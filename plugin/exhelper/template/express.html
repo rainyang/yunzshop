@@ -1,0 +1,557 @@
+{template 'web/_header'}
+{template 'tabs'}
+{template 'exhelpercommon'}
+{if $operation == 'post'}
+<script language='javascript' src="../addons/sz_yi/plugin/exhelper/static/js/designer.js"></script>
+<script language='javascript' src="../addons/sz_yi/plugin/exhelper/static/js/jquery.contextMenu.js"></script>
+<link href="../addons/sz_yi/plugin/exhelper/static/js/jquery.contextMenu.css" rel="stylesheet">
+<style type='text/css'>
+   #container {
+        border:1px solid #ccc;position:relative
+   }
+.items label { width:120px;margin:0;float:left;}
+   #container .bg { position:absolute;width:100%;z-index:0}
+   #container .drag { position: absolute; width:120px;height:25px; border:1px solid #000;z-index:1; top:10px;left:100px;background:#fff; }
+   #containerr .rRightDown,.rLeftDown,.rLeftUp,.rRightUp,.rRight,.rLeft,.rUp,.rDown{
+            position:absolute;
+            width:7px;
+            height:7px;
+            z-index:1;
+            font-size:0;
+    }    
+
+ .rRightDown,.rLeftDown,.rLeftUp,.rRightUp,.rRight,.rLeft,.rUp,.rDown{ 
+position:absolute;background:#C00;width:6px;height:6px;z-index:5;font-size:0; } 
+ 
+.rLeftDown,.rRightUp{cursor:ne-resize;} 
+.rRightDown,.rLeftUp{cursor:nw-resize;} 
+.rRight,.rLeft{cursor:e-resize;} 
+.rUp,.rDown{cursor:n-resize;} 
+.rRightDown{ bottom:-3px; right:-3px; background: #00f} 
+.rLeftDown{ bottom:-3px; left:-3px;} 
+.rRightUp{ top:-3px; right:-3px;} 
+.rLeftUp{ top:-3px; left:-3px;} 
+.rRight{ right:-3px; top:50%;margin-top:-3px;} 
+.rLeft{ left:-3px; top:50%;margin-top:-3px;} 
+.rUp{ top:-3px; left:50%} 
+.rDown{ bottom:-3px; left:50%} 
+    .context-menu-layer { z-index:9999;}
+    .context-menu-list { z-index:9999;}
+    .items .checkbox-inline,.col-xs-12 .checkbox-inline { margin:0;float:left;width:100px;}
+    
+</style>
+<div class="main">
+
+    <form id='dataform'  {ife 'exhelper.express' $item}action="" method="post"{/if} class="form-horizontal form" >
+       <input type="hidden" name="id" value="{$item['id']}" />
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                快递单信息
+            </div>
+            <div class="panel-body" >
+                <div class="form-group">
+                 
+                    <div class="col-sm-9 col-xs-12">
+                        {ife 'exhelper.express' $item}
+                        <div class="input-group">
+                            <div class="input-group-addon">快递单名称</div>
+                            <input type="text" name="expressname" class="form-control" value="{$item['expressname']}" />
+                            <div class="input-group-addon">宽度</div>
+                            <input type="text" name="width" class="form-control" value="{$item['width']}" />
+                            <div class="input-group-addon">px 高度</div>
+                            <input type="text" name="height" class="form-control" value="{$item['height']}" />
+                             <div class="input-group-addon">px</div>
+                        </div>
+                        {else}
+                        <div class='form-control-static'>快递单名称: {$item['expressname']} 宽度: {$item['width']}px 高度 {$item['height']}px</div>
+                        {/if} 
+                    </div>
+                </div>
+             
+                  <div class="form-group">
+                        <div class="col-sm-9 col-xs-12">
+                                <table style='width:100%;'>
+                                <tr>
+                                    <td style='width:869px;' valign='top'>
+                                        <div id="container">
+                                            <img src="../addons/sz_yi/plugin/exhelper/static/images/YTO1.jpg" />
+                                            {loop $datas $k $d}
+                                            <div class="drag" index="{$k}"
+                                                 items="{$d['items']}"
+                                                 item-string="{$d['string']}"
+                                                 item-font="{$d['font']}"
+                                                 item-size="{$d['size']}"
+                                                 item-color="{$d['color']}"
+                                                 item-bold="{$d['bold']}"
+                                                 item-pre="{$d['pre']}"
+                                                 item-last="{$d['last']}"
+                                                 style="z-index:{$k};left:{$d['left']};top:{$d['top']};width:{$d['width']};height:{$d['height']}"
+                                                 >
+                                                <div class="text" style="{if !empty($d['font'])}font-family: {$d['font']};{/if}font-size:{if !empty($d['size'])}{$d['size']}{else}14{/if}px;{if !empty($d['color'])}color: {$d['color']};{/if}{if !empty($d['bold'])}font-weight:bold;{/if}">
+                                                    {$d['pre']}{$d['string']}{$d['last']}
+                                                </div>
+                                                <div class="rRightDown"> </div><div class="rLeftDown"> </div><div class="rRightUp"> </div><div class="rLeftUp"> </div><div class="rRight"> </div><div class="rLeft"> </div><div class="rUp"> </div><div class="rDown"></div></div>
+                                            {/loop}
+                                        </div>
+                                    </td>
+                                    <td valign="top" style="padding-left:10px;">
+                                       
+                                                    <div class="panel panel-default">
+                                                        <div class="panel-heading">
+                                                             <a href="javascript:;" class="btn btn-default" onclick="addInput()"><i class="fa fa-plus">添加内容框</i></a>
+                                                    <a href="javascript:;" class="btn btn-primary" onclick="changeBG()"><i class="fa fa-picture-o">更换背景</i></a>
+                                                   
+                                                    
+                                                        </div>
+                                                        <div class="panel-body items">
+                                                            
+                                                  
+                                                           
+                                                            
+                                                          <div class="form-group">
+                                                                <div class="col-sm-12">
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='sendername' title='发件人' /> 发件人</label>
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='sendertel' title='发件人电话' /> 发件人电话</label>
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='senderaddress' title='发件地址' /> 发件地址</label>
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='sendersign' title='发件人签名' /> 发件人签名</label>
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='sendercode' title='发件邮编' /> 发件邮编</label>
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='sendertime' title='发件日期' /> 发件日期</label><br/>
+                                                               </div>
+                                                      </div>
+                                                            
+                                                            
+                                                          <div class="form-group">
+                                                                <div class="col-sm-12">
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='province' title='收件省份' /> 收件省份</label>
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='city' title='收件人城市' /> 收件人城市</label>
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='area' title='收件人区域' /> 收件人区域</label>
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='address' title='收件人地址' /> 收件人地址</label>
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='nickname' title='买家昵称' /> 买家昵称</label><br/>
+                                                               </div>
+                                                      </div>
+                                                            
+                                                              <div class="form-group">
+                                                                <div class="col-sm-12">
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='ordersn' title='订单编号' /> 订单编号</label>
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='price' title='订单金额'/> 订单金额</label>
+                                                                        
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='createtime' title='下单时间'/> 下单时间</label>
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='paytime' title='付款时间'/> 付款时间</label>
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='remark' title='买家留言'/> 买家留言</label>
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='goods' title='商品信息' /> 商品信息</label>
+                                                                        <label class="checkbox-inline"><input type="checkbox" value='total' title='商品数量'/> 商品数量</label>
+                                                               </div>
+                                                      </div>
+                                                            
+                                                      <div class="form-group">
+                                                              <div class="col-sm-12">
+                                                                        <div class='input-group'>
+                                                                                <div class='input-group-addon'>字体</div>
+                                                                                 <select class='form-control' id="item-font">
+                                                                                     <option value=''>默认</option>
+                                                                                     <option value='黑体'>黑体</option>
+                                                                                     <option value='宋体'>宋体</option>
+                                                                                     <option value='微软雅黑'>微软雅黑</option>
+                                                                                     <option value='新宋体'>新宋体</option>
+                                                                                     <option value='幼圆'>幼圆</option>
+                                                                                     <option value='华文细黑'>华文细黑</option>
+                                                                                     <option value='隶书'>隶书</option>
+                                                                                     <option value='Arial'>Arial</option>
+                                                                                     <option value='Arial Narrow'>Arial Narrow</option>
+                                                                                 </select>
+
+                                                                                <div class='input-group-addon'>大小</div>
+                                                                                <select class='form-control' id="item-size">
+                                                                                    <option value=''>默认</option>
+                                                                                    <?php for($i=8;$i<=100;$i++) { ?>
+                                                                                    <option value='{$i}'>{$i}</option>
+                                                                                    <?php } ?>
+                                                                                </select>
+                                                                             
+                                                                                <div class='input-group-addon'>加粗</div>
+                                                                                 <select class='form-control' id="item-bold">
+                                                                                     <option value=''>不加粗</option>
+                                                                                     <option value='bold'>加粗</option>
+                                                                                 </select>
+                                                                        </div>
+                                                               </div>      
+                                                     </div>
+                                                         <div class="form-group">
+                                                             <div class="col-sm-12">
+                                                                 <div class='input-group' id="item-color">
+                                                           <div class='input-group-addon'>颜色</div>
+                                                                                 {php echo tpl_form_field_color('color')}
+                                                                                 </div>
+                                                                 </div>
+                                                             </div>
+                                                                                 
+                                                        <div class="form-group">
+                                                              <div class="col-sm-12">
+                                                                        <div class='input-group'>
+                                                                                <div class='input-group-addon'>前文字</div>
+                                                                               <input type="text" id="item-pre" class="form-control" />
+                                                                               <div class='input-group-addon'>后文字</div>
+                                                                               <input type="text" id="item-last" class="form-control"/>
+                                                                        </div>
+                                                               </div>      
+                                                     </div>
+                                                             
+                                                </div>
+                                                          
+                                                    </div>
+                                                            
+                                           
+                                    </td>
+                                </tr>
+                                </table>
+                         
+                        </div>
+                </div>
+                
+                
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否为默认模板</label>
+                    <div class="col-sm-9 col-xs-12">
+                        {ife 'exhelper.express' $item}
+                        <label class="radio-inline">
+                            <input type="radio" name='isdefault' value="1" {if $item['isdefault']==1}checked{/if} /> 是
+                        </label>
+                        <label class="radio-inline">
+                            <input type="radio" name='isdefault' value="0" {if $item['isdefault']==0}checked{/if} /> 否
+                        </label>
+                      
+                      {else} 
+                       <div class='form-control-static'>{if $item['isdefault']==1}是{else}否{/if}</div>
+                        {/if}
+                      
+                    </div>
+                </div>
+             <div class='panel-body'>
+                <div class="form-group"></div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label> 
+                    <div class="col-sm-9 col-xs-12">
+                        {ife 'exhelper.express' $item}
+                        <input type="button" name="btnsave" value="保 存" class="btn btn-primary col-lg-1 btnsave" onclick="save(false)" />
+                        <input type="button" name="btnpreview" value="保存并预览" class="btn btn-success col-lg-1 btnsave" onclick="save(true)" style="margin-left:10px;" />
+                        <input type="hidden" name="token" value="{$_W['token']}" />
+                        {/if}
+                        <input type="button" name="back" onclick='history.back()' {ifp 'exhelper.express.add|exhelper.express.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default col-lg-1" />
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <input type="hidden" id="datas" name="datas" values="" />
+        <input type="hidden" id="bg" name="bg" values="{$item['bg']}" />
+    </form>
+</div> 
+<script language='javascript'>
+    function addInput(){
+       var index = $('#container .drag').length+1;
+       var drag = $('<div class="drag" index="' + index +'" style="z-index:' + index+'" fields=""><div class="text"></div><div class="rRightDown"> </div><div class="rLeftDown"> </div><div class="rRightUp"> </div><div class="rLeftUp"> </div><div class="rRight"> </div><div class="rLeft"> </div><div class="rUp"> </div><div class="rDown"></div></div>');
+       $('#container').append(drag);
+       bindEvents(drag);
+       setCurrentDrag(drag);
+    }
+    function changeBG(){
+        util.image('',function(data){
+            if($('#container').find('img').length<=0){
+              $('#container').insertAt( $("<img src='" + data.url + "'>"),0);
+            }
+            else{
+                $('#container').find('img').attr('src',data.url);
+            }
+            $('#bg').val(data.filename);
+        });
+    }
+      var currentDrag = false; 
+        function bindEvents(obj){
+            var index = obj.attr('index');
+            var rs = new Resize(obj, { Max: true, mxContainer: "#container" });
+            rs.Set($(".rRightDown",obj), "right-down");
+            rs.Set($(".rLeftDown",obj), "left-down");
+            rs.Set($(".rRightUp",obj), "right-up");
+            rs.Set($(".rLeftUp",obj), "left-up");
+            rs.Set($(".rRight",obj), "right");
+            rs.Set($(".rLeft",obj), "left");
+            rs.Set($(".rUp",obj), "up");
+            rs.Set($(".rDown",obj), "down"); 
+            new Drag(obj, { Limit: true, mxContainer: "#containerr" });
+            $('.drag .remove').unbind('click').click(function(){
+                $(this).parent().remove();
+            });
+         
+         $.contextMenu({
+                selector: '.drag[index=' + index + ']',
+                callback: function(key, options) {
+                    var index = parseInt($(this).attr('zindex'));
+                    
+                    if(key=='next'){
+                        var nextdiv = $(this).next('.drag');
+                        if(nextdiv.length>0 ){
+                           nextdiv.insertBefore($(this));  
+                        }
+                    } else if(key=='prev'){
+                        var prevdiv = $(this).prev('.drag');
+                        if(prevdiv.length>0 ){
+                           $(this).insertBefore(prevdiv);  
+                        } 
+                    } else if(key=='last'){
+                        var len = $('.drag').length;
+                         if(index >=len-1){
+                            return;
+                        } 
+                        var last = $('#containerr .drag:last');
+                        if(last.length>0){
+                           $(this).insertAfter(last);  
+                        }
+                    }else if(key=='first'){
+                        var index = $(this).index();
+                        if(index<=1){
+                            return;
+                        }
+                        var first = $('#containerr .drag:first');
+                        if(first.length>0){
+                           $(this).insertBefore(first);  
+                        }
+                    }else if(key=='delete'){
+                       $(this).remove();
+                    }
+                    var n =1 ;
+                    $('.drag').each(function(){
+                        $(this).css("z-index",n);
+                        n++; 
+                    })
+                },
+                items: {
+                    "next": {name: "调整到上层"},
+                    "prev": {name: "调整到下层"},
+                    "last": {name: "调整到最顶层"},
+                    "first": {name: "调整到最低层"},
+                    "delete": {name: "删除元素"}
+                }
+            });
+            obj.unbind('mousedown').mousedown(function(){
+                setCurrentDrag(obj);
+            });
+              
+        }
+        var timer = 0;
+        function setCurrentDrag(obj){
+            currentDrag =obj;
+            bindItems();
+            $('.items').show();
+            $('.drag').css('border','1px solid #000');
+            obj.css('border','1px solid red');
+          
+                   
+        }
+        function bindItems(){
+             var items =  currentDrag.attr('items') || "";
+             var values = items.split(',');
+             
+             $('.items').find(':checkbox').each(function(){
+                 $(this).get(0).checked = false;
+             });
+             $('#item-font').val('');
+             $('#item-size').val('');
+             $('#item-bold').val('');
+             for(var i in values){
+                 if(values[i]!=''){
+                   $('.items').find(":checkbox[value='" + values[i]+ "']").get(0).checked =true;
+                 }
+             }
+             $('#item-font').val( currentDrag.attr('item-font') || '' );
+             $('#item-size').val(currentDrag.attr('item-size') || '');
+             $('#item-bold').val(currentDrag.attr('item-bold') || '');
+              $('#item-pre').val(currentDrag.attr('item-pre') || '');
+               $('#item-last').val(currentDrag.attr('item-last') || '');
+             
+              var itemcolor = $('#item-color');
+              var input = itemcolor.find('input:first');
+              var picker = itemcolor.find('.sp-preview-inner');
+              var color = currentDrag.attr('item-color') || '#000';
+              input.val(color); 
+              picker.css( {'background-color':color});
+              timer = setInterval(function(){
+                     currentDrag.attr('item-color',input.val()).find('.text').css('color',input.val());
+                     currentDrag.attr('item-pre',$('#item-pre').val());
+                     currentDrag.attr('item-last',$('#item-last').val());
+                     var pre = currentDrag.attr('item-pre') || "";
+                     var last = currentDrag.attr('item-last') || "";
+                     var string = currentDrag.attr('item-string') || "";
+                     currentDrag.find('.text').html( pre+ string +last);
+             },10);
+        }
+        $(function(){
+              $('#dataform').ajaxForm();
+              
+        $('.drag').each(function(){
+            bindEvents($(this));
+        })
+            $('.items .checkbox-inline').click(function(){
+          
+                if(currentDrag){
+                   var values = [];
+                   var titles = [];
+                   $('.items').find(':checkbox:checked').each(function(){
+                       titles.push( $(this).attr('title') );
+                       values.push( $(this).val() );
+                   });
+                   currentDrag.attr('items', values.join(',')).attr('item-string', titles.join(',')).find('.text').text(titles.join(','));
+                }
+            });
+            $('#item-font').change(function(){
+                 if(currentDrag){
+                     var data =  $(this).val();
+                     currentDrag.attr('item-font',data);
+                     if(data==''){
+                         data = "宋体";
+                     }
+                     currentDrag.attr('item-font',data).css('font-family',data);
+                 }
+            });
+            $('#item-size').change(function(){
+                 if(currentDrag){
+                     var data =  $(this).val();
+                   
+                    currentDrag.attr('item-size',data);
+                      if(data==''){
+                         data = 14;
+                     }
+                         currentDrag.css('font-size',data + "px");
+                 }
+            });
+            $('#item-bold').change(function(){
+                 if(currentDrag){
+                     var data =  $(this).val();
+                    currentDrag.attr('item-bold',data);
+                    if(data=='bold'){
+                        currentDrag.css('font-weight','bold');
+                    }
+                    else{
+                        currentDrag.css('font-weight','normal');
+                    }
+                 }
+            });
+        });
+    function save(ispreview){
+        
+       if($(':input[name=expressname]').isEmpty()){
+           Tip.focus($(':input[name=expressname]'),'请填写快递单名称!');
+           return;
+       }
+       var data = [];
+       $('.drag').each(function(){
+            var obj = $(this);
+            var d= {
+                left:obj.css('left'),
+                top:obj.css('top'),
+                width:obj.css('width'),
+                height:obj.css('height'),
+                items:obj.attr('items'),
+                font: obj.attr('item-font'),
+                size: obj.attr('item-size'),
+                color: obj.attr('item-color'),
+                bold: obj.attr('item-bold'),
+                string: obj.attr('item-string'),
+                pre: obj.attr('item-pre'),
+                last: obj.attr('item-last')
+            };
+            data.push(d);
+       });
+       $('#datas').val(JSON.stringify(data));
+       $('.btnsave').button('loading');
+       $('#dataform').ajaxSubmit(function(data){
+              $('.btnsave').button('reset');
+               data = eval("(" +  data  +")");
+               $(':hidden[name=id]').val(data.id);
+               if(ispreview){
+                 //  Exhelper.preview(data.id);
+                 previews(); 
+               }else{
+                   location.href= "{php echo $this->createPluginWebUrl('exhelper/express')}";
+               }
+      })
+      return; 
+    }
+    
+    function previews(){
+        var LODOP=getLodop();
+        LODOP.PRINT_INIT("快递单预览");
+        LODOP.ADD_PRINT_HTM(0,0,869,480,document.getElementById("container").innerHTML);
+        LODOP.PREVIEW();	
+    }
+    
+</script>
+{elseif $operation == 'display'}
+     <form action="" method="post">
+<div class="panel panel-default">
+    <div class="panel-body table-responsive">
+        <table class="table table-hover">
+            <thead class="navbar-inner">
+                <tr>
+                    <th style="width:30px;">ID</th>
+                    <th>快递单</th>					
+                     <th>是否默认</th>
+                    <th >操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {loop $list $row}
+                <tr>
+                    <td>{$row['id']}</td>
+                    <td>{$row['expressname']}</td>
+                       <td> 
+                                    {if $row['isdefault']==1}
+                                    <span class='label label-success'><i class='fa fa-check'></i></span>
+                                    {/if}
+                                </td>
+                    <td style="text-align:left;">
+                   
+                        {ifp 'exhelper.express.view|exhelper.express.edit'}<a href="{php echo $this->createPluginWebUrl('exhelper/express', array('op' => 'post', 'id' => $row['id']))}" class="btn btn-default btn-sm"  title="{ifp 'exhelper.express.edit'}修改{else}查看{/if}"><i class="fa fa-edit"></i></a>{/if}
+                        {ifp 'exhelper.express.delete'}<a href="{php echo $this->createPluginWebUrl('exhelper/express', array('op' => 'delete', 'id' => $row['id']))}"class="btn btn-default btn-sm" onclick="return confirm('确认删除此快递单?')" title="删除"><i class="fa fa-times"></i></a>{/if}
+                             {ifp 'exhelper.express.setdefault'}
+                        {if empty($row['isdefault'])}
+                        <a href="{php echo $this->createPluginWebUrl('exhelper/express', array('op' => 'setdefault', 'id' => $row['id']))}"class="btn btn-default btn-sm" onclick="return confirm('确认设置默认?')" title="设置默认"><i class="fa fa-check"></i></a>
+                        {/if}
+                        {/if}
+                    </td>
+                </tr>
+                {/loop} 
+                <tr>
+                    <td colspan='4'>
+                        {ifp 'exhelper.express.add'}
+                          <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('exhelper/express',array('op'=>'post'))}"><i class='fa fa-plus'></i> 添加快递单</a>
+                          <input type="hidden" name="token" value="{$_W['token']}" />
+                       {/if}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        {$pager}
+    </div>
+</div>
+</form>
+{/if}
+<div id="modal-module-preview"  class="modal fade" tabindex="-1">
+    <div class="modal-dialog" style='width: 900px;height:480px;'>
+        <div class="modal-content">
+          <div class="modal-header">
+                        <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                        <h3>快递单预览</h3>
+                    </div>
+                    <div class="modal-body">
+                           <iframe style="border:1px solid #ccc; width: 869px;height:480px; padding:0px; margin: 0px;" src=""></iframe>
+                    </div>
+                    <div class="modal-footer">
+                        <a href="#" class="btn btn-primary">打 印</a>
+                        <a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关 闭</a>
+                    </div>
+        </div>
+       
+    </div>
+</div>
+{template 'common/footer'}
+
