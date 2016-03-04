@@ -65,10 +65,7 @@ if (is_array($setting['payment'])) {
 				m('common')->paylog('log: ' . (empty($log) ? '' : json_encode($log)) . '');
 				if (!empty($log) && $log['status'] == '0') {
 					m('common')->paylog('corelog: ok');
-                    file_put_contents(IA_ROOT.'/1.log', print_r($log, 1));
-                    $log['module'] = ucfirst($log['module']);
 					$site = WeUtility::createModuleSite($log['module']);
-                    file_put_contents(IA_ROOT.'/2.log', print_r($site, 1));
 
 					if (!is_error($site)) {
 						$method = 'payResult';

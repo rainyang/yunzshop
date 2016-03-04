@@ -30,7 +30,7 @@ if (!class_exists('SaleModel')) {
 					}
 				}
 			}
-			usort($_var_5, 'sort_enoughs');
+			@usort($_var_5, 'sort_enoughs');
 			return $_var_5;
 		}
         public function perms()

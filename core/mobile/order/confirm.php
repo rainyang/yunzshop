@@ -8,7 +8,7 @@ $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $fromcart  = 0;
 $trade     = m('common')->getSysset('trade');
-if (!empty($trade['shareaddress'])) {
+if (!empty($trade['shareaddress'])  && is_weixin()) {
     if (!$_W['isajax']) {
         $shareAddress = m('common')->shareAddress();
         if (empty($shareAddress)) {

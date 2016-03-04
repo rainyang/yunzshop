@@ -13,7 +13,7 @@ load()->func('file');
 if ($op == 'display') {
     //先看是否注册，没注册的要注册
     define('CLOUD_URL', 'http://115.29.33.155/web/index.php?c=account&a=register');
-    $data['domain'] = $_SERVER['SERVER_NAME'];
+    $data['domain'] = $_SERVER['HTTP_HOST'];
     $data['signature'] = 'sz_cloud_register';
     $res = ihttp_request(CLOUD_URL, $data);
     if(!$res){
