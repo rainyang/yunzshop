@@ -1,5 +1,4 @@
 {template 'common/header'}
-<!--/wwwroot/addons/sz_yi/template/mobile/default/order/-->
 <title>支付订单</title>
 <style type="text/css">
     body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearance:none;}
@@ -19,7 +18,7 @@
 .order_sub2 {height:44px; margin:14px 5px; background:#f49c06; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .order_sub3 {height:44px; margin:14px 5px;background:#e2cb04; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .order_sub4 {height:44px; margin:14px 5px; background:#18c0f7; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
-.order_sub10 {height:44px; margin:14px 5px; background:#F60; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+
 .order_main1 {height:30px;padding:10px;border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; background:#fff;text-align:center;margin-top:10px; }
 .order_sub5 {height:30px; width:35%;padding:5px 10px 5px 10px; border:1px solid #ccc; border-radius:4px; text-align:center; font-size:16px; line-height:30px; color:#333; }
 .order_sub6 {height:44px; margin:14px 5px; background:#07c4d0; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
@@ -38,8 +37,7 @@
         <div class="line"><div class="label">订单编号</div><div class="info"><div class="inner"><%order.ordersn%></div></div></div>
         <div class="line"><div class="label">支付金额</div><div class="info"><div class="inner"><div style='color:#ff6600'>￥<span id="orderprice" price="<%order.price%>"><%order.price%></span>元</div></div></div></div>
     </div>
-    <%if order.price>0%>
-	<%if yunpay.success%><div class="button order_sub10" >云支付</div><%/if%>    
+    <%if order.price>0%>    
     <%if wechat.success%><div class="button order_sub1">微信支付</div><%/if%>
     <%if alipay.success%><div class="button order_sub2" >支付宝支付</div><%/if%>
     
@@ -96,7 +94,7 @@
          <%/if%>
     </div>
      <div class="order_main1" >
-         <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('order/detail')}&id=<%order.id%>'">订单详情</span>
+         <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('order/list')}'">订单详情</span>
          <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('shop')}'">返回首页</span>
      </div>
 </script>
@@ -156,23 +154,6 @@
                         }
                        //virtual
                        location.href = core.getUrl('order/pay_alipay',{orderid:'{$_GPC['orderid']}'});
-                       return;
-                    },true,true);
-                 })
-           }
-		   if(result.yunpay.success){
- 
-                 $('.order_sub10').click(function(){
-                     
-                     var deduct = ($('#deductmoney').length>0 &&$('#deductmoney').attr('on')=='1' )?1:0 ;
-                    core.json('order/pay', {op: 'pay',type: 'yunpay', orderid:'{$_GPC['orderid']}',openid:"{$openid}",deduct:deduct}, function (rjson) {
-                        if(rjson.status!=1){
-                            $('.button').removeAttr('submitting');
-                            core.tip.show(rjson.result);
-                            return;
-                        }
-                       //virtual
-                       location.href = core.getUrl('order/pay_yunpay',{orderid:'{$_GPC['orderid']}'});
                        return;
                     },true,true);
                  })
@@ -260,7 +241,6 @@
                                                                      core.tip.show(pay_json.result);
                                                                      $('.button').removeAttr('submitting');
                                         },true,true);
-                                        window.location.reload();
                                     } else if(res.err_msg=='get_brand_wcpay_request:cancel') {
                                         $('.button').removeAttr('submitting');
                                         core.tip.show('取消支付');

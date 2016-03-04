@@ -1,4 +1,4 @@
-<div class="form-group">
+﻿<div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
     <div class="col-sm-9 col-xs-12">
         {ife 'shop.goods' $item}
@@ -10,23 +10,24 @@
     </div>
 </div>
 <!-- 供货商start -->
-{if $_W['uid'] == 1}
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">供货商</label>
-    <div class="col-sm-9 col-xs-12">
-      <select name='supplier_uid' class='form-control'>
-        <option value="">
-            请选择供货商
-        </option>
-        {loop $result $row}
-        <option value="{$row['uid']}" {if $item['supplier_uid']==$row['uid']}selected="selected"{/if}>{$row['realname']}/{$row['username']}</option>
-        {/loop}
-      </select>
-        <span class='help-block'>选择供货商</span>
-    </div>
-</div>
+{if p('supplier')}
+  {if $_W['isfounder'] == 1}
+  <div class="form-group">
+      <label class="col-xs-12 col-sm-3 col-md-2 control-label">供货商</label>
+      <div class="col-sm-9 col-xs-12">
+        <select name='supplier_uid' class='form-control'>
+          <option value="">
+              请选择供货商
+          </option>
+          {loop $result $row}
+          <option value="{$row['uid']}" {if $item['supplier_uid']==$row['uid']}selected="selected"{/if}>{$row['realname']}/{$row['username']}</option>
+          {/loop}
+        </select>
+          <span class='help-block'>选择供货商</span>
+      </div>
+  </div>
+  {/if}
 {/if}
-
 <!-- 供货商end -->
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>商品名称</label>

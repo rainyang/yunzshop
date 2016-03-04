@@ -1,4 +1,4 @@
-{template 'web/_header'}
+﻿{template 'web/_header'}
 {template 'web/shop/tabs'}
 <script type="text/javascript" src="resource/js/lib/jquery-ui-1.10.3.min.js"></script>
 
@@ -327,11 +327,16 @@ if(window.type=='3'){
                         <td>{$item['salesreal']}</td>
                         <td>{$item['goodssn']}</td>
                         <td>
-                            {if $_W['user']['uid'] == 1}
-                                <label data='{$item['status']}' class='label  label-default {if $item['status']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'status')"{/if}>{if $item['status']==1}上架{else}下架{/if}</label>
-                                <label data='{$item['type']}' class='label  label-default {if $item['type']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'type')"{/if}>{if $item['type']==1}实体物品{else}虚拟物品{/if}</label>
+                            {if p('supplier')}
+                                {if $_W['isfounder'] == 1}
+                                    <label data='{$item['status']}' class='label  label-default {if $item['status']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'status')"{/if}>{if $item['status']==1}上架{else}下架{/if}</label>
+                                    <label data='{$item['type']}' class='label  label-default {if $item['type']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'type')"{/if}>{if $item['type']==1}实体物品{else}虚拟物品{/if}</label>
+                                {else}
+                                    <label data='{$item['status']}' class='label  label-default {if $item['status']==1}label-info{/if}' >{if $item['status']==1}上架{else}下架{/if}</label>
+                                    <label data='{$item['type']}' class='label  label-default {if $item['type']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'type')"{/if}>{if $item['type']==1}实体物品{else}虚拟物品{/if}</label>
+                                {/if}
                             {else}
-                                <label data='{$item['status']}' class='label  label-default {if $item['status']==1}label-info{/if}' >{if $item['status']==1}上架{else}下架{/if}</label>
+                                <label data='{$item['status']}' class='label  label-default {if $item['status']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'status')"{/if}>{if $item['status']==1}上架{else}下架{/if}</label>
                                 <label data='{$item['type']}' class='label  label-default {if $item['type']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'type')"{/if}>{if $item['type']==1}实体物品{else}虚拟物品{/if}</label>
                             {/if}
                         </td>

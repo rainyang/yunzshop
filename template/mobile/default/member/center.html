@@ -1,4 +1,4 @@
-{template 'common/header'}
+﻿{template 'common/header'}
 <title>个人中心</title>
 <style type="text/css">
     body {margin:0px; background:#eee; -moz-appearance:none;}
@@ -96,8 +96,7 @@
     {if !$member['isbindmobile'] && is_weixin()}
             <a href="{php echo $this->createMobileUrl('member/bindmobile')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-mobile" style="color:#f10;"></i>绑定手机<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>   
     {/if}
-<?php $cond = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_perm_role') . ' where status1=1');?>
-{if !empty($cond)}
+{if p('supplier')}
 <div class="cart">
         <a href="{php echo $this->createPluginMobileUrl('supplier/af_supplier')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-pencil" style="color:#f10;"></i>供应商申请<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 </div>

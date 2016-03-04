@@ -2,9 +2,9 @@
 /*=============================================================================
 #     FileName: order.php
 #         Desc: 订单类
-#       Author: Yunzhong - http://www.yunzshop.com
-#        Email: 913768135@qq.com
-#     HomePage: http://www.yunzshop.com
+#       Author: RainYang - https://github.com/rainyang
+#        Email: rainyang2012@qq.com
+#     HomePage: http://rainyang.github.io
 #      Version: 0.0.1
 #   LastChange: 2016-02-05 02:34:01
 #      History:
@@ -36,18 +36,18 @@ class Sz_DYi_Order
         }
         return $price;
     }
-	function getCityDispatchPrice($_var_6, $_var_7, $weight, $d)
-	{
-		if (is_array($_var_6) && count($_var_6) > 0) {
-			foreach ($_var_6 as $_var_8) {
-				$_var_9 = explode(';', $_var_8['citys']);
-				if (in_array($_var_7, $_var_9) && !empty($_var_9)) {
-					return $this->getDispatchPrice($weight, $_var_8);
-				}
-			}
-		}
-		return $this->getDispatchPrice($weight, $d);
-	}
+    function getCityDispatchPrice($_var_6, $_var_7, $weight, $d)
+    {
+        if (is_array($_var_6) && count($_var_6) > 0) {
+            foreach ($_var_6 as $_var_8) {
+                $_var_9 = explode(';', $_var_8['citys']);
+                if (in_array($_var_7, $_var_9) && !empty($_var_9)) {
+                    return $this->getDispatchPrice($weight, $_var_8);
+                }
+            }
+        }
+        return $this->getDispatchPrice($weight, $d);
+    }
     public function payResult($params)
     {
         global $_W;
@@ -99,9 +99,9 @@ class Sz_DYi_Order
                             ));
                         }
                         $this->setStocksAndCredits($orderid, 1);
-			if (p('coupon') && !empty($order['couponid'])) {
-				p('coupon')->backConsumeCoupon($order['id']);
-		    	}
+            if (p('coupon') && !empty($order['couponid'])) {
+                p('coupon')->backConsumeCoupon($order['id']);
+                }
                         m('notice')->sendOrderMessage($orderid);
                         if (p('commission')) {
                             p('commission')->checkOrderPay($order['id']);
@@ -109,78 +109,80 @@ class Sz_DYi_Order
                     }
                 }
                 //订单分解
-                $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where  ordersn=:ordersn and uniacid=:uniacid limit 1', array(
+                if(p('supplier')){
+                    $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where  ordersn=:ordersn and uniacid=:uniacid limit 1', array(
                         ':uniacid' => $_W['uniacid'],
                         ':ordersn' => $ordersn
                     ));
 
-                $order_info = $order;
-                $order_id = $order['id'];
-                $resolve_order_goods = pdo_fetchall('select * from ' . tablename('sz_yi_order_goods') . ' where orderid=:orderid and uniacid=:uniacid ',array(
-                        ':orderid' => $order['id'],
-                        ':uniacid' => $_W['uniacid']
-                    ));
-                $datas = array();
-                $num = false;
-                foreach ($resolve_order_goods as $key => $value) {
-                    $datas[$value['supplier_uid']][]['id'] = $value['id'];
-                }
-                
-                unset($order['id']);
-                $dispatchprice = $order['dispatchprice'];
-                $olddispatchprice = $order['olddispatchprice'];
-                if(!empty($datas)){
-                    foreach ($datas as $key => $value) {
-                        $price = 0;
-                        $realprice = 0;
-                        $oldprice = 0;
-                        $goodsprice = 0;
-                        foreach($value as $v){
-                            $resu = pdo_fetch('select price,realprice,oldprice,supplier_uid from ' . tablename('sz_yi_order_goods') . ' where id=:id and uniacid=:uniacid ',array(
-                                    ':id' => $v['id'],
-                                    ':uniacid' => $_W['uniacid']
-                                ));
-                            $price += $resu['price'];
-                            $realprice += $resu['realprice'];
-                            $oldprice += $resu['oldprice'];
-                            $goodsprice += $resu['price'];
-                            $supplier_uid = $resu['supplier_uid'];
-                        }
-                        $order['price'] = $price;
-                        $order['oldprice'] = $oldprice;
-                        $order['goodsprice'] = $goodsprice;
-                        $order['supplier_uid'] = $supplier_uid;
-
-                        if($supplier_uid == 0){
-                            $order['dispatchprice'] = $dispatchprice;
-                            $order['olddispatchprice'] = $olddispatchprice;
-                        }else{
-                            $order['dispatchprice'] = 0;
-                            $order['olddispatchprice'] = 0;
-                        }
-                        if($num == false){
-                            pdo_update('sz_yi_order', $order, array(
-                                'id' => $order_id,
-                                'uniacid' => $_W['uniacid']
-                                ));
-                            pdo_update('sz_yi_commission_goods',array('paystatus' => 1, 'paytime' => time()),array('orderid' => $order_id,'uniacid' => $_W['uniacid']));
-                            $num = ture;
-                            
-                        }else{
-                            $ordersn = m('common')->createNO('order', 'ordersn', 'SH');
-                            $order['ordersn'] = $ordersn;
-                            pdo_insert('sz_yi_order', $order);
-                            $logid = pdo_insertid();
-                            $oid = array(
-                                'orderid' => $logid
-                                );
-                            foreach ($value as $val) {
-                                pdo_update('sz_yi_order_goods',$oid ,array('id' => $val['id'],'uniacid' => $_W['uniacid']));
-                                pdo_update('sz_yi_commission_goods',array('paystatus' => 1, 'paytime' => time()),array('orderid' => $val['id'],'uniacid' => $_W['uniacid']));
+                    $order_info = $order;
+                    $order_id = $order['id'];
+                    $resolve_order_goods = pdo_fetchall('select * from ' . tablename('sz_yi_order_goods') . ' where orderid=:orderid and uniacid=:uniacid ',array(
+                            ':orderid' => $order['id'],
+                            ':uniacid' => $_W['uniacid']
+                        ));
+                    
+                    $datas = array();
+                    $num = false;
+                    foreach ($resolve_order_goods as $key => $value) {
+                        $datas[$value['supplier_uid']][]['id'] = $value['id'];
+                    }
+                    unset($order['id']);
+                    $dispatchprice = $order['dispatchprice'];
+                    $olddispatchprice = $order['olddispatchprice'];
+                    if(!empty($datas)){
+                        foreach ($datas as $key => $value) {
+                            $price = 0;
+                            $realprice = 0;
+                            $oldprice = 0;
+                            $goodsprice = 0;
+                            foreach($value as $v){
+                                $resu = pdo_fetch('select price,realprice,oldprice,supplier_uid from ' . tablename('sz_yi_order_goods') . ' where id=:id and uniacid=:uniacid ',array(
+                                        ':id' => $v['id'],
+                                        ':uniacid' => $_W['uniacid']
+                                    ));
+                                $price += $resu['price'];
+                                $realprice += $resu['realprice'];
+                                $oldprice += $resu['oldprice'];
+                                $goodsprice += $resu['price'];
+                                $supplier_uid = $resu['supplier_uid'];
                             }
-                            
+                            $order['price'] = $price;
+                            $order['oldprice'] = $oldprice;
+                            $order['goodsprice'] = $goodsprice;
+                            $order['supplier_uid'] = $supplier_uid;
+
+                            if($supplier_uid == 0){
+                                $order['dispatchprice'] = $dispatchprice;
+                                $order['olddispatchprice'] = $olddispatchprice;
+                            }else{
+                                $order['dispatchprice'] = 0;
+                                $order['olddispatchprice'] = 0;
+                            }
+                            if($num == false){
+                                pdo_update('sz_yi_order', $order, array(
+                                    'id' => $order_id,
+                                    'uniacid' => $_W['uniacid']
+                                    ));
+                                $num = ture;
+                                
+                            }else{
+                                $ordersn = m('common')->createNO('order', 'ordersn', 'SH');
+                                $order['ordersn'] = $ordersn;
+                                pdo_insert('sz_yi_order', $order);
+                                $logid = pdo_insertid();
+                                $oid = array(
+                                    'orderid' => $logid
+                                    );
+                                foreach ($value as $val) {
+                                    pdo_update('sz_yi_order_goods',$oid ,array('id' => $val['id'],'uniacid' => $_W['uniacid']));
+                                }
+                                
+                            }
                         }
                     }
+                }else{
+                    $order_info = $order;
                 }
                 return array(
                     'result' => 'success',
