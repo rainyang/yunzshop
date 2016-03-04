@@ -90,14 +90,22 @@ class Sz_DYi_User
 
     function getUserInfo(){
         global $_W, $_GPC;
-        //print_r($_GPC);
+
+        //需要登陆的P方法
         $needLoginPList = array('address', 'cart', 'commission');
+
+        //不需要登陆的P方法
         $noLoginList = array('category', 'login', 'register', 'sendcode', 'bindmobile', 'forget', 'article');
+
+        //不需要登陆的do方法
         $noLoginDoList = array('shop', 'login', 'register');
 
+        //首页不用判断是否登陆
         if(!$_GPC['p'] && $_GPC["do"]=='shop'){
             return;
         }
+
+        //需要登陆
         if((!in_array($_GPC["p"], $noLoginList) && !in_array($_GPC["do"], $noLoginDoList)) or (in_array($_GPC["p"], $needLoginPList))){
             //小店不需要登陆，否则分享出去别人不能直接看到
             if($_GPC['method'] != 'myshop'){

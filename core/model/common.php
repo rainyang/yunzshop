@@ -4,6 +4,54 @@ if (!defined('IN_IA')) {
 }
 class Sz_DYi_Common
 {
+    public function dataMove(){
+        $dbprefix = 'ewei_shop';
+        $new_dbprefix = 'sz_yi';
+
+        $result = pdo_fetchall("SHOW TABLES LIKE '%".$new_dbprefix."%'");
+        if(!$result){
+            return false;
+        }
+        
+        foreach($result as $tables){
+            foreach($tables as $tablename){
+                $sql="drop table `".$tablename."`"; 
+                pdo_query($sql);
+            }
+        }
+
+        $result = pdo_fetchall("SHOW TABLES LIKE '%".$dbprefix."%'");
+        if(!$result){
+            return false;
+        }
+        
+        foreach($result as $tables){
+            foreach($tables as $tablename){
+                $sql="rename table `".$tablename."` to `".str_replace ( $dbprefix, $new_dbprefix, $tablename)."`"; 
+                pdo_query($sql);
+            }
+        }
+
+        if(!pdo_fieldexists('sz_yi_member', 'regtype')) {
+            pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD    `regtype` tinyint(3) DEFAULT '1';");
+        }
+        if(!pdo_fieldexists('sz_yi_member', 'isbindmobile')) {
+            pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD    `isbindmobile` tinyint(3) DEFAULT '0';");
+        }
+        if(!pdo_fieldexists('sz_yi_member', 'isjumpbind')) {
+            pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD    `isjumpbind` tinyint(3) DEFAULT '0';");
+        }
+        if(!pdo_fieldexists('sz_yi_member', 'pwd')) {
+            pdo_query("ALTER TABLE  ".tablename('sz_yi_member')." CHANGE  `pwd`  `pwd` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;");
+        }
+        pdo_query("UPDATE `ims_sz_yi_plugin` SET `name` = '芸众分销' WHERE `identity` = 'commission'");
+        pdo_query("UPDATE `ims_qrcode` SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
+
+        if(!pdo_fieldexists('sz_yi_goods', 'cates')) {
+            pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD     `cates` text;");
+        }
+    }
+
     public function getSetData($uniacid = 0)
     {
         global $_W;
