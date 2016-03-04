@@ -1,10 +1,10 @@
-<?php
+﻿<?php
 /*=============================================================================
 #     FileName: goods.php
 #         Desc: 商品管理
-#       Author: Yunzhong - http://www.yunzshop.com
-#        Email: 913768135@qq.com
-#     HomePage: http://www.yunzshop.com
+#       Author: RainYang - https://github.com/rainyang
+#        Email: rainyang2012@qq.com
+#     HomePage: http://rainyang.github.io
 #      Version: 0.0.1
 #   LastChange: 2016-02-05 02:40:09
 #      History:
@@ -13,7 +13,6 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
-
 $shopset = m('common')->getSysset('shop');
 $sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
 $category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
@@ -224,15 +223,6 @@ if ($operation == 'post') {
 		if (empty($_GPC['thumbs'])) {
 			$_GPC['thumbs'] = array();
 		}
-		//判断有没有供应商id
-		$supplier_uid = 0;
-		if($_W['user']['uid'] == 1){
-			$supplier_uid = $_GPC['supplier_uid'];
-			$status = intval($_GPC['status']);
-		}else{
-			$supplier_uid = $_W['user']['uid'];
-			$status = 0;
-		}
 		$data = array(
 			'uniacid' => intval($_W['uniacid']), 
 			'displayorder' => intval($_GPC['displayorder']),
@@ -270,7 +260,6 @@ if ($operation == 'post') {
 			'share_icon' => trim($_GPC['share_icon']), 
 			'share_title' => trim($_GPC['share_title']), 
 			'cash' => intval($_GPC['cash']), 
-			'status' => $status, 
 			'showlevels' => is_array($_GPC['showlevels']) ? implode(',', $_GPC['showlevels']) : '', 'buylevels' => is_array($_GPC['buylevels']) ? implode(',', $_GPC['buylevels']) : '', 
 			'showgroups' => is_array($_GPC['showgroups']) ? implode(',', $_GPC['showgroups']) : '', 'buygroups' => is_array($_GPC['buygroups']) ? implode(',', $_GPC['buygroups']) : '', 
 			'isverify' => intval($_GPC['isverify']), 
@@ -291,9 +280,21 @@ if ($operation == 'post') {
 			'detail_btnurl2' => trim($_GPC['detail_btnurl2']), 
 			'ednum' => intval($_GPC['ednum']), 
 			'edareas' => trim($_GPC['edareas']), 
-			'edmoney' => trim($_GPC['edmoney']), 
-			'supplier_uid' => $supplier_uid
+			'edmoney' => trim($_GPC['edmoney'])
 		);
+		//判断是否安装供应商插件判断有没有供应商id 
+		if(p('supplier')){
+			if($_W['isfounder'] == 1){
+				$data['supplier_uid'] = $_GPC['supplier_uid'];
+				$data['status'] = $_GPC['status'];
+			}else{
+				$data['supplier_uid'] = $_W['uid'];
+				$data['status'] = 0;
+			}
+		}else{
+			$data['status'] = $_GPC['status'];
+		}
+		//////////////////////////////////////////////
 		$cateset = m('common')->getSysset('shop');
 		$pcates = array();
 		$ccates = array();
@@ -553,19 +554,20 @@ if ($operation == 'post') {
 		$condition .= ' AND `status` = :status';
 		$params[':status'] = intval($_GPC['status']);
 	}
-	$sql = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition;
-	$total = pdo_fetchcolumn($sql, $params);
-	if (!empty($total)) {
-		if($_W['uid'] == 1){
-			$sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' ORDER BY `status` DESC, `displayorder` DESC,
-						`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
-		}else{
-			$sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'].' ORDER BY `status` DESC, `displayorder` DESC,
-						`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
-		}
-		$list = pdo_fetchall($sql, $params);
-		$pager = pagination($total, $pindex, $psize);
+	
+	if($_W['uid'] == 1){
+		$sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' ORDER BY `status` DESC, `displayorder` DESC,
+					`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
+		$sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition;
+		$total = pdo_fetchcolumn($sqls, $params);
+	}else{
+		$sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'].' ORDER BY `status` DESC, `displayorder` DESC,
+					`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
+		$sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'];
+		$total = pdo_fetchcolumn($sqls, $params);
 	}
+	$list = pdo_fetchall($sql, $params);
+	$pager = pagination($total, $pindex, $psize);
 } elseif ($operation == 'delete') {
 	ca('shop.goods.delete');
 	$id = intval($_GPC['id']);
