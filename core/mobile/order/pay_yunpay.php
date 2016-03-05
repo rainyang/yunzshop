@@ -45,16 +45,17 @@ $shopset = m('common')->getSysset('shop');
         load()->func('communication');
         load()->model('payment');
 		
-        $setting = uni_setting($_W['uniacid'], array(
-            'payment'
-        ));
-        if (is_array($setting['payment'])) {
-			
-            $options = $setting['payment']['yunpay'];
-            $yunpay  = m('common')->yunpay_build($params, $options, 0, $openid);
-            echo $yunpay;
-			die();
+        $pluginy = p('yunpay');
+        if ($pluginy) {
+            $yunpayinfo = $pluginy->getYunpay();
+            
+            if (!isset($yunpayinfo) or !$yunpayinfo['switch']) {
+                $yunpay  = $pluginy->yunpay_build($params, $yunpayinfo, 0, $openid);
+                echo $yunpay;
+                die();
+            }
         }
+
     } elseif (!empty($logid)) {
         $log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `id`=:id and `uniacid`=:uniacid limit 1', array(
             ':uniacid' => $uniacid,
@@ -76,15 +77,17 @@ $shopset = m('common')->getSysset('shop');
         $params['title'] = $log['title'];
         load()->func('communication');
         load()->model('payment');
-        $setting = uni_setting($_W['uniacid'], array(
-            'payment'
-        ));
-        if (is_array($setting['payment'])) {
-            $options = $setting['payment']['yunpay'];
-            $yunpay  = m('common')->yunpay_build($params, $options, 1, $openid);
-            echo $yunpay;
-			die();
+
+        if ($pluginy) {
+            $yunpayinfo = $pluginy->getYunpay();
+            
+            if (!isset($yunpayinfo) or !$yunpayinfo['switch']) {
+                $yunpay  = $pluginy->yunpay_build($params, $yunpayinfo, 1, $openid);
+                echo $yunpay;
+                die();
+            }
         }
+
     }
 
 //}

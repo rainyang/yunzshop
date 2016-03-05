@@ -9,7 +9,7 @@ $preUrl = $_COOKIE['preUrl'];
 if ($_W['isajax']) {
     if ($_W['ispost']) {
         $mc = $_GPC['memberdata'];
-         $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where  mobile ="'.$mc['mobile'].'"');
+         $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where  mobile ="'.$mc['mobile'].'" and pwd <> ""');
 
         if($info){
             $oldopenid = $info['openid'];

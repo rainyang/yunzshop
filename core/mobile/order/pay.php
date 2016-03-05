@@ -95,12 +95,16 @@ if ($operation == 'display' && $_W['isajax']) {
             $alipay['success'] = true;
         }
     }
-	$yunpay = array(
-        'success' => false
-    );
-	
-    if (isset($set['pay']) && $set['pay']['yunpay'] == 1) {
-        if (is_array($setting['payment']['yunpay']) && $setting['payment']['yunpay']['switch']) {
+
+    $pluginy = p('yunpay');
+    if ($pluginy) {
+        $yunpay = array(
+            'success' => false
+        );
+
+        $yunpayinfo = $pluginy->getYunpay();
+        
+        if (isset($yunpayinfo) && $yunpayinfo['switch']) {
             $yunpay['success'] = true;
         }
     }
@@ -446,7 +450,8 @@ if ($operation == 'display' && $_W['isajax']) {
     $tids = $_REQUEST['i2'];
 	$strs          = explode(':', $tids);
 	$tid=$strs [0];
-    if (!m('finance')->isYunpayNotify($_GET)) {
+    $pluginy = p('yunpay');
+    if (!$pluginy->isYunpayNotify($_GET)) {
         die('支付出现错误，请重试!');
     }
     $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(

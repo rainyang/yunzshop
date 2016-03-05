@@ -1,85 +1,92 @@
 <?php
+//芸众商城 QQ:913768135
 if (!defined('IN_IA')) {
-	exit('Access Denied');
+    exit('Access Denied');
 }
 if (!class_exists('YunpayModel')) {
-	class YunpayModel extends PluginModel
-	{
-		public function doShare($article, $shareid, $myid)
-		{
-			global $_W, $_GPC;
-			$profile = m('member')->getMember($shareid);
-			$myinfo = m('member')->getMember($myid);
-			$shopset = m('common')->getSysset('shop');
-			if (!empty($myid) && $shareid != $myid && !empty($profile['openid'])) {
-				$my_click = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article_share') . " WHERE aid=:aid and click_user=:click_user and uniacid=:uniacid ", array(':aid' => $article['id'], ':click_user' => $myid, ':uniacid' => $_W['uniacid']));
-				if (empty($my_click)) {
-					$share_click = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article_share') . " WHERE aid=:aid and click_user=:share_user and share_user=:click_user and uniacid=:uniacid ", array(':aid' => $article['id'], ':share_user' => $shareid, ':click_user' => $myid, ':uniacid' => $_W['uniacid']));
-					if (empty($share_click)) {
-						$all_click = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article_share') . " WHERE aid=:aid and share_user=:share_user and uniacid=:uniacid ", array(':aid' => $article['id'], ':share_user' => $shareid, ':uniacid' => $_W['uniacid']));
-						if ($all_click < $article['article_rule_allnum']) {
-							$day_start = mktime(0, 0, 0, date("m"), date("d"), date("Y"));
-							$day_end = mktime(0, 0, 0, date('m'), date('d') + 1, date('Y')) - 1;
-							$day_click = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article_share') . " WHERE aid=:aid and share_user=:share_user and click_date>:day_start and click_date<:day_end and uniacid=:uniacid ", array(':aid' => $article['id'], ':share_user' => $shareid, ':day_start' => $day_start, ':day_end' => $day_end, ':uniacid' => $_W['uniacid']));
-							if ($day_click < $article['article_rule_daynum']) {
-								$insert = array('aid' => $article['id'], 'share_user' => $shareid, 'click_user' => $myid, 'click_date' => time(), 'add_credit' => $article['article_rule_credit'], 'add_money' => $article['article_rule_money'], 'uniacid' => $_W['uniacid']);
-								pdo_insert('sz_yi_article_share', $insert);
-								if ($article['article_rule_credit'] > 0) {
-									m('member')->setCredit($profile['openid'], 'credit1', $article['article_rule_credit'], array(0, $shopset['name'] . " 文章营销奖励积分"));
-								}
-								if ($article['article_rule_money'] > 0) {
-									m('member')->setCredit($profile['openid'], 'credit2', $article['article_rule_money'], array(0, $shopset['name'] . " 文章营销奖励余额"));
-								}
-								$article_sys = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article_sys') . " WHERE uniacid=:uniacid limit 1 ", array(':uniacid' => $_W['uniacid']));
-								$detailurl = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=member';
-								$p = '';
-								if (!empty($article['article_rule_credit'])) {
-									$p .= $article['article_rule_credit'] . '个积分、';
-								}
-								if (!empty($article['article_rule_money'])) {
-									$p .= $article['article_rule_money'] . '元余额';
-								}
-								$msg = array('first' => array('value' => "您的奖励已到帐！", "color" => "#4a5077"), 'keyword1' => array('title' => '任务名称', 'value' => "分享得奖励", "color" => "#4a5077"), 'keyword2' => array('title' => '通知类型', 'value' => "用户通过您的分享进入文章《" . $article['article_title'] . "》，系统奖励您" . $p . "。", "color" => "#4a5077"), 'remark' => array('value' => "奖励已发放成功，请到会员中心查看。", "color" => "#4a5077"));
-								if (!empty($article_sys['article_message'])) {
-									m('message')->sendTplNotice($profile['openid'], $article_sys['article_message'], $msg, $detailurl);
-								} else {
-									m('message')->sendCustomNotice($profile['openid'], $msg, $detailurl);
-								}
-							}
-						}
-					}
-				}
-			}
-		}
+    class YunpayModel extends PluginModel
+    {
+        function getYunpay(){
+            global $_W;
+            $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+                ':uniacid' => $_W['uniacid']
+            ));
+            $set     = unserialize($setdata['sets']);
 
-		function mid_replace($content)
-		{
-			global $_GPC;
-			preg_match_all('/href\\=["|\'](.*?)["|\']/is', $content, $links);
-			foreach ($links[1] as $key => $lnk) {
-				$newlnk = $this->href_replace($lnk);
-				$content = str_replace($links[0][$key], "href=\"{$newlnk}\"", $content);
-			}
-			return $content;
-		}
+            return $set['pay']['yunpay'];
+        }
+        function isYunpayNotify($gpc) {
+            global $_W;
+            
+            $yunpay = $this->getYunpay();
+        
+            if (!isset($yunpay) or !$yunpay['switch']) {
+                return false;
+            }
 
-		function href_replace($lnk)
-		{
-			global $_GPC;
-			$newlnk = $lnk;
-			if (strexists($lnk, 'sz_yi') && !strexists($lnk, '&mid')) {
-				if (strexists($lnk, '?')) {
-					$newlnk = $lnk . "&mid=" . intval($_GPC['mid']);
-				} else {
-					$newlnk = $lnk . "?mid=" . intval($_GPC['mid']);
-				}
-			}
-			return $newlnk;
-		}
+            $prestr = $gpc['i1'] . $gpc['i2'].$yunpay['partner'].$yunpay['secret'];
+            $mysgin = md5($prestr);
 
-		function perms()
-		{
-			return array('article' => array('text' => $this->getName(), 'isplugin' => true, 'child' => array('cate' => array('text' => '分类设置', 'addcate' => '添加分类-log', 'editcate' => '编辑分类-log', 'delcate' => '删除分类-log'), 'page' => array('text' => '文章设置', 'add' => '添加文章-log', 'edit' => '修改文章-log', 'delete' => '删除文章-log', 'showdata' => '查看数据统计', 'otherset' => '其他设置', 'report' => '举报记录'))));
-		}
-	}
+           if($mysgin != $gpc['i3']) {
+                return false;
+           }
+           else{
+               return true;
+           }
+        }
+
+        public function yunpay_build($params, $yunpay = array(), $type = 0, $openid = '')
+        {
+            global $_W;
+            $tid                   = $params['tid'].':'.$_W['uniacid'] . ':' . $type;
+           
+            if (empty($type)) {
+                $nourl = $_W['siteroot'] . "addons/sz_yi/plugin/yunpay/notify.php";
+                $reurl = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&m=sz_yi&do=order&p=pay&op=returnyunpay&openid=" . $openid;
+            } else {
+                $nourl = $_W['siteroot'] . "addons/sz_yi/plugin/yunpay/notify.php";
+                $reurl = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&m=sz_yi&do=member&p=recharge&op=returnyunpay&openid=" . $openid;
+            }
+            
+           //商户订单号
+            $out_trade_no = $tid;//商户网站订单系统中唯一订单号，必填
+
+            //订单名称
+            $subject = $params['title'];//必填
+
+            //付款金额
+            $total_fee = $params['fee'];//必填 需为整数
+
+            //订单描述
+            $body = $_W['uniacid'] . ':' . $type;
+           
+            //商品展示地址
+            $orurl = "";
+            //需http://格式的完整路径，不能加?id=123这类自定义参数，如原网站带有 参数请彩用伪静态或短网址解决
+
+            //商品形象图片地址
+            $orimg = "";
+            //需http://格式的完整路径，必须为图片完整地址
+            $parameter = array(
+            "partner" => trim($yunpay['partner']),
+            "seller_email"	=> $yunpay['account'],
+            "out_trade_no"	=> $out_trade_no,
+            "subject"	=> $subject,
+            "total_fee"	=> floor($total_fee),
+            "body"	=> $body,
+            "nourl"	=> $nourl,
+            "reurl"	=> $reurl,
+            "orurl"	=> $orurl,
+            "orimg"	=> $orimg
+            );
+            
+            foreach ($parameter as $pars) {
+                $myparameter.=$pars;
+            }
+
+            $sign=md5($myparameter.'i2eapi'.$yunpay['secret']);
+            $mycodess="<form name='yunsubmit' action='http://pay.yunpay.net.cn/i2eorder/yunpay/' accept-charset='utf-8' method='get'><input type='hidden' name='body' value='".$parameter['body']."'/><input type='hidden' name='out_trade_no' value='".$parameter['out_trade_no']."'/><input type='hidden' name='partner' value='".$parameter['partner']."'/><input type='hidden' name='seller_email' value='".$parameter['seller_email']."'/><input type='hidden' name='subject' value='".$parameter['subject']."'/><input type='hidden' name='total_fee' value='".$parameter['total_fee']."'/><input type='hidden' name='nourl' value='".$parameter['nourl']."'/><input type='hidden' name='reurl' value='".$parameter['reurl']."'/><input type='hidden' name='orurl' value='".$parameter['orurl']."'/><input type='hidden' name='orimg' value='".$parameter['orimg']."'/><input type='hidden' name='sign' value='".$sign."'/></form><script>document.forms['yunsubmit'].submit();</script>";
+            return $mycodess;
+        }
+    }
 }

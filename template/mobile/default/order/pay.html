@@ -15,6 +15,7 @@
 .order_main .line .nav .on {margin-left:19px;}
 
 .order_sub1 {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+.order_sub10 {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .order_sub2 {height:44px; margin:14px 5px; background:#f49c06; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .order_sub3 {height:44px; margin:14px 5px;background:#e2cb04; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .order_sub4 {height:44px; margin:14px 5px; background:#18c0f7; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
@@ -38,6 +39,7 @@
         <div class="line"><div class="label">支付金额</div><div class="info"><div class="inner"><div style='color:#ff6600'>￥<span id="orderprice" price="<%order.price%>"><%order.price%></span>元</div></div></div></div>
     </div>
     <%if order.price>0%>    
+	<%if yunpay.success%><div class="button order_sub10" >云支付</div><%/if%>    
     <%if wechat.success%><div class="button order_sub1">微信支付</div><%/if%>
     <%if alipay.success%><div class="button order_sub2" >支付宝支付</div><%/if%>
     
@@ -141,6 +143,23 @@
             }
             $('#container').html(tpl('tpl_order_info',result));
             
+           if(result.yunpay.success){
+ 
+                 $('.order_sub10').click(function(){
+                     
+                     var deduct = ($('#deductmoney').length>0 &&$('#deductmoney').attr('on')=='1' )?1:0 ;
+                    core.json('order/pay', {op: 'pay',type: 'yunpay', orderid:'{$_GPC['orderid']}',openid:"{$openid}",deduct:deduct}, function (rjson) {
+                        if(rjson.status!=1){
+                            $('.button').removeAttr('submitting');
+                            core.tip.show(rjson.result);
+                            return;
+                        }
+                       //virtual
+                       location.href = core.getUrl('order/pay_yunpay',{orderid:'{$_GPC['orderid']}'});
+                       return;
+                    },true,true);
+                 })
+           }
            if(result.alipay.success){
  
                  $('.order_sub2').click(function(){

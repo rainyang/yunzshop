@@ -22,7 +22,7 @@
    <div class="balance_num">￥<%credit%></div>
    <div class="balance_num" style="height:30px;">
    <input type="text" id="money" value='' style="width:90%; height:38px; font-size:20px; margin:auto; border:1px solid #eee; padding:0px 2%; text-align:center;" placeholder="请输入充值的金额"/></div>
-   <%if yunpay.success%><div class="button balance_sub10" >云支付</div><%/if%>
+   <%if yunpay.success%><div class="button balance_sub10" >云支付 </div><%/if%>
    <%if wechat.success%><div class="button balance_sub1">微信支付</div><%/if%>
    <%if alipay.success%><div class="button balance_sub2" >支付宝支付</div><%/if%>
 <div class="balance_sub3" onclick="location.href='{php echo $this->createMobileUrl('member/log',array('type'=>0))}'">充值记录</div>

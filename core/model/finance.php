@@ -434,30 +434,5 @@ class Sz_DYi_Finance {
         $resp = @file_get_contents($url);
         return preg_match("/true$/i", $resp);
     }
-	
-	
-	function isYunpayNotify($gpc) {
-        global $_W;
-        
-        $setting = uni_setting($_W['uniacid'], array(
-            'payment'
-        ));
-        if (!is_array($setting['payment'])) {
-            return false;
-        }
-        $yunpay = $setting['payment']['yunpay'];
-		
-		$prestr = $gpc['i1'] . $gpc['i2'].$yunpay['partner'].$yunpay['secret'];
-		$mysgin = md5($prestr);
-
-       if($mysgin != $gpc['i3']) {
-            return false;
-        }else{
-   
-        return true;
-		}
-    }
-	
-	
 }
 
