@@ -49,7 +49,7 @@ $shopset = m('common')->getSysset('shop');
         if ($pluginy) {
             $yunpayinfo = $pluginy->getYunpay();
             
-            if (!isset($yunpayinfo) or !$yunpayinfo['switch']) {
+            if (isset($yunpayinfo) && $yunpayinfo['switch']) {
                 $yunpay  = $pluginy->yunpay_build($params, $yunpayinfo, 0, $openid);
                 echo $yunpay;
                 die();
@@ -81,7 +81,7 @@ $shopset = m('common')->getSysset('shop');
         if ($pluginy) {
             $yunpayinfo = $pluginy->getYunpay();
             
-            if (!isset($yunpayinfo) or !$yunpayinfo['switch']) {
+            if (isset($yunpayinfo) && $yunpayinfo['switch']) {
                 $yunpay  = $pluginy->yunpay_build($params, $yunpayinfo, 1, $openid);
                 echo $yunpay;
                 die();
