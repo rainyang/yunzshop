@@ -560,6 +560,12 @@ if ($operation == 'post') {
 			$sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'];
 			$total = pdo_fetchcolumn($sqls, $params);
 		}
+        else{
+            $sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' ORDER BY `status` DESC, `displayorder` DESC,
+                        `id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
+            $sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition;
+            $total = pdo_fetchcolumn($sqls, $params);
+        }
 	}else{
 		$sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' ORDER BY `status` DESC, `displayorder` DESC,
 					`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;

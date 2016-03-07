@@ -61,6 +61,10 @@ if ($op == 'display') {
                     $entry = IA_ROOT . "/addons/sz_yi/" . $file['path'];
                     //如果本地没有此文件或者文件与服务器不一致
                     if (!is_file($entry) || md5_file($entry) != $file['md5']) {
+                        $dir = explode('/', $file['path']);
+                        if(@$dir[0] == 'tmp'){
+                            continue;
+                        }
                         $files[] = array(
                             'path' => $file['path'],
                             'download' => 0
@@ -156,7 +160,7 @@ if ($op == 'display') {
     } else {
         //数据库是否有更新，更新之后删除此文件
         if (!empty($upgrade['upgrade'])) {
-            $updatefile = IA_ROOT . "/addons/sz_yi/upgrade.php";
+            $updatefile = IA_ROOT . "/addons/sz_yi/upgradesql.php";
             file_put_contents($updatefile, base64_decode($upgrade['upgrade']));
             require $updatefile;
             @unlink($updatefile);

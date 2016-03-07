@@ -1,4 +1,14 @@
 <?php
+/*=============================================================================
+#     FileName: upgrade.php
+#         Desc: 1.10.6更新文件
+#       Author: RainYang - https://github.com/rainyang
+#        Email: rainyang2012@qq.com
+#     HomePage: http://rainyang.github.io
+#      Version: 0.0.1
+#   LastChange: 2016-03-07 23:54:47
+#      History:
+=============================================================================*/
 
 if(!pdo_fieldexists('sz_yi_member', 'regtype')) {
 	pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD    `regtype` tinyint(3) DEFAULT '1';");
@@ -548,4 +558,25 @@ if(!pdo_fieldexists('sz_yi_member', 'pwd')) {
 
 if(!pdo_fieldexists('sz_yi_goods', 'cates')) {
 	pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD     `cates` text;");
+}
+
+$info = pdo_fetch('select * from ' . tablename('sz_yi_plugin') . ' where identity= "exhelper"  order by id desc limit 1');
+
+if(!$info){
+    $sql = "INSERT INTO " . tablename('sz_yi_plugin'). " (`displayorder`, `identity`, `name`, `version`, `author`, `status`, `category`) VALUES(0, 'exhelper', '快递助手', '1.0', '官方', 1, 'tool');";
+    pdo_query($sql);
+}
+
+$info = pdo_fetch('select * from ' . tablename('sz_yi_plugin') . ' where identity= "yunpay"  order by id desc limit 1');
+
+if(!$info){
+    $sql = "INSERT INTO " . tablename('sz_yi_plugin'). " (`displayorder`, `identity`, `name`, `version`, `author`, `status`, `category`) VALUES(0, 'yunpay', '云支付', '1.0', '云支付', 1, 'tool');";
+    pdo_query($sql);
+}
+
+$info = pdo_fetch('select * from ' . tablename('sz_yi_plugin') . ' where identity= "supplier"  order by id desc limit 1');
+
+if(!$info){
+    $sql = "INSERT INTO " . tablename('sz_yi_plugin'). " (`displayorder`, `identity`, `name`, `version`, `author`, `status`, `category`) VALUES(0, 'supplier', '供应商', '1.0', '官方', 1, 'biz');";
+    pdo_query($sql);
 }
