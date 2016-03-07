@@ -64,26 +64,27 @@
                     return;
                 }
                 core.json('member/sendcode', {
-                   'memberdata':{'mobile': $('#mobile').val()},
-                    'op':'ismobile' 
-
+                   'mobile': $('#mobile').val(),
+                   'op':'ismobile' 
                    }, function(json) {
-                    if(json.status==0){
+                    if(json.status==1){
                       $('.hide').show();
                       hasmobile = true;
+                    }else{
+                      core.tip.show(json.result);
                     }
                 },true,true);   
               　curCount = count;
-            　　//设置button效果，开始计时
-                 $("#btnSendCode").attr("disabled", "true");
-                 $("#btnSendCode").val("请在" + curCount + "秒内输入验证码");
-                 InterValObj = window.setInterval(SetRemainTime, 1000); //启动计时器，1秒执行一次
+            　　
+                 
             　　  //向后台发送处理数据 
                  core.json('member/sendcode', {
-                       'memberdata':{
                             'mobile': $('#mobile').val(),
-                           } 
                        }, function(json) {
+                        //设置button效果，开始计时
+                        $("#btnSendCode").attr("disabled", "true");
+                         $("#btnSendCode").val("请在" + curCount + "秒内输入验证码");
+                         InterValObj = window.setInterval(SetRemainTime, 1000); //启动计时器，1秒执行一次
                     },true,true);
             });
 
@@ -109,7 +110,7 @@
    
                       if(json.status == 0)
                       {
-                       core.tip.show(json.result.msg);
+                       core.tip.show(json.result);
                        return;
                       }
                     },true,true);
@@ -143,7 +144,7 @@
    
                       if(json.status == 0)
                       {
-                       core.tip.show(json.result.msg);
+                       core.tip.show(json.result);
                        return;
                       }
                         core.json('member/bindmobile', {
