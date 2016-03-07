@@ -300,7 +300,7 @@ function my_scandir($dir)
     global $my_scenfiles;
     if ($handle = opendir($dir)) {
         while (($file = readdir($handle)) !== false) {
-            if ($file != ".." && $file != ".") {
+            if ($file != ".." && $file != "." && $file != ".git") {
                 if (is_dir($dir . "/" . $file)) {
                     my_scandir($dir . "/" . $file);
                 } else {

@@ -1,7 +1,4 @@
 {template 'common/header'}
-<style>
-#upgradebtn{width:100px}
-</style>
 <div class="main">
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <div class="panel panel-default">
@@ -12,7 +9,7 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">当前版本</label>
                     <div class="col-sm-9 col-xs-12">
-                        <div class="form-control-static">{$version}<br/> 最后更新日期: {$updatedate} </div>
+                        <div class="form-control-static">{$version}<br/> 最后更新日期: {$updatedate} <a href="{php echo $this->createWebUrl('upgrade',array('op'=>'checkversion'))}">降低版本重新检测</a></div>
                     </div>
                 </div>
                  <div class="form-group" >
@@ -55,11 +52,6 @@
                   alert('更新完成!');
                   location.reload();
              }
-             else if(ret.result==0){
-                  $('#process').html(ret.msg);
-                  alert(ret.msg);
-                  location.reload();
-             }
             }
         });
     }
@@ -67,12 +59,11 @@
     $(function(){
          $.ajax({
             url: "{php $this->createWebUrl('upgrade')}",
-            data:{op:'check',verifycode:$('#verifycode').val()}, 
+            data:{op:'check'}, 
             type:'post',
             dataType:'json',
             success:function(ret){
                 if(ret.result==1){
-                   
                     var html = "";
                     html+="最新版本: <span style='color:red'>" + ret.version + "</span><br/>";
                     if(ret.filecount<=0 && !ret.upgrade){
@@ -92,6 +83,8 @@
                        html+="<br/><b style='color:red'>更新之前请注意数据备份!</b><br/><br/>";    
                     }
                     
+                    
+                
                     html+="<div id='process'></div>";
                     $("#check").html( html);
                     if(ret.filecount>0 || ret.upgrade){
@@ -117,4 +110,5 @@
 
     })
 </script>
-{template 'web/_footer'}
+{template 'common/footer'}
+
