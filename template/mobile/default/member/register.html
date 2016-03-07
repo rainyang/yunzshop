@@ -47,6 +47,21 @@
             $('.info_sub').click(function(){
                 location.href = "{php echo $this->createMobileUrl('member/login')}";
             });
+
+            $('#mobile').blur(function(){
+                if(!$('#mobile').isMobile()){
+                    core.tip.show('请输入正确手机号码!');
+                    return;
+                }
+                core.json('member/sendcode', {
+                      'op'    : 'ismobile',
+                      'mobile'  : $('#mobile').val(),
+                       }, function(json) {
+                        if(json.status==0){
+                             core.tip.show(json.result);
+                        }
+                }, true, true);
+            });
             
             var InterValObj; //timer变量，控制时间
             var count = 60; //间隔函数，1秒执行
@@ -58,18 +73,19 @@
                     return;
                 }
               　curCount = count;
-            　　//设置button效果，开始计时
-                 $("#btnSendCode").attr("disabled", "true");
-                 $("#btnSendCode").val(curCount + "秒后重新获取验证码");
-                 InterValObj = window.setInterval(SetRemainTime, 1000); //启动计时器，1秒执行一次
-            　　  //向后台发送处理数据 
+            　　
                  core.json('member/sendcode', {
-                       'memberdata':{
-                            'mobile': $('#mobile').val(),
-                           } 
+                       'mobile': $('#mobile').val()
                        }, function(json) {
-
-
+                        if(json.status==1){
+                             //设置button效果，开始计时
+                             $("#btnSendCode").attr("disabled", "true");
+                             $("#btnSendCode").val(curCount + "秒后重新获取验证码");
+                             InterValObj = window.setInterval(SetRemainTime, 1000); //启动计时器，1秒执行一次
+                        　　  //向后台发送处理数据 
+                        }else{
+                            core.tip.show(json.result);
+                        }
                     },true,true);
             });
 
@@ -119,29 +135,26 @@
    
                       if(json.status == 0)
                       {
-                       core.tip.show(json.result.msg);
+                       core.tip.show(json.result);
                        return;
                       }
                         core.json('member/register', {
-                           'memberdata':{
                                 'mobile': $('#mobile').val(),
                                 'password': $('#password').val(),
-                                'cpassword': $('#cpassword').val(),
-                               } 
+                                'code': $('#code').val(),
                            }, function(json) {
                             if(json.status==1){
                                  core.tip.show('注册成功');
-                                 //console.log(json.result.preurl);
-                                 location.href=json.result.preurl;
+                                 location.href=json.result;
                             }
                             else{
-                                core.tip.show('注册失败!');
+                                core.tip.show(json.result);
                             }
 
-                        },true,true);
+                        },true, true);
                       
                     },true,true);
-                });
+            });
     })
 </script>
 
