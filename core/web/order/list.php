@@ -252,6 +252,10 @@ if ($operation == 'display') {
         '3' => array(
             'css' => 'primary',
             'name' => '货到付款'
+        ),
+        '24' => array(
+            'css' => 'warning',
+            'name' => '云支付'
         )
     );
     $orderstatus = array(

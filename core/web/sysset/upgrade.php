@@ -78,10 +78,10 @@ if ($op == 'display') {
                     if (!is_file($entry) || md5_file($entry) != $file['hash']) {
 
                         $files[] = array('path' => $file['path'], 'download' => 0);
-						
-		     if( is_file($entry) && strexists($entry, 'template/mobile') && strexists($entry, '.html') ){
-			  $templatefiles.= "/".$file['path']."\r\n";
-		     }
+                                    
+                         if( is_file($entry) && strexists($entry, 'template/mobile') && strexists($entry, '.html') ){
+                          $templatefiles.= "/".$file['path']."\r\n";
+                         }
                     }
                 } 
             } 

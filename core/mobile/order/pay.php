@@ -287,7 +287,7 @@ if ($operation == 'display' && $_W['isajax']) {
         show_json(1);
     }else if ($type == 'yunpay') {
         pdo_update('sz_yi_order', array(
-            'paytype' => 22
+            'paytype' => 24
         ), array(
             'id' => $order['id']
         ));
