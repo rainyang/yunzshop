@@ -60,8 +60,8 @@ if(!pdo_fieldexists('sz_yi_supplier_apply', 'id')) {
 if(!pdo_fieldexists('sz_yi_perm_role', 'status1')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_perm_role')." ADD `status1` tinyint(3) NOT NULL COMMENT '1：供应商开启';");
 }
-if(!pdo_fieldexists('ims_sz_yi_perm_user', 'openid')) {
-  pdo_query("ALTER TABLE ".tablename('ims_sz_yi_perm_user')." ADD `openid` VARCHAR( 255 ) NOT NULL;");
+if(!pdo_fieldexists('sz_yi_perm_user', 'openid')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `openid` VARCHAR( 255 ) NOT NULL;");
 }
 $res = pdo_fetch('select * from ' . tablename('sz_yi_plugin') . ' where id=:id', array(':id' => '999'));
 if(empty($res)){
