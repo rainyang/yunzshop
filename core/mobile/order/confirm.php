@@ -571,7 +571,11 @@ if ($_W['isajax']) {
 			if (empty($goodsid)) {
 				show_json(0, '参数错误，请刷新重试');
 			}
-			$sql = 'SELECT id as goodsid,supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,virtual,discounts,deduct2,ednum,edmoney,edareas FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
+			if(p('supplier')){
+				$sql = 'SELECT id as goodsid,supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,virtual,discounts,deduct2,ednum,edmoney,edareas FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
+			}else{
+				$sql = 'SELECT id as goodsid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,virtual,discounts,deduct2,ednum,edmoney,edareas FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
+			}
 			$data = pdo_fetch($sql, array(':uniacid' => $uniacid, ':id' => $goodsid));
 			if (empty($data['status']) || !empty($data['deleted'])) {
 				show_json(-1, $data['title'] . '<br/> 已下架!');
@@ -933,9 +937,11 @@ if ($_W['isajax']) {
 				'goodssn' => $goods['goodssn'], 
 				'productsn' => $goods['productsn'], 
 				'realprice' => $goods['realprice'], 
-				'oldprice' => $goods['realprice'],
-				'supplier_uid' => $goods['supplier_uid']
+				'oldprice' => $goods['realprice']
 				);
+			if(p('supplier')){
+				$order_goods['supplier_uid'] = $goods['supplier_uid'];
+			}
 			pdo_insert('sz_yi_order_goods', $order_goods);
 		}
 		

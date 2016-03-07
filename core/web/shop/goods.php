@@ -1,10 +1,7 @@
-﻿<?php
+<?php
 /*=============================================================================
 #     FileName: goods.php
 #         Desc: 商品管理
-#       Author: RainYang - https://github.com/rainyang
-#        Email: rainyang2012@qq.com
-#     HomePage: http://rainyang.github.io
 #      Version: 0.0.1
 #   LastChange: 2016-02-05 02:40:09
 #      History:
@@ -554,8 +551,11 @@ if ($operation == 'post') {
 		$condition .= ' AND `status` = :status';
 		$params[':status'] = intval($_GPC['status']);
 	}
-	
-	if($_W['uid'] == 1){
+	if(p('supplier')){
+		$suproleid = pdo_fetchcolumn('select id from' . tablename('sz_yi_perm_role') . ' where status1 = 1');
+	}
+	$userroleid = pdo_fetchcolumn('select roleid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid' => $_W['uniacid']));
+	if($userroleid != $suproleid){
 		$sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' ORDER BY `status` DESC, `displayorder` DESC,
 					`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
 		$sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition;

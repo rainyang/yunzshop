@@ -179,10 +179,8 @@ if ($operation == 'display') {
                 $log = pdo_fetch('select * from ' . tablename('sz_yi_supplier_apply') . ' where uid=:uid and uniacid=:uniacid limit 1', array(
                         ':uid' => $_W['uid']
                     ));
-                $opid = pdo_fetch('select * from ' . tablename('users_profile') . ' where uid=:uid',array(
-                        ':uid' => $_W['uid']
-                    ));
-                $result = m('finance')->pay($opid, 1, $log['apply_money'] * 100, $log['applysn'], $set['name'] . '供应商提现');
+                $openid = pdo_fetchcolumn('select openid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid'=> $_W['uniacid']));
+                $result = m('finance')->pay($openid, 1, $log['apply_money'] * 100, $log['applysn'], $set['name'] . '供应商提现');
                 if (is_error($result)) {
                     pdo_delete('sz_yi_supplier_apply', array(
                         'uid' => $_W['uid'],
