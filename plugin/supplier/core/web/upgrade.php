@@ -1,8 +1,8 @@
 ﻿<?php
 global $_W;
 $sql = "
-CREATE TABLE IF NOT EXISTS `sz_yi_af_supplier` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_supplier` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `openid` varchar(255) CHARACTER SET utf8 NOT NULL,
   `uniacid` int(11) NOT NULL,
   `realname` varchar(55) CHARACTER SET utf8 NOT NULL,
@@ -11,8 +11,8 @@ CREATE TABLE IF NOT EXISTS `sz_yi_af_supplier` (
   `productname` varchar(255) CHARACTER SET utf8 NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-CREATE TABLE IF NOT EXISTS `sz_yi_supplier_apply` (
-  `id` int(11) NOT NULL,
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_apply` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL COMMENT '供应商id',
   `type` int(11) NOT NULL COMMENT '1手动2微信',
   `applysn` varchar(255) NOT NULL COMMENT '提现单号',
@@ -23,7 +23,6 @@ CREATE TABLE IF NOT EXISTS `sz_yi_supplier_apply` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;";
 pdo_query($sql);
-
 if(!pdo_fieldexists('sz_yi_perm_user', 'banknumber')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `banknumber` varchar(255) NOT NULL COMMENT '银行卡号';");
 }

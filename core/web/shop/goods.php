@@ -554,8 +554,11 @@ if ($operation == 'post') {
 		$condition .= ' AND `status` = :status';
 		$params[':status'] = intval($_GPC['status']);
 	}
-	
-	if($_W['uid'] == 1){
+	if(p('supplier')){
+		$suproleid = pdo_fetchcolumn('select id from' . tablename('sz_yi_perm_role') . ' where status1 = 1');
+	}
+	$userroleid = pdo_fetchcolumn('select roleid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid' => $_W['uniacid']));
+	if($userroleid != $suproleid){
 		$sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' ORDER BY `status` DESC, `displayorder` DESC,
 					`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
 		$sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition;
