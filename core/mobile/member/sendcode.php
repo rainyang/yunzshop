@@ -49,7 +49,7 @@ if($op == 'sendcode'){
     $content = "您的安全码是：". $code ."。请不要把安全码泄露给其他人。如非本人操作，可不用理会！";
     $issendsms = $this->sendSms($mobile, $content);
     show_json(1);
-}else if ($op == 'forgetcode'){
+}else if ($op == 'bindmobilecode'){
     $mobile = $_GPC['mobile'];
     if(empty($mobile)){
         show_json(0, '请填入手机号');
@@ -66,12 +66,7 @@ if($op == 'sendcode'){
     $_SESSION['code_mobile'] = $mobile;
     $content = "您的安全码是：". $code ."。请不要把安全码泄露给其他人。如非本人操作，可不用理会！";
     $issendsms = $this->sendSms($mobile, $content);
-    if(empty($info))
-    {
-        show_json(0);
-    }else{
-        show_json(1);
-    }
+    show_json(1);
 }else if ($op == 'checkcode'){
     $code = $_GPC['code']; 
 
@@ -95,5 +90,7 @@ else if ($op == 'ismobile'){
     if(!empty($info))
     {
         show_json(0, '该手机号已被注册！');
-    }     
+    }else{
+        show_json(1); 
+    }    
 }
