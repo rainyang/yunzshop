@@ -161,7 +161,7 @@ if ($op == 'display') {
             require $updatefile;
             @unlink($updatefile);
         }
-        file_put_contents(IA_ROOT . '/addons/sz_yi/version.php', "<?php if(!defined('IN_IA')) {exit('Access Denied');}if(!defined('EWEI_SHOP_VERSION')) {define('EWEI_SHOP_VERSION', '" . $upgrade['version'] . "');}");
+        file_put_contents(IA_ROOT . '/addons/sz_yi/version.php', "<?php if(!defined('IN_IA')) {exit('Access Denied');}if(!defined('SZ_YI_VERSION')) {define('SZ_YI_VERSION', '" . $upgrade['version'] . "');}");
         $tmpdir = IA_ROOT . "/addons/sz_yi/tmp";
         @rmdirs($tmpdir);
         $time = time();
