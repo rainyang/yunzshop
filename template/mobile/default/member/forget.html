@@ -58,19 +58,20 @@
                     return;
                 }
               　curCount = count;
-            　　//设置button效果，开始计时
-                 $("#btnSendCode").attr("disabled", "true");
-                 $("#btnSendCode").val("请在" + curCount + "秒内输入验证码");
-                 InterValObj = window.setInterval(SetRemainTime, 1000); //启动计时器，1秒执行一次
-            　　  //向后台发送处理数据 
+            　　
                  core.json('member/sendcode', {
-                       'memberdata':{
-                            'mobile': $('#mobile').val(),
-                           } 
+                       'mobile': $('#mobile').val()
                        }, function(json) {
-
-
-                    },true,true);
+                        if(json.status==1){
+                             //设置button效果，开始计时
+                             $("#btnSendCode").attr("disabled", "true");
+                             $("#btnSendCode").val(curCount + "秒后重新获取验证码");
+                             InterValObj = window.setInterval(SetRemainTime, 1000); //启动计时器，1秒执行一次
+                        　　  //向后台发送处理数据 
+                        }else{
+                            core.tip.show(json.result);
+                        }
+                    },true);
             });
 
             //timer处理函数

@@ -64,8 +64,7 @@
                     core.json('member/login', {
                        'memberdata':{
                             'mobile': $('#mobile').val(),
-                            'password': $('#password').val(),
-                            'cpassword': $('#cpassword').val(),
+                            'password': $('#password').val()
                            } 
                        }, function(json) {
                         if(json.status==1){
