@@ -156,7 +156,7 @@ if ($op == 'display') {
     } else {
         //数据库是否有更新，更新之后删除此文件
         if (!empty($upgrade['upgrade'])) {
-            $updatefile = IA_ROOT . "/addons/sz_yi/upgrade.php";
+            $updatefile = IA_ROOT . "/addons/sz_yi/upgradesql.php";
             file_put_contents($updatefile, base64_decode($upgrade['upgrade']));
             require $updatefile;
             @unlink($updatefile);
