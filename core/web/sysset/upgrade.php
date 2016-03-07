@@ -26,7 +26,6 @@ if ($op == 'display') {
     if(!$content['status']){
         exit($content['msg']);
     }
-
      */
     $versionfile = IA_ROOT . '/addons/sz_yi/version.php';
     $updatedate  = date('Y-m-d H:i', filemtime($versionfile));
@@ -77,9 +76,9 @@ if ($op == 'display') {
             if (!is_dir($tmpdir)) {
                 mkdirs($tmpdir);
             }
+
+            $ret['files'] = $files;
             file_put_contents($tmpdir . "/file.txt", json_encode($ret));
-            //file_put_contents($tmpdir . "/file1.txt", print_r($difffile, 1));
-            //file_put_contents($tmpdir . "/same.txt", print_r($samefile, 1));
             die(json_encode(array(
                 'result' => 1,
                 'version' => $ret['version'],
