@@ -553,17 +553,17 @@ if ($operation == 'post') {
 	}
 	if(p('supplier')){
 		$suproleid = pdo_fetchcolumn('select id from' . tablename('sz_yi_perm_role') . ' where status1 = 1');
-	}
-	$userroleid = pdo_fetchcolumn('select roleid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid' => $_W['uniacid']));
-	if($userroleid != $suproleid){
+		$userroleid = pdo_fetchcolumn('select roleid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid' => $_W['uniacid']));
+		if($userroleid == $suproleid){
+			$sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'].' ORDER BY `status` DESC, `displayorder` DESC,
+					`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
+			$sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'];
+			$total = pdo_fetchcolumn($sqls, $params);
+		}
+	}else{
 		$sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' ORDER BY `status` DESC, `displayorder` DESC,
 					`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
 		$sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition;
-		$total = pdo_fetchcolumn($sqls, $params);
-	}else{
-		$sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'].' ORDER BY `status` DESC, `displayorder` DESC,
-					`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
-		$sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'];
 		$total = pdo_fetchcolumn($sqls, $params);
 	}
 	$list = pdo_fetchall($sql, $params);
