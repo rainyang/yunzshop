@@ -49,6 +49,7 @@ if ($_W['isajax']) {
             $member_data = array(
                 'pwd' => md5($password),   //md5
                 'regtype' => 1,
+                'isbindmobile' => 1
             );
             pdo_update('sz_yi_member', $member_data, array("mobile" => $mobile, "uniacid" => $_W['uniacid']));
         }
