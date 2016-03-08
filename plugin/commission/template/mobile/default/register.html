@@ -46,7 +46,7 @@ a{ text-decoration: none;}
 	<div class="text">欢迎加入<span><%shop_set.name%></span>，请填写申请信息</div>
 	<div class="text">邀请人：<span><%if agent%><%agent.nickname%><%else%>总店<%/if%></span> (请核对)</div>
 	<div class="input"><input type="text" id='realname' placeholder="请填写真实姓名，用于结算" value="{$member['realname']}" /></div>
-	<div class="input"><input type="text" id='mobile' placeholder="请填写手机号码方便联系"  value="{$member['mobile']}"/></div>
+<!--<div class="input"><input type="text" id='mobile' placeholder="请填写手机号码方便联系"  value="{$member['mobile']}"/></div>-->
 	<div class="input"><input type="text" id='weixin' placeholder="请填写微信号"  value="{$member['weixin']}"/></div>
 	<div class="sub" id="submit">申请成为{php echo $this->set['texts']['agent']}</div>
                    <%/if%>
@@ -112,10 +112,10 @@ a{ text-decoration: none;}
                    core.tip.show('请填写您的姓名!');
                    return;
                }
-               if(!$('#mobile').isMobile()){
+               /*if(!$('#mobile').isMobile()){
                    core.tip.show('请填写正确手机号!');
                    return;
-               }
+               }*/
                if($('#weixin').isEmpty()){
                    core.tip.show('请填写微信号!');
                    return;
@@ -123,7 +123,7 @@ a{ text-decoration: none;}
                var data = {
                    'agentid':"{$_GPC['mid']}",
                    'realname': $('#realname').val(),
-                   'mobile': $('#mobile').val(),
+                   //'mobile': $('#mobile').val(),
                    'weixin': $('#weixin').val()
                };
                core.pjson('commission/register',data,function(pjson){
