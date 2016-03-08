@@ -63,12 +63,14 @@ if(!pdo_fieldexists('sz_yi_perm_role', 'status1')) {
 if(!pdo_fieldexists('sz_yi_perm_user', 'openid')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `openid` VARCHAR( 255 ) NOT NULL;");
 }
-$res = pdo_fetch('select * from ' . tablename('sz_yi_plugin') . ' where id=:id', array(':id' => '999'));
-if(empty($res)){
-  $sql = "
-INSERT INTO " . tablename('sz_yi_plugin') . " (`id`,`displayorder`,`identity`,`name`,`version`,`author`,`status`,`category`) VALUES(999,999,'supplier','供应商','1.0','官方','1','biz');";
-pdo_query($sql);
+
+$info = pdo_fetch('select * from ' . tablename('sz_yi_plugin') . ' where identity= "supplier"  order by id desc limit 1');
+
+if(!$info){
+    $sql = "INSERT INTO " . tablename('sz_yi_plugin'). " (`displayorder`, `identity`, `name`, `version`, `author`, `status`, `category`) VALUES(0, 'supplier', '供应商', '1.0', '官方', 1, 'biz');";
+    pdo_query($sql);
 }
+
 $result = pdo_fetch('select * from ' . tablename('sz_yi_perm_role') . ' where status1=1');
 if(empty($result)){
   $sql = "

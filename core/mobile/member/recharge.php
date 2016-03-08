@@ -20,7 +20,7 @@ if ($operation == 'display' && $_W['isajax']) {
     if (!empty($set['trade']['closerecharge'])) {
         show_json(-1, '系统未开启账户充值!');
     }
-    pdo_delete('ewei_shop_member_log', array(
+    pdo_delete('sz_yi_member_log', array(
         'openid' => $openid,
         'status' => 0,
         'type' => 0,
@@ -36,7 +36,7 @@ if ($operation == 'display' && $_W['isajax']) {
         'createtime' => time(),
         'status' => 0
     );
-    pdo_insert('ewei_shop_member_log', $log);
+    pdo_insert('sz_yi_member_log', $log);
     $logid  = pdo_insertid();
     $credit = m('member')->getCredit($openid, 'credit2');
     $wechat = array(
@@ -105,14 +105,14 @@ if ($operation == 'display' && $_W['isajax']) {
     ))) {
         show_json(0, '未找到支付方式');
     }
-    $log = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_member_log') . ' WHERE `id`=:id and `uniacid`=:uniacid limit 1', array(
+    $log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `id`=:id and `uniacid`=:uniacid limit 1', array(
         ':uniacid' => $uniacid,
         ':id' => $logid
     ));
     if (empty($log)) {
         show_json(0, '充值出错, 请重试!');
     }
-    pdo_update('ewei_shop_member_log', array(
+    pdo_update('sz_yi_member_log', array(
         'money' => $money
     ), array(
         'id' => $log['id']
@@ -165,14 +165,14 @@ if ($operation == 'display' && $_W['isajax']) {
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
     $logid = intval($_GPC['logid']);
-    $log   = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_member_log') . ' WHERE `id`=:id and `uniacid`=:uniacid limit 1', array(
+    $log   = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `id`=:id and `uniacid`=:uniacid limit 1', array(
         ':uniacid' => $uniacid,
         ':id' => $logid
     ));
     if (!empty($log) && empty($log['status'])) {
         $payquery = m('finance')->isWeixinPay($log['logno']);
         if (!is_error($payquery)) {
-            pdo_update('ewei_shop_member_log', array(
+            pdo_update('sz_yi_member_log', array(
                 'status' => 1,
                 'rechargetype' => $_GPC['type']
             ), array(
@@ -197,12 +197,12 @@ if ($operation == 'display' && $_W['isajax']) {
     if (!m('finance')->isAlipayNotify($_GET)) {
         die('充值出现错误，请重试!');
     }
-    $log = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_member_log') . ' WHERE `logno`=:logno and `uniacid`=:uniacid limit 1', array(
+    $log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `logno`=:logno and `uniacid`=:uniacid limit 1', array(
         ':uniacid' => $uniacid,
         ':logno' => $logno
     ));
     if (!empty($log) && empty($log['status'])) {
-        pdo_update('ewei_shop_member_log', array(
+        pdo_update('sz_yi_member_log', array(
             'status' => 1,
             'rechargetype' => 'alipay'
         ), array(
@@ -227,12 +227,12 @@ if ($operation == 'display' && $_W['isajax']) {
     if (!m('finance')->isYunpayNotify($_GET)) {
         die('充值出现错误，请重试!');
     }
-    $log = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_member_log') . ' WHERE `logno`=:logno and `uniacid`=:uniacid limit 1', array(
+    $log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `logno`=:logno and `uniacid`=:uniacid limit 1', array(
         ':uniacid' => $uniacid,
         ':logno' => $logno
     ));
     if (!empty($log) && empty($log['status'])) {
-        pdo_update('ewei_shop_member_log', array(
+        pdo_update('sz_yi_member_log', array(
             'status' => 1,
             'rechargetype' => 'yunpay'
         ), array(
