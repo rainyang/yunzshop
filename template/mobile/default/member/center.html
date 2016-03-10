@@ -92,20 +92,18 @@
             <a href="{php echo $this->createPluginMobileUrl('commission')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-home" style="color:#f10;"></i>{php echo $pset['texts']['center']}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>   
     {/if}
     <a href="{php echo $this->createMobileUrl('member/info')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-user" style="color:#A6E1EC;"></i>我的资料<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-</div>
     {if !$member['isbindmobile'] && is_weixin()}
-            <a href="{php echo $this->createMobileUrl('member/bindmobile')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-mobile" style="color:#f10;"></i>绑定手机<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>   
+    <a href="{php echo $this->createMobileUrl('member/bindmobile')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-mobile" style="color:#f10;"></i>绑定手机<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>   
     {/if}
-{if p('supplier')}
+</div>
 <div class="cart">
+    {if p('supplier')}
         <a href="{php echo $this->createPluginMobileUrl('supplier/af_supplier')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-pencil" style="color:#f10;"></i>供应商申请<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-</div>
-{/if}
-{if p('bonus')}
-<div class="cart">
+    {/if}
+    {if p('bonus')}
     <a href="{php echo $this->createPluginMobileUrl('bonus/index')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-money" style="color:#f10;"></i>{php echo empty($bonus_set['detail_text']) ? "分红明细" : $bonus_set['detail_text'];}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    {/if}
 </div>
-{/if}
 {if $hascoupon}
 <div class="cart">
      {if $hascouponcenter}
