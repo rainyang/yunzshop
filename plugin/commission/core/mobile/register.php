@@ -83,7 +83,7 @@ if ($_W['isajax']) {
 		} else {
 			$become_check = intval($set['become_check']);
 			$ret['status'] = $become_check;
-			$data = array('isagent' => 1, 'agentid' => $mid, 'status' => $become_check, 'realname' => $_GPC['realname'], 'mobile' => $_GPC['mobile'], 'weixin' => $_GPC['weixin'], 'agenttime' => $become_check == 1 ? time() : 0);
+			$data = array('isagent' => 1, 'agentid' => $mid, 'status' => $become_check, 'realname' => $_GPC['realname'], 'weixin' => $_GPC['weixin'], 'agenttime' => $become_check == 1 ? time() : 0);
 			pdo_update('sz_yi_member', $data, array('id' => $member['id']));
 			if ($become_check == 1) {
 				$this->model->sendMessage($member['openid'], array('agenttime' => $data['agenttime']), TM_COMMISSION_BECOME);
@@ -93,7 +93,7 @@ if ($_W['isajax']) {
 			}
 			if (!empty($member['uid'])) {
 				load()->model('mc');
-				mc_update($member['uid'], array('realname' => $data['realname'], 'mobile' => $data['mobile']));
+				mc_update($member['uid'], array('realname' => $data['realname']));
 				show_json(1, $ret);
 			}
 		}
