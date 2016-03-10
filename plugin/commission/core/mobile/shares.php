@@ -17,7 +17,7 @@ $returnurl = urlencode($this->createPluginMobileUrl('commission/shares', array('
 $infourl = "";
 $set = $this->set;
 if (empty($set['become_reg'])) {
-	if (empty($member['realname']) || empty($member['mobile'])) {
+	if (empty($member['realname'])) {
 		$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
 	}
 }
