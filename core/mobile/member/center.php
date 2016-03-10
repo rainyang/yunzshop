@@ -40,6 +40,10 @@ if ($plugin_coupon) {
 		$hascouponcenter = true;
 	}
 }
+$plugb = p('bonus');
+if($plugb){
+	$bonus_set = $plugb->getSet();
+}
 if ($_W['isajax']) {
 	$level = array('levelname' => empty($set['shop']['levelname']) ? '普通会员' : $set['shop']['levelname']);
 	if (!empty($member['level'])) {

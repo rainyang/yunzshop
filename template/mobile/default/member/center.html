@@ -101,6 +101,11 @@
         <a href="{php echo $this->createPluginMobileUrl('supplier/af_supplier')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-pencil" style="color:#f10;"></i>供应商申请<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 </div>
 {/if}
+{if p('bonus')}
+<div class="cart">
+    <a href="{php echo $this->createPluginMobileUrl('bonus/index')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-money" style="color:#f10;"></i>{php echo empty($bonus_set['detail_text']) ? "分红明细" : $bonus_set['detail_text'];}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+</div>
+{/if}
 {if $hascoupon}
 <div class="cart">
      {if $hascouponcenter}
