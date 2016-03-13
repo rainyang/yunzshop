@@ -1,6 +1,8 @@
 <?php
 global $_W;
 
+load()->func('communication');
+
 define('CLOUD_URL', 'http://115.29.33.155/web/index.php?c=account&a=register');
 $data['domain'] = $_SERVER['HTTP_HOST'];
 $data['signature'] = 'sz_cloud_register';
