@@ -56,7 +56,7 @@ class Sz_DYi_Order
             'status' => $params['result'] == 'success' ? 1 : 0
         );
         $ordersn = $params['tid'];
-        $order   = pdo_fetch('select id,ordersn, price,openid,dispatchtype,addressid,carrier,status,isverify,deductcredit2,virtual,isvirtual from ' . tablename('sz_yi_order') . ' where  ordersn=:ordersn and uniacid=:uniacid limit 1', array(
+        $order   = pdo_fetch('select id,ordersn, price,openid,dispatchtype,addressid,carrier,status,isverify,deductcredit2,virtual,isvirtual,changeprice from ' . tablename('sz_yi_order') . ' where  ordersn=:ordersn and uniacid=:uniacid limit 1', array(
             ':uniacid' => $_W['uniacid'],
             ':ordersn' => $ordersn
         ));
@@ -99,15 +99,16 @@ class Sz_DYi_Order
                             ));
                         }
                         $this->setStocksAndCredits($orderid, 1);
-            if (p('coupon') && !empty($order['couponid'])) {
-                p('coupon')->backConsumeCoupon($order['id']);
-                }
+                        if (p('coupon') && !empty($order['couponid'])) {
+                            p('coupon')->backConsumeCoupon($order['id']);
+                        }
                         m('notice')->sendOrderMessage($orderid);
                         if (p('commission')) {
                             p('commission')->checkOrderPay($order['id']);
                         }
                     }
                 }
+                
                 //订单分解
                 if(p('supplier')){
                     $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where  ordersn=:ordersn and uniacid=:uniacid limit 1', array(
@@ -147,7 +148,9 @@ class Sz_DYi_Order
                                 $goodsprice += $resu['price'];
                                 $supplier_uid = $resu['supplier_uid'];
                             }
-                            $order['price'] = $price;
+                            //$order['price'] = $price;
+                            //这里应该用真实价格，避免改价的情况价格不对
+                            $order['price'] = $realprice;
                             $order['oldprice'] = $oldprice;
                             $order['goodsprice'] = $goodsprice;
                             $order['supplier_uid'] = $supplier_uid;
