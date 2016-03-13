@@ -1,9 +1,14 @@
 {template 'web/_header'}
 {template 'web/order/tabs'}
+
+<script type="text/javascript" src="../addons/ewei_shop/static/js/dist/area/cascade.js"></script>
+
+
 <style type="text/css">
     .main .form-horizontal .form-group{margin-bottom:0;}
     .main .form-horizontal .modal .form-group{margin-bottom:15px;}
     #modal-confirmsend .control-label{margin-top:0;}
+    .ad2 {display: none;}
 </style>
 <div class="main">
     <form class="form-horizontal form" action="" method="post">
@@ -154,20 +159,20 @@
                     <div class="col-sm-9 col-xs-12">
                         <p class="form-control-static">
 							{if empty($item['addressid'])}
-                            {if $item['isverify']==1}
-                            线下核销
-			 {elseif $item['isvirtual']==1}
-                            虚拟物品
-                            {elseif !empty($item['virtual'])}
-                            虚拟物品(卡密)自动发货<!--virtual-->
-                            {/if}
-                            
-                            {else}{if empty($dispatch)}
-                             快递   {$item['dispatchname']}
-									 
+                                {if $item['isverify']==1}
+                                    线下核销
+                                {elseif $item['isvirtual']==1}
+                                    虚拟物品
+                                {elseif !empty($item['virtual'])}
+                                    虚拟物品(卡密)自动发货<!--virtual-->
+                                {elseif $item['dispatchtype']==1}
+                                    自提
+                                {/if}
+
                             {else}
-                            {$dispatch['dispatchname']}
-                            {/if}
+                                {if empty($dispatchtype)}
+                                快递
+                                {/if}
                             {/if}</p>
                     </div>
                 </div>
@@ -367,24 +372,48 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">姓名 :</label>
                     <div class="col-sm-9 col-xs-12">
-                        <p class="form-control-static">{$user['realname']}</p>
+                        <p class="form-control-static ad1">{$user['realname']}</p>
+                        <p class="form-control-static ad2"><input type="text" name="realname" id="realname" value="{$user['realname']}" class="form-control" style="width:130px;display:inline;"></p>
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">手机 :</label>
                     <div class="col-sm-9 col-xs-12">
-                        <p class="form-control-static">{$user['mobile']}</p>
+                        <p class="form-control-static ad1">{$user['mobile']}</p>
+                        <p class="form-control-static ad2"><input type="text" name="mobile" id="mobile" value="{$user['mobile']}" class="form-control" style="width:130px;display:inline;"></p>
                     </div>
                 </div>
                 <div class="form-group">
+
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">地址 :</label>
                     <div class="col-sm-9 col-xs-12">
-                        <p class="form-control-static">{$user['address']}</p>
+                        <p class="form-control-static ad1" id="d_address">{$user['address']}
+                        </p>
+
+                        {ifp 'order.op.changeaddress'}
+                        <p class="form-control-static ad2" id="e_address">
+                            <select id="sel-provance" onChange="selectCity();" class="select form-control" style="width:130px;display:inline;">
+                                <option value="" selected="true">省/直辖市</option>
+                            </select>
+                            <select id="sel-city" onChange="selectcounty(0)" class="select form-control" style="width:135px;display:inline;">
+                                <option value="" selected="true">请选择</option>
+                            </select>
+                            <select id="sel-area" class="select form-control" style="width:130px;display:inline;">
+                                <option value="" selected="true">请选择</option>
+                            </select>
+                            <input type="text" name="address_info" id="address_info" class="form-control changeprice_orderprice" style="width:300px;display:inline;" value="{php echo $address_info}">
+                        </p>
+
+                        <button type='button' name='editaddress' id='editaddress' class='btn btn-default ad1'>编辑信息</button>
+                        <button type='button' name='saveaddress' id='saveaddress' class='btn btn-default ad2'>保存信息</button>
+                        <button type='button' name='backaddress' id='backaddress' class='btn btn-default ad2' style="margin-left:50px;">返回</button>
+                        {/if}
                     </div>
                 </div>
             </div>
         </div>
         {elseif $item['isverify']==1 || !empty($item['virtual']) ||!empty($item['isvirtual'])}
+		{if $show==1}
         <div class="panel panel-default">
             <div class="panel-heading">
                联系人
@@ -404,6 +433,7 @@
                 </div>
             </div>
         </div>
+		{/if} 
         {else}
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -426,6 +456,115 @@
         </div>
         {/if}
       
+
+    {if $diyform_flag == 1}
+	
+	{if !empty($order_data)}
+   <div class='panel-heading'>
+        订单统一表单信息
+    </div>
+    <div class='panel-body'>
+        <!--<span>diyform</span>-->
+    
+       {php $datas = $order_data}
+        {loop $order_fields $key $value}
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">{php echo $value['tp_name']}</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="form-control-static">
+
+                    {if $value['data_type'] == 0 || $value['data_type'] == 1 || $value['data_type'] == 2 || $value['data_type'] == 6}
+                    {php echo str_replace("\n","<br/>",$datas[$key])}
+
+                    {else if $value['data_type'] == 3}
+                    {if !empty($datas[$key])}
+                    {loop $datas[$key] $k1 $v1}
+                    {php echo $v1}
+                    {/loop}
+                    {/if}
+
+                    {else if $value['data_type'] == 5}
+                    {if !empty($datas[$key])}
+                    {loop $datas[$key] $k1 $v1}
+                    <a target="_blank" href="{php echo tomedia($v1)}"><img style='width:100px;;padding:1px;border:1px solid #ccc'  src="{php echo tomedia($v1)}"></a>
+                    {/loop}
+                    {/if}
+
+                    {else if $value['data_type'] == 7}
+                    {php echo $datas[$key]}
+
+                    {else if $value['data_type'] == 8}
+                    {if !empty($datas[$key])}
+                    {loop $datas[$key] $k1 $v1}
+                    {php echo $v1}
+                    {/loop}
+                    {/if}
+
+                    {else if $value['data_type'] == 9}
+                    {php echo $datas[$key]['province']!='请选择省份'?$datas[$key]['province']:''}-{php echo $datas[$key]['city']!='请选择城市'?$datas[$key]['city']:''}
+                    {/if}
+                </div>
+
+            </div>
+        </div>
+
+        {/loop}
+     
+    </div>
+	{/if}
+	  {if count($goods)==1 &&  !empty($goods[0]['diyformdata'])}
+    <div class='panel-heading'>
+        其他信息
+    </div>
+    <div class='panel-body'>
+        <!--<span>diyform</span>-->
+      
+		{php $datas = $goods[0]['diyformdata']}
+        {loop $goods[0]['diyformfields'] $key $value}
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">{php echo $value['tp_name']}</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="form-control-static">
+
+                    {if $value['data_type'] == 0 || $value['data_type'] == 1 || $value['data_type'] == 2 || $value['data_type'] == 6}
+                    {php echo str_replace("\n","<br/>",$datas[$key])}
+
+                    {else if $value['data_type'] == 3}
+                    {if !empty($datas[$key])}
+                    {loop $datas[$key] $k1 $v1}
+                    {php echo $v1}
+                    {/loop}
+                    {/if}
+
+                    {else if $value['data_type'] == 5}
+                    {if !empty($datas[$key])}
+                    {loop $datas[$key] $k1 $v1}
+                    <a target="_blank" href="{php echo tomedia($v1)}"><img style='width:100px;;padding:1px;border:1px solid #ccc'  src="{php echo tomedia($v1)}"></a>
+                    {/loop}
+                    {/if}
+
+                    {else if $value['data_type'] == 7}
+                    {php echo $datas[$key]}
+
+                    {else if $value['data_type'] == 8}
+                    {if !empty($datas[$key])}
+                    {loop $datas[$key] $k1 $v1}
+                    {php echo $v1}
+                    {/loop}
+                    {/if}
+
+                    {else if $value['data_type'] == 9}
+                    {php echo $datas[$key]['province']!='请选择省份'?$datas[$key]['province']:''}-{php echo $datas[$key]['city']!='请选择城市'?$datas[$key]['city']:''}
+                    {/if}
+                </div>
+
+            </div>
+        </div>
+
+        {/loop}
+    
+    </div>    {/if}
+    {/if}
         {if !empty($refund)}
 
         <div class="panel panel-default">
@@ -519,6 +658,61 @@
                             <a href="{php echo $this->createWebUrl('shop/goods', array('id' => $goods['id'], 'op' => 'post'))}" class="btn btn-default btn-sm" title="编辑"><i class="fa fa-edit"></i></a>&nbsp;&nbsp;
                         </td>
                     </tr>
+					{if count($item['goods'])>1 && $diyform_flag==1 && !empty($goods['diyformdata'])}
+					<tr>
+						<td colspan='10' style="background:#FCF8E3">
+							 
+							<a href='javascript:;' class='btn btn-default' hide="1" onclick="showDiyInfo(this)">查看用户信息</a>
+							<div style='display:none'>
+							  
+		{php $datas = $goods['diyformdata']}
+        {loop $goods['diyformfields'] $key $value}
+        <div class="form-group">
+            <label class="col-xs-1 control-label">{php echo $value['tp_name']}</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="form-control-static">
+
+                    {if $value['data_type'] == 0 || $value['data_type'] == 1 || $value['data_type'] == 2 || $value['data_type'] == 6}
+                    {php echo str_replace("\n","<br/>",$datas[$key])}
+
+                    {else if $value['data_type'] == 3}
+                    {if !empty($datas[$key])}
+                    {loop $datas[$key] $k1 $v1}
+                    {php echo $v1}
+                    {/loop}
+                    {/if}
+
+                    {else if $value['data_type'] == 5}
+                    {if !empty($datas[$key])}
+                    {loop $datas[$key] $k1 $v1}
+                    <a target="_blank" href="{php echo tomedia($v1)}"><img style='width:100px;;padding:1px;border:1px solid #ccc'  src="{php echo tomedia($v1)}"></a>
+                    {/loop}
+                    {/if}
+
+                    {else if $value['data_type'] == 7}
+                    {php echo $datas[$key]}
+
+                    {else if $value['data_type'] == 8}
+                    {if !empty($datas[$key])}
+                    {loop $datas[$key] $k1 $v1}
+                    {php echo $v1}
+                    {/loop}
+                    {/if}
+
+                    {else if $value['data_type'] == 9}
+                    {php echo $datas[$key]['province']!='请选择省份'?$datas[$key]['province']:''}-{php echo $datas[$key]['city']!='请选择城市'?$datas[$key]['city']:''}
+                    {/if}
+                </div>
+
+            </div>
+        </div>
+
+        {/loop}
+       
+					</div>		
+						</td>
+					</tr>
+					{/if}
                     {/loop}
                     <tr>
                         <td colspan="10">
@@ -530,6 +724,86 @@
                 </table>
             </div>
         </div>
+		<script language="javascript">
+			function showDiyInfo(obj){
+				var hide = $(obj).attr('hide');
+				if(hide=='1'){
+					$(obj).next().slideDown();
+				}
+				else{
+					$(obj).next().slideUp();
+				}
+				$(obj).attr('hide',hide=='1'?'0':'1');
+			}
+
+            {ifp 'order.op.changeaddress'}
+            cascdeInit("{php echo isset($user['province'])?$user['province']:''}","{php echo isset($user['city'])?$user['city']:''}","{php echo isset($user['area'])?$user['area']:''}");
+
+            $('#editaddress').click(function() {
+                show_address(1);
+            });
+
+            $('#backaddress').click(function() {
+                show_address(0);
+            });
+
+            $('#saveaddress').click(function() {
+                var url = "{php echo $this->createWebUrl('order/list',array('op'=>'saveaddress'))}";
+                var id ={php echo $id};
+                var realname = $('#realname').val();
+                var mobile = $('#mobile').val();
+                var provance = $('#sel-provance').val();
+                var city = $('#sel-city').val();
+                var area = $('#sel-area').val();
+                var address = $('#address_info').val();
+
+                if(realname==''){
+                    alert('请填写收件人姓名!');
+                    return false;
+                }
+
+                if(mobile==''){
+                    alert('请填写收件人手机!');
+                    return false;
+                }
+
+                if(provance=='请选择省份'){
+                    alert('请选择省份!');
+                    return false;
+                }
+
+                if(address==''){
+                    alert('请填写详细地址!');
+                    return false;
+                }
+
+                $.ajax({
+                    url: url,
+                    dataType: "json",
+                    data: {id:id,realname:realname,mobile:mobile,provance:provance,city:city,area:area,address:address},
+                    success:function(json){
+                        var result = json.result;
+                        if(json.status==1){
+                            location.reload();
+                        } else {
+                            alert(result);
+                        }
+                    }
+                });
+            });
+
+            function show_address(flag) {
+                if (flag == 1) {
+                    $('.ad1').hide();
+                    $('.ad2').show();
+                } else {
+                    $('.ad1').show();
+                    $('.ad2').hide();
+                }
+            }
+            {/if}
+
+			</script>
 {template 'web/order/modals'}
   {if  p('commission')}
 		  
@@ -537,3 +811,4 @@
 		  {/if}
 
 {template 'web/_footer'}
+

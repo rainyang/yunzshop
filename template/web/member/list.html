@@ -8,7 +8,7 @@
         <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
             <input type="hidden" name="c" value="site" />
             <input type="hidden" name="a" value="entry" />
-            <input type="hidden" name="m" value="sz_yi" />
+            <input type="hidden" name="m" value="ewei_shop" />
             <input type="hidden" name="do" value="member" />
                  <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">ID</label>
@@ -33,6 +33,7 @@
                     </select>
                 </div>
             </div>
+	
              <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">会员等级</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
@@ -70,7 +71,17 @@
                         {php echo tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d H:i', $starttime),'endtime'=>date('Y-m-d  H:i', $endtime)),true);}
                     </div>
                          
-                </div> 
+                </div>
+	      <div class="form-group">
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">黑名单</label>
+                <div class="col-sm-8 col-lg-9 col-xs-12">
+                       <select name='isblack' class='form-control'>
+                        <option value=''></option>
+                        <option value='0' {if $_GPC['isblack']=='0'}selected{/if}>否</option>
+                        <option value='1' {if $_GPC['isblack']=='1'}selected{/if}>是</option>
+                    </select>
+                </div>
+            </div>
               <div class="form-group">
                     <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label"></label>
                     <div class="col-sm-7 col-lg-9 col-xs-12">
@@ -154,7 +165,11 @@
                     <td>{$row['credit2']}</td>
                     <td>{$row['ordercount']}</td>
                     <td>{php echo floatval($row['ordermoney'])}</td>
-                    <td>  {if empty($row['followed'])}
+                    <td> 
+						   {if $row['isblack']==1}
+                    <span class="label label-default" style='color:#fff;background:black'>黑名单</span>
+					{else}
+						{if empty($row['followed'])}
                         {if empty($row['uid'])}
                         <label class='label label-default'>未关注</label>
                         {else}
@@ -162,7 +177,9 @@
                         {/if}
                         {else}
                     <label class='label label-success'>已关注</label>    
-                    {/if}</td>
+                    {/if}{/if}
+					
+					</td>
              
                             <td  style="overflow:visible;">
                         
@@ -174,6 +191,13 @@
                         {ifp 'order'}<li><a  href="{php echo $this->createWebUrl('order', array('op' => 'display','member'=>$row['nickname']))}" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>{/if}
                         {ifp 'finance.recharge.credit1'}<li><a href="{php echo $this->createWebUrl('finance/recharge', array('op'=>'credit1','id'=>$row['id']))}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>{/if}
                         {ifp 'finance.recharge.credit2'}<li><a href="{php echo $this->createWebUrl('finance/recharge', array('op'=>'credit2','id'=>$row['id']))}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>{/if}
+		    {ifp 'member.member.black'}
+                            {if $row['isblack']==1}
+                            <li><a href="{php echo $this->createWebUrl('member/list',array('op'=>'setblack','id' => $row['id'],'black'=>0));}" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
+                            {else}
+                            <li><a href="{php echo $this->createWebUrl('member/list',array('op'=>'setblack','id' => $row['id'],'black'=>1));}" title='设置黑名单'><i class='fa fa-minus-circle'></i> 设置黑名单</a></li>
+                            {/if}
+                        {/if}
                         {ifp 'member.member.delete'}<li><a  href="{php echo $this->createWebUrl('member',array('op'=>'delete','id' => $row['id']));}" title='删除会员' onclick="return confirm('确定要删除该会员吗？');"><i class='fa fa-remove'></i> 删除会员</a></li>{/if}
                                 </ul>
                             </div>
@@ -197,7 +221,7 @@
     <input type="hidden" name="op" value="detail">
     <input type="hidden" name="c" value="site" />
     <input type="hidden" name="a" value="entry" />
-    <input type="hidden" name="m" value="sz_yi" />
+    <input type="hidden" name="m" value="ewei_shop" />
     <input type="hidden" name="do" value="member" />
     <div class='panel panel-default'>
         <div class='panel-heading'>
@@ -222,7 +246,7 @@
                 <div class="col-sm-9 col-xs-12">
                     {ifp 'member.member.edit'}
                       <select name='data[level]' class='form-control'>
-                        <option value=''>普通会员</option>
+                        <option value=''>{php echo empty($shop['levelname'])?'普通会员':$shop['levelname']}</option>
                         {loop $levels $level}
                         <option value='{$level['id']}' {if $member['level']==$level['id']}selected{/if}>{$level['levelname']}</option>
                         {/loop}
@@ -230,9 +254,9 @@
                     {else}
                     <div class='form-control-static'>
                         {if empty($member['level'])}
-                        普通会员
+                        {php echo empty($shop['levelname'])?'普通会员':$shop['levelname']}
                         {else}
-                        {php echo pdo_fetchcolumn('select levelname from '.tablename('sz_yi_member_level').' where id=:id limit 1',array(':id'=>$member['level']))}
+                        {php echo pdo_fetchcolumn('select levelname from '.tablename('ewei_shop_member_level').' where id=:id limit 1',array(':id'=>$member['level']))}
                         {/if}
                     </div>
                     {/if}
@@ -253,7 +277,7 @@
                         {if empty($member['groupid'])}
                         无分组
                         {else}
-                        {php echo pdo_fetchcolumn('select groupname from '.tablename('sz_yi_member_group').' where id=:id limit 1',array(':id'=>$member['groupid']))}
+                        {php echo pdo_fetchcolumn('select groupname from '.tablename('ewei_shop_member_group').' where id=:id limit 1',array(':id'=>$member['groupid']))}
                         {/if}
                     </div>
                     {/if}
@@ -360,7 +384,20 @@
                     </div>
                 </div>
             </div>
-            
+        <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">黑名单</label>
+                <div class="col-sm-9 col-xs-12">
+                      {ifp 'member.member.edit'}
+                    <label class="radio-inline"><input type="radio" name="data[isblack]" value="1" {if $member['isblack']==1}checked{/if}>是</label>
+                    <label class="radio-inline" ><input type="radio" name="data[isblack]" value="0" {if $member['isblack']==0}checked{/if}>否</label>
+                    <span class="help-block">设置黑名单后，此会员无法访问商城</span>
+                    {else}
+                      <input type='hidden' name='data[isblack]' value='{$member['isblack']}' />
+                      <div class='form-control-static'>{if $member['isblack']==1}是{else}否{/if}</div>
+                    {/if}
+                    
+                </div>
+            </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">备注</label>
                 <div class="col-sm-9 col-xs-12">
@@ -373,9 +410,64 @@
             </div>
         </div>
 
+		
+        {if $diyform_flag == 1}
+        <div class='panel-heading'>
+            自定义表单信息
+        </div>
+        <div class='panel-body'>
+            <!--<span>diyform</span>-->
+
+            {php $datas = iunserializer($member['diymemberdata'])}
+            {loop $fields $key $value}
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">{php echo $value['tp_name']}</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="form-control-static">
+
+                        {if $value['data_type'] == 0 || $value['data_type'] == 1 || $value['data_type'] == 2 || $value['data_type'] == 6}
+                        {php echo str_replace("\n","<br/>",$datas[$key])}
+
+                        {else if $value['data_type'] == 3}
+                        {if !empty($datas[$key])}
+                        {loop $datas[$key] $k1 $v1}
+                        {php echo $v1}
+                        {/loop}
+                        {/if}
+
+                        {else if $value['data_type'] == 5}
+                        {if !empty($datas[$key])}
+                        {loop $datas[$key] $k1 $v1}
+                        <a target="_blank" href="{php echo tomedia($v1)}"><img style='width:100px;padding:1px;border:1px solid #ccc'  src="{php echo tomedia($v1)}"></a>
+                        {/loop}
+                        {/if}
+
+                        {else if $value['data_type'] == 7}
+                        {php echo $datas[$key]}
+
+                        {else if $value['data_type'] == 8}
+                        {if !empty($datas[$key])}
+                        {loop $datas[$key] $k1 $v1}
+                        {php echo $v1}
+                        {/loop}
+                        {/if}
+
+                        {else if $value['data_type'] == 9}
+                         {php echo $datas[$key]['province']!='请选择省份'?$datas[$key]['province']:''}-{php echo $datas[$key]['city']!='请选择城市'?$datas[$key]['city']:''}
+                        {/if}
+                    </div>
+
+                </div>
+            </div>
+
+            {/loop}
+        </div>
+        {/if}
+	{if $member['isagent']==1 && $member['status']==1}
+	{else}
         {if $hascommission && cv('commission.agent.changeagent')}
         <div class='panel-heading'>
-            设置分销商
+            设置分销商 <small>注意: 分销商设置后，无法再此进行修改，如果要修改，请联系系统管理员</small>
         </div>
            <div class='panel-body'>
 <div class="form-group">
@@ -452,7 +544,7 @@
                               {if empty($member['agentlevel'])}
                             {php echo empty($plugin_com_set['levelname'])?'普通等级':$plugin_com_set['levelname']}
                                 {else}
-                                {php echo pdo_fetchcolumn('select levelname from '.tablename('sz_yi_commission_level').' where id=:id limit 1',array(':id'=>$member['agentlevel']))}
+                                {php echo pdo_fetchcolumn('select levelname from '.tablename('ewei_shop_commission_level').' where id=:id limit 1',array(':id'=>$member['agentlevel']))}
                                 {/if}
                          {/if}
                 </div>
@@ -543,6 +635,7 @@
             </div>
         </div>
         {/if}
+		        {/if}
         <div class='panel-body'>
           <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
@@ -555,8 +648,9 @@
                 </div>
             </div>
          </div>
-        
+
     </div>   
+	
 </form>
 {/if}
 <script language='javascript'>
@@ -583,3 +677,4 @@
         
     </script>
 {template 'web/_footer'}
+

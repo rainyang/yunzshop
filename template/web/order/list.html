@@ -8,6 +8,7 @@
 .goods_info:hover {z-index:1;position:absolute;width:auto;}
 .goods_info:hover img{width:320px; height:320px;}
 </style>
+{php echo $status;}
 {if $status != 9}
 <div class="panel panel-default">
     <div class="panel-body">
@@ -271,7 +272,7 @@
         <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
             <input type="hidden" name="c" value="site" />
             <input type="hidden" name="a" value="entry" />
-            <input type="hidden" name="m" value="ewei_shop" />
+            <input type="hidden" name="m" value="sz_yi" />
             <input type="hidden" name="do" value="plugin" />
             <input type="hidden" name="p" value="commission" />
             <input type="hidden" name="method" value="supplier_finish" />
