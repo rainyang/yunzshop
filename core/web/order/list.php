@@ -177,8 +177,10 @@ if ($operation == 'display') {
                     'applysn' => $applysn
                     );
                 pdo_insert('sz_yi_supplier_apply',$data);
+                //todo，这里要加uniacid, 否则查不出来. By RainYang 
                 $log = pdo_fetch('select * from ' . tablename('sz_yi_supplier_apply') . ' where uid=:uid and uniacid=:uniacid limit 1', array(
-                        ':uid' => $_W['uid']
+                        ':uid' => $_W['uid'],
+                        'uniacid' => $_W['uniacid']
                     ));
                 $openid = pdo_fetchcolumn('select openid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid'=> $_W['uniacid']));
                 $result = m('finance')->pay($openid, 1, $log['apply_money'] * 100, $log['applysn'], $set['name'] . '供应商提现');

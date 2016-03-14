@@ -7,14 +7,15 @@ if ($operation == 'display') {
 	if(empty($_GPC['uid'])){
 		$where .= ' where roleid =' . $cond['id'] . ' and uniacid=' . $_W['uniacid'];
 	}else{
-		$where .= ' where roleid =' . $cond['id'] . ' and uid=' . $_GPC['uid'] . ' and uniacid=' . $_W['uniacid'];
+		$where .= ' where roleid =' . $cond['id'] . ' and uid="' . $_GPC['uid'] . '" and uniacid=' . $_W['uniacid'];
 	}
     $list = pdo_fetchall('select * from ' . tablename('sz_yi_perm_user') . $where);
     
     $total = count($list);
 } else if ($operation == 'detail') {
     $uid = intval($_GPC['uid']);
-	$supplierinfo = pdo_fetch('select * from ' . tablename('sz_yi_perm_user') . ' where uid=' . $uid . ' and uniacid=' . $_W['uniacid']);
+    //todo,uid要加引号或者intval
+	$supplierinfo = pdo_fetch('select * from ' . tablename('sz_yi_perm_user') . ' where uid="' . $uid . '" and uniacid=' . $_W['uniacid']);
 	if(!empty($supplierinfo['openid'])){
         $saler = m('member')->getInfo($supplierinfo['openid']);
     }

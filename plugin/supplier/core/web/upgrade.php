@@ -1,4 +1,5 @@
 ﻿<?php
+//金额不能用int, apply表少uniacid字段
 global $_W;
 $sql = "
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_supplier` (
@@ -14,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_supplier` (
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_apply` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL COMMENT '供应商id',
+  `uniacid` int(11) NOT NULL,
   `type` int(11) NOT NULL COMMENT '1手动2微信',
   `applysn` varchar(255) NOT NULL COMMENT '提现单号',
   `apply_money` int(11) NOT NULL COMMENT '申请金额',
@@ -71,6 +73,7 @@ if(!$info){
     pdo_query($sql);
 }
 
+//todo,这里缺少uniacid，我没加，要测试$_W['uniacid']是否可用
 $result = pdo_fetch('select * from ' . tablename('sz_yi_perm_role') . ' where status1=1');
 if(empty($result)){
   $sql = "
