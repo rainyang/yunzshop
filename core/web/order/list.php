@@ -178,13 +178,9 @@ if ($operation == 'display') {
                     'applysn' => $applysn
                     );
                 pdo_insert('sz_yi_supplier_apply',$data);
-                //todo，这里要加uniacid, 否则查不出来. By RainYang 
-                $log = pdo_fetch('select * from ' . tablename('sz_yi_supplier_apply') . ' where uid=:uid and uniacid=:uniacid limit 1', array(
-                        ':uid' => $_W['uid'],
-                        'uniacid' => $_W['uniacid']
-                    ));
+                $logid = pdo_insertid();
                 $openid = pdo_fetchcolumn('select openid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid'=> $_W['uniacid']));
-                $result = m('finance')->pay($openid, 1, $log['apply_money'] * 100, $log['applysn'], $set['name'] . '供应商提现');
+                $result = m('finance')->pay($openid, 1, $costmoney * 100, $applysn, $set['name'] . '供应商提现');
                 if (is_error($result)) {
                     pdo_delete('sz_yi_supplier_apply', array(
                         'uid' => $_W['uid'],
@@ -209,7 +205,7 @@ if ($operation == 'display') {
                         'id' => $ids['id']
                         ));
                 }
-                m('notice')->sendMemberLogMessage($log['id']);
+                m('notice')->sendMemberLogMessage($logid);
                 message('微信钱包提现成功!', referer(), 'success');
             }
         }else{
@@ -222,6 +218,7 @@ if ($operation == 'display') {
         $sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
     }
     $list        = pdo_fetchall($sql, $paras);
+   // print_r($list);
     $paytype     = array(
         '0' => array(
             'css' => 'default',
