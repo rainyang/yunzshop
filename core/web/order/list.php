@@ -7,7 +7,6 @@ if ($operation == "display") {
     $pindex = max(1, intval($_GPC["page"]));
     $psize = 20;
     $status = $_GPC["status"];
-    echo $status . "++++";
     $sendtype = !isset($_GPC["sendtype"]) ? 0 : $_GPC["sendtype"];
     $condition = " o.uniacid = :uniacid and o.deleted=0";
     $paras = $paras1 = array(

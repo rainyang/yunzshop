@@ -1,7 +1,7 @@
 {template 'common/header'}
 <title>{if empty($current_category)}全部商品{else}{$current_category['name']}{/if}</title>
 <style type="text/css">
-    body {margin:0px; width:100%; height:100%; background:#eee; color:#fff; }
+    body {margin:0px; width:100%; height:100%; background:#efefef; color:#fff; }
     html {}
     .main {height:100%; width:100%; background:#fff; }
     .main .category {height:100%; width:60%; background:rgba(0,0,0,0.8);  position:fixed; left:-60%; top:0; z-index:9999;overflow-y: auto;}
@@ -21,14 +21,25 @@
     .main .page .topbar .search {height:28px; width:10%; float:right; margin-right:3%; font-size:18px; line-height:25px; text-align:right; color:#999;}
 
     .main .page .goods {height:auto; width:98%; padding:0 1%; margin-top:5px; float:left;}
-    .main .page .goods .good {height:auto;  width:46%; background:#fff; padding:1%; margin:5px 1%; float:left;position:relative;}
-    .main .page .goods .good img {width:100%;}
-    .main .page .goods .good .nostock { position: absolute;bottom:20px;right:0px; width:30%;height:30%;}
+    .main .page .goods .good {width: 50%;box-sizing: border-box;float: left;    padding: 8px 4px 4px 8px;}
+    .main .page .goods .good img {width:100%; }
+    .main .page .goods .good .nostock { position: absolute;bottom:20px;right:0px; width:30%;height:30%;z-index: 999;}
     .main .page .goods .good .nostock img { max-width: 50px}
-    
-    .main .page .goods .good .name {height:50px; width:100%; font-size:14px; color:#999; line-height:25px;overflow:hidden}
-    .main .page .goods .good .price {height:25px; width:100%; font-size:14px; color:#feabb4;}
-    .main .page .goods .good .price span {height:23px; width:auto; padding:2px 6px; background:#666; color:#fff; font-size:12px; border-radius:5px; text-decoration: line-through}
+	.goods-img {
+    width: 100%;
+    height: 0;
+    padding-bottom: 100%;
+    position: relative;
+}
+    .goods-cont {
+    background-color: #fff;
+    padding: 5px;
+    box-sizing: border-box;
+}
+
+    .main .page .goods .good .name {height:42px; width:100%; font-size:14px; color:#333333; line-height:22px;overflow:hidden; padding-bottom:5px;}
+    .main .page .goods .good .price {height:25px; width:100%; font-size:16px; color:#ff6600}
+    .main .page .goods .good .price span {height:23px; width:auto; padding:2px 6px; color:#cccccc; font-size:12px; border-radius:5px; text-decoration: line-through}
     .main .page .copyright {height:40px; width:100%; text-align:center; line-height:40px; font-size:12px; color:#999; margin-top:10px;float:left;}
 
     .main .page .sort_list {height:100px; width:90px; background:rgba(51,51,51,0.8); border-radius:5px; position:absolute; top:50px; right:5%; display:none;z-index:999}
@@ -45,8 +56,41 @@
 .category_group  a {color:#f90;   height:45px; line-height:35px; text-decoration: none; color:#333; text-align: center; padding:10px;; }
 .category_group  a.on  { color:#f90;font-weight:bold;background:#efefef;}
 
+span.f12 {
+    font-size: 10px;
+}
+
+#fenye{clear:both;margin:15px 0;height:35px; text-align:center; }
+#fenye table{ width:100%}
+#fenye img{ vertical-align:inherit}
+#fenye a,#fenye span{text-decoration:none; font-size:14px;height:30px;display:inline-block; text-align:center; 
+line-height:30px;color:#666;border: 1px solid #ccc;padding:0 10px; font-size:12px; margin:0 2px;background:#fff; border-radius:3px; }
+#fenye a.curr{background-color: #EFEFEF; cursor:default;}
+#fenye a:hover{color:#333; background-color: #EFEFEF; }
+#fenye span em{ margin-left:5px;}
+.head a{ text-decoration:none}
+
+.pagination{display:inline-block;padding-left:0;margin:20px auto;border-radius:4px;text-align: center;width:100%;}.pagination>li{display:inline-block;}.pagination>li>a,.pagination>li>span{position:relative;float:left;padding:6px 12px;margin-left:-1px;line-height:1.42857143;color:#666;text-decoration:none;background-color:#fff;border:1px solid #ddd}.pagination>li:first-child>a,.pagination>li:first-child>span{margin-left:0;border-top-left-radius:4px;border-bottom-left-radius:4px}.pagination>li:last-child>a,.pagination>li:last-child>span{border-top-right-radius:4px;border-bottom-right-radius:4px}.pagination>li>a:hover,.pagination>li>span:hover,.pagination>li>a:focus,.pagination>li>span:focus{color:#2a6496;background-color:#eee;border-color:#ddd}.pagination>.active>a,.pagination>.active>span,.pagination>.active>a:hover,.pagination>.active>span:hover,.pagination>.active>a:focus,.pagination>.active>span:focus{z-index:2;cursor:default;background-color:#EFEFEF;}.pagination>.disabled>span,.pagination>.disabled>span:hover,.pagination>.disabled>span:focus,.pagination>.disabled>a,.pagination>.disabled>a:hover,.pagination>.disabled>a:focus{color:#777;cursor:not-allowed;background-color:#fff;border-color:#ddd}.pagination-lg>li>a,.pagination-lg>li>span{padding:10px 16px;font-size:18px}.pagination-lg>li:first-child>a,.pagination-lg>li:first-child>span{border-top-left-radius:6px;border-bottom-left-radius:6px}.pagination-lg>li:last-child>a,.pagination-lg>li:last-child>span{border-top-right-radius:6px;border-bottom-right-radius:6px}.pagination-sm>li>a,.pagination-sm>li>span{padding:5px 10px;font-size:12px}.pagination-sm>li:first-child>a,.pagination-sm>li:first-child>span{border-top-left-radius:3px;border-bottom-left-radius:3px}.pagination-sm>li:last-child>a,.pagination-sm>li:last-child>span{border-top-right-radius:3px;border-bottom-right-radius:3px}.pager{padding-left:0;margin:20px 0;text-align:center;list-style:none}.pager li{display:inline}.pager li>a,.pager li>span{display:inline-block;padding:5px 14px;background-color:#fff;border:1px solid #ddd;border-radius:15px}.pager li>a:hover,.pager li>a:focus{text-decoration:none;background-color:#eee}.pager .next>a,.pager .next>span{float:right}.pager .previous>a,.pager .previous>span{float:left}.pager .disabled>a,.pager .disabled>a:hover,.pager .disabled>a:focus,.pager .disabled>span{color:#777;cursor:not-allowed;background-color:#fff}
 
 
+div.addinfo{height:18px;}
+
+.label-waring {
+    font-size: 12px;
+    line-height: 14px;
+    padding: 1px 5px;
+    display: inline-block; 
+}
+
+.label-waring {
+    background-color: #fd6801;
+    color: #fff;
+}.tint-gray {
+    color: #ccc;
+}.f12 {
+    font-size: 12px;
+    line-height: 14px;
+}
 </style>
 
  
@@ -83,7 +127,8 @@
             <div class="topbar">
                 {if !empty($myshop['selectcategory']) || empty($myshop)}
                 <div class="list1">
-                  <i class="fa fa-list-ul"></i>
+                  <i class="fa fa-list-ul"><br><span class="f12" style="position:relative; bottom:5px;">分类</span></i>
+				  
                 </div>
                 {else}
                 <div class="list2" onclick='history.back()'>
@@ -95,7 +140,7 @@
                 <div class="search"><i class="fa fa-search"></i></div>
                 <div class="sort"><i class="fa fa-sort-numeric-desc" style="float:right;"></i></div>
             </div>
-            <div id="category_group"></div>
+           <!-- <div id="category_group"></div> -->
             <!--商品列表-->
             <div class="goods">
                 <div id='goods_container'></div>
@@ -132,14 +177,41 @@
  
  </script>
 <script id='tpl_goods_list' type='text/html'>
-    <%each goods as g%>
-    <div class="good" data-goodsid='<%g.id%>'>
-        <%if g.total<=0%><div class="nostock"><img src="../addons/sz_yi/template/mobile/default/static/images/salez.png"></div><%/if%>
-        <img src="<%g.thumb%>">
-        <div class="name"><%g.title%> </div>
-        <div class="price">￥<%g.marketprice%> <%if g.productprice>0 && g.marketprice!=g.productprice%><span>￥<%g.productprice%></span><%/if%></div>
+  <form action="" method="get" id="goodsform">
+    <input type="hidden" name="i" value="{$_W['uniacid']}">
+    <input type="hidden" name="c" value="{$_GPC['c']}">
+    <input type="hidden" name="do" value="{$_GPC['do']}">
+    <input type="hidden" name="m" value="{$_GPC['m']}">
+    <input type="hidden" name="p" value="{$_GPC['p']}">
+
+
+    <input type="hidden" id="isnew" name="isnew" value="{$_GPC['isnew']}">
+    <input type="hidden" id="ishot" name="ishot" value="{$_GPC['ishot']}">
+    <input type="hidden" id="isrecommand" name="isrecommand" value="{$_GPC['isrecommand']}">
+    <input type="hidden" id="isdiscount" name="isdiscount" value="{$_GPC['isdiscount']}">
+    <input type="hidden" id="istime" name="istime" value="{$_GPC['istime']}">
+    <input type="hidden" id="pcate" name="pcate" value="{$_GPC['pcate']}">
+    <input type="hidden" id="ccate" name="ccate" value="{$_GPC['ccate']}">
+    <input type="hidden" id="tcate" name="tcate" value="{$_GPC['tcate']}">
+    <input type="hidden" id="order" name="order" value="{$_GPC['order']}">
+    <input type="hidden" id="by" name="by" value="{$_GPC['by']}">
+  </form>
+    {loop $goods $g}
+     {php $discount=number_format($g['marketprice']*10/$g['productprice'],1)}
+    <div class="good" data-goodsid='{$g['id']}' style="position:relative;">
+        {if $g['total']<=0}<div class="nostock"><img src="../addons/sz_yi/template/mobile/default/static/images/salez.png"></div>{/if}
+		<div class="goods-img">
+        <img src="{$g['thumb']}">
+		</div>
+		<div class="goods-cont">
+        <div class="name">{$g['title']} </div>
+        <div class="price">￥{$g['marketprice']} {if $g['productprice']>0 && $g['marketprice']!=$g['productprice']}<span>￥{$g['productprice']}</span>{/if}</div>
+        <div class="addinfo" style=" display:none;">{if $discount&&$discount>0}<span class="label-waring">{$discount}折</span>{/if}  <span class="f12 tint-gray">销量：{$g['sales']}</span></div>
+		</div>
     </div>
-    <%/each%>
+    {/loop}
+
+    {$pager}
 </script>
 <script id='tpl_category_list' type='text/html'>
      <div class="category">
@@ -151,9 +223,13 @@
         <p class='category_item' data-istime='1'  data-name='限时秒杀'><i class="fa fa-clock-o"></i> 限时秒杀</p>
         <p class='category_item' data-isdiscount='1'  data-name='促销宝贝'><i class="fa fa-thumbs-up"></i> 促销宝贝</p>
         <%each category as parent%>
-         <p class='category_item'  data-pcate='<%parent.id%>' data-name='<%parent.name%>'><i class="fa fa-angle-double-right"></i> <%parent.name%></p>
+		<a href="http://fx.mokapai.com/app/index.php?i=1&c=entry&do=shop&m=sz_yi&p=list&pcate=<%parent.id%>">
+         <p class='category_item' style=" color:#ffff00;"><i class="fa fa-angle-double-right"></i> <%parent.name%></p>
+		 </a>
          <%each parent.children as child%>
-              <p class='child category_item' data-ccate='<%child.id%>' data-name='<%child.name%>'><i class="fa fa-angle-right"></i> <%child.name%></p>
+<a href="http://fx.mokapai.com/app/index.php?i=1&c=entry&do=shop&m=sz_yi&p=list&pcate=<%parent.id%>&ccate=<%child.id%>">
+              <p class='child category_item' style=" color:#fff;"><i class="fa fa-angle-right"></i> <%child.name%></p>
+			  </a>
               {if intval($set['catlevel'])==3}
                <%each child.children as third%>
                    <p class='third category_item' data-tcate='<%third.id%>' data-name='<%third.name%>'><i class="fa fa-angle-right"></i> <%third.name%></p>
@@ -191,7 +267,15 @@
     };
 
     require(['tpl', 'core'], function (tpl, core) {
-    
+
+
+      function getGoods() {
+          $('#goods_container').html(tpl('tpl_goods_list'));
+          bindEvents();
+      }
+
+
+        /*
         function getGoods() {
              
             core.json('shop/list', args, function (json) {
@@ -236,7 +320,7 @@
                 bindMore();
                 
             }, true);
-        }
+        }*/
         function getGoodsMore() {
      
             core.json('shop/list', args, function (json) {
@@ -299,8 +383,21 @@
              });
              $(".category .category_item").unbind('click').click(function(){
                  var item = $(this);
-                      $('#keywords').val(""); $('#search_container').html('');
+                     $('#keywords').val(""); $('#search_container').html('');
                      $(".category").animate({left:"-60%"},200);
+                      
+                      $("#isnew").val(item.data('isnew'));
+                      $("#ishot").val(item.data('ishot'));
+                      $("#isrecommand").val(item.data('isrecommand'));
+                      $("#isdiscount").val(item.data('isdiscount'));
+                      $("#istime").val(item.data('istime'));
+                      $("#ccate").val(item.data('ccate'));
+                      $("#tcate").val(item.data('tcate'));
+                      $("#pcate").val(item.data('pcate'));
+                      $("#order").val('');
+                      $("#by").val('');
+                      $("#goodsform").submit();
+                      /*
                       args  = {
                             page:1,
                             isnew: item.data('isnew'),
@@ -319,6 +416,7 @@
                      $('.topbar .name').html( item.data('name'));
                      document.title = item.data('name');
                      getGoods();
+                     */
              });
              
         }
@@ -343,6 +441,12 @@
                 $('.nav').removeClass('navon');
                 
                 $(this).addClass('navon');
+
+                      $("#order").val($(this).data('order'));
+                      $("#by").val($(this).data('by'));
+                      $("#goodsform").submit();
+
+                /*
                    args  = {
                             page:1,
                             isnew: args.isnew,
@@ -361,6 +465,7 @@
                
                 $(".sort_list").fadeOut(200);
                 getGoods();
+                */
         });
         $('.list1').click(function(){
              $(".sort_list").fadeOut(100);
@@ -434,3 +539,4 @@
 </script>
 {php $show_footer = true;}
 {template 'common/footer'}
+
