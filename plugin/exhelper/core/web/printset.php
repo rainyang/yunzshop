@@ -8,7 +8,7 @@ global $_W, $_GPC;
 $op = !empty($_GPC["op"]) ? $_GPC["op"] : "display";
 if ($op == "display") {
     ca("exhelper.printset.view");
-    $printset = pdo_fetch("SELECT * FROM " . tablename("ewei_shop_exhelper_sys") . " WHERE uniacid=:uniacid limit 1", array(
+    $printset = pdo_fetch("SELECT * FROM " . tablename("sz_yi_exhelper_sys") . " WHERE uniacid=:uniacid limit 1", array(
         ":uniacid" => $_W["uniacid"]
     ));
 }
@@ -17,13 +17,13 @@ if ($_W["ispost"]) {
     $port = $_GPC["port"];
     $ip   = $_GPC["ip"];
     if (empty($printset)) {
-        pdo_insert("ewei_shop_exhelper_sys", array(
+        pdo_insert("sz_yi_exhelper_sys", array(
             "port" => $port,
             "ip" => $ip,
             "uniacid" => $_W["uniacid"]
         ));
     } else {
-        pdo_update("ewei_shop_exhelper_sys", array(
+        pdo_update("sz_yi_exhelper_sys", array(
             "port" => $port,
             "ip" => $ip
         ), array(

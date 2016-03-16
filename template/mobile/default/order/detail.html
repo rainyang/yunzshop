@@ -88,6 +88,21 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
 .page_topbar .nav { position:absolute;right:5px;;color:#333;}
 
 .detail_good .text { padding:10px; color:#666;font-size:13px;}
+
+
+    .diyform_info {height:auto;  background:#fff; margin-top:14px; border-bottom:1px solid #e8e8e8; border-top:1px solid #e8e8e8;}
+    .diyform_info .dline {margin:0 10px; height:40px; border-bottom:1px solid #e8e8e8; line-height:40px; color:#666;}
+    .diyform_info .dline .dtitle {height:40px; width:90px; line-height:40px; color:#444; float:left; font-size:16px;  }
+    .diyform_info .dline .dinfo { width:100%;float:right;margin-left:-90px; position: relative; font-size:14px; color:#999; line-height:40px; height:40px; }
+    .diyform_info .dline .dinner { margin-left:90px; }
+    .diyform_info .dline1  { height:auto;overflow:hidden;}
+     .diyform_info .dline2 .dinfo img  { margin-top:5px;}
+   .diyform_info .dline1 .dinfo { height:auto; line-height:35px;}
+   .diyform_info1 { border:none; margin-top:0px; border:1px solid #efefef; border-top:none;  }
+   .diyform_info1 .dline { margin:0;}
+   .diyform_info1 .dline .dtitle { padding-left:10px;width:80px;font-size:13px;}
+   .diyform_info1 .dline .dinner { font-size:13px;}
+   .diyform_info .btn { text-decoration: none;  display: block; background:#f0f0f0; width:100%; text-align: center; color: #999;padding:3px; border-radius:1px; line-height:25px;  }
 </style>
 <div id='container'></div>
 
@@ -101,7 +116,7 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
     <div class="ico"><i class="fa fa-file-text-o"></i></div>
     <div class="tips">
          <%if order.status==0 && order.paytype!=3%>等待付款<%/if%>
-	<%if order.paytype==3 && order.status==0%>货到付款，等待发货<%/if%>
+     <%if order.paytype==3 && order.status==0%>货到付款，等待发货<%/if%>
         <%if order.status==1%>买家已付款<%/if%>
         <%if order.status==2 %>卖家已发货<%/if%>
         <%if order.status==3%>交易完成<%/if%>
@@ -110,6 +125,7 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
         <span>订单金额(含运费): ￥<%order.price%><span><br/>
         <span>运费: ￥<%order.dispatchprice%><span><br/></div>
 </div>
+  <%if show==1%>
     <%if order.isverify==1 || order.virtual!='0'%>
     
     <div class="detail_user">
@@ -125,6 +141,8 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
           </div>
     </div>
     <%/if%>
+<%/if%>
+
     <%if order.isverify==1%>
     <div class="store_title" onclick="showStores(this)" show="1" >适用的门店
          <i class="fa fa-angle-down" style="float:right; line-height:44px; font-size:26px;"></i>
@@ -178,6 +196,10 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
    
     <%else%>
     
+	
+ 
+
+
  <%if order.addressid!=0%>
 <div class="detail_user">
     <input type='hidden' id='addressid' value='<%address.id%>' />
@@ -209,6 +231,25 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
 </div>
  <%/if%>
  <%/if%>
+ 
+ 
+
+<!--<span>diyform</span>-->
+{if $diyform_flag == 1 && count($goods)==1}
+{php $datas = iunserializer($goods[0]['diyformdata'])}
+<div class="diyform_info">
+{loop $goods[0]['diyformfields'] $value}
+<div class='dline   {$value['tp_css']}'>
+        <div class='dtitle'>{$value['tp_name']}：</div>
+        <div class='dinfo'>
+			<div class='dinner'>
+		           {$value['tp_value']}
+			</div>
+        </div>
+</div>
+{/loop}
+</div>
+{/if}	
 <div class="detail_good">
     <div class="ico"><i class="fa fa-gift" style="color:#666; font-size:20px;"></i></div>
     <div class="shop"><%set.name%></div>
@@ -226,6 +267,28 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
                 <div class='pnum'><span class='total'>×<%g.total%></span></div>
             </div>
         </div>
+	{if count($goods)>1}
+	<%if g.diyformfields.length>0%>
+	 
+	<div class="diyform_info diyform_info1">
+	        <a href='javascript:;' class='btn' onclick='showDiyInfo(this)' hide='1'>查看提交的资料</a>
+	        <div style='display:none'>
+		<%each g.diyformfields as v %>
+			<div class='dline  <%=v.tp_css%>'>
+				 <div class='dtitle'><%=v.tp_name%>：</div>
+				 <div class='dinfo'>
+					 <div class='dinner'>
+						 <%=v.tp_value%>
+					 </div>
+				 </div>
+		   </div> <%/each%>
+		 </div>
+	      
+          </div>
+		<%/if%>
+		
+		{/if}
+
     <%/each%>
 </div> 
  <%if order.virtual_str!=''%>
@@ -292,7 +355,7 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
       <%/if%>
   
       
-      <%if order.status==2%>
+      <%if order.status==2 %>
              <div class="paysub order_complete">确认收货</div>
 			 <%if order.expresssn!=''%>
              <div class="paysub1 order_express">查看物流</div>
@@ -328,6 +391,12 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
 {/if}
 
 <script type="text/javascript">
+	function showDiyInfo(obj){
+				var hide = $(obj).attr('hide');
+				$(obj).next().toggle('fadeIn');
+				$(obj).attr('hide',hide=='1'?'0':'1');
+			}
+			
      function showStores(obj){
         if($(obj).attr('show')=='1'){
             $(obj).next('div').slideUp(100);
@@ -340,6 +409,9 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
     }
     require(['tpl', 'core'], function(tpl, core) {
     
+	function is_weixin(){
+		
+	}
         core.json('order/detail',{id:'{$_GPC['id']}'},function(json){
                  
                  if(json.status==0){
@@ -347,6 +419,32 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
                      return;
                  }
                  $('#container').html(  tpl('tpl_detail',json.result) );
+				 
+				 
+				     var ua = navigator.userAgent.toLowerCase();
+						var isWX = ua.match(/MicroMessenger/i) == "micromessenger";
+						var z = []; 
+						$(".diyform_info img").each(function() {
+							 z.push($(this).attr("src"));
+						 });
+						 var current;
+						 if (isWX) {
+							 $(".diyform_info img").click(function(e) {
+								 e.preventDefault();
+								 var startingIndex = $(".diyform_info img").index($(e.currentTarget));
+								 var current = null;
+								 $(".diyform_info img").each(function(B, A) {
+									 if (B === startingIndex) {
+										 current = $(A).attr("src");
+									 }
+								 });
+								 WeixinJSBridge.invoke("imagePreview", {
+									 current: current,
+									 urls: z
+								 });
+							 });
+						 }
+			 
                  $("#verifycode").html( json.result.order.verifycode);
                  $(".order_cancel").find('select').change(function(){
                         var reason = $(this).val();
@@ -405,3 +503,4 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
    });
 </script>
 {template 'common/footer'}
+

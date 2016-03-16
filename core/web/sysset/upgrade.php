@@ -168,6 +168,7 @@ if ($op == 'display') {
         file_put_contents(IA_ROOT . '/addons/sz_yi/version.php', "<?php if(!defined('IN_IA')) {exit('Access Denied');}if(!defined('SZ_YI_VERSION')) {define('SZ_YI_VERSION', '" . $upgrade['version'] . "');}");
         $tmpdir = IA_ROOT . "/addons/sz_yi/tmp";
         @rmdirs($tmpdir);
+        @rmdirs(IA_ROOT . "/addons/sz_yi/data/cache");
         $time = time();
         global $my_scenfiles;
         my_scandir(IA_ROOT . '/addons/sz_yi');

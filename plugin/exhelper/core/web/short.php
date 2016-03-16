@@ -6,7 +6,7 @@ if (!defined("IN_IA")) {
 global $_W, $_GPC;
 
 $shopset  = m("common")->getSysset("shop");
-$sql      = "SELECT * FROM " . tablename("ewei_shop_category") . " WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC";
+$sql      = "SELECT * FROM " . tablename("sz_yi_category") . " WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC";
 $category = pdo_fetchall($sql, array(
     ":uniacid" => $_W["uniacid"]
 ), "id");
@@ -26,7 +26,7 @@ if ($operation == "display") {
     if (!empty($_GPC["shorttitle"])) {
         ca("exhelper.short.save");
         foreach ($_GPC["shorttitle"] as $id => $shorttitle) {
-            pdo_update("ewei_shop_goods", array(
+            pdo_update("sz_yi_goods", array(
                 "shorttitle" => $shorttitle
             ), array(
                 "id" => $id,
@@ -71,10 +71,10 @@ if ($operation == "display") {
     } else if ($_GPC["shortstatus"] == "1") {
         $condition .= " AND `shorttitle` <>''";
     }
-    $sql   = "SELECT COUNT(*) FROM " . tablename("ewei_shop_goods") . $condition;
+    $sql   = "SELECT COUNT(*) FROM " . tablename("sz_yi_goods") . $condition;
     $total = pdo_fetchcolumn($sql, $params);
     if (!empty($total)) {
-        $sql   = "SELECT id,title,thumb,shorttitle FROM " . tablename("ewei_shop_goods") . $condition . " ORDER BY `status` DESC, `displayorder` DESC,
+        $sql   = "SELECT id,title,thumb,shorttitle FROM " . tablename("sz_yi_goods") . $condition . " ORDER BY `status` DESC, `displayorder` DESC,
 						`id` DESC LIMIT " . ($pindex - 1) * $psize . "," . $psize;
         $list  = pdo_fetchall($sql, $params);
         $pager = pagination($total, $pindex, $psize);

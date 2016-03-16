@@ -108,7 +108,6 @@ class Sz_DYi_Order
                         }
                     }
                 }
-                
                 //订单分解
                 if(p('supplier')){
                     $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where  ordersn=:ordersn and uniacid=:uniacid limit 1', array(
@@ -314,5 +313,27 @@ class Sz_DYi_Order
                 }
             }
         }
+    }
+    function getDefaultDispatch(){
+        global $_W;
+        //$dephp_31 = 'select * from ' . tablename('sz_yi_dispatch') . ' where isdefault=1 and uniacid=:uniacid and enabled=1 Limit 1';
+        $dephp_31 = 'select * from ' . tablename('sz_yi_dispatch') . ' where uniacid=:uniacid and enabled=1 Limit 1';
+        $dephp_11 = array(':uniacid' => $_W['uniacid']);
+        $dephp_13 = pdo_fetch($dephp_31, $dephp_11);
+        return $dephp_13;
+    }
+    function getNewDispatch(){
+        global $_W;
+        $dephp_31 = 'select * from ' . tablename('sz_yi_dispatch') . ' where uniacid=:uniacid and enabled=1 order by id desc Limit 1';
+        $dephp_11 = array(':uniacid' => $_W['uniacid']);
+        $dephp_13 = pdo_fetch($dephp_31, $dephp_11);
+        return $dephp_13;
+    }
+    function getOneDispatch($dephp_32){
+        global $_W;
+        $dephp_31 = 'select * from ' . tablename('sz_yi_dispatch') . ' where id=:id and uniacid=:uniacid and enabled=1 Limit 1';
+        $dephp_11 = array(':id' => $dephp_32, ':uniacid' => $_W['uniacid']);
+        $dephp_13 = pdo_fetch($dephp_31, $dephp_11);
+        return $dephp_13;
     }
 }

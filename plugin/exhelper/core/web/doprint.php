@@ -10,7 +10,7 @@ if (empty($type)) {
     header('location: ' . $this->createPluginWebUrl('exhelper/express'));
     die;
 }
-$printset = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_exhelper_sys') . ' WHERE uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
+$printset = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_exhelper_sys') . ' WHERE uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
 if ($op == 'search') {
     if ($type == 1) {
         ca('exhelper.print.single');
@@ -76,14 +76,14 @@ if ($op == 'search') {
     if ($printstate2 != '') {
         $condition .= ' AND o.printstate2=' . $printstate2 . ' ';
     }
-    $sql = 'select o.* ,a.realname,m.nickname, d.dispatchname,m.nickname,r.status as refundstatus from ' . tablename('ewei_shop_order') . ' o' . ' left join ' . tablename('ewei_shop_order_refund') . ' r on r.orderid=o.id and ifnull(r.status,-1)<>-1' . ' left join ' . tablename('ewei_shop_member') . ' m on m.openid=o.openid ' . ' left join ' . tablename('ewei_shop_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('ewei_shop_dispatch') . ' d on d.id = o.dispatchid ' . " where {$condition} ORDER BY o.createtime DESC,o.status DESC  ";
+    $sql = 'select o.* ,a.realname,m.nickname, d.dispatchname,m.nickname,r.status as refundstatus from ' . tablename('sz_yi_order') . ' o' . ' left join ' . tablename('sz_yi_order_refund') . ' r on r.orderid=o.id and ifnull(r.status,-1)<>-1' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid ' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_dispatch') . ' d on d.id = o.dispatchid ' . " where {$condition} ORDER BY o.createtime DESC,o.status DESC  ";
     $orders = pdo_fetchall($sql, $paras);
     if ($type == 1) {
         $list = array();
         foreach ($orders as $order) {
             $order_address = iunserializer($order['address']);
             if (!is_array($order_address)) {
-                $member_address = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_member_address') . ' WHERE id=:id and uniacid=:uniacid limit 1', array(':id' => $order['addressid'], ':uniacid' => $_W['uniacid']));
+                $member_address = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_address') . ' WHERE id=:id and uniacid=:uniacid limit 1', array(':id' => $order['addressid'], ':uniacid' => $_W['uniacid']));
                 $addresskey = $member_address['realname'] . $member_address['mobile'] . $member_address['province'] . $member_address['city'] . $member_address['area'] . $member_address['address'];
             } else {
                 $addresskey = $order_address['realname'] . $order_address['mobile'] . $order_address['province'] . $order_address['city'] . $order_address['area'] . $order_address['address'];
@@ -101,10 +101,10 @@ if ($op == 'search') {
             $totalmoney = number_format($totalmoney, 2);
             $paytype = array('0' => array('css' => 'default', 'name' => '未支付'), '1' => array('css' => 'danger', 'name' => '余额支付'), '11' => array('css' => 'default', 'name' => '后台付款'), '2' => array('css' => 'danger', 'name' => '在线支付'), '21' => array('css' => 'success', 'name' => '微信支付'), '22' => array('css' => 'warning', 'name' => '支付宝支付'), '23' => array('css' => 'warning', 'name' => '银联支付'), '3' => array('css' => 'primary', 'name' => '货到付款'));
             $orderstatus = array('-1' => array('css' => 'default', 'name' => '已关闭'), '0' => array('css' => 'danger', 'name' => '待付款'), '1' => array('css' => 'info', 'name' => '待发货'), '2' => array('css' => 'warning', 'name' => '待收货'), '3' => array('css' => 'success', 'name' => '已完成'));
-            $order_goods = pdo_fetchall('select g.id,g.title,g.shorttitle,g.thumb,g.unit,g.goodssn,og.optionid,og.goodssn as option_goodssn, g.productsn,og.productsn as option_productsn, og.total,og.price,og.optionname as optiontitle, og.realprice,og.printstate,og.id as ordergoodid from ' . tablename('ewei_shop_order_goods') . ' og ' . ' left join ' . tablename('ewei_shop_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
+            $order_goods = pdo_fetchall('select g.id,g.title,g.shorttitle,g.thumb,g.unit,g.goodssn,og.optionid,og.goodssn as option_goodssn, g.productsn,og.productsn as option_productsn, og.total,og.price,og.optionname as optiontitle, og.realprice,og.printstate,og.id as ordergoodid from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
             foreach ($order_goods as $ii => $order_good) {
                 if (!empty($order_good['optionid'])) {
-                    $option = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_goods_option') . ' WHERE id=:id and uniacid=:uniacid limit 1', array(':id' => $order_good['optionid'], ':uniacid' => $_W['uniacid']));
+                    $option = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_goods_option') . ' WHERE id=:id and uniacid=:uniacid limit 1', array(':id' => $order_good['optionid'], ':uniacid' => $_W['uniacid']));
                     $order_goods[$ii]['weight'] = $option['weight'];
                 }
             }
@@ -150,7 +150,7 @@ if ($op == 'search') {
     }
     $paytype = array('0' => array('css' => 'default', 'name' => '未支付'), '1' => array('css' => 'danger', 'name' => '余额支付'), '11' => array('css' => 'default', 'name' => '后台付款'), '2' => array('css' => 'danger', 'name' => '在线支付'), '21' => array('css' => 'success', 'name' => '微信支付'), '22' => array('css' => 'warning', 'name' => '支付宝支付'), '23' => array('css' => 'warning', 'name' => '银联支付'), '3' => array('css' => 'primary', 'name' => '货到付款'));
     $orderstatus = array('-1' => array('css' => 'default', 'name' => '已关闭'), '0' => array('css' => 'danger', 'name' => '待付款'), '1' => array('css' => 'info', 'name' => '待发货'), '2' => array('css' => 'warning', 'name' => '待收货'), '3' => array('css' => 'success', 'name' => '已完成'));
-    $sql = 'select o.* , a.realname,a.mobile,a.province,a.city,a.area,a.address, d.dispatchname,m.nickname,r.status as refundstatus from ' . tablename('ewei_shop_order') . ' o' . ' left join ' . tablename('ewei_shop_order_refund') . ' r on r.orderid=o.id and ifnull(r.status,-1)<>-1' . ' left join ' . tablename('ewei_shop_member') . ' m on m.openid=o.openid ' . ' left join ' . tablename('ewei_shop_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('ewei_shop_dispatch') . ' d on d.id = o.dispatchid ' . ' where o.id in ( ' . implode(',', $arr) . ") and o.uniacid={$_W['uniacid']} ORDER BY o.createtime DESC,o.status DESC  ";
+    $sql = 'select o.* , a.realname,a.mobile,a.province,a.city,a.area,a.address, d.dispatchname,m.nickname,r.status as refundstatus from ' . tablename('sz_yi_order') . ' o' . ' left join ' . tablename('sz_yi_order_refund') . ' r on r.orderid=o.id and ifnull(r.status,-1)<>-1' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid ' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_dispatch') . ' d on d.id = o.dispatchid ' . ' where o.id in ( ' . implode(',', $arr) . ") and o.uniacid={$_W['uniacid']} ORDER BY o.createtime DESC,o.status DESC  ";
     $list = pdo_fetchall($sql, $paras);
     foreach ($list as &$value) {
         $s = $value['status'];
@@ -190,10 +190,10 @@ if ($op == 'search') {
             $value['address'] = $address['address'];
         }
         $value['address'] = array('realname' => $value['realname'], 'nickname' => $value['nickname'], 'mobile' => $value['mobile'], 'province' => $value['province'], 'city' => $value['city'], 'area' => $value['area'], 'address' => $value['address']);
-        $order_goods = pdo_fetchall('select g.id,g.title,g.shorttitle,g.thumb,g.goodssn,og.optionid,g.unit,og.goodssn as option_goodssn, g.productsn,og.productsn as option_productsn, og.total,og.price,og.optionname as optiontitle, og.realprice,og.id as ordergoodid,og.printstate,og.printstate2 from ' . tablename('ewei_shop_order_goods') . ' og ' . ' left join ' . tablename('ewei_shop_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $value['id']));
+        $order_goods = pdo_fetchall('select g.id,g.title,g.shorttitle,g.thumb,g.goodssn,og.optionid,g.unit,og.goodssn as option_goodssn, g.productsn,og.productsn as option_productsn, og.total,og.price,og.optionname as optiontitle, og.realprice,og.id as ordergoodid,og.printstate,og.printstate2 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $value['id']));
         foreach ($order_goods as $i => $order_good) {
             if (!empty($order_good['optionid'])) {
-                $option = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_goods_option') . ' WHERE id=:id and uniacid=:uniacid limit 1', array(':id' => $order_good['optionid'], ':uniacid' => $_W['uniacid']));
+                $option = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_goods_option') . ' WHERE id=:id and uniacid=:uniacid limit 1', array(':id' => $order_good['optionid'], ':uniacid' => $_W['uniacid']));
                 $order_goods[$i]['weight'] = $option['weight'];
             }
         }
@@ -222,8 +222,8 @@ if ($op == 'search') {
         $value['goods_str'] = $goods;
     }
     unset($value);
-    $total = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('ewei_shop_order') . ' o ' . ' left join ' . tablename('ewei_shop_order_refund') . ' r on r.orderid=o.id and ifnull(r.status,-1)<>-1' . ' left join ' . tablename('ewei_shop_member') . ' m on m.openid=o.openid  ' . ' left join ' . tablename('ewei_shop_member_address') . ' a on o.addressid = a.id ' . ' WHERE o.id in ( ' . implode(',', $arr) . ") and o.uniacid={$_W['uniacid']}", $paras);
-    $totalmoney = pdo_fetchcolumn('SELECT sum(o.price) FROM ' . tablename('ewei_shop_order') . ' o ' . ' left join ' . tablename('ewei_shop_order_refund') . ' r on r.orderid=o.id and ifnull(r.status,-1)<>-1' . ' left join ' . tablename('ewei_shop_member') . ' m on m.openid=o.openid  ' . ' left join ' . tablename('ewei_shop_member_address') . ' a on o.addressid = a.id ' . ' WHERE o.id in ( ' . implode(',', $arr) . ") and o.uniacid={$_W['uniacid']}", $paras);
+    $total = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_order_refund') . ' r on r.orderid=o.id and ifnull(r.status,-1)<>-1' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  ' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' WHERE o.id in ( ' . implode(',', $arr) . ") and o.uniacid={$_W['uniacid']}", $paras);
+    $totalmoney = pdo_fetchcolumn('SELECT sum(o.price) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_order_refund') . ' r on r.orderid=o.id and ifnull(r.status,-1)<>-1' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  ' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' WHERE o.id in ( ' . implode(',', $arr) . ") and o.uniacid={$_W['uniacid']}", $paras);
     $address = false;
     if (!empty($list)) {
         $address = $list[0]['address'];
@@ -252,7 +252,7 @@ if ($op == 'search') {
         $gid = intval($_GPC['goodid']);
         $shorttitle = empty($_GPC['shorttitle']) ? '' : $_GPC['shorttitle'];
         if (!empty($gid)) {
-            $do = pdo_update('ewei_shop_goods', array('shorttitle' => $shorttitle), array('id' => $gid));
+            $do = pdo_update('sz_yi_goods', array('shorttitle' => $shorttitle), array('id' => $gid));
             $result = array('result' => 'success');
         } else {
             $result = array('result' => 'error', 'resp' => '提交参数错误！请刷新重试');
@@ -271,13 +271,13 @@ if ($op == 'search') {
         foreach ($arr as $i => $data) {
             $orderid = $data['orderid'];
             $ordergoodid = $data['ordergoodid'];
-            $ordergood = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_order_goods') . ' WHERE id=:id and uniacid=:uniacid limit 1', array('id' => $ordergoodid, ':uniacid' => $_W['uniacid']));
+            $ordergood = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_order_goods') . ' WHERE id=:id and uniacid=:uniacid limit 1', array('id' => $ordergoodid, ':uniacid' => $_W['uniacid']));
             if ($pt == 'print1') {
-                pdo_update('ewei_shop_order_goods', array('printstate' => $ordergood['printstate'] + 1), array('id' => $ordergood['id']));
-                $orderprint = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('ewei_shop_order_goods') . ' WHERE orderid=:orderid and printstate=0 and uniacid= :uniacid ', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
+                pdo_update('sz_yi_order_goods', array('printstate' => $ordergood['printstate'] + 1), array('id' => $ordergood['id']));
+                $orderprint = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_order_goods') . ' WHERE orderid=:orderid and printstate=0 and uniacid= :uniacid ', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
             } elseif ($pt == 'print2') {
-                pdo_update('ewei_shop_order_goods', array('printstate2' => $ordergood['printstate2'] + 1), array('id' => $ordergood['id']));
-                $orderprint = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('ewei_shop_order_goods') . ' WHERE orderid=:orderid and printstate2=0 and uniacid= :uniacid ', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
+                pdo_update('sz_yi_order_goods', array('printstate2' => $ordergood['printstate2'] + 1), array('id' => $ordergood['id']));
+                $orderprint = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_order_goods') . ' WHERE orderid=:orderid and printstate2=0 and uniacid= :uniacid ', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
             }
             if ($orderprint == 0) {
                 $printstatenum = 2;
@@ -285,9 +285,9 @@ if ($op == 'search') {
                 $printstatenum = 1;
             }
             if ($pt == 'print1') {
-                pdo_update('ewei_shop_order', array('printstate' => $printstatenum), array('id' => $orderid));
+                pdo_update('sz_yi_order', array('printstate' => $printstatenum), array('id' => $orderid));
             } elseif ($pt == 'print2') {
-                pdo_update('ewei_shop_order', array('printstate2' => $printstatenum), array('id' => $orderid));
+                pdo_update('sz_yi_order', array('printstate2' => $printstatenum), array('id' => $orderid));
             }
         }
         die(json_encode(array('result' => 'success', 'orderprintstate' => $printstatenum)));
@@ -298,8 +298,8 @@ if ($op == 'search') {
         if (empty($type)) {
             die(json_encode(array('result' => 'error', 'resp' => '加载模版错误! 请刷新重试。')));
         }
-        $expSendTemp = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_exhelper_senduser') . ' WHERE isdefault=1 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
-        $expTemp = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_exhelper_express') . ' WHERE type=:type and isdefault=1 and uniacid=:uniacid limit 1', array(':type' => $type, ':uniacid' => $_W['uniacid']));
+        $expSendTemp = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_exhelper_senduser') . ' WHERE isdefault=1 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
+        $expTemp = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_exhelper_express') . ' WHERE type=:type and isdefault=1 and uniacid=:uniacid limit 1', array(':type' => $type, ':uniacid' => $_W['uniacid']));
         $shop_set = m('common')->getSysset('shop');
         $expDatas = json_decode($expTemp['datas'], true);
         $expTemp['shopname'] = $shop_set['name'];
@@ -319,10 +319,10 @@ if ($op == 'search') {
         $type = $_GPC['type'];
         $arr = array();
         foreach ($ordersns as $ordersn) {
-            $orderinfo = pdo_fetch('SELECT id,status,expresssn,expresscom FROM ' . tablename('ewei_shop_order') . ' WHERE ordersn=:ordersn and status>-1 and uniacid=:uniacid limit 1', array('ordersn' => $ordersn, ':uniacid' => $_W['uniacid']));
+            $orderinfo = pdo_fetch('SELECT id,status,expresssn,expresscom FROM ' . tablename('sz_yi_order') . ' WHERE ordersn=:ordersn and status>-1 and uniacid=:uniacid limit 1', array('ordersn' => $ordersn, ':uniacid' => $_W['uniacid']));
             $arr[] = array('ordersn' => $ordersn, 'status' => $orderinfo['status'], 'expresssn' => $orderinfo['expresssn'], 'expresscom' => $orderinfo['expresscom']);
         }
-        $printTemp = pdo_fetch('SELECT id,type,expressname,express,expresscom FROM ' . tablename('ewei_shop_exhelper_express') . ' WHERE type=:type and isdefault=1 and uniacid=:uniacid limit 1', array(':type' => 1, ':uniacid' => $_W['uniacid']));
+        $printTemp = pdo_fetch('SELECT id,type,expressname,express,expresscom FROM ' . tablename('sz_yi_exhelper_express') . ' WHERE type=:type and isdefault=1 and uniacid=:uniacid limit 1', array(':type' => 1, ':uniacid' => $_W['uniacid']));
         die(json_encode(array('printTemp' => $printTemp, 'datas' => $arr)));
     }
 } elseif ($op == 'dosend') {
@@ -332,17 +332,17 @@ if ($op == 'search') {
         $express = $_GPC['express'];
         $expresssn = $_GPC['expresssn'];
         $expresscom = $_GPC['expresscom'];
-        $orderinfo = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_order') . ' WHERE ordersn=:ordersn and status>-1 and uniacid=:uniacid limit 1', array('ordersn' => $ordersn, ':uniacid' => $_W['uniacid']));
+        $orderinfo = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_order') . ' WHERE ordersn=:ordersn and status>-1 and uniacid=:uniacid limit 1', array('ordersn' => $ordersn, ':uniacid' => $_W['uniacid']));
         if (empty($orderinfo)) {
             die(json_encode(array('result' => 'error', 'resp' => '订单不存在')));
         }
         if ($orderinfo['status'] == 1) {
-            pdo_update('ewei_shop_order', array('express' => trim($express), 'expresssn' => trim($expresssn), 'expresscom' => trim($expresscom), 'sendtime' => time(), 'status' => 2), array('ordersn' => $ordersn));
+            pdo_update('sz_yi_order', array('express' => trim($express), 'expresssn' => trim($expresssn), 'expresscom' => trim($expresscom), 'sendtime' => time(), 'status' => 2), array('ordersn' => $ordersn));
             if (!empty($orderinfo['refundid'])) {
-                $refund = pdo_fetch('select * from ' . tablename('ewei_shop_order_refund') . ' where id=:id limit 1', array(':id' => $orderinfo['refundid']));
+                $refund = pdo_fetch('select * from ' . tablename('sz_yi_order_refund') . ' where id=:id limit 1', array(':id' => $orderinfo['refundid']));
                 if (!empty($refund)) {
-                    pdo_update('ewei_shop_order_refund', array('status' => -1), array('id' => $orderinfo['refundid']));
-                    pdo_update('ewei_shop_order', array('refundid' => 0), array('id' => $orderinfo['id']));
+                    pdo_update('sz_yi_order_refund', array('status' => -1), array('id' => $orderinfo['refundid']));
+                    pdo_update('sz_yi_order', array('refundid' => 0), array('id' => $orderinfo['id']));
                 }
             }
             m('notice')->sendOrderMessage($orderinfo['id']);
@@ -381,7 +381,7 @@ if ($op == 'search') {
             die(json_encode(array('result' => 'error', 'resp' => '订单数据为空')));
         }
         foreach ($ordersns as $ordersn) {
-            pdo_update('ewei_shop_order', array('address_send' => $address_send), array('ordersn' => $ordersn));
+            pdo_update('sz_yi_order', array('address_send' => $address_send), array('ordersn' => $ordersn));
         }
         die;
     }

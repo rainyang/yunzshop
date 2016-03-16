@@ -1,15 +1,4 @@
 <?php
-/*=============================================================================
-#     FileName: list.php
-#         Desc:  
-#       Author: Yunzhong - http://www.yunzshop.com
-#        Email: 913768135@qq.com
-#     HomePage: http://www.yunzshop.com
-#      Version: 0.0.1
-#   LastChange: 2016-02-05 02:24:52
-#      History:
-=============================================================================*/
-
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -61,6 +50,9 @@ if ($op == 'display') {
         } else {
             $condition .= ' and f.follow=' . intval($_GPC['followed']);
         }
+    }
+    if ($_GPC['isblack'] != '') {
+        $condition .= ' and dm.isblack=' . intval($_GPC['isblack']);
     }
     $sql = "select dm.*,l.levelname,g.groupname,a.nickname as agentnickname,a.avatar as agentavatar from " . tablename('sz_yi_member') . " dm " . " left join " . tablename('sz_yi_member_group') . " g on dm.groupid=g.id" . " left join " . tablename('sz_yi_member') . " a on a.id=dm.agentid" . " left join " . tablename('sz_yi_member_level') . " l on dm.level =l.id" . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid  and f.uniacid={$_W['uniacid']}" . " where 1 {$condition}  ORDER BY dm.id DESC";
     if (empty($_GPC['export'])) {
@@ -176,7 +168,7 @@ if ($op == 'display') {
         $member = m('member')->getMember($id);
         plog('member.member.edit', "修改会员资料  ID: {$member['id']} <br/> 会员信息:  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
         if ($hascommission) {
-            if (cv('commission.agent.edit|commission.agent.check')) {
+            if (cv('commission.agent.changeagent')) {
                 $adata = is_array($_GPC['adata']) ? $_GPC['adata'] : array();
                 if (!empty($adata)) {
                     if (empty($_GPC['oldstatus']) && $adata['status'] == 1) {
@@ -193,11 +185,11 @@ if ($op == 'display') {
                         'id' => $id,
                         'uniacid' => $_W['uniacid']
                     ));
-					if (empty($_GPC['oldstatus']) && $adata['status'] == 1) {
-						if (!empty($member['agentid'])) {
-							$plugin_com->upgradeLevelByAgent($member['agentid']);
-						}
-					}
+                    if (empty($_GPC['oldstatus']) && $adata['status'] == 1) {
+                        if (!empty($member['agentid'])) {
+                            $plugin_com->upgradeLevelByAgent($member['agentid']);
+                        }
+                    }
                 }
             }
         }
@@ -224,6 +216,14 @@ if ($op == 'display') {
     if (!empty($member['agentid'])) {
         $parentagent = m('member')->getMember($member['agentid']);
     }
+    $diyform_flag   = 0;
+    $diyform_plugin = p('diyform');
+    if ($diyform_plugin) {
+        if (!empty($member['diymemberdata'])) {
+            $diyform_flag = 1;
+            $fields       = iunserializer($member['diymemberfields']);
+        }
+    }
 } else if ($op == 'delete') {
     ca('member.member.delete');
     $id      = intval($_GPC['id']);
@@ -241,7 +241,7 @@ if ($op == 'display') {
             ':agentid' => $id
         ));
         if ($agentcount > 0) {
-            message('此会员有下线存在，无法删除!', '', 'error');
+            message('此会员有下线存在，无法删除! ', '', 'error');
         }
     }
     pdo_delete('sz_yi_member', array(
@@ -249,6 +249,35 @@ if ($op == 'display') {
     ));
     plog('member.member.delete', "删除会员  ID: {$member['id']} <br/>会员信息: {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
     message('删除成功！', $this->createWebUrl('member/list'), 'success');
+} else if ($operation == 'setblack') {
+    ca('member.member.setblack');
+    $id     = intval($_GPC['id']);
+    $member = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid=:uniacid and id=:id limit 1 ", array(
+        ':uniacid' => $_W['uniacid'],
+        ':id' => $id
+    ));
+    if (empty($member)) {
+        message('会员不存在，无法设置黑名单!', $this->createWebUrl('member/list'), 'error');
+    }
+    $black = intval($_GPC['black']);
+    if (!empty($black)) {
+        pdo_update('sz_yi_member', array(
+            'isblack' => 1
+        ), array(
+            'id' => $_GPC['id']
+        ));
+        plog('member.member.black', "设置黑名单 <br/>用户信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+        message('设置黑名单成功！', $this->createWebUrl('member/list'), 'success');
+    } else {
+        pdo_update('sz_yi_member', array(
+            'isblack' => 0
+        ), array(
+            'id' => $_GPC['id']
+        ));
+        plog('member.member.black', "取消黑名单 <br/>用户信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+        message('取消黑名单成功！', $this->createWebUrl('member/list'), 'success');
+    }
 }
 load()->func('tpl');
 include $this->template('web/member/list');
+

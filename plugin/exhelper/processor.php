@@ -3,7 +3,7 @@
 if (!defined("IN_IA")) {
     print("Access Denied");
 }
-require IA_ROOT . "/addons/ewei_shop/defines.php";
+require IA_ROOT . "/addons/sz_yi/defines.php";
 require EWEI_SHOP_INC . "plugin/plugin_processor.php";
 class ExhelperProcessor extends PluginProcessor
 {
@@ -20,7 +20,7 @@ class ExhelperProcessor extends PluginProcessor
         $zym_var_12 = strtolower($zym_var_10["msgtype"]);
         $zym_var_14 = strtolower($zym_var_10["event"]);
         if ($zym_var_12 == "text" || $zym_var_14 == "click") {
-            $zym_var_8 = pdo_fetch("select * from " . tablename("ewei_shop_saler") . " where openid=:openid and uniacid=:uniacid limit 1", array(
+            $zym_var_8 = pdo_fetch("select * from " . tablename("sz_yi_saler") . " where openid=:openid and uniacid=:uniacid limit 1", array(
                 ":uniacid" => $_W["uniacid"],
                 ":openid" => $zym_var_9
             ));
@@ -31,7 +31,7 @@ class ExhelperProcessor extends PluginProcessor
                 $zym_var_13->beginContext();
                 return $zym_var_13->respText("请输入兑换码:");
             } else if ($zym_var_13->inContext && is_numeric($zym_var_11)) {
-                $zym_var_7 = pdo_fetch("select * from " . tablename("ewei_shop_creditshop_log") . " where eno=:eno and uniacid=:uniacid  limit 1", array(
+                $zym_var_7 = pdo_fetch("select * from " . tablename("sz_yi_creditshop_log") . " where eno=:eno and uniacid=:uniacid  limit 1", array(
                     ":eno" => $zym_var_11,
                     ":uniacid" => $_W["uniacid"]
                 ));
@@ -77,7 +77,7 @@ class ExhelperProcessor extends PluginProcessor
                     }
                 }
                 $zym_var_5 = time();
-                pdo_update("ewei_shop_creditshop_log", array(
+                pdo_update("sz_yi_creditshop_log", array(
                     "status" => 3,
                     "usetime" => $zym_var_5,
                     "verifyopenid" => $zym_var_9
