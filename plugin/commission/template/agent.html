@@ -8,7 +8,7 @@
         <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
             <input type="hidden" name="c" value="site" />
             <input type="hidden" name="a" value="entry" />
-            <input type="hidden" name="m" value="ewei_shop" />
+            <input type="hidden" name="m" value="sz_yi" />
             <input type="hidden" name="do" value="plugin" />
             <input type="hidden" name="p" value="commission" />
             <input type="hidden" name="method" value="agent" />
@@ -222,7 +222,7 @@
 <input type="hidden" name="op" value="detail">
 <input type="hidden" name="c" value="site" />
 <input type="hidden" name="a" value="entry" />
-<input type="hidden" name="m" value="ewei_shop" />
+<input type="hidden" name="m" value="sz_yi" />
 <input type="hidden" name="p" value="commission" />
 <input type="hidden" name="method" value="agent" />
 <input type="hidden" name="op" value="detail" />
@@ -295,7 +295,7 @@
                 {if empty($member['agentlevel'])}
                 {php echo empty($this->set['levelname'])?'普通等级':$this->set['levelname']}
                 {else}
-                {php echo pdo_fetchcolumn('select levelname from '.tablename('ewei_shop_commission_level').' where id=:id limit 1',array(':id'=>$member['agentlevel']))}
+                {php echo pdo_fetchcolumn('select levelname from '.tablename('sz_yi_commission_level').' where id=:id limit 1',array(':id'=>$member['agentlevel']))}
                 {/if}
                 {/if}
             </div>

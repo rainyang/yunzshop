@@ -67,7 +67,7 @@ if ($_W["isajax"]) {
                 "weixin" => $_GPC["weixin"],
                 "agenttime" => $become_check == 1 ? time() : 0
             );
-            pdo_update("ewei_shop_member", $data, array(
+            pdo_update("sz_yi_member", $data, array(
                 "id" => $member["id"]
             ));
             if ($become_check == 1) {
@@ -85,7 +85,7 @@ if ($_W["isajax"]) {
             }
         }
     } else if ($set["become"] == "2") {
-        $ordercount = pdo_fetchcolumn("select count(*) from " . tablename("ewei_shop_order") . " where uniacid=:uniacid and openid=:openid and status>={$status} limit 1", array(
+        $ordercount = pdo_fetchcolumn("select count(*) from " . tablename("sz_yi_order") . " where uniacid=:uniacid and openid=:openid and status>={$status} limit 1", array(
             ":uniacid" => $_W["uniacid"],
             ":openid" => $openid
         ));
@@ -95,7 +95,7 @@ if ($_W["isajax"]) {
             $ret["ordercount"] = number_format($set["become_ordercount"], 0);
         }
     } else if ($set["become"] == "3") {
-        $moneycount = pdo_fetchcolumn("select sum(goodsprice) from " . tablename("ewei_shop_order") . " where uniacid=:uniacid and openid=:openid and status>={$status} limit 1", array(
+        $moneycount = pdo_fetchcolumn("select sum(goodsprice) from " . tablename("sz_yi_order") . " where uniacid=:uniacid and openid=:openid and status>={$status} limit 1", array(
             ":uniacid" => $_W["uniacid"],
             ":openid" => $openid
         ));
@@ -105,11 +105,11 @@ if ($_W["isajax"]) {
             $ret["moneycount"] = number_format($set["become_moneycount"], 2);
         }
     } else if ($set["become"] == 4) {
-        $goods      = pdo_fetch("select id,title from" . tablename("ewei_shop_goods") . " where id=:id and uniacid=:uniacid limit 1", array(
+        $goods      = pdo_fetch("select id,title from" . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid limit 1", array(
             ":id" => $set["become_goodsid"],
             ":uniacid" => $_W["uniacid"]
         ));
-        $goodscount = pdo_fetchcolumn("select count(*) from " . tablename("ewei_shop_order_goods") . " og " . "  left join " . tablename("ewei_shop_order") . " o on o.id = og.orderid" . " where og.goodsid=:goodsid and o.openid=:openid and o.status>=1  limit 1", array(
+        $goodscount = pdo_fetchcolumn("select count(*) from " . tablename("sz_yi_order_goods") . " og " . "  left join " . tablename("sz_yi_order") . " o on o.id = og.orderid" . " where og.goodsid=:goodsid and o.openid=:openid and o.status>=1  limit 1", array(
             ":goodsid" => $set["become_goodsid"],
             ":openid" => $openid
         ));
@@ -129,7 +129,7 @@ if ($_W["isajax"]) {
             );
             $member["status"] = 1;
             $ret["member"]    = $member;
-            pdo_update("ewei_shop_member", $data, array(
+            pdo_update("sz_yi_member", $data, array(
                 "id" => $member["id"]
             ));
             $this->model->sendMessage($member["openid"], array(
@@ -160,7 +160,7 @@ if ($_W["isajax"]) {
                 $m_data["agentid"]             = $mid;
                 $m_data["status"]              = $become_check;
                 $m_data["agenttime"]           = $become_check == 1 ? time() : 0;
-                pdo_update("ewei_shop_member", $m_data, array(
+                pdo_update("sz_yi_member", $m_data, array(
                     "id" => $member["id"]
                 ));
                 if ($become_check == 1) {
@@ -181,11 +181,11 @@ if ($_W["isajax"]) {
                     "agentid" => $mid,
                     "status" => $become_check,
                     "realname" => $_GPC["realname"],
-                    "mobile" => $_GPC["mobile"],
+                    //"mobile" => $_GPC["mobile"],
                     "weixin" => $_GPC["weixin"],
                     "agenttime" => $become_check == 1 ? time() : 0
                 );
-                pdo_update("ewei_shop_member", $data, array(
+                pdo_update("sz_yi_member", $data, array(
                     "id" => $member["id"]
                 ));
                 if ($become_check == 1) {

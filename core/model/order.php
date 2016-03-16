@@ -108,7 +108,6 @@ class Sz_DYi_Order
                         }
                     }
                 }
-
                 //订单分解
                 if(p('supplier')){
                     $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where  ordersn=:ordersn and uniacid=:uniacid limit 1', array(
@@ -148,7 +147,9 @@ class Sz_DYi_Order
                                 $goodsprice += $resu['price'];
                                 $supplier_uid = $resu['supplier_uid'];
                             }
-                            $order['price'] = $price;
+                            //$order['price'] = $price;
+                            //这里应该用真实价格，避免改价的情况价格不对
+                            $order['price'] = $realprice;
                             $order['oldprice'] = $oldprice;
                             $order['goodsprice'] = $goodsprice;
                             $order['supplier_uid'] = $supplier_uid;
@@ -335,5 +336,4 @@ class Sz_DYi_Order
         $dephp_13 = pdo_fetch($dephp_31, $dephp_11);
         return $dephp_13;
     }
-
 }

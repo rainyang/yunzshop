@@ -13,7 +13,7 @@ if ($op == 'list') {
         } elseif ($cate == 2) {
             ca('exhelper.exptemp2');
         }
-        $list = pdo_fetchall('SELECT * FROM ' . tablename('ewei_shop_exhelper_express') . ' WHERE type=:type and uniacid=:uniacid ORDER BY isdefault desc , id DESC', array(':type' => $cate, ':uniacid' => $_W['uniacid']));
+        $list = pdo_fetchall('SELECT * FROM ' . tablename('sz_yi_exhelper_express') . ' WHERE type=:type and uniacid=:uniacid ORDER BY isdefault desc , id DESC', array(':type' => $cate, ':uniacid' => $_W['uniacid']));
     }
 } elseif ($op == 'delete') {
     $id = intval($_GPC['id']);
@@ -23,11 +23,11 @@ if ($op == 'list') {
     } elseif ($type == 2) {
         ca('exhelper.exptemp2.delete');
     }
-    $item = pdo_fetch('SELECT id,type FROM ' . tablename('ewei_shop_exhelper_express') . ' WHERE id=:id AND uniacid=:uniacid', array(':id' => $id, ':uniacid' => $_W['uniacid']));
+    $item = pdo_fetch('SELECT id,type FROM ' . tablename('sz_yi_exhelper_express') . ' WHERE id=:id AND uniacid=:uniacid', array(':id' => $id, ':uniacid' => $_W['uniacid']));
     if (empty($item)) {
         message('抱歉，模不存在或是已经被删除！', $this->createPluginWebUrl('exhelper/express', array('op' => 'list' . $type)), 'error');
     }
-    pdo_delete('ewei_shop_exhelper_express', array('id' => $id));
+    pdo_delete('sz_yi_exhelper_express', array('id' => $id));
     plog('exhelper.express.delete', "删除快递单 ID: {$id} 发件人: {$item['sendername']} ");
     message('模删除成功！', $this->createPluginWebUrl('exhelper/express', array('op' => 'list', 'cate' => $type)), 'success');
 } elseif ($op == 'setdefault') {
@@ -38,12 +38,12 @@ if ($op == 'list') {
     } elseif ($type == 2) {
         ca('exhelper.exptemp2.setdefault');
     }
-    $item = pdo_fetch('SELECT id,expressname,type FROM ' . tablename('ewei_shop_exhelper_express') . ' WHERE id=:id AND uniacid=:uniacid', array(':id' => $id, ':uniacid' => $_W['uniacid']));
+    $item = pdo_fetch('SELECT id,expressname,type FROM ' . tablename('sz_yi_exhelper_express') . ' WHERE id=:id AND uniacid=:uniacid', array(':id' => $id, ':uniacid' => $_W['uniacid']));
     if (empty($item)) {
         message('抱歉，快递单不存在或是已经被删除！', $this->createPluginWebUrl('exhelper/express', array('op' => 'list' . $type)), 'error');
     }
-    pdo_update('ewei_shop_exhelper_express', array('isdefault' => 0), array('type' => $type, 'uniacid' => $_W['uniacid']));
-    pdo_update('ewei_shop_exhelper_express', array('isdefault' => 1), array('id' => $id));
+    pdo_update('sz_yi_exhelper_express', array('isdefault' => 0), array('type' => $type, 'uniacid' => $_W['uniacid']));
+    pdo_update('sz_yi_exhelper_express', array('isdefault' => 1), array('id' => $id));
     plog('exhelper.express.delete', "设置快递单默认信息 ID: {$id} 快递单: {$item['expressname']} ");
     message('设置成功！', $this->createPluginWebUrl('exhelper/express', array('op' => 'list', 'cate' => $type)), 'success');
 } elseif ($op == 'post') {
@@ -52,7 +52,7 @@ if ($op == 'list') {
     if (empty($cate)) {
         die;
     }
-    $printset = pdo_fetch('SELECT * FROM ' . tablename('ewei_shop_exhelper_sys') . ' WHERE uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
+    $printset = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_exhelper_sys') . ' WHERE uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
     if (empty($id)) {
         if ($cate == 1) {
             ca('exhelper.exptemp1.add');
@@ -73,7 +73,7 @@ if ($op == 'list') {
             $data['expresscom'] = $_GPC['expresscom'];
         }
         if (!empty($id)) {
-            pdo_update('ewei_shop_exhelper_express', $data, array('id' => $id));
+            pdo_update('sz_yi_exhelper_express', $data, array('id' => $id));
             if ($cate == 1) {
                 plog('exhelper.exptemp1.edit', "修改快递单 ID: {$id}");
             } else {
@@ -81,7 +81,7 @@ if ($op == 'list') {
             }
         } else {
             $data['type'] = $cate;
-            pdo_insert('ewei_shop_exhelper_express', $data);
+            pdo_insert('sz_yi_exhelper_express', $data);
             $id = pdo_insertid();
             if ($cate == 1) {
                 plog('exhelper.exptemp1.add', "添加快递单 ID: {$id}");
@@ -90,12 +90,12 @@ if ($op == 'list') {
             }
         }
         if (!empty($data['isdefault'])) {
-            pdo_update('ewei_shop_exhelper_express', array('isdefault' => 0), array('type' => $cate, 'uniacid' => $_W['uniacid']));
-            pdo_update('ewei_shop_exhelper_express', array('isdefault' => 1), array('type' => $cate, 'id' => $id));
+            pdo_update('sz_yi_exhelper_express', array('isdefault' => 0), array('type' => $cate, 'uniacid' => $_W['uniacid']));
+            pdo_update('sz_yi_exhelper_express', array('isdefault' => 1), array('type' => $cate, 'id' => $id));
         }
         die(json_encode(array('id' => $id)));
     }
-    $item = pdo_fetch('select * from ' . tablename('ewei_shop_exhelper_express') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $id, ':uniacid' => $_W['uniacid']));
+    $item = pdo_fetch('select * from ' . tablename('sz_yi_exhelper_express') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $id, ':uniacid' => $_W['uniacid']));
     if (!empty($item)) {
         $datas = json_decode($item['datas'], true);
     }

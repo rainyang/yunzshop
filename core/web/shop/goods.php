@@ -3,13 +3,22 @@ if (!defined("IN_IA")) {
     print ("Access Denied");
 }
 global $_W, $_GPC;
-
-$shopset  = m('common')->getSysset('shop');
-$sql      = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
-$category = pdo_fetchall($sql, array(
-    ':uniacid' => $_W['uniacid']
-), 'id');
-$parent   = $children = array();
+//  START 判断是否当前用户是否供应商
+$roleid = pdo_fetchcolumn('select roleid from' . tablename('sz_yi_perm_user') . ' where uid='.$_W['uid'].' and uniacid=' . $_W['uniacid']);
+if($roleid == 0){
+	$perm_role = 0;
+}else{
+	if(p('supplier')){
+		$perm_role = pdo_fetchcolumn('select status1 from' . tablename('sz_yi_perm_role') . ' where id=' . $roleid);
+	}else{
+		$perm_role = 0;
+	}
+}
+//  END
+$shopset = m('common')->getSysset('shop');
+$sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
+$category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
+$parent = $children = array();
 if (!empty($category)) {
     foreach ($category as $cid => $cate) {
         if (!empty($cate['parentid'])) {
@@ -58,6 +67,13 @@ if ($operation == "change") {
     } else {
         ca('shop.goods.add');
     }
+    $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid']);
+	$id = intval($_GPC['id']);
+	if (!empty($id)) {
+		ca('shop.goods.edit|shop.goods.view');
+	} else {
+		ca('shop.goods.add');
+	}
     $levels = m('member')->getLevels();
     $groups = m('member')->getGroups();
     if (!empty($id)) {
@@ -357,6 +373,8 @@ if ($operation == "change") {
 
         //判断是否安装供应商插件判断有没有供应商id 
 		if(p('supplier')){
+            //todo,这个有问题吧?其他公众号管理员也可以选择供货商和是否上架的
+            /*
 			if($_W['isfounder'] == 1){
 				$data['supplier_uid'] = $_GPC['supplier_uid'];
 				$data['status'] = $_GPC['status'];
@@ -364,6 +382,9 @@ if ($operation == "change") {
 				$data['supplier_uid'] = $_W['uid'];
 				$data['status'] = 0;
 			}
+             */
+				$data['supplier_uid'] = $_GPC['supplier_uid'];
+				$data['status'] = $_GPC['status'];
 		}else{
 			$data['status'] = $_GPC['status'];
 		}

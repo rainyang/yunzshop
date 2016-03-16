@@ -14,7 +14,6 @@ $orderid = intval($_GPC['orderid']);
 $logid   = intval($_GPC['logid']);
 $shopset = m('common')->getSysset('shop');
 //if ($_W['isajax']) {
-
     if (!empty($orderid)) {
 		
         $order = pdo_fetch("select * from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
@@ -75,12 +74,13 @@ $shopset = m('common')->getSysset('shop');
         $params['user']  = $log['openid'];
         $params['fee']   = $log['money'];
         $params['title'] = $log['title'];
+
         load()->func('communication');
         load()->model('payment');
 
+        $pluginy = p('yunpay');
         if ($pluginy) {
             $yunpayinfo = $pluginy->getYunpay();
-            
             if (isset($yunpayinfo) && $yunpayinfo['switch']) {
                 $yunpay  = $pluginy->yunpay_build($params, $yunpayinfo, 1, $openid);
                 echo $yunpay;
