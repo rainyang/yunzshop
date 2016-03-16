@@ -10,6 +10,14 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+//  START 判断是否当前用户是否供应商
+$roleid = pdo_fetchcolumn('select roleid from' . tablename('sz_yi_perm_user') . ' where uid='.$_W['uid'].' and uniacid=' . $_W['uniacid']);
+if($roleid == 0){
+	$perm_role = 0;
+}else{
+	$perm_role = pdo_fetchcolumn('select status1 from' . tablename('sz_yi_perm_role') . ' where id=' . $roleid);
+}
+//  END
 $shopset = m('common')->getSysset('shop');
 $sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
 $category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
