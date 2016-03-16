@@ -15,7 +15,11 @@ $roleid = pdo_fetchcolumn('select roleid from' . tablename('sz_yi_perm_user') . 
 if($roleid == 0){
 	$perm_role = 0;
 }else{
-	$perm_role = pdo_fetchcolumn('select status1 from' . tablename('sz_yi_perm_role') . ' where id=' . $roleid);
+	if(p('supplier')){
+		$perm_role = pdo_fetchcolumn('select status1 from' . tablename('sz_yi_perm_role') . ' where id=' . $roleid);
+	}else{
+		$perm_role = 0;
+	}
 }
 //  END
 $shopset = m('common')->getSysset('shop');
