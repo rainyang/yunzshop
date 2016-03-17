@@ -230,7 +230,6 @@ if ($operation == "display") {
                     'status' => 1
                 ), array(
                     'uid' => $_W['uid'],
-                    'uniacid' => $_W['uniacid']
                 ));
                 $mygoodsid = pdo_fetchall('select id from ' . tablename('sz_yi_order_goods') . 'where supplier_uid=:supplier_uid',array(
                         ':supplier_uid' => $_W['uid']
