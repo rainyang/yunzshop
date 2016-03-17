@@ -8,7 +8,6 @@
 .goods_info:hover {z-index:1;position:absolute;width:auto;}
 .goods_info:hover img{width:320px; height:320px;}
 </style>
-{php echo $status;}
 {if $status != 9}
 <div class="panel panel-default">
     <div class="panel-body">
@@ -106,11 +105,11 @@
         <table class='table' style='float:left;border:1px solid #ccc;margin-bottom:5px;table-layout: fixed'>
                 <tr class='trhead'>
                     <td colspan='2' style='width:520px;text-align: left'>订单数: {$total}  订单金额: <span style="color:red">{if $totalmoney>0}{$totalmoney}{else}0{/if}</span>元&nbsp;{if $perm_role == 1}结算金额: <span style="color:red">{if $costmoney>0}{$costmoney}</span>元 &nbsp;<a class="btn btn-default" href="{php echo $this->createWebUrl('order/list',array('applytype'=>1))}">提现</a><a class='btn btn-default' onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('order/list',array('applytype'=>2));}">微信提现</a>{else}没有可提现金额{/if}{/if}</td>
-                    <td  style='width:150px;text-align:left;'>单价/数量</td>
-                    <td  >买家</td>
-                    <td >支付方式/配送方式</td>
-                    <td  style='width:200px;'>价格</td>             
-                    <td >状态</td>
+                    <td style='width:150px;text-align:left;'>单价/数量</td>
+                    <td>买家</td>
+                    <td>支付方式/配送方式</td>
+                    <td style='width:200px;'>价格</td>             
+                    <td>状态</td>
                     <td>操作</td>
                 </tr>
             </table>
