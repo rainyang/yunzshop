@@ -5,9 +5,7 @@ $plugin_diyform = p("diyform");
 if ($operation == "display") {
     ca("order.view.status_1|order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status5");
     //判断该帐号的权限
-
     if(p('supplier')){
-
         $roleid = pdo_fetchcolumn('select roleid from' . tablename('sz_yi_perm_user') . ' where uid='.$_W['uid'].' and uniacid=' . $_W['uniacid']);
         if($roleid == 0){
             $perm_role = 0;
@@ -171,7 +169,7 @@ if ($operation == "display") {
 
     //是否为供应商 不等于1的是
     if(p('supplier')){
-        if($_W['isfounder'] == '' && !empty($res)){
+        if($perm_role == 1){
             $sql = "select o.* , a.realname as arealname,a.mobile as amobile,a.province as aprofince ,a.city as acity , a.area as aarea,a.address as aaddress, d.dispatchname,r.goodsid,r.supplier_uid,m.nickname,m.id as mid from " . tablename('sz_yi_order') . " o" . " 
              join 
             ( select ro.id as orderid,g.supplier_uid,g.goodsid,rr.status from " . tablename('sz_yi_order') . " ro left join " . tablename('sz_yi_order_refund') . " rr  on rr.orderid =ro.id left join " . tablename('sz_yi_order_goods') . " g on ro.id = g.orderid where g.supplier_uid=".$_W['uid']." ) r 
@@ -232,7 +230,6 @@ if ($operation == "display") {
                     'status' => 1
                 ), array(
                     'uid' => $_W['uid'],
-                    'uniacid' => $_W['uniacid']
                 ));
                 $mygoodsid = pdo_fetchall('select id from ' . tablename('sz_yi_order_goods') . 'where supplier_uid=:supplier_uid',array(
                         ':supplier_uid' => $_W['uid']
@@ -851,7 +848,7 @@ if ($operation == "display") {
     }
     
     if(p('supplier')){
-        if($_W['isfounder'] == '' && !empty($res)){
+        if($perm_role == 1){
             $totalmoney = pdo_fetchcolumn(' select ifnull(sum(o.price),0) from ' . tablename('sz_yi_order_goods') . ' og left join ' . tablename('sz_yi_order') . ' o on o.id=og.orderid left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid where og.supplier_uid=:supplier_uid and og.uniacid=:uniacid',array(
                     ':supplier_uid' => $_W['uid'],
                     ':uniacid' => $_W['uniacid']
@@ -890,7 +887,7 @@ if ($operation == "display") {
         $totals['status5'] = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id  order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.refundtime<>0", $paras);
     }
     if(p('supplier')){
-        if(!empty($res)){
+        if($perm_role == 1){
             $supplierapply = pdo_fetchall('select u.uid,p.realname,p.mobile,p.banknumber,p.accountname,p.accountbank,a.applysn,a.apply_money,a.apply_time,a.type,a.finish_time,a.status from ' . tablename('sz_yi_supplier_apply') . ' a ' . ' left join' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid ' . 'left join' . tablename('users') . ' u on a.uid=u.uid where u.uid=' . $_W['uid']);
             $totals['status9'] = count($supplierapply);
         }
