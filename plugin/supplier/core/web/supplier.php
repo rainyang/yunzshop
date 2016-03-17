@@ -2,16 +2,17 @@
 global $_W, $_GPC;
 $operation   = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 if ($operation == 'display') {
-	$where = '';
-	$cond = pdo_fetch('select id from ' . tablename('sz_yi_perm_role') . ' where status1=1');
-	if(empty($_GPC['uid'])){
-		$where .= ' where roleid =' . $cond['id'] . ' and uniacid=' . $_W['uniacid'];
-	}else{
-		$where .= ' where roleid =' . $cond['id'] . ' and uid="' . $_GPC['uid'] . '" and uniacid=' . $_W['uniacid'];
-	}
-    $list = pdo_fetchall('select * from ' . tablename('sz_yi_perm_user') . $where);
+    $roleid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_perm_role') . ' where status1=1');
+    $where = '';
+    if(empty($_GPC['uid'])){
+        $where .= ' and uniacid=' . $_W['uniacid'];
+    }else{
+        $where .= ' and uid="' . $_GPC['uid'] . '" and uniacid=' . $_W['uniacid'];
+    }
+    $list = pdo_fetchall('select * from ' . tablename('sz_yi_perm_user') . ' where roleid='. $roleid . " " .$where);
     
     $total = count($list);
+	
 } else if ($operation == 'detail') {
     $uid = intval($_GPC['uid']);
     //todo,uid要加引号或者intval
