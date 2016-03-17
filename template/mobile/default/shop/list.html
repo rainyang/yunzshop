@@ -1,6 +1,7 @@
 {template 'common/header'}
 <title>{if empty($current_category)}全部商品{else}{$current_category['name']}{/if}</title>
 <style type="text/css">
+
     body {margin:0px; width:100%; height:100%; background:#efefef; color:#fff; }
     html {}
     .main {height:100%; width:100%; background:#fff; }
@@ -223,11 +224,11 @@ div.addinfo{height:18px;}
         <p class='category_item' data-istime='1'  data-name='限时秒杀'><i class="fa fa-clock-o"></i> 限时秒杀</p>
         <p class='category_item' data-isdiscount='1'  data-name='促销宝贝'><i class="fa fa-thumbs-up"></i> 促销宝贝</p>
         <%each category as parent%>
-		<a href="http://fx.mokapai.com/app/index.php?i=1&c=entry&do=shop&m=sz_yi&p=list&pcate=<%parent.id%>">
+		<a href="{php echo $this->createMobileUrl('shop/list')}&pcate=<%parent.id%>">
          <p class='category_item' style=" color:#ffff00;"><i class="fa fa-angle-double-right"></i> <%parent.name%></p>
 		 </a>
          <%each parent.children as child%>
-<a href="http://fx.mokapai.com/app/index.php?i=1&c=entry&do=shop&m=sz_yi&p=list&pcate=<%parent.id%>&ccate=<%child.id%>">
+<a href="{php echo $this->createMobileUrl('shop/list')}&pcate=<%parent.id%>&ccate=<%child.id%>">
               <p class='child category_item' style=" color:#fff;"><i class="fa fa-angle-right"></i> <%child.name%></p>
 			  </a>
               {if intval($set['catlevel'])==3}

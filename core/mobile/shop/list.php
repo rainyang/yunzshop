@@ -40,7 +40,7 @@ $parent_category = pdo_fetch('select id,parentid,name,level from ' . tablename('
 ));
 //if ($_W['isajax']) {
     $args = array(
-        'pagesize' => 2,
+        'pagesize' => 20,
         'page' => $_GPC['page'],
         'isnew' => $_GPC['isnew'],
         'ishot' => $_GPC['ishot'],

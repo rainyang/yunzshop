@@ -4,6 +4,18 @@ $operation = !empty($_GPC["op"]) ? $_GPC["op"] : "display";
 $plugin_diyform = p("diyform");
 if ($operation == "display") {
     ca("order.view.status_1|order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status5");
+    //判断该帐号的权限
+
+    if(p('supplier')){
+
+        $roleid = pdo_fetchcolumn('select roleid from' . tablename('sz_yi_perm_user') . ' where uid='.$_W['uid'].' and uniacid=' . $_W['uniacid']);
+        if($roleid == 0){
+            $perm_role = 0;
+        }else{
+            $perm_role = pdo_fetchcolumn('select status1 from' . tablename('sz_yi_perm_role') . ' where id=' . $roleid);
+        }
+    }
+    //END
     $pindex = max(1, intval($_GPC["page"]));
     $psize = 20;
     $status = $_GPC["status"];
