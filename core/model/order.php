@@ -56,7 +56,7 @@ class Sz_DYi_Order
             'status' => $params['result'] == 'success' ? 1 : 0
         );
         $ordersn = $params['tid'];
-        $order   = pdo_fetch('select id,ordersn, price,openid,dispatchtype,addressid,carrier,status,isverify,deductcredit2,virtual,isvirtual,changeprice from ' . tablename('sz_yi_order') . ' where  ordersn=:ordersn and uniacid=:uniacid limit 1', array(
+        $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where  ordersn=:ordersn and uniacid=:uniacid limit 1', array(
             ':uniacid' => $_W['uniacid'],
             ':ordersn' => $ordersn
         ));
@@ -109,33 +109,36 @@ class Sz_DYi_Order
                     }
                 }
                 //订单分解
+                /**订单分解修改，订单会员折扣、积分折扣、余额抵扣、使用优惠劵后订单分解按商品价格与总商品价格比例拆分，使用运费的平分运费。添加平分修改运费以及修改订单金额的字段信息。**/
                 if(p('supplier')){
-                    $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where  ordersn=:ordersn and uniacid=:uniacid limit 1', array(
-                        ':uniacid' => $_W['uniacid'],
-                        ':ordersn' => $ordersn
-                    ));
-
                     $order_info = $order;
-                    $order_id = $order['id'];
                     $resolve_order_goods = pdo_fetchall('select * from ' . tablename('sz_yi_order_goods') . ' where orderid=:orderid and uniacid=:uniacid ',array(
                             ':orderid' => $order['id'],
                             ':uniacid' => $_W['uniacid']
                         ));
-                    
                     $datas = array();
                     $num = false;
+                    //对应供应商商品循环到对应供应商下
                     foreach ($resolve_order_goods as $key => $value) {
                         $datas[$value['supplier_uid']][]['id'] = $value['id'];
                     }
                     unset($order['id']);
                     $dispatchprice = $order['dispatchprice'];
                     $olddispatchprice = $order['olddispatchprice'];
+                    $changedispatchprice = $order['changedispatchprice'];
                     if(!empty($datas)){
                         foreach ($datas as $key => $value) {
                             $price = 0;
                             $realprice = 0;
                             $oldprice = 0;
+                            $changeprice = 0;
                             $goodsprice = 0;
+                            $couponprice = 0;
+                            $discountprice = 0;
+                            //jifen
+                            $deductprice = 0;
+                            //yue
+                            $deductcredit2 = 0;
                             foreach($value as $v){
                                 $resu = pdo_fetch('select price,realprice,oldprice,supplier_uid from ' . tablename('sz_yi_order_goods') . ' where id=:id and uniacid=:uniacid ',array(
                                         ':id' => $v['id'],
@@ -146,21 +149,35 @@ class Sz_DYi_Order
                                 $oldprice += $resu['oldprice'];
                                 $goodsprice += $resu['price'];
                                 $supplier_uid = $resu['supplier_uid'];
+                                $changeprice += $resu['changeprice'];
+                                //计算order_goods表中的价格占订单商品总额的比例
+                                $scale = $resu['price']/$order['goodsprice'];
+                                //按比例计算优惠劵金额
+                                $couponprice += round($scale*$order['couponprice'],2);
+                                //按比例计算会员折扣金额
+                                $discountprice += round($scale*$order['discountprice'],2);
+                                //按比例计算积分金额
+                                $deductprice += round($scale*$order['deductprice'],2);
+                                //按比例计算消费余额金额
+                                $deductcredit2 += round($scale*$order['deductcredit2'],2); 
                             }
-                            //$order['price'] = $price;
-                            //这里应该用真实价格，避免改价的情况价格不对
-                            $order['price'] = $realprice;
+                            
                             $order['oldprice'] = $oldprice;
                             $order['goodsprice'] = $goodsprice;
                             $order['supplier_uid'] = $supplier_uid;
-
-                            if($supplier_uid == 0){
-                                $order['dispatchprice'] = $dispatchprice;
-                                $order['olddispatchprice'] = $olddispatchprice;
-                            }else{
-                                $order['dispatchprice'] = 0;
-                                $order['olddispatchprice'] = 0;
-                            }
+                            $order['couponprice'] = $couponprice;
+                            $order['discountprice'] = $discountprice;
+                            $order['deductprice'] = $deductprice;
+                            $order['deductcredit2'] = $deductcredit2;
+                            $order['changeprice'] = $changeprice;
+                            //平分实际支付运费金额
+                            $order['dispatchprice'] = round($dispatchprice/(count($resu)),2);
+                            //平分老的支付运费金额
+                            $order['olddispatchprice'] = round($olddispatchprice/(count($resu)),2);
+                            //平分修改后支付运费金额
+                            $order['changedispatchprice'] = round($changedispatchprice/(count($resu)),2);
+                            //新订单金额计算，实际支付金额减计算后优惠劵金额、会员折金额、积分金额、余额抵扣金额，在加上实际运费的金额。
+                            $order['price'] = $realprice - $couponprice - $discountprice - $deductprice - $deductcredit2 + $order['dispatchprice'];
                             if($num == false){
                                 pdo_update('sz_yi_order', $order, array(
                                     'id' => $order_id,

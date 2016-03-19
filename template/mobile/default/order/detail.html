@@ -316,14 +316,18 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
         <%if order.deductcredit2>0%>
         <div class="line">余额抵扣:<span>-￥<span class='deductprice2'><%order.deductcredit2%></span></span></div>
         <%/if%>
- <%if order.changeprice!=0%>
+        <%if order.changeprice!=0%>
         <div class="line">改价优惠:<span><%if order.changeprice>0%>+<%/if%>￥<span class='changeprice2'><%order.changeprice%></span></span></div>
         <%/if%>
+        
         <%if order.changedispatchprice!=0%>
         <div class="line">运费改价:<span><%if order.changedispatchprice>0%>+<%/if%>￥<span class='changedispatchprice2'><%order.changedispatchprice%></span></span></div>
         <%/if%>
+
+        <%if order.couponprice!=0%>
+        <div class="line">优惠券优惠:<span><%if order.couponprice>0%>-<%/if%>￥<span class='changedispatchprice2'><%order.couponprice%></span></span></div>
+        <%/if%>
         
-		
         <div class="line">实付费(含运费):<span><span class='dispatchprice' style='color:#ff6600'>￥<%order.price%></span></span></div>
       </div> 
 </div>
