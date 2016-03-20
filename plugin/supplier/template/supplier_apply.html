@@ -48,15 +48,16 @@
         <table class="table table-hover table-responsive">
             <thead class="navbar-inner" >
                 <tr>
-                    <th style='width:50px;'>供应商ID</th>
-                    <th style='width:200px;'>提现单号</th>
-                    <th style='width:150px;'>开户名</th>
-                    <th style='width:150px;'>电话</th>
-                    <th style='width:150px;'>开户银行</th>
-                    <th style='width:150px;'>银行卡号</th>
-                    <th style='width:150px;'>提现金额</th>
-                    <th>申请时间</th>
-                    <th>状态</th>
+                    <th style='width:5%;'>供应商ID</th>
+                    <th style='width:15%;'>提现单号</th>
+                    <th style='width:5%;'>开户名</th>
+                    <th style='width:10%;'>电话</th>
+                    <th style='width:10%;'>开户银行</th>
+                    <th style='width:15%;'>银行卡号</th>
+                    <th style='width:10%;'>提现金额</th>
+                    <th style='width:10%;'>申请时间</th>
+                    <th style='width:10%;'>打款</th>
+                    <th style='width:10%;'>状态</th>
                 </tr>
             </thead>
             <tbody>
@@ -71,6 +72,7 @@
                             <td>{$row['banknumber']}</td>
                             <td>{$row['apply_money']}</td>
                             <td><?php echo date('Y-m-d H:i:s',$row['apply_time']);?></td>
+                            <td>{php echo $row['type'] == 1 ? "银行卡" : "微信余额"}</td>
                             <td  style="overflow:visible;">
                                 <div class="form-group">
                                     <div class="col-sm-9 col-xs-9">
