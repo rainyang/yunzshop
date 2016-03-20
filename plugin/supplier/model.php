@@ -2,7 +2,7 @@
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
-
+define('TM_SUPPLIER_PAY', 'supplier_pay');
 if (!class_exists('SupplierModel')) {
 
 	class SupplierModel extends PluginModel
@@ -395,6 +395,23 @@ if (!class_exists('SupplierModel')) {
 				}
 			}
 			return $perms;
+		}
+
+		public function sendMessage($openid = '', $data = array(), $_var_151 = '')
+		{
+			$_var_22 = m('member')->getMember($openid);
+			if ($_var_151 == TM_SUPPLIER_PAY) {
+				$_var_155 = '恭喜您，您的提现将通过 [提现方式] 转账提现金额为[金额]已在[时间]转账到您的账号，敬请查看';
+				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', time()), $_var_155);
+				$_var_155 = str_replace('[金额]', $data['money'], $_var_155);
+				$_var_155 = str_replace('[提现方式]', $data['type'], $_var_155);
+				$_var_156 = array('keyword1' => array('value' => '供应商打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
+				/*if (!empty($_var_153)) {
+					m('message')->sendTplNotice($openid, $_var_153, $_var_156);
+				} else {*/
+				m('message')->sendCustomNotice($openid, $_var_156);
+				//}
+			}
 		}
 	}
 }

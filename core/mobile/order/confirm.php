@@ -351,9 +351,9 @@ if ($_W['isajax']) {
                         if (!empty($address)) {
                             $dispatch_price += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $dispatch_data);
                         } else if (!empty($member["city"])) {
-                            $dispatch_price = +m("order")->getCityDispatchPrice($areas, $member["city"], $param, $dispatch_data);
+                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $dispatch_data);
                         } else {
-                            $dispatch_price = +m("order")->getDispatchPrice($param, $dispatch_data);
+                            $dispatch_price += m("order")->getDispatchPrice($param, $dispatch_data);
                         }
                     }
                 }
@@ -1252,7 +1252,7 @@ if ($_W['isajax']) {
             'remark' => $_GPC['remark'],
             'addressid' => empty($dispatchtype) ? $addressid : 0,
             'goodsprice' => $goodsprice,
-            'dispatchprice' => $dispatchprice,
+            'dispatchprice' => $dispatch_price,
             'dispatchtype' => $dispatchtype,
             'dispatchid' => $dispatchid,
             "storeid" => $carrierid,
@@ -1263,7 +1263,7 @@ if ($_W['isajax']) {
             'virtual' => $virtualid,
             'isvirtual' => $isvirtual ? 1 : 0,
             'oldprice' => $totalprice,
-            'olddispatchprice' => $dispatchprice,
+            'olddispatchprice' => $dispatch_price,
             "couponid" => $couponid,
             "couponprice" => $couponprice
         );
@@ -1369,4 +1369,3 @@ if ($_W['isajax']) {
     }
 }
 include $this->template('order/confirm');
-
