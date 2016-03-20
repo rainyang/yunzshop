@@ -182,21 +182,26 @@ if ($operation == "display") {
             if(empty($openid)){
                 message("暂未绑定微信，请联系管理员", '', "error");
             }
-            //手动提现
-            if($_GPC['applytype'] == "1"){
+            //全部提现
+            $applytype = intval($_GPC['applytype']);
+            if(!empty($applytype)){
+                $mygoodsid = pdo_fetchall('select id from ' . tablename('sz_yi_order_goods') . 'where supplier_uid=:supplier_uid and supplier_apply_status = 0',array(
+                        ':supplier_uid' => $_W['uid']
+                    ));
+                if(empty($mygoodsid)){
+                    message("没有可提现的订单金额");
+                }
                 $applysn = m('common')->createNO('commission_apply', 'applyno', 'CA');
                 $data = array(
                     'uid' => $_W['uid'],
                     'apply_money' => $costmoney,
                     'apply_time' => time(),
                     'status' => 0,
-                    'type' => 1,
+                    'type' => $applytype,
                     'applysn' => $applysn
                     );
                 pdo_insert('sz_yi_supplier_apply',$data);
-                $mygoodsid = pdo_fetchall('select id from ' . tablename('sz_yi_order_goods') . 'where supplier_uid=:supplier_uid',array(
-                        ':supplier_uid' => $_W['uid']
-                    ));
+                
                 foreach ($mygoodsid as $ids) {
                     $arr = array(
                         'supplier_apply_status' => 1
@@ -209,7 +214,7 @@ if ($operation == "display") {
                 message("提现申请已提交，请耐心等待!", $this->createWebUrl('order/list'), "success");
             }
             //微信提现
-            if($_GPC['applytype'] == "2"){
+            /*if($_GPC['applytype'] == "2"){
                 $applysn = m('common')->createNO('commission_apply', 'applyno', 'CA');
                 $set     = m('common')->getSysset('shop');
                 $data = array(
@@ -249,7 +254,7 @@ if ($operation == "display") {
                 }
                 m('notice')->sendMemberLogMessage($logid);
                 message('微信钱包提现成功!', referer(), 'success');
-            }
+            }*/
         }else{
             $sql = "select o.* , a.realname as arealname,a.mobile as amobile,a.province as aprofince ,a.city as acity , a.area as aarea,a.address as aaddress, d.dispatchname,m.nickname,m.id as mid from " . tablename('sz_yi_order') . " o" . " left join ( select rr.id,rr.orderid,g.supplier_uid,rr.status from " . tablename('sz_yi_order_refund') . " rr left join " . tablename('sz_yi_order') . " ro on rr.orderid =ro.id left join " . tablename('sz_yi_order_goods') . " g on ro.id = g.orderid order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename('sz_yi_member') . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename('sz_yi_member_address') . " a on a.id=o.addressid " . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . " left join " . tablename('sz_yi_dispatch') . " d on d.id = o.dispatchid " . " where $condition $statuscondition ORDER BY o.createtime DESC,o.status DESC  ";
         }

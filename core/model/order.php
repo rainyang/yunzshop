@@ -109,7 +109,7 @@ class Sz_DYi_Order
                     }
                 }
                 //订单分解
-                /**订单分解修改，订单会员折扣、积分折扣、余额抵扣、使用优惠劵后订单分解按商品价格与总商品价格比例拆分，使用运费的平分运费。添加平分修改运费以及修改订单金额的字段信息。**/
+                /**订单分解修改，订单会员折扣、积分折扣、余额抵扣、使用优惠劵后订单分解按商品价格与总商品价格比例拆分，使用运费的平分运费。添加平分修改运费以及修改订单金额的信息到新的订单表中。**/
                 if(p('supplier')){
                     $order_info = $order;
                     $resolve_order_goods = pdo_fetchall('select * from ' . tablename('sz_yi_order_goods') . ' where orderid=:orderid and uniacid=:uniacid ',array(
@@ -135,9 +135,7 @@ class Sz_DYi_Order
                             $goodsprice = 0;
                             $couponprice = 0;
                             $discountprice = 0;
-                            //jifen
                             $deductprice = 0;
-                            //yue
                             $deductcredit2 = 0;
                             foreach($value as $v){
                                 $resu = pdo_fetch('select price,realprice,oldprice,supplier_uid from ' . tablename('sz_yi_order_goods') . ' where id=:id and uniacid=:uniacid ',array(
