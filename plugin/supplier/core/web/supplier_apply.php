@@ -18,7 +18,7 @@ if ($operation == 'display') {
 	if(!empty($id)){
 		$set     = m('common')->getSysset('shop');
 		$apply = pdo_fetch('select * from ' . tablename('sz_yi_supplier_apply') . ' where id = '.$id);
-		$openid = pdo_fetchcolumn('select openid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid'=> $_W['uniacid']));
+		$openid = pdo_fetchcolumn('select openid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $apply['uid'],':uniacid'=> $_W['uniacid']));
 		if($apply['type'] == 2){
 			$result = m('finance')->pay($openid, 1, $applyp['apply_money'] * 100, $apply['applysn'], $set['name'] . '供应商提现');
 			if (is_error($result)) {
