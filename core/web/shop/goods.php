@@ -374,21 +374,17 @@ if ($operation == "change") {
         //判断是否安装供应商插件判断有没有供应商id 
 		if(p('supplier')){
             //todo,这个有问题吧?其他公众号管理员也可以选择供货商和是否上架的
-            /*
-			if($_W['isfounder'] == 1){
-				$data['supplier_uid'] = $_GPC['supplier_uid'];
-				$data['status'] = $_GPC['status'];
+			if($perm_role == 1){
+                $data['supplier_uid'] = $_W['uid'];
+                $data['status'] = 0;
 			}else{
-				$data['supplier_uid'] = $_W['uid'];
-				$data['status'] = 0;
-			}
-             */
 				$data['supplier_uid'] = $_GPC['supplier_uid'];
-				$data['status'] = $_GPC['status'];
+                $data['status'] = $_GPC['status'];
+			}
 		}else{
 			$data['status'] = $_GPC['status'];
 		}
-
+        
         $cateset = m('common')->getSysset('shop');
         $pcates  = array();
         $ccates  = array();
@@ -759,15 +755,8 @@ m("cache")->set("areas", $areas, "global");
 		$sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition;
 		$total = pdo_fetchcolumn($sqls, $params);
     }
-
-    //$sql   = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition;
-    //$total = pdo_fetchcolumn($sql, $params);
-    if (!empty($total)) {
-        $sql   = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' ORDER BY `status` DESC, `displayorder` DESC,
-						`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
-        $list  = pdo_fetchall($sql, $params);
-        $pager = pagination($total, $pindex, $psize);
-    }
+    $list  = pdo_fetchall($sql, $params);
+    $pager = pagination($total, $pindex, $psize);
 } elseif ($operation == 'delete') {
     ca('shop.goods.delete');
     $id  = intval($_GPC['id']);
