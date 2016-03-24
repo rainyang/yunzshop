@@ -146,7 +146,7 @@ class Sz_DYi_Excel
         }
         $rownum++;
         foreach ($list as $row) {
-            $len = count($row);
+            $len = count($params['columns']);
             for ($i = 0; $i < $len; $i++) {
                 $value = $row[$params['columns'][$i]['field']];
                 $sheet->setCellValue($this->column($i, $rownum), $value);
