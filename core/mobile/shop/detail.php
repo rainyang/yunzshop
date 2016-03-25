@@ -15,6 +15,9 @@ $goods          = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHER
 $shop           = set_medias(m('common')->getSysset('shop'), 'logo');
 $shop['url']    = $this->createMobileUrl('shop');
 $mid            = intval($_GPC['mid']);
+
+$shopset = m('common')->getSysset('shop');
+
 $opencommission = false;
 if (p('commission')) {
     if (empty($member['agentblack'])) {
@@ -263,6 +266,7 @@ if ($_W['isajax']) {
         'followurl' => $followurl,
         'followtip' => $followtip,
         'saleset' => $saleset,
+        'shopset' => $shopset,
         'pics' => $pics,
         'options' => $options,
         'specs' => $specs,
