@@ -158,6 +158,11 @@ if ($operation == 'display' && $_W['isajax']) {
     ))) {
         show_json(0, '未找到支付方式');
     }
+
+    if($member['credit2'] < $order['deductcredit2'] && $order['deductcredit2'] > 0){
+        show_json(0, '余额不足，请充值后在试！');
+    }
+
     $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
         ':uniacid' => $uniacid,
         ':module' => 'sz_yi',
@@ -310,6 +315,9 @@ if ($operation == 'display' && $_W['isajax']) {
         'cash'
     ))) {
         show_json(0, '未找到支付方式');
+    }
+    if($member['credit2'] < $order['deductcredit2'] && $order['deductcredit2'] > 0){
+        show_json(0, '余额不足，请充值后在试！');
     }
     $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
         ':uniacid' => $uniacid,
