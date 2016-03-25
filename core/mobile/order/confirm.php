@@ -742,9 +742,9 @@ if ($_W['isajax']) {
                         if (!empty($address)) {
                             $dispatch_price += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $dispatch_data);
                         } else if (!empty($member["city"])) {
-                            $dispatch_price = +m("order")->getCityDispatchPrice($areas, $member["city"], $param, $dispatch_data);
+                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $dispatch_data);
                         } else {
-                            $dispatch_price = +m("order")->getDispatchPrice($param, $dispatch_data);
+                            $dispatch_price += m("order")->getDispatchPrice($param, $dispatch_data);
                         }
                     }
                 }
@@ -1118,9 +1118,9 @@ if ($_W['isajax']) {
                     if (!empty($address)) {
                         $dispatch_price += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $dispatch_data);
                     } else if (!empty($member["city"])) {
-                        $dispatch_price = +m("order")->getCityDispatchPrice($areas, $member["city"], $param, $dispatch_data);
+                        $dispatch_price += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $dispatch_data);
                     } else {
-                        $dispatch_price = +m("order")->getDispatchPrice($param, $dispatch_data);
+                        $dispatch_price += m("order")->getDispatchPrice($param, $dispatch_data);
                     }
                 }
             }
