@@ -38,7 +38,7 @@ $parent_category = pdo_fetch('select id,parentid,name,level from ' . tablename('
     ':id' => $current_category['parentid'],
     ':uniacid' => $_W['uniacid']
 ));
-//if ($_W['isajax']) {
+if ($_W['isajax']) {
     $args = array(
         'pagesize' => 20,
         'page' => $_GPC['page'],
@@ -178,7 +178,6 @@ $parent_category = pdo_fetch('select id,parentid,name,level from ' . tablename('
         }
         unset($c);
     }
-/*
     show_json(1, array(
         'goods' => $goods,
         'pagesize' => $args['pagesize'],
@@ -186,6 +185,5 @@ $parent_category = pdo_fetch('select id,parentid,name,level from ' . tablename('
         'current_category' => $current_category
     ));
 }
-*/
 include $this->template('shop/list');
 
