@@ -47,13 +47,12 @@ ul,li {padding:0px; margin:0px;}
 .good_info2 .tab_con #con_1 img { width:100%;outline-width:0px;  vertical-align:top; display:block}
 .tab_con p{ margin:0 }
 
-
 .good_bottom {height:50px; width:100%; background:#ff6801; position:fixed; bottom:0px; left:0px;}
 .good_bottom span {font-size:14px; line-height:10px;}
 .good_bottom .buy {height:50px; width:35%; background:#ff6801; float:left; font-size:16px; line-height:50px; text-align:center; color:#fff;}
 .good_bottom .add {height:50px; width:35%; background:#fd9a34; float:left; font-size:16px; line-height:50px; text-align:center; color:#fff;}
 .good_bottom .cart {height:42px; width:15%; background:#fdfdfd; float:left; padding-top:7px; border-top:1px solid #e1e1e1; text-align:center; font-size:20px; color:#666;line-height:10px; position:relative;}
-.good_bottom .cs{height:42px; width:15%; background:#fdfdfd; float:left; padding-top:7px; border-top:1px solid #e1e1e1; text-align:center; font-size:20px; color:#666;line-height:10px; position:relative;}
+.good_bottom .cs{height:42px; width:15%; background:#fdfdfd; float:left; padding-top:7px; border-top:1px solid #e1e1e1; text-align:center; font-size:20px; color:#666;line-height:10px; position:relative;    border-right: 1px solid hsl(0, 0%, 88%);}
 .good_bottom .cart b {height:16px; width:16px; background:#f30; border-radius:8px; position:absolute; top:2px; right:5px; font-size:12px; color:#fff; line-height:16px; font-weight:100;}
 .good_bottom .like {height:42px; width:14%; background:#fdfdfd; float:left; padding-top:7px; border-top:1px solid #e1e1e1; border-right:1px solid #e1e1e1; text-align:center; font-size:20px; color:#666; line-height:10px;}
 
@@ -382,7 +381,13 @@ div.flicking_con a.on{background-position:0 -9px}
         </div>
         <%if shopset.cservice%>
             <div class="cs" ><i class="fa fa-headphones"></i><br><span>客服</span></div>
-            <div class="add" onclick="choose('cart')">加入购物车</div>
+            <%if goods.canaddcart%>
+            <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
+                <%if cartcount>0%><b><%cartcount%></b><%/if%>
+            </div>
+            <%/if%>
+            <div class="add" onclick="choose('cart')" <%if shopset.cservice &&  goods.canaddcart%>style="width:28%"<%/if%>>加入购物车</div>
+            <div class="buy" onclick="choose('buy')" <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%/if%>>立即购买</div>
         <%else%>
              <%if goods.canaddcart%>
             <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
@@ -390,8 +395,8 @@ div.flicking_con a.on{background-position:0 -9px}
             </div>
             <%/if%>
             <div class="add" onclick="choose('cart')">加入购物车</div>
+            <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:50%'<%/if%>>立即购买</div>
         <%/if%>
-        <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:50%'<%/if%>>立即购买</div>
 </div>
     <%/if%>
 </script>
