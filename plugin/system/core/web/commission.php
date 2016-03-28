@@ -16,7 +16,7 @@ if (checksubmit('submit')) {
     if ($mid == $agentid) {
         message('不能选择相同的会员!', '', 'error');
     }
-    $member = pdo_fetch('select * from ' . tablename('ewei_shop_member') . ' where id=:id and uniacid=:uniacid limit 1', array(
+    $member = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where id=:id and uniacid=:uniacid limit 1', array(
         ':id' => $mid,
         ':uniacid' => $wechatid
     ));
@@ -24,7 +24,7 @@ if (checksubmit('submit')) {
         message('会员未找到!', '', 'error');
     }
     if (!empty($agentid)) {
-        $agent = pdo_fetch('select * from ' . tablename('ewei_shop_member') . ' where id=:id and isagent=1 and status=1 and uniacid=:uniacid limit 1', array(
+        $agent = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where id=:id and isagent=1 and status=1 and uniacid=:uniacid limit 1', array(
             ':id' => $agentid,
             ':uniacid' => $wechatid
         ));
@@ -32,7 +32,7 @@ if (checksubmit('submit')) {
             message('分销商未找到!', '', 'error');
         }
     }
-    pdo_update('ewei_shop_member', array(
+    pdo_update('sz_yi_member', array(
         'agentid' => $agentid,
         'fixagentid' => intval($_GPC['fixagentid'])
     ), array(

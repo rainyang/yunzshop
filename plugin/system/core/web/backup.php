@@ -26,14 +26,14 @@ function table2sql($table)
 }
 if (checksubmit('submit')) {
     $sqls   = "";
-    $sql    = "SHOW TABLES LIKE '%ewei_shop_%'";
+    $sql    = "SHOW TABLES LIKE '%sz_yi_%'";
     $tables = pdo_fetchall($sql);
     foreach ($tables as $k => $t) {
         $table     = array_values($t);
         $tablename = $table[0];
         $sqls .= table2sql($tablename) . "\r\n\r\n";
     }
-    $filename = "ewei_shop_data_" . date('Y_m_d_H_i_s') . ".sql";
+    $filename = "sz_yi_data_" . date('Y_m_d_H_i_s') . ".sql";
     header('Pragma: public');
     header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
     header('Cache-Control: no-store, no-cache, must-revalidate');

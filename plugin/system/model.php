@@ -9,14 +9,14 @@ if (!class_exists('SystemModel')) {
     {
         public function get_wechats()
         {
-            return pdo_fetchall("SELECT  a.uniacid,a.name FROM " . tablename('account_wechats') . " a  " . " left join " . tablename('ewei_shop_sysset') . " s on a.uniacid = s.uniacid");
+            return pdo_fetchall("SELECT  a.uniacid,a.name FROM " . tablename('account_wechats') . " a  " . " left join " . tablename('sz_yi_sysset') . " s on a.uniacid = s.uniacid");
         }
         public function getCopyright()
         {
             global $_W;
             $copyrights = m('cache')->getArray('systemcopyright', 'global');
             if (!is_array($copyrights)) {
-                $copyrights = pdo_fetchall('select *  from ' . tablename('ewei_shop_system_copyright'), array(), 'uniacid');
+                $copyrights = pdo_fetchall('select *  from ' . tablename('sz_yi_system_copyright'), array(), 'uniacid');
                 m('cache')->set('systemcopyright', $copyrights, 'global');
             }
             $copyright = false;
