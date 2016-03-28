@@ -40,9 +40,12 @@ if ($plugin_coupon) {
 		$hascouponcenter = true;
 	}
 }
-$plugb = p('bonus');
-if($plugb){
-	$bonus_set = $plugb->getSet();
+$pluginbonus = p("bonus");
+if(!empty($pluginbonus)){
+	$bonus_set = $pluginbonus->getSet();
+	if(!empty($bonus_set['start'])){
+		$pluginbonus->upgradeLevelByAgent($_var_20);
+	}
 }
 if ($_W['isajax']) {
 	$level = array('levelname' => empty($set['shop']['levelname']) ? '普通会员' : $set['shop']['levelname']);
