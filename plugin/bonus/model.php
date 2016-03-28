@@ -81,9 +81,9 @@ if (!class_exists('BonusModel')) {
 		                }else{
 		                    continue;
 		                }
-		                $bonus_money_old = round($price * $setmoney, 2);
 		                //级差分红
-		                $bonus_money = $bonus_money_old - $range_money;
+		                $bonus_money = round($price * $setmoney, 2);
+		                //$bonus_money = $bonus_money_old - $range_money;
 		                $data = array(
 		                    'uniacid' => $_W['uniacid'],
 		                    'ordergoodid' => $cinfo['goodsid'],
@@ -96,7 +96,7 @@ if (!class_exists('BonusModel')) {
 		                    'createtime' => $time
 		                );
 		                pdo_insert('sz_yi_bonus_goods', $data);
-		                $range_money = $bonus_money_old;
+		                //$range_money = $bonus_money_old;
 					}
 				}
 	        }
