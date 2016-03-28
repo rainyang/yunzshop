@@ -1,6 +1,7 @@
 <?php
 global $_W, $_GPC;
 $openid = m('user')->getOpenid();
+$bonus = p('bonus')->getSet();
 if ($_W['isajax']) {
 	$member = $this->model->getInfo($openid, array('total', 'ordercount0', 'ok'));
     //print_r($member);exit;

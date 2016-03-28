@@ -26,10 +26,6 @@
     .menu .nav .con span {color:#f90;}
     .menu .nav1 {border-bottom:1px solid #f1f1f1; border-right:1px solid #f1f1f1;   }
     .menu .nav2 {border-bottom:1px solid #f1f1f1; }
-    
-    
-    
- 
  
 </style>
 <div id='container'></div>
@@ -59,6 +55,14 @@
         <a href="{php echo $this->createPluginMobileUrl('commission/team')}"><div class="nav nav1"><i class="fa fa-user  fa-3x" style="color:#98cd37;"></i><div class="title">{php echo $this->set['texts']['myteam']}</div><div class="con"><span><%member.agentcount%></span> 人</div></div></a>
         <a href="{php echo $this->createPluginMobileUrl('commission/customer')}"><div class="nav nav1"><i class="fa fa-users  fa-3x" style="color:#3c7bce "></i><div class="title">{php echo $this->set['texts']['mycustomer']}</div><div class="con"><span><%member.customercount%></span> 人</div></div></a>
         <a href="{php echo $this->createPluginMobileUrl('commission/shares')}"><div class="nav nav2"><i class="fa fa-qrcode  fa-3x" style="color:#53bdec;"></i><div class="title">二维码</div><div class="con">推广二维码</div></div></a>
+
+        <!--分红-->
+        <a href="{php echo $this->createPluginMobileUrl('bonus/withdraw')}"><div class="nav nav1"><i class="fa fa-cny fa-3x" style="color:#ff9901;"></i><div class="title">{php echo $bonus['texts']['commission1']}</div><div class="con"><span>{$member['commission_total']}</span> 元</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('bonus/order')}"><div class="nav nav1"><i class="fa fa-list fa-3x" style="color:#ffcb05;"></i><div class="title">{php echo $bonus['texts']['order']}</div><div class="con"><span>{$member['ordercount0']}</span> 个</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('bonus/log')}"><div class="nav nav2"><i class="fa fa-random  fa-3x" style="color:#ca81d1;"></i><div class="title">{php echo $bonus['texts']['commission_detail']}</div><div class="con">{php echo $bonus['texts']['commission']}明细</div></div></a>        
+        <a href="{php echo $this->createPluginMobileUrl('bonus/customer')}"><div class="nav nav1"><i class="fa fa-users  fa-3x" style="color:#3c7bce "></i><div class="title">{php echo $bonus['texts']['mycustomer']}</div><div class="con"><span>{$member['customercount']}</span> 人</div></div></a> 
+        <!--/分红-->
+
         <%if set.closemyshop!='1'%>
         <a href="{php echo $this->createPluginMobileUrl('commission/myshop/set')}"><div class="nav nav1"><i class="fa fa-cog  fa-3x" style="color:#aadaf6;"></i><div class="title">小店设置</div><div class="con">设置我的小店</div></div></a>
 		<%if set.openselect%>
