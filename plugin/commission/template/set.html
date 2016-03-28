@@ -82,57 +82,64 @@
                 </div> 
             </div>
             <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                    <div class="col-sm-6">
-                         <label class="radio-inline"><input type="radio"  name="setdata[become]" value="1" {if $set['become'] ==1} checked="checked"{/if} /> 申请</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-6">
+                     <label class="radio-inline"><input type="radio"  name="setdata[become]" value="1" {if $set['become'] ==1} checked="checked"{/if} /> 申请</label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-6">
+                     <div class='input-group' style='border:none;margin-left:-12px;'>
+                        <div class='input-group-addon'  style='border:none;background:#fff;'><label class="radio-inline" style='margin-top:-3px;'><input type="radio"  name="setdata[become]" value="2" {if $set['become'] == 2} checked="checked"{/if} /> 消费达到</label></div>
+                        <input type='text' class='form-control' name='setdata[become_ordercount]' value="{$set['become_ordercount']}" />
+                        <div class='input-group-addon'  style='border:none;background:#fff;'>次</div>
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                    <div class="col-sm-6">
-                         <div class='input-group' style='border:none;margin-left:-12px;'>
-                            <div class='input-group-addon'  style='border:none;background:#fff;'><label class="radio-inline" style='margin-top:-3px;'><input type="radio"  name="setdata[become]" value="2" {if $set['become'] == 2} checked="checked"{/if} /> 消费达到</label></div>
-                            <input type='text' class='form-control' name='setdata[become_ordercount]' value="{$set['become_ordercount']}" />
-                            <div class='input-group-addon'  style='border:none;background:#fff;'>次</div>
-                        </div>
-                    </div>
-                </div>
+            </div>
       
 
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                    <div class="col-sm-6">
-                          <div class='input-group' style='border:none;margin-left:-12px;'>
-                            <div class='input-group-addon'  style='border:none;background:#fff;'><label class="radio-inline" style='margin-top:-3px;'><input type="radio"  name="setdata[become]" value="3" {if $set['become'] == 3} checked="checked"{/if} /> 消费达到</label></div>
-                            <input type='text' class='form-control' name='setdata[become_moneycount]' value="{$set['become_moneycount']}" />
-                            <div class='input-group-addon'  style='border:none;background:#fff;'>元</div>
-                        </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-6">
+                      <div class='input-group' style='border:none;margin-left:-12px;'>
+                        <div class='input-group-addon'  style='border:none;background:#fff;'><label class="radio-inline" style='margin-top:-3px;'><input type="radio"  name="setdata[become]" value="3" {if $set['become'] == 3} checked="checked"{/if} /> 消费达到</label></div>
+                        <input type='text' class='form-control' name='setdata[become_moneycount]' value="{$set['become_moneycount']}" />
+                        <div class='input-group-addon'  style='border:none;background:#fff;'>元</div>
                     </div>
                 </div>
-      <div class="form-group">
+            </div>
+            <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                 <div class="col-sm-9 col-xs-12">
                     <label class="radio-inline"><input type="radio"  name="setdata[become_order]" value="0" {if $set['become_order'] ==0} checked="checked"{/if} /> 付款后</label>
                     <label class="radio-inline"><input type="radio"  name="setdata[become_order]" value="1" {if $set['become_order'] ==1} checked="checked"{/if} /> 完成后</label>
                     <span class="help-block">消费条件统计的方式</span>
                 </div>
-           </div>
-           <div class="form-group">
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">购买指定商品升级</label>
+                <div class="col-sm-9 col-xs-12">
+                    <label class="radio-inline"><input type="radio"  name="setdata[upgrade_by_good]" value="0" {if $set['upgrade_by_good'] ==0} checked="checked"{/if} /> 否</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[upgrade_by_good]" value="1" {if $set['upgrade_by_good'] ==1} checked="checked"{/if} /> 是</label>
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">分销商必须完善资料</label>
                 <div class="col-sm-9 col-xs-12">
                     <label class="radio-inline"><input type="radio"  name="setdata[become_reg]" value="0" {if $set['become_reg'] ==0} checked="checked"{/if} /> 需要</label>
                     <label class="radio-inline"><input type="radio"  name="setdata[become_reg]" value="1" {if $set['become_reg'] ==1} checked="checked"{/if} /> 不需要</label>
                     <span class="help-block">分销商在分销或提现时是否必须完善资料</span>
                 </div>
-           </div>
-           <div class="form-group">
+            </div>
+            <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">成为分销商是否需要审核</label>
                 <div class="col-sm-9 col-xs-12">
                     <label class="radio-inline"><input type="radio"  name="setdata[become_check]" value="0" {if $set['become_check'] ==0} checked="checked"{/if} /> 需要</label>
                     <label class="radio-inline"><input type="radio"  name="setdata[become_check]" value="1" {if $set['become_check'] ==1} checked="checked"{/if} /> 不需要</label>
                     <span class="help-block">以上条件达到后，是否需要审核才能成为真正的分销商</span>
                 </div>
-           </div>
+            </div>
             
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现额度</label>
