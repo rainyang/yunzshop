@@ -31,6 +31,9 @@
         <div class="line"><div class="title">姓名</div><div class='info'><div class='inner'><input type="text" id='realname' placeholder="请输入您的姓名"  value="<%realname%>" /></div></div></div>
         <%if mobile%>
         <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><%mobile%></div></div></div>
+        <input type="hidden" id='mobile' value="<%mobile%>" />
+        <%else%>
+        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><input type="text" id='mobile' placeholder="请输入您的手机号码"  value="<%mobile%>" /></div></div></div>
         <%/if%>
         <div class="line"><div class="title">微信号</div><div class='info'><div class='inner'><input type="text"  id='weixin' placeholder="请输入微信号" value="<%weixin%>"/></div></div></div>
         <div class="line">
@@ -99,6 +102,10 @@
                            core.tip.show('请输入姓名!');
                            return;
                        }
+                       if(!$('#mobile').isMobile()){
+                           core.tip.show('请输入正确手机号码!');
+                           return;
+                       }
                        
                       if( $('#weixin').isEmpty()){
                            core.tip.show('请输入微信号!');
@@ -110,7 +117,7 @@
                     core.json('member/info', {
                        'memberdata':{
                             'realname': $('#realname').val(),
-                            //'mobile': $('#mobile').val(),
+                            'mobile': $('#mobile').val(),
                             'weixin': $('#weixin').val(),
                             'gender': $('#sex').val(),
                             'birthyear': $('#birthday').val().length>0?birthday[0]:0,
@@ -120,7 +127,7 @@
                             'city': $('#sel-city').val()
                        }, 'mcdata':{
                             'realname': $('#realname').val(),
-                            //'mobile': $('#mobile').val(),
+                            'mobile': $('#mobile').val(),
                             'gender': $('#sex').val(),
                             'birthyear': $('#birthday').val().length>0?birthday[0]:0,
                             'birthmonth': $('#birthday').val().length>0?birthday[1]:0,

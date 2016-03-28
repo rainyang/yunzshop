@@ -45,6 +45,7 @@ ul,li {padding:0px; margin:0px;}
 .good_info2 .tab_con .con {height:auto; display:none;color:#333;word-break:break-all;}
 .good_info2 .tab_con .con .param { padding:10px; border-bottom:1px solid #ccc}
 .good_info2 .tab_con #con_1 img { width:100%;outline-width:0px;  vertical-align:top; display:block}
+.tab_con p{ margin:0 }
 
 
 .good_bottom {height:50px; width:100%; background:#ff6801; position:fixed; bottom:0px; left:0px;}
@@ -52,6 +53,7 @@ ul,li {padding:0px; margin:0px;}
 .good_bottom .buy {height:50px; width:35%; background:#ff6801; float:left; font-size:16px; line-height:50px; text-align:center; color:#fff;}
 .good_bottom .add {height:50px; width:35%; background:#fd9a34; float:left; font-size:16px; line-height:50px; text-align:center; color:#fff;}
 .good_bottom .cart {height:42px; width:15%; background:#fdfdfd; float:left; padding-top:7px; border-top:1px solid #e1e1e1; text-align:center; font-size:20px; color:#666;line-height:10px; position:relative;}
+.good_bottom .cs{height:42px; width:15%; background:#fdfdfd; float:left; padding-top:7px; border-top:1px solid #e1e1e1; text-align:center; font-size:20px; color:#666;line-height:10px; position:relative;}
 .good_bottom .cart b {height:16px; width:16px; background:#f30; border-radius:8px; position:absolute; top:2px; right:5px; font-size:12px; color:#fff; line-height:16px; font-weight:100;}
 .good_bottom .like {height:42px; width:14%; background:#fdfdfd; float:left; padding-top:7px; border-top:1px solid #e1e1e1; border-right:1px solid #e1e1e1; text-align:center; font-size:20px; color:#666; line-height:10px;}
 
@@ -378,11 +380,15 @@ div.flicking_con a.on{background-position:0 -9px}
             <i class="fa <%if isfavorite%>fa-star<%else%>fa-star-o<%/if%>" <%if isfavorite==1%>style="color:#f90"<%/if%>></i>
             <br><span>收藏</span>
         </div>
-         <%if goods.canaddcart%>
-        <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
-            <%if cartcount>0%><b><%cartcount%></b><%/if%>
-        </div>
-        <div class="add" onclick="choose('cart')">加入购物车</div>
+        <%if shopset.cservice%>
+            <div class="cs" ><i class="fa fa-headphones"></i><br><span>客服</span></div>
+            <div class="add" onclick="choose('cart')">加入购物车</div>
+        <%else%>
+             <%if goods.canaddcart%>
+            <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
+                <%if cartcount>0%><b><%cartcount%></b><%/if%>
+            </div>
+            <%/if%>
         <%/if%>
         <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:80%'<%/if%>>立即购买</div>
 </div>
@@ -468,6 +474,10 @@ div.flicking_con a.on{background-position:0 -9px}
     var tip = null;
     var action="";
     var alpha = 0;
+
+    $(document).on('click', '.cs', function(){
+            location.href='{php echo $shopset['cservice']}&metadata={"name":"{php echo $member['nickname']}","tel":"{php echo $member['mobile']}","address":"{php echo $member['province']}"}';
+    });
     
     function share(){
         

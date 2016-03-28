@@ -818,6 +818,14 @@ if (!class_exists('CommissionModel')) {
 			if (empty($_var_22)) {
 				return;
 			}
+			//分红
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$bonus_set = $pluginbonus->getSet();
+				if(!empty($bonus_set['start'])){
+					$pluginbonus->checkOrderConfirm($_var_1);
+				}
+			}
 			$_var_123 = intval($_var_0['become_child']);
 			$_var_117 = false;
 			if (empty($_var_123)) {
@@ -870,6 +878,14 @@ if (!class_exists('CommissionModel')) {
 			$_var_22 = m('member')->getMember($_var_20);
 			if (empty($_var_22)) {
 				return;
+			}
+			//分红
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$bonus_set = $pluginbonus->getSet();
+				if(!empty($bonus_set['start'])){
+					$pluginbonus->checkOrderPay($_var_1);
+				}
 			}
 			$_var_123 = intval($_var_0['become_child']);
 			$_var_117 = false;
@@ -976,6 +992,14 @@ if (!class_exists('CommissionModel')) {
 			$_var_22 = m('member')->getMember($_var_20);
 			if (empty($_var_22)) {
 				return;
+			}
+			//分红
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$bonus_set = $pluginbonus->getSet();
+				if(!empty($bonus_set['start'])){
+					$pluginbonus->checkOrderFinish($_var_1);
+				}
 			}
 			$_var_24 = time();
 			$_var_125 = $_var_22['isagent'] == 1 && $_var_22['status'] == 1;
@@ -1111,6 +1135,13 @@ if (!class_exists('CommissionModel')) {
 			$_var_132 = m('member')->getMember($_var_20);
 			if (empty($_var_132)) {
 				return;
+			}
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$bonus_set = $pluginbonus->getSet();
+				if(!empty($bonus_set['start'])){
+					$pluginbonus->upgradeLevelByAgent($_var_20);
+				}
 			}
 			$_var_139 = intval($_var_0['leveltype']);
 			if ($_var_139 == 4 || $_var_139 == 5) {
@@ -1267,6 +1298,13 @@ if (!class_exists('CommissionModel')) {
 			if (empty($_var_132)) {
 				return;
 			}
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$bonus_set = $pluginbonus->getSet();
+				if(!empty($bonus_set['start'])){
+					$pluginbonus->upgradeLevelByAgent($_var_20);
+				}
+			}
 			$_var_139 = intval($_var_0['leveltype']);
 			if ($_var_139 < 6 || $_var_139 > 9) {
 				return;
@@ -1372,6 +1410,13 @@ if (!class_exists('CommissionModel')) {
 			$_var_132 = m('member')->getMember($_var_20);
 			if (empty($_var_132)) {
 				return;
+			}
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$bonus_set = $pluginbonus->getSet();
+				if(!empty($bonus_set['start'])){
+					$pluginbonus->upgradeLevelByAgent($_var_20);
+				}
 			}
 			$_var_139 = intval($_var_0['leveltype']);
 			if ($_var_139 != 10) {
