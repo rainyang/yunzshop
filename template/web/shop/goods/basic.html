@@ -437,8 +437,20 @@
         {/if}
     </div>
 </div>
-
-
+{if $com_set['upgrade_by_good'] && !empty($com_set['level'])}
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">分销商</label>
+    <div class="col-sm-6 col-xs-12">
+        <select name='commission_level_id' class='form-control'>
+            <option value="0">请选择分销商等级</option>
+            {loop $commissionLevels $level}
+                <option value="{$level['id']}" {if $item['commission_level_id'] == $level['id']}selected="selected"{/if}>{$level['levelname']}</option>
+            {/loop}
+        </select>
+        <span class='help-block'>购买此商品成为指定的分销商等级</span>
+    </div>
+</div>
+{/if}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否支持货到付款</label>
     <div class="col-sm-6 col-xs-6">

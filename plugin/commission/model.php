@@ -1060,6 +1060,7 @@ if (!class_exists('CommissionModel')) {
 				}
 			}
 			$this->upgradeLevelByOrder($_var_20);
+			$this->upgradeLevelByGood($_var_1);
 		}
 
 		function getShop($_var_132)
@@ -1566,5 +1567,39 @@ if (!class_exists('CommissionModel')) {
 		{
 			return array('commission' => array('text' => $this->getName(), 'isplugin' => true, 'child' => array('cover' => array('text' => '入口设置'), 'agent' => array('text' => '分销商', 'view' => '浏览', 'check' => '审核-log', 'edit' => '修改-log', 'agentblack' => '黑名单操作-log', 'delete' => '删除-log', 'user' => '查看下线', 'order' => '查看推广订单(还需有订单权限)', 'changeagent' => '设置分销商'), 'level' => array('text' => '分销商等级', 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log'), 'apply' => array('text' => '佣金审核', 'view1' => '浏览待审核', 'view2' => '浏览已审核', 'view3' => '浏览已打款', 'view_1' => '浏览无效', 'export1' => '导出待审核-log', 'export2' => '导出已审核-log', 'export3' => '导出已打款-log', 'export_1' => '导出无效-log', 'check' => '审核-log', 'pay' => '打款-log', 'cancel' => '重新审核-log'), 'notice' => array('text' => '通知设置-log'), 'increase' => array('text' => '分销商趋势图'), 'changecommission' => array('text' => '修改佣金-log'), 'set' => array('text' => '基础设置-log'))));
 		}
+
+        function upgradeLevelByGood($orderid)
+        {
+            // 如果购买的商品可以指定成为分销商
+            global $_W;
+            $set = $this->getSet();
+            if (!$set['upgrade_by_good']) {
+                return;
+            }
+
+            $goods = pdo_fetch('select g.commission_level_id from ' . tablename('sz_yi_order_goods') . ' AS og, ' . tablename('sz_yi_goods') . ' AS g WHERE og.goodsid = g.id AND og.orderid=:orderid AND og.uniacid=:uniacid LIMIT 1', array(
+                ':orderid' => $orderid,
+                ':uniacid' => $_W['uniacid']
+            ));
+            print_r($goods);
+            $goodsLevel = $goods['commission_level_id'];
+            if ($goodsLevel) {
+                $levels = $this->getLevels();
+                foreach ($levels as $level) {
+                    if ($level['id'] == $goodsLevel) {
+                        $goodsLevelCommission1 = $level['commission1'];
+                    }
+                }
+                $openid = pdo_fetchcolumn('select openid from ' . tablename('sz_yi_order') . ' where uniacid=:uniacid and id=:orderid', array(
+                    ':uniacid' => $_W['uniacid'],
+                    ':orderid' => $orderid
+                ));
+                $userLevel = $this->getLevel($openid);
+                // 如果原来用户没有分销商等级或者分销商等级较低，则变为该商品的分销商等级
+                if (!$userLevel || $userLevel['commission1'] < $goodsLevelCommission1) {
+                    pdo_update('sz_yi_member', array('agentlevel' => $goodsLevel), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
+                }
+            }
+        }
 	}
 }

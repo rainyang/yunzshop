@@ -600,6 +600,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_goods') . " (
   `edmoney` decimal(10,2) DEFAULT '0.00',
   `edareas` text,
   `cates` text,
+  `commission_level_id` int(11) DEFAULT '0' COMMENT '购买该商品成为指定分销商等级',
   PRIMARY KEY (`id`),
   KEY `idx_uniacid` (`uniacid`),
   KEY `idx_pcate` (`pcate`),

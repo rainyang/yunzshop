@@ -28,6 +28,12 @@ if (!empty($category)) {
         }
     }
 }
+if (p('commission')) {
+    $commissionLevels = pdo_fetchall(
+        'SELECT id, levelname FROM ' . tablename('sz_yi_commission_level') . ' WHERE `uniacid` = :uniacid ORDER BY `commission1` DESC, `commission2` DESC, `commission3` DESC',
+        array(':uniacid' => $_W['uniacid'])
+    );
+}
 $pv        = p('virtual');
 $diyform_plugin = p("diyform");
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
@@ -446,6 +452,7 @@ if ($operation == "change") {
                 $data['commission2_pay']  = $_GPC['commission2_pay'];
                 $data['commission3_pay']  = $_GPC['commission3_pay'];
                 $data['commission_thumb'] = save_media($_GPC['commission_thumb']);
+                $data['commission_level_id'] = intval($_GPC['commission_level_id']);
             }
         }
       if ($diyform_plugin) {
@@ -853,4 +860,3 @@ m("cache")->set("areas", $areas, "global");
 }
 load()->func('tpl');
 include $this->template('web/shop/goods');
-
