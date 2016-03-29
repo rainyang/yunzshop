@@ -481,9 +481,7 @@ div.flicking_con a.on{background-position:0 -9px}
     var action="";
     var alpha = 0;
 
-    $(document).on('click', '.cs', function(){
-            location.href='{php echo $shopset['cservice']}&metadata={"name":"{php echo $member['nickname']}","tel":"{php echo $member['mobile']}","address":"{php echo $member['province']}"}';
-    });
+    
     
     function share(){
         
@@ -836,11 +834,14 @@ div.flicking_con a.on{background-position:0 -9px}
 				$('#productpricecontainer').html("");
 				}
 				else{
-			
 				   $('#productpricecontainer').html("市场价￥<span id='productprice'>" + productprice + "</span>");
 				}
 			}
 		});
+
+            $('cs').click(function(){
+            location.href='{php echo $shopset['cservice']}&metadata={"name":"{php echo $member['nickname']}","tel":"{php echo $member['mobile']}","address":"{php echo $member['province']}"}';
+    });
                 
            
                 $('.like').click(function(){
