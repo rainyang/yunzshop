@@ -1,5 +1,5 @@
 <?php
-define('CLOUD_UPGRADE_URL', 'http://115.29.33.155/web/index.php?c=account&a=upgradetest');
+define('CLOUD_UPGRADE_URL', 'http://xinghuo.yunzshop.com/web/index.php?c=account&a=upgradetest');
 
 if (!defined('IN_IA')) {
     exit('Access Denied');
@@ -26,7 +26,7 @@ if ($op == 'display') {
     if(!$content['status']){
         exit($content['msg']);
     }
-     */
+    */
     $versionfile = IA_ROOT . '/addons/sz_yi/version.php';
     $updatedate  = date('Y-m-d H:i', filemtime($versionfile));
     $version     = SZ_YI_VERSION;
@@ -185,7 +185,7 @@ if ($op == 'display') {
 
 } else if ($op == 'download_zip') {
 	//更新版本
-    define('CLOUD_UPGRADE_URL', 'http://115.29.33.155/web/index.php?c=account&a=upgrade');
+    define('CLOUD_UPGRADE_URL', 'http://xinghuo.yunzshop.com/web/index.php?c=account&a=upgrade');
     $data['version'] = SZ_YI_VERSION;
     $data['method'] = 'upgrade';
     $res = ihttp_request(CLOUD_UPGRADE_URL, $data);
@@ -202,7 +202,7 @@ if ($op == 'display') {
         if($v['version'] == SZ_YI_VERSION){
             continue;
         }
-        $filename = 'http://115.29.33.155/data/upgrade_zip/'.$v['version'].'.zip';
+        $filename = 'http://xinghuo.yunzshop.com/data/upgrade_zip/'.$v['version'].'.zip';
         curl_download($filename, IA_ROOT. '/addons/sz_yi/upgrade.zip');
 
         $zip = new ZipArchive; 
