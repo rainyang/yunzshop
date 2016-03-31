@@ -8,18 +8,20 @@ if(!empty($pluginbonus)){
 	$bonus_set = $pluginbonus->getSet();
 	if(!empty($bonus_set['start'])){
 		//分红
-		$bonus = 1;
-		$member_bonus = p('bonus')->getInfo($openid, array('total', 'ordercount', 'ok'));
-		$bonus_cansettle = $member_bonus['commission_ok'] > 0 && $member_bonus['commission_ok'] >= floatval($bonus['withdraw']);
-		//$bonus_commission_ok = $member['commission_ok'];
-		$member_bonus['nickname'] = empty($member_bonus['nickname']) ? $member_bonus['mobile'] : $member_bonus['nickname'];
-		$member_bonus['agentcount'] = number_format($member_bonus['agentcount'], 0);
-		$member_bonus['ordercount0'] = number_format($member_bonus['ordercount'], 0);
-		$member_bonus['commission_ok'] = number_format($member_bonus['commission_ok'], 2);
-		$member_bonus['commission_pay'] = number_format($member_bonus['commission_pay'], 2);
-		$member_bonus['commission_total'] = number_format($member_bonus['commission_total'], 2);
-		$member_bonus['customercount'] = count(p('bonus')->getChildAgents($member_bonus['id']));
-		$level = p('bonus')->getLevel($openid);
+		if($bonus_set['bonushow'] == 1){
+			$bonus = 1;
+			$member_bonus = p('bonus')->getInfo($openid, array('total', 'ordercount', 'ok'));
+			$bonus_cansettle = $member_bonus['commission_ok'] > 0 && $member_bonus['commission_ok'] >= floatval($bonus['withdraw']);
+			//$bonus_commission_ok = $member['commission_ok'];
+			$member_bonus['nickname'] = empty($member_bonus['nickname']) ? $member_bonus['mobile'] : $member_bonus['nickname'];
+			$member_bonus['agentcount'] = number_format($member_bonus['agentcount'], 0);
+			$member_bonus['ordercount0'] = number_format($member_bonus['ordercount'], 0);
+			$member_bonus['commission_ok'] = number_format($member_bonus['commission_ok'], 2);
+			$member_bonus['commission_pay'] = number_format($member_bonus['commission_pay'], 2);
+			$member_bonus['commission_total'] = number_format($member_bonus['commission_total'], 2);
+			$member_bonus['customercount'] = count(p('bonus')->getChildAgents($member_bonus['id']));
+			$level = p('bonus')->getLevel($openid);
+		}
 	}
 }
 
