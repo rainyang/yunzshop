@@ -15,6 +15,15 @@ if($roleid == 0){
 	}
 }
 //  END
+//分红
+$pluginbonus = p("bonus");
+$bonus_start = 0;
+if(!empty($pluginbonus)){
+    $bonus_set = $pluginbonus->getSet();
+    if(!empty($bonus_set['start'])){
+        $bonus_start = 1;
+    }
+}
 $shopset = m('common')->getSysset('shop');
 $sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
 $category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
@@ -374,9 +383,11 @@ if ($operation == "change") {
             'detail_btnurl2' => trim($_GPC['detail_btnurl2']),
 			"ednum"=>intval($_GPC["ednum"]) ,
 			"edareas"=>trim($_GPC["edareas"]) ,
-			"edmoney"=>trim($_GPC["edmoney"]) 
+			"edmoney"=>trim($_GPC["edmoney"])
         );
-
+        if(!empty($_GPC['bonusmoney'])){
+            $data['bonusmoney'] = $_GPC['bonusmoney'];
+        }
         //判断是否安装供应商插件判断有没有供应商id 
 		if(p('supplier')){
             //todo,这个有问题吧?其他公众号管理员也可以选择供货商和是否上架的

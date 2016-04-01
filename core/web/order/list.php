@@ -122,6 +122,23 @@ if ($operation == "display") {
             $statuscondition = " AND o.status = " . intval($status);
         }
     }
+    $bonusagentid = intval($_GPC['bonusagentid']);
+    if(!empty($bonusagentid)){
+        $sql = "select distinct orderid from " . tablename('sz_yi_bonus_goods') . " where mid=".$bonusagentid." ORDER BY id DESC";
+        $bonusoderids = pdo_fetchall($sql);
+        $inorderids = "";
+        if(!empty($bonusoderids)){
+            foreach ($bonusoderids as $key => $value) {
+                if($key != 0){
+                    $inorderids .= ",";
+                }
+                $inorderids = $value['orderid'];
+            }
+            $condition .= ' and  o.id in('.$inorderids.')';
+        }else{
+            $condition .= ' and  o.id=0'; 
+        }
+    }
     $agentid = intval($_GPC["agentid"]);
     $p = p("commission");
     $level = 0;
