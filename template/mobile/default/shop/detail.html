@@ -37,7 +37,7 @@ ul,li {padding:0px; margin:0px;}
 .good_shop .shop2 .sub1 {height:37px; width:47%; float:left; border:1px solid #e2e2e2; border-radius:3px; text-align:center; line-height:37px; font-size:16px; color:#999;}
 .good_shop .shop2 .sub2 {height:37px; width:47%; float:right; border:1px solid #e2e2e2; border-radius:3px; text-align:center; line-height:37px; font-size:16px; color:#999;}
 
-.good_info2 {height:auto; width:100%; background:#fff; margin-top:14px; }
+.good_info2 {height:auto; width:100%; background:#fff; margin-top:14px;margin-bottom: 50px; }
 .good_info2 .menu {height:40px; width:100%;}
 .good_info2 .menu .nav {height:37px; width:25%;  float:left; font-size:14px; color:#666; text-align:center; line-height:37px; border-bottom:2px solid #e3e3e3;}
 .good_info2 .menu .navon {color:#ff6500; height:37px; line-height:37px; border-bottom:2px solid #ff6500; }
@@ -382,17 +382,25 @@ div.flicking_con a.on{background-position:0 -9px}
         </div>
         <%if shopset.cservice%>
             <div class="cs" ><i class="fa fa-headphones"></i><br><span>客服</span></div>
-            <div class="add" onclick="choose('cart')">加入购物车</div>
+            <%if goods.canaddcart%>
+            <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
+                <%if cartcount>0%><b><%cartcount%></b><%/if%>
+            </div>
+            <%/if%>
+            <div class="add" onclick="choose('cart')" <%if shopset.cservice &&  goods.canaddcart%>style="width:28%"<%/if%>>加入购物车</div>
+            <div class="buy" onclick="choose('buy')" <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%/if%>>立即购买</div>
         <%else%>
              <%if goods.canaddcart%>
             <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
                 <%if cartcount>0%><b><%cartcount%></b><%/if%>
             </div>
             <%/if%>
+            <div class="add" onclick="choose('cart')">加入购物车</div>
+            <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:50%'<%/if%>>立即购买</div>
         <%/if%>
-        <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:80%'<%/if%>>立即购买</div>
 </div>
     <%/if%>
+
 </script>
 <script id='tpl_comment' type='text/html'>
     <%each list as comment%>
@@ -475,9 +483,6 @@ div.flicking_con a.on{background-position:0 -9px}
     var action="";
     var alpha = 0;
 
-    $(document).on('click', '.cs', function(){
-            location.href='{php echo $shopset['cservice']}&metadata={"name":"{php echo $member['nickname']}","tel":"{php echo $member['mobile']}","address":"{php echo $member['province']}"}';
-    });
     
     function share(){
         
@@ -837,6 +842,10 @@ div.flicking_con a.on{background-position:0 -9px}
 		});
                 
            
+    $('.cs').click(function(){
+            location.href='{php echo $shopset['cservice']}&metadata={"name":"{php echo $member['nickname']}","tel":"{php echo $member['mobile']}","address":"{php echo $member['province']}"}';
+    });
+    
                 $('.like').click(function(){
                     var self = $(this);
                     require(['core'],function(core){

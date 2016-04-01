@@ -1,6 +1,30 @@
 <?php
 global $_W, $_GPC;
 $openid = m('user')->getOpenid();
+$pluginbonus = p("bonus");
+$bonus = 0;
+$level = $this->model->getLevel($openid);
+if(!empty($pluginbonus)){
+	$bonus_set = $pluginbonus->getSet();
+	if(!empty($bonus_set['start'])){
+		//分红
+		if($bonus_set['bonushow'] == 1){
+			$bonus = 1;
+			$member_bonus = p('bonus')->getInfo($openid, array('total', 'ordercount', 'ok'));
+			$bonus_cansettle = $member_bonus['commission_ok'] > 0 && $member_bonus['commission_ok'] >= floatval($bonus['withdraw']);
+			//$bonus_commission_ok = $member['commission_ok'];
+			$member_bonus['nickname'] = empty($member_bonus['nickname']) ? $member_bonus['mobile'] : $member_bonus['nickname'];
+			$member_bonus['agentcount'] = number_format($member_bonus['agentcount'], 0);
+			$member_bonus['ordercount0'] = number_format($member_bonus['ordercount'], 0);
+			$member_bonus['commission_ok'] = number_format($member_bonus['commission_ok'], 2);
+			$member_bonus['commission_pay'] = number_format($member_bonus['commission_pay'], 2);
+			$member_bonus['commission_total'] = number_format($member_bonus['commission_total'], 2);
+			$member_bonus['customercount'] = count(p('bonus')->getChildAgents($member_bonus['id']));
+			$level = p('bonus')->getLevel($openid);
+		}
+	}
+}
+
 if ($_W['isajax']) {
 	$member = $this->model->getInfo($openid, array('total', 'ordercount0', 'ok'));
     //print_r($member);exit;
@@ -27,7 +51,7 @@ if ($_W['isajax']) {
 		}
 	}
 	$this->set['openselect'] = $openselect;
-	$level = $this->model->getLevel($openid);
+	
 	show_json(1, array('commission_ok' => $commission_ok, 'member' => $member, 'level' => $level, 'cansettle' => $cansettle, 'settlemoney' => number_format(floatval($this->set['withdraw']), 2), 'set' => $this->set,));
 }
 include $this->template('index');

@@ -95,7 +95,7 @@ class Sz_DYi_User
         $needLoginPList = array('address', 'cart', 'commission');
 
         //不需要登陆的P方法
-        $noLoginList = array('category', 'login', 'register', 'sendcode', 'bindmobile', 'forget', 'article');
+        $noLoginList = array('category', 'login', 'designer', 'register', 'sendcode', 'bindmobile', 'forget', 'article');
 
         //不需要登陆的do方法
         $noLoginDoList = array('shop', 'login', 'register');
@@ -108,7 +108,7 @@ class Sz_DYi_User
         //需要登陆
         if((!in_array($_GPC["p"], $noLoginList) && !in_array($_GPC["do"], $noLoginDoList)) or (in_array($_GPC["p"], $needLoginPList))){
             //小店不需要登陆，否则分享出去别人不能直接看到
-            if($_GPC['method'] != 'myshop' or $_GPC['c'] != 'entry'){
+            if(($_GPC['method'] != 'myshop') or ($_GPC['c'] != 'entry')){
                 $openid = $this->isLogin();
                 if(!$openid){  //未登录
                     if($_GPC['do'] != 'runtasks'){
