@@ -10,10 +10,11 @@
                     <th style="width:50px;">ID</th>
                     <th style="width:80px;">显示顺序</th>
                     <th>配送方式名称</th>
-                    <th>配送类型</th>
-                    <th>首重价格</th>
-                    <th>续重价格</th>
+                    <th>计费方式</th>
+                    <th>首重(首件)价格</th>
+                    <th>续重(续件)价格</th>
                     <th>状态</th>
+                    <th>默认快递</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -27,14 +28,18 @@
                         {/if}
                     </td>
                     <td>{$item['dispatchname']}</td>
-                    <td>{if $item['dispatchtype']==0}
-                        商家配送
-                        {else}
-                        客户自提
-                        {/if}</td>
+                    {if $item['calculatetype']==0}
+                    <td>按重量计费</td>
                     <td>{$item['firstprice']}</td>
                     <td>{$item['secondprice']}</td>
+                    {else}
+                    <td>按件计费</td>
+                    <td>{$item['firstnumprice']}</td>
+                    <td>{$item['secondnumprice']}</td>
+                    {/if}
+
                     <td><label class='label  label-default {if $item['enabled']==1}label-info{/if}' >{if $item['enabled']==1}显示{else}隐藏{/if}</label></td>
+                    <td><label class='label  label-default {if $item['isdefault']==1}label-info{/if}' >{if $item['isdefault']==1}是{else}否{/if}</label></td>
                     <td style="text-align:left;">
                          {ifp 'shop.dispatch.view|shop.dispatch.edit'}<a href="{php echo $this->createWebUrl('shop/dispatch', array('op' => 'post', 'id' => $item['id']))}" class="btn btn-default btn-sm" title="{ifp 'shop.dispatch.edit'}修改{else}查看{/if}"><i class="fa fa-pencil"></i></a>{/if}
                          {ifp 'shop.dispatch.delete'}<a href="{php echo $this->createWebUrl('shop/dispatch', array('op' => 'delete', 'id' => $item['id']))}" class="btn btn-default btn-sm" onclick="return confirm('确认删除此配送方式?')" title="删除"><i class="fa fa-times"></i></a>{/if}
@@ -42,7 +47,7 @@
                 </tr>
                 {/loop}
                 <tr>
-                    <td colspan='8'>
+                    <td colspan='9'>
                           {ifp 'shop.dispatch.add'}
                         <a class='btn btn-default' href="{php echo $this->createWebUrl('shop/dispatch',array('op'=>'post'))}"><i class='fa fa-plus'></i> 添加配送方式</a>
                         <input type="hidden" name="token" value="{$_W['token']}" />
@@ -72,6 +77,7 @@
 <div class="main">
     <form {ife 'shop.dispatch' $dispatch}action="" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data" onsubmit='return formcheck()'>
         <input type="hidden" name="id" value="{$dispatch['id']}" />
+ 
         <div class="panel panel-default">
             <div class="panel-heading">
                 配送方式设置
@@ -99,22 +105,42 @@
                         
                     </div>
                 </div>
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">配送类型</label>
-                    <div class="col-sm-9 col-xs-12">
-                          {ife 'shop.dispatch' $dispatch}
-                        <label class='radio-inline'>
-                            <input type='radio' name='dispatchtype' value='0' {if $dispatch['dispatchtype']==0}checked{/if} /> 商家配送
-                        </label>
-                        <label class='radio-inline'>
-                            <input type='radio' name='dispatchtype' value='1' {if $dispatch['dispatchtype']==1}checked{/if} /> 自提
-                        </label>
-                          {else}
-                              <div class='form-control-static'>{if empty($dispatch['dispatchtype'])}商家配送{else}自提{/if}</div>
-                          {/if}
-                    </div>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否为默认快递模板</label>
+
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'shop.dispatch' $dispatch}
+                    <label class='radio-inline'>
+                        <input type='radio' name='isdefault' id="isdefault1" value='1' {if $dispatch['isdefault']==1}checked{/if} /> 是
+                    </label>
+                    <label class='radio-inline'>
+                        <input type='radio' name='isdefault' id="isdefault0" value='0' {if $dispatch['isdefault']==0}checked{/if} /> 否
+                    </label>
+                    {else}
+                    <div class='form-control-static'>{if empty($dispatch['calculatetype'])}按重量计费{else}按件计费{/if}</div>
+                    {/if}
                 </div>
-                <div class="form-group dispatch0" {if $dispatch['dispatchtype']==1}style='display:none'{/if}>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">计费方式</label>
+
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'shop.dispatch' $dispatch}
+                    <label class='radio-inline'>
+                        <input type='radio' name='calculatetype' value='0' {if $dispatch['calculatetype']==0}checked{/if} /> 按重量计费
+                    </label>
+                    <label class='radio-inline'>
+                        <input type='radio' name='calculatetype' value='1' {if $dispatch['calculatetype']==1}checked{/if} /> 按件计费
+                    </label>
+                    {else}
+                    <div class='form-control-static'>{if empty($dispatch['calculatetype'])}按重量计费{else}按件计费{/if}</div>
+                    {/if}
+                </div>
+            </div>
+
+                <div class="form-group dispatch0" style='display:none'>
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">物流公司</label>
                     <div class="col-sm-9 col-xs-12">
                          {ife 'shop.dispatch' $dispatch}
@@ -219,7 +245,7 @@
                     </div>
                 </div>
              
-              <div class="form-group dispatch0" {if $dispatch['dispatchtype']==1}style='display:none'{/if}>
+              <div class="form-group dispatch0" >
                          <label class="col-xs-12 col-sm-3 col-md-2 control-label">配送区域</label>
                     <div class="col-sm-9 col-xs-12">
                    
@@ -227,41 +253,75 @@
                             <thead>
                             <tr>
                                 <th style="height:40px;width:400px;">运送到</th>
-                                <th style="width:120px;">首重(克)</th>
-                                <th style="width:120px;">首费(元)</th>
-                                <th style="width:120px;">续重(克)</th>
-                                <th style="width:120px;">续费(元)</th>
+			                    <th class="show_h" style="width:120px;">首重(克)</th>
+			                    <th class="show_h" style="width:120px;">首费(元)</th>
+			                    <th class="show_h" style="width:120px;">续重(克)</th>
+			                    <th class="show_h" style="width:120px;">续费(元)</th>
+
+
+			                    <th class="show_n" style="width:120px;">首件(个)</th>
+			                    <th class="show_n" style="width:120px;">运费(元)</th>
+			                    <th class="show_n" style="width:120px;">续件(个)</th>
+			                    <th class="show_n" style="width:120px;">续费(元)</th>
                                 <th style="width:120px;">管理</th>
                             </tr>
                             </thead>
                             <tbody id='tbody-areas'>
                             <tr>
                                 <td style="padding:10px;">全国 [默认运费]</td>
-                                <td class="text-center">
-                                    {ife 'shop.dispatch' $dispatch}
-                                    <input type="number" value="{php echo empty($dispatch['firstweight'])?1000:$dispatch['firstweight']}" class="form-control" name="default_firstweight" style="width:100px;"></td>
-                                  {else}
-                                      <div class='form-control-static'>{php echo empty($dispatch['firstweight'])?1000:$dispatch['firstweight']}</div>
-                                  {/if}
-                                <td class="text-center">
-                                    {ife 'shop.dispatch' $dispatch}
-                                    <input type="text" value="{$dispatch['firstprice']}" class="form-control" name="default_firstprice"  style="width:100px;"></td>
-                                   {else}
-                                      <div class='form-control-static'>{$dispatch['firstprice']}</div>
-                                  {/if}
-                                <td class="text-center">
-                                    {ife 'shop.dispatch' $dispatch}
-                                    <input type="number" value="{php echo empty($dispatch['secondweight'])?1000:$dispatch['secondweight']}" class="form-control" name="default_secondweight"  style="width:100px;"></td>
-                                     {else}
-                                      <div class='form-control-static'>{php echo empty($dispatch['secondweight'])?1000:$dispatch['secondweight']}</div>
-                                  {/if}
-                                <td class="text-center">
-                                    {ife 'shop.dispatch' $dispatch}
-                                    <input type="text" value="{$dispatch['secondprice']}" class="form-control" name="default_secondprice"  style="width:100px;"></td>
-                                     {else}
-                                      <div class='form-control-static'>{$dispatch['secondprice']}</div>
-                                  {/if}
-                                <td></td>
+                    <td class="show_h text-center">
+                        {ife 'shop.dispatch' $dispatch}
+                        <input type="number" value="{php echo empty($dispatch['firstweight'])?1000:$dispatch['firstweight']}" class="form-control" name="default_firstweight" style="width:100px;"></td>
+                    {else}
+                    <div class='show_h form-control-static'>{php echo empty($dispatch['firstweight'])?1000:$dispatch['firstweight']}</div>
+                    {/if}
+                    <td class="show_h text-center">
+                        {ife 'shop.dispatch' $dispatch}
+                        <input type="text" value="{$dispatch['firstprice']}" class="form-control" name="default_firstprice"  style="width:100px;"></td>
+                    {else}
+                    <div class='show_h form-control-static'>{$dispatch['firstprice']}</div>
+                    {/if}
+                    <td class="show_h text-center">
+                        {ife 'shop.dispatch' $dispatch}
+                        <input type="number" value="{php echo empty($dispatch['secondweight'])?1000:$dispatch['secondweight']}" class="form-control" name="default_secondweight"  style="width:100px;"></td>
+                    {else}
+                    <div class='show_h form-control-static'>{php echo empty($dispatch['secondweight'])?1000:$dispatch['secondweight']}</div>
+                    {/if}
+                    <td class="show_h text-center">
+                        {ife 'shop.dispatch' $dispatch}
+                        <input type="text" value="{$dispatch['secondprice']}" class="form-control" name="default_secondprice"  style="width:100px;"></td>
+                    {else}
+                    <div class='show_h form-control-static'>{$dispatch['secondprice']}</div>
+                    {/if}
+
+                    <td class="show_h"></td>
+
+                    <td class="show_n text-center">
+                        {ife 'shop.dispatch' $dispatch}
+                        <input type="number" value="{php echo empty($dispatch['firstnum'])?1:$dispatch['firstnum']}" class="form-control" name="default_firstnum" style="width:100px;"></td>
+                    {else}
+                    <div class='show_n form-control-static'>{php echo empty($dispatch['firstnum'])?1:$dispatch['firstnum']}</div>
+                    {/if}
+                    <td class="show_n text-center">
+                        {ife 'shop.dispatch' $dispatch}
+                        <input type="text" value="{$dispatch['firstnumprice']}" class="form-control" name="default_firstnumprice"  style="width:100px;"></td>
+                    {else}
+                    <div class='show_n form-control-static'>{$dispatch['firstnumprice']}</div>
+                    {/if}
+                    <td class="show_n text-center">
+                        {ife 'shop.dispatch' $dispatch}
+                        <input type="number" value="{php echo empty($dispatch['secondnum'])?1:$dispatch['secondnum']}" class="form-control" name="default_secondnum"  style="width:100px;"></td>
+                    {else}
+                    <div class='show_n form-control-static'>{php echo empty($dispatch['secondnum'])?1:$dispatch['secondnum']}</div>
+                    {/if}
+                    <td class="show_n text-center">
+                        {ife 'shop.dispatch' $dispatch}
+                        <input type="text" value="{$dispatch['secondnumprice']}" class="form-control" name="default_secondnumprice"  style="width:100px;"></td>
+                    {else}
+                    <div class='show_n form-control-static'>{$dispatch['secondnumprice']}</div>
+                    {/if}
+
+                    <td class="show_n"></td>
                             </tr>
                             {loop $dispatch_areas $row}
                                {php $random = random(16);}
@@ -271,14 +331,15 @@
                         </table>
                           {ife 'shop.dispatch' $dispatch}
                           <a class='btn btn-default' href="javascript:;" onclick='addArea(this)'><span class="fa fa-plus"></span> 新增配送区域</a>
-                        <span class='help-i'>根据重量来计算运费，当物品不足《首重重量》时，按照《首重费用》计算，超过部分按照《续重重量》和《续重费用》乘积来计算</span>
+                         <span class='help-block show_h' {if $dispatch['type']==1}style='display:block'{/if}>根据重量来计算运费，当物品不足《首重重量》时，按照《首重费用》计算，超过部分按照《续重重量》和《续重费用》乘积来计算</span>
+		     <span class='help-block show_n' {if $dispatch['type']==0}style='display:block'{/if}>根据件数来计算运费，当物品不足《首件数量》时，按照《首件费用》计算，超过部分按照《续件数量》和《续件费用》乘积来计算</span>
                           {/if}
                         
                     </div>
                         
                     </div>
                   </div>
-             <div class="form-group dispatch1" {if $dispatch['dispatchtype']==0}style='display:none'{/if}>
+             <div class="form-group dispatch1" style='display:none'>
                          <label class="col-xs-12 col-sm-3 col-md-2 control-label">自提地址设置</label>
                     <div class="col-sm-9 col-xs-12">
                    
@@ -386,8 +447,22 @@
      </div>
 </div> 
 <script language='javascript'>
+    function show_type(flag){
+        if (flag == 1) {
+            $('.show_h').hide();
+            $('.show_n').show();
+        } else {
+            $('.show_h').show();
+            $('.show_n').hide();
+        }
+    }
     $(function(){
-        
+        show_type({php echo $dispatch['calculatetype']});
+
+        $(':radio[name=calculatetype]').click(function(){
+            var val = $(this).val();
+            show_type(val);
+        })
         $(':radio[name=dispatchtype]').click(function(){
             var val = $(this).val();
             $(".dispatch0,.dispatch1").hide();
@@ -477,7 +552,7 @@
                 current = json.random;
               
                 $('#tbody-areas').append(json.html);
-                
+                $('#tbody-areas tr').last().hide();
                  clearSelects();
                 
                 $("#modal-areas").modal();
@@ -500,7 +575,10 @@
                       });
                       $('.' + current + ' .cityshtml').html(citystrs);
                       $('.' + current + ' .citys').val(citystrs);
+                      $('#tbody-areas tr').last().show(); 
                 })
+                        var calculatetype1 = $('input[name="calculatetype"]:checked ').val();
+                        show_type(calculatetype1);
             }
         })
     }
@@ -537,6 +615,8 @@
                    });
                    $('.' + current + ' .cityshtml').html(citystrs);
                    $('.' + current + ' .citys').val(citystrs);
+
+
         })
            var currents = getCurrents(current);
                 currents = currents.split(';');
@@ -564,3 +644,4 @@
 {/if}
 
 {template 'web/_footer'}
+
