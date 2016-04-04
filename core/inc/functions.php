@@ -78,8 +78,24 @@ function m($name = '')
     $_modules[$name] = new $class_name();
     return $_modules[$name];
 }
+function isEnablePlugin($name){
+    $plugins = m("cache")->getArray("plugins", "global");
+    foreach($plugins as $p){
+        if($p['identity'] == $name){
+            if($p['status']){
+                return true;
+            }
+            else{
+                return false;
+            }
+        }
+    }
+}
 function p($name = '')
 {
+    if(!isEnablePlugin($name)){
+        return false;
+    }
     if ($name != 'perm' && !IN_MOBILE) {
         static $_perm_model;
         if (!$_perm_model) {
