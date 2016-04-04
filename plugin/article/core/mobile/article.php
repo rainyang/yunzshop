@@ -1,6 +1,5 @@
 <?php
 global $_W, $_GPC;
-
 load()->func('tpl');
 $article_sys = pdo_fetch("select * from" . tablename('sz_yi_article_sys') . "where uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
 $article_sys['article_image'] = tomedia($article_sys['article_image']);

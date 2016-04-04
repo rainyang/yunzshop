@@ -22,8 +22,27 @@ if (!class_exists('ArticleModel')) {
 							$day_end = mktime(0, 0, 0, date('m'), date('d') + 1, date('Y')) - 1;
 							$day_click = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article_share') . " WHERE aid=:aid and share_user=:share_user and click_date>:day_start and click_date<:day_end and uniacid=:uniacid ", array(':aid' => $article['id'], ':share_user' => $shareid, ':day_start' => $day_start, ':day_end' => $day_end, ':uniacid' => $_W['uniacid']));
 							if ($day_click < $article['article_rule_daynum']) {
+								
+								
+								//如果设置了最高累计奖金，计算出已经支出的金额：@phpdb.net;
+								$total_money = $article['article_rule_userd_money'] ? $article['article_rule_userd_money'] : 0;
+								if ($article['article_rule_money_total']>0){
+									$sql = "select sum(add_money) from ".tablename('sz_yi_article_share').
+											" where uniacid = '{$_W['uniacid']}' and aid='{$article['id']}' ";
+											// echo $sql;exit;
+									$total_money += pdo_fetchcolumn($sql);
+									// echo $total_money;exit;
+									//这里判断是否超出了总奖励金额，如果超过，金额设为0：@phpdb.net;
+									if ($total_money >= $article['article_rule_money_total']){
+										//把奖励的金额设为0，即不允许给会员增加金额：
+										$article['article_rule_money'] = 0;
+									}
+								}
+								//==================end
+								
 								$insert = array('aid' => $article['id'], 'share_user' => $shareid, 'click_user' => $myid, 'click_date' => time(), 'add_credit' => $article['article_rule_credit'], 'add_money' => $article['article_rule_money'], 'uniacid' => $_W['uniacid']);
-								pdo_insert('sz_yi_article_share', $insert);
+								pdo_insert('sz_yi_article_share', $insert); 
+								
 								if ($article['article_rule_credit'] > 0) {
 									m('member')->setCredit($profile['openid'], 'credit1', $article['article_rule_credit'], array(0, $shopset['name'] . " 文章营销奖励积分"));
 								}

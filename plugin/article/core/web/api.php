@@ -1,6 +1,6 @@
 <?php
 global $_W, $_GPC;
-
+//check_shop_auth('http://120.26.212.219/api.php', $this->pluginname);
 $apido = $_GPC['apido'];
 if ($_W['isajax'] && $_W['ispost']) {
 	if ($apido == 'delarticle') {
@@ -65,6 +65,7 @@ if ($_W['isajax'] && $_W['ispost']) {
 		}
 	} elseif ($apido == 'save') {
 		$data = $_GPC['data'];
+		// print_r($data);exit;
 		$content = htmlspecialchars_decode($content);
 		$content = m('common')->html_images($_GPC['content']);
 		$content = htmlspecialchars($content);
@@ -84,6 +85,7 @@ if ($_W['isajax'] && $_W['ispost']) {
 			foreach ($data as $d) {
 				$arr[$d['name']] = $d['value'];
 			}
+			// print_r($arr);exit;
 			if (!empty($arr['id'])) {
 				$articlekeyword = pdo_fetchcolumn("SELECT article_keyword FROM " . tablename('sz_yi_article') . " WHERE id=:aid and uniacid=:uniacid limit 1 ", array(':aid' => $arr['id'], ':uniacid' => $_W['uniacid']));
 				if ($arr['article_keyword'] != $articlekeyword) {
@@ -157,7 +159,27 @@ if ($_W['isajax'] && $_W['ispost']) {
 		$article_shownum = $_GPC['article_shownum'];
 		$article_keyword = $_GPC['article_keyword'];
 		$article_temp = intval($_GPC['article_temp']);
-		$arr = array('article_message' => $article_message, 'article_title' => $article_title, 'article_image' => $article_image, 'article_shownum' => $article_shownum, 'article_keyword' => $article_keyword, 'article_temp' => $article_temp);
+		
+		//处理地区数据；@phpdb.net
+		$article_province = $_GPC['article_province'];
+		$article_city = $_GPC['article_city'];
+		$article_province = explode(',',$article_province);
+		$article_city = explode(',',$article_city);
+		$area_arr = array();
+		$index = 0;
+		if (is_array($article_province)){
+			foreach ($article_province as $key=>$province){
+				if ($province){
+					$area_arr[$index]['province'] = $province;
+					$area_arr[$index]['city'] = $article_city[$key];
+					$index ++;
+				}
+			}
+		}
+		$area_arr = json_encode($area_arr);
+		// print_r($area_arr);exit;
+		
+		$arr = array('article_message' => $article_message, 'article_title' => $article_title, 'article_image' => $article_image, 'article_shownum' => $article_shownum, 'article_keyword' => $article_keyword, 'article_temp' => $article_temp,'article_area' => $area_arr);
 		if (!empty($arr)) {
 			$rule = pdo_fetch("select * from " . tablename('rule') . ' where uniacid=:uniacid and module=:module and name=:name limit 1', array(':uniacid' => $_W['uniacid'], ':module' => 'cover', ':name' => "sz_yi文章营销入口设置"));
 			if (!empty($rule)) {

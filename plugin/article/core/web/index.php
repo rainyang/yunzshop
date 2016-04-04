@@ -1,6 +1,6 @@
 <?php
 global $_W, $_GPC;
-
+//check_shop_auth('http://120.26.212.219/api.php', $this->pluginname);
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 load()->func('tpl');
 if ($operation == 'display') {
@@ -42,6 +42,17 @@ if ($operation == 'display') {
 } elseif ($operation == 'other') {
 	ca('article.page.otherset');
 	$article_sys = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article_sys') . " WHERE uniacid=:uniacid limit 1 ", array(':uniacid' => $_W['uniacid']));
+	$article_sys['article_area'] = json_decode($article_sys['article_area'],true);
+	$area_count = sizeof($article_sys['article_area']);
+	// echo $area_count;exit;
+	if ($area_count == 0){
+		//没有设定地区的时候的默认值：
+		$article_sys['article_area'][0]['province'] = '';
+		$article_sys['article_area'][0]['city'] = '';
+		$area_count = 1;
+	}
+	// print_r($article_sys);exit;
+	
 } elseif ($operation == 'list_read' || $operation == 'list_share') {
 	ca('article.page.showdata');
 	$aid = intval($_GPC['aid']);
@@ -88,3 +99,48 @@ if ($operation == 'display') {
 	$reportnum = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article_report') . " WHERE uniacid= :uniacid ", array(':uniacid' => $_W['uniacid']));
 }
 include $this->template('index');
+
+
+//增加的函数区：
+function tpl_form_field_district_pdb($name, $values = array()) {
+	$html = '';
+	if (!defined('TPL_INIT_DISTRICT')) {
+		$html .= '
+		<script type="text/javascript">
+			require(["jquery", "district"], function($, dis){
+				$(".tpl-district-container").each(function(){
+					var elms = {};
+					elms.province = $(this).find(".tpl-province")[0];
+					elms.city = $(this).find(".tpl-city")[0];
+					var vals = {};
+					vals.province = $(elms.province).attr("data-value");
+					vals.city = $(elms.city).attr("data-value");
+					dis.render(elms, vals, {withTitle: true});
+				});
+			});
+		</script>';
+		define('TPL_INIT_DISTRICT', true);
+	}
+	if (empty($values) || !is_array($values)) {
+		$values = array('province'=>'','city'=>'','district'=>'');
+	}
+	if(empty($values['province'])) {
+		$values['province'] = '';
+	}
+	if(empty($values['city'])) {
+		$values['city'] = '';
+	}
+	$html .= '
+		<div class="row row-fix tpl-district-container">
+			<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+				<select name="' . $name . '[province]" data-value="' . $values['province'] . '" class="form-control tpl-province">
+				</select>
+			</div>
+			<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+				<select name="' . $name . '[city]" data-value="' . $values['city'] . '" class="form-control tpl-city">
+				</select>
+			</div>
+			
+		</div>';
+	return $html;
+}

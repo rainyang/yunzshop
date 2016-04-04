@@ -1,5 +1,5 @@
 <?php
-define('CLOUD_UPGRADE_URL', 'http://xinghuo.yunzshop.com/web/index.php?c=account&a=upgradetest');
+define('CLOUD_UPGRADE_URL', 'http://115.29.33.155/web/index.php?c=account&a=upgradetest');
 
 if (!defined('IN_IA')) {
     exit('Access Denied');
@@ -14,19 +14,17 @@ load()->func('communication');
 load()->func('file');
 if ($op == 'display') {
     //先看是否注册，没注册的要注册
-    /*
     define('CLOUD_URL', 'http://115.29.33.155/web/index.php?c=account&a=register');
     $data['domain'] = $_SERVER['HTTP_HOST'];
     $data['signature'] = 'sz_cloud_register';
     $res = ihttp_request(CLOUD_URL, $data);
     if(!$res){
-        exit('通讯失败,请检查网络');
+        //exit('通讯失败,请检查网络');
     }
     $content = json_decode($res['content'], 1);
     if(!$content['status']){
-        exit($content['msg']);
+        //exit($content['msg']);
     }
-    */
     $versionfile = IA_ROOT . '/addons/sz_yi/version.php';
     $updatedate  = date('Y-m-d H:i', filemtime($versionfile));
     $version     = SZ_YI_VERSION;
