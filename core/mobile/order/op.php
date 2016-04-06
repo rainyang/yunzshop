@@ -113,12 +113,9 @@ if ($_W['isajax']) {
 		if ($order['iscomment'] >= 2) {
 			show_json(0, '您已经评价了!');
 		}
-		if ($_W['ispost']) {
+		$comments = $_GPC['comments'];
+		if ($_W['ispost'] && is_array($comments)) {
 			$member = m('member')->getMember($openid);
-			$comments = $_GPC['comments'];
-			if (!is_array($comments)) {
-				show_json(0, '数据出错，请重试!');
-			}
 			foreach ($comments as $c) {
 				$old_c = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order_comment') . ' where uniacid=:uniacid and orderid=:orderid and goodsid=:goodsid limit 1', array(':uniacid' => $_W['uniacid'], ':goodsid' => $c['goodsid'], ':orderid' => $orderid));
 				if (empty($old_c)) {
