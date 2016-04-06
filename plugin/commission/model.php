@@ -1581,13 +1581,14 @@ if (!class_exists('CommissionModel')) {
                 ':orderid' => $orderid,
                 ':uniacid' => $_W['uniacid']
             ));
-            print_r($goods);
             $goodsLevel = $goods['commission_level_id'];
             if ($goodsLevel) {
                 $levels = $this->getLevels();
                 foreach ($levels as $level) {
                     if ($level['id'] == $goodsLevel) {
                         $goodsLevelCommission1 = $level['commission1'];
+                        $goodsLevelCommission2 = $level['commission2'];
+                        $goodsLevelCommission3 = $level['commission3'];
                     }
                 }
                 $openid = pdo_fetchcolumn('select openid from ' . tablename('sz_yi_order') . ' where uniacid=:uniacid and id=:orderid', array(
@@ -1596,7 +1597,11 @@ if (!class_exists('CommissionModel')) {
                 ));
                 $userLevel = $this->getLevel($openid);
                 // 如果原来用户没有分销商等级或者分销商等级较低，则变为该商品的分销商等级
-                if (!$userLevel || $userLevel['commission1'] < $goodsLevelCommission1) {
+                if (!$userLevel
+                 || $userLevel['commission1'] < $goodsLevelCommission1
+                 || $userLevel['commission2'] < $goodsLevelCommission2
+                 || $userLevel['commission3'] < $goodsLevelCommission3
+                ) {
                     pdo_update('sz_yi_member', array('agentlevel' => $goodsLevel), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
                 }
             }

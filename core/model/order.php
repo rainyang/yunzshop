@@ -14,6 +14,49 @@ if (!defined('IN_IA')) {
 }
 class Sz_DYi_Order
 {
+    function getDispatchPrice($dephp_0, $dephp_1, $dephp_2 = -1){
+        if (empty($dephp_1)){
+            return 0;
+        }
+        $dephp_3 = 0;
+        if ($dephp_2 == -1){
+            $dephp_2 = $dephp_1['calculatetype'];
+        }
+        if ($dephp_2 == 1){
+            if ($dephp_0 <= $dephp_1['firstnum']){
+                $dephp_3 = floatval($dephp_1['firstnumprice']);
+            }else{
+                $dephp_3 = floatval($dephp_1['firstnumprice']);
+                $dephp_4 = $dephp_0 - floatval($dephp_1['firstnum']);
+                $dephp_5 = floatval($dephp_1['secondnum']) <= 0 ? 1 : floatval($dephp_1['secondnum']);
+                $dephp_6 = 0;
+                if ($dephp_4 % $dephp_5 == 0){
+                    $dephp_6 = ($dephp_4 / $dephp_5) * floatval($dephp_1['secondnumprice']);
+                }else{
+                    $dephp_6 = ((int) ($dephp_4 / $dephp_5) + 1) * floatval($dephp_1['secondnumprice']);
+                }
+                $dephp_3 += $dephp_6;
+            }
+        }else{
+            if ($dephp_0 <= $dephp_1['firstweight']){
+                $dephp_3 = floatval($dephp_1['firstprice']);
+            }else{
+                $dephp_3 = floatval($dephp_1['firstprice']);
+                $dephp_4 = $dephp_0 - floatval($dephp_1['firstweight']);
+                $dephp_5 = floatval($dephp_1['secondweight']) <= 0 ? 1 : floatval($dephp_1['secondweight']);
+                $dephp_6 = 0;
+                if ($dephp_4 % $dephp_5 == 0){
+                    $dephp_6 = ($dephp_4 / $dephp_5) * floatval($dephp_1['secondprice']);
+                }else{
+                    $dephp_6 = ((int) ($dephp_4 / $dephp_5) + 1) * floatval($dephp_1['secondprice']);
+                }
+                $dephp_3 += $dephp_6;
+            }
+        }
+        return $dephp_3;
+    }
+
+    /*
     function getDispatchPrice($weight, $d)
     {
         if (empty($d)) {
@@ -36,6 +79,9 @@ class Sz_DYi_Order
         }
         return $price;
     }
+     */
+
+    /*
     function getCityDispatchPrice($_var_6, $_var_7, $weight, $d)
     {
         if (is_array($_var_6) && count($_var_6) > 0) {
@@ -48,6 +94,20 @@ class Sz_DYi_Order
         }
         return $this->getDispatchPrice($weight, $d);
     }
+     */
+
+    function getCityDispatchPrice($dephp_7, $dephp_8, $dephp_0, $dephp_1){
+        if (is_array($dephp_7) && count($dephp_7) > 0){
+            foreach ($dephp_7 as $dephp_9){
+                $dephp_10 = explode(';', $dephp_9['citys']);
+                if (in_array($dephp_8, $dephp_10) && !empty($dephp_10)){
+                    return $this -> getDispatchPrice($dephp_0, $dephp_9, $dephp_1['calculatetype']);
+                }
+            }
+        }
+        return $this -> getDispatchPrice($dephp_0, $dephp_1);
+    }
+
     public function payResult($params)
     {
         global $_W;
@@ -331,8 +391,8 @@ class Sz_DYi_Order
     }
     function getDefaultDispatch(){
         global $_W;
-        //$dephp_31 = 'select * from ' . tablename('sz_yi_dispatch') . ' where isdefault=1 and uniacid=:uniacid and enabled=1 Limit 1';
-        $dephp_31 = 'select * from ' . tablename('sz_yi_dispatch') . ' where uniacid=:uniacid and enabled=1 Limit 1';
+        $dephp_31 = 'select * from ' . tablename('sz_yi_dispatch') . ' where isdefault=1 and uniacid=:uniacid and enabled=1 Limit 1';
+        //$dephp_31 = 'select * from ' . tablename('sz_yi_dispatch') . ' where uniacid=:uniacid and enabled=1 Limit 1';
         $dephp_11 = array(':uniacid' => $_W['uniacid']);
         $dephp_13 = pdo_fetch($dephp_31, $dephp_11);
         return $dephp_13;
