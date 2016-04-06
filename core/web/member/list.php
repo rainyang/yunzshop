@@ -161,6 +161,45 @@ if ($op == 'display') {
     if (checksubmit('submit')) {
         ca('member.member.edit');
         $data = is_array($_GPC['data']) ? $_GPC['data'] : array();
+
+        $member = m('member')->getMember($id);
+
+        if( (!empty($data['level']) || !empty($member['level'])) && $data['level'] != $member['level'])
+        {
+
+            $new_level_name = $old_level_name = '普通会员';
+            foreach ($levels as $key => $value) {
+                if($data['level'] == $value['id'])
+                {
+                    $new_level_name = $value['levelname'];
+                }
+
+                if($member['level'] == $value['id'])
+                {
+                    $old_level_name = $value['levelname'];
+                }
+            }
+            $msg = array(
+                'first' => array(
+                    'value' => "后台修改会员等级！",
+                    "color" => "#4a5077"
+                ),
+                'keyword1' => array(
+                    'title' => '修改等级',
+                    'value' => "由【". $old_level_name ."】修改为 【" . $new_level_name . "】!",
+                    "color" => "#4a5077"
+                ),
+                'remark' => array(
+                    'value' => "\r\n我们已为您修改会员等级。",
+                    "color" => "#4a5077"
+                )
+            );
+
+            $detailurl  = $this->createMobileUrl('member');
+            m('message')->sendCustomNotice($member['openid'], $msg, $detailurl);         
+        }
+
+
         pdo_update('sz_yi_member', $data, array(
             'id' => $id,
             'uniacid' => $_W['uniacid']

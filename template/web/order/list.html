@@ -153,7 +153,7 @@
 	  <table class='table' style='float:left;border:1px solid #ccc;border-top:none;table-layout: fixed;'>
 
 
-                {loop $item['goods'] $k $g}
+            {loop $item['goods'] $k $g}
                 <tr class='trbody'>
                     <td class="goods_info">
 						 <img src="{php echo tomedia($g['thumb'])}"> 
@@ -253,17 +253,14 @@
                     </td>
                     <td   rowspan="{php echo count($item['goods'])}" ><label class='label label-{$item['statuscss']}'>{$item['status']}</label><br />
                     <a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $item['id']))}"   >查看详情</a></td>
- <td   rowspan="{php echo count($item['goods'])}" >
-{template 'web/order/ops'}
- 
-
- </td>
+                     <td   rowspan="{php echo count($item['goods'])}" >
+                    {template 'web/order/ops'}
+                     </td>
             {/if} 
-                                                                                                                  </tr>
-                                                                                                                  {/loop}
+        </tr>
+    {/loop}
    </table>
-
-                                                                                                                  {/loop}
+{/loop}
 {else}
 <div class="panel panel-info">
     <div class="panel-heading">筛选</div>
