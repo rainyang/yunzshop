@@ -1,5 +1,6 @@
 <?php
 //芸众商城 QQ:913768135
+
 global $_W, $_GPC;
 $pageid = $_GPC['pageid'];
 if (!empty($pageid)) {

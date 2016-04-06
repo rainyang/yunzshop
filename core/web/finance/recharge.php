@@ -9,16 +9,38 @@ $id      = intval($_GPC['id']);
 $profile = m('member')->getMember($id);
 
 if ($op == 'credit1') {
-	
+
 	ca('finance.recharge.credit1');
 	if ($_W['ispost']) {
 		m('member')->setCredit($profile['openid'], 'credit1', $_GPC['num'], array($_W['uid'], '后台会员充值积分'));//余额积分
 		plog('finance.recharge.credit1', "积分充值 充值积分: {$_GPC['num']} <br/>会员信息: ID: {$profile['id']} /  {$profile['openid']}/{$profile['nickname']}/{$profile['realname']}/{$profile['mobile']}");
+
+
+		$msg = array(
+		    'first' => array(
+		        'value' => "后台会员充值积分！",
+		        "color" => "#4a5077"
+		    ),
+		    'keyword1' => array(
+		        'title' => '积分充值',
+		        'value' => "后台会员充值积分:" .$_GPC['num'] . "积分!",
+		        "color" => "#4a5077"
+		    ),
+		    'remark' => array(
+		        'value' => "\r\n我们已为您充值积分，请您登录个人中心查看。",
+		        "color" => "#4a5077"
+		    )
+		);
+
+		$detailurl  = $this->createMobileUrl('member');
+		m('message')->sendCustomNotice($profile['openid'], $msg, $detailurl);
 		message('充值成功!', referer(), 'success');
 	}
-	
+
 	$profile['credit1'] = m('member')->getCredit($profile['openid'], 'credit1');
-	
+
+
+
 } elseif ($op == 'credit2') {
 	
 	ca('finance.recharge.credit2');
