@@ -108,10 +108,16 @@ class Sz_DYi_Order
         return $this -> getDispatchPrice($dephp_0, $dephp_1);
     }
 
+    /**
+     * 支付完成回调方法
+     * @param params array
+     * @return array()
+     * modify RainYang 2016.4.7
+     */
     public function payResult($params)
     {
         global $_W;
-        $fee     = intval($params['fee']);
+        $fee     = $params['fee'];
         $data    = array(
             'status' => $params['result'] == 'success' ? 1 : 0
         );
@@ -120,6 +126,21 @@ class Sz_DYi_Order
             ':uniacid' => $_W['uniacid'],
             ':ordersn' => $ordersn
         ));
+
+        //验证paylog里金额是否与订单金额一致
+        $log = pdo_fetch('select * from ' . tablename('core_paylog') . ' where `uniacid`=:uniacid and fee=:fee and `module`=:module and `tid`=:tid limit 1',
+            array(
+            ':uniacid' => $_W['uniacid'],
+            ':module' => 'sz_yi',
+            ':fee' => $fee,
+            ':tid' => $order['ordersn']
+        ));
+
+        if (empty($log)) {
+            show_json(-1, '订单金额错误, 请重试!');
+            exit;
+        }
+
         $orderid = $order['id'];
         if ($params['from'] == 'return') {
             $address = false;
