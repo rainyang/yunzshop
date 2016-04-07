@@ -148,6 +148,16 @@
                     <span class="help-block">当前代理的佣金达到此额度时才能提现</span>
                 </div>
             </div>
+            
+            <!-- Author:ym Date:2016-04-07 Content:钓鱼式营销 -->
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现消费</label>
+                <div class="col-sm-9 col-xs-12">
+                    <input type="text" name="setdata[consume_withdraw]" class="form-control" value="{$set['consume_withdraw']}"  />
+                    <span class="help-block">钓鱼式营销，提现需先消费的金额，需订单完成后。</span>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启提现到余额</label>
                 <div class="col-sm-9 col-xs-12">
@@ -197,7 +207,7 @@
                     <span class="help-block">分销中心分销订单是否显示商品详情</span>
                 </div> 
            </div>
-	   <div class="form-group">
+	       <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">分销订单购买者详情</label>
                 <div class="col-sm-9 col-xs-12">
                 	<label class="radio-inline"><input type="radio"  name="setdata[openorderbuyer]" value="0" {if empty($set['openorderbuyer'])} checked="checked"{/if} /> 关闭</label>
@@ -206,8 +216,15 @@
                     <span class="help-block">分销中心分销订单是否显示购买者</span>
                 </div> 
            </div>
-            
-           
+           <!-- Author:ym Date:2016-04-07 Content:三级消息提醒开关 -->
+           <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启三级消息提醒</label>
+                <div class="col-sm-9 col-xs-12">
+                    <label class="radio-inline"><input type="radio"  name="setdata[remind_message]" value="0" {if empty($set['remind_message'])} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[remind_message]" value="1" {if $set['remind_message'] ==1} checked="checked"{/if} /> 开启</label>
+                    <span class="help-block">是否开启三级分销订单消息提醒功能，不开启上级有消息</span>
+                </div> 
+           </div>
             
         </div>
  

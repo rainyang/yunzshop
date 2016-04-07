@@ -38,10 +38,9 @@
     </div>
     <div class="gold_num">买家确认收货后，立即获得{php echo $this->set['texts']['commission1']}。<%if set.settledays>0%>结算期（<%set.settledays%>天）后，{php echo $this->set['texts']['commission']}可{php echo $this->set['texts']['withdraw']}。结算期内，买家退货，{php echo $this->set['texts']['commission']}将自动扣除。<%/if%>
         <%if set.withdraw>0%><br/><br/>注意： 可用{php echo $this->set['texts']['commission']}满 <span style='color:red'><%set.withdraw%></span> 元后才能申请{php echo $this->set['texts']['withdraw']}<br/><%/if%>
+        <%if set.consume_withdraw>0%><br/><br/>注意： 自己购买的完成订单，共计 <span style='color:red'><%set.consume_withdraw%></span> 元后才能申请{php echo $this->set['texts']['withdraw']}<br/><%/if%>
     </div>
-    <div class="gold_sub" <%if !cansettle %>style='background:#ccc'<%/if%>>我要提现</div>
-        
-        
+    <div class="gold_sub" <%if !cansettle %>style='background:#ccc'<%/if%>>我要提现</div>     
 </div>
 
 </script>

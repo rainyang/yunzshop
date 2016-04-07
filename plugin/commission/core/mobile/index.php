@@ -26,9 +26,9 @@ if(!empty($pluginbonus)){
 }
 
 if ($_W['isajax']) {
-	$member = $this->model->getInfo($openid, array('total', 'ordercount0', 'ok'));
-    //print_r($member);exit;
+	$member = $this->model->getInfo($openid, array('total', 'ordercount0', 'ok', 'myorder'));
 	$cansettle = $member['commission_ok'] > 0 && $member['commission_ok'] >= floatval($this->set['withdraw']);
+	$mycansettle = $member['commission_ok'] > 0 && $member['myoedermoney'] >= floatval($this->set['consume_withdraw']);
 	$commission_ok = $member['commission_ok'];
     $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
 	$member['agentcount'] = number_format($member['agentcount'], 0);
@@ -52,6 +52,6 @@ if ($_W['isajax']) {
 	}
 	$this->set['openselect'] = $openselect;
 	
-	show_json(1, array('commission_ok' => $commission_ok, 'member' => $member, 'level' => $level, 'cansettle' => $cansettle, 'settlemoney' => number_format(floatval($this->set['withdraw']), 2), 'set' => $this->set,));
+	show_json(1, array('commission_ok' => $commission_ok, 'member' => $member, 'level' => $level, 'cansettle' => $cansettle, 'mycansettle' => $mycansettle, 'settlemoney' => number_format(floatval($this->set['withdraw']), 2), 'settlemoney' => number_format(floatval($this->set['consume_withdraw']), 2), 'set' => $this->set,));
 }
 include $this->template('index');

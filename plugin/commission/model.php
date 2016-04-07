@@ -159,6 +159,8 @@ if (!class_exists('CommissionModel')) {
 			$_var_51 = 0;
 			$_var_52 = 0;
 			$_var_53 = 0;
+			$myoedermoney = 0;
+			$myordercount = 0;
 			if ($_var_8 >= 1) {
 				if (in_array('ordercount0', $_var_21)) {
 					$_var_54 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=0 and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $_var_22['id']));
@@ -451,6 +453,15 @@ if (!class_exists('CommissionModel')) {
 					$_var_26 += $_var_41;
 				}
 			}
+			//Author:ym Date:2016-04-07 Content:自购完成订单
+			if (in_array('myorder', $_var_21)) {
+				$myorder = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $_var_22['openid']));
+				//Author:ym Date:2016-04-07 Content:自购订单金额
+				$myoedermoney = $myorder['ordermoney'];
+				//Author:ym Date:2016-04-07 Content:自购订单数量
+				$myordercount = $myorder['ordercount'];
+			}
+
 			$_var_22['agentcount'] = $_var_26;
 			$_var_22['ordercount'] = $_var_29;
 			$_var_22['ordermoney'] = $_var_30;
@@ -483,6 +494,8 @@ if (!class_exists('CommissionModel')) {
 			$_var_22['level3'] = $_var_41;
 			$_var_22['level3_agentids'] = $_var_75;
 			$_var_22['agenttime'] = date('Y-m-d H:i', $_var_22['agenttime']);
+			$_var_22['myoedermoney'] = $myoedermoney;
+			$_var_22['myordercount'] = $myordercount;
 			return $_var_22;
 		}
 
@@ -799,149 +812,159 @@ if (!class_exists('CommissionModel')) {
 			}
 		}
 
-		public function checkOrderConfirm($_var_1 = '0')
+		/**
+		 * Author:ym
+		 * Date:2016-04-07
+		 * Content:修改编译变量，检查内购无问题。
+		 **/
+		public function checkOrderConfirm($orderid = '0')
 		{
 			global $_W, $_GPC;
-			if (empty($_var_1)) {
+			if (empty($orderid)) {
 				return;
 			}
-			$_var_0 = $this->getSet();
-			if (empty($_var_0['level'])) {
+			$set = $this->getSet();
+			if (empty($set['level'])) {
 				return;
 			}
-			$_var_77 = pdo_fetch('select id,openid,ordersn,goodsprice,agentid,paytime from ' . tablename('sz_yi_order') . ' where id=:id and status>=0 and uniacid=:uniacid limit 1', array(':id' => $_var_1, ':uniacid' => $_W['uniacid']));
-			if (empty($_var_77)) {
+			$order = pdo_fetch('select id,openid,ordersn,goodsprice,agentid,paytime from ' . tablename('sz_yi_order') . ' where id=:id and status>=0 and uniacid=:uniacid limit 1', array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
+			if (empty($order)) {
 				return;
 			}
-			$_var_20 = $_var_77['openid'];
-			$_var_22 = m('member')->getMember($_var_20);
-			if (empty($_var_22)) {
+			$openid = $order['openid'];
+			$member = m('member')->getMember($openid);
+			if (empty($member)) {
 				return;
 			}
-			//分红
+			//Author:ym Date:2016-04-07 Content:分红提交订单处理
 			$pluginbonus = p("bonus");
 			if(!empty($pluginbonus)){
 				$bonus_set = $pluginbonus->getSet();
 				if(!empty($bonus_set['start'])){
-					$pluginbonus->checkOrderConfirm($_var_1);
+					$pluginbonus->checkOrderConfirm($orderid);
 				}
 			}
-			$_var_123 = intval($_var_0['become_child']);
-			$_var_117 = false;
-			if (empty($_var_123)) {
-				$_var_117 = m('member')->getMember($_var_22['agentid']);
+			$become_child = intval($set['become_child']);
+			$parent = false;
+			if (empty($become_child)) {
+				$parent = m('member')->getMember($member['agentid']);
 			} else {
-				$_var_117 = m('member')->getMember($_var_22['inviter']);
+				$parent = m('member')->getMember($member['inviter']);
 			}
-			$_var_118 = !empty($_var_117) && $_var_117['isagent'] == 1 && $_var_117['status'] == 1;
-			$_var_24 = time();
-			$_var_123 = intval($_var_0['become_child']);
-			if ($_var_118) {
-				if ($_var_123 == 1) {
-					if (empty($_var_22['agentid']) && $_var_22['id'] != $_var_117['id']) {
-						if (empty($_var_22['fixagentid'])) {
-							$_var_22['agentid'] = $_var_117['id'];
-							pdo_update('sz_yi_member', array('agentid' => $_var_117['id'], 'childtime' => $_var_24), array('uniacid' => $_W['uniacid'], 'id' => $_var_22['id']));
-							$this->sendMessage($_var_117['openid'], array('nickname' => $_var_22['nickname'], 'childtime' => $_var_24), TM_COMMISSION_AGENT_NEW);
-							$this->upgradeLevelByAgent($_var_117['id']);
+			$parent_is_agent = !empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1;
+			$time = time();
+			$become_child = intval($set['become_child']);
+			if ($parent_is_agent) {
+				if ($become_child == 1) {
+					if (empty($member['agentid']) && $member['id'] != $parent['id']) {
+						if (empty($member['fixagentid'])) {
+							$member['agentid'] = $parent['id'];
+							pdo_update('sz_yi_member', array('agentid' => $parent['id'], 'childtime' => $time), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
+							$this->sendMessage($parent['openid'], array('nickname' => $member['nickname'], 'childtime' => $time), TM_COMMISSION_AGENT_NEW);
+							$this->upgradeLevelByAgent($parent['id']);
 						}
 					}
 				}
 			}
-			$_var_4 = $_var_22['agentid'];
-			if ($_var_22['isagent'] == 1 && $_var_22['status'] == 1) {
-				if (!empty($_var_0['selfbuy'])) {
-					$_var_4 = $_var_22['id'];
+			$agentid = $member['agentid'];
+			if ($member['isagent'] == 1 && $member['status'] == 1) {
+				if (!empty($set['selfbuy'])) {
+					$agentid = $member['id'];
 				}
 			}
-			if (!empty($_var_4)) {
-				pdo_update('sz_yi_order', array('agentid' => $_var_4), array('id' => $_var_1));
+			if (!empty($agentid)) {
+				pdo_update('sz_yi_order', array('agentid' => $agentid), array('id' => $orderid));
 			}
-			$this->calculate($_var_1);
+			$this->calculate($orderid);
 		}
 
-		public function checkOrderPay($_var_1 = '0')
+		/**
+		 * Author:ym
+		 * Date:2016-04-07
+		 * Content:修改编译变量
+		 **/
+		public function checkOrderPay($orderid = '0')
 		{
 			global $_W, $_GPC;
-			if (empty($_var_1)) {
+			if (empty($orderid)) {
 				return;
 			}
-			$_var_0 = $this->getSet();
-			if (empty($_var_0['level'])) {
+			$set = $this->getSet();
+			if (empty($set['level'])) {
 				return;
 			}
-			$_var_77 = pdo_fetch('select id,openid,ordersn,goodsprice,agentid,paytime from ' . tablename('sz_yi_order') . ' where id=:id and status>=1 and uniacid=:uniacid limit 1', array(':id' => $_var_1, ':uniacid' => $_W['uniacid']));
-			if (empty($_var_77)) {
+			$order = pdo_fetch('select id,openid,ordersn,goodsprice,agentid,paytime from ' . tablename('sz_yi_order') . ' where id=:id and status>=1 and uniacid=:uniacid limit 1', array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
+			if (empty($order)) {
 				return;
 			}
-			$_var_20 = $_var_77['openid'];
-			$_var_22 = m('member')->getMember($_var_20);
-			if (empty($_var_22)) {
+			$openid = $order['openid'];
+			$member = m('member')->getMember($openid);
+			if (empty($member)) {
 				return;
 			}
-			//分红
+			//Author:ym Date:2016-04-07 Content:分红支付订单处理
 			$pluginbonus = p("bonus");
 			if(!empty($pluginbonus)){
 				$bonus_set = $pluginbonus->getSet();
 				if(!empty($bonus_set['start'])){
-					$pluginbonus->checkOrderPay($_var_1);
+					$pluginbonus->checkOrderPay($orderid);
 				}
 			}
-			$_var_123 = intval($_var_0['become_child']);
-			$_var_117 = false;
-			if (empty($_var_123)) {
-				$_var_117 = m('member')->getMember($_var_22['agentid']);
+			$become_child = intval($set['become_child']);
+			$parent = false;
+			if (empty($become_child)) {
+				$parent = m('member')->getMember($member['agentid']);
 			} else {
-				$_var_117 = m('member')->getMember($_var_22['inviter']);
+				$parent = m('member')->getMember($member['inviter']);
 			}
-			$_var_118 = !empty($_var_117) && $_var_117['isagent'] == 1 && $_var_117['status'] == 1;
-			$_var_24 = time();
-			$_var_123 = intval($_var_0['become_child']);
-			if ($_var_118) {
-				if ($_var_123 == 2) {
-					if (empty($_var_22['agentid']) && $_var_22['id'] != $_var_117['id']) {
-						if (empty($_var_22['fixagentid'])) {
-							$_var_22['agentid'] = $_var_117['id'];
-							pdo_update('sz_yi_member', array('agentid' => $_var_117['id'], 'childtime' => $_var_24), array('uniacid' => $_W['uniacid'], 'id' => $_var_22['id']));
-							$this->sendMessage($_var_117['openid'], array('nickname' => $_var_22['nickname'], 'childtime' => $_var_24), TM_COMMISSION_AGENT_NEW);
-							$this->upgradeLevelByAgent($_var_117['id']);
-							if (empty($_var_77['agentid'])) {
-								$_var_77['agentid'] = $_var_117['id'];
-								pdo_update('sz_yi_order', array('agentid' => $_var_117['id']), array('id' => $_var_1));
-								$this->calculate($_var_1);
+			$parent_is_agent = !empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1;
+			$time = time();
+			$become_child = intval($set['become_child']);
+			if ($parent_is_agent) {
+				if ($become_child == 2) {
+					if (empty($member['agentid']) && $member['id'] != $parent['id']) {
+						if (empty($member['fixagentid'])) {
+							$member['agentid'] = $parent['id'];
+							pdo_update('sz_yi_member', array('agentid' => $parent['id'], 'childtime' => $time), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
+							$this->sendMessage($parent['openid'], array('nickname' => $member['nickname'], 'childtime' => $time), TM_COMMISSION_AGENT_NEW);
+							$this->upgradeLevelByAgent($parent['id']);
+							if (empty($order['agentid'])) {
+								$order['agentid'] = $parent['id'];
+								pdo_update('sz_yi_order', array('agentid' => $parent['id']), array('id' => $orderid));
+								$this->calculate($orderid);
 							}
 						}
 					}
 				}
 			}
-			$_var_125 = $_var_22['isagent'] == 1 && $_var_22['status'] == 1;
-			if (!$_var_125 && empty($_var_0['become_order'])) {
-				$_var_24 = time();
-				if ($_var_0['become'] == 2 || $_var_0['become'] == 3) {
-					$_var_126 = true;
-					if (!empty($_var_22['agentid'])) {
-						$_var_117 = m('member')->getMember($_var_22['agentid']);
-						if (empty($_var_117) || $_var_117['isagent'] != 1 || $_var_117['status'] != 1) {
-							$_var_126 = false;
+			$isagent = $member['isagent'] == 1 && $member['status'] == 1;
+			if (!$isagent && empty($set['become_order'])) {
+				$time = time();
+				if ($set['become'] == 2 || $set['become'] == 3) {
+					$parentisagent = true;
+					if (!empty($member['agentid'])) {
+						$parent = m('member')->getMember($member['agentid']);
+						if (empty($parent) || $parent['isagent'] != 1 || $parent['status'] != 1) {
+							$parentisagent = false;
 						}
 					}
-					if ($_var_126) {
-						$_var_127 = false;
-						if ($_var_0['become'] == '2') {
-							$_var_29 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where openid=:openid and status>=1 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $_var_20));
-							$_var_127 = $_var_29 >= intval($_var_0['become_ordercount']);
-						} else if ($_var_0['become'] == '3') {
-							$_var_128 = pdo_fetchcolumn('select sum(og.realprice) from ' . tablename('sz_yi_order_goods') . ' og left join ' . tablename('sz_yi_order') . ' o on og.orderid=o.id  where o.openid=:openid and o.status>=1 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $_var_20));
-							$_var_127 = $_var_128 >= floatval($_var_0['become_moneycount']);
+					if ($parentisagent) {
+						$can = false;
+						if ($set['become'] == '2') {
+							$ordercount = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where openid=:openid and status>=1 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+							$can = $ordercount >= intval($set['become_ordercount']);
+						} else if ($set['become'] == '3') {
+							$moneycount = pdo_fetchcolumn('select sum(og.realprice) from ' . tablename('sz_yi_order_goods') . ' og left join ' . tablename('sz_yi_order') . ' o on og.orderid=o.id  where o.openid=:openid and o.status>=1 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+							$can = $moneycount >= floatval($set['become_moneycount']);
 						}
-						if ($_var_127) {
-							if (empty($_var_22['agentblack'])) {
-								$_var_124 = intval($_var_0['become_check']);
-								pdo_update('sz_yi_member', array('status' => $_var_124, 'isagent' => 1, 'agenttime' => $_var_24), array('uniacid' => $_W['uniacid'], 'id' => $_var_22['id']));
-								if ($_var_124 == 1) {
-									$this->sendMessage($_var_20, array('nickname' => $_var_22['nickname'], 'agenttime' => $_var_24), TM_COMMISSION_BECOME);
-									if ($_var_126) {
-										$this->upgradeLevelByAgent($_var_117['id']);
+						if ($can) {
+							if (empty($member['agentblack'])) {
+								$become_check = intval($set['become_check']);
+								pdo_update('sz_yi_member', array('status' => $become_check, 'isagent' => 1, 'agenttime' => $time), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
+								if ($become_check == 1) {
+									$this->sendMessage($openid, array('nickname' => $member['nickname'], 'agenttime' => $time), TM_COMMISSION_BECOME);
+									if ($parentisagent) {
+										$this->upgradeLevelByAgent($parent['id']);
 									}
 								}
 							}
@@ -949,86 +972,141 @@ if (!class_exists('CommissionModel')) {
 					}
 				}
 			}
-			if (!empty($_var_22['agentid'])) {
-				$_var_117 = m('member')->getMember($_var_22['agentid']);
-				if (!empty($_var_117) && $_var_117['isagent'] == 1 && $_var_117['status'] == 1) {
-					if ($_var_77['agentid'] == $_var_117['id']) {
-						$_var_129 = pdo_fetchall('select g.id,g.title,og.total,og.price,og.realprice, og.optionname as optiontitle,g.noticeopenid,g.noticetype,og.commission1 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $_var_77['id']));
-						$_var_5 = '';
-						$_var_8 = $_var_117['agentlevel'];
-						$_var_33 = 0;
-						$_var_130 = 0;
-						foreach ($_var_129 as $_var_131) {
-							$_var_5 .= "" . $_var_131['title'] . '( ';
-							if (!empty($_var_131['optiontitle'])) {
-								$_var_5 .= ' 规格: ' . $_var_131['optiontitle'];
+			if (!empty($order['agentid'])) {
+				$parent = m('member')->getMember($member['agentid']);
+				if (!empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1) {
+					if ($order['agentid'] == $parent['id']) {
+						$order_goods = pdo_fetchall('select g.id,g.title,og.total,og.price,og.realprice, og.optionname as optiontitle,g.noticeopenid,g.noticetype,og.commission1 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
+						$goods = '';
+						$level = $parent['agentlevel'];
+						$commission_total = 0;
+						$pricetotal = 0;
+						foreach ($order_goods as $og) {
+							$goods .= "" . $og['title'] . '( ';
+							if (!empty($og['optiontitle'])) {
+								$goods .= ' 规格: ' . $og['optiontitle'];
 							}
-							$_var_5 .= ' 单价: ' . ($_var_131['realprice'] / $_var_131['total']) . ' 数量: ' . $_var_131['total'] . ' 总价: ' . $_var_131['realprice'] . '); ';
-							$_var_58 = iunserializer($_var_131['commission1']);
-							$_var_33 += isset($_var_58['level' . $_var_8]) ? $_var_58['level' . $_var_8] : $_var_58['default'];
-							$_var_130 += $_var_131['realprice'];
+							$goods .= ' 单价: ' . ($og['realprice'] / $og['total']) . ' 数量: ' . $og['total'] . ' 总价: ' . $og['realprice'] . '); ';
+							$commission = iunserializer($og['commission1']);
+							$commission_total += isset($commission['level' . $level]) ? $commission['level' . $level] : $commission['default'];
+							$pricetotal += $og['realprice'];
 						}
-						$this->sendMessage($_var_117['openid'], array('nickname' => $_var_22['nickname'], 'ordersn' => $_var_77['ordersn'], 'price' => $_var_130, 'goods' => $_var_5, 'commission' => $_var_33, 'paytime' => $_var_77['paytime'],), TM_COMMISSION_ORDER_PAY);
+						$this->sendMessage($parent['openid'], array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $pricetotal, 'goods' => $goods, 'commission' => $commission_total, 'paytime' => $order['paytime'],), TM_COMMISSION_ORDER_PAY);
+					}
+				}
+				if(!empty($set['remind_message'])){ //Author:ym Date:2016-04-07 Content:三级消息提醒开关
+					//Author:ym Date:2016-04-07 Content:二级消息处理
+					if (!empty($parent['agentid'])) {
+						$parent = m('member')->getMember($parent['agentid']);
+						if (!empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1) {
+							if ($order['agentid'] == $parent['id']) {
+								$order_goods = pdo_fetchall('select g.id,g.title,og.total,og.price,og.realprice, og.optionname as optiontitle,g.noticeopenid,g.noticetype,og.commission2 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
+								$goods = '';
+								$level = $parent['agentlevel'];
+								$commission_total = 0;
+								$pricetotal = 0;
+								foreach ($order_goods as $og) {
+									$goods .= "" . $og['title'] . '( ';
+									if (!empty($og['optiontitle'])) {
+										$goods .= ' 规格: ' . $og['optiontitle'];
+									}
+									$goods .= ' 单价: ' . ($og['realprice'] / $og['total']) . ' 数量: ' . $og['total'] . ' 总价: ' . $og['realprice'] . '); ';
+									$commission = iunserializer($og['commission2']);
+									$commission_total += isset($commission['level' . $level]) ? $commission['level' . $level] : $commission['default'];
+									$pricetotal += $og['realprice'];
+								}
+								$this->sendMessage($parent['openid'], array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $pricetotal, 'goods' => $goods, 'commission' => $commission_total, 'paytime' => $order['paytime'],), TM_COMMISSION_ORDER_PAY);
+							}
+						}
+						//Author:ym Date:2016-04-07 Content:三级消息处理
+						if (!empty($parent['agentid'])) {
+							$parent = m('member')->getMember($parent['agentid']);
+							if (!empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1) {
+								if ($order['agentid'] == $parent['id']) {
+									$order_goods = pdo_fetchall('select g.id,g.title,og.total,og.price,og.realprice, og.optionname as optiontitle,g.noticeopenid,g.noticetype,og.commission3 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
+									$goods = '';
+									$level = $parent['agentlevel'];
+									$commission_total = 0;
+									$pricetotal = 0;
+									foreach ($order_goods as $og) {
+										$goods .= "" . $og['title'] . '( ';
+										if (!empty($og['optiontitle'])) {
+											$goods .= ' 规格: ' . $og['optiontitle'];
+										}
+										$goods .= ' 单价: ' . ($og['realprice'] / $og['total']) . ' 数量: ' . $og['total'] . ' 总价: ' . $og['realprice'] . '); ';
+										$commission = iunserializer($og['commission3']);
+										$commission_total += isset($commission['level' . $level]) ? $commission['level' . $level] : $commission['default'];
+										$pricetotal += $og['realprice'];
+									}
+									$this->sendMessage($parent['openid'], array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $pricetotal, 'goods' => $goods, 'commission' => $commission_total, 'paytime' => $order['paytime'],), TM_COMMISSION_ORDER_PAY);
+								}
+							}
+						}
 					}
 				}
 			}
 		}
 
-		public function checkOrderFinish($_var_1 = '')
+		/**
+		 * Author:ym
+		 * Date:2016-04-07
+		 * Content:修改编译变量
+		 **/
+		public function checkOrderFinish($orderid = '')
 		{
 			global $_W, $_GPC;
-			if (empty($_var_1)) {
+			if (empty($orderid)) {
 				return;
 			}
-			$_var_77 = pdo_fetch('select id,openid, ordersn,goodsprice,agentid,finishtime from ' . tablename('sz_yi_order') . ' where id=:id and status>=3 and uniacid=:uniacid limit 1', array(':id' => $_var_1, ':uniacid' => $_W['uniacid']));
-			if (empty($_var_77)) {
+			$order = pdo_fetch('select id,openid, ordersn,goodsprice,agentid,finishtime from ' . tablename('sz_yi_order') . ' where id=:id and status>=3 and uniacid=:uniacid limit 1', array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
+			if (empty($order)) {
 				return;
 			}
-			$_var_0 = $this->getSet();
-			if (empty($_var_0['level'])) {
+			$set = $this->getSet();
+			if (empty($set['level'])) {
 				return;
 			}
-			$_var_20 = $_var_77['openid'];
-			$_var_22 = m('member')->getMember($_var_20);
-			if (empty($_var_22)) {
+			$openid = $order['openid'];
+			$member = m('member')->getMember($openid);
+			if (empty($member)) {
 				return;
 			}
-			//分红
+			//Author:ym Date:2016-04-07 Content:分红完成订单处理
 			$pluginbonus = p("bonus");
 			if(!empty($pluginbonus)){
 				$bonus_set = $pluginbonus->getSet();
 				if(!empty($bonus_set['start'])){
-					$pluginbonus->checkOrderFinish($_var_1);
+					$pluginbonus->checkOrderFinish($orderid);
 				}
 			}
-			$_var_24 = time();
-			$_var_125 = $_var_22['isagent'] == 1 && $_var_22['status'] == 1;
-			if (!$_var_125 && $_var_0['become_order'] == 1) {
-				if ($_var_0['become'] == 2 || $_var_0['become'] == 3) {
-					$_var_126 = true;
-					if (!empty($_var_22['agentid'])) {
-						$_var_117 = m('member')->getMember($_var_22['agentid']);
-						if (empty($_var_117) || $_var_117['isagent'] != 1 || $_var_117['status'] != 1) {
-							$_var_126 = false;
+			$time = time();
+			$isagent = $member['isagent'] == 1 && $member['status'] == 1;
+			if (!$isagent && $set['become_order'] == 1) {
+				if ($set['become'] == 2 || $set['become'] == 3) {
+					$parentisagent = true;
+					if (!empty($member['agentid'])) {
+						$parent = m('member')->getMember($member['agentid']);
+						if (empty($parent) || $parent['isagent'] != 1 || $parent['status'] != 1) {
+							$parentisagent = false;
 						}
 					}
-					if ($_var_126) {
-						$_var_127 = false;
-						if ($_var_0['become'] == '2') {
-							$_var_29 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where openid=:openid and status>=3 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $_var_20));
-							$_var_127 = $_var_29 >= intval($_var_0['become_ordercount']);
-						} else if ($_var_0['become'] == '3') {
-							$_var_128 = pdo_fetchcolumn('select sum(goodsprice) from ' . tablename('sz_yi_order') . ' where openid=:openid and status>=3 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $_var_20));
-							$_var_127 = $_var_128 >= floatval($_var_0['become_moneycount']);
+					if ($parentisagent) {
+						$can = false;
+						if ($set['become'] == '2') {
+							$ordercount = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where openid=:openid and status>=3 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+							$can = $ordercount >= intval($set['become_ordercount']);
+						} else if ($set['become'] == '3') {
+							$moneycount = pdo_fetchcolumn('select sum(goodsprice) from ' . tablename('sz_yi_order') . ' where openid=:openid and status>=3 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+							$can = $moneycount >= floatval($set['become_moneycount']);
 						}
-						if ($_var_127) {
-							if (empty($_var_22['agentblack'])) {
-								$_var_124 = intval($_var_0['become_check']);
-								pdo_update('sz_yi_member', array('status' => $_var_124, 'isagent' => 1, 'agenttime' => $_var_24), array('uniacid' => $_W['uniacid'], 'id' => $_var_22['id']));
-								if ($_var_124 == 1) {
-									$this->sendMessage($_var_22['openid'], array('nickname' => $_var_22['nickname'], 'agenttime' => $_var_24), TM_COMMISSION_BECOME);
-									if ($_var_126) {
-										$this->upgradeLevelByAgent($_var_117['id']);
+						if ($can) {
+							if (empty($member['agentblack'])) {
+								$become_check = intval($set['become_check']);
+								pdo_update('sz_yi_member', array('status' => $become_check, 'isagent' => 1, 'agenttime' => $time), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
+								if ($become_check == 1) {
+									$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'agenttime' => $time), TM_COMMISSION_BECOME);
+									if ($parentisagent) {
+										$this->upgradeLevelByAgent($parent['id']);
 									}
 								}
 							}
@@ -1036,31 +1114,82 @@ if (!class_exists('CommissionModel')) {
 					}
 				}
 			}
-			if (!empty($_var_22['agentid'])) {
-				$_var_117 = m('member')->getMember($_var_22['agentid']);
-				if (!empty($_var_117) && $_var_117['isagent'] == 1 && $_var_117['status'] == 1) {
-					if ($_var_77['agentid'] == $_var_117['id']) {
-						$_var_129 = pdo_fetchall('select g.id,g.title,og.total,og.realprice,og.price,og.optionname as optiontitle,g.noticeopenid,g.noticetype,og.commission1 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $_var_77['id']));
-						$_var_5 = '';
-						$_var_8 = $_var_117['agentlevel'];
-						$_var_33 = 0;
-						$_var_130 = 0;
-						foreach ($_var_129 as $_var_131) {
-							$_var_5 .= "" . $_var_131['title'] . '( ';
-							if (!empty($_var_131['optiontitle'])) {
-								$_var_5 .= ' 规格: ' . $_var_131['optiontitle'];
+			if (!empty($order['agentid'])) {
+				$parent = m('member')->getMember($member['agentid']);
+				if (!empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1) {
+					if ($order['agentid'] == $parent['id']) {
+						$order_goods = pdo_fetchall('select g.id,g.title,og.total,og.realprice,og.price,og.optionname as optiontitle,g.noticeopenid,g.noticetype,og.commission1 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
+						$goods = '';
+						$level = $parent['agentlevel'];
+						$commission_total = 0;
+						$pricetotal = 0;
+						foreach ($order_goods as $og) {
+							$goods .= "" . $og['title'] . '( ';
+							if (!empty($og['optiontitle'])) {
+								$goods .= ' 规格: ' . $og['optiontitle'];
 							}
-							$_var_5 .= ' 单价: ' . ($_var_131['realprice'] / $_var_131['total']) . ' 数量: ' . $_var_131['total'] . ' 总价: ' . $_var_131['realprice'] . '); ';
-							$_var_58 = iunserializer($_var_131['commission1']);
-							$_var_33 += isset($_var_58['level' . $_var_8]) ? $_var_58['level' . $_var_8] : $_var_58['default'];
-							$_var_130 += $_var_131['realprice'];
+							$goods .= ' 单价: ' . ($og['realprice'] / $og['total']) . ' 数量: ' . $og['total'] . ' 总价: ' . $og['realprice'] . '); ';
+							$commission = iunserializer($og['commission1']);
+							$commission_total += isset($commission['level' . $level]) ? $commission['level' . $level] : $commission['default'];
+							$pricetotal += $og['realprice'];
 						}
-						$this->sendMessage($_var_117['openid'], array('nickname' => $_var_22['nickname'], 'ordersn' => $_var_77['ordersn'], 'price' => $_var_130, 'goods' => $_var_5, 'commission' => $_var_33, 'finishtime' => $_var_77['finishtime'],), TM_COMMISSION_ORDER_FINISH);
+						$this->sendMessage($parent['openid'], array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $pricetotal, 'goods' => $goods, 'commission' => $commission_total, 'finishtime' => $order['finishtime'],), TM_COMMISSION_ORDER_FINISH);
+					}
+				}
+
+				if(!empty($set['remind_message'])){ //Author:ym Date:2016-04-07 Content:三级消息提醒开关
+					//Author:ym Date:2016-04-07 Content:二级消息处理
+					if (!empty($parent['agentid'])) { 
+						$parent = m('member')->getMember($parent['agentid']);
+						if (!empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1) {
+							if ($order['agentid'] == $parent['id']) {
+								$order_goods = pdo_fetchall('select g.id,g.title,og.total,og.realprice,og.price,og.optionname as optiontitle,g.noticeopenid,g.noticetype,og.commission2 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
+								$goods = '';
+								$level = $parent['agentlevel'];
+								$commission_total = 0;
+								$pricetotal = 0;
+								foreach ($order_goods as $og) {
+									$goods .= "" . $og['title'] . '( ';
+									if (!empty($og['optiontitle'])) {
+										$goods .= ' 规格: ' . $og['optiontitle'];
+									}
+									$goods .= ' 单价: ' . ($og['realprice'] / $og['total']) . ' 数量: ' . $og['total'] . ' 总价: ' . $og['realprice'] . '); ';
+									$commission = iunserializer($og['commission2']);
+									$commission_total += isset($commission['level' . $level]) ? $commission['level' . $level] : $commission['default'];
+									$pricetotal += $og['realprice'];
+								}
+								$this->sendMessage($parent['openid'], array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $pricetotal, 'goods' => $goods, 'commission' => $commission_total, 'finishtime' => $order['finishtime'],), TM_COMMISSION_ORDER_FINISH);
+							}
+						}
+						//Author:ym Date:2016-04-07 Content:三级消息处理
+						if (!empty($parent['agentid'])) {
+							$parent = m('member')->getMember($parent['agentid']);
+							if (!empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1) {
+								if ($order['agentid'] == $parent['id']) {
+									$order_goods = pdo_fetchall('select g.id,g.title,og.total,og.realprice,og.price,og.optionname as optiontitle,g.noticeopenid,g.noticetype,og.commission3 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
+									$goods = '';
+									$level = $parent['agentlevel'];
+									$commission_total = 0;
+									$pricetotal = 0;
+									foreach ($order_goods as $og) {
+										$goods .= "" . $og['title'] . '( ';
+										if (!empty($og['optiontitle'])) {
+											$goods .= ' 规格: ' . $og['optiontitle'];
+										}
+										$goods .= ' 单价: ' . ($og['realprice'] / $og['total']) . ' 数量: ' . $og['total'] . ' 总价: ' . $og['realprice'] . '); ';
+										$commission = iunserializer($og['commission3']);
+										$commission_total += isset($commission['level' . $level]) ? $commission['level' . $level] : $commission['default'];
+										$pricetotal += $og['realprice'];
+									}
+									$this->sendMessage($parent['openid'], array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $pricetotal, 'goods' => $goods, 'commission' => $commission_total, 'finishtime' => $order['finishtime'],), TM_COMMISSION_ORDER_FINISH);
+								}
+							}
+						}
 					}
 				}
 			}
-			$this->upgradeLevelByOrder($_var_20);
-			$this->upgradeLevelByGood($_var_1);
+			$this->upgradeLevelByOrder($openid);
+			$this->upgradeLevelByGood($orderid);
 		}
 
 		function getShop($_var_132)
