@@ -52,6 +52,6 @@ if ($_W['isajax']) {
 	}
 	$this->set['openselect'] = $openselect;
 	
-	show_json(1, array('commission_ok' => $commission_ok, 'member' => $member, 'level' => $level, 'cansettle' => $cansettle, 'mycansettle' => $mycansettle, 'settlemoney' => number_format(floatval($this->set['withdraw']), 2), 'settlemoney' => number_format(floatval($this->set['consume_withdraw']), 2), 'set' => $this->set,));
+	show_json(1, array('commission_ok' => $commission_ok, 'member' => $member, 'level' => $level, 'cansettle' => $cansettle, 'mycansettle' => $mycansettle, 'settlemoney' => number_format(floatval($this->set['withdraw']), 2), 'mysettlemoney' => number_format(floatval($this->set['consume_withdraw']), 2), 'set' => $this->set,));
 }
 include $this->template('index');
