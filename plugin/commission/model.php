@@ -938,6 +938,22 @@ if (!class_exists('CommissionModel')) {
 				}
 			}
 			$isagent = $member['isagent'] == 1 && $member['status'] == 1;
+			//Author:Y.yang Date:2016-04-08 Content:购买指定商品成为分销商，判断是否为分销商，如果不是，查选择的商品是否存在，条件满足更改用户信息（isagent => 1, status => 1）并推送微信消息。
+			if (!$isagent) {
+                if (intval($set['become']) == 4 && !empty($set['become_goodsid'])) {
+                    $goods_id = pdo_fetchall('select goodsid from ' . tablename('sz_yi_order_goods') . ' where orderid=:orderid and uniacid=:uniacid  ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']), 'goodsid');
+                    if (in_array($set['become_goodsid'], array_keys($goods_id))) {
+                        if (empty($member['agentblack'])) {
+                            pdo_update('sz_yi_member', array('status' => 1, 'isagent' => 1, 'agenttime' => $time), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
+                            $this->sendMessage($openid, array('nickname' => $member['nickname'], 'agenttime' => $time), TM_COMMISSION_BECOME);
+                            if (!empty($parent)) {
+                                $this->upgradeLevelByAgent($parent['id']);
+                            }
+                        }
+                    }
+                }
+            }
+            //END
 			if (!$isagent && empty($set['become_order'])) {
 				$time = time();
 				if ($set['become'] == 2 || $set['become'] == 3) {

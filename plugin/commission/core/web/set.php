@@ -23,5 +23,14 @@ if ($handle = opendir($dir)) {
     }
     closedir($handle);
 }
+//Author:Y.yang Date:2016-04-08 Content:成为分销商条件（购买条件）
+$goods = false;
+if (!empty($set['become_goodsid'])) {
+    $goods = pdo_fetch('select id,title from ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid limit 1 ', array(
+        ':id' => $set['become_goodsid'],
+        ':uniacid' => $_W['uniacid']
+    ));
+}
+// END
 load()->func('tpl');
 include $this->template('set');
