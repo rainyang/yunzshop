@@ -755,7 +755,9 @@ m("cache")->set("areas", $areas, "global");
     if(p('supplier')){
 		$suproleid = pdo_fetchcolumn('select id from' . tablename('sz_yi_perm_role') . ' where status1 = 1');
 		$userroleid = pdo_fetchcolumn('select roleid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid' => $_W['uniacid']));
-		if($userroleid == $suproleid){
+
+        //Author:RainYang Date:2016-04-09 Content:修改供应商判断条件,有可能上面两个id都是空的情况,照成商品不显示
+		if((!empty($userroleid)) && ($userroleid == $suproleid)){
 			$sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'].' ORDER BY `status` DESC, `displayorder` DESC,
 					`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
 			$sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'];
