@@ -1,6 +1,6 @@
 * {margin:0px; -webkit-overflow-scrolling:touch;}
 body {font-family:"Helvetica Neue",Helvetica,"Hiragino Sans GB","Microsoft YaHei",Arial,sans-serif; background: #f3f3f3;}
-.rich_primary {height:auto; margin: auto; padding:20px 15px 15px; background:#fff;}
+.rich_primary {height:auto; margin: auto; padding:20px 15px 15px; background:#fff; max-width:700px;}
 .rich_title {margin-bottom:10px; line-height:1.4; font-weight:400; font-size:24px;}
 .rich_mate {margin-bottom:18px; line-height:20px; overflow:hidden;}
 .rich_mate .href {color:#607fa6;}
