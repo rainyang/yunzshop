@@ -985,7 +985,6 @@ div.flicking_con a.on{background-position:0 -9px}
                          }
                          var specselected  = '';
   if( action=='cart'){
-	           
 			 $('.good_choose_layer').fadeIn(200);
 							 $('.good_choose_layer').unbind('click').click(function(){
 								   closechoose();
@@ -1122,6 +1121,8 @@ div.flicking_con a.on{background-position:0 -9px}
 						'diydata':diydata
 					};
 				{/if}
+        //openid
+                                {if !empty($popenid)}
                                                                            core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
                                                                                                         if(ret.status==1){ 
                                                                                                            core.tip.show(ret.result.message);
@@ -1137,6 +1138,11 @@ div.flicking_con a.on{background-position:0 -9px}
                                                                                                            core.message(ret.result,'','error');
                                                                                                        }
                                                                                },true,true);
+                                
+                            {else}
+                                         location.href = "{php echo $this->createMobileUrl('member/login')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+                            {/if}
+        //end openid
                                             
                                     }else if(action=='buy'){
  

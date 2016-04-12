@@ -6,6 +6,8 @@ if (!defined('IN_IA')) {
 }
 global $_W, $_GPC;
 $openid         = m('user')->getOpenid();
+$popenid        = m('user')->islogin();
+
 $member         = m('member')->getMember($openid);
 $uniacid        = $_W['uniacid'];
 $goodsid        = intval($_GPC['id']);
