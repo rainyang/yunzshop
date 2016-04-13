@@ -37,23 +37,22 @@ ul,li {padding:0px; margin:0px;}
 .good_shop .shop2 .sub1 {height:37px; width:47%; float:left; border:1px solid #e2e2e2; border-radius:3px; text-align:center; line-height:37px; font-size:16px; color:#999;}
 .good_shop .shop2 .sub2 {height:37px; width:47%; float:right; border:1px solid #e2e2e2; border-radius:3px; text-align:center; line-height:37px; font-size:16px; color:#999;}
 
-.good_info2 {height:auto; width:100%; background:#fff; margin-top:14px;margin-bottom: 50px; }
+.good_info2 {height:auto; width:100%; background:#fff; margin-top:14px; }
 .good_info2 .menu {height:40px; width:100%;}
 .good_info2 .menu .nav {height:37px; width:25%;  float:left; font-size:14px; color:#666; text-align:center; line-height:37px; border-bottom:2px solid #e3e3e3;}
 .good_info2 .menu .navon {color:#ff6500; height:37px; line-height:37px; border-bottom:2px solid #ff6500; }
 .good_info2 .tab_con {height:auto; width:94%; padding:10px 3%; overflow: hidden;}
-.good_info2 .tab_con .con {height:auto; display:none;color:#333;word-break:break-all;margin-bottom:80px;}
+.good_info2 .tab_con .con {height:auto; display:none;color:#333;word-break:break-all;}
 .good_info2 .tab_con .con .param { padding:10px; border-bottom:1px solid #ccc}
 .good_info2 .tab_con #con_1 img { width:100%;outline-width:0px;  vertical-align:top; display:block}
 .tab_con p{ margin:0 }
-
 
 .good_bottom {height:50px; width:100%; background:#ff6801; position:fixed; bottom:0px; left:0px;}
 .good_bottom span {font-size:14px; line-height:10px;}
 .good_bottom .buy {height:50px; width:35%; background:#ff6801; float:left; font-size:16px; line-height:50px; text-align:center; color:#fff;}
 .good_bottom .add {height:50px; width:35%; background:#fd9a34; float:left; font-size:16px; line-height:50px; text-align:center; color:#fff;}
 .good_bottom .cart {height:42px; width:15%; background:#fdfdfd; float:left; padding-top:7px; border-top:1px solid #e1e1e1; text-align:center; font-size:20px; color:#666;line-height:10px; position:relative;}
-.good_bottom .cs{height:42px; width:15%; background:#fdfdfd; float:left; padding-top:7px; border-top:1px solid #e1e1e1; text-align:center; font-size:20px; color:#666;line-height:10px; position:relative;}
+.good_bottom .cs{height:42px; width:15%; background:#fdfdfd; float:left; padding-top:7px; border-top:1px solid #e1e1e1; text-align:center; font-size:20px; color:#666;line-height:10px; position:relative;    border-right: 1px solid hsl(0, 0%, 88%);}
 .good_bottom .cart b {height:16px; width:16px; background:#f30; border-radius:8px; position:absolute; top:2px; right:5px; font-size:12px; color:#fff; line-height:16px; font-weight:100;}
 .good_bottom .like {height:42px; width:14%; background:#fdfdfd; float:left; padding-top:7px; border-top:1px solid #e1e1e1; border-right:1px solid #e1e1e1; text-align:center; font-size:20px; color:#666; line-height:10px;}
 
@@ -400,7 +399,6 @@ div.flicking_con a.on{background-position:0 -9px}
         <%/if%>
 </div>
     <%/if%>
-
 </script>
 <script id='tpl_comment' type='text/html'>
     <%each list as comment%>
@@ -483,6 +481,7 @@ div.flicking_con a.on{background-position:0 -9px}
     var action="";
     var alpha = 0;
 
+    
     
     function share(){
         
@@ -835,17 +834,16 @@ div.flicking_con a.on{background-position:0 -9px}
 				$('#productpricecontainer').html("");
 				}
 				else{
-			
 				   $('#productpricecontainer').html("市场价￥<span id='productprice'>" + productprice + "</span>");
 				}
 			}
 		});
-                
-           
-    $('.cs').click(function(){
+
+            $('.cs').click(function(){
             location.href='{php echo $shopset['cservice']}&metadata={"name":"{php echo $member['nickname']}","tel":"{php echo $member['mobile']}","address":"{php echo $member['province']}"}';
     });
-    
+                
+           
                 $('.like').click(function(){
                     var self = $(this);
                     require(['core'],function(core){
@@ -985,6 +983,7 @@ div.flicking_con a.on{background-position:0 -9px}
                          }
                          var specselected  = '';
   if( action=='cart'){
+	           
 			 $('.good_choose_layer').fadeIn(200);
 							 $('.good_choose_layer').unbind('click').click(function(){
 								   closechoose();
@@ -1121,8 +1120,6 @@ div.flicking_con a.on{background-position:0 -9px}
 						'diydata':diydata
 					};
 				{/if}
-        //openid
-                                {if !empty($popenid)}
                                                                            core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
                                                                                                         if(ret.status==1){ 
                                                                                                            core.tip.show(ret.result.message);
@@ -1138,11 +1135,6 @@ div.flicking_con a.on{background-position:0 -9px}
                                                                                                            core.message(ret.result,'','error');
                                                                                                        }
                                                                                },true,true);
-                                
-                            {else}
-                                         location.href = "{php echo $this->createMobileUrl('member/login')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
-                            {/if}
-        //end openid
                                             
                                     }else if(action=='buy'){
  

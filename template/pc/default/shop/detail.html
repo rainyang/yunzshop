@@ -1,0 +1,1311 @@
+﻿<!--头部调用-->
+{template 'common/header'}
+
+<title>{$goods['title']}</title>
+<style type="text/css">
+    /* css 重置 */
+    .slideBox11{ width:100%; height:545px; overflow:hidden; position:relative; }
+    .slideBox11 .bd{ position:relative; overflow:hidden; height:100%;z-index:0;   }
+    .slideBox11 .bd ul{position: absolute;}
+    .slideBox11 .bd li{overflow:auto; height:545px; float:left; width:309px;}
+    .slideBox11 .bd img{ width:100%;}
+
+    /* 下面是前/后按钮代码，如果不需要删除即可 */
+    .slideBox11 .prev,
+    .slideBox11 .next{ position:absolute; left:2%; top:50%; margin-top:-25px; display:block; width:32px; height:40px; background:url(http://www.ecmoban.com/content/themes/ecmoban2014/images/goods-direction.png) -110px 5px no-repeat #000; filter:alpha(opacity=10);opacity:0.1;   }
+    .slideBox11 .next{ left:auto; right:2%; background-position:8px 5px; }
+    .slideBox11 .prev:hover,
+    .slideBox11 .next:hover{ filter:alpha(opacity=50);opacity:0.5;  }
+    .slideBox11 .prevStop{ display:none;  }
+    .slideBox11 .nextStop{ display:none;  }
+  </style>
+  
+<!--导航调用-->
+{template 'common/navigation'}
+
+<div class="cover-page-details fl wfs bcf2">
+<div class="cover-page-wrapper">
+	<div class="place fz12" style="padding-left:20px;">
+		<span>您现在的位置：</span>
+		<a href="{php echo $this->createMobileUrl('shop/index')}"> 首页 </a> <code>&gt;</code>
+		<a href="#">{$goods['detail_shopname']}</a> <code>&gt;</code>
+		<a href="category-9-b0.html">
+			{loop $category $row}
+			{if $row['id'] == $goods['pcate']}
+				{$row['name']}
+			{/if}
+			{/loop}
+		</a> <code>&gt;</code>
+		<a href="category-4-b0.html">
+			{loop $category $row}
+			{if $row['id'] == $goods['ccate']}
+				{$row['name']}
+			{/if}
+			{/loop}
+		</a> <code>&gt;</code>
+		{$goods['title']}+团购
+	</div>
+	<div class="details fl wfs" style="position:relative;">
+		<div style="right:220px;bottom:50px; position:absolute;">
+			<img src="http://www.ecmoban.com/content/themes/ecmoban2014/images/shoucang.png" onClick="collectgoods(500)" class="shoucang" style="cursor:pointer;" />
+		</div>
+		<div class="bdsharebuttonbox" data-tag="share_1" style="right:100px;bottom:50px;*bottom: 55px; position:absolute;">
+			<a class="bds_tsina" data-cmd="tsina"></a>
+			<a class="bds_tqq" data-cmd="tqq"></a>
+			<a class="bds_more" data-cmd="more"></a>
+			<a class="bds_count" data-cmd="count"></a>
+		</div>
+		
+<!-- left_img_start -->
+		<div class="left fl">
+			<span class="up-down-btn j-up-down-btn up-btn"></span>
+			<div class="canvas">
+				<ul class="canvas-container j-canvas-container" style="top:0;">
+					<li class="canvas-container-li j-canvas-container-li now">
+					<img src="{$goods['thumb']}" title="{$goods['title']}" alt="{$goods['title']}+团购" />
+					</li>
+					
+					
+					<li class="canvas-container-li j-canvas-container-li video"><i></i><span></span><img src="http://upfile.ecmoban.com/images/201603/goods_img/500_P_1457289520413.png" data="http://ecmoban.qiniudn.com/000500-rwxf.mp4"></li>
+					
+					<li class="canvas-container-li j-canvas-container-li">
+					<img src="http://upfile.ecmoban.com/images/201603/goods_img/500_P_1457289461554.png" title="6.png" alt="ECSHOP模板堂天猫商城升级旗舰版+团购" />
+					</li>
+				</ul>
+			</div>
+			<span class="up-down-btn j-up-down-btn down-btn down-icon"></span>
+		</div>
+<div class="mid fl">
+<div class="mid-container fl">
+<div class="j-details-mid-item details-mid-item" style="display:block;">
+<img src="{$goods['thumb']}" jqimg="{$goods['thumb']}" alt="{$goods['title']}+团购">
+</div>
+</div>
+</div>
+<form action="javascript:addToCart(500)" method="post" name="ECS_FORMBUY" id="ECS_FORMBUY">
+	<input style="display:none" name="number" type="text" id="number" value="1" size="4" onblur="changePrice()"/>
+	<div class="right fr">
+		<div class="discount-msg">
+			<h3>{$goods['title']}+团购</h3>
+		</div>
+		<div class="discount-msg-two" style="padding-bottom: 10px;">
+			<p class="price" id="ECS_GOODS_AMOUNT">￥{$goods['marketprice']}元</p>
+		</div>
+		<div class="attri_l"><i style="width:50px">主机</i></div>
+			<div class="attri_r">
+				<span style="color:#000; text-decoration:none" class="now" onclick="changeAtt(this)" name="1448" title="[ ￥0.00元]">无主机<input style="display:none" id="spec_value_1448" type="radio" name="spec_38" value="1448" checked /></span>
+				<span style="color:#000; text-decoration:none" onclick="changeAtt(this)" name="2130" title="[ ￥0.00元]">代开阿里云A型(2740元)<input style="display:none" id="spec_value_2130" type="radio" name="spec_38" value="2130" /></span>
+				<span style="color:#000; text-decoration:none" onclick="changeAtt(this)" name="2131" title="[ ￥0.00元]">代开阿里云豪华B型(5750元)<input style="display:none" id="spec_value_2131" type="radio" name="spec_38" value="2131" /></span>
+			</div>
+			<input type="hidden" name="spec_list" value="2" />
+			<div class="evaluation score-wrap" style="margin-top:10px;">
+				<div class="score">
+					<em style="margin-left:0;">评价</em>
+					<span class="evaluation-stars-grey"><i class="evaluation-stars-red" style="width:80px;"></i></span>
+					<b class="evaluation-b">(已有<a href="javascript:;" onClick="comment_location()">5人</a>评价)</b>
+				</div>
+			</div>
+<p class="make fl wfs">
+<a class="make-cart fl" href="javascript:addToCart(500)">加入购物车</a>
+<a class="make-show fl" href="{php echo $this->createMobileUrl('shop/cart')}">立即购买</a>
+</p>
+<div class="offer j-offer">
+<span class="offer-give">送</span>
+<span class="offer-fold">折</span>
+<span class="offer-less">减</span>
+<p class="offer-item offer-fold j-offer-item">
+<em></em>
+<a href="http://www.ecmoban.com/topic/shouquan" title="ecshop授权" target="_blank">买ecshop商业授权有优惠！</a>
+</p>
+<p class="offer-item offer-less j-offer-item">
+<em></em>
+<img src='http://www.ecmoban.com/content/themes/ecmoban2014/images/erhui.png' data-png="0" class="erweima" style="position: absolute;right: 0;top: 0;cursor:pointer;" />
+<img src="http://www.ecmoban.com/content/themes/ecmoban2014/images/wxlogo.png" width="100" style="display:none;" alt="">
+<a href="http://about.ecmoban.com/article-2054.html" title="送200元红包" target="_blank">扫官方微信送200元红包</a>
+</p>
+</div>
+</div>
+</div>
+</form>
+<div class="content fl wfs">
+<div class="content-icons fl wfs" style="position:relative;">
+<div class="tips" style="left:0px;width:88px;"></div>
+<ul class="mainLeftNav">
+<li class="cur">产品描述</li>
+<li>用户评价</li>
+</ul>
+</div>
+<div class="content-item j-content-item content-package fl wfs" style="display:block;">
+<dl class="content-item-dl fl wfs">
+<dt>产品信息</dt>
+<dd style="line-height: 29px;  width:33%">货号：{$goods['goodssn']}</dd>
+<dd style="line-height: 29px; height:29px; width:33%; overflow:hidden; text-overflow:ellipsis; white-space: nowrap;" title="ECSHOP模板堂天猫商城升级旗舰版+团购">商品名称：{$goods['title']}+团购</dd>
+<dd style="line-height: 29px; width:34%;">浏览量：{$goods['viewcount']}</dd>
+<dd style="line-height: 29px; width:33%;">主题：时尚简约</dd>
+<dd style="line-height: 29px; width:33%;">色系：红色</dd>
+</dl>
+<div class="desc fl wfs" style="margin-top:20px;">
+<div>
+<div style="width: 1170px;height: 550px;margin-top: 20px;background: #fff url(http://www.ecmoban.com/content/themes/ecmoban2014/images/video-bg.png) no-repeat center center">
+<div style="float: left;width: 675px;height: 418px;margin-left: 248px;margin-top: 40px;">
+<iframe src="http://player.ecmoban.com/player.php/gid/500/v.swf?width=675&height=418" scrolling="no" allowfullscreen="" frameborder="0" height="418" width="675"></iframe>
+</div>
+</div>
+</div>
+<!-- 调用商品描述 -->
+{$goods['content']}
+</div>
+<script>
+    
+      $(".list-paddingleft-2").append($(".list-paddingleft-2").html());
+      var canvas_width  = 309;     //画布宽度
+        var img_nums        = $(".list-paddingleft-2 li").length/2;
+      var l_now;             //用来存储大图滚动的参数
+      var handle_select = '.prev,.next'; //左右按钮选择器
+      var reg = /next/;
+      
+      $(".list-paddingleft-2").css('width',img_nums*canvas_width*2+"px").css('left',-img_nums*canvas_width+"px");
+      var SlideMovie = function(obj)
+      {
+          var l = parseInt($(".list-paddingleft-2").css('left'));
+          //防止客户连续快速点击
+          if(l%canvas_width != 0) return;
+            //判断当前是否是右测按钮，还是测的按钮或者是自动滑动
+          if(typeof(obj) == "undefined" || reg.test(obj.attr("class")))
+          {
+             l_now = l - canvas_width;
+          }else{
+             l_now = l + canvas_width;
+          }
+          //$(".j-icons span").eq((((-l_now)/canvas_width)%img_nums)).addClass('now').siblings('span').removeClass('now');
+        $(".list-paddingleft-2").animate({left:l_now+'px'},'normal',function(){
+          if(l_now==0){
+            $(".list-paddingleft-2").css("left",-canvas_width*img_nums+"px");
+          }
+            if(l_now == -canvas_width*img_nums*2+canvas_width){
+            $(".list-paddingleft-2").css("left",-canvas_width*(img_nums-1)+"px");
+          }
+        });
+      }
+      // 左右按钮点击效果
+        $(handle_select).click(function(){
+        var obj = $(this);
+        SlideMovie(obj);
+      });
+    
+</script>
+</div>
+<div class="content-item j-content-item fl wfs" style="display:none;">
+<div class="content-item-comments fl wfs">
+<script src="http://www.ecmoban.com/content/themes/ecmoban2014/js/transport.js"></script>
+<script src="http://www.ecmoban.com/content/themes/ecmoban2014/js/utils.js"></script>
+<div id="ECS_COMMENT"> <ul class="fl wfs">
+<li class="comment-item">
+<p class="name">
+<span>xb608</span>
+</p>
+<div class="msg">
+<p class="fl wfs">
+<span class="stars"><i class="star" style="width:100px;"></i></span>
+<b class="scores"><i class="score">5</i>分</b>
+<span class="evaluation-txt"></span>
+</p>
+<p class="testimonials">
+很好的
+</p>
+</div>
+<span class="date">2015-06-11 11:56:11</span>
+</li>
+<li class="comment-item">
+<p class="name">
+<span>slin99</span>
+</p>
+<div class="msg">
+<p class="fl wfs">
+<span class="stars"><i class="star" style="width:100px;"></i></span>
+<b class="scores"><i class="score">5</i>分</b>
+<span class="evaluation-txt"></span>
+</p>
+<p class="testimonials">
+喜欢
+</p>
+</div>
+<span class="date">2015-02-10 10:47:04</span>
+</li>
+<li class="comment-item">
+<p class="name">
+<span>小心荷包蛋</span>
+</p>
+<div class="msg">
+<p class="fl wfs">
+<span class="stars"><i class="star" style="width:100px;"></i></span>
+<b class="scores"><i class="score">5</i>分</b>
+<span class="evaluation-txt"></span>
+</p>
+<p class="testimonials">
+喜欢哦
+</p>
+</div>
+<span class="date">2014-12-19 13:26:31</span>
+</li>
+<li class="comment-item">
+	<p class="name"><span>风中之子</span></p>
+	<div class="msg">
+		<p class="fl wfs">
+			<span class="stars"><i class="star" style="width:100px;"></i></span>
+			<b class="scores"><i class="score">5</i>分</b>
+			<span class="evaluation-txt"></span>
+		</p>
+		<p class="testimonials">客服态度挺好的，模板也很赞，瞬间洋气了不少。</p>
+	</div>
+	<span class="date">2014-10-22 09:34:31</span>
+</li>
+<li class="comment-item">
+	<p class="name"><span>test0001</span></p>
+	<div class="msg">
+		<p class="fl wfs">
+			<span class="stars"><i class="star" style="width:0px;"></i></span>
+			<b class="scores"><i class="score">0</i>分</b>
+			<span class="evaluation-txt"></span>
+		</p>
+		<p class="testimonials">这套模板很不错啊</p>
+	</div>
+	<span class="date">2014-10-16 14:07:59</span>
+</li>
+</ul>
+<form name="selectPageForm" action="/goods.php" method="get">
+</form>
+<script type="Text/Javascript" language="JavaScript">
+    
+        function selectPage(sel)
+        {
+            sel.form.submit();
+        }
+    
+</script>
+<form class="comment_box fl wfs" action="javascript:;" onsubmit="submitComment(this)" method="post" name="commentForm" id="commentForm">
+	<div class="evaluation">
+		<span>商品评分：</span>
+		<p class="stars-grey"><i class="starts-red"></i></p><span class="starsnum fl">5分</span>
+	</div>
+	<div class="evaluation">
+		<span>评论内容：</span>
+		<textarea class="form-control" id="comment_area" name="content" rows="3"></textarea>
+		<input type="hidden" name="cmt_type" value="0" />
+		<input type="hidden" name="id" value="500" />
+		<input type="hidden" value="5" name="comment_rank">
+	</div>
+	<div class="evaluation">
+		<span style="margin-top:13px;">验证码：</span>
+		<input type="text" name="captcha_comment" style="width:100px;border: 1px solid #ccc;height:40px;"/>
+		<img src="http://www.ecmoban.com/index.php?m=captcha&c=index&a=init" alt="captcha" onClick="this.src='http://www.ecmoban.com/index.php?m=captcha&c=index&a=init&t='+Math.random()" class="captcha">
+		<input type="hidden" value="1" name="enabled_captcha">
+	</div>
+	<div class="evaluation comment_submit">
+		<input class="btn btn-danger submit-comment" type="submit" name="submit" value="提交评论"/>
+	</div>
+</form>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal-dialog">
+<div class="modal-content" style="width: 450px; *margin-left: 700px;margin-top: 200px;border-radius: 0px;">
+<div class="modal-header" style="background-color:#FFE6E6; padding:28px 0;border-bottom: 1px solid #f4d4d4;">
+<button type="button" class="close" data-dismiss="modal" style="margin-top: -28px;margin-right: 13px;opacity: inherit;">
+<span aria-hidden="true"><img src="http://www.ecmoban.com/content/themes/ecmoban2014/images/close.png"/></span><span class="sr-only">Close</span>
+</button>
+<h4 class="modal-title" id="myModalLabel" style="font-size: 23px;color:#ff9d9d;text-align: center;padding-left: 40px;">登录模板堂</h4>
+</div>
+<div class="modal-body" style="margin-top:45px;border-radius: 0px;padding-bottom:0px;">
+<form class="form-horizontal" role="form" id="ECS_LOGINFORM" name="ECS_LOGINFORM" method="post" action="" onSubmit="return signInlogin()">
+<div class="" style="*position:relative;*height: 40px;margin-bottom:15px;">
+<div style="margin:0 auto;width: 390px;">
+<input type="text" style="width:390px;height: 45px;text-indent: 10px;border-radius: 0px;background: #f5f5f5;background-image: url(http://www.ecmoban.com/content/themes/ecmoban2014/images/user.png);background-repeat: no-repeat;background-position: 350px center;" placeholder="用户名" name="username" value="" class="form-control" id="inputEmail3">
+</div>
+</div>
+<div class="" style="*position:relative;*height: 40px;">
+<div style="margin:0 auto;width: 390px;">
+<input type="password" style="width:390px;height: 45px;text-indent: 10px;border-radius: 0px;background: #f5f5f5;background-image: url(http://www.ecmoban.com/content/themes/ecmoban2014/images/pwd.png);background-repeat: no-repeat;background-position: 350px center;" placeholder="密码" class="form-control" id="inputPassword3" name="password">
+</div>
+</div>
+<div class="form-group" style="margin:0 15px;margin-top:10px;">
+<div class="fl">
+<div class="checkbox" style="*margin-left: 90px;">
+<p>
+<a style="color:#ccc;" href="http://member.ecmoban.com/user.php?act=get_password" target="_blank">忘记密码？</a>
+</p>
+<p style="margin-top: 5px;">
+<label style="color:#ccc;">
+<input type="checkbox" value="1" name="remember" style="*margin-top: -1px; " id="remember"/>自动登录
+</label>
+</p>
+</div>
+</div>
+<div class="fr" style="margin-top:10px;">
+<button type="button" style="background: #ff9d9d;color: #fff;padding: 10px 45px;border: none;border-radius: 3px;" onclick="ajax_login()">登 录</button>
+</div>
+</div>
+<div style="background-color:#FF9d9d; height:125px; margin:50px -15px 0 -15px;">
+<img src="http://www.ecmoban.com/content/themes/ecmoban2014/images/comment_login.jpg" style="margin-top: -16px;">
+<div style="color:#fff;padding-top: 6px;text-align: center;">
+还没有注册帐号？
+</div>
+<div style="text-align: center;padding-top: 20px;">
+<a style="color: #ff9d9d;padding: 10px 35px;background: #fff;text-decoration: none;border-radius: 3px;" href="http://member.ecmoban.com/user.php?act=register">立即免费注册</a>
+</div>
+</div>
+<input type="hidden" name="goods_id" value="500">
+</form>
+</div>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+    /**
+     * 会员登录
+     */
+    function signIn()
+    {
+      var frm = document.forms['ECS_LOGINFORM'];
+
+          if (frm)
+          {
+            var username = frm.elements['username'].value;
+            var goods_id = frm.elements['goods_id'].value;
+            var password = frm.elements['password'].value;
+            var captcha = '';
+            if (frm.elements['captcha'])
+            {
+              captcha = frm.elements['captcha'].value;
+            }
+
+            if (username.length == 0 || password.length == 0)
+            {
+               alert("对不起，您必须完整填写用户名和密码。");
+             return false;
+            }
+            else
+            {
+               $.post("http://member.ecmoban.com/user.php?act=signin", 'username=' + username + '&password=' + encodeURIComponent(password) + '&captcha=' + captcha +'&goods_id='+ goods_id, signinResponse,  "json");
+            }
+          }
+          else
+          {
+            alert('Template error!');
+          }
+    }
+
+  
+  /**
+   *ajax登录
+   **/
+    function ajax_login(){
+      var username = $("input[name='username']").val();
+      var password = $("input[name='password']").val();
+      var enabled_captchalogin =  $('.enabled_captchalogin').html();
+      var captcha = $(".captcha_login").val();
+    
+      if (username.length == 0 || password.length == 0){
+          alert("对不起，您必须完整填写用户名和密码。");
+          return false;
+       }
+      if(enabled_captchalogin){
+        if (captcha.length == 0){
+              alert('验证码不能为空！');
+              return false;
+           }
+          }
+      
+      var params = {
+      username:username,
+      password:password,
+      captcha:captcha,
+      };
+      $.post('http://member.ecmoban.com/user.php?act=signin_ajax', params, change_response ,'JSON'); 
+      
+    }
+
+  function change_response(result){
+    
+    if(result.error == 0){
+       $('.head-operates-logined').html(result.content);//更新  
+       if(result.login_success == '登录成功！'){
+         alert(result.login_success);
+         $('#myModal').modal('hide');
+         $('.comment_submit').html(result.comment_button);//更新评论按钮
+       }
+    }else{
+      if(result.content != null){
+            alert(result.content);
+              }else{
+            alert('您输入的用户名或密码不正确！');
+                  }
+    }
+  }
+    
+  /**
+     * 会员登录验证
+     */
+  function signInlogin()
+    {
+      var frm = document.forms['ECS_LOGINFORM'];
+
+          if (frm)
+          {
+            var username = frm.elements['username'].value;
+            var goods_id = frm.elements['goods_id'].value;
+            var password = frm.elements['password'].value;
+            var captcha = '';
+            if (frm.elements['captcha'])
+            {
+              captcha = frm.elements['captcha'].value;
+            }
+
+            if (username.length == 0 || password.length == 0)
+            {
+               alert("对不起，您必须完整填写用户名和密码。");
+             return false;
+            }
+            else
+            {
+        return true;
+            }
+          }
+          else
+          {
+            alert('Template error!');
+          }
+    }
+    function signinResponse(result)
+    {
+      var userName = document.forms['ECS_LOGINFORM'].elements['username'].value;
+      var mzone = document.getElementById("ECS_MEMBERZONE");
+    var goods_id = $("input[name='goods_id']").val();
+      var res   = result;
+
+          if (res.error > 0)
+          {
+            // 登录失败
+            alert(res.content);
+            if(res.html)
+            {
+              mzone.innerHTML = res.html;
+              document.forms['ECS_LOGINFORM'].elements['username'].value = userName;
+            }
+          }
+          else
+          {
+            if (mzone)
+            {
+              mzone.innerHTML = res.content;
+              evalscript(res.ucdata);
+              //alert(res.ucdata);
+            }
+            else
+            {
+              alert("Template Error!");
+            }
+      
+          location.href="goods.php?id="+goods_id;
+          
+          }
+    }
+    </script>
+<script type="text/javascript">
+//<![CDATA[
+var cmt_empty_username = "请输入您的用户名称";
+var cmt_empty_email = "请输入您的电子邮件地址";
+var cmt_error_email = "电子邮件地址格式不正确";
+var cmt_empty_content = "您没有输入评论的内容";
+var captcha_not_null = "验证码不能为空!";
+var cmt_invalid_comments = "无效的评论内容!";
+
+/**
+ * 提交评论信息
+*/
+function submitComment(frm)
+{
+  var cmt = new Object;
+
+ // cmt.email         = frm.elements['email'].value;
+  cmt.content         = frm.elements['content'].value;
+  cmt.type            = frm.elements['cmt_type'].value;
+  cmt.id              = frm.elements['id'].value;
+  cmt.enabled_captcha = frm.elements['enabled_captcha'] ? frm.elements['enabled_captcha'].value : '0';
+  cmt.captcha_comment = frm.elements['captcha_comment'] ? frm.elements['captcha_comment'].value : '';
+  cmt.rank            = frm.elements['comment_rank'].value;
+
+//   var email = $("input[name='email']").val();
+//   var content = $("input[name='content']").val();
+//   var enabled_captcha = $("input[name='enabled_captcha']").val() ? $("input[name='enabled_captcha']").val() : '0';
+//   var captcha_comment = $("input[name='captcha_comment']").val() ? $("input[name='captcha_comment']").val() : '';
+   if (cmt.content.length == 0)
+   {
+      alert(cmt_empty_content);
+      return false;
+   }
+
+   if (cmt.enabled_captcha > 0 && cmt.captcha_comment.length == 0 )
+   {
+      alert(captcha_not_null);
+      return false;
+   }
+
+   Ajax.call('comment.php', 'cmt=' + $.toJSON(cmt), commentResponse, 'POST', 'JSON');
+   return false;
+}
+
+/**
+ * 处理提交评论的反馈信息
+*/
+  function commentResponse(result)
+  {
+    if (result.message)
+    {
+      alert(result.message);
+    }
+
+    if (result.error == 0)
+    {
+      var layer = document.getElementById('ECS_COMMENT');
+
+      if (layer)
+      {
+        layer.innerHTML = result.content;
+      }
+    }
+  }
+
+//]]>
+</script></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cover-page-foot fl wfs">
+<p class="subnav">
+<a target="_blank" href="http://about.ecmoban.com/company.php#contact">联系我们</a>
+<a target="_blank" href="http://about.ecmoban.com/company.php">公司简介</a>
+<a target="_blank" href="http://about.ecmoban.com/payment.php">支付方式</a>
+<a target="_blank" href="http://about.ecmoban.com/legal.php">法律条款</a>
+<a target="_blank" href="http://www.ecmoban.com/daili.php">合作代理</a>
+<a target="_blank" href="http://about.ecmoban.com/friendlink.php">友情链接</a>
+<a target="_blank" href="http://about.ecmoban.com/hr.php">诚聘英才</a>
+<a class="last" target="_blank" href="http://www.ecmoban.com/topic/feature_list/index.html">服务支持</a>
+</p>
+<p class="copyright">© 2005-2016 ecshop模板堂(ecmoban.com) 版权所有，并保留所有权利。常年法律顾问:<a class="copyright" target="_blank" href="http://about.ecmoban.com/article-1557.html">上海华宏律师事务所</a></p>
+<p class="address">上海市普陀区中山北路3553号伸大厦3层</p>
+<p class="verify" style="height:80px; padding:15px 0; text-align:center">
+<a href="http://www.sgs.gov.cn/lz/licenseLink.do?method=licenceView&entyId=20130119112046782" target="_blank"><img src="http://www.ecmoban.com/content/themes/ecmoban2014/images/cover-page-foot-1.png" alt="上海工商"></a>
+<a id="kx_verify" style="display:inline-block;" kx_type="图标式" target="_blank" tabindex="-1" href="https://ss.knet.cn/verifyseal.dll?sn=e14040431010747888rvtu000000&ct=df&a=1&pa=0.7447642335747345"><img src="http://www.ecmoban.com/content/themes/ecmoban2014/images/cover-page-foot-2.png" alt="可信网站"></a>
+<a href="https://search.szfw.org/cert/l/CX20140701008307008358" target="_blank"><img src="http://www.ecmoban.com/content/themes/ecmoban2014/images/cover-page-foot-3.png" alt="诚信网站"></a>
+<a href="http://www.anquan.org/authenticate/cert/?site=ecmoban.com&at=realname" target="_blank"><img src="http://www.ecmoban.com/content/themes/ecmoban2014/images/cover-page-foot-4.png" alt="实名验证网站"></a>
+<a href="http://si.trustutn.org/info?sn=758151126018210042237&certType=1" target="_blank"><img src="http://www.ecmoban.com/content/themes/ecmoban2014//images/cover-page-foot-5.png" alt="实名网站"></a>
+<a href="http://union.tenpay.com/cgi-bin/trust_mch/ShowTrustMchInfo.cgi?uin=1217551101&uin_type=1" target="_blank"><img src="http://www.ecmoban.com/content/themes/ecmoban2014/images/cover-page-foot-6.png" alt="财付通"></a>
+</p>
+<div style="background-color:#E1E1E1; text-align:center; height:20px;padding-top:5px;">
+<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010702001054" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="http://www.ecmoban.com/content/themes/ecmoban2014/images/beian_ghs.png" style="float:left;"/><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">沪公网安备 31010702001054号</p></a>
+<div>
+</div>
+<script src="http://www.ecmoban.com/content/themes/ecmoban2014/js/zzsc.js"></script>
+<script src="http://www.ecmoban.com/content/themes/ecmoban2014/js/posfixed.js"></script>
+<script>
+//放大镜效果
+$(".j-details-mid-item").jqueryzoom({
+    xzoom:440,
+    yzoom:440,
+    offset:10,
+    position:"right",
+    preload:1,
+    lens:1
+});
+$(".j-canvas-container li").bind("click",function(){
+    var data = '';
+    data = $(this).find("img").attr("data");
+    if(data){
+        var reg = /mp4/;
+        if(reg.test(data)){
+            $(".j-details-mid-item").html('<div style="width: 400px;height: 400px;overflow:hidden;"><iframe src="http://player.ecmoban.com/player.php/gid/500/v.swf?width=400&height=400" scrolling="no" allowfullscreen="" frameborder="0" height="400" width="400"></iframe></div>');
+        }else{
+            $(".j-details-mid-item").html('<embed type="application/x-shockwave-flash" class="edui-faked-video" pluginspage="http://www.macromedia.com/go/getflashplayer" src="'+data+'" width="400" height="400" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true">');
+        }
+
+        return ;
+    }
+    $(".j-details-mid-item").html('<img src="" jqimg="" alt="">');
+    var src=$(this).find("img").attr("src");
+
+    $(".j-details-mid-item img").eq(0).attr({
+        src:src.replace("\/n5\/","\/n1\/"),
+        jqimg:src.replace("\/n5\/","\/n0\/")
+    });
+});
+  
+    //导航那个悬浮
+    /* $(".j-nav").posfixed({
+        distance:0,
+        pos:"top",
+        type:"while",
+        hide:false
+    }); */
+//     alert(11);
+    //搜索框下拉框效果
+    $("input[name='keywords']").click(function(){
+    var search_val = $("#keyword").val();
+    if(Utils.trim(search_val) !='')
+      $(".j-search-history").hide();
+    else
+          $(".j-search-history").show();
+    });
+    $("form[name='searchForm']").mouseleave(function(){
+        $(".j-search-history").hide();
+    })
+    function clear_search()
+    {
+        $.post('search.php?act=clear', '', clear_searchhtml, 'JSON');
+    }
+    function clear_searchhtml(){
+        $('.history-items').html('');
+    }
+    
+   
+</script>
+<div style="display:none;">
+<script type="text/javascript">
+  var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
+  document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F8513c8e18c0a7dc33633b4e6b1880ecb' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-61683719-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+</div>
+<script src="http://www.ecmoban.com/content/themes/ecmoban2014/js/suspension.js"></script>
+<!--[if IE 6]> 
+<script src="http://www.ecmoban.com/content/themes/ecmoban2014/js/ie6-tips.js"></script>
+<![endif]-->
+<script type='text/javascript' src='http://www.ecmoban.com/content/themes/ecmoban2014/js/jquery.json.js'></script>
+<script type='text/javascript' src='http://www.ecmoban.com/content/themes/ecmoban2014/js/common2.js'></script>
+<script type='text/javascript' src='http://www.ecmoban.com/content/themes/ecmoban2014/js/transport2.js'></script>
+<script src="http://www.ecmoban.com/content/themes/ecmoban2014/js/slide-common.js"></script>
+<script>
+    
+    $(document).ready(function(){
+      mainleftnav();
+    });
+    
+    function mainleftnav(){
+      var left=0,width=0,obj=$(".tips");
+      $(".mainLeftNav").find("li").each(function(){
+        if($(this).hasClass("cur")){
+          left=$(this).position().left;
+          width=$(this).outerWidth();
+          setTimeout(function(){
+            obj.stop(true,false).animate({left:left,width:width});
+          },500);
+          
+        }
+        $(this).hover(function(){
+          var l=$(this).position().left,w=$(this).outerWidth();
+          obj.stop(true,false).animate({left:l,width:w});
+        },function(){
+          obj.stop(true,false).animate({left:left,width:width});
+        });
+      });
+    }
+    function comment_location()
+    {
+      $(".content-icons ul li").removeClass("cur").eq(1).addClass("cur");
+            $(".j-content-item").eq(1).show().siblings(".j-content-item").hide();
+      var top= ($(".content").offset().top-48)+'px';
+      $('html,body').animate({scrollTop: top}, "slow");
+      mainleftnav();
+    }
+    function changeAtt(t) {
+      t.lastChild.checked='checked';
+      for (var i = 0; i<t.parentNode.childNodes.length;i++) {
+          if (t.parentNode.childNodes[i].className == 'now') {
+            t.parentNode.childNodes[i].className = '';
+          }
+        }
+      t.className = "now";
+      changePrice();
+    }
+     
+    var goodsId = 500;
+    /**
+     * 点选可选属性或改变数量时修改商品价格的函数
+     */
+    function changePrice()
+    {
+        var attr = getSelectedAttributes(document.forms['ECS_FORMBUY']);
+        var qty = document.forms['ECS_FORMBUY'].elements['number'].value;
+       Ajax.call('goods.php', 'act=price&id=' + goodsId + '&attr=' + attr + '&number=' + qty, changePriceResponse, 'GET', 'JSON');
+    }
+    /**
+     * 接收返回的信息
+     */
+    function changePriceResponse(res)
+    {
+      if (res.err_msg.length > 0)
+      {
+      alert(res.err_msg);
+      }
+      else
+      {
+      document.forms['ECS_FORMBUY'].elements['number'].value = res.qty;
+    
+      if (document.getElementById('ECS_GOODS_AMOUNT'))
+                var reg = /\d{1,9}/;
+                if(reg.exec(res.result)[0] > 0){
+                    var obj = document.getElementById("down_now"); 
+          if(obj){
+            var str = 'javascript:addToCart(500)';
+            document.getElementById('down_now').href = str;
+            document.getElementById('down_now').target = '';
+            document.getElementById('down_now').innerHTML = '立即购买';
+          }
+                }else{
+                    document.getElementById('down_now').href = '0';
+                    document.getElementById('down_now').target = '_blank';
+                    document.getElementById('down_now').innerHTML = '立即下载';
+                }
+                //更改打折价格 by jiaoxiliang add start
+                if (document.getElementById('promotion-price'))
+                {
+                    var discount_obj = document.getElementById('promotion-price');
+                                        var discount_price = Math.ceil(reg.exec(res.result)[0]*discount_rate) + '元';
+                    discount_obj.innerHTML = discount_price;
+                }
+                //更改打折价格 by jiaoxiliang add end
+        document.getElementById('ECS_GOODS_AMOUNT').innerHTML = res.result;
+      $('.show_quick_price').html(res.result);//by mike add
+      }
+    }
+     
+        var theme_url = "http://www.ecmoban.com/content/themes/ecmoban2014/";
+    
+    $('.erweima').mouseover(function(){
+      if($(this).attr('data-png')!='0'){
+        $(this).attr('src',theme_url+"images/erhui.png");
+      }else{
+        $(this).attr('src',theme_url+"images/erlan.png");
+      }
+    });
+    $('.erweima').mouseout(function(){
+      if($(this).attr('data-png')=='0'){
+        $(this).attr('src',theme_url+"images/erhui.png");
+      }else{
+        $(this).attr('src',theme_url+"images/erlan.png");
+      }
+    });
+    $('.erweima').click(function(){
+      if($(this).attr('data-png')=='0'){
+        $(this).siblings("img").css({'display':'block','margin':'0 auto'}).siblings("a").css('margin-left','12px').siblings("span").css('display','none').parent().css({'width':'122px','text-align': 'center','padding':'10px'});
+        $(this).attr('data-png','1')
+      }else{
+        $(this).siblings("img").css('display','none').siblings("a").css('margin-left','0px').siblings("span").css('display','block').parent().css({'width':'164px','text-align': 'inherit','padding':'5px'});
+        $(this).attr('data-png','0')
+      }
+    });
+    $('.shoucang').hover(
+        function () {
+        $(this).attr("src",theme_url+"images/shoucang2.png");
+        },
+        function () {
+        $(this).attr("src",theme_url+"images/shoucang.png");
+        }
+     );
+    $(".stars-grey").click(function(e){
+      var starsnum = Math.ceil((e.pageX - $(this).offset().left)/20)
+      $(".starts-red").css("width",starsnum*20);
+        $(".starsnum").text(starsnum +'分' );
+      $("input[name='comment_rank']").val(starsnum);
+    });
+        // 点击切换效果
+        $(".content-icons ul li").click(function(){
+            $(this).addClass("cur").siblings("li").removeClass("cur");
+            $(".j-content-item").eq($(this).index()).show().siblings(".j-content-item").hide();
+      mainleftnav();
+        });
+        $(".j-offer span").hover(function(){
+            $(".j-offer-item").eq($(this).index()).show().siblings(".j-offer-item").hide();
+        });
+        // 左侧小图上下切换和滑动
+        $(".j-canvas-container-li").click(function(){
+            $(this).addClass("now").siblings(".j-canvas-container-li").removeClass("now");
+            $(".j-details-mid-item").eq($(this).index()).show().siblings(".j-details-mid-item").hide();
+        });
+
+        $(".j-up-down-btn").click(function(){
+            Slide.SlideParams = {
+                l_width  : 75,                         //每一个子元素的宽度
+                l_area   : 375,                        //展示的舞台的宽度
+                l_nums   : 5,                          //舞台可以展示的元素的个数
+                l_totals : $(".canvas-container-li").length,  //元素的总数量
+                l_map    : ".j-canvas-container",            //移动的画布
+                l_now    : 0,                          //用来存储大图滚动的参数
+                reg      : /down-icon/,                       //用来判断是上下哪一个按钮点击
+                l_path   : "top"
+            };
+            var obj = $(this);
+            Slide.SlideMovie(obj);
+        });
+        //package-with movie
+        $(".j-package-btn").click(function(){
+            Slide.SlideParams = {
+                l_width  : 190,                             //每一个子元素的宽度
+                l_area   : 760,                             //展示的舞台的宽度
+                l_nums   : 4,                               //舞台可以展示的元素的个数
+                l_totals : $(".j-width-item").length,       //元素的总数量
+                l_map    : ".j-package-container-items",    //移动的画布
+                l_now    : 0,                               //用来存储大图滚动的参数
+                reg      : /package-btn-right/,              //用来判断是左右哪一个按钮点击
+                l_path   : "left"
+            };
+            var obj = $(this);
+            Slide.SlideMovie(obj);
+        });
+        
+    //浏览器刷新页面清除套餐勾选
+    // $(".j-package-opt").attr("checked",false);
+        //套餐勾选，计算价钱
+    </script>
+<script type="text/javascript">
+var btn_buy = "确定";
+var is_cancel = "取消";
+var select_spe = "请选择商品属性";
+var select_base = '请先选择套餐主件';
+var select_shop = '请选择套餐商品';
+var data_not_complete = '数据格式不完整';
+var understock = '库存不足，请选择其他商品';
+//window.history.forward();//禁止页面后退
+$(function(){
+  //组合套餐tab切换
+  var _tab = $('#cn_b h2');
+  var _con = $('#cn_h blockquote');
+  var _index = 0;
+  _con.eq(0).show().siblings('blockquote').hide();
+  _tab.css('cursor','pointer');
+  _tab.click(function(){
+    _index = _tab.index(this);
+    _tab.eq(_index).removeClass('h2bg').siblings('h2').addClass('h2bg');
+    _con.eq(_index).show().siblings('blockquote').hide();
+  })
+  //选择基本件
+  var goods_body=true;
+  function m_goods_body(){
+    if($('.m_goods_body').prop('checked')){
+        ec_group_addToCart($('.m_goods_body').attr('item'), 500); //基本件(组,主件)
+      goods_body=false;
+    }else{
+        ec_group_delInCart($('.m_goods_body').attr('item'), 500); //删除基本件(组,主件)
+      $('.combo_price').html($('.m_goods_body').attr('data')+'.00');
+      $('.tip_spare').html('0.00')
+      goods_body=true;
+    }
+  }
+  //变更选购的配件
+    $('.m_goods_list').click(function(){
+    var bool = false;
+    $('.package-container-items li').each(function(i){
+      if($(this).children("input[type='checkbox']").prop('checked')){
+        bool=true;
+        return true;
+      }
+    });
+    if(bool){
+      $('.m_goods_body').attr("checked",true);
+      if(goods_body){
+        m_goods_body();
+        sleep(600);
+      }
+    }
+    /*else{
+      $('.m_goods_body').attr("checked",false);
+      m_goods_body();
+      return false;
+    }*/
+    
+    //是否选择主件
+    var $parent_body = $(this).parents('form').find('.m_goods_body');
+    if(!$parent_body.prop('checked')){
+      //$parent_body.attr("checked",true);
+      //ec_group_addToCart($parent_body.attr('item'), 500); //基本件(组,主件)
+      //sleep(500);
+      alert(select_base);
+      return false;
+    }
+    if($(this).prop('checked')){
+      ec_group_addToCart($(this).attr('item'), $(this).val(),500); //新增配件(组,配件,主件)
+    }else{
+      ec_group_delInCart($(this).attr('item'), $(this).val(),500); //删除基本件(组,配件,主件)
+      display_Price($(this).attr('item'),$(this).attr('item').charAt($(this).attr('item').length-1));
+    }
+    })
+  //可以购买套餐的最大数量
+  $(".combo_stock").keyup(function(){
+    var group = $(this).parents('form').attr('name');
+    getMaxStock(group);//根据套餐获取该套餐允许购买的最大数
+  });
+})
+
+//允许购买套餐的最大数量
+function getMaxStock(group){
+  var obj = $('input[name="'+group+'_number"]');
+  var original = parseInt(Number(obj.val()));
+  var stock = $("."+group).eq(0).attr('stock');
+  //是否是数字
+  if(isNaN(original)){
+    original = 1;
+    obj.val(original);
+  }
+  $("."+group).each(function(index){
+    if($("."+group).eq(index).prop('checked')){
+      var item_stock = parseInt($("."+group).eq(index).attr('stock'));
+      stock = (stock > item_stock)?item_stock:stock;//取最小值
+    }
+  });
+  //更新
+  original = (original < 1)?1:original;
+  stock = (stock < 1)?1:stock;
+  if(original > stock){
+    obj.val(stock);
+  }
+}
+
+//统计套餐价格
+function display_Price(_item,indexTab){
+  indexTab = indexTab - 1;
+  var _size = $('.'+_item).size();
+  var _amount_shop_price = 0;
+  var _amount_spare_price = 0;
+  for(i=0; i<_size; i++){
+    obj = $('.'+_item).eq(i);
+    if(obj.prop('checked')){
+      _amount_shop_price += parseFloat(obj.attr('data')); //原件合计
+      _amount_spare_price += parseFloat(obj.attr('spare')); //优惠合计
+    }
+  }
+  var tip_spare = $('.tip_spare:eq('+indexTab+')');//节省文本
+  tip_spare.text(_amount_spare_price+'.00');
+  /*
+  //省钱显示提示信息
+  if(_amount_spare_price > 0){
+    //tip_spare.show();
+    //tip_spare.children('strong').text(_amount_spare_price);
+  }else{
+    //tip_spare.hide();
+  }
+  */
+  //显示总价
+  $('.combo_price:eq('+indexTab+')').text(_amount_shop_price+'.00');
+}
+
+//处理添加商品到购物车
+function ec_group_addToCart(group,goodsId,parentId){
+  var goods        = new Object();
+  var spec_arr     = new Array();
+  var fittings_arr = new Array();
+  var number       = 1;
+  var quick      = 0;
+  var group_item   = (typeof(parentId) == "undefined") ? goodsId : parseInt(parentId);
+
+  goods.quick    = quick;
+  goods.spec     = spec_arr;
+  goods.goods_id = goodsId;
+  goods.number   = number;
+  goods.parent   = (typeof(parentId) == "undefined") ? 0 : parseInt(parentId);
+  goods.group = group + '_' + group_item;//组名
+
+  Ajax.call('flow.php?step=add_to_cart_combo', 'goods=' + $.toJSON(goods), ec_group_addToCartResponse, 'POST', 'JSON'); //兼容jQuery by mike
+}
+
+//处理添加商品到购物车的反馈信息
+function ec_group_addToCartResponse(result)
+{
+  if (result.error > 0)
+  {   
+    // 如果需要缺货登记，跳转
+    if (result.error == 2)
+    {
+        alert(understock);
+      cancel_checkboxed(result.group, result.goods_id);//取消checkbox
+    }
+    // 没选规格，弹出属性选择框
+    else if (result.error == 6)
+    {
+      ec_group_openSpeDiv(result.message, result.group, result.goods_id, result.parent);
+    }
+    else
+    {
+        alert(result.message);
+      cancel_checkboxed(result.group, result.goods_id);//取消checkbox
+    }
+  }
+  else
+  {
+    //处理Ajax数据
+    var group = result.group.substr(0,result.group.lastIndexOf("_"));
+    $("."+group).each(function(index){
+    if($("."+group).eq(index).val()==result.goods_id){
+        //主件显示价格、配件显示基本件+属性价
+        var goods_price = (result.parent > 0) ? (parseFloat(result.fittings_price)+parseFloat(result.spec_price)):result.goods_price;
+        $("."+group).eq(index).attr('data',goods_price);//赋值到文本框data参数
+        $("."+group).eq(index).attr('stock',result.stock);//赋值到文本框stock参数
+        $('.'+group+'_display').eq(index).text(goods_price);//前台显示
+      }
+    });
+    getMaxStock(group);//根据套餐获取该套餐允许购买的最大数
+    if(result.parent){
+      display_Price(group,group.charAt(group.length-1));//显示套餐价格
+    }
+  }return true;
+}
+
+//处理删除购物车中的商品
+function ec_group_delInCart(group,goodsId,parentId){
+  var goods        = new Object();
+  var group_item   = (typeof(parentId) == "undefined") ? goodsId : parseInt(parentId);
+
+  goods.goods_id = goodsId;
+  goods.parent   = (typeof(parentId) == "undefined") ? 0 : parseInt(parentId);
+  goods.group = group + '_' + group_item;//组名
+
+  Ajax.call('flow.php?step=del_in_cart_combo', 'goods=' + $.toJSON(goods), ec_group_delInCartResponse, 'POST', 'JSON'); //兼容jQuery by mike
+}
+
+//处理删除购物车中的商品的反馈信息
+function ec_group_delInCartResponse(result)
+{
+  var group = result.group;
+  if (result.error > 0){
+    alert(data_not_complete);
+  }else if(result.parent == 0){
+    $('.'+group).attr("checked",false);
+  }
+  if(result.parent)
+  {
+    display_Price(group,group.charAt(group.length-1));//显示套餐价格
+  }
+}
+
+//生成属性选择层
+function ec_group_openSpeDiv(message, group, goods_id, parent) 
+{
+  var _id = "speDiv";
+  var m = "mask";
+  if (docEle(_id)) document.removeChild(docEle(_id));
+  if (docEle(m)) document.removeChild(docEle(m));
+  //计算上卷元素值
+  var scrollPos; 
+  if (typeof window.pageYOffset != 'undefined') 
+  { 
+    scrollPos = window.pageYOffset; 
+  } 
+  else if (typeof document.compatMode != 'undefined' && document.compatMode != 'BackCompat') 
+  { 
+    scrollPos = document.documentElement.scrollTop; 
+  } 
+  else if (typeof document.body != 'undefined') 
+  { 
+    scrollPos = document.body.scrollTop; 
+  }
+
+  var i = 0;
+  var sel_obj = document.getElementsByTagName('select');
+  while (sel_obj[i])
+  {
+    sel_obj[i].style.visibility = "hidden";
+    i++;
+  }
+
+  // 新激活图层
+  var newDiv = document.createElement("div");
+  newDiv.id = _id;
+  newDiv.style.position = "absolute";
+  newDiv.style.zIndex = "10000";
+  newDiv.style.width = "300px";
+  newDiv.style.height = "210px";
+  newDiv.style.top = (parseInt(scrollPos + 200)) + "px";
+  newDiv.style.left = (parseInt(document.body.offsetWidth) - 200) / 2 + "px"; // 屏幕居中
+  newDiv.style.overflow = "auto"; 
+  newDiv.style.background = "#FFF";
+  newDiv.style.border = "2px solid #FC8080";
+
+  //生成层内内容
+  newDiv.innerHTML = '<h4 style="font-size:16px;text-indent: 10px;margin: 0;line-height: 40px;font-family: Microsoft Yahei;background-color: #FC8080;color: #fff;">' + select_spe + "</h4>";
+
+  for (var spec = 0; spec < message.length; spec++)
+  {
+      newDiv.innerHTML += '<h6 style="margin-top: 15px;margin-bottom: 10px;text-align:left;background:#ffffff; margin-left:15px;font-family: Microsoft Yahei;font-size: 16px;">' +  message[spec]['name'] + '</h6>';
+
+      if (message[spec]['attr_type'] == 1)
+      {
+        for (var val_arr = 0; val_arr < message[spec]['values'].length; val_arr++)
+        {
+          if (val_arr == 0)
+          {
+            newDiv.innerHTML += "<div style='margin-top: 5px;'><input style='*margin-top: 5px;margin-left:15px;margin-right: 10px;width: 15px;height: 15px;float: left;' type='radio' name='spec_" + message[spec]['attr_id'] + "' value='" + message[spec]['values'][val_arr]['id'] + "' id='spec_value_" + message[spec]['values'][val_arr]['id'] + "' checked /><font style='font-family: Microsoft Yahei;font-size: 15px;color: #333;'>" + message[spec]['values'][val_arr]['label'] + '</font> [' + message[spec]['values'][val_arr]['format_price'] + ']</font></div>';      
+          }
+          else
+          {
+            newDiv.innerHTML += "<div style='margin-top: 5px;'><input style='*margin-top: 5px;margin-left:15px;margin-right: 10px;width: 15px;height: 15px;float: left;' type='radio' name='spec_" + message[spec]['attr_id'] + "' value='" + message[spec]['values'][val_arr]['id'] + "' id='spec_value_" + message[spec]['values'][val_arr]['id'] + "' /><font style='font-family: Microsoft Yahei;font-size: 15px;color: #333;'>" + message[spec]['values'][val_arr]['label'] + '</font> [' + message[spec]['values'][val_arr]['format_price'] + ']</font><br />';      
+          }
+        } 
+        newDiv.innerHTML += "<input type='hidden' name='spec_list' value='" + val_arr + "' />";
+      }
+      else
+      {
+        for (var val_arr = 0; val_arr < message[spec]['values'].length; val_arr++)
+        {
+          newDiv.innerHTML += "<div style='margin-top: 5px;'><input style='*margin-top: 5px;margin-left:15px;margin-right: 10px;width: 15px;height: 15px;float: left;' type='checkbox' name='spec_" + message[spec]['attr_id'] + "' value='" + message[spec]['values'][val_arr]['id'] + "' id='spec_value_" + message[spec]['values'][val_arr]['id'] + "' /><font style='font-family: Microsoft Yahei;font-size: 15px;color: #333;'>" + message[spec]['values'][val_arr]['label'] + ' [' + message[spec]['values'][val_arr]['format_price'] + ']</font></div>';     
+        }
+        newDiv.innerHTML += "<input type='hidden' name='spec_list' value='" + val_arr + "' />";
+      }
+  }
+  newDiv.innerHTML += "<div style='width: 160px;*width: 190px;margin: 0 auto;margin-top: 15px;'><a style='float: left;width: 70px;height: 30px;background-color: #FC8080;text-align: center; line-height: 30px;font-size: 14px;color: #fff;font-family: Microsoft Yahei;' href='javascript:ec_group_submit_div(\"" + group + "\"," + goods_id + "," + parent + ")' class='f6' >" + btn_buy + "</a>&nbsp;&nbsp;<a style='*margin-top: -20px;margin-left: 10px;float: left;width: 70px;height: 30px;background-color: #959595;text-align: center; line-height: 30px;font-size: 14px;color: #fff;font-family: Microsoft Yahei;' href='javascript:ec_group_cancel_div(\"" + group + "\"," + goods_id + ")' class='f6' >" + is_cancel + "</a></div>";
+  document.body.appendChild(newDiv);
+
+
+  // mask图层
+  var newMask = document.createElement("div");
+  newMask.id = m;
+  newMask.style.position = "absolute";
+  newMask.style.zIndex = "9999";
+  newMask.style.width = document.body.scrollWidth + "px";
+  newMask.style.height = document.body.scrollHeight + "px";
+  newMask.style.top = "0px";
+  newMask.style.left = "0px";
+  newMask.style.background = "#FFF";
+  newMask.style.filter = "alpha(opacity=30)";
+  newMask.style.opacity = "0.40";
+  document.body.appendChild(newMask);
+} 
+
+//获取选择属性后，再次提交到购物车
+function ec_group_submit_div(group, goods_id, parentId) 
+{
+  var goods        = new Object();
+  var spec_arr     = new Array();
+  var fittings_arr = new Array();
+  var number       = 1;
+  var input_arr      = document.getElementById('speDiv').getElementsByTagName('input'); //by mike
+  var quick      = 1;
+
+  var spec_arr = new Array();
+  var j = 0;
+
+  for (i = 0; i < input_arr.length; i ++ )
+  {
+    var prefix = input_arr[i].name.substr(0, 5);
+
+    if (prefix == 'spec_' && (
+      ((input_arr[i].type == 'radio' || input_arr[i].type == 'checkbox') && input_arr[i].checked)))
+    {
+      spec_arr[j] = input_arr[i].value;
+      j++ ;
+    }
+  }
+
+  goods.quick    = quick;
+  goods.spec     = spec_arr;
+  goods.goods_id = goods_id;
+  goods.number   = number;
+  goods.parent   = (typeof(parentId) == "undefined") ? 0 : parseInt(parentId);
+  goods.group    = group;//组名
+
+  Ajax.call('flow.php?step=add_to_cart_combo', 'goods=' + $.toJSON(goods), ec_group_addToCartResponse, 'POST', 'JSON'); //兼容jQuery by mike
+
+  document.body.removeChild(docEle('speDiv'));
+  document.body.removeChild(docEle('mask'));
+
+  var i = 0;
+  var sel_obj = document.getElementsByTagName('select');
+  while (sel_obj[i])
+  {
+    sel_obj[i].style.visibility = "";
+    i++;
+  }
+
+}
+
+//关闭mask和新图层的同时取消选择
+function ec_group_cancel_div(group, goods_id){
+  document.body.removeChild(docEle('speDiv'));
+  document.body.removeChild(docEle('mask'));
+
+  var i = 0;
+  var sel_obj = document.getElementsByTagName('select');
+  while (sel_obj[i])
+  {
+    sel_obj[i].style.visibility = "";
+    i++;
+  }
+  cancel_checkboxed(group, goods_id);//取消checkbox
+}
+
+/*
+*套餐提交到购物车 by mike
+*/
+function addMultiToCart(group,goodsId){
+  var goods     = new Object();
+  var number    = $('input[name="'+group+'_number"]').val();
+  
+  goods.group = group;
+  goods.goods_id = goodsId;
+  goods.number = (number < 1) ? 1:number;
+  
+  //判断是否勾选套餐
+  if(!$("."+group).is(':checked')){
+    alert(select_shop);
+    //return false; 
+  }else{
+    Ajax.call('flow.php?step=add_to_cart_group', 'goods=' + $.toJSON(goods), addMultiToCartResponse, 'POST', 'JSON'); //兼容jQuery by mike
+  }
+}
+
+//回调
+function addMultiToCartResponse(result){
+  if(result.error > 0){
+    alert(result.message);
+  }else{
+    window.location.href = 'flow.php';
+  }
+}
+
+//取消选项
+function cancel_checkboxed(group, goods_id){
+  //取消选择
+  group = group.substr(0,group.lastIndexOf("_"));
+  $("."+group).each(function(index){
+    if($("."+group).eq(index).val()==goods_id){
+      $("."+group).eq(index).attr("checked",false);       
+    }
+  });
+}
+
+//sleep
+function sleep(d){
+  for(var t = Date.now();Date.now() - t <= d;);
+}
+function collectgoods(goodsId)
+{
+    Ajax.call('goods.php?act=collect', 'id=' + goodsId , collectResponse, 'GET', 'JSON');
+
+  
+  
+}
+</script>
+<script>
+
+window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"share":{"bdSize":16}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];
+
+</script>
+</body>
+</html>

@@ -88,10 +88,13 @@ class Sz_DYi_Goods
         $condition .= " and ( ifnull(showlevels,'')='' or FIND_IN_SET( {$levelid},showlevels)<>0 ) ";
         $condition .= " and ( ifnull(showgroups,'')='' or FIND_IN_SET( {$groupid},showgroups)<>0 ) ";
         if (!$random) {
-            $sql = "SELECT id,title,thumb,marketprice,productprice,sales,total,description FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} LIMIT " . ($page - 1) * $pagesize . ',' . $pagesize;
+            $sql = "SELECT id,title,thumb,marketprice,productprice,sales,total,description,unit FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} LIMIT " . ($page - 1) * $pagesize . ',' . $pagesize;
         } else {
-            $sql = "SELECT id,title,thumb,marketprice,productprice,sales,total,description FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() LIMIT " . $pagesize;
+            $sql = "SELECT id,title,thumb,marketprice,productprice,sales,total,description,unit FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() LIMIT " . $pagesize;
         }
+        //echo $sql;
+        //print_r($params);
+        //exit;
         $list = pdo_fetchall($sql, $params);
         $list = set_medias($list, 'thumb');
         return $list;

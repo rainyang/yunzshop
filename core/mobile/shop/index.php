@@ -32,26 +32,33 @@ if ($designer) {
 	}
 }
 $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
-if ($_W['isajax']) {
-	if ($operation == 'index') {
-		$advs = pdo_fetchall('select id,advname,link,thumb from ' . tablename('sz_yi_adv') . ' where uniacid=:uniacid and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
-		$advs = set_medias($advs, 'thumb');
-		$category = pdo_fetchall('select id,name,thumb,parentid,level from ' . tablename('sz_yi_category') . ' where uniacid=:uniacid and ishome=1 and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
-		$category = set_medias($category, 'thumb');
-		foreach ($category as &$c) {
-			$c['thumb'] = tomedia($c['thumb']);
-			if ($c['level'] == 3) {
-				$c['url'] = $this->createMobileUrl('shop/list', array('tcate' => $c['id']));
-			} else if ($c['level'] == 2) {
-				$c['url'] = $this->createMobileUrl('shop/list', array('ccate' => $c['id']));
-			}
+
+if ($operation == 'index') {
+	$advs = pdo_fetchall('select id,advname,link,thumb from ' . tablename('sz_yi_adv') . ' where uniacid=:uniacid and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
+	$advs = set_medias($advs, 'thumb');
+	$category = pdo_fetchall('select * from ' . tablename('sz_yi_category'));
+	$category = set_medias($category, 'thumb');
+	$goods = pdo_fetchall('select * from ' . tablename('sz_yi_goods'));
+	$goods = set_medias($goods, 'thumb');
+	foreach ($category as &$c) {
+		$c['thumb'] = tomedia($c['thumb']);
+		if ($c['level'] == 3) {
+			$c['url'] = $this->createMobileUrl('shop/list', array('tcate' => $c['id']));
+		} else if ($c['level'] == 2) {
+			$c['url'] = $this->createMobileUrl('shop/list', array('ccate' => $c['id']));
 		}
-		unset($c);
+	}
+	unset($c);
+} else if ($operation == 'goods') {
+	$type = $_GPC['type'];
+	$args = array('page' => $_GPC['page'], 'pagesize' => 6, 'isrecommand' => 1, 'order' => 'displayorder desc,createtime desc', 'by' => '');
+	$goods = m('goods')->getList($args);
+}
+if ($_W['isajax']) {	
+	if ($operation == 'index') {
 		show_json(1, array('set' => $set, 'advs' => $advs, 'category' => $category));
 	} else if ($operation == 'goods') {
 		$type = $_GPC['type'];
-		$args = array('page' => $_GPC['page'], 'pagesize' => 6, 'isrecommand' => 1, 'order' => 'displayorder desc,createtime desc', 'by' => '');
-		$goods = m('goods')->getList($args);
 		show_json(1, array('goods' => $goods, 'pagesize' => $args['pagesize']));
 	}
 }

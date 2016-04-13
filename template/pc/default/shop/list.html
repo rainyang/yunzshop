@@ -1,0 +1,142 @@
+
+{template 'common/header'}
+<title>{if empty($current_category)}全部商品{else}{$current_category['name']}{/if}</title>
+
+<!--导航调用-->
+{template 'common/navigation'}
+
+
+<!--  -->
+
+
+
+<div class="w m0a">
+	<div class="xqleft">
+		<div class="left-shop">
+			<div id="sp-category" class="m m2" clstag="shangpin|keycount|product|pop-04">
+				<div class="mt">
+					<h2>店内分类</h2>
+				</div>
+				<div class="mc">
+					<dl class="sp-single">
+						<dt class="open"><s></s><a href="#">新上宝贝</a></dt>
+					</dl>
+					<dl class="sp-single">
+						<dt class="open"><s></s><a href="#">推荐宝贝</a></dt>
+					</dl>
+					<dl class="sp-single">
+						<dt class="open"><s></s><a href="{php echo $this->createMobileUrl('shop/list', array('ishot' => 1))}">热销宝贝</a></dt>
+					</dl>
+					<dl>
+						<dt class="open"><s></s><a href="#">限时秒杀</a></dt>
+					</dl>
+{loop $category $row}
+
+					<dl>
+						<dt class="open"><s></s><a href="{php echo $this->createMobileUrl('shop/list')}&pcate={$row['id']}">{$row['name']}</a></dt>
+					</dl>
+
+{/loop}
+				</div>
+			</div>
+			<div class="m m2 related-buy">
+				<div class="mt">
+					<h2>店铺热销</h2>
+				</div>
+				<div class="mc">
+					<ul>
+					{loop $goods $g}
+						<li class="fore1">
+						<div class="p-imgbox">
+							<a href="#" target="_blank">
+							<img height="160" src="{$g['thumb']}" width="160">
+							</a></div>
+						<div class="p-name">
+							<a href="#" target="_blank">{$g['title']}</a></div>
+						<div class="p-info p-bfc">
+							<div class="p-count fl"><s><?php echo $i+=1 ?></s><b>热销{$g['sales']}{$g['unit']}</b></div>
+							<div class="p-price fr"><strong class="J-p-1005947680">￥{$g['productprice']}</strong></div>
+						</div>
+						</li>
+					{/loop}
+					</ul>
+				</div>
+			</div>
+		</div>
+
+
+		<div class="detail-info">
+
+			<div class="filter cls">
+				<div class="fl rankitem" >
+					<span class="orderCell orderActive">
+						<a class="item itemDefault" href="?sort=10">
+							<span>默认排序</span>
+						</a>
+					</span>
+					<span class="orderCell ">
+						<a class="item" href="{php echo $this->createMobileUrl('shop/list', array('ishot' => 1))}">
+							<span>销量</span>
+						</a>
+					</span>
+					<span class="orderCell ">
+						<a class="item " href="{php echo $this->createMobileUrl('shop/list', array('ishot' => 1))}">
+							<span>价格</span>
+						</a>
+					</span>
+					<span class="orderCell ">
+						<a class="item" href="?sort=60">
+							<span>评论</span>
+						</a>
+					</span>
+				</div>
+			</div>
+			<div class="allsortgood">
+				<ul>
+				{loop $goods $g}
+					<li>
+					<div class="bor-sort">
+						<a class="img-pos" href="{php echo $this->createMobileUrl('shop/detail')}&id={$g['id']}">
+						<img src="{$g['thumb']}"></a>
+						<a class="sort-tit" href="{php echo $this->createMobileUrl('shop/detail')}&id={$g['id']}">{$g['title']}</a>
+						<p><em>￥{$g['productprice']}</em><i>总销量<b>{$g['sales']}</b>{$g['unit']}</i></p>
+					</div>
+					</li>
+				{/loop}
+				</ul>
+			</div>
+			<div class="catepro_pageNav pageNav tc">
+				<a class="pre preDisable" href="#"><span>上一页</span></a>
+				<a class="curr" href="#"><span>1</span></a>
+				<a href="#"><span>2</span></a>
+				<em>...</em> 
+				<a href="#"><span>8</span></a>
+				<a class="next " href="#"><span>下一页</span></a> </div>
+		</div>
+	</div>
+</div>
+
+
+<!-- foot -->
+<div class="cover-page-foot fl wfs">
+<p class="subnav">
+<a target="_blank" href="http://about.ecmoban.com/company.php#contact">联系我们</a>
+<a target="_blank" href="http://about.ecmoban.com/company.php">公司简介</a>
+<a target="_blank" href="http://about.ecmoban.com/payment.php">支付方式</a>
+<a target="_blank" href="http://about.ecmoban.com/legal.php">法律条款</a>
+<a target="_blank" href="http://www.ecmoban.com/daili.php">合作代理</a>
+<a target="_blank" href="http://about.ecmoban.com/friendlink.php">友情链接</a>
+<a target="_blank" href="http://about.ecmoban.com/hr.php">诚聘英才</a>
+<a class="last" target="_blank" href="http://www.ecmoban.com/topic/feature_list/index.html">服务支持</a>
+</p>
+<p class="copyright">© 2005-2016 ecshop模板堂(ecmoban.com) 版权所有，并保留所有权利。常年法律顾问:<a class="copyright" target="_blank" href="http://about.ecmoban.com/article-1557.html">上海华宏律师事务所</a></p>
+<p class="address">上海市普陀区中山北路3553号伸大厦3层</p>
+<div style="background-color:#E1E1E1; text-align:center; height:20px;padding-top:5px;">
+<a target="_blank" href="http://www.beian.gov.cn/portal/registerSystemInfo?recordcode=31010702001054" style="display:inline-block;text-decoration:none;height:20px;line-height:20px;"><img src="http://www.ecmoban.com/content/themes/ecmoban2014/images/beian_ghs.png" style="float:left;"/><p style="float:left;height:20px;line-height:20px;margin: 0px 0px 0px 5px; color:#939393;">沪公网安备 31010702001054号</p></a>
+<div>
+</div>
+<!--  -->
+
+</body>
+
+</html>
