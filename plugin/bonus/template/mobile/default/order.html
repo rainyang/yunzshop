@@ -78,8 +78,8 @@ a {text-decoration:none;}
 		<div class='detail_good'>
 			<%each order.order_goods as g%>
 	            <div class="good">
-				<div class="img"  onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'"><img src="<%g.thumb%>"/></div>
-				<div class='info' onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
+				<div class="img"  onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.ordergoodid%>'"><img src="<%g.thumb%>"/></div>
+				<div class='info' onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.ordergoodid%>'">
 					<div class='inner'>
 						   <div class="name" ><%g.title%></div>     
 						   <div class='option'> <%g.optionname%>x<%g.total%></div>
