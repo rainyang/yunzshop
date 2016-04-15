@@ -7,7 +7,7 @@ $pindex = max(1, intval($_GPC['page']));
 $psize = 20;
 $list = array();
 $total = 0;
-if(!empty($agents)){
+if(!empty($member['agentcount'])){
 	$total = $member['agentcount'];
 	$inagents = implode(',', $member['agentids']);
 	$sql = 'select * from ' . tablename('sz_yi_member') . " where id in (".$inagents.") and uniacid = " . $_W['uniacid'] . " {$condition}  ORDER BY id desc limit " . ($pindex - 1) * $psize . ',' . $psize;
