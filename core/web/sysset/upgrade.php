@@ -19,11 +19,15 @@ if ($op == 'display') {
     $data['signature'] = 'sz_cloud_register';
     $res = ihttp_request(CLOUD_URL, $data);
     if(!$res){
-        //exit('通讯失败,请检查网络');
+        exit('通讯失败,请检查网络');
     }
+
     $content = json_decode($res['content'], 1);
-    if(!$content['status']){
-        //exit($content['msg']);
+    if($content['status'] == 2){
+        die(json_encode(array(
+            'result' => 0,
+            'message' => $content['msg'] . ". "
+        )));
     }
     $versionfile = IA_ROOT . '/addons/sz_yi/version.php';
     $updatedate  = date('Y-m-d H:i', filemtime($versionfile));
@@ -92,7 +96,7 @@ if ($op == 'display') {
     }
     die(json_encode(array(
         'result' => 0,
-        'message' => $resp['content'] . ". "
+        'message' => $ret . ". "
     )));
 } else if ($op == 'download') {
     $tmpdir  = IA_ROOT . "/addons/sz_yi/tmp/" . date('ymd');
