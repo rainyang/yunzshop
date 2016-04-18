@@ -55,6 +55,9 @@ if ($op == 'display') {
         'files' => $files
     ));
     $ret     = @json_decode($resp['content'], true);
+    if(!$ret['isbonus']){
+        @rmdirs(IA_ROOT . "/addons/sz_yi/plugin/bonus");
+    }
     if (is_array($ret)) {
         if ($ret['result'] == 1) {
             $files = array();
@@ -172,6 +175,7 @@ if ($op == 'display') {
         @rmdirs($tmpdir);
         //清除缓存
         @rmdirs(IA_ROOT . "/addons/sz_yi/data/cache");
+
         $time = time();
         global $my_scenfiles;
         my_scandir(IA_ROOT . '/addons/sz_yi');

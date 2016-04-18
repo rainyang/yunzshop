@@ -9,6 +9,7 @@ if (!empty($_POST)) {
     require '../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
 	
     $body          = $_REQUEST['i2'];
+    $total_fee     = $_REQUEST['i1'];
     $strs          = explode(':', $body);
 	$out_trade_no = $strs[0];
     $_W['uniacid'] = $_W['weid'] = intval($strs[1]);
@@ -43,7 +44,7 @@ if (!empty($_POST)) {
                     $params[':module'] = 'sz_yi';
                     $log               = pdo_fetch($sql, $params);
                     m('common')->paylog('log: ' . (empty($log) ? '' : json_encode($log)) . "\r\n");
-                    if (!empty($log) && $log['status'] == '0') {
+                    if (!empty($log) && $log['status'] == '0' && $log['fee'] == $total_fee) {
                         m('common')->paylog("corelog: ok\r\n");
                         $site = WeUtility::createModuleSite($log['module']);
                         if (!is_error($site)) {
@@ -90,7 +91,7 @@ if (!empty($_POST)) {
                         ':uniacid' => $_W['uniacid'],
                         ':logno' => $logno
                     ));
-                    if (!empty($log) && empty($log['status'])) {
+                    if (!empty($log) && empty($log['status']) && $log['fee'] == $total_fee) {
                         pdo_update('sz_yi_member_log', array(
                             'status' => 1,
                             'rechargetype' => 'yunpay'
