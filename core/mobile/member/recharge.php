@@ -116,7 +116,7 @@ if ($operation == 'display' && $_W['isajax']) {
     /*修复支付问题*/
     $couponid = intval($_GPC['couponid']);
 	if($log['money'] <= 0){
-        pdo_update('ewei_shop_member_log', array('money' => $money, 'couponid' => $couponid), array('id' => $log['id']));
+        pdo_update('sz_yi_member_log', array('money' => $money, 'couponid' => $couponid), array('id' => $log['id']));
     }
 
     $set = m('common')->getSysset(array(
