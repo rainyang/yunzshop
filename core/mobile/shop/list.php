@@ -3,6 +3,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 $operation  = !empty($_GPC['op']) ? $_GPC['op'] : 'index';
 $openid     = m('user')->getOpenid();
 $uniacid    = $_W['uniacid'];
@@ -57,7 +58,7 @@ if (!empty($myshop['selectgoods']) && !empty($myshop['goodsids'])) {
     $args['ids'] = $myshop['goodsids'];
 }
 
-
+//print_r($args);exit;
 $condition = ' and `uniacid` = :uniacid AND `deleted` = 0 and status=1';
 $params    = array(
      ':uniacid' => $_W['uniacid']
@@ -112,6 +113,7 @@ $pager = pagination($total, $pindex, $args['pagesize']);
 
 
 $goods    = m('goods')->getList($args);
+//print_r($goods);exit;
 $category = false;
 if (intval($_GPC['page']) <= 1) {
     if (!empty($_GPC['tcate'])) {

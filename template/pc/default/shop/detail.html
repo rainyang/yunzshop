@@ -28,21 +28,7 @@
 	<div class="place fz12" style="padding-left:20px;">
 		<span>您现在的位置：</span>
 		<a href="{php echo $this->createMobileUrl('shop/index')}"> 首页 </a> <code>&gt;</code>
-		<a href="#">{$goods['detail_shopname']}</a> <code>&gt;</code>
-		<a href="category-9-b0.html">
-			{loop $category $row}
-			{if $row['id'] == $goods['pcate']}
-				{$row['name']}
-			{/if}
-			{/loop}
-		</a> <code>&gt;</code>
-		<a href="category-4-b0.html">
-			{loop $category $row}
-			{if $row['id'] == $goods['ccate']}
-				{$row['name']}
-			{/if}
-			{/loop}
-		</a> <code>&gt;</code>
+		<a href="{php echo $this->createMobileUrl('shop/list', array('order' => 'sales', 'by' => 'desc'))}">全部商品</a> <code>&gt;</code>
 		{$goods['title']}+团购
 	</div>
 	<div class="details fl wfs" style="position:relative;">
@@ -58,22 +44,20 @@
 		
 <!-- left_img_start -->
 		<div class="left fl">
-			<span class="up-down-btn j-up-down-btn up-btn"></span>
+			<span class="up-down-btn j-up-down-btn up-btn">上拉</span>
 			<div class="canvas">
 				<ul class="canvas-container j-canvas-container" style="top:0;">
-					<li class="canvas-container-li j-canvas-container-li now">
-					<img src="{$goods['thumb']}" title="{$goods['title']}" alt="{$goods['title']}+团购" />
-					</li>
-					
-					
-					<li class="canvas-container-li j-canvas-container-li video"><i></i><span></span><img src="http://upfile.ecmoban.com/images/201603/goods_img/500_P_1457289520413.png" data="http://ecmoban.qiniudn.com/000500-rwxf.mp4"></li>
-					
+					<!--视频
+					 <li class="canvas-container-li j-canvas-container-li video"><i></i><span></span><img src="http://upfile.ecmoban.com/images/201603/goods_img/500_P_1457289520413.png" data="http://ecmoban.qiniudn.com/000500-rwxf.mp4"></li> -->
+
+				{loop $pics $row}
 					<li class="canvas-container-li j-canvas-container-li">
-					<img src="http://upfile.ecmoban.com/images/201603/goods_img/500_P_1457289461554.png" title="6.png" alt="ECSHOP模板堂天猫商城升级旗舰版+团购" />
+					<img src="{$row}" title="{$goods['title']}" alt="{$goods['title']}" />
 					</li>
+				{/loop}
 				</ul>
 			</div>
-			<span class="up-down-btn j-up-down-btn down-btn down-icon"></span>
+			<span class="up-down-btn j-up-down-btn down-btn down-icon">下滑</span>
 		</div>
 <div class="mid fl">
 <div class="mid-container fl">
@@ -91,12 +75,21 @@
 		<div class="discount-msg-two" style="padding-bottom: 10px;">
 			<p class="price" id="ECS_GOODS_AMOUNT">￥{$goods['marketprice']}元</p>
 		</div>
-		<div class="attri_l"><i style="width:50px">主机</i></div>
+
+<!--商品规格调用——start-->
+
+	{loop $specs $row}
+		<div class="attri_l"><i style="width:50px">{$row['title']}</i></div>
+
 			<div class="attri_r">
-				<span style="color:#000; text-decoration:none" class="now" onclick="changeAtt(this)" name="1448" title="[ ￥0.00元]">无主机<input style="display:none" id="spec_value_1448" type="radio" name="spec_38" value="1448" checked /></span>
-				<span style="color:#000; text-decoration:none" onclick="changeAtt(this)" name="2130" title="[ ￥0.00元]">代开阿里云A型(2740元)<input style="display:none" id="spec_value_2130" type="radio" name="spec_38" value="2130" /></span>
-				<span style="color:#000; text-decoration:none" onclick="changeAtt(this)" name="2131" title="[ ￥0.00元]">代开阿里云豪华B型(5750元)<input style="display:none" id="spec_value_2131" type="radio" name="spec_38" value="2131" /></span>
+			{loop $row['items'] $ros}
+				<span style="color:#000; text-decoration:none" onclick="changeAtt(this)" name="1448" title="[ ￥0.00元]">{$ros['title']}<input style="display:none" id="spec_value_1448" type="radio" name="spec_38" value="1448" checked /></span>
+			{/loop}
 			</div>
+	{/loop}
+
+<!--商品规格调用——end-->
+
 			<input type="hidden" name="spec_list" value="2" />
 			<div class="evaluation score-wrap" style="margin-top:10px;">
 				<div class="score">
@@ -105,11 +98,11 @@
 					<b class="evaluation-b">(已有<a href="javascript:;" onClick="comment_location()">5人</a>评价)</b>
 				</div>
 			</div>
-<p class="make fl wfs">
-<a class="make-cart fl" href="javascript:addToCart(500)">加入购物车</a>
-<a class="make-show fl" href="{php echo $this->createMobileUrl('shop/cart')}">立即购买</a>
-</p>
-<div class="offer j-offer">
+			<p class="make fl wfs">
+			<a class="make-cart fl" href="javascript:addToCart(500)">加入购物车</a>
+			<a class="make-show fl" href="{php echo $this->createMobileUrl('shop/cart')}">立即购买</a>
+			</p>
+<!-- <div class="offer j-offer">
 <span class="offer-give">送</span>
 <span class="offer-fold">折</span>
 <span class="offer-less">减</span>
@@ -123,9 +116,9 @@
 <img src="http://www.ecmoban.com/content/themes/ecmoban2014/images/wxlogo.png" width="100" style="display:none;" alt="">
 <a href="http://about.ecmoban.com/article-2054.html" title="送200元红包" target="_blank">扫官方微信送200元红包</a>
 </p>
-</div>
-</div>
-</div>
+</div> -->
+		</div>
+	</div>
 </form>
 <div class="content fl wfs">
 <div class="content-icons fl wfs" style="position:relative;">
@@ -145,14 +138,14 @@
 <dd style="line-height: 29px; width:33%;">色系：红色</dd>
 </dl>
 <div class="desc fl wfs" style="margin-top:20px;">
-<div>
-<div style="width: 1170px;height: 550px;margin-top: 20px;background: #fff url(http://www.ecmoban.com/content/themes/ecmoban2014/images/video-bg.png) no-repeat center center">
-<div style="float: left;width: 675px;height: 418px;margin-left: 248px;margin-top: 40px;">
-<iframe src="http://player.ecmoban.com/player.php/gid/500/v.swf?width=675&height=418" scrolling="no" allowfullscreen="" frameborder="0" height="418" width="675"></iframe>
+<!-- <div>
+	<div style="width: 1170px;height: 550px;margin-top: 20px;background: #fff url(http://www.ecmoban.com/content/themes/ecmoban2014/images/video-bg.png) no-repeat center center">
+		<div style="float: left;width: 675px;height: 418px;margin-left: 248px;margin-top: 40px;">
+		<iframe src="http://player.ecmoban.com/player.php/gid/500/v.swf?width=675&height=418" 		scrolling="no" allowfullscreen="" frameborder="0" height="418" width="675"></iframe>
+		</div>
+	</div>
 </div>
-</div>
-</div>
-<!-- 调用商品描述 -->
+ --><!-- 调用商品描述 -->
 {$goods['content']}
 </div>
 <script>
@@ -734,7 +727,7 @@ $(".j-canvas-container li").bind("click",function(){
           }
         }
       t.className = "now";
-      changePrice();
+      //changePrice();
     }
      
     var goodsId = 500;

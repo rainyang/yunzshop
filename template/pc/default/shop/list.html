@@ -8,8 +8,6 @@
 
 <!--  -->
 
-
-
 <div class="w m0a">
 	<div class="xqleft">
 		<div class="left-shop">
@@ -18,25 +16,23 @@
 					<h2>店内分类</h2>
 				</div>
 				<div class="mc">
+{loop $category $row}
+					<dl>
+						<dt class="open" style="background-color:#e72119"><s></s><a href="{php echo $this->createMobileUrl('shop/list')}&pcate={$row['id']}">{$row['name']}</a></dt>
+					</dl>
+{/loop}
 					<dl class="sp-single">
-						<dt class="open"><s></s><a href="#">新上宝贝</a></dt>
+						<dt class="open" style="background-color:#e72119"><s></s><a href="{php echo $this->createMobileUrl('shop/list', array('isnew' => 1))}">新上宝贝</a></dt>
 					</dl>
 					<dl class="sp-single">
-						<dt class="open"><s></s><a href="#">推荐宝贝</a></dt>
+						<dt class="open"><s></s><a href="{php echo $this->createMobileUrl('shop/list', array('isrecommand' => 1))}">推荐宝贝</a></dt>
 					</dl>
 					<dl class="sp-single">
 						<dt class="open"><s></s><a href="{php echo $this->createMobileUrl('shop/list', array('ishot' => 1))}">热销宝贝</a></dt>
 					</dl>
 					<dl>
-						<dt class="open"><s></s><a href="#">限时秒杀</a></dt>
+						<dt class="open"><s></s><a href="{php echo $this->createMobileUrl('shop/list', array('istime' => 1))}">限时秒杀</a></dt>
 					</dl>
-{loop $category $row}
-
-					<dl>
-						<dt class="open"><s></s><a href="{php echo $this->createMobileUrl('shop/list')}&pcate={$row['id']}">{$row['name']}</a></dt>
-					</dl>
-
-{/loop}
 				</div>
 			</div>
 			<div class="m m2 related-buy">
@@ -65,28 +61,28 @@
 		</div>
 
 
-		<div class="detail-info">
+		<div class="detail-info" data-url = '{php echo $url}'>
 
 			<div class="filter cls">
 				<div class="fl rankitem" >
-					<span class="orderCell orderActive">
-						<a class="item itemDefault" href="?sort=10">
-							<span>默认排序</span>
+					<span class="orderCell ">
+						<a class="item itemDefault" href="{php echo $this->createMobileUrl('shop/list', array('order' => 'sales', 'by' => 'desc'))}">
+							<span>销量从高到低</span>
+						</a>
+					</span>
+					<span class="orderCell">
+						<a class="item" href="{php echo $this->createMobileUrl('shop/list', array('order' => 'marketprice', 'by' => 'desc'))}">
+							<span>价格从高到低</span>
 						</a>
 					</span>
 					<span class="orderCell ">
-						<a class="item" href="{php echo $this->createMobileUrl('shop/list', array('ishot' => 1))}">
-							<span>销量</span>
+						<a class="item " href="{php echo $this->createMobileUrl('shop/list', array('order' => 'marketprice', 'by' => 'asc'))}">
+							<span>价格从低到高</span>
 						</a>
 					</span>
 					<span class="orderCell ">
-						<a class="item " href="{php echo $this->createMobileUrl('shop/list', array('ishot' => 1))}">
-							<span>价格</span>
-						</a>
-					</span>
-					<span class="orderCell ">
-						<a class="item" href="?sort=60">
-							<span>评论</span>
+						<a class="item" href="{php echo $this->createMobileUrl('shop/list', array('order' => 'score', 'by' => 'asc'))}">
+							<span>评论从高到低</span>
 						</a>
 					</span>
 				</div>
@@ -99,7 +95,7 @@
 						<a class="img-pos" href="{php echo $this->createMobileUrl('shop/detail')}&id={$g['id']}">
 						<img src="{$g['thumb']}"></a>
 						<a class="sort-tit" href="{php echo $this->createMobileUrl('shop/detail')}&id={$g['id']}">{$g['title']}</a>
-						<p><em>￥{$g['productprice']}</em><i>总销量<b>{$g['sales']}</b>{$g['unit']}</i></p>
+						<p><em>￥{$g['marketprice']}</em><i>总销量<b>{$g['sales']}</b>{$g['unit']}</i></p>
 					</div>
 					</li>
 				{/loop}
@@ -139,4 +135,16 @@
 
 </body>
 
+<script type="text/javascript">
+	$(document).ready(function(){
+		var url = $(".detail-info").attr('data-url');
+		//alert($(".detail-info").attr('data-url'));return false;
+		$(".item").each(function(){
+			//alert($(this).attr('href'));
+			if($(this).attr('href') == url){
+				$(this).parent().addClass('orderActive');
+			}
+		})
+	})
+</script>
 </html>

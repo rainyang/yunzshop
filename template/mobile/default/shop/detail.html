@@ -1120,16 +1120,16 @@ div.flicking_con a.on{background-position:0 -9px}
 						'diydata':diydata
 					};
 				{/if}
-                                                                           core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
-                                                                                                        if(ret.status==1){ 
-                                                                                                           core.tip.show(ret.result.message);
-                                                                                                           var cartdiv = $('.cart');
-                                                                                                                               if( cartdiv.find('b').length<=0){
-                                                                                                                                  cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
-                                                                                                                               }
-                                                                                                                               else {
-                                                                                                                                  cartdiv.find('b').html(ret.result.cartcount);
-                                                                                                                               } closechoose();
+                core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
+                    if(ret.status==1){ 
+                        core.tip.show(ret.result.message);
+                        var cartdiv = $('.cart');
+                        if( cartdiv.find('b').length<=0){
+                            cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
+                        }
+                        else {
+                            cartdiv.find('b').html(ret.result.cartcount);
+                    } closechoose();
 
                                                                                                        } else{
                                                                                                            core.message(ret.result,'','error');
