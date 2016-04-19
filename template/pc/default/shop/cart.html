@@ -1,14 +1,14 @@
-﻿{template 'common/header'}
+{template 'common/header'}
 <title>购物车</title>
 {template 'common/navigation'}
 <!--  -->
-
+<form name="formone">
 <div class="w m0a">
 	<div class="cart-main cart-main-new">
 		<div class="cart-thead">
 			<div class="column t-checkbox">
 				<div class="cart-checkbox">
-					<input class="jdcheckbox all fa-check-circle-o" sel="1" name="toggle-checkboxes" type="checkbox">
+					<input class="selectIt jdcheckbox" type="checkbox" name="selectall" value="checkbox">
 				</div>
 				全选 </div>
 			<div class="column t-goods">
@@ -27,7 +27,7 @@
 		<div class="cart-item-list">
 			<div class="shop">
 				<div class="cart-checkbox">
-					<input class="jdcheckbox" type="checkbox"> </div>
+					<input class="all jdcheckbox" type="hidden" /> </div>
 				<span class="shop-txt">
 				<a class="shop-name self-shop-name" href="#">芸众商城</a> </span>
 			</div>
@@ -49,7 +49,7 @@
 						<div class="item-form">
 							<div class="cell p-checkbox">
 								<div class="cart-checkbox">
-	 							 <input  type="checkbox"  class="jdcheckbox">					
+	 							 <input  type="checkbox"  class="jdcheckbox" name="checkbox" value="checkbox">					
 								</div>
 							</div>
 							<div class="cell p-goods">
@@ -72,11 +72,12 @@
 									<input type="text" class="itxt" value="{$good[total]}">
 									<div class="increment">+</div>
 								</div>
-								<!-- <input type="hidden" name="maxbuy" class="maxbuy" value="{$good['maxbuy']}"> -->
+								
 							</div>
 							<div class="cell p-sum"><strong id="{$good['id']}">{php echo $good[total] * $good['marketprice']}</strong></div>
 							<div class="cell p-ops">
-								<a  class="cart-remove" href="#">删除</a>
+								<a  class="cart-remove" href="">删除</a>
+								<!-- {php echo $this->createMobileUrl('shop/cart',array('op' => 'remove'))}&id={$good['id']} -->
 								<a href="#" class="cart-follow">移到我的收藏</a>
 							</div>						
 						</div>
@@ -88,13 +89,14 @@
 			</div>
 
 		</div>
+
 		<!-- 结算 -->
 		<div class="cart-toolbar">
 			<div class="options-box">
 				<div class="select-all">
 					<div class="cart-checkbox">
-						<input type="checkbox"  class="jdcheckbox all fa-check-circle-o" sel="1">
-					</div>全选
+						<input type="checkbox" class="selectIt jdcheckbox" name="invest" value="chockbox">
+					</div>反选
 				</div>
 				<div class="operation">
 					<a href="#" class="remove-batch fl">删除选中的商品</a>
@@ -102,7 +104,7 @@
 				</div>
 				<div class="toolbar-right">
 					<div class="comm-right">
-						<div class="btn-area"><a href="#" class="submit-btn">去结算</a></div>
+						<div class="btn-area"><a href="#" class="submit-btn">去结算<span id = 'totaltwo'></span></a></div>
 						<div class="price-sum">
 							<div>
 								<span class="txt">品总价（含运费）：</span>
@@ -118,9 +120,10 @@
 		</div>
 	</div>
 </div>
+</form>
 <script type="text/javascript">
 	$(document).ready(function(){
-		/*function setSelect(obj, sel,isall){
+/*		function setSelect(obj, sel,isall){
 	        if(sel=='1'){
 	          	obj.find('i').addClass('fa-circle-o').removeClass('fa-check-circle-o').css('color', '#999');
 	        }else{
@@ -133,7 +136,7 @@
 	            obj.attr('sel',sel);
 	        }
 	        calcprice();
-	    }*/
+	    }
 		$(".all").click(function(){
 			//alert("hello");
 			var $this = $(this);
@@ -144,9 +147,10 @@
             });
             setSelect($(this),sel,true);
 		});
-		/*$(".ico").click(function(){
+		$(".ico").click(function(){
             setSelect($(this),$(this).parent().attr('sel'))
         });*/
+		
 	    function calcprice(){
 	    	var total = 0;
 	    	var totalprice = 0;
@@ -170,11 +174,42 @@
 	    		//alert(single);
 	    		var number=document.getElementById("total");
 	    		number.innerHTML=total;
+	    		var numbertwo=document.getElementById("totaltwo");
+	    		numbertwo.innerHTML='(' + total + ')';
 	    		var quantity=document.getElementById("totalprice");
 	    		quantity.innerHTML="￥" + totalprice;
 	    	});
 
 	    }
+	    $(".selectIt").click(function(){
+/*	    	//alert("123");
+	    	var form = document.formone;
+	    	//alert(form);
+	    	var list = document.getElementsByTagName("input");
+	    	//var action = list[i].name;
+	    	for (var i = list.length - 1; i >= 0; i--) {
+	    		alert(list[i].name);
+	    	};
+	    	
+	    	for (var i = 0; i < form.elements.length; i++){
+	    		if (form.elements[i].name == "checkbox"){
+	    			e = form.elements[i];
+	    			e.checked = (action == "selectall") ? (form.selectall.checked) : (!e.checked);
+	    		}
+	    	}*/
+	    	var selected = document.getElementsByName('selected')[0];
+	    	var form=document.formone;
+	    	for(var i = 0; i < form.length; i++){
+				if(form.elements[i].checked==true){
+					form.elements[i].checked=false;
+					//selected.setAttribute('checked', 'checked');
+				}else{
+					form.elements[i].checked=true;
+					//selected.setAttribute('checked', '');
+				}
+			}
+			//return false;
+	    });
 		$(".decrement").click(function(){
             var input =$(this).next();
             var num = parseFloat( input.val() );
@@ -190,6 +225,7 @@
 			single = input.val() * single;
 			var singlemon=document.getElementById(cartid);
 	    	singlemon.innerHTML="￥" + single;
+
 			calcprice();
 		});
 		$(".increment").click(function(){

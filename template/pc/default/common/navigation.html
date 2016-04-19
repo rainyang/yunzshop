@@ -24,10 +24,17 @@ var process_request = "正在处理您的请求...";
 <li class="spacer"></li>
 <li class="fore"><a href="http://bbs.ecmoban.com" target="_blank">社区</a></li>
 </ul>
+
+
 <ul class="fr top_r">
+
+
 <li class="fore"><a href="{php echo $this->createMobileUrl('member')}">登录</a></li>
 <li class="spacer"></li>
 <li class="fore"><a href="{php echo $this->createMobileUrl('member/register')}">注册</a></li>
+
+
+
 <li class="fore site_map"><i class="fontello-icon-menu"></i><a href="javascript:;">网站导航</a>
 <div class="categorys j-categorys">
 <div class="categorys-box categorys-dsxt fl wfs">
@@ -140,7 +147,7 @@ var process_request = "正在处理您的请求...";
     <a href="{php echo $this->createMobileUrl('shop/notice')}">店铺公告</a>
 </li>
 <li>
-    <a href="{php echo $this->createMobileUrl('shop/notice')}">成为分销商</a>
+    <a href="{php echo $this->createMobileUrl('plugin/commission',array('method' => 'register'))}">成为分销商</a>
 </li>
 <li>
     <a href="{php echo $this->createMobileUrl('member')}">会员中心</a>

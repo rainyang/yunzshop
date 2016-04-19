@@ -4,6 +4,7 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
+$tmplateType = (isMobile()) ? 'mobile' : 'pc';
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
@@ -58,7 +59,7 @@ if ($operation == "display" || $operation == "create") {
         }
     }
 }
-if ($_W['isajax']) {
+if ($_W['isajax'] || $tmplateType == 'pc') {
     if ($operation == 'display') {
         $id       = intval($_GPC['id']);
         $optionid = intval($_GPC['optionid']);
@@ -436,35 +437,37 @@ if ($_W['isajax']) {
                 }
             }
         }
-        show_json(1, array(
-            'member' => $member,
-            'deductcredit' => $deductcredit,
-            'deductmoney' => $deductmoney,
-            'deductcredit2' => $deductcredit2,
-            'saleset' => $saleset,
-            'goods' => $goods,
-            'weight' => $weight / $buytotal,
-            'set' => m('common')->getSysset('shop'),
-            'fromcart' => $fromcart,
-            'haslevel' => !empty($level['id']) && $level['discount'] > 0 && $level['discount'] < 10,
-            'total' => $total,
-            "dispatchprice" => number_format($dispatch_price, 2),
-            'totalprice' => number_format($totalprice, 2),
-            'goodsprice' => number_format($goodsprice, 2),
-            'discountprice' => number_format($discountprice, 2),
-            'discount' => $level['discount'],
-            'realprice' => number_format($realprice, 2),
-            'address' => $address,
-            'carrier' => $carrier,
-            'carrier_list' => $carrier_list,
-            'dispatch_list' => $dispatch_list,
-            'isverify' => $isverify,
-            'stores' => $stores,
-            'isvirtual' => $isvirtual,
-            'changenum' => $changenum,
-            'hascoupon' => $hascoupon,
-            'couponcount' => $couponcount
-        ));
+        if ($tmplateType == 'mobile'){
+            show_json(1, array(
+                'member' => $member,
+                'deductcredit' => $deductcredit,
+                'deductmoney' => $deductmoney,
+                'deductcredit2' => $deductcredit2,
+                'saleset' => $saleset,
+                'goods' => $goods,
+                'weight' => $weight / $buytotal,
+                'set' => m('common')->getSysset('shop'),
+                'fromcart' => $fromcart,
+                'haslevel' => !empty($level['id']) && $level['discount'] > 0 && $level['discount'] < 10,
+                'total' => $total,
+                "dispatchprice" => number_format($dispatch_price, 2),
+                'totalprice' => number_format($totalprice, 2),
+                'goodsprice' => number_format($goodsprice, 2),
+                'discountprice' => number_format($discountprice, 2),
+                'discount' => $level['discount'],
+                'realprice' => number_format($realprice, 2),
+                'address' => $address,
+                'carrier' => $carrier,
+                'carrier_list' => $carrier_list,
+                'dispatch_list' => $dispatch_list,
+                'isverify' => $isverify,
+                'stores' => $stores,
+                'isvirtual' => $isvirtual,
+                'changenum' => $changenum,
+                'hascoupon' => $hascoupon,
+                'couponcount' => $couponcount
+            ));
+        }
     } else if ($operation == 'getdispatchprice') {
         $isverify       = false;
         $isvirtual      = false;

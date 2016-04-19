@@ -100,7 +100,7 @@
 			</div>
 			<p class="make fl wfs">
 			<a class="make-cart fl" href="javascript:addToCart(500)">加入购物车</a>
-			<a class="make-show fl" href="{php echo $this->createMobileUrl('shop/cart')}">立即购买</a>
+			<a class="make-show fl" href="{php echo $this->createMobileUrl('order/confirm', array('id' => $goods['id'] , 'total' => '1' , optionid => ''))}">立即购买</a>
 			</p>
 <!-- <div class="offer j-offer">
 <span class="offer-give">送</span>
