@@ -12,7 +12,7 @@ $member['ordercount0'] = number_format($member['ordercount'], 0);
 $member['commission_ok'] = number_format($member['commission_ok'], 2);
 $member['commission_pay'] = number_format($member['commission_pay'], 2);
 $member['commission_total'] = number_format($member['commission_total'], 2);
-$member['customercount'] = $member['agentcount'];
+$member['customercount'] = intval($member['agentcount']);
 if (mb_strlen($member['nickname'], 'utf-8') > 6) {
 	$member['nickname'] = mb_substr($member['nickname'], 0, 6, 'utf-8');
 }

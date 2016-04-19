@@ -112,11 +112,13 @@ if ($operation == 'display' && $_W['isajax']) {
     if (empty($log)) {
         show_json(0, '充值出错, 请重试!');
     }
-    pdo_update('sz_yi_member_log', array(
-        'money' => $money
-    ), array(
-        'id' => $log['id']
-    ));
+
+    /*修复支付问题*/
+    $couponid = intval($_GPC['couponid']);
+	if($log['money'] <= 0){
+        pdo_update('sz_yi_member_log', array('money' => $money, 'couponid' => $couponid), array('id' => $log['id']));
+    }
+
     $set = m('common')->getSysset(array(
         'shop',
         'pay'
