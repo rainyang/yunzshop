@@ -46,19 +46,24 @@
              <h3>送货清单</h3>
         </div>
 {loop $goods $g}
-        <div class="goods-items">
+        <div class="goods-items" data-cartid="{$g['goodsid']}"
+              sel='1'
+              data-marketprice="{$g['marketprice']}"
+              data-goodsid="{$g['goodsid']}"
+              data-maxbuy='{$g['maxbuy']}' 
+              data-stock='{$g['stock']}'>
         	<div class="p-img">
-       			<a href="{php echo $this->createMobileUrl('shop/detail')}&id={$g['id']}"><img src="{$g['thumb']}"></a>
+       			<a href="{php echo $this->createMobileUrl('shop/detail')}&id={$g['goodsid']}"><img src="{$g['thumb']}"></a>
       		</div>
-      		<div class="list-name"><a href="{php echo $this->createMobileUrl('shop/detail')}&id={$g['id']}">{$g['title']}</a></div>
+      		<div class="list-name"><a href="{php echo $this->createMobileUrl('shop/detail')}&id={$g['goodsid']}">{$g['title']}</a></div>
       		<div class="cell-pos fl">
   				  <div class="div-add" data-maxbuy="{$g['totalmaxbuy']}" data-stock="{$g['stock']}" data-marketprice="{$g['marketprice']}">
       				<div class="add-pos">-</div>
-      				<input type="text" class="num-pos" value="1">
+      				<input type="text" class="num-pos" value="{$g['total']}">
     					<div class="less-pos">+</div>
   				  </div>
 		    	</div>
-          <div class="list-price fr"><strong class="jd-price" id = "marketprice">{php echo $g['marketprice']}</strong></div>
+          <div class="list-price fr"><strong class="jd-price" id = "{$g['goodsid']}">{php echo $g['marketprice'] * $g['total']}</strong></div>
         </div>
 {/loop}
 
@@ -66,19 +71,19 @@
   <div class="order-summary">
     <div class="statistic fr">
         <div class="list">
-          <span><em class="ftx-01">1</em> 件商品，总商品金额：</span>
-          <em class="price" >￥139.00</em>
+          <span><em class="ftx-01" id="num">1</em> 件商品，总商品金额：</span>
+          <em class="price" id = "priceone"></em>
         </div>
         <div class="list">
           <span>运费：</span>
-          <em class="price" >￥0.00</em>
+          <em class="price">￥0.00</em>
         </div>
     </div>
   </div>
   <div class="foot-detail">
     <div class="fc-price-info">
         <span class="price-tit">应付总额：</span>
-        <span class="price-numfoot">￥139.00</span>
+        <span class="price-numfoot"  id ="pricetwo"></span>
     </div>
     <div class="fc-consignee-info">
       <span class="mr20">寄送至： 黑龙江 哈尔滨市 南岗区 城区  中兴大道555号东辉明珠园D4栋3单元601</span>
@@ -89,9 +94,25 @@
 </div>
 <!--  -->
 <script type="text/javascript">
+
   $(document).ready(function(){
+    function calcprice(){
+      var total = 0;
+      var totalprice = 0;
+      $(".goods-items").each(function(){
+        var $this = $(this);
+        var num = $this.find(".num-pos").val();
+        total+=parseInt(num);
+        totalprice+=parseFloat($this.find('.num-pos').val()) * parseFloat($this.attr('data-marketprice'));
+        var number=document.getElementById("num");
+        number.innerHTML=total;
+        var priceone=document.getElementById("priceone");
+        priceone.innerHTML="￥" + totalprice;
+        var pricetwo=document.getElementById("pricetwo");
+        pricetwo.innerHTML="￥" + totalprice;
+      });
+    }
     $(".add-pos").click(function(){
-      //alert('hello');
       var input =$(this).next();
       var num = parseFloat( input.val() );
       num--;
@@ -99,16 +120,16 @@
         num=1;
       }
       input.val(num);
-      var marketprice = $(this).parent().attr('data-marketprice');
-      var singlemon = document.getElementById(marketprice);
+      var cartid = $(this).parent().parent().parent().attr('data-cartid');
+      var marketprice = $(this).parent().parent().parent().attr('data-marketprice');
+      var singlemon = document.getElementById(cartid);
       var single = input.val() * marketprice;
-      alert(single);
       singlemon.innerHTML = '￥' + single;
+      calcprice();
     });
     $(".less-pos").click(function(){
       var maxbuy = $(this).parent().attr('data-maxbuy');
       var stock = $(this).parent().attr('data-stock');
-      //alert(stock);
       var input =$(this).prev();
       var num = parseFloat( input.val() );
       num++;
@@ -120,7 +141,14 @@
       alert("您最多购买 " + stock + "件");
       }
       input.val(num);
+      var cartid = $(this).parent().parent().parent().attr('data-cartid');
+      var marketprice = $(this).parent().parent().parent().attr('data-marketprice');
+      var singlemon = document.getElementById(cartid);
+      var single = input.val() * marketprice;
+      singlemon.innerHTML = '￥' + single;
+      calcprice();
     });
+    calcprice();
   });
 </script>
 <!-- foot -->

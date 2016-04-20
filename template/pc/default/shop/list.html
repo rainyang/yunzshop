@@ -16,11 +16,6 @@
 					<h2>店内分类</h2>
 				</div>
 				<div class="mc">
-{loop $category $row}
-					<dl>
-						<dt class="open" style="background-color:#e72119"><s></s><a href="{php echo $this->createMobileUrl('shop/list')}&pcate={$row['id']}">{$row['name']}</a></dt>
-					</dl>
-{/loop}
 					<dl class="sp-single">
 						<dt class="open" style="background-color:#e72119"><s></s><a href="{php echo $this->createMobileUrl('shop/list', array('isnew' => 1))}">新上宝贝</a></dt>
 					</dl>
@@ -33,6 +28,11 @@
 					<dl>
 						<dt class="open"><s></s><a href="{php echo $this->createMobileUrl('shop/list', array('istime' => 1))}">限时秒杀</a></dt>
 					</dl>
+{loop $category $row}
+					<dl>
+						<dt class="open" style="background-color:#e72119"><s></s><a href="{php echo $this->createMobileUrl('shop/list')}&pcate={$row['id']}">{$row['name']}</a></dt>
+					</dl>
+{/loop}
 				</div>
 			</div>
 			<div class="m m2 related-buy">
@@ -44,11 +44,11 @@
 					{loop $goods $g}
 						<li class="fore1">
 						<div class="p-imgbox">
-							<a href="#" target="_blank">
+							<a href="{php echo $this->createMobileUrl('shop/detail')}&id={$g['id']}">
 							<img height="160" src="{$g['thumb']}" width="160">
 							</a></div>
 						<div class="p-name">
-							<a href="#" target="_blank">{$g['title']}</a></div>
+							<a href="{php echo $this->createMobileUrl('shop/detail')}&id={$g['id']}">{$g['title']}</a></div>
 						<div class="p-info p-bfc">
 							<div class="p-count fl"><s><?php echo $i+=1 ?></s><b>热销{$g['sales']}{$g['unit']}</b></div>
 							<div class="p-price fr"><strong class="J-p-1005947680">￥{$g['productprice']}</strong></div>

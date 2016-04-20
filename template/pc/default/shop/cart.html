@@ -8,7 +8,7 @@
 		<div class="cart-thead">
 			<div class="column t-checkbox">
 				<div class="cart-checkbox">
-					<input class="selectIt jdcheckbox" type="checkbox" name="selectall" value="checkbox">
+					<input class="jdcheckbox" type="checkbox" checked="checked" id="checkall" name="subcheckbox">
 				</div>
 				全选 </div>
 			<div class="column t-goods">
@@ -38,18 +38,20 @@
 
 					{loop $list $good}
 					<!-- list begin -->
-					<div class=" item-last item-item " 
+					<div class=" item-last item-item cart_good" 
 							data-cartid="{$good['id']}"
 							sel='1'
 							data-marketprice="{$good['marketprice']}"
 							data-goodsid="{$good['goodsid']}"
+                        	data-maxbuy='{$good['maxbuy']}' 
+                        	data-stock='{$good['stock']}'
 							>
 
 
 						<div class="item-form">
 							<div class="cell p-checkbox">
 								<div class="cart-checkbox">
-	 							 <input  type="checkbox"  class="jdcheckbox" name="checkbox" value="checkbox">					
+	 							 <input  type="checkbox"  class="jdcheckbox check" checked="checked" name="subcheckbox">					
 								</div>
 							</div>
 							<div class="cell p-goods">
@@ -76,7 +78,7 @@
 							</div>
 							<div class="cell p-sum"><strong id="{$good['id']}">{php echo $good[total] * $good['marketprice']}</strong></div>
 							<div class="cell p-ops">
-								<a  class="cart-remove" href="">删除</a>
+								<a  class="cart-remove" href="javascript::void(del)" data-delid = '{$good['id']}'>删除</a>
 								<!-- {php echo $this->createMobileUrl('shop/cart',array('op' => 'remove'))}&id={$good['id']} -->
 								<a href="#" class="cart-follow">移到我的收藏</a>
 							</div>						
@@ -93,18 +95,18 @@
 		<!-- 结算 -->
 		<div class="cart-toolbar">
 			<div class="options-box">
-				<div class="select-all">
+				<!-- <div class="select-all">
 					<div class="cart-checkbox">
-						<input type="checkbox" class="selectIt jdcheckbox" name="invest" value="chockbox">
+						<input type="checkbox" class="selected jdcheckbox" id="selected" name="invest" value="checkbox">
 					</div>反选
-				</div>
+				</div> -->
 				<div class="operation">
-					<a href="#" class="remove-batch fl">删除选中的商品</a>
+					<a href="javascript::void(delcheck)" class="remove-batch fl">删除选中的商品</a>
 					<a href="#" class="remove-batch fl">移动到我的收藏</a>
 				</div>
 				<div class="toolbar-right">
 					<div class="comm-right">
-						<div class="btn-area"><a href="#" class="submit-btn">去结算<span id = 'totaltwo'></span></a></div>
+						<div class="btn-area paysub"><a href="javascript::void(0)" class="submit-btn">去结算<span id = 'totaltwo'></span></a></div>
 						<div class="price-sum">
 							<div>
 								<span class="txt">品总价（含运费）：</span>
@@ -122,35 +124,32 @@
 </div>
 </form>
 <script type="text/javascript">
+
+//结算触发
 	$(document).ready(function(){
-/*		function setSelect(obj, sel,isall){
-	        if(sel=='1'){
-	          	obj.find('i').addClass('fa-circle-o').removeClass('fa-check-circle-o').css('color', '#999');
-	        }else{
-				obj.find('i').removeClass('fa-circle-o').addClass('fa-check-circle-o').css('color', '#0c9');
-	        }
-	        sel =sel==1?0:1;
-	        if(!isall){
-	       		obj.parent().attr('sel',sel);
-	        }else{
-	            obj.attr('sel',sel);
-	        }
-	        calcprice();
-	    }
-		$(".all").click(function(){
-			//alert("hello");
+		$('.paysub').click(function(){
+			console.log('test');
+            var total =  calcprice();
+            if(total<=0){
+                return;
+            }
+            var ids = [];
+            $('.cart_good[sel=1]').each(function(){
+                ids.push($(this).data('cartid'));
+	        });
+	        location.href = '{php echo $this->createMobileUrl("order/confirm");}&cartids='+ids.join(',');//core.getUrl('order/confirm',{cartids:ids.join(',')});
+    	});
+
+//删除触发
+		$('.cart-remove').click(function(){
 			var $this = $(this);
-            var sel = $this.attr('sel');
-            //alert(sel);
-            $(".ico").each(function(){
-            	setSelect($(this),sel)
-            });
-            setSelect($(this),sel,true);
+			var delid = $this.attr('data-delid');
+			//alert(delid);
+			var type = if(confirm("确定删除这件商品吗？删除将不能恢复！")) return true; else return false;
+			alert(type);
 		});
-		$(".ico").click(function(){
-            setSelect($(this),$(this).parent().attr('sel'))
-        });*/
-		
+
+//计算金额数量总和
 	    function calcprice(){
 	    	var total = 0;
 	    	var totalprice = 0;
@@ -158,20 +157,16 @@
 	    		var $this = $(this);
 	    		var sel = $this.attr('sel') == '1';
 	    		//alert(sel);
-	    		if(sel){
+	    		var check= $this.find(".check").is(':checked');
+	    		//alert(gouxuan);
+	    		if(sel && check){
 	    			var num = $this.find(".itxt").val();
 	    			if(isNaN(num)){
 	    				num = 1;
-	    			}
-	    			//alert(num);
-	    			total+=parseInt(num);
-	    			//alert(total);
-	    			totalprice+=parseFloat($this.find('.itxt').val()) * parseFloat($this.attr('data-marketprice'));
-	    			//alert(totalprice);
-	    			//var market = $this.attr('data-marketprice');
-	    			//alert(market);
 	    		}
-	    		//alert(single);
+	    		total+=parseInt(num);
+	    		totalprice+=parseFloat($this.find('.itxt').val()) * parseFloat($this.attr('data-marketprice'));
+	    		}
 	    		var number=document.getElementById("total");
 	    		number.innerHTML=total;
 	    		var numbertwo=document.getElementById("totaltwo");
@@ -179,37 +174,24 @@
 	    		var quantity=document.getElementById("totalprice");
 	    		quantity.innerHTML="￥" + totalprice;
 	    	});
-
 	    }
-	    $(".selectIt").click(function(){
-/*	    	//alert("123");
-	    	var form = document.formone;
-	    	//alert(form);
-	    	var list = document.getElementsByTagName("input");
-	    	//var action = list[i].name;
-	    	for (var i = list.length - 1; i >= 0; i--) {
-	    		alert(list[i].name);
-	    	};
-	    	
-	    	for (var i = 0; i < form.elements.length; i++){
-	    		if (form.elements[i].name == "checkbox"){
-	    			e = form.elements[i];
-	    			e.checked = (action == "selectall") ? (form.selectall.checked) : (!e.checked);
-	    		}
-	    	}*/
-	    	var selected = document.getElementsByName('selected')[0];
-	    	var form=document.formone;
-	    	for(var i = 0; i < form.length; i++){
-				if(form.elements[i].checked==true){
-					form.elements[i].checked=false;
-					//selected.setAttribute('checked', 'checked');
-				}else{
-					form.elements[i].checked=true;
-					//selected.setAttribute('checked', '');
-				}
-			}
-			//return false;
+	    
+//点击全选触发事件
+	    $("#checkall").click(function() {
+            $('input[name="subcheckbox"]').attr("checked",this.checked);
+            calcprice();
 	    });
+
+	    var $subcheckbox = $("input[name='subcheckbox']");
+	    $subcheckbox.click(function(){
+	        $("#checkall").attr("checked",$subcheckbox.length == $("input[name='subcheckbox']:checked").length ? true : false);
+	        var check = $(this).is(':checked');
+	        var sel = (check) ? 1 : 0;
+	        $(this).closest('.cart_good').attr('sel', sel);
+	        calcprice();
+        });
+
+//商品数量减少事件
 		$(".decrement").click(function(){
             var input =$(this).next();
             var num = parseFloat( input.val() );
@@ -228,6 +210,8 @@
 
 			calcprice();
 		});
+
+//商品数量增加事件
 		$(".increment").click(function(){
 			var maxbuy = $(this).parent().attr('data-maxbuy');
 			var stock = $(this).parent().attr('data-stock');
