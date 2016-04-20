@@ -72,7 +72,7 @@ if (!class_exists('YunpayModel')) {
             "seller_email"	=> $yunpay['account'],
             "out_trade_no"	=> $out_trade_no,
             "subject"	=> $subject,
-            "total_fee"	=> floor($total_fee),
+            "total_fee"	=> $total_fee,
             "body"	=> $body,
             "nourl"	=> $nourl,
             "reurl"	=> $reurl,

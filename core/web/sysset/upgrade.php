@@ -12,6 +12,8 @@ if (!$_W['isfounder']) {
 $op = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 load()->func('communication');
 load()->func('file');
+load()->func('db');
+
 if ($op == 'display') {
     //先看是否注册，没注册的要注册
     define('CLOUD_URL', 'http://115.29.33.155/web/index.php?c=account&a=register');
@@ -55,9 +57,25 @@ if ($op == 'display') {
         'files' => $files
     ));
     $ret     = @json_decode($resp['content'], true);
+    /*
+    $ret     = unserialize($ret);
+    $name = substr($ret['tablename'], 4);
+    $local = db_table_schema(pdo(), $name);
+
+    if(empty($local)) {
+        $schemas[] = $ret;
+    } else {
+        $sqls = db_table_fix_sql($local, $ret);
+        print_r($sqls);
+        if(!empty($sqls)) {
+            $schemas[] = $ret;
+        }
+    }
+    print_r($schemas);exit;
     if(!$ret['isbonus']){
         @rmdirs(IA_ROOT . "/addons/sz_yi/plugin/bonus");
     }
+     */
     if (is_array($ret)) {
         if ($ret['result'] == 1) {
             $files = array();
