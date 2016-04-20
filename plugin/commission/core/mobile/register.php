@@ -123,7 +123,6 @@ if ($_W["isajax"]) {
             $ret["status"]    = 4;
             $data             = array(
                 "isagent" => 1,
-                "agentid" => $mid,
                 "status" => 1,
                 "agenttime" => time()
             );
