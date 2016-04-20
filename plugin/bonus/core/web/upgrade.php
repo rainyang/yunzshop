@@ -7,7 +7,7 @@ $result = pdo_fetchcolumn('select id from ' . tablename('sz_yi_plugin') . ' wher
 if(empty($result)){
     $displayorder_max = pdo_fetchcolumn('select max(displayorder) from ' . tablename('sz_yi_plugin'));
     $displayorder = $displayorder_max + 1;
-    $sql = "INSERT INTO " . tablename('sz_yi_plugin') . " (`displayorder`,`identity`,`name`,`version`,`author`,`status`) VALUES(". $displayorder .",'bonus','亚美分红','1.0','官方','1');";
+    $sql = "INSERT INTO " . tablename('sz_yi_plugin') . " (`displayorder`,`identity`,`name`,`version`,`author`,`status`) VALUES(". $displayorder .",'bonus','芸众分红','1.0','官方','1');";
   pdo_query($sql);
 }
 $sql = "CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_bonus_goods') . " (
