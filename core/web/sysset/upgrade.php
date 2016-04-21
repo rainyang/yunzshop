@@ -19,11 +19,15 @@ if ($op == 'display') {
     $data['signature'] = 'sz_cloud_register';
     $res = ihttp_request(CLOUD_URL, $data);
     if(!$res){
-        //exit('通讯失败,请检查网络');
+        exit('通讯失败,请检查网络');
     }
+
     $content = json_decode($res['content'], 1);
-    if(!$content['status']){
-        //exit($content['msg']);
+    if($content['status'] == 2){
+        die(json_encode(array(
+            'result' => 0,
+            'message' => $content['msg'] . ". "
+        )));
     }
     $versionfile = IA_ROOT . '/addons/sz_yi/version.php';
     $updatedate  = date('Y-m-d H:i', filemtime($versionfile));
@@ -51,6 +55,9 @@ if ($op == 'display') {
         'files' => $files
     ));
     $ret     = @json_decode($resp['content'], true);
+    if(!$ret['isbonus']){
+        @rmdirs(IA_ROOT . "/addons/sz_yi/plugin/bonus");
+    }
     if (is_array($ret)) {
         if ($ret['result'] == 1) {
             $files = array();
@@ -92,7 +99,7 @@ if ($op == 'display') {
     }
     die(json_encode(array(
         'result' => 0,
-        'message' => $resp['content'] . ". "
+        'message' => $ret . ". "
     )));
 } else if ($op == 'download') {
     $tmpdir  = IA_ROOT . "/addons/sz_yi/tmp/" . date('ymd');
@@ -168,6 +175,7 @@ if ($op == 'display') {
         @rmdirs($tmpdir);
         //清除缓存
         @rmdirs(IA_ROOT . "/addons/sz_yi/data/cache");
+
         $time = time();
         global $my_scenfiles;
         my_scandir(IA_ROOT . '/addons/sz_yi');

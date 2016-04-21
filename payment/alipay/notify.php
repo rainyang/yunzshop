@@ -9,6 +9,7 @@ if (!empty($_POST)) {
 	require '../../../../addons/sz_yi/core/inc/functions.php';
 	require '../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
 	$body = $_POST['body'];
+    $total_fee = $_POST['total_fee'];
 	$strs = explode(':', $body);
 	$_W['uniacid'] = $_W['weid'] = intval($strs[0]);
 	$type = intval($strs[1]);
@@ -48,7 +49,7 @@ if (!empty($_POST)) {
 					$params[':module'] = 'sz_yi';
 					$log = pdo_fetch($sql, $params);
 					m('common')->paylog('log: ' . (empty($log) ? '' : json_encode($log)) . "\r\n");
-					if (!empty($log) && $log['status'] == '0') {
+					if (!empty($log) && $log['status'] == '0' && $log['fee'] == $total_fee) {
 						m('common')->paylog("corelog: ok\r\n");
 						$site = WeUtility::createModuleSite($log['module']);
 						if (!is_error($site)) {
@@ -90,7 +91,7 @@ if (!empty($_POST)) {
 						exit;
 					}
 					$log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `uniacid`=:uniacid and `logno`=:logno limit 1', array(':uniacid' => $_W['uniacid'], ':logno' => $logno));
-					if (!empty($log) && empty($log['status'])) {
+					if (!empty($log) && empty($log['status']) && $log['fee'] == $total_fee) {
 						pdo_update('sz_yi_member_log', array('status' => 1, 'rechargetype' => 'alipay'), array('id' => $log['id']));
 						m('member')->setCredit($log['openid'], 'credit2', $log['money'], array(0, '芸众商城会员充值:credit2:' . $log['money']));
 						m('member')->setRechargeCredit($log['openid'], $log['money']);

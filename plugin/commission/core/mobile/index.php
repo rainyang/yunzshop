@@ -19,7 +19,7 @@ if(!empty($pluginbonus)){
 			$member_bonus['commission_ok'] = number_format($member_bonus['commission_ok'], 2);
 			$member_bonus['commission_pay'] = number_format($member_bonus['commission_pay'], 2);
 			$member_bonus['commission_total'] = number_format($member_bonus['commission_total'], 2);
-			$member_bonus['customercount'] = count(p('bonus')->getChildAgents($member_bonus['id']));
+			$member_bonus['customercount'] = intval($member_bonus['agentcount']);
 			$level = p('bonus')->getLevel($openid);
 		}
 	}

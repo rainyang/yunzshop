@@ -55,6 +55,8 @@ pdo_update('sz_yi_order', array(
     'finishtime' => $time,
     'verifytime' => $time,
     'verified' => 1,
+    //修复核销门店无效问题
+    'verifystoreid' => $saler['storeid'],
     'verifyopenid' => $openid
 ), array(
     'id' => $order['id']
