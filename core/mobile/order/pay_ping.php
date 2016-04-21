@@ -16,6 +16,7 @@ if (!defined('IN_IA')) {
 }
 
 global $_W, $_GPC;
+$uniacid        = $_W['uniacid'];
 
 require_once('../addons/sz_yi/plugin/pingpp/init.php');
 
@@ -35,6 +36,7 @@ require_once('../addons/sz_yi/plugin/pingpp/init.php');
       'channel' => $_POST['channel'],
       'amount' => $_POST['amount'],
       'order_no' => $_POST['ordersn'],
+      'openid' => $_POST['token']
   );
 
     if (empty($input_data['channel'])) {
@@ -46,10 +48,16 @@ require_once('../addons/sz_yi/plugin/pingpp/init.php');
     $api_key = 'sk_live_DW1Wr5TO0e940ufDqH4S08K0';//'sk_test_88ynL0SG8SCKOm5K00z9ufD0';
 
     $orderNo = $input_data['order_no'];
-    $order_info = array('total'=>1,'name'=>'测试订单');
-    $amount = (int)($order_info['total'] * 100);
-    $subject = $order_info['name'];
-    $body = $order_info['name'];
+
+    $order_info          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid and openid=:openid limit 1', array(
+        'ordersn' => $orderNo,
+        ':uniacid' => $uniacid,
+        ':openid' => $input_data['openid']
+    ));
+
+    $amount = (int)($order_info['price'] * 100);
+    $subject = '商品订单';
+    $body = '商品订单';
 
     $app_id = 'app_unrfnH1qH8KOf14K';
     //$extra 在使用某些渠道的时候，需要填入相应的参数，其它渠道则是 array() .具体见以下代码或者官网中的文档。其他渠道时可以传空值也可以不传。
