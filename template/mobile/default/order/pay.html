@@ -36,7 +36,7 @@
         <div class="title">支付订单</div>
     </div>
     <div class="order_main" >  
-        <div class="line"><div class="label">订单编号</div><div class="info"><div class="inner"><%order.ordersn%></div></div></div>
+        <div class="line"><div class="label">订单编号</div><div class="info"><div class="inner" id="ordersn"><%order.ordersn%></div></div></div>
         <div class="line"><div class="label">支付金额</div><div class="info"><div class="inner"><div style='color:#ff6600'>￥<span id="orderprice" price="<%order.price%>"><%order.price%></span>元</div></div></div></div>
     </div>
     <%if order.price>0%>    
@@ -165,17 +165,18 @@
 
             $('.order_sub22').click(function() {
 
-                core.json('order/pay_ping',{},function(charge) {
-                    var channel = charge.channel;
-                    var amount = charge.amount;
+                //core.json('order/pay_ping',{},function(charge) {
+                var channel = $(this).data('info');
+                var amount = $("#orderprice").attr("price");
+                var ordersn = $("#ordersn").text();
 
                         if (typeof PINGPP_IOS_SDK !== 'undefined') {
-                            PINGPP_IOS_SDK.callPay(channel, amount);
+                            PINGPP_IOS_SDK.callPay(channel, amount,ordersn);
                         } else if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
-                            PINGPP_ANDROID_SDK.callPay(channel, amount);
+                            PINGPP_ANDROID_SDK.callPay(channel, ordersn);
                         }
 
-                });
+               // });
             });  //app aliapy
 
            if(result.alipay.success){

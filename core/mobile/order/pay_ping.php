@@ -15,11 +15,12 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 
-    require_once('../addons/sz_yi/plugin/pingpp/init.php');
+global $_W, $_GPC;
 
+require_once('../addons/sz_yi/plugin/pingpp/init.php');
 
     //$input_data = $this->para;
-    if (empty($this->para)) {
+    /*if (empty($this->para)) {
         $input_data = array(
             'channel' => 'alipay',//alipay,upmp,bfb,upacp,wx
             'amount' => '101',
@@ -28,15 +29,21 @@ if (!defined('IN_IA')) {
             'app_id' => 'app_unrfnH1qH8KOf14K',
             'order_no' => '22910252521',
         );
-    }
+    }*/
 
-    if (empty($input_data['channel']) || empty($input_data['amount'])) {
-        echo 'channel or amount is empty';
+  $input_data = array(
+      'channel' => $_POST['channel'],
+      'amount' => $_POST['amount'],
+      'order_no' => $_POST['ordersn'],
+  );
+
+    if (empty($input_data['channel'])) {
+        echo 'channel is empty';
         exit();
     }
     $channel = strtolower($input_data['channel']);
 
-    $api_key = 'sk_test_88ynL0SG8SCKOm5K00z9ufD0';
+    $api_key = 'sk_live_DW1Wr5TO0e940ufDqH4S08K0';//'sk_test_88ynL0SG8SCKOm5K00z9ufD0';
 
     $orderNo = $input_data['order_no'];
     $order_info = array('total'=>1,'name'=>'测试订单');
