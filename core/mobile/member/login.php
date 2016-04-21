@@ -24,7 +24,8 @@ if ($_W['isajax']) {
             $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
             setcookie($cookieid, base64_encode($info['openid']));
             show_json(1, array(
-                'preurl' => $preUrl
+                'preurl' => $preUrl,
+                'open_id' => $info['openid']
             ));
         }
         else{
