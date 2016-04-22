@@ -254,6 +254,7 @@ if ($_W['isajax'] || $tmplateType == 'pc') {
         ));
         show_json(1);
     } else if ($operation == 'remove' && $_W['ispost']) {
+        //echo "hello";exit();
         $ids = $_GPC['ids'];
         if (empty($ids) || !is_array($ids)) {
             show_json(0, '参数错误');

@@ -128,25 +128,86 @@
 //结算触发
 	$(document).ready(function(){
 		$('.paysub').click(function(){
-			console.log('test');
-            var total =  calcprice();
-            if(total<=0){
-                return;
-            }
             var ids = [];
             $('.cart_good[sel=1]').each(function(){
                 ids.push($(this).data('cartid'));
 	        });
+	        if(ids.length <=0){
+	        	alert('未选择商品');
+	        	return;
+	        }
 	        location.href = '{php echo $this->createMobileUrl("order/confirm");}&cartids='+ids.join(',');//core.getUrl('order/confirm',{cartids:ids.join(',')});
     	});
 
 //删除触发
 		$('.cart-remove').click(function(){
 			var $this = $(this);
+			var ids = [];
 			var delid = $this.attr('data-delid');
+			ids.push(delid) ;
 			//alert(delid);
-			var type = if(confirm("确定删除这件商品吗？删除将不能恢复！")) return true; else return false;
-			alert(type);
+			var del = confirm("确定删除这件商品吗？删除将不能恢复！");
+			if(del == true){
+				$.post('{php echo $this->createMobileUrl("shop/cart")}',
+				{
+					op: "remove",
+					ids: ids
+				},
+				function(json){
+					if(json.status==1)  {
+                        //alert(1);
+                        $('.item-last[data-cartid=' + delid+ ']').attr('sel',0).fadeOut(500,function(){
+                        	$(this).remove();
+                        });
+                        calcprice();
+                    }
+                    else{
+                        alert('删除失败');
+                    }
+				},
+				'json');
+			}
+		});
+
+//删除选中触发
+		$('.remove-batch').click(function(){
+			var ids =[];
+            $('.item-last[sel=1]').each(function(){
+                ids.push($(this).data('cartid')) ;
+            })
+            if(ids.length<=0){
+                alert('未选择商品');
+                return;
+            }
+            var delcheck = confirm("确认删除选中商品吗？删除将不能恢复！");
+            if(delcheck == true){
+            	//alert(ids);
+            	$.post('{php echo $this->createMobileUrl("shop/cart")}',
+				{
+					op:"remove",
+					ids:ids
+				},
+            	function(json){
+            		if (json.status==1) {
+            			console.log('ids:'+ids);
+                        for(var i in ids){
+                        	if($.isNumeric(i) == false){
+                        		continue;
+                        	}
+                        	console.log('ID:'+i);
+                            $('.item-last[data-cartid=' + ids[i]+ ']').attr('sel',0).fadeOut(500,function(){
+                            	$(this).remove();
+                            	//console.log("test:"+i);
+                            }) 
+                        }
+                    	if($('.item-last[sel=1]').length<=0){
+                             calcprice();
+                        }
+            		}else {
+            			alert("删除失败");
+            		}
+            	},'json');
+            }
 		});
 
 //计算金额数量总和
@@ -179,6 +240,12 @@
 //点击全选触发事件
 	    $("#checkall").click(function() {
             $('input[name="subcheckbox"]').attr("checked",this.checked);
+            $('.item-last').each(function(){
+            	$this = $(this);
+            	var check = $('input[name="subcheckbox"]').is(':checked');
+	        	var sel = (check) ? 1 : 0;
+            	$this.attr('sel',sel);
+            })
             calcprice();
 	    });
 

@@ -99,7 +99,7 @@
 				</div>
 			</div>
 			<p class="make fl wfs">
-			<a class="make-cart fl" href="javascript:addToCart(500)">加入购物车</a>
+			<a class="make-cart fl" href="javascript::void(0)">加入购物车</a>
 			<a class="make-show fl" href="{php echo $this->createMobileUrl('order/confirm', array('id' => $goods['id'] , 'total' => '1' , optionid => ''))}">立即购买</a>
 			</p>
 <!-- <div class="offer j-offer">
@@ -120,6 +120,13 @@
 		</div>
 	</div>
 </form>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('.make-cart').click(function(){
+		alert('未连接');
+	});
+});
+</script>
 <div class="content fl wfs">
 <div class="content-icons fl wfs" style="position:relative;">
 <div class="tips" style="left:0px;width:88px;"></div>

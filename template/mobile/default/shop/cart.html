@@ -538,7 +538,7 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                                         for(var i in ids){
                                             
                                             $('.cart_good[data-cartid=' + ids[i]+ ']').attr('del',1).fadeOut(500,function(){
-                                                $('.cart_good[data-cartid=' + ids[i]+ ']').remove();
+                                                //$('.cart_good[data-cartid=' + ids[i]+ ']').remove();
                                             })
                                         }
                                        if($('.cart_good[del=0]').length<=0){

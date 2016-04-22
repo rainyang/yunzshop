@@ -1032,28 +1032,28 @@ div.flicking_con a.on{background-position:0 -9px}
                              })
 	                    $('.good_choose').fadeIn(200);
                       } else{
-                          if(action=='cart'){
-                                                require(['core'],function(core){
+                            if(action=='cart'){
+                            require(['core'],function(core){
 
-                                                                           core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val()},function(ret){
-                                                                                                        if(ret.status==1){
-                                                                                                           core.tip.show(ret.result.message);
-                                                                                                           var cartdiv = $('.cart');
-                                                                                                                               if( cartdiv.find('b').length<=0){
-                                                                                                                                  cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
-                                                                                                                               }
-                                                                                                                               else {
-                                                                                                                                  cartdiv.find('b').html(ret.result.cartcount);
-                                                                                                                               }
+                                core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val()},function(ret){
+                                    if(ret.status==1){
+                                        core.tip.show(ret.result.message);
+                                        var cartdiv = $('.cart');
+                                        if( cartdiv.find('b').length<=0){
+                                            cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
+                                        }
+                                        else {
+                                            cartdiv.find('b').html(ret.result.cartcount);
+                                                                                                                       }
 
-                                                                                                       } else{
-                                                                                                           core.message(ret.result,'','error');
-                                                                                                       }
-                                                                               },true,true);
-                                                 });
-                                    }else if(action=='buy'){
-                                         location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
-                                    }
+                                    } else{
+                                        core.message(ret.result,'','error');
+                                                                                               }
+                                    },true,true);
+                                });
+                            }else if(action=='buy'){
+                                 location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+                            }
 
                       }
 	}
