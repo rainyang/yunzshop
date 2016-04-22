@@ -156,7 +156,7 @@ if ($op == 'display') {
     if($_GPC['status'] == 1){
       $where = " and openid in ('".$_GPC['mid']."')";  
     }
-    $sql = "select * from " . tablename('mc_mapping_fans') . " where uniacid=".$_W['uniacid'].$where."  ORDER BY fanid DESC";
+    $sql = "select * from " . tablename('mc_mapping_fans') . " where uniacid=".$_W['uniacid'].$where." and follow = 1 ORDER BY fanid DESC";
     $list = pdo_fetchall($sql);
     foreach ($list as $key => $row) {
         $fan = $this->model->fansQueryInfo($row['openid']);
