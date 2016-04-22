@@ -61,12 +61,15 @@
 		                    <td>{$row['realname']}</td>
 		                    <td>{$row['mobile']}</td>
 		                    <td  style="overflow:visible;">
-		                        <div class="btn-group btn-group-sm">
-                                    <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('supplier/supplier/detail',array('uid' => $row['uid']));}">详细信息</a>
-                                    <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('supplier/supplier_add', array('op' => 'post', 'id' => $row['id']))}"><i class="fa fa-edit"></i></a>
-                                    <a class='btn btn-default'  href="{php echo $this->createPluginWebUrl('supplier/supplier_add', array('op' => 'delete', 'id' => $row['id']))}" onclick="return confirm('确认删除此供应商吗？');
-                                    return false;"><i class="fa fa-remove"></i></a>
-		                        </div>
+                                <div class="btn-group btn-group-sm">
+                                    <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:;">操作 <span class="caret"></span></a>
+                                        <ul class="dropdown-menu dropdown-menu-left" role="menu" style='z-index: 99999'>
+                                            <li><a href="{php echo $this->createPluginWebUrl('supplier/supplier/detail',array('uid' => $row['uid']));}" title='供应商信息'><i class='fa fa-user'></i> 供应商信息</a></li>
+                                            <li><a href="{php echo $this->createPluginWebUrl('supplier/supplier_add', array('op' => 'post', 'id' => $row['id']))}" title='修改密码'><i class='fa fa-edit'></i> 修改密码</a></li>
+                                            <li><a  href="{php echo $this->createPluginWebUrl('supplier/supplier_list',array('supplier_uid' => $row['uid']));}" title='我的订单'><i class='fa fa-list'></i> 我的订单</a></li>
+                                            <li><a href="{php echo $this->createPluginWebUrl('supplier/supplier_add', array('op' => 'delete', 'id' => $row['id']))}" title="删除" onclick="return confirm('确定要删除该供应商吗？');"><i class='fa fa-remove'></i> &nbsp;删除供应商</a></li>
+                                        </ul>
+                                </div>
 		                    </td>
 		                </tr>
 		            {/if}

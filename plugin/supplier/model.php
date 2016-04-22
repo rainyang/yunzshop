@@ -396,7 +396,11 @@ if (!class_exists('SupplierModel')) {
 			}
 			return $perms;
 		}
-
+		public function getSet()
+		{	
+			$_var_0 = parent::getSet();
+			return $_var_0;
+		}
 		public function sendMessage($openid = '', $data = array(), $_var_151 = '')
 		{
 			$_var_22 = m('member')->getMember($openid);
@@ -412,6 +416,27 @@ if (!class_exists('SupplierModel')) {
 				m('message')->sendCustomNotice($openid, $_var_156);
 				//}
 			}
+		}
+
+		public function sendSupplierInform($openid = '', $status = '')
+		{	
+			if ($status == 1) {
+				$resu = '驳回';
+			} else {
+				$resu = '通过';
+			}
+			$set = $this->getSet();
+			$_var_152 = $set['tm'];
+			$_var_155 = $_var_152['commission_become'];			
+			$_var_155 = str_replace('[状态]', $resu, $_var_155);
+			$_var_155 = str_replace('[时间]', date('Y-m-d H:i', time()), $_var_155);
+			if (!empty($_var_152['commission_becometitle'])) {
+				$title = $_var_152['commission_becometitle'];
+			} else {
+				$title = '会员申请供应商通知';
+			}
+			$_var_156 = array('keyword1' => array('value' => $title, 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
+			m('message')->sendCustomNotice($openid, $_var_156);
 		}
 	}
 }

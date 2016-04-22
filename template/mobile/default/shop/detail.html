@@ -962,7 +962,6 @@ div.flicking_con a.on{background-position:0 -9px}
 		$('.good_choose').fadeOut(100); 
         }
 	function choose(act){
-            
                           if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
                                 require(['core'],function(core){
                                     core.tip.confirm($('#followtip').val(),function(){
@@ -976,10 +975,10 @@ div.flicking_con a.on{background-position:0 -9px}
                          if(!action){
                                      
                                 $('.good_choose_layer').fadeIn(200);
-                                          $('.good_choose_layer').unbind('click').click(function(){
-                                                    $('.good_choose_layer').fadeOut(100);
-                                 $('.good_choose').fadeOut(100); 
-                                          })
+                                $('.good_choose_layer').unbind('click').click(function(){
+                                    $('.good_choose_layer').fadeOut(100);
+                                    $('.good_choose').fadeOut(100); 
+                                })
                                 $('.good_choose').fadeIn(200);
                                 return;
                          }
