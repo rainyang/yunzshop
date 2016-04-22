@@ -66,11 +66,12 @@
 </div>
 </div>
 </div>
+
 <form action="javascript:addToCart(500)" method="post" name="ECS_FORMBUY" id="ECS_FORMBUY">
 	<input style="display:none" name="number" type="text" id="number" value="1" size="4" onblur="changePrice()"/>
 	<div class="right fr">
 		<div class="discount-msg">
-			<h3>{$goods['title']}+团购</h3>
+			<h3>{$goods['title']}+团购{$goods['id']}</h3>
 		</div>
 		<div class="discount-msg-two" style="padding-bottom: 10px;">
 			<p class="price" id="ECS_GOODS_AMOUNT">￥{$goods['marketprice']}元</p>
@@ -99,7 +100,7 @@
 				</div>
 			</div>
 			<p class="make fl wfs">
-			<a class="make-cart fl" href="javascript::void(0)">加入购物车</a>
+			<a class="make-cart fl" href="javascript::void(0)" data-goodid="{$goods['id']}">加入购物车</a>
 			<a class="make-show fl" href="{php echo $this->createMobileUrl('order/confirm', array('id' => $goods['id'] , 'total' => '1' , optionid => ''))}">立即购买</a>
 			</p>
 <!-- <div class="offer j-offer">
@@ -123,7 +124,25 @@
 <script type="text/javascript">
 $(document).ready(function(){
 	$('.make-cart').click(function(){
-		alert('未连接');
+		//alert('未连接');
+		$this = $(this);
+		var id = $this.attr('data-goodid');
+		//alert(id);
+
+        $.post('{php echo $this->createMobileUrl("shop/cart")}',
+		{
+			op: "add",
+			id: id,
+			optionid: '',
+			total:  '1'
+		},
+    	function(json){
+    		if (json.status==1) {
+    				alert("添加成功");
+    		}else {
+    			alert("添加失败");
+    		}
+    	},'json');
 	});
 });
 </script>

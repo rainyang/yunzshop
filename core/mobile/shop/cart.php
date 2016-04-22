@@ -48,6 +48,7 @@ if ($_W['isajax'] || $tmplateType == 'pc') {
             ':uniacid' => $uniacid,
             ':id' => $id
         ));
+        
         if (empty($goods)) {
             show_json(0, '商品未找到');
         }

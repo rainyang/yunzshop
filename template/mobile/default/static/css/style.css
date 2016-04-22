@@ -187,3 +187,6 @@ footer#footer-nav .menu-list:after {
 
 .topbar {max-width: 720px;}
 .main .page {position: relative;}
+/*个人中心左侧导航样式*/
+.leftlistnav{width: 230px;height: auto;background-color: #192229;float: left;}
+.rightlist{ width: 960px;float: right;background: #fff;padding: 0}

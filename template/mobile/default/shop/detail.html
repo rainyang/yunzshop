@@ -162,7 +162,8 @@ div.flicking_con a.on{background-position:0 -9px}
             <div class="close" onClick="closechoose()"><i class="fa fa-remove-o"></i></div>
         </div>
         <div class="other">
-            <input type='hidden' id='optionid' value='' />
+            
+            
                 <%each specs as spec%>
                 <input type='hidden' name="optionid[]" class='optionid optionid_<%spec.id%>' value="" title="<%spec.title%>">
                 <div class="spec"><%spec.title%></div>
@@ -955,33 +956,33 @@ div.flicking_con a.on{background-position:0 -9px}
 		$('#nav_'+n).siblings().removeClass('navon');
                       
 	}
-        function closechoose(){
-                 $('.good_choose_layer').fadeOut(100);
-		$('.good_choose').fadeOut(100); 
-        }
+    function closechoose(){
+        $('.good_choose_layer').fadeOut(100);
+        $('.good_choose').fadeOut(100); 
+    }
 	function choose(act){
             
-                          if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
-                                require(['core'],function(core){
-                                    core.tip.confirm($('#followtip').val(),function(){
-                                        location.href = $('#followurl').val();
-                                        return;
-                                    }) 
-                                });
-                             return;
-                          }
-	               action = act;
-                         if(!action){
+        if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
+            require(['core'],function(core){
+                core.tip.confirm($('#followtip').val(),function(){
+                    location.href = $('#followurl').val();
+                    return;
+                }) 
+            });
+        return;
+        }
+	    action = act;
+        if(!action){
                                      
-                                $('.good_choose_layer').fadeIn(200);
-                                          $('.good_choose_layer').unbind('click').click(function(){
-                                                    $('.good_choose_layer').fadeOut(100);
-                                 $('.good_choose').fadeOut(100); 
-                                          })
-                                $('.good_choose').fadeIn(200);
-                                return;
-                         }
-                         var specselected  = '';
+            $('.good_choose_layer').fadeIn(200);
+            $('.good_choose_layer').unbind('click').click(function(){
+                $('.good_choose_layer').fadeOut(100);
+                $('.good_choose').fadeOut(100); 
+            })
+            $('.good_choose').fadeIn(200);
+                return;
+        }
+     var specselected  = '';
   if( action=='cart'){
 	           
 			 $('.good_choose_layer').fadeIn(200);
@@ -1057,70 +1058,68 @@ div.flicking_con a.on{background-position:0 -9px}
 
                       }
 	}
+        
+
+
         function setoptions(){
-             var titles = '';
-   		         if(hasoption){
+            var titles = '';
+            if(hasoption){
 			     
-			 titles+='已选: ';
-			     $('.spec_items').each(function(){
- 			        titles+= $(this).find('.on').attr('title')+";";   
-			     });
-		         }
-                                             titles+='数量:' + $('#total').val();
-		         $("#optiondiv").html(titles);
+                titles+='已选: ';
+                $('.spec_items').each(function(){
+                    titles+= $(this).find('.on').attr('title')+";";   
+                });
+            }
+            titles+='数量:' + $('#total').val();
+            $("#optiondiv").html(titles);
         }
+
+
+
+
 	function choose2(direct,close){
-		 require(['core'],function(core){
-			 
+		require(['core'],function(core){
+    			 
             if(close){
                 closechoose();
                 return;
             }
-	    if(!direct){
-		    if($('.sub').hasClass('disabled')){
-		       return;
-		    }
-		    else{
-		        setoptions();
-		    }
-                                      
-		  
-	    } else {
-                            action = "";
-                      }
-		
-                var specselected  = '';
+	        if(!direct){
+                if($('.sub').hasClass('disabled')){
+                    return;
+		        }
+    		    else{
+    		        setoptions();
+    		    }
+	        } else {
+                action = "";
+            }
+            var specselected  = '';
                 
-	    $('.spec_items').each(function(){
-                
-                   var self = $(this);
- 		 if( $(this).find('.on').length<=0){
-                                          specselected = self.attr('title');
-                                          return false;
-                      }
-                               });  
-                                if( specselected!=''){
-                                      require(['core'],function(core){
-                                         core.tip.show('请选择' + specselected) ;
-                                      });
-                                      return;
-                      }
-                               
-                           
-                              
-		if(action=='cart'){
-			     var data = {};
-				 
-			     {if !empty($formInfo)}
-				 
-					{template 'diyform/common_js_data'}
-
-				         data = {
-						'diyformid': "{$goods['diyformid']}",
-						'diydata':diydata
-					};
-				{/if}
+            $('.spec_items').each(function(){
+                var self = $(this);
+                if( $(this).find('.on').length<=0){
+                    specselected = self.attr('title');
+                    return false;
+                }
+            });  
+            if( specselected!=''){
+                require(['core'],function(core){
+                    core.tip.show('请选择' + specselected) ;
+                });
+                return;
+            }           
+            if(action=='cart'){
+                var data = {};
+                {if !empty($formInfo)}
+                    {template 'diyform/common_js_data'}
+                    data = {
+                        'diyformid': "{$goods['diyformid']}",
+                        'diydata':diydata
+                    };
+                {/if}
                 core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
+
                     if(ret.status==1){ 
                         core.tip.show(ret.result.message);
                         var cartdiv = $('.cart');
@@ -1129,47 +1128,53 @@ div.flicking_con a.on{background-position:0 -9px}
                         }
                         else {
                             cartdiv.find('b').html(ret.result.cartcount);
-                    } closechoose();
-
-                                                                                                       } else{
-                                                                                                           core.message(ret.result,'','error');
-                                                                                                       }
-                                                                               },true,true);
-                                            
-                                    }else if(action=='buy'){
- 
-               {if !empty($formInfo)}
-				  
-                {template 'diyform/common_js_data'}
-
-                var data ={
-                    'op': 'create',
-                    'id': {$_GPC['id']},
-                    'diydata': diydata
-                };
-
-                require(['core'],function(core){
-                    core.json('shop/detail', data, function(create_json) {
-                        if (create_json.status == 1) {
-                            location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val()+ "&gdid="+create_json.result.goods_data_id;
-                        } else {
-                            core.tip.show("提交失败!")
                         }
+                        closechoose();
+
+                    } else{
+                        core.message(ret.result,'','error');
+                    }
+                },true,true);
+                                            
+            }else if(action=='buy'){
+                {if !empty($formInfo)}
+                    {template 'diyform/common_js_data'}
+
+                    var data ={
+                        'op': 'create',
+                        'id': {$_GPC['id']},
+                        'diydata': diydata
+                    };
+
+                    require(['core'],function(core){
+                        core.json('shop/detail', data, function(create_json) {
+                            if (create_json.status == 1) {
+                                location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val()+ "&gdid="+create_json.result.goods_data_id;
+                            } else {
+                                core.tip.show("提交失败!")
+                            }
 
                         return false;
 
-                    }, true, true);
-                })
+                        }, true, true);
+                    })
 
-                {else}
-                    location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+                    {else}
+                        location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
                 {/if}
 
-                    } else {
-							 closechoose();
-		}
-  });
+            } else {
+                closechoose();
+            }
+        });
 	}
+
+
+
+
+
+
+
   function addNum(){
 	var total = $("#total");
 	if(!total.isInt()){
