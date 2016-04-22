@@ -116,6 +116,7 @@ class Sz_DYi_Order
      */
     public function payResult($params)
     {
+        //file_put_contents($_SERVER['DOCUMENT_ROOT'].'/addons/sz_yi/1.txt', print_r($params,true));exit;
         global $_W;
         $fee     = $params['fee'];
         $data    = array(
@@ -267,6 +268,7 @@ class Sz_DYi_Order
                             }else{
                                 $ordersn = m('common')->createNO('order', 'ordersn', 'SH');
                                 $order['ordersn'] = $ordersn;
+                                $order['status'] = 1;
                                 pdo_insert('sz_yi_order', $order);
                                 $logid = pdo_insertid();
                                 $oid = array(
