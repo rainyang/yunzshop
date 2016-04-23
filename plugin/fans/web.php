@@ -19,9 +19,18 @@ class FansWeb extends Plugin
 			header('location: ' . $this->createPluginWebUrl('fans/member'));
 			exit;
 		}
+		if (cv('fans.agent')) {
+			header('location: ' . $this->createPluginWebUrl('fans/agent'));
+			exit;
+		}
 	}
 
 	public function member()
+	{
+		$this->_exec_plugin(__FUNCTION__);
+	}
+
+	public function agent()
 	{
 		$this->_exec_plugin(__FUNCTION__);
 	}
