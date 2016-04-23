@@ -191,7 +191,7 @@ if ($operation == "display") {
              join 
             ( select ro.id as orderid,g.supplier_uid,g.goodsid,rr.status from " . tablename('sz_yi_order') . " ro left join " . tablename('sz_yi_order_refund') . " rr  on rr.orderid =ro.id left join " . tablename('sz_yi_order_goods') . " g on ro.id = g.orderid where g.supplier_uid=".$_W['uid']." ) r 
             on r.orderid= o.id" . " left join " . tablename('sz_yi_member') . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename('sz_yi_member_address') . " a on a.id=o.addressid " . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . " left join " . tablename('sz_yi_dispatch') . " d on d.id = o.dispatchid " . "where $condition $statuscondition ORDER BY o.createtime DESC ";
-            $costmoney = pdo_fetchcolumn(' select ifnull(sum(g.costprice*og.total),0) from ' . tablename('sz_yi_order_goods') . ' og left join ' . tablename('sz_yi_order') . ' o on o.id=og.orderid left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid where og.supplier_uid=:supplier_uid and og.supplier_apply_status!=1 and o.status=3 and og.uniacid=:uniacid',array(
+            $costmoney = pdo_fetchcolumn(' select ifnull(sum(go.costprice*og.total),0) from ' . tablename('sz_yi_order_goods') . ' og left join ' . tablename('sz_yi_order') . ' o on o.id=og.orderid left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid left join ' . tablename('sz_yi_goods_option') . ' go on go.goodsid=g.id where og.supplier_uid=:supplier_uid and og.supplier_apply_status!=1 and o.status=3 and og.uniacid=:uniacid',array(
                     ':supplier_uid' => $_W['uid'],
                     ':uniacid' => $_W['uniacid']
                 ));
@@ -1615,7 +1615,7 @@ function zymfunc_5($zym_var_32) {
     if (!empty($zym_var_32["virtual"]) && $zym_var_34) {
         $zym_var_34->pay($zym_var_32);
     } else {
-        pdo_update("sz_yi_order", array(
+        /*pdo_update("sz_yi_order", array(
             "status" => 1,
             "paytype" => 11,
             "paytime" => time()
@@ -1630,7 +1630,22 @@ function zymfunc_5($zym_var_32) {
         }
         if (p("commission")) {
             p("commission")->checkOrderPay($zym_var_32["id"]);
-        }
+        }*/
+        $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
+            ':uniacid' => $_W['uniacid'],
+            ':module' => 'sz_yi',
+            ':tid' => $zym_var_32['ordersn']
+        ));
+        pdo_update("sz_yi_order", array('paytype' => '11'), array('uniacid' => $_W['uniacid'], 'id' => $zym_var_32['id']));
+        $ret            = array();
+        $ret['result']  = 'success';
+        $ret['from']    = 'return';
+        $ret['tid']     = $log['tid'];
+        $ret['user']    = $zym_var_32['openid'];
+        $ret['fee']     = $zym_var_32['price'];
+        $ret['weid']    = $_W['uniacid'];
+        $ret['uniacid'] = $_W['uniacid'];
+        $payresult      = m('order')->payResult($ret);
     }
     plog("order.op.pay", "订单确认付款 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]}");
     message("确认订单付款操作成功！", order_list_backurl() , "success");

@@ -9,7 +9,7 @@
             <input type="hidden" name="m" value="sz_yi" />
             <input type="hidden" name="do" value="plugin" />
             <input type="hidden" name="p" value="supplier" />
-            <input type="hidden" name="method" value="supplier_for" />
+            <input type="hidden" name="method" value="supplier_for_resu" />
                  <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">ID</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
@@ -20,6 +20,16 @@
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">姓名</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                     <input type="text" class="form-control"  name="realname" value="{$_GPC['realname']}" placeholder="可搜索昵称/姓名/手机号"/> 
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">状态</label>
+                <div class="col-sm-4">
+                    <select name='status' class='form-control'>
+                        <option value=''>审核状态</option>
+                        <option value='1' {if $_GPC['status']=='1'}selected{/if}>驳回</option>
+                        <option value='2' {if $_GPC['status']=='2'}selected{/if}>通过</option>
+                    </select>
                 </div>
             </div>
               <div class="form-group">
@@ -52,7 +62,7 @@
                     <th style='width:120px;'>手机号码</th>
                     <th style='width:120px;'>微信</th>
                     <th style='width:120px;'>产品名称</th>
-                    <th style='width:120px;'>操作</th>
+                    <th style='width:120px;'>申请结果</th>
                 </tr>
             </thead>
             <tbody>
@@ -63,7 +73,7 @@
                     <td>{$row['mobile']}</td>
                     <td>{$row['weixin']}</td>
                     <td>{$row['productname']}</td>
-                    <td><a class="label label-default " href="{php echo $this->createPluginWebUrl('supplier/supplier_for',array('op' => 'af_supplier', 'id' => $row['id'], 'status' => 1));}">驳回审核</a><a class="label label-default label-info" href="{php echo $this->createPluginWebUrl('supplier/supplier_for',array('op' => 'af_supplier', 'id' => $row['id'], 'status' => 2));}">审核通过</a></td>
+                    <td>{if $row['status'] == 1}<span class="label label-default ">驳回审核</span>{elseif $row['status'] == 2}<span class="label label-default label-info">审核通过</span>{/if}</td>
                 </tr>
                 {/loop}
             </tbody>

@@ -10,23 +10,6 @@ $condition = " and uniacid=:uniacid";
 $params    = array(
     ':uniacid' => $_W['uniacid']
 );
-if ($operation == 'af_supplier') {
-    $status = $_GPC['status'];
-    $id = $_GPC['id'];
-    $openid = pdo_fetchcolumn("select openid from " . tablename('sz_yi_af_supplier') . " where uniacid={$_W['uniacid']} and id={$id}");
-    if (empty($openid)) {
-        message('没有该条申请记录', $this->createPluginWebUrl('supplier/supplier_for'), 'error');
-    } else {
-        pdo_update('sz_yi_af_supplier',array('status' => $status), array('id' => $id, 'uniacid' => $_W['uniacid']));
-        $this->model->sendSupplierInform($openid,$status);
-        if ($status == 1) {
-            $msg = '驳回申请成功';
-        } else {
-            $msg = '审核通过成功';
-        }
-        message($msg, $this->createPluginWebUrl('supplier/supplier_for'), 'success');
-    }
-}
 if (!empty($_GPC['mid'])) {
     $condition .= ' and id=:mid';
     $params[':mid'] = intval($_GPC['mid']);
@@ -36,7 +19,17 @@ if (!empty($_GPC['realname'])) {
     $condition .= ' and realname like :realname';
     $params[':realname'] = "%{$_GPC['realname']}%";
 }
-$sql = "select * from " . tablename('sz_yi_af_supplier') . " where 1 and status=0 {$condition}";
+if (!empty($_GPC['status'])) {
+    if ($_GPC['status'] == 1) {
+        $condition .= ' and status=1';
+    }
+    if ($_GPC['status'] == 2) {
+        $condition .= ' and status=2';
+    }
+} else {
+    $condition .= ' and status>0';
+}
+$sql = "select * from " . tablename('sz_yi_af_supplier') . " where 1 {$condition}";
 if (empty($_GPC['export'])) {
     $sql .= " limit " . ($pindex - 1) * $psize . ',' . $psize;
 }
@@ -77,4 +70,4 @@ if ($_GPC['export1'] == '1') {
 $total           = count($list);
 $pager           = pagination($total, $pindex, $psize);
 load()->func('tpl');
-include $this->template('supplier_for');
+include $this->template('supplier_for_resu');

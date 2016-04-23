@@ -159,14 +159,14 @@
         <div class="address carrier"
              data-index='<%index%>'
              data-id='<%carrier.id%>'
-             data-realname='<%carrier.realname%>'
-             data-mobile='<%carrier.mobile%>'
+             data-realname='<%carrier.storename%>'
+             data-mobile='<%carrier.tel%>'
              data-address='<%carrier.address%>' 
              >
             <div class="ico" ><%if selectedCarrierIndex==index%><i class="fa fa-check" style="color:#0c9"></i><%/if%></div>
             <div class="info">
                 <div class='inner'>
-                    <div class="name"><%carrier.realname%>(<%carrier.mobile%>)</div>
+                    <div class="name"><%carrier.storename%>(<%carrier.tel%>)</div>
                     <div class="addr"><%carrier.address%></div>
                 </div>
             </div>
@@ -240,7 +240,7 @@
 					<div class="ico"><i class="fa fa-map-marker"></i></div>
 					<div class='info1'>
 						 <div class='inner'>
-							 <div class="user">自提地点：<span id='carrier_realname'><%carrier.realname%></span>(<span id='carrier_mobile'><%carrier.mobile%></span>)</div>
+							 <div class="user">自提地点：<span id='carrier_realname'><%carrier.storename%></span>(<span id='carrier_mobile'><%carrier.tel%></span>)</div>
 							 <div class="address"><span id='carrier_address'><%carrier.address%></span></div>
 						 </div>
 					</div>
