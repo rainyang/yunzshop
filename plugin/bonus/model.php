@@ -323,7 +323,7 @@ if (!class_exists('BonusModel')) {
 			if(empty($set['start'])){
 				return;
 			}
-			$order = pdo_fetch('select id,openid,ordersn,goodsprice,agentid,paytime from ' . tablename('sz_yi_order') . ' where id=:id and status>=1 and uniacid=:uniacid limit 1', array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
+			$order = pdo_fetch('select id,openid,ordersn,goodsprice,agentid,paytime,finishtime from ' . tablename('sz_yi_order') . ' where id=:id and status>=1 and uniacid=:uniacid limit 1', array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
 			if (empty($order)) {
 				return;
 			}
@@ -348,7 +348,7 @@ if (!class_exists('BonusModel')) {
 			foreach ($bonus_goods as $key => $val) {
 				$openid = pdo_fetchcolumn("select openid from " . tablename('sz_yi_member') . " where id=".$val['mid']." and uniacid=".$_W['uniacid']);
 				$agent_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods') . " where mid=".$val['mid']." and orderid=".$order['id']." and uniacid=".$_W['uniacid']);
-				$this->sendMessage($openid, array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $realprice, 'goods' => $goods, 'commission' => $agent_money, 'paytime' => $order['paytime']), TM_BONUS_ORDER_FINISH);
+				$this->sendMessage($openid, array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $realprice, 'goods' => $goods, 'commission' => $agent_money, 'finishtime' => $order['finishtime']), TM_BONUS_ORDER_FINISH);
 			}
 		}
 
