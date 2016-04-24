@@ -35,6 +35,7 @@ if (!empty($_GPC['supplier_uid'])) {
     $condition .= " and og.supplier_uid > 0";
 }
 $sql = "select o.id,o.ordersn,o.price,o.goodsprice, o.dispatchprice,o.createtime, o.paytype, a.realname as addressname,m.realname from " . tablename('sz_yi_order') . " o  left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id left join " . tablename('sz_yi_member') . " m on o.openid = m.openid left join " . tablename('sz_yi_member_address') . " a on a.id = o.addressid  where 1 {$condition} ";
+$sql .= " ORDER BY o.id DESC ";
 if (empty($_GPC['export'])) {
     $sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
 }
