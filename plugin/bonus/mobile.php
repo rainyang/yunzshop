@@ -43,6 +43,10 @@ class BonusMobile extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function order_area()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
     public function withdraw()
     {
         $this->_exec_plugin(__FUNCTION__, false);
