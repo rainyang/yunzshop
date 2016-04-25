@@ -215,23 +215,21 @@ $(document).ready(function(){
 });
 </script>
 <div class="content fl wfs">
-<div class="content-icons fl wfs" style="position:relative;">
-<div class="tips" style="left:0px;width:88px;"></div>
-<ul class="mainLeftNav">
-<li class="cur">产品描述</li>
-<li>用户评价</li>
-</ul>
-</div>
-<div class="content-item j-content-item content-package fl wfs" style="display:block;">
-<dl class="content-item-dl fl wfs">
-<dt>产品信息</dt>
-<dd style="line-height: 29px;  width:33%">货号：{$goods['goodssn']}</dd>
-<dd style="line-height: 29px; height:29px; width:33%; overflow:hidden; text-overflow:ellipsis; white-space: nowrap;" title="ECSHOP模板堂天猫商城升级旗舰版+团购">商品名称：{$goods['title']}+团购</dd>
-<dd style="line-height: 29px; width:34%;">浏览量：{$goods['viewcount']}</dd>
-<dd style="line-height: 29px; width:33%;">主题：时尚简约</dd>
-<dd style="line-height: 29px; width:33%;">色系：红色</dd>
-</dl>
-<div class="desc fl wfs" style="margin-top:20px;">
+	<div class="content-icons fl wfs" style="position:relative;">
+		<div class="tips" style="left:0px;width:88px;"></div>
+		<ul class="mainLeftNav">
+			<li class="cur">产品描述</li>
+			<li>用户评价</li>
+		</ul>
+	</div>
+	<div class="content-item j-content-item content-package fl wfs" style="display:block;">
+		<dl class="content-item-dl fl wfs">
+			<dt>产品信息</dt>
+			<dd style="line-height: 29px;  width:33%">货号：{$goods['goodssn']}</dd>
+			<dd style="line-height: 29px; height:29px; width:33%; overflow:hidden; text-overflow:ellipsis; white-space: nowrap;" title="{$goods['title']}">商品名称：{$goods['title']}+团购</dd>
+			<dd style="line-height: 29px; width:34%;">浏览量：{$goods['viewcount']}</dd>
+		</dl>
+	<div class="desc fl wfs" style="margin-top:20px;">
 <!-- <div>
 	<div style="width: 1170px;height: 550px;margin-top: 20px;background: #fff url(http://www.ecmoban.com/content/themes/ecmoban2014/images/video-bg.png) no-repeat center center">
 		<div style="float: left;width: 675px;height: 418px;margin-left: 248px;margin-top: 40px;">

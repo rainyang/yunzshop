@@ -4,7 +4,7 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-$tmplateType = (isMobile()) ? 'mobile' : 'pc';
+//$tmplateType = (isMobile()) ? 'mobile' : 'pc';
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
@@ -59,7 +59,7 @@ if ($operation == "display" || $operation == "create") {
         }
     }
 }
-if ($_W['isajax'] || $tmplateType == 'pc') {
+if ($_W['isajax']) {
     if ($operation == 'display') {
         $id       = intval($_GPC['id']);
         $optionid = intval($_GPC['optionid']);
@@ -437,7 +437,7 @@ if ($_W['isajax'] || $tmplateType == 'pc') {
                 }
             }
         }
-        if ($tmplateType == 'mobile'){
+        //if ($tmplateType == 'mobile'){
             show_json(1, array(
                 'member' => $member,
                 'deductcredit' => $deductcredit,
@@ -467,7 +467,7 @@ if ($_W['isajax'] || $tmplateType == 'pc') {
                 'hascoupon' => $hascoupon,
                 'couponcount' => $couponcount
             ));
-        }
+        //}
     } else if ($operation == 'getdispatchprice') {
         $isverify       = false;
         $isvirtual      = false;

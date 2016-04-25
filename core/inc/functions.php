@@ -99,7 +99,6 @@ function curl_download($url, $dir) {
 function send_sms($account, $pwd, $mobile, $content) 
 {		
    $smsrs = file_get_contents('http://115.29.33.155/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
-  
    return xml_to_array($smsrs);
 }
 

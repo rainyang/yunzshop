@@ -44,14 +44,16 @@
 </div>
 </div>
 <div class="icons fl wfs">
-<ul id="tips">
-<li><span></span></li>
-<li><span></span></li>
-<li><span></span></li>
-<li><span></span></li>
-<li><span></span></li>
-<li><span></span></li>
-</ul>
+	<ul id="tips">
+		{if $advs}
+		{loop $advs $row}
+		<li><span class= "{$row['advname']}"></span></li>
+		{/loop}
+		{else}
+		<li><span class= "{$row['advname']}"></span></li>
+		<li><span class= "{$row['advname']}"></span></li>
+		{/if}
+	</ul>
 </div>
 <script src="http://www.ecmoban.com/content/themes/ecmoban2014/js/jquery.SuperSlide.js"></script>
 <script>
@@ -109,7 +111,7 @@
 	<ul class="items" style="width: 1222px;">
 {if $goods}
 	{loop $goods $row}
-		{if $row['status'] == 1 and $row['isrecommand'] == 1}
+		{if $row['status'] == 1 and $row['isrecommand'] == 1 and $row['deleted'] == 0}
 		<li class="items-li j-items-li">
 			<a target="_blank" href="{php echo $this->createMobileUrl('shop/detail')}&id={$row['id']}" style="position:relative;"><img src="{$row['thumb']}" title=""></a>
 			<div class="wrap_div">
@@ -219,7 +221,7 @@
 	<ul class="items" style="width: 1222px;">
 {if $goods}
 	{loop $goods $row}
-		{if $row['status'] == 1 and $row['isnew'] == 1}
+		{if $row['status'] == 1 and $row['isnew'] == 1 and $row['deleted'] == 0}
 		<li class="items-li j-items-li">
 			<a target="_blank" href="{php echo $this->createMobileUrl('shop/detail')}&id={$row['id']}" style="position:relative;"><img src="{$row['thumb']}" title=""></a>
 			<div class="wrap_div">

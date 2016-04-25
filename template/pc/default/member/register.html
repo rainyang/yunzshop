@@ -1,52 +1,75 @@
-{template 'common/header_old'}
-<title>会员注册</title>
 
-<style type="text/css">
-    body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearance:none;}
-    .info_main {height:auto;  background:#fff; margin-top:14px; border-bottom:1px solid #e8e8e8; border-top:1px solid #e8e8e8;}
-    .info_main .line {margin:0 10px; height:40px; border-bottom:1px solid #e8e8e8; line-height:40px; color:#999;position: relative;}
-    .info_main .line .title {height:40px; width:80px; line-height:40px; color:#444; float:left; font-size:16px;}
-    .info_main .line .info { width:100%;float:right;margin-left:-80px; }
-    .info_main .line .inner { margin-left:80px; }
-    .info_main .line .inner input {height:40px; display:block; padding:0px; margin:0px; border:0px; float:left; font-size:16px;}
-    .info_main .line .inner .user_sex {line-height:40px;}
-    .register {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
-    .info_sub {height:44px; margin:14px 5px; background:#ccc; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
-    .nobindmobile {clear:both;height:44px; margin:14px 5px; background:#ccc; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
-    .select { border:1px solid #ccc;height:25px;}
-</style>
-<script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.core-2.5.2.js" type="text/javascript"></script>
-<script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.core-2.5.2-zh.js" type="text/javascript"></script>
-<link href="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.core-2.5.2.css" rel="stylesheet" type="text/css" />
-<link href="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.animation-2.5.2.css" rel="stylesheet" type="text/css" />
-<script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.datetime-2.5.1.js" type="text/javascript"></script>
-<script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.datetime-2.5.1-zh.js" type="text/javascript"></script>
-<script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.android-ics-2.5.2.js" type="text/javascript"></script>
-<link href="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.android-ics-2.5.2.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
-<div id="container"></div>
-<script id="member_info" type="text/html">
-    <div class="page_topbar">
-    <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
-    <div class="title">会员注册</div>
-</div>
-    <div class="info_main">
-        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><input type="text" id='mobile' placeholder="请输入您的手机号码"  value="" /></div></div></div>
-        <div class="line"><div class="title">验证码</div><div class='info'><div class='inner'><input type="text" id='code' placeholder="请输入验证码"  value="" /><input id="btnSendCode" type="button" style="position: absolute;right: 0;top: 0;" value="发送验证码"  /></div></div></div>
-        <div class="line"><div class="title">设置密码</div><div class='info'><div class='inner'><input type="password" id='password' placeholder="请输入您的密码"  value="" /></div></div></div>
-        <div class="line"><div class="title">确认密码</div><div class='info'><div class='inner'><input type="password" id='cpassword' placeholder="请确认密码"  value="" /></div></div></div>
-        
+{template 'common/header'}
+
+{template 'common/navigation'}
+
+        <div class="fl wfs bcf7">
+            <div class="regist-process-wrapper">
+                <div class="regist-process-body fl wfs">
+                    
+                    <div class="regist-process-register-left fl">
+                        <h2 class="title">用户注册</h2>
+                        <form id="registerForm" action="user.php" method="post" name="formUser" onsubmit="return register2();">
+                            <div>
+                                <span class="title">手机号：</span>
+                                <input class="form-control text" id="mobile" name="mobile"  type="text">
+                                <p class="tips" id="username_notice"></p>
+                            </div>
+                            <div>
+                                <span class="title">验证码：</span>
+                                <input id="code" class="form-control text" type="text"  name="code">
+                                <input type="button" class="yzma" id="btnSendCode" value="发送验证码">
+                                <!-- <a href="#" class="yzma">60秒后重新发送</a> -->
+                                <p class="tips" id="email_notice"></p>
+                            </div>
+                            
+                            <div>
+                                <span class="title">密码：</span>
+                                <input class="form-control text" id="password"  name="password"  type="password">
+                                <p class="tips" id="password_notice"></p>
+                            </div>
+                            <div>
+                                <span class="title">确认密码：</span>
+                                <input class="form-control text" id="cpassword" onblur="check_conform_password(this.value);" name="cpassword" type="password">
+                                <p class="tips" id="conform_password_notice"></p>      
+                            </div>
+                            <div class="read-protocal">
+                                <input id="protocal" name="agreement" type="checkbox" value="1" checked="checked" />
+                                阅读并已同意<a href="http://help.ecmoban.com/article-6.html" target="_blank">《芸众商城用户协议》</a>
+                            </div>
+                            <input type="hidden" name="act" value="act_register" >
+                            <input type="hidden" name="back_act" value="" />
+                            <input class="btn btn-danger register-now register" name="Submit" type="button"  value="立即注册">
+                        </form>
+                    </div>
+                    
+                    
+                   <div class="regist-process-register-right fr">
+                       <h2 class="title">我已注册账号</h2>
+                       <a class="btn btn-info login-now" href="{php echo $this->createMobileUrl('member')}">立即登录</a>
+                       <div class="scan">
+                           <img src="../addons/sz_yi/template/pc/default/static/images/qrcode.jpg">
+                           <span>扫描我，立即关注</span>
+                           <b>芸众商城微信公众号</b>
+                       </div>
+                       <p class="pre-consultation">售前咨询<b>0451-86630395</b></p>
+                   </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+
+<div class="blank"></div>
+    <div class="regist-process-foot fl wfs">
+        <p class="copyright">© 2005-2016 ecshop模板堂(ecmoban.com) 版权所有，并保留所有权利。常年法律顾问：上海华宏律师事务所</p>
+        <p class="address">上海市普陀区中山北路3553号伸大厦3层</p>
     </div>
-    <div class="register">注册</div>
-    <div class="info_sub">登录</div>
 
-</script>
+</div>
 <script language="javascript">
     require(['tpl', 'core'], function(tpl, core) {
-        $('#container').html(tpl('member_info'));
-            $('.info_sub').click(function(){
-                location.href = "{php echo $this->createMobileUrl('member/login')}";
-            });
+        //$('#container').html(tpl('member_info'));
 
             $('#mobile').blur(function(){
                 if(!$('#mobile').isMobile()){
@@ -157,5 +180,5 @@
             });
     })
 </script>
-
-{template 'common/footer'}
+</body>
+</html>

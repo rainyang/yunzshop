@@ -37,7 +37,7 @@ class Core extends WeModuleSite
     }
     public function sendSms($mobile, $content){
         $set = m('common')->getSysset();
-        send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $content);
+        return send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $content);
     }
     public function runTasks()
     {
