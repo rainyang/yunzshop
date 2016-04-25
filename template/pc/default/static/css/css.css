@@ -1709,7 +1709,7 @@ cursor: pointer;
 }
 .checkout-steps {
     background-color: #fff;
-    padding: 10px 100px 0;
+    padding: 10px 40px 0;
     border: 1px solid #f0f0f0;
     overflow: hidden;
 
@@ -1891,8 +1891,8 @@ cursor: pointer;
     text-align: right;
     font-family: verdana;
 }
-.order-summary{padding: 20px 100px 0 0;    overflow: hidden;}
-.foot-detail{padding: 15px 120px 15px 0;
+.order-summary{padding: 20px 40px 0 0;    overflow: hidden;}
+.foot-detail{padding: 15px 60px 15px 0;
     line-height: 20px;
     text-align: right;
     border-top: 1px solid #e6e6e6;
@@ -1909,11 +1909,95 @@ cursor: pointer;
 .fc-consignee-info{padding: 4px 0 }
 .fc-consignee-info span{ font-size: 12px;}
 
-.inner{ width:100%;margin-bottom:20px;overflow:hidden;padding-right: 120px;}
+.inner{ width:100%;margin-bottom:20px;overflow:hidden;padding-right: 60px;}
 .inner a{float:right;width:136px;height:36px;background:#e4393c;color:#fff;text-align:center;line-height:36px}
 .inner a:hover{ background:#C51E21}
+/*付款方式*/
+.buy1 {
+    padding: 20px 40px;
+    box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    margin-bottom: 15px;
+}
+.buy-main {
+    background: #FFFFFF;
+    border: 1px solid #cacaca;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+.buy1 h1 {
+    color: #666666;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+.freight{
+	margin-left: -20px;
+	overflow:hidden;
+	height: 90px;
+}
+.freight li{
+	width: 25%;
+	float: left;
+	padding-left: 20px;
+	box-sizing:border-box;
+	-moz-box-sizing:border-box;
+	-webkit-box-sizing:border-box;
+}
+.freight li a{
+	display: block;
+	width: 100%;
+	text-align: center;
+	height: 88px;
+	line-height: 88px;
+	border: 1px solid #dfe3e4;
+	font-size: 20px;
+	color: #666666;
+}
+.freight li a:hover{
+	border: 1px solid #f00;
+}
+.freight li a.hover{
+	border: 1px solid #f00;
+}
+.alipay{border: 1px solid #dfe3e4;margin:20px 0;overflow:hidden;}
+.paytit{ height:39px;line-height:39px;font-size:14px;color:#666666;padding:0 30px 0 0;}
+.paytit em{    height: 38px;font-size:14px;float:left; padding-left: 30px; width: 260px; background: #fbfbfb;}
+.paytit span{ font-size:12px;float:right;}
 
+.borb {
+    border-bottom: 1px #dfe3e4 solid;
+}
 
+.nombank{width:100%;padding: 0 30px 0 0;overflow:hidden}
+.bankleft{ width:24%;height:88px; padding: 14px 0 14px 30px; background: #fbfbfb; margin-right: 20px;}
+.bankleft h1{ padding:6px 0 0 0;font-size:14px;color:#666666;margin:0}
+.bankleft p{font-size:12px;line-height:20px;color:#888888 }
+
+.banklist{ width:70%;}
+.banklist .largebank{ height:38px;margin-top:2%}
+.banklist .normalbank{ height:22px;margin-top:3%}
+.banklist label{ width:146px;height:22px;float:left;margin-top:6px;margin-bottom:6px;}
+.banklist label img{ float:left;max-width: 105px;margin-left:6%}
+.radio{ margin:4% 0;}
+.radiolarge{ margin:8% 0;}
+
+.fpchose{border: 1px solid #dfe3e4;margin:20px 0;overflow:hidden;padding:20px;}
+.fpchose h1{ font-size:16px;color:#ff0000;}
+.fpchose h2{ font-size:12px;color:#666666;padding:10px 0 18px;}
+.fpchose h3{ font-size:12px;color:#666666;}
+.fpchose p{ font-size:14px;color:#444444;line-height:26px}
+
+.fpul{margin-left: -20px;overflow:hidden;height: 60px;margin-top:14px;}
+.fpul li{width: 22%;float: left;padding-left: 20px;box-sizing:border-box;-moz-box-sizing:border-box;-webkit-box-sizing:border-box;}
+.fpul li a{display: block;color: #666666;width: 100%;text-align: center;height:58px;line-height:58px;border: 1px solid #dfe3e4;font-size: 20px;}
+.fpul li a:hover{border: 1px solid #f00;}
+.fpul li a.hover{border: 1px solid #f00;}
+
+.ddzj{ font-size:26px;color:#ff0000}
+.ddzj p{ float:right;line-height:50px;padding-right:20px;}
+.btn-ddzj{background: #FF4D13;color: #FFFFFF;width: 150px;text-align: center;height: 52px;line-height: 52px;font-size: 24px;border-radius: 5px;}
+.btn-ddzj:hover{background: #EB4109;}
 
 
 

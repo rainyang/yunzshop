@@ -560,16 +560,16 @@ li {
 }
 /*login after*/
 /*nav css*/
-.nav-wrap {    background-color: #F5F5F5;}
+.nav-wrap {    background-color: #fff;}
 .nav-wrap-fix {background: rgba(255, 255, 255, 0.95) none repeat scroll 0% 0%; z-index:200;top:0; position:fixed;
  heigh:80px;-webkit-box-shadow: 0px 0px 6px rgba(0, 0,0, 0.3);  
 	-moz-box-shadow: 0px 0px 6px rgba(0, 0,0, 0.3);  
 	box-shadow: 0px 0px 6px rgba(0, 0,0, 0.3);}
 .logo {
 	width:270px;
-	height: 48px;
-	line-height: 48px;
-    margin-top: 30px;
+	height: 55px;
+	line-height: 55px;
+    margin-top: 26px;
 	}
 .nav-wrap-fix .logo {
 	margin-top: 16px;
@@ -3917,6 +3917,20 @@ li {
     *padding-left: 30px;*/
     border-radius: 0;
 }
+#registerForm div{position: relative;}
+.yzma{
+    position: absolute;
+    right: 105px;
+    top: 0;
+    width: 110px;
+    height: 40px;
+    line-height: 40px;
+    background-color: #ccc;
+    color: #646464;
+    text-align: center;
+    text-decoration: none
+}
+.yzma:hover{text-decoration: none;color: #646464;}
 .regist-process-register-left p.tips {
     margin-left: 95px;
     line-height: 30px;
@@ -3983,7 +3997,8 @@ li {
 }
 .regist-process-register-right .scan img {
     float: left;
-    margin-right: 30px;
+    margin-right: 20px;
+    width: 106px;
 }
 .regist-process-register-right .scan span {
     float: left;
@@ -4331,6 +4346,7 @@ background-color: #fff;
 background-color: #E72119!important;
 }
 .pageNav a span {
+
 float: left;
 background-position: left top;
 display: inline-block;
@@ -4340,3 +4356,95 @@ font-size: 14px;
 min-width: 16px;
 text-align: center;
 }
+/*付款成功*/
+.msop {
+    position: relative;
+    background: #F3FDED;
+    border-top: 2px solid #7ABD54;
+    padding-right: 20px;
+    padding: 40px 98px;
+    min-height: 360px;
+}
+#success_tittle {
+    display: block;
+    height: 50px;
+}
+.icon-succ02 {
+    margin-left: -60px;
+    float: left;
+}
+.icon-succ02, .icon-warn02, .icon-wrong02 {
+    background-image:url('../images/icon48.png');
+    display: inline-block;
+    font-size: 0;
+    line-height: 0;
+    overflow: hidden;
+    width: 48px;
+    height: 48px;
+}
+.d-tips{
+	margin-top:120px
+}
+.ftx-02{
+    font-size: 18px;
+    font-family: "Microsoft YaHei";
+    font-weight: 400;
+    margin-bottom: 15px;
+    padding-top: 15px;
+    color: #7ABD54;
+}
+#success_detail{
+    overflow: visible;
+}
+.btn-areaho {
+    display: block;
+    width: 100%;
+    height: 28px;
+    margin-bottom:10px
+}
+.btn-ordershow {
+    border: 1px solid #ddd;
+    background-color: #fff;
+    padding: 6px 16px;
+    border-radius: 2px;
+    color: #545454;
+    float: left;
+}
+.list-order {
+    background-color: #fff;
+    border-top: 1px solid #e6e6e6;
+    margin-bottom: 8px;
+}
+.li-st {
+    border-bottom: 1px solid #e6e6e6;
+    padding: 10px;
+    overflow: hidden;
+    color: #333;
+}
+.li-st .fore1, .li-st .fore2, .li-st .fore3 {
+    float: left;
+}
+.li-st .fore1, .li-st .fore2 {
+    margin-right: 30px;
+}
+
+.fore1 a:link, .fore1 a:visited {
+    color: #005a9d;
+}
+.flk-01 a:link, .flk-01 a:visited, .ftx-01, a.flk-01:link, a.flk-01:visited {
+    color: #E4393C;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -18,4 +18,7 @@ if ($_W['isajax']) {
         'member' => $member
     ));
 }
+//echo $this->template('member/center');exit();
+include $this->template('member/center');
+
 include $this->template('af_supplier');
