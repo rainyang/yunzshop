@@ -1318,12 +1318,12 @@ li {
 .cover-page-index-slide .center {
 	background : #f2f2f2;
     width: 1210px;
-    height: 425px;
+    height: 513px;
     margin: 0 auto;
 }
 .cover-page-index-slide .center .relative {
     position: relative;
-    height: 425px;
+    height: 513px;
 }
 .cover-page-index-slide .center .relative .location {
     position: absolute;
@@ -1332,7 +1332,7 @@ li {
 .cover-page-index-slide .center .relative .location .hidden-beyond {
     position: relative;
     width: 1920px;
-    height: 425px;
+    height: 513px;
     overflow: hidden;
 }
 .cover-page-index-slide .center .items {
@@ -1343,21 +1343,21 @@ li {
 .cover-page-index-slide .center .items li {
     float: left;
     width: 1920px;
-    height: 425px;
+    height: 513px;
 }
 .cover-page-index-slide .center .items li a {
     display: block;
     width: 1920px;
-    height: 425px;
+    height: 513px;
     background-repeat: no-repeat;
 }
 .cover-page-index-slide .center .items li a img {
     width: 1920px;
-    height: 425px;
+    height: 513px;
 }
 .cover-page-index-slide .icons {
     padding-top: 15px;
-    background-color: #F2F2F2;
+    background-color: #E8E8E8;
 }
 .cover-page-index-slide .icons .box {
     width: 570px;
