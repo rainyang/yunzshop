@@ -1121,7 +1121,7 @@ div.flicking_con a.on{background-position:0 -9px}
 					};
 				{/if}
         //openid
-                                {if !empty($popenid) || !empty($openid)}
+                                {if !empty($popenid) or !empty($openid)}
                                                                            core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
                                                                                                         if(ret.status==1){ 
                                                                                                            core.tip.show(ret.result.message);

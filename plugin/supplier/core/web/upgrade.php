@@ -74,6 +74,10 @@ if(!$info){
     pdo_query($sql);
 }
 
+if(!pdo_fieldexists('sz_yi_af_supplier', 'status')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_af_supplier')." ADD `status` TINYINT( 3 ) NOT NULL COMMENT '0申请1驳回2通过' AFTER `productname`;");
+}
+
 //todo,这里缺少uniacid，我没加，要测试$_W['uniacid']是否可用
 $result = pdo_fetch('select * from ' . tablename('sz_yi_perm_role') . ' where status1=1');
 if(empty($result)){
