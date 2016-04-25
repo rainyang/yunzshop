@@ -5,7 +5,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
-$tmplateType = (isMobile()) ? 'mobile' : 'pc';
+//$tmplateType = (isMobile()) ? 'mobile' : 'pc';
 $openid         = m('user')->getOpenid();
 $popenid        = m('user')->islogin();
 

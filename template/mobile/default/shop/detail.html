@@ -574,7 +574,6 @@ div.flicking_con a.on{background-position:0 -9px}
         } 
 
         core.json('shop/detail',{id:'{$_GPC['id']}',mid:"{$mid}"},function(json){
-     
             tip = core.tip;
             if(json.status<=0){
                 core.message('没有找到您想要的宝贝哦~',"{php echo $this->createMobileUrl('shop/list')}",'error');
