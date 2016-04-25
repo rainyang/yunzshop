@@ -4340,3 +4340,4 @@ font-size: 14px;
 min-width: 16px;
 text-align: center;
 }
+.iphone .icon,.android .icon,.ipad .icon{display: inline-block;}

@@ -194,5 +194,5 @@ footer#footer-nav .menu-list:after {
 
 .card_no,.order_no,.customer_no,.team_no,.log_no,.history_no,.notice_no{color: #BDBDBD !important}
 .card_no i,.order_no i,.customer_no i,.team_no i,.log_no i,.history_no i,.notice_no i{ font-size: 80px !important;padding-bottom: 10px;}
-.card_no span,.order_no span,.customer_no span,.team_no span,.log_no span,.history_no span,.notice_no span{ color: #646464 !important;}
+.card_no span,.order_no span,.customer_no span,.team_no span,.log_no span,.history_no span,.notice_no span,.favorite_no span{ color: #646464 !important;}
 
