@@ -73,9 +73,12 @@
             <thead class="navbar-inner">
                 <tr>
                     <th style="width:220px">订单号</th>
+                    <th style="width:180px">下单时间</th>
                     <th>总金额</th>
                     <th>商品小计</th>
-         <th>运费</th>
+		    <th>运费</th>
+                    <th>会员名称</th>
+                    <th>收货人</th>
                     <th>会员折扣</th>                   
                     <th>积分抵扣</th>
                     <th>余额抵扣</th>
@@ -83,20 +86,19 @@
                     <th>优惠券优惠</th>
                     <th>卖家改价</th>
                     <th>卖家改运费</th>
-                    
                     <th>付款方式</th>
-                    <th>会员名称</th>
-                    <th>收货人</th>
-                    <th>下单时间</th>
                 </tr>
             </thead>
             <tbody>
                 {loop $list $row}
                 <tr  style="background: #eee">
                     <td>{$row['ordersn']}</td>
+                    <td>{php echo date('Y-m-d H:i',$row['createtime'])}</td>   
                     <td><b>{$row['price']}</b></td>
                     <td>{$row['goodsprice']}</td>
          <td>{$row['dispatchprice']}</td>
+                    <td>{$row['realname']}</td>
+                    <td>{$row['addressname']}</td>
         <td>{if $row['discountprice']>0}-{$row['discountprice']}{/if}</td>                      
         <td>{if $row['deductprice']>0}-{$row['deductprice']}{/if}</td>          
         <td>{if $row['deductcredit2']>0}-{$row['deductcredit2']}{/if}</td>          
@@ -121,9 +123,6 @@
                            <span class="label label-success">货到付款</span>
                          {/if}
                     </td>
-                    <td>{$row['realname']}</td>
-                    <td>{$row['addressname']}</td>
-                    <td>{php echo date('Y-m-d H:i',$row['createtime'])}</td>   
                 </tr>   
                 <tr >
 

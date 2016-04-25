@@ -193,23 +193,30 @@ class Sz_DYi_Order
                 //订单分解
                 /**订单分解修改，订单会员折扣、积分折扣、余额抵扣、使用优惠劵后订单分解按商品价格与总商品价格比例拆分，使用运费的平分运费。添加平分修改运费以及修改订单金额的信息到新的订单表中。**/
                 if(p('supplier')){
-                    $order_info = $order;
+                    $order = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where  ordersn=:ordersn and uniacid=:uniacid limit 1', array(
+                        ':uniacid' => $_W['uniacid'],
+                        ':ordersn' => $ordersn
+                        ));
+
                     $resolve_order_goods = pdo_fetchall('select * from ' . tablename('sz_yi_order_goods') . ' where orderid=:orderid and uniacid=:uniacid ',array(
                             ':orderid' => $order['id'],
                             ':uniacid' => $_W['uniacid']
-                        ));
+                    ));
+                    //file_put_contents($_SERVER['DOCUMENT_ROOT'].'/addons/sz_yi/core/model/1.txt', print_r($resolve_order_goods,true));exit;
                     $datas = array();
                     $num = false;
                     //对应供应商商品循环到对应供应商下
                     foreach ($resolve_order_goods as $key => $value) {
                         $datas[$value['supplier_uid']][]['id'] = $value['id'];
                     }
+                    //file_put_contents($_SERVER['DOCUMENT_ROOT'].'/addons/sz_yi/core/model/1.txt', print_r($datas,true));exit;
                     unset($order['id']);
                     $dispatchprice = $order['dispatchprice'];
                     $olddispatchprice = $order['olddispatchprice'];
                     $changedispatchprice = $order['changedispatchprice'];
                     if(!empty($datas)){
                         foreach ($datas as $key => $value) {
+                            //file_put_contents($_SERVER['DOCUMENT_ROOT'].'/addons/sz_yi/core/model/1.txt', print_r($key,true));exit;
                             $price = 0;
                             $realprice = 0;
                             $oldprice = 0;
@@ -228,7 +235,8 @@ class Sz_DYi_Order
                                 $realprice += $resu['realprice'];
                                 $oldprice += $resu['oldprice'];
                                 $goodsprice += $resu['price'];
-                                $supplier_uid = $resu['supplier_uid'];
+                                $supplier_uid = $key;
+                                //file_put_contents($_SERVER['DOCUMENT_ROOT'].'/addons/sz_yi/core/model/1.txt', print_r($supplier_uid,true));exit;
                                 $changeprice += $resu['changeprice'];
                                 //计算order_goods表中的价格占订单商品总额的比例
                                 $scale = $resu['price']/$order['goodsprice'];
@@ -241,7 +249,7 @@ class Sz_DYi_Order
                                 //按比例计算消费余额金额
                                 $deductcredit2 += round($scale*$order['deductcredit2'],2); 
                             }
-                            
+                            //file_put_contents($_SERVER['DOCUMENT_ROOT'].'/addons/sz_yi/core/model/1.txt', print_r($supplier_uid,true));exit;
                             $order['oldprice'] = $oldprice;
                             $order['goodsprice'] = $goodsprice;
                             $order['supplier_uid'] = $supplier_uid;
@@ -260,15 +268,13 @@ class Sz_DYi_Order
                             $order['price'] = $realprice - $couponprice - $discountprice - $deductprice - $deductcredit2 + $order['dispatchprice'];
                             if($num == false){
                                 pdo_update('sz_yi_order', $order, array(
-                                    'id' => $order_id,
+                                    'id' => $orderid,
                                     'uniacid' => $_W['uniacid']
                                     ));
                                 $num = ture;
-                                
                             }else{
                                 $ordersn = m('common')->createNO('order', 'ordersn', 'SH');
                                 $order['ordersn'] = $ordersn;
-                                $order['status'] = 1;
                                 pdo_insert('sz_yi_order', $order);
                                 $logid = pdo_insertid();
                                 $oid = array(
@@ -281,12 +287,10 @@ class Sz_DYi_Order
                             }
                         }
                     }
-                }else{
-                    $order_info = $order;
                 }
                 return array(
                     'result' => 'success',
-                    'order' => $order_info,
+                    'order' => $order,
                     'address' => $address,
                     'carrier' => $carrier,
                     'virtual' => $order['virtual']

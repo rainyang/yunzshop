@@ -189,12 +189,43 @@ if ($operation == "display") {
         if($perm_role == 1){
             $sql = "select o.* , a.realname as arealname,a.mobile as amobile,a.province as aprofince ,a.city as acity , a.area as aarea,a.address as aaddress, d.dispatchname,r.goodsid,r.supplier_uid,m.nickname,m.id as mid from " . tablename('sz_yi_order') . " o" . " 
              join 
-            ( select ro.id as orderid,g.supplier_uid,g.goodsid,rr.status from " . tablename('sz_yi_order') . " ro left join " . tablename('sz_yi_order_refund') . " rr  on rr.orderid =ro.id left join " . tablename('sz_yi_order_goods') . " g on ro.id = g.orderid where g.supplier_uid=".$_W['uid']." ) r 
-            on r.orderid= o.id" . " left join " . tablename('sz_yi_member') . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename('sz_yi_member_address') . " a on a.id=o.addressid " . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . " left join " . tablename('sz_yi_dispatch') . " d on d.id = o.dispatchid " . "where $condition $statuscondition ORDER BY o.createtime DESC ";
-            $costmoney = pdo_fetchcolumn(' select ifnull(sum(go.costprice*og.total),0) from ' . tablename('sz_yi_order_goods') . ' og left join ' . tablename('sz_yi_order') . ' o on o.id=og.orderid left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid left join ' . tablename('sz_yi_goods_option') . ' go on go.goodsid=g.id where og.supplier_uid=:supplier_uid and og.supplier_apply_status!=1 and o.status=3 and og.uniacid=:uniacid',array(
+            ( select ro.id as orderid,g.supplier_uid,g.goodsid,rr.status from " . tablename('sz_yi_order') . " ro left join " . tablename('sz_yi_order_refund') . " rr  on rr.orderid =ro.id left join " . tablename('sz_yi_order_goods') . " g on ro.id = g.orderid  ) r 
+            on r.orderid= o.id" . " left join " . tablename('sz_yi_member') . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename('sz_yi_member_address') . " a on a.id=o.addressid " . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . " left join " . tablename('sz_yi_dispatch') . " d on d.id = o.dispatchid " . "where o.supplier_uid={$_W['uid']} and $condition $statuscondition ORDER BY o.createtime DESC ";
+            /**
+             * Author:Y.yang
+             * Date:2016-04-23
+             * Content:IF(oj1,oj2,oj3) 如果oj1不等于0并且不等于null，返回oj2，否则返回oj3。
+             **/
+        $costmoney = pdo_fetchcolumn(' select ifnull(sum(IF(go.costprice,go.costprice,g.costprice)*og.total),0) from 
+            ' . tablename('sz_yi_order') . ' o  
+            left join 
+            ' . tablename('sz_yi_order_goods') . ' og
+            on o.id=og.orderid 
+            left join 
+            ' . tablename('sz_yi_goods_option') . ' go 
+            on go.id=og.optionid 
+            left join 
+            ' . tablename('sz_yi_goods') . ' g 
+            on g.id=og.goodsid where og.supplier_uid=:supplier_uid and og.supplier_apply_status!=1 and o.status=3 and og.uniacid=:uniacid',array(
                     ':supplier_uid' => $_W['uid'],
                     ':uniacid' => $_W['uniacid']
                 ));
+        /*
+        $costmoney = pdo_fetchcolumn(' select ifnull(sum(IF(go.costprice,go.costprice,g.costprice)*og.total),0) from 
+            ' . tablename('sz_yi_order_goods') . ' og  
+            inner join 
+            ' . tablename('sz_yi_goods_option') . ' go 
+            on go.id=og.optionid 
+            left join 
+            ' . tablename('sz_yi_order') . ' o 
+            on o.id=og.orderid 
+            left join 
+            ' . tablename('sz_yi_goods') . ' g 
+            on g.id=og.goodsid where og.supplier_uid=:supplier_uid and og.supplier_apply_status!=1 and o.status=3 and og.uniacid=:uniacid',array(
+                    ':supplier_uid' => $_W['uid'],
+                    ':uniacid' => $_W['uniacid']
+                ));
+         */
             $openid = pdo_fetchcolumn('select openid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid'=> $_W['uniacid']));
             if(empty($openid)){
                 message("暂未绑定微信，请联系管理员", '', "error");
@@ -876,7 +907,7 @@ if ($operation == "display") {
     
     if(p('supplier')){
         if($perm_role == 1){
-            $totalmoney = pdo_fetchcolumn(' select ifnull(sum(o.price),0) from ' . tablename('sz_yi_order_goods') . ' og left join ' . tablename('sz_yi_order') . ' o on o.id=og.orderid left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid where og.supplier_uid=:supplier_uid and og.uniacid=:uniacid',array(
+            $totalmoney = pdo_fetchcolumn(' select ifnull(sum(o.price),0) from ' . tablename('sz_yi_order_goods') . ' og left join ' . tablename('sz_yi_order') . ' o on o.id=og.orderid left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid where o.supplier_uid=:supplier_uid and og.uniacid=:uniacid',array(
                     ':supplier_uid' => $_W['uid'],
                     ':uniacid' => $_W['uniacid']
                 ));
