@@ -106,7 +106,7 @@
 			</div>
 			<p class="make fl wfs">
 			<a class="make-cart fl" href="javascript::void(0)" data-goodid="{$goods['id']}">加入购物车</a>
-			<a class="make-show fl" href="{php echo $this->createMobileUrl('order/confirm', array('id' => $goods['id'] , 'total' => '1' , optionid => ''))}">立即购买</a>
+			<a class="make-show fl" href="javascript::void(0)">立即购买</a>
 			</p>
 <!-- <div class="offer j-offer">
 <span class="offer-give">送</span>
@@ -147,6 +147,24 @@ function calculation(){
     alert(titles);*/
 }
 $(document).ready(function(){
+	$('.make-show').click(function(){
+		//alert(1);
+ 		var specselected  = '';
+        $('.attri_r').each(function(){
+            var self = $(this);
+            if( $(this).find('.now').length<=0){
+                specselected = self.attr('title');
+                //alert(specselected);
+                return false;
+            }
+        });  
+        if( specselected!=''){
+            alert('请选择' + specselected) ;
+            return;
+        }else{
+        	location.href = '{php echo $this->createMobileUrl('order/confirm', array('id' => $goods['id'] , 'total' => '1' , optionid => ''))}';
+        }
+	});
 //加入购物车触发  start
 	$('.make-cart').click(function(){
 		//alert('未连接');
