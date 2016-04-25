@@ -151,12 +151,17 @@ class Core extends WeModuleSite
             'url' => $this->createMobileUrl('shop/category')
         );
         $this->footer['commission'] = false;
+        $member  = m('member')->getMember($openid);
+        if(!empty($member['isblack'])){
+            if($_GPC['op'] != 'black'){
+                header('Location: '.$this->createMobileUrl('member/login', array('op' => 'black')));
+            }
+        }
         if (p('commission')) {
             $set = p('commission')->getSet();
             if (empty($set['level'])) {
                 return;
-            }
-            $member  = m('member')->getMember($openid);
+            } 
             $isagent = $member['isagent'] == 1 && $member['status'] == 1;
             if ($_GPC['do'] == 'plugin') {
                 $this->footer['first'] = array(

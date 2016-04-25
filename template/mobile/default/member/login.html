@@ -1,3 +1,4 @@
+{if $operation != 'black'}
 {template 'common/header'}
 <title>会员登录</title>
 <style type="text/css">
@@ -82,5 +83,20 @@
 
     })
 </script>
-
 {template 'common/footer'}
+{/if}
+{if $operation == 'black'}
+{template 'common/header'}
+<style type="text/css">
+.ok {height:200px; padding-top:65px;}
+.ok .ico {height:65px; width:65px; margin:auto; border:3px solid #32cd32; border-radius:55px; color:#32cd32; font-size:50px; text-align:center; line-height:65px;}
+.ok .text {height:20px; margin-top:30px; font-size:16px; color:#666; line-height:20px; text-align:center;}
+.ok .sub {height:32px; width:145px; background:#e53c39; margin:20px auto; border-radius:20px; color:#fff; line-height:32px; text-align:center; font-size:16px;}
+</style>
+<title>禁止访问</title>
+<div id='container'></div>
+  <div class="ok">
+    <div class="ico"><i class="fa fa-check"></i></div>
+          <div class="text">禁止访问，请联系客服！</div>
+    </div>
+{/if}

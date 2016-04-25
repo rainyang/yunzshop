@@ -38,6 +38,9 @@ if ($diyform_plugin) {
         }
     }
 }
+$carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1", array(
+            ":uniacid" => $_W["uniacid"]
+        ));
 if ($operation == "display" || $operation == "create") {
     $id   = intval($_GPC["id"]);
     $show = 1;
