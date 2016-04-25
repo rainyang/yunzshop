@@ -16,7 +16,7 @@ if ($_W['isajax']) {
                 ':pwd' => md5($password),
             ));
         //pdo_debug();
-        $preUrl = $_COOKIE['preUrl'] ? $_COOKIE['preUrl'] : $this->createMobileUrl('shop');
+        $preUrl = $_COOKIE['preUrl'] ? $_COOKIE['preUrl'] : $this->createMobileUrl('member/info');
         if($info){
             $lifeTime = 24 * 3600 * 3;
             session_set_cookie_params($lifeTime);
