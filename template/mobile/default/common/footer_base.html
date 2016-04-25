@@ -84,7 +84,7 @@
              }
         } ?>
 		<span style='display:none'>
- {php $shopset = m('common')->getSysset('shop')}{$shopset['diycode']} 
+ {php $shopset = m('common')->getSysset('shop')}{php echo htmlspecialchars_decode($shopset['diycode'])} 
  </span>
 		<script language='javascript'>
 	$(function(){
