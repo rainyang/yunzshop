@@ -292,8 +292,8 @@ class Core extends WeModuleSite
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
         global $_W;
-        $tmplateType = (isMobile()) ? 'mobile' : 'pc';
-        //$tmplateType = 'pc';
+        //$tmplateType = (isMobile()) ? 'mobile' : 'pc';
+        $tmplateType = 'mobile';
         $name = strtolower($this->modulename);
         if (defined('IN_SYS')) {
             $source  = IA_ROOT . "/web/themes/{$_W['template']}/{$name}/{$filename}.html";
