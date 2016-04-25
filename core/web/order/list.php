@@ -186,46 +186,19 @@ if ($operation == "display") {
 
     //是否为供应商 不等于1的是
     if(p('supplier')){
+        $cond = "";
         if($perm_role == 1){
-            $sql = "select o.* , a.realname as arealname,a.mobile as amobile,a.province as aprofince ,a.city as acity , a.area as aarea,a.address as aaddress, d.dispatchname,r.goodsid,r.supplier_uid,m.nickname,m.id as mid from " . tablename('sz_yi_order') . " o" . " 
-             join 
-            ( select ro.id as orderid,g.supplier_uid,g.goodsid,rr.status from " . tablename('sz_yi_order') . " ro left join " . tablename('sz_yi_order_refund') . " rr  on rr.orderid =ro.id left join " . tablename('sz_yi_order_goods') . " g on ro.id = g.orderid  ) r 
-            on r.orderid= o.id" . " left join " . tablename('sz_yi_member') . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename('sz_yi_member_address') . " a on a.id=o.addressid " . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . " left join " . tablename('sz_yi_dispatch') . " d on d.id = o.dispatchid " . "where o.supplier_uid={$_W['uid']} and $condition $statuscondition ORDER BY o.createtime DESC ";
-            /**
-             * Author:Y.yang
-             * Date:2016-04-23
-             * Content:IF(oj1,oj2,oj3) 如果oj1不等于0并且不等于null，返回oj2，否则返回oj3。
-             **/
-        $costmoney = pdo_fetchcolumn(' select ifnull(sum(IF(go.costprice,go.costprice,g.costprice)*og.total),0) from 
-            ' . tablename('sz_yi_order') . ' o  
-            left join 
-            ' . tablename('sz_yi_order_goods') . ' og
-            on o.id=og.orderid 
-            left join 
-            ' . tablename('sz_yi_goods_option') . ' go 
-            on go.id=og.optionid 
-            left join 
-            ' . tablename('sz_yi_goods') . ' g 
-            on g.id=og.goodsid where og.supplier_uid=:supplier_uid and og.supplier_apply_status!=1 and o.status=3 and og.uniacid=:uniacid',array(
-                    ':supplier_uid' => $_W['uid'],
-                    ':uniacid' => $_W['uniacid']
-                ));
-        /*
-        $costmoney = pdo_fetchcolumn(' select ifnull(sum(IF(go.costprice,go.costprice,g.costprice)*og.total),0) from 
-            ' . tablename('sz_yi_order_goods') . ' og  
-            inner join 
-            ' . tablename('sz_yi_goods_option') . ' go 
-            on go.id=og.optionid 
-            left join 
-            ' . tablename('sz_yi_order') . ' o 
-            on o.id=og.orderid 
-            left join 
-            ' . tablename('sz_yi_goods') . ' g 
-            on g.id=og.goodsid where og.supplier_uid=:supplier_uid and og.supplier_apply_status!=1 and o.status=3 and og.uniacid=:uniacid',array(
-                    ':supplier_uid' => $_W['uid'],
-                    ':uniacid' => $_W['uniacid']
-                ));
-         */
+            $cond .= " o.supplier_uid={$_W['uid']} and ";
+            $costmoney = 0;
+            $sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$_W['uid']} and o.status=3");
+            foreach ($sp_goods as $key => $value) {
+                if ($value['goods_op_cost_price'] > 0) {
+                    $costmoney += $value['goods_op_cost_price'];
+                } else {
+                    $option = pdo_fetch("select * from " . tablename('sz_yi_goods_option') . " where uniacid={$_W['uniacid']} and goodsid={$value['goodsid']} and id={$value['optionid']}");
+                    $costmoney += $option['costprice'];
+                }
+            }
             $openid = pdo_fetchcolumn('select openid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid'=> $_W['uniacid']));
             if(empty($openid)){
                 message("暂未绑定微信，请联系管理员", '', "error");
@@ -261,56 +234,9 @@ if ($operation == "display") {
                 //p('commission')->sendMessage($openid, array('money' => $costmoney, 'type' => '微信'), TM_SUPPLIER_PAY);
                 message("提现申请已提交，请耐心等待!", $this->createWebUrl('order/list'), "success");
             }
-            //微信提现
-            /*if($_GPC['applytype'] == "2"){
-                $applysn = m('common')->createNO('commission_apply', 'applyno', 'CA');
-                $set     = m('common')->getSysset('shop');
-                $data = array(
-                    'uid' => $_W['uid'],
-                    'apply_money' => $costmoney,
-                    'apply_time' => time(),
-                    'status' => 3,
-                    'type' => 2,
-                    'applysn' => $applysn
-                    );
-                pdo_insert('sz_yi_supplier_apply',$data);
-                $logid = pdo_insertid();
-                
-                $result = m('finance')->pay($openid, 1, $costmoney * 100, $applysn, $set['name'] . '供应商提现');
-                if (is_error($result)) {
-                    pdo_delete('sz_yi_supplier_apply', array(
-                        'uid' => $_W['uid'],
-                        'status' => 3
-                        ));
-                    message('微信钱包提现失败: ' . $result['message'], '', 'error');
-                }
-                pdo_update('sz_yi_supplier_apply', array(
-                    'status' => 1
-                ), array(
-                    'uid' => $_W['uid'],
-                ));
-                $mygoodsid = pdo_fetchall('select id from ' . tablename('sz_yi_order_goods') . 'where supplier_uid=:supplier_uid',array(
-                        ':supplier_uid' => $_W['uid']
-                    ));
-                foreach ($mygoodsid as $ids) {
-                    $arr = array(
-                        'supplier_apply_status' => 1
-                        );
-                    pdo_update('sz_yi_order_goods', $arr, array(
-                        'id' => $ids['id']
-                        ));
-                }
-                m('notice')->sendMemberLogMessage($logid);
-                message('微信钱包提现成功!', referer(), 'success');
-            }*/
-        }else{
-            $sql = "select o.* , a.realname as arealname,a.mobile as amobile,a.province as aprofince ,a.city as acity , a.area as aarea,a.address as aaddress, d.dispatchname,m.nickname,m.id as mid from " . tablename('sz_yi_order') . " o" . " left join ( select rr.id,rr.orderid,g.supplier_uid,rr.status from " . tablename('sz_yi_order_refund') . " rr left join " . tablename('sz_yi_order') . " ro on rr.orderid =ro.id left join " . tablename('sz_yi_order_goods') . " g on ro.id = g.orderid order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename('sz_yi_member') . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename('sz_yi_member_address') . " a on a.id=o.addressid " . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . " left join " . tablename('sz_yi_dispatch') . " d on d.id = o.dispatchid " . " where $condition $statuscondition ORDER BY o.createtime DESC,o.status DESC  ";
         }
     }
-    else{
-        $sql = "select o.* , a.realname as arealname,a.mobile as amobile,a.province as aprovince ,a.city as acity , a.area as aarea,a.address as aaddress, d.dispatchname,m.nickname,m.id as mid,m.realname as mrealname,m.mobile as mmobile,sm.id as salerid,sm.nickname as salernickname,s.salername from " . tablename("sz_yi_order") . " o" . " left join ( select rr.id,rr.orderid,rr.status from " . tablename("sz_yi_order_refund") . " rr left join " . tablename("sz_yi_order") . " ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename("sz_yi_member_address") . " a on a.id=o.addressid " . " left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " where $condition $statuscondition ORDER BY o.createtime DESC,o.status DESC  ";
-    }
-
+    $sql = "select o.* , a.realname as arealname,a.mobile as amobile,a.province as aprovince ,a.city as acity , a.area as aarea,a.address as aaddress, d.dispatchname,m.nickname,m.id as mid,m.realname as mrealname,m.mobile as mmobile,sm.id as salerid,sm.nickname as salernickname,s.salername from " . tablename("sz_yi_order") . " o" . " left join ( select rr.id,rr.orderid,rr.status from " . tablename("sz_yi_order_refund") . " rr left join " . tablename("sz_yi_order") . " ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename("sz_yi_member_address") . " a on a.id=o.addressid " . " left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " where $cond $condition $statuscondition ORDER BY o.createtime DESC,o.status DESC  ";
     if (empty($_GPC["export"])) {
         $sql.= "LIMIT " . ($pindex - 1) * $psize . "," . $psize;
     }
