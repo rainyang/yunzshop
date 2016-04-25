@@ -36,11 +36,11 @@ $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
 
 if ($operation == 'index') {
 	$advs = pdo_fetchall('select id,advname,link,thumb from ' . tablename('sz_yi_adv') . ' where uniacid=:uniacid and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
-	$advs = set_medias($advs, 'thumb');
+	//$advs = set_medias($advs, 'thumb');
 	$category = pdo_fetchall('select * from ' . tablename('sz_yi_category'));
 	$category = set_medias($category, 'thumb');
-	//$goods = pdo_fetchall('select * from ' . tablename('sz_yi_goods'));
-	//$goods = set_medias($goods, 'thumb');
+	$goods = pdo_fetchall('select * from ' . tablename('sz_yi_goods'));
+	$goods = set_medias($goods, 'thumb');
 	foreach ($category as &$c) {
 		$c['thumb'] = tomedia($c['thumb']);
 		if ($c['level'] == 3) {
