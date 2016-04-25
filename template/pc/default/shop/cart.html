@@ -57,16 +57,22 @@
 							<div class="cell p-goods">
 								<div class="goods-item">
 									<div class="p-img">
-										<a href="#"><img src="{php echo $good['thumb']}"></a>
+										<a href="{php echo $this->createMobileUrl('shop/detail',array('id' => $good['goodsid']))}"><img src="{php echo $good['thumb']}"></a>
 									</div>
 									<div class="item-msg">
 										<div class="p-name"><a href="{php echo $this->createMobileUrl('shop/detail',array('id' => $good['goodsid']))}">{php echo $good['title']}</a></div>
 									</div>
 								</div>
 							</div>
+
+
+
 							<div class="cell p-props p-props-new">
-								<div class="props-txt">颜色：红色</div>
+								<div class="props-txt">{$good['optiontitle']}</div>
 							</div>
+
+
+
 							<div class="cell p-price"><strong>{php echo $good['marketprice']}</strong></div>
 							<div class="cell p-quantity">
 								<div class="quantity-form" data-maxbuy="{$good['maxbuy']}" data-stock="{$good['stock']}">

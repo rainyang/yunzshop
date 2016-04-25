@@ -169,10 +169,12 @@ if ($_W['isajax'] || $tmplateType == 'pc') {
         $allspecs = pdo_fetchall("select * from " . tablename('sz_yi_goods_spec') . " where goodsid=:id order by displayorder asc", array(
             ':id' => $goodsid
         ));
+        //print_r($allspecs);exit();
         foreach ($allspecs as &$s) {
             $items      = pdo_fetchall("select * from " . tablename('sz_yi_goods_spec_item') . " where  `show`=1 and specid=:specid order by displayorder asc", array(
                 ":specid" => $s['id']
             ));
+            //print_r($items);exit();
             $s['items'] = set_medias($items, 'thumb');
         }
         unset($s);
@@ -183,6 +185,7 @@ if ($_W['isajax'] || $tmplateType == 'pc') {
             ':id' => $goodsid
         ));
         $options = set_medias($options, 'thumb');
+        //print_r($options);exit();
         foreach ($options as $o) {
             if ($maxprice < $o['marketprice']) {
                 $maxprice = $o['marketprice'];

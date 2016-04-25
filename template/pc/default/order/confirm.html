@@ -1,4 +1,4 @@
-﻿{template 'common/header'}
+{template 'common/header'}
 <title></title>
 {template 'common/navigation'}
 <!-- 结算订单 -->
@@ -96,6 +96,135 @@
 <script type="text/javascript">
 
   $(document).ready(function(){
+//顶单
+    $('.paysub').click(function() {
+        if ($(this).attr('submitting') == '1') {
+            return;
+        }
+        var dispatchid = $("#dispatchid").val();
+        var carrierid = $("#carrierid").val();
+        var addressid = $("#addressid").val();
+        var goods = $("#goods").val();
+        var carrier_realname = $.trim( $('#carrier_input_realname').val() );
+        var carrier_mobile = $.trim( $('#carrier_input_mobile').val() );
+        if (goods == '') {
+            core.tip.show("没有任何商品");
+            return;
+        }
+        {if $show==1}
+    if( $("#dispatchtype").val()=='0'){
+                if (addressid == '') {
+        core.tip.show("请选择地址");
+        return;
+      }
+      if (dispatchid == '') {
+        core.tip.show("请选择配送方式");
+        return;
+      }
+    } 
+            if($('#isverify').val()=='true'){
+                if (carrier_realname== '') {
+                    core.tip.show("请填写联系人姓名");
+                    return;
+                }
+                if (!$.isMobile(carrier_mobile)) {
+                    core.tip.show("请填写正确手机号");
+                    return;
+                }
+            }
+            if( $("#dispatchtype").val()=='1'){
+                if (carrier_realname== '') {
+                    core.tip.show("请填写姓名");
+                    return;
+                }
+                if (!$.isMobile(carrier_mobile)) {
+                    core.tip.show("请填写正确手机号");
+                    return;
+                }
+            }
+        {/if} 
+        var diydata = '';
+        var gdid = {php echo intval($goods_data_id)};
+        {if !empty($order_formInfo)}
+            {template 'diyform/common_js_data'}
+        {/if}
+        $(this).attr('submitting', '1').html('提交中...');
+        var data ={
+            'op': 'create', 
+            'goods': goods,
+    'id':'{$id}',
+    gdid:gdid,
+    diydata:diydata,
+            'dispatchtype': $("#dispatchtype").val(),
+            'fromcart':fromcart,
+            'cartids':"{$_GPC['cartids']}",
+            'remark': $("#remark").val(),
+            'deduct':0,
+            'deduct2':0
+        };
+    
+        if( $("#dispatchtype").val()=='0'){
+
+            data.addressid = addressid; 
+            data.dispatchid = dispatchid;
+        }
+         
+        if( $("#dispatchtype").val()=='1' || $('#isverify').val()=='true'){
+            data.carrierid = carrierid;
+            data.carrier = {
+                'carrier_realname': carrier_realname,
+                'carrier_mobile':carrier_mobile,
+                'realname': $('#carrier_realname').html(),
+                'mobile': $('#carrier_mobile').html(),
+                'address': $('#carrier_address').html()
+            };
+        }
+        
+        if($("#deductcredit").length>0){
+            if($("#deductcredit").attr('on')=='1'){
+                  data.deduct = 1;       
+            }
+        }
+         
+        if($("#deductcredit2").length>0){
+            if($("#deductcredit2").attr('on')=='1'){
+                  data.deduct2 = 1;       
+            }
+        }
+        {if $hascouponplugin}
+            data.couponid = $('#couponid').val();
+        {/if}
+        core.json('order/confirm', data, function(create_json) {
+
+            if (create_json.status == 1) {
+                location.href = "{php echo $this->createMobileUrl('order/pay')}&orderid=" + create_json.result.orderid +"&openid={$openid}";
+            }  else if (create_json.status == -1) {
+                 $('.paysub').html('确认订单').removeAttr('submitting');
+                 core.tip.show(create_json.result);
+            }
+            else {
+                $('.paysub').html('确认订单').removeAttr('submitting');
+                core.tip.show("生成订单失败!")
+            }
+
+        }, true, true);
+/*    $.post('{php echo $this->createMobileUrl("order/confirm")}',
+        {
+          op: "tofavorite",
+          ids: ids
+        },
+        function (json){
+          if (json.status == 1) {
+              $('.item-last[data-cartid='+ moveid +']').attr('sel',0).fadeOut(500,function(){
+                $(this).remove();
+              });
+            calcprice();
+          } else {
+            alert("移动失败");
+          }
+        },'json');*/
+    })
+
     function calcprice(){
       var total = 0;
       var totalprice = 0;

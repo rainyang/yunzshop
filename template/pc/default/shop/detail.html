@@ -80,15 +80,20 @@
 <!--商品规格调用——start-->
 
 	{loop $specs $row}
-		<div class="attri_l"><i style="width:50px">{$row['title']}</i></div>
+		<div class="attri_l" data-id="{$row['id']}">
+			<input type='hidden' name="optionid[]" class='optionid optionid_{$row['id']}' value="" title="{$row['title']}">
+			<i style="width:50px">{$row['title']}</i>
+		</div>
 
-			<div class="attri_r">
+			<div class="attri_r" title="{$row['title']}">
 			{loop $row['items'] $ros}
-				<span style="color:#000; text-decoration:none" onclick="changeAtt(this)" name="1448" title="[ ￥0.00元]">{$ros['title']}<input style="display:none" id="spec_value_1448" type="radio" name="spec_38" value="1448" checked /></span>
+				<span style="color:#000; text-decoration:none" onclick="changeAtt(this)" class="spec" data-specid="{$ros['id']}" title="{$ros['title']}">{$ros['title']}<input style="display:none" id="spec_value_1448" type="radio" name="spec_38" value="1448" checked /></span>
 			{/loop}
 			</div>
 	{/loop}
-
+	{loop $options $op}
+		<input type="hidden" name="" value="" title="" data-title="{$op['title']}" data-id="{$op['id']}" data-weight="{$op['weight']}" data-thumb="{$op['thumb']}" data-marketprice="{$op['marketprice']}" data-productprice="{$op['productprice']}" data-costprice="{$op['costprice']}" data-stock="{$op['stock']}"/>
+	{/loop}
 <!--商品规格调用——end-->
 
 			<input type="hidden" name="spec_list" value="2" />
@@ -121,14 +126,46 @@
 		</div>
 	</div>
 </form>
+
 <script type="text/javascript">
+//规格点击触发
+function changeAtt(t) {
+	t.lastChild.checked='checked';
+	for (var i = 0; i<t.parentNode.childNodes.length;i++) {
+		if (t.parentNode.childNodes[i].className == 'now') {
+			t.parentNode.childNodes[i].className = '';
+		}
+	}
+	t.className = "now";
+	//calculation();
+}
+function calculation(){
+/*	var titles = '';
+    $('.attri_r').each(function(){
+        titles+= $(this).find('.now').attr('data-specid')+"_";   
+    });
+    alert(titles);*/
+}
 $(document).ready(function(){
+//加入购物车触发  start
 	$('.make-cart').click(function(){
 		//alert('未连接');
 		$this = $(this);
 		var id = $this.attr('data-goodid');
 		//alert(id);
-
+ 		var specselected  = '';
+        $('.attri_r').each(function(){
+            var self = $(this);
+            if( $(this).find('.now').length<=0){
+                specselected = self.attr('title');
+                //alert(specselected);
+                return false;
+            }
+        });  
+        if( specselected!=''){
+            alert('请选择' + specselected) ;
+            return;
+        }
         $.post('{php echo $this->createMobileUrl("shop/cart")}',
 		{
 			op: "add",
@@ -143,7 +180,20 @@ $(document).ready(function(){
     			alert("添加失败");
     		}
     	},'json');
+        
 	});
+/*	$('.spec').mouseover(function(e){
+		//alert(2);
+		$this = $(this);
+		var id = $this.attr('title');
+		//alert(id);
+		var 
+
+	});
+	$('.spec').click(function(){
+		//alert('1');
+	});
+*/
 });
 </script>
 <div class="content fl wfs">
@@ -753,16 +803,7 @@ $(".j-canvas-container li").bind("click",function(){
       $('html,body').animate({scrollTop: top}, "slow");
       mainleftnav();
     }
-    function changeAtt(t) {
-      t.lastChild.checked='checked';
-      for (var i = 0; i<t.parentNode.childNodes.length;i++) {
-          if (t.parentNode.childNodes[i].className == 'now') {
-            t.parentNode.childNodes[i].className = '';
-          }
-        }
-      t.className = "now";
-      //changePrice();
-    }
+
      
     var goodsId = 500;
     /**
