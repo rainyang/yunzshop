@@ -912,7 +912,7 @@ if ($_W['isajax']) {
                 }
             }
             if (!empty($optionid)) {
-                $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,stock,virtual,weight from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
+                $option = pdo_fetch('select id,title,marketprice,costprice,goodssn,productsn,stock,virtual,weight from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
                     ':uniacid' => $uniacid,
                     ':goodsid' => $goodsid,
                     ':id' => $optionid
@@ -926,6 +926,7 @@ if ($_W['isajax']) {
                     $data['optionid']    = $optionid;
                     $data['optiontitle'] = $option['title'];
                     $data['marketprice'] = $option['marketprice'];
+                    $data['costprice']   = $option['costprice'];
                     $virtualid           = $option['virtual'];
                     if (!empty($option['goodssn'])) {
                         $data['goodssn'] = $option['goodssn'];
@@ -1326,7 +1327,8 @@ if ($_W['isajax']) {
                 'productsn' => $goods['productsn'],
                 "realprice" => $goods["realprice"],
                 "oldprice" => $goods["realprice"],
-                "openid" => $openid
+                "openid" => $openid,
+                'goods_op_cost_price' => $goods['costprice']
             );
             if ($diyform_plugin) {
                 $order_goods["diyformid"]     = $goods["diyformid"];
