@@ -25,7 +25,7 @@ if($op == 'sendcode'){
     $_SESSION['codetime'] = time();
     $_SESSION['code'] = $code;
     $_SESSION['code_mobile'] = $mobile;
-    $content = "您的安全码是：". $code ."。请不要把安全码泄露给其他人。如非本人操作，可不用理会！";
+    $content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
     $issendsms = $this->sendSms($mobile, $content);
     show_json(1);
 }else if ($op == 'forgetcode'){
