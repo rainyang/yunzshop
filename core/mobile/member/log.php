@@ -30,4 +30,5 @@ if ($_W['isajax']) {
         ));
     }
 }
+include $this->template('member/center');
 include $this->template('member/log');

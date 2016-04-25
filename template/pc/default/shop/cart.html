@@ -57,16 +57,22 @@
 							<div class="cell p-goods">
 								<div class="goods-item">
 									<div class="p-img">
-										<a href="#"><img src="{php echo $good['thumb']}"></a>
+										<a href="{php echo $this->createMobileUrl('shop/detail',array('id' => $good['goodsid']))}"><img src="{php echo $good['thumb']}"></a>
 									</div>
 									<div class="item-msg">
 										<div class="p-name"><a href="{php echo $this->createMobileUrl('shop/detail',array('id' => $good['goodsid']))}">{php echo $good['title']}</a></div>
 									</div>
 								</div>
 							</div>
+
+
+
 							<div class="cell p-props p-props-new">
-								<div class="props-txt">颜色：红色</div>
+								<div class="props-txt">{$good['optiontitle']}</div>
 							</div>
+
+
+
 							<div class="cell p-price"><strong>{php echo $good['marketprice']}</strong></div>
 							<div class="cell p-quantity">
 								<div class="quantity-form" data-maxbuy="{$good['maxbuy']}" data-stock="{$good['stock']}">
@@ -80,7 +86,7 @@
 							<div class="cell p-ops">
 								<a  class="cart-remove" href="javascript::void(del)" data-delid = '{$good['id']}'>删除</a>
 								<!-- {php echo $this->createMobileUrl('shop/cart',array('op' => 'remove'))}&id={$good['id']} -->
-								<a href="#" class="cart-follow">移到我的收藏</a>
+								<a href="javascript::void(0)" class="cart-follow move" data-moveid = '{$good['id']}'>移到我的收藏</a>
 							</div>						
 						</div>
 					</div>
@@ -102,14 +108,14 @@
 				</div> -->
 				<div class="operation">
 					<a href="javascript::void(delcheck)" class="remove-batch fl">删除选中的商品</a>
-					<a href="#" class="remove-batch fl">移动到我的收藏</a>
+					<a href="javascript::void(0)" class="moveall fl">移动到我的收藏</a>
 				</div>
 				<div class="toolbar-right">
 					<div class="comm-right">
 						<div class="btn-area paysub"><a href="javascript::void(0)" class="submit-btn">去结算<span id = 'totaltwo'></span></a></div>
 						<div class="price-sum">
 							<div>
-								<span class="txt">品总价（含运费）：</span>
+								<span class="txt">品总价（不含运费）：</span>
 								<span class="price sumPrice"><em id="totalprice"></em></span>
 								<br>
 								<span class="txt">共<em id="total"></em>件商品</span>
@@ -124,29 +130,157 @@
 </div>
 </form>
 <script type="text/javascript">
-
-//结算触发
 	$(document).ready(function(){
+//结算触发
 		$('.paysub').click(function(){
-			console.log('test');
-            var total =  calcprice();
-            if(total<=0){
-                return;
-            }
             var ids = [];
             $('.cart_good[sel=1]').each(function(){
                 ids.push($(this).data('cartid'));
 	        });
+	        if(ids.length <=0){
+	        	alert('未选择商品');
+	        	return;
+	        }
 	        location.href = '{php echo $this->createMobileUrl("order/confirm");}&cartids='+ids.join(',');//core.getUrl('order/confirm',{cartids:ids.join(',')});
     	});
+
+//移动触发
+		$('.move').click(function (){
+			//alert(1);
+			var $this = $(this);
+			var ids = [];
+			var moveid = $this.attr('data-moveid');
+			//alert(moveid);
+			ids.push(moveid);
+			var move = confirm("确认将这件商品移至到收藏夹吗？");
+			if (move == true){
+				$.post('{php echo $this->createMobileUrl("shop/cart")}',
+				{
+					op: "tofavorite",
+					ids: ids
+				},
+				function (json){
+					if (json.status == 1) {
+							$('.item-last[data-cartid='+ moveid +']').attr('sel',0).fadeOut(500,function(){
+								$(this).remove();
+							});
+						calcprice();
+					} else {
+						alert("移动失败");
+					}
+				},'json');
+			}
+		});
+//移动选中触发
+		$('.moveall').click(function(){
+			var ids =[];
+            $('.item-last[sel=1]').each(function(){
+                ids.push($(this).data('cartid')) ;
+            })
+            if(ids.length<=0){
+                alert('未选择商品');
+                return;
+            }
+            var delcheck = confirm("确认将这件商品移至到收藏夹吗？");
+            if(delcheck == true){
+            	//alert(ids);
+            	$.post('{php echo $this->createMobileUrl("shop/cart")}',
+				{
+					op:"tofavorite",
+					ids:ids
+				},
+            	function(json){
+            		if (json.status==1) {
+            			//console.log('ids:'+ids);
+                        for(var i in ids){
+                        	if($.isNumeric(i) == false){
+                        		continue;
+                        	}
+                        	console.log('ID:'+i);
+                            $('.item-last[data-cartid=' + ids[i]+ ']').attr('sel',0).fadeOut(500,function(){
+                            	$(this).remove();
+                            	//console.log("test:"+i);
+                            }) 
+                        }
+                    	if($('.item-last[sel=1]').length<=0){
+                             calcprice();
+                        }
+            		}else {
+            			alert("移动失败");
+            		}
+            	},'json');
+            }
+		});
 
 //删除触发
 		$('.cart-remove').click(function(){
 			var $this = $(this);
+			var ids = [];
 			var delid = $this.attr('data-delid');
+			ids.push(delid) ;
 			//alert(delid);
-			var type = if(confirm("确定删除这件商品吗？删除将不能恢复！")) return true; else return false;
-			alert(type);
+			var del = confirm("确定删除这件商品吗？删除将不能恢复！");
+			if(del == true){
+				$.post('{php echo $this->createMobileUrl("shop/cart")}',
+				{
+					op: "remove",
+					ids: ids
+				},
+				function(json){
+					if(json.status==1)  {
+                        //alert(1);
+                        $('.item-last[data-cartid=' + delid+ ']').attr('sel',0).fadeOut(500,function(){
+                        	$(this).remove();
+                        });
+                        calcprice();
+                    }
+                    else{
+                        alert('删除失败');
+                    }
+				},
+				'json');
+			}
+		});
+
+//删除选中触发
+		$('.remove-batch').click(function(){
+			var ids =[];
+            $('.item-last[sel=1]').each(function(){
+                ids.push($(this).data('cartid')) ;
+            })
+            if(ids.length<=0){
+                alert('未选择商品');
+                return;
+            }
+            var delcheck = confirm("确认删除选中商品吗？删除将不能恢复！");
+            if(delcheck == true){
+            	//alert(ids);
+            	$.post('{php echo $this->createMobileUrl("shop/cart")}',
+				{
+					op:"remove",
+					ids:ids
+				},
+            	function(json){
+            		if (json.status==1) {
+            			//console.log('ids:'+ids);
+                        for(var i in ids){
+                        	if($.isNumeric(i) == false){
+                        		continue;
+                        	}
+                        	console.log('ID:'+i);
+                            $('.item-last[data-cartid=' + ids[i]+ ']').attr('sel',0).fadeOut(500,function(){
+                            	$(this).remove();
+                            	//console.log("test:"+i);
+                            }) 
+                        }
+                    	if($('.item-last[sel=1]').length<=0){
+                             calcprice();
+                        }
+            		}else {
+            			alert("删除失败");
+            		}
+            	},'json');
+            }
 		});
 
 //计算金额数量总和
@@ -179,6 +313,12 @@
 //点击全选触发事件
 	    $("#checkall").click(function() {
             $('input[name="subcheckbox"]').attr("checked",this.checked);
+            $('.item-last').each(function(){
+            	$this = $(this);
+            	var check = $('input[name="subcheckbox"]').is(':checked');
+	        	var sel = (check) ? 1 : 0;
+            	$this.attr('sel',sel);
+            })
             calcprice();
 	    });
 

@@ -64,6 +64,7 @@ if ($_W['isajax']) {
         'member' => $member
     ));
 }
+include $this->template('member/center');
 if ($template_flag == 1) {
     include $this->template('diyform/info');
 } else {

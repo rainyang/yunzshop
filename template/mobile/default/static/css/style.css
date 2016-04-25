@@ -194,6 +194,7 @@ footer#footer-nav .menu-list:after {
 
 .topbar {max-width: 720px;}
 .main .page {position: relative;}
+<<<<<<< HEAD
 /*更改颜色*/
 .take{background: #ff4a4e !important; margin-top: 9px !important;height: 26px !important;
     line-height: 26px !important;font-size: 12px !important;}
@@ -267,3 +268,8 @@ footer#footer-nav .menu-list:after {
 .addorder_good .ico .fa-gift{padding-top: 8px;}
 .fa-3x {font-size: 2em;}
 .header {background: url(/addons/sz_yi/template/mobile/default/static/images/bg3.png) 0 0 no-repeat !important;}
+=======
+/*个人中心左侧导航样式*/
+.leftlistnav{width: 230px;height: auto;background-color: #192229;float: left;}
+.rightlist{ width: 960px;float: right;background: #fff;padding: 0}
+>>>>>>> 2f6a920ff7892144b397b8a904e76604370c21e3

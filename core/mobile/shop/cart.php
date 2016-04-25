@@ -48,6 +48,7 @@ if ($_W['isajax'] || $tmplateType == 'pc') {
             ':uniacid' => $uniacid,
             ':id' => $id
         ));
+        
         if (empty($goods)) {
             show_json(0, '商品未找到');
         }
@@ -254,6 +255,7 @@ if ($_W['isajax'] || $tmplateType == 'pc') {
         ));
         show_json(1);
     } else if ($operation == 'remove' && $_W['ispost']) {
+        //echo "hello";exit();
         $ids = $_GPC['ids'];
         if (empty($ids) || !is_array($ids)) {
             show_json(0, '参数错误');

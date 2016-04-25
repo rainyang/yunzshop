@@ -162,7 +162,8 @@ div.flicking_con a.on{background-position:0 -9px}
             <div class="close" onClick="closechoose()"><i class="fa fa-remove-o"></i></div>
         </div>
         <div class="other">
-            <input type='hidden' id='optionid' value='' />
+            
+            
                 <%each specs as spec%>
                 <input type='hidden' name="optionid[]" class='optionid optionid_<%spec.id%>' value="" title="<%spec.title%>">
                 <div class="spec"><%spec.title%></div>
@@ -468,11 +469,11 @@ div.flicking_con a.on{background-position:0 -9px}
 </script>
 
 <script language="javascript">
-  function showMoreActivity(){
-	 $('#morebtn').hide();
-	 $("#moreactivity").fadeIn();
- }
- 
+    function showMoreActivity(){
+        $('#morebtn').hide();
+        $("#moreactivity").fadeIn();
+    }
+
     var hasoption = false;
     var maxbuy = 0;
     var options = [];
@@ -484,10 +485,10 @@ div.flicking_con a.on{background-position:0 -9px}
     
     
     function share(){
-        
-           $('#cover').fadeIn(200).unbind('click').click(function(){
-                    $(this).fadeOut(100);
-          })
+
+        $('#cover').fadeIn(200).unbind('click').click(function(){
+            $(this).fadeOut(100);
+        })
     }
     function menu(obj){
        
@@ -499,6 +500,7 @@ div.flicking_con a.on{background-position:0 -9px}
             $('.sort_list').fadeIn(200);
         }
     }
+
     $(function(){
         $(document.body).click(function(e){
            var classname = "";
@@ -524,94 +526,96 @@ div.flicking_con a.on{background-position:0 -9px}
         }
     }
     require(['tpl', 'core','jquery.touchslider','swipe'], function(tpl, core) {
-      function setTimer(goods){
-            
+
+        function setTimer(goods){
             setTimeHtml(goods);
             window.timer = setInterval(function(){
                 setTimeHtml(goods);
             },1000);
         }
+
         function setTimeHtml(goods){
             var current = Math.floor(new Date().getTime()/1000);
-                var ts = 0;//计算剩余的毫秒数
-                var prefix = '';
+            var ts = 0;//计算剩余的毫秒数
+            var prefix = '';
+            
+            if(goods.timestate=='before'){
+                ts = goods.timestart - current;
+                prefix = "限时购开始倒计时: ";
+                if(ts<=0){
+                    location.reload();
+                }
+            }
+            else if(goods.timestate=='after'){
+                ts = goods.timeend - current;
                 
-                if(goods.timestate=='before'){
-                    ts = goods.timestart - current;
-                    prefix = "限时购开始倒计时: ";
-                    if(ts<=0){
-                        location.reload();
-                    }
+                prefix = "限时购结束倒计时:  ";
+                if(ts<=0){
+                    location.reload();
                 }
-                else if(goods.timestate=='after'){
-                    ts = goods.timeend - current;
-                    
-                    prefix = "限时购结束倒计时:  ";
-                     if(ts<=0){
-                        location.reload();
-                    }
-                }
-                var dd = parseInt(ts / 60 / 60 / 24, 10);//计算剩余的天数
-                var hh = parseInt(ts  / 60 / 60 % 24, 10);//计算剩余的小时数
-                var mm = parseInt(ts  / 60 % 60, 10);//计算剩余的分钟数
-                var ss = parseInt(ts % 60, 10);//计算剩余的秒数
-                dd = checkTime(dd);
-                hh = checkTime(hh);
-                mm = checkTime(mm);
-                ss = checkTime(ss);
-                $('.timestate').html(prefix+ "<span>" + dd + "</span>天<span>" + hh + "</span>时<span>" + mm + "</span>分<span>" + ss + "</span>秒");
+            }
+            var dd = parseInt(ts / 60 / 60 / 24, 10);//计算剩余的天数
+            var hh = parseInt(ts  / 60 / 60 % 24, 10);//计算剩余的小时数
+            var mm = parseInt(ts  / 60 % 60, 10);//计算剩余的分钟数
+            var ss = parseInt(ts % 60, 10);//计算剩余的秒数
+            dd = checkTime(dd);
+            hh = checkTime(hh);
+            mm = checkTime(mm);
+            ss = checkTime(ss);
+            $('.timestate').html(prefix+ "<span>" + dd + "</span>天<span>" + hh + "</span>时<span>" + mm + "</span>分<span>" + ss + "</span>秒");
         }
-        function checkTime(i)    
-            {    
-               if (i < 10) {    
-                   i = "0" + i;    
-                }    
-               return i;    
-            } 
+
+
+        function checkTime(i){
+            if (i < 10) {    
+                i = "0" + i;    
+            }
+            return i;    
+        } 
 
         core.json('shop/detail',{id:'{$_GPC['id']}',mid:"{$mid}"},function(json){
      
-          tip = core.tip;
-          if(json.status<=0){
-              core.message('没有找到您想要的宝贝哦~',"{php echo $this->createMobileUrl('shop/list')}",'error');
-              return;
-          }
+            tip = core.tip;
+            if(json.status<=0){
+                core.message('没有找到您想要的宝贝哦~',"{php echo $this->createMobileUrl('shop/list')}",'error');
+                return;
+            }
             
-        $(window).scroll(function(){
+            $(window).scroll(function(){
          
-           var top = $(document).scrollTop() ;
-           alpha = top/270 ;
-           if(alpha>0.5){
-               alpha = 0.5;
-           }
-           $('.good_topbar').css("background","rgba(237,237,237,"+ alpha + ")");
-             $('.good_topbar .btn').css("background","rgba(237,237,237,"+ (0.5-alpha) + ")");
-        });
-         $('body').on("touchmove",function(){
+                var top = $(document).scrollTop() ;
+                alpha = top/270 ;
+                if(alpha>0.5){
+                    alpha = 0.5;
+                }
+                $('.good_topbar').css("background","rgba(237,237,237,"+ alpha + ")");
+                $('.good_topbar .btn').css("background","rgba(237,237,237,"+ (0.5-alpha) + ")");
+            });
+            $('body').on("touchmove",function(){
                 
-           var top = $(document).scrollTop() ;
-           alpha = top/270 ;
-           if(alpha>0.6){
-               alpha = 0.6;
-           }
-          $('.good_topbar').css("background","rgba(237,237,237,"+ alpha + ")");
-          $('.good_topbar .btn').css("background","rgba(237,237,237,"+ (0.6-alpha) + ")");
-        });
+                var top = $(document).scrollTop() ;
+                alpha = top/270 ;
+                if(alpha>0.6){
+                    alpha = 0.6;
+                }
+                $('.good_topbar').css("background","rgba(237,237,237,"+ alpha + ")");
+                $('.good_topbar .btn').css("background","rgba(237,237,237,"+ (0.6-alpha) + ")");
+            });
         
-          $('#container').html(  tpl('goods_info',json.result) ); 
-    
-          var bh = $(document.body).height() - 50;
-          $('.good_choose').css('max-height',bh); 
-          $('.good_choose .other').css('max-height',bh-175);
-       
-         // alert(document.body.clientWidth);
-         $('.good_img').height( document.body.clientWidth + "px");
+            $('#container').html(  tpl('goods_info',json.result) ); 
+
+            var bh = $(document.body).height() - 50;
+            $('.good_choose').css('max-height',bh); 
+            $('.good_choose .other').css('max-height',bh-175);
+
+            // alert(document.body.clientWidth);
+            $('.good_img').height( document.body.clientWidth + "px");
               
-          $('#con_1 img,#con_1 table,#con_1 div').width('100%');
-           var ua = navigator.userAgent.toLowerCase();
-           var isWX = ua.match(/MicroMessenger/i) == "micromessenger";
-           var z = []; 
-           $(".main_image img").each(function() {
+            $('#con_1 img,#con_1 table,#con_1 div').width('100%');
+            var ua = navigator.userAgent.toLowerCase();
+            var isWX = ua.match(/MicroMessenger/i) == "micromessenger";
+            var z = []; 
+            $(".main_image img").each(function() {
                 z.push($(this).attr("src"));
             });
             var current;
@@ -632,8 +636,8 @@ div.flicking_con a.on{background-position:0 -9px}
                 });
             }
             
-              var z1 = []; 
-           $("#con_1 img").each(function() {
+            var z1 = []; 
+            $("#con_1 img").each(function() {
                 z1.push($(this).attr("src"));
             });
             var current1;
@@ -657,236 +661,231 @@ div.flicking_con a.on{background-position:0 -9px}
             
       
             
-           document.title = json.result.goods.title;
-           hasoption = json.result.options.length>0;
-           goods = json.result.goods;
-           maxbuy = json.result.goods.maxbuy;
-           options = json.result.options;
-           specs = json.result.specs;
-           
-           nothtml = "";
-           timehtml = "";
-           hastime = false;
-            if( goods.canbuy){
-                     if(goods.userbuy=='0') {
-                               nothtml = "您已超出购买上限~";
-                     } else {
-                              if( goods.groupbuy=='0' || goods.levelbuy=='0'){
-                                         nothtml="您不能购买此商品,请联系客服";
-                             } else {
-                                        if( goods.total==0){
-                                                 nothtml="库存不足，无法购买";
-                                        } else {
-                                                 if( goods.istime=='1'){
-                                                      if( goods.timebuy=='1'){
-                                                          nothtml= "限时购活动已经结束，请下次再来~"
-                                                      }else{//未开始倒计时或进行中
-                                                          nothtml='<span class="timestate"></span>';
-                                                          hastime = true;
-                                                      }
-                                                 }
-                                        }
-                             }
+            document.title = json.result.goods.title;
+            hasoption = json.result.options.length>0;
+            goods = json.result.goods;
+            maxbuy = json.result.goods.maxbuy;
+            options = json.result.options;
+            specs = json.result.specs;
 
+            nothtml = "";
+            timehtml = "";
+            hastime = false;
+            if( goods.canbuy){
+                if(goods.userbuy=='0') {
+                    nothtml = "您已超出购买上限~";
+                } else {
+                    if( goods.groupbuy=='0' || goods.levelbuy=='0'){
+                        nothtml="您不能购买此商品,请联系客服";
+                    } else {
+                        if( goods.total==0){
+                            nothtml="库存不足，无法购买";
+                        } else {
+                            if( goods.istime=='1'){
+                                if( goods.timebuy=='1'){
+                                    nothtml= "限时购活动已经结束，请下次再来~"
+                                }else{//未开始倒计时或进行中
+                                    nothtml='<span class="timestate"></span>';
+                                    hastime = true;
+                                }
+                            }
+                        }
                     }
-                     if( goods.istime=='1'){
-                                                      if( goods.timebuy!='1'){
-                                                         
-                                                          timehtml = '<span class="timestate"></span>';
-                                                      }
-                                                 }
+
+                }
+                if( goods.istime=='1'){
+                    if( goods.timebuy!='1'){
+
+                        timehtml = '<span class="timestate"></span>';
+                    }
+                }
                      
-        }else{
-            nothtml = "商品已下架";
-        }
-        if( nothtml!=''){
-            $('#notbuy').html(nothtml).show();
-        }
-        if( timehtml!='' && !hastime){
-            $('#buytime').html(timehtml).show();
-        }
-        if($('.timestate').length>0) {
-               if(goods.timestate!=''){
-                     setTimer(goods);
-               }
-        }
+            }else{
+                nothtml = "商品已下架";
+            }
+            if( nothtml!=''){
+                $('#notbuy').html(nothtml).show();
+            }
+            if( timehtml!='' && !hastime){
+                $('#buytime').html(timehtml).show();
+            }
+            if($('.timestate').length>0) {
+                if(goods.timestate!=''){
+                    setTimer(goods);
+                }
+            }
             
-           
-           if(options.length>0){
-             $('#productpricecontainer').html('');
-           }
-   
-           $('#total').blur(function(){
-              var total = $("#total");
-	if(!total.isInt()){
-	     total.val("1");
+
+            if(options.length>0){
+                $('#productpricecontainer').html('');
+            }
+
+            $('#total').blur(function(){
+                var total = $("#total");
+                if(!total.isInt()){
+                total.val("1");
                        return;
-	}
-                  if(parseInt(total.val())<=0){
-	     total.val("1");
-                       return;
-	} 
-	var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
-	var num = parseInt(total.val() );
-                  if(num>maxbuy && maxbuy>0){
-		tip.show("您最多可购买 " + maxbuy + " 件!");
-		num = maxbuy;
-	}
-	else if(num>stock && stock!=-1){
-		tip.show("您最多可购买 " + stock + " 件");
-		num = stock;
-	}
+                }
+                if(parseInt(total.val())<=0){
+                    total.val("1");
+                    return;
+                } 
+                var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+                var num = parseInt(total.val() );
+                if(num>maxbuy && maxbuy>0){
+                    tip.show("您最多可购买 " + maxbuy + " 件!");
+                    num = maxbuy;
+                }
+                else if(num>stock && stock!=-1){
+                    tip.show("您最多可购买 " + stock + " 件");
+                    num = stock;
+                }
 	
-	total.val(num);
-        
-               
-           });
+                total.val(num);
+            });
  
                
-                    new Swipe($('.main_image')[0], {
-			speed:300,
-			auto:4000,
-			callback: function(){
-			  
-                                 $(".flicking_con  .inner  a").removeClass("on").eq(this.index).addClass("on");
-		}
-	  });
+            new Swipe($('.main_image')[0], {
+                speed:300,
+                auto:4000,
+                callback: function(){
+                    $(".flicking_con  .inner  a").removeClass("on").eq(this.index).addClass("on");
+                }
+            });
             {if !empty($formInfo)}
-            {template 'diyform/common_js'}
+                {template 'diyform/common_js'}
             {/if}
 
-            $(".option").click(function() {
-               
-			 var specid = $(this).attr("specid");
-			 var oid = $(this).attr("oid");
-			$(".optionid_"+specid).val(oid);
-			$(".options_" + specid + "  .option").removeClass("on").attr("sel", "false");
-			$(this).addClass("on").attr("sel", "true");
-	 
-             var titles='已选: ';
-			     $('.spec_items').each(function(){
-                                 if($(this).find('.on').length>0){
-			        titles+= $(this).find('.on').attr('title')+";";   
-                            }
-			     });
-                             
-                             $('.good_choose .info .right .option').html(titles);
-         var thumb = $(this).attr('thumb');
-         if(thumb!=''){
-             $("#chooser_img").attr('src',thumb);
-         }
-         else{
-             
-             $("#chooser_img").attr('src',json.result.goods.thumb);
-         }
-         setoptions();
-			var optionid = "";
-			var stock =0;
-			var marketprice = 0;
-			var productprice = 0;
-			 var ret = option_selected();
-  
-			if(ret.no==''){
-				var len = options.length;
-				for(var i=0;i<len;i++) {
-					var o = options[i];
-					var ids = ret.all.join("_");
-                                
-                                var specarr = o.specs.split('_').sort();
-                                var idsarr = ret.all.sort();
-                              
-                                
-                                
-                             
-					if(specarr.join('_') ==idsarr.join('_') ){
-						optionid = o.id;
-						stock = o.stock;
-						marketprice = o.marketprice;
-						productprice = o.productprice;
-						break;
-					}
-					
-				}
-                                
-			   $("#optionid").val(optionid); 
-			    
-				if(stock!="-1"){
-					$("#stockcontainer").html("库存:<span id='stock'>" + stock + "</span>");
-				}
-				else{
-				  $("#stockcontainer").html("<span id='stock'></span>");
-				}
-				if(ret.no==''){
-					if(stock==0){
-					   $('.sub').addClass('disabled').html('库存不足,无法购买');
-					}
-					else{
-					 $('.sub').removeClass('disabled').html('确认');
-					}
-				} 
-				$("#marketprice").html(marketprice);
-				
-		     	$("#option_price").html(marketprice);	
-		     	$("#option_stock").html(stock);	
-				 
-				$("#productprice").html(productprice);
-				if(productprice<=0){
-				$('#productpricecontainer').html("");
-				}
-				else{
-				   $('#productpricecontainer').html("市场价￥<span id='productprice'>" + productprice + "</span>");
-				}
-			}
-		});
 
-            $('.cs').click(function(){
+
+
+
+
+
+            $(".option").click(function() {
+
+                var specid = $(this).attr("specid");
+                var oid = $(this).attr("oid");
+                $(".optionid_"+specid).val(oid);
+                $(".options_" + specid + "  .option").removeClass("on").attr("sel", "false");
+                $(this).addClass("on").attr("sel", "true");
+
+                var titles='已选: ';
+
+                $('.spec_items').each(function(){
+                    if($(this).find('.on').length>0){
+                        titles+= $(this).find('.on').attr('title')+";";   
+                    }
+                });
+                $('.good_choose .info .right .option').html(titles);
+                var thumb = $(this).attr('thumb');
+                if(thumb!=''){
+                    $("#chooser_img").attr('src',thumb);
+                }
+                else{
+                    $("#chooser_img").attr('src',json.result.goods.thumb);
+                }
+                setoptions();
+                var optionid = "";
+                var stock =0;
+                var marketprice = 0;
+                var productprice = 0;
+                var ret = option_selected();
+
+                if(ret.no==''){
+                    var len = options.length;
+                    for(var i=0;i<len;i++) {
+                        var o = options[i];
+                        var ids = ret.all.join("_");
+                        var specarr = o.specs.split('_').sort();
+                        var idsarr = ret.all.sort();                                
+                        if(specarr.join('_') ==idsarr.join('_') ){
+                            optionid = o.id;
+                            stock = o.stock;
+                            marketprice = o.marketprice;
+                            productprice = o.productprice;
+                            break;
+                        }
+    			    }
+                    $("#optionid").val(optionid); 
+    		    
+    				if(stock!="-1"){
+    					$("#stockcontainer").html("库存:<span id='stock'>" + stock + "</span>");
+    				}
+    				else{
+    				  $("#stockcontainer").html("<span id='stock'></span>");
+    				}
+                    if(ret.no==''){
+                        if(stock==0){
+                            $('.sub').addClass('disabled').html('库存不足,无法购买');
+                        }
+                        else{
+                            $('.sub').removeClass('disabled').html('确认');
+                        }
+    			    } 
+    				$("#marketprice").html(marketprice);
+    				
+    		     	$("#option_price").html(marketprice);	
+    		     	$("#option_stock").html(stock);	
+    				 
+    				$("#productprice").html(productprice);
+    			    if(productprice<=0){
+    			        $('#productpricecontainer').html("");
+    			    }
+    			    else{
+                        $('#productpricecontainer').html("市场价￥<span id='productprice'>" + productprice + "</span>");
+    			    }
+                }
+            });
+
+        $('.cs').click(function(){
             location.href='{php echo $shopset['cservice']}&metadata={"name":"{php echo $member['nickname']}","tel":"{php echo $member['mobile']}","address":"{php echo $member['province']}"}';
-    });
+        });
                 
            
-                $('.like').click(function(){
-                    var self = $(this);
-                    require(['core'],function(core){
-                       core.json('shop/favorite',{op:'set', id:'{$_GPC['id']}'},function(ret){
-                           if(ret.status==1){
-                
-                                if(ret.result.isfavorite){
-                                   self.find('i').removeClass('fa-star-o').addClass('fa-star').css('color','#f90');
-                                }
-                                else{
-                                   self.find('i').addClass('fa-star-o').removeClass('fa-star').css('color','#999');
-                                }
-                           }
-                           else{
-                               core.tip.show('操作失败');
-                           }
-                       });
-                      },false,true);
+        $('.like').click(function(){
+            var self = $(this);
+            require(['core'],function(core){
+               core.json('shop/favorite',{op:'set', id:'{$_GPC['id']}'},function(ret){
+                    if(ret.status==1){
+        
+                        if(ret.result.isfavorite){
+                           self.find('i').removeClass('fa-star-o').addClass('fa-star').css('color','#f90');
+                        }
+                        else{
+                           self.find('i').addClass('fa-star-o').removeClass('fa-star').css('color','#999');
+                        }
+                   }
+                   else{
+                       core.tip.show('操作失败');
+                   }
+               });
+              },false,true);
+        });
+        var page = 1;
+        function bindCommentImages(){
+        var z = []; 
+        $(".comment .imgs img").each(function() {
+            z.push($(this).attr("src"));
+        });
+        var current;
+        if (isWX) {
+            $(".comment .imgs  img").click(function(e) {
+                e.preventDefault();
+                var startingIndex = $(".comment .imgs  img").index($(e.currentTarget));
+                var current = null;
+                $(".comment .imgs  img").each(function(B, A) {
+                    if (B === startingIndex) {
+                        current = $(A).attr("src");
+                    }
                 });
-                var page = 1;
-          function bindCommentImages(){
-                var z = []; 
-                          $(".comment .imgs img").each(function() {
-                             z.push($(this).attr("src"));
-                         });
-                         var current;
-                         if (isWX) {
-                             $(".comment .imgs  img").click(function(e) {
-                                 e.preventDefault();
-                                 var startingIndex = $(".comment .imgs  img").index($(e.currentTarget));
-                                 var current = null;
-                                 $(".comment .imgs  img").each(function(B, A) {
-                                     if (B === startingIndex) {
-                                         current = $(A).attr("src");
-                                     }
-                                 });
-                                 WeixinJSBridge.invoke("imagePreview", {
-                                     current: current,
-                                     urls: z
-                                 });
-                             });
-                         }
-          }
+                WeixinJSBridge.invoke("imagePreview", {
+                    current: current,
+                    urls: z
+                });
+            });
+        }
+        }
                 $('#nav_3').click(function(){
                     page = 1;
                      core.json('shop/util',{op:'comment', page:page,goodsid:'{$_GPC['id']}'},function(json){
@@ -955,172 +954,178 @@ div.flicking_con a.on{background-position:0 -9px}
 		$('#nav_'+n).siblings().removeClass('navon');
                       
 	}
-        function closechoose(){
-                 $('.good_choose_layer').fadeOut(100);
-		$('.good_choose').fadeOut(100); 
-        }
+    function closechoose(){
+        $('.good_choose_layer').fadeOut(100);
+        $('.good_choose').fadeOut(100); 
+    }
+
+
+
 	function choose(act){
             
-                          if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
-                                require(['core'],function(core){
-                                    core.tip.confirm($('#followtip').val(),function(){
-                                        location.href = $('#followurl').val();
-                                        return;
-                                    }) 
-                                });
-                             return;
-                          }
-	               action = act;
-                         if(!action){
+        if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
+            require(['core'],function(core){
+                core.tip.confirm($('#followtip').val(),function(){
+                    location.href = $('#followurl').val();
+                    return;
+                }) 
+            });
+        return;
+        }
+	    action = act;
+        if(!action){
                                      
-                                $('.good_choose_layer').fadeIn(200);
-                                          $('.good_choose_layer').unbind('click').click(function(){
-                                                    $('.good_choose_layer').fadeOut(100);
-                                 $('.good_choose').fadeOut(100); 
-                                          })
-                                $('.good_choose').fadeIn(200);
-                                return;
-                         }
-                         var specselected  = '';
-  if( action=='cart'){
-	           
-			 $('.good_choose_layer').fadeIn(200);
-							 $('.good_choose_layer').unbind('click').click(function(){
-								   closechoose();
-							 })
-			   $('.good_choose').fadeIn(200);
-			   return;	 
-	         }else{
+            $('.good_choose_layer').fadeIn(200);
+            $('.good_choose_layer').unbind('click').click(function(){
+                $('.good_choose_layer').fadeOut(100);
+                $('.good_choose').fadeOut(100); 
+            })
+            $('.good_choose').fadeIn(200);
+                return;
+        }
+        var specselected  = '';
+
+
+
+        if( action=='cart'){
+
+            $('.good_choose_layer').fadeIn(200);
+            $('.good_choose_layer').unbind('click').click(function(){
+                closechoose();
+            })
+            $('.good_choose').fadeIn(200);
+            return;	 
+        }else{
 			{if !empty($formInfo)}
-				 $('.good_choose_layer').fadeIn(200);
-							 $('.good_choose_layer').unbind('click').click(function(){
-								   closechoose();
-							 })
-			   $('.good_choose').fadeIn(200);
-			   return;
+                $('.good_choose_layer').fadeIn(200);
+                $('.good_choose_layer').unbind('click').click(function(){
+                    closechoose();
+                })
+                $('.good_choose').fadeIn(200);
+                return;
 			{/if}
 			 
-				$('.spec_items').each(function(){
-							 var self = $(this);
-				                            if( $(this).find('.on').length<=0){
-								 specselected = self.attr('title');
-								 return false;
-							  }
-				});  
-		     if(specselected!='') {
-			   $('.good_choose_layer').fadeIn(200);
-							 $('.good_choose_layer').unbind('click').click(function(){
-								   closechoose();
-							 })
-			   $('.good_choose').fadeIn(200);
-			   return;
-		     }
+            $('.spec_items').each(function(){
+                var self = $(this);
+                if( $(this).find('.on').length<=0){
+                    specselected = self.attr('title');
+                    return false;
+                }
+            });  
+            if(specselected!='') {
+                $('.good_choose_layer').fadeIn(200);
+                $('.good_choose_layer').unbind('click').click(function(){
+                    closechoose();
+                })
+                $('.good_choose').fadeIn(200);
+                return;
+            }
 			
-		 }
+        }
  
 
-                      var diymode = {php echo intval($diymode)};
+        var diymode = {php echo intval($diymode)};
 
-                      if(specselected!='' || diymode==1) {
-                             if (specselected == '') {
-                                 $('#goods_spec').hide();
-                             }
+        if(specselected!='' || diymode==1) {
+            if (specselected == '') {
+                $('#goods_spec').hide();
+            }
 
-                             $('.good_choose_layer').fadeIn(200);
-                             $('.good_choose_layer').unbind('click').click(function(){
-                                 closechoose();
-                             })
-	                    $('.good_choose').fadeIn(200);
-                      } else{
-                          if(action=='cart'){
-                                                require(['core'],function(core){
+            $('.good_choose_layer').fadeIn(200);
+            $('.good_choose_layer').unbind('click').click(function(){
+            closechoose();
+                })
+            $('.good_choose').fadeIn(200);
+        } else{
+            if(action=='cart'){
+                require(['core'],function(core){
 
-                                                                           core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val()},function(ret){
-                                                                                                        if(ret.status==1){
-                                                                                                           core.tip.show(ret.result.message);
-                                                                                                           var cartdiv = $('.cart');
-                                                                                                                               if( cartdiv.find('b').length<=0){
-                                                                                                                                  cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
-                                                                                                                               }
-                                                                                                                               else {
-                                                                                                                                  cartdiv.find('b').html(ret.result.cartcount);
-                                                                                                                               }
+                    core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val()},function(ret){
+                        if(ret.status==1){
+                            core.tip.show(ret.result.message);
+                            var cartdiv = $('.cart');
+                            if( cartdiv.find('b').length<=0){
+                                cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
+                            }
+                            else {
+                                cartdiv.find('b').html(ret.result.cartcount);
+                            }
 
-                                                                                                       } else{
-                                                                                                           core.message(ret.result,'','error');
-                                                                                                       }
-                                                                               },true,true);
-                                                 });
-                                    }else if(action=='buy'){
-                                         location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
-                                    }
+                        } else{
+                            core.message(ret.result,'','error');
+                        }
+                    },true,true);
+                });
+            }else if(action=='buy'){
+                location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+            }
 
-                      }
-	}
-        function setoptions(){
-             var titles = '';
-   		         if(hasoption){
-			     
-			 titles+='已选: ';
-			     $('.spec_items').each(function(){
- 			        titles+= $(this).find('.on').attr('title')+";";   
-			     });
-		         }
-                                             titles+='数量:' + $('#total').val();
-		         $("#optiondiv").html(titles);
         }
+    }
+        
+
+
+
+
+    function setoptions(){
+        var titles = '';
+        if(hasoption){
+
+            titles+='已选: ';
+            $('.spec_items').each(function(){
+                titles+= $(this).find('.on').attr('title')+";";   
+            });
+        }
+        titles+='数量:' + $('#total').val();
+        $("#optiondiv").html(titles);
+    }
+
+
+
+
 	function choose2(direct,close){
-		 require(['core'],function(core){
-			 
+		require(['core'],function(core){
+    			 
             if(close){
                 closechoose();
                 return;
             }
-	    if(!direct){
-		    if($('.sub').hasClass('disabled')){
-		       return;
-		    }
-		    else{
-		        setoptions();
-		    }
-                                      
-		  
-	    } else {
-                            action = "";
-                      }
-		
-                var specselected  = '';
+	        if(!direct){
+                if($('.sub').hasClass('disabled')){
+                    return;
+		        }
+    		    else{
+    		        setoptions();
+    		    }
+	        } else {
+                action = "";
+            }
+            var specselected  = '';
                 
-	    $('.spec_items').each(function(){
-                
-                   var self = $(this);
- 		 if( $(this).find('.on').length<=0){
-                                          specselected = self.attr('title');
-                                          return false;
-                      }
-                               });  
-                                if( specselected!=''){
-                                      require(['core'],function(core){
-                                         core.tip.show('请选择' + specselected) ;
-                                      });
-                                      return;
-                      }
-                               
-                           
-                              
-		if(action=='cart'){
-			     var data = {};
-				 
-			     {if !empty($formInfo)}
-				 
-					{template 'diyform/common_js_data'}
-
-				         data = {
-						'diyformid': "{$goods['diyformid']}",
-						'diydata':diydata
-					};
-				{/if}
+            $('.spec_items').each(function(){
+                var self = $(this);
+                if( $(this).find('.on').length<=0){
+                    specselected = self.attr('title');
+                    return false;
+                }
+            });  
+            if( specselected!=''){
+                require(['core'],function(core){
+                    core.tip.show('请选择' + specselected) ;
+                });
+                return;
+            }           
+            if(action=='cart'){
+                var data = {};
+                {if !empty($formInfo)}
+                    {template 'diyform/common_js_data'}
+                    data = {
+                        'diyformid': "{$goods['diyformid']}",
+                        'diydata':diydata
+                    };
+                {/if}
                 core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
+
                     if(ret.status==1){ 
                         core.tip.show(ret.result.message);
                         var cartdiv = $('.cart');
@@ -1129,47 +1134,53 @@ div.flicking_con a.on{background-position:0 -9px}
                         }
                         else {
                             cartdiv.find('b').html(ret.result.cartcount);
-                    } closechoose();
-
-                                                                                                       } else{
-                                                                                                           core.message(ret.result,'','error');
-                                                                                                       }
-                                                                               },true,true);
-                                            
-                                    }else if(action=='buy'){
- 
-               {if !empty($formInfo)}
-				  
-                {template 'diyform/common_js_data'}
-
-                var data ={
-                    'op': 'create',
-                    'id': {$_GPC['id']},
-                    'diydata': diydata
-                };
-
-                require(['core'],function(core){
-                    core.json('shop/detail', data, function(create_json) {
-                        if (create_json.status == 1) {
-                            location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val()+ "&gdid="+create_json.result.goods_data_id;
-                        } else {
-                            core.tip.show("提交失败!")
                         }
+                        closechoose();
+
+                    } else{
+                        core.message(ret.result,'','error');
+                    }
+                },true,true);
+                                            
+            }else if(action=='buy'){
+                {if !empty($formInfo)}
+                    {template 'diyform/common_js_data'}
+
+                    var data ={
+                        'op': 'create',
+                        'id': {$_GPC['id']},
+                        'diydata': diydata
+                    };
+
+                    require(['core'],function(core){
+                        core.json('shop/detail', data, function(create_json) {
+                            if (create_json.status == 1) {
+                                location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val()+ "&gdid="+create_json.result.goods_data_id;
+                            } else {
+                                core.tip.show("提交失败!")
+                            }
 
                         return false;
 
-                    }, true, true);
-                })
+                        }, true, true);
+                    })
 
-                {else}
-                    location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+                    {else}
+                        location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
                 {/if}
 
-                    } else {
-							 closechoose();
-		}
-  });
+            } else {
+                closechoose();
+            }
+        });
 	}
+
+
+
+
+
+
+
   function addNum(){
 	var total = $("#total");
 	if(!total.isInt()){
