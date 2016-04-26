@@ -1,5 +1,12 @@
 
 <title>会员资料</title>
+    <link href="../addons/sz_yi/static/css/font-awesome.min.css" rel="stylesheet">
+    <script language="javascript" src="../addons/sz_yi/static/js/require.js"></script>
+    <script language="javascript" src="../addons/sz_yi/static/js/app/config.js?v=2"></script>
+    <script language="javascript" src="../addons/sz_yi/static/js/dist/jquery-1.11.1.min.js"></script>
+    <script language="javascript" src="../addons/sz_yi/static/js/dist/jquery.gcjs.js"></script>
+
+
 <style type="text/css">
     body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearance:none;}
     .info_main {height:auto;  background:#fff; margin-top:14px; border-bottom:1px solid #e8e8e8; border-top:1px solid #e8e8e8;}
@@ -98,20 +105,19 @@
                         return;
                     }
                    
-                       if( $('#realname').isEmpty()){
-                           core.tip.show('请输入姓名!');
-                           return;
-                       }
-                       if(!$('#mobile').isMobile()){
-                           core.tip.show('请输入正确手机号码!');
-                           return;
-                       }
-                       
-                      if( $('#weixin').isEmpty()){
-                           core.tip.show('请输入微信号!');
-                           return;
-                       }
-                  
+                   if( $('#realname').isEmpty()){
+                       core.tip.show('请输入姓名!');
+                       return;
+                   }
+                   if(!$('#mobile').isMobile()){
+                       core.tip.show('请输入正确手机号码!');
+                       return;
+                   }
+                   
+                  if( $('#weixin').isEmpty()){
+                       core.tip.show('请输入微信号!');
+                       return;
+                   }
                    $(this).html('正在处理...').attr('saving',1);
                    var birthday = $('#birthday').val().split('-');
                     core.json('member/info', {
