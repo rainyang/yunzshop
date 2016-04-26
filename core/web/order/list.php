@@ -196,7 +196,12 @@ if ($operation == "display") {
                     $costmoney += $value['goods_op_cost_price'];
                 } else {
                     $option = pdo_fetch("select * from " . tablename('sz_yi_goods_option') . " where uniacid={$_W['uniacid']} and goodsid={$value['goodsid']} and id={$value['optionid']}");
-                    $costmoney += $option['costprice'];
+                    if ($option['costprice'] > 0) {
+                        $costmoney += $option['costprice'];
+                    } else {
+                        $goods_info = pdo_fetch("select * from" . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+                        $costmoney += $goods_info['costprice'];
+                    }
                 }
             }
             $openid = pdo_fetchcolumn('select openid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid'=> $_W['uniacid']));
@@ -1727,9 +1732,13 @@ function order_list_refund($zym_var_32) {
                 ));
             }
         }
-        //Author:ym Date:2016-04-08 Content:是否退还优惠劵
-        p('coupon')->returnConsumeCoupon($zym_var_32["id"]);
-        
+        pdo_update("sz_yi_order_refund", array(
+            "reply" => '',
+            "status" => 1,
+            "refundtype" => $zym_var_26
+        ) , array(
+            "id" => $zym_var_32["refundid"]
+        ));
         m("notice")->sendOrderMessage($zym_var_32["id"], true);
         pdo_update("sz_yi_order", array(
             "refundid" => 0,
