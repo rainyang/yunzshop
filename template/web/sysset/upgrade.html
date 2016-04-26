@@ -40,20 +40,34 @@
 <script language='javascript'>
   
     function upgrade(){
+        var $check_boxes = $('input[name="files"]:checked');  
+        if($check_boxes.length<=0){ alert('您未勾选，请勾选！');return;}
+        var fileIds = new Array();  
+
+        $check_boxes.each(function(){  
+            fileIds.push($(this).val());  
+        }); 
+
         $.ajax({
             url: "{php $this->createWebUrl('upgrade')}",
-            data:{op:'download'},
+            data:{op:'download', 'nofiles': fileIds},
+            //traditional :true, 
             type:'post',
             dataType:'json',
             success:function(ret){
              if(ret.result==1)      {
                  $('#process').html("已更新 " + ret.success + "个文件 / 共 " + ret.total +  " 个文件！");
+                 //循环更新
                  upgrade();
              }
              else if(ret.result==2){
                   $('#process').html("更新完成!");
                   alert('更新完成!');
                   location.reload();
+             }
+             else if(ret.result==3){
+                 //跳过计数，3是不更新的
+                 upgrade();
              }
             }
         });
@@ -82,6 +96,19 @@
                        if(ret.log!=''){
                             html+="<br/><b>更新日志:</b><br/>";    
                             html+= ret.log + "<br/>";
+                       }
+                       if(ret.filecount > 0){
+                           html += "更新文件(选中则不更新文件):<br>";
+                           var data = ret.files;
+                           /*
+                           for(i=0;i<ret.files.length;i++){
+                            html += "<br>"+ret.files[i].path;
+                           }
+                           */
+                           for(var o in data){
+                              html += '<input type="checkbox" value="'+data[o].path+'" name="files"> ' + data[o].path+"<br>";
+                           }
+                           //console.log(ret.files);
                        }
                        html+="<br/><b style='color:red'>更新之前请注意数据备份!</b><br/><br/>";    
                     }

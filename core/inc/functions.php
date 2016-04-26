@@ -80,13 +80,15 @@ function m($name = '')
 }
 function isEnablePlugin($name){
     $plugins = m("cache")->getArray("plugins", "global");
-    foreach($plugins as $p){
-        if($p['identity'] == $name){
-            if($p['status']){
-                return true;
-            }
-            else{
-                return false;
+    if($plugins){
+        foreach($plugins as $p){
+            if($p['identity'] == $name){
+                if($p['status']){
+                    return true;
+                }
+                else{
+                    return false;
+                }
             }
         }
     }
