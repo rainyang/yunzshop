@@ -186,6 +186,7 @@ li {
     padding-bottom: 30px; */
 	height:108px;
     box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    margin-bottom: 20px;
 	/*background : url(../images/chunjie.png);*/
 }
 /* .head_logo_nav { position:relative} */
@@ -1312,7 +1313,7 @@ li {
  * 2014-09-05
  */
 /*cover-page-index-slide css*/
-.cover-page-index-slide {position: relative;}
+.cover-page-index-slide {position: relative;margin-top: -20px;}
 .cover-page-index-slide .border {
     position: relative;
     overflow: hidden;
