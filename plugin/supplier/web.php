@@ -66,8 +66,4 @@ class SupplierWeb extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__);
     }
-    public function supplier_list()
-    {
-        $this->_exec_plugin(__FUNCTION__);
-    }
 }

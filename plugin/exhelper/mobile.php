@@ -1,5 +1,4 @@
 <?php
-/*QQ:261753427*/
 if (!defined("IN_IA")) {
     print("Access Denied");
 }

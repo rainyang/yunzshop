@@ -35,3 +35,4 @@ foreach ($sets as $set) {
 		}
 	}
 }
+echo "ok...";
