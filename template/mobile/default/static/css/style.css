@@ -1,4 +1,4 @@
-body { font-family: 宋体,Tahoma; -webkit-tap-highlight-color: transparent;width:100%;height:100%;-webkit-tap-highlight-color:transparent; -webkit-appearance: none;
+body { font-family: 宋体,Tahoma; -webkit-tap-highlight-color: transparent;width:100%;-webkit-tap-highlight-color:transparent; -webkit-appearance: none;
 margin: 0 auto !important;}
 html{ width:100%;height:100%;}
 ul { margin:0;padding:0; list-style: none}
@@ -272,8 +272,5 @@ footer#footer-nav .menu-list:after {
 /*个人中心左侧导航样式*/
 .leftlistnav{width: 230px;height: auto;background-color: #192229;float: left;}
 .rightlist{ width: 960px;float: right;background: #fff;padding: 0}
-.order_main .info1 {
 
-    display: inline-block;
-}
 

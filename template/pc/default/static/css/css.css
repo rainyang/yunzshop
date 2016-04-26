@@ -1998,8 +1998,14 @@ cursor: pointer;
 .ddzj p{ float:right;line-height:50px;padding-right:20px;}
 .btn-ddzj{background: #FF4D13;color: #FFFFFF;width: 150px;text-align: center;height: 52px;line-height: 52px;font-size: 24px;border-radius: 5px;}
 .btn-ddzj:hover{background: #EB4109;}
-
-
+/**/
+.good_info2{background: #fff}
+.good_img{    height: 500px !important;
+    width: 500px !important;
+    float: left;}
+.good_info1{width: 700px !important;
+    float: left;
+    height: 500px !important;}
 
 
 
