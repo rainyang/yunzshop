@@ -97,7 +97,7 @@ if (isset($imgs[1])) {
     }
     $goods['content'] = $html;
 }
-if ($_W['isajax'] || $tmplateType == 'pc') {
+if ($_W['isajax']) {
     if (empty($goods)) {
         show_json(0);
     }
@@ -314,9 +314,9 @@ if ($_W['isajax'] || $tmplateType == 'pc') {
         'btntext2' => trim($goods['detail_btntext2']),
         'btnurl2' => !empty($goods['detail_btnurl2']) ? $goods['detail_btnurl2'] : $shop['url']
     );
-    if($tmplateType == 'mobile'){
+
         show_json(1, $ret);
-    }
+
 }
 $_W['shopshare'] = array(
     'title' => !empty($goods['share_title']) ? $goods['share_title'] : $goods['title'],
