@@ -1,8 +1,6 @@
-<<<<<<< HEAD
-﻿<!-- 头部调用 -->
-=======
+
 ﻿<!-- header -->
->>>>>>> 2fa0a1ee00992b2182ba46e3aa6409ca3964a994
+
 {template 'common/header'}
 
 <title>{$set['name']}</title>
@@ -353,7 +351,6 @@
 		</ul>
 	</div>
 </div>
-<<<<<<< HEAD
 
 <!-- <div class="church fl wfs mt50">
 	<dl class="reputation fl">
@@ -438,85 +435,10 @@
  -->
 
 
-<!-- foot -->
 
-<script src="http://www.ecmoban.com/content/themes/ecmoban2014/js/zzsc.js"></script>
-<script src="http://www.ecmoban.com/content/themes/ecmoban2014/js/posfixed.js"></script>
-<script>
-//放大镜效果
-$(".j-details-mid-item").jqueryzoom({
-    xzoom:440,
-    yzoom:440,
-    offset:10,
-    position:"right",
-    preload:1,
-    lens:1
-});
-$(".j-canvas-container li").bind("click",function(){
-    var data = '';
-    data = $(this).find("img").attr("data");
-    if(data){
-        var reg = /mp4/;
-        if(reg.test(data)){
-            $(".j-details-mid-item").html('<div style="width: 400px;height: 400px;overflow:hidden;"><iframe src="http://player.ecmoban.com/player.php/gid//v.swf?width=400&height=400" scrolling="no" allowfullscreen="" frameborder="0" height="400" width="400"></iframe></div>');
-        }else{
-            $(".j-details-mid-item").html('<embed type="application/x-shockwave-flash" class="edui-faked-video" pluginspage="http://www.macromedia.com/go/getflashplayer" src="'+data+'" width="400" height="400" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true">');
-        }
-
-        return ;
-    }
-    $(".j-details-mid-item").html('<img src="" jqimg="" alt="">');
-    var src=$(this).find("img").attr("src");
-
-    $(".j-details-mid-item img").eq(0).attr({
-        src:src.replace("\/n5\/","\/n1\/"),
-        jqimg:src.replace("\/n5\/","\/n0\/")
-    });
-});
-  
-    //导航那个悬浮
-    /* $(".j-nav").posfixed({
-        distance:0,
-        pos:"top",
-        type:"while",
-        hide:false
-    }); */
-//     alert(11);
-    //搜索框下拉框效果
-    $("input[name='keywords']").click(function(){
-    var search_val = $("#keyword").val();
-    if(Utils.trim(search_val) !='')
-      $(".j-search-history").hide();
-    else
-          $(".j-search-history").show();
-    });
-    $("form[name='searchForm']").mouseleave(function(){
-        $(".j-search-history").hide();
-    })
-    function clear_search()
-    {
-        $.post('search.php?act=clear', '', clear_searchhtml, 'JSON');
-    }
-    function clear_searchhtml(){
-        $('.history-items').html('');
-    }
-    
-   
-</script>
-<div style="display:none;">
-<script type="text/javascript">
-  var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
-  document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F8513c8e18c0a7dc33633b4e6b1880ecb' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-=======
 
 <!-- 删除原模板口碑堂~~~至~~~~在线客服  后续想添加可到模板取值-->
->>>>>>> 2fa0a1ee00992b2182ba46e3aa6409ca3964a994
+
 
 
 <!-- 删除原JS -->
@@ -575,10 +497,7 @@ $(".j-canvas-container li").bind("click",function(){
         }
         run();
     </script>
-<<<<<<< HEAD
-<!-- 头部调用 -->
-{template 'common/footer'}
-=======
+
 <!-- foot -->
 {template 'common/bottom'}
->>>>>>> 2fa0a1ee00992b2182ba46e3aa6409ca3964a994
+
