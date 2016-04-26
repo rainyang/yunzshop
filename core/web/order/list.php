@@ -1727,13 +1727,9 @@ function order_list_refund($zym_var_32) {
                 ));
             }
         }
-        pdo_update("sz_yi_order_refund", array(
-            "reply" => '',
-            "status" => 1,
-            "refundtype" => $zym_var_26
-        ) , array(
-            "id" => $zym_var_32["refundid"]
-        ));
+        //Author:ym Date:2016-04-08 Content:是否退还优惠劵
+        p('coupon')->returnConsumeCoupon($zym_var_32["id"]);
+        
         m("notice")->sendOrderMessage($zym_var_32["id"], true);
         pdo_update("sz_yi_order", array(
             "refundid" => 0,
