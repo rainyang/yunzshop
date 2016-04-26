@@ -182,6 +182,38 @@ div.addinfo{height:18px;}
  
  </script>
 <script id='tpl_goods_list' type='text/html'>
+
+<div style="float:right; width:30%" id='tpl_category_list'>
+
+<div class="category">
+        <div class="title category_item" data-name='全部商品'><i class="fa fa-list-ul"></i> 全部分类<i class="fa fa-angle-left close" style="font-size:26px; float:right; line-height:44px; margin-right:20px;"></i></div>
+        <div class="all">
+        <p class='category_item' data-isnew='1' data-name='新上宝贝'><i class="fa fa-cart-plus"></i> 新上宝贝</p>
+        <p class='category_item' data-isrecommand='1'  data-name='推荐宝贝'><i class="fa fa-heart"></i> 推荐宝贝</p>
+        <p class='category_item' data-ishot='1'  data-name='热销宝贝'><i class="fa fa-fire"></i> 热销宝贝</p>
+        <p class='category_item' data-istime='1'  data-name='限时秒杀'><i class="fa fa-clock-o"></i> 限时秒杀</p>
+        <p class='category_item' data-isdiscount='1'  data-name='促销宝贝'><i class="fa fa-thumbs-up"></i> 促销宝贝</p>
+        <%each category as parent%>
+    <a href="{php echo $this->createMobileUrl('shop/list')}&pcate=<%parent.id%>">
+         <p class='category_item' style=" color:#ffff00;"><i class="fa fa-angle-double-right"></i> <%parent.name%></p>
+     </a>
+         <%each parent.children as child%>
+<a href="{php echo $this->createMobileUrl('shop/list')}&pcate=<%parent.id%>&ccate=<%child.id%>">
+              <p class='child category_item' style=" color:#fff;"><i class="fa fa-angle-right"></i> <%child.name%></p>
+        </a>
+              {if intval($set['catlevel'])==3}
+               <%each child.children as third%>
+                   <p class='third category_item' data-tcate='<%third.id%>' data-name='<%third.name%>'><i class="fa fa-angle-right"></i> <%third.name%></p>
+               <%/each%>
+               {/if}
+         <%/each%>
+         <%/each%>
+        </div>
+    </div>
+
+</div>
+
+<div style="float:right; width:70%">
   <form action="" method="get" id="goodsform">
     <input type="hidden" name="i" value="{$_W['uniacid']}">
     <input type="hidden" name="c" value="{$_GPC['c']}">
@@ -217,6 +249,7 @@ div.addinfo{height:18px;}
     {/loop}
 
     {$pager}
+  </div>
 </script>
 <script id='tpl_category_list' type='text/html'>
      <div class="category">

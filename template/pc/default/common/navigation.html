@@ -137,9 +137,16 @@
     <a href="#">店铺公告</a>
     <!-- <a href="{php echo $this->createMobileUrl('shop/notice')}">店铺公告</a> -->
 </li>
-<li>
-    <a href="{php echo $this->createMobileUrl('plugin/commission',array('method' => 'register'))}">成为分销商</a>
-</li>
+
+
+{if $this->footer['commission']}
+    <li {if $footer_current=='commission'}class='active'{/if}>
+        <a href="{php echo $this->footer['commission']['url']}">
+            <span>{php echo $this->footer['commission']['text']}</span>
+        </a>
+    </li>
+{/if} 
+
 <li>
     <a href="{php echo $this->createMobileUrl('member')}">会员中心</a>
 </li>

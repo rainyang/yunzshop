@@ -230,15 +230,61 @@ div.flicking_con a.on{background-position:0 -9px}
         <%else%>
         <div class="info2"><%if goods.issendfree==1%><span class='label label-free' >包邮</span><%/if%>&nbsp;<%goods.title%></div>
         <%/if%>
-        <div class="price">￥<d id='marketprice'>
+
+            <div class="price">￥<d id='marketprice'>
                 <%if goods.minprice !=goods.maxprice%>
                 <%goods.minprice%> - <%goods.maxprice%>
                 <%else%>
                 <%goods.marketprice%>
                 <%/if%>
             </d>&nbsp;<span id='productpricecontainer'><%if goods.productprice>0%>市场价￥<%/if%><span id='productprice'><%if goods.productprice>0%><%goods.productprice%><%/if%></span></span>
-			 
+             
             <span style='float:right'><d id="stockcontainer">库存:<d id="stock"><%goods.total%></d></d> 销量:<%goods.sales%><%goods.unit%></d></span>
+        </div>
+        <div class="price">
+
+            <div class="right">
+                <div class="option">请选择规格</div>
+            </div>
+            <div class="close" onClick="closechoose()"><i class="fa fa-remove-o"></i></div>
+
+            <div class="other">
+
+
+                <%each specs as spec%>
+                    <input type='hidden' name="optionid[]" class='optionid optionid_<%spec.id%>' value="" title="<%spec.title%>">
+                    <div class="spec"><%spec.title%></div>
+                    <div class="spec_items options_<%spec.id%>"  title="<%spec.title%>">
+                    <%each spec.items as o%>
+                        <div class="option option_<%spec.id%>" specid='<%spec.id%>' oid="<%o.id%>" sel='false' title='<%o.title%>' thumb='<%o.thumb%>'><%o.title%></div>
+                    <%/each%>
+            </div>
+            <%/each%>
+
+            <!--<span>diyform</span>-->
+
+
+            {if !empty($formInfo)}
+            <div id="diyform_container" >
+            {template 'diyform/formcss'}
+            <style type='text/css'>
+            .diyform_main { float:left;}
+            </style>
+            {template 'diyform/formfields'}
+            </div>
+            {/if}
+
+            <div class='number'>
+            <div class='label'>购买数量</div>
+            <div class='num'>
+            <button id='btn_minus' onclick='reduceNum()'><i class='fa fa-minus'></i></button>
+            <input type='text' id='total' value='1' />
+            <button id='btn_plus' onclick='addNum()'><i class='fa fa-plus'></i></button>
+            </div>
+            </div>
+            </div>
+            <div class="close" onClick="closechoose()"><i class="fa fa-times-circle-o"></i></div>
+            <div class="sub " onClick="choose2()">确认</div>
         </div>
        
        <%if saleset && saleset.enoughfree=='1' %>
