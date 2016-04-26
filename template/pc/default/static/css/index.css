@@ -220,7 +220,7 @@ li {
     float: left;
     width: 320px;
     height: 48px;
-	margin-top:34px;
+	margin-top:14px;
    /* margin-left: 235px;
     *margin-left: 120px;*/
 }
@@ -580,12 +580,13 @@ li {
 	margin-top: 16px;
 }
 .nav_head {
-	width: 620px;
+	width: 600px;
 	height: 108px;
 	line-height: 108px;
     z-index: 1000;
 	overflow: hidden;
 	padding-left: 17px;
+    margin-top: -20px !important;
 }
 
 .nav_head li {
@@ -1259,6 +1260,7 @@ li {
     color: #3A3A3A;
     text-align: center;
     background-color: #E1E1E1;
+        margin-top: 20px;
 }
 .cover-page-foot .subnav,
 .cover-page-foot .copyright{
@@ -4361,7 +4363,6 @@ font-size: 14px;
 min-width: 16px;
 text-align: center;
 }
-<<<<<<< HEAD
 /*付款成功*/
 .msop {
     position: relative;
@@ -4440,6 +4441,8 @@ text-align: center;
 .flk-01 a:link, .flk-01 a:visited, .ftx-01, a.flk-01:link, a.flk-01:visited {
     color: #E4393C;
 }
+#confirm_container{width: 1200px;
+    margin: 0 auto;}
 
 
 
@@ -4454,6 +4457,5 @@ text-align: center;
 
 
 
-=======
 .iphone .icon,.android .icon,.ipad .icon{display: inline-block;}
->>>>>>> eddca40626559abff0fb0c5e3ec905a8ea11fa7f
+

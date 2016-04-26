@@ -100,7 +100,7 @@ footer#footer-nav {
 
     
 .good_choose_layer {height: 100%; width: 100%; background: rgba(0,0,0,0.6); position: fixed; top: 0px; left: 0px; z-index: 9;display:none }
-.good_choose {height:auto; width:100%; background:#fff; position:fixed; bottom:0px; left:0px; z-index:10;display:none}
+.good_choose {height:auto; width:100%; background:#fff;  bottom:0px; left:0px; z-index:10;display:none}
 .good_choose .info {padding-left:10px;position:relative;  height:90px; width:100%; top:-15px;  }
 .good_choose .info .left { width:80px;height:80px;  background:#fff;border-radius: 5px;}
 .good_choose .info .left img { width:80px;height:80px; padding:1px;border:1px solid #ddd; border-radius: 5px;}
@@ -108,15 +108,25 @@ footer#footer-nav {
 .good_choose .info .right .price {color:#ff4a4e; font-size:14px; line-height:20px; ;height:20px;overflow:hidden}
 .good_choose .info .right .stock {color:#999;font-size:12px; line-height:20px; ;height:20px; }
 .good_choose .info .right .option {color:#999;font-size:12px; line-height:20px; ;height:20px;overflow: hidden; }
-.good_choose .other { position:relative; height:auto;margin-bottom:50px;padding-left:10px;width:99%;overflow-y:scroll; overflow-x:hidden; margin-top:-15px;  font-size:14px; color:#999;}
+.good_choose .other { position:relative; height:auto;margin-bottom:50px;padding-left:10px;width:99%;margin-top:-15px;  font-size:14px; color:#999;}
 .good_choose .other .spec { width:100%;padding:10px 0 5px 0;float:left}
 .good_choose .other .spec_items {width:100%;padding:5px 0 5px 0;height:auto;border-bottom:1px solid #e4e4e4;float:left}
 .good_choose .other .option { float:left; padding:5px; background:#fff; border:1px solid #e4e4e4; border-radius:3px; margin-right:5px;margin-bottom:5px; font-size:14px; color:#999;}
 .good_choose .other .on {background:#ff6801; border:1px solid #ff6801; color:#fff}
-.good_choose .other .number { float:left; width:100%;padding-top:10px;height:36px}
-.good_choose .other .number .label { float:left;width:100px;padding-top:5px;}
+.good_choose .other .number { float:left; width:100%;padding-top:10px;/*height:36px*/}
+.good_choose .other .number .label {    float: left;
+    width: 100px;
+    padding-top: 5px;
+    height: 40px;
+    color: #565656;
+    line-height: 40px;
+    padding: 0;
+    font-size: 14px;
+    font-weight: normal;
+    text-align: left;
+    padding-left: 10px;}
 .good_choose .other .number .num { border:1px solid #dedede;width:140px;height:34px;float:right;margin-right:10px;}
-.good_choose .other .number .num button { width:35px; height:34px; border:none; color:#333; float:left; background: #eee;-webkit-appearance: none;  }
+.good_choose .other .number .num button { width:35px; height:32px; border:none; color:#333; float:left; background: #eee;-webkit-appearance: none;  }
 .good_choose .other .number .num button#btn_plus { float:right;}
 .good_choose .other .number .num input { width:59px; border-left:1px solid #dedede; border-right:1px solid #dedede; text-align:center; border:none; height:28px;line-height:28px; float:left; -webkit-appearance: none;}
 .good_choose .sub {position:fixed; bottom:0px; height:44px; width:100%; background:#ff6801;  line-height:44px; text-align:center; font-size:18px; color:#fff; }
@@ -192,7 +202,7 @@ footer#footer-nav .menu-list:after {
 .page_topbar a.btn { position: absolute;right:10px;height:45px;line-height:45px;display:block;color:#999; font-size:24px; }
 
 
-.topbar {max-width: 720px;}
+
 .main .page {position: relative;}
 
 /*更改颜色*/
@@ -214,11 +224,11 @@ footer#footer-nav .menu-list:after {
 .order_main .title span,.order_list .right span{color: #ec0405 !important;}
 .good_bottom .cart,.good_bottom .like,.good_bottom .cs{
     height: 50px !important;
-    width: 15% !important;
+    width: 50px !important;
     box-sizing: border-box;
-    background-color: #333!important;
+  /*  background-color: #333!important;*/
     /*border:0 !important;*/
-        border-left: 1px #424242  solid;
+/*        border-left: 1px #424242  solid;*/
         border-right: 0 !important;
         border-top: 0 !important;
     color: #dadada !important

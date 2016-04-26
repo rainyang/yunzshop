@@ -1,8 +1,7 @@
-<!-- header -->
 {template 'common/header'}
 <title>{if empty($current_category)}全部商品{else}{$current_category['name']}{/if}</title>
 
-<!--navigation-->
+<!--导航调用-->
 {template 'common/navigation'}
 <style type="text/css">
 
@@ -13,7 +12,7 @@
     .main .category .title {height:44px; width:100%; background:rgba(0,0,0,0.2); line-height:44px; font-size:16px; color:#fff; text-align:center;}
     .main .category .all {height:auto; width:80%; padding:10px 10%; color:#fff;}
     .main .category .all p {height:auto; width:100%; font-size:16px; line-height:20px; padding:0px; margin:0px;}
-    .main .category .all p.category_item { padding-top:10px;}
+   .main .category .all p.category_item { padding-top:10px;}
     .main .category .all p.child {height:auto; width:100%; font-size:16px; line-height:20px;  padding-left:10px;padding-top:10px;}
     .main .category .all p.third {height:auto; width:100%; font-size:16px; line-height:20px;  padding-left:20px;padding-top:10px;}
     .main .category .all span {height:auto; width:95%; margin-left:5%; margin-bottom:10px; font-size:16px; line-height:20px; padding:0px;}
@@ -99,7 +98,7 @@ div.addinfo{height:18px;}
 </style>
 
  
-<div id='container' ></div>
+<div id='container'style="width:1200px;margin:10px auto 0;overflow: hidden;"></div>
 
 <script id='tpl_main' type='text/html'>
      <!--搜索-->
@@ -576,4 +575,5 @@ div.addinfo{height:18px;}
     });
 </script>
 {php $show_footer = true;}
-{template 'common/bottom'}
+{template 'common/footer'}
+
