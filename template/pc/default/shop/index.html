@@ -1,4 +1,4 @@
-﻿<!-- 头部调用 -->
+﻿<!-- header -->
 {template 'common/header'}
 
 <title>{$set['name']}</title>
@@ -10,7 +10,7 @@
         
 </script>
 
-<!--导航调用-->
+<!--navigation-->
 {template 'common/navigation'}
 
 <div class="cover-page-index-slide j-index-slide fl wfs">
@@ -55,22 +55,7 @@
 		{/if}
 	</ul>
 </div>
-<script src="http://www.ecmoban.com/content/themes/ecmoban2014/js/jquery.SuperSlide.js"></script>
-<script>
-            $(function(){
-                $(".j-index-slide").slide({
-                mainCell:"#slide .slide_ul",
-                effect:"leftLoop",
-                prevCell:".show_pre",
-                nextCell:".show_next",
-                titCell:"#tips li",
-                titOnClassName:"cur",
-                interTime:"5000",
-                autoPlay:true
-
-                });
-            });
-        </script>
+<!-- 删除原JS -->
 </div>
 
 <div class="cover-page-index fl wfs pt50 bcf2">
@@ -365,169 +350,10 @@
 	</div>
 </div>
 
-<!-- <div class="church fl wfs mt50">
-	<dl class="reputation fl">
-		<dt class="title"><span class="h3"><a class="title-a" href="#" target="_blank">口碑堂</a></span><i></i></dt>
-		<dd class="fl wfs">
-			<a class="template-community fl" target="_blank" href="#">电商资讯</a>
-			<p class="items fl">
-				<a class="fl wfs" target="_blank" href="#">百度口碑</a>
-				<a class="fl wfs" target="_blank" href="#">百度百科</a>
-				<a class="fl wfs" target="_blank" href="#">问卷调查</a>
-				<a class="fl wfs" target="_blank" href="#">我要提问</a>
-			</p>
-		</dd>
-	</dl>
-	<dl class="knowledge fl">
-		<dt class="title">
-			<span class="h3"><a class="title-a" target='_blank' href="#">知识堂</a></span><i></i>
-			<a class="more fr" target="_blank" href="#"><span>more</span></a>
-		</dt>
-		<dd class="fl wfs">
-			<b><a target="_blank" href="#" title="芸众商城">芸众商城合集版下 最新...</a></b>
-			<b><a target="_blank" href="#" title="【芸众商城】解决1.3版本首页轮播图下广告问题">【芸众商城】解决1.3版本首页轮播图下广告问题</a></b>
-			<b><a target="_blank" href="#" title="【芸众商城】广告位模型结构设置">【芸众商城】广告位模型结构设置</a></b>
-			<b><a target="_blank" href="#" title="【芸众商城】大商创1.3升级说明">【芸众商城】大商创1.3升级说明</a></b>
-			<b><a target="_blank" href="#" title="【芸众商城】大商创windows server 2008配置环境教程">【芸众商城】芸众商城windows server ...</a></b>
-		</dd>
-	</dl>
-	<dl class="letters fl">
-		<dt class="title">
-			<span class="h3"><a class="title-a" target='_blank' href="#">快报堂</a></span><i></i>
-			<a class="more fr" target="_blank" href="#"><span>more</span></a>
-		</dt>
-		<dd class="fl wfs">
-		<b><a target="_blank" href="#" title="芸众商城多用户商城系统版本升级 1.3版正式发布">芸众商城多用户商城系统版本升级 1.3版正式发布</a></b>
-		<b><a target="_blank" href="#" title="堂主的一封信：芸众商城被同行抄袭 证明我们已获得初步成功！">堂主的一封信：芸众商城被同行抄袭 证明我们已获得初步成功！</a></b>
-		</dd>
-	</dl>
-</div>
-<div class="demos fl wfs">
-	<dl class="fl" style="margin-left:-1px;">
-		<dt><a href='#' target="_blank" title="新手上路">新手上路</a></dt>
-		<dd>
-			<a href="#" target="_blank" title="测试后台">测试后台</a>
-			<a href="#" target="_blank" title="芸众程序下载">芸众程序下载</a>
-			<a href="#" target="_blank" title="芸众补丁下载">芸众补丁下载</a>
-		</dd>
-	</dl>
-	<dl class="fl">
-		<dt><a href='#' target="_blank" title="会员中心">会员中心</a></dt>
-		<dd>
-			<a href="#" target="_blank" title="在线充值">在线充值</a>
-			<a href="#" target="_blank" title="我的订单">我的订单</a>
-			<a href="#" target="_blank" title="我的关注">我的关注</a>
-			<a href="#" target="_blank" title="我的红包">我的红包</a>
-		</dd>
-	</dl>
-	<dl class="fl">
-		<dt><a href='#' target="_blank" title="帮助中心">帮助中心</a></dt>
-		<dd>
-			<a href="#" title="在线手册">在线手册</a>
-			<a href="#" target="_blank" title="安装使用">安装使用</a>
-			<a href="#" target="_blank" title="模板说明">模板说明</a>
-			<a href="#" target="_blank" title="视频教程">视频教程</a>
-		</dd>
-	</dl>
-	<dl class="fl">
-		<dt><a href='' title="客户端">客户端</a></dt>
-		<dd>
-			<a class="iphone" href="#" target="_blank" title="iPhone版"><img src="http://www.ecmoban.com/content/themes/ecmoban2014/images/icon_iphone.png" class="icon" />&nbsp;&nbsp;iPhone版</a>
-			<a class="android" href="#" target="_blank" title="Android版"><img src="http://www.ecmoban.com/content/themes/ecmoban2014/images/icon_android.png" class="icon" />&nbsp;&nbsp;Android版</a>
-			<a href="#" class="ipad" target="_blank" title="iPad版" style="cursor:pointer;"><img src="http://www.ecmoban.com/content/themes/ecmoban2014/images/icon_ipad.png" class="icon" />&nbsp;&nbsp;iPad版</a>
-		</dd>
-	</dl>
-	<div class="service fr">
-		<b>服务热线</b>
-		<strong>0451-86630395</strong>
-		<a class="service_kefu" href="tencent://message/?uin=1910622112&Site=sc.chinaz.com&Menu=yes" target="_blank">在线客服</a>
-	</div>
-</div>
-</div>
-</div>
- -->
+<!-- 删除原模板口碑堂~~~至~~~~在线客服  后续想添加可到模板取值-->
 
 
-<!-- foot -->
-
-<script src="http://www.ecmoban.com/content/themes/ecmoban2014/js/zzsc.js"></script>
-<script src="http://www.ecmoban.com/content/themes/ecmoban2014/js/posfixed.js"></script>
-<script>
-//放大镜效果
-$(".j-details-mid-item").jqueryzoom({
-    xzoom:440,
-    yzoom:440,
-    offset:10,
-    position:"right",
-    preload:1,
-    lens:1
-});
-$(".j-canvas-container li").bind("click",function(){
-    var data = '';
-    data = $(this).find("img").attr("data");
-    if(data){
-        var reg = /mp4/;
-        if(reg.test(data)){
-            $(".j-details-mid-item").html('<div style="width: 400px;height: 400px;overflow:hidden;"><iframe src="http://player.ecmoban.com/player.php/gid//v.swf?width=400&height=400" scrolling="no" allowfullscreen="" frameborder="0" height="400" width="400"></iframe></div>');
-        }else{
-            $(".j-details-mid-item").html('<embed type="application/x-shockwave-flash" class="edui-faked-video" pluginspage="http://www.macromedia.com/go/getflashplayer" src="'+data+'" width="400" height="400" wmode="transparent" play="true" loop="false" menu="false" allowscriptaccess="never" allowfullscreen="true">');
-        }
-
-        return ;
-    }
-    $(".j-details-mid-item").html('<img src="" jqimg="" alt="">');
-    var src=$(this).find("img").attr("src");
-
-    $(".j-details-mid-item img").eq(0).attr({
-        src:src.replace("\/n5\/","\/n1\/"),
-        jqimg:src.replace("\/n5\/","\/n0\/")
-    });
-});
-  
-    //导航那个悬浮
-    /* $(".j-nav").posfixed({
-        distance:0,
-        pos:"top",
-        type:"while",
-        hide:false
-    }); */
-//     alert(11);
-    //搜索框下拉框效果
-    $("input[name='keywords']").click(function(){
-    var search_val = $("#keyword").val();
-    if(Utils.trim(search_val) !='')
-      $(".j-search-history").hide();
-    else
-          $(".j-search-history").show();
-    });
-    $("form[name='searchForm']").mouseleave(function(){
-        $(".j-search-history").hide();
-    })
-    function clear_search()
-    {
-        $.post('search.php?act=clear', '', clear_searchhtml, 'JSON');
-    }
-    function clear_searchhtml(){
-        $('.history-items').html('');
-    }
-    
-   
-</script>
-<div style="display:none;">
-<script type="text/javascript">
-  var _bdhmProtocol = (("https:" == document.location.protocol) ? " https://" : " http://");
-  document.write(unescape("%3Cscript src='" + _bdhmProtocol + "hm.baidu.com/h.js%3F8513c8e18c0a7dc33633b4e6b1880ecb' type='text/javascript'%3E%3C/script%3E"));
-</script>
-<script>
-  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-  ga('create', 'UA-61683719-1', 'auto');
-  ga('send', 'pageview');
-
-</script>
+<!-- 删除原JS -->
 </div>
 <!-- <script src="http://www.ecmoban.com/content/themes/ecmoban2014/js/suspension.js"></script> -->
 <!--[if IE 6]> 
@@ -583,5 +409,5 @@ $(".j-canvas-container li").bind("click",function(){
         }
         run();
     </script>
-<!-- 头部调用 -->
-{template 'common/footer'}
+<!-- foot -->
+{template 'common/bottom'}
