@@ -185,6 +185,7 @@ li {
     /* padding-top: 30px;
     padding-bottom: 30px; */
 	height:108px;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
 	/*background : url(../images/chunjie.png);*/
 }
 /* .head_logo_nav { position:relative} */
