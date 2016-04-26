@@ -2000,12 +2000,12 @@ cursor: pointer;
 .btn-ddzj:hover{background: #EB4109;}
 /**/
 .good_info2{background: #fff}
-.good_img{    height: 500px !important;
-    width: 500px !important;
-    float: left;}
+.good_img{    height: 440px !important;
+    width: 440px !important;
+    float: left;margin: 30px}
 .good_info1{width: 700px !important;
     float: left;
-    height: 500px !important;}
+    height: 440px !important;}
 
 
 

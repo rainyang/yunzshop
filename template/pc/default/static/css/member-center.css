@@ -16,8 +16,10 @@ html, body, ul, li, ol, dl, dd, dt, p, h1, h2, h3, h4, h5, h6, form, fieldset, l
 }
 a:active,
 a:focus,
+a:hover,
 a {
     outline: none;
+    text-decoration: none
 }
 body {
     font-family: "Microsoft YaHei", "微软雅黑", "SimSun", "宋体";
@@ -2385,4 +2387,3 @@ a{cursor: pointer;}
     color: #FC8C8F;
     padding-right: 20px;
 }
-.order_main .info1 {display: inline-block;}
