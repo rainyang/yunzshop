@@ -114,7 +114,7 @@ a{cursor: pointer;}
 .head .nav a.index {
     background-position: 22px 0;
 }
-.head .nav a.order {
+.head .nav a.order1 {
     background-position: 22px -74px;
 }
 .head .nav a.member {
@@ -2385,3 +2385,4 @@ a{cursor: pointer;}
     color: #FC8C8F;
     padding-right: 20px;
 }
+.order_main .info1 {display: inline-block;}
