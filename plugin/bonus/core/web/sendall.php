@@ -16,8 +16,9 @@ if(empty($set['sendmonth'])){
     $endtime = mktime(0, 0, 0, date('m'), 1, date('Y')) - 1;
 }
 
-$sql = "select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and {$stattime} >= o.finishtime and o.finishtime < {$endtime}  ORDER BY o.finishtime DESC,o.status DESC";
+$sql = "select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}  ORDER BY o.finishtime DESC,o.status DESC";
 $ordermoney = pdo_fetchcolumn($sql);
+$ordermoney = floatval($ordermoney);
 $premierlevels = pdo_fetchall("select * from ".tablename('sz_yi_bonus_level')." where uniacid={$_W['uniacid']} and premier=1");
 $levelmoneys = array();
 $totalmoney = 0;
