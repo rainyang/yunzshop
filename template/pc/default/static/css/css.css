@@ -1909,8 +1909,8 @@ cursor: pointer;
 .fc-consignee-info{padding: 4px 0 }
 .fc-consignee-info span{ font-size: 12px;}
 
-.inner{ width:100%;margin-bottom:20px;overflow:hidden;padding-right: 60px;}
-.inner a{float:right;width:136px;height:36px;background:#e4393c;color:#fff;text-align:center;line-height:36px}
+.inner{ width:100%;margin-bottom:20px;overflow:hidden;/*padding-right: 60px;*/}
+.inner a{/*float:right;*/width:136px;height:36px;background:#e4393c;color:#fff;text-align:center;line-height:36px}
 .inner a:hover{ background:#C51E21}
 /*付款方式*/
 .buy1 {
