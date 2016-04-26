@@ -1,5 +1,6 @@
-{template 'common/header_old'}
+{template 'common/header'}
 <title>{php echo $this->set['texts']['center']}</title>
+{template 'common/navigation'}
 <style type="text/css">
     body {margin:0px; background:#eee; font-family:'微软雅黑'; }
     a {text-decoration:none;}
@@ -116,4 +117,4 @@
     })
 </script>
 {php $show_footer=true;$footer_current ='commission'}
-{template 'common/footer'}
+{template 'common/bottom'}
