@@ -104,11 +104,11 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
    .diyform_info1 .dline .dinner { font-size:13px;}
    .diyform_info .btn { text-decoration: none;  display: block; background:#f0f0f0; width:100%; text-align: center; color: #999;padding:3px; border-radius:1px; line-height:25px;  }
 </style>
-<div id='container'></div>
+<div id="container" class="rightlist"></div></div>
 
 <script id='tpl_detail' type='text/html'>
 <div class="page_topbar">
-    <a href="{php echo $this->createMobileUrl('order')}" class="back"><i class="fa fa-angle-left"></i></a>
+    <!-- <a href="{php echo $this->createMobileUrl('order')}" class="back"><i class="fa fa-angle-left"></i></a> -->
     <%if order.status==1 && order.isverify=='1' && order.verifyied!='1'%><a href="javascript:;" class="btn" onclick="VerifyHandler.verify('{$_GPC['id']}')"><i class="fa fa-qrcode"></i></a><%/if%>
     <div class="title">订单详情</div>
 </div>

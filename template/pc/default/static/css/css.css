@@ -39,7 +39,7 @@ a:hover,.w-input,textarea,.sig-button,.dev-table>ul>li>a {
 .blue{ color:#3366cc!important}
 .tal{ text-align:left}
 .tac{ text-align:center!important}
-img{ max-width: 100%; display: block;}
+img{ max-width: 100%;}
 button{	cursor: pointer; font-family: 微软雅黑, Microsoft Yahei;}
 textarea{ font-family: 微软雅黑, Microsoft Yahei;}
 input{	

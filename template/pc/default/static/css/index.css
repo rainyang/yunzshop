@@ -69,7 +69,7 @@ li {
     padding-top: 50px;
 }
 .bcf2 {
-    background-color: #E8E8E8;
+    background-color: #f2f2f2;
 }
 .bceb {
     background-color: #ebebf0;
@@ -142,12 +142,12 @@ li {
 	font-size:15px;
 	margin-right: 0.5em;
     margin-top: -0.1em;
+    background: url(../images/cart.jpg) 4px 15px no-repeat;
     /*width: 18px;
     height: 15px;
     margin-top: 13px;
     margin-right: 10px;
-    background-image: url(../images/cover-page-nav-cart.png);
-    background-repeat: no-repeat;*/
+    */
 }
 .head_top .cart span {
     float: left;
@@ -185,6 +185,7 @@ li {
     /* padding-top: 30px;
     padding-bottom: 30px; */
 	height:108px;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
 	/*background : url(../images/chunjie.png);*/
 }
 /* .head_logo_nav { position:relative} */
@@ -239,6 +240,7 @@ li {
     /*border: 1px solid #f00;*/
     border-left: none;
 	padding-right:-5px;
+    background: url(../images/search-h.jpg) no-repeat;
 	}
 .head .search-product .search-history {
     position: absolute;
@@ -968,11 +970,11 @@ li {
 .boutique .items-li .title {
     float:left;
     width: 100%;
-    padding-top: 10px;
-    padding-bottom: 5px;
     font-weight: normal;
     line-height: 22px;
     text-align: center;
+    margin: 0;
+    padding: 10px 10px 5px;
 }
 .boutique .items-li .title a {
     color: #333;
@@ -1318,12 +1320,12 @@ li {
 .cover-page-index-slide .center {
 	background : #f2f2f2;
     width: 1210px;
-    height: 425px;
+    height: 513px;
     margin: 0 auto;
 }
 .cover-page-index-slide .center .relative {
     position: relative;
-    height: 425px;
+    height: 513px;
 }
 .cover-page-index-slide .center .relative .location {
     position: absolute;
@@ -1332,7 +1334,7 @@ li {
 .cover-page-index-slide .center .relative .location .hidden-beyond {
     position: relative;
     width: 1920px;
-    height: 425px;
+    height: 513px;
     overflow: hidden;
 }
 .cover-page-index-slide .center .items {
@@ -1343,21 +1345,21 @@ li {
 .cover-page-index-slide .center .items li {
     float: left;
     width: 1920px;
-    height: 425px;
+    height: 513px;
 }
 .cover-page-index-slide .center .items li a {
     display: block;
     width: 1920px;
-    height: 425px;
+    height: 513px;
     background-repeat: no-repeat;
 }
 .cover-page-index-slide .center .items li a img {
     width: 1920px;
-    height: 425px;
+    height: 513px;
 }
 .cover-page-index-slide .icons {
     padding-top: 15px;
-    background-color: #F2F2F2;
+    background-color: #f2f2f2;
 }
 .cover-page-index-slide .icons .box {
     width: 570px;
@@ -4356,6 +4358,7 @@ font-size: 14px;
 min-width: 16px;
 text-align: center;
 }
+<<<<<<< HEAD
 /*付款成功*/
 .msop {
     position: relative;
@@ -4448,3 +4451,6 @@ text-align: center;
 
 
 
+=======
+.iphone .icon,.android .icon,.ipad .icon{display: inline-block;}
+>>>>>>> eddca40626559abff0fb0c5e3ec905a8ea11fa7f
