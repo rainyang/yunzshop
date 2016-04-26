@@ -268,5 +268,6 @@ if ($_W['isajax'] || $tmplateType == 'pc') {
         show_json(1);
     }
 }
+
 include $this->template('shop/cart');
 
