@@ -142,12 +142,12 @@ li {
 	font-size:15px;
 	margin-right: 0.5em;
     margin-top: -0.1em;
+    background: url(../images/cart.jpg) 4px 15px no-repeat;
     /*width: 18px;
     height: 15px;
     margin-top: 13px;
     margin-right: 10px;
-    background-image: url(../images/cover-page-nav-cart.png);
-    background-repeat: no-repeat;*/
+    */
 }
 .head_top .cart span {
     float: left;
@@ -240,6 +240,7 @@ li {
     /*border: 1px solid #f00;*/
     border-left: none;
 	padding-right:-5px;
+    background: url(../images/search-h.jpg) no-repeat;
 	}
 .head .search-product .search-history {
     position: absolute;
@@ -969,11 +970,11 @@ li {
 .boutique .items-li .title {
     float:left;
     width: 100%;
-    padding-top: 10px;
-    padding-bottom: 5px;
     font-weight: normal;
     line-height: 22px;
     text-align: center;
+    margin: 0;
+    padding: 10px 10px 5px;
 }
 .boutique .items-li .title a {
     color: #333;
