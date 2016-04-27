@@ -1696,15 +1696,24 @@ if (!class_exists('CommissionModel')) {
 					m('message')->sendCustomNotice($_var_20, $_var_156);
 				}
 			} else if ($_var_151 == TM_COMMISSION_BECOME && !empty($_var_152['commission_become']) && empty($_var_154['commission_become'])) {
+				/*m('member')->setCredit($_var_20, $credittype = 'credit1', $_var_0['own_integral'], $log = array());*/
 				$_var_155 = $_var_152['commission_become'];
 				$_var_155 = str_replace('[昵称]', $_var_150['nickname'], $_var_155);
 				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', $_var_150['agenttime']), $_var_155);
+				/*$_var_155 = str_replace('[积分]', $_var_0['own_integral'], $_var_155);*/
 				$_var_156 = array('keyword1' => array('value' => !empty($_var_152['commission_becometitle']) ? $_var_152['commission_becometitle'] : '成为分销商通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
 				if (!empty($_var_153)) {
 					m('message')->sendTplNotice($_var_20, $_var_153, $_var_156);
 				} else {
 					m('message')->sendCustomNotice($_var_20, $_var_156);
 				}
+				/*if (!empty($_var_22['agentid'])) {
+					$agent_info = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid={$_W['uniacid']} and id={$_var_22['agentid']}");
+					m('member')->setCredit($agent_info['openid'], $credittype = 'credit1', $_var_0['up_integral'], $log = array());
+					$_var_155 = "[" . $_var_22['realname'] . "]成为分销商，您获得推广奖励：" . $_var_0['up_integral'] . "积分";
+					$_var_156 = array('keyword1' => array('value' => '推广奖励通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
+					m('message')->sendCustomNotice($agent_info['openid'], $_var_156);
+				}*/
 			}
 		}
 
