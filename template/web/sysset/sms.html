@@ -94,13 +94,24 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">短信模板ID:</label>
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">注册短信模板ID:</label>
                         <div class="col-sm-9 col-xs-12">
                             {ifp 'sysset.save.sms'}
                             <input type="text" name="sms[templateCode]" class="form-control" value="{$set['sms']['templateCode']}"  placeholder="SMS_5057806" />
                             {else}
                             <input type="hidden" name="sms[templateCode]" value="{$set['sms']['templateCode']}"/>
                             <div class='form-control-static'>{$set['sms']['templateCode']}</div>
+                            {/if}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">找回密码短信模板ID:</label>
+                        <div class="col-sm-9 col-xs-12">
+                            {ifp 'sysset.save.sms'}
+                            <input type="text" name="sms[templateCodeForget]" class="form-control" value="{$set['sms']['templateCodeForget']}"  placeholder="SMS_5057806" />
+                            {else}
+                            <input type="hidden" name="sms[templateCodeForget]" value="{$set['sms']['templateCodeForget']}"/>
+                            <div class='form-control-static'>{$set['sms']['templateCodeForget']}</div>
                             {/if}
                         </div>
                     </div>

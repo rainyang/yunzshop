@@ -66,7 +66,7 @@ if($op == 'sendcode'){
     $_SESSION['code'] = $code;
     $_SESSION['code_mobile'] = $mobile;
     //$content = "您的安全码是：". $code ."。请不要把安全码泄露给其他人。如非本人操作，可不用理会！";
-    $issendsms = $this->sendSms($mobile, $code);
+    $issendsms = $this->sendSms($mobile, $code, 'forget');
     $set = m('common')->getSysset();
     //互亿无线
     if($set['sms']['type'] == 1){

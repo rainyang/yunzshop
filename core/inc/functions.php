@@ -43,11 +43,24 @@ function send_sms($account, $pwd, $mobile, $code)
    return xml_to_array($smsrs);
 }
 
-function send_sms_alidayu($mobile, $code){
+function send_sms_alidayu($mobile, $code, $templateType){
     $set = m('common')->getSysset();
     include IA_ROOT . "/addons/sz_yi/alifish/TopSdk.php";
     //$appkey = '23355246';
     //$secret = '0c34a4887d2f52a6365a266bb3b38d25';
+
+    switch ($templateType) {
+        case 'reg':
+            $templateCode = $set['sms']['templateCode'];
+            break;
+        case 'forget':
+            $templateCode = $set['sms']['templateCodeForget'];
+            break;
+        default:
+            $templateCode = $set['sms']['templateCode'];
+            break;
+    }
+
     $c = new TopClient;
     $c->appkey = $set['sms']['appkey'];
     $c->secretKey = $set['sms']['secret'];
@@ -57,7 +70,7 @@ function send_sms_alidayu($mobile, $code){
     $req->setSmsFreeSignName($set['sms']['signname']);
     $req->setSmsParam("{\"code\":\"{$code}\",\"product\":\"{$set['sms']['product']}\"}");
     $req->setRecNum($mobile);
-    $req->setSmsTemplateCode($set['sms']['templateCode']);
+    $req->setSmsTemplateCode($templateCode);
     $resp = $c->execute($req);
     return objectArray($resp);
 }

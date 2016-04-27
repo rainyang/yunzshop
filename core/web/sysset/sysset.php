@@ -94,6 +94,7 @@ if (checksubmit()) {
         $set['sms']['signname'] = $sms['signname'];
         $set['sms']['product']  = $sms['product'];
         $set['sms']['templateCode'] = $sms['templateCode'];
+        $set['sms']['templateCodeForget'] = $sms['templateCodeForget'];
         plog('sysset.save.sms', '修改系统设置-短信设置');
     } elseif ($op == 'follow') {
         $set['share']         = is_array($_GPC['share']) ? $_GPC['share'] : array();
