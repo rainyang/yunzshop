@@ -32,7 +32,7 @@
     .addorder_user .info .info1 .inner { margin-left:30px;margin-right:30px;overflow:hidden;}
     .addorder_user .info .info1 .inner .user {height:30px; width:100%; font-size:16px; color:#333; line-height:35px;overflow:hidden;}
     .addorder_user .info .info1 .inner .address {height:20px; width:100%; font-size:14px; color:#999; line-height:20px;overflow:hidden;}
-    .addorder_user .info .ico2 {height:50px;  width:30px; line-height:65px; float:right; font-size:16px; text-align:right; color:#999;}
+    .addorder_user .info .ico2 {height:50px;  width:30px; line-height:65px; float:right; font-size:16px; text-align:right; color:#999;cursor: pointer;}
     
     .addorder_exp {height:42px;  background:#fff; padding:5px; border-bottom:1px solid #eaeaea; line-height:42px; font-size:16px; color:#333;}
     .addorder_exp .t1 {height:42px; width:auto; float:left;padding-left:10px;}
@@ -67,24 +67,24 @@
     .addorder_pay {height:60px; width:100%; background:#fff; padding:0px 1%; margin-top:30px; border-top:1px solid #eaeaea;}
     .addorder_pay span {height:60px; width:auto; margin-right:16px; float:right; line-height:60px; color:#ff771b; font-size:16px;}
     .addorder_pay .paysub {height:40px; width:auto; background:#ff771b; padding:0px 10px; margin-top:10px; border-radius:5px; color:#fff; line-height:40px; float:right;}
-    .chooser {overflow: auto; width: 100%; background:#efefef; position: fixed; top: 0px; right: -100%; z-index: 1;}
-    .chooser .address {height:50px; background:#fff; padding:10px;; border-bottom:1px solid #eaeaea;}
+    .chooser {/*overflow: auto;*/ width: 100%; background:#efefef; /*position: fixed; top: 0px; right: -100%; */z-index: 1;}
+    .chooser .address {box-sizing: content-box;height:50px; background:#fff; padding:10px;; border-bottom:1px solid #eaeaea;}
     .chooser .address .ico {float:left; height:50px; width:30px; line-height:50px; float:left; font-size:20px; text-align:center; color:#999;}
     .chooser .address .info {height:50px; width:100%;float:left;margin-left:-30px;margin-right:-30px;}
     .chooser .address .info .inner { margin-left:35px;margin-right:30px;}
     .chooser .address .info .inner .name {height:28px; width:100%; font-size:16px; color:#666; line-height:28px;overflow:hidden;}
     .chooser .address .info .inner .addr {height:22px; width:100%; font-size:14px; color:#999; line-height:22px;overflow: hidden;}
-    .chooser .address .edit {height:50px; width:30px; float:right;margin-left:-30px;text-align:center;line-height:50px;color:#666;}
+    .chooser .address .edit {cursor: pointer;height:50px; width:30px; float:right;margin-left:-30px;text-align:center;line-height:50px;color:#666;}
 
-    .chooser .add_address {height:44px; padding:5px; background:#fff; border-bottom:1px solid #eaeaea; line-height:44px; font-size:16px; color:#666;}
+    .chooser .add_address {box-sizing: content-box;height:44px; padding:5px; background:#fff; border-bottom:1px solid #eaeaea; line-height:44px; font-size:16px; color:#666;cursor: pointer;}
 
    
 
-    .address_main {height:100%; width:100%; background:#fff;  position: fixed; top: 0px; right: -100%; z-index: 1;}
+    .address_main {width: 500px;min-height: 280px;left: 50%;top: 20%;margin-left: -250px;z-index: 999;background:#fff;  position: fixed;border-radius: 5px;    border: 4px solid rgba(0,0,0,.2);}
     .address_main .line {height:44px; margin: 0 5px; border-bottom:1px solid #f0f0f0; line-height:44px;}
 
     .address_main .line input {float:left; height:44px; width:100%; padding:0px; margin:0px; border:0px; outline:none; font-size:16px; color:#666;padding-left:5px;}
-    .address_main .line select  { border:none;height:25px;width:100%;color:#666;font-size:16px;}
+    .address_main .line select  { border:none;height:42px;width:100%;color:#666;font-size:16px;}
     .address_main .address_sub1 {height:44px; margin:14px 5px; background:#ff4f4f; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
     .address_main .address_sub2 {height:44px; margin:14px  5px; background:#ddd; border-radius:4px; text-align:center; font-size:18px; line-height:44px; color:#666; border:1px solid #d4d4d4;}
 .select { -webkit-appearance: none }
@@ -106,11 +106,17 @@
 .cnum .rightnav {height:20px; width:19px; float:right; border-left:1px solid #e2e2e2; background:#eee; color:#6b6b6b; text-align:center; line-height:20px; font-size:18px; font-weight:bold;}
 
 .couponcount {float:right; margin-top:8px;  margin-right: 5px; height:16px; width:16px; background:#f30; border-radius:8px; font-size:12px; color:#fff; line-height:16px; text-align: center;}
-
+.mark_layer{    height: 100%;
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 10;}
 </style>
 <div id='carrier_container'></div>
 <div id='dispatch_container'></div>
-<div id='address_container'></div>
+<!-- <div id='address_container'></div> -->
 <div id='confirm_container'></div>
 
 <script id='tpl_address_list' type='text/html'>
@@ -138,6 +144,7 @@
 
 <script id='tpl_address_new' type='text/html'>
     <input type='hidden' id='edit_addressid' value="<%address.id%>" />
+    <div class="mark_layer">
     <div class="address_main" >
         <div class="line"><input type="text" placeholder="收件人" id="realname" value="{if address.realname}<%address.realname%>{/if}" /></div>
         <div class="line"><input type="text" placeholder="联系电话"  id="mobile" value="{if address.mobile}<%address.mobile%>{/if}"/></div>
@@ -151,6 +158,7 @@
 
         <div class="address_sub1">确认</div>
         <div class="address_sub2">取消</div>
+    </div>
     </div>
 </script>
 
@@ -231,8 +239,9 @@
           </div>
           <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
         </div>
-
       </div>
+
+
       <%if carrier%>
       <div class="addorder_user addorder_user_1" style='display:none'>
         <input type='hidden' id='carrierindex' value='0' />
@@ -250,6 +259,7 @@
 
       </div>
       <%/if%>
+      <div id='address_container'></div>
       <div class="carrier_input_info" style='display:none' >
           <div class="row">
             <div class='title'>提货人姓名</div>
@@ -627,9 +637,38 @@ var fromcart = 0;
             })
         }
 
+        //地址编辑
+        $(document).on("click", '.address .edit', function() {
+            var addressid = $(this).parent().data('addressid');
+            core.json('shop/address', {op: 'get', id: addressid}, function(getaddress_json) {
+                var arrlist = $('#address_container').html();
+                $('#address_container').html(arrlist + tpl('tpl_address_new', getaddress_json.result));
+                //$(".chooser").height($(document.body).height());
+                //$(".address_main").animate({right: "0px"}, 200);
+                var address = getaddress_json.result.address;
+                cascdeInit(address.province, address.city, address.area);
+                $('.address_sub2').click(function() {
+                    //$(".address_main").animate({right: "-100%"}, 200);
+                    //$(".good_choose_layer").class("display", "");
+                    //$('.mark_layer').show();
+                    //$(".mark_layer").removeClass("hide").show();
+                    //$(".address_main").removeClass("hide").show();
+                    $(".mark_layer").hide();
+                    $(".address_main").hide();
+                });
+                $('.address_sub1').click(function() {
+                    saveAddress($(this));
+                });
+
+            }, true);
+        });
+        
+        $(document).on('click', '.add_address', function() {
+            addAddress($(this));
+        });
+
         //选择地址 
         $('#address_select').click(function() {
-
             core.json('shop/address', {}, function(addresslist_json) {
                 //默认地址
                 addresslist_json.result.selectedAdressID = $("#addressid").val();
@@ -641,33 +680,15 @@ var fromcart = 0;
                     $("#address_realname").html($this.data('realname'));
                     $("#address_mobile").html($this.data('mobile'));
                     $("#address_address").html($this.data('address'));
-                    $(".choose_address").animate({right: "-100%"}, 200);
+                    $(".choose_address").show();
+                    //$(".choose_address").animate({right: "-100%"}, 200);
                     //重新获取运费
                     getDispatchPrice();
                 });
-                //地址编辑
-                $('.address .edit').click(function() {
-                    var addressid = $(this).parent().data('addressid');
-                    core.json('shop/address', {op: 'get', id: addressid}, function(getaddress_json) {
-                        $('#address_container').html(tpl('tpl_address_new', getaddress_json.result));
-                        $(".chooser").height($(document.body).height());
-                        $(".address_main").animate({right: "0px"}, 200);
-                        var address = getaddress_json.result.address;
-                        cascdeInit(address.province, address.city, address.area);
-                        $('.address_sub2').click(function() {
-                            $(".address_main").animate({right: "-100%"}, 200);
-                        });
-                        $('.address_sub1').click(function() {
-                            saveAddress($(this));
-                        });
-
-                    }, true);
-                })
-        $(".chooser").height($(document.body).height());
-                $(".choose_address").animate({right: "0px"}, 200);
-                $('.add_address').click(function() {
-                    addAddress($(this));
-                })
+                
+                //$(".chooser").height($(document.body).height());
+                //$(".choose_address").animate({right: "0px"}, 200);
+                
             }, true);
 
         });
@@ -724,8 +745,9 @@ var fromcart = 0;
                     $("#address_mobile").html($('#mobile').val());
                     $("#address_address").html($('#address').val());
                     $("#address_select").show();
-                    $(".address_main").animate({right: "-100%"}, 200);
+                    $(".address_main").hide();
                     $('#address_new').hide();
+                    $('.mark_layer').hide();
                     getDispatchPrice();
                 }
                 else {
@@ -819,7 +841,8 @@ var fromcart = 0;
             core.json('shop/address', {'op': 'new'}, function(addaddress_json) {
 
                 var result = addaddress_json.result;
-                $('#address_container').html(tpl('tpl_address_new', result));
+                var arrlist = $('#address_container').html();
+                $('#address_container').html(arrlist + tpl('tpl_address_new', result));
                 cascdeInit(result.address.province,result.address.city);
                 {if $trade['shareaddress']=='1'}
                     var shareAddress = {php echo json_encode($shareAddress)};
@@ -832,10 +855,11 @@ var fromcart = 0;
                                     }
                     });
                 {/if}
-          $(".chooser").height($(document.body).height());
-                $(".address_main").animate({right: "0px"}, 200); 
+          //$(".chooser").height($(document.body).height());
+                //$(".address_main").animate({right: "0px"}, 200); 
                 $('.address_sub2').click(function() {
-                    $(".address_main").animate({right: "-100%"}, 200);
+                    $(".mark_layer").hide();
+                    $(".address_main").hide();
                 });
                 $('.address_sub1').click(function() {
                     saveAddress($(this));
