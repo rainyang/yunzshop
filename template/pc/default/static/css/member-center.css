@@ -92,7 +92,8 @@ a{cursor: pointer;}
     padding-top: 20px;
     padding-bottom: 10px;
     background-color: #fff;
-        margin-bottom: 10px;
+    margin-bottom: 10px;
+    box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
 }
 .head .logo {
     float: left;
