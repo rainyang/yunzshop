@@ -43,7 +43,7 @@
             <div class="left fl">尊敬的芸众商城用户，欢迎登陆管理中心！</div>
                 <div class="right fr" >
                     您的账号：{$member['nickname']}
-                    <a href="#">[修改密码]</a>
+                    <a href="{php echo $this->createMobileUrl('member/forget')}">[修改密码]</a>
                     <a href="{php echo $this->createMobileUrl('member/logout')}">[退出登录]</a>
                 </div>
         </div>
