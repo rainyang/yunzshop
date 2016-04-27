@@ -857,7 +857,7 @@ if ($_W['isajax']) {
             }
             if(p('supplier')){
                 $sql  = 'SELECT id as goodsid,supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
-			}else{
+            }else{
                 $sql  = 'SELECT id as goodsid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
             }
             $data = pdo_fetch($sql, array(
@@ -1336,8 +1336,8 @@ if ($_W['isajax']) {
                 $order_goods["diyformfields"] = $goods["diyformfields"];
             }
             if(p('supplier')){
-				$order_goods['supplier_uid'] = $goods['supplier_uid'];
-			}
+                $order_goods['supplier_uid'] = $goods['supplier_uid'];
+            }
             pdo_insert('sz_yi_order_goods', $order_goods);
         }
         if ($deductcredit > 0) {
