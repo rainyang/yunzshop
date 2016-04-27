@@ -34,11 +34,32 @@ function curl_download($url, $dir) {
     return $res;
 }
 
-function send_sms($account, $pwd, $mobile, $content) 
+function send_sms($account, $pwd, $mobile, $code) 
 {		
-   $smsrs = file_get_contents('http://115.29.33.155/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
+    $content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
+    //$smsrs = file_get_contents('http://115.29.33.155/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
+    $smsrs = file_get_contents('http://106.ihuyi.cn/webservice/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
   
    return xml_to_array($smsrs);
+}
+
+function send_sms_alidayu($mobile, $code){
+    $set = m('common')->getSysset();
+    include IA_ROOT . "/addons/sz_yi/alifish/TopSdk.php";
+    //$appkey = '23355246';
+    //$secret = '0c34a4887d2f52a6365a266bb3b38d25';
+    $c = new TopClient;
+    $c->appkey = $set['sms']['appkey'];
+    $c->secretKey = $set['sms']['secret'];
+    $req = new AlibabaAliqinFcSmsNumSendRequest;
+    $req->setExtend("123456");
+    $req->setSmsType("normal");
+    $req->setSmsFreeSignName($set['sms']['signname']);
+    $req->setSmsParam("{\"code\":\"{$code}\",\"product\":\"{$set['sms']['product']}\"}");
+    $req->setRecNum($mobile);
+    $req->setSmsTemplateCode($set['sms']['templateCode']);
+    $resp = $c->execute($req);
+    return objectArray($resp);
 }
 
 function xml_to_array($xml)
@@ -50,7 +71,7 @@ function xml_to_array($xml)
             $subxml= $matches[2][$i];
             $key = $matches[1][$i];
                     if(preg_match( $reg, $subxml )){
-                            $arr[$key] = $this->xml_to_array( $subxml );
+                            $arr[$key] = xml_to_array( $subxml );
                     }else{
                             $arr[$key] = $subxml;
                     }
@@ -392,6 +413,18 @@ function plog($type = '', $op = '')
     if ($perm) {
         $perm->log($type, $op);
     }
+}
+//stdClass Object 转 数组
+function objectArray($array){
+    if(is_object($array)){
+        $array = (array)$array;
+    }
+    if(is_array($array)){
+        foreach($array as $key=>$value){
+            $array[$key] = objectArray($value);
+        }
+    }
+    return $array;
 }
 function tpl_form_field_category_3level($name, $parents, $children, $parentid, $childid, $thirdid)
 {

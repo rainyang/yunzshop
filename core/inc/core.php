@@ -35,9 +35,14 @@ class Core extends WeModuleSite
             }
         }
     }
-    public function sendSms($mobile, $content){
+    public function sendSms($mobile, $code){
         $set = m('common')->getSysset();
-        send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $content);
+        if($set['sms']['type'] == 1){
+            return send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $code);
+        }
+        else{
+            return send_sms_alidayu($mobile, $code);
+        }
     }
     public function runTasks()
     {

@@ -25,9 +25,28 @@ if($op == 'sendcode'){
     $_SESSION['codetime'] = time();
     $_SESSION['code'] = $code;
     $_SESSION['code_mobile'] = $mobile;
-    $content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
-    $issendsms = $this->sendSms($mobile, $content);
-    show_json(1);
+    //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
+    $issendsms = $this->sendSms($mobile, $code);
+    //print_r($issendsms);
+
+    $set = m('common')->getSysset();
+    //互亿无线
+    if($set['sms']['type'] == 1){
+        if($issendsms['SubmitResult']['code'] == 2){
+            show_json(1);
+        }
+        else{
+            show_json(0, $issendsms['SubmitResult']['msg']);
+        }
+    }
+    else{
+        if(isset($issendsms['result']['success'])){
+            show_json(1);
+        }
+        else{
+            show_json(0, $issendsms['msg']);
+        }
+    }
 }else if ($op == 'forgetcode'){
     $mobile = $_GPC['mobile'];
     if(empty($mobile)){
@@ -46,9 +65,26 @@ if($op == 'sendcode'){
     $_SESSION['codetime'] = time();
     $_SESSION['code'] = $code;
     $_SESSION['code_mobile'] = $mobile;
-    $content = "您的安全码是：". $code ."。请不要把安全码泄露给其他人。如非本人操作，可不用理会！";
-    $issendsms = $this->sendSms($mobile, $content);
-    show_json(1);
+    //$content = "您的安全码是：". $code ."。请不要把安全码泄露给其他人。如非本人操作，可不用理会！";
+    $issendsms = $this->sendSms($mobile, $code);
+    $set = m('common')->getSysset();
+    //互亿无线
+    if($set['sms']['type'] == 1){
+        if($issendsms['SubmitResult']['code'] == 2){
+            show_json(1);
+        }
+        else{
+            show_json(0, $issendsms['SubmitResult']['msg']);
+        }
+    }
+    else{
+        if(isset($issendsms['result']['success'])){
+            show_json(1);
+        }
+        else{
+            show_json(0, $issendsms['msg']);
+        }
+    }
 }else if ($op == 'bindmobilecode'){
     $mobile = $_GPC['mobile'];
     if(empty($mobile)){
@@ -64,9 +100,26 @@ if($op == 'sendcode'){
     $_SESSION['codetime'] = time();
     $_SESSION['code'] = $code;
     $_SESSION['code_mobile'] = $mobile;
-    $content = "您的安全码是：". $code ."。请不要把安全码泄露给其他人。如非本人操作，可不用理会！";
-    $issendsms = $this->sendSms($mobile, $content);
-    show_json(1);
+    //$content = "您的安全码是：". $code ."。请不要把安全码泄露给其他人。如非本人操作，可不用理会！";
+    $issendsms = $this->sendSms($mobile, $code);
+    $set = m('common')->getSysset();
+    //互亿无线
+    if($set['sms']['type'] == 1){
+        if($issendsms['SubmitResult']['code'] == 2){
+            show_json(1);
+        }
+        else{
+            show_json(0, $issendsms['SubmitResult']['msg']);
+        }
+    }
+    else{
+        if(isset($issendsms['result']['success'])){
+            show_json(1);
+        }
+        else{
+            show_json(0, $issendsms['msg']);
+        }
+    }
 }else if ($op == 'checkcode'){
     $code = $_GPC['code']; 
 

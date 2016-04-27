@@ -41,7 +41,6 @@
   
     function upgrade(){
         var $check_boxes = $('input[name="files"]:checked');  
-        if($check_boxes.length<=0){ alert('您未勾选，请勾选！');return;}
         var fileIds = new Array();  
 
         $check_boxes.each(function(){  
