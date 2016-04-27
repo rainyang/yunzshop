@@ -6,6 +6,16 @@ global $_W, $_GPC;
 $openid = m('user')->getOpenid();
 
 $preUrl = $_COOKIE['preUrl'];
+if(is_weixin()){
+    //是否强制绑定手机号,只针对微信端
+    $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+            ':uniacid' => $_W['uniacid']
+        ));
+    $set     = unserialize($setdata['sets']);
+    if(!empty($set['shop']['isbindmobile'])){
+        $nobindmobile_hide = true;
+    }
+}
 if ($_W['isajax']) {
     if ($_W['ispost']) {
         $mc = $_GPC['memberdata'];

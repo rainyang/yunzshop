@@ -90,12 +90,13 @@ if($op == 'sendcode'){
     if(empty($mobile)){
         show_json(0, '请填入手机号');
     }
-    $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where mobile=:mobile and pwd!="" and uniacid=:uniacid limit 1', array(
+    $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where mobile=:mobile and pwd!="" and uniacid=:uniacid and isbindmobile=1 limit 1', array(
                 ':uniacid' => $_W['uniacid'],
                 ':mobile' => $mobile
             ));
-    //print_r($info);
-    
+    if(!empty($info)){
+        show_json(0, '该手机号已绑定过');
+    }
     $code = rand(1000, 9999);
     $_SESSION['codetime'] = time();
     $_SESSION['code'] = $code;
