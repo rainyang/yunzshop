@@ -9,7 +9,7 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $tmplateType = (isMobile()) ? 'mobile' : 'pc';
-if ($_W['isajax'] || $tmplateType == 'pc') {
+if ($_W['isajax']) {
     if ($operation == 'display') {
         $condition  = ' and f.uniacid= :uniacid and f.openid=:openid and f.deleted=0';
         $params     = array(
@@ -32,13 +32,13 @@ if ($_W['isajax'] || $tmplateType == 'pc') {
         $list       = set_medias($list, 'thumb');
         $totalprice = number_format($totalprice, 2);
         //print_r($list);exit();
-        if($tmplateType == 'mobile'){
+        
             show_json(1, array(
                 'total' => $total,
                 'list' => $list,
                 'totalprice' => $totalprice
             ));
-        }
+        
     } else if ($operation == 'add' && $_W['ispost']) {
         $id    = intval($_GPC['id']);
         $total = intval($_GPC['total']);
