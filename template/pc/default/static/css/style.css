@@ -176,7 +176,7 @@ footer#footer-nav .menu-list:after {
 	height: 0;
 }
 #core_alert .layer {height: 100%; width: 100%; background: rgba(0,0,0,0.4); position: fixed; top: 0px; left: 0px; z-index: 9999; display: none;}
-#core_alert .tips {height: 120px; width: 250px; background: #fff; position: fixed; top: 50%; left: 50%; z-index: 10000; margin: -100px -146px; display: none; border-radius:3px; border:1px solid rgba(255,255,255,0.6); padding:20px 20px 10px 20px;}
+#core_alert .tips {box-sizing: initial;height: 120px; width: 250px; background: #fff; position: fixed; top: 50%; left: 50%; z-index: 10000; margin: -100px -146px; display: none; border-radius:3px; border:1px solid rgba(255,255,255,0.6); padding:20px 20px 10px 20px;}
 #core_alert .tips .title {height:90px; width:250px; font-size:16px; color:#676767;}
 #core_alert .tips .sub {height:30px; width:250px;}
 #core_alert .tips .sub nav {height:30px; width:auto; padding:0px 10px; margin:0px 2px; font-size:16px; line-height:30px; float:right; color:#5e7199;}
