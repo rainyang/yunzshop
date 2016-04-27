@@ -33,10 +33,11 @@
 </script>
 </head>
 <body>
-	
+	<!--
 	<script src="http://member.ecmoban.com/content/themes/ecmoban2014/js/jquery.min.js"></script>
     <script src="http://member.ecmoban.com/content/themes/ecmoban2014/bootstrap/js/bootstrap.min.js"></script>
     <script>var _hmt = _hmt || [];</script>
+    -->
 
     <div class="top fl wfs fz12">
         <div class="wrapper">
@@ -56,10 +57,10 @@
         <div class="nav">
             <a class="index" href="{php echo $this->createMobileUrl('shop/index')}">首页</a>
             <a class="member member-now" href="{php echo $this->createMobileUrl('member/info')}">会员中心</a>
-            <a class="order1 " href="#">订单中心</a>
+            <a class="order1 " href="{php echo $this->createMobileUrl('order',array('status'=>0))}">订单中心</a>
 
-            <a class="account " href="#">帐户中心</a>
-            <a class="service " href="#">售后服务</a>
+            <a class="account " href="{php echo $this->createMobileUrl('shop/favorite')}">我的收藏</a>
+            <a class="service " href="{php echo $this->createMobileUrl('shop/address')}">收货地址</a>
         </div>
     </div>
 </div>
