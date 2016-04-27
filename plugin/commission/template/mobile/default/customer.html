@@ -6,7 +6,7 @@
     .customer_top {height:44px; width:100%;  background:#f8f8f8;  border-bottom:1px solid #e3e3e3;}
     .customer_top .title {height:44px; width:auto;margin-left:10px; float:left; font-size:16px; line-height:44px; color:#666;}
 
-    .customer_list_head {height:20px; width:94%; background:#fff; padding:10px 3%;border-bottom:1px solid #eaeaea;}
+    .customer_list_head {height:20px; width:94%; background:#fff; padding:10px 3%;border-bottom:1px solid #eaeaea;box-sizing: content-box;}
     .customer_list_head .info {height:20px; width:60%; float:left;  font-size:16px; color:#666; line-height:20px; text-align:left;}
     .customer_list_head .info span {font-size:14px; color:#999;}
     .customer_list_head .num {height:20px; float:right; text-align:right; font-size:16px; color:#666; line-height:20px; font-size:14px; color:#999;}
@@ -27,6 +27,7 @@
     #customer_loading { padding:10px;color:#666;text-align: center;}
 
 </style>
+<div class="all-divbox">
 <div class="customer_top">
     <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> {php echo $this->set['texts']['mycustomer']}({$total})</div>
 </div>
@@ -35,7 +36,7 @@
         <div class="num">TA的消费订单/金额</div>
 </div>
 <div id='container'></div>
-
+</div>
 <script id='tpl_customer' type='text/html'>
     <%each list as user%>
     <div class="customer_list">
