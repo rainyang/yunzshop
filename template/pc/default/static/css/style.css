@@ -205,3 +205,7 @@ footer#footer-nav .menu-list:after {
 .diyform_main select{height: 42px}
 .left-navcp{ width: 230px;background: #fff}
 .goodlist-right{ width: 960px;background: #fff;margin-left: 10px}
+
+
+.all-divbox{width:1200px;margin:130px auto 0;min-height: 400px;overflow: hidden;background: #fff}
+

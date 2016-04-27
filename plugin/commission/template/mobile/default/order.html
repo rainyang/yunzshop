@@ -46,6 +46,7 @@ a {text-decoration:none;}
     .detail_good .price .pnum { height:20px;width:100%;text-align:right;font-size:13px;color:#666; }
     .detail_good .price .num { height:20px;width:100%;text-align:right;color:#ff6600}
 </style>
+<div class="all-divbox">
 <div class="order_top">
     <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> {php echo $this->set['texts']['order']}({$ordercount})</div>
     <div class='num'>预计: +{$commissioncount}元</div>
@@ -57,7 +58,7 @@ a {text-decoration:none;}
         <div class="nav"  data-status='3'>已完成</div>
 </div>
 
-<div id='container'></div>
+<div id='container' style="background-color: #f2f2f2;"></div></div>
 <script id='tpl_order' type='text/html'>
     <%each list as order%>
   <div class="order_list">
