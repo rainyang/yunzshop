@@ -10,6 +10,12 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">短信设置</label>
                     <div class="col-sm-9 col-xs-12">
+                        <?php 
+                        if(!$set['sms']['type'])
+                        { 
+                            $set['sms']['type'] = 1;
+                        }
+                        ?>
                         {ifp 'sysset.save.sms'}
                         <label class='radio-inline sms_type' type="1"><input type='radio' name='sms[type]' value='1' {if $set['sms']['type']==1}checked{/if}/> 互亿无线</label>
                         <label class='radio-inline sms_type' type="2"><input type='radio' name='sms[type]' value='2' {if $set['sms']['type']==2}checked{/if} /> 阿里大鱼</label>
