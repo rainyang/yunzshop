@@ -8,7 +8,7 @@ body,h1,h2,h3,h4,h5,h6,strong,hr,i,em,b,p,blockquote,dl,dt,dd,ul,ol,li,pre,form,
 input,textarea{ border: 1px solid #d8d8d8;}
 html, body{height: 100%;background: #ffffff;}
 a {font-size:12px;text-decoration:none !important;outline: none !important;color:#666}
-a:hover,a:visited,a:active,a:link{outline: none;text-decoration: none}}
+a:hover,a:visited,a:active,a:link{outline: none;text-decoration: none;color: #7e7e7e}
 input::-webkit-input-placeholder {
 color: #9e9e9e !important; /* WebKit browsers /
 }
@@ -61,7 +61,7 @@ input{
 .leftul li a,.rightul li a{color:#6f6f6f;font-size:12px;text-decoration:none}
 .rightul li{ float:left;font-size:12px;line-height:30px;color:#6f6f6f;padding:0 6px}
 .rightul li a img{ float:left;margin: 16px 10px;}
-.site-nav-pipe {height: 30px;line-height: 30px;padding: 0 10px;font-style: normal;color: #6f6f6f;}
+.site-nav-pipe {height: 30px;line-height: 30px;padding: 0 10px;font-style: normal;color: #6f6f6f; }
 
 #shortcut-2014 {
     width: 100%;
@@ -880,7 +880,7 @@ b {
 .info-img img{ margin:6px 0}
 .left-shop{ width:216px;position:absolute;left:0;top:0}
 /*详情改*/
-.xqleft{ width:100%;padding-left:226px;position:relative;margin-top: 20px;min-height: 1600px}
+.xqleft{ width:100%;padding-left:226px;position:relative;margin-top: 20px;min-height: 650px}
 .left-shop{ width:216px;position:absolute;left:0;top:0}
 #J_TabBarBox {
 width: 100%;
@@ -1299,7 +1299,7 @@ _margin-top: -1px;
 .filter .orderActive {
 position: relative;
 z-index: 1;
-background-color: #c40000;
+background-color: #E72119;
 }
 .filter .orderCell {
 margin-right: 0;
@@ -1321,7 +1321,7 @@ background-position: left -1224px;
 position: relative;
 display: inline-block;
 height: 38px;
-padding-right: 30px;
+padding-right: 18px;
 line-height: 38px;
 background-position: right -1076px;
 vertical-align: middle;
@@ -1360,10 +1360,10 @@ cursor: pointer;
 .allsortgood ul li:hover .libg-zz{ display:block}
 .libg-zz{ width:96%;height:100%;background:rgba(0,0,0,.2);position:absolute;left:0;top:0;filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#33000000,endColorstr=#33000000);display:none;}
 .libg-zz a{width:40%;height:36px;background:#e72119;color:#fff;text-align:center;line-height:36px;display:block;position:absolute;top:50%;left:50%;margin-top:-18px;margin-left:-20%}
-.bor-sort{ border:1px #e3e3e3 solid;width:100%;overflow: hidden;padding-bottom:10px;}
-.img-pos{ text-align:center}
-.img-pos img{max-height:286px;margin:0 auto}
-.sort-tit{ font-size:12px;color:#7e7e7e;padding:4px 1%;display:block;width:100%}
+.bor-sort{ border:1px #e3e3e3 solid;width:100%;overflow: hidden;padding-bottom:10px;height: 306px;}
+.img-pos{ text-align:center;}
+.img-pos img{max-height:236px;min-height:236px;margin:0 auto;}
+.sort-tit{ font-size:12px;color:#7e7e7e;padding:4px;display:block;width:100%;height: 42px}
 .bor-sort p{ padding:0 2%;line-height:18px}
 .bor-sort p em{ color:#dd0000;font-size:18px;float:left}
 .bor-sort p i{float:right;font-size:12px;color:#2a2a2a;}
