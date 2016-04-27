@@ -44,8 +44,9 @@
 
     </div>
     <div class="info_sub">绑定</div>
-
+    {if empty($nobindmobile_hide)}
     <div class="nobindmobile">跳过</div>
+    {/if}
 </script>
 <script language="javascript">
     require(['tpl', 'core'], function(tpl, core) {
@@ -62,19 +63,8 @@
                 if(!$('#mobile').isMobile()){
                     core.tip.show('请输入正确手机号码!');
                     return;
-                }
-                core.json('member/sendcode', {
-                   'mobile': $('#mobile').val(),
-                   'op':'ismobile' 
-                   }, function(json) {
-                    if(json.status==1){
-                      $('.hide').show();
-                      hasmobile = true;
-                    }
-                },true,true);   
-              　curCount = count;
-            　　
-                 
+                }  
+              　curCount = count;  　　
             　　  //向后台发送处理数据 
                  core.json('member/sendcode', {
                             'mobile': $('#mobile').val(),

@@ -92,7 +92,6 @@ class Core extends WeModuleSite
         $memberid = m('member')->getMid();
         $this->setFooter();
 
-
         @session_start();
         if (!$followed && $memberid != $mid) {
             $set          = m('common')->getSysset();
@@ -120,7 +119,7 @@ class Core extends WeModuleSite
     }
     public function setFooter()
     {
-        global $_GPC;
+        global $_W, $_GPC;
         $_var_11 = strtolower(trim($_GPC['p']));
         $_var_12 = strtolower(trim($_GPC['method']));
         if (strexists($_var_11, 'poster') && $_var_12 == 'build') {
@@ -151,6 +150,7 @@ class Core extends WeModuleSite
             'ico' => 'list',
             'url' => $this->createMobileUrl('shop/category')
         );
+        
         $this->footer['commission'] = false;
         $member  = m('member')->getMember($openid);
         if(!empty($member['isblack'])){
@@ -198,6 +198,23 @@ class Core extends WeModuleSite
                                 'mid' => $member['id']
                             )) : $this->createPluginMobileUrl('commission')
                         );
+                    }
+                }
+            }
+        }
+        if(is_weixin()){
+            //是否强制绑定手机号,只针对微信端
+            $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+                    ':uniacid' => $_W['uniacid']
+                ));
+            $set     = unserialize($setdata['sets']);
+            if(!empty($set['shop']['isbindmobile'])){
+                $member = m('member')->getMember($userinfo['openid']);
+                if(empty($member) || $member['isbindmobile'] == 0){
+                    if($_GPC['p'] != 'bindmobile' && $_GPC['p'] != 'sendcode'){
+                        $bindmobileurl = $this->createMobileUrl('member/bindmobile');
+                        redirect($bindmobileurl);
+                        exit();
                     }
                 }
             }

@@ -155,6 +155,7 @@ if (checksubmit()) {
         $shop                     = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['levelname'] = trim($shop['levelname']);
         $set['shop']['levelurl']  = trim($shop['levelurl']);
+        $set['shop']['isbindmobile']   = intval($shop['isbindmobile']);
         plog('sysset.save.pay', '修改系统设置-会员设置');
     } elseif ($op == 'category') {
         $shop                     = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
