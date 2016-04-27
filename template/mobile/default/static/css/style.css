@@ -216,8 +216,9 @@ footer#footer-nav .menu-list:after {
 .cart_top .title{font-size: 14px !important;}
 /*.menu .nav i{ padding-top: 12px}*/
 .order_pub{ height: auto !important;font-size: 14px;}
+.order_all{overflow: hidden;}
 .order_all .fa{ font-size: 22px !important; padding-bottom: 6px;}
-.order{ height: 130px !important;}
+/*.order{ height: 130px !important;}*/
 .allorder{ margin-right: 10px !important}
 .order_no_nav,.notice_no_nav{width: 200px !important;height: 34px !important;line-height: 34px !important;font-size: 14px !important;display: block;padding: 0 !important;margin: 0 auto;}
 .order_topbar .on,.log_menu .navon,.order_menu .navon,.good_info2 .menu .navon,.myshop_menu .navon{color: #ec0405 !important;border-bottom: 2px solid #ec0405 !important;}
