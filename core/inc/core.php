@@ -92,6 +92,7 @@ class Core extends WeModuleSite
         $memberid = m('member')->getMid();
         $this->setFooter();
 
+
         @session_start();
         if (!$followed && $memberid != $mid) {
             $set          = m('common')->getSysset();

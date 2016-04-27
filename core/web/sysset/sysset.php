@@ -147,7 +147,9 @@ if (checksubmit()) {
     } elseif ($op == 'template') {
         $shop                 = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['style'] = save_media($shop['style']);
+        $set['shop']['theme'] = trim($shop['theme']);
         m('cache')->set('template_shop', $set['shop']['style']);
+        m('cache')->set('theme_shop', $set['shop']['theme']);
         plog('sysset.save.pay', '修改系统设置-模板设置');
     } elseif ($op == 'member') {
         $shop                     = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
