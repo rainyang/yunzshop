@@ -7,15 +7,16 @@
             <li class="fore"><a href="{php echo $this->createMobileUrl('shop/index')}">欢迎来到芸众商城！</a></li>
         </ul>
         <ul class="fr top_r">
-            <li class="fore"><a href="{php echo $this->createMobileUrl('member')}">登录</a></li>
+        {if $_COOKIE[__cookie_sz_yi_userid_.$_W['uniacid']]}
+        <li class="fore"><a href="{php echo $this->createMobileUrl('member/info')}">个人中心</a></li>
+        {else}
+        <li class="fore"><a href="{php echo $this->createMobileUrl('member')}">登陆</a></li>
             <li class="spacer"></li>
             <li class="fore"><a href="{php echo $this->createMobileUrl('member/register')}">注册</a></li>
+        {/if}
+            
             <li class="fore cart" id="ECS_CARTINFO">
-                <a href="{php echo $this->createMobileUrl('shop/cart')}" title="查看购物车"><i class="fontello-icon-basket"></i><span>购物车</span><strong>0</strong></a>
-                <ul class="car_ul_none j-car">
-                    <img src="http://www.ecmoban.com/content/themes/ecmoban2014/images/cart_car.png"/>
-                    <a href="#" style="color:#ccc;">您的购物车还没有加入任何商品哦~</a>
-                 </ul>
+                <a href="{php echo $this->createMobileUrl('shop/cart')}" title="查看购物车"><i class="fontello-icon-basket"></i><span>购物车</span><strong><b>0</b></strong></a>
              </li>
         </ul>
     </div>

@@ -43,7 +43,8 @@
         <div class="wrapper">
             <div class="left fl">尊敬的芸众商城用户，欢迎登陆管理中心！</div>
                 <div class="right fr" >
-                    您的账号：{$member['nickname']}
+                您的账号：{php echo base64_decode($_COOKIE['member_name'])}
+                    
                     <a href="{php echo $this->createMobileUrl('member/forget')}">[修改密码]</a>
                     <a href="{php echo $this->createMobileUrl('member/logout')}">[退出登录]</a>
                 </div>
