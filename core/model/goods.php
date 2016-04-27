@@ -32,12 +32,17 @@ class Sz_DYi_Goods
         $order     = !empty($args['order']) ? $args['order'] : ' displayorder desc,createtime desc';
         $orderby   = !empty($args['by']) ? $args['by'] : '';
         $ids       = !empty($args['ids']) ? trim($args['ids']) : '';
+        $sup_uid   = !empty($args['supplier_uid']) ? trim($args['supplier_uid']) : '';
         $condition = ' and `uniacid` = :uniacid AND `deleted` = 0 and status=1';
         $params    = array(
             ':uniacid' => $_W['uniacid']
         );
         if (!empty($ids)) {
             $condition .= " and id in ( " . $ids . ")";
+        }
+        if (!empty($sup_uid)) {
+            $condition .= " and supplier_uid = :supplier_uid ";
+            $params[':supplier_uid'] = intval($sup_uid);
         }
         $isnew = !empty($args['isnew']) ? 1 : 0;
         if (!empty($isnew)) {

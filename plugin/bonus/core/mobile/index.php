@@ -3,7 +3,7 @@ global $_W, $_GPC;
 $openid = m('user')->getOpenid();
 $level = $this->model->getLevel($openid);
 $set = $this->getSet();
-$member = $this->model->getInfo($openid, array('total', 'ordercount', 'ok'));
+$member = $this->model->getInfo($openid, array('total', 'ordercount', 'ordercount_area', 'ok'));
 $cansettle = $member['commission_ok'] > 0 && $member['commission_ok'] >= floatval($this->set['withdraw']);
 $commission_ok = $member['commission_ok'];
 $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];

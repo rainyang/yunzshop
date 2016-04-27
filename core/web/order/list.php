@@ -196,7 +196,12 @@ if ($operation == "display") {
                     $costmoney += $value['goods_op_cost_price'];
                 } else {
                     $option = pdo_fetch("select * from " . tablename('sz_yi_goods_option') . " where uniacid={$_W['uniacid']} and goodsid={$value['goodsid']} and id={$value['optionid']}");
-                    $costmoney += $option['costprice'];
+                    if ($option['costprice'] > 0) {
+                        $costmoney += $option['costprice'];
+                    } else {
+                        $goods_info = pdo_fetch("select * from" . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+                        $costmoney += $goods_info['costprice'];
+                    }
                 }
             }
             $openid = pdo_fetchcolumn('select openid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid'=> $_W['uniacid']));

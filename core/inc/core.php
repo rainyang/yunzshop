@@ -35,9 +35,14 @@ class Core extends WeModuleSite
             }
         }
     }
-    public function sendSms($mobile, $content){
+    public function sendSms($mobile, $code){
         $set = m('common')->getSysset();
-        send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $content);
+        if($set['sms']['type'] == 1){
+            return send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $code);
+        }
+        else{
+            return send_sms_alidayu($mobile, $code);
+        }
     }
     public function runTasks()
     {
@@ -119,7 +124,7 @@ class Core extends WeModuleSite
     }
     public function setFooter()
     {
-        global $_GPC;
+        global $_W, $_GPC;
         $_var_11 = strtolower(trim($_GPC['p']));
         $_var_12 = strtolower(trim($_GPC['method']));
         if (strexists($_var_11, 'poster') && $_var_12 == 'build') {
@@ -150,13 +155,19 @@ class Core extends WeModuleSite
             'ico' => 'list',
             'url' => $this->createMobileUrl('shop/category')
         );
+        
         $this->footer['commission'] = false;
+        $member  = m('member')->getMember($openid);
+        if(!empty($member['isblack'])){
+            if($_GPC['op'] != 'black'){
+                header('Location: '.$this->createMobileUrl('member/login', array('op' => 'black')));
+            }
+        }
         if (p('commission')) {
             $set = p('commission')->getSet();
             if (empty($set['level'])) {
                 return;
-            }
-            $member  = m('member')->getMember($openid);
+            } 
             $isagent = $member['isagent'] == 1 && $member['status'] == 1;
             if ($_GPC['do'] == 'plugin') {
                 $this->footer['first'] = array(
@@ -192,6 +203,23 @@ class Core extends WeModuleSite
                                 'mid' => $member['id']
                             )) : $this->createPluginMobileUrl('commission')
                         );
+                    }
+                }
+            }
+        }
+        if(is_weixin()){
+            //是否强制绑定手机号,只针对微信端
+            $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+                    ':uniacid' => $_W['uniacid']
+                ));
+            $set     = unserialize($setdata['sets']);
+            if(!empty($set['shop']['isbindmobile'])){
+                $member = m('member')->getMember($userinfo['openid']);
+                if(empty($member) || $member['isbindmobile'] == 0){
+                    if($_GPC['p'] != 'bindmobile' && $_GPC['p'] != 'sendcode'){
+                        $bindmobileurl = $this->createMobileUrl('member/bindmobile');
+                        redirect($bindmobileurl);
+                        exit();
                     }
                 }
             }
