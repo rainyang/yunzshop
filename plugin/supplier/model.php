@@ -442,6 +442,7 @@ if (!class_exists('SupplierModel')) {
         //订单分解
         /**订单分解修改，订单会员折扣、积分折扣、余额抵扣、使用优惠劵后订单分解按商品价格与总商品价格比例拆分，使用运费的平分运费。添加平分修改运费以及修改订单金额的信息到新的订单表中。**/
 		public function order_split($orderid){
+			global $_W;
 			if(empty($orderid)){
 				return;
 			}
