@@ -47,11 +47,20 @@ body {margin:0px; background:#f8f8f8;width:100%;}
 .card_no {/*height:100px; */ margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
 .card_no_menu {height:40px; width:100%;}
 .card_no_nav {height:38px; width:43%; background:#eee; margin:0px 3%; float:left; border:1px solid #d4d4d4; border-radius:5px; text-align:center; line-height:38px; color:#666;}
-
-
-
+.info{top: 0 !important}
+.good_choose .other{margin-top: 0!important}
+.good_choose .sub{position: static!important;}
+.good_choose .info .right{top: 0!important;}
+.good_choose .info .left{margin-top: 10px}
+.good_choose{   position: fixed;
+    width: 500px;
+    min-height: 280px;
+    left: 50%;
+    top: 20%;
+    margin-left: -250px;
+    z-index: 999;}
 </style>
-<div id='options'></div>
+<div id='options' style="" ></div>
 <div id='container' style=" width:1200px;margin:120px auto 0;background:#fff;min-height: 400px;overflow: hidden;"></div>
 <script id='option_info' type='text/html'>
  <div class="good_choose_layer"></div>
@@ -71,11 +80,13 @@ body {margin:0px; background:#f8f8f8;width:100%;}
             <input type='hidden' id='optionid' value='' />
                 <%each specs as spec%>
                 <input type='hidden' name="optionid[]" class='optionid optionid_<%spec.id%>' value="" title="<%spec.title%>">
+                <div class="list-bor">
                 <div class="spec"><%spec.title%></div>
                 <div class="spec_items options_<%spec.id%>"  title="<%spec.title%>">
                       <%each spec.items as o%>
                       <div class="option option_<%spec.id%>" specid='<%spec.id%>' oid="<%o.id%>" sel='false' title='<%o.title%>' thumb='<%o.thumb%>'><%o.title%></div>
                      <%/each%>
+                </div>
                 </div>
                 <%/each%>
  
