@@ -44,7 +44,7 @@ body {margin:0px; background:#f8f8f8;width:100%;}
 .cart_top .disabled { color:#ccc;}
  
 
-.card_no {height:100px;  margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
+.card_no {/*height:100px; */ margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
 .card_no_menu {height:40px; width:100%;}
 .card_no_nav {height:38px; width:43%; background:#eee; margin:0px 3%; float:left; border:1px solid #d4d4d4; border-radius:5px; text-align:center; line-height:38px; color:#666;}
 
@@ -52,7 +52,7 @@ body {margin:0px; background:#f8f8f8;width:100%;}
 
 </style>
 <div id='options'></div>
-<div id='container'></div>
+<div id='container' style=" width:1200px;margin:120px auto 0;background:#fff;min-height: 400px;overflow: hidden;"></div>
 <script id='option_info' type='text/html'>
  <div class="good_choose_layer"></div>
     <div class="good_choose">
@@ -85,9 +85,9 @@ body {margin:0px; background:#f8f8f8;width:100%;}
     </div>
  </script>   
  <script id='cart_empty' type='text/html'>
-     <div class="cart_top">
+     <!--<div class="cart_top">
     <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> 购物车(0)</div>
-</div>
+</div>-->
  <div class="card_no"><i class="fa fa-shopping-cart" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">购物车快饿瘪了</span><br>主人快去给我找点东西吧</div>
 <div class="card_no_menu">
    	<div class="card_no_nav" onclick="location.href='{php echo $this->createMobileUrl('member')}'">个人中心</div>
