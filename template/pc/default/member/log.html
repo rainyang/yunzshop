@@ -2,7 +2,7 @@
 <title>{if $trade && $trade['withdraw']==1}余额明细{else}充值记录{/if}</title>
 <style type="text/css">
     body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
-    .credit_list {height:40px; width:94%; background:#fff; padding:10px 3%;margin-top:5px;}
+    .credit_list {box-sizing: content-box;height:40px; width:94%; background:#F7F7F7; padding:10px 3%;margin-top:5px;}
     
     .credit_list .info {height:40px; width:70%; float:left;  font-size:16px; color:#666; line-height:20px; text-align:left;}
     .credit_list .info span {font-size:14px; color:#999;}
@@ -13,7 +13,7 @@
     .credit_navon {color:#fff; background:#ff6801;}
     .credit_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
     #credit_loading { padding:10px;color:#666;text-align: center;}
-
+.page_topbar{width: 960px;float: right;}
 </style>
 <div class="page_topbar">
     <!-- <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a> -->

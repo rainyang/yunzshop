@@ -3888,6 +3888,7 @@ li {
 .regist-process-login-right .free-registe {
     padding: 10px 135px;
     font-size: 16px;
+    color: #fff
 }
 /*
  * 注册流程--注册
@@ -3931,7 +3932,7 @@ li {
     top: 0;
     width: 110px;
     height: 40px;
-    line-height: 40px;
+    line-height: 38px;
     background-color: #ccc;
     color: #646464;
     text-align: center;
@@ -3969,6 +3970,7 @@ li {
     margin-top: 20px;
     padding: 10px 135px;
     font-size: 16px;
+        color: #fff;
 }
 .regist-process-register-right .other-account {
     font-size: 18px;
@@ -4459,3 +4461,4 @@ text-align: center;
 
 .iphone .icon,.android .icon,.ipad .icon{display: inline-block;}
 
+.regist-process-body h2{ color: #333;font-size: 30px}

@@ -8,13 +8,13 @@
     .address_list {height:50px; padding:0 10px;  border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; margin-top:14px; background:#fff;}
     .address_list .ico {height:50px; width:30px;   float:left; color:#999;margin-right:-30px; z-index:2}
     .address_list .ico i { font-size:24px;margin-top:15px;margin-left:10px;z-index:2;position: relative;}
-    .address_list .info {height:50px; width:100%; float:left;position: relative;}
+    .address_list .info {height:50px; width:94%; float:left;position: relative;}
     .address_list .info .inner { margin-left:40px;margin-right:50px;}
     .address_list .info .inner .addr {height:20px; width:100%; color:#999; line-height:26px; font-size:14px; overflow:hidden;}
     .address_list .info .inner .user {height:30px; width:100%; color:#666; line-height:30px; font-size:16px; overflow:hidden;}
     .address_list .info .inner .user span {color:#444; font-size:16px;}
-    .address_list .btn { width:45px; float:right;margin-left:-45px;z-index:2;position: relative;}
-    .address_list .btn .edit,.address_list .btn .remove {height:50px; float:right; color:#999; font-size:18px;margin-top:5px;}
+    .address_list .btn { width:45px; float:right;margin-left:-45px;z-index:2;position: relative;padding: 0;box-sizing: content-box;}
+    .address_list .btn .edit,.address_list .btn .remove {height:50px; float:right; color:#999; font-size:18px;/*margin-top:5px;*/}
     .address_list .btn .edit { margin-right:10px;}
     
 .address_addnav {height:40px;  border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; margin-top:14px; line-height:40px; color:#666; }
@@ -56,7 +56,7 @@
 <script id='address_data' type='text/html'>
  
       <div class="page_topbar">
-        <a href="javascript:;" class="back" id="editback"><i class="fa fa-angle-left"></i></a>
+        <!--<a href="javascript:;" class="back" id="editback"><i class="fa fa-angle-left"></i></a>-->
         <div class="title"> <%if !address.id%>添加收货地址<%else%>编辑收货地址<%/if%></div>
     </div>
     
