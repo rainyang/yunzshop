@@ -103,7 +103,7 @@
     {/if}
     {/if}
     {if $pluginbonus}
-        {if empty($bonus_set['start'])}
+        {if !empty($bonus_set['start'])}
             <a href="{php echo $this->createPluginMobileUrl('bonus/index')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-money" style="color:#f10;"></i>{php echo empty($bonus_set['texts']['center']) ? "分红中心" : $bonus_set['texts']['center'];}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
         {/if}
     {/if}
