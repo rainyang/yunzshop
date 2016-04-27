@@ -2005,7 +2005,7 @@ cursor: pointer;
     float: left;margin: 30px}
 .good_info1{width: 700px !important;
     float: left;
-    height: 440px !important;}
+    min-height: 440px !important;}
 
 
 

@@ -57,21 +57,44 @@
                 <a href="{php echo $this->createMobileUrl('member')}">会员中心</a>
             </li>
         </ul>
-    <form id="searchForm" name="searchForm" method="get" action="search.php" onSubmit="return checkSearchForm()" class="search-product fl">
+    <form id="searchForm" name="searchForm" method="get" action="" onSubmit="return checkSearchForm()" class="search-product fl">
         <input name="k_template" type="hidden" class="k_value" value="0">
-        <i class="fontello-icon-search fr"></i>
-        <input autocomplete="off" name="keywords" onfocus="lookup(this.value);" onkeypress="search_history_hide()" type="text" id="keyword" placeholder="输入关键字搜索" value="" class="form-control search-box fr"/>
+        <i class="fontello-icon-search fr search"></i>
+        <input autocomplete="off" name="keywords" type="text" id="keyword" placeholder="输入关键字搜索" value="" class="form-control search-box fr"/>
         <div class="suggestions_box" id="suggestions" style="display:none;border-bottom: 1px solid #cdcdcd;">
             <div class="suggestions_list" id="auto_suggestions_list"></div>
         </div>
-        <div class="search-history j-search-history fz12" id="search-history">
+        <!-- <div class="search-history j-search-history fz12" id="search-history">
             <div class="left fl">
                 <p class="txt fl">历史记录</p>
                 <a href="javascript:;" onClick="clear_search()"><i class="delete fr">清除</i></a>
                 <ul class="history-items fl wfs"></ul>
             </div>
-        </div>
+        </div> -->
     </form>
 
 </div>
 </div>
+<script type="text/javascript">
+    require(['tpl', 'core'], function(tpl, core) {
+        $('.search').click(function(){
+            var args  = {
+                   page:"{$_GPC['page']}",
+                   isnew: "{$_GPC['isnew']}",
+                   ishot: "{$_GPC['ishot']}",
+                   isrecommand:"{$_GPC['isrecommand']}",
+                   isdiscount:"{$_GPC['isdiscount']}",
+                   keywords:"{$_GPC['keywords']}",
+                   istime:"{$_GPC['istime']}",
+                   pcate:"{$_GPC['pcate']}",
+                   ccate:"{$_GPC['ccate']}",
+                   tcate:"{$_GPC['tcate']}",
+                   order:"{$_GPC['order']}",
+                   by:"{$_GPC['by']}",
+                   shopid:"{$_GPC['shopid']}",
+                   keywords:$("#keyword").val()
+            };
+            location.href=core.getUrl('shop/list', args);
+        });
+    })
+</script>

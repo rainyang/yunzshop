@@ -24,7 +24,7 @@ ul,li {padding:0px; margin:0px;}
     padding: 10px;background-color: #F3F3F3;
     margin-top: 10px; width:100%;  font-size:18px; color:#ff6500; line-height:40px;}
 .good_info1 .price span {font-size:12px; color:#999;}
-.good_info1 .other { /*height:34px; */width:100%;  line-height:34px; font-size:14px; color:#999;}
+.good_info1 .other { /*height:34px; */width:100%;  line-height:34px; font-size:14px; color:#999;margin-top: 10px;}
 .good_info1 .other .left { float:left; text-align:right;}
 .good_info1 .other .right { float:right; text-align:right;}
 .good_info1 .other1 { border-top:1px dashed #f3f3f3; width:100%;  font-size:14px; color:#999; height:auto; overflow:hidden;line-height:22px;padding:2px 0}
@@ -243,27 +243,29 @@ div.flicking_con a.on{background-position:0 -9px}
 
   <!--  <div class="good_choose_layer"></div>-->
     <div class="good_choose" style="display:block">
-        <div class="info">
-             <!-- <div class="left">
+        <!-- <div class="info">
+             <div class="left">
                  <img id="chooser_img" src='<%goods.thumb%>'/>
              </div>
              <div class="right">
                    <div class="price">￥<span id='option_price'><%goods.marketprice%></span></div>
                    <div class="stock">库存:<span id='option_stock'><%goods.total%></span>件</span> </div>
                    <div class="option">请选择规格</div>
-             </div>-->
+             </div>
             <div class="close" onClick="closechoose()"><i class="fa fa-remove-o"></i></div>
-        </div>
+        </div>-->
         <div class="other">
             
             
                 <%each specs as spec%>
                 <input type='hidden' name="optionid[]" class='optionid optionid_<%spec.id%>' value="" title="<%spec.title%>">
-                <div class="spec"><%spec.title%></div>
-                <div class="spec_items options_<%spec.id%>"  title="<%spec.title%>">
-                      <%each spec.items as o%>
-                      <div class="option option_<%spec.id%>" specid='<%spec.id%>' oid="<%o.id%>" sel='false' title='<%o.title%>' thumb='<%o.thumb%>'><%o.title%></div>
-                     <%/each%>
+                <div class="list-bor">
+                    <div class="spec"><%spec.title%></div>
+                    <div class="spec_items options_<%spec.id%>"  title="<%spec.title%>">
+                          <%each spec.items as o%>
+                          <div class="option option_<%spec.id%>" specid='<%spec.id%>' oid="<%o.id%>" sel='false' title='<%o.title%>' thumb='<%o.thumb%>'><%o.title%></div>
+                         <%/each%>
+                    </div>
                 </div>
                 <%/each%>
 
@@ -289,8 +291,8 @@ div.flicking_con a.on{background-position:0 -9px}
                   </div>
                </div>
         </div>
-        <div class="close" onClick="closechoose()"><i class="fa fa-times-circle-o"></i></div>
-        <!--<div class="sub " onClick="choose2()">确认</div>-->
+         <!--<div class="close" onClick="closechoose()"><i class="fa fa-times-circle-o"></i></div>
+       <div class="sub " onClick="choose2()">确认</div>-->
     </div>
 
 
