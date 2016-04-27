@@ -52,7 +52,7 @@
         <div class="user">
             <div class="user-head"><img src="<%member.avatar%>" /></div>
             <div class="user-info">
-                <div class="user-name"><%member.nickname%></div>
+                <div class="user-name">{if empty($member['realname'])}未填写{else}{$member['realname']}{/if}</div>
                 <div class="user-other" {if !empty($set['shop']['levelurl'])}onclick='location.href="{$set['shop']['levelurl']}"'{/if}>[<%level.levelname%>] {if !empty($set['shop']['levelurl'])}<i class='fa fa-question-circle' ></i>{/if}
                 </div>
             </div>

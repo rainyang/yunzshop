@@ -23,6 +23,13 @@ if ($_W['isajax']) {
             @session_start();
             $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
             setcookie($cookieid, base64_encode($info['openid']));
+            $openid = base64_decode($_COOKIE[$cookieid]);
+            $member_info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where   uniacid=:uniacid and openid=:openid limit 1', array(
+                ':uniacid' => $_W['uniacid'],
+                ':openid' => $openid,
+            ));
+            setcookie('member_name', base64_encode($member_info['realname']));
+            //echo base64_decode($_COOKIE['member_name']);exit;
             show_json(1, array(
                 'preurl' => $preUrl
             ));
