@@ -299,10 +299,10 @@ div.flicking_con a.on{background-position:0 -9px}
     <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1' && goods.groupbuy=='1'  && goods.levelbuy=='1'%>
         <div class="good_bottom">
             <%if shopset.cservice%>
-                <div class="add" onclick="choose('cart')" <%if shopset.cservice &&  goods.canaddcart%>style="width:28%"<%/if%>>加入购物车</div>
+                <div class="add" onclick="choose2('cart')" <%if shopset.cservice &&  goods.canaddcart%>style="width:28%"<%/if%>>加入购物车</div>
                 <div class="buy" onclick="choose('buy')" <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%/if%>>立即购买</div>
             <%else%>
-                <div class="add" onclick="choose('cart')">加入购物车</div>
+                <div class="add" onClick="choose2('cart')">加入购物车</div>
                 <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:50%'<%/if%>>立即购买</div>
             <%/if%>
         </div>
@@ -970,13 +970,12 @@ div.flicking_con a.on{background-position:0 -9px}
 	}
     function closechoose(){
         $('.good_choose_layer').fadeOut(100);
-        $('.good_choose').fadeOut(100); 
+        //$('.good_choose').fadeOut(100); 
     }
 
 
 
 	function choose(act){
-         
         if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
             require(['core'],function(core){
                 core.tip.confirm($('#followtip').val(),function(){
@@ -1005,11 +1004,13 @@ div.flicking_con a.on{background-position:0 -9px}
 
             $('.good_choose_layer').fadeIn(200);
             $('.good_choose_layer').unbind('click').click(function(){
+                alert(9);
                 closechoose();
             })
             $('.good_choose').fadeIn(200);
             return;	 
         }else{
+
 			{if !empty($formInfo)}
                 $('.good_choose_layer').fadeIn(200);
                 $('.good_choose_layer').unbind('click').click(function(){
@@ -1041,6 +1042,7 @@ div.flicking_con a.on{background-position:0 -9px}
         var diymode = {php echo intval($diymode)};
 
         if(specselected!='' || diymode==1) {
+            alert(1);
             if (specselected == '') {
                 $('#goods_spec').hide();
             }
@@ -1052,6 +1054,7 @@ div.flicking_con a.on{background-position:0 -9px}
             $('.good_choose').fadeIn(200);
         } else{
             if(action=='cart'){
+                alert(1);
                 require(['core'],function(core){
 
                     core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val()},function(ret){
@@ -1099,7 +1102,7 @@ div.flicking_con a.on{background-position:0 -9px}
 
 	function choose2(direct,close){
 		require(['core'],function(core){
-    			 
+
             if(close){
                 closechoose();
                 return;
@@ -1129,7 +1132,7 @@ div.flicking_con a.on{background-position:0 -9px}
                 });
                 return;
             }           
-            if(action=='cart'){
+            if(direct=='cart'){
                 var data = {};
                 {if !empty($formInfo)}
                     {template 'diyform/common_js_data'}
