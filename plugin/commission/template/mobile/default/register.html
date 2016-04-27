@@ -60,7 +60,10 @@ a{ text-decoration: none;}
                        才可成为&lt;<%shop_set.name%>&gt;购物中心{php echo $this->set['texts']['agent']}，您已消费 <span><%money%></span> 元，请继续努力！</div>
 	   <div class="sub" onclick="location.href='{php echo $this->createMobileUrl('shop/list')}'"><i class='fa fa-shopping-cart'></i> 继续去购物</div>
                    <%/if%>
-                   
+                   <%if status==3%>
+                   <div class="text1">本店需购买商品【<%goods.title%>】才可成为&lt;<%shop_set.name%>&gt;购物中心{php echo $this->set['texts']['agent']}，请现在去购买吧！</div>
+     <div class="sub" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%goods.id%>'"><i class='fa fa-shopping-cart'></i> 现在就去购买</div>
+                   <%/if%>
         
         <div class="title">{php echo $this->set['texts']['agent']}特权</div>
 		<div class="vip_main">

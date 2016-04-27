@@ -57,6 +57,7 @@ if (!class_exists('BonusModel')) {
 			$levels = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_bonus_level') . " WHERE uniacid = '{$_W['uniacid']}' ORDER BY level asc");
 			foreach ($goods as $cinfo) {
 				$price = $cinfo['bonusmoney'] > 0.00 ? $cinfo['bonusmoney'] : $cinfo['realprice'];
+				$price_all = $price * $cinfo['total'];
 				if(empty($set['selfbuy'])){
 					if($member['agentid'] == 0){
 						return;
@@ -78,7 +79,7 @@ if (!class_exists('BonusModel')) {
 		                }else{
 		                    continue;
 		                }
-		                $bonus_money_old = round($price * $setmoney, 2);
+		                $bonus_money_old = round($price_all * $setmoney, 2);
 		                //级差分红
 		                $bonus_money = $bonus_money_old - $range_money;
 		                $data = array(
