@@ -4,11 +4,11 @@ body {margin:0px; background:#f8f8f8;width:100%;}
 .cart_no {height:40px; width:100%;  padding-top:180px; margin:50px 0px;}
 .cart_no_nav {height:38px; width:43%; background:#eee; margin:0px 3%; float:left; border:1px solid #d4d4d4; border-radius:5px; text-align:center; line-height:38px; color:#666;}
 
-.cart_top {height:44px; width:100%;  background:#f8f8f8;  border-bottom:1px solid #e3e3e3;}
+.cart_top {height:44px; width:100%;  background:#e8e8e8;  border-bottom:1px solid #e3e3e3;}
 .cart_top .title {height:44px; width:auto;margin-left:10px; float:left; font-size:16px; line-height:44px; color:#666;}
 .cart_top .nav {height:30px; width:auto;background:#fff; padding:0px 10px; border:1px solid #e3e3e3; border-radius:5px; float:right; line-height:30px; margin:6px 0px 0px 16px; color:#666; font-size:14px;}
 .cart_main { height:auto; }
-.cart_good {height:80px;  padding:10px 0px; border-bottom:1px solid #e3e3e3;}
+.cart_good {height:80px;  padding:10px 0px; border-bottom:1px solid #e3e3e3;box-sizing: content-box;}
 
 .cart_good .ico {height:20px; width:30px; text-align: center; margin-top:25px; float:left;font-size:24px;z-index:2;position: relative;}
 
@@ -26,11 +26,11 @@ body {margin:0px; background:#f8f8f8;width:100%;}
 .cart_good .other .price,.cart_good .other .price1 { width:100%;height:20px;text-align:right;color:#666;font-size:14px; }
 .cart_good .other .price1 { text-decoration:line-through;color:#999;}
 .cart_good .other .num {height:28px; width:80px; border:1px solid #e2e2e2; margin-top:5px;}
-.cart_good .other .num .leftnav {height:28px; width:25px; float:left; border-right:1px solid #e2e2e2; background:#eee; color:#6b6b6b; text-align:center; line-height:24px; font-size:20px; font-weight:bold;}
-.cart_good .other .num .shownum {height:28px; width:26px; float:left; border:0px; margin:0px; padding:0px; text-align:center;}
-.cart_good .other .num .rightnav {height:28px; width:25px; float:right; border-left:1px solid #e2e2e2; background:#eee; color:#6b6b6b; text-align:center; line-height:24px; font-size:20px; font-weight:bold;}
+.cart_good .other .num .leftnav {height:26px; width:25px; float:left; border-right:1px solid #e2e2e2; background:#eee; color:#6b6b6b; text-align:center; line-height:24px; font-size:20px; font-weight:bold;}
+.cart_good .other .num .shownum {height:26px; width:26px; float:left; border:0px; margin:0px; padding:0px; text-align:center;}
+.cart_good .other .num .rightnav {height:26px; width:25px; float:right; border-left:1px solid #e2e2e2; background:#eee; color:#6b6b6b; text-align:center; line-height:24px; font-size:20px; font-weight:bold;}
 
-.cart_pay {float:left;height:54px; width:94%; padding: 0 3%; background:#eee; border-top:1px solid #e1e1e1; position:fixed; bottom:0px; left:0px;}
+.cart_pay {float:left;height:54px; width:100%; padding: 0 1%; background:#E8E8E8; border-top:1px solid #e1e1e1;/* position:fixed; bottom:0px; left:0px;*/}
 .cart_pay .all {height:54px; width:100px;  float:left; line-height:50px; font-size:14px; color:#999; }
 .cart_pay .all i { font-size:24px;margin-top:15px; float:left;}
 .cart_pay .all .t { float:left;margin-left:5px;}
@@ -39,8 +39,8 @@ body {margin:0px; background:#f8f8f8;width:100%;}
 .cart_pay .text {height:40px; width:auto; float:right; line-height:20px; color:#666; font-size:14px; margin:7px 20px 0px;}
 .cart_pay .text span {color:#e43a3d;}
 
-.cart_count {height:40px; padding:0 3px; text-align:right; color:#bbb; font-size:14px; line-height:40px;}
-.cart_count span {color:#666;}
+.cart_count {height:40px; padding:0 3px; text-align:right; color:#313131; font-size:14px; line-height:40px;}
+.cart_count span {color:#313131;}
 .cart_top .disabled { color:#ccc;}
  
 
@@ -142,7 +142,7 @@ body {margin:0px; background:#f8f8f8;width:100%;}
     <div class="cart_pay">
         <div class="all" sel="1"><i class="fa fa-check-circle-o" style="color:#0C9;"></i> <span class='t'>全选</span></div>
         <div class="paysub <%if total<=0%>disabled<%/if%>">结算(<span class='total'><%total%></span>)</div>
-        <div class="text">合计：<span>￥<span  class='totalprice'><%totalprice%></span></span><br><span style="color:#999; font-size:14px;">不含运费</span></div>
+        <div class="text">合计：<span>￥<span  class='totalprice'><%totalprice%></span></span><br><span style="color:#313131; font-size:14px;">不含运费</span></div>
     </div>
 </script>
 <script language="javascript">
