@@ -1,5 +1,6 @@
 <ul class="nav nav-tabs">
     {ifp 'sysset.view.shop'}<li {if $_GPC['op']=='shop'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'shop'))}">商城设置</a></li>{/if}
+    {ifp 'sysset.view.custom'}<li {if $_GPC['op']=='custom'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'custom'))}">PC自定义</a></li>{/if}
     {ifp 'sysset.view.follow'}<li  {if $_GPC['op']=='follow'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'follow'))}">引导及分享设置</a></li>{/if}
     {ifp 'sysset.view.notice'}<li  {if $_GPC['op']=='notice'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'notice'))}">提醒及模板消息设置</a></li>{/if}
     {ifp 'sysset.view.trade'}<li  {if $_GPC['op']=='trade'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'trade'))}">交易设置</a></li>{/if}
