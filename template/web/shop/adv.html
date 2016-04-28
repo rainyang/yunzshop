@@ -117,6 +117,21 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">PC端幻灯片图片</label>
+                    <div class="col-sm-9 col-xs-12">
+                         {ife 'shop.adv' $item}
+                        {php echo tpl_form_field_image('thumb_pc', $item['thumb_pc'])}
+                        <span class='help-block'>建议尺寸:1920 * 513 , 请将所有幻灯片图片尺寸保持一致</span>
+                        {else}
+                            {if !empty($item['thumb_pc'])}
+                                  <a href='{php echo tomedia($item['thumb_pc'])}' target='_blank'>
+                            <img src="{php echo tomedia($item['thumb_pc'])}" style='width:100px;border:1px solid #ccc;padding:1px' />
+                                  </a>
+                            {/if}
+                        {/if}
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">幻灯片连接</label>
                     <div class="col-sm-9 col-xs-12">
                          {ife 'shop.adv' $item}

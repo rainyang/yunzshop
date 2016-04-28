@@ -15,12 +15,20 @@ if (!defined('IN_IA')) {
 }
 class Core extends WeModuleSite
 {
+
     public $footer = array();
     public $header = null;
     public function __construct()
     {
         global $_W, $_GPC;
+        
+        $set=m('common')->getSysset('shop');
 
+        if(strstr($_SERVER['REQUEST_URI'],'app')){
+            if($set['ispc']==0 && !isMobile()){
+                message('抱歉，PC版暂时关闭，请用微信打开!','','error');
+            }   
+        }
         if (is_weixin()) {
             m('member')->checkMember();
         }
@@ -316,9 +324,13 @@ class Core extends WeModuleSite
         include $file;
         exit;
     }
+
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
         global $_W;
+
+        $tmplateType = (isMobile()) ? 'mobile' : 'pc';
+        //$tmplateType = 'pc';
         $name = strtolower($this->modulename);
         if (defined('IN_SYS')) {
             $source  = IA_ROOT . "/web/themes/{$_W['template']}/{$name}/{$filename}.html";
@@ -345,13 +357,14 @@ class Core extends WeModuleSite
             if (empty($template)) {
                 $template = "default";
             }
-            if (!is_dir(IA_ROOT . '/addons/sz_yi/template/mobile/' . $template)) {
+            if (!is_dir(IA_ROOT . '/addons/sz_yi/template/'.$tmplateType.'/' . $template)) {
                 $template = "default";
             }
-            $compile = IA_ROOT . "/data/tpl/app/sz_yi/{$template}/mobile/{$filename}.tpl.php";
-            $source  = IA_ROOT . "/addons/{$name}/template/mobile/{$template}/{$filename}.html";
+            $compile = IA_ROOT . "/data/tpl/app/sz_yi/{$template}/{$tmplateType}/{$filename}.tpl.php";
+            $source  = IA_ROOT . "/addons/{$name}/template/{$tmplateType}/{$template}/{$filename}.html";
+
             if (!is_file($source)) {
-                $source = IA_ROOT . "/addons/{$name}/template/mobile/default/{$filename}.html";
+                $source = IA_ROOT . "/addons/{$name}/template/{$tmplateType}/default/{$filename}.html";
             }
             if (!is_file($source)) {
                 $names      = explode('/', $filename);
@@ -360,11 +373,11 @@ class Core extends WeModuleSite
                 if (empty($ptemplate)) {
                     $ptemplate = "default";
                 }
-                if (!is_dir(IA_ROOT . '/addons/sz_yi/plugin/' . $pluginname . "/template/mobile/" . $ptemplate)) {
+                if (!is_dir(IA_ROOT . '/addons/sz_yi/plugin/' . $pluginname . "/template/{$tmplateType}/" . $ptemplate)) {
                     $ptemplate = "default";
                 }
                 $pfilename = $names[1];
-                $source    = IA_ROOT . "/addons/sz_yi/plugin/" . $pluginname . "/template/mobile/" . $ptemplate . "/{$pfilename}.html";
+                $source    = IA_ROOT . "/addons/sz_yi/plugin/" . $pluginname . "/template/{$tmplateType}/" . $ptemplate . "/{$pfilename}.html";
             }
             if (!is_file($source)) {
                 $source = IA_ROOT . "/app/themes/{$_W['template']}/{$filename}.html";
@@ -376,6 +389,7 @@ class Core extends WeModuleSite
         if (!is_file($source)) {
             exit("Error: template source '{$filename}' is not exist!");
         }
+        //echo $source;exit;
         if (DEVELOPMENT || !is_file($compile) || filemtime($source) > filemtime($compile)) {
             shop_template_compile($source, $compile, true);
         }

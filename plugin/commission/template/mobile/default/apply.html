@@ -1,4 +1,8 @@
-{template 'common/header'}
+<?php if(isMobile()){?>
+    {template 'common/header'}
+<?php }else{?>
+    {template 'common/header_center'}
+<?php }?>
 <title>申请{php echo $this->set['texts']['withdraw']}</title>
 <style type="text/css">
 body {margin:0px; background:#efefef; -moz-appearance:none;}
