@@ -29,12 +29,12 @@ if (!empty($_GPC['ordersn'])) {
     $params[':ordersn'] = "%{$_GPC['ordersn']}%";
 }
 if (!empty($_GPC['supplier_uid'])) {
-    $condition .= " and og.supplier_uid = :supplier_uid";
+    $condition .= " and o.supplier_uid = :supplier_uid";
     $params[':supplier_uid'] = "{$_GPC['supplier_uid']}";
 } else {
     $condition .= " and og.supplier_uid > 0";
 }
-$sql = "select o.id,o.ordersn,o.price,o.goodsprice, o.dispatchprice,o.createtime, o.paytype, a.realname as addressname,m.realname from " . tablename('sz_yi_order') . " o  left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id left join " . tablename('sz_yi_member') . " m on o.openid = m.openid left join " . tablename('sz_yi_member_address') . " a on a.id = o.addressid  where 1 {$condition} ";
+$sql = "select o.id,o.ordersn,o.price,o.goodsprice, o.dispatchprice,o.createtime, o.paytype, a.realname as addressname,m.realname from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m on o.openid = m.openid left join " . tablename('sz_yi_member_address') . " a on a.id = o.addressid  where 1 {$condition} and o.status >=3 ";
 $sql .= " ORDER BY o.id DESC ";
 if (empty($_GPC['export'])) {
     $sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
@@ -52,7 +52,7 @@ if (empty($totalmoney)) {
     $totalmoney = 0;
 }
 unset($row);
-$totalcount = $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_order') . ' o ' . " left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id left join " . tablename('sz_yi_member') . " m on o.openid = m.openid " . " left join " . tablename('sz_yi_member_address') . " a on a.id = o.addressid " . " where 1 {$condition}", $params);
+$totalcount = $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_order') . ' o ' . " left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id left join " . tablename('sz_yi_member') . " m on o.openid = m.openid " . " left join " . tablename('sz_yi_member_address') . " a on a.id = o.addressid " . " where 1 {$condition} and o.status >= 3 ", $params);
 $pager      = pagination($total, $pindex, $psize);
 if ($_GPC['export'] == 1) {
     ca('statistics.export.order');
