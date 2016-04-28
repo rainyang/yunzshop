@@ -7,7 +7,6 @@ $member = $this->model->getInfo($openid, array('total', 'ordercount', 'ordercoun
 $cansettle = $member['commission_ok'] > 0 && $member['commission_ok'] >= floatval($this->set['withdraw']);
 $commission_ok = $member['commission_ok'];
 $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
-$member['agentcount'] = number_format($member['agentcount'], 0);
 $member['ordercount0'] = number_format($member['ordercount'], 0);
 $member['commission_ok'] = number_format($member['commission_ok'], 2);
 $member['commission_pay'] = number_format($member['commission_pay'], 2);

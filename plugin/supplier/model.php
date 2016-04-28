@@ -446,10 +446,13 @@ if (!class_exists('SupplierModel')) {
 			if(empty($orderid)){
 				return;
 			}
+			file_put_contents("/mnt/yunzhong/yz_kehu2/4.txt", $orderid);
             $supplier_order_goods = pdo_fetchall("select distinct supplier_uid from " . tablename('sz_yi_order_goods') . " where orderid=:orderid and uniacid=:uniacid",array(
                     ':orderid' => $orderid,
                     ':uniacid' => $_W['uniacid']
             ));
+
+            file_put_contents("/mnt/yunzhong/yz_kehu2/3.txt", print_r($supplier_order_goods, true));
             //查询不重复supplier_uid订单，如只有一个不进行拆单
             if(count($supplier_order_goods) == 1){
                 return;
@@ -530,6 +533,7 @@ if (!class_exists('SupplierModel')) {
                     $order['price'] = $realprice - $couponprice - $discountprice - $deductprice - $deductcredit2 + $order['dispatchprice'];
 
                     if($num == false){
+                    	file_put_contents("/mnt/yunzhong/yz_kehu2/1.txt", print_r($order, true));
                         pdo_update('sz_yi_order', $order, array(
                             'id' => $orderid,
                             'uniacid' => $_W['uniacid']
@@ -539,6 +543,7 @@ if (!class_exists('SupplierModel')) {
                         $order['uniacid'] = $_W['uniacid'];
                         $ordersn = m('common')->createNO('order', 'ordersn', 'SH');
                         $order['ordersn'] = $ordersn;
+                        file_put_contents("/mnt/yunzhong/yz_kehu2/2.txt", print_r($order, true));
                         pdo_insert('sz_yi_order', $order);
                         $logid = pdo_insertid();
                         $oid = array(

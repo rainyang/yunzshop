@@ -12,9 +12,7 @@ if(!empty($pluginbonus)){
 			$bonus = 1;
 			$member_bonus = p('bonus')->getInfo($openid, array('total', 'ordercount', 'ok'));
 			$bonus_cansettle = $member_bonus['commission_ok'] > 0 && $member_bonus['commission_ok'] >= floatval($bonus['withdraw']);
-			//$bonus_commission_ok = $member['commission_ok'];
 			$member_bonus['nickname'] = empty($member_bonus['nickname']) ? $member_bonus['mobile'] : $member_bonus['nickname'];
-			$member_bonus['agentcount'] = number_format($member_bonus['agentcount'], 0);
 			$member_bonus['ordercount0'] = number_format($member_bonus['ordercount'], 0);
 			$member_bonus['commission_ok'] = number_format($member_bonus['commission_ok'], 2);
 			$member_bonus['commission_pay'] = number_format($member_bonus['commission_pay'], 2);
