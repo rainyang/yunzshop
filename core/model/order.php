@@ -282,12 +282,18 @@ class Sz_DYi_Order
                 }else{
                     $order_info = $order;
                 }
+                $orderdetail=pdo_fetch("select o.ordersn,o.price,og.optionname as optiontitle,og.optionid,og.total from " .tablename('sz_yi_order'). " o left join " .tablename('sz_yi_order_goods').  "og on og.orderid = o.id  where o.id = :id and o.uniacid=:uniacid",array(':id'=>$order_info['id'],':uniacid'=>$_W['uniacid']));
+                $sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where og.orderid=:orderid order by og.id asc';
+                $orderdetail['goods1'] = set_medias(pdo_fetchall($sql, array(':orderid' => $order_info['id'])), 'thumb');
+                $orderdetail['goodscount'] = count($orderdetail['goods1']);
                 return array(
                     'result' => 'success',
                     'order' => $order_info,
                     'address' => $address,
                     'carrier' => $carrier,
-                    'virtual' => $order['virtual']
+                    'virtual' => $order['virtual'],
+                    'goods'=>$orderdetail
+
                 );
             }
         }
