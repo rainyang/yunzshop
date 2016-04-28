@@ -90,7 +90,7 @@ if (checksubmit()) {
         $set['custom']['footer'] = $custom['footer'];
         $set['custom']['index'] = $custom['index'];
         //print_r($set);exit;
-        plog('sysset.save.sms', '修改系统设置-短信设置');
+        plog('sysset.save.sms', '修改系统设置-PC设置');
     }
     elseif ($op == 'sms') {
         $sms                    = is_array($_GPC['sms']) ? $_GPC['sms'] : array();
