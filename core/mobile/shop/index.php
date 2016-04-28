@@ -33,6 +33,8 @@ if ($designer) {
 	}
 }
 $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
+$custom = m('common')->getSysset('custom');
+
 //print_r($set);exit();
 
 if ($operation == 'index') {
