@@ -106,7 +106,6 @@ body {margin:0px; background:#f4f4f4;}
     <!-- 底部浮层 结束 -->
     <script language="javascript">
         require(['core'],function(core){
-           
            if( "{$infourl}"!=''){
                 core.message('您需要完善您的资料才能继续!',"{$infourl}","warning");
                 return;
@@ -124,6 +123,7 @@ body {margin:0px; background:#f4f4f4;}
                 url:'', 
                 type:'post',
                 success:function(img){ 
+                    console.log(img);
                     $("#posterimg").attr('src',img).show();
                     core.tip.show(false);
                 }
