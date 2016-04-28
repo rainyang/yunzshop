@@ -52,6 +52,7 @@ if (empty($infourl)) {
 		}
 	}
 }
+$share_my_Url = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=plugin&p=commission&method=myshop&mid=' . $member['id'];
 if (empty($infourl) && $_W['isajax']) {
     $p = p('poster');
     $shareUrl = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=plugin&p=commission&method=myshop&mid=' . $member['id'];

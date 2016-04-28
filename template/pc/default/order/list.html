@@ -16,7 +16,7 @@
     .order_main .good  .img img {height:100%; width:100%;}
     .order_main .good  .info {width:100%;float:left; margin-left:-50px;margin-right:-60px;}
     .order_main .good .info .inner { margin-left:60px;margin-right:60px; }
-    .order_main .good .info .inner .name {height:32px; width:100%; float:left; font-size:12px; color:#555;overflow:hidden;}
+    .order_main .good .info .inner .name {height:32px; width:10%; float:left; font-size:12px; color:#555;overflow:hidden;}
     .order_main .good .info .inner .option {height:18px; width:100%; float:left; font-size:12px; color:#888;overflow:hidden;word-break: break-all}
     .order_main .good span { color:#666;}
     .order_main .good  .price { float:right;width:60px;;height:54px;margin-left:-60px;;}
@@ -61,13 +61,13 @@
 <script id='tpl_order' type='text/html'>
     <%each list as order%>
     <div class="order_main" data-orderid="<%order.id%>">
-        <div class="title">订单号：<%order.ordersn%><span><%order.statusstr%></span></div>
+        <div class="title" >订单号：<%order.ordersn%><span><%order.statusstr%></span></div>
         <%each order.goods as g%>      
         <div class="good">
             <div class="img"  onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'"><img src="<%g.thumb%>"/></div>
-            <div class='info' onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
+            <div class='info'>
                 <div class='inner'>
-                       <div class="name"><%g.title%></div>     
+                       <div class="name" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'"><%g.title%></div>     
                        <div class='option'><%if g.optionid!='0'%>规格:  <%g.optiontitle%><%/if%></div>
                 </div>
             </div>
@@ -79,6 +79,7 @@
         <%/each%>
         <div class="info1">共 <%order.goodscount%> 件商品&nbsp;实付：<span>￥<%order.price%></span></div>
         <div class="sub">
+        <div class="sub1" onclick="location.href='{php echo $this->createMobileUrl('order/detail')}&id=<%order.id%>'">订单详情</div>
             <%if order.status==0%>
 			<%if order.paytype!=3%>
             <div class="sub1" onclick="location.href='{php echo $this->createMobileUrl('order/pay')}&orderid=<%order.id%>&openid={$openid}'">付款</div>
@@ -145,12 +146,12 @@
         
              function bindEvents(){
                 
-                    $('.order_main .good').unbind('click').click(function() {
+                    /*$('.order_main .good').unbind('click').click(function() {
 
                         var orderid = $(this).closest('.order_main').data('orderid');
                         location.href = core.getUrl('order/detail', {id: orderid});
 
-                    });
+                    });*/
                     
             
                     $(".order_cancel").find('select').unbind('change').change(function() {

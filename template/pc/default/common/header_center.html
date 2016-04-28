@@ -54,7 +54,15 @@
 
 <div class="head fl wfs">
     <div class="wrapper">
-        <a class="logo" href="#"><img src="../addons/sz_yi/template/pc/default/static/images/logo.png" alt="ECSHOP模板堂"></a>
+        <a class="logo" href="#">
+{php $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));}
+        
+            {if $set['logo']}
+                <img src="{$set['logo']}" title="" alt=""></a>
+            {else}
+                <img src="../addons/sz_yi/template/pc/default/static/images/logo.png" alt="我是默认logo"></a>
+            {/if}
+        </a>
         <div class="nav">
             <a class="index" href="{php echo $this->createMobileUrl('shop/index')}">首页</a>
             <a class="member member-now" href="{php echo $this->createMobileUrl('member/info')}">会员中心</a>

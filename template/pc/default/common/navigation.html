@@ -25,6 +25,8 @@
 <div id="head-fix" class="head fl wfs nav-wrap">
 <div class="cover-page-wrapper head_logo_nav">
 <!-- logo -->
+{php $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));}
+{php $custom = m('common')->getSysset('custom');}
         <div class="logo fl"><a href="{php echo $this->createMobileUrl('shop/index')}">
             {if $set['logo']}
                 <img src="{$set['logo']}" title="" alt=""></a>
@@ -33,6 +35,27 @@
             {/if}
         </div>
 
+    {if $custom['iscustom'] == 1}
+          <ul class="nav_head fl">
+            <li>
+                <a href="{$custom['header']['link1']}">{$custom['header']['name1']}</a>
+            </li>
+            <li>
+                <a href="{$custom['header']['link2']}">{$custom['header']['name2']}</a>
+            </li>
+            <li>
+                <a href="{$custom['header']['link3']}">{$custom['header']['name3']}</a>
+            </li>
+           
+            <li >
+                <a href="{$custom['header']['link4']}">{$custom['header']['name4']}</a>
+            </li>
+      
+            <li>
+               <a href="{$custom['header']['link5']}">{$custom['header']['name5']}</a>
+            </li>
+        </ul>  
+    {else}
         <ul class="nav_head fl">
             <li>
                 <a href="{php echo $this->createMobileUrl('shop/index')}">首页</a>
@@ -54,6 +77,8 @@
                 <a href="{php echo $this->createMobileUrl('member')}">会员中心</a>
             </li>
         </ul>
+    {/if}
+
     <form id="searchForm" name="searchForm" method="get" action="" onSubmit="return checkSearchForm()" class="search-product fl">
         <input name="k_template" type="hidden" class="k_value" value="0">
         <i class="fontello-icon-search fr search"></i>
