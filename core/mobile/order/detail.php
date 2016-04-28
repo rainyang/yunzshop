@@ -144,5 +144,6 @@ if ($_W['isajax']) {
         'set' => $set
     ));
 }
+include $this->template('member/center');
 include $this->template('order/detail');
 
