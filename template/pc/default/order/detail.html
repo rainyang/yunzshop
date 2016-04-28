@@ -43,7 +43,7 @@
     .detail_price .price .line span {height:26px; width:auto; float:right;}
     
    
-    .detail_pay {height:60px; width:100%; background:#fff; padding:0px 1%; margin-top:30px; border-top:1px solid #eaeaea;position:absolute;bottom:0px}
+    .detail_pay {height:60px; width:100%; background:#fff; padding:0px 1s%; margin-top:30px; border-top:1px solid #eaeaea;position:absolute;bottom:0px}
     .detail_pay span {height:60px; width:auto; margin-right:16px; float:right; line-height:60px; color:#ff771b; font-size:16px;}
     .detail_pay .paysub {height:38px; width:auto;margin-left:5px; background:#ff771b; padding:0px 10px; margin-top:10px; border-radius:5px; color:#fff; line-height:38px; float:right;}
     
@@ -346,7 +346,7 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
 	  <%if order.paytype!=3%>
 		<div class="paysub" onclick="location.href ='{php echo $this->createMobileUrl('order/pay')}&orderid=<%order.id%>&openid={$openid}'">付款</div>
            <%/if%>
-           <div class="paysub1 order_cancel" style='position:relative;width:63px;'>
+           <div class="paysub1 order_cancel" style='position:relative;width:80px;'>
                <span style='position:absolute;display:block;width:70px;top:-10px;color:#5f6e8b'>取消订单</span>
            <select>
                <option value="">不取消了</option>
