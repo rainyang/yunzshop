@@ -15,12 +15,12 @@ if (!defined('IN_IA')) {
 }
 class Core extends WeModuleSite
 {
+
     public $footer = array();
     public $header = null;
     public function __construct()
     {
         global $_W, $_GPC;
-
         if (is_weixin()) {
             m('member')->checkMember();
         }
@@ -292,6 +292,7 @@ class Core extends WeModuleSite
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
         global $_W;
+
         $tmplateType = (isMobile()) ? 'mobile' : 'pc';
         //$tmplateType = 'pc';
         $name = strtolower($this->modulename);

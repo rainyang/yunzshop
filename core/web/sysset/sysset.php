@@ -81,8 +81,10 @@ if (checksubmit()) {
         $set['shop']['logo']    = save_media($shop['logo']);
         $set['shop']['signimg'] = save_media($shop['signimg']);
         $set['shop']['diycode'] = trim($shop['diycode']);
+        $set['shop']['ispc'] = $shop['ispc'];
         plog('sysset.save.shop', '修改系统设置-商城设置');
     }
+    
     elseif ($op == 'sms') {
         $sms                    = is_array($_GPC['sms']) ? $_GPC['sms'] : array();
         $set['sms']['account']  = $sms['account'];

@@ -8,6 +8,30 @@
 .order_main .line .label { float:left;width:80px;}
 .order_main .line .info { float:right; width:100%; margin-left:-85px;text-align: right;overflow:hidden;height:44px;}
 .order_main .line .info .inner { color:#666;/*margin-left:85px;*/}
+
+.order_mainy {height:auto; border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; background:#fff;margin-top:10px;width: 50%;float: left;}
+.order_mainy .line {height:44px; margin:0 5px; border-bottom:1px solid #f0f0f0; line-height:44px;}
+.order_mainy .line .label { float:left;width:80px;line-height: 44px;text-align: left;padding: 0 0 0 10px;color: #5D5D5D}
+.order_mainy .line .info { float:right; width:100%; margin-left:-85px;text-align: right;overflow:hidden;height:44px;}
+.order_mainy .line .info .inner { color:#666;/*margin-left:85px;*/}
+    .order_main {height:auto; width:100%; background:#fff; padding:0px 1%; margin-top:16px; border-bottom:1px solid #e2e2e2; border-top:1px solid #e2e2e2;}
+    .order_main .title {height:42px; width:100%; border-bottom:1px solid #e2e2e2; font-size:14px; line-height:42px; color:#666;}
+    .order_main .title span {height:42px; width:auto; float:right; color:#ff771b;}
+   
+
+    .order_main .good {height:70px; width:100%; padding:10px 0px; border-bottom:1px solid #eaeaea;}
+    .order_main .good .img {height:50px; width:50px; float:left;}
+    .order_main .good  .img img {height:100%; width:100%;}
+    .order_main .good  .info {width:100%;float:left; margin-left:-50px;margin-right:-60px;}
+    .order_main .good .info .inner { margin-left:60px;margin-right:60px; }
+    .order_main .good .info .inner .name {height:32px; width:100%; float:left; font-size:12px; color:#555;overflow:hidden;}
+    .order_main .good .info .inner .option {height:18px; width:100%; float:left; font-size:12px; color:#888;overflow:hidden;word-break: break-all}
+    .order_main .good span { color:#666;}
+    .order_main .good  .price { float:right;width:60px;;height:54px;margin-left:-60px;;}
+    .order_main .good  .price .pnum { height:20px;width:100%;text-align:right;font-size:14px; }
+    .order_main .good  .price .num { height:20px;width:100%;text-align:right;}
+    .order_main .info1 {height:42px; width:100%; /*border-bottom:1px solid #e2e2e2;*/ font-size:14px; color:#999; line-height:42px; text-align:right;overflow: hidden;}
+    .order_main .info1 span {color:#666;}
 .order_main .tip { color:#666; line-height:20px;padding:5px;font-size:13px; }
  
   .order_main .line .nav {height:22px; width:40px; background:#ccc; margin:10px 0px; float:right; border-radius:40px;}
@@ -77,25 +101,28 @@
 	 <%if order.isvirtual=='1'%>
         <img src="../addons/sz_yi/template/mobile/default/static/images/pay_success.png?v=1" style="width:100%;" />
      <%/if%>
-    <div class="order_main" >
-        <%if address%>
-        <div class="line"><div class="label">收货人</div><div class="info"><div class='inner'><%address.realname%> <%address.mobile%></div></div></div>
-        <div class="line"><div class="label">收货地址</div><div class="info"><div class='inner'><%address.address%></div></div></div>
-        <%/if%>
-        <%if carrier%>
-         <%if order.isverify=='1' || order.isvirtual=='1'%> 
-         <div class="line"><div class="label">联系人</div><div class="info"><div class='inner'><%carrier.carrier_realname%></div></div></div>
-        <div class="line"><div class="label">联系电话</div><div class="info"><div class='inner'><%carrier.carrier_mobile%></div></div></div>
-         <%else%>
-        <div class="line"><div class="label">自提地点</div><div class="info"><div class='inner'><%carrier.address%></div></div></div>
-        <div class="line"><div class="label">自提联系人</div><div class="info"><div class='inner'><%carrier.realname%> <%carrier.mobile%></div></div></div>
-        <%/if%>
-        <%/if%>
-        <div class="line"><div class="label">实付款</div><div class="info"><div class='inner'><span style='color:#ff6600'>￥<%order.price%>元</span></div></div></div>
-         <%if order.virtual!='0'%>
-         <div class="line" style='text-align:center;'>请到订单中查看物品信息</div>
-         <%/if%>
+     <%if goods%>
+
+     <div class="order_main">
+        <div class="title">订单号：<%goods.ordersn%></div>   
+        <%each goods.goods1 as g%>
+        <div class="good">
+            <div class="img"  ><img src="<%g.thumb%>"/></div>
+            <div class='info' >
+                <div class='inner'>
+                       <div class="name"><%g.title%></div>     
+                       <div class='option'><%if g.optionid!='0'%>规格:  <%g.optiontitle%><%/if%></div>
+                </div>
+            </div>
+            <div class="price">
+                <div class='pnum'><span class='marketprice'>￥<%g.price%></span></div>
+                <div class='pnum'><span class='total'>×<%g.total%></span></div>
+            </div>
+        </div>
+        <%/each%>
+        <div class="info1">共 <%goods.goodscount%> 件商品&nbsp;实付：<span>￥<%goods.price%></span></div>
     </div>
+    <%/if%>
      <div class="order_main1" >
          <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('order/list')}'">订单详情</span>
          <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('shop')}'">返回首页</span>
@@ -192,6 +219,7 @@
                         type:'credit'
                     },function(pay_json){
                         if(pay_json.status==1){
+                            console.log(pay_json.result.goods);
                            $('#container').html(tpl('tpl_order_pay',pay_json.result));
                            return;
                         }
