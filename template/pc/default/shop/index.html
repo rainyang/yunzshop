@@ -1,13 +1,6 @@
 {template 'common/header'}
 
 <title>{$set['name']}</title>
-<script type="text/javascript">
-      
-        $(function(){
-            $('img[data-original]').lazyload({effect:"fadeIn"});
-        })
-        
-</script>
 
 <!--navigation-->
 {template 'common/navigation'}
@@ -19,30 +12,30 @@
 <!--幻灯片-->
 	<div class="location">
 		<div id="wrap" class="wrap">
-			<div class="slide" id="slide">
+			<div class="slide"  id='banner'>
 				<ul class="slide_ul">
 				{if $advs}
 				{loop $advs $row}
 					<li><a target="_blank" href="{$row['link']}"><img src="{$row['thumb']}" alt="{$row['advname']}"></a></li>
 				{/loop}
 				{else}
-					<li><a target="_blank" href="{$row['link']}"><img src="../addons/sz_yi/template/pc/default/static/images/banner.jpg" alt="默认效果图片"></a></li>
+					<!-- <li><a target="_blank" href="{$row['link']}"><img src="../addons/sz_yi/template/pc/default/static/images/banner.jpg" alt="默认效果图片"></a></li>
 					<li><a target="_blank" href="{$row['link']}"><img src="../addons/sz_yi/template/pc/default/static/images/banner1.jpg" alt="默认效果图片"></a></li>
 					<li><a target="_blank" href="{$row['link']}"><img src="../addons/sz_yi/template/pc/default/static/images/banner.jpg" alt="默认效果图片"></a></li>
 					<li><a target="_blank" href="{$row['link']}"><img src="../addons/sz_yi/template/pc/default/static/images/banner1.jpg" alt="默认效果图片"></a></li>
 					<li><a target="_blank" href="{$row['link']}"><img src="../addons/sz_yi/template/pc/default/static/images/banner.jpg" alt="默认效果图片"></a></li>
-					<li><a target="_blank" href="{$row['link']}"><img src="../addons/sz_yi/template/pc/default/static/images/banner1.jpg" alt="默认效果图片"></a></li>
+					<li><a target="_blank" href="{$row['link']}"><img src="../addons/sz_yi/template/pc/default/static/images/banner1.jpg" alt="默认效果图片"></a></li> -->
 				{/if}
 				</ul>
 			</div>
 		</div>
 	</div>
-<a href="javascript:void(0);" class="show_pre j-slide-btn">左边</a>
-<a href="javascript:void(0);" class="show_next j-slide-btn">右边</a>
+<!-- <a href="javascript:void(0);" class="show_pre j-slide-btn">左边</a>
+<a href="javascript:void(0);" class="show_next j-slide-btn">右边</a> -->
 </div>
 </div>
 </div>
-<div class="icons fl wfs">
+<!-- <div class="icons fl wfs">
 	<ul id="tips">
 		{if $advs}
 		{loop $advs $row}
@@ -53,7 +46,7 @@
 		<li><span class= "{$row['advname']}"></span></li>
 		{/if}
 	</ul>
-</div>
+</div> -->
 <!-- 删除原JS -->
 </div>
 
@@ -61,36 +54,41 @@
 <div class="cover-page-wrapper">
 <div class="cover-page-plug-in j-cover-page-plug-in">
 <div class="fl w484 mr1">
-<a href="#" target="_blank"><img src="../addons/sz_yi/template/pc/default/static/images/11.jpg" width="484" height="260" alt="ectouch 微分销"></a>
+<a href="{php echo $adss[0][link_1]}" target="_blank"><img src="{php echo $adss[0]['thumb_1']}" width="484" height="260" alt="ectouch 微分销"></a>
 <p class="btn">
-<a class="click-more" href="#" target="_blank">点击了解详情</a>
+<a class="click-more" href="{php echo $adss[0][link_1]}" target="_blank">点击了解详情</a>
 <i></i>
 </p>
 </div>
 <div class="fl w241 mr1">
-<a href="#" target="_blank"><img src="../addons/sz_yi/template/pc/default/static/images/22.jpg" width="241" height="260" alt="ecjia 尊享版"></a>
+<a href="{php echo $adss[0][link_2]}" target="_blank"><img src="{php echo $adss[0]['thumb_2']}" width="241" height="260" alt="ecjia 尊享版"></a>
 <p class="btn">
-<a class="click-more" href="#" target="_blank">点击了解详情</a>
+<a class="click-more" href="{php echo $adss[0][link_2]}" target="_blank">点击了解详情</a>
 <i></i>
 </p>
 </div>
 <div class="fl w241 mr1">
-<a href="#" target="_blank"><img src="../addons/sz_yi/template/pc/default/static/images/333.jpg" width="241" height="260" alt="跨境电商"></a>
+<a href="{php echo $adss[0][link_3]}" target="_blank"><img src="{php echo $adss[0]['thumb_3']}" width="241" height="260" alt="跨境电商"></a>
 <p class="btn">
-<a class="click-more" href="#" target="_blank">点击了解详情</a>
+<a class="click-more" href="{php echo $adss[0][link_3]}" target="_blank">点击了解详情</a>
 <i></i>
 </p>
 </div>
 <div class="fl w241">
-<a href="#" target="_blank"><img src="../addons/sz_yi/template/pc/default/static/images/444.jpg" width="241" height="260" alt="ectouch免费开源"></a>
+<a href="{php echo $adss[0][link_4]}" target="_blank"><img src="{php echo $adss[0]['thumb_4']}" width="241" height="260" alt="ectouch免费开源"></a>
 <p class="btn">
-<a class="click-more" href="#" target="_blank">点击了解详情</a>
+<a class="click-more" href="{php echo $adss[0][link_4]}" target="_blank">点击了解详情</a>
 <i></i>
 </p>
 </div>
 </div>
 <div class="boutique boutique-index mt50 fl wfs">
-<h3>友情推荐</h3>
+{if $custom['iscustom'] == 1}
+	<h3><a href="{$custom['index']['link1']}">{$custom['index']['name1']}</a></h3>
+{else}
+	<h3>友情推荐</h3>
+{/if}
+
 <div class="canvas">
 	<ul class="items" style="width: 1222px;">
 {if $goods}
@@ -200,7 +198,11 @@
 </div>
 </div>
 <div class="boutique boutique-index mt50 fl wfs">
-<h3>新品上线</h3>
+{if $custom['iscustom'] == 1}
+	<h3><a href="{$custom['index']['link2']}">{$custom['index']['name2']}</a></h3>
+{else}
+	<h3>新品上线</h3>
+{/if}
 <div class="canvas">
 	<ul class="items" style="width: 1222px;">
 {if $goods}
@@ -308,7 +310,7 @@
 </div>
 </div>
 <!-- 新品上线 End -->
-<div class="classical-case fl wfs mt50">
+<!-- <div class="classical-case fl wfs mt50">
 	<div class="header fl wfs">
 		<h3 class="fl">经典案例</h3>
 		<a class="more fr" target="_blank" href="#"><span>more</span></a>
@@ -347,7 +349,7 @@
 			</li>
 		</ul>
 	</div>
-</div>
+</div> -->
 
 
 <!-- <div class="church fl wfs mt50">
@@ -483,9 +485,9 @@
                 top: 0
             });
             obj.find("img").hover(function() {
-                $(this).stop().animate({
-                    left: '-10px'
-                },200);
+                // $(this).stop().animate({
+                //     left: '-10px'
+                // },200);
             }, function() {
                 $(this).stop().animate({
                     left: 0
@@ -493,6 +495,17 @@
             });
         }
         run();
+
+
+        require(['jquery','jquery.touchslider','swipe'], function ($) {
+            new Swipe($('#banner')[0], {
+				speed:300,
+				auto:4000,
+				callback: function(){
+					$(".flicking_con  .inner  a").removeClass("on").eq(this.index).addClass("on");
+				}
+	  		});         
+        })
     </script>
 
 <!-- foot -->
