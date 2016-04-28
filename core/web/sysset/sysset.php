@@ -84,6 +84,15 @@ if (checksubmit()) {
         $set['shop']['ispc'] = trim($shop['ispc']);
         plog('sysset.save.shop', '修改系统设置-商城设置');
     }
+    elseif ($op == 'custom') {
+        $custom                    = is_array($_GPC['custom']) ? $_GPC['custom'] : array();
+        $set['custom']['iscustom']  = $custom['iscustom'];
+        $set['custom']['header']  = $custom['header'];
+        $set['custom']['footer'] = $custom['footer'];
+        $set['custom']['index'] = $custom['index'];
+        //print_r($set);exit;
+        plog('sysset.save.sms', '修改系统设置-PC设置');
+    }
     elseif ($op == 'sms') {
         $sms                    = is_array($_GPC['sms']) ? $_GPC['sms'] : array();
         $set['sms']['account']  = $sms['account'];
