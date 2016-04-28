@@ -989,7 +989,7 @@ if (!class_exists('CommissionModel')) {
 				}
 			}
 			if (!empty($order['agentid'])) {
-				$parent = m('member')->getMember($member['agentid']);
+				$parent = m('member')->getMember($order['agentid']);
 				if (!empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1) {
 					if ($order['agentid'] == $parent['id']) {
 						$order_goods = pdo_fetchall('select g.id,g.title,og.total,og.price,og.realprice, og.optionname as optiontitle,g.noticeopenid,g.noticetype,og.commission1 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
@@ -1131,7 +1131,7 @@ if (!class_exists('CommissionModel')) {
 				}
 			}
 			if (!empty($order['agentid'])) {
-				$parent = m('member')->getMember($member['agentid']);
+				$parent = m('member')->getMember($order['agentid']);
 				if (!empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1) {
 					if ($order['agentid'] == $parent['id']) {
 						$order_goods = pdo_fetchall('select g.id,g.title,og.total,og.realprice,og.price,og.optionname as optiontitle,g.noticeopenid,g.noticetype,og.commission1 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
