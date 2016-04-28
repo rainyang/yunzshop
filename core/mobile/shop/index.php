@@ -38,8 +38,9 @@ $custom = m('common')->getSysset('custom');
 //print_r($set);exit();
 
 if ($operation == 'index') {
-	$advs = pdo_fetchall('select id,advname,link,thumb from ' . tablename('sz_yi_adv') . ' where uniacid=:uniacid and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
+	$advs = pdo_fetchall('select id,advname,link,thumb,thumb_pc from ' . tablename('sz_yi_adv') . ' where uniacid=:uniacid and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
 	$advs = set_medias($advs, 'thumb,thumb_pc');
+	//print_r($advs);exit;
 	$adss = pdo_fetchall('select * from ' . tablename('sz_yi_ads') . ' where uniacid=:uniacid', array(':uniacid' => $uniacid));
 	$adss = set_medias($adss, 'thumb_1,thumb_2,thumb_3,thumb_4');
 	//print_r($adss);exit;

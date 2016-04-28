@@ -40,7 +40,7 @@ if ($operation == 'display') {
         ca('shop.adv.edit|shop.adv.view');
     }
     if (checksubmit('submit')) {
-        print_r($_GPC);exit;
+        //print_r($_GPC);exit;
         $data = array(
             'uniacid' => $_W['uniacid'],
             'advname' => trim($_GPC['advname']),
