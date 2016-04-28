@@ -20,7 +20,7 @@ class Core extends WeModuleSite
     public function __construct()
     {
         global $_W, $_GPC;
-
+        
         if (is_weixin()) {
             m('member')->checkMember();
         }
