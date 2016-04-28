@@ -1,4 +1,4 @@
-body { font-family: 宋体,Tahoma; -webkit-tap-highlight-color: transparent;width:100%;height:100%;-webkit-tap-highlight-color:transparent; -webkit-appearance: none;    max-width: 720px;
+body { font-family: 宋体,Tahoma; -webkit-tap-highlight-color: transparent;width:100%;-webkit-tap-highlight-color:transparent; -webkit-appearance: none;
 margin: 0 auto !important;}
 html{ width:100%;height:100%;}
 ul { margin:0;padding:0; list-style: none}
@@ -72,20 +72,23 @@ footer#footer-nav {
 	bottom: 0;
 	width: 100%;
 	height: auto!important;
-	border-top: 1px solid #e5e5e5;
-	box-shadow: 0 -1px 1px #f7f7f7;
+	/*border-top: 1px solid #dbdbdb;*/
+	border-top: 0;
+/*	box-shadow: 0 -1px 1px #f7f7f7;*/
 	z-index: 999;
 	max-width: 720px;
-	background-image: -moz-linear-gradient(top, #fff, #e7e7e7); /* Firefox */
-	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #fff), color-stop(1, #e7e7e7)); /* Saf4+, Chrome */
-	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#fff', endColorstr='#e7e7e7', GradientType='0'); /
+/*	opacity: 0.95 !important;*/
+	background-image: -moz-linear-gradient(top, #333333, #333333); /* Firefox */
+	background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0, #333333), color-stop(1, #333333)); /* Saf4+, Chrome */
+	filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#333333', endColorstr='#333333', GradientType='0'); /
+	
 }
 
     .search1 {height:100%; width:100%; background:#fff; position:fixed; bottom:-100%; left:0; z-index:999;}
     .search1 .topbar1 {height:50px; width:100%; background:#f6f6f6;}
     .search1 .topbar1 .left_wrap {height:34px; width:100%; float:left;margin-left:10px; }
     .search1 .topbar1 .left { margin-right:70px;margin-top:7px;}
-    .search1 .topbar1 .left input {width:100%; height:32px;line-height:30px;border:none;padding:0 0 0 10px; background:transparent;background:#e3e3e5; border-radius:8px 0px 0px 8px;}
+    .search1 .topbar1 .left input {font-size: 12px;width:100%; height:32px;line-height:30px;border:none;padding:0 0 0 10px; background:transparent;background:#e3e3e5; border-radius:8px 0px 0px 8px;}
     .search1 .topbar1 .right { position:relative; float:right;width:70px;margin-left:-70px;}
     .search1 .topbar1  .right .sub1 {height:32px; width:30px; float:left; background:#e3e3e5; border-radius:0px 8px 8px 0px; border:0px; padding:0px; margin-top:7px; font-size:16px; color:#6f737c;}
     .search1 .topbar1  .right .home1 {height:50px;width:30px; margin-left:5px;float: left; text-align:right; line-height:50px; color:#6f737c; font-size:14px;}
@@ -97,26 +100,36 @@ footer#footer-nav {
 
     
 .good_choose_layer {height: 100%; width: 100%; background: rgba(0,0,0,0.6); position: fixed; top: 0px; left: 0px; z-index: 9;display:none }
-.good_choose {height:auto; width:100%; background:#fff; position:fixed; bottom:0px; left:0px; z-index:10;display:none}
+.good_choose {height:auto; width:100%; background:#fff;  bottom:0px; left:0px; z-index:10;display:none}
 .good_choose .info {padding-left:10px;position:relative;  height:90px; width:100%; top:-15px;  }
 .good_choose .info .left { width:80px;height:80px;  background:#fff;border-radius: 5px;}
 .good_choose .info .left img { width:80px;height:80px; padding:1px;border:1px solid #ddd; border-radius: 5px;}
 .good_choose .info .right {position:absolute; left:110px; top:20px;}
-.good_choose .info .right .price {color:#ff6801; font-size:14px; line-height:20px; ;height:20px;overflow:hidden}
+.good_choose .info .right .price {color:#ff4a4e; font-size:14px; line-height:20px; ;height:20px;overflow:hidden}
 .good_choose .info .right .stock {color:#999;font-size:12px; line-height:20px; ;height:20px; }
 .good_choose .info .right .option {color:#999;font-size:12px; line-height:20px; ;height:20px;overflow: hidden; }
-.good_choose .other { position:relative; height:auto;margin-bottom:50px;padding-left:10px;width:99%;overflow-y:scroll; overflow-x:hidden; margin-top:-15px;  font-size:14px; color:#999;}
+.good_choose .other { position:relative; height:auto;margin-bottom:50px;padding-left:10px;width:99%;margin-top:-15px;  font-size:14px; color:#999;}
 .good_choose .other .spec { width:100%;padding:10px 0 5px 0;float:left}
 .good_choose .other .spec_items {width:100%;padding:5px 0 5px 0;height:auto;border-bottom:1px solid #e4e4e4;float:left}
 .good_choose .other .option { float:left; padding:5px; background:#fff; border:1px solid #e4e4e4; border-radius:3px; margin-right:5px;margin-bottom:5px; font-size:14px; color:#999;}
 .good_choose .other .on {background:#ff6801; border:1px solid #ff6801; color:#fff}
-.good_choose .other .number { float:left; width:100%;padding-top:10px;height:36px}
-.good_choose .other .number .label { float:left;width:100px;padding-top:5px;}
+.good_choose .other .number { float:left; width:100%;padding-top:10px;/*height:36px*/}
+.good_choose .other .number .label {    float: left;
+    width: 100px;
+    padding-top: 5px;
+    height: 40px;
+    color: #565656;
+    line-height: 40px;
+    padding: 0;
+    font-size: 14px;
+    font-weight: normal;
+    text-align: left;
+    padding-left: 10px;}
 .good_choose .other .number .num { border:1px solid #dedede;width:140px;height:34px;float:right;margin-right:10px;}
-.good_choose .other .number .num button { width:35px; height:34px; border:none; color:#333; float:left; background: #eee;-webkit-appearance: none;  }
+.good_choose .other .number .num button { width:35px; height:32px; border:none; color:#333; float:left; background: #eee;-webkit-appearance: none;  }
 .good_choose .other .number .num button#btn_plus { float:right;}
 .good_choose .other .number .num input { width:59px; border-left:1px solid #dedede; border-right:1px solid #dedede; text-align:center; border:none; height:28px;line-height:28px; float:left; -webkit-appearance: none;}
-.good_choose .sub {position:fixed; bottom:0px; height:40px; width:100%; background:#ff6801;  line-height:40px; text-align:center; font-size:18px; color:#fff; }
+.good_choose .sub {position:fixed; bottom:0px; height:44px; width:100%; background:#ff6801;  line-height:44px; text-align:center; font-size:18px; color:#fff; }
 .good_choose .close { position:absolute; right:10px; top:10px;font-size:24px; color:#666;font-weight:normal;}
 .good_choose .disabled { background:#ccc;color:#fff}
 
@@ -136,15 +149,19 @@ footer#footer-nav .menu-list li {
 	float: left;
 }
 
-footer#footer-nav .menu-list li a {
+/*footer#footer-nav .menu-list li a {
 	color: #333;
 	padding: 6px 0; text-decoration: none;
 	display: block;
+}*/
+footer#footer-nav .menu-list li a {
+	color: #dadada;
+	padding: 6px 0; text-decoration: none;
+	display: block;
 }
-
 footer#footer-nav .menu-list li a > i {
 	display: block;
-	font-size: 22px;
+	font-size: 20px;
 	line-height: 25px;
 }
 
@@ -155,11 +172,11 @@ footer#footer-nav .menu-list li a > span {
 }
 
 footer#footer-nav .menu-list li.active a > span {
-	color: #f60;
+	color: #ff4a4e;
 }
 
 footer#footer-nav .menu-list li.active a > i {
-	color: #f60;
+	color: #ff4a4e;
 }
 
 footer#footer-nav .menu-list:after {
@@ -180,10 +197,91 @@ footer#footer-nav .menu-list:after {
 #cover img { width:100%;}
 
 .page_topbar {    position: relative;height:45px; background:#f9f9f9; border-bottom:1px solid #e8e8e8; font-size:16px; line-height:45px; text-align:center; }
-.page_topbar .title {height:45px;;line-height:45px; color:#666; text-align: center;}
+.page_topbar .title {height:45px;line-height:45px; color:#666; text-align: center;}
 .page_topbar a.back {position:absolute;left:15px;height:45px;line-height:45px;display:block;color:#999; font-size:24px;}
 .page_topbar a.btn { position: absolute;right:10px;height:45px;line-height:45px;display:block;color:#999; font-size:24px; }
 
 
-.topbar {max-width: 720px;}
+
 .main .page {position: relative;}
+
+/*更改颜色*/
+.take{background: #ff4a4e !important; margin-top: 9px !important;height: 26px !important;
+    line-height: 26px !important;font-size: 12px !important;}
+.card_no_nav,.history_no_nav{height: 34px !important;line-height: 34px !important;font-size: 14px !important;    margin: 0px 0 0 6% !important; width: 41% !important}
+.card_no,.order_no,.customer_no,.team_no,.log_no,.history_no,.notice_no{color: #BDBDBD !important}
+.card_no i,.order_no i,.customer_no i,.team_no i,.log_no i,.history_no i,.notice_no i{ font-size: 80px !important;padding-bottom: 10px;}
+.card_no span,.order_no span,.customer_no span,.team_no span,.log_no span,.history_no span,.notice_no span{ color: #646464 !important;}
+.main .page .topbar .list1, .main .page .topbar .list2,.main .page .topbar .sort,.main .page .topbar .search{color: #333 !important}
+.cart_top .title{font-size: 14px !important;}
+/*.menu .nav i{ padding-top: 12px}*/
+.order_pub{ height: auto !important;font-size: 14px;}
+.order_all{overflow: hidden;}
+.order_all .fa{ font-size: 22px !important; padding-bottom: 6px;}
+/*.order{ height: 130px !important;}*/
+.allorder{ margin-right: 10px !important}
+.order_no_nav,.notice_no_nav{width: 200px !important;height: 34px !important;line-height: 34px !important;font-size: 14px !important;display: block;padding: 0 !important;margin: 0 auto;}
+.order_topbar .on,.log_menu .navon,.order_menu .navon,.good_info2 .menu .navon,.myshop_menu .navon{color: #ec0405 !important;border-bottom: 2px solid #ec0405 !important;}
+.order_main .title span,.order_list .right span{color: #ec0405 !important;}
+.good_bottom .cart,.good_bottom .like,.good_bottom .cs{
+    height: 50px !important;
+    width: 50px !important;
+    box-sizing: border-box;
+  /*  background-color: #333!important;*/
+    /*border:0 !important;*/
+/*        border-left: 1px #424242  solid;*/
+        border-right: 0 !important;
+        border-top: 0 !important;
+    color: #dadada !important
+}
+.goods .good .price,.good_info1 .price,.good_info1 .price,.other .left span,.menu .nav .con span{color: #ec0405 !important;}
+.good_bottom .add,.good_info1 .info1 .sub1{background: #FFA722 !important;font-size: 14px; }
+.good_info1 .info1 .sub1 i{color: #FFA722 !important;}
+.good_bottom .buy,.good_choose .sub,.myshop_sub1,#left_container .on{background: #ff4a4e !important;}
+.good_bottom span{ font-size: 12px !important;}
+.like .fa{padding-left: 6px}
+.like .fa-star,.main .page .sort_list .navon{color: #ff4a4e !important;}
+.myshop_main .line1 .info .inner .preview1 {width: 100% !important;}
+.top .topbar .menu .navon {border-bottom: 3px solid #ec0405 !important;}
+#left_container .on{color: #fff !important}
+#left_container .parent_item {border-bottom: 1px #DCDCDC solid;height: 40px !important;line-height: 40px !important;}
+.diyform_main select { font-size: 14px;}
+.all a{text-decoration: none;}
+.category_item i{ width: 16px;text-align: center;}
+.all a .category_item{color: #fff !important;font-size: 14px;}
+.all a .child{color: #9A9A9A !important}
+/*.user_info .user_name span,.top span{color: #ff4a4e !important;}
+*/
+.menu .nav .fa-3x{    padding-top: 10px !important;}
+.main .category .all p.category_item{padding-top: 5px !important;padding-bottom: 5px !important;}
+.main .category .all p.child {padding-left: 16px !important;}
+.main .page .sort_list{height: auto !important;padding: 6px 0;}
+.main .page .sort_list .nav{height: 22px!important;line-height: 22px !important;}
+.cart_top{border-bottom: 1px solid #cdcdcd !important;background:#f9f9f9 !important;}
+.cart_top .title {color: #1f1f1f !important;}
+
+.cart .fa-heart{ color: #FFB2D2!important}
+.list1 .fa-street-view{ color: #c3b1eb!important}
+.list1 .fa-file-text{color: #8282FF!important}
+.list1 .fa-sign-out{ color: #77e2c8!important}
+.cart .fa-list{ color: #7DB7FF!important}
+
+.like .fa-star-o,.like .fa-star,.cart .fa-shopping-cart,.cs .fa-headphones{ padding-bottom: 2px; box-sizing: border-box;}
+.label-free{background: #ec0405 !important}
+.good_shop .shop2 .sub1,.good_shop .shop2 .sub2{font-size: 14px !important;color: #333 !important;}
+.good_info1 .info1 .name {line-height: 24px;}
+.cart_good {background-color: #fff;}
+.cart_top .nav {margin: 6px 6px 0px 0 !important;}
+.all .fa-check-circle-o,.ico .fa-check-circle-o,.addorder_pay span,.text span{ color:#ec0405 !important}
+.addorder_pay .paysub {background: #ec0405 !important; font-size: 14px;}
+.addorder_good .shop{font-size: 14px !important;}
+.addorder_good{padding: 0 10px !important}
+.addorder_good .ico .fa-gift{padding-top: 8px;}
+.fa-3x {font-size: 2em;}
+/*.header {background: url(/addons/sz_yi/template/mobile/default/static/images/bg3.png) 0 0 no-repeat !important;}*/
+.good_info1 .price{text-align: left;}
+/*个人中心左侧导航样式*/
+.leftlistnav{width: 230px;height: auto;background-color: #192229;float: left;}
+.rightlist{ width: 960px;float: right;background: #fff;padding: 0}
+
+

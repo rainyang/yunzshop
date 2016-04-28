@@ -3,6 +3,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+
 $operation = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 if ($operation == 'display') {
     if ($_W['isajax']) {
@@ -16,13 +17,23 @@ if ($operation == 'display') {
                     ':pwd' => md5($password),
                 ));
             //pdo_debug();
-            $preUrl = $_COOKIE['preUrl'] ? $_COOKIE['preUrl'] : $this->createMobileUrl('shop');
+            $preUrl = $_COOKIE['preUrl'] ? $_COOKIE['preUrl'] : $this->createMobileUrl('member/info');
             if($info){
                 $lifeTime = 24 * 3600 * 3;
                 session_set_cookie_params($lifeTime);
                 @session_start();
                 $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
                 setcookie($cookieid, base64_encode($info['openid']));
+                if(!isMobile()){
+                    $openid = base64_decode($_COOKIE[$cookieid]);
+                    $member_info = pdo_fetch('select realname,nickname from ' . tablename('sz_yi_member') . ' where   uniacid=:uniacid and openid=:openid limit 1', array(
+                        ':uniacid' => $_W['uniacid'],
+                        ':openid' => $openid,
+                    ));
+                    $member_name = !empty($member_info['realname']) ? $member_info['realname'] : $member_info['nickname'];
+                    $member_name = !empty($member_name) ? $member_name : "未知";
+                    setcookie('member_name', base64_encode($member_info['realname']));
+                }
                 show_json(1, array(
                     'preurl' => $preUrl
                 ));

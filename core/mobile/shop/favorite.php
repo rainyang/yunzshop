@@ -51,4 +51,7 @@ if ($_W['isajax']) {
 		show_json(1);
 	}
 }
+if(!isMobile()){
+	include $this->template('member/center');
+}
 include $this->template('shop/favorite');

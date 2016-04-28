@@ -252,6 +252,9 @@ if ($operation == 'display' && $_W['isajax']) {
 }
 
 if ($operation == 'display') {
+    if(!isMobile()){
+        include $this->template('member/center');
+    }
     include $this->template('member/recharge');
 }
 

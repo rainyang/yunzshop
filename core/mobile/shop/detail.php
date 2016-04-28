@@ -5,6 +5,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+$tmplateType = (isMobile()) ? 'mobile' : 'pc';
 $openid         = m('user')->getOpenid();
 $popenid        = m('user')->islogin();
 
@@ -17,9 +18,7 @@ $goods          = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHER
 $shop           = set_medias(m('common')->getSysset('shop'), 'logo');
 $shop['url']    = $this->createMobileUrl('shop');
 $mid            = intval($_GPC['mid']);
-
 $shopset = m('common')->getSysset('shop');
-
 $opencommission = false;
 if (p('commission')) {
     if (empty($member['agentblack'])) {
@@ -309,7 +308,9 @@ if ($_W['isajax']) {
         'btntext2' => trim($goods['detail_btntext2']),
         'btnurl2' => !empty($goods['detail_btnurl2']) ? $goods['detail_btnurl2'] : $shop['url']
     );
-    show_json(1, $ret);
+
+        show_json(1, $ret);
+
 }
 $_W['shopshare'] = array(
     'title' => !empty($goods['share_title']) ? $goods['share_title'] : $goods['title'],

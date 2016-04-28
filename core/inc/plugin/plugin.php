@@ -28,7 +28,7 @@ class Plugin extends Core
         } else if (strexists($_SERVER['REQUEST_URI'], '/app/')) {
             
                 $this->setFooter();  
-	}
+	    }
         $this->module['title'] = pdo_fetchcolumn('select title from ' . tablename('modules') . " where name='sz_yi' limit 1");
     }
     private function loadModel()
@@ -88,10 +88,22 @@ class Plugin extends Core
                 $source  = $defineDir . "/plugin/" . $this->pluginname . "/template/mobile/default/{$filename}.html";
                 $compile = IA_ROOT . "/data/app/sz_yi/plugin/" . $this->pluginname . "/default/mobile/{$filename}.tpl.php";
             }
-            if (!is_file($source)) {
-                $source  = $defineDir . "/template/mobile/{$global_template}/{$filename}.html";
-                $compile = IA_ROOT . "/data/app/sz_yi/{$global_template}/{$filename}.tpl.php";
+
+            if(isMobile()){
+                if (!is_file($source)) {
+                    $source  = $defineDir . "/template/mobile/{$global_template}/{$filename}.html";
+                    $compile = IA_ROOT . "/data/app/sz_yi/{$global_template}/{$filename}.tpl.php";
+                }
             }
+            else{
+                if (!is_file($source)) {
+                    //$compile = IA_ROOT . "/data/tpl/app/sz_yi/{$template}/{$tmplateType}/{$filename}.tpl.php";
+                    //$source  = IA_ROOT . "/addons/{$name}/template/{$tmplateType}/{$template}/{$filename}.html";
+                    $source  = $defineDir . "/template/pc/default/{$filename}.html";
+                    $compile = IA_ROOT . "/data/tpl/app/sz_yi/default/{$filename}.tpl.php";
+                }
+            }
+            
             if (!is_file($source)) {
                 $source  = $defineDir . "/template/mobile/default/{$filename}.html";
                 $compile = IA_ROOT . "/data/app/sz_yi/default/{$filename}.tpl.php";
@@ -113,6 +125,7 @@ class Plugin extends Core
                 $pfilename = $names[1];
                 $source    = IA_ROOT . "/addons/sz_yi/plugin/" . $pluginname . "/template/mobile/" . $ptemplate . "/{$pfilename}.html";
             }
+            
         }
         if (!is_file($source)) {
             exit("Error: template source '{$filename}' is not exist!");

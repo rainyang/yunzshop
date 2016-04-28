@@ -73,4 +73,8 @@ if ($_W['isajax']) {
 	}
 	show_json(1, array('member' => $member, 'order' => $order, 'level' => $level, 'open_creditshop' => $open_creditshop, 'counts' => $counts));
 }
+
 include $this->template('member/center');
+if(!isMobile()){
+	include $this->template('member/info');
+}

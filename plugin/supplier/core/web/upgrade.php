@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 //金额不能用int, apply表少uniacid字段
 global $_W;
 $sql = "

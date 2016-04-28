@@ -607,11 +607,18 @@ if (!class_exists('CommissionModel')) {
 			$_var_88 = empty($_var_5['commission_thumb']) ? $_var_5['thumb'] : tomedia($_var_5['commission_thumb']);
 			$_var_89 = md5(json_encode(array('id' => $_var_5['id'], 'marketprice' => $_var_5['marketprice'], 'productprice' => $_var_5['productprice'], 'img' => $_var_88, 'openid' => $_var_20, 'version' => 4)));
 			$_var_82 = $_var_89 . '.jpg';
+			//echo $_var_80 . $_var_82;exit;
 			if (!is_file($_var_80 . $_var_82)) {
+				
 				set_time_limit(0);
 				$_var_90 = IA_ROOT . '/addons/sz_yi/static/fonts/msyh.ttf';
 				$_var_91 = imagecreatetruecolor(640, 1225);
-				$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
+				if($_W['os'] == "windows"){
+					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster_pc.jpg');
+				}else{
+					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
+				}
+				
 				imagecopy($_var_91, $_var_92, 0, 0, 0, 0, 640, 1225);
 				imagedestroy($_var_92);
 				$_var_93 = preg_replace('/\\/0$/i', '/96', $_var_87['avatar']);
@@ -670,6 +677,8 @@ if (!class_exists('CommissionModel')) {
 				}
 				imagejpeg($_var_91, $_var_80 . $_var_82);
 				imagedestroy($_var_91);
+			}else{
+				echo 2;exit;
 			}
 			return $_W['siteroot'] . 'addons/sz_yi/data/poster/' . $_W['uniacid'] . '/' . $_var_82;
 		}
@@ -989,7 +998,7 @@ if (!class_exists('CommissionModel')) {
 				}
 			}
 			if (!empty($order['agentid'])) {
-				$parent = m('member')->getMember($member['agentid']);
+				$parent = m('member')->getMember($order['agentid']);
 				if (!empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1) {
 					if ($order['agentid'] == $parent['id']) {
 						$order_goods = pdo_fetchall('select g.id,g.title,og.total,og.price,og.realprice, og.optionname as optiontitle,g.noticeopenid,g.noticetype,og.commission1 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
@@ -1131,7 +1140,7 @@ if (!class_exists('CommissionModel')) {
 				}
 			}
 			if (!empty($order['agentid'])) {
-				$parent = m('member')->getMember($member['agentid']);
+				$parent = m('member')->getMember($order['agentid']);
 				if (!empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1) {
 					if ($order['agentid'] == $parent['id']) {
 						$order_goods = pdo_fetchall('select g.id,g.title,og.total,og.realprice,og.price,og.optionname as optiontitle,g.noticeopenid,g.noticetype,og.commission1 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));

@@ -8,6 +8,7 @@ global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
+$tmplateType = (isMobile()) ? 'mobile' : 'pc';
 if ($_W['isajax']) {
     if ($operation == 'display') {
         $condition  = ' and f.uniacid= :uniacid and f.openid=:openid and f.deleted=0';
@@ -30,11 +31,14 @@ if ($_W['isajax']) {
         unset($r);
         $list       = set_medias($list, 'thumb');
         $totalprice = number_format($totalprice, 2);
-        show_json(1, array(
-            'total' => $total,
-            'list' => $list,
-            'totalprice' => $totalprice
-        ));
+        //print_r($list);exit();
+        
+            show_json(1, array(
+                'total' => $total,
+                'list' => $list,
+                'totalprice' => $totalprice
+            ));
+        
     } else if ($operation == 'add' && $_W['ispost']) {
         $id    = intval($_GPC['id']);
         $total = intval($_GPC['total']);
@@ -44,6 +48,7 @@ if ($_W['isajax']) {
             ':uniacid' => $uniacid,
             ':id' => $id
         ));
+        
         if (empty($goods)) {
             show_json(0, '商品未找到');
         }
@@ -261,6 +266,9 @@ if ($_W['isajax']) {
         ));
         show_json(1);
     }
+}
+if(!isMobile()){
+    include $this->template('member/center');
 }
 include $this->template('shop/cart');
 

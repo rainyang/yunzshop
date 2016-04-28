@@ -1,4 +1,8 @@
-{template 'common/header'}
+<?php if(isMobile()){?>
+    {template 'common/header'}
+<?php }else{?>
+    {template 'common/header_center'}
+<?php }?>
 <title>{php echo $this->set['texts']['commission_detail']}</title>
 <style type="text/css">
 body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}

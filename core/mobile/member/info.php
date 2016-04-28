@@ -5,6 +5,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+
 $openid         = m('user')->getOpenid();
 $member         = m('member')->getInfo($openid);
 $template_flag  = 0;
@@ -63,6 +64,9 @@ if ($_W['isajax']) {
     show_json(1, array(
         'member' => $member
     ));
+}
+if(!isMobile()){
+    include $this->template('member/center');
 }
 if ($template_flag == 1) {
     include $this->template('diyform/info');
