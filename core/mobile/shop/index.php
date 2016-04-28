@@ -39,8 +39,17 @@ $custom = m('common')->getSysset('custom');
 
 if ($operation == 'index') {
 	$advs = pdo_fetchall('select id,advname,link,thumb,thumb_pc from ' . tablename('sz_yi_adv') . ' where uniacid=:uniacid and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
+	foreach($advs as $key => $adv){
+		if(!empty($advs[$key]['thumb'])){
+			$adv[] = $advs[$key];
+		}
+		if(!empty($advs[$key]['thumb_pc'])){
+			$adv_pc[] = $advs[$key];
+		}
+	}
 	$advs = set_medias($advs, 'thumb,thumb_pc');
-	//print_r($advs);exit;
+	$advs_pc = set_medias($adv_pc, 'thumb,thumb_pc');
+	//print_r($adv_pc);exit;
 	$adss = pdo_fetchall('select * from ' . tablename('sz_yi_ads') . ' where uniacid=:uniacid', array(':uniacid' => $uniacid));
 	$adss = set_medias($adss, 'thumb_1,thumb_2,thumb_3,thumb_4');
 	//print_r($adss);exit;

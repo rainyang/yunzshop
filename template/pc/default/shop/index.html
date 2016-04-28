@@ -14,8 +14,8 @@
 		<div id="wrap" class="wrap">
 			<div class="slide"  id='banner'>
 				<ul class="slide_ul">
-				{if $advs}
-				{loop $advs $row}
+				{if $advs_pc}
+				{loop $advs_pc $row}
 					<li><a target="_blank" href="{$row['link']}"><img src="{$row['thumb_pc']}" alt="{$row['advname']}"></a></li>
 				{/loop}
 				{else}
