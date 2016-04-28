@@ -1520,7 +1520,7 @@ li {
     position: relative;
     height: 260px;
     overflow: hidden;
-    background-color: #FF9D9D;
+/*    background-color: #FF9D9D;*/
 }
 .cover-page-plug-in div p {
     position: absolute;

@@ -81,6 +81,7 @@ if (checksubmit()) {
         $set['shop']['logo']    = save_media($shop['logo']);
         $set['shop']['signimg'] = save_media($shop['signimg']);
         $set['shop']['diycode'] = trim($shop['diycode']);
+        $set['shop']['ispc'] = trim($shop['ispc']);
         plog('sysset.save.shop', '修改系统设置-商城设置');
     }
     elseif ($op == 'custom') {
@@ -90,7 +91,7 @@ if (checksubmit()) {
         $set['custom']['footer'] = $custom['footer'];
         $set['custom']['index'] = $custom['index'];
         //print_r($set);exit;
-        plog('sysset.save.sms', '修改系统设置-短信设置');
+        plog('sysset.save.sms', '修改系统设置-PC设置');
     }
     elseif ($op == 'sms') {
         $sms                    = is_array($_GPC['sms']) ? $_GPC['sms'] : array();
