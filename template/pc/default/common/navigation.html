@@ -1,4 +1,4 @@
-</head>
+	
 <body>
 
 <div class="wfs head_top">
@@ -43,15 +43,13 @@
             <li>
                 <a href="{php echo $this->createMobileUrl('shop/notice')}">店铺公告</a>
             </li>
-            <li>
-                {if $this->footer['commission']}
-                    <li {if $footer_current=='commission'}class='active'{/if}>
-                        <a href="{php echo $this->footer['commission']['url']}">
-                            <span>{php echo $this->footer['commission']['text']}</span>
-                        </a>
-                    </li>
-                {/if} 
-            </li>
+            {if $this->footer['commission']}
+                <li {if $footer_current=='commission'}class='active'{/if}>
+                    <a href="{php echo $this->footer['commission']['url']}">
+                        <span>{php echo $this->footer['commission']['text']}</span>
+                    </a>
+                </li>
+            {/if} 
             <li>
                 <a href="{php echo $this->createMobileUrl('member')}">会员中心</a>
             </li>
