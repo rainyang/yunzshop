@@ -40,7 +40,7 @@ li {
  */
 .cover-page-wrapper {
     width: 1210px;
-    margin: 0 auto;
+    margin: 0 auto 10px;
 }
 .shop-cart-wrapper {
     width: 900px;
