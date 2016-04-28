@@ -70,8 +70,18 @@ body {margin:0px; background:#f4f4f4;}
           </div>
   	    </div>
         <div class="info2">说明：分享后会带有独有的推荐码，您的好友访问之后，系统会自动检测并记录客户关系。如果您的好友已被其他人抢先发展成了客户，他就不能成为您的客户，以最早发展成为客户为准。</div>
+        <div  style="margin: 10px 0px;">专属推广链接：<input type="text" id="biao1" value="{php echo $share_my_Url}" style="color:black;width: 86%;"  readonly="readonly" /></div>
+        <input type="button" onClick="copyUrl2()" value="点击复制" style="background:#fe924a;border:0;padding:4px 8px;color:#fff;border-radius: 4px;" />
 	</div>
-
+<script type="text/javascript">
+    function copyUrl2()
+    {
+        var Url2=document.getElementById("biao1");
+        Url2.select(); 
+        document.execCommand("Copy"); 
+        alert("已复制推广链接。");
+    }
+</script>
     <!-- 底部浮层 开始 -->
     <div class="bottom">
         {if is_weixin()}
