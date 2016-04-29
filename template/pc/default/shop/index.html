@@ -83,11 +83,9 @@
 </div>
 </div>
 <div class="boutique boutique-index mt50 fl wfs">
-{if $custom['iscustom'] == 1}
-	<h3><a href="{$custom['index']['link1']}">{$custom['index']['name1']}</a></h3>
-{else}
-	<h3>友情推荐</h3>
-{/if}
+
+	<h3>{$index_name1}</h3>
+
 
 <div class="canvas">
 	<ul class="items" style="width: 1222px;">
@@ -198,11 +196,7 @@
 </div>
 </div>
 <div class="boutique boutique-index mt50 fl wfs">
-{if $custom['iscustom'] == 1}
-	<h3><a href="{$custom['index']['link2']}">{$custom['index']['name2']}</a></h3>
-{else}
-	<h3>新品上线</h3>
-{/if}
+<h3>{$index_name2}</h3>
 <div class="canvas">
 	<ul class="items" style="width: 1222px;">
 {if $goods_two}

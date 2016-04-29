@@ -23,7 +23,7 @@
     .addorder_topbar .ico .fa{color: #fff}
     .addorder_topbar .tips {height:34px;  margin-left:10px; font-size:13px; color:#fff; line-height:17px;}
     
-    .addorder_nav { height:30px; padding:10px;}
+    .addorder_nav { height:26px; padding:10px;box-sizing: content-box; background: #fff;margin: 10px 0;}
     .addorder_nav .nav { padding:2px 5px 2px 5px;; border:1px solid #5f6e8b; color:#5f6e8b; background:#fff; float:left; margin-left:10px;}
     .addorder_nav .selected { border:1px solid #ff6600; color:#ff6600; }
     
@@ -129,7 +129,7 @@
              data-mobile='<%address.mobile%>'
              data-address='<%address.address%>'
              >
-            <div class="ico" ><%if selectedAdressID==address.id%><i class="fa fa-check" style="color:#0c9"></i><%/if%></div>
+            <div class="ico" ><%if address.id==selectedAdressID%><i class="fa fa-check" style="color:#0c9"></i><%/if%></div>
             <div class="info">
                 <div class='inner'>
                     <div class="name"><%address.realname%>(<%address.mobile%>)</div>
@@ -682,9 +682,11 @@ var fromcart = 0;
                     $("#address_mobile").html($this.data('mobile'));
                     $("#address_address").html($this.data('address'));
                     $(".choose_address").show();
+                    
                     //$(".choose_address").animate({right: "-100%"}, 200);
                     //重新获取运费
                     getDispatchPrice();
+                    $('#address_select').click();//pc版选择地址后ico没有变换 因此加入
                 });
                 
                 //$(".chooser").height($(document.body).height());
