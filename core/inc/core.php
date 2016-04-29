@@ -209,6 +209,7 @@ class Core extends WeModuleSite
                 }
             }
         }
+        $set = m('common')->getSysset('shop');
         if(strstr($_SERVER['REQUEST_URI'],'app')){
             if(!isMobile()){
                 if($set['ispc']==0){

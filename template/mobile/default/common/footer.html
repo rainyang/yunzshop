@@ -22,7 +22,7 @@
                     </li>
                  {/if} 
                     <li {if $footer_current=='cart'}class='active'{/if}><a href="{php echo $this->createMobileUrl('shop/cart')}"><i class="fa fa-shopping-cart"></i><span>购物车</span></a></li>
-                    <li {if $footer_current=='member'}class='active'{/if}><a href="{php echo $this->createMobileUrl('')}"><i class="fa fa-user"></i><span>会员中心</span></a></li>
+                    <li {if $footer_current=='member'}class='active'{/if}><a href="{php echo $this->createMobileUrl('member')}"><i class="fa fa-user"></i><span>会员中心</span></a></li>
                 </ul>
 </footer>
 {/if}
