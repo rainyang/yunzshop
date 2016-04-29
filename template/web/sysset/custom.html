@@ -81,6 +81,60 @@
                     </div>
                 </div>
             </div>
+
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">首页模块1</label>
+    <div class="col-sm-9 col-xs-12" >
+          
+        <label for="isrecommand" class="checkbox-inline">
+            <input type="checkbox" name="custom[index1][isrecommand]" value="isrecommand" id="isrecommand" {if $set['custom']['index1']['isrecommand'] == 'isrecommand'}checked="true"{/if} /> 推荐
+        </label>
+        <label for="isnew" class="checkbox-inline">
+            <input type="checkbox" name="custom[index1][isnew]" value="isnew" id="isnew" {if $set['custom']['index1']['isnew'] == 'isnew'}checked="true"{/if} /> 新上
+        </label>
+        <label for="ishot" class="checkbox-inline">
+            <input type="checkbox" name="custom[index1][ishot]" value="ishot" id="ishot" {if $set['custom']['index1']['ishot'] == 'ishot'}checked="true"{/if} /> 热卖
+        </label>
+        <label for="isdiscount" class="checkbox-inline">
+            <input type="checkbox" name="custom[index1][isdiscount]" value="isdiscount" id="isdiscount" {if $set['custom']['index1']['isdiscount'] == 'isdiscount'}checked="true"{/if} /> 促销
+        </label>
+        <label for="issendfree" class="checkbox-inline">
+            <input type="checkbox" name="custom[index1][issendfree]" value="issendfree" id="issendfree" {if $set['custom']['index1']['issendfree'] == 'issendfree'}checked="true"{/if} /> 包邮
+        </label>
+        <label for="istime" class="checkbox-inline">
+            <input type="checkbox" name="custom[index1][istime]" value="istime" id="istime" {if $set['custom']['index1']['istime'] == 'istime'}checked="true"{/if} /> 限时卖
+        </label>
+
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">首页模块2</label>
+    <div class="col-sm-9 col-xs-12" >
+          
+        <label for="isrecommand2" class="checkbox-inline">
+            <input type="checkbox" name="custom[index2][isrecommand]" value="isrecommand" id="isrecommand2" {if $set['custom']['index2']['isrecommand'] == 'isrecommand'}checked="true"{/if} /> 推荐
+        </label>
+        <label for="isnew2" class="checkbox-inline">
+            <input type="checkbox" name="custom[index2][isnew]" value="isnew" id="isnew2" {if $set['custom']['index2']['isnew'] == 'isnew'}checked="true"{/if} /> 新上
+        </label>
+        <label for="ishot2" class="checkbox-inline">
+            <input type="checkbox" name="custom[index2][ishot]" value="ishot" id="ishot2" {if $set['custom']['index2']['ishot'] == 'ishot'}checked="true"{/if} /> 热卖
+        </label>
+        <label for="isdiscount2" class="checkbox-inline">
+            <input type="checkbox" name="custom[index2][isdiscount]" value="isdiscount" id="isdiscount2" {if $set['custom']['index2']['isdiscount'] == 'isdiscount'}checked="true"{/if} /> 促销
+        </label>
+        <label for="issendfree2" class="checkbox-inline">
+            <input type="checkbox" name="custom[index2][issendfree]" value="issendfree" id="issendfree2" {if $set['custom']['index2']['issendfree'] == 'issendfree'}checked="true"{/if} /> 包邮
+        </label>
+        <label for="istime2" class="checkbox-inline">
+            <input type="checkbox" name="custom[index2][istime]" value="istime" id="istime2" {if $set['custom']['index2']['istime'] == 'istime'}checked="true"{/if} /> 限时卖
+        </label>
+
+    </div>
+</div>
+<!-- 
+
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">首页模块1</label>
                 <div class="col-sm-9">
@@ -106,7 +160,7 @@
                         <input type="text" name="custom[index][link2]" class="form-control" value="{$set['custom']['index']['link2']}"  />
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">底部菜单</label>
                 <div class="col-sm-9">
