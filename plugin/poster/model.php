@@ -109,7 +109,7 @@ if (!class_exists('PosterModel')) {
 			return array('barcode' => json_decode($data, true), 'ticket' => $ticket);
 		}
         public function getQR($poster, $member, $goodsid = 0)
-        {echo 1;exit;
+        {
             global $_W, $_GPC;
             $acid = $_W['acid'];
             if ($poster['type'] == 1) {
