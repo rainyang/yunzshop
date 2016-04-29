@@ -51,8 +51,11 @@ if ($operation == 'index') {
 	$adss = set_medias($adss, 'thumb_1,thumb_2,thumb_3,thumb_4');
 	$category = pdo_fetchall('select * from ' . tablename('sz_yi_category'));
 	$category = set_medias($category, 'thumb');
-	$goods = pdo_fetchall('select * from ' . tablename('sz_yi_goods'));
-	$goods = set_medias($goods, 'thumb');
+	$goods_one = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . 'where uniacid = :uniacid and status = 1 and deleted = 0', array(':uniacid' => $uniacid));
+	//$goods = pdo_fetchall('select * from ' . tablename('sz_yi_goods'));
+	$goods_one = set_medias($goods_one, 'thumb');
+	$goods_two = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . 'where uniacid = :uniacid and status = 1 and deleted = 0', array(':uniacid' => $uniacid));
+	$goods_two = set_medias($goods_two, 'thumb');
 	foreach ($category as &$c) {
 		$c['thumb'] = tomedia($c['thumb']);
 		if ($c['level'] == 3) {
