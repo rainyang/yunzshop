@@ -1,7 +1,12 @@
 {template 'common/header'}
 
 <title>{php echo $this->set['texts']['center']}</title>
-{template 'common/navigation'}
+
+<?php if(isMobile()){?>
+
+<?php }else{?>
+    {template 'common/navigation'}
+<?php }?>
 <style type="text/css">
     body {margin:0px; background:#eee; font-family:'微软雅黑'; }
     a {text-decoration:none;}
@@ -118,4 +123,9 @@
     })
 </script>
 {php $show_footer=true;$footer_current ='commission'}
-{template 'common/bottom'}
+<?php if(isMobile()){?>
+    {template 'common/footer'}
+<?php }else{?>
+    {template 'common/bottom'}
+<?php }?>
+
