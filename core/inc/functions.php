@@ -3,6 +3,68 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 
+function isMobile() {
+    // 如果有HTTP_X_WAP_PROFILE则一定是移动设备
+    if (isset ($_SERVER['HTTP_X_WAP_PROFILE'])){
+        return true;
+    }
+    //如果via信息含有wap则一定是移动设备,部分服务商会屏蔽该信息
+    if (isset ($_SERVER['HTTP_VIA'])) {
+        //找不到为flase,否则为true
+        return stristr($_SERVER['HTTP_VIA'], "wap") ? true : false;
+    }
+    //判断手机发送的客户端标志,兼容性有待提高
+    if (isset ($_SERVER['HTTP_USER_AGENT'])) {
+        $clientkeywords = array (
+            'nokia',
+            'sony',
+            'ericsson',
+            'mot',
+            'samsung',
+            'htc',
+            'sgh',
+            'lg',
+            'sharp',
+            'sie-',
+            'philips',
+            'panasonic',
+            'alcatel',
+            'lenovo',
+            'iphone',
+            'ipod',
+            'blackberry',
+            'meizu',
+            'android',
+            'netfront',
+            'symbian',
+            'ucweb',
+            'windowsce',
+            'palm',
+            'operamini',
+            'operamobi',
+            'openwave',
+            'nexusone',
+            'cldc',
+            'midp',
+            'wap',
+            'mobile'
+        );
+        // 从HTTP_USER_AGENT中查找手机浏览器的关键字
+        if (preg_match("/(" . implode('|', $clientkeywords) . ")/i", strtolower($_SERVER['HTTP_USER_AGENT']))) {
+            return true;
+        }
+    }
+    //协议法，因为有可能不准确，放到最后判断
+    if (isset ($_SERVER['HTTP_ACCEPT'])) {
+        // 如果只支持wml并且不支持html那一定是移动设备
+        // 如果支持wml和html但是wml在html之前则是移动设备
+        if ((strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') !== false) && (strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === false || (strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') < strpos($_SERVER['HTTP_ACCEPT'], 'text/html')))) {
+            return true;
+        }
+    }
+    return false;
+}
+
 function chmod_dir($dir,$chmod='') {
     if(is_dir($dir)) {
         if($handle = opendir($dir)) {
@@ -34,11 +96,45 @@ function curl_download($url, $dir) {
     return $res;
 }
 
-function send_sms($account, $pwd, $mobile, $content) 
-{		
-   $smsrs = file_get_contents('http://115.29.33.155/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
+function send_sms($account, $pwd, $mobile, $code) 
+{       
+    $content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
+    //$smsrs = file_get_contents('http://115.29.33.155/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
+    $smsrs = file_get_contents('http://106.ihuyi.cn/webservice/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
   
    return xml_to_array($smsrs);
+}
+
+function send_sms_alidayu($mobile, $code, $templateType){
+    $set = m('common')->getSysset();
+    include IA_ROOT . "/addons/sz_yi/alifish/TopSdk.php";
+    //$appkey = '23355246';
+    //$secret = '0c34a4887d2f52a6365a266bb3b38d25';
+
+    switch ($templateType) {
+        case 'reg':
+            $templateCode = $set['sms']['templateCode'];
+            break;
+        case 'forget':
+            $templateCode = $set['sms']['templateCodeForget'];
+            break;
+        default:
+            $templateCode = $set['sms']['templateCode'];
+            break;
+    }
+
+    $c = new TopClient;
+    $c->appkey = $set['sms']['appkey'];
+    $c->secretKey = $set['sms']['secret'];
+    $req = new AlibabaAliqinFcSmsNumSendRequest;
+    $req->setExtend("123456");
+    $req->setSmsType("normal");
+    $req->setSmsFreeSignName($set['sms']['signname']);
+    $req->setSmsParam("{\"code\":\"{$code}\",\"product\":\"{$set['sms']['product']}\"}");
+    $req->setRecNum($mobile);
+    $req->setSmsTemplateCode($templateCode);
+    $resp = $c->execute($req);
+    return objectArray($resp);
 }
 
 function xml_to_array($xml)
@@ -50,7 +146,7 @@ function xml_to_array($xml)
             $subxml= $matches[2][$i];
             $key = $matches[1][$i];
                     if(preg_match( $reg, $subxml )){
-                            $arr[$key] = $this->xml_to_array( $subxml );
+                            $arr[$key] = xml_to_array( $subxml );
                     }else{
                             $arr[$key] = $subxml;
                     }
@@ -80,13 +176,15 @@ function m($name = '')
 }
 function isEnablePlugin($name){
     $plugins = m("cache")->getArray("plugins", "global");
-    foreach($plugins as $p){
-        if($p['identity'] == $name){
-            if($p['status']){
-                return true;
-            }
-            else{
-                return false;
+    if($plugins){
+        foreach($plugins as $p){
+            if($p['identity'] == $name){
+                if($p['status']){
+                    return true;
+                }
+                else{
+                    return false;
+                }
             }
         }
     }
@@ -390,6 +488,18 @@ function plog($type = '', $op = '')
     if ($perm) {
         $perm->log($type, $op);
     }
+}
+//stdClass Object 转 数组
+function objectArray($array){
+    if(is_object($array)){
+        $array = (array)$array;
+    }
+    if(is_array($array)){
+        foreach($array as $key=>$value){
+            $array[$key] = objectArray($value);
+        }
+    }
+    return $array;
 }
 function tpl_form_field_category_3level($name, $parents, $children, $parentid, $childid, $thirdid)
 {

@@ -30,4 +30,7 @@ if ($_W['isajax']) {
         ));
     }
 }
+if(!isMobile()){
+    include $this->template('member/center');
+}
 include $this->template('member/log');

@@ -103,7 +103,7 @@ class Sz_DYi_User
         $needLoginPList = array('address', 'cart', 'commission');
 
         //不需要登陆的P方法
-        $noLoginList = array('category', 'login', 'designer', 'register', 'sendcode', 'bindmobile', 'forget', 'article');
+        $noLoginList = array('category', 'login', 'receive', 'close', 'designer', 'register', 'sendcode', 'bindmobile', 'forget', 'article');
 
         //不需要登陆的do方法
         $noLoginDoList = array('shop', 'login', 'register');
@@ -112,6 +112,12 @@ class Sz_DYi_User
         if(!$_GPC['p'] && $_GPC["do"]=='shop'){
             return;
         }
+
+        /*
+        if($_GPC["c"]=='entry'){
+            return;
+        }
+         */
 
         //需要登陆
         if((!in_array($_GPC["p"], $noLoginList) && !in_array($_GPC["do"], $noLoginDoList)) or (in_array($_GPC["p"], $needLoginPList))){

@@ -152,6 +152,9 @@ if ($_W['isajax']) {
 }
 if ($operation == 'refund') {
     $tradeset = m('common')->getSysset('trade');
+    if(!isMobile()){
+    	include $this->template('member/center');
+    }
     include $this->template('order/refund');
 } else if ($operation == 'comment') {
     include $this->template('order/comment');

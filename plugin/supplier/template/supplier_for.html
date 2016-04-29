@@ -52,6 +52,7 @@
                     <th style='width:120px;'>手机号码</th>
                     <th style='width:120px;'>微信</th>
                     <th style='width:120px;'>产品名称</th>
+                    <th style='width:120px;'>操作</th>
                 </tr>
             </thead>
             <tbody>
@@ -62,6 +63,7 @@
                     <td>{$row['mobile']}</td>
                     <td>{$row['weixin']}</td>
                     <td>{$row['productname']}</td>
+                    <td><a class="label label-default " href="{php echo $this->createPluginWebUrl('supplier/supplier_for',array('op' => 'af_supplier', 'id' => $row['id'], 'status' => 1));}">驳回审核</a><a class="label label-default label-info" href="{php echo $this->createPluginWebUrl('supplier/supplier_for',array('op' => 'af_supplier', 'id' => $row['id'], 'status' => 2));}">审核通过</a></td>
                 </tr>
                 {/loop}
             </tbody>

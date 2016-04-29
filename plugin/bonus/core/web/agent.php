@@ -1,8 +1,5 @@
 <?php
-
-
 global $_W, $_GPC;
-
 $agentlevels = $this->model->getLevels();
 $operation   = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 if ($operation == 'display') {
@@ -34,6 +31,27 @@ if ($operation == 'display') {
         } else {
             $condition .= ' and f.follow=' . intval($_GPC['followed']);
         }
+    }
+
+    if($_GPC['bonus_area'] != ''){
+        if($_GPC['bonus_area'] == 1){
+            $condition .= " and dm.bonus_area=1";
+        }else if($_GPC['bonus_area'] == 2){
+            $condition .= " and dm.bonus_area=2";
+        }else if($_GPC['bonus_area'] == 3){
+            $condition .= " and dm.bonus_area=3";
+        }
+    }
+    if($_GPC['reside']['province'] != ""){
+        $condition .= " and dm.bonus_province='".$_GPC['reside']['province']."'";
+    }
+
+    if($_GPC['reside']['city'] != ""){
+        $condition .= "and dm.bonus_city='".$_GPC['reside']['city']."'";
+    }
+
+    if($_GPC['reside']['district'] != ""){
+        $condition .= "and dm.bonus_district='".$_GPC['reside']['district']."'";
     }
     if (empty($starttime) || empty($endtime)) {
         $starttime = strtotime('-1 month');
@@ -218,6 +236,25 @@ if ($operation == 'display') {
             $data['agentblack'] = 1;
             $data['status']     = 0;
             $data['isagent']    = 1;
+        }
+        $reside = $_GPC['reside'];
+        if(!empty($data['bonus_area'])){
+            if($data['bonus_area'] == 1){
+                if(empty($reside['province'])){
+                    message('请选择代理的省', '', 'error');
+                }
+            }else if($data['bonus_area'] == 2){
+                if(empty($reside['city'])){
+                    message('请选择代理的市', '', 'error');
+                }
+            }else if($data['bonus_area'] == 3){
+                if(empty($reside['district'])){
+                    message('请选择代理的区', '', 'error');
+                }
+            }
+            $data['bonus_province'] = $reside['province'];
+            $data['bonus_city'] = $reside['city'];
+            $data['bonus_district'] = $reside['district'];
         }
         plog('bonus.agent.edit', "修改分销商 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
         if(!empty($data['bonuslevel'])){

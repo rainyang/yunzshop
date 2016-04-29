@@ -44,6 +44,7 @@ $oldset  = unserialize($setdata['sets']);
 
 if ($op == 'template') {
     $styles = array();
+    //主题列表
     $dir    = IA_ROOT . "/addons/sz_yi/template/mobile/";
     if ($handle = opendir($dir)) {
         while (($file = readdir($handle)) !== false) {
@@ -81,13 +82,29 @@ if (checksubmit()) {
         $set['shop']['logo']    = save_media($shop['logo']);
         $set['shop']['signimg'] = save_media($shop['signimg']);
         $set['shop']['diycode'] = trim($shop['diycode']);
+        $set['shop']['ispc'] = trim($shop['ispc']);
         plog('sysset.save.shop', '修改系统设置-商城设置');
+    }
+    elseif ($op == 'custom') {
+        $custom                    = is_array($_GPC['custom']) ? $_GPC['custom'] : array();
+        $set['custom']['iscustom']  = $custom['iscustom'];
+        $set['custom']['header']  = $custom['header'];
+        $set['custom']['footer'] = $custom['footer'];
+        $set['custom']['index'] = $custom['index'];
+        //print_r($set);exit;
+        plog('sysset.save.sms', '修改系统设置-PC设置');
     }
     elseif ($op == 'sms') {
         $sms                    = is_array($_GPC['sms']) ? $_GPC['sms'] : array();
+        $set['sms']['type']     = $sms['type'];
         $set['sms']['account']  = $sms['account'];
         $set['sms']['password'] = $sms['password'];
-        //print_r($set);exit;
+        $set['sms']['appkey']   = $sms['appkey'];
+        $set['sms']['secret']   = $sms['secret'];
+        $set['sms']['signname'] = $sms['signname'];
+        $set['sms']['product']  = $sms['product'];
+        $set['sms']['templateCode'] = $sms['templateCode'];
+        $set['sms']['templateCodeForget'] = $sms['templateCodeForget'];
         plog('sysset.save.sms', '修改系统设置-短信设置');
     } elseif ($op == 'follow') {
         $set['share']         = is_array($_GPC['share']) ? $_GPC['share'] : array();
@@ -147,27 +164,30 @@ if (checksubmit()) {
     } elseif ($op == 'template') {
         $shop                 = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['style'] = save_media($shop['style']);
+        $set['shop']['theme'] = trim($shop['theme']);
         m('cache')->set('template_shop', $set['shop']['style']);
-        plog('sysset.save.pay', '修改系统设置-模板设置');
+        m('cache')->set('theme_shop', $set['shop']['theme']);
+        plog('sysset.save.template', '修改系统设置-模板设置');
     } elseif ($op == 'member') {
         $shop                     = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['levelname'] = trim($shop['levelname']);
         $set['shop']['levelurl']  = trim($shop['levelurl']);
-        plog('sysset.save.pay', '修改系统设置-会员设置');
+        plog('sysset.save.member', '修改系统设置-会员设置');
+        $set['shop']['isbindmobile']   = intval($shop['isbindmobile']);
     } elseif ($op == 'category') {
         $shop                     = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['catlevel']  = trim($shop['catlevel']);
         $set['shop']['catshow']   = intval($shop['catshow']);
         $set['shop']['catadvimg'] = save_media($shop['catadvimg']);
         $set['shop']['catadvurl'] = trim($shop['catadvurl']);
-        plog('sysset.save.pay', '修改系统设置-分类层级设置');
+        plog('sysset.save.category', '修改系统设置-分类层级设置');
     } elseif ($op == 'contact') {
         $shop                       = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['qq']          = trim($shop['qq']);
         $set['shop']['address']     = trim($shop['address']);
         $set['shop']['phone']       = trim($shop['phone']);
         $set['shop']['description'] = trim($shop['description']);
-        plog('sysset.save.pay', '修改系统设置-联系方式设置');
+        plog('sysset.save.contact', '修改系统设置-联系方式设置');
     }
     $data = array(
         'uniacid' => $_W['uniacid'],

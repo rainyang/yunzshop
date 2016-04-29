@@ -60,24 +60,23 @@
                         </select>
                     </div>
                 </div>
-                <!-- <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">状态</label>
-                    <div class="col-sm-4">
-                        <select name='status' class='form-control'>
-                            <option value=''>审核状态</option>
-                            <option value='0' {if $_GPC['status']=='0'}selected{/if}>未审核</option>
-                            <option value='1' {if $_GPC['status']=='1'}selected{/if}>已审核</option>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">区域代理</label>
+                    <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <select name='bonus_area' class='form-control'>
+                            <option value=''>全部等级</option>
+                            <option value='1' {if $_GPC['bonus_area']=='1'}selected{/if}>省级代理</option>
+                            <option value='2' {if $_GPC['bonus_area']=='2'}selected{/if}>市级代理</option>
+                            <option value='3' {if $_GPC['bonus_area']=='3'}selected{/if}>区级代理</option>
                         </select>
                     </div>
-                    <div class="col-sm-4">
-                        <select name='agentblack' class='form-control'>
-                            <option value=''>黑名单状态</option>
-                            <option value='0' {if $_GPC['agentblack']=='0'}selected{/if}>否</option>
-                            <option value='1' {if $_GPC['agentblack']=='1'}selected{/if}>是</option>
-                        </select>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">区域选择</label>
+                    <div class="col-sm-8 col-lg-9 col-xs-12">
+                        {php echo tpl_fans_form('reside',array('province' => $_GPC['reside']['province'],'city' => $_GPC['reside']['city'],'district' => $_GPC['reside']['district']));}
                     </div>
-
-                </div> -->
+                </div>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label"></label>
                     <div class="col-sm-8 col-lg-9 col-xs-12">
@@ -97,12 +96,12 @@
         <table class="table table-hover table-responsive">
             <thead class="navbar-inner" >
             <tr>
-                <th style='width:10%;'>会员ID</th>
+                <th style='width:5%;'>会员ID</th>
                 <th style='width:10%;'>推荐人</th>
                 <th style='width:10%x;'>粉丝</th>
                 <th style='width:10%;'>姓名<br/>手机号码</th>
                 <th style='width:10%;'>代理商等级</th>
-                <th style='width:10%;'>点击数</th>
+                <th style='width:15%;'>区域代理</th>
                 <th style='width:10%;;'>累计分红佣金<br/>发放分红佣金</th>
                 <th style='width:10%;;'>下级总数</th>
                 <th style='width:10%;'>关注</th>
@@ -134,7 +133,12 @@
 
                 <td>{$row['realname']} <br/> {$row['mobile']}</td>
                 <td>{if empty($row['levelname'])} {php echo empty($this->set['levelname'])?'普通等级':$this->set['levelname']}{else}{$row['levelname']}{/if}</td>
-                <td>{$row['clickcount']}</td>
+                <td>
+                    {if $row['bonus_area'] == 0}无{/if}
+                    {if $row['bonus_area'] == 1}省级代理：{$row['bonus_province']}{/if}
+                    {if $row['bonus_area'] == 2}市级代理：{$row['bonus_city']}{/if}
+                    {if $row['bonus_area'] == 3}区级代理：{$row['bonus_district']}{/if}
+                </td>
                 <td>{$row['commission_total']}<br/>{$row['commission_pay']}</td>
                 <td>
                     总计：{$row['levelcount']} 人
@@ -256,6 +260,63 @@
                 {/if}
             </div>
         </div>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">区域代理</label>
+            <div class="col-sm-4">
+                <select  class="form-control" id="bonus_area" name="data[bonus_area]">
+                    <option value="0" {if empty($member['bonus_area'])}selected{/if}>不选择</option>
+                    <option value="1" {if $member['bonus_area']==1}selected{/if}>省级代理</option>
+                    <option value="2" {if $member['bonus_area']==2}selected{/if} >市级代理</option>
+                    <option value="3" {if $member['bonus_area']==3}selected{/if} >区级代理</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group form-area" {if empty($member['bonus_area'])}style="display:none;"{/if}>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">代理区域</label>
+            <div class="col-sm-9 col-xs-12">
+                {php echo tpl_fans_form('reside',array('province' => $member['bonus_province'],'city' => $member['bonus_city'],'district' => $member['bonus_district']));}
+            </div>
+        </div>
+        <div class="form-group form-area">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <div class="input-group-addon">区域代理</div>
+                        <input type="text" name="data[bonus_area_commission]" class="form-control" value="{$member['bonus_area_commission']}"  />
+                        <div class="input-group-addon">%</div>
+                    </div>
+                    <span class='help-block'>如不设置，则为基础设置中默认比例值</span>
+                </div>
+            </div>
+        <script type="text/javascript">
+            $(document).ready(function(){
+              $("#bonus_area").change(function(){
+                changearea();
+              });
+            });
+            function changearea(){
+                var area_val = $("#bonus_area").val();
+                if(area_val==0){
+                    $(".form-area").hide();
+                }else if(area_val==1){            
+                    $(".form-area").show();
+                    $(".form-province").show();
+                    $(".tpl-city").hide();
+                    $(".tpl-district").hide();
+                }else if(area_val==2){            
+                    $(".form-area").show();
+                    $(".form-province").show();
+                    $(".tpl-city").show();
+                    $(".tpl-district").hide();
+                }else if(area_val==3){            
+                    $(".form-area").show();
+                    $(".form-province").show();
+                    $(".tpl-city").show();
+                    $(".tpl-district").show();  
+                }
+            }
+            changearea();
+        </script>
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">累计分红佣金</label>
             <div class="col-sm-9 col-xs-12">

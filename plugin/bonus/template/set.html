@@ -16,6 +16,50 @@
                     </select>
                 </div>
             </div> 
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区代理分红</label>
+                <div class="col-sm-4">
+                    <select  class="form-control" name="setdata[area_start]">
+                        <option value="0" {if empty($set['area_start'])}selected{/if}>不开启地区代理</option>
+                        <option value="1" {if $set['area_start']==1}selected{/if}>开启地区代理</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">默认分销佣金比例</label>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <div class="input-group-addon">省级</div>
+                        <input type="text" name="setdata[bonus_commission1]" class="form-control" value="{$set['bonus_commission1']}"  />
+                        <div class="input-group-addon">%</div>
+                        
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <div class="input-group-addon">市级</div>
+                        <input type="text" name="setdata[bonus_commission2]" class="form-control" value="{$set['bonus_commission2']}"  />
+                        <div class="input-group-addon">%</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-4">
+                    <div class="input-group">
+                        <div class="input-group-addon">区级</div>
+                        <input type="text" name="setdata[bonus_commission3]" class="form-control" value="{$set['bonus_commission3']}"  />
+                        <div class="input-group-addon">%</div>
+                    </div>
+                  <span class='help-block'>按订单收货地址，省事区代理获得相应比例分红</span>
+                </div>
+
+            </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">内购得分红</label>
                 <div class="col-sm-9 col-xs-12">
@@ -49,9 +93,20 @@
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">打款周期</label>
                 <div class="col-sm-9 col-xs-12">
-                    <label class="radio-inline"><input type="radio"  name="setdata[sendmonth]" value="0" {if $set['sendmonth'] ==0} checked="checked"{/if} /> 天</label>
-                    <label class="radio-inline"><input type="radio"  name="setdata[sendmonth]" value="1" {if $set['sendmonth'] ==1} checked="checked"{/if} /> 月</label>
+                    <label class="radio-inline"><input type="radio" class="sendmoth" name="setdata[sendmonth]" value="0" {if $set['sendmonth'] ==0} checked="checked"{/if} /> 天</label>
+                    <label class="radio-inline"><input type="radio" class="sendmoth"  name="setdata[sendmonth]" value="1" {if $set['sendmonth'] ==1} checked="checked"{/if} /> 月</label>
                     <span class='help-block'>结算后第二天打款的时间(需选择自动打款起效)</span>
+                </div>
+            </div>
+            <div class="form-group form-interval" style="display:none;">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="input-group">
+                        <div class="input-group-addon">分红间隔</div>
+                        <input type="text" name="setdata[interval_day]" class="form-control" value="{$set['interval_day']}"  />
+                        <div class="input-group-addon">天</div>
+                    </div>
+                    <span class='help-block'>结算后分红间隔几天发放</span>
                 </div>
             </div>
             <div class="form-group">
@@ -195,8 +250,8 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
                           <div class="input-group">
-                            <div class="input-group-addon">最高级别名称</div>
-                            <input type="text" name="texts[premiername]" class="form-control" value="{php echo empty($set['texts']['premiername'])?'最高级别':$set['texts']['premiername']}"  />
+                            <div class="input-group-addon">全球分红</div>
+                            <input type="text" name="texts[premiername]" class="form-control" value="{php echo empty($set['texts']['premiername'])?'全球分红':$set['texts']['premiername']}"  />
                         </div>
                     </div>
               </div>
@@ -296,4 +351,21 @@
         
     </div>
 </form>
+<script type="text/javascript">
+
+$(document).ready(function(){
+  $(".sendmoth").click(function(){
+    interval_day();
+  });
+});
+
+function interval_day(){
+   if($('.sendmoth:checked').val()==1){
+        $(".form-interval").show();
+    }else{
+       $(".form-interval").hide(); 
+    } 
+}
+interval_day();
+</script>
 {template 'web/_footer'}

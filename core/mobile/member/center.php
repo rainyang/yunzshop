@@ -10,15 +10,15 @@ $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
 setcookie($cookieid, '');
 exit;
  */
-
 $openid = m('user')->getOpenid();
 $set = m('common')->getSysset(array('shop', 'trade'));
 $member = m('member')->getMember($openid);
 $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
-//echo $openid;
-//print_r($member);exit;
 $uniacid = $_W['uniacid'];
 $hascom = false;
+if (p('supplier')) {
+	$supplier_set = p('supplier')->getSet();
+}
 $plugc = p('commission');
 if ($plugc) {
 	$pset = $plugc->getSet();
@@ -73,4 +73,8 @@ if ($_W['isajax']) {
 	}
 	show_json(1, array('member' => $member, 'order' => $order, 'level' => $level, 'open_creditshop' => $open_creditshop, 'counts' => $counts));
 }
+
 include $this->template('member/center');
+if(!isMobile()){
+	include $this->template('member/info');
+}

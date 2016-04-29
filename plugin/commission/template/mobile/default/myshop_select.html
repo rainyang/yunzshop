@@ -1,4 +1,8 @@
-{template 'common/header'}
+<?php if(isMobile()){?>
+    {template 'common/header'}
+<?php }else{?>
+    {template 'common/header_center'}
+<?php }?>
 <title>小店设置</title>
 <script src="../addons/sz_yi/static/js/dist/ajaxfileupload.js" type="text/javascript"></script>
 <style type="text/css">

@@ -1,4 +1,8 @@
-{template 'common/header'}
+<?php if(isMobile()){?>
+    {template 'common/header'}
+<?php }else{?>
+    {template 'common/header_center'}
+<?php }?>
 <title>{php echo $this->set['texts']['order']}</title>
 <style type="text/css">
 body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
@@ -13,7 +17,7 @@ a {text-decoration:none;}
 
 .order_title {height:40px; padding:5px; line-height:50px; font-size:16px; color:#666;}
 
-.order_list {height:40px; padding:10px; background:#fff;margin-top:5px;}
+.order_list {height:60px; padding:10px; background:#fff;margin-top:5px;}
 .order_list .left {height:40px; width:100%; float:left; color:#999; margin-right:-20%;font-size:14px;}
 .order_list .left .inner { width:100%;margin-right:-20%}
 .order_list .left span {color:#666; font-size:14px; line-height:28px;}
@@ -46,6 +50,7 @@ a {text-decoration:none;}
     .detail_good .price .pnum { height:20px;width:100%;text-align:right;font-size:13px;color:#666; }
     .detail_good .price .num { height:20px;width:100%;text-align:right;color:#ff6600}
 </style>
+<div class="all-divbox">
 <div class="order_top">
     <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> {php echo $this->set['texts']['order']}({$ordercount})</div>
     <div class='num'>预计: +{$commissioncount}元</div>
@@ -57,7 +62,7 @@ a {text-decoration:none;}
         <div class="nav"  data-status='3'>已完成</div>
 </div>
 
-<div id='container'></div>
+<div id='container' style="background-color: #f2f2f2;"></div></div>
 <script id='tpl_order' type='text/html'>
     <%each list as order%>
   <div class="order_list">
