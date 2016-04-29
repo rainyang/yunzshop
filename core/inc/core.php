@@ -211,7 +211,7 @@ class Core extends WeModuleSite
         if(strstr($_SERVER['REQUEST_URI'],'app')){
             if(!isMobile()){
                 if($set['ispc']==0){
-                    message('抱歉，PC版暂时关闭，请用微信打开!','','error');
+                    //message('抱歉，PC版暂时关闭，请用微信打开!','','error');
                 }
             }
         }
@@ -328,8 +328,16 @@ class Core extends WeModuleSite
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
         global $_W;
-
         $tmplateType = (isMobile()) ? 'mobile' : 'pc';
+        $set = m('common')->getSysset('shop');
+        if(strstr($_SERVER['REQUEST_URI'],'app')){
+            if(!isMobile()){
+                if($set['ispc']==0){
+                    $tmplateType = 'mobile';
+                    //message('抱歉，PC版暂时关闭，请用微信打开!','','error');
+                }
+            }
+        }
         $name = strtolower($this->modulename);
         if (defined('IN_SYS')) {
             $source  = IA_ROOT . "/web/themes/{$_W['template']}/{$name}/{$filename}.html";

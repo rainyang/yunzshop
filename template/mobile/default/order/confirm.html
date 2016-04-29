@@ -730,7 +730,7 @@ var fromcart = 0;
                 var result = addaddress_json.result;
                 $('#address_container').html(tpl('tpl_address_new', result));
                 cascdeInit(result.address.province,result.address.city);
-                {if $trade['shareaddress']=='1'}
+                {if $trade['shareaddress']=='1' && is_weixin()}
                     var shareAddress = {php echo json_encode($shareAddress)};
                                 WeixinJSBridge.invoke('editAddress',shareAddress,function(res){ 
                                     if(res.err_msg=='edit_address:ok'){
