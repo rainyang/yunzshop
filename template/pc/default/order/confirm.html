@@ -676,6 +676,7 @@ var fromcart = 0;
 
                 $('#address_container').html(tpl('tpl_address_list', addresslist_json.result));
                 $('.address .ico,.address .info').click(function() {
+                  alert
                     var $this = $(this).parent();
                     $("#addressid").val($this.data('addressid'));
                     $("#address_realname").html($this.data('realname'));
@@ -685,6 +686,7 @@ var fromcart = 0;
                     //$(".choose_address").animate({right: "-100%"}, 200);
                     //重新获取运费
                     getDispatchPrice();
+                    //$('#address_select').click();//pc版选择地址后ico没有变换 因此加入
                 });
                 
                 //$(".chooser").height($(document.body).height());
