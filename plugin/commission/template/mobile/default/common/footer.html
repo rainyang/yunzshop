@@ -11,15 +11,15 @@
 	                </ul>
 	</footer>
 	{/if}
-<?php }else{?>
+<?php }else{
+	$set = m('common')->getSysset('custom');
+	?>
 <div class="foot fl wfs fz12">
-    <p>Copyright © 2016芸众. All Rights Reserved. 哈尔滨芸众 版权所有</p>
-    <p>哈尔滨市南岗区中兴大道555号东辉明珠园</p>
+    <p>{$set['custom1']}</p>
+    <p>{$set['custom2']}</p>
 </div>
 </body>
 </html>
 <?php }?>
-
-
-
 {template 'common/footer_base'}
+
