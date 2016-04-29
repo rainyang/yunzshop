@@ -82,6 +82,14 @@ class Sz_DYi_User
         @session_start();
         $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
         $openid   = base64_decode($_COOKIE[$cookieid]);
+
+        /**
+         * app端通过token验证用户身份
+         */
+        if  (empty($_SERVER['HTTP_USER_AGENT']) && empty($openid) && $_GPC['token']) {
+            $openid = $_GPC['token'];
+        }
+
         if (!empty($openid)) {
             return $openid;
         }
@@ -130,6 +138,7 @@ class Sz_DYi_User
                         //'nickname' => '小萝莉',
                         'headimgurl' => '',
                     );
+
                     return $userinfo;
                 }
             }

@@ -111,10 +111,10 @@
                        return;
                    }
                    
-                  if( $('#weixin').isEmpty()){
+/*                  if( $('#weixin').isEmpty()){
                        core.tip.show('请输入微信号!');
                        return;
-                   }
+                   }*/
                    $(this).html('正在处理...').attr('saving',1);
                    var birthday = $('#birthday').val().split('-');
                     core.json('member/info', {
