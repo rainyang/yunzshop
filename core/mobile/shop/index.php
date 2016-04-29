@@ -104,10 +104,10 @@ if ($operation == 'index') {
 	}
 
 
-	$goods_one = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . 'where uniacid = :uniacid and status = 1 and deleted = 0 '.$condition1, array(':uniacid' => $uniacid));
+	$goods_one = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . ' where uniacid = :uniacid and status = 1 and deleted = 0 '.$condition1, array(':uniacid' => $uniacid));
 	$goods_one = set_medias($goods_one, 'thumb');
 
-	$goods_two = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . 'where uniacid = :uniacid and status = 1 and deleted = 0 '.$condition2, array(':uniacid' => $uniacid));
+	$goods_two = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . ' where uniacid = :uniacid and status = 1 and deleted = 0 '.$condition2, array(':uniacid' => $uniacid));
 
 	$goods_two = set_medias($goods_two, 'thumb');
 	foreach ($category as &$c) {
