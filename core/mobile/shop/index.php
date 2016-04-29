@@ -51,8 +51,65 @@ if ($operation == 'index') {
 	$adss = set_medias($adss, 'thumb_1,thumb_2,thumb_3,thumb_4');
 	$category = pdo_fetchall('select * from ' . tablename('sz_yi_category'));
 	$category = set_medias($category, 'thumb');
-	$goods = pdo_fetchall('select * from ' . tablename('sz_yi_goods'));
-	$goods = set_medias($goods, 'thumb');
+
+	$custom = m("common")->getSysset('custom');
+
+	$index_name = array(
+		'isrecommand' 	=> '精品推荐',
+		'isnew' 		=> '新上商品',
+		'ishot' 		=> '热卖商品',
+		'isdiscount' 	=> '促销商品',
+		'issendfree' 	=> '包邮商品',
+		'istime' 		=> '限时特价'
+		);
+
+
+	$condition1 = ' and isrecommand = 1 ';
+	$condition2 = ' and isnew = 1';
+	$index_name1 = $index_name['isrecommand'];
+	$index_name2 = $index_name['isnew'];
+	if($custom['iscustom'])
+	{
+		$condition1 = '';
+		$condition2 = '';
+		$index_name1 = '';
+		$index_name2 = '';
+		$i = 1;
+		foreach ($custom['index1'] as $key => $value) {
+			$index_name1 .= " ".$index_name[$key];
+			if($i == 1)
+			{
+				$condition1 .= " and (".$key." = 1";
+			}else
+			{
+				$condition1 .= " or ".$key." = 1";
+			}
+			
+			$i++;
+		}
+		$condition1 .= ") ";
+		$i = 1;
+		foreach ($custom['index2'] as $key => $value) {
+			$index_name2 .= " ".$index_name[$key];
+			if($i == 1)
+			{
+				$condition2 .= " and (".$key." = 1";
+			}else
+			{
+				$condition2 .= " or ".$key." = 1";
+			}
+			$i++;
+		}
+		$condition2 .= ") ";
+	}
+
+
+	$goods_one = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . ' where uniacid = :uniacid and status = 1 and deleted = 0 '.$condition1, array(':uniacid' => $uniacid));
+	$goods_one = set_medias($goods_one, 'thumb');
+
+	$goods_two = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . ' where uniacid = :uniacid and status = 1 and deleted = 0 '.$condition2, array(':uniacid' => $uniacid));
+
+	$goods_two = set_medias($goods_two, 'thumb');
 	foreach ($category as &$c) {
 		$c['thumb'] = tomedia($c['thumb']);
 		if ($c['level'] == 3) {

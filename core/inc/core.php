@@ -21,14 +21,6 @@ class Core extends WeModuleSite
     public function __construct()
     {
         global $_W, $_GPC;
-        
-        $set=m('common')->getSysset('shop');
-
-        if(strstr($_SERVER['REQUEST_URI'],'app')){
-            if($set['ispc']==0 && !isMobile()){
-                message('抱歉，PC版暂时关闭，请用微信打开!','','error');
-            }   
-        }
         if (is_weixin()) {
             m('member')->checkMember();
         }
@@ -215,6 +207,14 @@ class Core extends WeModuleSite
                 }
             }
         }
+        $set = m('common')->getSysset('shop');
+        if(strstr($_SERVER['REQUEST_URI'],'app')){
+            if(!isMobile()){
+                if($set['ispc']==0){
+                    message('抱歉，PC版暂时关闭，请用微信打开!','','error');
+                }
+            }
+        }
         if(is_weixin()){
             //是否强制绑定手机号,只针对微信端
             $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
@@ -330,7 +330,6 @@ class Core extends WeModuleSite
         global $_W;
 
         $tmplateType = (isMobile()) ? 'mobile' : 'pc';
-        //$tmplateType = 'pc';
         $name = strtolower($this->modulename);
         if (defined('IN_SYS')) {
             $source  = IA_ROOT . "/web/themes/{$_W['template']}/{$name}/{$filename}.html";
@@ -389,7 +388,6 @@ class Core extends WeModuleSite
         if (!is_file($source)) {
             exit("Error: template source '{$filename}' is not exist!");
         }
-        //echo $source;exit;
         if (DEVELOPMENT || !is_file($compile) || filemtime($source) > filemtime($compile)) {
             shop_template_compile($source, $compile, true);
         }

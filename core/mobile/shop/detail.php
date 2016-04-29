@@ -8,7 +8,7 @@ global $_W, $_GPC;
 $tmplateType = (isMobile()) ? 'mobile' : 'pc';
 $openid         = m('user')->getOpenid();
 $popenid        = m('user')->islogin();
-
+$openid = $openid?$openid:$popenid;
 $member         = m('member')->getMember($openid);
 $uniacid        = $_W['uniacid'];
 $goodsid        = intval($_GPC['id']);

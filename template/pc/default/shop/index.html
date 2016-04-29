@@ -1,4 +1,4 @@
-{template 'common/header'}
+﻿{template 'common/header'}
 
 <title>{$set['name']}</title>
 
@@ -83,17 +83,15 @@
 </div>
 </div>
 <div class="boutique boutique-index mt50 fl wfs">
-{if $custom['iscustom'] == 1}
-	<h3><a href="{$custom['index']['link1']}">{$custom['index']['name1']}</a></h3>
-{else}
-	<h3>友情推荐</h3>
-{/if}
+
+	<h3>{$index_name1}</h3>
+
 
 <div class="canvas">
 	<ul class="items" style="width: 1222px;">
-{if $goods}
-	{loop $goods $row}
-		{if $row['status'] == 1 and $row['isrecommand'] == 1 and $row['deleted'] == 0}
+{if $goods_one}
+	{loop $goods_one $row}
+		
 		<li class="items-li j-items-li">
 			<a target="_blank" href="{php echo $this->createMobileUrl('shop/detail')}&id={$row['id']}" style="position:relative;"><img src="{$row['thumb']}" title=""></a>
 			<div class="wrap_div">
@@ -113,7 +111,7 @@
 				<span class="attente" title="库存">库存:{$row['total']}{$row['unit']}</span>
 			</p>
 		</li>
-		{/if}
+		
 	{/loop}
 {else}
 		<li class="items-li j-items-li">
@@ -198,16 +196,12 @@
 </div>
 </div>
 <div class="boutique boutique-index mt50 fl wfs">
-{if $custom['iscustom'] == 1}
-	<h3><a href="{$custom['index']['link2']}">{$custom['index']['name2']}</a></h3>
-{else}
-	<h3>新品上线</h3>
-{/if}
+<h3>{$index_name2}</h3>
 <div class="canvas">
 	<ul class="items" style="width: 1222px;">
-{if $goods}
-	{loop $goods $row}
-		{if $row['status'] == 1 and $row['isnew'] == 1 and $row['deleted'] == 0}
+{if $goods_two}
+	{loop $goods_two $row}
+		
 		<li class="items-li j-items-li">
 			<a target="_blank" href="{php echo $this->createMobileUrl('shop/detail')}&id={$row['id']}" style="position:relative;"><img src="{$row['thumb']}" title=""></a>
 			<div class="wrap_div">
@@ -225,7 +219,7 @@
 				<span class="attente" title="库存">库存:{$row['total']}{$row['unit']}</span>
 			</p>
 		</li>
-		{/if}
+		
 	{/loop}
 {else}
 		<li class="items-li j-items-li">

@@ -1,8 +1,4 @@
-<?php if(isMobile()){?>
-    {template 'common/header'}
-<?php }else{?>
-    {template 'common/header_center'}
-<?php }?>
+{template 'common/header'}
 <title>{php echo $this->set['texts']['commission_detail']}</title>
 <style type="text/css">
 body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
@@ -23,10 +19,10 @@ a {text-decoration:none;}
 .log_list .left span {color:#666; font-size:13px; line-height:28px;}
 .log_list .right {height:40px; width:20%; float:right; font-size:14px; text-align:right; line-height:18px; margin-left:-20%;}
 .log_list .right span {color:#f90;}
-.log_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center}
+.log_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
 #log_loading { padding:10px;color:#666;text-align: center;}
 </style>
-<div class="all-divbox">
+
 <div class="log_top">
        <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> {php echo $this->set['texts']['commission_detail']}(<span id='total'></span>)</div>
     <div class='num'>预计{php echo $this->set['texts']['commission']}: +<span id='commissioncount'></span>元</div>
@@ -39,7 +35,7 @@ a {text-decoration:none;}
         <div class="nav"  data-status='3'>已打款</div>
         <div class="nav"  data-status='-1'>无效</div>
 </div>
-<div id='container'></div></div>
+<div id='container'></div>
 
 <script id='tpl_log' type='text/html'>
 
@@ -60,7 +56,7 @@ a {text-decoration:none;}
     <%/each%>
 </script>
 <script id='tpl_empty' type='text/html'>
-    <div class="log_no"><i class="fa fa-file-text-o" style="font-size:100px;"></i><br><br><span style="line-height:18px; font-size:16px;">您还没有相关{php echo $this->set['texts']['commission_detail']}~</span></div>
+    <div class="log_no"><i class="fa fa-file-text-o" style="font-size:100px;"></i><br><br>c<span style="line-height:18px; font-size:16px;">您还没有相关{php echo $this->set['texts']['commission_detail']}~</span></div>
 </script>
 
 <script language="javascript">

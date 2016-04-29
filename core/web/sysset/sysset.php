@@ -90,8 +90,9 @@ if (checksubmit()) {
         $set['custom']['iscustom']  = $custom['iscustom'];
         $set['custom']['header']  = $custom['header'];
         $set['custom']['footer'] = $custom['footer'];
-        $set['custom']['index'] = $custom['index'];
-        //print_r($set);exit;
+        $set['custom']['index1'] = $custom['index1'];
+        $set['custom']['index2'] = $custom['index2'];
+
         plog('sysset.save.sms', '修改系统设置-PC设置');
     }
     elseif ($op == 'sms') {
@@ -208,6 +209,8 @@ if (checksubmit()) {
         'op' => $op
     )), 'success');
 }
+
+
 load()->func('tpl');
 include $this->template('web/sysset/' . $op);
 exit;
