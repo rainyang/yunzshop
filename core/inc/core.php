@@ -25,9 +25,11 @@ class Core extends WeModuleSite
         $set=m('common')->getSysset('shop');
 
         if(strstr($_SERVER['REQUEST_URI'],'app')){
-            if($set['ispc']==0 && !isMobile()){
-                message('抱歉，PC版暂时关闭，请用微信打开!','','error');
-            }   
+            if(!isMobile()){
+                if($set['ispc']==0){
+                    message('抱歉，PC版暂时关闭，请用微信打开!','','error');
+                }
+            }
         }
         if (is_weixin()) {
             m('member')->checkMember();
