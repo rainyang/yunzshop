@@ -104,7 +104,7 @@
      <%if goods%>
 
      <div class="order_main">
-        <div class="title">订单号：<%goods.ordersn%></div>   
+        <div class="title">订单号：<%order.ordersn%></div>   
         <%each goods.goods1 as g%>
         <div class="good">
             <div class="img"  ><img src="<%g.thumb%>"/></div>
@@ -219,7 +219,7 @@
                         type:'credit'
                     },function(pay_json){
                         if(pay_json.status==1){
-                            console.log(pay_json.result.goods);
+                            console.log(pay_json.result);
                            $('#container').html(tpl('tpl_order_pay',pay_json.result));
                            return;
                         }

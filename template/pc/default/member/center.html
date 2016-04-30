@@ -83,7 +83,7 @@
         </div>
     </a>
     <div class="order_all">
-        <a href="{php echo $this->createMobileUrl('order',array('status'=>0))}"><div class="order_pub order_1" style="border:0px;"><!--<i class="fa fa-credit-card" style="font-size:30px"></i><br>-->待付款订单<%if order.status0>0%><!--<span><%order.status0%></span>--><%/if%></div></a>
+        <a href="{php echo $this->createMobileUrl('order',array('status'=>0))}"><div class="order_pub order_1" style="border:0px;"><!--<i class="fa fa-credit-card" style="font-size:30px"></i><br>-->待付款订单<%if order.status0>0%><span><%order.status0%></span><%/if%></div></a>
         <a href="{php echo $this->createMobileUrl('order',array('status'=>1))}"><div class="order_pub order_2"><!--<i class="fa fa-suitcase" style="font-size:30px"></i><br>-->待发货<%if order.status1>0%><span><%order.status1%></span><%/if%></div></a>
         <a href="{php echo $this->createMobileUrl('order',array('status'=>2))}"><div class="order_pub order_3"><!--<i class="fa fa-truck" style="font-size:30px"></i><br>-->待收货<%if order.status2>0%><span><%order.status2%></span><%/if%></div></a>
         <a href="{php echo $this->createMobileUrl('order',array('status'=>4))}"><div class="order_pub order_4"><!--<i class="fa fa-money" style="font-size:30px"></i><br>-->待退款<%if order.status4>0%><span><%order.status4%></span><%/if%></div></a>

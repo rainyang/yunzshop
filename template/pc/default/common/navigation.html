@@ -1,4 +1,4 @@
-	
+    
 <body>
 
 <div class="wfs head_top">
@@ -26,6 +26,7 @@
 <div class="cover-page-wrapper head_logo_nav">
 <!-- logo -->
 {php $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));}
+
 {php $custom = m('common')->getSysset('custom');}
         <div class="logo fl"><a href="{php echo $this->createMobileUrl('shop/index')}">
             {if $set['logo']}

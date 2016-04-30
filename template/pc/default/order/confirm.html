@@ -847,15 +847,15 @@ var fromcart = 0;
                 var arrlist = $('#address_container').html();
                 $('#address_container').html(arrlist + tpl('tpl_address_new', result));
                 cascdeInit(result.address.province,result.address.city);
-                {if $trade['shareaddress']=='1'}
+                {if $shareAddress}
                     var shareAddress = {php echo json_encode($shareAddress)};
-                                WeixinJSBridge.invoke('editAddress',shareAddress,function(res){ 
-                                    if(res.err_msg=='edit_address:ok'){
-                                        $("#realname").val( res.userName  );
-                                        $('#mobile').val( res.telNumber );
-                                        $('#address').val( res.addressDetailInfo );
-                                        cascdeInit(res.proviceFirstStageName,res.addressCitySecondStageName,res.addressCountiesThirdStageName);
-                                    }
+                        WeixinJSBridge.invoke('editAddress',shareAddress,function(res){ 
+                            if(res.err_msg=='edit_address:ok'){
+                                $("#realname").val( res.userName  );
+                                $('#mobile').val( res.telNumber );
+                                $('#address').val( res.addressDetailInfo );
+                                cascdeInit(res.proviceFirstStageName,res.addressCitySecondStageName,res.addressCountiesThirdStageName);
+                            }
                     });
                 {/if}
           //$(".chooser").height($(document.body).height());
