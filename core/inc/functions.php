@@ -3,6 +3,39 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 
+function sz_tpl_form_field_date($name, $value = '', $withtime = false) {
+	$s = '';
+	if (!defined('TPL_INIT_DATA')) {
+		$s = '
+			<script type="text/javascript">
+				require(["datetimepicker"], function(){
+					$(function(){
+						$(".datetimepicker").each(function(){
+							var option = {
+								lang : "zh",
+								step : "10",
+								timepicker : ' . (!empty($withtime) ? "true" : "false") .
+			',closeOnDateSelect : true,
+			format : "Y-m-d' . (!empty($withtime) ? ' H:i:s"' : '"') .
+			'};
+			$(this).datetimepicker(option);
+		});
+	});
+});
+</script>';
+		define('TPL_INIT_DATA', true);
+	}
+	$withtime = empty($withtime) ? false : true;
+	if (!empty($value)) {
+		$value = strexists($value, '-') ? strtotime($value) : $value;
+	} else {
+		$value = TIMESTAMP;
+	}
+	$value = ($withtime ? date('Y-m-d H:i:s', $value) : date('Y-m-d', $value));
+	$s .= '<input type="text" name="' . $name . '"  value="'.$value.'" placeholder="请选择日期时间" readonly="readonly" class="datetimepicker form-control" style="padding-left:12px;" />';
+	return $s;
+}
+
 function isMobile() {
     // 如果有HTTP_X_WAP_PROFILE则一定是移动设备
     if (isset ($_SERVER['HTTP_X_WAP_PROFILE'])){
@@ -96,12 +129,12 @@ function curl_download($url, $dir) {
     return $res;
 }
 
-function send_sms($account, $pwd, $mobile, $code) 
-{       
+function send_sms($account, $pwd, $mobile, $code)
+{
     $content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
     //$smsrs = file_get_contents('http://115.29.33.155/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
     $smsrs = file_get_contents('http://106.ihuyi.cn/webservice/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
-  
+
    return xml_to_array($smsrs);
 }
 
@@ -508,7 +541,7 @@ function tpl_form_field_category_3level($name, $parents, $children, $parentid, $
 	window._' . $name . ' = ' . json_encode($children) . ';
 </script>';
     if (!defined('TPL_INIT_CATEGORY_THIRD')) {
-        $html .= '	
+        $html .= '
 <script type="text/javascript">
 	function renderCategoryThird(obj, name){
 		var index = obj.options[obj.selectedIndex].value;
@@ -518,7 +551,7 @@ function tpl_form_field_category_3level($name, $parents, $children, $parentid, $
 			var html = \'<option value="0">请选择二级分类</option>\';
                                                       var html1 = \'<option value="0">请选择三级分类</option>\';
 			if (!window[\'_\'+name] || !window[\'_\'+name][index]) {
-				$selectChild.html(html); 
+				$selectChild.html(html);
                                                                         $selectThird.html(html1);
 				return false;
 			}
@@ -570,8 +603,8 @@ function tpl_form_field_category_3level($name, $parents, $children, $parentid, $
         }
     }
     $html .= '
-		</select> 
-	</div> 
+		</select>
+	</div>
                   <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
 		<select class="form-control tpl-category-child" id="' . $name . '_third" name="' . $name . '[thirdid]">
 			<option value="0">请选择三级分类</option>';

@@ -32,7 +32,7 @@ if (!empty($_GPC['supplier_uid'])) {
     $condition .= " and o.supplier_uid = :supplier_uid";
     $params[':supplier_uid'] = "{$_GPC['supplier_uid']}";
 } else {
-    $condition .= " and og.supplier_uid > 0";
+    $condition .= " and o.supplier_uid > 0";
 }
 $sql = "select o.id,o.ordersn,o.price,o.goodsprice, o.dispatchprice,o.createtime, o.paytype, a.realname as addressname,m.realname from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m on o.openid = m.openid left join " . tablename('sz_yi_member_address') . " a on a.id = o.addressid  where 1 {$condition} and o.status >=3 ";
 $sql .= " ORDER BY o.id DESC ";

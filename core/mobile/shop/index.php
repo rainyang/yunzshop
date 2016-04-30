@@ -49,7 +49,7 @@ if ($operation == 'index') {
 	$advs_pc = set_medias($adv_pc, 'thumb,thumb_pc');
 	$adss = pdo_fetchall('select * from ' . tablename('sz_yi_ads') . ' where uniacid=:uniacid', array(':uniacid' => $uniacid));
 	$adss = set_medias($adss, 'thumb_1,thumb_2,thumb_3,thumb_4');
-	$category = pdo_fetchall('select * from ' . tablename('sz_yi_category'));
+    $category = pdo_fetchall('select id,name,thumb,parentid,level from ' . tablename('sz_yi_category') . ' where uniacid=:uniacid and ishome=1 and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
 	$category = set_medias($category, 'thumb');
 
 	$custom = m("common")->getSysset('custom');
@@ -84,7 +84,7 @@ if ($operation == 'index') {
 			{
 				$condition1 .= " or ".$key." = 1";
 			}
-			
+
 			$i++;
 		}
 		$condition1 .= ") ";
@@ -124,7 +124,7 @@ if ($operation == 'index') {
 	$args = array('page' => $_GPC['page'], 'pagesize' => 6, 'isrecommand' => 1, 'order' => 'displayorder desc,createtime desc', 'by' => '');
 	$goods = m('goods')->getList($args);
 }
-if ($_W['isajax']) {	
+if ($_W['isajax']) {
 	if ($operation == 'index') {
 		show_json(1, array('set' => $set, 'advs' => $advs, 'category' => $category));
 	} else if ($operation == 'goods') {

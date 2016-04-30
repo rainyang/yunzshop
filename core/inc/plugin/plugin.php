@@ -1,7 +1,7 @@
 <?php
 /*=============================================================================
 #     FileName: plugin.php
-#         Desc:  
+#         Desc:
 #       Author: Yunzhong - http://www.yunzshop.com
 #        Email: 913768135@qq.com
 #     HomePage: http://www.yunzshop.com
@@ -26,8 +26,8 @@ class Plugin extends Core
         if (strexists($_SERVER['REQUEST_URI'], '/web/')) {
             cpa($this->pluginname);
         } else if (strexists($_SERVER['REQUEST_URI'], '/app/')) {
-            
-                $this->setFooter();  
+
+                $this->setFooter();
 	    }
         $this->module['title'] = pdo_fetchcolumn('select title from ' . tablename('modules') . " where name='sz_yi' limit 1");
     }
@@ -51,7 +51,8 @@ class Plugin extends Core
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
         global $_W;
-        $tmplateType = (isMobile()) ? 'mobile' : 'pc';
+        $tmplateType = 'mobile';
+        //$tmplateType = (isMobile()) ? 'mobile' : 'pc';
         $defineDir = IA_ROOT . "/addons/sz_yi/";
         if (defined('IN_SYS')) {
             $source  = IA_ROOT . "/addons/sz_yi/plugin/" . $this->pluginname . "/template/{$filename}.html";
@@ -94,7 +95,7 @@ class Plugin extends Core
                 $source  = $defineDir . "/template/{$tmplateType}/{$global_template}/{$filename}.html";
                 $compile = IA_ROOT . "/data/app/sz_yi/{$global_template}/{$filename}.tpl.php";
             }
-            
+
             if (!is_file($source)) {
                 $source  = $defineDir . "/template/{$tmplateType}/default/{$filename}.html";
                 $compile = IA_ROOT . "/data/app/sz_yi/default/{$filename}.tpl.php";
@@ -116,7 +117,7 @@ class Plugin extends Core
                 $pfilename = $names[1];
                 $source    = IA_ROOT . "/addons/sz_yi/plugin/" . $pluginname . "/template/{$tmplateType}/" . $ptemplate . "/{$pfilename}.html";
             }
-            
+
         }
         if (!is_file($source)) {
             exit("Error: template source '{$filename}' is not exist!");

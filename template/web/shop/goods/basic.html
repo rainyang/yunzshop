@@ -225,10 +225,10 @@
       {ife 'shop.goods' $item}
     <div class="col-sm-4 col-xs-6">
 
-        {php echo tpl_form_field_date('timestart', !empty($item['timestart']) ? date('Y-m-d H:i',$item['timestart']) : date('Y-m-d H:i'), 1)}
+        {php echo sz_tpl_form_field_date('timestart', !empty($item['timestart']) ? date('Y-m-d H:i',$item['timestart']) : date('Y-m-d H:i'), 1)}
     </div>
     <div class="col-sm-4 col-xs-6">
-        {php echo tpl_form_field_date('timeend', !empty($item['timeend']) ? date('Y-m-d H:i',$item['timeend']) : date('Y-m-d H:i'), 1)}
+        {php echo sz_tpl_form_field_date('timeend', !empty($item['timeend']) ? date('Y-m-d H:i',$item['timeend']) : date('Y-m-d H:i'), 1)}
     </div>
       {else}
        <div class="col-sm-6 col-xs-6">
