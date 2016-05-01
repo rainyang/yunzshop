@@ -82,16 +82,21 @@ if (checksubmit()) {
         $set['shop']['logo']    = save_media($shop['logo']);
         $set['shop']['signimg'] = save_media($shop['signimg']);
         $set['shop']['diycode'] = trim($shop['diycode']);
-        $set['shop']['ispc'] = trim($shop['ispc']);
+        
         plog('sysset.save.shop', '修改系统设置-商城设置');
     }
-    elseif ($op == 'custom') {
-        $custom                    = is_array($_GPC['custom']) ? $_GPC['custom'] : array();
-        $set['custom']['iscustom']  = $custom['iscustom'];
+    elseif ($op == 'pcset') {
+        $custom                    = is_array($_GPC['pcset']) ? $_GPC['pcset'] : array();
+        $set['shop']['ispc'] = trim($custom['ispc']);
+        $set['shop']['pctitle'] = trim($custom['pctitle']);
+        $set['shop']['pckeywords'] = trim($custom['pckeywords']);
+        $set['shop']['pcdesc'] = trim($custom['pcdesc']);
+        $set['shop']['copyright'] = trim($custom['copyright']);
+        /*$set['custom']['iscustom']  = $custom['iscustom'];
         $set['custom']['header']  = $custom['header'];
         $set['custom']['footer'] = $custom['footer'];
         $set['custom']['index1'] = $custom['index1'];
-        $set['custom']['index2'] = $custom['index2'];
+        $set['custom']['index2'] = $custom['index2'];*/
 
         plog('sysset.save.sms', '修改系统设置-PC设置');
     }

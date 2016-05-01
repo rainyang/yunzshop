@@ -1,10 +1,8 @@
-
 <body>
-
 <div class="wfs head_top">
     <div class="cover-page-wrapper">
         <ul class="fl top_l">
-            <li class="fore"><a href="{php echo $this->createMobileUrl('shop/index')}">欢迎来到{$set['name']}！</a></li>
+            <li class="fore"><a href="{php echo $this->createMobileUrl('shop/index')}">欢迎来到{php echo $this->yzShopSet['name']}！</a></li>
         </ul>
         <ul class="fr top_r">
         {if $_COOKIE[__cookie_sz_yi_userid_.$_W['uniacid']]}
@@ -87,15 +85,7 @@
         <div class="suggestions_box" id="suggestions" style="display:none;border-bottom: 1px solid #cdcdcd;">
             <div class="suggestions_list" id="auto_suggestions_list"></div>
         </div>
-        <!-- <div class="search-history j-search-history fz12" id="search-history">
-            <div class="left fl">
-                <p class="txt fl">历史记录</p>
-                <a href="javascript:;" onClick="clear_search()"><i class="delete fr">清除</i></a>
-                <ul class="history-items fl wfs"></ul>
-            </div>
-        </div> -->
     </form>
-
 </div>
 </div>
 <script type="text/javascript">

@@ -18,6 +18,7 @@ class Core extends WeModuleSite
 
     public $footer = array();
     public $header = null;
+    public $yzShopSet = array();
     public function __construct()
     {
         global $_W, $_GPC;
@@ -34,7 +35,11 @@ class Core extends WeModuleSite
                 p('commission')->checkAgent();
             }
         }
+        $this->yzShopSet = m('common')->getSysset('shop');
     }
+
+
+
     public function sendSms($mobile, $code, $templateType = 'reg'){
         $set = m('common')->getSysset();
         if($set['sms']['type'] == 1){
