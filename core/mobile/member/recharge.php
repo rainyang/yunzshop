@@ -67,13 +67,12 @@ if ($operation == 'display' && $_W['isajax']) {
     }
 
     $pluginy = p('yunpay');
+    $yunpay = array(
+        'success' => false
+    );
     if ($pluginy) {
-        $yunpay = array(
-            'success' => false
-        );
-
         $yunpayinfo = $pluginy->getYunpay();
-        
+
         if (isset($yunpayinfo) && $yunpayinfo['switch']) {
             $yunpay['success'] = true;
         }
@@ -257,4 +256,3 @@ if ($operation == 'display') {
     }
     include $this->template('member/recharge');
 }
-

@@ -137,7 +137,7 @@ if ($operation == "display") {
             }
             $condition .= ' and  o.id in('.$inorderids.')';
         }else{
-            $condition .= ' and  o.id=0'; 
+            $condition .= ' and  o.id=0';
         }
     }
     $agentid = intval($_GPC["agentid"]);
@@ -184,7 +184,7 @@ if ($operation == "display") {
             }
         }
     }
-    //是否为供应商 不等于1的是
+    //是否为供应商 等于1的是
     if(p('supplier')){
         $cond = "";
         if($perm_role == 1){
@@ -192,17 +192,17 @@ if ($operation == "display") {
             $supplierapply = pdo_fetchall('select u.uid,p.realname,p.mobile,p.banknumber,p.accountname,p.accountbank,a.applysn,a.apply_money,a.apply_time,a.type,a.finish_time,a.status from ' . tablename('sz_yi_supplier_apply') . ' a ' . ' left join' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid ' . 'left join' . tablename('users') . ' u on a.uid=u.uid where u.uid=' . $_W['uid']);
             $totals['status9'] = count($supplierapply);
             $costmoney = 0;
-            $sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$_W['uid']} and o.status=3");
+            $sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$_W['uid']} and o.status=3 and og.supplier_apply_status=0");
             foreach ($sp_goods as $key => $value) {
                 if ($value['goods_op_cost_price'] > 0) {
-                    $costmoney += $value['goods_op_cost_price'];
+                    $costmoney += $value['goods_op_cost_price'] * $value['total'];
                 } else {
                     $option = pdo_fetch("select * from " . tablename('sz_yi_goods_option') . " where uniacid={$_W['uniacid']} and goodsid={$value['goodsid']} and id={$value['optionid']}");
                     if ($option['costprice'] > 0) {
-                        $costmoney += $option['costprice'];
+                        $costmoney += $option['costprice'] * $value['total'];
                     } else {
                         $goods_info = pdo_fetch("select * from" . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
-                        $costmoney += $goods_info['costprice'];
+                        $costmoney += $goods_info['costprice'] * $value['total'];
                     }
                 }
             }
@@ -229,7 +229,7 @@ if ($operation == "display") {
                     'applysn' => $applysn
                     );
                 pdo_insert('sz_yi_supplier_apply',$data);
-                
+
                 foreach ($mygoodsid as $ids) {
                     $arr = array(
                         'supplier_apply_status' => 1
