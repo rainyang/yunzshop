@@ -51,8 +51,7 @@ class Plugin extends Core
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
         global $_W;
-        $tmplateType = 'mobile';
-        //$tmplateType = (isMobile()) ? 'mobile' : 'pc';
+        $tmplateType = (isMobile()) ? 'mobile' : 'pc';
         $defineDir = IA_ROOT . "/addons/sz_yi/";
         if (defined('IN_SYS')) {
             $source  = IA_ROOT . "/addons/sz_yi/plugin/" . $this->pluginname . "/template/{$filename}.html";

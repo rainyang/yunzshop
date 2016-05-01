@@ -328,9 +328,7 @@ class Core extends WeModuleSite
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
         global $_W;
-        //$tmplateType = (isMobile()) ? 'mobile' : 'pc';
-        //暂不开放PC
-        $tmplateType = 'mobile';
+        $tmplateType = (isMobile()) ? 'mobile' : 'pc';
         $set = m('common')->getSysset('shop');
         if(strstr($_SERVER['REQUEST_URI'],'app')){
             if(!isMobile()){

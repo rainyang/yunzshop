@@ -31,7 +31,4 @@ if ($_W['isajax']) {
         'member' => $member
     ));
 }
-if(!isMobile()){
-    include $this->template('member/center');
-}
 include $this->template('af_supplier');
