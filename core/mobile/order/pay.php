@@ -100,11 +100,11 @@ if ($operation == 'display' && $_W['isajax']) {
     );
     if ($pluginy) {
         $yunpayinfo = $pluginy->getYunpay();
-        if (isset($yunpayinfo) && $yunpayinfo['switch']) {
+        if (isset($yunpayinfo) && @$yunpayinfo['switch']) {
             $yunpay['success'] = true;
         }
     }
-	
+
     $unionpay = array(
         'success' => false
     );
@@ -450,7 +450,7 @@ if ($operation == 'display' && $_W['isajax']) {
     ));
     die("<script>top.window.location.href='{$url}'</script>");
 } else if ($operation == 'returnyunpay') {
-	
+
     $tids = $_REQUEST['i2'];
 	$strs          = explode(':', $tids);
 	$tid=$strs [0];
