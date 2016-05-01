@@ -70,7 +70,7 @@ class Core extends WeModuleSite
             m('cache')->set('closeorder', date('Y-m-d H:i:s', $current), 'global');
             ihttp_request($_W['siteroot'] . 'addons/sz_yi/core/mobile/order/close.php', null, null, 1);
         }
-		
+
 		if (p('coupon')) {
 			$_var_0 = strtotime(m('cache')->getString('couponbacktime', 'global'));
 			$_var_3 = p('coupon')->getSet();
@@ -87,7 +87,7 @@ class Core extends WeModuleSite
 		}
 		exit('run finished.');
     }
-	
+
     public function setHeader()
     {
         global $_W, $_GPC;
@@ -155,7 +155,7 @@ class Core extends WeModuleSite
             'ico' => 'list',
             'url' => $this->createMobileUrl('shop/category')
         );
-        
+
         $this->footer['commission'] = false;
         $member  = m('member')->getMember($openid);
         if(!empty($member['isblack'])){
@@ -167,7 +167,7 @@ class Core extends WeModuleSite
             $set = p('commission')->getSet();
             if (empty($set['level'])) {
                 return;
-            } 
+            }
             $isagent = $member['isagent'] == 1 && $member['status'] == 1;
             if ($_GPC['do'] == 'plugin') {
                 $this->footer['first'] = array(
@@ -328,9 +328,9 @@ class Core extends WeModuleSite
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
         global $_W;
-        //$tmplateType = (isMobile()) ? 'mobile' : 'pc';
+        $tmplateType = (isMobile()) ? 'mobile' : 'pc';
         //暂不开放PC
-        $tmplateType = 'mobile';
+        //$tmplateType = 'mobile';
         $set = m('common')->getSysset('shop');
         if(strstr($_SERVER['REQUEST_URI'],'app')){
             if(!isMobile()){
