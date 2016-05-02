@@ -46,7 +46,7 @@
                 <tr>
                     <td colspan='6'>
                         {ifp 'shop.adpc.add'}
-                          <a class='btn btn-default' href="{php echo $this->createWebUrl('shop/ads',array('op'=>'post'))}"><i class='fa fa-plus'></i> 添加广告</a>
+                          <a class='btn btn-default' href="{php echo $this->createWebUrl('shop/adpc',array('op'=>'post'))}"><i class='fa fa-plus'></i> 添加广告</a>
                           <input type="hidden" name="token" value="{$_W['token']}" />
                        {/if}
                         {ifp 'shop.adpc.edit'}

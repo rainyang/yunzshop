@@ -52,7 +52,7 @@
 	{if in_array($key, $this->yzShopSet['index'])}
 		{if $ads_pc[$key]}
 		{loop $ads_pc[$key] $adkey $adval}
-		<div class="cover-page-plug-in j-cover-page-plug-in">
+		<div>
 			<a href="{php echo $adval['link'] ? $adval['link'] : '#'}" target="_blank"><img src="{$adval['thumb']}" style="width:100%"></a>
 		</div>
 		{/loop}
@@ -110,8 +110,14 @@
 		</div>
 	{/if}
 {/loop}
+		{if $ads_pc['bottom_ad']}
+		<div>
+			<a href="{php echo $ads_pc['bottom_ad']['link'] ? $ads_pc['bottom_ad']['link'] : '#'}" target="_blank"><img src="{$ads_pc['bottom_ad']['thumb']}" style="width:100%"></a>
+		</div>
+		{/if}
 	</div>		
 </div>
+
 <script src="../addons/sz_yi/static/js/jquery.easing.1.3.js"></script>
 <script src="../addons/sz_yi/static/js/Animation.js"></script>
 <script>

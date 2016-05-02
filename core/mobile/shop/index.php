@@ -114,6 +114,7 @@ if ($operation == 'index') {
 		$ads_pc['istime'] = set_medias($ads_pc['istime'], 'istime');
 		$goods_pc['istime'] = set_medias($goods_pc['istime'], 'istime');
 	}
+	$ads_pc['bottom_ad'] = pdo_fetch('select link,thumb from ' . tablename('sz_yi_adpc') . " where uniacid=:uniacid and location='bottom_ad'", array(':uniacid' => $uniacid));
 	unset($c);
 } else if ($operation == 'goods') {
 	$type = $_GPC['type'];

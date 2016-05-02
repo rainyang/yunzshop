@@ -23,13 +23,14 @@
 <div id="head-fix" class="head fl wfs nav-wrap">
 <div class="cover-page-wrapper head_logo_nav">
 <!-- logo -->
-    <div class="logo fl"><a href="{php echo $this->createMobileUrl('shop/index')}">
-  
+    <div class="logo fl">
+        <a href="{php echo $this->createMobileUrl('shop/index')}">
         {if $this->yzShopSet['pclogo']}
-            <img src="{php echo $_W['siteroot'] . "attachment/" . $this->yzShopSet['pclogo']}" title="" alt=""></a>
+            <img src="{php echo $_W['siteroot'] . "attachment/" . $this->yzShopSet['pclogo']}" title="" alt="">
         {else}
-            <img src="../addons/sz_yi/template/pc/default/static/images/logo.png" title="" alt="我是默认logo"></a>
+            <img src="../addons/sz_yi/template/pc/default/static/images/logo.png" title="" alt="我是默认logo">
         {/if}
+        </a>
     </div>
     {if $this->yzShopSet['hmenu_name']}
           <ul class="nav_head fl">
