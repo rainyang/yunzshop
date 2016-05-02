@@ -6,9 +6,9 @@
         </ul>
         <ul class="fr top_r">
         {if $_COOKIE[__cookie_sz_yi_userid_.$_W['uniacid']]}
-        <li class="fore"><a href="{php echo $this->createMobileUrl('member/info')}">个人中心</a></li>
+            <li class="fore"><a href="{php echo $this->createMobileUrl('member/info')}">个人中心</a></li>
         {else}
-        <li class="fore"><a href="{php echo $this->createMobileUrl('member')}">登陆</a></li>
+            <li class="fore"><a href="{php echo $this->createMobileUrl('member')}">登陆</a></li>
             <li class="spacer"></li>
             <li class="fore"><a href="{php echo $this->createMobileUrl('member/register')}">注册</a></li>
         {/if}
@@ -26,7 +26,7 @@
     <div class="logo fl">
         <a href="{php echo $this->createMobileUrl('shop/index')}">
         {if $this->yzShopSet['pclogo']}
-            <img src="{php echo $_W['siteroot'] . "attachment/" . $this->yzShopSet['pclogo']}" title="" alt="">
+            <img src="{php echo $_W['siteroot'] . "attachment/" . $this->yzShopSet['pclogo']}" style="width:270px;height:60px;" title="{php echo $this->yzShopSet['pctitle']}">
         {else}
             <img src="../addons/sz_yi/template/pc/default/static/images/logo.png" title="" alt="我是默认logo">
         {/if}
@@ -59,7 +59,7 @@
                 </li>
             {/if}
             <li>
-                <a href="{php echo $this->createMobileUrl('member/order')}">会员中心</a>
+                <a href="{php echo $this->createMobileUrl('member/info')}">会员中心</a>
             </li>
         </ul>
     {/if}

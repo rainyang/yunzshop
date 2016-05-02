@@ -122,7 +122,7 @@ class Sz_DYi_User
         //需要登陆
         if((!in_array($_GPC["p"], $noLoginList) && !in_array($_GPC["do"], $noLoginDoList)) or (in_array($_GPC["p"], $needLoginPList))){
             //小店不需要登陆，否则分享出去别人不能直接看到
-            if(($_GPC['method'] != 'myshop') or ($_GPC['c'] != 'entry')){
+            if(($_GPC['method'] == 'myshop' && $_GPC['op'] == 'set') or ($_GPC['c'] != 'entry')){
                 $openid = $this->isLogin();
                 if(!$openid){  //未登录
                     if($_GPC['do'] != 'runtasks'){

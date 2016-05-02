@@ -1,8 +1,10 @@
 <?php
 //芸众商城 QQ:913768135
 global $_W, $_GPC;
+
+$openid = m('user')->getOpenid();
 $mid     = intval($_GPC['mid']);
-$openid  = m('user')->getOpenid();
+
 $member  = m('member')->getMember($openid);
 $set     = $this->set;
 $uniacid = $_W['uniacid'];

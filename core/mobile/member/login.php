@@ -24,15 +24,16 @@ if ($operation == 'display') {
                 @session_start();
                 $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
                 setcookie($cookieid, base64_encode($info['openid']));
+                setcookie('member_mobile', $info['mobile']);
                 if(!isMobile()){
                     $openid = base64_decode($_COOKIE[$cookieid]);
-                    $member_info = pdo_fetch('select realname,nickname from ' . tablename('sz_yi_member') . ' where   uniacid=:uniacid and openid=:openid limit 1', array(
+                    $member_info = pdo_fetch('select realname,nickname,mobile from ' . tablename('sz_yi_member') . ' where   uniacid=:uniacid and openid=:openid limit 1', array(
                         ':uniacid' => $_W['uniacid'],
                         ':openid' => $openid,
                     ));
                     $member_name = !empty($member_info['realname']) ? $member_info['realname'] : $member_info['nickname'];
                     $member_name = !empty($member_name) ? $member_name : "未知";
-                    setcookie('member_name', base64_encode($member_info['realname']));
+                    setcookie('member_name', base64_encode($member_name));
                 }
                 show_json(1, array(
                     'preurl' => $preUrl
