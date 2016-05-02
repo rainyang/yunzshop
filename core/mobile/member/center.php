@@ -27,10 +27,10 @@ if ($plugc) {
 	if (!empty($pset['level'])) {
 		if ($member['isagent'] == 1 && $member['status'] == 1) {
 			$hascom = true;
-			$shopset['pset'] = $pset;
 		}
 	}
 }
+$shopset['commission_text'] = $pset['texts']['center'];
 $shopset['hascom'] = $hascom;
 $hascoupon = false;
 $hascouponcenter = false;

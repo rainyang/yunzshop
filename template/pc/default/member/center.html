@@ -92,7 +92,7 @@
     
 <div class="cart">
     <%if shopset.hascom%>
-        <a href="{php echo $this->createPluginMobileUrl('commission')}"><div class="list1" ><i class="fa fa-home"></i>{php echo $pset['texts']['center']}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>   
+        <a href="{php echo $this->createPluginMobileUrl('commission')}"><div class="list1" ><i class="fa fa-home"></i><%shopset.commission_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>   
     <%/if%>
     <a href="{php echo $this->createMobileUrl('member/info')}"><div class="list1" ><i class="fa fa-user"></i>我的资料<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     <%if !member.isbindmobile && shopset.is_weixin%>
