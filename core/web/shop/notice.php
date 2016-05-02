@@ -17,6 +17,7 @@ if ($operation == 'display') {
             'uniacid' => $_W['uniacid'],
             'displayorder' => intval($_GPC['displayorder']),
             'title' => trim($_GPC['title']),
+            'desc' => trim($_GPC['desc']),
             'thumb' => save_media($_GPC['thumb']),
             'link' => trim($_GPC['link']),
             'detail' => htmlspecialchars_decode($_GPC['detail']),

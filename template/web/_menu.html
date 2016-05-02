@@ -20,7 +20,9 @@
                 {ifp 'shop.dispatch'}<li><a href="{php echo $this->createWebUrl('shop/dispatch')}">配送方式</a></li>{/if}
                 {ifp 'shop.adv'}<li><a href="{php echo $this->createWebUrl('shop/adv')}">幻灯片管理</a></li>{/if}
                 {ifp 'shop.notice'}<li><a href="{php echo $this->createWebUrl('shop/notice')}">公告管理</a></li>{/if}
-                {ifp 'shop.comment'}<li><a href="{php echo $this->createWebUrl('shop/comment')}">评价管理</a></li>{/if}
+                {ifp 'shop.comment'}<li><a href="{php echo $this->createWebUrl('shop/comment')}">评价管理</a></li>
+                {/if}
+                {ifp 'shop.adpc'}<li><a href="{php echo $this->createWebUrl('shop/adpc')}">广告管理</a></li>{/if}
             </ul>
         </li>
         {/if}

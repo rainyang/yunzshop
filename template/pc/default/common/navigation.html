@@ -23,36 +23,22 @@
 <div id="head-fix" class="head fl wfs nav-wrap">
 <div class="cover-page-wrapper head_logo_nav">
 <!-- logo -->
-{php $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));}
-
-{php $custom = m('common')->getSysset('custom');}
-        <div class="logo fl"><a href="{php echo $this->createMobileUrl('shop/index')}">
-            {if $set['logo']}
-                <img src="{$set['logo']}" title="" alt=""></a>
-            {else}
-                <img src="../addons/sz_yi/template/pc/default/static/images/logo.png" title="" alt="我是默认logo"></a>
-            {/if}
-        </div>
-
-    {if $custom['iscustom'] == 1}
+    <div class="logo fl">
+        <a href="{php echo $this->createMobileUrl('shop/index')}">
+        {if $this->yzShopSet['pclogo']}
+            <img src="{php echo $_W['siteroot'] . "attachment/" . $this->yzShopSet['pclogo']}" title="" alt="">
+        {else}
+            <img src="../addons/sz_yi/template/pc/default/static/images/logo.png" title="" alt="我是默认logo">
+        {/if}
+        </a>
+    </div>
+    {if $this->yzShopSet['hmenu_name']}
           <ul class="nav_head fl">
+            {loop $this->yzShopSet['hmenu_name'] $k $v}
             <li>
-                <a href="{$custom['header']['link1']}">{$custom['header']['name1']}</a>
+                <a href="{php echo $this->yzShopSet['hmenu_url'][$k]}">{$v}</a>
             </li>
-            <li>
-                <a href="{$custom['header']['link2']}">{$custom['header']['name2']}</a>
-            </li>
-            <li>
-                <a href="{$custom['header']['link3']}">{$custom['header']['name3']}</a>
-            </li>
-
-            <li >
-                <a href="{$custom['header']['link4']}">{$custom['header']['name4']}</a>
-            </li>
-
-            <li>
-               <a href="{$custom['header']['link5']}">{$custom['header']['name5']}</a>
-            </li>
+            {/loop}
         </ul>
     {else}
         <ul class="nav_head fl">
@@ -73,7 +59,7 @@
                 </li>
             {/if}
             <li>
-                <a href="{php echo $this->createMobileUrl('member')}">会员中心</a>
+                <a href="{php echo $this->createMobileUrl('member/order')}">会员中心</a>
             </li>
         </ul>
     {/if}
