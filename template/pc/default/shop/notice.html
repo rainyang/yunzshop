@@ -8,13 +8,14 @@
     .notice_topbar a {height:40px;margin-left:10px; width:15px; display:block; float:left; outline:0px; color:#999; font-size:24px;}
 
     .notice_addnav {height:44px; padding:5px;  border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; margin-top:14px; line-height:42px; color:#666; background:#fff;}
-    .notice_list {box-sizing: content-box;height:50px; padding:5px; border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; margin-top:14px; background:#fff;}
-    .notice_list .ico {height:50px; width:50px;  float:left; color:#999; }
-    .notice_list .ico img { width:45px;height:45px;margin-top:3px;}
-    .notice_list .info {height:50px; width:100%; float:left; margin-left:-50px;}
-    .notice_list .info .inner { margin-left:55px;}
-    .notice_list .info .inner .addr {height:20px; width:100%; color:#666; line-height:26px; font-size:14px; overflow:hidden;}
-    .notice_list .info .inner .user {height:30px; width:100%; color:#999; line-height:30px; font-size:12px; overflow:hidden;}
+    .notice_list {box-sizing: content-box;height:50px; padding:5px; border:1px solid #f0f0f0;margin:10px; background:#fff;height:100px;padding-left: 100px;position: relative;}
+    .notice_list .ico {height:90px; width:90px;color:#999;position: absolute;left: 5px;top: 5px}
+    .notice_list .ico img { width:90px;height:90px;margin-top:3px;float:left;cursor: pointer;}
+    .notice_list .info {height:50px; width:100%; }
+    .notice_list .info .inner { }
+    .notice_list .info .inner .addr {    line-height: 30px;width:100%; color:#232323; line-height:28px; font-size:16px; overflow:hidden;cursor: pointer;}
+    .notice_list .info .inner .user {text-align: right;height:20px; width:100%; color:#bbb; line-height:20px; font-size:14px; overflow:hidden;}
+    .notice_list .info .inner .notice-info{ color: #666;line-height: 22px;}
     .notice_list .info .inner .user span {color:#444; font-size:16px;}
    
     .notice_addnav {height:40px; width:94%; padding:0 3%; border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; margin-top:14px; line-height:40px; color:#666; }
@@ -54,6 +55,9 @@
         <div class="info">
             <div class="inner">
                 <div class="addr"><%value.title%></div>
+                <div class="notice-info">
+                    公告介绍公告信息公告介绍公告信息公告介绍公告信息公告介绍公告信息公告介绍公告信息公告介绍公告信息公告介绍公告信息公告介绍公告信息公告介绍公告信息公告介绍公告信息公告介绍公告信息公告介绍公告信息公告介绍公告信息
+                </div>
                 <div class="user"><%value.createtime%></div>
             </div>
         </div>

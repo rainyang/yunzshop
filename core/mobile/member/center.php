@@ -4,30 +4,28 @@ if (!defined('IN_IA')) {
 }
 global $_W, $_GPC;
 
-/*
-@session_start();
-$cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
-setcookie($cookieid, '');
-exit;
- */
 $openid = m('user')->getOpenid();
 $set = m('common')->getSysset(array('shop', 'trade'));
 $member = m('member')->getMember($openid);
 $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
 $uniacid = $_W['uniacid'];
 $hascom = false;
+$shopset = array();
 if (p('supplier')) {
 	$supplier_set = p('supplier')->getSet();
 }
+$shopset['supplier_set'] = $supplier_set;
 $plugc = p('commission');
 if ($plugc) {
 	$pset = $plugc->getSet();
 	if (!empty($pset['level'])) {
 		if ($member['isagent'] == 1 && $member['status'] == 1) {
 			$hascom = true;
+			$shopset['pset'] = $pset;
 		}
 	}
 }
+$shopset['hascom'] = $hascom;
 $hascoupon = false;
 $hascouponcenter = false;
 $plugin_coupon = p('coupon');
@@ -35,15 +33,16 @@ if ($plugin_coupon) {
 	$pcset = $plugin_coupon->getSet();
 	if (empty($pcset['closemember'])) {
 		$hascoupon = true;
-	}
-	if (empty($pcset['closecenter'])) {
 		$hascouponcenter = true;
 	}
 }
+$shopset['hascoupon'] = $hascoupon;
+$shopset['hascouponcenter'] = $hascouponcenter;
 $pluginbonus = p("bonus");
 if(!empty($pluginbonus)){
 	$bonus_set = $pluginbonus->getSet();
 }
+$shopset['bonus_set'] = $bonus_set;
 if ($_W['isajax']) {
 	$level = array('levelname' => empty($set['shop']['levelname']) ? '普通会员' : $set['shop']['levelname']);
 	if (!empty($member['level'])) {
@@ -71,6 +70,6 @@ if ($_W['isajax']) {
 		$sql .= " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$time} && c.timeend>={$time})) order by d.gettime desc";
 		$counts['couponcount'] = pdo_fetchcolumn($sql, array(':openid' => $openid, ':uniacid' => $_W['uniacid']));
 	}
-	show_json(1, array('member' => $member, 'order' => $order, 'level' => $level, 'open_creditshop' => $open_creditshop, 'counts' => $counts));
+	show_json(1, array('member' => $member, 'order' => $order, 'level' => $level, 'open_creditshop' => $open_creditshop, 'counts' => $counts, 'shopset' => $shopset, 'set' => $set));
 }
 include $this->template('member/center');
