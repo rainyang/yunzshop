@@ -8,12 +8,12 @@
     .notice_topbar a {height:40px;margin-left:10px; width:15px; display:block; float:left; outline:0px; color:#999; font-size:24px;}
 
     .notice_addnav {height:44px; padding:5px;  border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; margin-top:14px; line-height:42px; color:#666; background:#fff;}
-    .notice_list {box-sizing: content-box;height:50px; padding:5px; border:1px solid #f0f0f0;margin:10px; background:#fff;height:100px;padding-left: 100px;position: relative;}
+    .notice_list {box-sizing: content-box;height:50px; /*padding:5px; */border:1px solid #f0f0f0;background:#fff;height:100px;padding-left: 100px;position: relative;margin: 10px 10px 0;}
     .notice_list .ico {height:90px; width:90px;color:#999;position: absolute;left: 5px;top: 5px}
-    .notice_list .ico img { width:90px;height:90px;margin-top:3px;float:left;cursor: pointer;}
+    .notice_list .ico img { width:90px;height:90px;float:left;cursor: pointer;}
     .notice_list .info {height:50px; width:100%; }
     .notice_list .info .inner { }
-    .notice_list .info .inner .addr {    line-height: 30px;width:100%; color:#232323; line-height:28px; font-size:16px; overflow:hidden;cursor: pointer;}
+    .notice_list .info .inner .addr {line-height: 30px;width:100%; color:#232323;font-size:16px; overflow:hidden;cursor: pointer;}
     .notice_list .info .inner .user {text-align: right;height:20px; width:100%; color:#bbb; line-height:20px; font-size:14px; overflow:hidden;}
     .notice_list .info .inner .notice-info{ color: #666;line-height: 22px;}
     .notice_list .info .inner .user span {color:#444; font-size:16px;}
@@ -22,11 +22,11 @@
 
     .notice_detail { width:100%;/*position:absolute;top:0;right:-100%;*/z-index:99999;display: none}
     .notice_main {height:auto;width:98%; padding:0px 1%; border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; background:#fff;box-sizing: content-box;padding-bottom: 20px}
-    .notice_main .title {height:auto;; width:98%; padding:0px 1%;line-height:22px;word-break: break-all;font-size:16px;color:#333;box-sizing: content-box;}
-    .notice_main .time {height:30px; width:98%; padding:0px 1%; border-bottom:1px solid #f0f0f0; line-height:22px;word-break: break-all;font-size:14px;color:#666;box-sizing: content-box;}
-    .notice_main .detail { height:100%;width:100%; padding:0px 1%; word-break: break-all;}
-    .notice_main .detail img { width:100%;}
-    .notice_main .detail p{ line-height: 24px;}
+    .notice_main .title {height:auto;; width:98%; padding:10px 1% 0;line-height:22px;word-break: break-all;font-size:16px;color:#333;box-sizing: content-box;line-height: 30px;}
+    .notice_main .time {height:30px; width:98%; padding:0px 1%; border-bottom:1px solid #f0f0f0; line-height:22px;word-break: break-all;font-size:14px;color:#bbb;box-sizing: content-box;}
+    .notice_main .detail { height:100%;width:100%; padding:1%; word-break: break-all;}
+    .notice_main .detail img { max-width:300px;}
+    .notice_main .detail p{ line-height: 26px;color: #666;}
     .notice_sub1 {height:44px; width:94%; margin:14px 3% 0px; background:#ff4f4f; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
     .notice_sub2 {height:44px; width:94%; margin:14px 3% 0px; background:#ddd; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#666; border:1px solid #d4d4d4;}
 
@@ -67,10 +67,10 @@
 
 <script id='tpl_notice_data' type='text/html'>
     <div class="notice_detail">
-          <div class="page_topbar">
-        <!--<a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>-->
+          <!--<div class="page_topbar">
+        <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
         <div class="title">公告内容</div>
-    </div>
+    </div>-->
         <div class="notice_main" >
             <div class="title"><%notice.title%></div>
             <div class="time"><%notice.createtime%></div>
