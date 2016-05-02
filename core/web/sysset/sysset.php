@@ -41,7 +41,6 @@ $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where unia
 ));
 $set     = unserialize($setdata['sets']);
 $oldset  = unserialize($setdata['sets']);
-
 if ($op == 'template') {
     $styles = array();
     //主题列表
@@ -72,6 +71,23 @@ if ($op == 'template') {
 } else if ($op == 'pay') {
     $sec = m('common')->getSec();
     $sec = iunserializer($sec['sec']);
+} else if($op == 'pcset'){
+    $designer = p('designer');
+    $categorys = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_article_category') . " WHERE uniacid=:uniacid ", array(':uniacid' => $_W['uniacid']));
+    if ($designer) {
+        $diypages = pdo_fetchall("SELECT id,pagetype,setdefault,pagename FROM " . tablename('sz_yi_designer') . " WHERE uniacid=:uniacid order by setdefault desc  ", array(':uniacid' => $_W['uniacid']));
+    }
+    $article_sys = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article_sys') . " WHERE uniacid=:uniacid limit 1 ", array(':uniacid' => $_W['uniacid']));
+    $article_sys['article_area'] = json_decode($article_sys['article_area'],true);
+    $area_count = sizeof($article_sys['article_area']);
+    // echo $area_count;exit;
+    if ($area_count == 0){
+        //没有设定地区的时候的默认值：
+        $article_sys['article_area'][0]['province'] = '';
+        $article_sys['article_area'][0]['city'] = '';
+        $area_count = 1;
+    }
+    $goodcates = pdo_fetchall("SELECT id,name,parentid FROM " . tablename('sz_yi_category') . " WHERE enabled=:enabled and uniacid= :uniacid  ", array(':uniacid' => $_W['uniacid'], ':enabled' => '1'));
 }
 if (checksubmit()) {
     if ($op == 'shop') {
@@ -87,17 +103,19 @@ if (checksubmit()) {
     }
     elseif ($op == 'pcset') {
         $custom                    = is_array($_GPC['pcset']) ? $_GPC['pcset'] : array();
-        $set['shop']['ispc'] = trim($custom['ispc']);
-        $set['shop']['pctitle'] = trim($custom['pctitle']);
+        $set['shop']['ispc']       = trim($custom['ispc']);
+        $set['shop']['pctitle']    = trim($custom['pctitle']);
         $set['shop']['pckeywords'] = trim($custom['pckeywords']);
-        $set['shop']['pcdesc'] = trim($custom['pcdesc']);
-        $set['shop']['copyright'] = trim($custom['copyright']);
-        /*$set['custom']['iscustom']  = $custom['iscustom'];
-        $set['custom']['header']  = $custom['header'];
-        $set['custom']['footer'] = $custom['footer'];
-        $set['custom']['index1'] = $custom['index1'];
-        $set['custom']['index2'] = $custom['index2'];*/
-
+        $set['shop']['pcdesc']     = trim($custom['pcdesc']);
+        $set['shop']['copyright']  = trim($custom['copyright']);
+        $set['shop']['index']      = $custom['index'];
+        $set['shop']['pclogo']     = save_media($custom['pclogo']);
+        $set['shop']['hmenu_name'] = $custom['hmenu_name'];
+        $set['shop']['hmenu_url']  = $custom['hmenu_url'];
+        $set['shop']['hmenu_id']   = $custom['hmenu_id'];
+        $set['shop']['fmenu_name'] = $custom['fmenu_name'];
+        $set['shop']['fmenu_url']  = $custom['fmenu_url'];
+        $set['shop']['fmenu_id']   = $custom['fmenu_id'];
         plog('sysset.save.sms', '修改系统设置-PC设置');
     }
     elseif ($op == 'sms') {
