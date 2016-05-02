@@ -1,8 +1,4 @@
-<?php if(isMobile()){?>
-    {template 'common/header'}
-<?php }else{?>
-    {template 'common/header_center'}
-<?php }?>
+{template 'member/center'}
 <title>{php echo $this->set['texts']['mycustomer']}</title>
 <style type="text/css">
     body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
@@ -31,9 +27,9 @@
     #customer_loading { padding:10px;color:#666;text-align: center;}
 
 </style>
-<div class="all-divbox">
+<div class="rightlist">
 <div class="customer_top">
-    <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> {php echo $this->set['texts']['mycustomer']}({$total})</div>
+    <div class="title" onclick='history.back()'><!--<i class='fa fa-chevron-left'></i>--> {php echo $this->set['texts']['mycustomer']}({$total})</div>
 </div>
 <div class="customer_list_head">
         <div class="info">会员信息</div>

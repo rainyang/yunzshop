@@ -260,11 +260,11 @@ footer#footer-nav .menu-list:after {
 .cart_top{border-bottom: 1px solid #cdcdcd !important;background:#f9f9f9 !important;}
 .cart_top .title {color: #1f1f1f !important;}
 
-.cart .fa-heart{ color: #FFB2D2!important}
+/*.cart .fa-heart{ color: #FFB2D2!important}
 .list1 .fa-street-view{ color: #c3b1eb!important}
 .list1 .fa-file-text{color: #8282FF!important}
 .list1 .fa-sign-out{ color: #77e2c8!important}
-.cart .fa-list{ color: #7DB7FF!important}
+.cart .fa-list{ color: #7DB7FF!important}*/
 
 .like .fa-star-o,.like .fa-star,.cart .fa-shopping-cart,.cs .fa-headphones{ padding-bottom: 2px; box-sizing: border-box;}
 .label-free{background: #ec0405 !important}

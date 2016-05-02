@@ -1,8 +1,4 @@
-<?php if(isMobile()){?>
-    {template 'common/header'}
-<?php }else{?>
-    {template 'common/header_center'}
-<?php }?>
+{template 'member/center'}
 <title>{php echo $this->set['texts']['commission_detail']}</title>
 <style type="text/css">
 body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
@@ -17,7 +13,8 @@ a {text-decoration:none;}
 
 .log_title {height:40px; padding:5px; line-height:50px; font-size:16px; color:#666;}
 
-.log_list {height:40px; padding:10px; background:#fff;margin-top:5px;}
+.log_list {height:40px; padding:10px; background:#fff;margin-top:5px;    border-bottom: 1px #eee solid;
+    box-sizing: content-box;}
 .log_list .left {height:40px; width:100%; float:left; color:#999; margin-right:-20%;font-size:14px;}
 .log_list .left .inner { width:100%;margin-right:-20%}
 .log_list .left span {color:#666; font-size:13px; line-height:28px;}
@@ -26,9 +23,9 @@ a {text-decoration:none;}
 .log_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center}
 #log_loading { padding:10px;color:#666;text-align: center;}
 </style>
-<div class="all-divbox">
+<div class="rightlist">
 <div class="log_top">
-       <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> {php echo $this->set['texts']['commission_detail']}(<span id='total'></span>)</div>
+       <div class="title" onclick='history.back()'><!--<i class='fa fa-chevron-left'></i>-->{php echo $this->set['texts']['commission_detail']}(<span id='total'></span>)</div>
     <div class='num'>预计{php echo $this->set['texts']['commission']}: +<span id='commissioncount'></span>元</div>
 </div>
  
