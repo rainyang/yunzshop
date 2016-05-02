@@ -5,16 +5,22 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 
 $openid = m('user')->getOpenid();
-$set = m('common')->getSysset(array('shop', 'trade'));
+$set = m('common')->getSysset(array('trade'));
 $member = m('member')->getMember($openid);
 $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
 $uniacid = $_W['uniacid'];
+$trade['withdraw'] = $set['trade']['withdraw'];
+$trade['closerecharge'] = $set['trade']['closerecharge'];
 $hascom = false;
 $shopset = array();
+$supplier_switch = false;
 if (p('supplier')) {
 	$supplier_set = p('supplier')->getSet();
+	if(!empty($supplier_set['switch'])){
+		$supplier_switch = true;
+	}
 }
-$shopset['supplier_set'] = $supplier_set;
+$shopset['supplier_switch'] = $supplier_switch;
 $plugc = p('commission');
 if ($plugc) {
 	$pset = $plugc->getSet();
@@ -39,10 +45,18 @@ if ($plugin_coupon) {
 $shopset['hascoupon'] = $hascoupon;
 $shopset['hascouponcenter'] = $hascouponcenter;
 $pluginbonus = p("bonus");
+$bonus_start = false;
+$bonus_text = "";
 if(!empty($pluginbonus)){
 	$bonus_set = $pluginbonus->getSet();
+	if(!empty($bonus_set['start'])){
+		$bonus_start = true;
+		$bonus_text = $bonus_set['detail_text'] ? $bonus_set['detail_text'] : "分红明细";
+	}
 }
-$shopset['bonus_set'] = $bonus_set;
+$shopset['bonus_start'] = $bonus_start;
+$shopset['bonus_text'] = $bonus_text;
+$shopset['is_weixin'] = is_weixin();
 if ($_W['isajax']) {
 	$level = array('levelname' => empty($set['shop']['levelname']) ? '普通会员' : $set['shop']['levelname']);
 	if (!empty($member['level'])) {
@@ -70,6 +84,6 @@ if ($_W['isajax']) {
 		$sql .= " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$time} && c.timeend>={$time})) order by d.gettime desc";
 		$counts['couponcount'] = pdo_fetchcolumn($sql, array(':openid' => $openid, ':uniacid' => $_W['uniacid']));
 	}
-	show_json(1, array('member' => $member, 'order' => $order, 'level' => $level, 'open_creditshop' => $open_creditshop, 'counts' => $counts, 'shopset' => $shopset, 'set' => $set));
+	show_json(1, array('member' => $member, 'order' => $order, 'level' => $level, 'open_creditshop' => $open_creditshop, 'counts' => $counts, 'shopset' => $shopset, 'trade' => $trade));
 }
 include $this->template('member/center');

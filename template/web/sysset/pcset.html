@@ -1,0 +1,270 @@
+{template 'web/_header'}
+{template 'web/sysset/tabs'}
+<div class="main">
+    <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
+        <input type='hidden' name='setid' value="{$set['id']}" />
+        <input type='hidden' name='op' value="pcset" />
+        <div class="panel panel-default">
+            <div class='panel-heading'>
+                基本设置
+            </div>
+            <div class='panel-body'>  
+                <div class="form-group">
+
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">PC版开关</label>
+                    <div class="col-sm-9 col-xs-12">
+
+                        <label class='radio-inline'><input type='radio' name='pcset[ispc]' value='1' {if $set['shop']['ispc']==1}checked{/if}/> 开启</label>
+                        <label class='radio-inline'><input type='radio' name='pcset[ispc]' value='0' {if $set['shop']['ispc']==0}checked{/if} /> 关闭</label>
+  
+                    </div>
+                </div>
+            </div>
+            <div class='panel-heading'>
+                SEO优化
+            </div>
+            <div class='panel-body'>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">商城标题</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input class="form-control" type="text" value="{$set['shop']['pctitle']}" name="pcset[pctitle]">
+                        <span class="help-block">搜索引擎优化商城标题</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">SEO关键字</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input class="form-control" type="text" value="{$set['shop']['pckeywords']}" name="pcset[pckeywords]">
+                        <span class="help-block">搜索引擎优化商城关键字</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">SEO描述</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <textarea class="form-control" cols="60" name="pcset[pcdesc]" style="height:100px;">{$set['shop']['pcdesc']}</textarea>
+                        <span class="help-block">搜索引擎优化商城描述</span>
+                    </div>
+                </div>
+            </div>
+            <div class='panel-heading'>
+                关注设置
+            </div>
+            <div class='panel-body'>  
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">头部导航</label>
+                <div class="col-sm-9">
+                    <div class="input-group"  style="width: 30%;float:left;margin-right:1%">
+                        <div class="input-group-addon">名称1</div>
+                        <input type="text" name="custom[header][name1]" class="form-control" value="{$set['custom']['header']['name1']}"  />
+                    </div>
+                   <div class="input-group" style="width: 68%;float:left;margin-right:1%">
+                        <div class="input-group-addon">链接1</div>
+                        <input type="text" name="custom[header][link1]" class="form-control" value="{$set['custom']['header']['link1']}"  />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" >
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9">
+                    <div class="input-group" style="width: 30%;float:left;margin-right:1%">
+                        <div class="input-group-addon">名称2</div>
+                        <input type="text" name="custom[header][name2]" class="form-control" value="{$set['custom']['header']['name2']}"  />
+                    </div>
+                   <div class="input-group" style="width: 68%;float:left;margin-right:1%">
+                        <div class="input-group-addon">链接2</div>
+                        <input type="text" name="custom[header][link2]" class="form-control" value="{$set['custom']['header']['link2']}"  />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" >
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9">
+                    <div class="input-group" style="width: 30%;float:left;margin-right:1%">
+                        <div class="input-group-addon">名称3</div>
+                        <input type="text" name="custom[header][name3]" class="form-control" value="{$set['custom']['header']['name3']}"  />
+                    </div>
+                   <div class="input-group" style="width: 68%;float:left;margin-right:1%">
+                        <div class="input-group-addon">链接3</div>
+                        <input type="text" name="custom[header][link3]" class="form-control" value="{$set['custom']['header']['link3']}"  />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" >
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9">
+                    <div class="input-group" style="width: 30%;float:left;margin-right:1%">
+                        <div class="input-group-addon">名称4</div>
+                        <input type="text" name="custom[header][name4]" class="form-control" value="{$set['custom']['header']['name4']}"  />
+                    </div>
+                   <div class="input-group" style="width: 68%;float:left;margin-right:1%">
+                        <div class="input-group-addon">链接4</div>
+                        <input type="text" name="custom[header][link4]" class="form-control" value="{$set['custom']['header']['link4']}"  />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" >
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9">
+                    <div class="input-group" style="width: 30%;float:left;margin-right:1%">
+                        <div class="input-group-addon">名称5</div>
+                        <input type="text" name="custom[header][name5]" class="form-control" value="{$set['custom']['header']['name5']}"  />
+                    </div>
+                   <div class="input-group" style="width: 68%;float:left;margin-right:1%">
+                        <div class="input-group-addon">链接5</div>
+                        <input type="text" name="custom[header][link5]" class="form-control" value="{$set['custom']['header']['link5']}"  />
+                    </div>
+                </div>
+            </div>
+
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">首页模块1</label>
+    <div class="col-sm-9 col-xs-12" >
+          
+        <label for="isrecommand" class="checkbox-inline">
+            <input type="checkbox" name="custom[index1][isrecommand]" value="isrecommand" id="isrecommand" {if $set['custom']['index1']['isrecommand'] == 'isrecommand'}checked="true"{/if} /> 推荐
+        </label>
+        <label for="isnew" class="checkbox-inline">
+            <input type="checkbox" name="custom[index1][isnew]" value="isnew" id="isnew" {if $set['custom']['index1']['isnew'] == 'isnew'}checked="true"{/if} /> 新上
+        </label>
+        <label for="ishot" class="checkbox-inline">
+            <input type="checkbox" name="custom[index1][ishot]" value="ishot" id="ishot" {if $set['custom']['index1']['ishot'] == 'ishot'}checked="true"{/if} /> 热卖
+        </label>
+        <label for="isdiscount" class="checkbox-inline">
+            <input type="checkbox" name="custom[index1][isdiscount]" value="isdiscount" id="isdiscount" {if $set['custom']['index1']['isdiscount'] == 'isdiscount'}checked="true"{/if} /> 促销
+        </label>
+        <label for="issendfree" class="checkbox-inline">
+            <input type="checkbox" name="custom[index1][issendfree]" value="issendfree" id="issendfree" {if $set['custom']['index1']['issendfree'] == 'issendfree'}checked="true"{/if} /> 包邮
+        </label>
+        <label for="istime" class="checkbox-inline">
+            <input type="checkbox" name="custom[index1][istime]" value="istime" id="istime" {if $set['custom']['index1']['istime'] == 'istime'}checked="true"{/if} /> 限时卖
+        </label>
+
+    </div>
+</div>
+
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">首页模块2</label>
+    <div class="col-sm-9 col-xs-12" >
+          
+        <label for="isrecommand2" class="checkbox-inline">
+            <input type="checkbox" name="custom[index2][isrecommand]" value="isrecommand" id="isrecommand2" {if $set['custom']['index2']['isrecommand'] == 'isrecommand'}checked="true"{/if} /> 推荐
+        </label>
+        <label for="isnew2" class="checkbox-inline">
+            <input type="checkbox" name="custom[index2][isnew]" value="isnew" id="isnew2" {if $set['custom']['index2']['isnew'] == 'isnew'}checked="true"{/if} /> 新上
+        </label>
+        <label for="ishot2" class="checkbox-inline">
+            <input type="checkbox" name="custom[index2][ishot]" value="ishot" id="ishot2" {if $set['custom']['index2']['ishot'] == 'ishot'}checked="true"{/if} /> 热卖
+        </label>
+        <label for="isdiscount2" class="checkbox-inline">
+            <input type="checkbox" name="custom[index2][isdiscount]" value="isdiscount" id="isdiscount2" {if $set['custom']['index2']['isdiscount'] == 'isdiscount'}checked="true"{/if} /> 促销
+        </label>
+        <label for="issendfree2" class="checkbox-inline">
+            <input type="checkbox" name="custom[index2][issendfree]" value="issendfree" id="issendfree2" {if $set['custom']['index2']['issendfree'] == 'issendfree'}checked="true"{/if} /> 包邮
+        </label>
+        <label for="istime2" class="checkbox-inline">
+            <input type="checkbox" name="custom[index2][istime]" value="istime" id="istime2" {if $set['custom']['index2']['istime'] == 'istime'}checked="true"{/if} /> 限时卖
+        </label>
+
+    </div>
+</div>
+        </div>
+            <div class='panel-heading'>
+                底部设置
+            </div>
+            <div class='panel-body'> 
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">底部菜单</label>
+                <div class="col-sm-9">
+                    <div class="panel-body table-responsive" style="padding:0px;">
+    <table class="table">
+        <thead>
+            <tr>
+                <th style='width:50px;'></th>
+                <th>名称</th>
+                <th>链接</th>
+            </tr>
+        </thead>
+        <tbody id="param-items">
+            {loop $params $p}
+            <tr>
+                <td>
+                   {ife 'shop.goods' $item}
+                    <a href="javascript:;" class="fa fa-move" title="拖动调整此显示顺序"><i class="fa fa-arrows"></i></a>&nbsp;
+                    <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;" title="删除"><i class='fa fa-remove'></i></a>
+                    {/if}
+                </td>
+                <td>
+                      {ife 'shop.goods' $item}
+                    <input name="param_title[]" type="text" class="form-control param_title" value="{$p['title']}"/>
+                    {else}
+                      {$p['title']}
+                    {/if}
+                    <input name="param_id[]" type="hidden" class="form-control" value="{$p['id']}"/>
+                </td>
+                <td>
+                       {ife 'shop.goods' $item}
+                    <input name="param_value[]" type="text" class="form-control param_value" value="{$p['value']}"/>
+                {else}   {$p['value']}
+                    {/if}
+                </td>
+            </tr>
+            {/loop}
+        </tbody>
+           {ife 'shop.goods' $item}
+        <tbody>
+            <tr>
+                <td>&nbsp;</td>
+                <td colspan="2">
+                    <a href="javascript:;" id='add-param' onclick="addParam()" style="margin-top:10px;" class="btn btn-default"  title="添加属性"><i class='fa fa-plus'></i> 添加属性</a>
+                </td>
+            </tr>
+        </tbody>
+        {/if}
+    </table>
+</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">版权信息</label>
+                <div class="col-sm-9">
+                    <div class="input-group"  style="width: 99%;float:left;margin-right:1%">
+                        {php echo tpl_ueditor('pcset[copyright]',$set['shop']['copyright'])}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group"></div>
+            <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <div class="col-sm-9 col-xs-12">
+                           {ifp 'sysset.save.shop'}
+                            <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  />
+                            <input type="hidden" name="token" value="{$_W['token']}" />
+                          {/if}
+                     </div>
+            </div>
+                       
+            </div>
+        </div>     
+    </form>
+</div>
+<script type="text/javascript">
+    function addSpecItem(specid){
+    $("#add-specitem-" + specid).html("正在处理...").attr("disabled", "true");
+        var url = "{php echo$this->createWebUrl('shop/tpl',array('tpl'=>'specitem'))}" + "&specid=" + specid;
+        $.ajax({
+            "url": url,
+            success:function(data){
+                $("#add-specitem-" + specid).html('<i class="fa fa-plus"></i> 添加规格项').removeAttr("disabled");
+                $('#spec_item_' + specid).append(data);
+                var len = $("#spec_" + specid + " .spec_item_title").length -1;
+                $("#spec_" + specid + " .spec_item_title:eq(" +len+ ")").focus();
+                window.optionchanged = true;
+                                                                        if(type==3 && virtual==0){
+                                                                                    $(".choosetemp").show();
+                                                                         }
+            }
+        });
+    }
+</script>
+{template 'web/_footer'}     
