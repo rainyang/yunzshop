@@ -389,6 +389,8 @@ pdo_query("CREATE TABLE " . tablename('sz_yi_adpc') . " (
   `displayorder` int(11) DEFAULT '0',
   `enabled` int(11) DEFAULT '0',
   `thumb_pc` varchar(500) DEFAULT '',
-  `location` varchar(50) NOT NULL DEFAULT ''
+  `location` varchar(50) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`),
+  KEY `idx_uniacid` (`uniacid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;");
 
