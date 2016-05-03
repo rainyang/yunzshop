@@ -103,7 +103,7 @@ class Core extends WeModuleSite
         $this->setFooter();
 
         @session_start();
-        if (!$followed && $memberid != $mid) {
+        if (!$followed && $memberid != $mid && isMobile()) {
             $set          = m('common')->getSysset();
             $this->header = array(
                 'url' => $set['share']['followurl']

@@ -677,8 +677,6 @@ if (!class_exists('CommissionModel')) {
 				}
 				imagejpeg($_var_91, $_var_80 . $_var_82);
 				imagedestroy($_var_91);
-			}else{
-				echo 2;exit;
 			}
 			return $_W['siteroot'] . 'addons/sz_yi/data/poster/' . $_W['uniacid'] . '/' . $_var_82;
 		}
