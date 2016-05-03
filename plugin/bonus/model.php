@@ -472,7 +472,7 @@ if (!class_exists('BonusModel')) {
 			}
 			$set = $this->getSet();
 			//$member = m('member')->getMember($mid);
-			$member = p('commission')->getInfo($mid, array(''));
+			$member = p('commission')->getInfo($mid, array('ordercount3'));
 
 			if (empty($member)) {
 				return;
@@ -530,6 +530,15 @@ if (!class_exists('BonusModel')) {
 			if(in_array('9', $leveltype)){
 				if(!empty($levelup['downcountlevel1'])){
 					if($member['level1'] < $levelup['downcountlevel1']){
+						$isleveup = false;
+					}
+				}
+			}
+
+			//分销订单总金额
+			if(in_array('11', $leveltype)){
+				if(!empty($levelup['commissionmoney'])){
+					if($member['ordermoney'] < $levelup['commissionmoney']){
 						$isleveup = false;
 					}
 				}

@@ -114,7 +114,7 @@
                 <div class="col-sm-9 col-xs-12">
                     <select  class="form-control" name="setdata[senddaytime]">
                       <?php for($i=1; $i<25; $i++){?>
-                        <option value="<?php echo $i?>" {if empty($set['senddaytime'])}selected{/if}><?php echo $i?>点</option>
+                        <option value="<?php echo $i?>" {if $set['senddaytime']==$i}selected{/if}><?php echo $i?>点</option>
                       <?php }?>
                     </select>
                     <span class='help-block'>结算后第二天打款的时间(需选择自动打款起效)</span>
@@ -185,10 +185,8 @@
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">代理商等级升级依据</label>
                 <div class="col-sm-9 col-xs-12">
               
-                        <!-- <label class="checkbox checkbox-inline" style="width:240px">
-                              <input type="checkbox" name="setdata[leveltype][]" value="0" {if empty($set['leveltype'])}checked{/if}/> 分销订单总额(完成的订单)
-                        </label>
-		                <label class="checkbox checkbox-inline" style="width:240px">
+                        
+		                <!-- <label class="checkbox checkbox-inline" style="width:240px">
                               <input type="checkbox" name="setdata[leveltype][]" value="1" {if $set['leveltype']==1}checked{/if}/> 一级分销订单金额(完成的订单)
                         </label>		<br/>
 						
@@ -226,6 +224,9 @@
 				        <label class="checkbox checkbox-inline" style="width:240px">
                               <input type="checkbox" name="setdata[leveltype][]" value="10" {if $set['leveltype']==10}checked{/if}/> 已提现佣金总金额
                         </label> -->	
+                        <label class="checkbox checkbox-inline" style="width:240px">
+                              <input type="checkbox" name="setdata[leveltype][]" value="11" {if empty($set['leveltype'])}checked{/if}/> 分销订单总额(完成的订单)
+                        </label>
                         <span class="help-block">默认为分销订单总金额</span> 
                       
                 </div>

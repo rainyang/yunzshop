@@ -36,11 +36,7 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">升级条件</label>
                     <div class="col-sm-9 col-xs-12">
                         <div class='input-group'>
-							{if in_array('0', $leveltype)}
-									<span class='input-group-addon'>分销订单金额满</span>
-									<input type="text" name="ordermoney" class="form-control" value="{$level['ordermoney']}" />
-									<span class='input-group-addon'>元</span>
-							{/if}
+							
 							
 							{if in_array('1', $leveltype)}
 									<span class='input-group-addon'>一级分销订单金额满</span>
@@ -98,7 +94,11 @@
 									<input type="text" name="commissionmoney" class="form-control" value="{$level['commissionmoney']}" />
 									<span class='input-group-addon'>元</span>
 							{/if}
-							
+							{if in_array('11', $leveltype)}
+                                    <span class='input-group-addon'>分销订单金额满</span>
+                                    <input type="text" name="commissionmoney" class="form-control" value="{$level['commissionmoney']}" />
+                                    <span class='input-group-addon'>元</span>
+                            {/if}
 							
                         </div>
                         <span class='help-block'>代理商升级条件，不填写默认为不自动升级</span>
@@ -170,7 +170,7 @@
                         <td>{$row['levelname']}</td>
                         <td>{$row['agent_money']}%</td>
                         <td class="condition">
-						{if in_array('0', $set['leveltype'])}{if $row['ordermoney']>0}分销订单金额满 {$row['ordermoney']} 元 {/if}{/if}
+						
 						{if in_array('1', $set['leveltype'])}{if $row['ordermoney']>0}一级分销订单金额满 {$row['ordermoney']} 元 {/if}{/if}
 						{if in_array('2', $set['leveltype'])}{if $row['ordercount']>0}分销订单数量满 {$row['ordercount']} 个 {/if}{/if}
 						{if in_array('3', $set['leveltype'])}{if $row['ordercount']>0}一级分销订单数量满 {$row['ordercount']} 个 {/if}{/if}
@@ -184,7 +184,8 @@
 						{if in_array('9', $set['leveltype'])}{if $row['downcountlevel1']>0}一级团队人数满 {$row['downcountlevel1']} 个（分销商）{/if}{/if}
 						
 						 
-						{if in_array('10', $set['leveltype'])}{if $row['bonusmoney']>0}已提现佣金总金额满 {$row['bonusmoney']} 元 {/if}{/if}	 
+						{if in_array('10', $set['leveltype'])}{if $row['bonusmoney']>0}已提现佣金总金额满 {$row['bonusmoney']} 元 {/if}{/if}
+                        {if in_array('11', $set['leveltype'])}{if $row['commissionmoney']>0}分销订单金额满 {$row['commissionmoney']} 元 {/if}{/if}	 
                           </td>
                         <td>
                             <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('bonus/level', array('op' => 'post', 'id' => $row['id']))}">编辑</a>
