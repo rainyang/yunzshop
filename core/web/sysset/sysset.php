@@ -110,6 +110,7 @@ if (checksubmit()) {
         $set['shop']['pccopyright']  = trim($custom['pccopyright']);
         $set['shop']['index']      = $custom['index'];
         $set['shop']['pclogo']     = save_media($custom['pclogo']);
+        $set['shop']['reglogo']    = save_media($custom['reglogo']);
         $set['shop']['hmenu_name'] = $custom['hmenu_name'];
         $set['shop']['hmenu_url']  = $custom['hmenu_url'];
         $set['shop']['hmenu_id']   = $custom['hmenu_id'];
