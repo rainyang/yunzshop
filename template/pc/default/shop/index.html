@@ -52,12 +52,12 @@
 	{if in_array($key, $this->yzShopSet['index'])}
 		{if $ads_pc[$key]}
 		{loop $ads_pc[$key] $adkey $adval}
-		<div>
+		<div class="mt20">
 			<a href="{php echo $adval['link'] ? $adval['link'] : '#'}" target="_blank"><img src="{$adval['thumb']}" style="width:100%"></a>
 		</div>
 		{/loop}
 		{/if}
-		<div class="boutique boutique-index mt50 fl wfs">
+		<div class="boutique boutique-index mt20 fl wfs">
 			<h3>{$val}</h3>
 			<div class="canvas">
 				<ul class="items" style="width: 1222px;">

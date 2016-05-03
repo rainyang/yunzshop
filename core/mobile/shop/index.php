@@ -87,24 +87,24 @@ if ($operation == 'index') {
 	if(!empty($this->yzShopSet['index']['ishot']) && !empty($this->yzShopSet['ispc'])){
 		$ads_pc['ishot'] = pdo_fetchall('select * from ' . tablename('sz_yi_adpc') . " where uniacid=:uniacid and location='ishot'", array(':uniacid' => $uniacid));
 		$goods_pc['ishot'] = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . ' where uniacid = :uniacid and status = 1 and deleted = 0 and ishot=1 order by displayorder desc limit 4', array(':uniacid' => $uniacid));
-		$ads_pc['ishot'] = set_medias($ads_pc['isnew'], 'thumb');
-		$goods_pc['ishot'] = set_medias($goods_pc['isnew'], 'thumb');
+		$ads_pc['ishot'] = set_medias($ads_pc['ishot'], 'thumb');
+		$goods_pc['ishot'] = set_medias($goods_pc['ishot'], 'thumb');
 	}
 
 	//促销商品
 	if(!empty($this->yzShopSet['index']['isdiscount']) && !empty($this->yzShopSet['ispc'])){
 		$ads_pc['isdiscount'] = pdo_fetchall('select * from ' . tablename('sz_yi_adpc') . " where uniacid=:uniacid and location='isdiscount'", array(':uniacid' => $uniacid));
 		$goods_pc['isdiscount'] = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . ' where uniacid = :uniacid and status = 1 and deleted = 0 and isdiscount=1 order by displayorder desc limit 4', array(':uniacid' => $uniacid));
-		$ads_pc['isdiscount'] = set_medias($ads_pc['isnew'], 'thumb');
-		$goods_pc['isdiscount'] = set_medias($goods_pc['isnew'], 'thumb');
+		$ads_pc['isdiscount'] = set_medias($ads_pc['isdiscount'], 'thumb');
+		$goods_pc['isdiscount'] = set_medias($goods_pc['isdiscount'], 'thumb');
 	}
 
 	//包邮商品
 	if(!empty($this->yzShopSet['index']['issendfree']) && !empty($this->yzShopSet['ispc'])){
 		$ads_pc['issendfree'] = pdo_fetchall('select * from ' . tablename('sz_yi_adpc') . " where uniacid=:uniacid and location='issendfree'", array(':uniacid' => $uniacid));
 		$goods_pc['issendfree'] = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . ' where uniacid = :uniacid and status = 1 and deleted = 0 and issendfree=1 order by displayorder desc limit 4', array(':uniacid' => $uniacid));
-		$ads_pc['issendfree'] = set_medias($ads_pc['isnew'], 'thumb');
-		$goods_pc['issendfree'] = set_medias($goods_pc['isnew'], 'thumb');
+		$ads_pc['issendfree'] = set_medias($ads_pc['issendfree'], 'thumb');
+		$goods_pc['issendfree'] = set_medias($goods_pc['issendfree'], 'thumb');
 	}
 
 	//限时特价
