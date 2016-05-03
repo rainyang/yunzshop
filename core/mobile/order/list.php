@@ -28,7 +28,7 @@ if ($_W['isajax']) {
 		} else {
 			$condition .= ' and status<>-1';
 		}
-		$list = pdo_fetchall('select id,ordersn,price,status,iscomment,isverify,verified,verifycode,iscomment,refundid,expresscom,express,expresssn,finishtime,virtual,paytype,expresssn from ' . tablename('sz_yi_order') . " where 1 {$condition} order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
+		$list = pdo_fetchall('select id,createtime,ordersn,price,status,iscomment,isverify,verified,verifycode,iscomment,refundid,expresscom,express,expresssn,finishtime,virtual,paytype,expresssn from ' . tablename('sz_yi_order') . " where 1 {$condition} order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where 1 {$condition}", $params);
 		$tradeset = m('common')->getSysset('trade');
 		$refunddays = intval($tradeset['refunddays']);
@@ -36,6 +36,7 @@ if ($_W['isajax']) {
 			$sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where og.orderid=:orderid order by og.id asc';
 			$row['goods'] = set_medias(pdo_fetchall($sql, array(':orderid' => $row['id'])), 'thumb');
 			$row['goodscount'] = count($row['goods']);
+			$row['createtime'] = date('Y-m-d H:i:s',$row['createtime']);
 			switch ($row['status']) {
 				case '-1':
 					$status = '已取消';

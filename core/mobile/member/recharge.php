@@ -73,7 +73,7 @@ if ($operation == 'display' && $_W['isajax']) {
     if ($pluginy) {
         $yunpayinfo = $pluginy->getYunpay();
 
-        if (isset($yunpayinfo) && $yunpayinfo['switch']) {
+        if (isset($yunpayinfo) && @$yunpayinfo['switch']) {
             $yunpay['success'] = true;
         }
     }
