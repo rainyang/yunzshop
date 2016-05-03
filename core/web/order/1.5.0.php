@@ -377,10 +377,18 @@ if(!pdo_fieldexists('sz_yi_notice', 'desc')) {
 }
 
 if(!pdo_fieldexists('sz_yi_order_goods', 'goods_op_cost_price')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `goods_op_cost_price` DECIMAL(10,2) NOT NULL DEFAULT '0.00';");
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `goods_op_cost_price` DECIMAL(10,2) DEFAULT '0.00';");
 }
 
-pdo_query("CREATE TABLE " . tablename('sz_yi_adpc') . " (
+if(!pdo_fieldexists('sz_yi_store', 'myself_support')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_store')." ADD `myself_support` tinyint(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_store', 'verity_support')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_store')." ADD `verity_support` tinyint(1) DEFAULT '0';");
+}
+
+pdo_query("CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_adpc') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `advname` varchar(50) DEFAULT '',
@@ -388,9 +396,9 @@ pdo_query("CREATE TABLE " . tablename('sz_yi_adpc') . " (
   `thumb` varchar(255) DEFAULT '',
   `displayorder` int(11) DEFAULT '0',
   `enabled` int(11) DEFAULT '0',
-  `thumb_pc` varchar(500) DEFAULT '',
-  `location` varchar(50) NOT NULL DEFAULT '',
+  `thumb_pc` varchar(255) DEFAULT '',
+  `location` varchar(50) DEFAULT '',
   PRIMARY KEY (`id`),
   KEY `idx_uniacid` (`uniacid`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;");
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 
