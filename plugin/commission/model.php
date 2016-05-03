@@ -613,12 +613,13 @@ if (!class_exists('CommissionModel')) {
 				set_time_limit(0);
 				$_var_90 = IA_ROOT . '/addons/sz_yi/static/fonts/msyh.ttf';
 				$_var_91 = imagecreatetruecolor(640, 1225);
-				if($_W['os'] == "windows"){
+				if(!is_weixin()){
 					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster_pc.jpg');
 				}else{
 					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
 				}
-				
+				$imgusername = $_var_87['realname'] ? $_var_87['realname'] : $_var_87['nickname'];
+				$imgusername = $imgusername ? $imgusername : $_var_87['mobile'];
 				imagecopy($_var_91, $_var_92, 0, 0, 0, 0, 640, 1225);
 				imagedestroy($_var_92);
 				$_var_93 = preg_replace('/\\/0$/i', '/96', $_var_87['avatar']);
@@ -643,7 +644,7 @@ if (!class_exists('CommissionModel')) {
 				$_var_101 = $this->createImage($_var_100);
 				$_var_95 = imagesx($_var_101);
 				$_var_96 = imagesy($_var_101);
-				imagecopyresized($_var_91, $_var_101, 50, 835, 0, 0, 250, 250, $_var_95, $_var_96);
+				imagecopyresized($_var_91, $_var_101, 196, 835, 0, 0, 250, 250, $_var_95, $_var_96);
 				imagedestroy($_var_101);
 				$_var_102 = imagecolorallocate($_var_91, 0, 3, 51);
 				$_var_103 = imagecolorallocate($_var_91, 240, 102, 0);
@@ -651,7 +652,7 @@ if (!class_exists('CommissionModel')) {
 				$_var_105 = imagecolorallocate($_var_91, 255, 255, 0);
 				$_var_106 = '我是';
 				imagettftext($_var_91, 20, 0, 150, 70, $_var_102, $_var_90, $_var_106);
-				imagettftext($_var_91, 20, 0, 210, 70, $_var_103, $_var_90, $_var_87['nickname']);
+				imagettftext($_var_91, 20, 0, 210, 70, $_var_103, $_var_90, $imgusername);
 				$_var_107 = '我要为';
 				imagettftext($_var_91, 20, 0, 150, 105, $_var_102, $_var_90, $_var_107);
 				$_var_108 = $_var_85['name'];
@@ -712,7 +713,13 @@ if (!class_exists('CommissionModel')) {
 				$_var_103 = imagecolorallocate($_var_91, 240, 102, 0);
 				$_var_104 = imagecolorallocate($_var_91, 255, 255, 255);
 				$_var_105 = imagecolorallocate($_var_91, 255, 255, 0);
-				$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
+				if(!is_weixin()){
+					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster_pc.jpg');
+				}else{
+					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
+				}
+				$imgusername = $_var_87['realname'] ? $_var_87['realname'] : $_var_87['nickname'];
+				$imgusername = $imgusername ? $imgusername : $_var_87['mobile'];
 				imagecopy($_var_91, $_var_92, 0, 0, 0, 0, 640, 1225);
 				imagedestroy($_var_92);
 				$_var_93 = preg_replace('/\\/0$/i', '/96', $_var_87['avatar']);
@@ -730,11 +737,11 @@ if (!class_exists('CommissionModel')) {
 				$_var_101 = $this->createImage($_var_116);
 				$_var_95 = imagesx($_var_101);
 				$_var_96 = imagesy($_var_101);
-				imagecopyresized($_var_91, $_var_101, 50, 835, 0, 0, 250, 250, $_var_95, $_var_96);
+				imagecopyresized($_var_91, $_var_101, 196, 835, 0, 0, 250, 250, $_var_95, $_var_96);
 				imagedestroy($_var_101);
 				$_var_106 = '我是';
 				imagettftext($_var_91, 20, 0, 150, 70, $_var_102, $_var_90, $_var_106);
-				imagettftext($_var_91, 20, 0, 210, 70, $_var_103, $_var_90, $_var_87['nickname']);
+				imagettftext($_var_91, 20, 0, 210, 70, $_var_103, $_var_90, $imgusername);
 				$_var_107 = '我要为';
 				imagettftext($_var_91, 20, 0, 150, 105, $_var_102, $_var_90, $_var_107);
 				$_var_108 = $_var_85['name'];
