@@ -71,8 +71,8 @@ if ($operation == 'index') {
 	if(!empty($this->yzShopSet['index']['isrecommand']) && !empty($this->yzShopSet['ispc'])){
 		$ads_pc['isrecommand'] = pdo_fetchall('select * from ' . tablename('sz_yi_adpc') . " where uniacid=:uniacid and location='isrecommand'", array(':uniacid' => $uniacid));
 		$goods_pc['isrecommand'] = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . ' where uniacid = :uniacid and status = 1 and deleted = 0 and isrecommand=1 order by displayorder desc limit 4', array(':uniacid' => $uniacid));
-		$ads_pc['isrecommand'] = set_medias($ads_pc['isnew'], 'thumb');
-		$goods_pc['isrecommand'] = set_medias($goods_pc['isnew'], 'thumb');
+		$ads_pc['isrecommand'] = set_medias($ads_pc['isrecommand'], 'thumb');
+		$goods_pc['isrecommand'] = set_medias($goods_pc['isrecommand'], 'thumb');
 	}
 
 	//新上商品
