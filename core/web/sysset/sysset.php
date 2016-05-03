@@ -80,7 +80,6 @@ if ($op == 'template') {
     $article_sys = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article_sys') . " WHERE uniacid=:uniacid limit 1 ", array(':uniacid' => $_W['uniacid']));
     $article_sys['article_area'] = json_decode($article_sys['article_area'],true);
     $area_count = sizeof($article_sys['article_area']);
-    // echo $area_count;exit;
     if ($area_count == 0){
         //没有设定地区的时候的默认值：
         $article_sys['article_area'][0]['province'] = '';
@@ -88,6 +87,13 @@ if ($op == 'template') {
         $area_count = 1;
     }
     $goodcates = pdo_fetchall("SELECT id,name,parentid FROM " . tablename('sz_yi_category') . " WHERE enabled=:enabled and uniacid= :uniacid  ", array(':uniacid' => $_W['uniacid'], ':enabled' => '1'));
+    //默认首页导航内容
+    if(empty($set['shop']['hmenu_name'])){
+        $set['shop']['hmenu_name'] = array('首页', '全部商品', '店铺公告', '成为分销商', '会员中心');
+        $set['shop']['hmenu_url']  = array($this->createMobileUrl('shop/index'), $this->createMobileUrl('shop/list', array('order' => 'sales', 'by' => 'desc')), $this->createMobileUrl('shop/notice'), $this->createPluginMobileUrl('commission'), $this->createMobileUrl('member/info'));
+        $set['shop']['hmenu_id']   = array('yz01', 'yz02', 'yz03', 'yz04', 'yz05');
+    }
+
 }
 if (checksubmit()) {
     if ($op == 'shop') {

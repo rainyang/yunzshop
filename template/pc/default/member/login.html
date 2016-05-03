@@ -1,8 +1,4 @@
-
-
 {template 'common/header'}
-
-
 {template 'common/navigation'}
 <div class="blank"></div>
 
@@ -20,9 +16,9 @@
                           <a class="fr" href="{php echo $this->createMobileUrl('member/forget')}">忘记密码</a>
                           <p>
                               <input type="hidden" name="act" value="act_login" />
-                              <input type="hidden" name="back_act" value="http://member.ecmoban.com/user.php" />
-                              <input type="checkbox" value="1" name="remember" id="remember" />
-                              下次自动登录<span>使用公用电脑勿选</span>
+                              <input type="hidden" name="back_act" value="" />
+                              <!-- <input type="checkbox" value="1" name="remember" id="remember" />
+                              下次自动登录<span>使用公用电脑勿选</span> -->
                           </p>
                         </div>
                         <div class="other-login fl">
@@ -35,8 +31,9 @@
                 </form>
                 
                 
-                <div class="regist-process-login-right fr">
+                <div class="regist-process-register-right fr">
                     <h2 class="title">没有账号？立即注册</h2>
+<<<<<<< HEAD
                     <a class="btn btn-info free-registe" href="{php echo $this->createMobileUrl('member/register')}">免费注册</a>
 		    <div style="margin-top:25px">
 		    {if $this->yzShopSet['reglogo']}
@@ -45,6 +42,17 @@
 			<img src="../addons/sz_yi/template/pc/default/static/images/logo.png" title="" alt="我是默认logo">
 		    {/if}
 		    </div>
+=======
+                    <a class="btn btn-info login-now" href="{php echo $this->createMobileUrl('member/register')}">免费注册</a>
+                    <div class="scan">
+                           <img src="{php echo $_W['account']['qrcode']}">
+                           <span>扫描我，立即关注</span>
+                           <b>{php echo $_W['account']['name']}微信公众号</b>
+                       </div>
+                       {if $this->yzShopSet['phone']}
+                        <p class="pre-consultation">客服电话<b>{php echo $this->yzShopSet['phone']}</b></p>
+                      {/if}
+>>>>>>> 45d2e4cae15cab8148591d9c2d2f39e8be6acba7
                 </div>
                 
             </div>

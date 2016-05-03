@@ -62,7 +62,8 @@
               　curCount = count;
             　　
                  core.json('member/sendcode', {
-                       'mobile': $('#mobile').val()
+                       'mobile': $('#mobile').val(),
+                       'op' : 'forgetcode'
                        }, function(json) {
                         if(json.status==1){
                              //设置button效果，开始计时

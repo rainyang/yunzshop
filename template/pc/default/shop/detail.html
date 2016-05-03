@@ -316,12 +316,9 @@ div.flicking_con a.on{background-position:0 -9px}
                 <i class="fa <%if isfavorite%>fa-star<%else%>fa-star-o<%/if%>" <%if isfavorite==1%>style="color:#f90"<%/if%>></i>
                 <br><span>收藏</span>
             </div>
+            {if $this->yzShopSet['cservice']}
             <div class="cs" ><i class="fa fa-headphones"></i><br><span>客服</span></div>
-            <!--<%if goods.canaddcart%>
-                <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
-                    <%if cartcount>0%><b><%cartcount%></b><%/if%>
-                </div>
-            <%/if%>-->
+            {/if}
         </div>
 
       </div>
@@ -860,7 +857,7 @@ div.flicking_con a.on{background-position:0 -9px}
             });
 
         $('.cs').click(function(){
-            location.href='{php echo $shopset['cservice']}&metadata={"name":"{php echo $member['nickname']}","tel":"{php echo $member['mobile']}","address":"{php echo $member['province']}"}';
+            location.href='{php echo $this->yzShopSet['cservice']}&metadata={"name":"{php echo $member['realname']}","tel":"{php echo $member['mobile']}","address":"{php echo $member['province']}"}';
         });
                 
            

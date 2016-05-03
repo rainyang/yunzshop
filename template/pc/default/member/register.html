@@ -32,20 +32,20 @@
                                 <input class="form-control text" id="cpassword" onblur="check_conform_password(this.value);" name="cpassword" type="password">
                                 <p class="tips" id="conform_password_notice"></p>      
                             </div>
-                            <!--<div class="read-protocal">
+                            <!-- <div class="read-protocal">
                                 <input id="protocal" name="agreement" type="checkbox" value="1" checked="checked" />
                                 阅读并已同意<a href="http://help.ecmoban.com/article-6.html" target="_blank">《芸众商城用户协议》</a>
-                            </div>-->
+                            </div> -->
                             <input type="hidden" name="act" value="act_register" >
                             <input type="hidden" name="back_act" value="" />
                             <input class="btn btn-danger register-now register" name="Submit" type="button"  value="立即注册">
                         </form>
                     </div>
                     
-                    
                    <div class="regist-process-register-right fr">
                        <h2 class="title">我已注册账号</h2>
                        <a class="btn btn-info login-now" href="{php echo $this->createMobileUrl('member')}">立即登录</a>
+<<<<<<< HEAD
                        <div class="scan" style="margin-top:25px">
 			   {if $this->yzShopSet['reglogo']}
 				<img src="{php echo $_W['siteroot'] . "attachment/" . $this->yzShopSet['reglogo']}" style="width:335px;height:230px;" title="{php echo $this->yzShopSet['pctitle']}">
@@ -53,6 +53,16 @@
 				<img src="../addons/sz_yi/template/pc/default/static/images/logo.png" title="" alt="我是默认logo">
 			    {/if}
                        </div>
+=======
+                       <div class="scan">
+                           <img src="{php echo $_W['account']['qrcode']}">
+                           <span>扫描我，立即关注</span>
+                           <b>{php echo $_W['account']['name']}微信公众号</b>
+                       </div>
+                       {if $this->yzShopSet['phone']}
+                        <p class="pre-consultation">客服电话<b>{php echo $this->yzShopSet['phone']}</b></p>
+                      {/if}
+>>>>>>> 45d2e4cae15cab8148591d9c2d2f39e8be6acba7
                    </div>
                     
                 </div>
