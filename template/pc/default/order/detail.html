@@ -9,12 +9,12 @@
     .detail_topbar .tips {height:34px;  margin-left:10px; font-size:13px; color:#fff; line-height:17px;}
     .detail_topbar .tips  span{line-height: 22px;}
     
-    .detail_user {box-sizing: content-box;height:40px;  background:#fff; padding:5px;}
+    .detail_user,.store{box-sizing: content-box;height:40px;  background:#fff; padding:5px;}
     .detail_user .info .ico { float:left;  height:40px; width:30px; line-height:50px; font-size:26px; text-align:center; color:#666}
-    .detail_user .info .info1 {height:40px; width:100%; float:left;line-height: 40px}
+    .detail_user .info .info1,.store .info .info1{height:40px; width:100%; float:left;line-height: 40px;position: relative;}
     .detail_user .info .info1 .inner { margin-left:10px;margin-right:10px;overflow:hidden;}
-    .detail_user .info .info1 .inner span{display: inline-block;width: 48px;font-size: 12px;color: #828282;vertical-align: top;}
-    .detail_user .info .info1 .inner i{display: inline-block;font-size: 12px;color: #222;vertical-align: top;padding-left: 14px;font-style: normal;}
+    .detail_user .info .info1 .inner span,.store .info .info1 .inner span{display: inline-block;width: 48px;font-size: 12px;color: #828282;vertical-align: top;}
+    .detail_user .info .info1 .inner i,.store .info .info1 .inner i{display: inline-block;font-size: 12px;color: #222;vertical-align: top;padding-left: 14px;font-style: normal;}
     .detail_user .info .info1 .inner .user {height:30px; width:100%; font-size:16px; color:#333; line-height:35px;overflow:hidden;}
     .detail_user .info .info1 .inner .address {height:20px; width:100%; font-size:14px; color:#999; line-height:20px;overflow:hidden;border: 0}
     .detail_user .info .ico2 {height:50px; width:30px;padding-top:15px; float:right; font-size:16px; text-align:right; color:#999;}
@@ -76,16 +76,16 @@
 select { width:80px;height:38px;position:absolute;left:0; -webkit-appearance: none;background:#fff; -webkit-tap-highlight-color: transparent;filter:alpha(Opacity=0); opacity: 0;};
  
 .stores {overflow:hidden;background:#fff;}
-.store {height:65px;  background:#fff; padding:5px; border-bottom:1px solid #eaeaea;}
+/*.store {height:65px;  background:#fff; padding:5px; border-bottom:1px solid #eaeaea;}*/
 .store .info .ico { float:left;  height:50px; width:30px; line-height:30px; font-size:16px; text-align:center; color:#666}
-.store .info .info1 {height:54px; width:100%; float:left;margin-left:-30px;margin-right:-60px;}
-.store .info .info1 .inner { margin-left:30px;margin-right:60px;overflow:hidden;}
+.store .info .info1 .inner { margin-left:10px;margin-right:10px;overflow:hidden;}
+
 .store .info .info1 .inner .user {height:25px; width:100%; font-size:14px; color:#333; line-height:25px;overflow:hidden;}
 .store .info .info1 .inner .tel {height:20px; width:100%; font-size:13px; color:#999; line-height:20px;overflow:hidden;}
 .store .info .info1 .inner .address {height:20px; width:100%; font-size:13px; color:#999; line-height:20px;overflow:hidden;}
-.store .info .ico2 {height:50px; width:30px;padding-top:15px; float:right; font-size:24px; text-align:center; color:#ccc;}
-.store .info .ico3 {height:50px; width:30px;padding-top:15px; float:right; font-size:24px; text-align:center; color:#ccc;} 
-.store_title {height:44px; width:94%; overflow: hidden; background:#fff; padding:0px 3%; margin-top:14px; border-bottom:1px solid #eaeaea; border-top:1px solid #eaeaea; line-height:44px; color:#666; font-size:14px;} 
+.store .info .ico2 {height:40px; width:30px;float:right; font-size:24px; text-align:center; color:#ccc;}
+.store .info .ico3 {height:40px; width:30px;float:right; font-size:24px; text-align:center; color:#ccc;} 
+.store_title {height:44px; width:98%; overflow: hidden; background:#fff; padding:0px 5px; margin:0 auto; border-bottom:1px solid #eaeaea; border-top:1px solid #eaeaea; line-height:44px; color:#666; font-size:14px;} 
 .store_more {height:20px;  background:#fff; font-size:14px; color:#999; line-height:20px; padding:5px; border-bottom:1px solid #eaeaea; text-align: center;}
 .page_topbar .nav { position:absolute;right:5px;;color:#333;}
 
@@ -159,6 +159,7 @@ select { width:80px;height:38px;position:absolute;left:0; -webkit-appearance: no
 .goods-list-tb tbody tr td .prop{margin-top: 15px}
 .order_detail_prop {margin-top: 15px;text-align: center;}
 .right-zt{ font-size: 18px;line-height: 44px;}
+.right-ico{position: absolute;right: 0;top: 0}
 </style>
 <div id="container" class="rightlist"></div></div>
 
@@ -217,9 +218,12 @@ select { width:80px;height:38px;position:absolute;left:0; -webkit-appearance: no
                      <span>收货信息</span>
                      <i><%store.storename%></i><i><%store.address%></i><i><%store.tel%></i>
                  </div>
+                 <div class="right-ico">
+                 <a href="http://api.map.baidu.com/marker?location=<%store.lat%>,<%store.lng%>&title=<%store.storename%>&name=<%store.storename%>&content=<%store.address%>&output=html"><div class="ico2"><i class='fa fa-map-marker'></i></div></a>
+                <a href="tel:<%store.tel%>"><div class="ico3" ><i class='fa fa-phone'></i></div></a>
+                </div>
              </div>
-             <a href="http://api.map.baidu.com/marker?location=<%store.lat%>,<%store.lng%>&title=<%store.storename%>&name=<%store.storename%>&content=<%store.address%>&output=html"><div class="ico2"><i class='fa fa-map-marker'></i></div></a>
-             <a href="tel:<%store.tel%>"><div class="ico3" ><i class='fa fa-phone'></i></div></a>
+             
         </div>
        </div>
      <%/if%>
@@ -234,10 +238,13 @@ select { width:80px;height:38px;position:absolute;left:0; -webkit-appearance: no
                  <div class='inner'>
                      <span>收货信息</span>
                      <i><%store.storename%></i><i><%store.address%></i><i><%store.tel%></i>
+                     <div class="right-ico">
+                     <a href="http://api.map.baidu.com/marker?location=<%store.lat%>,<%store.lng%>&title=<%store.storename%>&name=<%store.storename%>&content=<%store.address%>&output=html"><div class="ico2"><i class='fa fa-map-marker'></i></div></a>
+                     <a href="tel:<%store.tel%>"><div class="ico3" ><i class='fa fa-phone'></i></div></a>
+                     </div>
                  </div>
              </div>
-             <a href="http://api.map.baidu.com/marker?location=<%store.lat%>,<%store.lng%>&title=<%store.storename%>&name=<%store.storename%>&content=<%store.address%>&output=html"><div class="ico2"><i class='fa fa-map-marker'></i></div></a>
-             <a href="tel:<%store.tel%>"><div class="ico3" ><i class='fa fa-phone'></i></div></a>
+             
         </div>
        </div>
      <%/if%>

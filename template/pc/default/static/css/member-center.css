@@ -98,7 +98,7 @@ a{cursor: pointer;}
 .head .logo {
     float: left;
     margin-right: 20px;
-    margin-top: 10px;
+    margin-top: 0;
 }
 .head .nav a{
     float: left;
