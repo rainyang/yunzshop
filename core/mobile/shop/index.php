@@ -8,28 +8,30 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'index';
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $designer  = p('designer');
-if ($designer) {
-	$pagedata = $designer->getPage();
-	if ($pagedata) {
-		extract($pagedata);
-		$guide = $designer->getGuide($system, $pageinfo);
-		$_W['shopshare'] = array('title' => $share['title'], 'imgUrl' => $share['imgUrl'], 'desc' => $share['desc'], 'link' => $this->createMobileUrl('shop'));
-		if (p('commission')) {
-			$set = p('commission')->getSet();
-			if (!empty($set['level'])) {
-				$member = m('member')->getMember($openid);
-				if (!empty($member) && $member['status'] == 1 && $member['isagent'] == 1) {
-					$_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $member['id']));
-					if (empty($set['become_reg']) && (empty($member['realname']) || empty($member['mobile']))) {
-						$trigger = true;
+if(empty($this->yzShopSet['ispc']) OR is_weixin()){
+	if ($designer) {
+		$pagedata = $designer->getPage();
+		if ($pagedata) {
+			extract($pagedata);
+			$guide = $designer->getGuide($system, $pageinfo);
+			$_W['shopshare'] = array('title' => $share['title'], 'imgUrl' => $share['imgUrl'], 'desc' => $share['desc'], 'link' => $this->createMobileUrl('shop'));
+			if (p('commission')) {
+				$set = p('commission')->getSet();
+				if (!empty($set['level'])) {
+					$member = m('member')->getMember($openid);
+					if (!empty($member) && $member['status'] == 1 && $member['isagent'] == 1) {
+						$_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $member['id']));
+						if (empty($set['become_reg']) && (empty($member['realname']) || empty($member['mobile']))) {
+							$trigger = true;
+						}
+					} else if (!empty($_GPC['mid'])) {
+						$_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $_GPC['mid']));
 					}
-				} else if (!empty($_GPC['mid'])) {
-					$_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $_GPC['mid']));
 				}
 			}
+			include $this->template('shop/index_diy');
+			exit;
 		}
-		include $this->template('shop/index_diy');
-		exit;
 	}
 }
 

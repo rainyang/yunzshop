@@ -76,26 +76,30 @@ div.flicking_con .inner { width:100%;height:9px;text-align:center;}
 div.flicking_con a{position:relative; width:9px;height:9px;background:url('../addons/sz_yi/template/mobile/default/static/images/dot.png') 0 0 no-repeat;display:inline-block;text-indent:-1000px}
 div.flicking_con a.on{background-position:0 -9px}
  
-   .comment { padding:5px; border-bottom:1px solid #ccc;overflow:hidden;}
-                    .comment .info { padding:5px;height:45px;width:100%;}
-                    .comment .info .head-img { float:left; width:30px;height:30px;padding: 0}
-                    .comment .info .head-img img { width:100%;height:100%; }
-                    .comment .info .nickname { float:left;width:100%;margin-left:-30px;margin-right:-100px;height:30px;line-height:30px;overflow:hidden;}
-                    .comment .info .nickname .inner { margin-left:35px;margin-right:100px;overflow:hidden; }
-                    .comment .info .level { width:100px;float:right;margin-left:-100px; text-align:right;height:30px;line-height:30px;color:#ff6600}
-                    .comment .info .level i {width:13px;}
-                   
-                    .comment .content { overflow:hidden;color:#555;font-size:13px;padding-left:5px;}
-                    .comment .time { padding:5px; color:#666;font-size:13px;padding-left:5px;}
-                    .comment .imgs { overflow:hidden;padding-top:5px;padding-left:5px;}
-                    .comment .imgs img { padding:1px;border:1px solid #ccc;float:left;margin-right:5px;}
-                   #comment_loading { width:100%;padding:10px;color:#666;text-align: center;} 
-        #recommand_container  {height:auto; width:100%; background:#fff; overflow:hidden;float:left;} 
-    #recommand_container .good {height:auto; width:295px; padding:10px; float:left;box-sizing: border-box;}
-    #recommand_container .good img {height:295px; width:100%;}
-    #recommand_container .good .name {height:20px; width:100%; font-size:14px; line-height:20px; color:#666; overflow:hidden;}
-    #recommand_container .good .price {height:20px; width:100%; color:#f03; font-size:14px;    text-align: left;}
-    #recommand_container .good .price span {color:#aaa; font-size:12px; text-decoration:line-through;float: right;}
+.comment {border-bottom: 1px solid #e6e6e6;overflow:hidden;position: relative;padding-left: 60px;}
+.comment .info { padding:0 5px;height:30px;width:100%;}
+/*.comment .info .head-img { float:left; width:30px;height:30px;padding: 0}
+.comment .info .head-img img { width:100%;height:100%; }*/
+/*.comment .info .nickname {width:100%;height:30px;line-height:30px;overflow:hidden;text-align: center;}
+*/.comment .info .nickname .inner { margin-left:35px;margin-right:100px;overflow:hidden; }
+.comment .info .level { width:82px;float:left;text-align:right;height:30px;line-height:30px;color:#ff6600}
+.comment .info .level i {width:13px;}
+.pj-imgpos{ position: absolute;;left: 0;top: 0;width: 60px}
+.pj-imgpos .head-img{ width: 40px;height: 40px;border-radius: 50px;margin: 10px}
+.pj-imgpos .head-img img{ width: 40px;height: 40px;border-radius: 50px}
+.pj-imgpos .nickname{width:100%;height:20px;line-height:20px;overflow:hidden;text-align: center;}
+
+.comment .content { overflow:hidden;color:#555;font-size:14px;padding:5px;}
+.comment .time { padding:5px; color:#999;font-size:12px;padding-left:5px;}
+.comment .imgs { overflow:hidden;padding-top:5px;padding-left:5px;}
+.comment .imgs img { padding:1px;border:1px solid #ccc;float:left;margin-right:5px;}
+#comment_loading { width:100%;padding:10px;color:#666;text-align: center;} 
+#recommand_container  {height:auto; width:100%; background:#fff; overflow:hidden;float:left;} 
+#recommand_container .good {height:auto; width:295px; padding:10px; float:left;box-sizing: border-box;}
+#recommand_container .good img {height:295px; width:100%;}
+#recommand_container .good .name {height:20px; width:100%; font-size:14px; line-height:20px; color:#666; overflow:hidden;}
+#recommand_container .good .price {height:20px; width:100%; color:#f03; font-size:14px;    text-align: left;}
+#recommand_container .good .price span {color:#aaa; font-size:12px; text-decoration:line-through;float: right;}
     
 .store {height:75px;  background:#fff; padding:5px; border-bottom:1px solid #eaeaea;}
 .store .info .ico { float:left;  height:50px; width:30px; line-height:30px; font-size:16px; text-align:center; color:#666}
@@ -416,9 +420,12 @@ div.flicking_con a.on{background-position:0 -9px}
 <script id='tpl_comment' type='text/html'>
     <%each list as comment%>
     <div class='comment'>
+        <div class="pj-imgpos">
+            <div class='head-img'><img src='<%comment.headimgurl%>'/></div>
+            <div class='nickname'><div class='inner'><%comment.nickname%>杨小猫</div></div>
+        </div>
                     <div class='info'>
-                        <div class='head-img'><img src='<%comment.headimgurl%>' style='width:30px;height:30px;' /></div>
-                        <div class='nickname'><div class='inner'><%comment.nickname%></div></div>
+                        
                         <div class='level'>
                             <%if comment.level>=1%><i class='fa fa-star'></i><%else%><i class='fa fa-star-o'></i><%/if%>
                             <%if comment.level>=2%><i class='fa fa-star'></i><%else%><i class='fa fa-star-o'></i><%/if%>
@@ -443,7 +450,7 @@ div.flicking_con a.on{background-position:0 -9px}
                       <%/if%>
               
                      <%if comment.append_content!=''%>
-                         <div class='content' style='margin-top:5px;'><span style='color:#ff6600'>[追加]</span><%comment.append_content%></div>
+                         <div class='content' style='margin-top:5px;border-top: 1px dashed #E4E4E4;'><span style='color:#ff6600'>[追加]</span><%comment.append_content%></div>
                         <%if comment.append_images.length>0%>
                             <div class='imgs'>
                                <%each comment.append_images as img%><img src='<%img%>' style='width:30px;height:30px;' /><%/each%>
