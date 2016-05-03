@@ -60,12 +60,12 @@
 <script id='tpl_index' type='text/html'>
 
     <div class="top">
-        <div class="bgimg"><img src="<%if set.img%><%set.img%><%else%>../addons/sz_yi/template/mobile/default/static/images/bg.jpg<%/if%>"></div>
+        <div class="bgimg"><img src="{if $this->yzShopSet['img']}{php echo $this->yzShopSet['img']}{else}../addons/sz_yi/template/mobile/default/static/images/bg.jpg{/if}"></div>
 <!--        <div class="list" onclick="location.href='{php echo $this->createMobileUrl('shop/category')}'"><i class="fa fa-list"></i> 分类</div>-->
         <div class="topbar">
             
-            <div class="logo"><img src="<%if set.logo%><%set.logo%><%else%>../addons/sz_yi/template/mobile/default/static/images/logo.png<%/if%>"></div>
-            <div class="shop_name"><%set.name%></div>
+            <div class="logo"><img src="{if $this->yzShopSet['logo']}{php echo $this->yzShopSet['logo']}{else}../addons/sz_yi/template/mobile/default/static/images/logo.png{/if}"></div>
+            <div class="shop_name">{php echo $this->yzShopSet['name']}</div>
             <div class="menu">
                 <div class="nav navon"><i class="fa fa-home"></i><br>首页</div>
                 <div class="nav"  data-op='all'><i class="fa fa-suitcase"></i><br>全部商品</div>
@@ -118,9 +118,9 @@
     <div class="goods">
         <div id='goods_container'></div>
     </div>
-    <div class="copyright">版权所有 © <%if set.copyright%><%set.copyright%><%else%>{$_W['account']['name']}<%/if%></div>
-    
+    <div class="copyright">版权所有 © {if $this->yzShopSet['copyright']}{php echo $this->yzShopSet['copyright']}{else}{$_W['account']['name']}{/if}</div>
      <!--搜索-->
+
     <div class="search1"> 
                 <div class="topbar1">
                     <div class='right'>

@@ -98,7 +98,7 @@ if (checksubmit()) {
         $set['shop']['logo']    = save_media($shop['logo']);
         $set['shop']['signimg'] = save_media($shop['signimg']);
         $set['shop']['diycode'] = trim($shop['diycode']);
-        
+        $set['shop']['copyright']  = trim($shop['copyright']);
         plog('sysset.save.shop', '修改系统设置-商城设置');
     }
     elseif ($op == 'pcset') {
@@ -107,7 +107,7 @@ if (checksubmit()) {
         $set['shop']['pctitle']    = trim($custom['pctitle']);
         $set['shop']['pckeywords'] = trim($custom['pckeywords']);
         $set['shop']['pcdesc']     = trim($custom['pcdesc']);
-        $set['shop']['copyright']  = trim($custom['copyright']);
+        $set['shop']['pccopyright']  = trim($custom['pccopyright']);
         $set['shop']['index']      = $custom['index'];
         $set['shop']['pclogo']     = save_media($custom['pclogo']);
         $set['shop']['hmenu_name'] = $custom['hmenu_name'];
