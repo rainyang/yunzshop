@@ -28,7 +28,7 @@
                     <div class="col-sm-9 col-xs-12">
                         {ifp 'sysset.save.shop'}
                         {php echo tpl_form_field_image('pcset[pclogo]', $set['shop']['pclogo'])}
-                        <span class='help-block'>长方型图片</span>
+                        <span class='help-block'>长方型图片,建议270*60</span>
                         {else}
                         <input type="hidden" name="pcset[pclogo]" value="{$set['shop']['pclogo']}"/>
                         {if !empty($set['shop']['pclogo'])}
