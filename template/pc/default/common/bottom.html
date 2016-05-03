@@ -1,14 +1,24 @@
+<link rel="stylesheet" type="text/css" href="../addons/sz_yi/template/pc/default/static/css/footer.css">
 <div class="cover-page-foot fl wfs">
     <p class="subnav">
-        <a target="_blank" href="{php echo $this->createMobileUrl('shop/index')}">首页</a>
-        <a target="_blank" href="{php echo $this->createMobileUrl('shop/list', array('order' => 'sales', 'by' => 'desc'))}">全部商品</a>
-        <a target="_blank" href="{php echo $this->createMobileUrl('shop/notice')}">店铺公告</a>
-        {if $this->footer['commission']}
-        <a target="_blank" href="{php echo $this->footer['commission']['url']}">{php echo $this->footer['commission']['text']}</a>
+        {if $this->yzShopSet['fmenu_name']}
+            {loop $this->yzShopSet['fmenu_name'] $k $v}
+            <a target="_blank" href="{php echo $this->yzShopSet['fmenu_url'][$k]}">{$v}</a>
+            {/loop}
+        {else}
+            <a target="_blank" href="{php echo $this->createMobileUrl('shop/index')}">首页</a>
+            <a target="_blank" href="{php echo $this->createMobileUrl('shop/list', array('order' => 'sales', 'by' => 'desc'))}">全部商品</a>
+            <a target="_blank" href="{php echo $this->createMobileUrl('shop/notice')}">店铺公告</a>
+            {if $this->footer['commission']}
+            <a target="_blank" href="{php echo $this->footer['commission']['url']}">{php echo $this->footer['commission']['text']}</a>
+            {/if}
+            <a target="_blank" href="{php echo $this->createMobileUrl('member/order')}">会员中心</a>
         {/if}
-        <a target="_blank" href="{php echo $this->createMobileUrl('member/order')}">会员中心</a>
     </p>
-    <p class="copyright">{php echo $this->yzShopSet['copyright']}</p>
+    <p class="copyright">{php echo htmlspecialchars_decode($this->yzShopSet['copyright'])}</p>
+</div>
+<div style="display:none;">
+    {php echo htmlspecialchars_decode($this->yzShopSet['diycode'])}
 </div>
 </body>
 </html>

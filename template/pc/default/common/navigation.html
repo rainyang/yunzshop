@@ -5,6 +5,9 @@
             <li class="fore"><a href="{php echo $this->createMobileUrl('shop/index')}">欢迎来到{php echo $this->yzShopSet['name']}！</a></li>
         </ul>
         <ul class="fr top_r">
+            {if $this->yzShopSet['phone']}
+            <li class="fore">客服电话：{php echo $this->yzShopSet['phone']}</li>
+            {/if}
         {if $_COOKIE[__cookie_sz_yi_userid_.$_W['uniacid']]}
             <li class="fore"><a href="{php echo $this->createMobileUrl('member/info')}">个人中心</a></li>
         {else}

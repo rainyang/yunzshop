@@ -1,8 +1,4 @@
-<?php if(isMobile()){?>
-    {template 'common/header'}
-<?php }else{?>
-    {template 'common/header_center'}
-<?php }?>
+{template 'member/center'}
 <title>小店设置</title>
 <script src="../addons/sz_yi/static/js/dist/ajaxfileupload.js" type="text/javascript"></script>
 <style type="text/css">
@@ -18,7 +14,7 @@
 .myshop_main .line .info .inner { color:#666;margin-left:75px;}
 
 .myshop_main .line1 {height:80px; width:100%; border-bottom:1px solid #f0f0f0; line-height:80px;}
-.myshop_main .line1 .label { float:left;width:70px;}
+.myshop_main .line1 .label { float:left;width:70px;color:#222;line-height: 74px;}
 .myshop_main .line1 .info { float:right; width:100%; margin-left:-75px;;overflow:hidden;height:80px;}
 .myshop_main .line1 .info .inner { color:#666;margin-left:75px;padding-top:10px;}
 .myshop_main .line1 .info .inner .plus { float:left;width:60px;height:60px;border:1px solid #efefef; color:#efefef;; font-size:45px;line-height:55px;text-align:center;}
@@ -42,11 +38,10 @@ textarea {height:60px;line-height:22px; width:100%;padding:5px;font-size:13px; b
 .myshop_menu .navon {height:42px; color:#ff771b; border-bottom:2px solid #ff771b;}
   
 </style>
-<div id='container'></div>
+<div id='container' class="rightlist"></div>
 
 <script id='tpl_main' type='text/html'>
    <div class="page_topbar">
-    <a href="javascript:;" class="back" onclick="location.href='{php echo $this->createPluginMobileUrl('commission/myshop')}'"><i class="fa fa-angle-left"></i></a>
     <div class="title">小店设置</div>
 </div>
     <%if shop.openselect%>
@@ -66,7 +61,7 @@ textarea {height:60px;line-height:22px; width:100%;padding:5px;font-size:13px; b
                         <input type="file" data-tag="0" name='imgFile0' id='imgFile0' style="position:absolute;left:0;z-index:3;width:60px;height:60px;-webkit-tap-highlight-color: transparent;filter:alpha(Opacity=0); opacity: 0;" />
                         <i class="fa fa-plus"  style="position:absolute;top:10px;right:12px;z-index:1"></i>
                         <div id="preview0" class="preview0">
-                            <%if shop.logo!=''%><img src='<%shop.logo%>''/><%/if%>
+                            <%if shop.logo!=''%><img src='<%shop.logo%>'/><%/if%>
                         </div>
                     </div>
                     
@@ -93,7 +88,7 @@ textarea {height:60px;line-height:22px; width:100%;padding:5px;font-size:13px; b
     
     require(['tpl', 'core'], function(tpl, core) {
        
-           core.pjson('commission/myshop',{op:'set'},function(json){
+           core.pjson('commission/myshopset',{},function(json){
                 
                   
                          $('#container').html(  tpl('tpl_main',json.result) );    
@@ -116,8 +111,7 @@ textarea {height:60px;line-height:22px; width:100%;padding:5px;font-size:13px; b
                                     shopdata.img = $('#img1').val();
                                 }
                                     
-                                core.pjson('commission/myshop',{
-                                    op:'set',
+                                core.pjson('commission/myshopset',{
                                     shopdata:shopdata
                                  },function(postjson){
                                      if(postjson.status==1){
