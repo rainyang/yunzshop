@@ -99,9 +99,9 @@ a {text-decoration:none;}
         <!--/分红-->
         {/if}
         <%if set.closemyshop!='1'%>
-        <a href="{php echo $this->createPluginMobileUrl('commission/myshopset')}"><div class="nav nav1"><i class="fa fa-cog  fa-3x" style="color:#aadaf6;"></i><div class="title">小店设置</div><div class="con">设置我的小店</div></div></a>
+        <!--<a href="{php echo $this->createPluginMobileUrl('commission/myshopset')}"><div class="nav nav1"><i class="fa fa-cog  fa-3x" style="color:#aadaf6;"></i><div class="title">小店设置</div><div class="con">设置我的小店</div></div></a>-->
 		<%if set.openselect%>
-		        <a href="{php echo $this->createPluginMobileUrl('commission/myshop/select')}"><div class="nav nav1"><i class="fa fa-star  fa-3x" style="color:#f3d110"></i><div class="title">自选商品</div><div class="con">选择我喜欢的商品</div></div></a>
+		        <!--<a href="{php echo $this->createPluginMobileUrl('commission/myshop/select')}"><div class="nav nav1"><i class="fa fa-star  fa-3x" style="color:#f3d110"></i><div class="title">自选商品</div><div class="con">选择我喜欢的商品</div></div></a>-->
 		<%/if%>
 <%/if%>
         
@@ -134,4 +134,4 @@ a {text-decoration:none;}
         },true);
     })
 </script>
-{template 'common/footer'}
+{template 'common/bottom'}
