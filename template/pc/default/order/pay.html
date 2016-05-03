@@ -117,7 +117,7 @@
      <%if goods%>
 
      <div class="order_main">
-        <div class="title">订单号：<%order.ordersn%></div>   
+        <div class="title">订单号：<%goods.ordersn%></div>   
         <%each goods.goods1 as g%>
         <div class="good">
             <div class="img"  ><img src="<%g.thumb%>"/></div>
@@ -133,6 +133,7 @@
             </div>
         </div>
         <%/each%>
+        <div class="info1">运费：<span>￥<%goods.dispatchprice%></span></div>
         <div class="info1">共 <%goods.goodscount%> 件商品&nbsp;实付：<span>￥<%goods.price%></span></div>
     </div>
     <%/if%>
