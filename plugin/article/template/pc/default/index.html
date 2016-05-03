@@ -1,3 +1,5 @@
+{template 'common/header'}
+{template 'common/navigation'}
 <!doctype html>
 <html>
 <head>
@@ -6,7 +8,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport" name="viewport">
 <meta name="format-detection" content="telephone=no" />
-<link href="../addons/sz_yi/plugin/article/template/imgsrc/mobile.css" rel="stylesheet">
+<link href="../addons/sz_yi/plugin/article/template/imgsrc/pc.css" rel="stylesheet">
 <script type="text/javascript" src="../addons/sz_yi/static/js/dist/jquery-1.11.1.min.js"></script>
 <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 <script>
@@ -73,7 +75,7 @@
 </head>
 
 <body> 
-    <div class="rich_primary">
+    <div class="rich_primary all-divbox">
         <div class="rich_title">{$article['article_title']}</div>
         <div class="rich_mate">
             <div class="rich_mate_text">{$article['article_date_v']}</div>
@@ -138,3 +140,4 @@
 <script type="text/javascript" src="../addons/sz_yi/plugin/article/template/imgsrc/swipe.config.js"></script>
 </body>
 </html>
+{template 'common/footer'}
