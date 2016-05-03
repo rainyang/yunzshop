@@ -5,7 +5,11 @@
     body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearance:none;}
 .order_main {height:auto; border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; background:#fff;margin-top:10px;}
 .order_main .line {height:44px; margin:0 5px; border-bottom:1px solid #f0f0f0; line-height:44px;}
-.order_main .line .label { float:left;width:80px;}
+.order_main .line .label { float:left;width:80px;line-height: 44px;
+    color: #222;
+    padding: 0;
+    font-weight: normal;
+    font-size: 14px;}
 .order_main .line .info { float:right; width:100%; margin-left:-85px;text-align: right;overflow:hidden;height:44px;}
 .order_main .line .info .inner { color:#666;/*margin-left:85px;*/}
 
@@ -283,52 +287,22 @@
                     setTimeout(weixinpayresult, 2000);
                 }
                 $('.order_sub_qr').click(function(){   
-                    if($(this).attr('submitting')=='1'){
+                    if($(this).attr('submitting1')=='1'){
                            return;
                         }
-                        $('.button').attr('submitting',1);
+                        var qrbtn = $(this);
+                        $(this).attr('submitting1',1);
                         var deduct = ($('#deductmoney').length>0 &&$('#deductmoney').attr('on')=='1' )?1:0 ;
                         core.json('order/pay', {op: 'pay',type: 'weixin', orderid:'{$_GPC['orderid']}',deduct:deduct}, function (rjson) {
                             var wechat = rjson.result.wechat;
                             $('#wechat_code').attr("src", wechat.code_url);
                             $('#qrcode').removeClass('hide').show();
                             if(rjson.status!=1){
-                                $('.button').removeAttr('submitting');
+                                qrbtn.removeAttr('submitting');
                                 core.tip.show(rjson.result);
                                 return;
                             }
                             weixinpayresult();
-                          return;  
-                          WeixinJSBridge.invoke('getBrandWCPayRequest', {
-                                    'appId': wechat.appid ? wechat.appid : wechat.appId,
-                                    'timeStamp': wechat.timeStamp,
-                                    'nonceStr': wechat.nonceStr,
-                                    'package': wechat.package,
-                                    'signType': wechat.signType,
-                                    'paySign': wechat.paySign,
-                                }, function (res) {
-                                    if (res.err_msg == 'get_brand_wcpay_request:ok') {
-                                          core.json('order/pay',{
-                                                                     op:'complete',
-                                                                     orderid:'{$_GPC['orderid']}',
-                                                                     type:'weixin',deduct:deduct
-                                                                 },function(pay_json){ 
-                                                                     if(pay_json.status==1){
-																		
-                                                                        $('#container').html(tpl('tpl_order_pay',pay_json.result));
-                                                                        return;
-                                                                     }
-                                                                     core.tip.show(pay_json.result);
-                                                                     $('.button').removeAttr('submitting');
-                                        },true,true);
-                                    } else if(res.err_msg=='get_brand_wcpay_request:cancel') {
-                                        $('.button').removeAttr('submitting');
-                                        core.tip.show('取消支付');
-                                    } else {
-                                      $('.button').removeAttr('submitting');
-                                    	alert(res.err_msg);
-                                    }
-                                });
                           },true,true); 
                 });
 
