@@ -157,5 +157,8 @@ if ($operation == 'refund') {
     }
     include $this->template('order/refund');
 } else if ($operation == 'comment') {
+    if(!isMobile()){
+    	include $this->template('member/center');
+    }	
     include $this->template('order/comment');
 }

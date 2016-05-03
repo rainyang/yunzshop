@@ -77,9 +77,9 @@ div.flicking_con a{position:relative; width:9px;height:9px;background:url('../ad
 div.flicking_con a.on{background-position:0 -9px}
  
    .comment { padding:5px; border-bottom:1px solid #ccc;overflow:hidden;}
-                    .comment .info { padding:5px;height:35px;width:100%;}
-                    .comment .info .head { float:left; width:30px;height:30px;}
-                    .comment .info .head img { width:100%;height:100%; }
+                    .comment .info { padding:5px;height:45px;width:100%;}
+                    .comment .info .head-img { float:left; width:30px;height:30px;padding: 0}
+                    .comment .info .head-img img { width:100%;height:100%; }
                     .comment .info .nickname { float:left;width:100%;margin-left:-30px;margin-right:-100px;height:30px;line-height:30px;overflow:hidden;}
                     .comment .info .nickname .inner { margin-left:35px;margin-right:100px;overflow:hidden; }
                     .comment .info .level { width:100px;float:right;margin-left:-100px; text-align:right;height:30px;line-height:30px;color:#ff6600}
@@ -417,7 +417,7 @@ div.flicking_con a.on{background-position:0 -9px}
     <%each list as comment%>
     <div class='comment'>
                     <div class='info'>
-                        <div class='head'><img src='<%comment.headimgurl%>' style='width:30px;height:30px;' /></div>
+                        <div class='head-img'><img src='<%comment.headimgurl%>' style='width:30px;height:30px;' /></div>
                         <div class='nickname'><div class='inner'><%comment.nickname%></div></div>
                         <div class='level'>
                             <%if comment.level>=1%><i class='fa fa-star'></i><%else%><i class='fa fa-star-o'></i><%/if%>

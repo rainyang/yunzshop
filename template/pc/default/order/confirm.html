@@ -24,16 +24,16 @@
     .addorder_topbar .tips {height:34px;  margin-left:10px; font-size:13px; color:#fff; line-height:17px;}
     
     .addorder_nav { height:26px; padding:10px;box-sizing: content-box; background: #fff;margin: 10px 0;}
-    .addorder_nav .nav { padding:2px 5px 2px 5px;; border:1px solid #5f6e8b; color:#5f6e8b; background:#fff; float:left; margin-left:10px;}
-    .addorder_nav .selected { border:1px solid #ff6600; color:#ff6600; }
+    .addorder_nav .nav { padding:2px 5px 2px 5px;; border:1px solid #5f6e8b; color:#5f6e8b; background:#fff; float:left; margin-left:10px;cursor:pointer;}
+    .addorder_nav .selected { border:1px solid #ff6600; color:#ff6600;cursor:pointer; }
     
     .addorder_user {height:64px;  background:#fff; padding:5px; border-bottom:1px solid #eaeaea;}
     .addorder_user .info .ico { float:left;  height:50px; width:30px; line-height:50px; font-size:26px; text-align:center; color:#666}
     .addorder_user .info .info1 {height:54px; width:100%; float:left;margin-left:-30px;margin-right:-30px;}
-    .addorder_user .info .info1 .inner { margin-left:30px;margin-right:30px;overflow:hidden;}
+    .addorder_user .info .info1 .inner { margin-left:30px;margin-right:30px;overflow:hidden;width: auto;}
     .addorder_user .info .info1 .inner .user {box-sizing: content-box;height:30px; width:100%; font-size:16px; color:#333; line-height:35px;overflow:hidden;}
     .addorder_user .info .info1 .inner .address {height:20px; width:100%; font-size:14px; color:#999; line-height:20px;overflow:hidden;}
-    .addorder_user .info .ico2 {height:50px;  width:30px; line-height:65px; float:right; font-size:16px; text-align:right; color:#999;cursor: pointer;}
+    .addorder_user .info .ico2 {height:50px;  width:30px; line-height:65px; float:right; font-size:16px; text-align:center; color:#999;cursor: pointer;}
     
     .addorder_exp {height:42px;  background:#fff; padding:5px; border-bottom:1px solid #eaeaea; line-height:42px; font-size:16px; color:#333;}
     .addorder_exp .t1 {height:42px; width:auto; float:left;padding-left:10px;}
@@ -92,10 +92,10 @@
 
     .carrier_input_info {height:auto;width:100%; background:#fff; margin-top:14px; border-bottom:1px solid #e8e8e8; border-top:1px solid #e8e8e8;}
     .carrier_input_info .row { margin:0;padding:0 10px; height:40px; background:#fff; border-bottom:1px solid #e8e8e8; line-height:40px; color:#999;}
-    .carrier_input_info .row .title {height:40px; width:85px; line-height:40px; color:#444; float:left; font-size:16px;}
+    .carrier_input_info .row .title {height:40px; width:85px; line-height:40px; color:#444; float:left; font-size:14px;}
     .carrier_input_info .row .info { width:100%;float:right;margin-left:-85px; }
     .carrier_input_info .row .inner { margin-left:85px;margin-bottom: 0 }
-    .carrier_input_info .row .inner input {height:30px; color:#666;background:transparent;margin-top:0px; width:100%;border-radius:0;padding:0px; margin:0px; border:0px; float:left; font-size:16px;}
+    .carrier_input_info .row .inner input {height:30px; color:#666;background:transparent;margin-top:0px; width:100%;border-radius:0;padding:0px; margin:0px; border:0px; float:left; font-size:14px;}
  
     .addorder_price .line .nav {height:22px; width:40px; background:#ccc; margin:3px 0px; float:right; border-radius:40px;}
 .addorder_price .line .on {background:#4ad966;}
@@ -169,14 +169,14 @@
         <div class="address carrier"
              data-index='<%index%>'
              data-id='<%carrier.id%>'
-             data-realname='<%carrier.realname%>'
-             data-mobile='<%carrier.mobile%>'
+             data-realname='<%carrier.storename%>'
+             data-mobile='<%carrier.tel%>'
              data-address='<%carrier.address%>' 
              >
             <div class="ico" ><%if selectedCarrierIndex==index%><i class="fa fa-check" style="color:#0c9"></i><%/if%></div>
             <div class="info">
                 <div class='inner'>
-                    <div class="name"><%carrier.realname%>(<%carrier.mobile%>)</div>
+                    <div class="name"><%carrier.storename%>(<%carrier.tel%>)</div>
                     <div class="addr"><%carrier.address%></div>
                 </div>
             </div>
@@ -251,7 +251,7 @@
           <div class="ico"><i class="fa fa-map-marker"></i></div>
           <div class='info1'>
              <div class='inner'>
-               <div class="user">自提地点：<span id='carrier_realname'><%carrier.realname%></span>(<span id='carrier_mobile'><%carrier.mobile%></span>)</div>
+               <div class="user">自提地点：<span id='carrier_realname'><%carrier.storename%></span>(<span id='carrier_mobile'><%carrier.tel%></span>)</div>
                <div class="address"><span id='carrier_address'><%carrier.address%></span></div>
              </div>
           </div>
@@ -602,6 +602,7 @@ var fromcart = 0;
              
             //选择快递或字提
             $('.addorder_nav .nav').click(function() {
+              $('#address_container').html("");
                 var nav = $(this).data('nav');
                 $('.addorder_nav .nav').removeClass('selected');
                 $(this).addClass('selected');
@@ -622,10 +623,12 @@ var fromcart = 0;
             //选择自提
             $('#carrier_select').click(function() {
                 json.result.selectedCarrierIndex = $("#carrierindex").val();
-
-                $('#carrier_container').html(tpl('tpl_carrier_list', json.result));
-                $(".chooser").height($(document.body).height());
-                $(".choose_carrier").animate({right: "0px"}, 200);
+                $('#address_container').html("");
+                var arrlist = $('#address_container').html();
+                $('#address_container').html(arrlist + tpl('tpl_carrier_list', json.result));
+                //$('#carrier_container').html(tpl('tpl_carrier_list', json.result));
+                //$(".chooser").height($(document.body).height());
+                //$(".choose_carrier").animate({right: "0px"}, 200);
                 $('.carrier').click(function() {
                     var obj = $(this);
                     $("#carrierindex").val(obj.data('index'));
@@ -633,7 +636,8 @@ var fromcart = 0;
                     $("#carrier_realname").html(obj.data('realname'));
                     $("#carrier_mobile").html(obj.data('mobile'));
                     $("#carrier_address").html(obj.data('address'));
-                    $(".choose_carrier").animate({right: "-100%"}, 100);
+                    //$(".choose_carrier").animate({right: "-100%"}, 100);
+                    $('#carrier_select').click();//pc版选择地址后ico没有变换 因此加入
                 })
             })
         }
@@ -660,7 +664,7 @@ var fromcart = 0;
                 $('.address_sub1').click(function() {
                     saveAddress($(this));
                 });
-
+                window.location.reload();
             }, true);
         });
         
@@ -866,6 +870,29 @@ var fromcart = 0;
                 });
                 $('.address_sub1').click(function() {
                     saveAddress($(this));
+                    core.json('shop/address', {}, function(addresslist_json) {
+                //默认地址
+                addresslist_json.result.selectedAdressID = $("#addressid").val();
+
+                $('#address_container').html(tpl('tpl_address_list', addresslist_json.result));
+                $('.address .ico,.address .info').click(function() {
+                    var $this = $(this).parent();
+                    $("#addressid").val($this.data('addressid'));
+                    $("#address_realname").html($this.data('realname'));
+                    $("#address_mobile").html($this.data('mobile'));
+                    $("#address_address").html($this.data('address'));
+                    $(".choose_address").show();
+                    
+                    //$(".choose_address").animate({right: "-100%"}, 200);
+                    //重新获取运费
+                    getDispatchPrice();
+                    $('#address_select').click();//pc版选择地址后ico没有变换 因此加入
+                });
+                
+                //$(".chooser").height($(document.body).height());
+                //$(".choose_address").animate({right: "0px"}, 200);
+                
+            }, true);
                 });
 
             }, true);
