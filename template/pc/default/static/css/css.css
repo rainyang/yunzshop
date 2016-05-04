@@ -4,7 +4,7 @@
 -webkit-box-sizing:border-box; /* Safari */}
 body,h1,h2,h3,h4,h5,h6,strong,hr,i,em,b,p,blockquote,dl,dt,dd,ul,ol,li,pre,form,fieldset,legend,button,th,td,img,a,tr,img {
 	margin:0;padding:0;border:0;outline:none;list-style:none;font-family: 微软雅黑, Microsoft Yahei;font-weight: normal;
-	font-style:normal;color:#888888;font-size:14px}
+	font-style:normal;font-size:14px}
 input,textarea{ border: 1px solid #d8d8d8;}
 html, body{background: #ffffff;}
 a {font-size:12px;text-decoration:none !important;outline: none !important;color:#666}
