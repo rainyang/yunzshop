@@ -212,22 +212,16 @@ class Core extends WeModuleSite
                 }
             }
         }
-        $set = m('common')->getSysset('shop');
         if(strstr($_SERVER['REQUEST_URI'],'app')){
             if(!isMobile()){
-                if($set['ispc']==0){
+                if($this->yzShopSet['ispc']==0){
                     //message('抱歉，PC版暂时关闭，请用微信打开!','','error');
                 }
             }
         }
         if(is_weixin()){
             //是否强制绑定手机号,只针对微信端
-            $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
-                    ':uniacid' => $_W['uniacid']
-                ));
-            $set     = unserialize($setdata['sets']);
-            if(!empty($set['shop']['isbindmobile'])){
-                $member = m('member')->getMember($userinfo['openid']);
+            if(!empty($this->yzShopSet['isbindmobile'])){
                 if(empty($member) || $member['isbindmobile'] == 0){
                     if($_GPC['p'] != 'bindmobile' && $_GPC['p'] != 'sendcode'){
                         $bindmobileurl = $this->createMobileUrl('member/bindmobile');
