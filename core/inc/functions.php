@@ -80,7 +80,8 @@ function isMobile() {
             'cldc',
             'midp',
             'wap',
-            'mobile'
+            'mobile',
+            'WindowsWechat'
         );
         // 从HTTP_USER_AGENT中查找手机浏览器的关键字
         if (preg_match("/(" . implode('|', $clientkeywords) . ")/i", strtolower($_SERVER['HTTP_USER_AGENT']))) {
