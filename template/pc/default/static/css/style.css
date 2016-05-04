@@ -185,7 +185,7 @@ footer#footer-nav .menu-list:after {
 #cover img { width:100%;}
 
 .page_topbar {    position: relative;height:45px; background:#f9f9f9; border-bottom:1px solid #e8e8e8; font-size:16px; line-height:45px; text-align:center; }
-.page_topbar .title {border-bottom: 1px #eee solid;height:45px;;line-height:45px; color:#666; text-align: left;background-color: #fff;padding-left: 20px;   font-weight: bold;}
+.page_topbar .title {border-bottom: 1px #eee solid;height:45px;;line-height:45px; color:#666; text-align: left;background-color: #fff;padding-left: 20px;font-size: 14px;font-weight: bold;}
 .page_topbar a.back {position:absolute;left:15px;height:45px;line-height:45px;display:block;color:#999; font-size:24px;}
 .page_topbar a.btn { position: absolute;right:10px;height:45px;line-height:45px;display:block;color:#999; font-size:24px; }
 

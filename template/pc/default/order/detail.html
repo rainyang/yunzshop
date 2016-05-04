@@ -39,9 +39,9 @@
     .detail_good .price .pnum { height:20px;width:100%;text-align:right;font-size:14px; }
     .detail_good .price .num { height:20px;width:100%;text-align:right;}
     
-    .detail_price {height:auto; padding:10px 14px;background:#fff;   }
+    .detail_price {height:auto; padding:0 14px;background:#fff;   }
     .detail_price .price {height:auto; width:100%; }
-    .detail_price .price .line {padding-left: 78%;height:26px; width:100%; font-size:13px; color:#666; line-height:26px;}
+    .detail_price .price .line {padding-left: 75%;height:26px; width:100%; font-size:13px; color:#666; line-height:26px;}
     .detail_price .price .line span {height:26px; width:auto; float:right;}
     
    
@@ -428,7 +428,7 @@ select { width:80px;height:38px;position:absolute;left:0; -webkit-appearance: no
       </div> 
 </div>
     <%if order.status==3%>
-    <div class="detail_price" style="margin-top:15px;height:80px;">
+    <div class="detail_price" style="height:80px;">
     <div class="price" style="padding-top:10px;">
      <div class="line">订单号:<span><%order.ordersn%></span></div>
      <div class="line">交易完成时间:<span><%order.finishtime%></span></div>
