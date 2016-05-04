@@ -658,16 +658,16 @@ if (!class_exists('BonusModel')) {
 				}
 			} else if ($message_type == TM_BONUS_UPGRADE && !empty($tm['bonus_upgrade']) && empty($usernotice['bonus_upgrade'])) {
 				$message = $tm['bonus_upgrade'];
+				if(!empty($data['newlevel']['msgcontent'])){
+					$message = $data['newlevel']['msgcontent'];
+				}
 				$message = str_replace('[昵称]', $member['nickname'], $message);
 				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
 				$message = str_replace('[旧等级]', $data['oldlevel']['levelname'], $message);
 				$message = str_replace('[旧分红比例]', $data['oldlevel']['agent_money'] . '%', $message);
 				$message = str_replace('[新等级]', $data['newlevel']['levelname'], $message);
 				$message = str_replace('[新分红比例]', $data['newlevel']['agent_money'] . '%', $message);
-				$msg = array('keyword1' => array('value' => !empty($tm['bonus_upgradetitle']) ? $tm['bonus_upgradetitle'] : '代理商等级升级通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
-				if(!empty($data['newlevel']['content'])){
-					$msg .= $data['newlevel']['content'];
-				}
+				$msg = array('keyword1' => array('value' => !empty($data['newlevel']['msgtitle']) ? $data['newlevel']['msgtitle'] : $tm['bonus_upgradetitle'], 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
 				if (!empty($templateid)) {
 					m('message')->sendTplNotice($openid, $templateid, $msg);
 				} else {
