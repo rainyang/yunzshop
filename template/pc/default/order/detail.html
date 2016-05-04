@@ -7,7 +7,7 @@
     .detail_topbar {height:44px; background:#5f6e8b; padding:15px;box-sizing: content-box;}
     .detail_topbar .ico {height:44px; width:40px; line-height:34px; float:left; font-size:26px; text-align:center; color:#fff;margin: 4px}
     .detail_topbar .tips {height:34px;  margin-left:10px; font-size:13px; color:#fff; line-height:17px;}
-    .detail_topbar .tips  span{line-height: 22px;}
+    .detail_topbar .tips  span{line-height: 22px;display: block;}
     
     .detail_user,.store{box-sizing: content-box;height:40px;  background:#fff; padding:5px;}
     .detail_user .info .ico { float:left;  height:40px; width:30px; line-height:50px; font-size:26px; text-align:center; color:#666}
@@ -173,7 +173,7 @@ select { width:80px;height:38px;position:absolute;left:0; -webkit-appearance: no
     <div class="ico"><i class="fa fa-file-text-o"></i></div>
     <div class="tips">     
         <div class="fl">
-            <span>订单金额(含运费): ￥<%order.price%><span><br/>
+            <span>订单金额(含运费): ￥<%order.price%><span>
             <span>运费: ￥<%order.dispatchprice%><span>
         </div>
         <div class="fr right-zt">

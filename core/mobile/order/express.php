@@ -66,7 +66,4 @@ if ($_W['isajax']) {
 		show_json(1, array('list' => $list));
 	}
 }
-if(!isMobile()){
-	include $this->template('member/center');
-}
 include $this->template('order/express');
