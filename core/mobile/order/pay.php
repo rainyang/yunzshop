@@ -130,6 +130,34 @@ if ($operation == 'display' && $_W['isajax']) {
     $returnurl = urlencode($this->createMobileUrl('order/pay', array(
         'orderid' => $orderid
     )));
+
+    $order_goods = pdo_fetchall('select og.id,g.title, og.goodsid,og.optionid,g.thumb, g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where og.orderid=:orderid and og.uniacid=:uniacid ', array(
+        ':uniacid' => $_W['uniacid'],
+        ':orderid' => $orderid
+    ));
+
+    foreach ($order_goods as $key => &$value) {
+        if (!empty($value['optionid'])) {
+
+            $option = pdo_fetch("select id,title,marketprice,goodssn,productsn,stock,virtual,weight from " . tablename("sz_yi_goods_option") . " where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1", array(
+                ":uniacid" => $_W['uniacid'],
+                ":goodsid" => $value['goodsid'],
+                ":id" => $value['optionid']
+            ));
+            
+            if (!empty($option)) {
+                $value["optionid"]    = $value['optionid'];
+                $value["optiontitle"] = $option["title"];
+                $value["marketprice"] = $option["marketprice"];
+                if (!empty($option["weight"])) {
+                    $value["weight"] = $option["weight"];
+                }
+            }
+        }
+    }
+    unset($value);
+    $order_goods = set_medias($order_goods, 'thumb');
+    
     show_json(1, array(
         'order' => $order,
         'set' => $set,
@@ -141,7 +169,8 @@ if ($operation == 'display' && $_W['isajax']) {
         'cash' => $cash,
         'isweixin' => is_weixin(),
         'currentcredit' => $currentcredit,
-        'returnurl' => $returnurl
+        'returnurl' => $returnurl,
+        'goods'=>$order_goods
     ));
 } else if ($operation == 'pay' && $_W['ispost']) {
     $set   = m('common')->getSysset(array(
