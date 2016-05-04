@@ -65,12 +65,8 @@ if ($_W['isajax']) {
         'member' => $member
     ));
 }
-if(!isMobile()){
-    include $this->template('member/center');
-}
 if ($template_flag == 1) {
     include $this->template('diyform/info');
 } else {
     include $this->template('member/info');
 }
-

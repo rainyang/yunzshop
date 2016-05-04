@@ -1,6 +1,6 @@
-{template 'common/header'}
+{template 'member/center'} 
 <title>优惠券详情</title>
-<link rel="stylesheet" type="text/css" href="../addons/sz_yi/plugin/coupon/template/mobile/default/images/style.css">
+<link rel="stylesheet" type="text/css" href="../addons/sz_yi/plugin/coupon/template/pc/default/images/style.css">
 <style type="text/css">
     body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearance:none;overflow-x: hidden;}
     a {text-decoration:none;}
@@ -15,21 +15,23 @@
 
 
 	.coupon_detail .dgoods { overflow:hidden; padding:5px 0;}
-	.coupon_detail .dgoods .good {height:auto; width:46%; padding:0px 2% 10px; float:left;}
+	.coupon_detail .dgoods .good {height:auto; width:232px; padding:0px 2% 10px; float:left;}
     .coupon_detail .dgoods .good img {height:120px; width:100%;}
     .coupon_detail .dgoods .good .name {height:20px; width:100%; font-size:15px; line-height:20px; color:#666; overflow:hidden;}
     .coupon_detail .dgoods .good .price {height:20px; width:100%; color:#f03; font-size:14px;}
     .coupon_detail .dgoods .good .price span {color:#aaa; font-size:12px; text-decoration:line-through;}
  
 
-	.coupon_use {position: fixed;  bottom:0; width:100%; height:40px; line-height: 40px; color:#fff;font-size:14px; text-align: center;z-index:1000}    
+	.coupon_use {position:absolute;  bottom:0; width:100%; height:40px; line-height: 40px; color:#fff;font-size:14px; text-align: center;z-index:1000;left: 0}    
 	.coupon_use .left { float:left;width:70%;background:rgba(0,0,0,0.5); text-align: center;}
-	.coupon_use .right { float:left; width:30%;text-align: center; }
-
+	.coupon_use .right { float:left; width:30%;text-align: center;cursor: pointer;}
+.code-pos { padding: 0 !important;}
+.rightlist{position: relative;}
 </style>
+<div class="rightlist">
 <div class="page_topbar"> 
-	<a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
-	<a href="{php echo $this->createPluginMobileUrl('coupon')}" class="btn"><i class="fa fa-home"></i></a>
+
+	<a href="{php echo $this->createPluginMobileUrl('coupon')}" class="btn code-pos"><i class="fa fa-home"></i></a>
 	<div class="title">优惠券详情</div>
 </div>
 
@@ -38,7 +40,7 @@
 	
 	<div class="body {$coupon['css']}">
 		<div class="bg png png-{$coupon['css']}"></div>
-		<div class='top'>
+		<div class='topna'>
 			{if !empty($coupon['thumb'])}
 			<div class='left'><img src='{php echo tomedia($coupon['thumb'])}'/></div>
 			{/if}
@@ -143,7 +145,7 @@
 	<div id='btncoupon' class='right {if $coupon['canget']}{$coupon['css']}{else}past{/if}' >立即{$coupon['gettypestr']}</div>
 	</div>
 
-
+</div>
 	<script language='javascript'>
 		
 		function getRecommands() {
@@ -259,7 +261,5 @@
 			{/if}
 
 		});
-	</script>
-
-	{php $show_footer = false}
-	{template 'common/footer'}
+	</script></div>
+{template 'common/bottom'}

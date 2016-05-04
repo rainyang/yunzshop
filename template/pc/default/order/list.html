@@ -4,7 +4,7 @@
     body {margin:0px; background:#efefef; -moz-appearance:none; -webkit-appearance: none;}
     .order_topbar {height:44px; width:100%; background:#fff; border-bottom:1px solid #e3e3e3;}
     .order_topbar .nav {height:44px;cursor: pointer; line-height:44px; text-align:center; font-size:14px; float:left; color:#666; {if $_GPC['status']!=4}width:20%;{else}width:50%;{/if}}
-    .order_topbar .on {height:42px; color:#ff771b; border-bottom:2px solid #ff771b;}
+    .order_topbar .on {height:44px; color:#ff771b; border-bottom:2px solid #ff771b;}
     .order_noinfo {height:20px; width:150px; background:url(img/order_img1.png) top center no-repeat; margin:50px auto 0px; padding-top:100px; line-height:20px; font-size:14px; text-align:center; color:#c9c9c9;}
     .order_main {height:auto; width:100%; background:#fff; padding:0px 1%; margin-top:16px; border-bottom:1px solid #e2e2e2; border-top:1px solid #e2e2e2;}
     .order_main .title {height:42px; width:100%; border-bottom:1px solid #e2e2e2; font-size:14px; line-height:42px; color:#666;}
@@ -26,14 +26,14 @@
     .order_main .info1 span {color:#666;}
 
     .order_main .sub {height:50px; width:100%;}
-    .order_main .sub1 {height:30px; width:auto; padding:0px 10px; border:1px solid #ff771b; float:right; border-radius:5px; line-height:30px; font-size:14px; margin:10px 5px 10px 0px; color:#fff; background:#ff771b;}
-    .order_main .sub2 { text-align: center;height:30px; width:78px !important; padding:0px 10px; border:1px solid #5f6e8b; float:right; border-radius:5px; line-height:30px; font-size:14px; margin:10px 5px 10px 0px; color:#5f6e8b;}
+    .order_main .sub1 {height:30px; width:auto; padding:0px 10px; border:1px solid #ff771b; float:right; border-radius:5px; line-height:30px; font-size:14px; margin:10px 5px 10px 0px; color:#fff; background:#ff771b;cursor: pointer;}
+    .order_main .sub2 { text-align: center;height:30px; width:78px !important; padding:0px 10px; border:1px solid #5f6e8b; float:right; border-radius:5px; line-height:30px; font-size:14px; margin:10px 5px 10px 0px; color:#5f6e8b;cursor: pointer;}
     select { width:80px;height:30px;position:absolute;left:0; filter:alpha(Opacity=0); opacity: 0;-webkit-appearance: none;background:#fff; -webkit-tap-highlight-color: transparent };
     .order_no {height:40px; width:100%;  padding-top:180px; margin:50px 0px;}
 
     .order_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
     .order_no_menu {height:40px; width:100%; text-align:center;}
-    .order_no_nav {height:38px;padding:10px; width:100px; background:#eee; border:1px solid #d4d4d4; border-radius:5px; text-align:center; line-height:38px; color:#666;}
+    .order_no_nav {height:38px;padding:10px; width:100px; background:#eee; border:1px solid #d4d4d4; border-radius:5px; text-align:center; line-height:38px; color:#666;cursor: pointer;}
     #order_loading { width:94%;padding:10px;color:#666;text-align: center;}
 
 </style>
@@ -261,5 +261,4 @@
       
     });
 </script>
-{php $show_footer = true}
-{template 'common/footer'}
+{template 'common/bottom'}
