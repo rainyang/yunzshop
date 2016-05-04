@@ -13,7 +13,7 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">等级权重</label>
                     <div class="col-sm-9 col-xs-12">
                         <input class="form-control" type="text" value="{$level['level']}" name="level">
-                        <span class="help-block">等级权重，数字越大越高级</span>
+                        <span class="help-block">等级权重，数字越大级别越高。自动升级必填此项，否则不能正常升级</span>
                     </div>
                 </div>
                 <div class="form-group">
@@ -123,10 +123,18 @@
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">追加消息</label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信消息</label>
                     <div class="col-sm-9 col-xs-12">
-                        <input class="form-control" type="text" value="{$level['content']}" name="content">
-                        <span class="help-block">微信消息提醒追加内容</span>
+                        <input class="form-control" type="text" value="{$level['msgtitle']}" name="msgtitle">
+                        <span class="help-block">微信消息标题</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <div class="col-sm-9 col-xs-12">
+                        <textarea class="form-control" name="msgcontent">{$level['msgcontent']}</textarea>
+                        <div class="help-block">模板变量: [昵称] [旧等级] [旧分红比例] [新等级] [新分红比例] [时间] </div>
+                        <div class="help-block">独立微信消息通知。不填写则默认使用通知设置内容</div>
                     </div>
                 </div>
             </div>

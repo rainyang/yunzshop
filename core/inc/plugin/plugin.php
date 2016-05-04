@@ -52,6 +52,13 @@ class Plugin extends Core
     {
         global $_W;
         $tmplateType = (isMobile()) ? 'mobile' : 'pc';
+        if(strstr($_SERVER['REQUEST_URI'],'app')){
+            if(!isMobile()){
+                if($this->yzShopSet['ispc']==0){
+                    $tmplateType = 'mobile';
+                }
+            }
+        }
         $defineDir = IA_ROOT . "/addons/sz_yi/";
         if (defined('IN_SYS')) {
             $source  = IA_ROOT . "/addons/sz_yi/plugin/" . $this->pluginname . "/template/{$filename}.html";

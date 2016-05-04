@@ -1,8 +1,4 @@
-<?php if(isMobile()){?>
-    {template 'common/header'}
-<?php }else{?>
-    {template 'common/header_center'}
-<?php }?>
+{template 'common/header_center'}
 <title>{php echo $this->set['texts']['commission_detail']}</title>
 <style type="text/css">
 body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
@@ -162,5 +158,4 @@ function bindScroller(){
 
     })
 </script>
-{php $show_footer=true;$footer_current ='commission'}
-{template 'common/footer'}
+{template 'common/bottom'}
