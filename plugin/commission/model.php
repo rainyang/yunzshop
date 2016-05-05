@@ -1685,6 +1685,10 @@ if (!class_exists('CommissionModel')) {
 				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', time()), $_var_155);
 				$_var_155 = str_replace('[金额]', $_var_150['commission'], $_var_155);
 				$_var_155 = str_replace('[提现方式]', $_var_150['type'], $_var_155);
+				$_var_155 = str_replace('[微信比例]', $_var_0['withdraw_wechat'], $_var_155);
+				$_var_155 = str_replace('[商城余额比例]', $_var_0['withdraw_balance'], $_var_155);
+				$_var_155 = str_replace('[税费和服务费比例]', $_var_0['withdraw_factorage'], $_var_155);
+				
 				$_var_156 = array('keyword1' => array('value' => !empty($_var_152['commission_paytitle']) ? $_var_152['commission_paytitle'] : '佣金打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
 				if (!empty($_var_153)) {
 					m('message')->sendTplNotice($_var_20, $_var_153, $_var_156);
