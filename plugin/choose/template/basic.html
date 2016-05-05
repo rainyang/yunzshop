@@ -47,8 +47,8 @@
 		<div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启只显示供应商的商品</label>
                 <div class="col-sm-9 col-xs-12">
-                     <label class="radio-inline"><input type="radio"  name="openclose" value="1"  id="open"  {if $open['isopen'] ==1} checked="checked"{/if} /> 开启</label>
-                    <label class="radio-inline"><input type="radio"  name="openclose" value="0" id="close"  {if $open['isopen'] ==0} checked="checked"{/if} /> 关闭</label> 
+                     <label class="radio-inline"><input type="radio"  name="openclose" value="1"  id="open" onclick="showdiv()" {if $open['isopen'] ==1} checked="checked"{/if} /> 开启</label>
+                    <label class="radio-inline"><input type="radio"  name="openclose" value="0" id="close" onclick="hidediv()" {if $open['isopen'] ==0} checked="checked"{/if} /> 关闭</label> 
                     
                 </div>
         </div>
@@ -133,14 +133,14 @@ $('#submit').click(function(){
 
 });
 
-// function showdiv() { 
+function showdiv() { 
 
-// document.getElementById("agentchoose").style.display ="block";
-// }
-// function hidediv() {
+document.getElementById("agentchoose").style.display ="block";
+}
+function hidediv() {
 
-// document.getElementById("agentchoose").style.display ='none';
-// }	
+document.getElementById("agentchoose").style.display ='none';
+}	
 	
 
 </script>
