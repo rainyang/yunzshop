@@ -74,6 +74,26 @@
     </div>
     <div class="order_main" >  
         <div class="line"><div class="label">订单编号</div><div class="info"><div class="inner"><%order.ordersn%></div></div></div>
+
+
+        <%each goods as g%>
+        <div class="good">
+            <div class="img"  ><img src="<%g.thumb%>"/></div>
+            <div class='info' >
+                <div class='inner'>
+                       <div class="name"><%g.title%></div>     
+                       <div class='option'><%if g.optionid!='0'%>规格:  <%g.optiontitle%><%/if%></div>
+                </div>
+            </div>
+            <div class="price">
+                <div class='pnum'><span class='marketprice'>￥<%g.marketprice%></span></div>
+                <div class='pnum'><span class='total'>×<%g.buycount%></span></div>
+            </div>
+        </div>
+        <%/each%>
+
+ 
+
         <div class="line"><div class="label">支付金额</div><div class="info"><div class="inner"><div style='color:#ff6600'>￥<span id="orderprice" price="<%order.price%>"><%order.price%></span>元</div></div></div></div>
     </div>
     <%if order.price>0%>    
