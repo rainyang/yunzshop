@@ -77,7 +77,8 @@ if ($operation == 'display') {
 		} else if ($status == -1) {
 			$title = '已无效佣金';
 		}
-		m('excel')->export($list, array('title' => $title . '数据-' . date('Y-m-d-H-i', time()), 'columns' => array(array('title' => 'ID', 'field' => 'id', 'width' => 12), array('title' => '提现单号', 'field' => 'applyno', 'width' => 24), array('title' => '粉丝', 'field' => 'nickname', 'width' => 12), array('title' => '姓名', 'field' => 'realname', 'width' => 12), array('title' => '手机号码', 'field' => 'mobile', 'width' => 12), array('title' => '提现方式', 'field' => 'typestr', 'width' => 12), array('title' => '申请时间', 'field' => 'applytime', 'width' => 24), array('title' => '审核时间', 'field' => 'checktime', 'width' => 24), array('title' => '打款时间', 'field' => 'paytime', 'width' => 24), array('title' => '设置无效时间', 'field' => 'invalidtime', 'width' => 24))));
+
+		m('excel')->export($list, array('title' => $title . '数据-' . date('Y-m-d-H-i', time()), 'columns' => array(array('title' => 'ID', 'field' => 'id', 'width' => 12), array('title' => '提现单号', 'field' => 'applyno', 'width' => 24), array('title' => '粉丝', 'field' => 'nickname', 'width' => 12), array('title' => '姓名', 'field' => 'realname', 'width' => 12), array('title' => '手机号码', 'field' => 'mobile', 'width' => 12), array('title' => '提现方式', 'field' => 'typestr', 'width' => 12),array('title' => '申请佣金', 'field' => 'commission', 'width' => 12), array('title' => '申请时间', 'field' => 'applytime', 'width' => 24), array('title' => '审核时间', 'field' => 'checktime', 'width' => 24), array('title' => '打款时间', 'field' => 'paytime', 'width' => 24), array('title' => '设置无效时间', 'field' => 'invalidtime', 'width' => 24))));
 	}
 	$total = pdo_fetchcolumn('select count(a.id) from' . tablename('sz_yi_commission_apply') . ' a ' . ' left join ' . tablename('sz_yi_member') . ' m on m.uid = a.mid' . ' left join ' . tablename('sz_yi_commission_level') . ' l on l.id = m.agentlevel' . " where 1 {$condition}", $params);
 	$pager = pagination($total, $pindex, $psize);
