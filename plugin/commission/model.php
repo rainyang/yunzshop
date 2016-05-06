@@ -106,7 +106,7 @@ if (!class_exists('CommissionModel')) {
 					$costprice    = $option['costprice'] * $order_goods['total'];	
 				}
 				if($set['culate_method'] == 1){
-					return $productprice*;
+					return $productprice;
 				}else if($set['culate_method'] == 2){
 					return $marketprice;
 				}else if($set['culate_method'] == 3){
