@@ -20,7 +20,9 @@
                 {ifp 'shop.dispatch'}<li><a href="{php echo $this->createWebUrl('shop/dispatch')}">配送方式</a></li>{/if}
                 {ifp 'shop.adv'}<li><a href="{php echo $this->createWebUrl('shop/adv')}">幻灯片管理</a></li>{/if}
                 {ifp 'shop.notice'}<li><a href="{php echo $this->createWebUrl('shop/notice')}">公告管理</a></li>{/if}
-                {ifp 'shop.comment'}<li><a href="{php echo $this->createWebUrl('shop/comment')}">评价管理</a></li>{/if}
+                {ifp 'shop.comment'}<li><a href="{php echo $this->createWebUrl('shop/comment')}">评价管理</a></li>
+                {/if}
+                {ifp 'shop.adpc'}<li><a href="{php echo $this->createWebUrl('shop/adpc')}">广告管理</a></li>{/if}
             </ul>
         </li>
         {/if}
@@ -96,6 +98,7 @@
             <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-cog'></i> 系统设置 <i class="fa fa-angle-down"></i></a>
             <ul class="dropdown-menu">
                   {ifp 'sysset.view.shop'}<li><a href="{php echo $this->createWebUrl('sysset',array('op'=>'shop'))}">商城设置</a></li>{/if}
+                  {ifp 'sysset.view.pcset'}<li><a href="{php echo $this->createWebUrl('sysset',array('op'=>'pcset'))}">PC设置</a></li>{/if}
                   {ifp 'sysset.view.follow'}<li><a href="{php echo $this->createWebUrl('sysset',array('op'=>'follow'))}">引导及分享设置</a></li>{/if}
                   {ifp 'sysset.view.notice'}<li><a href="{php echo $this->createWebUrl('sysset',array('op'=>'notice'))}">模板消息设置</a></li>{/if}
                   {ifp 'sysset.view.trade'}<li><a href="{php echo $this->createWebUrl('sysset',array('op'=>'trade'))}">交易设置</a></li>{/if}

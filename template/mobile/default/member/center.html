@@ -1,4 +1,4 @@
-{template 'common/header'}
+﻿{template 'common/header'}
 <title>个人中心</title>
 <style type="text/css">
     body {margin:0px; background:#eee; -moz-appearance:none;}
@@ -13,14 +13,14 @@
     .header .user-gold {height:35px; width:94%; padding:5px 3%; border-bottom:1px solid #ddd; background:#fff; font-size:16px; line-height:35px;}
     .header .user-gold .title {height:35px; width:auto; float:left; color:#666;}
     .header .user-gold .num {height:35px; width:auto; float:left; color:#f90;}
-    
+
     .header .user-gold .draw {width:80px; height:30px; background:#6c9; float:right;}
     .header .user .set {height:26px; width:26px; float:right; margin-top:10px;}
 
     .header .user-op { height:35px; width:94%; padding:5px 3%; border-bottom:1px solid #ddd; background:#fff; font-size:16px; line-height:35px; }
     .take {height:30px; width:auto; padding:0 10px; line-height:30px; font-size:16px; float:right; background:#ff6600; border-radius:5px; margin-top:5px; color:#fff;}
     .take1 {height:30px; width:auto; padding:0 10px; line-height:30px; font-size:16px; float:right; background:#00cc00; border-radius:5px; margin-top:5px; color:#fff;}
-    
+
     .order {height:135px; width:100%; background:#fff; margin-top:20px; border-bottom:1px solid #ddd;}
     .order_all {height:100px; width:100%; padding:16px 0px; color:#666;}
     .order_pub {height:18px; float:left; border-left:1px solid #eee; padding-top:5px; text-align:center; color:#666; position:relative;}
@@ -48,7 +48,7 @@
         <div class="user">
             <div class="user-head"><img src="<%member.avatar%>" /></div>
             <div class="user-info">
-                <div class="user-name"><%member.nickname%></div>
+                <div class="user-name"><%member.nickname%>[会员ID:<%member.id%>]</div>
                 <div class="user-other" {if !empty($set['shop']['levelurl'])}onclick='location.href="{$set['shop']['levelurl']}"'{/if}>[<%level.levelname%>] {if !empty($set['shop']['levelurl'])}<i class='fa fa-question-circle' ></i>{/if}
                 </div>
             </div>
@@ -57,11 +57,11 @@
 
 </div>
  <div class="cart" style='margin-top:-20px;'>
-     <a href="javascript:;"><div class="list1" style=" border-bottom:0px;border-top:0px;">余额: <span style='color:#f90'><%member.credit2%></span> 
+     <a href="javascript:;"><div class="list1" style=" border-bottom:0px;border-top:0px;">余额: <span style='color:#f90'><%member.credit2%></span>
              {if empty($set['trade']['closerecharge'])}
              <div class="take" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</div>
              {/if}
-                 
+
          </div></a>
     <a href="javascript:;"><div class="list1" style="margin:0px; border-bottom:0px;">积分: <%member.credit1%>
             <%if open_creditshop%>
@@ -86,33 +86,38 @@
     </div>
 </div>
 
-    
+
 <div class="cart">
     {if $hascom}
-            <a href="{php echo $this->createPluginMobileUrl('commission')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-home" style="color:#f10;"></i>{php echo $pset['texts']['center']}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>   
+            <a href="{php echo $this->createPluginMobileUrl('commission')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-home" style="color:#f10;"></i>{php echo $pset['texts']['center']}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
     <a href="{php echo $this->createMobileUrl('member/info')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-user" style="color:#A6E1EC;"></i>我的资料<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {if !$member['isbindmobile'] && is_weixin()}
-    <a href="{php echo $this->createMobileUrl('member/bindmobile')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-mobile" style="color:#f10;"></i>绑定手机<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>   
+    <a href="{php echo $this->createMobileUrl('member/bindmobile')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-mobile" style="color:#f10;"></i>绑定手机<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
 </div>
 <div class="cart">
     {if p('supplier')}
+    {if $supplier_set['switch'] == 1}
         <a href="{php echo $this->createPluginMobileUrl('supplier/af_supplier')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-pencil" style="color:#f10;"></i>供应商申请<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
+    {/if}
     {if $pluginbonus}
-        {if empty($bonus_set['bonushow'])}
-            <a href="{php echo $this->createPluginMobileUrl('bonus/index')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-money" style="color:#f10;"></i>{php echo empty($bonus_set['texts']['center']) ? "分红明细" : $bonus_set['texts']['center'];}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+        {if !empty($bonus_set['start'])}
+            <a href="{php echo $this->createPluginMobileUrl('bonus/index')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-money" style="color:#f10;"></i>{php echo empty($bonus_set['texts']['center']) ? "分红中心" : $bonus_set['texts']['center'];}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
         {/if}
+    {/if}
+    {if p('return')}
+    <a href="{php echo $this->createPluginMobileUrl('return/return_log')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-money" style="color:#f10;"></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
     {/if}
 </div>
 {if $hascoupon}
 <div class="cart">
      {if $hascouponcenter}
-    <a href="{php echo $this->createPluginMobileUrl('coupon')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-tags" style="color:#b03d08;"></i>领取优惠券 <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i> </div></a>    
+    <a href="{php echo $this->createPluginMobileUrl('coupon')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-tags" style="color:#b03d08;"></i>领取优惠券 <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i> </div></a>
     {/if}
-    <a href="{php echo $this->createPluginMobileUrl('coupon/my')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-gift" style="color:#08b00e;"></i>我的优惠券 <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i> <span class="count"><%counts.couponcount%></span></div></a>    
-    
+    <a href="{php echo $this->createPluginMobileUrl('coupon/my')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-gift" style="color:#08b00e;"></i>我的优惠券 <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i> <span class="count"><%counts.couponcount%></span></div></a>
+
 </div>
 {/if}
 <div class="cart">
@@ -120,16 +125,16 @@
     <a href="{php echo $this->createMobileUrl('shop/favorite')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-heart" style="color:#f03;"></i>我的收藏<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i><span class="count"><%counts.favcount%></span></div></a>
     <a href="{php echo $this->createMobileUrl('shop/history')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-list" style="color:#096;"></i>我的足迹<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     <a href="{php echo $this->createMobileUrl('member/notice')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-volume-up" style="color:#cc6;"></i>消息提醒设置<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-    
+
 </div>
     {if isset($set['trade']) && $set['trade']['withdraw']==1}
-    <a href="javascript:;" id="btnwithdraw"><div class="list1" style="border-bottom: 0px;"><i class="fa fa-money" style="color:#0096ff;"></i>余额提现<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>    
+    <a href="javascript:;" id="btnwithdraw"><div class="list1" style="border-bottom: 0px;"><i class="fa fa-money" style="color:#0096ff;"></i>余额提现<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
     {if isset($set['trade']) && ($set['trade']['withdraw']==1 || empty($set['trade']['closerecharge']))}
     <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="{if isset($set['trade']) && $set['trade']['withdraw']==1}margin:0px;{/if}"><i class="fa fa-file-text" style="color:#009;"></i>{if isset($set['trade']) && $set['trade']['withdraw']==1}余额明细{else}充值记录{/if}
-            <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>    
+            <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
    {/if}
-    
+
 <a href="{php echo $this->createMobileUrl('shop/address')}"><div class="list1"><i class="fa fa-street-view" style="color:#99C"></i>收货地址管理<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 
 {if !is_weixin()}
@@ -140,26 +145,26 @@
 </script>
 <script language="javascript">
     require(['tpl', 'core'], function(tpl, core) {
-        
+
         core.json('member/center',{},function(json){
-            
+
            $('#container').html(  tpl('member_center',json.result) );
            var withdrawmoney = {php echo empty($set['trade']['withdrawmoney'])?0:floatval($set['trade']['withdrawmoney'])};
            $('#btnwithdraw').click(function(){
- 
+
                if(json.result.member.credit2<=0){
                    core.tip.show('无余额可提!');
                    return;
                }
                if(withdrawmoney>0 && json.result.member.credit2<withdrawmoney){
-                   core.tip.show('满' +withdrawmoney + "元才能提现!" ); 
+                   core.tip.show('满' +withdrawmoney + "元才能提现!" );
                    return;
                }
                location.href = core.getUrl('member/withdraw');
            })
-            
+
         },true);
-        
+
     })
 </script>
 {php $show_footer=true}

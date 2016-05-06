@@ -3,10 +3,12 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+
+$url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 $operation  = !empty($_GPC['op']) ? $_GPC['op'] : 'index';
 $openid     = m('user')->getOpenid();
 $uniacid    = $_W['uniacid'];
-$set        = m('common')->getSysset('shop');
+$set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
 $commission = p('commission');
 if ($commission) {
     $shopid = intval($_GPC['shopid']);
@@ -56,7 +58,6 @@ $args = array(
 if (!empty($myshop['selectgoods']) && !empty($myshop['goodsids'])) {
     $args['ids'] = $myshop['goodsids'];
 }
-
 
 $condition = ' and `uniacid` = :uniacid AND `deleted` = 0 and status=1';
 $params    = array(

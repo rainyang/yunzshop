@@ -64,6 +64,7 @@ if (!class_exists('PosterModel')) {
             if (!empty($goodsid)) {
                 $type = 3;
             }
+
             $poster = pdo_fetch('select * from ' . tablename('sz_yi_poster') . ' where uniacid=:uniacid and type=:type and isdefault=1 limit 1', array(
                 ':uniacid' => $_W['uniacid'],
                 ':type' => $type
@@ -75,6 +76,7 @@ if (!class_exists('PosterModel')) {
             if (empty($poster)) {
                 return "";
             }
+
             $qr = $this->getQR($poster, $member, $goodsid);
             if (empty($qr)) {
                 return "";

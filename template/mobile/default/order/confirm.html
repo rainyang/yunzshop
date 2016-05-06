@@ -159,14 +159,14 @@
         <div class="address carrier"
              data-index='<%index%>'
              data-id='<%carrier.id%>'
-             data-realname='<%carrier.realname%>'
-             data-mobile='<%carrier.mobile%>'
+             data-realname='<%carrier.storename%>'
+             data-mobile='<%carrier.tel%>'
              data-address='<%carrier.address%>' 
              >
             <div class="ico" ><%if selectedCarrierIndex==index%><i class="fa fa-check" style="color:#0c9"></i><%/if%></div>
             <div class="info">
                 <div class='inner'>
-                    <div class="name"><%carrier.realname%>(<%carrier.mobile%>)</div>
+                    <div class="name"><%carrier.storename%>(<%carrier.tel%>)</div>
                     <div class="addr"><%carrier.address%></div>
                 </div>
             </div>
@@ -240,7 +240,7 @@
 					<div class="ico"><i class="fa fa-map-marker"></i></div>
 					<div class='info1'>
 						 <div class='inner'>
-							 <div class="user">自提地点：<span id='carrier_realname'><%carrier.realname%></span>(<span id='carrier_mobile'><%carrier.mobile%></span>)</div>
+							 <div class="user">自提地点：<span id='carrier_realname'><%carrier.storename%></span>(<span id='carrier_mobile'><%carrier.tel%></span>)</div>
 							 <div class="address"><span id='carrier_address'><%carrier.address%></span></div>
 						 </div>
 					</div>
@@ -730,7 +730,7 @@ var fromcart = 0;
                 var result = addaddress_json.result;
                 $('#address_container').html(tpl('tpl_address_new', result));
                 cascdeInit(result.address.province,result.address.city);
-                {if $trade['shareaddress']=='1'}
+                {if $trade['shareaddress']=='1' && is_weixin()}
                     var shareAddress = {php echo json_encode($shareAddress)};
                                 WeixinJSBridge.invoke('editAddress',shareAddress,function(res){ 
                                     if(res.err_msg=='edit_address:ok'){
@@ -852,37 +852,37 @@ var fromcart = 0;
                 core.tip.show("没有任何商品");
                 return;
             }
-			 {if $show==1}
+            {if $show==1}
 				if( $("#dispatchtype").val()=='0'){
-					   if (addressid == '') {
-							core.tip.show("请选择地址");
-							return;
-						}
-						if (dispatchid == '') {
-							core.tip.show("请选择配送方式");
-							return;
-						}
-				} 
-				 if($('#isverify').val()=='true'){
-					if (carrier_realname== '') {
-						 core.tip.show("请填写联系人姓名");
-						 return;
-					 }
-					  if (!$.isMobile(carrier_mobile)) {
-							core.tip.show("请填写正确手机号");
-							return;
-					  }
-				 }
-				   if( $("#dispatchtype").val()=='1'){
-						if (carrier_realname== '') {
-							core.tip.show("请填写姓名");
-							return;
-						}
-						if (!$.isMobile(carrier_mobile)) {
-							core.tip.show("请填写正确手机号");
-							return;
-						}
+                    if (addressid == '') {
+						core.tip.show("请选择地址");
+						return;
 					}
+					if (dispatchid == '') {
+						core.tip.show("请选择配送方式");
+						return;
+					}
+				} 
+                if($('#isverify').val()=='true'){
+                    if (carrier_realname== '') {
+                        core.tip.show("请填写联系人姓名");
+                        return;
+                    }
+                    if (!$.isMobile(carrier_mobile)) {
+                        core.tip.show("请填写正确手机号");
+                        return;
+                    }
+                }
+                if( $("#dispatchtype").val()=='1'){
+                    if (carrier_realname== '') {
+                        core.tip.show("请填写姓名");
+                        return;
+                    }
+                    if (!$.isMobile(carrier_mobile)) {
+                        core.tip.show("请填写正确手机号");
+                        return;
+                    }
+                }
 					{/if} 
 			 var diydata = '';
 			 var gdid = {php echo intval($goods_data_id)};
@@ -1052,7 +1052,7 @@ var fromcart = 0;
        {/if}
 						  
        
-    }, true);
+    }, true,true);
 	
 	
 	

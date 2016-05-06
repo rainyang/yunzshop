@@ -23,6 +23,17 @@
                         {/if}
                     </div>
                 </div> 
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">主题选择</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <select class='form-control' name='shop[theme]'>
+                            <option value='style' {if 'style'==$set['shop']['theme']}selected{/if}>默认主题</option>
+                            <option value='style_red' {if 'style_red'==$set['shop']['theme']}selected{/if}>红黑主题</option>
+                        </select>
+                    </div>
+                </div> 
+
                        <div class="form-group"></div>
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>

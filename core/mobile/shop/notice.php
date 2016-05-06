@@ -4,6 +4,7 @@ if (!defined('IN_IA')) {
 }
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
+$set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
 $openid    = m('user')->getOpenid();
 if ($_W['isajax']) {
 	if ($operation == 'display') {

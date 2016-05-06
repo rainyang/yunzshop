@@ -15,12 +15,13 @@ if (!defined('IN_IA')) {
 }
 class Core extends WeModuleSite
 {
+
     public $footer = array();
     public $header = null;
+    public $yzShopSet = array();
     public function __construct()
     {
         global $_W, $_GPC;
-
         if (is_weixin()) {
             m('member')->checkMember();
         }
@@ -34,10 +35,19 @@ class Core extends WeModuleSite
                 p('commission')->checkAgent();
             }
         }
+        $this->yzShopSet = m('common')->getSysset('shop');
     }
-    public function sendSms($mobile, $content){
+
+
+
+    public function sendSms($mobile, $code, $templateType = 'reg'){
         $set = m('common')->getSysset();
-        send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $content);
+        if($set['sms']['type'] == 1){
+            return send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $code);
+        }
+        else{
+            return send_sms_alidayu($mobile, $code, $templateType);
+        }
     }
     public function runTasks()
     {
@@ -65,7 +75,7 @@ class Core extends WeModuleSite
             m('cache')->set('closeorder', date('Y-m-d H:i:s', $current), 'global');
             ihttp_request($_W['siteroot'] . 'addons/sz_yi/core/mobile/order/close.php', null, null, 1);
         }
-		
+
 		if (p('coupon')) {
 			$_var_0 = strtotime(m('cache')->getString('couponbacktime', 'global'));
 			$_var_3 = p('coupon')->getSet();
@@ -82,7 +92,7 @@ class Core extends WeModuleSite
 		}
 		exit('run finished.');
     }
-	
+
     public function setHeader()
     {
         global $_W, $_GPC;
@@ -93,7 +103,7 @@ class Core extends WeModuleSite
         $this->setFooter();
 
         @session_start();
-        if (!$followed && $memberid != $mid) {
+        if (!$followed && $memberid != $mid && isMobile()) {
             $set          = m('common')->getSysset();
             $this->header = array(
                 'url' => $set['share']['followurl']
@@ -119,7 +129,7 @@ class Core extends WeModuleSite
     }
     public function setFooter()
     {
-        global $_GPC;
+        global $_W, $_GPC;
         $_var_11 = strtolower(trim($_GPC['p']));
         $_var_12 = strtolower(trim($_GPC['method']));
         if (strexists($_var_11, 'poster') && $_var_12 == 'build') {
@@ -150,13 +160,19 @@ class Core extends WeModuleSite
             'ico' => 'list',
             'url' => $this->createMobileUrl('shop/category')
         );
+
         $this->footer['commission'] = false;
+        $member  = m('member')->getMember($openid);
+        if(!empty($member['isblack'])){
+            if($_GPC['op'] != 'black'){
+                header('Location: '.$this->createMobileUrl('member/login', array('op' => 'black')));
+            }
+        }
         if (p('commission')) {
             $set = p('commission')->getSet();
             if (empty($set['level'])) {
                 return;
             }
-            $member  = m('member')->getMember($openid);
             $isagent = $member['isagent'] == 1 && $member['status'] == 1;
             if ($_GPC['do'] == 'plugin') {
                 $this->footer['first'] = array(
@@ -192,6 +208,25 @@ class Core extends WeModuleSite
                                 'mid' => $member['id']
                             )) : $this->createPluginMobileUrl('commission')
                         );
+                    }
+                }
+            }
+        }
+        if(strstr($_SERVER['REQUEST_URI'],'app')){
+            if(!isMobile()){
+                if($this->yzShopSet['ispc']==0){
+                    //message('抱歉，PC版暂时关闭，请用微信打开!','','error');
+                }
+            }
+        }
+        if(is_weixin()){
+            //是否强制绑定手机号,只针对微信端
+            if(!empty($this->yzShopSet['isbindmobile'])){
+                if(empty($member) || $member['isbindmobile'] == 0){
+                    if($_GPC['p'] != 'bindmobile' && $_GPC['p'] != 'sendcode'){
+                        $bindmobileurl = $this->createMobileUrl('member/bindmobile');
+                        redirect($bindmobileurl);
+                        exit();
                     }
                 }
             }
@@ -288,9 +323,42 @@ class Core extends WeModuleSite
         include $file;
         exit;
     }
+
+    public function _execFront($do, $default = '', $web = true)
+    {
+        global $_W, $_GPC;
+	//todo, 需要加入微信权限认证
+	define('IN_SYS', true);
+	$_W['templateType'] = 'web';
+        $do = strtolower(substr($do, 5));
+        $p  = trim($_GPC['p']);
+        empty($p) && $p = $default;
+        $file = IA_ROOT . "/addons/sz_yi/core/web/" . $do . "/" . $p . ".php";
+        if (!is_file($file)) {
+            message("未找到 控制器文件 {$do}::{$p} : {$file}");
+        }
+        include $file;
+        exit;
+    }
+
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
         global $_W;
+        $tmplateType = (isMobile()) ? 'mobile' : 'pc';
+        $set = m('common')->getSysset('shop');
+        if(strstr($_SERVER['REQUEST_URI'],'app')){
+            if(!isMobile()){
+                if($set['ispc']==0){
+                    $tmplateType = 'mobile';
+                    //message('抱歉，PC版暂时关闭，请用微信打开!','','error');
+                }
+            }
+        }
+	
+	if($_W['templateType'] && $_W['templateType'] == 'web'){
+	
+	}
+
         $name = strtolower($this->modulename);
         if (defined('IN_SYS')) {
             $source  = IA_ROOT . "/web/themes/{$_W['template']}/{$name}/{$filename}.html";
@@ -317,13 +385,14 @@ class Core extends WeModuleSite
             if (empty($template)) {
                 $template = "default";
             }
-            if (!is_dir(IA_ROOT . '/addons/sz_yi/template/mobile/' . $template)) {
+            if (!is_dir(IA_ROOT . '/addons/sz_yi/template/'.$tmplateType.'/' . $template)) {
                 $template = "default";
             }
-            $compile = IA_ROOT . "/data/tpl/app/sz_yi/{$template}/mobile/{$filename}.tpl.php";
-            $source  = IA_ROOT . "/addons/{$name}/template/mobile/{$template}/{$filename}.html";
+            $compile = IA_ROOT . "/data/tpl/app/sz_yi/{$template}/{$tmplateType}/{$filename}.tpl.php";
+            $source  = IA_ROOT . "/addons/{$name}/template/{$tmplateType}/{$template}/{$filename}.html";
+
             if (!is_file($source)) {
-                $source = IA_ROOT . "/addons/{$name}/template/mobile/default/{$filename}.html";
+                $source = IA_ROOT . "/addons/{$name}/template/{$tmplateType}/default/{$filename}.html";
             }
             if (!is_file($source)) {
                 $names      = explode('/', $filename);
@@ -332,11 +401,11 @@ class Core extends WeModuleSite
                 if (empty($ptemplate)) {
                     $ptemplate = "default";
                 }
-                if (!is_dir(IA_ROOT . '/addons/sz_yi/plugin/' . $pluginname . "/template/mobile/" . $ptemplate)) {
+                if (!is_dir(IA_ROOT . '/addons/sz_yi/plugin/' . $pluginname . "/template/{$tmplateType}/" . $ptemplate)) {
                     $ptemplate = "default";
                 }
                 $pfilename = $names[1];
-                $source    = IA_ROOT . "/addons/sz_yi/plugin/" . $pluginname . "/template/mobile/" . $ptemplate . "/{$pfilename}.html";
+                $source    = IA_ROOT . "/addons/sz_yi/plugin/" . $pluginname . "/template/{$tmplateType}/" . $ptemplate . "/{$pfilename}.html";
             }
             if (!is_file($source)) {
                 $source = IA_ROOT . "/app/themes/{$_W['template']}/{$filename}.html";

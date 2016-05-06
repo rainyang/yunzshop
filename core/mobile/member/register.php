@@ -58,6 +58,7 @@ if ($_W['isajax']) {
         session_set_cookie_params($lifeTime);
         @session_start();
         $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
+        setcookie('member_mobile', $mobile);
         setcookie($cookieid, base64_encode($openid));
 
         show_json(1, $preUrl);

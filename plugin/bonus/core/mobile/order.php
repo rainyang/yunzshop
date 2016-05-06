@@ -21,7 +21,7 @@ if ($_W['isajax']) {
 	$pindex = max(1, intval($_GPC['page']));
 	$psize = 20;
 	$list = array();
-	$sql = "select o.id,o.ordersn,o.openid,o.status,o.createtime,cg.money from " . tablename('sz_yi_order') . " o" . " left join " . tablename('sz_yi_bonus_goods') . " cg on cg.orderid=o.id where 1 {$conditionq} and o.uniacid=".$_W['uniacid']." and cg.mid ={$member['id']} ORDER BY o.createtime DESC,o.status DESC  ";
+	$sql = "select o.id,o.ordersn,o.openid,o.status,o.createtime,cg.money from " . tablename('sz_yi_order') . " o" . " left join " . tablename('sz_yi_bonus_goods') . " cg on cg.orderid=o.id where 1 {$conditionq} and bonus_area=0 and o.uniacid=".$_W['uniacid']." and cg.mid ={$member['id']} ORDER BY o.createtime DESC,o.status DESC  ";
 	$sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
 	$list = pdo_fetchall($sql);
 

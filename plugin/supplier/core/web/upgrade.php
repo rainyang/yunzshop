@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 //金额不能用int, apply表少uniacid字段
 global $_W;
 $sql = "
@@ -72,6 +72,10 @@ $info = pdo_fetch('select * from ' . tablename('sz_yi_plugin') . ' where identit
 if(!$info){
     $sql = "INSERT INTO " . tablename('sz_yi_plugin'). " (`displayorder`, `identity`, `name`, `version`, `author`, `status`, `category`) VALUES(0, 'supplier', '供应商', '1.0', '官方', 1, 'biz');";
     pdo_query($sql);
+}
+
+if(!pdo_fieldexists('sz_yi_af_supplier', 'status')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_af_supplier')." ADD `status` TINYINT( 3 ) NOT NULL COMMENT '0申请1驳回2通过' AFTER `productname`;");
 }
 
 //todo,这里缺少uniacid，我没加，要测试$_W['uniacid']是否可用

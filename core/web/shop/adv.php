@@ -40,13 +40,15 @@ if ($operation == 'display') {
         ca('shop.adv.edit|shop.adv.view');
     }
     if (checksubmit('submit')) {
+        //print_r($_GPC);exit;
         $data = array(
             'uniacid' => $_W['uniacid'],
             'advname' => trim($_GPC['advname']),
             'link' => trim($_GPC['link']),
             'enabled' => intval($_GPC['enabled']),
             'displayorder' => intval($_GPC['displayorder']),
-            'thumb' => save_media($_GPC['thumb'])
+            'thumb' => save_media($_GPC['thumb']),
+            'thumb_pc' => save_media($_GPC['thumb_pc'])
         );
         if (!empty($id)) {
             pdo_update('sz_yi_adv', $data, array(

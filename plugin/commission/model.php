@@ -607,11 +607,19 @@ if (!class_exists('CommissionModel')) {
 			$_var_88 = empty($_var_5['commission_thumb']) ? $_var_5['thumb'] : tomedia($_var_5['commission_thumb']);
 			$_var_89 = md5(json_encode(array('id' => $_var_5['id'], 'marketprice' => $_var_5['marketprice'], 'productprice' => $_var_5['productprice'], 'img' => $_var_88, 'openid' => $_var_20, 'version' => 4)));
 			$_var_82 = $_var_89 . '.jpg';
+			//echo $_var_80 . $_var_82;exit;
 			if (!is_file($_var_80 . $_var_82)) {
+				
 				set_time_limit(0);
 				$_var_90 = IA_ROOT . '/addons/sz_yi/static/fonts/msyh.ttf';
 				$_var_91 = imagecreatetruecolor(640, 1225);
-				$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
+				if(!is_weixin()){
+					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster_pc.jpg');
+				}else{
+					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
+				}
+				$imgusername = $_var_87['realname'] ? $_var_87['realname'] : $_var_87['nickname'];
+				$imgusername = $imgusername ? $imgusername : $_var_87['mobile'];
 				imagecopy($_var_91, $_var_92, 0, 0, 0, 0, 640, 1225);
 				imagedestroy($_var_92);
 				$_var_93 = preg_replace('/\\/0$/i', '/96', $_var_87['avatar']);
@@ -636,7 +644,7 @@ if (!class_exists('CommissionModel')) {
 				$_var_101 = $this->createImage($_var_100);
 				$_var_95 = imagesx($_var_101);
 				$_var_96 = imagesy($_var_101);
-				imagecopyresized($_var_91, $_var_101, 50, 835, 0, 0, 250, 250, $_var_95, $_var_96);
+				imagecopyresized($_var_91, $_var_101, 196, 835, 0, 0, 250, 250, $_var_95, $_var_96);
 				imagedestroy($_var_101);
 				$_var_102 = imagecolorallocate($_var_91, 0, 3, 51);
 				$_var_103 = imagecolorallocate($_var_91, 240, 102, 0);
@@ -644,7 +652,7 @@ if (!class_exists('CommissionModel')) {
 				$_var_105 = imagecolorallocate($_var_91, 255, 255, 0);
 				$_var_106 = '我是';
 				imagettftext($_var_91, 20, 0, 150, 70, $_var_102, $_var_90, $_var_106);
-				imagettftext($_var_91, 20, 0, 210, 70, $_var_103, $_var_90, $_var_87['nickname']);
+				imagettftext($_var_91, 20, 0, 210, 70, $_var_103, $_var_90, $imgusername);
 				$_var_107 = '我要为';
 				imagettftext($_var_91, 20, 0, 150, 105, $_var_102, $_var_90, $_var_107);
 				$_var_108 = $_var_85['name'];
@@ -705,7 +713,13 @@ if (!class_exists('CommissionModel')) {
 				$_var_103 = imagecolorallocate($_var_91, 240, 102, 0);
 				$_var_104 = imagecolorallocate($_var_91, 255, 255, 255);
 				$_var_105 = imagecolorallocate($_var_91, 255, 255, 0);
-				$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
+				if(!is_weixin()){
+					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster_pc.jpg');
+				}else{
+					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
+				}
+				$imgusername = $_var_87['realname'] ? $_var_87['realname'] : $_var_87['nickname'];
+				$imgusername = $imgusername ? $imgusername : $_var_87['mobile'];
 				imagecopy($_var_91, $_var_92, 0, 0, 0, 0, 640, 1225);
 				imagedestroy($_var_92);
 				$_var_93 = preg_replace('/\\/0$/i', '/96', $_var_87['avatar']);
@@ -723,11 +737,11 @@ if (!class_exists('CommissionModel')) {
 				$_var_101 = $this->createImage($_var_116);
 				$_var_95 = imagesx($_var_101);
 				$_var_96 = imagesy($_var_101);
-				imagecopyresized($_var_91, $_var_101, 50, 835, 0, 0, 250, 250, $_var_95, $_var_96);
+				imagecopyresized($_var_91, $_var_101, 196, 835, 0, 0, 250, 250, $_var_95, $_var_96);
 				imagedestroy($_var_101);
 				$_var_106 = '我是';
 				imagettftext($_var_91, 20, 0, 150, 70, $_var_102, $_var_90, $_var_106);
-				imagettftext($_var_91, 20, 0, 210, 70, $_var_103, $_var_90, $_var_87['nickname']);
+				imagettftext($_var_91, 20, 0, 210, 70, $_var_103, $_var_90, $imgusername);
 				$_var_107 = '我要为';
 				imagettftext($_var_91, 20, 0, 150, 105, $_var_102, $_var_90, $_var_107);
 				$_var_108 = $_var_85['name'];
@@ -989,7 +1003,7 @@ if (!class_exists('CommissionModel')) {
 				}
 			}
 			if (!empty($order['agentid'])) {
-				$parent = m('member')->getMember($member['agentid']);
+				$parent = m('member')->getMember($order['agentid']);
 				if (!empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1) {
 					if ($order['agentid'] == $parent['id']) {
 						$order_goods = pdo_fetchall('select g.id,g.title,og.total,og.price,og.realprice, og.optionname as optiontitle,g.noticeopenid,g.noticetype,og.commission1 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
@@ -1131,7 +1145,7 @@ if (!class_exists('CommissionModel')) {
 				}
 			}
 			if (!empty($order['agentid'])) {
-				$parent = m('member')->getMember($member['agentid']);
+				$parent = m('member')->getMember($order['agentid']);
 				if (!empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1) {
 					if ($order['agentid'] == $parent['id']) {
 						$order_goods = pdo_fetchall('select g.id,g.title,og.total,og.realprice,og.price,og.optionname as optiontitle,g.noticeopenid,g.noticetype,og.commission1 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $order['id']));
@@ -1671,6 +1685,10 @@ if (!class_exists('CommissionModel')) {
 				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', time()), $_var_155);
 				$_var_155 = str_replace('[金额]', $_var_150['commission'], $_var_155);
 				$_var_155 = str_replace('[提现方式]', $_var_150['type'], $_var_155);
+				$_var_155 = str_replace('[微信比例]', $_var_0['withdraw_wechat'], $_var_155);
+				$_var_155 = str_replace('[商城余额比例]', $_var_0['withdraw_balance'], $_var_155);
+				$_var_155 = str_replace('[税费和服务费比例]', $_var_0['withdraw_factorage'], $_var_155);
+				
 				$_var_156 = array('keyword1' => array('value' => !empty($_var_152['commission_paytitle']) ? $_var_152['commission_paytitle'] : '佣金打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
 				if (!empty($_var_153)) {
 					m('message')->sendTplNotice($_var_20, $_var_153, $_var_156);
@@ -1696,15 +1714,24 @@ if (!class_exists('CommissionModel')) {
 					m('message')->sendCustomNotice($_var_20, $_var_156);
 				}
 			} else if ($_var_151 == TM_COMMISSION_BECOME && !empty($_var_152['commission_become']) && empty($_var_154['commission_become'])) {
+				/*m('member')->setCredit($_var_20, $credittype = 'credit1', $_var_0['own_integral'], $log = array());*/
 				$_var_155 = $_var_152['commission_become'];
 				$_var_155 = str_replace('[昵称]', $_var_150['nickname'], $_var_155);
 				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', $_var_150['agenttime']), $_var_155);
+				/*$_var_155 = str_replace('[积分]', $_var_0['own_integral'], $_var_155);*/
 				$_var_156 = array('keyword1' => array('value' => !empty($_var_152['commission_becometitle']) ? $_var_152['commission_becometitle'] : '成为分销商通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
 				if (!empty($_var_153)) {
 					m('message')->sendTplNotice($_var_20, $_var_153, $_var_156);
 				} else {
 					m('message')->sendCustomNotice($_var_20, $_var_156);
 				}
+				/*if (!empty($_var_22['agentid'])) {
+					$agent_info = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid={$_W['uniacid']} and id={$_var_22['agentid']}");
+					m('member')->setCredit($agent_info['openid'], $credittype = 'credit1', $_var_0['up_integral'], $log = array());
+					$_var_155 = "[" . $_var_22['realname'] . "]成为分销商，您获得推广奖励：" . $_var_0['up_integral'] . "积分";
+					$_var_156 = array('keyword1' => array('value' => '推广奖励通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
+					m('message')->sendCustomNotice($agent_info['openid'], $_var_156);
+				}*/
 			}
 		}
 

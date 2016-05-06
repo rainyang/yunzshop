@@ -32,12 +32,17 @@ class Sz_DYi_Goods
         $order     = !empty($args['order']) ? $args['order'] : ' displayorder desc,createtime desc';
         $orderby   = !empty($args['by']) ? $args['by'] : '';
         $ids       = !empty($args['ids']) ? trim($args['ids']) : '';
+        $sup_uid   = !empty($args['supplier_uid']) ? trim($args['supplier_uid']) : '';
         $condition = ' and `uniacid` = :uniacid AND `deleted` = 0 and status=1';
         $params    = array(
             ':uniacid' => $_W['uniacid']
         );
         if (!empty($ids)) {
             $condition .= " and id in ( " . $ids . ")";
+        }
+        if (!empty($sup_uid)) {
+            $condition .= " and supplier_uid = :supplier_uid ";
+            $params[':supplier_uid'] = intval($sup_uid);
         }
         $isnew = !empty($args['isnew']) ? 1 : 0;
         if (!empty($isnew)) {
@@ -88,9 +93,9 @@ class Sz_DYi_Goods
         $condition .= " and ( ifnull(showlevels,'')='' or FIND_IN_SET( {$levelid},showlevels)<>0 ) ";
         $condition .= " and ( ifnull(showgroups,'')='' or FIND_IN_SET( {$groupid},showgroups)<>0 ) ";
         if (!$random) {
-            $sql = "SELECT id,title,thumb,marketprice,productprice,sales,total,description FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} LIMIT " . ($page - 1) * $pagesize . ',' . $pagesize;
+            $sql = "SELECT id,title,thumb,marketprice,productprice,sales,total,description,unit FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} LIMIT " . ($page - 1) * $pagesize . ',' . $pagesize;
         } else {
-            $sql = "SELECT id,title,thumb,marketprice,productprice,sales,total,description FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() LIMIT " . $pagesize;
+            $sql = "SELECT id,title,thumb,marketprice,productprice,sales,total,description,unit FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() LIMIT " . $pagesize;
         }
         $list = pdo_fetchall($sql, $params);
         $list = set_medias($list, 'thumb');

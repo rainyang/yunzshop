@@ -54,4 +54,22 @@ class Sz_DYi_Qrcode
         }
         return $_W['siteroot'] . 'addons/sz_yi/data/qrcode/' . $_W['uniacid'] . '/' . $file;
     }
+    
+    public function createWechatQrcode($data)
+    {
+        global $_W, $_GPC;
+        $url = urldecode($data);
+        $path = IA_ROOT . "/addons/sz_yi/data/qrcode/" . $_W['uniacid'];
+        if (!is_dir($path)) {
+            load()->func('file');
+            mkdirs($path);
+        }
+        $file        = 'wechat_qrcode_' . time() . '.png';
+        $qrcode_file = $path . '/' . $file;
+        if (!is_file($qrcode_file)) {
+            require IA_ROOT . '/framework/library/qrcode/phpqrcode.php';
+            QRcode::png($url, $qrcode_file, QR_ECLEVEL_L, 4);
+        }
+        return $_W['siteroot'] . 'addons/sz_yi/data/qrcode/' . $_W['uniacid'] . '/' . $file;
+    }
 }

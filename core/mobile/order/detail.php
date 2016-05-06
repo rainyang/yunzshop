@@ -1,6 +1,4 @@
 <?php
-
-
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -143,6 +141,9 @@ if ($_W['isajax']) {
         'isverify' => $isverify,
         'set' => $set
     ));
+}
+if(!isMobile()){
+    include $this->template('member/center');
 }
 include $this->template('order/detail');
 

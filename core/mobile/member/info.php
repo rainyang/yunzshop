@@ -5,6 +5,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+
 $openid         = m('user')->getOpenid();
 $member         = m('member')->getInfo($openid);
 $template_flag  = 0;
@@ -69,4 +70,3 @@ if ($template_flag == 1) {
 } else {
     include $this->template('member/info');
 }
-
