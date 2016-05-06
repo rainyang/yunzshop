@@ -37,7 +37,7 @@
         <%if set.settledays>0%><div class="nav" style="border:0px; width:44%;"><div class="title">{php echo $this->set['texts']['commission_lock']}</div><div class="num"><%member.commission_lock%></div><div class='tip'>未到结算期{php echo $this->set['texts']['commission']}</div></div><%/if%>
     </div>
     <div class="gold_num">买家确认收货后，立即获得{php echo $this->set['texts']['commission1']}。<%if set.settledays>0%>结算期（<%set.settledays%>天）后，{php echo $this->set['texts']['commission']}可{php echo $this->set['texts']['withdraw']}。结算期内，买家退货，{php echo $this->set['texts']['commission']}将自动扣除。<%/if%>
-        <%if set.consume_withdraw>0%><br/><br/>注意： 需自购订单完成，共计 <span style='color:red'><%set.withdraw%></span> 元后才能得分红<br/><%/if%>
+        <%if set.consume_withdraw>0%><br/><br/>注意： 需自购订单完成，共计 <span style='color:red'><%set.consume_withdraw%></span> 元后才能得分红<br/><%/if%>
     </div> 
 </div>
 
