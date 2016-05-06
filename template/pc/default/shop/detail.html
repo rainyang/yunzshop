@@ -1146,6 +1146,8 @@ div.flicking_con a.on{background-position:0 -9px}
                         'diyformid': "{$goods['diyformid']}",
                         'diydata':diydata
                     };
+                {else}
+                    location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
                 {/if}
                 core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
 
