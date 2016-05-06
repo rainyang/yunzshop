@@ -76,7 +76,8 @@ require(['tpl', 'core'], function(tpl, core) {
                         if(json.status==1){
                              core.tip.show('登录成功');
                              //console.log(json.result.preurl);
-                             location.href=json.result.preurl;
+                             //location.href=json.result.preurl;
+                             location.href='{php echo $this->createMobileUrl('order')}';
                         }
                         else{
                             core.tip.show('用户不存在或密码错误!');
