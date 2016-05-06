@@ -1024,7 +1024,7 @@ if (!class_exists('CommissionModel')) {
 						$this->sendMessage($parent['openid'], array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $pricetotal, 'goods' => $goods, 'commission' => $commission_total, 'paytime' => $order['paytime'],), TM_COMMISSION_ORDER_PAY);
 					}
 				}
-				if(!empty($set['remind_message'])){ //Author:ym Date:2016-04-07 Content:三级消息提醒开关
+				if(!empty($set['remind_message']) && $set['level'] >= 2){ //Author:ym Date:2016-04-07 Content:三级消息提醒开关
 					//Author:ym Date:2016-04-07 Content:二级消息处理
 					if (!empty($parent['agentid'])) {
 						$parent = m('member')->getMember($parent['agentid']);
@@ -1049,7 +1049,7 @@ if (!class_exists('CommissionModel')) {
 							}
 						}
 						//Author:ym Date:2016-04-07 Content:三级消息处理
-						if (!empty($parent['agentid'])) {
+						if (!empty($parent['agentid']) && $set['level'] >= 3) {
 							$parent = m('member')->getMember($parent['agentid']);
 							if (!empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1) {
 								if ($order['agentid'] != $parent['id']) {
@@ -1167,7 +1167,7 @@ if (!class_exists('CommissionModel')) {
 					}
 				}
 
-				if(!empty($set['remind_message'])){ //Author:ym Date:2016-04-07 Content:三级消息提醒开关
+				if(!empty($set['remind_message']) && $set['level'] >= 2){ //Author:ym Date:2016-04-07 Content:三级消息提醒开关
 					//Author:ym Date:2016-04-07 Content:二级消息处理
 					if (!empty($parent['agentid'])) { 
 						$parent = m('member')->getMember($parent['agentid']);
@@ -1192,7 +1192,7 @@ if (!class_exists('CommissionModel')) {
 							}
 						}
 						//Author:ym Date:2016-04-07 Content:三级消息处理
-						if (!empty($parent['agentid'])) {
+						if (!empty($parent['agentid']) && $set['level'] >= 3) {
 							$parent = m('member')->getMember($parent['agentid']);
 							if (!empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1) {
 								if ($order['agentid'] != $parent['id']) {
