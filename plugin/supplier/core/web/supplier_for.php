@@ -3,6 +3,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+load()->model('user');
 $operation   = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 $pindex    = max(1, intval($_GPC['page']));
 $psize     = 20;
@@ -22,7 +23,22 @@ if ($operation == 'af_supplier') {
         if ($status == 1) {
             $msg = '驳回申请成功';
         } else {
+            $data = array();
             $msg = '审核通过成功';
+            $supplier_usre = pdo_fetch("select * from " . tablename('sz_yi_af_supplier') . " where uniacid={$_W['uniacid']} and id={$id}");
+            $data['uid'] = user_register(array('username' => $supplier_usre['username'], 'password' => $supplier_usre['password']));
+            $pwd = pdo_fetch('select password from ' . tablename('users') . ' where uid=:uid' , array(
+                ':uid' => $data['uid']
+                ));
+            $perm_role = pdo_fetchcolumn("select id,status from " . tablename('sz_yi_perm_role') . " where status1=1 and status=1");
+            $data['password'] = $pwd['password'];
+            $data['username'] = $supplier_usre['username'];
+            $data['roleid'] = $perm_role['id'];
+            $data['status'] = $perm_role['status'];
+            $data['uniacid'] = $_W['uniacid'];
+            $data['perms'] = '';
+            pdo_insert('uni_account_users', array('uid' => $data['uid'], 'uniacid' => $supplier_usre['uniacid'], 'role' => 'operator'));
+            pdo_insert('sz_yi_perm_user', $data);
         }
         message($msg, $this->createPluginWebUrl('supplier/supplier_for'), 'success');
     }
@@ -68,6 +84,16 @@ if ($_GPC['export1'] == '1') {
             ),
             array(
                 'title' => '产品名称',
+                'field' => 'productname',
+                'width' => 12
+            ),
+            array(
+                'title' => '用户名',
+                'field' => 'productname',
+                'width' => 12
+            ),
+            array(
+                'title' => '密码',
                 'field' => 'productname',
                 'width' => 12
             )
