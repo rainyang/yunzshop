@@ -21,9 +21,20 @@ if ($diyform_plugin) {
 }
 if ($_W['isajax']) {
     if ($_W['ispost']) {
-        $memberdata = $_GPC['memberdata'];
-		$memberdata['openid'] = $openid;
-		$memberdata['uniacid'] = $_W['uniacid'];
+        $memberdata = array(
+            'realname'      => $_GPC['memberdata']['realname'],
+            'mobile'        => $_GPC['memberdata']['mobile'],
+            'weixin'        => $_GPC['memberdata']['weixin'],
+            'productname'   => $_GPC['memberdata']['productname'],
+            'username'      => $_GPC['memberdata']['username'],
+            'password'      => $_GPC['memberdata']['password'],
+            'openid'        => $openid,
+            'uniacid'       => $_W['uniacid']
+            );
+        $result = pdo_fetch('select * from ' . tablename('users') . " where username='".$memberdata['username']."'");
+        if (!empty($result)) {
+            show_json(2);
+        } 
         pdo_insert('sz_yi_af_supplier',$memberdata);
         show_json(1);
     }
