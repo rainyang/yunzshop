@@ -324,6 +324,23 @@ class Core extends WeModuleSite
         exit;
     }
 
+    public function _execFront($do, $default = '', $web = true)
+    {
+        global $_W, $_GPC;
+	//todo, 需要加入微信权限认证
+	define('IN_SYS', true);
+	$_W['templateType'] = 'web';
+        $do = strtolower(substr($do, 5));
+        $p  = trim($_GPC['p']);
+        empty($p) && $p = $default;
+        $file = IA_ROOT . "/addons/sz_yi/core/web/" . $do . "/" . $p . ".php";
+        if (!is_file($file)) {
+            message("未找到 控制器文件 {$do}::{$p} : {$file}");
+        }
+        include $file;
+        exit;
+    }
+
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
         global $_W;
@@ -337,6 +354,11 @@ class Core extends WeModuleSite
                 }
             }
         }
+	
+	if($_W['templateType'] && $_W['templateType'] == 'web'){
+	
+	}
+
         $name = strtolower($this->modulename);
         if (defined('IN_SYS')) {
             $source  = IA_ROOT . "/web/themes/{$_W['template']}/{$name}/{$filename}.html";

@@ -401,7 +401,9 @@ if ($operation == "change") {
 		}else{
 			$data['status'] = $_GPC['status'];
 		}
-        
+        if (p('return')) {
+            $data['isreturn'] = intval($_GPC['isreturn']);   //添加全返开关    1:开    0:关
+        }
         $cateset = m('common')->getSysset('shop');
         $pcates  = array();
         $ccates  = array();

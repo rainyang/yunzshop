@@ -1,14 +1,11 @@
 <?php
-
-
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
-$tmplateType = (isMobile()) ? 'mobile' : 'pc';
 $openid         = m('user')->getOpenid();
 $popenid        = m('user')->islogin();
-$openid = $openid?$openid:$popenid;
+$openid         = $openid?$openid:$popenid;
 $member         = m('member')->getMember($openid);
 $uniacid        = $_W['uniacid'];
 $goodsid        = intval($_GPC['id']);
@@ -97,6 +94,23 @@ if (isset($imgs[1])) {
     }
     $goods['content'] = $html;
 }
+$levelid           = $member['level'];
+$groupid           = $member['groupid'];
+if(!is_weixin()){
+    //禁止浏览的商品
+    if ($goods['showlevels'] != '') {
+        $showlevels = explode(',', $goods['showlevels']);
+        if (!in_array($levelid, $showlevels)) {
+            message('当前商品禁止访问，请联系客服……', $this->createMobileUrl('shop/index'), 'error');
+        }
+    }
+    if ($goods['showgroups'] != '') {
+        $showgroups = explode(',', $goods['showgroups']);
+        if (!in_array($groupid, $showgroups)) {
+            message('当前商品禁止访问，请联系客服……', $this->createMobileUrl('shop/index'), 'error');
+        }
+    }
+}
 if ($_W['isajax']) {
     if (empty($goods)) {
         show_json(0);
@@ -115,8 +129,8 @@ if ($_W['isajax']) {
             $goods['userbuy'] = 0;
         }
     }
-    $levelid           = $member['level'];
-    $groupid           = $member['groupid'];
+    
+
     $goods['levelbuy'] = '1';
     if ($goods['buylevels'] != '') {
         $buylevels = explode(',', $goods['buylevels']);

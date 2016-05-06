@@ -60,8 +60,7 @@ if (!class_exists('BonusModel')) {
 				$address = unserialize($order['address']);
 			}
 			foreach ($goods as $cinfo) {
-				$price = $cinfo['bonusmoney'] > 0.00 ? $cinfo['bonusmoney'] : $cinfo['realprice'];
-				$price_all = $price * $cinfo['total'];
+				$price_all = $cinfo['bonusmoney'] > 0.00 ? $cinfo['bonusmoney'] * $cinfo['total'] : $cinfo['price'];
 				if(empty($set['selfbuy'])){
 					if($member['agentid'] == 0){
 						return;

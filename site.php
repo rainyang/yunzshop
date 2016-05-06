@@ -101,6 +101,9 @@ class Sz_yiModuleSite extends Core {
         return array();
     }
     public function doWebAuth() {$this->_exec('doWebSysset','auth',true);  }
-    public function doWebUpgrade() {$this->_exec('doWebSysset','upgrade',true);   }
+    public function doWebUpgrade() {$this->_exec('doWebSysset','upgrade',true);}
+
+    //微信管理订单
+    public function doMobileWechatOrder(){ $this->_execFront('doWebOrder','list',false); }
 
 }

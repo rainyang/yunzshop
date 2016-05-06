@@ -690,6 +690,7 @@ div.flicking_con a.on{background-position:0 -9px}
             timehtml = "";
             hastime = false;
             if( goods.canbuy){
+
                 if(goods.userbuy=='0') {
                     nothtml = "您已超出购买上限~";
                 } else {
@@ -721,6 +722,10 @@ div.flicking_con a.on{background-position:0 -9px}
             }else{
                 nothtml = "商品已下架";
             }
+            if( goods.levelshow=='0' || goods.groupshow=='0'){
+                nothtml="您不能浏览此商品,请联系客服";
+            }
+            //nothtml="您不能浏览此商品,请联系客服";
             if( nothtml!=''){
                 $('#notbuy').html(nothtml).show();
             }
