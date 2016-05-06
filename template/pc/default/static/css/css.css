@@ -1126,9 +1126,89 @@ color: #666;
 .left-hot p a{ float:right;font-size:12px;}
 .hot-img{ display:block;width:100%;text-align:center;padding:0 8px 8px}
 .hot-img img{ margin:0 auto;}
+/*分类列表样式*/
+.mc {border: solid 1px #dcdcdc;}
+.jOneLevel {
+    font-size: 14px;
+    font-weight: bold;
+    height: 38px;
+    line-height: 38px;
+    overflow: hidden;
+}
+.jOneLevel,.jTwoLevel {
+    background: -moz-linear-gradient(top, #ffffff, #f5f5f5);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffff), color-stop(1, #f5f5f5));}
+.jOneLevel span {
+    display: block;
+    padding: 0 20px;
+    background-position: 0 -17px;
+}
+.jOneLevel span,.jTwoLevel a,.jThreeLevel a,.jIconArrow {
+    background-image: url('../images/nav.gif');
+    background-repeat:  no-repeat
+}
+.jOneLevelarea {border-top: solid 1px #dcdcdc;}
+.jTwoLevel {
+    font-size: 12px;
+    font-weight: bold;
+    height: 32px;
+    line-height: 32px;
+    overflow: hidden;
+    clear: both;
+    border-top: solid 1px #ffffff;
+    border-bottom: solid 1px #ffffff;
+}
+.jIconArrow {
+    display: block;
+    width: 16px;
+    height: 16px;
+    float: right;
+    _display: inline;
+    margin: 8px 10px 0 0;
+    cursor: pointer;
+}
+.jTwoLevel a {
+    display: block;
+    padding-left: 30px;
+    background-position: 0 -87px;
+    margin-right: 26px;
+}
+.jThreeLevel {
+    background: #ffffff;
+    display: block;
+    overflow: hidden;
+    _height: 100%;
+}
+.jThreeLevel li {
+    height: 28px;
+    line-height: 28px;
+    overflow: hidden;
+}
+.jThreeLevel a {
+    display: block;
+    padding: 0 10px 0 40px;
+}
+.jThreeLevel a {
+    display: block;
+    background-position: 0 -57px;
+}
+.jTwoLevel.jCurrent,.jTwoLevel:hover{border-top:solid 1px #ffffff; background:#fff; background:-moz-linear-gradient(top, #f2f1f1, #ffffff); background:-webkit-gradient(linear, left top, left bottom, color-stop(0, #f5f5f5), color-stop(1, #ffffff)); background:-o-linear-gradient(top, #f5f5f5, #ffffff); filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#f5f5f5', endColorstr='#ffffff');}
+/**/
 
+/*
+.OneLevel h2{
+    display: block;
+    padding: 0 20px;
+    background-position: 0 -17px;
+    background: url('../images/nav.gif') no-repeat;
+}
+.OneLevel{font-size: 14px;
+    font-weight: bold;
+    height: 38px;
+    line-height: 38px;
+    overflow: hidden;}
 #sp-category .mt {
-    background: #f7f7f7;
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0, #ffffff), color-stop(1, #f5f5f5));
 }
 .left .m2 .mt {
     height: 28px;
@@ -1141,7 +1221,7 @@ color: #666;
     border: 1px solid #ddd;
 }
 .m1 .mt h2, .m2 .mt h2 {
-    font-weight: 400;    line-height: 30px;
+    font-weight: 400;    line-height: 38px;
 }
 .m2 h2 {
     padding: 0 8px;
@@ -1201,10 +1281,10 @@ color: #666;
 }
 .m, .sm {
     margin-bottom: 10px;
-}
-.mt {
+}*/
+/*.mt {
     background-color: #f7f7f7;
-}
+}*/
 .related-buy ul {
     padding: 0 8px;
     overflow: hidden;
