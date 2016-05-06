@@ -18,7 +18,11 @@ class ChooseWeb extends Plugin
         $this->_exec_plugin(__FUNCTION__);
 
     }
+    public function upgrade()
+    {
+        $this->_exec_plugin(__FUNCTION__);
 
+    }
     // public function api()
     // {
     //     $this->_exec_plugin(__FUNCTION__);

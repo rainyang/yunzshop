@@ -495,6 +495,23 @@
 </div>
 </div>
 
+<!-- 全返开关 begin -->
+<!-- From:LuckStar.D    Date:2016/04/27   Content:加入全返开关,  ims_sz_yi_goods 加入isreturn字段-->
+{if p('return')}
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否全返</label>
+    <div class="col-sm-6 col-xs-6">
+        {ife 'shop.goods' $item}
+        <label class="radio-inline"><input type="radio" name="isreturn" value="1" {if $item['isreturn'] == 1}checked="true"{/if}  /> 是</label>
+        <label class="radio-inline"><input type="radio" name="isreturn" value="0" {if $item['isreturn'] == 0}checked="true"{/if}  /> 否</label>
+           {else}
+           <div class='form-control-static'>{if $item['isreturn']}是{else}否{/if}</div>
+         {/if}
+    </div>
+</div>
+{/if}
+<!-- 全返开关 end -->
+
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否支持货到付款</label>
     <div class="col-sm-6 col-xs-6">
