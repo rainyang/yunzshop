@@ -8,7 +8,7 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'index';
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $designer  = p('designer');
-if(empty($this->yzShopSet['ispc']) OR is_weixin()){
+if(empty($this->yzShopSet['ispc']) || isMobile()){
 	if ($designer) {
 		$pagedata = $designer->getPage();
 		if ($pagedata) {
