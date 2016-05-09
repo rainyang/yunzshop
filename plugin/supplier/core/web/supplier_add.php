@@ -75,6 +75,7 @@ if($operation == 'post'){
         message('抱歉，操作员不存在或是已经被删除！', $this->createPluginWebUrl('supplier/supplier'), 'error');
     }
     pdo_delete('sz_yi_perm_user', array('id' => $id, 'uniacid' => $_W['uniacid']));
+    pdo_delete('users', array('uid' => $item['uid']));
     plog('supplier.supplier.delete', "删除操作员 ID: {$id} 用户名: {$item['username']} ");
     message('操作员删除成功！', $this->createPluginWebUrl('supplier/supplier'), 'success');
 }
