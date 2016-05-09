@@ -176,15 +176,15 @@ div.flicking_con a.on{background-position:0 -9px}
 
             <!--<span>diyform</span>-->
 
-			
+            
                 {if !empty($formInfo)}
-				<div id="diyform_container" >
-		     {template 'diyform/formcss'}
-			 <style type='text/css'>
-				     .diyform_main { float:left;}
-			 </style>
+                <div id="diyform_container" >
+             {template 'diyform/formcss'}
+             <style type='text/css'>
+                     .diyform_main { float:left;}
+             </style>
                          {template 'diyform/formfields'}
-				</div>
+                </div>
                 {/if}
 
                 <div class='number'>
@@ -234,7 +234,7 @@ div.flicking_con a.on{background-position:0 -9px}
                 <%goods.marketprice%>
                 <%/if%>
             </d>&nbsp;<span id='productpricecontainer'><%if goods.productprice>0%>市场价￥<%/if%><span id='productprice'><%if goods.productprice>0%><%goods.productprice%><%/if%></span></span>
-			 
+             
             <span style='float:right'><d id="stockcontainer">库存:<d id="stock"><%goods.total%></d></d> 销量:<%goods.sales%><%goods.unit%></d></span>
         </div>
        
@@ -255,15 +255,15 @@ div.flicking_con a.on{background-position:0 -9px}
             <div class='left'>
                 <span><i class='fa fa-birthday-cake'></i> 单笔订单
             </div>
-		  <div class='right'>
-			  <div class='inner'> 
-		<%each saleset.enoughs as e i%><%if i<=1%>满 <span style='color:#ff6600'><%e.enough%></span> 元立减 <span style='color:#ff6600'><%e.money%></span> 元</span>;<br/><%/if%><%/each%>
-		<%if saleset.enoughs.length>2%><span id='morebtn' onclick='showMoreActivity()'><i class='fa fa-angle-down'></i> 查看更多优惠<br/></span><%/if%>
-		<div id='moreactivity' style='display:none'>
-		<%each saleset.enoughs as e i%><%if i>1%>满 <span style='color:#ff6600'><%e.enough%></span> 元立减 <span style='color:#ff6600'><%e.money%></span> 元</span>;<br/><%/if%><%/each%>
-		</div>
+          <div class='right'>
+              <div class='inner'> 
+        <%each saleset.enoughs as e i%><%if i<=1%>满 <span style='color:#ff6600'><%e.enough%></span> 元立减 <span style='color:#ff6600'><%e.money%></span> 元</span>;<br/><%/if%><%/each%>
+        <%if saleset.enoughs.length>2%><span id='morebtn' onclick='showMoreActivity()'><i class='fa fa-angle-down'></i> 查看更多优惠<br/></span><%/if%>
+        <div id='moreactivity' style='display:none'>
+        <%each saleset.enoughs as e i%><%if i>1%>满 <span style='color:#ff6600'><%e.enough%></span> 元立减 <span style='color:#ff6600'><%e.money%></span> 元</span>;<br/><%/if%><%/each%>
+        </div>
 </div>
-		  </div>
+          </div>
        </div>
         <%/if%> 
         
@@ -471,8 +471,8 @@ div.flicking_con a.on{background-position:0 -9px}
 
 <script language="javascript">
   function showMoreActivity(){
-	 $('#morebtn').hide();
-	 $("#moreactivity").fadeIn();
+     $('#morebtn').hide();
+     $("#moreactivity").fadeIn();
  }
  
     var hasoption = false;
@@ -719,57 +719,57 @@ div.flicking_con a.on{background-position:0 -9px}
    
            $('#total').blur(function(){
               var total = $("#total");
-	if(!total.isInt()){
-	     total.val("1");
+    if(!total.isInt()){
+         total.val("1");
                        return;
-	}
+    }
                   if(parseInt(total.val())<=0){
-	     total.val("1");
+         total.val("1");
                        return;
-	} 
-	var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
-	var num = parseInt(total.val() );
+    } 
+    var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+    var num = parseInt(total.val() );
                   if(num>maxbuy && maxbuy>0){
-		tip.show("您最多可购买 " + maxbuy + " 件!");
-		num = maxbuy;
-	}
-	else if(num>stock && stock!=-1){
-		tip.show("您最多可购买 " + stock + " 件");
-		num = stock;
-	}
-	
-	total.val(num);
+        tip.show("您最多可购买 " + maxbuy + " 件!");
+        num = maxbuy;
+    }
+    else if(num>stock && stock!=-1){
+        tip.show("您最多可购买 " + stock + " 件");
+        num = stock;
+    }
+    
+    total.val(num);
         
                
            });
  
                
                     new Swipe($('.main_image')[0], {
-			speed:300,
-			auto:4000,
-			callback: function(){
-			  
+            speed:300,
+            auto:4000,
+            callback: function(){
+              
                                  $(".flicking_con  .inner  a").removeClass("on").eq(this.index).addClass("on");
-		}
-	  });
+        }
+      });
             {if !empty($formInfo)}
             {template 'diyform/common_js'}
             {/if}
 
             $(".option").click(function() {
                
-			 var specid = $(this).attr("specid");
-			 var oid = $(this).attr("oid");
-			$(".optionid_"+specid).val(oid);
-			$(".options_" + specid + "  .option").removeClass("on").attr("sel", "false");
-			$(this).addClass("on").attr("sel", "true");
-	 
+             var specid = $(this).attr("specid");
+             var oid = $(this).attr("oid");
+            $(".optionid_"+specid).val(oid);
+            $(".options_" + specid + "  .option").removeClass("on").attr("sel", "false");
+            $(this).addClass("on").attr("sel", "true");
+     
              var titles='已选: ';
-			     $('.spec_items').each(function(){
+                 $('.spec_items').each(function(){
                                  if($(this).find('.on').length>0){
-			        titles+= $(this).find('.on').attr('title')+";";   
+                    titles+= $(this).find('.on').attr('title')+";";   
                             }
-			     });
+                 });
                              
                              $('.good_choose .info .right .option').html(titles);
          var thumb = $(this).attr('thumb');
@@ -781,17 +781,17 @@ div.flicking_con a.on{background-position:0 -9px}
              $("#chooser_img").attr('src',json.result.goods.thumb);
          }
          setoptions();
-			var optionid = "";
-			var stock =0;
-			var marketprice = 0;
-			var productprice = 0;
-			 var ret = option_selected();
+            var optionid = "";
+            var stock =0;
+            var marketprice = 0;
+            var productprice = 0;
+             var ret = option_selected();
   
-			if(ret.no==''){
-				var len = options.length;
-				for(var i=0;i<len;i++) {
-					var o = options[i];
-					var ids = ret.all.join("_");
+            if(ret.no==''){
+                var len = options.length;
+                for(var i=0;i<len;i++) {
+                    var o = options[i];
+                    var ids = ret.all.join("_");
                                 
                                 var specarr = o.specs.split('_').sort();
                                 var idsarr = ret.all.sort();
@@ -799,47 +799,47 @@ div.flicking_con a.on{background-position:0 -9px}
                                 
                                 
                              
-					if(specarr.join('_') ==idsarr.join('_') ){
-						optionid = o.id;
-						stock = o.stock;
-						marketprice = o.marketprice;
-						productprice = o.productprice;
-						break;
-					}
-					
-				}
+                    if(specarr.join('_') ==idsarr.join('_') ){
+                        optionid = o.id;
+                        stock = o.stock;
+                        marketprice = o.marketprice;
+                        productprice = o.productprice;
+                        break;
+                    }
+                    
+                }
                                 
-			   $("#optionid").val(optionid); 
-			    
-				if(stock!="-1"){
-					$("#stockcontainer").html("库存:<span id='stock'>" + stock + "</span>");
-				}
-				else{
-				  $("#stockcontainer").html("<span id='stock'></span>");
-				}
-				if(ret.no==''){
-					if(stock==0){
-					   $('.sub').addClass('disabled').html('库存不足,无法购买');
-					}
-					else{
-					 $('.sub').removeClass('disabled').html('确认');
-					}
-				} 
-				$("#marketprice").html(marketprice);
-				
-		     	$("#option_price").html(marketprice);	
-		     	$("#option_stock").html(stock);	
-				 
-				$("#productprice").html(productprice);
-				if(productprice<=0){
-				$('#productpricecontainer').html("");
-				}
-				else{
-			
-				   $('#productpricecontainer').html("市场价￥<span id='productprice'>" + productprice + "</span>");
-				}
-			}
-		});
+               $("#optionid").val(optionid); 
+                
+                if(stock!="-1"){
+                    $("#stockcontainer").html("库存:<span id='stock'>" + stock + "</span>");
+                }
+                else{
+                  $("#stockcontainer").html("<span id='stock'></span>");
+                }
+                if(ret.no==''){
+                    if(stock==0){
+                       $('.sub').addClass('disabled').html('库存不足,无法购买');
+                    }
+                    else{
+                     $('.sub').removeClass('disabled').html('确认');
+                    }
+                } 
+                $("#marketprice").html(marketprice);
+                
+                $("#option_price").html(marketprice);   
+                $("#option_stock").html(stock); 
+                 
+                $("#productprice").html(productprice);
+                if(productprice<=0){
+                $('#productpricecontainer').html("");
+                }
+                else{
+            
+                   $('#productpricecontainer').html("市场价￥<span id='productprice'>" + productprice + "</span>");
+                }
+            }
+        });
                 
            
     $('.cs').click(function(){
@@ -950,18 +950,18 @@ div.flicking_con a.on{background-position:0 -9px}
     })
 </script>
 <script type="text/javascript">
-	function tab(n){
-		$('#con_'+n).fadeIn();
-		$('#con_'+n).siblings().hide();
-		$('#nav_'+n).addClass('navon');
-		$('#nav_'+n).siblings().removeClass('navon');
+    function tab(n){
+        $('#con_'+n).fadeIn();
+        $('#con_'+n).siblings().hide();
+        $('#nav_'+n).addClass('navon');
+        $('#nav_'+n).siblings().removeClass('navon');
                       
-	}
+    }
         function closechoose(){
                  $('.good_choose_layer').fadeOut(100);
-		$('.good_choose').fadeOut(100); 
+        $('.good_choose').fadeOut(100); 
         }
-	function choose(act){
+    function choose(act){
                           if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
                                 require(['core'],function(core){
                                     core.tip.confirm($('#followtip').val(),function(){
@@ -971,7 +971,7 @@ div.flicking_con a.on{background-position:0 -9px}
                                 });
                              return;
                           }
-	               action = act;
+                   action = act;
                          if(!action){
                                      
                                 $('.good_choose_layer').fadeIn(200);
@@ -984,39 +984,39 @@ div.flicking_con a.on{background-position:0 -9px}
                          }
                          var specselected  = '';
   if( action=='cart'){
-			 $('.good_choose_layer').fadeIn(200);
-							 $('.good_choose_layer').unbind('click').click(function(){
-								   closechoose();
-							 })
-			   $('.good_choose').fadeIn(200);
-			   return;	 
-	         }else{
-			{if !empty($formInfo)}
-				 $('.good_choose_layer').fadeIn(200);
-							 $('.good_choose_layer').unbind('click').click(function(){
-								   closechoose();
-							 })
-			   $('.good_choose').fadeIn(200);
-			   return;
-			{/if}
-			 
-				$('.spec_items').each(function(){
-							 var self = $(this);
-				                            if( $(this).find('.on').length<=0){
-								 specselected = self.attr('title');
-								 return false;
-							  }
-				});  
-		     if(specselected!='') {
-			   $('.good_choose_layer').fadeIn(200);
-							 $('.good_choose_layer').unbind('click').click(function(){
-								   closechoose();
-							 })
-			   $('.good_choose').fadeIn(200);
-			   return;
-		     }
-			
-		 }
+             $('.good_choose_layer').fadeIn(200);
+                             $('.good_choose_layer').unbind('click').click(function(){
+                                   closechoose();
+                             })
+               $('.good_choose').fadeIn(200);
+               return;   
+             }else{
+            {if !empty($formInfo)}
+                 $('.good_choose_layer').fadeIn(200);
+                             $('.good_choose_layer').unbind('click').click(function(){
+                                   closechoose();
+                             })
+               $('.good_choose').fadeIn(200);
+               return;
+            {/if}
+             
+                $('.spec_items').each(function(){
+                             var self = $(this);
+                                            if( $(this).find('.on').length<=0){
+                                 specselected = self.attr('title');
+                                 return false;
+                              }
+                });  
+             if(specselected!='') {
+               $('.good_choose_layer').fadeIn(200);
+                             $('.good_choose_layer').unbind('click').click(function(){
+                                   closechoose();
+                             })
+               $('.good_choose').fadeIn(200);
+               return;
+             }
+            
+         }
  
 
                       var diymode = {php echo intval($diymode)};
@@ -1030,7 +1030,7 @@ div.flicking_con a.on{background-position:0 -9px}
                              $('.good_choose_layer').unbind('click').click(function(){
                                  closechoose();
                              })
-	                    $('.good_choose').fadeIn(200);
+                        $('.good_choose').fadeIn(200);
                       } else{
                           if(action=='cart'){
                                                 require(['core'],function(core){
@@ -1056,45 +1056,45 @@ div.flicking_con a.on{background-position:0 -9px}
                                     }
 
                       }
-	}
+    }
         function setoptions(){
              var titles = '';
-   		         if(hasoption){
-			     
-			 titles+='已选: ';
-			     $('.spec_items').each(function(){
- 			        titles+= $(this).find('.on').attr('title')+";";   
-			     });
-		         }
+                 if(hasoption){
+                 
+             titles+='已选: ';
+                 $('.spec_items').each(function(){
+                    titles+= $(this).find('.on').attr('title')+";";   
+                 });
+                 }
                                              titles+='数量:' + $('#total').val();
-		         $("#optiondiv").html(titles);
+                 $("#optiondiv").html(titles);
         }
-	function choose2(direct,close){
-		 require(['core'],function(core){
-			 
+    function choose2(direct,close){
+         require(['core'],function(core){
+             
             if(close){
                 closechoose();
                 return;
             }
-	    if(!direct){
-		    if($('.sub').hasClass('disabled')){
-		       return;
-		    }
-		    else{
-		        setoptions();
-		    }
+        if(!direct){
+            if($('.sub').hasClass('disabled')){
+               return;
+            }
+            else{
+                setoptions();
+            }
                                       
-		  
-	    } else {
+          
+        } else {
                             action = "";
                       }
-		
+        
                 var specselected  = '';
                 
-	    $('.spec_items').each(function(){
+        $('.spec_items').each(function(){
                 
                    var self = $(this);
- 		 if( $(this).find('.on').length<=0){
+         if( $(this).find('.on').length<=0){
                                           specselected = self.attr('title');
                                           return false;
                       }
@@ -1108,20 +1108,20 @@ div.flicking_con a.on{background-position:0 -9px}
                                
                            
                               
-		if(action=='cart'){
-			     var data = {};
-				 
-			     {if !empty($formInfo)}
-				 
-					{template 'diyform/common_js_data'}
+        if(action=='cart'){
+                 var data = {};
+                 
+                 {if !empty($formInfo)}
+                 
+                    {template 'diyform/common_js_data'}
 
-				         data = {
-						'diyformid': "{$goods['diyformid']}",
-						'diydata':diydata
-					};
-				{/if}
+                         data = {
+                        'diyformid': "{$goods['diyformid']}",
+                        'diydata':diydata
+                    };
+                {/if}
         //openid
-                                {if !empty($popenid)}
+                                {if !empty($popenid) or !empty($openid)}
                                                                            core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
                                                                                                         if(ret.status==1){ 
                                                                                                            core.tip.show(ret.result.message);
@@ -1146,7 +1146,7 @@ div.flicking_con a.on{background-position:0 -9px}
                                     }else if(action=='buy'){
  
                {if !empty($formInfo)}
-				  
+                  
                 {template 'diyform/common_js_data'}
 
                 var data ={
@@ -1173,56 +1173,56 @@ div.flicking_con a.on{background-position:0 -9px}
                 {/if}
 
                     } else {
-							 closechoose();
-		}
+                             closechoose();
+        }
   });
-	}
+    }
   function addNum(){
-	var total = $("#total");
-	if(!total.isInt()){
-		total.val("1");
-	}
-	var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
-	var num = parseInt(total.val() ) + 1;
+    var total = $("#total");
+    if(!total.isInt()){
+        total.val("1");
+    }
+    var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+    var num = parseInt(total.val() ) + 1;
                   if(num>maxbuy && maxbuy>0){
-		tip.show("您最多可购买 " + maxbuy + " 件!");
-		num = maxbuy;
-	}
-	else if(num>stock && stock!=-1){
-		tip.show("您最多可购买 " + stock + " 件");
-		num = stock;
-	}
-	total.val(num);
+        tip.show("您最多可购买 " + maxbuy + " 件!");
+        num = maxbuy;
+    }
+    else if(num>stock && stock!=-1){
+        tip.show("您最多可购买 " + stock + " 件");
+        num = stock;
+    }
+    total.val(num);
 }
 function reduceNum(){
-	var total = $("#total");
-	if(!total.isInt()){
-		total.val("1");
-	}
-	var num = parseInt( total.val() );
-	if(num-1<=0){
-		return;
-	}
-	num--;
-	total.val(num);
+    var total = $("#total");
+    if(!total.isInt()){
+        total.val("1");
+    }
+    var num = parseInt( total.val() );
+    if(num-1<=0){
+        return;
+    }
+    num--;
+    total.val(num);
 }
 
-	function option_selected(){
-	var ret= {
-		no: "",
-		all: []
-	};
-	if(!hasoption){
-		return ret;
-	}
-			$(".optionid").each(function(){
-				ret.all.push($(this).val());
-				if($(this).val()==''){
-					ret.no = $(this).attr("title");
-					return false;
-				}
-	})
-	return ret;
+    function option_selected(){
+    var ret= {
+        no: "",
+        all: []
+    };
+    if(!hasoption){
+        return ret;
+    }
+            $(".optionid").each(function(){
+                ret.all.push($(this).val());
+                if($(this).val()==''){
+                    ret.no = $(this).attr("title");
+                    return false;
+                }
+    })
+    return ret;
 }
 </script>
 {php $show_copyright=true;$hide_footer=1}

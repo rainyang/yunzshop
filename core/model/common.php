@@ -201,7 +201,7 @@ class Sz_DYi_Common
             $package['total_fee']        = $params['fee'] * 100;
             $package['spbill_create_ip'] = CLIENT_IP;
             $package['notify_url']       = $_W['siteroot'] . "addons/sz_yi/payment/wechat/notify.php";
-            $package['trade_type']       = 'JSAPI';
+            $package['trade_type']       = ($params['trade_type'] == 'NATIVE') ? 'NATIVE' : 'JSAPI';
             $package['openid']           = $_W['fans']['from_user'];
             ksort($package, SORT_STRING);
             $string1 = '';
@@ -231,6 +231,11 @@ class Sz_DYi_Common
             $wOpt['nonceStr']  = random(8) . "";
             $wOpt['package']   = 'prepay_id=' . $prepayid;
             $wOpt['signType']  = 'MD5';
+
+            if($params['trade_type'] == 'NATIVE'){
+                $code_url = (array)$xml->code_url;
+                $wOpt['code_url']  = $code_url[0];
+            }
             ksort($wOpt, SORT_STRING);
             foreach ($wOpt as $key => $v) {
                 $string .= "{$key}={$v}&";

@@ -1,0 +1,69 @@
+{template 'web/_header'}
+{template 'tabs'}
+<form id="setform"  action="" method="post" class="form-horizontal form">
+    <div class='panel panel-default'>
+           <div class='panel-heading'>
+            全返设置
+        </div
+        <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启订单全返系统</label>
+                <div class="col-sm-9 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="setdata[isreturn]" value="0" {if $set['isreturn'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[isreturn]" value="1" {if $set['isreturn'] ==1} checked="checked"{/if} /> 开启</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">全返比例</label>
+
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <!-- <div class="input-group-addon">提现到微信</div> -->
+                    <input type="text" name="setdata[percentage]" class="form-control" value="{$set['percentage']}"  />
+                    <div class="input-group-addon">%</div>
+                </div>
+                <span class='help-block'>设定每天营业额的百分比为当天所有应返订单的总额</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">用户累计订单金额</label>
+
+            <div class="col-sm-4">
+                <div class="input-group">
+                    <!-- <div class="input-group-addon">提现到微信</div> -->
+                    <input type="text" name="setdata[orderprice]" class="form-control" value="{$set['orderprice']}"  />
+                    <div class="input-group-addon">元</div>
+                </div>
+                <span class='help-block'>用户完成的订单总额累计达到此金额后加入全返列表</span>
+            </div>
+        </div>
+
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现时间</label>
+
+    <div class="col-sm-4 col-xs-6">
+        <select id="returntime" class="form-control tpl-category-parent" name="setdata[returntime]">
+        <?php for ($i=1; $i <= 24; $i++) { if($set['returntime']==$i){?>
+            <option value="<?php echo $i;?>" selected>每天<?php echo $i;?>点执行返利</option>
+        <?php }else{?>
+            <option value="<?php echo $i;?>" >每天<?php echo $i;?>执行返利</option>
+        <?php } }?>
+  
+        </select>
+         <span class='help-block'>返利会有延迟 最多延迟10分钟</span>
+    </div>
+</div>
+
+            <div class="form-group"></div>
+               <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+            <div class="col-sm-9">
+                <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" onclick='return formcheck()' />
+                <input type="hidden" name="token" value="{$_W['token']}" />
+            </div>
+        </div>
+        
+    </div>
+</form>
+{template 'web/_footer'}

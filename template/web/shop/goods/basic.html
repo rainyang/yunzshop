@@ -15,7 +15,7 @@
   <div class="form-group">
       <label class="col-xs-12 col-sm-3 col-md-2 control-label">供货商</label>
       <div class="col-sm-9 col-xs-12">
-        <select name='supplier_uid' class='form-control'>
+        <select name='supplier_uid' class='form-control' id="supplier_uid">
           <option value="">
               请选择供货商
           </option>
@@ -27,7 +27,24 @@
       </div>
   </div>
   {/if}
+  <script type="text/javascript">
+  $(document).ready(function(){
+    $('#supplier_uid').change(function(){
+      if ($('#supplier_uid').val() != ''){
+        $('#dispatchprice').attr('readonly','readonly');
+        $('#dispatchtype1').attr('checked',true);
+        $('#dispatchtype2').attr('checked',false);
+        $('#type_dispatch_isshow').hide();
+        //alert($('input[name="dispatchtype"]').val());
+      }else{
+        $('#type_dispatch_isshow').show();
+        $('#dispatchprice').removeAttr('readonly');
+      }
+    });
+  });
+</script>
 {/if}
+
 <!-- 供货商end -->
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>商品名称</label>
@@ -470,15 +487,17 @@
 <label class="col-xs-12 col-sm-3 col-md-2 control-label">运费设置</label>
 <div class="col-sm-6 col-xs-6">
     {ife 'shop.goods' $item}
-    <label class="radio-inline" style="float: left;"><input type="radio" name="dispatchtype" value="1" {if $item['dispatchtype'] == 1}checked="true"{/if}  /> 统一邮费</label>
+    <label class="radio-inline" style="float: left;"><input type="radio" name="dispatchtype" value="1" {if $item['dispatchtype'] == 1}checked="true"{/if} {if p('supplier')}{if $perm_role == 1}checked="true"{/if}{/if} id="dispatchtype1" /> 统一邮费</label>
 
     <div class="input-group form-group" style="width: 180px; float: left; margin: 0px 20px 0px 10px;">
 
-        <input type="text" name="dispatchprice" id="dispatchprice" class="form-control" value="{$item['dispatchprice']}" />
+        <input type="text" name="dispatchprice" id="dispatchprice" class="form-control" value="{$item['dispatchprice']}" {if p('supplier')}{if $perm_role == 1}readonly='readonly'{/if}{/if}/>
         <span class="input-group-addon">元</span>
     </div>
-
-    <label class="radio-inline" style="float: left;"><input type="radio" name="dispatchtype" value="0" {if empty($item['dispatchtype'])}checked="true"{/if}   /> 运费模板</label>
+    {if p('supplier')}
+    {if $perm_role == 0}
+    <div id="type_dispatch_isshow">
+    <label class="radio-inline" style="float: left;"><input type="radio" name="dispatchtype" value="0" {if empty($item['dispatchtype'])}checked="true"{/if}   id="dispatchtype2"/> 运费模板</label>
 
     <div style="width: auto; float: left; margin-left: 10px;"  id="type_dispatch">
         <select class="form-control tpl-category-parent" id="dispatchid" name="dispatchid">
@@ -488,7 +507,9 @@
             {/loop}
         </select>
     </div>
-
+    </div>
+    {/if}
+    {/if}
     {else}
     <div class='form-control-static'>{if empty($item['dispatchtype'])}运费模板 {if $item['dispatchid'] == 0}默认模板{else}{loop $dispatch_data $dispatch_item}{if $item['dispatchid'] == $dispatch_item['id']}{$dispatch_item['dispatchname']}{/if}{/loop}{/if}{else}统一邮费{/if}</div>
     {/if}
@@ -506,6 +527,7 @@
          {/if}
     </div>
 </div>
+{if p('supplier')}
 {if $perm_role == 0}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否上架</label>
@@ -522,5 +544,5 @@
 
     </div>
 </div>
-{else}
+{/if}
 {/if}

@@ -1,0 +1,134 @@
+{template 'common/header'}
+{template 'common/navigation'}
+<div class="blank"></div>
+
+<div class="fl wfs bcf7">
+        <div class="regist-process-wrapper">
+            <div class="regist-process-body fl wfs">
+                
+                <form id="loginForm" name="formLogin"  method="post" onSubmit="return userLogin()">
+                    <div class="regist-process-login-left fl">
+                        <h2 class="title">登录</h2>
+                          <input class="form-control text" name="username" id="username" type="text" placeholder="用户名/邮箱地址">
+                          <input class="form-control text" name="password" id="password" type="password" placeholder="密码">
+                                                    <input  class="btn btn-danger login-btn" type="button" name="submit" value="登录" />
+                        <div class="operates fl wfs">
+                          <a class="fr" href="{php echo $this->createMobileUrl('member/forget')}">忘记密码</a>
+                          <p>
+                              <input type="hidden" name="act" value="act_login" />
+                              <input type="hidden" name="back_act" value="" />
+                              <!-- <input type="checkbox" value="1" name="remember" id="remember" />
+                              下次自动登录<span>使用公用电脑勿选</span> -->
+                          </p>
+                        </div>
+                        <div class="other-login fl">
+                           <!-- <a class="qq" href="user.php?act=qq" target="_blank">qq</a>
+                           <a class="sina" href="user.php?act=sina" target="_blank">新浪微博</a>
+                           <a class="alipay" href="user.php?act=alipay" target="_blank">支付宝</a>
+                           <a class="weixin" href="user.php?act=wechat" target="_blank">微信</a> -->
+                       </div>
+                    </div>
+                </form>
+                
+                <div class="regist-process-login-right fr">
+                    <h2 class="title">没有账号？立即注册</h2>
+                    <a class="btn btn-info free-registe" href="{php echo $this->createMobileUrl('member/register')}">免费注册</a>
+		    <div style="margin-top:25px">
+		    {if $this->yzShopSet['reglogo']}
+			<img src="{php echo $_W['siteroot'] . "attachment/" . $this->yzShopSet['reglogo']}" style="width:335px;height:230px;" title="{php echo $this->yzShopSet['pctitle']}">
+		    {else}
+			<img src="../addons/sz_yi/template/pc/default/static/images/logo.png" title="" alt="我是默认logo">
+		    {/if}
+		    </div>
+                </div>
+                
+            </div>
+        </div>
+
+
+        
+    </div>
+
+<div class="blank"></div>
+    <div class="regist-process-foot fl wfs">
+        <p class="copyright">{php echo htmlspecialchars_decode($this->yzShopSet['pccopyright'])}</p>
+    </div>
+
+    <script>
+require(['tpl', 'core'], function(tpl, core) {
+        //$('#container').html(tpl('member_info'));
+            $('.login-btn').click(function() {
+                  if(!$('#username').isMobile()){
+                       core.tip.show('请输入正确手机号码!');
+                       return;
+                  }
+                  if( $('#password').isEmpty()){
+                       core.tip.show('请输入密码!');
+                       return;
+                  }
+                  
+                    core.json('member/login', {
+                       'memberdata':{
+                            'mobile': $('#username').val(),
+                            'password': $('#password').val()
+                           } 
+                       }, function(json) {
+                        if(json.status==1){
+                             core.tip.show('登录成功');
+                             //console.log(json.result.preurl);
+                             //location.href=json.result.preurl;
+                             location.href='{php echo $this->createMobileUrl('order')}';
+                        }
+                        else{
+                            core.tip.show('用户不存在或密码错误!');
+                        }
+
+                    },true,true);
+                });
+
+
+    })
+
+
+/*
+        $(".login-btn").click(function(){
+            var username = $("#username").val();
+            var password = $("#password").val();
+            var msg = "";
+            if(username == ""){
+                alert("账号不能为空");
+            }
+            if(password == ""){
+               alert("密码不能为空");
+            }
+            if(msg){ 
+              alert(msg);
+              return false;
+            }else{
+              //alert(123);
+              $.post('{php echo $this->createMobileUrl("member/login")}',
+              {
+                'memberdata':{
+                  'mobile': $('#username').val(),
+                  'password': $('#password').val()
+                 } 
+              },
+              function(json){
+                if (json.status==1) {
+                  //console.log('ids:'+ids);
+                  alert("登陆成功");
+                  //location.href = "{php echo $this->createMobileUrl('member/center')}";  
+                }else {
+                  alert("用户不存在或密码错误!");
+                }
+              },'json');
+            }
+            
+        });
+*/
+    </script>
+
+</div>
+
+</body>
+</html>

@@ -55,9 +55,6 @@ if ($op == 'display') {
         'files' => $files
     ));
     $ret     = @json_decode($resp['content'], true);
-    if(!$ret['isbonus']){
-        @rmdirs(IA_ROOT . "/addons/sz_yi/plugin/bonus");
-    }
     if (is_array($ret)) {
         if ($ret['result'] == 1) {
             $files = array();
@@ -91,6 +88,7 @@ if ($op == 'display') {
             die(json_encode(array(
                 'result' => 1,
                 'version' => $ret['version'],
+                'files' => $ret['files'],
                 'filecount' => count($files),
                 'upgrade' => !empty($ret['upgrade']),
                 'log' => str_replace("\r\n", "<br/>", base64_decode($ret['log']))
@@ -107,13 +105,38 @@ if ($op == 'display') {
     $upgrade = json_decode($f, true);
     $files   = $upgrade['files'];
     $path    = "";
+
+    //找到一个没更新过的文件去更新
     foreach ($files as $f) {
         if (empty($f['download'])) {
             $path = $f['path'];
             break;
         }
     }
+
     if (!empty($path)) {
+        if(!empty($_GPC['nofiles'])){
+            if(in_array($path, $_GPC['nofiles'])){
+                foreach ($files as &$f) {
+                    if ($f['path'] == $path) {
+                        $f['download'] = 1;
+                        break;
+                    }
+                }
+                unset($f);
+                $upgrade['files'] = $files;
+                $tmpdir           = IA_ROOT . "/addons/sz_yi/tmp/" . date('ymd');
+                if (!is_dir($tmpdir)) {
+                    mkdirs($tmpdir);
+                }
+                file_put_contents($tmpdir . "/file.txt", json_encode($upgrade));
+
+                die(json_encode(array(
+                    'result' => 3
+                )));
+            }
+        }
+
         $resp = ihttp_post(CLOUD_UPGRADE_URL, array(
             'type' => 'download',
             'signature' => 'sz_cloud_register',

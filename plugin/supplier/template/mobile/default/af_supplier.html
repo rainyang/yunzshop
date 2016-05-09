@@ -30,6 +30,8 @@
 	</div>
 	<?php if(empty($af_supplier)){?>
     <div class="info_main">
+        <div class="line"><div class="title">用户名</div><div class='info'><div class='inner'><input type="text" id='username' placeholder="请输入用户名"  value="" /></div></div></div>
+        <div class="line"><div class="title">密码</div><div class='info'><div class='inner'><input type="text" id='password' placeholder="请输入密码"  value="" /></div></div></div>
         <div class="line"><div class="title">姓名</div><div class='info'><div class='inner'><input type="text" id='realname' placeholder="请输入您的姓名"  value="" /></div></div></div>
         <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><input type="text" id='mobile' placeholder="请输入您的手机号码"  value="" /></div></div></div>
         <div class="line"><div class="title">微信号</div><div class='info'><div class='inner'><input type="text" id='weixin' placeholder="请输入微信号" value=""/></div></div></div>
@@ -59,7 +61,14 @@
                     {
                         return;
                     }
-                   
+                       if( $('#username').isEmpty()){
+                           core.tip.show('请输入用户名!');
+                           return;
+                       }
+                       if( $('#password').isEmpty()){
+                           core.tip.show('请输入密码!');
+                           return;
+                       }
                        if( $('#realname').isEmpty()){
                            core.tip.show('请输入姓名!');
                            return;
@@ -72,7 +81,7 @@
                            core.tip.show('请输入微信号!');
                            return;
                        }
-					   if( $('#productname').isEmpty()){
+					             if( $('#productname').isEmpty()){
                            core.tip.show('请输入产品名!');
                            return;
                        }
@@ -80,10 +89,12 @@
                    $(this).html('正在处理...').attr('saving',1);
                     core.pjson('supplier/af_supplier', {
                        'memberdata':{
+                            'username': $('#username').val(),
+                            'password': $('#password').val(),
                             'realname': $('#realname').val(),
                             'mobile': $('#mobile').val(),
                             'weixin': $('#weixin').val(),
-							'productname': $('#productname').val()
+							              'productname': $('#productname').val()
                         }
                     }, function(json) {
                        
@@ -94,9 +105,11 @@
                              {else}
                                  location.href="{php echo $this->createMobileUrl('member')}";
                              {/if}
-                        }
-                        else{
-                            $('.info_sub').html('确认').removeAttr('saving');
+                        }else if(json.status==2){
+                          $('.info_sub').html('确认').removeAttr('saving');
+                            core.tip.show('用户名已存在');
+                        }else{
+                          $('.info_sub').html('确认').removeAttr('saving');
                             core.tip.show('提交申请失败!');
                         }
                     },true,true);

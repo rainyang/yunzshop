@@ -1,13 +1,11 @@
 <?php
-
-
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
 $openid         = m('user')->getOpenid();
 $popenid        = m('user')->islogin();
-
+$openid         = $openid?$openid:$popenid;
 $member         = m('member')->getMember($openid);
 $uniacid        = $_W['uniacid'];
 $goodsid        = intval($_GPC['id']);
@@ -17,9 +15,7 @@ $goods          = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHER
 $shop           = set_medias(m('common')->getSysset('shop'), 'logo');
 $shop['url']    = $this->createMobileUrl('shop');
 $mid            = intval($_GPC['mid']);
-
 $shopset = m('common')->getSysset('shop');
-
 $opencommission = false;
 if (p('commission')) {
     if (empty($member['agentblack'])) {
@@ -98,6 +94,23 @@ if (isset($imgs[1])) {
     }
     $goods['content'] = $html;
 }
+$levelid           = $member['level'];
+$groupid           = $member['groupid'];
+if(!is_weixin()){
+    //禁止浏览的商品
+    if ($goods['showlevels'] != '') {
+        $showlevels = explode(',', $goods['showlevels']);
+        if (!in_array($levelid, $showlevels)) {
+            message('当前商品禁止访问，请联系客服……', $this->createMobileUrl('shop/index'), 'error');
+        }
+    }
+    if ($goods['showgroups'] != '') {
+        $showgroups = explode(',', $goods['showgroups']);
+        if (!in_array($groupid, $showgroups)) {
+            message('当前商品禁止访问，请联系客服……', $this->createMobileUrl('shop/index'), 'error');
+        }
+    }
+}
 if ($_W['isajax']) {
     if (empty($goods)) {
         show_json(0);
@@ -116,8 +129,8 @@ if ($_W['isajax']) {
             $goods['userbuy'] = 0;
         }
     }
-    $levelid           = $member['level'];
-    $groupid           = $member['groupid'];
+    
+
     $goods['levelbuy'] = '1';
     if ($goods['buylevels'] != '') {
         $buylevels = explode(',', $goods['buylevels']);
@@ -309,7 +322,9 @@ if ($_W['isajax']) {
         'btntext2' => trim($goods['detail_btntext2']),
         'btnurl2' => !empty($goods['detail_btnurl2']) ? $goods['detail_btnurl2'] : $shop['url']
     );
-    show_json(1, $ret);
+
+        show_json(1, $ret);
+
 }
 $_W['shopshare'] = array(
     'title' => !empty($goods['share_title']) ? $goods['share_title'] : $goods['title'],

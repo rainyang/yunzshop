@@ -20,14 +20,13 @@ if (!class_exists('BonusModel')) {
 		public function getSet()
 		{
 			$set = parent::getSet();
-			$set['texts'] = array('agent' => empty($set['texts']['agent']) ? '代理商' : $set['texts']['agent'],'premiername' => empty($set['texts']['premiername']) ? '最高级别' : $set['texts']['premiername'], 'shop' => empty($set['texts']['shop']) ? '小店' : $set['texts']['shop'], 'myshop' => empty($set['texts']['myshop']) ? '我的小店' : $set['texts']['myshop'], 'center' => empty($set['texts']['center']) ? '分红中心' : $set['texts']['center'], 'become' => empty($set['texts']['become']) ? '成为分销商' : $set['texts']['become'], 'withdraw' => empty($set['texts']['withdraw']) ? '提现' : $set['texts']['withdraw'], 'commission' => empty($set['texts']['commission']) ? '佣金' : $set['texts']['commission'], 'commission1' => empty($set['texts']['commission1']) ? '分红佣金' : $set['texts']['commission1'], 'commission_total' => empty($set['texts']['commission_total']) ? '累计分红佣金' : $set['texts']['commission_total'], 'commission_ok' => empty($set['texts']['commission_ok']) ? '待分红佣金' : $set['texts']['commission_ok'], 'commission_apply' => empty($set['texts']['commission_apply']) ? '已申请佣金' : $set['texts']['commission_apply'], 'commission_check' => empty($set['texts']['commission_check']) ? '待打款佣金' : $set['texts']['commission_check'], 'commission_lock' => empty($set['texts']['commission_lock']) ? '未结算佣金' : $set['texts']['commission_lock'], 'commission_detail' => empty($set['texts']['commission_detail']) ? '分红明细' : $set['texts']['commission_detail'], 'commission_pay' => empty($set['texts']['commission_pay']) ? '成功提现佣金' : $set['texts']['commission_pay'], 'order' => empty($set['texts']['order']) ? '分销订单' : $set['texts']['order'], 'myteam' => empty($set['texts']['myteam']) ? '我的团队' : $set['texts']['myteam'], 'c1' => empty($set['texts']['c1']) ? '一级' : $set['texts']['c1'], 'c2' => empty($set['texts']['c2']) ? '二级' : $set['texts']['c2'], 'c3' => empty($set['texts']['c3']) ? '三级' : $set['texts']['c3'], 'mycustomer' => empty($set['texts']['mycustomer']) ? '我的客户' : $set['texts']['mycustomer'],);
+			$set['texts'] = array('agent' => empty($set['texts']['agent']) ? '代理商' : $set['texts']['agent'],'premiername' => empty($set['texts']['premiername']) ? '全球分红' : $set['texts']['premiername'], 'center' => empty($set['texts']['center']) ? '分红中心' : $set['texts']['center'], 'commission' => empty($set['texts']['commission']) ? '佣金' : $set['texts']['commission'], 'commission1' => empty($set['texts']['commission1']) ? '分红佣金' : $set['texts']['commission1'], 'commission_total' => empty($set['texts']['commission_total']) ? '累计分红佣金' : $set['texts']['commission_total'], 'commission_ok' => empty($set['texts']['commission_ok']) ? '待分红佣金' : $set['texts']['commission_ok'], 'commission_apply' => empty($set['texts']['commission_apply']) ? '已申请佣金' : $set['texts']['commission_apply'], 'commission_check' => empty($set['texts']['commission_check']) ? '待打款佣金' : $set['texts']['commission_check'], 'commission_lock' => empty($set['texts']['commission_lock']) ? '未结算佣金' : $set['texts']['commission_lock'], 'commission_detail' => empty($set['texts']['commission_detail']) ? '分红明细' : $set['texts']['commission_detail'], 'commission_pay' => empty($set['texts']['commission_pay']) ? '已分红佣金' : $set['texts']['commission_pay'], 'order' => empty($set['texts']['order']) ? '分红订单' : $set['texts']['order'], 'order_area' => empty($set['texts']['order_area']) ? '区域订单' : $set['texts']['order_area'], 'mycustomer' => empty($set['texts']['mycustomer']) ? '我的下线' : $set['texts']['mycustomer'], 'agent_province' => empty($set['texts']['agent_province']) ? '省级代理' : $set['texts']['agent_province'], 'agent_city' => empty($set['texts']['agent_city']) ? '市级代理' : $set['texts']['agent_city'], 'agent_district' => empty($set['texts']['agent_district']) ? '区级代理' : $set['texts']['agent_district']);
 			return $set;
 		}
 
 		//获取上级代理信息
         public function getParentAgents($id, $type = 0){
             global $_W;
-            $levels = $this->getLevel();
             $sql = "select id, agentid, bonuslevel, bonus_status from " . tablename('sz_yi_member') . " where id={$id} and isagent = 1 and uniacid=".$_W['uniacid'];
             $parentAgent =  pdo_fetch($sql);
             if(empty($parentAgent)){
@@ -44,20 +43,24 @@ if (!class_exists('BonusModel')) {
             }
         }
 
+        //分红佣金计算
 		public function calculate($orderid = 0, $update = true)
 		{
 			global $_W;
 			$set = $this->getSet();
 			$levels = $this->getLevels();
 			$time = time();
-			$openid = pdo_fetchcolumn('select openid from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
-			
+			$order = pdo_fetch('select openid, address from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
+			$openid = $order['openid'];
+
 			$goods = pdo_fetchall('select og.id,og.realprice,og.goodsid,og.total,og.optionname,g.hascommission,g.nocommission,g.bonusmoney from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
 			$member = m('member')->getInfo($openid);
 			$levels = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_bonus_level') . " WHERE uniacid = '{$_W['uniacid']}' ORDER BY level asc");
+			if(!empty($set['area_start'])){
+				$address = unserialize($order['address']);
+			}
 			foreach ($goods as $cinfo) {
-				$price = $cinfo['bonusmoney'] > 0.00 ? $cinfo['bonusmoney'] : $cinfo['realprice'];
-				$price_all = $price * $cinfo['total'];
+				$price_all = $cinfo['bonusmoney'] > 0.00 ? $cinfo['bonusmoney'] * $cinfo['total'] : $cinfo['price'];
 				if(empty($set['selfbuy'])){
 					if($member['agentid'] == 0){
 						return;
@@ -94,8 +97,87 @@ if (!class_exists('BonusModel')) {
 		                    'createtime' => $time
 		                );
 		                pdo_insert('sz_yi_bonus_goods', $data);
-		                $range_money = $bonus_money_old;
 					}
+				}
+
+				//是否开启区域代理
+				if(!empty($set['area_start'])){
+					//省级代理计算
+					$bonus_commission1 = floatval($set['bonus_commission1']);
+					if(!empty($bonus_commission1)){
+	            		$agent_province =  pdo_fetch("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_area=1 and uniacid=".$_W['uniacid']);
+	            		if(!empty($agent_province)){
+		            		if($agent_province['bonus_area_commission'] > 0){
+		            			$bonus_area_money = round($price_all * $agent_province['bonus_area_commission']/100, 2);
+		            		}else{
+		            			$bonus_area_money = round($price_all * $set['bonus_commission1']/100, 2);
+		            		}
+
+	            			$data = array(
+			                    'uniacid' => $_W['uniacid'],
+			                    'ordergoodid' => $cinfo['goodsid'],
+			                    'orderid' => $orderid,
+			                    'total' => $cinfo['total'],
+			                    'optionname' => $cinfo['optionname'],
+			                    'mid' => $agent_province['id'],
+			                    'bonus_area' => 1,
+			                    'money' => $bonus_area_money,
+			                    'createtime' => $time
+			                );
+			                pdo_insert('sz_yi_bonus_goods', $data);
+			            }
+		            }
+		            //市级代理计算
+		            $bonus_commission2 = floatval($set['bonus_commission2']);
+					if(!empty($bonus_commission2)){
+	            		$agent_city =  pdo_fetch("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_city='". $address['city']."' and bonus_area=2 and uniacid=".$_W['uniacid']);
+	            		if(!empty($agent_city)){
+		            		if($agent_city['bonus_area_commission'] > 0){
+		            			$bonus_area_money = round($price_all * $agent_city['bonus_area_commission']/100, 2);
+		            		}else{
+		            			$bonus_area_money = round($price_all * $set['bonus_commission2']/100, 2);
+		            		}
+
+	            			$data = array(
+			                    'uniacid' => $_W['uniacid'],
+			                    'ordergoodid' => $cinfo['goodsid'],
+			                    'orderid' => $orderid,
+			                    'total' => $cinfo['total'],
+			                    'optionname' => $cinfo['optionname'],
+			                    'mid' => $agent_city['id'],
+			                    'bonus_area' => 2,
+			                    'money' => $bonus_area_money,
+			                    'createtime' => $time
+			                );
+		                	pdo_insert('sz_yi_bonus_goods', $data);
+		                }
+		            }
+
+		            //区级代理计算
+		            $bonus_commission3 = floatval($set['bonus_commission3']);
+					if(!empty($bonus_commission3)){
+	            		$agent_district =  pdo_fetch("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_city='". $address['city']."' and bonus_district='". $address['area']."' and bonus_area=3 and uniacid=".$_W['uniacid']);
+	            		if(!empty($agent_district)){
+		            		if($agent_district['bonus_area_commission'] > 0){
+		            			$bonus_area_money = round($price_all * $agent_district['bonus_area_commission']/100, 2);
+		            		}else{
+		            			$bonus_area_money = round($price_all * $set['bonus_commission3']/100, 2);
+		            		}
+
+	            			$data = array(
+			                    'uniacid' => $_W['uniacid'],
+			                    'ordergoodid' => $cinfo['goodsid'],
+			                    'orderid' => $orderid,
+			                    'total' => $cinfo['total'],
+			                    'optionname' => $cinfo['optionname'],
+			                    'mid' => $agent_district['id'],
+			                    'bonus_area' => 3,
+			                    'money' => $bonus_area_money,
+			                    'createtime' => $time
+			                );
+			                pdo_insert('sz_yi_bonus_goods', $data);
+			            }
+		            }
 				}
 	        }
 		}
@@ -189,6 +271,8 @@ if (!class_exists('BonusModel')) {
             $commission_lock  = 0;
             $commission_pay   = 0;
             $commission_totaly= 0;
+            $commission_totaly_area = 0;
+            $ordercount_area  = 0;
             $myordermoney     = 0;
 			$myordercount     = 0;
 	        $agentid          = $member['id'];
@@ -197,8 +281,14 @@ if (!class_exists('BonusModel')) {
             $agentids		  = array();
             if (in_array('totaly', $options)) {
 	            //预计佣金
-	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=0 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid}";
+	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=0 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and cg.bonus_area = 0";
 	            $commission_totaly = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
+	        }
+
+	        if (in_array('totaly_area', $options)) {
+	            //预计区域代理佣金
+	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=0 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and cg.bonus_area!=0";
+	            $commission_totaly_area = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
 	        }
 
 	        if (in_array('ok', $options)) {
@@ -215,7 +305,12 @@ if (!class_exists('BonusModel')) {
 
 	        if (in_array('ordercount', $options)) {
 	            //佣金订单统计
-	            $ordercount = pdo_fetchcolumn('select count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_bonus_goods') . ' cg on cg.orderid=o.id  where o.status>=0 and cg.status>=0 and o.uniacid='.$_W['uniacid'].' and cg.mid ='.$agentid.' limit 1');
+	            $ordercount = pdo_fetchcolumn('select count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_bonus_goods') . ' cg on cg.orderid=o.id  where o.status>=0 and cg.status>=0 and o.uniacid='.$_W['uniacid'].' and cg.mid ='.$agentid.' and cg.bonus_area=0 limit 1');
+	        }
+
+	        if (in_array('ordercount_area', $options)) {
+	            //佣金订单统计
+	            $ordercount_area = pdo_fetchcolumn('select count(distinct o.id) as ordercount_area from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_bonus_goods') . ' cg on cg.orderid=o.id  where o.status>=0 and cg.status>=0 and o.uniacid='.$_W['uniacid'].' and cg.mid ='.$agentid.' and cg.bonus_area!=0 limit 1');
 	        }
 
 	        if (in_array('apply', $options)) {
@@ -258,7 +353,9 @@ if (!class_exists('BonusModel')) {
             $member['commission_check']     = isset($commission_check) ? $commission_check : 0;
             $member['commission_lock']      = isset($commission_lock) ? $commission_lock : 0;
             $member['commission_totaly']    = isset($commission_totaly) ? $commission_totaly : 0;
+            $member['commission_totaly_area']    = isset($commission_totaly_area) ? $commission_totaly_area : 0;
             $member['ordercount']           = $ordercount;
+            $member['ordercount_area']      = $ordercount_area;
             $member['agentcount']           = $agentcount;
             $member['agentids']				= $agentids;
             $member['myordermoney']         = $myordermoney;
@@ -307,7 +404,7 @@ if (!class_exists('BonusModel')) {
 			$bonus_goods = pdo_fetchall('select distinct mid from ' . tablename('sz_yi_bonus_goods') . ' where uniacid=:uniacid and orderid=:orderid', array(':orderid' => $order['id'], ':uniacid' => $_W['uniacid']));
 			foreach ($bonus_goods as $key => $val) {
 				$openid = pdo_fetchcolumn("select openid from " . tablename('sz_yi_member') . " where id=".$val['mid']." and uniacid=".$_W['uniacid']);
-				$agent_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods') . " where mid=".$val['mid']." and orderid=".$order['id']." and uniacid=".$_W['uniacid']);
+				$agent_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods') . " where mid=".$val['mid']." and orderid=".$order['id']." and bonus_area=0 and uniacid=".$_W['uniacid']);
 				$this->sendMessage($openid, array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $realprice, 'goods' => $goods, 'commission' => $agent_money, 'paytime' => $order['paytime']), TM_BONUS_ORDER_PAY);
 			}
 		}
@@ -347,7 +444,7 @@ if (!class_exists('BonusModel')) {
 			$bonus_goods = pdo_fetchall('select distinct mid from ' . tablename('sz_yi_bonus_goods') . ' where uniacid=:uniacid and orderid=:orderid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
 			foreach ($bonus_goods as $key => $val) {
 				$openid = pdo_fetchcolumn("select openid from " . tablename('sz_yi_member') . " where id=".$val['mid']." and uniacid=".$_W['uniacid']);
-				$agent_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods') . " where mid=".$val['mid']." and orderid=".$order['id']." and uniacid=".$_W['uniacid']);
+				$agent_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods') . " where mid=".$val['mid']." and orderid=".$order['id']." and bonus_area=0 and uniacid=".$_W['uniacid']);
 				$this->sendMessage($openid, array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $realprice, 'goods' => $goods, 'commission' => $agent_money, 'finishtime' => $order['finishtime']), TM_BONUS_ORDER_FINISH);
 			}
 		}
@@ -374,7 +471,7 @@ if (!class_exists('BonusModel')) {
 			}
 			$set = $this->getSet();
 			//$member = m('member')->getMember($mid);
-			$member = p('commission')->getInfo($mid, array(''));
+			$member = p('commission')->getInfo($mid, array('ordercount3'));
 
 			if (empty($member)) {
 				return;
@@ -432,6 +529,15 @@ if (!class_exists('BonusModel')) {
 			if(in_array('9', $leveltype)){
 				if(!empty($levelup['downcountlevel1'])){
 					if($member['level1'] < $levelup['downcountlevel1']){
+						$isleveup = false;
+					}
+				}
+			}
+
+			//分销订单总金额
+			if(in_array('11', $leveltype)){
+				if(!empty($levelup['commissionmoney'])){
+					if($member['ordermoney'] < $levelup['commissionmoney']){
 						$isleveup = false;
 					}
 				}
@@ -551,16 +657,16 @@ if (!class_exists('BonusModel')) {
 				}
 			} else if ($message_type == TM_BONUS_UPGRADE && !empty($tm['bonus_upgrade']) && empty($usernotice['bonus_upgrade'])) {
 				$message = $tm['bonus_upgrade'];
+				if(!empty($data['newlevel']['msgcontent'])){
+					$message = $data['newlevel']['msgcontent'];
+				}
 				$message = str_replace('[昵称]', $member['nickname'], $message);
 				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
 				$message = str_replace('[旧等级]', $data['oldlevel']['levelname'], $message);
 				$message = str_replace('[旧分红比例]', $data['oldlevel']['agent_money'] . '%', $message);
 				$message = str_replace('[新等级]', $data['newlevel']['levelname'], $message);
 				$message = str_replace('[新分红比例]', $data['newlevel']['agent_money'] . '%', $message);
-				$msg = array('keyword1' => array('value' => !empty($tm['bonus_upgradetitle']) ? $tm['bonus_upgradetitle'] : '代理商等级升级通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
-				if(!empty($data['newlevel']['content'])){
-					$msg .= $data['newlevel']['content'];
-				}
+				$msg = array('keyword1' => array('value' => !empty($data['newlevel']['msgtitle']) ? $data['newlevel']['msgtitle'] : $tm['bonus_upgradetitle'], 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
 				if (!empty($templateid)) {
 					m('message')->sendTplNotice($openid, $templateid, $msg);
 				} else {

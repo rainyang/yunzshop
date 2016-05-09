@@ -10,6 +10,9 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_supplier` (
   `mobile` varchar(255) CHARACTER SET utf8 NOT NULL,
   `weixin` varchar(255) CHARACTER SET utf8 NOT NULL,
   `productname` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `username` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `status` tinyint(3) NOT NULL COMMENT '1审核成功2驳回',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_apply` (
@@ -72,6 +75,10 @@ $info = pdo_fetch('select * from ' . tablename('sz_yi_plugin') . ' where identit
 if(!$info){
     $sql = "INSERT INTO " . tablename('sz_yi_plugin'). " (`displayorder`, `identity`, `name`, `version`, `author`, `status`, `category`) VALUES(0, 'supplier', '供应商', '1.0', '官方', 1, 'biz');";
     pdo_query($sql);
+}
+
+if(!pdo_fieldexists('sz_yi_af_supplier', 'status')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_af_supplier')." ADD `status` TINYINT( 3 ) NOT NULL COMMENT '0申请1驳回2通过' AFTER `productname`;");
 }
 
 //todo,这里缺少uniacid，我没加，要测试$_W['uniacid']是否可用

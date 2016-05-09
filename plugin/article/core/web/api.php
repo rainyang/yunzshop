@@ -1,6 +1,5 @@
 <?php
 global $_W, $_GPC;
-//check_shop_auth('http://120.26.212.219/api.php', $this->pluginname);
 $apido = $_GPC['apido'];
 if ($_W['isajax'] && $_W['ispost']) {
 	if ($apido == 'delarticle') {
