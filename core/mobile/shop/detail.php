@@ -3,6 +3,10 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+@session_start();
+//print_r($_W);exit;
+setcookie('preUrl', $_W['siteurl']);
+//echo $_COOKIE['preUrl'];exit;
 $openid         = m('user')->getOpenid();
 $popenid        = m('user')->islogin();
 $openid         = $openid?$openid:$popenid;
