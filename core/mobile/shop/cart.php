@@ -7,7 +7,8 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $tmplateType = (isMobile()) ? 'mobile' : 'pc';
-if(!$openid){
+
+if(!$_COOKIE[__cookie_sz_yi_userid_.$_W['uniacid']] && $tmplateType == 'pc'){
     show_json(2, '需要登陆');
 }
 if ($_W['isajax']) {
