@@ -1,5 +1,6 @@
 {template 'common/header'}
 <title>商家兑换</title>
+{template 'common/navigation'}
 <script type="text/javascript">
     require(['tpl', 'core'], function(tpl, core) {
         core.pjson('creditshop/exchange',{'op':'exchange',id:"{$_GPC['id']}"},function(json){

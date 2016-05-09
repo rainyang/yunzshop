@@ -1,6 +1,7 @@
 {template 'common/header'}
-{template '_header'}
+
 <title>积分商城</title>
+{template 'common/navigation'}
 <style type="text/css">
        .banner {overflow:hidden;position:relative;height:auto;}
      .banner  .main_image{width:100%;position:relative;top:0;left:0;}
@@ -183,7 +184,7 @@
         <%/each%>
     <%/if%>
     
-    <div class="index_footer">{php echo empty($this->set['copyright'])?"版权所有 ©".$shop['name']:html_entity_decode($this->set['copyright'])}</div>
+
  </script>
  
 <script language="javascript">
