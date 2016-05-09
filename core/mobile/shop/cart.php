@@ -7,6 +7,9 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $tmplateType = (isMobile()) ? 'mobile' : 'pc';
+if(!$openid){
+    show_json(2, '需要登陆');
+}
 if ($_W['isajax']) {
     if ($operation == 'display') {
         $condition  = ' and f.uniacid= :uniacid and f.openid=:openid and f.deleted=0';

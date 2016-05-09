@@ -17,7 +17,7 @@ if ($operation == 'display') {
                     ':pwd' => md5($password),
                 ));
             //pdo_debug();
-            $preUrl = $_COOKIE['preUrl'] ? $_COOKIE['preUrl'] : $this->createMobileUrl('member/info');
+            $preUrl = $_COOKIE['preUrl'] ? $_COOKIE['preUrl'] : $this->createMobileUrl('order/list');
             if($info){
                 $lifeTime = 24 * 3600 * 3;
                 session_set_cookie_params($lifeTime);
