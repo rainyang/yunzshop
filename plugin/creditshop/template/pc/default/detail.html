@@ -1,7 +1,7 @@
-{template 'common/header'}
-
+{template 'common/header_center'}
+<link href="../addons/sz_yi/plugin/creditshop/template/mobile/default/images/css.css" rel="stylesheet" type="text/css"/>
 <title>商品详情</title>
-{template 'common/navigation'}
+
 <style type='text/css'>
    
     .addorder_user {float:left;height:54px; width:100%;  background:#fff; border-bottom:1px solid #eaeaea; }
@@ -29,10 +29,12 @@
     .carrier_input_info .row .info { width:100%;float:right;margin-left:-85px; }
     .carrier_input_info .row .inner { margin-left:85px; }
     .carrier_input_info .row .inner input {height:30px; color:#666;background:transparent;margin-top:0px; width:100%;border-radius:0;padding:0px; margin:0px; border:0px; float:left; font-size:16px;}
- 
+ .sp-bg{background: #fff;overflow:hidden;}
+ .info_top{width: 440px;height: 440px;margin:30px;float: left;}
+ .right-sp{width: 700px;float: left;padding: 30px 30px 30px 0;}
 </style>
 
-<div id='container'></div>
+<div id='container'  style="width:1200px;margin:10px auto 0;overflow: hidden;"></div>
  
   
 	
@@ -59,21 +61,22 @@
         
         <%/each%>
 </div>
-	
+	<!--
     <div class="page_topbar">
     <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
     <a href="{php echo $this->createPluginMobileUrl('creditshop')}" class="btn" ><i class="fa fa-home"></i></a>
     <div class="title">商品详情</div>
-</div>
+</div>-->
+<div class="sp-bg">
       <div class="info_top">
-    	<img src="<%goods.thumb%>"/>
-        <div class="info">
-        	   <div class="classs"><%goods.subtitle%></div>
+    	  <img src="<%goods.thumb%>"/>
+      </div>
+      <div class="right-sp">
+      <div class="info">
+             <div class="classs"><%goods.subtitle%></div>
             <div class="name"><%goods.title%></div>
-        </div>
-		 
-    </div>
-        <div class="info_price">
+      </div>
+      <div class="info_price">
             <div class="num">
             <%if goods.acttype==0%>
                  <%goods.credit%><i class="fa fa-database"></i> <i class="fa fa-plus" style='color:#999;'></i> <%goods.money%><i class="fa fa-rmb"></i>
@@ -196,6 +199,7 @@
        
 </fieldset>  
         </div>
+        </div></div>
  
 
  </script>

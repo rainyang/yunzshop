@@ -1,21 +1,20 @@
-{template 'common/header'}
+{template 'common/header_center'}
+<link href="../addons/sz_yi/plugin/creditshop/template/mobile/default/images/css.css" rel="stylesheet" type="text/css"/>
 
 <title>{if empty($cate)}商品列表{else}{$cate['name']}{/if}</title>
-{template 'common/navigation'}
 <style type='text/css'>
-  body { background:#fff }
 #list_loading { padding:10px 0 10px 0;color:#666;text-align: center;width:100%;float:left;}
+.page_topbar .title{ text-align: left;}
 </style>
-<div id='container'></div>
+<div id='container'  style="width:1200px;margin:10px auto 0;overflow: hidden;"></div>
 <script id='tpl_main' type='text/html'>
    <div class="page_topbar">
-    <a href="{php echo $this->createPluginMobileUrl('creditshop')}" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
     <div class="title">{if empty($cate)}商品列表{else}{$cate['name']}{/if}</div>
 </div>
 <div class="list">
 <div id="container_list"></div>
 </div>
- <div class="list_footer">活动由{$shop['name']}提供，与商品生产商无关。</div>
+
 </script>
 <script id='tpl_empty' type='text/html'>
     <div class="record_ico"><i class="fa fa-cubes"></i></div>
@@ -102,6 +101,4 @@
          },true);
    });
 </script>
-{template 'common/footer'}
-
 {template 'common/footer'}
