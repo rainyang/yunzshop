@@ -100,10 +100,10 @@ class Sz_DYi_User
         global $_W, $_GPC;
 
         //需要登陆的P方法
-        $needLoginPList = array('address', 'cart', 'commission');
+        $needLoginPList = array('address', 'commission');
 
         //不需要登陆的P方法
-        $noLoginList = array('category', 'login', 'receive', 'close', 'designer', 'register', 'sendcode', 'bindmobile', 'forget', 'article');
+        $noLoginList = array('category', 'login','cart' ,'receive', 'close', 'designer', 'register', 'sendcode', 'bindmobile', 'forget', 'article');
 
         //不需要登陆的do方法
         $noLoginDoList = array('shop', 'login', 'register');
