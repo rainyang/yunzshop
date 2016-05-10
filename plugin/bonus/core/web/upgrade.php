@@ -8,7 +8,7 @@ if(empty($result)){
     $displayorder_max = pdo_fetchcolumn('select max(displayorder) from ' . tablename('sz_yi_plugin'));
     $displayorder = $displayorder_max + 1;
     $sql = "INSERT INTO " . tablename('sz_yi_plugin') . " (`displayorder`,`identity`,`name`,`version`,`author`,`status`) VALUES(". $displayorder .",'bonus','芸众分红','1.0','官方','1');";
-  pdo_query($sql);
+  pdo_fetchall($sql);
 }
 $sql = "CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_bonus_goods') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -86,21 +86,21 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_bonus_log') . " (
   KEY `idx_uniacid` (`uniacid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='分红日志';
 ";
-pdo_query($sql);
+pdo_fetchall($sql);
 if(!pdo_fieldexists('sz_yi_member', 'bonuslevel')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonuslevel` INT DEFAULT '0' AFTER `agentlevel`, ADD `bonus_status` TINYINT(1) DEFAULT '0' AFTER `bonuslevel`;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonuslevel` INT DEFAULT '0' AFTER `agentlevel`, ADD `bonus_status` TINYINT(1) DEFAULT '0' AFTER `bonuslevel`;");
 }
 
 if(!pdo_fieldexists('sz_yi_member', 'bonus_area')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_area` TINYINT(1) DEFAULT '0' AFTER `bonuslevel`, ADD `bonus_province` varchar(50) DEFAULT '' AFTER `bonus_area`, ADD `bonus_city` varchar(50) DEFAULT '' AFTER `bonus_province`, ADD `bonus_district` varchar(50) DEFAULT '' AFTER `bonus_city`, ADD `bonus_area_commission` decimal(10,2) DEFAULT '0.00' AFTER `bonus_district`;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_area` TINYINT(1) DEFAULT '0' AFTER `bonuslevel`, ADD `bonus_province` varchar(50) DEFAULT '' AFTER `bonus_area`, ADD `bonus_city` varchar(50) DEFAULT '' AFTER `bonus_province`, ADD `bonus_district` varchar(50) DEFAULT '' AFTER `bonus_city`, ADD `bonus_area_commission` decimal(10,2) DEFAULT '0.00' AFTER `bonus_district`;");
 }
 
 if(!pdo_fieldexists('sz_yi_goods', 'bonusmoney')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `bonusmoney` DECIMAL(10,2) AFTER `costprice`;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `bonusmoney` DECIMAL(10,2) AFTER `costprice`;");
 }
 
 if(!pdo_fieldexists('sz_yi_bonus_goods', 'bonus_area')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_bonus_goods')." ADD `bonus_area` TINYINT(1) DEFAULT '0' AFTER `levelid`;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_bonus_goods')." ADD `bonus_area` TINYINT(1) DEFAULT '0' AFTER `levelid`;");
 }
 
 message('芸众分红插件安装成功', $this->createPluginWebUrl('bonus/agent'), 'success');

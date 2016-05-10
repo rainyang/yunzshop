@@ -27,46 +27,46 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_apply` (
   `finish_time` int(11) NOT NULL COMMENT '完成时间',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;";
-pdo_query($sql);
+pdo_fetchall($sql);
 if(!pdo_fieldexists('sz_yi_perm_user', 'banknumber')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `banknumber` varchar(255) NOT NULL COMMENT '银行卡号';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `banknumber` varchar(255) NOT NULL COMMENT '银行卡号';");
 }
 if(!pdo_fieldexists('sz_yi_perm_user', 'accountname')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `accountname` varchar(255) NOT NULL COMMENT '开户名';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `accountname` varchar(255) NOT NULL COMMENT '开户名';");
 }
 if(!pdo_fieldexists('sz_yi_perm_user', 'accountbank')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `accountbank` varchar(255) NOT NULL COMMENT '开户行';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `accountbank` varchar(255) NOT NULL COMMENT '开户行';");
 }
 
 if(!pdo_fieldexists('sz_yi_goods', 'supplier_uid')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `supplier_uid` INT NOT NULL COMMENT '供应商ID';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `supplier_uid` INT NOT NULL COMMENT '供应商ID';");
 }
 if(!pdo_fieldexists('sz_yi_order', 'supplier_uid')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `supplier_uid` INT NOT NULL COMMENT '供应商ID';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `supplier_uid` INT NOT NULL COMMENT '供应商ID';");
 }
 if(!pdo_fieldexists('sz_yi_order_goods', 'supplier_uid')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `supplier_uid` INT NOT NULL COMMENT '供应商ID';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `supplier_uid` INT NOT NULL COMMENT '供应商ID';");
 }
 if(!pdo_fieldexists('sz_yi_order_goods', 'supplier_apply_status')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `supplier_apply_status` tinyint(4) NOT NULL COMMENT '1为供应商已提现';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `supplier_apply_status` tinyint(4) NOT NULL COMMENT '1为供应商已提现';");
 }
 if(!pdo_fieldexists('sz_yi_af_supplier', 'id')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_af_supplier')." ADD PRIMARY KEY (`id`);");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." ADD PRIMARY KEY (`id`);");
 }
 if(!pdo_fieldexists('sz_yi_supplier_apply', 'id')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_supplier_apply')." ADD PRIMARY KEY (`id`);");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_supplier_apply')." ADD PRIMARY KEY (`id`);");
 }
 if(!pdo_fieldexists('sz_yi_af_supplier', 'id')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_af_supplier')." MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;");
 }
 if(!pdo_fieldexists('sz_yi_supplier_apply', 'id')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_supplier_apply')." MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_supplier_apply')." MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;");
 }
 if(!pdo_fieldexists('sz_yi_perm_role', 'status1')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_role')." ADD `status1` tinyint(3) NOT NULL COMMENT '1：供应商开启';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_perm_role')." ADD `status1` tinyint(3) NOT NULL COMMENT '1：供应商开启';");
 }
 if(!pdo_fieldexists('sz_yi_perm_user', 'openid')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `openid` VARCHAR( 255 ) NOT NULL;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `openid` VARCHAR( 255 ) NOT NULL;");
 }
 
 
@@ -74,11 +74,11 @@ $info = pdo_fetch('select * from ' . tablename('sz_yi_plugin') . ' where identit
 
 if(!$info){
     $sql = "INSERT INTO " . tablename('sz_yi_plugin'). " (`displayorder`, `identity`, `name`, `version`, `author`, `status`, `category`) VALUES(0, 'supplier', '供应商', '1.0', '官方', 1, 'biz');";
-    pdo_query($sql);
+    pdo_fetchall($sql);
 }
 
 if(!pdo_fieldexists('sz_yi_af_supplier', 'status')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_af_supplier')." ADD `status` TINYINT( 3 ) NOT NULL COMMENT '0申请1驳回2通过' AFTER `productname`;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." ADD `status` TINYINT( 3 ) NOT NULL COMMENT '0申请1驳回2通过' AFTER `productname`;");
 }
 
 //todo,这里缺少uniacid，我没加，要测试$_W['uniacid']是否可用
@@ -87,7 +87,7 @@ if(empty($result)){
   $sql = "
 INSERT INTO " . tablename('sz_yi_perm_role') . " (`rolename`, `status`, `status1`, `perms`, `deleted`) VALUES
 ('供应商', 1, 1, 'shop,shop.goods,shop.goods.view,shop.goods.add,shop.goods.edit,shop.goods.delete,order,order.view,order.view.status_1,order.view.status0,order.view.status1,order.view.status2,order.view.status3,order.view.status4,order.view.status5,order.view.status9,order.op,order.op.send,order.op.sendcancel,order.op.verify,order.op.fetch,order.op.close,order.op.refund,order.op.export,order.op.changeprice', 0);";
-pdo_query($sql);
+pdo_fetchall($sql);
 }else{
   $gysdata = array("perms" => 'shop,shop.goods,shop.goods.view,shop.goods.add,shop.goods.edit,shop.goods.delete,order,order.view,order.view.status_1,order.view.status0,order.view.status1,order.view.status2,order.view.status3,order.view.status4,order.view.status5,order.view.status9,order.op,order.op.send,order.op.sendcancel,order.op.verify,order.op.fetch,order.op.close,order.op.refund,order.op.export,order.op.changeprice');
   pdo_update('sz_yi_perm_role', $gysdata, array('rolename' => "供应商"));
