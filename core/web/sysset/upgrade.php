@@ -8,7 +8,7 @@ global $_W, $_GPC;
 if (!$_W['isfounder']) {
     message('无权访问!');
 }
- 
+
 $op = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 load()->func('communication');
 load()->func('file');
@@ -199,7 +199,7 @@ if ($op == 'display') {
         $tmpdir = IA_ROOT . "/addons/sz_yi/tmp";
         @rmdirs($tmpdir);
         //清除缓存
-        @rmdirs(IA_ROOT . "/addons/sz_yi/data/cache");
+        //@rmdirs(IA_ROOT . "/addons/sz_yi/data/cache");
 
         $time = time();
         global $my_scenfiles;
@@ -236,29 +236,29 @@ if ($op == 'display') {
         $filename = 'http://xinghuo.yunzshop.com/data/upgrade_zip/'.$v['version'].'.zip';
         curl_download($filename, IA_ROOT. '/addons/sz_yi/upgrade.zip');
 
-        $zip = new ZipArchive; 
-        $res = $zip->open(IA_ROOT. '/addons/sz_yi/upgrade.zip'); 
-        if ($res === TRUE) { 
+        $zip = new ZipArchive;
+        $res = $zip->open(IA_ROOT. '/addons/sz_yi/upgrade.zip');
+        if ($res === TRUE) {
             //chmod_dir(IA_ROOT. '/addons/sz_yi/', '0755');
-            //解压缩到文件夹 
-            $zip->extractTo(IA_ROOT.'/addons'); 
-            $zip->close(); 
+            //解压缩到文件夹
+            $zip->extractTo(IA_ROOT.'/addons');
+            $zip->close();
             //echo "更新版本{$v['version']}成功<br>";
             //die(json_encode(array('result' => 1, 'total' => count($files), 'success' => $success)));
             $version = file_get_contents(IA_ROOT .'/addons/sz_yi/version.php');
             $v = preg_replace('/define\(\'SZ_YI_VERSION\', \'(.+)\'\)/', 'define(\'SZ_YI_VERSION\', \''.$v['version'].'\')',$version);
             file_put_contents(IA_ROOT .'/addons/sz_yi/version.php', $v);
 
-        } else { 
+        } else {
             die(json_encode(array('result' => 0, 'msg' => '解压失败')));
-        } 
+        }
     }
     die(json_encode(array('result' => 2)));
 } else if ($op == 'checkversion') {
-	
+
 	file_put_contents(IA_ROOT . "/addons/sz_yi/version.php", "<?php if(!defined('IN_IA')) {exit('Access Denied');}if(!defined('SZ_YI_VERSION')) {define('SZ_YI_VERSION', '1.0');}");
 	header('location: '.$this->createWebUrl('upgrade'));
-	exit;	 
-	
+	exit;
+
 }
 include $this->template('web/sysset/upgrade');
