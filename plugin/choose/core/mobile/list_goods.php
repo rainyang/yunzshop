@@ -16,6 +16,7 @@ if($_W['isajax']){
         
         'pcate'=>$_GPC['pcate'],
         'ccate'=>$_GPC['ccate'],
+        'tcate'=>$_GPC['tcate'],
         'supplier_uid'=>$page['uid']
         );
 	}else{
@@ -23,7 +24,8 @@ if($_W['isajax']){
         
         
         'pcate'=>$_GPC['pcate'],
-        'ccate'=>$_GPC['ccate']
+        'ccate'=>$_GPC['ccate'],
+        'tcate'=>$_GPC['tcate']
         );
 	}
 	    

@@ -21,6 +21,10 @@ class ChooseMobile extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function cart()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
     // public function api()
     // {
     //     $this->_exec_plugin(__FUNCTION__, false);
