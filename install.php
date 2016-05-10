@@ -34,6 +34,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_adv') . " (
   KEY `idx_displayorder` (`displayorder`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+
 CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_carrier') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
@@ -1546,7 +1547,7 @@ INSERT INTO " . tablename('sz_yi_plugin') . " (`id`,`displayorder`,`identity`,`n
 (14,14,'postera','活动海报','1.0','官方','0','sale');
 ;
 ";
-pdo_query($sql);
+pdo_fetchall($sql);
 
 $sql = "
 CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_article'). " (
@@ -1651,13 +1652,11 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_article_sys'). " (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='文章设置';
 
 INSERT INTO " . tablename('sz_yi_plugin'). " (`id`, `displayorder`, `identity`, `name`, `version`, `author`, `status`) VALUES
-(12, 12, 'article', '文章营销', '1.0', '官方', 1);
+(12, 12, 'article', '文章营销', '1.0', '官方', 1);";
+pdo_fetchall($sql);
 
-";
-pdo_query($sql);
-
-pdo_query("UPDATE `ims_qrcode` SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
+pdo_fetchall("UPDATE `ims_qrcode` SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
 
 if(!pdo_fieldexists('sz_yi_goods', 'cates')) {
-	pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD     `cates` text;");
+	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD     `cates` text;");
 }
