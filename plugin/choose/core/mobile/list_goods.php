@@ -3,7 +3,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
-$operation  = !empty($_GPC['op']) ? $_GPC['op'] : 'index';
+$operation  = !empty($_GPC['op']) ? $_GPC['op'] : 'moren';
 $openid     = m('user')->getOpenid();
 $uniacid    = $_W['uniacid'];
 if($_W['isajax']){
@@ -20,13 +20,50 @@ if($_W['isajax']){
         'supplier_uid'=>$page['uid']
         );
 	}else{
-		$args=array(
-        
-        
-        'pcate'=>$_GPC['pcate'],
-        'ccate'=>$_GPC['ccate'],
-        'tcate'=>$_GPC['tcate']
-        );
+        if($operation == 'moren'){
+            if(!empty($page['tcate'])){
+                $args=array(
+                'pcate'=>$_GPC['pcate'],
+                'ccate'=>$page['ccate'],
+                'tcate'=>$page['tcate']
+                );  
+            }else if(!empty($page['ccate'])){
+                $args=array(
+                'pcate'=>$_GPC['pcate'],
+                'ccate'=>$page['ccate'],
+                
+                );  
+            }else{
+                $args=array(
+                'pcate'=>$_GPC['pcate']
+                
+                ); 
+            }
+            
+        }else if($operation == 'second'){
+            if(!empty($page['tcate'])){
+               $args=array(
+                'pcate'=>$page['pcate'],
+                'ccate'=>$_GPC['ccate'],
+                'tcate'=>$page['ccate']
+                );  
+            }else{
+                $args=array(
+                'pcate'=>$page['pcate'],
+                'ccate'=>$_GPC['ccate']
+                );
+            }
+            $args=array(
+            'pcate'=>$_GPC['pcate'],
+            'ccate'=>$_GPC['ccate'],
+            'tcate'=>$_GPC['tcate']
+            );
+        }else if($operation == 'third'){
+            $args=array(
+            'tcate'=>$_GPC['tcate']
+            );
+        }
+		
 	}
 	    
     $goods = m('goods')->getList($args);
