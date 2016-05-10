@@ -22,7 +22,6 @@
                     <div class="col-sm-9 col-xs-12">
                         {ife 'perm.user' $su_info}
                         <input type="text" name="username" class="form-control" value="{$su_info['username']}" {if !empty($su_info)}readonly{/if}/>
-                                    <span class='help-block'>您可以直接输入系统已存在用户，且保证用户密码正确才能添加</span>
                                {else}
                                <div class='form-control-static'>{$su_info['username']}</div>
                                {/if}
