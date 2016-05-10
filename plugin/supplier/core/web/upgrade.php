@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 //金额不能用int, apply表少uniacid字段
 global $_W;
 $sql = "
@@ -10,6 +10,9 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_supplier` (
   `mobile` varchar(255) CHARACTER SET utf8 NOT NULL,
   `weixin` varchar(255) CHARACTER SET utf8 NOT NULL,
   `productname` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `username` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `status` tinyint(3) NOT NULL COMMENT '1审核成功2驳回',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_apply` (

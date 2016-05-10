@@ -1160,7 +1160,11 @@ div.flicking_con a.on{background-position:0 -9px}
                         }
                         //closechoose();
 
-                    } else{
+                    } else if(ret.status==2){
+                        //console.log(ret);
+                        //core.tip.show(ret.result);
+                        location.href = '{php echo $this->createMobileUrl('member/login')}';
+                    }else{
                         core.message(ret.result,'','error');
                     }
                 },true,true);

@@ -9,8 +9,8 @@
                 <form id="loginForm" name="formLogin"  method="post" onSubmit="return userLogin()">
                     <div class="regist-process-login-left fl">
                         <h2 class="title">登录</h2>
-                          <input class="form-control text" name="username" id="username" type="text" placeholder="用户名/邮箱地址">
-                          <input class="form-control text" name="password" id="password" type="password" placeholder="密码">
+                          <input class="form-control text" name="username" id="username" type="text" placeholder="请输入用户名">
+                          <input class="form-control text" name="password" id="password" type="password" placeholder="请输入登录密码">
                                                     <input  class="btn btn-danger login-btn" type="button" name="submit" value="登录" />
                         <div class="operates fl wfs">
                           <a class="fr" href="{php echo $this->createMobileUrl('member/forget')}">忘记密码</a>
@@ -77,6 +77,7 @@ require(['tpl', 'core'], function(tpl, core) {
                              core.tip.show('登录成功');
                              //console.log(json.result.preurl);
                              location.href=json.result.preurl;
+                             //location.href='{php echo $this->createMobileUrl('order')}';
                         }
                         else{
                             core.tip.show('用户不存在或密码错误!');
