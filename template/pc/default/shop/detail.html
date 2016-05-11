@@ -302,13 +302,9 @@ div.flicking_con a.on{background-position:0 -9px}
 
     <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1' && goods.groupbuy=='1'  && goods.levelbuy=='1'%>
         <div class="good_bottom">
-            <%if shopset.cservice%>
-                <div class="add" onclick="choose('cart')" <%if shopset.cservice &&  goods.canaddcart%>style="width:28%"<%/if%>>加入购物车</div>
-                <div class="buy" onclick="choose('buy')" <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%/if%>>立即购买</div>
-            <%else%>
+
                 <div class="add" onclick="choose2('cart')">加入购物车</div>
                 <div class="buy" onclick="choose2('buy')" <%if !goods.canaddcart%>style='width:50%'<%/if%>>立即购买</div>
-            <%/if%>
         </div>
     <%/if%>
         <div class="good_bottom">
