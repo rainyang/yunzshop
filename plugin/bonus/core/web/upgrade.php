@@ -96,11 +96,17 @@ if(!pdo_fieldexists('sz_yi_member', 'bonus_area')) {
 }
 
 if(!pdo_fieldexists('sz_yi_goods', 'bonusmoney')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `bonusmoney` DECIMAL(10,2) AFTER `costprice`;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `bonusmoney` DECIMAL(10,2) DEFAULT '0.00' AFTER `costprice`;");
 }
 
 if(!pdo_fieldexists('sz_yi_bonus_goods', 'bonus_area')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_bonus_goods')." ADD `bonus_area` TINYINT(1) DEFAULT '0' AFTER `levelid`;");
 }
+if(!pdo_fieldexists('sz_yi_bonus_level', 'msgtitle')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `msgtitle` varchar(100) DEFAULT '';");
+}
 
+if(!pdo_fieldexists('sz_yi_bonus_level', 'msgcontent')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `msgcontent` varchar(255) DEFAULT '';");
+}
 message('芸众分红插件安装成功', $this->createPluginWebUrl('bonus/agent'), 'success');
