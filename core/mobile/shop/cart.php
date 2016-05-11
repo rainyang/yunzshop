@@ -6,8 +6,13 @@ global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
-$tmplateType = (isMobile()) ? 'mobile' : 'pc';
 if ($_W['isajax']) {
+    if(empty($openid)){
+        show_json(2, array(
+                'message' => '请先登录',
+                'url' => $this->createMobileUrl('member/login')
+            )); 
+    }
     if ($operation == 'display') {
         $condition  = ' and f.uniacid= :uniacid and f.openid=:openid and f.deleted=0';
         $params     = array(
@@ -29,7 +34,6 @@ if ($_W['isajax']) {
         unset($r);
         $list       = set_medias($list, 'thumb');
         $totalprice = number_format($totalprice, 2);
-        //print_r($list);exit();
         
             show_json(1, array(
                 'total' => $total,

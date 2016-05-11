@@ -1073,7 +1073,9 @@ div.flicking_con a.on{background-position:0 -9px}
                             else {
                                 cartdiv.find('b').html(ret.result.cartcount);
                             }
-
+                        } else if(ret.status==2){
+                             core.tip.show(ret.result.message);
+                             location.href=ret.result.url;
                         } else{
                             core.message(ret.result,'','error');
                         }
@@ -1161,9 +1163,8 @@ div.flicking_con a.on{background-position:0 -9px}
                         //closechoose();
 
                     } else if(ret.status==2){
-                        //console.log(ret);
-                        //core.tip.show(ret.result);
-                        location.href = '{php echo $this->createMobileUrl('member/login')}';
+                        core.tip.show(ret.result.message);
+                        location.href=ret.result.url;
                     }else{
                         core.message(ret.result,'','error');
                     }
