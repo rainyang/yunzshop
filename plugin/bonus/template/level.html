@@ -35,69 +35,91 @@
                   <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">升级条件</label>
                     <div class="col-sm-9 col-xs-12">
-                        <div class='input-group'>
+                        
 							
 							
 							{if in_array('1', $leveltype)}
+                            <div class='input-group'>
 									<span class='input-group-addon'>一级分销订单金额满</span>
 									<input type="text" name="ordermoney" class="form-control" value="{$level['ordermoney']}" />
 									<span class='input-group-addon'>元</span>
+                            </div>
 							{/if}
 							 
 							
 							{if in_array('2', $leveltype)}
+                            <div class='input-group'>
 									<span class='input-group-addon'>分销订单数量满</span>
 									<input type="text" name="ordercount" class="form-control" value="{$level['ordercount']}" />
 									<span class='input-group-addon'>个</span>
+                            </div>
 							{/if}
 							
 							{if in_array('3', $leveltype)}
+                            <div class='input-group'>
 									<span class='input-group-addon'>一级分销订单数量满</span>
 									<input type="text" name="ordercount" class="form-control" value="{$level['ordercount']}" />
 									<span class='input-group-addon'>个</span>
+                            </div>
 							{/if}
 							
 							{if in_array('4', $leveltype)}
+                            <div class='input-group'>
 									<span class='input-group-addon'>自购订单金额满</span>
 									<input type="text" name="ordermoney" class="form-control" value="{$level['ordermoney']}" />
 									<span class='input-group-addon'>元</span>
+                            </div>
 							<?php }?>
 							
 							{if in_array('5', $leveltype)}
+                            <div class='input-group'>
 									<span class='input-group-addon'>自购订单数量满</span>
 									<input type="text" name="ordercount" class="form-control" value="{$level['ordercount']}" />
 									<span class='input-group-addon'>个</span>
+                            </div>
 							{/if}
 							{if in_array('6', $leveltype)}
+                            <div class='input-group'>
 									<span class='input-group-addon'>下级总人数满</span>
 									<input type="text" name="downcount" class="form-control" value="{$level['downcount']}" />
 									<span class='input-group-addon'>个（分销商+非分销商）</span>
+                            </div>
 							{/if}
 							{if in_array('7', $leveltype)}
+                            <div class='input-group'>
 									<span class='input-group-addon'>一级下级人数满</span>
 									<input type="text" name="downcount" class="form-control" value="{$level['downcount']}" />
 									<span class='input-group-addon'>个（分销商+非分销商）</span>
+                            </div>
 							{/if}
 							{if in_array('8', $leveltype)}
+                            <div class='input-group'>
 									<span class='input-group-addon'>团队总人数满</span>
 									<input type="text" name="downcount" class="form-control" value="{$level['downcount']}" />
 									<span class='input-group-addon'>个（分销商）</span>
+                            </div>
 							{/if}
 							{if in_array('9', $leveltype)}
+                            <div class='input-group'>
 									<span class='input-group-addon'>一级团队人数满</span>
 									<input type="text" name="downcountlevel1" class="form-control" value="{$level['downcountlevel1']}" />
 									<span class='input-group-addon'>个（分销商）</span>
+                            </div>
 							{/if}
 							 
 							{if in_array('10', $leveltype)}
+                            <div class='input-group'>
 									<span class='input-group-addon'>已提现佣金总金额满</span>
 									<input type="text" name="commissionmoney" class="form-control" value="{$level['commissionmoney']}" />
 									<span class='input-group-addon'>元</span>
+                            </div>
 							{/if}
 							{if in_array('11', $leveltype)}
+                            <div class='input-group'>
                                     <span class='input-group-addon'>分销订单金额满</span>
                                     <input type="text" name="commissionmoney" class="form-control" value="{$level['commissionmoney']}" />
                                     <span class='input-group-addon'>元</span>
+                            </div>
                             {/if}
 							
                         </div>
