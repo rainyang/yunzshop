@@ -1,9 +1,22 @@
 <?php
+/* QQ:261753427 */
 if (!defined("IN_IA")) {
     print("Access Denied");
 }
 global $_W, $_GPC;
-
+$perm_role = 0;
+if (p('supplier')) {
+    $roleid = pdo_fetchcolumn('select roleid from' . tablename('sz_yi_perm_user') . ' where uid='.$_W['uid'].' and uniacid=' . $_W['uniacid']);
+    if($roleid == 0){
+        $perm_role = 0;
+    }else{
+        if(p('supplier')){
+            $perm_role = pdo_fetchcolumn('select status1 from' . tablename('sz_yi_perm_role') . ' where id=' . $roleid);
+        }else{
+            $perm_role = 0;
+        }
+    }
+}
 $shopset  = m("common")->getSysset("shop");
 $sql      = "SELECT * FROM " . tablename("sz_yi_category") . " WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC";
 $category = pdo_fetchall($sql, array(
@@ -39,7 +52,12 @@ if ($operation == "display") {
     }
     $pindex    = max(1, intval($_GPC["page"]));
     $psize     = 20;
-    $condition = " WHERE `uniacid` = :uniacid AND `deleted` = :deleted";
+    if ($perm_role == 0) {
+        $condition = " WHERE `uniacid` = :uniacid AND `deleted` = :deleted";
+    }
+    if ($perm_role == 1) {
+        $condition = " WHERE `uniacid` = :uniacid AND `deleted` = :deleted and supplier_uid={$_W['uid']}";
+    }
     $params    = array(
         ":uniacid" => $_W["uniacid"],
         ":deleted" => '0'

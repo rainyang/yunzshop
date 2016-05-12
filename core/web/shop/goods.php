@@ -4,15 +4,17 @@ if (!defined("IN_IA")) {
 }
 global $_W, $_GPC;
 //  START 判断是否当前用户是否供应商
-$roleid = pdo_fetchcolumn('select roleid from' . tablename('sz_yi_perm_user') . ' where uid='.$_W['uid'].' and uniacid=' . $_W['uniacid']);
-if($roleid == 0){
-	$perm_role = 0;
-}else{
-	if(p('supplier')){
-		$perm_role = pdo_fetchcolumn('select status1 from' . tablename('sz_yi_perm_role') . ' where id=' . $roleid);
-	}else{
-		$perm_role = 0;
-	}
+if (p('supplier')) {
+    $roleid = pdo_fetchcolumn('select roleid from' . tablename('sz_yi_perm_user') . ' where uid='.$_W['uid'].' and uniacid=' . $_W['uniacid']);
+    if($roleid == 0){
+        $perm_role = 0;
+    }else{
+        if(p('supplier')){
+            $perm_role = pdo_fetchcolumn('select status1 from' . tablename('sz_yi_perm_role') . ' where id=' . $roleid);
+        }else{
+            $perm_role = 0;
+        }
+    }
 }
 //  END
 //分红
