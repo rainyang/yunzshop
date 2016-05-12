@@ -302,13 +302,9 @@ div.flicking_con a.on{background-position:0 -9px}
 
     <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1' && goods.groupbuy=='1'  && goods.levelbuy=='1'%>
         <div class="good_bottom">
-            <%if shopset.cservice%>
-                <div class="add" onclick="choose('cart')" <%if shopset.cservice &&  goods.canaddcart%>style="width:28%"<%/if%>>加入购物车</div>
-                <div class="buy" onclick="choose('buy')" <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%/if%>>立即购买</div>
-            <%else%>
+
                 <div class="add" onclick="choose2('cart')">加入购物车</div>
                 <div class="buy" onclick="choose2('buy')" <%if !goods.canaddcart%>style='width:50%'<%/if%>>立即购买</div>
-            <%/if%>
         </div>
     <%/if%>
         <div class="good_bottom">
@@ -383,15 +379,6 @@ div.flicking_con a.on{background-position:0 -9px}
     </div>
      <%/if%>-->
        
-    <div class="good_shop">
-        <div class="shop1" onclick="location.href='<%detail.btnurl2%>'">
-        <img src='<%detail.logo%>'/>
-        <div class="shop_info"><%detail.shopname%><br><span><%if detail.totaltitle!=''%><%detail.totaltitle%><%else%>全部宝贝 <%goodscount%> 个 <%/if%></span></div></div>
-        <div class="shop2">
-            <div class="sub1" onclick="location.href='<%detail.btnurl1%>'"><i class="fa fa-list"></i> <%if detail.btntext1!=''%><%detail.btntext1%><%else%>查看全部商品 <%/if%></div>
-            <div class="sub2" onclick="location.href='<%detail.btnurl2%>'"> <i class="fa fa-gift" o></i> <%if detail.btntext2!=''%><%detail.btntext2%><%else%>进店逛逛<%/if%></div>
-        </div>
-    </div>
     <div class="good_info2">
         <div class="menu">
             <div id="nav_1" class="nav navon" onClick="tab(1)">图文详情</div>
@@ -1073,7 +1060,9 @@ div.flicking_con a.on{background-position:0 -9px}
                             else {
                                 cartdiv.find('b').html(ret.result.cartcount);
                             }
-
+                        } else if(ret.status==2){
+                             core.tip.show(ret.result.message);
+                             location.href=ret.result.url;
                         } else{
                             core.message(ret.result,'','error');
                         }
@@ -1161,9 +1150,8 @@ div.flicking_con a.on{background-position:0 -9px}
                         //closechoose();
 
                     } else if(ret.status==2){
-                        //console.log(ret);
-                        //core.tip.show(ret.result);
-                        location.href = '{php echo $this->createMobileUrl('member/login')}';
+                        core.tip.show(ret.result.message);
+                        location.href=ret.result.url;
                     }else{
                         core.message(ret.result,'','error');
                     }

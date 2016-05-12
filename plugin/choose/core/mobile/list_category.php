@@ -86,7 +86,7 @@ if ($operation == 'category') {
 					$ids[] = $v['id'];
 				}
 				$sql1 = 'select id,parentid,name,level from ' . tablename('sz_yi_category') .' where uniacid=:uniacid  and parentid in('.implode(',',$ids).') ' ;
-				$third_category = pdo_fetchall($sql1, array(':uniacid'=>$uniacid,':parentid'=>$page['ccate']));					
+				$third_category = pdo_fetchall($sql1, array(':uniacid'=>$uniacid));					
 
 
 			}else{
@@ -102,7 +102,7 @@ if ($operation == 'category') {
 					$ids1[] = $v1['id'];
 				}
 				$sql1 = 'select id,parentid,name,level from ' . tablename('sz_yi_category') . ' where uniacid=:uniacid and parentid in ('.implode(',',$ids1).') ' ;
-				$thild_category = pdo_fetchall($sql1, array(':uniacid'=>$uniacid));								
+				$third_category = pdo_fetchall($sql1, array(':uniacid'=>$uniacid));								
 			}
 		}
 		

@@ -28,24 +28,24 @@
             <input type="hidden" name="op" value="user" />
             <input type="hidden" name="id" value="{$agentid}" />
            <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">成为代理时间</label>
-                    <div class="col-sm-7 col-lg-9 col-xs-12">
-                        <div class="col-sm-2">
-                            <label class='radio-inline'>
-                                <input type='radio' value='0' name='searchtime' {if $_GPC['searchtime']=='0'}checked{/if}>不搜索
-                            </label> 
-                             <label class='radio-inline'>
-                                <input type='radio' value='1' name='searchtime' {if $_GPC['searchtime']=='1'}checked{/if}>搜索
-                            </label>
-                     </div>
-                        {php echo tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d H:i', $starttime),'endtime'=>date('Y-m-d  H:i', $endtime)),true);}
-                    </div>
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">成为代理时间</label>
+                <div class="col-sm-7 col-lg-9 col-xs-12">
+                    <div class="col-sm-2">
+                        <label class='radio-inline'>
+                            <input type='radio' value='0' name='searchtime' {if $_GPC['searchtime']=='0'}checked{/if}>不搜索
+                        </label> 
+                         <label class='radio-inline'>
+                            <input type='radio' value='1' name='searchtime' {if $_GPC['searchtime']=='1'}checked{/if}>搜索
+                        </label>
+                 </div>
+                    {php echo tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d H:i', $starttime),'endtime'=>date('Y-m-d  H:i', $endtime)),true);}
                 </div>
-                <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">ID</label>
-                <div class="col-sm-8 col-lg-9 col-xs-12">
-                    <input type="text" class="form-control"  name="mid" value="{$_GPC['mid']}"/> 
-                </div>
+            </div>
+            <div class="form-group">
+            <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">ID</label>
+            <div class="col-sm-8 col-lg-9 col-xs-12">
+                <input type="text" class="form-control"  name="mid" value="{$_GPC['mid']}"/> 
+            </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">会员信息</label>
@@ -53,7 +53,7 @@
                     <input type="text" class="form-control"  name="realname" value="{$_GPC['realname']}" placeholder='可搜索昵称/名称/手机号'/> 
                 </div>
             </div>
-         <div class="form-group">
+            <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">是否关注</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                        <select name='followed' class='form-control'>
@@ -64,7 +64,7 @@
                     </select>
                 </div>
             </div>
-                   <div class="form-group">
+              <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">推荐人</label>
                 <div class="col-sm-3">
                     <select name='parentid' class='form-control'>
@@ -76,7 +76,7 @@
                     <input type="text"  class="form-control" name="parentname" value="{$_GPC['parentname']}" placeholder='推荐人昵称/姓名/手机号'/> 
                 </div>
             </div>
-                    <div class="form-group">
+            <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">状态</label>
                 <div class="col-sm-3 col-lg-2"><button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button></div>
             </div>

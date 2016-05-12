@@ -251,6 +251,10 @@ position: absolute;
     require(['tpl', 'core'], function(tpl, core) {
       
         core.json('shop/cart',{},function(json){
+            if(json.status==2){
+             core.tip.show(json.result.message);
+             location.href=json.result.url;
+            }
             if(json.result.total<=0){
                $('#container').html(  tpl('cart_empty') );
                 return;

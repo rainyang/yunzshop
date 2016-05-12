@@ -872,6 +872,14 @@ if (!class_exists('CommissionModel')) {
 			if (empty($orderid)) {
 				return;
 			}
+			//Author:ym Date:2016-04-07 Content:分红提交订单处理
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$bonus_set = $pluginbonus->getSet();
+				if(!empty($bonus_set['start'])){
+					$pluginbonus->checkOrderConfirm($orderid);
+				}
+			}
 			$set = $this->getSet();
 			if (empty($set['level'])) {
 				return;
@@ -885,14 +893,7 @@ if (!class_exists('CommissionModel')) {
 			if (empty($member)) {
 				return;
 			}
-			//Author:ym Date:2016-04-07 Content:分红提交订单处理
-			$pluginbonus = p("bonus");
-			if(!empty($pluginbonus)){
-				$bonus_set = $pluginbonus->getSet();
-				if(!empty($bonus_set['start'])){
-					$pluginbonus->checkOrderConfirm($orderid);
-				}
-			}
+			
 			$become_child = intval($set['become_child']);
 			$parent = false;
 			if (empty($become_child)) {

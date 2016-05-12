@@ -8,15 +8,22 @@
         <div class='panel-body'>
 
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">代理商分红</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">级差代理分红</label>
                 <div class="col-sm-4">
                     <select  class="form-control" name="setdata[start]">
-                        <option value="0" {if empty($set['start'])}selected{/if}>不开启代理商分红</option>
-                        <option value="1" {if $set['start']==1}selected{/if}>开启代理商分红</option>
+                        <option value="0" {if empty($set['start'])}selected{/if}>不开启股权代理分红</option>
+                        <option value="1" {if $set['start']==1}selected{/if}>开启股权代理分红</option>
                     </select>
                 </div>
             </div> 
-
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">级差</label>
+                <div class="col-sm-9 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="setdata[isdistinction]" value="0" {if $set['isdistinction'] ==0} checked="checked"{/if} /> 是</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[isdistinction]" value="1" {if $set['isdistinction'] ==1} checked="checked"{/if} /> 否</label>
+                    <span class='help-block'>级差代理，如选择否为同等级不拿分红外，分红比例正常没有级差</span>
+                </div>
+            </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区代理分红</label>
                 <div class="col-sm-4">
@@ -24,6 +31,14 @@
                         <option value="0" {if empty($set['area_start'])}selected{/if}>不开启地区代理</option>
                         <option value="1" {if $set['area_start']==1}selected{/if}>开启地区代理</option>
                     </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">级差</label>
+                <div class="col-sm-9 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="setdata[isdistinction_area]" value="0" {if $set['isdistinction_area'] ==0} checked="checked"{/if} /> 是</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[isdistinction_area]" value="1" {if $set['isdistinction_area'] ==1} checked="checked"{/if} /> 否</label>
+                    <span class='help-block'>地区代理，如选择否为同等级不拿分红外，分红比例正常没有级差</span>
                 </div>
             </div>
             <div class="form-group">
