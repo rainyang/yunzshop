@@ -68,7 +68,12 @@ if(!pdo_fieldexists('sz_yi_perm_role', 'status1')) {
 if(!pdo_fieldexists('sz_yi_perm_user', 'openid')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `openid` VARCHAR( 255 ) NOT NULL;");
 }
-
+if(!pdo_fieldexists('sz_yi_perm_user', 'username')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `username` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+} 
+if(!pdo_fieldexists('sz_yi_perm_user', 'password')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `username` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+}
 
 $info = pdo_fetch('select * from ' . tablename('sz_yi_plugin') . ' where identity= "supplier"  order by id desc limit 1');
 
