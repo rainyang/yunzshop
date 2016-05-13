@@ -29,6 +29,7 @@ if (!class_exists('BonusModel')) {
             global $_W;
             $sql = "select id, agentid, bonuslevel, bonus_status from " . tablename('sz_yi_member') . " where id={$id} and uniacid=".$_W['uniacid'];
             $parentAgent =  pdo_fetch($sql);
+
             if(empty($parentAgent)){
                 return $this->parentAgents;
             }else{
@@ -36,7 +37,7 @@ if (!class_exists('BonusModel')) {
         			$this->parentAgents[$parentAgent['bonuslevel']] = $parentAgent['id'];
         		}
             	if($parentAgent['agentid'] != 0){
-                    $this->getParentAgents($parentAgent['agentid']);
+                    return $this->getParentAgents($parentAgent['agentid']);
                 }else{
                 	return $this->parentAgents;
                 }
@@ -297,7 +298,7 @@ if (!class_exists('BonusModel')) {
 	        $agentid          = $member['id'];
             $time             = time();
             $day_times        = intval($set['settledaysdf']) * 3600 * 24;
-            $agentids		  = array();
+            $this->agents     = array();
             if (in_array('totaly', $options)) {
 	            //预计佣金
 	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=0 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and cg.bonus_area = 0";
