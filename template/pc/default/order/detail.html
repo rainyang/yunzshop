@@ -7,16 +7,24 @@
     .detail_topbar {height:44px; background:#5f6e8b; padding:15px;box-sizing: content-box;}
     .detail_topbar .ico {height:44px; width:40px; line-height:34px; float:left; font-size:26px; text-align:center; color:#fff;margin: 4px}
     .detail_topbar .tips {height:34px;  margin-left:10px; font-size:13px; color:#fff; line-height:17px;}
-    .detail_topbar .tips  span{line-height: 22px;display: block;}
+    .detail_topbar .tips  span{line-height: 22px;}
     
     .detail_user,.store{box-sizing: content-box;height:40px;  background:#fff; padding:5px;}
     .detail_user .info .ico { float:left;  height:40px; width:30px; line-height:50px; font-size:26px; text-align:center; color:#666}
     .detail_user .info .info1,.store .info .info1{height:40px; width:100%; float:left;line-height: 40px;position: relative;}
-    .detail_user .info .info1 .inner { margin-left:10px;margin-right:10px;overflow:hidden;}
+/*    .detail_user .info .info1 .inner { margin-left:10px;margin-right:10px;overflow:hidden;}
     .detail_user .info .info1 .inner span,.store .info .info1 .inner span{display: inline-block;width: 48px;font-size: 12px;color: #828282;vertical-align: top;}
-    .detail_user .info .info1 .inner i,.store .info .info1 .inner i{display: inline-block;font-size: 12px;color: #222;vertical-align: top;padding-left: 14px;font-style: normal;}
-    .detail_user .info .info1 .inner .user {height:30px; width:100%; font-size:16px; color:#333; line-height:35px;overflow:hidden;}
+    .detail_user .info .info1 .inner i,.store .info .info1 .inner i{display: inline-block;font-size: 12px;color: #222;vertical-align: top;padding-left: 14px;font-style: normal;}*/
+/*    .detail_user .info .info1 .inner .user {height:30px; width:100%; font-size:16px; color:#333; line-height:35px;overflow:hidden;}
     .detail_user .info .info1 .inner .address {height:20px; width:100%; font-size:14px; color:#999; line-height:20px;overflow:hidden;border: 0}
+    .detail_user .info .ico2 {height:50px; width:30px;padding-top:15px; float:right; font-size:16px; text-align:right; color:#999;}*/
+    
+    .detail_user {height:54px;  background:#fff; padding:5px; border-bottom:1px solid #eaeaea;}
+    .detail_user .info .ico { float:left;  height:50px; width:30px; line-height:50px; font-size:26px; text-align:center; color:#666}
+    .detail_user .info .info1 {height:54px; width:100%; float:left;margin-left:-30px;margin-right:-30px;}
+    .detail_user .info .info1 .inner { margin-left:30px;margin-right:30px;overflow:hidden;}
+    .detail_user .info .info1 .inner .user {height:30px; width:100%; font-size:16px; color:#333; line-height:35px;overflow:hidden;}
+    .detail_user .info .info1 .inner .address {height:20px; width:100%; font-size:14px; color:#999; line-height:20px;overflow:hidden;margin:0;border:0;}
     .detail_user .info .ico2 {height:50px; width:30px;padding-top:15px; float:right; font-size:16px; text-align:right; color:#999;}
 
     .detail_exp {height:42px; width:94%; background:#fff; padding:0px 3%; border-bottom:1px solid #eaeaea; line-height:42px; font-size:16px; color:#333;}
@@ -39,9 +47,9 @@
     .detail_good .price .pnum { height:20px;width:100%;text-align:right;font-size:14px; }
     .detail_good .price .num { height:20px;width:100%;text-align:right;}
     
-    .detail_price {height:auto; padding:0 14px;background:#fff;   }
+    .detail_price {height:auto; padding:10px 14px;background:#fff;   }
     .detail_price .price {height:auto; width:100%; }
-    .detail_price .price .line {padding-left: 75%;height:26px; width:100%; font-size:13px; color:#666; line-height:26px;}
+    .detail_price .price .line {padding-left: 78%;height:26px; width:100%; font-size:13px; color:#666; line-height:26px;}
     .detail_price .price .line span {height:26px; width:auto; float:right;}
     
    
@@ -173,7 +181,7 @@ select { width:80px;height:38px;position:absolute;left:0; -webkit-appearance: no
     <div class="ico"><i class="fa fa-file-text-o"></i></div>
     <div class="tips">     
         <div class="fl">
-            <span>订单金额(含运费): ￥<%order.price%><span>
+            <span>订单金额(含运费): ￥<%order.price%><span><br/>
             <span>运费: ￥<%order.dispatchprice%><span>
         </div>
         <div class="fr right-zt">
@@ -204,16 +212,16 @@ select { width:80px;height:38px;position:absolute;left:0; -webkit-appearance: no
 <%/if%>
 
     <%if order.isverify==1%>
-    <div class="store_title" onclick="showStores(this)" show="1" >适用的门店
+<!--     <div class="store_title" onclick="showStores(this)" show="1" >适用的门店
          <i class="fa fa-angle-down" style="float:right; line-height:44px; font-size:26px;"></i>
     </div>
       <div class="stores">
       <%each stores as store index%>
      <%if index<=1%>
      <div class="store" >
-             <div class="info">
+             <div class="info"> -->
              <!--<div class="ico"><i class="fa fa-building-o"></i></div>-->
-             <div class='info1'>
+            <!--  <div class='info1'>
                  <div class='inner'>
                      <span>收货信息</span>
                      <i><%store.storename%></i><i><%store.address%></i><i><%store.tel%></i>
@@ -232,9 +240,9 @@ select { width:80px;height:38px;position:absolute;left:0; -webkit-appearance: no
       <%each stores as store index%>
      <%if index>1%>
      <div class="store" >
-             <div class="info">
+             <div class="info"> -->
              <!--<div class="ico"><i class="fa fa-building-o"></i></div>-->
-             <div class='info1'>
+             <!-- <div class='info1'>
                  <div class='inner'>
                      <span>收货信息</span>
                      <i><%store.storename%></i><i><%store.address%></i><i><%store.tel%></i>
@@ -253,46 +261,72 @@ select { width:80px;height:38px;position:absolute;left:0; -webkit-appearance: no
     <%if stores.length>=3%>
      <div class="store_more" onclick="$('#store_more').show();$(this).remove()">显示更多 <i class="fa fa-angle-double-down"></i></div>
      <%/if%> 
-      </div>
-    
+      </div> -->
+         <%if order.dispatchtype==1%>
+             <div class="detail_user">
+                 <input type='hidden' id='carrierindex' value='0' />
+                <div class="info" id='carrier_select' >
+                    <!--<div class="ico"><i class="fa fa-map-marker"></i></div>-->
+                        <div class='info1'>
+                             <div class='inner'>
+                                    <div class="user">自提地点：<span id='address_realname'><%carrier.realname%></span>(<span id='address_mobile'><%carrier.mobile%></span>)</div>
+                                    <div class="address"><span id='address_address'><%carrier.address%></span></div>
+                             </div>
+                     </div>
+                </div>
+
+             </div>
+             <div class="detail_user">
+                <div class="info" id='carrier_select' >
+                    <!--<div class="ico"><i class="fa fa-map-marker"></i></div>-->
+                        <div class='info1'>
+                             <div class='inner'>
+                                    <div class="user">提货人姓名：<span id='address_realname'><%carrier.carrier_realname%></span></div>
+                                    <div class="user">提货人手机：<span id='address_mobile'><%carrier.carrier_mobile%></span></div>
+                             </div>
+                     </div>
+                </div>
+             </div>      
+         <%/if%>
+         <%if order.addressid!=0%>
+            <div class="detail_user">
+                <input type='hidden' id='addressid' value='<%address.id%>' />
+                <div class="info">
+                    <div class="ico"><i class="fa fa-map-marker"></i></div>
+                     <div class='info1'>
+                             <div class='inner'>
+                                    <div class="user">收件人：<span id='address_realname'><%address.realname%></span>(<span id='address_mobile'><%address.mobile%></span>)</div>
+                                    <div class="address"><span id='address_address'><%address.address%></span></div>
+                             </div>
+                         </div>
+               
+                </div>
+            </div>
+         <%/if%>
+
    
     <%else%>
-    
-	
+
+         
+            <%if order.addressid!=0%>
+                <div class="detail_user">
+                    <input type='hidden' id='addressid' value='<%address.id%>' />
+                    <div class="info">
+                        <div class="ico"><i class="fa fa-map-marker"></i></div>
+                         <div class='info1'>
+                                 <div class='inner'>
+                                        <div class="user">收件人：<span id='address_realname'><%address.realname%></span>(<span id='address_mobile'><%address.mobile%></span>)</div>
+                                        <div class="address"><span id='address_address'><%address.address%></span></div>
+                                 </div>
+                             </div>
+                   
+                    </div>
+                </div>
+             <%/if%>
+         
  
 
-
- <%if order.addressid!=0%>
-<div class="detail_user">
-    <input type='hidden' id='addressid' value='<%address.id%>' />
-    <div class="info">
-        <!--<div class="ico"><i class="fa fa-map-marker"></i></div>-->
-         <div class='info1'>
-                 <div class='inner'>
-                 <span>收货信息</span>
-                 <i><%address.realname%></i><i><%address.mobile%></i><i><%address.address%></i>
-                 </div>
-             </div>
-   
-    </div>
-</div>
- <%/if%>
- 
- <%if order.dispatchtype==1%>
- <div class="detail_user">
-     <input type='hidden' id='carrierindex' value='0' />
-    <div class="info" id='carrier_select' >
-        <!--<div class="ico"><i class="fa fa-map-marker"></i></div>-->
-            <div class='info1'>
-                 <div class='inner'>
-                    <span>自提地点</span>
-                     <i><%carrier.realname%></i><i><%carrier.mobile%></i><i><%carrier.address%></i>
-                 </div>
-         </div>
-    </div>
-</div>
- <%/if%>
- <%/if%>
+    <%/if%>
  
  
 
@@ -428,7 +462,7 @@ select { width:80px;height:38px;position:absolute;left:0; -webkit-appearance: no
       </div> 
 </div>
     <%if order.status==3%>
-    <div class="detail_price" style="height:80px;">
+    <div class="detail_price" style="margin-top:15px;height:80px;">
     <div class="price" style="padding-top:10px;">
      <div class="line">订单号:<span><%order.ordersn%></span></div>
      <div class="line">交易完成时间:<span><%order.finishtime%></span></div>

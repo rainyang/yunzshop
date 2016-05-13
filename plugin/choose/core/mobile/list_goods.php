@@ -11,7 +11,7 @@ if($_W['isajax']){
     $page=pdo_fetch('select * from '.tablename('sz_yi_chooseagent'). ' where id=:id and uniacid=:uniacid',array(':uniacid'=>$_W['uniacid'],':id'=>$pageid));
     if($page['isopen']!=0){
 
-	    $args=array(
+        $args=array(
         
         
         'pcate'=>$_GPC['pcate'],
@@ -19,53 +19,48 @@ if($_W['isajax']){
         'tcate'=>$_GPC['tcate'],
         'supplier_uid'=>$page['uid']
         );
-	}else{
+    }else{
         if($operation == 'moren'){
-            if(!empty($page['tcate'])){
-                $args=array(
-                'pcate'=>$_GPC['pcate'],
-                'ccate'=>$page['ccate'],
-                'tcate'=>$page['tcate']
-                );  
-            }else if(!empty($page['ccate'])){
-                $args=array(
-                'pcate'=>$_GPC['pcate'],
-                'ccate'=>$page['ccate'],
+            // if(!empty($page['tcate'])){
+            //     $args=array(
+            //     'pcate'=>$_GPC['pcate'],
+            //     'ccate'=>$page['ccate'],
+            //     'tcate'=>$page['tcate']
+            //     );  
+            // }else if(!empty($page['ccate'])){
+            //     $args=array(
+            //     'pcate'=>$_GPC['pcate'],
+            //     'ccate'=>$page['ccate'],
                 
-                );  
-            }else{
+            //     );  
+            // }else{
                 $args=array(
                 'pcate'=>$_GPC['pcate']
                 
                 ); 
-            }
+           //}
             
         }else if($operation == 'second'){
-            if(!empty($page['tcate'])){
-               $args=array(
-                'pcate'=>$page['pcate'],
-                'ccate'=>$_GPC['ccate'],
-                'tcate'=>$page['ccate']
-                );  
-            }else{
+            // if(!empty($page['tcate'])){
+            //    $args=array(
+            //     'pcate'=>$page['pcate'],
+            //     'ccate'=>$_GPC['ccate'],
+            //     'tcate'=>$page['ccate']
+            //     );  
+            // }else{
                 $args=array(
                 'pcate'=>$page['pcate'],
                 'ccate'=>$_GPC['ccate']
                 );
-            }
-            $args=array(
-            'pcate'=>$_GPC['pcate'],
-            'ccate'=>$_GPC['ccate'],
-            'tcate'=>$_GPC['tcate']
-            );
+            // }
         }else if($operation == 'third'){
             $args=array(
             'tcate'=>$_GPC['tcate']
             );
         }
-		
-	}
-	    
+        
+    }
+        
     $goods = m('goods')->getList($args);
     show_json(1,array('goods'=>$goods));
 }
