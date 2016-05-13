@@ -188,7 +188,7 @@ if ($_W['isajax']) {
             $saleset["enoughs"] = $sale_plugin->getEnoughs();
         }
         //$carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1 and type in(1,3)", array(
-        $carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1", array(
+        $carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1 and myself_support=1 ", array(
             ":uniacid" => $_W["uniacid"]
         ));
         if (!empty($carrier_list)) {
@@ -261,6 +261,10 @@ if ($_W['isajax']) {
                     ':uniacid' => $_W['uniacid']
                 ));
             }
+            $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
+                ':uniacid' => $uniacid,
+                ':openid' => $openid
+            ));            
         } else {
             $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
                 ':uniacid' => $uniacid,

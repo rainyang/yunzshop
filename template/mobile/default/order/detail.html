@@ -14,7 +14,7 @@
     .detail_user .info .info1 {height:54px; width:100%; float:left;margin-left:-30px;margin-right:-30px;}
     .detail_user .info .info1 .inner { margin-left:30px;margin-right:30px;overflow:hidden;}
     .detail_user .info .info1 .inner .user {height:30px; width:100%; font-size:16px; color:#333; line-height:35px;overflow:hidden;}
-    .detail_user .info .info1 .inner .address {height:20px; width:100%; font-size:14px; color:#999; line-height:20px;overflow:hidden;}
+    .detail_user .info .info1 .inner .address {height:20px; width:100%; font-size:14px; color:#999; line-height:20px;overflow:hidden;margin:0;border:0;}
     .detail_user .info .ico2 {height:50px; width:30px;padding-top:15px; float:right; font-size:16px; text-align:right; color:#999;}
 
     .detail_exp {height:42px; width:94%; background:#fff; padding:0px 3%; border-bottom:1px solid #eaeaea; line-height:42px; font-size:16px; color:#333;}
@@ -144,7 +144,7 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
 <%/if%>
 
     <%if order.isverify==1%>
-    <div class="store_title" onclick="showStores(this)" show="1" >适用的门店
+   <!--  <div class="store_title" onclick="showStores(this)" show="1" >适用的门店
          <i class="fa fa-angle-down" style="float:right; line-height:44px; font-size:26px;"></i>
     </div>
   
@@ -191,16 +191,8 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
     <%if stores.length>=3%>
      <div class="store_more" onclick="$('#store_more').show();$(this).remove()">显示更多 <i class="fa fa-angle-double-down"></i></div>
      <%/if%> 
-      </div>
-    
-   
-    <%else%>
-    
-	
- 
-
-
- <%if order.addressid!=0%>
+      </div> -->
+     <%if order.addressid!=0%>
 <div class="detail_user">
     <input type='hidden' id='addressid' value='<%address.id%>' />
     <div class="info">
@@ -229,7 +221,56 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
          </div>
     </div>
 </div>
+
+<div class="detail_user">
+     <input type='hidden' id='carrierindex' value='0' />
+    <div class="info" id='carrier_select' >
+            <div class='info1'>
+                 <div class='inner'>
+                     <div class="user" style="font-size: 14px;padding-left: 10px">提货人姓名：<span id='carrier_realname' ><%carrier.carrier_realname%></span></div>
+                     <div class="user" style="font-size: 14px;padding-left: 10px">提货人手机：<span id='carrier_mobile'><%carrier.carrier_mobile%></span></div>
+                 </div>
+         </div>
+    </div>
+</div>
  <%/if%>
+   
+    <%else%>
+    
+	
+ 
+
+
+ <%if order.addressid!=0%>
+<div class="detail_user">
+    <input type='hidden' id='addressid' value='<%address.id%>' />
+    <div class="info">
+        <div class="ico"><i class="fa fa-map-marker"></i></div>
+         <div class='info1'>
+                 <div class='inner'>
+                        <div class="user">收件人：<span id='address_realname'><%address.realname%></span>(<span id='address_mobile'><%address.mobile%></span>)</div>
+                        <div class="address"><span id='address_address'><%address.address%></span></div>
+                 </div>
+             </div>
+   
+    </div>
+</div>
+ <%/if%>
+ 
+<!--  <%if order.dispatchtype==1%>
+ <div class="detail_user">
+     <input type='hidden' id='carrierindex' value='0' />
+    <div class="info" id='carrier_select' >
+        <div class="ico"><i class="fa fa-map-marker"></i></div>
+            <div class='info1'>
+                 <div class='inner'>
+                     <div class="user">自提地点：<span id='carrier_realname'><%carrier.realname%></span>(<span id='carrier_mobile'><%carrier.mobile%></span>)</div>
+                     <div class="address"><span id='carrier_address'><%carrier.address%></span></div>
+                 </div>
+         </div>
+    </div>
+</div>
+ <%/if%> -->
  <%/if%>
  
  
