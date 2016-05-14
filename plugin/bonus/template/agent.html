@@ -1,6 +1,5 @@
 {template 'web/_header'}
 {template 'tabs'}
-
 {if $operation=='display'}
 <div class="panel panel-info">
     <div class="panel-heading">筛选</div>
@@ -161,12 +160,8 @@
                             {ifp 'bonus.agent.view'}<li><a href="{php echo $this->createPluginWebUrl('bonus/agent/detail',array('id' => $row['id']));}" title='详细信息'><i class='fa fa-edit'></i> 详细信息</a>	</li>	{/if}
                             {ifp 'bonus.agent.order'}<li><a  href="{php echo $this->createWebUrl('order',array('op'=>'display','bonusagentid' => $row['id']));}" title='推广订单'><i class='fa fa-list'></i> 分红订单</a></li>{/if}
                             {ifp 'bonus.agent.user'}<li><a  href="{php echo $this->createPluginWebUrl('bonus/agent/user',array('id' => $row['id']));}"  title='推广下线'><i class='fa fa-users'></i> 推广下线</a></li>{/if}
-                            {ifp 'bonus.agent.delete'}<li><a href="{php echo $this->createPluginWebUrl('commission/agent/delete',array('id' => $row['id']));}" title="删除" onclick="return confirm('确定要删除该会员吗？');"><i class='fa fa-remove'></i> &nbsp;删除分销商</a></li>{/if}
-
                         </ul>
                     </div>
-
-
                 </td>
             </tr>
             {/loop}
@@ -176,7 +171,7 @@
     </div>
 </div>
 {else if $operation=='detail'}
-
+<script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
 <form {ifp 'bonus.agent.edit|bonus.agent.check'}action="" method='post'{/if} class='form-horizontal'>
 <input type="hidden" name="id" value="{$member['id']}">
 <input type="hidden" name="op" value="detail">
@@ -263,29 +258,61 @@
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">区域代理</label>
             <div class="col-sm-4">
+                {ifp 'bonus.agent.edit'}
                 <select  class="form-control" id="bonus_area" name="data[bonus_area]">
                     <option value="0" {if empty($member['bonus_area'])}selected{/if}>不选择</option>
                     <option value="1" {if $member['bonus_area']==1}selected{/if}>省级代理</option>
                     <option value="2" {if $member['bonus_area']==2}selected{/if} >市级代理</option>
                     <option value="3" {if $member['bonus_area']==3}selected{/if} >区级代理</option>
                 </select>
+                {else}
+                <input type="hidden" name="data[weixin]" class="form-control" value="{if empty($member['bonus_area'])}0{/if}{if $member['bonus_area']==1}1{/if}{if $member['bonus_area']==2}2{/if}{if $member['bonus_area']==3}3{/if}"  />
+                <div class='form-control-static'>{if empty($member['bonus_area'])}无{/if}{if $member['bonus_area']==1}省级代理{/if}{if $member['bonus_area']==2}市级代理{/if}{if $member['bonus_area']==3}区级代理{/if}</div>
+                {/if}
             </div>
         </div>
         <div class="form-group form-area" {if empty($member['bonus_area'])}style="display:none;"{/if}>
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">代理区域</label>
             <div class="col-sm-9 col-xs-12">
-                {php echo tpl_fans_form('reside',array('province' => $member['bonus_province'],'city' => $member['bonus_city'],'district' => $member['bonus_district']));}
+                {ifp 'bonus.agent.edit'}
+                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                    <select class="form-control tpl-province" id="sel-provance" onchange="selectCity();" name="reside[province]">
+                        <option value="" selected="true">所在省份</option>
+                    </select>
+                </div>
+      
+                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                    <select class="form-control tpl-city" id="sel-city" onchange="selectcounty()" name="reside[city]"><option value="" selected="true">所在城市</option></select>
+                </div>
+        
+                <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                    <select class="form-control tpl-district" id="sel-area" name="reside[district]"><option value="" selected="true">所在地区</option></select>
+                </div>
+                {else}
+                <input type="hidden" name="reside[province]" class="form-control" value="{$member['bonus_province']}"  />
+                <div class='form-control-static'>{$member['bonus_province']}</div>
+                <input type="hidden" name="reside[city]" class="form-control" value="{$member['bonus_city']}"  />
+                <div class='form-control-static'>{$member['bonus_city']}</div>
+                <input type="hidden" name="reside[district]" class="form-control" value="{$member['bonus_area']}"  />
+                <div class='form-control-static'>{$member['bonus_area']}</div>
+                {/if}    
             </div>
         </div>
         <div class="form-group form-area">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                 <div class="col-sm-4">
+                    {ifp 'bonus.agent.edit'}
                     <div class="input-group">
                         <div class="input-group-addon">区域代理</div>
                         <input type="text" name="data[bonus_area_commission]" class="form-control" value="{$member['bonus_area_commission']}"  />
                         <div class="input-group-addon">%</div>
                     </div>
                     <span class='help-block'>如不设置，则为基础设置中默认比例值</span>
+                    {else}
+                    <input type="hidden" name="data[bonus_area_commission]" class="form-control" value="{$member['bonus_area_commission']}"  />
+                    <div class='form-control-static'>{$member['bonus_area_commission']}</div>
+                    {/if}
+                    
                 </div>
             </div>
         <script type="text/javascript">
@@ -316,6 +343,7 @@
                 }
             }
             changearea();
+            cascdeInit("{$member['bonus_province']}", "{$member['bonus_city']}", "{$member['bonus_area']}");
         </script>
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">累计分红佣金</label>
@@ -344,7 +372,7 @@
     <div class='panel-body'>
         <!--<span>diyform</span>-->
 
-        {php $datas = iunserializer($member['diycommissiondata'])}
+        {php $datas = iunserializer($member['diybonusdata'])}
         {loop $fields $key $value}
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">{php echo $value['tp_name']}</label>
@@ -403,15 +431,9 @@
                 <input type="button" name="back" onclick='history.back()' {ifp 'bonus.agent.edit|bonus.agent.check'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
             </div>
         </div>
-
-
     </div>
-
-
 </div>
-
 </form>
-
 {/if}
 {template 'web/_footer'}
 

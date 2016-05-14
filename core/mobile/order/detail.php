@@ -102,6 +102,14 @@ if ($_W['isajax']) {
                 ':uniacid' => $_W['uniacid']
             ));
         }
+        if ($order['dispatchtype'] == 0) {
+            $address = iunserializer($order['address']);
+            if (!is_array($address)) {
+                $address = pdo_fetch('select realname,mobile,address from ' . tablename('sz_yi_member_address') . ' where id=:id limit 1', array(
+                    ':id' => $order['addressid']
+                ));
+            }
+        }
     } else {
         if ($order['dispatchtype'] == 0) {
             $address = iunserializer($order['address']);
@@ -145,5 +153,7 @@ if ($_W['isajax']) {
 if(!isMobile()){
     include $this->template('member/center');
 }
-include $this->template('order/detail');
+    include $this->template('order/detail');   
+
+
 

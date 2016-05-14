@@ -6,12 +6,13 @@ global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
-$tmplateType = (isMobile()) ? 'mobile' : 'pc';
-
-if(!$_COOKIE[__cookie_sz_yi_userid_.$_W['uniacid']] && $tmplateType == 'pc'){
-    show_json(2, '需要登陆');
-}
 if ($_W['isajax']) {
+    if(empty($openid) || strstr($openid, 'http-equiv=refresh')){
+        show_json(2, array(
+                'message' => '请先登录',
+                'url' => $this->createMobileUrl('member/login')
+            )); 
+    }
     if ($operation == 'display') {
         $condition  = ' and f.uniacid= :uniacid and f.openid=:openid and f.deleted=0';
         $params     = array(
@@ -33,7 +34,6 @@ if ($_W['isajax']) {
         unset($r);
         $list       = set_medias($list, 'thumb');
         $totalprice = number_format($totalprice, 2);
-        //print_r($list);exit();
         
             show_json(1, array(
                 'total' => $total,
@@ -44,13 +44,27 @@ if ($_W['isajax']) {
     } else if ($operation == 'add' && $_W['ispost']) {
         $id    = intval($_GPC['id']);
         $total = intval($_GPC['total']);
+        if ($total <= 0) {
+           
+            $sql = "update " . tablename('sz_yi_member_cart') . ' set deleted=1 where uniacid=:uniacid and openid=:openid and goodsid = :goodsid';
+            pdo_query($sql, array(
+                ':uniacid' => $uniacid,
+                'goodsid' => $id,
+                ':openid' => $openid
+            ));
+
+            
+            show_json(1, array(
+                /*'message' => '添加成功',*/
+                'cartcount' => 0
+            ));
+        }
         empty($total) && $total = 1;
         $optionid = intval($_GPC['optionid']);
         $goods    = pdo_fetch('select id,marketprice from ' . tablename('sz_yi_goods') . ' where uniacid=:uniacid and id=:id limit 1', array(
             ':uniacid' => $uniacid,
             ':id' => $id
         ));
-        
         if (empty($goods)) {
             show_json(0, '商品未找到');
         }
@@ -85,39 +99,61 @@ if ($_W['isajax']) {
                 }
             }
         }
-        $cartcount = pdo_fetchcolumn('select sum(total) from ' . tablename('sz_yi_member_cart') . ' where openid=:openid and deleted=0 and uniacid=:uniacid limit 1', array(
+        $cartcount = pdo_fetchcolumn('select sum(total) from ' . tablename('sz_yi_member_cart') . ' where openid=:openid and deleted=0 and uniacid=:uniacid and goodsid = :goodsid  limit 1', array(
             ':uniacid' => $uniacid,
+            'goodsid' => $id,
             ':openid' => $openid
         ));
+        $dates= pdo_fetch("select {$datafields} from " . tablename('sz_yi_member_cart') . ' where openid=:openid and goodsid=:id  and deleted=0 and  uniacid=:uniacid   limit 1', array(
+        ':uniacid' => $uniacid,
+        ':openid' => $openid,
+        
+        ':id' => $id
+        ));                   
         if (empty($data)) {
+
             $data = array(
-                'uniacid' => $uniacid,
-                'openid' => $openid,
-                'goodsid' => $id,
-                'optionid' => $optionid,
-                'marketprice' => $goods['marketprice'],
-                'total' => $total,
-                'diyformid' => $diyformid,
-                'diyformdata' => $diyformdata,
-                'diyformfields' => $diyformfields,
-                'createtime' => time()
+            'uniacid' => $uniacid,
+            'openid' => $openid,
+            'goodsid' => $id,
+            'optionid' => $optionid,
+            'marketprice' => $goods['marketprice'],
+            'total' => $total,
+            'diyformid' => $diyformid,
+            'diyformdata' => $diyformdata,
+            'diyformfields' => $diyformfields,
+            'createtime' => time()
             );
             pdo_insert('sz_yi_member_cart', $data);
             $cartcount += $total;
             show_json(1, array(
                 'message' => '添加成功',
                 'cartcount' => $cartcount
-            ));
+            )); 
+
         } else {
-            $data['diyformdataid'] = $diyformdataid;
+           /* $data['diyformdataid'] = $diyformdataid;
             $data['diyformdata']   = $diyformdata;
             $data['diyformfields'] = $diyformfields;
             pdo_update('sz_yi_member_cart', $data, array(
                 'id' => $data['id']
-            ));
+            ));*/
+            
+            pdo_update('sz_yi_member_cart', array(
+                    'total' => $total
+                ), array(
+                    'uniacid' => $uniacid,
+                    'goodsid' => $id
+                ));
+            
         }
+        $cartcount = pdo_fetchcolumn('select sum(total) from ' . tablename('sz_yi_member_cart') . ' where openid=:openid and deleted=0 and uniacid=:uniacid and goodsid = :goodsid limit 1', array(
+            ':uniacid' => $uniacid,
+            'goodsid' => $id,
+            ':openid' => $openid
+        ));
         show_json(1, array(
-            'message' => '已在购物车',
+            'message' => '添加成功',
             'cartcount' => $cartcount
         ));
     } else if ($operation == 'selectoption') {
@@ -267,6 +303,45 @@ if ($_W['isajax']) {
             ':openid' => $openid
         ));
         show_json(1);
+    } else if ($operation == 'cart' && $_W['ispost']) {
+        $data          = pdo_fetchall("select * from " . tablename('sz_yi_member_cart') . ' where openid=:openid and deleted=0 and  uniacid=:uniacid ', array(
+            ':uniacid' => $uniacid,
+            ':openid' => $openid
+        ));
+        
+        // $current_category = pdo_fetch('select id,parentid,name,level from ' . tablename('sz_yi_category') . ' where uniacid=:uniacid order by displayorder DESC', array(
+        //     ':uniacid' => $_W['uniacid']
+        // ));
+
+        $parent_category = pdo_fetchall('select id,parentid,name,level from ' . tablename('sz_yi_category') . ' where parentid=0  and uniacid=:uniacid ', array(
+            
+            ':uniacid' => $_W['uniacid']
+        ));
+
+        foreach ($parent_category as $key => &$category) {
+            $args = array(           
+            'pcate' => $category['id']
+            );
+            $goods    = m('goods')->getList($args);
+
+            $conut = 0;
+            foreach ($goods as $key => $good) {
+                $cartcount = pdo_fetchcolumn('select sum(total) from ' . tablename('sz_yi_member_cart') . ' where openid=:openid and deleted=0 and uniacid=:uniacid and goodsid = :goodsid limit 1', array(
+                    ':uniacid' => $_W['uniacid'],
+                    'goodsid' => $good['id'],
+                    ':openid' => $openid
+                ));
+
+                $conut = $cartcount + $conut;
+            }
+
+            $category['count'] = $conut;
+        }
+
+         show_json(1, array(
+            'categorys' => $parent_category,
+            'goods' => $data
+        ));
     }
 }
 include $this->template('shop/cart');

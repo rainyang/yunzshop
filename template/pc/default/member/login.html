@@ -1,7 +1,23 @@
 {template 'common/header'}
 {template 'common/navigation'}
 <div class="blank"></div>
-
+{if $operation == 'black'}
+  {template 'common/header'}
+  <style type="text/css">
+  .ok {height:200px; padding-top:65px;}
+  .ok .ico {height:65px; width:65px; margin:auto; border:3px solid #32cd32; border-radius:55px; color:#32cd32; font-size:50px; text-align:center; line-height:65px;}
+  .ok .text {height:20px; margin-top:30px; font-size:16px; color:#666; line-height:20px; text-align:center;}
+  .ok .sub {height:32px; width:145px; background:#e53c39; margin:20px auto; border-radius:20px; color:#fff; line-height:32px; text-align:center; font-size:16px;}
+  </style>
+  <title>禁止访问</title>
+  <div class="fl wfs bcf7">
+  <div id='container'></div>
+    <div class="ok">
+      <div class="ico"><i class="fa fa-check"></i></div>
+            <div class="text">禁止访问，请联系客服！</div>
+      </div>
+    </div>
+{else}
 <div class="fl wfs bcf7">
         <div class="regist-process-wrapper">
             <div class="regist-process-body fl wfs">
@@ -75,9 +91,7 @@ require(['tpl', 'core'], function(tpl, core) {
                        }, function(json) {
                         if(json.status==1){
                              core.tip.show('登录成功');
-                             //console.log(json.result.preurl);
-                             location.href=json.result.preurl;
-                             //location.href='{php echo $this->createMobileUrl('order')}';
+                             location.href='{php echo $this->createMobileUrl('order')}';
                         }
                         else{
                             core.tip.show('用户不存在或密码错误!');
@@ -89,46 +103,8 @@ require(['tpl', 'core'], function(tpl, core) {
 
     })
 
-
-/*
-        $(".login-btn").click(function(){
-            var username = $("#username").val();
-            var password = $("#password").val();
-            var msg = "";
-            if(username == ""){
-                alert("账号不能为空");
-            }
-            if(password == ""){
-               alert("密码不能为空");
-            }
-            if(msg){ 
-              alert(msg);
-              return false;
-            }else{
-              //alert(123);
-              $.post('{php echo $this->createMobileUrl("member/login")}',
-              {
-                'memberdata':{
-                  'mobile': $('#username').val(),
-                  'password': $('#password').val()
-                 } 
-              },
-              function(json){
-                if (json.status==1) {
-                  //console.log('ids:'+ids);
-                  alert("登陆成功");
-                  //location.href = "{php echo $this->createMobileUrl('member/center')}";  
-                }else {
-                  alert("用户不存在或密码错误!");
-                }
-              },'json');
-            }
-            
-        });
-*/
     </script>
-
+{/if}
 </div>
-
 </body>
 </html>

@@ -27,8 +27,9 @@ if (!class_exists('BonusModel')) {
 		//获取上级代理信息
         public function getParentAgents($id, $type = 0){
             global $_W;
-            $sql = "select id, agentid, bonuslevel, bonus_status from " . tablename('sz_yi_member') . " where id={$id} and isagent = 1 and uniacid=".$_W['uniacid'];
+            $sql = "select id, agentid, bonuslevel, bonus_status from " . tablename('sz_yi_member') . " where id={$id} and uniacid=".$_W['uniacid'];
             $parentAgent =  pdo_fetch($sql);
+
             if(empty($parentAgent)){
                 return $this->parentAgents;
             }else{
@@ -55,18 +56,16 @@ if (!class_exists('BonusModel')) {
 			$openid = $order['openid'];
 			$address = unserialize($order['address']);
 			
-			$goods = pdo_fetchall('select og.id,og.realprice,og.goodsid,og.total,og.optionname,g.hascommission,g.nocommission,g.bonusmoney from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
+			$goods = pdo_fetchall('select og.id,og.realprice,og.price,og.goodsid,og.total,og.optionname,g.hascommission,g.nocommission,g.bonusmoney from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
 			$member = m('member')->getInfo($openid);
 			$levels = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_bonus_level') . " WHERE uniacid = '{$_W['uniacid']}' ORDER BY level asc");
-			
 			foreach ($goods as $cinfo) {
-				$price_all = $cinfo['bonusmoney'] > 0.00 ? $cinfo['bonusmoney'] * $cinfo['total'] : $cinfo['price'];
+				$price_all = $cinfo['bonusmoney'] > 0 && !empty($cinfo['bonusmoney']) ? $cinfo['bonusmoney'] * $cinfo['total'] : $cinfo['price'];
 				if(empty($set['selfbuy'])){
 					$masid = $member['agentid'];
 				}else{
 					$masid = $member['id'];
 				}
-				
 				//查询分红人员
 				if(!empty($masid)){
 					$parentAgents = $this->getParentAgents($masid, 1);
@@ -74,7 +73,6 @@ if (!class_exists('BonusModel')) {
 					foreach ($levels as $key => $level) {
 						$levelid = $level['id'];
 						if(array_key_exists($levelid, $parentAgents)){
-							
 							if($level['agent_money'] > 0){
 								$setmoney = $level['agent_money']/100;
 							}else{
@@ -82,7 +80,13 @@ if (!class_exists('BonusModel')) {
 							}
 							$bonus_money_old = round($price_all * $setmoney, 2);
 							//级差分红
-							$bonus_money = $bonus_money_old - $range_money;
+							if(empty($set['isdistinction'])){
+								$bonus_money = $bonus_money_old - $range_money;
+								$range_money = $bonus_money_old;
+							}else{
+								$bonus_money = $bonus_money_old;
+							}
+							
 							$data = array(
 								'uniacid' => $_W['uniacid'],
 								'ordergoodid' => $cinfo['goodsid'],
@@ -96,12 +100,13 @@ if (!class_exists('BonusModel')) {
 							);
 							pdo_insert('sz_yi_bonus_goods', $data);
 						}
+						
 					}
 				}
 			
 				//是否开启区域代理
 				if(!empty($set['area_start'])){
-					
+					$bonus_area_money_old = 0;
 					//省级代理计算
 					$bonus_commission1 = floatval($set['bonus_commission1']);
 					if(!empty($bonus_commission1)){
@@ -112,19 +117,24 @@ if (!class_exists('BonusModel')) {
 		            		}else{
 		            			$bonus_area_money = round($price_all * $set['bonus_commission1']/100, 2);
 		            		}
-
-	            			$data = array(
-			                    'uniacid' => $_W['uniacid'],
-			                    'ordergoodid' => $cinfo['goodsid'],
-			                    'orderid' => $orderid,
-			                    'total' => $cinfo['total'],
-			                    'optionname' => $cinfo['optionname'],
-			                    'mid' => $agent_province['id'],
-			                    'bonus_area' => 1,
-			                    'money' => $bonus_area_money,
-			                    'createtime' => $time
-			                );
-			                pdo_insert('sz_yi_bonus_goods', $data);
+		            		if(empty($set['isdistinction_area'])){
+								$bonus_area_money = $bonus_area_money - $bonus_area_money_old;
+								$bonus_area_money_old = $bonus_area_money;
+							}
+		            		if($bonus_area_money > 0){
+		            			$data = array(
+				                    'uniacid' => $_W['uniacid'],
+				                    'ordergoodid' => $cinfo['goodsid'],
+				                    'orderid' => $orderid,
+				                    'total' => $cinfo['total'],
+				                    'optionname' => $cinfo['optionname'],
+				                    'mid' => $agent_province['id'],
+				                    'bonus_area' => 1,
+				                    'money' => $bonus_area_money,
+				                    'createtime' => $time
+				                );
+				                pdo_insert('sz_yi_bonus_goods', $data);
+			                }
 			            }
 		            }
 		            //市级代理计算
@@ -137,19 +147,24 @@ if (!class_exists('BonusModel')) {
 		            		}else{
 		            			$bonus_area_money = round($price_all * $set['bonus_commission2']/100, 2);
 		            		}
-
-	            			$data = array(
-			                    'uniacid' => $_W['uniacid'],
-			                    'ordergoodid' => $cinfo['goodsid'],
-			                    'orderid' => $orderid,
-			                    'total' => $cinfo['total'],
-			                    'optionname' => $cinfo['optionname'],
-			                    'mid' => $agent_city['id'],
-			                    'bonus_area' => 2,
-			                    'money' => $bonus_area_money,
-			                    'createtime' => $time
-			                );
-		                	pdo_insert('sz_yi_bonus_goods', $data);
+		            		if(empty($set['isdistinction_area'])){
+								$bonus_area_money = $bonus_area_money - $bonus_area_money_old;
+								$bonus_area_money_old = $bonus_area_money;
+							}
+		            		if($bonus_area_money > 0){
+		            			$data = array(
+				                    'uniacid' => $_W['uniacid'],
+				                    'ordergoodid' => $cinfo['goodsid'],
+				                    'orderid' => $orderid,
+				                    'total' => $cinfo['total'],
+				                    'optionname' => $cinfo['optionname'],
+				                    'mid' => $agent_city['id'],
+				                    'bonus_area' => 2,
+				                    'money' => $bonus_area_money,
+				                    'createtime' => $time
+				                );
+			                	pdo_insert('sz_yi_bonus_goods', $data);
+			                }
 		                }
 		            }
 
@@ -163,18 +178,23 @@ if (!class_exists('BonusModel')) {
 		            		}else{
 		            			$bonus_area_money = round($price_all * $set['bonus_commission3']/100, 2);
 		            		}
-
-	            			$data = array(
-			                    'uniacid' => $_W['uniacid'],
-			                    'ordergoodid' => $cinfo['goodsid'],
-			                    'orderid' => $orderid,
-			                    'total' => $cinfo['total'],
-			                    'optionname' => $cinfo['optionname'],
-			                    'mid' => $agent_district['id'],
-			                    'bonus_area' => 3,
-			                    'money' => $bonus_area_money,
-			                    'createtime' => $time
-			                );
+		            		if(empty($set['isdistinction_area'])){
+								$bonus_area_money = $bonus_area_money - $bonus_area_money_old;
+								$bonus_area_money_old = $bonus_area_money;
+							}
+		            		if($bonus_area_money > 0){
+		            			$data = array(
+				                    'uniacid' => $_W['uniacid'],
+				                    'ordergoodid' => $cinfo['goodsid'],
+				                    'orderid' => $orderid,
+				                    'total' => $cinfo['total'],
+				                    'optionname' => $cinfo['optionname'],
+				                    'mid' => $agent_district['id'],
+				                    'bonus_area' => 3,
+				                    'money' => $bonus_area_money,
+				                    'createtime' => $time
+				                );
+				            }
 			                pdo_insert('sz_yi_bonus_goods', $data);
 			            }
 		            }
@@ -278,7 +298,7 @@ if (!class_exists('BonusModel')) {
 	        $agentid          = $member['id'];
             $time             = time();
             $day_times        = intval($set['settledaysdf']) * 3600 * 24;
-            $agentids		  = array();
+            $this->agents     = array();
             if (in_array('totaly', $options)) {
 	            //预计佣金
 	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=0 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and cg.bonus_area = 0";
@@ -687,7 +707,7 @@ if (!class_exists('BonusModel')) {
 
 		function perms()
 		{
-			return array('commission' => array('text' => $this->getName(), 'isplugin' => true, 'child' => array('cover' => array('text' => '入口设置'), 'agent' => array('text' => '分销商', 'view' => '浏览', 'check' => '审核-log', 'edit' => '修改-log', 'agentblack' => '黑名单操作-log', 'delete' => '删除-log', 'user' => '查看下线', 'order' => '查看推广订单(还需有订单权限)', 'changeagent' => '设置分销商'), 'level' => array('text' => '分销商等级', 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log'), 'apply' => array('text' => '佣金审核', 'view1' => '浏览待审核', 'view2' => '浏览已审核', 'view3' => '浏览已打款', 'view_1' => '浏览无效', 'export1' => '导出待审核-log', 'export2' => '导出已审核-log', 'export3' => '导出已打款-log', 'export_1' => '导出无效-log', 'check' => '审核-log', 'pay' => '打款-log', 'cancel' => '重新审核-log'), 'notice' => array('text' => '通知设置-log'), 'increase' => array('text' => '分销商趋势图'), 'changecommission' => array('text' => '修改佣金-log'), 'set' => array('text' => '基础设置-log'))));
+			return array('bonus' => array('text' => $this->getName(), 'isplugin' => true, 'child' => array('cover' => array('text' => '入口设置'), 'agent' => array('text' => '代理商管理', 'view' => '浏览', 'check' => '审核-log', 'edit' => '修改-log', 'agentblack' => '黑名单操作-log', 'user' => '查看下线', 'order' => '查看推广订单(还需有订单权限)', 'changeagent' => '设置代理商'), 'level' => array('text' => '代理商等级', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log'), 'send' => array('text' => '级差分红', 'view' => '浏览', 'bont' => '发放按钮'), 'sendall' => array('text' => '全球分红', 'view' => '浏览', 'bont' => '发放按钮'), 'detail' => array('text' => '分红明细', 'view' => '浏览', 'afresh' => '重发分红'), 'notice' => array('text' => '通知设置-log'), 'set' => array('text' => '基础设置-log'))));
 		}
 
 		//分红

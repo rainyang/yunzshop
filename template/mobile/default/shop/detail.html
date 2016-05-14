@@ -386,17 +386,19 @@ div.flicking_con a.on{background-position:0 -9px}
             <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
                 <%if cartcount>0%><b><%cartcount%></b><%/if%>
             </div>
-            <%/if%>
+            
             <div class="add" onclick="choose('cart')" <%if shopset.cservice &&  goods.canaddcart%>style="width:28%"<%/if%>>加入购物车</div>
+            <%/if%>
             <div class="buy" onclick="choose('buy')" <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%/if%>>立即购买</div>
         <%else%>
-             <%if goods.canaddcart%>
+            <%if goods.canaddcart%>
             <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
                 <%if cartcount>0%><b><%cartcount%></b><%/if%>
             </div>
-            <%/if%>
+            
             <div class="add" onclick="choose('cart')">加入购物车</div>
-            <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:50%'<%/if%>>立即购买</div>
+            <%/if%>
+            <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:85%'<%/if%>>立即购买</div>
         <%/if%>
 </div>
     <%/if%>

@@ -1,0 +1,677 @@
+{template 'common/header'}
+<!DOCTYPE html>
+<html>
+<head>
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type" /><meta charset="utf-8" />
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
+<meta content="yes" name="apple-mobile-web-app-capable" />
+<meta content="black" name="apple-mobile-web-app-status-bar-style" />
+<meta name="format-detection" content="telephone=no"/>
+<title></title>
+<link rel="stylesheet" type="text/css" href="../addons/sz_yi/plugin/choose/template/mobile/default/static/css/dish/wei_dialog.css" media="all" />
+<link rel="stylesheet" type="text/css" href="../addons/sz_yi/plugin/choose/template/mobile/default/static/css/dish/wei_canyin.css" media="all" />
+<link rel="stylesheet" type="text/css" href="../addons/sz_yi/plugin/choose/template/mobile/default/static/css/dish/home.css" media="all">
+<script type="text/javascript" src="../addons/sz_yi/plugin/choose/template/mobile/default/static/js/dish/jquery-1.8.3.min.js"></script>
+<script type="text/javascript" src="../addons/sz_yi/plugin/choose/template/mobile/default/static/js/dish/wei_webapp_v2_common.js"></script>
+<style type="text/css">
+  .num{width: 30px;
+border-bottom: 1px #ff0000 solid;
+border-right: 0;
+border-top: 0;
+border-left: 0;
+text-align: center;
+margin: 0 4px;
+float: left;
+height: 20px;}
+.subtract,.add{border-radius: 100px;
+border: 1px {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if} solid;
+width: 20px;
+height: 20px;
+display: inline-block;
+color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};
+text-align: center;
+line-height: 20px;
+float: left;
+}
+.fffbg{position: absolute;
+right: 4px;
+top: 4px;
+color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};
+text-align: center;
+display: block;
+background: #fff;
+border-radius: 50px;
+width: 20px;
+height: 20px;
+line-height: 20px;font-weight: bold;}
+.ff0000bg{position: absolute;
+right: 4px;
+top: 4px;
+color: #fff;
+text-align: center;
+display: block;
+background: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};
+border-radius: 50px;
+width: 20px;
+height: 20px;
+line-height: 20px;font-weight: bold;}
+#page_allMenu nav dl dd.active {
+  color: #fff;
+  background-color:{if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if}; 
+}
+
+#page_allMenu section article dl dd em.eys{ color: #A8A8A8 !important;font-size: 12px;font-weight: normal;padding-top: 10px}
+#page_allMenu section article dl dd em{ color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};font-weight: bold;font-size: 14px}
+#page_allMenu section article dl dd em i{ font-style: normal;color: #666;font-size: 12px}
+#page_allMenu section article dl dt h3{font-weight: normal;}
+.notice{height: 26px;background: #FFF9EC !important;line-height: 26px;padding: 0 26px;position: relative;font-size: 12px}
+.not-pos{position: absolute;left: 4px;top: 4px;max-width: 18px}
+.close-pos{position: absolute;right: 2px;top: 2px;}
+.close-pos img{max-width: 18px}
+#page_allMenu nav dl {
+    margin-top: 0;
+    margin-bottom: 0;
+}
+.nav-erj{ width: 100%;}
+.nav-erj dl dd{height:30px;line-height: 30px;color:#666;font-size: 12px;display:block;text-align: center!important;padding: 0 !important}
+
+
+
+
+.nav-sanj{ width: 100%;}
+.nav-sanj dl dd{ height:30px;line-height: 30px ;padding-right: 10px !important;color:#666;font-size: 12px;display:block;text-align: right !important;}
+
+
+
+</style>
+</head>
+<body id="page_allMenu">
+<script id='tpl_parent_list' type='text/html'>
+    
+    <%each category as value%>
+    <dl >
+        <dd id="erji" data-cate="<%value.id%>" data-advimg='<%value.advimg%>' data-advurl='<%value.advurl%>' class="parent_item" ><%value.name%>
+          <span class="fffbg"></span>
+        </dd>
+    </dl>
+         <div class="nav-erj" date-type="1">
+                
+            <%each value.sub as value1%>   
+                  <dl >  
+                    <dd data-cate="<%value1.id%>" data-advimg='<%value1.advimg%>' data-advurl='<%value1.advurl%>' class="parent_item1"><%value1.name%>
+                    
+                    </dd>
+                  </dl> 
+            <!-- 三级分类 -->
+                    {if intval($shopset['catlevel'])==3}
+                       <div class="nav-sanj" date-type="1">
+                              
+                          <%each value1.sub1 as value2%>
+                              <dl>   
+                                  <dd data-cate="<%value2.id%>" data-advimg='<%value2.advimg%>' data-advurl='<%value2.advurl%>' class="parent_item2"><%value2.name%>
+                                  
+                                  </dd>
+                              </dl>        
+                          <%/each%>    
+                              
+                      </div> 
+                    {/if}
+            <!-- end -->
+            <%/each%>    
+                
+        </div>
+
+    <%/each%>
+
+</script>
+<div class="center">
+    <div class="notice">
+    <!-- <img src="../addons/sz_yi/template/mobile/default/static/css/dish/img/notice.png" class="not-pos"> -->
+      <div><marquee scrollamount="1" scrolldelay="0" direction="left"></marquee></div>
+    <!-- <a href="javascript:;" class="close-pos"><img src="../addons/sz_yi/template/mobile/default/static/css/dish/img/close.png" class="close-pos"> --></a>
+    </div>
+    <nav id="navBar" >
+        
+    </nav>
+    <section id="infoSection" >
+        <article>
+            <!--div class="h2">推荐菜</div-->
+            <div id="pInfo"></div>
+        </article>
+    </section>
+</div>
+ <style type="text/css">
+ul, li { list-style:none; margin:0; padding:0 }
+
+.top_bar {position: static; z-index: 9; bottom: 0; left: 0; right: 0; margin: auto; font-family: Helvetica, Tahoma, Arial, Microsoft YaHei, sans-serif; }
+
+.top_bar {position: fixed; z-index: 9; bottom: 0; left: 0; right: 0; margin: auto; font-family: Helvetica, Tahoma, Arial, Microsoft YaHei, sans-serif; }
+
+.top_menu { display:-webkit-box; border-top: 1px solid #3D3D46; display: block; width: 100%; background: rgba(255, 255, 255, 0.7); height: 48px; display: -webkit-box; display: box; margin:0; padding:0; -webkit-box-orient: horizontal; background: -webkit-gradient(linear, 0 0, 0 100%, from(#524945), to(#48403c), color-stop(60%, #524945)); box-shadow: 0 1px 0 0 rgba(255, 255, 255, 0.1) inset; }
+.top_bar .top_menu>li { -webkit-box-flex:1; position:relative; text-align:center; }
+.top_menu li:first-child { background:none; }
+.top_bar .top_menu>li>a { height:48px; margin-right: 1px; display:block; text-align:center; color:#FFF; text-decoration:none; text-shadow: 0 1px rgba(0, 0, 0, 0.3); -webkit-box-flex:1; }
+.top_bar .top_menu>li.home { max-width:70px }
+.top_bar .top_menu>li.home a { height: 66px; width: 66px; margin: auto; border-radius: 60px; position: relative; top: -22px; left: 2px; background: url('tpl/Wap/default/common/images/home.png') no-repeat center center; background-size: 100% 100%; }
+.top_bar .top_menu>li>a label { overflow:hidden; margin: 0 0 0 0; font-size: 12px; display: block !important; line-height: 18px; text-align: center; }
+.top_bar .top_menu>li>a img { padding: 3px 0 0 0; height: 24px; width: 24px; color: #fff; line-height: 48px; vertical-align:middle; }
+.top_bar li:first-child a { display: block; }
+.menu_font { text-align:left; position:absolute; right:10px; z-index:5; background: -webkit-gradient(linear, 0 0, 0 100%, from(#524945), to(#48403c), color-stop(60%, #524945)); border-radius: 5px; width: 120px; margin-top: 10px; padding: 0; box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3); }
+.menu_font.hidden { display:none; }
+.menu_font { top:inherit !important; bottom:60px; }
+.menu_font li a { height:40px; margin-right: 1px; display:block; text-align:center; color:#FFF; text-decoration:none; text-shadow: 0 1px rgba(0, 0, 0, 0.3); -webkit-box-flex:1; }
+.menu_font li a { text-align: left !important; }
+.top_menu li:last-of-type a { background: none; overflow:hidden; }
+.menu_font:after { top: inherit!important; bottom: -6px; border-color: #48403c rgba(0, 0, 0, 0) rgba(0, 0, 0, 0); border-width: 6px 6px 0; position: absolute; content: ""; display: inline-block; width: 0; height: 0; border-style: solid; left: 80%; }
+.menu_font li { border-top: 1px solid rgba(255, 255, 255, 0.1); border-bottom: 1px solid rgba(0, 0, 0, 0.2); }
+.menu_font li:first-of-type { border-top: 0; }
+.menu_font li:last-of-type { border-bottom: 0; }
+.menu_font li a { height: 40px; line-height: 40px !important; position: relative; color: #fff; display: block; width: 100%; text-indent: 10px; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
+.menu_font li a img { width: 20px; height:20px; display: inline-block; margin-top:-2px; color: #fff; line-height: 40px; vertical-align:middle; }
+.menu_font>li>a label { padding:3px 0 0 3px; font-size:14px; overflow:hidden; margin: 0; }
+#menu_list0 { right:0; left:10px; }
+#menu_list0:after { left: 20%; }
+.top_bar .top_menu>li>a:hover, .top_bar .top_menu>li>a:active { background-color:#333; }
+.menu_font li a:hover, .menu_font li a:active { background-color:#333; }
+.menu_font li:first-of-type a { border-radius:5px 5px 0 0; }
+.menu_font li:last-of-type a { border-radius:0 0 5px 5px; }
+#plug-wrap { position: static; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0); z-index:8; }
+.foot-nav{ position: fixed;bottom: 53px;height:46px;background: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};color: #fff;width: 720px;z-index: 99;}
+.foot-nav span{ width: 30px;height: 30px;border-radius: 100px;border: 1px #fff solid;color: #fff;float: left;margin: 9px;text-align: center;line-height: 30px;font-weight: bold;}
+.foot-nav p{ float: left;line-height: 49px;padding-left:20px ;font-weight: bold;}
+.foot-nav a{float: right;height: 30px;background: #fff;line-height: 30px;color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};text-align: center;padding: 0 14px;margin:9px;border-radius: 18px}
+</style>
+<div class="foot-nav" id="total">
+  <span>0</span>
+  <p>总价：￥0.00</p>
+  <a href="{php echo $this->createMobileUrl('shop/cart')}">选好了</a>
+</div>
+{php $show_footer=true;$footer_current =''} 
+{template 'common/footer'}
+<script language='javascript'>
+    var category = [];
+    var children = [];
+    var recommand = [];
+    var pcate = 'rec';
+    var pageid = "{$_GPC['pageid']}";
+    require(['tpl', 'core'], function (tpl, core) {
+     
+     /*function bindChildEvents(){
+          $('.category_item').unbind('click').click(function(){
+              if($(this).data('cate')=='back'){
+                 if(pcate!='rec')                  { 
+                    setCategory(pcate);
+                }else{
+                    setCategory('rec');
+                }
+                  return;
+             }
+                        var level = $(this).data('level');
+                        var show = {php echo intval($shopset['catshow'])};
+                        {if intval($shopset['catlevel'])==3}
+                              var ccate = $(this).data('ccate');
+                              var tcate = $(this).data('tcate');
+                             
+                                    if(level==2){
+                                         setCategory(ccate,2);
+                                    }
+                                    else {
+                                      
+                                        location.href = core.getUrl('shop/list',{ccate:ccate,tcate:tcate});     
+                                   }
+                             
+                        {else}
+                                var pcate = $(this).data('pcate');
+                                var ccate = $(this).data('ccate');
+                                location.href = core.getUrl('shop/list',{pcate:pcate,ccate:ccate});
+                        {/if}
+                            
+          })
+     }*/
+        function setCategory(){
+            $("#navBar").find(".parent_item").find('span').removeClass('fffbg');
+            $("#navBar").find(".parent_item").find('span').addClass('ff0000bg');
+
+            $("#navBar").find(".parent_item").first().addClass("active");
+            $("#navBar").find(".parent_item").first().find('span').removeClass('ff0000bg');
+            $("#navBar").find(".parent_item").first().find('span').addClass('fffbg');
+            $("#navBar").find(".parent_item").find('span').hide();
+
+             
+            var pcate = $("#navBar").find(".parent_item").first().data('cate');
+
+            core.pjson('choose/list_goods',{pcate:pcate,pageid:pageid,op:'moren'}, function (json) {
+                            result = json.result;
+                            
+                            var h = '';
+                            
+                            var store = result.goods;
+
+                            if (store.length) {                                                             
+                                for (var i = 0; i < store.length ;i++ ) {
+
+                                    h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
+
+                                    if (store[i].isrecommand != 0) {
+                                        h += '<span style="font-size:10px;">推荐</span></a>';
+                                    }
+
+                                    h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元<i>/'+store[i].unit+'</i></em>';
+
+                                    h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div></dd></dl>';
+                                };
+                                $("#infoSection").css("height","auto"); 
+                                $("#navBar").css("height","auto"); 
+
+                            } else {
+                                h += '';
+                                $("#infoSection").css("height","729px");
+                                $("#navBar").css("height","729px");
+                            };
+
+                            $('#pInfo').html(h);
+                            setNum();
+                                                
+            }, true);        
+        }
+
+        function setNum(){          
+            $.ajax({
+                        url:"{php echo $this->createMobileUrl('shop/cart')}", 
+                        type:'post',
+                        data: {op:'cart'},
+                        success:function(data){
+                          console.log(data);
+                          if(data){
+                            var h = '';
+                            var jsonObj = eval('(' + data + ')');
+                            var goods = jsonObj.result.goods;
+                            var categorys = jsonObj.result.categorys;
+
+                            $('#pInfo').find('dl').each(function () {  
+                               var id = $(this).attr('data-id');
+
+                               if (goods.length) {                                                  
+                                    for (var i = 0; i < goods.length ;i++ ) {
+                                        if (goods[i].goodsid == id) {
+                                            $(this).attr("data-num",goods[i].total);
+
+                                            if (parseInt(goods[i].total) > 0) {
+                                                var input = $(this).find('.num');
+                                                input.show();                    
+                                                input.val(goods[i].total);
+                                                $(this).find('.subtract').show();
+                                            };
+                                        }
+                                    };
+                                }  
+                                 
+                            })
+                            
+
+                            $('#navBar').find('dd').each(function () {  
+                               var id = $(this).attr('data-cate');
+
+                               if (categorys.length) {
+                                    for (var i = 0; i < categorys.length ;i++ ) {
+                                        if (categorys[i].id == id) {
+                                            //$(this).attr("data-num",categorys[i].count);
+                                            if (categorys[i].count > 0) {
+                                              $(this).find("span").html(categorys[i].count);
+                                              $(this).find("span").show();
+
+                                            } else {
+                                              $(this).find("span").hide();
+                                            };
+                                            
+                                        }
+                                    };
+                                }  
+                                 
+                            })
+                        }
+                      }                       
+                    })
+        }
+
+        function getTotalPrice(){
+            require(['core'],function(core){
+                core.json('shop/cart',{op:'display'},function(ret){
+                     $('#total').find("span").html(ret.result.total);
+                     $('#total').find("p").html('总价：￥' + ret.result.totalprice);
+                        /*if(ret.status==1){ 
+                            core.tip.show(ret.result.message);                            var cartdiv = $('.cart'); 
+                            if( cartdiv.find('b').length<=0){                                                                                                 cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
+                            } else {
+                                cartdiv.find('b').html(ret.result.cartcount);
+                            }                                                          
+                        } else{                                                                 core.message(ret.result,'','error');
+                        }*/
+                    },true,true);
+                });
+        }
+
+
+        /*function setCategoryList(ret,level,catid){
+               showAdv(catid);
+               if(catid=='rec'){ 
+                     $('#right_container  .inner').html(tpl('tpl_child_list',{category:ret,level:level,catid:catid}));
+               }
+               else{
+                   {if intval($shopset['catlevel'])==3}
+
+                            {if intval($shopset['catshow'])==0}
+                              if(level==2){
+                                     $('#right_container  .inner').html(tpl('tpl_child_list',{category:ret,level:level,catid:catid}));
+                                 } else{
+                                     $('#right_container  .inner').html(tpl('tpl_third_page',{category:ret,level:level,catid:catid}));
+                                 }
+                            {else}
+                              $('#right_container  .inner').html(tpl('tpl_third_list',{category:ret,level:level,catid:catid}));
+                            {/if}
+                     {else}
+                              $('#right_container  .inner').html(tpl('tpl_child_list',{category:ret,level:level,catid:catid}));
+                     {/if}
+                    
+               }
+            setTimeout(function(){
+
+              $('#right_container  .inner img').each(function(){
+                  $(this).height($(this).closest('.category_item').width());
+              })
+              },10);
+             bindChildEvents(); ;
+           
+        }*/
+        /*function showAdv(cate){
+                        
+            var adv = $('#right_container .adv');
+            var img = '',url ='';
+            if(cate=='rec'){
+                img = "{php echo $shopset['catadvimg']}",url = "{php echo $shopset['catadvurl']}";
+            }
+            else{
+        
+            for(i in category){
+                  if(category[i].id==cate) {
+                      img = category[i].advimg,url = category[i].advurl;
+                      break;
+                  }
+                  for(j in category[i].children){ //二级
+                         if(category[i].children[j].id==cate) {
+                            img = category[i].children[j].advimg,url = category[i].children[j].advurl;
+                            break;
+                        }
+                   }
+             }
+         }
+             if(img!=''){
+                          adv.find('img').attr('src',img);
+                         $('#right_container .adv').show();
+                         if(url!=''){
+                             adv.unbind('click').click(function(){
+                                 location.href = url;
+                            });
+                         } 
+                     } else{
+                         adv.hide().unbind('click');
+                     }
+        }*/
+
+        core.pjson('choose/list_category',{op:'category',level:3,pageid:pageid}, function (json) {
+                 result = json.result;
+                 category = result.category;
+                 if (result) {
+                    $("#navBar").css("height","auto;");
+                 } else {
+                    $("#navBar").css("height","729px");
+                 };
+                 $('#navBar').html(tpl('tpl_parent_list',result));
+
+                 //$("#navBar").find(".parent_item").first().trigger("click");        
+                 setCategory();
+                 setNum();
+
+                 getTotalPrice();
+                 $('.parent_item').click(function(){
+                     $('.parent_item').removeClass('active');
+                     $('.parent_item').find('span').removeClass('fffbg');
+                     $('.parent_item').find('span').addClass('ff0000bg');
+
+                     $(this).addClass('active');
+                     $('.parent_item1').removeClass('active');
+                     $('.parent_item2').removeClass('active');
+                     $(this).find('span').removeClass('ff0000bg');
+                     $(this).find('span').addClass('fffbg');
+
+                     cate = $(this).data('cate');
+                     //console.log(pcate);
+                     core.pjson('choose/list_goods',{'pcate':cate,pageid:pageid,op:'moren'}, function (json) {
+                            result = json.result;                           
+                            var h = '';
+                            
+                            var store = result.goods;
+
+                            if (store.length) {                                                             
+                                for (var i = 0; i < store.length ;i++ ) {
+
+                                    h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
+
+                                    if (store[i].isrecommand != 0) {
+                                        h += '<span style="font-size:10px;">推荐</span></a>';
+                                    }
+
+                                    h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元<i>/'+store[i].unit+'</i></em>';
+
+                                    h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div></dd></dl>';
+                                };
+                                $("#infoSection").css("height","auto");
+                                //$("#navBar").css("height","auto");
+                            } else {
+                                h += '';
+                                $("#infoSection").css("height","729px"); 
+                                //$("#navBar").css("height","729px"); 
+                            };
+                            //$("#navBar").css("height","auto");
+                            $('#pInfo').html(h);
+                            setNum();
+                     }, true);                        
+                                        
+                  })
+                    $('.parent_item1').click(function(){
+                         $('.parent_item1').removeClass('active');
+                         $('.parent_item1').find('span').removeClass('fffbg');
+                         $('.parent_item1').find('span').addClass('ff0000bg');
+
+                         $(this).addClass('active');
+                         $('.parent_item').removeClass('active');
+                         $('.parent_item2').removeClass('active');
+                         $(this).find('span').removeClass('ff0000bg');
+                         $(this).find('span').addClass('fffbg');
+
+                         cate = $(this).data('cate');
+                         //console.log(pcate);
+                         core.pjson('choose/list_goods',{'ccate':cate,pageid:pageid,op:'second'}, function (json) {
+                                result = json.result;
+                                                        
+                                var h = '';
+                                
+                                var store = result.goods;
+
+                                if (store.length) {                                                             
+                                    for (var i = 0; i < store.length ;i++ ) {
+
+                                        h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
+
+                                        if (store[i].isrecommand != 0) {
+                                            h += '<span style="font-size:10px;">推荐</span></a>';
+                                        }
+
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元<i>/'+store[i].unit+'</i></em>';
+
+                                        h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div></dd></dl>';
+                                    };
+                                    $("#infoSection").css("height","auto");
+                                    //$("#navBar").css("height","auto");
+                                } else {
+                                    h += '';
+                                    $("#infoSection").css("height","729px"); 
+                                    //$("#navBar").css("height","729px"); 
+                                };
+                                //$("#navBar").css("height","auto");
+                                $('#pInfo').html(h);
+                                setNum();
+                                                    
+                        },true);                    
+                    })
+
+                    $('.parent_item2').click(function(){
+                         $('.parent_item2').removeClass('active');
+                         $('.parent_item2').find('span').removeClass('fffbg');
+                         $('.parent_item2').find('span').addClass('ff0000bg');
+
+                         $(this).addClass('active');
+                         $('.parent_item').removeClass('active');
+                         $('.parent_item1').removeClass('active');
+                         $(this).find('span').removeClass('ff0000bg');
+                         $(this).find('span').addClass('fffbg');
+
+                         cate = $(this).data('cate');
+                         //console.log(pcate);
+                         core.pjson('choose/list_goods',{'tcate':cate,pageid:pageid,op:'third'}, function (json) {
+                                result = json.result;
+                                                        
+                                var h = '';
+                                
+                                var store = result.goods;
+
+                                if (store.length) {                                                             
+                                    for (var i = 0; i < store.length ;i++ ) {
+
+                                        h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
+
+                                        if (store[i].isrecommand != 0) {
+                                            h += '<span style="font-size:10px;">推荐</span></a>';
+                                        }
+
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元<i>/'+store[i].unit+'</i></em>';
+
+                                        h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div></dd></dl>';
+                                    };
+                                    $("#infoSection").css("height","auto");
+                                    //$("#navBar").css("height","auto");
+                                } else {
+                                    h += '';
+                                    $("#infoSection").css("height","729px"); 
+                                    //$("#navBar").css("height","729px"); 
+                                };
+                                //$("#navBar").css("height","auto");
+                                $('#pInfo').html(h);
+                                setNum();
+                                                    
+                        },true);                    
+                    })
+
+                $('body').on('click','.dataIn',function(){
+                    var id  = $(this).attr('data-id');
+                    location.href=core.getUrl('shop/detail',{id:id});
+                })                
+
+                $('body').on('click','.close-pos',function(){
+                    $(this).parents('.notice').hide();
+                })
+
+                $('body').on('click','.add',function(){
+                    var input = $(this).parent().find('.num');
+                    var num = parseInt(input.val()) + 1;
+                    var id  = $(this).attr('data-id');
+                    var type = '';
+                    var now =$(this);
+                    $(this).parent().find('.subtract').show();
+                    input.show();                    
+                    input.val(num);                    
+
+                    if (num == 1) {
+                        type = 'add';
+                    } else {
+                        type = 'updatenum';                       
+                    };
+
+                    require(['core'],function(core){
+
+                        core.json('shop/cart',{op:'add', id:id,total:num},function(ret){
+                            now.attr("data-num",ret.result.cartcount);
+                              setNum();
+                              getTotalPrice();
+                            },true,true);
+                        });
+                    
+                })
+
+                $('body').on('click','.subtract',function(){                    
+                    var input = $(this).parent().find('.num');
+                    var num = parseInt(input.val()) - 1;
+
+                    var id  = $(this).attr('data-id');
+                    var now =$(this);
+
+                    if (num <= 0) {
+                        $(this).parent().find('.subtract').hide();
+                        input.hide();
+                        input.val(0);
+                    }else{
+                        input.val(num);
+                    };
+
+                    require(['core'],function(core){
+
+                        core.json('shop/cart',{op:'add', id:id,total:num},function(ret){
+                            now.attr("data-num",ret.result.cartcount);
+                            setNum();
+                            getTotalPrice();
+                            },true,true);
+                        });
+
+                })         
+                 
+                 
+                $('.search').click(function(){
+
+                   $(".search1").animate({bottom:"0px"},100);
+                   $('#keywords').focus().unbind('keyup').keyup(function(){
+                            var keywords = $.trim( $(this).val());
+                            if(keywords==''){
+                                $('#search_container').html("");         
+                                return;
+                            }
+                            core.json('list_goods',{op:'search',keywords:keywords }, function (json) {
+                                 var result = json.result;
+                                 if(result.list.length>0){
+                                    $('#search_container').html(tpl('tpl_search_list',result));    
+                                 }
+                                 else{
+                                    $('#search_container').html("");         
+                                 }
+
+                              }, true);
+                    });
+                    $('.search1 .home1').unbind('click').click(function(){
+                         $(".search1").animate({bottom:"-100%"},100);
+                    });
+                });
+        
+        }, true);
+ 
+        $('.sort').click(function () {
+                var display = $(".sort_list").css('display');
+                if (display == 'none') {
+                    $(".sort_list").fadeIn(200);
+                } else {
+                    $(".sort_list").fadeOut(100);
+                }
+
+        });
+     
+    });
+
+</script>

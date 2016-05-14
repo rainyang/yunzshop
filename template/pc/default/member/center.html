@@ -19,7 +19,7 @@
 
     .header .user-op { height:35px; width:94%; padding:5px 3%; border-bottom:1px solid #ddd; background:#fff; font-size:16px; line-height:35px; }
     .take {height:26px; width:auto; padding:0 10px; line-height:26px; font-size:12px; float:right; background:#ff6600; border-radius:5px; margin-top:9px; color:#fff;}
-    .take1 {height:30px; width:auto; padding:0 10px; line-height:30px; font-size:16px; float:right; background:#00cc00; border-radius:5px; margin-top:5px; color:#fff;}
+    .take1 {height:26px; width:auto; padding:0 10px; line-height:26px; font-size:12px; float:right; background:#00cc00; border-radius:5px; margin-top:5px; color:#fff;}
     
     .order {height:auto; width:100%; background:#192229; margin:2px 0;}
     .order_all {height:auto; width:100%; color:#666;}
@@ -67,9 +67,9 @@
                  
          </div></a>
     <a href="javascript:;"><div class="list1" style="margin:-2px 0px 0; border-bottom:0px;">积分: <%member.credit1%>
-            <%if open_creditshop%>
+
             <div class="take1" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">积分兑换</div>
-            <%/if%>
+
         </div></a>
 </div>
 <div class="order">

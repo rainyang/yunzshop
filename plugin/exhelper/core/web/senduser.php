@@ -1,4 +1,5 @@
 <?php
+/* QQ:261753427 */
 if (!defined('IN_IA')) {
     print 'Access Denied';
 }
@@ -6,7 +7,11 @@ global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if ($operation == 'display') {
     ca('exhelper.senduser');
-    $list = pdo_fetchall('SELECT * FROM ' . tablename('sz_yi_exhelper_senduser') . " WHERE uniacid = '{$_W['uniacid']}' ORDER BY isdefault desc , id DESC");
+    $condition = '';
+    if (p('supplier')) {
+        $condition .= " and uid={$_W['uid']}";
+    }
+    $list = pdo_fetchall('SELECT * FROM ' . tablename('sz_yi_exhelper_senduser') . " WHERE uniacid = '{$_W['uniacid']}' {$condition} ORDER BY isdefault desc , id DESC");
 } elseif ($operation == 'post') {
     $id = intval($_GPC['id']);
     if (empty($id)) {
@@ -16,6 +21,9 @@ if ($operation == 'display') {
     }
     if (checksubmit('submit')) {
         $data = array('uniacid' => $_W['uniacid'], 'sendername' => trim($_GPC['sendername']), 'sendertel' => trim($_GPC['sendertel']), 'sendersign' => trim($_GPC['sendersign']), 'sendercode' => trim($_GPC['sendercode']), 'senderaddress' => trim($_GPC['senderaddress']), 'sendercity' => trim($_GPC['sendercity']), 'isdefault' => intval($_GPC['isdefault']));
+        if (p('supplier')) {
+            $data['uid'] = $_W['uid'];
+        }
         if (!empty($id)) {
             pdo_update('sz_yi_exhelper_senduser', $data, array('id' => $id));
             plog('exhelper.senduser.edit', "修改快递单信息 ID: {$id}");

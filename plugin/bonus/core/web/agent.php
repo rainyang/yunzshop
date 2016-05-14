@@ -150,7 +150,7 @@ if ($operation == 'display') {
                     'width' => 12
                 ),
                 array(
-                    'title' => '分销商等级',
+                    'title' => '代理商等级',
                     'field' => 'levelname',
                     'width' => 12
                 ),
@@ -280,14 +280,14 @@ if ($operation == 'display') {
         }
     }
 } else if ($operation == 'delete') {
-    ca('commission.agent.delete');
+    ca('bonus.agent.delete');
     $id     = intval($_GPC['id']);
     $member = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid=:uniacid and id=:id limit 1 ", array(
         ':uniacid' => $_W['uniacid'],
         ':id' => $id
     ));
     if (empty($member)) {
-        message('会员不存在，无法取消分销商资格!', $this->createPluginWebUrl('commission/agent'), 'error');
+        message('会员不存在，无法取消分销商资格!', $this->createPluginWebUrl('bonus/agent'), 'error');
     }
     $agentcount = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . ' where  uniacid=:uniacid and agentid=:agentid limit 1 ', array(
         ':uniacid' => $_W['uniacid'],
@@ -302,17 +302,17 @@ if ($operation == 'display') {
     ), array(
         'id' => $_GPC['id']
     ));
-    plog('commission.agent.delete', "取消分销商资格 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
-    message('删除成功！', $this->createPluginWebUrl('commission/agent'), 'success');
+    plog('bonus.agent.delete', "取消分销商资格 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+    message('删除成功！', $this->createPluginWebUrl('bonus/agent'), 'success');
 } else if ($operation == 'agentblack') {
-    ca('commission.agent.agentblack');
+    ca('bonus.agent.agentblack');
     $id     = intval($_GPC['id']);
     $member = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid=:uniacid and id=:id limit 1 ", array(
         ':uniacid' => $_W['uniacid'],
         ':id' => $id
     ));
     if (empty($member)) {
-        message('会员不存在，无法设置黑名单!', $this->createPluginWebUrl('commission/agent'), 'error');
+        message('会员不存在，无法设置黑名单!', $this->createPluginWebUrl('bonus/agent'), 'error');
     }
     $black = intval($_GPC['black']);
     if (!empty($black)) {
@@ -323,8 +323,8 @@ if ($operation == 'display') {
         ), array(
             'id' => $_GPC['id']
         ));
-        plog('commission.agent.agentblack', "设置黑名单 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
-        message('设置黑名单成功！', $this->createPluginWebUrl('commission/agent'), 'success');
+        plog('bonus.agent.agentblack', "设置黑名单 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+        message('设置黑名单成功！', $this->createPluginWebUrl('bonus/agent'), 'success');
     } else {
         pdo_update('sz_yi_member', array(
             'isagent' => 1,
@@ -333,8 +333,8 @@ if ($operation == 'display') {
         ), array(
             'id' => $_GPC['id']
         ));
-        plog('commission.agent.agentblack', "取消黑名单 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
-        message('取消黑名单成功！', $this->createPluginWebUrl('commission/agent'), 'success');
+        plog('bonus.agent.agentblack', "取消黑名单 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+        message('取消黑名单成功！', $this->createPluginWebUrl('bonus/agent'), 'success');
     }
 } else if ($operation == 'user') {
     ca('bonus.agent.user');
@@ -450,7 +450,7 @@ if ($operation == 'display') {
     include $this->template('query');
     exit;
 } else if ($operation == 'check') {
-    ca('commission.agent.check');
+    ca('bonus.agent.check');
     $id     = intval($_GPC['id']);
     $member = $this->model->getInfo($id, array(
         'total',
@@ -477,8 +477,8 @@ if ($operation == 'display') {
     if (!empty($member['agentid'])) {
         $this->model->upgradeLevelByAgent($member['agentid']);
     }
-    plog('commission.agent.check', "审核分销商 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
-    message('审核分销商成功!', $this->createPluginWebUrl('commission/agent'), 'success');
+    plog('bonus.agent.check', "审核分销商 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+    message('审核分销商成功!', $this->createPluginWebUrl('bonus/agent'), 'success');
 }
 load()->func('tpl');
 include $this->template('agent');

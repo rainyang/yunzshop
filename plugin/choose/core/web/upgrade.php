@@ -19,7 +19,11 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_chooseagent` (
   `createtime` varchar(255) DEFAULT NULL,
   `savetime` varchar(255) DEFAULT NULL,
   `uniacid` int(11) DEFAULT NULL,
+  `pcate` int(11) DEFAULT NULL,
+  `ccate` int(11) DEFAULT NULL,
+  `tcate` int(11) DEFAULT NULL,
   `pagename` varchar(255) DEFAULT NULL,
+  `color` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 ";
