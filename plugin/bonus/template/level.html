@@ -218,8 +218,8 @@
                         {if in_array('11', $set['leveltype'])}{if $row['commissionmoney']>0}分销订单金额满 {$row['commissionmoney']} 元 {/if}{/if}	 
                           </td>
                         <td>
-                            <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('bonus/level', array('op' => 'post', 'id' => $row['id']))}">编辑</a>
-                            <a class='btn btn-default'  href="{php echo $this->createPluginWebUrl('bonus/level', array('op' => 'delete', 'id' => $row['id']))}" onclick="return confirm('确认删除此等级吗？');return false;">删除</a></td>
+                            {ifp 'bonus.level.edit'}<a class='btn btn-default' href="{php echo $this->createPluginWebUrl('bonus/level', array('op' => 'post', 'id' => $row['id']))}">编辑</a>{/if}
+                            {ifp 'bonus.level.delete'}<a class='btn btn-default'  href="{php echo $this->createPluginWebUrl('bonus/level', array('op' => 'delete', 'id' => $row['id']))}" onclick="return confirm('确认删除此等级吗？');return false;">删除</a></td>{/if}
 
                     </tr>
                     {/loop}
@@ -229,7 +229,9 @@
 
          </div>
          <div class='panel-footer'>
+            {ifp 'bonus.level.add'}
                 <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('bonus/level', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新等级</a>
+            {/if}
          </div>
      </div>
          </form>

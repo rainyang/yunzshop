@@ -3,6 +3,7 @@ global $_W;
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
+ca('bonus.upgrade');
 $result = pdo_fetchcolumn('select id from ' . tablename('sz_yi_plugin') . ' where identity=:identity', array(':identity' => 'bonus'));
 if(empty($result)){
     $displayorder_max = pdo_fetchcolumn('select max(displayorder) from ' . tablename('sz_yi_plugin'));

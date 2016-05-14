@@ -1,6 +1,6 @@
 <?php
 global $_W, $_GPC;
-ca('bonus.sendall');
+ca('bonus.sendall.view');
 $operation = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 $set = $this->getSet();
 $time             = time();

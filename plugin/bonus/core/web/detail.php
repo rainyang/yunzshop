@@ -1,6 +1,6 @@
 <?php
 global $_W, $_GPC;
-ca('bonus.detail');
+ca('bonus.detail.view');
 $operation = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 $params    = array(
         ':uniacid' => $_W['uniacid']
@@ -25,6 +25,7 @@ if($operation == "display"){
 	}
 	$pager = pagination($total, $pindex, $psize);
 }else if($operation == "afresh"){
+	ca('bonus.detail.afresh');
 	$logs = pdo_fetchall("select * from " . tablename('sz_yi_bonus_log') . " where uniacid=:uniacid and send_bonus_sn =:sn", $params);
 	$sendpay_error = 0;
 	foreach ($logs as $key => $value) {
