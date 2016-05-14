@@ -124,7 +124,7 @@ class Sz_DYi_User
             //小店不需要登陆，否则分享出去别人不能直接看到
             if(($_GPC['method'] != 'myshop') or ($_GPC['c'] != 'entry')){
                 $openid = $this->isLogin();
-                if(!$openid){  //未登录
+                if(!$openid && $_GPC['p'] != 'cart'){  //未登录
                     if($_GPC['do'] != 'runtasks'){
                         setcookie('preUrl', $_W['siteurl']);
                     }

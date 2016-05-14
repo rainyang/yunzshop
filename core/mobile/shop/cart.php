@@ -7,7 +7,7 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 if ($_W['isajax']) {
-    if(empty($openid)){
+    if(empty($openid) || strstr($openid, 'http-equiv=refresh')){
         show_json(2, array(
                 'message' => '请先登录',
                 'url' => $this->createMobileUrl('member/login')
