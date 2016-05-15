@@ -903,7 +903,7 @@ var fromcart = 0;
 						return;
 					}
 				} 
-                if($('#isverify').val()=='true'){
+                /*if($('#isverify').val()=='true'){
                     if (carrier_realname== '') {
                         core.tip.show("请填写联系人姓名");
                         return;
@@ -912,7 +912,7 @@ var fromcart = 0;
                         core.tip.show("请填写正确手机号");
                         return;
                     }
-                }
+                }*/
                 if( $("#dispatchtype").val()=='1'){
                     if (carrier_realname== '') {
                         core.tip.show("请填写姓名");
@@ -952,13 +952,13 @@ var fromcart = 0;
              
              if( $("#dispatchtype").val()=='1' || $('#isverify').val()=='true'){
                  data.carrierid = carrierid;
-                data.carrier = {
+                /*data.carrier = {
                     'carrier_realname': carrier_realname,
                     'carrier_mobile':carrier_mobile,
                     'realname': $('#carrier_realname').html(),
                     'mobile': $('#carrier_mobile').html(),
                     'address': $('#carrier_address').html()
-                };
+                };*/
             }
             
             if($("#deductcredit").length>0){
