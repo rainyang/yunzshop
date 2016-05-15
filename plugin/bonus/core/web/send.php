@@ -6,7 +6,7 @@ $set = $this->getSet();
 $time             = time();
 $pindex    = max(1, intval($_GPC['page']));
 $psize     = 20;
-$day_times        = intval($set['settledaysdf']) * 3600 * 24;
+$day_times        = intval($set['settledays']) * 3600 * 24;
 $daytime = strtotime(date("Y-m-d 00:00:00"));
 $sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times})  ORDER BY o.finishtime DESC,o.status DESC";
 $count = pdo_fetchall($sql);

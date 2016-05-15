@@ -42,4 +42,25 @@ foreach ($sets as $set) {
 		}
 	}
 }
+
+//自动分红
+$pbonus = p('bonus');
+if(!empty($pbonus)){
+	foreach ($sets as $set) {
+		$_W['uniacid'] = $set['uniacid'];
+		if (empty($_W['uniacid'])) {
+			continue;
+		}
+		$daytime = strtotime(date("Y-m-d 00:00:00"));
+		$set = $pbonus->getSet();
+		$bonus = pdo_fetch("select id from " . tablename('sz_yi_bonus') . " where uniacid=".$_W['uniacid']);
+		$isbonus = empty($bonus) ? 1 : 0;
+		$bonuslog = pdo_fetch("select id from " . tablename('sz_yi_bonus') . " where utime<".$daytime." and uniacid=".$_W['uniacid']);
+		
+		if(!empty($isbonus) || !empty($bonuslog)){
+			$pbonus->autosend();
+			$pbonus->autosendall();
+		}
+	}
+}
 echo "ok...";
