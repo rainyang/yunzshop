@@ -1236,10 +1236,7 @@ if ($_W['isajax']) {
                 $verifycode = random(8, true);
             }
         }
-        $carrier  = array(
-            "carrier_realname" => $address['realname'], 
-            "carrier_mobile" => $address['mobile']
-            );
+        $carrier  = $_GPC['carrier'];
         $carriers = is_array($carrier) ? iserializer($carrier) : iserializer(array());
         if ($totalprice <= 0) {
             $totalprice = 0;
@@ -1290,7 +1287,7 @@ if ($_W['isajax']) {
         }
         pdo_insert('sz_yi_order', $order);
         $orderid = pdo_insertid();
-        /*if (is_array($carrier)) {
+        if (is_array($carrier)) {
             $up = array(
                 'realname' => $carrier['carrier_realname'],
                 'mobile' => $carrier['carrier_mobile']
@@ -1303,7 +1300,7 @@ if ($_W['isajax']) {
                 load()->model('mc');
                 mc_update($member['uid'], $up);
             }
-        }*/
+        }
         if ($_GPC['fromcart'] == 1) {
             $cartids = $_GPC['cartids'];
             if (!empty($cartids)) {
