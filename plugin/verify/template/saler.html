@@ -1,6 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
-
+<div class="rightlist">
 {if $operation == 'post'}
 <div class="main">
     <form {ife 'verify.saler' $item}action="" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data">
@@ -53,7 +54,7 @@
                     </div>
                 </div>
 				
-				   <div class='panel-body'>
+
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 核销员姓名</label>
                     <div class="col-sm-9 col-xs-12">
@@ -130,7 +131,7 @@
                     </div>
             </div>
                 
-            </div>
+
         </div>
    
     </form>
@@ -196,7 +197,7 @@
         </div>
         {ifp 'verify.saler.add'}
         <div class='panel-footer'>
-            <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('verify/saler', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新核销员</a>
+            <a class='btn btn-primary' href="{php echo $this->createPluginWebUrl('verify/saler', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新核销员</a>
         </div>
         {/if}
     </div>
@@ -205,6 +206,8 @@
 
 
 {/if}
+</div>
+</div>
 <script language='javascript'>
      function search_members() {
            if( $.trim($('#search-kwd').val())==''){

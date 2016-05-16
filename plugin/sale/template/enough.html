@@ -1,5 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
+<div class="rightlist">
 <div class="main">
     <form id="dataform"    {ifp 'sale.deduct.save'}action="" method="post"{/if} class="form-horizontal form">
         <div class="panel panel-default">
@@ -28,9 +30,9 @@
                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                        <div class="col-sm-4">
                            {ifp 'sale.enough.save'}
-                          <div class='input-group'>
+                          <div class='input-group wid100'>
                                    <span class="input-group-addon">单笔订单满</span>
-                                   <input type="text" name="data[enoughorder]"  value="{$set['enoughorder']}" class="form-control" />
+                                   <input type="text" name="data[enoughorder]"  value="{$set['enoughorder']}" class="form-control wid100" />
                                    <span class='input-group-addon'>元</span>
                            </div>
                            <span class='help-block'>如果开启满额包邮，设置0为全场包邮</span>
@@ -59,9 +61,9 @@
                            {ifp 'sale.enough.save'}
                           <div class='input-group'>
                                    <span class="input-group-addon">单笔订单满</span>
-                                   <input type="text" name="data[enoughmoney]"  value="{$set['enoughmoney']}" class="form-control" />
+                                   <input type="text" name="data[enoughmoney]"  value="{$set['enoughmoney']}" class="form-control wid100" />
                                    <span class='input-group-addon'>元 立减</span>
-                                   <input type="text" name="data[enoughdeduct]"  value="{$set['enoughdeduct']}" class="form-control" />
+                                   <input type="text" name="data[enoughdeduct]"  value="{$set['enoughdeduct']}" class="form-control wid100" />
                                    <span class='input-group-addon'>元</span>
 			     <div class="input-group-btn"><button type='button' class="btn btn-default" ><i class="fa fa-minus"></i></button></div>
                            </div>
@@ -79,9 +81,9 @@
 						 
 						<div class="input-group recharge-item" style="margin-top:5px"> 
 							<span class="input-group-addon">单笔订单满</span>
-							<input type="text" class="form-control" name='enough[]' value='{$item['enough']}' />
+							<input type="text" class="form-control  wid100" name='enough[]' value='{$item['enough']}' />
 							<span class="input-group-addon">元 立减</span>
-							<input type="text" class="form-control"  name='give[]' value='{$item['give']}' />
+							<input type="text" class="form-control wid100"  name='give[]' value='{$item['give']}' />
 							<span class="input-group-addon">元</span>
 							<div class='input-group-btn'>
 							<button class='btn btn-danger' type='button' onclick="removeConsumeItem(this)"><i class='fa fa-remove'></i></button>
@@ -116,13 +118,15 @@
         </div>
     </form>
 </div>
+</div>
+</div>
 <script language='javascript'>
 	function addConsumeItem(){
 		var html= '<div class="input-group recharge-item"  style="margin-top:5px">';
            html+='<span class="input-group-addon">单笔订单满</span>';
-		 html+='<input type="text" class="form-control" name="enough[]"  />';
+		 html+='<input type="text" class="form-control wid100" name="enough[]"  />';
 							html+='<span class="input-group-addon">元 立减</span>';
-							html+='<input type="text" class="form-control"  name="give[]"  />';
+							html+='<input type="text" class="form-control wid100"  name="give[]"  />';
 							html+='<span class="input-group-addon">元</span>';
 							html+='<div class="input-group-btn"><button class="btn btn-danger" onclick="removeRechargeItem(this)"><i class="fa fa-remove"></i></button></div>';
 						html+='</div>';

@@ -1,11 +1,15 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 <!-- 导入CSS样式 -->
 <link href="../addons/sz_yi/plugin/designer/template/imgsrc/designer.css" rel="stylesheet">
 <link href="../addons/sz_yi/plugin/designer/template/imgsrc/menu.css" rel="stylesheet">
+<div class="ulleft-nav">
 <ul class="nav nav-tabs">
     <li ><a href="{php echo $this->createPluginWebUrl('designer')}" >店铺装修</a></li>
     <li class="active"><a href="{php echo $this->createPluginWebUrl('designer/menu')}" >自定义菜单</a></li>
 </ul>
+</div>
+<div class="rightlist">
 {if $op=='display'}
 <!-- 筛选区域 -->
 <div class="panel panel-info">
@@ -75,7 +79,7 @@
                 {ifp 'designer.menu.edit'}
                     <tr>
                         <td colspan="5">
-                            <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('designer/menu', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加一个新菜单</a>
+                            <a class='btn btn-primary' href="{php echo $this->createPluginWebUrl('designer/menu', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加一个新菜单</a>
                             <span>Tips:自定义菜单启用默认后将代替系统默认菜单</span>
                         </td>
                     </tr>
@@ -433,4 +437,6 @@ $scope.addSubMenu = function(menu, obj) {
 </script>
 
 {/if}
+</div>
+</div>
 {template 'web/_footer'}

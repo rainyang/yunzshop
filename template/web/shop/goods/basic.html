@@ -1,12 +1,4 @@
-﻿<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-    <div class="col-sm-9 col-xs-12 text-right">
-					<input type="submit" name="submit" value="保存商品"
-                    class="btn btn-success" style='margin-left:10px;' onclick="return formcheck()" />
-					<input type="button" name="back" onclick='history.back()' {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
-					<input type="hidden" name="token" value="{$_W['token']}" />
-    </div>
-</div>
+﻿
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
     <div class="col-sm-9 col-xs-12">
@@ -481,9 +473,9 @@
     {ife 'shop.goods' $item}
     <label class="radio-inline" style="float: left;"><input type="radio" name="dispatchtype" value="1" {if $item['dispatchtype'] == 1}checked="true"{/if}  /> 统一邮费</label>
 
-    <div class="input-group form-group" style="width: 180px; float: left; margin: 0px 20px 0px 10px;">
+    <div class="input-group form-group" style="width: 180px; float: left;">
 
-        <input type="text" name="dispatchprice" id="dispatchprice" class="form-control" value="{$item['dispatchprice']}" />
+        <input type="text" name="dispatchprice" style="margin:0 10px;" id="dispatchprice" class="form-control" value="{$item['dispatchprice']}" />
         <span class="input-group-addon">元</span>
     </div>
 

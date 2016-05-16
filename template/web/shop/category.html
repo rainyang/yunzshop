@@ -272,10 +272,10 @@
                                 <tr>
                                 <td>
                                     {ifp 'shop.category.add'}
-                                    <a href="{php echo $this->createWebUrl('shop/category',array('op' => 'post'))}" class="btn btn-default"><i class="fa fa-plus"></i> 添加新分类</a>
+                                    <a href="{php echo $this->createWebUrl('shop/category',array('op' => 'post'))}" class="btn btn-primary"><i class="fa fa-plus"></i> 添加新分类</a>
                                     {/if}
                                     {ifp 'shop.category.edit'}
-                                    <input id="save_category" type="button" class="btn btn-primary" value="保存分类修改">
+                                    <input id="save_category" type="button" class="btn btn-default" value="保存分类修改">
                                     {/if}
                                     <input type="hidden" name="token" value="{$_W['token']}" />
                                     <input type="hidden" name="datas" value="" />

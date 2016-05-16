@@ -1,6 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
-
+<div class="rightlist">
 {if $operation == 'post'}
 <div class="main">
     <form {ife 'verify.store' $item}action="" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data">
@@ -140,10 +141,12 @@
          </div>
           {ifp 'verify.store.add'}
            <div class='panel-footer'>
-                            <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('verify/store', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新门店</a>
+                            <a class='btn btn-primary' href="{php echo $this->createPluginWebUrl('verify/store', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新门店</a>
          </div>
           {/if}
      </div>
        </form>
 {/if}
+</div>
+</div>
 {template 'web/_footer'}

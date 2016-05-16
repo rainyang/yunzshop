@@ -1,5 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
+<div class="rightlist">
 {if $operation == 'post'}
     <div class="main">
         <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
@@ -210,7 +212,7 @@
             {/if}
             {ifp 'virtual.temp.add'}
                 <div class='panel-footer'>
-                    <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('virtual/temp', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新模版</a>
+                    <a class='btn btn-primary' href="{php echo $this->createPluginWebUrl('virtual/temp', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新模版</a>
                     <span style="line-height:32px;background-size:15839px; font-size:12px; margin-left: 10px;">温馨提示：点击数据可以查看与编辑哦~~</span>
                 </div>
             {/if}
@@ -488,4 +490,6 @@ $(function(){
         </div>
  
 {/if}
+</div>
+</div>
 {template 'web/_footer'}

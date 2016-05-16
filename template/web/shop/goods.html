@@ -18,7 +18,7 @@
             <div class="panel-body">
             	<div class="w1200 m0a">
             	<div class="ulleft-nav">
-                    {ifp 'shop.goods.view'}<li><a href="{php echo $this->createWebUrl('shop/goods')}">商品管理</a></li>{/if}
+                    <!-- {ifp 'shop.goods.view'}<li><a href="{php echo $this->createWebUrl('shop/goods')}">商品管理</a></li>{/if} -->
                 <ul class="nav nav-arrow-next nav-tabs" id="myTab">
                     <li class="active" ><a href="#tab_basic">基本信息</a></li>
                     <li><a href="#tab_des">商品描述</a></li>
@@ -44,6 +44,15 @@
                 </ul> 
                 </div>
                 <div class="rightlist">
+                <div class="good-tit">
+				    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+				    <div class="col-sm-10 col-xs-12 text-right">
+						<input type="submit" name="submit" value="保存商品"
+	                    class="btn btn-primary" onclick="return formcheck()" />
+						<input type="button" name="back" onclick='history.back()' {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
+						<input type="hidden" name="token" value="{$_W['token']}" />
+				    </div>
+				</div>
                 <div class="tab-content">
                     <div class="tab-pane  active" id="tab_basic">{template 'web/shop/goods/basic'}</div>
                     <div class="tab-pane" id="tab_des">{template 'web/shop/goods/des'}</div>
@@ -72,7 +81,8 @@
                     {/if}
 
                 </div>
-		        <div class="form-group col-sm-12 mrleft40">
+		        <div class="form-group col-sm-12 mrleft40 border-t">
+		        	<label class="col-xs-12 col-sm-3 col-md-2 control-label">&nbsp;</label>
 					{ife 'shop.goods' $item}
 					<input type="submit" name="submit" value="保存商品" class="btn btn-primary col-lg-1" onclick="return formcheck()" />
 					<input type="hidden" name="token" value="{$_W['token']}" />
@@ -298,11 +308,11 @@
 							<th width="6%">排序</th>
 							<th width="6%">商品</th>
 							<th width="14%">&nbsp;</th>
-							<th width="20%">属性</th>
+							<th width="26%">属性</th>
 							<th width="10%">价格</th>
 							<th width="6%">库存</th>
 							<th width="5%">销量</th>
-							<th width="14%">状态</th>
+							<th width="6%">状态</th>
 							<th width="15%">操作</th>
 						</tr>
 					</thead>
@@ -433,7 +443,7 @@
 						</tr>
 						{/loop}
 						<tr>
-							<td colspan='9'>
+							<td colspan='10'>
 								{ifp 'shop.goods.add'}
 								<a class='btn btn-primary' href="{php echo $this->createWebUrl('shop/goods',array('op'=>'post'))}"><i class='fa fa-plus'></i> 添加商品</a>
 								{/if}

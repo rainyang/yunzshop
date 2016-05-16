@@ -1,5 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
+<div class="rightlist">
 <div class='alert alert-danger'>
 	此功能仅超级管理员可见
 </div>
@@ -57,7 +59,7 @@
                 </tr>
                 {/loop}
                  <tr>
-                    <td colspan='3'>
+                    <td colspan='4'>
                            <input name="submit" type="submit" class="btn btn-primary" value="批量修改">
                            <input type="hidden" name="token" value="{$_W['token']}" />
                     </td>
@@ -68,4 +70,6 @@
     </div>
 </div> 
 </form>
+</div> 
+</div> 
 {template 'web/_footer'}

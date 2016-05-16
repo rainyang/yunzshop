@@ -1,7 +1,9 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
 
 {if $operation == 'post'}
+<div class="rightlist">
 <div class="main">
     <form id="dataform" action="" method="post" class="form-horizontal form" >
         <input type="hidden" name="id" value="{$item['id']}" />
@@ -143,6 +145,8 @@
         </div>
     </form>
 </div>
+</div>
+
 <script language='javascript'>
  
    $(function(){
@@ -181,6 +185,7 @@
   
 </script>
 {elseif $operation == 'display'}
+<div class="rightlist">
 <form action="" method="get" class='form form-horizontal'>
     <div class="panel panel-info">
         <div class="panel-heading">筛选</div>
@@ -217,14 +222,17 @@
                     <div class="col-xs-12 col-sm-8 col-lg-9">
                            <select name="status" class='form-control'>
                            <option value="" {if $_GPC['status']==''} selected{/if}></option>
-                            <option value="1" {if $_GPC['status'] == '1'} selected{/if}>启用</option>
-                            <option value="0" {if $_GPC['status'] == '0'} selected{/if}>禁用</option>
-                        </select>  </div>
-                     <div class="col-xs-12 col-sm-2 col-lg-2">
-                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                           <option value="1" {if $_GPC['status'] == '1'} selected{/if}>启用</option>
+                           <option value="0" {if $_GPC['status'] == '0'} selected{/if}>禁用</option>
+                           </select>
                     </div>
                 </div>
-              
+              <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label"> </label>
+                    <div class="col-xs-12 col-sm-8 col-lg-9">
+                      <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                    </div>                     
+                </div>
             </form>
         </div>
     </div>
@@ -276,13 +284,14 @@
         </div>
              {if 'perm.user.add'}
                     <div class='panel-footer'>
-                                 <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('perm/user', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新操作员</a>
+                                 <a class='btn btn-primary' href="{php echo $this->createPluginWebUrl('perm/user', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新操作员</a>
                     </div>
                     {/if}
  
     </div>
 </form>
-
+</div>
+</div>
 
 
 {/if}
