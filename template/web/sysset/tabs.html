@@ -1,3 +1,4 @@
+<div class="ulleft-nav">
 <ul class="nav nav-tabs">
     {ifp 'sysset.view.shop'}<li {if $_GPC['op']=='shop'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'shop'))}">商城设置</a></li>{/if}
     {ifp 'sysset.view.pcset'}<li {if $_GPC['op']=='pcset'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'pcset'))}">PC端设置</a></li>{/if}
@@ -12,3 +13,4 @@
     {ifp 'sysset.view.sms'}<li  {if $_GPC['op']=='sms'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'sms'))}">短信设置</a></li>{/if}
     {ifp 'sysset.view.upgrade'}<li  {if $_GPC['op']=='display'}class="active"{/if}><a href="{php echo $this->createWebUrl('upgrade',array('op'=>'display'))}">系统升级</a></li>{/if}
 </ul> 
+</div>

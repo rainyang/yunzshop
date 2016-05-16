@@ -1,11 +1,12 @@
 <style type='text/css'>
-    .topmenu { position: relative; width:100%;float:left;background:#efefef;margin-bottom:20px;}
+    .topmenu { width: 1200px;height: 50px;margin: 0 auto}
     .topmenu ul li a { color:#000}
     .topmenu .dropdown-menu li a { color:#666}
     .topmenu ul li { content:'|'}
 	.splitter { text-align: center;background:#ccc;color:#039702;padding-top:10px; padding-bottom:10px;font-size:12px;}
 	.splitter{background:#fff;}
 </style>
+<div class="topmenubg">
 <div class='topmenu'>
     <ul class="nav navbar-nav">
         <li>
@@ -13,7 +14,8 @@
         </li> 
         {ifp 'shop'}
         <li class="dropdown">
-            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-shopping-cart'></i> 商城管理 <i class="fa fa-angle-down"></i></a>
+            <a href='javascript:;' class="dropdown-toggle"
+                data-toggle="dropdown"><i class='fa fa-shopping-cart'></i> 商品 <i class="fa fa-angle-down"></i></a>
             <ul class="dropdown-menu">
                 {ifp 'shop.goods'}<li><a href="{php echo $this->createWebUrl('shop/goods')}">商品管理</a></li>{/if}
                 {ifp 'shop.category'}<li><a href="{php echo $this->createWebUrl('shop/category')}">分类管理</a></li>{/if}
@@ -28,7 +30,7 @@
         {/if}
         {ifp 'member'}
          <li class="dropdown">
-            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-user'></i> 会员管理 <i class="fa fa-angle-down"></i></a>
+            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-user'></i> 会员 <i class="fa fa-angle-down"></i></a>
             <ul class="dropdown-menu">
                  {ifp 'member.member'}<li><a href="{php echo $this->createWebUrl('member/list')}">会员管理</a></li>{/if}
                  {ifp 'member.level'}<li><a href="{php echo $this->createWebUrl('member/level')}">会员等级</a></li>{/if}
@@ -38,7 +40,7 @@
         {/if}
         {ifp 'order'}
         <li>
-            <a href='javascript;:' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-file-text-o'></i> 订单管理 <i class="fa fa-angle-down"></i></a>
+            <a href='javascript;:' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-file-text-o'></i> 订单 <i class="fa fa-angle-down"></i></a>
              <ul class="dropdown-menu">
                 {ifp 'order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status_1'}
                 <li><a href="{php echo $this->createWebUrl('order', array('op' => 'display'))}">全部订单</a></li>
@@ -55,7 +57,7 @@
         {/if}
           {ifp 'finance'}
          <li class="dropdown">
-            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-money'></i> 财务管理 <i class="fa fa-angle-down"></i></a>
+            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-money'></i> 财务 <i class="fa fa-angle-down"></i></a>
             <ul class="dropdown-menu">
                  {ifp 'finance.recharge'}<li><a href="{php echo $this->createWebUrl('finance/log',array('type'=>0))}">充值记录</a></li>{/if}
                  {ifp 'finance.withdraw'}<li><a href="{php echo $this->createWebUrl('finance/log',array('type'=>1))}">余额提现</a></li>{/if}
@@ -67,7 +69,7 @@
         
         {ifp 'statistics'}
         <li class="dropdown">
-            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-bar-chart-o '></i> 数据统计 <i class="fa fa-angle-down"></i></a>
+            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-bar-chart-o '></i> 统计 <i class="fa fa-angle-down"></i></a>
             <ul class="dropdown-menu">
                 {ifp 'statistics.view.sale'}<li><a href="{php echo $this->createWebUrl('statistics/sale')}">销售统计</a></li>{/if}
                 {ifp 'statistics.view.sale_analysis'}<li><a href="{php echo $this->createWebUrl('statistics/sale_analysis')}">销售指标</a></li>{/if}
@@ -83,19 +85,37 @@
         {/if}
            
         {php $plugins = m('plugin')->getAll()}
+        <?php if (p('supplier')) {
+                $roleid = pdo_fetchcolumn('select roleid from' . tablename('sz_yi_perm_user') . ' where uid='.$_W['uid'].' and uniacid=' . $_W['uniacid']);
+                if($roleid == 0){
+                    $perm_role = 0;
+                }else{
+                    if(p('supplier')){
+                        $perm_role = pdo_fetchcolumn('select status1 from' . tablename('sz_yi_perm_role') . ' where id=' . $roleid);
+                    }else{
+                        $perm_role = 0;
+                    }
+                }
+              }?>
         <li class="dropdown">
-           <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-cubes'></i> 插件管理 <i class="fa fa-angle-down"></i></a>
+           <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-cubes'></i> 插件 <i class="fa fa-angle-down"></i></a>
             <ul class="dropdown-menu">
                 {loop $plugins $plugin}
                 {ifpp $plugin['identity']}
+                     {if p('supplier') && $perm_role == 1}
+                     {if $plugin['identity']=='taobao' || $plugin['identity']=='exhelper'}
                      <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
+                     {/if}
+                     {else}
+                     <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
+                     {/if}
                 {/if}
                 {/loop}
             </ul>
         </li>
           {ifp 'sysset'}
          <li class="dropdown">
-            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-cog'></i> 系统设置 <i class="fa fa-angle-down"></i></a>
+            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-cog'></i> 设置 <i class="fa fa-angle-down"></i></a>
             <ul class="dropdown-menu">
                   {ifp 'sysset.view.shop'}<li><a href="{php echo $this->createWebUrl('sysset',array('op'=>'shop'))}">商城设置</a></li>{/if}
                   {ifp 'sysset.view.pcset'}<li><a href="{php echo $this->createWebUrl('sysset',array('op'=>'pcset'))}">PC设置</a></li>{/if}
@@ -119,5 +139,24 @@
             </ul>
         </li>
         {/if}
+        
+        <li class="dropdown">
+           <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" style="display:block; max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; "><i class="fa fa-group"></i>{$_W['user']['username']} ({if $_W['role'] == 'founder'}系统管理员{elseif $_W['role'] == 'manager'}公众号管理员{else}公众号操作员{/if}) <b class="caret"></b></a>
+            <ul class="dropdown-menu">
+                {if $_W['role'] != 'operator'}
+						<li><a href="{url 'account/post' array('uniacid' => $_W['uniacid'])}" target="_blank"><i class="fa fa-weixin fa-fw"></i> 编辑当前账号资料</a></li>
+                {/if}
+                <li><a href="{url 'utility/emulator'}" target="_blank"><i class="fa fa-mobile fa-fw"></i> 模拟测试</a></li>
+                        
+                {if !empty($_W['isfounder']) || empty($_W['setting']['permurls']['sections']) || in_array('platform', $_W['setting']['permurls']['sections'])}<li{if FRAME == 'platform'} class="active"{/if}><a href="{url 'home/welcome/platform'}"><i class="fa fa-cog"></i>基础设置</a></li>{/if}
+				{if !empty($_W['isfounder']) || empty($_W['setting']['permurls']['sections']) || in_array('site', $_W['setting']['permurls']['sections'])}<li{if FRAME == 'site'} class="active"{/if}><a href="{url 'home/welcome/site'}"><i class="fa fa-life-bouy"></i>微站功能</a></li>{/if}
+				{if !empty($_W['isfounder']) || empty($_W['setting']['permurls']['sections']) || in_array('mc', $_W['setting']['permurls']['sections'])}<li{if FRAME == 'mc'} class="active"{/if}><a href="{url 'home/welcome/mc'}"><i class="fa fa-gift"></i>粉丝营销</a></li>{/if}
+				{if !empty($_W['isfounder']) || empty($_W['setting']['permurls']['sections']) || in_array('setting', $_W['setting']['permurls']['sections'])}<li{if FRAME == 'setting'} class="active"{/if}><a href="{url 'home/welcome/setting'}"><i class="fa fa-umbrella"></i>功能选项</a></li>{/if}
+                <li><a href="{url 'system/updatecache'}" target="_blank"><i class="fa fa-refresh fa-fw"></i> 更新缓存</a></li>
+				<li><a href="./?refresh"><i class="fa fa-reply-all"></i>返回系统</a></li>
+
+            </ul>
+        </li>
     </ul>
+</div>
 </div>

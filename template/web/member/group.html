@@ -1,8 +1,10 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'web/member/tabs'}
 
 {if $operation == 'post'}
 <div class="main">
+<div class="rightlist">
     <form {ife 'member.group' $group}action="" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data">
         <input type="hidden" name="id" value="{$group['id']}" />
         <div class='panel panel-default'>
@@ -38,6 +40,7 @@
         </div>
   
     </form>
+    </div>
 </div>
 <script language='javascript'>
     $('form').submit(function(){
@@ -49,6 +52,7 @@
     })
     </script>
 {elseif $operation == 'display'}
+<div class="rightlist">
                <form action="" method="post" onsubmit="return formcheck(this)">
      <div class='panel panel-default'>
             <div class='panel-heading'>
@@ -95,5 +99,7 @@
          {/if}
      </div>
        </form>
+       </div>
 {/if}
+</div>
 {template 'web/_footer'}
