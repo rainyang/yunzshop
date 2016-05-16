@@ -6,7 +6,7 @@ $set = $this->getSet();
 $time             = time();
 $pindex    = max(1, intval($_GPC['page']));
 $psize     = 20;
-$day_times        = intval($set['settledaysdf']) * 3600 * 24;
+$day_times        = intval($set['settledays']) * 3600 * 24;
 $daytime = strtotime(date("Y-m-d 00:00:00"));
 if(empty($set['sendmonth'])){
     $stattime = $daytime - 86400;

@@ -11,6 +11,8 @@ if (empty($openid)) {
 $member  = m('member')->getMember($openid);
 $uniacid = $_W['uniacid'];
 $orderid = intval($_GPC['orderid']);
+$set = m('common')->getSysset(array('trade'));
+
 if ($operation == 'display' && $_W['isajax']) {
     if (empty($orderid)) {
         show_json(0, '参数错误!');

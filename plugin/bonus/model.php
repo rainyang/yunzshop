@@ -107,68 +107,7 @@ if (!class_exists('BonusModel')) {
 				//是否开启区域代理
 				if(!empty($set['area_start'])){
 					$bonus_area_money_old = 0;
-					//省级代理计算
-					$bonus_commission1 = floatval($set['bonus_commission1']);
-					if(!empty($bonus_commission1)){
-	            		$agent_province =  pdo_fetch("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_area=1 and uniacid=".$_W['uniacid']);
-	            		if(!empty($agent_province)){
-		            		if($agent_province['bonus_area_commission'] > 0){
-		            			$bonus_area_money = round($price_all * $agent_province['bonus_area_commission']/100, 2);
-		            		}else{
-		            			$bonus_area_money = round($price_all * $set['bonus_commission1']/100, 2);
-		            		}
-		            		if(empty($set['isdistinction_area'])){
-								$bonus_area_money = $bonus_area_money - $bonus_area_money_old;
-								$bonus_area_money_old = $bonus_area_money;
-							}
-		            		if($bonus_area_money > 0){
-		            			$data = array(
-				                    'uniacid' => $_W['uniacid'],
-				                    'ordergoodid' => $cinfo['goodsid'],
-				                    'orderid' => $orderid,
-				                    'total' => $cinfo['total'],
-				                    'optionname' => $cinfo['optionname'],
-				                    'mid' => $agent_province['id'],
-				                    'bonus_area' => 1,
-				                    'money' => $bonus_area_money,
-				                    'createtime' => $time
-				                );
-				                pdo_insert('sz_yi_bonus_goods', $data);
-			                }
-			            }
-		            }
-		            //市级代理计算
-		            $bonus_commission2 = floatval($set['bonus_commission2']);
-					if(!empty($bonus_commission2)){
-	            		$agent_city =  pdo_fetch("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_city='". $address['city']."' and bonus_area=2 and uniacid=".$_W['uniacid']);
-	            		if(!empty($agent_city)){
-		            		if($agent_city['bonus_area_commission'] > 0){
-		            			$bonus_area_money = round($price_all * $agent_city['bonus_area_commission']/100, 2);
-		            		}else{
-		            			$bonus_area_money = round($price_all * $set['bonus_commission2']/100, 2);
-		            		}
-		            		if(empty($set['isdistinction_area'])){
-								$bonus_area_money = $bonus_area_money - $bonus_area_money_old;
-								$bonus_area_money_old = $bonus_area_money;
-							}
-		            		if($bonus_area_money > 0){
-		            			$data = array(
-				                    'uniacid' => $_W['uniacid'],
-				                    'ordergoodid' => $cinfo['goodsid'],
-				                    'orderid' => $orderid,
-				                    'total' => $cinfo['total'],
-				                    'optionname' => $cinfo['optionname'],
-				                    'mid' => $agent_city['id'],
-				                    'bonus_area' => 2,
-				                    'money' => $bonus_area_money,
-				                    'createtime' => $time
-				                );
-			                	pdo_insert('sz_yi_bonus_goods', $data);
-			                }
-		                }
-		            }
-
-		            //区级代理计算
+					//区级代理计算
 		            $bonus_commission3 = floatval($set['bonus_commission3']);
 					if(!empty($bonus_commission3)){
 	            		$agent_district =  pdo_fetch("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_city='". $address['city']."' and bonus_district='". $address['area']."' and bonus_area=3 and uniacid=".$_W['uniacid']);
@@ -198,6 +137,66 @@ if (!class_exists('BonusModel')) {
 			                pdo_insert('sz_yi_bonus_goods', $data);
 			            }
 		            }
+					//市级代理计算
+		            $bonus_commission2 = floatval($set['bonus_commission2']);
+					if(!empty($bonus_commission2)){
+	            		$agent_city =  pdo_fetch("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_city='". $address['city']."' and bonus_area=2 and uniacid=".$_W['uniacid']);
+	            		if(!empty($agent_city)){
+		            		if($agent_city['bonus_area_commission'] > 0){
+		            			$bonus_area_money = round($price_all * $agent_city['bonus_area_commission']/100, 2);
+		            		}else{
+		            			$bonus_area_money = round($price_all * $set['bonus_commission2']/100, 2);
+		            		}
+		            		if(empty($set['isdistinction_area'])){
+								$bonus_area_money = $bonus_area_money - $bonus_area_money_old;
+								$bonus_area_money_old = $bonus_area_money;
+							}
+		            		if($bonus_area_money > 0){
+		            			$data = array(
+				                    'uniacid' => $_W['uniacid'],
+				                    'ordergoodid' => $cinfo['goodsid'],
+				                    'orderid' => $orderid,
+				                    'total' => $cinfo['total'],
+				                    'optionname' => $cinfo['optionname'],
+				                    'mid' => $agent_city['id'],
+				                    'bonus_area' => 2,
+				                    'money' => $bonus_area_money,
+				                    'createtime' => $time
+				                );
+			                	pdo_insert('sz_yi_bonus_goods', $data);
+			                }
+		                }
+		            }
+					//省级代理计算
+					$bonus_commission1 = floatval($set['bonus_commission1']);
+					if(!empty($bonus_commission1)){
+	            		$agent_province =  pdo_fetch("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_area=1 and uniacid=".$_W['uniacid']);
+	            		if(!empty($agent_province)){
+		            		if($agent_province['bonus_area_commission'] > 0){
+		            			$bonus_area_money = round($price_all * $agent_province['bonus_area_commission']/100, 2);
+		            		}else{
+		            			$bonus_area_money = round($price_all * $set['bonus_commission1']/100, 2);
+		            		}
+		            		if(empty($set['isdistinction_area'])){
+								$bonus_area_money = $bonus_area_money - $bonus_area_money_old;
+								$bonus_area_money_old = $bonus_area_money;
+							}
+		            		if($bonus_area_money > 0){
+		            			$data = array(
+				                    'uniacid' => $_W['uniacid'],
+				                    'ordergoodid' => $cinfo['goodsid'],
+				                    'orderid' => $orderid,
+				                    'total' => $cinfo['total'],
+				                    'optionname' => $cinfo['optionname'],
+				                    'mid' => $agent_province['id'],
+				                    'bonus_area' => 1,
+				                    'money' => $bonus_area_money,
+				                    'createtime' => $time
+				                );
+				                pdo_insert('sz_yi_bonus_goods', $data);
+			                }
+			            }
+		            } 
 				}
 	        }
 		}
@@ -243,7 +242,7 @@ if (!class_exists('BonusModel')) {
             $myordermoney     = 0;
 			$myordercount     = 0;
         	$time             = time();
-            $day_times        = intval($set['settledaysdf']) * 3600 * 24;
+            $day_times        = intval($set['settledays']) * 3600 * 24;
         	if (in_array('ok', $options)) {
 	            //可提现佣金
 	            $sql = "select sum(o.price) as money from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.createtime > {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
@@ -297,7 +296,7 @@ if (!class_exists('BonusModel')) {
 			$myordercount     = 0;
 	        $agentid          = $member['id'];
             $time             = time();
-            $day_times        = intval($set['settledaysdf']) * 3600 * 24;
+            $day_times        = intval($set['settledays']) * 3600 * 24;
             $this->agents     = array();
             if (in_array('totaly', $options)) {
 	            //预计佣金
@@ -713,6 +712,7 @@ if (!class_exists('BonusModel')) {
 		//分红
 		public function autosend(){
 			global $_W, $_GPC;
+			
 			$time           = time();
 			$sendpay_error  = 0;
 			$bonus_money    = 0;
@@ -728,7 +728,8 @@ if (!class_exists('BonusModel')) {
 			}else if($set['sendmonth'] == 1){
 				$endtime = date('Y-m-d', mktime(0,0,0,date('m')-1,1,date('Y')));
 			}
-			$day_times      = intval($set['settledaysdf']) * 3600 * 24;
+
+			$day_times      = intval($set['settledays']) * 3600 * 24;
 			$sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$endtime} - o.finishtime > {$day_times})  ORDER BY o.finishtime DESC,o.status DESC";
 			$bonus_member = pdo_fetchall($sql);
 			$totalmoney = 0;
@@ -766,7 +767,6 @@ if (!class_exists('BonusModel')) {
 		            "send_bonus_sn" => $time
 		        ));
 		        if($sendpay == 1){
-		        	
 		        	$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_PAY);
 		        }
 		        //更新分红订单完成
@@ -799,6 +799,7 @@ if (!class_exists('BonusModel')) {
 
 		//全球分红
 		public function autosendall(){
+			global $_W, $_GPC;
 			$time           = time();
 			$sendpay_error  = 0;
 			$bonus_money    = 0;
@@ -809,13 +810,16 @@ if (!class_exists('BonusModel')) {
 			if(empty($set['sendmethod'])){
 				return false;
 			}
-			$daytime 		= strtotime(date("Y-m-d 00:00:00"));
+			$day_times        = intval($set['settledays']) * 3600 * 24;
+			$daytime = strtotime(date("Y-m-d 00:00:00"));
 			if(empty($set['sendmonth'])){
-				$endtime = $daytime-1;
+			    $stattime = $daytime - 86400;
+			    $endtime = $daytime - 1;
 			}else if($set['sendmonth'] == 1){
-				$endtime = date('Y-m-d', mktime(0,0,0,date('m')-1,1,date('Y')));
+			    $stattime = mktime(0, 0, 0, date('m') - 1, 1, date('Y'));
+			    $endtime = mktime(0, 0, 0, date('m'), 1, date('Y')) - 1;
 			}
-			$sql = "select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$endtime})  ORDER BY o.finishtime DESC,o.status DESC";
+			$sql = "select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}  ORDER BY o.finishtime DESC,o.status DESC";
 			$ordermoney = pdo_fetchcolumn($sql);
 			$premierlevels = pdo_fetchall("select * from ".tablename('sz_yi_bonus_level')." where uniacid={$_W['uniacid']} and premier=1");
 			$levelmoneys = array();

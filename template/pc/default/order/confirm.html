@@ -1070,14 +1070,14 @@ console.log($('#address_container').html());
           }
         } 
                 if($('#isverify').val()=='true'){
-                    if (carrier_realname== '') {
+                    /*if (carrier_realname== '') {
                         core.tip.show("请填写联系人姓名");
                         return;
                     }
                     if (!$.isMobile(carrier_mobile)) {
                         core.tip.show("请填写正确手机号");
                         return;
-                    }
+                    }*/
                 }
                 if( $("#dispatchtype").val()=='1'){
                     if (carrier_realname== '') {
@@ -1118,13 +1118,13 @@ console.log($('#address_container').html());
              
              if( $("#dispatchtype").val()=='1' || $('#isverify').val()=='true'){
                  data.carrierid = carrierid;
-                data.carrier = {
+                /*data.carrier = {
                     'carrier_realname': carrier_realname,
                     'carrier_mobile':carrier_mobile,
                     'realname': $('#carrier_realname').html(),
                     'mobile': $('#carrier_mobile').html(),
                     'address': $('#carrier_address').html()
-                };
+                };*/
             }
             
             if($("#deductcredit").length>0){

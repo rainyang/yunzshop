@@ -54,7 +54,7 @@
                 var data = json.result.member;
                 $('#container').html(tpl('member_info', data));
         				$('.info_sub1').click(function(){
-        				 window.location.href="<?php echo $this->createMobileUrl('member/center')?>";
+        				 window.location.href="<?php echo $this->createMobileUrl('order')?>";
         				});
                 $('.info_sub').click(function() {
 			
@@ -109,5 +109,4 @@
 
     })
 </script>
-
 {template 'common/footer'}
