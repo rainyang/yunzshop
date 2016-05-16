@@ -1,6 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'web/sysset/tabs'}
-<div class="main">
+<div class="main rightlist">
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <input type='hidden' name='setid' value="{$set['id']}" />
         <input type='hidden' name='op' value="template" />
@@ -49,5 +50,6 @@
 
         </div>     
     </form>
+</div>
 </div>
 {template 'web/_footer'}     

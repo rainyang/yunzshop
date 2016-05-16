@@ -1,8 +1,9 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'web/shop/tabs'}
 
 {if $operation == 'post'}
-<div class="main">
+<div class="main rightlist">
     
     <form  {ife 'shop.category' $item}action="" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data" >
     
@@ -201,7 +202,7 @@
 <style type='text/css'>
     .dd-handle { height: 40px; line-height: 30px}
 </style>
-<div class="main">
+<div class="main rightlist">
     <div class="category">
         <form action="" method="post">
             <div class="panel panel-default">
@@ -286,6 +287,7 @@
             </div>
         </form>
     </div>
+</div>
 </div>
     <script language='javascript'>
      

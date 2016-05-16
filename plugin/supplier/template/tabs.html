@@ -1,3 +1,4 @@
+<div class="ulleft-nav">
 <ul class="nav nav-tabs">
     {ifp 'supplier.supplier'}<li {if $_GPC['method']=='supplier'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('supplier/supplier')}">供应商管理</a></li>{/if}
     {ifp 'supplier.supplier_list'}<li {if $_GPC['method']=='supplier_list'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('supplier/supplier_list')}">供应商订单</a></li>{/if}
@@ -8,3 +9,4 @@
     {ifp 'supplier.notice'}<li {if $_GPC['method']=='notice'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('supplier/notice')}">通知设置</a></li>{/if}
     {ifp 'supplier.set'}<li {if $_GPC['method']=='set'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('supplier/set')}">基础设置</a></li>{/if}
 </ul>
+</div>
