@@ -1,13 +1,17 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 <script language="javascript">require(['underscore']);</script>
 <!-- 导入CSS样式 -->
 <link href="../addons/sz_yi/plugin/designer/template/imgsrc/designer.css" rel="stylesheet">
 <!-- 头部选项卡 -->
+<div class="ulleft-nav">
 <ul class="nav nav-tabs">
     <li {if $_GPC['op']=='display' || empty($_GPC['op'])}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('choose')}" >快速选购</a></li>
 
 
 </ul>
+</div>
+<div class="rightlist">
 {if $op=='display'}
 <!-- 筛选区域 -->
 <!-- <div class="panel panel-info">
@@ -73,7 +77,7 @@
                     <tr>
                         <td colspan="8">
                             <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('choose/basic',array('op'=>'create'))}"><i class="fa fa-plus"></i> 添加一个新页面</a>
-                            <span></span>
+                            <span>Tips:自定义页面启用默认后将代替系统默认页面(商城首页、商品列表、商品详细)，同一个类型的页面仅允许设置一个默认页面</span>
                         </td>
                     </tr>
                 {/if}
@@ -127,6 +131,7 @@ function delpage(id){
 
 
 {/if}
-
+</div>
+</div>
 {template 'common/footer'}
 

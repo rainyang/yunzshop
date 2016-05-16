@@ -1,9 +1,12 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
+<div class="ulleft-nav">
 <ul class="nav nav-tabs">
     <li class="active"><a href="javascript:;">会员群发</a></li>
 </ul>
+</div>
+<div class="rightlist">
 {if $operation == 'post'}
-
 <div class="main">
     <form {ife 'tmessage' $list}action="" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data">
         <div class='panel panel-default'>
@@ -43,7 +46,7 @@
                         <input type="text" name="tp_first" class="form-control" value="{$list['first']}" placeholder="" />
                        
                     </div>
-                       <div class="col-sm-3" style="width:30%; ">
+                       <div class="col-sm-3 wid100" style="width:30%; ">
                           
                            {php echo tpl_form_field_color('firstcolor', $list['firstcolor'])}
                         
@@ -76,7 +79,7 @@
                         <input type="text" name="tp_remark" class="form-control" value="{$list['remark']}" placeholder="" />
                      
                     </div>
-                    <div class="col-sm-3" style="width:30%; ">
+                    <div class="col-sm-3 wid100" style="width:30%; ">
                            {php echo tpl_form_field_color('remarkcolor', $list['remarkcolor'])}
                     </div>
                     
@@ -200,7 +203,7 @@
          </div>
          {ifp 'tmessage.add'}
            <div class='panel-footer'>
-                            <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('tmessage', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新模版</a>
+                            <a class='btn btn-primary' href="{php echo $this->createPluginWebUrl('tmessage', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新模版</a>
          </div>
          {/if}
      </div>
@@ -398,4 +401,6 @@
             </form>
         </div>
 {/if}
+</div>
+</div>
 {template 'web/_footer'}

@@ -1,10 +1,10 @@
 {template 'web/_header'}
 <div class="w1200 m0a">
 {template 'web/member/tabs'}
-
-{if $operation == 'post'}
-<div class="main">
 <div class="rightlist">
+{if $operation == 'post'}
+<div class="main"> 
+
     <form {ife 'member.group' $group}action="" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data">
         <input type="hidden" name="id" value="{$group['id']}" />
         <div class='panel panel-default'>
@@ -40,7 +40,7 @@
         </div>
   
     </form>
-    </div>
+    
 </div>
 <script language='javascript'>
     $('form').submit(function(){
@@ -52,7 +52,7 @@
     })
     </script>
 {elseif $operation == 'display'}
-<div class="rightlist">
+
                <form action="" method="post" onsubmit="return formcheck(this)">
      <div class='panel panel-default'>
             <div class='panel-heading'>
@@ -94,12 +94,13 @@
          </div>
          {if 'member.group.add'}
            <div class='panel-footer'>
-                            <a class='btn btn-default' href="{php echo $this->createWebUrl('member/group', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新分组</a>
+                            <a class='btn btn-primary' href="{php echo $this->createWebUrl('member/group', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新分组</a>
          </div>
          {/if}
      </div>
        </form>
-       </div>
+       
 {/if}
+</div>
 </div>
 {template 'web/_footer'}

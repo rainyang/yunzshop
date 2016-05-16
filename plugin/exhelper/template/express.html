@@ -1,8 +1,10 @@
 {template 'web/_header'} 
+<div class="w1200 m0a">
 {template 'tabs'} 
 {template 'exhelpercommon'}
 
 {if $_GPC['op']=='list'}
+<div class="rightlist">
 <div class="panel panel-default">
 	<div class="panel-heading"><i class="fa fa-copy"></i> {if $cate==1}快递单模版列表{elseif $cate==2}发货单模版列表{/if}</div>
 	<div class="panel-body table-responsive">
@@ -98,6 +100,8 @@
 	</div>
 </div>
 
+</div>
+
 {elseif $_GPC['op']=='post'}
 <script language='javascript' src="../addons/sz_yi/plugin/exhelper/static/js/designer.js"></script>
 <script language='javascript' src="../addons/sz_yi/plugin/exhelper/static/js/jquery.contextMenu.js"></script>
@@ -127,7 +131,7 @@
 .edit-left {min-height: 592px; width: 420px; float: left; }
 .edit-right {min-height: 570px; width: auto; margin-left: 440px;}
 </style>
-<div class="main">
+<div class="main rightlist">
 	<form id='dataform' action="" method="post" class="form-horizontal form">
 		<input type="hidden" name="id" value="{$item['id']}" />
 		<input type="hidden" name="cate" value="{$cate}" />
@@ -263,7 +267,7 @@
 					{/if}
 				{/if}
 				<div class="edit-right">
-					<div id="container" style="width:{if !empty($item['width'])}{$item['width']}{else}250{/if}mm; height: {if !empty($item['height'])}{$item['height']}{else}150{/if}mm;">
+					<div id="container" style="/*width:{if !empty($item['width'])}{$item['width']}{else}142{/if}mm;*/ height: {if !empty($item['height'])}{$item['height']}{else}150{/if}mm;">
 						<img id="bgimg" src="{$item['bg']} " {if empty($item['bg'])} style="display: none;"{/if} /> 
 										{loop $datas $k $d}
 											<div class="drag" cate="{$d['cate']}" index="{$k}" items="{$d['items']}" item-string="{$d['string']}" item-font="{$d['font']}" item-size="{$d['size']}" item-color="{$d['color']}" item-bold="{$d['bold']}" item-pre="{$d['pre']}" item-last="{$d['last']}" item-align="{$d['align']}"
@@ -374,6 +378,7 @@
 				</div>
 	</form>
 	</div>
+</div>
 	<script language='javascript' src="../addons/sz_yi/plugin/exhelper/static/js/LodopFuncs.js"></script>
 	<script src='http://{if empty($printset["ip"])}8000{else}{$printset["ip"]}{/if}:{if empty($printset["port"])}8000{else}{$printset["port"]}{/if}/CLodopfuncs.js'></script>
 	<script language='javascript'>

@@ -85,12 +85,30 @@
         {/if}
            
         {php $plugins = m('plugin')->getAll()}
+        <?php if (p('supplier')) {
+                $roleid = pdo_fetchcolumn('select roleid from' . tablename('sz_yi_perm_user') . ' where uid='.$_W['uid'].' and uniacid=' . $_W['uniacid']);
+                if($roleid == 0){
+                    $perm_role = 0;
+                }else{
+                    if(p('supplier')){
+                        $perm_role = pdo_fetchcolumn('select status1 from' . tablename('sz_yi_perm_role') . ' where id=' . $roleid);
+                    }else{
+                        $perm_role = 0;
+                    }
+                }
+              }?>
         <li class="dropdown">
            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-cubes'></i> 插件 <i class="fa fa-angle-down"></i></a>
             <ul class="dropdown-menu">
                 {loop $plugins $plugin}
                 {ifpp $plugin['identity']}
+                     {if p('supplier') && $perm_role == 1}
+                     {if $plugin['identity']=='taobao' || $plugin['identity']=='exhelper'}
                      <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
+                     {/if}
+                     {else}
+                     <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
+                     {/if}
                 {/if}
                 {/loop}
             </ul>

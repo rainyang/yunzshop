@@ -1,5 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
+<div class="rightlist">
 <form id="setform"  action="" method="post" class="form-horizontal form">
     <div class='panel panel-default'>
            <div class='panel-heading'>
@@ -59,18 +61,7 @@
                     <span class='help-block'>开启分销内购，分销商自己购买商品，享受一级佣金，上级享受二级佣金，上上级享受三级佣金</span>
                 </div>
             </div>
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">佣金计算方式</label>
-                <div class="col-sm-4">
-                    <select  class="form-control" name="setdata[culate_method]">
-                        <option value="0" {if empty($set['culate_method'])}selected{/if}>实付款金额</option>
-                        <option value="1" {if $set['culate_method']==1}selected{/if}>商品原价</option>
-                        <option value="2" {if $set['culate_method']==2}selected{/if} >商品现价</option>
-                        <option value="3" {if $set['culate_method']==3}selected{/if} >商品成本价</option>
-                        <option value="4" {if $set['culate_method']==4}selected{/if} >商品利润（实付款金额-成本价）</option>
-                    </select>
-                </div>
-            </div>
+            
         </div>
         <div class='panel-heading'>
             分销设置
@@ -546,6 +537,7 @@
         
     </div>
 </form>
+
 <!-- Author:Y.yang Date:2016-04-08 Content:购买指定商品成为分销商，（选择商品的输入框和JS） -->
 <div id="modal-goods"  class="modal fade" tabindex="-1">
     <div class="modal-dialog" style='width: 920px;'>
@@ -563,6 +555,8 @@
             <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
         </div>
     </div>
+</div>
+</div>
 </div>
 <script language='javascript'>
       function search_goods() {

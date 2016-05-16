@@ -1,5 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
+<div class="rightlist">
 {if $operation == 'post'}
 
 <script type="text/javascript" src="resource/js/lib/jquery-ui-1.10.3.min.js"></script>
@@ -95,7 +97,7 @@
                     <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  />
                     <input type="hidden" name="token" value="{$_W['token']}" />
                     {/if}
-                    <a href="{php echo $this->createPluginWebUrl('diyform')}"  {ife 'diyform.temp' $item}style='margin-left:10px;'{/if}><span class="btn btn-default" style='margin-left:10px;'>返回列表</span></a>
+                    <a href="{php echo $this->createPluginWebUrl('diyform')}"  {ife 'diyform.temp' $item}{/if}><span class="btn btn-default" style='margin-left:10px;'>返回列表</span></a>
                 </div>
             </div>
         </div>
@@ -309,11 +311,11 @@
     {/if}
     {ifp 'diyform.temp.add'}
     <div class='panel-footer'>
-        <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('diyform/temp', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新模版</a>
+        <a class='btn btn-primary' href="{php echo $this->createPluginWebUrl('diyform/temp', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新模版</a>
         <span style="line-height:32px;background-size:13583px; font-size:12px; margin-left: 10px;">温馨提示：点击数据可以查看哦~~</span>
     </div>
     {/if}
-</div>
+
 
 <script language="javascript">
 
@@ -611,6 +613,8 @@ function del_temp(id) {
         <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('diyform', array('op' => 'postdata','typeid'=>$_GPC['typeid']))}"><i class="fa fa-plus"></i> 添加数据</a>
     </div>
 </div>
-
+</div>
 {/if}
+</div>
+</div>
 {template 'common/footer'}

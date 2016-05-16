@@ -16,6 +16,7 @@ if ($operation == 'display') {
     }
     unset($row);
 } elseif ($operation == 'post') {
+    $myself_support = !empty($_GPC['myself_support']) ? $_GPC['myself_support'] : '0';
     $id = intval($_GPC['id']);
     if (empty($id)) {
         ca('verify.store.add');
@@ -34,7 +35,8 @@ if ($operation == 'display') {
             'tel' => trim($_GPC['tel']),
             'lng' => $_GPC['map']['lng'],
             'lat' => $_GPC['map']['lat'],
-            'status' => intval($_GPC['status'])
+            'status' => intval($_GPC['status']),
+            'myself_support' => intval($myself_support)
         );
         if (!empty($id)) {
             pdo_update('sz_yi_store', $data, array(

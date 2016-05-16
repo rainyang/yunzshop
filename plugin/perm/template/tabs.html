@@ -1,3 +1,5 @@
+
+<div class="ulleft-nav">
 <ul class="nav nav-tabs">
 
     {ifp 'perm.role'}<li {if $_GPC['method']=='role'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('perm/role')}">角色管理</a></li>{/if}
@@ -10,4 +12,5 @@
     <li {if $_GPC['method']=='set'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('perm/set')}">基础设置</a></li>
    {/if}
 </ul>
+</div>
  
