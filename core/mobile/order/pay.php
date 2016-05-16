@@ -8,11 +8,11 @@ $openid    = m('user')->getOpenid();
 if (empty($openid)) {
     $openid = $_GPC['openid'];
 }
+$set = m('common')->getSysset(array('pay'));
+//print_r($set);
 $member  = m('member')->getMember($openid);
 $uniacid = $_W['uniacid'];
 $orderid = intval($_GPC['orderid']);
-$set = m('common')->getSysset(array('trade'));
-
 if ($operation == 'display' && $_W['isajax']) {
     if (empty($orderid)) {
         show_json(0, '参数错误!');
@@ -27,7 +27,7 @@ if ($operation == 'display' && $_W['isajax']) {
     }
     if ($order['status'] == -1) {
         show_json(-1, '订单已关闭, 无法付款!');
-    } else if ($order['status'] >= 1) {
+    } elseif ($order['status'] >= 1) {
         show_json(-1, '订单已付款, 无需重复支付!');
     }
     $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
@@ -90,7 +90,7 @@ if ($operation == 'display' && $_W['isajax']) {
     }
 
     //扫码
-    if(!isMobile() && isset($set['pay']) && $set['pay']['weixin'] == 1){
+    if (!isMobile() && isset($set['pay']) && $set['pay']['weixin'] == 1) {
         if (isset($set['pay']) && $set['pay']['weixin'] == 1) {
             if (is_array($setting['payment']['wechat']) && $setting['payment']['wechat']['switch']) {
                 $wechat['qrcode'] = true;
@@ -383,9 +383,15 @@ if ($operation == 'display' && $_W['isajax']) {
     ))) {
         show_json(0, '未找到支付方式');
     }
-    if($member['credit2'] < $order['deductcredit2'] && $order['deductcredit2'] > 0){
+
+    if (!$set['pay']['credit']) {
+        show_json(0, '余额支付未开启！');
+    }
+
+    if ($member['credit2'] < $order['deductcredit2'] && $order['deductcredit2'] > 0) {
         show_json(0, '余额不足，请充值后在试！');
     }
+
     $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
         ':uniacid' => $uniacid,
         ':module' => 'sz_yi',
