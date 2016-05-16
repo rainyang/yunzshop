@@ -4,20 +4,21 @@ if (!defined('IN_IA')) {
 }
 
 global $_W, $_GPC;
+
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'index';
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $designer  = p('designer');
-if(empty($this->yzShopSet['ispc']) || isMobile()){
-	if ($designer) {
-		$pagedata = $designer->getPage();
-		if ($pagedata) {
-			extract($pagedata);
-			$guide = $designer->getGuide($system, $pageinfo);
-			$_W['shopshare'] = array('title' => $share['title'], 'imgUrl' => $share['imgUrl'], 'desc' => $share['desc'], 'link' => $this->createMobileUrl('shop'));
-			if (p('commission')) {
-				$set = p('commission')->getSet();
-				if (!empty($set['level'])) {
+if (empty($this->yzShopSet['ispc']) || isMobile()) {
+    if ($designer) {
+        $pagedata = $designer->getPage();
+        if ($pagedata) {
+            extract($pagedata);
+            $guide = $designer->getGuide($system, $pageinfo);
+            $_W['shopshare'] = array('title' => $share['title'], 'imgUrl' => $share['imgUrl'], 'desc' => $share['desc'], 'link' => $this->createMobileUrl('shop'));
+            if (p('commission')) {
+                $set = p('commission')->getSet();
+                if (!empty($set['level'])) {
 					$member = m('member')->getMember($openid);
 					if (!empty($member) && $member['status'] == 1 && $member['isagent'] == 1) {
 						$_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $member['id']));

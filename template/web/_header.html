@@ -1,4 +1,7 @@
 {template 'common/header-base'}
+<link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/webstyle.css">
+
+<!--
 	<div class="navbar navbar-inverse navbar-static-top" role="navigation" style="position:static;">
 		<div class="container-fluid">
 			{if defined('IN_SOLUTION')}
@@ -32,10 +35,6 @@
                                 
 				{if FRAME == 'solution'}<li class="active"><a href="{url 'home/welcome/solution' array('m' => $m)}"><i class="fa fa-comments"></i>行业功能 - {$solution['title']}</a></li>{/if}
 				 
-<!--                                    {php $shop = m('common')->getSysset('shop')}
-                                {if !empty($shop['qq'])}
-		<li><a href="http://wpa.qq.com/msgrd?v=3&uin={$shop['qq']}&site=qq&menu=yes" target="_blank"><i class="fa fa-suitcase"></i>联系客服</a></li>
-                                {/if}-->
 			</ul>
 			{/if}
 			<ul class="nav navbar-nav navbar-right">
@@ -66,6 +65,7 @@
 			</ul>
 		</div>
 	</div>
+    -->
 	
 	<div class="container-fluid">
 		{if defined('IN_MESSAGE')}

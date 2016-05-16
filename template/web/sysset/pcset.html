@@ -1,10 +1,12 @@
 {template 'web/_header'}
+
+<div class="w1200 m0a">
 {template 'web/sysset/tabs'}
 <link href="../addons/sz_yi/plugin/article/template/imgsrc/article.css" rel="stylesheet">
 <style type="text/css">
     .setmenu .form-group{margin-bottom: 0;}
 </style>
-<div class="main">
+<div class="main rightlist">
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <input type='hidden' name='setid' value="{$set['id']}" />
         <input type='hidden' name='op' value="pcset" />
@@ -420,6 +422,7 @@
             </div>
         </div>
     </div>
+</div>
 <!-- mylink end -->
 <script type="text/javascript" src="resource/js/lib/jquery-ui-1.10.3.min.js"></script>
 <script language="javascript">

@@ -3,7 +3,31 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 
-function sz_tpl_form_field_date($name, $value = '', $withtime = false) {
+function icheck_gpc($var)
+{
+    if (is_array($var)) {
+        foreach ($var as $key => $value) {
+            $var[stripslashes($key)] = icheck_gpc($value);
+        }
+    } else {
+        $var = inject_check($var);
+        if ($var) {
+            exit('非法参数');
+        }
+    }
+    return $var;
+}
+
+/**
+ * 校验防止SQL注入
+ */
+function inject_check($sql_str)
+{
+    return preg_match('/eval|select|insert|update|delete|\'|\/\*|\*|\.\.\/|\.\/|union|into|load_file|outfile/i', $sql_str);
+}
+
+function sz_tpl_form_field_date($name, $value = '', $withtime = false)
+{
 	$s = '';
 	if (!defined('TPL_INIT_DATA')) {
 		$s = '

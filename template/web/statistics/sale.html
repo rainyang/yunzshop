@@ -1,5 +1,8 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'web/statistics/tabs'}
+
+<div class="rightlist">
 <div class="panel panel-info">
     <div class="panel-heading">
          按年、月、日统计商城交易额、交易量
@@ -15,7 +18,7 @@
 
             <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">日期</label>
-                <div class="col-sm-1">
+                <div class="col-sm-2">
                     <select name="year" class="form-control">
                         {loop $years $y}
                         <option value="{$y['data']}"  {if $y['selected']}selected="selected"{/if}>{$y['data']}年</option>
@@ -23,7 +26,7 @@
                     </select>
                 </div>
               
-                <div class="col-sm-1">
+                <div class="col-sm-2">
                     <select name="month" class="form-control">
                         <option value=''>未选月份</option>
                         {loop $months $m}
@@ -31,7 +34,7 @@
                         {/loop}
                     </select>
                 </div>
-                 <div class="col-sm-1">
+                 <div class="col-sm-2">
                     <select name="day" class="form-control">
                         <option value=''>未选日期</option>
                     </select>
@@ -95,6 +98,8 @@
             </tbody>
         </table>   
     </div>
+</div>
+</div>
 </div>
 <script language='javascript'>
     function get_days(){
