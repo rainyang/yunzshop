@@ -1,5 +1,6 @@
 {template 'web/_header'}
 <div class="w1200 m0a">
+{if $operation != 'post'}
 <div class="ulleft-nav">
 <ul class="nav nav-tabs">
     <li {if $_GPC['op']=='' || $_GPC['op']=='display'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('article')}" style="cursor: pointer;">文章管理</a></li>
@@ -17,6 +18,7 @@
     {if $_GPC['op']=='list_share'}<li class="active"><a href="javascript:;" style="cursor: pointer;">分享记录</a></li>{/if}
 </ul>
 </div>
+{/if}
 <div class="rightlist">
 {if $operation == 'display'}
 <div class="main">
@@ -540,6 +542,15 @@ $(function(){
     });
 });
 </script>
+
+<!-- 文章头部 -->
+<div class="page-heading">
+        <span class="pull-right">
+            <input type="submit" value="保存文章" class="btn btn-primary btn-sm" id="nav-save">          
+            <a class="btn btn-default  btn-sm" onclick="history.back()">返回列表</a>
+        </span>
+        <h2>添加文章 <small></small></h2>
+</div>
     <div id="modal-imgp" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -743,7 +754,6 @@ $(function(){
             <nav step="1" class="navon">① 编辑文章内容</nav>
             <nav step="2" id="nav-step-2">② 设置文章及页面信息</nav>
             <nav step="3">③ 设置营销内容</nav>
-            <div class="savebtn" id="nav-save">保存</div>
         </div>
         <div id="fart-editor-content">
             <div class="fart-editor-content" step="2">
