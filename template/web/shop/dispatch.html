@@ -1,6 +1,8 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'web/shop/tabs'}
 {if $operation == 'display'}
+<div class="rightlist">
 <form action="" method="post">
 <div class="main panel panel-default">
     <div class="panel-body table-responsive">
@@ -63,6 +65,7 @@
     </div>
 </div>
 </form>
+</div>
 <script>
     require(['bootstrap'], function ($) {
         $('.btn').hover(function () {
@@ -74,7 +77,7 @@
 </script>
 
 {elseif $operation == 'post'}
-<div class="main">
+<div class="main rightlist">
     <form {ife 'shop.dispatch' $dispatch}action="" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data" onsubmit='return formcheck()'>
         <input type="hidden" name="id" value="{$dispatch['id']}" />
  
@@ -445,6 +448,7 @@
             </div>
         </div>
      </div>
+</div> 
 </div> 
 <script language='javascript'>
     function show_type(flag){

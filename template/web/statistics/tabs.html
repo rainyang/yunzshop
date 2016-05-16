@@ -1,3 +1,4 @@
+<div class="ulleft-nav">
 <ul class="nav nav-tabs">
     {ifp 'statistics.view.sale'}<li {if $_GPC['p'] == 'sale' || empty($_GPC['p'])}class="active"{/if}><a href="{php echo $this->createWebUrl('statistics/sale')}">销售统计</a></li>{/if}
     {ifp 'statistics.view.sale_analysis'}<li {if $_GPC['p'] == 'sale_analysis'}class="active"{/if}><a href="{php echo $this->createWebUrl('statistics/sale_analysis')}">销售指标</a></li>{/if}
@@ -9,3 +10,4 @@
     {ifp 'statistics.view.member_increase'}<li {if $_GPC['p'] == 'member_increase'}class="active"{/if}><a href="{php echo $this->createWebUrl('statistics/member_increase')}">会员增长趋势</a></li>{/if}
     
 </ul>  
+</div>

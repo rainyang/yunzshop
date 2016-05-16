@@ -1,9 +1,10 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'web/shop/tabs'}
  <link href="../addons/sz_yi/template/mobile/default/static/js/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
 <script src="../addons/sz_yi/template/mobile/default/static/js/star-rating.js" type="text/javascript"></script>
+<div class="rightlist">
 {if $operation=='add'}
-
 <div class="main">
     <form id="dataform" action="" method="post" class="form-horizontal form" onsubmit='return formcheck()'>
         <div class='panel panel-default'>
@@ -343,6 +344,7 @@
     }
 </script>
 {elseif $operation == 'display'}
+
 <form action="" method="get" class='form form-horizontal'>
     <div class="panel panel-info">
         <div class="panel-heading">筛选</div>
@@ -355,13 +357,13 @@
                 <input type="hidden" name="p"  value="comment" />
                 <input type="hidden" name="op" value="display" />
                 <div class="form-group">
-                  <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">关键词</label>
+                  <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">关键词</label>
                     <div class="col-xs-12 col-sm-8 col-lg-9">
                         <input class="form-control" name="keyword" id="" type="text" value="{$_GPC['keyword']}" placeholder="可搜索订单号/商品标题">
                     </div>
                 </div>
                  <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">类型</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">类型</label>
                        <div class="col-xs-12 col-sm-8 col-lg-9">
                        <select name='fade' class='form-control'>
                           <option value='' {if $_GPC['fade']==''}selected{/if}></option>
@@ -373,7 +375,7 @@
  
                 </div>
                     <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">回复状态</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">回复状态</label>
                        <div class="col-xs-12 col-sm-8 col-lg-9">
                        <select name='replystatus' class='form-control'>
                           <option value='' {if $_GPC['replystatus']==''}selected{/if}></option>
@@ -384,21 +386,21 @@
                 </div>
                 
                  <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">按时间</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">按时间</label>
                      <div class="col-sm-2">
                        <select name='searchtime' class='form-control'>
                           <option value='' {if empty($_GPC['searchtime'])}selected{/if}>不搜索</option>
                           <option value='1' {if $_GPC['searchtime']==1}selected{/if} >搜索</option>
                        </select> 
                      </div>
-                    <div class="col-sm-7 col-lg-9 col-xs-12">
+                    <div class="col-sm-7 col-lg-7 col-xs-12">
                         {php echo tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d H:i', $starttime),'endtime'=>date('Y-m-d  H:i', $endtime)),true);}
                     </div>
  
                 </div>
                 
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label"> </label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"> </label>
                       <div class="col-xs-12 col-sm-2 col-lg-2">
                         <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
                     </div>
@@ -418,16 +420,14 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th style='width:200px;'>订单号</th>
-                        <th style='width:300px;'>商品信息</th>
-                        <th style='width:200px;'>评价者</th>
-                        <th style='width:200px;' >评分等级</th>
- 
-                        <th style='width:100px;'>评价状态</th>
-                        <th style='width:100px;'>回复状态</th>
-                        
-                        <th  style='width:150px;'>评价时间</th>
-                        <th>操作</th>
+                        <th style='width:12%;'>订单号</th>
+                        <th style='width:24%;'>商品信息</th>
+                        <th style='width:6%;'>评价者</th>
+                        <th style='width:10%;' >评分等级</th>
+                        <th style='width:10%;'>评价状态</th>
+                        <th style='width:10%;'>回复状态</th>
+                        <th style='width:14%;'>评价时间</th>
+                        <th style='width:14%;'>操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -499,9 +499,8 @@
         {/if}
     </div>
 </form>
-
-
-
 {/if}
+</div>
+</div>
 {template 'web/_footer'}
  

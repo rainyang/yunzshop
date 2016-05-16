@@ -16,6 +16,9 @@ if ($operation == 'display' && $_W['isajax']) {
 } else if ($operation == 'submit' && $_W['ispost']) {
 	$money = floatval($_GPC['money']);
 	$credit = m('member')->getCredit($openid, 'credit2');
+    if ($money < 0) {
+		show_json(0, '非法提现金额!');
+	}
 	if (empty($money)) {
 		show_json(0, '申请金额为空!');
 	}

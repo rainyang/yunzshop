@@ -1,5 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
+<div class="rightlist">
 <div class="panel panel-info">
     <div class="panel-heading">筛选</div>
     <div class="panel-body">
@@ -50,8 +52,6 @@
                     <th style='width:80px;'>会员ID</th>
                     <th style='width:80px;'>会员姓名</th>
                     <th style='width:120px;'>手机号码</th>
-                    <th style='width:120px;'>用户名</th>
-                    <th style='width:120px;'>密码</th>
                     <th style='width:120px;'>微信</th>
                     <th style='width:120px;'>产品名称</th>
                     <th style='width:120px;'>操作</th>
@@ -62,8 +62,6 @@
                 <tr>
                     <td>{$row['id']}</td>
                     <td>{$row['realname']}</td>
-                    <td>{$row['username']}</td>
-                    <td>{$row['password']}</td>
                     <td>{$row['mobile']}</td>
                     <td>{$row['weixin']}</td>
                     <td>{$row['productname']}</td>
@@ -74,6 +72,8 @@
         </table>
            {$pager}
     </div>
+</div>
+</div>
 </div>
 </div>
 {template 'web/_footer'}

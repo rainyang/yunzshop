@@ -1,4 +1,5 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'web/order/tabs'}
 
 <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
@@ -10,6 +11,7 @@
     #modal-confirmsend .control-label{margin-top:0;}
     .ad2 {display: none;}
 </style>
+<div class="rightlist">
 <div class="main">
     <form class="form-horizontal form" action="" method="post">
         {if $item['transid']}<div  class="alert alert-error"><i class="fa fa-lightbulb"></i> 此为微信支付订单，必须要提交发货状态！</div>{/if}
@@ -22,14 +24,14 @@
             </div>
             <div class="panel-body">
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">粉丝</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">粉丝 :</label>
                 <div class="col-sm-9 col-xs-12">
                     <img src='{$member['avatar']}' style='width:100px;height:100px;padding:1px;border:1px solid #ccc' />
                          {$member['nickname']}
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员信息</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员信息 :</label>
                 <div class="col-sm-9 col-xs-12">
                     <div class='form-control-static'>ID: {$member['id']} 姓名: {$member['realname']} / 手机号: {$member['mobile']} /微信号: {$member['weixin']}</div>
                 </div>
@@ -285,7 +287,7 @@
                 {/if}
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">备注 :</label>
-                    <div class="col-sm-9 col-xs-12"><textarea style="height:150px;" class="form-control" name="remark" cols="70">{$item['remark']}</textarea></div>
+                    <div class="col-sm-9 col-xs-12"><textarea style="height:60px;" class="form-control" name="remark" cols="70">{$item['remark']}</textarea></div>
                 </div>
                 
                 <div class="form-group">
@@ -413,27 +415,47 @@
             </div>
         </div>
         {elseif $item['isverify']==1 || !empty($item['virtual']) ||!empty($item['isvirtual'])}
-    		{if $show==1}         
-              <div class="panel panel-default">
-                <div class="panel-heading">
-                   自提信息
-                </div>
-                <div class="panel-body">
-                       <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">自提人姓名 :</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <p class="form-control-static">{$user['carrier_realname']} /  {$user['carrier_mobile']}</p>
-                        </div>
-                    </div>
+		{if $show==1}
+        <div class="panel panel-default">
+            <div class="panel-heading">
+               联系人
+            </div>
+            <div class="panel-body">
                    <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">自提地点 :</label>
-                        <div class="col-sm-9 col-xs-12">
-                            <p class="form-control-static">{$user['address']} (联系人： {$user['realname']} / {$user['mobile']} ) </p>
-                        </div>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">联系人姓名 :</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <p class="form-control-static">{$user['carrier_realname']} </p>
                     </div>
                 </div>
-              </div>
-    		{/if} 
+               <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">联系人手机 :</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <p class="form-control-static">{$user['carrier_mobile']}  </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+		{/if} 
+        {else}
+          <div class="panel panel-default">
+            <div class="panel-heading">
+               自提信息
+            </div>
+            <div class="panel-body">
+                   <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">自提人姓名 :</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <p class="form-control-static">{$user['carrier_realname']} /  {$user['carrier_mobile']}</p>
+                    </div>
+                </div>
+               <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">自提地点 :</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <p class="form-control-static">{$user['address']} (联系人： {$user['realname']} / {$user['mobile']} ) </p>
+                    </div>
+                </div>
+            </div>
+        </div>
         {/if}
       
 
@@ -599,14 +621,14 @@
                 <table class="table table-hover">
                     <thead class="navbar-inner">
                         <tr>
-                            <th style="width:5%;">ID</th>
+                            <th style="width:2%;">ID</th>
                             <th style="width:10%;">商品标题</th>
-                            <th style="width:15%;">商品规格</th>
+                            <th style="width:12%;">商品规格</th>
                             <th style="width:10%;">商品编号</th>
                             <th style="width:10%;">商品条码</th>
                        
-                            <th style="width:20%;">现价/原价/成本价</th>
-                            <th style="width:10%;">属性</th>
+                            <th style="width:16%;">现价/原价/成本价</th>
+                            <th style="width:15%;">属性</th>
                             <th style="width:5%;">购买数量</th>
                             <th style="width:10%;color:red;">折扣前/折扣后</th>
                             
@@ -695,14 +717,18 @@
 					{/if}
                     {/loop}
                     <tr>
-                        <td colspan="10">
+                        <td colspan="2">
                             
                            {template 'web/order/ops'}
                            
                         </td>
+                        <td colspan="8">
+                        </td>
                     </tr>
                 </table>
             </div>
+        </div>
+</div>
         </div>
 		<script language="javascript">
 			function showDiyInfo(obj){

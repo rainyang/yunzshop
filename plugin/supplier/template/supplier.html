@@ -1,4 +1,5 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
 <style type='text/css'>
 .trhead td {  background:#efefef;text-align: center}
@@ -9,6 +10,7 @@
 .goods_info:hover img{width:320px; height:320px;}
 </style>
 {if $operation=='display'}
+<div class="rightlist">
 <div class="panel panel-info">
     <div class="panel-heading">筛选</div>
     <div class="panel-body">
@@ -21,13 +23,13 @@
             <input type="hidden" name="method" value="supplier" />
             <input type="hidden" name="op" value="display" />
             <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">会员信息</label>
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                     <input type="text" class="form-control"  name="uid" value="{$_GPC['uid']}" placeholder='搜索供货商ID'/> 
                 </div>
             </div>
 			<div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label"></label>
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
 					<input type="hidden" name="token" value="{$_W['token']}" />
@@ -79,8 +81,9 @@
         {$pager}
     </div>
 </div>
+</div>
 {else if $operation=='detail'}
-
+<div class="rightlist">
 <form {ifp 'commission.supplier.edit|commission.supplier.check'}action="" method='post'{/if} class='form-horizontal'>
     <input type="hidden" name="id" value="{$supplierinfo['uid']}">
     <input type="hidden" name="op" value="detail">
@@ -226,5 +229,7 @@
    		 </div>
    	</div>   
 </form>
+</div>  
 {/if}
+</div> 
 {template 'common/footer'}
