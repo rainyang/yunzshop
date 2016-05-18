@@ -4,11 +4,31 @@
     <div class='panel panel-default'>
            <div class='panel-heading'>
             全返设置
-        </div
+        </div>
+
+        <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启队列全返系统</label>
+                <div class="col-sm-4 col-xs-6">
+                     <label class="radio-inline queue"><input type="radio"  name="setdata[isqueue]" value="0" {if $set['isqueue'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline queue"><input type="radio"  name="setdata[isqueue]" value="1" {if $set['isqueue'] ==1} checked="checked"{/if} /> 开启</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group" id="return_queue" {if $set['isqueue'] ==0} style="display:none;"{/if}>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">队列{$set['queue']}间隔</label>
+            <div class="col-sm-4 col-xs-6">
+                    <input type="text" name="setdata[queue]" class="form-control" value="{$set['queue']}"  />
+                    
+                 <span class='help-block'></span>
+            </div>
+        </div>
+
         <div class='panel-body'>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启订单全返系统</label>
-                <div class="col-sm-9 col-xs-12">
+                <div class="col-sm-4 col-xs-6">
                      <label class="radio-inline"><input type="radio"  name="setdata[isreturn]" value="0" {if $set['isreturn'] ==0} checked="checked"{/if} /> 关闭</label>
                     <label class="radio-inline"><input type="radio"  name="setdata[isreturn]" value="1" {if $set['isreturn'] ==1} checked="checked"{/if} /> 开启</label>
                 </div>
@@ -23,10 +43,79 @@
                     <input type="text" name="setdata[percentage]" class="form-control" value="{$set['percentage']}"  />
                     <div class="input-group-addon">%</div>
                 </div>
-                <span class='help-block'>设定每天营业额的百分比为当天所有应返订单的总额</span>
+                <span class='help-block'>设定返现比例</span>
             </div>
         </div>
-        <div class="form-group">
+        <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现规律</label>
+                <div class="col-sm-4 col-xs-6">
+                    <label class="radio-inline law"><input type="radio"   name="setdata[returnlaw]" value="1" {if $set['returnlaw'] !=2} checked="checked"{/if} /> 按天返现</label>
+                    <label class="radio-inline law"><input type="radio"   name="setdata[returnlaw]" value="2" {if $set['returnlaw'] ==2} checked="checked"{/if} /> 按月返现</label>
+                    <span class='help-block'>按月返现会在返单加入队列后每月返现一次。</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group" id="return_time" {if $set['returnlaw'] ==2} style="display:none;"{/if}>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现时间</label>
+            <div class="col-sm-4 col-xs-6">
+                <select id="returntime" class="form-control tpl-category-parent" name="setdata[returntime]">
+                <?php for ($i=1; $i <= 24; $i++) { if($set['returntime']==$i){?>
+                    <option value="<?php echo $i;?>" selected>每天<?php echo $i;?>点执行返利</option>
+                <?php }else{?>
+                    <option value="<?php echo $i;?>" >每天<?php echo $i;?>点执行返利</option>
+                <?php } }?>
+                </select>
+                 <span class='help-block'>返利会有延迟 最多延迟10分钟</span>
+            </div>
+        </div>
+
+        <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现规则</label>
+                <div class="col-sm-4 col-xs-6">
+                    <label class="radio-inline rule"><input type="radio"   name="setdata[returnrule]" value="1" {if $set['returnrule'] !=2} checked="checked"{/if} /> 按单笔订单返现</label>
+                    <label class="radio-inline rule"><input type="radio"   name="setdata[returnrule]" value="2" {if $set['returnrule'] ==2} checked="checked"{/if} /> 按订单累计金额返现</label>
+                    <span class='help-block'>按单笔订单返现是按订单金额加入返现队列，返现时是按照订单金额的百分比返现</br>
+                    按订单累计金额返现是按用户累计订单金额达到指定额度时加入返现队列，返现时是按照前一天总营业额的百分比返现
+                    </span>
+                </div>
+
+            </div>
+        </div>      
+
+<script type="text/javascript">
+    $('.queue').click(function(){
+        if($(this).find('input').val() == 1)
+        {
+            $("#return_queue").show();
+        }else
+        {
+            $("#return_queue").hide();
+        }
+    });
+    $('.law').click(function(){
+        if($(this).find('input').val() == 1)
+        {
+            $("#return_time").show();
+        }else
+        {
+            $("#return_time").hide();
+        }
+    });
+    $('.rule').click(function(){
+        if($(this).find('input').val() == 2)
+        {
+            $("#return_rule").show();
+        }else
+        {
+            $("#return_rule").hide();
+        }
+    });
+</script>
+
+        <div class="form-group"  id="return_rule" {if $set['returnrule'] ==1} style="display:none;"{/if}>
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">用户累计订单金额</label>
 
             <div class="col-sm-4">
@@ -39,21 +128,7 @@
             </div>
         </div>
 
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现时间</label>
 
-    <div class="col-sm-4 col-xs-6">
-        <select id="returntime" class="form-control tpl-category-parent" name="setdata[returntime]">
-        <?php for ($i=1; $i <= 24; $i++) { if($set['returntime']==$i){?>
-            <option value="<?php echo $i;?>" selected>每天<?php echo $i;?>点执行返利</option>
-        <?php }else{?>
-            <option value="<?php echo $i;?>" >每天<?php echo $i;?>执行返利</option>
-        <?php } }?>
-  
-        </select>
-         <span class='help-block'>返利会有延迟 最多延迟10分钟</span>
-    </div>
-</div>
 
             <div class="form-group"></div>
                <div class="form-group">

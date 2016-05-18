@@ -15,4 +15,5 @@
     {ifp 'return.notice'}<li {if $_GPC['method']=='notice'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('supplier/notice')}">通知设置</a></li>{/if} -->
     {ifp 'return.set'}<li {if $_GPC['method']=='set'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('return/set')}">基础设置</a></li>{/if}
     {ifp 'return.return_tj'}<li {if $_GPC['method']=='return_tj'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('return/return_tj')}">全返统计</a></li>{/if}
+    {ifp 'return.queue'}<li {if $_GPC['method']=='queue'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('return/queue')}">排列统计</a></li>{/if}
 </ul>
