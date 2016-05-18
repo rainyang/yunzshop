@@ -8,8 +8,8 @@
 </style>
 <div class="topmenubg">
 <div class='topmenu'>
-    <ul class="nav navbar-nav">
-        <li>
+    <ul class="nav navbar-nav headnavfl">
+        <li class="fl">
             <a href="{php echo url('home/welcome/ext',array('m'=>'sz_yi'))}"><i class='fa fa-home'></i> {php echo $this->module['title']}</a> 
         </li> 
         {ifp 'shop'}
@@ -39,7 +39,7 @@
         </li> 
         {/if}
         {ifp 'order'}
-        <li>
+        <li class="fl">
             <a href='javascript;:' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-file-text-o'></i> 订单 <i class="fa fa-angle-down"></i></a>
              <ul class="dropdown-menu">
                 {ifp 'order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status_1'}
