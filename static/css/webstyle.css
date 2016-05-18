@@ -1,15 +1,16 @@
 html,div,table,th,td,ul,.app li.panel-body,.app .panel,.app .app-preview .app-region .app-add-filed a{padding:0; margin:0;}
-html,body{font-family:arial, 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', '宋体', \5b8b\4f53, Tahoma, Arial, Helvetica, STHeiti;font-size:14px;background: #fff !important}
+html,body{font-family:arial, 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', '宋体', \5b8b\4f53, Tahoma, Arial, Helvetica, STHeiti;font-size:14px;background: #fff !important;min-width: 1200px;}
 a,a:hover,a:focus{text-decoration:none; cursor:pointer;}
 img{border:0;}
 ul{list-style:none;}
 .fr{float: right;}
-
+.fl{float: left;}
 .m0a{margin:0 auto }
 .mrt4{margin-top: 4px;display: block;}
 .fr{float: right !important;;}
 .rightlist{width: 990px;float: left;padding-left: 10px;min-height: 700px;padding-bottom: 104px;}
 .topmenubg{position: relative; width:100%;float:left;background:#F5F5F5;margin-bottom:20px;height: 50px;border-bottom: 1px #DCDCDC solid;}
+.dropdown,.open{float: left;}
 .container-fluid{padding: 0}
 .ulleft-nav{width: 190px;float: left;border-right: 1px solid #ddd !important;min-height: 700px;}
 .nav.nav-tabs li{width: 100%;}

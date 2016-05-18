@@ -1,6 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
-
+<div class="rightlist">
 {if $operation=='display'}
 <div class="panel panel-info">
     <div class="panel-heading">筛选</div>
@@ -13,40 +14,23 @@
             <input type="hidden" name="p" value="return" />
             <input type="hidden" name="method" value="return_tj" />
             <input type="hidden" name="op" value="display" />
-            <div class="form-group">
-                
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">ID</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">ID</label>
                     <div class="col-sm-8 col-lg-9 col-xs-12">
                         <input type="text" class="form-control"  name="mid" value="{$_GPC['mid']}"/>
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">会员信息</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>
                     <div class="col-sm-8 col-lg-9 col-xs-12">
                         <input type="text" class="form-control"  name="realname" value="{$_GPC['realname']}" placeholder='可搜索昵称/名称/手机号'/>
                     </div>
                 </div>
-                
-                <!-- <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">状态</label>
-                    <div class="col-sm-4">
-                        <select name='status' class='form-control'>
-                            <option value=''>返现状态</option>
-                            <option value='0' {if $_GPC['status']=='0'}selected{/if}>未完成</option>
-                            <option value='1' {if $_GPC['status']=='1'}selected{/if}>已完成</option>
-                        </select>
-                    </div>
-                   
-
-                </div> -->
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label"></label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
                     <div class="col-sm-8 col-lg-9 col-xs-12">
                         <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
                         <input type="hidden" name="token" value="{$_W['token']}" />
-                        
-                        
                     </div>
                 </div>
         </form>
@@ -150,7 +134,8 @@
     </div>
 </div>
 {/if}
-
+</div>
+</div>
 
 {template 'web/_footer'}
 

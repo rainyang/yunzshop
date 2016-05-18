@@ -1,19 +1,7 @@
-<ul class="nav nav-tabs">
-
-    
-    
-<!--     <li {if $_GPC['method']=='return_tj'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('return/return_tj')}">全返统计</a></li>
-    <li {if $_GPC['method']=='set'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('return/set')}">全返设置</a></li> -->
-    
-
-    <!-- {ifp 'return.supplier'}<li {if $_GPC['method']=='supplier'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('supplier/supplier')}">供应商管理</a></li>{/if}
-    {ifp 'return.supplier_list'}<li {if $_GPC['method']=='supplier_list'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('supplier/supplier_list')}">供应商订单</a></li>{/if}
-    {ifp 'return.supplier_apply'}<li {if $_GPC['method']=='supplier_apply'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('supplier/supplier_apply')}">供应商提现申请</a></li>{/if}
-    {ifp 'return.supplier_finish'}<li {if $_GPC['method']=='supplier_finish'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('supplier/supplier_finish')}">供应商提现完成</a></li>{/if}
-    {ifp 'return.supplier_for'}<li {if $_GPC['method']=='supplier_for'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('supplier/supplier_for')}">会员申请供应商</a></li>{/if}
-    {ifp 'return.supplier_for_resu'}<li {if $_GPC['method']=='supplier_for_resu'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('supplier/supplier_for_resu')}">申请结果</a></li>{/if}
-    {ifp 'return.notice'}<li {if $_GPC['method']=='notice'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('supplier/notice')}">通知设置</a></li>{/if} -->
+<div class="ulleft-nav">
+<ul class="nav nav-tabs"> 
     {ifp 'return.set'}<li {if $_GPC['method']=='set'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('return/set')}">基础设置</a></li>{/if}
     {ifp 'return.return_tj'}<li {if $_GPC['method']=='return_tj'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('return/return_tj')}">全返统计</a></li>{/if}
     {ifp 'return.queue'}<li {if $_GPC['method']=='queue'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('return/queue')}">排列统计</a></li>{/if}
 </ul>
+</div>
