@@ -4,14 +4,14 @@ a,a:hover,a:focus{text-decoration:none; cursor:pointer;}
 img{border:0;}
 ul{list-style:none;}
 .fr{float: right;}
-.w1200{width: 1200px;overflow: hidden;}
+
 .m0a{margin:0 auto }
 .mrt4{margin-top: 4px;display: block;}
-.fr{float: right;}
-.rightlist{width: 990px;float: left;padding-left: 10px;border-left: 1px solid #ddd !important;min-height: 700px;padding-bottom: 104px;}
+.fr{float: right !important;;}
+.rightlist{width: 990px;float: left;padding-left: 10px;min-height: 700px;padding-bottom: 104px;}
 .topmenubg{position: relative; width:100%;float:left;background:#F5F5F5;margin-bottom:20px;height: 50px;border-bottom: 1px #DCDCDC solid;}
 .container-fluid{padding: 0}
-.ulleft-nav{width: 190px;float: left;}
+.ulleft-nav{width: 190px;float: left;border-right: 1px solid #ddd !important;min-height: 700px;}
 .nav.nav-tabs li{width: 100%;}
 .nav-tabs>li.active>a{width: 101%;border-right-color:#fff; background-color:#fff;border-color:#ccc;color:#000;border-right-color:#fff;}
 .nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus {
@@ -99,3 +99,25 @@ ul{list-style:none;}
 .sizebg{background: none;color: #333;padding: 0 !important;font-weight: normal;}
 .label-success {background-color: #46CB2F;}
 .panel{box-shadow:0 0 0!important;}
+.fart-main{width: 1200px !important;margin-left: -10px !important;}
+.fart-editor{width: 800px !important;}
+.fart-editor-content .nav1,.fart-editor-content .nav2{width: 400px !important;}
+.fart-editor-content .con1,.fart-editor-content .con2{width: 400px !important;}
+.fart-editor-content .con2 .con{width: 340px !important;}
+.fart-editor-content .con2 .tab{width: 60px !important;}
+.fart-editor-content .con2 .tab .nav{font-size: 14px !important;}
+.fart-form {padding: 10px !important;}
+.fart-form .line2 {width: 380px !important;}
+.fart-editor-menu nav{width: 33.33333% !important;}
+.fe-save-main {width: 1032px !important;}
+.fe-save-submit,.fe-save-submit2{margin:14px 0 0px 4px !important;width: 80px !important;height: 34px !important;line-height: 34px !important;font-size: 14px !important;}
+.page-heading {
+    padding: 5px 0;
+    border-bottom: 1px solid #ccc;
+    margin-bottom: 20px;
+    position: relative;
+    width: 1200px;line-height: 50px;height: 50px;margin-left: -10px !important;
+}
+.page-heading h2{ font-size: 16px;position: absolute;left: 0;padding: 0;margin: 0;line-height: 50px;}
+.page-heading .pull-right{padding-right: 10px}
+.w1200{width: 1200px !important;overflow: hidden;}

@@ -9,7 +9,6 @@ if (empty($openid)) {
     $openid = $_GPC['openid'];
 }
 $set = m('common')->getSysset(array('pay'));
-//print_r($set);
 $member  = m('member')->getMember($openid);
 $uniacid = $_W['uniacid'];
 $orderid = intval($_GPC['orderid']);
@@ -384,10 +383,6 @@ if ($operation == 'display' && $_W['isajax']) {
         show_json(0, '未找到支付方式');
     }
 
-    if (!$set['pay']['credit']) {
-        show_json(0, '余额支付未开启！');
-    }
-
     if ($member['credit2'] < $order['deductcredit2'] && $order['deductcredit2'] > 0) {
         show_json(0, '余额不足，请充值后在试！');
     }
@@ -425,6 +420,9 @@ if ($operation == 'display' && $_W['isajax']) {
     $ps['fee']   = $log['fee'];
     $ps['title'] = $log['title'];
     if ($type == 'credit') {
+        if (!$set['pay']['credit']) {
+            show_json(0, '余额支付未开启！');
+        }
         $credits = m('member')->getCredit($openid, 'credit2');
         if ($credits < $ps['fee']) {
             show_json(0, "余额不足,请充值");

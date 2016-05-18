@@ -61,7 +61,7 @@ $args = array(
     'by' => $_GPC['by']
 );
 
-$args = icheck_gpc($args);
+//$args = icheck_gpc($args);
 if (!empty($myshop['selectgoods']) && !empty($myshop['goodsids'])) {
     $args['ids'] = $myshop['goodsids'];
 }

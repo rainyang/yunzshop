@@ -268,6 +268,7 @@ function p($name = '')
             }
         }
     }
+
     static $_plugins = array();
     if (isset($_plugins[$name])) {
         return $_plugins[$name];
