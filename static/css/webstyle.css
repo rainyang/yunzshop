@@ -125,3 +125,17 @@ ul{list-style:none;}
 .input-group{margin-bottom: 4px}
 .mart7{margin-top: 7px}
 .tpl-category-container select{margin-bottom: 4px}
+@media (max-width: 767px){
+.navbar-nav .open .dropdown-menu {
+    position: absolute;
+    float: none;
+    width: auto;
+    margin: 2px 0 0;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 4px;
+    -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    box-shadow: 0 6px 12px rgba(0,0,0,.175);
+    background-color: #fff;
+}
+}
