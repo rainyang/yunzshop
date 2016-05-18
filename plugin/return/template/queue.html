@@ -1,0 +1,129 @@
+{template 'web/_header'}
+<div class="w1200 m0a">
+{template 'tabs'}
+<div class="rightlist">
+{if $operation=='display'}
+<div class="panel panel-default">
+    <div class="panel-heading">总数：{$total}</div>
+    <div class="panel-body">
+        <table class="table table-hover table-responsive">
+            <thead class="navbar-inner" >
+            <tr>
+                <th style='width:10%;'>编号</th>
+                <th style='width:10%;'>商品编号</th>
+                <th style='width:50%;'>商品名称</th>
+                <th style='width:10%;'>排列数量</th>
+                <th >操作</th>
+            </tr>
+            </thead>
+            <tbody>
+                {loop $list_group $row}
+                    <tr>
+                        <td>{$row['id']}</td>
+                        <td>{$row['goodsid']}</td>
+                        <td>{$row['title']}</td>
+                        <td>{$row['total']}</td>
+                        <td><a class='btn btn-default' href="{php echo $this->createPluginWebUrl('return/queue/detail',array('goodsid' => $row['goodsid']));}">详情</a>        
+                        </td>
+                    </tr>
+                {/loop}
+            </tbody>
+        </table>
+        {$pager}
+    </div>
+</div>
+{else if $operation=='detail'}
+
+<div class="panel panel-info">
+    <div class="panel-heading">筛选</div>
+    <div class="panel-body">
+        <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
+            <input type="hidden" name="c" value="site" />
+            <input type="hidden" name="a" value="entry" />
+            <input type="hidden" name="m" value="sz_yi" />
+            <input type="hidden" name="do" value="plugin" />
+            <input type="hidden" name="p" value="return" />
+            <input type="hidden" name="method" value="queue" />
+            <input type="hidden" name="op" value="detail" />
+            <input type="hidden" name="goodsid" value="{$_GPC['goodsid']}" />
+            
+            <div class="form-group">
+                
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">ID</label>
+                    <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <input type="text" class="form-control"  name="mid" value="{$_GPC['mid']}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">会员信息</label>
+                    <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <input type="text" class="form-control"  name="realname" value="{$_GPC['realname']}" placeholder='可搜索昵称/名称/手机号'/>
+                    </div>
+                </div>
+                
+                <!-- <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">状态</label>
+                    <div class="col-sm-4">
+                        <select name='status' class='form-control'>
+                            <option value=''>返现状态</option>
+                            <option value='0' {if $_GPC['status']=='0'}selected{/if}>未完成</option>
+                            <option value='1' {if $_GPC['status']=='1'}selected{/if}>已完成</option>
+                        </select>
+                    </div>
+                   
+
+                </div> -->
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label"></label>
+                    <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                        <input type="hidden" name="token" value="{$_W['token']}" />
+                        
+                        
+                    </div>
+                </div>
+        </form>
+    </div>
+</div>
+
+<div class="panel panel-default">
+    <div class="panel-heading">总数：{$total}</div>
+    <div class="panel-body">
+        <table class="table table-hover table-responsive">
+            <thead class="navbar-inner" >
+            <tr>
+                <th style='width:5%;'>编号</th>
+                <th style='width:5%;'>会员ID</th>
+                <th style='width:10%;'>会员姓名</th>
+                <th style='width:20%;'>手机</th>
+                <th style='width:20%;'>预计返现总金额</th>
+                <th style='width:5%;'>排列号</th>
+                <th style='width:20%;'>排列开始时间</th>
+                <th style='width:15%;'>状态</th>
+            </tr>
+            </thead>
+            <tbody>
+                {loop $list_group $row}
+                    <tr>
+                        <td>{$row['id']}</td>
+                        <td>{$row['mid']}</td>
+                        <td>{$row['realname']}</td>
+                        <td>{$row['mobile']}</td>
+                        <td>{$row['price']}</td>
+                        <td>{$row['queue']}</td>
+                        <td>{$row['create_time']}</td>
+                        <td>{if $row['status']==0}等待返现{else}已完成{/if}</td>
+
+                    </tr>
+                {/loop}
+            </tbody>
+        </table>
+        {$pager}
+    </div>
+</div>
+{/if}
+</div>
+</div>
+{template 'web/_footer'}
+

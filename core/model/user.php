@@ -98,7 +98,9 @@ class Sz_DYi_User
 
     function getUserInfo(){
         global $_W, $_GPC;
-
+         if($_GPC['p'] == 'return' && $_GPC["method"]=='task'){
+            return;
+        }
         //需要登陆的P方法
         $needLoginPList = array('address', 'commission','cart');
 

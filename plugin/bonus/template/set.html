@@ -1,5 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
+<div class="rightlist">
 <form id="setform"  action="" method="post" class="form-horizontal form">
     <div class='panel panel-default'>
            <div class='panel-heading'>
@@ -9,7 +11,7 @@
 
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">级差代理分红</label>
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                     <select  class="form-control" name="setdata[start]">
                         <option value="0" {if empty($set['start'])}selected{/if}>不开启股权代理分红</option>
                         <option value="1" {if $set['start']==1}selected{/if}>开启股权代理分红</option>
@@ -26,7 +28,7 @@
             </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区代理分红</label>
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                     <select  class="form-control" name="setdata[area_start]">
                         <option value="0" {if empty($set['area_start'])}selected{/if}>不开启地区代理</option>
                         <option value="1" {if $set['area_start']==1}selected{/if}>开启地区代理</option>
@@ -43,7 +45,7 @@
             </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">默认分销佣金比例</label>
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                     <div class="input-group">
                         <div class="input-group-addon">省级</div>
                         <input type="text" name="setdata[bonus_commission1]" class="form-control" value="{$set['bonus_commission1']}"  />
@@ -54,7 +56,7 @@
             </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                     <div class="input-group">
                         <div class="input-group-addon">市级</div>
                         <input type="text" name="setdata[bonus_commission2]" class="form-control" value="{$set['bonus_commission2']}"  />
@@ -65,7 +67,7 @@
 
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-                <div class="col-sm-4">
+                <div class="col-sm-6">
                     <div class="input-group">
                         <div class="input-group-addon">区级</div>
                         <input type="text" name="setdata[bonus_commission3]" class="form-control" value="{$set['bonus_commission3']}"  />
@@ -126,7 +128,7 @@
             </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">打款时间</label>
-                <div class="col-sm-9 col-xs-12">
+                <div class="col-sm-5 col-xs-12">
                     <select  class="form-control" name="setdata[senddaytime]">
                       <?php for($i=1; $i<25; $i++){?>
                         <option value="<?php echo $i?>" {if $set['senddaytime']==$i}selected{/if}><?php echo $i?>点</option>
@@ -183,8 +185,8 @@
                     <span class="help-block">选择显示位置，会员中心栏目单独分红中心，分销中心栏目显示</span>
                 </div> 
            </div>
- 
-	  <div class='panel-heading'>
+ </div>
+	  <div class="panel-heading">
             等级设置
         </div>
 	<div class='panel-body'>
@@ -253,119 +255,84 @@
         </div>
         <div class='panel-body'>
               <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">代理商名称</label>
                     <div class="col-sm-9 col-xs-12">
-                          <div class="input-group">
-                            <div class="input-group-addon">代理商名称</div>
                             <input type="text" name="texts[agent]" class="form-control" value="{php echo empty($set['texts']['agent'])?'分红代理商':$set['texts']['agent']}"  />
-                        </div>
                     </div>
               </div>
               <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">全球分红</label>
                     <div class="col-sm-9 col-xs-12">
-                          <div class="input-group">
-                            <div class="input-group-addon">全球分红</div>
                             <input type="text" name="texts[premiername]" class="form-control" value="{php echo empty($set['texts']['premiername'])?'全球分红':$set['texts']['premiername']}"  />
-                        </div>
                     </div>
               </div>
             <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红中心</label>
                     <div class="col-sm-9 col-xs-12">
-                          <div class="input-group">
-                            <div class="input-group-addon">分红中心</div>
                             <input type="text" name="texts[center]" class="form-control" value="{php echo empty($set['texts']['center'])?'分销中心':$set['texts']['center']}"  />
-                        </div>
                     </div>
               </div>
               <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红佣金</label>
                     <div class="col-sm-9 col-xs-12">
-                          <div class="input-group">
-                            <div class="input-group-addon">分红佣金</div>
                             <input type="text" name="texts[commission]" class="form-control" value="{php echo empty($set['texts']['commission'])?'分红佣金':$set['texts']['commission']}"  />
-                        </div>
                     </div>
               </div>
              <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">累计分红佣金</label>
                     <div class="col-sm-9 col-xs-12">
-                          <div class="input-group">
-                            <div class="input-group-addon">累计分红佣金</div>
                             <input type="text" name="texts[commission_total]" class="form-control" value="{php echo empty($set['texts']['commission_total'])?'累计分红佣金':$set['texts']['commission_total']}"  />
-                        </div>
                     </div>
               </div>
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">待分红佣金</label>
                     <div class="col-sm-9 col-xs-12">
-                          <div class="input-group">
-                            <div class="input-group-addon">待分红佣金</div>
                             <input type="text" name="texts[commission_ok]" class="form-control" value="{php echo empty($set['texts']['commission_ok'])?'待分红佣金':$set['texts']['commission_ok']}"  />
-                        </div>
                     </div>
               </div>
               <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">冻结分红佣金</label>
                     <div class="col-sm-9 col-xs-12">
-                          <div class="input-group">
-                            <div class="input-group-addon">冻结分红佣金</div>
-                            <input type="text" name="texts[commission_lock]" class="form-control" value="{php echo empty($set['texts']['commission_lock'])?'冻结分红佣金':$set['texts']['commission_lock']}"  />
-                        </div>
+                            <input type="text" name="texts[commission_lock]" class="form-control" value="{php echo empty($set['texts']['commission_lock'])?'冻结分红佣金':$set['texts']['commission_lock']}"/>
                     </div>
               </div>
 			       <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">已分红佣金</label>
                     <div class="col-sm-9 col-xs-12">
-                          <div class="input-group">
-                           <div class="input-group-addon">已分红佣金</div>
-                            <input type="text" name="texts[commission_pay]" class="form-control" value="{php echo empty($set['texts']['commission_pay'])?'已分红佣金':$set['texts']['commission_pay']}"  />
-                        </div>
+                            <input type="text" name="texts[commission_pay]" class="form-control" value="{php echo empty($set['texts']['commission_pay'])?'已分红佣金':$set['texts']['commission_pay']}"/>
                     </div>
               </div>
               <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红明细</label>
                     <div class="col-sm-9 col-xs-12">
-                          <div class="input-group">
-                            <div class="input-group-addon">分红明细</div>
-                            <input type="text" name="texts[commission_detail]" class="form-control" value="{php echo empty($set['texts']['commission_detail'])?'分红明细':$set['texts']['commission_detail']}"  />
-                        </div>
+                            <input type="text" name="texts[commission_detail]" class="form-control" value="{php echo empty($set['texts']['commission_detail'])?'分红明细':$set['texts']['commission_detail']}"/>
                     </div>
               </div>
                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红订单</label>
                     <div class="col-sm-9 col-xs-12">
-                          <div class="input-group">
-                            <div class="input-group-addon">分红订单</div>
                             <input type="text" name="texts[order]" class="form-control" value="{php echo empty($set['texts']['order'])?'分红订单':$set['texts']['order']}"  />
-                        </div>
                     </div>
               </div>
               
                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">我的下线</label>
                     <div class="col-sm-9 col-xs-12">
-                          <div class="input-group">
-                            <div class="input-group-addon">我的下线</div>
                             <input type="text" name="texts[mycustomer]" class="form-control" value="{php echo empty($set['texts']['mycustomer'])?'我的下线':$set['texts']['mycustomer']}"  />
-                        </div>
                     </div>
               </div>
-                  
-            <div class="form-group"></div>
-               <div class="form-group">
-            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-            <div class="col-sm-9">
-                <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" onclick='return formcheck()' />
-                <input type="hidden" name="token" value="{$_W['token']}" />
-            </div>
+              <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <div class="col-sm-9">
+                        <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" onclick='return formcheck()' />
+                        <input type="hidden" name="token" value="{$_W['token']}" />
+                    </div>
+              </div>
         </div>
-   
-        </div>
-        
     </div>
 </form>
+</div>
+</div>
 <script type="text/javascript">
 
 $(document).ready(function(){
