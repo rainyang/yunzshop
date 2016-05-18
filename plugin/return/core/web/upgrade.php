@@ -41,7 +41,10 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_order_goods_queue` (
   `status` tinyint(1) NOT NULL DEFAULT '0',
   `create_time` INT( 11 ) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;";
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+ALTER TABLE  `ims_sz_yi_goods` ADD  `isreturn` TINYINT( 1 ) NOT NULL ,
+ADD  `isreturnqueue` TINYINT( 1 ) NOT NULL;";
 pdo_query($sql);
 
 message('全返插件安装成功', $this->createPluginWebUrl('return/set'), 'success');

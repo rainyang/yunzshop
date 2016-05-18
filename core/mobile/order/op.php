@@ -44,6 +44,9 @@ if ($_W['isajax']) {
 		if (p('commission')) {
 			p('commission')->checkOrderFinish($orderid);
 		}
+		if (p('return')) {
+			p('return')->cumulative_order_amount($orderid);
+		}
 		show_json(1);
 	} else if ($operation == 'refund') {
 		$orderid = intval($_GPC['orderid']);
