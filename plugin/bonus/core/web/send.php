@@ -21,7 +21,7 @@ $totalmoney = 0;
 foreach ($list as $key => &$row) {
 	$member = $this->model->getInfo($row['mid'], array('ok', 'pay', 'myorder'));
 	//Author:ym Date:2016-04-08 Content:需消费一定金额，否则清除该用户不参与分红
-	if($member['myordermoney'] < $set['consume_withdraw']){
+	if($member['myordermoney'] < $set['consume_withdraw'] || empty($member)){
 		unset($list[$key]);
 	}else{
 		if($member['commission_ok'] <= 0){
