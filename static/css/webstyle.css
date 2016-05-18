@@ -130,6 +130,8 @@ ul{list-style:none;}
     padding-top: 15px;
     padding-bottom: 15px;
 }
+.text-default{ background: none;color:#7B7B7B }
+.text-pinfo{ background: none;color: #ed5565 }
 @media (max-width: 767px){
 .navbar-nav .open .dropdown-menu {
     position: absolute;
