@@ -44,6 +44,7 @@ foreach ($sets as $set) {
 }
 
 //自动分红
+//自动分红
 $pbonus = p('bonus');
 if(!empty($pbonus)){
 	foreach ($sets as $set) {
@@ -52,14 +53,30 @@ if(!empty($pbonus)){
 			continue;
 		}
 		$daytime = strtotime(date("Y-m-d 00:00:00"));
-		$set = $pbonus->getSet();
-		$bonus = pdo_fetch("select id from " . tablename('sz_yi_bonus') . " where uniacid=".$_W['uniacid']);
-		$isbonus = empty($bonus) ? 1 : 0;
-		$bonuslog = pdo_fetch("select id from " . tablename('sz_yi_bonus') . " where utime<".$daytime." and uniacid=".$_W['uniacid']);
-		
-		if(!empty($isbonus) || !empty($bonuslog)){
-			$pbonus->autosend();
-			$pbonus->autosendall();
+		$isbonus = false;
+		$bonus_set = $pbonus->getSet();
+		//是否為月分紅
+		if($bonus_set['sendmonth'] == 1){
+			$monthtime = strtotime(date("Y-m-1 00:00:00"));
+			//按月初時間查詢，如查詢到則已發放
+			$bonus_data = pdo_fetchcolumn("select id from " . tablename('sz_yi_bonus') . " where utime>".$monthtime." and uniacid=".$_W['uniacid']."  order by id desc");
+			if(empty($bonus_data)){
+				$isbonus = true;	
+			}
+		}else{
+			//按每天0點查詢，如查詢到則已發放
+			$bonus_data = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where utime>".$daytime." and uniacid=".$_W['uniacid']."  order by id desc");
+			if(empty($bonus_data)){
+				$isbonus = true;	
+			}
+		}
+		if($isbonus){
+			if(!empty($bonus_set['start'])){
+				$pbonus->autosend();
+			}
+			if(!empty($bonus_set['area_start'])){
+				$pbonus->autosendall();
+			}
 		}
 	}
 }
