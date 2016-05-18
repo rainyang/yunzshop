@@ -1,33 +1,38 @@
-{template 'common/header'}
+{template 'member/center'}
 <title>返利记录</title>
 <style type="text/css">
     body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
-    .credit_list {height:40px; width:94%; background:#fff; padding:10px 3%;margin-top:5px;}
+    .credit_list {height:60px; width:100%; background:#fff; padding:10px 0 10px 10px;border-bottom: 1px solid #e8e8e8;}
     
     .credit_list .info {height:40px; width:50%; float:left;  font-size:16px; color:#666; line-height:20px; text-align:left;}
     .credit_list .info span {font-size:14px; color:#999;}
-    .credit_list .num {height:40px; border-left:1px solid #eaeaea; width:40%;line-height:20px; float:right; text-align:left; font-size:16px; color:#666;}
+    .credit_list .num {height:40px; border-left:1px solid #eaeaea; width:20%;line-height:20px; float:right; text-align:center; font-size:16px; color:#666;}
     .credit_list .num span {font-size:14px; color:#999;}
     .credit_tab {height:30px; margin:5px; border:1px solid #ff6801; border-radius:5px; overflow:hidden;font-size:13px;background:#fff;padding-right: -2px;}
     .credit_nav {height:30px; width:50%;  background:#fff; color:#666; text-align:center; line-height:30px; float:left;}
     .credit_navon {color:#fff; background:#ff6801;}
     .credit_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
     #credit_loading { padding:10px;color:#666;text-align: center;}
-
+.history_top {height:44px;  background:#e8e8e8; padding:0px 1%; border-bottom:1px solid #e3e3e3;}
+.history_top .title {height:44px; width:auto; float:left; font-size:16px; line-height:44px; color:#666;}
+.history_top .nav {height:30px; width:auto; background:#fff; padding:0px 10px; border:1px solid #e3e3e3; border-radius:5px; float:right; line-height:30px; margin:6px 0px 0px 16px; color:#666; font-size:14px;}
 </style>
-<div class="page_topbar">
-    <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
+<!-- <div class="page_topbar">
     <div class="title">返利记录</div>
-</div>
+</div> -->
 
 <div class="credit_tab">
     <div class="credit_nav {if $_GPC['type']==0}credit_navon{/if}" data-type='0' >返利记录</div>
     <div class="credit_nav {if $_GPC['type']==1}credit_navon{/if}"  data-type='1'>排列记录</div>
 </div>
 
-<div id='container'></div>
+<div id='container' class="rightlist">
+
+</div></div>
 
 <script id='tpl_log' type='text/html'>
+
+
     <%if type==0%>
         <%each list as log%>
             <div class="credit_list">
@@ -151,11 +156,10 @@ function bindScroller(){
             getLog(current_type);
         })
 
-        $('.credit_nav').unbind('click').click(function () {
+        $(document).on('click','.credit_nav',function(){
             page = 1;
             current_type = $(this).data('type');
             getLog(current_type);
-
         });
         getLog(current_type);
     })
