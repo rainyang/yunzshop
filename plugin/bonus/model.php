@@ -722,23 +722,26 @@ if (!class_exists('BonusModel')) {
 			$islog          = false;
 			$set = $this->getSet();
 			$setshop = m('common')->getSysset('shop');
-			if(empty($set['sendmethod'])){
-				return false;
-			}
 			$daytime 		= strtotime(date("Y-m-d 00:00:00"));
 			if(empty($set['sendmonth'])){
-				$endtime = $daytime-1;
+				$endtime = $daytime;
+				$sendtime = strtotime(date("Y-m-d ".$set['senddaytime'].":00:00"));
 			}else if($set['sendmonth'] == 1){
 				$endtime = date('Y-m-d', mktime(0,0,0,date('m')-1,1,date('Y')));
+				$interval_day = empty($set['interval_day']) ? 1 : 1+$set['interval_day'];
+				$sendtime = strtotime(date("Y-".date('m')."-".$interval_day." ".$set['senddaytime'].":00:00"));
 			}
-
+			if($sendtime > $time){
+				return false;
+			}
 			$day_times      = intval($set['settledays']) * 3600 * 24;
-			$sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$endtime} - o.finishtime > {$day_times})  ORDER BY o.finishtime DESC,o.status DESC";
+			$sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times}) and o.finishtime < {$endtime} ORDER BY o.finishtime DESC,o.status DESC";
 			$bonus_member = pdo_fetchall($sql);
 			$totalmoney = 0;
 			if(empty($bonus_member)){
 				return false;
 			}
+
 			foreach ($bonus_member as $key => $value) {
 				$member = $this->getInfo($value['mid'], array('ok'));
 				$send_money = $member['commission_ok'];
@@ -748,11 +751,12 @@ if (!class_exists('BonusModel')) {
 				$islog = true;
 				$sendpay = 1;
 				$level = $this->getlevel($member['openid']);
+				$levelname = empty($level['levelname']) ? "代理" : $level['levelname'];
 				if(empty($set['paymethod'])){
 					m('member')->setCredit($member['openid'], 'credit2', $send_money);
 				}else{
 					$logno = m('common')->createNO('bonus_log', 'logno', 'RB');
-					$result = m('finance')->pay($member['openid'], 1, $send_money * 100, $logno, "【" . $setshop['name']. "】".$level['levelname']."分红");
+					$result = m('finance')->pay($member['openid'], 1, $send_money * 100, $logno, "【" . $setshop['name']. "】".$levelname."分红");
 			        if (is_error($result)) {
 			            $sendpay = 0;
 			            $sendpay_error = 1;
@@ -810,19 +814,23 @@ if (!class_exists('BonusModel')) {
 			$islog          = false;
 			$set = $this->getSet();
 			$setshop = m('common')->getSysset('shop');
-			if(empty($set['sendmethod'])){
-				return false;
-			}
 			$day_times        = intval($set['settledays']) * 3600 * 24;
 			$daytime = strtotime(date("Y-m-d 00:00:00"));
 			if(empty($set['sendmonth'])){
-			    $stattime = $daytime - 86400;
-			    $endtime = $daytime - 1;
+				$stattime = $daytime - 86400;
+				$endtime = $daytime;
+				$sendtime = strtotime(date("Y-m-d ".$set['senddaytime'].":00:00"));
 			}else if($set['sendmonth'] == 1){
-			    $stattime = mktime(0, 0, 0, date('m') - 1, 1, date('Y'));
-			    $endtime = mktime(0, 0, 0, date('m'), 1, date('Y')) - 1;
+				$stattime = mktime(0, 0, 0, date('m') - 1, 1, date('Y'));
+				$endtime = date('Y-m-d', mktime(0,0,0,date('m')-1,1,date('Y')));
+				$interval_day = empty($set['interval_day']) ? 1 : 1+$set['interval_day'];
+				$sendtime = strtotime(date("Y-".date('m')."-".$interval_day." ".$set['senddaytime'].":00:00"));
 			}
-			$sql = "select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}  ORDER BY o.finishtime DESC,o.status DESC";
+
+			if($sendtime > $time){
+				return false;
+			}
+			$sql = "select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=0 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}";
 			$ordermoney = pdo_fetchcolumn($sql);
 			$premierlevels = pdo_fetchall("select * from ".tablename('sz_yi_bonus_level')." where uniacid={$_W['uniacid']} and premier=1");
 			$levelmoneys = array();
@@ -840,29 +848,31 @@ if (!class_exists('BonusModel')) {
 			        }
 			    }
 			}
-			$list = pdo_fetchall("select m.* from ".tablename('sz_yi_member')." m left join " . tablename('sz_yi_bonus_level') . " l on m.bonuslevel=l.id and m.bonus_status=1 where 1 and l.premier=1 and m.uniacid={$_W['uniacid']}");
+			$list = pdo_fetchall("select m.* from ".tablename('sz_yi_member')." m left join " . tablename('sz_yi_bonus_level') . " l on m.bonuslevel=l.id where 1 and l.premier=1 and m.uniacid={$_W['uniacid']}");
 			foreach ($list as $key => $value) {
-				$level = pdo_fetch("select id, levelname from " . tablename('sz_yi_bonus_level') . " where id=".$row['bonuslevel']);
+				$level = pdo_fetch("select id, levelname from " . tablename('sz_yi_bonus_level') . " where id=".$value['bonuslevel']);
+				if(empty($levelmoneys[$level['id']])){
+					continue;
+				}
 				$send_money = $levelmoneys[$level['id']];
 				if($send_money<=0){
 					continue;
 				}
 				$islog = true;
 				$sendpay = 1;
-				$level = $this->getlevel($member['openid']);
 				if(empty($set['paymethod'])){
 					m('member')->setCredit($value['openid'], 'credit2', $send_money);
 				}else{
 					$logno = m('common')->createNO('bonus_log', 'logno', 'RB');
-					$result = m('finance')->pay($value['openid'], 1, $send_money * 100, $logno, "【" . $setshop['name']. "】".$value['levelname']."分红");
+					$result = m('finance')->pay($value['openid'], 1, $send_money * 100, $logno, "【" . $setshop['name']. "】".$level['levelname']."分红");
 			        if (is_error($result)) {
 			            $sendpay = 0;
 			            $sendpay_error = 1;
 			        }
 				}
 				pdo_insert('sz_yi_bonus_log', array(
-			            "openid" => $member['openid'],
-			            "uid" => $member['uid'],
+			            "openid" => $value['openid'],
+			            "uid" => $value['uid'],
 			            "money" => $send_money,
 			            "uniacid" => $_W['uniacid'],
 			            "paymethod" => $set['paymethod'],

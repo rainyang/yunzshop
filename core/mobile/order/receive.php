@@ -44,7 +44,6 @@ foreach ($sets as $set) {
 }
 
 //自动分红
-//自动分红
 $pbonus = p('bonus');
 if(!empty($pbonus)){
 	foreach ($sets as $set) {
@@ -73,8 +72,6 @@ if(!empty($pbonus)){
 		if($isbonus){
 			if(!empty($bonus_set['start'])){
 				$pbonus->autosend();
-			}
-			if(!empty($bonus_set['area_start'])){
 				$pbonus->autosendall();
 			}
 		}
