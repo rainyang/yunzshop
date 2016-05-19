@@ -7,6 +7,7 @@ global $_W, $_GPC;
 $openid = m('user')->getOpenid();
 $set = m('common')->getSysset(array('trade'));
 $shop_set = m('common')->getSysset(array('shop'));
+
 $member = m('member')->getMember($openid);
 $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
 
@@ -105,6 +106,6 @@ if ($_W['isajax']) {
 		$sql .= " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$time} && c.timeend>={$time})) order by d.gettime desc";
 		$counts['couponcount'] = pdo_fetchcolumn($sql, array(':openid' => $openid, ':uniacid' => $_W['uniacid']));
 	}
-	show_json(1, array('member' => $member,'referrer'=>$referrer, 'order' => $order, 'level' => $level, 'open_creditshop' => $open_creditshop, 'counts' => $counts, 'shopset' => $shopset, 'trade' => $trade));
+	show_json(1, array('member' => $member,'referrer'=>$referrer,'shop_set'=>$shop_set, 'order' => $order, 'level' => $level, 'open_creditshop' => $open_creditshop, 'counts' => $counts, 'shopset' => $shopset, 'trade' => $trade));
 }
 include $this->template('member/center');
