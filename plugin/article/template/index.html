@@ -1459,13 +1459,25 @@ $(function(){
                 <input type="text" name="article_keyword" class="form-control" value="{$article_sys['article_keyword']}" />
             </div>
         </div>
+    </div>
+    <div class='panel-heading'>文字设置</div>
+    <div class='panel-body'>
+        <div class="form-group" style="padding-top:20px;">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员中心</label>
+            <div class="col-sm-9 col-xs-12">
+                <input type="text" name="article_text" class="form-control" value="{$article_sys['article_text']}" />
+            </div>
+        </div>
+
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
             <div class="col-sm-9">
                 <span  class="btn btn-primary col-lg-1" id='save'>保存</span>
             </div> 
         </div>
-    </div>
+        
+    </div> 
+
 </div>
 <script>
     $(function(){
@@ -1475,7 +1487,9 @@ $(function(){
             var article_image = $("input[name=article_image]").val();
             var article_shownum = $("input[name=article_shownum]").val();
             var article_keyword = $("input[name=article_keyword]").val();
+            var article_text = $("input[name=article_text]").val();
             var article_temp = $("input[name=article_temp]:checked").val();
+
 			
 			//读取区域设置的：
 			var article_province = '';
@@ -1509,6 +1523,7 @@ $(function(){
                     article_image:article_image,
                     article_shownum:article_shownum,
                     article_keyword:article_keyword,
+                    article_text:article_text,
                     article_temp:article_temp,
                     article_province:article_province,
                     article_city:article_city

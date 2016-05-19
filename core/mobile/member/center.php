@@ -57,6 +57,13 @@ if(!empty($pluginbonus)){
 $shopset['bonus_start'] = $bonus_start;
 $shopset['bonus_text'] = $bonus_text;
 $shopset['is_weixin'] = is_weixin();
+
+$plugin_article = p('article');
+if ($plugin_article) {
+	$article_set = $plugin_article->getSys();
+	$shopset['article_text'] = $article_set['article_text']?$article_set['article_text']:'文章管理';
+}
+
 if ($_W['isajax']) {
 	$level = array('levelname' => empty($set['shop']['levelname']) ? '普通会员' : $set['shop']['levelname']);
 	if (!empty($member['level'])) {

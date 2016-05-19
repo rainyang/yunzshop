@@ -50,6 +50,60 @@ if ($_W['isajax']) {
 	}
 	$this->set['openselect'] = $openselect;
 	
-	show_json(1, array('commission_ok' => $commission_ok, 'member' => $member, 'level' => $level, 'cansettle' => $cansettle, 'mycansettle' => $mycansettle, 'settlemoney' => number_format(floatval($this->set['withdraw']), 2), 'mysettlemoney' => number_format(floatval($this->set['consume_withdraw']), 2), 'set' => $this->set,));
+	$orders     = array();
+	$level1     = $member['level1'];
+	$level2     = $member['level2'];
+	$level3     = $member['level3'];
+	$levels = intval($this->set['level']);
+	if ($levels >= 1) {
+		$level1_memberids = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where uniacid=:uniacid and agentid=:agentid', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']), 'id');
+
+		$level1_orders = pdo_fetchall('select commission1,o.id,o.createtime,o.price,og.commissions from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on og.orderid=o.id ' . " where o.uniacid=:uniacid and o.agentid=:agentid {$condition} and og.status1>=0 and og.nocommission=0", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+		foreach ($level1_orders as $o) {
+			if (empty($o['id'])) {
+				continue;
+			}
+			$orders[] = array('id' => $o['id'], 'price' => $o['price'], 'createtime' => $o['createtime'], 'level' => 1);
+			$pricecount += $o['price'];
+		}
+	}
+
+	if ($levels >= 2) {
+		if ($level1 > 0) {
+			$level2_orders = pdo_fetchall('select commission2 ,o.id,o.createtime,o.price,og.commissions   from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on og.orderid=o.id ' . " where o.uniacid=:uniacid and o.agentid in( " . implode(',', array_keys($member['level1_agentids'])) . ")  {$condition}  and og.status2>=0 and og.nocommission=0 ", array(':uniacid' => $_W['uniacid']));
+			foreach ($level2_orders as $o) {
+				if (empty($o['id'])) {
+					continue;
+				}
+			$orders[] = array('id' => $o['id'], 'price' => $o['price'], 'createtime' => $o['createtime'], 'level' => 2);
+				$pricecount += $o['price'];
+			}
+		}
+	}
+	if ($levels >= 3) {
+		if ($level2 > 0) {
+			$level3_orders = pdo_fetchall('select commission3 ,o.id,o.createtime,o.price,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on og.orderid=o.id ' . ' where o.uniacid=:uniacid and o.agentid in( ' . implode(',', array_keys($member['level2_agentids'])) . ")  {$condition} and og.status3>=0 and og.nocommission=0", array(':uniacid' => $_W['uniacid']));
+			foreach ($level3_orders as $o) {
+				if (empty($o['id'])) {
+					continue;
+				}
+			$orders[] = array('id' => $o['id'], 'price' => $o['price'], 'createtime' => $o['createtime'], 'level' => 3);
+				$pricecount += $o['price'];
+			}
+		}
+	}
+
+
+	show_json(1, array('commission_ok' => $commission_ok,'pricecount'=>$pricecount, 'member' => $member, 'level' => $level, 'cansettle' => $cansettle, 'mycansettle' => $mycansettle, 'settlemoney' => number_format(floatval($this->set['withdraw']), 2), 'mysettlemoney' => number_format(floatval($this->set['consume_withdraw']), 2), 'set' => $this->set,));
 }
+$plugin_article = p('article');
+if ($plugin_article) {
+	$article_set = $plugin_article->getSys();
+
+	$article_text = $article_set['article_text']?$article_set['article_text']:'文章管理';
+	$article_title = $article_set['article_title']?$article_set['article_title']:'进入文章列表';
+}
+
+
+
 include $this->template('index');
