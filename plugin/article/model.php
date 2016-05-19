@@ -5,6 +5,14 @@ if (!defined('IN_IA')) {
 if (!class_exists('ArticleModel')) {
 	class ArticleModel extends PluginModel
 	{
+
+		public function getSys()
+		{
+			global $_W, $_GPC;
+			$article_sys = pdo_fetch("select * from" . tablename('sz_yi_article_sys') . "where uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
+			return $article_sys;
+		}
+
 		public function doShare($article, $shareid, $myid)
 		{
 			global $_W, $_GPC;

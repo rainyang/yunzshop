@@ -1,8 +1,8 @@
 <?php
 global $_W, $_GPC;
 load()->func('tpl');
-// echo 'hello';exit;
 $aid = intval($_GPC['aid']);
+
 if (!empty($aid)) {
 	$article = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article') . " WHERE id=:aid and article_state=1 and uniacid=:uniacid limit 1 ", array(':aid' => $aid, ':uniacid' => $_W['uniacid']));
 	
