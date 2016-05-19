@@ -64,8 +64,6 @@ if ($plugin_article) {
 	$shopset['article_text'] = $article_set['article_text']?$article_set['article_text']:'文章管理';
 }
 
-
-
 if ($_W['isajax']) {
 	$level = array('levelname' => empty($set['shop']['levelname']) ? '普通会员' : $set['shop']['levelname']);
 	if (!empty($member['level'])) {
