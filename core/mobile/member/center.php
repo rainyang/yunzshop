@@ -68,7 +68,7 @@ if ($plugin_article) {
 }
 
 if ($_W['isajax']) {
-	$level = array('levelname' => empty($set['shop']['levelname']) ? '普通会员' : $set['shop']['levelname']);
+	$level = array('levelname' => empty($this->yzShopSet['levelname']) ? '普通会员' : $this->yzShopSet['levelname']);
 	if (!empty($member['level'])) {
 		$level = m('member')->getLevel($openid);
 	}

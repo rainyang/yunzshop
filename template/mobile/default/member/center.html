@@ -57,9 +57,9 @@
             </div>
             <div class="set" onclick='location.href="{php echo $this->createMobileUrl('member/info')}"'><i class="fa fa-gear" style="font-size:26px; color:#fff;"></i></div>
         </div>
+    </div>
 
-</div>
- <div class="cart" style='margin-top:-20px;'>
+    <div class="cart" style='margin-top:-20px;'>
      <a href="javascript:;"><div class="list1" style=" border-bottom:0px;border-top:0px;">余额: <span style='color:#f90'><%member.credit2%></span>
              {if empty($set['trade']['closerecharge'])}
              <div class="take" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</div>
