@@ -87,12 +87,12 @@
 
     
     {if p('article')}
-        <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="nav nav1"><i class="fa fa-star  fa-3x" style="color:#f3d110"></i><div class="title">{$article_text}</div><div class="con">{$article_title}</div></div></a>    
+        <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="nav nav1"><i class="fa fa-article  fa-3x" style="color:#68DCC1"></i><div class="title">{$article_text}</div><div class="con">{$article_title}</div></div></a>    
  
     {/if} 
+   
+        <a href="#"><div class="nav nav1"><i class="fa fa-time fa-3x" style="color:#FF8282;"></i><div class="title">订单总计</div><div class="con"><span><%pricecount%></span> 元</div></div></a>
 
-        <a href="#"><div class="nav nav1"><i class="fa fa-cny fa-3x" style="color:#ff9901;"></i><div class="title">订单总计</div><div class="con"><span><%pricecount%></span> 元</div></div></a>
-    
 <%/if%>
         
         

@@ -7,8 +7,8 @@
     .header .user {height:48px; padding:10px;}
     .header .user .user-head {height:48px; width:48px; background:#fff; border-radius:50%; float:left;border:2px solid #fff;}
     .header .user .user-head img {height:48px; width:48px; border-radius:24px;}
-    .header .user .user-info {height:48px; width:auto; float:left; margin-left:14px; color:#fff;padding-top:5px;}
-    .header .user .user-info .user-name {height:24px; width:auto; font-size:16px; line-height:24px;}
+    .header .user .user-info {height:48px; width:auto; float:left; margin-left:14px; color:#fff;}
+    .header .user .user-info .user-name {height:20px; width:auto; font-size:16px; line-height:20px;}
     .header .user .user-info .user-other {height:24px; width:auto; font-size:12px;}
     .header .user-gold {height:35px; width:94%; padding:5px 3%; border-bottom:1px solid #ddd; background:#fff; font-size:16px; line-height:35px;}
     .header .user-gold .title {height:35px; width:auto; float:left; color:#666;}
@@ -50,6 +50,9 @@
             <div class="user-info">
                 <div class="user-name"><%member.nickname%>[会员ID:<%member.id%>]</div>
                 <div class="user-other" {if !empty($set['shop']['levelurl'])}onclick='location.href="{$set['shop']['levelurl']}"'{/if}>[<%level.levelname%>] {if !empty($set['shop']['levelurl'])}<i class='fa fa-question-circle' ></i>{/if}
+                <%if shop_set.shop.isreferrer%>
+                    <br>[推荐人：<%referrer.realname%>]
+                <%/if%>
                 </div>
             </div>
             <div class="set" onclick='location.href="{php echo $this->createMobileUrl('member/info')}"'><i class="fa fa-gear" style="font-size:26px; color:#fff;"></i></div>
@@ -110,10 +113,10 @@
         {/if}
     {/if}
     {if p('return')}
-    <a href="{php echo $this->createPluginMobileUrl('return/return_log')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-money" style="color:#f10;"></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
+    <a href="{php echo $this->createPluginMobileUrl('return/return_log')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-piechart" style="color:#ff9901;"></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
     {/if}
      {if p('article')}
-    <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-money" style="color:#f10;"></i><%shopset.article_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
+    <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-article" style="color:#ca81d1;"></i><%shopset.article_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
     {/if}   
 </div>
 {if $hascoupon}

@@ -55,6 +55,7 @@ if ($_W['isajax']) {
 	$level2     = $member['level2'];
 	$level3     = $member['level3'];
 	$levels = intval($this->set['level']);
+	$pricecount = 0;
 	if ($levels >= 1) {
 		$level1_memberids = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where uniacid=:uniacid and agentid=:agentid', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']), 'id');
 
