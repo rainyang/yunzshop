@@ -301,11 +301,11 @@ if ($operation == "change") {
             $saler = m('member')->getMember($item['noticeopenid']);
         }
     }
-    if (empty($category)) {
-        message('抱歉，请您先添加商品分类！', $this->createWebUrl('shop/category', array(
-            'op' => 'post'
-        )), 'error');
-    }
+    // if (empty($category)) {
+    //     message('抱歉，请您先添加商品分类！', $this->createWebUrl('shop/category', array(
+    //         'op' => 'post'
+    //     )), 'error');
+    // }
     $dispatch_data = pdo_fetchall("select * from".tablename("sz_yi_dispatch")."where uniacid =:uniacid and enabled = 1 order by displayorder desc",array(":uniacid"=>$_W["uniacid"])); 
    if (checksubmit("submit")) {
 	 if ($diyform_plugin) { 
@@ -316,9 +316,9 @@ if ($operation == "change") {
         if (empty($_GPC['goodsname'])) {
             message('请输入商品名称！');
         }
-        if (empty($_GPC['category']['parentid'])) {
-            message('请选择商品分类！');
-        }
+        // if (empty($_GPC['category']['parentid'])) {
+        //     message('请选择商品分类！');
+        // }
         if (empty($_GPC['thumbs'])) {
             $_GPC['thumbs'] = array();
         }
