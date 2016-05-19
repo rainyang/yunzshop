@@ -73,7 +73,7 @@
 
         <!--分红-->
         {if $bonus==1}
-        <a href="{php echo $this->createPluginMobileUrl('bonus/withdraw')}"><div class="nav nav1"><i class="fa fa-cny fa-3x" style="color:#B22222;"></i><div class="title">{php echo $bonus_set['texts']['commission1']}</div><div class="con"><span>{$member_bonus['commission_total']}</span> 元</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('bonus/withdraw')}"><div class="nav nav1"><i class="fa fa-cny fa-3x" style="color:#B22222;"></i><div class="title">{php echo $bonus_set['texts']['commission']}</div><div class="con"><span>{$member_bonus['commission_total']}</span> 元</div></div></a>
         <a href="{php echo $this->createPluginMobileUrl('bonus/order')}"><div class="nav nav1"><i class="fa fa-list fa-3x" style="color:#B22222;"></i><div class="title">{php echo $bonus_set['texts']['order']}</div><div class="con"><span>{$member_bonus['ordercount0']}</span> 个</div></div></a>
         <a href="{php echo $this->createPluginMobileUrl('bonus/log')}"><div class="nav nav2"><i class="fa fa-random  fa-3x" style="color:#B22222;"></i><div class="title">{php echo $bonus_set['texts']['commission_detail']}</div><div class="con">{php echo $bonus_set['texts']['commission']}明细</div></div></a>        
         <a href="{php echo $this->createPluginMobileUrl('bonus/customer')}"><div class="nav nav1"><i class="fa fa-users  fa-3x" style="color:#B22222;"></i><div class="title">{php echo $bonus_set['texts']['mycustomer']}</div><div class="con"><span>{$member_bonus['customercount']}</span> 人</div></div></a> 
