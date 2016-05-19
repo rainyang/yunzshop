@@ -205,6 +205,7 @@ if (checksubmit()) {
         $set['shop']['levelurl']  = trim($shop['levelurl']);
         plog('sysset.save.member', '修改系统设置-会员设置');
         $set['shop']['isbindmobile']   = intval($shop['isbindmobile']);
+        $set['shop']['isreferrer']   = intval($shop['isreferrer']);
     } elseif ($op == 'category') {
         $shop                     = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['catlevel']  = trim($shop['catlevel']);
