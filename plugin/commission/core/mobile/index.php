@@ -52,4 +52,13 @@ if ($_W['isajax']) {
 	
 	show_json(1, array('commission_ok' => $commission_ok, 'member' => $member, 'level' => $level, 'cansettle' => $cansettle, 'mycansettle' => $mycansettle, 'settlemoney' => number_format(floatval($this->set['withdraw']), 2), 'mysettlemoney' => number_format(floatval($this->set['consume_withdraw']), 2), 'set' => $this->set,));
 }
+$plugin_article = p('article');
+if ($plugin_article) {
+	$article_set = $plugin_article->getSys();
+
+	$article_text = $article_set['article_text']?$article_set['article_text']:'文章管理';
+	$article_title = $article_set['article_title']?$article_set['article_title']:'进入文章列表';
+}
+
+
 include $this->template('index');
