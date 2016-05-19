@@ -745,7 +745,7 @@ m("cache")->set("areas", $areas, "global");
         $params[':tcate'] = intval($_GPC['category']['thirdid']);
     }
     if (!empty($_GPC['category']['childid'])) {
-        $condition .= ' AND `ccate` = :ccate';
+        $condition .= ' AND (`ccate` = :ccate or ccates = :ccate)';
         $params[':ccate'] = intval($_GPC['category']['childid']);
     }
     if (!empty($_GPC['category']['parentid'])) {
