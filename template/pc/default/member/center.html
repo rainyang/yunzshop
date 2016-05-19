@@ -52,10 +52,10 @@
             <div class="user-head"><img src="<%member.avatar%>" /></div>
             <div class="user-info">
                 <div class="user-name"><%if member.realname%><%member.realname%><%else%>未填写<%/if%></div>
-                <div class="user-other" {if !empty($this->this->yzShopSet['levelurl'])}onclick='location.href="{php echo $this->this->yzShopSet['levelurl']}"'{/if}>[<%level.levelname%>] {if !empty($this->this->yzShopSet['levelurl'])}<i class='fa fa-question-circle' ></i>{/if}
-                <%if shop_set.shop.isreferrer%>
+                <div class="user-other" {if !empty($this->yzShopSet['levelurl'])}onclick='location.href="{php echo $this->yzShopSet['levelurl']}"'{/if}>[<%level.levelname%>] {if !empty($this->yzShopSet['levelurl'])}<i class='fa fa-question-circle' ></i>{/if}
+                {if !empty($this->yzShopSet['isreferrer'])}
                     <br>[推荐人：<%referrer.realname%>]
-                <%/if%>
+                {/if}
                 </div>
             </div>
             <div class="set" onclick='location.href="{php echo $this->createMobileUrl('member/info')}"'><i class="fa fa-gear" style="font-size:26px; color:#fff;cursor:pointer"></i></div>
