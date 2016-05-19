@@ -144,7 +144,7 @@
 				return false;
 		}
 		{if $shopset['catlevel'] == 3}
-		if ($("#category_third").val() == '0') {
+		<!--if ($("#category_third").val() == '0') {
 		$('#myTab a[href="#tab_basic"]').tab('show');
 				Tip.focus("#category_third", "请选择完整商品分类!");
 				return false;
@@ -154,7 +154,7 @@
 			$('#myTab a[href="#tab_basic"]').tab('show');
 			Tip.focus("#category_child", "请选择完整商品分类!");
 			return false;
-		}
+		}-->
 
 		{/if}
 
@@ -272,12 +272,12 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-1 control-label">分类</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">分类</label>
                     <div class="col-sm-8 col-xs-12">
                         {if intval($shopset['catlevel'])==3}
-						{php echo tpl_form_field_category_3level('category', $parent, $children, $params[':pcate'], $params[':ccate'], $params[':tcate'])}
+						{php echo tpl_form_field_category_level3('category', $parent, $children, $params[':pcate'], $params[':ccate'], $params[':tcate'])}
 						{else}
-						{php echo tpl_form_field_category_2level('category', $parent, $children, $params[':pcate'], $params[':ccate'])}
+						{php echo tpl_form_field_category_level2('category', $parent, $children, $params[':pcate'], $params[':ccate'])}
 						{/if}
                     </div>
                     <div class="col-xs-12 col-sm-2 col-lg-2">
@@ -304,16 +304,16 @@
 				<table class="table table-hover">
 					<thead class="navbar-inner">
 						<tr>
-							<th width="4%">ID</th>
+							<th width="6%">ID</th>
 							<th width="6%">排序</th>
 							<th width="6%">商品</th>
-							<th width="14%">&nbsp;</th>
-							<th width="26%">属性</th>
+							<th width="32%">&nbsp;</th>
+<!-- 							<th width="26%">属性</th> -->
 							<th width="10%">价格</th>
-							<th width="6%">库存</th>
-							<th width="5%">销量</th>
-							<th width="6%">状态</th>
-							<th width="15%">操作</th>
+							<th width="10%">库存</th>
+							<th width="9%">销量</th>
+							<th width="9%">状态</th>
+							<th width="14%">操作</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -354,18 +354,6 @@
 								{else}
 								{$item['title']}
 								{/if}
-							</td>
-							<td>
-
-								<label data='{$item['isnew']}' class='label label-default {if $item['isnew']==1}label-info{else}{/if}'   {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'new')"{/if}>新品</label>
-								<label data='{$item['ishot']}' class='label label-default {if $item['ishot']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'hot')"{/if}>热卖</label>
-								<label data='{$item['isrecommand']}' class='label label-default {if $item['isrecommand']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'recommand')"{/if}>推荐</label>
-								<label data='{$item['isdiscount']}' class='label label-default {if $item['isdiscount']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'discount')"{/if}>促销</label>
-								<label data='{$item['issendfree']}' class='label label-default {if $item['issendfree']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'sendfree')"{/if}>包邮</label>
-								<label data='{$item['istime']}' class='label label-default {if $item['istime']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'time')"{/if}>限时卖</label>
-								<label data='{$item['isnodiscount']}' class='label label-default {if $item['isnodiscount']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'nodiscount')"{/if}>不参与折扣</label>
-
-
 							</td>
 							<td class='tdedit'>
 								{if $item['hasoption']==1}
@@ -440,6 +428,24 @@
 								{ifp 'shop.goods.delete'}<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'], 'op' => 'delete'))}" onclick="return confirm('确认删除此商品？');
 										return false;" class="btn btn-default  btn-sm" title="删除"><i class="fa fa-times"></i></a>{/if}
 							</td>
+						</tr>
+						<tr>
+						<td  colspan="10" style="text-align: right;padding: 6px 0;border-top:none;">
+						<label data='{$item['isnew']}' class='label label-default text-default {if $item['isnew']==1}label-info text-pinfo{else}{/if}'   {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'new')"{/if}>新品</label>-
+
+						<label data='{$item['ishot']}' class='label label-default text-default {if $item['ishot']==1}label-info text-pinfo{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'hot')"{/if}>热卖</label>-
+
+						<label data='{$item['isrecommand']}' class='label label-default text-default {if $item['isrecommand']==1}label-info text-pinfo{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'recommand')"{/if}>推荐</label>-
+
+						<label data='{$item['isdiscount']}' class='label label-default text-default {if $item['isdiscount']==1}label-info text-pinfo{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'discount')"{/if}>促销</label>-
+
+						<label data='{$item['issendfree']}' class='label label-default text-default {if $item['issendfree']==1}label-info text-pinfo{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'sendfree')"{/if}>包邮</label>-
+
+						<label data='{$item['istime']}' class='label label-default text-default {if $item['istime']==1}label-info text-pinfo{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'time')"{/if}>限时卖</label>-
+
+						<label data='{$item['isnodiscount']}' class='label label-default text-default {if $item['isnodiscount']==1}label-info text-pinfo{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'nodiscount')"{/if}>不参与折扣</label>
+
+						</td>
 						</tr>
 						{/loop}
 						<tr>
@@ -535,7 +541,7 @@
 			}
 			$(obj).attr("data", d.data);
 			if (d.result == 1) {
-				$(obj).toggleClass("label-info");
+				$(obj).toggleClass("label-info text-pinfo");
 			}
 		}
 		, "json"

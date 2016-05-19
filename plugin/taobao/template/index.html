@@ -30,9 +30,9 @@
 
                     <div class="col-sm-9">
                            {if $shopset['catlevel']==3}
-        {php echo tpl_form_field_category_3level('category', $parent, $children,0,0,0)}
+        {php echo tpl_form_field_category_level3('category', $parent, $children,0,0,0)}
         {else}
-        {php echo tpl_form_field_category_2level('category', $parent, $children,0,0)}
+        {php echo tpl_form_field_category_level2('category', $parent, $children,0,0)}
         {/if}
                     </div>
 

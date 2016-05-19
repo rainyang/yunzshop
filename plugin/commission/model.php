@@ -96,14 +96,16 @@ if (!class_exists('CommissionModel')) {
 			if(empty($set['culate_method'])){
 				return $realprice;
 			}else{
-				$productprice = $order_goods['productprice'] * $order_goods['total'];	//原价
-				$marketprice  = $order_goods['marketprice'] * $order_goods['total'];		//现价
-				$costprice    = $order_goods['costprice'] * $order_goods['total'];			//成本价
+				
 				if($order_goods['optionid'] != 0){
 					$option = pdo_fetch('select productprice,marketprice,costprice from ' . tablename('sz_yi_goods_option') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $order_goods['optionid'], ':uniacid' => $_W['uniacid']));
 					$productprice = $option['productprice'] * $order_goods['total'];	//原价
 					$marketprice  = $option['marketprice'] * $order_goods['total'];		//现价
 					$costprice    = $option['costprice'] * $order_goods['total'];	
+				}else{
+					$productprice = $order_goods['productprice'] * $order_goods['total'];	//原价
+					$marketprice  = $order_goods['marketprice'] * $order_goods['total'];		//现价
+					$costprice    = $order_goods['costprice'] * $order_goods['total'];			//成本价
 				}
 				if($set['culate_method'] == 1){
 					return $productprice;

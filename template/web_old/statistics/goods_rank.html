@@ -19,9 +19,9 @@
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">分类</label>
                 <div class="col-sm-8 col-xs-12">
                     {if intval($shopset['catlevel'])==3}
-                    {php echo tpl_form_field_category_3level('category', $parent, $children, $pcate, $ccate, $tcate)}
+                    {php echo tpl_form_field_category_level3('category', $parent, $children, $pcate, $ccate, $tcate)}
                     {else}
-                    {php echo tpl_form_field_category_2level('category', $parent, $children, $pcate, $ccate)}
+                    {php echo tpl_form_field_category_level2('category', $parent, $children, $pcate, $ccate)}
                     {/if}
                 </div>
             </div>

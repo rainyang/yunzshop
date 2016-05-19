@@ -283,6 +283,9 @@ if (!class_exists('BonusModel')) {
             global $_W;
             $set              = $this->getSet();
             $member           = m('member')->getInfo($openid);
+            if(empty($member['id'])){
+            	return false;
+            }
             $commission_total = 0;
             $commission_ok    = 0;
             $commission_apply = 0;
