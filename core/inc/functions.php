@@ -560,6 +560,19 @@ function objectArray($array){
     }
     return $array;
 }
+
+if(!function_exists('tpl_form_field_category_3level')){
+    function tpl_form_field_category_3level($name, $parents, $children, $parentid, $childid, $thirdid){
+        return tpl_form_field_category_level3($name, $parents, $children, $parentid, $childid, $thirdid);
+    }
+}
+
+if(!function_exists('tpl_form_field_category_2level')){
+    function tpl_form_field_category_2level($name, $parents, $children, $parentid, $childid, $thirdid){
+        return tpl_form_field_category_level2($name, $parents, $children, $parentid, $childid, $thirdid);
+    }
+}
+
 function tpl_form_field_category_level3($name, $parents, $children, $parentid, $childid, $thirdid)
 {
     $html = '
