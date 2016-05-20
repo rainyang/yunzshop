@@ -58,20 +58,18 @@ if(!empty($pbonus)){
 		if($bonus_set['sendmonth'] == 1){
 			$monthtime = strtotime(date("Y-m-1 00:00:00"));
 			//按月初時間查詢，如查詢到則已發放
-			$bonus_data = pdo_fetchcolumn("select id from " . tablename('sz_yi_bonus') . " where utime>".$monthtime." and uniacid=".$_W['uniacid']."  order by id desc");
-			if(empty($bonus_data)){
-				$isbonus = true;	
-			}
+			$bonus_data = pdo_fetch("select id from " . tablename('sz_yi_bonus') . " where ctime>".$monthtime." and isglobal=0 and uniacid=".$_W['uniacid']."  order by id desc");
+			$bonus_data_isglobal = pdo_fetch("select id from " . tablename('sz_yi_bonus') . " where ctime>".$monthtime." and isglobal=1 and uniacid=".$_W['uniacid']."  order by id desc");
 		}else{
 			//按每天0點查詢，如查詢到則已發放
-			$bonus_data = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where utime>".$daytime." and uniacid=".$_W['uniacid']."  order by id desc");
-			if(empty($bonus_data)){
-				$isbonus = true;	
-			}
+			$bonus_data = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=0 and uniacid=".$_W['uniacid']."  order by id desc");
+			$bonus_data_isglobal = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=1 and uniacid=".$_W['uniacid']."  order by id desc");
 		}
-		if($isbonus){
-			if(!empty($bonus_set['start'])){
+		if(!empty($bonus_set['start'])){
+			if(empty($bonus_data)){
 				$pbonus->autosend();
+			}
+			if(empty($bonus_data_isglobal)){
 				$pbonus->autosendall();
 			}
 		}

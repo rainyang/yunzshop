@@ -741,7 +741,7 @@ if (!class_exists('BonusModel')) {
 			if(empty($bonus_member)){
 				return false;
 			}
-
+			$total = 0;
 			foreach ($bonus_member as $key => $value) {
 				$member = $this->getInfo($value['mid'], array('ok'));
 				$send_money = $member['commission_ok'];
@@ -787,17 +787,19 @@ if (!class_exists('BonusModel')) {
 				pdo_update('sz_yi_bonus_goods', $bonus_goods, array('mid' => $member['id'], 'uniacid' => $_W['uniacid']));
 				$totalmoney += $member['commission_ok'];
 			}
+			$total += 1;
 			if($islog){
 				$log = array(
 			            "uniacid" => $_W['uniacid'],
 			            "money" => $totalmoney,
 			            "status" => 1,
 			            "ctime" => time(),
+						"type" => 1,
 			            "paymethod" => $set['paymethod'],
 			            "sendpay_error" => $sendpay_error,
 			            'utime' => $daytime,
 			            "send_bonus_sn" => $time,
-			            "total" => count($bonus_member)
+			            "total" => $total
 			            );
 			    pdo_insert('sz_yi_bonus', $log);
 			    return true;
@@ -849,6 +851,7 @@ if (!class_exists('BonusModel')) {
 			    }
 			}
 			$list = pdo_fetchall("select m.* from ".tablename('sz_yi_member')." m left join " . tablename('sz_yi_bonus_level') . " l on m.bonuslevel=l.id where 1 and l.premier=1 and m.uniacid={$_W['uniacid']}");
+			$total = 0;
 			foreach ($list as $key => $value) {
 				$level = pdo_fetch("select id, levelname from " . tablename('sz_yi_bonus_level') . " where id=".$value['bonuslevel']);
 				if(empty($levelmoneys[$level['id']])){
@@ -882,7 +885,7 @@ if (!class_exists('BonusModel')) {
 			            "ctime" => time(),
 			            "send_bonus_sn" => $time
 			        ));
-
+				$total += 1;
 		        if($sendpay == 1){
 		        	$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_GLOPAL_PAY);
 		        }
@@ -893,6 +896,7 @@ if (!class_exists('BonusModel')) {
 			            "money" => $totalmoney,
 			            "status" => 1,
 			            "ctime" => time(),
+			            'type' => 1,
 			            "paymethod" => $set['paymethod'],
 			            "sendpay_error" => $sendpay_error,
 			            "isglobal" => 1,

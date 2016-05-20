@@ -49,9 +49,11 @@
     </li>
     {/if}
     {ifp 'order.view.status9'}
+    {if !empty($perm_role)}
     <li {if $operation == 'display' && $status == '9'}class="active"{/if}>
         <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 9))}">提现申请状态<em>({if $totals['status9']}{$totals['status9']}{else}0{/if})</em></a>
     </li>
+    {/if}
     {/if}
     {if $operation == 'detail'}
     <li class="active">
