@@ -186,7 +186,7 @@
                     <div class="col-sm-9 col-xs-12">
             {ifp 'sysset.save.shop'}
                         {php echo tpl_form_field_image('pcset[referrallogo]', $set['shop']['referrallogo'])}
-                        <span class='help-block'>1024*320</span>
+                        <span class='help-block'>960*258</span>
             {else}
                         <input type="hidden" name="pcset[referrallogo]" value="{$set['shop']['referrallogo']}"/>
                         {if !empty($set['shop']['referrallogo'])}
