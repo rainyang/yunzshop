@@ -5,6 +5,7 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 $preUrl = $_COOKIE['preUrl'];
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
+echo "<pre>"; print_r($this->yzShopSet);exit;
 session_start();
 if ($_W['isajax']) {
     if ($_W['ispost']) {

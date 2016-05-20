@@ -108,6 +108,7 @@ if (checksubmit()) {
         plog('sysset.save.shop', '修改系统设置-商城设置');
     }
     elseif ($op == 'pcset') {
+        //echo "<pre>"; print_r($_GPC['pcset']);exit;
         $custom                    = is_array($_GPC['pcset']) ? $_GPC['pcset'] : array();
         $set['shop']['ispc']       = trim($custom['ispc']);
         $set['shop']['pctitle']    = trim($custom['pctitle']);
@@ -123,6 +124,21 @@ if (checksubmit()) {
         $set['shop']['fmenu_name'] = $custom['fmenu_name'];
         $set['shop']['fmenu_url']  = $custom['fmenu_url'];
         $set['shop']['fmenu_id']   = $custom['fmenu_id'];
+
+        $set['shop']['reccredit']  = $custom['reccredit'];
+        $set['shop']['recmoney']   = $custom['recmoney'];
+        $set['shop']['subcredit']  = $custom['subcredit'];
+        $set['shop']['submoney']   = $custom['submoney'];
+        $set['shop']['paytype']    = $custom['paytype'];
+        $set['shop']['isreferral'] = $custom['isreferral'];
+
+        $set['shop']['templateid']      = $custom['templateid'];
+        $set['shop']['subtext']         = $custom['subtext'];
+        $set['shop']['entrytext']       = $custom['entrytext'];
+        $set['shop']['subpaycontent']   = $custom['subpaycontent'];
+        $set['shop']['recpaycontent']   = $custom['recpaycontent'];
+        $set['shop']['referrallogo']   = $custom['referrallogo'];
+
         plog('sysset.save.sms', '修改系统设置-PC设置');
     }
     elseif ($op == 'sms') {
