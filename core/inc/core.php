@@ -22,6 +22,7 @@ class Core extends WeModuleSite
     public function __construct()
     {
         global $_W, $_GPC;
+	    //m('common')->checkClose();
         if (is_weixin()) {
             m('member')->checkMember();
         }
@@ -52,7 +53,7 @@ class Core extends WeModuleSite
     public function runTasks()
     {
         global $_W;
-        load()->func('communication');
+        /*load()->func('communication');
         $lasttime = strtotime(m('cache')->getString('receive', 'global'));
         $interval = intval(m('cache')->getString('receive_time', 'global'));
         if (empty($interval)) {
@@ -89,7 +90,7 @@ class Core extends WeModuleSite
 				m('cache')->set('couponbacktime', date('Y-m-d H:i:s', $_var_2), 'global');
 				ihttp_request($_W['siteroot'] . 'addons/sz_yi/plugin/coupon/core/mobile/back.php', null, null, 1);
 			}
-		}
+		}*/
 		exit('run finished.');
     }
 
