@@ -1,5 +1,5 @@
 <?php
-define('CLOUD_UPGRADE_URL', 'http://115.29.33.155/web/index.php?c=account&a=upgradetest');
+define('CLOUD_UPGRADE_URL', 'http://cloud.cn/web/index.php?c=account&a=upgradetest1');
 
 if (!defined('IN_IA')) {
     exit('Access Denied');
@@ -16,7 +16,7 @@ load()->func('db');
 
 if ($op == 'display') {
     //先看是否注册，没注册的要注册
-    define('CLOUD_URL', 'http://115.29.33.155/web/index.php?c=account&a=register');
+    define('CLOUD_URL', 'http://cloud.cn/web/index.php?c=account&a=register');
     $data['domain'] = $_SERVER['HTTP_HOST'];
     $data['signature'] = 'sz_cloud_register';
     $res = ihttp_request(CLOUD_URL, $data);
@@ -56,6 +56,7 @@ if ($op == 'display') {
         'version' => $version,
         'files' => $files
     ));
+    //print_r($resp);exit;
     $ret     = @json_decode($resp['content'], true);
     if (is_array($ret)) {
         if ($ret['result'] == 1) {
