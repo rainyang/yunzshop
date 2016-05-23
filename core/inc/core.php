@@ -22,7 +22,7 @@ class Core extends WeModuleSite
     public function __construct()
     {
         global $_W, $_GPC;
-	    //m('common')->checkClose();
+	    m('common')->checkClose();
         if (is_weixin()) {
             m('member')->checkMember();
         }
@@ -53,7 +53,7 @@ class Core extends WeModuleSite
     public function runTasks()
     {
         global $_W;
-        /*load()->func('communication');
+        load()->func('communication');
         $lasttime = strtotime(m('cache')->getString('receive', 'global'));
         $interval = intval(m('cache')->getString('receive_time', 'global'));
         if (empty($interval)) {
@@ -63,7 +63,8 @@ class Core extends WeModuleSite
         $current = time();
         if ($lasttime + $interval <= $current) {
             m('cache')->set('receive', date('Y-m-d H:i:s', $current), 'global');
-            ihttp_request($_W['siteroot'] . 'addons/sz_yi/core/mobile/order/receive.php', null, null, 1);
+            $reveive_url = $this->createMobileUrl('order/receive');
+            ihttp_request($reveive_url, null, null, 1);
         }
         $lasttime = strtotime(m('cache')->getString('closeorder', 'global'));
         $interval = intval(m('cache')->getString('closeorder_time', 'global'));
@@ -74,7 +75,8 @@ class Core extends WeModuleSite
         $current = time();
         if ($lasttime + $interval <= $current) {
             m('cache')->set('closeorder', date('Y-m-d H:i:s', $current), 'global');
-            ihttp_request($_W['siteroot'] . 'addons/sz_yi/core/mobile/order/close.php', null, null, 1);
+            $close_url = $this->createMobileUrl('order/close');
+            ihttp_request($close_url, null, null, 1);
         }
 
 		if (p('coupon')) {
@@ -88,9 +90,10 @@ class Core extends WeModuleSite
 			$_var_2 = time();
 			if ($_var_0 + $_var_1 <= $_var_2) {
 				m('cache')->set('couponbacktime', date('Y-m-d H:i:s', $_var_2), 'global');
-				ihttp_request($_W['siteroot'] . 'addons/sz_yi/plugin/coupon/core/mobile/back.php', null, null, 1);
+                $back_url = $this->createPluginMobileUrl('coupon/back');
+				ihttp_request($back_url, null, null, 1);
 			}
-		}*/
+		}
 		exit('run finished.');
     }
 
