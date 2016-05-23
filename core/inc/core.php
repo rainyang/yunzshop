@@ -23,6 +23,12 @@ class Core extends WeModuleSite
     {
         global $_W, $_GPC;
 	    m('common')->checkClose();
+        if (empty($_W['uniacid'])) {
+            if (!empty($_W['uid'])) {
+                $_W['uniacid'] = pdo_fetchcolumn("select uniacid from " . tablename('sz_yi_perm_user') . " where uid={$_W['uid']}");
+                $_W['issupplier'] = 1;
+            }
+        }
         if (is_weixin()) {
             m('member')->checkMember();
         } else {

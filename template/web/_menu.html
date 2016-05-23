@@ -10,7 +10,10 @@
 <div class='topmenu'>
     <ul class="nav navbar-nav headnavfl">
         <li class="fl">
-            <a href="{php echo url('home/welcome/ext',array('m'=>'sz_yi'))}"><i class='fa fa-home'></i> {php echo $this->module['title']}</a> 
+            {if empty($_W['issupplier'])}<a href="{php echo url('home/welcome/ext',array('m'=>'sz_yi'))}"><i class='fa fa-home'></i> {php echo $this->module['title']}</a>
+            {else}
+            <a href="#"><i class='fa fa-home'></i> {php echo $this->module['title']}</a>
+            {/if} 
         </li> 
         {ifp 'shop'}
         <li class="dropdown">
@@ -141,8 +144,9 @@
         {/if}
         
         <li class="dropdown">
-           <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" style="display:block; max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; "><i class="fa fa-group"></i>{$_W['user']['username']} ({if $_W['role'] == 'founder'}系统管理员{elseif $_W['role'] == 'manager'}公众号管理员{else}公众号操作员{/if}) <b class="caret"></b></a>
+           <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" style="display:block; max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; "><i class="fa fa-group"></i>{$_W['user']['username']} ({if $_W['issupplier'] != 1}{if $_W['role'] == 'founder'}系统管理员{elseif $_W['role'] == 'manager'}公众号管理员{else}公众号操作员{/if}{else}供应商{/if}) <b class="caret"></b></a>
             <ul class="dropdown-menu">
+            {if $_W['issupplier'] != 1}
                 {if $_W['role'] != 'operator'}
 						<li><a href="{url 'account/post' array('uniacid' => $_W['uniacid'])}" target="_blank"><i class="fa fa-weixin fa-fw"></i> 编辑当前账号资料</a></li>
                 {/if}
@@ -154,7 +158,9 @@
 				{if !empty($_W['isfounder']) || empty($_W['setting']['permurls']['sections']) || in_array('setting', $_W['setting']['permurls']['sections'])}<li{if FRAME == 'setting'} class="active"{/if}><a href="{url 'home/welcome/setting'}"><i class="fa fa-umbrella"></i>功能选项</a></li>{/if}
                 <li><a href="{url 'system/updatecache'}" target="_blank"><i class="fa fa-refresh fa-fw"></i> 更新缓存</a></li>
 				<li><a href="./?refresh"><i class="fa fa-reply-all"></i>返回系统</a></li>
-
+        {else}
+        <li><a href="{$_W['siteroot']}app/index.php?c=entry&do=shop&m=sz_yi&p=login"><i class="fa fa-reply-all"></i>返回登录</a></li>
+        {/if}
             </ul>
         </li>
     </ul>
