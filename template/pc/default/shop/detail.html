@@ -261,8 +261,9 @@ div.flicking_con a.on{background-position:0 -9px}
         <div class="other">
             
             
+            <input type='hidden' id='optionid' value='' />
                 <%each specs as spec%>
-                <input type='hidden' id="optionid" name="optionid[]" class='optionid optionid_<%spec.id%>' value="" title="<%spec.title%>">
+                <input type='hidden' name="optionid[]" class='optionid optionid_<%spec.id%>' value="" title="<%spec.title%>">
                 <div class="list-bor">
                     <div class="spec"><%spec.title%></div>
                     <div class="spec_items options_<%spec.id%>"  title="<%spec.title%>">
@@ -766,12 +767,6 @@ div.flicking_con a.on{background-position:0 -9px}
                 {template 'diyform/common_js'}
             {/if}
 
-
-
-
-
-
-
             $(".option").click(function() {
 
                 var specid = $(this).attr("specid");
@@ -1229,22 +1224,22 @@ function reduceNum(){
 }
 
 	function option_selected(){
-	var ret= {
-		no: "",
-		all: []
-	};
-	if(!hasoption){
-		return ret;
-	}
-			$(".optionid").each(function(){
-				ret.all.push($(this).val());
-				if($(this).val()==''){
-					ret.no = $(this).attr("title");
-					return false;
-				}
-	})
-	return ret;
-}
+        var ret= {
+            no: "",
+            all: []
+        };
+        if(!hasoption){
+            return ret;
+        }
+        $(".optionid").each(function(){
+            ret.all.push($(this).val());
+            if($(this).val()==''){
+                ret.no = $(this).attr("title");
+                return false;
+            }
+        })
+        return ret;
+    }
 </script>
 
 {template 'common/bottom'}
