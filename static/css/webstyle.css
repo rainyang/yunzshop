@@ -133,6 +133,7 @@ ul{list-style:none;}
 .text-default{ background: none;color:#7B7B7B }
 .text-pinfo{ background: none;color: #ed5565 }
 .upgrade-tips{z-index:9;}
+.table .label {display: inline-block;margin-bottom: 2px;border-radius: 2px;}
 @media (max-width: 767px){
 .navbar-nav .open .dropdown-menu {
     position: absolute;
