@@ -7,6 +7,7 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
+$shopset1   = m('common')->getSysset('shop');
 if (empty($openid)) {
     $openid = $_GPC['openid'];
 }

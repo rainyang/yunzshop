@@ -7,6 +7,7 @@ $operation      = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid         = m('user')->getOpenid();
 $uniacid        = $_W['uniacid'];
 $orderid        = intval($_GPC['id']);
+$shopset1   = m('common')->getSysset('shop');
 $diyform_plugin = p('diyform');
 $order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
     ':id' => $orderid,

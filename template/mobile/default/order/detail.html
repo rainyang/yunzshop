@@ -353,10 +353,10 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
         <div class="line">会员折扣:<span>-￥<span class='discountprice'><%order.discountprice%></span></span></div>
         <%/if%>
         <%if order.deductprice>0%>
-        <div class="line">积分抵扣:<span>-￥<span class='deductprice'><%order.deductprice%></span></span></div>
+        <div class="line">{php echo $shopset1['credit1']}抵扣:<span>-￥<span class='deductprice'><%order.deductprice%></span></span></div>
         <%/if%>
         <%if order.deductcredit2>0%>
-        <div class="line">余额抵扣:<span>-￥<span class='deductprice2'><%order.deductcredit2%></span></span></div>
+        <div class="line">{php echo $shopset1['credit']}抵扣:<span>-￥<span class='deductprice2'><%order.deductcredit2%></span></span></div>
         <%/if%>
         <%if order.changeprice!=0%>
         <div class="line">改价优惠:<span><%if order.changeprice>0%>+<%/if%>￥<span class='changeprice2'><%order.changeprice%></span></span></div>
