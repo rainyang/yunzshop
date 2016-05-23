@@ -25,8 +25,10 @@ if (!class_exists('ReturnModel')) {
 				if($good['isreturnqueue'] == 1){
 
 					$goods_queue = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$_W['uniacid']." and goodsid = ".$good['goodsid']." order by queue desc limit 1" );
+					$queuemessages = '';
 					for ($i=1; $i <= $good['total'] ; $i++) { 
 						$queue = $goods_queue['queue']+$i;
+						$queuemessages .= $queue."、";
 						$data = array(
 		                    'uniacid' 	=> $_W['uniacid'],
 		                    'openid' 	=> $good['openid'],
@@ -39,15 +41,6 @@ if (!class_exists('ReturnModel')) {
 		                pdo_insert('sz_yi_order_goods_queue',$data);
 		                $queueid = pdo_insertid();
 
-						$queue_messages = array(
-							'keyword1' => array('value' => '加入排列通知',
-								'color' => '#73a68d'),
-							'keyword2' => array('value' => "您已加入排列，排列号为".$queue."号！",
-								'color' => '#73a68d'),
-							'keyword3' => array('value' => '加入排列完成，请等待返现！',
-								'color' => '#73a68d')
-							);
-						m('message')->sendCustomNotice($good['openid'], $queue_messages);
 						if(!($queue%$_var_0['queue']))
 						{
 							$queue = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$_W['uniacid']." and goodsid = ".$good['goodsid']." and status = 0 order by queue asc limit 1" );
@@ -68,6 +61,15 @@ if (!class_exists('ReturnModel')) {
 
 					}
 
+						$queue_messages = array(
+							'keyword1' => array('value' => '加入排列通知',
+								'color' => '#73a68d'),
+							'keyword2' => array('value' => "您已加入排列，排列号为".$queuemessages."号！",
+								'color' => '#73a68d'),
+							'keyword3' => array('value' => '加入排列完成，请等待返现！',
+								'color' => '#73a68d')
+							);
+						m('message')->sendCustomNotice($good['openid'], $queue_messages);
 				}
 			}
 
