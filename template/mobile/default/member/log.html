@@ -1,5 +1,5 @@
 {template 'common/header'}
-<title>{if $trade && $trade['withdraw']==1}余额明细{else}充值记录{/if}</title>
+<title>{if $trade && $trade['withdraw']==1}{php echo $shopset1['credit']}明细{else}充值记录{/if}</title>
 <style type="text/css">
     body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
     .credit_list {height:40px; width:94%; background:#fff; padding:10px 3%;margin-top:5px;}
@@ -17,7 +17,7 @@
 </style>
 <div class="page_topbar">
     <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
-    <div class="title">{if $trade && $trade['withdraw']==1}余额明细{else}充值记录{/if}</div>
+    <div class="title">{if $trade && $trade['withdraw']==1}{php echo $shopset1['credit']}明细{else}充值记录{/if}</div>
 </div>
 
 {if $trade && $trade['withdraw']==1}
