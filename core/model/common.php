@@ -363,4 +363,36 @@ class Sz_DYi_Common
             file_put_contents($file, $log, FILE_APPEND);
         }
     }
+
+    public function checkClose()
+    {
+        if (strexists($_SERVER['REQUEST_URI'], '/web/')) {
+            return;
+        }
+        $shop = $this->getSysset('shop');
+        if (!empty($shop['close'])) {
+            if (!empty($shop['closeurl'])) {
+                header('location: ' . $shop['closeurl']);
+                exit;
+            }
+            die("<!DOCTYPE html>
+                    <html>
+                        <head>
+                            <meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=0'>
+                            <title>抱歉，商城暂时关闭</title><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=0'><link rel='stylesheet' type='text/css' href='https://res.wx.qq.com/connect/zh_CN/htmledition/style/wap_err1a9853.css'>
+                        </head>
+                        <body>
+                        <style type='text/css'>
+                        body { background:#fbfbf2; color:#333;}
+                        img { display:block; width:100%;}
+                        .header {
+                        width:100%; padding:10px 0;text-align:center;font-weight:bold;}
+                        </style>
+                        <div class='page_msg'>
+                        
+                        <div class='inner'><span class='msg_icon_wrp'><i class='icon80_smile'></i></span>{$shop['closedetail']}</div></div>
+                        </body>
+                    </html>");
+        }
+    }
 }
