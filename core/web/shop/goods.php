@@ -896,6 +896,19 @@ m("cache")->set("areas", $areas, "global");
     die(json_encode(array(
         'result' => 0
     )));
+}elseif($operation == 'copygoods'){
+    $goodsid=$_GPC['id'];
+    $goods=pdo_fetch('select * from ' .tablename('sz_yi_goods'). ' where id = '.$goodsid);
+    if(empty($goods)){
+        message('未找到此商品，商品复制失败!', $this->createWebUrl('shop/goods') , 'error');
+    }
+    $goods['id']='';
+    $ok=pdo_insert('sz_yi_goods',$goods);
+    if(!empty($ok)){
+        message('商品复制成功！', $this->createWebUrl('shop/goods') , 'success');
+    }else{
+        message('商品复制失败，请联系管理员', $this->createWebUrl('shop/goods') , 'error'); 
+    }
 }
 load()->func('tpl');
 include $this->template('web/shop/goods');
