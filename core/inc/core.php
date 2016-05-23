@@ -327,9 +327,9 @@ class Core extends WeModuleSite
     public function _execFront($do, $default = '', $web = true)
     {
         global $_W, $_GPC;
-	//todo, 需要加入微信权限认证
-	define('IN_SYS', true);
-	$_W['templateType'] = 'web';
+        //todo, 需要加入微信权限认证
+        define('IN_SYS', true);
+        $_W['templateType'] = 'web';
         $do = strtolower(substr($do, 5));
         $p  = trim($_GPC['p']);
         empty($p) && $p = $default;
