@@ -43,7 +43,7 @@
     .detail_price .price .line span {height:26px; width:auto; float:right;}
     
    
-    .detail_pay {height:60px; width:94%; background:#fff; padding:0px 3%; margin-top:30px; border-top:1px solid #eaeaea;position:fixed;bottom:0px}
+    .detail_pay {height:60px; width:94%; background:#fff; padding:0px 1%; margin-top:30px; border-top:1px solid #eaeaea;position:fixed;bottom:0px;max-width: 720px;box-sizing: border-box;}
     .detail_pay span {height:60px; width:auto; margin-right:16px; float:right; line-height:60px; color:#ff771b; font-size:16px;}
     .detail_pay .paysub {height:38px; width:auto;margin-left:5px; background:#ff771b; padding:0px 10px; margin-top:10px; border-radius:5px; color:#fff; line-height:38px; float:right;}
     
@@ -343,6 +343,7 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
 <div class="detail_price" >
     <input type="hidden" id="weight" value="<%weight%>" />
     <div class="price">
+		<div class="line">订单编号:<span><span class='goodsprice'><%order.ordersn%></span></span></div>
         <div class="line">商品小计:<span>￥<span class='goodsprice'><%order.goodsprice%></span></span></div>
         	
         <div class="line">运费:<span>￥<span class='dispatchprice'><%order.olddispatchprice%></span></span></div>
