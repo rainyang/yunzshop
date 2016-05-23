@@ -24,8 +24,7 @@ class Core extends WeModuleSite
         global $_W, $_GPC;
         if (is_weixin()) {
             m('member')->checkMember();
-        }
-        else{
+        } else {
             $noLoginList = array('poster', 'postera');
             //微信回调通知要加入开放权限
             if (p('commission') && (!in_array($_GPC['p'], $noLoginList)) && !strpos($_SERVER['SCRIPT_NAME'], 'notify')) {
@@ -38,14 +37,12 @@ class Core extends WeModuleSite
         $this->yzShopSet = m('common')->getSysset('shop');
     }
 
-
-
-    public function sendSms($mobile, $code, $templateType = 'reg'){
+    public function sendSms($mobile, $code, $templateType = 'reg')
+    {
         $set = m('common')->getSysset();
-        if($set['sms']['type'] == 1){
+        if ($set['sms']['type'] == 1) {
             return send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $code);
-        }
-        else{
+        } else {
             return send_sms_alidayu($mobile, $code, $templateType);
         }
     }
@@ -76,21 +73,21 @@ class Core extends WeModuleSite
             ihttp_request($_W['siteroot'] . 'addons/sz_yi/core/mobile/order/close.php', null, null, 1);
         }
 
-		if (p('coupon')) {
-			$_var_0 = strtotime(m('cache')->getString('couponbacktime', 'global'));
-			$_var_3 = p('coupon')->getSet();
-			$_var_1 = intval($_var_3['backruntime']);
-			if (empty($_var_1)) {
-				$_var_1 = 60;
-			}
-			$_var_1 *= 60;
-			$_var_2 = time();
-			if ($_var_0 + $_var_1 <= $_var_2) {
-				m('cache')->set('couponbacktime', date('Y-m-d H:i:s', $_var_2), 'global');
-				ihttp_request($_W['siteroot'] . 'addons/sz_yi/plugin/coupon/core/mobile/back.php', null, null, 1);
-			}
-		}
-		exit('run finished.');
+        if (p('coupon')) {
+            $_var_0 = strtotime(m('cache')->getString('couponbacktime', 'global'));
+            $_var_3 = p('coupon')->getSet();
+            $_var_1 = intval($_var_3['backruntime']);
+            if (empty($_var_1)) {
+                $_var_1 = 60;
+            }
+            $_var_1 *= 60;
+            $_var_2 = time();
+            if ($_var_0 + $_var_1 <= $_var_2) {
+                m('cache')->set('couponbacktime', date('Y-m-d H:i:s', $_var_2), 'global');
+                ihttp_request($_W['siteroot'] . 'addons/sz_yi/plugin/coupon/core/mobile/back.php', null, null, 1);
+            }
+        }
+        exit('run finished.');
     }
 
     public function setHeader()
@@ -163,8 +160,8 @@ class Core extends WeModuleSite
 
         $this->footer['commission'] = false;
         $member  = m('member')->getMember($openid);
-        if(!empty($member['isblack'])){
-            if($_GPC['op'] != 'black'){
+        if (!empty($member['isblack'])) {
+            if ($_GPC['op'] != 'black') {
                 header('Location: '.$this->createMobileUrl('member/login', array('op' => 'black')));
             }
         }
@@ -212,18 +209,18 @@ class Core extends WeModuleSite
                 }
             }
         }
-        if(strstr($_SERVER['REQUEST_URI'],'app')){
-            if(!isMobile()){
-                if($this->yzShopSet['ispc']==0){
+        if (strstr($_SERVER['REQUEST_URI'], 'app')) {
+            if (!isMobile()) {
+                if ($this->yzShopSet['ispc']==0) {
                     //message('抱歉，PC版暂时关闭，请用微信打开!','','error');
                 }
             }
         }
-        if(is_weixin()){
+        if (is_weixin()) {
             //是否强制绑定手机号,只针对微信端
-            if(!empty($this->yzShopSet['isbindmobile'])){
-                if(empty($member) || $member['isbindmobile'] == 0){
-                    if($_GPC['p'] != 'bindmobile' && $_GPC['p'] != 'sendcode'){
+            if (!empty($this->yzShopSet['isbindmobile'])) {
+                if (empty($member) || $member['isbindmobile'] == 0) {
+                    if ($_GPC['p'] != 'bindmobile' && $_GPC['p'] != 'sendcode') {
                         $bindmobileurl = $this->createMobileUrl('member/bindmobile');
                         redirect($bindmobileurl);
                         exit();
@@ -346,18 +343,14 @@ class Core extends WeModuleSite
         global $_W;
         $tmplateType = (isMobile()) ? 'mobile' : 'pc';
         $set = m('common')->getSysset('shop');
-        if(strstr($_SERVER['REQUEST_URI'],'app')){
-            if(!isMobile()){
-                if($set['ispc']==0){
+        if (strstr($_SERVER['REQUEST_URI'], 'app')) {
+            if (!isMobile()) {
+                if ($set['ispc']==0) {
                     $tmplateType = 'mobile';
                     //message('抱歉，PC版暂时关闭，请用微信打开!','','error');
                 }
             }
         }
-	
-	if($_W['templateType'] && $_W['templateType'] == 'web'){
-	
-	}
 
         $name = strtolower($this->modulename);
         if (defined('IN_SYS')) {
@@ -432,7 +425,8 @@ class Core extends WeModuleSite
         }
         return $this->createMobileUrl('shop');
     }
-	/*private function executeTasks()
+
+    /*private function executeTasks()
     {
         global $_W;
         load()->func('communication');

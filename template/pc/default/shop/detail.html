@@ -44,8 +44,8 @@ ul,li {padding:0px; margin:0px;}
 
 .good_info2 {height:auto; width:100%; background:#fff; margin-top:14px; }
 .good_info2 .menu {height:40px; width:100%;}
-.good_info2 .menu .nav {height:37px; width:25%;  float:left; font-size:14px; color:#666; text-align:center; line-height:37px; border-bottom:2px solid #e3e3e3;cursor: pointer;}
-.good_info2 .menu .navon {color:#ff6500; height:37px; line-height:37px; border-bottom:2px solid #ff6500; }
+.good_info2 .menu .nav {height:37px; width:25%;  float:left; font-size:14px; color:#666; text-align:center; line-height:37px;cursor: pointer;}
+.good_info2 .menu .navon {color:#ff6500; height:40px; line-height:40px;}
 .good_info2 .tab_con {height:auto; width:100%; padding:10px; overflow: hidden;}
 .good_info2 .tab_con .con {height:auto; display:none;color:#333;word-break:break-all;}
 .good_info2 .tab_con .con .param { padding:10px; border-bottom:1px solid #ccc}
@@ -261,8 +261,9 @@ div.flicking_con a.on{background-position:0 -9px}
         <div class="other">
             
             
+            <input type='hidden' id='optionid' value='' />
                 <%each specs as spec%>
-                <input type='hidden' id="optionid" name="optionid[]" class='optionid optionid_<%spec.id%>' value="" title="<%spec.title%>">
+                <input type='hidden' name="optionid[]" class='optionid optionid_<%spec.id%>' value="" title="<%spec.title%>">
                 <div class="list-bor">
                     <div class="spec"><%spec.title%></div>
                     <div class="spec_items options_<%spec.id%>"  title="<%spec.title%>">
@@ -766,12 +767,6 @@ div.flicking_con a.on{background-position:0 -9px}
                 {template 'diyform/common_js'}
             {/if}
 
-
-
-
-
-
-
             $(".option").click(function() {
 
                 var specid = $(this).attr("specid");
@@ -1229,22 +1224,22 @@ function reduceNum(){
 }
 
 	function option_selected(){
-	var ret= {
-		no: "",
-		all: []
-	};
-	if(!hasoption){
-		return ret;
-	}
-			$(".optionid").each(function(){
-				ret.all.push($(this).val());
-				if($(this).val()==''){
-					ret.no = $(this).attr("title");
-					return false;
-				}
-	})
-	return ret;
-}
+        var ret= {
+            no: "",
+            all: []
+        };
+        if(!hasoption){
+            return ret;
+        }
+        $(".optionid").each(function(){
+            ret.all.push($(this).val());
+            if($(this).val()==''){
+                ret.no = $(this).attr("title");
+                return false;
+            }
+        })
+        return ret;
+    }
 </script>
 
 {template 'common/bottom'}
