@@ -143,6 +143,20 @@
 				Tip.focus("#goodsname", "请输入商品名称!");
 				return false;
 		}
+		{if $shopset['catlevel'] == 3}
+		if ($("#category_third").val() == '0') {
+		$('#myTab a[href="#tab_basic"]').tab('show');
+				Tip.focus("#category_third", "请选择完整商品分类!");
+				return false;
+		}
+		{else}
+		if ($("#category_child").val() == '0') {
+			$('#myTab a[href="#tab_basic"]').tab('show');
+			Tip.focus("#category_child", "请选择完整商品分类!");
+			return false;
+		}
+
+		{/if}
 
 		{if empty($id)}
 		if ($.trim($(':input[name="thumb"]').val()) == '') {
@@ -294,11 +308,13 @@
 							<th width="6%">排序</th>
 							<th width="6%">商品</th>
 							<th width="32%">&nbsp;</th>
-<!-- 							<th width="26%">属性</th> -->
+							<th  style="width:200px;" >商品属性</th>
 							<th width="10%">价格</th>
 							<th width="10%">库存</th>
-							<th width="9%">销量</th>
-							<th width="9%">状态</th>
+							<th >实际销量</th>
+							<th >商品编码</th>
+							<th >商品条码</th>
+							<th >状态(点击可修改)</th>
 							<th width="14%">操作</th>
 						</tr>
 					</thead>
@@ -340,6 +356,19 @@
 								{else}
 								{$item['title']}
 								{/if}
+							</td>
+							<td>
+
+								<label data='{$item['isnew']}' class='label label-default {if $item['isnew']==1}label-info{else}{/if}'   {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'new')"{/if}>新品</label>
+								<label data='{$item['ishot']}' class='label label-default {if $item['ishot']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'hot')"{/if}>热卖</label>
+								<label data='{$item['isrecommand']}' class='label label-default {if $item['isrecommand']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'recommand')"{/if}>推荐</label>
+								<label data='{$item['isdiscount']}' class='label label-default {if $item['isdiscount']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'discount')"{/if}>促销</label>
+								<br/>
+								<label data='{$item['issendfree']}' class='label label-default {if $item['issendfree']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'sendfree')"{/if}>包邮</label>
+								<label data='{$item['istime']}' class='label label-default {if $item['istime']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'time')"{/if}>限时卖</label>
+								<label data='{$item['isnodiscount']}' class='label label-default {if $item['isnodiscount']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'nodiscount')"{/if}>不参与折扣</label>
+
+
 							</td>
 							<td class='tdedit'>
 								{if $item['hasoption']==1}
@@ -387,6 +416,50 @@
 
 							</td>
 							<td>{$item['salesreal']}</td>
+							<td class='tdedit'>
+								{if $item['hasoption']==1}
+								{ifp 'shop.goods.edit'}
+								<span class='tip' title='多规格不支持快速修改'>{$item['goodssn']}</span>
+								{else}
+								{$item['goodssn']}
+								{/if}
+								{else}
+								{ifp 'shop.goods.edit'}
+
+								<span class=' fa-edit-item' style='cursor:pointer'><i class='fa fa-pencil' style="display:none"></i> <span class="title">{$item['goodssn']}</span> </span>
+								<div class="input-group" style="display:none" data-goodsid="{$item['id']}">
+									<input type='text' class='form-control' value="{$item['goodssn']}"   />
+									<div class="input-group-btn">
+										<button type="button" class="btn btn-default" data-goodsid='{$item['id']}' data-type="goodssn"><i class="fa fa-check"></i></button>
+									</div>
+								</div>
+								{else}
+								{$item['goodssn']}
+								{/if}{/if}
+
+							</td>
+							<td class='tdedit'>
+								{if $item['hasoption']==1}
+								{ifp 'shop.goods.edit'}
+								<span class='tip' title='多规格不支持快速修改'>{$item['productsn']}</span>
+								{else}
+								{$item['productsn']}
+								{/if}
+								{else}
+								{ifp 'shop.goods.edit'}
+
+								<span class=' fa-edit-item' style='cursor:pointer'><i class='fa fa-pencil' style="display:none"></i> <span class="title">{$item['productsn']}</span> </span>
+								<div class="input-group" style="display:none" data-goodsid="{$item['id']}">
+									<input type='text' class='form-control' value="{$item['productsn']}"   />
+									<div class="input-group-btn">
+										<button type="button" class="btn btn-default" data-goodsid='{$item['id']}' data-type="productsn"><i class="fa fa-check"></i></button>
+									</div>
+								</div>
+								{else}
+								{$item['productsn']}
+								{/if}{/if}
+
+							</td>
 							<td>
 
                                 {if p('supplier')}
@@ -406,7 +479,7 @@
                             {else}
                                 <label data='{$item['status']}' class='label  label-default {if $item['status']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'status')"{/if}>{if $item['status']==1}上架{else}下架{/if}</label>
                             {/if}
-
+							<label data='{$item['type']}' class='label  label-default {if $item['type']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'type')"{/if}>{if $item['type']==1}实体物品{else}虚拟物品{/if}</label>
 							</td>
 							<td style="position:relative;">
 								<a href="javascript:;" data-url="{php echo $this->createMobileUrl('shop/detail', array('id' => $item['id']))}"  title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>

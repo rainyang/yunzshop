@@ -105,21 +105,22 @@ if (!class_exists('BonusModel')) {
 				}
 			
 				//是否开启区域代理
+				$bonus_area_money_old = 0;
 				if(!empty($set['area_start'])){
-					$bonus_area_money_old = 0;
 					//区级代理计算
 		            $bonus_commission3 = floatval($set['bonus_commission3']);
 					if(!empty($bonus_commission3)){
 	            		$agent_district =  pdo_fetch("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_city='". $address['city']."' and bonus_district='". $address['area']."' and bonus_area=3 and uniacid=".$_W['uniacid']);
 	            		if(!empty($agent_district)){
 		            		if($agent_district['bonus_area_commission'] > 0){
-		            			$bonus_area_money = round($price_all * $agent_district['bonus_area_commission']/100, 2);
+		            			$bonus_area_money_new = round($price_all * $agent_district['bonus_area_commission']/100, 2);
 		            		}else{
-		            			$bonus_area_money = round($price_all * $set['bonus_commission3']/100, 2);
+		            			$bonus_area_money_new = round($price_all * $set['bonus_commission3']/100, 2);
 		            		}
 		            		if(empty($set['isdistinction_area'])){
-								$bonus_area_money = $bonus_area_money - $bonus_area_money_old;
-								$bonus_area_money_old = $bonus_area_money;
+								$bonus_area_money = $bonus_area_money_new - $bonus_area_money_old;
+								$bonus_area_money_old = $bonus_area_money_new;
+								
 							}
 		            		if($bonus_area_money > 0){
 		            			$data = array(
@@ -141,15 +142,16 @@ if (!class_exists('BonusModel')) {
 		            $bonus_commission2 = floatval($set['bonus_commission2']);
 					if(!empty($bonus_commission2)){
 	            		$agent_city =  pdo_fetch("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_city='". $address['city']."' and bonus_area=2 and uniacid=".$_W['uniacid']);
+	            		
 	            		if(!empty($agent_city)){
 		            		if($agent_city['bonus_area_commission'] > 0){
-		            			$bonus_area_money = round($price_all * $agent_city['bonus_area_commission']/100, 2);
+		            			$bonus_area_money_new = round($price_all * $agent_city['bonus_area_commission']/100, 2);
 		            		}else{
-		            			$bonus_area_money = round($price_all * $set['bonus_commission2']/100, 2);
+		            			$bonus_area_money_new = round($price_all * $set['bonus_commission2']/100, 2);
 		            		}
 		            		if(empty($set['isdistinction_area'])){
-								$bonus_area_money = $bonus_area_money - $bonus_area_money_old;
-								$bonus_area_money_old = $bonus_area_money;
+								$bonus_area_money = $bonus_area_money_new - $bonus_area_money_old;
+								$bonus_area_money_old = $bonus_area_money_new;
 							}
 		            		if($bonus_area_money > 0){
 		            			$data = array(
@@ -173,13 +175,13 @@ if (!class_exists('BonusModel')) {
 	            		$agent_province =  pdo_fetch("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_area=1 and uniacid=".$_W['uniacid']);
 	            		if(!empty($agent_province)){
 		            		if($agent_province['bonus_area_commission'] > 0){
-		            			$bonus_area_money = round($price_all * $agent_province['bonus_area_commission']/100, 2);
+		            			$bonus_area_money_new = round($price_all * $agent_province['bonus_area_commission']/100, 2);
 		            		}else{
-		            			$bonus_area_money = round($price_all * $set['bonus_commission1']/100, 2);
+		            			$bonus_area_money_new = round($price_all * $set['bonus_commission1']/100, 2);
 		            		}
 		            		if(empty($set['isdistinction_area'])){
-								$bonus_area_money = $bonus_area_money - $bonus_area_money_old;
-								$bonus_area_money_old = $bonus_area_money;
+								$bonus_area_money = $bonus_area_money_new - $bonus_area_money_old;
+								$bonus_area_money_old = $bonus_area_money_new;
 							}
 		            		if($bonus_area_money > 0){
 		            			$data = array(

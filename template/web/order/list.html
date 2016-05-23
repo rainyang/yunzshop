@@ -1,6 +1,10 @@
 ﻿{template 'web/_header'}.
 <div class="w1200 m0a">
 {template 'web/order/tabs'}
+<link href="../addons/sz_yi/static/js/dist/select2/select2.css" rel="stylesheet">
+<link href="../addons/sz_yi/static/js/dist/select2/select2-bootstrap.css" rel="stylesheet">
+<script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2.min.js"></script>
+<script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2_locale_zh-CN.js"></script>
 <style type='text/css'>
 .trhead td {  background:#f8f8f8;text-align: center}
 .trbody td {  text-align: center; vertical-align:top;border-left:1px solid #DEDEDE;overflow: hidden;}
@@ -8,6 +12,11 @@
 .goods_info img {width:50px;background:#fff;border:1px solid #DEDEDE;padding:1px;}
 .goods_info:hover {z-index:1;position:absolute;width:auto;}
 .goods_info:hover img{width:320px; height:320px;}
+.form-control .select2-choice {
+        border: 0 none;
+        border-radius: 2px;
+        height: 32px;    line-height: 32px;
+    }
 </style>
 <div class="rightlist">
 {if $status != 9}
@@ -71,8 +80,47 @@
                         </div>
                         {php echo tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d H:i', $starttime),'endtime'=>date('Y-m-d H:i', $endtime)),true);}
 
-
+						<div class='input-group-addon'>完成时间
+                            <label class='radio-inline' style='margin-top:-7px;'>
+                                <input type='radio' value='0' name='fsearchtime' {if $_GPC['fsearchtime']=='0'}checked{/if}>不搜索
+                            </label>
+                            <label class='radio-inline'  style='margin-top:-7px;'>
+                                <input type='radio' value='1' name='fsearchtime' {if $_GPC['fsearchtime']=='1'}checked{/if}>搜索
+                            </label>
+                        </div>
+                        {php echo tpl_form_field_daterange('ftime', array('starttime'=>date('Y-m-d H:i', $fstarttime),'endtime'=>date('Y-m-d H:i', $fendtime)),true);}
                     </div>
+
+                </div>
+
+            </div>
+
+            <div class="form-group">
+
+                <div class="col-sm-6">
+
+                    <div class='input-group'>
+                        <div class='input-group-addon'>付款时间
+                            <label class='radio-inline' style='margin-top:-7px;'>
+                                <input type='radio' value='0' name='psearchtime' {if $_GPC['psearchtime']=='0'}checked{/if}>不搜索
+                            </label>
+                            <label class='radio-inline'  style='margin-top:-7px;'>
+                                <input type='radio' value='1' name='psearchtime' {if $_GPC['psearchtime']=='1'}checked{/if}>搜索
+                            </label>
+                        </div>
+                        {php echo tpl_form_field_daterange('ptime', array('starttime'=>date('Y-m-d H:i', $pstarttime),'endtime'=>date('Y-m-d H:i', $pendtime)),true);}
+
+                        <div class='input-group-addon'>发货时间
+                            <label class='radio-inline' style='margin-top:-7px;'>
+                                <input type='radio' value='0' name='ssearchtime' {if $_GPC['ssearchtime']=='0'}checked{/if}>不搜索
+                            </label>
+                            <label class='radio-inline'  style='margin-top:-7px;'>
+                                <input type='radio' value='1' name='ssearchtime' {if $_GPC['ssearchtime']=='1'}checked{/if}>搜索
+                            </label>
+                        </div>
+                        {php echo tpl_form_field_daterange('stime', array('starttime'=>date('Y-m-d H:i', $sstarttime),'endtime'=>date('Y-m-d H:i', $sendtime)),true);}
+                    </div>
+
                 </div>
 
                 {if !empty($agentid) && $level>0}   
@@ -96,7 +144,9 @@
                     <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
                     <input type="hidden" name="token" value="{$_W['token']}" />
                     <button type="submit" name="export" value="1" class="btn btn-primary">导出 Excel</button>
+					<a class="btn btn-warning" href="{php echo $this->createWebUrl('order/export')}">自定义导出</a>
                 </div>
+
             </div>
      
         </form>
@@ -122,8 +172,9 @@
                     <td colspan='8'  style='border-bottom:1px solid #ccc;background:#f8f8f8;' > 
                         <b>订单编号:</b>  {$item['ordersn']}     
                         <b>下单时间:  </b>{php echo date('Y-m-d H:i:s', $item['createtime'])}
-                         {if !empty($item['refundid'])}<label class='label label-danger'>退款申请</label>{/if} 
-                         {if !empty($agentid)}
+                        {if !empty($item['refundstate'])}<label class='label label-danger'>{$r_type[$item['rtype']]}申请</label>{/if}
+			            {if $item['rstatus'] == 4}<label class='label label-primary'>客户已经寄出快递</label>{/if}
+			            {if !empty($agentid)}
                          <b>分销订单级别:</b> {$item['level']}级 <b>分销佣金:</b> {$item['commission']} 元
                         
                          {/if}
@@ -178,7 +229,17 @@
                              <br/>
                         {$item['addressdata']['realname']}<br/>{$item['addressdata']['mobile']}</td>
                     <td rowspan="{php echo count($item['goods'])}"    >
-                         <label class='label label-{$item['css']}'>{$item['paytype']}</label><br/>
+					{if $item['statusvalue'] > 0}
+		            <label class='label label-{$item['css']}'>{$item['paytype']}</label><br/>
+		            {else if $item['statusvalue'] == 0}
+		            {if $item['paytypevalue'] == 3}
+		            <label class='label label-default'>货到付款</label><br/>
+		            {else}
+		            <label class='label label-default'>未支付</label><br/>
+		            {/if}
+		            {else if $item['statusvalue'] == -1}
+		            <label class='label label-default'>{$item['paytype']}</label><br/>
+		            {/if}
                                        {$item['dispatchname']}
                                        {if $item['addressid']!=0 && $item['statusvalue']>=2}<br/>
                                        <button type='button' class='btn btn-default btn-sm' onclick='express_find(this,"{$item['id']}")' >查看物流</button>
@@ -367,6 +428,13 @@
             modal.find('.mobile').html(addressdata.mobile);
             modal.find('.address').html(addressdata.address);
     }
+	$(function () {
+        $('.select2').select2({
+            search: true,
+            placeholder: "请选择门店",
+            allowClear: true
+        });
+    });
 </script> 
                     
          {template 'web/order/modals'}

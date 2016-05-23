@@ -23,6 +23,11 @@ if ($mt <= 10) {
     }
 }
 $totals = array();
+$r_type         = array(
+    '0' => '退款',
+    '1' => '退货退款',
+    '2' => '换货'
+);
 if ($operation == "display") {
     ca("order.view.status_1|order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status5");
     //判断该帐号的权限
@@ -132,7 +137,7 @@ if ($operation == "display") {
         if ($status == "-1") {
             $statuscondition = " AND o.status=-1 and o.refundtime=0";
         } else if ($status == "4") {
-            $statuscondition = " AND o.refundid<>0";
+            $statuscondition = " AND o.refundstate>0 AND o.refundid<>0";
         } else if ($status == "5") {
             $statuscondition = " AND o.refundtime<>0";
         } else if ($status == "1") {
@@ -342,7 +347,9 @@ if ($operation == "display") {
         }
         if ($s == - 1) {
             if (!empty($value["refundtime"])) {
-                $value["status"] = "已退款";
+                if ($value['rstatus'] == 1) {
+                    $value['status'] = '已' . $r_type[$value['rtype']];
+                }
             }
         }
         $value["paytypevalue"] = $pt;
@@ -856,6 +863,7 @@ if ($operation == "display") {
             "columns" => $columns
         ));
     }
+    $total = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename("sz_yi_order") . " o " . " left join ( select rr.id,rr.orderid,rr.status from " . tablename("sz_yi_order_refund") . " rr left join " . tablename("sz_yi_order") . " ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition $statuscondition " . $cond , $paras);
     $totalmoney = pdo_fetchcolumn('SELECT ifnull(sum(o.price),0) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition $statuscondition $cond ", $paras);
     $totals['all'] = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE o.uniacid = :uniacid and o.deleted=0 $cond ", $paras);
     $totals['status_1'] = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.status=-1 and o.refundtime=0 $cond ", $paras);
@@ -865,7 +873,7 @@ if ($operation == "display") {
     $totals['status3'] = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.status=3 $cond ", $paras);
     $totals['status4'] = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.refundid<>0 $cond ", $paras);
     $totals['status5'] = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id  order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.refundtime<>0 $cond ", $paras);
-    $total = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename("sz_yi_order") . " o " . " left join ( select rr.id,rr.orderid,rr.status from " . tablename("sz_yi_order_refund") . " rr left join " . tablename("sz_yi_order") . " ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition $statuscondition " . $cond , $paras);
+    
 
     $pager = pagination($total, $pindex, $psize);
     $stores = pdo_fetchall("select id,storename from " . tablename("sz_yi_store") . " where uniacid=:uniacid ", array(
@@ -935,6 +943,11 @@ if ($operation == "display") {
         ":orderid" => $item["id"],
         ":uniacid" => $_W["uniacid"]
     ));
+    if (!empty($refund)) {
+        if (!empty($refund['imgs'])) {
+            $refund['imgs'] = iunserializer($refund['imgs']);
+        }
+    }
     $diyformfields = "";
     $plugin_diyform = p("diyform");
     if ($plugin_diyform) {
@@ -946,10 +959,10 @@ if ($operation == "display") {
     ));
     foreach ($goods as & $r) {
         if (!empty($r["option_goodssn"])) {
-            $r["goodssn"] = $og["option_goodssn"];
+            $r["goodssn"] = $r["option_goodssn"];
         }
-        if (!empty($og["option_productsn"])) {
-            $r["productsn"] = $og["option_productsn"];
+        if (!empty($r["option_productsn"])) {
+            $r["productsn"] = $r["option_productsn"];
         }
         if ($plugin_diyform) {
             $r["diyformfields"] = iunserializer($r["diyformfields"]);
@@ -1061,11 +1074,38 @@ if ($operation == "display") {
             }
         }
     }
+    $refund_address = pdo_fetchall('select * from ' . tablename('sz_yi_refund_address') . ' where uniacid=:uniacid', array(
+        ':uniacid' => $_W['uniacid']
+    ));
     load()->func("tpl");
     include $this->template("web/order/detail");
     exit;
+} elseif ($operation == 'saveexpress') {
+    $id         = intval($_GPC['id']);
+    $express    = $_GPC['express'];
+    $expresscom = $_GPC['expresscom'];
+    $expresssn  = trim($_GPC['expresssn']);
+    if (empty($id)) {
+        $ret = 'Url参数错误！请重试！';
+        show_json(0, $ret);
+    }
+    if (!empty($expresssn)) {
+        $change_data               = array();
+        $change_data['express']    = $express;
+        $change_data['expresscom'] = $expresscom;
+        $change_data['expresssn']  = $expresssn;
+        pdo_update('sz_yi_order', $change_data, array(
+            'id' => $id,
+            'uniacid' => $_W['uniacid']
+        ));
+        $ret = '修改成功';
+        show_json(1, $ret);
+    } else {
+        $ret = '请填写快递单号！';
+        show_json(0, $ret);
+    }
 } elseif ($operation == "saveaddress") {
-    $provance = $_GPC["provance"];
+    $province = $_GPC["province"];
     $realname = $_GPC["realname"];
     $mobile = $_GPC["mobile"];
     $city = $_GPC["city"];
@@ -1081,7 +1121,7 @@ if ($operation == "display") {
             $ret = "请填写收件人手机！";
             show_json(0, $ret);
         }
-        if ($provance == "请选择省份") {
+        if ($province == "请选择省份") {
             $ret = "请选择省份！";
             show_json(0, $ret);
         }
@@ -1093,10 +1133,11 @@ if ($operation == "display") {
             ":id" => $id,
             ":uniacid" => $_W["uniacid"]
         ));
+
         $address_array = iunserializer($item["address"]);
         $address_array["realname"] = $realname;
         $address_array["mobile"] = $mobile;
-        $address_array["provance"] = $provance;
+        $address_array["province"] = $province;
         $address_array["city"] = $city;
         $address_array["area"] = $area;
         $address_array["address"] = $address;
@@ -1146,18 +1187,18 @@ if ($operation == "display") {
         }
     }
     $to = trim($_GPC["to"]);
-    if ($to == "confirmpay") {
-        zymfunc_5($item);
-    } else if ($to == "cancelpay") {
+    if ($to == 'confirmpay') {
+        order_list_confirmpay($item);
+    } else if ($to == 'cancelpay') {
         order_list_cancelpay($item);
-    } else if ($to == "confirmsend") {
-        zymfunc_3($item);
-    } else if ($to == "cancelsend") {
-        zymfunc_4($item);
-    } else if ($to == "confirmsend1") {
-        zymfunc_1($item);
-    } else if ($to == "cancelsend1") {
-        zymfunc_2($item);
+    } else if ($to == 'confirmsend') {
+        order_list_confirmsend($item);
+    } else if ($to == 'cancelsend') {
+        order_list_cancelsend($item);
+    } else if ($to == 'confirmsend1') {
+        order_list_confirmsend1($item);
+    } else if ($to == 'cancelsend1') {
+        order_list_cancelsend1($item);
     } else if ($to == "finish") {
         order_list_finish($item);
     } else if ($to == "close") {
@@ -1274,6 +1315,51 @@ if ($operation == "display") {
         }
         plog("order.op.changeprice", "订单号： {$item["ordersn"]} <br/> 价格： {$item["price"]} -> {$orderprice}");
         message("订单改价成功!", referer() , "success");
+    } else if ($to == 'refundexpress') {
+        $flag     = intval($_GPC['flag']);
+        $refundid = $item['refundid'];
+        if (!empty($refundid)) {
+            $refund = pdo_fetch('select * from ' . tablename('sz_yi_order_refund') . ' where id=:id and uniacid=:uniacid  limit 1', array(
+                ':id' => $refundid,
+                ':uniacid' => $_W['uniacid']
+            ));
+        } else {
+            die('未找到退款申请.');
+            exit;
+        }
+        if ($flag == 1) {
+            $express   = trim($refund['express']);
+            $expresssn = trim($refund['expresssn']);
+        } else if ($flag == 2) {
+            $express   = trim($refund['rexpress']);
+            $expresssn = trim($refund['rexpresssn']);
+        }
+        $arr = getList($express, $expresssn);
+        if (!$arr) {
+            $arr = getList($express, $expresssn);
+            if (!$arr) {
+                die('未找到物流信息.');
+            }
+        }
+        $len   = count($arr);
+        $step1 = explode('<br />', str_replace('&middot;', "", $arr[0]));
+        $step2 = explode('<br />', str_replace('&middot;', "", $arr[$len - 1]));
+        for ($i = 0; $i < $len; $i++) {
+            if (strtotime(trim($step1[0])) > strtotime(trim($step2[0]))) {
+                $row = $arr[$i];
+            } else {
+                $row = $arr[$len - $i - 1];
+            }
+            $step   = explode('<br />', str_replace('&middot;', "", $row));
+            $list[] = array(
+                'time' => trim($step[0]),
+                'step' => trim($step[1]),
+                'ts' => strtotime(trim($step[0]))
+            );
+        }
+        load()->func('tpl');
+        include $this->template('web/order/express');
+        exit;
     } else if ($to == "express") {
         $express = trim($item["express"]);
         $expresssn = trim($item["expresssn"]);
@@ -1369,7 +1455,7 @@ function order_list_backurl() {
     global $_GPC;
     return $_GPC["op"] == "detail" ? $this->createWebUrl("order") : referer();
 }
-function zymfunc_3($zym_var_32) {
+function order_list_confirmsend($zym_var_32) {
     global $_W, $_GPC;
     ca("order.op.send");
     if (empty($zym_var_32["addressid"])) {
@@ -1417,7 +1503,7 @@ function zymfunc_3($zym_var_32) {
     plog("order.op.send", "订单发货 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]} <br/>快递公司: {$_GPC["expresscom"]} 快递单号: {$_GPC["expresssn"]}");
     message("发货操作成功！", order_list_backurl() , "success");
 }
-function zymfunc_1($zym_var_32) {
+function order_list_confirmsend1($zym_var_32) {
     global $_W, $_GPC;
     ca("order.op.fetch");
     if ($zym_var_32["status"] != 1) {
@@ -1463,7 +1549,7 @@ function zymfunc_1($zym_var_32) {
     plog("order.op.fetch", "订单确认取货 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]}");
     message("发货操作成功！", order_list_backurl() , "success");
 }
-function zymfunc_4($zym_var_32) {
+function order_list_cancelsend($zym_var_32) {
     global $_W, $_GPC;
     ca("order.op.sendcancel");
     if ($zym_var_32["status"] != 2) {
@@ -1482,7 +1568,7 @@ function zymfunc_4($zym_var_32) {
     plog("order.op.sencancel", "订单取消发货 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]}");
     message("取消发货操作成功！", order_list_backurl() , "success");
 }
-function zymfunc_2($zym_var_32) {
+function order_list_cancelsend1($zym_var_32) {
     global $_W, $_GPC;
     ca("order.op.fetchcancel");
     if ($zym_var_32["status"] != 3) {
@@ -1536,7 +1622,7 @@ function order_list_cancelpay($zym_var_32) {
     plog("order.op.paycancel", "订单取消付款 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]}");
     message("取消订单付款操作成功！", order_list_backurl() , "success");
 }
-function zymfunc_5($zym_var_32) {
+function order_list_confirmpay($zym_var_32) {
     global $_W, $_GPC;
     ca("order.op.pay");
     if ($zym_var_32["status"] > 1) {
@@ -1592,8 +1678,19 @@ function order_list_close($zym_var_32) {
     if (!empty($zym_var_32["transid"])) {
         changeWechatSend($zym_var_32["ordersn"], 0, $_GPC["reson"]);
     }
+    $time = time();
+    if ($zym_var_32['refundstate'] > 0 && !empty($zym_var_32['refundid'])) {
+        $_obscure_d931d4d43031d4393534d9383839d933               = array();
+        $_obscure_d931d4d43031d4393534d9383839d933['status']     = -1;
+        $_obscure_d931d4d43031d4393534d9383839d933['refundtime'] = $time;
+        pdo_update('sz_yi_order_refund', $_obscure_d931d4d43031d4393534d9383839d933, array(
+            'id' => $zym_var_32['refundid'],
+            'uniacid' => $_W['uniacid']
+        ));
+    }
     pdo_update("sz_yi_order", array(
         "status" => - 1,
+	'refundstate' => 0,
         "canceltime" => time() ,
         "remark" => $zym_var_32["remark"] . "" . $_GPC["remark"]
     ) , array(
@@ -1613,166 +1710,242 @@ function order_list_close($zym_var_32) {
     plog("order.op.close", "订单关闭 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]}");
     message("订单关闭操作成功！", order_list_backurl() , "success");
 }
-function order_list_refund($zym_var_32) {
+function order_list_refund($_obscure_a835d835d5d438d5d436383430353835)
+{
     global $_W, $_GPC;
-    ca("order.op.refund");
-    $zym_var_30 = m("common")->getSysset("shop");
-    if (empty($zym_var_32["refundid"])) {
-        message("订单未申请退款，不需处理！");
+    ca('order.op.refund');
+    $_obscure_abd8d9d63332d6313335d4313230d433 = m('common')->getSysset('shop');
+    if (empty($_obscure_a835d835d5d438d5d436383430353835['refundstate'])) {
+        message('订单未申请退款，不需处理！');
     }
-    $zym_var_35 = pdo_fetch("select * from " . tablename("sz_yi_order_refund") . " where id=:id and status=0 limit 1", array(
-        ":id" => $zym_var_32["refundid"]
+    $_obscure_a3d7d7d8333739d735d5373837d7d534 = pdo_fetch('select * from ' . tablename('sz_yi_order_refund') . ' where id=:id and (status=0 or status>1) order by id desc limit 1', array(
+        ':id' => $_obscure_a835d835d5d438d5d436383430353835['refundid']
     ));
-    if (empty($zym_var_35)) {
-        pdo_update("sz_yi_order", array(
-            "refundid" => 0
-        ) , array(
-            "id" => $zym_var_32["id"],
-            "uniacid" => $_W["uniacid"]
+    if (empty($_obscure_a3d7d7d8333739d735d5373837d7d534)) {
+        pdo_update('sz_yi_order', array(
+            'refundstate' => 0
+        ), array(
+            'id' => $_obscure_a835d835d5d438d5d436383430353835['id'],
+            'uniacid' => $_W['uniacid']
         ));
-        message("未找到退款申请，不需处理！");
+        message('未找到退款申请，不需处理！');
     }
-    if (empty($zym_var_35["refundno"])) {
-        $zym_var_35["refundno"] = m("common")->createNO("order_refund", "refundno", "SR");
-        pdo_update("sz_yi_order_refund", array(
-            "refundno" => $zym_var_35["refundno"]
-        ) , array(
-            "id" => $zym_var_35["id"]
+    if (empty($_obscure_a3d7d7d8333739d735d5373837d7d534['refundno'])) {
+        $_obscure_a3d7d7d8333739d735d5373837d7d534['refundno'] = m('common')->createNO('order_refund', 'refundno', 'SR');
+        pdo_update('sz_yi_order_refund', array(
+            'refundno' => $_obscure_a3d7d7d8333739d735d5373837d7d534['refundno']
+        ), array(
+            'id' => $_obscure_a3d7d7d8333739d735d5373837d7d534['id']
         ));
     }
-    $zym_var_27 = intval($_GPC["refundstatus"]);
-    $zym_var_21 = $_GPC["refundcontent"];
-    if ($zym_var_27 == 0) {
-        message("暂不处理", referer());
-    } else if ($zym_var_27 == 1) {
-        $zym_var_2 = $zym_var_32["ordersn"];
-        if (!empty($zym_var_32["ordersn2"])) {
-            $zym_var_20 = sprintf("%02d", $zym_var_32["ordersn2"]);
-            $zym_var_2.= "GJ" . $zym_var_20;
-        }
-        $zym_var_28 = $zym_var_35["price"];
-        $zym_var_18 = pdo_fetchall("SELECT g.id,g.credit, o.total,o.realprice FROM " . tablename("sz_yi_order_goods") . " o left join " . tablename("sz_yi_goods") . " g on o.goodsid=g.id " . " WHERE o.orderid=:orderid and o.uniacid=:uniacid", array(
-            ":orderid" => $zym_var_32["id"],
-            ":uniacid" => $_W["uniacid"]
-        ));
-        $zym_var_22 = 0;
-        foreach ($zym_var_18 as $zym_var_23) {
-            $zym_var_22+= $zym_var_23["credit"] * $zym_var_23["total"];
-        }
-        $zym_var_26 = 0;
-        if ($zym_var_32["paytype"] == 1) {
-            m("member")->setCredit($zym_var_32["openid"], "credit2", $zym_var_28, array(
-                0,
-                $zym_var_30["name"] . "退款: {$zym_var_28}元 订单号: " . $zym_var_32["ordersn"]
+    $_obscure_d7d4d4d435383739d4d53935d8d73036 = intval($_GPC['refundstatus']);
+    $_obscure_ab32d73338393838d7393736d7d939d4 = trim($_GPC['refundcontent']);
+    $_obscure_a7d8383137d4d537d9d73933d6323433 = time();
+    $_obscure_d931d4d43031d4393534d9383839d933 = array();
+    $_obscure_d73033d7333430d43532303035303436 = $_W['uniacid'];
+    if ($_obscure_d7d4d4d435383739d4d53935d8d73036 == 0) {
+        message('暂不处理', referer());
+    } else if ($_obscure_d7d4d4d435383739d4d53935d8d73036 == 3) {
+        $_obscure_a935d631d53636373730d433d4d433d6 = $_GPC['raid'];
+        $_obscure_d53335d73033d5d7d8383530d938d634 = trim($_GPC['message']);
+        if ($_obscure_a935d631d53636373730d433d4d433d6 == 0) {
+            $_obscure_aa35d7d734313632d43532d5d4d9d636 = pdo_fetch('select * from ' . tablename('sz_yi_refund_address') . ' where isdefault=1 and uniacid=:uniacid limit 1', array(
+                ':uniacid' => $_obscure_d73033d7333430d43532303035303436
             ));
-            $zym_var_25 = true;
-        } else if ($zym_var_32["paytype"] == 21) {
-            $zym_var_28 = round($zym_var_28 - $zym_var_32["deductcredit2"], 2);
-            $zym_var_25 = m("finance")->refund($zym_var_32["openid"], $zym_var_2, $zym_var_35["refundno"], $zym_var_32["price"] * 100, $zym_var_28 * 100);
-            $zym_var_26 = 2;
         } else {
-            if ($zym_var_28 < 1) {
-                message("退款金额必须大于1元，才能使用微信企业付款退款!", '', "error");
-            }
-            $zym_var_28 = round($zym_var_28 - $zym_var_32["deductcredit2"], 2);
-            $zym_var_25 = m("finance")->pay($zym_var_32["openid"], 1, $zym_var_28 * 100, $zym_var_35["refundno"], $zym_var_30["name"] . "退款: {$zym_var_28}元 订单号: " . $zym_var_32["ordersn"]);
-            $zym_var_26 = 1;
+            $_obscure_aa35d7d734313632d43532d5d4d9d636 = pdo_fetch('select * from ' . tablename('sz_yi_refund_address') . ' where id=:id and uniacid=:uniacid limit 1', array(
+                ':id' => $_obscure_a935d631d53636373730d433d4d433d6,
+                ':uniacid' => $_obscure_d73033d7333430d43532303035303436
+            ));
         }
-        if (is_error($zym_var_25)) {
-            message($zym_var_25["message"], '', "error");
+        if (empty($_obscure_aa35d7d734313632d43532d5d4d9d636)) {
+            $_obscure_aa35d7d734313632d43532d5d4d9d636 = pdo_fetch('select * from ' . tablename('sz_yi_refund_address') . ' where uniacid=:uniacid order by id desc limit 1', array(
+                ':uniacid' => $_obscure_d73033d7333430d43532303035303436
+            ));
         }
-        if ($zym_var_22 > 0) {
-            m("member")->setCredit($zym_var_32["openid"], "credit1", -$zym_var_22, array(
+        unset($_obscure_aa35d7d734313632d43532d5d4d9d636['uniacid']);
+        unset($_obscure_aa35d7d734313632d43532d5d4d9d636['openid']);
+        unset($_obscure_aa35d7d734313632d43532d5d4d9d636['isdefault']);
+        unset($_obscure_aa35d7d734313632d43532d5d4d9d636['deleted']);
+        $_obscure_aa35d7d734313632d43532d5d4d9d636                    = iserializer($_obscure_aa35d7d734313632d43532d5d4d9d636);
+        $_obscure_d931d4d43031d4393534d9383839d933['reply']           = '';
+        $_obscure_d931d4d43031d4393534d9383839d933['refundaddress']   = $_obscure_aa35d7d734313632d43532d5d4d9d636;
+        $_obscure_d931d4d43031d4393534d9383839d933['refundaddressid'] = $_obscure_a935d631d53636373730d433d4d433d6;
+        $_obscure_d931d4d43031d4393534d9383839d933['message']         = $_obscure_d53335d73033d5d7d8383530d938d634;
+        if (empty($_obscure_a3d7d7d8333739d735d5373837d7d534['operatetime'])) {
+            $_obscure_d931d4d43031d4393534d9383839d933['operatetime'] = $_obscure_a7d8383137d4d537d9d73933d6323433;
+        }
+        if ($_obscure_a3d7d7d8333739d735d5373837d7d534['status'] != 4) {
+            $_obscure_d931d4d43031d4393534d9383839d933['status'] = 3;
+        }
+        pdo_update('sz_yi_order_refund', $_obscure_d931d4d43031d4393534d9383839d933, array(
+            'id' => $_obscure_a835d835d5d438d5d436383430353835['refundid']
+        ));
+        m('notice')->sendOrderMessage($_obscure_a835d835d5d438d5d436383430353835['id'], true);
+    } else if ($_obscure_d7d4d4d435383739d4d53935d8d73036 == 5) {
+        $_obscure_d931d4d43031d4393534d9383839d933['rexpress']    = $_GPC['rexpress'];
+        $_obscure_d931d4d43031d4393534d9383839d933['rexpresscom'] = $_GPC['rexpresscom'];
+        $_obscure_d931d4d43031d4393534d9383839d933['rexpresssn']  = trim($_GPC['rexpresssn']);
+        $_obscure_d931d4d43031d4393534d9383839d933['status']      = 5;
+        if ($_obscure_a3d7d7d8333739d735d5373837d7d534['status'] != 5 && empty($_obscure_a3d7d7d8333739d735d5373837d7d534['returntime'])) {
+            $_obscure_d931d4d43031d4393534d9383839d933['returntime'] = $_obscure_a7d8383137d4d537d9d73933d6323433;
+        }
+        pdo_update('sz_yi_order_refund', $_obscure_d931d4d43031d4393534d9383839d933, array(
+            'id' => $_obscure_a835d835d5d438d5d436383430353835['refundid']
+        ));
+        m('notice')->sendOrderMessage($_obscure_a835d835d5d438d5d436383430353835['id'], true);
+    } else if ($_obscure_d7d4d4d435383739d4d53935d8d73036 == 10) {
+        $_obscure_acd53337d9d5d6d930343734d43739d7['status']     = 1;
+        $_obscure_acd53337d9d5d6d930343734d43739d7['refundtime'] = $_obscure_a7d8383137d4d537d9d73933d6323433;
+        pdo_update('sz_yi_order_refund', $_obscure_acd53337d9d5d6d930343734d43739d7, array(
+            'id' => $_obscure_a835d835d5d438d5d436383430353835['refundid'],
+            'uniacid' => $_obscure_d73033d7333430d43532303035303436
+        ));
+        $_obscure_aa343731d63230d534d9d5d73630d438                = array();
+        $_obscure_aa343731d63230d534d9d5d73630d438['refundstate'] = 0;
+        $_obscure_aa343731d63230d534d9d5d73630d438['status']      = 1;
+        $_obscure_aa343731d63230d534d9d5d73630d438['refundtime']  = $_obscure_a7d8383137d4d537d9d73933d6323433;
+        pdo_update('sz_yi_order', $_obscure_aa343731d63230d534d9d5d73630d438, array(
+            'id' => $_obscure_a835d835d5d438d5d436383430353835['id'],
+            'uniacid' => $_obscure_d73033d7333430d43532303035303436
+        ));
+        m('notice')->sendOrderMessage($_obscure_a835d835d5d438d5d436383430353835['id'], true);
+    } else if ($_obscure_d7d4d4d435383739d4d53935d8d73036 == 1) {
+        $_obscure_a438d5d73530d4353237d4d9333935d5 = $_obscure_a835d835d5d438d5d436383430353835['ordersn'];
+        if (!empty($_obscure_a835d835d5d438d5d436383430353835['ordersn2'])) {
+            $_obscure_a736393732d534d8d63937d738353133 = sprintf('%02d', $_obscure_a835d835d5d438d5d436383430353835['ordersn2']);
+            $_obscure_a438d5d73530d4353237d4d9333935d5 .= 'GJ' . $_obscure_a736393732d534d8d63937d738353133;
+        }
+        $_obscure_a9d530d734d8393433353739d9d63130 = $_obscure_a3d7d7d8333739d735d5373837d7d534['applyprice'];
+        $_obscure_a73835313932363736303035d8363837 = pdo_fetchall('SELECT g.id,g.credit, o.total,o.realprice FROM ' . tablename('sz_yi_order_goods') . ' o left join ' . tablename('sz_yi_goods') . ' g on o.goodsid=g.id ' . ' WHERE o.orderid=:orderid and o.uniacid=:uniacid', array(
+            ':orderid' => $_obscure_a835d835d5d438d5d436383430353835['id'],
+            ':uniacid' => $_obscure_d73033d7333430d43532303035303436
+        ));
+        $_obscure_d6d7d7393939d63330d7d53334d93234 = 0;
+        foreach ($_obscure_a73835313932363736303035d8363837 as $_obscure_d6373633d5393437383538d6d533d8d8) {
+            $_obscure_d6d7d7393939d63330d7d53334d93234 += $_obscure_d6373633d5393437383538d6d533d8d8['credit'] * $_obscure_d6373633d5393437383538d6d533d8d8['total'];
+        }
+        $_obscure_a4d8d8d8d839d8d83936d634d834d732 = 0;
+        if ($_obscure_a835d835d5d438d5d436383430353835['paytype'] == 1) {
+            m('member')->setCredit($_obscure_a835d835d5d438d5d436383430353835['openid'], 'credit2', $_obscure_a9d530d734d8393433353739d9d63130, array(
                 0,
-                $zym_var_30["name"] . "退款扣除积分: {$zym_var_22} 订单号: " . $zym_var_32["ordersn"]
+                $_obscure_abd8d9d63332d6313335d4313230d433['name'] . "退款: {$_obscure_a9d530d734d8393433353739d9d63130}元 订单号: " . $_obscure_a835d835d5d438d5d436383430353835['ordersn']
+            ));
+            $_obscure_d6d8d8d737d838d736d935353936d536 = true;
+        } else if ($_obscure_a835d835d5d438d5d436383430353835['paytype'] == 21) {
+            $_obscure_a9d530d734d8393433353739d9d63130 = round($_obscure_a9d530d734d8393433353739d9d63130 - $_obscure_a835d835d5d438d5d436383430353835['deductcredit2'], 2);
+            $_obscure_d6d8d8d737d838d736d935353936d536 = m('finance')->refund($_obscure_a835d835d5d438d5d436383430353835['openid'], $_obscure_a438d5d73530d4353237d4d9333935d5, $_obscure_a3d7d7d8333739d735d5373837d7d534['refundno'], $_obscure_a835d835d5d438d5d436383430353835['price'] * 100, $_obscure_a9d530d734d8393433353739d9d63130 * 100);
+            $_obscure_a4d8d8d8d839d8d83936d634d834d732 = 2;
+        } else {
+            if ($_obscure_a9d530d734d8393433353739d9d63130 < 1) {
+                message('退款金额必须大于1元，才能使用微信企业付款退款!', '', 'error');
+            }
+            $_obscure_a9d530d734d8393433353739d9d63130 = round($_obscure_a9d530d734d8393433353739d9d63130 - $_obscure_a835d835d5d438d5d436383430353835['deductcredit2'], 2);
+            $_obscure_d6d8d8d737d838d736d935353936d536 = m('finance')->pay($_obscure_a835d835d5d438d5d436383430353835['openid'], 1, $_obscure_a9d530d734d8393433353739d9d63130 * 100, $_obscure_a3d7d7d8333739d735d5373837d7d534['refundno'], $_obscure_abd8d9d63332d6313335d4313230d433['name'] . "退款: {$_obscure_a9d530d734d8393433353739d9d63130}元 订单号: " . $_obscure_a835d835d5d438d5d436383430353835['ordersn']);
+            $_obscure_a4d8d8d8d839d8d83936d634d834d732 = 1;
+        }
+        if (is_error($_obscure_d6d8d8d737d838d736d935353936d536)) {
+            message($_obscure_d6d8d8d737d838d736d935353936d536['message'], '', 'error');
+        }
+        if ($_obscure_d6d7d7393939d63330d7d53334d93234 > 0) {
+            m('member')->setCredit($_obscure_a835d835d5d438d5d436383430353835['openid'], 'credit1', -$_obscure_d6d7d7393939d63330d7d53334d93234, array(
+                0,
+                $_obscure_abd8d9d63332d6313335d4313230d433['name'] . "退款扣除积分: {$_obscure_d6d7d7393939d63330d7d53334d93234} 订单号: " . $_obscure_a835d835d5d438d5d436383430353835['ordersn']
             ));
         }
-        if ($zym_var_32["deductcredit"] > 0) {
-            m("member")->setCredit($zym_var_32["openid"], "credit1", $zym_var_32["deductcredit"], array(
+        if ($_obscure_a835d835d5d438d5d436383430353835['deductcredit'] > 0) {
+            m('member')->setCredit($_obscure_a835d835d5d438d5d436383430353835['openid'], 'credit1', $_obscure_a835d835d5d438d5d436383430353835['deductcredit'], array(
                 '0',
-                $zym_var_30["name"] . "购物返还抵扣积分 积分: {$zym_var_32["deductcredit"]} 抵扣金额: {$zym_var_32["deductprice"]} 订单号: {$zym_var_32["ordersn"]}"
+                $_obscure_abd8d9d63332d6313335d4313230d433['name'] . "购物返还抵扣积分 积分: {$_obscure_a835d835d5d438d5d436383430353835['deductcredit']} 抵扣金额: {$_obscure_a835d835d5d438d5d436383430353835['deductprice']} 订单号: {$_obscure_a835d835d5d438d5d436383430353835['ordersn']}"
             ));
         }
-        if (!empty($zym_var_26)) {
-            if ($zym_var_32["deductcredit2"] > 0) {
-                m("member")->setCredit($zym_var_32["openid"], "credit2", $zym_var_32["deductcredit2"], array(
+        if (!empty($_obscure_a4d8d8d8d839d8d83936d634d834d732)) {
+            if ($_obscure_a835d835d5d438d5d436383430353835['deductcredit2'] > 0) {
+                m('member')->setCredit($_obscure_a835d835d5d438d5d436383430353835['openid'], 'credit2', $_obscure_a835d835d5d438d5d436383430353835['deductcredit2'], array(
                     '0',
-                    $zym_var_30["name"] . "购物返还抵扣余额 积分: {$zym_var_32["deductcredit2"]} 订单号: {$zym_var_32["ordersn"]}"
+                    $_obscure_abd8d9d63332d6313335d4313230d433['name'] . "购物返还抵扣余额 积分: {$_obscure_a835d835d5d438d5d436383430353835['deductcredit2']} 订单号: {$_obscure_a835d835d5d438d5d436383430353835['ordersn']}"
                 ));
             }
         }
-        pdo_update("sz_yi_order_refund", array(
-            "reply" => '',
-            "status" => 1,
-            "refundtype" => $zym_var_26
-        ) , array(
-            "id" => $zym_var_32["refundid"]
+        $_obscure_d931d4d43031d4393534d9383839d933['reply']      = '';
+        $_obscure_d931d4d43031d4393534d9383839d933['status']     = 1;
+        $_obscure_d931d4d43031d4393534d9383839d933['refundtype'] = $_obscure_a4d8d8d8d839d8d83936d634d834d732;
+        $_obscure_d931d4d43031d4393534d9383839d933['price']      = $_obscure_a9d530d734d8393433353739d9d63130;
+        $_obscure_d931d4d43031d4393534d9383839d933['refundtime'] = $_obscure_a7d8383137d4d537d9d73933d6323433;
+        pdo_update('sz_yi_order_refund', $_obscure_d931d4d43031d4393534d9383839d933, array(
+            'id' => $_obscure_a835d835d5d438d5d436383430353835['refundid']
         ));
-        m("notice")->sendOrderMessage($zym_var_32["id"], true);
-        pdo_update("sz_yi_order", array(
-            "refundid" => 0,
-            "status" => - 1,
-            "refundtime" => time()
-        ) , array(
-            "id" => $zym_var_32["id"],
-            "uniacid" => $_W["uniacid"]
+        m('notice')->sendOrderMessage($_obscure_a835d835d5d438d5d436383430353835['id'], true);
+        pdo_update('sz_yi_order', array(
+            'refundstate' => 0,
+            'status' => -1,
+            'refundtime' => $_obscure_a7d8383137d4d537d9d73933d6323433
+        ), array(
+            'id' => $_obscure_a835d835d5d438d5d436383430353835['id'],
+            'uniacid' => $_obscure_d73033d7333430d43532303035303436
         ));
-        foreach ($zym_var_18 as $zym_var_23) {
-            $zym_var_24 = pdo_fetchcolumn("select ifnull(sum(total),0) from " . tablename("sz_yi_order_goods") . " og " . " left join " . tablename("sz_yi_order") . " o on o.id = og.orderid " . " where og.goodsid=:goodsid and o.status>=1 and o.uniacid=:uniacid limit 1", array(
-                ":goodsid" => $zym_var_23["id"],
-                ":uniacid" => $_W["uniacid"]
+        foreach ($_obscure_a73835313932363736303035d8363837 as $_obscure_d6373633d5393437383538d6d533d8d8) {
+            $_obscure_a632d9d8343035d631d7d8d4323637d9 = pdo_fetchcolumn('select ifnull(sum(total),0) from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where og.goodsid=:goodsid and o.status>=1 and o.uniacid=:uniacid limit 1', array(
+                ':goodsid' => $_obscure_d6373633d5393437383538d6d533d8d8['id'],
+                ':uniacid' => $_obscure_d73033d7333430d43532303035303436
             ));
-            pdo_update("sz_yi_goods", array(
-                "salesreal" => $zym_var_24
-            ) , array(
-                "id" => $zym_var_23["id"]
+            pdo_update('sz_yi_goods', array(
+                'salesreal' => $_obscure_a632d9d8343035d631d7d8d4323637d9
+            ), array(
+                'id' => $_obscure_d6373633d5393437383538d6d533d8d8['id']
             ));
         }
-        plog("order.op.refund", "订单退款 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]}");
-    } else if ($zym_var_27 == - 1) {
-        pdo_update("sz_yi_order_refund", array(
-            "reply" => $zym_var_21,
-            "status" => - 1
-        ) , array(
-            "id" => $zym_var_32["refundid"]
+        plog('order.op.refund', "订单退款 ID: {$_obscure_a835d835d5d438d5d436383430353835['id']} 订单号: {$_obscure_a835d835d5d438d5d436383430353835['ordersn']}");
+    } else if ($_obscure_d7d4d4d435383739d4d53935d8d73036 == -1) {
+        pdo_update('sz_yi_order_refund', array(
+            'reply' => $_obscure_ab32d73338393838d7393736d7d939d4,
+            'status' => -1
+        ), array(
+            'id' => $_obscure_a835d835d5d438d5d436383430353835['refundid']
         ));
-        m("notice")->sendOrderMessage($zym_var_32["id"], true);
-        plog("order.op.refund", "订单退款拒绝 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]} 原因: {$zym_var_21}");
-        pdo_update("sz_yi_order", array(
-            "refundid" => 0
-        ) , array(
-            "id" => $zym_var_32["id"],
-            "uniacid" => $_W["uniacid"]
+        m('notice')->sendOrderMessage($_obscure_a835d835d5d438d5d436383430353835['id'], true);
+        plog('order.op.refund', "订单退款拒绝 ID: {$_obscure_a835d835d5d438d5d436383430353835['id']} 订单号: {$_obscure_a835d835d5d438d5d436383430353835['ordersn']} 原因: {$_obscure_ab32d73338393838d7393736d7d939d4}");
+        pdo_update('sz_yi_order', array(
+            'refundstate' => 0
+        ), array(
+            'id' => $_obscure_a835d835d5d438d5d436383430353835['id'],
+            'uniacid' => $_obscure_d73033d7333430d43532303035303436
         ));
-    } else if ($zym_var_27 == 2) {
-        $zym_var_26 = 2;
-        pdo_update("sz_yi_order_refund", array(
-            "reply" => '',
-            "status" => 1,
-            "refundtype" => $zym_var_26
-        ) , array(
-            "id" => $zym_var_32["refundid"]
+    } else if ($_obscure_d7d4d4d435383739d4d53935d8d73036 == 2) {
+        $_obscure_a4d8d8d8d839d8d83936d634d834d732               = 2;
+        $_obscure_d931d4d43031d4393534d9383839d933['reply']      = '';
+        $_obscure_d931d4d43031d4393534d9383839d933['status']     = 1;
+        $_obscure_d931d4d43031d4393534d9383839d933['refundtype'] = $_obscure_a4d8d8d8d839d8d83936d634d834d732;
+        $_obscure_d931d4d43031d4393534d9383839d933['price']      = $_obscure_a3d7d7d8333739d735d5373837d7d534['applyprice'];
+        $_obscure_d931d4d43031d4393534d9383839d933['refundtime'] = $_obscure_a7d8383137d4d537d9d73933d6323433;
+        pdo_update('sz_yi_order_refund', $_obscure_d931d4d43031d4393534d9383839d933, array(
+            'id' => $_obscure_a835d835d5d438d5d436383430353835['refundid']
         ));
-        m("notice")->sendOrderMessage($zym_var_32["id"], true);
-        pdo_update("sz_yi_order", array(
-            "refundid" => 0,
-            "status" => - 1,
-            "refundtime" => time()
-        ) , array(
-            "id" => $zym_var_32["id"],
-            "uniacid" => $_W["uniacid"]
+        m('notice')->sendOrderMessage($_obscure_a835d835d5d438d5d436383430353835['id'], true);
+        pdo_update('sz_yi_order', array(
+            'refundstate' => 0,
+            'status' => -1,
+            'refundtime' => $_obscure_a7d8383137d4d537d9d73933d6323433
+        ), array(
+            'id' => $_obscure_a835d835d5d438d5d436383430353835['id'],
+            'uniacid' => $_obscure_d73033d7333430d43532303035303436
         ));
-        foreach ($zym_var_18 as $zym_var_23) {
-            $zym_var_24 = pdo_fetchcolumn("select ifnull(sum(total),0) from " . tablename("sz_yi_order_goods") . " og " . " left join " . tablename("sz_yi_order") . " o on o.id = og.orderid " . " where og.goodsid=:goodsid and o.status>=1 and o.uniacid=:uniacid limit 1", array(
-                ":goodsid" => $zym_var_23["id"],
-                ":uniacid" => $_W["uniacid"]
+        $_obscure_a73835313932363736303035d8363837 = pdo_fetchall('SELECT g.id,g.credit, o.total,o.realprice FROM ' . tablename('sz_yi_order_goods') . ' o left join ' . tablename('sz_yi_goods') . ' g on o.goodsid=g.id ' . ' WHERE o.orderid=:orderid and o.uniacid=:uniacid', array(
+            ':orderid' => $_obscure_a835d835d5d438d5d436383430353835['id'],
+            ':uniacid' => $_obscure_d73033d7333430d43532303035303436
+        ));
+        foreach ($_obscure_a73835313932363736303035d8363837 as $_obscure_d6373633d5393437383538d6d533d8d8) {
+            $_obscure_a632d9d8343035d631d7d8d4323637d9 = pdo_fetchcolumn('select ifnull(sum(total),0) from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where og.goodsid=:goodsid and o.status>=1 and o.uniacid=:uniacid limit 1', array(
+                ':goodsid' => $_obscure_d6373633d5393437383538d6d533d8d8['id'],
+                ':uniacid' => $_obscure_d73033d7333430d43532303035303436
             ));
-            pdo_update("sz_yi_goods", array(
-                "salesreal" => $zym_var_24
-            ) , array(
-                "id" => $zym_var_23["id"]
+            pdo_update('sz_yi_goods', array(
+                'salesreal' => $_obscure_a632d9d8343035d631d7d8d4323637d9
+            ), array(
+                'id' => $_obscure_d6373633d5393437383538d6d533d8d8['id']
             ));
         }
     }
-    message("退款申请处理成功!", order_list_backurl() , "success");
-} ?>
+    message('退款申请处理成功!', order_list_backurl(), 'success');
+}
+?>
