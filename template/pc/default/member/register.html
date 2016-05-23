@@ -32,6 +32,13 @@
                                 <input class="form-control text" id="cpassword" onblur="check_conform_password(this.value);" name="cpassword" type="password">
                                 <p class="tips" id="conform_password_notice"></p>      
                             </div>
+                            {if $this->yzShopSet['isreferral'] == 1}
+                              <div>
+                                  <span class="title">推荐码：</span>
+                                  <input class="form-control text" id="referral" name="referral" type="text">    
+                              </div>
+                            {/if}
+
                             <!-- <div class="read-protocal">
                                 <input id="protocal" name="agreement" type="checkbox" value="1" checked="checked" />
                                 阅读并已同意<a href="http://help.ecmoban.com/article-6.html" target="_blank">《芸众商城用户协议》</a>
@@ -162,6 +169,7 @@
                         core.json('member/register', {
                                 'mobile': $('#mobile').val(),
                                 'password': $('#password').val(),
+                                'referral': $('#referral').val(),
                                 'code': $('#code').val(),
                            }, function(json) {
                             if(json.status==1){
