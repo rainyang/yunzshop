@@ -1085,7 +1085,7 @@ if ($operation == "display") {
         show_json(0, $ret);
     }
 } elseif ($operation == "saveaddress") {
-    $provance = $_GPC["provance"];
+    $province = $_GPC["province"];
     $realname = $_GPC["realname"];
     $mobile = $_GPC["mobile"];
     $city = $_GPC["city"];
@@ -1101,7 +1101,7 @@ if ($operation == "display") {
             $ret = "请填写收件人手机！";
             show_json(0, $ret);
         }
-        if ($provance == "请选择省份") {
+        if ($province == "请选择省份") {
             $ret = "请选择省份！";
             show_json(0, $ret);
         }
@@ -1113,10 +1113,11 @@ if ($operation == "display") {
             ":id" => $id,
             ":uniacid" => $_W["uniacid"]
         ));
+
         $address_array = iunserializer($item["address"]);
         $address_array["realname"] = $realname;
         $address_array["mobile"] = $mobile;
-        $address_array["provance"] = $provance;
+        $address_array["province"] = $province;
         $address_array["city"] = $city;
         $address_array["area"] = $area;
         $address_array["address"] = $address;

@@ -1019,7 +1019,7 @@
                 var id ={php echo $id};
                 var realname = $('#realname').val();
                 var mobile = $('#mobile').val();
-                var provance = $('#sel-provance').val();
+                var province = $('#sel-provance').val();
                 var city = $('#sel-city').val();
                 var area = $('#sel-area').val();
                 var address = $('#address_info').val();
@@ -1034,7 +1034,7 @@
                     return false;
                 }
 
-                if(provance=='请选择省份'){
+                if(province=='请选择省份'){
                     alert('请选择省份!');
                     return false;
                 }
@@ -1046,7 +1046,7 @@
                 $.ajax({
                     url: url,
                     dataType: "json",
-                    data: {id:id,realname:realname,mobile:mobile,provance:provance,city:city,area:area,address:address},
+                    data: {id:id,realname:realname,mobile:mobile,province:province,city:city,area:area,address:address},
                     success:function(json){
                         var result = json.result;
                         if(json.status==1){
