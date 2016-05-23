@@ -144,7 +144,7 @@
 				return false;
 		}
 		{if $shopset['catlevel'] == 3}
-		<!--if ($("#category_third").val() == '0') {
+		if ($("#category_third").val() == '0') {
 		$('#myTab a[href="#tab_basic"]').tab('show');
 				Tip.focus("#category_third", "请选择完整商品分类!");
 				return false;
@@ -154,7 +154,7 @@
 			$('#myTab a[href="#tab_basic"]').tab('show');
 			Tip.focus("#category_child", "请选择完整商品分类!");
 			return false;
-		}-->
+		}
 
 		{/if}
 
@@ -554,4 +554,3 @@ $(function () {
 </script>
 {/if}
 {template 'web/_footer'}
-

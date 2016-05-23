@@ -2,6 +2,7 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
+load()->func('tpl');
 
 function sz_tpl_form_field_date($name, $value = '', $withtime = false)
 {
@@ -544,7 +545,7 @@ if(!function_exists('tpl_form_field_category_3level')){
     }
 }
 
-if(!function_exists('tpl_form_field_category_2level')){
+if(function_exists('tpl_form_field_category_2level') == false){
     function tpl_form_field_category_2level($name, $parents, $children, $parentid, $childid, $thirdid){
         return tpl_form_field_category_level2($name, $parents, $children, $parentid, $childid, $thirdid);
     }
