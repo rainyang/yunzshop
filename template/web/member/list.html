@@ -112,15 +112,15 @@
                 <tr>
                     <th style='width:8%;text-align: center;'>会员ID</th>
 		  {if $opencommission}
-			<th style='width:12%;'>推荐人</th>	
+			<th style='width:8%;text-align: center;'>推荐人</th>	
 		  {/if}
 
-                    <th style='width:8%;'>粉丝</th>
+                    <th style='width:8%;text-align: center;'>粉丝</th>
                     <th style='width:12%;'>姓名<br/>手机号码</th>
                     <th style='width:8%;'>等级/分组</th>
                     <th style='width:10%;'>注册时间</th>
-                    <th style='width:14%;'>积分/余额</th>
-                    <th style='width:12%;'>成交</th>
+                    <th style='width:15%;'>积分/余额</th>
+                    <th style='width:15%;'>成交</th>
                     <th style='width:8%'>关注</th>
                     <th style='width:8%'>操作</th>
                 </tr>
@@ -130,7 +130,7 @@
                 <tr>
                     <td style="text-align: center;">   {$row['id']}</td>
 		  {if $opencommission}
-		    <td  {if !empty($row['agentid'])}title='ID: {$row['agentid']}'{/if}>
+		    <td style="text-align: center;"  {if !empty($row['agentid'])}title='ID: {$row['agentid']}'{/if}>
 				{if empty($row['agentid'])}
 				  {if $row['isagent']==1}
 				      <label class='label label-primary'>总店</label>
@@ -140,7 +140,7 @@
 				{else}
 				
                     	{if !empty($row['agentavatar'])}
-                         <img src='{$row['agentavatar']}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' />
+                         <img src='{$row['agentavatar']}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                        {/if}
                        {if empty($row['agentnickname'])}未更新{else}{$row['agentnickname']}{/if}
 					   {/if}
@@ -148,9 +148,9 @@
                     </td>
 		  {/if}
 		  
-                    <td>
+                    <td style="text-align: center;">
                     	{if !empty($row['avatar'])}
-                         <img src='{$row['avatar']}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' />
+                         <img src='{$row['avatar']}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                        {/if}
                        {if empty($row['nickname'])}未更新{else}{$row['nickname']}{/if}
                         
