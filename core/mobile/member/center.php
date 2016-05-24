@@ -72,7 +72,7 @@ if ($plugin_article) {
 
 if (p('ranking')) {
 	$ranking_set = p('ranking')->getSet();
-	echo "<pre>"; print_r($ranking_set);exit;
+
 	$shopset['article_text'] = $article_set['article_text']?$article_set['article_text']:'文章管理';
 
 	$shopset['isarticle'] = $article_set['isarticle'];

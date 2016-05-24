@@ -10,7 +10,7 @@ if (!class_exists('RankingModel')) {
 		{
 			$_var_0 = parent::getSet();
 
-			return $_var_0['ranking'];
+			return $_var_0;
 		}
 
 	}
