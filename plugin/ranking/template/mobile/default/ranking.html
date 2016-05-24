@@ -36,101 +36,143 @@
 <div id='container'></div>
 
 <script id='tpl_log' type='text/html'>
+
+    <%if type==0%>
     <div class="report">
         <div class="report-img">
             <p>我的名次</p>
-            <h1>1011</h1>
+            <h1><%m_num%></h1>
             <div class="report-photo">
-                <img src="../addons/sz_yi/template/mobile/default/static/images/photo.jpg">
-                <h2>总积分：315555</h2>
+                <img src="<%m_avatar%>">
+                <h2>总积分：<%m_credit1%></h2>
             </div>
         </div>
+
         <div class="new-list">
             <ul>
-                <li>
-                    <span class="one-icon"><img src="../addons/sz_yi/static/images/01.png"></span>
-                    <div><img src="../addons/sz_yi/template/mobile/default/static/images/photo.jpg"><em>杨小猫</em></div>
-                    <p>积分：<i class="red">851</i></p>
-                </li>
-                <li>
-                    <span class="one-icon"><img src="../addons/sz_yi/static/images/02.png"></span>
-                    <div><img src="../addons/sz_yi/template/mobile/default/static/images/photo.jpg"><em>杨小咪</em></div>
-                    <p>积分：<i class="red">851</i></p>
-                </li>
-                <li>
-                    <span class="one-icon"><img src="../addons/sz_yi/static/images/03.png"></span>
-                    <div><img src="../addons/sz_yi/template/mobile/default/static/images/photo.jpg"><em>杨小柳</em></div>
-                    <p>积分：<i class="red">851</i></p>
-                </li>
-                <li>
-                    <span class="one-icon">4</span>
-                    <div><img src="../addons/sz_yi/template/mobile/default/static/images/photo.jpg"><em>杨小柳</em></div>
-                    <p>积分：<i class="red">851</i></p>
-                </li>
-                <li>
-                    <span class="one-icon">5</span>
-                    <div><img src="../addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg"><em>杨小柳</em></div>
-                    <p>积分：<i class="red">851</i></p>
-                </li>
-                <li>
-                    <span class="one-icon">6</span>
-                    <div><img src="../addons/sz_yi/template/mobile/default/static/images/photo.jpg"><em>杨小柳</em></div>
-                    <p>积分：<i class="red">851</i></p>
-                </li>
+                <%each list as log%>
+
+                    <%if log.number == 1%>
+                        <li>
+                            <span class="one-icon"><img src="../addons/sz_yi/static/images/01.png"></span>
+                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                            <p>积分：<i class="red"><%log.credit1%></i></p>
+                        </li>
+                    <%else if log.number == 2%>
+                        <li>
+                            <span class="one-icon"><img src="../addons/sz_yi/static/images/02.png"></span>
+                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                            <p>积分：<i class="red"><%log.credit1%></i></p>
+                        </li>
+                    <%else if log.number == 3%>
+                        <li>
+                            <span class="one-icon"><img src="../addons/sz_yi/static/images/03.png"></span>
+                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                            <p>积分：<i class="red"><%log.credit1%></i></p>
+                        </li>
+                    <%else%>
+                        <li>
+                            <span class="one-icon"><%log.number%></span>
+                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                            <p>积分：<i class="red"><%log.credit1%></i></p>
+                        </li>
+                    <%/if%>
+                <%/each%>
             </ul>
             <h1>积分排名每小时自动更新</h1>
         </div>
-    </div>
-    <!--<%if type==0%>
-        <%each list as log%>
-            <div class="credit_list">
-                <div class="info">
-                    <span> 第<%log.number%>名</span><br/>
-                    <span>id:<%log.id%></span>
-                </div>
-                <div class="num">
-                    <span>积分：<%log.credit1%> </span><br/>
-                    <span>
-                    名称：<%log.realname%>
-                    </span></div>
-                   
-                </div>
-            </div>
-        <%/each%>
+    </div>        
     <%/if%>
     <%if type==1%>
-        <%each list as log%>
-            <div class="credit_list">
-                <div class="info">
-                    <span> 第<%log.number%>名</span><br/>
-                    <span>id:<%log.id%></span>
-                </div>
-                <div class="num">
-                    <span>消费金额：<%log.ordermoney%> </span><br/>
-                    <span>
-                    名称：<%log.realname%>
-                    </span></div>
-                   
-                </div>
+    <div class="report">
+        <div class="report-img">
+            <p>我的名次</p>
+            <h1><%m_num%></h1>
+            <div class="report-photo">
+                <img src="<%m_avatar%>">
+                <h2>总消费：<%m_credit1%></h2>
             </div>
-        <%/each%>
+        </div>
+
+        <div class="new-list">
+            <ul>
+                <%each list as log%>
+                    <%if log.number == 1%>
+                        <li>
+                            <span class="one-icon"><img src="../addons/sz_yi/static/images/01.png"></span>
+                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                            <p>积分：<i class="red"><%log.ordermoney%></i></p>
+                        </li>
+                    <%else if log.number == 2%>
+                        <li>
+                            <span class="one-icon"><img src="../addons/sz_yi/static/images/02.png"></span>
+                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                            <p>积分：<i class="red"><%log.ordermoney%></i></p>
+                        </li>
+                    <%else if log.number == 3%>
+                        <li>
+                            <span class="one-icon"><img src="../addons/sz_yi/static/images/03.png"></span>
+                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                            <p>积分：<i class="red"><%log.ordermoney%></i></p>
+                        </li>
+                    <%else%>
+                        <li>
+                            <span class="one-icon"><%log.number%></span>
+                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                            <p>积分：<i class="red"><%log.ordermoney%></i></p>
+                        </li>
+                    <%/if%>
+                <%/each%>
+            </ul>
+            <h1>消费排名每小时自动更新</h1>
+        </div>
+    </div> 
     <%/if%>
     <%if type==2%>
-        <%each list as log%>
-            <div class="credit_list">
-                <div class="info">
-                    <span><%log.title%> </span><br/>
-                    <span>排列时间<%log.createtime%></span>
-                </div>
-
-                <div class="num">
-                    <span>队列编号:<%log.id%> </span><br/>
-                    <span>队列状态:<%if log.status == 0%>等待返现<%else%>已返现<%/if%> </span><br/>
- 
-                </div>
+    <div class="report">
+        <div class="report-img">
+            <p>我的名次</p>
+            <h1><%m_num%></h1>
+            <div class="report-photo">
+                <img src="<%m_avatar%>">
+                <h2>总佣金：<%m_credit1%></h2>
             </div>
-        <%/each%>
-    <%/if%>-->
+        </div>
+
+        <div class="new-list">
+            <ul>
+                <%each list as log%>
+                    <%if log.number == 1%>
+                        <li>
+                            <span class="one-icon"><img src="../addons/sz_yi/static/images/01.png"></span>
+                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                            <p>积分：<i class="red"><%log.credit%></i></p>
+                        </li>
+                    <%else if log.number == 2%>
+                        <li>
+                            <span class="one-icon"><img src="../addons/sz_yi/static/images/02.png"></span>
+                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                            <p>积分：<i class="red"><%log.credit%></i></p>
+                        </li>
+                    <%else if log.number == 3%>
+                        <li>
+                            <span class="one-icon"><img src="../addons/sz_yi/static/images/03.png"></span>
+                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                            <p>积分：<i class="red"><%log.credit%></i></p>
+                        </li>
+                    <%else%>
+                        <li>
+                            <span class="one-icon"><%log.number%></span>
+                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                            <p>积分：<i class="red"><%log.credit%></i></p>
+                        </li>
+                    <%/if%>
+                <%/each%>
+            </ul>
+            <h1>佣金排名每24小时更新</h1>
+        </div>
+    </div> 
+    <%/if%>
 </script>
 <script id='tpl_empty' type='text/html'>
     <div class="credit_no"><i class="fa fa-file-text-o" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">暂时没有任何记录~</span></div>
