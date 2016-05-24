@@ -294,30 +294,29 @@
 							<th width="6%">排序</th>
 							<th width="6%">商品</th>
 							<th width="28%">&nbsp;</th>
-<!-- 							<th width="26%">属性</th> -->
 							<th width="10%">价格</th>
 							<th width="10%">库存</th>
 							<th width="9%">销量</th>
-							<th width="9%">状态</th>
-							<th width="18%">操作</th>
+							<th width="8%">状态</th>
+							<th width="19%">操作</th>
 						</tr>
 					</thead>
 					<tbody>
 						{loop $list $item}
 						<tr>
 
-							<td>{$item['id']}</td>
-							<td>
+							<td width="6%">{$item['id']}</td>
+							<td width="6%">
 								{ifp 'shop.goods.edit'}
 								<input type="text" class="form-control" name="displayorder[{$item['id']}]" value="{$item['displayorder']}">
 								{else}
 								{$item['displayorder']} 
 								{/if}
 							</td>
-							<td title="{$item['title']}">
+							<td width="6%" title="{$item['title']}">
 								<img src="{php echo tomedia($item['thumb'])}" style="width:40px;height:40px;padding:1px;border:1px solid #ccc;"  />
 							</td>
-							<td title="{$item['title']}" class='tdedit'>
+							<td title="{$item['title']}" class='tdedit' width="28%">
 								{if !empty($category[$item['pcate']])}
 								<span class="text-danger">[{$category[$item['pcate']]['name']}]</span>
 								{/if}
@@ -341,7 +340,7 @@
 								{$item['title']}
 								{/if}
 							</td>
-							<td class='tdedit'>
+							<td class='tdedit' width="10%">
 								{if $item['hasoption']==1}
 								{ifp 'shop.goods.edit'}
 								<span class='tip' title='多规格不支持快速修改'>{$item['marketprice']}</span>
@@ -364,7 +363,7 @@
 
 							</td>
 
-							<td class='tdedit'>
+							<td class='tdedit' width="10%">
 								{if $item['hasoption']==1}
 								{ifp 'shop.goods.edit'}
 								<span class='tip' title='多规格不支持快速修改'>{$item['total']}</span>
@@ -386,8 +385,8 @@
 								{/if}{/if}
 
 							</td>
-							<td>{$item['salesreal']}</td>
-							<td>
+							<td width="9%">{$item['salesreal']}</td>
+							<td width="8%">
 
                                 {if p('supplier')}
                                 {if $_W['isfounder'] == 1}
@@ -408,7 +407,7 @@
                             {/if}
 
 							</td>
-							<td style="position:relative;">
+							<td style="position:relative;" width="19%">
 								<a href="javascript:;" data-url="{php echo $this->createMobileUrl('shop/detail', array('id' => $item['id']))}"  title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>
 								<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'] ,'op' => 'copygoods'))}"  title="复制商品" class="btn btn-default btn-sm js-clip"><i class="fa fa-article"></i></a>
 								{ifp 'shop.goods.edit|shop.goods.view'}<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'], 'op' => 'post'))}"class="btn btn-sm btn-default" title="{ifp 'shop.goods.edit'}编辑{else}查看{/if}"><i class="fa fa-pencil"></i></a>{/if}
