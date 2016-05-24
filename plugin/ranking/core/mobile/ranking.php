@@ -60,6 +60,7 @@ if ($_W['isajax']) {
                 'type'=>$_GPC['type'],
                 'm_num'=>$m_num,
                 'm_credit1'=>$member['credit1'],
+                'm_credit_name'=>"总积分",
                 'm_avatar'=>!empty($member['avatar'])?$member['avatar']:$default_avatar
             ));
 
@@ -98,6 +99,7 @@ if ($_W['isajax']) {
                 'type'=>$_GPC['type'],
                 'm_num'=>$m_num,
                 'm_credit1'=>$m_list['ordermoney'],
+                'm_credit_name'=>"总消费",
                 'm_avatar'=>!empty($member['avatar'])?$member['avatar']:$default_avatar
             ));
 
@@ -126,6 +128,7 @@ if ($_W['isajax']) {
                 'type'=>$_GPC['type'],
                 'm_num'=>$m_num,
                 'm_credit1'=>$m_list['credit'],
+                'm_credit_name'=>"总佣金",
                 'm_avatar'=>!empty($member['avatar'])?$member['avatar']:$default_avatar
             ));
 

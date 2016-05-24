@@ -33,23 +33,26 @@
 {/if}   
 </div>
 
+
+
+    <div class="report">
+        <div class="report-img">
+            <p>我的名次</p>
+            <h1 id='m_num'></h1>
+            <div class="report-photo">
+                <img id="m_avatar" src="">
+                <h2 id="m_credit1"></h2>
+            </div>
+        </div>
+
+        <div class="new-list">
+            <ul>
 <div id='container'></div>
 
 <script id='tpl_log' type='text/html'>
 
     <%if type==0%>
-    <div class="report">
-        <div class="report-img">
-            <p>我的名次</p>
-            <h1><%m_num%></h1>
-            <div class="report-photo">
-                <img src="<%m_avatar%>">
-                <h2>总积分：<%m_credit1%></h2>
-            </div>
-        </div>
 
-        <div class="new-list">
-            <ul>
                 <%each list as log%>
 
                     <%if log.number == 1%>
@@ -78,24 +81,10 @@
                         </li>
                     <%/if%>
                 <%/each%>
-            </ul>
-            <h1>积分排名每小时自动更新</h1>
-        </div>
-    </div>        
+         
     <%/if%>
     <%if type==1%>
-    <div class="report">
-        <div class="report-img">
-            <p>我的名次</p>
-            <h1><%m_num%></h1>
-            <div class="report-photo">
-                <img src="<%m_avatar%>">
-                <h2>总消费：<%m_credit1%></h2>
-            </div>
-        </div>
 
-        <div class="new-list">
-            <ul>
                 <%each list as log%>
                     <%if log.number == 1%>
                         <li>
@@ -123,24 +112,10 @@
                         </li>
                     <%/if%>
                 <%/each%>
-            </ul>
-            <h1>消费排名每小时自动更新</h1>
-        </div>
-    </div> 
+ 
     <%/if%>
     <%if type==2%>
-    <div class="report">
-        <div class="report-img">
-            <p>我的名次</p>
-            <h1><%m_num%></h1>
-            <div class="report-photo">
-                <img src="<%m_avatar%>">
-                <h2>总佣金：<%m_credit1%></h2>
-            </div>
-        </div>
 
-        <div class="new-list">
-            <ul>
                 <%each list as log%>
                     <%if log.number == 1%>
                         <li>
@@ -168,12 +143,13 @@
                         </li>
                     <%/if%>
                 <%/each%>
-            </ul>
-            <h1>佣金排名每24小时更新</h1>
-        </div>
-    </div> 
+ 
     <%/if%>
 </script>
+            </ul>
+            
+        </div>
+    </div>
 <script id='tpl_empty' type='text/html'>
     <div class="credit_no"><i class="fa fa-file-text-o" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">暂时没有任何记录~</span></div>
 </script>
@@ -205,6 +181,10 @@ function bindScroller(){
                         stop = true;
                         $('#credit_loading').remove();
                         $("#container").append(tpl('tpl_log', json.result));
+                     
+                        $('#m_num').html(json.result.m_num);
+                        $('#m_avatar').attr('src',json.result.m_avatar);
+                        $('#m_credit1').html(json.result.m_credit_name+":"+json.result.m_credit1);
                         if (json.result.list.length < json.result.pagesize) {
                             $('#credit_loading').remove();
                             //$('#credit_loading').html('已经加载完全部记录');
@@ -232,6 +212,10 @@ function bindScroller(){
                     return;
                 }
                 $('#container').html(tpl('tpl_log', json.result));
+                $('#m_num').html(json.result.m_num);
+                $('#m_avatar').attr('src',json.result.m_avatar);
+                $('#m_credit1').html(json.result.m_credit_name+":"+json.result.m_credit1);
+
                 bindScroller();
             }, true);
         }
