@@ -327,6 +327,15 @@
 								{if !empty($category[$item['tcate']]) && intval($shopset['catlevel'])==3}
 								<span class="text-info">[{$category[$item['tcate']]['name']}]</span>
 								{/if}
+								{if !empty($category2[$item['pcate1']])}
+								<b>,</b> <span class="text-danger">[{$category2[$item['pcate1']]['name']}]</span>
+								{/if}
+								{if !empty($category2[$item['ccate1']])}
+								<span class="text-info">[{$category2[$item['ccate1']]['name']}]</span>
+								{/if}
+								{if !empty($category2[$item['tcate1']]) && intval($shopset['catlevel'])==3}
+								<span class="text-info">[{$category2[$item['tcate1']]['name']}]</span>
+								{/if}
 								<br/>
 								{ifp 'shop.goods.edit'}
 

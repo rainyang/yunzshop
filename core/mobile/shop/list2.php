@@ -3,7 +3,6 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
-
 $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 $operation  = !empty($_GPC['op']) ? $_GPC['op'] : 'index';
 $openid     = m('user')->getOpenid();
@@ -21,27 +20,27 @@ if ($commission) {
     }
 }
 $current_category = false;
-if (!empty($_GPC['tcate'])) {
-    $current_category = pdo_fetch('select id,parentid,name,level from ' . tablename('sz_yi_category') . ' where id=:id 
+if (!empty($_GPC['tcate1'])) {
+    $current_category = pdo_fetch('select id,parentid,name,level from ' . tablename('sz_yi_category2') . ' where id=:id 
         and uniacid=:uniacid order by displayorder DESC', array(
-        ':id' => intval($_GPC['tcate']),
+        ':id' => intval($_GPC['tcate1']),
         ':uniacid' => $_W['uniacid']
     ));
-} elseif (!empty($_GPC['ccate'])) {
-    $current_category = pdo_fetch('select id,parentid,name,level from ' . tablename('sz_yi_category') . ' where id=:id 
+} elseif (!empty($_GPC['ccate1'])) {
+    $current_category = pdo_fetch('select id,parentid,name,level from ' . tablename('sz_yi_category2') . ' where id=:id 
         and uniacid=:uniacid order by displayorder DESC', array(
-        ':id' => intval($_GPC['ccate']),
+        ':id' => intval($_GPC['ccate1']),
         ':uniacid' => $_W['uniacid']
     ));
-} elseif (!empty($_GPC['pcate'])) {
-    $current_category = pdo_fetch('select id,parentid,name,level from ' . tablename('sz_yi_category') . ' where id=:id 
+} elseif (!empty($_GPC['pcate1'])) {
+    $current_category = pdo_fetch('select id,parentid,name,level from ' . tablename('sz_yi_category2') . ' where id=:id 
         and uniacid=:uniacid order by displayorder DESC', array(
-        ':id' => intval($_GPC['pcate']),
+        ':id' => intval($_GPC['pcate1']),
         ':uniacid' => $_W['uniacid']
     ));
 }
 
-$parent_category = pdo_fetch('select id,parentid,name,level from ' . tablename('sz_yi_category') . ' where id=:id 
+$parent_category = pdo_fetch('select id,parentid,name,level from ' . tablename('sz_yi_category2') . ' where id=:id 
     and uniacid=:uniacid limit 1', array(
     ':id' => $current_category['parentid'],
     ':uniacid' => $_W['uniacid']
@@ -55,13 +54,12 @@ $args = array(
     'isdiscount' => $_GPC['isdiscount'],
     'istime' => $_GPC['istime'],
     'keywords' => $_GPC['keywords'],
-    'pcate' => $_GPC['pcate'],
-    'ccate' => $_GPC['ccate'],
-    'tcate' => $_GPC['tcate'],
+    'pcate1' => $_GPC['pcate1'],
+    'ccate1' => $_GPC['ccate1'],
+    'tcate1' => $_GPC['tcate1'],
     'order' => $_GPC['order'],
     'by' => $_GPC['by']
 );
-
 //$args = icheck_gpc($args);
 if (!empty($myshop['selectgoods']) && !empty($myshop['goodsids'])) {
     $args['ids'] = $myshop['goodsids'];
@@ -99,20 +97,20 @@ if (!empty($keywords)) {
     $condition .= ' AND `title` LIKE :title';
     $params[':title'] = '%' . trim($keywords) . '%';
 }
-$tcate = !empty($args['tcate']) ? intval($args['tcate']) : 0;
-if (!empty($tcate)) {
-    $condition .= " AND (`tcate` = :tcate or FIND_IN_SET({$tcate},cates)<>0)";
-    $params[':tcate'] = intval($tcate);
+$tcate1 = !empty($args['tcate1']) ? intval($args['tcate1']) : 0;
+if (!empty($tcate1)) {
+    $condition .= " AND (`tcate1` = :tcate1 or FIND_IN_SET({$tcate1},cates)<>0)";
+    $params[':tcate1'] = intval($tcate1);
 }
-$ccate = !empty($args['ccate']) ? intval($args['ccate']) : 0;
-if (!empty($ccate)) {
-    $condition .= " AND ( `ccate` = :ccate or  FIND_IN_SET({$ccate},cates)<>0 )";
-    $params[':ccate'] = intval($ccate);
+$ccate1 = !empty($args['ccate1']) ? intval($args['ccate1']) : 0;
+if (!empty($ccate1)) {
+    $condition .= " AND ( `ccate1` = :ccate1 or  FIND_IN_SET({$ccate1},cates)<>0 )";
+    $params[':ccate1'] = intval($ccate1);
 }
-$pcate = !empty($args['pcate']) ? intval($args['pcate']) : 0;
-if (!empty($pcate)) {
-    $condition .= ' AND `pcate` = :pcate';
-    $params[':pcate'] = intval($pcate);
+$pcate1 = !empty($args['pcate1']) ? intval($args['pcate1']) : 0;
+if (!empty($pcate1)) {
+    $condition .= ' AND `pcate1` = :pcate1';
+    $params[':pcate1'] = intval($pcate1);
 }
 
 $total = pdo_fetchcolumn("SELECT count(*) FROM " . tablename('sz_yi_goods') . " where 1 {$condition}", $params);
@@ -124,13 +122,13 @@ $pager = pagination($total, $pindex, $args['pagesize']);
 $goods    = m('goods')->getList($args);
 $category = false;
 if (intval($_GPC['page']) <= 1) {
-    if (!empty($_GPC['tcate'])) {
-        $parent_category1 = pdo_fetch('select id,parentid,name,level,thumb from ' . tablename('sz_yi_category') . ' 
+    if (!empty($_GPC['tcate1'])) {
+        $parent_category1 = pdo_fetch('select id,parentid,name,level,thumb from ' . tablename('sz_yi_category2') . ' 
             where id=:id and uniacid=:uniacid limit 1', array(
             ':id' => $parent_category['parentid'],
             ':uniacid' => $_W['uniacid']
         ));
-        $category         = pdo_fetchall('select id,name,level,thumb from ' . tablename('sz_yi_category') . ' 
+        $category         = pdo_fetchall('select id,name,level,thumb from ' . tablename('sz_yi_category2') . ' 
             where parentid=:parentid 
             and enabled=1 and uniacid=:uniacid order by level asc, isrecommand desc, displayorder DESC', array(
             ':parentid' => $parent_category['id'],
@@ -145,16 +143,16 @@ if (intval($_GPC['page']) <= 1) {
             $parent_category1,
             $parent_category
         ), $category);
-    } elseif (!empty($_GPC['ccate'])) {
+    } elseif (!empty($_GPC['ccate1'])) {
         if (intval($set['catlevel']) == 3) {
-            $category = pdo_fetchall('select id,name,level,thumb from ' . tablename('sz_yi_category') . ' where 
+            $category = pdo_fetchall('select id,name,level,thumb from ' . tablename('sz_yi_category2') . ' where 
                 (parentid=:parentid or id=:parentid) and enabled=1  and uniacid=:uniacid 
                 order by level asc, isrecommand desc, displayorder DESC', array(
-                ':parentid' => intval($_GPC['ccate']),
+                ':parentid' => intval($_GPC['ccate1']),
                 ':uniacid' => $_W['uniacid']
             ));
         } else {
-            $category = pdo_fetchall('select id,name,level,thumb from ' . tablename('sz_yi_category') . ' where 
+            $category = pdo_fetchall('select id,name,level,thumb from ' . tablename('sz_yi_category2') . ' where 
                 parentid=:parentid and enabled=1 and uniacid=:uniacid order by level asc, 
                 isrecommand desc, displayorder DESC', array(
                 ':parentid' => $parent_category['id'],
@@ -169,11 +167,11 @@ if (intval($_GPC['page']) <= 1) {
             ),
             $parent_category
         ), $category);
-    } elseif (!empty($_GPC['pcate'])) {
-        $category = pdo_fetchall('select id,name,level,thumb from ' . tablename('sz_yi_category') . ' 
+    } elseif (!empty($_GPC['pcate1'])) {
+        $category = pdo_fetchall('select id,name,level,thumb from ' . tablename('sz_yi_category2') . ' 
             where (parentid=:parentid or id=:parentid) and enabled=1 and uniacid=:uniacid order by level asc, 
             isrecommand desc, displayorder DESC', array(
-            ':parentid' => intval($_GPC['pcate']),
+            ':parentid' => intval($_GPC['pcate1']),
             ':uniacid' => $_W['uniacid']
         ));
         $category = array_merge(array(
@@ -184,7 +182,7 @@ if (intval($_GPC['page']) <= 1) {
             )
         ), $category);
     } else {
-        $category = pdo_fetchall('select id,name,level,thumb from ' . tablename('sz_yi_category') . ' 
+        $category = pdo_fetchall('select id,name,level,thumb from ' . tablename('sz_yi_category2') . ' 
             where parentid=0 and enabled=1 and uniacid=:uniacid order by displayorder DESC', array(
             ':uniacid' => $_W['uniacid']
         ));
@@ -205,4 +203,4 @@ if ($_W['isajax']) {
         'current_category' => $current_category
     ));
 }
-include $this->template('shop/list');
+include $this->template('shop/list2');

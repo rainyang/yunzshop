@@ -230,6 +230,8 @@ if (checksubmit()) {
         $set['shop']['catshow']   = intval($shop['catshow']);
         $set['shop']['catadvimg'] = save_media($shop['catadvimg']);
         $set['shop']['catadvurl'] = trim($shop['catadvurl']);
+        $set['shop']['category2'] = intval($shop['category2']);
+        $set['shop']['category2name'] = trim($shop['category2name']);
         plog('sysset.save.category', '修改系统设置-分类层级设置');
     } elseif ($op == 'contact') {
         $shop                       = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
