@@ -6,7 +6,7 @@ global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $member    = m("member")->getMember($openid);
-$shopset1   = m('common')->getSysset('shop');
+$shopset   = m('common')->getSysset('shop');
 $uniacid   = $_W['uniacid'];
 $fromcart  = 0;
 $trade     = m('common')->getSysset('trade');
