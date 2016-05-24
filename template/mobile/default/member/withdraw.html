@@ -1,5 +1,5 @@
 {template 'common/header'}
-<title>{php echo $shopset1['credit']}提现</title>
+<title>{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}提现</title>
 <style type="text/css">
 body {margin:0px; background:#efefef; -moz-appearance:none;}
 input {-webkit-appearance:none; outline:none;}
@@ -16,7 +16,7 @@ input {-webkit-appearance:none; outline:none;}
 
 <script id="tpl_main" type="text/html">
    <div class="balance_img"><i class="fa fa-cny"></i></div>
-   <div class="balance_text">您的当前{php echo $shopset1['credit']}</div>
+   <div class="balance_text">您的当前{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}</div>
    <div class="balance_num">￥<span id="credit"><%credit%></span></div>
    <div class="balance_num" style="height:30px;">
    <input type="text" id="money" value='' style="width:90%; height:38px; font-size:20px; margin:auto; border:1px solid #eee; padding:0px 2%; text-align:center;" placeholder="请输入提现的金额"/></div>
@@ -44,12 +44,12 @@ input {-webkit-appearance:none; outline:none;}
             var withdrawmoney = {php echo empty($set['trade']['withdrawmoney'])?0:floatval($set['trade']['withdrawmoney'])};
            
             if(result.credit<=0){
-                core.message('无{php echo $shopset1['credit']}，无法申请提现!',"{php echo $this->createMobileUrl('member')}",'warning');
+                core.message('无{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}，无法申请提现!',"{php echo $this->createMobileUrl('member')}",'warning');
                 return;
             }
      
               if(withdrawmoney>0 && result.credit<withdrawmoney){
-                core.message('{php echo $shopset1['credit']}不足 '+ withdrawmoney +' 元，无法申请提现!',"{php echo $this->createMobileUrl('member')}",'warning');
+                core.message('{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}不足 '+ withdrawmoney +' 元，无法申请提现!',"{php echo $this->createMobileUrl('member')}",'warning');
                 return;
             }
              

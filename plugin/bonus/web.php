@@ -36,6 +36,9 @@ class BonusWeb extends Plugin
 		} else if (cv('bonus.sendall')) {
 			header('location: ' . $this->createPluginWebUrl('bonus/sendall'));
 			exit;
+		} else if (cv('bonus.order')) {
+			header('location: ' . $this->createPluginWebUrl('bonus/sendall'));
+			exit;
 		}
 	}
 
@@ -79,6 +82,10 @@ class BonusWeb extends Plugin
 		$this->_exec_plugin(__FUNCTION__);
 	}
 	public function detail()
+	{
+		$this->_exec_plugin(__FUNCTION__);
+	}
+	public function order()
 	{
 		$this->_exec_plugin(__FUNCTION__);
 	}
