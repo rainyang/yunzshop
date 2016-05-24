@@ -114,8 +114,8 @@
                    <div class="sub2 order_delete">删除订单</div>
             <%/if%>
                <%if order.canrefund%>
-                    <%if order.refundid!=0%>
-                    <div class="sub1 order_refund">退款申请中</div>
+                    <%if order.refundstate>0%>
+                    <div class="sub1 order_refund"><%if order.refundstate==2%>换货<%else%>退款<%/if%>申请中</div>
                     <%else%>
                     <div class="sub1 order_refund">申请退款</div>
                   <%/if%>

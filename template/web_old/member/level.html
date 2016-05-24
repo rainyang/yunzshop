@@ -3,6 +3,7 @@
 
 {if $operation == 'post'}
 <div class="main">
+
     <form {ife 'member.level' $level}action="" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data">
         <input type="hidden" name="id" value="{$level['id']}" />
         <div class='panel panel-default'>

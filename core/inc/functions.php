@@ -280,6 +280,7 @@ function byte_format($input, $dec = 0)
 }
 function save_media($url)
 {
+    load()->func('file');
     $config = array(
         'qiniu' => false
     );
@@ -299,6 +300,10 @@ function save_media($url)
         return $url;
     }
     return $url;
+}
+function save_remote($url)
+{
+    
 }
 function is_array2($array)
 {

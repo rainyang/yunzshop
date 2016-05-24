@@ -152,6 +152,7 @@ if ($_W['isajax'] && $_W['ispost']) {
 		die(json_encode($articles));
 	} elseif ($apido == 'savesys') {
 		ca('article.page.otherset');
+		$isarticle = $_GPC['isarticle'];
 		$article_message = $_GPC['article_message'];
 		$article_title = $_GPC['article_title'];
 		$article_image = save_media($_GPC['article_image']);
@@ -179,7 +180,8 @@ if ($_W['isajax'] && $_W['ispost']) {
 		$area_arr = json_encode($area_arr);
 		// print_r($area_arr);exit;
 		
-		$arr = array('article_message' => $article_message, 'article_title' => $article_title, 'article_image' => $article_image, 'article_shownum' => $article_shownum, 'article_keyword' => $article_keyword,'article_text' => $article_text, 'article_temp' => $article_temp,'article_area' => $area_arr);
+		$arr = array('isarticle' => $isarticle,'article_message' => $article_message, 'article_title' => $article_title, 'article_image' => $article_image, 'article_shownum' => $article_shownum, 'article_keyword' => $article_keyword,'article_text' => $article_text, 'article_temp' => $article_temp,'article_area' => $area_arr);
+		
 		if (!empty($arr)) {
 			$rule = pdo_fetch("select * from " . tablename('rule') . ' where uniacid=:uniacid and module=:module and name=:name limit 1', array(':uniacid' => $_W['uniacid'], ':module' => 'cover', ':name' => "sz_yi文章营销入口设置"));
 			if (!empty($rule)) {

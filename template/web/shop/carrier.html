@@ -1,0 +1,131 @@
+{template 'web/_header'}
+{template 'web/shop/tabs'}
+
+{if $operation == 'display'}
+<div class="main panel panel-default">
+    <div class="panel-body table-responsive">
+        <table class="table table-hover">
+            <thead class="navbar-inner">
+                <tr>
+                    <th style="width:30px;">ID</th>
+                    <th style="width:80px;">显示顺序</th>
+                    <th>联系人</th>
+                    <th>手机号码</th>
+                    <th>地址</th>
+                    <th>状态</th>
+                    <th style="width:120px;">操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                {loop $list $item}
+                <tr>
+                    <td>{$item['id']}</td>
+                    <td>{$item['displayorder']}</td>
+                    <td>{$item['realname']}</td>
+                    <td>{$item['mobile']}</td>
+                    <td>{$item['address']}</td>
+                    <td>{if $item['deleted']==1}
+                        <span class='label label-default'>不使用</span>
+                        {else}
+                        <span class='label label-success'>使用</span>
+                        {/if}
+                    </td>
+                    <td style="text-align:left;">
+                        <a href="{php echo $this->createWebUrl('shop/carrier', array('op' => 'post', 'id' => $item['id']))}" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="bottom" title="修改"><i class="fa fa-pencil"></i></a>
+                        <a href="{php echo $this->createWebUrl('shop/carrier', array('op' => 'delete', 'id' => $item['id']))}" class="btn btn-default btn-sm" data-toggle="tooltip" data-placement="bottom" title="删除"><i class="fa fa-times"></i></a>
+                    </td>
+                </tr>
+                {/loop}
+                <tr>
+                    <td colspan='7'>
+                        <a class='btn btn-default' href="{php echo $this->createWebUrl('shop/carrier',array('op'=>'post'))}"><i class='fa fa-plus'></i> 添加自提地点</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        {$pager}
+    </div>
+</div>
+<script>
+    require(['bootstrap'], function($){
+    $('.btn').hover(function(){
+    $(this).tooltip('show');
+    }, function(){
+    $(this).tooltip('hide');
+    });
+    });</script>
+{elseif $operation == 'post'}
+
+<div class="main">
+    <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" onsubmit='return formcheck()'>
+        <input type="hidden" name="id" value="{$carrier['id']}" />
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                自提地点设置
+            </div>
+            <div class="panel-body">
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" name="displayorder" class="form-control" value="{$carrier['displayorder']}" />
+                    </div>
+                </div>
+               
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>联系人</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" id='realname' name="realname" class="form-control" value="{$carrier['realname']}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">联系电话</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" id='mobile' name="mobile" class="form-control" value="{$carrier['mobile']}" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">详细地址</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" id='address' name="address" class="form-control" value="{$carrier['address']}" />
+                    </div>
+                </div>
+                 <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否使用</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <label class='radio-inline'>
+                            <input type='radio' name='deleted' value='0' {if $carrier['deleted']==0}checked{/if} /> 是
+                        </label>
+                        <label class='radio-inline'>
+                            <input type='radio' name='deleted' value='1' {if $carrier['deleted']==1}checked{/if} /> 否
+                        </label>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="form-group col-sm-12">
+            <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" onclick='return formcheck()' />
+            <input type="hidden" name="token" value="{$_W['token']}" />
+        </div>
+    </form>
+</div>
+<script language='javascript'>
+            function formcheck(){
+            if ($("#realname").isEmpty()){
+                    Tip.focus("realname", "请填写联系人!");
+                    return false;
+            }
+            if ($("#mobile").isEmpty()){
+                    Tip.focus("mobile", "请填写联系电话!");
+                    return false;
+            }
+            if ($("#address").isEmpty()){
+                    Tip.focus("address", "请填写详细地址!");
+                    return false;
+            }
+            return true;
+            }
+</script>
+{/if}
+{template 'common/footer'}

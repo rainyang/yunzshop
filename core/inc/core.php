@@ -22,6 +22,13 @@ class Core extends WeModuleSite
     public function __construct()
     {
         global $_W, $_GPC;
+	    m('common')->checkClose();
+        if (empty($_W['uniacid'])) {
+            if (!empty($_W['uid'])) {
+                $_W['uniacid'] = pdo_fetchcolumn("select uniacid from " . tablename('sz_yi_perm_user') . " where uid={$_W['uid']}");
+                $_W['issupplier'] = 1;
+            }
+        }
         if (is_weixin()) {
             m('member')->checkMember();
         } else {
@@ -59,7 +66,8 @@ class Core extends WeModuleSite
         $current = time();
         if ($lasttime + $interval <= $current) {
             m('cache')->set('receive', date('Y-m-d H:i:s', $current), 'global');
-            ihttp_request($_W['siteroot'] . 'addons/sz_yi/core/mobile/order/receive.php', null, null, 1);
+            $reveive_url = $this->createMobileUrl('order/receive');
+            ihttp_request($reveive_url, null, null, 1);
         }
         $lasttime = strtotime(m('cache')->getString('closeorder', 'global'));
         $interval = intval(m('cache')->getString('closeorder_time', 'global'));
@@ -70,24 +78,26 @@ class Core extends WeModuleSite
         $current = time();
         if ($lasttime + $interval <= $current) {
             m('cache')->set('closeorder', date('Y-m-d H:i:s', $current), 'global');
-            ihttp_request($_W['siteroot'] . 'addons/sz_yi/core/mobile/order/close.php', null, null, 1);
+            $close_url = $this->createMobileUrl('order/close');
+            ihttp_request($close_url, null, null, 1);
         }
 
-        if (p('coupon')) {
-            $_var_0 = strtotime(m('cache')->getString('couponbacktime', 'global'));
-            $_var_3 = p('coupon')->getSet();
-            $_var_1 = intval($_var_3['backruntime']);
-            if (empty($_var_1)) {
-                $_var_1 = 60;
-            }
-            $_var_1 *= 60;
-            $_var_2 = time();
-            if ($_var_0 + $_var_1 <= $_var_2) {
-                m('cache')->set('couponbacktime', date('Y-m-d H:i:s', $_var_2), 'global');
-                ihttp_request($_W['siteroot'] . 'addons/sz_yi/plugin/coupon/core/mobile/back.php', null, null, 1);
-            }
-        }
-        exit('run finished.');
+		if (p('coupon')) {
+			$_var_0 = strtotime(m('cache')->getString('couponbacktime', 'global'));
+			$_var_3 = p('coupon')->getSet();
+			$_var_1 = intval($_var_3['backruntime']);
+			if (empty($_var_1)) {
+				$_var_1 = 60;
+			}
+			$_var_1 *= 60;
+			$_var_2 = time();
+			if ($_var_0 + $_var_1 <= $_var_2) {
+				m('cache')->set('couponbacktime', date('Y-m-d H:i:s', $_var_2), 'global');
+                $back_url = $this->createPluginMobileUrl('coupon/back');
+				ihttp_request($back_url, null, null, 1);
+			}
+		}
+		exit('run finished.');
     }
 
     public function setHeader()

@@ -60,15 +60,15 @@
     </div>
 
     <div class="cart" style='margin-top:-20px;'>
-     <a href="javascript:;"><div class="list1" style=" border-bottom:0px;border-top:0px;">余额: <span style='color:#f90'><%member.credit2%></span>
+     <a href="javascript:;"><div class="list1" style=" border-bottom:0px;border-top:0px;">{php echo $shopset1['credit']}: <span style='color:#f90'><%member.credit2%></span>
              {if empty($set['trade']['closerecharge'])}
              <div class="take" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</div>
              {/if}
 
          </div></a>
-    <a href="javascript:;"><div class="list1" style="margin:0px; border-bottom:0px;">积分: <%member.credit1%>
+    <a href="javascript:;"><div class="list1" style="margin:0px; border-bottom:0px;">{php echo $shopset1['credit1']}: <%member.credit1%>
             <%if open_creditshop%>
-            <div class="take1" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">积分兑换</div>
+            <div class="take1" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">{php echo $shopset1['credit1']}兑换</div>
             <%/if%>
         </div></a>
 </div>
@@ -114,10 +114,16 @@
     {/if}
     {if p('return')}
     <a href="{php echo $this->createPluginMobileUrl('return/return_log')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-piechart" style="color:#ff9901;"></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
-    {/if}
-     {if p('article')}
+    {/if} 
+  
+     <%if shopset.isarticle == 1%>
     <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-article" style="color:#ca81d1;"></i><%shopset.article_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
-    {/if}   
+    <%/if%>
+    
+     <%if shopset.isarticle == 1%>
+    <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-article" style="color:#ca81d1;"></i><%shopset.article_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
+    <%/if%>
+ 
 </div>
 {if $hascoupon}
 <div class="cart">
@@ -136,10 +142,10 @@
 
 </div>
     {if isset($set['trade']) && $set['trade']['withdraw']==1}
-    <a href="javascript:;" id="btnwithdraw"><div class="list1" style="border-bottom: 0px;"><i class="fa fa-money" style="color:#0096ff;"></i>余额提现<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    <a href="javascript:;" id="btnwithdraw"><div class="list1" style="border-bottom: 0px;"><i class="fa fa-money" style="color:#0096ff;"></i>{php echo $shopset1['credit']}提现<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
     {if isset($set['trade']) && ($set['trade']['withdraw']==1 || empty($set['trade']['closerecharge']))}
-    <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="{if isset($set['trade']) && $set['trade']['withdraw']==1}margin:0px;{/if}"><i class="fa fa-file-text" style="color:#009;"></i>{if isset($set['trade']) && $set['trade']['withdraw']==1}余额明细{else}充值记录{/if}
+    <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="{if isset($set['trade']) && $set['trade']['withdraw']==1}margin:0px;{/if}"><i class="fa fa-file-text" style="color:#009;"></i>{if isset($set['trade']) && $set['trade']['withdraw']==1}{php echo $shopset1['credit']}明细{else}充值记录{/if}
             <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
    {/if}
 
@@ -161,7 +167,7 @@
            $('#btnwithdraw').click(function(){
 
                if(json.result.member.credit2<=0){
-                   core.tip.show('无余额可提!');
+                   core.tip.show('无{php echo $shopset1['credit']}可提!');
                    return;
                }
                if(withdrawmoney>0 && json.result.member.credit2<withdrawmoney){

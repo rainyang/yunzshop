@@ -7,6 +7,7 @@ $operation      = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid         = m('user')->getOpenid();
 $uniacid        = $_W['uniacid'];
 $orderid        = intval($_GPC['id']);
+$shopset1   = m('common')->getSysset('shop');
 $diyform_plugin = p('diyform');
 $order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
     ':id' => $orderid,
@@ -140,6 +141,16 @@ if ($_W['isajax']) {
         }
     }
     $order['canrefund'] = $canrefund;
+    if ($canrefund == true) {
+        if ($order['status'] == 1) {
+            $order['refund_button'] = '申请退款';
+        } else {
+            $order['refund_button'] = '申请售后';
+        }
+        if (!empty($order['refundstate'])) {
+            $order['refund_button'] .= '中';
+        }
+    }	
     show_json(1, array(
         'order' => $order,
         'goods' => $goods,
@@ -150,10 +161,7 @@ if ($_W['isajax']) {
         'set' => $set
     ));
 }
-if(!isMobile()){
-    include $this->template('member/center');
-}
-    include $this->template('order/detail');   
+include $this->template('order/detail');   
 
 
 

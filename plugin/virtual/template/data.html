@@ -194,14 +194,14 @@ $(function(){
                     <input type="hidden" name="op" value="display" />
                     <input type="hidden" name="typeid" value="{$type['id']}" />
                     <div class="form-group">
-                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">关键字</label>
+                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">关键字</label>
                         <div class="col-sm-8 col-lg-9">
                             <input class="form-control" name="keyword" id="" type="text" value="{$_GPC['keyword']}" placeholder="请输入主键(key)进行搜索">
                         </div>
                        
                     </div>
                     <div class="form-group">
-                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">使用状态</label>
+                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">使用状态</label>
                         <div class="col-sm-8 col-lg-9">
                             <select class='form-control' name='status'>
                                 <option value=''></option>
@@ -211,7 +211,7 @@ $(function(){
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label"></label>
+                        <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
                         <div class="col-sm-8 col-lg-9">
                          <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
                         </div>
@@ -226,19 +226,18 @@ $(function(){
                 <table class="table">
                     <thead>
                         <tr>
-                            <th style='width:50px;'>编号</th>
+                            <th style='width:5%;'>编号</th>
                            <th>
                             
                             {loop $type['fields'] $key $name}
-                                    {$name} ({$key})/
+                                    {$name} ({$key})
                             {/loop}</th>
-                            <th style='text-align: center;width:80px;'>状态</th>
-                            <th style='width:150px;'>购买粉丝</th>
-                            <th style='width:180px;'>姓名/手机</th>
-                            <th style='width:150px;'>购买时间</th>
-                            <th style='width:220px;'>订单号</th>
-                            <th style='width:80px;'>购买价格</th>
-                            <th>辑编 / 删除</th>
+                            <th style='text-align: center;width:8%;'>状态</th>
+                            <th style='width:15%;'>购买粉丝</th>
+                            <th style='width:10%;'>姓名/手机</th>
+                            <th style='width:15%;'>购买时间<br/>订单号</th>
+                            <th style='width:8%;'>购买价格</th>
+                            <th style='width:10%;'>辑编 / 删除</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -263,14 +262,12 @@ $(function(){
                                     {/if}
                                 </td>
                                   <td>
-                                    {if empty($item['openid'])}<span style="width: 100%">-</span>{else}
-                                    {$item['realname']}/{$item['mobile']}
-                                    {/if}
+                                    {if empty($item['openid'])}<br/><span style="width: 100%">-</span>{else}
+                                    {$item['realname']}{/if}<br/>{$item['mobile']}
                                 </td>
                                 <td>
                                     {if empty($item['openid'])}<span style="width: 100%">-</span>{else}{php echo date('Y-m-d H:i',$item['usetime'])}{/if}
-                                </td>
-                                <td>
+                                    <br/>
                                     {if empty($item['openid'])}<span style="width: 100%">-</span>{else}
                                     <a href="{php echo $this->createWebUrl('order',array('op'=>'detail','id'=>$item['orderid']))}" target='_blank'> [{$item['orderid']}]{$item['ordersn']}</a>
                                     {/if}

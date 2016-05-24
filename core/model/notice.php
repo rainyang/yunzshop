@@ -56,78 +56,85 @@ class Sz_DYi_Notice
         $shop = $set['shop'];
         $tm   = $set['notice'];
         if ($delRefund) {
+	    $_var_14 = array('0' => "退款", "1" => "退货退款", "2" => "换货");
             if (!empty($order['refundid'])) {
-                $refund = pdo_fetch('select * from ' . tablename('sz_yi_order_refund') . ' where id=:id limit 1', array(
-                    ':id' => $order['refundid']
-                ));
-                if (empty($refund)) {
-                    return;
-                }
-                if (empty($refund['status'])) {
-                    $msg = array(
-                        'first' => array(
-                            'value' => "您的退款申请已经提交！",
-                            "color" => "#4a5077"
-                        ),
-                        'orderProductPrice' => array(
-                            'title' => '退款金额',
-                            'value' => '￥' . $refund['price'] . '元',
-                            "color" => "#4a5077"
-                        ),
-                        'orderProductName' => array(
-                            'title' => '商品详情',
-                            'value' => $goods . $orderpricestr,
-                            "color" => "#4a5077"
-                        ),
-                        'orderName' => array(
-                            'title' => '订单编号',
-                            'value' => $order['ordersn'],
-                            "color" => "#4a5077"
-                        ),
-                        'remark' => array(
-                            'value' => "\r\n等待商家确认退款信息！",
-                            "color" => "#4a5077"
-                        )
-                    );
-                    if (!empty($tm['refund']) && empty($usernotice['refund'])) {
-                        m('message')->sendTplNotice($openid, $tm['refund'], $msg, $detailurl);
-                    } else if (empty($usernotice['refund'])) {
-                        m('message')->sendCustomNotice($openid, $msg, $detailurl);
-                    }
+                $refund = pdo_fetch("select * from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(":id" => $_var_2["refundid"]));
+			if (empty($refund)) {
+				return;
+			}
+			if (empty($refund["status"])) {
+				$msg = array("first" => array("value" => "您的" . $_var_14[$refund["rtype"]] . "申请已经提交！", "color" => "#4a5077"), "orderProductPrice" => array("title" => "退款金额", "value" => $refund["rtype"] == 3 ? "-" : ("¥" . $refund["applyprice"] . "元"), "color" => "#4a5077"), "orderProductName" => array("title" => "商品详情", "value" => $goods . $orderpricestr, "color" => "#4a5077"), "orderName" => array("title" => "订单编号", "value" => $_var_2["ordersn"], "color" => "#4a5077"), "remark" => array("value" => "\r\n等待商家确认" . $_var_14[$refund["rtype"]] . "信息！", "color" => "#4a5077"),);
+				if (!empty($tm["refund"]) && empty($usernotice["refund"])) {
+					m("message")->sendTplNotice($openid, $tm["refund"], $msg, $detailurl);
+				} else if (empty($usernotice["refund"])) {
+					m("message")->sendCustomNotice($openid, $msg, $detailurl);
+				}
+			} else if ($refund["status"] == 3) {
+				$_var_17 = iunserializer($refund["refundaddress"]);
+				$_var_18 = "退货地址: " . $_var_17["province"] . " " . $_var_17["city"] . " " . $_var_17["area"] . " " . $_var_17["address"] . " 收件人: " . $_var_17["name"] . " (" . $_var_17["mobile"] . ")(" . $_var_17["tel"] . ") ";
+				$msg = array("first" => array("value" => "您的" . $_var_14[$refund["rtype"]] . "申请已经通过！", "color" => "#4a5077"), "orderProductPrice" => array("title" => "退款金额", "value" => $refund["rtype"] == 3 ? "-" : ("¥" . $refund["applyprice"] . "元"), "color" => "#4a5077"), "orderProductName" => array("title" => "商品详情", "value" => $goods . $orderpricestr, "color" => "#4a5077"), "orderName" => array("title" => "订单编号", "value" => $_var_2["ordersn"], "color" => "#4a5077"), "remark" => array("value" => "\r\n请您根据商家提供的退货地址将商品寄回！" . $_var_18 . "", "color" => "#4a5077"),);
+				if (!empty($tm["refund"]) && empty($usernotice["refund"])) {
+					m("message")->sendTplNotice($openid, $tm["refund"], $msg, $detailurl);
+				} else if (empty($usernotice["refund"])) {
+					m("message")->sendCustomNotice($openid, $msg, $detailurl);
+				}
+			} else if ($refund["status"] == 5) {
+				if (!empty($_var_2["address"])) {
+					$_var_19 = iunserializer($_var_2["address_send"]);
+					if (!is_array($_var_19)) {
+						$_var_19 = iunserializer($_var_2["address"]);
+						if (!is_array($_var_19)) {
+							$_var_19 = pdo_fetch("select id,realname,mobile,address,province,city,area from " . tablename("sz_yi_member_address") . " where id=:id and uniacid=:uniacid limit 1", array(":id" => $_var_2["addressid"], ":uniacid" => $_W["uniacid"]));
+						}
+					}
+				}
+				if (empty($_var_19)) {
+					return;
+				}
+				$msg = array("first" => array("value" => "您的换货物品已经发货！", "color" => "#4a5077"), "keyword1" => array("title" => "订单内容", "value" => "【" . $_var_2["ordersn"] . "】" . $goods, "color" => "#4a5077"), "keyword2" => array("title" => "物流服务", "value" => $refund["rexpresscom"], "color" => "#4a5077"), "keyword3" => array("title" => "快递单号", "value" => $refund["rexpresssn"], "color" => "#4a5077"), "keyword4" => array("title" => "收货信息", "value" => "地址: " . $_var_19["province"] . " " . $_var_19["city"] . " " . $_var_19["area"] . " " . $_var_19["address"] . "收件人: " . $_var_19["realname"] . " (" . $_var_19["mobile"] . ") ", "color" => "#4a5077"), "remark" => array("value" => "\r\n我们正加速送到您的手上，请您耐心等候。", "color" => "#4a5077"));
+				if (!empty($tm["send"]) && empty($usernotice["send"])) {
+					m("message")->sendTplNotice($openid, $tm["send"], $msg, $detailurl);
+				} else if (empty($usernotice["send"])) {
+					m("message")->sendCustomNotice($openid, $msg, $detailurl);
+				}
                 } else if ($refund['status'] == 1) {
-                    $refundtype = '';
-                    if (empty($refund['refundtype'])) {
-                        $refundtype = ', 已经退回您的余额账户，请留意查收！';
-                    } else if ($refund['refundtype'] == 1) {
-                        $refundtype = ', 已经退回您的对应支付渠道（如银行卡，微信钱包等, 具体到账时间请您查看微信支付通知)，请留意查收！';
-                    } else {
-                        $refundtype = ', 请联系客服进行退款事项！';
-                    }
-                    $msg = array(
-                        'first' => array(
-                            'value' => "您的订单已经完成退款！",
-                            "color" => "#4a5077"
-                        ),
-                        'orderProductPrice' => array(
-                            'title' => '退款金额',
-                            'value' => '￥' . $refund['price'] . '元',
-                            "color" => "#4a5077"
-                        ),
-                        'orderProductName' => array(
-                            'title' => '商品详情',
-                            'value' => $goods . $orderpricestr,
-                            "color" => "#4a5077"
-                        ),
-                        'orderName' => array(
-                            'title' => '订单编号',
-                            'value' => $order['ordersn'],
-                            "color" => "#4a5077"
-                        ),
-                        'remark' => array(
-                            'value' => "\r\n 退款金额 ￥" . $refund['price'] . "{$refundtype}\r\n 【" . $shop['name'] . "】期待您再次购物！",
-                            "color" => "#4a5077"
-                        )
-                    );
+			if ($refund["rtype"] == 2) {
+				$msg = array("first" => array("value" => "您的订单已经完成换货！", "color" => "#4a5077"), "orderProductPrice" => array("title" => "退款金额", "value" => "-", "color" => "#4a5077"), "orderProductName" => array("title" => "商品详情", "value" => $goods . $orderpricestr, "color" => "#4a5077"), "orderName" => array("title" => "订单编号", "value" => $_var_2["ordersn"], "color" => "#4a5077"), "remark" => array("value" => "\r\n 换货成功！\r\n【" . $shop["name"] . "】期待您再次购物！", "color" => "#4a5077"));
+			} else {
+	                    $refundtype = '';
+	                    if (empty($refund['refundtype'])) {
+	                        $refundtype = ', 已经退回您的余额账户，请留意查收！';
+	                    } else if ($refund['refundtype'] == 1) {
+	                        $refundtype = ', 已经退回您的对应支付渠道（如银行卡，微信钱包等, 具体到账时间请您查看微信支付通知)，请留意查收！';
+	                    } else {
+	                        $refundtype = ', 请联系客服进行退款事项！';
+	                    }
+	                    $msg = array(
+	                        'first' => array(
+	                            'value' => "您的订单已经完成退款！",
+	                            "color" => "#4a5077"
+	                        ),
+	                        'orderProductPrice' => array(
+	                            'title' => '退款金额',
+	                            'value' => '￥' . $refund['price'] . '元',
+	                            "color" => "#4a5077"
+	                        ),
+	                        'orderProductName' => array(
+	                            'title' => '商品详情',
+	                            'value' => $goods . $orderpricestr,
+	                            "color" => "#4a5077"
+	                        ),
+	                        'orderName' => array(
+	                            'title' => '订单编号',
+	                            'value' => $order['ordersn'],
+	                            "color" => "#4a5077"
+	                        ),
+	                        'remark' => array(
+	                            'value' => "\r\n 退款金额 ￥" . $refund['price'] . "{$refundtype}\r\n 【" . $shop['name'] . "】期待您再次购物！",
+	                            "color" => "#4a5077"
+	                        )
+	                    );
+		    }
                     if (!empty($tm['refund1']) && empty($usernotice['refund1'])) {
                         m('message')->sendTplNotice($openid, $tm['refund1'], $msg, $detailurl);
                     } else if (empty($usernotice['refund1'])) {
@@ -174,10 +181,13 @@ class Sz_DYi_Notice
         }
         $buyerinfo = '';
         if (!empty($order['addressid'])) {
-            $address = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where id=:id and uniacid=:uniacid limit 1', array(
-                ':id' => $order['addressid'],
-                ':uniacid' => $_W['uniacid']
-            ));
+		$address = iunserializer($_var_2["address_send"]);
+		if (!is_array($address)) {
+			$address = iunserializer($_var_2["address"]);
+			if (!is_array($address)) {
+				$address = pdo_fetch("select id,realname,mobile,address,province,city,area from " . tablename("sz_yi_member_address") . " where id=:id and uniacid=:uniacid limit 1", array(":id" => $_var_2["addressid"], ":uniacid" => $_W["uniacid"]));
+			}
+		}
             if (!empty($address)) {
                 $buyerinfo = "收件人: " . $address["realname"] . "\n联系电话: " . $address["mobile"] . "\n收货地址: " . $address["province"] . $address["city"] . $address["area"] . " " . $address["address"];
             }
