@@ -114,10 +114,16 @@
     {/if}
     {if p('return')}
     <a href="{php echo $this->createPluginMobileUrl('return/return_log')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-piechart" style="color:#ff9901;"></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
-    {/if}
-     {if p('article')}
+    {/if} 
+  
+     <%if shopset.isarticle == 1%>
     <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-article" style="color:#ca81d1;"></i><%shopset.article_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
-    {/if}   
+    <%/if%>
+    
+     <%if shopset.isarticle == 1%>
+    <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-article" style="color:#ca81d1;"></i><%shopset.article_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
+    <%/if%>
+ 
 </div>
 {if $hascoupon}
 <div class="cart">

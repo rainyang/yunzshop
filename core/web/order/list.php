@@ -1546,6 +1546,9 @@ function order_list_confirmsend1($zym_var_32) {
     if (p("commission")) {
         p("commission")->checkOrderFinish($zym_var_32["id"]);
     }
+     if (p("return")) {
+        p("return")->cumulative_order_amount($zym_var_32["id"]);
+    }
     plog("order.op.fetch", "订单确认取货 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]}");
     message("发货操作成功！", order_list_backurl() , "success");
 }
@@ -1601,6 +1604,9 @@ function order_list_finish($zym_var_32) {
     }
     if (p("commission")) {
         p("commission")->checkOrderFinish($zym_var_32["id"]);
+    }
+     if (p("return")) {
+        p("return")->cumulative_order_amount($zym_var_32["id"]);
     }
     plog("order.op.finish", "订单完成 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]}");
     message("订单操作成功！", order_list_backurl() , "success");
