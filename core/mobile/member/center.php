@@ -7,7 +7,7 @@ global $_W, $_GPC;
 $openid = m('user')->getOpenid();
 $set = m('common')->getSysset(array('trade'));
 $shop_set = m('common')->getSysset(array('shop'));
-$shopset1   = m('common')->getSysset('shop');
+$shopset   = m('common')->getSysset('shop');
 
 $member = m('member')->getMember($openid);
 $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
@@ -16,7 +16,6 @@ $uniacid = $_W['uniacid'];
 $trade['withdraw'] = $set['trade']['withdraw'];
 $trade['closerecharge'] = $set['trade']['closerecharge'];
 $hascom = false;
-$shopset = array();
 $supplier_switch = false;
 if (p('supplier')) {
 	$supplier_set = p('supplier')->getSet();

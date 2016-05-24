@@ -7,7 +7,7 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid = m('user')->getOpenid();
 $uniacid = $_W['uniacid'];
 $set = m('common')->getSysset(array('trade'));
-$shopset1   = m('common')->getSysset('shop');
+$shopset   = m('common')->getSysset('shop');
 if ($operation == 'display' && $_W['isajax']) {
 	$credit = m('member')->getCredit($openid, 'credit2');
 	$member = m('member')->getMember($openid);
