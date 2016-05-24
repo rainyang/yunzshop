@@ -33,7 +33,7 @@ if($set['iscommission'] == 1)
 $style_width = 100 / $style_width_type;
 
 $_GPC['type'] = $_GPC['type']?$_GPC['type']:0;
-
+$default_avatar = "../addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg";
 if ($_W['isajax']) {
     if ($operation == 'display') {
         if($_GPC['type'] == 0)
@@ -41,10 +41,15 @@ if ($_W['isajax']) {
             $pindex    = max(1, intval($_GPC['page']));
             $psize     = 10;
 
-            $list      = pdo_fetchall("select * from " . tablename('sz_yi_member') . " where uniacid = '" .$_W['uniacid'] . "' order by credit1 desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
-            $total     = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . " where  uniacid = '" .$_W['uniacid'] . "'");
+            $list      = pdo_fetchall("select * from " . tablename('mc_members') . " where uniacid = '" .$_W['uniacid'] . "' order by credit1 desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+            $total     = pdo_fetchcolumn('select count(*) from ' . tablename('mc_members') . " where  uniacid = '" .$_W['uniacid'] . "'");
+            //我的排名
+            $m_list      = pdo_fetchall("select * from " . tablename('mc_members') . " where uniacid = '" .$_W['uniacid'] . "' and credit1 > '".$member['credit1']."'");
+            $m_num = count($m_list)+1;
+
             foreach ($list as $k => &$row) {
                 $row['number'] = ($k+1) + ($pindex - 1) * $psize;
+                $row['avatar'] = !empty($row['avatar'])?$row['avatar']:$default_avatar;
             }
             unset($row);
 
@@ -52,11 +57,16 @@ if ($_W['isajax']) {
                 'total' => $total,
                 'list' => $list,
                 'pagesize' => $psize,
-                'type'=>$_GPC['type']
+                'type'=>$_GPC['type'],
+                'm_num'=>$m_num,
+                'm_credit1'=>$member['credit1'],
+                'm_credit_name'=>"总积分",
+                'm_avatar'=>!empty($member['avatar'])?$member['avatar']:$default_avatar
             ));
 
         }elseif($_GPC['type'] == 1)
         {
+
             $pindex    = max(1, intval($_GPC['page']));
             $psize     = 10;
 
@@ -69,34 +79,57 @@ if ($_W['isajax']) {
             $list  = pdo_fetchall($sql, $params1);
 
             $total = pdo_fetchcolumn("select  count(*) from " . tablename('sz_yi_member') . ' m ' . " where 1 {$condition1} ", $params1);
+
             foreach ($list as $k => &$row) {
                 $row['number'] = ($k+1) + ($pindex - 1) * $psize;
+                $row['avatar'] = !empty($row['avatar'])?$row['avatar']:$default_avatar;
             }
+  
+            $m_sql     = "SELECT m.id,m.uniacid,m.realname, m.mobile,m.avatar,m.nickname,l.levelname," . "(select ifnull( count(o.id) ,0) from  " . tablename('sz_yi_order') . " o where o.openid=m.openid and o.status>=1 {$condition})  as ordercount," . "(select ifnull(sum(o.price),0) from  " . tablename('sz_yi_order') . " o where o.openid=m.openid  and o.status>=1 {$condition})  as ordermoney" . " from " . tablename('sz_yi_member') . " m  " . " left join " . tablename('sz_yi_member_level') . " l on l.id = m.level" . " where 1 {$condition1} and m.id = '".$member['id']."'";
+            $m_list  = pdo_fetch($m_sql, $params1);
 
-
+            $sql1     = "SELECT m.id,m.uniacid,m.realname, m.mobile,m.avatar,m.nickname,l.levelname," . "(select ifnull( count(o.id) ,0) from  " . tablename('sz_yi_order') . " o where o.openid=m.openid and o.status>=1 {$condition})  as ordercount," . "(select ifnull(sum(o.price),0) from  " . tablename('sz_yi_order') . " o where o.openid=m.openid  and o.status>=1 {$condition})  as ordermoney" . " from " . tablename('sz_yi_member') . " m  " . " left join " . tablename('sz_yi_member_level') . " l on l.id = m.level" . " where 1 {$condition1} and ordermoney > '".$m_list['ordermoney']."'";
+            $lists  = pdo_fetchall($sql1, $params1);
+            $m_num = count($lists)+1;
+            //echo "<pre>"; print_r(count($lists));exit;
             show_json(1, array(
                 'total' => $total,
                 'list' => $list,
                 'pagesize' => $psize,
-                'type'=>$_GPC['type']
+                'type'=>$_GPC['type'],
+                'm_num'=>$m_num,
+                'm_credit1'=>$m_list['ordermoney'],
+                'm_credit_name'=>"总消费",
+                'm_avatar'=>!empty($member['avatar'])?$member['avatar']:$default_avatar
             ));
+
         }elseif($_GPC['type'] == 2)
         {
             $pindex    = max(1, intval($_GPC['page']));
             $psize     = 10;
 
-            $list = pdo_fetchall("select ogq.*, g.title from " . tablename('sz_yi_order_goods_queue') . " ogq left join " . tablename('sz_yi_goods') . " g on(ogq.goodsid = g.id) where ogq.uniacid = '" .$_W['uniacid'] . "' and ogq.openid = '".$openid."'  and ogq.goodsid = '".$_GPC['goodsid']."'  LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+            $list = pdo_fetchall("select r.*, m.realname,m.avatar from " . tablename('sz_yi_ranking') . " r left join " . tablename('sz_yi_member') . " m on(r.mid = m.id) where r.uniacid = '" .$_W['uniacid'] . "' and r.mid > 0 order by r.credit desc   LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
 
-            $total     = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order_goods_queue') . " where  uniacid = '" .$_W['uniacid'] . "' and openid = '".$openid."' and goodsid = '".$_GPC['goodsid']."' ");
+            $total     = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_ranking') . " where  uniacid = '" .$_W['uniacid'] . "'");
+            $m_list = pdo_fetch("select r.*, m.realname,m.avatar from " . tablename('sz_yi_ranking') . " r left join " . tablename('sz_yi_member') . " m on(r.mid = m.id) where r.uniacid = '" .$_W['uniacid'] . "' and r.mid = '".$member['id']."'" );
+
+            $lists = pdo_fetchall("select r.*, m.realname,m.avatar from " . tablename('sz_yi_ranking') . " r left join " . tablename('sz_yi_member') . " m on(r.mid = m.id) where r.uniacid = '" .$_W['uniacid'] . "' and r.credit > '".$m_list['credit']."'" );
+            
+            $m_num = count($lists)+1;
             foreach ($list as &$row) {
-                $row['createtime'] = date('Y-m-d H:i', $row['create_time']);
+                $row['number'] = ($k+1) + ($pindex - 1) * $psize;
+                $row['avatar'] = !empty($row['avatar'])?$row['avatar']:$default_avatar;
             }
             unset($row);
             show_json(1, array(
                 'total' => $total,
                 'list' => $list,
                 'pagesize' => $psize,
-                'type'=>$_GPC['type']
+                'type'=>$_GPC['type'],
+                'm_num'=>$m_num,
+                'm_credit1'=>$m_list['credit'],
+                'm_credit_name'=>"总佣金",
+                'm_avatar'=>!empty($member['avatar'])?$member['avatar']:$default_avatar
             ));
 
         }

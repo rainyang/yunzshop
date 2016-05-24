@@ -60,6 +60,18 @@ if (!empty($category)) {
         }
     }
 }
+$sql = 'SELECT * FROM ' . tablename('sz_yi_category2') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
+$category2 = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
+$parent2 = $children2 = array();
+if (!empty($category2)) {
+    foreach ($category2 as $cid => $cate2) {
+        if (!empty($cate2['parentid'])) {
+            $children2[$cate2['parentid']][] = $cate2;
+        } else {
+            $parent2[$cate2['id']] = $cate2;
+        }
+    }
+}
 if (p('commission')) {
     $commissionLevels = pdo_fetchall(
         'SELECT id, levelname FROM ' . tablename('sz_yi_commission_level') . ' WHERE `uniacid` = :uniacid ORDER BY `commission1` DESC, `commission2` DESC, `commission3` DESC',
@@ -355,6 +367,9 @@ if ($operation == "change") {
             'pcate' => intval($_GPC['category']['parentid']),
             'ccate' => intval($_GPC['category']['childid']),
             'tcate' => intval($_GPC['category']['thirdid']),
+            'pcate1' => intval($_GPC['category2']['parentid']),
+            'ccate1' => intval($_GPC['category2']['childid']),
+            'tcate1' => intval($_GPC['category2']['thirdid']),
             'thumb' => save_media($_GPC['thumb']),
             'type' => intval($_GPC['type']),
             'isrecommand' => intval($_GPC['isrecommand']),

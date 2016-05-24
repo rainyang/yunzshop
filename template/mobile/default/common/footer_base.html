@@ -121,6 +121,25 @@
 	});
       });
 </script>
+<script language="javascript" type="text/javascript">
+<?php if($shopset['category2']==1){ ?>
+$('#shsh').click(function(){
+    var data_type = $('#show').attr('data-type');
+    //alert(1);
+    if(data_type == 1)
+    {
+        $('#show').show();
+        $('#show').attr('data-type','2');
 
+    }else
+    {
+        $('#show').hide();
+         $('#show').attr('data-type','1');
+    }
+
+});
+<?php } ?>
+
+</script>
 </body>
 </html>

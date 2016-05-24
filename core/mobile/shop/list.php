@@ -10,6 +10,7 @@ $openid     = m('user')->getOpenid();
 $uniacid    = $_W['uniacid'];
 $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
 $commission = p('commission');
+$shopset   = m('common')->getSysset('shop');
 if ($commission) {
     $shopid = intval($_GPC['shopid']);
     if (!empty($shopid)) {

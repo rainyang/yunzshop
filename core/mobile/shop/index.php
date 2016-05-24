@@ -9,6 +9,7 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'index';
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $designer  = p('designer');
+$shopset   = m('common')->getSysset('shop');
 if (empty($this->yzShopSet['ispc']) || isMobile()) {
     if ($designer) {
         $pagedata = $designer->getPage();
