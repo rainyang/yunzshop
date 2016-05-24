@@ -103,7 +103,7 @@ a:focus{outline:none; -moz-outline:none}
 .table-responsive.panel-body{overflow:auto;}
 .table{table-layout:fixed;}
 .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td{vertical-align:middle;}
-.table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td{white-space:normal; overflow:hidden; text-overflow:ellipsis;}
+.table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
 .table>thead>tr>th{border-top:none;}
 .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th{border-top:none;}
 @media screen and (max-width:767px){.tpl-calendar>div,.tpl-district-container>div{margin-bottom:10px;}}
