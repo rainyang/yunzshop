@@ -60,6 +60,18 @@ if (!empty($category)) {
         }
     }
 }
+$sql = 'SELECT * FROM ' . tablename('sz_yi_category2') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
+$category2 = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
+$parent2 = $children2 = array();
+if (!empty($category2)) {
+    foreach ($category2 as $cid => $cate2) {
+        if (!empty($cate2['parentid'])) {
+            $children2[$cate2['parentid']][] = $cate2;
+        } else {
+            $parent2[$cate2['id']] = $cate2;
+        }
+    }
+}
 if (p('commission')) {
     $commissionLevels = pdo_fetchall(
         'SELECT id, levelname FROM ' . tablename('sz_yi_commission_level') . ' WHERE `uniacid` = :uniacid ORDER BY `commission1` DESC, `commission2` DESC, `commission3` DESC',
@@ -196,6 +208,7 @@ if ($operation == "change") {
                 $html .= '<th class="success" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">销售价格</div><div class="input-group"><input type="text" class="form-control option_marketprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_marketprice\');"></a></span></div></div></th>';
                 $html .= '<th class="warning" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div><div class="input-group"><input type="text" class="form-control option_productprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productprice\');"></a></span></div></div></th>';
                 $html .= '<th class="danger" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div><div class="input-group"><input type="text" class="form-control option_costprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_costprice\');"></a></span></div></div></th>';
+                $html .= '<th class="warning" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">红包价格</div><div class="input-group"><input type="text" class="form-control option_redprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_redprice\');"></a></span></div></div></th>';
                 $html .= '<th class="primary" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品编码</div><div class="input-group"><input type="text" class="form-control option_goodssn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_goodssn\');"></a></span></div></div></th>';
                 $html .= '<th class="danger" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div><div class="input-group"><input type="text" class="form-control option_productsn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productsn\');"></a></span></div></div></th>';
                 $html .= '<th class="info" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div><div class="input-group"><input type="text" class="form-control option_weight_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_weight\');"></a></span></div></div></th>';
@@ -254,7 +267,8 @@ if ($operation == "change") {
                     "productprice" => "",
                     "marketprice" => "",
                     "weight" => "",
-                    'virtual' => ''
+                    'virtual' => '',
+                    "redprice"=>''
                 );
                 foreach ($options as $o) {
                     if ($ids === $o['specs']) {
@@ -268,7 +282,8 @@ if ($operation == "change") {
                             "goodssn" => $o['goodssn'],
                             "productsn" => $o['productsn'],
                             "weight" => $o['weight'],
-                            'virtual' => $o['virtual']
+                            'virtual' => $o['virtual'],
+                            'redprice' => $o['redprice']
                         );
                         break;
                     }
@@ -284,6 +299,7 @@ if ($operation == "change") {
                     $hh .= '<td class="success"><input name="option_marketprice_' . $ids . '[]" type="text" class="form-control option_marketprice option_marketprice_' . $ids . '" value="' . $val['marketprice'] . '"/></td>';
                     $hh .= '<td class="warning"><input name="option_productprice_' . $ids . '[]" type="text" class="form-control option_productprice option_productprice_' . $ids . '" " value="' . $val['productprice'] . '"/></td>';
                     $hh .= '<td class="danger"><input name="option_costprice_' . $ids . '[]" type="text" class="form-control option_costprice option_costprice_' . $ids . '" " value="' . $val['costprice'] . '"/></td>';
+                    $hh .= '<td class="warning"><input name="option_redprice_' . $ids . '[]" type="text" class="form-control option_redprice option_redprice_' . $ids . '" " value="' . $val['redprice'] . '"/></td>';
                     $hh .= '<td class="primary"><input name="option_goodssn_' . $ids . '[]" type="text" class="form-control option_goodssn option_goodssn_' . $ids . '" " value="' . $val['goodssn'] . '"/></td>';
                     $hh .= '<td class="danger"><input name="option_productsn_' . $ids . '[]" type="text" class="form-control option_productsn option_productsn_' . $ids . '" " value="' . $val['productsn'] . '"/></td>';
                     $hh .= '<td class="info"><input name="option_weight_' . $ids . '[]" type="text" class="form-control option_weight option_weight_' . $ids . '" " value="' . $val['weight'] . '"/></td>';
@@ -293,6 +309,7 @@ if ($operation == "change") {
                     $hh .= '<td class="success">' . $val['marketprice'] . '</td>';
                     $hh .= '<td class="warning">' . $val['productprice'] . '</td>';
                     $hh .= '<td class="danger">' . $val['costprice'] . '</td>';
+                    $hh .= '<td class="warning">' . $val['redprice'] . '</td>';
                     $hh .= '<td class="primary">' . $val['goodssn'] . '</td>';
                     $hh .= '<td class="danger">' . $val['productsn'] . '</td>';
                     $hh .= '<td class="info">' . $val['weight'] . '</td>';
@@ -350,6 +367,9 @@ if ($operation == "change") {
             'pcate' => intval($_GPC['category']['parentid']),
             'ccate' => intval($_GPC['category']['childid']),
             'tcate' => intval($_GPC['category']['thirdid']),
+            'pcate1' => intval($_GPC['category2']['parentid']),
+            'ccate1' => intval($_GPC['category2']['childid']),
+            'tcate1' => intval($_GPC['category2']['thirdid']),
             'thumb' => save_media($_GPC['thumb']),
             'type' => intval($_GPC['type']),
             'isrecommand' => intval($_GPC['isrecommand']),
@@ -406,7 +426,8 @@ if ($operation == "change") {
             'detail_btnurl2' => trim($_GPC['detail_btnurl2']),
 			"ednum"=>intval($_GPC["ednum"]) ,
 			"edareas"=>trim($_GPC["edareas"]) ,
-			"edmoney"=>trim($_GPC["edmoney"])
+			"edmoney"=>trim($_GPC["edmoney"]),
+            "redprice" => $_GPC["redprice"]//红包价格
         );
         if(!empty($_GPC['bonusmoney'])){
             $data['bonusmoney'] = $_GPC['bonusmoney'];
@@ -670,7 +691,8 @@ if ($operation == "change") {
                 "productsn" => $_GPC['option_productsn_' . $ids][0],
                 "goodsid" => $id,
                 "specs" => $newids,
-                'virtual' => $data['type'] == 3 ? $_GPC['option_virtual_' . $ids][0] : 0
+                'virtual' => $data['type'] == 3 ? $_GPC['option_virtual_' . $ids][0] : 0,
+                "redprice" => $_GPC['option_redprice_' . $ids][0],
             );
             $totalstocks += $a['stock'];
             if (empty($get_option_id)) {
@@ -896,6 +918,19 @@ m("cache")->set("areas", $areas, "global");
     die(json_encode(array(
         'result' => 0
     )));
+}elseif($operation == 'copygoods'){
+    $goodsid=$_GPC['id'];
+    $goods=pdo_fetch('select * from ' .tablename('sz_yi_goods'). ' where id = '.$goodsid);
+    if(empty($goods)){
+        message('未找到此商品，商品复制失败!', $this->createWebUrl('shop/goods') , 'error');
+    }
+    $goods['id']='';
+    $ok=pdo_insert('sz_yi_goods',$goods);
+    if(!empty($ok)){
+        message('商品复制成功！', $this->createWebUrl('shop/goods') , 'success');
+    }else{
+        message('商品复制失败，请联系管理员', $this->createWebUrl('shop/goods') , 'error'); 
+    }
 }
 load()->func('tpl');
 include $this->template('web/shop/goods');

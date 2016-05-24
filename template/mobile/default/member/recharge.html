@@ -49,7 +49,7 @@
     </div>
 	<div class="recharge">
 		<div class="line">
-			<div class="label">当前余额</div>
+			<div class="label">当前{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}</div>
 			<div class="info"><div class="inner"><%credit%></div></div>
 		</div>
 		<div class="line">

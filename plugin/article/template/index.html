@@ -1337,6 +1337,13 @@ $(function(){
 <div class='panel panel-default form-horizontal form'>
     <div class='panel-heading'>其他设置</div>
     <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启文章系统</label>
+                <div class="col-sm-4 col-xs-6">
+                     <label class="radio-inline"><input type="radio"  name="isarticle" value="0" {if $article_sys['isarticle'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline"><input type="radio"  name="isarticle" value="1" {if $article_sys['isarticle'] ==1} checked="checked"{/if} /> 开启</label>
+                </div>
+            </div>
         <div class="form-group" style="padding-top:20px;">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">奖励发放通知</label>
             <div class="col-sm-9 col-xs-12">
@@ -1483,6 +1490,7 @@ $(function(){
 <script>
     $(function(){
         $("#save").click(function(){
+            var isarticle = $("input[name=isarticle]:checked").val();
             var article_message = $("input[name=article_message]").val();
             var article_title = $("input[name=article_title]").val();
             var article_image = $("input[name=article_image]").val();
@@ -1491,7 +1499,7 @@ $(function(){
             var article_text = $("input[name=article_text]").val();
             var article_temp = $("input[name=article_temp]:checked").val();
 
-			
+
 			//读取区域设置的：
 			var article_province = '';
 			$('.tpl-province').each(function(){
@@ -1519,6 +1527,7 @@ $(function(){
                 type: 'POST',
                 url: "{php echo $this->createPluginWebUrl('article',array('method'=>'api','apido'=>'savesys'))}",
                 data: {
+                    isarticle:isarticle,
                     article_message:article_message,
                     article_title:article_title,
                     article_image:article_image,

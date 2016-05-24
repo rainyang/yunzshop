@@ -153,6 +153,17 @@ if(!pdo_fieldexists('sz_yi_goods', 'diymode')) {
 	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `diymode` tinyint(3) DEFAULT '0';");
 }
 
+if(!pdo_fieldexists('sz_yi_goods', 'redprice')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `redprice` varchar(50) DEFAULT '';");
+}
+
+if(!pdo_fieldexists('sz_yi_goods_option', 'redprice')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods_option')." ADD `redprice` varchar(50) DEFAULT '';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'redprice')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `redprice` varchar(50) DEFAULT '';");
+}
 
 pdo_fetchall("UPDATE ".tablename('qrcode')." SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
 
@@ -478,3 +489,8 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_refund_address'). " 
   PRIMARY KEY (`id`),
   KEY `idx_uniacid` (`uniacid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
+
+pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_member')." ADD  `referralsn` VARCHAR( 255 ) NOT NULL");
+pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_article_sys')." ADD  `article_text` VARCHAR( 255 ) NOT NULL AFTER  `article_keyword`");
+pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_article_sys')." ADD  `isarticle` TINYINT( 1 ) NOT NULL");
+

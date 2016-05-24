@@ -31,26 +31,51 @@ class Sz_DYi_Finance {
             $row = pdo_fetch($sql, array(
                 ':uniacid' => $_W['uniacid']
             ));
-            $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers';
-            $pars = array();
-            $pars['mch_appid'] = $row['key'];
-            $pars['mchid'] = $wechat['mchid'];
-            $pars['nonce_str'] = random(32);
-            $pars['partner_trade_no'] = empty($trade_no) ? time() . random(4, true) : $trade_no;
-            $pars['openid'] = $openid;
-            $pars['check_name'] = 'NO_CHECK';
-            $pars['amount'] = $money;
-            $pars['desc'] = empty($desc) ? '佣金提现' : $desc;
-            $pars['spbill_create_ip'] = gethostbyname($_SERVER["HTTP_HOST"]);
-            ksort($pars, SORT_STRING);
-            $string1 = '';
-            foreach ($pars as $k => $v) {
-                $string1.= "{$k}={$v}&";
+            if ($money <= 20000) {//金额小于200自动红包
+                $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack';
+                $pars = array(
+                    'wxappid'      => $row['key'],
+                    'mch_id'       => $wechat['mchid'],
+                    'mch_billno'   => $wechat['mchid'] . date('YmdHis') . rand(1000, 9999),
+                    'client_ip'    => gethostbyname($_SERVER["HTTP_HOST"]),
+                    're_openid'    => $openid,
+                    'total_amount' => $money,
+                    'total_num'    => 1,
+                    'send_name'    => $_W['account']['name'],
+                    'wishing'      => empty($desc) ? '微信红包佣金提现' : $desc,
+                    'act_name'     => empty($act_name) ? '佣金提现' : $act_name,
+                    'remark'       => empty($remark) ? '佣金提现' : $remark,
+                    'nonce_str'    => $this->createNonceStr()
+                );
+                $stringA           = $this->formatQuery($pars, false);
+                $stringSignTemp    = $stringA . '&key=' . $wechat['apikey'];
+                $pars['sign']      = strtoupper(md5($stringSignTemp));
+
+                $xml = array2xml($pars);
+            } else {//微信零钱
+                $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers';
+                $pars = array();
+                $pars['mch_appid'] = $row['key'];
+                $pars['mchid'] = $wechat['mchid'];
+                $pars['nonce_str'] = random(32);
+                $pars['partner_trade_no'] = empty($trade_no) ? time() . random(4, true) : $trade_no;
+                $pars['openid'] = $openid;
+                $pars['check_name'] = 'NO_CHECK';
+                $pars['amount'] = $money;
+                $pars['desc'] = empty($desc) ? '佣金提现' : $desc;
+                $pars['spbill_create_ip'] = gethostbyname($_SERVER["HTTP_HOST"]);
+                ksort($pars, SORT_STRING);
+                $string1 = '';
+                foreach ($pars as $k => $v) {
+                    $string1.= "{$k}={$v}&";
+                }
+                $string1.= "key=" . $wechat['apikey'];
+                $pars['sign'] = strtoupper(md5($string1));
+                $xml = array2xml($pars);
+                $extras = array();
+                
             }
-            $string1.= "key=" . $wechat['apikey'];
-            $pars['sign'] = strtoupper(md5($string1));
-            $xml = array2xml($pars);
-            $extras = array();
+            
             $sec = m('common')->getSec();
             $certs = iunserializer($sec['sec']);
             if (is_array($certs)) {
@@ -66,6 +91,10 @@ class Sz_DYi_Finance {
                 $extras['CURLOPT_SSLCERT'] = $certfile;
                 $extras['CURLOPT_SSLKEY'] = $keyfile;
                 $extras['CURLOPT_CAINFO'] = $rootfile;
+
+                // $extras['CURLOPT_SSLCERT'] = IA_ROOT . '/addons/sz_yi/cert/apiclient_cert.pem';
+                // $extras['CURLOPT_SSLKEY'] = IA_ROOT . '/addons/sz_yi/cert/apiclient_key.pem';
+                // $extras['CURLOPT_CAINFO'] = IA_ROOT . '/addons/sz_yi/cert/rootca.pem';
             } else {
                 message('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
             }
@@ -433,6 +462,37 @@ class Sz_DYi_Finance {
         $url = "https://mapi.alipay.com/gateway.do?service=notify_verify&partner={$alipay['partner']}&notify_id={$notify_id}";
         $resp = @file_get_contents($url);
         return preg_match("/true$/i", $resp);
+    }
+
+    //红包
+    protected function createNonceStr()
+    {
+        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $str   = '';
+        for ($i = 0; $i < 32; $i++) {
+            $str .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
+        }
+        return $str;
+    }
+    //红包
+    protected function formatQuery($querys, $urlencode = false)
+    {
+        if (!is_array($querys) || empty($querys)) {
+            return;
+        }
+        ksort($querys);
+
+        $params = array();
+        foreach ($querys as $key => $val) {
+            if ($key != 'sign' && $val != null && $val != 'null') {
+                if ($urlencode) {
+                    $val = urlencode($val);
+                }
+                $params[] = $key . '=' . $val;
+            }
+        }
+
+        return implode('&', $params);
     }
 }
 

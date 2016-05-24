@@ -6,7 +6,7 @@ global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $member    = m("member")->getMember($openid);
-$shopset1   = m('common')->getSysset('shop');
+$shopset   = m('common')->getSysset('shop');
 $uniacid   = $_W['uniacid'];
 $fromcart  = 0;
 $trade     = m('common')->getSysset('trade');
@@ -859,9 +859,9 @@ if ($_W['isajax']) {
                 show_json(0, '参数错误，请刷新重试');
             }
             if(p('supplier')){
-                $sql  = 'SELECT id as goodsid,supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
+                $sql  = 'SELECT id as goodsid,supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
             }else{
-                $sql  = 'SELECT id as goodsid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
+                $sql  = 'SELECT id as goodsid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
             }
             $data = pdo_fetch($sql, array(
                 ':uniacid' => $uniacid,
@@ -940,6 +940,9 @@ if ($_W['isajax']) {
                     if (!empty($option['weight'])) {
                         $data['weight'] = $option['weight'];
                     }
+                    if (!empty($option['redprice'])) {
+                        $data['redprice'] = $option['redprice'];
+                    }
                 }
             } else {
                 if ($data['stock'] != -1) {
@@ -972,6 +975,28 @@ if ($_W['isajax']) {
                     $data["diyformid"]     = $formInfo["id"];
                 }
             }
+            /**
+             *  红包价格计算 
+             */
+            if (strpos($data['redprice'],"%") === false) {
+                if (strpos($data['redprice'],"-") === false) {
+                    $redprice = $data['redprice'];
+                } else {
+                    $rprice = explode("-", $data['redprice']);
+                    if ($rprice[1]>200) {
+                       $redprice = rand($rprice[0]*100,200*100)/100;
+                    } else if ($rprice[0]<0) {
+                        $redprice = rand(0,$rprice[1]*100)/100;
+                    } else {
+                        $redprice = rand($rprice[0]*100,$rprice[1]*100)/100;
+                    }                   
+                }
+            } else {
+                $rprice = explode("%", $data['redprice']);
+                $redprice = ($rprice[0]*$data['marketprice'])/100;
+            }
+            $redprice = $redprice * $goodstotal;
+            $redpriceall = $redprice;
             $gprice = $data['marketprice'] * $goodstotal;
             $goodsprice += $gprice;
             $discounts = json_decode($data['discounts'], true);
@@ -1272,7 +1297,8 @@ if ($_W['isajax']) {
             'oldprice' => $totalprice,
             'olddispatchprice' => $dispatch_price,
             "couponid" => $couponid,
-            "couponprice" => $couponprice
+            "couponprice" => $couponprice,
+            'redprice' => $redpriceall
         );
         if ($diyform_plugin) {
             if (is_array($_GPC["diydata"]) && !empty($order_formInfo)) {

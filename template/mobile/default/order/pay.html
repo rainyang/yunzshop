@@ -44,7 +44,7 @@
     <%if alipay.success%><div class="button order_sub2" >支付宝支付</div><%/if%>
     
     <%if credit.success %>
-        <div class="button order_sub3">{php echo $shopset1['credit']}支付(当前{php echo $shopset1['credit']}:<%credit.current%>)</div>
+        <div class="button order_sub3">{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}支付(当前{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}:<%credit.current%>)</div>
         <input type="hidden" id="credit" value="<%credit.current%>" />
         <%if credit.current<=0%>
         <div class="button order_sub4" onclick="location.href='{php echo $this->createMobileUrl('member/recharge')}&returnurl=<%returnurl%>'">账户充值</div>
