@@ -17,11 +17,6 @@
 </style>
 
 
-
-
-
-
-
 <div id='container' class="rightlist"></div></div>
 
 <script id='tpl_list' type='text/html'>
@@ -235,8 +230,8 @@ function bindScroller(){
                 bindScroller();
             }, true);
         }
+        $(document).on('click','.credit_nav',function(){
 
-        $('.credit_nav').unbind('click').click(function () {
             page = 1;
             current_type = $(this).data('type');
             getLog(current_type);
