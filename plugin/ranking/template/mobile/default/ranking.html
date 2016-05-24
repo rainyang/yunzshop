@@ -166,7 +166,7 @@ function bindScroller(){
         var stop = true;
 
         $(window).scroll(function () {
-           
+
             if (loaded) {
                 return;
             }
@@ -185,6 +185,17 @@ function bindScroller(){
                         $('#m_num').html(json.result.m_num);
                         $('#m_avatar').attr('src',json.result.m_avatar);
                         $('#m_credit1').html(json.result.m_credit_name+":"+json.result.m_credit1);
+                            if(page==10)
+                            {
+                               $('#credit_loading').remove();
+                                //$('#credit_loading').html('已经加载完全部记录');
+                                $("#tpl_container").append('<div id="credit_loading">已经加载完全部记录</div>');
+                                loaded = true;
+                                //console.log('loaded:'+loaded);
+                                $(window).scroll = null;
+                                return;
+                            }
+                        
                         if (json.result.list.length < json.result.pagesize) {
                             $('#credit_loading').remove();
                             //$('#credit_loading').html('已经加载完全部记录');

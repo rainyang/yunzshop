@@ -17,6 +17,9 @@
 </style>
 
 
+<div id='container' class="rightlist"></div></div>
+
+<script id='tpl_list' type='text/html'>
 <div class="credit_tab">
 
 {if $set['isintegral']}
@@ -30,12 +33,6 @@
 {/if}   
 </div>
 
-
-
-
-<div id='container'></div></div>
-
-<script id='tpl_list' type='text/html'>
     <div class="report">
         <div class="report-img">
             <p>我的名次</p>
@@ -178,24 +175,36 @@ function bindScroller(){
                     $('#tpl_container').append('<div id="credit_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载...</div>');
                     page++;
    
-                    core.pjson('ranking/ranking', {type: current_type,page: page}, function (json) {
-                        stop = true;
-                        $('#credit_loading').remove();
-                        $("#tpl_container").append(tpl('tpl_log', json.result));
-                     
-                        $('#m_num').html(json.result.m_num);
-                        $('#m_avatar').attr('src',json.result.m_avatar);
-                        $('#m_credit1').html(json.result.m_credit_name+":"+json.result.m_credit1);
-                        if (json.result.list.length < json.result.pagesize) {
+
+                        core.pjson('ranking/ranking', {type: current_type,page: page}, function (json) {
+                            stop = true;
                             $('#credit_loading').remove();
-                            //$('#credit_loading').html('已经加载完全部记录');
-                            $("#tpl_container").append('<div id="credit_loading">已经加载完全部记录</div>');
-                            loaded = true;
-                            //console.log('loaded:'+loaded);
-                            $(window).scroll = null;
-                            return;
-                        }
-                    }, true);
+                            $("#tpl_container").append(tpl('tpl_log', json.result));
+                         
+                            $('#m_num').html(json.result.m_num);
+                            $('#m_avatar').attr('src',json.result.m_avatar);
+                            $('#m_credit1').html(json.result.m_credit_name+":"+json.result.m_credit1);
+                            if(page==10)
+                            {
+                               $('#credit_loading').remove();
+                                //$('#credit_loading').html('已经加载完全部记录');
+                                $("#tpl_container").append('<div id="credit_loading">已经加载完全部记录</div>');
+                                loaded = true;
+                                //console.log('loaded:'+loaded);
+                                $(window).scroll = null;
+                                return;
+                            }
+                            if (json.result.list.length < json.result.pagesize) {
+                                $('#credit_loading').remove();
+                                //$('#credit_loading').html('已经加载完全部记录');
+                                $("#tpl_container").append('<div id="credit_loading">已经加载完全部记录</div>');
+                                loaded = true;
+                                //console.log('loaded:'+loaded);
+                                $(window).scroll = null;
+                                return;
+                            }
+                        }, true);
+
                 }
             }
         });
@@ -221,8 +230,8 @@ function bindScroller(){
                 bindScroller();
             }, true);
         }
+        $(document).on('click','.credit_nav',function(){
 
-        $('.credit_nav').unbind('click').click(function () {
             page = 1;
             current_type = $(this).data('type');
             getLog(current_type);
