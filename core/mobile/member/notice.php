@@ -8,6 +8,7 @@ $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $member    = m('member')->getMember($openid);
 $notice    = iunserializer($member['noticeset']);
+$shopset = m('common')->getSysset('shop');
 if ($_W['isajax']) {
     if ($operation == 'display') {
         $hascommission = false;

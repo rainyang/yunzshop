@@ -8,6 +8,7 @@ $openid    = m('user')->getOpenid();
 $popenid        = m('user')->islogin();
 $openid = $openid?$openid:$popenid;
 $uniacid   = $_W['uniacid'];
+$shopset   = m('common')->getSysset('shop');
 if ($_W['isajax']) {
 	if ($operation == 'display') {
 		$pindex = max(1, intval($_GPC['page']));

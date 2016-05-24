@@ -5,6 +5,7 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
+$shopset   = m('common')->getSysset('shop');
 if ($operation == 'display') {
 	$pindex = max(1, intval($_GPC['page']));
 	$psize = 10;
