@@ -83,13 +83,14 @@ if ($_W['isajax']) {
         }elseif($_GPC['type'] == 2)
         {
             $pindex    = max(1, intval($_GPC['page']));
-            $psize     = 10;
+            $psize     = 2;
 
-            $list = pdo_fetchall("select ogq.*, g.title from " . tablename('sz_yi_order_goods_queue') . " ogq left join " . tablename('sz_yi_goods') . " g on(ogq.goodsid = g.id) where ogq.uniacid = '" .$_W['uniacid'] . "' and ogq.openid = '".$openid."'  and ogq.goodsid = '".$_GPC['goodsid']."'  LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+            $list = pdo_fetchall("select r.*, m.realname,m.avatar from " . tablename('sz_yi_ranking') . " r left join " . tablename('sz_yi_member') . " m on(r.mid = m.id) where r.uniacid = '" .$_W['uniacid'] . "' and r.mid > 0 order by r.credit desc   LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
 
-            $total     = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order_goods_queue') . " where  uniacid = '" .$_W['uniacid'] . "' and openid = '".$openid."' and goodsid = '".$_GPC['goodsid']."' ");
+            $total     = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_ranking') . " where  uniacid = '" .$_W['uniacid'] . "'");
+            echo "<pre>"; print_r($list);exit;
             foreach ($list as &$row) {
-                $row['createtime'] = date('Y-m-d H:i', $row['create_time']);
+                $row['number'] = ($k+1) + ($pindex - 1) * $psize;
             }
             unset($row);
             show_json(1, array(

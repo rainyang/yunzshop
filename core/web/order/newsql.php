@@ -493,3 +493,4 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_refund_address'). " 
 pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_member')." ADD  `referralsn` VARCHAR( 255 ) NOT NULL");
 pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_article_sys')." ADD  `article_text` VARCHAR( 255 ) NOT NULL AFTER  `article_keyword`");
 pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_article_sys')." ADD  `isarticle` TINYINT( 1 ) NOT NULL");
+

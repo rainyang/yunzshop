@@ -17,6 +17,10 @@ class RankingMobile extends Plugin
     {    
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function commission()
+    {    
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 
 
 }
