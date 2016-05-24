@@ -103,6 +103,7 @@ if ($plugin_article) {
 
 	$article_text = $article_set['article_text']?$article_set['article_text']:'文章管理';
 	$article_title = $article_set['article_title']?$article_set['article_title']:'进入文章列表';
+	$isarticle = $article_set['isarticle'];
 }
 
 

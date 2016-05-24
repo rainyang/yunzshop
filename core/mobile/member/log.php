@@ -7,7 +7,7 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $trade     = m('common')->getSysset('trade');
-$shopset1   = m('common')->getSysset('shop');
+$shopset   = m('common')->getSysset('shop');
 if ($_W['isajax']) {
     if ($operation == 'display') {
         $pindex    = max(1, intval($_GPC['page']));

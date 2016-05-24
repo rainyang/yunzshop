@@ -7,7 +7,7 @@ global $_W, $_GPC;
 $openid = m('user')->getOpenid();
 $set = m('common')->getSysset(array('trade'));
 $shop_set = m('common')->getSysset(array('shop'));
-$shopset1   = m('common')->getSysset('shop');
+$shopset   = m('common')->getSysset('shop');
 
 $member = m('member')->getMember($openid);
 $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
@@ -16,7 +16,6 @@ $uniacid = $_W['uniacid'];
 $trade['withdraw'] = $set['trade']['withdraw'];
 $trade['closerecharge'] = $set['trade']['closerecharge'];
 $hascom = false;
-$shopset = array();
 $supplier_switch = false;
 if (p('supplier')) {
 	$supplier_set = p('supplier')->getSet();
@@ -72,11 +71,11 @@ if ($plugin_article) {
 
 if (p('ranking')) {
 	$ranking_set = p('ranking')->getSet();
-	echo "<pre>"; print_r($ranking_set);exit;
-	$shopset['article_text'] = $article_set['article_text']?$article_set['article_text']:'文章管理';
 
-	$shopset['isarticle'] = $article_set['isarticle'];
+	$shopset['rankingname'] = $ranking_set['ranking']['rankingname'];
+	$shopset['isranking'] = $ranking_set['ranking']['isranking'];
 } 
+
 if ($_W['isajax']) {
 	$level = array('levelname' => empty($this->yzShopSet['levelname']) ? '普通会员' : $this->yzShopSet['levelname']);
 	if (!empty($member['level'])) {

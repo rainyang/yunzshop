@@ -6,7 +6,7 @@ global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
-$shopset1   = m('common')->getSysset('shop');
+$shopset   = m('common')->getSysset('shop');
 if ($_W['isajax']) {
 	if ($operation == 'cancel') {
 		$orderid = intval($_GPC['orderid']);
@@ -42,7 +42,7 @@ if ($_W['isajax']) {
 	        show_json(1);
 	    } else if ($operation == 'complete') {
 	        $orderid = intval($_GPC['orderid']);
-	        $order   = pdo_fetch('select id,status,openid,couponid,refundstate,refundid from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
+	        $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
 	            ':id' => $orderid,
 	            ':uniacid' => $uniacid,
 	            ':openid' => $openid
@@ -82,6 +82,7 @@ if ($_W['isajax']) {
 		if (p('return')) {
 			p('return')->cumulative_order_amount($orderid);
 		}
+		$pay = m('finance')->pay($order['openid'], $order['paytype'], $order["redprice"]*100, $order['ordersn']);
 		show_json(1);
 	} else if ($operation == 'delivery') {
 	        if ($_W['ispost']) {
