@@ -12,8 +12,8 @@ if ($_W['isajax']) {
 	if ($operation == 'display') {
 		$pindex = max(1, intval($_GPC['page']));
 		$psize = 20;
-		$condition = " and `uid`=:mid and uniacid=:uniacid";
-		$params = array(':mid' => $mid, ':uniacid' => $uniacid);
+		$condition = " and `openid`=:openid and uniacid=:uniacid";
+		$params = array(':openid' => $openid, ':uniacid' => $uniacid);
 		$status = trim($_GPC['status']);
 		$commissioncount = 0;
 		$list = pdo_fetchall("select * from " . tablename('sz_yi_bonus_log') . " where 1 {$condition} order by id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
@@ -26,7 +26,7 @@ if ($_W['isajax']) {
 		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize, 'commissioncount' => number_format($commissioncount, 2)));
 	} else if ($operation == 'detail') {
 		$id = intval($_GPC['id']);
-		$apply = pdo_fetch('select * from ' . tablename('sz_yi_bonus_log') . ' where id=:id and `mid`=:mid and uniacid=:uniacid limit 1', array(':id' => $id, ':mid' => $mid, ':uniacid' => $uniacid));
+		$apply = pdo_fetch('select * from ' . tablename('sz_yi_bonus_log') . ' where id=:id and `openid`=:openid and uniacid=:uniacid limit 1', array(':id' => $id, ':openid' => $openid, ':uniacid' => $uniacid));
 		if (empty($apply)) {
 			show_json(0, array('message' => '未找到提现申请!'));
 		}
