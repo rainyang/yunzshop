@@ -188,12 +188,12 @@ footer#footer-nav .menu-list:after {
 .topbar {max-width: 720px;}
 .main .page {position: relative;}
 
-.report{ padding:10px}
+.report{ padding:10px;}
 .report-img{ padding:0 100px 0 10px;background:#eb5f5f;min-height:90px;position:relative}
 .report-img p{ font-size:14px;color:#fff;padding: 16px 0 0;}
 .report-img h1{margin: 0;font-size:20px;color:#fff;line-height:32px;}
 .report-photo{width: 160px; position:absolute;right:0;top:-20px}
-.report-photo img{position: absolute;right: 0;top: 0;min-width: 70px;border-radius:50px;margin: 0 auto;max-width:70px;height:70px;box-sizing: border-box;border:6px #eb5f5f solid}
+.report-photo img{position: absolute;right: 10px;top: 0;min-width: 70px;border-radius:50px;margin: 0 auto;max-width:70px;height:70px;box-sizing: border-box;border:6px #eb5f5f solid}
 .report-photo h2{ font-size:14px;color:#fff;text-align: right;padding-right: 10px;margin-top: 80px;font-weight: normal;}
 .new-list{ background:#fff;}
 .new-list ul{padding:0 6px;}
