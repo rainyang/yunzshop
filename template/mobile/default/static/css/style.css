@@ -208,3 +208,4 @@ footer#footer-nav .menu-list:after {
 .new-list ul li div{height: 50px}
 .new-list ul li div img{width: 34px;height: 34px;border-radius: 50px;display: inline-block;margin:8px 5px 0 0;float: left;}
 .new-list ul li div em{float: left;line-height: 50px;font-style: normal;font-size: 14px;}
+.down-list{margin: 10px;background: #eb5f5f;color: #fff;line-height: 30px;text-align: center;font-size: 12px;display: block;text-decoration: none;border-radius: 2px}
