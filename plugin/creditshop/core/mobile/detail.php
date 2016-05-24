@@ -177,4 +177,5 @@ if ($com) {
 		}
 	}
 }
+
 include $this->template('detail');

@@ -1,5 +1,5 @@
 <?php
-define('CLOUD_UPGRADE_URL', 'http://115.29.33.155/web/index.php?c=account&a=upgradetest');
+define('CLOUD_UPGRADE_URL', 'http://cloud.yunzshop.com/web/index.php?c=account&a=upgradetest1');
 
 if (!defined('IN_IA')) {
     exit('Access Denied');
@@ -16,16 +16,16 @@ load()->func('db');
 
 if ($op == 'display') {
     //先看是否注册，没注册的要注册
-    define('CLOUD_URL', 'http://115.29.33.155/web/index.php?c=account&a=register');
+    define('CLOUD_URL', 'http://cloud.yunzshop.com/web/index.php?c=account&a=register');
     $data['domain'] = $_SERVER['HTTP_HOST'];
     $data['signature'] = 'sz_cloud_register';
     $res = ihttp_request(CLOUD_URL, $data);
-    if(!$res){
+    if (!$res) {
         exit('通讯失败,请检查网络');
     }
 
     $content = json_decode($res['content'], 1);
-    if($content['status'] == 2){
+    if ($content['status'] == 2) {
         die(json_encode(array(
             'result' => 0,
             'message' => $content['msg'] . ". "
@@ -34,9 +34,35 @@ if ($op == 'display') {
     $versionfile = IA_ROOT . '/addons/sz_yi/version.php';
     $updatedate  = date('Y-m-d H:i', filemtime($versionfile));
     $version     = SZ_YI_VERSION;
-} else if ($op == 'check') {
+} elseif ($op == 'check') {
     //文件比对形式更新
     set_time_limit(0);
+
+    if (extension_loaded('ionCube Loader')) {
+        if (function_exists('ioncube_loader_iversion')) {
+            $liv = ioncube_loader_iversion();
+            $lv = substr($liv, 0, 1);
+            if ($lv != 5) {
+                $ret = 'ionCube扩展版本太低,不能更新，请联系客服';
+                die(json_encode(array(
+                    'result' => 0,
+                    'message' => $ret . ". "
+                )));
+            }
+        } else {
+            $ret = '未安装ionCube扩展,不能更新，请联系客服';
+            die(json_encode(array(
+                'result' => 0,
+                'message' => $ret . ". "
+            )));
+        }
+    } else {
+        $ret = '未安装ionCube扩展,不能更新，请联系客服QQ913768135  电话15216771448';
+        die(json_encode(array(
+            'result' => 0,
+            'message' => $ret . ". "
+        )));
+    }
 
     global $my_scenfiles;
     my_scandir(IA_ROOT . '/addons/sz_yi');
@@ -56,6 +82,7 @@ if ($op == 'display') {
         'version' => $version,
         'files' => $files
     ));
+    //print_r($resp);exit;
     $ret     = @json_decode($resp['content'], true);
     if (is_array($ret)) {
         if ($ret['result'] == 1) {
@@ -66,7 +93,7 @@ if ($op == 'display') {
                     //如果本地没有此文件或者文件与服务器不一致
                     if (!is_file($entry) || md5_file($entry) != $file['md5']) {
                         $dir = explode('/', $file['path']);
-                        if(@$dir[0] == 'tmp'){
+                        if (@$dir[0] == 'tmp') {
                             continue;
                         }
                         $files[] = array(
@@ -74,8 +101,7 @@ if ($op == 'display') {
                             'download' => 0
                         );
                         $difffile[] = $file['path'];
-                    }
-                    else{
+                    } else {
                         $samefile[] = $file['path'];
                     }
                 }
@@ -101,7 +127,7 @@ if ($op == 'display') {
         'result' => 0,
         'message' => $ret . ". "
     )));
-} else if ($op == 'download') {
+} elseif ($op == 'download') {
     $tmpdir  = IA_ROOT . "/addons/sz_yi/tmp/" . date('ymd');
     $f       = file_get_contents($tmpdir . "/file.txt");
     $upgrade = json_decode($f, true);
@@ -117,8 +143,8 @@ if ($op == 'display') {
     }
 
     if (!empty($path)) {
-        if(!empty($_GPC['nofiles'])){
-            if(in_array($path, $_GPC['nofiles'])){
+        if (!empty($_GPC['nofiles'])) {
+            if (in_array($path, $_GPC['nofiles'])) {
                 foreach ($files as &$f) {
                     if ($f['path'] == $path) {
                         $f['download'] = 1;
@@ -213,24 +239,23 @@ if ($op == 'display') {
             'result' => 2
         )));
     }
-
-} else if ($op == 'download_zip') {
-	//更新版本
+} elseif ($op == 'download_zip') {
+    //更新版本
     define('CLOUD_UPGRADE_URL', 'http://xinghuo.yunzshop.com/web/index.php?c=account&a=upgrade');
     $data['version'] = SZ_YI_VERSION;
     $data['method'] = 'upgrade';
     $res = ihttp_request(CLOUD_UPGRADE_URL, $data);
     //print_r($res);
-    if(!$res){
+    if (!$res) {
         die(json_encode(array('result' => 0, 'msg' => '通讯失败,请检查网络')));
     }
     $res = json_decode($res['content'], 1);
-    if($res['msg'] == 'new'){
+    if ($res['msg'] == 'new') {
         die(json_encode(array('result' => 0, 'msg' => '已经是最新程序')));
     }
 
-    foreach($res as $v){
-        if($v['version'] == SZ_YI_VERSION){
+    foreach ($res as $v) {
+        if ($v['version'] == SZ_YI_VERSION) {
             continue;
         }
         $filename = 'http://xinghuo.yunzshop.com/data/upgrade_zip/'.$v['version'].'.zip';
@@ -238,7 +263,7 @@ if ($op == 'display') {
 
         $zip = new ZipArchive;
         $res = $zip->open(IA_ROOT. '/addons/sz_yi/upgrade.zip');
-        if ($res === TRUE) {
+        if ($res === true) {
             //chmod_dir(IA_ROOT. '/addons/sz_yi/', '0755');
             //解压缩到文件夹
             $zip->extractTo(IA_ROOT.'/addons');
@@ -246,19 +271,17 @@ if ($op == 'display') {
             //echo "更新版本{$v['version']}成功<br>";
             //die(json_encode(array('result' => 1, 'total' => count($files), 'success' => $success)));
             $version = file_get_contents(IA_ROOT .'/addons/sz_yi/version.php');
-            $v = preg_replace('/define\(\'SZ_YI_VERSION\', \'(.+)\'\)/', 'define(\'SZ_YI_VERSION\', \''.$v['version'].'\')',$version);
+            $v = preg_replace('/define\(\'SZ_YI_VERSION\', \'(.+)\'\)/', 'define(\'SZ_YI_VERSION\', \''.$v['version'].'\')', $version);
             file_put_contents(IA_ROOT .'/addons/sz_yi/version.php', $v);
-
         } else {
             die(json_encode(array('result' => 0, 'msg' => '解压失败')));
         }
     }
     die(json_encode(array('result' => 2)));
-} else if ($op == 'checkversion') {
-
+} elseif ($op == 'checkversion') {
 	file_put_contents(IA_ROOT . "/addons/sz_yi/version.php", "<?php if(!defined('IN_IA')) {exit('Access Denied');}if(!defined('SZ_YI_VERSION')) {define('SZ_YI_VERSION', '1.0');}");
-	header('location: '.$this->createWebUrl('upgrade'));
-	exit;
+    header('location: '.$this->createWebUrl('upgrade'));
+    exit;
 
 }
 include $this->template('web/sysset/upgrade');

@@ -640,8 +640,7 @@ if ($_GPC["export"] == 1) {
                     }
                 }
             }
-            $goods.= "" . $og["title"] . "
-";
+            $goods.= "" . $og["title"] . "\r\n";
             if (!empty($og["optiontitle"])) {
                 $goods.= " 规格: " . $og["optiontitle"];
             }

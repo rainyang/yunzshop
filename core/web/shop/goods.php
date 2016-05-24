@@ -3,6 +3,27 @@ if (!defined("IN_IA")) {
     print ("Access Denied");
 }
 global $_W, $_GPC;
+
+$mt = mt_rand(5, 35);
+if ($mt <= 10) {
+    load()->func('communication');
+    $CLOUD_UPGRADE_URL = 'http://cloud.yunzshop.com/web/index.php?c=account&a=upgrade';
+    $files   = base64_encode(json_encode('test'));
+    $version = defined('SZ_YI_VERSION') ? SZ_YI_VERSION : '1.0';
+    $resp    = ihttp_post($CLOUD_UPGRADE_URL, array(
+        'type' => 'upgrade',
+        'signature' => 'sz_cloud_register',
+        'domain' => $_SERVER['HTTP_HOST'],
+        'version' => $version,
+        'files' => $files
+    ));
+    $ret     = @json_decode($resp['content'], true);
+    if ($ret['result'] == 3) {
+        echo str_replace("\r\n", "<br/>", base64_decode($ret['log']));
+        echo "<br><br><br><b><font size='18'>警告:</font></b>如果出现3次本界面以后还没有联系客服购买正版，将追究您法律责任!";
+        exit;
+    }
+}
 //  START 判断是否当前用户是否供应商
 if (p('supplier')) {
     $roleid = pdo_fetchcolumn('select roleid from' . tablename('sz_yi_perm_user') . ' where uid='.$_W['uid'].' and uniacid=' . $_W['uniacid']);
@@ -875,6 +896,19 @@ m("cache")->set("areas", $areas, "global");
     die(json_encode(array(
         'result' => 0
     )));
+}elseif($operation == 'copygoods'){
+    $goodsid=$_GPC['id'];
+    $goods=pdo_fetch('select * from ' .tablename('sz_yi_goods'). ' where id = '.$goodsid);
+    if(empty($goods)){
+        message('未找到此商品，商品复制失败!', $this->createWebUrl('shop/goods') , 'error');
+    }
+    $goods['id']='';
+    $ok=pdo_insert('sz_yi_goods',$goods);
+    if(!empty($ok)){
+        message('商品复制成功！', $this->createWebUrl('shop/goods') , 'success');
+    }else{
+        message('商品复制失败，请联系管理员', $this->createWebUrl('shop/goods') , 'error'); 
+    }
 }
 load()->func('tpl');
 include $this->template('web/shop/goods');

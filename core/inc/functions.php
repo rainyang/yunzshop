@@ -2,35 +2,13 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-
-function icheck_gpc($var)
-{
-    if (is_array($var)) {
-        foreach ($var as $key => $value) {
-            $var[stripslashes($key)] = icheck_gpc($value);
-        }
-    } else {
-        $var = inject_check($var);
-        if ($var) {
-            exit('非法参数');
-        }
-    }
-    return $var;
-}
-
-/**
- * 校验防止SQL注入
- */
-function inject_check($sql_str)
-{
-    return preg_match('/eval|select|insert|update|delete|\'|\/\*|\*|\.\.\/|\.\/|union|into|load_file|outfile/i', $sql_str);
-}
+load()->func('tpl');
 
 function sz_tpl_form_field_date($name, $value = '', $withtime = false)
 {
-	$s = '';
-	if (!defined('TPL_INIT_DATA')) {
-		$s = '
+    $s = '';
+    if (!defined('TPL_INIT_DATA')) {
+        $s = '
 			<script type="text/javascript">
 				require(["datetimepicker"], function(){
 					$(function(){
@@ -302,6 +280,7 @@ function byte_format($input, $dec = 0)
 }
 function save_media($url)
 {
+    load()->func('file');
     $config = array(
         'qiniu' => false
     );
@@ -321,6 +300,10 @@ function save_media($url)
         return $url;
     }
     return $url;
+}
+function save_remote($url)
+{
+    
 }
 function is_array2($array)
 {
@@ -567,7 +550,7 @@ if(!function_exists('tpl_form_field_category_3level')){
     }
 }
 
-if(!function_exists('tpl_form_field_category_2level')){
+if(function_exists('tpl_form_field_category_2level') == false){
     function tpl_form_field_category_2level($name, $parents, $children, $parentid, $childid, $thirdid){
         return tpl_form_field_category_level2($name, $parents, $children, $parentid, $childid, $thirdid);
     }

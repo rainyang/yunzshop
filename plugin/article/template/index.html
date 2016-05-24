@@ -825,25 +825,26 @@ $(function(){
                         <div class="line2" style="margin-right: 10px;">
                             <div class="input-group form-group">
                                 <span class="input-group-addon">奖励规则&nbsp;&nbsp;&nbsp;&nbsp;每人每天奖励</span>
-                                <input type="text" name="article_rule_daynum"  class="form-control judge" value="{if $aid}{$article['article_rule_daynum']}{/if}" placeholder="2">
+                                <input type="text" name="article_rule_daynum"  style="width: 60px" class="form-control judge" value="{if $aid}{$article['article_rule_daynum']}{/if}" placeholder="2">
                                 <span class="input-group-addon" style="border-left: 0px; border-right: 0px;">次&nbsp;&nbsp;每人总共奖励</span>
-                                <input type="text" name="article_rule_allnum"  class="form-control judge" value="{if $aid}{$article['article_rule_allnum']}{/if}" placeholder="6">
+                                <input type="text" name="article_rule_allnum" style="width: 60px" class="form-control judge" value="{if $aid}{$article['article_rule_allnum']}{/if}" placeholder="6">
                                 <span class="input-group-addon" style="border-left: 0px;">次</span>
                             </div>
-                            <span class='help-block'>奖励规则提示：分享后，好友点击进入后，才算成功分享一次。</span>
                         </div>
-                        <div class="line2">
+                    </div>
+                    <div class="line">
+                        <div class="line2" style="padding-left: 70px">
                             <div class="input-group form-group">
-                                <span class="input-group-addon" style="border-right: 0px;">每分享1次可获得</span> 
-                                <input type="text" name="article_rule_credit"  class="form-control judge" value="{if $aid}{$article['article_rule_credit']}{/if}" placeholder="10">
-                                <span class="input-group-addon" style="border-left: 0px; border-right: 0px;">个积分</span> 
-                                <input type="text" name="article_rule_money"  class="form-control judge" value="{if $aid}{$article['article_rule_money']}{/if}" placeholder="0">
-                                <span class="input-group-addon">元余额</span> 
+                                    <span class="input-group-addon" style="border-right: 0px;">每分享1次可获得</span> 
+                                    <input type="text" name="article_rule_credit" style="width: 60px" class="form-control judge" value="{if $aid}{$article['article_rule_credit']}{/if}" placeholder="10">
+                                    <span class="input-group-addon" style="border-left: 0px; border-right: 0px;">个积分</span> 
+                                    <input type="text" name="article_rule_money" style="width: 60px" class="form-control judge" value="{if $aid}{$article['article_rule_money']}{/if}" placeholder="0">
+                                    <span class="input-group-addon">元余额</span> 
                             </div>
                         </div>
-						
-						
-						
+                    </div>
+                    <div class="line" style="padding-left: 80px">
+                        <span class='help-block'>奖励规则提示：分享后，好友点击进入后，才算成功分享一次。</span>
                     </div>
                     <div class="line">
 						<div class="line2">
@@ -871,7 +872,7 @@ $(function(){
                         <div class="line2" style="margin-right: 10px; width: 500px;">
                             <div class="input-group form-group">
                                 <span class="input-group-addon">页面设置</span>
-                                <div class="form-control">
+                                <div class="form-control" style="height: auto">
                                     <label for="page_set_option2" class="checkbox-inline"><input type="checkbox" name="page_set_option_nocopy" value="1" id="page_set_option2" {if $article['page_set_option_nocopy']=='1'}checked="checked"{/if}> 禁止复制链接</label>
                                     <label for="page_set_option3" class="checkbox-inline"><input type="checkbox" name="page_set_option_noshare_tl" value="1" id="page_set_option3" {if $article['page_set_option_noshare_tl']=='1'}checked="checked"{/if}> 禁止分享至朋友圈</label>
                                     <label for="page_set_option1" class="checkbox-inline"><input type="checkbox" name="page_set_option_noshare_msg" value="1" id="page_set_option1" {if $article['page_set_option_noshare_msg']=='1'}checked="checked"{/if}> 禁止分享给好友</label>
@@ -1336,6 +1337,13 @@ $(function(){
 <div class='panel panel-default form-horizontal form'>
     <div class='panel-heading'>其他设置</div>
     <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启文章系统</label>
+                <div class="col-sm-4 col-xs-6">
+                     <label class="radio-inline"><input type="radio"  name="isarticle" value="0" {if $article_sys['isarticle'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline"><input type="radio"  name="isarticle" value="1" {if $article_sys['isarticle'] ==1} checked="checked"{/if} /> 开启</label>
+                </div>
+            </div>
         <div class="form-group" style="padding-top:20px;">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">奖励发放通知</label>
             <div class="col-sm-9 col-xs-12">
@@ -1482,6 +1490,7 @@ $(function(){
 <script>
     $(function(){
         $("#save").click(function(){
+            var isarticle = $("input[name=isarticle]:checked").val();
             var article_message = $("input[name=article_message]").val();
             var article_title = $("input[name=article_title]").val();
             var article_image = $("input[name=article_image]").val();
@@ -1490,7 +1499,7 @@ $(function(){
             var article_text = $("input[name=article_text]").val();
             var article_temp = $("input[name=article_temp]:checked").val();
 
-			
+
 			//读取区域设置的：
 			var article_province = '';
 			$('.tpl-province').each(function(){
@@ -1518,6 +1527,7 @@ $(function(){
                 type: 'POST',
                 url: "{php echo $this->createPluginWebUrl('article',array('method'=>'api','apido'=>'savesys'))}",
                 data: {
+                    isarticle:isarticle,
                     article_message:article_message,
                     article_title:article_title,
                     article_image:article_image,

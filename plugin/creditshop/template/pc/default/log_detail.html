@@ -1,14 +1,14 @@
-{template 'common/header'}
-
+{template 'common/header_center'}
+<link href="../addons/sz_yi/plugin/creditshop/template/mobile/default/images/css.css" rel="stylesheet" type="text/css"/>
 <title>兑换详情</title>
-{template 'common/navigation'}
+
 <style type='text/css'>
     
-       .addorder_user {height:54px;  background:#fff; padding:0 5px; border-bottom:1px solid #eaeaea; margin-top:-5px;}
+       .addorder_user {/*height:54px;  */background:#fff; padding-bottom:10px; border-bottom:1px solid #eaeaea;overflow: hidden;}
     .addorder_user .info .ico { float:left;  height:50px; width:30px; line-height:50px; font-size:26px; text-align:center; color:#666}
     .addorder_user .info .info1 {height:44px; width:100%; float:left;margin-left:-30px;margin-right:-30px;}
     .addorder_user .info .info1 .inner { margin-left:30px;margin-right:30px;overflow:hidden;}
-    .addorder_user .info .info1 .inner .user {height:30px; width:100%; font-size:16px; color:#333; line-height:35px;overflow:hidden;}
+    .addorder_user .info .info1 .inner .user {/*height:30px; */width:100%; font-size:14px; color:#333; line-height:35px;overflow:hidden;}
     .addorder_user .info .info1 .inner .address {height:20px; width:100%; font-size:14px; color:#999; line-height:20px;overflow:hidden;}
     .addorder_user .info .ico2 {height:50px; width:30px;padding-top:15px; float:right; font-size:16px; text-align:right; color:#999;}
    .addorder_user .info .info2{ margin-right: -45px;}
@@ -16,7 +16,7 @@
     .addorder_user .info .ico3 { width:45px;}    
 	.addorder_user .info .ico3 i {font-size:24px; color:#999;}
         .chooser {overflow:auto; width: 100%; background:#efefef; position: fixed; top: 0px; right: -100%; z-index: 999;}
-    .chooser .address {height:50px; background:#fff; padding:10px;; border-bottom:1px solid #eaeaea;}
+    .chooser .address {height:70px; background:#fff; padding:10px;; border-bottom:1px solid #eaeaea;}
     .chooser .address .ico {float:left; height:50px; width:30px; line-height:50px; float:left; font-size:20px; text-align:center; color:#999;}
     .chooser .address .info {height:50px; width:100%;float:left;margin-left:-30px;margin-right:-30px;}
     .chooser .address .info .inner { margin-left:35px;margin-right:30px;}
@@ -62,14 +62,17 @@
     .carrier_input_info .row .info { width:100%;float:right;margin-left:-85px; }
     .carrier_input_info .row .inner { margin-left:85px; }
     .carrier_input_info .row .inner input {height:30px; color:#666;background:transparent;margin-top:0px; width:100%;border-radius:0;padding:0px; margin:0px; border:0px; float:left; font-size:16px;}
-
+ .sp-bg{background: #fff;overflow:hidden;}
+ .info_top{width: 440px;height: 440px;margin:30px;float: left;}
+ .right-sp{width: 700px;float: left;padding: 30px 30px 30px 0;}
+ .info_top img {width: 100%;}
 
 </style>
 <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
 
       
 <div id='address_container'></div>
-<div id='container'></div>
+<div id='container' style="width:1200px;margin:10px auto 0;overflow: hidden;"></div>
 
 <script id='tpl_address_list' type='text/html'>
    
@@ -141,20 +144,16 @@
 
 			<%/each%>
 	</div>
-	
-    <div class="page_topbar">
-    <a href="{php echo $this->createPluginMobileUrl('creditshop/log')}" class="back" ><i class="fa fa-angle-left"></i></a>
-    <a href="{php echo $this->createPluginMobileUrl('creditshop')}" class="btn" ><i class="fa fa-home"></i></a>
-    <div class="title">兑换详情</div>
-</div>
+  <div class="sp-bg">
       <div class="info_top" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%goods.id%>'">
     	<img src="<%goods.thumb%>"/>
-        <div class="info">
-        	<div class="classs"><%goods.subtitle%></div>
+        
+    </div>
+    <div class="right-sp">
+    <div class="info">
+          <div class="classs"><%goods.subtitle%></div>
             <div class="name"><%goods.title%></div>
         </div>
-    </div>
-    
         <div class="info_price">
             <div class="num">
             <%if goods.acttype==0%>
@@ -208,8 +207,10 @@
    
             
         <div class="info_content">
-       
-            <%if goods.isverify==0%>
+	         <%if goods.price>0%>
+          		<div class='ctitle'>商品原价: <span style='color:#f90'>￥<%=goods.price%></span></div>       
+           <%/if%>
+           <%if goods.isverify==0%>
             
       <div class="addorder_user addorder_user_0">
           <input type='hidden' id='addressid' value='<%log.addressid%>' />
@@ -234,77 +235,85 @@
         <%/if%>
       
     </div>
-	 <%else%>
-	 <input type='hidden' id='storeid' value='<%log.storeid%>' />
-	  <div class="carrier_input_info" >
-				<div class="row">
-					<div class='title'>联系人姓名</div>
-					<div class='info'>
-						<div class='inner'><input type="text" placeholder="联系人姓名" id="carrier_realname" value="<%if log.realname==''%><%member.realname%><%else%><%log.realname%><%/if%>" style='height:40px;' <%if log.realname!=''%>readonly<%/if%>/></div>
-					</div>
-				</div>
-				<div class="row">
-					<div class='title'>联系人手机</div>
-					<div class='info'>
-						<div class='inner'><input type="text" placeholder="联系人手机"  id="carrier_mobile"value="<%if log.mobile==''%><%member.mobile%><%else%><%log.mobile%><%/if%>" style='height:40px;' <%if log.mobile!=''%>readonly<%/if%>/></div>
-					</div>
-				</div>
-		</div>
-	 
-	 <%if store%>
-	    <div class="addorder_user" style='border-top:1px solid #e8e8e8; '>
-	    <div class="info address_select" >
+   <%else%>
+   <input type='hidden' id='storeid' value='<%log.storeid%>' />
+    <div class="carrier_input_info" >
+        <div class="row">
+          <div class='title'>联系人姓名</div>
+          <div class='info'>
+            <div class='inner'><input type="text" placeholder="联系人姓名" id="carrier_realname" value="<%if log.realname==''%><%member.realname%><%else%><%log.realname%><%/if%>" style='height:40px;' <%if log.realname!=''%>readonly<%/if%>/></div>
+          </div>
+        </div>
+        <div class="row">
+          <div class='title'>联系人手机</div>
+          <div class='info'>
+            <div class='inner'><input type="text" placeholder="联系人手机"  id="carrier_mobile"value="<%if log.mobile==''%><%member.mobile%><%else%><%log.mobile%><%/if%>" style='height:40px;' <%if log.mobile!=''%>readonly<%/if%>/></div>
+          </div>
+        </div>
+    </div>
+   
+   <%if store%>
+      <div class="addorder_user" style='border-top:1px solid #e8e8e8; '>
+      <div class="info address_select" >
              <div class='info1 info2'>
                  <div class='inner'>
                         <div class="user"><%store.storename%></div>
                         <div class="address"><%store.address%></div>
                  </div>
              </div>
-		<div class="ico2 ico3">
-				<a href="tel:<%store.tel%>"><i class='fa fa-phone fa-2x'></i></a>
-				<a href="http://api.map.baidu.com/marker?location=<%store.lat%>,<%store.lng%>&title=<%store.storename%>&name=<%store.storename%>&content=<%store.address%>&output=html"><i class='fa fa-map-marker  fa-2x'></i></a>
-		</div>
+    <div class="ico2 ico3">
+        <a href="tel:<%store.tel%>"><i class='fa fa-phone fa-2x'></i></a>
+        <a href="http://api.map.baidu.com/marker?location=<%store.lat%>,<%store.lng%>&title=<%store.storename%>&name=<%store.storename%>&content=<%store.address%>&output=html"><i class='fa fa-map-marker  fa-2x'></i></a>
+    </div>
         </div>
-		</div> 
-	 <%else%>
-	         
-	 <div class="addorder_user" id='store_info' style='display:none;'>
-	    <div class="info address_select" >
+    </div> 
+   <%else%>
+           
+   <div class="addorder_user" id='store_info' style='display:none;'>
+      <div class="info address_select" >
              <div class='info1 info2'>
                  <div class='inner'>
                         <div class="user"></div>
                         <div class="address"></div>
                  </div>
              </div>
-		<div class="ico2 ico3">
-				<a href="#" class='tellink'><i class='fa fa-phone fa-2x'></i></a>
-				<a href="#" class='maplink'><i class='fa fa-map-marker  fa-2x'></i></a>
-		</div>
+    <div class="ico2 ico3">
+        <a href="#" class='tellink'><i class='fa fa-phone fa-2x'></i></a>
+        <a href="#" class='maplink'><i class='fa fa-map-marker  fa-2x'></i></a>
+    </div>
         </div>
-		</div> 
-	 
-	   <div class="addorder_user store_select"  id='store_select'>
-			     <div class='info store_select'>
-				<div class='info1'>
-					 <div class='inner'>
-						 <div class="user" style='padding-top:8px;'>请选择兑换门店</div>  
-					 </div>
-				</div>
-				<div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
-	    </div>
-	   </div>
-	 
-	 <%/if%>
-			
-			
-            <%/if%>
-            
-	   <%if goods.price>0%>
-		<div class='ctitle'>商品原价: <span style='color:#f90'>￥<%=goods.price%></span></div>
-       
+    </div> 
+   
+     <div class="addorder_user store_select"  id='store_select'>
+           <div class='info store_select'>
+        <div class='info1'>
+           <div class='inner'>
+             <div class="user" style='padding-top:8px;'>请选择兑换门店</div>  
+           </div>
+        </div>
+        <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+      </div>
+     </div>
+   
+   <%/if%>
+      
+      
             <%/if%>
 			
-            <%if goods.goodsdetail!=''%>
+           
+          
+      <%if goods.isverify==1 && log.status==2 && log.storeid!=0%>
+         <div style='height:40px;'></div>
+          <%/if%>
+    </div>
+  
+       <%if goods.isverify==1 && log.status==2 && log.storeid!=0%>
+               <div class='exchange_confirm'>确认兑换</div>
+        <%/if%>
+      </div>  
+
+<div style="margin:0 30px 30px;overflow: hidden;border-top: 1px #eee solid;width:1140px;padding:10px">
+<%if goods.goodsdetail!=''%>
             <div class='ctitle'>商品简介:</div>
             <%=goods.goodsdetail%>
             <%/if%>
@@ -342,15 +351,11 @@
                 </div>
        
 </fieldset>
-          
-      <%if goods.isverify==1 && log.status==2 && log.storeid!=0%>
-         <div style='height:40px;'></div>
-          <%/if%>
-    </div>
-  
-       <%if goods.isverify==1 && log.status==2 && log.storeid!=0%>
-               <div class='exchange_confirm'>确认兑换</div>
-        <%/if%>
+</div>
+ 
+
+
+      </div>
  </script>
  {template 'pop'}
 <script language="javascript">
