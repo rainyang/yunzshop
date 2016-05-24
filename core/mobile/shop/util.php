@@ -7,6 +7,9 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if ($operation == 'category') {
 	$category = m('shop')->getCategory();
 	show_json(1, array('category' => $category));
+} else if($operation == 'category2'){
+	$category = m('shop')->getCategory2();
+	show_json(1, array('category' => $category));
 } else if ($operation == 'areas') {
 	$areas = m('cache')->getArray('areas', 'global');
 	if (!is_array($areas)) {

@@ -7,6 +7,7 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $member    = m('member')->getMember($openid);
 $trade     = m('common')->getSysset('trade');
+$shopset   = m('common')->getSysset('shop');
 if (!empty($trade['shareaddress']) && is_weixin()) {
     if (!$_W['isajax']) {
         $shareAddress = m('common')->shareAddress();

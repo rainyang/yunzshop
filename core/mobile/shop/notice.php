@@ -6,6 +6,7 @@ global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
 $openid    = m('user')->getOpenid();
+$shopset = m('common')->getSysset('shop');
 if ($_W['isajax']) {
 	if ($operation == 'display') {
 		$pindex = max(1, intval($_GPC['page']));
