@@ -65,22 +65,20 @@
                   </div>
             </div>
             <div class="form-group">
-
-                <div class="col-sm-6">
-
-                    <div class='input-group'>
-
-                        <div class='input-group-addon'>下单时间
-                            <label class='radio-inline' style='margin-top:-7px;'>
-                                <input type='radio' value='0' name='searchtime' {if $_GPC['searchtime']=='0'}checked{/if}>不搜索
-                            </label>
-                            <label class='radio-inline'  style='margin-top:-7px;'>
-                                <input type='radio' value='1' name='searchtime' {if $_GPC['searchtime']=='1'}checked{/if}>搜索
-                            </label>
+                    <div class="col-sm-6">
+                        <div class='input-group'>
+                            <div class='input-group-addon'>下单时间
+                                <label class='radio-inline' style='margin-top:-7px;'>
+                                    <input type='radio' value='0' name='searchtime' {if $_GPC['searchtime']=='0'}checked{/if}>不搜索
+                                </label>
+                                <label class='radio-inline'  style='margin-top:-7px;'>
+                                    <input type='radio' value='1' name='searchtime' {if $_GPC['searchtime']=='1'}checked{/if}>搜索
+                                </label>
+                            </div>
+                            {php echo tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d H:i', $starttime),'endtime'=>date('Y-m-d H:i', $endtime)),true);}
                         </div>
-                        {php echo tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d H:i', $starttime),'endtime'=>date('Y-m-d H:i', $endtime)),true);}
-
-						<div class='input-group-addon'>完成时间
+                        <div class='input-group'>
+						  <div class='input-group-addon'>完成时间
                             <label class='radio-inline' style='margin-top:-7px;'>
                                 <input type='radio' value='0' name='fsearchtime' {if $_GPC['fsearchtime']=='0'}checked{/if}>不搜索
                             </label>
@@ -89,16 +87,12 @@
                             </label>
                         </div>
                         {php echo tpl_form_field_daterange('ftime', array('starttime'=>date('Y-m-d H:i', $fstarttime),'endtime'=>date('Y-m-d H:i', $fendtime)),true);}
+                        </div>
                     </div>
-
-                </div>
-
             </div>
 
             <div class="form-group">
-
                 <div class="col-sm-6">
-
                     <div class='input-group'>
                         <div class='input-group-addon'>付款时间
                             <label class='radio-inline' style='margin-top:-7px;'>
@@ -109,7 +103,8 @@
                             </label>
                         </div>
                         {php echo tpl_form_field_daterange('ptime', array('starttime'=>date('Y-m-d H:i', $pstarttime),'endtime'=>date('Y-m-d H:i', $pendtime)),true);}
-
+                    </div>
+                    <div class='input-group'>
                         <div class='input-group-addon'>发货时间
                             <label class='radio-inline' style='margin-top:-7px;'>
                                 <input type='radio' value='0' name='ssearchtime' {if $_GPC['ssearchtime']=='0'}checked{/if}>不搜索
@@ -120,9 +115,7 @@
                         </div>
                         {php echo tpl_form_field_daterange('stime', array('starttime'=>date('Y-m-d H:i', $sstarttime),'endtime'=>date('Y-m-d H:i', $sendtime)),true);}
                     </div>
-
                 </div>
-
                 {if !empty($agentid) && $level>0}   
                 <div class="col-sm-3">
                     <div class='input-group'>
@@ -153,14 +146,20 @@
     </div>
 </div>
 
- 
+        <table class='table' style='float:left;margin-bottom:0;table-layout: fixed;line-height: 40px;height: 40px'>
+                 <tr class='trhead'>
+                    <td colspan='8' style="text-align: left;">
+                        订单数: {$total}  订单金额: <span style="color:red">{if $totalmoney>0}{$totalmoney}{else}0{/if}</span>元&nbsp;{if $perm_role == 1}结算金额: <span style="color:red">{if $costmoney>0}{$costmoney}</span>元 &nbsp;<a class="btn btn-default" href="{php echo $this->createWebUrl('order/list',array('applytype'=>1))}">提现</a><a class='btn btn-default' onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('order/list',array('applytype'=>2));}">微信提现</a>{else}没有可提现金额{/if}{/if}                        
+                    </td>
+                </tr>
+        </table>
         <table class='table' style='float:left;margin-bottom:5px;table-layout: fixed;line-height: 40px;height: 40px'>
-                <tr class='trhead'>
-                    <td colspan='2' style='/*width:520px;*/text-align: left'>订单数: {$total}  订单金额: <span style="color:red">{if $totalmoney>0}{$totalmoney}{else}0{/if}</span>元&nbsp;{if $perm_role == 1}结算金额: <span style="color:red">{if $costmoney>0}{$costmoney}</span>元 &nbsp;<a class="btn btn-default" href="{php echo $this->createWebUrl('order/list',array('applytype'=>1))}">提现</a><a class='btn btn-default' onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('order/list',array('applytype'=>2));}">微信提现</a>{else}没有可提现金额{/if}{/if}</td>
-                    <td style='/*width:150px;*/text-align:left;'>单价/数量</td>
+                <tr class='trhead' style='line-height: 40px'>
+                    <td colspan='2'style="width: 19%;text-align:left;">商品</td>
+                    <td style='text-align:left;'>单价/数量</td>
                     <td>买家</td>
                     <td>支付方式/配送方式</td>
-                    <td style='width:18%;'>价格</td>             
+                    <td>价格</td>             
                     <td>状态</td>
                     <td>操作</td>
                 </tr>
