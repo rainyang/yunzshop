@@ -370,6 +370,20 @@
     </div>
 </div>
 <div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">红包价格</label>
+    <div class="col-sm-6 col-xs-12">
+        {ife 'shop.goods' $item}
+        <div class="input-group">
+            <input type="text" name="redprice" id="redprice" class="form-control" value="{$item['redprice']}" />
+            <span class="input-group-addon"></span>
+        </div>
+    <div class='help-block'>只填写数字为指定金额：10 ; 填写数字后带‘%’为现价百分比：10% ; 填写区间‘-’为此区间随机金额：10-50; 注意：红包金额最大不得超过200元。</div>
+        {else}
+         <div class='form-control-static'>{$item['redprice']} </div>
+        {/if}
+    </div>
+</div>
+<div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">重量</label>
     <div class="col-sm-6 col-xs-12">
         {ife 'shop.goods' $item}
