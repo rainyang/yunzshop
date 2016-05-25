@@ -506,6 +506,10 @@ if(!pdo_fieldexists('sz_yi_order_refund', 'rtype')) {
 if(!pdo_fieldexists('sz_yi_order_refund', 'imgs')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `imgs` text DEFAULT '';");
 }
+if(!pdo_fieldexists('sz_yi_order_refund', 'refundtime')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `refundtime` INT(11) DEFAULT '0';");
+}
+
 pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_refund_address'). " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
