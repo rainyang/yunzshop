@@ -288,18 +288,18 @@
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">使用时间限制</label>
                 
                     {ife 'coupon.coupon.edit' $item}
-                    <div class="col-sm-3">
+                    <div class="col-sm-5">
                     <div class='input-group'>
                         <span class='input-group-addon'>
                              <label class="radio-inline" style='margin-top:-5px;' ><input type="radio" name="timelimit" value="0" {if $item['timelimit']==0}checked{/if}>获得后</label>
                         </span>
                    
-                     <input type='text' class='form-control' style="width:50px;" name='timedays' value="{$item['timedays']}" />
+                     <input type='text' class='form-control' style="width:80px;" name='timedays' value="{$item['timedays']}" />
                      <span class='input-group-addon'>天内有效(空为不限时间使用)</span>
                       </div>
                      </div>
                     
-                     <div class="col-sm-2">
+                     <div class="col-sm-5">
                     <div class='input-group'>
                         <span class='input-group-addon'>
                              <label class="radio-inline" style='margin-top:-5px;' ><input type="radio" name="timelimit" value="1" {if $item['timelimit']==1}checked{/if}>日期</label>
@@ -351,11 +351,11 @@
                               {ife 'coupon.coupon' $item}
                             <div class="input-group">
 			  <span class="input-group-addon">每个限领</span>
-			  <input type='text' class='form-control' value="{$item['getmax']}" name='getmax'/>
+			  <input type='text' class='form-control' value="{$item['getmax']}" name='getmax' style="width: 80px" />
                                 <span class="input-group-addon">张 消耗</span>
-                             <input type='text' class='form-control' value="{$item['credit']}" name='credit'/>
+                             <input style="width: 80px"  type='text' class='form-control' value="{$item['credit']}" name='credit'/>
                              <span class="input-group-addon">积分 + 花费</span>
-                                <input type='text' class='form-control' value="{$item['money']}" name='money'/>
+                                <input style="width: 80px"  type='text' class='form-control' value="{$item['money']}" name='money'/>
                               <span class="input-group-addon">元&nbsp;&nbsp;
                                   <label class="checkbox-inline" style='margin-top:-8px;'>
                                     <input type="checkbox" name='usecredit2' value="1" {if $item['usecredit2']==1}checked{/if} /> 优先使用余额支付
