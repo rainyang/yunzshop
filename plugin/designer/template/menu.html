@@ -40,31 +40,31 @@
 <div class='panel panel-default'>
     <div class='panel-heading'> 自定义菜单管理 (总数: {$menusnum})</div>
     <div class='panel-body'>
-        <table class="table" style="width:1240px;">
+        <table class="table" >
             <thead>
                 <tr>
-                    <th style="width:60px; text-align: center;">ID</th>
-                    <th style="width:350px">菜单名称</th>
-                    <th style="width:150px; text-align: center;">创建时间</th>
-                    <th style="width:100px; text-align: center;">是否默认</th>
-                    <th style="width:190px; text-align: center;">操作</th>
+                    <th style="width:10%; text-align: center;">ID</th>
+                    <th style="width:48%">菜单名称</th>
+                    <th style="width:14%; text-align: center;">创建时间</th>
+                    <th style="width:14%; text-align: center;">是否默认</th>
+                    <th style="width:14%; text-align: center;">操作</th>
                 </tr>
             </thead>
             <tbody>
                 {if !empty($menus)}
                     {loop $menus $menu}
                         <tr menuid="{$menu['id']}">
-                            <td style="width:60px; text-align: center;">{$menu['id']}</td>
+                            <td style="width:10%; text-align: center;">{$menu['id']}</td>
                             <td>{$menu['menuname']}</td>
-                            <td style="width:150px; text-align:  center;">{php echo date('Y-m-d H:i',$menu['createtime'])}</td>
-                            <td style="width:100px; text-align:  center;" data-id="{$menu['id']}">
+                            <td style="width:14%; text-align:  center;">{php echo date('Y-m-d H:i',$menu['createtime'])}</td>
+                            <td style="width:14%; text-align:  center;" data-id="{$menu['id']}">
                                  {if $menu['isdefault']==1}
                                       <label class='label label-success' style="cursor: pointer;" title="点击关闭" data-do="off" onclick="setdefault(this,{$menu['id']})">已启用</label>
                                  {else}
                                       <label class='label label-default' style="cursor: pointer;" title="点击开启" data-do="on" onclick="setdefault(this,{$menu['id']})">未启用</label>
                                  {/if}
                             </td>
-                            <td style="width:150px; text-align:  center;">
+                            <td style="width:14%; text-align:  center;">
                              
                                 {ifp 'designer.menu.edit'}<a class='btn btn-default' href="{php echo $this->createPluginWebUrl('designer/menu',array('op'=>'post','menuid'=>$menu['id']))}">编辑</a>{/if}
                                 {ifp 'designer.menu.delete'}<a class='btn btn-default'  href="javascript:;" onclick="delmenu({$menu['id']})">删除</a>{/if}
