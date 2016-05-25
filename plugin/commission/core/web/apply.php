@@ -280,7 +280,15 @@ if (checksubmit('submit_pay') && $apply['status'] == 2) {
 	if ($apply['type'] == 1) {
 		$pay *= 100;
 	}
-	$result = m('finance')->pay($member['openid'], $apply['type'], $pay, $apply['applyno']);
+
+	if ($pay <= 20000 && $pay > 0) { 
+		//200元以下微信红包		
+		$result = m('finance')->sendredpack($member['openid'], $pay, $desc = '佣金提现金额', $act_name = '佣金提现金额', $remark = '佣金提现金额以红包形式发送');
+	} else {
+		//大于200元微信钱包
+		$result = m('finance')->pay($member['openid'], $apply['type'], $pay, $apply['applyno']);
+	}
+	
 	if (is_error($result)) {
 		if (strexists($result['message'], '系统繁忙')) {
 			$updateno['applyno'] = $apply['applyno'] = m('common')->createNO('commission_apply', 'applyno', 'CA');

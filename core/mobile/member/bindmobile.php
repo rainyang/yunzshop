@@ -50,34 +50,35 @@ if ($_W['isajax']) {
                 pdo_delete('sz_yi_member', array('openid' => $oldopenid));
                 $mc_member = pdo_fetch('select * from ' . tablename('mc_mapping_fans') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $oldopenid));
                 if (!empty($mc_member)) {
-                    pdo_delete('mc_mapping_fans', array('openid' => $oldopenid));
+                    pdo_delete('mc_mapping_fans', array('openid' => $oldopenid, 'uniacid' => $_W['uniacid']));
                     if (!empty($mc_member['uid'])) {
-                        pdo_delete('mc_members', array('uid' => $mc_member['uid']));
+                        pdo_delete('mc_members', array('uid' => $mc_member['uid'], 'uniacid' => $_W['uniacid']));
                     }
                 }
 
                 //更新微信记录里的手机号等为pc的手机号
                 $member = pdo_fetch('select mobile, pwd, credit1, credit2 from ' . tablename('sz_yi_member') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
                 $data = array('isbindmobile' => 1);
-                if ($member['mobile'] != $mc['mobile'] || empty($member['mobile'])) {
+                if ($member['mobile'] != $mc['mobile'] || !empty($mc['mobile'])) {
                     $data['mobile'] = $mc['mobile'];
                 }
-                if (empty($member['pwd']) && !empty($mc['password'])) {
+                if (!empty($mc['password'])) {
                     $data['pwd'] = md5($mc['password']);
                 } elseif (empty($member['pwd']) && !empty($info['pwd'])) {
                     $data['pwd'] = $info['pwd'];
                 }
-
-                if ($info['credit1'] > 0) {
-                    $data['credit1'] = $member['credit1'] + $info['credit1'];
+                //获取积分
+                $credit1 = m('member')->getCredit($oldopenid, 'credit1');
+                if ($credit1 > 0) {
+                    m('member')->setCredit($openid, 'credit1', $credit1);
                 }
-
-                if ($info['credit2'] > 0) {
-                    $data['credit2'] = $member['credit2'] + $info['credit2'];
+                //获取余额
+                $credit2 = m('member')->getCredit($oldopenid, 'credit2');
+                if ($credit2 > 0) {
+                    m('member')->setCredit($openid, 'credit2', $credit2);
                 }
                 pdo_update('sz_yi_member', $data, array('openid' => $openid, 'uniacid' => $_W['uniacid']));
             }
-            
             
             show_json(1, array(
                 'preurl' => $preUrl
