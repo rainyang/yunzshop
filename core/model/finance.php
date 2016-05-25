@@ -31,6 +31,7 @@ class Sz_DYi_Finance {
             $row = pdo_fetch($sql, array(
                 ':uniacid' => $_W['uniacid']
             ));
+
             $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers';
             $pars = array();
             $pars['mch_appid'] = $row['key'];
@@ -47,6 +48,7 @@ class Sz_DYi_Finance {
             foreach ($pars as $k => $v) {
                 $string1.= "{$k}={$v}&";
             }
+
             $string1.= "key=" . $wechat['apikey'];
             $pars['sign'] = strtoupper(md5($string1));
             $xml = array2xml($pars);

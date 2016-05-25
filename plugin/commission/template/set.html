@@ -61,7 +61,18 @@
                     <span class='help-block'>开启分销内购，分销商自己购买商品，享受一级佣金，上级享受二级佣金，上上级享受三级佣金</span>
                 </div>
             </div>
-            
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">佣金计算方式</label>
+                <div class="col-sm-4">
+                    <select  class="form-control" name="setdata[culate_method]">
+                        <option value="0" {if empty($set['culate_method'])}selected{/if}>实付款金额</option>
+                        <option value="1" {if $set['culate_method']==1}selected{/if}>商品原价</option>
+                        <option value="2" {if $set['culate_method']==2}selected{/if} >商品现价</option>
+                        <option value="3" {if $set['culate_method']==3}selected{/if} >商品成本价</option>
+                        <option value="4" {if $set['culate_method']==4}selected{/if} >商品利润（实付款金额-成本价）</option>
+                    </select>
+                </div>
+            </div>
         </div>
         <div class='panel-heading'>
             分销设置

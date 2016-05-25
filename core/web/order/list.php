@@ -1602,7 +1602,7 @@ function order_list_finish($zym_var_32) {
     if (p("coupon") && !empty($zym_var_32["couponid"])) {
         p("coupon")->backConsumeCoupon($zym_var_32["id"]);
     }
-    
+
     if (p("commission")) {
         p("commission")->checkOrderFinish($zym_var_32["id"]);
     }
@@ -1610,6 +1610,7 @@ function order_list_finish($zym_var_32) {
     if (p("return")) {
         p("return")->cumulative_order_amount($zym_var_32["id"]);
     }
+
     
     if ($zym_var_32["redprice"] > 0) {
         m('finance')->sendredpack($zym_var_32['openid'], $zym_var_32["redprice"]*100, $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
