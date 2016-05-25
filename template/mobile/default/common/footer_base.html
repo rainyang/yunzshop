@@ -87,12 +87,14 @@
  {php $shopset = m('common')->getSysset('shop')}{php echo htmlspecialchars_decode($shopset['diycode'])} 
  </span>
 		<script language='javascript'>
+/*
 	$(function(){
 		$.ajax({
 			url: "{php echo $this->createMobileUrl('runtasks')}",
 			cache:false 
 		});
 	})
+    */
 </script>
  <script>
      require(['http://res.wx.qq.com/open/js/jweixin-1.0.0.js'],function(wx){
