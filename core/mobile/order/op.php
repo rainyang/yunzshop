@@ -82,12 +82,13 @@ if ($_W['isajax']) {
 		if (p('commission')) {
 			p('commission')->checkOrderFinish($orderid);
 		}
+
 		if (p('return')) {
 			p('return')->cumulative_order_amount($orderid);
 		}
-		if($order['redprice'] > 0)
-		{
-			$pay = m('finance')->pay($order['openid'], $order['paytype'], $order["redprice"]*100, $order['ordersn']);
+
+		if($order['redprice'] > 0) {
+			m('finance')->sendredpack($order['openid'], $order["redprice"]*100, $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
 		}
 
 		show_json(1);

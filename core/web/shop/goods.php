@@ -43,7 +43,7 @@ $pluginbonus = p("bonus");
 $bonus_start = 0;
 if(!empty($pluginbonus)){
     $bonus_set = $pluginbonus->getSet();
-    if(!empty($bonus_set['start'])){
+    if(!empty($bonus_set['start']) || !empty($bonus_set['area_start'])){
         $bonus_start = 1;
     }
 }

@@ -1602,13 +1602,20 @@ function order_list_finish($zym_var_32) {
     if (p("coupon") && !empty($zym_var_32["couponid"])) {
         p("coupon")->backConsumeCoupon($zym_var_32["id"]);
     }
+
     if (p("commission")) {
         p("commission")->checkOrderFinish($zym_var_32["id"]);
     }
-     if (p("return")) {
+
+    if (p("return")) {
         p("return")->cumulative_order_amount($zym_var_32["id"]);
     }
-    $pay = m('finance')->pay($zym_var_32['openid'], $zym_var_32['paytype'], $zym_var_32["redprice"]*100, $zym_var_32['ordersn']);
+
+    
+    if ($zym_var_32["redprice"] > 0) {
+        m('finance')->sendredpack($zym_var_32['openid'], $zym_var_32["redprice"]*100, $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
+    }
+
     plog("order.op.finish", "订单完成 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]}");
     message("订单操作成功！", order_list_backurl() , "success");
 }
