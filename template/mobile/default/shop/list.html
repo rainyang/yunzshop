@@ -8,10 +8,11 @@
     .main .category {height:100%; width:60%; background:rgba(0,0,0,0.8);  position:fixed; left:-60%; top:0; z-index:9999;overflow-y: auto;}
     .main .category .title {height:44px; width:100%; background:rgba(0,0,0,0.2); line-height:44px; font-size:16px; color:#fff; text-align:center;}
     .main .category .all {height:auto; width:80%; padding:10px 10%; color:#fff;}
-    .main .category .all p {height:auto; width:100%; font-size:16px; line-height:20px; padding:0px; margin:0px;}
+    .main .category .all p {height:auto; width:100%; font-size:14px; line-height:20px; padding:0px; margin:0px;}
+    .main .category .all a{text-decoration: none}
    .main .category .all p.category_item { padding-top:10px;}
-    .main .category .all p.child {height:auto; width:100%; font-size:16px; line-height:20px;  padding-left:10px;padding-top:10px;}
-    .main .category .all p.third {height:auto; width:100%; font-size:16px; line-height:20px;  padding-left:20px;padding-top:10px;}
+    .main .category .all p.child {height:auto; width:100%; font-size:14px; line-height:20px;  padding-left:10px;padding-top:10px;}
+    .main .category .all p.third {height:auto; width:100%; font-size:14px; line-height:20px;  padding-left:20px;padding-top:10px;}
     .main .category .all span {height:auto; width:95%; margin-left:5%; margin-bottom:10px; font-size:16px; line-height:20px; padding:0px;}
 
     .main .page {width:100%; background:#eee; }
@@ -225,7 +226,7 @@ div.addinfo{height:18px;}
         <p class='category_item' data-isdiscount='1'  data-name='促销宝贝'><i class="fa fa-thumbs-up"></i> 促销宝贝</p>
         <%each category as parent%>
 		<a href="{php echo $this->createMobileUrl('shop/list')}&pcate=<%parent.id%>">
-         <p class='category_item' style=" color:#ffff00;"><i class="fa fa-angle-double-right"></i> <%parent.name%></p>
+         <p class='category_item' style=" color:#fff;"><i class="fa fa-angle-double-right"></i> <%parent.name%></p>
 		 </a>
          <%each parent.children as child%>
 <a href="{php echo $this->createMobileUrl('shop/list')}&pcate=<%parent.id%>&ccate=<%child.id%>">
