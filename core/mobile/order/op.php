@@ -41,7 +41,9 @@ if ($_W['isajax']) {
 	        }
 	        show_json(1);
 	    } else if ($operation == 'complete') {
+
 	        $orderid = intval($_GPC['orderid']);
+
 	        $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
 	            ':id' => $orderid,
 	            ':uniacid' => $uniacid,
@@ -75,6 +77,7 @@ if ($_W['isajax']) {
 		if (p('coupon') && !empty($order['couponid'])) {
 			p('coupon')->backConsumeCoupon($orderid);
 		}
+
 		m('notice')->sendOrderMessage($orderid);
 		if (p('commission')) {
 			p('commission')->checkOrderFinish($orderid);
@@ -82,7 +85,11 @@ if ($_W['isajax']) {
 		if (p('return')) {
 			p('return')->cumulative_order_amount($orderid);
 		}
-		$pay = m('finance')->pay($order['openid'], $order['paytype'], $order["redprice"]*100, $order['ordersn']);
+		if($order['redprice'] > 0)
+		{
+			$pay = m('finance')->pay($order['openid'], $order['paytype'], $order["redprice"]*100, $order['ordersn']);
+		}
+
 		show_json(1);
 	} else if ($operation == 'delivery') {
 	        if ($_W['ispost']) {
