@@ -10,7 +10,7 @@
         <div class='panel-body'>
 
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">级差代理分红</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">股权代理分红</label>
                 <div class="col-sm-6">
                     <select  class="form-control" name="setdata[start]">
                         <option value="0" {if empty($set['start'])}selected{/if}>不开启股权代理分红</option>
@@ -30,8 +30,8 @@
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区代理分红</label>
                 <div class="col-sm-6">
                     <select  class="form-control" name="setdata[area_start]">
-                        <option value="0" {if empty($set['area_start'])}selected{/if}>不开启地区代理</option>
-                        <option value="1" {if $set['area_start']==1}selected{/if}>开启地区代理</option>
+                        <option value="0" {if empty($set['area_start'])}selected{/if}>不开启地区代理分红</option>
+                        <option value="1" {if $set['area_start']==1}selected{/if}>开启地区代理分红</option>
                     </select>
                 </div>
             </div>

@@ -9,5 +9,17 @@ if(empty($result)){
   pdo_fetchall($sql);
 }
 
+$sql = "CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_ranking') . " (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL,
+  `mid` int(11) NOT NULL,
+  `credit` decimal(10,2) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
+
+ ALTER TABLE " . tablename('sz_yi_order_goods') . "  ADD  `rankingstatus` TINYINT( 1 ) NOT NULL COMMENT  '排行状态';
+";
+pdo_query($sql);
+
 
 message('排行榜插件安装成功', $this->createPluginWebUrl('ranking/set'), 'success');

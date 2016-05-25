@@ -21,6 +21,7 @@
                 data-toggle="dropdown"><i class='fa fa-shopping-cart'></i> 商品 <i class="fa fa-angle-down"></i></a>
             <ul class="dropdown-menu">
                 {ifp 'shop.goods'}<li><a href="{php echo $this->createWebUrl('shop/goods')}">商品管理</a></li>{/if}
+                {if $shopset['category2']==1}{ifp 'shop.category'}<li><a href="{php echo $this->createWebUrl('shop/category2')}">{php echo $shopset['category2name']}分类管理</a></li>{/if}{/if}
                 {ifp 'shop.category'}<li><a href="{php echo $this->createWebUrl('shop/category')}">分类管理</a></li>{/if}
                 {ifp 'shop.dispatch'}<li><a href="{php echo $this->createWebUrl('shop/dispatch')}">配送方式</a></li>{/if}
                 {ifp 'shop.adv'}<li><a href="{php echo $this->createWebUrl('shop/adv')}">幻灯片管理</a></li>{/if}

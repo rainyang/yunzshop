@@ -189,7 +189,8 @@ if (!class_exists('ReturnModel')) {
 
 			//返利队列
 			$data_money = pdo_fetchall("select * from " . tablename('sz_yi_return') . " where uniacid = '". $_W['uniacid'] ."' and status = 0 and returnrule = '".$_var_0['returnrule']."'");
-
+			$return_money_totle = 0;
+			$surplus_money_totle = 0;
 			foreach ($data_money as $key => $value) {
 				$r_each = $value['money'] * $_var_0['percentage'] / 100;//可返利金额
 				
@@ -199,17 +200,8 @@ if (!class_exists('ReturnModel')) {
 					pdo_update('sz_yi_return', array('return_money'=>$value['money'],'status'=>'1'), array('id' => $value['id'], 'uniacid' => $_W['uniacid']));
 					m('member')->setCredit($member['openid'],'credit2',$value['money']-$value['return_money']);
 
-					$messages = array(
-						'keyword1' => array('value' => '返现通知', 
-							'color' => '#73a68d'),
-							'keyword2' => array('value' => '本次返现金额'.$value['money']-$value['return_money']."元！",
-											'color' => '#73a68d'
-							 ),
-							'keyword3' => array('value' => '此返单已经全部返现完成！',
-											'color' => '#73a68d'
-							 )
-						);
-					m('message')->sendCustomNotice($member['openid'], $messages);
+					$return_money_totle += $value['money']-$value['return_money'];
+		
 
 				}else
 				{
@@ -217,19 +209,25 @@ if (!class_exists('ReturnModel')) {
 					m('member')->setCredit($member['openid'],'credit2',$r_each);
 
 					$surplus = $value['money']-$value['return_money']-$r_each;
+
+					$return_money_totle += $r_each;
+					$surplus_money_totle += $surplus;
+				}
+			}
+			if($return_money_totle > 0)
+			{
 					$messages = array(
 						'keyword1' => array(
 							'value' => '返现通知',
 							'color' => '#73a68d'),
 						'keyword2' =>array(
-							'value' => '本次返现金额'.$r_each,
+							'value' => '本次返现金额'.$return_money_totle."元",
 							'color' => '#73a68d'),
 						'keyword3' => array(
-							'value' => "此返单剩余返现金额".$surplus,
+							'value' => "此返单剩余返现金额".$surplus_money_totle."元",
 							'color' => '#73a68d')
 						);
 					m('message')->sendCustomNotice($member['openid'], $messages);
-				}
 			}
 
 		}
@@ -253,7 +251,8 @@ if (!class_exists('ReturnModel')) {
 			$data_money = pdo_fetchall("select * from " . tablename('sz_yi_return') . " where uniacid = '". $_W['uniacid'] ."' and status = 0 and returnrule = '".$_var_0['returnrule']."'");
 			$r_each = $r_ordermoney / count($data_money);//每个队列返现金额
 			$r_each = sprintf("%.2f", $r_each);
-
+			$return_money_totle = 0;
+			$surplus_money_totle = 0;
 			foreach ($data_money as $key => $value) {
 				
 				$member = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid = '". $_W['uniacid'] ."' and id = '".$value['mid']."'");
@@ -261,18 +260,7 @@ if (!class_exists('ReturnModel')) {
 				if(($value['money']-$value['return_money']) < $r_each){
 					pdo_update('sz_yi_return', array('return_money'=>$value['money'],'status'=>'1'), array('id' => $value['id'], 'uniacid' => $_W['uniacid']));
 					m('member')->setCredit($member['openid'],'credit2',$value['money']-$value['return_money']);
-
-					$messages = array(
-						'keyword1' => array('value' => '返现通知', 
-							'color' => '#73a68d'),
-							'keyword2' => array('value' => '本次返现金额'.$value['money']-$value['return_money']."元！",
-											'color' => '#73a68d'
-							 ),
-							'keyword3' => array('value' => '此返单已经全部返现完成！',
-											'color' => '#73a68d'
-							 )
-						);
-					m('message')->sendCustomNotice($member['openid'], $messages);
+					$return_money_totle += $value['money']-$value['return_money'];
 
 				}else
 				{
@@ -280,21 +268,27 @@ if (!class_exists('ReturnModel')) {
 					m('member')->setCredit($member['openid'],'credit2',$r_each);
 
 					$surplus = $value['money']-$value['return_money']-$r_each;
-					$messages = array(
-						'keyword1' => array(
-							'value' => '返现通知',
-							'color' => '#73a68d'),
-						'keyword2' =>array(
-							'value' => '本次返现金额'.$r_each,
-							'color' => '#73a68d'),
-						'keyword3' => array(
-							'value' => "此返单剩余返现金额".$surplus,
-							'color' => '#73a68d')
-						);
-					m('message')->sendCustomNotice($member['openid'], $messages);
-				}
+					$return_money_totle += $r_each;
+					$surplus_money_totle += $surplus;
 
+				}
 			}
+			if($return_money_totle)
+			{
+				$messages = array(
+					'keyword1' => array(
+						'value' => '返现通知',
+						'color' => '#73a68d'),
+					'keyword2' =>array(
+						'value' => '本次返现金额'.$return_money_totle."元",
+						'color' => '#73a68d'),
+					'keyword3' => array(
+						'value' => "此返单剩余返现金额".$surplus_money_totle."元",
+						'color' => '#73a68d')
+					);
+				m('message')->sendCustomNotice($member['openid'], $messages);
+			}
+
 		}
 		// 查询可参加返利的 加入返利队列
 		public function setmoney($orderprice,$uniacid){

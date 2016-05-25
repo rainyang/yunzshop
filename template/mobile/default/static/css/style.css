@@ -187,3 +187,25 @@ footer#footer-nav .menu-list:after {
 
 .topbar {max-width: 720px;}
 .main .page {position: relative;}
+
+.report{ padding:10px;}
+.report-img{ padding:0 100px 0 10px;background:#eb5f5f;min-height:90px;position:relative}
+.report-img p{ font-size:14px;color:#fff;padding: 16px 0 0;}
+.report-img h1{margin: 0;font-size:20px;color:#fff;line-height:32px;}
+.report-photo{width: 160px; position:absolute;right:0;top:-20px}
+.report-photo img{position: absolute;right: 10px;top: 0;min-width: 70px;border-radius:50px;margin: 0 auto;max-width:70px;height:70px;box-sizing: border-box;border:6px #eb5f5f solid}
+.report-photo h2{ font-size:14px;color:#fff;text-align: right;padding-right: 10px;margin-top: 80px;font-weight: normal;}
+.new-list{ background:#fff;}
+.new-list ul{padding:0 6px;}
+.new-list ul li{ background:#fff;border-bottom:1px #e8e8e8 solid;line-height:50px;height:50px;box-sizing: border-box;color:#000;font-size: 12px;padding: 0 100px 0 40px;position: relative;overflow: hidden;}
+.new-list ul li p{ line-height:50px;margin: 0;position: absolute;right: 0;top: 0}
+.new-list ul li span{ line-height:50px;height:50px;margin: 0;position: absolute;left: 0;top: 0;text-align: center;width: 40px;}
+.new-list ul li span img{max-width: 24px;height: auto;margin:13px 8px }
+.new-list ul li p i{ font-size:16px;font-weight:bold;padding:0 4px 0 0;font-style: normal;font-weight: normal;}
+.new-list ul li:last-child{ border-bottom:0}
+.new-list h1{ line-height:30px;background:#E1E1E1;color:#333;text-align:right;padding-right:10px;font-size:12px;font-weight: normal;}
+.red {color: #eb5f5f;}
+.new-list ul li div{height: 50px}
+.new-list ul li div img{width: 34px;height: 34px;border-radius: 50px;display: inline-block;margin:8px 5px 0 0;float: left;}
+.new-list ul li div em{float: left;line-height: 50px;font-style: normal;font-size: 14px;}
+.down-list{margin: 10px;background: #eb5f5f;color: #fff;line-height: 30px;text-align: center;font-size: 12px;display: block;text-decoration: none;border-radius: 2px}

@@ -98,7 +98,10 @@ class Sz_DYi_User
 
     function getUserInfo(){
         global $_W, $_GPC;
-         if($_GPC['p'] == 'return' && $_GPC["method"]=='task'){
+        if($_GPC['p'] == 'return' && $_GPC["method"]=='task'){
+            return;
+        }
+        if($_GPC['p'] == 'ranking' && $_GPC["method"]=='commission'){
             return;
         }
         //需要登陆的P方法

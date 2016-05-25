@@ -22,6 +22,7 @@ if (p('supplier')) {
 	if(!empty($supplier_set['switch'])){
 		$supplier_switch = true;
 	}
+	$issupplier = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where openid='{$openid}' and uniacid={$_W['uniacid']} and roleid=(select id from " . tablename('sz_yi_perm_role') . " where status1=1)");
 }
 $shopset['supplier_switch'] = $supplier_switch;
 $plugc = p('commission');
@@ -64,7 +65,7 @@ $shopset['is_weixin'] = is_weixin();
 $plugin_article = p('article');
 if ($plugin_article) {
 	$article_set = $plugin_article->getSys();
-	$shopset['article_text'] = $article_set['article_text']?$article_set['article_text']:'文章管理';
+	$shopset['article_text'] = $article_set['article_text'] ? $article_set['article_text'] : '文章管理';
 
 	$shopset['isarticle'] = $article_set['isarticle'];
 }
