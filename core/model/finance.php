@@ -31,6 +31,8 @@ class Sz_DYi_Finance {
             $row = pdo_fetch($sql, array(
                 ':uniacid' => $_W['uniacid']
             ));
+            
+            /*
             if ($money <= 20000) {//金额小于200自动红包
                 $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack';
                 $pars = array(
@@ -75,6 +77,27 @@ class Sz_DYi_Finance {
                 $extras = array();
                 
             }
+*/
+            $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers';
+            $pars = array();
+            $pars['mch_appid'] = $row['key'];
+            $pars['mchid'] = $wechat['mchid'];
+            $pars['nonce_str'] = random(32);
+            $pars['partner_trade_no'] = empty($trade_no) ? time() . random(4, true) : $trade_no;
+            $pars['openid'] = $openid;
+            $pars['check_name'] = 'NO_CHECK';
+            $pars['amount'] = $money;
+            $pars['desc'] = empty($desc) ? '佣金提现' : $desc;
+            $pars['spbill_create_ip'] = gethostbyname($_SERVER["HTTP_HOST"]);
+            ksort($pars, SORT_STRING);
+            $string1 = '';
+            foreach ($pars as $k => $v) {
+                $string1.= "{$k}={$v}&";
+            }
+            $string1.= "key=" . $wechat['apikey'];
+            $pars['sign'] = strtoupper(md5($string1));
+            $xml = array2xml($pars);
+            $extras = array();
             
             $sec = m('common')->getSec();
             $certs = iunserializer($sec['sec']);
