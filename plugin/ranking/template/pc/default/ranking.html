@@ -1,4 +1,4 @@
-{template 'common/header'}
+{template 'member/center'}
 <title>{$set['rankingname']}</title>
 <style type="text/css">
     body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
@@ -15,11 +15,11 @@
     #credit_loading { padding:10px;color:#666;text-align: center;}
 
 </style>
-<div class="page_topbar">
-    <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
-    <div class="title">{$set['rankingname']}</div>
-</div>
 
+
+<div id='container' class="rightlist"></div></div>
+
+<script id='tpl_list' type='text/html'>
 <div class="credit_tab">
 
 {if $set['isintegral']}
@@ -33,8 +33,6 @@
 {/if}   
 </div>
 
-
-
     <div class="report">
         <div class="report-img">
             <p>我的名次</p>
@@ -47,12 +45,12 @@
 
         <div class="new-list">
             <ul>
-<div id='container'></div>
+<div id='tpl_container'></div>
+</script>
 
 <script id='tpl_log' type='text/html'>
 
     <%if type==0%>
-
                 <%each list as log%>
 
                     <%if log.number == 1%>
@@ -81,7 +79,7 @@
                         </li>
                     <%/if%>
                 <%/each%>
-
+         
     <%/if%>
     <%if type==1%>
 
@@ -166,7 +164,7 @@ function bindScroller(){
         var stop = true;
 
         $(window).scroll(function () {
-
+           
             if (loaded) {
                 return;
             }
@@ -174,17 +172,18 @@ function bindScroller(){
             if ($(document).height() <= totalheight) {
                 if (stop == true) {
                     stop = false; scrolled = true;
-                    $('#container').append('<div id="credit_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载...</div>');
+                    $('#tpl_container').append('<div id="credit_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载...</div>');
                     page++;
    
-                    core.pjson('ranking/ranking', {type: current_type,page: page}, function (json) {
-                        stop = true;
-                        $('#credit_loading').remove();
-                        $("#container").append(tpl('tpl_log', json.result));
-                     
-                        $('#m_num').html(json.result.m_num);
-                        $('#m_avatar').attr('src',json.result.m_avatar);
-                        $('#m_credit1').html(json.result.m_credit_name+":"+json.result.m_credit1);
+
+                        core.pjson('ranking/ranking', {type: current_type,page: page}, function (json) {
+                            stop = true;
+                            $('#credit_loading').remove();
+                            $("#tpl_container").append(tpl('tpl_log', json.result));
+                         
+                            $('#m_num').html(json.result.m_num);
+                            $('#m_avatar').attr('src',json.result.m_avatar);
+                            $('#m_credit1').html(json.result.m_credit_name+":"+json.result.m_credit1);
                             if(page==10)
                             {
                                $('#credit_loading').remove();
@@ -195,17 +194,17 @@ function bindScroller(){
                                 $(window).scroll = null;
                                 return;
                             }
-                        
-                        if (json.result.list.length < json.result.pagesize) {
-                            $('#credit_loading').remove();
-                            //$('#credit_loading').html('已经加载完全部记录');
-                            $("#container").append('<div id="credit_loading">已经加载完全部记录</div>');
-                            loaded = true;
-                            //console.log('loaded:'+loaded);
-                            $(window).scroll = null;
-                            return;
-                        }
-                    }, true);
+                            if (json.result.list.length < json.result.pagesize) {
+                                $('#credit_loading').remove();
+                                //$('#credit_loading').html('已经加载完全部记录');
+                                $("#tpl_container").append('<div id="credit_loading">已经加载完全部记录</div>');
+                                loaded = true;
+                                //console.log('loaded:'+loaded);
+                                $(window).scroll = null;
+                                return;
+                            }
+                        }, true);
+
                 }
             }
         });
@@ -218,11 +217,12 @@ function bindScroller(){
             }
 
             core.pjson('ranking/ranking', {type:type,page: page}, function (json) {
+                $("#container").html(tpl('tpl_list'));
                 if (json.result.list.length <= 0) {
-                    $('#container').html(tpl('tpl_empty'));
+                    $('#tpl_container').html(tpl('tpl_empty'));
                     return;
                 }
-                $('#container').html(tpl('tpl_log', json.result));
+                $('#tpl_container').html(tpl('tpl_log', json.result));
                 $('#m_num').html(json.result.m_num);
                 $('#m_avatar').attr('src',json.result.m_avatar);
                 $('#m_credit1').html(json.result.m_credit_name+":"+json.result.m_credit1);
@@ -230,8 +230,8 @@ function bindScroller(){
                 bindScroller();
             }, true);
         }
+        $(document).on('click','.credit_nav',function(){
 
-        $('.credit_nav').unbind('click').click(function () {
             page = 1;
             current_type = $(this).data('type');
             getLog(current_type);
@@ -240,5 +240,4 @@ function bindScroller(){
         getLog(current_type);
     })
 </script>
-{php $show_footer=true}
-{template 'common/footer'}
+{template 'common/bottom'}

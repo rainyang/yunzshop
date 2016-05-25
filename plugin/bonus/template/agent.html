@@ -99,8 +99,8 @@
             <thead class="navbar-inner" >
             <tr>
                 <th style='width:6%;'>会员ID</th>
-                <th style='width:10%;'>推荐人</th>
-                <th style='width:10%x;'>粉丝</th>
+                <th style='width:10%;text-align: center;'>推荐人</th>
+                <th style='width:10%;text-align: center;'>粉丝</th>
                 <th style='width:12%;'>姓名<br/>手机号码</th>
                 <th style='width:10%;'>代理商等级</th>
                 <th style='width:10%;text-align: center;'>区域代理</th>
@@ -114,7 +114,7 @@
             {loop $list $row}
             <tr>
                 <td>{$row['id']}</td>
-                <td  {if !empty($row['agentid'])}title='ID: {$row['agentid']}'{/if}>
+                <td  {if !empty($row['agentid'])}title='ID: {$row['agentid']}'{/if} style="text-align: center;">
                 {if empty($row['agentid'])}
                 {if $row['isagent']==1}
                 <label class='label label-primary'>总店</label>
@@ -122,12 +122,12 @@
                 <label class='label label-default'>暂无</label>
                 {/if}
                 {else}
-                <img src='{$row['parentavatar']}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' /> {$row['parentname']}
+                <img src='{$row['parentavatar']}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>{$row['parentname']}
                 {/if}
                 </td>
-                <td>
+                <td style="text-align: center;">
                     {if !empty($row['avatar'])}
-                    <img src='{$row['avatar']}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' />
+                    <img src='{$row['avatar']}' style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
                     {/if}
                     {if empty($row['nickname'])}未更新{else}{$row['nickname']}{/if}
 
