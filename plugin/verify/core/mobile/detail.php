@@ -48,7 +48,15 @@ if ($_W['isajax']) {
     $order['goodstotal'] = count($goods);
     $order['finishtime'] = date('Y-m-d H:i:s', $order['finishtime']);
     $address             = false;
-    $carrier             = unserialize($order['carrier']);
+    if($order['dispatchtype']==1){
+        $carrier             = unserialize($order['carrier']);
+    }else{
+        $carriers             = unserialize($order['address']);
+        $carrier=array();
+        $carrier['carrier_realname']=$carriers['realname'];
+        $carrier['carrier_mobile']=$carriers['mobile'];
+    }
+    
     $set                 = set_medias(m('common')->getSysset('shop'), 'logo');
     show_json(1, array(
         'order' => $order,
