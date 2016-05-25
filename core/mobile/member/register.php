@@ -103,7 +103,10 @@ if ($_W['isajax']) {
         $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
         setcookie('member_mobile', $mobile);
         setcookie($cookieid, base64_encode($openid));
-
+        if(empty($preUrl))
+        {
+            $preUrl = $this->createMobileUrl('shop');
+        }
         show_json(1, $preUrl);
     }      
 }
