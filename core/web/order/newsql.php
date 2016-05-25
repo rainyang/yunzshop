@@ -180,6 +180,18 @@ if(!pdo_fieldexists('sz_yi_goods', 'redprice')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `redprice` varchar(50) DEFAULT '';");
 }
 
+if(!pdo_fieldexists('sz_yi_goods', 'pcate1')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `pcate1` int(11) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_goods', 'ccate1')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `ccate1` int(11) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_goods', 'tcate1')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `tcate1` int(11) DEFAULT '0';");
+}
+
 if(!pdo_fieldexists('sz_yi_goods_option', 'redprice')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods_option')." ADD `redprice` varchar(50) DEFAULT '';");
 }
