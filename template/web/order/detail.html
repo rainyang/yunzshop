@@ -525,29 +525,8 @@
                 </div>
             </div>
         </div>
-        {elseif $item['isverify']==1 || !empty($item['virtual']) ||!empty($item['isvirtual'])}
+        {elseif $item['isverify']==1 && $item['dispatchtype']==1}
 		{if $show==1}
-        <div class="panel panel-default">
-            <div class="panel-heading">
-               联系人
-            </div>
-            <div class="panel-body">
-                   <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">联系人姓名 :</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <p class="form-control-static">{$user['carrier_realname']} </p>
-                    </div>
-                </div>
-               <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">联系人手机 :</label>
-                    <div class="col-sm-9 col-xs-12">
-                        <p class="form-control-static">{$user['carrier_mobile']}  </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-		{/if} 
-        {else}
           <div class="panel panel-default">
             <div class="panel-heading">
                自提信息
@@ -567,6 +546,27 @@
                 </div>
             </div>
         </div>
+		{/if} 
+        {elseif !empty($item['virtual']) ||!empty($item['isvirtual'])}
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                   联系人
+                </div>
+                <div class="panel-body">
+                       <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">联系人姓名 :</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <p class="form-control-static">{$user['carrier_realname']} </p>
+                        </div>
+                    </div>
+                   <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">联系人手机 :</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <p class="form-control-static">{$user['carrier_mobile']}  </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
         {/if}
       
 
