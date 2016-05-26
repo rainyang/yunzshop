@@ -284,8 +284,8 @@
                     <input name="pagename" type="text" style="height: 30px; width: 300px; border: 1px solid #bbb; border-radius: 3px; margin: 4px 10px; outline: none; padding-left: 10px;" placeholder="页面名称：快来给你的页面起一个响亮的名字" value="{$datas['pagename']}"/>
                 </div>
                 <div class="fe-save-submit2" ng-click="save(2)">保存并预览</div>
-                <div class="fe-save-submit" ng-click="save(1)">保存</div>
-                <div class="fe-save-submit" onclick="history.back()">返回列表</div>
+                <div class="fe-save-submit save-submit" ng-click="save(1)">保存</div>
+                <div class="fe-save-submit " onclick="history.back()">返回列表</div>
             </div>
             <div class="fe-save-fold" onclick="fold()"></div>
             <div class="fe-save-gotop" onclick="$(document.body).animate({scrollTop:0},500)"><i class="fa fa-angle-up"></i><br>返回顶部</div>
@@ -1012,7 +1012,7 @@ UE.registerUI('myinsertimage',function(editor, uiName) {
                    $scope.focus = 'M0000000000000';
                    return;
                }
-               $(".fe-save-submit").text('保存中...').addClass("fe-save-disabled").data('saving','1');
+               $(".save-submit").text('保存中...').addClass("fe-save-disabled").data('saving','1');
                $(".fe-save-submit2").css("color","#bbb");
                if($(".fe-save-submit").data('saving')==1){
                     $.ajax({
@@ -1034,12 +1034,12 @@ UE.registerUI('myinsertimage',function(editor, uiName) {
                                     location.href = "{php echo $this->createPluginWebUrl('designer',array('op'=>'post'))}&pageid="+data;
                                 }
                             }
-                            $(".fe-save-submit").text('保存').removeClass("fe-save-disabled").data('saving','0');
+                            $(".save-submit").text('保存').removeClass("fe-save-disabled").data('saving','0');
                             $(".fe-save-submit2").css("color","#4bb5fb")
                         }
                         ,error: function(){
                             alert('保存失败请重试');
-                            $(".fe-save-submit").text('保存').removeClass("fe-save-disabled").data('saving','0');
+                            $(".save-submit").text('保存').removeClass("fe-save-disabled").data('saving','0');
                             $(".fe-save-submit2").css("color","#4bb5fb")
                         }
                     });
