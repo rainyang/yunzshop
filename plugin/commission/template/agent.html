@@ -161,7 +161,9 @@
 
 
                 <td>{$row['clickcount']}</td>
-                <td>{$row['commission_total']}<br/>{$row['commission_pay']}</td>
+                <td>
+<label class="label label-primary">
+{$row['commission_total']}</label><br/><label class="label label-danger">{$row['commission_pay']}</label></td>
                 <td style="text-align: center">
                     {if $row['status']==0}
                     {if $row['agentblack']==1}
