@@ -53,7 +53,7 @@ $bonus_start = false;
 $bonus_text = "";
 if(!empty($pluginbonus)){
 	$bonus_set = $pluginbonus->getSet();
-	if(!empty($bonus_set['start'])){
+	if(!empty($bonus_set['start']) || !empty($bonus_set['start'])){
 		$bonus_start = true;
 		$bonus_text = $bonus_set['texts']['center'] ? $bonus_set['texts']['center'] : "分红明细";
 	}
