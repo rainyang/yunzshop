@@ -141,7 +141,7 @@
                     {if $row['bonus_area'] == 2}市级代理：{$row['bonus_city']}{/if}
                     {if $row['bonus_area'] == 3}区级代理：{$row['bonus_district']}{/if}
                 </td>
-                <td>{$row['commission_total']}<br/>{$row['commission_pay']}</td>
+                <td><label class="label label-primary">{$row['commission_total']}</label><br/><label class="label label-danger">{$row['commission_pay']}</label></td>
                 <td>
                     总计：{$row['levelcount']} 人
                 </td>
