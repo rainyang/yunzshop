@@ -61,8 +61,8 @@ a:focus{outline:none; -moz-outline:none}
 .welcome-container .account img{width:6em;height:6em;}
 .nav.nav-tabs{margin-bottom:20px; border-color:#428bca;}
 .nav-tabs>li>a:hover{border-color:#eee #eee #428bca #eee;}
-.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus{color:#FFF; background-color:#428bca; border-color:#428bca;}
-.page-header{padding-bottom:0;}
+/*.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus{color:#FFF; background-color:#428bca; border-color:#428bca;}
+*/.page-header{padding-bottom:0;}
 .page-header:first-child{margin-top:0;}
 .gw-logo{background:url('../images/gw-logo.png') no-repeat;display:inline-block;width:420px;height:95px;margin-left:0 !important;}
 .gw-container .footer{font-size:1.1em;padding:2em 0;}
@@ -103,7 +103,7 @@ a:focus{outline:none; -moz-outline:none}
 .table-responsive.panel-body{overflow:auto;}
 .table{table-layout:fixed;}
 .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th, .table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td{vertical-align:middle;}
-.table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.table>thead>tr>td, .table>tbody>tr>td, .table>tfoot>tr>td{white-space:normal; overflow:hidden; text-overflow:ellipsis;}
 .table>thead>tr>th{border-top:none;}
 .table>thead>tr>th, .table>tbody>tr>th, .table>tfoot>tr>th{border-top:none;}
 @media screen and (max-width:767px){.tpl-calendar>div,.tpl-district-container>div{margin-bottom:10px;}}
