@@ -1,0 +1,86 @@
+{template 'web/_header'}
+<div class="w1200 m0a">
+{template 'tabs'}
+<div class="rightlist">
+<form {if 'member.member.edit'}action="" method='post'{/if} class='form-horizontal'>
+    <input type="hidden" name="id" value="{$member['id']}">
+    <input type="hidden" name="op" value="detail">
+    <input type="hidden" name="c" value="site" />
+    <input type="hidden" name="a" value="entry" />
+    <input type="hidden" name="m" value="sz_yi" />
+    <input type="hidden" name="do" value="member" />
+    <div class='panel panel-default'>
+        {if $diyform_flag == 1}
+        <div class='panel-heading'>
+            详细信息
+        </div>
+        <div class='panel-body'>
+            <!--<span>diyform</span>-->
+
+            {php $datas = iunserializer($supplier['diymemberdata'])}
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="form-control-static">
+                    {if !empty($avatar)}
+                         <img src="{$avatar}" style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                       {/if}
+                </div>
+            </div>
+            {loop $fields $key $value}
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">{php echo $value['tp_name']}</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="form-control-static">
+                        {if $value['data_type'] == 0 || $value['data_type'] == 1 || $value['data_type'] == 2 || $value['data_type'] == 6}
+                        {php echo str_replace("\n","<br/>",$datas[$key])}
+                        {else if $value['data_type'] == 3}
+                        {if !empty($datas[$key])}
+                        {loop $datas[$key] $k1 $v1}
+                        {php echo $v1}
+                        {/loop}
+                        {/if}
+
+                        {else if $value['data_type'] == 5}
+                        {if !empty($datas[$key])}
+                        {loop $datas[$key] $k1 $v1}
+                        <a target="_blank" href="{php echo tomedia($v1)}"><img style='width:100px;padding:1px;border:1px solid #ccc'  src="{php echo tomedia($v1)}"></a>
+                        {/loop}
+                        {/if}
+
+                        {else if $value['data_type'] == 7}
+                        {php echo $datas[$key]}
+
+                        {else if $value['data_type'] == 8}
+                        {if !empty($datas[$key])}
+                        {loop $datas[$key] $k1 $v1}
+                        {php echo $v1}
+                        {/loop}
+                        {/if}
+
+                        {else if $value['data_type'] == 9}
+                         {php echo $datas[$key]['province']!='请选择省份'?$datas[$key]['province']:''}-{php echo $datas[$key]['city']!='请选择城市'?$datas[$key]['city']:''}
+                        {/if}
+                    </div>
+
+                </div>
+            </div>
+
+            {/loop}
+        </div>
+        {/if}
+        <div class='panel-body'>
+          <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                <input type="button" class="btn btn-default" name="submit" onclick="history.go(-1)" value="返回列表" {ifp 'member.member.edit'}style='margin-left:10px;'{/if} />
+                </div>
+            </div>
+         </div>
+
+    </div>   
+    
+</form>
+</div>
+</div>
+{template 'web/_footer'}
+
