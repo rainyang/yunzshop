@@ -22,6 +22,9 @@ if (p('supplier')) {
 	if(!empty($supplier_set['switch'])){
 		$supplier_switch = true;
 	}
+	if(!empty($supplier_set['switch_centre'])){
+		$supplier_switch_centre = true;
+	}
 	$issupplier = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where openid='{$openid}' and uniacid={$_W['uniacid']} and roleid=(select id from " . tablename('sz_yi_perm_role') . " where status1=1)");
 }
 $shopset['supplier_switch'] = $supplier_switch;
