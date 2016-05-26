@@ -24,15 +24,13 @@ if ($_W['isajax']) {
 	$cansettle = $commission_ok >= 1;
 	$member['commission_ok'] = number_format($commission_ok, 2);
 	if ($_W['ispost']) {
-		$orderids = array();
-		$orderids = pdo_fetchall("select id from " . tablename('sz_yi_order') . " where supplier_uid={$uid} and uniacid={$_W['uniacid']}");
 		$time = time();
-		foreach ($orderids as $key => $value) {
-			pdo_update('sz_yi_order', array('supplier_apply_status' => 1), array('id' => $value['id'], 'uniacid' => $_W['uniacid']));
+		foreach ($sp_goods as $key => $value) {
+			pdo_update('sz_yi_order_goods', array('supplier_apply_status' => 1), array('id' => $value['id'], 'uniacid' => $_W['uniacid']));
 		}
 		$applyno = m('common')->createNO('commission_apply', 'applyno', 'CA');
 		$apply = array(
-			'uid'			=> $member['uid'],
+			'uid'			=> $uid,
 			'type'			=> $_GPC['type'],
 			'applysn'		=> $applyno,
 			'apply_money'	=> $member['commission_ok'],
@@ -41,8 +39,8 @@ if ($_W['isajax']) {
 			'uniacid'		=> $_W['uniacid']
 			);
 		pdo_insert('sz_yi_supplier_apply', $apply);
-		$returnurl = urlencode($this->createMobileUrl('member/withdraw'));
-		$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
+		$returnurl = urlencode($this->createPluginMobileUrl('supplier/orderj'));
+		$infourl = $this->createPluginMobileUrl('supplier/orderj', array('returnurl' => $returnurl));
 		$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 2 ? '微信' : '线下'), TM_COMMISSION_APPLY);
 		show_json(1, '已提交,请等待审核!');
 	}
