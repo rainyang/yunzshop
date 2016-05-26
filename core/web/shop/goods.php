@@ -47,6 +47,10 @@ if(!empty($pluginbonus)){
         $bonus_start = 1;
     }
 }
+$pluginreturn = p('return');
+if ($pluginreturn) {
+    $return_set = $pluginreturn->getSet();
+}
 $shopset = m('common')->getSysset('shop');
 $sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
 $category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
@@ -445,9 +449,8 @@ if ($operation == "change") {
 		}else{
 			$data['status'] = $_GPC['status'];
 		}
-        $pluginreturn = p('return');
+        
         if ($pluginreturn) {
-            $return_set = $pluginreturn->getSet();
             $data['isreturn'] = intval($_GPC['isreturn']);   //添加全返开关    1:开    0:关
             $data['isreturnqueue'] = intval($_GPC['isreturnqueue']);   //添加全返排列开关    1:开    0:关
         }
