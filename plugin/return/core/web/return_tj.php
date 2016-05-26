@@ -64,7 +64,7 @@ if ($operation == 'display') {
         left join " . tablename('sz_yi_member') . " m on (r.mid = m.id ) where r.uniacid= " .$_W['uniacid'] ." and r.mid = ".$_GPC['mid'],$params);
     foreach ($list_group as $key => $value) {
         $list_group[$key]['unreturnmoney'] = $value['money'] - $value['return_money'];
-        $list_group[$key]['create_time'] = date('Y-m-d H:i');
+        $list_group[$key]['create_time'] = date('Y-m-d H:i',$value['create_time']);
     }
     //echo "<pre>"; print_r($list_group);exit;
 

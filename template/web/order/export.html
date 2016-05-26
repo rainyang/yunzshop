@@ -1,4 +1,5 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'web/order/tabs'}
 
 
@@ -37,7 +38,7 @@
 
 </style>
 
-
+<div class="rightlist">
    <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
             <input type="hidden" name="c" value="site" />
             <input type="hidden" name="a" value="entry" />
@@ -47,7 +48,7 @@
 			
 			
 <table class='table'>
-	<tr><td style='width:40%;vertical-align: top'>
+	<tr><td style='width:100%;vertical-align: top'>
 <div class="panel panel-default">
 	<div class='panel-heading'>
 		查询条件
@@ -55,9 +56,8 @@
     <div class="panel-body">
      
             <div class="form-group">
-   	  <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单号</label>
+   	  		<label class="col-xs-12 col-sm-3 col-md-2 control-label">订单号</label>
                <div class="col-sm-9 col-xs-12">
-                  
                         <input class="form-control" name="keyword" type="text" value="{$_GPC['keyword']}" placeholder="订单号">
                    
                 </div>
@@ -69,9 +69,7 @@
                      
                         <input class="form-control" name="expresssn" type="text" value="{$_GPC['expresssn']}" placeholder="快递单号">
                     </div>
-                </div>
-            </div> 
-			
+                </div>		
 			<div class="form-group">
 
 		      <label class="col-xs-12 col-sm-3 col-md-2 control-label">用户信息</label>
@@ -154,6 +152,8 @@
      
 
 </td>
+</tr>
+<tr>
 <td valign='top' style='vertical-align: top'>
 	
 	
@@ -161,7 +161,7 @@
 	<div class='panel-heading'>
 		现有列 （拖动可排序) 
 		
-		<select id="templates" class="form-control select2" style="width:300px;" onchange="changeTemplate()">
+		<select id="templates" class="form-control select2" style="width:400px;" onchange="changeTemplate()">
                             <option value="" >请选择导出列模板</option>
 							{loop $templates $key $t}
 								<option value="{$key}" >{$key}</option>
@@ -229,6 +229,7 @@
 	</tr>		
 </table>
 			  </form>
+</div></div>
    <script language='javascript'>
 	   function resetFields(){
 		   if(confirm('确认全部清空?')){

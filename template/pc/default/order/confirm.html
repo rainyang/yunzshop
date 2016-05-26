@@ -216,83 +216,86 @@
     <input type="hidden"  id="isverify" value="<%if isverify || isvirtual || goods.type==2%>true<%else%>false<%/if%>" />
   
     {if $show==1}
-      <%if isverify || isvirtual || goods.type==2%>
+        <%if isverify%>
           <input type="hidden"  id="dispatchtype" value="0" />
-	      <%if carrier_list.length>0%>
-		      <div class="addorder_nav">
-		        <div class="nav selected" data-nav='0'>配送核销</div>
-		        <div class="nav"  data-nav='1'>上门自提</div>
-		      </div>
-	      <%/if%>
+          <%if carrier_list.length>0%>
+              <div class="addorder_nav">
+                <div class="nav selected" data-nav='0'>配送核销</div>
+                <div class="nav"  data-nav='1'>上门自提</div>
+              </div>
+          <%/if%>
 
-		  <div class="addorder_user addorder_user_0">
-	        <input type='hidden' id='addressid' value='<%address.id%>' />
-	        <div class="info" id='address_select' <%if !address %>style='display:none'<%/if%>>
-	           <div class="ico"><i class="fa fa-map-marker"></i></div>
-	           <div class='info1'>
-	             <div class='inner'>
-	                <div class="user">收件人：<span id='address_realname'><%address.realname%></span>(<span id='address_mobile'><%address.mobile%></span>)</div>
-	                <div class="address"><span id='address_address'><%address.address%></span></div>
-	             </div>
-	           </div>
-	           <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
-	        </div>
-	        <div class='info' id='address_new'  <%if address %>style='display:none'<%/if%>>
-	          <div class="ico"><i class="fa fa-plus-circle"></i></div>
-	          <div class='info1'>
-	             <div class='inner'>
-	               <div class="user" style='padding-top:8px;'>新增地址</div>  
-	             </div>
-	          </div>
-	          <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
-	        </div>
-	      </div>
-            <div id='address_container'></div>
+          <div class="addorder_user addorder_user_0">
+            <input type='hidden' id='addressid' value='<%address.id%>' />
+            <div class="info" id='address_select' <%if !address %>style='display:none'<%/if%>>
+               <div class="ico"><i class="fa fa-map-marker"></i></div>
+               <div class='info1'>
+                 <div class='inner'>
+                    <div class="user">收件人：<span id='address_realname'><%address.realname%></span>(<span id='address_mobile'><%address.mobile%></span>)</div>
+                    <div class="address"><span id='address_address'><%address.address%></span></div>
+                 </div>
+               </div>
+               <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+            </div>
+            <div class='info' id='address_new'  <%if address %>style='display:none'<%/if%>>
+              <div class="ico"><i class="fa fa-plus-circle"></i></div>
+              <div class='info1'>
+                 <div class='inner'>
+                   <div class="user" style='padding-top:8px;'>新增地址</div>  
+                 </div>
+              </div>
+              <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+            </div>
+          </div>
+          <div id='address_container'></div>
 
-	       <%if carrier%>
-		      <div class="addorder_user addorder_user_1" style='display:none'>
-		        <input type='hidden' id='carrierindex' value='0' />
-		        <input type='hidden' id='carrierid' value='<%carrier.id%>' />
-		        <div class="info" id='carrier_select' >
-		          <div class="ico"><i class="fa fa-map-marker"></i></div>
-		          <div class='info1'>
-		             <div class='inner'>
-		               <div class="user">自提地点：<span id='carrier_realname'><%carrier.storename%></span>(<span id='carrier_mobile'><%carrier.tel%></span>)</div>
-		               <div class="address"><span id='carrier_address'><%carrier.address%></span></div>
-		             </div>
-		          </div>
-		          <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
-		        </div>
-		      </div>
-		      <div id='address_container'></div>
-		      <div class="carrier_input_info" style='display:none' >
-		          <div class="row">
-		            <div class='title'>提货人姓名</div>
-		            <div class='info'>
-		                <div class='inner'><input type="text" placeholder="提货人姓名" id="carrier_input_realname" value="<%member.realname%>" style='height:35px;'/></div>
-		            </div>
-		          </div>
-		          <div class="row">
-		            <div class='title'>提货人手机</div>
-		            <div class='info'>
-		                <div class='inner'><input type="text" placeholder="提货人手机"  id="carrier_input_mobile" value="<%member.mobile%>" style='height:35px;'/></div>
-		            </div>
-		          </div>
-		      </div>
-		   <%/if%>
+           <%if carrier%>
+              <div class="addorder_user addorder_user_1" style='display:none'>
+                <input type='hidden' id='carrierindex' value='0' />
+                <input type='hidden' id='carrierid' value='<%carrier.id%>' />
+                <div class="info" id='carrier_select' >
+                  <div class="ico"><i class="fa fa-map-marker"></i></div>
+                  <div class='info1'>
+                     <div class='inner'>
+                       <div class="user">自提地点：<span id='carrier_realname'><%carrier.storename%></span>(<span id='carrier_mobile'><%carrier.tel%></span>)</div>
+                       <div class="address"><span id='carrier_address'><%carrier.address%></span></div>
+                     </div>
+                  </div>
+                  <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+                </div>
+              </div>
+              <div id='address_container'></div>
+              <div class="carrier_input_info" style='display:none' >
+                  <div class="row">
+                    <div class='title'>提货人姓名</div>
+                    <div class='info'>
+                        <div class='inner'><input type="text" placeholder="提货人姓名" id="carrier_input_realname" value="<%member.realname%>" style='height:35px;'/></div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class='title'>提货人手机</div>
+                    <div class='info'>
+                        <div class='inner'><input type="text" placeholder="提货人手机"  id="carrier_input_mobile" value="<%member.mobile%>" style='height:35px;'/></div>
+                    </div>
+                  </div>
+              </div>
+           <%/if%>
 
-		   <%if dispatch%>
-		      <div class="addorder_exp" id='dispatch_select' style="display: none;">
-		        <input type='hidden' id='dispatchid' value='<%dispatch.id%>' />
-		        <div class="t1">配送方式</div>
-		        <div class="ico"><i class='fa fa-angle-right fa-2x'></i></div>
-		        <div class="t2"><span class='dispatchname'><%dispatch.dispatchname%></span> <span class='dispatchprice'><%dispatch.price%></span>元</div>
-		      </div>
-      	   <%/if%>
+           <%if dispatch%>
+              <div class="addorder_exp" id='dispatch_select' style="display: none;">
+                <input type='hidden' id='dispatchid' value='<%dispatch.id%>' />
+                <div class="t1">配送方式</div>
+                <div class="ico"><i class='fa fa-angle-right fa-2x'></i></div>
+                <div class="t2"><span class='dispatchname'><%dispatch.dispatchname%></span> <span class='dispatchprice'><%dispatch.price%></span>元</div>
+              </div>
+           <%/if%>
 
       
-       <!-- <input type="hidden"  id="dispatchtype" value="0" />
-        <div class="carrier_input_info" >
+
+      <%else%>
+        <%if isvirtual || goods.type==2%>
+          <input type="hidden"  id="dispatchtype" value="0" />
+          <div class="carrier_input_info" >
           <div class="row">
             <div class='title'>联系人姓名</div>
             <div class='info'>
@@ -305,44 +308,44 @@
                 <div class='inner'><input type="text" placeholder="联系人手机"  id="carrier_input_mobile" value="<%member.mobile%>" style='height:35px;'/></div>
             </div>
           </div>
-      </div> -->
-      <%else%>
-		<input type="hidden"  id="dispatchtype" value="0" />
-      <div class="addorder_user addorder_user_0">
-        <input type='hidden' id='addressid' value='<%address.id%>' />
-        <div class="info" id='address_select' <%if !address %>style='display:none'<%/if%>>
-           <div class="ico"><i class="fa fa-map-marker"></i></div>
-           <div class='info1'>
-             <div class='inner'>
-                <div class="user">收件人：<span id='address_realname'><%address.realname%></span>(<span id='address_mobile'><%address.mobile%></span>)</div>
-                <div class="address"><span id='address_address'><%address.address%></span></div>
+          </div> 
+        <%else%>
+          <input type="hidden"  id="dispatchtype" value="0" />
+        <div class="addorder_user addorder_user_0">
+          <input type='hidden' id='addressid' value='<%address.id%>' />
+          <div class="info" id='address_select' <%if !address %>style='display:none'<%/if%>>
+             <div class="ico"><i class="fa fa-map-marker"></i></div>
+             <div class='info1'>
+               <div class='inner'>
+                  <div class="user">收件人：<span id='address_realname'><%address.realname%></span>(<span id='address_mobile'><%address.mobile%></span>)</div>
+                  <div class="address"><span id='address_address'><%address.address%></span></div>
+               </div>
              </div>
-           </div>
-           <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
-        </div>
-
-        <div class='info' id='address_new'  <%if address %>style='display:none'<%/if%>>
-          <div class="ico"><i class="fa fa-plus-circle"></i></div>
-          <div class='info1'>
-             <div class='inner'>
-               <div class="user" style='padding-top:8px;'>新增地址</div>  
-             </div>
+             <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
           </div>
-          <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
-        </div>
-      </div>
-	<div id='address_container'></div>
-		   <%if dispatch%>
-		      <div class="addorder_exp" id='dispatch_select' style="display: none;">
-		        <input type='hidden' id='dispatchid' value='<%dispatch.id%>' />
-		        <div class="t1">配送方式</div>
-		        <div class="ico"><i class='fa fa-angle-right fa-2x'></i></div>
-		        <div class="t2"><span class='dispatchname'><%dispatch.dispatchname%></span> <span class='dispatchprice'><%dispatch.price%></span>元</div>
-		      </div>
-      	   <%/if%>
-     
 
-	  <%/if%>
+          <div class='info' id='address_new'  <%if address %>style='display:none'<%/if%>>
+            <div class="ico"><i class="fa fa-plus-circle"></i></div>
+            <div class='info1'>
+               <div class='inner'>
+                 <div class="user" style='padding-top:8px;'>新增地址</div>  
+               </div>
+            </div>
+            <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+          </div>
+        </div>
+      <div id='address_container'></div>
+             <%if dispatch%>
+                <div class="addorder_exp" id='dispatch_select' style="display: none;">
+                  <input type='hidden' id='dispatchid' value='<%dispatch.id%>' />
+                  <div class="t1">配送方式</div>
+                  <div class="ico"><i class='fa fa-angle-right fa-2x'></i></div>
+                  <div class="t2"><span class='dispatchname'><%dispatch.dispatchname%></span> <span class='dispatchprice'><%dispatch.price%></span>元</div>
+                </div>
+             <%/if%>
+       
+        <%/if%>
+      <%/if%>
 
     {/if}
 
@@ -429,13 +432,13 @@
      <div class="addorder_price" style="margin-top:5px;">
             <div class="price" style="border:none;">
             <%if deductcredit>0 %>
-            <div class="line" style="line-height:26px;"><d id="deductcredit_info"><%deductcredit%></d> 积分可抵扣 <d id="deductcredit_money" style='color:#ff6600'><%deductmoney%></d> 元
+            <div class="line" style="line-height:26px;"><d id="deductcredit_info"><%deductcredit%></d> {if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}可抵扣 <d id="deductcredit_money" style='color:#ff6600'><%deductmoney%></d> 元
                 <div id='deductcredit' class="nav" on="0" credit="<%deductcredit%>" money='<%deductmoney%>'><nav></nav></div>
             </div>
             <%/if%>
             
             <%if deductcredit2>0 %>
-            <div class="line" style="line-height:26px;">余额可抵扣 <d id="deductcredit2_money" style='color:#ff6600'><%deductcredit2%></d> 元
+            <div class="line" style="line-height:26px;">{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}可抵扣 <d id="deductcredit2_money" style='color:#ff6600'><%deductcredit2%></d> 元
                 <div id='deductcredit2' class="nav" on="0" credit2="<%deductcredit2%>"><nav></nav></div>
             </div>
             <%/if%>

@@ -43,7 +43,7 @@ $pluginbonus = p("bonus");
 $bonus_start = 0;
 if(!empty($pluginbonus)){
     $bonus_set = $pluginbonus->getSet();
-    if(!empty($bonus_set['start'])){
+    if(!empty($bonus_set['start']) || !empty($bonus_set['area_start'])){
         $bonus_start = 1;
     }
 }
@@ -186,7 +186,7 @@ if ($operation == "change") {
             $h        = array();
             $rowspans = array();
             for ($i = 0; $i < $len; $i++) {
-                $html .= "<th style='width:80px;'>" . $specs[$i]['title'] . "</th>";
+                $html .= "<th style='width:8%;'>" . $specs[$i]['title'] . "</th>";
                 $itemlen = count($specs[$i]['items']);
                 if ($itemlen <= 0) {
                     $itemlen = 1;
@@ -204,23 +204,23 @@ if ($operation == "change") {
             }
             $canedit = ce('shop.goods', $item);
             if ($canedit) {
-                $html .= '<th class="info" style="width:130px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">库存</div><div class="input-group"><input type="text" class="form-control option_stock_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_stock\');"></a></span></div></div></th>';
-                $html .= '<th class="success" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">销售价格</div><div class="input-group"><input type="text" class="form-control option_marketprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_marketprice\');"></a></span></div></div></th>';
-                $html .= '<th class="warning" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div><div class="input-group"><input type="text" class="form-control option_productprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productprice\');"></a></span></div></div></th>';
-                $html .= '<th class="danger" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div><div class="input-group"><input type="text" class="form-control option_costprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_costprice\');"></a></span></div></div></th>';
-                $html .= '<th class="warning" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">红包价格</div><div class="input-group"><input type="text" class="form-control option_redprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_redprice\');"></a></span></div></div></th>';
-                $html .= '<th class="primary" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品编码</div><div class="input-group"><input type="text" class="form-control option_goodssn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_goodssn\');"></a></span></div></div></th>';
-                $html .= '<th class="danger" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div><div class="input-group"><input type="text" class="form-control option_productsn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productsn\');"></a></span></div></div></th>';
-                $html .= '<th class="info" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div><div class="input-group"><input type="text" class="form-control option_weight_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_weight\');"></a></span></div></div></th>';
+                $html .= '<th class="info" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">库存</div><div class="input-group"><input type="text" class="form-control option_stock_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_stock\');"></a></span></div></div></th>';
+                $html .= '<th class="success" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">销售价格</div><div class="input-group"><input type="text" class="form-control option_marketprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_marketprice\');"></a></span></div></div></th>';
+                $html .= '<th class="warning" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div><div class="input-group"><input type="text" class="form-control option_productprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productprice\');"></a></span></div></div></th>';
+                $html .= '<th class="danger" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div><div class="input-group"><input type="text" class="form-control option_costprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_costprice\');"></a></span></div></div></th>';
+                $html .= '<th class="warning" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">红包价格</div><div class="input-group"><input type="text" class="form-control option_redprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_redprice\');"></a></span></div></div></th>';
+                $html .= '<th class="primary" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品编码</div><div class="input-group"><input type="text" class="form-control option_goodssn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_goodssn\');"></a></span></div></div></th>';
+                $html .= '<th class="danger" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div><div class="input-group"><input type="text" class="form-control option_productsn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productsn\');"></a></span></div></div></th>';
+                $html .= '<th class="info" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div><div class="input-group"><input type="text" class="form-control option_weight_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_weight\');"></a></span></div></div></th>';
                 $html .= '</tr></thead>';
             } else {
-                $html .= '<th class="info" style="width:130px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">库存</div></div></th>';
-                $html .= '<th class="success" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">销售价格</div></div></th>';
-                $html .= '<th class="warning" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div></div></th>';
-                $html .= '<th class="danger" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div></div></th>';
-                $html .= '<th class="primary" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品编码</div></div></th>';
-                $html .= '<th class="danger" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div></div></th>';
-                $html .= '<th class="info" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div></th>';
+                $html .= '<th class="info" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">库存</div></div></th>';
+                $html .= '<th class="success" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">销售价格</div></div></th>';
+                $html .= '<th class="warning" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div></div></th>';
+                $html .= '<th class="danger" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div></div></th>';
+                $html .= '<th class="primary" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品编码</div></div></th>';
+                $html .= '<th class="danger" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div></div></th>';
+                $html .= '<th class="info" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div></th>';
                 $html .= '</tr></thead>';
             }
             for ($m = 0; $m < $len; $m++) {
@@ -344,13 +344,13 @@ if ($operation == "change") {
     //         'op' => 'post'
     //     )), 'error');
     // }
-    $dispatch_data = pdo_fetchall("select * from".tablename("sz_yi_dispatch")."where uniacid =:uniacid and enabled = 1 order by displayorder desc",array(":uniacid"=>$_W["uniacid"])); 
-   if (checksubmit("submit")) {
-	 if ($diyform_plugin) { 
-	 if ($_GPC["type"] == 1 && $_GPC["diyformtype"] == 2) { 
-	 message("替换模式只试用于虚拟物品类型，实体物品无效！请重新选择！");
-	  }
-   } 
+        $dispatch_data = pdo_fetchall("select * from".tablename("sz_yi_dispatch")."where uniacid =:uniacid and enabled = 1 order by displayorder desc",array(":uniacid"=>$_W["uniacid"])); 
+        if (checksubmit("submit")) {
+    	  if ($diyform_plugin) { 
+    	  if ($_GPC["type"] == 1 && $_GPC["diyformtype"] == 2) { 
+    	  message("替换模式只试用于虚拟物品类型，实体物品无效！请重新选择！");
+    	   }
+        } 
         if (empty($_GPC['goodsname'])) {
             message('请输入商品名称！');
         }
@@ -413,8 +413,8 @@ if ($operation == "change") {
             'followurl' => trim($_GPC['followurl']),
             'followtip' => trim($_GPC['followtip']),
             'deduct' => $_GPC['deduct'],
-	    "manydeduct"=>$_GPC["manydeduct"],
-	    "deduct2"=>$_GPC["deduct2"],
+	        "manydeduct"=>$_GPC["manydeduct"],
+	        "deduct2"=>$_GPC["deduct2"],
             'virtual' => intval($_GPC['type']) == 3 ? intval($_GPC['virtual']) : 0,
             'discounts' => is_array($_GPC['discounts']) ? json_encode($_GPC['discounts']) : array(),
             'detail_logo' => save_media($_GPC['detail_logo']),
@@ -445,7 +445,9 @@ if ($operation == "change") {
 		}else{
 			$data['status'] = $_GPC['status'];
 		}
-        if (p('return')) {
+        $pluginreturn = p('return');
+        if ($pluginreturn) {
+            $return_set = $pluginreturn->getSet();
             $data['isreturn'] = intval($_GPC['isreturn']);   //添加全返开关    1:开    0:关
             $data['isreturnqueue'] = intval($_GPC['isreturnqueue']);   //添加全返排列开关    1:开    0:关
         }
@@ -919,18 +921,41 @@ m("cache")->set("areas", $areas, "global");
         'result' => 0
     )));
 }elseif($operation == 'copygoods'){
-    $goodsid=$_GPC['id'];
-    $goods=pdo_fetch('select * from ' .tablename('sz_yi_goods'). ' where id = '.$goodsid);
+    $uniacid=$_W['uniacid'];
+    $goodsid1=$_GPC['id'];
+    $goods=pdo_fetch('select * from ' .tablename('sz_yi_goods'). ' where id = '.$goodsid1.' and uniacid='.$uniacid);
     if(empty($goods)){
         message('未找到此商品，商品复制失败!', $this->createWebUrl('shop/goods') , 'error');
     }
     $goods['id']='';
-    $ok=pdo_insert('sz_yi_goods',$goods);
-    if(!empty($ok)){
-        message('商品复制成功！', $this->createWebUrl('shop/goods') , 'success');
-    }else{
-        message('商品复制失败，请联系管理员', $this->createWebUrl('shop/goods') , 'error'); 
+    pdo_insert('sz_yi_goods',$goods);
+    $goodsid=pdo_insertid();
+
+    $goodsoption=pdo_fetch('select * from ' .tablename('sz_yi_goods_option'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid);
+    $goodsoption['id']='';
+    $goodsoption['goodsid']=$goodsid;
+    pdo_insert('sz_yi_goods_option',$goodsoption);
+
+    $goodsparam=pdo_fetch('select * from ' .tablename('sz_yi_goods_param'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid);
+    $goodsparam['id']='';
+    $goodsparam['goodsid']=$goodsid;
+    pdo_insert('sz_yi_goods_param',$goodsparam);
+
+    $goodsspec=pdo_fetch('select * from ' .tablename('sz_yi_goods_spec'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid);
+    if(!empty($goodsspec)){
+        $goodsspec_item=pdo_fetch('select * from ' .tablename('sz_yi_goods_spec_item'). ' where specid = '.$goodsspec['id'].' and uniacid='.$uniacid);
+        $goodsspec['id']='';
+        pdo_insert('sz_yi_goods_spec',$goodsspec);
+        $goodsspecid=pdo_insertid();
+        $goodsspec_item['specid']=$goodsspecid;
+        $goodsspec_item['id']='';
+        $goodsspec['goodsid']=$goodsid;
+        pdo_insert('sz_yi_goods_spec_item',$goodsspec_item);        
     }
+
+    
+    message('商品复制成功！', $this->createWebUrl('shop/goods') , 'success');
+    
 }
 load()->func('tpl');
 include $this->template('web/shop/goods');

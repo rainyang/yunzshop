@@ -62,15 +62,15 @@
         </div>
 </div>
  <div class="cart" style='margin-top:-20px;'>
-     <a href="javascript:;"><div class="list1" style=" border-bottom:0px;border-top:0px;">余额: <span style='color:#f90'><%member.credit2%></span> 
+     <a href="javascript:;"><div class="list1" style=" border-bottom:0px;border-top:0px;">{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}: <span style='color:#f90'><%member.credit2%></span> 
              <%if trade.closerecharge < 1%>
              <div class="take" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</div>
              <%/if%>
                  
          </div></a>
-    <a href="javascript:;"><div class="list1" style="margin:-2px 0px 0; border-bottom:0px;">积分: <%member.credit1%>
+    <a href="javascript:;"><div class="list1" style="margin:-2px 0px 0; border-bottom:0px;">{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}: <%member.credit1%>
 
-            <div class="take1" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">积分兑换</div>
+            <div class="take1" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}兑换</div>
 
         </div></a>
 </div>
@@ -94,7 +94,7 @@
     
 <div class="cart">
     <%if shopset.hascom%>
-        <a href="{php echo $this->createPluginMobileUrl('commission')}"><div class="list1" ><i class="fa fa-home"></i><%shopset.commission_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>   
+        <a href="{php echo $this->createPluginMobileUrl('commission')}"><div class="list1" ><i class="fa fa-sitemap"></i><%shopset.commission_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>   
     <%/if%>
     <a href="{php echo $this->createMobileUrl('member/info')}"><div class="list1" ><i class="fa fa-user"></i>我的资料<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     <%if !member.isbindmobile && shopset.is_weixin%>
@@ -112,10 +112,13 @@
     <a href="{php echo $this->createPluginMobileUrl('return/return_log')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-piechart" style="color:#f10;"></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
     {/if}
 </div>
-    {if p('article')}
+         <%if shopset.isarticle == 1%>
     <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-article" style="color:#f10;"></i><%shopset.article_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
-    {/if}
 
+    <%/if%>
+     <%if shopset.isranking == 1%>
+    <a href="{php echo $this->createPluginMobileUrl('ranking/ranking')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-line-chart" style="color:#ca81d1;"></i><%shopset.rankingname%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
+    <%/if%>
 <%if shopset.hascoupon%>
 <div class="cart">
      <%if shopset.hascouponcenter%>

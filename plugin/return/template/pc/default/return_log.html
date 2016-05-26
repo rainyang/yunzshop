@@ -21,17 +21,24 @@
     <div class="title">返利记录</div>
 </div> -->
 
-<div class="credit_tab">
-    <div class="credit_nav {if $_GPC['type']==0}credit_navon{/if}" data-type='0' >返利记录</div>
-    <div class="credit_nav {if $_GPC['type']==1}credit_navon{/if}"  data-type='1'>排列记录</div>
-</div>
+
+
 
 <div id='container' class="rightlist">
 
 </div></div>
 
-<script id='tpl_log' type='text/html'>
+<script id='tpl_list' type='text/html'>
 
+<div class="credit_tab">
+    <div class="credit_nav {if $_GPC['type']==0}credit_navon{/if}" data-type='0' >返利记录</div>
+    <div class="credit_nav {if $_GPC['type']==1}credit_navon{/if}"  data-type='1'>排列记录</div>
+</div>
+
+<div id='tpl_container'></div>
+</script>
+
+<script id='tpl_log' type='text/html'>
 
     <%if type==0%>
         <%each list as log%>
@@ -111,17 +118,17 @@ function bindScroller(){
             if ($(document).height() <= totalheight) {
                 if (stop == true) {
                     stop = false; scrolled = true;
-                    $('#container').append('<div id="credit_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载...</div>');
+                    $('#tpl_container').append('<div id="credit_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载...</div>');
                     page++;
    
                     core.pjson('return/return_log', {type: current_type,goodsid:goodsid,page: page}, function (json) {
                         stop = true;
                         $('#credit_loading').remove();
-                        $("#container").append(tpl('tpl_log', json.result));
+                        $("#tpl_container").append(tpl('tpl_log', json.result));
                         if (json.result.list.length < json.result.pagesize) {
                             $('#credit_loading').remove();
                             //$('#credit_loading').html('已经加载完全部记录');
-                            $("#container").append('<div id="credit_loading">已经加载完全部记录</div>');
+                            $("#tpl_container").append('<div id="credit_loading">已经加载完全部记录</div>');
                             loaded = true;
                             //console.log('loaded:'+loaded);
                             $(window).scroll = null;
@@ -140,11 +147,12 @@ function bindScroller(){
             }
 
             core.pjson('return/return_log', {type:type,goodsid:goodsid,page: page}, function (json) {
+                 $("#container").html(tpl('tpl_list'));
                 if (json.result.list.length <= 0) {
-                    $('#container').html(tpl('tpl_empty'));
+                    $('#tpl_container').html(tpl('tpl_empty'));
                     return;
                 }
-                $('#container').html(tpl('tpl_log', json.result));
+                $('#tpl_container').html(tpl('tpl_log', json.result));
                 bindScroller();
             }, true);
         }
@@ -165,4 +173,4 @@ function bindScroller(){
     })
 </script>
 {php $show_footer=true}
-{template 'common/footer'}
+{template 'common/bottom'}

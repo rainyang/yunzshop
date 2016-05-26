@@ -41,7 +41,9 @@ if ($_W['isajax']) {
 	        }
 	        show_json(1);
 	    } else if ($operation == 'complete') {
+
 	        $orderid = intval($_GPC['orderid']);
+
 	        $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
 	            ':id' => $orderid,
 	            ':uniacid' => $uniacid,
@@ -75,14 +77,20 @@ if ($_W['isajax']) {
 		if (p('coupon') && !empty($order['couponid'])) {
 			p('coupon')->backConsumeCoupon($orderid);
 		}
+
 		m('notice')->sendOrderMessage($orderid);
 		if (p('commission')) {
 			p('commission')->checkOrderFinish($orderid);
 		}
+
 		if (p('return')) {
 			p('return')->cumulative_order_amount($orderid);
 		}
-		$pay = m('finance')->pay($order['openid'], $order['paytype'], $order["redprice"]*100, $order['ordersn']);
+
+		if($order['redprice'] > 0) {
+			m('finance')->sendredpack($order['openid'], $order["redprice"]*100, $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
+		}
+
 		show_json(1);
 	} else if ($operation == 'delivery') {
 	        if ($_W['ispost']) {

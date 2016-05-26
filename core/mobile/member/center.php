@@ -65,7 +65,7 @@ $shopset['is_weixin'] = is_weixin();
 $plugin_article = p('article');
 if ($plugin_article) {
 	$article_set = $plugin_article->getSys();
-	$shopset['article_text'] = $article_set['article_text']?$article_set['article_text']:'文章管理';
+	$shopset['article_text'] = $article_set['article_text'] ? $article_set['article_text'] : '文章管理';
 
 	$shopset['isarticle'] = $article_set['isarticle'];
 }

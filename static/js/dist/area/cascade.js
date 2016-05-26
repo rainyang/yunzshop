@@ -69,6 +69,7 @@ function cascdeInit(v1,v2,v3) {
 //依据省设置城市，县
 */
 function selectCity() {
+    
     var dropElement1 = document.getElementById("sel-provance");
     var name = dropElement1.options[dropElement1.selectedIndex].value;     
     countyNodes = TopnodeList[dropElement1.selectedIndex];      
