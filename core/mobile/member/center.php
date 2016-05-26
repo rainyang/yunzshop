@@ -10,6 +10,7 @@ $shop_set = m('common')->getSysset(array('shop'));
 $shopset   = m('common')->getSysset('shop');
 
 $member = m('member')->getMember($openid);
+$is_af_supplier = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and openid='{$openid}'");
 $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
 
 $uniacid = $_W['uniacid'];
