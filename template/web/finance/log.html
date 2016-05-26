@@ -121,7 +121,7 @@
 
                     <th style='width:12%;'>{if $_GPC['type']==1}提现时间{else}充值时间{/if}</th>
                     {if $_GPC['type']==0}<th style='width:10%;'>充值方式</th>{/if}
-                    <th style='width:10%;'>{if $_GPC['type']==1}提现金额{else}充值金额{/if}状态</th>
+                    <th style='width:10%;'>{if $_GPC['type']==1}提现金额{else}充值金额{/if}<br/>状态</th>
                     <th style='width:14%;'>操作</th>
                 </tr>
             </thead>
@@ -163,6 +163,7 @@
     {/if}
                     
                     <td>
+                        {$row['money']}<br/>
                         {if $row['status']==0}
                         <span class='label label-default'>{if $row['type']==1}申请中{else}未充值{/if}</span>
                         {else if $row['status']==1}
@@ -176,7 +177,7 @@
                     
                     <td>
                         {ifp 'member.member.view'}
-                        <a class='btn btn-default' href="{php echo $this->createWebUrl('member',array('op'=>'detail','id' => $row['mid']));}">用户信息</a>		
+                        <a class='btn btn-default' href="{php echo $this->createWebUrl('member',array('op'=>'detail','id' => $row['mid']));}" style="margin-bottom: 2px">用户信息</a>		
                         {/if}
                         {if $row['type']==0 && $row['status']==1}
                               {if $row['rechargetype']=='alipay' || $row['rechargetype']=='wechat'}
@@ -187,9 +188,9 @@
                         {/if}
                         {if $row['type']==1 && $row['status']==0}
                         {ifp 'finance.withdraw.withdraw'}
-                        <a class='btn btn-default' onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('finance/log',array('op'=>'pay','paytype'=>'wechat','id' => $row['id']));}">微信提现</a>		
-                        <a class='btn btn-default' onclick="return confirm('确认手动提现完成?')" href="{php echo $this->createWebUrl('finance/log',array('op'=>'pay','paytype'=>'manual','id' => $row['id']));}">手动提现</a>		
-                        <a class='btn btn-default' onclick="return confirm('确认拒绝提现申请?')" href="{php echo $this->createWebUrl('finance/log',array('op'=>'pay','paytype'=>'refuse','id' => $row['id']));}">拒绝</a>		
+                        <a class='btn btn-default' style="margin-bottom: 2px" onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('finance/log',array('op'=>'pay','paytype'=>'wechat','id' => $row['id']));}">微信提现</a>		
+                        <a class='btn btn-default' style="margin-bottom: 2px" onclick="return confirm('确认手动提现完成?')" href="{php echo $this->createWebUrl('finance/log',array('op'=>'pay','paytype'=>'manual','id' => $row['id']));}">手动提现</a>		
+                        <a class='btn btn-default' style="margin-bottom: 2px" onclick="return confirm('确认拒绝提现申请?')" href="{php echo $this->createWebUrl('finance/log',array('op'=>'pay','paytype'=>'refuse','id' => $row['id']));}">拒绝</a>		
                         {/if}
                         {/if}
                     </td>

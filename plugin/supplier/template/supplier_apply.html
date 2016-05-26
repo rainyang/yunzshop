@@ -50,15 +50,12 @@
         <table class="table table-hover table-responsive">
             <thead class="navbar-inner" >
                 <tr>
-                    <th style='width:5%;'>供应商ID</th>
-                    <th style='width:15%;'>提现单号</th>
-                    <th style='width:5%;'>开户名</th>
-                    <th style='width:10%;'>电话</th>
-                    <th style='width:10%;'>开户银行</th>
-                    <th style='width:15%;'>银行卡号</th>
-                    <th style='width:10%;'>提现金额</th>
+                    <th style='width:6%;'>供应商ID</th>
+                    <th style='width:22%;'>提现单号</th>
+                    <th style='width:14%;'>开户名<br>电话</th>
+                    <th style='width:22%;'>开户银行<br/>银行卡号</th>
+                    <th style='width:16%;'>提现金额<br/>打款方式</th>
                     <th style='width:10%;'>申请时间</th>
-                    <th style='width:10%;'>打款</th>
                     <th style='width:10%;'>状态</th>
                 </tr>
             </thead>
@@ -68,13 +65,10 @@
                         <tr>
                             <td>{$row['uid']}</td>
                             <td>{$row['applysn']}</td>
-                            <td>{$row['accountname']}</td>
-                            <td>{$row['telephone']}</td>
-                            <td>{$row['accountbank']}</td>
-                            <td>{$row['banknumber']}</td>
-                            <td>{$row['apply_money']}</td>
+                            <td>{$row['accountname']}<br/>{$row['telephone']}</td>
+                            <td>{$row['accountbank']}<br>{$row['banknumber']}</td>
+                            <td><label class="label label-danger">金额：{$row['apply_money']}</label><br>{php echo $row['type'] == 1 ? "银行卡" : "微信余额"}</td>
                             <td><?php echo date('Y-m-d H:i:s',$row['apply_time']);?></td>
-                            <td>{php echo $row['type'] == 1 ? "银行卡" : "微信余额"}</td>
                             <td  style="overflow:visible;">
                                 <div class="form-group">
                                     <div class="col-sm-9 col-xs-9">
