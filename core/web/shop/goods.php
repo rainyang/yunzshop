@@ -344,13 +344,13 @@ if ($operation == "change") {
     //         'op' => 'post'
     //     )), 'error');
     // }
-    $dispatch_data = pdo_fetchall("select * from".tablename("sz_yi_dispatch")."where uniacid =:uniacid and enabled = 1 order by displayorder desc",array(":uniacid"=>$_W["uniacid"])); 
-   if (checksubmit("submit")) {
-	 if ($diyform_plugin) { 
-	 if ($_GPC["type"] == 1 && $_GPC["diyformtype"] == 2) { 
-	 message("替换模式只试用于虚拟物品类型，实体物品无效！请重新选择！");
-	  }
-   } 
+        $dispatch_data = pdo_fetchall("select * from".tablename("sz_yi_dispatch")."where uniacid =:uniacid and enabled = 1 order by displayorder desc",array(":uniacid"=>$_W["uniacid"])); 
+        if (checksubmit("submit")) {
+    	  if ($diyform_plugin) { 
+    	  if ($_GPC["type"] == 1 && $_GPC["diyformtype"] == 2) { 
+    	  message("替换模式只试用于虚拟物品类型，实体物品无效！请重新选择！");
+    	   }
+        } 
         if (empty($_GPC['goodsname'])) {
             message('请输入商品名称！');
         }
@@ -413,8 +413,8 @@ if ($operation == "change") {
             'followurl' => trim($_GPC['followurl']),
             'followtip' => trim($_GPC['followtip']),
             'deduct' => $_GPC['deduct'],
-	    "manydeduct"=>$_GPC["manydeduct"],
-	    "deduct2"=>$_GPC["deduct2"],
+	        "manydeduct"=>$_GPC["manydeduct"],
+	        "deduct2"=>$_GPC["deduct2"],
             'virtual' => intval($_GPC['type']) == 3 ? intval($_GPC['virtual']) : 0,
             'discounts' => is_array($_GPC['discounts']) ? json_encode($_GPC['discounts']) : array(),
             'detail_logo' => save_media($_GPC['detail_logo']),
@@ -445,7 +445,9 @@ if ($operation == "change") {
 		}else{
 			$data['status'] = $_GPC['status'];
 		}
-        if (p('return')) {
+        $pluginreturn = p('return');
+        if ($pluginreturn) {
+            $return_set = $pluginreturn->getSet();
             $data['isreturn'] = intval($_GPC['isreturn']);   //添加全返开关    1:开    0:关
             $data['isreturnqueue'] = intval($_GPC['isreturnqueue']);   //添加全返排列开关    1:开    0:关
         }
