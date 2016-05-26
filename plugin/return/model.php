@@ -86,10 +86,17 @@ if (!class_exists('ReturnModel')) {
 					array(':orderid' => $orderid,':uniacid' => $_W['uniacid']
 				));
 				$order_price = 0;
+				$is_goods_return = false;
 				foreach($order_goods as $good){
  					if($good['isreturn'] == 1){
  						$order_price += $good['price'];
+ 						$is_goods_return = true;
  					}
+				}
+				//商品 没有开启全返 返回
+				if(!$is_goods_return)
+				{
+					return false;
 				}
 				if (empty($order_goods)) {
 					return false;
