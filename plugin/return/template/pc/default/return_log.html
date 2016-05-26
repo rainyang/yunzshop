@@ -16,6 +16,14 @@
 .history_top {height:44px;  background:#e8e8e8; padding:0px 1%; border-bottom:1px solid #e3e3e3;}
 .history_top .title {height:44px; width:auto; float:left; font-size:16px; line-height:44px; color:#666;}
 .history_top .nav {height:30px; width:auto; background:#fff; padding:0px 10px; border:1px solid #e3e3e3; border-radius:5px; float:right; line-height:30px; margin:6px 0px 0px 16px; color:#666; font-size:14px;}
+.queueinfo{    border: 1px #7D7D7D solid;
+    border-radius: 2px;
+    color: #4C4C4C;
+    padding: 0 4px;
+    font-size: 14px;
+    display: block;
+    width: 40%;
+    margin: 2px auto 0;}
 </style>
 <!-- <div class="page_topbar">
     <div class="title">返利记录</div>
@@ -71,7 +79,7 @@
 
                 <div class="num">
                     <span>队列数量:<%log.total%> </span><br/>
-                    <span class="queueinfo"  data-type='2' data-goodsid='<%log.goodsid%>'>查看详情</span> 
+                    <a class="queueinfo"  data-type='2' data-goodsid='<%log.goodsid%>'>查看详情</a> 
                 </div>
             </div>
         <%/each%>

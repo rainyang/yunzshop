@@ -931,15 +931,29 @@ m("cache")->set("areas", $areas, "global");
     pdo_insert('sz_yi_goods',$goods);
     $goodsid=pdo_insertid();
 
-    $goodsoption=pdo_fetch('select * from ' .tablename('sz_yi_goods_option'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid);
-    $goodsoption['id']='';
-    $goodsoption['goodsid']=$goodsid;
-    pdo_insert('sz_yi_goods_option',$goodsoption);
+    $goodsoption=pdo_fetch('select * from ' .tablename('sz_yi_goods_option'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid); 
+    if(!empty($goodsoption)){
+        $goodsoption['id']='';
+        $goodsoption['goodsid']=$goodsid;
+        pdo_insert('sz_yi_goods_option',$goodsoption);   
+    }
+    
+
+    $goodscomment=pdo_fetch('select * from ' .tablename('sz_yi_goods_comment'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid);
+    if(!empty($goodscomment)){
+        $goodscomment['id']='';
+        $goodscomment['goodsid']=$goodsid;
+        pdo_insert('sz_yi_goods_comment',$goodscomment);    
+    }
+
 
     $goodsparam=pdo_fetch('select * from ' .tablename('sz_yi_goods_param'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid);
-    $goodsparam['id']='';
-    $goodsparam['goodsid']=$goodsid;
-    pdo_insert('sz_yi_goods_param',$goodsparam);
+    if(!empty($goodsparam)){
+        $goodsparam['id']='';
+        $goodsparam['goodsid']=$goodsid;
+        pdo_insert('sz_yi_goods_param',$goodsparam);   
+    }
+
 
     $goodsspec=pdo_fetch('select * from ' .tablename('sz_yi_goods_spec'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid);
     if(!empty($goodsspec)){
