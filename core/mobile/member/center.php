@@ -55,7 +55,7 @@ if(!empty($pluginbonus)){
 	$bonus_set = $pluginbonus->getSet();
 	if(!empty($bonus_set['start'])){
 		$bonus_start = true;
-		$bonus_text = $bonus_set['detail_text'] ? $bonus_set['detail_text'] : "分红明细";
+		$bonus_text = $bonus_set['texts']['center'] ? $bonus_set['texts']['center'] : "分红明细";
 	}
 }
 $shopset['bonus_start'] = $bonus_start;
