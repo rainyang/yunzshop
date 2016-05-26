@@ -73,6 +73,13 @@ if ($plugin_article) {
 
 	$shopset['isarticle'] = $article_set['isarticle'];
 }
+$reurnset = m('plugin')->getpluginSet('return');
+$shopset['isreturn'] = false;
+if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 )
+{
+	$shopset['isreturn'] = true;
+}
+
 
 if (p('ranking')) {
 	$ranking_set = p('ranking')->getSet();
