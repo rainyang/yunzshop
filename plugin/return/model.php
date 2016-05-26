@@ -6,11 +6,11 @@ if (!class_exists('ReturnModel')) {
 
 	class ReturnModel extends PluginModel
 	{
-		// public function getSet()
-		// {
-		// 	$_var_0 = parent::getSet();
-		// 	return $_var_0;
-		// }
+		public function getSet()
+		{
+			$_var_0 = parent::getSet();
+			return $_var_0;
+		}
 		public function setGoodsQueue($orderid,$_var_0=array(),$uniacid='') {
 
 			$order_goods = pdo_fetchall("SELECT og.orderid,og.goodsid,og.total,og.price,g.isreturnqueue,o.openid,m.id as mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
@@ -71,20 +71,19 @@ if (!class_exists('ReturnModel')) {
 
 		}
 
-		public function cumulative_order_amount($orderid,$_var_0=array(),$uniacid='') {
-
+		public function cumulative_order_amount($orderid) {
+			global $_W, $_GPC;
+			$_var_0 = $this->getSet();
 			if($_var_0['isqueue'])
 			{
-				$this->setGoodsQueue($orderid,$_var_0,$uniacid);
+				$this->setGoodsQueue($orderid,$_var_0,$_W['uniacid']);
 			}
-
 			if ($_var_0['isreturn'] == 1) {
 				if (empty($orderid)) {
 					return false;
 				}
-
 				$order_goods = pdo_fetchall("SELECT og.price,g.isreturn,o.openid,m.id as mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
-					array(':orderid' => $orderid,':uniacid' => $uniacid
+					array(':orderid' => $orderid,':uniacid' => $_W['uniacid']
 				));
 				$order_price = 0;
 				foreach($order_goods as $good){
@@ -97,10 +96,10 @@ if (!class_exists('ReturnModel')) {
 				}
 				if($_var_0['returnrule'] == 1)
 				{
-					$this->setOrderRule($order_goods,$order_price,$_var_0,$uniacid);
-				}else
+					$this->setOrderRule($order_goods,$order_price,$_var_0,$_W['uniacid']);
+				}elseif($_var_0['returnrule'] == 2)
 				{
-					$this->setOrderMoneyRule($order_goods,$order_price,$_var_0,$uniacid);
+					$this->setOrderMoneyRule($order_goods,$order_price,$_var_0,$_W['uniacid']);
 				}
 				
 
@@ -133,8 +132,6 @@ if (!class_exists('ReturnModel')) {
 		//订单累计金额
 		public function setOrderMoneyRule($order_goods,$order_price,$_var_0=array(),$uniacid='')
 		{
-
-
 				$return = pdo_fetch("SELECT * FROM " . tablename('sz_yi_return_money') . " WHERE mid = :mid and uniacid = :uniacid",
 					array(':mid' => $order_goods[0]['mid'],':uniacid' => $uniacid
 				));
@@ -158,8 +155,7 @@ if (!class_exists('ReturnModel')) {
 				$return_money = pdo_fetchcolumn("SELECT money FROM " . tablename('sz_yi_return_money') . " WHERE id = :id and uniacid = :uniacid",
 					array(':id' => $returnid,':uniacid' => $uniacid
 				));
-
-				$this->setmoney($_var_0['orderprice'],$uniacid);
+				$this->setmoney($_var_0['orderprice'],$_var_0,$uniacid);
 
 				if ($return_money >= $_var_0['orderprice']) {
 					$text = "您的订单累计金额已经超过".$_var_0['orderprice']."元，每".$_var_0['orderprice']."元可以加入全返机制，等待全返。";
