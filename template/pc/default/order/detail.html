@@ -441,10 +441,10 @@ select { width:80px;height:38px;position:absolute;left:0; -webkit-appearance: no
         <div class="line">会员折扣:<span>-￥<span class='discountprice'><%order.discountprice%></span></span></div>
         <%/if%>
         <%if order.deductprice>0%>
-        <div class="line">积分抵扣:<span>-￥<span class='deductprice'><%order.deductprice%></span></span></div>
+        <div class="line">{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}抵扣:<span>-￥<span class='deductprice'><%order.deductprice%></span></span></div>
         <%/if%>
         <%if order.deductcredit2>0%>
-        <div class="line">余额抵扣:<span>-￥<span class='deductprice2'><%order.deductcredit2%></span></span></div>
+        <div class="line">{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}抵扣:<span>-￥<span class='deductprice2'><%order.deductcredit2%></span></span></div>
         <%/if%>
         <%if order.changeprice!=0%>
         <div class="line">改价优惠:<span><%if order.changeprice>0%>+<%/if%>￥<span class='changeprice2'><%order.changeprice%></span></span></div>
