@@ -1,4 +1,4 @@
-{template 'common/header_center'}
+{template 'web/_header'}
 <link href="../addons/sz_yi/plugin/creditshop/template/mobile/default/images/css.css" rel="stylesheet" type="text/css"/>
 <title>商品详情</title>
 
@@ -460,22 +460,11 @@
         
     })
 </script>
-{template 'common/footer'}
 
 <div class="w1200 m0a">
 
 <!-- {template 'tabs'} -->
-<div class="ulleft-nav">
-<ul class="nav nav-arrow-next nav-tabs" id="myTab">
-    <li class="active" ><a href="#tab_basic">商品设置</a></li>
-    <li><a href="#tab_act">活动设置</a></li>
-    <li><a href="#tab_sub">提供商家设置</a></li>
-    <li><a href="#tab_vip">特权设置</a></li>
-    {if p('verify')}<li><a href="#tab_verify">兑换设置</a></li>{/if}
-    <li><a href="#tab_notice">商家通知设置</a></li>
-    <li><a href="#tab_share">关注及分享设置</a></li>
-</ul> 
-</div>
+{template 'tabs'}
 <div class="rightlist">
 {if $operation=='post'}
 
