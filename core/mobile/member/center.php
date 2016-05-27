@@ -57,7 +57,7 @@ $bonus_start = false;
 $bonus_text = "";
 if(!empty($pluginbonus)){
 	$bonus_set = $pluginbonus->getSet();
-	if(!empty($bonus_set['start']) || !empty($bonus_set['start'])){
+	if(!empty($bonus_set['start']) || !empty($bonus_set['area_start'])){
 		$bonus_start = true;
 		$bonus_text = $bonus_set['texts']['center'] ? $bonus_set['texts']['center'] : "分红明细";
 	}
@@ -73,12 +73,12 @@ if ($plugin_article) {
 
 	$shopset['isarticle'] = $article_set['isarticle'];
 }
-$reurnset = m('plugin')->getpluginSet('return');
-$shopset['isreturn'] = false;
-if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 )
-{
-	$shopset['isreturn'] = true;
-}
+	$reurnset = m('plugin')->getpluginSet('return');
+	$shopset['isreturn'] = false;
+	if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 )
+	{
+		$shopset['isreturn'] = true;
+	}
 
 
 if (p('ranking')) {
