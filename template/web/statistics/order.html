@@ -74,38 +74,23 @@
   <table class="table table-hover">
             <thead class="navbar-inner">
                 <tr>
-                    <th style="width:220px">订单号</th>
-                    <th>总金额</th>
-                    <th>商品小计</th>
-		 <th>运费</th>
-					<th>会员折扣</th>					
-					<th>积分抵扣</th>
-					<th>余额抵扣</th>
-					<th>满额立减</th>
-					<th>优惠券优惠</th>
-					<th>卖家改价</th>
-					<th>卖家改运费</th>
-                    
+                    <th style="width:20%">订单号</th>
+                    <th style="width:12%">总金额<br/>商品小计<br/>运费</th>
+					<th style="width:26%">会员折扣 / 积分抵扣 / 余额抵扣 / 满额立减 / 优惠券优惠</th>					
+					<th style="width:12%">卖家改价<br/>卖家改运费</th>
                     <th style="width: 90px;">付款方式</th>
-                    <th>会员名称</th>
-                    <th>收货人</th>
-                    <th>下单时间</th>
+                    <th style="width:10%">会员名称<br/>收货人</th>
+                    <th style="width:12%">下单时间</th>
                 </tr>
             </thead>
             <tbody>
                 {loop $list $row}
                 <tr  style="background: #eee">
                     <td>{$row['ordersn']}</td>
-                    <td><b>{$row['price']}</b></td>
-                    <td>{$row['goodsprice']}</td>
-		 <td>{$row['dispatchprice']}</td>
-		<td>{if $row['discountprice']>0}-{$row['discountprice']}{/if}</td>						
-		<td>{if $row['deductprice']>0}-{$row['deductprice']}{/if}</td>			
-		<td>{if $row['deductcredit2']>0}-{$row['deductcredit2']}{/if}</td>			
-		<td>{if $row['deductenough']>0}-{$row['deductenough']}{/if}</td>			
-		<td>{if $row['couponprice']>0}-{$row['couponprice']}{/if}</td>			
-		<td>{if 0<$item['changeprice']}+{else}-{/if}{php echo number_format(abs($item['changeprice']),2)}</td>			
-		<td>{if 0<$item['changedipatchpriceprice']}+{else}-{/if}{php echo number_format(abs($item['changedipatchpriceprice']),2)}</td>	
+                    <td><b>{$row['price']}</b><br/>{$row['goodsprice']}<br/>{$row['dispatchprice']}</td>
+		<td>{if $row['discountprice']>0}-{$row['discountprice']}{/if}<br/>{if $row['deductprice']>0}-{$row['deductprice']}{/if}<br/>{if $row['deductcredit2']>0}-{$row['deductcredit2']}{/if}<br/>{if $row['deductenough']>0}-{$row['deductenough']}{/if}<br/>{if $row['couponprice']>0}-{$row['couponprice']}{/if}</td>						
+
+		<td>{if 0<$item['changeprice']}+{else}-{/if}{php echo number_format(abs($item['changeprice']),2)}<br/>{if 0<$item['changedipatchpriceprice']}+{else}-{/if}{php echo number_format(abs($item['changedipatchpriceprice']),2)}</td>			
 					
                     <td>{if $row['paytype'] == 1}
                                <span class="label label-primary">余额支付</span>
@@ -123,8 +108,7 @@
                            <span class="label label-success">货到付款</span>
                          {/if}
                     </td>
-                    <td>{$row['realname']}</td>
-                    <td>{$row['addressname']}</td>
+                    <td>{$row['realname']}<br/>{$row['addressname']}</td>
                     <td>{php echo date('Y-m-d H:i',$row['createtime'])}</td>   
                 </tr>	
                 <tr >

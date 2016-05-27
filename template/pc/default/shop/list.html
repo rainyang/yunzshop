@@ -78,7 +78,77 @@
                 </div>
                 <%/each%>
             </div>
-            
+
+            <div style="height: 20px"></div>
+            {if $shopset['category2']==1}
+            <div id="sp-category" class="mc" clstag="shangpin|keycount|product|pop-04">
+                <div class="jOneLevel">
+                    <span>{$shopset['category2name']}分类</span>
+                </div>
+                <div class="jOneLevelarea">
+                    <div class="jTwoLevel">
+                        <span class="jIconArrow"></span>
+                        <a class="category_item" href="{php echo $this->createMobileUrl('shop/list')}">全部商品</a>
+                    </div>
+                    <!--<div class="jThreeLevel">
+                        <ul>
+                            <li><a  href="#">2016夏装男款</a></li>
+                            <li><a  href="#">2016夏装男款</a></li>
+                        </ul>
+                    </div>-->
+                </div>
+                <div class="jOneLevelarea">
+                    <div class="jTwoLevel">
+                        <span class="jIconArrow"></span>
+                        <a class="category_item" href="javascript:void(0)"  data-isnew='1' data-name='新上宝贝'>新上宝贝</a>
+                    </div>
+                    <div class="jThreeLevel">
+                    </div>
+                </div>
+                <div class="jOneLevelarea">
+                    <div class="jTwoLevel">
+                        <span class="jIconArrow"></span>
+                        <a class="category_item" href="javascript:void(0)" data-isrecommand='1' data-name='推荐宝贝'>推荐宝贝</a>
+                    </div>
+                    <div class="jThreeLevel">
+                    </div>
+                </div>
+                <div class="jOneLevelarea">
+                    <div class="jTwoLevel">
+                        <span class="jIconArrow"></span>
+                        <a class="category_item" href="javascript:void(0)" data-ishot='1' data-name='热销宝贝'>热销宝贝</a>
+                    </div>
+                    <div class="jThreeLevel">
+                    </div>
+                </div>
+                <div class="jOneLevelarea">
+                    <div class="jTwoLevel">
+                        <span class="jIconArrow"></span>
+                        <a class="category_item" href="javascript:void(0)" data-istime='1' data-name='限时秒杀'>限时秒杀</a>
+                    </div>
+                    <div class="jThreeLevel">
+                    </div>
+                </div>
+                <div class="jOneLevelarea">
+                    <div class="jTwoLevel">
+                        <span class="jIconArrow"></span>
+                        <a class="category_item" href="javascript:void(0)" data-isdiscount='1' data-name='促销宝贝'>促销宝贝</a>
+                    </div>
+                    <div class="jThreeLevel">
+                    </div>
+                </div>
+                <%each category2 as parent%>
+                <div class="jOneLevelarea">
+                    <div class="jTwoLevel">
+                        <span class="jIconArrow"></span>
+                        <a class="child category_item" href="{php echo $this->createMobileUrl('shop/list')}&pcate1=<%parent.id%>"><%parent.name%></a>
+                    </div>
+                    <div class="jThreeLevel">
+                    </div>
+                </div>
+                <%/each%>
+            </div>
+            {/if}
            <!--<div class="m m2 related-buy">
                 <div class="mt">
                     <h2>店铺热销</h2>

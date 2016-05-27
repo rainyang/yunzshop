@@ -27,6 +27,9 @@ if ($operation == 'display') {
         if ($set['user_diyform_open'] && ($set['user_diyform'] == $value['id'])) {
             $items[$key]['use_flag1'] = 1;
         }
+        if ($set['supplier_diyform_open'] && ($set['supplier_diyform'] == $value['id'])) {
+            $items[$key]['supplier_flag1'] = 1;
+        }
         if ($set['commission_diyform_open'] && ($set['commission_diyform'] == $value['id'])) {
             $items[$key]['use_flag2'] = 1;
         }
@@ -51,6 +54,9 @@ if ($operation == 'display') {
         }
         if ($set['commission_diyform_open'] && ($set['commission_diyform'] == $id)) {
             $use_flag2 = 1;
+        }
+        if ($set['supplier_diyform_open'] && ($set['supplier_diyform'] == $id)) {
+            $supplier_flag1 = 1;
         }
         $datacount3 = $this->model->getCountGoodsUsed($id);
     }

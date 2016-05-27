@@ -64,13 +64,13 @@
                 <input type="text" class="short" id="field_data{php echo $i}_1" name='field_data{php echo $i}' placeholder="结束日期" readonly value='{if !empty($f_data[$k1][1])}{php echo $f_data[$k1][1]}{/if}'/>
 
                 {else if $v1['data_type'] == 9}
-                <select id="sel-provance{php echo $i}" onChange="selectCity({php echo $i});" class="select">
+                <select id="sel-provance" onChange="selectCity();" class="select">
                     <option value="" selected="true">省/直辖市</option>
                 </select>
-                <select id="sel-city{php echo $i}" onChange="selectcounty(0,{php echo $i})" class="select">
+                <select id="sel-city" onChange="selectcounty()" class="select">
                     <option value="" selected="true">请选择</option>
                 </select>
-                <select id="sel-area{php echo $i}" class="select" style="display:none">
+                <select id="sel-area" class="select" style="display:none">
                     <option value="" selected="true">请选择</option>
                 </select>
             {/if}

@@ -432,13 +432,13 @@
      <div class="addorder_price" style="margin-top:5px;">
             <div class="price" style="border:none;">
             <%if deductcredit>0 %>
-            <div class="line" style="line-height:26px;"><d id="deductcredit_info"><%deductcredit%></d> 积分可抵扣 <d id="deductcredit_money" style='color:#ff6600'><%deductmoney%></d> 元
+            <div class="line" style="line-height:26px;"><d id="deductcredit_info"><%deductcredit%></d> {if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}可抵扣 <d id="deductcredit_money" style='color:#ff6600'><%deductmoney%></d> 元
                 <div id='deductcredit' class="nav" on="0" credit="<%deductcredit%>" money='<%deductmoney%>'><nav></nav></div>
             </div>
             <%/if%>
             
             <%if deductcredit2>0 %>
-            <div class="line" style="line-height:26px;">余额可抵扣 <d id="deductcredit2_money" style='color:#ff6600'><%deductcredit2%></d> 元
+            <div class="line" style="line-height:26px;">{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}可抵扣 <d id="deductcredit2_money" style='color:#ff6600'><%deductcredit2%></d> 元
                 <div id='deductcredit2' class="nav" on="0" credit2="<%deductcredit2%>"><nav></nav></div>
             </div>
             <%/if%>
