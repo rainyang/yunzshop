@@ -35,6 +35,28 @@ class Sz_DYi_Plugin
         }
         return $allset[$key];
     }
+   public function getpluginSet( $key = '',$uniacid = 0 )
+    {
+        global $_W, $_GPC;
+        if (empty($uniacid)) {
+            $uniacid = $_W['uniacid'];
+        }
+        $set = m('cache')->getArray('sysset', $uniacid);
+        if (empty($set)) {
+            $set = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+                ':uniacid' => $uniacid
+            ));
+        }
+        if (empty($set)) {
+            return array();
+        }
+        $allset = unserialize($set['plugins']);
+        if (empty($key)) {
+            return $allset;
+        }
+        return $allset[$key];
+    }
+
     public function exists($pluginName = '')
     {
         $dbplugin = pdo_fetchall('select * from ' . tablename('sz_yi_plugin') . ' where identity=:identyty limit  1', array(

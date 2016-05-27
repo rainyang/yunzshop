@@ -10,6 +10,7 @@ $shop_set = m('common')->getSysset(array('shop'));
 $shopset   = m('common')->getSysset('shop');
 
 $member = m('member')->getMember($openid);
+$is_af_supplier = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and openid='{$openid}'");
 $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
 
 $uniacid = $_W['uniacid'];
@@ -21,6 +22,9 @@ if (p('supplier')) {
 	$supplier_set = p('supplier')->getSet();
 	if(!empty($supplier_set['switch'])){
 		$supplier_switch = true;
+	}
+	if(!empty($supplier_set['switch_centre'])){
+		$supplier_switch_centre = true;
 	}
 	$issupplier = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where openid='{$openid}' and uniacid={$_W['uniacid']} and roleid=(select id from " . tablename('sz_yi_perm_role') . " where status1=1)");
 }
@@ -53,7 +57,7 @@ $bonus_start = false;
 $bonus_text = "";
 if(!empty($pluginbonus)){
 	$bonus_set = $pluginbonus->getSet();
-	if(!empty($bonus_set['start'])){
+	if(!empty($bonus_set['start']) || !empty($bonus_set['start'])){
 		$bonus_start = true;
 		$bonus_text = $bonus_set['texts']['center'] ? $bonus_set['texts']['center'] : "分红明细";
 	}
@@ -69,6 +73,13 @@ if ($plugin_article) {
 
 	$shopset['isarticle'] = $article_set['isarticle'];
 }
+$reurnset = m('plugin')->getpluginSet('return');
+$shopset['isreturn'] = false;
+if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 )
+{
+	$shopset['isreturn'] = true;
+}
+
 
 if (p('ranking')) {
 	$ranking_set = p('ranking')->getSet();
