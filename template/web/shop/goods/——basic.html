@@ -66,8 +66,34 @@
         {/if}
     </div>
 </div>
+{if $shopset['category2']==1}
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>{$shopset['category2name']}分类</label>
+    <div class="col-sm-8 col-xs-12">
+        {if $shopset['catlevel']==3}
+             {ife 'shop.goods' $item}
+             {php echo tpl_form_field_category_level3('category2', $parent2, $children2, $item['pcate1'], $item['ccate1'], $item['tcate1'])}
+             {else}
+              <div class='form-control-static'>
+                   {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category2').' where id=:id limit 1',array(':id'=>$item['pcate1']))} -
+                   {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category2').' where id=:id limit 1',array(':id'=>$item['ccate1']))} -
+                   {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category2').' where id=:id limit 1',array(':id'=>$item['tcate1']))}
+              </div>
+             {/if}
 
-
+        {else}
+            {ife 'shop.goods' $item}
+            {php echo tpl_form_field_category_level2('category2', $parent2, $children2, $item['pcate1'], $item['ccate1'])}
+            {else}
+              <div class='form-control-static'>
+                   {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category2').' where id=:id limit 1',array(':id'=>$item['pcate1']))} -
+                   {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category2').' where id=:id limit 1',array(':id'=>$item['ccate1']))}
+              </div>
+            {/if}
+        {/if}
+    </div>
+</div>
+{/if}
 <link href="../addons/sz_yi/static/js/dist/select2/select2.css" rel="stylesheet">
 <link href="../addons/sz_yi/static/js/dist/select2/select2-bootstrap.css" rel="stylesheet">
 <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2.min.js"></script>
@@ -340,6 +366,20 @@
              {ife 'bonus.goods' $item}
           <span class='help-block'>填写分红金额，不填写则为现价计算</span>
           {/if}
+        {/if}
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">红包价格</label>
+    <div class="col-sm-6 col-xs-12">
+        {ife 'shop.goods' $item}
+        <div class="input-group">
+            <input type="text" name="redprice" id="redprice" class="form-control" value="{$item['redprice']}" />
+            <span class="input-group-addon"></span>
+        </div>
+    <div class='help-block'>只填写数字为指定金额：10 ; 填写数字后带‘%’为现价百分比：10% ; 填写区间‘-’为此区间随机金额：10-50; 注意：红包金额最大不得超过200元。</div>
+        {else}
+         <div class='form-control-static'>{$item['redprice']} </div>
         {/if}
     </div>
 </div>

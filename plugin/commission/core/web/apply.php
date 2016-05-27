@@ -277,15 +277,17 @@ if (checksubmit('submit_pay') && $apply['status'] == 2) {
 	ca('commission.apply.pay');
 	$time = time();
 	$pay = $totalpay;
-	if ($apply['type'] == 1) {
+	if ($apply['type'] == 1 || $apply['type'] == 2) {
 		$pay *= 100;
-	}
+	} 
 
-	if ($pay <= 20000 && $pay > 0) { 
-		//200元以下微信红包		
-		$result = m('finance')->sendredpack($member['openid'], $pay, $desc = '佣金提现金额', $act_name = '佣金提现金额', $remark = '佣金提现金额以红包形式发送');
+	if ($apply['type'] == 2) {
+		if ($pay <= 20000 && $pay >= 1) {
+			$result = m('finance')->sendredpack($member['openid'], $pay, $desc = '佣金提现金额', $act_name = '佣金提现金额', $remark = '佣金提现金额以红包形式发送');
+		} else {
+			message('红包提现金额限制1-200元！', '', 'error');
+		}
 	} else {
-		//大于200元微信钱包
 		$result = m('finance')->pay($member['openid'], $apply['type'], $pay, $apply['applyno']);
 	}
 	
