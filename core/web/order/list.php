@@ -372,6 +372,7 @@ if ($operation == "display") {
             if (is_array($carrier)) {
                 $value["addressdata"]["realname"] = $value["realname"] = $carrier["carrier_realname"];
                 $value["addressdata"]["mobile"] = $value["mobile"] = $carrier["carrier_mobile"];
+                $value["addressdata"]["address"] = $carrier["address"];
             }
         } else {
             $address = iunserializer($value["address"]);
