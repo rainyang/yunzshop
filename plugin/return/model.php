@@ -6,11 +6,11 @@ if (!class_exists('ReturnModel')) {
 
 	class ReturnModel extends PluginModel
 	{
-		// public function getSet()
-		// {
-		// 	$_var_0 = parent::getSet();
-		// 	return $_var_0;
-		// }
+		public function getSet()
+		{
+			$_var_0 = parent::getSet();
+			return $_var_0;
+		}
 		public function setGoodsQueue($orderid,$_var_0=array(),$uniacid='') {
 
 			$order_goods = pdo_fetchall("SELECT og.orderid,og.goodsid,og.total,og.price,g.isreturnqueue,o.openid,m.id as mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
@@ -71,36 +71,42 @@ if (!class_exists('ReturnModel')) {
 
 		}
 
-		public function cumulative_order_amount($orderid,$_var_0=array(),$uniacid='') {
-
+		public function cumulative_order_amount($orderid) {
+			global $_W, $_GPC;
+			$_var_0 = $this->getSet();
 			if($_var_0['isqueue'])
 			{
-				$this->setGoodsQueue($orderid,$_var_0,$uniacid);
+				$this->setGoodsQueue($orderid,$_var_0,$_W['uniacid']);
 			}
-
 			if ($_var_0['isreturn'] == 1) {
 				if (empty($orderid)) {
 					return false;
 				}
-
 				$order_goods = pdo_fetchall("SELECT og.price,g.isreturn,o.openid,m.id as mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
-					array(':orderid' => $orderid,':uniacid' => $uniacid
+					array(':orderid' => $orderid,':uniacid' => $_W['uniacid']
 				));
 				$order_price = 0;
+				$is_goods_return = false;
 				foreach($order_goods as $good){
  					if($good['isreturn'] == 1){
  						$order_price += $good['price'];
+ 						$is_goods_return = true;
  					}
+				}
+				//商品 没有开启全返 返回
+				if(!$is_goods_return)
+				{
+					return false;
 				}
 				if (empty($order_goods)) {
 					return false;
 				}
 				if($_var_0['returnrule'] == 1)
 				{
-					$this->setOrderRule($order_goods,$order_price,$_var_0,$uniacid);
-				}else
+					$this->setOrderRule($order_goods,$order_price,$_var_0,$_W['uniacid']);
+				}elseif($_var_0['returnrule'] == 2)
 				{
-					$this->setOrderMoneyRule($order_goods,$order_price,$_var_0,$uniacid);
+					$this->setOrderMoneyRule($order_goods,$order_price,$_var_0,$_W['uniacid']);
 				}
 				
 
@@ -133,8 +139,6 @@ if (!class_exists('ReturnModel')) {
 		//订单累计金额
 		public function setOrderMoneyRule($order_goods,$order_price,$_var_0=array(),$uniacid='')
 		{
-
-
 				$return = pdo_fetch("SELECT * FROM " . tablename('sz_yi_return_money') . " WHERE mid = :mid and uniacid = :uniacid",
 					array(':mid' => $order_goods[0]['mid'],':uniacid' => $uniacid
 				));
@@ -158,8 +162,7 @@ if (!class_exists('ReturnModel')) {
 				$return_money = pdo_fetchcolumn("SELECT money FROM " . tablename('sz_yi_return_money') . " WHERE id = :id and uniacid = :uniacid",
 					array(':id' => $returnid,':uniacid' => $uniacid
 				));
-
-				$this->setmoney($_var_0['orderprice'],$uniacid);
+				$this->setmoney($_var_0['orderprice'],$_var_0,$uniacid);
 
 				if ($return_money >= $_var_0['orderprice']) {
 					$text = "您的订单累计金额已经超过".$_var_0['orderprice']."元，每".$_var_0['orderprice']."元可以加入全返机制，等待全返。";
@@ -181,8 +184,7 @@ if (!class_exists('ReturnModel')) {
 
 			//返利队列
 			$data_money = pdo_fetchall("select * from " . tablename('sz_yi_return') . " where uniacid = '". $uniacid ."' and status = 0 and returnrule = '".$_var_0['returnrule']."'");
-			$return_money_totle = 0;
-			$surplus_money_totle = 0;
+			$return_mes = array();
 			foreach ($data_money as $key => $value) {
 				$r_each = $value['money'] * $_var_0['percentage'] / 100;//可返利金额
 				
@@ -192,7 +194,7 @@ if (!class_exists('ReturnModel')) {
 					pdo_update('sz_yi_return', array('return_money'=>$value['money'],'status'=>'1'), array('id' => $value['id'], 'uniacid' => $uniacid));
 					m('member')->setCredit($member['openid'],'credit2',$value['money']-$value['return_money']);
 
-					$return_money_totle += $value['money']-$value['return_money'];
+					$return_mes[$member['openid']][$key]['return_money_totle']= $value['money']-$value['return_money'];
 		
 
 				}else
@@ -202,12 +204,20 @@ if (!class_exists('ReturnModel')) {
 
 					$surplus = $value['money']-$value['return_money']-$r_each;
 
-					$return_money_totle += $r_each;
-					$surplus_money_totle += $surplus;
+					$return_mes[$member['openid']][$key]['return_money_totle']= $r_each;
+					$return_mes[$member['openid']][$key]['surplus_money_totle']= $surplus;
 				}
 			}
-			if($return_money_totle > 0)
-			{
+			
+			foreach ($return_mes as $key => $list) {
+					$return_money_totle = 0;
+					$surplus_money_totle = 0;
+				foreach ($list as $k => $v) {
+					$return_money_totle += $v['return_money_totle'];
+					$surplus_money_totle += $v['surplus_money_totle'];
+				}
+				if($return_money_totle > 0)
+				{
 					$messages = array(
 						'keyword1' => array(
 							'value' => '返现通知',
@@ -219,7 +229,8 @@ if (!class_exists('ReturnModel')) {
 							'value' => "此返单剩余返现金额".$surplus_money_totle."元",
 							'color' => '#73a68d')
 						);
-					m('message')->sendCustomNotice($member['openid'], $messages);
+					m('message')->sendCustomNotice($key, $messages);
+				}
 			}
 
 		}
@@ -245,8 +256,7 @@ if (!class_exists('ReturnModel')) {
 			{
 				$r_each = $r_ordermoney / count($data_money);//每个队列返现金额
 				$r_each = sprintf("%.2f", $r_each);
-				$return_money_totle = 0;
-				$surplus_money_totle = 0;
+				$return_mes = array();
 				foreach ($data_money as $key => $value) {
 					
 					$member = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid = '". $uniacid ."' and id = '".$value['mid']."'");
@@ -254,7 +264,7 @@ if (!class_exists('ReturnModel')) {
 					if(($value['money']-$value['return_money']) < $r_each){
 						pdo_update('sz_yi_return', array('return_money'=>$value['money'],'status'=>'1'), array('id' => $value['id'], 'uniacid' => $uniacid));
 						m('member')->setCredit($member['openid'],'credit2',$value['money']-$value['return_money']);
-						$return_money_totle += $value['money']-$value['return_money'];
+						$return_mes[$member['openid']][$key]['return_money_totle']= $value['money']-$value['return_money'];
 
 					}else
 					{
@@ -262,25 +272,33 @@ if (!class_exists('ReturnModel')) {
 						m('member')->setCredit($member['openid'],'credit2',$r_each);
 
 						$surplus = $value['money']-$value['return_money']-$r_each;
-						$return_money_totle += $r_each;
-						$surplus_money_totle += $surplus;
+						$return_mes[$member['openid']][$key]['return_money_totle']= $r_each;
+						$return_mes[$member['openid']][$key]['surplus_money_totle']= $surplus;
 
 					}
 				}
-				if($return_money_totle)
-				{
-					$messages = array(
-						'keyword1' => array(
-							'value' => '返现通知',
-							'color' => '#73a68d'),
-						'keyword2' =>array(
-							'value' => '本次返现金额'.$return_money_totle."元",
-							'color' => '#73a68d'),
-						'keyword3' => array(
-							'value' => "此返单剩余返现金额".$surplus_money_totle."元",
-							'color' => '#73a68d')
-						);
-					m('message')->sendCustomNotice($member['openid'], $messages);
+				foreach ($return_mes as $key => $list) {
+						$return_money_totle = 0;
+						$surplus_money_totle = 0;
+					foreach ($list as $k => $v) {
+						$return_money_totle += $v['return_money_totle'];
+						$surplus_money_totle += $v['surplus_money_totle'];
+					}
+					if($return_money_totle > 0)
+					{
+						$messages = array(
+							'keyword1' => array(
+								'value' => '返现通知',
+								'color' => '#73a68d'),
+							'keyword2' =>array(
+								'value' => '本次返现金额'.$return_money_totle."元",
+								'color' => '#73a68d'),
+							'keyword3' => array(
+								'value' => "此返单剩余返现金额".$surplus_money_totle."元",
+								'color' => '#73a68d')
+							);
+						m('message')->sendCustomNotice($key, $messages);
+					}
 				}		
 			}
 

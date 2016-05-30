@@ -54,6 +54,10 @@ if(!empty($pbonus)){
 		$daytime = strtotime(date("Y-m-d 00:00:00"));
 		$isbonus = false;
 		$bonus_set = $pbonus->getSet();
+		//未开启自动分红直接跳过
+		if (empty($bonus_set['sendmethod'])) {
+			continue;
+		}
 		//是否為月分紅
 		if($bonus_set['sendmonth'] == 1){
 			$monthtime = strtotime(date("Y-m-1 00:00:00"));

@@ -19,7 +19,6 @@ foreach ($sets as $val) {
  	unset($set['current_d']);
  	unset($set['current_m']);
  	$this->updateSet($set);
-
 		$isexecute = false;
 		if($set['returnlaw']==1)
 		{
@@ -40,7 +39,6 @@ foreach ($sets as $val) {
 				$isexecute = true;
 			}
 		}
-
 		if(($set["isreturn"]||$set["isqueue"]) && $isexecute){
 
 			//p('return')->getmoney($set['orderprice'],$_W['uniacid']);

@@ -97,6 +97,9 @@ if ($operation == 'display' && $_W['isajax']) {
     if (empty($money)) {
         show_json(0, '请填写充值金额!');
     }
+    if ($money <= 0) {
+        show_json(0, '充值金额需大于0');
+    }
     $type = $_GPC['type'];
     if (!in_array($type, array(
         'weixin',
@@ -117,6 +120,10 @@ if ($operation == 'display' && $_W['isajax']) {
     $couponid = intval($_GPC['couponid']);
 	if($log['money'] <= 0){
         pdo_update('sz_yi_member_log', array('money' => $money, 'couponid' => $couponid), array('id' => $log['id']));
+    }else{
+       if($log['money']!=$money){
+            show_json(0, '充值异常, 请重试!');
+       }
     }
 
     $set = m('common')->getSysset(array(

@@ -126,7 +126,7 @@ if ($_W['isajax']) {
     }
     $set       = set_medias(m('common')->getSysset('shop'), 'logo');
     $canrefund = false;
-    if ($order['status'] == 1) {
+    if ($order['status'] == 1 || $order['status'] == 2) {
         $canrefund = true;
     } else if ($order['status'] == 3) {
         if ($order['isverify'] != 1 && empty($order['virtual'])) {
