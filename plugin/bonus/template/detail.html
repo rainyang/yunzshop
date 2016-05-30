@@ -89,7 +89,7 @@
                     </td>
                     <td><?php echo date("Y-m-d H:i:s", $row['ctime'])?></td>
                     <td>
-                        <div class="col-sm-3 col-lg-2"><a class="btn btn-default" href="<?php echo $this->createPluginWebUrl('bonus/detail', array('sn' => $row['send_bonus_sn']))?>" data-original-title="" title="">
+                        <div class="col-sm-3 col-lg-2"><a class="btn btn-default" href="<?php echo $this->createPluginWebUrl('bonus/detail', array('sn' => $row['send_bonus_sn'], 'isglobal'=> $row['isglobal']))?>" data-original-title="" title="">
                         查看明细
                         </a></div>
                         {if $row['sendpay_error']==1}
