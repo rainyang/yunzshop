@@ -57,7 +57,7 @@ $bonus_start = false;
 $bonus_text = "";
 if(!empty($pluginbonus)){
 	$bonus_set = $pluginbonus->getSet();
-	if(!empty($bonus_set['start']) || !empty($bonus_set['start'])){
+	if(!empty($bonus_set['start']) || !empty($bonus_set['area_start'])){
 		$bonus_start = true;
 		$bonus_text = $bonus_set['texts']['center'] ? $bonus_set['texts']['center'] : "分红明细";
 	}
@@ -73,30 +73,17 @@ if ($plugin_article) {
 
 	$shopset['isarticle'] = $article_set['isarticle'];
 }
+
 //这两段代码 用哪个会好一些 实现的功能都一样
-// <!---------------------
-// $plugin_return = p('return');
-// if($plugin_return){
-// 	$returnset = $plugin_return->getSet();
-// 	$shopset['isreturn'] = false;
-// 	if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 ){
-// 		$shopset['isreturn'] = true;
-// 	}
-// }
-// ==========================================
-// $reurnset = m('plugin')->getpluginSet('return');
-// $shopset['isreturn'] = false;
-// if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 ){
-// 	$shopset['isreturn'] = true;
-// }
-// --------------------->
-
-
-$reurnset = m('plugin')->getpluginSet('return');
-$shopset['isreturn'] = false;
-if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 ){
-	$shopset['isreturn'] = true;
+$plugin_return = p('return');
+if(!empty($plugin_return)){
+	$returnset = $plugin_return->getSet();
+	$shopset['isreturn'] = false;
+	if($returnset['isqueue'] == 1 || $returnset['isreturn']== 1 ){
+		$shopset['isreturn'] = true;
+	}
 }
+
 if (p('ranking')) {
 	$ranking_set = p('ranking')->getSet();
 
