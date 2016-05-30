@@ -23,7 +23,7 @@ $premierlevels = pdo_fetchall("select * from ".tablename('sz_yi_bonus_level')." 
 $levelmoneys = array();
 $totalmoney = 0;
 foreach ($premierlevels as $key => $value) {
-    $leveldcount = pdo_fetchcolumn("select count(*) from ".tablename('sz_yi_member')." where uniacid={$_W['uniacid']} and bonuslevel=".$value['id']." and bonus_status = 1");
+    $leveldcount = pdo_fetchcolumn("select count(*) from ".tablename('sz_yi_member')." where uniacid={$_W['uniacid']} and bonuslevel=".$value['id']);
     if($leveldcount>0){
         $levelmembermoney = round($ordermoney*$value['pcommission']/100,2);
         if($levelmembermoney > 0){
@@ -36,9 +36,9 @@ foreach ($premierlevels as $key => $value) {
     }
 }
 
-$sql = "select count(*) from ".tablename('sz_yi_member')." m left join " . tablename('sz_yi_bonus_level') . " l on m.bonuslevel=l.id and m.bonus_status=1 where 1 and l.premier=1 and m.uniacid={$_W['uniacid']}";
+$sql = "select count(*) from ".tablename('sz_yi_member')." m left join " . tablename('sz_yi_bonus_level') . " l on m.bonuslevel=l.id where 1 and l.premier=1 and m.uniacid={$_W['uniacid']}";
 $total = pdo_fetchcolumn($sql);
-$sql = "select m.* from ".tablename('sz_yi_member')." m left join " . tablename('sz_yi_bonus_level') . " l on m.bonuslevel=l.id and m.bonus_status=1 where 1 and l.premier=1 and m.uniacid={$_W['uniacid']}";
+$sql = "select m.* from ".tablename('sz_yi_member')." m left join " . tablename('sz_yi_bonus_level') . " l on m.bonuslevel=l.id where 1 and l.premier=1 and m.uniacid={$_W['uniacid']}";
 $setshop = m('common')->getSysset('shop');
 if (empty($_GPC['export'])) {
     $sql .= " limit " . ($pindex - 1) * $psize . ',' . $psize;
