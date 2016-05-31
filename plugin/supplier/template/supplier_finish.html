@@ -50,15 +50,11 @@
         <table class="table table-hover table-responsive">
             <thead class="navbar-inner" >
                 <tr>
-                    <th style='width:50px;'>供应商ID</th>
-                    <th style='width:200px;'>提现单号</th>
-                    <th style='width:150px;'>开户名</th>
-                    <th style='width:150px;'>电话</th>
-                    <th style='width:150px;'>开户银行</th>
-                    <th style='width:150px;'>银行卡号</th>
-                    <th style='width:150px;'>提现金额</th>
-                    <th>完成时间</th>
-                    <th>状态</th>
+                    <th style='width:6%;'>供应商ID</th>
+                    <th style='width:22%;'>提现单号</th>
+                    <th style='width:16%;'>提现金额<br/>打款方式</th>
+                    <th style='width:10%;'>完成时间</th>
+                    <th style='width:10%;'>状态</th>
                 </tr>
             </thead>
             <tbody>
@@ -67,18 +63,10 @@
 		                <tr>
 		                    <td>{$row['uid']}</td>
                             <td>{$row['applysn']}</td>
-                            <td>{$row['accountname']}</td>
-                            <td>{$row['mobile']}</td>
-                            <td>{$row['accountbank']}</td>
-                            <td>{$row['banknumber']}</td>
-                            <td>{$row['apply_money']}</td>
+                            <td><button type="button" class="btn btn-danger">金额：{$row['apply_money']}</button><br>{if $row['type']==1}<button type="button" class="btn btn-warning">手动提现</button>{else}<button type="button" class="btn btn-success">微信余额</button>{/if}</td>
                             <td><?php echo date('Y-m-d H:i:s',$row['finish_time']);?></td>
 		                    <td  style="overflow:visible;">
-		                        <div class="form-group">
-				                    <div class="col-sm-9 col-xs-9">
-				                    <span style='color:red'>已完成</span>
-				                    </div>
-            					</div>
+		                        <a class="label label-default label-info" href="{php echo $this->createPluginWebUrl('supplier/supplier',array('op' => 'detail', 'applyid' => $row['id'], 'type' => 'finish'));}">详细信息</a>
 		                    </td>
 		                </tr>
 		            {/if}
