@@ -4,12 +4,12 @@ $operation   = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 if ($operation == 'display') {
 	$where = '';
 	if(!empty($_GPC['uid'])){
-		$where .= ' u.uid=' . $_GPC['uid'];
+		$where .= ' and uid=' . $_GPC['uid'];
 	}
 	if(!empty($_GPC['applysn'])){
-		$where .= ' and a.applysn=' . $_GPC['applysn'];
+		$where .= ' and applysn=' . $_GPC['applysn'];
 	}
-    $list = pdo_fetchall('select a.*,p.* from ' . tablename('sz_yi_supplier_apply') . ' a left join ' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid where a.status=1 and p.uniacid=' . $_W['uniacid'] . $where);
+    $list = pdo_fetchall("select * from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and status=1 {$where}");
     $total = count($list);
 }
 load()->func('tpl');

@@ -137,7 +137,7 @@ if ($operation == "display") {
         if ($status == "-1") {
             $statuscondition = " AND o.status=-1 and o.refundtime=0";
         } else if ($status == "4") {
-            $statuscondition = " AND o.refundid<>0"; 
+            $statuscondition = " AND o.refundstate>0 AND o.refundid<>0";
         } else if ($status == "5") {
             $statuscondition = " AND o.refundtime<>0";
         } else if ($status == "1") {
@@ -372,7 +372,6 @@ if ($operation == "display") {
             if (is_array($carrier)) {
                 $value["addressdata"]["realname"] = $value["realname"] = $carrier["carrier_realname"];
                 $value["addressdata"]["mobile"] = $value["mobile"] = $carrier["carrier_mobile"];
-                $value["addressdata"]["address"] = $carrier["address"];
             }
         } else {
             $address = iunserializer($value["address"]);
@@ -1705,7 +1704,7 @@ function order_list_close($zym_var_32) {
     }
     pdo_update("sz_yi_order", array(
         "status" => - 1,
-	'refundstate' => 0,
+    'refundstate' => 0,
         "canceltime" => time() ,
         "remark" => $zym_var_32["remark"] . "" . $_GPC["remark"]
     ) , array(

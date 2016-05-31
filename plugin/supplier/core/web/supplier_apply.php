@@ -14,7 +14,7 @@ if ($operation == 'display') {
 	$list = pdo_fetchall('select a.*,p.accountname, mobile as telephone, accountbank, banknumber   from ' . tablename('sz_yi_supplier_apply') . ' a left join ' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid where a.status=0 and p.uniacid=' . $_W['uniacid'] . $where);
     $total = count($list);
 } else if ($operation == 'detail') {
-	$id = intval($_GPC['id']);
+	$id = intval($_GPC['applyid']);
 	if(!empty($id)){
 		$set     = m('common')->getSysset('shop');
 		$apply = pdo_fetch('select * from ' . tablename('sz_yi_supplier_apply') . ' where id = '.$id);
