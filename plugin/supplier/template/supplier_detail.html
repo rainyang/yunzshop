@@ -18,14 +18,14 @@
             <!--<span>diyform</span>-->
 
             {php $datas = iunserializer($supplier['diymemberdata'])}
-            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+            {if !empty($avatar)}
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">头像</label>
             <div class="col-sm-9 col-xs-12">
                 <div class="form-control-static">
-                    {if !empty($avatar)}
-                         <img src="{$avatar}" style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
-                       {/if}
+                    <img src="{$avatar}" style="width:100px;height:100px;border:1px solid #ccc;padding:1px" /><br/>
                 </div>
             </div>
+            {/if}
             {loop $fields $key $value}
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">{php echo $value['tp_name']}</label>
@@ -66,6 +66,68 @@
             </div>
 
             {/loop}
+        </div>
+        {else}
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">真实姓名</label>
+            <div class="col-sm-9 col-xs-12">
+                   {ifp 'commission.supplier.edit'}
+                <input type="text" name="data[realname]" class="form-control" value="{$supplier['realname']}"  />
+                   {else}
+                   <input type="hidden" name="data[realname]" class="form-control" value="{$supplier['realname']}"  />
+                <div class='form-control-static'>{$supplier['realname']}</div>
+                {/if}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">手机号码</label>
+            <div class="col-sm-9 col-xs-12">
+                   {ifp 'commission.supplier.edit'}
+                <input type="text" name="data[mobile]" class="form-control" value="{$supplier['mobile']}"  />
+                   {else}
+                   <input type="hidden" name="data[mobile]" class="form-control" value="{$supplier['mobile']}"  />
+                <div class='form-control-static'>{$supplier['mobile']}</div>
+                {/if}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">金额</label>
+            <div class="col-sm-9 col-xs-12">
+            <span class='help-block'>累计金额：<span style='color:red'>{if !empty($totalmoney)}{$totalmoney}{else}0{/if}元</span> 已结算金额：<span style='color:red'>{if !empty($totalmoneyok)}{$totalmoneyok}{else}0{/if}元</span></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">银行卡号</label>
+            <div class="col-sm-9 col-xs-12">
+                   {ifp 'commission.supplier.edit'}
+                <input type="text" name="data[banknumber]" class="form-control" value="{$supplier['banknumber']}"  />
+                   {else}
+                   <input type="hidden" name="data[banknumber]" class="form-control" value="{$supplier['banknumber']}"  />
+                <div class='form-control-static'>{$supplier['banknumber']}</div>
+                {/if}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">开户名</label>
+            <div class="col-sm-9 col-xs-12">
+                   {ifp 'commission.supplier.edit'}
+                <input type="text" name="data[accountname]" class="form-control" value="{$supplier['accountname']}"  />
+                   {else}
+                   <input type="hidden" name="data[accountname]" class="form-control" value="{$supplier['accountname']}"  />
+                <div class='form-control-static'>{$supplier['accountname']}</div>
+                {/if}
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">开户银行</label>
+            <div class="col-sm-9 col-xs-12">
+                   {ifp 'commission.supplier.edit'}
+                <input type="text" name="data[accountbank]" class="form-control" value="{$supplier['accountbank']}"  />
+                   {else}
+                   <input type="hidden" name="data[accountbank]" class="form-control" value="{$supplier['accountbank']}"  />
+                <div class='form-control-static'>{$supplier['accountbank']}</div>
+                {/if}
+            </div>
         </div>
         {/if}
         <div class='panel-body'>

@@ -8,7 +8,6 @@ require '../../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
 global $_W, $_GPC;
 //ignore_user_abort();
 set_time_limit(0);
-//echo $_W['uniacid'];
 $sets = pdo_fetchall('select uniacid from ' . tablename('sz_yi_sysset'));
 foreach ($sets as $set) {
 	$_W['uniacid'] = $set['uniacid'];
