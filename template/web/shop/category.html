@@ -110,7 +110,12 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">分类广告链接</label>
                     <div class="col-sm-9 col-xs-12">
                          {ife 'shop.category' $item}
-                        <input type="text" name="advurl" class="form-control" value="{$item['advurl']}" />
+                        <div class="input-group ">
+                            <input class="form-control" type="text" data-id="PAL-00010" placeholder="请填写指向的链接 (请以http://开头, 不填则不显示)" value="{$item['advurl']}" name="advurl">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default nav-link" type="button" data-id="PAL-00010" >选择链接</button>
+                            </span>
+                        </div>
                         {else}
                          <div class='form-control-static'>{$item['advurl']}</div>
                          {/if}
@@ -196,6 +201,7 @@
         return true;
     });
 </script>
+{template 'web/sysset/mylink'}
 {elseif $operation == 'display'}
 <script language="javascript" src="../addons/sz_yi/static/js/dist/nestable/jquery.nestable.js"></script>
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/js/dist/nestable/nestable.css" />
