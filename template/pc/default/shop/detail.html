@@ -813,7 +813,19 @@ div.flicking_con a.on{background-position:0 -9px}
                         }
     			    }
                     $("#optionid").val(optionid); 
-    		    
+        		         var num = parseInt($("#total").val() );
+
+                        if(num>maxbuy && maxbuy>0){
+
+                            tip.show("您最多可购买 " + maxbuy + " 件!");
+                            num = maxbuy;
+                        }
+                        else if(num>stock && stock!=-1){
+                            tip.show("您最多可购买 " + stock + " 件");
+                            num = stock;
+                        }
+                        $("#total").val(num); 
+                    
     				if(stock!="-1"){
     					$("#stockcontainer").html("库存:<span id='stock'>" + stock + "</span>");
     				}
