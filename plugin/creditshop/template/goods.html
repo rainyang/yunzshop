@@ -464,10 +464,21 @@
 <div class="w1200 m0a">
 
 <!-- {template 'tabs'} -->
-{template 'tabs'}
-<div class="rightlist">
-{if $operation=='post'}
 
+{if $operation=='post'}
+<div class="ulleft-nav">
+<ul class="nav nav-arrow-next nav-tabs" id="myTab">
+    <li class="active" ><a href="#tab_basic">商品设置</a></li>
+    <li><a href="#tab_act">活动设置</a></li>
+    <li><a href="#tab_sub">提供商家设置</a></li>
+    <li><a href="#tab_vip">特权设置</a></li>
+    {if p('verify')}<li><a href="#tab_verify">兑换设置</a></li>{/if}
+    <li><a href="#tab_notice">商家通知设置</a></li>
+    <li><a href="#tab_share">关注及分享设置</a></li>
+</ul> 
+</div>
+>>>>>>> 0b1b39e212db99720a0468fd78ad498f658a93a1
+<div class="rightlist">
 <div class="main">
     <form id="dataform" action="" method="post" class="form-horizontal form" onsubmit='return formcheck()'>
         <div class='panel panel-default'>
@@ -589,6 +600,9 @@
 </script>
  
 {elseif $operation == 'display'}
+
+{template 'tabs'}
+<div class="rightlist">
 <form action="" method="get" class='form form-horizontal'>
     <div class="panel panel-info">
         <div class="panel-heading">筛选</div>

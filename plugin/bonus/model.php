@@ -117,10 +117,11 @@ if (!class_exists('BonusModel')) {
 		            		}else{
 		            			$bonus_area_money_new = round($price_all * $set['bonus_commission3']/100, 2);
 		            		}
-		            		if(empty($set['isdistinction_area'])){
+		            		if(!empty($set['isdistinction_area'])){
 								$bonus_area_money = $bonus_area_money_new - $bonus_area_money_old;
 								$bonus_area_money_old = $bonus_area_money_new;
-								
+							}else{
+								$bonus_area_money = $bonus_area_money_new;
 							}
 		            		if($bonus_area_money > 0){
 		            			$data = array(
@@ -152,6 +153,8 @@ if (!class_exists('BonusModel')) {
 		            		if(empty($set['isdistinction_area'])){
 								$bonus_area_money = $bonus_area_money_new - $bonus_area_money_old;
 								$bonus_area_money_old = $bonus_area_money_new;
+							}else{
+								$bonus_area_money = $bonus_area_money_new;
 							}
 		            		if($bonus_area_money > 0){
 		            			$data = array(
@@ -182,6 +185,8 @@ if (!class_exists('BonusModel')) {
 		            		if(empty($set['isdistinction_area'])){
 								$bonus_area_money = $bonus_area_money_new - $bonus_area_money_old;
 								$bonus_area_money_old = $bonus_area_money_new;
+							}else{
+								$bonus_area_money = $bonus_area_money_new;
 							}
 		            		if($bonus_area_money > 0){
 		            			$data = array(

@@ -1,0 +1,243 @@
+Array
+(
+    [0] => Array
+        (
+            [id] => 15
+            [displayorder] => 0
+            [identity] => supplier
+            [name] => 供应商
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => biz
+        )
+
+    [1] => Array
+        (
+            [id] => 16
+            [displayorder] => 0
+            [identity] => exhelper
+            [name] => 快递助手
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => tool
+        )
+
+    [2] => Array
+        (
+            [id] => 17
+            [displayorder] => 0
+            [identity] => yunpay
+            [name] => 云支付
+            [version] => 1.0
+            [author] => 云支付
+            [status] => 1
+            [category] => tool
+        )
+
+    [3] => Array
+        (
+            [id] => 18
+            [displayorder] => 0
+            [identity] => diyform
+            [name] => 自定义表单
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => help
+        )
+
+    [4] => Array
+        (
+            [id] => 19
+            [displayorder] => 0
+            [identity] => system
+            [name] => 系统工具
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => help
+        )
+
+    [5] => Array
+        (
+            [id] => 1
+            [displayorder] => 1
+            [identity] => qiniu
+            [name] => 七牛存储
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => tool
+        )
+
+    [6] => Array
+        (
+            [id] => 2
+            [displayorder] => 2
+            [identity] => taobao
+            [name] => 淘宝助手
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => tool
+        )
+
+    [7] => Array
+        (
+            [id] => 3
+            [displayorder] => 3
+            [identity] => commission
+            [name] => 分销设置
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => biz
+        )
+
+    [8] => Array
+        (
+            [id] => 4
+            [displayorder] => 4
+            [identity] => poster
+            [name] => 超级海报
+            [version] => 1.2
+            [author] => 官方
+            [status] => 1
+            [category] => sale
+        )
+
+    [9] => Array
+        (
+            [id] => 5
+            [displayorder] => 5
+            [identity] => verify
+            [name] => O2O核销
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => biz
+        )
+
+    [10] => Array
+        (
+            [id] => 6
+            [displayorder] => 6
+            [identity] => perm
+            [name] => 分权系统
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => help
+        )
+
+    [11] => Array
+        (
+            [id] => 7
+            [displayorder] => 7
+            [identity] => sale
+            [name] => 营销宝
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => sale
+        )
+
+    [12] => Array
+        (
+            [id] => 8
+            [displayorder] => 8
+            [identity] => tmessage
+            [name] => 会员群发
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => tool
+        )
+
+    [13] => Array
+        (
+            [id] => 9
+            [displayorder] => 9
+            [identity] => designer
+            [name] => 店铺装修
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => tool
+        )
+
+    [14] => Array
+        (
+            [id] => 10
+            [displayorder] => 10
+            [identity] => creditshop
+            [name] => 积分商城
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => biz
+        )
+
+    [15] => Array
+        (
+            [id] => 11
+            [displayorder] => 11
+            [identity] => virtual
+            [name] => 虚拟物品
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => biz
+        )
+
+    [16] => Array
+        (
+            [id] => 12
+            [displayorder] => 12
+            [identity] => article
+            [name] => 文章营销
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => sale
+        )
+
+    [17] => Array
+        (
+            [id] => 13
+            [displayorder] => 13
+            [identity] => coupon
+            [name] => 超级券
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => sale
+        )
+
+    [18] => Array
+        (
+            [id] => 14
+            [displayorder] => 14
+            [identity] => postera
+            [name] => 活动海报
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => sale
+        )
+
+    [19] => Array
+        (
+            [id] => 20
+            [displayorder] => 15
+            [identity] => bonus
+            [name] => 渠道分红
+            [version] => 1.0
+            [author] => 官方
+            [status] => 1
+            [category] => biz
+        )
+
+)

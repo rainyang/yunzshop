@@ -417,11 +417,7 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
              <div class="paysub1 order_delete">删除订单</div>
       <%/if%>
       <%if order.canrefund%>
-         <%if order.refundid!=0%>
-               <div class="paysub order_refund">退款申请中</div>
-         <%else%>
-               <div class="paysub order_refund">申请退款</div>
-         <%/if%>
+            <div class="paysub order_refund"><%order.refund_button%></div>
       <%/if%> 
        <%if order.isverify=='1' %>
               <%if order.verified!='1'%>

@@ -140,7 +140,7 @@ class Sz_DYi_Finance {
         $post = array(
             'wxappid'      => $row['key'],
             'mch_id'       => $wechat['mchid'],
-            'mch_billno'   => $mchId . date('YmdHis') . rand(1000, 9999),
+            'mch_billno'   => $wechat['mchid'] . date('YmdHis') . rand(1000, 9999),
             'client_ip'    => gethostbyname($_SERVER["HTTP_HOST"]),
             're_openid'    => $openid,
             'total_amount' => $money,

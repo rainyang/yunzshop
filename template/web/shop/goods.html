@@ -1,7 +1,34 @@
 ﻿{template 'web/_header'}
 <div class="w1200 m0a">
+
 {if $operation != 'post'}
 {template 'web/shop/tabs'}
+{else}
+<div class="ulleft-nav">
+	<ul class="nav nav-tabs" id="myTab">
+    	<li class="active" ><a href="#tab_basic">基本信息</a></li>
+        <li><a href="#tab_des">商品描述</a></li>
+        <li><a href="#tab_param">自定义属性</a></li>
+        <li><a href="#tab_option">商品规格</a></li>
+        <li><a href="#tab_discount">会员权限及折扣设置</a></li>
+		<li><a href="#tab_share">分享及关注设置</a></li>
+        <li><a href="#tab_others">其他设置</a></li>
+
+        {if p('verify')}
+		<li><a href="#tab_verify">线下核销设置</a></li>
+        {/if}
+        {if !empty($com_set['level'])}
+        <li><a href="#tab_sell">分销设置</a></li>
+        {/if}
+        {if p('sale')}
+		<li><a href="#tab_sale">营销设置</a></li>
+        {/if}
+        <li><a href="#tab_detaildiy">详情页店铺信息设置</a></li>
+        {if p('diyform')}
+		<li><a href="#tab_diyform">自定义表单</a></li>
+        {/if}
+    </ul> 
+</div>
 {/if}
 <script type="text/javascript" src="resource/js/lib/jquery-ui-1.10.3.min.js"></script>
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/font-awesome.min.css">
@@ -16,34 +43,6 @@
                 {if empty($item['id'])}添加商品{else}编辑商品{/if}
             </div> -->
             <div class="panel-body">
-            	<div class="w1200 m0a">
-            	<div class="ulleft-nav">
-                    <!-- {ifp 'shop.goods.view'}<li><a href="{php echo $this->createWebUrl('shop/goods')}">商品管理</a></li>{/if} -->
-                <ul class="nav nav-arrow-next nav-tabs" id="myTab">
-                    <li class="active" ><a href="#tab_basic">基本信息</a></li>
-                    <li><a href="#tab_des">商品描述</a></li>
-                    <li><a href="#tab_param">自定义属性</a></li>
-                    <li><a href="#tab_option">商品规格</a></li>
-                    <li><a href="#tab_discount">会员权限及折扣设置</a></li>
-					<li><a href="#tab_share">分享及关注设置</a></li>
-                    <li><a href="#tab_others">其他设置</a></li>
-
-                    {if p('verify')}
-					<li><a href="#tab_verify">线下核销设置</a></li>
-                    {/if}
-                    {if !empty($com_set['level'])}
-                    <li><a href="#tab_sell">分销设置</a></li>
-                    {/if}
-                    {if p('sale')}
-					<li><a href="#tab_sale">营销设置</a></li>
-                    {/if}
-                    <li><a href="#tab_detaildiy">详情页店铺信息设置</a></li>
-                    {if p('diyform')}
-					<li><a href="#tab_diyform">自定义表单</a></li>
-                    {/if}
-                </ul> 
-                </div>
-                <div class="rightlist">
                 <div class="good-tit">
 				    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
 				    <div class="col-sm-10 col-xs-12 text-right">
@@ -89,8 +88,6 @@
 					<input type="button" name="back" onclick='history.back()' {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
 
         		</div>
-            </div>
-            </div>
             </div>
         </div>
         
