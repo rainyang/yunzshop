@@ -49,8 +49,6 @@
                 <tr>
                     <th style='width:150px;'>供应商ID</th>
                     <th style='width:150px;'>用户名</th>
-                    <th style='width:150px;'>姓名</th>
-                    <th style='width:150px;'>手机号码</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -60,13 +58,11 @@
 		                <tr>
 		                    <td>{$row['uid']}</td>
 		                    <td>{$row['username']}</td>
-		                    <td>{$row['realname']}</td>
-		                    <td>{$row['mobile']}</td>
 		                    <td  style="overflow:visible;">
                                 <div class="btn-group btn-group-sm">
                                     <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:;">操作 <span class="caret"></span></a>
                                         <ul class="dropdown-menu dropdown-menu-left" role="menu" style='z-index: 99999'>
-                                            <li><a href="{php echo $this->createPluginWebUrl('supplier/supplier/detail',array('uid' => $row['uid']));}" title='供应商信息'><i class='fa fa-user'></i> 供应商信息</a></li>
+                                            <li><a href="{if !empty($row['openid'])}{php echo $this->createPluginWebUrl('supplier/supplier/detail',array('openid' => $row['openid']));}{else}{php echo $this->createPluginWebUrl('supplier/supplier/detail',array('uid' => $row['uid']));}{/if}" title='供应商信息'><i class='fa fa-user'></i> 供应商信息</a></li>
                                             <li><a href="{php echo $this->createPluginWebUrl('supplier/supplier_add', array('op' => 'post', 'id' => $row['id']))}" title='修改密码'><i class='fa fa-edit'></i> 修改密码</a></li>
                                             <li><a  href="{php echo $this->createPluginWebUrl('supplier/supplier_list',array('supplier_uid' => $row['uid']));}" title='我的订单'><i class='fa fa-list'></i> 我的订单</a></li>
                                             <li><a href="{php echo $this->createPluginWebUrl('supplier/supplier_add', array('op' => 'delete', 'id' => $row['id']))}" title="删除" onclick="return confirm('确定要删除该供应商吗？');"><i class='fa fa-remove'></i> &nbsp;删除供应商</a></li>
@@ -83,6 +79,7 @@
 </div>
 </div>
 {else if $operation=='detail'}
+{if empty($applyid)}
 <div class="rightlist">
 <form {ifp 'commission.supplier.edit|commission.supplier.check'}action="" method='post'{/if} class='form-horizontal'>
     <input type="hidden" name="id" value="{$supplierinfo['uid']}">
@@ -154,7 +151,69 @@
     $("#modal-module-menus-notice .close").click();
   }
 </script>
-			<div class="form-group">
+			
+            {if $diyform_flag == 1}
+            <div class='panel-body'>
+                <!--<span>diyform</span>-->
+
+                {php $datas = iunserializer($supplierinfo['diymemberdata'])}
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="form-control-static">
+                        {if !empty($avatar)}
+                             <img src="{$avatar}" style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/>
+                           {/if}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">金额</label>
+                    <div class="col-sm-9 col-xs-12">
+                    <span class='help-block'>累计提现金额：<span style='color:red'>{if !empty($totalmoney)}{$totalmoney}{else}0{/if}元</span> 未提现金额：<span style='color:red'>{if !empty($totalmoneyok)}{$totalmoneyok}{else}0{/if}元</span></span>
+                    </div>
+                </div>
+                {loop $fields $key $value}
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">{php echo $value['tp_name']}</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <div class="form-control-static">
+                            {if $value['data_type'] == 0 || $value['data_type'] == 1 || $value['data_type'] == 2 || $value['data_type'] == 6}
+                            {php echo str_replace("\n","<br/>",$datas[$key])}
+                            {else if $value['data_type'] == 3}
+                            {if !empty($datas[$key])}
+                            {loop $datas[$key] $k1 $v1}
+                            {php echo $v1}
+                            {/loop}
+                            {/if}
+
+                            {else if $value['data_type'] == 5}
+                            {if !empty($datas[$key])}
+                            {loop $datas[$key] $k1 $v1}
+                            <a target="_blank" href="{php echo tomedia($v1)}"><img style='width:100px;padding:1px;border:1px solid #ccc'  src="{php echo tomedia($v1)}"></a>
+                            {/loop}
+                            {/if}
+
+                            {else if $value['data_type'] == 7}
+                            {php echo $datas[$key]}
+
+                            {else if $value['data_type'] == 8}
+                            {if !empty($datas[$key])}
+                            {loop $datas[$key] $k1 $v1}
+                            {php echo $v1}
+                            {/loop}
+                            {/if}
+
+                            {else if $value['data_type'] == 9}
+                             {php echo $datas[$key]['province']!='请选择省份'?$datas[$key]['province']:''}-{php echo $datas[$key]['city']!='请选择城市'?$datas[$key]['city']:''}
+                            {/if}
+                        </div>
+
+                    </div>
+                </div>
+
+                {/loop}
+            </div>
+            {else}
+            <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">真实姓名</label>
                 <div class="col-sm-9 col-xs-12">
                        {ifp 'commission.supplier.edit'}
@@ -177,10 +236,10 @@
                 </div>
             </div>
             <div class="form-group">
-            	<label class="col-xs-12 col-sm-3 col-md-2 control-label">金额</label>
-            	<div class="col-sm-9 col-xs-12">
-            	<span class='help-block'>累计金额：<span style='color:red'>{if !empty($totalmoney)}{$totalmoney}{else}0{/if}元</span> 已结算金额：<span style='color:red'>{if !empty($totalmoneyok)}{$totalmoneyok}{else}0{/if}元</span></span>
-            	</div>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">金额</label>
+                <div class="col-sm-9 col-xs-12">
+                <span class='help-block'>累计金额：<span style='color:red'>{if !empty($totalmoney)}{$totalmoney}{else}0{/if}元</span> 已结算金额：<span style='color:red'>{if !empty($totalmoneyok)}{$totalmoneyok}{else}0{/if}元</span></span>
+                </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">银行卡号</label>
@@ -215,6 +274,7 @@
                     {/if}
                 </div>
             </div>
+            {/if}
             <div class="form-group"></div>
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
@@ -229,7 +289,197 @@
    		 </div>
    	</div>   
 </form>
-</div>  
+</div> 
+{else}
+<div class="rightlist">
+<form {ifp 'commission.supplier.edit|commission.supplier.check'}action="" method='post'{/if} class='form-horizontal'>
+    <input type="hidden" name="applyid" value="{$apply_info['id']}">
+    <input type="hidden" name="c" value="site" />
+    <input type="hidden" name="a" value="entry" />
+    <input type="hidden" name="m" value="sz_yi" />
+    <input type="hidden" name="p" value="supplier" />
+    <input type="hidden" name="method" value="supplier_apply" />
+    <input type="hidden" name="op" value="detail" />
+    <div class='panel panel-default'>
+        <div class='panel-heading'>
+            详细信息
+        </div>
+        <div class='panel-body'>
+            
+            {if $diyform_flag == 1}
+            <div class='panel-body'>
+                {php $datas = iunserializer($supplierinfo['diymemberdata'])}
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">头像</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="form-control-static">
+                        {if !empty($avatar)}
+                             <img src="{$avatar}" style='width:100px;height:100px;padding:1px;border:1px solid #ccc' /><br/>
+                           {/if}
+                    </div>
+                </div>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现单号</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="form-control-static">
+                        {$apply_info['applysn']}
+                    </div>
+                </div>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现金额</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="form-control-static">
+                        <button type="button" class="btn btn-danger">金额：{$apply_info['apply_money']}</button>
+                    </div>
+                </div>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现类型</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="form-control-static">
+                        {if $apply_info['type']==1}<button type="button" class="btn btn-primary">银行卡</button>{else}<button type="button" class="btn btn-success">微信余额</button>{/if}
+                    </div>
+                </div>
+                {if empty($finish)}
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">申请时间</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="form-control-static">
+                        {php echo date('Y-m-d H:i:s', $apply_info['apply_time'])}
+                    </div>
+                </div>
+                {else}
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">完成时间</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="form-control-static">
+                        {php echo date('Y-m-d H:i:s', $apply_info['finish_time'])}
+                    </div>
+                </div>
+                {/if}
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">状态</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="form-control-static">
+                        {if $apply_info['status'] == 0}
+                        <button type="button" class="btn btn-info">申请中，等待审核</button>
+                        {else}
+                        <button type="button" class="btn btn-danger">已打款，审核通过</button>
+                        {/if}
+                    </div>
+                </div>
+                {loop $fields $key $value}
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">{php echo $value['tp_name']}</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <div class="form-control-static">
+                            {if $value['data_type'] == 0 || $value['data_type'] == 1 || $value['data_type'] == 2 || $value['data_type'] == 6}
+                            {php echo str_replace("\n","<br/>",$datas[$key])}
+                            {else if $value['data_type'] == 3}
+                            {if !empty($datas[$key])}
+                            {loop $datas[$key] $k1 $v1}
+                            {php echo $v1}
+                            {/loop}
+                            {/if}
+
+                            {else if $value['data_type'] == 5}
+                            {if !empty($datas[$key])}
+                            {loop $datas[$key] $k1 $v1}
+                            <a target="_blank" href="{php echo tomedia($v1)}"><img style='width:100px;padding:1px;border:1px solid #ccc'  src="{php echo tomedia($v1)}"></a>
+                            {/loop}
+                            {/if}
+
+                            {else if $value['data_type'] == 7}
+                            {php echo $datas[$key]}
+
+                            {else if $value['data_type'] == 8}
+                            {if !empty($datas[$key])}
+                            {loop $datas[$key] $k1 $v1}
+                            {php echo $v1}
+                            {/loop}
+                            {/if}
+
+                            {else if $value['data_type'] == 9}
+                             {php echo $datas[$key]['province']!='请选择省份'?$datas[$key]['province']:''}-{php echo $datas[$key]['city']!='请选择城市'?$datas[$key]['city']:''}
+                            {/if}
+                        </div>
+
+                    </div>
+                </div>
+
+                {/loop}
+            </div>
+            {else}
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">头像</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="form-control-static">
+                    {if !empty($avatar)}
+                         <img src="{$avatar}" style='width:100px;height:100px;padding:1px;border:1px solid #ccc' /><br/>
+                       {/if}
+                </div>
+            </div>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现单号</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="form-control-static">
+                    {$apply_info['applysn']}
+                </div>
+            </div>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现金额</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="form-control-static">
+                    <button type="button" class="btn btn-danger">金额：{$apply_info['apply_money']}</button>
+                </div>
+            </div>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现类型</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="form-control-static">
+                    {if $apply_info['type']==1}<button type="button" class="btn btn-primary">银行卡</button>{else}<button type="button" class="btn btn-success">微信余额</button>{/if}
+                </div>
+            </div>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">申请时间</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="form-control-static">
+                    {php echo date('Y-m-d H:i:s', $apply_info['apply_time'])}
+                </div>
+            </div>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">姓名</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="form-control-static">
+                    {$apply_info['realname']}
+                </div>
+            </div>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">电话</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="form-control-static">
+                    {$apply_info['mobile']}
+                </div>
+            </div>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">卡号</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="form-control-static">
+                    {$apply_info['banknumber']}accountname
+                </div>
+            </div>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">开户名</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="form-control-static">
+                    {$apply_info['accountname']}accountbank
+                </div>
+            </div>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">开户行</label>
+            <div class="col-sm-9 col-xs-12">
+                <div class="form-control-static">
+                    {$apply_info['accountbank']}accountbank
+                </div>
+            </div>
+            {/if}
+            <div class="form-group"></div>
+            <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <div class="col-sm-9 col-xs-12">
+                        {if $apply_info['status'] == 0}
+                            <input type="submit" name="submit" value="通过" class="btn btn-primary col-lg-1"  />
+                        {/if}
+                            <input type="hidden" name="token" value="{$_W['token']}" />
+                       <input type="button" name="back" onclick='history.back()' style='margin-left:10px;' value="返回列表" class="btn btn-default" />
+                    </div>
+            </div>
+         </div>
+    </div>   
+</form>
+{/if} 
 {/if}
 </div> 
 {template 'common/footer'}
