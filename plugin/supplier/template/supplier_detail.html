@@ -18,14 +18,14 @@
             <!--<span>diyform</span>-->
 
             {php $datas = iunserializer($supplier['diymemberdata'])}
+            {if !empty($avatar)}
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">头像</label>
             <div class="col-sm-9 col-xs-12">
                 <div class="form-control-static">
-                    {if !empty($avatar)}
-                         <img src="{$avatar}" style="width:100px;height:100px;border:1px solid #ccc;padding:1px" /><br/>
-                       {/if}
+                    <img src="{$avatar}" style="width:100px;height:100px;border:1px solid #ccc;padding:1px" /><br/>
                 </div>
             </div>
+            {/if}
             {loop $fields $key $value}
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">{php echo $value['tp_name']}</label>
