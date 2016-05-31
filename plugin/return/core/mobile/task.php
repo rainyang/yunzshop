@@ -15,10 +15,7 @@ foreach ($sets as $val) {
 	$set = m('plugin')->getpluginSet('return', $_W['uniacid']);
 	if(!empty($set))
 	{
-		echo "<pre>";print_r($val);
- 	unset($set['current_d']);
- 	unset($set['current_m']);
- 	$this->updateSet($set);
+
 		$isexecute = false;
 		if($set['returnlaw']==1)
 		{
@@ -53,7 +50,7 @@ foreach ($sets as $val) {
 			echo "<pre>"; print_r('成功');
 
 		}else{
-			echo "<pre>"; print_r('失1败');
+			echo "<pre>"; print_r('失败');
 		}
 
 		
