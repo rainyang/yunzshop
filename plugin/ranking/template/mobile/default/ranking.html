@@ -220,6 +220,7 @@ function bindScroller(){
             core.pjson('ranking/ranking', {type:type,page: page}, function (json) {
                 if (json.result.list.length <= 0) {
                     $('#container').html(tpl('tpl_empty'));
+                    $('.report-img').hide();
                     return;
                 }
                 $('#container').html(tpl('tpl_log', json.result));

@@ -25,7 +25,7 @@ if (!class_exists('BonusModel')) {
 		}
 
 		//获取上级代理信息
-        public function getParentAgents($id, $type = 0){
+        public function getParentAgents($id, $isdistinction, $level = 0){
             global $_W;
             $sql = "select id, agentid, bonuslevel, bonus_status from " . tablename('sz_yi_member') . " where id={$id} and uniacid=".$_W['uniacid'];
             $parentAgent =  pdo_fetch($sql);
@@ -33,11 +33,19 @@ if (!class_exists('BonusModel')) {
             if(empty($parentAgent)){
                 return $this->parentAgents;
             }else{
-            	if(empty($this->parentAgents[$parentAgent['bonuslevel']])){
-        			$this->parentAgents[$parentAgent['bonuslevel']] = $parentAgent['id'];
+            	if(!empty($parentAgent['bonuslevel'])){
+            		if($isdistinction == 0){
+	            		$agentlevel = pdo_fetchcolumn("select level from " . tablename('sz_yi_bonus_level') . " where id=".$parentAgent['bonuslevel']);
+		            	if(empty($this->parentAgents[$parentAgent['bonuslevel']]) && $level <= $agentlevel){
+		            		$level = $parentAgent['bonuslevel'];
+		        			$this->parentAgents[$parentAgent['bonuslevel']] = $parentAgent['id'];
+		        		}
+	        		}else{
+	        			
+	        		}
         		}
             	if($parentAgent['agentid'] != 0){
-                    return $this->getParentAgents($parentAgent['agentid']);
+                    return $this->getParentAgents($parentAgent['agentid'], $isdistinction, $level);
                 }else{
                 	return $this->parentAgents;
                 }
@@ -59,6 +67,7 @@ if (!class_exists('BonusModel')) {
 			$goods = pdo_fetchall('select og.id,og.realprice,og.price,og.goodsid,og.total,og.optionname,g.hascommission,g.nocommission,g.bonusmoney from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
 			$member = m('member')->getInfo($openid);
 			$levels = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_bonus_level') . " WHERE uniacid = '{$_W['uniacid']}' ORDER BY level asc");
+			$isdistinction = empty($set['isdistinction']) ? 0 : 1;
 			foreach ($goods as $cinfo) {
 				$price_all = $cinfo['bonusmoney'] > 0 && !empty($cinfo['bonusmoney']) ? $cinfo['bonusmoney'] * $cinfo['total'] : $cinfo['price'];
 				if(empty($set['selfbuy'])){
@@ -68,7 +77,7 @@ if (!class_exists('BonusModel')) {
 				}
 				//查询分红人员
 				if(!empty($masid)){
-					$parentAgents = $this->getParentAgents($masid, 1);
+					$parentAgents = $this->getParentAgents($masid, $isdistinction, 1);
 					$range_money = 0;
 					foreach ($levels as $key => $level) {
 						$levelid = $level['id'];
@@ -80,7 +89,7 @@ if (!class_exists('BonusModel')) {
 							}
 							$bonus_money_old = round($price_all * $setmoney, 2);
 							//级差分红
-							if(empty($set['isdistinction'])){
+							if($isdistinction==0){
 								$bonus_money = $bonus_money_old - $range_money;
 								$range_money = $bonus_money_old;
 							}else{
