@@ -162,7 +162,6 @@
 function bindScroller(){
         var loaded = false;
         var stop = true;
-
         $(window).scroll(function () {
            
             if (loaded) {
@@ -210,18 +209,18 @@ function bindScroller(){
         });
 }
         function getLog(type) {
-            if(goodsid==0)
-            {
-                $('.credit_nav').removeClass('credit_navon');
-                $('.credit_nav[data-type=' + type + ']').addClass('credit_navon'); 
-            }
 
             core.pjson('ranking/ranking', {type:type,page: page}, function (json) {
+
                 $("#container").html(tpl('tpl_list'));
+                $('.credit_nav').removeClass('credit_navon');
+                $('.credit_nav[data-type=' + type + ']').addClass('credit_navon'); 
                 if (json.result.list.length <= 0) {
                     $('#tpl_container').html(tpl('tpl_empty'));
+                    $('.report-img').hide();
                     return;
                 }
+
                 $('#tpl_container').html(tpl('tpl_log', json.result));
                 $('#m_num').html(json.result.m_num);
                 $('#m_avatar').attr('src',json.result.m_avatar);
