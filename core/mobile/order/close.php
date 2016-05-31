@@ -6,7 +6,6 @@ require '../../../../../addons/sz_yi/core/inc/functions.php';
 require '../../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
  */
 global $_W, $_GPC;
-echo "<pre>"; print_r(11);exit;
 //ignore_user_abort();
 set_time_limit(0);
 //echo $_W['uniacid'];
