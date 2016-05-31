@@ -41,7 +41,9 @@ if (!class_exists('BonusModel')) {
 		        			$this->parentAgents[$parentAgent['bonuslevel']] = $parentAgent['id'];
 		        		}
 	        		}else{
-	        			
+		            	if(empty($this->parentAgents[$parentAgent['bonuslevel']])){
+		        			$this->parentAgents[$parentAgent['bonuslevel']] = $parentAgent['id'];
+		        		}
 	        		}
         		}
             	if($parentAgent['agentid'] != 0){
