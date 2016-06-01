@@ -6,7 +6,7 @@ global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
-$shopset   = m('common')->getSysset('shop');
+$r_type = array('0' => '退款', '1' => '退货退款', '2' => '换货');
 if ($_W['isajax']) {
 	if ($operation == 'display') {
 		$pindex = max(1, intval($_GPC['page']));
@@ -24,12 +24,12 @@ if ($_W['isajax']) {
 					$condition .= ' and status=' . intval($status);
 				}
 			} else {
-				$condition .= ' and refundid<>0';
+				$condition .= ' and refundstate>0';
 			}
 		} else {
 			$condition .= ' and status<>-1';
 		}
-		$list = pdo_fetchall('select id,createtime,ordersn,price,status,iscomment,isverify,verified,verifycode,iscomment,refundid,expresscom,express,expresssn,finishtime,virtual,paytype,expresssn from ' . tablename('sz_yi_order') . " where 1 {$condition} order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
+		$list = pdo_fetchall('select id,createtime,addressid,ordersn,price,status,iscomment,isverify,verified,verifycode,iscomment,refundid,expresscom,express,expresssn,finishtime,virtual,paytype,expresssn,refundstate from ' . tablename('sz_yi_order') . " where 1 {$condition} order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where 1 {$condition}", $params);
 		$tradeset = m('common')->getSysset('trade');
 		$refunddays = intval($tradeset['refunddays']);
@@ -50,7 +50,13 @@ if ($_W['isajax']) {
 					}
 					break;
 				case '1':
-					$status = '待发货';
+					if ($row['isverify'] == 1) {
+						$status = '待使用';
+					} else if (empty($row['addressid'])) {
+						$status = '待取货';
+					} else {
+						$status = '待发货';
+					}
 					break;
 				case '2':
 					$status = '待收货';
@@ -64,11 +70,14 @@ if ($_W['isajax']) {
 					break;
 			}
 			$row['statusstr'] = $status;
-			if (!empty($row['refundid'])) {
-				$row['statusstr'] = '待退款';
+			if ($row['refundstate'] > 0 && !empty($row['refundid'])) {
+				$refund = pdo_fetch('select * from ' . tablename('ewei_shop_order_refund') . ' where id=:id and uniacid=:uniacid and orderid=:orderid limit 1', array(':id' => $row['refundid'], ':uniacid' => $uniacid, ':orderid' => $row['id']));
+				if (!empty($refund)) {
+					$row['statusstr'] = '待' . $r_type[$refund['rtype']];
+				}
 			}
 			$canrefund = false;
-			if ($row['status'] == 1) {
+			if ($row['status'] == 1 || $row['status'] == 2) {
 				$canrefund = true;
 			} else if ($row['status'] == 3) {
 				if ($row['isverify'] != 1 && empty($row['virtual'])) {
