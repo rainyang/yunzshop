@@ -71,7 +71,7 @@ if ($_W['isajax']) {
 			}
 			$row['statusstr'] = $status;
 			if ($row['refundstate'] > 0 && !empty($row['refundid'])) {
-				$refund = pdo_fetch('select * from ' . tablename('ewei_shop_order_refund') . ' where id=:id and uniacid=:uniacid and orderid=:orderid limit 1', array(':id' => $row['refundid'], ':uniacid' => $uniacid, ':orderid' => $row['id']));
+				$refund = pdo_fetch('select * from ' . tablename('sz_yi_order_refund') . ' where id=:id and uniacid=:uniacid and orderid=:orderid limit 1', array(':id' => $row['refundid'], ':uniacid' => $uniacid, ':orderid' => $row['id']));
 				if (!empty($refund)) {
 					$row['statusstr'] = '待' . $r_type[$refund['rtype']];
 				}
@@ -91,6 +91,16 @@ if ($_W['isajax']) {
 			}
 			$row['canrefund'] = $canrefund;
 		}
+		if ($canrefund == true) {
+	        if ($row['status'] == 1) {
+	            $row['refund_button'] = '申请退款';
+	        } else {
+	            $row['refund_button'] = '申请售后';
+	        }
+	        if (!empty($row['refundstate'])) {
+	            $row['refund_button'] .= '中';
+	        }
+	    }
 		unset($row);
 		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 	}
