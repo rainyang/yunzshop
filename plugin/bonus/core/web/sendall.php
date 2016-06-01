@@ -64,7 +64,7 @@ $sendpay_error = 0;
 $bonus_money = 0;
 if (!empty($_POST)) {
     if($totalmoney<=0){
-        message("总，不能发放", '', "success");
+        message("总金额小于0，不能发放", '', "success");
     }
 	foreach ($list as $key => $value) {
 		$send_money = $value['commission_ok'];

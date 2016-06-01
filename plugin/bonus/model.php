@@ -510,16 +510,11 @@ if (!class_exists('BonusModel')) {
 				return false;
 			}
 			$set = $this->getSet();
-			//$member = m('member')->getMember($mid);
 			$member = p('commission')->getInfo($mid, array('ordercount3'));
 
 			if (empty($member)) {
 				return;
 			}
-			
-			/*if($member['bonus_status'] != 1){
-				return false;
-			}*/
 
 			if(empty($member['bonuslevel'])){
 				$oldlevel = false;
@@ -549,7 +544,7 @@ if (!class_exists('BonusModel')) {
 			//自购订单金额
 			if(in_array('4', $leveltype)){
 				$myprice = pdo_fetchcolumn('select sum(price) from ' . tablename('sz_yi_order') . ' where openid=:openid and status>=3 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
-				if(!empty($levelup['ordermoney'])){
+				if($levelup['ordermoney'] > 0){
 					if($myprice < $levelup['ordermoney']){
 						$isleveup = false;
 					}
@@ -576,7 +571,7 @@ if (!class_exists('BonusModel')) {
 
 			//分销订单总金额
 			if(in_array('11', $leveltype)){
-				if(!empty($levelup['commissionmoney'])){
+				if($levelup['commissionmoney'] > 0){
 					if($member['ordermoney'] < $levelup['commissionmoney']){
 						$isleveup = false;
 					}
