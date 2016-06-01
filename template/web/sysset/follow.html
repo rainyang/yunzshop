@@ -75,7 +75,12 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">分享连接</label>
                     <div class="col-sm-9 col-xs-12">
                         {ifp 'sysset.save.follow'}
-                        <input type="text" name="share[url]" class="form-control" value="{$set['share']['url']}" />
+                        <div class="input-group ">
+                            <input class="form-control" type="text" data-id="PAL-00010" placeholder="请填写指向的链接 (请以http://开头, 不填则不显示)" value="{$set['share']['url']}" name="share[url]">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default nav-link" type="button" data-id="PAL-00010" >选择链接</button>
+                            </span>
+                        </div>
                         <span class='help-block'>用户分享出去的连接，默认为首页</span>
                         {else}
                         <input type="hidden" name="share[url]" value="{$set['share']['url']}" />
@@ -100,4 +105,5 @@
     </form>
 </div>
 </div>
+{template 'web/sysset/mylink'}
 {template 'web/_footer'}     

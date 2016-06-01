@@ -169,7 +169,7 @@ div.flicking_con a.on{background-position:0 -9px}
                 <div class="spec"><%spec.title%></div>
                 <div class="spec_items options_<%spec.id%>"  title="<%spec.title%>">
                       <%each spec.items as o%>
-                      <div class="option option_<%spec.id%>" specid='<%spec.id%>' oid="<%o.id%>" sel='false' title='<%o.title%>' thumb='<%o.thumb%>'><%o.title%></div>
+                      <div onclick="addNum1('optionid_<%spec.id%>','<%o.id%>')" class="option option_<%spec.id%>" specid='<%spec.id%>' oid="<%o.id%>" sel='false' title='<%o.title%>' thumb='<%o.thumb%>'><%o.title%></div>
                      <%/each%>
                 </div>
                 <%/each%>
@@ -760,29 +760,28 @@ div.flicking_con a.on{background-position:0 -9px}
 
             $(".option").click(function() {
                
-             var specid = $(this).attr("specid");
-             var oid = $(this).attr("oid");
-            $(".optionid_"+specid).val(oid);
-            $(".options_" + specid + "  .option").removeClass("on").attr("sel", "false");
-            $(this).addClass("on").attr("sel", "true");
+              var specid = $(this).attr("specid");
+              var oid = $(this).attr("oid");
+              $(".optionid_"+specid).val(oid);
+              $(".options_" + specid + "  .option").removeClass("on").attr("sel", "false");
+              $(this).addClass("on").attr("sel", "true");
      
-             var titles='已选: ';
+              var titles='已选: ';
                  $('.spec_items').each(function(){
                                  if($(this).find('.on').length>0){
                     titles+= $(this).find('.on').attr('title')+";";   
                             }
                  });
                              
-                             $('.good_choose .info .right .option').html(titles);
-         var thumb = $(this).attr('thumb');
-         if(thumb!=''){
-             $("#chooser_img").attr('src',thumb);
-         }
-         else{
-             
-             $("#chooser_img").attr('src',json.result.goods.thumb);
-         }
-         setoptions();
+              $('.good_choose .info .right .option').html(titles);
+            var thumb = $(this).attr('thumb');
+            if(thumb!=''){
+               $("#chooser_img").attr('src',thumb);
+            }
+            else{ 
+               $("#chooser_img").attr('src',json.result.goods.thumb);
+            }
+            setoptions();
             var optionid = "";
             var stock =0;
             var marketprice = 0;
@@ -812,7 +811,21 @@ div.flicking_con a.on{background-position:0 -9px}
                 }
                                 
                $("#optionid").val(optionid); 
-                
+              
+
+                var num = parseInt($("#total").val() );
+
+                if(num>maxbuy && maxbuy>0){
+
+                    tip.show("您最多可购买 " + maxbuy + " 件!");
+                    num = maxbuy;
+                }
+                else if(num>stock && stock!=-1){
+                    tip.show("您最多可购买 " + stock + " 件");
+                    num = stock;
+                }
+                $("#total").val(num);
+
                 if(stock!="-1"){
                     $("#stockcontainer").html("库存:<span id='stock'>" + stock + "</span>");
                 }
@@ -1186,7 +1199,29 @@ div.flicking_con a.on{background-position:0 -9px}
     }
     var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
     var num = parseInt(total.val() ) + 1;
+
                   if(num>maxbuy && maxbuy>0){
+        tip.show("您最多可购买 " + maxbuy + " 件!");
+        num = maxbuy;
+    }
+    else if(num>stock && stock!=-1){
+        tip.show("您最多可购买 " + stock + " 件");
+        num = stock;
+    }
+    total.val(num);
+}
+  function addNum11(optionid_id,oid){
+
+    $("."+optionid_id).val(oid);
+
+    var total = $("#total");
+
+    var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+
+    var num = parseInt(total.val() );
+
+    if(num>maxbuy && maxbuy>0){
+
         tip.show("您最多可购买 " + maxbuy + " 件!");
         num = maxbuy;
     }

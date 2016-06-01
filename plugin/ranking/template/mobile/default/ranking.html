@@ -54,31 +54,32 @@
     <%if type==0%>
 
                 <%each list as log%>
-
-                    <%if log.number == 1%>
-                        <li>
-                            <span class="one-icon"><img src="../addons/sz_yi/static/images/01.png"></span>
-                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
-                            <p>积分：<i class="red"><%log.credit1%></i></p>
-                        </li>
-                    <%else if log.number == 2%>
-                        <li>
-                            <span class="one-icon"><img src="../addons/sz_yi/static/images/02.png"></span>
-                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
-                            <p>积分：<i class="red"><%log.credit1%></i></p>
-                        </li>
-                    <%else if log.number == 3%>
-                        <li>
-                            <span class="one-icon"><img src="../addons/sz_yi/static/images/03.png"></span>
-                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
-                            <p>积分：<i class="red"><%log.credit1%></i></p>
-                        </li>
-                    <%else%>
-                        <li>
-                            <span class="one-icon"><%log.number%></span>
-                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
-                            <p>积分：<i class="red"><%log.credit1%></i></p>
-                        </li>
+                    <%if log.credit1 > 0 %>
+                        <%if log.number == 1%>
+                            <li>
+                                <span class="one-icon"><img src="../addons/sz_yi/static/images/01.png"></span>
+                                <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                                <p>积分：<i class="red"><%log.credit1%></i></p>
+                            </li>
+                        <%else if log.number == 2%>
+                            <li>
+                                <span class="one-icon"><img src="../addons/sz_yi/static/images/02.png"></span>
+                                <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                                <p>积分：<i class="red"><%log.credit1%></i></p>
+                            </li>
+                        <%else if log.number == 3%>
+                            <li>
+                                <span class="one-icon"><img src="../addons/sz_yi/static/images/03.png"></span>
+                                <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                                <p>积分：<i class="red"><%log.credit1%></i></p>
+                            </li>
+                        <%else%>
+                            <li>
+                                <span class="one-icon"><%log.number%></span>
+                                <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                                <p>积分：<i class="red"><%log.credit1%></i></p>
+                            </li>
+                        <%/if%>
                     <%/if%>
                 <%/each%>
 
@@ -86,30 +87,32 @@
     <%if type==1%>
 
                 <%each list as log%>
-                    <%if log.number == 1%>
-                        <li>
-                            <span class="one-icon"><img src="../addons/sz_yi/static/images/01.png"></span>
-                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
-                            <p>积分：<i class="red"><%log.ordermoney%></i></p>
-                        </li>
-                    <%else if log.number == 2%>
-                        <li>
-                            <span class="one-icon"><img src="../addons/sz_yi/static/images/02.png"></span>
-                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
-                            <p>积分：<i class="red"><%log.ordermoney%></i></p>
-                        </li>
-                    <%else if log.number == 3%>
-                        <li>
-                            <span class="one-icon"><img src="../addons/sz_yi/static/images/03.png"></span>
-                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
-                            <p>积分：<i class="red"><%log.ordermoney%></i></p>
-                        </li>
-                    <%else%>
-                        <li>
-                            <span class="one-icon"><%log.number%></span>
-                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
-                            <p>积分：<i class="red"><%log.ordermoney%></i></p>
-                        </li>
+                    <%if log.ordermoney > 0 %>
+                        <%if log.number == 1%>
+                            <li>
+                                <span class="one-icon"><img src="../addons/sz_yi/static/images/01.png"></span>
+                                <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                                <p>消费：<i class="red"><%log.ordermoney%></i></p>
+                            </li>
+                        <%else if log.number == 2%>
+                            <li>
+                                <span class="one-icon"><img src="../addons/sz_yi/static/images/02.png"></span>
+                                <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                                <p>消费：<i class="red"><%log.ordermoney%></i></p>
+                            </li>
+                        <%else if log.number == 3%>
+                            <li>
+                                <span class="one-icon"><img src="../addons/sz_yi/static/images/03.png"></span>
+                                <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                                <p>消费：<i class="red"><%log.ordermoney%></i></p>
+                            </li>
+                        <%else%>
+                            <li>
+                                <span class="one-icon"><%log.number%></span>
+                                <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                                <p>消费：<i class="red"><%log.ordermoney%></i></p>
+                            </li>
+                        <%/if%>
                     <%/if%>
                 <%/each%>
  
@@ -117,30 +120,32 @@
     <%if type==2%>
 
                 <%each list as log%>
-                    <%if log.number == 1%>
-                        <li>
-                            <span class="one-icon"><img src="../addons/sz_yi/static/images/01.png"></span>
-                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
-                            <p>积分：<i class="red"><%log.credit%></i></p>
-                        </li>
-                    <%else if log.number == 2%>
-                        <li>
-                            <span class="one-icon"><img src="../addons/sz_yi/static/images/02.png"></span>
-                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
-                            <p>积分：<i class="red"><%log.credit%></i></p>
-                        </li>
-                    <%else if log.number == 3%>
-                        <li>
-                            <span class="one-icon"><img src="../addons/sz_yi/static/images/03.png"></span>
-                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
-                            <p>积分：<i class="red"><%log.credit%></i></p>
-                        </li>
-                    <%else%>
-                        <li>
-                            <span class="one-icon"><%log.number%></span>
-                            <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
-                            <p>积分：<i class="red"><%log.credit%></i></p>
-                        </li>
+                    <%if log.credit > 0 %>
+                        <%if log.number == 1%>
+                            <li>
+                                <span class="one-icon"><img src="../addons/sz_yi/static/images/01.png"></span>
+                                <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                                <p>佣金：<i class="red"><%log.credit%></i></p>
+                            </li>
+                        <%else if log.number == 2%>
+                            <li>
+                                <span class="one-icon"><img src="../addons/sz_yi/static/images/02.png"></span>
+                                <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                                <p>佣金：<i class="red"><%log.credit%></i></p>
+                            </li>
+                        <%else if log.number == 3%>
+                            <li>
+                                <span class="one-icon"><img src="../addons/sz_yi/static/images/03.png"></span>
+                                <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                                <p>佣金：<i class="red"><%log.credit%></i></p>
+                            </li>
+                        <%else%>
+                            <li>
+                                <span class="one-icon"><%log.number%></span>
+                                <div><img src="<%log.avatar%>"><em><%log.realname%></em></div>
+                                <p>佣金：<i class="red"><%log.credit%></i></p>
+                            </li>
+                        <%/if%>
                     <%/if%>
                 <%/each%>
  
@@ -182,9 +187,12 @@ function bindScroller(){
                         $('#credit_loading').remove();
                         $("#container").append(tpl('tpl_log', json.result));
                      
-                        $('#m_num').html(json.result.m_num);
-                        $('#m_avatar').attr('src',json.result.m_avatar);
-                        $('#m_credit1').html(json.result.m_credit_name+":"+json.result.m_credit1);
+                        var m_num = json.result.m_credit1?json.result.m_num:'未上榜';
+                        var m_avatar = json.result.m_avatar?json.result.m_avatar:'../addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg';
+                        var m_credit1 = json.result.m_credit1?json.result.m_credit1:'0';
+                        $('#m_num').html(m_num);
+                        $('#m_avatar').attr('src',m_avatar);
+                        $('#m_credit1').html(json.result.m_credit_name+":"+m_credit1); 
                             if(page==10)
                             {
                                $('#credit_loading').remove();
@@ -220,12 +228,19 @@ function bindScroller(){
             core.pjson('ranking/ranking', {type:type,page: page}, function (json) {
                 if (json.result.list.length <= 0) {
                     $('#container').html(tpl('tpl_empty'));
+                    $('.report-img').hide();
                     return;
                 }
                 $('#container').html(tpl('tpl_log', json.result));
-                $('#m_num').html(json.result.m_num);
-                $('#m_avatar').attr('src',json.result.m_avatar);
-                $('#m_credit1').html(json.result.m_credit_name+":"+json.result.m_credit1);
+
+                var m_num = json.result.m_credit1?json.result.m_num:'未上榜';
+                var m_avatar = json.result.m_avatar?json.result.m_avatar:'../addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg';
+                var m_credit1 = json.result.m_credit1?json.result.m_credit1:'0';
+                    $('#m_num').html(m_num);
+                    $('#m_avatar').attr('src',m_avatar);
+                    $('#m_credit1').html(json.result.m_credit_name+":"+m_credit1);                   
+               
+  
 
                 bindScroller();
             }, true);

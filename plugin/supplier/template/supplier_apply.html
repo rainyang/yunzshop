@@ -52,8 +52,6 @@
                 <tr>
                     <th style='width:6%;'>供应商ID</th>
                     <th style='width:22%;'>提现单号</th>
-                    <th style='width:14%;'>开户名<br>电话</th>
-                    <th style='width:22%;'>开户银行<br/>银行卡号</th>
                     <th style='width:16%;'>提现金额<br/>打款方式</th>
                     <th style='width:10%;'>申请时间</th>
                     <th style='width:10%;'>状态</th>
@@ -65,16 +63,10 @@
                         <tr>
                             <td>{$row['uid']}</td>
                             <td>{$row['applysn']}</td>
-                            <td>{$row['accountname']}<br/>{$row['telephone']}</td>
-                            <td>{$row['accountbank']}<br>{$row['banknumber']}</td>
-                            <td><label class="label label-danger">金额：{$row['apply_money']}</label><br>{php echo $row['type'] == 1 ? "银行卡" : "微信余额"}</td>
+                            <td><button type="button" class="btn btn-danger">金额：{$row['apply_money']}</button><br>{if $row['type']==1}<button type="button" class="btn btn-warning">手动提现</button>{else}<button type="button" class="btn btn-success">微信余额</button>{/if}</td>
                             <td><?php echo date('Y-m-d H:i:s',$row['apply_time']);?></td>
                             <td  style="overflow:visible;">
-                                <div class="form-group">
-                                    <div class="col-sm-9 col-xs-9">
-                                    <a href="{php echo $this->createPluginWebUrl('supplier/supplier_apply/detail',array('id' => $row['id']));}">通过</a>
-                                    </div>
-                                </div>
+                                <a class="label label-default label-info" href="{php echo $this->createPluginWebUrl('supplier/supplier',array('op' => 'detail', 'applyid' => $row['id']));}">详细信息</a>
                             </td>
                         </tr>
                     {/if}

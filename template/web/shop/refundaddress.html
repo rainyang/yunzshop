@@ -1,5 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'web/shop/tabs'}
+<div class="main rightlist">
 <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
 {if $operation == 'display'}
 <form action="" method="post">
@@ -8,13 +10,13 @@
         <table class="table table-hover">
             <thead class="navbar-inner">
                 <tr>
-                    <th style="width:50px;">ID</th>
-                    <th>退货地址名称</th>
-                    <th>联系人</th>
-                    <th>手机</th>
-                    <th>地址</th>
-                    <th>默认退货地址</th>
-                    <th>操作</th>
+                    <th style="width:10%;">ID</th>
+                    <th style="width:15%;">退货地址名称</th>
+                    <th style="width:14%;">联系人</th>
+                    <th style="width:10%;">手机</th>
+                    <th style="width:25%;">地址</th>
+                    <th style="width:16%;">默认退货地址</th>
+                    <th style="width:10%;">操作</th>
                 </tr>
             </thead>
             <tbody>
@@ -35,7 +37,7 @@
                 <tr>
                     <td colspan='9'>
                           {ifp 'shop.refundaddress.add'}
-                        <a class='btn btn-default' href="{php echo $this->createWebUrl('shop/refundaddress',array('op'=>'post'))}"><i class='fa fa-plus'></i> 添加退货地址</a>
+                        <a class='btn btn-primary' href="{php echo $this->createWebUrl('shop/refundaddress',array('op'=>'post'))}"><i class='fa fa-plus'></i> 添加退货地址</a>
                         <input type="hidden" name="token" value="{$_W['token']}" />
                         {/if}
                     </td>
@@ -185,7 +187,8 @@
      
     </form>
 </div>
-
+</div>
+</div>
 
 <script language='javascript'>
 
