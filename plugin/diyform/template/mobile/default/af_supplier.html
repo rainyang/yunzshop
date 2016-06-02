@@ -85,7 +85,7 @@
                     },true,true);
                 })
             } else {
-                core.tip.show('您已提交过申请,等待审核.');
+                alert('您已提交过申请,等待审核中！');
                 location.href="{php echo $this->createMobileUrl('member')}";
             }
         });
