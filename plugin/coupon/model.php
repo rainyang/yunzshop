@@ -110,6 +110,8 @@ if (!class_exists('CouponModel')) {
 				$_var_10 = $this->getSet();
 				$this->sendMessage($_var_1, 1, $_var_6, $_var_10['templateid']);
 			}
+			$_var_1['total'] -= 1;
+			pdo_update('sz_yi_coupon', array('total' => $_var_1['total']), array('uniacid' => $_W['uniacid'], 'id' => $_var_5['couponid']));
 			$_var_16 = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=member';
 			if ($_var_1['coupontype'] == 0) {
 				$_var_16 = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=shop&p=list';
