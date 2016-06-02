@@ -133,7 +133,7 @@ class Sz_DYi_Excel
         if (PHP_SAPI == 'cli') {
             die('This example should only be run from a Web Browser');
         }
-        require_once IA_ROOT . '/framework/library/phpexcel/PHPExcel.php';
+        require_once IA_ROOT . '/addons/sz_yi/core/inc/phpexcel/PHPExcel.php';
         $excel = new PHPExcel();
         $excel->getProperties()->setCreator("芸众商城")->setLastModifiedBy("芸众商城")->setTitle("Office 2007 XLSX Test Document")->setSubject("Office 2007 XLSX Test Document")->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")->setKeywords("office 2007 openxml php")->setCategory("report file");
         $sheet  = $excel->setActiveSheetIndex(0);
@@ -165,9 +165,9 @@ class Sz_DYi_Excel
     public function import($excefile)
     {
         global $_W;
-        require_once IA_ROOT . '/framework/library/phpexcel/PHPExcel.php';
-        require_once IA_ROOT . '/framework/library/phpexcel/PHPExcel/IOFactory.php';
-        require_once IA_ROOT . '/framework/library/phpexcel/PHPExcel/Reader/Excel5.php';
+        require_once IA_ROOT . '/addons/sz_yi/core/inc/phpexcel/PHPExcel.php';
+        require_once IA_ROOT . '/addons/sz_yi/core/inc/phpexcel/PHPExcel/IOFactory.php';
+        require_once IA_ROOT . '/addons/sz_yi/core/inc/phpexcel/PHPExcel/Reader/Excel5.php';
         $path = IA_ROOT . "/addons/sz_yi/data/tmp/";
         if (!is_dir($path)) {
             load()->func('file');

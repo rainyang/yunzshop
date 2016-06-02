@@ -538,3 +538,10 @@ if(!pdo_fieldexists('sz_yi_article_sys', 'isarticle')) {
 pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_article_sys')." ADD  `isarticle` TINYINT( 1 ) NOT NULL");
 }
 
+if(!pdo_fieldexists('sz_yi_article_category', 'm_level')) {
+pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article_category')." ADD `m_level` INT(11) NOT NULL DEFAULT '0'");
+}
+if(!pdo_fieldexists('sz_yi_article_category', 'd_level')) {
+pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article_category')." ADD `d_level` INT(11) NOT NULL DEFAULT '0'");
+}
+
