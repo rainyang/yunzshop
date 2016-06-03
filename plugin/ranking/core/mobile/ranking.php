@@ -113,8 +113,7 @@ if ($_W['isajax']) {
             $total     = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_ranking') . " where  uniacid = '" .$_W['uniacid'] . "'");
             $m_list = pdo_fetch("select r.*, m.realname,m.avatar from " . tablename('sz_yi_ranking') . " r left join " . tablename('sz_yi_member') . " m on(r.mid = m.id) where r.uniacid = '" .$_W['uniacid'] . "' and r.mid = '".$member['id']."'" );
 
-            $lists = pdo_fetchall("select r.*, m.realname,m.avatar from " . tablename('sz_yi_ranking') . " r left join " . tablename('sz_yi_member') . " m on(r.mid = m.id) where r.uniacid = '" .$_W['uniacid'] . "' and r.credit > '".$m_list['credit']."'" );
-            
+            $lists = pdo_fetchall("select r.*, m.realname,m.avatar from " . tablename('sz_yi_ranking') . " r left join " . tablename('sz_yi_member') . " m on(r.mid = m.id) where r.uniacid = '" .$_W['uniacid'] . "' and r.credit > '".$m_list['credit']."' and m.id > '0'" );
             $m_num = count($lists)+1;
             foreach ($list as &$row) {
                 $row['number'] = ($k+1) + ($pindex - 1) * $psize;
