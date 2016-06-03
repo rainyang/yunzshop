@@ -72,11 +72,32 @@ if ($plugin_article) {
 
 	$shopset['isarticle'] = $article_set['isarticle'];
 }
-
+//这两段代码 用哪个会好一些 实现的功能都一样
+// <!---------------------
+// $plugin_return = p('return');
+// if($plugin_return){
+// 	$returnset = $plugin_return->getSet();
+// 	$shopset['isreturn'] = false;
+// 	if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 ){
+// 		$shopset['isreturn'] = true;
+// 	}
+// }
+// ==========================================
+// $reurnset = m('plugin')->getpluginSet('return');
+// $shopset['isreturn'] = false;
+// if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 ){
+// 	$shopset['isreturn'] = true;
+// }
+// --------------------->
+$reurnset = m('plugin')->getpluginSet('return');
+$shopset['isreturn'] = false;
+if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 ){
+	$shopset['isreturn'] = true;
+}
 if (p('ranking')) {
 	$ranking_set = p('ranking')->getSet();
 
-	$shopset['rankingname'] = $ranking_set['ranking']['rankingname'];
+	$shopset['rankingname'] = $ranking_set['ranking']['rankingname']?$ranking_set['ranking']['rankingname']:"排行榜";
 	$shopset['isranking'] = $ranking_set['ranking']['isranking'];
 } 
 

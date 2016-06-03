@@ -72,21 +72,7 @@ if ($op == 'template') {
     $sec = m('common')->getSec();
     $sec = iunserializer($sec['sec']);
 } else if($op == 'pcset'){
-    $designer = p('designer');
-    $categorys = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_article_category') . " WHERE uniacid=:uniacid ", array(':uniacid' => $_W['uniacid']));
-    if ($designer) {
-        $diypages = pdo_fetchall("SELECT id,pagetype,setdefault,pagename FROM " . tablename('sz_yi_designer') . " WHERE uniacid=:uniacid order by setdefault desc  ", array(':uniacid' => $_W['uniacid']));
-    }
-    $article_sys = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article_sys') . " WHERE uniacid=:uniacid limit 1 ", array(':uniacid' => $_W['uniacid']));
-    $article_sys['article_area'] = json_decode($article_sys['article_area'],true);
-    $area_count = sizeof($article_sys['article_area']);
-    if ($area_count == 0){
-        //没有设定地区的时候的默认值：
-        $article_sys['article_area'][0]['province'] = '';
-        $article_sys['article_area'][0]['city'] = '';
-        $area_count = 1;
-    }
-    $goodcates = pdo_fetchall("SELECT id,name,parentid FROM " . tablename('sz_yi_category') . " WHERE enabled=:enabled and uniacid= :uniacid  ", array(':uniacid' => $_W['uniacid'], ':enabled' => '1'));
+
     //默认首页导航内容
     if(empty($set['shop']['hmenu_name'])){
         $set['shop']['hmenu_name'] = array('首页', '全部商品', '店铺公告', '成为分销商', '会员中心');

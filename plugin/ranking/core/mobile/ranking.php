@@ -41,12 +41,11 @@ if ($_W['isajax']) {
             $pindex    = max(1, intval($_GPC['page']));
             $psize     = 10;
 
-            $list      = pdo_fetchall("select * from " . tablename('mc_members') . " where uniacid = '" .$_W['uniacid'] . "' order by credit1 desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
-            $total     = pdo_fetchcolumn('select count(*) from ' . tablename('mc_members') . " where  uniacid = '" .$_W['uniacid'] . "'");
+            $list      = pdo_fetchall("select * from " . tablename('sz_yi_member') . " where uniacid = '" .$_W['uniacid'] . "' order by credit1 desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+            $total     = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . " where  uniacid = '" .$_W['uniacid'] . "'");
             //我的排名
-            $m_list      = pdo_fetchall("select * from " . tablename('mc_members') . " where uniacid = '" .$_W['uniacid'] . "' and credit1 > '".$member['credit1']."'");
+            $m_list      = pdo_fetchall("select * from " . tablename('sz_yi_member') . " where uniacid = '" .$_W['uniacid'] . "' and credit1 > '".$member['credit1']."'");
             $m_num = count($m_list)+1;
-
             foreach ($list as $k => &$row) {
                 $row['number'] = ($k+1) + ($pindex - 1) * $psize;
                 $row['avatar'] = !empty($row['avatar'])?$row['avatar']:$default_avatar;
@@ -80,18 +79,21 @@ if ($_W['isajax']) {
 
             $total = pdo_fetchcolumn("select  count(*) from " . tablename('sz_yi_member') . ' m ' . " where 1 {$condition1} ", $params1);
 
-            foreach ($list as $k => &$row) {
-                $row['number'] = ($k+1) + ($pindex - 1) * $psize;
-                $row['avatar'] = !empty($row['avatar'])?$row['avatar']:$default_avatar;
-            }
   
             $m_sql     = "SELECT m.id,m.uniacid,m.realname, m.mobile,m.avatar,m.nickname,l.levelname," . "(select ifnull( count(o.id) ,0) from  " . tablename('sz_yi_order') . " o where o.openid=m.openid and o.status>=1 {$condition})  as ordercount," . "(select ifnull(sum(o.price),0) from  " . tablename('sz_yi_order') . " o where o.openid=m.openid  and o.status>=1 {$condition})  as ordermoney" . " from " . tablename('sz_yi_member') . " m  " . " left join " . tablename('sz_yi_member_level') . " l on l.id = m.level" . " where 1 {$condition1} and m.id = '".$member['id']."'";
             $m_list  = pdo_fetch($m_sql, $params1);
 
-            $sql1     = "SELECT m.id,m.uniacid,m.realname, m.mobile,m.avatar,m.nickname,l.levelname," . "(select ifnull( count(o.id) ,0) from  " . tablename('sz_yi_order') . " o where o.openid=m.openid and o.status>=1 {$condition})  as ordercount," . "(select ifnull(sum(o.price),0) from  " . tablename('sz_yi_order') . " o where o.openid=m.openid  and o.status>=1 {$condition})  as ordermoney" . " from " . tablename('sz_yi_member') . " m  " . " left join " . tablename('sz_yi_member_level') . " l on l.id = m.level" . " where 1 {$condition1} and ordermoney > '".$m_list['ordermoney']."'";
-            $lists  = pdo_fetchall($sql1, $params1);
-            $m_num = count($lists)+1;
-            //echo "<pre>"; print_r(count($lists));exit;
+            $m_num = 1;
+
+            foreach ($list as $k => &$row) {
+                $row['number'] = ($k+1) + ($pindex - 1) * $psize;
+                $row['avatar'] = !empty($row['avatar'])?$row['avatar']:$default_avatar;
+                if($m_list['ordermoney'] < $row['ordermoney'])
+                {
+                    $m_num += 1;
+                }
+            }
+            unset($row);
             show_json(1, array(
                 'total' => $total,
                 'list' => $list,
@@ -115,7 +117,7 @@ if ($_W['isajax']) {
 
             $lists = pdo_fetchall("select r.*, m.realname,m.avatar from " . tablename('sz_yi_ranking') . " r left join " . tablename('sz_yi_member') . " m on(r.mid = m.id) where r.uniacid = '" .$_W['uniacid'] . "' and r.credit > '".$m_list['credit']."' and m.id > '0'" );
             $m_num = count($lists)+1;
-            foreach ($list as &$row) {
+            foreach ($list as $k => &$row) {
                 $row['number'] = ($k+1) + ($pindex - 1) * $psize;
                 $row['avatar'] = !empty($row['avatar'])?$row['avatar']:$default_avatar;
             }
@@ -126,7 +128,7 @@ if ($_W['isajax']) {
                 'pagesize' => $psize,
                 'type'=>$_GPC['type'],
                 'm_num'=>$m_num,
-                'm_credit1'=>$m_list['credit'],
+                'm_credit1'=>$m_list['credit']?$m_list['credit']:0,
                 'm_credit_name'=>"总佣金",
                 'm_avatar'=>!empty($member['avatar'])?$member['avatar']:$default_avatar
             ));

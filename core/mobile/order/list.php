@@ -90,16 +90,17 @@ if ($_W['isajax']) {
 				}
 			}
 			$row['canrefund'] = $canrefund;
-		}
-		if ($canrefund == true) {
-	        if ($row['status'] == 1) {
-	            $row['refund_button'] = '申请退款';
-	        } else {
-	            $row['refund_button'] = '申请售后';
-	        }
-	        if (!empty($row['refundstate'])) {
-	            $row['refund_button'] .= '中';
-	        }
+		
+			if ($canrefund == true) {
+		        if ($row['status'] == 1) {
+		            $row['refund_button'] = '申请退款';
+		        } else {
+		            $row['refund_button'] = '申请售后';
+		        }
+		        if (!empty($row['refundstate'])) {
+		            $row['refund_button'] .= '中';
+		        }
+		    }
 	    }
 		unset($row);
 		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
