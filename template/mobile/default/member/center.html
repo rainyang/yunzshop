@@ -101,10 +101,10 @@
 </div>
 <div class="cart">
     {if p('supplier')}
-        {if $supplier_set['switch'] == 1 && empty($is_af_supplier)}
+        {if $shopset['switch'] == 1 && empty($shopset['af_result'])}
             <a href="{php echo $this->createPluginMobileUrl('supplier/af_supplier')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-file" style="color:#666;"></i>供应商申请<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
         {/if}
-        {if !empty($issupplier) && $supplier_switch_centre == 1}
+        {if !empty($issupplier) && $shopset['switch_centre'] == 1}
             <a href="{php echo $this->createPluginMobileUrl('supplier/orderj')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-road" style="color:#f10;"></i>供应商中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
         {/if}
     {/if}
@@ -115,18 +115,16 @@
             {/if}
         {/if}
     {/if}
-    <%if shopset.isreturn%>
+    {if p('return')}
     <a href="{php echo $this->createPluginMobileUrl('return/return_log')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-piechart" style="color:#ff9901;"></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
-    <%/if%>
+    {/if} 
   
      <%if shopset.isarticle == 1%>
     <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-article" style="color:#ca81d1;"></i><%shopset.article_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
     <%/if%>
  
-    <%if shopset.isranking == 1%>
-    <%if shopset.isintegral == 1 || shopset.isexpense == 1 || shopset.iscommission == 1%>
+     <%if shopset.isranking == 1%>
     <a href="{php echo $this->createPluginMobileUrl('ranking/ranking')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-article" style="color:#ca81d1;"></i><%shopset.rankingname%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
-    <%/if%>
     <%/if%>
  
 </div>
