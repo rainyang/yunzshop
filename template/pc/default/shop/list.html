@@ -269,9 +269,12 @@
                             <a class="img-pos" href="{php echo $this->createMobileUrl('shop/detail', array('my' => $_GPC['my'], 'id' => $g['id']))}">
                             <img src="{$g['thumb']}"></a>
                             <a class="sort-tit" href="#">{$g['title']}</a>
-                            <p><em>￥{$g['marketprice']}</em><i>总销量<b>{$g['sales']}</b></i>
+                            <p><em>￥{$g['marketprice']}</em>
                              {if $g['productprice']>0 && $g['marketprice']!=$g['productprice']}<span>￥{$g['productprice']}</span>{/if}
                             {if $discount&&$discount>0}<span class="label-waring">{$discount}折</span>{/if}
+                            </p>
+                            <p>
+                            <i>总销量<b>{$g['sales']}</b></i>
                             </p>
                         </div>
                     </li>
