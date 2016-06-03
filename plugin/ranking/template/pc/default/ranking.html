@@ -185,9 +185,9 @@ function bindScroller(){
                             $('#credit_loading').remove();
                             $("#tpl_container").append(tpl('tpl_log', json.result));
                          
-                        var m_num = json.result.m_credit1?json.result.m_num:'未上榜';
+                        var m_num = json.result.m_credit1!=0?json.result.m_num:'未上榜';
                         var m_avatar = json.result.m_avatar?json.result.m_avatar:'../addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg';
-                        var m_credit1 = json.result.m_credit1?json.result.m_credit1:'0';
+                        var m_credit1 = json.result.m_credit1!=0?json.result.m_credit1:'0';
                         $('#m_num').html(m_num);
                         $('#m_avatar').attr('src',m_avatar);
                         $('#m_credit1').html(json.result.m_credit_name+":"+m_credit1);
@@ -230,9 +230,9 @@ function bindScroller(){
                 }
 
                 $('#tpl_container').html(tpl('tpl_log', json.result));
-                        var m_num = json.result.m_credit1?json.result.m_num:'未上榜';
+                        var m_num = json.result.m_credit1!=0?json.result.m_num:'未上榜';
                         var m_avatar = json.result.m_avatar?json.result.m_avatar:'../addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg';
-                        var m_credit1 = json.result.m_credit1?json.result.m_credit1:'0';
+                        var m_credit1 = json.result.m_credit1!=0?json.result.m_credit1:'0';
                         $('#m_num').html(m_num);
                         $('#m_avatar').attr('src',m_avatar);
                         $('#m_credit1').html(json.result.m_credit_name+":"+m_credit1);
