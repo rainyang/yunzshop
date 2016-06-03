@@ -432,6 +432,7 @@ select { width:80px;height:38px;position:absolute;left:0; -webkit-appearance: no
 <div class="detail_price" >
     <input type="hidden" id="weight" value="<%weight%>" />
     <div class="price">
+	<div class="line">订单编号:<span><span class='goodsprice'><%order.ordersn%></span></span></div>
         <div class="line">商品小计:<span>￥<span class='goodsprice'><%order.goodsprice%></span></span></div>
         	
         <div class="line">运费:<span>￥<span class='dispatchprice'><%order.olddispatchprice%></span></span></div>
@@ -513,11 +514,7 @@ select { width:80px;height:38px;position:absolute;left:0; -webkit-appearance: no
              <div class="paysub1 order_delete">删除订单</div>
       <%/if%>
       <%if order.canrefund%>
-         <%if order.refundid!=0%>
-               <div class="paysub order_refund">退款申请中</div>
-         <%else%>
-               <div class="paysub order_refund">申请退款</div>
-         <%/if%>
+         <div class="paysub order_refund"><%order.refund_button%></div>
       <%/if%> 
        <%if order.isverify=='1' %>
               <%if order.verified!='1'%>
