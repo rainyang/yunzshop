@@ -1,3 +1,4 @@
+{php $mylink_data = m('common')->mylink();}
 <link href="../addons/sz_yi/plugin/article/template/imgsrc/article.css" rel="stylesheet">
 <!-- mylink start -->
     <div id="modal-mylink" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -9,10 +10,13 @@
                         <li role="presentation" class="active" style="display: block;"><a aria-controls="link_system" role="tab" data-toggle="tab" href="#link_system" aria-expanded="true">系统页面</a></li>
                         <li role="presentation" style="display: block;"><a aria-controls="link_goods" role="tab" data-toggle="tab" href="#link_goods" aria-expanded="false">商品链接</a></li>
                         <li role="presentation" style="display: block;"><a aria-controls="link_cate" role="tab" data-toggle="tab" href="#link_cate" aria-expanded="false">商品分类</a></li>
-                        {if !empty($designer)}
+                        {if !empty($mylink_data['designer'])}
                             <li role="presentation" style="display: block;"><a aria-controls="link_diy" role="tab" data-toggle="tab" href="#link_diy" aria-expanded="false">DIY页面</a></li>
                         {/if}
                         <li role="presentation" style="display: block;"><a aria-controls="link_diy" role="tab" data-toggle="tab" href="#link_article" aria-expanded="false">营销文章</a></li>
+                        {if p('coupon')}
+                        <li role="presentation" style="display: block;"><a aria-controls="link_diy" role="tab" data-toggle="tab" href="#link_article" aria-expanded="false">超级券页面</a></li>
+                        {/if}
                         <li role="presentation" style="display: block;"><a aria-controls="link_other" role="tab" data-toggle="tab" href="#link_other" aria-expanded="false">自定义链接</a></li>
                     </ul>   
                 </div>
@@ -20,20 +24,75 @@
                      <div role="tabpanel" class="tab-pane link_system active" id="link_system">
                          <div class="mylink-con">
                             <div class="page-header">
-                                <h4><i class="fa fa-folder-open-o"></i> 商城页面</h4>
-                            </div>
-                            <div class="btn btn-default mylink-nav" data-href="{php echo $this->createMobileUrl('shop/index')}">商城首页</div>
-                            <div class="btn btn-default mylink-nav" data-href="{php echo $this->createMobileUrl('member')}">个人中心</div>
-                            <div class="btn btn-default mylink-nav" data-href="{php echo $this->createMobileUrl('plugin/commission')}">分销中心</div>
-                            <div class="btn btn-default mylink-nav" data-href="{php echo $this->createMobileUrl('shop/category')}">分类页面</div>
-                            <div class="btn btn-default mylink-nav" data-href="{php echo $this->createMobileUrl('shop/list')}">全部商品</div>
-                            <div class="btn btn-default mylink-nav" data-href="{php echo $this->createMobileUrl('shop/cart')}">购物车</div>
-                            <div class="btn btn-default mylink-nav" data-href="{php echo $this->createMobileUrl('plugin/commission',array('method'=>'myshop'))}">我的小店</div>
-                            <div class="btn btn-default mylink-nav" data-href="{php echo $this->createMobileUrl('order')}">我的订单</div>
+                            <h4><i class="fa fa-folder-open-o"></i> 商城页面链接</h4>
+                        </div>
+                        <div id="fe-tab-link-li-11" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 11)" data-href="{php echo $this->createMobileUrl('shop/index')}">商城首页</div>
+                        <div id="fe-tab-link-li-12" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 12)" data-href="{php echo $this->createMobileUrl('shop/category')}">分类导航</div>
+                        <div id="fe-tab-link-li-13" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 13)" data-href="{php echo $this->createMobileUrl('shop/list')}">全部商品</div>
+                        <div id="fe-tab-link-li-14" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 14)" data-href="{php echo $this->createMobileUrl('shop/notice')}">公告页面</div>
+                        <div class="page-header">
+                            <h4><i class="fa fa-folder-open-o"></i> 会员中心链接</h4>
+                        </div>
+                        <div id="fe-tab-link-li-21" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 21)" data-href="{php echo $this->createMobileUrl('member')}">会员中心</div>
+                        <div id="fe-tab-link-li-22" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 22)" data-href="{php echo $this->createMobileUrl('order')}">我的订单</div>
+                        <div id="fe-tab-link-li-23" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 23)" data-href="{php echo $this->createMobileUrl('shop/cart')}">我的购物车</div>
+                        <div id="fe-tab-link-li-24" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 24)" data-href="{php echo $this->createMobileUrl('shop/favorite')}">我的收藏</div>
+                        <div id="fe-tab-link-li-25" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 25)" data-href="{php echo $this->createMobileUrl('shop/history')}">我的足迹</div>
+                        <div id="fe-tab-link-li-26" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 26)" data-href="{php echo $this->createMobileUrl('member/recharge')}">会员充值</div>
+                        <div id="fe-tab-link-li-27" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 27)" data-href="{php echo $this->createMobileUrl('member/log')}">余额明细</div>
+                        <div id="fe-tab-link-li-28" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 28)" data-href="{php echo $this->createMobileUrl('member/withdraw')}">余额提现</div>
+                        <div id="fe-tab-link-li-29" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 29)" data-href="{php echo $this->createMobileUrl('shop/address')}">我的收货地址</div>
+                        
+                        {if p('commission')}
+                        <div class="page-header">
+                            <h4><i class="fa fa-folder-open-o"></i> 分销链接</h4>
+                        </div>
+                        
+                        <div id="fe-tab-link-li-31" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 31)" data-href="{php echo $this->createPluginMobileUrl('commission')}">分销中心</div>
+                        <div id="fe-tab-link-li-32" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 32)" data-href="{php echo $this->createPluginMobileUrl('commission/register')}">成为分销商</div>
+                        <div id="fe-tab-link-li-33" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 33)" data-href="{php echo $this->createPluginMobileUrl('commission/myshop')}">我的小店</div>
+                        <div id="fe-tab-link-li-34" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 34)" data-href="{php echo $this->createPluginMobileUrl('commission/withdraw')}">分销佣金</div>
+                        <div id="fe-tab-link-li-35" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 35)" data-href="{php echo $this->createPluginMobileUrl('commission/order')}">分销订单</div>
+                        <div id="fe-tab-link-li-36" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 36)" data-href="{php echo $this->createPluginMobileUrl('commission/team')}">我的团队</div>
+                        <div id="fe-tab-link-li-37" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 37)" data-href="{php echo $this->createPluginMobileUrl('commission/log')}">佣金明细</div>
+                        <div id="fe-tab-link-li-38" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 38)" data-href="{php echo $this->createPluginMobileUrl('commission/myshop',array('op'=>'set'))}">小店设置</div>
+                        <div id="fe-tab-link-li-39" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 39)" data-href="{php echo $this->createPluginMobileUrl('commission/myshop',array('op'=>'select'))}">自选商品</div>
+                        {/if}
+                        {if p('bonus')}
+                        <div class="page-header">
+                            <h4><i class="fa fa-folder-open-o"></i> 分红链接</h4>
+                        </div>
+                        
+                        <div id="fe-tab-link-li-31" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 40)" data-href="{php echo $this->createPluginMobileUrl('bonus')}">分红中心</div>
+                        <div id="fe-tab-link-li-34" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 41)" data-href="{php echo $this->createPluginMobileUrl('bonus/withdraw')}">分红佣金</div>
+                        <div id="fe-tab-link-li-35" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 42)" data-href="{php echo $this->createPluginMobileUrl('bonus/order')}">分红订单</div>
+                        <div id="fe-tab-link-li-36" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 43)" data-href="{php echo $this->createPluginMobileUrl('bonus/team')}">我的下线</div>
+                        <div id="fe-tab-link-li-37" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 44)" data-href="{php echo $this->createPluginMobileUrl('bonus/log')}">分红明细</div>
+                        <div id="fe-tab-link-li-38" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 45)" data-href="{php echo $this->createPluginMobileUrl('bonus/ordercount_area')}">区域订单</div>
+                        {/if}
+                        {if p('coupon')}
+                        <div class="page-header">
+                            <h4><i class="fa fa-folder-open-o"></i> 超级券链接</h4>
+                        </div>
+                        
+                        <div id="fe-tab-link-li-40" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 46)" data-href="{php echo $this->createPluginMobileUrl('coupon')}">优惠券领取中心</div>
+            <div id="fe-tab-link-li-41" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 47)" data-href="{php echo $this->createPluginMobileUrl('coupon/my')}">我的优惠券</div>
+                        {/if}
                             <div class="page-header">
-                                <h4><i class="fa fa-folder-open-o"></i> 其他页面</h4>
+                                <h4><i class="fa fa-folder-open-o"></i> 其它插件页面</h4>
                             </div>
-                            <p style="line-height: 20px;  padding-left: 20px;">更多功能正在开发...</p>
+                            {if !empty(p('return'))}
+                            <div class="btn btn-default mylink-nav" ng-click="chooseLink(1, 48)" data-href="{php echo $this->createPluginMobileUrl('return/return_log')}">全返明细</div>
+                            {/if}
+                            {if !empty(p('supplier'))}
+                            <div class="btn btn-default mylink-nav" ng-click="chooseLink(1, 49)" data-href="{php echo $this->createPluginMobileUrl('supplier/af_supplier')}">供应商申请</div>
+                            {/if}
+                            {if !empty(p('ranking'))}
+                             <div class="btn btn-default mylink-nav" ng-click="chooseLink(1, 50)" data-href="{php echo $this->createPluginMobileUrl('ranking/ranking')}">排行榜</div>
+                            {/if}
+                            {if !empty(p('creditshop'))}
+                             <div class="btn btn-default mylink-nav" ng-click="chooseLink(1, 51)" data-href="{php echo $this->createPluginMobileUrl('creditshop')}">积分商城</div>
+                            {/if}
                         </div>
                      </div>
                      <div role="tabpanel" class="tab-pane link_goods" id="link_goods">
@@ -45,7 +104,7 @@
                      </div>
                      <div role="tabpanel" class="tab-pane link_cate" id="link_cate">
                          <div class="mylink-con">
-                             {loop $goodcates $goodcate}
+                             {loop $mylink_data['goodcates'] $goodcate}
                                 {if empty($goodcate['parentid'])}
                                     <div class="mylink-line">
                                         {$goodcate['name']}
@@ -53,7 +112,8 @@
                                             <a href="javascript:;" class="mylink-nav" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$goodcate['id']))}">选择</a>
                                         </div>
                                     </div>
-                                    {loop $goodcates $goodcate2}
+
+                                    {loop $mylink_data['goodcates'] $goodcate2}
                                         {if $goodcate2['parentid']==$goodcate['id']}
                                             <div class="mylink-line">
                                                 <span style='height:10px; width: 10px; margin-left: 10px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
@@ -62,7 +122,7 @@
                                                     <a href="javascript:;" class="mylink-nav" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$goodcate['id'],'ccate'=>$goodcate2['id']))}">选择</a>
                                                 </div>
                                             </div>
-                                            {loop $goodcates $goodcate3}
+                                            {loop $$mylink_data['goodcates'] $goodcate3}
                                                 {if $goodcate3['parentid']==$goodcate2['id']}
                                                     <div class="mylink-line">
                                                         <span style='height:10px; width: 10px; margin-left: 30px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>
@@ -79,10 +139,10 @@
                              {/loop}
                          </div>
                      </div>
-                     {if !empty($designer)}
+                     {if !empty($mylink_data['designer'])}
                      <div role="tabpanel" class="tab-pane link_cate" id="link_diy">
                          <div class="mylink-con">
-                             {loop $diypages $diypage}
+                             {loop $mylink_data['diypages'] $diypage}
                                 <div class="mylink-line">
                                     {if $diypage['pagetype']=='4'}
                                         <label class="label label-danger" style="margin-right:5px;">其他</label>
@@ -107,7 +167,7 @@
                              <span class="input-group-addon" style='padding:0px; border: 0px;'>
                                  <select class="form-control tpl-category-parent" name="article_category" id="select-article-ca" style='width: 150px; border-radius: 4px 0px 0px 4px; border-right: 0px;'>
                                      <option value="" selected="selected">全部分类</option>
-                                     {loop $categorys $category}
+                                     {loop $mylink_data['categorys'] $category}
                                         <option value="{$category['id']}">{$category['category_name']}</option>
                                      {/loop}
                                  </select>
@@ -118,7 +178,7 @@
                          <div class="mylink-con" style="height:266px;">
                              <div class="mylink-line">
                                  <label class="label label-primary" style="margin-right:5px;">文章列表</label>
-                                 {$article_sys['article_title']}
+                                 {$mylink_data['article_sys']['article_title']}
                                  <div class="mylink-sub">
                                      <a href="javascript:;" class="mylink-nav" data-href="{php echo $this->createPluginMobileUrl('article',array('method'=>'article'))}">选择</a>
                                  </div>
@@ -147,10 +207,10 @@
         </div>
     </div>
 </div>
+
 <!-- mylink end -->
 <script language="javascript">
     $(function() {
-        $("#param-items").sortable({handle: '.fa-move'});
         $("#chkoption").click(function() {
             var obj = $(this);
             if (obj.get(0).checked) {
@@ -163,20 +223,7 @@
             }
         });
     })
-    function addParam(type) {
-        var url = "{php echo $this->createWebUrl('sysset/settpl',array('tpl'=>'setmenu'))}";
-        $.ajax({
-            "url": url,
-            "data": {'type':type},
-            success: function(data) {
-                $('#param-items.'+type).append(data);
-            }
-        });
-        return;
-    }
-    function deleteParam(o) {
-        $(o).parent().parent().remove();
-    }
+    
     $(document).on("click",".nav-link",function(){
         var id = $(this).data("id");
         if(id){
