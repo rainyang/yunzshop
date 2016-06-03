@@ -87,7 +87,8 @@
         {/if}
         <div class="list">
             {loop $articles $article}
-                <a href="{php echo $this->createPluginMobileUrl('article',array('aid'=>$article['id']))}">
+                <a href="{if $article['isread']}{php echo $this->createPluginMobileUrl('article',array('aid'=>$article['id']))}{else}javascript:;{/if}" {if !$article['isread']} class="noread" data-mmessage="{$article['m_message']}" data-dmessage="{$article['d_message']}"{/if}>
+
                     <div class="line-main">
                         <div class="line"> 
                             <div class="img">
@@ -98,7 +99,7 @@
                                 {/if}
                             </div>
                             <div class="info" >
-                                <div class="title">{$article['article_title']}</div>
+                                <div class="title">{$article['isread']}{$article['article_title']}</div>
                                 {if $article['article_rule_money']>0 || !empty($article['article_rule_credit'])}
                                     <div class="ico-main">
                                         <div class="ico">
@@ -168,6 +169,15 @@
 {/if}
 </div>
     <div class="add-more" {if $article_sys['article_temp']==2} style="height: 40px"{/if}><a id="add-more" href="javascript:;">加载更多</a></div>
+
+<script type="text/javascript">
+    $('.noread').click(function (){
+        var m_message = $(this).data('mmessage');
+        var d_message = $(this).data('dmessage');
+        alert(m_message+"或 "+d_message+"可阅读本篇文章！");
+    });
+</script>
+
 </body>
 </html>
 {template 'common/bottom'}

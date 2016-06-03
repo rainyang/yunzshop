@@ -1200,7 +1200,10 @@ $(function(){
                     <tr cid="{$row['id']}" cname="{$row['category_name']}">
                         <td class="cid">{$row['id']}</td>
                         <td class="cname">{$row['category_name']}</td>
+
                         <td style="text-align:center;">
+                        <span class="m_level hidden">{$row['m_level']}</span>
+                        <span class="d_level hidden">{$row['d_level']}</span>
                             {ifp 'article.cate.editcate'}
                                 <a class='btn btn-default nav-edit' href="javascript:;"><i class="fa fa-edit"></i></a>
                                 {else}-
@@ -1232,6 +1235,7 @@ $(function(){
                     <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
                     <h3>loading...</h3>
                 </div>
+
                 <div class="modal-body">
                     <div class="form-group" style="overflow:hidden;">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label" style='width: 100px; line-height:34px;'>分类名称:</label>
@@ -1242,6 +1246,38 @@ $(function(){
                     </div>
                     <div id="module-menus"></div>
                 </div>
+            <div class='panel-heading'>
+                阅读权限
+            </div>
+                <div class="modal-body">
+                    <div class="form-group" style="overflow:hidden;">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label" style='width: 100px; line-height:34px;'>会员等级</label>
+                        <div class="col-sm-9 col-xs-12" style='width: 450px'>
+                              <select id="m_level" name='m_level' class='form-control'>
+                                <option value='0'>全部</option>
+                                {loop $member_levels $level}
+                                <option value='{$level['id']}' >{$level['levelname']}</option>
+                                {/loop}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-body">
+                    <div class="form-group" style="overflow:hidden;">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label" style='width: 100px; line-height:34px;'>分销商等级</label>
+                        <div class="col-sm-9 col-xs-12" style='width: 450px'>
+                              <select id="d_level" name='d_level' class='form-control'>
+                                <option value='0'>全部</option>
+                                {loop $distributor_levels $level}
+                                <option value='{$level['id']}'>{$level['levelname']}</option>
+                                {/loop}
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="modal-footer">
                     <a class="btn btn-primary span2 nav-save">保存</a>
                     <a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a>
@@ -1280,8 +1316,12 @@ $(function(){
             $("#modal-add").modal();
         });
         $("tbody").on("click",".nav-edit",function(){
+
             var cid = $(this).parent().parent().attr("cid");
             var cname = $(this).parent().parent().attr("cname");
+            var m_level = $(this).parent().find(".m_level").html();
+            var d_level = $(this).parent().find(".d_level").html();
+
             if(!cid){
                 alert("参数错误! 点击确定刷新页面");
                 location.reload();
@@ -1290,11 +1330,16 @@ $(function(){
             $("#modal-add .modal-header h3").text("编辑分类");
             $("#category_id").val(cid);
             $("#category_name").val(cname);
+            $("#m_level").val(m_level);
+            $("#d_level").val(d_level);
             $("#modal-add").modal();
         });
         $(".nav-save").click(function(){
             var cid = $("#category_id").val();
             var cname = $("#category_name").val();
+            var m_level = $("#m_level option:selected").val();
+            var d_level = $("#d_level option:selected").val();
+
             if(!cname){
                 $("#category_name").focus();
                 alert("分类名称不能为空！");
@@ -1303,7 +1348,7 @@ $(function(){
             $.ajax({
                     type: 'POST',
                     url: "{php echo $this->createPluginWebUrl('article',array('method'=>'api','apido'=>'postcategory'))}",
-                    data: {cid:cid,cname:cname}, 
+                    data: {cid:cid,cname:cname,m_level:m_level,d_level:d_level}, 
                     dataType:'json',
                     success: function(data){
                         if(data.result=='success-add' && data.cid && data.cname){
@@ -1311,6 +1356,8 @@ $(function(){
                                   html+="<td class='cid'>"+data.cid+"</td>";
                                   html+="<td class='cname'>"+data.cname+"</td>";
                                   html+="<td style='text-align:center;'>";
+                                  html+="<span class='m_level'>"+data.m_level+"</span>";
+                                  html+="<span class='d_level'>"+data.d_level+"</span>";
                                   html+="<a class='btn btn-default nav-edit' href='javascript:;'><i class='fa fa-edit'></i></a>";
                                   html+="<a class='btn btn-default nav-del' href='javascript:;'><i class='fa fa-trash-o'></i></a>";
                                   html+="</td>";
@@ -1323,6 +1370,8 @@ $(function(){
                         }
                         else if (data.result=='success-edit') {
                             $("tr[cid="+cid+"]").find("td[class=cname]").text(data.cname);
+                            $("tr[cid="+cid+"]").find("td").find('.m_level').text(data.m_level);
+                            $("tr[cid="+cid+"]").find("td").find('.d_level').text(data.d_level);
                             $("#modal-add .close").click();
                         }
                         else{
