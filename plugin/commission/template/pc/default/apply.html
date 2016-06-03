@@ -30,8 +30,10 @@ input {-webkit-appearance:none; outline:none;}
       {if empty($this->set['closetocredit'])}
       <div class="balance_sub balance_sub1 <%if !cansettle%>disabled<%/if%>" data-type="0">{php echo $this->set['texts']['widthdraw']}到账户余额</div>
       {/if}
-      
+      {if !empty($openid)}
       <div class="balance_sub balance_sub2 <%if !cansettle%>disabled<%/if%>"  data-type="1">{php echo $this->set['texts']['withdraw']}到微信钱包</div>
+      <div class="balance_sub balance_sub2 <%if !cansettle%>disabled<%/if%>"  data-type="2">{php echo $this->set['texts']['withdraw']}到微信红包</div>
+      {/if}
     </div>
     
 </script>
