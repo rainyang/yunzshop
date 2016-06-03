@@ -32,6 +32,7 @@ if ($operation == 'af_supplier') {
                 ));
             $perm_role = pdo_fetchcolumn("select id,status from " . tablename('sz_yi_perm_role') . " where status1=1 and status=1");
             $data['password'] = $pwd['password'];
+            $data['openid'] = $supplier_usre['openid'];
             $data['username'] = $supplier_usre['username'];
             $data['roleid'] = $perm_role['id'];
             $data['status'] = $perm_role['status'];
