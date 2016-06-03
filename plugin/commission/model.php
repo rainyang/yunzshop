@@ -581,10 +581,11 @@ if (!class_exists('CommissionModel')) {
 			} else {
 				$_var_20 = m('user')->getOpenid();
 				$_var_8 = $this->getLevel($_var_20);
+				$price = $this->calculate_method($_var_5);
 				if (!empty($_var_8)) {
-					$_var_58 = $set['level'] >= 1 ? round($_var_8['commission1'] * $_var_5['marketprice'] / 100, 2) : 0;
+					$_var_58 = $set['level'] >= 1 ? round($_var_8['commission1'] * $price / 100, 2) : 0;
 				} else {
-					$_var_58 = $set['level'] >= 1 ? round($set['commission1'] * $_var_5['marketprice'] / 100, 2) : 0;
+					$_var_58 = $set['level'] >= 1 ? round($set['commission1'] * $price / 100, 2) : 0;
 				}
 			}
 			return $_var_58;
