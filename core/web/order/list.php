@@ -251,7 +251,8 @@ if ($operation == "display") {
                     'apply_time' => time(),
                     'status' => 0,
                     'type' => $applytype,
-                    'applysn' => $applysn
+                    'applysn' => $applysn,
+                    'uniacid' => $_W['uniacid']
                     );
                 pdo_insert('sz_yi_supplier_apply',$data);
 

@@ -71,10 +71,24 @@ if ($operation == 'display') {
         }
         if(checksubmit('submit')){
             $data = is_array($_GPC['data']) ? $_GPC['data'] : array();
-            pdo_update('sz_yi_perm_user', $data, array(
-                'openid' => $openid
-            ));
-            message('保存成功!', $this->createPluginWebUrl('supplier/supplier'), 'success');
+            if (!empty($data['openid'])) {
+                $result = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and openid='{$data['openid']}'");
+                if (!empty($result)) {
+                    if ($data['openid'] != $supplierinfo['openid']) {
+                        message('该微信已绑定，请更换!', $this->createPluginWebUrl('supplier/supplier'), 'error');
+                    } else {
+                        pdo_update('sz_yi_perm_user', $data, array(
+                            'openid' => $openid
+                        ));
+                        message('保存成功!', $this->createPluginWebUrl('supplier/supplier'), 'success');
+                    }
+                } else {
+                    pdo_update('sz_yi_perm_user', $data, array(
+                        'openid' => $openid
+                    ));
+                    message('保存成功!', $this->createPluginWebUrl('supplier/supplier'), 'success');
+                }
+            }
         }
     }
 } 

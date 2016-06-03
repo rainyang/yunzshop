@@ -2,6 +2,10 @@
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 load()->func('tpl');
+
+$member_levels = m('member')->getLevels();
+$distributor_levels = p("commission")->getLevels();
+
 if ($operation == 'display') {
 	$select_category = empty($_GPC['category']) ? '' : " and a.article_category=" . intval($_GPC['category']) . " ";
 	$select_title = empty($_GPC['keyword']) ? '' : " and a.article_title LIKE '%" . $_GPC['keyword'] . "%' ";
