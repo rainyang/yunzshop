@@ -194,6 +194,15 @@
                     <span class="help-block">是否允许用户佣金提现到余额，否则只允许微信提现</span>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启提现审核</label>
+                <div class="col-sm-9 col-xs-12">
+                    <label class="radio-inline"><input type="radio"  name="setdata[closewithdrawcheck]" value="0" {if $set['closewithdrawcheck'] ==0} checked="checked"{/if} /> 开启</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[closewithdrawcheck]" value="1" {if $set['closewithdrawcheck'] ==1} checked="checked"{/if} /> 关闭</label>
+                    <span class="help-block">是否开启提现审核功能，系统默认开启</span>
+                </div>
+            </div>
+
                <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">结算天数</label>
                 <div class="col-sm-9 col-xs-12">
