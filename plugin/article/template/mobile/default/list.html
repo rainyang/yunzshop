@@ -164,11 +164,29 @@
     <div class="list"></div>
 {/if}
     <div class="add-more" {if $article_sys['article_temp']==2} style="height: 40px"{/if}><a id="add-more" href="javascript:;">加载更多</a></div>
+
+<!-- 弹出 -->
+<div class="makg" style="display:none;" >
+    <div class="bgfff">
+        <h1 class="tit-not">温馨提示<a href="javascript:;" class="close-notice"></a></h1>
+        <p id="message">您确定要删除参与立领白衬衫搭配裙子的这个需求吗？</p>
+        <div class="but-notice">
+            <!-- <a href="javascript:;" class="cancel-not fl tac">取消</a> 
+            <a href="javascript:;" class="qued-not fr tac">确定</a>-->
+        </div>
+    </div>
+</div>
 <script type="text/javascript">
     $('.noread').click(function (){
         var m_message = $(this).data('mmessage');
         var d_message = $(this).data('dmessage');
-        alert(m_message+"或 "+d_message+"可阅读本篇文章！");
+        $('.makg').show();
+        $('#message').html("您当前不能阅读，只有"+m_message+"或 "+d_message+"才可以阅读本篇文章！");
+
+        //alert(m_message+"或 "+d_message+"可阅读本篇文章！");
+    });
+    $(".makg").click(function(){
+        $('.makg').hide();
     });
 </script>
 </body>

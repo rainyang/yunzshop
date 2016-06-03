@@ -158,12 +158,15 @@ if (!class_exists('VirtualModel')) {
             ));
             m('member')->upgradeLevel($order['openid']);
             m('notice')->sendOrderMessage($order['id']);
-	    if (p('coupon') && !empty($order['couponid'])) {
-	    	p('coupon')->backConsumeCoupon($order['id']);
-	    }
+    	    if (p('coupon') && !empty($order['couponid'])) {
+    	    	p('coupon')->backConsumeCoupon($order['id']);
+    	    }
             if (p('commission')) {
                 p('commission')->checkOrderPay($order['id']);
                 p('commission')->checkOrderFinish($order['id']);
+            }
+            if($order['redprice'] > 0) {
+                m('finance')->sendredpack($order['openid'], $order["redprice"]*100, $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
             }
         }
         public function perms()
