@@ -35,7 +35,7 @@ $distributor_levels = p("commission")->getLevels();
 		foreach ($member_levels as $key => $value) {
 			if($category['m_level'] == $value['id'])
 			{
-				$row['m_message'] = "成为".$value['levelname']."等级的会员！";
+				$row['m_message'] = "成为“".$value['levelname']."”等级的会员";
 			}
 		}
 
@@ -46,7 +46,7 @@ $distributor_levels = p("commission")->getLevels();
 			foreach ($distributor_levels as $key => $value) {
 				if($category['d_level'] == $value['id'])
 				{
-					$row['d_message'] = "成为".$value['levelname']."等级的分销商！";
+					$row['d_message'] = "成为“".$value['levelname']."”等级的分销商";
 				}
 			}
 			
