@@ -76,7 +76,7 @@ if ($plugin_article) {
 if (p('ranking')) {
 	$ranking_set = p('ranking')->getSet();
 
-	$shopset['rankingname'] = $ranking_set['ranking']['rankingname'];
+	$shopset['rankingname'] = $ranking_set['ranking']['rankingname']?$ranking_set['ranking']['rankingname']:"排行榜";
 	$shopset['isranking'] = $ranking_set['ranking']['isranking'];
 } 
 
