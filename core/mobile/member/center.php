@@ -3,29 +3,31 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+
 $openid = m('user')->getOpenid();
 $set = m('common')->getSysset(array('trade'));
 $shop_set = m('common')->getSysset(array('shop'));
 $shopset   = m('common')->getSysset('shop');
+
 $member = m('member')->getMember($openid);
-$is_af_supplier = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and openid='{$openid}'");
 $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
+
 $uniacid = $_W['uniacid'];
 $trade['withdraw'] = $set['trade']['withdraw'];
 $trade['closerecharge'] = $set['trade']['closerecharge'];
 $hascom = false;
 $supplier_switch = false;
+$supplier_switch_centre = false;
 if (p('supplier')) {
 	$supplier_set = p('supplier')->getSet();
-	if(!empty($supplier_set['switch'])){
-		$supplier_switch = true;
-	}
-	if(!empty($supplier_set['switch_centre'])){
-		$supplier_switch_centre = true;
-	}
 	$issupplier = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where openid='{$openid}' and uniacid={$_W['uniacid']} and roleid=(select id from " . tablename('sz_yi_perm_role') . " where status1=1)");
+	$af_result = pdo_fetchcolumn("select status from " . tablename('sz_yi_af_supplier') . " where uniacid={$_W['uniacid']} and openid='{$openid}'");
+	if ($af_result == 2) {
+		$shopset['af_result'] = true;
+	}
+	$shopset['switch'] = $supplier_set['switch'];
+	$shopset['switch_centre'] = $supplier_set['switch_centre'];
 }
-$shopset['supplier_switch'] = $supplier_switch;
 $plugc = p('commission');
 if ($plugc) {
 	$pset = $plugc->getSet();
@@ -54,7 +56,7 @@ $bonus_start = false;
 $bonus_text = "";
 if(!empty($pluginbonus)){
 	$bonus_set = $pluginbonus->getSet();
-	if(!empty($bonus_set['start']) || !empty($bonus_set['area_start'])){
+	if(!empty($bonus_set['start'])){
 		$bonus_start = true;
 		$bonus_text = $bonus_set['texts']['center'] ? $bonus_set['texts']['center'] : "分红明细";
 	}
@@ -71,16 +73,6 @@ if ($plugin_article) {
 	$shopset['isarticle'] = $article_set['isarticle'];
 }
 
-//这两段代码 用哪个会好一些 实现的功能都一样
-$plugin_return = p('return');
-if(!empty($plugin_return)){
-	$returnset = $plugin_return->getSet();
-	$shopset['isreturn'] = false;
-	if($returnset['isqueue'] == 1 || $returnset['isreturn']== 1 ){
-		$shopset['isreturn'] = true;
-	}
-}
-
 if (p('ranking')) {
 	$ranking_set = p('ranking')->getSet();
 
@@ -94,7 +86,7 @@ if ($_W['isajax']) {
 		$level = m('member')->getLevel($openid);
 	}
 	$orderparams = array(':uniacid' => $_W['uniacid'], ':openid' => $openid);
-	$order = array('status0' => pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=0  and uniacid=:uniacid limit 1', $orderparams), 'status1' => pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=1 and refundid=0 and uniacid=:uniacid limit 1', $orderparams), 'status2' => pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=2 and refundid=0 and uniacid=:uniacid limit 1', $orderparams), 'status4' => pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where openid=:openid and refundstate>0 and uniacid=:uniacid limit 1', $orderparams),);
+	$order = array('status0' => pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=0  and uniacid=:uniacid limit 1', $orderparams), 'status1' => pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=1 and refundid=0 and uniacid=:uniacid limit 1', $orderparams), 'status2' => pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=2 and refundid=0 and uniacid=:uniacid limit 1', $orderparams), 'status4' => pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where openid=:openid and refundid<>0 and uniacid=:uniacid limit 1', $orderparams),);
 	if (mb_strlen($member['nickname'], 'utf-8') > 6) {
 		$member['nickname'] = mb_substr($member['nickname'], 0, 6, 'utf-8');
 	}

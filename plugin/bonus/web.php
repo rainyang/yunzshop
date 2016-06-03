@@ -19,7 +19,7 @@ class BonusWeb extends Plugin
 			header('location: ' . $this->createPluginWebUrl('bonus/agent'));
 			exit;
 		} else if (cv('bonus.notice')) {
-			header('location: ' . $this->createPluginWebUrl('bonus/set'));
+			header('location: ' . $this->createPluginWebUrl('bonus/notice'));
 			exit;
 		} else if (cv('bonus.set')) {
 			header('location: ' . $this->createPluginWebUrl('bonus/set'));
@@ -37,7 +37,7 @@ class BonusWeb extends Plugin
 			header('location: ' . $this->createPluginWebUrl('bonus/sendall'));
 			exit;
 		} else if (cv('bonus.order')) {
-			header('location: ' . $this->createPluginWebUrl('bonus/sendall'));
+			header('location: ' . $this->createPluginWebUrl('bonus/order'));
 			exit;
 		}
 	}

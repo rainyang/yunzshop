@@ -32,10 +32,10 @@ input {-webkit-appearance:none; outline:none;}
         core.pjson('supplier/applyg',{},function(json){
            var result = json.result;
            $('#container').html(  tpl('tpl_main',json.result) );
-           if(result.noinfo){
+           /*if(result.noinfo){
                 core.message('请补充您的资料后才能申请提现!',result.infourl,'warning');
                 return;
-            }
+            }*/
             
            if(json.result.cansettle){
                $('.balance_sub').click(function(){

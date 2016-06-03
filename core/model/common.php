@@ -395,4 +395,24 @@ class Sz_DYi_Common
                     </html>");
         }
     }
+
+    public function mylink(){
+        global $_W;
+        $mylink['designer'] = p('designer');
+        $mylink['categorys'] = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_article_category') . " WHERE uniacid=:uniacid ", array(':uniacid' => $_W['uniacid']));
+        if ($mylink['designer']) {
+            $mylink['diypages'] = pdo_fetchall("SELECT id,pagetype,setdefault,pagename FROM " . tablename('sz_yi_designer') . " WHERE uniacid=:uniacid order by setdefault desc  ", array(':uniacid' => $_W['uniacid']));
+        }
+        $mylink['article_sys'] = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article_sys') . " WHERE uniacid=:uniacid limit 1 ", array(':uniacid' => $_W['uniacid']));
+        $mylink['article_sys']['article_area'] = json_decode($mylink['article_sys']['article_area'],true);
+        $mylink['area_count'] = sizeof($mylink['article_sys']['article_area']);
+        if ($mylink['area_count'] == 0){
+            //没有设定地区的时候的默认值：
+            $mylink['article_sys']['article_area'][0]['province'] = '';
+            $mylink['article_sys']['article_area'][0]['city'] = '';
+            $mylink['area_count'] = 1;
+        }
+        $mylink['goodcates'] = pdo_fetchall("SELECT id,name,parentid FROM " . tablename('sz_yi_category') . " WHERE enabled=:enabled and uniacid= :uniacid  ", array(':uniacid' => $_W['uniacid'], ':enabled' => '1'));
+        return $mylink;
+    }
 }
