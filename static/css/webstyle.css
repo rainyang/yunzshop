@@ -134,6 +134,7 @@ ul{list-style:none;}
 .text-pinfo{ background: none;color: #ed5565 }
 .upgrade-tips{z-index:9;}
 .table .label {display: inline-block;margin-bottom: 2px;border-radius: 2px;}
+.option_stock_all,.input-group-addon{padding: 6px !important}
 @media (max-width: 767px){
 .navbar-nav .open .dropdown-menu {
     position: absolute;
