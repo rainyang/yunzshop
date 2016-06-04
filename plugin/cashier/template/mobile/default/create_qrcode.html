@@ -1,0 +1,36 @@
+{template 'common/header'}
+<title>二维码</title>
+<style type="text/css">
+    body {margin:0px; background:#fff; font-family:'微软雅黑'; -moz-appearance:none;}
+    .info_main {height:auto;  background:#fff; margin-top:14px; border-bottom:1px solid #e8e8e8; border-top:1px solid #e8e8e8;}
+    .info_main .line {margin:0 10px; height:40px; border-bottom:1px solid #e8e8e8; line-height:40px; color:#999;}
+    .info_main .line .title {height:40px; width:160px; line-height:40px; color:#444; float:left; font-size:16px;}
+    .info_main .line .info { width:100%;float:right;margin-left:-160px; }
+    .info_main .line .inner { margin-left:160px; }
+    .info_main .line .inner input {height:40px; width:100%;display:block; padding:0px; margin:0px; border:0px; float:left; font-size:16px;}
+    .info_main .line .inner .user_sex {line-height:40px;}
+    .info_sub {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+    .select { border:1px solid #ccc;height:25px;}
+    .cashier_topbar {height:44px; width:100%; background:#fff; border-bottom:1px solid #e3e3e3;}
+    .cashier_topbar .nav {height:44px; width:50%; line-height:44px; text-align:center; font-size:14px; float:left; color:#666;}
+    .cashier_topbar .on {height:42px; color:#ff771b; border-bottom:2px solid #ff771b;}
+    .create_qrcode {height:44px; margin:14px 5px; background:#ff771b; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+    .code-img{width: 100%;text-align: center;}
+    .code-img img{ max-width: 50%;min-width: 50%;margin:70px auto 30px;  }
+</style>
+<div id="container"></div>
+
+    <div class="page_topbar">
+        <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
+        <div class="title">二维码</div>
+    </div>
+    <div class="code-img"><img src="../addons/sz_yi/data/qrcode/{$_W['uniacid']}/{$qrcodeImg}"></div>
+     <div style="width: 100%;text-align: center;">让顾客扫一扫,向我付款</div>
+
+
+<script language="javascript">
+
+</script>   
+
+{php $show_footer=true}
+{template 'common/footer'}
