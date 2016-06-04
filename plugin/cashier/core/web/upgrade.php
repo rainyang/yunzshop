@@ -1,0 +1,61 @@
+﻿<?php
+global $_W;
+if (!defined('IN_IA')) {
+    exit('Access Denied');
+}
+$result = pdo_fetchcolumn('select id from ' . tablename('sz_yi_plugin') . ' where identity=:identity', array(':identity' => 'cashier'));
+if(empty($result)){
+    $displayorder_max = pdo_fetchcolumn('select max(displayorder) from ' . tablename('sz_yi_plugin'));
+    $displayorder = $displayorder_max + 1;
+    $sql = "INSERT INTO " . tablename('sz_yi_plugin') . " (`displayorder`,`identity`,`name`,`version`,`author`,`status`) VALUES(". $displayorder .",'cashier','收银台','1.0','官方','1');";
+  pdo_query($sql);
+}
+$sql = "
+CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_order')." (
+  `order_id` int(11) NOT NULL,
+  `uniacid` int(11) NOT NULL,
+  `cashier_store_id` int(11) NOT NULL,
+  PRIMARY KEY (`order_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='收银台商户订单';
+
+CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_store')." (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL DEFAULT '0',
+  `name` varchar(100) DEFAULT NULL COMMENT '店名',
+  `thumb` varchar(255) NOT NULL,
+  `contact` varchar(100) DEFAULT NULL COMMENT '联系人',
+  `mobile` varchar(30) DEFAULT NULL COMMENT '电话',
+  `address` varchar(500) DEFAULT NULL COMMENT '地址',
+  `member_id` int(11) DEFAULT '0' COMMENT '绑定的会员微信号',
+  `deduct_credit1` decimal(10,2) DEFAULT '0.00' COMMENT '抵扣设置,允许使用的积分百分比',
+  `deduct_credit2` decimal(10,2) DEFAULT '0.00' COMMENT '抵扣设置,允许使用的余额百分比',
+  `settle_platform` decimal(10,2) DEFAULT '0.00' COMMENT '结算比例,平台比例',
+  `settle_store` decimal(10,2) DEFAULT '0.00' COMMENT '结算比例,商家比例',
+  `commission1_rate` decimal(10,2) DEFAULT '0.00' COMMENT '佣金比例,一级分销,消费者在商家用收银台支付后，分销商获得的佣金比例',
+  `commission2_rate` decimal(10,2) DEFAULT '0.00' COMMENT '佣金比例,二级分销',
+  `commission3_rate` decimal(10,2) DEFAULT '0.00' COMMENT '佣金比例,三级分销',
+  `credit1` decimal(10,2) DEFAULT '0.00' COMMENT '消费者在商家支付完成后，获得的积分奖励百分比',
+  `redpack_min` decimal(10,2) NOT NULL DEFAULT '0.00' COMMENT '最小消费金额，才会发红包',
+  `redpack` decimal(10,2) DEFAULT '0.00' COMMENT '消费者在商家支付完成后，获得的红包奖励百分比',
+  `coupon_id` int(11) NOT NULL DEFAULT '0' COMMENT '优惠卷',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_withdraw')." (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL,
+  `withdraw_no` varchar(255) NOT NULL,
+  `openid` varchar(50) DEFAULT NULL,
+  `cashier_store_id` int(11) NOT NULL,
+  `money` decimal(10,2) NOT NULL,
+  `status` int(1) unsigned NOT NULL DEFAULT '0' COMMENT '提现状态 0 生成 1 成功 2 失败',
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='收银台商户提现表';
+";
+pdo_query($sql);
+if(!pdo_fieldexists('sz_yi_order', 'cashier')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `cashier` tinyint(1) DEFAULT '0';");
+}
+message('芸众快速选购插件安装成功', $this->createPluginWebUrl('choose/index'), 'success');

@@ -153,7 +153,9 @@
    {/if}
 
 <a href="{php echo $this->createMobileUrl('shop/address')}"><div class="list1"><i class="fa fa-street-view" style="color:#99C"></i>收货地址管理<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-
+{if $has_cashier}
+    <a href="{php echo $this->createPluginMobileUrl('cashier/qrcode_list')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-money" style="color:#f10;"></i>收银台<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+{/if}
 {if !is_weixin()}
 <a href="{php echo $this->createMobileUrl('member/logout')}"><div class="list1"><i class="fa fa-sign-out" style="color:#99C"></i>退出<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 {/if}
