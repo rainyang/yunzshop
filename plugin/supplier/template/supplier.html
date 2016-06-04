@@ -28,11 +28,11 @@
                     <input type="text" class="form-control"  name="uid" value="{$_GPC['uid']}" placeholder='搜索供货商ID'/> 
                 </div>
             </div>
-			<div class="form-group">
+            <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
-					<input type="hidden" name="token" value="{$_W['token']}" />
+                    <input type="hidden" name="token" value="{$_W['token']}" />
                 </div>
             </div>    
         </form>
@@ -54,11 +54,11 @@
             </thead>
             <tbody>
                 {loop $list $row}
-                	{if !empty($row['uid'])}
-		                <tr>
-		                    <td>{$row['uid']}</td>
-		                    <td>{$row['username']}</td>
-		                    <td  style="overflow:visible;">
+                    {if !empty($row['uid'])}
+                        <tr>
+                            <td>{$row['uid']}</td>
+                            <td>{$row['username']}</td>
+                            <td  style="overflow:visible;">
                                 <div class="btn-group btn-group-sm">
                                     <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:;">操作 <span class="caret"></span></a>
                                         <ul class="dropdown-menu dropdown-menu-left" role="menu" style='z-index: 99999'>
@@ -68,9 +68,9 @@
                                             <li><a href="{php echo $this->createPluginWebUrl('supplier/supplier_add', array('op' => 'delete', 'id' => $row['id']))}" title="删除" onclick="return confirm('确定要删除该供应商吗？');"><i class='fa fa-remove'></i> &nbsp;删除供应商</a></li>
                                         </ul>
                                 </div>
-		                    </td>
-		                </tr>
-		            {/if}
+                            </td>
+                        </tr>
+                    {/if}
                 {/loop}
             </tbody>
         </table>
@@ -132,7 +132,7 @@
 <script language='javascript'>
   function search_members() {
              if( $.trim($('#search-kwd-notice').val())==''){
-				$('#search-kwd-notice').attr('placeholder','请输入关键词');
+                $('#search-kwd-notice').attr('placeholder','请输入关键词');
                  <!-- Tip.focus('#search-kwd-notice','请输入关键词'); -->
                  return;
              }
@@ -151,7 +151,7 @@
     $("#modal-module-menus-notice .close").click();
   }
 </script>
-			
+            
             {if $diyform_flag == 1}
             <div class='panel-body'>
                 <!--<span>diyform</span>-->
@@ -286,8 +286,8 @@
                        <input type="button" name="back" onclick='history.back()' {ifp 'commission.supplier.edit|commission.supplier.check'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
                     </div>
             </div>
-   		 </div>
-   	</div>   
+         </div>
+    </div>   
 </form>
 </div> 
 {else}
@@ -437,31 +437,31 @@
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">姓名</label>
             <div class="col-sm-9 col-xs-12">
                 <div class="form-control-static">
-                    {$apply_info['realname']}
+                    {if !empty($supplierinfo['realname'])}{$supplierinfo['realname']}{else}未填写{/if}
                 </div>
             </div>
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">电话</label>
             <div class="col-sm-9 col-xs-12">
                 <div class="form-control-static">
-                    {$apply_info['mobile']}
+                    {if !empty($supplierinfo['mobile'])}{$supplierinfo['mobile']}{else}未填写{/if}
                 </div>
             </div>
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">卡号</label>
             <div class="col-sm-9 col-xs-12">
                 <div class="form-control-static">
-                    {$apply_info['banknumber']}accountname
+                    {if !empty($supplierinfo['banknumber'])}{$supplierinfo['banknumber']}{else}未填写{/if}
                 </div>
             </div>
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">开户名</label>
             <div class="col-sm-9 col-xs-12">
                 <div class="form-control-static">
-                    {$apply_info['accountname']}accountbank
+                    {if !empty($supplierinfo['accountname'])}{$supplierinfo['accountname']}{else}未填写{/if}
                 </div>
             </div>
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">开户行</label>
             <div class="col-sm-9 col-xs-12">
                 <div class="form-control-static">
-                    {$apply_info['accountbank']}accountbank
+                    {if !empty($supplierinfo['accountbank'])}{$supplierinfo['accountbank']}{else}未填写{/if}
                 </div>
             </div>
             {/if}

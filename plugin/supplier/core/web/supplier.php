@@ -17,7 +17,7 @@ if ($operation == 'display') {
     if (!empty($applyid)) {
         $apply_info = pdo_fetch("select * from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and id={$applyid}");
         $openid = pdo_fetchcolumn("select openid from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and uid='{$apply_info['uid']}'");
-        if (empty($openid)) {
+        if (!empty($openid)) {
             $supplierinfo = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and uid='{$apply_info['uid']}'");
         } else {
             $supplierinfo = pdo_fetch("select * from " . tablename('sz_yi_af_supplier') . " where uniacid={$_W['uniacid']} and openid='{$openid}'");
