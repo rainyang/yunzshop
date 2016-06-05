@@ -1,0 +1,19 @@
+<div class="ulleft-nav">
+    <ul class="nav nav-tabs">
+        {ifp 'cashier.store'}
+            <li {if $_GPC['method'] == 'store'}class="active"{/if}>
+                <a href="{php echo $this->createPluginWebUrl('cashier/store')}">商家管理</a>
+            </li>
+        {/if}
+        {ifp 'cashier.statistics'}
+            <li {if $_GPC['method'] == 'statistics'}class="active"{/if}>
+                <a href="{php echo $this->createPluginWebUrl('cashier/statistics')}">统计结算</a>
+            </li>
+        {/if}
+        {ifp 'cashier.withdraw'}
+            <li {if $_GPC['method'] == 'withdraw'}class="active"{/if}>
+                <a href="{php echo $this->createPluginWebUrl('cashier/withdraw')}">提现申请</a>
+            </li>
+        {/if}
+    </ul>
+</div>

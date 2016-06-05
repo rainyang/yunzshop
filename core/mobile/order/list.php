@@ -78,7 +78,9 @@ if ($_W['isajax']) {
 			}
 			$canrefund = false;
 			if ($row['status'] == 1 || $row['status'] == 2) {
-				$canrefund = true;
+				if ($refunddays > 0) {
+					$canrefund = true;
+				}
 			} else if ($row['status'] == 3) {
 				if ($row['isverify'] != 1 && empty($row['virtual'])) {
 					if ($refunddays > 0) {

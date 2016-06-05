@@ -126,12 +126,15 @@ if ($_W['isajax']) {
     }
     $set       = set_medias(m('common')->getSysset('shop'), 'logo');
     $canrefund = false;
+    $tradeset   = m('common')->getSysset('trade');
+    $refunddays = intval($tradeset['refunddays']);
     if ($order['status'] == 1 || $order['status'] == 2) {
-        $canrefund = true;
+        if ($refunddays > 0) {
+            $canrefund = true;
+        }
     } else if ($order['status'] == 3) {
         if ($order['isverify'] != 1 && empty($order['virtual'])) {
-            $tradeset   = m('common')->getSysset('trade');
-            $refunddays = intval($tradeset['refunddays']);
+            
             if ($refunddays > 0) {
                 $days = intval((time() - $order['finishtimevalue']) / 3600 / 24);
                 if ($days <= $refunddays) {

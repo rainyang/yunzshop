@@ -93,16 +93,16 @@
                             <div class="page-header">
                                 <h4><i class="fa fa-folder-open-o"></i> 其它插件页面</h4>
                             </div>
-                            {if !empty(p('return'))}
+                            {if p('return')}
                             <div class="btn btn-default mylink-nav" ng-click="chooseLink(1, 48)" data-href="{php echo $this->createPluginMobileUrl('return/return_log')}">全返明细</div>
                             {/if}
-                            {if !empty(p('supplier'))}
+                            {if p('supplier')}
                             <div class="btn btn-default mylink-nav" ng-click="chooseLink(1, 49)" data-href="{php echo $this->createPluginMobileUrl('supplier/af_supplier')}">供应商申请</div>
                             {/if}
-                            {if !empty(p('ranking'))}
+                            {if p('ranking')}
                              <div class="btn btn-default mylink-nav" ng-click="chooseLink(1, 50)" data-href="{php echo $this->createPluginMobileUrl('ranking/ranking')}">排行榜</div>
                             {/if}
-                            {if !empty(p('creditshop'))}
+                            {if p('creditshop')}
                              <div class="btn btn-default mylink-nav" ng-click="chooseLink(1, 51)" data-href="{php echo $this->createPluginMobileUrl('creditshop')}">积分商城</div>
                             {/if}
                     </div>

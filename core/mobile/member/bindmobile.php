@@ -46,15 +46,7 @@ if ($_W['isajax']) {
                     pdo_update($val, array('openid' => $openid), $prem);
                 }
 
-                //删除pc的手机号
-                pdo_delete('sz_yi_member', array('openid' => $oldopenid));
-                $mc_member = pdo_fetch('select * from ' . tablename('mc_mapping_fans') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $oldopenid));
-                if (!empty($mc_member)) {
-                    pdo_delete('mc_mapping_fans', array('openid' => $oldopenid, 'uniacid' => $_W['uniacid']));
-                    if (!empty($mc_member['uid'])) {
-                        pdo_delete('mc_members', array('uid' => $mc_member['uid'], 'uniacid' => $_W['uniacid']));
-                    }
-                }
+                
 
                 //更新微信记录里的手机号等为pc的手机号
                 $member = pdo_fetch('select mobile, pwd, credit1, credit2 from ' . tablename('sz_yi_member') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
@@ -78,6 +70,17 @@ if ($_W['isajax']) {
                     m('member')->setCredit($openid, 'credit2', $credit2);
                 }
                 pdo_update('sz_yi_member', $data, array('openid' => $openid, 'uniacid' => $_W['uniacid']));
+
+                //删除其他手机号相同用户
+                pdo_delete('sz_yi_member', array('openid' => $oldopenid));
+                $mc_member = pdo_fetch('select * from ' . tablename('mc_mapping_fans') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $oldopenid));
+
+                if (!empty($mc_member)) {
+                    pdo_delete('mc_mapping_fans', array('openid' => $oldopenid, 'uniacid' => $_W['uniacid']));
+                    if (!empty($mc_member['uid'])) {
+                        pdo_delete('mc_members', array('uid' => $mc_member['uid'], 'uniacid' => $_W['uniacid']));
+                    }
+                }
             }
             
             show_json(1, array(
