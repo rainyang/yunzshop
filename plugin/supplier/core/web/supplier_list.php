@@ -7,7 +7,7 @@ global $_W, $_GPC;
 $suppliers = pdo_fetchall("select * from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and roleid = (select id from " .tablename('sz_yi_perm_role') . " where status1=1 LIMIT 1)");
 $pindex    = max(1, intval($_GPC['page']));
 $psize     = 20;
-$condition = ' and o.uniacid=:uniacid and o.status>=1';
+$condition = ' and o.uniacid=:uniacid and o.status>=3';
 $params    = array(
     ':uniacid' => $_W['uniacid']
 );
