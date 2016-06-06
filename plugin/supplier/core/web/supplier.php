@@ -75,7 +75,6 @@ if ($operation == 'display') {
         if(checksubmit('submit')){
             $data = is_array($_GPC['data']) ? $_GPC['data'] : array();
             if (!empty($data['openid'])) {
-                echo "<pre>"; print_r(1);exit;
                 $result = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and openid='{$data['openid']}'");
                 if (!empty($result)) {
                     if ($data['openid'] != $supplierinfo['openid']) {

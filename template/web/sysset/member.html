@@ -88,6 +88,15 @@
                         {/if}
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">清除重复会员</label>
+                    <div class="col-sm-9 col-xs-12">
+                        {ifp 'sysset.save.member'}
+                        <a class="btn btn-warning" href="{php echo $this->createWebUrl('member/query', array('op' => 'delfans'))}" data-original-title="" title="">清除</a>
+                        <span class="help-block">如会员管理中有重复的会员并id重复的信息,请点击清除</span> 
+                        {/if}
+                    </div>
+                </div>
                        <div class="form-group"></div>
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
