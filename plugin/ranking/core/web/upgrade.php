@@ -15,7 +15,7 @@ $sql = "CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_ranking') . " (
   `mid` int(11) NOT NULL,
   `credit` decimal(10,2) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
  ALTER TABLE " . tablename('sz_yi_order_goods') . "  ADD  `rankingstatus` TINYINT( 1 ) NOT NULL COMMENT  '排行状态';
 ";
