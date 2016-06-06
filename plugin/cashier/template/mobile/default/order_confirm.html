@@ -347,14 +347,14 @@ require(['tpl', 'core'], function(tpl, core) {
 		}
         if ($("#deductcredit").length > 0) {
             if ($("#deductcredit").attr('on') == '1') {
-                data.deduct = 1;
+                var deduct = 1;
             }
         }
         if ($("#deductcredit2").length > 0) {
             if ($("#deductcredit2").attr('on') == '1') {
-                data.deduct2 = 1;
+                var deduct2 = 1;
             }
-        }
+        }alert(12);
     var carrier_realname = $.trim( $('#carrier_input_realname').val() );
     var carrier_mobile = $.trim( $('#carrier_input_mobile').val() );
     var data = {
@@ -364,7 +364,9 @@ require(['tpl', 'core'], function(tpl, core) {
         carrier:{
             carrier_realname:carrier_realname,
             carrier_mobile:carrier_mobile,
-        }
+        },
+        deduct:deduct,
+        deduct2:deduct2,
     };
     
         core.pjson('cashier/order_confirm', data, function(create_json) {
