@@ -3,6 +3,7 @@ global $_W, $_GPC;
 $openid = m('user')->getOpenid();
 if ($_W['isajax']) {
 	$level = $this->set['level'];
+	$ischeck = $this->set['closewithdrawcheck'];//是否开启提现审核。 0为开启，1为关闭。默认开启。
 	$member = $this->model->getInfo($openid, array('ok'));
 	$time = time();
 	$day_times = intval($this->set['settledays']) * 3600 * 24;
@@ -49,71 +50,57 @@ if ($_W['isajax']) {
 		$applyno = m('common')->createNO('commission_apply', 'applyno', 'CA');
 		$apply = array('uniacid' => $_W['uniacid'], 'applyno' => $applyno, 'orderids' => iserializer($orderids), 'mid' => $member['id'], 'commission' => $commission_ok, 'type' => intval($_GPC['type']), 'status' => 1, 'applytime' => $time);
 		pdo_insert('sz_yi_commission_apply', $apply);
-		$returnurl = urlencode($this->createMobileUrl('member/withdraw'));
-		$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
-		$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 0 ? '余额' : '微信'), TM_COMMISSION_APPLY);
-		show_json(1, '已提交,请等待审核!');
+		$id = pdo_insertid();
 
-		/**
-		 * 关闭佣金提现审核的自动打款代码 		begin
-		 */
-		// ca('commission.apply.pay');
-		// $time = time();
-		// $pay = $totalpay;
-		// if ($apply['type'] == 1 || $apply['type'] == 2) {
-		// 	$pay *= 100;
-		// } 
+		if ($ischeck == 1) {
+			//关闭审核自动打款
 
-		// if ($apply['type'] == 2) {
-		// 	if ($pay <= 20000 && $pay >= 1) {
-		// 		$result = m('finance')->sendredpack($member['openid'], $pay, $desc = '佣金提现金额', $act_name = '佣金提现金额', $remark = '佣金提现金额以红包形式发送');
-		// 	} else {
-		// 		message('红包提现金额限制1-200元！', '', 'error');
-		// 	}
-		// } else {
-		// 	$result = m('finance')->pay($member['openid'], $apply['type'], $pay, $apply['applyno']);
-		// }
-		
-		// if (is_error($result)) {
-		// 	if (strexists($result['message'], '系统繁忙')) {
-		// 		$updateno['applyno'] = $apply['applyno'] = m('common')->createNO('commission_apply', 'applyno', 'CA');
-		// 		pdo_update('sz_yi_commission_apply', $updateno, array('id' => $apply['id']));
-		// 		$result = m('finance')->pay($member['openid'], $apply['type'], $pay, $apply['applyno']);
-		// 		if (is_error($result)) {
-		// 			message($result['message'], '', 'error');
-		// 		}
-		// 	}
-		// 	message($result['message'], '', 'error');
-		// }
-		// foreach ($list as $row) {
-		// 	$update = array();
-		// 	foreach ($row['goods'] as $g) {
-		// 		$update = array();
-		// 		if ($row['level'] == 1 && $g['status1'] == 2) {
-		// 			$update = array('paytime1' => $time, 'status1' => 3);
-		// 		} else if ($row['level'] == 2 && $g['status2'] == 2) {
-		// 			$update = array('paytime2' => $time, 'status2' => 3);
-		// 		} else if ($row['level'] == 3 && $g['status3'] == 2) {
-		// 			$update = array('paytime3' => $time, 'status3' => 3);
-		// 		}
-		// 		if (!empty($update)) {
-		// 			pdo_update('sz_yi_order_goods', $update, array('id' => $g['id']));
-		// 		}
-		// 	}
-		// }
-		// pdo_update('sz_yi_commission_apply', array('status' => 3, 'paytime' => $time, 'commission_pay' => $totalpay), array('id' => $id, 'uniacid' => $_W['uniacid']));
-		// $log = array('uniacid' => $_W['uniacid'], 'applyid' => $apply['id'], 'mid' => $member['id'], 'commission' => $totalcommission, 'commission_pay' => $totalpay, 'createtime' => $time);
-		// pdo_insert('sz_yi_commission_log', $log);
-		// $this->model->sendMessage($member['openid'], array('commission' => $totalpay, 'type' => $apply['type'] == 1 ? '微信' : '余额'), TM_COMMISSION_PAY);
-		// $this->model->upgradeLevelByCommissionOK($member['openid']);
-		// plog('commission.apply.pay', "佣金打款 ID: {$id} 申请编号: {$apply['applyno']} 总佣金: {$totalcommission} 审核通过佣金: {$totalpay} ");
-		// message('佣金打款处理成功!', $this->createPluginWebUrl('commission/apply', array('status' => $apply['status'])), 'success');
-		/**
-		 * 关闭佣金提现审核的自动打款代码 		end
-		 */
+			ca('commission.apply.pay');
+			$time = time();
+			$pay = $commission_ok;
+			if ($apply['type'] == 1 || $apply['type'] == 2) {
+				$pay *= 100;
+			} 
 
+			if ($apply['type'] == 2) {
+				if ($pay <= 20000 && $pay >= 1) {
+					$result = m('finance')->sendredpack($openid, $pay, $desc = '佣金提现金额', $act_name = '佣金提现金额', $remark = '佣金提现金额以红包形式发送');
+				} else {
+					message('红包提现金额限制1-200元！', '', 'error');
+				}
+			} else {
+				$result = m('finance')->pay($openid, $apply['type'], $pay, $apply['applyno']);
+			}
+			
+			if (is_error($result)) {
+				if (strexists($result['message'], '系统繁忙')) {
+					$updateno['applyno'] = $apply['applyno'] = m('common')->createNO('commission_apply', 'applyno', 'CA');
+					pdo_update('sz_yi_commission_apply', $updateno, array('id' => $apply['id']));
+					$result = m('finance')->pay($openid, $apply['type'], $pay, $apply['applyno']);
+					if (is_error($result)) {
+						message($result['message'], '', 'error');
+					}
+				}
+				message($result['message'], '', 'error');
+			}
 
+			pdo_update('sz_yi_commission_apply', array('status' => 3, 'paytime' => $time, 'commission_pay' => $commission_ok), array('id' => $id, 'uniacid' => $_W['uniacid']));
+			$log = array('uniacid' => $_W['uniacid'], 'applyid' => $id, 'mid' => $member['id'], 'commission' => $commission_ok, 'commission_pay' => $commission_ok, 'createtime' => $time);
+			pdo_insert('sz_yi_commission_log', $log);
+			$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 0 ? '余额' : '微信'), TM_COMMISSION_PAY);
+			$this->model->upgradeLevelByCommissionOK($openid);
+			plog('commission.apply.pay', "佣金打款 ID: {$id} 申请编号: {$apply['applyno']} 总佣金: {$commission_ok} 审核通过佣金: {$commission_ok} ");
+			message('佣金打款处理成功!', $this->createPluginWebUrl('commission/apply', array('status' => $apply['status'])), 'success');
+			show_json(1, '已自动打款!');
 
+		} else {
+			//开启审核走正常流程
+			$returnurl = urlencode($this->createMobileUrl('member/withdraw'));
+			$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
+			$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 0 ? '余额' : '微信'), TM_COMMISSION_APPLY);
+			show_json(1, '已提交,请等待审核!');
+			
+		}
 	}
 	$returnurl = urlencode($this->createPluginMobileUrl('commission/apply'));
 	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
