@@ -339,14 +339,14 @@ class Sz_DYi_Member
                 ':uid' => $uid
             ));
         }
-        if(!$openid))
+        if(!empty($openid))
         {
             $sz_credit = pdo_fetchcolumn("SELECT {$credittype} FROM " . tablename('sz_yi_member') . " WHERE  openid=:openid and uniacid=:uniacid limit 1", array(
                 ':uniacid' => $_W['uniacid'],
                 ':openid' => $openid
             ));  
         }   
-        return $mc_credit + $sz_credit;
+        return $mc_credit+$sz_credit;
         
     }
     public function checkMember($openid = '')
