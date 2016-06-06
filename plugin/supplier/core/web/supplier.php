@@ -93,6 +93,7 @@ if ($operation == 'display') {
                     message('保存成功!', $this->createPluginWebUrl('supplier/supplier'), 'success');
                 }
             } else {
+                //修改没有openid不能提交
                 pdo_update('sz_yi_perm_user', $data, array(
                         'uid' => $uid
                     ));
