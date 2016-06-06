@@ -17,6 +17,11 @@ class BonusMobile extends Plugin
     {
         parent::__construct('bonus');
         $this->set = $this->getSet();
+        $openid = m('user')->getOpenid();
+        $level = $this->model->getLevel($openid);
+        if(!$level){
+            redirect($this->createPluginMobileUrl('member'));
+        }
     }
     public function index()
     {
