@@ -16,6 +16,10 @@
     .cashier_topbar .nav {height:44px; width:50%; line-height:44px; text-align:center; font-size:14px; float:left; color:#666;}
     .cashier_topbar .on {height:42px; color:#ff771b; border-bottom:2px solid #ff771b;}
     .create_qrcode {height:44px; margin:14px 5px; background:#ff771b; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+.bank-box{overflow: hidden;background: #fff;border-top: 1px #eee solid;margin-top: 10px}
+.bank-box ul li{ width: 100%;border-bottom: 1px #eee solid;line-height: 58px}
+.bank-box ul li a{display:block;padding-left: 58px;position: relative;color: #222;text-decoration: none;font-size: 14px;}
+.bank-box ul li a img{position: absolute;left: 6px;top: 6px;width: 46px;height: 46px;border-radius: 6px;}
 </style>
 
     <div class="page_topbar">
@@ -23,11 +27,22 @@
         <div class="title">收银台列表</div>
     </div>
     <div class="info main">
-        {loop $store $row}
+        
         <div class="line">
-          <div class="title"><a id="a" href="{php echo $this->createPluginMobileUrl('cashier/store_set',array('id'=>$row['id']))}">{$row['name']}</a></div>
+          <div class="bank-box">
+            <ul>
+            {loop $store $row}
+               <li>
+                   <a href="{php echo $this->createPluginMobileUrl('cashier/store_set',array('id'=>$row['id']))}">
+                        <img src="{$row['thumb']}">
+                        {$row['name']}
+                   </a>
+               </li>
+            {/loop}  
+            </ul>
+          </div>
         </div>
-        {/loop}
+        
     </div>
 
 {php $show_footer=true}

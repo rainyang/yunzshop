@@ -28,7 +28,16 @@
     .credit_navon {color:#fff; background:#ff6801;}
     .credit_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
     #credit_loading { padding:10px;color:#666;text-align: center;}
+.credit_box {height:auto; width:96%; background:#fff; padding:10px 2%;margin-bottom:10px;}
+.cas-info{width: 100%;padding:0;}
+.cas-info p{line-height: 12px;display: block;width: 100%;color:#666;font-size: 14px}
+.cas-num{width: 98%;border-top:1px #eee solid;margin:0 1% }
+.cas-num p{width: 100%;line-height:16px;color:#222;font-size: 14px;}
+.cas-num p span{color: #ff771b}
 
+.tit-num{width: 96%;margin:0 2%;overflow: hidden;padding: 0;}
+.tit-num p{width: 100%;text-align: left;color:#222;font-size: 14px;height: 10px;line-height: 10px;padding:0 }
+.tit-num p span{color: #ff771b}
 </style>
 
 
@@ -45,25 +54,26 @@
 
      <div id='container'></div>
 <script id='tpl_log' type='text/html'>
-   <div style="margin-left: 15px ">
-        <span id="total">总订单数:<%total%><br/>总支付金额:<%totalmoney%>元<br/>实际金额:<%realtotalmoney%>元</span>
+   <div class="tit-num">
+        <p>总订单数:<span><%total%></span></p><p>总支付金额:<span><%totalmoney%></span>元</p><p>实际金额:<span><%realtotalmoney%></span>元</p>
     </div>
 
     <%each list as log%>
-    <div class="credit_list">
-        <div class="info">
-            <span> 付款人:<%log.carrier.carrier_realname%>/<%log.carrier.carrier_mobile%></span><br/>
-            <span> 佣金金额1级/2级/3级 : <%log.commission1.default%>元/<%log.commission2.default%>元/<%log.commission3.default%>元</span><br/>
-            <span>积分金额:<%log.credits%> 元</span><br/>
-            <span>红包金额:<%log.redpackmoney%> 元</span><br/>
-            <span>平台手续费:<%log.platform_poundage%> 元</span><br/>
-            <span>订单号:<%log.ordersn%> </span><br/>
-            <span>付款时间:<%log.createtime%></span><br/>
-            <span><%if log.text!=''%><%log.text%><%/if%></span>
+    <div class="credit_box">
+        <div class="cas-info">
+            <p> 付款人:<%log.carrier.carrier_realname%>/<%log.carrier.carrier_mobile%></p>
+            <p> 佣金金额1级/2级/3级 : <%log.commission1.default%>元/<%log.commission2.default%>元/<%log.commission3.default%>元</p>
+            <p>积分金额:<%log.credits%> 元</p>
+            <p>红包金额:<%log.redpackmoney%> 元</p>
+            <p>余额金额:<%log.creditpackmoney%> 元</p>
+            <p>平台手续费:<%log.platform_poundage%> 元</p>
+            <p>订单号:<%log.ordersn%> </p> 
+            <p>付款时间:<%log.createtime%></p>
+            <p><%if log.text!=''%><%log.text%><%/if%></p>
         </div>
-        <div class="num">
-            <span> 支付金额: <%log.price%>元</span>
-            <span> 结算金额: <%log.realprice%>元</span>
+        <div class="cas-num">
+            <p> 支付金额: <span><%log.price%></span>元</p>
+            <p> 结算金额: <span><%log.realprice%></span>元</p>
            
         </div>
     </div>
