@@ -1,6 +1,4 @@
 <?php
-
-
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -174,13 +172,15 @@ if ($operation == 'display' && $_W['isajax']) {
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
     $logid = intval($_GPC['logid']);
-    $log   = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `id`=:id and `openid`=:openid `uniacid`=:uniacid limit 1', array(
+    $log   = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `id`=:id and `openid`=:openid and `uniacid`=:uniacid limit 1', array(
         ':uniacid' => $uniacid,
         ':openid' => $openid,
         ':id' => $logid
     ));
+
     if (!empty($log) && empty($log['status'])) {
         $payquery = m('finance')->isWeixinPay($log['logno']);
+
         if (!is_error($payquery)) {
             pdo_update('sz_yi_member_log', array(
                 'status' => 1,
