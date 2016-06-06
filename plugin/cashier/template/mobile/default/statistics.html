@@ -16,7 +16,7 @@
     .cashier_topbar .on {height:42px; color:#ff771b; border-bottom:2px solid #ff771b;}
     .create_qrcode {height:44px; margin:14px 5px; background:#ff771b; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 
-        .credit_list {height:100px; width:94%; background:#fff; padding:10px 3%;margin-top:5px;}
+        .credit_list {height:160px; width:94%; background:#fff; padding:10px 3%;margin-top:5px;}
     
     .credit_list .info {height:40px; width:70%; float:left;  font-size:16px; color:#666; line-height:20px; text-align:left;}
     .credit_list .info span {font-size:14px; color:#999;}
@@ -46,7 +46,7 @@
      <div id='container'></div>
 <script id='tpl_log' type='text/html'>
    <div style="margin-left: 15px ">
-        <span id="total">总订单数:<%total%><br/>总支付金额:<%totalmoney%>元</span>
+        <span id="total">总订单数:<%total%><br/>总支付金额:<%totalmoney%>元<br/>实际金额:<%realtotalmoney%>元</span>
     </div>
 
     <%each list as log%>
@@ -55,11 +55,15 @@
             <span> 付款人:<%log.carrier.carrier_realname%>/<%log.carrier.carrier_mobile%></span><br/>
             <span> 佣金金额1级/2级/3级 : <%log.commission1.default%>元/<%log.commission2.default%>元/<%log.commission3.default%>元</span><br/>
             <span>积分金额:<%log.credits%> 元</span><br/>
+            <span>红包金额:<%log.redpackmoney%> 元</span><br/>
+            <span>平台手续费:<%log.platform_poundage%> 元</span><br/>
             <span>订单号:<%log.ordersn%> </span><br/>
-            <span>付款时间:<%log.createtime%></span>
+            <span>付款时间:<%log.createtime%></span><br/>
+            <span><%if log.text!=''%><%log.text%><%/if%></span>
         </div>
         <div class="num">
             <span> 支付金额: <%log.price%>元</span>
+            <span> 结算金额: <%log.realprice%>元</span>
            
         </div>
     </div>

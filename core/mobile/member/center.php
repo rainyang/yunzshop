@@ -142,4 +142,14 @@ if ($_W['isajax']) {
 	}
 	show_json(1, array('member' => $member,'referrer'=>$referrer,'shop_set'=>$shop_set, 'order' => $order, 'level' => $level, 'open_creditshop' => $open_creditshop, 'counts' => $counts, 'shopset' => $shopset, 'trade' => $trade));
 }
+$pcashier = p('cashier');
+$has_cashier = false;
+if ($pcashier) {
+    $store = pdo_fetch('select * from ' . tablename('sz_yi_cashier_store') . ' where uniacid=:uniacid and member_id=:member_id limit 1', array(
+        ':uniacid' => $_W['uniacid'], ':member_id' => $member['id']
+    ));
+    if ($store) {
+        $has_cashier = true;
+    }
+}
 include $this->template('member/center');

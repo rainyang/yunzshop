@@ -20,8 +20,8 @@ foreach ($cashier_order as $order) {
 $totalprices = 0;
 if ($orderids) {
     // 累计支付金额
-    $totalprices = pdo_fetch('SELECT SUM(price) AS tprice FROM ' . tablename('sz_yi_order') . ' WHERE uniacid = ' . $_W['uniacid'] . ' AND id IN (' . implode(',', $orderids) . ') AND status = 3');
-    $totalprices = $totalprices['tprice']*(100-$store['settle_platform'])/100;
+    $totalprices = pdo_fetch('SELECT SUM(realprice) AS tprice FROM ' . tablename('sz_yi_order') . ' WHERE uniacid = ' . $_W['uniacid'] . ' AND id IN (' . implode(',', $orderids) . ') AND status = 3');
+    $totalprices = $totalprices['tprice'];
     // 已经提现的金额
     $totalwithdraw = pdo_fetch('SELECT money FROM ' . tablename('sz_yi_cashier_withdraw') . ' WHERE uniacid = ' . $_W['uniacid'] . ' AND cashier_store_id = ' . $store['id']);
     $totalwithdraw = $totalwithdraw['money'];

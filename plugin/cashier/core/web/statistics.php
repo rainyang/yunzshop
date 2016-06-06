@@ -45,6 +45,11 @@ if ($operation == 'display') {
             $row['totalprices'] = $totalprices['tprice'];
 
             $totalprices = $row['totalprices']*(100-$row['settle_platform'])/100;
+
+            $realtotalprices = pdo_fetch('SELECT SUM(realprice) AS tprice FROM ' . tablename('sz_yi_order') . ' WHERE uniacid = ' .$_W['uniacid'].' AND id IN (' . implode(',', $orderids) . ')');
+            $row['realtotalprices'] = $realtotalprices['tprice'];
+
+            $realtotalprices = $row['realtotalprices'];
         }
 
         $row['total_commission'] = 0;
@@ -65,12 +70,12 @@ if ($operation == 'display') {
         }
         // 已经提现成功或正申请提现的金额
         $row['total_withdraw']    = 0;
-        $row['total_no_withdraw'] = $totalprices;
+        $row['total_no_withdraw'] = $realtotalprices;
         $totalwithdraw = pdo_fetch('SELECT SUM(money) as total_money FROM ' . tablename('sz_yi_cashier_withdraw') . ' WHERE uniacid = ' . $_W['uniacid'] . ' AND cashier_store_id = ' . $row['id'] . ' AND status = 1');
         if ($totalwithdraw) {
             $row['total_withdraw'] = $totalwithdraw['total_money'];
             if (!empty($row['total_withdraw'])) {
-                $row['total_no_withdraw'] = number_format($totalprices - $row['total_withdraw'], 2);
+                $row['total_no_withdraw'] = number_format($realtotalprices - $row['total_withdraw'], 2);
             }
         }
         $tidyList[] = $row;

@@ -39,6 +39,11 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_store')." (
   `redpack` decimal(10,2) DEFAULT '0.00' COMMENT '消费者在商家支付完成后，获得的红包奖励百分比',
   `coupon_id` int(11) NOT NULL DEFAULT '0' COMMENT '优惠卷',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `deredpack` tinyint(1) NOT NULL DEFAULT '0' COMMENT '扣除红包金额',
+  `decommission` tinyint(1) NOT NULL DEFAULT '0' COMMENT '扣除佣金金额',
+  `decredits` tinyint(1) NOT NULL DEFAULT '0' COMMENT '扣除奖励余额金额',
+  `creditpack` decimal(10,2) DEFAULT '0.00' COMMENT '消费者在商家支付完成后，获得的余额奖励百分比',
+  `iscontact` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否填写联系人信息',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
@@ -58,4 +63,20 @@ pdo_query($sql);
 if(!pdo_fieldexists('sz_yi_order', 'cashier')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `cashier` tinyint(1) DEFAULT '0';");
 }
-message('芸众快速选购插件安装成功', $this->createPluginWebUrl('choose/index'), 'success');
+
+if(!pdo_fieldexists('sz_yi_order', 'realprice')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `realprice` decimal(10) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'deredpack')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `deredpack` tinyint(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'decommission')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `decommission` tinyint(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'decredits')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `decredits` tinyint(1) DEFAULT '0';");
+}
+message('芸众收银台插件安装成功', $this->createPluginWebUrl('cashier/index'), 'success');

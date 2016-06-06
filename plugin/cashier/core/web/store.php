@@ -55,8 +55,13 @@ if ($operation == 'display') {
             'commission2_rate' => trim($_GPC['commission2_rate']),
             'commission3_rate' => trim($_GPC['commission3_rate']),
             'credit1' => trim($_GPC['credit1']),
+            'creditpack' => trim($_GPC['creditpack']),
             'redpack_min' => trim($_GPC['redpack_min']),
             'redpack' => trim($_GPC['redpack']),
+            'deredpack' => trim($_GPC['deredpack']),
+            'decommission' => trim($_GPC['decommission']),
+            'decredits' => trim($_GPC['decredits']),
+            'iscontact' => trim($_GPC['iscontact']),
         );
         if ($pcoupon) {
             $data['coupon_id'] = trim($_GPC['coupon_id']);

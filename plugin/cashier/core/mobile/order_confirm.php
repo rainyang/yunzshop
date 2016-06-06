@@ -157,25 +157,60 @@ if ($operation == 'display') {
             }
         }
     }
+    //真实结算费用
+    $realtotalprice = $totalprice;
+
     $carrier  = $_GPC['carrier'];
     $carriers = is_array($carrier) ? iserializer($carrier) : iserializer(array());
     // 生成订单
     $ordersn = m('common')->createNO('order', 'ordersn', 'SY');
     $user    = m('member')->getMember($openid);
+
+    //扣除平台费用
+    $realtotalprice = $totalprice*(100-$store['settle_platform'])/100;
+    //扣除余额奖励费用
+    if($store['decredits']==1){
+       $realtotalprice = $realtotalprice - $totalprice*($store['creditpack']/100); 
+    }
+    
     if (p('commission')) {
         $commission_set = p('commission')->getSet();
         if (empty($commission_set['selfbuy'])) {
             $agentid = $user['agentid'];
+
         } else {
             $agentid = $user['id'];
+            //扣除佣金
+            if($store['decommission']==1){
+                if($commission_set['level']==3){
+                    $realtotalprice = $realtotalprice - $totalprice*($store['commission3_rate']/100) - $totalprice*($store['commission2_rate']/100) - $totalprice*($store['commission1_rate']/100);
+
+                }else if($commission_set['level']==2){
+
+                    $realtotalprice = $realtotalprice - $totalprice*($store['commission2_rate']/100) - $totalprice*($store['commission1_rate']/100);
+
+                }else if($commission_set['level']==1){
+
+                    $realtotalprice = $realtotalprice - $totalprice*($store['commission1_rate']/100);
+                }
+            }
+
         }
     }
+
+    //扣除红包
+    
+    if($totalprice>=$store['redpack_min'] && $store['deredpack']==1){
+        $realtotalprice = $realtotalprice - $totalprice*($store['redpack']/100);
+    }
+    
     $order   = array(
         'uniacid' => $_W['uniacid'],
         'openid' => $openid,
         'agentid' => $agentid,
         'ordersn' => $ordersn,
         'price' => $totalprice,
+        'realprice' => $realtotalprice,
         'cash' => $cash,
         'discountprice' => 0.00,
         'deductprice' => $deductmoney,
@@ -204,6 +239,15 @@ if ($operation == 'display') {
         "couponprice" => $couponprice,
         'cashier' => 1
     );
+    if($store['deredpack']==1){
+        $order['deredpack']=1;
+    }
+    if($store['decommission']==1){
+        $order['decommission']=1;
+    }
+    if($store['decredits']==1){
+        $order['decredits']=1;
+    }
     pdo_insert('sz_yi_order', $order);
     $orderid = pdo_insertid();
     pdo_insert('sz_yi_cashier_order', array('order_id' => $orderid, 'uniacid' => $_W['uniacid'], 'cashier_store_id' => $sid));
