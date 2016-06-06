@@ -2,6 +2,8 @@
 global $_W, $_GPC;
 $operation   = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 if ($operation == 'display') {
+    $pindex = max(1, intval($_GPC["page"]));
+    $psize = 20;
     $roleid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_perm_role') . ' where status1=1');
     $where = '';
     if(empty($_GPC['uid'])){
@@ -9,8 +11,9 @@ if ($operation == 'display') {
     }else{
         $where .= ' and uid="' . $_GPC['uid'] . '" and uniacid=' . $_W['uniacid'];
     }
-    $list = pdo_fetchall('select * from ' . tablename('sz_yi_perm_user') . ' where roleid='. $roleid . " " .$where);
-    $total = count($list);
+    $list = pdo_fetchall('select * from ' . tablename('sz_yi_perm_user') . ' where roleid='. $roleid . " " .$where." LIMIT " . ($pindex - 1) * $psize . "," . $psize);
+    $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_perm_user') . " where roleid={$roleid} and uniacid={$_W['uniacid']}");
+    $pager = pagination($total, $pindex, $psize);
 } else if ($operation == 'detail') {
     $applyid = intval($_GPC['applyid']);
     $finish = $_GPC['type'];
@@ -72,6 +75,7 @@ if ($operation == 'display') {
         if(checksubmit('submit')){
             $data = is_array($_GPC['data']) ? $_GPC['data'] : array();
             if (!empty($data['openid'])) {
+                echo "<pre>"; print_r(1);exit;
                 $result = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and openid='{$data['openid']}'");
                 if (!empty($result)) {
                     if ($data['openid'] != $supplierinfo['openid']) {
@@ -88,6 +92,12 @@ if ($operation == 'display') {
                     ));
                     message('保存成功!', $this->createPluginWebUrl('supplier/supplier'), 'success');
                 }
+            } else {
+                //修改没有openid不能提交
+                pdo_update('sz_yi_perm_user', $data, array(
+                        'uid' => $uid
+                    ));
+                message('保存成功!', $this->createPluginWebUrl('supplier/supplier'), 'success');
             }
         }
     }
