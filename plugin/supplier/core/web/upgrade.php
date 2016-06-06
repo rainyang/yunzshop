@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_supplier` (
   `password` varchar(255) CHARACTER SET utf8 NOT NULL,
   `status` tinyint(3) NOT NULL COMMENT '1审核成功2驳回',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_apply` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL COMMENT '供应商id',
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_apply` (
   `status` tinyint(3) NOT NULL COMMENT '0为申请状态1为完成状态',
   `finish_time` int(11) NOT NULL COMMENT '完成时间',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
 pdo_query($sql);
 if(!pdo_fieldexists('sz_yi_perm_user', 'banknumber')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `banknumber` varchar(255) NOT NULL COMMENT '银行卡号';");
