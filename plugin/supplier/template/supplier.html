@@ -131,11 +131,11 @@
                 </div>
 <script language='javascript'>
   function search_members() {
-             if( $.trim($('#search-kwd-notice').val())==''){
-                $('#search-kwd-notice').attr('placeholder','请输入关键词');
-                 <!-- Tip.focus('#search-kwd-notice','请输入关键词'); -->
-                 return;
-             }
+     if( $.trim($('#search-kwd-notice').val())==''){
+        $('#search-kwd-notice').attr('placeholder','请输入关键词');
+         <!-- Tip.focus('#search-kwd-notice','请输入关键词'); -->
+         return;
+     }
     $("#module-menus-notice").html("正在搜索....")
     $.get('{php echo $this->createWebUrl('member/query')}', {
       keyword: $.trim($('#search-kwd-notice').val())
@@ -144,9 +144,10 @@
     });
   }
   function select_member(o) {
+    o.nickname = decodeURIComponent(o.nickname);
     $("#noticeopenid").val(o.openid);
-                                $("#saleravatar").show();
-                                 $("#saleravatar").find('img').attr('src',o.avatar);
+    $("#saleravatar").show();
+    $("#saleravatar").find('img').attr('src',o.avatar);
     $("#saler").val( o.nickname+ "/" + o.realname + "/" + o.mobile );
     $("#modal-module-menus-notice .close").click();
   }
