@@ -59,13 +59,13 @@ if ($_W['isajax']) {
                 } elseif (empty($member['pwd']) && !empty($info['pwd'])) {
                     $data['pwd'] = $info['pwd'];
                 }
-                //获取积分
-                $credit1 = m('member')->getCredit($oldopenid, 'credit1');
+                //获取积分 
+                $credit1 = m('member')->getMergeCredit($oldopenid, 'credit1');
                 if ($credit1 > 0) {
                     m('member')->setCredit($openid, 'credit1', $credit1);
                 }
                 //获取余额
-                $credit2 = m('member')->getCredit($oldopenid, 'credit2');
+                $credit2 = m('member')->getMergeCredit($oldopenid, 'credit2');
                 if ($credit2 > 0) {
                     m('member')->setCredit($openid, 'credit2', $credit2);
                 }
