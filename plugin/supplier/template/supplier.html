@@ -144,7 +144,6 @@
     });
   }
   function select_member(o) {
-    o.nickname = decodeURIComponent(o.nickname);
     $("#noticeopenid").val(o.openid);
     $("#saleravatar").show();
     $("#saleravatar").find('img').attr('src',o.avatar);
