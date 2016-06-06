@@ -73,8 +73,8 @@ if($operation == 'display' && $_W['isajax']){
         $row['commission2'] = iunserializer( $commission['commission2']);
         $row['commission3'] = iunserializer( $commission['commission3']);
         $row['redpackmoney'] = $row['price']*($store['creditpack']/100);
-        $row['creditpackmoney'] = $row['price']*($store['redpack']/100);
-        $row['platform_poundage'] = $row['price']*($store['settle_platform']/100);
+        $row['redpackmoney'] = $row['price']*($store['redpack']/100);
+        $row['creditpackmoney'] = $row['price']*($store['creditpack']/100);
         $row['credits'] = $this->model->setCredits($row['id'], true);
         $row['carrier'] = iunserializer($row['carrier']);
         $row['createtime'] = date('Y-m-d,H:i:s',$row['createtime']);
