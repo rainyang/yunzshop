@@ -571,6 +571,27 @@ if (!class_exists('CommissionModel')) {
 			return $_var_22['isagent'] == 1 && $_var_22['status'] == 1;
 		}
 
+		//Author:ym Date:2016-05-06 Content:分成方式计算		
+		public function calculate_goods_method($goods){
+			global $_W;
+			$set = $this->getSet();
+			$realprice = $goods['marketprice'];
+			if(empty($set['culate_method'])){
+				return $realprice;
+			}else{
+				if($set['culate_method'] == 1){
+					return $goods['productprice'];
+				}else if($set['culate_method'] == 2){
+					return $goods['marketprice'];
+				}else if($set['culate_method'] == 3){
+					return $goods['costprice'];
+				}else if($set['culate_method'] == 4){
+					$price = $realprice - $goods['costprice'];
+					return $price > 0 ? $price : 0;
+				}
+			}
+		}
+
 		public function getCommission($_var_5)
 		{
 			global $_W;
@@ -581,7 +602,7 @@ if (!class_exists('CommissionModel')) {
 			} else {
 				$_var_20 = m('user')->getOpenid();
 				$_var_8 = $this->getLevel($_var_20);
-				$price = $this->calculate_method($_var_5);
+				$price = $this->calculate_goods_method($_var_5);
 				if (!empty($_var_8)) {
 					$_var_58 = $set['level'] >= 1 ? round($_var_8['commission1'] * $price / 100, 2) : 0;
 				} else {
