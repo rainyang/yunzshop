@@ -227,6 +227,7 @@ if (!class_exists('CashierModel')) {
                 'select id,ordersn,openid,price from ' . tablename('sz_yi_order') . ' where id=:id limit 1',
                 array(':id' => $orderid)
             );
+            $member  = m('member')->getMember($openid);
             $store = pdo_fetch(
                 'select * from ' . tablename('sz_yi_cashier_order') . ' o inner join ' . tablename('sz_yi_cashier_store') . ' s on o.cashier_store_id = s.id where o.order_id=:orderid and o.uniacid=:uniacid',
                 array(
@@ -240,6 +241,9 @@ if (!class_exists('CashierModel')) {
             }
             $money = $order['price'] * $store['redpack'] / 100;
             if ($money < 1 || $money > 200) {
+
+                $credit2 = $member['credit2'] + $money;
+                pdo_update('mc_members',array('credit2'=>$credit2),array('uid'=>$member['uid']));
                 return;
             }
 

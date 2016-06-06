@@ -171,6 +171,14 @@
                 </div>
             </div>
             <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">前台是否填写联系人信息</label>
+                <div class="col-sm-9 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="iscontact" value="0" {if $item['iscontact'] ==0} checked="checked"{/if} /> 否</label>
+                    <label class="radio-inline"><input type="radio"  name="iscontact" value="1" {if $item['iscontact'] ==1} checked="checked"{/if} /> 是</label>
+                    
+                </div>
+            </div>
+            <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">抵扣设置</label>
                 <div class="col-sm-9 col-xs-12">
                     <div class="input-group">
@@ -187,6 +195,7 @@
                             <div class='form-control-static'>{$item['deduct_credit2']}</div>
                         {/if}
                     </div>
+                    <span class="help-block">此项要在"营销宝"插件里面开启抵扣设置才会生效!</span>
                 </div>
             </div>
             <div class="form-group">
@@ -197,8 +206,18 @@
                         {ife 'cashier.store' $item}
                             <input type="text" name="settle_platform" class="form-control" value="{$item['settle_platform']}">
                             <div class="input-group-addon">%</div>
+                            <div class="input-group-addon">扣除</div>
+                            <label for="decommission" class="checkbox-inline" style="margin-top:-25px">
+                                <input type="checkbox" name="decommission" value="1" id="decommission" {if $item['decommission'] == 1}checked="true"{/if} /> 佣金
+                            </label>
+                            <label for="decredits" class="checkbox-inline" style="margin-top:-25px">
+                                <input type="checkbox" name="decredits" value="1" id="decredits" {if $item['decredits'] == 1}checked="true"{/if} /> 奖励余额
+                            </label>
+                            <label for="deredpack" class="checkbox-inline" style="margin-top:-25px">
+                                <input type="checkbox" name="deredpack" value="1" id="deredpack" {if $item['decredits'] == 1}checked="true"{/if} /> 奖励红包
+                            </label>
                         {else}
-                            <div class='form-control-static'>{$item['settle_platform']}</div>
+                            <div class='form-control-static'>{$item['settle_platform']}{if $item['decommission'] == 1}扣除佣金{/if}{if $item['decredits'] == 1}扣除奖励积分{/if}{if $item['deredpack'] == 1}扣除奖励红包{/if}</div>
                         {/if}
 <!--                          <span class="input-group-addon ">商家比例</span>
                         {ife 'cashier.store' $item}
@@ -249,6 +268,16 @@
                         <input type="text" name="credit1" class="form-control" value="{$item['credit1']}" placeholder="消费者在商家支付完成后，获得的积分奖励百分比">
                     {else}
                         <div class='form-control-static'>{$item['credit1']}</div>
+                    {/if}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额奖励百分比</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="text" name="creditpack" class="form-control" value="{$item['creditpack']}" placeholder="消费者在商家支付完成后，获得的余额奖励百分比">
+                    {else}
+                        <div class='form-control-static'>{$item['creditpack']}</div>
                     {/if}
                 </div>
             </div>
