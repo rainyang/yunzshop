@@ -326,29 +326,6 @@ class Sz_DYi_Member
 		}
 
     }
-    //会员合并 查询会员余额 积分
-    public function getMergeCredit($openid = '', $credittype = 'credit1')
-    {
-        global $_W;
-        load()->model('mc');
-        $uid = mc_openid2uid($openid);
-        $mc_credit = 0;
-        $sz_credit = 0;
-        if (!empty($uid)) {
-            $mc_credit = pdo_fetchcolumn("SELECT {$credittype} FROM " . tablename('mc_members') . " WHERE `uid` = :uid", array(
-                ':uid' => $uid
-            ));
-        }
-        if(!empty($openid))
-        {
-            $sz_credit = pdo_fetchcolumn("SELECT {$credittype} FROM " . tablename('sz_yi_member') . " WHERE  openid=:openid and uniacid=:uniacid limit 1", array(
-                ':uniacid' => $_W['uniacid'],
-                ':openid' => $openid
-            ));  
-        }   
-        return $mc_credit+$sz_credit;
-        
-    }
     public function checkMember($openid = '')
     {
         global $_W, $_GPC;
