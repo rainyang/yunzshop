@@ -97,7 +97,10 @@ if (!class_exists('BonusModel')) {
 							}else{
 								$bonus_money = $bonus_money_old;
 							}
-							
+							//如分红金额小于0不写入
+							if($bonus_money <= 0){
+								continue;
+							}
 							$data = array(
 								'uniacid' => $_W['uniacid'],
 								'ordergoodid' => $cinfo['goodsid'],
