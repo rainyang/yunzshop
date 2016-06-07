@@ -56,11 +56,12 @@ $bonus_start = false;
 $bonus_text = "";
 if(!empty($pluginbonus)){
 	$bonus_set = $pluginbonus->getSet();
-	if(!empty($bonus_set['start'])){
+	$bonus_level = $pluginbonus->getLevel($openid);
+	if((!empty($bonus_set['start']) || !empty($bonus_set['area_start'])) && !empty($bonus_level)){
 		$bonus_start = true;
 		$bonus_text = $bonus_set['texts']['center'] ? $bonus_set['texts']['center'] : "分红明细";
 	}
-    $bonus_level = $pluginbonus->getLevel($openid);
+    
 }
 $shopset['bonus_start'] = $bonus_start;
 $shopset['bonus_text'] = $bonus_text;

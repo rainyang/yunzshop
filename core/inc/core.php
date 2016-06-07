@@ -400,7 +400,11 @@ class Core extends WeModuleSite
             if (!is_file($source)) {
                 $names      = explode('/', $filename);
                 $pluginname = $names[0];
-                $ptemplate  = m('cache')->getString('template_' . $pluginname);
+                if($pluginname == "designer"){
+                    $ptemplate = $template;
+                }else{
+                    $ptemplate  = m('cache')->getString('template_' . $pluginname);
+                }
                 if (empty($ptemplate)) {
                     $ptemplate = "default";
                 }
