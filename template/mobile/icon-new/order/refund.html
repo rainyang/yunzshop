@@ -1,0 +1,569 @@
+{template 'common/header'}
+<title>申请退款</title>
+<style type="text/css">
+    body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearance:none;}
+    .refund_addnav {height:44px; width:94%; padding:0 3%; border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; margin-top:14px; line-height:42px; color:#666; background:#fff;}
+    .refund_addnav {height:40px; width:94%; padding:0 3%; border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; margin-top:14px; line-height:40px; color:#666; }
+.refund_main {height:auto;width:94%; padding:0px 3%; border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; margin-top:14px; background:#fff;}
+.refund_main .line {height:44px; width:100%; border-bottom:1px solid #f0f0f0; line-height:44px;}
+
+.refund_main .line .label { float:left;width:70px;}
+.refund_main .line .info { float:right; width:100%; margin-left:-75px;text-align: right;overflow:hidden;height:44px;}
+.refund_main .line .info .inner { color:#666;margin-left:75px;}
+
+.refund_main .line input {float:left; height:44px; width:100%; padding:0px; margin:0px; border:0px; outline:none; font-size:16px; color:#666;padding-left:5px;}
+.refund_main .line select  {float:left; border:none;height:25px;width:100%;color:#666;font-size:16px;margin-top:10px;}
+.refund_sub1 {height:44px; width:94%; margin:14px 3% 0px; background:#ff4f4f; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+.refund_sub2 {height:44px; width:94%; margin:14px 3% 0px; background:#ddd; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#666; border:1px solid #d4d4d4;}
+
+.refund_main .line1 {width:100%;  line-height:25px; color:#666;overflow:hidden; font-size:13px;word-break: break-all;}
+
+    .refund_main .pic .images {float: left; width:auto;height:30px;margin-top:7px;}
+    .refund_main .pic .images .img { float:left; position:relative;width:30px;height:30px;border:1px solid #e9e9e9;margin-right:5px;}
+    .refund_main .pic .images .img img { position:absolute;top:0; width:100%;height:100%;}
+    .refund_main .pic .images .img .minus { position:absolute;color:red;width:8px;height:12px;top:-18px;right:-1px;}
+    .refund_main .pic .plus { float:left; width:30px;height:30px;border:1px solid #e9e9e9; color:#dedede;; font-size:18px;line-height:30px;text-align:center;margin-top:7px;}
+    .refund_main .pic .plus i { left:7px;top:7px;}
+</style>
+
+<link href="../addons/sz_yi/template/mobile/default/static/js/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
+<script src="../addons/sz_yi/template/mobile/default/static/js/star-rating.js" type="text/javascript"></script>
+<script src="../addons/sz_yi/static/js/dist/ajaxfileupload.js" type="text/javascript"></script>
+
+<div id='container'></div>
+
+<script id='refund_edit' type='text/html'>
+     <div class="page_topbar">
+        <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
+        <div class="title"><%if order.refundstate>0%>修改<%/if%><%order.refund_button%>申请</div>
+    </div>
+ <div class="refund_main" >
+        <input type='hidden' id='refundid' value="<%refund.id%>"/>
+
+         <div class="line">
+             <div class="label">处理方式</div>
+             <div class="info">
+                 <div class="inner">
+                     <select id="rtype">
+                         <option value="0" <%if refund.rtype=='0'%>selected<%/if%>>退款(仅退款不退货)</option>
+                         <%if order.status==2 || order.status==3%>
+                         <option value="2" <%if refund.rtype=='2'%>selected<%/if%>>换货</option>
+                         <option value="1" <%if refund.rtype=='1'%>selected<%/if%>>退货退款</option>
+                         <%/if%>
+                     </select>
+                 </div>
+             </div>
+         </div>
+
+        <div class="line">
+            <div class="label"><span class="re-g"><%if refund.rtype=='2'%>换货<%else%>退款<%/if%></span>原因</div>
+            <div class="info">
+                <div class="inner">
+                <select id="reason">
+                     <option value="不想要了" <%if refund.reason=='不想要了'%>selected<%/if%>>不想要了</option>
+                     <option value="卖家缺货" <%if refund.reason=='卖家缺货'%>selected<%/if%>>卖家缺货</option>
+                     <option value="拍错了/订单信息错误" <%if refund.reason=='拍错了/订单信息错误'%>selected<%/if%>>拍错了/订单信息错误</option>
+                     <option value="其它" <%if refund.reason=='其它'%>selected<%/if%>>其它</option>
+                </select>
+                </div>
+            </div>
+        </div>
+        <div class="line"><div class="label"><span class="re-g"><%if refund.rtype=='2'%>换货<%else%>退款<%/if%></span>说明</div><div class="info"><div class="inner"><input type="text" id="content" placeholder="选填" value="<%if refund.content%><%refund.content%><%/if%>"/></div></div></div>
+
+        <div class="line r-group" <%if refund.rtype=='2'%>style="display:none;"<%/if%>><div class="label"><span class="re-g">退款</span>金额</div><div class="info"><div class="inner"><input type="text" id="price" value="<%showprice%>"/></div></div></div>
+
+        <div class="line">
+            <div class="label">上传凭证</div>
+            <div class="info1">
+                <div class="inner">
+
+                    <div class="pic img_info" data-ogid='0' data-max='5'>
+                        <div class="images">
+                            <%each refund['imgs'] as imgs index%>
+                            <div data-img="<%imgs%>" class="img">
+                                <img src="<%refund['urls'][index]%>">
+
+                                <div class="minus minus_del">
+                                    <i class="fa fa-minus-circle"></i>
+                                </div>
+                            </div>
+                            <%/each%>
+                        </div>
+
+                        <div class="plus" style="position:relative;<%if imgnum>=5%>display:none;<%/if%>" ><i class="fa fa-plus" style="position:absolute;"></i>
+                            <input type="file" name='imgFile0' id='imgFile0'  style="position:absolute;width:30px;height:30px;-webkit-tap-highlight-color: transparent;filter:alpha(Opacity=0); opacity: 0;" />
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="line r-group" style="color: #666;<%if refund.rtype=='2'%>display:none;<%/if%>"><div class="label"></div><div class="inner" style="color: #ef4f4f;">提示:您可退款的最大金额为<%order.refundprice%></div></div>
+
+        <input type="hidden" name="maxprice" id="maxprice" value="<%order.refundprice%>">
+
+        {if !empty($tradeset['refundcontent'])}
+            <div class="line r-group" style="color: #666; height: auto; overflow: hidden"><div class="label"></div><div class="inner" style="color: #ef4f4f;">{$tradeset['refundcontent']}</div></div>
+        {/if}
+
+        
+    </div>
+    <div class="refund_sub1" id='refund_submit'>确认</div>
+</script>
+
+<script id='refund_dispatch' type='text/html'>
+    <div class="page_topbar">
+        <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
+        <div class="title">填写快递单号</div>
+    </div>
+    <div class="refund_main" >
+        <input type='hidden' id='rid' value="<%refund.id%>"/>
+        <input type='hidden' id='express_old' value="<%refund.express%>"/>
+
+        <div class="line">
+            <div class="label">选择快递</div>
+            <div class="info">
+                <div class="inner">
+                    <select id="express" name="express">
+                        <option value="" data-name="其他快递">其他快递</option>
+                        <option value="shunfeng" data-name="顺丰">顺丰</option>
+                        <option value="shentong" data-name="申通">申通</option>
+                        <option value="yunda" data-name="韵达快运">韵达快运</option>
+                        <option value="tiantian" data-name="天天快递">天天快递</option>
+                        <option value="yuantong" data-name="圆通速递">圆通速递</option>
+                        <option value="zhongtong" data-name="中通速递">中通速递</option>
+                        <option value="ems" data-name="ems快递">ems快递</option>
+                        <option value="huitongkuaidi" data-name="汇通快运">汇通快运</option>
+                        <option value="quanfengkuaidi" data-name="全峰快递">全峰快递</option>
+                        <option value="zhaijisong" data-name="宅急送">宅急送</option>
+                        <option value="aae" data-name="aae全球专递">aae全球专递</option>
+                        <option value="anjie" data-name="安捷快递">安捷快递</option>
+                        <option value="anxindakuaixi" data-name="安信达快递">安信达快递</option>
+                        <option value="biaojikuaidi" data-name="彪记快递">彪记快递</option>
+                        <option value="bht" data-name="bht">bht</option>
+                        <option value="baifudongfang" data-name="百福东方国际物流">百福东方国际物流</option>
+                        <option value="coe" data-name="中国东方（COE）">中国东方（COE）</option>
+                        <option value="changyuwuliu" data-name="长宇物流">长宇物流</option>
+                        <option value="datianwuliu" data-name="大田物流">大田物流</option>
+                        <option value="debangwuliu" data-name="德邦物流">德邦物流</option>
+                        <option value="dhl" data-name="dhl">dhl</option>
+                        <option value="dpex" data-name="dpex">dpex</option>
+                        <option value="dsukuaidi" data-name="d速快递">d速快递</option>
+                        <option value="disifang" data-name="递四方">递四方</option>
+                        <option value="fedex" data-name="fedex（国外）">fedex（国外）</option>
+                        <option value="feikangda" data-name="飞康达物流">飞康达物流</option>
+                        <option value="fenghuangkuaidi" data-name="凤凰快递">凤凰快递</option>
+                        <option value="feikuaida" data-name="飞快达">飞快达</option>
+                        <option value="guotongkuaidi" data-name="国通快递">国通快递</option>
+                        <option value="ganzhongnengda" data-name="港中能达物流">港中能达物流</option>
+                        <option value="guangdongyouzhengwuliu" data-name="广东邮政物流">广东邮政物流</option>
+                        <option value="gongsuda" data-name="共速达">共速达</option>
+                        <option value="hengluwuliu" data-name="恒路物流">恒路物流</option>
+                        <option value="huaxialongwuliu" data-name="华夏龙物流">华夏龙物流</option>
+                        <option value="haihongwangsong" data-name="海红">海红</option>
+                        <option value="haiwaihuanqiu" data-name="海外环球">海外环球</option>
+                        <option value="jiayiwuliu" data-name="佳怡物流">佳怡物流</option>
+                        <option value="jinguangsudikuaijian" data-name="京广速递">京广速递</option>
+                        <option value="jixianda" data-name="急先达">急先达</option>
+                        <option value="jjwl" data-name="佳吉物流">佳吉物流</option>
+                        <option value="jymwl" data-name="加运美物流">加运美物流</option>
+                        <option value="jindawuliu" data-name="金大物流">金大物流</option>
+                        <option value="jialidatong" data-name="嘉里大通">嘉里大通</option>
+                        <option value="jykd" data-name="晋越快递">晋越快递</option>
+                        <option value="kuaijiesudi" data-name="快捷速递">快捷速递</option>
+                        <option value="lianb" data-name="联邦快递（国内）">联邦快递（国内）</option>
+                        <option value="lianhaowuliu" data-name="联昊通物流">联昊通物流</option>
+                        <option value="longbanwuliu" data-name="龙邦物流">龙邦物流</option>
+                        <option value="lijisong" data-name="立即送">立即送</option>
+                        <option value="lejiedi" data-name="乐捷递">乐捷递</option>
+                        <option value="minghangkuaidi" data-name="民航快递">民航快递</option>
+                        <option value="meiguokuaidi" data-name="美国快递">美国快递</option>
+                        <option value="menduimen" data-name="门对门">门对门</option>
+                        <option value="ocs" data-name="OCS">OCS</option>
+                        <option value="peisihuoyunkuaidi" data-name="配思货运">配思货运</option>
+                        <option value="quanchenkuaidi" data-name="全晨快递">全晨快递</option>
+                        <option value="quanjitong" data-name="全际通物流">全际通物流</option>
+                        <option value="quanritongkuaidi" data-name="全日通快递">全日通快递</option>
+                        <option value="quanyikuaidi" data-name="全一快递">全一快递</option>
+                        <option value="rufengda" data-name="如风达">如风达</option>
+                        <option value="santaisudi" data-name="三态速递">三态速递</option>
+                        <option value="shenghuiwuliu" data-name="盛辉物流">盛辉物流</option>
+                        <option value="sue" data-name="速尔物流">速尔物流</option>
+                        <option value="shengfeng" data-name="盛丰物流">盛丰物流</option>
+                        <option value="saiaodi" data-name="赛澳递">赛澳递</option>
+                        <option value="tiandihuayu" data-name="天地华宇">天地华宇</option>
+                        <option value="tnt" data-name="tnt">tnt</option>
+                        <option value="ups" data-name="ups">ups</option>
+                        <option value="wanjiawuliu" data-name="万家物流">万家物流</option>
+                        <option value="wenjiesudi" data-name="文捷航空速递">文捷航空速递</option>
+                        <option value="wuyuan" data-name="伍圆">伍圆</option>
+                        <option value="wxwl" data-name="万象物流">万象物流</option>
+                        <option value="xinbangwuliu" data-name="新邦物流">新邦物流</option>
+                        <option value="xinfengwuliu" data-name="信丰物流">信丰物流</option>
+                        <option value="yafengsudi" data-name="亚风速递">亚风速递</option>
+                        <option value="yibangwuliu" data-name="一邦速递">一邦速递</option>
+                        <option value="youshuwuliu" data-name="优速物流">优速物流</option>
+                        <option value="youzhengguonei" data-name="邮政包裹挂号信">邮政包裹挂号信</option>
+                        <option value="youzhengguoji" data-name="邮政国际包裹挂号信">邮政国际包裹挂号信</option>
+                        <option value="yuanchengwuliu" data-name="远成物流">远成物流</option>
+                        <option value="yuanweifeng" data-name="源伟丰快递">源伟丰快递</option>
+                        <option value="yuanzhijiecheng" data-name="元智捷诚快递">元智捷诚快递</option>
+                        <option value="yuntongkuaidi" data-name="运通快递">运通快递</option>
+                        <option value="yuefengwuliu" data-name="越丰物流">越丰物流</option>
+                        <option value="yad" data-name="源安达">源安达</option>
+                        <option value="yinjiesudi" data-name="银捷速递">银捷速递</option>
+                        <option value="zhongtiekuaiyun" data-name="中铁快运">中铁快运</option>
+                        <option value="zhongyouwuliu" data-name="中邮物流">中邮物流</option>
+                        <option value="zhongxinda" data-name="忠信达">忠信达</option>
+                        <option value="zhimakaimen" data-name="芝麻开门">芝麻开门</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+
+        <!--<div class="line e-name" <%if refund.express!=''%>style="display: none;"<%/if%>><div class="label">快递名称</div><div class="info"><div class="inner"><input type="text" id="ename" name="ename" value="<%if refund.express==''%><%refund.expresscom%><%/if%>"/></div></div></div>-->
+
+        <div class="line"><div class="label">快递单号</div><div class="info"><div class="inner"><input type="text" id="expresssn" value="<%refund.expresssn%>" max="50"/></div></div></div>
+
+        <!--<div class="line" style="color: #666;"><div class="label"></div><div class="inner">提示:您可退款的最大金额为<%order.refundprice%></div></div>-->
+
+        <input type="hidden" name="expresscom" id="expresscom" value="<%refund.expresscom%>">
+
+    </div>
+    <div class="refund_sub1" id='express_submit'>确认</div>
+</script>
+
+<script id='refund_info' type='text/html'>
+  
+      <div class="page_topbar">
+        <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
+        <div class="title">查看<%order.refund_button%>申请</div>
+    </div>
+
+      <input type='hidden' id='rrefundid' value="<%refund.id%>"/>
+
+    <div class="refund_main" >
+
+        <div class="line"><%if refund.status==0%>等待商家处理<%order.refund_button%>申请<%/if%><%if refund.status>=3%>商家已经通过<%order.refund_button%>申请<%/if%></div>
+            <%if refund.status==0 && refund.rtype==0%>
+            <div class="line1">退款申请流程： <br>1、发起退款申请<br>2、商家确认后退款到您的账户</div>
+            <div class="line1">如果商家未处理：请及时与商家联系</div>
+            <%/if%>
+
+
+            <%if refund.rtype>0%>
+                <%if refund.rtype==1%>
+                <div class="line1">退款退货申请流程：<br>1、发起退款退货申请<br>2、退货需将退货商品邮寄至商家指定地址，并在系统内输入快递单号<br>3、商家后货后确认无误<br>4、退款到您的账户</div>
+                <%else if refund.rtype==2%>
+                <div class="line1">换货申请流程：<br>1、发起换货申请，并把快递单号录入系统<br>2、将需要换货的商品邮寄至商家指定地址，并在系统内输入快递单号<br>3、商家确认后货后重新发出商品<br>4、签收确认商品</div>
+                <%/if%>
+
+                <%if refund.status>=3%>
+                    <%if refund.address_info!=''%>
+                    <div class="line1"><br>退货地址: <span style="color: #ef4f4f;"><%refund.address_info%></span></div>
+                    <%/if%>
+
+                    <%if refund.message!=''%>
+                    <div class="line1">卖家留言: <span style="color: #ef4f4f;"><%refund.message%></span></div>
+                    <%/if%>
+
+                    <%if refund.rtype==1%>
+                        <div class="line1"><br>退货状态: <span style="color: #ef4f4f;"><%if refund.status==3%>请您填写快递单号<%else if refund.status==4%>等待商家收到您的快递物品并确认<%else if refund.status==5%>商家已经发货<%/if%></span></div>
+                        <%if refund.rexpresssn!=''%>
+                        <div class="line1">退货快递公司: <span style="color: #ef4f4f;"><%refund.rexpresscom%></span></div>
+                        <div class="line1">退货快递单号: <span style="color: #ef4f4f;"><%refund.rexpresssn%></span></div>
+                        <%/if%>
+                    <%/if%>
+
+                    <%if refund.rtype==2%>
+                        <div class="line1"><br>换货状态: <span style="color: #ef4f4f;"><%if refund.status==3%>请您填写快递单号<%else if refund.status==4%>等待商家收到您的快递物品并确认<%else if refund.status==5%>商家已经发货<%/if%></span></div>
+                        <%if refund.rexpresssn!=''%>
+                        <div class="line1">换货快递公司: <span style="color: #ef4f4f;"><%refund.rexpresscom%></span></div>
+                        <div class="line1">换货快递单号: <span style="color: #ef4f4f;"><%refund.rexpresssn%></span></div>
+                        <%/if%>
+                    <%/if%>
+                <%/if%>
+            <%/if%>
+    </div>
+
+    <div class="refund_main" >
+        <div class="line">协商详情</div>
+        <div class="line1">处理方式：<%if refund.rtype==0%>退款<%else if refund.rtype==1%>退货退款<%else if refund.rtype==2%>换货<%/if%></div>
+        <div class="line1"><%if refund.rtype=='2'%>换货<%else%>退款<%/if%>原因：<%refund.reason%></div>
+        <div class="line1"><%if refund.rtype=='2'%>换货<%else%>退款<%/if%>说明：<%refund.content%></div>
+        <%if refund.applyprice>0%>
+        <div class="line1">退款金额：<%refund.applyprice%>元</div>
+        <%/if%>
+        <div class="line1" >申请时间：<%refund.createtime%></div>
+    </div>
+
+    <%if refund.rtype==2 && refund.status==5%>
+    <div class="refund_sub1" id='refund_end'>确认收到换货物品</div>
+
+    <div class="refund_sub2" id='refund_express'>查看换货物流</div>
+    <%/if%>
+
+    <%if refund.status==3 || refund.status==4%>
+    <div class="refund_sub1" id='refund_input'>填写快递单号</div>
+    <%/if%>
+
+    <%if refund.status==0%>
+    <div class="refund_sub1" id='refund_change'>修改<%order.refund_button%>申请</div>
+    <%/if%>
+
+    <div class="refund_sub2"  id='refund_cancel'>取消<%order.refund_button%>申请</div>
+</script>
+
+<script id="tpl_img" type="text/html">
+    <div class='img' data-img='<%filename%>'>
+        <img src='<%url%>' />
+        <div class='minus'><i class='fa fa-minus-circle'></i></div>
+    </div>
+</script>
+
+<script language="javascript">
+ 
+    var orderid = "{$_GPC['orderid']}";
+    
+    require(['tpl', 'core'], function(tpl, core) {
+       
+           core.json('order/op',{op:'refund',orderid:orderid},function(json){
+
+                    if(json.status==0){
+                        core.message(json.result,"{php echo $this->createMobileUrl('order')}",'error');
+                        return;
+                    }
+
+                    if(json.result.refund){
+
+                         $('#container').html(  tpl('refund_info',json.result) );
+                     
+                          $('#refund_change').click(function(){
+                                 $('#container').html(  tpl('refund_edit',json.result) );
+                                 bindEdit();
+                         });
+
+                         $('#refund_input').click(function(){
+                             $('#container').html(  tpl('refund_dispatch',json.result) );
+
+                             $("select[name=express]").val($('#express_old').val());
+
+                             $("select[name=express]").change(function(){
+//                                 alert(123);return false;
+                                 var obj = $(this);
+                                 var sel = obj.find("option:selected");
+                                 var name = sel.data("name");
+
+                                 if (name=='其他快递') {
+                                     $(".e-name").show();
+                                 } else {
+                                     $(".e-name").hide();
+                                 }
+
+                                 $(":input[name=expresscom]").val(name);
+                             });
+
+                             $('#express_submit').click(function(){
+
+                                 var express = $('#express').val();
+                                 var expresscom = $('#expresscom').val();
+                                 var expresssn = $('#expresssn').val();
+
+                                 $(this).html('正在处理...').attr('saving',1);
+                                 core.json('order/op',{
+                                     op:'express',
+                                     id:$('#rid').val(),
+                                     orderid:orderid,
+                                     refunddata: {
+                                         express: express,
+                                         expresscom: expresscom,
+                                         expresssn: expresssn
+                                     }
+                                 },function(postjson){
+
+                                     if(postjson.status==1){
+                                         location.href = core.getUrl('order/detail',{id:orderid});
+                                     }
+                                     else{
+                                         $('#express_submit').html('确认').removeAttr('saving');
+                                         core.tip.show(postjson.result);
+                                     }
+                                 },true,true);
+
+                             });
+//                             bindEdit();
+                         });
+
+                        $('#refund_end').click(function(){
+
+                            core.tip.confirm('确认您已经收到换货物品?',function(){
+
+                                core.json('order/op',{
+                                    op:'delivery',
+                                    id:$('#rrefundid').val(),
+                                    orderid:orderid
+                                },function(postjson){
+                                    if(postjson.status==1){
+                                        location.href = core.getUrl('order/detail',{id:orderid});
+                                    }
+                                    else{
+                                        $('#refund_end').html('确认收到换货物品').removeAttr('saving');
+                                        core.tip.show(postjson.result);
+                                    }
+                                },true,true);
+                            });
+                        });
+
+                        $('#refund_express').click(function(){
+                            location.href = core.getUrl('order/refundexpress',{id:'{$_GPC['orderid']}'});
+                        });
+
+                         $('#refund_cancel').click(function(){
+                                    if($(this).attr('saving')=='1'){
+                                        return;
+                                    }
+                                     $(this).html('正在处理...').attr('saving',1);
+                                     core.json('order/op',{
+                                         op:'refund',
+                                         cancel:'true',
+                                         id:$('#refundid').val(),
+                                         orderid:orderid 
+                                      },function(canceljson){
+                                          if(canceljson.status==1){
+                                              location.href = core.getUrl('order/detail',{id:orderid});
+                                          }
+                                          else{
+                                              $(this).html('取消退款申请').removeAttr('saving');
+                                              core.tip.show(canceljson.result);
+                                          }
+                                     },true,true);
+
+                                })
+                    }
+                    else{
+                         $('#container').html(  tpl('refund_edit',json.result) );
+                         bindEdit();
+                    }
+
+                   function bindEdit(){
+
+                       $('#rtype').change(function() {
+
+                           var rtype = $(this).find("option:selected").val();
+
+                           if (rtype == 2) {
+                               $('.r-group').hide();
+                               $('.re-g').html('换货');
+
+                           } else {
+                               $('.r-group').show();
+                               $('.re-g').html('退款');
+                           }
+
+                       });
+
+
+                       $('.minus_del').click(function() {
+                           $(this).parent().remove();
+                           core.json('util/uploader', {op: 'remove', file: $(this).parent().data('img')}, function(rjson) {
+                               if (rjson.status == 1) {
+
+                               }
+                               $('.plus').show();
+                           }, false, true);
+                       });
+
+                       $('.plus input').change(function() {
+
+                           core.loading('正在上传');
+                           var comment =$(this).closest('.img_info');
+                           var ogid = comment.data('ogid');
+                           var max = comment.data('max');
+
+
+                           $.ajaxFileUpload({
+                               url: core.getUrl('util/uploader'),
+                               data: {file: "imgFile" + ogid},
+                               secureuri: false,
+                               fileElementId: 'imgFile' + ogid,
+                               dataType: 'json',
+                               success: function(res, status) {
+                                   core.removeLoading();
+                                   var obj = $(tpl('tpl_img', res));
+                                   $('.images',comment).append(obj);
+
+                                   $('.minus',comment).click(function() {
+                                       core.json('util/uploader', {op: 'remove', file: $(obj).data('img')}, function(rjson) {
+                                           if (rjson.status == 1) {
+                                               $(obj).remove();
+                                           }
+                                           $('.plus',comment).show();
+                                       }, false, true);
+                                   });
+
+                                   if ($('.img',comment).length >= max) {
+                                       $('.plus',comment).hide();
+                                   }
+                               }, error: function(data, status, e) {
+                                   core.removeLoading();
+                                   core.tip.show('上传失败!');
+                               }
+                           });
+                       });
+
+
+                       $('#refund_submit').click(function(){
+
+                            var maxprice = $('#maxprice').val();
+                            var price = $('#price').val();
+                            var rtype = $('#rtype').val();
+
+                           var images = [];
+                           $('.img_info[data-ogid=0]').find('.img').each(function(){
+                               images.push($(this).data('img'));
+                           });
+
+                            $(this).html('正在处理...').attr('saving',1);
+                            core.json('order/op',{
+                                op:'refund',
+                                id:$('#refundid').val(),
+                                orderid:orderid,
+                                refunddata: {
+                                    rtype: rtype,
+                                    reason: $('#reason').val(),
+                                    content: $('#content').val(),
+                                    images:images,
+                                    price:price
+                                }
+                            },function(postjson){
+                                if(postjson.status==1){
+                                    location.href = core.getUrl('order/detail',{id:orderid});
+                                }
+                                else{
+                                    $('#refund_submit').html('确认').removeAttr('saving');
+                                    core.tip.show(postjson.result);
+                                    if(postjson.status == 3) {
+                                        $('#price').val(maxprice);
+                                    }
+                                }
+                            },true,true);
+
+                       });
+
+
+                  }
+                   
+                   
+           },true);
+      
+    })
+
+
+
+
+
+
+</script>
+{template 'common/footer'}
