@@ -44,6 +44,10 @@ if ($operation == 'display') {
             $supplierinfo = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and uid='{$uid}'");
         } else {
             $supplierinfo = pdo_fetch("select * from " . tablename('sz_yi_af_supplier') . " where uniacid={$_W['uniacid']} and openid='{$openid}'");
+            if (empty($supplierinfo)) {
+                $supplierinfo = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and openid='{$openid}'");
+                $uid = pdo_fetchcolumn("select uid from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and openid='{$openid}'");
+            }
             $uid = pdo_fetchcolumn("select uid from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and openid='{$openid}'");
         }
         if(!empty($supplierinfo['openid'])){
@@ -92,7 +96,6 @@ if ($operation == 'display') {
                     message('保存成功!', $this->createPluginWebUrl('supplier/supplier'), 'success');
                 }
             } else {
-                //修改没有openid不能提交
                 pdo_update('sz_yi_perm_user', $data, array(
                         'uid' => $uid
                     ));

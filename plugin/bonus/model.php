@@ -97,7 +97,10 @@ if (!class_exists('BonusModel')) {
 							}else{
 								$bonus_money = $bonus_money_old;
 							}
-							
+							//如分红金额小于0不写入
+							if($bonus_money <= 0){
+								continue;
+							}
 							$data = array(
 								'uniacid' => $_W['uniacid'],
 								'ordergoodid' => $cinfo['goodsid'],
@@ -445,7 +448,9 @@ if (!class_exists('BonusModel')) {
 			foreach ($bonus_goods as $key => $val) {
 				$openid = pdo_fetchcolumn("select openid from " . tablename('sz_yi_member') . " where id=".$val['mid']." and uniacid=".$_W['uniacid']);
 				$agent_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods') . " where mid=".$val['mid']." and orderid=".$order['id']." and bonus_area=0 and uniacid=".$_W['uniacid']);
-				$this->sendMessage($openid, array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $realprice, 'goods' => $goods, 'commission' => $agent_money, 'paytime' => $order['paytime']), TM_BONUS_ORDER_PAY);
+				if($agent_money > 0){
+					$this->sendMessage($openid, array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $realprice, 'goods' => $goods, 'commission' => $agent_money, 'paytime' => $order['paytime']), TM_BONUS_ORDER_PAY);
+				}
 			}
 		}
 
@@ -485,7 +490,9 @@ if (!class_exists('BonusModel')) {
 			foreach ($bonus_goods as $key => $val) {
 				$openid = pdo_fetchcolumn("select openid from " . tablename('sz_yi_member') . " where id=".$val['mid']." and uniacid=".$_W['uniacid']);
 				$agent_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods') . " where mid=".$val['mid']." and orderid=".$order['id']." and bonus_area=0 and uniacid=".$_W['uniacid']);
-				$this->sendMessage($openid, array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $realprice, 'goods' => $goods, 'commission' => $agent_money, 'finishtime' => $order['finishtime']), TM_BONUS_ORDER_FINISH);
+				if($agent_money > 0){
+					$this->sendMessage($openid, array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $realprice, 'goods' => $goods, 'commission' => $agent_money, 'finishtime' => $order['finishtime']), TM_BONUS_ORDER_FINISH);
+				}
 			}
 		}
 
