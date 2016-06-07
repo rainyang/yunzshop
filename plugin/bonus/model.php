@@ -5,6 +5,8 @@ if (!defined('IN_IA')) {
 define('TM_COMMISSION_AGENT_NEW', 'commission_agent_new');
 define('TM_BONUS_ORDER_PAY', 'bonus_order_pay');
 define('TM_BONUS_ORDER_FINISH', 'bonus_order_finish');
+define('TM_BONUS_ORDER_AREA_PAY', 'bonus_order_area_pay');
+define('TM_BONUS_ORDER_AREA_FINISH', 'bonus_order_area_finish');
 define('TM_COMMISSION_APPLY', 'commission_apply');
 define('TM_COMMISSION_CHECK', 'commission_check');
 define('TM_BONUS_PAY', 'bonus_pay');
@@ -25,11 +27,10 @@ if (!class_exists('BonusModel')) {
 		}
 
 		//获取上级代理信息
-        public function getParentAgents($id, $isdistinction, $level = 0){
+        public function getParentAgents($id, $isdistinction, $level = -1){
             global $_W;
             $sql = "select id, agentid, bonuslevel, bonus_status from " . tablename('sz_yi_member') . " where id={$id} and uniacid=".$_W['uniacid'];
             $parentAgent =  pdo_fetch($sql);
-
             if(empty($parentAgent)){
                 return $this->parentAgents;
             }else{
@@ -72,6 +73,7 @@ if (!class_exists('BonusModel')) {
 			$isdistinction = empty($set['isdistinction']) ? 0 : 1;
 			foreach ($goods as $cinfo) {
 				$price_all = $cinfo['bonusmoney'] > 0 && !empty($cinfo['bonusmoney']) ? $cinfo['bonusmoney'] * $cinfo['total'] : $cinfo['price'];
+
 				if(empty($set['selfbuy'])){
 					$masid = $member['agentid'];
 				}else{
@@ -79,7 +81,7 @@ if (!class_exists('BonusModel')) {
 				}
 				//查询分红人员
 				if(!empty($masid)){
-					$parentAgents = $this->getParentAgents($masid, $isdistinction, 1);
+					$parentAgents = $this->getParentAgents($masid, $isdistinction);
 					$range_money = 0;
 					foreach ($levels as $key => $level) {
 						$levelid = $level['id'];
@@ -447,9 +449,15 @@ if (!class_exists('BonusModel')) {
 			$bonus_goods = pdo_fetchall('select distinct mid from ' . tablename('sz_yi_bonus_goods') . ' where uniacid=:uniacid and orderid=:orderid', array(':orderid' => $order['id'], ':uniacid' => $_W['uniacid']));
 			foreach ($bonus_goods as $key => $val) {
 				$openid = pdo_fetchcolumn("select openid from " . tablename('sz_yi_member') . " where id=".$val['mid']." and uniacid=".$_W['uniacid']);
+				//股权分红代理通知
 				$agent_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods') . " where mid=".$val['mid']." and orderid=".$order['id']." and bonus_area=0 and uniacid=".$_W['uniacid']);
 				if($agent_money > 0){
 					$this->sendMessage($openid, array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $realprice, 'goods' => $goods, 'commission' => $agent_money, 'paytime' => $order['paytime']), TM_BONUS_ORDER_PAY);
+				}
+				//区域代理分红通知
+				$agent_area_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods') . " where mid=".$val['mid']." and orderid=".$order['id']." and bonus_area > 0 and uniacid=".$_W['uniacid']);
+				if($agent_area_money > 0){
+					$this->sendMessage($openid, array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $realprice, 'goods' => $goods, 'commission' => $agent_area_money, 'paytime' => $order['paytime']), TM_BONUS_ORDER_AREA_PAY);
 				}
 			}
 		}
@@ -489,9 +497,15 @@ if (!class_exists('BonusModel')) {
 			$bonus_goods = pdo_fetchall('select distinct mid from ' . tablename('sz_yi_bonus_goods') . ' where uniacid=:uniacid and orderid=:orderid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
 			foreach ($bonus_goods as $key => $val) {
 				$openid = pdo_fetchcolumn("select openid from " . tablename('sz_yi_member') . " where id=".$val['mid']." and uniacid=".$_W['uniacid']);
+				//股权代理分红通知
 				$agent_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods') . " where mid=".$val['mid']." and orderid=".$order['id']." and bonus_area=0 and uniacid=".$_W['uniacid']);
 				if($agent_money > 0){
 					$this->sendMessage($openid, array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $realprice, 'goods' => $goods, 'commission' => $agent_money, 'finishtime' => $order['finishtime']), TM_BONUS_ORDER_FINISH);
+				}
+				//区域代理分红通知
+				$agent_area_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods') . " where mid=".$val['mid']." and orderid=".$order['id']." and bonus_area > 0 and uniacid=".$_W['uniacid']);
+				if($agent_area_money > 0){
+					$this->sendMessage($openid, array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $realprice, 'goods' => $goods, 'commission' => $agent_area_money, 'finishtime' => $order['finishtime']), TM_BONUS_ORDER_AREA_FINISH);
 				}
 			}
 		}
@@ -609,6 +623,7 @@ if (!class_exists('BonusModel')) {
 			if (!is_array($usernotice)) {
 				$usernotice = array();
 			}
+
 			if ($message_type == TM_COMMISSION_AGENT_NEW && !empty($tm['commission_agent_new']) && empty($usernotice['commission_agent_new'])) {
 				$message = $tm['commission_agent_new'];
 				$message = str_replace('[昵称]', $data['nickname'], $message);
@@ -627,7 +642,7 @@ if (!class_exists('BonusModel')) {
 				$message = str_replace('[订单金额]', $data['price'], $message);
 				$message = str_replace('[分红金额]', $data['commission'], $message);
 				$message = str_replace('[商品详情]', $data['goods'], $message);
-				$msg = array('keyword1' => array('value' => !empty($tm['bonus_order_paytitle']) ? $tm['bonus_order_paytitle'] : '分红下线付款通知'), 'keyword2' => array('value' => $message));
+				$msg = array('keyword1' => array('value' => !empty($tm['bonus_order_paytitle']) ? $tm['bonus_order_paytitle'] : '股权代理下级付款通知"'), 'keyword2' => array('value' => $message));
 				if (!empty($templateid)) {
 					m('message')->sendTplNotice($openid, $templateid, $msg);
 				} else {
@@ -641,31 +656,38 @@ if (!class_exists('BonusModel')) {
 				$message = str_replace('[订单金额]', $data['price'], $message);
 				$message = str_replace('[分红金额]', $data['commission'], $message);
 				$message = str_replace('[商品详情]', $data['goods'], $message);
-				$msg = array('keyword1' => array('value' => !empty($tm['bonus_order_finishtitle']) ? $tm['bonus_order_finishtitle'] : '分红下线确认收货通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
+				$msg = array('keyword1' => array('value' => !empty($tm['bonus_order_finishtitle']) ? $tm['bonus_order_finishtitle'] : '股权代理下级确认收货通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
 				if (!empty($templateid)) {
 					m('message')->sendTplNotice($openid, $templateid, $msg);
 				} else {
 					m('message')->sendCustomNotice($openid, $msg);
 				}
-			} else if ($message_type == TM_COMMISSION_APPLY && !empty($tm['commission_apply']) && empty($usernotice['commission_apply'])) {
-				$message = $tm['commission_apply'];
-				$message = str_replace('[昵称]', $member['nickname'], $message);
-				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
-				$message = str_replace('[金额]', $data['commission'], $message);
-				$message = str_replace('[提现方式]', $data['type'], $message);
-				$msg = array('keyword1' => array('value' => !empty($tm['commission_applytitle']) ? $tm['commission_applytitle'] : '提现申请提交成功', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
+			} else if ($message_type == TM_BONUS_ORDER_AREA_PAY && !empty($tm['bonus_order_area_pay']) && empty($usernotice['bonus_order_area_pay'])) {
+
+				
+				$message = $tm['bonus_order_area_pay'];
+				$message = str_replace('[昵称]', $data['nickname'], $message);
+				$message = str_replace('[时间]', date('Y-m-d H:i:s', $data['paytime']), $message);
+				$message = str_replace('[订单编号]', $data['ordersn'], $message);
+				$message = str_replace('[订单金额]', $data['price'], $message);
+				$message = str_replace('[分红金额]', $data['commission'], $message);
+				$message = str_replace('[商品详情]', $data['goods'], $message);
+				$msg = array('keyword1' => array('value' => !empty($tm['bonus_order_area_paytitle']) ? $tm['bonus_order_area_paytitle'] : '区域代理下级付款通知"'), 'keyword2' => array('value' => $message));
+				file_put_contents('/mnt/yunzhong/yz_kehu2/addons/sz_yi/plugin/bonus/1.txt', print_r($msg, true));
 				if (!empty($templateid)) {
 					m('message')->sendTplNotice($openid, $templateid, $msg);
 				} else {
 					m('message')->sendCustomNotice($openid, $msg);
 				}
-			} else if ($message_type == TM_COMMISSION_CHECK && !empty($tm['commission_check']) && empty($usernotice['commission_check'])) {
-				$message = $tm['commission_check'];
-				$message = str_replace('[昵称]', $member['nickname'], $message);
-				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
-				$message = str_replace('[金额]', $data['commission'], $message);
-				$message = str_replace('[提现方式]', $data['type'], $message);
-				$msg = array('keyword1' => array('value' => !empty($tm['commission_checktitle']) ? $tm['commission_checktitle'] : '提现申请审核处理完成', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
+			} else if ($message_type == TM_BONUS_ORDER_AREA_FINISH && !empty($tm['bonus_order_area_finish']) && empty($usernotice['bonus_order_area_finish'])) {
+				$message = $tm['bonus_order_area_finish'];
+				$message = str_replace('[昵称]', $data['nickname'], $message);
+				$message = str_replace('[时间]', date('Y-m-d H:i:s', $data['finishtime']), $message);
+				$message = str_replace('[订单编号]', $data['ordersn'], $message);
+				$message = str_replace('[订单金额]', $data['price'], $message);
+				$message = str_replace('[分红金额]', $data['commission'], $message);
+				$message = str_replace('[商品详情]', $data['goods'], $message);
+				$msg = array('keyword1' => array('value' => !empty($tm['bonus_order_area_finishtitle']) ? $tm['bonus_order_area_finishtitle'] : '区域代理下级确认收货通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
 				if (!empty($templateid)) {
 					m('message')->sendTplNotice($openid, $templateid, $msg);
 				} else {
@@ -678,7 +700,7 @@ if (!class_exists('BonusModel')) {
 				$message = str_replace('[金额]', $data['commission'], $message);
 				$message = str_replace('[打款方式]', $data['type'], $message);
 				$message = str_replace('[代理等级]', $data['levename'], $message);
-				$msg = array('keyword1' => array('value' => !empty($tm['bonus_paytitle']) ? $tm['bonus_paytitle'] : '分红打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
+				$msg = array('keyword1' => array('value' => !empty($tm['bonus_paytitle']) ? $tm['bonus_paytitle'] : '代理分红打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
 				if (!empty($templateid)) {
 					m('message')->sendTplNotice($openid, $templateid, $msg);
 				} else {
@@ -691,7 +713,7 @@ if (!class_exists('BonusModel')) {
 				$message = str_replace('[金额]', $data['commission'], $message);
 				$message = str_replace('[打款方式]', $data['type'], $message);
 				$message = str_replace('[代理等级]', $data['levename'], $message);
-				$msg = array('keyword1' => array('value' => !empty($tm['bonus_global_paytitle']) ? $tm['bonus_global_paytitle'] : '分红打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
+				$msg = array('keyword1' => array('value' => !empty($tm['bonus_global_paytitle']) ? $tm['bonus_global_paytitle'] : '全球分红打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
 				if (!empty($templateid)) {
 					m('message')->sendTplNotice($openid, $templateid, $msg);
 				} else {
@@ -708,6 +730,7 @@ if (!class_exists('BonusModel')) {
 				$message = str_replace('[旧分红比例]', $data['oldlevel']['agent_money'] . '%', $message);
 				$message = str_replace('[新等级]', $data['newlevel']['levelname'], $message);
 				$message = str_replace('[新分红比例]', $data['newlevel']['agent_money'] . '%', $message);
+				$tm['bonus_upgradetitle'] = !empty($tm['bonus_upgradetitle']) ? $tm['bonus_upgradetitle'] : '代理商等级升级通知';
 				$msg = array('keyword1' => array('value' => !empty($data['newlevel']['msgtitle']) ? $data['newlevel']['msgtitle'] : $tm['bonus_upgradetitle'], 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
 				if (!empty($templateid)) {
 					m('message')->sendTplNotice($openid, $templateid, $msg);
@@ -729,7 +752,7 @@ if (!class_exists('BonusModel')) {
 
 		function perms()
 		{
-			return array('bonus' => array('text' => $this->getName(), 'isplugin' => true, 'child' => array('cover' => array('text' => '入口设置'), 'agent' => array('text' => '代理商管理', 'view' => '浏览', 'edit' => '修改-log', 'user' => '查看下线', 'order' => '查看推广订单(还需有订单权限)', 'changeagent' => '设置代理商'), 'level' => array('text' => '代理商等级', 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log'), 'send' => array('text' => '级差分红', 'view' => '浏览', 'bont' => '发放按钮'), 'sendall' => array('text' => '全球分红', 'view' => '浏览', 'bont' => '发放按钮'), 'detail' => array('text' => '分红明细', 'view' => '浏览', 'afresh' => '重发分红'), 'notice' => array('text' => '通知设置-log'), 'set' => array('text' => '基础设置-log'))));
+			return array('bonus' => array('text' => $this->getName(), 'isplugin' => true, 'child' => array('cover' => array('text' => '入口设置'), 'agent' => array('text' => '代理商管理', 'view' => '浏览', 'edit' => '修改-log', 'user' => '查看下线', 'order' => '查看推广订单(还需有订单权限)', 'changeagent' => '设置代理商'), 'level' => array('text' => '代理商等级', 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log'), 'send' => array('text' => '代理分红', 'view' => '浏览', 'bont' => '分红按钮'), 'sendall' => array('text' => '全球分红', 'view' => '浏览', 'bont' => '分红按钮'), 'detail' => array('text' => '分红明细', 'view' => '浏览', 'afresh' => '重发分红'), 'notice' => array('text' => '通知设置-log'), 'set' => array('text' => '基础设置-log'))));
 		}
 
 		//分红
