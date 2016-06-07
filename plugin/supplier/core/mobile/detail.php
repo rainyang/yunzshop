@@ -11,6 +11,21 @@ $order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' wher
     ':id' => $orderid,
     ':uniacid' => $uniacid
 ));
+if ($operation == 'deal') {
+    $id = intval($_GPC["id"]);
+    $item = pdo_fetch("SELECT * FROM " . tablename("sz_yi_order") . " WHERE id = :id and uniacid=:uniacid", array(
+        ":id" => $id,
+        ":uniacid" => $_W["uniacid"]
+    ));
+    $shopset = m("common")->getSysset("shop");
+    if (empty($item)) {
+        message("抱歉，订单不存在!", referer() , "error");
+    }
+    $to = trim($_GPC["to"]);
+    if ($to == 'confirmsend') {
+        order_list_confirmsend($item);
+    }
+}
 if (!empty($order)) {
     $order['virtual_str'] = str_replace("\n", "<br/>", $order['virtual_str']);
     $diyformfields        = "";
@@ -74,23 +89,6 @@ if (!empty($order)) {
     }
 }
 if ($_W['isajax']) {
-    /*if ($operation == 'order_cancel') {
-        $orderid = $_GPC['orderid'];
-        pdo_update('sz_yi_order', array('agentuid' => 0, 'ownerid' => 0), array('id' => $orderid, 'uniacid' => $_W['uniacid']));
-        $data = array(
-            'uniacid'       => $_W['uniacid'],
-            'orderid'       => $orderid,
-            'from_agentuid' => $member['uid']
-        );
-        pdo_insert("sz_yi_cancel_goods", $data);
-        show_json(1,'取消订单成功');
-    } */
-    if ($operation == 'order_send') {
-        $orderid = $_GPC['orderid'];
-        pdo_update('sz_yi_order', array('status' => 2), array('id' => $orderid, 'uniacid' => $_W['uniacid']));
-        m('notice')->sendOrderMessage($orderid);
-        show_json(1,"");
-    }
     if (empty($order)) {
         show_json(0);
     }
@@ -100,6 +98,8 @@ if ($_W['isajax']) {
     $order['finishtime']      = date('Y-m-d H:i:s', $order['finishtime']);
     $order['createtime']      = date('Y-m-d H:i:s', $order['createtime']);
     $order['paytime']      = date('Y-m-d H:i:s', $order['paytime']);
+    $order['address'] = iunserializer($order['address']);
+    $order['address'] = json_encode($order['address']);
     $address                  = false;
     $carrier                  = false;
     $stores                   = array();
@@ -158,6 +158,53 @@ if ($_W['isajax']) {
         'isverify' => $isverify,
         'set' => $set
     ));
+}
+function order_list_confirmsend($zym_var_32) {
+    global $_W, $_GPC;
+    if (empty($zym_var_32["addressid"])) {
+        message("无收货地址，无法发货！");
+    }
+    if ($zym_var_32["paytype"] != 3) {
+        if ($zym_var_32["status"] != 1) {
+            message("订单未付款，无法发货！");
+        }
+    }
+    if (!empty($_GPC["isexpress"]) && empty($_GPC["expresssn"])) {
+        message("请输入快递单号！");
+    }
+    if (!empty($zym_var_32["transid"])) {
+        changeWechatSend($zym_var_32["ordersn"], 1);
+    }
+    pdo_update("sz_yi_order", array(
+        "status" => 2,
+        "express" => trim($_GPC["express"]) ,
+        "expresscom" => trim($_GPC["expresscom"]) ,
+        "expresssn" => trim($_GPC["expresssn"]) ,
+        "sendtime" => time()
+    ) , array(
+        "id" => $zym_var_32["id"],
+        "uniacid" => $_W["uniacid"]
+    ));
+    if (!empty($zym_var_32["refundid"])) {
+        $zym_var_35 = pdo_fetch("select * from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
+            ":id" => $zym_var_32["refundid"]
+        ));
+        if (!empty($zym_var_35)) {
+            pdo_update("sz_yi_order_refund", array(
+                "status" => - 1
+            ) , array(
+                "id" => $zym_var_32["refundid"]
+            ));
+            pdo_update("sz_yi_order", array(
+                "refundid" => 0
+            ) , array(
+                "id" => $zym_var_32["id"]
+            ));
+        }
+    }
+    m("notice")->sendOrderMessage($zym_var_32["id"]);
+    plog("order.op.send", "订单发货 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]} <br/>快递公司: {$_GPC["expresscom"]} 快递单号: {$_GPC["expresssn"]}");
+    message("发货操作成功！", referer() , "success");
 }
 include $this->template('detail');
 

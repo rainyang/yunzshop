@@ -73,13 +73,6 @@
         <%/each%>
         <div class="info1">共 <%order.goodscount%> 件商品&nbsp;实付：<span>￥<%order.price%></span></div>
         <%if order.isstatus == 1%>
-    <div class="sub">
-            <div class="sub1" >确认发货<input type="hidden" value="<%order.id%>" class="order_id" ></div>
-            <!--<div class="sub2 order_cancel" style="position:relative;width:56px;">
-                <span style="position:absolute;display:block;width:56px;">取消订单</span>
-                <input type="hidden" value="<%order.id%>" class="order_id" >
-            </div>-->
-        </div>
     <%/if%>
     </div>
     <%/each%>
@@ -92,38 +85,6 @@
 
     var page = 1;
     require(['tpl', 'core'], function(tpl, core) {
-            $(document).on('click','.order_cancel',function(){
-            var orderid = $(this).find('.order_id').val();
-                if(confirm('确认取消订单?'))
-                {
-                    core.pjson('supplier/orderj',{
-                        'op':'order_cancel',
-                        'orderid':orderid
-                    },function(json){
-                        if(json.status==1){
-                            location.reload();
-                            return;
-                        }
-                        core.tip.show(json.result);
-                    },true,true);
-                }
-            });
-            $(document).on('click','.sub1',function(){
-                var orderid = $(this).find('.order_id').val();
-                if(confirm('确认发货?'))
-                {
-                    core.pjson('supplier/orderj',{
-                        'op':'order_send',
-                        'orderid':orderid
-                    },function(json){
-                        if(json.status==1){
-                            location.reload();
-                            return;
-                        }
-                        core.tip.show(json.result);
-                    },true,true);
-                }
-            });
              core.pjson('supplier/orderj', {'op':'{$_GPC['op']}', page:page, status: '{$_GPC['status']}'}, function(json) {
 
                     $("#container").html(tpl('tpl_order_list'));
