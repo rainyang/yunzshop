@@ -325,7 +325,8 @@ footer#footer-nav .menu-list:after {
 .balance_sub4{background: #f15353 !important}
 .header .user .user-info .user-other{height: 20px !important;font-size: 14px!important}
 .topbar {text-align: center;height: auto !important;overflow: hidden;color: #fff}
-
+.header .user{height: auto!important;overflow: hidden;}
+.header .user .user-info{height: auto!important;overflow: hidden;}
 /**/
 .cart_good{background: #fff}
 .operation-bg{background: #fff;height: 50px;border-top: 1px solid #E4E4E4;position: fixed;left: 0;bottom: 55px;width: 100%}
