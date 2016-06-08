@@ -117,11 +117,13 @@
         <i class="fa iconfont icon-paw" style="background:#ffb13b"></i><br/>我的足迹
         </a>
         </li>
+        {if $hascoupon}
         <li>
             <a href="{php echo $this->createPluginMobileUrl('coupon/my')}">
                 <i class="fa iconfont icon-tags" style="background:#ff3877"></i><br/>优惠券
             </a>
         </li>
+        {/if}
 {if $open_creditshop}
         <li>
         <a href="#" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">
