@@ -89,7 +89,7 @@ if ($_W['isajax']) {
 		}
 
 		if($order['redprice'] > 0) {
-			m('finance')->sendredpack($order['openid'], $order["redprice"]*100, $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
+			m('finance')->sendredpack($order['openid'], $order["redprice"]*100, $orderid, $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
 		}
 
 		show_json(1);

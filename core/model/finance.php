@@ -112,7 +112,7 @@ class Sz_DYi_Finance {
     }
 
     //发送红包
-    public function sendredpack($openid, $money, $desc = '', $act_name = '', $remark = '')
+    public function sendredpack($openid, $money, $orderid = 0, $desc = '', $act_name = '', $remark = '')
     {
         global $_W;
         $_W['account']['name'] = pdo_fetchcolumn("SELECT name FROM ". tablename("uni_account") . "WHERE uniacid = '".$_W['uniacid']."'");
@@ -199,12 +199,36 @@ class Sz_DYi_Finance {
                 $ret = $xpath->evaluate('string(//xml/result_code)');
                 if (strtolower($code) == 'success' && strtolower($ret) == 'success') {
                     return true;
-                } else {
+                } else { 
                     if ($xpath->evaluate('string(//xml/return_msg)') == $xpath->evaluate('string(//xml/err_code_des)')) {
                         $error = $xpath->evaluate('string(//xml/return_msg)');
                     } else {
                         $error = $xpath->evaluate('string(//xml/return_msg)') . "<br/>" . $xpath->evaluate('string(//xml/err_code_des)');
                     }
+                    if (!empty($orderid)) {
+                        $sql = 'SELECT `ordersn` FROM ' . tablename('sz_yi_order') . ' WHERE `id`=:orderid limit 1';
+                        $row = pdo_fetch($sql,
+                            array(
+                                ':orderid' => $orderid
+                            )
+                        );
+
+                        $_var_156 = array(
+                            'keyword1' => array('value' => '购买商品发送红包失败', 'color' => '#73a68d'),
+                            'keyword2' => array('value' => '【订单编号】' . $row['ordersn'], 'color' => '#73a68d'),
+                            'remark' => array('value' => '购物赠送红包发送失败！失败原因：'.$error)
+                        );
+                        pdo_update('sz_yi_order', 
+                            array(
+                                'redstatus' => $error
+                            ), 
+                            array(
+                                'id' => $orderid
+                            )
+                        );
+                        m('message')->sendCustomNotice($openid, $_var_156);
+                    }
+                    
                     return error(-2, $error);
                 }
             } else {
