@@ -100,10 +100,10 @@
         <i class="fa iconfont icon-cart" style="background:#43BFF1"></i><br/>购物车
         </a>
         </li>
-        {if isset($set['trade']) && ($set['trade']['withdraw']==1 || empty($set['trade']['closerecharge']))}
+        {if isset($set['trade']) && $set['trade']['withdraw']==1}
             <li>
-                <a href="{php echo $this->createMobileUrl('member/log')}">
-                    <i class="fa iconfont icon-cny" style="background:#ff6e03"></i><br/>我的余额
+                <a href="javascript:;" id="btnwithdraw">
+                    <i class="fa iconfont icon-cny" style="background:#ff6e03"></i><br/>{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}提现
                 </a>
             </li>
         {/if}
@@ -170,9 +170,11 @@
      <%if shopset.isranking == 1%>
     <a href="{php echo $this->createPluginMobileUrl('ranking/ranking')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-ranking"></i><%shopset.rankingname%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
     <%/if%>
-    {if isset($set['trade']) && $set['trade']['withdraw']==1}
-        <a href="javascript:;" id="btnwithdraw"><div class="list1" style="border-bottom: 0px;"><i class="fa fa-money"></i>{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}提现<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-    {/if}
+    {if isset($set['trade']) && ($set['trade']['withdraw']==1 || empty($set['trade']['closerecharge']))}
+    <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="{if isset($set['trade']) && $set['trade']['withdraw']==1}margin:0px;{/if}"><i class="iconfont icon-cny"></i>{if isset($set['trade']) && $set['trade']['withdraw']==1}{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}明细{else}充值记录{/if}
+            <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+   {/if}
+
 </div>
 {if $hascoupon}
 <!--

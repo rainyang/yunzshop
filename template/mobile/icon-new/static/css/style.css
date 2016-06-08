@@ -322,7 +322,7 @@ footer#footer-nav .menu-list:after {
 .card-price,.main .page .goods .good .price{color: #f15353!important;}
 #left_container{overflow: hidden!important;}
 .order_all {height: auto !important}
-.balance_sub4{background: #f15353 !important}
+.balance_sub4,.balance_sub1{background: #f15353 !important}
 .header .user .user-info .user-other{height: 20px !important;font-size: 14px!important}
 .topbar {text-align: center;height: auto !important;overflow: hidden;color: #fff}
 .header .user{height: auto!important;overflow: hidden;}
