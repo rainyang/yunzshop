@@ -103,6 +103,15 @@ if (p('ranking')) {
 	$shopset['isranking'] = $ranking_set['ranking']['isranking'];
 } 
 
+$open_creditshop = false;
+$creditshop = p('creditshop');
+if ($creditshop) {
+	$creditshop_set = $creditshop->getSet();
+	if (!empty($creditshop_set['centeropen'])) {
+		$open_creditshop = true;
+	}
+}
+
 if ($_W['isajax']) {
 	$level = array('levelname' => empty($this->yzShopSet['levelname']) ? '普通会员' : $this->yzShopSet['levelname']);
 	if (!empty($member['level'])) {
@@ -125,14 +134,7 @@ if ($_W['isajax']) {
 		}
 	}
 
-	$open_creditshop = false;
-	$creditshop = p('creditshop');
-	if ($creditshop) {
-		$creditshop_set = $creditshop->getSet();
-		if (!empty($creditshop_set['centeropen'])) {
-			$open_creditshop = true;
-		}
-	}
+
 	$counts = array('cartcount' => pdo_fetchcolumn('select ifnull(sum(total),0) from ' . tablename('sz_yi_member_cart') . ' where uniacid=:uniacid and openid=:openid and deleted=0 ', array(':uniacid' => $uniacid, ':openid' => $openid)), 'favcount' => pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member_favorite') . ' where uniacid=:uniacid and openid=:openid and deleted=0 ', array(':uniacid' => $uniacid, ':openid' => $openid)));
 	if ($plugin_coupon) {
 		$time = time();
