@@ -7,12 +7,12 @@
     body {margin:0px; background:#efefef; -moz-appearance:none;}
 
 
-    .detail_topbar {height:44px; background:#5f6e8b; padding:15px;}
+    .detail_topbar {height:44px; background:#5f6e8b; padding:15px;box-sizing: content-box;}
     .detail_topbar .ico {height:44px; width:30px; line-height:34px; float:left; font-size:26px; text-align:center; color:#fff;}
     .detail_topbar .tips {height:34px;  margin-left:10px; font-size:13px; color:#fff; line-height:17px;}
     
     
-    .detail_user {height:54px;  background:#fff; padding:5px; border-bottom:1px solid #eaeaea;}
+    .detail_user {box-sizing: content-box;height:54px;  background:#fff; padding:5px; border-bottom:1px solid #eaeaea;}
     .detail_user .info .ico { float:left;  height:50px; width:30px; line-height:50px; font-size:26px; text-align:center; color:#666}
     .detail_user .info .info1 {height:54px; width:100%; float:left;margin-left:-30px;margin-right:-30px;}
     .detail_user .info .info1 .inner { margin-left:30px;margin-right:30px;overflow:hidden;}
@@ -46,9 +46,9 @@
     .detail_price .price .line span {height:26px; width:auto; float:right;}
     
    
-    .detail_pay {height:60px; width:94%; background:#fff; padding:0px 3%; margin-top:30px; border-top:1px solid #eaeaea;position:fixed;bottom:0px}
+    .detail_pay {height:60px; width:100%; background:#fff; padding:0px 2%; margin-top:30px; border-top:1px solid #eaeaea;position:fixed;bottom:0px}
     .detail_pay span {height:60px; width:auto; margin-right:16px; float:right; line-height:60px; color:#ff771b; font-size:16px;}
-    .detail_pay .paysub {height:38px; width:auto;margin-left:5px; background:#ff771b; padding:0px 10px; margin-top:10px; border-radius:5px; color:#fff; line-height:38px; float:right;}
+    .detail_pay .paysub {height:38px; width:auto;margin-left:5px; background:#ff771b; padding:0px 10px; margin-top:10px; border-radius:5px; color:#fff; line-height:38px; float:right;border-color:#ff771b }
     
     .detail_pay .paysub1 {height:38px; width:auto; margin-left:5px;background:#fff; padding:0px 10px; margin-top:10px; border-radius:5px; color:#5f6e8b; line-height:38px; float:right;border:1px solid #5f6e8b;}
        
@@ -74,8 +74,6 @@
 .address_main .line select  { border:none;height:25px;width:100%;color:#666;font-size:16px;}
 .address_main .address_sub1 {height:44px; width:94%; margin:14px 3% 0px; background:#ff4f4f; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .address_main .address_sub2 {height:44px; width:94%; margin:14px 3% 0px; background:#ddd; border-radius:4px; text-align:center; font-size:18px; line-height:44px; color:#666; border:1px solid #d4d4d4;}
-select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: none;background:#fff; -webkit-tap-highlight-color: transparent;filter:alpha(Opacity=0); opacity: 0;};
- 
 .stores {overflow:hidden;background:#fff;}
 .store {height:65px;  background:#fff; padding:5px; border-bottom:1px solid #eaeaea;}
 .store .info .ico { float:left;  height:50px; width:30px; line-height:30px; font-size:16px; text-align:center; color:#666}
@@ -267,7 +265,7 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
 <a class="btn btn-primary btn-sm disbut paysub" href="javascript:;" onclick="send(this)" data-toggle="modal" data-target="#modal-confirmsend">确认发货</a>
 </div>
 <%/if%>
-<div id="modal-confirmsend" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
+<div id="modal-confirmsend" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:70%;margin:0px auto;">
     <form class="form-horizontal form" action="{php echo $this->createPluginMobileUrl('supplier/detail')}" method="post" enctype="multipart/form-data">
         <input type='hidden' name='id' value='' />
         <input type='hidden' name='op' value='deal' />
@@ -288,7 +286,6 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
                             </div>
                         </div>
                     </div>
-
                     <div class="form-group">
                         <label class="col-xs-10 col-sm-3 col-md-3 control-label">快递公司</label>
                         <div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
@@ -404,9 +401,6 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
         </div>
     </form>
 </div>
-</script>
-<script type='text/html'>
-    
 </script>
 {if p('verify')}
 {template 'verify/pop'}

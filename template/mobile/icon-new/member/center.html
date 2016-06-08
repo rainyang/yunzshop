@@ -83,11 +83,13 @@
 
 <div class="cart new-ullist">
     <ul>
-        <li>
-        <a href="{php echo $this->createPluginMobileUrl('commission')}">
-        <i class="fa iconfont icon-sitemap" style="background:#f15353"></i><br/>分销中心
-        </a>
-        </li>
+        {if $hascom}
+            <li>
+                <a href="{php echo $this->createPluginMobileUrl('commission')}">
+                    <i class="fa iconfont icon-sitemap" style="background:#f15353"></i><br/>分销中心
+                </a>
+            </li>
+        {/if}
         <li>
         <a href="{php echo $this->createMobileUrl('member/info')}">
         <i class="fa iconfont icon-user" style="background:#BC7BFF"></i><br/>我的资料
@@ -98,11 +100,13 @@
         <i class="fa iconfont icon-cart" style="background:#43BFF1"></i><br/>购物车
         </a>
         </li>
-        <li>
-        <a href="{php echo $this->createMobileUrl('member/log')}">
-        <i class="fa iconfont icon-cny" style="background:#ff6e03"></i><br/>我的余额
-        </a>
-        </li>
+        {if isset($set['trade']) && $set['trade']['withdraw']==1}
+            <li>
+                <a href="javascript:;" id="btnwithdraw">
+                    <i class="fa iconfont icon-cny" style="background:#ff6e03"></i><br/>{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}提现
+                </a>
+            </li>
+        {/if}
         <li>
         <a href="{php echo $this->createMobileUrl('shop/favorite')}">
         <i class="fa iconfont icon-heart" style="background:#58d5d9"></i><br/>我的收藏
@@ -113,17 +117,22 @@
         <i class="fa iconfont icon-paw" style="background:#ffb13b"></i><br/>我的足迹
         </a>
         </li>
+        {if $hascoupon}
         <li>
-        <a href="{php echo $this->createPluginMobileUrl('coupon/my')}">
-        <i class="fa iconfont icon-tags" style="background:#ff3877"></i><br/>优惠券
-        </a>
+            <a href="{php echo $this->createPluginMobileUrl('coupon/my')}">
+                <i class="fa iconfont icon-tags" style="background:#ff3877"></i><br/>优惠券
+            </a>
         </li>
+        {/if}
+{if $open_creditshop}
         <li>
         <a href="#" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">
         <i class="fa iconfont icon-database" style="background:#28c870"></i><br/>积分商城
         </a>
         </li>
+{/if}
     </ul>
+
 </div>
 <!--
 <div class="cart">
@@ -137,13 +146,14 @@
 </div>-->
 <div class="cart">
     {if p('supplier')}
-        {if $supplier_set['switch'] == 1 && empty($is_af_supplier)}
+        {if $shopset['switch'] == 1 && empty($shopset['af_result'])}
             <a href="{php echo $this->createPluginMobileUrl('supplier/af_supplier')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-file" ></i>供应商申请<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
         {/if}
-        {if !empty($issupplier) && $supplier_switch_centre == 1}
-            <!--<a href="{php echo $this->createPluginMobileUrl('supplier/orderj')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-road"></i>供应商中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>-->
+        {if !empty($issupplier) && $shopset['switch_centre'] == 1}
+            <a href="{php echo $this->createPluginMobileUrl('supplier/orderj')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-road"></i>供应商中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
         {/if}
     {/if}
+
     {if $pluginbonus}
         {if !empty($bonus_set['start'])}
             {if empty($bonus_set['bonushow'])}
@@ -162,7 +172,11 @@
      <%if shopset.isranking == 1%>
     <a href="{php echo $this->createPluginMobileUrl('ranking/ranking')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-ranking"></i><%shopset.rankingname%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
     <%/if%>
- 
+    {if isset($set['trade']) && ($set['trade']['withdraw']==1 || empty($set['trade']['closerecharge']))}
+    <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="{if isset($set['trade']) && $set['trade']['withdraw']==1}margin:0px;{/if}"><i class="iconfont icon-cny"></i>{if isset($set['trade']) && $set['trade']['withdraw']==1}{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}明细{else}充值记录{/if}
+            <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+   {/if}
+
 </div>
 {if $hascoupon}
 <!--
