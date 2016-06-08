@@ -200,6 +200,10 @@ if(!pdo_fieldexists('sz_yi_order', 'redprice')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `redprice` varchar(50) DEFAULT '';");
 }
 
+if(!pdo_fieldexists('sz_yi_order', 'redstatus')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `redprice` varchar(100) DEFAULT '';");
+}
+
 pdo_fetchall("UPDATE ".tablename('qrcode')." SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
 
 if(!pdo_fieldexists('sz_yi_member', 'regtype')) {
