@@ -23,7 +23,7 @@
     
     .addorder_nav { height:30px; padding:10px;}
     .addorder_nav .nav { padding:2px 5px 2px 5px;; border:1px solid #5f6e8b; color:#5f6e8b; background:#fff; float:left; margin-left:10px;}
-    .addorder_nav .selected { border:1px solid #ff6600; color:#ff6600; }
+    .addorder_nav .selected { border:1px solid #f15353; color:#f15353; }
     
     .addorder_user {height:54px;  background:#fff; padding:5px; border-bottom:1px solid #eaeaea;}
     .addorder_user .info .ico { float:left;  height:50px; width:30px; line-height:50px; font-size:26px; text-align:center; color:#666}
@@ -94,7 +94,7 @@
     .carrier_input_info .row .inner { margin-left:85px; }
     .carrier_input_info .row .inner input {height:30px; color:#666;background:transparent;margin-top:0px; width:100%;border-radius:0;padding:0px; margin:0px; border:0px; float:left; font-size:16px;}
  
-    .addorder_price .line .nav {height:22px; width:40px; background:#ccc; margin:3px 0px; float:right; border-radius:40px;}
+    .addorder_price .line .nav {height:22px; width:40px; background:#ccc; margin:5px 0px; float:right; border-radius:40px;}
 .addorder_price .line .on {background:#4ad966;}
 .addorder_price .line .nav nav {height:20px; width:20px; background:#fff; margin:1px; border-radius:20px;}
 .addorder_price .line .nav .on {margin-left:19px;}
@@ -121,17 +121,17 @@
              data-mobile='<%address.mobile%>'
              data-address='<%address.address%>'
              >
-            <div class="ico" ><%if selectedAdressID==address.id%><i class="fa fa-check" style="color:#0c9"></i><%/if%></div>
+            <div class="ico" ><%if selectedAdressID==address.id%><i class="iconfont icon-check-circle-o" style="color:#f15353;font-size: 20px"></i><%/if%></div>
             <div class="info">
                 <div class='inner'>
                     <div class="name"><%address.realname%>(<%address.mobile%>)</div>
                     <div class="addr"><%address.address%></div>
                 </div>
             </div>
-            <div class="edit"><i class='fa fa-pencil'></i></div>
+            <div class="edit"><i class='iconfont icon-pencil'></i></div>
         </div>
         <%/each%>
-        <div class="add_address"><i class="fa fa-plus-circle" style="margin-left:3%; margin-right:10px; line-height:44px; font-size:20px;"></i>新增收货地址</div>
+        <div class="add_address"><i class="iconfont icon-plus-circle" style="margin-left:3%; margin-right:10px; line-height:44px; font-size:20px;"></i>新增收货地址</div>
     </div>
 </script>
 
@@ -163,7 +163,7 @@
              data-mobile='<%carrier.tel%>'
              data-address='<%carrier.address%>' 
              >
-            <div class="ico" ><%if selectedCarrierIndex==index%><i class="fa fa-check" style="color:#0c9"></i><%/if%></div>
+            <div class="ico" ><%if selectedCarrierIndex==index%><i class="iconfont icon-check-circle-o" style="color:#f15353;font-size: 20px"></i><%/if%></div>
             <div class="info">
                 <div class='inner'>
                     <div class="name"><%carrier.storename%>(<%carrier.tel%>)</div>
@@ -401,13 +401,13 @@
      <div class="addorder_price" style="margin-top:5px;">
             <div class="price" style="border:none;">
             <%if deductcredit>0 %>
-            <div class="line" style="line-height:26px;"><d id="deductcredit_info"><%deductcredit%></d> {if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}可抵扣 <d id="deductcredit_money" style='color:#ff6600'><%deductmoney%></d> 元
+            <div class="line" style="line-height:26px;"><d id="deductcredit_info"><%deductcredit%></d> {if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}可抵扣 <d id="deductcredit_money" style='color:#f15353'><%deductmoney%></d> 元
                 <div id='deductcredit' class="nav" on="0" credit="<%deductcredit%>" money='<%deductmoney%>'><nav></nav></div>
             </div>
             <%/if%>
             
             <%if deductcredit2>0 %>
-            <div class="line" style="line-height:26px;">{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}可抵扣 <d id="deductcredit2_money" style='color:#ff6600'><%deductcredit2%></d> 元
+            <div class="line" style="line-height:33px;">{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}可抵扣 <d id="deductcredit2_money" style='color:#f15353'><%deductcredit2%></d> 元
                 <div id='deductcredit2' class="nav" on="0" credit2="<%deductcredit2%>"><nav></nav></div>
             </div>
             <%/if%>
