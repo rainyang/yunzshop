@@ -62,6 +62,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_bonus') . " (
   `status` tinyint(1) DEFAULT '0',
   `type` tinyint(1) DEFAULT '0' COMMENT '0 手动 1 自动',
   `paymethod` tinyint(1) DEFAULT '0',
+  `sendmonth` tinyint(1) DEFAULT '0',
   `isglobal` tinyint(1) DEFAULT '0',
   `sendpay_error` tinyint(1) DEFAULT '0',
   `utime` int(11) DEFAULT '0',
