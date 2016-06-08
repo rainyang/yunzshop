@@ -10,10 +10,16 @@ $day_times        = intval($set['settledays']) * 3600 * 24;
 $daytime = strtotime(date("Y-m-d 00:00:00"));
 if(empty($set['sendmonth'])){
     $stattime = $daytime - 86400;
-    $endtime = $daytime - 1;
+    $endtime = $daytime;
+    $logs_count = pdo_fetchall("select count(*) from ".tablename('sz_yi_bonus')." where uniacid={$_W['uniacid']} and sendmonth=0 and utime=".$daytime);
+    $logs_text = "今天";
 }else if($set['sendmonth'] == 1){
     $stattime = mktime(0, 0, 0, date('m') - 1, 1, date('Y'));
-    $endtime = mktime(0, 0, 0, date('m'), 1, date('Y')) - 1;
+    $endtime = mktime(0, 0, 0, date('m'), 1, date('Y'));
+    $log_stattime = mktime(0, 0, 0, date('m'), 1, date('Y'));
+    $log_endtime = mktime(0, 0, 0, date('m')+1, 1, date('Y'));
+    $logs_count = pdo_fetchall("select count(*) from ".tablename('sz_yi_bonus')." where uniacid={$_W['uniacid']} and sendmonth=0 and ctime >= " . $log_stattime . " and ctime < ".$log_endtime);
+    $logs_text = "本月";
 }
 
 $sql = "select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}  ORDER BY o.finishtime DESC,o.status DESC";
@@ -100,6 +106,7 @@ if (!empty($_POST)) {
             "money" => $totalmoney,
             "status" => 1,
             "ctime" => time(),
+            "sendmonth" => $set['sendmonth'],
             "paymethod" => $set['paymethod'],
             "sendpay_error" => $sendpay_error,
             "isglobal" => 1,
