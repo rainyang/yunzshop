@@ -83,11 +83,13 @@
 
 <div class="cart new-ullist">
     <ul>
-        <li>
-        <a href="{php echo $this->createPluginMobileUrl('commission')}">
-        <i class="fa iconfont icon-sitemap" style="background:#f15353"></i><br/>分销中心
-        </a>
-        </li>
+        {if $hascom}
+            <li>
+                <a href="{php echo $this->createPluginMobileUrl('commission')}">
+                    <i class="fa iconfont icon-sitemap" style="background:#f15353"></i><br/>分销中心
+                </a>
+            </li>
+        {/if}
         <li>
         <a href="{php echo $this->createMobileUrl('member/info')}">
         <i class="fa iconfont icon-user" style="background:#BC7BFF"></i><br/>我的资料
@@ -98,11 +100,13 @@
         <i class="fa iconfont icon-cart" style="background:#43BFF1"></i><br/>购物车
         </a>
         </li>
-        <li>
-        <a href="{php echo $this->createMobileUrl('member/log')}">
-        <i class="fa iconfont icon-cny" style="background:#ff6e03"></i><br/>我的余额
-        </a>
-        </li>
+        {if isset($set['trade']) && ($set['trade']['withdraw']==1 || empty($set['trade']['closerecharge']))}
+            <li>
+                <a href="{php echo $this->createMobileUrl('member/log')}">
+                    <i class="fa iconfont icon-cny" style="background:#ff6e03"></i><br/>我的余额
+                </a>
+            </li>
+        {/if}
         <li>
         <a href="{php echo $this->createMobileUrl('shop/favorite')}">
         <i class="fa iconfont icon-heart" style="background:#58d5d9"></i><br/>我的收藏
@@ -114,16 +118,19 @@
         </a>
         </li>
         <li>
-        <a href="{php echo $this->createPluginMobileUrl('coupon/my')}">
-        <i class="fa iconfont icon-tags" style="background:#ff3877"></i><br/>优惠券
-        </a>
+            <a href="{php echo $this->createPluginMobileUrl('coupon/my')}">
+                <i class="fa iconfont icon-tags" style="background:#ff3877"></i><br/>优惠券
+            </a>
         </li>
+{if $open_creditshop}
         <li>
         <a href="#" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">
         <i class="fa iconfont icon-database" style="background:#28c870"></i><br/>积分商城
         </a>
         </li>
+{/if}
     </ul>
+
 </div>
 <!--
 <div class="cart">

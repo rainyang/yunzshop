@@ -16,12 +16,8 @@ if (p('supplier')) {
     if($roleid == 0){
         $perm_role = 0;
     }else{
-        if(p('supplier')){
-            $perm_role = pdo_fetchcolumn('select status1 from' . tablename('sz_yi_perm_role') . ' where id=' . $roleid);
-            $cond = " and identity in ('exhelper','taobao') ";
-        }else{
-            $perm_role = 0;
-        }
+        $perm_role = pdo_fetchcolumn('select status1 from' . tablename('sz_yi_perm_role') . ' where id=' . $roleid);
+        $cond = " and identity in ('exhelper','taobao') ";
     }
 }
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
