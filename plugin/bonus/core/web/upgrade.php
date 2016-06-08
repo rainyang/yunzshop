@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 global $_W;
 if (!defined('IN_IA')) {
     exit('Access Denied');
