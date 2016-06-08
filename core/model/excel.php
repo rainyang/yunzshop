@@ -133,6 +133,7 @@ class Sz_DYi_Excel
         if (PHP_SAPI == 'cli') {
             die('This example should only be run from a Web Browser');
         }
+        ob_end_clean();
         require_once IA_ROOT . '/addons/sz_yi/core/inc/phpexcel/PHPExcel.php';
         $excel = new PHPExcel();
         $excel->getProperties()->setCreator("芸众商城")->setLastModifiedBy("芸众商城")->setTitle("Office 2007 XLSX Test Document")->setSubject("Office 2007 XLSX Test Document")->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")->setKeywords("office 2007 openxml php")->setCategory("report file");
@@ -154,7 +155,7 @@ class Sz_DYi_Excel
             $rownum++;
         }
         $excel->getActiveSheet()->setTitle($params['title']);
-        $filename = urlencode($params['title'] . '-' . date('Y-m-d H:i', time()));
+        $filename = $params['title'] . '-' . date('Y-m-d H:i', time());
         header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
         header('Cache-Control: max-age=0');

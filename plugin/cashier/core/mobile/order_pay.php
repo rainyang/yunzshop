@@ -512,9 +512,21 @@ if ($operation == 'display' && $_W['isajax']) {
             ':openid'  => $openid
         )
     );
+    $store = pdo_fetch(
+        'select * from ' . tablename('sz_yi_cashier_order') . ' o inner join ' . tablename('sz_yi_cashier_store') . ' s on o.cashier_store_id = s.id where o.order_id=:orderid and o.uniacid=:uniacid',
+        array(
+            ':uniacid' => $_W['uniacid'],
+            ':orderid' => $orderid
+        )
+    );
     if($order['status']==3){
         $this->model->redpack($openid,$orderid);
+        if($store['creditpack']>0){
+            $credit2 = $member['credit2'] + $order['price']*($store['creditpack']/100);
+            pdo_update('mc_members',array('credit2'=>$credit2),array('uid'=>$member['uid']));
+        }
     }
+
 if ($operation == 'display') {
     include $this->template('cashier/order_pay');
 }

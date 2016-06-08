@@ -74,8 +74,10 @@ if ($_W['isajax']) {
         $isvirtual = false;
         $changenum = false;
         $goods     = array();
-        if (empty($id)) {
+
+        if (empty($id)) {   //购物车,否则是直接购买的
             $condition = '';
+            //todo, what? check var. cart store in db.
             $cartids   = $_GPC['cartids'];
             if (!empty($cartids)) {
                 $condition = ' and c.id in (' . $cartids . ')';
@@ -142,7 +144,7 @@ if ($_W['isajax']) {
                     ':uniacid' => $uniacid,
                     ':openid' => $openid
                 ));
-                $last             = $data['usermaxbuy'] - $order_goodscount;
+                $last = $data['usermaxbuy'] - $order_goodscount;
                 if ($last <= 0) {
                     $last = 0;
                 }
@@ -265,7 +267,7 @@ if ($_W['isajax']) {
             $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
-            ));            
+            ));
         } else {
             $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
                 ':uniacid' => $uniacid,
@@ -858,10 +860,10 @@ if ($_W['isajax']) {
             if (empty($goodsid)) {
                 show_json(0, '参数错误，请刷新重试');
             }
-            if(p('supplier')){
-                $sql  = 'SELECT id as goodsid,supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
-            }else{
-                $sql  = 'SELECT id as goodsid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
+            if (p('supplier')) {
+                $sql  = 'SELECT id as goodsid,costprice,supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
+            } else {
+                $sql  = 'SELECT id as goodsid,costprice,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
             }
             $data = pdo_fetch($sql, array(
                 ':uniacid' => $uniacid,
@@ -929,7 +931,9 @@ if ($_W['isajax']) {
                     $data['optionid']    = $optionid;
                     $data['optiontitle'] = $option['title'];
                     $data['marketprice'] = $option['marketprice'];
-                    $data['costprice']   = $option['costprice'];
+                    if (!empty($option['costprice'])) {
+                        $data['costprice']   = $option['costprice'];
+                    }
                     $virtualid           = $option['virtual'];
                     if (!empty($option['goodssn'])) {
                         $data['goodssn'] = $option['goodssn'];
@@ -976,24 +980,24 @@ if ($_W['isajax']) {
                 }
             }
             /**
-             *  红包价格计算 
+             *  红包价格计算
              */
-            if (strpos($data['redprice'],"%") === false) {
-                if (strpos($data['redprice'],"-") === false) {
+            if (strpos($data['redprice'], "%") === false) {
+                if (strpos($data['redprice'], "-") === false) {
                     $redprice = $data['redprice'];
                 } else {
                     $rprice = explode("-", $data['redprice']);
                     if ($rprice[1]>200) {
-                       $redprice = rand($rprice[0]*100,200*100)/100;
+                        $redprice = rand($rprice[0]*100, 200*100)/100;
                     } else if ($rprice[0]<0) {
-                        $redprice = rand(0,$rprice[1]*100)/100;
+                        $redprice = rand(0, $rprice[1]*100)/100;
                     } else {
-                        $redprice = rand($rprice[0]*100,$rprice[1]*100)/100;
-                    }                   
+                        $redprice = rand($rprice[0]*100, $rprice[1]*100)/100;
+                    }
                 }
             } else {
                 $rprice = explode("%", $data['redprice']);
-                $redprice = ($rprice[0]*$data['marketprice'])/100;
+                $redprice = ($rprice[0] * $data['marketprice']) / 100;
             }
             $redprice = $redprice * $goodstotal;
             $redpriceall = $redprice;
@@ -1060,8 +1064,8 @@ if ($_W['isajax']) {
             foreach ($saleset["enoughs"] as $e) {
                 if ($totalprice >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
                     $deductenough = floatval($e["money"]);
-            if ($deductenough > $totalprice) {
-                $deductenough = $totalprice;
+                    if ($deductenough > $totalprice) {
+                        $deductenough = $totalprice;
                     }
                     break;
                 }
@@ -1364,7 +1368,7 @@ if ($_W['isajax']) {
                 $order_goods["diyformdata"]   = $goods["diyformdata"];
                 $order_goods["diyformfields"] = $goods["diyformfields"];
             }
-            if(p('supplier')){
+            if (p('supplier')) {
                 $order_goods['supplier_uid'] = $goods['supplier_uid'];
             }
             pdo_insert('sz_yi_order_goods', $order_goods);

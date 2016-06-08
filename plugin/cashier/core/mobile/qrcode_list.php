@@ -9,5 +9,5 @@ $openid    = m('user')->getOpenid();
 $member  = m('member')->getMember($openid);
 
 $store = pdo_fetchall('select * from '.tablename('sz_yi_cashier_store').' where member_id='.$member['id']);  
-
+$store=set_medias($store,'thumb');
 include $this->template('cashier/qrcode_list');

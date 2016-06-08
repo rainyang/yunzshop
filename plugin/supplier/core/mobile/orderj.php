@@ -12,13 +12,6 @@ $_GPC['type'] = $_GPC['type'] ? $_GPC['type'] : 0;
 $ordercount0 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where supplier_uid={$uid} and userdeleted=0 and deleted=0 and uniacid={$_W['uniacid']} ");
 //已提现佣金总和
 $commission_total=number_format(pdo_fetchcolumn("select sum(apply_money) from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and uid={$uid} and status=1"), 2);
-//已申请的佣金
-//$commission_apply=number_format($member['commission_apply'], 2);
-//待处理的佣金
-//$commission_check=number_format($member['commission_check'], 2);
-//已提现佣金
-//$commission_lock=number_format($member['commission_lock'], 2);
-//可提现佣金
 $costmoney = 0;
 $sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0");
 foreach ($sp_goods as $key => $value) {
@@ -83,21 +76,6 @@ if($_W['isajax']) {
 	show_json(2, array('list' => $listsd,'pagesize' => $psize,'setlevel'=>$setids));
 	
 	
-	} elseif ($operation == 'order_cancel') {
-		$orderid = $_GPC['orderid'];
-		pdo_update('sz_yi_order', array('agentuid' => 0, 'ownerid' => 0), array('id' => $orderid, 'uniacid' => $_W['uniacid']));
-		$data = array(
-	        'uniacid'       => $_W['uniacid'],
-	        'orderid'       => $orderid,
-	        'from_agentuid' => $member['uid']
-        );
-    	pdo_insert("sz_yi_cancel_goods", $data);
-		show_json(1,'取消订单成功');
-	} elseif ($operation == 'order_send') {
-		$orderid = $_GPC['orderid'];
-		pdo_update('sz_yi_order', array('status' => 2), array('id' => $orderid, 'uniacid' => $_W['uniacid']));
-		m('notice')->sendOrderMessage($orderid);
-		show_json(1,"");
 	}
 }
 include $this->template('orderj');

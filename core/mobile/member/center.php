@@ -56,10 +56,12 @@ $bonus_start = false;
 $bonus_text = "";
 if(!empty($pluginbonus)){
 	$bonus_set = $pluginbonus->getSet();
-	if(!empty($bonus_set['start'])){
+	$bonus_level = $pluginbonus->getLevel($openid);
+	if((!empty($bonus_set['start']) || !empty($bonus_set['area_start'])) && !empty($bonus_level)){
 		$bonus_start = true;
 		$bonus_text = $bonus_set['texts']['center'] ? $bonus_set['texts']['center'] : "分红明细";
 	}
+    
 }
 $shopset['bonus_start'] = $bonus_start;
 $shopset['bonus_text'] = $bonus_text;
@@ -141,5 +143,15 @@ if ($_W['isajax']) {
 		$counts['couponcount'] = pdo_fetchcolumn($sql, array(':openid' => $openid, ':uniacid' => $_W['uniacid']));
 	}
 	show_json(1, array('member' => $member,'referrer'=>$referrer,'shop_set'=>$shop_set, 'order' => $order, 'level' => $level, 'open_creditshop' => $open_creditshop, 'counts' => $counts, 'shopset' => $shopset, 'trade' => $trade));
+}
+$pcashier = p('cashier');
+$has_cashier = false;
+if ($pcashier) {
+    $store = pdo_fetch('select * from ' . tablename('sz_yi_cashier_store') . ' where uniacid=:uniacid and member_id=:member_id limit 1', array(
+        ':uniacid' => $_W['uniacid'], ':member_id' => $member['id']
+    ));
+    if ($store) {
+        $has_cashier = true;
+    }
 }
 include $this->template('member/center');

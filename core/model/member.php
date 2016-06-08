@@ -326,6 +326,7 @@ class Sz_DYi_Member
 		}
 
     }
+
     public function checkMember($openid = '')
     {
         global $_W, $_GPC;

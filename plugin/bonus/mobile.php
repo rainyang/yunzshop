@@ -16,7 +16,13 @@ class BonusMobile extends Plugin
     public function __construct()
     {
         parent::__construct('bonus');
+        global $_GPC;
         $this->set = $this->getSet();
+        $openid = m('user')->getOpenid();
+        $level = $this->model->getLevel($openid);
+        if(empty($level) && $_GPC['method'] != 'register'){
+            redirect($this->createPluginMobileUrl('bonus/register'));
+        }
     }
     public function index()
     {

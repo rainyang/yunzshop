@@ -105,6 +105,7 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
 </form>
 {else if $operation == 'get-deduct'}
 <input type="hidden" name="sid" id="sid" value="{$sid}">
+{if $store['iscontact']==1}
 <div class="carrier_input_info" >
           <div class="row">
             <div class='title'>联系人姓名</div>
@@ -119,6 +120,7 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
             </div>
           </div>
           </div> 
+{/if}          
 <div class="info_main">
     <div class="line">
         <div class="title">金额</div>
@@ -332,23 +334,25 @@ require(['tpl', 'core'], function(tpl, core) {
         data.couponid = $('#couponid').val();
     {/if}
     $('.paysub').click(function() {
-
-        if($('#carrier_input_realname').val()==''){
-            core.tip.show("请填写联系人!")
-            return false; 
-        }
-        if($('#carrier_input_mobile').val()==''){
-            core.tip.show("请填写联系人手机!")
-            return false; 
-        }
+    	var iscontact = "{$store['iscontact']}";
+		if(iscontact == 1){
+			if($('#carrier_input_realname').val()==''){
+          		core.tip.show("请填写联系人!")
+          		return false;  
+        	}
+        	if($('#carrier_input_mobile').val()==''){
+          		core.tip.show("请填写联系人电话!")
+          		return false;  
+        	}
+		}
         if ($("#deductcredit").length > 0) {
             if ($("#deductcredit").attr('on') == '1') {
-                data.deduct = 1;
+                var deduct = 1;
             }
         }
         if ($("#deductcredit2").length > 0) {
             if ($("#deductcredit2").attr('on') == '1') {
-                data.deduct2 = 1;
+                var deduct2 = 1;
             }
         }
     var carrier_realname = $.trim( $('#carrier_input_realname').val() );
@@ -360,7 +364,9 @@ require(['tpl', 'core'], function(tpl, core) {
         carrier:{
             carrier_realname:carrier_realname,
             carrier_mobile:carrier_mobile,
-        }
+        },
+        deduct:deduct,
+        deduct2:deduct2,
     };
     
         core.pjson('cashier/order_confirm', data, function(create_json) {
