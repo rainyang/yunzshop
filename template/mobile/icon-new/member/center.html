@@ -61,7 +61,7 @@
         <li><a href="#"><span><%member.credit2%></span><br/>余额</a></li>
         <li><a href="#"><span><%member.credit1%></span><br/>积分</a></li>
         <li><a href="#"><span><%counts.couponcount%></span><br/>优惠券</a></li>
-        <li><a href="#" class="recharge">充值</a></li>
+        <li><a href="#" class="recharge" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</a></li>
     </ul>
 </div>
 <div class="order">
