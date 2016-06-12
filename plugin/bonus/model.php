@@ -243,7 +243,6 @@ if (!class_exists('BonusModel')) {
 
 		//Author:ym Date:2016-05-06 Content:分成方式计算		
 		public function calculate_method($order_goods){
-			$price_all = 
 			global $_W;
 			$set = $this->getSet();
 			$realprice = $order_goods['realprice'];
