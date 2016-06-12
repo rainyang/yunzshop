@@ -144,7 +144,7 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
 
 {/if}
 <input type="hidden" id="couponid" value="" />
-<div id="coupondiv" class="addorder_price" style="margin-top:5px;<%if !hascoupon%>display:none<%/if%>" >
+<div id="coupondiv" class="addorder_price" style="margin-top:5px;{if !$hascoupon}display:none{/if}" >
     <div class="price" style="border:none;">
         <div class="line" style="line-height:32px;" id="selectcoupon">
             <d id="couponselect">我要使用优惠券</d>
@@ -411,7 +411,7 @@ require(['tpl', 'core'], function(tpl, core) {
             }
             else {
                 $('.paysub').html('确认').removeAttr('submitting');
-                core.tip.show("生成订单失败!")
+                core.tip.show("生成订单失败!" + create_json.result)
             }
 
         }, true, true);

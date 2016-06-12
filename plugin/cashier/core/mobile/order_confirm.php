@@ -211,8 +211,13 @@ if ($operation == 'display') {
     if ($plugc) {
         $coupon = $plugc->getCouponByDataID($couponid);
         if (!empty($coupon)) {
+
             if ($totalprice >= $coupon["enough"] && empty($coupon["used"])) {
                 if ($coupon["backtype"] == 0) {
+                    if($coupon['deduct'] >= $totalprice && $coupon["enough"] == 0){
+                        show_json(-2,'优惠券金额不能大于订单金额!');exit;
+                    }
+
                     if ($coupon["deduct"] > 0) {
                         $couponprice = number_format($coupon["deduct"]);
                     }
