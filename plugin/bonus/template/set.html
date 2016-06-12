@@ -19,7 +19,7 @@
                 </div>
             </div> 
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">级差</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">股权代理级差</label>
                 <div class="col-sm-9 col-xs-12">
                      <label class="radio-inline"><input type="radio"  name="setdata[isdistinction]" value="0" {if $set['isdistinction'] ==0} checked="checked"{/if} /> 是</label>
                     <label class="radio-inline"><input type="radio"  name="setdata[isdistinction]" value="1" {if $set['isdistinction'] ==1} checked="checked"{/if} /> 否</label>
@@ -36,10 +36,18 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">级差</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区代理级差</label>
                 <div class="col-sm-9 col-xs-12">
-                     <label class="radio-inline"><input type="radio"  name="setdata[isdistinction_area]" value="0" {if $set['isdistinction_area'] ==0} checked="checked"{/if} /> 是</label>
-                    <label class="radio-inline"><input type="radio"  name="setdata[isdistinction_area]" value="1" {if $set['isdistinction_area'] ==1} checked="checked"{/if} /> 否</label>
+                     <label class="radio-inline"><input type="radio" class="distinction_area"  name="setdata[isdistinction_area]" value="0" {if $set['isdistinction_area'] ==0} checked="checked"{/if} /> 是</label>
+                    <label class="radio-inline"><input type="radio" class="distinction_area"  name="setdata[isdistinction_area]" value="1" {if $set['isdistinction_area'] ==1} checked="checked"{/if} /> 否</label>
+                    <span class='help-block'>地区代理，如选择否为同等级不拿分红外，分红比例正常没有级差</span>
+                </div>
+            </div>
+            <div class="form-group form-areaall" style="display:none;">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区多人分红</label>
+                <div class="col-sm-9 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="setdata[isdistinction_area_all]" value="1" {if $set['isdistinction_area_all'] ==1} checked="checked"{/if} /> 是</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[isdistinction_area_all]" value="0" {if $set['isdistinction_area_all'] ==0} checked="checked"{/if} /> 否</label>
                     <span class='help-block'>地区代理，如选择否为同等级不拿分红外，分红比例正常没有级差</span>
                 </div>
             </div>
@@ -85,7 +93,20 @@
                     <span class='help-block'>开启内购得分红，自己购买商品，享受订单分红</span>
                 </div>
             </div>
-            
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红计算方式</label>
+                <div class="col-sm-4">
+                    <select  class="form-control" name="setdata[culate_method]">
+                        <option value="0" {if empty($set['culate_method'])}selected{/if}>分红金额</option>
+                        <option value="1" {if $set['culate_method']==1}selected{/if}>实付款金额</option>
+                        <option value="2" {if $set['culate_method']==2}selected{/if}>商品原价</option>
+                        <option value="3" {if $set['culate_method']==3}selected{/if} >商品现价</option>
+                        <option value="4" {if $set['culate_method']==4}selected{/if} >商品成本价</option>
+                        <option value="5" {if $set['culate_method']==5}selected{/if} >商品利润（实付款金额-成本价）</option>
+
+                    </select>
+                </div>
+            </div>
         </div>
         <div class='panel-heading'>
             分红打款设置
@@ -339,6 +360,10 @@ $(document).ready(function(){
   $(".sendmoth").click(function(){
     interval_day();
   });
+  $(".distinction_area").click(function(){
+    distinction_area();
+  });
+  
 });
 
 function interval_day(){
@@ -348,6 +373,14 @@ function interval_day(){
        $(".form-interval").hide(); 
     } 
 }
+function distinction_area(){
+   if($('.distinction_area:checked').val()==1){
+        $(".form-areaall").show();
+    }else{
+       $(".form-areaall").hide(); 
+    } 
+}
 interval_day();
+distinction_area();
 </script>
 {template 'web/_footer'}
