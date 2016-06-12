@@ -549,3 +549,7 @@ if(!pdo_fieldexists('sz_yi_article_category', 'd_level')) {
 pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article_category')." ADD `d_level` INT(11) NOT NULL DEFAULT '0'");
 }
 
+//商品等级返现
+if(!pdo_fieldexists('sz_yi_goods', 'returns')) {
+pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returns` TEXT NOT NULL AFTER `discounts`");
+}
