@@ -30,20 +30,25 @@ if ($operation == 'display') {
     if($commission['become_child']==0){
         p('commission')->checkAgent();
     }
-} else if ($operation == 'get-deduct') {
-    $member = m('member')->getMember($openid);
-    $sid = $_GPC['sid'];
-    if (!is_numeric($sid)) {
-        redirect($this->createMobileUrl('member'));
+// } else if ($operation == 'get-deduct') {
+    // $member = m('member')->getMember($openid);
+    // $sid = $_GPC['sid'];
+    // if (!is_numeric($sid)) {
+    //     redirect($this->createMobileUrl('member'));
+    // }
+    // $store = pdo_fetch('select * from ' . tablename('sz_yi_cashier_store') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $sid, ':uniacid' => $_W['uniacid']));
+    // if (!$store) {
+    //     redirect($this->createMobileUrl('member'));
+    // }
+    if($_W['isajax']){
+        $orig_price = $_GPC['orig_price'];
+        if (!is_numeric($orig_price) || $orig_price <= 0) {
+            redirect($this->createMobileUrl('member'));
+        }  
+    }else{
+        $orig_price = 0;
     }
-    $store = pdo_fetch('select * from ' . tablename('sz_yi_cashier_store') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $sid, ':uniacid' => $_W['uniacid']));
-    if (!$store) {
-        redirect($this->createMobileUrl('member'));
-    }
-    $orig_price = number_format($_GPC['orig_price'], 2);
-    if (!is_numeric($orig_price) || $orig_price <= 0) {
-        redirect($this->createMobileUrl('member'));
-    }
+    
     // 抵扣： 积分 余额
     $store_max_credit1 = $orig_price * $store['deduct_credit1'] / 100;  // 商家允许使用的最大积分百分比
     $store_max_credit2 = $orig_price * $store['deduct_credit2'] / 100;  // 商家允许使用的最大余额百分比
@@ -80,8 +85,72 @@ if ($operation == 'display') {
     // coupon
     $hascoupon = false;
     if ($hascouponplugin) {
-        $couponcount = $plugc->consumeCouponCount($openid, $orig_price);
+        $couponcount = $plugc->consumeCouponCount($openid,$orig_price);
         $hascoupon   = $couponcount > 0;
+    }
+
+} else if ($operation == 'get_deduct') {
+    if($_W['isajax']){
+         $sid = $_GPC['sid'];
+        //  if (!is_numeric($sid)) {
+        //     redirect($this->createMobileUrl('member'));
+        // }
+        $store = pdo_fetch('select * from ' . tablename('sz_yi_cashier_store') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $sid, ':uniacid' => $_W['uniacid']));
+        
+        $orig_price = $_GPC['orig_price'];
+        if (!is_numeric($orig_price) || $orig_price <= 0) {
+            redirect($this->createMobileUrl('member'));
+        } 
+        $store_max_credit1 = $orig_price * $store['deduct_credit1'] / 100;  // 商家允许使用的最大积分百分比
+        $store_max_credit2 = $orig_price * $store['deduct_credit2'] / 100;  // 商家允许使用的最大余额百分比
+
+        $deductcredit  = 0;
+        $deductmoney   = 0;
+        $deductcredit2 = 0;
+        $sale_plugin = p('sale');
+        if ($sale_plugin) {
+            $saleset = $sale_plugin->getSet();
+            $credit = m('member')->getCredit($openid, 'credit1');
+            if (!empty($saleset['creditdeduct'])) {
+                $pcredit = intval($saleset['credit']);
+                $pmoney  = round(floatval($saleset['money']), 2);
+                if ($pcredit > 0 && $pmoney > 0) {
+                    if ($credit % $pcredit == 0) {
+                        $deductmoney = round(intval($credit / $pcredit) * $pmoney, 2);
+                    } else {
+                        $deductmoney = round((intval($credit / $pcredit) + 1) * $pmoney, 2);
+                    }
+                }
+                if ($deductmoney > $store_max_credit1) {
+                    $deductmoney = $store_max_credit1;
+                }
+                $deductcredit = $deductmoney / $pmoney * $pcredit;
+            }
+            if (!empty($saleset['moneydeduct'])) {
+                $deductcredit2 = m('member')->getCredit($openid, 'credit2');
+                if ($deductcredit2 > $store_max_credit2) {
+                    $deductcredit2 = $store_max_credit2;
+                }
+            }
+        }
+        // coupon
+        $hascoupon = false;
+        if ($hascouponplugin) {
+            $couponcount = $plugc->consumeCouponCount($openid,$orig_price);
+            $hascoupon   = $couponcount > 0;
+        }
+        $coupon=array(
+            'hascouponplugin' => $hascouponplugin,
+            'couponcount' => $couponcount,
+            'hascoupon' => $hascoupon
+            );
+        $deduct=array(
+            'deductcredit2'=>$deductcredit2,
+            'deductcredit'=>$deductcredit,
+            
+            'deductmoney'=>$deductmoney,
+            );
+        show_json(1,array('couponcount' => $couponcount, 'deduct' => $deduct, 'coupon' => $coupon ));
     }
 } else if ($operation == 'create-order') {
     $sid = $_GPC['sid'];
@@ -94,11 +163,11 @@ if ($operation == 'display') {
     if (!$store) {
         redirect($this->createMobileUrl('member'));
     }
-    $orig_price = number_format($_GPC['orig_price'], 2);
+    $orig_price = $_GPC['orig_price'];
     if (!is_numeric($orig_price) || $orig_price <= 0) {
         redirect($this->createMobileUrl('member'));
     }
-    // 抵扣： 积分 余额
+    //抵扣： 积分 余额
     $store_max_credit1 = $orig_price * $store['deduct_credit1'] / 100;  // 商家允许使用的最大积分百分比
     $store_max_credit2 = $orig_price * $store['deduct_credit2'] / 100;  // 商家允许使用的最大余额百分比
 
@@ -136,27 +205,35 @@ if ($operation == 'display') {
         }
         $totalprice -= $deductcredit2;
     }
+    
     //coupon
     $couponid    = intval($_GPC["couponid"]);
     if ($plugc) {
         $coupon = $plugc->getCouponByDataID($couponid);
         if (!empty($coupon)) {
+
             if ($totalprice >= $coupon["enough"] && empty($coupon["used"])) {
                 if ($coupon["backtype"] == 0) {
+                    if($coupon['deduct'] >= $totalprice && $coupon["enough"] == 0){
+                        show_json(-2,'优惠券金额不能大于订单金额!');exit;
+                    }
+
                     if ($coupon["deduct"] > 0) {
-                        $couponprice = $coupon["deduct"];
+                        $couponprice = number_format($coupon["deduct"]);
                     }
                 } else if ($coupon["backtype"] == 1) {
                     if ($coupon["discount"] > 0) {
                         $couponprice = $totalprice * (1 - $coupon["discount"] / 10);
                     }
                 }
+
                 if ($couponprice > 0) {
                     $totalprice -= $couponprice;
                 }
             }
         }
     }
+    
     //真实结算费用
     $realtotalprice = $totalprice;
 

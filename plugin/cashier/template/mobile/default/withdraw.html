@@ -58,10 +58,10 @@
                 core.message('请补充您的资料后才能申请提现!',result.infourl,'warning');
                 return;
             }
-            // if (result.store.totalprices <= 0) {
-            //     core.message('无未提现金额，无法申请提现!', "{php echo $this->createMobileUrl('member')}", 'warning');
-            //     return;
-            // }
+            if (result.store.totalprices <= 0) {
+                core.message('无未提现金额，无法申请提现!', "{php echo $this->createMobileUrl('member')}", 'warning');
+                return;
+            }
 
             $('.balance_sub1').click(function () {
                 if ($(this).attr('submitting') == '1') {

@@ -811,8 +811,11 @@ var fromcart = 0;
             }
 	        var totalprice = goodsprice - discountprice;
             var enoughprice =0;
-            if($("#deductenough_money").length>0 && $("#deductenough_money").html()!=''){
-                 enoughprice = parseFloat($("#deductenough_money").html().replace(',',''));
+            var isdeductenough = $("#deductenough").css("display");
+            if(isdeductenough != 'none'){
+                if($("#deductenough_money").length>0 && $("#deductenough_money").html()!=''){
+                     enoughprice = parseFloat($("#deductenough_money").html().replace(',',''));
+                }
             }
 	   {if $hascouponplugin}
 	       totalprice = calcCouponPrice(totalprice);
