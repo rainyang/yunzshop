@@ -506,6 +506,7 @@ if ($operation == "change") {
             $cset = p('commission')->getSet();
             if (!empty($cset['level'])) {
                 $data['nocommission']     = intval($_GPC['nocommission']);
+                $data['nobonus']          = intval($_GPC['nobonus']);
                 $data['hascommission']    = intval($_GPC['hascommission']);
                 $data['hidecommission']   = intval($_GPC['hidecommission']);
                 $data['commission1_rate'] = $_GPC['commission1_rate'];

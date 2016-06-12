@@ -57,6 +57,14 @@
                 </div>
             </div>
             {else}
+                {if $logs_count > 0}
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">状态</label>
+                    <div class="col-sm-9 col-xs-12 mart7">
+                        {$logs_text}已发放分红 {$logs_count} 次
+                    </div>
+                </div>
+                {/if}
             <div class="form-group" style="text-align: center;">
                 {ifp 'bonus.sendall.bont'}
                 <div class="col-sm-3 col-lg-2"><button class="btn btn-primary" >全球分红发放</button></div>

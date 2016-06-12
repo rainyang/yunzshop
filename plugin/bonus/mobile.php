@@ -19,8 +19,8 @@ class BonusMobile extends Plugin
         global $_GPC;
         $this->set = $this->getSet();
         $openid = m('user')->getOpenid();
-        $level = $this->model->getLevel($openid);
-        if(empty($level) && $_GPC['method'] != 'register'){
+        $isbonus = $this->model->isLevel($openid);
+        if($isbonus == false && $_GPC['method'] != 'register'){
             redirect($this->createPluginMobileUrl('bonus/register'));
         }
     }

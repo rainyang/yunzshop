@@ -56,8 +56,8 @@ $bonus_start = false;
 $bonus_text = "";
 if(!empty($pluginbonus)){
 	$bonus_set = $pluginbonus->getSet();
-	$bonus_level = $pluginbonus->getLevel($openid);
-	if((!empty($bonus_set['start']) || !empty($bonus_set['area_start'])) && !empty($bonus_level)){
+	$islevel = $pluginbonus->isLevel($openid);
+	if((!empty($bonus_set['start']) || !empty($bonus_set['area_start'])) && !empty($islevel)){
 		$bonus_start = true;
 		$bonus_text = $bonus_set['texts']['center'] ? $bonus_set['texts']['center'] : "分红明细";
 	}
