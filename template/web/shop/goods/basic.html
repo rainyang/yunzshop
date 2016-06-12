@@ -154,11 +154,75 @@
 
     </div>
 </div>
+{if $shopset['category2']==1}
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">其他{$shopset['category2name']}分类</label>
+    <div class="col-sm-8 col-xs-12">
+
+            {ife 'shop.goods' $item}
+
+               <select id="cates2" name='cates2[]' class="form-control" multiple="" >
+                {if intval($shopset['catlevel'])==3}
+                        {loop $category2 $p}
+                                    {if empty($p['parentid'])}
+                                        {loop $children2[$p['id']] $c}
+                                           {loop $children2[$c['id']] $t}
+                                             <option value="{$t['id']}" {if is_array($cates) && in_array($t['id'],$cates)}selected{/if} >{$p['name']}-{$c['name']}-{$t['name']}</option>
+                                           {/loop}
+                                        {/loop}
+                                    {/if}
+                                {/loop}
+                                {else}
+                                        {loop $category2 $p}
+                                            {if empty($p['parentid'])}
+                                                {loop $children2[$p['id']] $c}
+                                                   <option value="{$c['id']}" {if is_array($cates) && in_array($c['id'],$cates)}selected{/if} >{$p['name']}-{$c['name']}</option>
+                                                {/loop}
+                                            {/if}
+                                        {/loop}
+                             {/if}
+                  </select>
+
+            {else}
+
+              <div class='form-control-static'>
+                         {if intval($shopset['catlevel'])==3}
+                            {loop $category2 $p}
+                                {if empty($p['parentid'])}
+                                    {loop $children2[$p['id']] $c}
+                                       {loop $children2[$c['id']] $t}
+                                         {if is_array($cates) && in_array($t['id'],$cates)}{$p['name']}-{$c['name']}-{$t['name']}; {/if}
+                                       {/loop}
+                                    {/loop}
+                                {/if}
+                            {/loop}
+                            {else}
+                                    {loop $category2 $p}
+                                        {if empty($p['parentid'])}
+                                            {loop $children2[$p['id']] $c}
+                                               {if is_array($cates) && in_array($c['id'],$cates)}{$p['name']}-{$c['name']}; {/if}
+                                            {/loop}
+                                        {/if}
+                                    {/loop}
+                         {/if}
+            </div>
+         {/if}
+
+    </div>
+</div>
+{/if}
 <script language="javascript">
     $(function(){
             $('#cates').select2({
               search:true,
               placeholder: "请选择其他商品分类",
+              allowClear: true
+           });
+    })
+    $(function(){
+            $('#cates2').select2({
+              search:true,
+              placeholder: "请选择其他{$shopset['category2name']}分类",
               allowClear: true
            });
     })
