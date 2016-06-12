@@ -289,12 +289,12 @@
 							<th width="6%">ID</th>
 							<th width="6%">排序</th>
 							<th width="6%">商品</th>
-							<th width="28%">&nbsp;</th>
-							<th width="10%">价格</th>
-							<th width="10%">库存</th>
-							<th width="9%">销量</th>
-							<th width="8%">状态</th>
-							<th width="19%">操作</th>
+							<th width="26%">&nbsp;</th>
+							<th width="16%">价格<br/>库存</th>
+
+							<th width="10%">销量</th>
+							<th width="10%">状态</th>
+							<th width="20%">操作</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -312,7 +312,7 @@
 							<td width="6%" title="{$item['title']}">
 								<img src="{php echo tomedia($item['thumb'])}" style="width:40px;height:40px;padding:1px;border:1px solid #ccc;"  />
 							</td>
-							<td title="{$item['title']}" class='tdedit' width="28%">
+							<td title="{$item['title']}" class='tdedit' width="26%">
 								{if !empty($category[$item['pcate']])}
 								<span class="text-danger">[{$category[$item['pcate']]['name']}]</span>
 								{/if}
@@ -345,7 +345,7 @@
 								{$item['title']}
 								{/if}
 							</td>
-							<td class='tdedit' width="10%">
+							<td class='tdedit' width="16%">
 								{if $item['hasoption']==1}
 								{ifp 'shop.goods.edit'}
 								<span class='tip' title='多规格不支持快速修改'>{$item['marketprice']}</span>
@@ -365,10 +365,7 @@
 								{else}
 								{$item['marketprice']}
 								{/if}{/if}
-
-							</td>
-
-							<td class='tdedit' width="10%">
+								<br/>
 								{if $item['hasoption']==1}
 								{ifp 'shop.goods.edit'}
 								<span class='tip' title='多规格不支持快速修改'>{$item['total']}</span>
@@ -390,8 +387,9 @@
 								{/if}{/if}
 
 							</td>
-							<td width="9%">{$item['salesreal']}</td>
-							<td width="8%">
+
+							<td >{$item['salesreal']}</td>
+							<td >
 
                                 {if p('supplier')}
                                 {if $_W['isfounder'] == 1}
@@ -412,7 +410,7 @@
                             {/if}
 
 							</td>
-							<td style="position:relative;" width="19%">
+							<td style="position:relative;" width="20%">
 								<a href="javascript:;" data-url="{php echo $this->createMobileUrl('shop/detail', array('id' => $item['id']))}"  title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>
 								{ifp 'shop.goods.copy'}<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'] ,'op' =>'copygoods'))}"  title="复制商品" class="btn btn-default btn-smjs-clip"><i class="fa fa-article"></i></a>{/if}
 								{ifp 'shop.goods.edit|shop.goods.view'}<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'], 'op' => 'post'))}"class="btn btn-sm btn-default" title="{ifp 'shop.goods.edit'}编辑{else}查看{/if}"><i class="fa fa-pencil"></i></a>{/if}
