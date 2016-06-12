@@ -36,7 +36,7 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
     .addorder_good .good {height:100px; width:100%; padding:10px 0px; border-bottom:1px solid #eaeaea;}
     .addorder_good .img {height:100px; width:100px; float:left;}
     .addorder_good .img img {height:100%; width:100%;}
-    .addorder_good .info {width:100%;float:left; margin-left:-50px;margin-right:-60px;}
+    .addorder_good .info {float:left; margin-left:-50px;margin-right:-60px;}
     .addorder_good .info .inner { margin-left:60px;margin-right:60px; }
     .addorder_good .info .inner .name {height:32px; width:100%; float:left; font-size:18px; color:#555;overflow:hidden;}
     .addorder_good .info .inner .option {height:22px; width:100%; float:left; font-size:14px; color:#888;overflow:hidden;word-break: break-all}
@@ -60,7 +60,7 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
     <input type="hidden" name="do" value="plugin">
     <input type="hidden" name="p" value="cashier">
     <input type="hidden" name="method" value="order_confirm">
-    <input type="hidden" name="op" value="get-deduct">
+    <!-- <input type="hidden" name="op" value="get-deduct"> -->
 
     <div class="addorder_good">
         <div class="ico"><i class="fa fa-gift" style="color:#666; font-size:20px;"></i></div>
@@ -96,14 +96,14 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
             <div class="title">输入金额</div>
             <div class="info">
                 <div class="inner">
-                    <input type="text" id="input_price" value="" name="orig_price">
+                    <input type="text" id="orig_price" value="" name="orig_price">
                 </div>
             </div>
         </div>
     </div>
-    <button type="submit" class="info_sub">确认支付</button>
+<!--     <button type="submit" class="info_sub">确认支付</button> -->
 </form>
-{else if $operation == 'get-deduct'}
+
 <input type="hidden" name="sid" id="sid" value="{$sid}">
 {if $store['iscontact']==1}
 <div class="carrier_input_info" >
@@ -121,7 +121,7 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
           </div>
           </div> 
 {/if}          
-<div class="info_main">
+<!-- <div class="info_main">
     <div class="line">
         <div class="title">金额</div>
         <div class="info">
@@ -130,15 +130,18 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
             </div>
         </div>
     </div>
-</div>
+</div> -->
+
+
 {if $hascouponplugin}
-<div class="addorder_price">
+<div class="addorder_price" id="hascouponplugin">
     <div class="price" style="border:none;">
         <div id="coupondeduct_div" class="line" style="line-height:26px;display:none">
             <d id='coupondeduct_text'></d><span>-￥<span id="coupondeduct_money">0</span><span>
         </div>
     </div>
 </div>
+
 {/if}
 <input type="hidden" id="couponid" value="" />
 <div id="coupondiv" class="addorder_price" style="margin-top:5px;<%if !hascoupon%>display:none<%/if%>" >
@@ -146,28 +149,30 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
         <div class="line" style="line-height:32px;" id="selectcoupon">
             <d id="couponselect">我要使用优惠券</d>
             <div class="ico2" style="float:right;color:#999;margin-top:2px;"><i class='fa fa-angle-right fa-2x'></i></div>
-            <div class="couponcount">{$couponcount}</div>
+            <div class="couponcount" id="couponcount">{$couponcount}</div>
         </div>
     </div>
 </div>
-
-{if $deductcredit > 0 || $deductcredit2 > 0}
+<div id="deduct_container"></div>
+<script id="tpl_deduct" type="text/html">
+<%if deductcredit > 0 || deductcredit2 > 0%>
     <div class="addorder_price" style="margin-top:5px;">
         <div class="price" style="border:none;">
-        {if $deductcredit > 0}
-        <div class="line" style="line-height:26px;"><d id="deductcredit_info">{$deductcredit}</d> 积分可抵扣 <d id="deductcredit_money" style='color:#ff6600'>{$deductmoney}</d> 元
-            <div id="deductcredit" class="nav" on="0" credit="{$deductcredit}" money="{$deductmoney}"><nav></nav></div>
+        <%if deductcredit > 0%>
+        <div class="line" style="line-height:26px;"><d id="deductcredit_info"><%deductcredit%></d> 积分可抵扣 <d id="deductcredit_money" style='color:#ff6600'><%deductmoney%></d> 元
+            <div id="deductcredit" class="nav" on="0" credit="<%deductcredit%>" money="<%deductmoney%>"><nav></nav></div>
         </div>
-        {/if}
+        <%/if%>
 
-        {if $deductcredit2 > 0}
-        <div class="line" style="line-height:26px;">余额可抵扣 <d id="deductcredit2_money" style="color:#ff6600">{$deductcredit2}</d> 元
-            <div id='deductcredit2' class="nav" on="0" credit2="{$deductcredit2}"><nav></nav></div>
+        <%if deductcredit2 > 0%>
+        <div class="line" style="line-height:26px;">余额可抵扣 <d id="deductcredit2_money" style="color:#ff6600"><%deductcredit2%></d> 元
+            <div id='deductcredit2' class="nav" on="0" credit2="<%deductcredit2%>"><nav></nav></div>
         </div>
-        {/if}
+        <%/if%>
         </div>
     </div>
-{/if}
+<%/if%>
+</script>
 <div class="addorder_pay">
     <div class="paysub">确认</div>
     <span>需付：￥<t class='totalprice'>{$orig_price}</t>元</span>
@@ -182,6 +187,32 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
 {/if}
 <script>
 require(['tpl', 'core'], function(tpl, core) {
+    $('#orig_price').bind('input propertychange', function() {
+        $('#hascouponplugin').hide();
+        var orig_price = $('#orig_price').val();
+        $('.totalprice').html('');
+        $('.totalprice').html(orig_price);
+        
+            core.pjson('cashier/order_confirm', {op: 'get_deduct', orig_price: orig_price, sid:"{$_GPC['sid']}"}, function (rjson) {
+                    
+                    if(rjson.status == 1){
+                        $('#couponcount').html(rjson.result.couponcount);
+                        $('#deduct_container').html(tpl('tpl_deduct',rjson.result.deduct));
+                        
+                    }
+                    
+                    
+                
+            }, true, true);
+
+
+        //core.pjson('cashier/order_confirm',{orig_price:orig_price},function(json){
+        //         alert(json.status);
+                 // $('.couponcount').html(json.result.couponcount);
+            
+            
+        // }, true, true)
+    });
     function calctotalprice() {
         var totalprice  = $('#orig_price').val();
         {if $hascouponplugin}
@@ -225,7 +256,8 @@ require(['tpl', 'core'], function(tpl, core) {
         $('.totalprice').html(totalprice.toFixed(2));
         return totalprice;
     }
-    $('#deductcredit').click(function(){
+    
+    $(document).on('click','#deductcredit',function(){
         var on = $(this).attr('on') == '0' ? '1' : '0';
         $(this).attr('on', on);
         if (on == '1') {
@@ -235,13 +267,7 @@ require(['tpl', 'core'], function(tpl, core) {
         } 
         calctotalprice();
     });
-    $('.info_sub').click(function(){
-        if($('#input_price').val()==''){
-          core.tip.show("请填写金额!")
-          return false;  
-        }
-    })
-    $('#deductcredit2').click(function(){
+    $(document).on('click','#deductcredit2',function(){
         var on = $(this).attr('on') == '0' ? '1' : '0';
         $(this).attr('on', on);
         if (on == '1') {
@@ -330,21 +356,23 @@ require(['tpl', 'core'], function(tpl, core) {
             carrier_mobile:carrier_mobile,
         }
     };
-    {if $hascouponplugin}
-        data.couponid = $('#couponid').val();
-    {/if}
+
     $('.paysub').click(function() {
-    	var iscontact = "{$store['iscontact']}";
-		if(iscontact == 1){
-			if($('#carrier_input_realname').val()==''){
-          		core.tip.show("请填写联系人!")
-          		return false;  
-        	}
-        	if($('#carrier_input_mobile').val()==''){
-          		core.tip.show("请填写联系人电话!")
-          		return false;  
-        	}
-		}
+        if($('#orig_price').val()==''){
+          core.tip.show("请填写金额!")
+          return false;  
+        }
+        var iscontact = "{$store['iscontact']}";
+        if(iscontact == 1){
+            if($('#carrier_input_realname').val()==''){
+                core.tip.show("请填写联系人!")
+                return false;  
+            }
+            if($('#carrier_input_mobile').val()==''){
+                core.tip.show("请填写联系人电话!")
+                return false;  
+            }
+        }
         if ($("#deductcredit").length > 0) {
             if ($("#deductcredit").attr('on') == '1') {
                 var deduct = 1;
@@ -355,6 +383,7 @@ require(['tpl', 'core'], function(tpl, core) {
                 var deduct2 = 1;
             }
         }
+
     var carrier_realname = $.trim( $('#carrier_input_realname').val() );
     var carrier_mobile = $.trim( $('#carrier_input_mobile').val() );
     var data = {
@@ -368,10 +397,13 @@ require(['tpl', 'core'], function(tpl, core) {
         deduct:deduct,
         deduct2:deduct2,
     };
-    
+    {if $hascouponplugin}
+        data.couponid = $('#couponid').val();
+    {/if}
         core.pjson('cashier/order_confirm', data, function(create_json) {
 
             if (create_json.status == 1) {
+
                 location.href = "{php echo $this->createPluginMobileUrl('cashier/order_pay')}&orderid=" + create_json.result.orderid + "&openid={$openid}&mid={$_GPC['mid']}";
             }  else if (create_json.status == -1) {
                  $('.paysub').html('确认').removeAttr('submitting');
