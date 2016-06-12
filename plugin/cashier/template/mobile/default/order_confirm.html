@@ -36,7 +36,7 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
     .addorder_good .good {height:100px; width:100%; padding:10px 0px; border-bottom:1px solid #eaeaea;}
     .addorder_good .img {height:100px; width:100px; float:left;}
     .addorder_good .img img {height:100%; width:100%;}
-    .addorder_good .info {float:left; margin-left:-50px;margin-right:-60px;}
+    .addorder_good .info {width:100%;float:left; margin-left:-50px;margin-right:-60px;}
     .addorder_good .info .inner { margin-left:60px;margin-right:60px; }
     .addorder_good .info .inner .name {height:32px; width:100%; float:left; font-size:18px; color:#555;overflow:hidden;}
     .addorder_good .info .inner .option {height:22px; width:100%; float:left; font-size:14px; color:#888;overflow:hidden;word-break: break-all}
@@ -144,7 +144,7 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
 
 {/if}
 <input type="hidden" id="couponid" value="" />
-<div id="coupondiv" class="addorder_price" style="margin-top:5px;<%if !hascoupon%>display:none<%/if%>" >
+<div id="coupondiv" class="addorder_price" style="margin-top:5px;{if !$hascoupon}display:none{/if}" >
     <div class="price" style="border:none;">
         <div class="line" style="line-height:32px;" id="selectcoupon">
             <d id="couponselect">我要使用优惠券</d>
@@ -411,7 +411,7 @@ require(['tpl', 'core'], function(tpl, core) {
             }
             else {
                 $('.paysub').html('确认').removeAttr('submitting');
-                core.tip.show("生成订单失败!")
+                core.tip.show("生成订单失败!" + create_json.result)
             }
 
         }, true, true);
