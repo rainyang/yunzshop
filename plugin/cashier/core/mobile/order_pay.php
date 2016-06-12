@@ -356,8 +356,11 @@ if ($operation == 'display' && $_W['isajax']) {
         if($commission['become_child']==2){
              p('commission')->checkOrderPay($orderid);
         }
-        show_json(1, $pay_result);
         $this->model->redpack($openid,$orderid);
+        $this->model->setCredits($orderid);
+        $this->model->setCredits2($orderid);
+        show_json(1, $pay_result);
+
     } else if ($type == 'weixin') {
         $ordersn = $order['ordersn'];
         if (!empty($order['ordersn2'])) {
@@ -385,8 +388,11 @@ if ($operation == 'display' && $_W['isajax']) {
             if($commission['become_child']==2){
                  p('commission')->checkOrderPay($orderid);
             }
+            $this->model->redpack($openid,$orderid);
+            $this->model->setCredits($orderid);
+            $this->model->setCredits2($orderid);
             show_json(1, $pay_result);
-            
+
         }
         show_json(0, '支付出错,请重试!');
     }
@@ -504,28 +510,6 @@ if ($operation == 'display' && $_W['isajax']) {
     }
     die("<script>top.window.location.href='{$url}'</script>");
 }
-    $order = pdo_fetch(
-        'select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1',
-        array(
-            ':id' => $orderid,
-            ':uniacid' => $uniacid,
-            ':openid'  => $openid
-        )
-    );
-    $store = pdo_fetch(
-        'select * from ' . tablename('sz_yi_cashier_order') . ' o inner join ' . tablename('sz_yi_cashier_store') . ' s on o.cashier_store_id = s.id where o.order_id=:orderid and o.uniacid=:uniacid',
-        array(
-            ':uniacid' => $_W['uniacid'],
-            ':orderid' => $orderid
-        )
-    );
-    if($order['status']==3){
-        $this->model->redpack($openid,$orderid);
-        if($store['creditpack']>0){
-            $credit2 = $member['credit2'] + $order['price']*($store['creditpack']/100);
-            pdo_update('mc_members',array('credit2'=>$credit2),array('uid'=>$member['uid']));
-        }
-    }
 
 if ($operation == 'display') {
     include $this->template('cashier/order_pay');

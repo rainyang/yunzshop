@@ -78,7 +78,7 @@
                     <td>{php echo empty($row['type']) ? "手动" : "自动"}</td>
                     <td>
                         {php echo empty($row['paystatus']) ? "账户余额" : "微信钱包"}
-                        {if $row['sendpay_error']==1}(打款失败){/if}
+                        {if $row['sendpay_error']==1 && !empty($row['paystatus'])}(打款失败){/if}
                     </td>
                     <td>
                         {if $row['isglobal']==1}
@@ -89,13 +89,13 @@
                     </td>
                     <td><?php echo date("Y-m-d H:i:s", $row['ctime'])?></td>
                     <td>
-                        <div class="col-sm-3 col-lg-2"><a class="btn btn-default" href="<?php echo $this->createPluginWebUrl('bonus/detail', array('sn' => $row['send_bonus_sn'], 'isglobal'=> $row['isglobal']))?>" data-original-title="" title="">
-                        查看明细
-                        </a></div>
-                        {if $row['sendpay_error']==1}
-                        <div class="col-sm-3 col-lg-2"><a class="btn btn-default" href="<?php echo $this->createPluginWebUrl('bonus/detail', array('sn' => $row['send_bonus_sn'],"op" => "afresh"))?>" data-original-title="" title="">
-                        重新发放
-                        </a></div>
+                        <a class="btn btn-default" href="<?php echo $this->createPluginWebUrl('bonus/detail', array('sn' => $row['send_bonus_sn'], 'isglobal'=> $row['isglobal']))?>" data-original-title="" title="">
+                        详情
+                        </a>
+                        {if $row['sendpay_error']==1 && !empty($row['paystatus'])}
+                        <a class="btn btn-default" href="<?php echo $this->createPluginWebUrl('bonus/detail', array('sn' => $row['send_bonus_sn'],"op" => "afresh"))?>" data-original-title="" title="">
+                        重发
+                        </a>
                         {/if}
                     </td>
                 </tr>

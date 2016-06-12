@@ -84,17 +84,51 @@ if (!class_exists('CashierModel')) {
             if ($store['credit1'] > 0) {
                 $credits += $order['price'] * $store['credit1'] / 100;
             }
+            
             if ($credits > 0) {
                 if ($forStatistics) {
                     return $credits;
                 } else {
                     m('member')->setCredit($order['openid'], 'credit1', $credits, array(
-                        0, '购物积分 订单号: ' . $order['ordersn']
+                        0, '收银台奖励积分 订单号: ' . $order['ordersn']
                     ));
                 }
             }
         }
 
+        /**
+         * 消费者在商家支付完成后，获得的余额奖励百分比
+         */
+
+        function setCredits2($orderid, $forStatistics = false)
+        {
+            global $_W;
+            $order = pdo_fetch(
+                'select id,ordersn,openid,price from ' . tablename('sz_yi_order') . ' where id=:id limit 1',
+                array(':id' => $orderid)
+            );
+            $store = pdo_fetch(
+                'select * from ' . tablename('sz_yi_cashier_order') . ' o inner join ' . tablename('sz_yi_cashier_store') . ' s on o.cashier_store_id = s.id where o.order_id=:orderid and o.uniacid=:uniacid',
+                array(
+                    ':uniacid' => $_W['uniacid'],
+                    ':orderid' => $orderid
+                )
+            );
+            $credits = 0;
+            if ($store['creditpack'] > 0) {
+                $credits += $order['price'] * $store['creditpack'] / 100;
+            }
+            
+            if ($credits > 0) {
+                if ($forStatistics) {
+                    return $credits;
+                } else {
+                    m('member')->setCredit($order['openid'], 'credit2', $credits, array(
+                        0, '收银台奖励余额 订单号: ' . $order['ordersn']
+                    ));
+                }
+            }
+        }
         /**
          * 支付完成后，发放设置的优惠券
          */
@@ -242,8 +276,11 @@ if (!class_exists('CashierModel')) {
             $money = $order['price'] * $store['redpack'] / 100;
             if ($money < 1 || $money > 200) {
 
-                $credit2 = $member['credit2'] + $money;
-                pdo_update('mc_members',array('credit2'=>$credit2),array('uid'=>$member['uid']));
+                $credit2 =  $money;
+
+                m('member')->setCredit($openid, 'credit2', $credit2, array(
+                        0, '收银台红包奖励(超过红包最大金额限制,直接加到余额) 订单号: ' . $order['ordersn']
+                    ));
                 return;
             }
 

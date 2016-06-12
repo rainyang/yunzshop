@@ -26,6 +26,24 @@
         {/if}
     </div>
 </div>
+{if $bonus_start}
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否参与分红</label>
+    <div class="col-sm-9 col-xs-12">
+          {ife 'shop.goods' $item}
+       <label class="radio-inline">
+            <input type="radio"  value="0" name="nobonus" {if $item['nobonus']==0}checked{/if} /> 参与分红
+        </label>
+        <label class="radio-inline">
+            <input type="radio"  value="1" name="nobonus" {if $item['nobonus']==1}checked{/if} /> 不参与分红
+        </label>
+        <span class="help-block">如果不参与分红，则不产生分红佣金</span>
+        {else}
+        <div class='form-control-static'>{if $item['nobonus']==1}不参与分红{else}参与分红{/if}</div>
+        {/if}
+    </div>
+</div>
+{/if}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">显示"我要分销"按钮</label>
     <div class="col-sm-9 col-xs-12">

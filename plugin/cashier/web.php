@@ -32,10 +32,5 @@ class CashierWeb extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__);
     }
-
-    public function upgrade()
-    {
-        $this->_exec_plugin(__FUNCTION__);
-    }
 }
 

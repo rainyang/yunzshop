@@ -28,22 +28,6 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_exhelper_express') . " (
   KEY `idx_isdefault` (`isdefault`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_exhelper_senduser')." (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uniacid` int(11) DEFAULT '0',
-  `sendername` varchar(255) DEFAULT '' COMMENT '发件人',
-  `sendertel` varchar(255) DEFAULT '' COMMENT '发件人联系电话',
-  `sendersign` varchar(255) DEFAULT '' COMMENT '发件人签名',
-  `sendercode` int(11) DEFAULT NULL COMMENT '发件地址邮编',
-  `senderaddress` varchar(255) DEFAULT '' COMMENT '发件地址',
-  `sendercity` varchar(255) DEFAULT NULL COMMENT '发件城市',
-  `isdefault` tinyint(3) DEFAULT '0',
-  PRIMARY KEY (`id`),
-  KEY `idx_uniacid` (`uniacid`),
-  KEY `idx_isdefault` (`isdefault`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-
-
 CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_category2')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0' COMMENT '所属帐号',
@@ -66,6 +50,22 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_category2')." (
   KEY `idx_isrecommand` (`isrecommand`),
   KEY `idx_ishome` (`ishome`)
 ) ENGINE=MyISAM AUTO_INCREMENT=61 DEFAULT CHARSET=utf8;
+
+CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_exhelper_senduser')." (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT '0',
+  `sendername` varchar(255) DEFAULT '' COMMENT '发件人',
+  `sendertel` varchar(255) DEFAULT '' COMMENT '发件人联系电话',
+  `sendersign` varchar(255) DEFAULT '' COMMENT '发件人签名',
+  `sendercode` int(11) DEFAULT NULL COMMENT '发件地址邮编',
+  `senderaddress` varchar(255) DEFAULT '' COMMENT '发件地址',
+  `sendercity` varchar(255) DEFAULT NULL COMMENT '发件城市',
+  `isdefault` tinyint(3) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `idx_uniacid` (`uniacid`),
+  KEY `idx_isdefault` (`isdefault`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+
 
 CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_exhelper_sys')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -145,165 +145,137 @@ pdo_fetchall($sql);
 
 pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_member')." CHANGE  `pwd`  `pwd` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;");
 
-if(!pdo_fieldexists('sz_yi_goods', 'cates')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD     `cates` text;");
+if (!pdo_fieldexists('sz_yi_goods', 'cates')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD     `cates` text;");
 }
 
-if(!pdo_fieldexists('sz_yi_goods', 'diyformtype')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `diyformtype` tinyint(3) DEFAULT '0';");
+if (!pdo_fieldexists('sz_yi_goods', 'diyformtype')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `diyformtype` tinyint(3) DEFAULT '0';");
 }
 
-if(!pdo_fieldexists('sz_yi_goods', 'manydeduct')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `manydeduct` tinyint(1) DEFAULT '0';");
+if (!pdo_fieldexists('sz_yi_goods', 'manydeduct')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `manydeduct` tinyint(1) DEFAULT '0';");
 }
-if(!pdo_fieldexists('sz_yi_goods', 'dispatchtype')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `dispatchtype` tinyint(1) DEFAULT '0';");
+if (!pdo_fieldexists('sz_yi_goods', 'dispatchtype')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `dispatchtype` tinyint(1) DEFAULT '0';");
 }
-if(!pdo_fieldexists('sz_yi_goods', 'dispatchid')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `dispatchid` int(11) DEFAULT '0';");
+if (!pdo_fieldexists('sz_yi_goods', 'dispatchid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `dispatchid` int(11) DEFAULT '0';");
 }
-if(!pdo_fieldexists('sz_yi_goods', 'dispatchprice')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `dispatchprice`  decimal(10,2) DEFAULT '0.00';");
-}
-
-
-
-if(!pdo_fieldexists('sz_yi_goods', 'diyformid')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `diyformid` int(11) DEFAULT '0';");
+if (!pdo_fieldexists('sz_yi_goods', 'dispatchprice')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `dispatchprice`  decimal(10,2) DEFAULT '0.00';");
 }
 
-if(!pdo_fieldexists('sz_yi_goods', 'diymode')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `diymode` tinyint(3) DEFAULT '0';");
+
+
+if (!pdo_fieldexists('sz_yi_goods', 'diyformid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `diyformid` int(11) DEFAULT '0';");
 }
 
-if(!pdo_fieldexists('sz_yi_goods', 'redprice')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `redprice` varchar(50) DEFAULT '';");
-}
-
-if(!pdo_fieldexists('sz_yi_goods', 'pcate1')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `pcate1` int(11) DEFAULT '0';");
-}
-
-if(!pdo_fieldexists('sz_yi_goods', 'ccate1')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `ccate1` int(11) DEFAULT '0';");
-}
-
-if(!pdo_fieldexists('sz_yi_goods', 'tcate1')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `tcate1` int(11) DEFAULT '0';");
-}
-
-if(!pdo_fieldexists('sz_yi_goods_option', 'redprice')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods_option')." ADD `redprice` varchar(50) DEFAULT '';");
-}
-
-if(!pdo_fieldexists('sz_yi_order', 'redprice')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `redprice` varchar(50) DEFAULT '';");
-}
-
-if(!pdo_fieldexists('sz_yi_order', 'redstatus')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `redprice` varchar(100) DEFAULT '';");
+if (!pdo_fieldexists('sz_yi_goods', 'diymode')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `diymode` tinyint(3) DEFAULT '0';");
 }
 
 pdo_fetchall("UPDATE ".tablename('qrcode')." SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
 
-if(!pdo_fieldexists('sz_yi_member', 'regtype')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `regtype` tinyint(3) DEFAULT '1';");
+if (!pdo_fieldexists('sz_yi_member', 'regtype')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `regtype` tinyint(3) DEFAULT '1';");
 }
-if(!pdo_fieldexists('sz_yi_member', 'isbindmobile')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `isbindmobile` tinyint(3) DEFAULT '0';");
+if (!pdo_fieldexists('sz_yi_member', 'isbindmobile')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `isbindmobile` tinyint(3) DEFAULT '0';");
 }
 
-if(!pdo_fieldexists('sz_yi_member', 'isjumpbind')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `isjumpbind` tinyint(3) DEFAULT '0';");
+if (!pdo_fieldexists('sz_yi_member', 'isjumpbind')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `isjumpbind` tinyint(3) DEFAULT '0';");
 }
 //diy
-if(!pdo_fieldexists('sz_yi_store', 'realname')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD `realname` varchar(255) DEFAULT '';");
+if (!pdo_fieldexists('sz_yi_store', 'realname')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD `realname` varchar(255) DEFAULT '';");
 }
-if(!pdo_fieldexists('sz_yi_store', 'mobile')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD `mobile` varchar(255) DEFAULT '';");
+if (!pdo_fieldexists('sz_yi_store', 'mobile')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD `mobile` varchar(255) DEFAULT '';");
 }
-if(!pdo_fieldexists('sz_yi_store', 'fetchtime')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD `fetchtime` varchar(255) DEFAULT '';");
+if (!pdo_fieldexists('sz_yi_store', 'fetchtime')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD `fetchtime` varchar(255) DEFAULT '';");
 }
-if(!pdo_fieldexists('sz_yi_store', 'type')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD `type` tinyint(1) DEFAULT '0';");
-}
-
-if(!pdo_fieldexists('sz_yi_member', 'diymemberid')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `diymemberid` int(11) DEFAULT '0';");
-}
-if(!pdo_fieldexists('sz_yi_member', 'isblack')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `isblack` tinyint(3) DEFAULT '0';");
+if (!pdo_fieldexists('sz_yi_store', 'type')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD `type` tinyint(1) DEFAULT '0';");
 }
 
-if(!pdo_fieldexists('sz_yi_member', 'diymemberdataid')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `diymemberdataid` int(11) DEFAULT '0';");
+if (!pdo_fieldexists('sz_yi_member', 'diymemberid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `diymemberid` int(11) DEFAULT '0';");
 }
-if(!pdo_fieldexists('sz_yi_member', 'diycommissionid')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `diycommissionid` int(11) DEFAULT '0';");
+if (!pdo_fieldexists('sz_yi_member', 'isblack')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `isblack` tinyint(3) DEFAULT '0';");
 }
-if(!pdo_fieldexists('sz_yi_member', 'diycommissiondataid')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `diycommissiondataid` int(11) DEFAULT '0';");
+
+if (!pdo_fieldexists('sz_yi_member', 'diymemberdataid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `diymemberdataid` int(11) DEFAULT '0';");
 }
-if(!pdo_fieldexists('sz_yi_member', 'diymemberfields')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `diymemberfields` text NULL;");
+if (!pdo_fieldexists('sz_yi_member', 'diycommissionid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `diycommissionid` int(11) DEFAULT '0';");
 }
-if(!pdo_fieldexists('sz_yi_member', 'diymemberdata')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `diymemberdata` text NULL;");
+if (!pdo_fieldexists('sz_yi_member', 'diycommissiondataid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `diycommissiondataid` int(11) DEFAULT '0';");
 }
-if(!pdo_fieldexists('sz_yi_member', 'diycommissionfields')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `diycommissionfields` text NULL;");
+if (!pdo_fieldexists('sz_yi_member', 'diymemberfields')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `diymemberfields` text NULL;");
+}
+if (!pdo_fieldexists('sz_yi_member', 'diymemberdata')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `diymemberdata` text NULL;");
+}
+if (!pdo_fieldexists('sz_yi_member', 'diycommissionfields')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `diycommissionfields` text NULL;");
 }
 if(!pdo_fieldexists('sz_yi_member', 'diycommissiondata')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `diycommissiondata` text NULL;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `diycommissiondata` text NULL;");
 }
 if(!pdo_fieldexists('sz_yi_member_cart', 'diyformdata')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_cart')." ADD    `diyformdata` text NULL;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_cart')." ADD    `diyformdata` text NULL;");
 }
 if(!pdo_fieldexists('sz_yi_member_cart', 'diyformfields')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_cart')." ADD    `diyformfields` text NULL;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_cart')." ADD    `diyformfields` text NULL;");
 }
 if(!pdo_fieldexists('sz_yi_member_cart', 'diyformdataid')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_cart')." ADD    `diyformdataid` int(11) DEFAULT '0';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_cart')." ADD    `diyformdataid` int(11) DEFAULT '0';");
 }
 if(!pdo_fieldexists('sz_yi_member_cart', 'diyformid')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_cart')." ADD    `diyformid` int(11) DEFAULT '0';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_cart')." ADD    `diyformid` int(11) DEFAULT '0';");
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'diyformid')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD    `diyformid` int(11) DEFAULT '0';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD    `diyformid` int(11) DEFAULT '0';");
 }
 
 if(!pdo_fieldexists('sz_yi_order_goods', 'openid')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD    `openid` varchar(255) DEFAULT '';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD    `openid` varchar(255) DEFAULT '';");
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'storeid')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD    `storeid` int(11) DEFAULT '0';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD    `storeid` int(11) DEFAULT '0';");
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'diyformid')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD    `diyformid` int(11) DEFAULT '0';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD    `diyformid` int(11) DEFAULT '0';");
 }
 if(!pdo_fieldexists('sz_yi_order', 'diyformdata')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD    `diyformdata` text NULL;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD    `diyformdata` text NULL;");
 }
 if(!pdo_fieldexists('sz_yi_order', 'diyformfields')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD    `diyformfields` text NULL;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD    `diyformfields` text NULL;");
 }
 
 if(!pdo_fieldexists('sz_yi_order_goods', 'diyformdataid')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD    `diyformdataid` int(11) DEFAULT '0';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD    `diyformdataid` int(11) DEFAULT '0';");
 }
 if(!pdo_fieldexists('sz_yi_order_goods', 'diyformid')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD    `diyformid` int(11) DEFAULT '0';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD    `diyformid` int(11) DEFAULT '0';");
 }
 if(!pdo_fieldexists('sz_yi_order_goods', 'diyformdata')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD    `diyformdata` text NULL;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD    `diyformdata` text NULL;");
 }
 if(!pdo_fieldexists('sz_yi_order_goods', 'diyformfields')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD    `diyformfields` text NULL;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD    `diyformfields` text NULL;");
 }
 
 $info = pdo_fetch('select * from ' . tablename('sz_yi_plugin') . ' where identity= "exhelper"  order by id desc limit 1');
@@ -346,11 +318,11 @@ else{
 }
 
 if(!pdo_fieldexists('sz_yi_goods', 'shorttitle')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD  `shorttitle`  VARCHAR( 500 ) DEFAULT NULL;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD  `shorttitle`  VARCHAR( 500 ) DEFAULT NULL;");
 }
 
 if(!pdo_fieldexists('sz_yi_goods', 'commission_level_id')) {
-	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD  `commission_level_id`  int(11) DEFAULT '0';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD  `commission_level_id`  int(11) DEFAULT '0';");
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'printstate')) {
@@ -402,14 +374,14 @@ if(!pdo_fieldexists('sz_yi_article', 'article_rule_userd_money')) {
 }
 
 //供应商增加
-//if(pdo_tableexists(tablename('sz_yi_af_supplier'))){
+if(pdo_tableexists('sz_yi_af_supplier')){
     if(!pdo_fieldexists('sz_yi_af_supplier', 'status')) {
       pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." ADD `status` TINYINT( 3 ) NOT NULL COMMENT '0申请1驳回2通过' AFTER `productname`;");
     }
-//}
+}
 
 //供应商提现字段int不对要改
-if(pdo_tableexists(tablename('sz_yi_supplier_apply'))){
+if(pdo_tableexists('sz_yi_supplier_apply')){
     if(!pdo_fieldexists('sz_yi_supplier_apply', 'apply_money')) {
       pdo_fetchall("ALTER TABLE ".tablename('sz_yi_supplier_apply')." ADD `apply_money` DECIMAL( 10, 2 ) NOT NULL DEFAULT '0.00' COMMENT '申请提现金额';");
     }
@@ -440,13 +412,18 @@ if(!pdo_fieldexists('sz_yi_store', 'verity_support')) {
 
 
 //分红插件增加等级独立消息
-if(pdo_tableexists(tablename('sz_yi_bonus_level'))){
+if(pdo_tableexists('sz_yi_bonus_level')){
   if(!pdo_fieldexists('sz_yi_bonus_level', 'msgtitle')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `msgtitle` varchar(100) DEFAULT '';");
   }
 
   if(!pdo_fieldexists('sz_yi_bonus_level', 'msgcontent')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `msgcontent` varchar(255) DEFAULT '';");
+  }
+}
+if(pdo_tableexists('sz_yi_bonus')){
+  if(!pdo_fieldexists('sz_yi_bonus', 'sendmonth')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_bonus')." ADD `sendmonth` tinyint(1) DEFAULT '0';");
   }
 }
 pdo_fetchall("CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_adpc') . " (
@@ -462,15 +439,6 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_adpc') . " (
   PRIMARY KEY (`id`),
   KEY `idx_uniacid` (`uniacid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
-
-pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_system_copyright'). " (
-`id`  int(11) NOT NULL AUTO_INCREMENT ,
-`uniacid`  int(11) NULL DEFAULT NULL ,
-`copyright`  text CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
-`bgcolor`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' ,
-PRIMARY KEY (`id`),
-INDEX `idx_uniacid` (`uniacid`) USING BTREE 
-) ENGINE=MyISAM DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;");
 
 if(!pdo_fieldexists('sz_yi_perm_user', 'username')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `username` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
@@ -495,6 +463,18 @@ if(!pdo_fieldexists('sz_yi_af_supplier', 'password')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." ADD `password` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
 }
 
+if(!pdo_fieldexists('sz_yi_goods', 'redprice')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `redprice` varchar(50) DEFAULT '';");
+}
+
+if(!pdo_fieldexists('sz_yi_goods_option', 'redprice')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods_option')." ADD `redprice` varchar(50) DEFAULT '';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'redprice')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `redprice` varchar(50) DEFAULT '';");
+}
+
 if(!pdo_fieldexists('sz_yi_order', 'refundstate')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD  `refundstate` tinyint(3) DEFAULT '0';");
 }
@@ -513,7 +493,6 @@ if(!pdo_fieldexists('sz_yi_order_refund', 'imgs')) {
 if(!pdo_fieldexists('sz_yi_order_refund', 'refundtime')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `refundtime` INT(11) DEFAULT '0';");
 }
-
 pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_refund_address'). " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
@@ -532,15 +511,38 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_refund_address'). " 
   PRIMARY KEY (`id`),
   KEY `idx_uniacid` (`uniacid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
-if(!pdo_fieldexists('sz_yi_member', 'referralsn')) {
-pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_member')." ADD  `referralsn` VARCHAR( 255 ) NOT NULL");
+
+if (!pdo_fieldexists('sz_yi_member', 'referralsn')) {
+    pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_member')." ADD  `referralsn` VARCHAR( 255 ) NOT NULL");
 }
-if(!pdo_fieldexists('sz_yi_article_sys', 'article_text')) {
-pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_article_sys')." ADD  `article_text` VARCHAR( 255 ) NOT NULL AFTER  `article_keyword`");
+
+if (!pdo_fieldexists('sz_yi_article_sys', 'article_text')) {
+    pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_article_sys')." ADD  `article_text` VARCHAR( 255 ) NOT NULL AFTER  `article_keyword`");
 }
-if(!pdo_fieldexists('sz_yi_article_sys', 'isarticle')) {
-pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_article_sys')." ADD  `isarticle` TINYINT( 1 ) NOT NULL");
+if (!pdo_fieldexists('sz_yi_article_sys', 'isarticle')) {
+    pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_article_sys')." ADD  `isarticle` TINYINT( 1 ) NOT NULL");
 }
+
+if (!pdo_fieldexists('sz_yi_goods', 'pcate1')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `pcate1` int(11) DEFAULT '0';");
+}
+
+if (!pdo_fieldexists('sz_yi_goods', 'ccate1')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `ccate1` int(11) DEFAULT '0';");
+}
+
+if (!pdo_fieldexists('sz_yi_goods', 'tcate1')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `tcate1` int(11) DEFAULT '0';");
+}
+
+pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_system_copyright'). " (
+`id`  int(11) NOT NULL AUTO_INCREMENT ,
+`uniacid`  int(11) NULL DEFAULT NULL ,
+`copyright`  text CHARACTER SET utf8 COLLATE utf8_general_ci NULL ,
+`bgcolor`  varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT '' ,
+PRIMARY KEY (`id`),
+INDEX `idx_uniacid` (`uniacid`) USING BTREE 
+) ENGINE=MyISAM DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;");
 
 if(!pdo_fieldexists('sz_yi_article_category', 'm_level')) {
 pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article_category')." ADD `m_level` INT(11) NOT NULL DEFAULT '0'");
@@ -549,7 +551,17 @@ if(!pdo_fieldexists('sz_yi_article_category', 'd_level')) {
 pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article_category')." ADD `d_level` INT(11) NOT NULL DEFAULT '0'");
 }
 
+
 //商品等级返现
 if(!pdo_fieldexists('sz_yi_goods', 'returns')) {
 pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returns` TEXT NOT NULL AFTER `discounts`");
 }
+
+if(!pdo_fieldexists('sz_yi_order', 'redstatus')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `redstatus` varchar(100) DEFAULT '';");
+}
+
+if (!pdo_fieldexists('sz_yi_goods', 'nobonus')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `nobonus` tinyint(1) DEFAULT '0';");
+}
+

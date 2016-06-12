@@ -3,10 +3,10 @@
 <style type="text/css">
     body {margin:0px; background:#f9f9f9; -moz-appearance:none;font: 12px/1.5 tahoma, "microsoft yahei", "\5FAE\8F6F\96C5\9ED1";}
     a {text-decoration:none;}
-    .header {height: auto;padding:0px; background:#f15353;background-size: 100% 100%; padding:10px 100px;position: relative;}
+    .header {height: auto;padding:0px; background:#f15353;background-size: 100% 100%; padding:10px;position: relative;}
     .header .user {height:100px;text-align: center;}
     .header .user .user-head {height:48px; width:48px; background:#fff; border-radius:50%; border:2px solid #fff;margin: 6px auto;}
-    .header .user .user-head img {height:48px; width:48px; border-radius:24px;}
+    .header .user .user-head img {height:48px; width:48px; border-radius:50%;}
     .header .user .user-info {height:48px; width:100%; float:left;color:#fff;}
     .header .user .user-info .user-name {height:20px; width:auto; font-size:14px; line-height:20px;}
     .header .user .user-info .user-other {height:24px; width:auto; font-size:12px;}
@@ -58,8 +58,8 @@
     </div>
 <div class="money-center">
     <ul>
-        <li><a href="#"><span><%member.credit2%></span><br/>余额</a></li>
-        <li><a href="#"><span><%member.credit1%></span><br/>积分</a></li>
+        <li><a href="#"><span><%member.credit2%></span><br/>{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}: </a></li>
+        <li><a href="#"><span><%member.credit1%></span><br/>{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}:</a></li>
         <li><a href="#"><span><%counts.couponcount%></span><br/>优惠券</a></li>
         <li><a href="#" class="recharge" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</a></li>
     </ul>
@@ -155,7 +155,7 @@
     {/if}
 
     {if $pluginbonus}
-        {if !empty($bonus_set['start'])}
+        {if !empty($shopset['start'])}
             {if empty($bonus_set['bonushow'])}
             <a href="{php echo $this->createPluginMobileUrl('bonus/index')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-money"></i>{php echo empty($bonus_set['texts']['center']) ? "分红中心" : $bonus_set['texts']['center'];}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
             {/if}

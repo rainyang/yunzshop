@@ -11,6 +11,9 @@ if ($_W['isajax']) {
 	$cansettle = $commission_ok >= floatval($this->set['withdraw']);
 	$member['commission_ok'] = number_format($commission_ok, 2);
 	if ($_W['ispost']) {
+		if(empty($cansettle) || $commission_ok <= 0){
+			show_json(0, '提现金额错误');
+		}
 		$orderids = array();
 		if ($level >= 1) {
 			$level1_orders = pdo_fetchall('select distinct o.id from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . " where o.agentid=:agentid and o.status>=3  and og.status1=0 and og.nocommission=0 and ({$time} - o.createtime > {$day_times}) and o.uniacid=:uniacid  group by o.id", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
@@ -66,7 +69,7 @@ if ($_W['isajax']) {
 				if ($pay <= 20000 && $pay >= 1) {
 					$result = m('finance')->sendredpack($openid, $pay, $desc = '佣金提现金额', $act_name = '佣金提现金额', $remark = '佣金提现金额以红包形式发送');
 				} else {
-					message('红包提现金额限制1-200元！', '', 'error');
+					show_json(0, '红包提现金额限制1-200元！');
 				}
 			} else {
 				$result = m('finance')->pay($openid, $apply['type'], $pay, $apply['applyno']);
@@ -78,10 +81,10 @@ if ($_W['isajax']) {
 					pdo_update('sz_yi_commission_apply', $updateno, array('id' => $apply['id']));
 					$result = m('finance')->pay($openid, $apply['type'], $pay, $apply['applyno']);
 					if (is_error($result)) {
-						message($result['message'], '', 'error');
+						show_json(0, $result['message']);
 					}
 				}
-				message($result['message'], '', 'error');
+				show_json(0, $result['message']);
 			}
 
 			pdo_update('sz_yi_commission_apply', array('status' => 3, 'paytime' => $time, 'commission_pay' => $commission_ok), array('id' => $id, 'uniacid' => $_W['uniacid']));
@@ -90,8 +93,8 @@ if ($_W['isajax']) {
 			$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 0 ? '余额' : '微信'), TM_COMMISSION_PAY);
 			$this->model->upgradeLevelByCommissionOK($openid);
 			plog('commission.apply.pay', "佣金打款 ID: {$id} 申请编号: {$apply['applyno']} 总佣金: {$commission_ok} 审核通过佣金: {$commission_ok} ");
-			message('佣金打款处理成功!', $this->createPluginWebUrl('commission/apply', array('status' => $apply['status'])), 'success');
-			show_json(1, '已自动打款!');
+			//message('佣金打款处理成功!', $this->createPluginWebUrl('commission/apply', array('status' => $apply['status'])), 'success');
+			show_json(1, '已打款到您的账户，请注意查收!');
 
 		} else {
 			//开启审核走正常流程
