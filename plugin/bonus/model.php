@@ -67,177 +67,213 @@ if (!class_exists('BonusModel')) {
 			$openid = $order['openid'];
 			$address = unserialize($order['address']);
 			
-			$goods = pdo_fetchall('select og.id,og.realprice,og.price,og.goodsid,og.total,og.optionname,g.hascommission,g.nocommission,g.bonusmoney from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
+			$goods = pdo_fetchall('select og.id,og.realprice,og.price,og.goodsid,og.total,og.optionname,g.hascommission,g.nocommission,g.nobonus,g.bonusmoney from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
 			$member = m('member')->getInfo($openid);
 			$levels = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_bonus_level') . " WHERE uniacid = '{$_W['uniacid']}' ORDER BY level asc");
 			$isdistinction = empty($set['isdistinction']) ? 0 : 1;
 			foreach ($goods as $cinfo) {
-				$price_all = $cinfo['bonusmoney'] > 0 && !empty($cinfo['bonusmoney']) ? $cinfo['bonusmoney'] * $cinfo['total'] : $cinfo['price'];
-
-				if(empty($set['selfbuy'])){
-					$masid = $member['agentid'];
-				}else{
-					$masid = $member['id'];
-				}
-				//查询分红人员
-				if(!empty($masid)){
-					$parentAgents = $this->getParentAgents($masid, $isdistinction);
-					$range_money = 0;
-					foreach ($levels as $key => $level) {
-						$levelid = $level['id'];
-						if(array_key_exists($levelid, $parentAgents)){
-							if($level['agent_money'] > 0){
-								$setmoney = $level['agent_money']/100;
-							}else{
-								continue;
-							}
-							$bonus_money_old = round($price_all * $setmoney, 2);
-							//级差分红
-							if($isdistinction==0){
-								$bonus_money = $bonus_money_old - $range_money;
-								$range_money = $bonus_money_old;
-							}else{
-								$bonus_money = $bonus_money_old;
-							}
-							//如分红金额小于0不写入
-							if($bonus_money <= 0){
-								continue;
-							}
-							$data = array(
-								'uniacid' => $_W['uniacid'],
-								'ordergoodid' => $cinfo['goodsid'],
-								'orderid' => $orderid,
-								'total' => $cinfo['total'],
-								'optionname' => $cinfo['optionname'],
-								'mid' => $parentAgents[$levelid],
-								'levelid' => $levelid,
-								'money' => $bonus_money,
-								'createtime' => $time
-							);
-							pdo_insert('sz_yi_bonus_goods', $data);
-						}
-						
+				$price_all = $this->calculate_method($cinfo);
+				if (empty($cinfo['nobonus']) && $price_all > 0) {
+					if(empty($set['selfbuy'])){
+						$masid = $member['agentid'];
+					}else{
+						$masid = $member['id'];
 					}
-				}
-			
-				//是否开启区域代理
-				$bonus_area_money_old = 0;
-				if(!empty($set['area_start'])){
-					//区级代理计算
-		            $bonus_commission3 = floatval($set['bonus_commission3']);
-					if(!empty($bonus_commission3)){
-	            		$agent_districtall =  pdo_fetchall("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_city='". $address['city']."' and bonus_district='". $address['area']."' and bonus_area=3 and uniacid=".$_W['uniacid']);
-	            		if(!empty($agent_districtall)){
-	            			foreach ($agent_districtall as $key => $agent_district) {
-	            				if($agent_district['bonus_area_commission'] > 0){
-			            			$bonus_area_money_new = round($price_all * $agent_district['bonus_area_commission']/100, 2);
-			            		}else{
-			            			$bonus_area_money_new = round($price_all * $set['bonus_commission3']/100, 2);
-			            		}
-			            		if(!empty($set['isdistinction_area'])){
-									$bonus_area_money = $bonus_area_money_new - $bonus_area_money_old;
-									$bonus_area_money_old = $bonus_area_money_new;
+					//查询分红人员
+					if(!empty($masid)){
+						$parentAgents = $this->getParentAgents($masid, $isdistinction);
+						$range_money = 0;
+						foreach ($levels as $key => $level) {
+							$levelid = $level['id'];
+							if(array_key_exists($levelid, $parentAgents)){
+								if($level['agent_money'] > 0){
+									$setmoney = $level['agent_money']/100;
 								}else{
-									$bonus_area_money = $bonus_area_money_new;
+									continue;
 								}
-			            		if($bonus_area_money > 0){
-			            			$data = array(
-					                    'uniacid' => $_W['uniacid'],
-					                    'ordergoodid' => $cinfo['goodsid'],
-					                    'orderid' => $orderid,
-					                    'total' => $cinfo['total'],
-					                    'optionname' => $cinfo['optionname'],
-					                    'mid' => $agent_district['id'],
-					                    'bonus_area' => 3,
-					                    'money' => $bonus_area_money,
-					                    'createtime' => $time
-					                );
-					            }
-				                pdo_insert('sz_yi_bonus_goods', $data);
-				                if(!empty($set['isdistinction_area']) || empty($set['isdistinction_area_all'])){
-				                	break;
-				                }
-	            			}
-		            		
-			            }
-		            }
-					//市级代理计算
-		            $bonus_commission2 = floatval($set['bonus_commission2']);
-					if(!empty($bonus_commission2)){
-	            		$agent_cityall =  pdo_fetchall("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_city='". $address['city']."' and bonus_area=2 and uniacid=".$_W['uniacid']);
-	            		
-	            		if(!empty($agent_cityall)){
-	            			foreach ($agent_cityall as $key => $agent_city) {
-			            		if($agent_city['bonus_area_commission'] > 0){
-			            			$bonus_area_money_new = round($price_all * $agent_city['bonus_area_commission']/100, 2);
-			            		}else{
-			            			$bonus_area_money_new = round($price_all * $set['bonus_commission2']/100, 2);
-			            		}
-			            		if(empty($set['isdistinction_area'])){
-									$bonus_area_money = $bonus_area_money_new - $bonus_area_money_old;
-									$bonus_area_money_old = $bonus_area_money_new;
+								$bonus_money_old = round($price_all * $setmoney, 2);
+								//级差分红
+								if($isdistinction==0){
+									$bonus_money = $bonus_money_old - $range_money;
+									$range_money = $bonus_money_old;
 								}else{
-									$bonus_area_money = $bonus_area_money_new;
+									$bonus_money = $bonus_money_old;
 								}
-			            		if($bonus_area_money > 0){
-			            			$data = array(
-					                    'uniacid' => $_W['uniacid'],
-					                    'ordergoodid' => $cinfo['goodsid'],
-					                    'orderid' => $orderid,
-					                    'total' => $cinfo['total'],
-					                    'optionname' => $cinfo['optionname'],
-					                    'mid' => $agent_city['id'],
-					                    'bonus_area' => 2,
-					                    'money' => $bonus_area_money,
-					                    'createtime' => $time
-					                );
-				                	pdo_insert('sz_yi_bonus_goods', $data);
-				                }
-				                if(!empty($set['isdistinction_area']) || empty($set['isdistinction_area_all'])){
-				                	break;
-				                }
-				            }
-		                }
-		            }
-					//省级代理计算
-					$bonus_commission1 = floatval($set['bonus_commission1']);
-					if(!empty($bonus_commission1)){
-	            		$agent_provinceall =  pdo_fetch("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_area=1 and uniacid=".$_W['uniacid']);
-	            		if(!empty($agent_provinceall)){
-	            			foreach ($agent_provinceall as $key => $agent_province) {
-			            		if($agent_province['bonus_area_commission'] > 0){
-			            			$bonus_area_money_new = round($price_all * $agent_province['bonus_area_commission']/100, 2);
-			            		}else{
-			            			$bonus_area_money_new = round($price_all * $set['bonus_commission1']/100, 2);
-			            		}
-			            		if(empty($set['isdistinction_area'])){
-									$bonus_area_money = $bonus_area_money_new - $bonus_area_money_old;
-									$bonus_area_money_old = $bonus_area_money_new;
-								}else{
-									$bonus_area_money = $bonus_area_money_new;
+								//如分红金额小于0不写入
+								if($bonus_money <= 0){
+									continue;
 								}
-			            		if($bonus_area_money > 0){
-			            			$data = array(
-					                    'uniacid' => $_W['uniacid'],
-					                    'ordergoodid' => $cinfo['goodsid'],
-					                    'orderid' => $orderid,
-					                    'total' => $cinfo['total'],
-					                    'optionname' => $cinfo['optionname'],
-					                    'mid' => $agent_province['id'],
-					                    'bonus_area' => 1,
-					                    'money' => $bonus_area_money,
-					                    'createtime' => $time
-					                );
+								$data = array(
+									'uniacid' => $_W['uniacid'],
+									'ordergoodid' => $cinfo['goodsid'],
+									'orderid' => $orderid,
+									'total' => $cinfo['total'],
+									'optionname' => $cinfo['optionname'],
+									'mid' => $parentAgents[$levelid],
+									'levelid' => $levelid,
+									'money' => $bonus_money,
+									'createtime' => $time
+								);
+								pdo_insert('sz_yi_bonus_goods', $data);
+							}
+							
+						}
+					}
+				
+					//是否开启区域代理
+					$bonus_area_money_old = 0;
+					if(!empty($set['area_start'])){
+						//区级代理计算
+			            $bonus_commission3 = floatval($set['bonus_commission3']);
+						if(!empty($bonus_commission3)){
+		            		$agent_districtall =  pdo_fetchall("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_city='". $address['city']."' and bonus_district='". $address['area']."' and bonus_area=3 and uniacid=".$_W['uniacid']);
+		            		if(!empty($agent_districtall)){
+		            			foreach ($agent_districtall as $key => $agent_district) {
+		            				if($agent_district['bonus_area_commission'] > 0){
+				            			$bonus_area_money_new = round($price_all * $agent_district['bonus_area_commission']/100, 2);
+				            		}else{
+				            			$bonus_area_money_new = round($price_all * $set['bonus_commission3']/100, 2);
+				            		}
+				            		if(!empty($set['isdistinction_area'])){
+										$bonus_area_money = $bonus_area_money_new - $bonus_area_money_old;
+										$bonus_area_money_old = $bonus_area_money_new;
+									}else{
+										$bonus_area_money = $bonus_area_money_new;
+									}
+				            		if($bonus_area_money > 0){
+				            			$data = array(
+						                    'uniacid' => $_W['uniacid'],
+						                    'ordergoodid' => $cinfo['goodsid'],
+						                    'orderid' => $orderid,
+						                    'total' => $cinfo['total'],
+						                    'optionname' => $cinfo['optionname'],
+						                    'mid' => $agent_district['id'],
+						                    'bonus_area' => 3,
+						                    'money' => $bonus_area_money,
+						                    'createtime' => $time
+						                );
+						            }
 					                pdo_insert('sz_yi_bonus_goods', $data);
-				                }
-				                if(!empty($set['isdistinction_area']) || empty($set['isdistinction_area_all'])){
-				                	break;
-				                }
+					                if(!empty($set['isdistinction_area']) || empty($set['isdistinction_area_all'])){
+					                	break;
+					                }
+		            			}
+			            		
 				            }
 			            }
-		            } 
+						//市级代理计算
+			            $bonus_commission2 = floatval($set['bonus_commission2']);
+						if(!empty($bonus_commission2)){
+		            		$agent_cityall =  pdo_fetchall("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_city='". $address['city']."' and bonus_area=2 and uniacid=".$_W['uniacid']);
+		            		
+		            		if(!empty($agent_cityall)){
+		            			foreach ($agent_cityall as $key => $agent_city) {
+				            		if($agent_city['bonus_area_commission'] > 0){
+				            			$bonus_area_money_new = round($price_all * $agent_city['bonus_area_commission']/100, 2);
+				            		}else{
+				            			$bonus_area_money_new = round($price_all * $set['bonus_commission2']/100, 2);
+				            		}
+				            		if(empty($set['isdistinction_area'])){
+										$bonus_area_money = $bonus_area_money_new - $bonus_area_money_old;
+										$bonus_area_money_old = $bonus_area_money_new;
+									}else{
+										$bonus_area_money = $bonus_area_money_new;
+									}
+				            		if($bonus_area_money > 0){
+				            			$data = array(
+						                    'uniacid' => $_W['uniacid'],
+						                    'ordergoodid' => $cinfo['goodsid'],
+						                    'orderid' => $orderid,
+						                    'total' => $cinfo['total'],
+						                    'optionname' => $cinfo['optionname'],
+						                    'mid' => $agent_city['id'],
+						                    'bonus_area' => 2,
+						                    'money' => $bonus_area_money,
+						                    'createtime' => $time
+						                );
+					                	pdo_insert('sz_yi_bonus_goods', $data);
+					                }
+					                if(!empty($set['isdistinction_area']) || empty($set['isdistinction_area_all'])){
+					                	break;
+					                }
+					            }
+			                }
+			            }
+						//省级代理计算
+						$bonus_commission1 = floatval($set['bonus_commission1']);
+						if(!empty($bonus_commission1)){
+		            		$agent_provinceall =  pdo_fetchall("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_area=1 and uniacid=".$_W['uniacid']);
+		            		if(!empty($agent_provinceall)){
+		            			foreach ($agent_provinceall as $key => $agent_province) {
+				            		if($agent_province['bonus_area_commission'] > 0){
+				            			$bonus_area_money_new = round($price_all * $agent_province['bonus_area_commission']/100, 2);
+				            		}else{
+				            			$bonus_area_money_new = round($price_all * $set['bonus_commission1']/100, 2);
+				            		}
+				            		if(empty($set['isdistinction_area'])){
+										$bonus_area_money = $bonus_area_money_new - $bonus_area_money_old;
+										$bonus_area_money_old = $bonus_area_money_new;
+									}else{
+										$bonus_area_money = $bonus_area_money_new;
+									}
+				            		if($bonus_area_money > 0){
+				            			$data = array(
+						                    'uniacid' => $_W['uniacid'],
+						                    'ordergoodid' => $cinfo['goodsid'],
+						                    'orderid' => $orderid,
+						                    'total' => $cinfo['total'],
+						                    'optionname' => $cinfo['optionname'],
+						                    'mid' => $agent_province['id'],
+						                    'bonus_area' => 1,
+						                    'money' => $bonus_area_money,
+						                    'createtime' => $time
+						                );
+						                pdo_insert('sz_yi_bonus_goods', $data);
+					                }
+					                if(!empty($set['isdistinction_area']) || empty($set['isdistinction_area_all'])){
+					                	break;
+					                }
+					            }
+				            }
+			            } 
+					}
+		        }
+		    }
+		}
+
+		//Author:ym Date:2016-05-06 Content:分成方式计算		
+		public function calculate_method($order_goods){
+			$price_all = 
+			global $_W;
+			$set = $this->getSet();
+			$realprice = $order_goods['realprice'];
+			if(empty($set['culate_method'])){
+				return $order_goods['bonusmoney'] > 0 && !empty($order_goods['bonusmoney']) ? $order_goods['bonusmoney'] * $order_goods['total'] : $order_goods['price'];
+			}else{
+				
+				if($order_goods['optionid'] != 0){
+					$option = pdo_fetch('select productprice,marketprice,costprice from ' . tablename('sz_yi_goods_option') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $order_goods['optionid'], ':uniacid' => $_W['uniacid']));
+					$productprice = $option['productprice'] * $order_goods['total'];	//原价
+					$marketprice  = $option['marketprice'] * $order_goods['total'];		//现价
+					$costprice    = $option['costprice'] * $order_goods['total'];	
+				}else{
+					$productprice = $order_goods['productprice'] * $order_goods['total'];	//原价
+					$marketprice  = $order_goods['marketprice'] * $order_goods['total'];		//现价
+					$costprice    = $order_goods['costprice'] * $order_goods['total'];			//成本价
 				}
-	        }
+				if($set['culate_method'] == 1){
+					return $realprice;
+				}else if($set['culate_method'] == 2){
+					return $productprice;
+				}else if($set['culate_method'] == 3){
+					return $marketprice;
+				}else if($set['culate_method'] == 4){
+					return $costprice;
+				}else if($set['culate_method'] == 5){
+					$price = $realprice - $costprice;
+					return $price > 0 ? $price : 0;
+				}
+			}
 		}
 
 		public function getChildAgents($id){
@@ -538,6 +574,25 @@ if (!class_exists('BonusModel')) {
 			}
 			$level = pdo_fetch('select * from ' . tablename('sz_yi_bonus_level') . ' where uniacid=:uniacid and id=:id limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $member['bonuslevel']));
 			return $level;
+		}
+
+		public function isLevel($openid)
+		{
+			global $_W;
+			if (empty($openid)) {
+				return false;
+			}
+			$member = m('member')->getMember($openid);
+			if (empty($member['bonuslevel'])) {
+				$levelid = 0;
+			}else{
+				$levelid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_bonus_level') . ' where uniacid=:uniacid and id=:id limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $member['bonuslevel']));
+			}
+			if(!empty($levelid) || !empty($member['bonus_area'])){
+				return true;
+			}else{
+				return false;	
+			}
 		}
 
 		public function upgradeLevelByAgent($mid)
