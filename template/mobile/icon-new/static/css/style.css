@@ -223,6 +223,7 @@ footer#footer-nav .menu-list:after {
 .good_bottom .add,.good_info1 .info1 .sub1{background: #FFAC2E !important;font-size: 14px; }
 .good_bottom .buy{background: #f15353 !important;}
 /*内嵌样式强调修改*/
+.order_main .sub2,.order_main .sub1{border-radius: 2px !important;}
 .topbar .user_face img{border-radius: 50%}
 .gold_sub{font-size: 16px !important}
 .info_sub{background: #f15353 !important}
