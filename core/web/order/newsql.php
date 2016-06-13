@@ -552,7 +552,7 @@ pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article_category')." ADD `d_level` 
 }
 
 
-//商品等级返现
+//商品等级返现 2016-06-13
 if(!pdo_fieldexists('sz_yi_goods', 'returns')) {
 pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returns` TEXT NOT NULL AFTER `discounts`");
 }

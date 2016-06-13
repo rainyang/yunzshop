@@ -1654,7 +1654,7 @@ INSERT INTO " . tablename('sz_yi_plugin'). " (`id`, `displayorder`, `identity`, 
 (12, 12, 'article', '文章营销', '1.0', '官方', 1);";
 pdo_fetchall($sql);
 
-pdo_fetchall("UPDATE `ims_qrcode` SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
+//pdo_fetchall("UPDATE `ims_qrcode` SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
 
 if (!pdo_fieldexists('sz_yi_goods', 'cates')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `cates` text;");
