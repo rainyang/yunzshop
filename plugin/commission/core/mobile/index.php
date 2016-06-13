@@ -4,6 +4,7 @@ $openid = m('user')->getOpenid();
 $pluginbonus = p("bonus");
 $bonus = 0;
 $level = $this->model->getLevel($openid);
+
 $total_all = 0;
 if(!empty($pluginbonus)){
 	$bonus_set = $pluginbonus->getSet();
@@ -23,6 +24,26 @@ if(!empty($pluginbonus)){
 			$member_bonus['commission_total'] = number_format($member_bonus['commission_total'], 2);
 			$member_bonus['customercount'] = intval($member_bonus['agentcount']);
 			$level = $pluginbonus->getLevel($openid);
+			$areaname = "";
+			if($member_bonus['bonus_area'] != 0){
+	            if($member_bonus['bonus_area']==1){
+	                $areaname = $bonus_set['texts']['agent_province'];
+	            }else if($member_bonus['bonus_area']==2){
+	                $areaname = $bonus_set['texts']['agent_city'];
+	            }else if($member_bonus['bonus_area']==3){
+	                $areaname = $bonus_set['texts']['agent_district'];
+	            }
+            }
+            
+            if(!empty($level)){
+            	if(!empty($areaname)){
+            		$level['levelname'] = $level['levelname']."][".$areaname;
+            	}
+            }else{
+            	if(!empty($areaname)){
+            		$level['levelname'] = $areaname;
+            	}	
+            }
 		}
 	}
 }
