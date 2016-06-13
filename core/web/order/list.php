@@ -127,6 +127,10 @@ if ($operation == "display") {
         $_GPC["storeid"] = trim($_GPC["storeid"]);
         $condition.= " AND o.verifystoreid=" . intval($_GPC["storeid"]);
     }
+    if (!empty($_GPC["csid"])) {
+        $_GPC["csid"] = trim($_GPC["csid"]);
+        $condition.= " AND o.cashierid=" . intval($_GPC["csid"]);
+    }
     $statuscondition = '';
     if ($status != '') {
         if ($status == - 1) {
@@ -367,8 +371,11 @@ if ($operation == "display") {
             $value["dispatchname"] = "虚拟物品";
         } else if (!empty($value["virtual"])) {
             $value["dispatchname"] = "虚拟物品(卡密)<br/>自动发货";
+        } else if ($value['cashier']==1) {
+            $value["dispatchname"] = "收银台支付";
         }
-        if ($value["dispatchtype"] == 1 || !empty($value["isverify"]) || !empty($value["virtual"]) || !empty($value["isvirtual"])) {
+        $value['name'] = set_medias(pdo_fetch('select cs.name,cs.thumb from ' .tablename('sz_yi_cashier_store'). 'cs '.'left join ' .tablename('sz_yi_cashier_order'). ' co on cs.id = co.cashier_store_id where co.order_id=:orderid and co.uniacid=:uniacid', array(':orderid' => $value['id'],':uniacid'=>$_W['uniacid'])), 'thumb');
+        if ($value["dispatchtype"] == 1 || !empty($value["isverify"]) || !empty($value["virtual"]) || !empty($value["isvirtual"])|| $value['cashier'] == 1) {
             $value["address"] = '';
             $carrier = iunserializer($value["carrier"]);
             if (is_array($carrier)) {
@@ -879,6 +886,9 @@ if ($operation == "display") {
 
     $pager = pagination($total, $pindex, $psize);
     $stores = pdo_fetchall("select id,storename from " . tablename("sz_yi_store") . " where uniacid=:uniacid ", array(
+        ":uniacid" => $_W["uniacid"]
+    ));
+    $cashier_stores = pdo_fetchall("select id,name from " . tablename("sz_yi_cashier_store") . " where uniacid=:uniacid ", array(
         ":uniacid" => $_W["uniacid"]
     ));
     load()->func("tpl");

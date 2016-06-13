@@ -229,7 +229,9 @@ if ($operation == 'display' && $_W['isajax']) {
         }
         pdo_update('sz_yi_order', array(
             'paytype' => 21,
-            'status'  => 3
+            'status'  => 3,
+            'paytime' => time(),
+            'finishtime' =>time()
         ), array(
             'id' => $order['id']
         ));
@@ -242,7 +244,9 @@ if ($operation == 'display' && $_W['isajax']) {
     } else if ($type == 'alipay') {
         pdo_update('sz_yi_order', array(
             'paytype' => 22,
-            'status'  => 3
+            'status'  => 3,
+            'paytime' => time(),
+            'finishtime' =>time()
         ), array(
             'id' => $order['id']
         ));
@@ -253,7 +257,9 @@ if ($operation == 'display' && $_W['isajax']) {
     }else if ($type == 'yunpay') {
         pdo_update('sz_yi_order', array(
             'paytype' => 24,
-            'status'  => 3
+            'status'  => 3,
+            'paytime' => time(),
+            'finishtime' =>time()
         ), array(
             'id' => $order['id']
         ));
@@ -333,7 +339,9 @@ if ($operation == 'display' && $_W['isajax']) {
         ));
         pdo_update('sz_yi_order', array(
             'paytype' => 1,
-            'status'  => 3
+            'status'  => 3,
+            'paytime' => time(),
+            'finishtime' =>time()
         ), array(
             'id' => $order['id']
         ));

@@ -25,23 +25,11 @@ if($operation == 'display' && $_W['isajax']){
        
         }
     }
-    // $text = '';
-    // $store = pdo_fetch('select * from '.tablename('sz_yi_cashier_store').' where id ='.$id);
-    // if($store['deredpack']==1&&$store['decommission']==1&&$store['decredits']==1){
-    //     $text = '(已扣除佣金和红包费用以及奖励余额费用)';
-    // }else if($store['deredpack']==1&&$store['decommission']==1){
-    //     $text = '(已扣除红包和佣金费用)';
-    // }else if($store['decommission']==1&&$store['decredits']==1){
-    //     $text = '(已扣除佣金和余额费用)';
-    // }else if($store['deredpack']==1&&$store['decredits']==1){
-    //     $text = '(已扣除红包和余额费用)';
-    // }else if($store['decredits']==1){
-    //     $text = '(已扣除余额费用)';
-    // }
+
     $sql   = 'SELECT o.*,co.cashier_store_id,co.order_id FROM ' . tablename('sz_yi_order') . ' o left join '.tablename('sz_yi_cashier_order').' co on o.id = co.order_id '.' where 1 and '.$condition.' and o.status = 3 ORDER BY o.id DESC LIMIT ' . ($page - 1) * $pagesize . ',' . $pagesize;
     $list  = pdo_fetchall($sql, $params);
     $total = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_order') . ' o left join '.tablename('sz_yi_cashier_order').' co on o.id = co.order_id '.' where 1 and '.$condition, $params);
-    $store = pdo_fetch(' select * from '.tablename('sz_yi_cashier_store').' where id='.$id);
+    $store = pdo_fetch(' select * from '.tablename('sz_yi_cashier_store').' where uniacid = '.$_W['uniacid'].' and id='.$id);
     $pager = pagination($total, $page, $pagesize);
 
     foreach ($list as &$row) {

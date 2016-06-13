@@ -148,7 +148,7 @@
         {/if}
         <div class="line" style="height:80px;">
 
-                    <span class='help-block'>您的计算金额=用户支付金额-用户支付金额*{$store['settle_platform']}%(平台提成)</span>
+                    <span style="font-size: 12px; color: #666">您的计算金额=用户支付金额-用户支付金额*{$store['settle_platform']}%(平台提成) - {$text}</span>
 
         </div>        
     </div>
@@ -271,7 +271,7 @@
                 });
 
                 $('.create_qrcode').click(function () {
-                    location.href = "{php echo $this->createPluginMobileUrl('cashier/create_qrcode')}";
+                    location.href = "{php echo $this->createPluginMobileUrl('cashier/create_qrcode',array('id' => $_GPC['id']))}";
                 });
             }
         });
