@@ -1,6 +1,6 @@
 {template 'web/_header'}
 <div class="w1200 m0a">
-{if $operation != 'post'}
+
 <div class="ulleft-nav">
 <ul class="nav nav-tabs">
     <li {if $_GPC['op']=='' || $_GPC['op']=='display'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('article')}" style="cursor: pointer;">文章管理</a></li>
@@ -18,7 +18,7 @@
     {if $_GPC['op']=='list_share'}<li class="active"><a href="javascript:;" style="cursor: pointer;">分享记录</a></li>{/if}
 </ul>
 </div>
-{/if}
+
 <div class="rightlist">
 {if $operation == 'display'}
 <div class="main">

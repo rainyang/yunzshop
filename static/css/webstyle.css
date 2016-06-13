@@ -112,11 +112,11 @@ ul{list-style:none;}
 .sizebg{background: none;color: #333;padding: 0 !important;font-weight: normal;}
 .label-success {background-color: #46CB2F;}
 .panel{box-shadow:0 0 0!important;}
-.fart-main{width: 1200px !important;margin-left: -10px !important;}
-.fart-editor{width: 800px !important;}
-.fart-editor-content .nav1,.fart-editor-content .nav2{width: 400px !important;}
-.fart-editor-content .con1,.fart-editor-content .con2{width: 400px !important;}
-.fart-editor-content .con2 .con{width: 340px !important;}
+.fart-main{width: 100% !important;}
+.fart-editor{width: 1000px !important;}
+.fart-editor-content .nav1,.fart-editor-content .nav2{width: 500px !important;}
+.fart-editor-content .con1,.fart-editor-content .con2{width: 500px !important;}
+.fart-editor-content .con2 .con{width: 440px !important;}
 .fart-editor-content .con2 .tab{width: 60px !important;}
 .fart-editor-content .con2 .tab .nav{font-size: 14px !important;}
 .fart-form {padding: 10px !important;}
@@ -128,9 +128,7 @@ ul{list-style:none;}
     padding: 5px 0;
     border-bottom: 1px solid #ccc;
     margin-bottom: 20px;
-    position: relative;
-    width: 1200px;line-height: 50px;height: 50px;margin-left: -10px !important;
-}
+    position: relative;line-height: 50px;height: 50px;}
 .page-heading h2{ font-size: 16px;position: absolute;left: 0;padding: 0;margin: 0;line-height: 50px;}
 .page-heading .pull-right{padding-right: 10px}
 .w1200{width: 100% !important;overflow: hidden;padding: 50px 6px 0 166px;}
