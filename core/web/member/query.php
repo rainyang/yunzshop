@@ -17,7 +17,7 @@ $kwd = trim($_GPC['keyword']);
 $params = array();
 $params[':uniacid'] = $_W['uniacid'];
 $condition = " and uniacid=:uniacid";
-$op     = $operation = $_GPC['op'] ? $_GPC['op'] : 'display';
+$op     = $operation = $_GPC['op'] ? $_GPC['op'] : 'query';
 if ($op == 'query') {
 
 	if (!empty($kwd)) {
@@ -25,6 +25,7 @@ if ($op == 'query') {
 		$params[':keyword'] = "%{$kwd}%";
 	}
 	$ds = pdo_fetchall('SELECT id,avatar,nickname,openid,realname,mobile FROM ' . tablename('sz_yi_member') . " WHERE 1 {$condition} order by createtime desc", $params);
+    //print_r($ds);exit;
 	include $this->template('web/member/query');
 } else if ($op == 'delfans') {
 	$member_ids = pdo_fetchall('SELECT id, openid FROM ' . tablename('sz_yi_member') . " WHERE 1 {$condition} order by id asc", $params);
