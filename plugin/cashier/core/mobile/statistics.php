@@ -48,13 +48,13 @@ if($operation == 'display' && $_W['isajax']){
         if($row['deredpack'] == 1 && $row['decommission'] == 1 && $row['decredits'] == 1){
             $row['text'] = '(已扣除佣金和红包费用以及奖励余额费用)';
         }
-        else if ($row['deredpack'] == 1 && $row['decommission'] == 1){
+        else if ($row['deredpack'] == 1 && $row['decommission'] == 1 && $row['decredits'] != 1){
             $row['text'] = '(已扣除红包和佣金费用)';
         }
-        else if ($row['decommission'] == 1 && $row['decredits'] == 1){
+        else if ($row['decommission'] == 1 && $row['decredits'] == 1 && $row['deredpack'] != 1){
             $row['text'] = '(已扣除佣金和奖励余额费用)';
         }
-        else if ($row['deredpack'] == 1 && $row['decredits'] == 1){
+        else if ($row['deredpack'] == 1 && $row['decredits'] == 1 && $row['decommission'] != 1){
             $row['text'] = '(已扣除红包和奖励余额费用)';
         }
         else if ($row['decredits'] == 1){
@@ -72,9 +72,9 @@ if($operation == 'display' && $_W['isajax']){
         $row['commission1'] = iunserializer( $commission['commission1']);
         $row['commission2'] = iunserializer( $commission['commission2']);
         $row['commission3'] = iunserializer( $commission['commission3']);
-        $row['redpackmoney'] = $row['price']*($store['creditpack']/100);
         $row['redpackmoney'] = $row['price']*($store['redpack']/100);
         $row['creditpackmoney'] = $row['price']*($store['creditpack']/100);
+        $row['platform_poundage'] = $row['price']*($store['settle_platform']/100);
         $row['credits'] = $this->model->setCredits($row['id'], true);
         $row['carrier'] = iunserializer($row['carrier']);
         $row['createtime'] = date('Y-m-d,H:i:s',$row['createtime']);

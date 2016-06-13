@@ -63,7 +63,7 @@
                         <tr>
                             <td>{$row['uid']}</td>
                             <td>{$row['applysn']}</td>
-                            <td><button type="button" class="btn btn-danger">金额：{$row['apply_money']}</button><br>{if $row['type']==1}<button type="button" class="btn btn-warning">手动提现</button>{else}<button type="button" class="btn btn-success">微信余额</button>{/if}</td>
+                            <td><label type="button" class="label label-danger">金额：{$row['apply_money']}</label><br>{if $row['type']==1}<label type="button" class="label label-primary">手动提现</label>{else}<label type="button" class="label label-primary">微信余额</label>{/if}</td>
                             <td><?php echo date('Y-m-d H:i:s',$row['apply_time']);?></td>
                             <td  style="overflow:visible;">
                                 <a class="label label-default label-info" href="{php echo $this->createPluginWebUrl('supplier/supplier',array('op' => 'detail', 'applyid' => $row['id']));}">详细信息</a>

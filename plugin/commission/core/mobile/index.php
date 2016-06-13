@@ -4,36 +4,62 @@ $openid = m('user')->getOpenid();
 $pluginbonus = p("bonus");
 $bonus = 0;
 $level = $this->model->getLevel($openid);
+
+$total_all = 0;
 if(!empty($pluginbonus)){
 	$bonus_set = $pluginbonus->getSet();
-	if(!empty($bonus_set['start'])){
+	$islevel = $pluginbonus->isLevel($openid);
+	if((!empty($bonus_set['start']) || !empty($bonus_set['area_start'])) && !empty($islevel)){
 		//分红
 		if($bonus_set['bonushow'] == 1){
 			$bonus = 1;
-			$member_bonus = p('bonus')->getInfo($openid, array('total', 'ordercount', 'ok'));
+			$member_bonus = $pluginbonus->getInfo($openid, array('total', 'ordercount', 'ordercount_area', 'ok'));
 			$bonus_cansettle = $member_bonus['commission_ok'] > 0 && $member_bonus['commission_ok'] >= floatval($bonus['withdraw']);
+			$total_all = $member_bonus['commission_total'];
 			$member_bonus['nickname'] = empty($member_bonus['nickname']) ? $member_bonus['mobile'] : $member_bonus['nickname'];
-			$member_bonus['ordercount0'] = number_format($member_bonus['ordercount'], 0);
+			$member_bonus['ordercount0'] = intval($member_bonus['ordercount']);
+			$member_bonus['ordercount_area0'] = intval($member_bonus['ordercount_area']);
 			$member_bonus['commission_ok'] = number_format($member_bonus['commission_ok'], 2);
 			$member_bonus['commission_pay'] = number_format($member_bonus['commission_pay'], 2);
 			$member_bonus['commission_total'] = number_format($member_bonus['commission_total'], 2);
 			$member_bonus['customercount'] = intval($member_bonus['agentcount']);
-			$level = p('bonus')->getLevel($openid);
+			$level = $pluginbonus->getLevel($openid);
+			$areaname = "";
+			if($member_bonus['bonus_area'] != 0){
+	            if($member_bonus['bonus_area']==1){
+	                $areaname = $bonus_set['texts']['agent_province'];
+	            }else if($member_bonus['bonus_area']==2){
+	                $areaname = $bonus_set['texts']['agent_city'];
+	            }else if($member_bonus['bonus_area']==3){
+	                $areaname = $bonus_set['texts']['agent_district'];
+	            }
+            }
+            
+            if(!empty($level)){
+            	if(!empty($areaname)){
+            		$level['levelname'] = $level['levelname']."][".$areaname;
+            	}
+            }else{
+            	if(!empty($areaname)){
+            		$level['levelname'] = $areaname;
+            	}	
+            }
 		}
 	}
 }
-
+$member = $this->model->getInfo($openid, array('total', 'ordercount0', 'ok', 'myorder'));
 if ($_W['isajax']) {
-	$member = $this->model->getInfo($openid, array('total', 'ordercount0', 'ok', 'myorder'));
 	$cansettle = $member['commission_ok'] > 0 && $member['commission_ok'] >= floatval($this->set['withdraw']);
 	$mycansettle = $member['commission_ok'] > 0 && $member['myoedermoney'] >= floatval($this->set['consume_withdraw']);
 	$commission_ok = $member['commission_ok'];
-    $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
+    $member['nickname'] 	 = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
+    $total_all += $member['commission_total'];
 	$member['agentcount'] = number_format($member['agentcount'], 0);
 	$member['ordercount0'] = number_format($member['ordercount0'], 0);
 	$member['commission_ok'] = number_format($member['commission_ok'], 2);
 	$member['commission_pay'] = number_format($member['commission_pay'], 2);
 	$member['commission_total'] = number_format($member['commission_total'], 2);
+	$member['total_all'] = number_format($total_all, 2);
 	$member['customercount'] = pdo_fetchcolumn('select count(id) from ' . tablename('sz_yi_member') . ' where agentid=:agentid and ((isagent=1 and status=0) or isagent=0) and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 	if (mb_strlen($member['nickname'], 'utf-8') > 6) {
 		$member['nickname'] = mb_substr($member['nickname'], 0, 6, 'utf-8');

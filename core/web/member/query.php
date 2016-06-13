@@ -18,7 +18,8 @@ $params = array();
 $params[':uniacid'] = $_W['uniacid'];
 $condition = " and uniacid=:uniacid";
 $op     = $operation = $_GPC['op'] ? $_GPC['op'] : 'display';
-if ($op == 'display') {
+if ($op == 'query') {
+
 	if (!empty($kwd)) {
 		$condition .= " AND ( `nickname` LIKE :keyword or `realname` LIKE :keyword or `mobile` LIKE :keyword )";
 		$params[':keyword'] = "%{$kwd}%";

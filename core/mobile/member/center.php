@@ -56,8 +56,8 @@ $bonus_start = false;
 $bonus_text = "";
 if(!empty($pluginbonus)){
 	$bonus_set = $pluginbonus->getSet();
-	$bonus_level = $pluginbonus->getLevel($openid);
-	if((!empty($bonus_set['start']) || !empty($bonus_set['area_start'])) && !empty($bonus_level)){
+	$islevel = $pluginbonus->isLevel($openid);
+	if((!empty($bonus_set['start']) || !empty($bonus_set['area_start'])) && !empty($islevel)){
 		$bonus_start = true;
 		$bonus_text = $bonus_set['texts']['center'] ? $bonus_set['texts']['center'] : "分红明细";
 	}
@@ -103,6 +103,15 @@ if (p('ranking')) {
 	$shopset['isranking'] = $ranking_set['ranking']['isranking'];
 } 
 
+$open_creditshop = false;
+$creditshop = p('creditshop');
+if ($creditshop) {
+	$creditshop_set = $creditshop->getSet();
+	if (!empty($creditshop_set['centeropen'])) {
+		$open_creditshop = true;
+	}
+}
+
 if ($_W['isajax']) {
 	$level = array('levelname' => empty($this->yzShopSet['levelname']) ? '普通会员' : $this->yzShopSet['levelname']);
 	if (!empty($member['level'])) {
@@ -125,14 +134,7 @@ if ($_W['isajax']) {
 		}
 	}
 
-	$open_creditshop = false;
-	$creditshop = p('creditshop');
-	if ($creditshop) {
-		$creditshop_set = $creditshop->getSet();
-		if (!empty($creditshop_set['centeropen'])) {
-			$open_creditshop = true;
-		}
-	}
+
 	$counts = array('cartcount' => pdo_fetchcolumn('select ifnull(sum(total),0) from ' . tablename('sz_yi_member_cart') . ' where uniacid=:uniacid and openid=:openid and deleted=0 ', array(':uniacid' => $uniacid, ':openid' => $openid)), 'favcount' => pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member_favorite') . ' where uniacid=:uniacid and openid=:openid and deleted=0 ', array(':uniacid' => $uniacid, ':openid' => $openid)));
 	if ($plugin_coupon) {
 		$time = time();

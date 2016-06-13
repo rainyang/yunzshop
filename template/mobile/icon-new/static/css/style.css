@@ -223,6 +223,8 @@ footer#footer-nav .menu-list:after {
 .good_bottom .add,.good_info1 .info1 .sub1{background: #FFAC2E !important;font-size: 14px; }
 .good_bottom .buy{background: #f15353 !important;}
 /*内嵌样式强调修改*/
+.order_main .sub2,.order_main .sub1{border-radius: 2px !important;}
+.topbar .user_face img{border-radius: 50%}
 .gold_sub{font-size: 16px !important}
 .info_sub{background: #f15353 !important}
 .addorder_user .info .ico2{width: 20px !important;text-align: center !important;}
@@ -282,7 +284,7 @@ footer#footer-nav .menu-list:after {
 }
 .goods .good {
     width: 48% !important;
-    margin:0 4px 8px;
+    margin:0 1% 8px;
     background-color: #fff;
     box-sizing: border-box;
     border: 1px #eee solid;
@@ -322,10 +324,11 @@ footer#footer-nav .menu-list:after {
 .card-price,.main .page .goods .good .price{color: #f15353!important;}
 #left_container{overflow: hidden!important;}
 .order_all {height: auto !important}
-.balance_sub4{background: #f15353 !important}
+.balance_sub4,.balance_sub1{background: #f15353 !important}
 .header .user .user-info .user-other{height: 20px !important;font-size: 14px!important}
 .topbar {text-align: center;height: auto !important;overflow: hidden;color: #fff}
-
+.header .user{height: auto!important;overflow: hidden;}
+.header .user .user-info{height: auto!important;overflow: hidden;}
 /**/
 .cart_good{background: #fff}
 .operation-bg{background: #fff;height: 50px;border-top: 1px solid #E4E4E4;position: fixed;left: 0;bottom: 55px;width: 100%}
