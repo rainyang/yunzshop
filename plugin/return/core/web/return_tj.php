@@ -31,14 +31,14 @@ if ($operation == 'display') {
     // $list  = pdo_fetchall($sql, $params);
 
     $total = pdo_fetchall("select * from" . tablename('sz_yi_return') . " r 
-        left join " . tablename('sz_yi_member') . " m on (r.mid = m.id ) where r.uniacid =" . $_W['uniacid'] . "  and returnrule = '2'  {$condition1} group by mid" ,$params);
+        left join " . tablename('sz_yi_member') . " m on (r.mid = m.id ) where r.uniacid =" . $_W['uniacid'] . "    {$condition1} group by mid" ,$params);
     $total = count($total);
     $list_group=pdo_fetchall(" select * from " .tablename('sz_yi_return'). " r 
-        left join " . tablename('sz_yi_member') . " m on (r.mid = m.id ) where r.uniacid= " .$_W['uniacid']. "  and returnrule = '2' {$condition1}  group by mid",$params);
+        left join " . tablename('sz_yi_member') . " m on (r.mid = m.id ) where r.uniacid= " .$_W['uniacid']. "  {$condition1}  group by mid",$params);
     
     foreach( $list_group as $row1){
         $infomation=pdo_fetch("select * from " .tablename('sz_yi_member'). "  where uniacid=" .$_W['uniacid']. " and id=" .$row1['mid'] );
-       $list_group1[$row1['mid']]= pdo_fetchall(" select * from " .tablename('sz_yi_return'). " where uniacid=" .$_W['uniacid']. "  and returnrule = '2'  and  mid = ".$row1['mid']);
+       $list_group1[$row1['mid']]= pdo_fetchall(" select * from " .tablename('sz_yi_return'). " where uniacid=" .$_W['uniacid']. " and  mid = ".$row1['mid']);
        foreach($list_group1[$row1['mid']] as  $row2){
 
             $asd[$row1['mid']]['money1']+=$row2['money'];
@@ -57,11 +57,11 @@ if ($operation == 'display') {
 }elseif ($operation == 'detail') {
 //echo "<pre>"; print_r($_GPC);exit;
     $total = pdo_fetchall("select * from" . tablename('sz_yi_return') . " r 
-        left join " . tablename('sz_yi_member') . " m on (r.mid = m.id ) where r.uniacid =" . $_W['uniacid'] ."  and r.returnrule = '2' and r.mid = ".$_GPC['mid'],$params);
+        left join " . tablename('sz_yi_member') . " m on (r.mid = m.id ) where r.uniacid =" . $_W['uniacid'] ."  and r.mid = ".$_GPC['mid'],$params);
     $total = count($total);
 
     $list_group=pdo_fetchall(" select r.id, r.uniacid, r.mid, r.money, r.return_money, r.create_time, r.status, m.realname, m.nickname, m.avatar from " .tablename('sz_yi_return'). " r 
-        left join " . tablename('sz_yi_member') . " m on (r.mid = m.id ) where r.uniacid= " .$_W['uniacid'] ."  and r.returnrule = '2' and r.mid = ".$_GPC['mid'],$params);
+        left join " . tablename('sz_yi_member') . " m on (r.mid = m.id ) where r.uniacid= " .$_W['uniacid'] ."  and r.mid = ".$_GPC['mid'],$params);
     foreach ($list_group as $key => $value) {
         $list_group[$key]['unreturnmoney'] = $value['money'] - $value['return_money'];
         $list_group[$key]['create_time'] = date('Y-m-d H:i',$value['create_time']);
