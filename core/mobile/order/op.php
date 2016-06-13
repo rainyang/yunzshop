@@ -44,10 +44,7 @@ if ($_W['isajax']) {
 	    } else if ($operation == 'complete') {
 
 	        $orderid = intval($_GPC['orderid']);
-		if (p('return')) {
-			p('return')->cumulative_order_amount($orderid);
-		}
-		echo "<pre>";print_r(1);exit;
+
 	        $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
 	            ':id' => $orderid,
 	            ':uniacid' => $uniacid,
