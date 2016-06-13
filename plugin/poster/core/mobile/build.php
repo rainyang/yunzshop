@@ -45,11 +45,13 @@ if ($member['isagent'] != 1 || $member['status'] != 1) {
 $waittext = !empty($poster['waittext']) ? $poster['waittext'] : '您的专属海报正在拼命生成中，请等待片刻...';
 m('message')->sendCustomNotice($openid, $waittext);
 $qr = $this->model->getQR($poster, $member, $goodsid);
+//file_put_contents(IA_ROOT . '/addons/sz_yi/test_build.log', print_r($qr, 1), FILE_APPEND);
 if (is_error($qr)) {
     m('message')->sendCustomNotice($openid, '生成二维码出错: ' . $qr['message']);
     exit;
 }
 $img     = $this->model->createPoster($poster, $member, $qr);
+//file_put_contents(IA_ROOT . '/addons/sz_yi/test_img.log', print_r($qr, 1), FILE_APPEND);
 $mediaid = $img['mediaid'];
 if (!empty($mediaid)) {
 	m('message')->sendImage($openid, $mediaid);
