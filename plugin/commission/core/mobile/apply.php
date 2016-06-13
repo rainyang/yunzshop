@@ -52,6 +52,9 @@ if ($_W['isajax']) {
 		$id = pdo_insertid();
 
 		if (!empty($this->set['closewithdrawcheck'])) {
+			if ($this->set['closewithdrawcheck'] < 0) {
+				$this->set['closewithdrawcheck'] = 0;
+			}
 			//限制内金额自动打款
 			if ($commission_ok <= $this->set['closewithdrawcheck']) {
 				ca('commission.apply.pay');
