@@ -3,7 +3,6 @@ global $_W, $_GPC;
 $openid = m('user')->getOpenid();
 if ($_W['isajax']) {
 	$level = $this->set['level'];
-	$ischeck = $this->set['closewithdrawcheck'];//是否开启提现审核。 0为开启，1为关闭。默认开启。
 	$member = $this->model->getInfo($openid, array('ok'));
 	$time = time();
 	$day_times = intval($this->set['settledays']) * 3600 * 24;
@@ -11,9 +10,6 @@ if ($_W['isajax']) {
 	$cansettle = $commission_ok >= floatval($this->set['withdraw']);
 	$member['commission_ok'] = number_format($commission_ok, 2);
 	if ($_W['ispost']) {
-		if(empty($cansettle) || $commission_ok <= 0){
-			show_json(0, '提现金额错误');
-		}
 		$orderids = array();
 		if ($level >= 1) {
 			$level1_orders = pdo_fetchall('select distinct o.id from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . " where o.agentid=:agentid and o.status>=3  and og.status1=0 and og.nocommission=0 and ({$time} - o.createtime > {$day_times}) and o.uniacid=:uniacid  group by o.id", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
@@ -55,46 +51,57 @@ if ($_W['isajax']) {
 		pdo_insert('sz_yi_commission_apply', $apply);
 		$id = pdo_insertid();
 
-		if ($ischeck == 1) {
-			//关闭审核自动打款
+		if (!empty($this->set['closewithdrawcheck'])) {
+			if ($this->set['closewithdrawcheck'] < 0) {
+				$this->set['closewithdrawcheck'] = 0;
+			}
+			//限制内金额自动打款
+			if ($commission_ok <= $this->set['closewithdrawcheck']) {
+				ca('commission.apply.pay');
+				$time = time();
+				$pay = $commission_ok;
+				if ($apply['type'] == 1 || $apply['type'] == 2) {
+					$pay *= 100;
+				} 
 
-			ca('commission.apply.pay');
-			$time = time();
-			$pay = $commission_ok;
-			if ($apply['type'] == 1 || $apply['type'] == 2) {
-				$pay *= 100;
-			} 
-
-			if ($apply['type'] == 2) {
-				if ($pay <= 20000 && $pay >= 1) {
-					$result = m('finance')->sendredpack($openid, $pay, $desc = '佣金提现金额', $act_name = '佣金提现金额', $remark = '佣金提现金额以红包形式发送');
+				if ($apply['type'] == 2) {
+					if ($pay <= 20000 && $pay >= 1) {
+						$result = m('finance')->sendredpack($openid, $pay, $desc = '佣金提现金额', $act_name = '佣金提现金额', $remark = '佣金提现金额以红包形式发送');
+					} else {
+						message('红包提现金额限制1-200元！', '', 'error');
+					}
 				} else {
-					show_json(0, '红包提现金额限制1-200元！');
+					$result = m('finance')->pay($openid, $apply['type'], $pay, $apply['applyno']);
 				}
+				
+				if (is_error($result)) {
+					if (strexists($result['message'], '系统繁忙')) {
+						$updateno['applyno'] = $apply['applyno'] = m('common')->createNO('commission_apply', 'applyno', 'CA');
+						pdo_update('sz_yi_commission_apply', $updateno, array('id' => $apply['id']));
+						$result = m('finance')->pay($openid, $apply['type'], $pay, $apply['applyno']);
+						if (is_error($result)) {
+							message($result['message'], '', 'error');
+						}
+					}
+					message($result['message'], '', 'error');
+				}
+
+				pdo_update('sz_yi_commission_apply', array('status' => 3, 'paytime' => $time, 'commission_pay' => $commission_ok), array('id' => $id, 'uniacid' => $_W['uniacid']));
+				$log = array('uniacid' => $_W['uniacid'], 'applyid' => $id, 'mid' => $member['id'], 'commission' => $commission_ok, 'commission_pay' => $commission_ok, 'createtime' => $time);
+				pdo_insert('sz_yi_commission_log', $log);
+				$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 0 ? '余额' : '微信'), TM_COMMISSION_PAY);
+				$this->model->upgradeLevelByCommissionOK($openid);
+				plog('commission.apply.pay', "佣金打款 ID: {$id} 申请编号: {$apply['applyno']} 总佣金: {$commission_ok} 审核通过佣金: {$commission_ok} ");
+				message('佣金打款处理成功!', $this->createPluginWebUrl('commission/apply', array('status' => $apply['status'])), 'success');
+				show_json(1, '已自动打款!');
 			} else {
-				$result = m('finance')->pay($openid, $apply['type'], $pay, $apply['applyno']);
+				//开启审核走正常流程
+				$returnurl = urlencode($this->createMobileUrl('member/withdraw'));
+				$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
+				$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 0 ? '余额' : '微信'), TM_COMMISSION_APPLY);
+				show_json(1, '已提交,请等待审核!');
 			}
 			
-			if (is_error($result)) {
-				if (strexists($result['message'], '系统繁忙')) {
-					$updateno['applyno'] = $apply['applyno'] = m('common')->createNO('commission_apply', 'applyno', 'CA');
-					pdo_update('sz_yi_commission_apply', $updateno, array('id' => $apply['id']));
-					$result = m('finance')->pay($openid, $apply['type'], $pay, $apply['applyno']);
-					if (is_error($result)) {
-						show_json(0, $result['message']);
-					}
-				}
-				show_json(0, $result['message']);
-			}
-
-			pdo_update('sz_yi_commission_apply', array('status' => 3, 'paytime' => $time, 'commission_pay' => $commission_ok), array('id' => $id, 'uniacid' => $_W['uniacid']));
-			$log = array('uniacid' => $_W['uniacid'], 'applyid' => $id, 'mid' => $member['id'], 'commission' => $commission_ok, 'commission_pay' => $commission_ok, 'createtime' => $time);
-			pdo_insert('sz_yi_commission_log', $log);
-			$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 0 ? '余额' : '微信'), TM_COMMISSION_PAY);
-			$this->model->upgradeLevelByCommissionOK($openid);
-			plog('commission.apply.pay', "佣金打款 ID: {$id} 申请编号: {$apply['applyno']} 总佣金: {$commission_ok} 审核通过佣金: {$commission_ok} ");
-			//message('佣金打款处理成功!', $this->createPluginWebUrl('commission/apply', array('status' => $apply['status'])), 'success');
-			show_json(1, '已打款到您的账户，请注意查收!');
 
 		} else {
 			//开启审核走正常流程
