@@ -145,6 +145,7 @@ if ($operation == "change") {
             $cates = explode(',', $item['ccates']);
         }
         $discounts = json_decode($item['discounts'], true);
+        $returns = json_decode($item['returns'], true);
         $allspecs  = pdo_fetchall("select * from " . tablename('sz_yi_goods_spec') . " where goodsid=:id order by displayorder asc", array(
             ":id" => $id
         ));
@@ -422,6 +423,7 @@ if ($operation == "change") {
 	        "deduct2"=>$_GPC["deduct2"],
             'virtual' => intval($_GPC['type']) == 3 ? intval($_GPC['virtual']) : 0,
             'discounts' => is_array($_GPC['discounts']) ? json_encode($_GPC['discounts']) : array(),
+            'returns' => is_array($_GPC['returns']) ? json_encode($_GPC['returns']) : array(),
             'detail_logo' => save_media($_GPC['detail_logo']),
             'detail_shopname' => trim($_GPC['detail_shopname']),
             'detail_totaltitle' => trim($_GPC['detail_totaltitle']),
