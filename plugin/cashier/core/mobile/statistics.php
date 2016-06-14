@@ -12,7 +12,7 @@ $page1 = 'statistics';
 if($operation == 'display' && $_W['isajax']){
 
     $page      = max(1, intval($_GPC['page']));
-    $pagesize  = 20;
+    $pagesize  = 10;
     $condition = ' o.uniacid = :uniacid';
     $params    = array(':uniacid' => $_W['uniacid']);
     $condition .= ' and co.cashier_store_id = :id';
@@ -26,12 +26,11 @@ if($operation == 'display' && $_W['isajax']){
         }
     }
 
-    $sql   = 'SELECT o.*,co.cashier_store_id,co.order_id FROM ' . tablename('sz_yi_order') . ' o left join '.tablename('sz_yi_cashier_order').' co on o.id = co.order_id '.' where 1 and '.$condition.' and o.status = 3 ORDER BY o.id DESC LIMIT ' . ($page - 1) * $pagesize . ',' . $pagesize;
+    $sql   = 'SELECT o.*,co.cashier_store_id,co.order_id FROM ' . tablename('sz_yi_order') . ' o left join '.tablename('sz_yi_cashier_order').' co on o.id = co.order_id '.' where 1 and '.$condition.' and o.status = 3 ORDER BY o.id DESC ';
     $list  = pdo_fetchall($sql, $params);
     $total = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_order') . ' o left join '.tablename('sz_yi_cashier_order').' co on o.id = co.order_id '.' where 1 and '.$condition, $params);
     $store = pdo_fetch(' select * from '.tablename('sz_yi_cashier_store').' where uniacid = '.$_W['uniacid'].' and id='.$id);
-    $pager = pagination($total, $page1, $pagesize);
-
+    $pager = pagination($total, $page, $pagesize);
     foreach ($list as &$row) {
         if($row['deredpack'] == 1 && $row['decommission'] == 1 && $row['decredits'] == 1){
             $row['text'] = '(已扣除佣金和红包费用以及奖励余额费用)';
@@ -67,7 +66,7 @@ if($operation == 'display' && $_W['isajax']){
         $row['carrier'] = iunserializer($row['carrier']);
         $row['createtime'] = date('Y-m-d,H:i:s',$row['createtime']);
     }
-    show_json(1,array('list'=>$list,'total'=>$total,'totalmoney'=>$totalmoney,'realtotalmoney'=>$realtotalmoney));
+    show_json(1,array('list'=>$list,'total'=>$total,'totalmoney'=>$totalmoney,'realtotalmoney'=>$realtotalmoney ));
 
 }
 include $this->template('statistics');

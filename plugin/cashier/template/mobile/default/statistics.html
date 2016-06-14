@@ -80,7 +80,7 @@
     <%/each%>
 
 </script>
- {$pager}
+ 
  <!--     <div>
     <tr style="width:100%">
         <td>订单号</td>
@@ -105,6 +105,7 @@
     
     
 <script language="javascript">
+var page = 1;
  require(['tpl', 'core'], function(tpl, core) {
         core.pjson('cashier/statistics', {id:"{$_GPC['id']}"}, function (json) {
             if(json.status==1){
@@ -129,7 +130,7 @@
         });
  })  
 
-    core.pjson('cashier/statistics', {'op': 'goods', page: page}, function (gjson) {
+    core.pjson('cashier/statistics', { page: page}, function (gjson) {
                     var result = gjson.result;
                     if (result.status == 0) {
                         core.message('服务器内部错误', core.getUrl('shop'), 'error');
