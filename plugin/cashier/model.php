@@ -222,28 +222,36 @@ if (!class_exists('CashierModel')) {
 
                 $levels = array('level1' => 0, 'level2' => 0, 'level3' => 0);
                 if (!empty($order['agentid'])) {
+                    
                     $user = m('member')->getMember($order['agentid']);
+                    $commissionss = array();
                     if ($user['isagent'] == 1 && $user['status'] == 1) {
                         $levels['level1'] = round($commissions['commission1']['default'], 2);
+
+                        $commissionss['commission1'] = iserializer($commissions['commission1']);
                         if (!empty($user['agentid'])) {
                             $puser = m('member')->getMember($user['agentid']);
                             $levels['level2'] = round($commissions['commission2']['default'], 2);
+
+                            $commissionss['commission1'] = iserializer($commissions['commission1']);
+                            $commissionss['commission2'] = iserializer($commissions['commission2']);
                             if (!empty($puser['agentid'])) {
                                 $levels['level3'] = round($commissions['commission3']['default'], 2);
+
+                                $commissionss['commission1'] = iserializer($commissions['commission1']);
+                                $commissionss['commission2'] = iserializer($commissions['commission2']);
+                                $commissionss['commission3'] = iserializer($commissions['commission3']);
                             }
                         }
                     }
+                    $commissionss['commissions'] = iserializer($levels);
                     if ($forStatistics) {
                         $total = 0;
                         foreach ($levels as $level => $commission) {
                             $total += $commission;
                         }
                     } else {
-                        pdo_update('sz_yi_order_goods', array(
-                            'commission1' => iserializer($commissions['commission1']),
-                            'commission2' => iserializer($commissions['commission2']),
-                            'commission3' => iserializer($commissions['commission3']),
-                            'commissions' => iserializer($levels)),
+                        pdo_update('sz_yi_order_goods', $commissionss,
                             array('orderid' => $orderid)
                         );
                     }
@@ -384,8 +392,33 @@ if (!class_exists('CashierModel')) {
                         } else {
                             $error = $xpath->evaluate('string(//xml/return_msg)') . "<br/>" . $xpath->evaluate('string(//xml/err_code_des)');
                         }
+
+                        if (!empty($orderid)) {
+                            $sql = 'SELECT `ordersn` FROM ' . tablename('sz_yi_order') . ' WHERE `id`=:orderid limit 1';
+                            $row = pdo_fetch($sql,
+                                array(
+                                    ':orderid' => $orderid
+                                )
+                            );
+
+                            $_var_156 = array(
+                                'keyword1' => array('value' => '收银台收款发送红包失败', 'color' => '#73a68d'),
+                                'keyword2' => array('value' => '【订单编号】' . $row['ordersn'], 'color' => '#73a68d'),
+                                'remark' => array('value' => '收银台收款红包发送失败！失败原因：'.$error)
+                            );
+                            pdo_update('sz_yi_order', 
+                                array(
+                                    'redstatus' => $error
+                                ), 
+                                array(
+                                    'id' => $orderid
+                                )
+                            );
+                            m('message')->sendCustomNotice($openid, $_var_156);
+                        }
                         return error(-2, $error);
                     }
+
                 } else {
                     return error(-1, '未知错误');
                 }

@@ -56,7 +56,7 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
 
 <script id='tpl_order_pay' type='text/html'>
     <div class="page_topbar">    
-    
+        
         <div class="title">支付成功</div>
     </div>
     <img src="../addons/sz_yi/template/mobile/default/static/images/pay_success.png?v=1" style="width:100%;" />
@@ -186,7 +186,7 @@ require(['tpl', 'core'], function(tpl, core) {
                         'paySign': wechat.paySign,
                     }, function (res) {
                         if (res.err_msg == 'get_brand_wcpay_request:ok') {
-                            core.json('order/pay', {
+                            core.pjson('cashier/order_pay', {
                                 op: 'complete',
                                 orderid: '{$_GPC['orderid']}',
                                 type: 'weixin',
@@ -194,10 +194,10 @@ require(['tpl', 'core'], function(tpl, core) {
                             }, function (pay_json) { 
                                 if (pay_json.status == 1) {
                                     $('#container').html(tpl('tpl_order_pay',pay_json.result));
-                                    if ($('#couponurl').val() != '') {
+                                    if (pay_json.result.couponurl) {
                                         setTimeout(function () {
                                             // TODO: 跳转到营销页面
-                                            location.href = $('#couponurl').val();
+                                            location.href =pay_json.result.couponurl;
                                         }, 2000);
                                     }
                                     return;

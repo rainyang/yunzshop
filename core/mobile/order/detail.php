@@ -14,6 +14,8 @@ $order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' wher
     ':uniacid' => $uniacid,
     ':openid' => $openid
 ));
+$order['name'] = set_medias(pdo_fetch('select cs.name,cs.thumb,cs.contact,cs.mobile,cs.address from ' .tablename('sz_yi_cashier_store'). 'cs '.'left join ' .tablename('sz_yi_cashier_order'). ' co on cs.id = co.cashier_store_id where co.order_id=:orderid and co.uniacid=:uniacid', array(':orderid' => $orderid,':uniacid'=>$_W['uniacid'])), 'thumb');
+
 if (!empty($order)) {
     $order['virtual_str'] = str_replace("\n", "<br/>", $order['virtual_str']);
     $diyformfields        = "";
