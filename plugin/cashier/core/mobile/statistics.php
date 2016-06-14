@@ -30,7 +30,7 @@ if($operation == 'display' && $_W['isajax']){
     $list  = pdo_fetchall($sql, $params);
     $total = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_order') . ' o left join '.tablename('sz_yi_cashier_order').' co on o.id = co.order_id '.' where 1 and '.$condition, $params);
     $store = pdo_fetch(' select * from '.tablename('sz_yi_cashier_store').' where uniacid = '.$_W['uniacid'].' and id='.$id);
-    $pager = pagination($total, $page, $pagesize);
+    $pager = pagination($total, $page1, $pagesize);
 
     foreach ($list as &$row) {
         if($row['deredpack'] == 1 && $row['decommission'] == 1 && $row['decredits'] == 1){

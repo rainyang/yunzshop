@@ -55,6 +55,7 @@ class Sz_DYi_Notice
         $set  = m('common')->getSysset();
         $shop = $set['shop'];
         $tm   = $set['notice'];
+        $cashier_stores = pdo_fetch('select * from ' .tablename('sz_yi_cashier_store'). ' where id ='.$order['cashierid']);
         if ($delRefund) {
 	    $_var_14 = array('0' => "退款", "1" => "退货退款", "2" => "换货");
             if (!empty($order['refundid'])) {
@@ -346,39 +347,70 @@ class Sz_DYi_Notice
                 $remark = "\r\n您的订单我们已经收到，支付后您就可以到店使用了~~";
             } else if (!empty($order['virtual'])) {
                 $remark = "\r\n您的订单我们已经收到，支付后系统将会自动发货~~";
+            } else if (!empty($order['cashier'])) {
+                $remark = "\r\n您的订单我们已经收到，支付后订单会自动完成,无需其他操作~~";
             } else {
                 $remark = "\r\n您的订单我们已经收到，支付后您就可以到自提点提货物了~~";
             }
-            $msg = array(
-                'first' => array(
-                    'value' => "您的订单已提交成功！",
-                    "color" => "#4a5077"
-                ),
-                'keyword1' => array(
-                    'title' => '店铺',
-                    'value' => $shop['name'],
-                    "color" => "#4a5077"
-                ),
-                'keyword2' => array(
-                    'title' => '下单时间',
-                    'value' => date('Y-m-d H:i:s', $order['createtime']),
-                    "color" => "#4a5077"
-                ),
-                'keyword3' => array(
-                    'title' => '商品',
-                    'value' => $goods,
-                    "color" => "#4a5077"
-                ),
-                'keyword4' => array(
-                    'title' => '金额',
-                    'value' => '￥' . $order['price'] . '元(含运费' . $order['dispatchprice'] . '元)',
-                    "color" => "#4a5077"
-                ),
-                'remark' => array(
-                    'value' => $remark,
-                    "color" => "#4a5077"
-                )
-            );
+            if($order['cashier']==1){
+               $msg = array(
+                    'first' => array(
+                        'value' => "您于收银台的订单已提交成功！",
+                        "color" => "#4a5077"
+                    ),
+                    'keyword1' => array(
+                        'title' => '店铺',
+                        'value' => $cashier_stores['name'],
+                        "color" => "#4a5077"
+                    ),
+                    'keyword2' => array(
+                        'title' => '下单时间',
+                        'value' => date('Y-m-d H:i:s', $order['createtime']),
+                        "color" => "#4a5077"
+                    ),
+                    'keyword3' => array(
+                        'title' => '金额',
+                        'value' => '￥' . $order['price'] . '元',
+                        "color" => "#4a5077"
+                    ),
+                    'remark' => array(
+                        'value' => $remark,
+                        "color" => "#4a5077"
+                    )
+                ); 
+            }else{
+                $msg = array(
+                    'first' => array(
+                        'value' => "您的订单已提交成功！",
+                        "color" => "#4a5077"
+                    ),
+                    'keyword1' => array(
+                        'title' => '店铺',
+                        'value' => $shop['name'],
+                        "color" => "#4a5077"
+                    ),
+                    'keyword2' => array(
+                        'title' => '下单时间',
+                        'value' => date('Y-m-d H:i:s', $order['createtime']),
+                        "color" => "#4a5077"
+                    ),
+                    'keyword3' => array(
+                        'title' => '商品',
+                        'value' => $goods,
+                        "color" => "#4a5077"
+                    ),
+                    'keyword4' => array(
+                        'title' => '金额',
+                        'value' => '￥' . $order['price'] . '元(含运费' . $order['dispatchprice'] . '元)',
+                        "color" => "#4a5077"
+                    ),
+                    'remark' => array(
+                        'value' => $remark,
+                        "color" => "#4a5077"
+                    )
+                );
+            }
+            
             if (!empty($tm['submit']) && empty($usernotice['submit'])) {
                 m('message')->sendTplNotice($openid, $tm['submit'], $msg, $detailurl);
             } else if (empty($usernotice['submit'])) {
@@ -755,42 +787,72 @@ class Sz_DYi_Notice
                     }
                 }
             } else {
-                $msg = array(
-                    'first' => array(
-                        'value' => "亲, 您购买的宝贝已经确认收货!",
-                        "color" => "#4a5077"
-                    ),
-                    'keyword1' => array(
-                        'title' => '订单号',
-                        'value' => $order['ordersn'],
-                        "color" => "#4a5077"
-                    ),
-                    'keyword2' => array(
-                        'title' => '商品名称',
-                        'value' => $goods . $orderpricestr,
-                        "color" => "#4a5077"
-                    ),
-                    'keyword3' => array(
-                        'title' => '下单时间',
-                        'value' => date('Y-m-d H:i:s', $order['createtime']),
-                        "color" => "#4a5077"
-                    ),
-                    'keyword4' => array(
-                        'title' => '发货时间',
-                        'value' => date('Y-m-d H:i:s', $order['sendtime']),
-                        "color" => "#4a5077"
-                    ),
-                    'keyword5' => array(
-                        'title' => '确认收货时间',
-                        'value' => date('Y-m-d H:i:s', $order['finishtime']),
-                        "color" => "#4a5077"
-                    ),
-                    'remark' => array(
-                        'title' => '',
-                        'value' => "\r\n【" . $shop['name'] . '】感谢您的支持与厚爱，欢迎您的再次购物！',
-                        "color" => "#4a5077"
-                    )
-                );
+                if($order['cashier']==1){
+                    $msg = array(
+                        'first' => array(
+                            'value' => "亲, 您收银台的订单已经支付完成!",
+                            "color" => "#4a5077"
+                        ),
+                        'keyword1' => array(
+                            'title' => '订单号',
+                            'value' => $order['ordersn'],
+                            "color" => "#4a5077"
+                        ),
+                        'keyword2' => array(
+                            'title' => '下单时间',
+                            'value' => date('Y-m-d H:i:s', $order['createtime']),
+                            "color" => "#4a5077"
+                        ),
+                        'keyword3' => array(
+                            'title' => '支付完成时间',
+                            'value' => date('Y-m-d H:i:s', $order['finishtime']),
+                            "color" => "#4a5077"
+                        ),
+                        'remark' => array(
+                            'title' => '',
+                            'value' => "\r\n【" . $cashier_stores['name'] . '】感谢您的支持与厚爱，欢迎您再次光临本店！',
+                            "color" => "#4a5077"
+                        )
+                    );
+                }else{
+                    $msg = array(
+                        'first' => array(
+                            'value' => "亲, 您购买的宝贝已经确认收货!",
+                            "color" => "#4a5077"
+                        ),
+                        'keyword1' => array(
+                            'title' => '订单号',
+                            'value' => $order['ordersn'],
+                            "color" => "#4a5077"
+                        ),
+                        'keyword2' => array(
+                            'title' => '商品名称',
+                            'value' => $goods . $orderpricestr,
+                            "color" => "#4a5077"
+                        ),
+                        'keyword3' => array(
+                            'title' => '下单时间',
+                            'value' => date('Y-m-d H:i:s', $order['createtime']),
+                            "color" => "#4a5077"
+                        ),
+                        'keyword4' => array(
+                            'title' => '发货时间',
+                            'value' => date('Y-m-d H:i:s', $order['sendtime']),
+                            "color" => "#4a5077"
+                        ),
+                        'keyword5' => array(
+                            'title' => '确认收货时间',
+                            'value' => date('Y-m-d H:i:s', $order['finishtime']),
+                            "color" => "#4a5077"
+                        ),
+                        'remark' => array(
+                            'title' => '',
+                            'value' => "\r\n【" . $shop['name'] . '】感谢您的支持与厚爱，欢迎您的再次购物！',
+                            "color" => "#4a5077"
+                        )
+                    );
+                }
+                
                 if (!empty($tm['finish']) && empty($usernotice['finish'])) {
                     m('message')->sendTplNotice($openid, $tm['finish'], $msg, $detailurl);
                 } else if (empty($usernotice['finish'])) {
