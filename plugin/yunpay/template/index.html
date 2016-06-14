@@ -1,5 +1,11 @@
 {template 'web/_header'}
 <div class="w1200 m0a">
+<div class="ulleft-nav">
+<ul class="nav nav-tabs">
+    <li {if $_GPC['op']=='display' || empty($_GPC['op'])}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunpay')}" >云支付</a></li>
+</ul>
+</div>
+<div class="rightlist">
 <div class="main">
     <form id="dataform" action="" method="post" class="form-horizontal form">
         <div class="panel panel-default">
@@ -62,6 +68,7 @@
             </div>
         </div>
     </form>
+</div>
 </div>
 </div>
 {template 'web/_footer'}
