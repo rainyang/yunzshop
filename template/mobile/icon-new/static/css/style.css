@@ -252,7 +252,7 @@ footer#footer-nav .menu-list:after {
 .bottom{height: 32px!important;}
 .jiathis_style_32x32 .jiathis_txt {font-size: 16px!important;}
 .top .nav .sub{width: 33.3333% !important;box-sizing: border-box;}
-.sort_list {
+.sort_listnew {
     height: 44px;
     width: 100%;
     background: #fff;
@@ -260,7 +260,7 @@ footer#footer-nav .menu-list:after {
     border-bottom: 1px solid #E4E4E4;
     border-top: 1px solid #E4E4E4;
 }
-.sort_list .nav{height: 20px;
+.sort_listnew .nav{height: 20px;
     width: 25%;
     line-height: 20px;
     font-size: 12px;
@@ -270,7 +270,7 @@ footer#footer-nav .menu-list:after {
     margin: 12px 0;
     border-right: 1px #C1C1C1 solid;
     box-sizing: border-box;}
-.sort_list .navon {color:#f15353;}
+.sort_listnew .navon {color:#f15353;}
 .top .nav .sub span{color: #999!important}
 .title{background: none!important}
 .red-top{background:#f15353 !important}
@@ -324,7 +324,7 @@ footer#footer-nav .menu-list:after {
 .card-price,.main .page .goods .good .price{color: #f15353!important;}
 #left_container{overflow: hidden!important;}
 .order_all {height: auto !important}
-.balance_sub4,.balance_sub1{background: #f15353 !important}
+.balance_sub4,.balance_sub1,.label-free{background: #f15353 !important}
 .header .user .user-info .user-other{height: 20px !important;font-size: 14px!important}
 .topbar {text-align: center;height: auto !important;overflow: hidden;color: #fff}
 .header .user{height: auto!important;overflow: hidden;}
