@@ -141,7 +141,7 @@ if ($operation == "display") {
         if ($status == "-1") {
             $statuscondition = " AND o.status=-1 and o.refundtime=0";
         } else if ($status == "4") {
-            $statuscondition = " AND o.refundstate>0 AND o.refundid<>0";
+            $statuscondition = " AND o.refundstate>=0 AND o.refundid<>0";
         } else if ($status == "5") {
             $statuscondition = " AND o.refundtime<>0";
         } else if ($status == "1") {
