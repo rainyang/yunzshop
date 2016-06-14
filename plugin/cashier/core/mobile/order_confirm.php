@@ -406,6 +406,7 @@ if ($operation == 'display') {
             '0', "收银台购物积分抵扣 消费积分: {$deductcredit} 抵扣金额: {$deductmoney} 订单号: {$ordersn}"
         ));
     }
+    m('notice')->sendOrderMessage($orderid);
     //$orderid
     if($commission['become_child']==1){
         p('commission')->checkOrderConfirm($orderid);

@@ -235,6 +235,7 @@ if ($operation == 'display' && $_W['isajax']) {
         ), array(
             'id' => $order['id']
         ));
+        m('notice')->sendOrderMessage($orderid);
         if($commission['become_child']==2){
              p('commission')->checkOrderPay($orderid);
         }
@@ -253,6 +254,7 @@ if ($operation == 'display' && $_W['isajax']) {
         if($commission['become_child']==2){
              p('commission')->checkOrderPay($orderid);
         }
+        m('notice')->sendOrderMessage($orderid);
         show_json(1);
     }else if ($type == 'yunpay') {
         pdo_update('sz_yi_order', array(
@@ -266,6 +268,7 @@ if ($operation == 'display' && $_W['isajax']) {
         if($commission['become_child']==2){
              p('commission')->checkOrderPay($orderid);
         }
+        m('notice')->sendOrderMessage($orderid);
         show_json(1);
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
@@ -364,6 +367,7 @@ if ($operation == 'display' && $_W['isajax']) {
         if($commission['become_child']==2){
              p('commission')->checkOrderPay($orderid);
         }
+        m('notice')->sendOrderMessage($orderid);
         $this->model->redpack($openid,$orderid);
         $this->model->setCredits($orderid);
         $this->model->setCredits2($orderid);
@@ -397,6 +401,7 @@ if ($operation == 'display' && $_W['isajax']) {
             if($commission['become_child']==2){
                  p('commission')->checkOrderPay($orderid);
             }
+            m('notice')->sendOrderMessage($orderid);
             $this->model->redpack($openid,$orderid);
             $this->model->setCredits($orderid);
             $this->model->setCredits2($orderid);
