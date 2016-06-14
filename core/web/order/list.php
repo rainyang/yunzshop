@@ -965,10 +965,12 @@ if ($operation == "display") {
     if ($plugin_diyform) {
         $diyformfields = ",diyformfields,diyformdata";
     }
-    $goods = pdo_fetchall("SELECT g.*, o.goodssn as option_goodssn, o.productsn as option_productsn,o.total,g.type,o.optionname,o.optionid,o.price as orderprice,o.realprice,o.changeprice,o.oldprice,o.commission1,o.commission2,o.commission3,o.commissions{$diyformfields} FROM " . tablename("sz_yi_order_goods") . " o left join " . tablename("sz_yi_goods") . " g on o.goodsid=g.id " . " WHERE o.orderid=:orderid and o.uniacid=:uniacid", array(
-        ":orderid" => $id,
-        ":uniacid" => $_W["uniacid"]
-    ));
+
+	    $goods = pdo_fetchall("SELECT g.*, o.goodssn as option_goodssn, o.productsn as option_productsn,o.total,g.type,o.optionname,o.optionid,o.price as orderprice,o.realprice,o.changeprice,o.oldprice,o.commission1,o.commission2,o.commission3,o.commissions{$diyformfields} FROM " . tablename("sz_yi_order_goods") . " o left join " . tablename("sz_yi_goods") . " g on o.goodsid=g.id " . " WHERE o.orderid=:orderid and o.uniacid=:uniacid", array(
+	        ":orderid" => $id,
+	        ":uniacid" => $_W["uniacid"]
+	    ));
+	   	$cashier_stores = set_medias(pdo_fetch("select * from " .tablename('sz_yi_cashier_store'). " where id = ".$item['cashierid']." and uniacid=".$_W['uniacid']),'thumb');	
     foreach ($goods as & $r) {
         if (!empty($r["option_goodssn"])) {
             $r["goodssn"] = $r["option_goodssn"];
