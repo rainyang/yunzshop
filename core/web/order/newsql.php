@@ -567,3 +567,29 @@ if (!pdo_fieldexists('sz_yi_coupon', 'supplier_uid')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `supplier_uid` INT(11) DEFAULT '0';");
 }
 
+//收银台新加order字段
+
+
+if(!pdo_fieldexists('sz_yi_order', 'cashier')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `cashier` tinyint(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'realprice')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `realprice` decimal(10) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'deredpack')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `deredpack` tinyint(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'decommission')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `decommission` tinyint(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'decredits')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `decredits` tinyint(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'cashierid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `cashierid` int(11) DEFAULT '0';");
+}

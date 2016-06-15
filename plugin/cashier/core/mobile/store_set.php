@@ -9,6 +9,7 @@ $member = m('member')->getInfo($openid);
 if(!empty($_GPC['id'])){
 	$id=$_GPC['id'];
 }
+
 $store = pdo_fetch('select * from ' . tablename('sz_yi_cashier_store') . ' where uniacid=:uniacid and id=:id', array(
     ':uniacid' => $_W['uniacid'], ':id' => $id
 ));
@@ -40,6 +41,7 @@ if($store['deredpack'] == 1 && $store['decommission'] == 1 && $store['decredits'
 if ($_W['isajax']) {
     if ($_W['ispost'] && $_GPC['op'] == 'sub_info') {
         $data = array(
+            'uniacid' => $_W['uniacid'],
             'name'    => trim($_GPC['name']),
             'contact' => trim($_GPC['contact']),
             'mobile'  => trim($_GPC['mobile']),
@@ -54,12 +56,13 @@ if ($_W['isajax']) {
             'credit1' => trim($_GPC['credit1']),
             'redpack_min' => trim($_GPC['redpack_min']),
             'redpack' => trim($_GPC['redpack']),
+            'creditpack' => trim($_GPC['creditpack']),
         );
         if ($pcoupon) {
             $data['coupon_id'] = trim($_GPC['coupon_id']);
         }
-        if (!empty($store['id'])) {
-            pdo_update('sz_yi_cashier_store', $data, array('id' => $store['id'], 'uniacid' => $_W['uniacid']));
+        if (!empty($id)) {
+            pdo_update('sz_yi_cashier_store', $data, array('id' => $id, 'uniacid' => $_W['uniacid']));
         } else {
             $data['create_time'] = date('Y-m-d H:i:s');
             pdo_insert('sz_yi_cashier_store', $data);
