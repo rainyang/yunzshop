@@ -563,7 +563,24 @@ if(!pdo_fieldexists('sz_yi_order', 'redstatus')) {
 if (!pdo_fieldexists('sz_yi_goods', 'nobonus')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `nobonus` tinyint(1) DEFAULT '0';");
 }
+
+
 if (!pdo_fieldexists('sz_yi_coupon', 'supplier_uid')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `supplier_uid` INT(11) DEFAULT '0';");
+}
+
+
+//添加全返记录表 2016-06-14
+if (!pdo_fieldexists('sz_yi_return_log', 'id')) {
+  pdo_fetchall("CREATE TABLE ".tablename('sz_yi_return_log')." (
+    `id` int(11) NOT NULL,
+    `uniacid` int(11) NOT NULL,
+    `mid` int(11) NOT NULL,
+    `openid` varchar(255) NOT NULL,
+    `money` decimal(10,2) NOT NULL,
+    `status` tinyint(2) NOT NULL DEFAULT '0',
+    `returntype` tinyint(2) NOT NULL DEFAULT '0',
+    `create_time` INT NOT NULL 
+  ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 }
 

@@ -42,7 +42,10 @@
     <div class="credit_nav {if $_GPC['type']==0}credit_navon{/if}" data-type='0' >返利记录</div>
     <div class="credit_nav {if $_GPC['type']==1}credit_navon{/if}"  data-type='1'>排列记录</div>
 </div>
+<div class="credit_tab">
 
+    <div class="credit_nav {if $_GPC['type']==3}credit_navon{/if}"  data-type='3'>会员等级返利记录</div>
+</div>
 <div id='tpl_container'></div>
 </script>
 
@@ -96,6 +99,28 @@
                     <span>队列编号:<%log.id%> </span><br/>
                     <span>队列状态:<%if log.status == 0%>等待返现<%else%>已返现<%/if%> </span><br/>
  
+                </div>
+            </div>
+        <%/each%>
+    <%/if%>
+   <%if type==3%>
+        <%each list as log%>
+            <div class="credit_list">
+                <div class="info">
+                    <p>会员等级返现</p>
+                    <span>返现金额<%log.money%> 元</span>
+                </div>
+                <div class="num">
+                    <span>   <%if log.status == 1%>
+                        已完成
+                    <%else%>
+                        进行中
+                    <%/if%></span><br/>
+                    <span>
+                 
+                    返现时间<%log.createtime%>
+                    </span></div>
+                   
                 </div>
             </div>
         <%/each%>
