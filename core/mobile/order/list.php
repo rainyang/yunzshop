@@ -36,6 +36,7 @@ if ($_W['isajax']) {
 		foreach ($list as &$row) {
 			$sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where og.orderid=:orderid order by og.id asc';
 			$row['goods'] = set_medias(pdo_fetchall($sql, array(':orderid' => $row['id'])), 'thumb');
+			$row['name'] = set_medias(pdo_fetch('select cs.name,cs.thumb from ' .tablename('sz_yi_cashier_store'). 'cs '.'left join ' .tablename('sz_yi_cashier_order'). ' co on cs.id = co.cashier_store_id where co.order_id=:orderid and co.uniacid=:uniacid', array(':orderid' => $row['id'],':uniacid'=>$_W['uniacid'])), 'thumb');
 			$row['goodscount'] = count($row['goods']);
 			$row['createtime'] = date('Y-m-d H:i:s',$row['createtime']);
 			switch ($row['status']) {

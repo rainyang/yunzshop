@@ -21,7 +21,22 @@ if ($pcoupon) {
         ':uniacid' => $_W['uniacid']
     ));
 }
-
+$text = '';
+if($store['deredpack'] == 1 && $store['decommission'] == 1 && $store['decredits'] == 1){
+    $text = '佣金和奖励红包费用以及奖励余额费用';
+}else if($store['deredpack'] == 1 && $store['decommission'] == 1){
+    $text = '奖励红包和佣金费用';
+}else if($store['decommission'] == 1 && $store['decredits'] == 1){
+    $text = '佣金和奖励余额费用';
+}else if($store['deredpack'] == 1 && $store['decredits'] == 1){
+    $text = '奖励红包和奖励余额费用';
+}else if($store['decredits'] == 1){
+    $text = '奖励余额费用';
+}else if($store['deredpack'] == 1){
+    $text = '奖励红包费用';
+}else if($store['decommission'] == 1){
+    $text = '佣金费用';
+}
 if ($_W['isajax']) {
     if ($_W['ispost'] && $_GPC['op'] == 'sub_info') {
         $data = array(

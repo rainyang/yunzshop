@@ -6,9 +6,7 @@ global $_W, $_GPC;
 $page = 'set';
 $openid = m('user')->getOpenid();
 $member = m('member')->getInfo($openid);
-$store = pdo_fetch('select * from ' . tablename('sz_yi_cashier_store') . ' where uniacid=:uniacid and member_id=:member_id', array(
-    ':uniacid' => $_W['uniacid'], ':member_id' => $member['id']
-));
+
 if (p('commission')) {
     $com_set = p('commission')->getSet();
 }
@@ -21,7 +19,7 @@ if ($pcoupon) {
 
 
 
-    $id = intval($store['id']);
+    $id = intval($_GPC['id']);
     $accountDir = IA_ROOT . '/addons/sz_yi/data/qrcode/' . $_W['uniacid'];
     if (!is_dir($accountDir)) {
         load()->func('file');

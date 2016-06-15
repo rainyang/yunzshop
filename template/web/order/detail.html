@@ -838,8 +838,45 @@
         {/if}
         <div class="panel panel-default">
             <div class="panel-heading">
-                商品信息</span>
+               {if $item['cashier']==1}商户信息{else}商品信息{/if}</span>
             </div>
+        {if $item['cashier']==1}
+            {if $p_cashier}
+              <div class="panel-body table-responsive">
+                <table class="table table-hover">
+                  <thead class="navbar-inner">
+                    <tr>
+                        <th style="width:8%;">商户ID</th>
+                        <th style="width:16%;" >商户logo</th>
+                        <th style="width:16%;">商户名称</th>
+                        <th style="width:20%;">商户地址</th>
+                        <th style="width:16%;">商户电话</th>
+                        <th style="width:16%;">商户联系人</th>
+                        <th style="width:16%;">商户创建时间</th>
+                        
+                        
+                        
+                    </tr>
+                  </thead>
+                  
+                    <tr>
+                        <th style="width:8%;">{$cashier_stores['id']}</th>
+                        <th style="width:16%;"><img style="width:50px;height:50px;" src="{$cashier_stores['thumb']}"></th>
+                        <th style="width:16%;">{$cashier_stores['name']}</th>
+                        <th style="width:20%;">{$cashier_stores['address']}</th>
+                        <th style="width:16%;">{$cashier_stores['mobile']}</th>
+                        <th style="width:16%;">{$cashier_stores['contact']}</th>
+                        <th style="width:16%;">{$cashier_stores['create_time']}</th>
+                        
+                        
+                    </tr>
+
+                  
+                </table>
+
+              </div>
+            {/if}   
+        {else}
             <div class="panel-body table-responsive">
                 <table class="table table-hover">
                     <thead class="navbar-inner">
@@ -947,6 +984,7 @@
                     </tr>
                 </table>
             </div>
+        {/if}    
         </div>
 </div>
         </div>

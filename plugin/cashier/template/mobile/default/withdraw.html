@@ -54,10 +54,10 @@
                 }
             });
 
-            if(result.noinfo){
-                core.message('请补充您的资料后才能申请提现!',result.infourl,'warning');
-                return;
-            }
+            // if(result.noinfo){
+            //     core.message('请补充您的资料后才能申请提现!',result.infourl,'warning');
+            //     return;
+            // }
             if (result.store.totalprices <= 0) {
                 core.message('无未提现金额，无法申请提现!', "{php echo $this->createMobileUrl('member')}", 'warning');
                 return;
@@ -82,7 +82,7 @@
                 }
                
                 $(this).attr('submitting', 1);
-                core.pjson('cashier/withdraw', {op: 'submit', money: money}, function (rjson) {
+                core.pjson('cashier/withdraw', {op: 'submit', money: money,id:"{$_GPC['id']}"}, function (rjson) {
                     if (rjson.status != 1) {
                         $(this).removeAttr('submitting');
                         core.tip.show(rjson.result);

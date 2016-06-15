@@ -61,6 +61,15 @@
             <option value="{$store['id']}" {if $_GPC['storeid'] ==$store['id']} selected="selected" {/if}>{$store['storename']}</option>
             {/loop}
                         </select>
+                    {if $p_cashier}
+                        <div class='input-group-addon'>收银商户</div>
+                        <select name="csid" class="form-control">
+                            <option value="" ></option>
+             {loop $cashier_stores $cashier_store}
+            <option value="{$cashier_store['id']}" {if $_GPC['csid'] ==$cashier_store['id']} selected="selected" {/if}>{$cashier_store['name']}</option>
+            {/loop}
+                        </select>
+                    {/if}
             </div>
                   </div>
             </div>
@@ -207,10 +216,10 @@
 {loop $item['goods'] $k $g}
                 <tr class='trbody'>
                     <td class="goods_info">
-                         <img src="{php echo tomedia($g['thumb'])}"> 
+                         <img src="{if $item['cashier']==1 || !$p_cashier}{$item['name']['thumb']}{else}{php echo tomedia($g['thumb'])}{/if}"> 
                     </td>
                     <td valign='top'  style='border-left:none;text-align: left;/*width:400px*/;'  >
-                        {$g['title']}{if !empty($g['optiontitle'])}<br/><span class="label label-primary sizebg">{$g['optiontitle']}</span>{/if}
+                        {if $item['cashier']==1 || !$p_cashier}{$item['name']['name']}{else}{$g['title']}{/if}{if !empty($g['optiontitle'])}<br/><span class="label label-primary sizebg">{$g['optiontitle']}</span>{/if}
                         <br/>{$g['goodssn']}
                     </td>
                     <td style='border-left:none;text-align:left;/*width:150px*/'>原价: {php echo number_format( $g['price']/$g['total'],2)} <br />应付: {php echo number_format($g['realprice']/$g['total'],2)}
