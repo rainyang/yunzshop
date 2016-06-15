@@ -841,6 +841,7 @@
                {if $item['cashier']==1}商户信息{else}商品信息{/if}</span>
             </div>
         {if $item['cashier']==1}
+            {if $p_cashier}
               <div class="panel-body table-responsive">
                 <table class="table table-hover">
                   <thead class="navbar-inner">
@@ -873,7 +874,8 @@
                   
                 </table>
 
-              </div>   
+              </div>
+            {/if}   
         {else}
             <div class="panel-body table-responsive">
                 <table class="table table-hover">
