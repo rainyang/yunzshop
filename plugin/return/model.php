@@ -72,21 +72,32 @@ if (!class_exists('ReturnModel')) {
 		}
 		public function setMembeerLevel($orderid,$_var_0=array(),$uniacid='') {
 
-			$order_goods = pdo_fetchall("SELECT og.price,g.isreturn,g.returns,o.openid,m.id as mid ,m.level FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
+			$order_goods = pdo_fetchall("SELECT og.price,og.total,g.isreturn,g.returns,o.openid,m.id as mid ,m.level FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
 				array(':orderid' => $orderid,':uniacid' => $uniacid
 			));	
 			foreach ($order_goods as $key => $value) {
 				$discounts = json_decode($value['returns'],true);
 				if($value['level'] == '0')
 				{
-					$money += $discounts['default']?$discounts['default']:'0';
+					$money += $discounts['default']?$discounts['default']*$value['total']:'0';
 				}else
 				{
-					$money += $discounts['level'.$value['level']]?$discounts['level'.$value['level']]:'0';
+					$money += $discounts['level'.$value['level']]?$discounts['level'.$value['level']]*$value['total']:'0';
 				}
 			}
 			if( $money > 0 )
 			{
+				$data = array(
+					'uniacid' => $uniacid,
+	                'mid' => $order_goods[0]['mid'],
+	                'openid' => $order_goods[0]['openid'],
+	                'money' => $money,
+	                'status' => 1,
+	                'returntype' => 1,
+					'create_time'	=> time()
+                );
+				pdo_insert('sz_yi_return_log', $data);
+
 				m('member')->setCredit($order_goods[0]['openid'],'credit2',$money);
 				$text = "您的订单以返现完成。";
 				$_var_156 = array(
