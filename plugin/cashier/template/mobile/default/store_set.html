@@ -131,6 +131,14 @@
                 </div>
             </div>
         </div>
+        <div class="line">
+            <div class="title">余额奖励(奖励百分比)</div>
+            <div class='info'>
+                <div class='inner'>
+                    <input type="text" id='creditpack' value="<%creditpack%>" />
+                </div>
+            </div>
+        </div>
         {if $pcoupon}
         <div class="line">
             <div class="title">优惠券</div>
@@ -236,6 +244,7 @@
                   
                     var postData = {
                         'op': 'sub_info',
+                        'id': "{$_GPC['id']}",
                         'name': $('#name').val(),
                         'contact': $('#contact').val(),
                         'mobile': $('#mobile').val(),
@@ -244,8 +253,10 @@
                         'deduct_credit2': $('#deduct_credit2').val(),
                         'credit1': $('#credit1').val(),
                         'redpack_min': $('#redpack_min').val(),
-                        'redpack': $('#redpack').val()
+                        'redpack': $('#redpack').val(),
+                        'creditpack': $('#creditpack').val(),
                     };
+                    alert(postData.redpack);
                     if ($('#commission1_rate').length > 0) {
                         postData.commission1_rate = $('#commission1_rate').val();
                     }
@@ -262,7 +273,7 @@
                     core.pjson('cashier/store_set', postData, function (json) {
                         if (json.status == 1) {
                              core.tip.show('保存成功');
-                             location.href="{php echo $this->createMobileUrl('member')}";
+                             location.href="{php echo $this->createPluginMobileUrl('cashier/store_set',array('id' => $_GPC['id']))}";
                         } else {
                             $('.info_sub').html('确认修改').removeAttr('saving');
                             core.tip.show('保存失败!');

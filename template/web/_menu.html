@@ -101,11 +101,13 @@
                 {loop $plugins $plugin}
                 {ifpp $plugin['identity']}
                      {if p('supplier') && $perm_role == 1}
-                     {if $plugin['identity']=='taobao' || $plugin['identity']=='exhelper'}
-                     <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
-                     {/if}
+                         {if $plugin['identity']=='taobao' || $plugin['identity']=='exhelper'}
+                         <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
+                         {/if}
                      {else}
-                     <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
+                        {if p($plugin['identity'])}
+                         <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
+                         {/if}
                      {/if}
                 {/if}
                 {/loop}
