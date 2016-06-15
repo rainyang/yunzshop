@@ -375,7 +375,9 @@ if ($operation == "display") {
         } else if ($value['cashier']==1) {
             $value["dispatchname"] = "收银台支付";
         }
-        $value['name'] = set_medias(pdo_fetch('select cs.name,cs.thumb from ' .tablename('sz_yi_cashier_store'). 'cs '.'left join ' .tablename('sz_yi_cashier_order'). ' co on cs.id = co.cashier_store_id where co.order_id=:orderid and co.uniacid=:uniacid', array(':orderid' => $value['id'],':uniacid'=>$_W['uniacid'])), 'thumb');
+        if($p_cashier){
+            $value['name'] = set_medias(pdo_fetch('select cs.name,cs.thumb from ' .tablename('sz_yi_cashier_store'). 'cs '.'left join ' .tablename('sz_yi_cashier_order'). ' co on cs.id = co.cashier_store_id where co.order_id=:orderid and co.uniacid=:uniacid', array(':orderid' => $value['id'],':uniacid'=>$_W['uniacid'])), 'thumb');
+        }    
         if ($value["dispatchtype"] == 1 || !empty($value["isverify"]) || !empty($value["virtual"]) || !empty($value["isvirtual"])|| $value['cashier'] == 1) {
             $value["address"] = '';
             $carrier = iunserializer($value["carrier"]);
@@ -889,9 +891,12 @@ if ($operation == "display") {
     $stores = pdo_fetchall("select id,storename from " . tablename("sz_yi_store") . " where uniacid=:uniacid ", array(
         ":uniacid" => $_W["uniacid"]
     ));
-    $cashier_stores = pdo_fetchall("select id,name from " . tablename("sz_yi_cashier_store") . " where uniacid=:uniacid ", array(
+    if($p_cashier){
+        $cashier_stores = pdo_fetchall("select id,name from " . tablename("sz_yi_cashier_store") . " where uniacid=:uniacid ", array(
         ":uniacid" => $_W["uniacid"]
-    ));
+        ));
+    }
+
     load()->func("tpl");
     include $this->template("web/order/list");
     exit;
@@ -971,7 +976,10 @@ if ($operation == "display") {
 	        ":orderid" => $id,
 	        ":uniacid" => $_W["uniacid"]
 	    ));
-	   	$cashier_stores = set_medias(pdo_fetch("select * from " .tablename('sz_yi_cashier_store'). " where id = ".$item['cashierid']." and uniacid=".$_W['uniacid']),'thumb');	
+        if($p_cashier){
+           $cashier_stores = set_medias(pdo_fetch("select * from " .tablename('sz_yi_cashier_store'). " where id = ".$item['cashierid']." and uniacid=".$_W['uniacid']),'thumb'); 
+        }
+	   		
     foreach ($goods as & $r) {
         if (!empty($r["option_goodssn"])) {
             $r["goodssn"] = $r["option_goodssn"];
