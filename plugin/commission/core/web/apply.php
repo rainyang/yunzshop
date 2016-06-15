@@ -403,8 +403,8 @@ if (checksubmit('submit_pay') && $apply['status'] == 2) {
 	foreach ($order_goods_change as $og) {
 		$commissions = iunserializer($og['commissions']);
 		$commissions['level1'] = isset($cm1[$og['id']]) ? round($cm1[$og['id']], 2) : $commissions['level1'];
-		$commissions['level2'] = isset($cm2[$og['id']]) ? round($cm2[$og['id']], 2) : $commissions['level3'];
-		$commissions['level3'] = isset($cm3[$og['id']]) ? round($cm3[$og['id']], 2) : $commissions['level2'];
+		$commissions['level2'] = isset($cm2[$og['id']]) ? round($cm2[$og['id']], 2) : $commissions['level2'];
+		$commissions['level3'] = isset($cm3[$og['id']]) ? round($cm3[$og['id']], 2) : $commissions['level3'];
 		pdo_update('sz_yi_order_goods', array('commissions' => iserializer($commissions)), array('id' => $og['id']));
 	}
 	plog('commission.changecommission', "修改佣金 订单号: {$order['ordersn']}");

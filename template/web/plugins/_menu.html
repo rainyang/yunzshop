@@ -81,7 +81,9 @@
             <ul class="dropdown-menu">
                 {loop $plugins $plugin}
                 {ifpp $plugin['identity']}
+                <?php if(p($plugin['identity'])) { ?>
                      <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
+                    <?php }?>
                 {/if}
                 {/loop}
             </ul>

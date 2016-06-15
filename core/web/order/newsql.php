@@ -551,7 +551,6 @@ if(!pdo_fieldexists('sz_yi_article_category', 'd_level')) {
 pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article_category')." ADD `d_level` INT(11) NOT NULL DEFAULT '0'");
 }
 
-
 //商品等级返现 2016-06-13
 if(!pdo_fieldexists('sz_yi_goods', 'returns')) {
 pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returns` TEXT NOT NULL AFTER `discounts`");
@@ -564,4 +563,22 @@ if(!pdo_fieldexists('sz_yi_order', 'redstatus')) {
 if (!pdo_fieldexists('sz_yi_goods', 'nobonus')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `nobonus` tinyint(1) DEFAULT '0';");
 }
+
+
+if (!pdo_fieldexists('sz_yi_coupon', 'supplier_uid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `supplier_uid` INT(11) DEFAULT '0';");
+}
+
+
+//添加全返记录表 2016-06-14
+pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_return_log')." (
+  `id` int(11) NOT NULL,
+  `uniacid` int(11) NOT NULL,
+  `mid` int(11) NOT NULL,
+  `openid` varchar(255) NOT NULL,
+  `money` decimal(10,2) NOT NULL,
+  `status` tinyint(2) NOT NULL DEFAULT '0',
+  `returntype` tinyint(2) NOT NULL DEFAULT '0',
+  `create_time` int(11) NOT NULL 
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
