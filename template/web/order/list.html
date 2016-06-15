@@ -61,6 +61,7 @@
             <option value="{$store['id']}" {if $_GPC['storeid'] ==$store['id']} selected="selected" {/if}>{$store['storename']}</option>
             {/loop}
                         </select>
+                    {if $p_cashier}
                         <div class='input-group-addon'>收银商户</div>
                         <select name="csid" class="form-control">
                             <option value="" ></option>
@@ -68,6 +69,7 @@
             <option value="{$cashier_store['id']}" {if $_GPC['csid'] ==$cashier_store['id']} selected="selected" {/if}>{$cashier_store['name']}</option>
             {/loop}
                         </select>
+                    {/if}
             </div>
                   </div>
             </div>

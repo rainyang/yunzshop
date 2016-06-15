@@ -23,6 +23,7 @@ if ($mt <= 10) {
     }
 }
 $totals = array();
+$p_cashier = p('cashier');
 $r_type         = array(
     '0' => '退款',
     '1' => '退货退款',
