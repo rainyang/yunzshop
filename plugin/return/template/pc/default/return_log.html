@@ -4,12 +4,14 @@
     body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
     .credit_list {height:60px; width:100%; background:#fff; padding:10px 0 10px 10px;border-bottom: 1px solid #e8e8e8;}
     
-    .credit_list .info {height:40px; width:50%; float:left;  font-size:16px; color:#666; line-height:20px; text-align:left;}
+    .credit_list .info {height:40px; width:50%; float:left;  font-size:16px; color:#666; line-height:20px; text-align:left;border-right:1px solid #eaeaea; }
     .credit_list .info span {font-size:14px; color:#999;}
-    .credit_list .num {height:40px; border-left:1px solid #eaeaea; width:20%;line-height:20px; float:right; text-align:center; font-size:16px; color:#666;}
+    .credit_list .num {height:40px; width:20%;line-height:20px; float:right; text-align:center; font-size:16px; color:#666;}
     .credit_list .num span {font-size:14px; color:#999;}
+
     .credit_tab {height:30px; margin:5px; border:1px solid #ff6801; border-radius:5px; overflow:hidden;font-size:13px;background:#fff;padding-right: -2px;}
-    .credit_nav {height:30px; width:50%;  background:#fff; color:#666; text-align:center; line-height:30px; float:left;}
+    .credit_nav {height:30px; width:33.33%;  background:#fff; color:#666; text-align:center; line-height:30px; float:left;}
+
     .credit_navon {color:#fff; background:#ff6801;}
     .credit_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
     #credit_loading { padding:10px;color:#666;text-align: center;}
@@ -41,6 +43,7 @@
 <div class="credit_tab">
     <div class="credit_nav {if $_GPC['type']==0}credit_navon{/if}" data-type='0' >返利记录</div>
     <div class="credit_nav {if $_GPC['type']==1}credit_navon{/if}"  data-type='1'>排列记录</div>
+    <div class="credit_nav {if $_GPC['type']==3}credit_navon{/if}"  data-type='3'>会员等级返利记录</div>
 </div>
 
 <div id='tpl_container'></div>
@@ -100,6 +103,28 @@
             </div>
         <%/each%>
     <%/if%>
+   <%if type==3%>
+        <%each list as log%>
+            <div class="credit_list">
+                <div class="info">
+                    <p>会员等级返现</p>
+                    <span>返现金额<%log.money%> 元</span>
+                </div>
+                <div class="num">
+                    <span>   <%if log.status == 1%>
+                        已完成
+                    <%else%>
+                        进行中
+                    <%/if%></span><br/>
+                    <span>
+                 
+                    返现时间<%log.createtime%>
+                    </span></div>
+                   
+                </div>
+            </div>
+        <%/each%>
+    <%/if%>
 </script>
 <script id='tpl_empty' type='text/html'>
     <div class="credit_no"><i class="fa fa-file-text-o" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">暂时没有任何记录~</span></div>
@@ -148,11 +173,6 @@ function bindScroller(){
         });
 }
         function getLog(type) {
-            if(goodsid==0)
-            {
-                $('.credit_nav').removeClass('credit_navon');
-                $('.credit_nav[data-type=' + type + ']').addClass('credit_navon'); 
-            }
 
             core.pjson('return/return_log', {type:type,goodsid:goodsid,page: page}, function (json) {
                  $("#container").html(tpl('tpl_list'));
@@ -162,6 +182,11 @@ function bindScroller(){
                 }
                 $('#tpl_container').html(tpl('tpl_log', json.result));
                 bindScroller();
+                            if(goodsid==0)
+            {
+                $('.credit_nav').removeClass('credit_navon');
+                $('.credit_nav[data-type=' + type + ']').addClass('credit_navon'); 
+            }
             }, true);
         }
 
