@@ -551,7 +551,6 @@ if(!pdo_fieldexists('sz_yi_article_category', 'd_level')) {
 pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article_category')." ADD `d_level` INT(11) NOT NULL DEFAULT '0'");
 }
 
-
 //商品等级返现 2016-06-13
 if(!pdo_fieldexists('sz_yi_goods', 'returns')) {
 pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returns` TEXT NOT NULL AFTER `discounts`");
@@ -563,5 +562,8 @@ if(!pdo_fieldexists('sz_yi_order', 'redstatus')) {
 
 if (!pdo_fieldexists('sz_yi_goods', 'nobonus')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `nobonus` tinyint(1) DEFAULT '0';");
+}
+if (!pdo_fieldexists('sz_yi_coupon', 'supplier_uid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `supplier_uid` INT(11) DEFAULT '0';");
 }
 
