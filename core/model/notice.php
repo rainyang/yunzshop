@@ -55,7 +55,9 @@ class Sz_DYi_Notice
         $set  = m('common')->getSysset();
         $shop = $set['shop'];
         $tm   = $set['notice'];
-        $cashier_stores = pdo_fetch('select * from ' .tablename('sz_yi_cashier_store'). ' where id ='.$order['cashierid']);
+        if(p("cashier")){
+            $cashier_stores = pdo_fetch('select * from ' .tablename('sz_yi_cashier_store'). ' where id ='.$order['cashierid']);
+        }
         if ($delRefund) {
 	    $_var_14 = array('0' => "退款", "1" => "退货退款", "2" => "换货");
             if (!empty($order['refundid'])) {

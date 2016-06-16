@@ -89,6 +89,11 @@ if ($operation == 'display') {
         } else {
             $data['create_time'] = date('Y-m-d H:i:s');
             pdo_insert('sz_yi_cashier_store', $data);
+            $_var_157 = array(
+                                'keyword1' => array('value' => '收银台商户通知', 'color' => '#73a68d'),
+                                'keyword2' => array('value' => '【商户名称】' . $cashier_stores['name'], 'color' => '#73a68d'),
+                                'remark' => array('value' => '您已经被绑定成为此商户的微信角色!')
+                            );   
             $id = pdo_insertid();
             plog('cashier.store.add', "添加商户 ID: {$id}  <br/>店名: {$data['name']}");
             message('添加商户成功！', $this->createPluginWebUrl('cashier/store'), 'success');

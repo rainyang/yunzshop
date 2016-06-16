@@ -570,6 +570,34 @@ if (!pdo_fieldexists('sz_yi_coupon', 'supplier_uid')) {
 }
 
 
+//收银台新加order字段
+
+
+if(!pdo_fieldexists('sz_yi_order', 'cashier')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `cashier` tinyint(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'realprice')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `realprice` decimal(10) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'deredpack')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `deredpack` tinyint(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'decommission')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `decommission` tinyint(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'decredits')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `decredits` tinyint(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'cashierid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `cashierid` int(11) DEFAULT '0';");
+}
+
+
 //添加全返记录表 2016-06-14
 pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_return_log')." (
   `id` int(11) NOT NULL,
@@ -581,4 +609,5 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_return_log')." (
   `returntype` tinyint(2) NOT NULL DEFAULT '0',
   `create_time` int(11) NOT NULL 
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+
 
