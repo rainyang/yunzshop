@@ -99,10 +99,10 @@ if (!class_exists('ReturnModel')) {
 				pdo_insert('sz_yi_return_log', $data);
 
 				m('member')->setCredit($order_goods[0]['openid'],'credit2',$money);
-				$text = "您的订单以返现完成。";
+				$text = "您的订单(".$orderid.")已返现完成。";
 				$_var_156 = array(
-					'keyword1' => array('value' => '会员等级返现通知', 'color' => '#73a68d'), 
-					'keyword2' => array('value' => '[返现金额]'.$money, 'color' => '#73a68d'),
+					'keyword1' => array('value' => '购物返现通知', 'color' => '#73a68d'), 
+					'keyword2' => array('value' => '[返现金额]'.$money.'元,已存到您的余额', 'color' => '#73a68d'),
 					'remark' => array('value' => $text)
 				);
 	        	m('message')->sendCustomNotice($order_goods[0]['openid'], $_var_156);
