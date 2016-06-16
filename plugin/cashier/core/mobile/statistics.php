@@ -59,7 +59,11 @@ if($operation == 'display' && $_W['isajax']){
         $row['commission1'] = iunserializer( $commission['commission1']);
         $row['commission2'] = iunserializer( $commission['commission2']);
         $row['commission3'] = iunserializer( $commission['commission3']);
-        $row['redpackmoney'] = $row['price']*($store['redpack']/100);
+        if($row['price'] > $store['redpack_min']){
+            $row['redpackmoney'] = $row['price']*($store['redpack']/100);
+        }else{
+            $row['redpackmoney'] = 0;
+        }
         $row['creditpackmoney'] = $row['price']*($store['creditpack']/100);
         $row['platform_poundage'] = $row['price']*($store['settle_platform']/100);
         $row['credits'] = $this->model->setCredits($row['id'], true);
