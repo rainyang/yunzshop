@@ -2,6 +2,8 @@
 global $_W, $_GPC;
 $operation   = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 if ($operation == 'display') {
+	$pindex = max(1, intval($_GPC['page']));
+	$psize = 20;
 	$where = '';
 	if(!empty($_GPC['uid'])){
 		$where .= ' and p.uid=' . $_GPC['uid'];
@@ -11,8 +13,9 @@ if ($operation == 'display') {
 	} 
 
     //修复p.*问题, 直接p.*和a.* id会有冲突,字段名也不对，没有telephone. By RainYang
-	$list = pdo_fetchall('select a.*,p.accountname, mobile as telephone, accountbank, banknumber   from ' . tablename('sz_yi_supplier_apply') . ' a left join ' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid where a.status=0 and p.uniacid=' . $_W['uniacid'] . $where);
-    $total = count($list);
+	$list = pdo_fetchall('select a.*,p.accountname, mobile as telephone, accountbank, banknumber   from ' . tablename('sz_yi_supplier_apply') . ' a left join ' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid where a.status=0 and p.uniacid=' . $_W['uniacid'] . $where . '  limit ' . ($pindex - 1) * $psize . ',' . $psize);
+	$total = pdo_fetchcolumn('select count(a.id) from ' . tablename('sz_yi_supplier_apply') . ' a left join ' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid where a.status=0 and p.uniacid=' . $_W['uniacid'] . $where);
+    $pager = pagination($total, $pindex, $psize);
 } else if ($operation == 'detail') {
 	$id = intval($_GPC['applyid']);
 	if(!empty($id)){
