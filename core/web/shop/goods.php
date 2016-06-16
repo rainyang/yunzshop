@@ -511,10 +511,16 @@ if ($operation == "change") {
                 }
             }
         }
-        $pcates = array_merge($pcates,$pcates2);
-        $ccates = array_merge($ccates,$ccates2);
+        if($shopset['category2']==1){
+            $pcates = array_merge($pcates,$pcates2);
+            $ccates = array_merge($ccates,$ccates2);  
+        }
+
         if($cateset['catlevel'] == 3){
-             $tcates = array_merge($tcates,$tcates2);
+             if($shopset['category2']==1){
+                 $tcates = array_merge($tcates,$tcates2);
+             }
+            
         }
        
 

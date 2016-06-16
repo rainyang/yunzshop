@@ -55,7 +55,7 @@
      <div id='container'></div>
 <script id='tpl_log' type='text/html'>
    <div class="tit-num">
-        <p>总订单数:<span><%total%></span></p><p>总支付金额:<span><%totalmoney%></span>元</p><p>实际金额:<span><%realtotalmoney%></span>元</p>
+        <p>总订单数:<span><%total%></span></p><p>总支付金额:<span><%totalmoney%></span>元</p><p>总结算金额:<span><%realtotalmoney%></span>元</p>
     </div>
 
     <%each list as log%>
@@ -73,7 +73,7 @@
         </div>
         <div class="cas-num">
             <p> 支付金额: <span><%log.price%></span>元</p>
-            <p> 总结算金额: <span><%log.realprice%></span>元</p>
+            <p> 结算金额: <span><%log.realprice%></span>元</p>
            
         </div>
     </div>
