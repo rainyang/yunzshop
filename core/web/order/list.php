@@ -1211,7 +1211,11 @@ if ($operation == "display") {
     }
     $to = trim($_GPC["to"]);
     if ($to == 'confirmpay') {
-        order_list_confirmpay($item);
+        if($item['cashier'] == 1){
+            order_list_finish($item);
+        }else{
+            order_list_confirmpay($item); 
+        }
     } else if ($to == 'cancelpay') {
         order_list_cancelpay($item);
     } else if ($to == 'confirmsend') {
