@@ -41,12 +41,12 @@ if ($operation == 'display') {
         $row['totalprices'] = 0;
         if ($orderids) {
             // 累计支付金额
-            $totalprices = pdo_fetch('SELECT SUM(price) AS tprice FROM ' . tablename('sz_yi_order') . ' WHERE uniacid = ' .$_W['uniacid'].' and status=3 AND id IN (' . implode(',', $orderids) . ')');
+            $totalprices = pdo_fetch('SELECT SUM(price) AS tprice FROM ' . tablename('sz_yi_order') . ' WHERE uniacid = ' .$_W['uniacid'].' and status = 3 AND id IN (' . implode(',', $orderids) . ')');
             $row['totalprices'] = $totalprices['tprice'];
 
             $totalprices = $row['totalprices']*(100-$row['settle_platform'])/100;
 
-            $realtotalprices = pdo_fetch('SELECT SUM(realprice) AS tprice FROM ' . tablename('sz_yi_order') . ' WHERE uniacid = ' .$_W['uniacid'].' and status=3 AND id IN (' . implode(',', $orderids) . ')');
+            $realtotalprices = pdo_fetch('SELECT SUM(realprice) AS tprice FROM ' . tablename('sz_yi_order') . ' WHERE uniacid = ' .$_W['uniacid'].' and status = 3 AND id IN (' . implode(',', $orderids) . ')');
             $row['realtotalprices'] = $realtotalprices['tprice'];
 
             $realtotalprices = $row['realtotalprices'];
