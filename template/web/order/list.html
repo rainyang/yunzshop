@@ -87,7 +87,7 @@
                             {php echo tpl_form_field_daterange('time', array('starttime'=>date('Y-m-d H:i', $starttime),'endtime'=>date('Y-m-d H:i', $endtime)),true);}
                         </div>
                         <div class='input-group'>
-						  <div class='input-group-addon'>完成时间
+                          <div class='input-group-addon'>完成时间
                             <label class='radio-inline' style='margin-top:-7px;'>
                                 <input type='radio' value='0' name='fsearchtime' {if $_GPC['fsearchtime']=='0'}checked{/if}>不搜索
                             </label>
@@ -146,7 +146,7 @@
                     <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
                     <input type="hidden" name="token" value="{$_W['token']}" />
                     <button type="submit" name="export" value="1" class="btn btn-primary">导出 Excel</button>
-					<a class="btn btn-warning" href="{php echo $this->createWebUrl('order/export')}">自定义导出</a>
+                    <a class="btn btn-warning" href="{php echo $this->createWebUrl('order/export')}">自定义导出</a>
                 </div>
 
             </div>
@@ -181,8 +181,8 @@
                         <b>订单编号:</b>  {$item['ordersn']}     
                         <b>下单时间:  </b>{php echo date('Y-m-d H:i:s', $item['createtime'])}
                         {if !empty($item['refundstate'])}<label class='label label-danger'>{$r_type[$item['rtype']]}申请</label>{/if}
-			            {if $item['rstatus'] == 4}<label class='label label-primary'>客户已经寄出快递</label>{/if}
-			            {if !empty($agentid)}
+                        {if $item['rstatus'] == 4}<label class='label label-primary'>客户已经寄出快递</label>{/if}
+                        {if !empty($agentid)}
                          <b>分销订单级别:</b> {$item['level']}级 <b>分销佣金:</b> {$item['commission']} 元
                         
                          {/if}
@@ -216,10 +216,10 @@
 {loop $item['goods'] $k $g}
                 <tr class='trbody'>
                     <td class="goods_info">
-                         <img src="{if $item['cashier']==1 || !$p_cashier}{$item['name']['thumb']}{else}{php echo tomedia($g['thumb'])}{/if}"> 
+                         <img src="{if $item['cashier']==1 || $p_cashier}{$item['name']['thumb']}{else}{php echo tomedia($g['thumb'])}{/if}"> 
                     </td>
                     <td valign='top'  style='border-left:none;text-align: left;/*width:400px*/;'  >
-                        {if $item['cashier']==1 || !$p_cashier}{$item['name']['name']}{else}{$g['title']}{/if}{if !empty($g['optiontitle'])}<br/><span class="label label-primary sizebg">{$g['optiontitle']}</span>{/if}
+                        {if $item['cashier']==1 || $p_cashier}{$item['name']['name']}{else}{$g['title']}{/if}{if !empty($g['optiontitle'])}<br/><span class="label label-primary sizebg">{$g['optiontitle']}</span>{/if}
                         <br/>{$g['goodssn']}
                     </td>
                     <td style='border-left:none;text-align:left;/*width:150px*/'>原价: {php echo number_format( $g['price']/$g['total'],2)} <br />应付: {php echo number_format($g['realprice']/$g['total'],2)}
@@ -237,17 +237,17 @@
                              <br/>
                         {$item['addressdata']['realname']}<br/>{$item['addressdata']['mobile']}</td>
                     <td rowspan="{php echo count($item['goods'])}"    >
-					{if $item['statusvalue'] > 0}
-		            <label class='label label-{$item['css']}'>{$item['paytype']}</label><br/>
-		            {else if $item['statusvalue'] == 0}
-		            {if $item['paytypevalue'] == 3}
-		            <label class='label label-default'>货到付款</label><br/>
-		            {else}
-		            <label class='label label-default'>未支付</label><br/>
-		            {/if}
-		            {else if $item['statusvalue'] == -1}
-		            <label class='label label-default'>{$item['paytype']}</label><br/>
-		            {/if}
+                    {if $item['statusvalue'] > 0}
+                    <label class='label label-{$item['css']}'>{$item['paytype']}</label><br/>
+                    {else if $item['statusvalue'] == 0}
+                    {if $item['paytypevalue'] == 3}
+                    <label class='label label-default'>货到付款</label><br/>
+                    {else}
+                    <label class='label label-default'>未支付</label><br/>
+                    {/if}
+                    {else if $item['statusvalue'] == -1}
+                    <label class='label label-default'>{$item['paytype']}</label><br/>
+                    {/if}
                                        {$item['dispatchname']}
                                        {if $item['addressid']!=0 && $item['statusvalue']>=2}<br/>
                                        <button type='button' class='btn btn-default btn-sm' onclick='express_find(this,"{$item['id']}")' >查看物流</button>
@@ -387,7 +387,7 @@
             modal.find('.mobile').html(addressdata.mobile);
             modal.find('.address').html(addressdata.address);
     }
-	$(function () {
+    $(function () {
         $('.select2').select2({
             search: true,
             placeholder: "请选择门店",
