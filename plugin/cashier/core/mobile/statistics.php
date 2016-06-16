@@ -26,9 +26,9 @@ if($operation == 'display' && $_W['isajax']){
         }
     }
 
-    $sql   = 'SELECT o.*,co.cashier_store_id,co.order_id FROM ' . tablename('sz_yi_order') . ' o left join '.tablename('sz_yi_cashier_order').' co on o.id = co.order_id '.' where 1 and '.$condition.' and o.status = 3 ORDER BY o.id DESC ';
+    $sql   = 'SELECT o.*,co.cashier_store_id,co.order_id FROM ' . tablename('sz_yi_order') . ' o left join '.tablename('sz_yi_cashier_order').' co on o.id = co.order_id '.' where 1 and '.$condition.' and o.status = 3 and cashier = 1 ORDER BY o.id DESC ';
     $list  = pdo_fetchall($sql, $params);
-    $total = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_order') . ' o left join '.tablename('sz_yi_cashier_order').' co on o.id = co.order_id '.' where 1 and '.$condition, $params);
+    $total = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_order') . ' o left join '.tablename('sz_yi_cashier_order').' co on o.id = co.order_id '.' where 1 and o.cashier = 1 and  o.status = 3 and '.$condition, $params);
     $store = pdo_fetch(' select * from '.tablename('sz_yi_cashier_store').' where uniacid = '.$_W['uniacid'].' and id='.$id);
     $pager = pagination($total, $page, $pagesize);
     foreach ($list as &$row) {
