@@ -1619,13 +1619,24 @@ function order_list_cancelsend1($zym_var_32) {
 function order_list_finish($zym_var_32) {
     global $_W, $_GPC;
     ca("order.op.finish");
-    pdo_update("sz_yi_order", array(
-        "status" => 3,
-        "finishtime" => time()
-    ) , array(
-        "id" => $zym_var_32["id"],
-        "uniacid" => $_W["uniacid"]
-    ));
+    if($zym_var_32['cashier'] == 1){
+        pdo_update("sz_yi_order", array(
+                "status" => 3,
+                "paytype"=>11,
+                "finishtime" => time()
+            ) , array(
+                "id" => $zym_var_32["id"],
+                "uniacid" => $_W["uniacid"]
+        ));
+    }else{
+        pdo_update("sz_yi_order", array(
+            "status" => 3,
+            "finishtime" => time()
+        ) , array(
+            "id" => $zym_var_32["id"],
+            "uniacid" => $_W["uniacid"]
+        ));
+    }
     m("member")->upgradeLevel($zym_var_32["openid"]);
     m("notice")->sendOrderMessage($zym_var_32["id"]);
     if (p("coupon") && !empty($zym_var_32["couponid"])) {
