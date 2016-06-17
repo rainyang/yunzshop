@@ -8,7 +8,7 @@ $operation = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 if ($operation == 'display') {
     if ($_W['isajax']) {
         if ($_W['ispost']) {
-        	if (empty(p('supplier'))) {
+        	if (!p('supplier')) {
         		show_json(3);
         	}
             $userdata = $_GPC['userdata'];
