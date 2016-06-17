@@ -55,7 +55,7 @@ class Sz_DYi_Notice
         $set  = m('common')->getSysset();
         $shop = $set['shop'];
         $tm   = $set['notice'];
-        if(p("cashier")){
+        if(p("cashier") && $order['cashier'] == 1){
             $cashier_stores = pdo_fetch('select * from ' .tablename('sz_yi_cashier_store'). ' where id ='.$order['cashierid']);
         }
         if ($delRefund) {
