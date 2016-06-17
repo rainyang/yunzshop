@@ -116,12 +116,11 @@ if ($operation == 'display' && $_W['isajax']) {
         }
     }
 
-    $pluginy = p('yunpay');
-    if ($pluginy) {
-        $yunpay = array(
+    $pluginy = p('yunpay');        
+    $yunpay = array(
             'success' => false
         );
-
+    if ($pluginy) {
         $yunpayinfo = $pluginy->getYunpay();
         if (isset($yunpayinfo) && $yunpayinfo['switch']) {
             $yunpay['success'] = true;
