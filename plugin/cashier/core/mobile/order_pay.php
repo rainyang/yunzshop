@@ -227,10 +227,7 @@ if ($operation == 'display' && $_W['isajax']) {
             show_json(0, '微信支付参数错误!');
         }
         pdo_update('sz_yi_order', array(
-            'paytype' => 21,
-            'status'  => 3,
-            'paytime' => time(),
-            'finishtime' =>time()
+            'paytype' => 21
         ), array(
             'id' => $order['id']
         ));
@@ -243,10 +240,7 @@ if ($operation == 'display' && $_W['isajax']) {
         ));
     } else if ($type == 'alipay') {
         pdo_update('sz_yi_order', array(
-            'paytype' => 22,
-            'status'  => 3,
-            'paytime' => time(),
-            'finishtime' =>time()
+            'paytype' => 22
         ), array(
             'id' => $order['id']
         ));
@@ -257,10 +251,7 @@ if ($operation == 'display' && $_W['isajax']) {
         show_json(1);
     }else if ($type == 'yunpay') {
         pdo_update('sz_yi_order', array(
-            'paytype' => 24,
-            'status'  => 3,
-            'paytime' => time(),
-            'finishtime' =>time()
+            'paytype' => 24
         ), array(
             'id' => $order['id']
         ));
@@ -340,10 +331,7 @@ if ($operation == 'display' && $_W['isajax']) {
             'plid' => $log['plid']
         ));
         pdo_update('sz_yi_order', array(
-            'paytype' => 1,
-            'status'  => 3,
-            'paytime' => time(),
-            'finishtime' =>time()
+            'paytype' => 1
         ), array(
             'id' => $order['id']
         ));

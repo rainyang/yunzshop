@@ -38,10 +38,11 @@ if (!class_exists('CashierModel')) {
 
             $orderid = $order['id'];
             if ($params['from'] == 'return') {
-                if ($order['status'] == 0) {
+                if ($order['status'] == 0 || $params['type'] == 'wechat' || $params['type'] == 'yunpay' || $params['type'] == 'alipay') {                
                     pdo_update('sz_yi_order', array(
                         'status' => 3,
-                        'paytime' => time()
+                        'paytime' => time(),
+                        'finishtime' => time()
                     ), array(
                         'id' => $orderid
                     ));
