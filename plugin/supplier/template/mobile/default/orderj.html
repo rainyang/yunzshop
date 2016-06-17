@@ -93,15 +93,16 @@
                         var status = $(this).data('status');
                         location.href = core.getUrl('plugin/supplier/orderj', {'op':'order',status: status});
                     })
-                    $(document).on('click','.order_main .good',function(){
-                        var orderid = $(this).closest('.order_main').data('orderid');
-                        location.href = core.getUrl('plugin/supplier/detail', {orderid: orderid});
-                    });
+                    
                     if (json.result.list.length <= 0) {
                         $("#order_container").html(tpl('tpl_empty'));
                         return;
                     }
                     $("#order_container").html(tpl('tpl_order', json.result));
+                    $('.order_main').click(function(){
+                        var orderid = $(this).closest('.order_main').data('orderid');
+                        location.href = core.getUrl('plugin/supplier/detail', {orderid: orderid});
+                    });
                 }, true);
       
     });
