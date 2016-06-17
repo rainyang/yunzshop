@@ -57,7 +57,7 @@
             <div class="title">地址</div>
             <div class='info'>
                 <div class='inner'>
-                    <input type="text" id='address' placeholder="请输入您的手机号码"  value="<%address%>" />
+                    <input type="text" id='address' placeholder="请输入您的商户地址"  value="<%address%>" />
                 </div>
             </div>
         </div>
@@ -107,14 +107,14 @@
             </div>
         </div>
         {/if}
-        <div class="line">
+<!--         <div class="line">
             <div class="title">积分奖励(%)</div>
             <div class='info'>
                 <div class='inner'>
                     <input type="text" id='credit1' value="<%credit1%>" placeholder="支付完成后，获得的积分奖励" />
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="line">
             <div class="title">红包奖励(最小消费)</div>
             <div class='info'>
@@ -256,7 +256,7 @@
                         'redpack': $('#redpack').val(),
                         'creditpack': $('#creditpack').val(),
                     };
-                    alert(postData.redpack);
+                    // alert(postData.redpack);
                     if ($('#commission1_rate').length > 0) {
                         postData.commission1_rate = $('#commission1_rate').val();
                     }
