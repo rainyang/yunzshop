@@ -86,6 +86,8 @@ if (!class_exists('CouponModel')) {
 				if ($_var_1['total'] <= 0) {
 					return error(-1, '优惠券数量不足');
 				}
+				//只有优惠劵数量不等于-1的情况下减数量
+				$_var_1['total'] -= 1;
 			}
 			if (!$_var_1['canget']) {
 				return error(-1, '您已超出领取次数限制');
@@ -110,7 +112,7 @@ if (!class_exists('CouponModel')) {
 				$_var_10 = $this->getSet();
 				$this->sendMessage($_var_1, 1, $_var_6, $_var_10['templateid']);
 			}
-			$_var_1['total'] -= 1;
+			
 			pdo_update('sz_yi_coupon', array('total' => $_var_1['total']), array('uniacid' => $_W['uniacid'], 'id' => $_var_5['couponid']));
 			$_var_16 = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=member';
 			if ($_var_1['coupontype'] == 0) {
@@ -268,12 +270,12 @@ if (!class_exists('CouponModel')) {
 			$this->sendBackMessage($_var_5['openid'], $_var_1, $_var_26);
 		}
 
-		function consumeCouponCount($_var_25, $_var_32 = 0)
+		function consumeCouponCount($openid, $enough = 0, $supplier_uid = 0)
 		{
 			global $_W, $_GPC;
-			$_var_33 = time();
-			$_var_34 = 'select count(*) from ' . tablename('sz_yi_coupon_data') . ' d ' . '  left join ' . tablename('sz_yi_coupon') . ' c on d.couponid = c.id ' . "  where d.openid=:openid and d.uniacid=:uniacid and  c.coupontype=0 and {$_var_32}>=c.enough and d.used=0 " . " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$_var_33} && c.timeend>={$_var_33}))";
-			return pdo_fetchcolumn($_var_34, array(':openid' => $_var_25, ':uniacid' => $_W['uniacid']));
+			$time = time();
+			$sql = 'select count(*) from ' . tablename('sz_yi_coupon_data') . ' d ' . '  left join ' . tablename('sz_yi_coupon') . ' c on d.couponid = c.id ' . "  where d.openid=:openid and d.uniacid=:uniacid and c.supplier_uid=:supplier_uid and c.coupontype=0 and {$enough}>=c.enough and d.used=0 " . " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$time} && c.timeend>={$time}))";
+			return pdo_fetchcolumn($sql, array(':openid' => $openid, ':supplier_uid' => $supplier_uid, ':uniacid' => $_W['uniacid']));
 		}
 
 		function useConsumeCoupon($_var_35 = 0)
