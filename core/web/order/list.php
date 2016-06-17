@@ -375,7 +375,7 @@ if ($operation == "display") {
         } else if ($value['cashier']==1) {
             $value["dispatchname"] = "收银台支付";
         }
-        if($p_cashier){
+        if($p_cashier && $value['cashier'] == 1){
             $value['name'] = set_medias(pdo_fetch('select cs.name,cs.thumb from ' .tablename('sz_yi_cashier_store'). 'cs '.'left join ' .tablename('sz_yi_cashier_order'). ' co on cs.id = co.cashier_store_id where co.order_id=:orderid and co.uniacid=:uniacid', array(':orderid' => $value['id'],':uniacid'=>$_W['uniacid'])), 'thumb');
         }    
         if ($value["dispatchtype"] == 1 || !empty($value["isverify"]) || !empty($value["virtual"]) || !empty($value["isvirtual"])|| $value['cashier'] == 1) {
@@ -429,6 +429,7 @@ if ($operation == "display") {
             ":uniacid" => $_W["uniacid"],
             ":orderid" => $value["id"]
         ));
+
         $goods = '';
         foreach ($order_goods as & $og) {
             if (!empty($level) && empty($agentid)) {
@@ -976,7 +977,7 @@ if ($operation == "display") {
 	        ":orderid" => $id,
 	        ":uniacid" => $_W["uniacid"]
 	    ));
-        if($p_cashier){
+        if($p_cashier && $item['cashier'] == 1 ){
            $cashier_stores = set_medias(pdo_fetch("select * from " .tablename('sz_yi_cashier_store'). " where id = ".$item['cashierid']." and uniacid=".$_W['uniacid']),'thumb'); 
         }
 	   		
