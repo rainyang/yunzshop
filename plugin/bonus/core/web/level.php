@@ -49,8 +49,10 @@ if ($operation == 'display') {
 } elseif ($operation == 'delete') {
 	ca('bonus.level.delete');
 	$id = intval($_GPC['id']);
-	$level = pdo_fetch("SELECT id,levelname FROM " . tablename('sz_yi_bonus_level') . " WHERE id = '$id'");
-	if (empty($level)) {
+    if($id){
+	  $level = pdo_fetch("SELECT id,levelname FROM " . tablename('sz_yi_bonus_level') . " WHERE uniacid =:uniacid and id=:id", array(':uniacid' => $_W['uniacid'], ':id' =>$id));
+    }
+    if (empty($level)) {
 		message('抱歉，等级不存在或是已经被删除！', $this->createPluginWebUrl('bonus/level', array('op' => 'display')), 'error');
 	}
 	pdo_delete('sz_yi_bonus_level', array('id' => $id, 'uniacid' => $_W['uniacid']));
