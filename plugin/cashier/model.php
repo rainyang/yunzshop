@@ -54,9 +54,9 @@ if (!class_exists('CashierModel')) {
                         ));
                     }
                     $this->setCredits($orderid);
-                    if ($params['type'] != 'wechat' && $params['type'] != 'yunpay' && $params['type'] != 'alipay') {
-                         m('notice')->sendOrderMessage($orderid);
-                    }
+                    
+                    m('notice')->sendOrderMessage($orderid);
+                    
                     if (p('commission')) {
                         $this->calculateCommission($order['id']);
                     }
