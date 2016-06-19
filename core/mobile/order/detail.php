@@ -133,7 +133,7 @@ if ($_W['isajax']) {
     $tradeset   = m('common')->getSysset('trade');
     $refunddays = intval($tradeset['refunddays']);
     if ($order['status'] == 1 || $order['status'] == 2) {
-        if ($refunddays > 0 || $row['status'] == 1) {
+        if ($refunddays > 0 || $order['status'] == 1) {
             $canrefund = true;
         }
     } else if ($order['status'] == 3) {
