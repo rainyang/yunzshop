@@ -50,7 +50,7 @@ if(!empty($pluginbonus)){
 $member = $this->model->getInfo($openid, array('total', 'ordercount0', 'ok', 'myorder'));
 if ($_W['isajax']) {
 	$cansettle = $member['commission_ok'] > 0 && $member['commission_ok'] >= floatval($this->set['withdraw']);
-	$mycansettle = $member['commission_ok'] > 0 && $member['myoedermoney'] >= floatval($this->set['consume_withdraw']);
+	$mycansettle = $member['commission_total'] > 0 && $member['myoedermoney'] >= floatval($this->set['consume_withdraw']);
 	$commission_ok = $member['commission_ok'];
     $member['nickname'] 	 = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
     $total_all += $member['commission_total'];
