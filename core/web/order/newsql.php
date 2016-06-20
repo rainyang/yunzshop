@@ -600,14 +600,15 @@ if(!pdo_fieldexists('sz_yi_order', 'cashierid')) {
 
 //添加全返记录表 2016-06-14
 pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_return_log')." (
-  `id` int(11) NOT NULL,
+  `id` INT NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `mid` int(11) NOT NULL,
   `openid` varchar(255) NOT NULL,
   `money` decimal(10,2) NOT NULL,
   `status` tinyint(2) NOT NULL DEFAULT '0',
   `returntype` tinyint(2) NOT NULL DEFAULT '0',
-  `create_time` int(11) NOT NULL 
+  `create_time` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
 
