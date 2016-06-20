@@ -54,7 +54,7 @@ $list = pdo_fetchall($sql);
 foreach ($list as $key => &$row) {  
     //Author:ym Date:2016-04-08 Content:需消费一定金额，否则清除该用户不参与分红
     if(!empty($set['consume_withdraw'])){
-        $myorder = pdo_fetchcolumn('select sum(og.realprice) as ordermoney as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $row['openid']));
+        $myorder = pdo_fetchcolumn('select sum(og.realprice) as ordermoney from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $row['openid']));
         if($myorder < floatval($set['consume_withdraw'])){
             unset($list[$key]);
             continue;
@@ -98,7 +98,7 @@ if (!empty($_POST)) {
             "send_bonus_sn" => $send_bonus_sn
         ));
         if($sendpay == 1){
-        	$this->model->sendMessage($value['openid'], array('nickname' => $value['nickname'], 'levelname' => $value['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_GLOPAL_PAY);
+        	$this->model->sendMessage($value['openid'], array('nickname' => $value['nickname'], 'levelname' => $value['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_GLOBAL_PAY);
         }
 	}
 	$log = array(

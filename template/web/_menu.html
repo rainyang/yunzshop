@@ -13,7 +13,7 @@
         </li> 
         {ifp 'shop'}
         <li class="dropdown">
-            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='iconfont icon-good-web'></i> 商品管理 <i class="fa fa-angle-down"></i></a>
+            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='iconfont icon-good-web'></i> 商城管理 <i class="fa fa-angle-down"></i></a>
             <ul class="dropdown-menu">
                 {ifp 'shop.goods'}<li><a href="{php echo $this->createWebUrl('shop/goods')}">商品管理</a></li>{/if}
                 {ifp 'shop.category'}<li><a href="{php echo $this->createWebUrl('shop/category')}">分类管理</a></li>{/if}
@@ -97,7 +97,7 @@
               }?>
         <li class="dropdown">
            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-cubes'></i> 插件 <i class="fa fa-angle-down"></i></a>
-            <ul class="dropdown-menu">
+            <ul class="dropdown-menu plug-list">
                 {loop $plugins $plugin}
                 {ifpp $plugin['identity']}
                      {if p('supplier') && $perm_role == 1}

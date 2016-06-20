@@ -116,12 +116,11 @@ if ($operation == 'display' && $_W['isajax']) {
         }
     }
 
-    $pluginy = p('yunpay');
-    if ($pluginy) {
-        $yunpay = array(
+    $pluginy = p('yunpay');        
+    $yunpay = array(
             'success' => false
         );
-
+    if ($pluginy) {
         $yunpayinfo = $pluginy->getYunpay();
         if (isset($yunpayinfo) && $yunpayinfo['switch']) {
             $yunpay['success'] = true;
@@ -228,14 +227,11 @@ if ($operation == 'display' && $_W['isajax']) {
             show_json(0, '微信支付参数错误!');
         }
         pdo_update('sz_yi_order', array(
-            'paytype' => 21,
-            'status'  => 3,
-            'paytime' => time(),
-            'finishtime' =>time()
+            'paytype' => 21
         ), array(
             'id' => $order['id']
         ));
-        m('notice')->sendOrderMessage($orderid);
+
         if($commission['become_child']==2){
              p('commission')->checkOrderPay($orderid);
         }
@@ -244,31 +240,25 @@ if ($operation == 'display' && $_W['isajax']) {
         ));
     } else if ($type == 'alipay') {
         pdo_update('sz_yi_order', array(
-            'paytype' => 22,
-            'status'  => 3,
-            'paytime' => time(),
-            'finishtime' =>time()
+            'paytype' => 22
         ), array(
             'id' => $order['id']
         ));
         if($commission['become_child']==2){
              p('commission')->checkOrderPay($orderid);
         }
-        m('notice')->sendOrderMessage($orderid);
+
         show_json(1);
     }else if ($type == 'yunpay') {
         pdo_update('sz_yi_order', array(
-            'paytype' => 24,
-            'status'  => 3,
-            'paytime' => time(),
-            'finishtime' =>time()
+            'paytype' => 24
         ), array(
             'id' => $order['id']
         ));
         if($commission['become_child']==2){
              p('commission')->checkOrderPay($orderid);
         }
-        m('notice')->sendOrderMessage($orderid);
+
         show_json(1);
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
@@ -341,10 +331,7 @@ if ($operation == 'display' && $_W['isajax']) {
             'plid' => $log['plid']
         ));
         pdo_update('sz_yi_order', array(
-            'paytype' => 1,
-            'status'  => 3,
-            'paytime' => time(),
-            'finishtime' =>time()
+            'paytype' => 1
         ), array(
             'id' => $order['id']
         ));
@@ -367,7 +354,7 @@ if ($operation == 'display' && $_W['isajax']) {
         if($commission['become_child']==2){
              p('commission')->checkOrderPay($orderid);
         }
-        m('notice')->sendOrderMessage($orderid);
+       
         $this->model->redpack($openid,$orderid);
         $this->model->setCredits($orderid);
         $this->model->setCredits2($orderid);
@@ -401,7 +388,7 @@ if ($operation == 'display' && $_W['isajax']) {
             if($commission['become_child']==2){
                  p('commission')->checkOrderPay($orderid);
             }
-            m('notice')->sendOrderMessage($orderid);
+            
             $this->model->redpack($openid,$orderid);
             $this->model->setCredits($orderid);
             $this->model->setCredits2($orderid);

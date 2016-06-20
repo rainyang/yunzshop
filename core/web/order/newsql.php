@@ -578,7 +578,7 @@ if(!pdo_fieldexists('sz_yi_order', 'cashier')) {
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'realprice')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `realprice` decimal(10) DEFAULT '0';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `realprice` decimal(10,2) DEFAULT '0';");
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'deredpack')) {

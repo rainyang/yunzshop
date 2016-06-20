@@ -14,8 +14,8 @@ $order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' wher
     ':uniacid' => $uniacid,
     ':openid' => $openid
 ));
-if(p('cashier')){
-    $order['name'] = set_medias(pdo_fetch('select cs.name,cs.thumb,cs.contact,cs.mobile,cs.address from ' .tablename('sz_yi_cashier_store'). 'cs '.'left join ' .tablename('sz_yi_cashier_order'). ' co on cs.id = co.cashier_store_id where co.order_id=:orderid and co.uniacid=:uniacid', array(':orderid' => $orderid,':uniacid'=>$_W['uniacid'])), 'thumb');
+if(p('cashier') && $order['cashier'] == 1){
+    $order['name'] = set_medias(pdo_fetch('select * from ' .tablename('sz_yi_cashier_store'). ' where id=:id and uniacid=:uniacid', array(':id' => $order['cashierid'],':uniacid'=>$_W['uniacid'])), 'thumb');
 }
 
 if (!empty($order)) {
@@ -133,7 +133,7 @@ if ($_W['isajax']) {
     $tradeset   = m('common')->getSysset('trade');
     $refunddays = intval($tradeset['refunddays']);
     if ($order['status'] == 1 || $order['status'] == 2) {
-        if ($refunddays > 0) {
+        if ($refunddays > 0 || $order['status'] == 1) {
             $canrefund = true;
         }
     } else if ($order['status'] == 3) {
@@ -168,7 +168,4 @@ if ($_W['isajax']) {
         'set' => $set
     ));
 }
-include $this->template('order/detail');   
-
-
-
+include $this->template('order/detail');

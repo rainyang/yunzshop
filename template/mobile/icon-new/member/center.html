@@ -86,7 +86,7 @@
         {if $hascom}
             <li>
                 <a href="{php echo $this->createPluginMobileUrl('commission')}">
-                    <i class="fa iconfont icon-sitemap" style="background:#f15353"></i><br/>分销中心
+                    <i class="fa iconfont icon-sitemap" style="background:#f15353"></i><br/>{php echo $pset['texts']['center']}
                 </a>
             </li>
         {/if}
@@ -155,9 +155,9 @@
     {/if}
 
     {if $pluginbonus}
-        {if !empty($shopset['start'])}
+        {if !empty($shopset['bonus_start'])}
             {if empty($bonus_set['bonushow'])}
-            <a href="{php echo $this->createPluginMobileUrl('bonus/index')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-money"></i>{php echo empty($bonus_set['texts']['center']) ? "分红中心" : $bonus_set['texts']['center'];}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+                <a href="{php echo $this->createPluginMobileUrl('bonus/index')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-money"></i>{php echo empty($bonus_set['texts']['center']) ? "分红中心" : $bonus_set['texts']['center'];}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
             {/if}
         {/if}
     {/if}
@@ -173,7 +173,7 @@
     <a href="{php echo $this->createPluginMobileUrl('ranking/ranking')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-ranking"></i><%shopset.rankingname%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
     <%/if%>
     {if isset($set['trade']) && ($set['trade']['withdraw']==1 || empty($set['trade']['closerecharge']))}
-    <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="{if isset($set['trade']) && $set['trade']['withdraw']==1}margin:0px;{/if}"><i class="iconfont icon-cny"></i>{if isset($set['trade']) && $set['trade']['withdraw']==1}{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}明细{else}充值记录{/if}
+    <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-cny"></i>{if isset($set['trade']) && $set['trade']['withdraw']==1}{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}明细{else}充值记录{/if}
             <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
    {/if}
 
@@ -204,7 +204,9 @@
 -->
 <a href="{php echo $this->createMobileUrl('member/notice')}"><div class="list1"><i class="iconfont icon-volume-up"></i>消息提醒设置<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 <a href="{php echo $this->createMobileUrl('shop/address')}"><div class="list1" style="margin:0px; border-top:0px;"><i class="iconfont icon-street-view" ></i>收货地址管理<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-
+{if $has_cashier}
+    <a href="{php echo $this->createPluginMobileUrl('cashier/qrcode_list')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-money" style="color:#f10;"></i>收银台<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+{/if}
 {if !is_weixin()}
 <a href="{php echo $this->createMobileUrl('member/logout')}"><div class="list1"><i class="iconfont icon-sign-out"></i>退出<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 {/if}

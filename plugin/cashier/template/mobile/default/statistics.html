@@ -55,7 +55,7 @@
      <div id='container'></div>
 <script id='tpl_log' type='text/html'>
    <div class="tit-num">
-        <p>总订单数:<span><%total%></span></p><p>总支付金额:<span><%totalmoney%></span>元</p><p>实际金额:<span><%realtotalmoney%></span>元</p>
+        <p>总订单数:<span><%total%></span></p><p>总支付金额:<span><%totalmoney%></span>元</p><p>总结算金额:<span><%realtotalmoney%></span>元</p>
     </div>
 
     <%each list as log%>
@@ -63,7 +63,7 @@
         <div class="cas-info">
             <p> 付款人:<%log.carrier.carrier_realname%>/<%log.carrier.carrier_mobile%></p>
             <p> 佣金金额1级/2级/3级 : <%log.commission1.default%>元/<%log.commission2.default%>元/<%log.commission3.default%>元</p>
-            <p>积分金额:<%log.credits%> 元</p>
+            <p>积分:<%log.credits%> </p>
             <p>红包金额:<%log.redpackmoney%> 元</p>
             <p>余额金额:<%log.creditpackmoney%> 元</p>
             <p>平台手续费:<%log.platform_poundage%> 元</p>
@@ -73,7 +73,7 @@
         </div>
         <div class="cas-num">
             <p> 支付金额: <span><%log.price%></span>元</p>
-            <p> 总结算金额: <span><%log.realprice%></span>元</p>
+            <p> 结算金额: <span><%log.realprice%></span>元</p>
            
         </div>
     </div>

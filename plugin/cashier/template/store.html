@@ -242,13 +242,14 @@
                                 <input type="checkbox" name="decredits" value="1" id="decredits" {if $item['decredits'] == 1}checked="true"{/if} /> 奖励余额
                             </label>
                             <label for="deredpack" class="checkbox-inline" >
-                                <input type="checkbox" name="deredpack" value="1" id="deredpack" {if $item['decredits'] == 1}checked="true"{/if} /> 奖励红包
+                                <input type="checkbox" name="deredpack" value="1" id="deredpack" {if $item['deredpack'] == 1}checked="true"{/if} /> 奖励红包
                             </label>
                             {else}
                             <div class='form-control-static'>{if $item['decommission'] == 1}扣除佣金{/if}{if $item['decredits'] == 1}扣除奖励积分{/if}{if $item['deredpack'] == 1}扣除奖励红包{/if}</div>
                             {/if}
                         </div>
                          <span class="help-block">决定奖励费用由平台还是商家提供!</span>
+                         <span class="help-block" style="color:red">注:选项打勾则为商户提供!</span>
                     </div>   
             </div>    
         </div>    

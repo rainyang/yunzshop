@@ -82,7 +82,7 @@ if ($_W['isajax']) {
 			}
 			$canrefund = false;
 			if ($row['status'] == 1 || $row['status'] == 2) {
-				if ($refunddays > 0) {
+				if ($refunddays > 0 || $row['status'] == 1) {
 					$canrefund = true;
 				}
 			} else if ($row['status'] == 3) {
