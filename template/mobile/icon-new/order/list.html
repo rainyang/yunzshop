@@ -72,7 +72,7 @@
                 <div class='info'onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
               <%/if%>
                 <div class='inner'>
-                       <div class="name"><%g.title%></div>     
+                       <div class="name"><%if order.cashier==1%><%order.name.name%><span style="color:red">(收银台支付)</span><%else%><%g.title%><%/if%></div>     
                        <div class='option'><%if g.optionid!='0'%>规格:  <%g.optiontitle%><%/if%></div>
                 </div>
             </div>
