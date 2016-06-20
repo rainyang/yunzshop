@@ -210,7 +210,7 @@ if ($operation == 'display') {
         $row['commission1'] =  $row['commission1']['default'];
         $row['commission2'] =  $row['commission2']['default'];
         $row['commission3'] =  $row['commission3']['default'];
-        if($row['price'] > $store['redpack_min']){
+        if($row['price'] >= $store['redpack_min']){
             $row['redpackmoney'] = $row['price']*($store['redpack']/100);
         }else{
             $row['redpackmoney'] = 0;

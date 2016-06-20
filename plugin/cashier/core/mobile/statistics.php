@@ -59,7 +59,7 @@ if($operation == 'display' && $_W['isajax']){
         $row['commission1'] = iunserializer( $commission['commission1']);
         $row['commission2'] = iunserializer( $commission['commission2']);
         $row['commission3'] = iunserializer( $commission['commission3']);
-        if($row['price'] > $store['redpack_min']){
+        if($row['price'] >= $store['redpack_min']){
             $row['redpackmoney'] = $row['price']*($store['redpack']/100);
         }else{
             $row['redpackmoney'] = 0;
