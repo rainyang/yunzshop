@@ -37,8 +37,7 @@ if (!class_exists('BonusModel')) {
             	if(!empty($parentAgent['bonuslevel'])){
             		if($isdistinction == 0){
 	            		$agentlevel = pdo_fetchcolumn("select level from " . tablename('sz_yi_bonus_level') . " where id=".$parentAgent['bonuslevel']);
-		            	if(empty($this->parentAgents[$parentAgent['bonuslevel']]) && $level <= $agentlevel){
-		            		$level = $parentAgent['bonuslevel'];
+		            	if(empty($this->parentAgents[$parentAgent['bonuslevel']]) && $level < $agentlevel){
 		        			$this->parentAgents[$parentAgent['bonuslevel']] = $parentAgent['id'];
 		        		}
 	        		}else{
@@ -48,7 +47,7 @@ if (!class_exists('BonusModel')) {
 	        		}
         		}
             	if($parentAgent['agentid'] != 0){
-                    return $this->getParentAgents($parentAgent['agentid'], $isdistinction, $level);
+                    return $this->getParentAgents($parentAgent['agentid'], $isdistinction, $agentlevel);
                 }else{
                 	return $this->parentAgents;
                 }
