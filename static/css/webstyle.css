@@ -38,7 +38,7 @@ ul{list-style:none;}
 .table{margin-bottom: 6px}
 .nav>li{float: left;}
 .nav-tabs>li>a{border: 0;border-radius: 0 }
-.dropdown-menu{left: auto;right:0;}
+.dropdown-menu{left: 0;right:0;}
 .nav-tabs>li>a:hover{border: 0;background: none}
 .topmenu .nav>li>a:hover,.topmenu .nav>li>a:focus,.topmenu .nav .open>a,.topmenu .nav .open>a:hover,.topmenu .nav .open>a:focus{background: none;color: #fff !important}
 .navbar-nav{width: 100%}
