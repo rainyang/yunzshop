@@ -114,9 +114,10 @@ ul{list-style:none;}
 .label-success {background-color: #46CB2F;}
 .panel{box-shadow:0 0 0!important;}
 .fart-main{width: 100% !important;}
-.fart-editor{width: 1000px !important;}
-.fart-editor-content .nav1,.fart-editor-content .nav2{width: 500px !important;}
-.fart-editor-content .con1,.fart-editor-content .con2{width: 500px !important;}
+.fart-editor{width: 62%!important;}
+.fart-preview{width: 38%!important;}
+.fart-editor-content .nav1,.fart-editor-content .nav2{width: 50%!important;}
+.fart-editor-content .con1,.fart-editor-content .con2{width: 50%!important;}
 .fart-editor-content .con2 .con{width: 440px !important;}
 .fart-editor-content .con2 .tab{width: 60px !important;}
 .fart-editor-content .con2 .tab .nav{font-size: 14px !important;}
