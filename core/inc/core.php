@@ -22,7 +22,7 @@ class Core extends WeModuleSite
     public function __construct()
     {
         global $_W, $_GPC;
-	    m('common')->checkClose();
+        m('common')->checkClose();
         if (empty($_W['uniacid'])) {
             if (!empty($_W['uid'])) {
                 $_W['uniacid'] = pdo_fetchcolumn("select uniacid from " . tablename('sz_yi_perm_user') . " where uid={$_W['uid']}");
@@ -42,6 +42,27 @@ class Core extends WeModuleSite
             }
         }
         $this->yzShopSet = m('common')->getSysset('shop');
+
+        if (is_app()) {
+            /**
+             * 设置app端使用模板文件夹
+             */
+            $_W['template'] = 'app';
+
+            /**
+             * 后台设置绑定,重新定义uniacid值
+             */
+
+            //$_W['uniacid'];
+
+            /**
+             * 推送 leancloud配置
+             */
+
+            require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
+
+            LeanCloud\LeanClient::initialize("egEtMTe0ky9XbUd57y5rKEAX-gzGzoHsz", "ca0OTkPQUdrXlPTGrospCY2L", "4HFoIDCAwaeOUSedwOISMUrj,master");
+        }
     }
 
     public function sendSms($mobile, $code, $templateType = 'reg')
@@ -82,22 +103,22 @@ class Core extends WeModuleSite
             ihttp_request($close_url, null, null, 1);
         }
 
-		if (p('coupon')) {
-			$_var_0 = strtotime(m('cache')->getString('couponbacktime', 'global'));
-			$_var_3 = p('coupon')->getSet();
-			$_var_1 = intval($_var_3['backruntime']);
-			if (empty($_var_1)) {
-				$_var_1 = 60;
-			}
-			$_var_1 *= 60;
-			$_var_2 = time();
-			if ($_var_0 + $_var_1 <= $_var_2) {
-				m('cache')->set('couponbacktime', date('Y-m-d H:i:s', $_var_2), 'global');
+        if (p('coupon')) {
+            $_var_0 = strtotime(m('cache')->getString('couponbacktime', 'global'));
+            $_var_3 = p('coupon')->getSet();
+            $_var_1 = intval($_var_3['backruntime']);
+            if (empty($_var_1)) {
+                $_var_1 = 60;
+            }
+            $_var_1 *= 60;
+            $_var_2 = time();
+            if ($_var_0 + $_var_1 <= $_var_2) {
+                m('cache')->set('couponbacktime', date('Y-m-d H:i:s', $_var_2), 'global');
                 $back_url = $this->createPluginMobileUrl('coupon/back');
-				ihttp_request($back_url, null, null, 1);
-			}
-		}
-		exit('run finished.');
+                ihttp_request($back_url, null, null, 1);
+            }
+        }
+        exit('run finished.');
     }
 
     public function setHeader()
@@ -351,6 +372,8 @@ class Core extends WeModuleSite
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
         global $_W;
+	m('cache')->set('template_shop', $_W['template']);
+	
         $tmplateType = (isMobile()) ? 'mobile' : 'pc';
         $set = m('common')->getSysset('shop');
         if (strstr($_SERVER['REQUEST_URI'], 'app')) {
@@ -468,3 +491,4 @@ class Core extends WeModuleSite
         }
     }*/
 }
+

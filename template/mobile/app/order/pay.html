@@ -1,0 +1,281 @@
+{template 'common/header'}
+<title>支付订单</title>
+<style type="text/css">
+    body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearance:none;}
+    .order_main {height:auto; border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; background:#fff;margin-top:10px;}
+    .order_main .line {height:44px; margin:0 5px; border-bottom:1px solid #f0f0f0; line-height:44px; position: relative;}
+    .order_main .line .label { width: 100%; position: absolute; left: 5px; top: 0;}
+    .order_main .line .info { float:right; width:100%; margin-left:-85px;text-align: right;overflow:hidden;height:44px;}
+    .order_main .line .inner { color:#666; text-align: right;}
+    .order_main .tip { color:#666; line-height:20px;padding:5px;font-size:13px; }
+
+    .order_main .line .nav {height:22px; width:40px; background:#ccc; margin:10px 0px; float:right; border-radius:40px;}
+    .order_main .line .on {background:#4ad966;}
+    .order_main .line .nav nav {height:20px; width:20px; background:#fff; margin:1px; border-radius:20px;}
+    .order_main .line .nav .on {margin-left:19px;}
+
+    .order_sub1 {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+    .order_sub10 {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+    .order_sub2 {height:44px; margin:14px 5px; background:#f49c06; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+    .order_sub3 {height:44px; margin:14px 5px;background:#e2cb04; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+    .order_sub4 {height:44px; margin:14px 5px; background:#18c0f7; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+
+    .order_main1 {height:30px;padding:10px;border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; background:#fff;text-align:center;margin-top:10px; }
+    .order_sub5 {height:30px; width:35%;padding:5px 10px 5px 10px; border:1px solid #ccc; border-radius:4px; text-align:center; font-size:16px; line-height:30px; color:#333; }
+    .order_sub6 {height:44px; margin:14px 5px; background:#07c4d0; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+
+    .order_subc {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+    .payway-h1{
+        font-weight: normal;
+        font-size: 14px;
+        margin: 15px 0px 0px 5px;
+        margin-left: 5px;
+    }
+    .icon-payway{
+        float: left;
+        width: 45px;
+        height: 35px;
+        text-align: center;
+    }
+    .icon-payway img{ max-width: 26px; margin-top: 9px}
+    .payyue{
+        font-style: normal;
+        width: 26px;
+        height: 26px;
+        display: inline-block;
+        background: #E6A727;
+        border-radius: 2px;
+        text-align: center;
+        line-height: 26px;
+        color: rgb(255, 255, 255);
+        font-size: 18px;
+        vertical-align: -1px;
+    }
+</style>
+
+<div id='container'></div>
+<script id='tpl_order_info' type='text/html'>
+    <input type='hidden' id='orderid' value="<%order.id%>"/>
+       <div class="page_topbar">
+        <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
+        <div class="title">支付订单</div>
+    </div>
+    <div class="order_main" >  
+        <div class="line"><div class="label">订单编号</div><div class="info"><div class="inner" id="ordersn"><%order.ordersn%></div></div></div>
+        <div class="line"><div class="label">支付金额</div><div class="info"><div class="inner"><div style='color:#ff6600'>￥<span id="orderprice" price="<%order.price%>"><%order.price%></span>元</div></div></div></div>
+    </div>
+    <!-- 支付方式begin -->
+    <h1 class="payway-h1">请选择支付方式：</h1>
+    <%if order.price>0%>
+    <div class="order_main">
+        <%if app_alipay.success%>
+        <div class="line payline">
+            <label class="label" for="payinpuzhi">
+                <div class="icon-payway"><img src="../addons/sz_yi/template/mobile/app/static/images/zhifub.png" alt=""></div>
+                <span>支付宝支付</span>
+            </label>
+            <div class="inner"><input type="radio" checked id="payinpuzhi" name="pay_type" value="1"></div>
+        </div>
+        <%/if%>
+
+        <%if app_wechat.success%>
+        <div class="line payline">
+            <label class="label" for="payinpuwe">
+                <div class="icon-payway"><img src="../addons/sz_yi/template/mobile/app/static/images/wexin.png" alt=""></div>
+                <span>微信支付</span>
+            </label>
+            <div class="inner"><input type="radio" id="payinpuwe" name="pay_type" value="2"></div>
+        </div>
+        <%/if%>
+
+        <%if credit.success %>
+        <div class="line payline">
+            <label class="label" for="payinpuyu">
+                <div class="icon-payway"><i class="payyue">￥</i></div>
+                <input type="hidden" id="credit" value="<%credit.current%>" />
+                <span>余额支付</span>
+            </label>
+            <div class="inner"><input type="radio" id="payinpuyu" name="pay_type" value="3"></div>
+        </div>
+        <%/if%>
+
+        <%if cash.success%>
+        <div class="line payline">
+            <label class="label" for="payinpuhuo">
+                <div class="icon-payway"><img src="../addons/sz_yi/template/mobile/app/static/images/huodaof.png" alt=""></div>
+                <span>货到付款</span>
+            </label>
+            <div class="inner"><input type="radio" id="payinpuhuo" name="pay_type" value="4"></div>
+        </div>
+        <%/if%>
+    </div>
+
+    <div class="button order_sub10" >确定支付</div>
+    <%/if%>
+
+
+    <!-- 支付方式over -->
+</script>
+
+<script id='tpl_order_pay' type='text/html'>
+       <div class="page_topbar">
+            <div class="title">支付成功</div>
+        </div>
+    <%if address%>
+        <img src="../addons/sz_yi/template/mobile/default/static/images/pay_ok.png" style="width:100%;" />
+     <%/if%>
+     <%if order.dispatchtype=='1' && order.isverify!='1'%>
+        <img src="../addons/sz_yi/template/mobile/default/static/images/pay_carrier.png" style="width:100%;" />
+     <%/if%>
+     <%if order.isverify=='1'%>
+        <img src="../addons/sz_yi/template/mobile/default/static/images/pay_verify.png" style="width:100%;" />
+     <%/if%>
+     <%if order.virtual!='0'%>
+        <img src="../addons/sz_yi/template/mobile/default/static/images/pay_virtual.png" style="width:100%;" />
+     <%/if%>
+     <%if order.isvirtual=='1'%>
+        <img src="../addons/sz_yi/template/mobile/default/static/images/pay_success.png?v=1" style="width:100%;" />
+     <%/if%>
+    <div class="order_main" >
+        <%if address%>
+        <div class="line"><div class="label">收货人</div><div class="info"><div class='inner'><%address.realname%> <%address.mobile%></div></div></div>
+        <div class="line"><div class="label">收货地址</div><div class="info"><div class='inner'><%address.address%></div></div></div>
+        <%/if%>
+        <%if carrier%>
+         <%if order.isverify=='1' || order.isvirtual=='1'%> 
+         <div class="line"><div class="label">联系人</div><div class="info"><div class='inner'><%carrier.carrier_realname%></div></div></div>
+        <div class="line"><div class="label">联系电话</div><div class="info"><div class='inner'><%carrier.carrier_mobile%></div></div></div>
+         <%else%>
+        <div class="line"><div class="label">自提地点</div><div class="info"><div class='inner'><%carrier.address%></div></div></div>
+        <div class="line"><div class="label">自提联系人</div><div class="info"><div class='inner'><%carrier.realname%> <%carrier.mobile%></div></div></div>
+        <%/if%>
+        <%/if%>
+        <div class="line"><div class="label">实付款</div><div class="info"><div class='inner'><span style='color:#ff6600'>￥<%order.price%>元</span></div></div></div>
+         <%if order.virtual!='0'%>
+         <div class="line" style='text-align:center;'>请到订单中查看物品信息</div>
+         <%/if%>
+    </div>
+     <div class="order_main1" >
+         <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('order/list')}'">订单详情</span>
+         <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('shop')}'">返回首页</span>
+     </div>
+</script>
+
+<script id='tpl_order_cash' type='text/html'>
+      <div class="page_topbar">
+           <div class="title">订单提交成功</div>
+        </div>
+    <img src="../addons/sz_yi/template/mobile/default/static/images/pay_cash.png" style="width:100%;" />
+    <div class="order_main" >
+        <%if address%>
+        <div class="line"><div class="label">收货人</div><div class="info"><div class='inner'><%address.realname%> <%address.mobile%></div></div></div>
+        <div class="line"><div class="label">收货地址</div><div class="info"><div class='inner'><%address.address%></div></div></div>
+        <%/if%>
+        <%if carrier%>
+         <%if order.isverify=='1' || order.isvirtual=='1'%> 
+         <div class="line"><div class="label">联系人</div><div class="info"><div class='inner'><%carrier.carrier_realname%></div></div></div>
+        <div class="line"><div class="label">联系电话</div><div class="info"><div class='inner'><%carrier.carrier_mobile%></div></div></div>
+         <%else%>
+        <div class="line"><div class="label">自提地点</div><div class="info"><div class='inner'><%carrier.address%></div></div></div>
+        <div class="line"><div class="label">自提联系人</div><div class="info"><div class='inner'><%carrier.realname%> <%carrier.mobile%></div></div></div>
+        <%/if%>
+        <%/if%>
+        <div class="line"><div class="label">需到付</div><div class="info"><div class='inner'><span style='color:#ff6600'>￥<%order.price%>元</span></div></div></div>
+    </div>
+     <div class="order_main1" >
+         <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('order/detail')}&id=<%order.id%>'">订单详情</span>
+         <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('shop')}'">返回首页</span>
+     </div>
+</script>
+
+<script src="../addons/sz_yi/template/mobile/app/static/js/pingpp.js" type="text/javascript"></script>
+<script language="javascript">
+    require(['tpl', 'core'], function(tpl, core) {
+        core.json('order/pay',{orderid:'{$_GPC['orderid']}',openid:"{$openid}"},function(json){
+            var result = json.result;
+            if(json.status==-1){
+                location.href = core.getUrl('order/detail',{id:"{$_GPC['orderid']}"});
+                return;
+            }
+            if(json.status!=1){
+                core.message(result,"{php echo $this->createMobileUrl('order/detail',array('id'=>$_GPC['orderid']))}",'error');
+                return;
+            }
+            $('#container').html(tpl('tpl_order_info',result));
+
+
+            $('.order_sub10').click(function(){
+                var pay_type = $("input[name='pay_type']:checked").val();
+
+                var amount = $("#orderprice").attr("price");
+                var ordersn = $("#ordersn").text();
+
+                switch (pay_type) {
+                    case "1":
+                        var channel = 'alipay';
+
+                        if (typeof PINGPP_IOS_SDK !== 'undefined') {
+                            PINGPP_IOS_SDK.callPay(channel, amount,ordersn);
+                        } else if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
+                            PINGPP_ANDROID_SDK.callPay(channel, amount,ordersn);
+                        }
+
+                        break;
+                    case "2":
+                        var channel = 'wx';
+
+                        if (typeof PINGPP_IOS_SDK !== 'undefined') {
+                            PINGPP_IOS_SDK.callPay(channel, amount,ordersn);
+                        } else if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
+                            PINGPP_ANDROID_SDK.callPay(channel, amount,ordersn);
+                        }
+
+                        break;
+                    case "3":
+                        core.json('order/pay',{
+                            op:'complete',
+                            orderid:'{$_GPC['orderid']}',
+                            type:'credit'
+                        },function(pay_json){
+                            if(pay_json.status==1){
+                                $('#container').html(tpl('tpl_order_pay',pay_json.result));
+                                return;
+                            }
+                            core.tip.show(pay_json.result);
+                            $('.button').removeAttr('submitting');
+                        },true,true);
+
+                        break;
+                    case "4":
+                        core.json('order/pay',{
+                            op:'complete',
+                            orderid:'{$_GPC['orderid']}',
+                            type:'cash'
+                        },function(pay_json){
+                            if(pay_json.status==2){
+                                $('#container').html(tpl('tpl_order_cash',pay_json.result));
+                                return;
+                            }
+                            core.tip.show(pay_json.result);
+                            $('.button').removeAttr('submitting');
+                        },true,true);
+
+                        break;
+                    default:
+                        var channel = 'alipay';
+
+                        if (typeof PINGPP_IOS_SDK !== 'undefined') {
+                            PINGPP_IOS_SDK.callPay(channel, amount,ordersn);
+                        } else if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
+                            PINGPP_ANDROID_SDK.callPay(channel, amount,ordersn);
+                        }
+
+                }
+            });
+
+
+        },true)
+    });
+
+</script>
+{template 'common/footer'}
