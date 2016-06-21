@@ -22,7 +22,7 @@ if ($_W['isajax']) {
 	}
 	$commission_ok=number_format($costmoney, 2);
 	$cansettle = $commission_ok >= 1;
-	$member['commission_ok'] = number_format($commission_ok, 2);
+	$member['commission_ok'] = $costmoney;
 	if ($_W['ispost']) {
 		$time = time();
 		foreach ($sp_goods as $key => $value) {
