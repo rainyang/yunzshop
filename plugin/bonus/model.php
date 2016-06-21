@@ -432,7 +432,7 @@ if (!class_exists('BonusModel')) {
 	            $commission_lock = pdo_fetchcolumn($sql);
 	        }
 	        //Author:ym Date:2016-04-08 Content:自购完成订单
-			if (in_array('myorder', $_var_21)) {
+			if (in_array('myorder', $options)) {
 				$myorder = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
 				//Author:ym Date:2016-04-08 Content:自购订单金额
 				$myordermoney = $myorder['ordermoney'];
@@ -625,7 +625,7 @@ if (!class_exists('BonusModel')) {
 						)
 					);
 			}
-			if(empty($levelup)){
+			if(empty($levelup) || $levelup['status'] == 1){
 				return false;
 			}
 			$leveltype = $set['leveltype'];
