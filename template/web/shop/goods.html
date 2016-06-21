@@ -262,11 +262,27 @@
 						{php echo tpl_form_field_category_level2('category', $parent, $children, $params[':pcate'], $params[':ccate'])}
 						{/if}
                     </div>
+                    {if $shopset['category2'] != 1}
+                    <div class="col-xs-12 col-sm-2 col-lg-2">
+                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                    </div>
+                    {/if}
+                </div>
+                {if $shopset['category2'] == 1}
+				<div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">{$shopset['category2name']}分类</label>
+                    <div class="col-sm-8 col-xs-12">
+                        {if intval($shopset['catlevel'])==3}
+						{php echo tpl_form_field_category_level3('category2', $parent2, $children2, $params[':pcate2'], $params[':ccate2'], $params[':tcate2'])}
+						{else}
+						{php echo tpl_form_field_category_level2('category2', $parent2, $children2, $params[':pcate2'], $params[':ccate2'])}
+						{/if}
+                    </div>
                     <div class="col-xs-12 col-sm-2 col-lg-2">
                         <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
                     </div>
                 </div>
-
+				{/if}
                 <div class="form-group">
                 </div>
             </form>

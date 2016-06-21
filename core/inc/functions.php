@@ -15,7 +15,7 @@ function sz_tpl_form_field_date($name, $value = '', $withtime = false)
 						$(".datetimepicker").each(function(){
 							var option = {
 								lang : "zh",
-								step : "10",
+								step : "30",
 								timepicker : ' . (!empty($withtime) ? "true" : "false") .
 			',closeOnDateSelect : true,
 			format : "Y-m-d' . (!empty($withtime) ? ' H:i:s"' : '"') .
@@ -34,7 +34,7 @@ function sz_tpl_form_field_date($name, $value = '', $withtime = false)
 		$value = TIMESTAMP;
 	}
 	$value = ($withtime ? date('Y-m-d H:i:s', $value) : date('Y-m-d', $value));
-	$s .= '<input type="text" name="' . $name . '"  value="'.$value.'" placeholder="请选择日期时间" readonly="readonly" class="datetimepicker form-control" style="padding-left:12px;" />';
+	$s .= '<input type="text" name="' . $name . '"  value="'.$value.'" placeholder="请选择日期时间" class="datetimepicker form-control" style="padding-left:12px;" />';
 	return $s;
 }
 

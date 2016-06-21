@@ -4,7 +4,7 @@
 <!-- 导入CSS样式 -->
 <link href="../addons/sz_yi/plugin/designer/template/imgsrc/designer.css" rel="stylesheet">
 <!-- 头部选项卡 -->
-{if $op !='post'}
+
 <div class="ulleft-nav">
 <ul class="nav nav-tabs">
     <li {if $_GPC['op']=='display' || empty($_GPC['op'])}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('designer')}" >店铺装修</a></li>
@@ -12,7 +12,7 @@
    <li ><a href="{php echo $this->createPluginWebUrl('designer/menu')}" >自定义菜单</a></li>
 </ul>
 </div>
-{/if}
+
 <div class="rightlist">
    
 {if $op=='display'}
@@ -183,7 +183,6 @@
 </script>
 {elseif $op=='post'}
 <!-- 编辑页面 -->
-<div class="w1200">
 <div class='panel panel-default' ng-app="FoxEditor" style="background: #f2f2f2">
     <div class='panel-heading'> 页面编辑 {if $_GPC['pageid']!=''}(ID: {$_GPC['pageid']}){/if}</div>
     <div class='panel-body' ng-controller="FoxController">
@@ -291,7 +290,6 @@
             <div class="fe-save-gotop" onclick="$(document.body).animate({scrollTop:0},500)"><i class="fa fa-angle-up"></i><br>返回顶部</div>
              {template 'modal'}
         </div>
-    </div>
 <!-- editor template  page start -->
 <script type="text/ng-template" id="edit-topbar.html">{template 'temp/edit-topbar'}</script>
 <script type="text/ng-template" id="edit-shop.html">{template 'temp/edit-shop'}</script>

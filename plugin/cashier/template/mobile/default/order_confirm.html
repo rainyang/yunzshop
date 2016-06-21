@@ -1,15 +1,15 @@
 {template 'common/header'}
-<title>支付</title>
+<title>{$store['name']}</title>
 <style>
 body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearance:none;}
-.info_main {height:auto;  background:#fff; margin-top:14px; border-bottom:1px solid #e8e8e8; border-top:1px solid #e8e8e8;}
-.info_main .line {margin:0 10px; height:40px; border-bottom:1px solid #e8e8e8; line-height:40px; color:#999;}
-.info_main .line .title {height:40px; width:80px; line-height:40px; color:#444; float:left; font-size:16px;}
-.info_main .line .info { width:100%;float:right;margin-left:-80px; }
-.info_main .line .inner { margin-left:80px; }
-.info_main .line .inner input {height:40px; width:100%;display:block; padding:0px; margin:0px; border:0px; float:left; font-size:16px;}
+.info_main {height:auto;  background:#fff; margin-top:10px; border-bottom:1px solid #e8e8e8; border-top:1px solid #e8e8e8;}
+.info_main .line {margin:0 10px; height:40px;line-height:40px; color:#999;}
+.info_main .line .title {height:40px; width:85px; line-height:40px; color:#444; float:left; font-size:16px;}
+.info_main .line .info { width:100%;float:right;margin-left:-85px; }
+.info_main .line .inner { margin-left:85px; }
+.info_main .line .inner input {height:40px; width:100%;display:block; padding:0px; margin:0px; border:0px; float:left; font-size:14px;}
 .info_sub {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff; border:0; width:100%; }
-    .carrier_input_info {height:auto;width:100%; background:#fff; margin-top:14px; border-bottom:1px solid #e8e8e8; border-top:1px solid #e8e8e8;}
+    .carrier_input_info {height:auto;width:100%; background:#fff; margin-top:10px; border-bottom:1px solid #e8e8e8; border-top:1px solid #e8e8e8;}
     .carrier_input_info .row { padding:0 10px; height:40px; background:#fff; border-bottom:1px solid #e8e8e8; line-height:40px; color:#999;}
     .carrier_input_info .row .title {height:40px; width:85px; line-height:40px; color:#444; float:left; font-size:16px;}
     .carrier_input_info .row .info { width:100%;float:right;margin-left:-85px; }
@@ -17,7 +17,7 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
     .carrier_input_info .row .inner input {height:30px; color:#666;background:transparent;margin-top:0px; width:100%;border-radius:0;padding:0px; margin:0px; border:0px; float:left; font-size:16px;}
 .addorder_price {height:auto;  background:#fff; padding:5px 10px; margin-top:16px; border-bottom:1px solid #eaeaea; border-top:1px solid #eaeaea;}
 .addorder_price .price {height:auto; width:100%; border-bottom:1px solid #eaeaea;}
-.addorder_price .price .line {height:33px; width:100%; font-size:14px; color:#666;}
+.addorder_price .price .line {height:33px; width:100%; font-size:14px; color:#666;cursor:pointer;}
 .addorder_price .price .line span {height:33px; width:auto; float:right;}
 .addorder_price .all {height:47px; width:100%; line-height:47px; font-size:16px; color:#666;}
 .addorder_price .all span {height:47px; width:auto; float:right; color:#ff771b;}
@@ -25,21 +25,21 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
 .addorder_price .line .on {background:#4ad966;}
 .addorder_price .line .nav nav {height:20px; width:20px; background:#fff; margin:1px; border-radius:20px;}
 .addorder_price .line .nav .on {margin-left:19px;}
-.addorder_pay {height:60px; width:94%; background:#fff; padding:0px 3%; margin-top:30px; border-top:1px solid #eaeaea;}
-.addorder_pay span {height:60px; width:auto; margin-right:16px; float:right; line-height:60px; color:#ff771b; font-size:16px;}
-.addorder_pay .paysub {height:40px; width:auto; background:#ff771b; padding:0px 10px; margin-top:10px; border-radius:5px; color:#fff; line-height:40px; float:right;}
+.addorder_pay {height:60px; width:94%; background:#fff; padding:0px 3%; margin-top:10px; border-top:1px solid #eaeaea;position: fixed;bottom: 0;left: 0}
+.addorder_pay span {height:60px; width:auto; margin-right:16px; float:left; line-height:60px; color:#ff771b; font-size:14px;}
+.addorder_pay .paysub {height:40px; width:auto; background:#ff771b;margin-top:10px; border-radius:2px; font-size: 14px;color:#fff; line-height:40px; float:right;width: 100px;text-align: center;}
 .couponcount {float:right; margin-top:8px;  margin-right: 5px; height:16px; width:16px; background:#f30; border-radius:8px; font-size:12px; color:#fff; line-height:16px; text-align: center;}
 
-.addorder_good {height:auto;padding:10px;background:#fff;  margin-top:16px; border-bottom:1px solid #eaeaea; border-top:1px solid #eaeaea;}
-    .addorder_good .ico {height:6px; width:10%; line-height:36px; float:left; text-align:center;}
-    .addorder_good .shop {height:36px; width:90%; padding-left:10%; border-bottom:1px solid #eaeaea; line-height:36px; font-size:18px; color:#333;}
-    .addorder_good .good {height:100px; width:100%; padding:10px 0px; border-bottom:1px solid #eaeaea;}
-    .addorder_good .img {height:100px; width:100px; float:left;}
-    .addorder_good .img img {height:100%; width:100%;}
-    .addorder_good .info {width:100%;float:left; margin-left:-50px;margin-right:-60px;}
-    .addorder_good .info .inner { margin-left:60px;margin-right:60px; }
-    .addorder_good .info .inner .name {height:32px; width:100%; float:left; font-size:18px; color:#555;overflow:hidden;}
-    .addorder_good .info .inner .option {height:22px; width:100%; float:left; font-size:14px; color:#888;overflow:hidden;word-break: break-all}
+.addorder_good {height:auto;padding:0 10px;background:#fff;  margin-top:10px; border-bottom:1px solid #eaeaea; border-top:1px solid #eaeaea;}
+    .addorder_good .ico {height:6px; width:20px; line-height:36px; float:left; text-align:center;}
+    .addorder_good .shop {height:36px; width:90%; padding-left:20px; border-bottom:1px solid #eaeaea; line-height:36px; font-size:18px; color:#333;}
+    .addorder_good .good {height:auto; padding:10px 0px;position: relative;overflow: hidden; padding-left: 100px;}
+    .addorder_good .img {height:100px; width:100px;    position: absolute;    left: 0;    top: 10px;}
+    .addorder_good .img img {height:100%; width:100%; border-radius: 5px;}
+    .addorder_good .info {width:100%;padding-left: 10px;}
+
+    .addorder_good .info .inner .name {height:32px;line-height:32px; width:100%; float:left; font-size:16px; color:#555;overflow:hidden;}
+    .addorder_good .info .inner .option {min-height:22px; width:100%; float:left; font-size:14px; color:#888;overflow:hidden;word-break: break-all;line-height: 18px}
     .addorder_good span { color:#666;}
     .addorder_good .price { float:right;height:54px;margin-left:-60px;;}
     .addorder_good .price .pnum { height:20px;width:100%;text-align:right;font-size:14px; }
@@ -48,10 +48,7 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
     .addorder_good .text {height:34px; width:100%; line-height:34px; text-align:right; font-size:16px; color:#999;}
 </style>
 
-<div id="container">
-<div class="page_topbar">
-    <div class="title">支付</div>
-</div>
+<div id="container" style="padding-bottom: 62px">
 {if $operation == 'display'}
 <form method="post">
     <input type="hidden" name="sid" value="{$sid}">
@@ -63,8 +60,8 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
     <!-- <input type="hidden" name="op" value="get-deduct"> -->
 
     <div class="addorder_good">
-        <div class="ico"><i class="fa fa-gift" style="color:#666; font-size:20px;"></i></div>
-        <div class="shop">{$shopset['name']}</div>
+        <!-- <div class="ico"><i class="fa fa-gift" style="color:#666; font-size:20px;"></i></div>
+        <div class="shop"></div> -->
         
         <div class="good" >
             
@@ -83,7 +80,6 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
                         <div class="option">
                        {$store['address']}
                         </div> 
-                       <div class='option'></div>
                 </div>
             </div>
             
@@ -96,7 +92,7 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
             <div class="title">输入金额</div>
             <div class="info">
                 <div class="inner">
-                    <input type="text" id="orig_price" value="" name="orig_price">
+                    <input type="text" id="orig_price" value="" name="orig_price" placeholder="0.00">
                 </div>
             </div>
         </div>
@@ -110,13 +106,13 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
           <div class="row">
             <div class='title'>联系人姓名</div>
             <div class='info'>
-                <div class='inner'><input type="text" placeholder="联系人姓名" id="carrier_input_realname" value="{$member['realname']}" style='height:35px;'/></div>
+                <div class='inner'><input type="text" placeholder="联系人姓名" id="carrier_input_realname" value="{$member['realname']}" style='height:40px;'/></div>
             </div>
           </div>
           <div class="row">
             <div class='title'>联系人手机</div>
             <div class='info'>
-                <div class='inner'><input type="text" placeholder="联系人手机"  id="carrier_input_mobile" value="{$member['mobile']}" style='height:35px;'/></div>
+                <div class='inner'><input type="text" placeholder="联系人手机"  id="carrier_input_mobile" value="{$member['mobile']}" style='height:40px;'/></div>
             </div>
           </div>
           </div> 
@@ -133,7 +129,7 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
 </div> -->
 
 
-{if $hascouponplugin}
+<!-- {if $hascouponplugin}
 <div class="addorder_price" id="hascouponplugin">
     <div class="price" style="border:none;">
         <div id="coupondeduct_div" class="line" style="line-height:26px;display:none">
@@ -142,9 +138,11 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
     </div>
 </div>
 
-{/if}
+{/if} -->
+<!-- <div id="coupon_container"></div> -->
+<!-- <script id="tpl_coupon" type="text/html"> -->
 <input type="hidden" id="couponid" value="" />
-<div id="coupondiv" class="addorder_price" style="margin-top:5px;<%if !hascoupon%>display:none<%/if%>" >
+<div id="coupondiv" class="addorder_price" style="margin-top:10px;" >
     <div class="price" style="border:none;">
         <div class="line" style="line-height:32px;" id="selectcoupon">
             <d id="couponselect">我要使用优惠券</d>
@@ -153,10 +151,12 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
         </div>
     </div>
 </div>
+<!-- </script> -->
+
 <div id="deduct_container"></div>
 <script id="tpl_deduct" type="text/html">
 <%if deductcredit > 0 || deductcredit2 > 0%>
-    <div class="addorder_price" style="margin-top:5px;">
+    <div class="addorder_price" style="margin-top:10px;">
         <div class="price" style="border:none;">
         <%if deductcredit > 0%>
         <div class="line" style="line-height:26px;"><d id="deductcredit_info"><%deductcredit%></d> 积分可抵扣 <d id="deductcredit_money" style='color:#ff6600'><%deductmoney%></d> 元
@@ -173,8 +173,20 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
     </div>
 <%/if%>
 </script>
+<div style="background: white">
+<span style="color:#666;font-size: 12px;line-height: 18px;padding: 10px;display: block;">
+通过收银台支付时,您可以获得额外的奖励!<br/>
+余额奖励:订单总额的{$store['creditpack']}%<br/>
+红包奖励:订单总额的{$store['redpack']}%<br/>
+积分奖励:订单总额的{$store['credit1']}%<br/>
+{if !empty($store['couponid'])}
+支付完成之后还有优惠券赠送哦!
+{/if}    
+</span>
+
+</div>
 <div class="addorder_pay">
-    <div class="paysub">确认</div>
+    <div class="paysub">立即支付</div>
     <span>需付：￥<t class='totalprice'>{$orig_price}</t>元</span>
 </div>
 {else if $operation == 'create-order'}
@@ -198,7 +210,6 @@ require(['tpl', 'core'], function(tpl, core) {
                     if(rjson.status == 1){
                         $('#couponcount').html(rjson.result.couponcount);
                         $('#deduct_container').html(tpl('tpl_deduct',rjson.result.deduct));
-                        
                     }
                     
                     
@@ -320,7 +331,8 @@ require(['tpl', 'core'], function(tpl, core) {
         return totalprice;
     }
     function bindCouponEvents () {
-        $('#selectcoupon').click(function () {
+        
+        $(document).on('click','#selectcoupon',function(){
             var money = parseFloat($('.totalprice').html().replace(",", ""));
             core.pjson('coupon/util', {op: 'query', money: money, type:0}, function (rjson) {
                 if (rjson.status != 1) {
@@ -411,7 +423,7 @@ require(['tpl', 'core'], function(tpl, core) {
             }
             else {
                 $('.paysub').html('确认').removeAttr('submitting');
-                core.tip.show("生成订单失败!")
+                core.tip.show("生成订单失败!" + create_json.result)
             }
 
         }, true, true);

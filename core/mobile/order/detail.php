@@ -14,6 +14,10 @@ $order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' wher
     ':uniacid' => $uniacid,
     ':openid' => $openid
 ));
+if(p('cashier') && $order['cashier'] == 1){
+    $order['name'] = set_medias(pdo_fetch('select * from ' .tablename('sz_yi_cashier_store'). ' where id=:id and uniacid=:uniacid', array(':id' => $order['cashierid'],':uniacid'=>$_W['uniacid'])), 'thumb');
+}
+
 if (!empty($order)) {
     $order['virtual_str'] = str_replace("\n", "<br/>", $order['virtual_str']);
     $diyformfields        = "";
@@ -129,7 +133,7 @@ if ($_W['isajax']) {
     $tradeset   = m('common')->getSysset('trade');
     $refunddays = intval($tradeset['refunddays']);
     if ($order['status'] == 1 || $order['status'] == 2) {
-        if ($refunddays > 0) {
+        if ($refunddays > 0 || $order['status'] == 1) {
             $canrefund = true;
         }
     } else if ($order['status'] == 3) {
@@ -164,7 +168,4 @@ if ($_W['isajax']) {
         'set' => $set
     ));
 }
-include $this->template('order/detail');   
-
-
-
+include $this->template('order/detail');

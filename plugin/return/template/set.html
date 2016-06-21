@@ -28,6 +28,21 @@
         </div>
 
         <div class='panel-heading'>
+           会员等级返现
+        </div>
+
+        <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启</label>
+                <div class="col-sm-8 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="setdata[islevelreturn]" value="0" {if $set['islevelreturn'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[islevelreturn]" value="1" {if $set['islevelreturn'] ==1} checked="checked"{/if} /> 开启</label>
+                    <span class='help-block'>会员购物时 按会员等级进行返现。需要在商品里设置等级返现额度。</span>
+                </div>
+            </div>
+        </div>
+
+        <div class='panel-heading'>
            订单全返系统
         </div>
         <div class='panel-body'>

@@ -17,7 +17,7 @@ class PosterProcessor extends PluginProcessor
         $msgtype     = strtolower($message['msgtype']);
         $event       = strtolower($message['event']);
         $obj->member = $this->model->checkMember($message['from']);
-        //file_put_contents(IA_ROOT . '/addons/sz_yi/test.log', print_r($message, 1));
+        file_put_contents(IA_ROOT . '/addons/sz_yi/test.log', print_r($message, 1), FILE_APPEND);
         if ($msgtype == 'text' || $event == 'click') {
             return $this->responseText($obj);
         } else if ($msgtype == 'event') {
@@ -46,7 +46,7 @@ class PosterProcessor extends PluginProcessor
 		load()->func('communication');
 		$resp = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=plugin&p=poster&method=build&timestamp=' . time();
 		$_var_6 = ihttp_request($resp, array('openid' => $obj->message['from'], 'content' => urlencode($obj->message['content'])), array(), $timeout);
-        //file_put_contents(IA_ROOT . '/addons/sz_yi/test1.log', print_r($_var_6, 1));
+        file_put_contents(IA_ROOT . '/addons/sz_yi/test_responseText.log', print_r($_var_6, 1), FILE_APPEND);
 		return $this->responseEmpty();
 	}
     private function responseEmpty()

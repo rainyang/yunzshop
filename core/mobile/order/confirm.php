@@ -256,11 +256,11 @@ if ($_W['isajax']) {
                 }
             }
             if (empty($storeids)) {
-                $stores = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where  uniacid=:uniacid and status=1 and type in(2,3)', array(
+                $stores = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where  uniacid=:uniacid and status=1 and myself_support=1', array(
                     ':uniacid' => $_W['uniacid']
                 ));
             } else {
-                $stores = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where id in (' . implode(',', $storeids) . ') and uniacid=:uniacid and status=1 and type in(2,3)', array(
+                $stores = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where id in (' . implode(',', $storeids) . ') and uniacid=:uniacid and status=1 and myself_support=1', array(
                     ':uniacid' => $_W['uniacid']
                 ));
             }
@@ -463,8 +463,8 @@ if ($_W['isajax']) {
             'discount' => $level['discount'],
             'realprice' => number_format($realprice, 2),
             'address' => $address,
-            'carrier' => $carrier,
-            'carrier_list' => $carrier_list,
+            'carrier' => $stores[0],
+            'carrier_list' => $stores,
             'dispatch_list' => $dispatch_list,
             'isverify' => $isverify,
             'stores' => $stores,

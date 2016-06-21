@@ -67,7 +67,7 @@ if (!class_exists('BonusModel')) {
 			$openid = $order['openid'];
 			$address = unserialize($order['address']);
 			
-			$goods = pdo_fetchall('select og.id,og.realprice,og.price,og.goodsid,og.total,og.optionname,g.hascommission,g.nocommission,g.nobonus,g.bonusmoney from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
+			$goods = pdo_fetchall('select og.id,og.realprice,og.price,og.goodsid,og.total,og.optionname,g.hascommission,g.nocommission,g.nobonus,g.bonusmoney,g.productprice,g.marketprice,g.costprice from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
 			$member = m('member')->getInfo($openid);
 			$levels = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_bonus_level') . " WHERE uniacid = '{$_W['uniacid']}' ORDER BY level asc");
 			$isdistinction = empty($set['isdistinction']) ? 0 : 1;
@@ -432,7 +432,7 @@ if (!class_exists('BonusModel')) {
 	            $commission_lock = pdo_fetchcolumn($sql);
 	        }
 	        //Author:ym Date:2016-04-08 Content:自购完成订单
-			if (in_array('myorder', $_var_21)) {
+			if (in_array('myorder', $options)) {
 				$myorder = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
 				//Author:ym Date:2016-04-08 Content:自购订单金额
 				$myordermoney = $myorder['ordermoney'];
@@ -625,7 +625,7 @@ if (!class_exists('BonusModel')) {
 						)
 					);
 			}
-			if(empty($levelup)){
+			if(empty($levelup) || $levelup['status'] == 1){
 				return false;
 			}
 			$leveltype = $set['leveltype'];
@@ -743,7 +743,6 @@ if (!class_exists('BonusModel')) {
 				$message = str_replace('[分红金额]', $data['commission'], $message);
 				$message = str_replace('[商品详情]', $data['goods'], $message);
 				$msg = array('keyword1' => array('value' => !empty($tm['bonus_order_area_paytitle']) ? $tm['bonus_order_area_paytitle'] : '区域代理下级付款通知"'), 'keyword2' => array('value' => $message));
-				file_put_contents('/mnt/yunzhong/yz_kehu2/addons/sz_yi/plugin/bonus/1.txt', print_r($msg, true));
 				if (!empty($templateid)) {
 					m('message')->sendTplNotice($openid, $templateid, $msg);
 				} else {
@@ -945,48 +944,58 @@ if (!class_exists('BonusModel')) {
 			if($sendtime > $time){
 				return false;
 			}
-			$sql = "select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=0 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}";
-			$ordermoney = pdo_fetchcolumn($sql);
+			
+			$ordermoney = pdo_fetchcolumn("select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}");
+
 			$premierlevels = pdo_fetchall("select * from ".tablename('sz_yi_bonus_level')." where uniacid={$_W['uniacid']} and premier=1");
 			$levelmoneys = array();
 			$totalmoney = 0;
 			foreach ($premierlevels as $key => $value) {
-			    $leveldcount = pdo_fetchcolumn("select count(*) from ".tablename('sz_yi_member')." where uniacid={$_W['uniacid']} and bonuslevel=".$value['id']." and bonus_status = 1");
+			    $leveldcount = pdo_fetchcolumn("select count(*) from ".tablename('sz_yi_member')." where uniacid={$_W['uniacid']} and bonuslevel=".$value['id']);
 			    if($leveldcount>0){
-			        $levelmembermoney = round($ordermoney*$value['pcommission']/100,2);
+			        //当前等级分总额的百分比
+			        $levelmembermoney = round($orderallmoney*$value['pcommission']/100,2);
 			        if($levelmembermoney > 0){
+			            //当前等级人数平分该等级比例金额
 			            $membermoney = round($levelmembermoney/$leveldcount,2);
 			            if($membermoney > 0){
+			                //等级id座位键名保存该等级的代理商每人所分金额
 			                $levelmoneys[$value['id']] = $membermoney;
-			                $totalmoney += $membermoney;
+			                $totalmoney += $levelmembermoney;
 			            }
 			        }
 			    }
 			}
-			$list = pdo_fetchall("select m.* from ".tablename('sz_yi_member')." m left join " . tablename('sz_yi_bonus_level') . " l on m.bonuslevel=l.id where 1 and l.premier=1 and m.uniacid={$_W['uniacid']}");
+			$list = pdo_fetchall("select m.*,l.levelname from ".tablename('sz_yi_member')." m left join " . tablename('sz_yi_bonus_level') . " l on m.bonuslevel=l.id where 1 and l.premier=1 and m.uniacid={$_W['uniacid']}");
 			$total = 0;
-			foreach ($list as $key => $value) {
-				$level = pdo_fetch("select id, levelname from " . tablename('sz_yi_bonus_level') . " where id=".$value['bonuslevel']);
-				if(empty($levelmoneys[$level['id']])){
-					continue;
-				}
-				$send_money = $levelmoneys[$level['id']];
-				if($send_money<=0){
-					continue;
-				}
-				$islog = true;
-				$sendpay = 1;
-				if(empty($set['paymethod'])){
-					m('member')->setCredit($value['openid'], 'credit2', $send_money);
-				}else{
-					$logno = m('common')->createNO('bonus_log', 'logno', 'RB');
-					$result = m('finance')->pay($value['openid'], 1, $send_money * 100, $logno, "【" . $setshop['name']. "】".$level['levelname']."分红");
-			        if (is_error($result)) {
-			            $sendpay = 0;
-			            $sendpay_error = 1;
+			//Author:ym Date:2016-04-08 Content:需消费一定金额，否则清除该用户不参与分红
+			if(!empty($set['consume_withdraw'])){
+				foreach ($list as $key => $row) {  
+			        $myorder = pdo_fetchcolumn('select sum(og.realprice) as ordermoney as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $row['openid']));
+			        if($myorder < floatval($set['consume_withdraw'])){
+			            unset($list[$key]);
+			            continue;
 			        }
 				}
-				pdo_insert('sz_yi_bonus_log', array(
+			}
+			if (!empty($_POST)) {
+			    if($totalmoney<=0){
+			        return false;
+			    }
+				foreach ($list as $key => $value) {
+					$send_money = $levelmoneys[$value['bonuslevel']];
+					$sendpay = 1;
+					if(empty($set['paymethod'])){
+						m('member')->setCredit($value['openid'], 'credit2', $send_money);
+					}else{
+						$logno = m('common')->createNO('bonus_log', 'logno', 'RB');
+						$result = m('finance')->pay($value['openid'], 1, $send_money * 100, $logno, "【" . $setshop['name']. "】".$value['levelname']."分红");
+				        if (is_error($result)) {
+				            $sendpay = 0;
+				            $sendpay_error = 1;
+				        }
+					}
+					pdo_insert('sz_yi_bonus_log', array(
 			            "openid" => $value['openid'],
 			            "uid" => $value['uid'],
 			            "money" => $send_money,
@@ -998,19 +1007,18 @@ if (!class_exists('BonusModel')) {
 			            "ctime" => time(),
 			            "send_bonus_sn" => $time
 			        ));
-				$total += 1;
-		        if($sendpay == 1){
-		        	$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_GLOPAL_PAY);
-		        }
-			}
-			if($islog){
+			        if($sendpay == 1){
+			        	$this->model->sendMessage($value['openid'], array('nickname' => $value['nickname'], 'levelname' => $value['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_GLOBAL_PAY);
+			        }
+				}
 				$log = array(
 			            "uniacid" => $_W['uniacid'],
 			            "money" => $totalmoney,
 			            "status" => 1,
 			            "ctime" => time(),
-			            'type' => 1,
+			            "sendmonth" => $set['sendmonth'],
 			            "paymethod" => $set['paymethod'],
+			            'type' => 1,
 			            "sendpay_error" => $sendpay_error,
 			            "isglobal" => 1,
 			            'utime' => $daytime,
@@ -1018,7 +1026,7 @@ if (!class_exists('BonusModel')) {
 			            "total" => $total
 			            );
 			    pdo_insert('sz_yi_bonus', $log);
-		    }
+			}
 		}
 	}
 }

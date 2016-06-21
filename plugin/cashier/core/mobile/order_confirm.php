@@ -5,6 +5,7 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
+$shopset = m('common')->getSysset(array('shop'));
 $hascouponplugin = false;
 if (p('commission')) {
     $commission = p('commission')->getSet();
@@ -211,8 +212,13 @@ if ($operation == 'display') {
     if ($plugc) {
         $coupon = $plugc->getCouponByDataID($couponid);
         if (!empty($coupon)) {
+
             if ($totalprice >= $coupon["enough"] && empty($coupon["used"])) {
                 if ($coupon["backtype"] == 0) {
+                    if($coupon['deduct'] >= $totalprice && $coupon["enough"] == 0){
+                        show_json(-2,'优惠券金额不能大于订单金额!');exit;
+                    }
+
                     if ($coupon["deduct"] > 0) {
                         $couponprice = number_format($coupon["deduct"]);
                     }
@@ -241,33 +247,71 @@ if ($operation == 'display') {
     //扣除平台费用
     $realtotalprice = $totalprice*(100-$store['settle_platform'])/100;
     //扣除余额奖励费用
-    if($store['decredits']==1){
+    if($store['decredits'] == 1){
        $realtotalprice = $realtotalprice - $totalprice*($store['creditpack']/100); 
     }
     
     if (p('commission')) {
-        $commission_set = p('commission')->getSet();
-        if (empty($commission_set['selfbuy'])) {
-            $agentid = $user['agentid'];
+        $commission_set = p('commission') -> getSet();
+        //扣除佣金
+        if($store['decommission'] == 1){
+            if($commission_set['level'] == 3){
+                $fuser = m('member')->getMember($user['agentid']);
+                $suser = m('member')->getMember($fuser['agentid']);
+                
+                if(empty($user['agentid'])){
+                      
+                }else if(empty($fuser['agentid'])){
 
-        } else {
-            $agentid = $user['id'];
-            //扣除佣金
-            if($store['decommission']==1){
-                if($commission_set['level']==3){
-                    $realtotalprice = $realtotalprice - $totalprice*($store['commission3_rate']/100) - $totalprice*($store['commission2_rate']/100) - $totalprice*($store['commission1_rate']/100);
+                    $realtotalprice = $realtotalprice  - $totalprice * ($store['commission1_rate']/100);
 
-                }else if($commission_set['level']==2){
+                }else if(empty($suser['agentid'])){
 
-                    $realtotalprice = $realtotalprice - $totalprice*($store['commission2_rate']/100) - $totalprice*($store['commission1_rate']/100);
+                    $realtotalprice = $realtotalprice - $totalprice * ($store['commission2_rate']/100) - $totalprice * ($store['commission1_rate']/100);
 
-                }else if($commission_set['level']==1){
+                }else {
 
-                    $realtotalprice = $realtotalprice - $totalprice*($store['commission1_rate']/100);
+                    $realtotalprice = $realtotalprice - $totalprice * ($store['commission3_rate']/100) - $totalprice * ($store['commission2_rate']/100) - $totalprice * ($store['commission1_rate']/100);
                 }
-            }
+                
 
+            }else if($commission_set['level'] == 2){
+                $fuser = m('member')->getMember($user['agentid']);
+                $suser = m('member')->getMember($fuser['agentid']);
+                
+                if(empty($user['agentid'])){
+                      
+                }else if(empty($fuser['agentid'])){
+
+                    $realtotalprice = $realtotalprice  - $totalprice * ($store['commission1_rate']/100);
+
+                }else if(empty($suser['agentid'])){
+
+                    $realtotalprice = $realtotalprice - $totalprice * ($store['commission2_rate']/100) - $totalprice * ($store['commission1_rate']/100);
+
+                }
+                
+
+            }else if($commission_set['level'] == 1){
+                $fuser = m('member')->getMember($user['agentid']);
+                if(empty($user['agentid'])){
+                      
+                }else if(empty($fuser['agentid'])){
+
+                    $realtotalprice = $realtotalprice  - $totalprice * ($store['commission1_rate']/100);
+
+                }
+                
+            }
         }
+        
+        $agentid = $user['agentid'];
+
+
+        
+            
+
+        
     }
 
     //扣除红包
@@ -309,7 +353,9 @@ if ($operation == 'display') {
         'olddispatchprice' => 0,
         "couponid" => $couponid,
         "couponprice" => $couponprice,
-        'cashier' => 1
+        'cashier' => 1,
+        'cashierid' => $sid,
+        'redprice' => $totalprice*($store['redpack']/100)
     );
     if($store['deredpack']==1){
         $order['deredpack']=1;
@@ -360,6 +406,7 @@ if ($operation == 'display') {
             '0', "收银台购物积分抵扣 消费积分: {$deductcredit} 抵扣金额: {$deductmoney} 订单号: {$ordersn}"
         ));
     }
+    m('notice')->sendOrderMessage($orderid);
     //$orderid
     if($commission['become_child']==1){
         p('commission')->checkOrderConfirm($orderid);

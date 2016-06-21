@@ -76,6 +76,7 @@ if (!empty($category2)) {
         }
     }
 }
+
 if (p('commission')) {
     $commissionLevels = pdo_fetchall(
         'SELECT id, levelname FROM ' . tablename('sz_yi_commission_level') . ' WHERE `uniacid` = :uniacid ORDER BY `commission1` DESC, `commission2` DESC, `commission3` DESC',
@@ -144,6 +145,7 @@ if ($operation == "change") {
             $cates = explode(',', $item['ccates']);
         }
         $discounts = json_decode($item['discounts'], true);
+        $returns = json_decode($item['returns'], true);
         $allspecs  = pdo_fetchall("select * from " . tablename('sz_yi_goods_spec') . " where goodsid=:id order by displayorder asc", array(
             ":id" => $id
         ));
@@ -420,7 +422,8 @@ if ($operation == "change") {
 	        "manydeduct"=>$_GPC["manydeduct"],
 	        "deduct2"=>$_GPC["deduct2"],
             'virtual' => intval($_GPC['type']) == 3 ? intval($_GPC['virtual']) : 0,
-            'discounts' => is_array($_GPC['discounts']) ? json_encode($_GPC['discounts']) : array(),
+            'discounts' => is_array($_GPC['discounts']) ? json_encode($_GPC['discounts']) : "",
+            'returns' => is_array($_GPC['returns']) ? json_encode($_GPC['returns']) : "",
             'detail_logo' => save_media($_GPC['detail_logo']),
             'detail_shopname' => trim($_GPC['detail_shopname']),
             'detail_totaltitle' => trim($_GPC['detail_totaltitle']),
@@ -483,6 +486,44 @@ if ($operation == "change") {
                 }
             }
         }
+        if (is_array($_GPC['cates2'])) {
+            $postcates2 = $_GPC['cates2'];
+            foreach ($postcates2 as $pid) {
+                if ($cateset['catlevel'] == 3) {
+                    $tcate2    = pdo_fetch('select id ,parentid from ' . tablename('sz_yi_category2') . ' where id=:id and uniacid=:uniacid limit 1', array(
+                        ':id' => $pid,
+                        ':uniacid' => $_W['uniacid']
+                    ));
+                    $ccate2    = pdo_fetch('select id ,parentid from ' . tablename('sz_yi_category2') . ' where id=:id and uniacid=:uniacid limit 1', array(
+                        ':id' => $tcate2['parentid'],
+                        ':uniacid' => $_W['uniacid']
+                    ));
+                    $tcates2[] = $tcate2['id'];
+                    $ccates2[] = $ccate2['id'];
+                    $pcates2[] = $ccate2['parentid'];
+                } else {
+                    $ccate2    = pdo_fetch('select id ,parentid from ' . tablename('sz_yi_category2') . ' where id=:id and uniacid=:uniacid limit 1', array(
+                        ':id' => $pid,
+                        ':uniacid' => $_W['uniacid']
+                    ));
+                    $ccates2[] = $ccate2['id'];
+                    $pcates2[] = $ccate2['parentid'];
+                }
+            }
+        }
+        if($shopset['category2']==1){
+            $pcates = array_merge($pcates,$pcates2);
+            $ccates = array_merge($ccates,$ccates2);  
+        }
+
+        if($cateset['catlevel'] == 3){
+             if($shopset['category2']==1){
+                 $tcates = array_merge($tcates,$tcates2);
+             }
+            
+        }
+       
+
         $data['pcates'] = implode(',', $pcates);
         $data['ccates'] = implode(',', $ccates);
         $data['tcates'] = implode(',', $tcates);
@@ -789,8 +830,10 @@ m("cache")->set("areas", $areas, "global");
         $condition .= ' AND `title` LIKE :title';
         $params[':title'] = '%' . trim($_GPC['keyword']) . '%';
     }
+
+
     if (!empty($_GPC['category']['thirdid'])) {
-        $condition .= ' AND `tcate` = :tcate';
+        $condition .= ' AND (`tcate` = :tcate or tcates = :tcate)';
         $params[':tcate'] = intval($_GPC['category']['thirdid']);
     }
     if (!empty($_GPC['category']['childid'])) {
@@ -798,10 +841,26 @@ m("cache")->set("areas", $areas, "global");
         $params[':ccate'] = intval($_GPC['category']['childid']);
     }
     if (!empty($_GPC['category']['parentid'])) {
-        $condition .= ' AND `pcate` = :pcate';
+        $condition .= ' AND (`pcate` = :pcate or pcates = :pcate)' ;
         $params[':pcate'] = intval($_GPC['category']['parentid']);
     }
-   if ($_GPC["status"] != '') {
+
+
+    if (!empty($_GPC['category2']['thirdid'])) {
+        $condition .= ' AND (`tcate1` = :tcate2 or tcates = :tcate2)';
+        $params[':tcate2'] = intval($_GPC['category2']['thirdid']);
+    }
+    if (!empty($_GPC['category2']['childid'])) {
+        $condition .= ' AND (`ccate1` = :ccate2 or ccates = :ccate2)';
+        $params[':ccate2'] = intval($_GPC['category2']['childid']);
+    }
+    if (!empty($_GPC['category2']['parentid'])) {
+        $condition .= ' AND (`pcate1` = :pcate2 or pcates = :pcate2)' ;
+        $params[':pcate2'] = intval($_GPC['category2']['parentid']);
+    }
+
+
+    if ($_GPC["status"] != '') {
         $condition .= ' AND `status` = :status';
         $params[':status'] = intval($_GPC['status']);
     }

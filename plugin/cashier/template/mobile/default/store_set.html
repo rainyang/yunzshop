@@ -57,7 +57,7 @@
             <div class="title">地址</div>
             <div class='info'>
                 <div class='inner'>
-                    <input type="text" id='address' placeholder="请输入您的手机号码"  value="<%address%>" />
+                    <input type="text" id='address' placeholder="请输入您的商户地址"  value="<%address%>" />
                 </div>
             </div>
         </div>
@@ -107,14 +107,14 @@
             </div>
         </div>
         {/if}
-        <div class="line">
+<!--         <div class="line">
             <div class="title">积分奖励(%)</div>
             <div class='info'>
                 <div class='inner'>
                     <input type="text" id='credit1' value="<%credit1%>" placeholder="支付完成后，获得的积分奖励" />
                 </div>
             </div>
-        </div>
+        </div> -->
         <div class="line">
             <div class="title">红包奖励(最小消费)</div>
             <div class='info'>
@@ -128,6 +128,14 @@
             <div class='info'>
                 <div class='inner'>
                     <input type="text" id='redpack' value="<%redpack%>" />
+                </div>
+            </div>
+        </div>
+        <div class="line">
+            <div class="title">余额奖励(奖励百分比)</div>
+            <div class='info'>
+                <div class='inner'>
+                    <input type="text" id='creditpack' value="<%creditpack%>" />
                 </div>
             </div>
         </div>
@@ -148,7 +156,7 @@
         {/if}
         <div class="line" style="height:80px;">
 
-                    <span class='help-block'>您的计算金额=用户支付金额-用户支付金额*{$store['settle_platform']}%(平台提成)</span>
+                    <span style="font-size: 12px; color: #666">您的计算金额=用户支付金额-用户支付金额*{$store['settle_platform']}%(平台提成) - {$text}</span>
 
         </div>        
     </div>
@@ -236,6 +244,7 @@
                   
                     var postData = {
                         'op': 'sub_info',
+                        'id': "{$_GPC['id']}",
                         'name': $('#name').val(),
                         'contact': $('#contact').val(),
                         'mobile': $('#mobile').val(),
@@ -244,8 +253,10 @@
                         'deduct_credit2': $('#deduct_credit2').val(),
                         'credit1': $('#credit1').val(),
                         'redpack_min': $('#redpack_min').val(),
-                        'redpack': $('#redpack').val()
+                        'redpack': $('#redpack').val(),
+                        'creditpack': $('#creditpack').val(),
                     };
+                    // alert(postData.redpack);
                     if ($('#commission1_rate').length > 0) {
                         postData.commission1_rate = $('#commission1_rate').val();
                     }
@@ -262,7 +273,7 @@
                     core.pjson('cashier/store_set', postData, function (json) {
                         if (json.status == 1) {
                              core.tip.show('保存成功');
-                             location.href="{php echo $this->createMobileUrl('member')}";
+                             location.href="{php echo $this->createPluginMobileUrl('cashier/store_set',array('id' => $_GPC['id']))}";
                         } else {
                             $('.info_sub').html('确认修改').removeAttr('saving');
                             core.tip.show('保存失败!');
@@ -271,7 +282,7 @@
                 });
 
                 $('.create_qrcode').click(function () {
-                    location.href = "{php echo $this->createPluginMobileUrl('cashier/create_qrcode')}";
+                    location.href = "{php echo $this->createPluginMobileUrl('cashier/create_qrcode',array('id' => $_GPC['id']))}";
                 });
             }
         });

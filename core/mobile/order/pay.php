@@ -187,7 +187,7 @@ if ($operation == 'display' && $_W['isajax']) {
         'app_wechat' => $app_wechat,
         'app_alipay' => $app_alipay,
         'unionpay' => $unionpay,
-		'yunpay' => $yunpay,
+        'yunpay' => $yunpay,
         'cash' => $cash,
         'isweixin' => is_weixin(),
         'currentcredit' => $currentcredit,
@@ -393,6 +393,70 @@ if ($operation == 'display' && $_W['isajax']) {
         ':uniacid' => $uniacid,
         ':openid' => $openid
     ));
+    $order_goods = pdo_fetchall('select og.id,g.title, og.goodsid,og.optionid,g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where og.orderid=:orderid and og.uniacid=:uniacid ', array(
+        ':uniacid' => $_W['uniacid'],
+        ':orderid' => $orderid
+    ));
+    foreach ($order_goods as $data) {
+        if (empty($data['status']) || !empty($data['deleted'])) {
+            show_json(-1, $data['title'] . '<br/> 已下架!');
+        }
+        if ($data['maxbuy'] > 0) {
+            if ($data['buycount'] > $data['maxbuy']) {
+                show_json(-1, $data['title'] . '<br/> 一次限购 ' . $data['maxbuy'] . $unit . "!");
+            }
+        }
+        if ($data['usermaxbuy'] > 0) {
+            $order_goodscount = pdo_fetchcolumn('select ifnull(sum(og.total),0)  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_order') . ' o on og.orderid=o.id ' . ' where og.goodsid=:goodsid and  o.status>=1 and o.openid=:openid  and og.uniacid=:uniacid ', array(
+                ':goodsid' => $data['goodsid'],
+                ':uniacid' => $uniacid,
+                ':openid' => $openid
+            ));
+            if ($order_goodscount >= $data['usermaxbuy']) {
+                show_json(-1, $data['title'] . '<br/> 最多限购 ' . $data['usermaxbuy'] . $unit . "!");
+            }
+        }
+        if ($data['istime'] == 1) {
+            if (time() < $data['timestart']) {
+                show_json(-1, $data['title'] . '<br/> 限购时间未到!');
+            }
+            if (time() > $data['timeend']) {
+                show_json(-1, $data['title'] . '<br/> 限购时间已过!');
+            }
+        }
+        if ($data['buylevels'] != '') {
+            $buylevels = explode(',', $data['buylevels']);
+            if (!in_array($member['level'], $buylevels)) {
+                show_json(-1, '您的会员等级无法购买<br/>' . $data['title'] . '!');
+            }
+        }
+        if ($data['buygroups'] != '') {
+            $buygroups = explode(',', $data['buygroups']);
+            if (!in_array($member['groupid'], $buygroups)) {
+                show_json(-1, '您所在会员组无法购买<br/>' . $data['title'] . '!');
+            }
+        }
+        if (!empty($data['optionid'])) {
+            $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,stock,virtual from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
+                ':uniacid' => $uniacid,
+                ':goodsid' => $data['goodsid'],
+                ':id' => $data['optionid']
+            ));
+            if (!empty($option)) {
+                if ($option['stock'] != -1) {
+                    if (empty($option['stock'])) {
+                        show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
+                    }
+                }
+            }
+        } else {
+            if ($data['stock'] != -1) {
+                if (empty($data['stock'])) {
+                    show_json(-1, $data['title'] . "<br/>库存不足!");
+                }
+            }
+        }
+    }
     if (empty($order)) {
         show_json(0, '订单未找到!');
     }
@@ -550,8 +614,8 @@ if ($operation == 'display' && $_W['isajax']) {
 } else if ($operation == 'returnyunpay') {
 
     $tids = $_REQUEST['i2'];
-	$strs          = explode(':', $tids);
-	$tid=$strs [0];
+    $strs          = explode(':', $tids);
+    $tid=$strs [0];
     $pluginy = p('yunpay');
     if (!$pluginy->isYunpayNotify($_GET)) {
         die('支付出现错误，请重试!');

@@ -70,6 +70,26 @@ if ($_W['isajax']) {
                 'type'=>$_GPC['type']
             ));
 
+        }elseif($_GPC['type'] == 3)
+        {
+            $pindex    = max(1, intval($_GPC['page']));
+            $psize     = 10;
+
+            $list = pdo_fetchall("select * from " . tablename('sz_yi_return_log') . "  where uniacid = '" .$_W['uniacid'] . "' and openid = '".$openid."'  LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+
+            $total     = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_return_log') . " where  uniacid = '" .$_W['uniacid'] . "' and openid = '".$openid."' ");
+            
+            foreach ($list as &$row) {
+                $row['createtime'] = date('Y-m-d H:i', $row['create_time']);
+            }
+            unset($row);
+            show_json(1, array(
+                'total' => $total,
+                'list' => $list,
+                'pagesize' => $psize,
+                'type'=>$_GPC['type']
+            ));
+
         }
 
     }
