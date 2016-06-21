@@ -20,9 +20,9 @@ if ($_W['isajax']) {
 	        }
 	    }
 	}
-	$commission_ok=number_format($costmoney, 2);
+	$commission_ok = $costmoney;
 	$cansettle = $commission_ok >= 1;
-	$member['commission_ok'] = $costmoney;
+	$member['commission_ok'] = number_format($costmoney, 2);
 	if ($_W['ispost']) {
 		$time = time();
 		foreach ($sp_goods as $key => $value) {
@@ -33,7 +33,7 @@ if ($_W['isajax']) {
 			'uid'			=> $uid,
 			'type'			=> $_GPC['type'],
 			'applysn'		=> $applyno,
-			'apply_money'	=> $member['commission_ok'],
+			'apply_money'	=> $costmoney,
 			'apply_time'	=> $time,
 			'status' 		=> 0,
 			'uniacid'		=> $_W['uniacid']

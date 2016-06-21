@@ -54,6 +54,8 @@ if ($pluginreturn) {
 $shopset = m('common')->getSysset('shop');
 $sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
 $category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
+$result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid']);
+
 $parent = $children = array();
 if (!empty($category)) {
     foreach ($category as $cid => $cate) {
@@ -863,6 +865,32 @@ m("cache")->set("areas", $areas, "global");
     if ($_GPC["status"] != '') {
         $condition .= ' AND `status` = :status';
         $params[':status'] = intval($_GPC['status']);
+    }
+
+    //增加商品属性搜索
+    $product_attr_list = array(
+                            'isnew' => '新品', 
+                            'ishot' => '热卖', 
+                            'isrecommand' => '推荐', 
+                            'isdiscount' => '促销', 
+                            'issendfree' => '包邮', 
+                            'istime' => '限时', 
+                            'isnodiscount' => '不参与折扣'
+                        );
+
+    $product_attr = $_GPC['product_attr'];
+    foreach ($product_attr as $p_attr) {
+        $condition .= " AND `{$p_attr}` = 1";
+    }
+
+    //供应商搜索
+    if (!empty($_GPC["supplier_uid"])) {
+        $condition .= " AND `supplier_uid` = "."$_GPC[supplier_uid]";
+    }
+
+	if ($_GPC["supplier_uid"] == 0) {
+        $condition .= ' AND `supplier_uid` = 0';
+        
     }
 
     if(p('supplier')){
