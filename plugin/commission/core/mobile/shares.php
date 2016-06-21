@@ -74,4 +74,9 @@ if (empty($infourl) && $_W['isajax']) {
     die($img);
 }
 
-include $this->template('shares');
+if (is_app()) {
+	include $this->template('app_shares');
+} else {
+	include $this->template('shares');
+}
+

@@ -49,15 +49,34 @@ require_once('../addons/sz_yi/plugin/pingpp/init.php');
 
     $orderNo = $input_data['order_no'];
 
-    $order_info          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid and openid=:openid limit 1', array(
-        'ordersn' => $orderNo,
-        ':uniacid' => $uniacid,
-        ':openid' => $input_data['openid']
-    ));
+    if (substr($orderNo,0,2) == 'RC') {
+        $log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `logno`=:logno and `uniacid`=:uniacid limit 1', array(
+            ':uniacid' => $uniacid,
+            ':logno' => $orderNo
+        ));
+        if (empty($log)) {
+            show_json(0, '充值出错!');
+        }
+        if (!empty($log['status'])) {
+            show_json(0, '已经充值成功,无需重复支付!');
+        }
 
-    $amount = (int)($order_info['price'] * 100);
-    $subject = '商品订单';
-    $body = '商品订单';
+        $amount = (int)($log['money'] * 100);
+        $subject = $log['title'];
+        $body = $log['title'];
+    } else {
+        $order_info          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid and openid=:openid limit 1', array(
+            'ordersn' => $orderNo,
+            ':uniacid' => $uniacid,
+            ':openid' => $input_data['openid']
+        ));
+
+        $amount = (int)($order_info['price'] * 100);
+        $subject = '商品订单';
+        $body = '商品订单';
+    }
+
+
 
     $app_id = 'app_unrfnH1qH8KOf14K';
     //$extra 在使用某些渠道的时候，需要填入相应的参数，其它渠道则是 array() .具体见以下代码或者官网中的文档。其他渠道时可以传空值也可以不传。

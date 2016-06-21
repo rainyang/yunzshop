@@ -57,7 +57,7 @@
             </select></div></div>
         </div>
         <div class="line"  style="border:0px;"><div class="title">生日</div><div class='info'><div class='inner'><input type="text" id="birthday" placeholder="点击选择日期" readonly value='<%birthday%>'/></div></div></div>
-        
+
     </div>
     <div class="info_sub">确认修改</div>
 </script>
@@ -65,9 +65,9 @@
     require(['tpl', 'core'], function(tpl, core) {
         core.json('member/info',{},function(json){
             if (json.result.member) {
- 
+
                 var data = json.result.member;
- 
+
                 $('#container').html(tpl('member_info', data));
 
                 var currYear = (new Date()).getFullYear();
@@ -76,12 +76,12 @@
                 opt.datetime = {preset: 'datetime'};
                 opt.time = {preset: 'time'};
                 opt.default = {
-                    theme: 'android-ics light', 
+                    theme: 'android-ics light',
                     display: 'modal',
                     mode: 'scroller',
                     lang: 'zh',
                     startYear: currYear - 100,
-                    endYear: currYear 
+                    endYear: currYear
                 };
 
                 $("#birthday").scroller('destroy').scroller($.extend(opt['date'], opt['default']));
@@ -98,7 +98,7 @@
                     {
                         return;
                     }
-                   
+
                    if( $('#realname').isEmpty()){
                        core.tip.show('请输入姓名!');
                        return;
@@ -107,7 +107,7 @@
                        core.tip.show('请输入正确手机号码!');
                        return;
                    }
-                   
+
 /*                  if( $('#weixin').isEmpty()){
                        core.tip.show('请输入微信号!');
                        return;
@@ -136,7 +136,7 @@
                             'residecity': $('#sel-city').val()
                        }
                     }, function(json) {
-                       
+
                         if(json.status==1){
                              core.tip.show('保存成功');
                              {if !empty($_GPC['returnurl'])}

@@ -22,7 +22,7 @@
 				{if !empty($_W['isfounder']) || empty($_W['setting']['permurls']['sections']) || in_array('site', $_W['setting']['permurls']['sections'])}<li{if FRAME == 'site'} class="active"{/if}><a href="{url 'home/welcome/site'}"><i class="fa fa-life-bouy"></i>微站功能</a></li>{/if}
 				{if !empty($_W['isfounder']) || empty($_W['setting']['permurls']['sections']) || in_array('mc', $_W['setting']['permurls']['sections'])}<li{if FRAME == 'mc'} class="active"{/if}><a href="{url 'home/welcome/mc'}"><i class="fa fa-gift"></i>粉丝营销</a></li>{/if}
 				{if !empty($_W['isfounder']) || empty($_W['setting']['permurls']['sections']) || in_array('setting', $_W['setting']['permurls']['sections'])}<li{if FRAME == 'setting'} class="active"{/if}><a href="{url 'home/welcome/setting'}"><i class="fa fa-umbrella"></i>功能选项</a></li>{/if}
-				
+
                                 {php $eid =intval($_GPC['eid'])}
                                 {if !empty($eid)}
                                    {php $binding_module = pdo_fetchcolumn('select module from '.tablename('modules_bindings').' where eid=:eid limit 1',array(':eid'=>$eid))}
@@ -33,9 +33,9 @@
     {else}
     {if !empty($_W['isfounder']) || empty($_W['setting']['permurls']['sections']) || in_array('ext', $_W['setting']['permurls']['sections'])}<li{if FRAME == 'ext' } class="active"{/if}><a href="{url 'home/welcome/ext'}"><i class="fa fa-cubes"></i>其他扩展</a></li>{/if}
     {/if}
-                                
+
 				{if FRAME == 'solution'}<li class="active"><a href="{url 'home/welcome/solution' array('m' => $m)}"><i class="fa fa-comments"></i>行业功能 - {$solution['title']}</a></li>{/if}
-				 
+
 			</ul>
 			{/if}
 			<ul class="nav navbar-nav navbar-right">
@@ -67,10 +67,10 @@
 		</div>
 	</div>
     -->
-	
+
 	<div class="container-fluid">
 		{if defined('IN_MESSAGE')}
-            
+
 		<div class="jumbotron clearfix alert alert-{$label}">
 			<div class="row">
 				<div class="col-xs-12 col-sm-3 col-lg-2">
@@ -97,7 +97,7 @@
 					{/if}
 				</div>
 		{else}
-		 
+
 		{/if}
 
 {template 'web/_common'}

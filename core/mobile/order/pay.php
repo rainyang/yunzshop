@@ -107,6 +107,24 @@ if ($operation == 'display' && $_W['isajax']) {
         }
     }
 
+    $app_alipay = array(
+        'success' => false
+    );
+    if (isset($set['pay']) && $set['pay']['app_alipay'] == 1) {
+        if (is_array($setting['payment']['ping']) && $setting['payment']['ping']['switch']) {
+            $app_alipay['success'] = true;
+        }
+    }
+
+    $app_wechat = array(
+        'success' => false
+    );
+    if (isset($set['pay']) && $set['pay']['app_weixin'] == 1) {
+        if (is_array($setting['payment']['ping']) && $setting['payment']['ping']['switch']) {
+            $app_wechat['success'] = true;
+        }
+    }
+
     $pluginy = p('yunpay');
     $yunpay = array(
         'success' => false
@@ -166,6 +184,8 @@ if ($operation == 'display' && $_W['isajax']) {
         'credit' => $credit,
         'wechat' => $wechat,
         'alipay' => $alipay,
+        'app_wechat' => $app_wechat,
+        'app_alipay' => $app_alipay,
         'unionpay' => $unionpay,
         'yunpay' => $yunpay,
         'cash' => $cash,
@@ -191,6 +211,8 @@ if ($operation == 'display' && $_W['isajax']) {
     if (!in_array($type, array(
         'weixin',
         'alipay',
+        'app_alipay',
+        'app_weixin',
         'unionpay',
         'yunpay'
     ))) {

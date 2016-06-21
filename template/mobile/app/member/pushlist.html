@@ -1,0 +1,88 @@
+{template 'common/header'}
+<title>系统消息</title>
+
+<link rel="stylesheet" href="../addons/sz_yi/template/mobile/app/static/css/fenxiao.css" />
+<body class="bgf8">
+<style>
+    .yznews li a{
+        position: relative;
+        padding-left: 40px;
+        background: none;
+        margin-bottom: 5px;
+    }
+    .yznews li a p{ line-height: 20px;    }
+    .msgimg{
+        position: absolute;
+        left: 0;
+        top: 20px;        
+    }
+    .msgwrap{
+        background: #ffffff;
+        border: 1px solid #cccccc;
+        border-radius: 3px;
+        padding: 10px;
+    }
+    .yznews li time { margin: 5px 0 10px;}
+</style>
+<section>
+    <div class="cart_top">
+        <div class="title"><i class='fa fa-chevron-left'></i> 系统消息</div>
+
+    </div>
+    <div class="fenxwap">
+        <ul class="yznews">
+
+
+        </ul>
+    </div>
+</section>
+
+<script id='tpl_msg_list' type='text/html'>
+  <%each list as r%>
+    <li>
+        <a href="{php echo $this->createMobileUrl('member/pushinfo')}&id=<%r.id%>">
+            <div class="msgimg"><img src="../addons/sz_yi/template/mobile/app/static/images/iconmsg.png" alt=""></div> 
+            <div class="msgwrap">                  
+                <h1 ><%r.name%></h1>
+                <time ><%r.time%></time>
+                <p><%r.description%></p>
+                <!--<div class="yznews-list"><%r.content%></div>-->
+            </div>
+        </a>
+    </li>
+    <%/each%>
+
+</script>
+<script id='tpl_empty' type='text/html'>
+        <div class="yznews-none">
+            <img src="../addons/sz_yi/template/mobile/app/static/images/newsno.png" alt="" class="yznews-noneimg">
+            <p>暂无消息记录</p>
+        </div>
+</script>
+
+<script>
+    require(['tpl', 'core'], function (tpl, core) {
+        core.json('member/pushlist',{ }, function (json) {
+            var result = json.result;
+            if(result.list.length>0){
+                $('.yznews').html(tpl('tpl_msg_list',result));
+            }
+            else{
+                $('.fenxwap').html(tpl('tpl_empty',result));
+            }
+
+            $(".cart_top").click(function () {
+                //返回
+                if (typeof PINGPP_IOS_SDK !== 'undefined') {
+                    msgback();
+                } else if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
+                    PINGPP_ANDROID_SDK.msgback();
+                }
+            });
+
+        }, true);
+
+
+
+    })
+</script>
