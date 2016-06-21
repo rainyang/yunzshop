@@ -34,7 +34,8 @@ if ($operation == 'display') {
 			'premier' => intval($_GPC['premier']),
 			'pcommission' => floatval($_GPC['pcommission']),
 			'msgtitle' => trim($_GPC['msgtitle']),
-			'msgcontent' => trim($_GPC['msgcontent'])
+			'msgcontent' => trim($_GPC['msgcontent']),
+			'status' => intval($_GPC['status'])
 			);
 		if (!empty($id)) {
 			pdo_update('sz_yi_bonus_level', $data, array('id' => $id, 'uniacid' => $_W['uniacid']));

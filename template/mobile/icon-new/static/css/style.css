@@ -251,7 +251,7 @@ footer#footer-nav .menu-list:after {
 .top .nav{padding: 0px 0px 5px 88px!important;}
 .bottom{height: 32px!important;}
 .jiathis_style_32x32 .jiathis_txt {font-size: 16px!important;}
-.top .nav .sub{width: 33.3333% !important;box-sizing: border-box;}
+.top .nav .sub{box-sizing: border-box;}
 .sort_listnew {
     height: 44px;
     width: 100%;
