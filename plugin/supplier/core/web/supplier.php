@@ -11,7 +11,26 @@ if ($operation == 'display') {
     }else{
         $where .= ' and uid="' . $_GPC['uid'] . '" and uniacid=' . $_W['uniacid'];
     }
-    $list = pdo_fetchall('select * from ' . tablename('sz_yi_perm_user') . ' where roleid='. $roleid . " " .$where." LIMIT " . ($pindex - 1) * $psize . "," . $psize);
+    if (p('merchant') && !empty($_GPC['member_id'])) {
+        $ismerchant = true;
+        $member_id = intval($_GPC['member_id']);
+        $supplier_uids = pdo_fetchall("select distinct supplier_uid from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and member_id={$member_id}");
+        $uids = "";
+        foreach ($supplier_uids as $key => $value) {
+            if ($key == 0) {
+                $uids .= $value['supplier_uid'];
+            } else {
+                $uids .= ','.$value['supplier_uid'];
+            }
+        }
+        if (empty($uids)) {
+            $uids = 0;
+        }
+        $list = pdo_fetchall('select * from ' . tablename('sz_yi_perm_user') . ' where roleid='. $roleid . " and uniacid={$_W['uniacid']} and uid in ({$uids}) LIMIT " . ($pindex - 1) * $psize . "," . $psize);
+    } else {
+        $ismerchant = false;
+        $list = pdo_fetchall('select * from ' . tablename('sz_yi_perm_user') . ' where roleid='. $roleid . " " .$where." LIMIT " . ($pindex - 1) * $psize . "," . $psize);
+    }
     $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_perm_user') . " where roleid={$roleid} and uniacid={$_W['uniacid']}");
     $pager = pagination($total, $pindex, $psize);
 } else if ($operation == 'detail') {
@@ -103,6 +122,47 @@ if ($operation == 'display') {
             }
         }
     }
-} 
+} else if ($operation == 'merchant') {
+    $uid = intval($_GPC['uid']);
+    $merchants = pdo_fetchall("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and supplier_uid={$uid}");
+    $total = count($merchants);
+    foreach ($merchants as &$value) {
+        $merchants_member = m('member')->getMember($value['openid']);
+        $value['avatar'] = $merchants_member['avatar'];
+        $value['nickname'] = $merchants_member['nickname'];
+        $value['realname'] = $merchants_member['realname'];
+        $value['mobile'] = $merchants_member['mobile'];
+    }
+    unset($value);
+} else if ($operation == 'merchant_post') {
+    $uid = intval($_GPC['uid']);
+    if(checksubmit('submit')){
+        $data = is_array($_GPC['data']) ? $_GPC['data'] : array();
+        if (empty($data['openid'])) {
+            message('请选择微信!', referer(), 'error');
+        } else {
+            $result = pdo_fetch("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and openid='{$data['openid']}' and supplier_uid={$uid}");
+            if (!empty($result)) {
+                message('该微信角色已经是此供应商的招商员!', referer(), 'error');
+            } else {
+                $data['member_id'] = pdo_fetchcolumn("select id from " . tablename('sz_yi_member') . " where uniacid={$_W['uniacid']} and openid='{$data['openid']}'");
+            }
+        }
+        if (empty($data['commissions'])) {
+            message('请输入佣金比例!', referer(), 'error');
+        }
+        $data['uniacid'] = $_W['uniacid'];
+        $data['supplier_uid'] = $uid;
+        pdo_insert('sz_yi_merchants',$data);
+        message('添加招商员成功!', $this->createPluginWebUrl('supplier/supplier', array('op' => 'merchant', 'uid' => $uid)), 'success');
+    }
+} else if ($operation == 'merchant_delete') {
+    $id = intval($_GPC['id']);
+    if (empty($id)) {
+        message('未找到该招商员!', referer(), 'error');
+    }
+    pdo_delete('sz_yi_merchants', array('id' => $id, 'uniacid' => $_W['uniacid']));
+    message('删除成功!', referer(), 'success');
+}
 load()->func('tpl');
 include $this->template('supplier');

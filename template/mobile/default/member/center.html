@@ -98,6 +98,9 @@
     {if !$member['isbindmobile'] && is_weixin()}
     <a href="{php echo $this->createMobileUrl('member/bindmobile')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-mobile" style="color:#f10;"></i>绑定手机<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
+    {if p('merchant') && !empty($ismerchant)}
+        <a href="{php echo $this->createPluginMobileUrl('merchant/orderj')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-globe" style="color:#f10;"></i>招商员<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    {/if}
 </div>
 <div class="cart">
     {if p('supplier')}
