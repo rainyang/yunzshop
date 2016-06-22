@@ -693,3 +693,7 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_push')." (
 if(!pdo_fieldexists('sz_yi_member', 'bindapp')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bindapp` tinyint(4) NOT NULL DEFAULT '0';");
 }
+
+if(!pdo_fieldexists('sz_yi_order', 'ordersn_general')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `ordersn_general` varchar(255) NOT NULL DEFAULT '';");
+}
