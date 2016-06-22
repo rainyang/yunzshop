@@ -654,7 +654,7 @@ if(pdo_tableexists('sz_yi_return_log')) {
 }
 
 //app 首页banner表 2016-6-21
-pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('ims_sz_yi_banner')." (
+pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_banner')." (
   `id` int(11) NOT NULL,
   `uniacid` int(11) DEFAULT '0',
   `advname` varchar(50) DEFAULT '',
@@ -667,7 +667,7 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('ims_sz_yi_banner')." (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 
 //app 客户订单推送消息表 2016-6-21
-pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('ims_sz_yi_message')." (
+pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_message')." (
    `id` int(11) NOT NULL COMMENT '编号',
   `openid` varchar(255) NOT NULL COMMENT '用户openid',
   `title` varchar(255) NOT NULL COMMENT '标题',
@@ -678,7 +678,7 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('ims_sz_yi_message')." (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 
 //app 系统推送消息表 2016-6-21
-pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('ims_sz_yi_push')." (
+pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_push')." (
   `id` int(11) NOT NULL,
   `uniacid` int(11) DEFAULT '0',
   `name` varchar(50) DEFAULT '',
@@ -690,6 +690,6 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('ims_sz_yi_push')." (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 
 //会员表 增加app绑定字段
-if(!pdo_fieldexists('ims_sz_yi_member', 'bindapp')) {
-    pdo_fetchall("ALTER TABLE ".tablename('ims_sz_yi_member')." ADD `bindapp` tinyint(4) NOT NULL DEFAULT '0';");
+if(!pdo_fieldexists('sz_yi_member', 'bindapp')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bindapp` tinyint(4) NOT NULL DEFAULT '0';");
 }
