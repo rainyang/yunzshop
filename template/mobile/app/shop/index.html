@@ -213,18 +213,13 @@
     var loaded = false;
     var stop = true;
     var scrolling = false;
-    require(['core', 'tpl', 'swiper'], function (core, tpl) {
+    require(['core', 'tpl'], function (core, tpl) {
     
         core.json('shop/index', {}, function (json) {
             var result = json.result;
 
             $('#container').html(tpl('tpl_index', result));
 
-            var swiper = new Swiper('.swiper-container', {
-                pagination: '.swiper-pagination',
-                paginationClickable: true,
-                spaceBetween: 0,
-            });
           
             $('.nav').click(function () {
                 $('.nav').removeClass('navon');
