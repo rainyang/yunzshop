@@ -125,12 +125,12 @@ if ($operation == "change") {
         ca('shop.goods.add');
     }
     $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid']);
-	$id = intval($_GPC['id']);
-	if (!empty($id)) {
-		ca('shop.goods.edit|shop.goods.view');
-	} else {
-		ca('shop.goods.add');
-	}
+    $id = intval($_GPC['id']);
+    if (!empty($id)) {
+        ca('shop.goods.edit|shop.goods.view');
+    } else {
+        ca('shop.goods.add');
+    }
     $levels = m('member')->getLevels();
     $groups = m('member')->getGroups();
     if (!empty($id)) {
@@ -354,10 +354,10 @@ if ($operation == "change") {
     // }
         $dispatch_data = pdo_fetchall("select * from".tablename("sz_yi_dispatch")."where uniacid =:uniacid and enabled = 1 order by displayorder desc",array(":uniacid"=>$_W["uniacid"])); 
         if (checksubmit("submit")) {
-    	  if ($diyform_plugin) { 
-    	  if ($_GPC["type"] == 1 && $_GPC["diyformtype"] == 2) { 
-    	  message("替换模式只试用于虚拟物品类型，实体物品无效！请重新选择！");
-    	   }
+          if ($diyform_plugin) { 
+          if ($_GPC["type"] == 1 && $_GPC["diyformtype"] == 2) { 
+          message("替换模式只试用于虚拟物品类型，实体物品无效！请重新选择！");
+           }
         } 
         if (empty($_GPC['goodsname'])) {
             message('请输入商品名称！');
@@ -421,8 +421,8 @@ if ($operation == "change") {
             'followurl' => trim($_GPC['followurl']),
             'followtip' => trim($_GPC['followtip']),
             'deduct' => $_GPC['deduct'],
-	        "manydeduct"=>$_GPC["manydeduct"],
-	        "deduct2"=>$_GPC["deduct2"],
+            "manydeduct"=>$_GPC["manydeduct"],
+            "deduct2"=>$_GPC["deduct2"],
             'virtual' => intval($_GPC['type']) == 3 ? intval($_GPC['virtual']) : 0,
             'discounts' => is_array($_GPC['discounts']) ? json_encode($_GPC['discounts']) : "",
             'returns' => is_array($_GPC['returns']) ? json_encode($_GPC['returns']) : "",
@@ -433,27 +433,27 @@ if ($operation == "change") {
             'detail_btnurl1' => trim($_GPC['detail_btnurl1']),
             'detail_btntext2' => trim($_GPC['detail_btntext2']),
             'detail_btnurl2' => trim($_GPC['detail_btnurl2']),
-			"ednum"=>intval($_GPC["ednum"]) ,
-			"edareas"=>trim($_GPC["edareas"]) ,
-			"edmoney"=>trim($_GPC["edmoney"]),
+            "ednum"=>intval($_GPC["ednum"]) ,
+            "edareas"=>trim($_GPC["edareas"]) ,
+            "edmoney"=>trim($_GPC["edmoney"]),
             "redprice" => $_GPC["redprice"]//红包价格
         );
         if(!empty($_GPC['bonusmoney'])){
             $data['bonusmoney'] = $_GPC['bonusmoney'];
         }
         //判断是否安装供应商插件判断有没有供应商id 
-		if(p('supplier')){
+        if(p('supplier')){
             //todo,这个有问题吧?其他公众号管理员也可以选择供货商和是否上架的
-			if($perm_role == 1){
+            if($perm_role == 1){
                 $data['supplier_uid'] = $_W['uid'];
                 $data['status'] = 0;
-			}else{
-				$data['supplier_uid'] = $_GPC['supplier_uid'];
+            }else{
+                $data['supplier_uid'] = $_GPC['supplier_uid'];
                 $data['status'] = $_GPC['status'];
-			}
-		}else{
-			$data['status'] = $_GPC['status'];
-		}
+            }
+        }else{
+            $data['status'] = $_GPC['status'];
+        }
         
         if ($pluginreturn) {
             $data['isreturn'] = intval($_GPC['isreturn']);   //添加全返开关    1:开    0:关
@@ -902,27 +902,27 @@ m("cache")->set("areas", $areas, "global");
     }
 
     if(p('supplier')){
-		$suproleid = pdo_fetchcolumn('select id from' . tablename('sz_yi_perm_role') . ' where status1 = 1');
-		$userroleid = pdo_fetchcolumn('select roleid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid' => $_W['uniacid']));
+        $suproleid = pdo_fetchcolumn('select id from' . tablename('sz_yi_perm_role') . ' where status1 = 1');
+        $userroleid = pdo_fetchcolumn('select roleid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid' => $_W['uniacid']));
 
         //Author:RainYang Date:2016-04-09 Content:修改供应商判断条件,有可能上面两个id都是空的情况,照成商品不显示
-		if((!empty($userroleid)) && ($userroleid == $suproleid)){
-			$sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'].' ORDER BY `status` DESC, `displayorder` DESC,
-					`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
-			$sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'];
-			$total = pdo_fetchcolumn($sqls, $params);
-		}
+        if((!empty($userroleid)) && ($userroleid == $suproleid)){
+            $sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'].' ORDER BY `status` DESC, `displayorder` DESC,
+                    `id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
+            $sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'];
+            $total = pdo_fetchcolumn($sqls, $params);
+        }
         else{
             $sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' ORDER BY `status` DESC, `displayorder` DESC,
                         `id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
             $sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition;
             $total = pdo_fetchcolumn($sqls, $params);
         }
-	}else{
-		$sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' ORDER BY `status` DESC, `displayorder` DESC,
-					`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
-		$sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition;
-		$total = pdo_fetchcolumn($sqls, $params);
+    }else{
+        $sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' ORDER BY `status` DESC, `displayorder` DESC,
+                    `id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
+        $sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition;
+        $total = pdo_fetchcolumn($sqls, $params);
     }
     $list  = pdo_fetchall($sql, $params);
     $pager = pagination($total, $pindex, $psize);

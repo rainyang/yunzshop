@@ -9,7 +9,7 @@ require.config({
         'jquery.touchslider':'../dist/jquery.touchslider.min',
         'swipe':'../dist/swipe',
         'sweetalert':'../dist/sweetalert/sweetalert.min',
-        'swiper':'../dist/swiper'
+        /*'swiper':'../dist/swiper'*/
         
     },
     shim: {

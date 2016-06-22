@@ -371,6 +371,8 @@ footer#footer-nav .menu-list:after {
 .comm-center ul li a{color: #8c8c8c;text-align: center;display: block;}
 .comm-center ul li a span{color: #222;font-size: 16px}
 .recharge{width: 40%; background: #f15353;border-radius: 2px;color: #fff !important;font-size: 14px;padding: 4px 8px;margin:6px 30% }
+#page_allMenu section article dl dt h3{height: 16px;overflow: hidden;}
+#page_allMenu section article dl dd span, .content b{left: -71px !important;top: -25px !important;}
 .menu .nav i {
     width: 36px;
     height: 36px;

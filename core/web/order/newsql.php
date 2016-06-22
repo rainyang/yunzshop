@@ -513,13 +513,13 @@ if(!pdo_fieldexists('sz_yi_order_refund', 'expresssn')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `expresssn` varchar(100) DEFAULT '';");
 }
 if(!pdo_fieldexists('sz_yi_order_refund', 'operatetime')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `operatetime` INT(11) DEFAULT '';");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `operatetime` INT(11) DEFAULT '0';");
 }
 if(!pdo_fieldexists('sz_yi_order_refund', 'sendtime')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `sendtime` INT(11) DEFAULT '';");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `sendtime` INT(11) DEFAULT '0';");
 }
 if(!pdo_fieldexists('sz_yi_order_refund', 'returntime')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `returntime` INT(11) DEFAULT '';");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `returntime` INT(11) DEFAULT '0';");
 }
 if(!pdo_fieldexists('sz_yi_order_refund', 'rexpress')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `rexpress` varchar(100) DEFAULT '';");
@@ -531,10 +531,10 @@ if(!pdo_fieldexists('sz_yi_order_refund', 'rexpresssn')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `rexpresssn` varchar(100) DEFAULT '';");
 }
 if(!pdo_fieldexists('sz_yi_order_refund', 'refundaddressid')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `refundaddressid` INT(11) DEFAULT '';");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `refundaddressid` INT(11) DEFAULT '0';");
 }
 if(!pdo_fieldexists('sz_yi_order_refund', 'endtime')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `endtime` INT(11) DEFAULT '';");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `endtime` INT(11) DEFAULT '0';");
 }
 pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_refund_address'). " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -651,4 +651,49 @@ if(!pdo_fieldexists('sz_yi_order', 'cashierid')) {
 if(pdo_tableexists('sz_yi_return_log')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_return_log')." DROP `id`;");
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_return_log')." ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`);");
+}
+
+//app 首页banner表 2016-6-21
+pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_banner')." (
+  `id` int(11) NOT NULL,
+  `uniacid` int(11) DEFAULT '0',
+  `advname` varchar(50) DEFAULT '',
+  `link` varchar(255) DEFAULT '',
+  `thumb` varchar(255) DEFAULT '',
+  `displayorder` int(11) DEFAULT '0',
+  `enabled` int(11) DEFAULT '0',
+  `thumb_pc` varchar(500) DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+
+//app 客户订单推送消息表 2016-6-21
+pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_message')." (
+   `id` int(11) NOT NULL COMMENT '编号',
+  `openid` varchar(255) NOT NULL COMMENT '用户openid',
+  `title` varchar(255) NOT NULL COMMENT '标题',
+  `contents` text NOT NULL COMMENT '内容',
+  `status` set('0','1') NOT NULL DEFAULT '0' COMMENT '0-未读；1-已读',
+  `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '日期',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+
+//app 系统推送消息表 2016-6-21
+pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_push')." (
+  `id` int(11) NOT NULL,
+  `uniacid` int(11) DEFAULT '0',
+  `name` varchar(50) DEFAULT '',
+  `description` varchar(255) DEFAULT NULL,
+  `content` text,
+  `time` int(11) DEFAULT NULL,
+  `status` int(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+
+//会员表 增加app绑定字段
+if(!pdo_fieldexists('sz_yi_member', 'bindapp')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bindapp` tinyint(4) NOT NULL DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'ordersn_general')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `ordersn_general` varchar(255) NOT NULL DEFAULT '';");
 }
