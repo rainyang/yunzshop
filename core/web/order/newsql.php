@@ -513,13 +513,13 @@ if(!pdo_fieldexists('sz_yi_order_refund', 'expresssn')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `expresssn` varchar(100) DEFAULT '';");
 }
 if(!pdo_fieldexists('sz_yi_order_refund', 'operatetime')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `operatetime` INT(11) DEFAULT '';");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `operatetime` INT(11) DEFAULT '0';");
 }
 if(!pdo_fieldexists('sz_yi_order_refund', 'sendtime')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `sendtime` INT(11) DEFAULT '';");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `sendtime` INT(11) DEFAULT '0';");
 }
 if(!pdo_fieldexists('sz_yi_order_refund', 'returntime')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `returntime` INT(11) DEFAULT '';");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `returntime` INT(11) DEFAULT '0';");
 }
 if(!pdo_fieldexists('sz_yi_order_refund', 'rexpress')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `rexpress` varchar(100) DEFAULT '';");
@@ -531,10 +531,10 @@ if(!pdo_fieldexists('sz_yi_order_refund', 'rexpresssn')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `rexpresssn` varchar(100) DEFAULT '';");
 }
 if(!pdo_fieldexists('sz_yi_order_refund', 'refundaddressid')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `refundaddressid` INT(11) DEFAULT '';");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `refundaddressid` INT(11) DEFAULT '0';");
 }
 if(!pdo_fieldexists('sz_yi_order_refund', 'endtime')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `endtime` INT(11) DEFAULT '';");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `endtime` INT(11) DEFAULT '0';");
 }
 pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_refund_address'). " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
