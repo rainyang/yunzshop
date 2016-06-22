@@ -18,6 +18,9 @@ $trade['closerecharge'] = $set['trade']['closerecharge'];
 $hascom = false;
 $supplier_switch = false;
 $supplier_switch_centre = false;
+if (p('merchant')) {
+	$ismerchant = pdo_fetchall("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and member_id={$member['id']}");
+}
 if (p('supplier')) {
 	$supplier_set = p('supplier')->getSet();
 	$issupplier = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where openid='{$openid}' and uniacid={$_W['uniacid']} and roleid=(select id from " . tablename('sz_yi_perm_role') . " where status1=1)");
