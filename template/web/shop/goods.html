@@ -262,7 +262,7 @@
                             <label for="{$product_attr_key}"
                                 style="font-weight:100; margin-left:10px;">
                             <input type="checkbox"  {if
-                                   in_array($product_attr_key, $product_attr)}
+                                   @in_array($product_attr_key, $product_attr)}
                             checked="checked"{/if} name="product_attr[]"
                             value="{$product_attr_key}" id="{$product_attr_key}" />
                             {$product_attr_name}
@@ -279,7 +279,10 @@
                 {if p('supplier')}
                   {if $perm_role == 0}
                        <select name='supplier_uid' class='form-control'>
-                          <option value="0">
+                          <option value="0" {if $_GPC['supplier_uid']==0}selected="selected"{/if}>
+                            所有商品
+                          </option>
+                          <option value="9999" {if $_GPC['supplier_uid']==9999}selected="selected"{/if}>
                               平台商品
                           </option>
                           {loop $result $row}

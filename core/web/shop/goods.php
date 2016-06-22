@@ -879,18 +879,26 @@ m("cache")->set("areas", $areas, "global");
                         );
 
     $product_attr = $_GPC['product_attr'];
-    foreach ($product_attr as $p_attr) {
-        $condition .= " AND `{$p_attr}` = 1";
+    
+    if ($product_attr) {
+        $condition .= ' AND (';
+        foreach ($product_attr as $k => $p_attr) {
+            if ($k == 0) {
+                $condition .= " `{$p_attr}` = 1";
+            } else {
+                $condition .= " OR `{$p_attr}` = 1";
+            }
+        }
+        $condition .= ' )';
     }
 
     //供应商搜索
-    if (!empty($_GPC["supplier_uid"])) {
+    if (!empty($_GPC["supplier_uid"]) && $_GPC["supplier_uid"] != 9999) {
         $condition .= " AND `supplier_uid` = "."$_GPC[supplier_uid]";
     }
 
-    if ($_GPC["supplier_uid"] == 0) {
+	if ($_GPC["supplier_uid"] == 9999) {
         $condition .= ' AND `supplier_uid` = 0';
-        
     }
 
     if(p('supplier')){
