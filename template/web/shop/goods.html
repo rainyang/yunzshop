@@ -254,6 +254,45 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">商品类型</label>
+
+                    <div class="col-xs-12 col-sm-8 col-lg-9">
+                        {loop $product_attr_list $product_attr_key
+                        $product_attr_name}
+                            <label for="{$product_attr_key}"
+                                style="font-weight:100; margin-left:10px;">
+                            <input type="checkbox"  {if
+                                   in_array($product_attr_key, $product_attr)}
+                            checked="checked"{/if} name="product_attr[]"
+                            value="{$product_attr_key}" id="{$product_attr_key}" />
+                            {$product_attr_name}
+                            </label>
+                        {/loop}
+                    </div>
+                </div>
+				
+                <div class="form-group">
+
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">供应商</label>
+
+                    <div class="col-xs-12 col-sm-8 col-lg-9">
+                {if p('supplier')}
+                  {if $perm_role == 0}
+                       <select name='supplier_uid' class='form-control'>
+                          <option value="0">
+                              平台商品
+                          </option>
+                          {loop $result $row}
+                          <option value="{$row['uid']}" {if $_GPC['supplier_uid']==$row['uid']}selected="selected"{/if}>{$row['realname']}/{$row['username']}</option>
+                          {/loop}
+                        </select>
+
+                         {/if}
+                {/if}
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">分类</label>
                     <div class="col-sm-8 col-xs-12">
                         {if intval($shopset['catlevel'])==3}
@@ -553,9 +592,6 @@
 				);
 	}
 
-$(function () {
-  $('[data-toggle="popover"]').popover()
-})
 </script>
 {/if}
 {template 'web/_footer'}
