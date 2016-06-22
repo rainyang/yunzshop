@@ -54,6 +54,8 @@ if ($pluginreturn) {
 $shopset = m('common')->getSysset('shop');
 $sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
 $category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
+$result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid']);
+
 $parent = $children = array();
 if (!empty($category)) {
     foreach ($category as $cid => $cate) {
@@ -422,8 +424,8 @@ if ($operation == "change") {
 	        "manydeduct"=>$_GPC["manydeduct"],
 	        "deduct2"=>$_GPC["deduct2"],
             'virtual' => intval($_GPC['type']) == 3 ? intval($_GPC['virtual']) : 0,
-            'discounts' => is_array($_GPC['discounts']) ? json_encode($_GPC['discounts']) : array(),
-            'returns' => is_array($_GPC['returns']) ? json_encode($_GPC['returns']) : array(),
+            'discounts' => is_array($_GPC['discounts']) ? json_encode($_GPC['discounts']) : "",
+            'returns' => is_array($_GPC['returns']) ? json_encode($_GPC['returns']) : "",
             'detail_logo' => save_media($_GPC['detail_logo']),
             'detail_shopname' => trim($_GPC['detail_shopname']),
             'detail_totaltitle' => trim($_GPC['detail_totaltitle']),
@@ -511,10 +513,16 @@ if ($operation == "change") {
                 }
             }
         }
-        $pcates = array_merge($pcates,$pcates2);
-        $ccates = array_merge($ccates,$ccates2);
+        if($shopset['category2']==1){
+            $pcates = array_merge($pcates,$pcates2);
+            $ccates = array_merge($ccates,$ccates2);  
+        }
+
         if($cateset['catlevel'] == 3){
-             $tcates = array_merge($tcates,$tcates2);
+             if($shopset['category2']==1){
+                 $tcates = array_merge($tcates,$tcates2);
+             }
+            
         }
        
 
@@ -857,6 +865,32 @@ m("cache")->set("areas", $areas, "global");
     if ($_GPC["status"] != '') {
         $condition .= ' AND `status` = :status';
         $params[':status'] = intval($_GPC['status']);
+    }
+
+    //增加商品属性搜索
+    $product_attr_list = array(
+                            'isnew' => '新品', 
+                            'ishot' => '热卖', 
+                            'isrecommand' => '推荐', 
+                            'isdiscount' => '促销', 
+                            'issendfree' => '包邮', 
+                            'istime' => '限时', 
+                            'isnodiscount' => '不参与折扣'
+                        );
+
+    $product_attr = $_GPC['product_attr'];
+    foreach ($product_attr as $p_attr) {
+        $condition .= " AND `{$p_attr}` = 1";
+    }
+
+    //供应商搜索
+    if (!empty($_GPC["supplier_uid"])) {
+        $condition .= " AND `supplier_uid` = "."$_GPC[supplier_uid]";
+    }
+
+	if ($_GPC["supplier_uid"] == 0) {
+        $condition .= ' AND `supplier_uid` = 0';
+        
     }
 
     if(p('supplier')){

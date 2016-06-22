@@ -176,7 +176,7 @@ if (!pdo_fieldexists('sz_yi_goods', 'diymode')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `diymode` tinyint(3) DEFAULT '0';");
 }
 
-pdo_fetchall("UPDATE ".tablename('qrcode')." SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
+//pdo_fetchall("UPDATE ".tablename('qrcode')." SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
 
 if (!pdo_fieldexists('sz_yi_member', 'regtype')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `regtype` tinyint(3) DEFAULT '1';");
@@ -420,6 +420,10 @@ if(pdo_tableexists('sz_yi_bonus_level')){
   if(!pdo_fieldexists('sz_yi_bonus_level', 'msgcontent')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `msgcontent` varchar(255) DEFAULT '';");
   }
+
+  if(!pdo_fieldexists('sz_yi_bonus_level', 'status')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `status` tinyint(1) DEFAULT '0';");
+  }
 }
 if(pdo_tableexists('sz_yi_bonus')){
   if(!pdo_fieldexists('sz_yi_bonus', 'sendmonth')) {
@@ -493,6 +497,45 @@ if(!pdo_fieldexists('sz_yi_order_refund', 'imgs')) {
 if(!pdo_fieldexists('sz_yi_order_refund', 'refundtime')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `refundtime` INT(11) DEFAULT '0';");
 }
+if(!pdo_fieldexists('sz_yi_order_refund', 'refundaddress')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `refundaddress` text DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_order_refund', 'message')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `message` text DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_order_refund', 'express')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `express` varchar(100) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_order_refund', 'expresscom')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `expresscom` varchar(100) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_order_refund', 'expresssn')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `expresssn` varchar(100) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_order_refund', 'operatetime')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `operatetime` INT(11) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_order_refund', 'sendtime')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `sendtime` INT(11) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_order_refund', 'returntime')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `returntime` INT(11) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_order_refund', 'rexpress')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `rexpress` varchar(100) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_order_refund', 'rexpresscom')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `rexpresscom` varchar(100) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_order_refund', 'rexpresssn')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `rexpresssn` varchar(100) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_order_refund', 'refundaddressid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `refundaddressid` INT(11) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_order_refund', 'endtime')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_refund')." ADD  `endtime` INT(11) DEFAULT '';");
+}
 pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_refund_address'). " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
@@ -551,12 +594,6 @@ if(!pdo_fieldexists('sz_yi_article_category', 'd_level')) {
 pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article_category')." ADD `d_level` INT(11) NOT NULL DEFAULT '0'");
 }
 
-
-//商品等级返现
-if(!pdo_fieldexists('sz_yi_goods', 'returns')) {
-pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returns` TEXT NOT NULL AFTER `discounts`");
-}
-
 if(!pdo_fieldexists('sz_yi_order', 'redstatus')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `redstatus` varchar(100) DEFAULT '';");
 }
@@ -565,3 +602,53 @@ if (!pdo_fieldexists('sz_yi_goods', 'nobonus')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `nobonus` tinyint(1) DEFAULT '0';");
 }
 
+if(!pdo_fieldexists('sz_yi_goods', 'returns')) {
+pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returns` TEXT NOT NULL AFTER `discounts`");
+}
+
+//添加全返记录表 2016-06-14
+pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_return_log')." (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL,
+  `mid` int(11) NOT NULL,
+  `openid` varchar(255) NOT NULL,
+  `money` decimal(10,2) NOT NULL,
+  `status` tinyint(2) NOT NULL DEFAULT '0',
+  `returntype` tinyint(2) NOT NULL DEFAULT '0',
+  `create_time` int(11) NOT NULL, 
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+
+if (!pdo_fieldexists('sz_yi_coupon', 'supplier_uid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `supplier_uid` INT(11) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'cashier')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `cashier` tinyint(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'realprice')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `realprice` decimal(10) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'deredpack')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `deredpack` tinyint(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'decommission')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `decommission` tinyint(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'decredits')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `decredits` tinyint(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'cashierid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `cashierid` int(11) DEFAULT '0';");
+}
+
+//过几天要删掉，临时处理全返表无自增问题
+if(pdo_tableexists('sz_yi_return_log')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_return_log')." DROP `id`;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_return_log')." ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`);");
+}

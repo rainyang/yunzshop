@@ -67,12 +67,33 @@ if ($operation == 'display') {
             $data['coupon_id'] = trim($_GPC['coupon_id']);
         }
         if (!empty($id)) {
+            $cashier_stores = pdo_fetch(' select * from ' .tablename('sz_yi_cashier_store'). ' where id='.$id);
+            $oldopenid = pdo_fetchcolumn('select openid from ' .tablename('sz_yi_member'). ' where id='.$cashier_stores['member_id']);
+            if($cashier_stores['member_id'] != $data['member_id']){
+                $_var_156 = array(
+                                'keyword1' => array('value' => '收银台商户通知', 'color' => '#73a68d'),
+                                'keyword2' => array('value' => '【商户名称】' . $cashier_stores['name'], 'color' => '#73a68d'),
+                                'remark' => array('value' => '您于此商户绑定的微信角色已经被替换!')
+                            );
+                $_var_157 = array(
+                                'keyword1' => array('value' => '收银台商户通知', 'color' => '#73a68d'),
+                                'keyword2' => array('value' => '【商户名称】' . $cashier_stores['name'], 'color' => '#73a68d'),
+                                'remark' => array('value' => '此商户绑定的微信角色已经成功更换成您!')
+                            );          
+                m('message')->sendCustomNotice($oldopenid, $_var_156);
+                m('message')->sendCustomNotice($data['member_id'], $_var_156);
+            }
             pdo_update('sz_yi_cashier_store', $data, array('id' => $id, 'uniacid' => $_W['uniacid']));
             plog('cashier.store.edit', "编辑商户 ID: {$id} <br/>店名: {$data['name']}");
             message('更新商户信息成功！', $this->createPluginWebUrl('cashier/store'), 'success');
         } else {
             $data['create_time'] = date('Y-m-d H:i:s');
             pdo_insert('sz_yi_cashier_store', $data);
+            $_var_157 = array(
+                                'keyword1' => array('value' => '收银台商户通知', 'color' => '#73a68d'),
+                                'keyword2' => array('value' => '【商户名称】' . $cashier_stores['name'], 'color' => '#73a68d'),
+                                'remark' => array('value' => '您已经被绑定成为此商户的微信角色!')
+                            );   
             $id = pdo_insertid();
             plog('cashier.store.add', "添加商户 ID: {$id}  <br/>店名: {$data['name']}");
             message('添加商户成功！', $this->createPluginWebUrl('cashier/store'), 'success');

@@ -675,7 +675,7 @@ if (!class_exists('CommissionModel')) {
 					$location_num = 50;
 					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
 				}
-				$imgusername = $_var_87['realname'] ? $_var_87['realname'] : $_var_87['nickname'];
+				$imgusername = $_var_87['nickname'] ? $_var_87['nickname'] : $_var_87['realname'];
 				$imgusername = $imgusername ? $imgusername : $_var_87['mobile'];
 				imagecopy($_var_91, $_var_92, 0, 0, 0, 0, 640, 1225);
 				imagedestroy($_var_92);
@@ -777,7 +777,7 @@ if (!class_exists('CommissionModel')) {
 					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
 					$location_num = 50;
 				}
-				$imgusername = $_var_87['realname'] ? $_var_87['realname'] : $_var_87['nickname'];
+				$imgusername = $_var_87['nickname'] ? $_var_87['nickname'] : $_var_87['realname'];
 				$imgusername = $imgusername ? $imgusername : $_var_87['mobile'];
 				imagecopy($_var_91, $_var_92, 0, 0, 0, 0, 640, 1225);
 				imagedestroy($_var_92);

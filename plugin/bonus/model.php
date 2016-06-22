@@ -37,8 +37,7 @@ if (!class_exists('BonusModel')) {
             	if(!empty($parentAgent['bonuslevel'])){
             		if($isdistinction == 0){
 	            		$agentlevel = pdo_fetchcolumn("select level from " . tablename('sz_yi_bonus_level') . " where id=".$parentAgent['bonuslevel']);
-		            	if(empty($this->parentAgents[$parentAgent['bonuslevel']]) && $level <= $agentlevel){
-		            		$level = $parentAgent['bonuslevel'];
+		            	if(empty($this->parentAgents[$parentAgent['bonuslevel']]) && $level < $agentlevel){
 		        			$this->parentAgents[$parentAgent['bonuslevel']] = $parentAgent['id'];
 		        		}
 	        		}else{
@@ -48,7 +47,7 @@ if (!class_exists('BonusModel')) {
 	        		}
         		}
             	if($parentAgent['agentid'] != 0){
-                    return $this->getParentAgents($parentAgent['agentid'], $isdistinction, $level);
+                    return $this->getParentAgents($parentAgent['agentid'], $isdistinction, $agentlevel);
                 }else{
                 	return $this->parentAgents;
                 }
@@ -432,7 +431,7 @@ if (!class_exists('BonusModel')) {
 	            $commission_lock = pdo_fetchcolumn($sql);
 	        }
 	        //Author:ym Date:2016-04-08 Content:自购完成订单
-			if (in_array('myorder', $_var_21)) {
+			if (in_array('myorder', $options)) {
 				$myorder = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
 				//Author:ym Date:2016-04-08 Content:自购订单金额
 				$myordermoney = $myorder['ordermoney'];
@@ -625,7 +624,7 @@ if (!class_exists('BonusModel')) {
 						)
 					);
 			}
-			if(empty($levelup)){
+			if(empty($levelup) || $levelup['status'] == 1){
 				return false;
 			}
 			$leveltype = $set['leveltype'];
@@ -1008,7 +1007,7 @@ if (!class_exists('BonusModel')) {
 			            "send_bonus_sn" => $time
 			        ));
 			        if($sendpay == 1){
-			        	$this->model->sendMessage($value['openid'], array('nickname' => $value['nickname'], 'levelname' => $value['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_GLOPAL_PAY);
+			        	$this->model->sendMessage($value['openid'], array('nickname' => $value['nickname'], 'levelname' => $value['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_GLOBAL_PAY);
 			        }
 				}
 				$log = array(

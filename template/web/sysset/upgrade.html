@@ -1,8 +1,10 @@
-{template 'common/header'}
+{template 'web/_header'}
 <style>
 #upgradebtn{width:20%}
 </style>
-<div class="main">
+<div class="w1200 m0a">
+{template 'web/sysset/tabs'}
+<div class="main rightlist">
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -36,6 +38,7 @@
             </div>  
         </div>
     </form>
+</div>
 </div>
 <script language='javascript'>
   
@@ -139,5 +142,5 @@
 
     })
 </script>
-{template 'common/footer'}
+{template 'web/_footer'}
 

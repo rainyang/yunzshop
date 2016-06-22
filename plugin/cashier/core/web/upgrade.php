@@ -79,4 +79,8 @@ if(!pdo_fieldexists('sz_yi_order', 'decommission')) {
 if(!pdo_fieldexists('sz_yi_order', 'decredits')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `decredits` tinyint(1) DEFAULT '0';");
 }
+
+if(!pdo_fieldexists('sz_yi_order', 'cashierid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `cashierid` int(11) DEFAULT '0';");
+}
 message('芸众收银台插件安装成功', $this->createPluginWebUrl('cashier/index'), 'success');

@@ -13,29 +13,41 @@ $store = pdo_fetch('select * from ' . tablename('sz_yi_cashier_store') . ' where
 ));
 
 $cashier_order = pdo_fetchall('SELECT order_id FROM ' . tablename('sz_yi_cashier_order') . ' WHERE uniacid = :uniacid AND cashier_store_id = :cashier_store_id', array(':uniacid' => $_W['uniacid'], ':cashier_store_id' => $store['id']));
-$orderids = array();
+$orderidss = false;
+
 foreach ($cashier_order as $order) {
-    $orderids[] = $order['order_id'];
+    if($order['order_id']){
+         $orderidss = true;
+         $orderids .= "'".$order['order_id']."',";
+    }
+    
 }
+
 $totalprices = 0;
-if ($orderids) {
+if ($orderidss) {
     // 累计支付金额
-    $totalprices = pdo_fetch('SELECT SUM(realprice) AS tprice FROM ' . tablename('sz_yi_order') . ' WHERE uniacid = ' . $_W['uniacid'] . ' AND id IN (' . implode(',', $orderids) . ') AND status = 3');
+    $orderids = substr($orderids,0,-1);
+    $totalprices = pdo_fetch('SELECT SUM(realprice) AS tprice FROM ' . tablename('sz_yi_order') . ' WHERE uniacid = ' . $_W['uniacid'] . ' AND id IN ( '.$orderids.' ) AND status = 3');
     $totalprices = $totalprices['tprice'];
     // 已经提现的金额
-    $totalwithdraw = pdo_fetch('SELECT money FROM ' . tablename('sz_yi_cashier_withdraw') . ' WHERE uniacid = ' . $_W['uniacid'] . ' AND cashier_store_id = ' . $store['id']);
-    $totalwithdraw = $totalwithdraw['money'];
-    $totalprices = number_format($totalprices - $totalwithdraw, 2);
+    $totalwithdraw = pdo_fetchall('SELECT money FROM ' . tablename('sz_yi_cashier_withdraw') . ' WHERE uniacid = ' . $_W['uniacid'] . ' AND cashier_store_id = ' . $id);
+    foreach ($totalwithdraw as  $value) {
+        $totalwithdraws += $value['money'];
+    }
+    
+    $totalprices = $totalprices - $totalwithdraws;
+    $totalpricess = number_format($totalprices,'2');
 }
 
 if ($operation == 'display' && $_W['isajax']) {
-    $store['totalprices'] = $totalprices;
+    $store['totalprices'] = $totalpricess;
     show_json(1, array(
         'store'  => $store,
         'noinfo' => empty($member['realname'])
     ));
 } else if ($operation == 'submit' && $_W['ispost']) {
     $money = floatval($_GPC['money']);
+    
     if (empty($money)) {
         show_json(0, '申请金额为空!');
     }
@@ -45,16 +57,23 @@ if ($operation == 'display' && $_W['isajax']) {
     if ($money > $totalprices) {
         show_json(0, '提现金额过大!');
     }
+   
     $withdraw_no = m('common')->createNO('cashier_withdraw', 'withdraw_no', 'CW');
     $data = array(
         'uniacid'           => $_W['uniacid'],
         'withdraw_no'       => $withdraw_no,
         'openid'            => $openid,
-        'cashier_store_id'  => $store['id'],
+        'cashier_store_id'  => $id,
         'money'             => $money,
         'status'            => 0
     );
     pdo_insert('sz_yi_cashier_withdraw', $data);
+    $_var_157 = array(
+                            'keyword1' => array('value' => '收银台提现成功通知', 'color' => '#73a68d'),
+                            'keyword2' => array('value' => '【商户名称】' . $cashier_stores['name'], 'color' => '#73a68d'),
+                            'remark' => array('value' => '恭喜,您的提现申请已经成功提交!')
+                        );          
+    m('message')->sendCustomNotice($openid, $_var_157);
     show_json(1);
 }
 

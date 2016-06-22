@@ -116,12 +116,11 @@ if ($operation == 'display' && $_W['isajax']) {
         }
     }
 
-    $pluginy = p('yunpay');
-    if ($pluginy) {
-        $yunpay = array(
+    $pluginy = p('yunpay');        
+    $yunpay = array(
             'success' => false
         );
-
+    if ($pluginy) {
         $yunpayinfo = $pluginy->getYunpay();
         if (isset($yunpayinfo) && $yunpayinfo['switch']) {
             $yunpay['success'] = true;
@@ -228,11 +227,11 @@ if ($operation == 'display' && $_W['isajax']) {
             show_json(0, '微信支付参数错误!');
         }
         pdo_update('sz_yi_order', array(
-            'paytype' => 21,
-            'status'  => 3
+            'paytype' => 21
         ), array(
             'id' => $order['id']
         ));
+
         if($commission['become_child']==2){
              p('commission')->checkOrderPay($orderid);
         }
@@ -241,25 +240,25 @@ if ($operation == 'display' && $_W['isajax']) {
         ));
     } else if ($type == 'alipay') {
         pdo_update('sz_yi_order', array(
-            'paytype' => 22,
-            'status'  => 3
+            'paytype' => 22
         ), array(
             'id' => $order['id']
         ));
         if($commission['become_child']==2){
              p('commission')->checkOrderPay($orderid);
         }
+
         show_json(1);
     }else if ($type == 'yunpay') {
         pdo_update('sz_yi_order', array(
-            'paytype' => 24,
-            'status'  => 3
+            'paytype' => 24
         ), array(
             'id' => $order['id']
         ));
         if($commission['become_child']==2){
              p('commission')->checkOrderPay($orderid);
         }
+
         show_json(1);
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
@@ -332,8 +331,7 @@ if ($operation == 'display' && $_W['isajax']) {
             'plid' => $log['plid']
         ));
         pdo_update('sz_yi_order', array(
-            'paytype' => 1,
-            'status'  => 3
+            'paytype' => 1
         ), array(
             'id' => $order['id']
         ));
@@ -356,6 +354,7 @@ if ($operation == 'display' && $_W['isajax']) {
         if($commission['become_child']==2){
              p('commission')->checkOrderPay($orderid);
         }
+       
         $this->model->redpack($openid,$orderid);
         $this->model->setCredits($orderid);
         $this->model->setCredits2($orderid);
@@ -385,13 +384,19 @@ if ($operation == 'display' && $_W['isajax']) {
             $ret['uniacid'] = $log['uniacid'];
             $ret['deduct']  = intval($_GPC['deduct']) == 1;
             $pay_result     = $this->model->payResult($ret);
+
             if($commission['become_child']==2){
                  p('commission')->checkOrderPay($orderid);
             }
+            
             $this->model->redpack($openid,$orderid);
             $this->model->setCredits($orderid);
             $this->model->setCredits2($orderid);
-            show_json(1, $pay_result);
+            $pay_result['couponurl'] = $couponUrl;
+            $pay_result['order'] = $order;
+            show_json(1,$pay_result); 
+            
+            
 
         }
         show_json(0, '支付出错,请重试!');
@@ -449,6 +454,8 @@ if ($operation == 'display' && $_W['isajax']) {
         $url = $this->createPluginMobileUrl('coupon/detail', array(
             'id' => $store['coupon_id']
         ));
+    }else{
+         $url = $this->createMobileUrl('member');
     }
     die("<script>top.window.location.href='{$url}'</script>");
 } else if ($operation == 'returnyunpay') {
@@ -507,6 +514,8 @@ if ($operation == 'display' && $_W['isajax']) {
         $url = $this->createPluginMobileUrl('coupon/detail', array(
             'id' => $store['coupon_id']
         ));
+    }else{
+         $url = $this->createMobileUrl('member');
     }
     die("<script>top.window.location.href='{$url}'</script>");
 }

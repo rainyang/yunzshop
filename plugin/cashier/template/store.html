@@ -171,13 +171,18 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">前台是否填写联系人信息</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">下单时是否填写联系人信息</label>
                 <div class="col-sm-9 col-xs-12">
                      <label class="radio-inline"><input type="radio"  name="iscontact" value="0" {if $item['iscontact'] ==0} checked="checked"{/if} /> 否</label>
                     <label class="radio-inline"><input type="radio"  name="iscontact" value="1" {if $item['iscontact'] ==1} checked="checked"{/if} /> 是</label>
                     
                 </div>
             </div>
+        </div>
+        <div class='panel-heading'>
+            抵扣设置
+        </div>
+        <div class='panel-body'>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">抵扣设置</label>
                 <div class="col-sm-9 col-xs-12">
@@ -198,6 +203,11 @@
                     <span class="help-block">此项要在"营销宝"插件里面开启抵扣设置才会生效!</span>
                 </div>
             </div>
+        </div>    
+        <div class='panel-heading'>
+            结算规则
+        </div>
+        <div class='panel-body'>    
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">结算规则</label>
                 <div class="col-sm-9 col-xs-12">
@@ -206,18 +216,10 @@
                         {ife 'cashier.store' $item}
                             <input type="text" name="settle_platform" class="form-control" value="{$item['settle_platform']}">
                             <div class="input-group-addon">%</div>
-                            <div class="input-group-addon">扣除</div>
-                            <label for="decommission" class="checkbox-inline" style="margin-top:-25px">
-                                <input type="checkbox" name="decommission" value="1" id="decommission" {if $item['decommission'] == 1}checked="true"{/if} /> 佣金
-                            </label>
-                            <label for="decredits" class="checkbox-inline" style="margin-top:-25px">
-                                <input type="checkbox" name="decredits" value="1" id="decredits" {if $item['decredits'] == 1}checked="true"{/if} /> 奖励余额
-                            </label>
-                            <label for="deredpack" class="checkbox-inline" style="margin-top:-25px">
-                                <input type="checkbox" name="deredpack" value="1" id="deredpack" {if $item['decredits'] == 1}checked="true"{/if} /> 奖励红包
-                            </label>
+                            
+
                         {else}
-                            <div class='form-control-static'>{$item['settle_platform']}{if $item['decommission'] == 1}扣除佣金{/if}{if $item['decredits'] == 1}扣除奖励积分{/if}{if $item['deredpack'] == 1}扣除奖励红包{/if}</div>
+                            <div class='form-control-static'>{$item['settle_platform']}</div>
                         {/if}
 <!--                          <span class="input-group-addon ">商家比例</span>
                         {ife 'cashier.store' $item}
@@ -228,7 +230,35 @@
                     </div>
                 </div>
             </div>
-            {if $com_set['level'] >= 1}
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">结算时扣除</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <div class="input-group">
+                            {ife 'cashier.store' $item}
+                             <label for="decommission" class="checkbox-inline" >
+                                <input type="checkbox" name="decommission" value="1" id="decommission" {if $item['decommission'] == 1}checked="true"{/if} /> 佣金
+                            </label>
+                            <label for="decredits" class="checkbox-inline">
+                                <input type="checkbox" name="decredits" value="1" id="decredits" {if $item['decredits'] == 1}checked="true"{/if} /> 奖励余额
+                            </label>
+                            <label for="deredpack" class="checkbox-inline" >
+                                <input type="checkbox" name="deredpack" value="1" id="deredpack" {if $item['deredpack'] == 1}checked="true"{/if} /> 奖励红包
+                            </label>
+                            {else}
+                            <div class='form-control-static'>{if $item['decommission'] == 1}扣除佣金{/if}{if $item['decredits'] == 1}扣除奖励积分{/if}{if $item['deredpack'] == 1}扣除奖励红包{/if}</div>
+                            {/if}
+                        </div>
+                         <span class="help-block">决定奖励费用由平台还是商家提供!</span>
+                         <span class="help-block" style="color:red">注:选项打勾则为商户提供!</span>
+                    </div>   
+            </div>    
+        </div>    
+        <div class='panel-heading'>
+            分销佣金设置
+        </div>
+        {if $com_set['level'] >= 1}
+        <div class='panel-body'>    
+            
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">佣金比例</label>
                 <div class="col-sm-9 col-xs-12">
@@ -260,7 +290,12 @@
                     </div>
                 </div>
             </div>
-            {/if}
+        </div>
+        {/if}    
+        <div class='panel-heading'>
+            奖励设置
+        </div>
+        <div class='panel-body'>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分奖励百分比</label>
                 <div class="col-sm-9 col-xs-12">
@@ -303,7 +338,7 @@
             </div>
             {if $pcoupon}
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">优惠券</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">赠送优惠券</label>
                 <div class="col-sm-9 col-xs-12">
                     {ife 'cashier.store' $item}
                         <select name="coupon_id" class="form-control">
@@ -318,6 +353,7 @@
                 </div>
             </div>
             {/if}
+        </div>    
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                 <div class="col-sm-9 col-xs-12">

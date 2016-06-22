@@ -1,8 +1,5 @@
 <?php
-
-
 global $_W, $_GPC;
-
 if (!$_W['isfounder']) {
     message('您无权操作!', '', 'error');
 }
@@ -11,7 +8,6 @@ if (checksubmit('submit')) {
     $condition = "";
     $acid      = 0;
     $where     = array();
-    exit;
     if ($wechatid != -1) {
         $condition = ' and uniacid=' . $wechatid;
         $where     = array(
