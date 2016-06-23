@@ -89,6 +89,17 @@
             </div>
         </div>
         <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">产品名称</label>
+            <div class="col-sm-9 col-xs-12">
+                   {ifp 'commission.supplier.edit'}
+                <input type="text" name="data[productname]" class="form-control" value="{$supplier['productname']}"  />
+                   {else}
+                   <input type="hidden" name="data[productname]" class="form-control" value="{$supplier['productname']}"  />
+                <div class='form-control-static'>{$supplier['productname']}</div>
+                {/if}
+            </div>
+        </div>
+        <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">金额</label>
             <div class="col-sm-9 col-xs-12">
             <span class='help-block'>累计金额：<span style='color:red'>{if !empty($totalmoney)}{$totalmoney}{else}0{/if}元</span> 已结算金额：<span style='color:red'>{if !empty($totalmoneyok)}{$totalmoneyok}{else}0{/if}元</span></span>
