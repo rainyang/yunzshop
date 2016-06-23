@@ -99,20 +99,21 @@ if (!empty($keywords)) {
     $condition .= ' AND `title` LIKE :title';
     $params[':title'] = '%' . trim($keywords) . '%';
 }
-$tcate = !empty($args['tcate']) ? intval($args['tcate']) : 0;
 if (!empty($tcate)) {
-    $condition .= " AND (`tcate` = :tcate or FIND_IN_SET({$tcate},cates)<>0)";
+    $condition .= " AND ( `tcate` = :tcate or  FIND_IN_SET({$tcate},tcates)<>0 )";
     $params[':tcate'] = intval($tcate);
-}
-$ccate = !empty($args['ccate']) ? intval($args['ccate']) : 0;
-if (!empty($ccate)) {
-    $condition .= " AND ( `ccate` = :ccate or  FIND_IN_SET({$ccate},cates)<>0 )";
-    $params[':ccate'] = intval($ccate);
-}
-$pcate = !empty($args['pcate']) ? intval($args['pcate']) : 0;
-if (!empty($pcate)) {
-    $condition .= ' AND `pcate` = :pcate';
-    $params[':pcate'] = intval($pcate);
+} else {
+    $ccate = intval($args['ccate']);
+    if (!empty($ccate)) {
+        $condition .= " AND ( `ccate` = :ccate or  FIND_IN_SET({$ccate},ccates)<>0 )";
+        $params[':ccate'] = intval($ccate);
+    } else {
+        $pcate = intval($args['pcate']);
+        if (!empty($pcate)) {
+            $condition .= " AND ( `pcate` = :pcate or  FIND_IN_SET({$pcate},pcates)<>0 )";
+            $params[':pcate'] = intval($pcate);
+        }
+    }
 }
 
 $total = pdo_fetchcolumn("SELECT count(*) FROM " . tablename('sz_yi_goods') . " where 1 {$condition}", $params);
