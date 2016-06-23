@@ -21,7 +21,7 @@ if ($_W['isajax']) {
         $mc = $_GPC['memberdata'];
         $memberall = pdo_fetchall('select id, openid, pwd from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and openid!=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':mobile' => $mc['mobile']));
 
-        if ($memberall) {
+        if (!empty($memberall)) {
             foreach ($memberall as $key => $info) {
                 $oldopenid = $info['openid'];
                 $prem = array('openid' => $oldopenid, 'uniacid' => $_W['uniacid']);
