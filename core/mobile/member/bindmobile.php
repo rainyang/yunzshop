@@ -19,7 +19,7 @@ if (is_weixin()) {
 if ($_W['isajax']) {
     if ($_W['ispost']) {
         $mc = $_GPC['memberdata'];
-        $memberall = pdo_fetchall('select * from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and openid!=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':mobile' => $mc['mobile']));
+        $memberall = pdo_fetchall('select id, openid, pwd from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and openid!=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':mobile' => $mc['mobile']));
 
         if ($memberall) {
             foreach ($memberall as $key => $info) {
@@ -46,10 +46,8 @@ if ($_W['isajax']) {
                     pdo_update($val, array('openid' => $openid), $prem);
                 }
 
-                
-
                 //更新微信记录里的手机号等为pc的手机号
-                $member = pdo_fetch('select mobile, pwd, credit1, credit2 from ' . tablename('sz_yi_member') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+                $member = pdo_fetch('select id, mobile, pwd, credit1, credit2 from ' . tablename('sz_yi_member') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
                 $data = array('isbindmobile' => 1);
                 if ($member['mobile'] != $mc['mobile'] || !empty($mc['mobile'])) {
                     $data['mobile'] = $mc['mobile'];
@@ -69,6 +67,9 @@ if ($_W['isajax']) {
                 if ($credit2 > 0) {
                     m('member')->setCredit($openid, 'credit2', $credit2);
                 }
+                //修改其它手机号相同用户的上下级关系id为当前微信的。
+                pdo_update('sz_yi_member', array('agentid' => $member['id']), array('agentid' => $info['id'], 'uniacid' => $_W['uniacid']));
+
                 pdo_update('sz_yi_member', $data, array('openid' => $openid, 'uniacid' => $_W['uniacid']));
 
                 //删除其他手机号相同用户
