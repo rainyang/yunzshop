@@ -123,13 +123,18 @@ if ($operation == 'index') {
 		$ads_pc['bottom_ad'] = set_medias($ads_pc['bottom_ad'], 'thumb');	
 	}
 
-	//最新消息
-	$message = pdo_fetchall('select * from ' . tablename('sz_yi_message') . ' where  openid=:openid', array(':openid' => $openid));
-	foreach ($message as $key => $value) {
-		if($value['status']== '0'){
-			$is_read='has';
+	if (is_app()) {
+		//最新消息
+		$message = pdo_fetchall('select * from ' . tablename('sz_yi_message') . ' where  openid=:openid', array(':openid' => $openid));
+		foreach ($message as $key => $value) {
+			if($value['status']== '0'){
+				$is_read='has';
+			}
 		}
+	} else {
+		$is_read = '';
 	}
+
 
 	unset($c);
 } else if ($operation == 'goods') {
