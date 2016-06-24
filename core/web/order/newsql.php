@@ -697,3 +697,7 @@ if(!pdo_fieldexists('sz_yi_member', 'bindapp')) {
 if(!pdo_fieldexists('sz_yi_order', 'ordersn_general')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `ordersn_general` varchar(255) NOT NULL DEFAULT '';");
 }
+//前台下单 判断是否支持配送核销字段
+if(!pdo_fieldexists('sz_yi_goods', 'isverifysend')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isverifysend` tinyint(1) NOT NULL DEFAULT '0';");
+}
