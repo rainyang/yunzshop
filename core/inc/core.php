@@ -62,7 +62,14 @@ class Core extends WeModuleSite
 
             require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
 
-            LeanCloud\LeanClient::initialize("egEtMTe0ky9XbUd57y5rKEAX-gzGzoHsz", "ca0OTkPQUdrXlPTGrospCY2L", "4HFoIDCAwaeOUSedwOISMUrj,master");
+            $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+                ':uniacid' => $_W['uniacid']
+            ));
+            $set     = unserialize($setdata['sets']);
+
+            $app = $set['app']['base'];
+
+            LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'].",master");
         }
     }
 

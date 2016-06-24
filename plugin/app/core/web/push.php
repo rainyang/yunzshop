@@ -35,7 +35,14 @@ if ($operation == 'display') {
         $id = pdo_insertid();
         $url = "http://".$_SERVER['HTTP_HOST']."/app/index.php?i=".$_W['uniacid']."&c=entry&p=pushinfo&do=member&m=sz_yi&id=".$id;
         require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
-        LeanCloud\LeanClient::initialize("egEtMTe0ky9XbUd57y5rKEAX-gzGzoHsz", "ca0OTkPQUdrXlPTGrospCY2L", "4HFoIDCAwaeOUSedwOISMUrj,master");
+
+        $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+            ':uniacid' => $_W['uniacid']
+        ));
+        $set     = unserialize($setdata['sets']);
+
+        $app = $set['app']['base'];
+        LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'].",master");
 
         $post_data = '{
           "alert":             "'. $data["name"] . '",
