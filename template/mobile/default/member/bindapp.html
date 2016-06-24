@@ -1,0 +1,140 @@
+{template 'common/header'}
+<link rel="stylesheet" href="../addons/sz_yi/template/mobile/app/static/css/fenxiao.css" />
+<style>
+    .cart_top {height:44px; width:100%;  background:#f8f8f8;  border-bottom:1px solid #e3e3e3;}
+    .cart_top .title {height:44px; width:auto;margin-left:10px; float:left; font-size:16px; line-height:44px; color:#666;}
+    .cart_top .nav {height:30px; width:auto;background:#fff; padding:0px 10px; border:1px solid #e3e3e3; border-radius:5px; float:right; line-height:30px; margin:6px 0px 0px 16px; color:#666; font-size:14px;}
+</style>
+<title>分销-绑定APP用户</title>
+<body class="fenxbg">
+<section>
+    <div class="cart_top">
+        <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> 绑定APP用户</div>
+    </div>
+    <div class="fenxwap">
+        <div class="fenx-img"><img src="../addons/sz_yi/template/mobile/app/static/images/fenx.png" alt=""></div>
+            <input type="hidden" id="redireurl" value="{$redireurl}">
+            <input type="text" class="fenxinpu" placeholder="请输入手机号码" id="mobile">
+            <div class="fenxinpu-div">
+                <input type="text" class="fenxinpu" placeholder="请输入验证码" id="code">
+                <a href="javascript:;" class="fenxhuoqu" id="btnSendCode">获取验证码</a>
+            </div>
+            <div class="btnfenx-bg"><a href="javascript:;" id="btn_bind">绑定</a></div>
+            <a href="{php echo $this->createMobileUrl('shop/download')}" class="btnuse-bg">立即使用</a>
+
+    </div>
+</section>
+</body>
+</html>
+<script language="javascript">
+    require(['tpl', 'core'], function(tpl, core) {
+        $('.nobindmobile').click(function(){
+            location.href = "{php echo $this->createMobileUrl('member/nobindmobile')}";
+        });
+
+        var InterValObj; //timer变量，控制时间
+        var count = 60; //间隔函数，1秒执行
+        var curCount;//当前剩余秒数
+        var hasmobile = false;
+        $('#btnSendCode').click(function(){
+            if(!$('#mobile').isMobile()){
+                core.tip.show('请输入正确手机号码!');
+                return;
+            }
+            core.json('member/sendcode', {
+                'mobile': $('#mobile').val(),
+                'op':'ismobile'
+            }, function(json) {
+                if(json.status==1){
+                    $('.hide').show();
+                    hasmobile = true;
+                }
+            },true,true);
+            curCount = count;
+
+
+            //向后台发送处理数据
+            core.json('member/sendcode', {
+                'mobile': $('#mobile').val(),
+                'op' : "bindmobilecode"
+            }, function(json) {
+                if(json.status==1){
+                    //设置button效果，开始计时
+                    $("#btnSendCode").attr("disabled", "true");
+                    $("#btnSendCode").html("请在" + curCount + "秒内输入验证码");
+                    InterValObj = window.setInterval(SetRemainTime, 1000); //启动计时器，1秒执行一次
+                }else{
+                    core.tip.show(json.result);
+                }
+
+            },true,true);
+        });
+
+        //timer处理函数
+        function SetRemainTime() {
+            if (curCount == 0) {
+                window.clearInterval(InterValObj);//停止计时器
+                $("#btnSendCode").removeAttr("disabled");//启用按钮
+                $("#btnSendCode").html("重新发送验证码");
+            }
+            else {
+                curCount--;
+                $("#btnSendCode").html("请在" + curCount + "秒内输入验证码");
+            }
+        }
+        //检验验证码
+        function checkcode()
+        {
+            core.json('member/sendcode', {
+                'code': $('#code').val(),
+                'op':'checkcode'
+            }, function(json) {
+
+                if(json.status == 0)
+                {
+                    core.tip.show(json.result);
+                    return;
+                }
+            },true,true);
+        }
+
+        $('#btn_bind').click(function() {
+            if(!$('#mobile').isMobile()){
+                core.tip.show('请输入正确手机号码!');
+                return;
+            }
+            if( $('#code').isEmpty()){
+                core.tip.show('请输验证码!');
+                return;
+            }
+
+
+            core.json('member/sendcode', {
+                'code': $('#code').val(),
+                'op':'checkcode'
+            }, function(json) {
+
+                if(json.status == 0)
+                {
+                    core.tip.show(json.result);
+                    return;
+                }
+                core.json('member/bindapp', {
+                    'mobile': $('#mobile').val(),
+                    'redireurl': $("#redireurl").val()
+                }, function(json) {
+                    if(json.status==1){
+                    core.tip.show('绑定成功');
+                    location.href=json.result.redireurl;
+                    }
+                    else{
+                    core.tip.show('绑定失败!');
+                    }
+
+                },true,true);
+            },true,true);
+
+
+        });
+    })
+</script>

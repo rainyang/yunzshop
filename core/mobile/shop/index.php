@@ -122,6 +122,20 @@ if ($operation == 'index') {
 	if(!empty($ads_pc['bottom_ad'])){
 		$ads_pc['bottom_ad'] = set_medias($ads_pc['bottom_ad'], 'thumb');	
 	}
+
+	if (is_app()) {
+		//最新消息
+		$message = pdo_fetchall('select * from ' . tablename('sz_yi_message') . ' where  openid=:openid', array(':openid' => $openid));
+		foreach ($message as $key => $value) {
+			if($value['status']== '0'){
+				$is_read='has';
+			}
+		}
+	} else {
+		$is_read = '';
+	}
+
+
 	unset($c);
 } else if ($operation == 'goods') {
 	$type = $_GPC['type'];
@@ -130,7 +144,7 @@ if ($operation == 'index') {
 }
 if ($_W['isajax']) {
 	if ($operation == 'index') {
-		show_json(1, array('set' => $set, 'advs' => $advs, 'category' => $category));
+		show_json(1, array('set' => $set, 'advs' => $advs, 'category' => $category, 'is_read' => $is_read));
 	} else if ($operation == 'goods') {
 		$type = $_GPC['type'];
 		show_json(1, array('goods' => $goods, 'pagesize' => $args['pagesize']));

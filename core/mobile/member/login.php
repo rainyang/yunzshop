@@ -6,6 +6,10 @@ global $_W, $_GPC;
 @session_start();
 $operation = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 if ($operation == 'display') {
+    if (m('user')->islogin() != false) {
+        header('location: ' . $this->createMobileUrl('member'));
+    }
+
     if ($_W['isajax']) {
         if ($_W['ispost']) {
             $mc = $_GPC['memberdata'];
@@ -24,7 +28,11 @@ if ($operation == 'display') {
             }
             //echo $preUrl;exit;
             if($info){
-                $lifeTime = 24 * 3600 * 3;
+                if (is_app()) {
+                    $lifeTime = 24 * 3600 * 3 * 100;
+                } else {
+                    $lifeTime = 24 * 3600 * 3;
+                }
                 session_set_cookie_params($lifeTime);
                 
                 $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
@@ -40,9 +48,16 @@ if ($operation == 'display') {
                     $member_name = !empty($member_name) ? $member_name : "未知";
                     setcookie('member_name', base64_encode($member_name));
                 }
-                show_json(1, array(
-                    'preurl' => $preUrl
-                ));
+                if (is_app()) {
+                    show_json(1, array(
+                        'preurl' => $preUrl,
+                        'open_id' => $info['openid'],
+                    ));
+                } else {
+                    show_json(1, array(
+                        'preurl' => $preUrl
+                    ));
+                }
             }
             else{
                 show_json(0, "用户名或密码错误！");

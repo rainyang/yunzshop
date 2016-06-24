@@ -11,6 +11,8 @@ if (empty($openid)) {
 }
 $uniacid = $_W['uniacid'];
 if ($operation == 'display' && $_W['isajax']) {
+    //$payno = 'CZ'. date('YmdHis') . random(6, true);
+
     $set = m('common')->getSysset(array(
         'shop',
         'pay',
@@ -65,6 +67,32 @@ if ($operation == 'display' && $_W['isajax']) {
         }
     }
 
+    $app_alipay = array(
+        'success' => false
+    );
+    if (isset($set['pay']) && $set['pay']['app_alipay'] == 1) {
+        load()->model('payment');
+        $setting = uni_setting($_W['uniacid'], array(
+            'payment'
+        ));
+        if (is_array($setting['payment']['ping']) && $setting['payment']['ping']['switch']) {
+            $app_alipay['success'] = true;
+        }
+    }
+
+    $app_wechat = array(
+        'success' => false
+    );
+    if (isset($set['pay']) && $set['pay']['app_weixin'] == 1) {
+        load()->model('payment');
+        $setting = uni_setting($_W['uniacid'], array(
+            'payment'
+        ));
+        if (is_array($setting['payment']['ping']) && $setting['payment']['ping']['switch']) {
+            $app_wechat['success'] = true;
+        }
+    }
+
     $pluginy = p('yunpay');
     $yunpay = array(
         'success' => false
@@ -83,8 +111,11 @@ if ($operation == 'display' && $_W['isajax']) {
         'isweixin' => is_weixin(),
         'wechat' => $wechat,
         'alipay' => $alipay,
+        'app_wechat' => $app_wechat,
+        'app_alipay' => $app_alipay,
         'credit' => $credit,
-        'yunpay' => $yunpay
+        'yunpay' => $yunpay,
+        'payno' => $logno
     ));
 } else if ($operation == 'recharge' && $_W['ispost']) {
     $logid = intval($_GPC['logid']);
@@ -102,7 +133,8 @@ if ($operation == 'display' && $_W['isajax']) {
     if (!in_array($type, array(
         'weixin',
         'alipay',
-        'yunpay'
+        'yunpay',
+        'ping'
     ))) {
         show_json(0, '未找到支付方式');
     }
@@ -168,6 +200,8 @@ if ($operation == 'display' && $_W['isajax']) {
     } else if ($type == 'alipay') {
         show_json(1);
     } else if ($type == 'yunpay') {
+        show_json(1);
+    } else if ($type == 'ping') {
         show_json(1);
     }
 } else if ($operation == 'complete' && $_W['ispost']) {

@@ -46,7 +46,17 @@ class Sz_DYi_Message
                 }
             } else {
                 $content = $msg;
+            };
+
+        /**
+         * app消息通知
+         */
+            if (is_app()) {
+                pdo_insert('sz_yi_message',array('openid'=>$openid,'title'=>$msg['first']['value'],
+                    'contents'=>$content));
+                sent_message([(string)$openid],$msg['first']['value']);
             }
+
             if (!empty($url)) {
                 $content .= "<a href='{$url}'>点击查看详情</a>";
             }

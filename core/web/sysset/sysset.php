@@ -168,16 +168,28 @@ if (checksubmit()) {
         }
         plog('sysset.save.trade', '修改系统设置-交易设置');
     } elseif ($op == 'pay') {
-	
+
         $pluginy = p('yunpay');
         if($pluginy){
             $pay = $set['pay']['yunpay'];
         }
+
+        $pluginapp = p('app');
+        if($pluginapp){
+            $app_weixin = $set['pay']['app_weixin'];
+            $app_alipay = $set['pay']['app_alipay'];
+        }
+
         $set['pay'] = is_array($_GPC['pay']) ? $_GPC['pay'] : array();
         if($pluginy){
             $set['pay']['yunpay'] = $pay;
         }
-		
+
+        if($pluginapp){
+            $set['pay']['app_weixin'] = $app_weixin;
+            $set['pay']['app_alipay'] = $app_alipay;
+        }
+
         if ($_FILES['weixin_cert_file']['name']) {
             $sec['cert'] = upload_cert('weixin_cert_file');
         }

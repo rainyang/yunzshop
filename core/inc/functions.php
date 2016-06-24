@@ -699,3 +699,33 @@ function tpl_form_field_category_level2($name, $parents, $children, $parentid, $
     ';
     return $html;
 }
+
+/**
+ * 推送消息
+ *
+ * @param $customer_id_array
+ * @param $message
+ * @return array
+ */
+function sent_message($customer_id_array,$message){
+    $customer_id_array_str = json_encode($customer_id_array,JSON_UNESCAPED_UNICODE);
+    $post_data = '{"from_peer": "58",
+                "to_peers": '.$customer_id_array_str.',
+                "message": "{\"_lctype\":-1,\"_lctext\":\"'.$message.'\", \"_lcattrs\":{ \"clientId\":\"58\", \"clientName\":\"商城助手\", \"clientIcon\":\"http://192.168.1.108/image/icon.png\" }}"
+                , "conv_id": "5721da8b71cfe4006b3f362b", "transient": false}';
+    $data = json_decode($post_data,true);
+    $lean_push = new LeanCloud\LeanMessage($data);
+    $response = $lean_push->send();
+    return $response;
+}
+
+function is_app()
+{
+    $agent = strtolower($_SERVER['HTTP_USER_AGENT']);
+    $yunzhong = (strpos($agent, 'yunzhong')) ? true : false;
+    if($yunzhong) {
+        return true;
+    }
+
+    return false;
+}

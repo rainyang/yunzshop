@@ -147,6 +147,15 @@ class Sz_DYi_User
                     return $userinfo;
                 }
             }
+        } elseif (is_app() && $_GPC["p"] == 'index' && $_GPC["do"] == 'shop') {
+            $openid = $this->isLogin();
+            $userinfo = array(
+                'openid' => $openid,
+                //'nickname' => '小萝莉',
+                'headimgurl' => '',
+            );
+
+            return $userinfo;
         }
     }
 
