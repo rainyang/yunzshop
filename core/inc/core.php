@@ -377,6 +377,8 @@ class Core extends WeModuleSite
             m('cache')->set('template_shop', $_W['template']);
         }
 
+        //print_r($_SERVER);exit;
+
         $tmplateType = (isMobile()) ? 'mobile' : 'pc';
         $set = m('common')->getSysset('shop');
         if (strstr($_SERVER['REQUEST_URI'], 'app')) {
