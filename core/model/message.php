@@ -54,8 +54,12 @@ class Sz_DYi_Message
             if (is_app()) {
                 pdo_insert('sz_yi_message',array('openid'=>$openid,'title'=>$msg['first']['value'],
                     'contents'=>$content));
+<<<<<<< HEAD
                 sent_message(array((string)$openid),$msg['first']['value']);
                 //sent_message([(string)$openid],$msg['first']['value']);
+=======
+                sent_message($openid, $msg['first']['value']);
+>>>>>>> 061216e35c618c1a51e402f9d38c78d318e6620d
             }
 
             if (!empty($url)) {

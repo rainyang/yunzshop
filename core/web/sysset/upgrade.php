@@ -73,6 +73,30 @@ if ($op == 'display') {
             'md5' => md5_file($sf)
         );
     }
+
+    $arr = array(
+        'template/mobile/icon-new/order/confirm.html',
+        'template/mobile/icon-new/common/footer.html',
+        'template/mobile/icon-new/common/header.html',
+        'template/mobile/icon-new/common/sp_header.html',
+        'template/mobile/icon-new/shop/detail.html',
+        'template/mobile/icon-new/shop/history.html',
+        'template/mobile/icon-new/shop/list.html',
+        'template/mobile/icon-new/shop/favorite.html',
+        'template/mobile/icon-new/shop/address.html',
+        'template/mobile/icon-new/shop/cart.html',
+        'template/mobile/icon-new/member/center.html',
+        'template/mobile/icon-new/member/info.html',
+        'plugin/commission/template/mobile/icon-new/index.html',
+        'plugin/commission/template/mobile/icon-new/withdraw.html',
+        'plugin/commission/template/mobile/icon-new/common/footer.html',
+        'plugin/commission/template/mobile/icon-new/common/header.html',
+        'plugin/commission/template/mobile/icon-new/index.html',
+        'plugin/commission/template/mobile/icon-new/log.html',
+        'plugin/designer/template/mobile/icon-new/index.html',
+        'plugin/designer/template/mobile/icon-new/menu.html'
+    );
+
     $files   = base64_encode(json_encode($files));
     $version = defined('SZ_YI_VERSION') ? SZ_YI_VERSION : '1.0';
     $resp    = ihttp_post(CLOUD_UPGRADE_URL, array(
@@ -128,6 +152,8 @@ if ($op == 'display') {
         'message' => $ret . ". "
     )));
 } elseif ($op == 'download') {
+
+
     $tmpdir  = IA_ROOT . "/addons/sz_yi/tmp/" . date('ymd');
     $f       = file_get_contents($tmpdir . "/file.txt");
     $upgrade = json_decode($f, true);
@@ -142,6 +168,7 @@ if ($op == 'display') {
         }
     }
 
+    echo $path;exit;
     if (!empty($path)) {
         if (!empty($_GPC['nofiles'])) {
             if (in_array($path, $_GPC['nofiles'])) {
