@@ -13,6 +13,7 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
+
 class Core extends WeModuleSite
 {
 
@@ -372,8 +373,10 @@ class Core extends WeModuleSite
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
         global $_W;
-	m('cache')->set('template_shop', $_W['template']);
-	
+        if (is_app()) {
+            m('cache')->set('template_shop', $_W['template']);
+        }
+
         $tmplateType = (isMobile()) ? 'mobile' : 'pc';
         $set = m('common')->getSysset('shop');
         if (strstr($_SERVER['REQUEST_URI'], 'app')) {
