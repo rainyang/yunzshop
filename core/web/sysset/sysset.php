@@ -219,6 +219,7 @@ if (checksubmit()) {
         $shop                     = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['levelname'] = trim($shop['levelname']);
         $set['shop']['levelurl']  = trim($shop['levelurl']);
+        $set['shop']['leveltype']  = trim($shop['leveltype']);
         plog('sysset.save.member', '修改系统设置-会员设置');
         $set['shop']['isbindmobile']   = intval($shop['isbindmobile']);
         $set['shop']['isreferrer']   = intval($shop['isreferrer']);
