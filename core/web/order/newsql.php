@@ -653,6 +653,20 @@ if(pdo_tableexists('sz_yi_return_log')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_return_log')." ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`);");
 }
 
+
+//添加全返记录表 2016-06-14
+pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_return_log')." (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL,
+  `mid` int(11) NOT NULL,
+  `openid` varchar(255) NOT NULL,
+  `money` decimal(10,2) NOT NULL,
+  `status` tinyint(2) NOT NULL DEFAULT '0',
+  `returntype` tinyint(2) NOT NULL DEFAULT '0',
+  `create_time` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
+
 //app 首页banner表 2016-6-21
 pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_banner')." (
   `id` int(11) NOT NULL,
@@ -676,6 +690,7 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_message')." (
   `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '日期',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+
 
 //app 系统推送消息表 2016-6-21
 pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_push')." (
