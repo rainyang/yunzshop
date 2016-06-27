@@ -382,15 +382,13 @@ class Sz_DYi_Notice
                         "color" => "#4a5077"
                     )
                 );
-                if (!empty($tm['new'])) {
-                    m('message')->sendTplNotice($store_openid, $tm['new'], $msg, '', $account);
-                } else {
-                    m('message')->sendCustomNotice($store_openid, $msg, '', $account);
-                }
+
+                m('message')->sendCustomNotice($store_openid, $msg, '', $account);
+                
                 foreach ($store_waiter as  $value) {
                     $waiter_openid = pdo_fetchcolumn(" select openid from ".tablename('sz_yi_member')." where id = ".$value['member_id']);
                     
-                        m('message')->sendCustomNotice($waiter_openid, $msg, '', $account);
+                    m('message')->sendCustomNotice($waiter_openid, $msg, '', $account);
                       
                 }
             }
@@ -437,6 +435,7 @@ class Sz_DYi_Notice
                         "color" => "#4a5077"
                     )
                 ); 
+                m('message')->sendCustomNotice($openid, $msg, $detailurl);
             }else{
                 $msg = array(
                     'first' => array(
@@ -468,13 +467,14 @@ class Sz_DYi_Notice
                         "color" => "#4a5077"
                     )
                 );
+                if (!empty($tm['submit']) && empty($usernotice['submit'])) {
+                    m('message')->sendTplNotice($openid, $tm['submit'], $msg, $detailurl);
+                } else if (empty($usernotice['submit'])) {
+                    m('message')->sendCustomNotice($openid, $msg, $detailurl);
+                }
             }
             
-            if (!empty($tm['submit']) && empty($usernotice['submit'])) {
-                m('message')->sendTplNotice($openid, $tm['submit'], $msg, $detailurl);
-            } else if (empty($usernotice['submit'])) {
-                m('message')->sendCustomNotice($openid, $msg, $detailurl);
-            }
+
         } else if ($order['status'] == 1) {
             $newtype = explode(',', $tm['newtype']);
             if ($tm['newtype'] == 1 || (is_array($newtype) && in_array(1, $newtype))) {
@@ -553,6 +553,11 @@ class Sz_DYi_Notice
                         "color" => "#4a5077"
                     ),
                     'keyword4' => array(
+                        'title' => '支付时间',
+                        'value' => date('Y-m-d H:i:s', $order['paytime']),
+                        "color" => "#4a5077"
+                    ),
+                    'keyword5' => array(
                         'title' => '金额',
                         'value' => '￥' . $order['price'] . '元',
                         "color" => "#4a5077"
@@ -562,15 +567,13 @@ class Sz_DYi_Notice
                         "color" => "#4a5077"
                     )
                 );
-                if (!empty($tm['new'])) {
-                    m('message')->sendTplNotice($store_openid, $tm['new'], $msg, '', $account);
-                } else {
-                    m('message')->sendCustomNotice($store_openid, $msg, '', $account);
+            
+                m('message')->sendCustomNotice($store_openid, $msg, '', $account);
                 }
                 foreach ($store_waiter as  $value) {
                     $waiter_openid = pdo_fetchcolumn(" select openid from ".tablename('sz_yi_member')." where id = ".$value['member_id']);
                     
-                        m('message')->sendCustomNotice($waiter_openid, $msg, '', $account);
+                    m('message')->sendCustomNotice($waiter_openid, $msg, '', $account);
                       
                 }
             }else{
@@ -951,24 +954,27 @@ class Sz_DYi_Notice
                             "color" => "#4a5077"
                         ),
                         'keyword4' => array(
+                            'title' => '支付时间',
+                            'value' => date('Y-m-d H:i:s', $order['paytime']),
+                            "color" => "#4a5077"
+                        ),
+                        'keyword5' => array(
                             'title' => '金额',
                             'value' => '￥' . $order['price'] . '元',
                             "color" => "#4a5077"
                         ),
                         'remark' => array(
-                            'value' => $remark1,
+                            'value' => $remark,
                             "color" => "#4a5077"
                         )
                     );
-                    if (!empty($tm['new'])) {
-                        m('message')->sendTplNotice($store_openid, $tm['new'], $msg1, '', $account);
-                    } else {
-                        m('message')->sendCustomNotice($store_openid, $msg1, '', $account);
-                    }
+                    m('message')->sendCustomNotice($openid, $msg, $detailurl);
+                    m('message')->sendCustomNotice($store_openid, $msg1, '', $account);
+                    
                     foreach ($store_waiter as  $value) {
                         $waiter_openid = pdo_fetchcolumn(" select openid from ".tablename('sz_yi_member')." where id = ".$value['member_id']);
                         
-                            m('message')->sendCustomNotice($waiter_openid, $msg1, '', $account);
+                        m('message')->sendCustomNotice($waiter_openid, $msg1, '', $account);
                           
                     }
                 }else{
@@ -1008,13 +1014,14 @@ class Sz_DYi_Notice
                             "color" => "#4a5077"
                         )
                     );
+                    if (!empty($tm['finish']) && empty($usernotice['finish'])) {
+                        m('message')->sendTplNotice($openid, $tm['finish'], $msg, $detailurl);
+                    } else if (empty($usernotice['finish'])) {
+                        m('message')->sendCustomNotice($openid, $msg, $detailurl);
+                    }
                 }
                 
-                if (!empty($tm['finish']) && empty($usernotice['finish'])) {
-                    m('message')->sendTplNotice($openid, $tm['finish'], $msg, $detailurl);
-                } else if (empty($usernotice['finish'])) {
-                    m('message')->sendCustomNotice($openid, $msg, $detailurl);
-                }
+  
                 $first = "买家购买的商品已经确认收货!";
                 if ($order['isverify'] == 1) {
                     $first = "买家购买的商品已经确认核销!";
