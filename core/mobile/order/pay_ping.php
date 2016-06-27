@@ -18,9 +18,7 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 $uniacid        = $_W['uniacid'];
 
-$setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
-    ':uniacid' => $_W['uniacid']
-));
+$setdata = m("cache")->get("sysset");
 
 $set     = unserialize($setdata['sets']);
 
