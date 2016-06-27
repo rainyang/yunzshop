@@ -318,7 +318,7 @@ if (!class_exists('BonusModel')) {
             $day_times        = intval($set['settledays']) * 3600 * 24;
         	if (in_array('ok', $options)) {
 	            //可提现佣金
-	            $sql = "select sum(o.price) as money from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.createtime > {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
+	            $sql = "select sum(o.price) as money from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
 	            $commission_ok = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
 	        }
 
@@ -388,7 +388,7 @@ if (!class_exists('BonusModel')) {
 
 	        if (in_array('ok', $options)) {
 	            //可提现佣金
-	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.createtime > {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
+	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.finishtime > {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
 	            $commission_ok = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
 	        }
 
@@ -410,13 +410,13 @@ if (!class_exists('BonusModel')) {
 
 	        if (in_array('apply', $options)) {
 	            //待审核佣金
-	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=1 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.createtime <= {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
+	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=1 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.finishtime <= {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
 	            $commission_apply = pdo_fetchcolumn($sql);
 	        }
 
 	        if (in_array('check', $options)) {
 	            //待打款佣金
-	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=2 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.createtime <= {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
+	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=2 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.finishtime <= {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
 	            $commission_check = pdo_fetchcolumn($sql);
 	        }
 
@@ -427,7 +427,7 @@ if (!class_exists('BonusModel')) {
 	        }
 
 	        if (in_array('lock', $options)) {
-	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=1 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.createtime <= {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
+	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=1 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.finishtime <= {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
 	            $commission_lock = pdo_fetchcolumn($sql);
 	        }
 	        //Author:ym Date:2016-04-08 Content:自购完成订单
@@ -767,7 +767,7 @@ if (!class_exists('BonusModel')) {
 				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
 				$message = str_replace('[金额]', $data['commission'], $message);
 				$message = str_replace('[打款方式]', $data['type'], $message);
-				$message = str_replace('[代理等级]', $data['levename'], $message);
+				$message = str_replace('[代理等级]', $data['levelname'], $message);
 				$msg = array('keyword1' => array('value' => !empty($tm['bonus_paytitle']) ? $tm['bonus_paytitle'] : '代理分红打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
 				if (!empty($templateid)) {
 					m('message')->sendTplNotice($openid, $templateid, $msg);
@@ -780,7 +780,7 @@ if (!class_exists('BonusModel')) {
 				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
 				$message = str_replace('[金额]', $data['commission'], $message);
 				$message = str_replace('[打款方式]', $data['type'], $message);
-				$message = str_replace('[代理等级]', $data['levename'], $message);
+				$message = str_replace('[代理等级]', $data['levelname'], $message);
 				$msg = array('keyword1' => array('value' => !empty($tm['bonus_global_paytitle']) ? $tm['bonus_global_paytitle'] : '全球分红打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
 				if (!empty($templateid)) {
 					m('message')->sendTplNotice($openid, $templateid, $msg);
@@ -833,20 +833,22 @@ if (!class_exists('BonusModel')) {
 			$islog          = false;
 			$set = $this->getSet();
 			$setshop = m('common')->getSysset('shop');
+			$day_times        = intval($set['settledays']) * 3600 * 24;
 			$daytime 		= strtotime(date("Y-m-d 00:00:00"));
 			if(empty($set['sendmonth'])){
-				$endtime = $daytime;
+				$endtime = $daytime-$day_times;
 				$sendtime = strtotime(date("Y-m-d ".$set['senddaytime'].":00:00"));
 			}else if($set['sendmonth'] == 1){
-				$endtime = date('Y-m-d', mktime(0,0,0,date('m')-1,1,date('Y')));
+				$now_endtime = date('Y-m-d', mktime(0,0,0,date('m')-1,1,date('Y')));
+				$endtime = $now_endtime - $day_times;
 				$interval_day = empty($set['interval_day']) ? 1 : 1+$set['interval_day'];
 				$sendtime = strtotime(date("Y-".date('m')."-".$interval_day." ".$set['senddaytime'].":00:00"));
 			}
-			if($sendtime > $time){
+			if($sendtime < $time){
 				return false;
 			}
 			$day_times      = intval($set['settledays']) * 3600 * 24;
-			$sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times}) and o.finishtime < {$endtime} ORDER BY o.finishtime DESC,o.status DESC";
+			$sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and o.finishtime < {$endtime}";
 			$bonus_member = pdo_fetchall($sql);
 			$totalmoney = 0;
 			if(empty($bonus_member)){
@@ -930,17 +932,19 @@ if (!class_exists('BonusModel')) {
 			$day_times        = intval($set['settledays']) * 3600 * 24;
 			$daytime = strtotime(date("Y-m-d 00:00:00"));
 			if(empty($set['sendmonth'])){
-				$stattime = $daytime - 86400;
-				$endtime = $daytime;
+				$stattime = $daytime - $day_times - 86400;
+				$endtime = $daytime - $day_times;
 				$sendtime = strtotime(date("Y-m-d ".$set['senddaytime'].":00:00"));
 			}else if($set['sendmonth'] == 1){
-				$stattime = mktime(0, 0, 0, date('m') - 1, 1, date('Y'));
-    			$endtime = mktime(0, 0, 0, date('m'), 1, date('Y'));
+				$now_stattime = mktime(0, 0, 0, date('m') - 1, 1, date('Y'));
+				$stattime = $now_stattime - $day_times;
+    			$now_endtime = mktime(0, 0, 0, date('m'), 1, date('Y'));
+    			$endtime = $now_endtime - $day_times;
 				$interval_ady = empty($set['interval_day']) ? 1 : 1+$set['interval_day'];
 				$sendtime = strtotime(date("Y-".date('m')."-".$interval_day." ".$set['senddaytime'].":00:00"));
 			}
 
-			if($sendtime > $time){
+			if($sendtime < $time){
 				return false;
 			}
 			
