@@ -45,6 +45,30 @@
 						</div>-->
 
 						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">LeanCloud App ID</label>
+							<div class="col-sm-9 col-xs-12">
+								<input type="text" name="leancloud[id]" class="form-control" value="{$set['app']['base']['leancloud']['id']}" autocomplete="off">
+								<span class="help-block">每个 app 有一个唯一 ID，不可变更</span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">LeanCloud App Key </label>
+							<div class="col-sm-9 col-xs-12">
+								<input type="text" name="leancloud[key]" class="form-control" value="{$set['app']['base']['leancloud']['key']}" autocomplete="off">
+								<span class="help-block"></span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">LeanCloud Master Key</label>
+							<div class="col-sm-9 col-xs-12">
+								<input type="text" name="leancloud[master]" class="form-control" value="{$set['app']['base']['leancloud']['master']}" autocomplete="off">
+								<span class="help-block"></span>
+							</div>
+						</div>
+
+						<div class="form-group">
 							<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
 							<div class="col-sm-9 col-xs-12">
 								<input type="submit" name="submit" value="保存设置" class="btn btn-primary" data-original-title="" title="">

@@ -156,7 +156,8 @@ class Sz_DYi_Excel
         }
         $excel->getActiveSheet()->setTitle($params['title']);
         $filename = $params['title'] . '-' . date('Y-m-d H:i', time());
-        header('Content-Type: application/octet-stream');
+        header('Content-Type: application/vnd.ms-excel');
+        //header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
         header('Cache-Control: max-age=0');
         $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel5');
