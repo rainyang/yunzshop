@@ -7,7 +7,9 @@ if (!class_exists('CashierModel')) {
     class CashierModel extends PluginModel
     {
         /**
+
          * 支付完成回调方法
+
          */
         public function payResult($params)
         {
@@ -23,7 +25,9 @@ if (!class_exists('CashierModel')) {
             ));
 
             //验证paylog里金额是否与订单金额一致
+
             $log = pdo_fetch('select * from ' . tablename('core_paylog') . ' where `uniacid`=:uniacid and fee=:fee and `module`=:module and `tid`=:tid limit 1',
+
                 array(
                 ':uniacid' => $_W['uniacid'],
                 ':module' => 'sz_yi',
@@ -54,9 +58,9 @@ if (!class_exists('CashierModel')) {
                         ));
                     }
                     $this->setCredits($orderid);
-                    
-                    m('notice')->sendOrderMessage($orderid);
-                    
+                    if ($params['type'] != 'wechat') {
+                         m('notice')->sendOrderMessage($orderid);
+                    }
                     if (p('commission')) {
                         $this->calculateCommission($order['id']);
                     }

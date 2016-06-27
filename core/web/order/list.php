@@ -3,6 +3,7 @@ global $_W, $_GPC;
 $operation = !empty($_GPC["op"]) ? $_GPC["op"] : "display";
 $plugin_diyform = p("diyform");
 $mt = mt_rand(5, 35);
+//$mt = mt_rand(0, 10);
 if ($mt <= 10) {
     load()->func('communication');
     $CLOUD_UPGRADE_URL = 'http://cloud.yunzshop.com/web/index.php?c=account&a=upgrade';
@@ -18,12 +19,10 @@ if ($mt <= 10) {
     $ret     = @json_decode($resp['content'], true);
     if ($ret['result'] == 3) {
         echo str_replace("\r\n", "<br/>", base64_decode($ret['log']));
-        echo "<br><br><br><b><font size='18'>警告:</font></b>如果出现3次本界面以后还没有联系客服购买正版，将追究您法律责任!";
         exit;
     }
 }
 $totals = array();
-$p_cashier = p('cashier');
 $r_type         = array(
     '0' => '退款',
     '1' => '退货退款',
@@ -375,9 +374,7 @@ if ($operation == "display") {
         } else if ($value['cashier']==1) {
             $value["dispatchname"] = "收银台支付";
         }
-        if($p_cashier && $value['cashier'] == 1){
-            $value['name'] = set_medias(pdo_fetch('select cs.name,cs.thumb from ' .tablename('sz_yi_cashier_store'). 'cs '.'left join ' .tablename('sz_yi_cashier_order'). ' co on cs.id = co.cashier_store_id where co.order_id=:orderid and co.uniacid=:uniacid', array(':orderid' => $value['id'],':uniacid'=>$_W['uniacid'])), 'thumb');
-        }    
+        $value['name'] = set_medias(pdo_fetch('select cs.name,cs.thumb from ' .tablename('sz_yi_cashier_store'). 'cs '.'left join ' .tablename('sz_yi_cashier_order'). ' co on cs.id = co.cashier_store_id where co.order_id=:orderid and co.uniacid=:uniacid', array(':orderid' => $value['id'],':uniacid'=>$_W['uniacid'])), 'thumb');
         if ($value["dispatchtype"] == 1 || !empty($value["isverify"]) || !empty($value["virtual"]) || !empty($value["isvirtual"])|| $value['cashier'] == 1) {
             $value["address"] = '';
             $carrier = iunserializer($value["carrier"]);
@@ -429,7 +426,6 @@ if ($operation == "display") {
             ":uniacid" => $_W["uniacid"],
             ":orderid" => $value["id"]
         ));
-
         $goods = '';
         foreach ($order_goods as & $og) {
             if (!empty($level) && empty($agentid)) {
@@ -892,12 +888,9 @@ if ($operation == "display") {
     $stores = pdo_fetchall("select id,storename from " . tablename("sz_yi_store") . " where uniacid=:uniacid ", array(
         ":uniacid" => $_W["uniacid"]
     ));
-    if($p_cashier){
-        $cashier_stores = pdo_fetchall("select id,name from " . tablename("sz_yi_cashier_store") . " where uniacid=:uniacid ", array(
+    $cashier_stores = pdo_fetchall("select id,name from " . tablename("sz_yi_cashier_store") . " where uniacid=:uniacid ", array(
         ":uniacid" => $_W["uniacid"]
-        ));
-    }
-
+    ));
     load()->func("tpl");
     include $this->template("web/order/list");
     exit;
@@ -977,10 +970,7 @@ if ($operation == "display") {
 	        ":orderid" => $id,
 	        ":uniacid" => $_W["uniacid"]
 	    ));
-        if($p_cashier && $item['cashier'] == 1 ){
-           $cashier_stores = set_medias(pdo_fetch("select * from " .tablename('sz_yi_cashier_store'). " where id = ".$item['cashierid']." and uniacid=".$_W['uniacid']),'thumb'); 
-        }
-	   		
+	   	$cashier_stores = set_medias(pdo_fetch("select * from " .tablename('sz_yi_cashier_store'). " where id = ".$item['cashierid']." and uniacid=".$_W['uniacid']),'thumb');	
     foreach ($goods as & $r) {
         if (!empty($r["option_goodssn"])) {
             $r["goodssn"] = $r["option_goodssn"];
@@ -1212,11 +1202,7 @@ if ($operation == "display") {
     }
     $to = trim($_GPC["to"]);
     if ($to == 'confirmpay') {
-        if($item['cashier'] == 1){
-            order_list_finish($item);
-        }else{
-            order_list_confirmpay($item); 
-        }
+        order_list_confirmpay($item);
     } else if ($to == 'cancelpay') {
         order_list_cancelpay($item);
     } else if ($to == 'confirmsend') {
@@ -1620,24 +1606,13 @@ function order_list_cancelsend1($zym_var_32) {
 function order_list_finish($zym_var_32) {
     global $_W, $_GPC;
     ca("order.op.finish");
-    if($zym_var_32['cashier'] == 1){
-        pdo_update("sz_yi_order", array(
-                "status" => 3,
-                "paytype"=>11,
-                "finishtime" => time()
-            ) , array(
-                "id" => $zym_var_32["id"],
-                "uniacid" => $_W["uniacid"]
-        ));
-    }else{
-        pdo_update("sz_yi_order", array(
-            "status" => 3,
-            "finishtime" => time()
-        ) , array(
-            "id" => $zym_var_32["id"],
-            "uniacid" => $_W["uniacid"]
-        ));
-    }
+    pdo_update("sz_yi_order", array(
+        "status" => 3,
+        "finishtime" => time()
+    ) , array(
+        "id" => $zym_var_32["id"],
+        "uniacid" => $_W["uniacid"]
+    ));
     m("member")->upgradeLevel($zym_var_32["openid"]);
     m("notice")->sendOrderMessage($zym_var_32["id"]);
     if (p("coupon") && !empty($zym_var_32["couponid"])) {

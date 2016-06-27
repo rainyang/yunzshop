@@ -13,6 +13,7 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
+
 class Core extends WeModuleSite
 {
 
@@ -61,7 +62,12 @@ class Core extends WeModuleSite
 
             require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
 
-            LeanCloud\LeanClient::initialize("egEtMTe0ky9XbUd57y5rKEAX-gzGzoHsz", "ca0OTkPQUdrXlPTGrospCY2L", "4HFoIDCAwaeOUSedwOISMUrj,master");
+            $setdata = m("cache")->get("sysset");
+            $set     = unserialize($setdata['sets']);
+
+            $app = $set['app']['base'];
+
+            LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'].",master");
         }
     }
 
@@ -372,8 +378,12 @@ class Core extends WeModuleSite
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
         global $_W;
-	m('cache')->set('template_shop', $_W['template']);
-	
+        if (is_app()) {
+            m('cache')->set('template_shop', $_W['template']);
+        }
+
+        //print_r($_SERVER);exit;
+
         $tmplateType = (isMobile()) ? 'mobile' : 'pc';
         $set = m('common')->getSysset('shop');
         if (strstr($_SERVER['REQUEST_URI'], 'app')) {
