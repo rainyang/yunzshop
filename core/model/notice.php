@@ -569,7 +569,6 @@ class Sz_DYi_Notice
                 );
             
                 m('message')->sendCustomNotice($store_openid, $msg, '', $account);
-                }
                 foreach ($store_waiter as  $value) {
                     $waiter_openid = pdo_fetchcolumn(" select openid from ".tablename('sz_yi_member')." where id = ".$value['member_id']);
                     
@@ -711,7 +710,7 @@ class Sz_DYi_Notice
                     m('message')->sendCustomNotice($openid, $msg, $detailurl);
                 }
             }
-        } else if ($order['status'] == 2) {
+        } elseif ($order['status'] == 2) {
             if (empty($order['dispatchtype'])) {
                 $address = pdo_fetch('select * from ' . tablename('sz_yi_member_address') . ' where id=:id and uniacid=:uniacid limit 1 ', array(
                     ":uniacid" => $_W['uniacid'],
@@ -756,7 +755,7 @@ class Sz_DYi_Notice
                     m('message')->sendCustomNotice($openid, $msg, $detailurl);
                 }
             }
-        } else if ($order['status'] == 3) {
+        } elseif ($order['status'] == 3) {
             $pv = p('virtual');
             if ($pv && !empty($order['virtual'])) {
                 $pvset       = $pv->getSet();
@@ -1137,6 +1136,7 @@ class Sz_DYi_Notice
             }
         }
     }
+
     public function sendMemberUpgradeMessage($openid = '', $oldlevel = null, $level = null)
     {
         global $_W, $_GPC;
