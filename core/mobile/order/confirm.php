@@ -1005,7 +1005,7 @@ if ($_W['isajax']) {
                 $redprice = ($rprice[0] * $data['marketprice']) / 100;
             }
             $redprice = $redprice * $goodstotal;
-            $redpriceall = $redprice;
+            $redpriceall += $redprice;
             $gprice = $data['marketprice'] * $goodstotal;
             $goodsprice += $gprice;
             $discounts = json_decode($data['discounts'], true);
@@ -1275,6 +1275,9 @@ if ($_W['isajax']) {
         $carriers = is_array($carrier) ? iserializer($carrier) : iserializer(array());
         if ($totalprice <= 0) {
             $totalprice = 0;
+        }
+        if ($redpriceall > 200) {
+            $redpriceall = 200;
         }
         $order    = array(
             'uniacid' => $uniacid,
