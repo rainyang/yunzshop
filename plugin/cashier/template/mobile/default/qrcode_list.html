@@ -33,10 +33,17 @@
             <ul>
             {loop $store $row}
                <li>
+               {if empty($row['mid'])}
                    <a href="{php echo $this->createPluginMobileUrl('cashier/store_set',array('id'=>$row['id']))}">
                         <img src="{$row['thumb']}">
                         {$row['name']}
                    </a>
+               {else}
+                   <a href="{php echo $this->createPluginMobileUrl('cashier/create_qrcode',array('id'=>$row['id']))}">
+                        <img src="{$row['thumb']}">
+                        {$row['name']}
+                   </a>
+               {/if}    
                </li>
             {/loop}  
             </ul>
