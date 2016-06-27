@@ -66,7 +66,7 @@ class Core extends WeModuleSite
             $set     = unserialize($setdata['sets']);
 
             $app = $set['app']['base'];
-            
+
             LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'].",master");
         }
     }

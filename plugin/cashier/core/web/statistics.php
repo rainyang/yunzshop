@@ -33,27 +33,41 @@ if ($operation == 'display') {
 
     $tidyList = array();
     foreach ($list as &$row) {
+
+    	
+
         $cashier_order = pdo_fetchall('SELECT order_id FROM ' . tablename('sz_yi_cashier_order') . ' WHERE uniacid = :uniacid AND cashier_store_id = :cashier_store_id', array(':uniacid' => $_W['uniacid'], ':cashier_store_id' => $row['id']));
         $orderids = array();
         foreach ($cashier_order as $order) {
-            $orderids[] = $order['order_id']; 
+        	$orderstatus = pdo_fetchall("select status from ".tablename('sz_yi_order')." where id =".$order['order_id']);
+        	foreach($orderstatus as $status){
+        		if($status['status'] == 3){
+					$orderids[] = $order['order_id'];
+        		}
+        	}
+             
         }
-        $row['totalprices'] = 0;
+        
         if ($orderids) {
             // 累计支付金额
             $totalprices = pdo_fetch('SELECT SUM(price) AS tprice FROM ' . tablename('sz_yi_order') . ' WHERE uniacid = ' .$_W['uniacid']." and cashier = 1 and status = '3'  AND id IN (" . implode(',', $orderids) . ")");
             $row['totalprices'] = $totalprices['tprice'];
 
-            $totalprices = $row['totalprices']*(100-$row['settle_platform'])/100;
+            
 
             $realtotalprices = pdo_fetch('SELECT SUM(realprice) AS tprice FROM ' . tablename('sz_yi_order') . ' WHERE uniacid = ' .$_W['uniacid']." and cashier = 1 and status = '3'  AND id IN (" . implode(',', $orderids) . ")");
             $row['realtotalprices'] = $realtotalprices['tprice'];
-
-            $realtotalprices = $row['realtotalprices'];
+         
+        }else{
+        	$row['totalprices'] = 0;
+        	$row['realtotalprices'] = 0;
         }
 
         $row['total_commission'] = 0;
         $row['total_credits']    = 0;
+        $row['commission1_total'] = 0;
+        $row['commission2_total'] = 0;
+        $row['commission3_total'] = 0;
         foreach ($orderids as $orderid) {
             $commissions=pdo_fetch('select * from '.tablename('sz_yi_order_goods').' where orderid='.$orderid . ' and uniacid='.$_W['uniacid']);
 
@@ -69,13 +83,13 @@ if ($operation == 'display') {
             }
         }
         // 已经提现成功或正申请提现的金额
-        $row['total_withdraw']    = 0;
-        $row['total_no_withdraw'] = $realtotalprices;
+        
+        $row['total_no_withdraw'] = !empty($row['realtotalprices']) ? $row['realtotalprices'] : 0;
         $totalwithdraw = pdo_fetch('SELECT SUM(money) as total_money FROM ' . tablename('sz_yi_cashier_withdraw') . ' WHERE uniacid = ' . $_W['uniacid'] . ' AND cashier_store_id = ' . $row['id'] . ' AND status = 1');
         if ($totalwithdraw) {
-            $row['total_withdraw'] = $totalwithdraw['total_money'];
+            $row['total_withdraw'] = !empty($totalwithdraw['total_money']) ? $totalwithdraw['total_money'] : 0;
             if (!empty($row['total_withdraw'])) {
-                $row['total_no_withdraw'] = number_format($realtotalprices - $row['total_withdraw'], 2);
+                $row['total_no_withdraw'] = number_format($row['realtotalprices'] - $row['total_withdraw'], 2);
             }
         }
         $tidyList[] = $row;

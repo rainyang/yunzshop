@@ -57,6 +57,7 @@ class Sz_DYi_Notice
         $tm   = $set['notice'];
         if(p("cashier") && $order['cashier'] == 1){
             $cashier_stores = pdo_fetch('select * from ' .tablename('sz_yi_cashier_store'). ' where id ='.$order['cashierid']);
+            $store_openid = pdo_fetchcolumn('select openid from ' .tablename('sz_yi_member'). ' where id = '.$cashier_stores['member_id']);
         }
         if ($delRefund) {
 	    $_var_14 = array('0' => "退款", "1" => "退货退款", "2" => "换货");
@@ -297,52 +298,96 @@ class Sz_DYi_Notice
                     }
                 }
             }
-            $remark = "\r\n商品已经下单，请及时备货，谢谢!";
+            if($order['cashier'] == 1){
+				$remark = "\r\n您的收银台有新订单啦!";
+            }else{
+            	$remark = "\r\n商品已经下单，请及时备货，谢谢!";
+            }
+           
             if (!empty($buyerinfo)) {
                 $remark .= "\r\n下单者信息:\n" . $buyerinfo;
             }
-            foreach ($order_goods as $og) {
-                if (!empty($og['noticeopenid'])) {
-                    $noticetype = explode(',', $og['noticetype']);
-                    if (empty($og['noticetype']) || (is_array($noticetype) && in_array(0, $noticetype))) {
-                        $goodstr = $og['title'] . '( ';
-                        if (!empty($og['optiontitle'])) {
-                            $goodstr .= " 规格: " . $og['optiontitle'];
-                        }
-                        $goodstr .= ' 单价: ' . ($og['price'] / $og['total']) . ' 数量: ' . $og['total'] . ' 总价: ' . $og['price'] . "); ";
-                        $msg = array(
-                            'first' => array(
-                                'value' => "商品下单通知!",
-                                "color" => "#4a5077"
-                            ),
-                            'keyword1' => array(
-                                'title' => '时间',
-                                'value' => date('Y-m-d H:i:s', $order['createtime']),
-                                "color" => "#4a5077"
-                            ),
-                            'keyword2' => array(
-                                'title' => '商品名称',
-                                'value' => $goodstr,
-                                "color" => "#4a5077"
-                            ),
-                            'keyword3' => array(
-                                'title' => '订单号',
-                                'value' => $order['ordersn'],
-                                "color" => "#4a5077"
-                            ),
-                            'remark' => array(
-                                'value' => $remark,
-                                "color" => "#4a5077"
-                            )
-                        );
-                        if (!empty($tm['new'])) {
-                            m('message')->sendTplNotice($og['noticeopenid'], $tm['new'], $msg, '', $account);
-                        } else {
-                            m('message')->sendCustomNotice($og['noticeopenid'], $msg, '', $account);
-                        }
-                    }
+            if($order['cashier'] != 1){ 
+	            foreach ($order_goods as $og) {
+	                if (!empty($og['noticeopenid'])) {
+	                    $noticetype = explode(',', $og['noticetype']);
+	                    if (empty($og['noticetype']) || (is_array($noticetype) && in_array(0, $noticetype))) {
+	                        $goodstr = $og['title'] . '( ';
+	                        if (!empty($og['optiontitle'])) {
+	                            $goodstr .= " 规格: " . $og['optiontitle'];
+	                        }
+	                        $goodstr .= ' 单价: ' . ($og['price'] / $og['total']) . ' 数量: ' . $og['total'] . ' 总价: ' . $og['price'] . "); ";
+	                        $msg = array(
+	                            'first' => array(
+	                                'value' => "商品下单通知!",
+	                                "color" => "#4a5077"
+	                            ),
+	                            'keyword1' => array(
+	                                'title' => '时间',
+	                                'value' => date('Y-m-d H:i:s', $order['createtime']),
+	                                "color" => "#4a5077"
+	                            ),
+	                            'keyword2' => array(
+	                                'title' => '商品名称',
+	                                'value' => $goodstr,
+	                                "color" => "#4a5077"
+	                            ),
+	                            'keyword3' => array(
+	                                'title' => '订单号',
+	                                'value' => $order['ordersn'],
+	                                "color" => "#4a5077"
+	                            ),
+	                            'remark' => array(
+	                                'value' => $remark,
+	                                "color" => "#4a5077"
+	                            )
+	                        );
+	                        if (!empty($tm['new'])) {
+	                            m('message')->sendTplNotice($og['noticeopenid'], $tm['new'], $msg, '', $account);
+	                        } else {
+	                            m('message')->sendCustomNotice($og['noticeopenid'], $msg, '', $account);
+	                        }
+	                    }
+	                }
+	            }
+            }else{
+            	$msg = array(
+                    'first' => array(
+                        'value' => "收银台下单通知!",
+                        "color" => "#4a5077"
+                    ),
+                    'keyword1' => array(
+                        'title' => '订单号',
+                        'value' => $order['ordersn'],
+                        "color" => "#4a5077"
+                    ),
+                    'keyword2' => array(
+                        'title' => '店铺',
+                        'value' => $cashier_stores['name'],
+                        "color" => "#4a5077"
+                    ),
+                    'keyword3' => array(
+                        'title' => '下单时间',
+                        'value' => date('Y-m-d H:i:s', $order['createtime']),
+                        "color" => "#4a5077"
+                    ),
+                    'keyword4' => array(
+                        'title' => '金额',
+                        'value' => '￥' . $order['price'] . '元',
+                        "color" => "#4a5077"
+                    ),
+                    'remark' => array(
+                        'value' => $remark,
+                        "color" => "#4a5077"
+                    )
+                );
+                if (!empty($tm['new'])) {
+                    m('message')->sendTplNotice($store_openid, $tm['new'], $msg, '', $account);
+                } else {
+                    m('message')->sendCustomNotice($store_openid, $msg, '', $account);
                 }
             }
+            
             if (!empty($order['addressid'])) {
                 $remark = "\r\n您的订单我们已经收到，支付后我们将尽快配送~~";
             } else if (!empty($order['isverify'])) {
@@ -361,16 +406,21 @@ class Sz_DYi_Notice
                         "color" => "#4a5077"
                     ),
                     'keyword1' => array(
+                        'title' => '订单号',
+                        'value' => $order['ordersn'],
+                        "color" => "#4a5077"
+                    ),
+                    'keyword2' => array(
                         'title' => '店铺',
                         'value' => $cashier_stores['name'],
                         "color" => "#4a5077"
                     ),
-                    'keyword2' => array(
+                    'keyword3' => array(
                         'title' => '下单时间',
                         'value' => date('Y-m-d H:i:s', $order['createtime']),
                         "color" => "#4a5077"
                     ),
-                    'keyword3' => array(
+                    'keyword4' => array(
                         'title' => '金额',
                         'value' => '￥' . $order['price'] . '元',
                         "color" => "#4a5077"
@@ -465,49 +515,93 @@ class Sz_DYi_Notice
                     }
                 }
             }
-            $remark = "\r\n商品已经下单支付，请及时备货，谢谢!";
+            if($order['cashier'] == 1){
+            	$remark = "\r\n收银台订单支付成功通知!";
+            }else{
+            	$remark = "\r\n商品已经下单支付，请及时备货，谢谢!";
+            }
+            
             if (!empty($buyerinfo)) {
                 $remark .= "\r\n购买者信息:\n" . $buyerinfo;
             }
-            foreach ($order_goods as $og) {
-                $noticetype = explode(',', $og['noticetype']);
-                if ($og['noticetype'] == '1' || (is_array($noticetype) && in_array(1, $noticetype))) {
-                    $goodstr = $og['title'] . '( ';
-                    if (!empty($og['optiontitle'])) {
-                        $goodstr .= " 规格: " . $og['optiontitle'];
-                    }
-                    $goodstr .= ' 单价: ' . ($og['price'] / $og['total']) . ' 数量: ' . $og['total'] . ' 总价: ' . $og['price'] . "); ";
-                    $msg = array(
-                        'first' => array(
-                            'value' => "商品下单支付通知!",
-                            "color" => "#4a5077"
-                        ),
-                        'keyword1' => array(
-                            'title' => '时间',
-                            'value' => date('Y-m-d H:i:s', $order['createtime']),
-                            "color" => "#4a5077"
-                        ),
-                        'keyword2' => array(
-                            'title' => '商品名称',
-                            'value' => $goodstr,
-                            "color" => "#4a5077"
-                        ),
-                        'keyword3' => array(
-                            'title' => '订单号',
-                            'value' => $order['ordersn'],
-                            "color" => "#4a5077"
-                        ),
-                        'remark' => array(
-                            'value' => $remark,
-                            "color" => "#4a5077"
-                        )
-                    );
-                    if (!empty($tm['new'])) {
-                        m('message')->sendTplNotice($og['noticeopenid'], $tm['new'], $msg, '', $account);
-                    } else {
-                        m('message')->sendCustomNotice($og['noticeopenid'], $msg, '', $account);
-                    }
+            if($order['cashier'] == 1){
+            	$msg = array(
+                    'first' => array(
+                        'value' => "您收银台的新订单已经支付成功啦!",
+                        "color" => "#4a5077"
+                    ),
+                    'keyword1' => array(
+                        'title' => '订单号',
+                        'value' => $order['ordersn'],
+                        "color" => "#4a5077"
+                    ),
+                    'keyword2' => array(
+                        'title' => '店铺',
+                        'value' => $cashier_stores['name'],
+                        "color" => "#4a5077"
+                    ),
+                    'keyword3' => array(
+                        'title' => '下单时间',
+                        'value' => date('Y-m-d H:i:s', $order['createtime']),
+                        "color" => "#4a5077"
+                    ),
+                    'keyword4' => array(
+                        'title' => '金额',
+                        'value' => '￥' . $order['price'] . '元',
+                        "color" => "#4a5077"
+                    ),
+                    'remark' => array(
+                        'value' => $remark,
+                        "color" => "#4a5077"
+                    )
+                );
+                if (!empty($tm['new'])) {
+                    m('message')->sendTplNotice($store_openid, $tm['new'], $msg, '', $account);
+                } else {
+                    m('message')->sendCustomNotice($store_openid, $msg, '', $account);
                 }
+            }else{
+	            foreach ($order_goods as $og) {
+	                $noticetype = explode(',', $og['noticetype']);
+	                if ($og['noticetype'] == '1' || (is_array($noticetype) && in_array(1, $noticetype))) {
+	                    $goodstr = $og['title'] . '( ';
+	                    if (!empty($og['optiontitle'])) {
+	                        $goodstr .= " 规格: " . $og['optiontitle'];
+	                    }
+	                    $goodstr .= ' 单价: ' . ($og['price'] / $og['total']) . ' 数量: ' . $og['total'] . ' 总价: ' . $og['price'] . "); ";
+	                    $msg = array(
+	                        'first' => array(
+	                            'value' => "商品下单支付通知!",
+	                            "color" => "#4a5077"
+	                        ),
+	                        'keyword1' => array(
+	                            'title' => '时间',
+	                            'value' => date('Y-m-d H:i:s', $order['createtime']),
+	                            "color" => "#4a5077"
+	                        ),
+	                        'keyword2' => array(
+	                            'title' => '商品名称',
+	                            'value' => $goodstr,
+	                            "color" => "#4a5077"
+	                        ),
+	                        'keyword3' => array(
+	                            'title' => '订单号',
+	                            'value' => $order['ordersn'],
+	                            "color" => "#4a5077"
+	                        ),
+	                        'remark' => array(
+	                            'value' => $remark,
+	                            "color" => "#4a5077"
+	                        )
+	                    );
+	                    if (!empty($tm['new'])) {
+	                        m('message')->sendTplNotice($og['noticeopenid'], $tm['new'], $msg, '', $account);
+	                    } else {
+	                        m('message')->sendCustomNotice($og['noticeopenid'], $msg, '', $account);
+	                    }
+	                }
+	            }
+            
             }
             $remark = "\r\n【" . $shop['name'] . "】欢迎您的再次购物！";
             if ($order['isverify']) {
@@ -816,6 +910,48 @@ class Sz_DYi_Notice
                             "color" => "#4a5077"
                         )
                     );
+
+
+
+		            $remark1 = "\r\n收银台订单支付成功通知!";
+
+		            $remark1 .= "\r\n购买者信息:\n" . $buyerinfo;
+		            
+                    $msg1 = array(
+	                    'first' => array(
+	                        'value' => "您收银台的新订单已经支付成功啦!",
+	                        "color" => "#4a5077"
+	                    ),
+	                    'keyword1' => array(
+	                        'title' => '订单号',
+	                        'value' => $order['ordersn'],
+	                        "color" => "#4a5077"
+	                    ),
+	                    'keyword2' => array(
+	                        'title' => '店铺',
+	                        'value' => $cashier_stores['name'],
+	                        "color" => "#4a5077"
+	                    ),
+	                    'keyword3' => array(
+	                        'title' => '下单时间',
+	                        'value' => date('Y-m-d H:i:s', $order['createtime']),
+	                        "color" => "#4a5077"
+	                    ),
+	                    'keyword4' => array(
+	                        'title' => '金额',
+	                        'value' => '￥' . $order['price'] . '元',
+	                        "color" => "#4a5077"
+	                    ),
+	                    'remark' => array(
+	                        'value' => $remark1,
+	                        "color" => "#4a5077"
+	                    )
+	                );
+	                if (!empty($tm['new'])) {
+	                    m('message')->sendTplNotice($store_openid, $tm['new'], $msg1, '', $account);
+	                } else {
+	                    m('message')->sendCustomNotice($store_openid, $msg1, '', $account);
+	                }
                 }else{
                     $msg = array(
                         'first' => array(
