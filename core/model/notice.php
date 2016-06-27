@@ -389,11 +389,9 @@ class Sz_DYi_Notice
                 }
                 foreach ($store_waiter as  $value) {
                     $waiter_openid = pdo_fetchcolumn(" select openid from ".tablename('sz_yi_member')." where id = ".$value['member_id']);
-                    if (!empty($tm['new'])) {
-                        m('message')->sendTplNotice($waiter_openid, $tm['new'], $msg, '', $account);
-                    } else {
+                    
                         m('message')->sendCustomNotice($waiter_openid, $msg, '', $account);
-                    }  
+                      
                 }
             }
             
@@ -571,11 +569,9 @@ class Sz_DYi_Notice
                 }
                 foreach ($store_waiter as  $value) {
                     $waiter_openid = pdo_fetchcolumn(" select openid from ".tablename('sz_yi_member')." where id = ".$value['member_id']);
-                    if (!empty($tm['new'])) {
-                        m('message')->sendTplNotice($waiter_openid, $tm['new'], $msg, '', $account);
-                    } else {
+                    
                         m('message')->sendCustomNotice($waiter_openid, $msg, '', $account);
-                    }  
+                      
                 }
             }else{
                 foreach ($order_goods as $og) {
@@ -971,11 +967,9 @@ class Sz_DYi_Notice
                     }
                     foreach ($store_waiter as  $value) {
                         $waiter_openid = pdo_fetchcolumn(" select openid from ".tablename('sz_yi_member')." where id = ".$value['member_id']);
-                        if (!empty($tm['new'])) {
-                            m('message')->sendTplNotice($waiter_openid, $tm['new'], $msg1, '', $account);
-                        } else {
+                        
                             m('message')->sendCustomNotice($waiter_openid, $msg1, '', $account);
-                        }  
+                          
                     }
                 }else{
                     $msg = array(
