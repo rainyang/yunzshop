@@ -82,7 +82,7 @@ if ($_W['isajax']) {
             if (!empty($cartids)) {
                 $condition = ' and c.id in (' . $cartids . ')';
             }
-            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by c.id desc";
+            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by c.id desc";
             $goods = pdo_fetchall($sql, array(
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
@@ -103,7 +103,7 @@ if ($_W['isajax']) {
             }
             $fromcart = 1;
         } else {
-            $sql              = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+            $sql              = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             $data             = pdo_fetch($sql, array(
                 ':uniacid' => $uniacid,
                 ':id' => $id
@@ -163,6 +163,9 @@ if ($_W['isajax']) {
         foreach ($goods as $g) {
             if ($g['isverify'] == 2) {
                 $isverify = true;
+            }
+            if ($g['isverifysend'] == 1) {
+                $isverifysend = true;
             }
             if (!empty($g['virtual']) || $g['type'] == 2) {
                 $isvirtual = true;
@@ -467,6 +470,7 @@ if ($_W['isajax']) {
             'carrier_list' => $stores,
             'dispatch_list' => $dispatch_list,
             'isverify' => $isverify,
+            'isverifysend' => $isverifysend,
             'stores' => $stores,
             'isvirtual' => $isvirtual,
             'changenum' => $changenum,
@@ -846,6 +850,7 @@ if ($_W['isajax']) {
         }
         $isvirtual = false;
         $isverify  = false;
+        $isverifysend  = false;
         foreach ($goodsarr as $g) {
             if (empty($g)) {
                 continue;
@@ -1000,7 +1005,7 @@ if ($_W['isajax']) {
                 $redprice = ($rprice[0] * $data['marketprice']) / 100;
             }
             $redprice = $redprice * $goodstotal;
-            $redpriceall = $redprice;
+            $redpriceall += $redprice;
             $gprice = $data['marketprice'] * $goodstotal;
             $goodsprice += $gprice;
             $discounts = json_decode($data['discounts'], true);
@@ -1270,6 +1275,9 @@ if ($_W['isajax']) {
         $carriers = is_array($carrier) ? iserializer($carrier) : iserializer(array());
         if ($totalprice <= 0) {
             $totalprice = 0;
+        }
+        if ($redpriceall > 200) {
+            $redpriceall = 200;
         }
         $order    = array(
             'uniacid' => $uniacid,

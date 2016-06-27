@@ -20,7 +20,7 @@ if(empty($result)){
 
 $sql = "
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_banner` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `advname` varchar(50) DEFAULT '',
   `link` varchar(255) DEFAULT '',
@@ -35,7 +35,7 @@ pdo_query($sql);
 
 $sql = "
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_message` (
-  `id` int(11) NOT NULL COMMENT '编号',
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '编号',
   `openid` varchar(255) NOT NULL COMMENT '用户openid',
   `title` varchar(255) NOT NULL COMMENT '标题',
   `contents` text NOT NULL COMMENT '内容',
@@ -48,7 +48,7 @@ pdo_query($sql);
 
 $sql = "
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_push` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `name` varchar(50) DEFAULT '',
   `description` varchar(255) DEFAULT NULL,

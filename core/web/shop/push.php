@@ -41,7 +41,12 @@ if ($operation == 'display') {
         $id = pdo_insertid();
         $url = "http://".$_SERVER['HTTP_HOST']."/app/index.php?i=".$_W['uniacid']."&c=entry&p=pushinfo&do=member&m=sz_yi&id=".$id;
         require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
-        LeanCloud\LeanClient::initialize("egEtMTe0ky9XbUd57y5rKEAX-gzGzoHsz", "ca0OTkPQUdrXlPTGrospCY2L", "4HFoIDCAwaeOUSedwOISMUrj,master");
+
+        $setdata = m("cache")->get("sysset");
+        $set     = unserialize($setdata['sets']);
+
+        $app = $set['app']['base'];
+        LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'].",master");
 
         $post_data = '{
           "alert":             "'. $data["name"] . '",
@@ -50,7 +55,7 @@ if ($operation == 'display') {
           "sound":             "1.wav",
           "action_type":"1",
           "title":            "'. $data["content"] . '",
-          "action":            "com.yunzhong_notify.action",
+          "action":            "' . $app["leancloud"]["notify"] . '",
           "ext": {"id":"'.$id.'","url":"'. $url .'"}
         }';
 

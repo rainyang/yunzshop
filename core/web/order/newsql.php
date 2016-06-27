@@ -628,7 +628,7 @@ if(!pdo_fieldexists('sz_yi_order', 'cashier')) {
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'realprice')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `realprice` decimal(10) DEFAULT '0';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `realprice` decimal(10,2) DEFAULT '0';");
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'deredpack')) {
@@ -711,4 +711,8 @@ if(!pdo_fieldexists('sz_yi_member', 'bindapp')) {
 
 if(!pdo_fieldexists('sz_yi_order', 'ordersn_general')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `ordersn_general` varchar(255) NOT NULL DEFAULT '';");
+}
+//前台下单 判断是否支持配送核销字段
+if(!pdo_fieldexists('sz_yi_goods', 'isverifysend')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isverifysend` tinyint(1) NOT NULL DEFAULT '0';");
 }
