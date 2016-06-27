@@ -66,7 +66,7 @@ if ($_W['isajax']) {
 
 				if ($apply['type'] == 2) {
 					if ($pay <= 20000 && $pay >= 1) {
-						$result = m('finance')->sendredpack($openid, $pay, $desc = '佣金提现金额', $act_name = '佣金提现金额', $remark = '佣金提现金额以红包形式发送');
+						$result = m('finance')->sendredpack($openid, $pay, 0, $desc = '佣金提现', $act_name = '佣金提现', $remark = '佣金提现金额以红包形式发送');
 					} else {
 						message('红包提现金额限制1-200元！', '', 'error');
 					}

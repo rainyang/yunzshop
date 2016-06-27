@@ -68,8 +68,8 @@
 				
 						<td valign='top' colspan='2' style='text-align: left; width: 400px; position: relative; ' 
 							data-ordersn="{$item['ordersn']}" data-orderid="{$item['id']}" data-ordergoodid="{$g['ordergoodid']}" data-goodid="{$g['id']}" data-goodtitle="{$g['title']}" 
-							data-shorttitle = "{if empty($g['shorttitle'])}-{else}{$g['shorttitle']}{/if}" data-goodnum="{$g['total']}" data-goodssn="{$g['goodssn']}" data-productsn="{$g['productsn']}" data-marketprice="{php echo $g['realprice']/$g['total']}"
-							data-productprice="{php echo $g['price']/$g['total']}" data-total="{$g['total']}" data-goodoption="{if empty($g['optiontitle'])}-{else}{$g['optiontitle']}{/if}" data-goodunit="{if empty($g['unit'])}-{else}{$g['unit']}{/if}"
+							data-shorttitle = "{if empty($g['shorttitle'])}-{else}{$g['shorttitle']}{/if}" data-goodnum="{$g['total']}" data-goodssn="{$g['goodssn']}" data-productsn="{$g['productsn']}" data-marketprice="{php echo $g['price']/$g['total']}"
+							data-productprice="{php echo $g['realprice']/$g['total']}" data-total="{$g['total']}" data-goodoption="{if empty($g['optiontitle'])}-{else}{$g['optiontitle']}{/if}" data-goodunit="{if empty($g['unit'])}-{else}{$g['unit']}{/if}"
 							data-realprice="{php echo $g['realprice']/$g['total']}" data-goodweight="{if empty($g['weight'])}-{else}{$g['weight']}{/if}"
 							>
 							<img src="{php echo tomedia($g['thumb'])}" style="width: 50px; height: 50px;border:1px solid #ccc;padding:1px;" > 
@@ -274,12 +274,14 @@
 						  	var _marketprice = _this.data("marketprice");	//商品原价
 						  	var _productprice = _this.data("productprice");	//商品现价
 						  	var _allprice = _this.data("productprice") * _this.data("total");	// 商品总价			
+                            _allprice = _allprice.toFixed(2);
 						  	var _total = _this.data("total");	// 商品数量
 						  	var _note = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';	//备注栏
 						  	var _goodoption = _this.data("goodoption");	// 商品规格 
 						  	var _goodunit = _this.data("goodunit");	// 商品单位
 						  	var _goodweight = _this.data("goodweight");	// 商品重量
 						  	var _realprice = _this.data("realprice");	// 商品折后价格
+                            _realprice = _realprice.toFixed(2);
 						  	
 						  	info.push({'odsn':_ordersn,'goodname':_goodname,'goodshortname':_goodshortname,'goodssn':_goodssn,'productsn':_productsn,
 						  					'marketprice':_marketprice,'productprice':_productprice,'allprice':_allprice,'total':_total,'note':_note,'goodoption':_goodoption,'goodunit':_goodunit,

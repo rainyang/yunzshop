@@ -441,7 +441,7 @@
             <input type="text" name="redprice" id="redprice" class="form-control" value="{$item['redprice']}" />
             <span class="input-group-addon"></span>
         </div>
-    <div class='help-block'>只填写数字为指定金额：10 ; 填写数字后带‘%’为现价百分比：10% ; 填写区间‘-’为此区间随机金额：10-50; 注意：红包金额最大不得超过200元。</div>
+    <div class='help-block'>只填写数字为指定金额：10 ; 填写数字后带‘%’为现价百分比：10% ; 填写区间‘-’为此区间随机金额：10-50; 注意：红包金额最大不得超过200元 ; 如果一个订单购买多个商品，则每个商品的红包金额相加发一个红包，如果相加金额超过200则只发200元。</div>
         {else}
          <div class='form-control-static'>{$item['redprice']} </div>
         {/if}

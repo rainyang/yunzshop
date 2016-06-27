@@ -42,9 +42,7 @@ if ($operation == 'display') {
         $url = "http://".$_SERVER['HTTP_HOST']."/app/index.php?i=".$_W['uniacid']."&c=entry&p=pushinfo&do=member&m=sz_yi&id=".$id;
         require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
 
-        $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
-            ':uniacid' => $_W['uniacid']
-        ));
+        $setdata = m("cache")->get("sysset");
         $set     = unserialize($setdata['sets']);
 
         $app = $set['app']['base'];
@@ -57,7 +55,7 @@ if ($operation == 'display') {
           "sound":             "1.wav",
           "action_type":"1",
           "title":            "'. $data["content"] . '",
-          "action":            "com.yunzhong_notify.action",
+          "action":            "' . $app["leancloud"]["notify"] . '",
           "ext": {"id":"'.$id.'","url":"'. $url .'"}
         }';
 
