@@ -9,16 +9,18 @@ $psize     = 20;
 $day_times        = intval($set['settledays']) * 3600 * 24;
 $daytime = strtotime(date("Y-m-d 00:00:00"));
 if(empty($set['sendmonth'])){
-    $stattime = $daytime - 86400;
-    $endtime = $daytime;
-    $logs_count = pdo_fetchcolumn("select count(*) from ".tablename('sz_yi_bonus')." where uniacid={$_W['uniacid']} and sendmonth=0 and utime=".$daytime);
+    $stattime = $daytime - $day_times - 86400;
+    $endtime = $daytime - $day_times;
+    $logs_count = pdo_fetchcolumn("select count(*) from ".tablename('sz_yi_bonus')." where uniacid={$_W['uniacid']} and isglobal=1 and sendmonth=0 and utime=".$daytime);
     $logs_text = "今天";
 }else if($set['sendmonth'] == 1){
-    $stattime = mktime(0, 0, 0, date('m') - 1, 1, date('Y'));
-    $endtime = mktime(0, 0, 0, date('m'), 1, date('Y'));
+    $now_stattime = mktime(0, 0, 0, date('m') - 1, 1, date('Y'));
+    $stattime = $now_stattime - $day_times;
+    $now_endtime = mktime(0, 0, 0, date('m'), 1, date('Y'));
+    $endtime = $now_endtime - $day_times;
     $log_stattime = mktime(0, 0, 0, date('m'), 1, date('Y'));
     $log_endtime = mktime(0, 0, 0, date('m')+1, 1, date('Y'));
-    $logs_count = pdo_fetchcolumn("select count(*) from ".tablename('sz_yi_bonus')." where uniacid={$_W['uniacid']} and sendmonth=0 and ctime >= " . $log_stattime . " and ctime < ".$log_endtime);
+    $logs_count = pdo_fetchcolumn("select count(*) from ".tablename('sz_yi_bonus')." where uniacid={$_W['uniacid']} and isglobal=1 and sendmonth=0 and ctime >= " . $log_stattime . " and ctime < ".$log_endtime);
     $logs_text = "本月";
 }
 
@@ -98,7 +100,9 @@ if (!empty($_POST)) {
             "send_bonus_sn" => $send_bonus_sn
         ));
         if($sendpay == 1){
-        	$this->model->sendMessage($value['openid'], array('nickname' => $value['nickname'], 'levelname' => $value['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_GLOBAL_PAY);
+            //获取用户等级名称
+            $levelname = pdo_fetchcolumn("select levelname from " . tablename('sz_yi_bonus_level') . " where id=:id and uniacid=:uniacid", array(":id" => $value['bonuslevel'], ":uniacid" => $_W['uniacid']));
+        	$this->model->sendMessage($value['openid'], array('nickname' => $value['nickname'], 'levelname' => $levelname, 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_GLOBAL_PAY);
         }
 	}
 	$log = array(
