@@ -18,6 +18,15 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 $uniacid        = $_W['uniacid'];
 
+$setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+    ':uniacid' => $_W['uniacid']
+));
+
+$set     = unserialize($setdata['sets']);
+
+$setting = uni_setting($_W['uniacid'], array('payment'));
+$pay = $setting['payment'];
+
 require_once('../addons/sz_yi/plugin/pingpp/init.php');
 
     //$input_data = $this->para;
@@ -45,7 +54,7 @@ require_once('../addons/sz_yi/plugin/pingpp/init.php');
     }
     $channel = strtolower($input_data['channel']);
 
-    $api_key = 'sk_live_DW1Wr5TO0e940ufDqH4S08K0';//'sk_test_88ynL0SG8SCKOm5K00z9ufD0';
+    $api_key = $pay['ping']['secret'];//'sk_test_88ynL0SG8SCKOm5K00z9ufD0';
 
     $orderNo = $input_data['order_no'];
 
@@ -78,7 +87,7 @@ require_once('../addons/sz_yi/plugin/pingpp/init.php');
 
 
 
-    $app_id = 'app_unrfnH1qH8KOf14K';
+    $app_id = $pay['ping']['partner'];
     //$extra 在使用某些渠道的时候，需要填入相应的参数，其它渠道则是 array() .具体见以下代码或者官网中的文档。其他渠道时可以传空值也可以不传。
     $extra = array();
     switch ($channel) {

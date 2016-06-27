@@ -167,7 +167,7 @@ class LeanMessage {
     {
         $out = $this->encode();
         $out['conv_id'] = $this->getConvId();
-        $resp = LeanClient::post("/rtm/messages", $out, null, [], true);
+        $resp = LeanClient::post("/rtm/messages", $out, null, array(), true);
         return $resp;
     }
 
@@ -186,7 +186,7 @@ class LeanMessage {
     public function createConvId()
     {
         $data = json_decode('{"name": "Notification Channel","sys": true}', true);
-        $resp = LeanClient::post("/classes/_Conversation", $data, null, [], true);
+        $resp = LeanClient::post("/classes/_Conversation", $data, null, array(), true);
         return $resp;
     }
 }

@@ -340,4 +340,3 @@ if ($op == 'display') {
 }
 load()->func('tpl');
 include $this->template('web/member/list');
-
