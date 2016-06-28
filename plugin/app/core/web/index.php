@@ -44,7 +44,7 @@ if($_W['ispost']) {
 
 	$set['app']['base'] = $app;
 
-	$leancloud = array_elements(array('id', 'key', 'master'), $_GPC['leancloud']);
+	$leancloud = array_elements(array('id', 'key', 'master', 'notify'), $_GPC['leancloud']);
 	$set['app']['base']['leancloud'] = $leancloud;
 
     $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(

@@ -62,9 +62,7 @@ class Core extends WeModuleSite
 
             require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
 
-            $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
-                ':uniacid' => $_W['uniacid']
-            ));
+            $setdata = m("cache")->get("sysset");
             $set     = unserialize($setdata['sets']);
 
             $app = $set['app']['base'];
