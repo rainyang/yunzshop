@@ -32,10 +32,12 @@ if ($op == 'display') {
     $pages     = pdo_fetchall("SELECT id,pagename,pagetype,setdefault FROM " . tablename('sz_yi_designer') . " WHERE uniacid= :uniacid  ", array(
         ':uniacid' => $_W['uniacid']
     ));
-    $categorys = pdo_fetchall("SELECT id,name,parentid FROM " . tablename('sz_yi_category') . " WHERE enabled=:enabled and uniacid= :uniacid  ", array(
+    $categorys = pdo_fetchall("SELECT id,name,parentid FROM " . tablename('sz_yi_category') . " WHERE enabled=:enabled and uniacid= :uniacid and parentid= :parentid  ", array(
         ':uniacid' => $_W['uniacid'],
-        ':enabled' => '1'
+        ':enabled' => '1',
+        ':parentid'=> '0'
     ));
+
     if (!empty($pageid)) {
         ca('designer.page.edit');
         $datas = pdo_fetch("SELECT * FROM " . tablename('sz_yi_designer') . " WHERE uniacid= :uniacid and id=:id", array(
@@ -351,5 +353,67 @@ if ($op == 'display') {
         }
     }
     exit();
+}elseif($op = 'iscategory')
+{
+    if($_GPC['level'] == '3'){
+        $category = pdo_fetch("SELECT id,name,parentid FROM " . tablename('sz_yi_category') . " WHERE enabled=:enabled and uniacid= :uniacid and id= :id  ", array(
+            ':uniacid' => $_W['uniacid'],
+            ':enabled' => '1',
+            ':id'=> $_GPC['categoryid']
+        ));
+        $c_level1 = $category['parentid'];
+        $c_level2 = $_GPC['categoryid'];
+    }else
+    {
+        $c_level1 = $_GPC['categoryid'];     
+    }
+
+    $categorys = pdo_fetchall("SELECT id,name,parentid FROM " . tablename('sz_yi_category') . " WHERE enabled=:enabled and uniacid= :uniacid and parentid= :parentid ", array(
+            ':uniacid' => $_W['uniacid'],
+            ':enabled' => 1,
+            ':parentid'=> $_GPC['categoryid']
+        ));
+
+    $html = '';
+    if($categorys)
+    {
+       foreach ($categorys as $key => $value) {
+           $html.="<div class='fe-tab-link-line'>";
+
+           
+            if($_GPC['level'] == '3'){
+                $html.="<div class='fe-tab-link-sub'><a class='chooseclick' href='javascript:;' data-id='{$value['id']}' ng-click='chooseLink(4, {$value['id']})'>选择</a></div>";
+                $url = $this->createMobileUrl('shop/list',array('pcate'=>$c_level1,'ccate'=>$c_level2,'tcate'=>$value['id']));
+                $html.="<div class='fe-tab-link-text' id='fe-tab-link-li-{$value['id']}' data-href='{$url}'>";
+                $html.="<span style='height:10px; width: 10px; margin-left: 30px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>";
+            }else
+            {
+                $html.="<div class='fe-tab-link-sub'><a href='javascript:;' class='c_id' data-cid='{$value['id']}' >下一级 </a><a class='chooseclick' href='javascript:;' data-id='{$value['id']}' ng-click='chooseLink(4, {$value['id']})'>选择</a></div>";
+                $url = $this->createMobileUrl('shop/list',array('pcate'=>$c_level1,'ccate'=>$value['id']));
+                $html.="<div class='fe-tab-link-text' id='fe-tab-link-li-{$value['id']}' data-href='{$url}'>";
+                $html.="<span style='height:10px; width: 10px; margin-left: 10px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>";
+            }
+           $html.=$value['name'];
+           $html.="</div>";
+           $html.="</div>";
+           $html .= "<div class='categorynull3 category3{$value['id']}'></div>";
+        
+        }   
+        $data['success'] = 1;
+        //$data['category_id'] = $c_level1;
+        $data['html'] = $html;
+        echo json_encode($data);
+        exit;
+        
+    }else
+    {
+        $data['success'] = 0;
+        $data['html'] = '没有发现分类数据！';
+        echo json_encode($data);
+        exit;
+        
+    }
+
 }
+
 include $this->template('index');

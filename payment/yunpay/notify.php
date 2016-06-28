@@ -100,7 +100,7 @@ if (!empty($_POST)) {
                         ));
                         m('member')->setCredit($log['openid'], 'credit2', $log['money'], array(
                             0,
-                            '芸众商城会员充值:credit2:' . $log['money']
+                            '商城会员充值:credit2:' . $log['money']
                         ));
                         m('member')->setRechargeCredit($log['openid'], $log['money']);
                         if (p('sale')) {

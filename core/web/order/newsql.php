@@ -362,6 +362,10 @@ if(!pdo_fieldexists('sz_yi_dispatch', 'firstnum')) {
 if(!pdo_fieldexists('sz_yi_dispatch', 'secondnum')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_dispatch')." ADD  `secondnum`  int(11) DEFAULT '0';");
 }
+//供应商独立运费id
+if(!pdo_fieldexists('sz_yi_dispatch', 'supplier_uid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_dispatch')." ADD  `supplier_uid`  int(11) DEFAULT '0';");
+}
 //文章营销
 if(!pdo_fieldexists('sz_yi_article_sys', 'article_area')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article_sys')." ADD  `article_area`  TEXT NULL COMMENT '文章阅读地区';");
@@ -710,7 +714,7 @@ if(!pdo_fieldexists('sz_yi_member', 'bindapp')) {
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'ordersn_general')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `ordersn_general` varchar(255) NOT NULL DEFAULT '';");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `ordersn_general` varchar(255) NOT NULL DEFAULT '';");
 }
 //前台下单 判断是否支持配送核销字段
 if(!pdo_fieldexists('sz_yi_goods', 'isverifysend')) {
