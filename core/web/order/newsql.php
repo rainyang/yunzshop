@@ -716,3 +716,15 @@ if(!pdo_fieldexists('sz_yi_order', 'ordersn_general')) {
 if(!pdo_fieldexists('sz_yi_goods', 'isverifysend')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isverifysend` tinyint(1) NOT NULL DEFAULT '0';");
 }
+//收银台添加店员表结构
+pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_store_waiter')." (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `sid` int(11) DEFAULT NULL,
+  `realname` varchar(255) DEFAULT NULL,
+  `mobile` varchar(255) DEFAULT NULL,
+  `member_id` int(11) DEFAULT NULL,
+  `uniacid` int(11) DEFAULT NULL,
+  `createtime` varchar(255) DEFAULT NULL,
+  `savetime` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");

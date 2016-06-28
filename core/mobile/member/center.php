@@ -155,7 +155,10 @@ if ($pcashier) {
     $store = pdo_fetch('select * from ' . tablename('sz_yi_cashier_store') . ' where uniacid=:uniacid and member_id=:member_id limit 1', array(
         ':uniacid' => $_W['uniacid'], ':member_id' => $member['id']
     ));
-    if ($store) {
+    $store_waiter = pdo_fetch('select * from ' . tablename('sz_yi_cashier_store_waiter') . ' where uniacid=:uniacid and member_id=:member_id limit 1', array(
+        ':uniacid' => $_W['uniacid'], ':member_id' => $member['id']
+    ));
+    if ($store || $store_waiter) {
         $has_cashier = true;
     }
 }
