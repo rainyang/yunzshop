@@ -362,6 +362,10 @@ if(!pdo_fieldexists('sz_yi_dispatch', 'firstnum')) {
 if(!pdo_fieldexists('sz_yi_dispatch', 'secondnum')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_dispatch')." ADD  `secondnum`  int(11) DEFAULT '0';");
 }
+//供应商独立运费id
+if(!pdo_fieldexists('sz_yi_dispatch', 'supplier_uid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_dispatch')." ADD  `supplier_uid`  int(11) DEFAULT '0';");
+}
 //文章营销
 if(!pdo_fieldexists('sz_yi_article_sys', 'article_area')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article_sys')." ADD  `article_area`  TEXT NULL COMMENT '文章阅读地区';");

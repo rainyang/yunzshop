@@ -79,7 +79,7 @@ if (!empty($_POST) && verify($_POST) && $_POST['respMsg'] == 'success') {
 		$log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `uniacid`=:uniacid and `id`=:id limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $logid));
 		if (!empty($log) && empty($log['status'])) {
 			pdo_update('sz_yi_member_log', array('status' => 1, 'rechargetype' => 'alipay', 'logno' => $log['openid']), array('id' => $logid));
-			m('member')->setCredit($log['openid'], 'credit2', $log['money'], array(0, '芸众商城会员充值:credit2:' . $log['money']));
+			m('member')->setCredit($log['openid'], 'credit2', $log['money'], array(0, '商城会员充值:credit2:' . $log['money']));
 			m('member')->setRechargeCredit($openid, $log['money']);
 			m('notice')->sendMemberLogMessage($logid);
 		}
