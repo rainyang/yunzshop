@@ -133,7 +133,7 @@ if (!class_exists('BonusModel')) {
 				            		}else{
 				            			$bonus_area_money_new = round($price_all * $set['bonus_commission3']/100, 2);
 				            		}
-				            		if(!empty($set['isdistinction_area'])){
+				            		if(empty($set['isdistinction_area'])){
 										$bonus_area_money = $bonus_area_money_new - $bonus_area_money_old;
 										$bonus_area_money_old = $bonus_area_money_new;
 									}else{
@@ -153,7 +153,7 @@ if (!class_exists('BonusModel')) {
 						                );
 						            }
 					                pdo_insert('sz_yi_bonus_goods', $data);
-					                if(!empty($set['isdistinction_area']) || empty($set['isdistinction_area_all'])){
+					                if(empty($set['isdistinction_area']) || empty($set['isdistinction_area_all'])){
 					                	break;
 					                }
 		            			}
@@ -192,7 +192,7 @@ if (!class_exists('BonusModel')) {
 						                );
 					                	pdo_insert('sz_yi_bonus_goods', $data);
 					                }
-					                if(!empty($set['isdistinction_area']) || empty($set['isdistinction_area_all'])){
+					                if(empty($set['isdistinction_area']) || empty($set['isdistinction_area_all'])){
 					                	break;
 					                }
 					            }
@@ -229,7 +229,7 @@ if (!class_exists('BonusModel')) {
 						                );
 						                pdo_insert('sz_yi_bonus_goods', $data);
 					                }
-					                if(!empty($set['isdistinction_area']) || empty($set['isdistinction_area_all'])){
+					                if(empty($set['isdistinction_area']) || empty($set['isdistinction_area_all'])){
 					                	break;
 					                }
 					            }
