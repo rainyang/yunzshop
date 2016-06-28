@@ -196,11 +196,11 @@ footer#footer-nav .menu-list li a > span {
 }
 
 footer#footer-nav .menu-list li.active a > span {
-	color: #49f;
+	color: #f60;
 }
 
 footer#footer-nav .menu-list li.active a > i {
-	color: #49f;
+	color: #f60;
 }
 
 footer#footer-nav .menu-list:after {

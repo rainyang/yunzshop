@@ -110,7 +110,7 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>绑定微信</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>绑定管理员微信</label>
                 <div class="col-sm-9 col-xs-12">
                     {ife 'cashier.store' $item}
                         <input type="hidden" class="form-control" id="member_id" name="member_id" value="{$item['member_id']}" />
@@ -118,6 +118,9 @@
                         <input type="text" class="form-control" id="member" value="{if !empty($member)}{$member['nickname']}{/if}" readonly />
                         <div class="input-group-btn">
                             <button type="button" onclick="$('#modal-members').modal()" class="btn btn-default" >选择会员</button>
+                            {if $id}
+                            <button type="button" id="insert_waiter" class="btn btn-default" >管理店员</button>
+                            {/if}
                         </div>
                         </div>
                     {else}
@@ -367,6 +370,149 @@
         </div>
     </div>
 </form>
+{else if $operation == 'waiter'}
+<div class="panel panel-info">
+    <div class="panel-heading">筛选</div>
+    <div class="panel-body">
+        <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
+            <input type="hidden" name="c" value="site" />
+            <input type="hidden" name="a" value="entry" />
+            <input type="hidden" name="m" value="sz_yi" />
+            <input type="hidden" name="do" value="plugin" />
+            <input type="hidden" name="p" value="cashier" />
+            <input type="hidden" name="method" value="store" />
+            <input type="hidden" name="op" value="waiter" />
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">店员信息</label>
+                <div class="col-sm-8 col-lg-9 col-xs-12">
+                    <input type="text" class="form-control" name="keyword" value="{$_GPC['keyword']}" placeholder="可搜索姓名/电话"> 
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
+                <div class="col-sm-8 col-lg-9 col-xs-12">
+                    <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                    <input type="hidden" name="token" value="{$_W['token']}" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="clearfix">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            总数：{$total}
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover" style="overflow:visible;">
+                <thead class="navbar-inner">
+                    <tr>
+                        <th style="width:80px;">店员ID</th>
+                        <th style="width:80px;">店员姓名</th>
+                        <th style="width:100px;">电话</th>
+                        <th style="width:100px;">操作</th>
+                        <th style="width:100px;">创建时间</th>
+                        <th style="width:100px;">上次保存时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {loop $list $row}
+                    <tr>
+                        <td>{$row['id']}</td>
+                        <td>{$row['realname']}</td>
+                        <td>{$row['mobile']}</td>
+                        <td>{$row['createtime']}</td>
+                        <td>{$row['savetime']}</td>
+                        <td>
+                            {ifp 'cashier.store.edit'} 
+                                <a class="btn btn-default btn-sm" href="{php echo $this->createPluginWebUrl('cashier/store/post_waiter',array('id' => $row['id'] , 'sid' => $row['sid']));}" title="编辑" ><i class='fa fa-edit'></i></a>
+                            {/if}
+                            {ifp 'cashier.store.delete'}
+                                <a class="btn btn-default btn-sm" href="{php echo $this->createPluginWebUrl('cashier/store/delete_waiter',array('id' => $row['id'] , 'sid' => $row['sid']));}" title="删除" onclick="return confirm('确定要删除该店员吗？');"><i class='fa fa-remove'></i></a>
+                            {/if}
+                        </td>
+                    </tr>
+                    {/loop}
+                </tbody>
+            </table>
+            {$pager}
+        </div>
+        <div class="panel-footer">
+            {ifp 'cashier.store.add'}  
+            <a class="btn btn-default" href="{php echo $this->createPluginWebUrl('cashier/store/post_waiter',array('sid' => $id));}"><i class="fa fa-plus"></i> 添加店员</a>
+            {/if}
+        </div>
+    </div>
+</div>
+{else if $operation == 'post_waiter'}
+<form {ife 'cashier.store.edit' $item}action="" method="post"{/if} class="form-horizontal">
+    <input type="hidden" name="id" value="{$item['id']}">
+    <input type="hidden" name="c" value="site">
+    <input type="hidden" name="a" value="entry">
+    <input type="hidden" name="m" value="sz_yi">
+    <input type="hidden" name="p" value="cashier">
+    <input type="hidden" name="method" value="store">
+    <input type="hidden" name="op" value="post_waiter">
+    <div class="panel panel-default">
+        <div class="panel-heading">编辑店员信息</div>
+        <div class="panel-body">
+            <div class="alert alert-info">
+                
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>店员名称</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="text" name="realname" id="realname" class="form-control" value="{$item['realname']}">
+                    {else}
+                        <div class='form-control-static'>{$item['realname']}</div>
+                    {/if}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>绑定微信</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="hidden" class="form-control" id="member_id" name="member_id" value="{$item['member_id']}" />
+                        <div class='input-group' style='border:none;'>
+                        <input type="text" class="form-control" id="member" value="{if !empty($member)}{$member['nickname']}{/if}" readonly />
+                        <div class="input-group-btn">
+                            <button type="button" onclick="$('#modal-members').modal()" class="btn btn-default" >选择会员</button>
+                        </div>
+                        </div>
+                    {else}
+                        <div class='form-control-static'>{$item['wechat']}</div>
+                    {/if}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">电话</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="text" name="mobile" class="form-control" value="{$item['mobile']}">
+                    {else}
+                        <div class='form-control-static'>{$item['mobile']}</div>
+                    {/if}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" onclick="return formcheck1()" />
+                        <input type="hidden" name="token" value="{$_W['token']}" />
+                    {/if}
+                    <input type="button" name="back" onclick="history.back()" {ife 'coupon.coupon' $item}style="margin-left:10px;"{/if} value="返回列表" class="btn btn-default">
+                </div>
+            </div>
+
+        </div>
+        
+    </div>
+</form>
 {/if}
 </div>
 
@@ -388,9 +534,22 @@
     </div>
 </div>
 <script language='javascript'>
+$('#insert_waiter').click(function(){
+    location.href="{php echo $this->createPluginWebUrl('cashier/store', array('op' => 'waiter', 'id' => "$id"))}";
+});
 function formcheck() {
     if ($("#name").isEmpty()) {
         Tip.focus("#name", "请输入商户名!");
+        return false;
+    }
+    if ($('#member').isEmpty()) {
+        Tip.focus("#member", "请选择绑定的微信!");
+        return false;
+    }
+}
+function formcheck1() {
+    if ($("#realname").isEmpty()) {
+        Tip.focus("#realname", "请输入店员名!");
         return false;
     }
     if ($('#member').isEmpty()) {
