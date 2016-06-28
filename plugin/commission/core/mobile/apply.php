@@ -3,6 +3,7 @@ global $_W, $_GPC;
 $openid = m('user')->getOpenid();
 if ($_W['isajax']) {
 	$level = $this->set['level'];
+	$closewithdrawcheck = $this->set['closewithdrawcheck'];
 	$member = $this->model->getInfo($openid, array('ok'));
 	$time = time();
 	$day_times = intval($this->set['settledays']) * 3600 * 24;
@@ -10,6 +11,7 @@ if ($_W['isajax']) {
 	$cansettle = $commission_ok >= floatval($this->set['withdraw']);
 	$member['commission_ok'] = number_format($commission_ok, 2);
 	if ($_W['ispost']) {
+
 		$orderids = array();
 		if ($level >= 1) {
 			$level1_orders = pdo_fetchall('select distinct o.id from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . " where o.agentid=:agentid and o.status>=3  and og.status1=0 and og.nocommission=0 and ({$time} - o.createtime > {$day_times}) and o.uniacid=:uniacid  group by o.id", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
@@ -51,13 +53,9 @@ if ($_W['isajax']) {
 		pdo_insert('sz_yi_commission_apply', $apply);
 		$id = pdo_insertid();
 
-		if (!empty($this->set['closewithdrawcheck'])) {
-			if ($this->set['closewithdrawcheck'] < 0) {
-				$this->set['closewithdrawcheck'] = 0;
-			}
+		if ($closewithdrawcheck > 0) {
 			//限制内金额自动打款
-			if ($commission_ok <= $this->set['closewithdrawcheck']) {
-				ca('commission.apply.pay');
+			if ($commission_ok <= $closewithdrawcheck) {
 				$time = time();
 				$pay = $commission_ok;
 				if ($apply['type'] == 1 || $apply['type'] == 2) {
