@@ -226,7 +226,7 @@ footer#footer-nav .menu-list:after {
 .order_main .sub2,.order_main .sub1{border-radius: 2px !important;}
 .topbar .user_face img{border-radius: 50%}
 .gold_sub{font-size: 16px !important}
-.info_sub{background: #f15353 !important}
+.info_sub,.info_price .sub{background: #f15353 !important}
 .addorder_user .info .ico2{width: 20px !important;text-align: center !important;}
 .cart_pay{background: #f5f5f5 !important}
 .cart_pay .paysub{border-radius: 2px !important}
@@ -236,22 +236,24 @@ footer#footer-nav .menu-list:after {
 .addorder_user .info .ico{font-size: 20px !important;line-height: 54px !important;height: 54px !important}
 .addorder_topbar{padding: 15px 10px!important;}
 .good_shop .shop2 .sub2,.good_shop .shop2 .sub1{font-size: 14px!important;}
-.good_shop .shop2 .sub1{}
+
 .order_main .sub1{    border: 1px solid #f15353!important; background: #f15353!important;}
 .addorder_topbar .tips{margin-left: 36px !important}
 .addorder_pay span{font-size: 14px !important}
 .addorder_good{padding: 0 10px!important}
 .header .user .set{top: 8px !important;font-size: 18px !important;right: 14px !important}
-.fa-star{color:#f15353 !important }
+.fa-star,.info_price .num,.ctitle span,.ccontent span{color:#f15353 !important }
 .address_main .address_sub2{font-size: 16px !important;}
 #left_container .on {border-left: 2px #f15353 solid;color: #f15353 !important;}
 .menu .nav .con span,.order_list .right span{color: #f15353 !important;}
 .myshop_main .line1 .info .inner .preview1{width: 100% !important;}
-.log_menu .navon,.myshop_menu .navon,.order_menu .navon{color: #f15353 !important;border-bottom: 2px solid #f15353 !important;}
+.log_list .right span{color: #f15353 !important;}
+.log_menu .navon,.myshop_menu .navon,.order_menu .navon,.tab .navon{color: #f15353 !important;border-bottom: 2px solid #f15353 !important;}
 .top .nav{padding: 0px 0px 5px 88px!important;}
 .bottom{height: 32px!important;}
 .jiathis_style_32x32 .jiathis_txt {font-size: 16px!important;}
 .top .nav .sub{box-sizing: border-box;}
+
 .sort_listnew {
     height: 44px;
     width: 100%;
@@ -361,7 +363,9 @@ footer#footer-nav .menu-list:after {
 
 .money-center{background: #fff;border-bottom: 1px solid #e3e3e3;border-top: 1px solid #e3e3e3;margin-top: 10px;overflow: hidden;}
 .comm-center{background: #fff;border-bottom: 1px solid #e3e3e3;border-top: 1px solid #e3e3e3;margin: 10px 0;overflow: hidden;}
-
+.detail_pay .paysub{background: #f15353 !important;border-radius:2px  !important}
+.detail_pay .paysub1{border-radius:2px  !important;height: 36px  !important}
+.detail_pay span{width: 66px!important;line-height: 56px!important;font-size: 14px!important;text-align: center;}
 .money-center ul li{ float: left;width: 25%;margin:10px 0;border-right: 1px solid #e3e3e3;box-sizing: border-box;}
 .money-center ul li:last-child{border: 0}
 .money-center ul li a{color: #8c8c8c;text-align: center;display: block;}
