@@ -37,6 +37,7 @@ if (empty($this->yzShopSet['ispc']) || isMobile()) {
 	}
 }
 
+
 if ($operation == 'index') {
 	$advs = pdo_fetchall('select id,advname,link,thumb,thumb_pc from ' . tablename('sz_yi_adv') . ' where uniacid=:uniacid and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
 	foreach($advs as $key => $adv){
@@ -144,10 +145,35 @@ if ($operation == 'index') {
 }
 if ($_W['isajax']) {
 	if ($operation == 'index') {
+
 		show_json(1, array('set' => $set, 'advs' => $advs, 'category' => $category, 'is_read' => $is_read));
 	} else if ($operation == 'goods') {
 		$type = $_GPC['type'];
 		show_json(1, array('goods' => $goods, 'pagesize' => $args['pagesize']));
+	} else if ($operation == 'category'){
+
+		$category = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where parentid=0 and uniacid=".$_W['uniacid']),'thumb');
+
+		foreach ($category as $key => $value) {
+			$children = pdo_fetchall("select * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"]));
+			foreach($children as $key1 => $value1){
+				$category[$key]['children'][$key1] = set_medias($value2,'thumb');
+				$third = pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid",array(':pid' => $value1['id'] , ':uniacid' => $_W["uniacid"]));
+				foreach($third as $key2 => $value2){
+					$category[$key]['children'][$key1]['third'][$key2] = set_medias($value2,'thumb');
+				}
+			}
+		}
+
+		show_json(1,array('category' => $category));
+	} else if ($operation == 'children_goods'){
+		$id = $_GPC['id'];
+		if(empty($id)){
+			show_json(0);
+		}
+		$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where ccate=:ccate and uniacid=:uniacid",array(':ccate' => $id , ':uniacid' => $_W['uniacid'])) , 'thumb');
+		show_json(1,array('goods' => $goods));
+
 	}
 }
 
