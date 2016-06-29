@@ -80,7 +80,8 @@
                 </div>
                 <span class='help-block'>用户完成的订单总额累计达到此金额后加入全返队列</span>
             </div>
-        </div>       
+        </div> 
+
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现比例</label>
 
@@ -165,4 +166,22 @@
 </form>
 </div>
 </div>
+
+<script type="text/javascript">
+    
+    function formcheck(){
+        var returnrule = $('input[name="setdata[returnrule]"]:checked ').val();
+        if(returnrule == '2')
+        {
+            var orderprice = $('input[name="setdata[orderprice]"]').val();
+            if(orderprice < '0')
+            {
+                alert('订单累计额度不能为空！');
+                return false;
+            }
+           
+        }
+
+    }
+</script>
 {template 'web/_footer'}
