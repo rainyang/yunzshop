@@ -16,6 +16,16 @@ $goodsid        = intval($_GPC['id']);
 $goods          = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE id = :id limit 1", array(
     ':id' => $goodsid
 ));
+if($goods['pcate']){
+    $pcate = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$goods['pcate']." and uniacid=".$uniacid);
+}
+if($goods['ccate']){
+    $ccate = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$goods['ccate']." and uniacid=".$uniacid);
+}
+if($goods['tcate']){
+    $tcate = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$goods['tcate']." and uniacid=".$uniacid);
+}
+
 $shop           = set_medias(m('common')->getSysset('shop'), 'logo');
 $shop['url']    = $this->createMobileUrl('shop');
 $mid            = intval($_GPC['mid']);
@@ -228,6 +238,12 @@ if ($_W['isajax']) {
         ':uniacid' => $uniacid,
         ':openid' => $openid
     ));
+
+    //我的足迹
+    $history_goods = pdo_fetchall('select g.* from ' . tablename('sz_yi_member_history') . ' h '.' left join '.tablename('sz_yi_goods').' g on h.goodsid = g.id  where  h.uniacid=:uniacid and h.openid=:openid and h.deleted=0 order by h.createtime desc limit 5', array(
+        ':uniacid' => $uniacid,
+        ':openid' => $openid
+    ));
     if ($history <= 0) {
         $history = array(
             'uniacid' => $uniacid,
@@ -254,6 +270,19 @@ if ($_W['isajax']) {
             }
         }
     }
+    $comment =pdo_fetchall("select * from ".tablename('sz_yi_goods_comment')." where goodsid=:id and uniacid=:uniacid",array(':id' => $goodsid , ':uniacid' => $uniacid));
+    $commentcount =pdo_fetchcolumn("select count(id) from ".tablename('sz_yi_goods_comment')." where goodsid=:id and uniacid=:uniacid",array(':id' => $goodsid , ':uniacid' => $uniacid));
+
+    //热卖商品
+    if($goods['tcate']){
+         $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where tcate=:tcate and pcate=:pcate and ccate=:ccate and uniacid=:uniacid and ishot =1 limit 5",array(':uniacid' => $uniacid , ':tcate' => $goods['tcate'] , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
+     }else if ($goods['ccate']){
+        $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate and ccate=:ccate and uniacid=:uniacid and ishot =1 limit 5",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
+     }else if ($goods['pcate']){
+        $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate  and uniacid=:uniacid and ishot =1 limit 5",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] )),'thumb');
+     }
+   
+
     $stores = array();
     if ($goods['isverify'] == 2) {
         $storeids = array();
@@ -302,7 +331,11 @@ if ($_W['isajax']) {
             ':openid' => $openid
         )),
         'isfavorite' => $fcount > 0,
-        'stores' => $stores
+        'stores' => $stores,
+        'comment' => $comment,
+        'commentcount' => $commentcount,
+        'ishot' => $ishot,
+        'history' => $history_goods
     );
     $commission = p('commission');
     if ($commission) {

@@ -832,6 +832,7 @@ if ($_W['isajax']) {
         $allgoods      = array();
         $totalprice    = 0;
         $goodsprice    = 0;
+        $redpriceall   = 0;
         $weight        = 0;
         $discountprice = 0;
         $goodsarr      = explode('|', $goods);
