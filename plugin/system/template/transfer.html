@@ -27,6 +27,7 @@
 						</select>
                     </div>
                 </div>
+                {ifp 'system.transfer.view'}
 				  <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">目标公众号</label>
                     <div class="col-sm-9">
@@ -39,6 +40,7 @@
 						<span class='help-block'><b>此公众号的数据会被清空，请慎重选择 ！</b></span>
                     </div>
                 </div>
+                {/if}
 				<div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">删除源公众号数据</label>
                     <div class="col-sm-9">
@@ -241,11 +243,18 @@
 			alert("请选择源公众号!");
 			return false;
 		}
+		{ifp 'system.transfer.view'}
 		if ($("#wechatid1").val() == '') {
 			alert("请选择源公众号!");
 			return false;
 		}
-		 if ($("#wechatid").val() == $("#wechatid1").val()) {
+		{/if}
+		{ifp 'system.transfer.view'}
+			var wechatid1 = $("#wechatid1").val();
+		{else}
+			var wechatid1 = {$_W['uniacid']};
+		{/if}
+		 if ($("#wechatid").val() == wechatid1) {
 			 alert("请选择两个不同的公众号!");
 			return false;
 		 }
