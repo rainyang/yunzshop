@@ -1,6 +1,4 @@
 <?php
-
-
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -13,9 +11,26 @@ class SystemWeb extends Plugin
     }
     public function index()
     {
-        header('location: ' . $this->createPluginWebUrl('system/clear'));
-        exit;
+        global $_W;
+        if (cv('system.clear')) {
+            header('location: ' . $this->createPluginWebUrl('system/clear'));
+            exit;
+        } else if (cv('system.transfer')) {
+            header('location: ' . $this->createPluginWebUrl('system/transfer'));
+            exit;
+        } else if (cv('system.copyright')) {
+            header('location: ' . $this->createPluginWebUrl('system/copyright'));
+            exit;
+        } else if (cv('system.backup')) {
+            header('location: ' . $this->createPluginWebUrl('system/backup'));
+            exit;
+        } else if (cv('system.commission')) {
+            header('location: ' . $this->createPluginWebUrl('system/commission'));
+            exit;
+        }
+        
     }
+    
     public function clear()
     {
         $this->_exec_plugin(__FUNCTION__);

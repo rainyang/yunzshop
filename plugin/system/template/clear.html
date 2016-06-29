@@ -14,6 +14,7 @@
                 数据清理工具
             </div>
             <div class="panel-body">
+            	{ifp 'system.clear.view'}
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">选择公众号</label>
                     <div class="col-sm-9">
@@ -26,6 +27,7 @@
 						</select>
                     </div>
                 </div>
+                {/if}
 				<div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">
 			    <label>
@@ -312,7 +314,7 @@
 			})
 		})
 	})
-
+	{ifp 'system.clear.view'}
 	function formcheck() {
 
 		if ($("#wechatid").val() == '') {
@@ -325,7 +327,7 @@
 		}
 		return confirm('您选择的公众号是: ' + wechatname + ' ，是否确认操作?');
 	}
- 
+ 	{/if}
 </script>
 
 {template 'web/_footer'}
