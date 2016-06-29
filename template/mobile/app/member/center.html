@@ -56,6 +56,8 @@
     .listbg10{ background: #E01818;}
     .listbg11{ background: #D59865;}
     .listbg12{ background: #698C9C;}
+    .listbg13{ background: #FFB355;}
+    .listbg14{ background: #76A0FF;}
 
 
 </style>
@@ -111,7 +113,7 @@
     {/if}
     <a href="{php echo $this->createMobileUrl('member/info')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg3"><i class="fa fa-user"></i></span>我的资料<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
     {if !$member['isbindmobile'] && is_weixin()}
-    <a href="{php echo $this->createMobileUrl('member/bindmobile')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-mobile" style="color:#f10;"></i>绑定手机<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>   
+    <a href="{php echo $this->createMobileUrl('member/bindmobile')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg13"><i class="fa fa-mobile"></i></span>绑定手机<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>   
     {/if}
 </div>
 <div class="cart">
@@ -142,7 +144,7 @@
      <a href="{php echo $this->createMobileUrl('member/pushlist')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg7"><i class="fa fa-share-square-o"></i></span>系统消息<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
 </div>
     {if isset($set['trade']) && $set['trade']['withdraw']==1}
-    <a href="javascript:;" id="btnwithdraw"><div class="list1" style="border-bottom: 0px;"><i class="fa fa-money" style="color:#0096ff;"></i>余额提现<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>    
+    <a href="javascript:;" id="btnwithdraw"><div class="list1" style="border-bottom: 0px;"><span class="listbg listbg14"><i class="fa fa-money"></span></i>余额提现<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>    
     {/if}
     {if isset($set['trade']) && ($set['trade']['withdraw']==1 || empty($set['trade']['closerecharge']))}
     <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="{if isset($set['trade']) && $set['trade']['withdraw']==1}margin:0px;{/if}">
