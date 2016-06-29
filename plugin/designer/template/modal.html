@@ -145,31 +145,24 @@
                     </div>
                     <div class="fe-tab-link" id="fe-tab-link-4">
                         {loop $categorys $category}
-                        {if empty($category['parentid'])}
-                        <div class="fe-tab-link-line">
-                            <div class="fe-tab-link-sub"><a href="javascript:;" ng-click="chooseLink(4, {$category['id']})">选择</a></div>
-                            <div class="fe-tab-link-text" id="fe-tab-link-li-{$category['id']}" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$category['id']))}">{$category['name']}</div>
-                        </div>
-                        {loop $categorys $category2}
-                        {if $category2['parentid']==$category['id']}
-                        <div class="fe-tab-link-line">
-                            <div class="fe-tab-link-sub"><a href="javascript:;" ng-click="chooseLink(4, {$category2['id']})">选择</a></div>
-                            <div class="fe-tab-link-text" id="fe-tab-link-li-{$category2['id']}" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$category['id'],'ccate'=>$category2['id']))}"><span style='height:10px; width: 10px; margin-left: 10px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>{$category2['name']}</div>
-                        </div>
-                        {loop $categorys $category3}
-                        {if $category3['parentid']==$category2['id']}
-                        <div class="fe-tab-link-line">
-                            <div class="fe-tab-link-sub"><a href="javascript:;" ng-click="chooseLink(4, {$category3['id']})">选择</a></div>
-                            <div class="fe-tab-link-text" id="fe-tab-link-li-{$category3['id']}" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$category['id'],'ccate'=>$category2['id'],'tcate'=>$category3['id']))}"><span style='height:10px; width: 10px; margin-left: 30px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>{$category3['name']}</div>
-                        </div>
-                        {/if}
+                            {if empty($category['parentid'])}
+                                <div class="fe-tab-link-line">
+                                    <div class="fe-tab-link-sub">
+                                        <a href="javascript:;" data-cid="{$category['id']}"  ng-click="selectChild({$category['id']})">下一级</a>
+                                        <a href="javascript:;" ng-click="chooseLink(4, {$category['id']})">选择</a>
+                                    </div>
+                                    <div class="fe-tab-link-text" id="fe-tab-link-li-{$category['id']}" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$category['id']))}">
+                                        {$category['name']}
+                                    </div>
+                                </div>
+                                <div class="categorynull2 category2{$category['id']}"></div>
+                                
+
+                            {/if}
                         {/loop}
-                        {/if}
-                        {/loop}
-                        {/if}
-                        {/loop}
+
                     </div>
-                  
+
                     <div class="fe-tab-link" id="fe-tab-link-5">
                         {loop $pages $pagelink}
                         <div class="fe-tab-link-line">
