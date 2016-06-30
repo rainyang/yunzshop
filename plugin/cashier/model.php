@@ -64,7 +64,7 @@ if (!class_exists('CashierModel')) {
                     if (p('commission')) {
                         $this->calculateCommission($order['id']);
                     }
-                    $this->redpack($params['user'], $orderid);
+                    
                     $this->setCoupon($orderid);
                 }
             }
