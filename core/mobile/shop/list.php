@@ -58,9 +58,22 @@ $args = array(
     'pcate' => $_GPC['pcate'],
     'ccate' => $_GPC['ccate'],
     'tcate' => $_GPC['tcate'],
+    'pcate1' => $_GPC['pcate1'],
+    'ccate1' => $_GPC['ccate1'],
+    'tcate1' => $_GPC['tcate1'],
     'order' => $_GPC['order'],
     'by' => $_GPC['by']
 );
+
+if($_GPC['tcate']){
+     $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where tcate=:tcate and pcate=:pcate and ccate=:ccate and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':tcate' => $goods['tcate'] , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
+ }else if ($_GPC['ccate']){
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate and ccate=:ccate and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
+ }else if ($_GPC['pcate']){
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate  and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] )),'thumb');
+ }else{
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where uniacid=:uniacid order by sales desc limit 10",array(':uniacid' => $uniacid )),'thumb');
+ }
 
 //$args = icheck_gpc($args);
 if (!empty($myshop['selectgoods']) && !empty($myshop['goodsids'])) {
@@ -99,6 +112,7 @@ if (!empty($keywords)) {
     $condition .= ' AND `title` LIKE :title';
     $params[':title'] = '%' . trim($keywords) . '%';
 }
+$tcate = intval($args['tcate']);
 if (!empty($tcate)) {
     $condition .= " AND ( `tcate` = :tcate or  FIND_IN_SET({$tcate},tcates)<>0 )";
     $params[':tcate'] = intval($tcate);
@@ -115,12 +129,32 @@ if (!empty($tcate)) {
         }
     }
 }
-
+$tcate1 = intval($args['tcate1']);
+if (!empty($tcate1)) {
+    $condition .= " AND ( `tcate1` = :tcate1 or  FIND_IN_SET({$tcate1},tcates)<>0 )";
+    $params[':tcate1'] = intval($tcate1);
+} else {
+    $ccate1 = intval($args['ccate1']);
+    if (!empty($ccate1)) {
+        $condition .= " AND ( `ccate1` = :ccate1 or  FIND_IN_SET({$ccate1},ccates)<>0 )";
+        $params[':ccate1'] = intval($ccate1);
+    } else {
+        $pcate1 = intval($args['pcate1']);
+        if (!empty($pcate1)) {
+            $condition .= " AND ( `pcate1` = :pcate1 or  FIND_IN_SET({$pcate1},pcates)<>0 )";
+            $params[':pcate1'] = intval($pcate1);
+        }
+    }
+}
 $total = pdo_fetchcolumn("SELECT count(*) FROM " . tablename('sz_yi_goods') . " where 1 {$condition}", $params);
 
 $pindex = max(1, intval($_GPC['page']));
 $pager = pagination($total, $pindex, $args['pagesize']);
 
+
+if(intval($shopset['catlevel']) == 3){
+    $third_category = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where parentid=:ccate and uniacid=:uniacid",array(':ccate' => $_GPC['ccate'] , ':uniacid' => $_W['uniacid'])),'advimg,thumb');
+}
 
 $goods    = m('goods')->getList($args);
 $category = false;
@@ -199,6 +233,7 @@ if (intval($_GPC['page']) <= 1) {
     unset($c);
 }
 if ($_W['isajax']) {
+
     show_json(1, array(
         'goods' => $goods,
         'pagesize' => $args['pagesize'],
