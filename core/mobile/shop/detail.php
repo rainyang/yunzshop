@@ -332,10 +332,10 @@ if ($_W['isajax']) {
         )),
         'isfavorite' => $fcount > 0,
         'stores' => $stores,
-        'comment' => $comment,
+        'comment' => set_medias($comment,'headimgurl'),
         'commentcount' => $commentcount,
         'ishot' => $ishot,
-        'history' => $history_goods
+        'history' => set_medias($history_goods,'thumb')
     );
     $commission = p('commission');
     if ($commission) {

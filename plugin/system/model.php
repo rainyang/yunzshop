@@ -27,5 +27,16 @@ if (!class_exists('SystemModel')) {
             }
             return $copyright;
         }
+        
+        function perms()
+        {
+            return array(
+                'taobao' => array(
+                    'text' => $this->getName(),
+                    'isplugin' => true,
+                    'fetch' => '抓取宝贝-log'
+                )
+            );
+        }
     }
 }

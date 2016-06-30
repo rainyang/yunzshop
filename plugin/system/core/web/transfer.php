@@ -1,13 +1,12 @@
 <?php
-
-
 global $_W, $_GPC;
-
+$wechatid1 = intval($_GPC['wechatid1']);
 if (!$_W['isfounder']) {
-    message('您无权操作!', '', 'error');
+    if($wechatid1 == 0){
+        $wechatid1 = $_W['uniacid'];
+    }
 }
 $wechatid   = intval($_GPC['wechatid']);
-$wechatid1  = intval($_GPC['wechatid1']);
 $transtype  = intval($_GPC['transtype']);
 $condition  = " and uniacid=" . $wechatid;
 $where      = array(
