@@ -180,7 +180,7 @@ if (!class_exists('TaobaoModel')) {
                 'storeids' => ''
             );
             if (p('supplier')) {
-                $perm_user = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and uid={$_W['uid']} and roleid=(select id from " . tablename('sz_yi_perm_role') . " where status1=1)");
+                $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
                 if (empty($perm_user)) {
                     $data['supplier_uid'] = 0;
                 } else {
