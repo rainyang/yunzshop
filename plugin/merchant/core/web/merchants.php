@@ -41,7 +41,9 @@ if ($operation == 'display') {
 		$value['commission_total'] = 0;
 		foreach ($suppliers as $val) {
 			$value['ordercount'] += pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_order') . " where uniacid={$_W['uniacid']} and status=3 and supplier_uid={$val['supplier_uid']}");
-			$value['commission_total'] += pdo_fetchcolumn("select sum(price) from " . tablename('sz_yi_order') . " where uniacid={$_W['uniacid']} and status=3 and supplier_uid={$val['supplier_uid']}");
+			$com_total = pdo_fetchcolumn("select sum(price) from " . tablename('sz_yi_order') . " where uniacid={$_W['uniacid']} and status=3 and supplier_uid={$val['supplier_uid']}");
+			$com_total = number_format($value['commissions']*$com_total/100,2);
+			$value['commission_total'] += $com_total;
 		}
 	}
 	unset($value);
