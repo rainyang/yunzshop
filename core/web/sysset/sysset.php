@@ -47,7 +47,7 @@ if ($op == 'template') {
     $dir    = IA_ROOT . "/addons/sz_yi/template/mobile/";
     if ($handle = opendir($dir)) {
         while (($file = readdir($handle)) !== false) {
-            if ($file != ".." && $file != ".") {
+            if ($file != ".." && $file != "." && $file != "app") {
                 if (is_dir($dir . "/" . $file)) {
                     $styles[] = $file;
                 }
