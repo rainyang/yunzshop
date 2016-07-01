@@ -167,7 +167,7 @@ $pindex = max(1, intval($_GPC['page']));
 $pager = pagination($total, $pindex, $args['pagesize']);
 
 if(!empty($maxprice) || !empty($minprice)){
-    $goods = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition}", $params);
+    $goods = set_medias(pdo_fetchall("SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition}", $params),'thumb');
 }else{
     $goods    = m('goods')->getList($args);
 }
