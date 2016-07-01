@@ -963,7 +963,7 @@ class Sz_DYi_Notice
                             "color" => "#4a5077"
                         ),
                         'remark' => array(
-                            'value' => $remark,
+                            'value' => $remark1,
                             "color" => "#4a5077"
                         )
                     );
