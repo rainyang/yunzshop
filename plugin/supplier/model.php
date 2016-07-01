@@ -18,6 +18,7 @@ if (!class_exists('SupplierModel')) {
 	            return $perm_role;
 	        }
 		}
+        
 		public function getSet()
 		{	
 			$_var_0 = parent::getSet();
