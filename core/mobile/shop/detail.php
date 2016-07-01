@@ -274,9 +274,15 @@ if ($_W['isajax']) {
     $commentcount = pdo_fetchcolumn("select count(id) from ".tablename('sz_yi_goods_comment')." where goodsid=:id and uniacid=:uniacid",array(':id' => $goodsid , ':uniacid' => $uniacid));
 
     //热卖商品
-    if($goods['supplier_uid']){
-         $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where supplier_uid = :uid and uniacid=:uniacid order by sales desc limit 10",array(':uniacid' => $uniacid , ':uid' => $goods['supplier_uid'] )),'thumb');
-     }
+if($goods['tcate']){
+     $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where tcate=:tcate and pcate=:pcate and ccate=:ccate and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':tcate' => $goods['tcate'] , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
+ }else if ($goods['ccate']){
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate and ccate=:ccate and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
+ }else if ($goods['pcate']){
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate  and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] )),'thumb');
+ }else{
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where uniacid=:uniacid order by sales desc limit 10",array(':uniacid' => $uniacid )),'thumb');
+ }
    
     $category = m('shop')->getCategory();
     
