@@ -125,6 +125,8 @@ if(!is_weixin()){
         }
     }
 }
+//分销佣金
+$commissionprice = p('commission')->getCommission($goods);
 if ($_W['isajax']) {
     if (empty($goods)) {
         show_json(0);
