@@ -23,7 +23,7 @@ if (p('merchant')) {
 }
 if (p('supplier')) {
 	$supplier_set = p('supplier')->getSet();
-	$issupplier = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where openid='{$openid}' and uniacid={$_W['uniacid']} and roleid=(select id from " . tablename('sz_yi_perm_role') . " where status1=1)");
+	$issupplier = p('supplier')->isSupplier($openid);
 	$af_result = pdo_fetchcolumn("select status from " . tablename('sz_yi_af_supplier') . " where uniacid={$_W['uniacid']} and openid='{$openid}'");
 	if ($af_result == 2) {
 		$shopset['af_result'] = true;
