@@ -178,7 +178,6 @@ $(function(){
             toolbars : [['fullscreen', 'source', '|', 'undo', 'redo', '|', 'bold', 'italic', 'underline', 'strikethrough', 'forecolor', 'backcolor', '|','justifyleft', 'justifycenter', 'justifyright', '|', 'insertorderedlist', 'insertunorderedlist', 'blockquote', 'emotion', 'insertvideo', 'removeformat', '|', 'rowspacingtop', 'rowspacingbottom', 'lineheight','indent', 'paragraph', 'fontsize', '|','inserttable', 'deletetable', 'insertparagraphbeforetable', 'insertrow', 'deleterow', 'insertcol', 'deletecol','mergecells', 'mergeright', 'mergedown', 'splittocells', 'splittorows', 'splittocols', '|', 'anchor', 'map', 'print', 'drafts', '|','autotypeset']],
         });
         ue.ready(function() {
-            //ue.setContent("{$article['article_content']}");
             ue.addListener('contentChange',function(){
                 $("#preview-content").html(ue.getContent());
                 pagestate = 1;
@@ -227,7 +226,6 @@ $(function(){
                 require(['fileUploader'],
                 function(uploader) {
                     uploader.show(function(imgs) {
-                        //console.log(imgs);
                         if (imgs.length == 0) {
                             return;
                         } else if (imgs.length == 1) {
