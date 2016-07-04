@@ -14,7 +14,9 @@ if (!class_exists('SupplierModel')) {
             if (empty($uid)) {
                 return '';
             }
+            //uid下的所有招商员
             $merchants = pdo_fetchall("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and supplier_uid={$uid}");
+            //循环赋予头像等信息
             foreach ($merchants as &$value) {
                 $merchants_member = m('member')->getMember($value['openid']);
                 $value['avatar'] = $merchants_member['avatar'];
@@ -29,6 +31,7 @@ if (!class_exists('SupplierModel')) {
         //供应商角色权限id
         public function getRoleId(){
             global $_W, $_GPC;
+            //权限id
             $roleid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_perm_role') . ' where status1=1');
             return $roleid;
         }
@@ -37,9 +40,13 @@ if (!class_exists('SupplierModel')) {
         public function getSupplierInfo($uid){
             global $_W, $_GPC;
             $supplierinfo = array();
+            //订单总数
             $supplierinfo['ordercount'] = 0;
+            //累积佣金
             $supplierinfo['commission_total'] = 0;
+            //可提现佣金
             $supplierinfo['costmoney'] = 0;
+            //累积佣金
             $supplierinfo['totalmoney'] = 0;
             $supplierinfo['ordercount'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where supplier_uid={$uid} and userdeleted=0 and deleted=0 and uniacid={$_W['uniacid']} ");
             $supplierinfo['commission_total'] = number_format(pdo_fetchcolumn("select sum(apply_money) from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and uid={$uid} and status=1"), 2);
@@ -64,6 +71,7 @@ if (!class_exists('SupplierModel')) {
         //通过前台用户openid获取供应商uid和username
         public function getSupplierUidAndUsername($openid){
             global $_W, $_GPC;
+            //查询uid和username
             $supplieruser = pdo_fetch("select uid,username from " . tablename('sz_yi_perm_user') . " where openid='{$openid}' and uniacid={$_W['uniacid']}");
             return $supplieruser;
         }
@@ -71,6 +79,7 @@ if (!class_exists('SupplierModel')) {
         //前台判断用户是否为供应商
         public function isSupplier($openid){
             global $_W, $_GPC;
+            //不为空时，该用户是供应商
             $issupplier = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where openid='{$openid}' and uniacid={$_W['uniacid']} and roleid=(select id from " . tablename('sz_yi_perm_role') . " where status1=1)");
             return $issupplier;
         }
