@@ -115,6 +115,7 @@ class Sz_DYi_Finance {
     public function sendredpack($openid, $money, $orderid, $desc = '', $act_name = '', $remark = '')
     {
         global $_W;
+        //查询公众号名称
         $_W['account']['name'] = pdo_fetchcolumn("SELECT name FROM ". tablename("uni_account") . "WHERE uniacid = '".$_W['uniacid']."'");
         if (empty($openid)) {
             return error(-1, 'openid不能为空');
@@ -123,6 +124,7 @@ class Sz_DYi_Finance {
         if (empty($member)) {
             return error(-1, '未找到用户');
         }
+        //查询支付参数配置
         $setting = uni_setting($_W['uniacid'], array(
             'payment'
         ));
@@ -131,11 +133,12 @@ class Sz_DYi_Finance {
         }
         $pay = m('common')->getSysset('pay');
         $wechat = $setting['payment']['wechat'];
+        //查询微信公众号参数信息
         $sql = 'SELECT `key`,`secret` FROM ' . tablename('account_wechats') . ' WHERE `uniacid`=:uniacid limit 1';
         $row = pdo_fetch($sql, array(
             ':uniacid' => $_W['uniacid']
         ));
-
+        //接口地址及相应参数
         $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack';
         $post = array(
             'wxappid'      => $row['key'],
@@ -157,6 +160,7 @@ class Sz_DYi_Finance {
         $post['sign']      = strtoupper(md5($stringSignTemp));
         $postXml = array2xml($post, 1);
         $sec     = m('common')->getSec();
+        //上传微信支付证书信息
         $certs   = iunserializer($sec['sec']);
         if (is_array($certs)) {
             if (empty($certs['cert']) || empty($certs['key']) || empty($certs['root'])) {
@@ -198,6 +202,7 @@ class Sz_DYi_Finance {
                 $code = $xpath->evaluate('string(//xml/return_code)');
                 $ret = $xpath->evaluate('string(//xml/result_code)');
                 if (strtolower($code) == 'success' && strtolower($ret) == 'success') {
+                    //发送成功
                     return true;
                 } else { 
                     if ($xpath->evaluate('string(//xml/return_msg)') == $xpath->evaluate('string(//xml/err_code_des)')) {
@@ -205,6 +210,7 @@ class Sz_DYi_Finance {
                     } else {
                         $error = $xpath->evaluate('string(//xml/return_msg)') . "<br/>" . $xpath->evaluate('string(//xml/err_code_des)');
                     }
+                    //失败后更新发送状态字段
                     if (!empty($orderid) && $orderid != 0) {
                         $sql = 'SELECT `ordersn` FROM ' . tablename('sz_yi_order') . ' WHERE `id`=:orderid limit 1';
                         $row = pdo_fetch($sql,
@@ -212,7 +218,7 @@ class Sz_DYi_Finance {
                                 ':orderid' => $orderid
                             )
                         );
-
+                        
                         if (!empty($row)) {
                             $_var_156 = array(
                                 'keyword1' => array('value' => '购买商品发送红包失败', 'color' => '#73a68d'),
