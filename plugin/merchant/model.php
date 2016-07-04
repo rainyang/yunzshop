@@ -5,12 +5,33 @@ if (!defined('IN_IA')) {
 if (!class_exists('MerchantModel')) {
 	class MerchantModel extends PluginModel
 	{
+
+		//会员id下的所有供应商的supplier_uid
+		public function getAllSupplierUids($member_id){
+			global $_W, $_GPC;
+			$supplier_uids = pdo_fetchall("select distinct supplier_uid from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and member_id={$member_id}");
+	        $uids = "";
+	        foreach ($supplier_uids as $key => $value) {
+	            if ($key == 0) {
+	                $uids .= $value['supplier_uid'];
+	            } else {
+	                $uids .= ','.$value['supplier_uid'];
+	            }
+	        }
+	        if (empty($uids)) {
+	            $uids = 0;
+	        }
+	        return $uids;
+		}
+
+		//基础设置
 		public function getSet()
 		{
 			$set = parent::getSet();
 			return $set;
 		}
 
+		//发送消息
 		function sendMessage($_var_20 = '', $_var_150 = array(), $_var_151 = '')
 		{
 			global $_W, $_GPC;
@@ -45,6 +66,7 @@ if (!class_exists('MerchantModel')) {
 			}
 		}
 
+		//权限
 		function perms()
 		{
 			return array('merchant' => array('text' => $this->getName(), 'isplugin' => true, 'child' => array('cover' => array('text' => '入口设置'), 'merchants' => array('text' => '招商员', 'view' => '浏览'))));

@@ -4,8 +4,7 @@ $operation   = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 if ($operation == 'display') {
     $pindex = max(1, intval($_GPC["page"]));
     $psize = 20;
-    //分权权限id
-    $roleid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_perm_role') . ' where status1=1');
+    $roleid = $this->model->getRoleId();
     $where = '';
     if(empty($_GPC['uid'])){
         $where .= ' and uniacid=' . $_W['uniacid'];
@@ -14,31 +13,15 @@ if ($operation == 'display') {
     }
     //是否从招商员进入
     if (p('merchant') && !empty($_GPC['member_id'])) {
-        //$ismerchant是否为招商员
         $ismerchant = true;
         $member_id = intval($_GPC['member_id']);
-        //$_GPC['member_id']会员下的所有供应商的supplier_uid
-        $supplier_uids = pdo_fetchall("select distinct supplier_uid from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and member_id={$member_id}");
-        $uids = "";
-        //数组转字符串
-        foreach ($supplier_uids as $key => $value) {
-            if ($key == 0) {
-                $uids .= $value['supplier_uid'];
-            } else {
-                $uids .= ','.$value['supplier_uid'];
-            }
-        }
-        if (empty($uids)) {
-            $uids = 0;
-        }
-        //供应商的详细信息
+        $uids = p('merchant')->getAllSupplierUids($_GPC['member_id']);
         $list = pdo_fetchall('select * from ' . tablename('sz_yi_perm_user') . ' where roleid='. $roleid . " and uniacid={$_W['uniacid']} and uid in ({$uids}) LIMIT " . ($pindex - 1) * $psize . "," . $psize);
     } else {
         $ismerchant = false;
         $list = pdo_fetchall('select * from ' . tablename('sz_yi_perm_user') . ' where roleid='. $roleid . " " .$where." LIMIT " . ($pindex - 1) * $psize . "," . $psize);
     }
     $total = count($list);
-    //分页
     $pager = pagination($total, $pindex, $psize);
 } else if ($operation == 'detail') {
     //提现id
@@ -95,25 +78,10 @@ if ($operation == 'display') {
                 $fields       = iunserializer($supplierinfo['diymemberfields']);
             }
         }
-        //累积佣金
-        $totalmoney = pdo_fetchcolumn("select sum(apply_money) from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and uid={$uid}");
-        //供应商的订单商品，supplier_apply_status==0 为未提现状态
-        $sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0");
-        //$costmoney为供应商可提现金额
-        foreach ($sp_goods as $key => $value) {
-            if ($value['goods_op_cost_price'] > 0) {
-                $costmoney += $value['goods_op_cost_price'] * $value['total'];
-            } else {
-                $option = pdo_fetch("select * from " . tablename('sz_yi_goods_option') . " where uniacid={$_W['uniacid']} and goodsid={$value['goodsid']} and id={$value['optionid']}");
-                if ($option['costprice'] > 0) {
-                    $costmoney += $option['costprice'] * $value['total'];
-                } else {
-                    $goods_info = pdo_fetch("select * from" . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
-                    $costmoney += $goods_info['costprice'] * $value['total'];
-                }
-            }
-        }
-        //后台操作供应商详细信息
+        //累积申请佣金
+        $supinfo = $this->model->getSupplierInfo($uid);
+        $totalmoney = $supinfo['totalmoney'];
+        $totalmoneyok = $supinfo['costmoney'];
         if(checksubmit('submit')){
             $data = is_array($_GPC['data']) ? $_GPC['data'] : array();
             //如果没有选择微信角色可直接提交
@@ -144,18 +112,9 @@ if ($operation == 'display') {
         }
     }
 } else if ($operation == 'merchant') {
-    //查询供应商uid下的招商员
     $uid = intval($_GPC['uid']);
-    $merchants = pdo_fetchall("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and supplier_uid={$uid}");
+    $merchants = $this->model->getSupplierMerchants($uid);
     $total = count($merchants);
-    foreach ($merchants as &$value) {
-        $merchants_member = m('member')->getMember($value['openid']);
-        $value['avatar'] = $merchants_member['avatar'];
-        $value['nickname'] = $merchants_member['nickname'];
-        $value['realname'] = $merchants_member['realname'];
-        $value['mobile'] = $merchants_member['mobile'];
-    }
-    unset($value);
 } else if ($operation == 'merchant_post') {
     //对某个供应商添加招商员
     $uid = intval($_GPC['uid']);
