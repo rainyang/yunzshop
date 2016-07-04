@@ -25,6 +25,7 @@ input {-webkit-appearance:none; outline:none;}
     {/if}
     
     <div class="balance_sub balance_sub2 <%if !cansettle%>disabled<%/if%>"  data-type="1">{php echo $this->set['texts']['withdraw']}到微信钱包</div>
+    <!-- 提现金额在1-200之间显示红包提现按钮 -->
     <%if member.commission_ok >= 1 && member.commission_ok <= 200%>
     <div class="balance_sub balance_sub4 <%if !cansettle%>disabled<%/if%>"  data-type="2">{php echo $this->set['texts']['withdraw']}到微信红包</div>
     <%/if%>

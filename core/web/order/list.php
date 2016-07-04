@@ -1222,6 +1222,7 @@ if ($operation == "display") {
     } else if ($to == "refund") {
         order_list_refund($item);
     } else if ($to == "redpack") {
+        //补发红包
         order_list_redpack($item);
     } else if ($to == "changepricemodal") {
         if (!empty($item["status"])) {
@@ -1629,26 +1630,34 @@ function order_list_finish($zym_var_32) {
         p("return")->cumulative_order_amount($zym_var_32["id"]);
     }
 
-    
+
+    // 订单确认收货后自动发送红包
     if ($zym_var_32["redprice"] > 0) {
+        // 订单红包价格字段大于0则执行发送红包
         m('finance')->sendredpack($zym_var_32['openid'], $zym_var_32["redprice"]*100, $zym_var_32["id"], $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
     }
 
     plog("order.op.finish", "订单完成 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]}");
     message("订单操作成功！", order_list_backurl() , "success");
 }
+
+// 自动发送红包失败后补发红包
 function order_list_redpack($zym_var_32) {
     global $_W, $_GPC;
     if (empty($zym_var_32['redstatus'])) {
+        //如果该字段为空则表示已经发送过
         message("红包已发送，不可重复发送！");
     }
 
     if ($zym_var_32["redprice"] > 0 ) {
+        //订单红包价格字段大于0则正常发送红包
         if ($zym_var_32["redprice"] >= 1 && $zym_var_32["redprice"] <= 200) {
+            //红包价格必须在1-200元之间
             $result = m('finance')->sendredpack($zym_var_32['openid'], $zym_var_32["redprice"]*100, $zym_var_32["id"], $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
             if (is_error($result)) {
                 message($result['message'], '', 'error');
             } else {
+                //如果发送失败则更新订单红包状态字段，字段为空则表示发送成功
                 pdo_update('sz_yi_order', 
                     array(
                         'redstatus' => ""
