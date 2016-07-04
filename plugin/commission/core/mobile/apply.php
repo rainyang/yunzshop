@@ -53,22 +53,27 @@ if ($_W['isajax']) {
 		pdo_insert('sz_yi_commission_apply', $apply);
 		$id = pdo_insertid();
 
+		//佣金提现免审核自动打款
 		if ($closewithdrawcheck > 0) {
-			//限制内金额自动打款
+			//填写免审核限额则开启自动打款
 			if ($commission_ok <= $closewithdrawcheck) {
+				//提现金额在0-审核金额之内则自动打款
 				$time = time();
 				$pay = $commission_ok;
 				if ($apply['type'] == 1 || $apply['type'] == 2) {
+					//微信支付方式 钱包或者红包 金额乘100  1为钱包，2为红包
 					$pay *= 100;
 				} 
 
 				if ($apply['type'] == 2) {
+					//红包提现发送红包
 					if ($pay <= 20000 && $pay >= 1) {
 						$result = m('finance')->sendredpack($openid, $pay, 0, $desc = '佣金提现', $act_name = '佣金提现', $remark = '佣金提现金额以红包形式发送');
 					} else {
 						message('红包提现金额限制1-200元！', '', 'error');
 					}
 				} else {
+					//微信钱包
 					$result = m('finance')->pay($openid, $apply['type'], $pay, $apply['applyno']);
 				}
 				
