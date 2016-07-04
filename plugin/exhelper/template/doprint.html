@@ -95,7 +95,7 @@
 
 							<input type="hidden" value="{php echo date('Y-m-d H:m')}" name="time[start]">
 							<input type="hidden" value="{php echo date('Y-m-d H:m')}" name="time[end]">
-							<button type="button" class="btn btn-default daterange daterange-time" data-original-title="" title=""><span class="date-title">1970-01-01 08:00 至 1970-01-01 08:00</span> <i class="fa fa-calendar"></i></button>
+							<button type="button" class="btn btn-default daterange daterange-time" data-original-title="" title=""><span class="date-title"><?php echo date('Y-m-d H:i:s',time())?> 至 <?php echo date('Y-m-d H:i:s',time())?></span> <i class="fa fa-calendar"></i></button>
 						</div>
 						<div style="height: 34px; width: 150px; float: left; padding-left: 5px;">
 							<button id="search-btn" onclick="search()" class="btn btn-primary" type="button" data-original-title="" title=""><i class="fa fa-search"></i> 搜索</button>

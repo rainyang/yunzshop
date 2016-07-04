@@ -42,15 +42,15 @@ if ($operation == 'display') {
             $condition .= " and dm.bonus_area=3";
         }
     }
-    if($_GPC['reside']['province'] != ""){
+    if($_GPC['reside']['province'] != "" && $_GPC['reside']['province'] != "请选择省份"){
         $condition .= " and dm.bonus_province='".$_GPC['reside']['province']."'";
     }
 
-    if($_GPC['reside']['city'] != ""){
+    if($_GPC['reside']['city'] != "" && $_GPC['reside']['city'] != "请选择城市"){
         $condition .= "and dm.bonus_city='".$_GPC['reside']['city']."'";
     }
 
-    if($_GPC['reside']['district'] != ""){
+    if($_GPC['reside']['district'] != "" && $_GPC['reside']['district'] != "请选择区域"){
         $condition .= "and dm.bonus_district='".$_GPC['reside']['district']."'";
     }
     if (empty($starttime) || empty($endtime)) {

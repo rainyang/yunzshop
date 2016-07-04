@@ -362,10 +362,6 @@ if(!pdo_fieldexists('sz_yi_dispatch', 'firstnum')) {
 if(!pdo_fieldexists('sz_yi_dispatch', 'secondnum')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_dispatch')." ADD  `secondnum`  int(11) DEFAULT '0';");
 }
-//供应商独立运费id
-if(!pdo_fieldexists('sz_yi_dispatch', 'supplier_uid')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_dispatch')." ADD  `supplier_uid`  int(11) DEFAULT '0';");
-}
 //文章营销
 if(!pdo_fieldexists('sz_yi_article_sys', 'article_area')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article_sys')." ADD  `article_area`  TEXT NULL COMMENT '文章阅读地区';");
@@ -632,7 +628,7 @@ if(!pdo_fieldexists('sz_yi_order', 'cashier')) {
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'realprice')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `realprice` decimal(10,2) DEFAULT '0';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `realprice` decimal(10) DEFAULT '0';");
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'deredpack')) {
@@ -656,20 +652,6 @@ if(pdo_tableexists('sz_yi_return_log')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_return_log')." DROP `id`;");
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_return_log')." ADD `id` INT NOT NULL AUTO_INCREMENT FIRST, ADD PRIMARY KEY (`id`);");
 }
-
-
-//添加全返记录表 2016-06-14
-pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_return_log')." (
-  `id` INT NOT NULL AUTO_INCREMENT,
-  `uniacid` int(11) NOT NULL,
-  `mid` int(11) NOT NULL,
-  `openid` varchar(255) NOT NULL,
-  `money` decimal(10,2) NOT NULL,
-  `status` tinyint(2) NOT NULL DEFAULT '0',
-  `returntype` tinyint(2) NOT NULL DEFAULT '0',
-  `create_time` int(11) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;");
 
 //app 首页banner表 2016-6-21
 pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_banner')." (
@@ -695,7 +677,6 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_message')." (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 
-
 //app 系统推送消息表 2016-6-21
 pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_push')." (
   `id` int(11) NOT NULL,
@@ -713,14 +694,23 @@ if(!pdo_fieldexists('sz_yi_member', 'bindapp')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bindapp` tinyint(4) NOT NULL DEFAULT '0';");
 }
 
-if(!pdo_fieldexists('sz_yi_order', 'ordersn_general')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `ordersn_general` varchar(255) NOT NULL DEFAULT '';");
+if(!pdo_fieldexists('sz_yi_member', 'ordersn_general')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `ordersn_general` varchar(255) NOT NULL DEFAULT '';");
 }
+
 //前台下单 判断是否支持配送核销字段
 if(!pdo_fieldexists('sz_yi_goods', 'isverifysend')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isverifysend` tinyint(1) NOT NULL DEFAULT '0';");
 }
-//收银台表结构
+
+pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." CHANGE `realprice` `realprice` decimal(10,2) DEFAULT '0';");
+
+//快递助手缺少
+if(!pdo_fieldexists('sz_yi_order', 'address_send')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `address_send` varchar(2000) NOT NULL DEFAULT '';");
+}
+
+//收银台添加店员表结构
 pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_store_waiter')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `sid` int(11) DEFAULT NULL,
@@ -732,6 +722,7 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_store_waiter
   `savetime` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+
 $sql = "
 CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_order')." (
   `order_id` int(11) NOT NULL,
@@ -781,4 +772,4 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_withdraw')." (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='收银台商户提现表';
 ";
-pdo_query($sql);
+pdo_fetchall($sql);

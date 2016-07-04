@@ -42,7 +42,7 @@ if (!class_exists('CashierModel')) {
 
             $orderid = $order['id'];
             if ($params['from'] == 'return') {
-                if ($order['status'] == 0 || $params['type'] == 'wechat' || $params['type'] == 'yunpay' || $params['type'] == 'alipay') {                
+                if ($order['status'] == 0 || $order['status'] == 1) {                
                     pdo_update('sz_yi_order', array(
                         'status' => 3,
                         'paytime' => time(),
@@ -64,7 +64,7 @@ if (!class_exists('CashierModel')) {
                     if (p('commission')) {
                         $this->calculateCommission($order['id']);
                     }
-                    $this->redpack($params['user'], $orderid);
+                    
                     $this->setCoupon($orderid);
                 }
             }

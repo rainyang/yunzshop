@@ -12,11 +12,8 @@
 global $_W, $_GPC;
 $cond = '';
 if (p('supplier')) {
-    $roleid = pdo_fetchcolumn('select roleid from' . tablename('sz_yi_perm_user') . ' where uid='.$_W['uid'].' and uniacid=' . $_W['uniacid']);
-    if($roleid == 0){
-        $perm_role = 0;
-    }else{
-        $perm_role = pdo_fetchcolumn('select status1 from' . tablename('sz_yi_perm_role') . ' where id=' . $roleid);
+    $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+    if($perm_role != 0){
         $cond = " and identity in ('exhelper','taobao') ";
     }
 }

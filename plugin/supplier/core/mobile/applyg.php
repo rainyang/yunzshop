@@ -3,24 +3,10 @@ global $_W, $_GPC;
 $openid = m('user')->getOpenid();
 if ($_W['isajax']) {
 	$member = m('member')->getMember($openid);
-	$uid = pdo_fetchcolumn("select uid from " . tablename('sz_yi_perm_user') . " where openid='{$openid}' and uniacid={$_W['uniacid']}");
-	$time = time();
-	$costmoney = 0;
-	$sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0");
-	foreach ($sp_goods as $key => $value) {
-	    if ($value['goods_op_cost_price'] > 0) {
-	        $costmoney += $value['goods_op_cost_price'] * $value['total'];
-	    } else {
-	        $option = pdo_fetch("select * from " . tablename('sz_yi_goods_option') . " where uniacid={$_W['uniacid']} and goodsid={$value['goodsid']} and id={$value['optionid']}");
-	        if ($option['costprice'] > 0) {
-	            $costmoney += $option['costprice'] * $value['total'];
-	        } else {
-	            $goods_info = pdo_fetch("select * from" . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
-	            $costmoney += $goods_info['costprice'] * $value['total'];
-	        }
-	    }
-	}
-	$commission_ok = $costmoney;
+	$supplieruser = $this->model->getSupplierUidAndUsername($openid);
+	$uid = $supplieruser['uid'];
+	$supplierinfo = $this->model->getSupplierInfo($uid);
+	$commission_ok = $supplierinfo['costmoney'];
 	$cansettle = $commission_ok >= 1;
 	$member['commission_ok'] = number_format($costmoney, 2);
 	if ($_W['ispost']) {

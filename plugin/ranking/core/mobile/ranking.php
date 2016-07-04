@@ -41,10 +41,10 @@ if ($_W['isajax']) {
             $pindex    = max(1, intval($_GPC['page']));
             $psize     = 10;
 
-            $list      = pdo_fetchall("select * from " . tablename('sz_yi_member') . " where uniacid = '" .$_W['uniacid'] . "' order by credit1 desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
-            $total     = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . " where  uniacid = '" .$_W['uniacid'] . "'");
+            $list      = pdo_fetchall("select * from " . tablename('mc_members') . " where uniacid = '" .$_W['uniacid'] . "' order by credit1 desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+            $total     = pdo_fetchcolumn('select count(*) from ' . tablename('mc_members') . " where  uniacid = '" .$_W['uniacid'] . "'");
             //我的排名
-            $m_list      = pdo_fetchall("select * from " . tablename('sz_yi_member') . " where uniacid = '" .$_W['uniacid'] . "' and credit1 > '".$member['credit1']."'");
+            $m_list      = pdo_fetchall("select * from " . tablename('mc_members') . " where uniacid = '" .$_W['uniacid'] . "' and credit1 > '".$member['credit1']."'");
             $m_num = count($m_list)+1;
             foreach ($list as $k => &$row) {
                 $row['number'] = ($k+1) + ($pindex - 1) * $psize;

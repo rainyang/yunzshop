@@ -7,25 +7,14 @@ global $_W, $_GPC;
 $condition = '';
 $perm_role = 0;
 if (p('supplier')) {
-    $roleid = pdo_fetchcolumn('select roleid from' . tablename('sz_yi_perm_user') . ' where uid='.$_W['uid'].' and uniacid=' . $_W['uniacid']);
-    if($roleid == 0){
-        $perm_role = 0;
-    }else{
-        if(p('supplier')){
-            $perm_role = pdo_fetchcolumn('select status1 from' . tablename('sz_yi_perm_role') . ' where id=' . $roleid);
-        }else{
-            $perm_role = 0;
-        }
-    }
+    $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+    $condition .= " and uid={$_W['uid']}";
 }
 $op = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $type = intval($_GPC['type']);
 if (empty($type)) {
     header('location: ' . $this->createPluginWebUrl('exhelper/express'));
     die;
-}
-if (p('supplier')) {
-    $condition .= " and uid={$_W['uid']}";
 }
 $printset = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_exhelper_sys') . " WHERE uniacid=:uniacid {$condition} limit 1", array(':uniacid' => $_W['uniacid']));
 if ($op == 'search') {

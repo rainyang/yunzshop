@@ -174,7 +174,7 @@
         if(returnrule == '2')
         {
             var orderprice = $('input[name="setdata[orderprice]"]').val();
-            if(orderprice < '0')
+            if(orderprice <= '0')
             {
                 alert('订单累计额度不能为空！');
                 return false;

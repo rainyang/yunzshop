@@ -125,6 +125,8 @@ if(!is_weixin()){
         }
     }
 }
+//分销佣金
+$commissionprice = p('commission')->getCommission($goods);
 if ($_W['isajax']) {
     if (empty($goods)) {
         show_json(0);
@@ -240,10 +242,10 @@ if ($_W['isajax']) {
     ));
 
     //我的足迹
-    $history_goods = pdo_fetchall('select g.* from ' . tablename('sz_yi_member_history') . ' h '.' left join '.tablename('sz_yi_goods').' g on h.goodsid = g.id  where  h.uniacid=:uniacid and h.openid=:openid and h.deleted=0 order by h.createtime desc limit 5', array(
+    $history_goods = set_medias(pdo_fetchall('select g.* from ' . tablename('sz_yi_member_history') . ' h '.' left join '.tablename('sz_yi_goods').' g on h.goodsid = g.id  where  h.uniacid=:uniacid and h.openid=:openid and h.deleted=0 order by h.createtime desc limit 5', array(
         ':uniacid' => $uniacid,
         ':openid' => $openid
-    ));
+    )),'thumb');
     if ($history <= 0) {
         $history = array(
             'uniacid' => $uniacid,
@@ -270,19 +272,22 @@ if ($_W['isajax']) {
             }
         }
     }
-    $comment =pdo_fetchall("select * from ".tablename('sz_yi_goods_comment')." where goodsid=:id and uniacid=:uniacid",array(':id' => $goodsid , ':uniacid' => $uniacid));
-    $commentcount =pdo_fetchcolumn("select count(id) from ".tablename('sz_yi_goods_comment')." where goodsid=:id and uniacid=:uniacid",array(':id' => $goodsid , ':uniacid' => $uniacid));
+    $comment = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods_comment')." where goodsid=:id and uniacid=:uniacid",array(':id' => $goodsid , ':uniacid' => $uniacid)),'headimgurl');
+    $commentcount = pdo_fetchcolumn("select count(id) from ".tablename('sz_yi_goods_comment')." where goodsid=:id and uniacid=:uniacid",array(':id' => $goodsid , ':uniacid' => $uniacid));
 
     //热卖商品
-    if($goods['tcate']){
-         $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where tcate=:tcate and pcate=:pcate and ccate=:ccate and uniacid=:uniacid and ishot =1 limit 5",array(':uniacid' => $uniacid , ':tcate' => $goods['tcate'] , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
-     }else if ($goods['ccate']){
-        $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate and ccate=:ccate and uniacid=:uniacid and ishot =1 limit 5",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
-     }else if ($goods['pcate']){
-        $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate  and uniacid=:uniacid and ishot =1 limit 5",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] )),'thumb');
-     }
+if($goods['tcate']){
+     $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where tcate=:tcate and pcate=:pcate and ccate=:ccate and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':tcate' => $goods['tcate'] , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
+ }else if ($goods['ccate']){
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate and ccate=:ccate and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
+ }else if ($goods['pcate']){
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate  and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] )),'thumb');
+ }else{
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where uniacid=:uniacid order by sales desc limit 10",array(':uniacid' => $uniacid )),'thumb');
+ }
    
-
+    $category = m('shop')->getCategory();
+    
     $stores = array();
     if ($goods['isverify'] == 2) {
         $storeids = array();
@@ -335,7 +340,8 @@ if ($_W['isajax']) {
         'comment' => $comment,
         'commentcount' => $commentcount,
         'ishot' => $ishot,
-        'history' => $history_goods
+        'history' => $history_goods,
+        'category' => $category
     );
     $commission = p('commission');
     if ($commission) {
