@@ -272,6 +272,18 @@ if ($operation == "display") {
         $sql.= "LIMIT " . ($pindex - 1) * $psize . "," . $psize;
     }
     $list = pdo_fetchall($sql, $paras);
+
+    if (p('supplier')) {
+        foreach ($list as &$value) {
+            if ($value['supplier_uid'] == 0) {
+                $value['vendor'] = '总店';
+            } else {
+                $sup_username = pdo_fetchcolumn("select username from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and uid={$value['supplier_uid']}");
+                $value['vendor'] = '供应商：' . $sup_username;
+            }
+        }
+    }
+    
     $paytype = array(
         '0' => array(
             "css" => "default",

@@ -328,26 +328,25 @@ class Sz_DYi_Order
             }
         }
     }
-    function getDefaultDispatch(){
+    function getDefaultDispatch($supplier_uid = 0){
         global $_W;
-        $dephp_31 = 'select * from ' . tablename('sz_yi_dispatch') . ' where isdefault=1 and uniacid=:uniacid and enabled=1 Limit 1';
-        //$dephp_31 = 'select * from ' . tablename('sz_yi_dispatch') . ' where uniacid=:uniacid and enabled=1 Limit 1';
-        $dephp_11 = array(':uniacid' => $_W['uniacid']);
-        $dephp_13 = pdo_fetch($dephp_31, $dephp_11);
-        return $dephp_13;
+        $sql = 'select * from ' . tablename('sz_yi_dispatch') . ' where isdefault=1 and uniacid=:uniacid and enabled=1 and supplier_uid=:supplier_uid Limit 1';
+        $prem = array(':supplier_uid' => $supplier_uid, ':uniacid' => $_W['uniacid']);
+        $DefaultDispatch = pdo_fetch($sql, $prem);
+        return $DefaultDispatch;
     }
-    function getNewDispatch(){
+    function getNewDispatch($supplier_uid = 0){
         global $_W;
-        $dephp_31 = 'select * from ' . tablename('sz_yi_dispatch') . ' where uniacid=:uniacid and enabled=1 order by id desc Limit 1';
-        $dephp_11 = array(':uniacid' => $_W['uniacid']);
-        $dephp_13 = pdo_fetch($dephp_31, $dephp_11);
-        return $dephp_13;
+        $sql = 'select * from ' . tablename('sz_yi_dispatch') . ' where uniacid=:uniacid and enabled=1 and supplier_uid=:supplier_uid order by id desc Limit 1';
+        $prem = array(':supplier_uid' => $supplier_uid,':uniacid' => $_W['uniacid']);
+        $NewDispatch = pdo_fetch($sql, $prem);
+        return $NewDispatch;
     }
-    function getOneDispatch($dephp_32){
+    function getOneDispatch($dispatch_id, $supplier_uid = 0){
         global $_W;
-        $dephp_31 = 'select * from ' . tablename('sz_yi_dispatch') . ' where id=:id and uniacid=:uniacid and enabled=1 Limit 1';
-        $dephp_11 = array(':id' => $dephp_32, ':uniacid' => $_W['uniacid']);
-        $dephp_13 = pdo_fetch($dephp_31, $dephp_11);
-        return $dephp_13;
+        $sql = 'select * from ' . tablename('sz_yi_dispatch') . ' where id=:id and uniacid=:uniacid and enabled=1 and supplier_uid=:supplier_uid Limit 1';
+        $prem = array(':supplier_uid' => $supplier_uid, ':id' => $dispatch_id, ':uniacid' => $_W['uniacid']);
+        $OneDispatch = pdo_fetch($sql, $prem);
+        return $OneDispatch;
     }
 }

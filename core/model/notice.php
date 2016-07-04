@@ -929,8 +929,10 @@ class Sz_DYi_Notice
 
 
                     $remark1 = "\r\n收银台订单支付成功通知!";
-
-                    $remark1 .= "\r\n购买者信息:\n" . $buyerinfo;
+                    if(!empty($buyerinfo)){
+                    	$remark1 .= "\r\n购买者信息:\n" . $buyerinfo;
+                    }
+                    
                     
                     $msg1 = array(
                         'first' => array(

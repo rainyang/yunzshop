@@ -7,8 +7,96 @@ if (!class_exists('SupplierModel')) {
 
 	class SupplierModel extends PluginModel
 	{
-        public $parentAgents = "";
 
+        //某个供应商下的招商员
+        public function getSupplierMerchants($uid){
+            global $_W, $_GPC;
+            if (empty($uid)) {
+                return '';
+            }
+            $merchants = pdo_fetchall("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and supplier_uid={$uid}");
+            foreach ($merchants as &$value) {
+                $merchants_member = m('member')->getMember($value['openid']);
+                $value['avatar'] = $merchants_member['avatar'];
+                $value['nickname'] = $merchants_member['nickname'];
+                $value['realname'] = $merchants_member['realname'];
+                $value['mobile'] = $merchants_member['mobile'];
+            }
+            unset($value);
+            return $merchants;
+        }
+
+        //供应商角色权限id
+        public function getRoleId(){
+            global $_W, $_GPC;
+            $roleid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_perm_role') . ' where status1=1');
+            return $roleid;
+        }
+
+        //获取供应商订单佣金相关数据
+        public function getSupplierInfo($uid){
+            global $_W, $_GPC;
+            $supplierinfo = array();
+            $supplierinfo['ordercount'] = 0;
+            $supplierinfo['commission_total'] = 0;
+            $supplierinfo['costmoney'] = 0;
+            $supplierinfo['totalmoney'] = 0;
+            $supplierinfo['ordercount'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where supplier_uid={$uid} and userdeleted=0 and deleted=0 and uniacid={$_W['uniacid']} ");
+            $supplierinfo['commission_total'] = number_format(pdo_fetchcolumn("select sum(apply_money) from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and uid={$uid} and status=1"), 2);
+            $sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0");
+            foreach ($sp_goods as $key => $value) {
+                if ($value['goods_op_cost_price'] > 0) {
+                    $supplierinfo['costmoney'] += $value['goods_op_cost_price'] * $value['total'];
+                } else {
+                    $option = pdo_fetch("select * from " . tablename('sz_yi_goods_option') . " where uniacid={$_W['uniacid']} and goodsid={$value['goodsid']} and id={$value['optionid']}");
+                    if ($option['costprice'] > 0) {
+                        $supplierinfo['costmoney'] += $option['costprice'] * $value['total'];
+                    } else {
+                        $goods_info = pdo_fetch("select * from" . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+                        $supplierinfo['costmoney'] += $goods_info['costprice'] * $value['total'];
+                    }
+                }
+            }
+            $supplierinfo['totalmoney'] = pdo_fetchcolumn("select sum(apply_money) from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and uid={$uid}");
+            return $supplierinfo;
+        }
+
+        //通过前台用户openid获取供应商uid和username
+        public function getSupplierUidAndUsername($openid){
+            global $_W, $_GPC;
+            $supplieruser = pdo_fetch("select uid,username from " . tablename('sz_yi_perm_user') . " where openid='{$openid}' and uniacid={$_W['uniacid']}");
+            return $supplieruser;
+        }
+
+        //前台判断用户是否为供应商
+        public function isSupplier($openid){
+            global $_W, $_GPC;
+            $issupplier = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where openid='{$openid}' and uniacid={$_W['uniacid']} and roleid=(select id from " . tablename('sz_yi_perm_role') . " where status1=1)");
+            return $issupplier;
+        }
+
+        //获取供应商权限角色id
+        public function getSupplierPermId(){
+            global $_W, $_GPC;
+            $perms = pdo_fetch('select * from ' . tablename('sz_yi_perm_role') . ' where status1 = 1');
+            $supplier_perms = 'shop,shop.goods,shop.goods.view,shop.goods.add,shop.goods.edit,shop.goods.delete,order,order.view,order.view.status_1,order.view.status0,order.view.status1,order.view.status2,order.view.status3,order.view.status4,order.view.status5,order.view.status9,order.op,order.op.pay,order.op.send,order.op.sendcancel,order.op.finish,order.op.verify,order.op.fetch,order.op.close,order.op.refund,order.op.export,order.op.changeprice,exhelper,exhelper.print,exhelper.print.single,exhelper.print.more,exhelper.exptemp1,exhelper.exptemp1.view,exhelper.exptemp1.add,exhelper.exptemp1.edit,exhelper.exptemp1.delete,exhelper.exptemp1.setdefault,exhelper.exptemp2,exhelper.exptemp2.view,exhelper.exptemp2.add,exhelper.exptemp2.edit,exhelper.exptemp2.delete,exhelper.exptemp2.setdefault,exhelper.senduser,exhelper.senduser.view,exhelper.senduser.add,exhelper.senduser.edit,exhelper.senduser.delete,exhelper.senduser.setdefault,exhelper.short,exhelper.short.view,exhelper.short.save,exhelper.printset,exhelper.printset.view,exhelper.printset.save,exhelper.dosen,taobao,taobao.fetch';
+            if(empty($perms)){
+                $data = array(
+                    'rolename' => '供应商',
+                    'status' => 1,
+                    'status1' => 1,
+                    'perms' => $supplier_perms,
+                    'deleted' => 0
+                    );
+                pdo_insert('sz_yi_perm_role' , $data);
+                $permid = pdo_insertid();
+            }else{
+                $permid = $perms['id'];
+            }
+            return $permid;
+        }
+
+        //验证用户是否为供应商，$perm_role不为空是供应商。
 		public function verifyUserIsSupplier($uid)
 		{
 			global $_W, $_GPC;
@@ -19,30 +107,32 @@ if (!class_exists('SupplierModel')) {
 	        }
 		}
         
+        //获取供应商的基础设置
 		public function getSet()
 		{	
-			$_var_0 = parent::getSet();
-			return $_var_0;
+			$set = parent::getSet();
+			return $set;
 		}
-		public function sendMessage($openid = '', $data = array(), $_var_151 = '')
+
+        //通知设置
+		public function sendMessage($openid = '', $data = array(), $becometitle = '')
 		{
-			$_var_22 = m('member')->getMember($openid);
-			if ($_var_151 == TM_SUPPLIER_PAY) {
+            global $_W, $_GPC;
+			$member = m('member')->getMember($openid);
+			if ($becometitle == TM_SUPPLIER_PAY) {
 				$_var_155 = '恭喜您，您的提现将通过 [提现方式] 转账提现金额为[金额]已在[时间]转账到您的账号，敬请查看';
 				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', time()), $_var_155);
 				$_var_155 = str_replace('[金额]', $data['money'], $_var_155);
 				$_var_155 = str_replace('[提现方式]', $data['type'], $_var_155);
 				$_var_156 = array('keyword1' => array('value' => '供应商打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
-				/*if (!empty($_var_153)) {
-					m('message')->sendTplNotice($openid, $_var_153, $_var_156);
-				} else {*/
 				m('message')->sendCustomNotice($openid, $_var_156);
-				//}
 			}
 		}
 
+        //推送申请审核结果
 		public function sendSupplierInform($openid = '', $status = '')
 		{	
+            global $_W, $_GPC;
 			if ($status == 1) {
 				$resu = '驳回';
 			} else {
@@ -62,7 +152,6 @@ if (!class_exists('SupplierModel')) {
 			m('message')->sendCustomNotice($openid, $_var_156);
 		}
 		
-        //订单分解
         /**订单分解修改，订单会员折扣、积分折扣、余额抵扣、使用优惠劵后订单分解按商品价格与总商品价格比例拆分，使用运费的平分运费。添加平分修改运费以及修改订单金额的信息到新的订单表中。**/
 		public function order_split($orderid){
 			global $_W;
@@ -151,11 +240,11 @@ if (!class_exists('SupplierModel')) {
                     $order['deductcredit2'] = $deductcredit2;
                     $order['changeprice'] = $changeprice;
                     //平分实际支付运费金额
-                    $order['dispatchprice'] = round($dispatchprice/(count($resu)),2);
+                    $order['dispatchprice'] = round($dispatchprice/(count($resolve_order_goods)),2);
                     //平分老的支付运费金额
-                    $order['olddispatchprice'] = round($olddispatchprice/(count($resu)),2);
+                    $order['olddispatchprice'] = round($olddispatchprice/(count($resolve_order_goods)),2);
                     //平分修改后支付运费金额
-                    $order['changedispatchprice'] = round($changedispatchprice/(count($resu)),2);
+                    $order['changedispatchprice'] = round($changedispatchprice/(count($resolve_order_goods)),2);
                     //新订单金额计算，实际支付金额减计算后优惠劵金额、会员折金额、积分金额、余额抵扣金额，在加上实际运费的金额。
                     $order['price'] = $realprice - $couponprice - $discountprice - $deductprice - $deductcredit2 + $order['dispatchprice'];
 

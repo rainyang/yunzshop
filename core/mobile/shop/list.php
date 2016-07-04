@@ -64,17 +64,20 @@ $args = array(
     'order' => $_GPC['order'],
     'by' => $_GPC['by']
 );
+if($args['pcate']){
+    $pcatename = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$args['pcate']." and uniacid=".$uniacid);
+}
+if($args['ccate']){
+    $ccatename = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$args['ccate']." and uniacid=".$uniacid);
+}
+if($args['tcate']){
+    $tcatename = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$args['tcate']." and uniacid=".$uniacid);
+}
 
-if($_GPC['tcate']){
-     $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where tcate=:tcate and pcate=:pcate and ccate=:ccate and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':tcate' => $goods['tcate'] , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
- }else if ($_GPC['ccate']){
-    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate and ccate=:ccate and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
- }else if ($_GPC['pcate']){
-    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate  and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] )),'thumb');
- }else{
-    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where uniacid=:uniacid order by sales desc limit 10",array(':uniacid' => $uniacid )),'thumb');
- }
-
+if($args['pcate1']){
+    $pcate1name = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category2')." where id =".$args['pcate1']." and uniacid=".$uniacid);
+}
+$category2 = m('shop')->getCategory2();
 //$args = icheck_gpc($args);
 if (!empty($myshop['selectgoods']) && !empty($myshop['goodsids'])) {
     $args['ids'] = $myshop['goodsids'];
@@ -145,18 +148,50 @@ if (!empty($tcate1)) {
             $params[':pcate1'] = intval($pcate1);
         }
     }
+} 
+$minprice = intval($_GPC['minprice']);
+$maxprice = intval($_GPC['maxprice']);
+if(!empty($maxprice) ){
+    $condition .= ' AND `marketprice` <= :maxprice';
+    $params[':maxprice'] = $maxprice;
+}
+
+if (!empty($minprice) ) {
+    $condition .= ' AND `marketprice` >= :minprice';
+    $params[':minprice'] = $minprice;
+
 }
 $total = pdo_fetchcolumn("SELECT count(*) FROM " . tablename('sz_yi_goods') . " where 1 {$condition}", $params);
 
 $pindex = max(1, intval($_GPC['page']));
 $pager = pagination($total, $pindex, $args['pagesize']);
 
-
-if(intval($shopset['catlevel']) == 3){
-    $third_category = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where parentid=:ccate and uniacid=:uniacid",array(':ccate' => $_GPC['ccate'] , ':uniacid' => $_W['uniacid'])),'advimg,thumb');
+if(!empty($maxprice) || !empty($minprice)){
+    $goods = set_medias(pdo_fetchall("SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition}", $params),'thumb');
+}else{
+    $goods    = m('goods')->getList($args);
 }
 
-$goods    = m('goods')->getList($args);
+if(intval($shopset['catlevel']) == 3){
+
+    if($args['ccate']){
+        $third_category = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where parentid=:ccate and uniacid=:uniacid",array(':ccate' => $args['ccate'] , ':uniacid' => $_W['uniacid'])),'advimg,thumb');
+    }
+    
+    
+}
+
+if($args['tcate']){
+     $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where tcate=:tcate and pcate=:pcate and ccate=:ccate and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':tcate' => $args['tcate'] , ':pcate' => $args['pcate'] , ':ccate' => $args['ccate'])),'thumb');
+ }else if ($args['ccate']){
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate and ccate=:ccate and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $args['pcate'] , ':ccate' => $args['ccate'])),'thumb');
+ }else if ($args['pcate']){
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate  and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $args['pcate'] )),'thumb');
+ }else{
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where uniacid=:uniacid order by sales desc limit 10",array(':uniacid' => $uniacid )),'thumb');
+ }
+
+
 $category = false;
 if (intval($_GPC['page']) <= 1) {
     if (!empty($_GPC['tcate'])) {
