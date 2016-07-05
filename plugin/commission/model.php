@@ -592,24 +592,24 @@ if (!class_exists('CommissionModel')) {
 			}
 		}
 
-		public function getCommission($_var_5)
+		public function getCommission($goods)
 		{
 			global $_W;
 			$set = $this->getSet();
-			$_var_58 = 0;
-			if ($_var_5['hascommission'] == 1) {
-				$_var_58 = $set['level'] >= 1 ? ($_var_5['commission1_rate'] > 0 ? ($_var_5['commission1_rate'] * $_var_5['marketprice'] / 100) : $_var_5['commission1_pay']) : 0;
+			$commission = 0;
+			if ($goods['hascommission'] == 1) {
+				$commission = $set['level'] >= 1 ? ($goods['commission1_rate'] > 0 ? ($goods['commission1_rate'] * $goods['marketprice'] / 100) : $goods['commission1_pay']) : 0;
 			} else {
-				$_var_20 = m('user')->getOpenid();
-				$_var_8 = $this->getLevel($_var_20);
-				$price = $this->calculate_goods_method($_var_5);
-				if (!empty($_var_8)) {
-					$_var_58 = $set['level'] >= 1 ? round($_var_8['commission1'] * $price / 100, 2) : 0;
+				$openid = m('user')->getOpenid();
+				$level = $this->getLevel($openid);
+				$price = $this->calculate_goods_method($goods);
+				if (!empty($level)) {
+					$commission = $set['level'] >= 1 ? round($level['commission1'] * $price / 100, 2) : 0;
 				} else {
-					$_var_58 = $set['level'] >= 1 ? round($set['commission1'] * $price / 100, 2) : 0;
+					$commission = $set['level'] >= 1 ? round($set['commission1'] * $price / 100, 2) : 0;
 				}
 			}
-			return $_var_58;
+			return $commission;
 		}
 
 		public function createMyShopQrcode($_var_78 = 0, $_var_79 = 0)
@@ -1354,13 +1354,6 @@ if (!class_exists('CommissionModel')) {
 			$_var_132 = m('member')->getMember($_var_20);
 			if (empty($_var_132)) {
 				return;
-			}
-			$pluginbonus = p("bonus");
-			if(!empty($pluginbonus)){
-				$bonus_set = $pluginbonus->getSet();
-				if(!empty($bonus_set['start'])){
-					$pluginbonus->upgradeLevelByAgent($_var_20);
-				}
 			}
 			$_var_139 = intval($set['leveltype']);
 			if ($_var_139 == 4 || $_var_139 == 5) {

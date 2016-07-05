@@ -4,9 +4,7 @@ if (!defined('IN_IA')) {
 }
 global $_W, $_GPC;
 @session_start();
-//print_r($_W);exit;
 setcookie('preUrl', $_W['siteurl']);
-//echo $_COOKIE['preUrl'];exit;
 $openid         = m('user')->getOpenid();
 $popenid        = m('user')->islogin();
 $openid         = $openid?$openid:$popenid;
@@ -130,6 +128,7 @@ if(!is_weixin()){
 }
 //分销佣金
 $commissionprice = p('commission')->getCommission($goods);
+
 if ($_W['isajax']) {
     if (empty($goods)) {
         show_json(0);

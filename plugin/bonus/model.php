@@ -509,6 +509,7 @@ if (!class_exists('BonusModel')) {
 				if($agent_area_money > 0){
 					$this->sendMessage($openid, array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $realprice, 'goods' => $goods, 'commission' => $agent_area_money, 'paytime' => $order['paytime']), TM_BONUS_ORDER_AREA_PAY);
 				}
+				$this->upgradeLevelByAgent($openid);
 			}
 		}
 
@@ -557,6 +558,7 @@ if (!class_exists('BonusModel')) {
 				if($agent_area_money > 0){
 					$this->sendMessage($openid, array('nickname' => $member['nickname'], 'ordersn' => $order['ordersn'], 'price' => $realprice, 'goods' => $goods, 'commission' => $agent_area_money, 'finishtime' => $order['finishtime']), TM_BONUS_ORDER_AREA_FINISH);
 				}
+				$this->upgradeLevelByAgent($openid);
 			}
 		}
 
@@ -600,7 +602,7 @@ if (!class_exists('BonusModel')) {
 				return false;
 			}
 			$set = $this->getSet();
-			$member = p('commission')->getInfo($mid, array('ordercount3'));
+			$member = p('commission')->getInfo($mid, array('ordercount0'));
 
 			if (empty($member)) {
 				return;
@@ -662,7 +664,7 @@ if (!class_exists('BonusModel')) {
 			//分销订单总金额
 			if(in_array('11', $leveltype)){
 				if($levelup['commissionmoney'] > 0){
-					if($member['ordermoney'] < $levelup['commissionmoney']){
+					if($member['ordermoney0'] < $levelup['commissionmoney']){
 						$isleveup = false;
 					}
 				}
