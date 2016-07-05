@@ -58,7 +58,7 @@
                               
                                    {/if}
                                 {/if}
-                                
+                            <!-- 补发红包 -->
                             {elseif $item['statusvalue'] == 3}
                                 {if !empty($item['redstatus'])}
                                     <a class="btn btn-danger btn-sm disbut" href="{php echo $this->createWebUrl('order', array('op' => 'deal','to'=>'redpack','id' => $item['id']))}" onclick="return confirm('确认发送红包吗？');return false;">补发红包</a>
