@@ -89,7 +89,6 @@
         <li class="dropdown">
            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-cubes'></i> 插件 <i class="fa fa-angle-down"></i></a>
             <ul class="dropdown-menu plug-list">
-                <?php print_r($plugins);?>
                 {loop $plugins $plugin}
                 {ifpp $plugin['identity']}
                      {if p('supplier') && $perm_role == 1}
@@ -97,7 +96,9 @@
                          <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
                          {/if}
                      {else}
+                        {if p($plugin['identity'])}
                          <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
+                         {/if}
                      {/if}
                 {/if}
                 {/loop}

@@ -61,12 +61,12 @@
 
     <div class="top">
         <div class="bgimg"><img src="{if $this->yzShopSet['img']}{php echo
-        $yzImages['img']}{else}../addons/sz_yi/template/mobile/default/static/images/bg.jpg{/if}"></div>
+        $this->yzImages['img']}{else}../addons/sz_yi/template/mobile/default/static/images/bg.jpg{/if}"></div>
 <!--        <div class="list" onclick="location.href='{php echo $this->createMobileUrl('shop/category')}'"><i class="fa fa-list"></i> 分类</div>-->
         <div class="topbar">
             
             <div class="logo"><img src="{if $this->yzShopSet['logo']}{php echo
-            $$yzImages['logo']}{else}../addons/sz_yi/template/mobile/default/static/images/logo.png{/if}"></div>
+            $this->yzImages['logo']}{else}../addons/sz_yi/template/mobile/default/static/images/logo.png{/if}"></div>
             <div class="shop_name">{php echo $this->yzShopSet['name']}</div>
             <div class="menu">
                 <div class="nav navon"><i class="fa fa-home"></i><br>首页</div>
