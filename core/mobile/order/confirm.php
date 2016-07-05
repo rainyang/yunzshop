@@ -923,7 +923,7 @@ if ($_W['isajax']) {
                 }
             }
             if (!empty($optionid)) {
-                $option = pdo_fetch('select id,title,marketprice,costprice,goodssn,productsn,stock,virtual,weight from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
+                $option = pdo_fetch('select * from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
                     ':uniacid' => $uniacid,
                     ':goodsid' => $goodsid,
                     ':id' => $optionid
