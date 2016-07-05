@@ -97,9 +97,7 @@
                          <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
                          {/if}
                      {else}
-                        {if p($plugin['identity'])}
                          <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
-                         {/if}
                      {/if}
                 {/if}
                 {/loop}
