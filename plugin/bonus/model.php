@@ -277,7 +277,7 @@ if (!class_exists('BonusModel')) {
 		public function getChildAgents($id){
             global $_W;
 
-            $sql = "select id from " . tablename('sz_yi_member') . " where agentid={$id} and status=1 and isagent = 1 and uniacid=".$_W['uniacid'];
+            $sql = "select id from " . tablename('sz_yi_member') . " where agentid={$id} and id!={$id} and status=1 and isagent = 1 and uniacid=".$_W['uniacid'];
             $agents =  pdo_fetchall($sql);
             foreach ($agents as $agent) {
                 $this->agents[] = $agent['id'];
