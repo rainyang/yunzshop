@@ -11,9 +11,7 @@ if ($_W['isajax']) {
 	$member['commission_ok'] = number_format($costmoney, 2);
 	if ($_W['ispost']) {
 		$time = time();
-		foreach ($sp_goods as $key => $value) {
-			pdo_update('sz_yi_order_goods', array('supplier_apply_status' => 1), array('id' => $value['id'], 'uniacid' => $_W['uniacid']));
-		}
+		
 		$applyno = m('common')->createNO('commission_apply', 'applyno', 'CA');
 		$apply = array(
 			'uid'			=> $uid,
@@ -25,6 +23,16 @@ if ($_W['isajax']) {
 			'uniacid'		=> $_W['uniacid']
 			);
 		pdo_insert('sz_yi_supplier_apply', $apply);
+		@file_put_contents(IA_ROOT . "/addons/sz_yi/data/apply.log", print_r($apply, 1), FILE_APPEND);
+		if( pdo_insertid() ) {
+			foreach ($sp_goods as $key => $value) {
+				pdo_update('sz_yi_order_goods', array('supplier_apply_status' => 1), array('id' => $value['id'], 'uniacid' => $_W['uniacid']));
+			}
+			$tmp_sp_goods = $sp_goods;
+			$tmp_sp_goods['applyno'] = $applyno;
+			@file_put_contents(IA_ROOT . "/addons/sz_yi/data/sp_goods.log", print_r($tmp_sp_goods, 1), FILE_APPEND);
+		}
+
 		$returnurl = urlencode($this->createPluginMobileUrl('supplier/orderj'));
 		$infourl = $this->createPluginMobileUrl('supplier/orderj', array('returnurl' => $returnurl));
 		$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 2 ? '微信' : '线下'), TM_COMMISSION_APPLY);

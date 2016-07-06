@@ -253,15 +253,21 @@ if ($operation == "display") {
                     'applysn' => $applysn,
                     'uniacid' => $_W['uniacid']
                     );
-                pdo_insert('sz_yi_supplier_apply',$data);
 
-                foreach ($mygoodsid as $ids) {
-                    $arr = array(
-                        'supplier_apply_status' => 1
-                        );
-                    pdo_update('sz_yi_order_goods', $arr, array(
-                        'id' => $ids['id']
-                        ));
+                pdo_insert('sz_yi_supplier_apply',$data);
+                @file_put_contents(IA_ROOT . "/addons/sz_yi/data/apply.log", print_r($data, 1), FILE_APPEND);
+                if( pdo_insertid() ) {
+                    foreach ($mygoodsid as $ids) {
+                        $arr = array(
+                            'supplier_apply_status' => 1
+                            );
+                        pdo_update('sz_yi_order_goods', $arr, array(
+                            'id' => $ids['id']
+                            ));
+                    }
+                    $tmp_sp_goods = $sp_goods;
+                    $tmp_sp_goods['applyno'] = $applysn;
+                    @file_put_contents(IA_ROOT . "/addons/sz_yi/data/sp_goods.log", print_r($tmp_sp_goods, 1), FILE_APPEND);
                 }
                 message("提现申请已提交，请耐心等待!", $this->createWebUrl('order/list'), "success");
             }
