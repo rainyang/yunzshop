@@ -20,6 +20,7 @@ class Core extends WeModuleSite
     public $footer = array();
     public $header = null;
     public $yzShopSet = array();
+    public $yzImages = array();
     public function __construct()
     {
         global $_W, $_GPC;
@@ -43,6 +44,7 @@ class Core extends WeModuleSite
             }
         }
         $this->yzShopSet = m('common')->getSysset('shop');
+        $this->yzImages = set_medias(m('common')->getSysset('shop'), array('logo', 'img', 'pclogo'));
 
         if (is_app()) {
             /**
@@ -512,4 +514,5 @@ class Core extends WeModuleSite
         }
     }*/
 }
+
 
