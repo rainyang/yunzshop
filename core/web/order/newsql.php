@@ -772,4 +772,12 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_withdraw')." (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='收银台商户提现表';
 ";
+
 pdo_fetchall($sql);
+//一级分类后台设置添加PC首页推荐广告
+if(!pdo_fieldexists('sz_yi_category', 'advimg_pc')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `advimg_pc` varchar(255) NOT NULL DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_category', 'advurl_pc')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `advurl_pc` varchar(500) NOT NULL DEFAULT '';");
+}
