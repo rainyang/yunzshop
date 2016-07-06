@@ -381,7 +381,7 @@ class Core extends WeModuleSite
     {
         global $_W;
         if (is_app()) {
-            m('cache')->set('template_shop', $_W['template']);
+            m('cache')->set('app_template_shop', $_W['template']);
         }
 
         //print_r($_SERVER);exit;
@@ -419,7 +419,12 @@ class Core extends WeModuleSite
                 $source  = IA_ROOT . "/addons/{$name}/plugin/" . $explode[0] . "/template/" . implode('/', $temp) . ".html";
             }
         } else {
-            $template = m('cache')->getString('template_shop');
+            if (is_app()) {
+                $template = m('cache')->getString('app_template_shop');
+            } else {
+                $template = m('cache')->getString('template_shop');
+            }
+
             if (empty($template)) {
                 $template = "default";
             }
@@ -503,4 +508,5 @@ class Core extends WeModuleSite
         }
     }*/
 }
+
 
