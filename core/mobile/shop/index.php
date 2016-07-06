@@ -176,6 +176,8 @@ if ($_W['isajax']) {
 			$category[$key]['goods'] = $goods;
 			foreach($children as $key1 => $value1){
 				$category[$key]['children'][$key1] = $value1;
+				$third = set_medias(pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and ishome=1 and uniacid=:uniacid",array(':pid' => $value1['id'] , ':uniacid' => $_W["uniacid"])),'advimg');
+				$category[$key]['third'] = $third;
 				
 			}
 		}
