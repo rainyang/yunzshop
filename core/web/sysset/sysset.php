@@ -55,6 +55,20 @@ if ($op == 'template') {
         }
         closedir($handle);
     }
+
+    $styles_pc = array();
+    //主题列表
+    $dir_pc    = IA_ROOT . "/addons/sz_yi/template/pc/";
+    if ($handle_pc = opendir($dir_pc)) {
+        while (($file_pc = readdir($handle_pc)) !== false) {
+            if ($file_pc != ".." && $file_pc != "." && $file_pc != "app") {
+                if (is_dir($dir_pc . "/" . $file_pc)) {
+                    $styles_pc[] = $file_pc;
+                }
+            }
+        }
+        closedir($handle_pc);
+    }
 } else if ($op == 'notice') {
     $salers = array();
     if (isset($set['notice']['openid'])) {
@@ -211,8 +225,10 @@ if (checksubmit()) {
     } elseif ($op == 'template') {
         $shop                 = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['style'] = save_media($shop['style']);
+        $set['shop']['style_pc'] = save_media($shop['style_pc']);
         $set['shop']['theme'] = trim($shop['theme']);
         m('cache')->set('template_shop', $set['shop']['style']);
+        m('cache')->set('template_shop_pc', $set['shop']['style_pc']);
         m('cache')->set('theme_shop', $set['shop']['theme']);
         plog('sysset.save.template', '修改系统设置-模板设置');
     } elseif ($op == 'member') {

@@ -378,9 +378,58 @@ div.flicking_con a.on{background-position:0 -9px}
        
 
       </div>
-    </div>
+    </div>     
 
-      <%if goods.isverify=='2'%>
+
+<div class="detail_rc">
+
+<div class="goods-side-warp">
+<div class="goods-side">
+                <div class="goods-side-tit"><s></s><span>看了又看</span></div>
+                <div id="J_GoodsSideSlide" class="goods-side-bd" style="position: relative;">
+                    <div class="goods-side-slides-wrap">
+                        <ul>
+                                <%each history as item%>								
+								<li>
+                                    <a href="{php echo $this->createMobileUrl('shop/detail')}&id=<%item.id%>">									
+                                        <div class="slidepic">
+                                            <img src="<%item.thumb%>">
+                                        </div>
+                                        <div class="slideprice">
+                                            ¥<span><%item.marketprice%></span>
+                                        </div>
+                                        <div class="slidename">
+                                        <%item.title%>
+                                        </div>
+                                    </a>
+                                </li>
+								<%/each%>							
+                               </ul>
+                    </div>
+                    <div class="goods-side-slides-nav">
+                        <div class="prev"></div>
+                        <div class="next"></div>
+                    </div>
+                </div>
+            </div>
+
+
+</div>
+</div>
+
+</div>
+   <!--<div id="buytime" class="good_speci" style="display:none"></div>
+
+   <div id="notbuy" class="good_speci" style="display:none"></div>
+   
+   <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1'  && goods.groupbuy=='1'  && goods.levelbuy=='1'%> 
+    <div class="good_speci" onClick="choose()">
+                <span id="optiondiv">请选择商品规格及数量</span>
+                <i class="fa fa-angle-right" style="float:right; line-height:44px; font-size:26px;"></i>
+    </div>
+     <%/if%>-->
+
+<%if goods.isverify=='2'%>
      <div class="good_speci" onclick="showStores(this)" show="1">适用的门店
          <i class="fa fa-angle-down" style="float:right; line-height:44px; font-size:26px;"></i>
      </div>
@@ -429,53 +478,6 @@ div.flicking_con a.on{background-position:0 -9px}
       </div>
      <%/if%>
 
-
-<div class="detail_rc">
-
-<div class="goods-side-warp">
-<div class="goods-side">
-                <div class="goods-side-tit"><s></s><span>看了又看</span></div>
-                <div id="J_GoodsSideSlide" class="goods-side-bd" style="position: relative;">
-                    <div class="goods-side-slides-wrap">
-                        <ul>
-                                <%each history as item%>								
-								<li>
-                                    <a href="{php echo $this->createMobileUrl('shop/detail')}&id=<%item.id%>">									
-                                        <div class="slidepic">
-                                            <img src="<%item.thumb%>">
-                                        </div>
-                                        <div class="slideprice">
-                                            ¥<span><%item.marketprice%></span>
-                                        </div>
-                                        <div class="slidename">
-                                        <%item.title%>
-                                        </div>
-                                    </a>
-                                </li>
-								<%/each%>							
-                               </ul>
-                    </div>
-                    <div class="goods-side-slides-nav">
-                        <div class="prev"></div>
-                        <div class="next"></div>
-                    </div>
-                </div>
-            </div>
-
-
-</div>
-</div>
-
-</div>
-   <!--<div id="buytime" class="good_speci" style="display:none"></div>
-   <div id="notbuy" class="good_speci" style="display:none"></div>
-   
-   <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1'  && goods.groupbuy=='1'  && goods.levelbuy=='1'%> 
-    <div class="good_speci" onClick="choose()">
-                <span id="optiondiv">请选择商品规格及数量</span>
-                <i class="fa fa-angle-right" style="float:right; line-height:44px; font-size:26px;"></i>
-    </div>
-     <%/if%>-->
 <div class="detail_col clearfix">
 <div class="detail_lcol"> 
 	

@@ -182,13 +182,13 @@ if(intval($shopset['catlevel']) == 3){
 }
 
 if($args['tcate']){
-     $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where tcate=:tcate and pcate=:pcate and ccate=:ccate and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':tcate' => $args['tcate'] , ':pcate' => $args['pcate'] , ':ccate' => $args['ccate'])),'thumb');
+     $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where tcate=:tcate and pcate=:pcate and ccate=:ccate and uniacid=:uniacidand deleted = 0   order by sales desc limit 10",array(':uniacid' => $uniacid , ':tcate' => $args['tcate'] , ':pcate' => $args['pcate'] , ':ccate' => $args['ccate'])),'thumb');
  }else if ($args['ccate']){
-    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate and ccate=:ccate and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $args['pcate'] , ':ccate' => $args['ccate'])),'thumb');
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate and ccate=:ccate and uniacid=:uniacidand deleted = 0   order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $args['pcate'] , ':ccate' => $args['ccate'])),'thumb');
  }else if ($args['pcate']){
-    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate  and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $args['pcate'] )),'thumb');
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate  and uniacid=:uniacidand deleted = 0   order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $args['pcate'] )),'thumb');
  }else{
-    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where uniacid=:uniacid order by sales desc limit 10",array(':uniacid' => $uniacid )),'thumb');
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where uniacid=:uniacid and deleted = 0  order by sales desc limit 10",array(':uniacid' => $uniacid )),'thumb');
  }
 
 
