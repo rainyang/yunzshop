@@ -239,7 +239,7 @@ body { background:#fff;}
 <div class="tab_goods_warp" style="margin-bottom:20px;">
   <div class="tab_left">
     <div class="tab_title"><span><%value.name%></span></div>
-    <a href="<%value.advurl_pc%>"><img src="<%value.advimg_url%>"/></a> 
+    <a href="<%value.advurl_pc%>"><img src="<%value.advimg_pc%>"/></a> 
     <div class="tab-third-warp">
        <%each value.third as t%>
         <a target="_blank" href="{php echo $this->createMobileUrl('shop/list')}&tcate=<%t.id%>"><%t.name%></a>
