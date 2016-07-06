@@ -204,6 +204,9 @@
 -->
 <a href="{php echo $this->createMobileUrl('member/notice')}"><div class="list1"><i class="iconfont icon-volume-up"></i>消息提醒设置<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 <a href="{php echo $this->createMobileUrl('shop/address')}"><div class="list1" style="margin:0px; border-top:0px;"><i class="iconfont icon-street-view" ></i>收货地址管理<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+{if p('merchant') && !empty($ismerchant)}
+    <a href="{php echo $this->createPluginMobileUrl('merchant/orderj')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-globe" style="color:#f10;"></i>招商员<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+{/if}
 {if $has_cashier}
     <a href="{php echo $this->createPluginMobileUrl('cashier/qrcode_list')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-money" style="color:#f10;"></i>收银台<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 {/if}
