@@ -116,7 +116,6 @@ class Sz_DYi_Order
      */
     public function payResult($params)
     {
-        //file_put_contents($_SERVER['DOCUMENT_ROOT'].'/addons/sz_yi/1.txt', print_r($params,true));exit;
         global $_W;
         $fee     = $params['fee'];
         $data    = array(
@@ -128,12 +127,13 @@ class Sz_DYi_Order
             ':ordersn' => $ordersn
         ));
 
-        //验证paylog里金额是否与订单金额一致
-        $log = pdo_fetch('select * from ' . tablename('core_paylog') . ' where `uniacid`=:uniacid and fee=:fee and `module`=:module and `tid`=:tid limit 1',
+        //验证paylog里金额是否与订单金额一致, modify by 订单改价后金额错误问题修复, By RainYang.
+        $log = pdo_fetch('select * from ' . tablename('core_paylog') . ' where `uniacid`=:uniacid and (fee=:fee OR fee=:oldprice) and `module`=:module and `tid`=:tid limit 1',
             array(
             ':uniacid' => $_W['uniacid'],
             ':module' => 'sz_yi',
             ':fee' => $fee,
+            ':oldprice' => $order['oldprice'],
             ':tid' => $order['ordersn']
         ));
 
