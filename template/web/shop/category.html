@@ -122,37 +122,38 @@
                          {/if}
                     </div>
                 </div>
-                {if $level==1}
-                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">pc首页推荐分类广告</label>
-                    <div class="col-sm-9 col-xs-12">
-                        {ife 'shop.category' $item}
-                        {php echo tpl_form_field_image('advimg_pc', $item['advimg_pc'])}
-                        <span class="help-block">建议尺寸: 300*640</span>
-                         {else}
-                           {if !empty($item['advimg_pc'])}
-                                 <a href='{php echo tomedia($item['advimg_pc'])}' target='_blank'>
-                                <img src="{php echo tomedia($item['advimg_pc'])}" style='width:100px;border:1px solid #ccc;padding:1px' />
-                                 </a>
-                           {/if}
-                        {/if}
-                    </div>
-                </div>
-                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">PC分类广告链接</label>
-                    <div class="col-sm-9 col-xs-12">
-                         {ife 'shop.category' $item}
-                        <div class="input-group ">
-                            <input class="form-control" type="text" data-id="PAL-00010" placeholder="请填写指向的链接 (请以http://开头, 不填则不显示)" value="{$item['advurl_pc']}" name="advurl_pc">
-                            <span class="input-group-btn">
-                                <button class="btn btn-default nav-link" type="button" data-id="PAL-00010" >选择链接</button>
-                            </span>
+                    {if $level==1}
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">pc首页推荐分类广告</label>
+                        <div class="col-sm-9 col-xs-12">
+                            {ife 'shop.category' $item}
+                            {php echo tpl_form_field_image('advimg_pc', $item['advimg_pc'])}
+                            <span class="help-block">建议尺寸: 300*640</span>
+                             {else}
+                               {if !empty($item['advimg_pc'])}
+                                     <a href='{php echo tomedia($item['advimg_pc'])}' target='_blank'>
+                                    <img src="{php echo tomedia($item['advimg_pc'])}" style='width:100px;border:1px solid #ccc;padding:1px' />
+                                     </a>
+                               {/if}
+                            {/if}
                         </div>
-                        {else}
-                         <div class='form-control-static'>{$item['advurl_pc']}</div>
-                         {/if}
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">pc首页推荐分类广告链接</label>
+                        <div class="col-sm-9 col-xs-12">
+                             {ife 'shop.category' $item}
+                            <div class="input-group ">
+                                <input class="form-control" type="text" data-id="PAL-00010" placeholder="请填写指向的链接 (请以http://开头, 不填则不显示)" value="{$item['advurl_pc']}" name="advurl_pc">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default nav-link" type="button" data-id="PAL-00010" >选择链接</button>
+                                </span>
+                            </div>
+                            {else}
+                             <div class='form-control-static'>{$item['advurl_pc']}</div>
+                             {/if}
+                        </div>
+                    </div>   
+                    {/if}
                {/if}
                {if !empty($parentid)}
                 <div class="form-group">
