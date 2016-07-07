@@ -236,13 +236,15 @@ if ($operation == "display") {
             }
             //全部提现
             $applytype = intval($_GPC['applytype']);
-            if(!empty($applytype)){
-                $mygoodsid = pdo_fetchall('select id from ' . tablename('sz_yi_order_goods') . 'where supplier_uid=:supplier_uid and supplier_apply_status = 0',array(
-                        ':supplier_uid' => $_W['uid']
-                    ));
-                if(empty($mygoodsid)){
-                    message("没有可提现的订单金额");
+            $apply_ordergoods_ids = "";
+            foreach ($sp_goods as $key => $value) {
+                if ($key == 0) {
+                    $apply_ordergoods_ids .= $value['id'];
+                } else {
+                    $apply_ordergoods_ids .= ','.$value['id'];
                 }
+            }
+            if(!empty($applytype)){
                 $applysn = m('common')->createNO('commission_apply', 'applyno', 'CA');
                 $data = array(
                     'uid' => $_W['uid'],
@@ -251,15 +253,16 @@ if ($operation == "display") {
                     'status' => 0,
                     'type' => $applytype,
                     'applysn' => $applysn,
-                    'uniacid' => $_W['uniacid']
+                    'uniacid' => $_W['uniacid'],
+                    'apply_ordergoods_ids' => $apply_ordergoods_ids
                     );
 
                 pdo_insert('sz_yi_supplier_apply',$data);
                 @file_put_contents(IA_ROOT . "/addons/sz_yi/data/apply.log", print_r($data, 1), FILE_APPEND);
                 if( pdo_insertid() ) {
-                    foreach ($mygoodsid as $ids) {
+                    foreach ($sp_goods as $ids) {
                         $arr = array(
-                            'supplier_apply_status' => 1
+                            'supplier_apply_status' => 2
                             );
                         pdo_update('sz_yi_order_goods', $arr, array(
                             'id' => $ids['id']
