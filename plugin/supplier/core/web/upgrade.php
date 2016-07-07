@@ -58,7 +58,7 @@ if(!pdo_fieldexists('sz_yi_supplier_apply', 'id')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_supplier_apply')." ADD PRIMARY KEY (`id`);");
 }
 if (!pdo_fieldexists('sz_yi_supplier_apply', 'apply_ordergoods_ids')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD  `apply_ordergoods_ids` text;");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_supplier_apply')." ADD  `apply_ordergoods_ids` text;");
 }
 if(!pdo_fieldexists('sz_yi_af_supplier', 'id')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_af_supplier')." MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;");
