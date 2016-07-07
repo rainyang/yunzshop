@@ -1716,9 +1716,9 @@ function order_list_confirmpay($order) {
     if ($order["status"] > 1) {
         message("订单已付款，不需重复付款！");
     }
-    $zym_var_34 = p("virtual");
-    if (!empty($order["virtual"]) && $zym_var_34) {
-        $zym_var_34->pay($order);
+    $virtual = p("virtual");
+    if (!empty($order["virtual"]) && $virtual) {
+        $virtual->pay($order);
     } else {
         /*pdo_update("sz_yi_order", array(
             "status" => 1,
