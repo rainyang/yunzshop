@@ -213,7 +213,7 @@ if ($operation == "display") {
         $cond = "";
         if($perm_role == 1){
             $cond .= " and o.supplier_uid={$_W['uid']} ";
-            $supplierapply = pdo_fetchall('select u.uid,p.realname,p.mobile,p.banknumber,p.accountname,p.accountbank,a.applysn,a.apply_money,a.apply_time,a.type,a.finish_time,a.status from ' . tablename('sz_yi_supplier_apply') . ' a ' . ' left join' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid ' . 'left join' . tablename('users') . ' u on a.uid=u.uid where u.uid=' . $_W['uid']);
+            $supplierapply = pdo_fetchall('select a.id,u.uid,p.realname,p.mobile,p.banknumber,p.accountname,p.accountbank,a.applysn,a.apply_money,a.apply_time,a.type,a.finish_time,a.status from ' . tablename('sz_yi_supplier_apply') . ' a ' . ' left join' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid ' . 'left join' . tablename('users') . ' u on a.uid=u.uid where u.uid=' . $_W['uid']);
             $totals['status9'] = count($supplierapply);
             $costmoney = 0;
             $sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$_W['uid']} and o.status=3 and og.supplier_apply_status=0");
@@ -236,13 +236,15 @@ if ($operation == "display") {
             }
             //全部提现
             $applytype = intval($_GPC['applytype']);
-            if(!empty($applytype)){
-                $mygoodsid = pdo_fetchall('select id from ' . tablename('sz_yi_order_goods') . 'where supplier_uid=:supplier_uid and supplier_apply_status = 0',array(
-                        ':supplier_uid' => $_W['uid']
-                    ));
-                if(empty($mygoodsid)){
-                    message("没有可提现的订单金额");
+            $apply_ordergoods_ids = "";
+            foreach ($sp_goods as $key => $value) {
+                if ($key == 0) {
+                    $apply_ordergoods_ids .= $value['id'];
+                } else {
+                    $apply_ordergoods_ids .= ','.$value['id'];
                 }
+            }
+            if(!empty($applytype)){
                 $applysn = m('common')->createNO('commission_apply', 'applyno', 'CA');
                 $data = array(
                     'uid' => $_W['uid'],
@@ -251,17 +253,24 @@ if ($operation == "display") {
                     'status' => 0,
                     'type' => $applytype,
                     'applysn' => $applysn,
-                    'uniacid' => $_W['uniacid']
+                    'uniacid' => $_W['uniacid'],
+                    'apply_ordergoods_ids' => $apply_ordergoods_ids
                     );
-                pdo_insert('sz_yi_supplier_apply',$data);
 
-                foreach ($mygoodsid as $ids) {
-                    $arr = array(
-                        'supplier_apply_status' => 1
-                        );
-                    pdo_update('sz_yi_order_goods', $arr, array(
-                        'id' => $ids['id']
-                        ));
+                pdo_insert('sz_yi_supplier_apply',$data);
+                @file_put_contents(IA_ROOT . "/addons/sz_yi/data/apply.log", print_r($data, 1), FILE_APPEND);
+                if( pdo_insertid() ) {
+                    foreach ($sp_goods as $ids) {
+                        $arr = array(
+                            'supplier_apply_status' => 2
+                            );
+                        pdo_update('sz_yi_order_goods', $arr, array(
+                            'id' => $ids['id']
+                            ));
+                    }
+                    $tmp_sp_goods = $sp_goods;
+                    $tmp_sp_goods['applyno'] = $applysn;
+                    @file_put_contents(IA_ROOT . "/addons/sz_yi/data/sp_goods.log", print_r($tmp_sp_goods, 1), FILE_APPEND);
                 }
                 message("提现申请已提交，请耐心等待!", $this->createWebUrl('order/list'), "success");
             }
@@ -1707,9 +1716,9 @@ function order_list_confirmpay($order) {
     if ($order["status"] > 1) {
         message("订单已付款，不需重复付款！");
     }
-    $zym_var_34 = p("virtual");
-    if (!empty($order["virtual"]) && $zym_var_34) {
-        $zym_var_34->pay($order);
+    $virtual = p("virtual");
+    if (!empty($order["virtual"]) && $virtual) {
+        $virtual->pay($order);
     } else {
         /*pdo_update("sz_yi_order", array(
             "status" => 1,

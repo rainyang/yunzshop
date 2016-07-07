@@ -20,6 +20,7 @@ class Core extends WeModuleSite
     public $footer = array();
     public $header = null;
     public $yzShopSet = array();
+    public $yzImages = array();
     public function __construct()
     {
         global $_W, $_GPC;
@@ -43,6 +44,7 @@ class Core extends WeModuleSite
             }
         }
         $this->yzShopSet = m('common')->getSysset('shop');
+        $this->yzImages = set_medias(m('common')->getSysset('shop'), array('logo', 'img', 'pclogo'));
 
         if (is_app()) {
             /**
@@ -420,18 +422,23 @@ class Core extends WeModuleSite
             if (is_app()) {
                 $template = m('cache')->getString('app_template_shop');
             } else {
-                $template = m('cache')->getString('template_shop');
+                if (!isMobile() && $set['ispc']) {
+                    $template = m('cache')->getString('template_shop_pc');
+                } else {
+                    $template = m('cache')->getString('template_shop');
+                }
             }
-
+            
             if (empty($template)) {
                 $template = "default";
             }
             if (!is_dir(IA_ROOT . '/addons/sz_yi/template/'.$tmplateType.'/' . $template)) {
                 $template = "default";
             }
+
             $compile = IA_ROOT . "/data/tpl/app/sz_yi/{$template}/{$tmplateType}/{$filename}.tpl.php";
             $source  = IA_ROOT . "/addons/{$name}/template/{$tmplateType}/{$template}/{$filename}.html";
-
+//echo $source;exit;
             if (!is_file($source)) {
                 $source = IA_ROOT . "/addons/{$name}/template/{$tmplateType}/default/{$filename}.html";
             }
@@ -506,4 +513,5 @@ class Core extends WeModuleSite
         }
     }*/
 }
+
 

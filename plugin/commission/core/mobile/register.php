@@ -62,9 +62,9 @@ if ($_W["isajax"]) {
                 "isagent" => 1,
                 "agentid" => $mid,
                 "status" => $become_check,
-                "realname" => $_GPC["realname"],
-                "mobile" => $_GPC["mobile"],
-                "weixin" => $_GPC["weixin"],
+                //"realname" => $_GPC["realname"],
+                //"mobile" => $_GPC["mobile"],
+                //"weixin" => $_GPC["weixin"],
                 "agenttime" => $become_check == 1 ? time() : 0
             );
             pdo_update("sz_yi_member", $data, array(
