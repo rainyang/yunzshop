@@ -427,7 +427,6 @@ class Core extends WeModuleSite
                 } else {
                     $template = m('cache')->getString('template_shop');
                 }
-                
             }
             
             if (empty($template)) {
