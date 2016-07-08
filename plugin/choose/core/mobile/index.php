@@ -17,9 +17,9 @@ if ($commission) {
 }
 $color=pdo_fetch('select color from ' .tablename('sz_yi_chooseagent'). ' where id='.$pageid);
 $_W['shopshare'] = array(
-    'title' => !empty($shopset['share']) ? $shopset['share'] : $shopset['name'],
-    'imgUrl' => !empty($shopset['icon']) ? tomedia($shopset['icon']) : tomedia($shopset['logo']),
-    'desc' => !empty($shopset['desc']) ? $shopset['desc'] : $shopset['name'],
+    'title' => !empty($shopset['share']["title"]) ? $shopset['share']["title"] : $shopset['shop']['name'],
+    'imgUrl' => !empty($shopset['share']['icon']) ? tomedia($shopset['share']['icon']) : tomedia($shopset['shop']['logo']),
+    'desc' => !empty($shopset['share']['desc']) ? $shopset['share']['desc'] : $shopset['shop']['name'],
     'link' => $this->createPluginMobileUrl('choose', array('pageid' => $pageid, 'mid' => $member['id']))
 );
 $this->setHeader();

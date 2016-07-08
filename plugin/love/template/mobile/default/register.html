@@ -1,0 +1,10 @@
+{template 'common/header'}
+<title>{php echo $this->set['texts']['become']}</title>
+
+<div id='container'></div>
+<script language="javascript">
+    require(['tpl', 'core'], function(tpl, core) {
+        core.message('您不是代理商，不能进入',"{php echo $this->createMobileUrl('member')}" ,'error');
+    })
+</script>
+{template 'common/footer'}
