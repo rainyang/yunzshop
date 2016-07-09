@@ -25,6 +25,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_apply` (
   `apply_time` int(11) NOT NULL COMMENT '申请时间',
   `status` tinyint(3) NOT NULL COMMENT '0为申请状态1为完成状态',
   `finish_time` int(11) NOT NULL COMMENT '完成时间',
+  `apply_ordergoods_ids` text,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
 pdo_query($sql);
@@ -55,6 +56,9 @@ if(!pdo_fieldexists('sz_yi_af_supplier', 'id')) {
 }
 if(!pdo_fieldexists('sz_yi_supplier_apply', 'id')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_supplier_apply')." ADD PRIMARY KEY (`id`);");
+}
+if (!pdo_fieldexists('sz_yi_supplier_apply', 'apply_ordergoods_ids')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_supplier_apply')." ADD  `apply_ordergoods_ids` text;");
 }
 if(!pdo_fieldexists('sz_yi_af_supplier', 'id')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_af_supplier')." MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;");

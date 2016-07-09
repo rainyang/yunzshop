@@ -4,15 +4,16 @@ if (!defined('IN_IA')) {
 }
 global $_W, $_GPC;
 @session_start();
-//print_r($_W);exit;
 setcookie('preUrl', $_W['siteurl']);
-//echo $_COOKIE['preUrl'];exit;
 $openid         = m('user')->getOpenid();
 $popenid        = m('user')->islogin();
 $openid         = $openid?$openid:$popenid;
 $member         = m('member')->getMember($openid);
 $uniacid        = $_W['uniacid'];
 $goodsid        = intval($_GPC['id']);
+$params = array(':uniacid' => $_W['uniacid'], ':goodsid' => $goodsid);
+$sql = 'SELECT count(id) FROM ' . tablename('sz_yi_order_comment') . ' where 1 and uniacid = :uniacid and goodsid=:goodsid and deleted=0 ORDER BY `id` DESC';
+$commentcount = pdo_fetchcolumn($sql, $params);
 $goods          = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE id = :id limit 1", array(
     ':id' => $goodsid
 ));
@@ -127,6 +128,7 @@ if(!is_weixin()){
 }
 //分销佣金
 $commissionprice = p('commission')->getCommission($goods);
+
 if ($_W['isajax']) {
     if (empty($goods)) {
         show_json(0);
@@ -242,7 +244,7 @@ if ($_W['isajax']) {
     ));
 
     //我的足迹
-    $history_goods = set_medias(pdo_fetchall('select g.* from ' . tablename('sz_yi_member_history') . ' h '.' left join '.tablename('sz_yi_goods').' g on h.goodsid = g.id  where  h.uniacid=:uniacid and h.openid=:openid and h.deleted=0 order by h.createtime desc limit 5', array(
+    $history_goods = set_medias(pdo_fetchall('select g.* from ' . tablename('sz_yi_member_history') . ' h '.' left join '.tablename('sz_yi_goods').' g on h.goodsid = g.id  where  h.uniacid=:uniacid and h.openid=:openid and h.deleted=0 and g.deleted = 0  order by h.createtime desc limit 5', array(
         ':uniacid' => $uniacid,
         ':openid' => $openid
     )),'thumb');
@@ -277,13 +279,13 @@ if ($_W['isajax']) {
 
     //热卖商品
 if($goods['tcate']){
-     $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where tcate=:tcate and pcate=:pcate and ccate=:ccate and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':tcate' => $goods['tcate'] , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
+     $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where tcate=:tcate and pcate=:pcate and ccate=:ccate and uniacid=:uniacid and deleted = 0   order by sales desc limit 10",array(':uniacid' => $uniacid , ':tcate' => $goods['tcate'] , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
  }else if ($goods['ccate']){
-    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate and ccate=:ccate and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate and ccate=:ccate and uniacid=:uniacid and deleted = 0 order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
  }else if ($goods['pcate']){
-    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate  and uniacid=:uniacid  order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] )),'thumb');
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate  and uniacid=:uniacid and deleted = 0 order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] )),'thumb');
  }else{
-    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where uniacid=:uniacid order by sales desc limit 10",array(':uniacid' => $uniacid )),'thumb');
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where uniacid=:uniacid and deleted = 0 order by sales desc limit 10",array(':uniacid' => $uniacid )),'thumb');
  }
    
     $category = m('shop')->getCategory();

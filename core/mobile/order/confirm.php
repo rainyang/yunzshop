@@ -40,6 +40,7 @@ if ($diyform_plugin) {
 $carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1", array(
             ":uniacid" => $_W["uniacid"]
         ));
+
 if ($operation == "display" || $operation == "create") {
     $id   = intval($_GPC["id"]);
     $show = 1;
@@ -82,7 +83,12 @@ if ($_W['isajax']) {
             if (!empty($cartids)) {
                 $condition = ' and c.id in (' . $cartids . ')';
             }
-            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by c.id desc";
+
+            $suppliers = pdo_fetchall('SELECT distinct g.supplier_uid FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc", array(
+                ':uniacid' => $uniacid,
+                ':openid' => $openid
+            ),'supplier_uid');
+            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
             $goods = pdo_fetchall($sql, array(
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
@@ -103,11 +109,12 @@ if ($_W['isajax']) {
             }
             $fromcart = 1;
         } else {
-            $sql              = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+            $sql              = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             $data             = pdo_fetch($sql, array(
                 ':uniacid' => $uniacid,
                 ':id' => $id
             ));
+            $suppliers = array($data['supplier_uid'] => array("supplier_uid" => $data['supplier_uid']));
             $data['total']    = $total;
             $data['optionid'] = $optionid;
             if (!empty($optionid)) {
@@ -160,6 +167,7 @@ if ($_W['isajax']) {
             $goods[]             = $data;
         }
         $goods = set_medias($goods, 'thumb');
+        
         foreach ($goods as $g) {
             if ($g['isverify'] == 2) {
                 $isverify = true;
@@ -169,30 +177,49 @@ if ($_W['isajax']) {
             }
             if (!empty($g['virtual']) || $g['type'] == 2) {
                 $isvirtual = true;
+            }  
+        }
+        //多店值分开初始化
+        foreach ($suppliers as $key => $val) {
+            $order_all[$val['supplier_uid']]['weight']         = 0;
+            $order_all[$val['supplier_uid']]['total']          = 0;
+            $order_all[$val['supplier_uid']]['goodsprice']     = 0;
+            $order_all[$val['supplier_uid']]['realprice']      = 0;
+            $order_all[$val['supplier_uid']]['deductprice']    = 0;
+            $order_all[$val['supplier_uid']]['discountprice']  = 0;
+            $order_all[$val['supplier_uid']]['deductprice2']   = 0;
+            $order_all[$val['supplier_uid']]['dispatch_price'] = 0;
+            $order_all[$val['supplier_uid']]['storeids']       = array();
+            $order_all[$val['supplier_uid']]['dispatch_array'] = array();
+            $order_all[$val['supplier_uid']]['supplier_uid'] = $val['supplier_uid'];
+            if($val['supplier_uid']==0){
+                $order_all[$val['supplier_uid']]['supplier_name'] = $shopset['name'];
+            }else{
+                $supplier_names = pdo_fetch('select username, brandname from ' . tablename('sz_yi_perm_user') . ' where uid='. $val['supplier_uid'] . " and uniacid=" . $_W['uniacid']);
+                if(!empty($supplier_names)){
+                    $order_all[$val['supplier_uid']]['supplier_name'] = $supplier_names['brandname'] ? $supplier_names['brandname'] : "";
+                }else{
+                    $order_all[$val['supplier_uid']]['supplier_name'] = '';        
+                }       
             }
         }
         $member        = m('member')->getMember($openid);
         $level          = m("member")->getLevel($openid);
-        $weight         = 0;
-        $total          = 0;
-        $goodsprice     = 0;
-        $realprice      = 0;
-        $deductprice    = 0;
-        $discountprice  = 0;
-        $deductprice2   = 0;
+        //$weight         = 0;
+        //$total          = 0;
+        //$goodsprice     = 0;
+        //$realprice      = 0;
+        //$deductprice    = 0;
+        //$discountprice  = 0;
+        //$deductprice2   = 0;
         $stores        = array();
         $address       = false;
         $carrier       = false;
         $carrier_list  = array();
         $dispatch_list = false;
-        $dispatch_price = 0;
-        $dispatch_array = array();
-        $sale_plugin   = p('sale');
-        $saleset       = false;
-        if ($sale_plugin) {
-            $saleset = $sale_plugin->getSet();
-            $saleset["enoughs"] = $sale_plugin->getEnoughs();
-        }
+        //$dispatch_price = 0;
+        //$dispatch_array = array();
+        
         //$carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1 and type in(1,3)", array(
         $carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1 and myself_support=1 ", array(
             ":uniacid" => $_W["uniacid"]
@@ -227,46 +254,51 @@ if ($_W['isajax']) {
             }
             if (empty($g["isnodiscount"]) && floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
                 $price = round(floatval($level["discount"]) / 10 * $gprice, 2);
-                $discountprice += $gprice - $price;
+                $order_all[$g['supplier_uid']]['discountprice'] += $gprice - $price;
             } else {
                 $price = $gprice;
             }
             $g["ggprice"] = $price;
-            $realprice += $price;
-            $goodsprice += $gprice;
-            $total += $g["total"];
+            $order_all[$g['supplier_uid']]['realprice'] += $price;
+            $order_all[$g['supplier_uid']]['goodsprice'] += $gprice;
+            $order_all[$g['supplier_uid']]['total'] += $g["total"];
             if ($g["manydeduct"]) {
-                $deductprice += $g["deduct"] * $g["total"];
+                $order_all[$g['supplier_uid']]['deductprice'] += $g["deduct"] * $g["total"];
             } else {
-                $deductprice += $g["deduct"];
+                $order_all[$g['supplier_uid']]['deductprice'] += $g["deduct"];
             }
             if ($g["deduct2"] == 0) {
-                $deductprice2 += $price;
+                $order_all[$g['supplier_uid']]['deductprice2'] += $price;
             } else if ($g["deduct2"] > 0) {
                 if ($g["deduct2"] > $price) {
-                    $deductprice2 += $price;
+                    $order_all[$g['supplier_uid']]['deductprice2'] += $price;
                 } else {
-                    $deductprice2 += $g["deduct2"];
+                    $order_all[$g['supplier_uid']]['deductprice2'] += $g["deduct2"];
                 }
             }
+            $order_all[$g['supplier_uid']]['goods'][] = $g;
         }
+
         unset($g);
         if ($isverify) {
             $storeids = array();
             foreach ($goods as $g) {
                 if (!empty($g['storeids'])) {
-                    $storeids = array_merge(explode(',', $g['storeids']), $storeids);
+                    $order_all[$g['supplier_uid']]['storeids'] = array_merge(explode(',', $g['storeids']), $order_all[$g['supplier_uid']]['storeids']);
                 }
             }
-            if (empty($storeids)) {
-                $stores = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where  uniacid=:uniacid and status=1 and myself_support=1', array(
-                    ':uniacid' => $_W['uniacid']
-                ));
-            } else {
-                $stores = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where id in (' . implode(',', $storeids) . ') and uniacid=:uniacid and status=1 and myself_support=1', array(
-                    ':uniacid' => $_W['uniacid']
-                ));
+            foreach ($suppliers as $key => $val) {
+                if (empty($order_all[$val['supplier_uid']]['storeids'])) {
+                    $order_all[$val['supplier_uid']]['stores'] = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where  uniacid=:uniacid and status=1 and myself_support=1', array(
+                        ':uniacid' => $_W['uniacid']
+                    ));
+                } else {
+                    $order_all[$val['supplier_uid']]['stores'] = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where id in (' . implode(',', $order_all[$val['supplier_uid']]['storeids']) . ') and uniacid=:uniacid and status=1 and myself_support=1', array(
+                        ':uniacid' => $_W['uniacid']
+                    ));
+                }
             }
+            
             $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
@@ -276,9 +308,6 @@ if ($_W['isajax']) {
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
             ));
-            if (!empty($carrier_list)) {
-                $carrier = $carrier_list[0];
-            }
             if (!$isvirtual) {
                 foreach ($goods as $g) {
                     $sendfree = false;
@@ -322,150 +351,168 @@ if ($_W['isajax']) {
                             }
                         }
                     }
+
                     if (!$sendfree) {
                         if ($g["dispatchtype"] == 1) {
                             if ($g["dispatchprice"] > 0) {
-                                $dispatch_price += $g["dispatchprice"] * $g["total"];
+                                $order_all[$g['supplier_uid']]['dispatch_price'] += $g["dispatchprice"] * $g["total"];
                             }
                         } else if ($g["dispatchtype"] == 0) {
                             if (empty($g["dispatchid"])) {
-                                $dispatch_data = m("order")->getDefaultDispatch();
+                                $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getDefaultDispatch($g['supplier_uid']);
                             } else {
-                                $dispatch_data = m("order")->getOneDispatch($g["dispatchid"]);
+                                $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getOneDispatch($g["dispatchid"], $g['supplier_uid']);
                             }
-                            if (empty($dispatch_data)) {
-                                $dispatch_data = m("order")->getNewDispatch();
+                            if (empty($order_all[$g['supplier_uid']]['dispatch_data'])) {
+                                $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getNewDispatch($g['supplier_uid']);
                             }
-                            if (!empty($dispatch_data)) {
-                                $areas = unserialize($dispatch_data["areas"]);
-                                if ($dispatch_data["calculatetype"] == 1) {
-                                    $param = $g["total"];
+                            if (!empty($order_all[$g['supplier_uid']]['dispatch_data'])) {
+                                if ($order_all[$g['supplier_uid']]['dispatch_data']["calculatetype"] == 1) {
+                                    $order_all[$g['supplier_uid']]['param'] = $g["total"];
                                 } else {
-                                    $param = $g["weight"] * $g["total"];
+                                    $order_all[$g['supplier_uid']]['param'] = $g["weight"] * $g["total"];
                                 }
-                                $dkey = $dispatch_data["id"];
-                                if (array_key_exists($dkey, $dispatch_array)) {
-                                    $dispatch_array[$dkey]["param"] += $param;
+                                $dkey = $order_all[$g['supplier_uid']]['dispatch_data']["id"];
+                                if (array_key_exists($dkey, $order_all[$g['supplier_uid']]['dispatch_array'])) {
+                                    $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["param"] += $order_all[$g['supplier_uid']]['param'];
                                 } else {
-                                    $dispatch_array[$dkey]["data"]  = $dispatch_data;
-                                    $dispatch_array[$dkey]["param"] = $param;
+                                    $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["data"]  = $order_all[$g['supplier_uid']]['dispatch_data'];
+                                    $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["param"] = $order_all[$g['supplier_uid']]['param'];
                                 }
                             }
                         }
                     }
                 }
-                if (!empty($dispatch_array)) {
-                    foreach ($dispatch_array as $k => $v) {
-                        $dispatch_data = $dispatch_array[$k]["data"];
-                        $param         = $dispatch_array[$k]["param"];
-                        $areas         = unserialize($dispatch_data["areas"]);
-                        if (!empty($address)) {
-                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $dispatch_data);
-                        } else if (!empty($member["city"])) {
-                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $dispatch_data);
-                        } else {
-                            $dispatch_price += m("order")->getDispatchPrice($param, $dispatch_data);
-                        }
-                    }
-                }
-            }
-        }
-        if ($saleset) {
-            if (!empty($saleset["enoughfree"])) {
-                if (floatval($saleset["enoughorder"]) <= 0) {
-                    $dispatch_price = 0;
-                } else {
-                    if ($realprice >= floatval($saleset["enoughorder"])) {
-                        if (empty($saleset["enoughareas"])) {
-                            $dispatch_price = 0;
-                        } else {
-                            $areas = explode(",", $saleset["enoughareas"]);
+                foreach ($suppliers as $key => $val) {
+                    if (!empty($order_all[$val['supplier_uid']]['dispatch_array'])) {
+                        foreach ($order_all[$val['supplier_uid']]['dispatch_array'] as $k => $v) {
+                            $order_all[$val['supplier_uid']]['dispatch_data'] = $order_all[$val['supplier_uid']]['dispatch_array'][$k]["data"];
+                            $param         = $order_all[$val['supplier_uid']]['dispatch_array'][$k]["param"];
+                            $areas         = unserialize($order_all[$val['supplier_uid']]['dispatch_data']["areas"]);
                             if (!empty($address)) {
-                                if (!in_array($address["city"], $areas)) {
-                                    $dispatch_price = 0;
-                                }
+                                $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $order_all[$val['supplier_uid']]['dispatch_data'],$val['supplier_uid']);
                             } else if (!empty($member["city"])) {
-                                if (!in_array($member["city"], $areas)) {
-                                    $dispatch_price = 0;
-                                }
-                            } else if (empty($member["city"])) {
-                                $dispatch_price = 0;
+                                $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $order_all[$val['supplier_uid']]['dispatch_data'],$val['supplier_uid']);
+                            } else {
+                                $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getDispatchPrice($param, $order_all[$val['supplier_uid']]['dispatch_data'], -1, $val['supplier_uid']);
                             }
                         }
                     }
                 }
             }
-            foreach ($saleset["enoughs"] as $e) {
-                if ($realprice >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
-                    $saleset["showenough"]   = true;
-                    $saleset["enoughmoney"]  = $e["enough"];
-                    $saleset["enoughdeduct"] = $e["money"];
-                    $realprice -= floatval($e["money"]);
-                    break;
-                }
-            }
-            if (empty($saleset["dispatchnodeduct"])) {
-                $deductprice2 += $dispatch_price;
-            }
         }
-        $hascoupon = false;
-        if ($hascouponplugin) {
-            $couponcount = $plugc->consumeCouponCount($openid, $realprice);
-            $hascoupon   = $couponcount > 0;
-        }
-        $realprice += $dispatch_price;
-        $deductcredit  = 0;
-        $deductmoney   = 0;
-        $deductcredit2 = 0;
+        $sale_plugin   = p('sale');
+        $saleset       = false;
         if ($sale_plugin) {
-            $credit = m('member')->getCredit($openid, 'credit1');
-            if (!empty($saleset['creditdeduct'])) {
-                $pcredit = intval($saleset['credit']);
-                $pmoney  = round(floatval($saleset['money']), 2);
-                if ($pcredit > 0 && $pmoney > 0) {
-                    if ($credit % $pcredit == 0) {
-                        $deductmoney = round(intval($credit / $pcredit) * $pmoney, 2);
+            $saleset = $sale_plugin->getSet();
+            $saleset["enoughs"] = $sale_plugin->getEnoughs();
+        }
+        //订单总价
+        $realprice_total = 0;
+        foreach ($suppliers as $key => $val) {
+            if ($saleset) {
+                if (!empty($saleset["enoughfree"])) {
+                    if (floatval($saleset["enoughorder"]) <= 0) {
+                        $order_all[$val['supplier_uid']]['dispatch_price'] = 0;
                     } else {
-                        $deductmoney = round((intval($credit / $pcredit) + 1) * $pmoney, 2);
+                        if ($order_all[$val['supplier_uid']]['realprice'] >= floatval($saleset["enoughorder"])) {
+                            if (empty($saleset["enoughareas"])) {
+                                $order_all[$val['supplier_uid']]['dispatch_price'] = 0;
+                            } else {
+                                $areas = explode(",", $saleset["enoughareas"]);
+                                if (!empty($address)) {
+                                    if (!in_array($address["city"], $areas)) {
+                                        $order_all[$val['supplier_uid']]['dispatch_price'] = 0;
+                                    }
+                                } else if (!empty($member["city"])) {
+                                    if (!in_array($member["city"], $areas)) {
+                                        $order_all[$val['supplier_uid']]['dispatch_price'] = 0;
+                                    }
+                                } else if (empty($member["city"])) {
+                                    $order_all[$val['supplier_uid']]['dispatch_price'] = 0;
+                                }
+                            }
+                        }
                     }
                 }
-                if ($deductmoney > $deductprice) {
-                    $deductmoney = $deductprice;
+
+                $order_all[$val['supplier_uid']]['saleset'] = $saleset;
+                foreach ($saleset["enoughs"] as $e) {
+                    if ($order_all[$val['supplier_uid']]['realprice'] >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
+                        $order_all[$val['supplier_uid']]['saleset']["showenough"]   = true;
+                        $order_all[$val['supplier_uid']]['saleset']["enoughmoney"]  = $e["enough"];
+                        $order_all[$val['supplier_uid']]['saleset']["enoughdeduct"] = $e["money"];
+                        $order_all[$val['supplier_uid']]['realprice'] -= floatval($e["money"]);
+                        break;
+                    }
                 }
-                if ($deductmoney > $realprice) {
-                    $deductmoney = $realprice;
+                if (empty($saleset["dispatchnodeduct"])) {
+                    $order_all[$val['supplier_uid']]['deductprice2'] += $order_all[$val['supplier_uid']]['dispatch_price'];
                 }
-                $deductcredit = $deductmoney / $pmoney * $pcredit;
             }
-            if (!empty($saleset['moneydeduct'])) {
-                $deductcredit2 = m('member')->getCredit($openid, 'credit2');
-                if ($deductcredit2 > $realprice) {
-                    $deductcredit2 = $realprice;
+            $order_all[$val['supplier_uid']]['hascoupon'] = false;
+            if ($hascouponplugin) {
+                $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid']);
+                $order_all[$val['supplier_uid']]['hascoupon']   = $order_all[$val['supplier_uid']]['couponcount'] > 0;
+            }
+            $order_all[$val['supplier_uid']]['realprice'] += $order_all[$val['supplier_uid']]['dispatch_price'];
+            $realprice_total += $order_all[$val['supplier_uid']]['realprice'];
+            $order_all[$val['supplier_uid']]['deductcredit']  = 0;
+            $order_all[$val['supplier_uid']]['deductmoney']   = 0;
+            $order_all[$val['supplier_uid']]['deductcredit2'] = 0;
+            if ($sale_plugin) {
+                $credit = m('member')->getCredit($openid, 'credit1');
+                if (!empty($saleset['creditdeduct'])) {
+                    $pcredit = intval($saleset['credit']);
+                    $pmoney  = round(floatval($saleset['money']), 2);
+                    if ($pcredit > 0 && $pmoney > 0) {
+                        if ($credit % $pcredit == 0) {
+                            $order_all[$val['supplier_uid']]['deductmoney'] = round(intval($credit / $pcredit) * $pmoney, 2);
+                        } else {
+                            $order_all[$val['supplier_uid']]['deductmoney'] = round((intval($credit / $pcredit) + 1) * $pmoney, 2);
+                        }
+                    }
+                    if ($order_all[$val['supplier_uid']]['deductmoney'] > $deductprice) {
+                        $order_all[$val['supplier_uid']]['deductmoney'] = $deductprice;
+                    }
+                    if ($order_all[$val['supplier_uid']]['deductmoney'] > $order_all[$val['supplier_uid']]['realprice']) {
+                        $order_all[$val['supplier_uid']]['deductmoney'] = $order_all[$val['supplier_uid']]['realprice'];
+                    }
+                    $order_all[$val['supplier_uid']]['deductcredit'] = $order_all[$val['supplier_uid']]['deductmoney'] / $pmoney * $pcredit;
                 }
-                if ($deductcredit2 > $deductprice2) {
-                    $deductcredit2 = $deductprice2;
+                if (!empty($saleset['moneydeduct'])) {
+                    $order_all[$val['supplier_uid']]['deductcredit2'] = m('member')->getCredit($openid, 'credit2');
+                    if ($order_all[$val['supplier_uid']]['deductcredit2'] > $order_all[$val['supplier_uid']]['realprice']) {
+                        $order_all[$val['supplier_uid']]['deductcredit2'] = $order_all[$val['supplier_uid']]['realprice'];
+                    }
+                    if ($order_all[$val['supplier_uid']]['deductcredit2'] > $order_all[$val['supplier_uid']]['deductprice2']) {
+                        $order_all[$val['supplier_uid']]['deductcredit2'] = $order_all[$val['supplier_uid']]['deductprice2'];
+                    }
                 }
             }
         }
+        $supplierids = implode(',', array_keys($suppliers));
         show_json(1, array(
             'member' => $member,
-            'deductcredit' => $deductcredit,
+            //'deductcredit' => $deductcredit,
             'deductmoney' => $deductmoney,
-            'deductcredit2' => $deductcredit2,
+            //'deductcredit2' => $deductcredit2,
             'saleset' => $saleset,
             'goods' => $goods,
             'weight' => $weight / $buytotal,
-            'set' => m('common')->getSysset('shop'),
+            'set' => $shopset,
             'fromcart' => $fromcart,
             'haslevel' => !empty($level['id']) && $level['discount'] > 0 && $level['discount'] < 10,
             'total' => $total,
-            "dispatchprice" => number_format($dispatch_price, 2),
+            //"dispatchprice" => number_format($dispatch_price, 2),
             'totalprice' => number_format($totalprice, 2),
             'goodsprice' => number_format($goodsprice, 2),
             'discountprice' => number_format($discountprice, 2),
             'discount' => $level['discount'],
-            'realprice' => number_format($realprice, 2),
+            'realprice_total' => number_format($realprice_total, 2),
             'address' => $address,
+            //'carrier' => $carrier,
+            //'carrier_list' => $carrier_list,
             'carrier' => $stores[0],
             'carrier_list' => $stores,
             'dispatch_list' => $dispatch_list,
@@ -474,8 +521,10 @@ if ($_W['isajax']) {
             'stores' => $stores,
             'isvirtual' => $isvirtual,
             'changenum' => $changenum,
-            'hascoupon' => $hascoupon,
-            'couponcount' => $couponcount
+            //'hascoupon' => $hascoupon,
+            //'couponcount' => $couponcount,
+            'order_all' => $order_all,
+            'supplierids' => $supplierids
         ));
     } else if ($operation == 'getdispatchprice') {
         $isverify       = false;
@@ -489,10 +538,11 @@ if ($_W['isajax']) {
         $hascoupon      = false;
         $couponcount    = 0;
         $pc             = p("coupon");
+        $supplier_uid   = p("supplier_uid");
         if ($pc) {
             $pset = $pc->getSet();
             if (empty($pset["closemember"])) {
-                $couponcount = $pc->consumeCouponCount($openid, $totalprice);
+                $couponcount = $pc->consumeCouponCount($openid, $totalprice, $supplier_uid);
                 $hascoupon   = $couponcount > 0;
             }
         }
@@ -510,11 +560,11 @@ if ($_W['isajax']) {
         $deductenough_enough = 0;
         $sale_plugin = p('sale');
         $saleset     = false;
-        if ($sale_plugin) {
+        if ($sale_plugin && $supplier_uid==0) {
             $saleset = $sale_plugin->getSet();
             $saleset["enoughs"] = $sale_plugin->getEnoughs();
         }
-        if ($sale_plugin) {
+        if ($sale_plugin && $supplier_uid==0) {
             if ($saleset) {
                 foreach ($saleset["enoughs"] as $e) {
                     if ($totalprice >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
@@ -721,12 +771,12 @@ if ($_W['isajax']) {
                             }
                         } else if ($g["dispatchtype"] == 0) {
                             if (empty($g["dispatchid"])) {
-                                $dispatch_data = m("order")->getDefaultDispatch();
+                                $dispatch_data = m("order")->getDefaultDispatch($supplier_uid);
                             } else {
-                                $dispatch_data = m("order")->getOneDispatch($g["dispatchid"]);
+                                $dispatch_data = m("order")->getOneDispatch($g["dispatchid"],$supplier_uid);
                             }
                             if (empty($dispatch_data)) {
-                                $dispatch_data = m("order")->getNewDispatch();
+                                $dispatch_data = m("order")->getNewDispatch($supplier_uid);
                             }
                             if (!empty($dispatch_data)) {
                                 $areas = unserialize($dispatch_data["areas"]);
@@ -752,11 +802,11 @@ if ($_W['isajax']) {
                         $param         = $dispatch_array[$k]["param"];
                         $areas         = unserialize($dispatch_data["areas"]);
                         if (!empty($address)) {
-                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $dispatch_data);
+                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $dispatch_data, $supplier_uid);
                         } else if (!empty($member["city"])) {
-                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $dispatch_data);
+                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $dispatch_data, $supplier_uid);
                         } else {
-                            $dispatch_price += m("order")->getDispatchPrice($param, $dispatch_data);
+                            $dispatch_price += m("order")->getDispatchPrice($param, $dispatch_data, -1, $supplier_uid);
                         }
                     }
                 }
@@ -810,609 +860,619 @@ if ($_W['isajax']) {
             "deductmoney" => $deductmoney
         ));
     } else if ($operation == 'create' && $_W['ispost']) {
+
+        $order_data = $_GPC['order'];
+        //通用订单号，支付用
+        if(count($order_data) > 1)
+            $ordersn_general    = m('common')->createNO('order', 'ordersn', 'SH');
+        }else{
+            $ordersn_general    = "";
+        }
         $member       = m('member')->getMember($openid);
-        $dispatchtype = intval($_GPC['dispatchtype']);
-        $addressid    = intval($_GPC['addressid']);
-        $address      = false;
-        if (!empty($addressid) && $dispatchtype == 0) {
-            $address = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where id=:id and openid=:openid and uniacid=:uniacid   limit 1', array(
-                ':uniacid' => $uniacid,
-                ':openid' => $openid,
-                ':id' => $addressid
-            ));
-            if (empty($address)) {
-                show_json(0, '未找到地址');
-            }
-        }
-        $carrierid = intval($_GPC["carrierid"]);
-        $goods = $_GPC['goods'];
-        if (empty($goods)) {
-            show_json(0, '未找到任何商品');
-        }
-        $allgoods      = array();
-        $totalprice    = 0;
-        $goodsprice    = 0;
-        $redpriceall   = 0;
-        $weight        = 0;
-        $discountprice = 0;
-        $goodsarr      = explode('|', $goods);
-        $cash          = 1;
         $level         = m('member')->getLevel($openid);
-        $deductprice   = 0;
-        $deductprice2   = 0;
-        $virtualsales  = 0;
-        $dispatch_price = 0;
-        $dispatch_array = array();
-        $sale_plugin   = p('sale');
-        $saleset       = false;
-        if ($sale_plugin) {
-            $saleset = $sale_plugin->getSet();
-            $saleset["enoughs"] = $sale_plugin->getEnoughs();
-        }
-        $isvirtual = false;
-        $isverify  = false;
-        $isverifysend  = false;
-        foreach ($goodsarr as $g) {
-            if (empty($g)) {
-                continue;
-            }
-            $goodsinfo  = explode(',', $g);
-            $goodsid    = !empty($goodsinfo[0]) ? intval($goodsinfo[0]) : '';
-            $optionid   = !empty($goodsinfo[1]) ? intval($goodsinfo[1]) : 0;
-            $goodstotal = !empty($goodsinfo[2]) ? intval($goodsinfo[2]) : '1';
-            if ($goodstotal < 1) {
-                $goodstotal = 1;
-            }
-            if (empty($goodsid)) {
-                show_json(0, '参数错误，请刷新重试');
-            }
-            if (p('supplier')) {
-                $sql  = 'SELECT id as goodsid,costprice,supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
-            } else {
-                $sql  = 'SELECT id as goodsid,costprice,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
-            }
-            $data = pdo_fetch($sql, array(
-                ':uniacid' => $uniacid,
-                ':id' => $goodsid
-            ));
-            if (empty($data['status']) || !empty($data['deleted'])) {
-                show_json(-1, $data['title'] . '<br/> 已下架!');
-            }
-            $virtualid     = $data['virtual'];
-            $data['stock'] = $data['total'];
-            $data['total'] = $goodstotal;
-            if ($data['cash'] != 2) {
-                $cash = 0;
-            }
-            $unit = empty($data['unit']) ? '件' : $data['unit'];
-            if ($data['maxbuy'] > 0) {
-                if ($goodstotal > $data['maxbuy']) {
-                    show_json(-1, $data['title'] . '<br/> 一次限购 ' . $data['maxbuy'] . $unit . "!");
-                }
-            }
-            if ($data['usermaxbuy'] > 0) {
-                $order_goodscount = pdo_fetchcolumn('select ifnull(sum(og.total),0)  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_order') . ' o on og.orderid=o.id ' . ' where og.goodsid=:goodsid and  o.status>=1 and o.openid=:openid  and og.uniacid=:uniacid ', array(
-                    ':goodsid' => $data['goodsid'],
+        foreach ($order_data as $key => $order_row) {
+            
+            $dispatchtype = intval($order_row['dispatchtype']);
+            $addressid    = intval($order_row['addressid']);
+            $address      = false;
+            if (!empty($addressid) && $dispatchtype == 0) {
+                $address = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where id=:id and openid=:openid and uniacid=:uniacid   limit 1', array(
                     ':uniacid' => $uniacid,
-                    ':openid' => $openid
+                    ':openid' => $openid,
+                    ':id' => $addressid
                 ));
-                if ($order_goodscount >= $data['usermaxbuy']) {
-                    show_json(-1, $data['title'] . '<br/> 最多限购 ' . $data['usermaxbuy'] . $unit . "!");
+                if (empty($address)) {
+                    show_json(0, '未找到地址');
                 }
             }
-            if ($data['istime'] == 1) {
-                if (time() < $data['timestart']) {
-                    show_json(-1, $data['title'] . '<br/> 限购时间未到!');
-                }
-                if (time() > $data['timeend']) {
-                    show_json(-1, $data['title'] . '<br/> 限购时间已过!');
-                }
+            $carrierid = intval($order_row["carrierid"]);
+            $goods = $order_row['goods'];
+            if (empty($goods)) {
+                show_json(0, '未找到任何商品');
             }
-            $levelid = intval($member['level']);
-            $groupid = intval($member['groupid']);
-            if ($data['buylevels'] != '') {
-                $buylevels = explode(',', $data['buylevels']);
-                if (!in_array($levelid, $buylevels)) {
-                    show_json(-1, '您的会员等级无法购买<br/>' . $data['title'] . '!');
-                }
-            }
-            if ($data['buygroups'] != '') {
-                $buygroups = explode(',', $data['buygroups']);
-                if (!in_array($groupid, $buygroups)) {
-                    show_json(-1, '您所在会员组无法购买<br/>' . $data['title'] . '!');
-                }
-            }
-            if (!empty($optionid)) {
-                $option = pdo_fetch('select id,title,marketprice,costprice,goodssn,productsn,stock,virtual,weight from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
-                    ':uniacid' => $uniacid,
-                    ':goodsid' => $goodsid,
-                    ':id' => $optionid
-                ));
-                if (!empty($option)) {
-                    if ($option['stock'] != -1) {
-                        if (empty($option['stock'])) {
-                            show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
-                        }
-                    }
-                    $data['optionid']    = $optionid;
-                    $data['optiontitle'] = $option['title'];
-                    $data['marketprice'] = $option['marketprice'];
-                    if (!empty($option['costprice'])) {
-                        $data['costprice']   = $option['costprice'];
-                    }
-                    $virtualid           = $option['virtual'];
-                    if (!empty($option['goodssn'])) {
-                        $data['goodssn'] = $option['goodssn'];
-                    }
-                    if (!empty($option['productsn'])) {
-                        $data['productsn'] = $option['productsn'];
-                    }
-                    if (!empty($option['weight'])) {
-                        $data['weight'] = $option['weight'];
-                    }
-                    if (!empty($option['redprice'])) {
-                        $data['redprice'] = $option['redprice'];
-                    }
-                }
-            } else {
-                if ($data['stock'] != -1) {
-                    if (empty($data['stock'])) {
-                        show_json(-1, $data['title'] . "<br/>库存不足!");
-                    }
-                }
-            }
-            $data["diyformdataid"] = 0;
-            $data["diyformdata"]   = iserializer(array());
-            $data["diyformfields"] = iserializer(array());
-            if ($_GPC["fromcart"] == 1) {
-                if ($diyform_plugin) {
-                    $cartdata = pdo_fetch("select id,diyformdataid,diyformfields,diyformdata from " . tablename("sz_yi_member_cart") . " " . " where goodsid=:goodsid and optionid=:optionid and openid=:openid and deleted=0 order by id desc limit 1", array(
-                        ":goodsid" => $data["goodsid"],
-                        ":optionid" => $data["optionid"],
-                        ":openid" => $openid
-                    ));
-                    if (!empty($cartdata)) {
-                        $data["diyformdataid"] = $cartdata["diyformdataid"];
-                        $data["diyformdata"]   = $cartdata["diyformdata"];
-                        $data["diyformfields"] = $cartdata["diyformfields"];
-                    }
-                }
-            } else {
-                if (!empty($diyformtype) && !empty($data["diyformid"])) {
-                    $temp_data             = $diyform_plugin->getOneDiyformTemp($goods_data_id, 0);
-                    $data["diyformfields"] = $temp_data["diyformfields"];
-                    $data["diyformdata"]   = $temp_data["diyformdata"];
-                    $data["diyformid"]     = $formInfo["id"];
-                }
-            }
-            /**
-             *  红包价格计算
-             */
-            if (strpos($data['redprice'], "%") === false) {
-                if (strpos($data['redprice'], "-") === false) {
-                    $redprice = $data['redprice'];
-                } else {
-                    $rprice = explode("-", $data['redprice']);
-                    if ($rprice[1]>200) {
-                        $redprice = rand($rprice[0]*100, 200*100)/100;
-                    } else if ($rprice[0]<0) {
-                        $redprice = rand(0, $rprice[1]*100)/100;
-                    } else {
-                        $redprice = rand($rprice[0]*100, $rprice[1]*100)/100;
-                    }
-                }
-            } else {
-                $rprice = explode("%", $data['redprice']);
-                $redprice = ($rprice[0] * $data['marketprice']) / 100;
-            }
-            $redprice = $redprice * $goodstotal;
-            $redpriceall += $redprice;
-            $gprice = $data['marketprice'] * $goodstotal;
-            $goodsprice += $gprice;
-            $discounts = json_decode($data['discounts'], true);
-            if (is_array($discounts)) {
-                if (!empty($level["id"])) {
-                    if (floatval($discounts["level" . $level["id"]]) > 0 && floatval($discounts["level" . $level["id"]]) < 10) {
-                        $level["discount"] = floatval($discounts["level" . $level["id"]]);
-                    } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
-                        $level["discount"] = floatval($level["discount"]);
-                    } else {
-                        $level["discount"] = 0;
-                    }
-                } else {
-                    if (floatval($discounts["default"]) > 0 && floatval($discounts["default"]) < 10) {
-                        $level["discount"] = floatval($discounts["default"]);
-                    } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
-                        $level["discount"] = floatval($level["discount"]);
-                    } else {
-                        $level["discount"] = 0;
-                    }
-                }
-            }
-            $ggprice = 0;
-            if (empty($data['isnodiscount']) && $level['discount'] > 0 && $level['discount'] < 10) {
-                $dprice = round($gprice * $level['discount'] / 10, 2);
-                $discountprice += $gprice - $dprice;
-                $ggprice = $dprice;
-            } else {
-                $ggprice = $gprice;
-            }
-            $data["realprice"] = $ggprice;
-            $totalprice += $ggprice;
-            if ($data['isverify'] == 2) {
-                $isverify = true;
-            }
-            if (!empty($data["virtual"]) || $data["type"] == 2) {
-                $isvirtual = true;
-            }
-            if ($data["manydeduct"]) {
-                $deductprice += $data["deduct"] * $data["total"];
-            } else {
-                $deductprice += $data["deduct"];
-            }
-            $virtualsales += $data["sales"];
-            if ($data["deduct2"] == 0) {
-                $deductprice2 += $ggprice;
-            } else if ($data["deduct2"] > 0) {
-                if ($data["deduct2"] > $ggprice) {
-                    $deductprice2 += $ggprice;
-                } else {
-                    $deductprice2 += $data["deduct2"];
-                }
-            }
-            $allgoods[] = $data;
-        }
-        if (empty($allgoods)) {
-            show_json(0, '未找到任何商品');
-        }
-        $deductenough = 0;
-        if ($saleset) {
-            foreach ($saleset["enoughs"] as $e) {
-                if ($totalprice >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
-                    $deductenough = floatval($e["money"]);
-                    if ($deductenough > $totalprice) {
-                        $deductenough = $totalprice;
-                    }
-                    break;
-                }
-            }
-        }
-        if (!$isvirtual && !$isverify && $dispatchtype == 0) {
-            foreach ($allgoods as $g) {
-                $sendfree = false;
-                if (!empty($g["issendfree"])) {
-                    $sendfree = true;
-                } else {
-                    if ($g["total"] >= $g["ednum"] && $g["ednum"] > 0) {
-                        $gareas = explode(";", $g["edareas"]);
-                        if (empty($gareas)) {
-                            $sendfree = true;
-                        } else {
-                            if (!empty($address)) {
-                                if (!in_array($address["city"], $gareas)) {
-                                    $sendfree = true;
-                                }
-                            } else if (!empty($member["city"])) {
-                                if (!in_array($member["city"], $gareas)) {
-                                    $sendfree = true;
-                                }
-                            } else {
-                                $sendfree = true;
-                            }
-                        }
-                    }
-                    if ($g["ggprice"] >= floatval($g["edmoney"]) && floatval($g["edmoney"]) > 0) {
-                        $gareas = unserialize($g["edareas"]);
-                        if (empty($gareas)) {
-                            $sendfree = true;
-                        } else {
-                            if (!empty($address)) {
-                                if (!in_array($address["city"], $gareas)) {
-                                    $sendfree = true;
-                                }
-                            } else if (!empty($member["city"])) {
-                                if (!in_array($member["city"], $gareas)) {
-                                    $sendfree = true;
-                                }
-                            } else {
-                                $sendfree = true;
-                            }
-                        }
-                    }
-                }
-                if (!$sendfree) {
-                    if ($g["dispatchtype"] == 1) {
-                        if ($g["dispatchprice"] > 0) {
-                            $dispatch_price += $g["dispatchprice"] * $g["total"];
-                        }
-                    } else if ($g["dispatchtype"] == 0) {
-                        if (empty($g["dispatchid"])) {
-                            $dispatch_data = m("order")->getDefaultDispatch();
-                        } else {
-                            $dispatch_data = m("order")->getOneDispatch($g["dispatchid"]);
-                        }
-                        if (empty($dispatch_data)) {
-                            $dispatch_data = m("order")->getNewDispatch();
-                        }
-                        if (!empty($dispatch_data)) {
-                            $areas = unserialize($dispatch_data["areas"]);
-                            if ($dispatch_data["calculatetype"] == 1) {
-                                $param = $g["total"];
-                            } else {
-                                $param = $g["weight"] * $g["total"];
-                            }
-                            $dkey = $dispatch_data["id"];
-                            if (array_key_exists($dkey, $dispatch_array)) {
-                                $dispatch_array[$dkey]["param"] += $param;
-                            } else {
-                                $dispatch_array[$dkey]["data"]  = $dispatch_data;
-                                $dispatch_array[$dkey]["param"] = $param;
-                            }
-                        }
-                    }
-                }
-            }
-            if (!empty($dispatch_array)) {
-                foreach ($dispatch_array as $k => $v) {
-                    $dispatch_data = $dispatch_array[$k]["data"];
-                    $param         = $dispatch_array[$k]["param"];
-                    $areas         = unserialize($dispatch_data["areas"]);
-                    if (!empty($address)) {
-                        $dispatch_price += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $dispatch_data);
-                    } else if (!empty($member["city"])) {
-                        $dispatch_price += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $dispatch_data);
-                    } else {
-                        $dispatch_price += m("order")->getDispatchPrice($param, $dispatch_data);
-                    }
-                }
-            }
-        }
-        if ($saleset) {
-            if (!empty($saleset["enoughfree"])) {
-                if (floatval($saleset["enoughorder"]) <= 0) {
-                    $dispatch_price = 0;
-                } else {
-                    if ($totalprice >= floatval($saleset["enoughorder"])) {
-                        if (empty($saleset["enoughareas"])) {
-                            $dispatch_price = 0;
-                        } else {
-                            $areas = explode(",", $saleset["enoughareas"]);
-                            if (!empty($address)) {
-                                if (!in_array($address["city"], $areas)) {
-                                    $dispatch_price = 0;
-                                }
-                            } else if (!empty($member["city"])) {
-                                if (!in_array($member["city"], $areas)) {
-                                    $dispatch_price = 0;
-                                }
-                            } else if (empty($member["city"])) {
-                                $dispatch_price = 0;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        $couponprice = 0;
-        $couponid    = intval($_GPC["couponid"]);
-        if ($plugc) {
-            $coupon = $plugc->getCouponByDataID($couponid);
-            if (!empty($coupon)) {
-                if ($totalprice >= $coupon["enough"] && empty($coupon["used"])) {
-                    if ($coupon["backtype"] == 0) {
-                        if ($coupon["deduct"] > 0) {
-                            $couponprice = $coupon["deduct"];
-                        }
-                    } else if ($coupon["backtype"] == 1) {
-                        if ($coupon["discount"] > 0) {
-                            $couponprice = $totalprice * (1 - $coupon["discount"] / 10);
-                        }
-                    }
-                    if ($couponprice > 0) {
-                        $totalprice -= $couponprice;
-                    }
-                }
-            }
-        }
-        $totalprice -= $deductenough;
-        $totalprice += $dispatch_price;
-        if ($saleset && empty($saleset["dispatchnodeduct"])) {
-            $deductprice2 += $dispatch_price;
-        }
-        $deductcredit  = 0;
-        $deductmoney   = 0;
-        $deductcredit2 = 0;
-        if ($sale_plugin) {
-            if (!empty($_GPC['deduct'])) {
-                $credit  = m('member')->getCredit($openid, 'credit1');
+            $allgoods      = array();
+            $totalprice    = 0;
+            $goodsprice    = 0;
+            $redpriceall   = 0;
+            $weight        = 0;
+            $discountprice = 0;
+            $goodsarr      = explode('|', $goods);
+            $cash          = 1;
+            
+            $deductprice   = 0;
+            $deductprice2   = 0;
+            $virtualsales  = 0;
+            $dispatch_price = 0;
+            $dispatch_array = array();
+            $sale_plugin   = p('sale');
+            $saleset       = false;
+            if ($sale_plugin) {
                 $saleset = $sale_plugin->getSet();
-                if (!empty($saleset['creditdeduct'])) {
-                    $pcredit = intval($saleset['credit']);
-                    $pmoney  = round(floatval($saleset['money']), 2);
-                    if ($pcredit > 0 && $pmoney > 0) {
-                        if ($credit % $pcredit == 0) {
-                            $deductmoney = round(intval($credit / $pcredit) * $pmoney, 2);
-                        } else {
-                            $deductmoney = round((intval($credit / $pcredit) + 1) * $pmoney, 2);
+                $saleset["enoughs"] = $sale_plugin->getEnoughs();
+            }
+            $isvirtual = false;
+            $isverify  = false;
+            $isverifysend  = false;
+            foreach ($goodsarr as $g) {
+                if (empty($g)) {
+                    continue;
+                }
+                $goodsinfo  = explode(',', $g);
+                $goodsid    = !empty($goodsinfo[0]) ? intval($goodsinfo[0]) : '';
+                $optionid   = !empty($goodsinfo[1]) ? intval($goodsinfo[1]) : 0;
+                $goodstotal = !empty($goodsinfo[2]) ? intval($goodsinfo[2]) : '1';
+                if ($goodstotal < 1) {
+                    $goodstotal = 1;
+                }
+                if (empty($goodsid)) {
+                    show_json(0, '参数错误，请刷新重试');
+                }
+                $sql  = 'SELECT id as goodsid,costprice,supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
+                $data = pdo_fetch($sql, array(
+                    ':uniacid' => $uniacid,
+                    ':id' => $goodsid
+                ));
+                if (empty($data['status']) || !empty($data['deleted'])) {
+                    show_json(-1, $data['title'] . '<br/> 已下架!');
+                }
+                $virtualid     = $data['virtual'];
+                $data['stock'] = $data['total'];
+                $data['total'] = $goodstotal;
+                if ($data['cash'] != 2) {
+                    $cash = 0;
+                }
+                $unit = empty($data['unit']) ? '件' : $data['unit'];
+                if ($data['maxbuy'] > 0) {
+                    if ($goodstotal > $data['maxbuy']) {
+                        show_json(-1, $data['title'] . '<br/> 一次限购 ' . $data['maxbuy'] . $unit . "!");
+                    }
+                }
+                if ($data['usermaxbuy'] > 0) {
+                    $order_goodscount = pdo_fetchcolumn('select ifnull(sum(og.total),0)  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_order') . ' o on og.orderid=o.id ' . ' where og.goodsid=:goodsid and  o.status>=1 and o.openid=:openid  and og.uniacid=:uniacid ', array(
+                        ':goodsid' => $data['goodsid'],
+                        ':uniacid' => $uniacid,
+                        ':openid' => $openid
+                    ));
+                    if ($order_goodscount >= $data['usermaxbuy']) {
+                        show_json(-1, $data['title'] . '<br/> 最多限购 ' . $data['usermaxbuy'] . $unit . "!");
+                    }
+                }
+                if ($data['istime'] == 1) {
+                    if (time() < $data['timestart']) {
+                        show_json(-1, $data['title'] . '<br/> 限购时间未到!');
+                    }
+                    if (time() > $data['timeend']) {
+                        show_json(-1, $data['title'] . '<br/> 限购时间已过!');
+                    }
+                }
+                $levelid = intval($member['level']);
+                $groupid = intval($member['groupid']);
+                if ($data['buylevels'] != '') {
+                    $buylevels = explode(',', $data['buylevels']);
+                    if (!in_array($levelid, $buylevels)) {
+                        show_json(-1, '您的会员等级无法购买<br/>' . $data['title'] . '!');
+                    }
+                }
+                if ($data['buygroups'] != '') {
+                    $buygroups = explode(',', $data['buygroups']);
+                    if (!in_array($groupid, $buygroups)) {
+                        show_json(-1, '您所在会员组无法购买<br/>' . $data['title'] . '!');
+                    }
+                }
+                if (!empty($optionid)) {
+                    $option = pdo_fetch('select * from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
+                        ':uniacid' => $uniacid,
+                        ':goodsid' => $goodsid,
+                        ':id' => $optionid
+                    ));
+                    if (!empty($option)) {
+                        if ($option['stock'] != -1) {
+                            if (empty($option['stock'])) {
+                                show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
+                            }
+                        }
+                        $data['optionid']    = $optionid;
+                        $data['optiontitle'] = $option['title'];
+                        $data['marketprice'] = $option['marketprice'];
+                        if (!empty($option['costprice'])) {
+                            $data['costprice']   = $option['costprice'];
+                        }
+                        $virtualid           = $option['virtual'];
+                        if (!empty($option['goodssn'])) {
+                            $data['goodssn'] = $option['goodssn'];
+                        }
+                        if (!empty($option['productsn'])) {
+                            $data['productsn'] = $option['productsn'];
+                        }
+                        if (!empty($option['weight'])) {
+                            $data['weight'] = $option['weight'];
+                        }
+                        if (!empty($option['redprice'])) {
+                            $data['redprice'] = $option['redprice'];
                         }
                     }
-                    if ($deductmoney > $deductprice) {
-                        $deductmoney = $deductprice;
+                } else {
+                    if ($data['stock'] != -1) {
+                        if (empty($data['stock'])) {
+                            show_json(-1, $data['title'] . "<br/>库存不足!");
+                        }
                     }
-                    if ($deductmoney > $totalprice) {
-                        $deductmoney = $totalprice;
+                }
+                $data["diyformdataid"] = 0;
+                $data["diyformdata"]   = iserializer(array());
+                $data["diyformfields"] = iserializer(array());
+                if ($_GPC["fromcart"] == 1) {
+                    if ($diyform_plugin) {
+                        $cartdata = pdo_fetch("select id,diyformdataid,diyformfields,diyformdata from " . tablename("sz_yi_member_cart") . " " . " where goodsid=:goodsid and optionid=:optionid and openid=:openid and deleted=0 order by id desc limit 1", array(
+                            ":goodsid" => $data["goodsid"],
+                            ":optionid" => $data["optionid"],
+                            ":openid" => $openid
+                        ));
+                        if (!empty($cartdata)) {
+                            $data["diyformdataid"] = $cartdata["diyformdataid"];
+                            $data["diyformdata"]   = $cartdata["diyformdata"];
+                            $data["diyformfields"] = $cartdata["diyformfields"];
+                        }
                     }
-                    $deductcredit = round($deductmoney / $pmoney * $pcredit, 2);
+                } else {
+                    if (!empty($diyformtype) && !empty($data["diyformid"])) {
+                        $temp_data             = $diyform_plugin->getOneDiyformTemp($goods_data_id, 0);
+                        $data["diyformfields"] = $temp_data["diyformfields"];
+                        $data["diyformdata"]   = $temp_data["diyformdata"];
+                        $data["diyformid"]     = $formInfo["id"];
+                    }
+                }
+                /**
+                 *  红包价格计算
+                 */
+                if (strpos($data['redprice'], "%") === false) {
+                    if (strpos($data['redprice'], "-") === false) {
+                        $redprice = $data['redprice'];
+                    } else {
+                        $rprice = explode("-", $data['redprice']);
+                        if ($rprice[1]>200) {
+                            $redprice = rand($rprice[0]*100, 200*100)/100;
+                        } else if ($rprice[0]<0) {
+                            $redprice = rand(0, $rprice[1]*100)/100;
+                        } else {
+                            $redprice = rand($rprice[0]*100, $rprice[1]*100)/100;
+                        }
+                    }
+                } else {
+                    $rprice = explode("%", $data['redprice']);
+                    $redprice = ($rprice[0] * $data['marketprice']) / 100;
+                }
+                $redprice = $redprice * $goodstotal;
+                $redpriceall += $redprice;
+                $gprice = $data['marketprice'] * $goodstotal;
+                $goodsprice += $gprice;
+                $discounts = json_decode($data['discounts'], true);
+                if (is_array($discounts)) {
+                    if (!empty($level["id"])) {
+                        if (floatval($discounts["level" . $level["id"]]) > 0 && floatval($discounts["level" . $level["id"]]) < 10) {
+                            $level["discount"] = floatval($discounts["level" . $level["id"]]);
+                        } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+                            $level["discount"] = floatval($level["discount"]);
+                        } else {
+                            $level["discount"] = 0;
+                        }
+                    } else {
+                        if (floatval($discounts["default"]) > 0 && floatval($discounts["default"]) < 10) {
+                            $level["discount"] = floatval($discounts["default"]);
+                        } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+                            $level["discount"] = floatval($level["discount"]);
+                        } else {
+                            $level["discount"] = 0;
+                        }
+                    }
+                }
+                $ggprice = 0;
+                if (empty($data['isnodiscount']) && $level['discount'] > 0 && $level['discount'] < 10) {
+                    $dprice = round($gprice * $level['discount'] / 10, 2);
+                    $discountprice += $gprice - $dprice;
+                    $ggprice = $dprice;
+                } else {
+                    $ggprice = $gprice;
+                }
+                $data["realprice"] = $ggprice;
+                $totalprice += $ggprice;
+                if ($data['isverify'] == 2) {
+                    $isverify = true;
+                }
+                if (!empty($data["virtual"]) || $data["type"] == 2) {
+                    $isvirtual = true;
+                }
+                if ($data["manydeduct"]) {
+                    $deductprice += $data["deduct"] * $data["total"];
+                } else {
+                    $deductprice += $data["deduct"];
+                }
+                $virtualsales += $data["sales"];
+                if ($data["deduct2"] == 0.00) {
+                    $deductprice2 += $ggprice;
+                } else if ($data["deduct2"] > 0) {
+                    if ($data["deduct2"] > $ggprice) {
+                        $deductprice2 += $ggprice;
+                    } else {
+                        $deductprice2 += $data["deduct2"];
+                    }
+                }
+                $allgoods[] = $data;
+            }
+            if (empty($allgoods)) {
+                show_json(0, '未找到任何商品');
+            }
+            $deductenough = 0;
+            if ($saleset) {
+                foreach ($saleset["enoughs"] as $e) {
+                    if ($totalprice >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
+                        $deductenough = floatval($e["money"]);
+                        if ($deductenough > $totalprice) {
+                            $deductenough = $totalprice;
+                        }
+                        break;
+                    }
                 }
             }
-            $totalprice -= $deductmoney;
-            if (!empty($_GPC['deduct2'])) {
-                $deductcredit2 = m('member')->getCredit($openid, 'credit2');
-                if ($deductcredit2 > $totalprice) {
-                    $deductcredit2 = $totalprice;
+            if (!$isvirtual && !$isverify && $dispatchtype == 0) {
+                foreach ($allgoods as $g) {
+                    $sendfree = false;
+                    if (!empty($g["issendfree"])) {
+                        $sendfree = true;
+                    } else {
+                        if ($g["total"] >= $g["ednum"] && $g["ednum"] > 0) {
+                            $gareas = explode(";", $g["edareas"]);
+                            if (empty($gareas)) {
+                                $sendfree = true;
+                            } else {
+                                if (!empty($address)) {
+                                    if (!in_array($address["city"], $gareas)) {
+                                        $sendfree = true;
+                                    }
+                                } else if (!empty($member["city"])) {
+                                    if (!in_array($member["city"], $gareas)) {
+                                        $sendfree = true;
+                                    }
+                                } else {
+                                    $sendfree = true;
+                                }
+                            }
+                        }
+                        if ($g["ggprice"] >= floatval($g["edmoney"]) && floatval($g["edmoney"]) > 0) {
+                            $gareas = unserialize($g["edareas"]);
+                            if (empty($gareas)) {
+                                $sendfree = true;
+                            } else {
+                                if (!empty($address)) {
+                                    if (!in_array($address["city"], $gareas)) {
+                                        $sendfree = true;
+                                    }
+                                } else if (!empty($member["city"])) {
+                                    if (!in_array($member["city"], $gareas)) {
+                                        $sendfree = true;
+                                    }
+                                } else {
+                                    $sendfree = true;
+                                }
+                            }
+                        }
+                    }
+                    if (!$sendfree) {
+                        if ($g["dispatchtype"] == 1) {
+                            if ($g["dispatchprice"] > 0) {
+                                $dispatch_price += $g["dispatchprice"] * $g["total"];
+                            }
+                        } else if ($g["dispatchtype"] == 0) {
+                            if (empty($g["dispatchid"])) {
+                                $dispatch_data = m("order")->getDefaultDispatch($g['supplier_uid']);
+                            } else {
+                                $dispatch_data = m("order")->getOneDispatch($g["dispatchid"],$g['supplier_uid']);
+                            }
+                            if (empty($dispatch_data)) {
+                                $dispatch_data = m("order")->getNewDispatch($g['supplier_uid']);
+                            }
+                            if (!empty($dispatch_data)) {
+                                $areas = unserialize($dispatch_data["areas"]);
+                                if ($dispatch_data["calculatetype"] == 1) {
+                                    $param = $g["total"];
+                                } else {
+                                    $param = $g["weight"] * $g["total"];
+                                }
+                                $dkey = $dispatch_data["id"];
+                                if (array_key_exists($dkey, $dispatch_array)) {
+                                    $dispatch_array[$dkey]["param"] += $param;
+                                } else {
+                                    $dispatch_array[$dkey]["data"]  = $dispatch_data;
+                                    $dispatch_array[$dkey]["param"] = $param;
+                                }
+                            }
+                        }
+                    }
                 }
-                if ($deductcredit2 > $deductprice2) {
-                    $deductcredit2 = $deductprice2;
+                if (!empty($dispatch_array)) {
+                    foreach ($dispatch_array as $k => $v) {
+                        $dispatch_data = $dispatch_array[$k]["data"];
+                        $param         = $dispatch_array[$k]["param"];
+                        $areas         = unserialize($dispatch_data["areas"]);
+                        if (!empty($address)) {
+                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $dispatch_data,$order_row['supplier_uid']);
+                        } else if (!empty($member["city"])) {
+                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $dispatch_data,$order_row['supplier_uid']);
+                        } else {
+                            $dispatch_price += m("order")->getDispatchPrice($param, $dispatch_data, -1, $order_row['supplier_uid']);
+                        }
+                    }
                 }
             }
-            $totalprice -= $deductcredit2;
-        }
-        $ordersn    = m('common')->createNO('order', 'ordersn', 'SH');
-        $verifycode = "";
-        if ($isverify) {
-            $verifycode = random(8, true);
-            while (1) {
-                $count = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where verifycode=:verifycode and uniacid=:uniacid limit 1', array(
-                    ':verifycode' => $verifycode,
-                    ':uniacid' => $_W['uniacid']
-                ));
-                if ($count <= 0) {
-                    break;
+            if ($saleset) {
+                if (!empty($saleset["enoughfree"])) {
+                    if (floatval($saleset["enoughorder"]) <= 0) {
+                        $dispatch_price = 0;
+                    } else {
+                        if ($totalprice >= floatval($saleset["enoughorder"])) {
+                            if (empty($saleset["enoughareas"])) {
+                                $dispatch_price = 0;
+                            } else {
+                                $areas = explode(",", $saleset["enoughareas"]);
+                                if (!empty($address)) {
+                                    if (!in_array($address["city"], $areas)) {
+                                        $dispatch_price = 0;
+                                    }
+                                } else if (!empty($member["city"])) {
+                                    if (!in_array($member["city"], $areas)) {
+                                        $dispatch_price = 0;
+                                    }
+                                } else if (empty($member["city"])) {
+                                    $dispatch_price = 0;
+                                }
+                            }
+                        }
+                    }
                 }
+            }
+            $couponprice = 0;
+            $couponid    = intval($order_row["couponid"]);
+            if ($plugc) {
+                $coupon = $plugc->getCouponByDataID($couponid);
+                if (!empty($coupon)) {
+                    if ($totalprice >= $coupon["enough"] && empty($coupon["used"])) {
+                        if ($coupon["backtype"] == 0) {
+                            if ($coupon["deduct"] > 0) {
+                                $couponprice = $coupon["deduct"];
+                            }
+                        } else if ($coupon["backtype"] == 1) {
+                            if ($coupon["discount"] > 0) {
+                                $couponprice = $totalprice * (1 - $coupon["discount"] / 10);
+                            }
+                        }
+                        if ($couponprice > 0) {
+                            $totalprice -= $couponprice;
+                        }
+                    }
+                }
+            }
+            $totalprice -= $deductenough;
+            $totalprice += $dispatch_price;
+            if ($saleset && empty($saleset["dispatchnodeduct"])) {
+                $deductprice2 += $dispatch_price;
+            }
+            $deductcredit  = 0;
+            $deductmoney   = 0;
+            $deductcredit2 = 0;
+            if ($sale_plugin) {
+                if (!empty($_GPC['deduct'])) {
+                    $credit  = m('member')->getCredit($openid, 'credit1');
+                    $saleset = $sale_plugin->getSet();
+                    if (!empty($saleset['creditdeduct'])) {
+                        $pcredit = intval($saleset['credit']);
+                        $pmoney  = round(floatval($saleset['money']), 2);
+                        if ($pcredit > 0 && $pmoney > 0) {
+                            if ($credit % $pcredit == 0) {
+                                $deductmoney = round(intval($credit / $pcredit) * $pmoney, 2);
+                            } else {
+                                $deductmoney = round((intval($credit / $pcredit) + 1) * $pmoney, 2);
+                            }
+                        }
+                        if ($deductmoney > $deductprice) {
+                            $deductmoney = $deductprice;
+                        }
+                        if ($deductmoney > $totalprice) {
+                            $deductmoney = $totalprice;
+                        }
+                        $deductcredit = round($deductmoney / $pmoney * $pcredit, 2);
+                    }
+                }
+                $totalprice -= $deductmoney;
+                if (!empty($order_row['deduct2'])) {
+                    $deductcredit2 = m('member')->getCredit($openid, 'credit2');
+                    if ($deductcredit2 > $totalprice) {
+                        $deductcredit2 = $totalprice;
+                    }
+                    if ($deductcredit2 > $deductprice2) {
+                        $deductcredit2 = $deductprice2;
+                    }
+                }
+                $totalprice -= $deductcredit2;
+            }
+            $ordersn    = m('common')->createNO('order', 'ordersn', 'SH');
+            $verifycode = "";
+            if ($isverify) {
                 $verifycode = random(8, true);
+                while (1) {
+                    $count = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where verifycode=:verifycode and uniacid=:uniacid limit 1', array(
+                        ':verifycode' => $verifycode,
+                        ':uniacid' => $_W['uniacid']
+                    ));
+                    if ($count <= 0) {
+                        break;
+                    }
+                    $verifycode = random(8, true);
+                }
             }
-        }
-        $carrier  = $_GPC['carrier'];
-        $carriers = is_array($carrier) ? iserializer($carrier) : iserializer(array());
-        if ($totalprice <= 0) {
-            $totalprice = 0;
-        }
-        if ($redpriceall > 200) {
-            $redpriceall = 200;
-        }
-        $order    = array(
-            'uniacid' => $uniacid,
-            'openid' => $openid,
-            'ordersn' => $ordersn,
-            'price' => $totalprice,
-            'cash' => $cash,
-            'discountprice' => $discountprice,
-            'deductprice' => $deductmoney,
-            'deductcredit' => $deductcredit,
-            'deductcredit2' => $deductcredit2,
-            'deductenough' => $deductenough,
-            'status' => 0,
-            'paytype' => 0,
-            'transid' => '',
-            'remark' => $_GPC['remark'],
-            'addressid' => empty($dispatchtype) ? $addressid : 0,
-            'goodsprice' => $goodsprice,
-            'dispatchprice' => $dispatch_price,
-            'dispatchtype' => $dispatchtype,
-            'dispatchid' => $dispatchid,
-            "storeid" => $carrierid,
-            'carrier' => $carriers,
-            'createtime' => time(),
-            'isverify' => $isverify ? 1 : 0,
-            'verifycode' => $verifycode,
-            'virtual' => $virtualid,
-            'isvirtual' => $isvirtual ? 1 : 0,
-            'oldprice' => $totalprice,
-            'olddispatchprice' => $dispatch_price,
-            "couponid" => $couponid,
-            "couponprice" => $couponprice,
-            'redprice' => $redpriceall
-        );
-        if ($diyform_plugin) {
-            if (is_array($_GPC["diydata"]) && !empty($order_formInfo)) {
-                $diyform_data           = $diyform_plugin->getInsertData($fields, $_GPC["diydata"]);
-                $idata                  = $diyform_data["data"];
-                $order["diyformfields"] = iserializer($fields);
-                $order["diyformdata"]   = $idata;
-                $order["diyformid"]     = $order_formInfo["id"];
+            $carrier  = $_GPC['carrier'];
+            $carriers = is_array($carrier) ? iserializer($carrier) : iserializer(array());
+            if ($totalprice <= 0) {
+                $totalprice = 0;
             }
-        }
-        if (!empty($address)) {
-            $order['address'] = iserializer($address);
-        }
-        pdo_insert('sz_yi_order', $order);
-        $orderid = pdo_insertid();
-        if (is_array($carrier)) {
-            $up = array(
-                'realname' => $carrier['carrier_realname'],
-                'mobile' => $carrier['carrier_mobile']
-            );
-            pdo_update('sz_yi_member', $up, array(
-                'id' => $member['id'],
-                'uniacid' => $_W['uniacid']
-            ));
-            if (!empty($member['uid'])) {
-                load()->model('mc');
-                mc_update($member['uid'], $up);
+            if ($redpriceall > 200) {
+                $redpriceall = 200;
             }
-        }
-        if ($_GPC['fromcart'] == 1) {
-            $cartids = $_GPC['cartids'];
-            if (!empty($cartids)) {
-                pdo_query('update ' . tablename('sz_yi_member_cart') . ' set deleted=1 where id in (' . $cartids . ') and openid=:openid and uniacid=:uniacid ', array(
-                    ':uniacid' => $uniacid,
-                    ':openid' => $openid
-                ));
-            } else {
-                pdo_query('update ' . tablename('sz_yi_member_cart') . ' set deleted=1 where openid=:openid and uniacid=:uniacid ', array(
-                    ':uniacid' => $uniacid,
-                    ':openid' => $openid
-                ));
-            }
-        }
-        foreach ($allgoods as $goods) {
-            $order_goods = array(
+            $order    = array(
+                'supplier_uid' => $order_row['supplier_uid'],
                 'uniacid' => $uniacid,
-                'orderid' => $orderid,
-                'goodsid' => $goods['goodsid'],
-                'price' => $goods['marketprice'] * $goods['total'],
-                'total' => $goods['total'],
-                'optionid' => $goods['optionid'],
+                'openid' => $openid,
+                'ordersn' => $ordersn,
+                'ordersn_general' => $ordersn_general,
+                'price' => $totalprice,
+                'cash' => $cash,
+                'discountprice' => $discountprice,
+                'deductprice' => $deductmoney,
+                'deductcredit' => $deductcredit,
+                'deductcredit2' => $deductcredit2,
+                'deductenough' => $deductenough,
+                'status' => 0,
+                'paytype' => 0,
+                'transid' => '',
+                'remark' => $order_row['remark'],
+                'addressid' => empty($dispatchtype) ? $addressid : 0,
+                'goodsprice' => $goodsprice,
+                'dispatchprice' => $dispatch_price,
+                'dispatchtype' => $dispatchtype,
+                'dispatchid' => $dispatchid,
+                "storeid" => $carrierid,
+                'carrier' => $carriers,
                 'createtime' => time(),
-                'optionname' => $goods['optiontitle'],
-                'goodssn' => $goods['goodssn'],
-                'productsn' => $goods['productsn'],
-                "realprice" => $goods["realprice"],
-                "oldprice" => $goods["realprice"],
-                "openid" => $openid,
-                'goods_op_cost_price' => $goods['costprice']
+                'isverify' => $isverify ? 1 : 0,
+                'verifycode' => $verifycode,
+                'virtual' => $virtualid,
+                'isvirtual' => $isvirtual ? 1 : 0,
+                'oldprice' => $totalprice,
+                'olddispatchprice' => $dispatch_price,
+                "couponid" => $couponid,
+                "couponprice" => $couponprice,
+                'redprice' => $redpriceall
             );
             if ($diyform_plugin) {
-                $order_goods["diyformid"]     = $goods["diyformid"];
-                $order_goods["diyformdata"]   = $goods["diyformdata"];
-                $order_goods["diyformfields"] = $goods["diyformfields"];
+                if (is_array($order_row["diydata"]) && !empty($order_formInfo)) {
+                    $diyform_data           = $diyform_plugin->getInsertData($fields, $order_row["diydata"]);
+                    $idata                  = $diyform_data["data"];
+                    $order["diyformfields"] = iserializer($fields);
+                    $order["diyformdata"]   = $idata;
+                    $order["diyformid"]     = $order_formInfo["id"];
+                }
             }
-            if (p('supplier')) {
-                $order_goods['supplier_uid'] = $goods['supplier_uid'];
+            if (!empty($address)) {
+                $order['address'] = iserializer($address);
             }
-            pdo_insert('sz_yi_order_goods', $order_goods);
-        }
-        if ($deductcredit > 0) {
-            $shop = m('common')->getSysset('shop');
-            m('member')->setCredit($openid, 'credit1', -$deductcredit, array(
-                '0',
-                $shop['name'] . "购物积分抵扣 消费积分: {$deductcredit} 抵扣金额: {$deductmoney} 订单号: {$ordersn}"
-            ));
-        }
-        if (empty($virtualid)) {
-            m('order')->setStocksAndCredits($orderid, 0);
-        } else {
-            if (isset($allgoods[0])) {
-                $vgoods = $allgoods[0];
-                pdo_update('sz_yi_goods', array(
-                    'sales' => $vgoods['sales'] + $vgoods['total']
-                ), array(
-                    'id' => $vgoods['goodsid']
+            pdo_insert('sz_yi_order', $order);
+            $orderid = pdo_insertid();
+            if (is_array($carrier)) {
+                $up = array(
+                    'realname' => $carrier['carrier_realname'],
+                    'mobile' => $carrier['carrier_mobile']
+                );
+                pdo_update('sz_yi_member', $up, array(
+                    'id' => $member['id'],
+                    'uniacid' => $_W['uniacid']
+                ));
+                if (!empty($member['uid'])) {
+                    load()->model('mc');
+                    mc_update($member['uid'], $up);
+                }
+            }
+            if ($order_row['fromcart'] == 1) {
+                $cartids = $order_row['cartids'];
+                if (!empty($cartids)) {
+                    pdo_query('update ' . tablename('sz_yi_member_cart') . ' set deleted=1 where id in (' . $cartids . ') and openid=:openid and uniacid=:uniacid ', array(
+                        ':uniacid' => $uniacid,
+                        ':openid' => $openid
+                    ));
+                } else {
+                    pdo_query('update ' . tablename('sz_yi_member_cart') . ' set deleted=1 where openid=:openid and uniacid=:uniacid ', array(
+                        ':uniacid' => $uniacid,
+                        ':openid' => $openid
+                    ));
+                }
+            }
+            foreach ($allgoods as $goods) {
+                $order_goods = array(
+                    'uniacid' => $uniacid,
+                    'orderid' => $orderid,
+                    'goodsid' => $goods['goodsid'],
+                    'price' => $goods['marketprice'] * $goods['total'],
+                    'total' => $goods['total'],
+                    'optionid' => $goods['optionid'],
+                    'createtime' => time(),
+                    'optionname' => $goods['optiontitle'],
+                    'goodssn' => $goods['goodssn'],
+                    'productsn' => $goods['productsn'],
+                    "realprice" => $goods["realprice"],
+                    "oldprice" => $goods["realprice"],
+                    "openid" => $openid,
+                    'goods_op_cost_price' => $goods['costprice']
+                );
+                if ($diyform_plugin) {
+                    $order_goods["diyformid"]     = $goods["diyformid"];
+                    $order_goods["diyformdata"]   = $goods["diyformdata"];
+                    $order_goods["diyformfields"] = $goods["diyformfields"];
+                }
+                if (p('supplier')) {
+                    $order_goods['supplier_uid'] = $goods['supplier_uid'];
+                }
+                pdo_insert('sz_yi_order_goods', $order_goods);
+            }
+            if ($deductcredit > 0) {
+                $shop = m('common')->getSysset('shop');
+                m('member')->setCredit($openid, 'credit1', -$deductcredit, array(
+                    '0',
+                    $shop['name'] . "购物积分抵扣 消费积分: {$deductcredit} 抵扣金额: {$deductmoney} 订单号: {$ordersn}"
                 ));
             }
-        }
-        $plugincoupon = p("coupon");
-        if ($plugincoupon) {
-            $plugincoupon->useConsumeCoupon($orderid);
-        }
-        m('notice')->sendOrderMessage($orderid);
-        $pluginc = p('commission');
-        if ($pluginc) {
-            $pluginc->checkOrderConfirm($orderid);
+            if (empty($virtualid)) {
+                m('order')->setStocksAndCredits($orderid, 0);
+            } else {
+                if (isset($allgoods[0])) {
+                    $vgoods = $allgoods[0];
+                    pdo_update('sz_yi_goods', array(
+                        'sales' => $vgoods['sales'] + $vgoods['total']
+                    ), array(
+                        'id' => $vgoods['goodsid']
+                    ));
+                }
+            }
+            $plugincoupon = p("coupon");
+            if ($plugincoupon) {
+                $plugincoupon->useConsumeCoupon($orderid);
+            }
+            m('notice')->sendOrderMessage($orderid);
+            $pluginc = p('commission');
+            if ($pluginc) {
+                $pluginc->checkOrderConfirm($orderid);
+            }
         }
         show_json(1, array(
             'orderid' => $orderid
         ));
     }
-}
+//}
 include $this->template('order/confirm');

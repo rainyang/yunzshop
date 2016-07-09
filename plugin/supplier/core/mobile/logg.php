@@ -7,7 +7,8 @@ global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid = m('user')->getOpenid();
 $member = m('member')->getMember($openid);
-$uid = pdo_fetchcolumn("select uid from " . tablename('sz_yi_perm_user') . " where openid='{$openid}' and uniacid={$_W['uniacid']}");
+$supplieruser = $this->model->getSupplierUidAndUsername($openid);
+$uid = $supplieruser['uid'];
 $uniacid = $_W['uniacid'];
 if ($_W['isajax']) {
 	$pindex = max(1, intval($_GPC['page']));

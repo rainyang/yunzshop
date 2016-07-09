@@ -4,10 +4,15 @@ if (!defined('IN_IA')) {
 }
 global $_W, $_GPC;
 
+$apply_id = $_GPC['apply_id'];
+$condition = ' and o.uniacid=:uniacid and o.status>=3';
+if (!empty($apply_id)) {
+    $apply_info = pdo_fetch("select * from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and id={$apply_id}");
+    $condition .= " and og.id in ({$apply_info['apply_ordergoods_ids']}) ";
+}
 $suppliers = pdo_fetchall("select * from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and roleid = (select id from " .tablename('sz_yi_perm_role') . " where status1=1 LIMIT 1)");
 $pindex    = max(1, intval($_GPC['page']));
 $psize     = 20;
-$condition = ' and o.uniacid=:uniacid and o.status>=3';
 $params    = array(
     ':uniacid' => $_W['uniacid']
 );

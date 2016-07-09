@@ -200,7 +200,7 @@
                               {/if}
                          
                          {/if}
-                         <b><button type="button" class="btn btn-success">{$item['vendor']}</button></b>
+                         <label class='label label-info'>{$item['vendor']}</label>
                     <td style='border-bottom:1px solid #ccc;background:#f8f8f8;text-align: center' >
                           {if empty($item['statusvalue'])}
                            {ifp 'order.op.close'}
@@ -341,7 +341,7 @@
                 <tr>
                     <th style='width:8%;'>供应商ID</th>
                     <th style='width:22%;'>提现单号</th>
-                    <th style='width:8%;'>提现金额</th>
+                    <th style='width:20%;'>提现金额</th>
                     <th style='width:10%;'>提现方式<br>手动/微信</th>
                     <th style='width:22%;'>申请时间<br>完成时间</th>
                     <th style='width:29%;'>状态</th>
@@ -353,7 +353,7 @@
                         <tr>
                             <td>{$row['uid']}</td>
                             <td>{$row['applysn']}</td>
-                            <td>{$row['apply_money']}</td>
+                            <td><a class="btn btn-danger" href="{if $row['status'] == 0}{php echo $this->createPluginWebUrl('supplier/supplier_list',array('apply_id' => $row['id']));}{else}#{/if}">金额：{$row['apply_money']}元{if $row['status'] == 0}(点击查看订单){/if}</a></td>
                             <td>{if $row['type']==1}<button type="button" class="btn btn-warning">手动提现</button>{elseif $row['type']==2}<button type="button" class="btn btn-success">微信提现</button>{/if}</td>
                             {if $row['status'] == 0}
                             <td><?php echo date('Y-m-d H:i:s',$row['apply_time']);?></td>

@@ -25,13 +25,13 @@
     .detail_good {height:auto;padding:10px;background:#fff;  margin-top:16px; border-top:1px solid #eaeaea;}
     .detail_good .ico {height:6px; width:10%; line-height:36px; float:left; text-align:center;}
     .detail_good .shop {height:36px; width:90%; padding-left:10%; border-bottom:1px solid #eaeaea; line-height:36px; font-size:18px; color:#333;}
-    .detail_good .good {height:50px; width:100%; padding:10px 0px; border-bottom:1px solid #eaeaea;}
+    .detail_good .good {if $order['cashier']==1}{height:100px; width:100%; padding:10px 0px; border-bottom:1px solid #eaeaea;}{else}{height:50px; width:100%; padding:10px 0px; border-bottom:1px solid #eaeaea;}{/if}
     .detail_good .img {height:50px; width:50px; float:left;}
     .detail_good .img img {height:100%; width:100%;}
     .detail_good .info {width:100%;float:left; margin-left:-50px;margin-right:-60px;}
     .detail_good .info .inner { margin-left:60px;margin-right:60px; }
     .detail_good .info .inner .name {height:32px; width:100%; float:left; font-size:12px; color:#555;overflow:hidden;}
-    .detail_good .info .inner .option {height:16px; width:100%; float:left; font-size:12px; color:#888;overflow:hidden;word-break: break-all}
+    .detail_good .info .inner .option {if $order['cashier']==1}{height:22px; width:100%; float:left; font-size:12px; color:#888;overflow:hidden;word-break: break-all}{else}{height:16px; width:100%; float:left; font-size:12px; color:#888;overflow:hidden;word-break: break-all}{/if}
     .detail_good span { color:#666;}
     .detail_good .price { float:right;width:60px;;height:54px;margin-left:-60px;;}
     .detail_good .price .pnum { height:20px;width:100%;text-align:right;font-size:14px; }
@@ -296,8 +296,7 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
     <div class="shop"><%set.name%></div>
     <%each goods as g%>
      <div class="good">
-
-        <%if order.cashier==1%>
+            <%if order.cashier==1%>
               <div class="img"  ><img src="<%order.name.thumb%>"/></div>
               <div class='info' >
               <div class='inner'>
@@ -312,12 +311,11 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
               <div class='info'onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
              
                   <div class='inner'>
-                         <div class="name"> <%g.title%></div>     
+                         <div class="name"><%if order.cashier==1%><%order.name.name%><span style="color:red">(收银台支付)</span><%else%><%g.title%><%/if%></div>     
                          <div class='option'><%if g.optionid!='0'%>规格:  <%g.optiontitle%><%/if%></div>
                   </div>
               </div>
-            <%/if%>
-
+            <%/if%> 
             <div class="price">
                 <div class='pnum'><span class='marketprice'>￥<%g.price%></span></div>
                 <div class='pnum'><span class='total'>×<%g.total%></span></div>
@@ -376,6 +374,7 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
         <%if order.deductenough!=0%>
         <div class="line">满额立减：<span><%if order.deductenough>0%>-<%/if%>￥<span class='deductenough'><%order.deductenough%></span></span></div>
         <%/if%>
+        
         <%if order.changeprice!=0%>
         <div class="line">改价优惠:<span><%if order.changeprice>0%>+<%/if%>￥<span class='changeprice2'><%order.changeprice%></span></span></div>
         <%/if%>

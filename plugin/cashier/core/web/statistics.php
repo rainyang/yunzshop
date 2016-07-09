@@ -34,17 +34,17 @@ if ($operation == 'display') {
     $tidyList = array();
     foreach ($list as &$row) {
 
-    	
+        
 
         $cashier_order = pdo_fetchall('SELECT order_id FROM ' . tablename('sz_yi_cashier_order') . ' WHERE uniacid = :uniacid AND cashier_store_id = :cashier_store_id', array(':uniacid' => $_W['uniacid'], ':cashier_store_id' => $row['id']));
         $orderids = array();
         foreach ($cashier_order as $order) {
-        	$orderstatus = pdo_fetchall("select status from ".tablename('sz_yi_order')." where id =".$order['order_id']);
-        	foreach($orderstatus as $status){
-        		if($status['status'] == 3){
-					$orderids[] = $order['order_id'];
-        		}
-        	}
+            $orderstatus = pdo_fetchall("select status from ".tablename('sz_yi_order')." where id =".$order['order_id']);
+            foreach($orderstatus as $status){
+                if($status['status'] == 3){
+                    $orderids[] = $order['order_id'];
+                }
+            }
              
         }
         
@@ -59,8 +59,8 @@ if ($operation == 'display') {
             $row['realtotalprices'] = $realtotalprices['tprice'];
          
         }else{
-        	$row['totalprices'] = 0;
-        	$row['realtotalprices'] = 0;
+            $row['totalprices'] = 0;
+            $row['realtotalprices'] = 0;
         }
 
         $row['total_commission'] = 0;
@@ -250,9 +250,10 @@ if ($operation == 'display') {
         if ($row["couponprice"] > 0) {
             $row["couponprice"] = "-" . $row["couponprice"];
         }
-        $exportlist = $list;
+        $exportlist[] = $row;
     }
     unset($row);
+    
     if ($_GPC["export"] == 1) {
         ca("order.op.export");
         plog("order.op.export", "导出订单");

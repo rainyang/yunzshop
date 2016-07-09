@@ -9,7 +9,7 @@
                                          <a class="btn btn-primary btn-sm disbut" href="javascript:;" onclick="send(this)" data-toggle="modal" data-target="#modal-confirmsend">确认发货</a>
 										 </div>
 				{else}
-                                <a class="btn btn-primary btn-sm disbut" href="{php echo $this->createWebUrl('order', array('op' => 'deal','to'=>'confirmpay','id' => $item['id']))}" onclick="return confirm('确认此订单已付款吗？');return false;">确认付款</a>
+                                <!-- <a class="btn btn-primary btn-sm disbut" href="{php echo $this->createWebUrl('order', array('op' => 'deal','to'=>'confirmpay','id' => $item['id']))}" onclick="return confirm('确认此订单已付款吗？');return false;">确认付款</a> -->
                                {/if}
 							   
                                 {/if}
@@ -58,7 +58,7 @@
                               
                                    {/if}
                                 {/if}
-                                
+                            <!-- 补发红包 -->
                             {elseif $item['statusvalue'] == 3}
                                 {if !empty($item['redstatus'])}
                                     <a class="btn btn-danger btn-sm disbut" href="{php echo $this->createWebUrl('order', array('op' => 'deal','to'=>'redpack','id' => $item['id']))}" onclick="return confirm('确认发送红包吗？');return false;">补发红包</a>

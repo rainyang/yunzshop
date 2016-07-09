@@ -152,27 +152,52 @@ if ($_W['isajax']) {
 		show_json(1, array('goods' => $goods, 'pagesize' => $args['pagesize']));
 	} else if ($operation == 'category'){
 
-		$category = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where parentid=0 and uniacid=".$_W['uniacid']),'thumb');
+		$category = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where parentid=0 and uniacid=".$_W['uniacid']),'advimg');
 
 		foreach ($category as $key => $value) {
-			$children = pdo_fetchall("select * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"]));
+			$children = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"])),'advimg');
 			foreach($children as $key1 => $value1){
-				$category[$key]['children'][$key1] = set_medias($value2,'thumb');
-				$third = pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid",array(':pid' => $value1['id'] , ':uniacid' => $_W["uniacid"]));
+				$category[$key]['children'][$key1] = $value1;
+				$third = set_medias(pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid",array(':pid' => $value1['id'] , ':uniacid' => $_W["uniacid"])),'advimg');
 				foreach($third as $key2 => $value2){
-					$category[$key]['children'][$key1]['third'][$key2] = set_medias($value2,'thumb');
+					$category[$key]['children'][$key1]['third'][$key2] = $value2;
 				}
+			}
+		}
+
+		show_json(1,array('category' => $category));
+	} else if ($operation == 'category_recommend'){
+
+		$category = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=0 and uniacid=".$_W['uniacid']),'advimg');
+
+		foreach ($category as $key => $value) {
+			$children = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=:pid and uniacid=:uniacid",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"])),'advimg');
+			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 and deleted = 0 limit 8",array(':pcate' => $value['id'] , ':uniacid' => $_W['uniacid'])) , 'thumb');
+			$category[$key]['goods'] = $goods;
+			foreach($children as $key1 => $value1){
+				$category[$key]['children'][$key1] = $value1;
+				$third = set_medias(pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and ishome=1 and uniacid=:uniacid",array(':pid' => $value1['id'] , ':uniacid' => $_W["uniacid"])),'advimg');
+				$category[$key]['third'] = $third;
+				
 			}
 		}
 
 		show_json(1,array('category' => $category));
 	} else if ($operation == 'children_goods'){
 		$id = $_GPC['id'];
-		if(empty($id)){
-			show_json(0);
+		$aid = $_GPC['aid'];
+		if($aid){
+			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 limit 8",array(':pcate' => $aid , ':uniacid' => $_W['uniacid'])) , 'thumb');
+			show_json(1,array('goods' => $goods));	
+		}else{
+			if(empty($id)){
+				show_json(0);
+			}
+			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where ccate=:ccate and uniacid=:uniacid and deleted = 0",array(':ccate' => $id , ':uniacid' => $_W['uniacid'])) , 'thumb');
+			$third = pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid",array(':pid' => $id , ':uniacid' => $_W["uniacid"]));
+			show_json(1,array('goods' => $goods,'third' => $third));
 		}
-		$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where ccate=:ccate and uniacid=:uniacid",array(':ccate' => $id , ':uniacid' => $_W['uniacid'])) , 'thumb');
-		show_json(1,array('goods' => $goods));
+		
 
 	}
 }
