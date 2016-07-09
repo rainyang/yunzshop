@@ -362,6 +362,9 @@ if(!pdo_fieldexists('sz_yi_dispatch', 'firstnum')) {
 if(!pdo_fieldexists('sz_yi_dispatch', 'secondnum')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_dispatch')." ADD  `secondnum`  int(11) DEFAULT '0';");
 }
+if(!pdo_fieldexists('sz_yi_dispatch', 'supplier_uid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_dispatch')." ADD  `supplier_uid`  int(11) DEFAULT '0';");
+}
 //文章营销
 if(!pdo_fieldexists('sz_yi_article_sys', 'article_area')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article_sys')." ADD  `article_area`  TEXT NULL COMMENT '文章阅读地区';");
@@ -603,7 +606,7 @@ if (!pdo_fieldexists('sz_yi_goods', 'nobonus')) {
 }
 
 if(!pdo_fieldexists('sz_yi_goods', 'returns')) {
-pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returns` TEXT NOT NULL AFTER `discounts`");
+pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returns` TEXT DEFAULT '';");
 }
 
 //添加全返记录表 2016-06-14
@@ -617,7 +620,7 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_return_log')." (
   `returntype` tinyint(2) NOT NULL DEFAULT '0',
   `create_time` int(11) NOT NULL, 
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 
 if (!pdo_fieldexists('sz_yi_coupon', 'supplier_uid')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `supplier_uid` INT(11) DEFAULT '0';");
@@ -664,7 +667,7 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_banner')." (
   `enabled` int(11) DEFAULT '0',
   `thumb_pc` varchar(500) DEFAULT '',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 
 //app 客户订单推送消息表 2016-6-21
 pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_message')." (
@@ -675,7 +678,7 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_message')." (
   `status` set('0','1') NOT NULL DEFAULT '0' COMMENT '0-未读；1-已读',
   `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '日期',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 
 //app 系统推送消息表 2016-6-21
 pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_push')." (
@@ -687,20 +690,31 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_push')." (
   `time` int(11) DEFAULT NULL,
   `status` int(1) DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 
 //会员表 增加app绑定字段
 if(!pdo_fieldexists('sz_yi_member', 'bindapp')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bindapp` tinyint(4) NOT NULL DEFAULT '0';");
 }
 
-if(!pdo_fieldexists('sz_yi_member', 'ordersn_general')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `ordersn_general` varchar(255) NOT NULL DEFAULT '';");
+if(!pdo_fieldexists('sz_yi_order', 'ordersn_general')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `ordersn_general` varchar(255) NOT NULL DEFAULT '';");
 }
 
 //前台下单 判断是否支持配送核销字段
 if(!pdo_fieldexists('sz_yi_goods', 'isverifysend')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isverifysend` tinyint(1) NOT NULL DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_goods', 'supplier_uid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `supplier_uid` int(11) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_goods', 'isreturn')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isreturn` tinyint(1) DEFAULT '0';");
+}
+if(!pdo_fieldexists('sz_yi_goods', 'isreturnqueue')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isreturnqueue` tinyint(1) DEFAULT '0';");
 }
 
 pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." CHANGE `realprice` `realprice` decimal(10,2) DEFAULT '0';");
@@ -721,7 +735,7 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_store_waiter
   `createtime` varchar(255) DEFAULT NULL,
   `savetime` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 
 $sql = "
 CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_order')." (
@@ -729,7 +743,7 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_order')." (
   `uniacid` int(11) NOT NULL,
   `cashier_store_id` int(11) NOT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='收银台商户订单';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='收银台商户订单';
 
 CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_store')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -758,7 +772,7 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_store')." (
   `creditpack` decimal(10,2) DEFAULT '0.00' COMMENT '消费者在商家支付完成后，获得的余额奖励百分比',
   `iscontact` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否填写联系人信息',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_withdraw')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -770,14 +784,156 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_withdraw')." (
   `status` int(1) unsigned NOT NULL DEFAULT '0' COMMENT '提现状态 0 生成 1 成功 2 失败',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='收银台商户提现表';
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='收银台商户提现表';
 ";
-
 pdo_fetchall($sql);
+
+//供应商
+pdo_fetchall("
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_supplier` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `openid` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `uniacid` int(11) NOT NULL,
+  `realname` varchar(55) CHARACTER SET utf8 NOT NULL,
+  `mobile` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `weixin` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `productname` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `username` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `status` tinyint(3) NOT NULL COMMENT '1审核成功2驳回',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_apply` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL COMMENT '供应商id',
+  `uniacid` int(11) NOT NULL,
+  `type` int(11) NOT NULL COMMENT '1手动2微信',
+  `applysn` varchar(255) NOT NULL COMMENT '提现单号',
+  `apply_money` int(11) NOT NULL COMMENT '申请金额',
+  `apply_time` int(11) NOT NULL COMMENT '申请时间',
+  `status` tinyint(3) NOT NULL COMMENT '0为申请状态1为完成状态',
+  `finish_time` int(11) NOT NULL COMMENT '完成时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+
+
+if(!pdo_fieldexists('sz_yi_perm_user', 'banknumber')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `banknumber` varchar(255) NOT NULL COMMENT '银行卡号';");
+}
+if(!pdo_fieldexists('sz_yi_perm_user', 'accountname')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `accountname` varchar(255) NOT NULL COMMENT '开户名';");
+}
+if(!pdo_fieldexists('sz_yi_perm_user', 'accountbank')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `accountbank` varchar(255) NOT NULL COMMENT '开户行';");
+}
+
+if(!pdo_fieldexists('sz_yi_goods', 'supplier_uid')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `supplier_uid` INT NOT NULL COMMENT '供应商ID';");
+}
+if(!pdo_fieldexists('sz_yi_order', 'supplier_uid')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `supplier_uid` INT NOT NULL COMMENT '供应商ID';");
+}
+if(!pdo_fieldexists('sz_yi_order_goods', 'supplier_uid')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `supplier_uid` INT NOT NULL COMMENT '供应商ID';");
+}
+if(!pdo_fieldexists('sz_yi_order_goods', 'supplier_apply_status')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `supplier_apply_status` tinyint(4) NOT NULL COMMENT '1为供应商已提现';");
+}
+
+
+if(!pdo_fieldexists('sz_yi_perm_role', 'status1')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_role')." ADD `status1` tinyint(3) NOT NULL COMMENT '1：供应商开启';");
+}
+if(!pdo_fieldexists('sz_yi_perm_user', 'openid')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `openid` VARCHAR( 255 ) NOT NULL;");
+}
+if(!pdo_fieldexists('sz_yi_perm_user', 'username')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `username` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+} 
+if(!pdo_fieldexists('sz_yi_perm_user', 'password')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `username` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+}
+//添加供应商品牌名称
+if(!pdo_fieldexists('sz_yi_perm_user', 'brandname')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `brandname` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+}
+
+$info = pdo_fetch('select * from ' . tablename('sz_yi_plugin') . ' where identity= "supplier"  order by id desc limit 1');
+
+
+$result = pdo_fetch('select * from ' . tablename('sz_yi_perm_role') . ' where status1=1');
+
+if(empty($result)){
+  $sql = "
+INSERT INTO " . tablename('sz_yi_perm_role') . " (`rolename`, `status`, `status1`, `perms`, `deleted`) VALUES
+('供应商', 1, 1, 'shop,shop.goods,shop.goods.view,shop.goods.add,shop.goods.edit,shop.goods.delete,order,order.view,order.view.status_1,order.view.status0,order.view.status1,order.view.status2,order.view.status3,order.view.status4,order.view.status5,order.view.status9,order.op,order.op.pay,order.op.send,order.op.sendcancel,order.op.finish,order.op.verify,order.op.fetch,order.op.close,order.op.refund,order.op.export,order.op.changeprice,exhelper,exhelper.print,exhelper.print.single,exhelper.print.more,exhelper.exptemp1,exhelper.exptemp1.view,exhelper.exptemp1.add,exhelper.exptemp1.edit,exhelper.exptemp1.delete,exhelper.exptemp1.setdefault,exhelper.exptemp2,exhelper.exptemp2.view,exhelper.exptemp2.add,exhelper.exptemp2.edit,exhelper.exptemp2.delete,exhelper.exptemp2.setdefault,exhelper.senduser,exhelper.senduser.view,exhelper.senduser.add,exhelper.senduser.edit,exhelper.senduser.delete,exhelper.senduser.setdefault,exhelper.short,exhelper.short.view,exhelper.short.save,exhelper.printset,exhelper.printset.view,exhelper.printset.save,exhelper.dosen,taobao,taobao.fetch', 0);";
+  pdo_query($sql);
+}
+
 //一级分类后台设置添加PC首页推荐广告
 if(!pdo_fieldexists('sz_yi_category', 'advimg_pc')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `advimg_pc` varchar(255) NOT NULL DEFAULT '';");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_category')." ADD `advimg_pc` varchar(255) NOT NULL DEFAULT '';");
 }
+
 if(!pdo_fieldexists('sz_yi_category', 'advurl_pc')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `advurl_pc` varchar(500) NOT NULL DEFAULT '';");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_category')." ADD `advurl_pc` varchar(500) NOT NULL DEFAULT '';");
+}
+
+if (!pdo_fieldexists('sz_yi_supplier_apply', 'apply_ordergoods_ids')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_supplier_apply')." ADD  `apply_ordergoods_ids` text;");
+}
+
+//直接安装APP插件
+$result = pdo_fetchcolumn('select id from ' . tablename('sz_yi_plugin') . ' where identity=:identity', array(':identity' => 'app'));
+if(empty($result)){
+    $displayorder_max = pdo_fetchcolumn('select max(displayorder) from ' . tablename('sz_yi_plugin'));
+    $displayorder = $displayorder_max + 1;
+    $sql = "INSERT INTO " . tablename('sz_yi_plugin') . " (`displayorder`,`identity`,`name`,`version`,`author`,`status`) VALUES(". $displayorder .",'app','APP客户端','1.0','官方','1');";
+    pdo_fetchall($sql);
+}
+
+$sql = "
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_banner` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT '0',
+  `advname` varchar(50) DEFAULT '',
+  `link` varchar(255) DEFAULT '',
+  `thumb` varchar(255) DEFAULT '',
+  `displayorder` int(11) DEFAULT '0',
+  `enabled` int(11) DEFAULT '0',
+  `thumb_pc` varchar(500) DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+";
+pdo_fetchall($sql);
+
+$sql = "
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_message` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '编号',
+  `openid` varchar(255) NOT NULL COMMENT '用户openid',
+  `title` varchar(255) NOT NULL COMMENT '标题',
+  `contents` text NOT NULL COMMENT '内容',
+  `status` set('0','1') NOT NULL DEFAULT '0' COMMENT '0-未读；1-已读',
+  `createdate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '日期',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+";
+pdo_fetchall($sql);
+
+$sql = "
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_push` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT '0',
+  `name` varchar(50) DEFAULT '',
+  `description` varchar(255) DEFAULT NULL,
+  `content` text,
+  `time` int(11) DEFAULT NULL,
+  `status` int(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+";
+pdo_fetchall($sql);
+
+if(!pdo_fieldexists('sz_yi_member', 'bindapp')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bindapp` tinyint(4) NOT NULL DEFAULT '0';");
 }
