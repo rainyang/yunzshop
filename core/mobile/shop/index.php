@@ -187,7 +187,7 @@ if ($_W['isajax']) {
 		$id = $_GPC['id'];
 		$aid = $_GPC['aid'];
 		if($aid){
-			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 limit 8",array(':pcate' => $aid , ':uniacid' => $_W['uniacid'])) , 'thumb');
+			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 and deleted = 0 limit 8",array(':pcate' => $aid , ':uniacid' => $_W['uniacid'])) , 'thumb');
 			show_json(1,array('goods' => $goods));	
 		}else{
 			if(empty($id)){
