@@ -8,11 +8,12 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'query';
 $openid = m('user')->getOpenid();
 if ($operation == 'query') {
 	$type = intval($_GPC['type']);
+	$supplier_uid = intval($_GPC['supplier_uid']);
 	$money = floatval($_GPC['money']);
 	$time = time();
-	$sql = 'select d.id,d.couponid,d.gettime,c.timelimit,c.timedays,c.timestart,c.timeend,c.thumb,c.couponname,c.enough,c.backtype,c.deduct,c.discount,c.backmoney,c.backcredit,c.backredpack,c.bgcolor,c.thumb from ' . tablename('sz_yi_coupon_data') . ' d';
+	$sql = 'select d.id,d.couponid,d.gettime,c.timelimit,c.timedays,c.timestart,c.timeend,c.thumb,c.couponname,c.enough,c.backtype,c.deduct,c.discount,c.backmoney,c.backcredit,c.backredpack,c.bgcolor,c.thumb,c.supplier_uid from ' . tablename('sz_yi_coupon_data') . ' d';
 	$sql .= ' left join ' . tablename('sz_yi_coupon') . ' c on d.couponid = c.id';
-	$sql .= " where d.openid=:openid and d.uniacid=:uniacid and  c.coupontype={$type} and {$money}>=c.enough and d.used=0 ";
+	$sql .= " where c.supplier_uid=0 and d.openid=:openid and d.uniacid=:uniacid and  c.coupontype={$type} and {$money}>=c.enough and d.used=0 ";
 	$sql .= " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$time} && c.timeend>={$time})) order by d.gettime desc";
 	$list = set_medias(pdo_fetchall($sql, array(':openid' => $openid, ':uniacid' => $_W['uniacid'])), 'thumb');
 	foreach ($list as &$row) {
@@ -57,5 +58,5 @@ if ($operation == 'query') {
 		}
 	}
 	unset($row);
-	show_json(1, array('coupons' => $list));
+	show_json(1, array('coupons' => $list, 'supplier_uid' => $supplier_uid));
 }
