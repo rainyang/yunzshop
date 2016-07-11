@@ -9,11 +9,55 @@ $uniacid        = $_W['uniacid'];
 $orderid        = intval($_GPC['id']);
 $shopset   = m('common')->getSysset('shop');
 $diyform_plugin = p('diyform');
+$orderisyb = pdo_fetch("select ordersn_general,status from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
+            ':id' => $orderid,
+            ':uniacid' => $uniacid,
+            ':openid' => $openid
+        ));
 $order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
     ':id' => $orderid,
     ':uniacid' => $uniacid,
     ':openid' => $openid
 ));
+
+if(!empty($orderisyb['ordersn_general']) && $orderisyb['status']==0){
+    $order_all = pdo_fetchall("select * from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid', array(
+        ':ordersn_general' => $orderisyb['ordersn_general'],
+        ':uniacid' => $uniacid,
+        ':openid' => $openid
+    ));
+    $orderids = array();
+    $order['goodsprice'] = 0;
+    $order['olddispatchprice'] = 0;
+    $order['discountprice'] = 0;
+    $order['deductprice'] = 0;
+    $order['deductcredit2'] = 0;
+    $order['deductenough'] = 0;
+    $order['changeprice'] = 0;
+    $order['changedispatchprice'] = 0;
+    $order['couponprice'] = 0;
+    $order['price'] = 0;
+    foreach ($order_all as $k => $v) {
+        $orderids[] = $v['id'];
+        $order['goodsprice'] += $v['goodsprice'];
+        $order['olddispatchprice'] += $v['olddispatchprice'];
+        $order['discountprice'] += $v['discountprice'];
+        $order['deductprice'] += $v['deductprice'];
+        $order['deductcredit2'] += $v['deductcredit2'];
+        $order['deductenough'] += $v['deductenough'];
+        $order['changeprice'] += $v['changeprice'];
+        $order['changedispatchprice'] += $v['changedispatchprice'];
+        $order['couponprice'] += $v['couponprice'];
+        $order['price'] += $v['price'];
+    }
+    
+    $order['ordersn'] = $orderisyb['ordersn_general'];
+    $orderid_where_in = implode(',', $orderids);
+    $order_where = "og.orderid in ({$orderid_where_in})";
+}else{
+    $order_where = "og.orderid = ".$orderid;
+}
+
 if(p('cashier') && $order['cashier'] == 1){
     $order['name'] = set_medias(pdo_fetch('select * from ' .tablename('sz_yi_cashier_store'). ' where id=:id and uniacid=:uniacid', array(':id' => $order['cashierid'],':uniacid'=>$_W['uniacid'])), 'thumb');
 }
@@ -24,9 +68,8 @@ if (!empty($order)) {
     if ($diyform_plugin) {
         $diyformfields = ",og.diyformfields,og.diyformdata";
     }
-    $goods        = pdo_fetchall("select og.goodsid,og.price,g.title,g.thumb,og.total,g.credit,og.optionid,og.optionname as optiontitle,g.isverify,g.storeids{$diyformfields}  from " . tablename('sz_yi_order_goods') . " og " . " left join " . tablename('sz_yi_goods') . " g on g.id=og.goodsid " . " where og.orderid=:orderid and og.uniacid=:uniacid ", array(
-        ':uniacid' => $uniacid,
-        ':orderid' => $orderid
+    $goods        = pdo_fetchall("select og.goodsid,og.price,g.title,g.thumb,og.total,g.credit,og.optionid,og.optionname as optiontitle,g.isverify,g.storeids{$diyformfields}  from " . tablename('sz_yi_order_goods') . " og " . " left join " . tablename('sz_yi_goods') . " g on g.id=og.goodsid " . " where {$order_where} and og.uniacid=:uniacid ", array(
+        ':uniacid' => $uniacid
     ));
     $show         = 1;
     $diyform_flag = 0;

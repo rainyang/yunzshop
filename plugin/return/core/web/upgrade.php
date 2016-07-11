@@ -19,7 +19,7 @@ $sql = " CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_return') . " (
   `status` tinyint(2) NOT NULL DEFAULT '0',
   `returnrule` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_return_money') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -27,7 +27,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_return_money') . " (
   `mid` int(11) NOT NULL,
   `money` decimal(10,2) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_order_goods_queue` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_order_goods_queue` (
   `status` tinyint(1) NOT NULL DEFAULT '0',
   `create_time` INT( 11 ) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 ALTER TABLE  `ims_sz_yi_goods` ADD  `isreturn` TINYINT( 1 ) NOT NULL ,
 ADD  `isreturnqueue` TINYINT( 1 ) NOT NULL;";

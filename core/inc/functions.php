@@ -371,6 +371,10 @@ function show_json($status = 1, $return = null)
 }
 function is_weixin()
 {
+    global $_W;
+    if ($_W['uniaccount']['level'] == 1 OR $_W['uniaccount']['level'] == 3) {
+        return false;
+    }
     if (empty($_SERVER['HTTP_USER_AGENT']) || strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') === false && strpos($_SERVER['HTTP_USER_AGENT'], 'Windows Phone') === false) {
         return false;
     }
