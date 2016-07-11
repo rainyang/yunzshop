@@ -6,8 +6,8 @@ if ($_W['isajax']) {
 	$supplieruser = $this->model->getSupplierUidAndUsername($openid);
 	$uid = $supplieruser['uid'];
 	$supplierinfo = $this->model->getSupplierInfo($uid);
-	$commission_ok = $supplierinfo['costmoney'];
-	$cansettle = $commission_ok >= 1;
+	$costmoney = $supplierinfo['costmoney'];
+	$cansettle = $costmoney >= 1;
 	$member['commission_ok'] = number_format($costmoney, 2);
 	if ($_W['ispost']) {
 		$time = time();

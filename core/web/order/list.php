@@ -326,6 +326,10 @@ if ($operation == "display") {
             "css" => "primary",
             "name" => "货到付款"
         ) ,
+        "4" => array(
+            "css" => "primary",
+            "name" => "到店支付"
+        ) 
     );
     $orderstatus = array(
         "-1" => array(
