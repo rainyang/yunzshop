@@ -187,7 +187,6 @@ if (!class_exists('TaobaoModel')) {
                     $data['supplier_uid'] = $_W['uid'];
                 }
             }
-            echo "<pre>"; print_r($data);exit;
             $thumb_url = array();
             $pics      = $item['pics'];
             $piclen    = count($pics);
