@@ -92,15 +92,19 @@ COMMENT = '渠道商进货记录'";
 
 
 pdo_fetchall($sql);
+
 if(!pdo_fieldexists('sz_yi_member', 'ischannel')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD `ischannel` INT(1) DEFAULT '0';");
 }
+
 if(!pdo_fieldexists('sz_yi_member', 'channel_level')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD `channel_level` INT(1) DEFAULT '0';");
 }
+
 if(!pdo_fieldexists('sz_yi_member', 'channeltime')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD `channeltime` INT(11) DEFAULT '0';");
 }
+
 if(!pdo_fieldexists('sz_yi_order', 'ischannelself')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `ischannelself` INT(11) DEFAULT '0';");
 }
@@ -109,5 +113,8 @@ if(!pdo_fieldexists('sz_yi_order_goods', 'channel_id')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `channel_id` INT(11) DEFAULT '0';");
 }
 
+if(!pdo_fieldexists('sz_yi_af_channel', 'status')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_af_channel')." ADD `status` tinyint(2) NOT NULL COMMENT '0为申请1为通过';");
+}
 
 message('渠道商插件安装成功', $this->createPluginWebUrl('channel/index'), 'success');

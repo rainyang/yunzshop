@@ -23,4 +23,9 @@ class ChannelMobile extends Plugin
         $this->_exec_plugin(__FUNCTION__, false);
     }
 
+    public function af_channel()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+
 }
