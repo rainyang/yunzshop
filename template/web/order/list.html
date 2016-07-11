@@ -74,7 +74,7 @@
                   </div>
             </div>
             <div class="form-group">
-                    <div class="col-sm-6">
+                    <div class="col-sm-4">
                         <div class='input-group'>
                             <div class='input-group-addon'>下单时间
                                 <label class='radio-inline' style='margin-top:-7px;'>
@@ -98,10 +98,7 @@
                         {php echo tpl_form_field_daterange('ftime', array('starttime'=>date('Y-m-d H:i', $fstarttime),'endtime'=>date('Y-m-d H:i', $fendtime)),true);}
                         </div>
                     </div>
-            
-
-            
-                <div class="col-sm-6">
+                    <div class="col-sm-4">
                     <div class='input-group'>
                         <div class='input-group-addon'>付款时间
                             <label class='radio-inline' style='margin-top:-7px;'>
@@ -137,8 +134,9 @@
                         </select>
                     </div>    </div>
                 {/if}
+            </div>
 
-            
+
 
             <div class="form-group">
 
@@ -200,7 +198,7 @@
                               {/if}
                          
                          {/if}
-                         <label class='label label-info'>{$item['vendor']}</label>
+                         <b><button type="button" class="btn btn-success">{$item['vendor']}</button></b>
                     <td style='border-bottom:1px solid #ccc;background:#f8f8f8;text-align: center' >
                           {if empty($item['statusvalue'])}
                            {ifp 'order.op.close'}
