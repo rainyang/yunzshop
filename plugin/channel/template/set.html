@@ -1,0 +1,107 @@
+{template 'web/_header'}
+<div class="w1200 m0a">
+{template 'tabs'}
+<div class="rightlist">
+<form id="setform"  action="" method="post" class="form-horizontal form">
+    <div class='panel panel-default'>
+           <div class='panel-heading'>
+            渠道商开关设置
+        </div>
+        <div class='panel-body'>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">渠道商申请开关</label>
+                <div class="col-sm-9 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="setdata[closeregisterchannel]" value="0" {if $set['closeregisterchannel'] ==0} checked="checked"{/if} /> 开启</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[closeregisterchannel]" value="1" {if $set['closeregisterchannel'] ==1} checked="checked"{/if} /> 关闭</label>
+                    <span class='help-block'></span>
+                </div>
+            </div>        
+        </div>
+        <div class='panel-heading'>
+            渠道商提现设置
+        </div>
+        <div class='panel-body'>
+            <div class='panel-body'>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现周期</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class='input-group'>
+                        <input type="text" name="setdata[setapplycycle]" class="form-control" value="{$set['setapplycycle']}"  />
+                        <span class='input-group-addon'>小时</span>
+                    </div>
+                    <span class="help-block">每次提现间隔时间</span>
+                </div>
+            </div>
+            <div class='panel-body'>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现限额</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class='input-group'>
+                        <input type="text" name="setdata[setapplyminmoney]" class="form-control" value="{$set['setapplyminmoney']}"  />
+                        <span class='input-group-addon'>元</span>
+                    </div>
+                    <span class="help-block">每次允许提现的最小金额</span>
+                </div>
+            </div>
+            
+ </div>
+	  <div class="panel-heading">
+            渠道商升级设置
+        </div>
+	<div class='panel-body'>
+		  <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">默认级别名称</label>
+                <div class="col-sm-9 col-xs-12">
+                    <select  class="form-control" name="setdata[culate_method]">
+                        {loop $level $row}
+                        <option value="{$row['id']}" {if empty($set['default_level'] == $row['id'])}selected{/if}>{$row['level_name']} -- {$row['level_num']}</option>
+                        {/loop}
+                    </select>
+                    <span class="help-block">申请成为渠道商的默认等级</span>
+                </div>
+            </div> 
+		<div class='panel-body'>
+		    <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">渠道商等级升级依据</label>
+                <div class="col-sm-9 col-xs-12">      
+                        <label class="radio radio-inline" style="width:240px">
+                              <input type="radio" name="setdata[become]" value="1" {if $set['become'] == 1}checked{/if}/> 团队总人数
+                        </label>										
+		                <label class="radio radio-inline" style="width:240px">
+                              <input type="radio" name="setdata[become]" value="2" {if $set['become'] == 2}checked{/if}/> 累计进货量（金额）
+                        </label>
+                        <label class="radio radio-inline" style="width:240px">
+                              <input type="radio" name="setdata[become]" value="3" {if $set['become'] == 3}checked{/if}/> 累计进货次数（次）
+                        </label>
+                        <label class="radio radio-inline" style="width:240px">
+                              <input type="radio" name="setdata[become]" value="4" {if $set['become'] == 4}checked{/if}/> 指定商品
+                        </label>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    <label class="radio-inline"><input type="radio"  name="setdata[become_order]" value="0" {if $set['become_order'] ==0} checked="checked"{/if} /> 付款后</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[become_order]" value="1" {if $set['become_order'] ==1} checked="checked"{/if} /> 完成后</label>
+                    <span class="help-block">升级渠道商订单的计算方式</span>
+                </div>
+            </div>
+			
+ </div> </div> 
+	
+
+
+              
+              <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <div class="col-sm-9">
+                        <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" onclick='return formcheck()' />
+                        <input type="hidden" name="token" value="{$_W['token']}" />
+                    </div>
+              </div>
+
+    </div>
+</form>
+</div>
+</div>
+
+{template 'web/_footer'}
