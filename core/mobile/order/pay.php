@@ -175,7 +175,10 @@ if ($operation == 'display' && $_W['isajax']) {
         }
     }
     $cash      = array(
-        'success' => $order['cash'] == 1 && isset($set['pay']) && $set['pay']['cash'] == 1
+        'success' => $order['cash'] == 1 && isset($set['pay']) && $set['pay']['cash'] == 1 && $order['dispatchtype'] == 0
+    );
+    $storecash      = array(
+        'success' => $order['cash'] == 1 && isset($set['pay']) && $set['pay']['cash'] == 1 && $order['dispatchtype'] == 1
     );
     $returnurl = urlencode($this->createMobileUrl('order/pay', array(
         'orderid' => $orderid
@@ -223,6 +226,7 @@ if ($operation == 'display' && $_W['isajax']) {
         'unionpay' => $unionpay,
         'yunpay' => $yunpay,
         'cash' => $cash,
+        'storecash' => $storecash,
         'isweixin' => is_weixin(),
         'currentcredit' => $currentcredit,
         'returnurl' => $returnurl,
@@ -498,7 +502,8 @@ if ($operation == 'display' && $_W['isajax']) {
         'weixin',
         'alipay',
         'credit',
-        'cash'
+        'cash',
+        'storecash'
     ))) {
         show_json(0, '未找到支付方式');
     }
@@ -529,6 +534,29 @@ if ($operation == 'display' && $_W['isajax']) {
         $ret            = array();
         $ret['result']  = 'success';
         $ret['type']    = 'cash';
+        $ret['from']    = 'return';
+        $ret['tid']     = $log['tid'];
+        $ret['user']    = $order['openid'];
+        $ret['fee']     = $order['price'];
+        $ret['weid']    = $_W['uniacid'];
+        $ret['uniacid'] = $_W['uniacid'];
+        $payresult      = $this->payResult($ret);
+        show_json(2, $payresult);
+    }
+    $ps          = array();
+    $ps['tid']   = $log['tid'];
+    $ps['user']  = $openid;
+    $ps['fee']   = $log['fee'];
+    $ps['title'] = $log['title'];
+    if ($type == 'storecash') {
+        pdo_update('sz_yi_order', array(
+            'paytype' => 4
+        ), array(
+            'id' => $order['id']
+        ));
+        $ret            = array();
+        $ret['result']  = 'success';
+        $ret['type']    = 'storecash';
         $ret['from']    = 'return';
         $ret['tid']     = $log['tid'];
         $ret['user']    = $order['openid'];

@@ -181,12 +181,13 @@ if (!class_exists('TaobaoModel')) {
             );
             if (p('supplier')) {
                 $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
-                if (empty($perm_user)) {
+                if (empty($perm_role)) {
                     $data['supplier_uid'] = 0;
                 } else {
                     $data['supplier_uid'] = $_W['uid'];
                 }
             }
+            echo "<pre>"; print_r($data);exit;
             $thumb_url = array();
             $pics      = $item['pics'];
             $piclen    = count($pics);

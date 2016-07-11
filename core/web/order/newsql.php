@@ -561,7 +561,7 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_refund_address'). " 
 if (!pdo_fieldexists('sz_yi_member', 'referralsn')) {
     pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_member')." ADD  `referralsn` VARCHAR( 255 ) NOT NULL");
 }
-
+//author rayyang
 if (!pdo_fieldexists('sz_yi_article_sys', 'article_text')) {
     pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_article_sys')." ADD  `article_text` VARCHAR( 255 ) NOT NULL AFTER  `article_keyword`");
 }
@@ -605,9 +605,11 @@ if (!pdo_fieldexists('sz_yi_goods', 'nobonus')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `nobonus` tinyint(1) DEFAULT '0';");
 }
 
+//author rayyang
 if(!pdo_fieldexists('sz_yi_goods', 'returns')) {
 pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returns` TEXT DEFAULT '';");
 }
+
 
 //添加全返记录表 2016-06-14
 pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_return_log')." (
@@ -621,6 +623,7 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_return_log')." (
   `create_time` int(11) NOT NULL, 
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+
 
 if (!pdo_fieldexists('sz_yi_coupon', 'supplier_uid')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `supplier_uid` INT(11) DEFAULT '0';");
@@ -786,6 +789,7 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_withdraw')." (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='收银台商户提现表';
 ";
+
 pdo_fetchall($sql);
 
 //供应商
@@ -936,4 +940,13 @@ pdo_fetchall($sql);
 
 if(!pdo_fieldexists('sz_yi_member', 'bindapp')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bindapp` tinyint(4) NOT NULL DEFAULT '0';");
+}
+
+//返现队列表 添加最后一次返现金额 2016-07-09 杨雷
+if(!pdo_fieldexists('sz_yi_return', 'last_money')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_return')." ADD `last_money` DECIMAL(10,2) NOT NULL AFTER `return_money`;");
+}
+//返现队列表 添加更新时间 2016-07-09 杨雷
+if(!pdo_fieldexists('sz_yi_return', 'updatetime')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_return')." ADD `updatetime` VARCHAR(255) NOT NULL AFTER `create_time`;");
 }
