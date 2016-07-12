@@ -3,7 +3,7 @@ global $_W, $_GPC;
 $operation   = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 if ($operation == 'display') {
     $pindex = max(1, intval($_GPC["page"]));
-    $psize = 1;
+    $psize = 20;
     $roleid = $this->model->getRoleId();
     $where = '';
     if(empty($_GPC['uid'])){
