@@ -9,7 +9,7 @@ class Aes {
             $this->key = $key;
             $this->val = $val;
         }else{
-            $this->key = "hrb-yunzs-2016";        //密钥名称
+            $this->key = "hrbin-yunzs-2016";        //密钥名称
           //  $this->val = "siyuan-rzky-2012";  //密钥值
         }
         $this->out	=	'';

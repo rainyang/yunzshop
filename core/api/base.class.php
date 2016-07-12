@@ -24,14 +24,22 @@ class Base
         $res = array('result' => '1',
             'msg' => $msg,
             'data' => $data);
-        $this->callBackByAes($res);
+        if(defined("IS_TEST_ALL")){
+            echo $_GET['api'].":成功/n/r";
+        }else{
+            $this->callBackByAes($res);
+        }
     }
     public function returnError($msg = '网络繁忙')
     {
         $res = array('result' => '0',
             'msg' => $msg,
             'data' => []);
-        $this->callBackByAes($res);
+        if(defined("IS_TEST_ALL")){
+            echo $_GET['api'].":错误/n/r";
+        }else{
+            $this->callBackByAes($res);
+        }
     }
     public function validate($expect_keys){
         $expect_keys = explode(',',$expect_keys);

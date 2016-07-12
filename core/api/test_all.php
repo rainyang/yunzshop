@@ -1,6 +1,6 @@
 <?php
 namespace Api;
-define("IS_TEST", true);
+define("IS_TEST_ALL", true);
 function get_test_para()
 {
     require_once __DIR__ . '/../inc/aes.php';
