@@ -300,11 +300,13 @@
 <script type="text/javascript">
 
 	$(function () {
+		{if $_W['isfounder']}
 		$('#wechatid').select2({
 			search: true,
 			placeholder: "请选择公众号",
 			allowClear: true
 		});
+		{/if}
 		$('.checkline-all').click(function(){
 			var checked  =$(this).get(0).checked;
 			 
@@ -314,9 +316,9 @@
 			})
 		})
 	})
-	{ifp 'system.clear.view'}
+	
 	function formcheck() {
-
+		{if $_W['isfounder']}
 		if ($("#wechatid").val() == '') {
 			alert("请选择要清除的公众号!");
 			return false;
@@ -326,8 +328,11 @@
 			wechatname = '全部公众号';
 		}
 		return confirm('您选择的公众号是: ' + wechatname + ' ，是否确认操作?');
+		{else}
+		return confirm('您是否确认操作?');
+		{/if}
 	}
- 	{/if}
+ 	
 </script>
 
 {template 'web/_footer'}
