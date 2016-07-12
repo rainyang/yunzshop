@@ -22,6 +22,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_level` (
   `min_price` DECIMAL(10,2) NULL COMMENT '最小进货量',
   `profit_sharing` VARCHAR(45) NULL COMMENT '利润分成\n%',
   `become` INT(11) NULL COMMENT '升级条件',
+  'team_total' INT(11) NULL COMMENT '团队人数',
   `goods_id` INT(11) NULL COMMENT '指定商品id',
   `createtime` INT(11) NULL COMMENT '创建时间',
   `updatetime` INT(11) NULL COMMENT '更新时间',
