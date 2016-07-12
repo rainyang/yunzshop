@@ -953,3 +953,25 @@ if(!pdo_fieldexists('sz_yi_return', 'last_money')) {
 if(!pdo_fieldexists('sz_yi_return', 'updatetime')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_return')." ADD `updatetime` VARCHAR(255) NOT NULL AFTER `create_time`;");
 }
+
+
+//转让记录表 2016-7-12 杨雷
+$sql = "
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_member_transfer_log` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL,
+  `openid` varchar(255) NOT NULL,
+  `tosell_id` int(11) DEFAULT NULL COMMENT '出让人id',
+  `assigns_id` int(11) DEFAULT NULL COMMENT '受让人id',
+  `createtime` int(11) NOT NULL,
+  `status` tinyint(3) NOT NULL COMMENT '-1 失败 0 进行中 1 成功',
+  `money` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+";
+pdo_fetchall($sql);
+
+
+
+
+
