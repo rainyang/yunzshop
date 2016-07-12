@@ -46,6 +46,7 @@ foreach ($sets as $val) {
 			}else{
 				//订单累计金额
 				p('return')->setOrderMoneyReturn($set,$_W['uniacid']);
+
 			}
 			echo "<pre>"; print_r('成功');
 

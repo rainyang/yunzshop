@@ -295,28 +295,26 @@ if (!class_exists('ReturnModel')) {
 			$ordermoney = pdo_fetchcolumn($sql);
 			$ordermoney = floatval($ordermoney);
 			$r_ordermoney = $ordermoney * $_var_0['percentage'] / 100;//可返利金额
-
+$r_ordermoney=1000;
 			//返利队列
 			$queue_count = pdo_fetchcolumn("select count(1) from " . tablename('sz_yi_return') . " where uniacid = '". $uniacid ."' and status = 0 and returnrule = '".$_var_0['returnrule']."'");
-
 			if($r_ordermoney>0 && $queue_count)
 			{
 				$r_each = $r_ordermoney / $queue_count;//每个队列返现金额
 				$r_each = sprintf("%.2f", $r_each);
 				$current_time = time();
 
-				$unfinished_record = pdo_fetchall("SELECT mid,count(1) as count FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - return_money) > '".$r_each."' and returnrule = '".$_var_0['returnrule']."' group by mid ");
+				// $unfinished_record = pdo_fetchall("SELECT mid,count(1) as count FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - return_money) > '".$r_each."' and returnrule = '".$_var_0['returnrule']."' group by mid ");
 
-				$finished_record = pdo_fetchall("SELECT mid,count(1) as count FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - `return_money`) <= '".$r_each."' and returnrule = '".$_var_0['returnrule']."'  group by mid");
+				// $finished_record = pdo_fetchall("SELECT mid,count(1) as count FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - `return_money`) <= '".$r_each."' and returnrule = '".$_var_0['returnrule']."'  group by mid");
 
 				pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + '".$r_each."',last_money = '".$r_each."',updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and (money - `return_money`) > '".$r_each."' and returnrule = '".$_var_0['returnrule']."' ");
 
 				pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and (money - `return_money`) <= '".$r_each."' and returnrule = '".$_var_0['returnrule']."' ");
 
-				$return_record = pdo_fetchall("SELECT sum(r.money) as money, sum(r.return_money) as return_money, sum(r.last_money) as last_money,m.openid  FROM " . tablename('sz_yi_return') . " r 
+				$return_record = pdo_fetchall("SELECT sum(r.money) as money, sum(r.return_money) as return_money, sum(r.last_money) as last_money,m.openid,count(r.id) as count  FROM " . tablename('sz_yi_return') . " r 
 					left join " . tablename('sz_yi_member') . " m on (r.mid = m.id) 
 				 WHERE r.uniacid = '". $uniacid ."' and r.updatetime = '".$current_time."' and r.returnrule = '".$_var_0['returnrule']."'  group by r.mid");
-
 				foreach ($return_record as $key => $value) {
 					if($value['last_money'] > 0)
 					{
