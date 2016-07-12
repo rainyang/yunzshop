@@ -366,8 +366,14 @@ body { background:#fff;}
                 var category = json.result;
                 if(json.status == 1){
                     $('#category_recommend').html(tpl('tpl_category_recommend',category)); 
+
+                    var cid = $('.tab_menu li:first').data('cid');
+                    var id = $('.tab_menu li:first').data('id');
+                    $('.tab_menu li:first').addClass('selected').siblings().removeClass('selected');
+                    setgood(cid,id);
                 }
             },true);
+
 
 
             $(document).on('mouseover','.tab_li',function(){
@@ -376,8 +382,12 @@ body { background:#fff;}
               // $('div.tab_box > div').eq(index).show().siblings().hide();
                 var cid = $(this).data('cid');
                 var id = $(this).data('id');
-                var aid = $(this).data('aid');
-                core.json('shop' , {op:'children_goods',id:cid,aid:aid} , function(json){
+                setgood(cid,id);
+            }); 
+
+
+            function setgood (cid,id){
+                  core.json('shop' , {op:'children_goods',id:cid} , function(json){
                   var goods = json.result;
                   var third = json.result;
                   if(json.status == 1){
@@ -387,7 +397,8 @@ body { background:#fff;}
                     $('.tab_third'+id).html(tpl('tpl_third_list',third)); 
                   }
                 },true)
-            }); 
+            }
+
             
         });   
     </script> 
