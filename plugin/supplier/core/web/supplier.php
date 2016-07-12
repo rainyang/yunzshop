@@ -3,7 +3,7 @@ global $_W, $_GPC;
 $operation   = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 if ($operation == 'display') {
     $pindex = max(1, intval($_GPC["page"]));
-    $psize = 20;
+    $psize = 1;
     $roleid = $this->model->getRoleId();
     $where = '';
     if(empty($_GPC['uid'])){
@@ -21,7 +21,7 @@ if ($operation == 'display') {
         $ismerchant = false;
         $list = pdo_fetchall('select * from ' . tablename('sz_yi_perm_user') . ' where roleid='. $roleid . " " .$where." LIMIT " . ($pindex - 1) * $psize . "," . $psize);
     }
-    $total = count($list);
+    $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_perm_user') . " where roleid={$roleid} and uniacid={$_W['uniacid']}");
     $pager = pagination($total, $pindex, $psize);
 } else if ($operation == 'detail') {
     //提现id
