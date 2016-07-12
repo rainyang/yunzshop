@@ -139,7 +139,7 @@
     <a href="{php echo $this->createMobileUrl('member/bindmobile')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-mobile"></i>绑定手机<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
     {if p('supplier')}
-        {if $shopset['switch'] == 1 && empty($shopset['af_result'])}
+        {if $shopset['switch'] == 1 && empty($shopset['af_result']) && empty($issupplier)}
             <a href="{php echo $this->createPluginMobileUrl('supplier/af_supplier')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-file" ></i>供应商申请<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
         {/if}
         {if !empty($issupplier) && $shopset['switch_centre'] == 1}

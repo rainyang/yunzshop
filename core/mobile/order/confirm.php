@@ -441,7 +441,7 @@ if ($_W['isajax']) {
                     if ($order_all[$val['supplier_uid']]['realprice'] >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
                         $order_all[$val['supplier_uid']]['saleset']["showenough"]   = true;
                         $order_all[$val['supplier_uid']]['saleset']["enoughmoney"]  = $e["enough"];
-                        $order_all[$val['supplier_uid']]['saleset']["enoughdeduct"] = $e["money"];
+                        $order_all[$val['supplier_uid']]['saleset']["enoughdeduct"] = number_format($e["money"],2);
                         $order_all[$val['supplier_uid']]['realprice'] -= floatval($e["money"]);
                         break;
                     }
@@ -490,6 +490,11 @@ if ($_W['isajax']) {
                     }
                 }
             }
+            $order_all[$val['supplier_uid']]['goodsprice'] = number_format($order_all[$val['supplier_uid']]['goodsprice'],2);
+            $order_all[$val['supplier_uid']]['totalprice'] = number_format($order_all[$val['supplier_uid']]['totalprice'],2);
+            $order_all[$val['supplier_uid']]['discountprice'] = number_format($order_all[$val['supplier_uid']]['discountprice'],2);
+            $order_all[$val['supplier_uid']]['realprice'] = number_format($order_all[$val['supplier_uid']]['realprice'],2);
+            $order_all[$val['supplier_uid']]['dispatch_price'] = number_format($order_all[$val['supplier_uid']]['dispatch_price'],2);
         }
         $supplierids = implode(',', array_keys($suppliers));
         show_json(1, array(
@@ -1396,8 +1401,10 @@ if ($_W['isajax']) {
                     'uniacid' => $_W['uniacid']
                 ));
                 if (!empty($member['uid'])) {
-                    load()->model('mc');
-                    mc_update($member['uid'], $up);
+                    pdo_update('mc_members', $up, array(
+                        'uid' => $member['uid'],
+                        'uniacid' => $_W['uniacid']
+                    ));
                 }
             }
             if ($order_row['fromcart'] == 1) {
