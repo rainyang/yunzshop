@@ -1,5 +1,5 @@
 <?php
-require __DIR__.'/../base.class.php';
+require __API_ROOT__.'/base.class.php';
 //dump($_W);
 //dump($_GPC);
 $api = new Api\Base();
