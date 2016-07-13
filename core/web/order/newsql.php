@@ -972,6 +972,12 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_member_transfer_log` (
 pdo_fetchall($sql);
 
 
+//返现队列表 添加删除字段 2016-07-13 杨雷
+if(!pdo_fieldexists('sz_yi_return', 'delete')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_return')." ADD `delete` TINYINT(1) NOT NULL DEFAULT '0' ;");
+}
+
+
 
 
 

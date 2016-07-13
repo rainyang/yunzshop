@@ -36,6 +36,7 @@ foreach ($sets as $val) {
 				$isexecute = true;
 			}
 		}
+		$isexecute = true;
 		if(($set["isreturn"]||$set["isqueue"]) && $isexecute){
 
 			//p('return')->getmoney($set['orderprice'],$_W['uniacid']);
