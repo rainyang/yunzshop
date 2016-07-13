@@ -109,7 +109,7 @@
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现时间</label>
             <div class="col-sm-8 col-xs-12">
                 <select id="returntime" class="form-control tpl-category-parent" name="setdata[returntime]">
-                <?php for ($i=1; $i <= 24; $i++) { if($set['returntime']==$i){?>
+                <?php for ($i=0; $i <= 23; $i++) { if($set['returntime']==$i){?>
                     <option value="<?php echo $i;?>" selected>每天<?php echo $i;?>点执行返利</option>
                 <?php }else{?>
                     <option value="<?php echo $i;?>" >每天<?php echo $i;?>点执行返利</option>
