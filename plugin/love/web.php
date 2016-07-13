@@ -2,42 +2,42 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-class BonusWeb extends Plugin
+class LoveWeb extends Plugin
 {
 	protected $set = null;
 
 	public function __construct()
 	{
-		parent::__construct('bonus');
+		parent::__construct('love');
 		$this->set = $this->getSet();
 	}
 
 	public function index()
 	{
 		global $_W;
-		if (cv('bonus.agent')) {
-			header('location: ' . $this->createPluginWebUrl('bonus/agent'));
+		if (cv('love.agent')) {
+			header('location: ' . $this->createPluginWebUrl('love/agent'));
 			exit;
-		} else if (cv('bonus.notice')) {
-			header('location: ' . $this->createPluginWebUrl('bonus/notice'));
+		} else if (cv('love.notice')) {
+			header('location: ' . $this->createPluginWebUrl('love/notice'));
 			exit;
-		} else if (cv('bonus.set')) {
-			header('location: ' . $this->createPluginWebUrl('bonus/set'));
+		} else if (cv('love.set')) {
+			header('location: ' . $this->createPluginWebUrl('love/set'));
 			exit;
-		} else if (cv('bonus.level')) {
-			header('location: ' . $this->createPluginWebUrl('bonus/level'));
+		} else if (cv('love.level')) {
+			header('location: ' . $this->createPluginWebUrl('love/level'));
 			exit;
-		} else if (cv('bonus.cover')) {
-			header('location: ' . $this->createPluginWebUrl('bonus/cover'));
+		} else if (cv('love.cover')) {
+			header('location: ' . $this->createPluginWebUrl('love/cover'));
 			exit;
-		} else if (cv('bonus.send')) {
-			header('location: ' . $this->createPluginWebUrl('bonus/send'));
+		} else if (cv('love.send')) {
+			header('location: ' . $this->createPluginWebUrl('love/send'));
 			exit;
-		} else if (cv('bonus.sendall')) {
-			header('location: ' . $this->createPluginWebUrl('bonus/sendall'));
+		} else if (cv('love.sendall')) {
+			header('location: ' . $this->createPluginWebUrl('love/sendall'));
 			exit;
-		} else if (cv('bonus.order')) {
-			header('location: ' . $this->createPluginWebUrl('bonus/order'));
+		} else if (cv('love.order')) {
+			header('location: ' . $this->createPluginWebUrl('love/order'));
 			exit;
 		}
 	}

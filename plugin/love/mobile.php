@@ -2,65 +2,17 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-function sortByCreateTime($a, $b)
-{
-    if ($a['createtime'] == $b['createtime']) {
-        return 0;
-    } else {
-        return ($a['createtime'] < $b['createtime']) ? 1 : -1;
-    }
-}
-class BonusMobile extends Plugin
+class LoveMobile extends Plugin
 {
     protected $set = null;
     public function __construct()
     {
-        parent::__construct('bonus');
+        parent::__construct('love');
         global $_GPC;
         $this->set = $this->getSet();
         $openid = m('user')->getOpenid();
-        $isbonus = $this->model->isLevel($openid);
-        if($isbonus == false && $_GPC['method'] != 'register'){
-            redirect($this->createPluginMobileUrl('bonus/register'));
-        }
     }
     public function index()
-    {
-        $this->_exec_plugin(__FUNCTION__, false);
-    }
-    public function team()
-    {
-        $this->_exec_plugin(__FUNCTION__, false);
-    }
-    public function customer()
-    {
-        $this->_exec_plugin(__FUNCTION__, false);
-    }
-    public function order()
-    {
-        $this->_exec_plugin(__FUNCTION__, false);
-    }
-    public function order_area()
-    {
-        $this->_exec_plugin(__FUNCTION__, false);
-    }
-    public function withdraw()
-    {
-        $this->_exec_plugin(__FUNCTION__, false);
-    }
-    public function apply()
-    {
-        $this->_exec_plugin(__FUNCTION__, false);
-    }
-    public function shares()
-    {
-        $this->_exec_plugin(__FUNCTION__, false);
-    }
-    public function register()
-    {
-        $this->_exec_plugin(__FUNCTION__, false);
-    }
-    public function myshop()
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
