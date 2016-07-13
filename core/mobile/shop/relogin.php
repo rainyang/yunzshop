@@ -13,7 +13,7 @@ global $_W, $_GPC;
 
 $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where  openid=:openid and uniacid=:uniacid limit 1', array(
     ':uniacid' => $_W['uniacid'],
-    ':openid' => $_POST['token'],
+    ':openid' => $_GPC['token'],
 ));
 
 if($info) {

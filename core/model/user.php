@@ -86,7 +86,7 @@ class Sz_DYi_User
         /**
          * app端通过token验证用户身份
          */
-        if  (empty($_SERVER['HTTP_USER_AGENT']) && empty($openid) && $_GPC['token']) {
+        if  (is_app() && empty($openid) && $_GPC['token']) {
             $openid = $_GPC['token'];
         }
 
@@ -114,9 +114,12 @@ class Sz_DYi_User
         $noLoginDoList = array('shop', 'login', 'register');
 
         //首页不用判断是否登陆
-        if(!$_GPC['p'] && $_GPC["do"]=='shop'){
-            return;
+        if (!is_app()) {
+            if(!$_GPC['p'] && $_GPC["do"]=='shop'){
+                return;
+            }
         }
+
 
         /*
         if($_GPC["c"]=='entry'){
@@ -135,6 +138,7 @@ class Sz_DYi_User
                     }
                     $mid = ($_GPC['mid']) ? "&mid=".$_GPC['mid'] : "";
                     $url = "/app/index.php?i={$_W['uniacid']}&c=entry&p=login&do=member&m=sz_yi".$mid;
+
                     redirect($url);
                 }
                 else{
