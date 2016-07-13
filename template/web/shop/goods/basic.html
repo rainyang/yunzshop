@@ -156,14 +156,22 @@
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品类型</label>
     <div class="col-sm-9 col-xs-12">
+
         {ife 'shop.goods' $item}
+
          <div style="float: left" id="ttttype">
+            {if p('hotel')}
+               <label for="isshow4" class="radio-inline"><input type="radio" name="type" value="99" id="isshow3" {if empty($item['type']) || $item['type'] == 1}checked="true"{/if} onclick="$('#product').show();$('#type_virtual').hide()" /> 酒店房间</label>
+               <label for="isshow4" class="radio-inline"><input type="radio" name="type" value="98" id="isshow3" {if empty($item['type']) || $item['type'] == 1}checked="true"{/if} onclick="$('#product').show();$('#type_virtual').hide()" /> 餐饮</label>
+                   <label for="isshow4" class="radio-inline"><input type="radio" name="type" value="97" id="isshow3" {if empty($item['type']) || $item['type'] == 1}checked="true"{/if} onclick="$('#product').show();$('#type_virtual').hide()" />会议</label>
+            {/if}
             <label for="isshow3" class="radio-inline"><input type="radio" name="type" value="1" id="isshow3" {if empty($item['type']) || $item['type'] == 1}checked="true"{/if} onclick="$('#product').show();$('#type_virtual').hide()" /> 实体商品</label>
             <label for="isshow4" class="radio-inline"><input type="radio" name="type" value="2" id="isshow4"  {if $item['type'] == 2}checked="true"{/if}  onclick="$('#product').hide();$('#type_virtual').hide()" /> 虚拟商品</label>
             {if p('virtual')}
             <label for="isshow5" class="radio-inline"><input type="radio" name="type" value="3" id="isshow5"  {if $item['type'] == 3}checked="true"{/if}  onclick="$('#type_virtual').show();" /> 虚拟物品(卡密)</label>
             {/if}
         </div>
+
         {if p('virtual')}
         <div style="width: auto; float: left; margin-left: 10px;  {if $item['type'] != 3}display: none;{/if}" id="type_virtual">
             <select class="form-control tpl-category-parent" id="virtual" name="virtual">
