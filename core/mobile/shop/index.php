@@ -168,7 +168,7 @@ if ($_W['isajax']) {
 		show_json(1,array('category' => $category));
 	} else if ($operation == 'category_recommend'){
 
-		$category = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=0 and uniacid=".$_W['uniacid']),'advimg');
+		$category = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=0 and uniacid=".$_W['uniacid']),'advimg_pc');
 
 		foreach ($category as $key => $value) {
 			$children = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=:pid and uniacid=:uniacid",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"])),'advimg');
@@ -187,7 +187,7 @@ if ($_W['isajax']) {
 		$id = $_GPC['id'];
 		$aid = $_GPC['aid'];
 		if($aid){
-			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 limit 8",array(':pcate' => $aid , ':uniacid' => $_W['uniacid'])) , 'thumb');
+			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 and deleted = 0 limit 8",array(':pcate' => $aid , ':uniacid' => $_W['uniacid'])) , 'thumb');
 			show_json(1,array('goods' => $goods));	
 		}else{
 			if(empty($id)){

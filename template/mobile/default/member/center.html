@@ -64,8 +64,11 @@
              {if empty($set['trade']['closerecharge'])}
              <div class="take" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</div>
              {/if}
-
+            {if $member['credit2'] > 0}
+                <div class="take" style="background:hsl(148, 91%, 42%);margin-right: 5px;" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer'))}'">转让 </div> 
+            {/if} 
          </div></a>
+         
     <a href="javascript:;"><div class="list1" style="margin:0px; border-bottom:0px;">{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}: <%member.credit1%>
             <%if open_creditshop%>
             <div class="take1" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}兑换</div>
@@ -104,7 +107,7 @@
 </div>
 <div class="cart">
     {if p('supplier')}
-        {if $shopset['switch'] == 1 && empty($shopset['af_result'])}
+        {if $shopset['switch'] == 1 && empty($shopset['af_result']) && empty($issupplier)}
             <a href="{php echo $this->createPluginMobileUrl('supplier/af_supplier')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-file" style="color:#666;"></i>供应商申请<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
         {/if}
         {if !empty($issupplier) && $shopset['switch_centre'] == 1}

@@ -231,7 +231,7 @@ if (!class_exists('ReturnModel')) {
 
 
 			//返利队列
-			$data_money = pdo_fetchall("select * from " . tablename('sz_yi_return') . " where uniacid = '". $uniacid ."' and status = 0 and returnrule = '".$_var_0['returnrule']."'");
+			$data_money = pdo_fetchall("select * from " . tablename('sz_yi_return') . " where uniacid = '". $uniacid ."' and status = 0 and `delete` = '0' and returnrule = '".$_var_0['returnrule']."'");
 			$return_mes = array();
 			foreach ($data_money as $key => $value) {
 				$r_each = $value['money'] * $_var_0['percentage'] / 100;//可返利金额
@@ -295,45 +295,34 @@ if (!class_exists('ReturnModel')) {
 			$ordermoney = pdo_fetchcolumn($sql);
 			$ordermoney = floatval($ordermoney);
 			$r_ordermoney = $ordermoney * $_var_0['percentage'] / 100;//可返利金额
-
-
+			$r_ordermoney = 1000;
 			//返利队列
-			$data_money = pdo_fetchall("select * from " . tablename('sz_yi_return') . " where uniacid = '". $uniacid ."' and status = 0 and returnrule = '".$_var_0['returnrule']."'");
-			
-			if($r_ordermoney>0 && $data_money)
+			$queue_count = pdo_fetchcolumn("select count(1) from " . tablename('sz_yi_return') . " where uniacid = '". $uniacid ."' and status = 0 and `delete` = '0' and returnrule = '".$_var_0['returnrule']."'");
+			if($r_ordermoney>0 && $queue_count)
 			{
-				$r_each = $r_ordermoney / count($data_money);//每个队列返现金额
+				$r_each = $r_ordermoney / $queue_count;//每个队列返现金额
 				$r_each = sprintf("%.2f", $r_each);
-				$return_mes = array();
-				foreach ($data_money as $key => $value) {
-					
-					$member = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid = '". $uniacid ."' and id = '".$value['mid']."'");
-					
-					if(($value['money']-$value['return_money']) < $r_each){
-						pdo_update('sz_yi_return', array('return_money'=>$value['money'],'status'=>'1'), array('id' => $value['id'], 'uniacid' => $uniacid));
-						m('member')->setCredit($member['openid'],'credit2',$value['money']-$value['return_money']);
-						$return_mes[$member['openid']][$key]['return_money_totle']= $value['money']-$value['return_money'];
+				$current_time = time();
 
-					}else
+				// $unfinished_record = pdo_fetchall("SELECT mid,count(1) as count FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - return_money) > '".$r_each."' and returnrule = '".$_var_0['returnrule']."' group by mid ");
+
+				// $finished_record = pdo_fetchall("SELECT mid,count(1) as count FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - `return_money`) <= '".$r_each."' and returnrule = '".$_var_0['returnrule']."'  group by mid");
+
+				pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + '".$r_each."',last_money = '".$r_each."',updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - `return_money`) > '".$r_each."' and returnrule = '".$_var_0['returnrule']."' ");
+
+				pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - `return_money`) <= '".$r_each."' and returnrule = '".$_var_0['returnrule']."' ");
+
+				$return_record = pdo_fetchall("SELECT sum(r.money) as money, sum(r.return_money) as return_money, sum(r.last_money) as last_money,m.openid,count(r.id) as count  FROM " . tablename('sz_yi_return') . " r 
+					left join " . tablename('sz_yi_member') . " m on (r.mid = m.id) 
+				 WHERE r.uniacid = '". $uniacid ."' and r.updatetime = '".$current_time."' and r.returnrule = '".$_var_0['returnrule']."' and r.delete = '0'  group by r.mid");
+				foreach ($return_record as $key => $value) {
+					if($value['last_money'] > 0)
 					{
-						pdo_update('sz_yi_return', array('return_money'=>$value['return_money']+$r_each), array('id' => $value['id'], 'uniacid' => $uniacid));
-						m('member')->setCredit($member['openid'],'credit2',$r_each);
+						$return_money_totle = $value['last_money'];
+						$surplus_money_totle = $value['money']-$value['return_money'];
 
-						$surplus = $value['money']-$value['return_money']-$r_each;
-						$return_mes[$member['openid']][$key]['return_money_totle']= $r_each;
-						$return_mes[$member['openid']][$key]['surplus_money_totle']= $surplus;
+						m('member')->setCredit($value['openid'],'credit2',$return_money_totle);
 
-					}
-				}
-				foreach ($return_mes as $key => $list) {
-						$return_money_totle = 0;
-						$surplus_money_totle = 0;
-					foreach ($list as $k => $v) {
-						$return_money_totle += $v['return_money_totle'];
-						$surplus_money_totle += $v['surplus_money_totle'];
-					}
-					if($return_money_totle > 0)
-					{
 						$messages = array(
 							'keyword1' => array(
 								'value' => '返现通知',
@@ -345,12 +334,12 @@ if (!class_exists('ReturnModel')) {
 								'value' => "此返单剩余返现金额".$surplus_money_totle."元",
 								'color' => '#73a68d')
 							);
-						m('message')->sendCustomNotice($key, $messages);
+						m('message')->sendCustomNotice($value['openid'], $messages);
 					}
 				}		
 			}
-
 		}
+
 		// 查询可参加返利的 加入返利队列
 		public function setmoney($orderprice,$_var_0=array(),$uniacid=''){
 

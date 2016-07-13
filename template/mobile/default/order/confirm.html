@@ -822,6 +822,7 @@ var fromcart = 0;
 	          var totalprice = goodsprice - discountprice;
             var enoughprice =0;
             var isdeductenough = $('.deductenough[data-id='+supplier_uid+']').css("display");
+
             if(isdeductenough != 'none'){
                 if($('.deductenough_money[data-id='+supplier_uid+']').length>0 && $('.deductenough_money[data-id='+supplier_uid+']').html()!=''){
                      enoughprice = parseFloat($('.deductenough_money[data-id='+supplier_uid+']').html().replace(',',''));
@@ -831,7 +832,6 @@ var fromcart = 0;
         	       totalprice = calcCouponPrice(totalprice, supplier_uid);
         	  {/if}
             totalprice = totalprice - enoughprice + dispatchprice;
-
             var deductprice = 0;
             if($('.deductcredit[data-id='+supplier_uid+']').length>0){
                 if($('.deductcredit[data-id='+supplier_uid+']').attr('on')=='1'){
@@ -1101,7 +1101,7 @@ var fromcart = 0;
              var money =parseFloat( $('.totalprice').html().replace(",","") ) ;	
              var supplier_uid = $(this).attr('data-id');
              console.log(supplier_uid);
- 				     core.pjson('coupon/util', {op: 'query', money: money, type:0}, function (rjson) {
+ 				     core.pjson('coupon/util', {op: 'query', money: money, type:0, supplier_uid: supplier_uid}, function (rjson) {
   							if (rjson.status != 1) {
   								core.tip.show(rjson.result);
   								$("input[data-name='couponid'][data-id="+supplier_uid+"]").val('');

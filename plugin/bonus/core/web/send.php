@@ -82,7 +82,15 @@ if (!empty($_POST)) {
             "send_bonus_sn" => $send_bonus_sn
         ));
         if($sendpay == 1){
-        	
+        	if(empty($level)){
+				if($member['bonus_area'] == 1){
+					$level['levelname'] = "省级代理";
+				}else if($member['bonus_area'] == 2){
+					$level['levelname'] = "市级代理";
+				}else if($member['bonus_area'] == 3){
+					$level['levelname'] = "区级代理";
+				}
+			}
         	$this->model->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_PAY);
         }
         //更新分红订单完成

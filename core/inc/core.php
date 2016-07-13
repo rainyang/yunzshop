@@ -175,6 +175,12 @@ class Core extends WeModuleSite
             return;
         }
         $openid = m('user')->getOpenid();
+        $member  = m('member')->getMember($openid);
+        if (!empty($member['isblack'])) {
+            if ($_GPC['op'] != 'black') {
+                header('Location: '.$this->createMobileUrl('member/login', array('op' => 'black')));
+            }
+        }
         $designer = p('designer');
         if ($designer && $_GPC['p'] != 'designer') {
             $menu = $designer->getDefaultMenu();
@@ -196,14 +202,8 @@ class Core extends WeModuleSite
             'ico' => 'list',
             'url' => $this->createMobileUrl('shop/category')
         );
-
         $this->footer['commission'] = false;
-        $member  = m('member')->getMember($openid);
-        if (!empty($member['isblack'])) {
-            if ($_GPC['op'] != 'black') {
-                header('Location: '.$this->createMobileUrl('member/login', array('op' => 'black')));
-            }
-        }
+        
         if (p('commission')) {
             $set = p('commission')->getSet();
             if (empty($set['level'])) {
