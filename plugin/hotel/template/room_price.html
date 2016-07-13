@@ -1,16 +1,8 @@
 {template 'web/_header'}
 {template 'tabs'}
 <script type="text/javascript" src="resource/js/lib/jquery-ui-1.10.3.min.js"></script>
-<div class="main">
-<!-- 	<ul class="nav nav-tabs">
-		<li><a href="{php echo $this->createWebUrl('hotel');}">酒店管理</a></li>
-		<li><a href="{php echo $this->createWebUrl('hotel', array('op'=>'edit','id' => $hotelid));}">酒店编辑</a></li>
-		<li {if $_GPC['op'] == 'edit'}class="active"{/if}><a href="{php echo $this->createWebUrl('room', array('op'=>'edit','hotelid' => $hotelid));}">添加房型</a></li>
-		<li><a href="{php echo $this->createWebUrl('room', array('hotelid' => $rid));}">房型管理</a></li>
-		<li><a href="{php echo $this->createWebUrl('room_status', array('hotelid' => $hotelid));}">维护房量/房态</a></li>
-		<li class="active"><a href="{php echo $this->createWebUrl('room_price', array('hotelid' => $hotelid));}">维护房价</a></li>
-	</ul> -->
-	<div class="main">
+<div class="w1200 m0a">
+   <div class="rightlist">
 		<div class="panel panel-default">
 			<div class="panel-heading">
 				维护房价
@@ -109,6 +101,4 @@
 			$("#search_button").click();
 		});
 	</script>
-
-
 {template 'web/_footer'}

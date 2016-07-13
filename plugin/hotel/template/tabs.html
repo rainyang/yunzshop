@@ -1,5 +1,7 @@
+<div class="ulleft-nav">
 <ul class="nav nav-tabs">
-  <li {if $_GPC['method'] == 'room_price'} class="active" {/if}><a href="/web/index.php?c=site&a=entry&method=room_price&p=hotel&do=plugin&m=sz_yi">维护房价</a></li>
-   <li {if $_GPC['method'] == 'room_status'} class="active" {/if}><a href="/web/index.php?c=site&a=entry&method=room_status&p=hotel&do=plugin&m=sz_yi">维护房态/房量</a></li>
-   <li><a href="/web/index.php?c=site&a=entry&op=display&do=order&m=sz_yi&type=hotel">酒店订单</a></li>
+	{ifp 'hotel.room_status'}<li {if $_GPC['method']=='room_status'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('hotel/room_status')}">维护房态/房量</a></li>{/if}
+	{ifp 'hotel.room_price'}<li {if $_GPC['method']=='room_price'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('hotel/room_price')}">维护房价</a></li>{/if}
+	<li><a href="/web/index.php?c=site&a=entry&op=display&do=order&m=sz_yi&type=hotel">酒店订单</a></li>
 </ul>
+</div>
