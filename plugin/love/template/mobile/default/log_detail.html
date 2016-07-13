@@ -1,5 +1,5 @@
 {template 'common/header'}
-<title>{php echo $this->set['texts']['commission_detail']}</title>
+<title>佣金明细</title>
 <style type="text/css">
 body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
 a {text-decoration:none;}
@@ -57,8 +57,8 @@ a {text-decoration:none;}
   <div class="log_list">
     <div class="left"><div class='inner'>
                订单编号: <%order.ordersn%> <br> 订单金额: <%order.goodsprice%> 元 <br>
-                申请{php echo $this->set['texts']['commission']}: <%order.ordercommission%> 元 <br/>
-                审核通过{php echo $this->set['texts']['commission']}: <%order.orderpay%> 元 
+                申请佣金: <%order.ordercommission%> 元 <br/>
+                审核通过佣金: <%order.orderpay%> 元 
                 </div></div>
     
    </div>
@@ -69,7 +69,7 @@ a {text-decoration:none;}
             <div class='info' onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
                 <div class='inner'>
                        <div class="name" <%if g.status==-1%>style='height:16px;'<%/if%>><%g.title%></div>     
-                       <div class='option'>{php echo $this->set['texts']['commission']}: <%g.commission%> 元 </div>
+                       <div class='option'>佣金: <%g.commission%> 元 </div>
                        <%if g.status==-1%>
                          <div class='option'>理由: <%g.content%> </div>
                        <%/if%>
@@ -97,7 +97,7 @@ a {text-decoration:none;}
 
     core.pjson('commission/log', {'op':'detail','id':"{$_GPC['id']}"}, function (json) {
           if (json.status=='0') {
-               core.message(json.result,"{php echo $this->createPluginMobileUrl('commission/log')}",'error');
+               core.message(json.result,"{php echo $this->createPluginUrl('commission/log')}",'error');
                return;
           }
           var result = json.result;
@@ -158,5 +158,5 @@ function bindScroller(){
 
     })
 </script>
-{php $show_footer=true;$footer_current ='bonus'}
+{php $show_footer=true;$footer_current ='commission'}
 {template 'common/footer'}

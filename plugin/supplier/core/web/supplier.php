@@ -9,7 +9,7 @@ if ($operation == 'display') {
     if(empty($_GPC['uid'])){
         $where .= ' and uniacid=' . $_W['uniacid'];
     }else{
-        $where .= ' and uid="' . $_GPC['uid'] . '" and uniacid=' . $_W['uniacid'];
+        $where .= ' and (uid="' . $_GPC['uid'] . '" or username like"%' . $_GPC['uid'] . '%") and uniacid=' . $_W['uniacid'];
     }
     //是否从招商员进入
     if (p('merchant') && !empty($_GPC['member_id'])) {
