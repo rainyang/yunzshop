@@ -7,7 +7,6 @@ class Base
 
     public function __construct()
     {
-
         /*if(!IS_POST){
             exit('提交方式不正确');
         }*/
@@ -16,43 +15,54 @@ class Base
         $this->para = json_decode(urldecode($this->aes->siyuan_aes_decode(str_replace(" ", "+", $_POST['para']))), TRUE);//
         //$this->addLog();
     }
-    public function getPara(){
+
+    public function getPara()
+    {
         return $this->para;
     }
+
     public function returnSuccess($data = [], $msg = '成功')
     {
         $res = array('result' => '1',
             'msg' => $msg,
             'data' => $data);
-        if(defined("IS_TEST_ALL")){
-            echo $_GET['api'].":成功/n/r";
-        }else{
+        if (defined("IS_TEST_ALL")) {
+            echo $_GET['api'] . ":成功/n/r";
+        } elseif (is_test()) {
+            exit(json_encode($res, JSON_UNESCAPED_UNICODE));
+        } else {
             $this->callBackByAes($res);
         }
     }
+
     public function returnError($msg = '网络繁忙')
     {
         $res = array('result' => '0',
             'msg' => $msg,
             'data' => []);
-        if(defined("IS_TEST_ALL")){
-            echo $_GET['api'].":错误/n/r";
-        }else{
+        if (defined("IS_TEST_ALL")) {
+            echo $_GET['api'] . ":错误/n/r";
+        } elseif (is_test()) {
+            exit(json_encode($res, JSON_UNESCAPED_UNICODE));
+        } else {
             $this->callBackByAes($res);
         }
     }
-    public function validate($expect_keys){
-        $expect_keys = explode(',',$expect_keys);
-        if(is_array($this->para)){
+
+    public function validate($expect_keys)
+    {
+        $expect_keys = explode(',', $expect_keys);
+        if (is_array($this->para)) {
             $para_keys = array_keys($this->para);
-            $missing_paras = array_diff($expect_keys,$para_keys);
+            $missing_paras = array_diff($expect_keys, $para_keys);
         }
-        if(count($missing_paras)>0){
-            $missing_paras = implode(',',$missing_paras);
+        if (count($missing_paras) > 0) {
+            $missing_paras = implode(',', $missing_paras);
             $this->returnError("缺少参数:{$missing_paras}");
         }
         return true;
     }
+
     /**
      * @todo    生成经过Aes加密后的字符串
      * @param    array $json_data
@@ -60,7 +70,7 @@ class Base
      */
     protected function callBackByAes($json_data)
     {
-        if(isset($_GET['is_test'])){
+        if (isset($_GET['is_test'])) {
             dump($json_data);
         }
         $return_data = str_replace('"', '', $this->aes->siyuan_aes_encode(json_encode($json_data, JSON_UNESCAPED_UNICODE)));
@@ -68,15 +78,17 @@ class Base
         //dump($this->getSqlLog());
         exit($return_data);
     }
+
     protected function addLog()
     {
-        $data['para'] = $this->para=='null' ? '' : json_encode($this->para, JSON_UNESCAPED_UNICODE);
+        $data['para'] = $this->para == 'null' ? '' : json_encode($this->para, JSON_UNESCAPED_UNICODE);
         $data['api'] = $api_name = __INFO__;
         $data['client_ip'] = $this->getClientIp();
         $data['error_info'] = "";
         $data['is_error'] = "";
         D('ApiLog')->add($data);
     }
+
     public function setErrorInfo($errno, $errstr, $errfile, $errline)
     {
         switch ($errno) {
@@ -97,10 +109,11 @@ class Base
                 break;
         }
         $this->error_info[] = 'PHP ' . $error . ':  ' . $errstr . ' in ' . $errfile . ' on line ' . $errline;
-        if(is_test()){
+        if (is_test()) {
             dump($this->error_info);
         }
     }
+
     protected function getClientIp()
     {
         if (!empty($_SERVER["HTTP_CLIENT_IP"])) {

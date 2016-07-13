@@ -13,7 +13,14 @@ function get_test_para()
         ),'goods/display' => array(
             'uid' => '1',
             'uniacid' => '2',
-
+        ),'goods/detail' => array(
+            'uid' => '1',
+            'uniacid' => '2',
+            'goods_id' => '3',
+        )
+    ,'statistics/sale' => array(
+            'uid' => '1',
+            'uniacid' => '2',
         )
     );
     $aes = new \Common\Org\Aes();

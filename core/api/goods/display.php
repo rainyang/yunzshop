@@ -14,34 +14,6 @@ if (!empty($_GPC['keyword'])) {
     $params[':title'] = '%' . trim($_GPC['keyword']) . '%';
 }
 
-/*
-if (!empty($para['category']['thirdid'])) {
-    $condition .= ' AND (`tcate` = :tcate or tcates = :tcate)';
-    $params[':tcate'] = intval($para['category']['thirdid']);
-}
-if (!empty($para['category']['childid'])) {
-    $condition .= ' AND (`ccate` = :ccate or ccates = :ccate)';
-    $params[':ccate'] = intval($para['category']['childid']);
-}
-if (!empty($para['category']['parentid'])) {
-    $condition .= ' AND (`pcate` = :pcate or pcates = :pcate)' ;
-    $params[':pcate'] = intval($para['category']['parentid']);
-}
-
-
-if (!empty($para['category2']['thirdid'])) {
-    $condition .= ' AND (`tcate1` = :tcate2 or tcates = :tcate2)';
-    $params[':tcate2'] = intval($para['category2']['thirdid']);
-}
-if (!empty($para['category2']['childid'])) {
-    $condition .= ' AND (`ccate1` = :ccate2 or ccates = :ccate2)';
-    $params[':ccate2'] = intval($para['category2']['childid']);
-}
-if (!empty($para['category2']['parentid'])) {
-    $condition .= ' AND (`pcate1` = :pcate2 or pcates = :pcate2)' ;
-    $params[':pcate2'] = intval($para['category2']['parentid']);
-}*/
-
 
 if ($_GPC["status"] != '') {
     $condition .= ' AND `status` = :status';

@@ -18,10 +18,14 @@ if(!empty($record)) {
     $status['uid'] = $record['uid'];
     $status['lastvisit'] = TIMESTAMP;
     $status['lastip'] = CLIENT_IP;
+    if(isset($_GPC['tel'])&&is_numeric($_GPC['tel'])){
+        $status['tel'] = $_GPC['tel'];//首次登录时绑定手机号
+    }
     user_update($status);
     if($record['type'] == ACCOUNT_OPERATE_CLERK) {
         header('Location:' . url('account/switch', array('uniacid' => $record['uniacid'])));
         die;
     }
 }
+$record = array_part('uid,username',$record);
 $_YZ->returnSuccess($record);

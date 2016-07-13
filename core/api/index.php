@@ -1,8 +1,17 @@
 <?php
+ /**
+  * 网站入口页面
+  *
+  * PHP version 5.x.x
+  *
+  * @package   前台模块
+  * @author    name <xxx@yunzshop.com>
+  * @version   v1.0
+  */
 namespace Api;
 define("__API_ROOT__",__DIR__);
 define("__BASE_ROOT__",__DIR__."/../../../..");
-
+//echo phpinfo();
 require_once __BASE_ROOT__.'/framework/bootstrap.inc.php';
 require_once __BASE_ROOT__.'/addons/sz_yi/defines.php';
 require_once __BASE_ROOT__.'/addons/sz_yi/core/inc/functions.php';
