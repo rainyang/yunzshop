@@ -41,7 +41,7 @@ if ($_W['isajax']) {
 			}
 			
 			if (!empty($this->set['openorderdetail'])) {
-				$goods = pdo_fetchall("SELECT og.id,og.ordergoodid,og.money,g.thumb,g.title,og.total,og.optionname from " . tablename('sz_yi_bonus_goods') . " og" . " left join " . tablename('sz_yi_goods') . " g on g.id=og.ordergoodid  " . " where og.orderid=:orderid and og.uniacid = :uniacid order by og.createtime  desc ", array(':uniacid' => $_W['uniacid'], ':orderid' => $row['id']));
+				$goods = pdo_fetchall("SELECT og.id,og.ordergoodid,og.money,g.thumb,g.title,og.total,og.optionname from " . tablename('sz_yi_bonus_goods') . " og" . " left join " . tablename('sz_yi_goods') . " g on g.id=og.ordergoodid  " . " where og.orderid=:orderid and og.uniacid = :uniacid and og.bonus_area!=0 and og.mid =:mid order by og.createtime  desc ", array(':uniacid' => $_W['uniacid'], ':orderid' => $row['id'], ':mid' => $member['id']));
 				$goods = set_medias($goods, 'thumb');
 				foreach ($goods as &$g) {
 					$g['commission'] = $g['money'];

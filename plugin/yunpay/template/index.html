@@ -1,5 +1,11 @@
 {template 'web/_header'}
-
+<div class="w1200 m0a">
+<div class="ulleft-nav">
+<ul class="nav nav-tabs">
+    <li {if $_GPC['op']=='display' || empty($_GPC['op'])}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunpay')}" >云支付</a></li>
+</ul>
+</div>
+<div class="rightlist">
 <div class="main">
     <form id="dataform" action="" method="post" class="form-horizontal form">
         <div class="panel panel-default">
@@ -14,7 +20,7 @@
 							云支付，含微信支付，支付宝，银联，信用卡等多种支付方式, <a href="http://www.yunpay.net.cn/yunpay.php" target="_blank">申请及详情请查看这里</a>.
 						</div>
                         <div class="alert alert-danger">
-							此插件为第三方插件,出现资金安全问题芸众商城不承担任何责任.
+							此插件为第三方插件,出现资金安全问题本商城不承担任何责任.
 						</div>
 						<label class="radio-inline">
                             <input type="radio" name="yunpay[switch]" <?php if($pay['switch']) echo "checked";?> ng-model="yunpay.switch" value="true"/>
@@ -62,6 +68,8 @@
             </div>
         </div>
     </form>
+</div>
+</div>
 </div>
 {template 'web/_footer'}
 

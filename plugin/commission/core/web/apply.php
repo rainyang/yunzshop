@@ -277,10 +277,20 @@ if (checksubmit('submit_pay') && $apply['status'] == 2) {
 	ca('commission.apply.pay');
 	$time = time();
 	$pay = $totalpay;
-	if ($apply['type'] == 1) {
+	if ($apply['type'] == 1 || $apply['type'] == 2) {
 		$pay *= 100;
+	} 
+
+	if ($apply['type'] == 2) {
+		if ($pay <= 20000 && $pay >= 1) {
+			$result = m('finance')->sendredpack($member['openid'], $pay, 0, $desc = '佣金提现金额', $act_name = '佣金提现金额', $remark = '佣金提现金额以红包形式发送');
+		} else {
+			message('红包提现金额限制1-200元！', '', 'error');
+		}
+	} else {
+		$result = m('finance')->pay($member['openid'], $apply['type'], $pay, $apply['applyno']);
 	}
-	$result = m('finance')->pay($member['openid'], $apply['type'], $pay, $apply['applyno']);
+	
 	if (is_error($result)) {
 		if (strexists($result['message'], '系统繁忙')) {
 			$updateno['applyno'] = $apply['applyno'] = m('common')->createNO('commission_apply', 'applyno', 'CA');
@@ -393,8 +403,8 @@ if (checksubmit('submit_pay') && $apply['status'] == 2) {
 	foreach ($order_goods_change as $og) {
 		$commissions = iunserializer($og['commissions']);
 		$commissions['level1'] = isset($cm1[$og['id']]) ? round($cm1[$og['id']], 2) : $commissions['level1'];
-		$commissions['level2'] = isset($cm2[$og['id']]) ? round($cm2[$og['id']], 2) : $commissions['level3'];
-		$commissions['level3'] = isset($cm3[$og['id']]) ? round($cm3[$og['id']], 2) : $commissions['level2'];
+		$commissions['level2'] = isset($cm2[$og['id']]) ? round($cm2[$og['id']], 2) : $commissions['level2'];
+		$commissions['level3'] = isset($cm3[$og['id']]) ? round($cm3[$og['id']], 2) : $commissions['level3'];
 		pdo_update('sz_yi_order_goods', array('commissions' => iserializer($commissions)), array('id' => $og['id']));
 	}
 	plog('commission.changecommission', "修改佣金 订单号: {$order['ordersn']}");

@@ -116,18 +116,41 @@ class Sz_DYi_Order
      */
     public function payResult($params)
     {
-        //file_put_contents($_SERVER['DOCUMENT_ROOT'].'/addons/sz_yi/1.txt', print_r($params,true));exit;
         global $_W;
         $fee     = $params['fee'];
+        $uniacid = $_W['uniacid'];
         $data    = array(
             'status' => $params['result'] == 'success' ? 1 : 0
         );
         $ordersn = $params['tid'];
-        $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where  ordersn=:ordersn and uniacid=:uniacid limit 1', array(
-            ':uniacid' => $_W['uniacid'],
-            ':ordersn' => $ordersn
+        $orderall = pdo_fetchall("select * from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid', array(
+            ':ordersn_general' => $ordersn,
+            ':uniacid' => $uniacid
         ));
-
+        if(count($orderall) > 0){
+            $order = array();
+            $order['ordersn'] = $ordersn;
+            $orderid = array();
+            foreach ($orderall as $key => $val) {
+                $order['price']           += $val['price'];
+                $order['deductcredit2']   += $val['deductcredit2'];
+                $order['ordersn2']        += $val['ordersn2'];
+                $orderid[]                 = $val['id'];
+            }
+            $order['dispatchtype'] = $val['dispatchtype'];
+            $order['addressid'] = $val['addressid'];
+            $order['isvirtual'] = $val['isvirtual'];
+            $order['carrier'] = $val['carrier'];
+            $order['status'] = $val['status'];
+            $order['virtual'] = $val['virtual'];
+            $order['couponid'] = $val['couponid'];
+        }else{
+            $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where  ordersn=:ordersn and uniacid=:uniacid limit 1', array(
+                ':uniacid' => $_W['uniacid'],
+                ':ordersn' => $ordersn
+            ));
+            $orderid = $order['id'];
+        }
         //验证paylog里金额是否与订单金额一致
         $log = pdo_fetch('select * from ' . tablename('core_paylog') . ' where `uniacid`=:uniacid and fee=:fee and `module`=:module and `tid`=:tid limit 1',
             array(
@@ -136,13 +159,12 @@ class Sz_DYi_Order
             ':fee' => $fee,
             ':tid' => $order['ordersn']
         ));
-
         if (empty($log)) {
             show_json(-1, '订单金额错误, 请重试!');
             exit;
         }
 
-        $orderid = $order['id'];
+        //$orderid = $order['id'];
         if ($params['from'] == 'return') {
             $address = false;
             if (empty($order['dispatchtype'])) {
@@ -162,17 +184,23 @@ class Sz_DYi_Order
                     'carrier' => $carrier
                 );
             } else {
+                //多供应商支付成功条件
+                if(is_array($orderid)){
+                    $orderids     = implode(',', $orderid);
+                    $order_update = "id in ({$orderids})";
+                    $orderdetail_where = "o.id in ({$orderids})";
+                    $goods_where = "og.orderid in ({$orderids})";
+                }else{
+                    $order_update = "id = ".$orderid;
+                    $orderdetail_where = "o.id = {$orderid}";
+                    $goods_where = "og.orderid = {$orderid}";
+                }
                 if ($order['status'] == 0) {
                     $pv = p('virtual');
                     if (!empty($order['virtual']) && $pv) {
                         $pv->pay($order);
                     } else {
-                        pdo_update('sz_yi_order', array(
-                            'status' => 1,
-                            'paytime' => time()
-                        ), array(
-                            'id' => $orderid
-                        ));
+                        pdo_query('update ' . tablename('sz_yi_order') . " set status=1, paytime=".time()." where {$order_update} and uniacid='{$uniacid}' ");
                         if ($order['deductcredit2'] > 0) {
                             $shopset = m('common')->getSysset('shop');
                             m('member')->setCredit($order['openid'], 'credit2', -$order['deductcredit2'], array(
@@ -180,23 +208,34 @@ class Sz_DYi_Order
                                 $shopset['name'] . "余额抵扣: {$order['deductcredit2']} 订单号: " . $order['ordersn']
                             ));
                         }
-                        $this->setStocksAndCredits($orderid, 1);
-                        if (p('coupon') && !empty($order['couponid'])) {
-                            p('coupon')->backConsumeCoupon($order['id']);
-                        }
-                        m('notice')->sendOrderMessage($orderid);
-                        if (p('commission')) {
-                            p('commission')->checkOrderPay($order['id']);
-                        }
+                        if(is_array($orderid)){
+                            foreach ($orderall as $k => $v) {
+                                $this->setStocksAndCredits($v['id'], 1);
+                                if (p('coupon') && !empty($v['couponid'])) {
+                                    p('coupon')->backConsumeCoupon($v['id']);
+                                }
+                                m('notice')->sendOrderMessage($v['id']);
+                                if (p('commission')) {
+                                    p('commission')->checkOrderPay($v['id']);
+                                }
+                            }
+                        }else{
+                            $this->setStocksAndCredits($orderid, 1);
+                            if (p('coupon') && !empty($order['couponid'])) {
+                                p('coupon')->backConsumeCoupon($orderid);
+                            }
+                            m('notice')->sendOrderMessage($orderid);
+                            if (p('commission')) {
+                                p('commission')->checkOrderPay($orderid);
+                            }
+                        }   
                     }
                 }
                 
-                if(p('supplier')){
-                    p('supplier')->order_split($orderid);
-                }
-                $orderdetail=pdo_fetch("select o.dispatchprice,o.ordersn,o.price,og.optionname as optiontitle,og.optionid,og.total from " .tablename('sz_yi_order'). " o left join " .tablename('sz_yi_order_goods').  "og on og.orderid = o.id  where o.id = :id and o.uniacid=:uniacid",array(':id'=>$orderid,':uniacid'=>$_W['uniacid']));
-                $sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where og.orderid=:orderid order by og.id asc';
-                $orderdetail['goods1'] = set_medias(pdo_fetchall($sql, array(':orderid' => $orderid)), 'thumb');
+                
+                $orderdetail=pdo_fetch("select o.dispatchprice,o.ordersn,o.price,og.optionname as optiontitle,og.optionid,og.total from " .tablename('sz_yi_order'). " o left join " .tablename('sz_yi_order_goods').  "og on og.orderid = o.id where {$orderdetail_where} and o.uniacid=:uniacid",array(':uniacid'=>$_W['uniacid']));
+                $sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where ' . $goods_where . ' order by og.id asc';
+                $orderdetail['goods1'] = set_medias(pdo_fetchall($sql), 'thumb');
                 $orderdetail['goodscount'] = count($orderdetail['goods1']);
                 return array(
                     'result' => 'success',
@@ -328,26 +367,25 @@ class Sz_DYi_Order
             }
         }
     }
-    function getDefaultDispatch(){
+    function getDefaultDispatch($supplier_uid = 0){
         global $_W;
-        $dephp_31 = 'select * from ' . tablename('sz_yi_dispatch') . ' where isdefault=1 and uniacid=:uniacid and enabled=1 Limit 1';
-        //$dephp_31 = 'select * from ' . tablename('sz_yi_dispatch') . ' where uniacid=:uniacid and enabled=1 Limit 1';
-        $dephp_11 = array(':uniacid' => $_W['uniacid']);
-        $dephp_13 = pdo_fetch($dephp_31, $dephp_11);
-        return $dephp_13;
+        $sql = 'select * from ' . tablename('sz_yi_dispatch') . ' where isdefault=1 and uniacid=:uniacid and enabled=1 and supplier_uid=:supplier_uid Limit 1';
+        $prem = array(':supplier_uid' => $supplier_uid, ':uniacid' => $_W['uniacid']);
+        $DefaultDispatch = pdo_fetch($sql, $prem);
+        return $DefaultDispatch;
     }
-    function getNewDispatch(){
+    function getNewDispatch($supplier_uid = 0){
         global $_W;
-        $dephp_31 = 'select * from ' . tablename('sz_yi_dispatch') . ' where uniacid=:uniacid and enabled=1 order by id desc Limit 1';
-        $dephp_11 = array(':uniacid' => $_W['uniacid']);
-        $dephp_13 = pdo_fetch($dephp_31, $dephp_11);
-        return $dephp_13;
+        $sql = 'select * from ' . tablename('sz_yi_dispatch') . ' where uniacid=:uniacid and enabled=1 and supplier_uid=:supplier_uid order by id desc Limit 1';
+        $prem = array(':supplier_uid' => $supplier_uid,':uniacid' => $_W['uniacid']);
+        $NewDispatch = pdo_fetch($sql, $prem);
+        return $NewDispatch;
     }
-    function getOneDispatch($dephp_32){
+    function getOneDispatch($dispatch_id, $supplier_uid = 0){
         global $_W;
-        $dephp_31 = 'select * from ' . tablename('sz_yi_dispatch') . ' where id=:id and uniacid=:uniacid and enabled=1 Limit 1';
-        $dephp_11 = array(':id' => $dephp_32, ':uniacid' => $_W['uniacid']);
-        $dephp_13 = pdo_fetch($dephp_31, $dephp_11);
-        return $dephp_13;
+        $sql = 'select * from ' . tablename('sz_yi_dispatch') . ' where id=:id and uniacid=:uniacid and enabled=1 and supplier_uid=:supplier_uid Limit 1';
+        $prem = array(':supplier_uid' => $supplier_uid, ':id' => $dispatch_id, ':uniacid' => $_W['uniacid']);
+        $OneDispatch = pdo_fetch($sql, $prem);
+        return $OneDispatch;
     }
 }

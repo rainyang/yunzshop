@@ -67,7 +67,7 @@ if ($_GPC['export1'] == '1') {
         )
     ));
 }
-$total           = count($list);
+$total           = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_af_supplier') . " where 1 {$condition}", $params);
 $pager           = pagination($total, $pindex, $psize);
 load()->func('tpl');
 include $this->template('supplier_for_resu');

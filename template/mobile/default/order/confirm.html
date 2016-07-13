@@ -62,7 +62,7 @@
     .addorder_price .price .line span {height:33px; width:auto; float:right;}
     .addorder_price .all {height:47px; width:100%; line-height:47px; font-size:16px; color:#666;}
     .addorder_price .all span {height:47px; width:auto; float:right; color:#ff771b;}
-    .addorder_pay {height:60px; width:94%; background:#fff; padding:0px 3%; margin-top:30px; border-top:1px solid #eaeaea;}
+    .addorder_pay {height:60px; width:94%; background:#fff; padding:0px 3%; margin-top:30px; border-top:1px solid #eaeaea;position: fixed;bottom: 0;left: 0}
     .addorder_pay span {height:60px; width:auto; margin-right:16px; float:right; line-height:60px; color:#ff771b; font-size:16px;}
     .addorder_pay .paysub {height:40px; width:auto; background:#ff771b; padding:0px 10px; margin-top:10px; border-radius:5px; color:#fff; line-height:40px; float:right;}
     .chooser {overflow: auto; width: 100%; background:#efefef; position: fixed; top: 0px; right: -100%; z-index: 1;}
@@ -110,7 +110,7 @@
 <div id='carrier_container'></div>
 <div id='dispatch_container'></div>
 <div id='address_container'></div>
-<div id='confirm_container'></div>
+<div id='confirm_container'  style="padding-bottom:65px"></div>
 
 <script id='tpl_address_list' type='text/html'>
     <div class="chooser choose_address" >
@@ -184,104 +184,148 @@
     </div>
     <input type="hidden"  id="isverify" value="<%if isverify || isvirtual || goods.type==2%>true<%else%>false<%/if%>" />
 	
-	  {if $show==1}
-			<%if isverify || isvirtual || goods.type==2%>
-			 <input type="hidden"  id="dispatchtype" value="0" />
-			  <div class="carrier_input_info" >
-					<div class="row">
-						<div class='title'>联系人姓名</div>
-						<div class='info'>
-								<div class='inner'><input type="text" placeholder="联系人姓名" id="carrier_input_realname" value="<%member.realname%>" style='height:35px;'/></div>
-						</div>
-					</div>
-					<div class="row">
-						<div class='title'>联系人手机</div>
-						<div class='info'>
-							  <div class='inner'><input type="text" placeholder="联系人手机"  id="carrier_input_mobile" value="<%member.mobile%>" style='height:35px;'/></div>
-						</div>
-					</div>
-			</div>
-			<%else%>
-			<input type="hidden"  id="dispatchtype" value="0" />
-			<%if carrier_list.length>0%>
-			<div class="addorder_nav">
-				<div class="nav selected" data-nav='0'>快递配送</div>
-				<div class="nav"  data-nav='1'>上门自提</div>
-			</div>
-			<%/if%>
-			<div class="addorder_user addorder_user_0">
-				<input type='hidden' id='addressid' value='<%address.id%>' />
-				<div class="info" id='address_select' <%if !address %>style='display:none'<%/if%>>
-					 <div class="ico"><i class="fa fa-map-marker"></i></div>
-					 <div class='info1'>
-						 <div class='inner'>
-								<div class="user">收件人：<span id='address_realname'><%address.realname%></span>(<span id='address_mobile'><%address.mobile%></span>)</div>
-								<div class="address"><span id='address_address'><%address.address%></span></div>
-						 </div>
-					 </div>
-					 <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
-				</div>
-				<div class='info' id='address_new'  <%if address %>style='display:none'<%/if%>>
-					<div class="ico"><i class="fa fa-plus-circle"></i></div>
-					<div class='info1'>
-						 <div class='inner'>
-							 <div class="user" style='padding-top:8px;'>新增地址</div>  
-						 </div>
-					</div>
-					<div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
-				</div>
+	 {if $show==1}
+      <%if isverify%>
+          <input type="hidden"  id="dispatchtype" value="0" />
+        <%if isverifysend%>
+          <%if carrier_list.length>0%>
+              <div class="addorder_nav">
+                <div class="nav selected" data-nav='0'>配送核销</div>
+                <div class="nav"  data-nav='1'>上门自提</div>
+              </div>
+          <%/if%>
 
-			</div>
-			<%if carrier%>
-			<div class="addorder_user addorder_user_1" style='display:none'>
-				<input type='hidden' id='carrierindex' value='0' />
-				<input type='hidden' id='carrierid' value='<%carrier.id%>' />
-				<div class="info" id='carrier_select' >
-					<div class="ico"><i class="fa fa-map-marker"></i></div>
-					<div class='info1'>
-						 <div class='inner'>
-							 <div class="user">自提地点：<span id='carrier_realname'><%carrier.storename%></span>(<span id='carrier_mobile'><%carrier.tel%></span>)</div>
-							 <div class="address"><span id='carrier_address'><%carrier.address%></span></div>
-						 </div>
-					</div>
-					<div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
-				</div>
+          <div class="addorder_user addorder_user_0">
+            <input type='hidden' id='addressid' value='<%address.id%>' />
+            <div class="info" id='address_select' <%if !address %>style='display:none'<%/if%>>
+               <div class="ico"><i class="fa fa-map-marker"></i></div>
+               <div class='info1'>
+                 <div class='inner'>
+                    <div class="user">收件人：<span id='address_realname'><%address.realname%></span>(<span id='address_mobile'><%address.mobile%></span>)</div>
+                    <div class="address"><span id='address_address'><%address.address%></span></div>
+                 </div>
+               </div>
+               <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+            </div>
+            <div class='info' id='address_new'  <%if address %>style='display:none'<%/if%>>
+              <div class="ico"><i class="fa fa-plus-circle"></i></div>
+              <div class='info1'>
+                 <div class='inner'>
+                   <div class="user" style='padding-top:8px;'>新增地址</div>  
+                 </div>
+              </div>
+              <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+            </div>
+          </div>
+          <div id='address_container'></div>
+        <%/if%>
+           <%if carrier%>
+              <div class="addorder_user addorder_user_1" style='display:none'>
+                <input type='hidden' id='carrierindex' value='0' />
+                <input type='hidden' id='carrierid' value='<%carrier.id%>' />
+                <div class="info" id='carrier_select' >
+                  <div class="ico"><i class="fa fa-map-marker"></i></div>
+                  <div class='info1'>
+                     <div class='inner'>
+                       <div class="user">自提地点：<span id='carrier_realname'><%carrier.storename%></span>(<span id='carrier_mobile'><%carrier.tel%></span>)</div>
+                       <div class="address"><span id='carrier_address'><%carrier.address%></span></div>
+                     </div>
+                  </div>
+                  <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+                </div>
+              </div>
+              <div id='address_container'></div>
+              <div class="carrier_input_info" style='display:none' >
+                  <div class="row">
+                    <div class='title'>提货人姓名</div>
+                    <div class='info'>
+                        <div class='inner'><input type="text" placeholder="提货人姓名" id="carrier_input_realname" value="<%member.realname%>" style='height:35px;'/></div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class='title'>提货人手机</div>
+                    <div class='info'>
+                        <div class='inner'><input type="text" placeholder="提货人手机"  id="carrier_input_mobile" value="<%member.mobile%>" style='height:35px;'/></div>
+                    </div>
+                  </div>
+              </div>
+           <%/if%>
 
-			</div>
-			<%/if%>
-			<div class="carrier_input_info" style='display:none' >
-					<div class="row">
-						<div class='title'>提货人姓名</div>
-						<div class='info'>
-								<div class='inner'><input type="text" placeholder="提货人姓名" id="carrier_input_realname" value="<%member.realname%>" style='height:35px;'/></div>
-						</div>
-					</div>
-					<div class="row">
-						<div class='title'>提货人手机</div>
-						<div class='info'>
-							  <div class='inner'><input type="text" placeholder="提货人手机"  id="carrier_input_mobile" value="<%member.mobile%>" style='height:35px;'/></div>
-						</div>
-					</div>
-			</div>
+           <%if dispatch%>
+              <div class="addorder_exp" id='dispatch_select' style="display: none;">
+                <input type='hidden' id='dispatchid' value='<%dispatch.id%>' />
+                <div class="t1">配送方式</div>
+                <div class="ico"><i class='fa fa-angle-right fa-2x'></i></div>
+                <div class="t2"><span class='dispatchname'><%dispatch.dispatchname%></span> <span class='dispatchprice'><%dispatch.price%></span>元</div>
+              </div>
+           <%/if%>
 
+      
 
-			<%if dispatch%>
-			<div class="addorder_exp" id='dispatch_select' style="display: none;">
-				<input type='hidden' id='dispatchid' value='<%dispatch.id%>' />
-				<div class="t1">配送方式</div>
-				<div class="ico"><i class='fa fa-angle-right fa-2x'></i></div>
-				<div class="t2"><span class='dispatchname'><%dispatch.dispatchname%></span> <span class='dispatchprice'><%dispatch.price%></span>元</div>
-			</div>
-			<%/if%>
+      <%else%>
+        <%if isvirtual || goods.type==2%>
+          <input type="hidden"  id="dispatchtype" value="0" />
+          <div class="carrier_input_info" >
+          <div class="row">
+            <div class='title'>联系人姓名</div>
+            <div class='info'>
+                <div class='inner'><input type="text" placeholder="联系人姓名" id="carrier_input_realname" value="<%member.realname%>" style='height:35px;'/></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class='title'>联系人手机</div>
+            <div class='info'>
+                <div class='inner'><input type="text" placeholder="联系人手机"  id="carrier_input_mobile" value="<%member.mobile%>" style='height:35px;'/></div>
+            </div>
+          </div>
+          </div> 
+        <%else%>
+          <input type="hidden"  id="dispatchtype" value="0" />
+        <div class="addorder_user addorder_user_0">
+          <input type='hidden' id='addressid' value='<%address.id%>' />
+          <div class="info" id='address_select' <%if !address %>style='display:none'<%/if%>>
+             <div class="ico"><i class="fa fa-map-marker"></i></div>
+             <div class='info1'>
+               <div class='inner'>
+                  <div class="user">收件人：<span id='address_realname'><%address.realname%></span>(<span id='address_mobile'><%address.mobile%></span>)</div>
+                  <div class="address"><span id='address_address'><%address.address%></span></div>
+               </div>
+             </div>
+             <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+          </div>
 
-			<%/if%>
+          <div class='info' id='address_new'  <%if address %>style='display:none'<%/if%>>
+            <div class="ico"><i class="fa fa-plus-circle"></i></div>
+            <div class='info1'>
+               <div class='inner'>
+                 <div class="user" style='padding-top:8px;'>新增地址</div>  
+               </div>
+            </div>
+            <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+          </div>
+        </div>
+      <div id='address_container'></div>
+             <%if dispatch%>
+                <div class="addorder_exp" id='dispatch_select' style="display: none;">
+                  <input type='hidden' id='dispatchid' value='<%dispatch.id%>' />
+                  <div class="t1">配送方式</div>
+                  <div class="ico"><i class='fa fa-angle-right fa-2x'></i></div>
+                  <div class="t2"><span class='dispatchname'><%dispatch.dispatchname%></span> <span class='dispatchprice'><%dispatch.price%></span>元</div>
+                </div>
+             <%/if%>
+       
+        <%/if%>
+      <%/if%>
+
     {/if}
-
-	
+<input type="hidden" id="supplierids" value="<%supplierids%>">
+<!--订单区分开始-->
+	  <%each order_all as order%>
+    
     <div class="addorder_good">
         <div class="ico"><i class="fa fa-gift" style="color:#666; font-size:20px;"></i></div>
-        <div class="shop"><%set.name%></div>
-        <%each goods as g%>
+        <div class="shop"><%order.supplier_name%></div>
+        <%each order.goods as g%>
         <div class="good" data-totalmaxbuy="<%g.totalmaxbuy%>">
             
             <div class="img"  onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'"><img src="<%g.thumb%>"/></div>
@@ -303,71 +347,63 @@
             </div>
         </div>
         <%/each%>
-        <input type="hidden" id="goods" value="<%each goods as g%><%g.goodsid%>,<%g.optionid%>,<%g.total%>|<%/each%>"/>
-        <input type="text" id="remark" placeholder="给卖家留言" />
-        <div class="text">共 <span id="goodscount"><%total%></span> 件商品 合计：<span style="color:#ff771b;">￥<span class='goodsprice' style="color:#ff771b;"><%goodsprice%></span></span></div>
+        <input type="hidden"  data-id="<%order.supplier_uid%>" data-name="goods" value="<%each order.goods as g%><%g.goodsid%>,<%g.optionid%>,<%g.total%>|<%/each%>"/>
+        <input type="text" data-id="<%order.supplier_uid%>" data-name="remark" placeholder="给卖家留言" />
+        <div class="text">共 <span id="goodscount"><%order.total%></span> 件商品 合计：<span style="color:#ff771b;">￥<span class='goodsprice' data-id="<%order.supplier_uid%>" style="color:#ff771b;"><%order.goodsprice%></span></span></div>
     </div>
-{if !empty($order_formInfo)}
-	 <div class="carrier_input_info" >
-		 {template 'diyform/formcss'}
-		  <style type='text/css'>
-				     .diyform_main .dline { margin:0 10px;}
-					 .diyform_main .dline .dtitle { color:#666;}
-			 </style>
-    {template 'diyform/formfields'}
-	 </div>
+    {if !empty($order_formInfo)}
+    	 <div class="carrier_input_info" >
+    		 {template 'diyform/formcss'}
+    		  <style type='text/css'>
+    				     .diyform_main .dline { margin:0 10px;}
+    					 .diyform_main .dline .dtitle { color:#666;}
+    			 </style>
+        {template 'diyform/formfields'}
+    	 </div>
     {/if}
 
     <div class="addorder_price" >
-        <input type="hidden" id="weight" value="<%weight%>" />
+        <input type="hidden" data-id="<%order.supplier_uid%>" data-name="weight" value="<%weight%>" />
         <div class="price" style="border:none;">
-            <div class="line" style="line-height:26px;">商品金额<span>￥<span class='goodsprice'><%goodsprice%></span></span></div>
-           
-            <div class="line" style="line-height:26px;">+运费<span>￥<span class='dispatchprice'><%dispatchprice%></span></span></div>
-            <%if discountprice>0%>
-            <div class="line" style="line-height:26px;">-会员折扣(<d class='memberdiscount'><%discount%></d>折)<span>-￥<span class='discountprice'><%discountprice%></span></span></div>
+            <%if order.dispatch_price>0%>
+            <div class="line" style="line-height:26px;">+运费<span>￥<span class='dispatchprice' data-id="<%order.supplier_uid%>"><%order.dispatch_price%></span></span></div>
             <%/if%>
-		
-						
-            
-            <div id="deductenough" class="line" style="line-height:26px;<%if !saleset.showenough %>display:none<%/if%>"  >-单笔满 <d style='color:#ff6600' id="deductenough_enough"><%saleset.enoughmoney%></d> 元立减  <span>-￥<span id="deductenough_money"><%saleset.enoughdeduct%></span><span></div>
-				{if $hascouponplugin}
-            
-			<div id="coupondeduct_div" class="line" style="line-height:26px;display:none"><d id='coupondeduct_text'></d><span>-￥<span id="coupondeduct_money">0</span><span></div>
+            <%if order.discountprice>0%>
+            <div class="line" style="line-height:26px;">-会员折扣(<d class='memberdiscount'><%discount%></d>折)<span>-￥<span class='discountprice' data-id='<%order.supplier_uid%>'><%order.discountprice%></span></span></div>
+            <%/if%>
+  		      <%if order.saleset%>
+            <div class="deductenough"  data-id='<%order.supplier_uid%>' class="line" style="line-height:26px;<%if !order.saleset.showenough %>display:none<%/if%>"  >-单笔满 <d style='color:#ff6600' class="deductenough_enough" data-id='<%order.supplier_uid%>'><%saleset.enoughmoney%></d> 元立减  <span>-￥<span class="deductenough_money"  data-id='<%order.supplier_uid%>'><%saleset.enoughdeduct%></span><span></div>
+            <%/if%>
+				   {if $hascouponplugin}
+			       <div class="coupondeduct_div"  data-id='<%order.supplier_uid%>' class="line" style="line-height:26px;display:none"><d class='coupondeduct_text'></d><span>-￥<span class="coupondeduct_money">0</span><span></div>
 				   {/if}
             
         </div>
     </div>
-	<input type="hidden" id="couponid" value="" />
-	 
-	 
-     <div id="coupondiv" class="addorder_price" style="margin-top:5px;<%if !hascoupon%>display:none<%/if%>" >
-            <div class="price" style="border:none;">
-          
-          <div class="line" style="line-height:32px;" id="selectcoupon">
-			  <d id="couponselect">我要使用优惠券</d>
-                                <div class="ico2" style="float:right;color:#999;margin-top:2px;"><i class='fa fa-angle-right fa-2x'></i></div>
-                                <div class="couponcount"><%couponcount%></div>
+	<input type="hidden" data-id="<%order.supplier_uid%>" data-name="couponid" value="" />
+     <div class="addorder_price coupondiv"  data-id="<%order.supplier_uid%>" style="margin-top:5px;<%if !order.hascoupon%>display:none<%/if%>" >
+        <div class="price" style="border:none;">
+            <div class="line selectcoupon" style="line-height:32px;" data-id="<%order.supplier_uid%>">
+			           <d class="couponselect" data-id="<%order.supplier_uid%>">我要使用优惠券</d>
+                <div class="ico2" style="float:right;color:#999;margin-top:2px;"><i class='fa fa-angle-right fa-2x'></i></div>
+                <div class="couponcount"><%order.couponcount%></div>
             </div>
- 
-            
         </div>
-      
     </div>
    
 	
-    <%if deductcredit>0 || deductcredit2>0  %>
+    <%if order.deductcredit>0 || order.deductcredit2>0  %>
      <div class="addorder_price" style="margin-top:5px;">
             <div class="price" style="border:none;">
-            <%if deductcredit>0 %>
-            <div class="line" style="line-height:26px;"><d id="deductcredit_info"><%deductcredit%></d> 积分可抵扣 <d id="deductcredit_money" style='color:#ff6600'><%deductmoney%></d> 元
-                <div id='deductcredit' class="nav" on="0" credit="<%deductcredit%>" money='<%deductmoney%>'><nav></nav></div>
+            <%if order.deductcredit>0 %>
+            <div class="line" style="line-height:26px;"><d class="deductcredit_info" data-id="<%order.supplier_uid%>"><%order.deductcredit%></d> {if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}可抵扣 <d class="deductcredit_money" data-id="<%order.supplier_uid%>" style='color:#ff6600'><%order.deductmoney%></d> 元
+                <div class="nav deductcredit" data-id="<%order.supplier_uid%>" on="0" credit="<%order.deductcredit%>" money='<%order.deductmoney%>'><nav></nav></div>
             </div>
             <%/if%>
             
-            <%if deductcredit2>0 %>
-            <div class="line" style="line-height:26px;">余额可抵扣 <d id="deductcredit2_money" style='color:#ff6600'><%deductcredit2%></d> 元
-                <div id='deductcredit2' class="nav" on="0" credit2="<%deductcredit2%>"><nav></nav></div>
+            <%if order.deductcredit2>0 %>
+            <div class="line" style="line-height:26px;">{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}可抵扣 <d class="deductcredit2_money"  data-id="<%order.supplier_uid%>" style='color:#ff6600'><%order.deductcredit2%></d> 元
+                <div data-id="<%order.supplier_uid%>" class="nav deductcredit2" on="0" credit2="<%order.deductcredit2%>"><nav></nav></div>
             </div>
             <%/if%>
 	 
@@ -375,10 +411,17 @@
       
     </div>
     <%/if%>
-	
+    <div class="addorder_price" style="margin-top:5px;">
+            <div class="price" style="border:none;">
+            <div class="line" style="line-height:26px;">商品小计 <span>￥<span class='goodspricesubtotal' data-id="<%order.supplier_uid%>"><%order.realprice%></span></span>
+            </div>
+        </div>
+      
+    </div>
+<%/each%>	
     <div class="addorder_pay">
         <div class="paysub">确认订单</div>
-        <span>需付：￥<t class='totalprice'><%realprice%></t>元</span>
+        <span>需付：￥<t class='totalprice'><%realprice_total%></t>元</span>
     </div> 
 </script>
 <script id="tpl_img" type="text/html">
@@ -394,9 +437,6 @@
 <script type="text/javascript">
 var fromcart = 0;
     require(['tpl', 'core'], function(tpl, core) {
-
-
-
         core.json('order/confirm', {id:'{php echo intval($_GPC['id'])}', optionid:'{php echo intval($_GPC['optionid'])}', total:'{php echo intval($_GPC['total'])}',cartids:"{$_GPC['cartids']}"}, function(json){
 
         if(json.status==-1){
@@ -404,13 +444,11 @@ var fromcart = 0;
             return;
         }
         $('#confirm_container').html(tpl('tpl_confirm_info', json.result));
-
-
             {if !empty($order_formInfo)}
                 {template 'diyform/common_js'}
-                {/if}
-                    
-           $('.leftnav').click(function(){
+            {/if} 
+
+            $('.leftnav').click(function(){
                 var input =$(this).next();
                 if(!input.isInt()){
                     input.val('1');
@@ -507,11 +545,13 @@ var fromcart = 0;
                 $('.addorder_user_' + nav).show();
                 if (nav == '1') {
                     $('.carrier_input_info').show();
+                    $('.addorder_user addorder_user_0').hide(); 
                     $('.addorder_exp').hide();
                     getDispatchPrice(true);
                 }
                 else {
                     $('.carrier_input_info').hide();
+                    $('.addorder_user addorder_user_0').show();
                     $('.addorder_exp').show();
                     getDispatchPrice();
                 }
@@ -572,12 +612,12 @@ var fromcart = 0;
 
                     }, true);
                 })
-				$(".chooser").height($(document.body).height());
-                $(".choose_address").animate({right: "0px"}, 200);
-                $('.add_address').click(function() {
-                    addAddress($(this));
-                })
-            }, true);
+    				    $(".chooser").height($(document.body).height());
+                    $(".choose_address").animate({right: "0px"}, 200);
+                    $('.add_address').click(function() {
+                        addAddress($(this));
+                    })
+                }, true);
 
         });
 
@@ -645,82 +685,87 @@ var fromcart = 0;
 
         }
         function getDispatchPrice(zt) {
-            var goodsprice = parseFloat($('.goodsprice').html().replace(',',''));
-            var discountprice =0;
-            if($('.discountprice').length>0){
-                 discountprice = parseFloat($(".discountprice").html().replace(',',''));
-            }
-            totalprice = goodsprice - discountprice;
-            //重新获取运费
-            if( $('.shownum').length>0){
-                totalprice = parseFloat( $('.marketprice').html() ) * parseInt($('.shownum').val());
-                var goodsinfo = $('#goods').val().split('|')[0];
-                var goods = goodsinfo.split(',');
-                var goodsid = goods[0];
-                var optionid = goods[1];
-                var num = parseInt( $('.shownum').val());
-                $('#goods').val(goodsid + "," + optionid +"," + num + '|');
-            }
-					 
-            core.json('order/confirm', {
-                op: 'getdispatchprice',
-                totalprice:totalprice,
-                addressid: $('#addressid').val(),
-                dispatchid: $('#dispatchid').val(),
-                dflag: zt,
-	            goods: $('#goods').val()
-            }, function(getjson) {
-                if (getjson.status == 1) {
-                    if(zt){
-                        $('.dispatchprice').html('0.00');
-                    } else {
-                        $('.dispatchprice').html(getjson.result.price);
-                    }
+            var supplierids = $("#supplierids").val();
+            var supplierarr = new Array();
+            supplierarr = supplierids.split(",");
+            for (var i = 0; i < supplierarr.length; i++) {
+              var goodsprice = parseFloat($('.goodsprice[data-id='+supplierarr[i]+']').html().replace(',',''));
+              var discountprice =0;
+              if($('.discountprice[data-id='+supplierarr[i]+']').length>0){
+                   discountprice = parseFloat($('.discountprice[data-id='+supplierarr[i]+']').html().replace(',',''));
+              }
+              totalprice = goodsprice - discountprice;
+              //重新获取运费
+              if( $('.shownum').length>0){
+                  totalprice = parseFloat( $('.marketprice').html() ) * parseInt($('.shownum').val());
+                  var goodsinfo = $('#goods').val().split('|')[0];
+                  var goods = goodsinfo.split(',');
+                  var goodsid = goods[0];
+                  var optionid = goods[1];
+                  var num = parseInt( $('.shownum').val());
+                  $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val(goodsid + "," + optionid +"," + num + '|');
+              }
+              core.json('order/confirm', {
+                  op: 'getdispatchprice',
+                  totalprice:totalprice,
+                  addressid: $('#addressid').val(),
+                  dispatchid: $('#dispatchid').val(),
+                  supplier_uid: supplierarr[i],
+                  dflag: zt,
+                  goods: $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val()
+              }, function(getjson) {
+                  if (getjson.status == 1) {
+                      if(zt){
+                          $('.dispatchprice[data-id='+supplierarr[i]+']').html('0.00');
+                      } else {
+                          $('.dispatchprice[data-id='+supplierarr[i]+']').html(getjson.result.price);
+                      }
 
-                    if(getjson.result.deductcredit){
-                        $('#deductcredit_money').html( getjson.result.deductmoney);
-                        $('#deductcredit_info').html( getjson.result.deductcredit);
-                        $("#deductcredit").attr('credit',getjson.result.deductcredit);
-                        $("#deductcredit").attr('money',getjson.result.deductmoney);
-                    }
+                      if(getjson.result.deductcredit){
+                          $('.deductcredit_money[data-id='+supplierarr[i]+']').html( getjson.result.deductmoney);
+                          $('.deductcredit_info[data-id='+supplierarr[i]+']').html( getjson.result.deductcredit);
+                          $('.deductcredit[data-id='+supplierarr[i]+']').attr('credit',getjson.result.deductcredit);
+                          $('.deductcredit[data-id='+supplierarr[i]+']').attr('money',getjson.result.deductmoney);
+                      }
 
-                    if(getjson.result.deductcredit2){
-                        $('#deductcredit2_money').html( getjson.result.deductcredit2);
-                        $("#deductcredit2").attr('credit2',getjson.result.deductcredit2);
-                    }
+                      if(getjson.result.deductcredit2){
+                          $('.deductcredit2_money[data-id='+supplierarr[i]+']').html( getjson.result.deductcredit2);
+                          $('.deductcredit2[data-id='+supplierarr[i]+']').attr('credit2',getjson.result.deductcredit2);
+                      }
 
-					if(getjson.result.hascoupon){
-						$('#coupondiv').show();
-						$('#coupondiv .couponcount').html(getjson.result.couponcount);
-						bindCouponEvents();
-					}else{
-						$('#couponid').val('');
-						$('#couponselect').html('我要使用优惠券');
-						$('#coupondiv').hide();
-					}
+                      if(getjson.result.hascoupon){
+                        $('.coupondiv[data-id='+supplierarr[i]+']').show();
+                        $('.coupondiv[data-id='+supplierarr[i]+'] .couponcount').html(getjson.result.couponcount);
+                        bindCouponEvents();
+                      }else{
+                        $("input[data-name='couponid'][data-id="+supplierarr[i]+"]").val('');
+                        $('.couponselect[data-id='+supplierarr[i]+']').html('我要使用优惠券');
+                        $('.coupondiv[data-id='+supplierarr[i]+']').hide();
+                      }
 
-					if(getjson.result.deductenough_money>0){
-						$('#deductenough').show();
-						$('#deductenough_money').html( getjson.result.deductenough_money);
-						$('#deductenough_enough').html( getjson.result.deductenough_enough);
-					} else{
-						$('#deductenough').hide();
-						$('#deductenough_money').html( '0');
-						$('#deductenough_enough').html( '0');
-					}
-                    calctotalprice();
-                       if( $('.shownum').length>0){
-
-					var goodsinfo = $('#goods').val().split('|')[0];
-					var goods = goodsinfo.split(',');
-					var goodsid = goods[0];
-					var optionid = goods[1];
-					var num = parseInt( $('.shownum').val());
-					$('#goods').val(goodsid + "," + optionid +"," + num + '|');
-				}
-                   
-                }
-            }, true);
+                      if(getjson.result.deductenough_money>0){
+                        $('.deductenough[data-id='+supplierarr[i]+']').show();
+                        $('.deductenough_money[data-id='+supplierarr[i]+']').html( getjson.result.deductenough_money);
+                        $('.deductenough_enough[data-id='+supplierarr[i]+']').html( getjson.result.deductenough_enough);
+                      } else{
+                        $('.deductenough[data-id='+supplierarr[i]+']').hide();
+                        $('.deductenough_money[data-id='+supplierarr[i]+']').html( '0');
+                        $('.deductenough_enough[data-id='+supplierarr[i]+']').html( '0');
+                      }
+                      calctotalprice(supplierarr[i]);
+                      if( $('.shownum').length>0){
+                        var goodsinfo = $('#goods').val().split('|')[0];
+                        var goods = goodsinfo.split(',');
+                        var goodsid = goods[0];
+                        var optionid = goods[1];
+                        var num = parseInt( $('.shownum').val());
+                        $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val(goodsid + "," + optionid +"," + num + '|');
+                      }
+                     
+                  }
+              }, true);
+            };
+            
         }
         //新增地址
         function addAddress(obj) {
@@ -758,73 +803,83 @@ var fromcart = 0;
         });
 
         //计算总价
-        function calctotalprice() {
-            var goodsprice = parseFloat($('.goodsprice').html().replace(',',''));
-            var dispatchprice = parseFloat($(".dispatchprice").html().replace(',',''));
-            
+        function calctotalprice(supplier_uid) {
+            var dispatchprice = 0;
+            var goodsprice = parseFloat($('.goodsprice[data-id='+supplier_uid+']').html().replace(',',''));
+            var dispatchpricehtml = $('.dispatchprice[data-id='+supplier_uid+']').html();
+            if(dispatchpricehtml){
+              dispatchprice = parseFloat(dispatchpricehtml.replace(',',''));
+            }
             var discountprice =0;
-            if($('.discountprice').length>0){
-                 discountprice = parseFloat($(".discountprice").html().replace(',',''));
-            }
-	        var totalprice = goodsprice - discountprice;
+            if($('.discountprice[data-id='+supplier_uid+']').length>0){
+                   discountprice = parseFloat($('.discountprice[data-id='+supplier_uid+']').html().replace(',',''));
+              }
+	          var totalprice = goodsprice - discountprice;
             var enoughprice =0;
-            if($("#deductenough_money").length>0 && $("#deductenough_money").html()!=''){
-                 enoughprice = parseFloat($("#deductenough_money").html().replace(',',''));
-            }
-	   {if $hascouponplugin}
-	       totalprice = calcCouponPrice(totalprice);
-	   {/if}
-            totalprice = totalprice - enoughprice + dispatchprice;
+            var isdeductenough = $('.deductenough[data-id='+supplier_uid+']').css("display");
 
+            if(isdeductenough != 'none'){
+                if($('.deductenough_money[data-id='+supplier_uid+']').length>0 && $('.deductenough_money[data-id='+supplier_uid+']').html()!=''){
+                     enoughprice = parseFloat($('.deductenough_money[data-id='+supplier_uid+']').html().replace(',',''));
+                }
+            }
+        	  {if $hascouponplugin}
+        	       totalprice = calcCouponPrice(totalprice, supplier_uid);
+        	  {/if}
+            totalprice = totalprice - enoughprice + dispatchprice;
             var deductprice = 0;
-            if($("#deductcredit").length>0){
-                if($("#deductcredit").attr('on')=='1'){
-                    deductprice = parseFloat( $("#deductcredit").attr('money').replace(',','') )
+            if($('.deductcredit[data-id='+supplier_uid+']').length>0){
+                if($('.deductcredit[data-id='+supplier_uid+']').attr('on')=='1'){
+                    deductprice = parseFloat( $('.deductcredit[data-id='+supplier_uid+']').attr('money').replace(',','') )
                  
-                           if($("#deductcredit2").length>0){
-                              var td1 = parseFloat( $("#deductcredit2").attr('credit2').replace(',','') );
+                           if($('.deductcredit2[data-id='+supplier_uid+']').length>0){
+                              var td1 = parseFloat( $('.deductcredit2[data-id='+supplier_uid+']').attr('credit2').replace(',','') );
                         
                               if(totalprice-deductprice>=0){
                                   var td = totalprice - deductprice;
                                   if(td>td1){
                                       td = td1;
                                   }
-                                  $("#deductcredit2_money").html( td.toFixed(2) );
+                                  $('.deductcredit2_money[data-id='+supplier_uid+']').html( td.toFixed(2) );
                               }else{
-                                   $("#deductcredit2").attr('on','0').removeClass('on');
+                                   $('.deductcredit2[data-id='+supplier_uid+']').attr('on','0').removeClass('on');
                               }
                            }
                    
                 } else{
-                     if($("#deductcredit2").length>0){
-                        var td = parseFloat( $("#deductcredit2").attr('credit2').replace(',','') );
-                        $("#deductcredit2_money").html( td.toFixed(2) );
+                     if($('.deductcredit2[data-id='+supplier_uid+']').length>0){
+                        var td = parseFloat( $('.deductcredit2[data-id='+supplier_uid+']').attr('credit2').replace(',','') );
+                        $('.deductcredit2_money[data-id='+supplier_uid+']').html( td.toFixed(2) );
                      }
                      
                 }
             }   
             var deductprice2 = 0;
-            if($("#deductcredit2").length>0){
-                     if($("#deductcredit2").attr('on')=='1'){
-                          deductprice2 = parseFloat( $("#deductcredit2_money").html().replace(',','') );
+
+            if($('.deductcredit2[data-id='+supplier_uid+']').length>0){
+                     if($('.deductcredit2[data-id='+supplier_uid+']').attr('on')=='1'){
+                          deductprice2 = parseFloat( $('.deductcredit2_money[data-id='+supplier_uid+']').html().replace(',','') );
                      }
              }
-    
+            
             totalprice = totalprice - deductprice - deductprice2;
             if(totalprice<=0){ 
                 totalprice = 0;
             }
-
-
-            $('.totalprice').html(totalprice.toFixed(2));
+            $('.goodspricesubtotal[data-id='+supplier_uid+']').html(totalprice.toFixed(2));
+            var order_realprice = 0;
+            $(".goodspricesubtotal").each(function(){
+                order_realprice += parseFloat($(this).html().replace(',',''));
+            });
+            
+            $('.totalprice').html(order_realprice.toFixed(2));
             return totalprice;
         }
         //选择快递
         $('#dispatch_select').click(function() {
-
             json.result.selectedDispatchID = $("#dispatchid").val();
             $('#dispatch_container').html(tpl('tpl_dispatch_list', json.result));
-			$(".chooser").height($(document.body).height());
+			      $(".chooser").height($(document.body).height());
             $(".choose_dispatch").animate({right: "0px"}, 200);
             $('.dispatch').click(function() {
                 var obj = $(this);
@@ -839,13 +894,25 @@ var fromcart = 0;
 
         //订单
         $('.paysub').click(function() {
+          var supplierids = $("#supplierids").val();
+          var supplierarr = new Array();
+          var data = new Array();
+          var order = new Array();
+          supplier_str = supplierids.split(",");
+          if($.isArray(supplierarr) == false){
+            supplierarr[0] = supplier_str;
+          }else{
+            supplierarr = supplier_str;
+          }
+          for (var i = 0; i < supplierarr.length; i++) {
             if ($(this).attr('submitting') == '1') {
                 return;
             }
+
             var dispatchid = $("#dispatchid").val();
             var carrierid = $("#carrierid").val();
             var addressid = $("#addressid").val();
-            var goods = $("#goods").val();
+            var goods = $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val();
             var carrier_realname = $.trim( $('#carrier_input_realname').val() );
             var carrier_mobile = $.trim( $('#carrier_input_mobile').val() );
             if (goods == '') {
@@ -853,17 +920,17 @@ var fromcart = 0;
                 return;
             }
             {if $show==1}
-				if( $("#dispatchtype").val()=='0'){
-                    if (addressid == '') {
-						core.tip.show("请选择地址");
-						return;
-					}
-					if (dispatchid == '') {
-						core.tip.show("请选择配送方式");
-						return;
-					}
-				} 
-                if($('#isverify').val()=='true'){
+      				if( $("#dispatchtype").val()=='0'){
+                if (addressid == '') {
+      						core.tip.show("请选择地址");
+      						return;
+      					}
+      					if (dispatchid == '') {
+      						core.tip.show("请选择配送方式");
+      						return;
+      					}
+      				} 
+                /*if($('#isverify').val()=='true'){
                     if (carrier_realname== '') {
                         core.tip.show("请填写联系人姓名");
                         return;
@@ -872,47 +939,47 @@ var fromcart = 0;
                         core.tip.show("请填写正确手机号");
                         return;
                     }
-                }
-                if( $("#dispatchtype").val()=='1'){
-                    if (carrier_realname== '') {
-                        core.tip.show("请填写姓名");
-                        return;
-                    }
-                    if (!$.isMobile(carrier_mobile)) {
-                        core.tip.show("请填写正确手机号");
-                        return;
-                    }
-                }
-					{/if} 
-			 var diydata = '';
-			 var gdid = {php echo intval($goods_data_id)};
-   	                    {if !empty($order_formInfo)}
-				 {template 'diyform/common_js_data'}
-			 {/if}
-            $(this).attr('submitting', '1').html('提交中...');
-            var data ={
-                'op': 'create', 
+                }*/
+              if( $("#dispatchtype").val()=='1'){
+                  if (carrier_realname== '') {
+                      core.tip.show("请填写姓名");
+                      return;
+                  }
+                  if (!$.isMobile(carrier_mobile)) {
+                      core.tip.show("请填写正确手机号");
+                      return;
+                  }
+              }
+					  {/if} 
+			      var diydata = '';
+			      var gdid = {php echo intval($goods_data_id)};
+   	        {if !empty($order_formInfo)}
+      				 {template 'diyform/common_js_data'}
+      			{/if}
+            
+
+            order[i] ={
+                'supplier_uid': supplierarr[i], 
                 'goods': goods,
-				'id':'{$id}',
-				gdid:gdid,
-				diydata:diydata,
+        				'id':'{$id}',
+        				gdid:gdid,
+        				diydata:diydata,
                 'dispatchtype': $("#dispatchtype").val(),
                 'fromcart':fromcart,
                 'cartids':"{$_GPC['cartids']}",
-                'remark': $("#remark").val(),
+                'remark': $("input[data-name='remark'][data-id="+supplierarr[i]+"]").val(),
                 'deduct':0,
                 'deduct2':0
             };
-        
-             if( $("#dispatchtype").val()=='0'){
             
-                 data.addressid = addressid; 
-                 data.dispatchid = dispatchid;
-             }
+            if( $("#dispatchtype").val()=='0'){
+               order[i].addressid = addressid; 
+               order[i].dispatchid = dispatchid;
+            }
              
-             if( $("#dispatchtype").val()=='1' || $('#isverify').val()=='true'){
-                 data.carrierid = carrierid;
-                data.carrier = {
+            if( $("#dispatchtype").val()=='1' || $('#isverify').val()=='true'){
+                order[i].carrierid = carrierid;
+                order[i].carrier = {
                     'carrier_realname': carrier_realname,
                     'carrier_mobile':carrier_mobile,
                     'realname': $('#carrier_realname').html(),
@@ -921,20 +988,24 @@ var fromcart = 0;
                 };
             }
             
-            if($("#deductcredit").length>0){
-                if($("#deductcredit").attr('on')=='1'){
-                      data.deduct = 1;       
+            if($('.deductcredit[data-id='+supplierarr[i]+']').length>0){
+                if($('.deductcredit[data-id='+supplierarr[i]+']').attr('on')=='1'){
+                      order[i].deduct = 1;       
                 }
             }
              
-            if($("#deductcredit2").length>0){
-                if($("#deductcredit2").attr('on')=='1'){
-                      data.deduct2 = 1;       
+            if($('.deductcredit2[data-id='+supplierarr[i]+']').length>0){
+                if($('.deductcredit2[data-id='+supplierarr[i]+']').attr('on')=='1'){
+                      order[i].deduct2 = 1;       
                 }
             }
-	   {if $hascouponplugin}
-		data.couponid = $('#couponid').val();
-	  {/if}
+        	  {if $hascouponplugin}
+        		  order[i].couponid = $("input[data-name='couponid'][data-id="+supplierarr[i]+"]").val();
+        	  {/if}
+
+          }
+          data = {op:'create', order:order};
+          $(this).attr('submitting', '1').html('提交中...');
             core.json('order/confirm', data, function(create_json) {
 
                 if (create_json.status == 1) {
@@ -949,11 +1020,13 @@ var fromcart = 0;
                 }
 
             }, true, true);
+          
         })
         
         //积分抵扣
-        $('#deductcredit').click(function(){
+        $('.deductcredit').click(function(){
                var on = $(this).attr('on')=='0'?'1':'0';
+               var supplier_uid = $(this).attr('data-id');
                $(this).attr('on',on);
                if(on=='1'){
                      $(this).addClass('on').find('nav').addClass('on');
@@ -961,11 +1034,12 @@ var fromcart = 0;
                else{
                      $(this).removeClass('on').find('nav').removeClass('on');
                } 
-               calctotalprice();
+               calctotalprice(supplier_uid);
         });
         //余额抵扣
-          $('#deductcredit2').click(function(){
+        $('.deductcredit2').click(function(){
                var on = $(this).attr('on')=='0'?'1':'0';
+               var supplier_uid = $(this).attr('data-id');
                $(this).attr('on',on);
                if(on=='1'){
                      $(this).addClass('on').find('nav').addClass('on');
@@ -973,89 +1047,79 @@ var fromcart = 0;
                else{
                      $(this).removeClass('on').find('nav').removeClass('on');
                } 
-               calctotalprice();
+               calctotalprice(supplier_uid);
         });
        {if $hascouponplugin}
-            bindCouponEvents();
-            function calcCouponPrice(totalprice){
-	  
-	       $('#coupondeduct_div').hide();
-	       $('#coupondeduct_text').html('');
-	       $('#coupondeduct_money').html('0');
-	       if($('#couponid').val()=='' ||  $('#couponid').val()=='0')   {
-			  return totalprice;
-	       }
-	       var deduct   = parseFloat( $('#couponselect').data('deduct') );
-                 var discount = parseFloat( $('#couponselect').data('discount') );
-                 var backtype = parseFloat( $('#couponselect').data('backtype') );
-	     
-	       var deductprice = 0;
-	       if(deduct>0 && backtype==0){ //抵扣
-		   if(deduct>totalprice){
-			   deduct=totalprice;
-		   }
-		   if(deduct<=0){
-			   deduct = 0;
-		   }
- 		   deductprice = deduct;
-		   totalprice-=deduct;
-		   $('#coupondeduct_text').html('-优惠券优惠');
-	      }else if(discount>0 && backtype==1){//打折
-			  
-		   deductprice = totalprice *  (1 - discount/10 );
-		   if(deductprice>totalprice){
-			   deductprice=totalprice;
-		   }
-		  if(deductprice<=0){
-			   deductprice = 0;
-		   }
-    		   totalprice-=deductprice;		
-		   $('#coupondeduct_text').html('-优惠券折扣(' + discount + '折)');
-	        }
-	       if(deductprice>0){
-		 $('#coupondeduct_div').show();
-	          $('#coupondeduct_money').html(deductprice.toFixed(2));	
-	       }
-	      return totalprice;
+        bindCouponEvents();
+        function calcCouponPrice(totalprice, supplier_uid){
+  	       $('.coupondeduct_div[data-id='+supplier_uid+']').hide();
+  	       $('.coupondeduct_text[data-id='+supplier_uid+']').html('');
+  	       $('.coupondeduct_money[data-id='+supplier_uid+']').html('0');
+  	       if($("input[data-name='couponid'][data-id="+supplier_uid+"]").val()=='' ||  $("input[data-name='couponid'][data-id="+supplier_uid+"]").val()=='0')   {
+  			     return totalprice;
+  	       }
+	         var deduct   = parseFloat( $('.couponselect[data-id='+supplier_uid+']').data('deduct') );
+           var discount = parseFloat( $('.couponselect[data-id='+supplier_uid+']').data('discount') );
+           var backtype = parseFloat( $('.couponselect[data-id='+supplier_uid+']').data('backtype') );
+	         var deductprice = 0;
+	         if(deduct>0 && backtype==0){ //抵扣
+      		   if(deduct>totalprice){
+      			   deduct=totalprice;
+      		   }
+      		   if(deduct<=0){
+      			   deduct = 0;
+      		   }
+       		   deductprice = deduct;
+      		   totalprice-=deduct;
+      		   $('.coupondeduct_text[data-id='+supplier_uid+']').html('-优惠券优惠');
+	         }else if(discount>0 && backtype==1){//打折
+      		   deductprice = totalprice *  (1 - discount/10 );
+      		   if(deductprice>totalprice){
+      			   deductprice=totalprice;
+      		   }
+        		 if(deductprice<=0){
+        			   deductprice = 0;
+        		 }
+    		     totalprice-=deductprice;		
+		         $('.coupondeduct_text[data-id='+supplier_uid+']').html('-优惠券折扣(' + discount + '折)');
+	         }
+	         if(deductprice>0){
+		        $('.coupondeduct_div[data-id='+supplier_uid+']').show();
+	          $('.coupondeduct_money[data-id='+supplier_uid+']').html(deductprice.toFixed(2));	
+	         }
+	         return totalprice;
 				
-            }
-            function bindCouponEvents(){
-				$('#selectcoupon').click( function(){
-                                              
-                                             var money =parseFloat( $('.totalprice').html().replace(",","") ) ;	
- 				     core.pjson('coupon/util', {op: 'query', money: money, type:0}, function (rjson) {
-							if (rjson.status != 1) {
-								core.tip.show(rjson.result);
-								$('#couponid').val('');
-								calctotalprice(); 
-								return;
-							}
-							if(rjson.result.coupons.length>0){
-								CouponChooser.cancelCallback = function(){
-									
-									$('#coupondeduct_div').hide();
-									$('#coupondeduct_text').html('');
-									$('#coupondeduct_money').html('0');
-									calctotalprice();
-									 
-								}
-								CouponChooser.confirmCallback = function(){
-									calctotalprice();
-								}
-								CouponChooser.open( rjson.result );
-								
-							}
-						}, true, true);
+        }
+
+        function bindCouponEvents(){
+				  $('.selectcoupon').click( function(){
+             var money =parseFloat( $('.totalprice').html().replace(",","") ) ;	
+             var supplier_uid = $(this).attr('data-id');
+             console.log(supplier_uid);
+ 				     core.pjson('coupon/util', {op: 'query', money: money, type:0, supplier_uid: supplier_uid}, function (rjson) {
+  							if (rjson.status != 1) {
+  								core.tip.show(rjson.result);
+  								$("input[data-name='couponid'][data-id="+supplier_uid+"]").val('');
+  								calctotalprice(supplier_uid); 
+  								return;
+  							}
+  							if(rjson.result.coupons.length>0){
+  								CouponChooser.cancelCallback = function(){
+  									$('.coupondeduct_div[data-id='+supplier_uid+']').hide();
+  									$('.coupondeduct_text[data-id='+supplier_uid+']').html('');
+  									$('.coupondeduct_money[data-id='+supplier_uid+']').html('0');
+  									calctotalprice(supplier_uid); 
+  								}
+  								CouponChooser.confirmCallback = function(){
+  									calctotalprice(supplier_uid);
+  								}
+  								CouponChooser.open( rjson.result, supplier_uid);
+  							}
+					 }, true, true);
 				});
-		}
-			
-       {/if}
-						  
-       
-    }, true,true);
-	
-	
-	
-    });
+		  }
+      {/if}
+  }, true,true);
+});
 </script>
 

@@ -1,0 +1,25 @@
+<style type="text/css">
+    footer#footer-nav .menu-list li { width:20%}
+</style>
+{if $show_footer}
+{if $this->footer['diymenu']}
+{template 'designer/menu'}
+{else}
+<div style='height:80px;width:100%'></div>
+<footer id="footer-nav">
+    <ul class="menu-list" style="margin:0">
+        <li {if $footer_current=='first'}class='active'{/if}><a href="{php echo $this->footer['first']['url']}"><i class="fa fa-{php echo $this->footer['first']['ico']}"></i><span>{php echo $this->footer['first']['text']}</span></a></li>
+        <li {if $footer_current=='second'}class='active'{/if}><a href="{php echo $this->footer['second']['url']}"><i class="fa fa-{php echo $this->footer['second']['ico']}"></i><span>{php echo $this->footer['second']['text']}</span></a></li>
+        <li {if $footer_current=='commission'}class='active'{/if}>
+            <a href="{php echo $this->createPluginMobileUrl('supplier/orderj')}">
+                <i class="fa fa-road"></i>
+                <span>供应商中心</span>
+            </a>
+        </li>
+        <li {if $footer_current=='cart'}class='active'{/if}><a href="{php echo $this->createMobileUrl('shop/cart')}"><i class="fa fa-shopping-cart"></i><span>购物车</span></a></li>
+        <li {if $footer_current=='member'}class='active'{/if}><a href="{php echo $this->createMobileUrl('member')}"><i class="fa fa-user"></i><span>会员中心</span></a></li>
+    </ul>
+</footer>
+{/if}
+{/if}
+{template 'common/footer_base'}

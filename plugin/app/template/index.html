@@ -1,0 +1,78 @@
+{template 'web/_header'}
+<div class="w1200 m0a">
+	{template 'tabs'}
+	<style type='text/css'>
+		.trhead td {  background:#efefef;text-align: center}
+		.trbody td {  text-align: center; vertical-align:top;border-left:1px solid #ccc;overflow: hidden;}
+		.goods_info{position:relative;width:60px;}
+		.goods_info img {width:50px;background:#fff;border:1px solid #CCC;padding:1px;}
+		.goods_info:hover {z-index:1;position:absolute;width:auto;}
+		.goods_info:hover img{width:320px; height:320px;}
+	</style>
+
+	<div class="main">
+		<form id="baseform" method="post" class="form-horizontal form">
+			<div class="rightlist">
+				<div class="panel panel-default">
+					<div class="panel-heading">APP客户端设置</div>
+					<div class="panel-body">
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">APP客户端</label>
+							<div class="col-sm-9 col-xs-12">
+								<label class="radio-inline">
+									<input type="radio" name="app[switch]" value="1" {if $set['app']['base']['switch'] == 1} checked {/if}> 开启
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="app[switch]" value="0" {if empty($set['app']['base']['switch']) || $set['app']['base']['switch'] == 0} checked {/if}> 关闭
+								</label>
+								<span class="help-block">是否使用APP客户端</span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">LeanCloud App ID</label>
+							<div class="col-sm-9 col-xs-12">
+								<input type="text" name="leancloud[id]" class="form-control" value="{$set['app']['base']['leancloud']['id']}" autocomplete="off">
+								<span class="help-block">每个 app 有一个唯一 ID，不可变更</span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">LeanCloud App Key </label>
+							<div class="col-sm-9 col-xs-12">
+								<input type="text" name="leancloud[key]" class="form-control" value="{$set['app']['base']['leancloud']['key']}" autocomplete="off">
+								<span class="help-block"></span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">LeanCloud Master Key</label>
+							<div class="col-sm-9 col-xs-12">
+								<input type="text" name="leancloud[master]" class="form-control" value="{$set['app']['base']['leancloud']['master']}" autocomplete="off">
+								<span class="help-block"></span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">LeanCloud Notify Action </label>
+							<div class="col-sm-9 col-xs-12">
+								<input type="text" name="leancloud[notify]" class="form-control" value="{$set['app']['base']['leancloud']['notify']}" autocomplete="off">
+								<span class="help-block"></span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+							<div class="col-sm-9 col-xs-12">
+								<input type="submit" name="submit" value="保存设置" class="btn btn-primary" data-original-title="" title="">
+								<input type="hidden" name="token" value="e784fadb">
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>
+
+
+	{template 'common/footer'}

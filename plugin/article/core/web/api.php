@@ -43,21 +43,29 @@ if ($_W['isajax'] && $_W['ispost']) {
 	} elseif ($apido == 'postcategory') {
 		$cid = intval($_GPC['cid']);
 		$cname = ($_GPC['cname']);
+		$m_level = ($_GPC['m_level']);
+		$d_level = ($_GPC['d_level']);
+		
 		if (!empty($cname)) {
 			$cates = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article_category') . " WHERE category_name=:cname and id<>:cid and uniacid=:uniacid limit 1 ", array(':cid' => $cid, ':cname' => $cname, ':uniacid' => $_W['uniacid']));
 			if (!empty($cates)) {
 				die(json_encode(array("result" => "error", "desc" => '分类名称已存在')));
 			}
-			$arr = array("category_name" => $cname, "uniacid" => $_W['uniacid']);
+			$arr = array(
+				"category_name" => $cname,
+				 "uniacid" => $_W['uniacid'],
+				 "m_level" => $m_level,
+				 "d_level" => $d_level
+				 );
 			if (empty($cid)) {
 				ca('article.cate.addcate');
 				pdo_insert('sz_yi_article_category', $arr);
 				$insertid = pdo_insertid();
-				die(json_encode(array('result' => 'success-add', 'cid' => $insertid, "cname" => $cname)));
+				die(json_encode(array('result' => 'success-add', 'cid' => $insertid, "cname" => $cname, "m_level" => $m_level, "d_level" => $d_level)));
 			} else {
 				ca('article.cate.editcate');
 				pdo_update('sz_yi_article_category', $arr, array('id' => $cid));
-				die(json_encode(array('result' => 'success-edit', 'cid' => $cid, "cname" => $cname)));
+				die(json_encode(array('result' => 'success-edit', 'cid' => $cid, "cname" => $cname, "m_level" => $m_level, "d_level" => $d_level)));
 			}
 		} else {
 			die(json_encode(array('result' => 'error', 'desc' => '分类名称为空')));
@@ -152,11 +160,13 @@ if ($_W['isajax'] && $_W['ispost']) {
 		die(json_encode($articles));
 	} elseif ($apido == 'savesys') {
 		ca('article.page.otherset');
+		$isarticle = $_GPC['isarticle'];
 		$article_message = $_GPC['article_message'];
 		$article_title = $_GPC['article_title'];
 		$article_image = save_media($_GPC['article_image']);
 		$article_shownum = $_GPC['article_shownum'];
 		$article_keyword = $_GPC['article_keyword'];
+		$article_text = $_GPC['article_text'];
 		$article_temp = intval($_GPC['article_temp']);
 		
 		//处理地区数据；@phpdb.net
@@ -178,7 +188,8 @@ if ($_W['isajax'] && $_W['ispost']) {
 		$area_arr = json_encode($area_arr);
 		// print_r($area_arr);exit;
 		
-		$arr = array('article_message' => $article_message, 'article_title' => $article_title, 'article_image' => $article_image, 'article_shownum' => $article_shownum, 'article_keyword' => $article_keyword, 'article_temp' => $article_temp,'article_area' => $area_arr);
+		$arr = array('isarticle' => $isarticle,'article_message' => $article_message, 'article_title' => $article_title, 'article_image' => $article_image, 'article_shownum' => $article_shownum, 'article_keyword' => $article_keyword,'article_text' => $article_text, 'article_temp' => $article_temp,'article_area' => $area_arr);
+		
 		if (!empty($arr)) {
 			$rule = pdo_fetch("select * from " . tablename('rule') . ' where uniacid=:uniacid and module=:module and name=:name limit 1', array(':uniacid' => $_W['uniacid'], ':module' => 'cover', ':name' => "sz_yi文章营销入口设置"));
 			if (!empty($rule)) {

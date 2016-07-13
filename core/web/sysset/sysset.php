@@ -47,13 +47,27 @@ if ($op == 'template') {
     $dir    = IA_ROOT . "/addons/sz_yi/template/mobile/";
     if ($handle = opendir($dir)) {
         while (($file = readdir($handle)) !== false) {
-            if ($file != ".." && $file != ".") {
+            if ($file != ".." && $file != "." && $file != "app") {
                 if (is_dir($dir . "/" . $file)) {
                     $styles[] = $file;
                 }
             }
         }
         closedir($handle);
+    }
+
+    $styles_pc = array();
+    //主题列表
+    $dir_pc    = IA_ROOT . "/addons/sz_yi/template/pc/";
+    if ($handle_pc = opendir($dir_pc)) {
+        while (($file_pc = readdir($handle_pc)) !== false) {
+            if ($file_pc != ".." && $file_pc != "." && $file_pc != "app") {
+                if (is_dir($dir_pc . "/" . $file_pc)) {
+                    $styles_pc[] = $file_pc;
+                }
+            }
+        }
+        closedir($handle_pc);
     }
 } else if ($op == 'notice') {
     $salers = array();
@@ -72,21 +86,7 @@ if ($op == 'template') {
     $sec = m('common')->getSec();
     $sec = iunserializer($sec['sec']);
 } else if($op == 'pcset'){
-    $designer = p('designer');
-    $categorys = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_article_category') . " WHERE uniacid=:uniacid ", array(':uniacid' => $_W['uniacid']));
-    if ($designer) {
-        $diypages = pdo_fetchall("SELECT id,pagetype,setdefault,pagename FROM " . tablename('sz_yi_designer') . " WHERE uniacid=:uniacid order by setdefault desc  ", array(':uniacid' => $_W['uniacid']));
-    }
-    $article_sys = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article_sys') . " WHERE uniacid=:uniacid limit 1 ", array(':uniacid' => $_W['uniacid']));
-    $article_sys['article_area'] = json_decode($article_sys['article_area'],true);
-    $area_count = sizeof($article_sys['article_area']);
-    if ($area_count == 0){
-        //没有设定地区的时候的默认值：
-        $article_sys['article_area'][0]['province'] = '';
-        $article_sys['article_area'][0]['city'] = '';
-        $area_count = 1;
-    }
-    $goodcates = pdo_fetchall("SELECT id,name,parentid FROM " . tablename('sz_yi_category') . " WHERE enabled=:enabled and uniacid= :uniacid  ", array(':uniacid' => $_W['uniacid'], ':enabled' => '1'));
+
     //默认首页导航内容
     if(empty($set['shop']['hmenu_name'])){
         $set['shop']['hmenu_name'] = array('首页', '全部商品', '店铺公告', '成为分销商', '会员中心');
@@ -105,9 +105,12 @@ if (checksubmit()) {
         $set['shop']['signimg'] = save_media($shop['signimg']);
         $set['shop']['diycode'] = trim($shop['diycode']);
         $set['shop']['copyright']  = trim($shop['copyright']);
+        $set['shop']['credit']  = trim($shop['credit']);
+        $set['shop']['credit1']  = trim($shop['credit1']);
         plog('sysset.save.shop', '修改系统设置-商城设置');
     }
     elseif ($op == 'pcset') {
+        //echo "<pre>"; print_r($_GPC['pcset']);exit;
         $custom                    = is_array($_GPC['pcset']) ? $_GPC['pcset'] : array();
         $set['shop']['ispc']       = trim($custom['ispc']);
         $set['shop']['pctitle']    = trim($custom['pctitle']);
@@ -123,6 +126,21 @@ if (checksubmit()) {
         $set['shop']['fmenu_name'] = $custom['fmenu_name'];
         $set['shop']['fmenu_url']  = $custom['fmenu_url'];
         $set['shop']['fmenu_id']   = $custom['fmenu_id'];
+
+        $set['shop']['reccredit']  = $custom['reccredit'];
+        $set['shop']['recmoney']   = $custom['recmoney'];
+        $set['shop']['subcredit']  = $custom['subcredit'];
+        $set['shop']['submoney']   = $custom['submoney'];
+        $set['shop']['paytype']    = $custom['paytype'];
+        $set['shop']['isreferral'] = $custom['isreferral'];
+
+        $set['shop']['templateid']      = $custom['templateid'];
+        $set['shop']['subtext']         = $custom['subtext'];
+        $set['shop']['entrytext']       = $custom['entrytext'];
+        $set['shop']['subpaycontent']   = $custom['subpaycontent'];
+        $set['shop']['recpaycontent']   = $custom['recpaycontent'];
+        $set['shop']['referrallogo']   = $custom['referrallogo'];
+
         plog('sysset.save.sms', '修改系统设置-PC设置');
     }
     elseif ($op == 'sms') {
@@ -164,16 +182,28 @@ if (checksubmit()) {
         }
         plog('sysset.save.trade', '修改系统设置-交易设置');
     } elseif ($op == 'pay') {
-	
+
         $pluginy = p('yunpay');
         if($pluginy){
             $pay = $set['pay']['yunpay'];
         }
+
+        $pluginapp = p('app');
+        if($pluginapp){
+            $app_weixin = $set['pay']['app_weixin'];
+            $app_alipay = $set['pay']['app_alipay'];
+        }
+
         $set['pay'] = is_array($_GPC['pay']) ? $_GPC['pay'] : array();
         if($pluginy){
             $set['pay']['yunpay'] = $pay;
         }
-		
+
+        if($pluginapp){
+            $set['pay']['app_weixin'] = $app_weixin;
+            $set['pay']['app_alipay'] = $app_alipay;
+        }
+
         if ($_FILES['weixin_cert_file']['name']) {
             $sec['cert'] = upload_cert('weixin_cert_file');
         }
@@ -195,22 +225,28 @@ if (checksubmit()) {
     } elseif ($op == 'template') {
         $shop                 = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['style'] = save_media($shop['style']);
+        $set['shop']['style_pc'] = save_media($shop['style_pc']);
         $set['shop']['theme'] = trim($shop['theme']);
         m('cache')->set('template_shop', $set['shop']['style']);
+        m('cache')->set('template_shop_pc', $set['shop']['style_pc']);
         m('cache')->set('theme_shop', $set['shop']['theme']);
         plog('sysset.save.template', '修改系统设置-模板设置');
     } elseif ($op == 'member') {
         $shop                     = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['levelname'] = trim($shop['levelname']);
         $set['shop']['levelurl']  = trim($shop['levelurl']);
+        $set['shop']['leveltype']  = trim($shop['leveltype']);
         plog('sysset.save.member', '修改系统设置-会员设置');
         $set['shop']['isbindmobile']   = intval($shop['isbindmobile']);
+        $set['shop']['isreferrer']   = intval($shop['isreferrer']);
     } elseif ($op == 'category') {
         $shop                     = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['catlevel']  = trim($shop['catlevel']);
         $set['shop']['catshow']   = intval($shop['catshow']);
         $set['shop']['catadvimg'] = save_media($shop['catadvimg']);
         $set['shop']['catadvurl'] = trim($shop['catadvurl']);
+        $set['shop']['category2'] = intval($shop['category2']);
+        $set['shop']['category2name'] = trim($shop['category2name']);
         plog('sysset.save.category', '修改系统设置-分类层级设置');
     } elseif ($op == 'contact') {
         $shop                       = is_array($_GPC['shop']) ? $_GPC['shop'] : array();

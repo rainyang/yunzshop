@@ -1,4 +1,4 @@
-/web/index.php?c=site&a=entry&method=upgrade&p=return&do=plugin&m=sz_yi
+ åŸŸå/web/index.php?c=site&a=entry&method=upgrade&p=return&do=plugin&m=sz_yi
 
-Çå³ı»º´æÎÄ¼ş
+æ¸…é™¤ç¼“å­˜
 

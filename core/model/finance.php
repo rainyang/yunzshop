@@ -31,6 +31,7 @@ class Sz_DYi_Finance {
             $row = pdo_fetch($sql, array(
                 ':uniacid' => $_W['uniacid']
             ));
+
             $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/promotion/transfers';
             $pars = array();
             $pars['mch_appid'] = $row['key'];
@@ -47,10 +48,12 @@ class Sz_DYi_Finance {
             foreach ($pars as $k => $v) {
                 $string1.= "{$k}={$v}&";
             }
+
             $string1.= "key=" . $wechat['apikey'];
             $pars['sign'] = strtoupper(md5($string1));
             $xml = array2xml($pars);
             $extras = array();
+            
             $sec = m('common')->getSec();
             $certs = iunserializer($sec['sec']);
             if (is_array($certs)) {
@@ -66,6 +69,10 @@ class Sz_DYi_Finance {
                 $extras['CURLOPT_SSLCERT'] = $certfile;
                 $extras['CURLOPT_SSLKEY'] = $keyfile;
                 $extras['CURLOPT_CAINFO'] = $rootfile;
+
+                // $extras['CURLOPT_SSLCERT'] = IA_ROOT . '/addons/sz_yi/cert/apiclient_cert.pem';
+                // $extras['CURLOPT_SSLKEY'] = IA_ROOT . '/addons/sz_yi/cert/apiclient_key.pem';
+                // $extras['CURLOPT_CAINFO'] = IA_ROOT . '/addons/sz_yi/cert/rootca.pem';
             } else {
                 message('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
             }
@@ -103,6 +110,142 @@ class Sz_DYi_Finance {
             }
         }
     }
+
+    //发送红包
+    public function sendredpack($openid, $money, $orderid, $desc = '', $act_name = '', $remark = '')
+    {
+        global $_W;
+        //查询公众号名称
+        $_W['account']['name'] = pdo_fetchcolumn("SELECT name FROM ". tablename("uni_account") . "WHERE uniacid = '".$_W['uniacid']."'");
+        if (empty($openid)) {
+            return error(-1, 'openid不能为空');
+        }
+        $member = m('member')->getInfo($openid);
+        if (empty($member)) {
+            return error(-1, '未找到用户');
+        }
+        //查询支付参数配置
+        $setting = uni_setting($_W['uniacid'], array(
+            'payment'
+        ));
+        if (!is_array($setting['payment'])) {
+            return error(1, '没有设定支付参数');
+        }
+        $pay = m('common')->getSysset('pay');
+        $wechat = $setting['payment']['wechat'];
+        //查询微信公众号参数信息
+        $sql = 'SELECT `key`,`secret` FROM ' . tablename('account_wechats') . ' WHERE `uniacid`=:uniacid limit 1';
+        $row = pdo_fetch($sql, array(
+            ':uniacid' => $_W['uniacid']
+        ));
+        //接口地址及相应参数
+        $url = 'https://api.mch.weixin.qq.com/mmpaymkttransfers/sendredpack';
+        $post = array(
+            'wxappid'      => $row['key'],
+            'mch_id'       => $wechat['mchid'],
+            'mch_billno'   => $wechat['mchid'] . date('YmdHis') . rand(1000, 9999),
+            'client_ip'    => gethostbyname($_SERVER["HTTP_HOST"]),
+            're_openid'    => $openid,
+            'total_amount' => $money,
+            'total_num'    => 1,
+            'send_name'    => $_W['account']['name'],
+            'wishing'      => empty($desc) ? '佣金提现红包' : $desc,
+            'act_name'     => empty($act_name) ? '佣金提现红包' : $act_name,
+            'remark'       => empty($remark) ? '佣金提现红包' : $remark,
+            'nonce_str'    => $this->createNonceStr()
+        );
+
+        $stringA           = $this->formatQuery($post, false);
+        $stringSignTemp    = $stringA . '&key=' . $wechat['apikey'];
+        $post['sign']      = strtoupper(md5($stringSignTemp));
+        $postXml = array2xml($post, 1);
+        $sec     = m('common')->getSec();
+        //上传微信支付证书信息
+        $certs   = iunserializer($sec['sec']);
+        if (is_array($certs)) {
+            if (empty($certs['cert']) || empty($certs['key']) || empty($certs['root'])) {
+                message('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
+            }
+            $certfile = IA_ROOT . "/addons/sz_yi/cert/" . random(128);
+            file_put_contents($certfile, $certs['cert']);
+            $keyfile = IA_ROOT . "/addons/sz_yi/cert/" . random(128);
+            file_put_contents($keyfile, $certs['key']);
+            $rootfile = IA_ROOT . "/addons/sz_yi/cert/" . random(128);
+            file_put_contents($rootfile, $certs['root']);
+            $extras = array(
+                'CURLOPT_SSLCERT' => $certfile,
+                'CURLOPT_SSLKEY'  => $keyfile,
+                'CURLOPT_CAINFO'  => $rootfile
+            );
+            // $extras['CURLOPT_SSLCERT'] = IA_ROOT . '/addons/sz_yi/cert/apiclient_cert.pem';
+            // $extras['CURLOPT_SSLKEY'] = IA_ROOT . '/addons/sz_yi/cert/apiclient_key.pem';
+            // $extras['CURLOPT_CAINFO'] = IA_ROOT . '/addons/sz_yi/cert/rootca.pem';
+        } else {
+            message('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
+        }
+        load()->func('communication');
+        $resp = ihttp_request($url, $postXml, $extras);
+        @unlink($certfile);
+        @unlink($keyfile);
+        @unlink($rootfile);
+        if (is_error($resp)) {
+            return error(-2, $resp['message']);
+        }
+        if (empty($resp['content'])) {
+            return error(-2, '网络错误');
+        } else {
+            $arr = json_decode(json_encode((array)simplexml_load_string($resp['content'])) , true);
+            $xml = '<?xml version="1.0" encoding="utf-8"?>' . $resp['content'];
+            $dom = new DOMDocument();
+            if ($dom->loadXML($xml)) {
+                $xpath = new DOMXPath($dom);
+                $code = $xpath->evaluate('string(//xml/return_code)');
+                $ret = $xpath->evaluate('string(//xml/result_code)');
+                if (strtolower($code) == 'success' && strtolower($ret) == 'success') {
+                    //发送成功
+                    return true;
+                } else { 
+                    if ($xpath->evaluate('string(//xml/return_msg)') == $xpath->evaluate('string(//xml/err_code_des)')) {
+                        $error = $xpath->evaluate('string(//xml/return_msg)');
+                    } else {
+                        $error = $xpath->evaluate('string(//xml/return_msg)') . "<br/>" . $xpath->evaluate('string(//xml/err_code_des)');
+                    }
+                    //失败后更新发送状态字段
+                    if (!empty($orderid) && $orderid != 0) {
+                        $sql = 'SELECT `ordersn` FROM ' . tablename('sz_yi_order') . ' WHERE `id`=:orderid limit 1';
+                        $row = pdo_fetch($sql,
+                            array(
+                                ':orderid' => $orderid
+                            )
+                        );
+                        
+                        if (!empty($row)) {
+                            $_var_156 = array(
+                                'keyword1' => array('value' => '购买商品发送红包失败', 'color' => '#73a68d'),
+                                'keyword2' => array('value' => '【订单编号】' . $row['ordersn'], 'color' => '#73a68d'),
+                                'remark' => array('value' => '购物赠送红包发送失败！失败原因：'.$error)
+                            );
+                            pdo_update('sz_yi_order', 
+                                array(
+                                    'redstatus' => $error
+                                ), 
+                                array(
+                                    'id' => $orderid
+                                )
+                            );
+                            m('message')->sendCustomNotice($openid, $_var_156);
+                        }
+                        
+                    }
+                    
+                    return error(-2, $error);
+                }
+            } else {
+                return error(-1, '未知错误');
+            }
+        }
+    }
+
     public function refund($openid, $out_trade_no, $out_refund_no, $totalmoney, $refundmoney = 0) {
         global $_W, $_GPC;
         if (empty($openid)) {
@@ -194,6 +337,7 @@ class Sz_DYi_Finance {
             }
         }
     }
+
     public function downloadbill($starttime, $endtime, $type = 'ALL') {
         global $_W, $_GPC;
         $dates = array();
@@ -241,6 +385,7 @@ class Sz_DYi_Finance {
         header('Pragma: public ');
         die($content);
     }
+
     private function downloadday($date, $row, $wechat, $type) {
         $url = 'https://api.mch.weixin.qq.com/pay/downloadbill';
         $pars = array();
@@ -273,6 +418,7 @@ class Sz_DYi_Finance {
             return $resp['content'];
         }
     }
+
     public function closeOrder($out_trade_no = '') {
         global $_W, $_GPC;
         $setting = uni_setting($_W['uniacid'], array(
@@ -331,6 +477,7 @@ class Sz_DYi_Finance {
             }
         }
     }
+
     public function isWeixinPay($out_trade_no) {
         global $_W, $_GPC;
         $setting = uni_setting($_W['uniacid'], array(
@@ -389,6 +536,7 @@ class Sz_DYi_Finance {
             }
         }
     }
+
     function isAlipayNotify($gpc) {
         global $_W;
         $notify_id = trim($gpc['notify_id']);
@@ -433,6 +581,37 @@ class Sz_DYi_Finance {
         $url = "https://mapi.alipay.com/gateway.do?service=notify_verify&partner={$alipay['partner']}&notify_id={$notify_id}";
         $resp = @file_get_contents($url);
         return preg_match("/true$/i", $resp);
+    }
+
+    //红包
+    protected function createNonceStr()
+    {
+        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $str   = '';
+        for ($i = 0; $i < 32; $i++) {
+            $str .= substr($chars, mt_rand(0, strlen($chars) - 1), 1);
+        }
+        return $str;
+    }
+    //红包
+    protected function formatQuery($querys, $urlencode = false)
+    {
+        if (!is_array($querys) || empty($querys)) {
+            return;
+        }
+        ksort($querys);
+
+        $params = array();
+        foreach ($querys as $key => $val) {
+            if ($key != 'sign' && $val != null && $val != 'null') {
+                if ($urlencode) {
+                    $val = urlencode($val);
+                }
+                $params[] = $key . '=' . $val;
+            }
+        }
+
+        return implode('&', $params);
     }
 }
 

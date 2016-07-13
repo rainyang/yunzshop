@@ -1,12 +1,12 @@
 <?php
 global $_W, $_GPC;
-ca('bonus.send');
+ca('bonus.send.view');
 $operation = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 $set = $this->getSet();
 $time             = time();
 $pindex    = max(1, intval($_GPC['page']));
 $psize     = 20;
-$day_times        = intval($set['settledaysdf']) * 3600 * 24;
+$day_times        = intval($set['settledays']) * 3600 * 24;
 $daytime = strtotime(date("Y-m-d 00:00:00"));
 $sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times})  ORDER BY o.finishtime DESC,o.status DESC";
 $count = pdo_fetchall($sql);
@@ -21,7 +21,7 @@ $totalmoney = 0;
 foreach ($list as $key => &$row) {
 	$member = $this->model->getInfo($row['mid'], array('ok', 'pay', 'myorder'));
 	//Author:ym Date:2016-04-08 Content:需消费一定金额，否则清除该用户不参与分红
-	if($member['myordermoney'] < $set['consume_withdraw']){
+	if($member['myordermoney'] < $set['consume_withdraw'] || empty($member)){
 		unset($list[$key]);
 	}else{
 		if($member['commission_ok'] <= 0){
@@ -82,7 +82,15 @@ if (!empty($_POST)) {
             "send_bonus_sn" => $send_bonus_sn
         ));
         if($sendpay == 1){
-        	
+        	if(empty($level)){
+				if($member['bonus_area'] == 1){
+					$level['levelname'] = "省级代理";
+				}else if($member['bonus_area'] == 2){
+					$level['levelname'] = "市级代理";
+				}else if($member['bonus_area'] == 3){
+					$level['levelname'] = "区级代理";
+				}
+			}
         	$this->model->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_PAY);
         }
         //更新分红订单完成

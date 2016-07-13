@@ -1,13 +1,15 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 <script language="javascript">require(['underscore']);</script>
 <!-- 导入CSS样式 -->
 <link href="../addons/sz_yi/plugin/designer/template/imgsrc/designer.css" rel="stylesheet">
 <!-- 头部选项卡 -->
+<div class="ulleft-nav">
 <ul class="nav nav-tabs">
     <li {if $_GPC['op']=='display' || empty($_GPC['op'])}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('choose')}" >快速选购</a></li>
-
-
 </ul>
+</div>
+<div class="rightlist">
 {if $op=='display'}
 <!-- 筛选区域 -->
 <!-- <div class="panel panel-info">
@@ -38,19 +40,19 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th style="width:60px; text-align: center;">ID</th>
-                    <th >页面名称</th>
-                    <th style=" text-align: center;">供应商</th>
-                    <th style="text-align: center;">页面创建时间</th>
-                    <th style=" text-align: center;">最后修改时间</th>
-                    <th style="text-align: center;">操作</th>
+                    <th style="text-align: center;width: 6%;">ID</th>
+                    <th style="text-align: center;width: 30%;">页面名称</th>
+                    <th style=" text-align: center;width: 10%">供应商</th>
+                    <th style="text-align: center;width: 15%">页面创建时间</th>
+                    <th style=" text-align: center;width: 15%">最后修改时间</th>
+                    <th style="text-align: center;width: 24%">操作</th>
                 </tr>
             </thead>
             <tbody>
                 {if !empty($pages)}
                     {loop $pages $page}
                         <tr pageid="{$page['id']}">
-                            <td style="width:60px; text-align: center;">{$page['id']}</td>
+                            <td style="text-align: center;">{$page['id']}</td>
                             <td>{$page['pagename']}</td>                       
                             <td style=" text-align:  center;">{$page['agentname']}</td>
                             <td style="text-align:  center;">{$page['createtime']}</td>
@@ -72,8 +74,8 @@
                 {ifp 'designer.page.edit'}
                     <tr>
                         <td colspan="8">
-                            <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('choose/basic',array('op'=>'create'))}"><i class="fa fa-plus"></i> 添加一个新页面</a>
-                            <span>Tips:自定义页面启用默认后将代替系统默认页面(商城首页、商品列表、商品详细)，同一个类型的页面仅允许设置一个默认页面</span>
+                            <a class='btn btn-primary' href="{php echo $this->createPluginWebUrl('choose/basic',array('op'=>'create'))}"><i class="fa fa-plus"></i> 添加一个新页面</a>
+                            <span></span>
                         </td>
                     </tr>
                 {/if}
@@ -127,6 +129,7 @@ function delpage(id){
 
 
 {/if}
-
-{template 'common/footer'}
+</div>
+</div>
+{template 'web/_footer'}
 

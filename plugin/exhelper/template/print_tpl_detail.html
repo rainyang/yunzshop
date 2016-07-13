@@ -5,18 +5,18 @@
 <div class="panel-body">
 	<form class="form-horizontal">
 		<div class="form-group">
-			<div class="col-sm-4">
+			<div class="col-sm-7">
 				<div class="input-group">
 					<span class="input-group-addon">姓名</span>
-					<input type="hidden" name="nickname" value="{$address['nickname']}"/>
-					<input type="text" class="form-control" name="realname" value="{$address['realname']}" style="border-right: none;" />
+					<input style="width: 200px" type="hidden" name="nickname" value="{$address['nickname']}"/>
+					<input style="width: 200px" type="text" class="form-control" name="realname" value="{$address['realname']}" style="border-right: none;" />
 					<span class="input-group-addon" style="border-right: none;">电话</span>
-					<input type="text" class="form-control" name="mobile" value="{$address['mobile']}" />
+					<input style="width: 200px" type="text" class="form-control" name="mobile" value="{$address['mobile']}" />
 				</div>
 			</div>
 		</div>
 		<div class="form-group">
-			<div class="col-sm-9 col-xs-12">
+			<div class="col-sm-12 col-xs-12">
 				<div class="input-group">
 					<span class="input-group-addon">地址</span>
 					<input type="text" class="form-control" name="province" value="{$address['province']}" style="width:100px; border-right: none;" />
@@ -29,7 +29,7 @@
 		<table class='table' style='float:left;border:1px solid #ccc;margin-bottom:5px;table-layout: fixed'>
 			<tr class='trhead'>
 				<td style='width:30px;'><input type="checkbox" checked="" class="cBoxOrderAll"></td>
-				<td colspan='2' style='text-align:left;'>订单总数: {$total} 订单金额: {$totalmoney}</td>
+				<td colspan='2' style='text-align:left;'>订单总数: {$total} <br/>订单金额: {$totalmoney}</td>
 				<td class="tac" style="border: 1px solid #ccc;">规格及编码</td>
 				<td class="tac" style="border: 1px solid #ccc;">单价(元)</td>
 				<td class="tac" style="border: 1px solid #ccc;">数量</td>
@@ -37,7 +37,7 @@
 				<td class="tac" style="border: 1px solid #ccc;">配送方式</td>
 				<td class="tac" style="border: 1px solid #ccc;">价格</td>
 				<td class="tac" style="border: 1px solid #ccc;">订单状态</td>
-				<td class="tac" style="border: 1px solid #ccc;">打印状态/次数</td>
+				<td class="tac" style="border: 1px solid #ccc;">打印状态<br/>次数</td>
 			</tr>
 		</table>
 		<div class="allorder">
@@ -68,8 +68,8 @@
 				
 						<td valign='top' colspan='2' style='text-align: left; width: 400px; position: relative; ' 
 							data-ordersn="{$item['ordersn']}" data-orderid="{$item['id']}" data-ordergoodid="{$g['ordergoodid']}" data-goodid="{$g['id']}" data-goodtitle="{$g['title']}" 
-							data-shorttitle = "{if empty($g['shorttitle'])}-{else}{$g['shorttitle']}{/if}" data-goodnum="{$g['total']}" data-goodssn="{$g['goodssn']}" data-productsn="{$g['productsn']}" data-marketprice="{php echo $g['realprice']/$g['total']}"
-							data-productprice="{php echo $g['price']/$g['total']}" data-total="{$g['total']}" data-goodoption="{if empty($g['optiontitle'])}-{else}{$g['optiontitle']}{/if}" data-goodunit="{if empty($g['unit'])}-{else}{$g['unit']}{/if}"
+							data-shorttitle = "{if empty($g['shorttitle'])}-{else}{$g['shorttitle']}{/if}" data-goodnum="{$g['total']}" data-goodssn="{$g['goodssn']}" data-productsn="{$g['productsn']}" data-marketprice="{php echo $g['price']/$g['total']}"
+							data-productprice="{php echo $g['realprice']/$g['total']}" data-total="{$g['total']}" data-goodoption="{if empty($g['optiontitle'])}-{else}{$g['optiontitle']}{/if}" data-goodunit="{if empty($g['unit'])}-{else}{$g['unit']}{/if}"
 							data-realprice="{php echo $g['realprice']/$g['total']}" data-goodweight="{if empty($g['weight'])}-{else}{$g['weight']}{/if}"
 							>
 							<img src="{php echo tomedia($g['thumb'])}" style="width: 50px; height: 50px;border:1px solid #ccc;padding:1px;" > 
@@ -102,7 +102,7 @@
 									<a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $item['id']))}" >查看详情</a>
 								</td>
 			           		{/if} 
-			           		<td class="tac" style="border: 1px solid #ccc;">
+			           		<td class="tac" style="border: 1px solid #ccc;padding: 2px 4px">
 								<label class="icon-ps1 label label-{if $g['printstate']>0}primary{else}default{/if}" data-printstate="{$g['printstate']}">{if $g['printstate']>0}快递单 x {$g['printstate']}{else}快递单未打印{/if}</label><br>
 				               	<label class="icon-ps2 label label-{if $g['printstate2']>0}success{else}default{/if}" data-printstate="{$g['printstate2']}">{if $g['printstate2']>0}发货单 x {$g['printstate2']}{else}发货单未打印{/if}</label>
 			           		</td>
@@ -274,12 +274,14 @@
 						  	var _marketprice = _this.data("marketprice");	//商品原价
 						  	var _productprice = _this.data("productprice");	//商品现价
 						  	var _allprice = _this.data("productprice") * _this.data("total");	// 商品总价			
+                            _allprice = _allprice.toFixed(2);
 						  	var _total = _this.data("total");	// 商品数量
 						  	var _note = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';	//备注栏
 						  	var _goodoption = _this.data("goodoption");	// 商品规格 
 						  	var _goodunit = _this.data("goodunit");	// 商品单位
 						  	var _goodweight = _this.data("goodweight");	// 商品重量
 						  	var _realprice = _this.data("realprice");	// 商品折后价格
+                            _realprice = _realprice.toFixed(2);
 						  	
 						  	info.push({'odsn':_ordersn,'goodname':_goodname,'goodshortname':_goodshortname,'goodssn':_goodssn,'productsn':_productsn,
 						  					'marketprice':_marketprice,'productprice':_productprice,'allprice':_allprice,'total':_total,'note':_note,'goodoption':_goodoption,'goodunit':_goodunit,
@@ -645,7 +647,7 @@
 						                        </td>
 						                        <td class="tac" rowspan="{php echo count($order['goods'])}">
 						                        	<label class='label label-{$order['statuscss']} label-oss'>{$order['status']}</label><br />
-						                         	<a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $good['id']))}" >查看详情</a>
+						                         	<a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $order['id']))}" >查看详情</a>
 						                        </td>
 		                        			{/if} 
 		                        			<td  class="tac">

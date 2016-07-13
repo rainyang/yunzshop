@@ -45,7 +45,7 @@ class Sz_DYi_Common
             pdo_query("ALTER TABLE  ".tablename('sz_yi_member')." CHANGE  `pwd`  `pwd` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;");
         }
         pdo_query("UPDATE `ims_sz_yi_plugin` SET `name` = '芸众分销' WHERE `identity` = 'commission'");
-        pdo_query("UPDATE `ims_qrcode` SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
+        //pdo_query("UPDATE `ims_qrcode` SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
 
         if(!pdo_fieldexists('sz_yi_goods', 'cates')) {
             pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD     `cates` text;");
@@ -362,5 +362,57 @@ class Sz_DYi_Common
             $file = $path . "/" . date('H') . '.log';
             file_put_contents($file, $log, FILE_APPEND);
         }
+    }
+
+    public function checkClose()
+    {
+        if (strexists($_SERVER['REQUEST_URI'], '/web/')) {
+            return;
+        }
+        $shop = $this->getSysset('shop');
+        if (!empty($shop['close'])) {
+            if (!empty($shop['closeurl'])) {
+                header('location: ' . $shop['closeurl']);
+                exit;
+            }
+            die("<!DOCTYPE html>
+                    <html>
+                        <head>
+                            <meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=0'>
+                            <title>抱歉，商城暂时关闭</title><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=0'><link rel='stylesheet' type='text/css' href='https://res.wx.qq.com/connect/zh_CN/htmledition/style/wap_err1a9853.css'>
+                        </head>
+                        <body>
+                        <style type='text/css'>
+                        body { background:#fbfbf2; color:#333;}
+                        img { display:block; width:100%;}
+                        .header {
+                        width:100%; padding:10px 0;text-align:center;font-weight:bold;}
+                        </style>
+                        <div class='page_msg'>
+                        
+                        <div class='inner'><span class='msg_icon_wrp'><i class='icon80_smile'></i></span>{$shop['closedetail']}</div></div>
+                        </body>
+                    </html>");
+        }
+    }
+
+    public function mylink(){
+        global $_W;
+        $mylink['designer'] = p('designer');
+        $mylink['categorys'] = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_article_category') . " WHERE uniacid=:uniacid ", array(':uniacid' => $_W['uniacid']));
+        if ($mylink['designer']) {
+            $mylink['diypages'] = pdo_fetchall("SELECT id,pagetype,setdefault,pagename FROM " . tablename('sz_yi_designer') . " WHERE uniacid=:uniacid order by setdefault desc  ", array(':uniacid' => $_W['uniacid']));
+        }
+        $mylink['article_sys'] = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article_sys') . " WHERE uniacid=:uniacid limit 1 ", array(':uniacid' => $_W['uniacid']));
+        $mylink['article_sys']['article_area'] = json_decode($mylink['article_sys']['article_area'],true);
+        $mylink['area_count'] = sizeof($mylink['article_sys']['article_area']);
+        if ($mylink['area_count'] == 0){
+            //没有设定地区的时候的默认值：
+            $mylink['article_sys']['article_area'][0]['province'] = '';
+            $mylink['article_sys']['article_area'][0]['city'] = '';
+            $mylink['area_count'] = 1;
+        }
+        $mylink['goodcates'] = pdo_fetchall("SELECT id,name,parentid FROM " . tablename('sz_yi_category') . " WHERE enabled=:enabled and uniacid= :uniacid  ", array(':uniacid' => $_W['uniacid'], ':enabled' => '1'));
+        return $mylink;
     }
 }

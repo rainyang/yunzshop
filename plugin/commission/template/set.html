@@ -1,5 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
+<div class="rightlist">
 <form id="setform"  action="" method="post" class="form-horizontal form">
     <div class='panel panel-default'>
            <div class='panel-heading'>
@@ -192,6 +194,17 @@
                     <span class="help-block">是否允许用户佣金提现到余额，否则只允许微信提现</span>
                 </div>
             </div>
+            <!-- 提现免审核金额  不填写则需要审核  填写金额 则0-金额内可免审核自动打款 -->
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现审核限制</label>
+                <div class="col-sm-9 col-xs-12">
+                    <!-- <label class="radio-inline"><input type="radio"  name="setdata[closewithdrawcheck]" value="0" {if $set['closewithdrawcheck'] ==0} checked="checked"{/if} /> 开启</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[closewithdrawcheck]" value="1" {if $set['closewithdrawcheck'] ==1} checked="checked"{/if} /> 关闭</label> -->
+                    <input type="text" name="setdata[closewithdrawcheck]" class="form-control" value="{$set['closewithdrawcheck']}"  />
+                    <span class="help-block">提现金额少于等于自定义的限制金额，则提现不需要审核。否则需要审核。</span>
+                </div>
+            </div>
+
                <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">结算天数</label>
                 <div class="col-sm-9 col-xs-12">
@@ -546,6 +559,7 @@
         
     </div>
 </form>
+
 <!-- Author:Y.yang Date:2016-04-08 Content:购买指定商品成为分销商，（选择商品的输入框和JS） -->
 <div id="modal-goods"  class="modal fade" tabindex="-1">
     <div class="modal-dialog" style='width: 920px;'>
@@ -563,6 +577,8 @@
             <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
         </div>
     </div>
+</div>
+</div>
 </div>
 <script language='javascript'>
       function search_goods() {

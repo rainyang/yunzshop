@@ -1,8 +1,9 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'web/shop/tabs'}
 
 {if $operation == 'post'}
-<div class="main">
+<div class="main rightlist">
     
     <form  {ife 'shop.category' $item}action="" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data" >
     
@@ -91,7 +92,7 @@
                 </div> 
                {if $level<=2}
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">分类广告</label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">移动端分类广告</label>
                     <div class="col-sm-9 col-xs-12">
                         {ife 'shop.category' $item}
                         {php echo tpl_form_field_image('advimg', $item['advimg'])}
@@ -105,16 +106,54 @@
                         {/if}
                     </div>
                 </div>
+
                  <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">分类广告链接</label>
                     <div class="col-sm-9 col-xs-12">
                          {ife 'shop.category' $item}
-                        <input type="text" name="advurl" class="form-control" value="{$item['advurl']}" />
+                        <div class="input-group ">
+                            <input class="form-control" type="text" data-id="PAL-00010" placeholder="请填写指向的链接 (请以http://开头, 不填则不显示)" value="{$item['advurl']}" name="advurl">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default nav-link" type="button" data-id="PAL-00010" >选择链接</button>
+                            </span>
+                        </div>
                         {else}
                          <div class='form-control-static'>{$item['advurl']}</div>
                          {/if}
                     </div>
                 </div>
+                    {if $level==1}
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">pc首页推荐分类广告</label>
+                        <div class="col-sm-9 col-xs-12">
+                            {ife 'shop.category' $item}
+                            {php echo tpl_form_field_image('advimg_pc', $item['advimg_pc'])}
+                            <span class="help-block">建议尺寸: 300*640</span>
+                             {else}
+                               {if !empty($item['advimg_pc'])}
+                                     <a href='{php echo tomedia($item['advimg_pc'])}' target='_blank'>
+                                    <img src="{php echo tomedia($item['advimg_pc'])}" style='width:100px;border:1px solid #ccc;padding:1px' />
+                                     </a>
+                               {/if}
+                            {/if}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">pc首页推荐分类广告链接</label>
+                        <div class="col-sm-9 col-xs-12">
+                             {ife 'shop.category' $item}
+                            <div class="input-group ">
+                                <input class="form-control" type="text" data-id="PAL-00010" placeholder="请填写指向的链接 (请以http://开头, 不填则不显示)" value="{$item['advurl_pc']}" name="advurl_pc">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-default nav-link" type="button" data-id="PAL-00010" >选择链接</button>
+                                </span>
+                            </div>
+                            {else}
+                             <div class='form-control-static'>{$item['advurl_pc']}</div>
+                             {/if}
+                        </div>
+                    </div>   
+                    {/if}
                {/if}
                {if !empty($parentid)}
                 <div class="form-group">
@@ -132,6 +171,7 @@
                            {/if}
                     </div> 
                 </div>
+               {/if} 
                <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">首页推荐</label>
                     <div class="col-sm-9 col-xs-12">
@@ -147,7 +187,7 @@
                            {/if}
                     </div> 
                 </div>
-                {/if}  
+                 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否显示</label>
                     <div class="col-sm-9 col-xs-12">
@@ -195,13 +235,14 @@
         return true;
     });
 </script>
+{template 'web/sysset/mylink'}
 {elseif $operation == 'display'}
 <script language="javascript" src="../addons/sz_yi/static/js/dist/nestable/jquery.nestable.js"></script>
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/js/dist/nestable/nestable.css" />
 <style type='text/css'>
     .dd-handle { height: 40px; line-height: 30px}
 </style>
-<div class="main">
+<div class="main rightlist">
     <div class="category">
         <form action="" method="post">
             <div class="panel panel-default">
@@ -271,10 +312,10 @@
                                 <tr>
                                 <td>
                                     {ifp 'shop.category.add'}
-                                    <a href="{php echo $this->createWebUrl('shop/category',array('op' => 'post'))}" class="btn btn-default"><i class="fa fa-plus"></i> 添加新分类</a>
+                                    <a href="{php echo $this->createWebUrl('shop/category',array('op' => 'post'))}" class="btn btn-primary"><i class="fa fa-plus"></i> 添加新分类</a>
                                     {/if}
                                     {ifp 'shop.category.edit'}
-                                    <input id="save_category" type="button" class="btn btn-primary" value="保存分类修改">
+                                    <input id="save_category" type="button" class="btn btn-default" value="保存分类修改">
                                     {/if}
                                     <input type="hidden" name="token" value="{$_W['token']}" />
                                     <input type="hidden" name="datas" value="" />
@@ -286,6 +327,7 @@
             </div>
         </form>
     </div>
+</div>
 </div>
     <script language='javascript'>
      

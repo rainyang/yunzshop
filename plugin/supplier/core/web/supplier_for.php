@@ -19,7 +19,6 @@ if ($operation == 'af_supplier') {
         message('没有该条申请记录', $this->createPluginWebUrl('supplier/supplier_for'), 'error');
     } else {
         pdo_update('sz_yi_af_supplier',array('status' => $status), array('id' => $id, 'uniacid' => $_W['uniacid']));
-        $this->model->sendSupplierInform($openid,$status);
         if ($status == 1) {
             $msg = '驳回申请成功';
         } else {
@@ -30,8 +29,9 @@ if ($operation == 'af_supplier') {
             $pwd = pdo_fetch('select password from ' . tablename('users') . ' where uid=:uid' , array(
                 ':uid' => $data['uid']
                 ));
-            $perm_role = pdo_fetchcolumn("select id,status from " . tablename('sz_yi_perm_role') . " where status1=1 and status=1");
+            $perm_role = pdo_fetch("select id,status from " . tablename('sz_yi_perm_role') . " where status1=1 and status=1");
             $data['password'] = $pwd['password'];
+            $data['openid'] = $supplier_usre['openid'];
             $data['username'] = $supplier_usre['username'];
             $data['roleid'] = $perm_role['id'];
             $data['status'] = $perm_role['status'];
@@ -40,6 +40,7 @@ if ($operation == 'af_supplier') {
             pdo_insert('uni_account_users', array('uid' => $data['uid'], 'uniacid' => $supplier_usre['uniacid'], 'role' => 'operator'));
             pdo_insert('sz_yi_perm_user', $data);
         }
+        $this->model->sendSupplierInform($openid,$status);
         message($msg, $this->createPluginWebUrl('supplier/supplier_for'), 'success');
     }
 }
@@ -100,7 +101,7 @@ if ($_GPC['export1'] == '1') {
         )
     ));
 }
-$total           = count($list);
+$total           = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_af_supplier') . " where 1 and status=0 {$condition}",$params);
 $pager           = pagination($total, $pindex, $psize);
 load()->func('tpl');
 include $this->template('supplier_for');

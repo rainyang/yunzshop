@@ -7,7 +7,7 @@ if (!class_exists('TaobaoModel')) {
     class TaobaoModel extends PluginModel
     {
         function get_item_taobao($itemid = '', $taobaourl = '', $pcate = 0, $ccate = 0, $tcate = 0)
-        {
+        {   
             global $_W;
             $g = pdo_fetch("select * from " . tablename('sz_yi_goods') . " where uniacid=:uniacid and taobaoid=:taobaoid limit 1", array(
                 ':uniacid' => $_W['uniacid'],
@@ -179,6 +179,14 @@ if (!class_exists('TaobaoModel')) {
                 'noticeopenid' => '',
                 'storeids' => ''
             );
+            if (p('supplier')) {
+                $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+                if (empty($perm_role)) {
+                    $data['supplier_uid'] = 0;
+                } else {
+                    $data['supplier_uid'] = $_W['uid'];
+                }
+            }
             $thumb_url = array();
             $pics      = $item['pics'];
             $piclen    = count($pics);

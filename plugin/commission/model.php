@@ -96,14 +96,16 @@ if (!class_exists('CommissionModel')) {
 			if(empty($set['culate_method'])){
 				return $realprice;
 			}else{
-				$productprice = $order_goods['productprice'] * $order_goods['total'];	//原价
-				$marketprice  = $order_goods['marketprice'] * $order_goods['total'];		//现价
-				$costprice    = $order_goods['costprice'] * $order_goods['total'];			//成本价
+				
 				if($order_goods['optionid'] != 0){
 					$option = pdo_fetch('select productprice,marketprice,costprice from ' . tablename('sz_yi_goods_option') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $order_goods['optionid'], ':uniacid' => $_W['uniacid']));
 					$productprice = $option['productprice'] * $order_goods['total'];	//原价
 					$marketprice  = $option['marketprice'] * $order_goods['total'];		//现价
 					$costprice    = $option['costprice'] * $order_goods['total'];	
+				}else{
+					$productprice = $order_goods['productprice'] * $order_goods['total'];	//原价
+					$marketprice  = $order_goods['marketprice'] * $order_goods['total'];		//现价
+					$costprice    = $order_goods['costprice'] * $order_goods['total'];			//成本价
 				}
 				if($set['culate_method'] == 1){
 					return $productprice;
@@ -569,23 +571,45 @@ if (!class_exists('CommissionModel')) {
 			return $_var_22['isagent'] == 1 && $_var_22['status'] == 1;
 		}
 
-		public function getCommission($_var_5)
+		//Author:ym Date:2016-05-06 Content:分成方式计算		
+		public function calculate_goods_method($goods){
+			global $_W;
+			$set = $this->getSet();
+			$realprice = $goods['marketprice'];
+			if(empty($set['culate_method'])){
+				return $realprice;
+			}else{
+				if($set['culate_method'] == 1){
+					return $goods['productprice'];
+				}else if($set['culate_method'] == 2){
+					return $goods['marketprice'];
+				}else if($set['culate_method'] == 3){
+					return $goods['costprice'];
+				}else if($set['culate_method'] == 4){
+					$price = $realprice - $goods['costprice'];
+					return $price > 0 ? $price : 0;
+				}
+			}
+		}
+
+		public function getCommission($goods)
 		{
 			global $_W;
 			$set = $this->getSet();
-			$_var_58 = 0;
-			if ($_var_5['hascommission'] == 1) {
-				$_var_58 = $set['level'] >= 1 ? ($_var_5['commission1_rate'] > 0 ? ($_var_5['commission1_rate'] * $_var_5['marketprice'] / 100) : $_var_5['commission1_pay']) : 0;
+			$commission = 0;
+			if ($goods['hascommission'] == 1) {
+				$commission = $set['level'] >= 1 ? ($goods['commission1_rate'] > 0 ? ($goods['commission1_rate'] * $goods['marketprice'] / 100) : $goods['commission1_pay']) : 0;
 			} else {
-				$_var_20 = m('user')->getOpenid();
-				$_var_8 = $this->getLevel($_var_20);
-				if (!empty($_var_8)) {
-					$_var_58 = $set['level'] >= 1 ? round($_var_8['commission1'] * $_var_5['marketprice'] / 100, 2) : 0;
+				$openid = m('user')->getOpenid();
+				$level = $this->getLevel($openid);
+				$price = $this->calculate_goods_method($goods);
+				if (!empty($level)) {
+					$commission = $set['level'] >= 1 ? round($level['commission1'] * $price / 100, 2) : 0;
 				} else {
-					$_var_58 = $set['level'] >= 1 ? round($set['commission1'] * $_var_5['marketprice'] / 100, 2) : 0;
+					$commission = $set['level'] >= 1 ? round($set['commission1'] * $price / 100, 2) : 0;
 				}
 			}
-			return $_var_58;
+			return $commission;
 		}
 
 		public function createMyShopQrcode($_var_78 = 0, $_var_79 = 0)
@@ -651,7 +675,7 @@ if (!class_exists('CommissionModel')) {
 					$location_num = 50;
 					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
 				}
-				$imgusername = $_var_87['realname'] ? $_var_87['realname'] : $_var_87['nickname'];
+				$imgusername = $_var_87['nickname'] ? $_var_87['nickname'] : $_var_87['realname'];
 				$imgusername = $imgusername ? $imgusername : $_var_87['mobile'];
 				imagecopy($_var_91, $_var_92, 0, 0, 0, 0, 640, 1225);
 				imagedestroy($_var_92);
@@ -753,7 +777,7 @@ if (!class_exists('CommissionModel')) {
 					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
 					$location_num = 50;
 				}
-				$imgusername = $_var_87['realname'] ? $_var_87['realname'] : $_var_87['nickname'];
+				$imgusername = $_var_87['nickname'] ? $_var_87['nickname'] : $_var_87['realname'];
 				$imgusername = $imgusername ? $imgusername : $_var_87['mobile'];
 				imagecopy($_var_91, $_var_92, 0, 0, 0, 0, 640, 1225);
 				imagedestroy($_var_92);
@@ -872,6 +896,14 @@ if (!class_exists('CommissionModel')) {
 			if (empty($orderid)) {
 				return;
 			}
+			//Author:ym Date:2016-04-07 Content:分红提交订单处理
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$bonus_set = $pluginbonus->getSet();
+				if(!empty($bonus_set['start'])){
+					$pluginbonus->checkOrderConfirm($orderid);
+				}
+			}
 			$set = $this->getSet();
 			if (empty($set['level'])) {
 				return;
@@ -885,14 +917,7 @@ if (!class_exists('CommissionModel')) {
 			if (empty($member)) {
 				return;
 			}
-			//Author:ym Date:2016-04-07 Content:分红提交订单处理
-			$pluginbonus = p("bonus");
-			if(!empty($pluginbonus)){
-				$bonus_set = $pluginbonus->getSet();
-				if(!empty($bonus_set['start'])){
-					$pluginbonus->checkOrderConfirm($orderid);
-				}
-			}
+			
 			$become_child = intval($set['become_child']);
 			$parent = false;
 			if (empty($become_child)) {
@@ -1329,13 +1354,6 @@ if (!class_exists('CommissionModel')) {
 			$_var_132 = m('member')->getMember($_var_20);
 			if (empty($_var_132)) {
 				return;
-			}
-			$pluginbonus = p("bonus");
-			if(!empty($pluginbonus)){
-				$bonus_set = $pluginbonus->getSet();
-				if(!empty($bonus_set['start'])){
-					$pluginbonus->upgradeLevelByAgent($_var_20);
-				}
 			}
 			$_var_139 = intval($set['leveltype']);
 			if ($_var_139 == 4 || $_var_139 == 5) {

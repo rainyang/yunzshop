@@ -1,6 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'web/statistics/tabs'}
-
+<div class="rightlist">
 <div class="panel panel-info">
     <div class="panel-heading">查询商品销售量和销售额明细</div>
     <div class="panel-body">
@@ -12,7 +13,7 @@
             <input type="hidden" name="do" value="statistics" />
             <input type="hidden" name="p"  value="goods" />
               <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">商品名称</label>
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">商品名称</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                       <input name="title" type="text"  class="form-control" value="{$_GPC['title']}">
                 </div>
@@ -20,8 +21,8 @@
         
             
             <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">下单时间</label>
-                  <div class="col-sm-1">
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">下单时间</label>
+                  <div class="col-sm-2">
                             <label class="radio-inline">
                                 <input type="radio" name="searchtime" value="0" {if empty($_GPC['searchtime'])}checked{/if}>不搜索
                             </label> 
@@ -29,12 +30,12 @@
                                 <input type="radio" name="searchtime" value="1" {if !empty($_GPC['searchtime'])}checked{/if}>搜索
                             </label>
                 </div> 
-                <div class="col-sm-8 col-lg-9 col-xs-12">
+                <div class="col-sm-8 col-lg-7 col-xs-12">
                         {php echo tpl_form_field_daterange('datetime', array('starttime'=>date('Y-m-d H:i',$starttime),'endtime'=>date('Y-m-d H:i',$endtime)), true)}
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">排序方式</label>
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">排序方式</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                     <label class='radio-inline'>
                         <input type='radio' name='orderby' value='0' {if empty($_GPC['orderby'])}checked{/if}/> 按销售额
@@ -47,7 +48,7 @@
             </div>
             
             <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label"></label>
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                     <button class="btn btn-default" ><i class="fa fa-search"></i> 搜索</button>
                      <input type="hidden" name="token" value="{$_W['token']}" />
@@ -65,12 +66,12 @@
         <table class="table table-hover">
             <thead class="navbar-inner">
                 <tr>
-                    <th>订单号</th>
-                    <th>商品名称</th>
-                    <th>商品编号</th>
-                    <th>数量</th>
-                    <th>价格</th>
-                    <th>成交时间</th>
+                    <th width="20%">订单号</th>
+                    <th width="24%">商品名称</th>
+                    <th width="20%">商品编号</th>
+                    <th width="10%">数量</th>
+                    <th width="10%">价格</th>
+                    <th width="16%">成交时间</th>
                 </tr>
             </thead>
             <tbody>
@@ -88,5 +89,7 @@
         </table>
         {$pager}
     </div>
+</div>
+</div>
 </div>
 {template 'web/_footer'}

@@ -1,0 +1,80 @@
+{template 'member/center'}
+<title>推荐码</title>
+
+<style type="text/css">
+body {margin:0px; background:#f4f4f4;}
+.top1 {height:68px; background:#fff; border-bottom:#e3e3e3; overflow:hidden;}
+.top1 .ico {height:44px; width:44px; margin:12px; background:#fe9900; border-radius:44px; font-size:30px; line-height:44px; text-align:center; color:#fff; float:left;}
+.top1 .info1 {height:44px; padding:12px 0px; float:left;}
+.top1 .info1 .t1 {height:22px; font-size:16px; color:#666; line-height:26px;}
+.top1 .info1 .t2 {height:22px; font-size:13px; color:#999; line-height:20px;}
+.top1 span {color:#ff6600}
+.img {padding:1px;overflow:hidden;height:auto;width: 960px;}
+.img img { width:100%;}
+
+.info {float: left;width: 960px;height:auto; background:#fff; padding:10px; padding-bottom:80px; border-bottom:1px solid #eee; border-top:1px solid #eee;}
+.info .title {height:38px; border-bottom:1px solid #eee; overflow:hidden;}
+.info .title .ico {height:24px; width:24px; background:#fd6401; margin:7px 7px 7px 0px; border-radius:24px; font-size:12px; color:#fff; line-height:24px; text-align:center; float:left;}
+.info .title .text {height:38px; line-height:38px; font-size:14px; color:#666; float:left;}
+.info .con {height:auto; padding:10px 0px;}
+.info .con .line {height:auto; overflow:hidden; margin-bottom:5px;}
+.info .con .line .t1 {height:auto; width:55px; float:left; font-size:14px; color:#666; line-height:20px;}
+.info .con .line .t2 {padding-left:55px; background:#f90;}
+.info .con .line .t2 .t3 {height:auto; float:left; font-size:14px; color:#999;}
+.info .info2 {height:auto; background:#fe924a; padding:10px; font-size:14px; color:#fff;}
+
+.bottom {height:50px; width:100%; background:#fff; padding:10px; border-top:1px solid #eee; /*position:fixed; bottom:0px; left:0px;*/ box-shadow:1px 2px 10px rgba(0,0,0,0.2);overflow: hidden;width: 800px;float: left;}
+.bottom .sub {height:50px; width:46%; margin-left:2%; float:left; border:1px solid #eee; border-radius:3px; font-size:16px; line-height:50px; text-align:center; color:#666;}
+</style> 
+<div id="container" class="rightlist">
+
+    <!-- 系统生成图片 开始 -->
+    <div class="img">
+        <img id='posterimg' style='' src="{php echo $_W['siteroot'] . "attachment/" . $this->yzShopSet['referrallogo']}" />
+    </div>
+    <!-- 系统生成图片 结束 -->
+
+	<div class="info">
+    	<div class="title">
+        	<div class="ico"><i class="fa fa-cubes"></i></div>
+            <div class="text">如何使用</div>
+        </div>
+        <div class="con">
+          <div class="line">
+           	<div class="t1">第一步</div>
+                <div class="t2">
+                	<div class="t3">转发分享推荐码给好友；</div>
+                </div>
+          </div>
+          <div class="line">
+           	<div class="t1">第二步</div>
+                <div class="t2">
+                	<div class="t3">从您转发的推荐码注册商城的好友，</br>系统将自动锁定成为您的客户。 </br>他们在商城中购买任何商品，您都可以获得奖励；</div>
+                </div>
+          </div>
+          <div class="line">
+           	<div class="t1">第三步</div>
+                <div class="t2">
+                	<div class="t3">您可以在分销中心查看【我的团队】和【分销订单】，</br>好友确认收货后佣金方可提现。</div>
+                </div>
+          </div>
+  	    </div>
+        <div class="info2">说明：分享独有的推荐码，您的好友通过推荐码注册之后，系统会自动检测并记录客户关系。</div>
+        <div  style="margin: 10px 0px;">专属推荐码：<input type="text" id="biao1" value="{$member['referralsn']}" style="color:black;width: 86%;"  readonly="readonly" /></div>
+        <input type="button" onClick="copyUrl2()" value="点击复制" style="background:#fe924a;border:0;padding:4px 8px;color:#fff;border-radius: 4px;" />
+	</div>
+    <script type="text/javascript">
+        function copyUrl2()
+        {
+            var Url2=document.getElementById("biao1");
+            Url2.select(); 
+            document.execCommand("Copy"); 
+            alert("已复制推荐码。");
+        }
+    </script>
+
+    </div>
+
+</div></div>
+
+{template 'common/bottom'}

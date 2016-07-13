@@ -35,11 +35,11 @@ a {text-decoration:none;}
 .menu .nav .fa-qrcode{background-color: #ffcb05;}
 .menu .nav .fa-cog{background-color: #aadaf6;}
 .menu .nav .fa-star{background-color: #7ED484;}
+.menu .nav .fa-time {background-color: #5ED1FF;}
 .menu .nav .title {padding-left: 50px;height:24px; width:100%; text-align:left; font-size:14px; color:#222;}
 .menu .nav .con {padding-left: 50px;height:20px; width:100%; text-align:left; font-size:12px; color:#999;}
 .menu .nav .con span {color:#f90;}
-/*.menu .nav1 {border-bottom:1px solid #f1f1f1; border-right:1px solid #f1f1f1;   }
-.menu .nav2 {border-bottom:1px solid #f1f1f1; }*/
+
 </style>
 <div id='container' class="rightlist"></div>
 <script id='tpl_main' type='text/html'>
@@ -66,20 +66,12 @@ a {text-decoration:none;}
             </div>
             <div class="top_1">
                 <div class="text">
-                {php echo $this->set['texts']['commission_total']}：<%member.commission_total%> 元</div>
+                {php echo $this->set['texts']['commission_total']}：<%member.total_all%> 元</div>
                 <a href="{php echo $this->createPluginMobileUrl('commission/withdraw')}">
                 <!--<div class="ico"></div>--></a>
             </div>
         </div>
     </div>
-    <!--<div class="topbonus">
-        <div class="top_1">
-            <div class="text">
-            {php echo $bonus_set['texts']['commission_total']}：{$member_bonus['commission_total']} 元<br>{php echo $bonus_set['texts']['commission_ok']}：{$member_bonus['commission_ok']}
-            </div>
-            <a href="{php echo $this->createPluginMobileUrl('commission/withdraw')}"><div class="ico"></div></a>
-        </div>
-    </div>-->
     
     <div class="menu">  
         <a href="{php echo $this->createPluginMobileUrl('commission/withdraw')}"><div class="nav nav1"><i class="fa fa-cny fa-3x" style="color:#ff9901;"></i><div class="title">{php echo $this->set['texts']['commission1']}</div><div class="con"><span><%member.commission_total%></span> 元</div></div></a>
@@ -92,20 +84,25 @@ a {text-decoration:none;}
 
         <!--分红-->
         {if $bonus==1}
-        <a href="{php echo $this->createPluginMobileUrl('bonus/withdraw')}"><div class="nav nav1"><i class="fa fa-cny fa-3x" style="color:#B22222;"></i><div class="title">{php echo $bonus_set['texts']['commission1']}</div><div class="con"><span>{$member_bonus['commission_total']}</span> 元</div></div></a>
-        <a href="{php echo $this->createPluginMobileUrl('bonus/order')}"><div class="nav nav1"><i class="fa fa-list fa-3x" style="color:#B22222;"></i><div class="title">{php echo $bonus_set['texts']['order']}</div><div class="con"><span>{$member_bonus['ordercount0']}</span> 个</div></div></a>
-        <a href="{php echo $this->createPluginMobileUrl('bonus/log')}"><div class="nav nav2"><i class="fa fa-random  fa-3x" style="color:#B22222;"></i><div class="title">{php echo $bonus_set['texts']['commission_detail']}</div><div class="con">{php echo $bonus_set['texts']['commission']}明细</div></div></a>        
-        <a href="{php echo $this->createPluginMobileUrl('bonus/customer')}"><div class="nav nav1"><i class="fa fa-users  fa-3x" style="color:#B22222;"></i><div class="title">{php echo $bonus_set['texts']['mycustomer']}</div><div class="con"><span>{$member_bonus['customercount']}</span> 人</div></div></a> 
+        <a href="{php echo $this->createPluginMobileUrl('bonus/withdraw')}"><div class="nav nav1"><i class="fa fa-cny fa-3x" style="color:#7775FF;"></i><div class="title">{php echo $bonus_set['texts']['commission1']}</div><div class="con"><span>{$member_bonus['commission_total']}</span> 元</div></div></a>
+        {if $level}
+        <a href="{php echo $this->createPluginMobileUrl('bonus/order')}"><div class="nav nav1"><i class="fa fa-list fa-3x" style="color:#40BD56;"></i><div class="title">{php echo $bonus_set['texts']['order']}</div><div class="con"><span>{$member_bonus['ordercount0']}</span> 个</div></div></a>
+        {/if}
+        {if $member['bonus_area']}
+        <a href="{php echo $this->createPluginMobileUrl('bonus/order_area')}"><div class="nav nav1"><i class="fa fa-list fa-3x" style="color:#A6D044;"></i><div class="title">{php echo $bonus_set['texts']['order_area']}</div><div class="con"><span>{$member_bonus['ordercount_area0']}</span> 个</div></div></a>
+        {/if}
+        <a href="{php echo $this->createPluginMobileUrl('bonus/log')}"><div class="nav nav1"><i class="fa fa-random  fa-3x" style="color:#FF3D3D;"></i><div class="title">{php echo $bonus_set['texts']['commission_detail']}</div><div class="con">{php echo $bonus_set['texts']['commission']}明细</div></div></a>        
+        <a href="{php echo $this->createPluginMobileUrl('bonus/customer')}"><div class="nav nav1"><i class="fa fa-users  fa-3x" style="color:#F758C6;"></i><div class="title">{php echo $bonus_set['texts']['mycustomer']}</div><div class="con"><span>{$member_bonus['customercount']}</span> 人</div></div></a> 
         <!--/分红-->
         {/if}
         <%if set.closemyshop!='1'%>
         <!--<a href="{php echo $this->createPluginMobileUrl('commission/myshopset')}"><div class="nav nav1"><i class="fa fa-cog  fa-3x" style="color:#aadaf6;"></i><div class="title">小店设置</div><div class="con">设置我的小店</div></div></a>-->
-        		<%if set.openselect%>
-        		        <!--<a href="{php echo $this->createPluginMobileUrl('commission/myshop/select')}"><div class="nav nav1"><i class="fa fa-star  fa-3x" style="color:#f3d110"></i><div class="title">自选商品</div><div class="con">选择我喜欢的商品</div></div></a>-->
-        		<%/if%>
+                <%if set.openselect%>
+                        <!--<a href="{php echo $this->createPluginMobileUrl('commission/myshop/select')}"><div class="nav nav1"><i class="fa fa-star  fa-3x" style="color:#f3d110"></i><div class="title">自选商品</div><div class="con">选择我喜欢的商品</div></div></a>-->
+                <%/if%>
         <%/if%>
         
-        
+        <a href="#"><div class="nav nav1"><i class="fa fa-time fa-3x" style="color:#ff9901;"></i><div class="title">订单总计</div><div class="con"><span><%pricecount%></span> 元</div></div></a>    
     </div>
 </script>
  

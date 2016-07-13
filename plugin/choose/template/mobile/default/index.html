@@ -7,7 +7,7 @@
 <meta content="yes" name="apple-mobile-web-app-capable" />
 <meta content="black" name="apple-mobile-web-app-status-bar-style" />
 <meta name="format-detection" content="telephone=no"/>
-<title></title>
+<title>{$shopset['name']}</title>
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/plugin/choose/template/mobile/default/static/css/dish/wei_dialog.css" media="all" />
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/plugin/choose/template/mobile/default/static/css/dish/wei_canyin.css" media="all" />
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/plugin/choose/template/mobile/default/static/css/dish/home.css" media="all">
@@ -24,11 +24,11 @@ margin: 0 4px;
 float: left;
 height: 20px;}
 .subtract,.add{border-radius: 100px;
-border: 1px #ff0000 solid;
+border: 1px {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if} solid;
 width: 20px;
 height: 20px;
 display: inline-block;
-color: #ff0000;
+color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};
 text-align: center;
 line-height: 20px;
 float: left;
@@ -36,7 +36,7 @@ float: left;
 .fffbg{position: absolute;
 right: 4px;
 top: 4px;
-color: #ff0000;
+color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};
 text-align: center;
 display: block;
 background: #fff;
@@ -50,13 +50,18 @@ top: 4px;
 color: #fff;
 text-align: center;
 display: block;
-background: #ff0000;
+background: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};
 border-radius: 50px;
 width: 20px;
 height: 20px;
 line-height: 20px;font-weight: bold;}
+#page_allMenu nav dl dd.active {
+  color: #fff;
+  background-color:{if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if}; 
+}
+
 #page_allMenu section article dl dd em.eys{ color: #A8A8A8 !important;font-size: 12px;font-weight: normal;padding-top: 10px}
-#page_allMenu section article dl dd em{ color: #ff0000;font-weight: bold;font-size: 14px}
+#page_allMenu section article dl dd em{ color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};font-weight: bold;font-size: 14px}
 #page_allMenu section article dl dd em i{ font-style: normal;color: #666;font-size: 12px}
 #page_allMenu section article dl dt h3{font-weight: normal;}
 .notice{height: 26px;background: #FFF9EC !important;line-height: 26px;padding: 0 26px;position: relative;font-size: 12px}
@@ -68,10 +73,16 @@ line-height: 20px;font-weight: bold;}
     margin-bottom: 0;
 }
 .nav-erj{ width: 100%;}
-.nav-erj ul li{ width: 100%;height:30px;line-height: 30px }
-.nav-erj ul li a{ padding-left: 10px;color:#666;font-size: 12px;display:block;}
+.nav-erj dl dd{height:30px;line-height: 30px;color:#666;font-size: 12px;display:block;text-align: center!important;padding: 0 !important}
 
-.nav-erj ul li a:active,.nav-erj ul li a.active{color: rgba(255,0,0,0.6)}
+
+
+
+.nav-sanj{ width: 100%;}
+.nav-sanj dl dd{ height:30px;line-height: 30px ;padding-right: 10px !important;color:#666;font-size: 12px;display:block;text-align: right !important;}
+
+
+
 </style>
 </head>
 <body id="page_allMenu">
@@ -84,20 +95,40 @@ line-height: 20px;font-weight: bold;}
         </dd>
     </dl>
          <div class="nav-erj" date-type="1">
-                <ul>
+                
             <%each value.sub as value1%>   
-                    <li data-cate="<%value1.id%>" data-advimg='<%value1.advimg%>' data-advurl='<%value1.advurl%>' class="parent_item1"><a href="#"><%value1.name%></a></li>
+                  <dl >  
+                    <dd data-cate="<%value1.id%>" data-advimg='<%value1.advimg%>' data-advurl='<%value1.advurl%>' class="parent_item1"><%value1.name%>
+                    
+                    </dd>
+                  </dl> 
+            <!-- 三级分类 -->
+                    {if intval($shopset['catlevel'])==3}
+                       <div class="nav-sanj" date-type="1">
+                              
+                          <%each value1.sub1 as value2%>
+                              <dl>   
+                                  <dd data-cate="<%value2.id%>" data-advimg='<%value2.advimg%>' data-advurl='<%value2.advurl%>' class="parent_item2"><%value2.name%>
+                                  
+                                  </dd>
+                              </dl>        
+                          <%/each%>    
+                              
+                      </div> 
+                    {/if}
+            <!-- end -->
             <%/each%>    
-                </ul>
-        </div> 
+                
+        </div>
+
     <%/each%>
 
 </script>
 <div class="center">
     <div class="notice">
-    <img src="../addons/sz_yi/template/mobile/default/static/css/dish/img/notice.png" class="not-pos">
+    <!-- <img src="../addons/sz_yi/template/mobile/default/static/css/dish/img/notice.png" class="not-pos"> -->
       <div><marquee scrollamount="1" scrolldelay="0" direction="left"></marquee></div>
-    <a href="javascript:;" class="close-pos"><img src="../addons/sz_yi/template/mobile/default/static/css/dish/img/close.png" class="close-pos"></a>
+    <!-- <a href="javascript:;" class="close-pos"><img src="../addons/sz_yi/template/mobile/default/static/css/dish/img/close.png" class="close-pos"> --></a>
     </div>
     <nav id="navBar" >
         
@@ -145,10 +176,10 @@ ul, li { list-style:none; margin:0; padding:0 }
 .menu_font li:first-of-type a { border-radius:5px 5px 0 0; }
 .menu_font li:last-of-type a { border-radius:0 0 5px 5px; }
 #plug-wrap { position: static; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0); z-index:8; }
-.foot-nav{ position: fixed;bottom: 53px;height:46px;background: rgba(255,0,0,0.6);color: #fff;width: 100%;z-index: 99;}
+.foot-nav{ position: fixed;bottom: 53px;height:46px;background: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};color: #fff;width: 100%;z-index: 99;}
 .foot-nav span{ width: 30px;height: 30px;border-radius: 100px;border: 1px #fff solid;color: #fff;float: left;margin: 9px;text-align: center;line-height: 30px;font-weight: bold;}
 .foot-nav p{ float: left;line-height: 49px;padding-left:20px ;font-weight: bold;}
-.foot-nav a{float: right;height: 30px;background: #fff;line-height: 30px;color: #ff0000;text-align: center;padding: 0 14px;margin:9px;border-radius: 18px}
+.foot-nav a{float: right;height: 30px;background: #fff;line-height: 30px;color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};text-align: center;padding: 0 14px;margin:9px;border-radius: 18px}
 </style>
 <div class="foot-nav" id="total">
   <span>0</span>
@@ -207,8 +238,9 @@ ul, li { list-style:none; margin:0; padding:0 }
             $("#navBar").find(".parent_item").find('span').hide();
 
              
-            var pcate = $("#navBar").find(".parent_item").first().data('cate'); 
-            core.pjson('choose/list_goods',{pcate:pcate,pageid:pageid}, function (json) {
+            var pcate = $("#navBar").find(".parent_item").first().data('cate');
+
+            core.pjson('choose/list_goods',{pcate:pcate,pageid:pageid,op:'moren'}, function (json) {
                             result = json.result;
                             
                             var h = '';
@@ -386,7 +418,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                      }
         }*/
 
-        core.pjson('choose/list_category',{op:'category',level:2,pageid:pageid}, function (json) {
+        core.pjson('choose/list_category',{op:'category',level:3,pageid:pageid}, function (json) {
                  result = json.result;
                  category = result.category;
                  if (result) {
@@ -407,12 +439,14 @@ ul, li { list-style:none; margin:0; padding:0 }
                      $('.parent_item').find('span').addClass('ff0000bg');
 
                      $(this).addClass('active');
+                     $('.parent_item1').removeClass('active');
+                     $('.parent_item2').removeClass('active');
                      $(this).find('span').removeClass('ff0000bg');
                      $(this).find('span').addClass('fffbg');
 
                      cate = $(this).data('cate');
                      //console.log(pcate);
-                     core.pjson('choose/list_goods',{'pcate':cate,pageid:pageid}, function (json) {
+                     core.pjson('choose/list_goods',{'pcate':cate,pageid:pageid,op:'moren'}, function (json) {
                             result = json.result;                           
                             var h = '';
                             
@@ -450,12 +484,14 @@ ul, li { list-style:none; margin:0; padding:0 }
                          $('.parent_item1').find('span').addClass('ff0000bg');
 
                          $(this).addClass('active');
+                         $('.parent_item').removeClass('active');
+                         $('.parent_item2').removeClass('active');
                          $(this).find('span').removeClass('ff0000bg');
                          $(this).find('span').addClass('fffbg');
 
                          cate = $(this).data('cate');
                          //console.log(pcate);
-                         core.pjson('choose/list_goods',{'ccate':cate,pageid:pageid}, function (json) {
+                         core.pjson('choose/list_goods',{'ccate':cate,pageid:pageid,op:'second'}, function (json) {
                                 result = json.result;
                                                         
                                 var h = '';
@@ -487,7 +523,54 @@ ul, li { list-style:none; margin:0; padding:0 }
                                 setNum();
                                                     
                         },true);                    
-                      })
+                    })
+
+                    $('.parent_item2').click(function(){
+                         $('.parent_item2').removeClass('active');
+                         $('.parent_item2').find('span').removeClass('fffbg');
+                         $('.parent_item2').find('span').addClass('ff0000bg');
+
+                         $(this).addClass('active');
+                         $('.parent_item').removeClass('active');
+                         $('.parent_item1').removeClass('active');
+                         $(this).find('span').removeClass('ff0000bg');
+                         $(this).find('span').addClass('fffbg');
+
+                         cate = $(this).data('cate');
+                         //console.log(pcate);
+                         core.pjson('choose/list_goods',{'tcate':cate,pageid:pageid,op:'third'}, function (json) {
+                                result = json.result;
+                                                        
+                                var h = '';
+                                
+                                var store = result.goods;
+
+                                if (store.length) {                                                             
+                                    for (var i = 0; i < store.length ;i++ ) {
+
+                                        h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
+
+                                        if (store[i].isrecommand != 0) {
+                                            h += '<span style="font-size:10px;">推荐</span></a>';
+                                        }
+
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元<i>/'+store[i].unit+'</i></em>';
+
+                                        h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div></dd></dl>';
+                                    };
+                                    $("#infoSection").css("height","auto");
+                                    //$("#navBar").css("height","auto");
+                                } else {
+                                    h += '';
+                                    $("#infoSection").css("height","729px"); 
+                                    //$("#navBar").css("height","729px"); 
+                                };
+                                //$("#navBar").css("height","auto");
+                                $('#pInfo').html(h);
+                                setNum();
+                                                    
+                        },true);                    
+                    })
 
                 $('body').on('click','.dataIn',function(){
                     var id  = $(this).attr('data-id');

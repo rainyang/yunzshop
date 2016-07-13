@@ -76,7 +76,12 @@
     <div class="col-sm-9 col-xs-12">
            {ife 'shop.goods' $item}
            <input type="text" class="form-control" name="detail_btntext1" value="{$item['detail_btntext1']}" placeholder="按钮名称" style="width:200px;float:left"  />
-           <input type="text" class="form-control" name="detail_btnurl1" value="{$item['detail_btnurl1']}" placeholder="按钮完整连接" style="width:600px;" />
+           <div class="input-group ">
+              <input class="form-control" type="text" data-id="PAL-00010" placeholder="请填写指向的链接 (请以http://开头, 不填则不显示)" value="{$item['detail_btnurl1']}" name="detail_btnurl1">
+              <span class="input-group-btn">
+                  <button class="btn btn-default nav-link" type="button" data-id="PAL-00010" >选择链接</button>
+              </span>
+           </div>
         <span class='help-block'>如果不填写，系统默认"查看所有商品"及"默认的全部商品连接"</span>
         {else}
         <div class='form-control-static'>{$item['btn_text1']} / {php echo empty($item['btn_url1'])?'默认':$item['btn_url1']}</div>
@@ -90,11 +95,15 @@
     <div class="col-sm-9 col-xs-12">
            {ife 'shop.goods' $item}
            <input type="text" class="form-control" name="detail_btntext2" value="{$item['detail_btntext2']}" placeholder="按钮名称" style="width:200px;float:left"  />
-           <input type="text" class="form-control" name="detail_btnurl2" value="{$item['detail_btnurl2']}" placeholder="按钮完整连接" style="width:600px;" />
+           <div class="input-group ">
+              <input class="form-control" type="text" data-id="PAL-00020" placeholder="请填写指向的链接 (请以http://开头, 不填则不显示)" value="{$item['detail_btnurl2']}" name="detail_btnurl2">
+              <span class="input-group-btn">
+                  <button class="btn btn-default nav-link" type="button" data-id="PAL-00020" >选择链接</button>
+              </span>
+           </div>
         <span class='help-block'>如果不填写，系统默认"进店逛逛"及"默认的小店或商城连接"</span>
         {else}
         <div class='form-control-static'>{$item['detail_btntext2']} / {php echo empty($item['detail_url2'])?'默认':$item['detail_url2']}</div>
         {/if}
     </div>
 </div>
-

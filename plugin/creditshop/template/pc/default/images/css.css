@@ -1,4 +1,4 @@
-body {width:100%; margin:0px; background:#eee;}
+body {width:100%; margin:0px; background: #eee;}
 a {text-decoration:none;}
 .top .left .info .name ,.list .good .info .name   { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; clear:both; content:"..."}
 
@@ -10,32 +10,32 @@ a {text-decoration:none;}
 .index_sub {height:40px; background:#fff; border-top:1px solid #eee;color:#f90; border-bottom:1px solid #eee; line-height:40px; text-align: center;}
 .index_sub a {height:40px; width:45%; display:inline-block; text-align:center; line-height:40px; font-size:14px; color:#777;}
 .index_sub a { color:#666; }
-.index_sub a i { color:#eee;border:1px solid #eee;padding:4px; width:8px;height:8px; border-radius: 8px; font-size:8px;margin-top:-2px; }
+.index_sub a i { /*color:#eee;border:1px solid #eee;padding:4px; width:8px;height:8px; border-radius: 8px; font-size:8px;margin-top:-2px; */}
 .index_sub a d {color:#f90;}
 
-.top {height:198px; background:#fff; border-top:1px solid #eee; border-bottom:1px solid #eee; margin-top:12px;}
-.top .left {height:198px; width:40%; margin-left:-1px; border-right:1px solid #eee; float:left;}
-.top .left .info {height:178px; padding:10px;}
-.top .left .info .classs {height:16px; font-size:10px; color:#999;}
-.top .left .info .classs .span1 {background:#f90; color:#fff; padding:2px 3px; margin-left:2px; border-radius:2px;}
-.top .left .info .classs .span2 {background:#ccc; color:#fff; padding:2px 3px; margin-left:2px; border-radius:2px;}
-.top .left .info .name {height:20px; font-size:14px; color:#777;line-height:20px;overflow: hidden;}
-.top .left .info .price {height:16px; font-size:12px; line-height:16px; color:#f90;}
-.top .left .info .price i {color:#777; margin-left:2px; font-size:10px; color:#999;}
-.top .left .info .img {height:146px; text-align:center; line-height:146px;margin-top:20px;}
-.top .left .info .img img {max-height:146px; max-width:100%}
+.top01 {height:218px; background:#fff; border-top:1px solid #eee; border-bottom:1px solid #eee; margin-top:12px;}
+.top01 .left {height:218px; width:40%; margin-left:-1px; border-right:1px solid #eee; float:left;}
+.top01 .left .info {height:198px; padding:10px;}
+.top01 .left .info .classs {height:16px; font-size:10px; color:#999;}
+.top01 .left .info .classs .span1 {background:#f90; color:#fff; padding:2px 3px; margin-left:2px; border-radius:2px;}
+.top01 .left .info .classs .span2 {background:#ccc; color:#fff; padding:2px 3px; margin-left:2px; border-radius:2px;}
+.top01 .left .info .name {height:20px; font-size:14px; color:#777;line-height:20px;overflow: hidden;}
+.top01 .left .info .price {height:16px; font-size:12px; line-height:16px; color:#f90;}
+.top01 .left .info .price i {color:#777; margin-left:2px; font-size:10px; color:#999;}
+.top01 .left .info .img {height:146px; text-align:center; line-height:146px;margin-top:20px;}
+.top01 .left .info .img img {max-height:146px; max-width:100%}
 
-.top .right {height:198px; width:60%; float:left;}
-.top .right .good {height:99px; border-bottom:1px solid #eee;}
-.top .right .good .info {height:79px; width:auto; padding:10px; margin-right:100px; float:left; word-break:break-all;}
-.top .right .good .info .classs {height:16px; font-size:10px; color:#999;}
-.top .right .good .info .span1 {background:#f90; color:#fff; padding:2px 3px; margin-left:2px; border-radius:2px; font-size:14px; float:left;}
-.top .right .good .info .span2 {background:#ccc; color:#fff; padding:2px 3px; margin-left:2px; border-radius:2px; font-size:14px; float:left;}
-.top .right .good .info .name {height:20px; font-size:14px; color:#777; line-height:20px;overflow: hidden}
-.top .right .good .info .price {height:16px; font-size:12px; line-height:16px; color:#f90;}
-.top .right .good .info .price i {color:#777; margin-left:2px; font-size:10px; color:#999;}
-.top .right .good .img {height:89px; width:89px; padding:5px; float:right; line-height:89px;}
-.top .right .good .img img {max-height:89px; max-width:89px;}
+.top01 .right {height:218px; width:60%; float:left;}
+.top01 .right .good {height:109px; border-bottom:1px solid #eee;}
+.top01 .right .good .info {height:89px; width:auto; padding:10px; margin-right:100px; float:left; word-break:break-all;}
+.top01 .right .good .info .classs {height:16px; font-size:10px; color:#999;}
+.top01 .right .good .info .span1 {background:#f90; color:#fff; padding:2px 3px; margin-left:2px; border-radius:2px; font-size:14px; float:left;}
+.top01 .right .good .info .span2 {background:#ccc; color:#fff; padding:2px 3px; margin-left:2px; border-radius:2px; font-size:14px; float:left;}
+.top01 .right .good .info .name {height:20px; font-size:14px; color:#777; line-height:20px;overflow: hidden}
+.top01 .right .good .info .price {height:16px; font-size:12px; line-height:16px; color:#f90;}
+.top01 .right .good .info .price i {color:#777; margin-left:2px; font-size:10px; color:#999;}
+.top01 .right .good .img {height:109px; width:109px; padding:5px; float:right; line-height:89px;}
+.top01 .right .good .img img {max-height:99px; max-width:99px;}
 .index_footer {padding:5px 0 5px 0; font-size:12px; color:#666; line-height:20px; text-align:center;background:#efefef;}
 
 .class1 {background:#fff; margin-top:12px; border-top:1px solid #eee; border-bottom:1px solid #eee;overflow:hidden}
@@ -45,19 +45,19 @@ a {text-decoration:none;}
 .class1 .class2 .class3 .ico {height:40px; width:40px; margin:10px 15px 10px 15px; border-radius:40px; line-height:40px; text-align:center; color:#fff; font-size:18px;}
 .class1 .class2 .class3 .ico img { width:50px;height:50px; border-radius:25px;}
 .class1 .class2 .class3 .text {height:20px; width:80px; font-size:12px; color:#999; text-align:center; line-height:20px;overflow:hidden;}
-.index_title {height:30px; background:url(d.png) center repeat-x; font-size:12px; color:#999; text-align:center; line-height:30px;}
+.index_title {height:50px; /*background:url(d.png) center repeat-x; */font-size:14px; color:#616161; text-align:left; line-height:50px;font-weight: 700}
 .index_title span {height:30px; width:auto; background:#eee; padding:0px 10px; margin:auto;}
 .list {height:auto;  background:#fff; overflow:hidden;}
-.list .good {height:140px; width:50%;float:left; margin-right:-1px; border-right:1px solid #eee; border-bottom:1px solid #eee; float:left;}
-.list .good .info {height:120px; padding:10px;}
+.list .good {height:360px; width:25%;float:left; margin-right:-1px; border-right:1px solid #eee; border-bottom:1px solid #eee; float:left;}
+.list .good .info {height:340px; padding:10px;}
 .list .good .info .classs {height:16px; font-size:10px; color:#999;}
 .list .good .info .span1 {background:#f90; color:#fff; padding:2px 3px; margin-left:2px; border-radius:2px;}
 .list .good .info .span2 {background:#ccc; color:#fff; padding:2px 3px; margin-left:2px; border-radius:2px;}
 .list .good .info .name {height:20px; font-size:14px; color:#777;}
 .list .good .info .price {height:16px; font-size:12px; line-height:16px; color:#f90;}
-.list .good .info .price i {color:#777; margin-left:2px; font-size:10px; color:#999;}
-.list .good .info .img {height:68px; text-align:center;}
-.list .good .info .img img {max-height:68px; max-width:100%}
+.list .good .info .price i {margin-left:2px; font-size:10px; color:#999;}
+.list .good .info .img {height:268px; text-align:center;}
+.list .good .info .img img {max-height:268px;min-height:268px; max-width:100%}
 .list_footer {height:30px; font-size:12px; color:#666; line-height:30px; text-align:center;background:#efefef;}
 
 /*info页面*/

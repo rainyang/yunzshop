@@ -1,4 +1,62 @@
-{template 'common/header-base'}
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>{php if(isset($title)) $_W['page']['title'] = $title}{if !empty($_W['page']['title'])}{$_W['page']['title']} - {/if}{if empty($_W['page']['copyright']['sitename'])}{if IMS_FAMILY != 'x'}分销商城{/if}{else}{$_W['page']['copyright']['sitename']}{/if}</title>
+	<meta name="keywords" content="{if empty($_W['page']['copyright']['keywords'])}{if IMS_FAMILY != 'x'}分销商城{/if}{else}{$_W['page']['copyright']['keywords']}{/if}" />
+	<meta name="description" content="{if empty($_W['page']['copyright']['description'])}{if IMS_FAMILY != 'x'}分销商城{/if}{else}{$_W['page']['copyright']['description']}{/if}" />
+	<link rel="shortcut icon" href="{$_W['siteroot']}{$_W['config']['upload']['attachdir']}/{if !empty($_W['setting']['copyright']['icon'])}{$_W['setting']['copyright']['icon']}{else}images/global/wechat.jpg{/if}" />
+	<link href="../addons/sz_yi/static/resource/css/bootstrap.min.css" rel="stylesheet">
+	<link href="../addons/sz_yi/static/resource/css/font-awesome.min.css" rel="stylesheet">
+	<link href="../addons/sz_yi/static/resource/css/common.css" rel="stylesheet">
+	<script>var require = { urlArgs: 'v={php echo date('YmdH');}' };</script>
+	<script src="../addons/sz_yi/static/resource/js/lib/jquery-1.11.1.min.js"></script>
+	<script src="../addons/sz_yi/static/resource/js/app/util.js"></script>
+	<script src="../addons/sz_yi/static/resource/js/require.js"></script>
+	<script src="../addons/sz_yi/static/resource/js/app/config.js"></script>
+	<!--[if lt IE 9]>
+		<script src="../addons/sz_yi/static/resource/js/html5shiv.min.js"></script>
+		<script src="../addons/sz_yi/static/resource/js/respond.min.js"></script>
+	<![endif]-->
+	<script type="text/javascript">
+	if(navigator.appName == 'Microsoft Internet Explorer'){
+		if(navigator.userAgent.indexOf("MSIE 5.0")>0 || navigator.userAgent.indexOf("MSIE 6.0")>0 || navigator.userAgent.indexOf("MSIE 7.0")>0) {
+			alert('您使用的 IE 浏览器版本过低, 推荐使用 Chrome 浏览器或 IE8 及以上版本浏览器.');
+		}
+	}
+	
+	window.sysinfo = {
+{if !empty($_W['uniacid'])}
+		'uniacid': '{$_W['uniacid']}',
+{/if}
+{if !empty($_W['acid'])}
+		'acid': '{$_W['acid']}',
+{/if}
+{if !empty($_W['openid'])}
+		'openid': '{$_W['openid']}',
+{/if}
+{if !empty($_W['uid'])}
+		'uid': '{$_W['uid']}',
+{/if}
+		'siteroot': '{$_W['siteroot']}',
+		'siteurl': '{$_W['siteurl']}',
+		'attachurl': '{$_W['attachurl']}',
+		'attachurl_local': '{$_W['attachurl_local']}',
+		'attachurl_remote': '{$_W['attachurl_remote']}',
+{if defined('MODULE_URL')}
+		'MODULE_URL': '{MODULE_URL}',
+{/if}
+		'cookie' : {'pre': '{$_W['config']['cookie']['pre']}'}
+	};
+	</script>
+</head>
+<body>
+<link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/webstyle.css">
+<link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/font/iconfont.css">
+<link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/common.css">
+<!--
 	<div class="navbar navbar-inverse navbar-static-top" role="navigation" style="position:static;">
 		<div class="container-fluid">
 			{if defined('IN_SOLUTION')}
@@ -18,7 +76,7 @@
 				{if !empty($_W['isfounder']) || empty($_W['setting']['permurls']['sections']) || in_array('site', $_W['setting']['permurls']['sections'])}<li{if FRAME == 'site'} class="active"{/if}><a href="{url 'home/welcome/site'}"><i class="fa fa-life-bouy"></i>微站功能</a></li>{/if}
 				{if !empty($_W['isfounder']) || empty($_W['setting']['permurls']['sections']) || in_array('mc', $_W['setting']['permurls']['sections'])}<li{if FRAME == 'mc'} class="active"{/if}><a href="{url 'home/welcome/mc'}"><i class="fa fa-gift"></i>粉丝营销</a></li>{/if}
 				{if !empty($_W['isfounder']) || empty($_W['setting']['permurls']['sections']) || in_array('setting', $_W['setting']['permurls']['sections'])}<li{if FRAME == 'setting'} class="active"{/if}><a href="{url 'home/welcome/setting'}"><i class="fa fa-umbrella"></i>功能选项</a></li>{/if}
-				
+
                                 {php $eid =intval($_GPC['eid'])}
                                 {if !empty($eid)}
                                    {php $binding_module = pdo_fetchcolumn('select module from '.tablename('modules_bindings').' where eid=:eid limit 1',array(':eid'=>$eid))}
@@ -29,13 +87,9 @@
     {else}
     {if !empty($_W['isfounder']) || empty($_W['setting']['permurls']['sections']) || in_array('ext', $_W['setting']['permurls']['sections'])}<li{if FRAME == 'ext' } class="active"{/if}><a href="{url 'home/welcome/ext'}"><i class="fa fa-cubes"></i>其他扩展</a></li>{/if}
     {/if}
-                                
+
 				{if FRAME == 'solution'}<li class="active"><a href="{url 'home/welcome/solution' array('m' => $m)}"><i class="fa fa-comments"></i>行业功能 - {$solution['title']}</a></li>{/if}
-				 
-<!--                                    {php $shop = m('common')->getSysset('shop')}
-                                {if !empty($shop['qq'])}
-		<li><a href="http://wpa.qq.com/msgrd?v=3&uin={$shop['qq']}&site=qq&menu=yes" target="_blank"><i class="fa fa-suitcase"></i>联系客服</a></li>
-                                {/if}-->
+
 			</ul>
 			{/if}
 			<ul class="nav navbar-nav navbar-right">
@@ -66,10 +120,11 @@
 			</ul>
 		</div>
 	</div>
-	
+    -->
+
 	<div class="container-fluid">
 		{if defined('IN_MESSAGE')}
-            
+
 		<div class="jumbotron clearfix alert alert-{$label}">
 			<div class="row">
 				<div class="col-xs-12 col-sm-3 col-lg-2">
@@ -96,7 +151,7 @@
 					{/if}
 				</div>
 		{else}
-		 
+
 		{/if}
 
 {template 'web/_common'}

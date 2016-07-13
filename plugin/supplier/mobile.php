@@ -23,4 +23,20 @@ class SupplierMobile extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function logg()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function applyg()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function orderj()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function detail()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 }

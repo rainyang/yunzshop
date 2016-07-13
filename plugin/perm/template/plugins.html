@@ -1,5 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
+<div class="rightlist">
 <div class='alert alert-danger'>
 	此功能仅超级管理员可见
 </div>
@@ -76,6 +78,7 @@
         </div>
     
     </form>
+</div>
 </div>
 <script language='javascript'>
     function checkAll(obj){
@@ -166,9 +169,9 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>公众号</th>
-                        <th>开放插件</th>
-                        <th>操作</th>
+                        <th width="14%">公众号</th>
+                        <th width="74%">开放插件</th>
+                        <th width="12%">操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -195,7 +198,7 @@
                     {/loop}
                     <tr>
                         <td colspan="4">
-                                 <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('perm/plugins', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新权限</a>
+                                 <a class='btn btn-primary' href="{php echo $this->createPluginWebUrl('perm/plugins', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新权限</a>
                         </td>
                     </tr>
                 </tbody>
@@ -207,9 +210,10 @@
     </div>
 </form>
 
-
+ 
 
 {/if}
+</div>
 <script language='javascript'>
  
                 function search_users() {

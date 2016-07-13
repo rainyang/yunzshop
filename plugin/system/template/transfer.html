@@ -1,9 +1,11 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
 <link href="../addons/sz_yi/static/js/dist/select2/select2.css" rel="stylesheet">
 <link href="../addons/sz_yi/static/js/dist/select2/select2-bootstrap.css" rel="stylesheet">
 <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2.min.js"></script>
 <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2_locale_zh-CN.js"></script>
+<div class="rightlist">
 <div class="main">
     <form id="dataform" action="" method="post" class="form-horizontal form">
         <div class="panel panel-default">
@@ -25,6 +27,7 @@
 						</select>
                     </div>
                 </div>
+                {if $_W['isfounder']}
 				  <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">目标公众号</label>
                     <div class="col-sm-9">
@@ -37,6 +40,7 @@
 						<span class='help-block'><b>此公众号的数据会被清空，请慎重选择 ！</b></span>
                     </div>
                 </div>
+                {/if}
 				<div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">删除源公众号数据</label>
                     <div class="col-sm-9">
@@ -83,7 +87,7 @@
 				 
 	    <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">   <label>
-				 <input type='checkbox'  class="checkline-all" value="commission" /> 芸众分销
+				 <input type='checkbox'  class="checkline-all" value="commission" />&nbsp;　分销
 			    </label>	</label>
                     <div class="col-sm-9">
 			     
@@ -218,11 +222,13 @@
 <script type="text/javascript">
 
 	$(function () {
+		{if $_W['isfounder']}
 		$('#wechatid,#wechatid1').select2({
 			search: true,
 			placeholder: "请选择公众号",
 			allowClear: true
 		});
+		{/if}
 		$('.checkline-all').click(function(){
 			var checked  =$(this).get(0).checked;
 			 
@@ -239,11 +245,18 @@
 			alert("请选择源公众号!");
 			return false;
 		}
+		{if $_W['isfounder']}
 		if ($("#wechatid1").val() == '') {
 			alert("请选择源公众号!");
 			return false;
 		}
-		 if ($("#wechatid").val() == $("#wechatid1").val()) {
+		{/if}
+		{if $_W['isfounder']}
+			var wechatid1 = $("#wechatid1").val();
+		{else}
+			var wechatid1 = {$_W['uniacid']};
+		{/if}
+		 if ($("#wechatid").val() == wechatid1) {
 			 alert("请选择两个不同的公众号!");
 			return false;
 		 }
@@ -251,5 +264,6 @@
 	}
  
 </script>
-
+</div>
+</div>
 {template 'web/_footer'}

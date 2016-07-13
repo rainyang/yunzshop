@@ -86,6 +86,23 @@ class Sz_DYi_Goods
                 }
             }
         }
+        $tcate1 = intval($args['tcate1']);
+        if (!empty($tcate1)) {
+            $condition .= " AND ( `tcate1` = :tcate1 or  FIND_IN_SET({$tcate1},tcates)<>0 )";
+            $params[':tcate1'] = intval($tcate1);
+        } else {
+            $ccate1 = intval($args['ccate1']);
+            if (!empty($ccate1)) {
+                $condition .= " AND ( `ccate1` = :ccate1 or  FIND_IN_SET({$ccate1},ccates)<>0 )";
+                $params[':ccate1'] = intval($ccate1);
+            } else {
+                $pcate1 = intval($args['pcate1']);
+                if (!empty($pcate1)) {
+                    $condition .= " AND ( `pcate1` = :pcate1 or  FIND_IN_SET({$pcate1},pcates)<>0 )";
+                    $params[':pcate1'] = intval($pcate1);
+                }
+            }
+        }
         $openid  = m('user')->getOpenid();
         $member  = m('member')->getMember($openid);
         $levelid = intval($member['level']);
@@ -93,9 +110,9 @@ class Sz_DYi_Goods
         $condition .= " and ( ifnull(showlevels,'')='' or FIND_IN_SET( {$levelid},showlevels)<>0 ) ";
         $condition .= " and ( ifnull(showgroups,'')='' or FIND_IN_SET( {$groupid},showgroups)<>0 ) ";
         if (!$random) {
-            $sql = "SELECT id,title,thumb,marketprice,productprice,sales,total,description,unit FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} LIMIT " . ($page - 1) * $pagesize . ',' . $pagesize;
+            $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} LIMIT " . ($page - 1) * $pagesize . ',' . $pagesize;
         } else {
-            $sql = "SELECT id,title,thumb,marketprice,productprice,sales,total,description,unit FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() LIMIT " . $pagesize;
+            $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() LIMIT " . $pagesize;
         }
         $list = pdo_fetchall($sql, $params);
         $list = set_medias($list, 'thumb');

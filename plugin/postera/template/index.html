@@ -1,5 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
+<div class="rightlist">
 {if $operation == 'post'}
 <script language='javascript' src="../addons/sz_yi/plugin/postera/static/js/designer.js"></script>
 <script language='javascript' src="../addons/sz_yi/plugin/postera/static/js/jquery.contextMenu.js"></script>
@@ -234,7 +236,7 @@
                                           <div class='panel panel-default'>
                                               <div class='panel-body'>
                                                 <div class="form-group" id="bgset">
-                                                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">背景图片</label>
+                                                    <label class="col-xs-12 col-sm-3 col-md-3 control-label">背景图片</label>
                                                     <div class="col-sm-9 col-xs-12">
                                                        {php echo tpl_form_field_image('bg',$item['bg'])}
                                                        <span class='help-block'>背景图片尺寸: 640 * 1008</span>
@@ -243,13 +245,13 @@
                                                     
                                                 </div>
                                                     <div class="form-group">
-                                                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">海报元素</label>
+                                                        <label class="col-xs-12 col-sm-3 col-md-3 control-label">海报元素</label>
                                                         <div class="col-sm-9 col-xs-12">
-                                                             <button class='btn btn-default btn-com' type='button' data-type='head' >头像</button>
-                                                             <button class='btn btn-default btn-com' type='button' data-type='nickname' >昵称</button>
-                                                             <button class='btn btn-default btn-com' type='button' data-type='qr' >二维码</button>
-                                                             <button class='btn btn-default btn-com' type='button' data-type='img' >图片</button>
-                                                            <button class='btn btn-default btn-com' type='button' data-type='time' >失效时间(Y-m-d H:i)</button>
+                                                             <button class='btn btn-default btn-com' type='button' data-type='head'style="margin-bottom: 4px" >头像</button>
+                                                             <button class='btn btn-default btn-com' type='button' data-type='nickname' style="margin-bottom: 4px">昵称</button>
+                                                             <button class='btn btn-default btn-com' type='button' data-type='qr' style="margin-bottom: 4px">二维码</button>
+                                                             <button class='btn btn-default btn-com' type='button' data-type='img' style="margin-bottom: 4px">图片</button>
+                                                            <button class='btn btn-default btn-com' type='button' data-type='time' style="margin-bottom: 4px">失效时间(Y-m-d H:i)</button>
 															
                                                              <span id="goodsparams" {if empty($goods)}style="display:none"{/if}>
                                                                   <button class='btn btn-default btn-com' type='button' data-type='title' >商品名称</button>    
@@ -262,7 +264,7 @@
                                                     </div>
                                                   <div id='qrset' style='display:none'>
                                                    <div class="form-group">
-                                                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">二维码尺寸</label>
+                                                        <label class="col-xs-12 col-sm-3 col-md-3 control-label">二维码尺寸</label>
                                                          <div class="col-sm-9 col-xs-12">
                                                              <select id='qrsize' class='form-control'>
                                                                  <option value='1'>1</option>
@@ -279,16 +281,16 @@
                                        
                                                   <div id='nameset' style='display:none'>
                                                    <div class="form-group">
-                                                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">文字颜色</label>
-                                                         <div class="col-sm-9 col-xs-12">
+                                                        <label class="col-xs-12 col-sm-3 col-md-3 control-label">文字颜色</label>
+                                                         <div class="col-sm-9 col-xs-12 wid100">
                                                               {php echo tpl_form_field_color('color')}
                                                         </div>
                                                     
                                                     </div>
                                                     <div class="form-group">
-                                                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">文字大小</label>
+                                                        <label class="col-xs-12 col-sm-3 col-md-3 control-label">文字大小</label>
                                                         <div class="col-sm-4">
-                                                             <div class='input-group'>
+                                                             <div class='input-group wid100'>
                                                                  <input type="text" id="namesize" class="form-control namesize" placeholder="例如: 14,16"  />
                                                                  <div class='input-group-addon'>px</div>
                                                             </div>
@@ -296,7 +298,7 @@
                                                     </div>
                                              </div>
                                                      <div class="form-group" id="imgset" style="display:none">
-                                                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">图片设置</label>
+                                                        <label class="col-xs-12 col-sm-3 col-md-3 control-label">图片设置</label>
                                                         <div class="col-sm-9 col-xs-12">
                                                               {php echo tpl_form_field_image('img')}
                                                         </div>
@@ -1143,7 +1145,7 @@
                     <tr>
                         <td colspan="5">
                             {ifp 'postera.add'}
-                                 <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('postera', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加海报</a>
+                                 <a class='btn btn-primary' href="{php echo $this->createPluginWebUrl('postera', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加海报</a>
                             {/if}
                             {ifp 'postera.clear'}
                                  <input type="submit" name="submit" value="清除当前公众号海报缓存" class="btn btn-danger" onclick="return confirm('确认要清除海报缓存?')" />
@@ -1159,4 +1161,6 @@
      </div>
          </form> 
 {/if}
+</div>
+</div>
 {template 'web/_footer'}

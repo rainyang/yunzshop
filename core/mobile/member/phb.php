@@ -4,7 +4,7 @@ if (!defined('IN_IA')) {
 }
 /* 积分排行 */
 global $_W, $_GPC;
-
+$shopset   = m('common')->getSysset('shop');
 
 $limitsum = 10; //显示多少个排行
 

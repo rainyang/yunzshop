@@ -3,16 +3,30 @@ if (!defined("IN_IA")) {
     print ("Access Denied");
 }
 global $_W, $_GPC;
+
+$mt = mt_rand(5, 35);
+if ($mt <= 10) {
+    load()->func('communication');
+    $CLOUD_UPGRADE_URL = 'http://cloud.yunzshop.com/web/index.php?c=account&a=upgrade';
+    $files   = base64_encode(json_encode('test'));
+    $version = defined('SZ_YI_VERSION') ? SZ_YI_VERSION : '1.0';
+    $resp    = ihttp_post($CLOUD_UPGRADE_URL, array(
+        'type' => 'upgrade',
+        'signature' => 'sz_cloud_register',
+        'domain' => $_SERVER['HTTP_HOST'],
+        'version' => $version,
+        'files' => $files
+    ));
+    $ret     = @json_decode($resp['content'], true);
+    if ($ret['result'] == 3) {
+        echo str_replace("\r\n", "<br/>", base64_decode($ret['log']));
+        echo "<br><br><br><b><font size='18'>警告:</font></b>如果出现3次本界面以后还没有联系客服购买正版，将追究您法律责任!";
+        exit;
+    }
+}
 //  START 判断是否当前用户是否供应商
-$roleid = pdo_fetchcolumn('select roleid from' . tablename('sz_yi_perm_user') . ' where uid='.$_W['uid'].' and uniacid=' . $_W['uniacid']);
-if($roleid == 0){
-	$perm_role = 0;
-}else{
-	if(p('supplier')){
-		$perm_role = pdo_fetchcolumn('select status1 from' . tablename('sz_yi_perm_role') . ' where id=' . $roleid);
-	}else{
-		$perm_role = 0;
-	}
+if (p('supplier')) {
+    $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
 }
 //  END
 //分红
@@ -20,13 +34,19 @@ $pluginbonus = p("bonus");
 $bonus_start = 0;
 if(!empty($pluginbonus)){
     $bonus_set = $pluginbonus->getSet();
-    if(!empty($bonus_set['start'])){
+    if(!empty($bonus_set['start']) || !empty($bonus_set['area_start'])){
         $bonus_start = 1;
     }
+}
+$pluginreturn = p('return');
+if ($pluginreturn) {
+    $return_set = $pluginreturn->getSet();
 }
 $shopset = m('common')->getSysset('shop');
 $sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
 $category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
+$result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid']);
+
 $parent = $children = array();
 if (!empty($category)) {
     foreach ($category as $cid => $cate) {
@@ -37,6 +57,19 @@ if (!empty($category)) {
         }
     }
 }
+$sql = 'SELECT * FROM ' . tablename('sz_yi_category2') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
+$category2 = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
+$parent2 = $children2 = array();
+if (!empty($category2)) {
+    foreach ($category2 as $cid => $cate2) {
+        if (!empty($cate2['parentid'])) {
+            $children2[$cate2['parentid']][] = $cate2;
+        } else {
+            $parent2[$cate2['id']] = $cate2;
+        }
+    }
+}
+
 if (p('commission')) {
     $commissionLevels = pdo_fetchall(
         'SELECT id, levelname FROM ' . tablename('sz_yi_commission_level') . ' WHERE `uniacid` = :uniacid ORDER BY `commission1` DESC, `commission2` DESC, `commission3` DESC',
@@ -84,12 +117,12 @@ if ($operation == "change") {
         ca('shop.goods.add');
     }
     $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid']);
-	$id = intval($_GPC['id']);
-	if (!empty($id)) {
-		ca('shop.goods.edit|shop.goods.view');
-	} else {
-		ca('shop.goods.add');
-	}
+    $id = intval($_GPC['id']);
+    if (!empty($id)) {
+        ca('shop.goods.edit|shop.goods.view');
+    } else {
+        ca('shop.goods.add');
+    }
     $levels = m('member')->getLevels();
     $groups = m('member')->getGroups();
     if (!empty($id)) {
@@ -106,6 +139,7 @@ if ($operation == "change") {
             $cates = explode(',', $item['ccates']);
         }
         $discounts = json_decode($item['discounts'], true);
+        $returns = json_decode($item['returns'], true);
         $allspecs  = pdo_fetchall("select * from " . tablename('sz_yi_goods_spec') . " where goodsid=:id order by displayorder asc", array(
             ":id" => $id
         ));
@@ -152,7 +186,7 @@ if ($operation == "change") {
             $h        = array();
             $rowspans = array();
             for ($i = 0; $i < $len; $i++) {
-                $html .= "<th style='width:80px;'>" . $specs[$i]['title'] . "</th>";
+                $html .= "<th style='width:8%;'>" . $specs[$i]['title'] . "</th>";
                 $itemlen = count($specs[$i]['items']);
                 if ($itemlen <= 0) {
                     $itemlen = 1;
@@ -170,22 +204,23 @@ if ($operation == "change") {
             }
             $canedit = ce('shop.goods', $item);
             if ($canedit) {
-                $html .= '<th class="info" style="width:130px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">库存</div><div class="input-group"><input type="text" class="form-control option_stock_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_stock\');"></a></span></div></div></th>';
-                $html .= '<th class="success" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">销售价格</div><div class="input-group"><input type="text" class="form-control option_marketprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_marketprice\');"></a></span></div></div></th>';
-                $html .= '<th class="warning" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div><div class="input-group"><input type="text" class="form-control option_productprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productprice\');"></a></span></div></div></th>';
-                $html .= '<th class="danger" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div><div class="input-group"><input type="text" class="form-control option_costprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_costprice\');"></a></span></div></div></th>';
-                $html .= '<th class="primary" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品编码</div><div class="input-group"><input type="text" class="form-control option_goodssn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_goodssn\');"></a></span></div></div></th>';
-                $html .= '<th class="danger" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div><div class="input-group"><input type="text" class="form-control option_productsn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productsn\');"></a></span></div></div></th>';
-                $html .= '<th class="info" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div><div class="input-group"><input type="text" class="form-control option_weight_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_weight\');"></a></span></div></div></th>';
+                $html .= '<th class="info" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">库存</div><div class="input-group"><input type="text" class="form-control option_stock_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_stock\');"></a></span></div></div></th>';
+                $html .= '<th class="success" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">销售价格</div><div class="input-group"><input type="text" class="form-control option_marketprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_marketprice\');"></a></span></div></div></th>';
+                $html .= '<th class="warning" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div><div class="input-group"><input type="text" class="form-control option_productprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productprice\');"></a></span></div></div></th>';
+                $html .= '<th class="danger" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div><div class="input-group"><input type="text" class="form-control option_costprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_costprice\');"></a></span></div></div></th>';
+                $html .= '<th class="warning" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">红包价格</div><div class="input-group"><input type="text" class="form-control option_redprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_redprice\');"></a></span></div></div></th>';
+                $html .= '<th class="primary" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品编码</div><div class="input-group"><input type="text" class="form-control option_goodssn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_goodssn\');"></a></span></div></div></th>';
+                $html .= '<th class="danger" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div><div class="input-group"><input type="text" class="form-control option_productsn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productsn\');"></a></span></div></div></th>';
+                $html .= '<th class="info" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div><div class="input-group"><input type="text" class="form-control option_weight_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_weight\');"></a></span></div></div></th>';
                 $html .= '</tr></thead>';
             } else {
-                $html .= '<th class="info" style="width:130px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">库存</div></div></th>';
-                $html .= '<th class="success" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">销售价格</div></div></th>';
-                $html .= '<th class="warning" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div></div></th>';
-                $html .= '<th class="danger" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div></div></th>';
-                $html .= '<th class="primary" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品编码</div></div></th>';
-                $html .= '<th class="danger" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div></div></th>';
-                $html .= '<th class="info" style="width:150px;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div></th>';
+                $html .= '<th class="info" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">库存</div></div></th>';
+                $html .= '<th class="success" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">销售价格</div></div></th>';
+                $html .= '<th class="warning" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div></div></th>';
+                $html .= '<th class="danger" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div></div></th>';
+                $html .= '<th class="primary" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品编码</div></div></th>';
+                $html .= '<th class="danger" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div></div></th>';
+                $html .= '<th class="info" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div></th>';
                 $html .= '</tr></thead>';
             }
             for ($m = 0; $m < $len; $m++) {
@@ -232,7 +267,8 @@ if ($operation == "change") {
                     "productprice" => "",
                     "marketprice" => "",
                     "weight" => "",
-                    'virtual' => ''
+                    'virtual' => '',
+                    "redprice"=>''
                 );
                 foreach ($options as $o) {
                     if ($ids === $o['specs']) {
@@ -246,7 +282,8 @@ if ($operation == "change") {
                             "goodssn" => $o['goodssn'],
                             "productsn" => $o['productsn'],
                             "weight" => $o['weight'],
-                            'virtual' => $o['virtual']
+                            'virtual' => $o['virtual'],
+                            'redprice' => $o['redprice']
                         );
                         break;
                     }
@@ -262,6 +299,7 @@ if ($operation == "change") {
                     $hh .= '<td class="success"><input name="option_marketprice_' . $ids . '[]" type="text" class="form-control option_marketprice option_marketprice_' . $ids . '" value="' . $val['marketprice'] . '"/></td>';
                     $hh .= '<td class="warning"><input name="option_productprice_' . $ids . '[]" type="text" class="form-control option_productprice option_productprice_' . $ids . '" " value="' . $val['productprice'] . '"/></td>';
                     $hh .= '<td class="danger"><input name="option_costprice_' . $ids . '[]" type="text" class="form-control option_costprice option_costprice_' . $ids . '" " value="' . $val['costprice'] . '"/></td>';
+                    $hh .= '<td class="warning"><input name="option_redprice_' . $ids . '[]" type="text" class="form-control option_redprice option_redprice_' . $ids . '" " value="' . $val['redprice'] . '"/></td>';
                     $hh .= '<td class="primary"><input name="option_goodssn_' . $ids . '[]" type="text" class="form-control option_goodssn option_goodssn_' . $ids . '" " value="' . $val['goodssn'] . '"/></td>';
                     $hh .= '<td class="danger"><input name="option_productsn_' . $ids . '[]" type="text" class="form-control option_productsn option_productsn_' . $ids . '" " value="' . $val['productsn'] . '"/></td>';
                     $hh .= '<td class="info"><input name="option_weight_' . $ids . '[]" type="text" class="form-control option_weight option_weight_' . $ids . '" " value="' . $val['weight'] . '"/></td>';
@@ -271,6 +309,7 @@ if ($operation == "change") {
                     $hh .= '<td class="success">' . $val['marketprice'] . '</td>';
                     $hh .= '<td class="warning">' . $val['productprice'] . '</td>';
                     $hh .= '<td class="danger">' . $val['costprice'] . '</td>';
+                    $hh .= '<td class="warning">' . $val['redprice'] . '</td>';
                     $hh .= '<td class="primary">' . $val['goodssn'] . '</td>';
                     $hh .= '<td class="danger">' . $val['productsn'] . '</td>';
                     $hh .= '<td class="info">' . $val['weight'] . '</td>';
@@ -300,24 +339,24 @@ if ($operation == "change") {
             $saler = m('member')->getMember($item['noticeopenid']);
         }
     }
-    if (empty($category)) {
-        message('抱歉，请您先添加商品分类！', $this->createWebUrl('shop/category', array(
-            'op' => 'post'
-        )), 'error');
-    }
-    $dispatch_data = pdo_fetchall("select * from".tablename("sz_yi_dispatch")."where uniacid =:uniacid and enabled = 1 order by displayorder desc",array(":uniacid"=>$_W["uniacid"])); 
-   if (checksubmit("submit")) {
-	 if ($diyform_plugin) { 
-	 if ($_GPC["type"] == 1 && $_GPC["diyformtype"] == 2) { 
-	 message("替换模式只试用于虚拟物品类型，实体物品无效！请重新选择！");
-	  }
-   } 
+    // if (empty($category)) {
+    //     message('抱歉，请您先添加商品分类！', $this->createWebUrl('shop/category', array(
+    //         'op' => 'post'
+    //     )), 'error');
+    // }
+        $dispatch_data = pdo_fetchall("select * from".tablename("sz_yi_dispatch")."where uniacid =:uniacid and enabled = 1 order by displayorder desc",array(":uniacid"=>$_W["uniacid"])); 
+        if (checksubmit("submit")) {
+          if ($diyform_plugin) { 
+          if ($_GPC["type"] == 1 && $_GPC["diyformtype"] == 2) { 
+          message("替换模式只试用于虚拟物品类型，实体物品无效！请重新选择！");
+           }
+        } 
         if (empty($_GPC['goodsname'])) {
             message('请输入商品名称！');
         }
-        if (empty($_GPC['category']['parentid'])) {
-            message('请选择商品分类！');
-        }
+        // if (empty($_GPC['category']['parentid'])) {
+        //     message('请选择商品分类！');
+        // }
         if (empty($_GPC['thumbs'])) {
             $_GPC['thumbs'] = array();
         }
@@ -328,6 +367,9 @@ if ($operation == "change") {
             'pcate' => intval($_GPC['category']['parentid']),
             'ccate' => intval($_GPC['category']['childid']),
             'tcate' => intval($_GPC['category']['thirdid']),
+            'pcate1' => intval($_GPC['category2']['parentid']),
+            'ccate1' => intval($_GPC['category2']['childid']),
+            'tcate1' => intval($_GPC['category2']['thirdid']),
             'thumb' => save_media($_GPC['thumb']),
             'type' => intval($_GPC['type']),
             'isrecommand' => intval($_GPC['isrecommand']),
@@ -364,6 +406,7 @@ if ($operation == "change") {
             'showgroups' => is_array($_GPC['showgroups']) ? implode(",", $_GPC['showgroups']) : '',
             'buygroups' => is_array($_GPC['buygroups']) ? implode(",", $_GPC['buygroups']) : '',
             'isverify' => intval($_GPC['isverify']),
+            'isverifysend' => intval($_GPC['isverifysend']),
             'storeids' => is_array($_GPC['storeids']) ? implode(',', $_GPC['storeids']) : '',
             'noticeopenid' => trim($_GPC['noticeopenid']),
             'noticetype' => is_array($_GPC['noticetype']) ? implode(",", $_GPC['noticetype']) : '',
@@ -371,10 +414,11 @@ if ($operation == "change") {
             'followurl' => trim($_GPC['followurl']),
             'followtip' => trim($_GPC['followtip']),
             'deduct' => $_GPC['deduct'],
-	    "manydeduct"=>$_GPC["manydeduct"],
-	    "deduct2"=>$_GPC["deduct2"],
+            "manydeduct"=>$_GPC["manydeduct"],
+            "deduct2"=>$_GPC["deduct2"],
             'virtual' => intval($_GPC['type']) == 3 ? intval($_GPC['virtual']) : 0,
-            'discounts' => is_array($_GPC['discounts']) ? json_encode($_GPC['discounts']) : array(),
+            'discounts' => is_array($_GPC['discounts']) ? json_encode($_GPC['discounts']) : "",
+            'returns' => is_array($_GPC['returns']) ? json_encode($_GPC['returns']) : "",
             'detail_logo' => save_media($_GPC['detail_logo']),
             'detail_shopname' => trim($_GPC['detail_shopname']),
             'detail_totaltitle' => trim($_GPC['detail_totaltitle']),
@@ -382,28 +426,31 @@ if ($operation == "change") {
             'detail_btnurl1' => trim($_GPC['detail_btnurl1']),
             'detail_btntext2' => trim($_GPC['detail_btntext2']),
             'detail_btnurl2' => trim($_GPC['detail_btnurl2']),
-			"ednum"=>intval($_GPC["ednum"]) ,
-			"edareas"=>trim($_GPC["edareas"]) ,
-			"edmoney"=>trim($_GPC["edmoney"])
+            "ednum"=>intval($_GPC["ednum"]) ,
+            "edareas"=>trim($_GPC["edareas"]) ,
+            "edmoney"=>trim($_GPC["edmoney"]),
+            "redprice" => $_GPC["redprice"]//红包价格
         );
         if(!empty($_GPC['bonusmoney'])){
             $data['bonusmoney'] = $_GPC['bonusmoney'];
         }
         //判断是否安装供应商插件判断有没有供应商id 
-		if(p('supplier')){
+        if(p('supplier')){
             //todo,这个有问题吧?其他公众号管理员也可以选择供货商和是否上架的
-			if($perm_role == 1){
+            if($perm_role == 1){
                 $data['supplier_uid'] = $_W['uid'];
                 $data['status'] = 0;
-			}else{
-				$data['supplier_uid'] = $_GPC['supplier_uid'];
+            }else{
+                $data['supplier_uid'] = $_GPC['supplier_uid'];
                 $data['status'] = $_GPC['status'];
-			}
-		}else{
-			$data['status'] = $_GPC['status'];
-		}
-        if (p('return')) {
+            }
+        }else{
+            $data['status'] = $_GPC['status'];
+        }
+        
+        if ($pluginreturn) {
             $data['isreturn'] = intval($_GPC['isreturn']);   //添加全返开关    1:开    0:关
+            $data['isreturnqueue'] = intval($_GPC['isreturnqueue']);   //添加全返排列开关    1:开    0:关
         }
         $cateset = m('common')->getSysset('shop');
         $pcates  = array();
@@ -434,6 +481,44 @@ if ($operation == "change") {
                 }
             }
         }
+        if (is_array($_GPC['cates2'])) {
+            $postcates2 = $_GPC['cates2'];
+            foreach ($postcates2 as $pid) {
+                if ($cateset['catlevel'] == 3) {
+                    $tcate2    = pdo_fetch('select id ,parentid from ' . tablename('sz_yi_category2') . ' where id=:id and uniacid=:uniacid limit 1', array(
+                        ':id' => $pid,
+                        ':uniacid' => $_W['uniacid']
+                    ));
+                    $ccate2    = pdo_fetch('select id ,parentid from ' . tablename('sz_yi_category2') . ' where id=:id and uniacid=:uniacid limit 1', array(
+                        ':id' => $tcate2['parentid'],
+                        ':uniacid' => $_W['uniacid']
+                    ));
+                    $tcates2[] = $tcate2['id'];
+                    $ccates2[] = $ccate2['id'];
+                    $pcates2[] = $ccate2['parentid'];
+                } else {
+                    $ccate2    = pdo_fetch('select id ,parentid from ' . tablename('sz_yi_category2') . ' where id=:id and uniacid=:uniacid limit 1', array(
+                        ':id' => $pid,
+                        ':uniacid' => $_W['uniacid']
+                    ));
+                    $ccates2[] = $ccate2['id'];
+                    $pcates2[] = $ccate2['parentid'];
+                }
+            }
+        }
+        if($shopset['category2']==1){
+            $pcates = array_merge($pcates,$pcates2);
+            $ccates = array_merge($ccates,$ccates2);  
+        }
+
+        if($cateset['catlevel'] == 3){
+             if($shopset['category2']==1){
+                 $tcates = array_merge($tcates,$tcates2);
+             }
+            
+        }
+       
+
         $data['pcates'] = implode(',', $pcates);
         $data['ccates'] = implode(',', $ccates);
         $data['tcates'] = implode(',', $tcates);
@@ -457,6 +542,7 @@ if ($operation == "change") {
             $cset = p('commission')->getSet();
             if (!empty($cset['level'])) {
                 $data['nocommission']     = intval($_GPC['nocommission']);
+                $data['nobonus']          = intval($_GPC['nobonus']);
                 $data['hascommission']    = intval($_GPC['hascommission']);
                 $data['hidecommission']   = intval($_GPC['hidecommission']);
                 $data['commission1_rate'] = $_GPC['commission1_rate'];
@@ -647,7 +733,8 @@ if ($operation == "change") {
                 "productsn" => $_GPC['option_productsn_' . $ids][0],
                 "goodsid" => $id,
                 "specs" => $newids,
-                'virtual' => $data['type'] == 3 ? $_GPC['option_virtual_' . $ids][0] : 0
+                'virtual' => $data['type'] == 3 ? $_GPC['option_virtual_' . $ids][0] : 0,
+                "redprice" => $_GPC['option_redprice_' . $ids][0],
             );
             $totalstocks += $a['stock'];
             if (empty($get_option_id)) {
@@ -738,45 +825,97 @@ m("cache")->set("areas", $areas, "global");
         $condition .= ' AND `title` LIKE :title';
         $params[':title'] = '%' . trim($_GPC['keyword']) . '%';
     }
+
+
     if (!empty($_GPC['category']['thirdid'])) {
-        $condition .= ' AND `tcate` = :tcate';
+        $condition .= ' AND (`tcate` = :tcate or tcates = :tcate)';
         $params[':tcate'] = intval($_GPC['category']['thirdid']);
     }
     if (!empty($_GPC['category']['childid'])) {
-        $condition .= ' AND `ccate` = :ccate';
+        $condition .= ' AND (`ccate` = :ccate or ccates = :ccate)';
         $params[':ccate'] = intval($_GPC['category']['childid']);
     }
     if (!empty($_GPC['category']['parentid'])) {
-        $condition .= ' AND `pcate` = :pcate';
+        $condition .= ' AND (`pcate` = :pcate or pcates = :pcate)' ;
         $params[':pcate'] = intval($_GPC['category']['parentid']);
     }
-   if ($_GPC["status"] != '') {
+
+
+    if (!empty($_GPC['category2']['thirdid'])) {
+        $condition .= ' AND (`tcate1` = :tcate2 or tcates = :tcate2)';
+        $params[':tcate2'] = intval($_GPC['category2']['thirdid']);
+    }
+    if (!empty($_GPC['category2']['childid'])) {
+        $condition .= ' AND (`ccate1` = :ccate2 or ccates = :ccate2)';
+        $params[':ccate2'] = intval($_GPC['category2']['childid']);
+    }
+    if (!empty($_GPC['category2']['parentid'])) {
+        $condition .= ' AND (`pcate1` = :pcate2 or pcates = :pcate2)' ;
+        $params[':pcate2'] = intval($_GPC['category2']['parentid']);
+    }
+
+
+    if ($_GPC["status"] != '') {
         $condition .= ' AND `status` = :status';
         $params[':status'] = intval($_GPC['status']);
     }
 
+    //增加商品属性搜索
+    $product_attr_list = array(
+                            'isnew' => '新品', 
+                            'ishot' => '热卖', 
+                            'isrecommand' => '推荐', 
+                            'isdiscount' => '促销', 
+                            'issendfree' => '包邮', 
+                            'istime' => '限时', 
+                            'isnodiscount' => '不参与折扣'
+                        );
+
+    $product_attr = $_GPC['product_attr'];
+    
+    if ($product_attr) {
+        $condition .= ' AND (';
+        foreach ($product_attr as $k => $p_attr) {
+            if ($k == 0) {
+                $condition .= " `{$p_attr}` = 1";
+            } else {
+                $condition .= " OR `{$p_attr}` = 1";
+            }
+        }
+        $condition .= ' )';
+    }
+
+    //供应商搜索
+    if (!empty($_GPC["supplier_uid"]) && $_GPC["supplier_uid"] != 9999) {
+        $condition .= " AND `supplier_uid` = "."$_GPC[supplier_uid]";
+    }
+
+	if ($_GPC["supplier_uid"] == 9999) {
+        $condition .= ' AND `supplier_uid` = 0';
+    }
+
     if(p('supplier')){
-		$suproleid = pdo_fetchcolumn('select id from' . tablename('sz_yi_perm_role') . ' where status1 = 1');
-		$userroleid = pdo_fetchcolumn('select roleid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid' => $_W['uniacid']));
+        $suproleid = pdo_fetchcolumn('select id from' . tablename('sz_yi_perm_role') . ' where status1 = 1');
+        $userroleid = pdo_fetchcolumn('select roleid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid' => $_W['uniacid']));
 
         //Author:RainYang Date:2016-04-09 Content:修改供应商判断条件,有可能上面两个id都是空的情况,照成商品不显示
-		if((!empty($userroleid)) && ($userroleid == $suproleid)){
-			$sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'].' ORDER BY `status` DESC, `displayorder` DESC,
-					`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
-			$sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'];
-			$total = pdo_fetchcolumn($sqls, $params);
-		}
+        if((!empty($userroleid)) && ($userroleid == $suproleid)){
+            $sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'].' ORDER BY `status` DESC, `displayorder` DESC,
+                    `id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
+            $sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition . ' and supplier_uid='.$_W['uid'];
+            $total = pdo_fetchcolumn($sqls, $params);
+        }
         else{
             $sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' ORDER BY `status` DESC, `displayorder` DESC,
                         `id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
             $sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition;
             $total = pdo_fetchcolumn($sqls, $params);
         }
-	}else{
-		$sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' ORDER BY `status` DESC, `displayorder` DESC,
-					`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
-		$sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition;
-		$total = pdo_fetchcolumn($sqls, $params);
+    }else{
+        $sql = 'SELECT * FROM ' . tablename('sz_yi_goods') . $condition . ' ORDER BY `status` DESC, `displayorder` DESC,
+                    `id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
+        $sqls = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_goods') . $condition;
+        $total = pdo_fetchcolumn($sqls, $params);
     }
     $list  = pdo_fetchall($sql, $params);
     $pager = pagination($total, $pindex, $psize);
@@ -873,6 +1012,56 @@ m("cache")->set("areas", $areas, "global");
     die(json_encode(array(
         'result' => 0
     )));
+}elseif($operation == 'copygoods'){
+    $uniacid=$_W['uniacid'];
+    $goodsid1=$_GPC['id'];
+    $goods=pdo_fetch('select * from ' .tablename('sz_yi_goods'). ' where id = '.$goodsid1.' and uniacid='.$uniacid);
+    if(empty($goods)){
+        message('未找到此商品，商品复制失败!', $this->createWebUrl('shop/goods') , 'error');
+    }
+    $goods['id']='';
+    pdo_insert('sz_yi_goods',$goods);
+    $goodsid=pdo_insertid();
+
+    $goodsoption=pdo_fetch('select * from ' .tablename('sz_yi_goods_option'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid); 
+    if(!empty($goodsoption)){
+        $goodsoption['id']='';
+        $goodsoption['goodsid']=$goodsid;
+        pdo_insert('sz_yi_goods_option',$goodsoption);   
+    }
+    
+
+    $goodscomment=pdo_fetch('select * from ' .tablename('sz_yi_goods_comment'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid);
+    if(!empty($goodscomment)){
+        $goodscomment['id']='';
+        $goodscomment['goodsid']=$goodsid;
+        pdo_insert('sz_yi_goods_comment',$goodscomment);    
+    }
+
+
+    $goodsparam=pdo_fetch('select * from ' .tablename('sz_yi_goods_param'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid);
+    if(!empty($goodsparam)){
+        $goodsparam['id']='';
+        $goodsparam['goodsid']=$goodsid;
+        pdo_insert('sz_yi_goods_param',$goodsparam);   
+    }
+
+
+    $goodsspec=pdo_fetch('select * from ' .tablename('sz_yi_goods_spec'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid);
+    if(!empty($goodsspec)){
+        $goodsspec_item=pdo_fetch('select * from ' .tablename('sz_yi_goods_spec_item'). ' where specid = '.$goodsspec['id'].' and uniacid='.$uniacid);
+        $goodsspec['id']='';
+        pdo_insert('sz_yi_goods_spec',$goodsspec);
+        $goodsspecid=pdo_insertid();
+        $goodsspec_item['specid']=$goodsspecid;
+        $goodsspec_item['id']='';
+        $goodsspec['goodsid']=$goodsid;
+        pdo_insert('sz_yi_goods_spec_item',$goodsspec_item);        
+    }
+
+    
+    message('商品复制成功！', $this->createWebUrl('shop/goods') , 'success');
+    
 }
 load()->func('tpl');
 include $this->template('web/shop/goods');

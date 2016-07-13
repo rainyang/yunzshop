@@ -1,0 +1,178 @@
+{template 'common/header'}
+<title>收银台</title>
+<style type="text/css">
+    body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearance:none;}
+    .info_main {height:auto;  background:#fff; margin-top:14px; border-bottom:1px solid #e8e8e8; border-top:1px solid #e8e8e8;}
+    .info_main .line {margin:0 10px; height:40px; border-bottom:1px solid #e8e8e8; line-height:40px; color:#999;}
+    .info_main .line .title {height:40px; width:160px; line-height:40px; color:#444; float:left; font-size:16px;}
+    .info_main .line .info { width:100%;float:right;margin-left:-160px; }
+    .info_main .line .inner { margin-left:160px; }
+    .info_main .line .inner input {height:40px; width:100%;display:block; padding:0px; margin:0px; border:0px; float:left; font-size:16px;}
+    .info_main .line .inner .user_sex {line-height:40px;}
+    .info_sub {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+    .select { border:1px solid #ccc;height:25px;}
+    .cashier_topbar {height:44px; width:100%; background:#fff; border-bottom:1px solid #e3e3e3;}
+    .cashier_topbar .nav {height:44px; width:33%; line-height:44px; text-align:center; font-size:14px; float:left; color:#666;}
+    .cashier_topbar .on {height:42px; color:#ff771b; border-bottom:2px solid #ff771b;}
+    .create_qrcode {height:44px; margin:14px 5px; background:#ff771b; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+
+        .credit_list {height:160px; width:94%; background:#fff; padding:10px 3%;margin-top:5px;}
+    
+    .credit_list .info {height:40px; width:70%; float:left;  font-size:16px; color:#666; line-height:20px; text-align:left;}
+    .credit_list .info span {font-size:14px; color:#999;}
+    .credit_list .num {height:40px; border-left:1px solid #eaeaea; width:20%;line-height:40px; float:right; text-align:right; font-size:16px; color:#666;}
+    .credit_list .num span {font-size:14px; color:#999;}
+    #total{font-size:16px; color:#666;}
+    .credit_tab {height:30px; margin:5px; border:1px solid #ff6801; border-radius:5px; overflow:hidden;font-size:13px;background:#fff;padding-right: -2px;}
+    .credit_nav {height:30px; width:50%;  background:#fff; color:#666; text-align:center; line-height:30px; float:left;}
+    .credit_navon {color:#fff; background:#ff6801;}
+    .credit_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
+    #credit_loading { padding:10px;color:#666;text-align: center;}
+.credit_box {height:auto; width:96%; background:#fff; padding:10px 2%;margin-bottom:10px;}
+.cas-info{width: 100%;padding:0;}
+.cas-info p{line-height: 12px;display: block;width: 100%;color:#666;font-size: 14px}
+.cas-num{width: 98%;border-top:1px #eee solid;margin:0 1% }
+.cas-num p{width: 100%;line-height:16px;color:#222;font-size: 14px;}
+.cas-num p span{color: #ff771b}
+
+.tit-num{width: 96%;margin:0 2%;overflow: hidden;padding: 0;}
+.tit-num p{width: 100%;text-align: left;color:#222;font-size: 14px;height: 10px;line-height: 10px;padding:0 }
+.tit-num p span{color: #ff771b}
+</style>
+
+
+    <div class="page_topbar">
+        <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
+        <div class="title">收银台</div>
+    </div>
+    <div class="cashier_topbar">
+        <div class="nav {if $page=='set'}on{/if}" data-page="set">商家设置</div>
+        <div class="nav {if $page=='withdraw'}on{/if}" data-page="withdraw">提现</div>
+        <div class="nav {if $page1=='statistics'}on{/if}" data-page="statistics">统计结算</div>
+    </div>
+
+
+     <div id='container'></div>
+<script id='tpl_log' type='text/html'>
+   <div class="tit-num">
+        <p>总订单数:<span><%total%></span></p><p>总支付金额:<span><%totalmoney%></span>元</p><p>总结算金额:<span><%realtotalmoney%></span>元</p>
+    </div>
+
+    <%each list as log%>
+    <div class="credit_box">
+        <div class="cas-info">
+            <p> 付款人:<%log.carrier.carrier_realname%>/<%log.carrier.carrier_mobile%></p>
+            <p> 佣金金额1级/2级/3级 : <%log.commission1.default%>元/<%log.commission2.default%>元/<%log.commission3.default%>元</p>
+            <p>积分:<%log.credits%> </p>
+            <p>红包金额:<%log.redpackmoney%> 元</p>
+            <p>余额金额:<%log.creditpackmoney%> 元</p>
+            <p>平台手续费:<%log.platform_poundage%> 元</p>
+            <p>订单号:<%log.ordersn%> </p> 
+            <p>付款时间:<%log.createtime%></p>
+            <p><%if log.text!=''%><%log.text%><%/if%></p>
+        </div>
+        <div class="cas-num">
+            <p> 支付金额: <span><%log.price%></span>元</p>
+            <p> 结算金额: <span><%log.realprice%></span>元</p>
+           
+        </div>
+    </div>
+    <%/each%>
+
+</script>
+ 
+ <!--     <div>
+    <tr style="width:100%">
+        <td>订单号</td>
+        <td>付款人</td>
+        <td>佣金1/2/3</td>
+        <td>积分金额</td>
+        <td>付款总金额</td>
+    </tr>
+    </div>
+    {loop $list $item}
+    <div>
+        <tr style="width:100%">
+            <td>{$item['ordersn']}</td>
+            <td>{$item['carrier']['carrier_realname']}/{$item['carrier']['carrier_mobile']}</td>
+            <td>{$item['commission1']['default']}/{$item['commission2']['default']}/{$item['commission3']['default']}</td>
+            <td>{$item['credits']}</td>
+            <td>{$item['price']}</td>
+
+        </tr>
+    </div>    
+    {/loop} -->
+    
+    
+<script language="javascript">
+var page = 1;
+ require(['tpl', 'core'], function(tpl, core) {
+        core.pjson('cashier/statistics', {id:"{$_GPC['id']}"}, function (json) {
+            if(json.status==1){
+                
+                var data = json.result;
+                
+                //alert(data.coupon_id);
+                $('#container').html(tpl('tpl_log', data));
+
+                
+                
+                $('.nav').click(function() {
+                    if ($(this).data('page') == 'set') {
+                        location.href = core.getUrl('plugin/cashier/store_set', {page: 'set',id:"{$_GPC['id']}"});
+                    } else if($(this).data('page') == 'withdraw'){
+                        location.href = core.getUrl('plugin/cashier/withdraw', {page: 'withdraw',id:"{$_GPC['id']}"});
+                    } else {
+                        location.href = core.getUrl('plugin/cashier/statistics', {page1: 'statistics',id:"{$_GPC['id']}"});
+                    }
+                });
+            }
+        });
+ })  
+
+    core.pjson('cashier/statistics', { page: page}, function (gjson) {
+                    var result = gjson.result;
+                    if (result.status == 0) {
+                        core.message('服务器内部错误', core.getUrl('shop'), 'error');
+                        return;
+                    }
+                    stop = true;
+                    $('#index_loading').remove();
+                    $('#goods_container').append(tpl('tpl_goods_list', result));
+                    $('.good img').each(function(){
+                        $(this).height($(this).width());
+                    })
+                        $('.good').unbind('click').click(function(){
+                            location.href = core.getUrl('shop/detail',{id:$(this).data('goodsid') });
+                        })
+                     
+                    if (result.goods.length < result.pagesize && scrolling) {
+
+                        $('#goods_container').append('<div id="index_loading">已经加载全部商品</div>');
+                        loaded = true;
+                        $(window).scroll = null;
+                        return;
+                    }
+ 
+ 
+
+                    $(window).scroll(function () {
+
+                        if (loaded) {
+                            return;
+                        }
+                        totalheight = parseFloat($(window).height()) + parseFloat($(window).scrollTop());
+                        if ($(document).height() <= totalheight) {
+                            if (stop == true) {
+                                stop = false;scrolling=true; 
+                                $('#goods_container').append('<div id="index_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载更多商品</div>');
+                                page++;
+                                getGoods('display');
+                            }
+                        }
+                    });
+                });        
+</script>
+
+{php $show_footer=true}
+{template 'common/footer'}

@@ -9,9 +9,6 @@
 <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport" name="viewport">
 <meta name="format-detection" content="telephone=no" />
 <link href="../addons/sz_yi/plugin/article/template/imgsrc/pc.css" rel="stylesheet">
-<style type="text/css">
-.t1{padding: 0}
-</style>
 <script type="text/javascript" src="../addons/sz_yi/static/js/dist/jquery-1.11.1.min.js"></script>
 <script>
     $(function(){
@@ -81,16 +78,17 @@
 
 <body class="{if $article_sys['article_temp']==0}t1{elseif $article_sys['article_temp']==1}t2{elseif $article_sys['article_temp']==2}t3{/if}">
 {if $article_sys['article_temp']==0}
-    <div class="all-divbox">
+<div class="all-divbox">
     <div class="main">
         {if !empty($article_sys['article_image'])}
-            <div >
+            <div>
                 <img src="{$article_sys['article_image']}"/>
             </div>
         {/if}
         <div class="list">
             {loop $articles $article}
-                <a href="{php echo $this->createPluginMobileUrl('article',array('aid'=>$article['id']))}">
+                <a href="{if $article['isread']}{php echo $this->createPluginMobileUrl('article',array('aid'=>$article['id']))}{else}javascript:;{/if}" {if !$article['isread']} class="noread" data-mmessage="{$article['m_message']}" data-dmessage="{$article['d_message']}"{/if}>
+
                     <div class="line-main">
                         <div class="line"> 
                             <div class="img">
@@ -101,7 +99,8 @@
                                 {/if}
                             </div>
                             <div class="info" >
-                                <div class="title">{$article['article_title']}
+                                <div class="title">{$article['isread']}{$article['article_title']}</div>
+                                {if $article['article_rule_money']>0 || !empty($article['article_rule_credit'])}
                                     <div class="ico-main">
                                         <div class="ico">
                                             {if $article['article_rule_money']>0}
@@ -112,9 +111,6 @@
                                             {/if}
                                         </div>
                                     </div>
-                                </div>
-                                <div class="info-article">劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品劳动节的商品</div>
-                                {if $article['article_rule_money']>0 || !empty($article['article_rule_credit'])}
                                 {/if}
                             </div>
                         </div>
@@ -122,8 +118,6 @@
                 </a>
             {/loop}
         </div>
-    </div>
-    <div class="add-more" {if $article_sys['article_temp']==2} style="height: 40px"{/if}><a id="add-more" href="javascript:;">加载更多</a></div>
     </div>
 {elseif $article_sys['article_temp']==1} 
         {loop $articles $k  $v}
@@ -159,7 +153,7 @@
                         {/loop}
                     {/if}
             </div>
-        {/loop}	 
+        {/loop}  
         <div class="append"></div>
 {elseif $article_sys['article_temp']==2} 
     <div class="topbar">
@@ -173,7 +167,36 @@
     </div>
     <div class="list"></div>
 {/if}
-    
+</div>
+    <div class="add-more" {if $article_sys['article_temp']==2} style="height: 40px"{/if}><a id="add-more" href="javascript:;">加载更多</a></div>
+
+<!-- 弹出 -->
+<div class="makg" style="display:none;" >
+    <div class="bgfff">
+        <h1 class="tit-not">温馨提示<a href="javascript:;" class="close-notice"></a></h1>
+        <p id="message">您确定要删除参与立领白衬衫搭配裙子的这个需求吗？</p>
+        <div class="but-notice">
+            <!-- <a href="javascript:;" class="cancel-not fl tac">取消</a> 
+            <a href="javascript:;" class="qued-not fr tac">确定</a>-->
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $('.noread').click(function (){
+        var m_message = $(this).data('mmessage');
+        var d_message = $(this).data('dmessage');
+        $('.makg').show();
+        $('#message').html("您当前不能阅读，只有"+m_message+"或 "+d_message+"才可以阅读本篇文章！");
+
+        //alert(m_message+"或 "+d_message+"可阅读本篇文章！");
+    });
+    $(".makg").click(function(){
+        $('.makg').hide();
+    });
+</script>
+
 </body>
 </html>
-{template 'common/footer'}
+{template 'common/bottom'}

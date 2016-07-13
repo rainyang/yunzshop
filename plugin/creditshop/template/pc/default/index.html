@@ -1,21 +1,26 @@
-{template 'common/header'}
-
+{template 'common/header_center'}
+<link href="../addons/sz_yi/plugin/creditshop/template/pc/default/images/css.css" rel="stylesheet" type="text/css"/>
 <title>积分商城</title>
-{template 'common/navigation'}
+
 <style type="text/css">
+
        .banner {overflow:hidden;position:relative;height:auto;}
      .banner  .main_image{width:100%;position:relative;top:0;left:0;}
   .banner .main_image ul{}
   .banner .main_image li{float:left;}
   .banner .main_image li img{display:block;width:100%; }
   .banner .main_image li a{display:block;width:100%;}
-
+.jf-tit{color: #333;padding-bottom: 20px;height: 47px;background: #fff;line-height: 47px;padding: 0 10px}
+.jf-tit h2 {font-weight: 700;float: left;font-size: 16px;color: #333;font-family: "微软雅黑";line-height: 47px}
+.jf-tit span{    padding-left: 10px;color: #999;font-size: 12px}
+.jf-tit span a{    padding:0 4px;color: #e02f2f}
+.jf-tit .tx-list{ background: #f5fbef;color: #323333;border: 1px solid #bfd6af;font-size: 12px;padding: 4px}
     div.flicking_con{position:absolute;bottom:10px;z-index:1;width:100%;height:12px;}
     div.flicking_con .inner { width:100%;height:9px;text-align:center;}
     div.flicking_con a{position:relative; width:10px;height:9px;background:url('../addons/sz_yi/template/mobile/default/static/images/dot.png') 0 0 no-repeat;display:inline-block;text-indent:-1000px}
     div.flicking_con a.on{background-position:0 -9px}
 </style>
-<div id='container'></div>
+<div id='container' style="width:1200px;margin:10px auto 0;overflow: hidden;"></div>
 <script id='tpl_main'  type='text/html'>
     <%if advs.length>0%>
     <div class="banner">
@@ -37,12 +42,13 @@
         </div>
     </div>
     <%/if%>
-    <div class="index_sub">
-        <a href="{php echo $this->createPluginMobileUrl('creditshop/creditlog')}"><i class="fa fa-database"></i> 积分<d><%credit%></d></a>
-        <a href="{php echo $this->createPluginMobileUrl('creditshop/log')}"><i class="fa fa-align-justify"></i> 兑换记录</a>
+    <div class="jf-tit">
+        <h2>我的积分</h2>
+        <span>可用积分<a href="{php echo $this->createPluginMobileUrl('creditshop/creditlog')}"><%credit%></a>分</span>
+        <a class="tx-list" href="{php echo $this->createPluginMobileUrl('creditshop/log')}"> 兑换记录</a>
     </div>
     <%if tops.length>0%>
-    <div class="top">
+    <div class="top01">
        <div class="left">
            <%if tops.length>0%>
            <a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%tops[0].id%>">
@@ -62,7 +68,7 @@
              <%if tops.length>1%>
              <a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%tops[1].id%>">
                         <div class="good">
-                           <div style="height:99px; float:left; margin-right:-99px; width:100%;">
+                           <div style="height:99px; float:left; margin-right:-109px; width:100%;">
                                <div class="info">
                                      <%if tops[1].subtitle!=''%><div class="classs"><%tops[1].subtitle%></div><%/if%>
                                      <div class="name"><%tops[1].title%></div>
@@ -77,7 +83,7 @@
              <%if tops.length>2%>
                <a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%tops[2].id%>">
           <div class="good">
-                           <div style="height:99px; float:left; margin-right:-99px; width:100%;">
+                           <div style="height:99px; float:left; margin-right:-109px; width:100%;">
                                <div class="info">
                                      <%if tops[2].subtitle!=''%><div class="classs"><%tops[2].subtitle%></div><%/if%>
                                      <div class="name"><%tops[2].title%></div>

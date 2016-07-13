@@ -1,15 +1,22 @@
 <?php
+/* QQ:261753427 */
 if (!defined('IN_IA')) {
     print 'Access Denied';
 }
 global $_W, $_GPC;
+$condition = '';
+$perm_role = 0;
+if (p('supplier')) {
+    $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+    $condition .= " and uid={$_W['uid']}";
+}
 $op = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $type = intval($_GPC['type']);
 if (empty($type)) {
     header('location: ' . $this->createPluginWebUrl('exhelper/express'));
     die;
 }
-$printset = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_exhelper_sys') . ' WHERE uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
+$printset = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_exhelper_sys') . " WHERE uniacid=:uniacid {$condition} limit 1", array(':uniacid' => $_W['uniacid']));
 if ($op == 'search') {
     if ($type == 1) {
         ca('exhelper.print.single');
@@ -20,7 +27,12 @@ if ($op == 'search') {
     $printstate = $_GPC['printstate'];
     $printstate2 = $_GPC['printstate2'];
     $sendtype = !isset($_GPC['sendtype']) ? 0 : $_GPC['sendtype'];
-    $condition = ' o.uniacid = :uniacid and o.addressid<>0 and o.deleted=0';
+    if ($perm_role == 0) {
+        $condition = ' o.uniacid = :uniacid and o.addressid<>0 and o.deleted=0';
+    }
+    if ($perm_role == 1) {
+        $condition = " o.uniacid = :uniacid and o.addressid<>0 and o.deleted=0 and o.supplier_uid={$_W['uid']}";
+    }
     $paras = array(':uniacid' => $_W['uniacid']);
     if (empty($starttime) || empty($endtime)) {
         $starttime = strtotime('-1 month');

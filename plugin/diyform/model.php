@@ -8,7 +8,7 @@ if (!class_exists('DiyformModel')) {
     class DiyformModel extends PluginModel
     {
         public $_data_type_config = array(0 => '单行文本', 1 => '多行文本', 2 => '下拉框', 3 => '多选框', 5 => '图片', 6 => '身份证号码', 7 => '日期', 8 => '日期范围', 9 => '城市');
-        public $_default_data_config = array(0 => '', 1 => '自定义', 2 => '姓名', 3 => '电话', 4 => '微信号');
+        public $_default_data_config = array(0 => '', 1 => '自定义', 2 => '姓名', 3 => '电话', 4 => '微信号', 5 => '账号', 6 => '密码');
         public $_default_date_config = array(0 => '', 1 => '填写当天', 2 => '特定日期');
         public function getInsertData($fields, $memberdata)
         {
@@ -30,6 +30,12 @@ if (!class_exists('DiyformModel')) {
                                 break;
                             case 4:
                                 $m_data['weixin'] = $data[$key];
+                                break;
+                            case 5:
+                                $m_data['username'] = $mc_data['username'] = $data[$key];
+                                break;
+                            case 6:
+                                $m_data['password'] = $mc_data['password'] = $data[$key];
                                 break;
                         }
                     }

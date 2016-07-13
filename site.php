@@ -29,7 +29,7 @@ class Sz_yiModuleSite extends Core {
     //系统设置 
     public function doWebSysset(){ $this->_exec(__FUNCTION__,'sysset'); } 
     //插件web入口  
-    public function doWebPlugin(){   
+    public function doWebPlugin(){
         global $_W,$_GPC;
         require_once SZ_YI_INC."plugin/plugin.php";
         $plugins = m('plugin')->getAll(); 

@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 //金额不能用int, apply表少uniacid字段
 global $_W;
 $sql = "
@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_supplier` (
   `password` varchar(255) CHARACTER SET utf8 NOT NULL,
   `status` tinyint(3) NOT NULL COMMENT '1审核成功2驳回',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_apply` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL COMMENT '供应商id',
@@ -25,8 +25,9 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_apply` (
   `apply_time` int(11) NOT NULL COMMENT '申请时间',
   `status` tinyint(3) NOT NULL COMMENT '0为申请状态1为完成状态',
   `finish_time` int(11) NOT NULL COMMENT '完成时间',
+  `apply_ordergoods_ids` text,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1 ROW_FORMAT=COMPACT;";
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
 pdo_query($sql);
 if(!pdo_fieldexists('sz_yi_perm_user', 'banknumber')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `banknumber` varchar(255) NOT NULL COMMENT '银行卡号';");
@@ -56,6 +57,9 @@ if(!pdo_fieldexists('sz_yi_af_supplier', 'id')) {
 if(!pdo_fieldexists('sz_yi_supplier_apply', 'id')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_supplier_apply')." ADD PRIMARY KEY (`id`);");
 }
+if (!pdo_fieldexists('sz_yi_supplier_apply', 'apply_ordergoods_ids')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_supplier_apply')." ADD  `apply_ordergoods_ids` text;");
+}
 if(!pdo_fieldexists('sz_yi_af_supplier', 'id')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_af_supplier')." MODIFY `id` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;");
 }
@@ -68,7 +72,12 @@ if(!pdo_fieldexists('sz_yi_perm_role', 'status1')) {
 if(!pdo_fieldexists('sz_yi_perm_user', 'openid')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `openid` VARCHAR( 255 ) NOT NULL;");
 }
-
+if(!pdo_fieldexists('sz_yi_perm_user', 'username')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `username` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+} 
+if(!pdo_fieldexists('sz_yi_perm_user', 'password')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_perm_user')." ADD `username` VARCHAR( 255 ) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+}
 
 $info = pdo_fetch('select * from ' . tablename('sz_yi_plugin') . ' where identity= "supplier"  order by id desc limit 1');
 
@@ -81,16 +90,16 @@ if(!pdo_fieldexists('sz_yi_af_supplier', 'status')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_af_supplier')." ADD `status` TINYINT( 3 ) NOT NULL COMMENT '0申请1驳回2通过' AFTER `productname`;");
 }
 
-//todo,这里缺少uniacid，我没加，要测试$_W['uniacid']是否可用
 $result = pdo_fetch('select * from ' . tablename('sz_yi_perm_role') . ' where status1=1');
 if(empty($result)){
   $sql = "
 INSERT INTO " . tablename('sz_yi_perm_role') . " (`rolename`, `status`, `status1`, `perms`, `deleted`) VALUES
-('供应商', 1, 1, 'shop,shop.goods,shop.goods.view,shop.goods.add,shop.goods.edit,shop.goods.delete,order,order.view,order.view.status_1,order.view.status0,order.view.status1,order.view.status2,order.view.status3,order.view.status4,order.view.status5,order.view.status9,order.op,order.op.send,order.op.sendcancel,order.op.verify,order.op.fetch,order.op.close,order.op.refund,order.op.export,order.op.changeprice', 0);";
+('供应商', 1, 1, 'shop,shop.goods,shop.goods.view,shop.goods.add,shop.goods.edit,shop.goods.delete,shop.dispatch,shop.dispatch.view,shop.dispatch.add,shop.dispatch.edit,shop.dispatch.delete,order,order.view,order.view.status_1,order.view.status0,order.view.status1,order.view.status2,order.view.status3,order.view.status4,order.view.status5,order.view.status9,order.op,order.op.pay,order.op.send,order.op.sendcancel,order.op.finish,order.op.verify,order.op.fetch,order.op.close,order.op.refund,order.op.export,order.op.changeprice,exhelper,exhelper.print,exhelper.print.single,exhelper.print.more,exhelper.exptemp1,exhelper.exptemp1.view,exhelper.exptemp1.add,exhelper.exptemp1.edit,exhelper.exptemp1.delete,exhelper.exptemp1.setdefault,exhelper.exptemp2,exhelper.exptemp2.view,exhelper.exptemp2.add,exhelper.exptemp2.edit,exhelper.exptemp2.delete,exhelper.exptemp2.setdefault,exhelper.senduser,exhelper.senduser.view,exhelper.senduser.add,exhelper.senduser.edit,exhelper.senduser.delete,exhelper.senduser.setdefault,exhelper.short,exhelper.short.view,exhelper.short.save,exhelper.printset,exhelper.printset.view,exhelper.printset.save,exhelper.dosend,taobao,taobao.fetch', 0);";
 pdo_query($sql);
 }else{
-  $gysdata = array("perms" => 'shop,shop.goods,shop.goods.view,shop.goods.add,shop.goods.edit,shop.goods.delete,order,order.view,order.view.status_1,order.view.status0,order.view.status1,order.view.status2,order.view.status3,order.view.status4,order.view.status5,order.view.status9,order.op,order.op.send,order.op.sendcancel,order.op.verify,order.op.fetch,order.op.close,order.op.refund,order.op.export,order.op.changeprice');
-  pdo_update('sz_yi_perm_role', $gysdata, array('rolename' => "供应商"));
+  $gysdata = array("perms" => 'shop,shop.goods,shop.goods.view,shop.goods.add,shop.goods.edit,shop.goods.delete,shop.dispatch,shop.dispatch.view,shop.dispatch.add,shop.dispatch.edit,shop.dispatch.delete,order,order.view,order.view.status_1,order.view.status0,order.view.status1,order.view.status2,order.view.status3,order.view.status4,order.view.status5,order.view.status9,order.op,order.op.pay,order.op.send,order.op.sendcancel,order.op.finish,order.op.verify,order.op.fetch,order.op.close,order.op.refund,order.op.export,order.op.changeprice,exhelper,exhelper.print,exhelper.print.single,exhelper.print.more,exhelper.exptemp1,exhelper.exptemp1.view,exhelper.exptemp1.add,exhelper.exptemp1.edit,exhelper.exptemp1.delete,exhelper.exptemp1.setdefault,exhelper.exptemp2,exhelper.exptemp2.view,exhelper.exptemp2.add,exhelper.exptemp2.edit,exhelper.exptemp2.delete,exhelper.exptemp2.setdefault,exhelper.senduser,exhelper.senduser.view,exhelper.senduser.add,exhelper.senduser.edit,exhelper.senduser.delete,exhelper.senduser.setdefault,exhelper.short,exhelper.short.view,exhelper.short.save,exhelper.printset,exhelper.printset.view,exhelper.printset.save,exhelper.dosend,taobao,taobao.fetch');
+  pdo_update('sz_yi_perm_role', $gysdata, array('rolename' => "供应商", 'status1' => 1));
 }
 
 message('供应商插件安装成功', $this->createPluginWebUrl('supplier/supplier'), 'success');
+

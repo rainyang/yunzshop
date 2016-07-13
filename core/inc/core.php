@@ -13,19 +13,27 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
+
 class Core extends WeModuleSite
 {
 
     public $footer = array();
     public $header = null;
     public $yzShopSet = array();
+    public $yzImages = array();
     public function __construct()
     {
         global $_W, $_GPC;
+        m('common')->checkClose();
+        if (empty($_W['uniacid'])) {
+            if (!empty($_W['uid'])) {
+                $_W['uniacid'] = pdo_fetchcolumn("select uniacid from " . tablename('sz_yi_perm_user') . " where uid={$_W['uid']}");
+                $_W['issupplier'] = 1;
+            }
+        }
         if (is_weixin()) {
             m('member')->checkMember();
-        }
-        else{
+        } else {
             $noLoginList = array('poster', 'postera');
             //微信回调通知要加入开放权限
             if (p('commission') && (!in_array($_GPC['p'], $noLoginList)) && !strpos($_SERVER['SCRIPT_NAME'], 'notify')) {
@@ -36,16 +44,41 @@ class Core extends WeModuleSite
             }
         }
         $this->yzShopSet = m('common')->getSysset('shop');
+        $this->yzImages = set_medias(m('common')->getSysset('shop'), array('logo', 'img', 'pclogo'));
+
+        if (is_app()) {
+            /**
+             * 设置app端使用模板文件夹
+             */
+            $_W['template'] = 'app';
+
+            /**
+             * 后台设置绑定,重新定义uniacid值
+             */
+
+            //$_W['uniacid'];
+
+            /**
+             * 推送 leancloud配置
+             */
+
+            require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
+
+            $setdata = m("cache")->get("sysset");
+            $set     = unserialize($setdata['sets']);
+
+            $app = $set['app']['base'];
+
+            LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'].",master");
+        }
     }
 
-
-
-    public function sendSms($mobile, $code, $templateType = 'reg'){
+    public function sendSms($mobile, $code, $templateType = 'reg')
+    {
         $set = m('common')->getSysset();
-        if($set['sms']['type'] == 1){
+        if ($set['sms']['type'] == 1) {
             return send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $code);
-        }
-        else{
+        } else {
             return send_sms_alidayu($mobile, $code, $templateType);
         }
     }
@@ -62,7 +95,8 @@ class Core extends WeModuleSite
         $current = time();
         if ($lasttime + $interval <= $current) {
             m('cache')->set('receive', date('Y-m-d H:i:s', $current), 'global');
-            ihttp_request($_W['siteroot'] . 'addons/sz_yi/core/mobile/order/receive.php', null, null, 1);
+            $reveive_url = $this->createMobileUrl('order/receive');
+            ihttp_request($reveive_url, null, null, 1);
         }
         $lasttime = strtotime(m('cache')->getString('closeorder', 'global'));
         $interval = intval(m('cache')->getString('closeorder_time', 'global'));
@@ -73,24 +107,26 @@ class Core extends WeModuleSite
         $current = time();
         if ($lasttime + $interval <= $current) {
             m('cache')->set('closeorder', date('Y-m-d H:i:s', $current), 'global');
-            ihttp_request($_W['siteroot'] . 'addons/sz_yi/core/mobile/order/close.php', null, null, 1);
+            $close_url = $this->createMobileUrl('order/close');
+            ihttp_request($close_url, null, null, 1);
         }
 
-		if (p('coupon')) {
-			$_var_0 = strtotime(m('cache')->getString('couponbacktime', 'global'));
-			$_var_3 = p('coupon')->getSet();
-			$_var_1 = intval($_var_3['backruntime']);
-			if (empty($_var_1)) {
-				$_var_1 = 60;
-			}
-			$_var_1 *= 60;
-			$_var_2 = time();
-			if ($_var_0 + $_var_1 <= $_var_2) {
-				m('cache')->set('couponbacktime', date('Y-m-d H:i:s', $_var_2), 'global');
-				ihttp_request($_W['siteroot'] . 'addons/sz_yi/plugin/coupon/core/mobile/back.php', null, null, 1);
-			}
-		}
-		exit('run finished.');
+        if (p('coupon')) {
+            $_var_0 = strtotime(m('cache')->getString('couponbacktime', 'global'));
+            $_var_3 = p('coupon')->getSet();
+            $_var_1 = intval($_var_3['backruntime']);
+            if (empty($_var_1)) {
+                $_var_1 = 60;
+            }
+            $_var_1 *= 60;
+            $_var_2 = time();
+            if ($_var_0 + $_var_1 <= $_var_2) {
+                m('cache')->set('couponbacktime', date('Y-m-d H:i:s', $_var_2), 'global');
+                $back_url = $this->createPluginMobileUrl('coupon/back');
+                ihttp_request($back_url, null, null, 1);
+            }
+        }
+        exit('run finished.');
     }
 
     public function setHeader()
@@ -139,6 +175,12 @@ class Core extends WeModuleSite
             return;
         }
         $openid = m('user')->getOpenid();
+        $member  = m('member')->getMember($openid);
+        if (!empty($member['isblack'])) {
+            if ($_GPC['op'] != 'black') {
+                header('Location: '.$this->createMobileUrl('member/login', array('op' => 'black')));
+            }
+        }
         $designer = p('designer');
         if ($designer && $_GPC['p'] != 'designer') {
             $menu = $designer->getDefaultMenu();
@@ -160,14 +202,8 @@ class Core extends WeModuleSite
             'ico' => 'list',
             'url' => $this->createMobileUrl('shop/category')
         );
-
         $this->footer['commission'] = false;
-        $member  = m('member')->getMember($openid);
-        if(!empty($member['isblack'])){
-            if($_GPC['op'] != 'black'){
-                header('Location: '.$this->createMobileUrl('member/login', array('op' => 'black')));
-            }
-        }
+        
         if (p('commission')) {
             $set = p('commission')->getSet();
             if (empty($set['level'])) {
@@ -212,18 +248,18 @@ class Core extends WeModuleSite
                 }
             }
         }
-        if(strstr($_SERVER['REQUEST_URI'],'app')){
-            if(!isMobile()){
-                if($this->yzShopSet['ispc']==0){
+        if (strstr($_SERVER['REQUEST_URI'], 'app')) {
+            if (!isMobile()) {
+                if ($this->yzShopSet['ispc']==0) {
                     //message('抱歉，PC版暂时关闭，请用微信打开!','','error');
                 }
             }
         }
-        if(is_weixin()){
+        if (is_weixin()) {
             //是否强制绑定手机号,只针对微信端
-            if(!empty($this->yzShopSet['isbindmobile'])){
-                if(empty($member) || $member['isbindmobile'] == 0){
-                    if($_GPC['p'] != 'bindmobile' && $_GPC['p'] != 'sendcode'){
+            if (!empty($this->yzShopSet['isbindmobile'])) {
+                if (empty($member) || $member['isbindmobile'] == 0) {
+                    if ($_GPC['p'] != 'bindmobile' && $_GPC['p'] != 'sendcode') {
                         $bindmobileurl = $this->createMobileUrl('member/bindmobile');
                         redirect($bindmobileurl);
                         exit();
@@ -327,9 +363,9 @@ class Core extends WeModuleSite
     public function _execFront($do, $default = '', $web = true)
     {
         global $_W, $_GPC;
-	//todo, 需要加入微信权限认证
-	define('IN_SYS', true);
-	$_W['templateType'] = 'web';
+        //todo, 需要加入微信权限认证
+        define('IN_SYS', true);
+        $_W['templateType'] = 'web';
         $do = strtolower(substr($do, 5));
         $p  = trim($_GPC['p']);
         empty($p) && $p = $default;
@@ -344,20 +380,22 @@ class Core extends WeModuleSite
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
         global $_W;
+        if (is_app()) {
+            m('cache')->set('app_template_shop', $_W['template']);
+        }
+
+        //print_r($_SERVER);exit;
+
         $tmplateType = (isMobile()) ? 'mobile' : 'pc';
         $set = m('common')->getSysset('shop');
-        if(strstr($_SERVER['REQUEST_URI'],'app')){
-            if(!isMobile()){
-                if($set['ispc']==0){
+        if (strstr($_SERVER['REQUEST_URI'], 'app')) {
+            if (!isMobile()) {
+                if ($set['ispc']==0) {
                     $tmplateType = 'mobile';
                     //message('抱歉，PC版暂时关闭，请用微信打开!','','error');
                 }
             }
         }
-	
-	if($_W['templateType'] && $_W['templateType'] == 'web'){
-	
-	}
 
         $name = strtolower($this->modulename);
         if (defined('IN_SYS')) {
@@ -381,23 +419,37 @@ class Core extends WeModuleSite
                 $source  = IA_ROOT . "/addons/{$name}/plugin/" . $explode[0] . "/template/" . implode('/', $temp) . ".html";
             }
         } else {
-            $template = m('cache')->getString('template_shop');
+            if (is_app()) {
+                $template = m('cache')->getString('app_template_shop');
+            } else {
+                if (!isMobile() && $set['ispc']) {
+                    $template = m('cache')->getString('template_shop_pc');
+                } else {
+                    $template = m('cache')->getString('template_shop');
+                }
+            }
+            
             if (empty($template)) {
                 $template = "default";
             }
             if (!is_dir(IA_ROOT . '/addons/sz_yi/template/'.$tmplateType.'/' . $template)) {
                 $template = "default";
             }
+
             $compile = IA_ROOT . "/data/tpl/app/sz_yi/{$template}/{$tmplateType}/{$filename}.tpl.php";
             $source  = IA_ROOT . "/addons/{$name}/template/{$tmplateType}/{$template}/{$filename}.html";
-
+//echo $source;exit;
             if (!is_file($source)) {
                 $source = IA_ROOT . "/addons/{$name}/template/{$tmplateType}/default/{$filename}.html";
             }
             if (!is_file($source)) {
                 $names      = explode('/', $filename);
                 $pluginname = $names[0];
-                $ptemplate  = m('cache')->getString('template_' . $pluginname);
+                if($pluginname == "designer"){
+                    $ptemplate = $template;
+                }else{
+                    $ptemplate  = m('cache')->getString('template_' . $pluginname);
+                }
                 if (empty($ptemplate)) {
                     $ptemplate = "default";
                 }
@@ -432,7 +484,8 @@ class Core extends WeModuleSite
         }
         return $this->createMobileUrl('shop');
     }
-	/*private function executeTasks()
+
+    /*private function executeTasks()
     {
         global $_W;
         load()->func('communication');
@@ -460,3 +513,5 @@ class Core extends WeModuleSite
         }
     }*/
 }
+
+

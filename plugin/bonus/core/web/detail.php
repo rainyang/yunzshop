@@ -1,18 +1,20 @@
 <?php
 global $_W, $_GPC;
-ca('bonus.detail');
+ca('bonus.detail.view');
 $operation = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 $params    = array(
         ':uniacid' => $_W['uniacid']
     );
 $daytime = strtotime(date('Y-m-d',time()));
 $sn = $_GPC['sn'];
+$isglobal = empty($_GPC['isglobal']) ? 0 : 1;
 $params[':sn'] = $sn;
+$params[':isglobal'] = $isglobal;
 if($operation == "display"){
 	$pindex    = max(1, intval($_GPC['page']));
 	$psize     = 20;
-	$logs = pdo_fetchall("select * from " . tablename('sz_yi_bonus_log') . " where uniacid=:uniacid and send_bonus_sn =:sn limit " . ($pindex - 1) * $psize . ',' . $psize, $params);
-	$total = pdo_fetchcolumn("select count(id) from " . tablename('sz_yi_bonus_log') . " where uniacid=:uniacid and send_bonus_sn =:sn", $params);
+	$logs = pdo_fetchall("select * from " . tablename('sz_yi_bonus_log') . " where uniacid=:uniacid and send_bonus_sn =:sn and isglobal=:isglobal limit " . ($pindex - 1) * $psize . ',' . $psize, $params);
+	$total = pdo_fetchcolumn("select count(id) from " . tablename('sz_yi_bonus_log') . " where uniacid=:uniacid and send_bonus_sn =:sn and isglobal=:isglobal", $params);
 	foreach ($logs as $key => &$value) {
 	    $member = m('member')->getInfo($value['openid']);
 	    $value['avatar'] = $member['avatar'];
@@ -25,7 +27,8 @@ if($operation == "display"){
 	}
 	$pager = pagination($total, $pindex, $psize);
 }else if($operation == "afresh"){
-	$logs = pdo_fetchall("select * from " . tablename('sz_yi_bonus_log') . " where uniacid=:uniacid and send_bonus_sn =:sn", $params);
+	ca('bonus.detail.afresh');
+	$logs = pdo_fetchall("select * from " . tablename('sz_yi_bonus_log') . " where uniacid=:uniacid and send_bonus_sn =:sn and isglobal=:isglobal", $params);
 	$sendpay_error = 0;
 	foreach ($logs as $key => $value) {
 		$sendpay = 1;

@@ -1,5 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
+<div class="rightlist">
 <style type="text/css">
 .input-group{
     width: 40%;
@@ -21,24 +23,22 @@
             <input type="hidden" name="endtime_order" value="{$endtime_order}" />
             <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">共计分红人数</label>
-                <div class="col-sm-8 col-lg-9 col-xs-12">
+                <div class="col-sm-8 col-lg-9 col-xs-12 mart7">
                     <span style='color:red'>{$total}</span>&nbsp;人
                 </div>
             </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">共计分红金额</label>
-                <div class="col-sm-8 col-lg-9 col-xs-12">
+                <div class="col-sm-8 col-lg-9 col-xs-12 mart7">
                     <span style='color:red'>{$totalmoney}</span>&nbsp;元
                 </div>
             </div>
             
             <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">打款方式</label>
-                    <div class="col-sm-9 col-xs-12">
-                    <div class="input-group" style="margin-left:0">
+                    <div class="col-sm-9 col-xs-12 mart7">
                       {if $set['paymethod']==0}打款到站内余额{/if}
                       {if $set['paymethod']==1}打款到微信钱包{/if}
-                    </div>
                 </div>
             </div>
 
@@ -53,7 +53,9 @@
             </div>
             {else}
             <div class="form-group" style="text-align: center;">
-                <div class="col-sm-3 col-lg-2"><button class="btn btn-default" style="background-color: #428bca;color:#fff;width:200px;">发放分红</button></div>
+                {ifp 'bonus.send.bont'}
+                <div class="col-sm-3 col-lg-2"><button class="btn btn-primary">发放分红</button></div>
+                {/if}
             </div>
             {/if}
          </form> 
@@ -96,4 +98,6 @@
         {$pager}
     </div>
 </div>
-{template 'common/footer'}
+</div>
+</div>
+{template 'web/_footer'}

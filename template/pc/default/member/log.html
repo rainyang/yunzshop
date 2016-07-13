@@ -1,5 +1,5 @@
 {template 'member/center'}
-<title>{if $trade && $trade['withdraw']==1}余额明细{else}充值记录{/if}</title>
+<title>{if $trade && $trade['withdraw']==1}{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}明细{else}充值记录{/if}</title>
 <style type="text/css">
     body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
     .credit_list {box-sizing: content-box;height:40px; width:94%; background:#F7F7F7; padding:10px 3%;margin-top:5px;}
@@ -15,9 +15,15 @@
     #credit_loading { padding:10px;color:#666;text-align: center;}
 .page_topbar{width: 960px;float: right;}
 </style>
+
+
+<div id="container" class="rightlist"></div></div>
+
+<script id='tpl_list' type='text/html'>
+
 <div class="page_topbar">
     <!-- <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a> -->
-    <div class="title">{if $trade && $trade['withdraw']==1}余额明细{else}充值记录{/if}</div>
+    <div class="title">{if $trade && $trade['withdraw']==1}{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}明细{else}充值记录{/if}</div>
 </div>
 
 {if $trade && $trade['withdraw']==1}
@@ -26,8 +32,10 @@
     <div class="credit_nav {if $_GPC['type']==1}credit_navon{/if}"  data-type='1'>提现记录</div>
 </div>
 {/if}
+<div id='tpl_container'></div>
 
-<div id="container" class="rightlist"></div></div>
+</script>
+
 
 <script id='tpl_log' type='text/html'>
     <%each list as log%>
@@ -84,14 +92,14 @@ function bindScroller(){
 
                 if (stop == true) {
                     stop = false; scrolled = true;
-                    $('#container').append('<div id="credit_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载...</div>');
+                    $('#tpl_container').append('<div id="credit_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载...</div>');
                     page++;
                     core.json('member/log', {type:current_type,page: page}, function (json) {
                         stop = true;
                         $('#credit_loading').remove();
-                        $("#container").append(tpl('tpl_log', morejson.result));
+                        $("#tpl_container").append(tpl('tpl_log', morejson.result));
                         if (morejson.result.list.length < morejson.result.pagesize) {
-                            $("#container").append('<div id="credit_loading">已经加载完全部记录</div>');
+                            $("#tpl_container").append('<div id="credit_loading">已经加载完全部记录</div>');
                             loaded = true;
                             $(window).scroll = null;
                             return;
@@ -105,15 +113,16 @@ function bindScroller(){
             $('.credit_nav').removeClass('credit_navon');
             $('.credit_nav[data-type=' + type + ']').addClass('credit_navon');
             core.json('member/log', {type:type,page: page}, function (json) {
+                $("#container").html(tpl('tpl_list'));
                 if (json.result.list.length <= 0) {
-                    $('#container').html(tpl('tpl_empty'));
+                    $('#tpl_container').html(tpl('tpl_empty'));
                     return;
                 }
-                $('#container').html(tpl('tpl_log', json.result));
+                $('#tpl_container').html(tpl('tpl_log', json.result));
                 bindScroller();
             }, true);
         }
-        $('.credit_nav').unbind('click').click(function () {
+        $(document).on('click','.credit_nav',function(){
             page = 1; current_type = $(this).data('type')
             getLog(current_type);
 

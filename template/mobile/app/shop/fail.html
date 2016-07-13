@@ -1,0 +1,22 @@
+{template 'common/header'}
+<title>支付失败</title>
+<link rel="stylesheet" href="../addons/sz_yi/template/mobile/app/static/css/fenxiao.css" />
+<section>
+    <div class="fenxwap">
+        <div class="paysuccess-wrap">
+            <img src="../addons/sz_yi/template/mobile/app/static/images/payfailed.png" alt="">
+            <h1>支付失败，请重新支付</h1>
+        </div>
+        <div class="payinfo">
+            <h1>订单信息</h1>
+            <p>该订单会为您保留12小时（从下单之日算起），12小时之后如果还未付款，系统将自动取消该订单。</p>
+        </div>
+        <div class="btn-paysuccess">
+            <a href="" class="goto-repay fl">重新支付</a>
+            <a href="{php echo $this->createMobileUrl('order')}" class="goto-check fr">查看订单</a>
+        </div>
+        <div class="payseccess-notice"><i>!</i>安全提醒：{$shop_name}不会以任何理由要求您提供银行卡信息或支付额外费用，请谨慎防钓鱼链接或诈骗电话。</div>
+    </div>
+</section>
+{php $show_footer = true}
+{template 'common/footer'}

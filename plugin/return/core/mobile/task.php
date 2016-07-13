@@ -1,78 +1,72 @@
 <?php
 global $_W, $_GPC;
-$set = $this->getSet();
-$isexecute = false;
- //  unset($set['current']);
- //  $this->updateSet($set);
- // echo "<pre>"; print_r($set);exit;
-if(date('H') == $set['returntime'])
-{
-	if(!isset($set['current']) || $set['current'] !=date('d')){
-
-		$data  = array_merge($set, array('current'=>date('d')));
-		$this->updateSet($data);
-		$isexecute = true;
+// $set = $this->getSet($set);
+// echo "<pre>";print_r($set);exit;
+//ignore_user_abort();
+set_time_limit(0);
+//echo $_W['uniacid'];
+$sets = pdo_fetchall('select uniacid from ' . tablename('sz_yi_sysset'));
+foreach ($sets as $val) {
+	$_W['uniacid'] = $val['uniacid'];
+	if (empty($_W['uniacid'])) {
+		continue;
 	}
-}
 
-if($set["isreturn"] && $isexecute){
+	$set = m('plugin')->getpluginSet('return', $_W['uniacid']);
+	if(!empty($set))
+	{
 
-	p('return')->getmoney($set['orderprice'],$_W['uniacid']);
-
-	//昨天成交金额
-	$daytime = strtotime(date("Y-m-d 00:00:00"));
-	    $stattime = $daytime - 86400;
-	    $endtime = $daytime - 1;
-	$sql = "select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}  ORDER BY o.finishtime DESC,o.status DESC";
-	$ordermoney = pdo_fetchcolumn($sql);
-	$ordermoney = floatval($ordermoney);
-
-	$r_ordermoney = $ordermoney * $set['percentage'] / 100;//可返利金额
-
-
-	//返利队列
-	$data_money = pdo_fetchall("select * from " . tablename('sz_yi_return') . " where uniacid = '". $_W['uniacid'] ."' and status = 0");
-	$r_each = $r_ordermoney / count($data_money);//每个队列返现金额
-	$r_each = sprintf("%.2f", $r_each);
-
-	foreach ($data_money as $key => $value) {
-		
-		$member = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid = '". $_W['uniacid'] ."' and id = '".$value['mid']."'");
-		
-		if(($value['money']-$value['return_money']) < $r_each){
-			pdo_update('sz_yi_return', array('return_money'=>$value['money'],'status'=>'1'), array('id' => $value['id'], 'uniacid' => $_W['uniacid']));
-			m('member')->setCredit($member['openid'],'credit2',$value['money']-$value['return_money']);
-
-			$messages = array(
-				'keyword1' => array('value' => '返现通知', 
-					'color' => '#73a68d'),
-					'keyword2' => array('value' => '本次返现金额'.$value['money']-$value['return_money']."元！",
-									'color' => '#73a68d'
-					 ),
-					'keyword3' => array('value' => '此返单已经全部返现完成！',
-									'color' => '#73a68d'
-					 )
-				);
-			m('message')->sendCustomNotice($member['openid'], $messages);
-
-		}else
+		$isexecute = false;
+		if($set['returnlaw']==1)
 		{
-			pdo_update('sz_yi_return', array('return_money'=>$value['return_money']+$r_each), array('id' => $value['id'], 'uniacid' => $_W['uniacid']));
-			m('member')->setCredit($member['openid'],'credit2',$r_each);
-			$messages = array(
-				'keyword1' => array('value' => '返现通知', 
-					'color' => '#73a68d'),
-					'keyword2' => array('value' => '本次返现金额'.$r_each,
-									'color' => '#73a68d'
-					 ),
-					'keyword3' => array('value' => '此返单剩余返现金额'.$value['money']-$value['return_money']+$r_each,
-									'color' => '#73a68d'
-					 )
-				);
-			m('message')->sendCustomNotice($member['openid'], $messages);
+			if(date('H') == $set['returntime'])
+			{
+				if(!isset($set['current_d']) || $set['current_d'] !=date('d')){
+					//$data  = array_merge($set, array('current_d'=>date('d')));
+					$set['current_d'] = date('d');
+					$this->updateSet($set);
+					$isexecute = true;
+				}
+			}
+		}elseif($set['returnlaw']==2){
+			if(!isset($set['current_m']) || $set['current_m'] !=date('m')){
+				//$data  = array_merge($set, array('current_m'=>date('m')));
+				$set['current_m'] = date('m');
+				$this->updateSet($set);
+				$isexecute = true;
+			}
+		}
+		if(($set["isreturn"]||$set["isqueue"]) && $isexecute){
+
+			//p('return')->getmoney($set['orderprice'],$_W['uniacid']);
+			if($set["returnrule"]==1)
+			{
+				//单笔订单
+				p('return')->setOrderReturn($set,$_W['uniacid']);
+			}else{
+				//订单累计金额
+				p('return')->setOrderMoneyReturn($set,$_W['uniacid']);
+
+			}
+			echo "<pre>"; print_r('成功');
+
+		}else{
+			echo "<pre>"; print_r('失败');
 		}
 
+		
+
 	}
+	
 }
+echo "ok...";
+
+
+
+ // 	unset($set['current_d']);
+ // unset($set['current_m']);
+ // 	$this->updateSet($set);
+ 
+
 //定时任务 执行地址
 //http://yu.gxzajy.com/app/index.php?i=19&c=entry&method=task&p=return&m=sz_yi&do=plugin

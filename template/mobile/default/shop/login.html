@@ -1,0 +1,71 @@
+{template 'common/sp_header'}
+{template 'common/navigation'}
+<title>供应商登录</title>
+<style type="text/css">
+    body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearance:none;}
+    .info_sub {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+    .register {height:44px; margin:14px 5px; background:#ccc; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+    .select { border:1px solid #ccc;height:25px;}
+    .forget {color: #999;padding: 10px 20px 0 0;float: right;};
+</style>
+<div class="fl wfs bcf7">
+  <div class="regist-process-wrapper">
+    <div class="regist-process-body fl wfs">
+        <div class="regist-process-login-left fl">
+          <h2 class="title">供应商登录</h2>
+          <input class="form-control text" type="text" id='username' placeholder=""  value="" />
+          <input class="form-control text" type="password" id='password' placeholder=""  value="" />
+          <input class="btn btn-danger login-btn" id="sub" type="button" name="submit" value="登录" />
+        <div class="operates fl wfs">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script language="javascript">
+
+    require(['tpl', 'core'], function(tpl, core) {
+        $('#container').html(tpl('member_info'));
+            $('.register').click(function(){
+                location.href = "{php echo $this->createMobileUrl('member/register')}";
+            });
+
+            $('.forget').click(function(){
+              location.href = "{php echo $this->createMobileUrl('member/forget')}";
+            });
+            
+            $('#sub').click(function() {
+                  if($('#username').isEmpty()){
+                       core.tip.show('请输入用户名!');
+                       return;
+                  }
+                  if( $('#password').isEmpty()){
+                       core.tip.show('请输入密码!');
+                       return;
+                  }
+                  
+                    core.json('shop/login', {
+                       'userdata':{
+                            'username': $('#username').val(),
+                            'password': $('#password').val()
+                           } 
+                       }, function(json) {
+                        if(json.status==1){
+                             core.tip.show('登录成功');
+                             location.href=json.result.preurl;
+                        }
+                        if(json.status==0){
+                            core.tip.show('用户不存在或密码错误!');
+                        }
+                        if(json.status==3){
+                            core.tip.show('供应商插件未开启!');
+                        }
+                    },true,true);
+                });
+
+
+    })
+</script>
+</div>
+</body>
+</html>

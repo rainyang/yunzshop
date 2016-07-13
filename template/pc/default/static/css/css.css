@@ -1441,13 +1441,14 @@ cursor: pointer;
 .allsortgood ul li:hover .libg-zz{ display:block}
 .libg-zz{ width:96%;height:100%;background:rgba(0,0,0,.2);position:absolute;left:0;top:0;filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#33000000,endColorstr=#33000000);display:none;}
 .libg-zz a{width:40%;height:36px;background:#e72119;color:#fff;text-align:center;line-height:36px;display:block;position:absolute;top:50%;left:50%;margin-top:-18px;margin-left:-20%}
-.bor-sort{ border:1px #e3e3e3 solid;width:100%;overflow: hidden;padding-bottom:10px;height: 306px;}
+.bor-sort{ border:1px #e3e3e3 solid;width:100%;overflow: hidden;padding-bottom:10px;height: 326px;}
 .img-pos{ text-align:center;}
 .img-pos img{max-height:236px;min-height:236px;margin:0 auto;}
 .sort-tit{ font-size:12px;color:#7e7e7e;padding:4px;display:block;width:100%;height: 42px}
-.bor-sort p{ padding:0 2%;line-height:18px}
-.bor-sort p em{ color:#dd0000;font-size:18px;float:left}
-.bor-sort p i{float:right;font-size:12px;color:#2a2a2a;}
+.bor-sort p{ padding:0 2%;line-height:20px}
+.bor-sort p em{ color:#dd0000;font-size:16px;float:left}
+.bor-sort p span{text-decoration: line-through;}
+.bor-sort p i{float:left;font-size:12px;color:#2a2a2a;}
 .bor-sort p i b{color:#E72119;font-size:12px;}
 /*购物车*/
 .cart-main .cart-thead {

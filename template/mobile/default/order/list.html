@@ -11,13 +11,13 @@
     .order_main .title span {height:42px; width:auto; float:right; color:#ff771b;}
    
 
-    .order_main .good {height:50px; width:100%; padding:10px 0px; border-bottom:1px solid #eaeaea;}
+    .order_main .good {height:50px; width:100%; padding:10px 0px; border-bottom:1px solid #eaeaea;overflow: hidden;}
     .order_main .good .img {height:50px; width:50px; float:left;}
     .order_main .good  .img img {height:100%; width:100%;}
     .order_main .good  .info {width:100%;float:left; margin-left:-50px;margin-right:-60px;}
     .order_main .good .info .inner { margin-left:60px;margin-right:60px; }
-    .order_main .good .info .inner .name {height:32px; width:100%; float:left; font-size:12px; color:#555;overflow:hidden;}
-    .order_main .good .info .inner .option {height:18px; width:100%; float:left; font-size:12px; color:#888;overflow:hidden;word-break: break-all}
+    .order_main .good .info .inner .name {height:32px; width:100%; float:left; font-size:12px; color:#555;overflow:hidden;line-height: 16px}
+    .order_main .good .info .inner .option {height:18px; width:100%; float:left; font-size:12px; color:#888;overflow:hidden;word-break: break-all;l}
     .order_main .good span { color:#666;}
     .order_main .good  .price { float:right;width:60px;;height:54px;margin-left:-60px;;}
     .order_main .good  .price .pnum { height:20px;width:100%;text-align:right;font-size:14px; }
@@ -61,21 +61,26 @@
     <%each list as order%>
     <div class="order_main" data-orderid="<%order.id%>">
         <div class="title">订单号：<%order.ordersn%><span><%order.statusstr%></span></div>
-        <%each order.goods as g%>      
-        <div class="good">
-            <div class="img"  onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'"><img src="<%g.thumb%>"/></div>
-            <div class='info' onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
-                <div class='inner'>
-                       <div class="name"><%g.title%></div>     
-                       <div class='option'><%if g.optionid!='0'%>规格:  <%g.optiontitle%><%/if%></div>
+          <%each order.goods as g%>      
+            <div class="good">
+              <%if order.cashier==1%>
+                <div class="img"  ><img src="<%order.name.thumb%>"/></div>
+                <div class='info' >
+              <%else%>
+                <div class="img" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'"><img src="<%g.thumb%>"/></div>
+                <div class='info'onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
+              <%/if%>  
+                    <div class='inner'>
+                           <div class="name"><%if order.cashier==1%><%order.name.name%><span style="color:red">(收银台支付)</span><%else%><%g.title%><%/if%></div>     
+                           <div class='option'><%if g.optionid!='0'%>规格:  <%g.optiontitle%><%/if%></div>
+                    </div>
+                </div>
+                <div class="price">
+                    <div class='pnum'><span class='marketprice'>￥<%g.price%></span></div>
+                    <div class='pnum'><span class='total'>×<%g.total%></span></div>
                 </div>
             </div>
-            <div class="price">
-                <div class='pnum'><span class='marketprice'>￥<%g.price%></span></div>
-                <div class='pnum'><span class='total'>×<%g.total%></span></div>
-            </div>
-        </div>
-        <%/each%>
+          <%/each%>
         <div class="info1">共 <%order.goodscount%> 件商品&nbsp;实付：<span>￥<%order.price%></span></div>
         <div class="sub">
             <%if order.status==0%>
@@ -114,11 +119,7 @@
                    <div class="sub2 order_delete">删除订单</div>
             <%/if%>
                <%if order.canrefund%>
-                    <%if order.refundid!=0%>
-                    <div class="sub1 order_refund">退款申请中</div>
-                    <%else%>
-                    <div class="sub1 order_refund">申请退款</div>
-                  <%/if%>
+                    <div class="sub1 order_refund"><%order.refund_button%></div>
             <%/if%>
       
 

@@ -6,6 +6,10 @@ global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if ($operation == 'category') {
 	$category = m('shop')->getCategory();
+	$category2 = m('shop')->getCategory2();
+	show_json(1, array('category' => $category,'category2'=>$category2));
+} else if($operation == 'category2'){
+	$category = m('shop')->getCategory2();
 	show_json(1, array('category' => $category));
 } else if ($operation == 'areas') {
 	$areas = m('cache')->getArray('areas', 'global');

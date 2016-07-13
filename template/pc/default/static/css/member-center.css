@@ -78,12 +78,12 @@ a{cursor: pointer;}
 }
 
 /*顶部 css*/
-.top {
+.top-head {
     line-height: 40px;
     color: #fff;
     background-color: #192229;
 }
-.top .right a {
+.top-head .right a {
     padding-left: 5px;
     color: #fff;
 }

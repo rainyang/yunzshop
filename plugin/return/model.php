@@ -9,32 +9,186 @@ if (!class_exists('ReturnModel')) {
 		public function getSet()
 		{
 			$_var_0 = parent::getSet();
-
 			return $_var_0;
 		}
+		public function setGoodsQueue($orderid,$_var_0=array(),$uniacid='') {
 
+			$order_goods = pdo_fetchall("SELECT og.orderid,og.goodsid,og.total,og.price,g.isreturnqueue,o.openid,m.id as mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
+				array(':orderid' => $orderid,':uniacid' => $uniacid
+			));
+		
+			foreach($order_goods as $good){
+				if($good['isreturnqueue'] == 1){
+
+					$goods_queue = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$uniacid." and goodsid = ".$good['goodsid']." order by queue desc limit 1" );
+					$queuemessages = '';
+					for ($i=1; $i <= $good['total'] ; $i++) { 
+						$queue = $goods_queue['queue']+$i;
+						$queuemessages .= $queue."、";
+						$data = array(
+		                    'uniacid' 	=> $uniacid,
+		                    'openid' 	=> $good['openid'],
+		                    'goodsid' 	=> $good['goodsid'],
+		                    'orderid' 	=> $good['orderid'],
+		                    'price' 	=> $good['price']/$good['total'],
+		                    'queue' 	=> $queue,
+		                    'create_time' 	=> time()
+		                    );
+		                pdo_insert('sz_yi_order_goods_queue',$data);
+		                $queueid = pdo_insertid();
+
+						if(!($queue%$_var_0['queue']))
+						{
+							$queue = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$uniacid." and goodsid = ".$good['goodsid']." and status = 0 order by queue asc limit 1" );
+
+							pdo_update('sz_yi_order_goods_queue', array('returnid'=>$queueid,'status'=>'1'), array('id' => $queue['id'], 'uniacid' => $uniacid));
+							m('member')->setCredit($queue['openid'],'credit2',$queue['price']);
+
+							$messages = array(
+								'keyword1' => array('value' => '排列返现通知',
+									'color' => '#73a68d'),
+								'keyword2' => array('value' => '本次返现金额'.$queue['price']."元！",
+									'color' => '#73a68d'),
+								'keyword3' => array('value' => '排列返现完成！',
+									'color' => '#73a68d')
+								);
+							m('message')->sendCustomNotice($queue['openid'], $messages);
+						}
+
+					}
+
+						$queue_messages = array(
+							'keyword1' => array('value' => '加入排列通知',
+								'color' => '#73a68d'),
+							'keyword2' => array('value' => "您已加入排列，排列号为".$queuemessages."号！",
+								'color' => '#73a68d'),
+							'keyword3' => array('value' => '加入排列完成，请等待返现！',
+								'color' => '#73a68d')
+							);
+						m('message')->sendCustomNotice($good['openid'], $queue_messages);
+				}
+			}
+
+		}
+		public function setMembeerLevel($orderid,$_var_0=array(),$uniacid='') {
+
+			$order_goods = pdo_fetchall("SELECT og.price,og.total,g.isreturn,g.returns,o.openid,m.id as mid ,m.level FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
+				array(':orderid' => $orderid,':uniacid' => $uniacid
+			));	
+			foreach ($order_goods as $key => $value) {
+				$discounts = json_decode($value['returns'],true);
+				if($value['level'] == '0')
+				{
+					$money += $discounts['default']?$discounts['default']*$value['total']:'0';
+				}else
+				{
+					$money += $discounts['level'.$value['level']]?$discounts['level'.$value['level']]*$value['total']:'0';
+				}
+			}
+			if( $money > 0 )
+			{
+				$data = array(
+					'uniacid' => $uniacid,
+	                'mid' => $order_goods[0]['mid'],
+	                'openid' => $order_goods[0]['openid'],
+	                'money' => $money,
+	                'status' => 1,
+	                'returntype' => 1,
+					'create_time'	=> time()
+                );
+				pdo_insert('sz_yi_return_log', $data);
+
+				m('member')->setCredit($order_goods[0]['openid'],'credit2',$money);
+				$text = "您的订单(".$orderid.")已返现完成。";
+				$_var_156 = array(
+					'keyword1' => array('value' => '购物返现通知', 'color' => '#73a68d'), 
+					'keyword2' => array('value' => '[返现金额]'.$money.'元,已存到您的余额', 'color' => '#73a68d'),
+					'remark' => array('value' => $text)
+				);
+	        	m('message')->sendCustomNotice($order_goods[0]['openid'], $_var_156);
+			}
+			
+			
+		}
 		public function cumulative_order_amount($orderid) {
-			global $_W;
+			global $_W, $_GPC;
 			$_var_0 = $this->getSet();
+
+			//会员等级返现
+			if($_var_0['islevelreturn'])
+			{
+				$this->setMembeerLevel($orderid,$_var_0,$_W['uniacid']);
+			}
+
+			
+			//排列全返
+			if($_var_0['isqueue'])
+			{
+				$this->setGoodsQueue($orderid,$_var_0,$_W['uniacid']);
+			}
 			if ($_var_0['isreturn'] == 1) {
 				if (empty($orderid)) {
 					return false;
 				}
-				$order_goods = pdo_fetchall("SELECT og.price,g.isreturn,o.openid,m.id as mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid",
+				$order_goods = pdo_fetchall("SELECT og.price,g.isreturn,o.openid,m.id as mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
 					array(':orderid' => $orderid,':uniacid' => $_W['uniacid']
 				));
-				//print_r($order_goods);exit;
 				$order_price = 0;
+				$is_goods_return = false;
 				foreach($order_goods as $good){
  					if($good['isreturn'] == 1){
  						$order_price += $good['price'];
+ 						$is_goods_return = true;
  					}
+				}
+				//商品 没有开启全返 返回
+				if(!$is_goods_return)
+				{
+					return false;
 				}
 				if (empty($order_goods)) {
 					return false;
 				}
+				if($_var_0['returnrule'] == 1)
+				{
+					$this->setOrderRule($order_goods,$order_price,$_var_0,$_W['uniacid']);
+				}elseif($_var_0['returnrule'] == 2)
+				{
+					$this->setOrderMoneyRule($order_goods,$order_price,$_var_0,$_W['uniacid']);
+				}
+				
+
+			}
+			
+		}
+
+		//单笔订单
+		public function setOrderRule($order_goods,$order_price,$_var_0=array(),$uniacid='')
+		{
+
+
+			$data = array(
+                'mid' => $order_goods[0]['mid'],
+                'uniacid' => $uniacid,
+                'money' => $order_price,
+                'returnrule' => $_var_0['returnrule'],
+				'create_time'	=> time()
+                );
+			pdo_insert('sz_yi_return', $data);
+			$text = "您的订单以加入全返机制，等待全返。";
+			$_var_156 = array(
+				'keyword1' => array('value' => '订单全返通知', 'color' => '#73a68d'), 
+				'keyword2' => array('value' => '[订单返现金额]'.$return_money, 'color' => '#73a68d'),
+				'remark' => array('value' => $text)
+			);
+        	m('message')->sendCustomNotice($order_goods[0]['openid'], $_var_156);
+
+		}
+		//订单累计金额
+		public function setOrderMoneyRule($order_goods,$order_price,$_var_0=array(),$uniacid='')
+		{
 				$return = pdo_fetch("SELECT * FROM " . tablename('sz_yi_return_money') . " WHERE mid = :mid and uniacid = :uniacid",
-					array(':mid' => $order_goods[0]['mid'],':uniacid' => $_W['uniacid']
+					array(':mid' => $order_goods[0]['mid'],':uniacid' => $uniacid
 				));
 				if (!empty($return)) {
 					$returnid = $return['id'];
@@ -47,15 +201,17 @@ if (!class_exists('ReturnModel')) {
 				} else {
 					$data = array(
 	                    'mid' => $order_goods[0]['mid'],
-	                    'uniacid' => $_W['uniacid'],
+	                    'uniacid' => $uniacid,
 	                    'money' => $order_price,
 	                    );
 	                pdo_insert('sz_yi_return_money',$data);
 	                $returnid = pdo_insertid();
 				}
 				$return_money = pdo_fetchcolumn("SELECT money FROM " . tablename('sz_yi_return_money') . " WHERE id = :id and uniacid = :uniacid",
-					array(':id' => $returnid,':uniacid' => $_W['uniacid']
+					array(':id' => $returnid,':uniacid' => $uniacid
 				));
+				$this->setmoney($_var_0['orderprice'],$_var_0,$uniacid);
+
 				if ($return_money >= $_var_0['orderprice']) {
 					$text = "您的订单累计金额已经超过".$_var_0['orderprice']."元，每".$_var_0['orderprice']."元可以加入全返机制，等待全返。";
 				} else {
@@ -67,13 +223,125 @@ if (!class_exists('ReturnModel')) {
 					'remark' => array('value' => $text)
 				);
 	        	m('message')->sendCustomNotice($order_goods[0]['openid'], $_var_156);
-				return $returnid;
+			
+		}
+		
+		//单笔订单返现
+		public function setOrderReturn($_var_0=array(),$uniacid=''){
+
+
+			//返利队列
+			$data_money = pdo_fetchall("select * from " . tablename('sz_yi_return') . " where uniacid = '". $uniacid ."' and status = 0 and returnrule = '".$_var_0['returnrule']."'");
+			$return_mes = array();
+			foreach ($data_money as $key => $value) {
+				$r_each = $value['money'] * $_var_0['percentage'] / 100;//可返利金额
+				
+				$member = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid = '". $uniacid ."' and id = '".$value['mid']."'");
+
+				if(($value['money']-$value['return_money']) < $r_each){
+					pdo_update('sz_yi_return', array('return_money'=>$value['money'],'status'=>'1'), array('id' => $value['id'], 'uniacid' => $uniacid));
+					m('member')->setCredit($member['openid'],'credit2',$value['money']-$value['return_money']);
+
+					$return_mes[$member['openid']][$key]['return_money_totle']= $value['money']-$value['return_money'];
+		
+
+				}else
+				{
+					pdo_update('sz_yi_return', array('return_money'=>$value['return_money']+$r_each), array('id' => $value['id'], 'uniacid' => $uniacid));
+					m('member')->setCredit($member['openid'],'credit2',$r_each);
+
+					$surplus = $value['money']-$value['return_money']-$r_each;
+
+					$return_mes[$member['openid']][$key]['return_money_totle']= $r_each;
+					$return_mes[$member['openid']][$key]['surplus_money_totle']= $surplus;
+				}
 			}
 			
+			foreach ($return_mes as $key => $list) {
+					$return_money_totle = 0;
+					$surplus_money_totle = 0;
+				foreach ($list as $k => $v) {
+					$return_money_totle += $v['return_money_totle'];
+					$surplus_money_totle += $v['surplus_money_totle'];
+				}
+				if($return_money_totle > 0)
+				{
+					$messages = array(
+						'keyword1' => array(
+							'value' => '返现通知',
+							'color' => '#73a68d'),
+						'keyword2' =>array(
+							'value' => '本次返现金额'.$return_money_totle."元",
+							'color' => '#73a68d'),
+						'keyword3' => array(
+							'value' => "此返单剩余返现金额".$surplus_money_totle."元",
+							'color' => '#73a68d')
+						);
+					m('message')->sendCustomNotice($key, $messages);
+				}
+			}
+
+		}
+
+		//订单累计金额返现
+		public function setOrderMoneyReturn($_var_0=array(),$uniacid=''){
+
+
+			//昨天成交金额
+			$daytime = strtotime(date("Y-m-d 00:00:00"));
+			$stattime = $daytime - 86400;
+			$endtime = $daytime - 1;
+			$sql = "select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$uniacid} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}  ORDER BY o.finishtime DESC,o.status DESC";
+			$ordermoney = pdo_fetchcolumn($sql);
+			$ordermoney = floatval($ordermoney);
+			$r_ordermoney = $ordermoney * $_var_0['percentage'] / 100;//可返利金额
+$r_ordermoney=1000;
+			//返利队列
+			$queue_count = pdo_fetchcolumn("select count(1) from " . tablename('sz_yi_return') . " where uniacid = '". $uniacid ."' and status = 0 and returnrule = '".$_var_0['returnrule']."'");
+			if($r_ordermoney>0 && $queue_count)
+			{
+				$r_each = $r_ordermoney / $queue_count;//每个队列返现金额
+				$r_each = sprintf("%.2f", $r_each);
+				$current_time = time();
+
+				// $unfinished_record = pdo_fetchall("SELECT mid,count(1) as count FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - return_money) > '".$r_each."' and returnrule = '".$_var_0['returnrule']."' group by mid ");
+
+				// $finished_record = pdo_fetchall("SELECT mid,count(1) as count FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - `return_money`) <= '".$r_each."' and returnrule = '".$_var_0['returnrule']."'  group by mid");
+
+				pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + '".$r_each."',last_money = '".$r_each."',updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and (money - `return_money`) > '".$r_each."' and returnrule = '".$_var_0['returnrule']."' ");
+
+				pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and (money - `return_money`) <= '".$r_each."' and returnrule = '".$_var_0['returnrule']."' ");
+
+				$return_record = pdo_fetchall("SELECT sum(r.money) as money, sum(r.return_money) as return_money, sum(r.last_money) as last_money,m.openid,count(r.id) as count  FROM " . tablename('sz_yi_return') . " r 
+					left join " . tablename('sz_yi_member') . " m on (r.mid = m.id) 
+				 WHERE r.uniacid = '". $uniacid ."' and r.updatetime = '".$current_time."' and r.returnrule = '".$_var_0['returnrule']."'  group by r.mid");
+				foreach ($return_record as $key => $value) {
+					if($value['last_money'] > 0)
+					{
+						$return_money_totle = $value['last_money'];
+						$surplus_money_totle = $value['money']-$value['return_money'];
+
+						m('member')->setCredit($value['openid'],'credit2',$return_money_totle);
+
+						$messages = array(
+							'keyword1' => array(
+								'value' => '返现通知',
+								'color' => '#73a68d'),
+							'keyword2' =>array(
+								'value' => '本次返现金额'.$return_money_totle."元",
+								'color' => '#73a68d'),
+							'keyword3' => array(
+								'value' => "此返单剩余返现金额".$surplus_money_totle."元",
+								'color' => '#73a68d')
+							);
+						m('message')->sendCustomNotice($value['openid'], $messages);
+					}
+				}		
+			}
 		}
 
 		// 查询可参加返利的 加入返利队列
-		public function getmoney($orderprice,$uniacid){
+		public function setmoney($orderprice,$_var_0=array(),$uniacid=''){
 
 			$data_money = pdo_fetchall("select * from " . tablename('sz_yi_return_money') . " where uniacid = '". $uniacid . "' and money >= '" . $orderprice . "' ");
 			if($data_money){
@@ -83,13 +351,14 @@ if (!class_exists('ReturnModel')) {
 							'uniacid' 		=> $value['uniacid'],
 							'mid' 			=> $value['mid'],
 							'money' 		=> $orderprice,
+							'returnrule' => $_var_0['returnrule'],
 							'create_time'	=> time()
 							 );
 						pdo_insert('sz_yi_return', $data);
 						pdo_update('sz_yi_return_money', array('money'=>$value['money']-$orderprice), array('id' => $value['id'], 'uniacid' => $uniacid));	
 					}
 				}
-				$this->getmoney($orderprice,$uniacid);
+				$this->setmoney($orderprice,$_var_0,$uniacid);
 			}
 
 		}

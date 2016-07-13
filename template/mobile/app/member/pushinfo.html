@@ -1,0 +1,17 @@
+{template 'common/header'}
+<title>详情</title>
+<link rel="stylesheet" href="../addons/sz_yi/template/mobile/app/static/css/fenxiao.css" />
+<section>
+    <div class="cart_top">
+        <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> 详情</div>
+    </div>
+    <div class="fenxwap">
+        <div class="yznews-detail">
+            <h1 style="font-weight: bold;"><?php echo $info['name'] ?></h1>
+            <time><?php echo $info['time'] ?></time>
+            <p><?php echo $info['content'] ?></p>
+        </div>
+    </div>
+</section>
+{php $show_footer=true;$footer_current ='first'}
+{template 'common/footer'}

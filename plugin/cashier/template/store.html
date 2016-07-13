@@ -1,0 +1,580 @@
+{template 'web/_header'}
+<div class="w1200 m0a">
+{template 'tabs'}
+<div class="rightlist">
+
+{if $operation == 'display'}
+<div class="panel panel-info">
+    <div class="panel-heading">筛选</div>
+    <div class="panel-body">
+        <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
+            <input type="hidden" name="c" value="site" />
+            <input type="hidden" name="a" value="entry" />
+            <input type="hidden" name="m" value="sz_yi" />
+            <input type="hidden" name="do" value="plugin" />
+            <input type="hidden" name="p" value="cashier" />
+            <input type="hidden" name="method" value="store" />
+            <input type="hidden" name="op" value="display" />
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">商户信息</label>
+                <div class="col-sm-8 col-lg-9 col-xs-12">
+                    <input type="text" class="form-control" name="keyword" value="{$_GPC['keyword']}" placeholder="可搜索店名/联系人/电话/地址"> 
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
+                <div class="col-sm-8 col-lg-9 col-xs-12">
+                    <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                    <input type="hidden" name="token" value="{$_W['token']}" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="clearfix">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            总数：{$total}
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover" style="overflow:visible;">
+                <thead class="navbar-inner">
+                    <tr>
+                        <th style="width:80px;">商户ID</th>
+                        <th style="width:100px;">商户</th>
+                        <th style="width:80px;">联系人</th>
+                        <th style="width:100px;">电话</th>
+                        <th style="width:120px;">地址</th>
+                        <th style="width:100px;">绑定微信</th>
+                        <th style="width:100px;">操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {loop $list $row}
+                    <tr>
+                        <td>{$row['id']}</td>
+                        <td>{$row['name']}</td>
+                        <td>{$row['contact']}</td>
+                        <td>{$row['mobile']}</td>
+                        <td>{$row['address']}</td>
+                        <td>{$row['member_id']}</td>
+                        <td>
+                            {ifp 'cashier.store.qrcode'} 
+                                <a class="btn btn-default btn-sm" href="{php echo $this->createPluginWebUrl('cashier/store/qrcode', array('id' => $row['id']));}" title="获取二维码" ><i class='fa fa-qrcode'></i></a>
+                            {/if}
+                            {ifp 'cashier.store.edit'} 
+                                <a class="btn btn-default btn-sm" href="{php echo $this->createPluginWebUrl('cashier/store/post',array('id' => $row['id']));}" title="编辑" ><i class='fa fa-edit'></i></a>
+                            {/if}
+                            {ifp 'cashier.store.delete'}
+                                <a class="btn btn-default btn-sm" href="{php echo $this->createPluginWebUrl('cashier/store/delete',array('id' => $row['id']));}" title="删除" onclick="return confirm('确定要删除该商户吗？');"><i class='fa fa-remove'></i></a>
+                            {/if}
+                        </td>
+                    </tr>
+                    {/loop}
+                </tbody>
+            </table>
+            {$pager}
+        </div>
+        <div class="panel-footer">
+            {ifp 'cashier.store.add'}  
+            <a class="btn btn-default" href="{php echo $this->createPluginWebUrl('cashier/store',array('op'=>'post'))}"><i class="fa fa-plus"></i> 添加商户</a>
+            {/if}
+        </div>
+    </div>
+</div>
+{else if $operation == 'post'}
+<form {ife 'cashier.store.edit' $item}action="" method="post"{/if} class="form-horizontal">
+    <input type="hidden" name="id" value="{$item['id']}">
+    <input type="hidden" name="c" value="site">
+    <input type="hidden" name="a" value="entry">
+    <input type="hidden" name="m" value="sz_yi">
+    <input type="hidden" name="p" value="cashier">
+    <input type="hidden" name="method" value="store">
+    <input type="hidden" name="op" value="post">
+    <div class="panel panel-default">
+        <div class="panel-heading">编辑商户</div>
+        <div class="panel-body">
+            <div class="alert alert-info">
+                <p>可以只填写商户名称和绑定的微信号，其他设置项，绑定的微信用户可以在用户中心进行设置！</p>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>商户名称</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="text" name="name" id="name" class="form-control" value="{$item['name']}">
+                    {else}
+                        <div class='form-control-static'>{$item['name']}</div>
+                    {/if}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>绑定管理员微信</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="hidden" class="form-control" id="member_id" name="member_id" value="{$item['member_id']}" />
+                        <div class='input-group' style='border:none;'>
+                        <input type="text" class="form-control" id="member" value="{if !empty($member)}{$member['nickname']}{/if}" readonly />
+                        <div class="input-group-btn">
+                            <button type="button" onclick="$('#modal-members').modal()" class="btn btn-default" >选择会员</button>
+                            {if $id}
+                            <button type="button" id="insert_waiter" class="btn btn-default" >管理店员</button>
+                            {/if}
+                        </div>
+                        </div>
+                    {else}
+                        <div class='form-control-static'>{$item['wechat']}</div>
+                    {/if}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">商户LOGO</label>
+                <div class="col-sm-9 col-xs-12 detail-logo">
+                         {ife 'shop.goods' $item}
+                    {php echo tpl_form_field_image('thumb', $item['thumb'])}
+                    <span class="help-block">建议尺寸: 640 * 640 ，或正方型图片 </span>
+                      {else}
+                                        {if !empty($item['thumb'])}
+                                        <a href='{php echo tomedia($item['thumb'])}' target='_blank'>
+                                        <img src="{php echo tomedia($item['thumb'])}" style='width:100px;border:1px solid #ccc;padding:1px' />
+                                         </a>
+                                        {/if}
+                                    {/if}
+                </div>
+            </div>
+                        <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">联系人</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="text" name="contact" class="form-control" value="{$item['contact']}">
+                    {else}
+                        <div class='form-control-static'>{$item['contact']}</div>
+                    {/if}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">电话</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="text" name="mobile" class="form-control" value="{$item['mobile']}">
+                    {else}
+                        <div class='form-control-static'>{$item['mobile']}</div>
+                    {/if}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">地址</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="text" name="address" class="form-control" value="{$item['address']}">
+                    {else}
+                        <div class='form-control-static'>{$item['address']}</div>
+                    {/if}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">下单时是否填写联系人信息</label>
+                <div class="col-sm-9 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="iscontact" value="0" {if $item['iscontact'] ==0} checked="checked"{/if} /> 否</label>
+                    <label class="radio-inline"><input type="radio"  name="iscontact" value="1" {if $item['iscontact'] ==1} checked="checked"{/if} /> 是</label>
+                    
+                </div>
+            </div>
+        </div>
+        <div class='panel-heading'>
+            抵扣设置
+        </div>
+        <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">抵扣设置</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="input-group">
+                        <span class="input-group-addon">允许使用的积分百分比</span>
+                        {ife 'cashier.store' $item}
+                            <input type="text" name="deduct_credit1" class="form-control" value="{$item['deduct_credit1']}">
+                        {else}
+                            <div class='form-control-static'>{$item['deduct_credit1']}</div>
+                        {/if}
+                        <span class="input-group-addon">允许使用的余额百分比</span>
+                        {ife 'cashier.store' $item}
+                            <input type="text" name="deduct_credit2" class="form-control" value="{$item['deduct_credit2']}">
+                        {else}
+                            <div class='form-control-static'>{$item['deduct_credit2']}</div>
+                        {/if}
+                    </div>
+                    <span class="help-block">此项要在"营销宝"插件里面开启抵扣设置才会生效!</span>
+                </div>
+            </div>
+        </div>    
+        <div class='panel-heading'>
+            结算规则
+        </div>
+        <div class='panel-body'>    
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">结算规则</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="input-group">
+                        <span class="input-group-addon">平台提成</span>
+                        {ife 'cashier.store' $item}
+                            <input type="text" name="settle_platform" class="form-control" value="{$item['settle_platform']}">
+                            <div class="input-group-addon">%</div>
+                            
+
+                        {else}
+                            <div class='form-control-static'>{$item['settle_platform']}</div>
+                        {/if}
+<!--                          <span class="input-group-addon ">商家比例</span>
+                        {ife 'cashier.store' $item}
+                            <input type="text" name="settle_store" class="form-control" value="{$item['settle_store']}">
+                        {else}
+                            <div class='form-control-static'>{$item['settle_store']}</div>
+                        {/if} -->
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">结算时扣除</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <div class="input-group">
+                            {ife 'cashier.store' $item}
+                             <label for="decommission" class="checkbox-inline" >
+                                <input type="checkbox" name="decommission" value="1" id="decommission" {if $item['decommission'] == 1}checked="true"{/if} /> 佣金
+                            </label>
+                            <label for="decredits" class="checkbox-inline">
+                                <input type="checkbox" name="decredits" value="1" id="decredits" {if $item['decredits'] == 1}checked="true"{/if} /> 奖励余额
+                            </label>
+                            <label for="deredpack" class="checkbox-inline" >
+                                <input type="checkbox" name="deredpack" value="1" id="deredpack" {if $item['deredpack'] == 1}checked="true"{/if} /> 奖励红包
+                            </label>
+                            {else}
+                            <div class='form-control-static'>{if $item['decommission'] == 1}扣除佣金{/if}{if $item['decredits'] == 1}扣除奖励积分{/if}{if $item['deredpack'] == 1}扣除奖励红包{/if}</div>
+                            {/if}
+                        </div>
+                         <span class="help-block">决定奖励费用由平台还是商家提供!</span>
+                         <span class="help-block" style="color:red">注:选项打勾则为商户提供!</span>
+                    </div>   
+            </div>    
+        </div>    
+        <div class='panel-heading'>
+            分销佣金设置
+        </div>
+        {if $com_set['level'] >= 1}
+        <div class='panel-body'>    
+            
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">佣金比例</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="input-group">
+                        {if $com_set['level'] >= 1}
+                        <span class="input-group-addon">一级分销</span>
+                        {ife 'cashier.store' $item}
+                            <input type="text" name="commission1_rate" class="form-control" value="{$item['commission1_rate']}">
+                        {else}
+                            <div class='form-control-static'>{$item['commission1_rate']}</div>
+                        {/if}
+                        {/if}
+                        {if $com_set['level'] >= 2}
+                        <span class="input-group-addon">二级分销</span>
+                        {ife 'cashier.store' $item}
+                            <input type="text" name="commission2_rate" class="form-control" value="{$item['commission2_rate']}">
+                        {else}
+                            <div class='form-control-static'>{$item['commission2_rate']}</div>
+                        {/if}
+                        {/if}
+                        {if $com_set['level'] >= 3}
+                        <span class="input-group-addon">三级分销</span>
+                        {ife 'cashier.store' $item}
+                            <input type="text" name="commission3_rate" class="form-control" value="{$item['commission3_rate']}">
+                        {else}
+                            <div class='form-control-static'>{$item['commission3_rate']}</div>
+                        {/if}
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {/if}    
+        <div class='panel-heading'>
+            奖励设置
+        </div>
+        <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分奖励百分比</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="text" name="credit1" class="form-control" value="{$item['credit1']}" placeholder="消费者在商家支付完成后，获得的积分奖励百分比">
+                    {else}
+                        <div class='form-control-static'>{$item['credit1']}</div>
+                    {/if}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额奖励百分比</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="text" name="creditpack" class="form-control" value="{$item['creditpack']}" placeholder="消费者在商家支付完成后，获得的余额奖励百分比">
+                    {else}
+                        <div class='form-control-static'>{$item['creditpack']}</div>
+                    {/if}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">红包奖励</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="input-group">
+                        <span class="input-group-addon">最小消费金额</span>
+                        {ife 'cashier.store' $item}
+                            <input type="text" name="redpack_min" class="form-control" value="{$item['redpack_min']}" placeholder="消费者在商家至少消费多少才会有红包奖励">
+                        {else}
+                            <div class='form-control-static'>{$item['redpack_min']}</div>
+                        {/if}
+                        <span class="input-group-addon">奖励百分比</span>
+                        {ife 'cashier.store' $item}
+                            <input type="text" name="redpack" class="form-control" value="{$item['redpack']}" placeholder="获得的红包奖励百分比">
+                        {else}
+                            <div class='form-control-static'>{$item['redpack']}</div>
+                        {/if}
+                    </div>
+                    <span class="help-block">微信红包要求发放金额不小于1元，所以请计算好，如订单最少100元才会发红包，那红包奖励百分比应至少为1，否则收不到红包</span>
+                </div>
+            </div>
+            {if $pcoupon}
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">赠送优惠券</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <select name="coupon_id" class="form-control">
+                            <option value="0">-请选择-</option>
+                            {loop $couponList $coupon}
+                                <option value="{$coupon['id']}" {if $coupon['id'] == $item['coupon_id']}selected="selected"{/if}>{$coupon['couponname']}</option>
+                            {/loop}
+                        </select>
+                    {else}
+                        <div class='form-control-static'>{$item['coupon_id']}</div>
+                    {/if}
+                </div>
+            </div>
+            {/if}
+        </div>    
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" onclick="return formcheck()" />
+                        <input type="hidden" name="token" value="{$_W['token']}" />
+                    {/if}
+                    <input type="button" name="back" onclick="history.back()" {ife 'coupon.coupon' $item}style="margin-left:10px;"{/if} value="返回列表" class="btn btn-default">
+                </div>
+            </div>
+        </div>
+    </div>
+</form>
+{else if $operation == 'waiter'}
+<div class="panel panel-info">
+    <div class="panel-heading">筛选</div>
+    <div class="panel-body">
+        <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
+            <input type="hidden" name="c" value="site" />
+            <input type="hidden" name="a" value="entry" />
+            <input type="hidden" name="m" value="sz_yi" />
+            <input type="hidden" name="do" value="plugin" />
+            <input type="hidden" name="p" value="cashier" />
+            <input type="hidden" name="method" value="store" />
+            <input type="hidden" name="op" value="waiter" />
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">店员信息</label>
+                <div class="col-sm-8 col-lg-9 col-xs-12">
+                    <input type="text" class="form-control" name="keyword" value="{$_GPC['keyword']}" placeholder="可搜索姓名/电话"> 
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
+                <div class="col-sm-8 col-lg-9 col-xs-12">
+                    <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                    <input type="hidden" name="token" value="{$_W['token']}" />
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="clearfix">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            总数：{$total}
+        </div>
+        <div class="panel-body">
+            <table class="table table-hover" style="overflow:visible;">
+                <thead class="navbar-inner">
+                    <tr>
+                        <th style="width:80px;">店员ID</th>
+                        <th style="width:80px;">店员姓名</th>
+                        <th style="width:100px;">电话</th>
+                        <th style="width:100px;">操作</th>
+                        <th style="width:100px;">创建时间</th>
+                        <th style="width:100px;">上次保存时间</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {loop $list $row}
+                    <tr>
+                        <td>{$row['id']}</td>
+                        <td>{$row['realname']}</td>
+                        <td>{$row['mobile']}</td>
+                        <td>{$row['createtime']}</td>
+                        <td>{$row['savetime']}</td>
+                        <td>
+                            {ifp 'cashier.store.edit'} 
+                                <a class="btn btn-default btn-sm" href="{php echo $this->createPluginWebUrl('cashier/store/post_waiter',array('id' => $row['id'] , 'sid' => $row['sid']));}" title="编辑" ><i class='fa fa-edit'></i></a>
+                            {/if}
+                            {ifp 'cashier.store.delete'}
+                                <a class="btn btn-default btn-sm" href="{php echo $this->createPluginWebUrl('cashier/store/delete_waiter',array('id' => $row['id'] , 'sid' => $row['sid']));}" title="删除" onclick="return confirm('确定要删除该店员吗？');"><i class='fa fa-remove'></i></a>
+                            {/if}
+                        </td>
+                    </tr>
+                    {/loop}
+                </tbody>
+            </table>
+            {$pager}
+        </div>
+        <div class="panel-footer">
+            {ifp 'cashier.store.add'}  
+            <a class="btn btn-default" href="{php echo $this->createPluginWebUrl('cashier/store/post_waiter',array('sid' => $id));}"><i class="fa fa-plus"></i> 添加店员</a>
+            {/if}
+        </div>
+    </div>
+</div>
+{else if $operation == 'post_waiter'}
+<form {ife 'cashier.store.edit' $item}action="" method="post"{/if} class="form-horizontal">
+    <input type="hidden" name="id" value="{$item['id']}">
+    <input type="hidden" name="c" value="site">
+    <input type="hidden" name="a" value="entry">
+    <input type="hidden" name="m" value="sz_yi">
+    <input type="hidden" name="p" value="cashier">
+    <input type="hidden" name="method" value="store">
+    <input type="hidden" name="op" value="post_waiter">
+    <div class="panel panel-default">
+        <div class="panel-heading">编辑店员信息</div>
+        <div class="panel-body">
+            <div class="alert alert-info">
+                
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>店员名称</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="text" name="realname" id="realname" class="form-control" value="{$item['realname']}">
+                    {else}
+                        <div class='form-control-static'>{$item['realname']}</div>
+                    {/if}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>绑定微信</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="hidden" class="form-control" id="member_id" name="member_id" value="{$item['member_id']}" />
+                        <div class='input-group' style='border:none;'>
+                        <input type="text" class="form-control" id="member" value="{if !empty($member)}{$member['nickname']}{/if}" readonly />
+                        <div class="input-group-btn">
+                            <button type="button" onclick="$('#modal-members').modal()" class="btn btn-default" >选择会员</button>
+                        </div>
+                        </div>
+                    {else}
+                        <div class='form-control-static'>{$item['wechat']}</div>
+                    {/if}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">电话</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="text" name="mobile" class="form-control" value="{$item['mobile']}">
+                    {else}
+                        <div class='form-control-static'>{$item['mobile']}</div>
+                    {/if}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" onclick="return formcheck1()" />
+                        <input type="hidden" name="token" value="{$_W['token']}" />
+                    {/if}
+                    <input type="button" name="back" onclick="history.back()" {ife 'coupon.coupon' $item}style="margin-left:10px;"{/if} value="返回列表" class="btn btn-default">
+                </div>
+            </div>
+
+        </div>
+        
+    </div>
+</form>
+{/if}
+</div>
+
+<div id="modal-members"  class="modal fade" tabindex="-1">
+    <div class="modal-dialog" style='width: 920px;'>
+        <div class="modal-content">
+            <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择会员</h3></div>
+            <div class="modal-body" >
+                <div class="row"> 
+                    <div class="input-group"> 
+                        <input type="text" class="form-control" name="keyword" value="" id="search-member" placeholder="请输入会员名" />
+                        <span class='input-group-btn'><button type="button" class="btn btn-default" onclick="search_member();">搜索</button></span>
+                    </div>
+                </div>
+                <div id="module-members" style="padding-top:5px;"></div>
+            </div>
+            <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
+        </div>
+    </div>
+</div>
+<script language='javascript'>
+$('#insert_waiter').click(function(){
+    location.href="{php echo $this->createPluginWebUrl('cashier/store', array('op' => 'waiter', 'id' => "$id"))}";
+});
+function formcheck() {
+    if ($("#name").isEmpty()) {
+        Tip.focus("#name", "请输入商户名!");
+        return false;
+    }
+    if ($('#member').isEmpty()) {
+        Tip.focus("#member", "请选择绑定的微信!");
+        return false;
+    }
+}
+function formcheck1() {
+    if ($("#realname").isEmpty()) {
+        Tip.focus("#realname", "请输入店员名!");
+        return false;
+    }
+    if ($('#member').isEmpty()) {
+        Tip.focus("#member", "请选择绑定的微信!");
+        return false;
+    }
+}
+function search_member() {
+    if ($.trim($('#search-member').val()) == '') {
+        Tip.focus('#search-member', '请输入关键词');
+        return;
+    }
+    $("#module-members").html("正在搜索....")
+    $.get('{php echo $this->createPluginWebUrl('cashier/store/getmembers')}', {
+        keyword: $.trim($('#search-member').val())
+    }, function (dat) {
+        $('#module-members').html(dat);
+    });
+}
+function select_member(o) {
+    $("#member_id").val(o.id);
+    $("#member").val(o.nickname);
+    $("#modal-members .close").click();
+}
+</script>
+
+{template 'web/_footer'}
+

@@ -1,5 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
+<div class="rightlist">
 {if $operation == 'post'}
     <form id="dataform" action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
         <div class='panel panel-default'>
@@ -296,4 +298,6 @@ $(function(){
         </div>
  
 {/if}
+</div>
+</div>
 {template 'common/footer'}

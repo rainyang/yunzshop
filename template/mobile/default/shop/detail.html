@@ -37,12 +37,12 @@ ul,li {padding:0px; margin:0px;}
 .good_shop .shop2 .sub1 {height:37px; width:47%; float:left; border:1px solid #e2e2e2; border-radius:3px; text-align:center; line-height:37px; font-size:16px; color:#999;}
 .good_shop .shop2 .sub2 {height:37px; width:47%; float:right; border:1px solid #e2e2e2; border-radius:3px; text-align:center; line-height:37px; font-size:16px; color:#999;}
 
-.good_info2 {height:auto; width:100%; background:#fff; margin-top:14px;margin-bottom: 50px; }
+.good_info2 {height:auto; width:100%; background:#fff; margin-top:14px;}
 .good_info2 .menu {height:40px; width:100%;}
 .good_info2 .menu .nav {height:37px; width:25%;  float:left; font-size:14px; color:#666; text-align:center; line-height:37px; border-bottom:2px solid #e3e3e3;}
 .good_info2 .menu .navon {color:#ff6500; height:37px; line-height:37px; border-bottom:2px solid #ff6500; }
-.good_info2 .tab_con {height:auto; width:94%; padding:10px 3%; overflow: hidden;}
-.good_info2 .tab_con .con {height:auto; display:none;color:#333;word-break:break-all;margin-bottom:80px;}
+.good_info2 .tab_con {height:auto; width:96%;padding:10px 2% 55px; overflow: hidden;}
+.good_info2 .tab_con .con {height:auto; display:none;color:#333;word-break:break-all;/*margin-bottom:80px;*/}
 .good_info2 .tab_con .con .param { padding:10px; border-bottom:1px solid #ccc}
 .good_info2 .tab_con #con_1 img { width:100%;outline-width:0px;  vertical-align:top; display:block}
 .tab_con p{ margin:0 }
@@ -169,7 +169,7 @@ div.flicking_con a.on{background-position:0 -9px}
                 <div class="spec"><%spec.title%></div>
                 <div class="spec_items options_<%spec.id%>"  title="<%spec.title%>">
                       <%each spec.items as o%>
-                      <div class="option option_<%spec.id%>" specid='<%spec.id%>' oid="<%o.id%>" sel='false' title='<%o.title%>' thumb='<%o.thumb%>'><%o.title%></div>
+                      <div onclick="addNum1('optionid_<%spec.id%>','<%o.id%>')" class="option option_<%spec.id%>" specid='<%spec.id%>' oid="<%o.id%>" sel='false' title='<%o.title%>' thumb='<%o.thumb%>'><%o.title%></div>
                      <%/each%>
                 </div>
                 <%/each%>
@@ -270,7 +270,7 @@ div.flicking_con a.on{background-position:0 -9px}
       <%if goods.deduct>0%>
       <div class="other">
             <div class='left'>
-                    <span><i class='fa fa-cube'></i> 积分抵扣 <span style='color:#ff6600'><%goods.deduct%></span> 元</span>
+                    <span><i class='fa fa-cube'></i> {if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}抵扣 <span style='color:#ff6600'><%goods.deduct%></span> 元</span>
             </div>
        </div>
         <%/if%> 
@@ -354,7 +354,7 @@ div.flicking_con a.on{background-position:0 -9px}
         <div class="menu">
             <div id="nav_1" class="nav navon" onClick="tab(1)">图文详情</div>
             <div id="nav_2" class="nav" onClick="tab(2)">产品参数</div>
-            <div id="nav_3" class="nav" onClick="tab(3)">用户评价</div>
+            <div id="nav_3" class="nav" onClick="tab(3)">用户评价({php echo $commentcount})</div>
             <div id="nav_4" class="nav" onClick="tab(4)" style="border-right:0px; width:24%">同店推荐</div>
         </div>
         <div class="tab_con">
@@ -377,7 +377,7 @@ div.flicking_con a.on{background-position:0 -9px}
     <div class="good_bottom">
      
         <div class="like" >
-            <i class="fa <%if isfavorite%>fa-star<%else%>fa-star-o<%/if%>" <%if isfavorite==1%>style="color:#f90"<%/if%>></i>
+            <i style="padding-left:6px" class="fa <%if isfavorite%>fa-star<%else%>fa-star-o<%/if%>" <%if isfavorite==1%>style="color:#f90"<%/if%>></i>
             <br><span>收藏</span>
         </div>
         <%if shopset.cservice%>
@@ -386,19 +386,21 @@ div.flicking_con a.on{background-position:0 -9px}
             <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
                 <%if cartcount>0%><b><%cartcount%></b><%/if%>
             </div>
-            <%/if%>
+            
             <div class="add" onclick="choose('cart')" <%if shopset.cservice &&  goods.canaddcart%>style="width:28%"<%/if%>>加入购物车</div>
-            <div class="buy" onclick="choose('buy')" <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%/if%>>立即购买</div>
+            <%/if%>
+            <div class="buy" onclick="choose('buy')" <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%else%>style="width:70%"<%/if%>>立即购买</div>
         <%else%>
-             <%if goods.canaddcart%>
+            <%if goods.canaddcart%>
             <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
                 <%if cartcount>0%><b><%cartcount%></b><%/if%>
             </div>
-            <%/if%>
+            
             <div class="add" onclick="choose('cart')">加入购物车</div>
-            <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:50%'<%/if%>>立即购买</div>
+            <%/if%>
+            <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:85%'<%/if%>>立即购买</div>
         <%/if%>
-</div>
+      </div>
     <%/if%>
 
 </script>
@@ -758,29 +760,28 @@ div.flicking_con a.on{background-position:0 -9px}
 
             $(".option").click(function() {
                
-             var specid = $(this).attr("specid");
-             var oid = $(this).attr("oid");
-            $(".optionid_"+specid).val(oid);
-            $(".options_" + specid + "  .option").removeClass("on").attr("sel", "false");
-            $(this).addClass("on").attr("sel", "true");
+              var specid = $(this).attr("specid");
+              var oid = $(this).attr("oid");
+              $(".optionid_"+specid).val(oid);
+              $(".options_" + specid + "  .option").removeClass("on").attr("sel", "false");
+              $(this).addClass("on").attr("sel", "true");
      
-             var titles='已选: ';
+              var titles='已选: ';
                  $('.spec_items').each(function(){
                                  if($(this).find('.on').length>0){
                     titles+= $(this).find('.on').attr('title')+";";   
                             }
                  });
                              
-                             $('.good_choose .info .right .option').html(titles);
-         var thumb = $(this).attr('thumb');
-         if(thumb!=''){
-             $("#chooser_img").attr('src',thumb);
-         }
-         else{
-             
-             $("#chooser_img").attr('src',json.result.goods.thumb);
-         }
-         setoptions();
+              $('.good_choose .info .right .option').html(titles);
+            var thumb = $(this).attr('thumb');
+            if(thumb!=''){
+               $("#chooser_img").attr('src',thumb);
+            }
+            else{ 
+               $("#chooser_img").attr('src',json.result.goods.thumb);
+            }
+            setoptions();
             var optionid = "";
             var stock =0;
             var marketprice = 0;
@@ -810,7 +811,21 @@ div.flicking_con a.on{background-position:0 -9px}
                 }
                                 
                $("#optionid").val(optionid); 
-                
+              
+
+                var num = parseInt($("#total").val() );
+
+                if(num>maxbuy && maxbuy>0){
+
+                    tip.show("您最多可购买 " + maxbuy + " 件!");
+                    num = maxbuy;
+                }
+                else if(num>stock && stock!=-1){
+                    tip.show("您最多可购买 " + stock + " 件");
+                    num = stock;
+                }
+                $("#total").val(num);
+
                 if(stock!="-1"){
                     $("#stockcontainer").html("库存:<span id='stock'>" + stock + "</span>");
                 }
@@ -1184,7 +1199,29 @@ div.flicking_con a.on{background-position:0 -9px}
     }
     var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
     var num = parseInt(total.val() ) + 1;
+
                   if(num>maxbuy && maxbuy>0){
+        tip.show("您最多可购买 " + maxbuy + " 件!");
+        num = maxbuy;
+    }
+    else if(num>stock && stock!=-1){
+        tip.show("您最多可购买 " + stock + " 件");
+        num = stock;
+    }
+    total.val(num);
+}
+  function addNum11(optionid_id,oid){
+
+    $("."+optionid_id).val(oid);
+
+    var total = $("#total");
+
+    var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+
+    var num = parseInt(total.val() );
+
+    if(num>maxbuy && maxbuy>0){
+
         tip.show("您最多可购买 " + maxbuy + " 件!");
         num = maxbuy;
     }
