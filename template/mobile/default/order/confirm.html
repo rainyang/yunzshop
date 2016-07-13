@@ -177,7 +177,12 @@
 
 
 <script id='tpl_confirm_info' type='text/html'>
-
+    {if is_app()}
+    <div class="page_topbar">
+        <a href="javascript:history.back()" class="back"><i class="fa fa-angle-left"></i></a>
+        <div class="title">订单详情</div>
+    </div>
+    {/if}
     <div class="addorder_topbar">
         <div class="ico"><i class="fa fa-file-text-o"></i></div>
         <div class="tips">确认订单后请尽快付款，<br>过时订单将自动取消。</div>
