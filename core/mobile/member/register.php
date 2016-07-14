@@ -9,7 +9,7 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 session_start();
 
 //获取APP参数设置
-if (!is_app()) {
+if (is_app()) {
     $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
         ':uniacid' => $_W['uniacid']
     ));
