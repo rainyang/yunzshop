@@ -35,8 +35,9 @@
         <div class="line"><div class="title">验证码</div><div class='info'><div class='inner'><input type="text" id='code' placeholder="请输入验证码"  value="" /><input id="btnSendCode" type="button" style="position: absolute;right: 0;top: 0;" value="发送验证码"  /></div></div></div>
         <div class="line"><div class="title">设置密码</div><div class='info'><div class='inner'><input type="password" id='password' placeholder="请输入您的密码"  value="" /></div></div></div>
         <div class="line"><div class="title">确认密码</div><div class='info'><div class='inner'><input type="password" id='cpassword' placeholder="请确认密码"  value="" /></div></div></div>
-        <div class="line"><div class="title">推荐码</div><div class='info'><div class='inner'><input id="referral" name="referral" type="text" placeholder="选填项">  </div></div></div>
-
+       {if $app['accept'] == '1' }
+        <div class="line"><div class="title">推荐码</div><div class='info'><div class='inner'><input id="referral" name="referral" type="text" placeholder="{if $app['useing'] == '0'} 选填项 {else} 必填项 {/if}">  </div></div></div>
+       {/if}
     </div>
     <div class="register">注册</div>
     <div class="info_sub">登录</div>
@@ -44,6 +45,8 @@
 </script>
 <script language="javascript">
     require(['tpl', 'core'], function(tpl, core) {
+        var referral_useing = "{php echo $app['useing']}";
+
         $('#container').html(tpl('member_info'));
             $('.info_sub').click(function(){
                 location.href = "{php echo $this->createMobileUrl('member/login')}";
@@ -126,6 +129,13 @@
                   if( $('#cpassword').val() != $('#password').val()){
                        core.tip.show('两次密码不一致!');
                        return;
+                  }
+
+                  if (referral_useing == "1") {
+                      if( $('#referral').isEmpty()){
+                          core.tip.show('请输入推荐码!');
+                          return;
+                      }
                   }
 
                   //检验验证码
