@@ -1161,6 +1161,12 @@ if (!class_exists('CommissionModel')) {
 			if (empty($member)) {
 				return;
 			}
+			//Author:ym Date:2016-07-14 Content:爱心基金完成订单
+			$pluginlove = p('love');
+            if($pluginlove){
+               $goods_where = "og.orderid = {$orderid}";
+               $pluginlove->checkOrder($goods_where, $order['openid'], 1);
+            }
 			//Author:ym Date:2016-04-07 Content:分红完成订单处理
 			$pluginbonus = p("bonus");
 			if(!empty($pluginbonus)){
