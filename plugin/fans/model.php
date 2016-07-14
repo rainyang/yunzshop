@@ -2,7 +2,7 @@
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
-if (!class_exists('FabsModel')) {
+if (!class_exists('FansModel')) {
 	class FansModel extends PluginModel
 	{
 		public function fetchFansGroupid($openid) {
