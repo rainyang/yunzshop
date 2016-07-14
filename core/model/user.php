@@ -114,12 +114,9 @@ class Sz_DYi_User
         $noLoginDoList = array('shop', 'login', 'register');
 
         //首页不用判断是否登陆
-        if (!is_app()) {
-            if(!$_GPC['p'] && $_GPC["do"]=='shop'){
-                return;
-            }
+        if(!$_GPC['p'] && $_GPC["do"]=='shop'){
+            return;
         }
-
 
         /*
         if($_GPC["c"]=='entry'){
