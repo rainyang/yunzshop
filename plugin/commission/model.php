@@ -987,7 +987,7 @@ if (!class_exists('CommissionModel')) {
 			$pluginchannel = p("channel");
 			if(!empty($pluginchannel)){
 				$channel_set = $pluginchannel->getSet();
-				if(!empty($channel_set['become_order'])){
+				if(empty($channel_set['become_order'])){
 					$pluginchannel->checkOrderPay($orderid);
 				}
 			}

@@ -14,6 +14,9 @@ if ($_W['isajax']) {
             )); 
     }
     if ($operation == 'display') {
+        if (p('channel')) {
+            $my_info = p('channel')->getInfo($openid);
+        }
         $condition  = ' and f.uniacid= :uniacid and f.openid=:openid and f.deleted=0';
         $params     = array(
             ':uniacid' => $uniacid,
@@ -28,8 +31,26 @@ if ($_W['isajax']) {
             if (!empty($r['optionid'])) {
                 $r['stock'] = $r['optionstock'];
             }
+            if (p('channel')) {
+                if (!empty($my_info['up_level'])) {
+                    $r['marketprice'] = (($r['marketprice'] * $my_info['up_level']['purchase_discount']/100) - ($r['marketprice'] * $my_info['my_level']['purchase_discount']/100)) * $my_info['up_level']['profit_sharing']/100;
+                } else {
+                    $r['marketprice'] = $r['marketprice'] * $my_info['my_level']['purchase_discount']/100;
+                }
+            }
             $totalprice += $r['marketprice'] * $r['total'];
             $total += $r['total'];
+        }
+        $difference = '';
+        if (p('channel')) {
+            $min_price = $my_info['my_level']['min_price'];
+            $difference = $min_price - $totalprice;
+            if ($difference <= 0) {
+                $difference = '';
+            } else {
+                $difference = number_format($difference,2);
+                $difference = "您还需要{$difference}元才可以购买";
+            }
         }
         unset($r);
         $list       = set_medias($list, 'thumb');
@@ -38,7 +59,8 @@ if ($_W['isajax']) {
             show_json(1, array(
                 'total' => $total,
                 'list' => $list,
-                'totalprice' => $totalprice
+                'totalprice' => $totalprice,
+                'difference' => $difference
             ));
         
     } else if ($operation == 'add' && $_W['ispost']) {
