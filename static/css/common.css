@@ -246,7 +246,7 @@ a:focus{outline:none; -moz-outline:none}
 .notice-show h6{font-size:24px;}
 
 /*图片弹出框*/
-#modal-webuploader{z-index:1000000000}
+#modal-webuploader,#modal-fileUploader{z-index:1000000000!important;}
 
 /*表单验证插件*/
 .bv-form .help-block{margin-bottom: 0}
