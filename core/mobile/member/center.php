@@ -96,7 +96,7 @@ if ($plugin_article) {
 // --------------------->
 $reurnset = m('plugin')->getpluginSet('return');
 $shopset['isreturn'] = false;
-if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 ){
+if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 || $reurnset['islevelreturn']== 1 ){ 
 	$shopset['isreturn'] = true;
 }
 if (p('ranking')) {
