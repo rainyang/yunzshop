@@ -30,20 +30,23 @@ if (!class_exists('LoveModel')) {
             global $_W;
             $set = $this->getSet();
             if(!empty($set['start']) && intval($set['become_order']) == $become_order){
-                $love_money = pdo_fetchcolumn('SELECT sum(love_money) FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where ' . $goods_where);
-                if($love_money > 0){
-                    $memberid = pdo_fetchcolumn("select id from " .tablename('sz_yi_member'). "  where openid=:openid and o.uniacid=:uniacid",array(':openid'=>$openid, ':uniacid'=>$_W['uniacid']));
-                    $love_data = array(
-                        'uniacid' => $_W['uniacid'],
-                        'mid' => $memberid,
-                        'openid' => $openid,
-                        'money' => floatval($love_money),
-                        'paymonth' => 2,
-                        'type' => 1,
-                        'createtime' => time()
-                    );
-                    pdo_insert('sz_yi_love_log', $data);
-                }
+                $goods = pdo_fetchall('SELECT g.id, g.love_money FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where ' . $goods_where);
+                foreach ($goods as $key => $val) {
+                    if($val['love_money'] > 0){
+                        $memberid = pdo_fetchcolumn("select id from " .tablename('sz_yi_member'). "  where openid=:openid and uniacid=:uniacid",array(':openid'=>$openid, ':uniacid'=>$_W['uniacid']));
+                        $love_data = array(
+                            'uniacid' => $_W['uniacid'],
+                            'mid' => $memberid,
+                            'openid' => $openid,
+                            'money' => $val['love_money'],
+                            'goodsid' => $val['id'],
+                            'paymonth' => 2,
+                            'type' => 1,
+                            'createtime' => time()
+                        );
+                        pdo_insert('sz_yi_love_log', $love_data);
+                    }
+                }  
             }
         }
 

@@ -101,15 +101,15 @@
         <table class="table table-hover">
             <thead class="navbar-inner">
                 <tr>
-                    <th style='width:220px;'>ID</th>
-                    <th style='width:120px;'>粉丝</th>
-                    <th style='width:120px;'>会员信息</th>
-                    <th style='width:120px;' class='hidden-xs'>微信号</th>
-                    <th style='width:120px;' class='hidden-xs'>会员等级</th>
-                    <th style='width:120px;' class='hidden-xs'>会员分组</th>
-                    <th style='width:100px;'>贡献基金</th>
-                    <th style='width:130px;'>贡献时间</th>
-                    <th style='width:120px;'>贡献方式</th>
+                    <th style='width:5%;'>记录ID</th>
+                    <th style='width:10%;'>粉丝</th>
+                    <th style='width:10%;'>会员信息</th>
+                    <th style='width:10%;' class='hidden-xs'>微信号</th>
+                    <th style='width:10%;' class='hidden-xs'>会员等级</th>
+                    <th style='width:10%;' class='hidden-xs'>会员分组</th>
+                    <th style='width:15%;'>贡献基金</th>
+                    <th style='width:12%;'>贡献时间</th>
+                    <th style='width:8%;'>贡献方式</th>
                     
                     <th>操作</th>
                 </tr>
@@ -125,11 +125,11 @@
                     <td   class='hidden-xs'>{if empty($row['groupname'])}无分组{else}{$row['groupname']}{/if}</td>
                     <td>
 					{if $row['paymonth']=='2'}
-                        {$row['money']}宝币
-                    {else if $row['type']=='1'}
-                        {php echo $row['money']}积分
-                    {else if $row['type']=='3'}
-                        {php echo $row['money']}佣金
+                        {$row['money']} 宝币
+                    {else if $row['paymonth']=='1'}
+                        {php echo $row['money']*100} 积分
+                    {else if $row['paymonth']=='3'}
+                        {php echo $row['money']} 佣金
                     {/if}
 					</td>
                     <td>{php echo date('Y-m-d H:i',$row['createtime'])}</td>

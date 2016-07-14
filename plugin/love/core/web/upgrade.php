@@ -17,8 +17,10 @@ $sql = "CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_love_log') . " (
   `mid` int(11) DEFAULT '0',
   `openid` varchar(255) DEFAULT '',
   `money` decimal(10,2) DEFAULT '0.00',
-  `paymonth` int(100) DEFAULT '0' COMMENT '1为积分 2为余额',
-  `type` int(11) DEFAULT '0' COMMENT '1为购物 2为捐赠 3为文章',
+  `paymonth` TINYINT(1) DEFAULT '0' COMMENT '1为积分 2为余额',
+  `type` TINYINT(1) DEFAULT '0' COMMENT '1为购物 2为捐赠 3为文章',
+  `goodsid` int(11) DEFAULT '0' COMMENT,
+  `status` TINYINT(1) DEFAULT '0' COMMENT '0为未使用 1为使用',
   `createtime` int(11) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `idx_uniacid` (`uniacid`)
