@@ -150,6 +150,10 @@ class Sz_DYi_Excel
             $len = count($params['columns']);
             for ($i = 0; $i < $len; $i++) {
                 $value = $row[$params['columns'][$i]['field']];
+                if ($params['columns'][$i]['field'] == 'nickname') {
+                    $value = @iconv("utf-8", "gbk", $value);
+                    $value = @iconv("gbk", "utf-8", $value);
+                }
                 $sheet->setCellValue($this->column($i, $rownum), $value);
             }
             $rownum++;

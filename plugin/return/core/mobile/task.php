@@ -36,6 +36,7 @@ foreach ($sets as $val) {
 				$isexecute = true;
 			}
 		}
+		$isexecute = true;
 		if(($set["isreturn"]||$set["isqueue"]) && $isexecute){
 
 			//p('return')->getmoney($set['orderprice'],$_W['uniacid']);
@@ -46,6 +47,7 @@ foreach ($sets as $val) {
 			}else{
 				//订单累计金额
 				p('return')->setOrderMoneyReturn($set,$_W['uniacid']);
+
 			}
 			echo "<pre>"; print_r('成功');
 
