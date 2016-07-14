@@ -13,7 +13,7 @@
             <input type="hidden" name="m" value="sz_yi" />
             <input type="hidden" name="do" value="plugin" />
             <input type="hidden" name="p" value="channel" />
-            <input type="hidden" name="method" value="channel" />
+            <input type="hidden" name="method" value="manage" />
             <input type="hidden" name="op" value="display" />
             <div class="form-group">
                 <div class="form-group">
@@ -34,7 +34,7 @@
                         <select name='channel_level' class='form-control'>
                             <option value=''></option>
                             {loop $channellevels $level}
-                            <option value='{$level['id']}' {if $_GPC['channellevel']==$level['id']}selected{/if}>{$level['level_name']}</option>
+                            <option value='{$level['id']}' {if $_GPC['channellevel']==$level['id']}selected{/if}>{$level['level_name']} -- {$level['level_num']}</option>
                             {/loop}
                         </select>
                     </div>
@@ -44,7 +44,7 @@
                     <div class="col-sm-8 col-lg-9 col-xs-12">
                         <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
                         <input type="hidden" name="token" value="{$_W['token']}" />
-                        {ifp 'commission.agent.export'}
+                        {ifp 'channel.manage.export'}
                         <button type="submit" name="export" value="1" class="btn btn-primary">导出 Excel</button>
                         {/if}
                     </div>
@@ -63,7 +63,7 @@
                 <th style='width:10%;text-align: center'>推荐人</th>
                 <th style='width:10%;text-align: center'>粉丝</th>
                 <th style='width:13%;'>姓名<br/>手机号码</th>
-                <th style='width:12%;'>分销等级<br/>下级分销商</th>
+                <th style='width:12%;'>渠道商等级<br/>下级渠道商</th>
                 <th style='width:8%;'>点击数</th>
                 <th style='width:10%;'>累计佣金<br/>打款佣金</th>
                 <th style='width:12%;text-align: center'>状态{ifp 'commission.agent.check'}<br/>（点击审核){/if}</th>
@@ -95,7 +95,7 @@
                 </td>
 
                 <td>{$row['realname']} <br/> {$row['mobile']}</td>
-                <td>{if empty($row['levelname'])} {php echo empty($this->set['levelname'])?'普通等级':$this->set['levelname']}{else}{$row['levelname']}{/if}
+                <td>{$row['level_name']} -- {$row['level_num']}
                     <br/>
                     总计：{$row['levelcount']} 人
                     {if $level>=1 && $row['level1']>0}<br/>一级：{$row['level1']} 人{/if}

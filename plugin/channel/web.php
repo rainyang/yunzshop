@@ -15,7 +15,7 @@ class ChannelWeb extends Plugin
 	public function index()
 	{
 		global $_W;
-		header('location: ' . $this->createPluginWebUrl('channel/level'));
+		header('location: ' . $this->createPluginWebUrl('channel/manage'));
 		exit;
 	}
 	public function level()
@@ -30,7 +30,11 @@ class ChannelWeb extends Plugin
 	{
 		$this->_exec_plugin(__FUNCTION__);
 	}
-	public function channel()
+	public function manage()
+	{
+		$this->_exec_plugin(__FUNCTION__);
+	}
+	public function af()
 	{
 		$this->_exec_plugin(__FUNCTION__);
 	}

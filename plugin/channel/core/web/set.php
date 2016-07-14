@@ -3,7 +3,7 @@ global $_W, $_GPC;
 ca('channel.set');
 $set = $this->getSet();
 $leveltype = $set['leveltype'];
-$level = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_level') . " WHERE uniacid = :uniacid",array(':uniacid' => $_W['uniacid']));
+$level = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_level') . " WHERE uniacid = :uniacid ORDER BY level_num DESC",array(':uniacid' => $_W['uniacid']));
 if (checksubmit('submit')) {
     $data          = is_array($_GPC['setdata']) ? array_merge($set, $_GPC['setdata']) : array();
     $data['texts'] = is_array($_GPC['texts']) ? $_GPC['texts'] : array();
