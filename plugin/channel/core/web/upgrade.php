@@ -118,4 +118,11 @@ if(!pdo_fieldexists('sz_yi_af_channel', 'status')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_af_channel')." ADD `status` tinyint(1) NOT NULL COMMENT '0为申请1为通过';");
 }
 
+if(!pdo_fieldexists('sz_yi_chooseagent', 'isopenchannel')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_chooseagent')." ADD `isopenchannel` tinyint(1) NOT NULL COMMENT '0关闭1开启';");
+}
+
+if(!pdo_fieldexists('sz_yi_goods', 'isopenchannel')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isopenchannel` tinyint(1) NOT NULL COMMENT '0关闭1开启';");
+}
 message('渠道商插件安装成功', $this->createPluginWebUrl('channel/index'), 'success');

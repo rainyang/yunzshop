@@ -28,4 +28,18 @@ class ChannelMobile extends Plugin
         $this->_exec_plugin(__FUNCTION__, false);
     }
 
+    public function apply()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+
+    public function detail()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+
+    public function log()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 }

@@ -24,6 +24,15 @@ if (!class_exists('ChannelModel')) {
 		}
 		/**
 		  * 渠道商根据订单升级
+		  * @param string $mid 用户id
+		  */
+		public function getChannelInfo($mid)
+		{
+			global $_W;
+			$channelinfo = array();
+		}
+		/**
+		  * 渠道商根据订单升级
 		  * @param string $openid 用户openid
 		  */
 		function upgradeLevelByOrder($openid)
