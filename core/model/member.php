@@ -112,6 +112,7 @@ class Sz_DYi_Member
 			$credits = $this->getCredits($openid);
 			$info['credit1'] = $credits['credit1'];
 			$info['credit2'] = $credits['credit2'];
+            $info['credit8'] = $credits['credit8'];
 		}
         return $info;
     }

@@ -7,6 +7,20 @@ $preUrl = $_COOKIE['preUrl'];
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 
 session_start();
+
+if (m('user')->islogin() != false) {
+    header('location: ' . $this->createMobileUrl('member'));
+}
+
+//获取APP参数设置
+if (is_app()) {
+    $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+        ':uniacid' => $_W['uniacid']
+    ));
+    $set     = unserialize($setdata['sets']);
+
+    $app = $set['app']['base'];
+}
 if ($_W['isajax']) {
     if ($_W['ispost']) {
         $mobile = !empty($_GPC['mobile']) ? $_GPC['mobile'] : show_json(0, '手机号不能为空！');
@@ -31,7 +45,15 @@ if ($_W['isajax']) {
         }
         //使用推荐码 是否开启
         $isreferraltrue = false;
-        if ($this->yzShopSet['isreferral'] == 1 && !empty($_GPC['referral'])) {
+
+        //判断APP,PC是否开启推荐码功能
+        if (is_app()) {
+            $isreferral = $app['accept'];
+        } else {
+            $isreferral = $this->yzShopSet['isreferral'];
+        }
+
+        if ($isreferral == 1 && !empty($_GPC['referral'])) {
             $referral = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where referralsn=:referralsn and uniacid=:uniacid limit 1', array(
                         ':uniacid' => $_W['uniacid'],
                         ':referralsn' => $_GPC['referral']
