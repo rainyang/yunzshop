@@ -35,10 +35,20 @@ foreach ($sets as $val) {
 				$this->updateSet($set);
 				$isexecute = true;
 			}
-		}
-		$isexecute = true;
-		if(($set["isreturn"]||$set["isqueue"]) && $isexecute){
+		}elseif($set['returnlaw']==3){
+			if( date("w") == $set['returntimezhou']){
+				if(!isset($set['current_d']) || $set['current_d'] !=date('d')){
+					$set['current_d'] = date('d');
+					$this->updateSet($set);
+					$isexecute = true;
+				}	
 
+			}
+			
+		
+		}
+
+		if(($set["isreturn"]||$set["isqueue"]) && $isexecute){
 			//p('return')->getmoney($set['orderprice'],$_W['uniacid']);
 			if($set["returnrule"]==1)
 			{

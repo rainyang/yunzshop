@@ -229,43 +229,52 @@ if (!class_exists('ReturnModel')) {
 		//单笔订单返现
 		public function setOrderReturn($_var_0=array(),$uniacid=''){
 
+			$member_record = pdo_fetchall("SELECT r.mid, m.level, m.agentlevel, m.openid FROM " . tablename('sz_yi_return') . " r 
+				left join " . tablename('sz_yi_member') . " m on (r.mid = m.id) 
+			 WHERE r.uniacid = '". $uniacid ."' and r.returnrule = '".$_var_0['returnrule']."' and r.delete = '0'  group by r.mid");
 
-			//返利队列
-			$data_money = pdo_fetchall("select * from " . tablename('sz_yi_return') . " where uniacid = '". $uniacid ."' and status = 0 and `delete` = '0' and returnrule = '".$_var_0['returnrule']."'");
-			$return_mes = array();
-			foreach ($data_money as $key => $value) {
-				$r_each = $value['money'] * $_var_0['percentage'] / 100;//可返利金额
-				
-				$member = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid = '". $uniacid ."' and id = '".$value['mid']."'");
-
-				if(($value['money']-$value['return_money']) < $r_each){
-					pdo_update('sz_yi_return', array('return_money'=>$value['money'],'status'=>'1'), array('id' => $value['id'], 'uniacid' => $uniacid));
-					m('member')->setCredit($member['openid'],'credit2',$value['money']-$value['return_money']);
-
-					$return_mes[$member['openid']][$key]['return_money_totle']= $value['money']-$value['return_money'];
-		
-
-				}else
+			$level =  array();
+			if($_var_0['islevels'] == 1)
+			{
+				if($_var_0['islevel'] == 1)
 				{
-					pdo_update('sz_yi_return', array('return_money'=>$value['return_money']+$r_each), array('id' => $value['id'], 'uniacid' => $uniacid));
-					m('member')->setCredit($member['openid'],'credit2',$r_each);
-
-					$surplus = $value['money']-$value['return_money']-$r_each;
-
-					$return_mes[$member['openid']][$key]['return_money_totle']= $r_each;
-					$return_mes[$member['openid']][$key]['surplus_money_totle']= $surplus;
+					$level = json_decode($_var_0['member'], true);
+				}elseif($_var_0['islevel'] == 2)
+				{
+					$level = json_decode($_var_0['commission'], true);
 				}
 			}
-			
-			foreach ($return_mes as $key => $list) {
-					$return_money_totle = 0;
-					$surplus_money_totle = 0;
-				foreach ($list as $k => $v) {
-					$return_money_totle += $v['return_money_totle'];
-					$surplus_money_totle += $v['surplus_money_totle'];
-				}
-				if($return_money_totle > 0)
+
+			$current_time = time();
+			foreach ($member_record as $key => $value) {
+
+
+			if($_var_0['islevels'] == 1)
+			{
+				if($_var_0['islevel'] == 1)
 				{
+					$percentage = $level['level'.$value['level']]?$level['level'.$value['level']]:$_var_0['percentage'];
+				}elseif($_var_0['islevel'] == 2)
+				{
+					$percentage = $level['level'.$value['agentlevel']]?$level['level'.$value['agentlevel']]:$_var_0['percentage'];
+				}
+			}
+					// $unfinished_record[$percentage] = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");
+					// $finished_record[$percentage] = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");
+				pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + money * ".$percentage." / 100,last_money = money * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");
+
+				pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");
+
+			}
+			$return_record = pdo_fetchall("SELECT sum(r.money) as money, sum(r.return_money) as return_money, sum(r.last_money) as last_money,m.openid,count(r.id) as count  FROM " . tablename('sz_yi_return') . " r 
+				left join " . tablename('sz_yi_member') . " m on (r.mid = m.id) 
+			 WHERE r.uniacid = '". $uniacid ."' and r.updatetime = '".$current_time."' and r.returnrule = '".$_var_0['returnrule']."' and r.delete = '0'  group by r.mid");
+			foreach ($return_record as $key => $value) {
+				if($value['last_money'] > 0)
+				{
+					$return_money_totle = $value['last_money'];
+					$surplus_money_totle = $value['money']-$value['return_money'];
+					m('member')->setCredit($value['openid'],'credit2',$return_money_totle);
 					$messages = array(
 						'keyword1' => array(
 							'value' => '返现通知',
@@ -274,12 +283,63 @@ if (!class_exists('ReturnModel')) {
 							'value' => '本次返现金额'.$return_money_totle."元",
 							'color' => '#73a68d'),
 						'keyword3' => array(
-							'value' => "此返单剩余返现金额".$surplus_money_totle."元",
+							'value' => "剩余返现金额".$surplus_money_totle."元",
 							'color' => '#73a68d')
 						);
-					m('message')->sendCustomNotice($key, $messages);
+					m('message')->sendCustomNotice($value['openid'], $messages);
 				}
-			}
+			}	
+	// //返利队列
+	// 		$data_money = pdo_fetchall("select * from " . tablename('sz_yi_return') . " where uniacid = '". $uniacid ."' and status = 0 and `delete` = '0' and returnrule = '".$_var_0['returnrule']."'");
+
+	// 		$return_mes = array();
+	// 		foreach ($data_money as $key => $value) {
+	// 			$r_each = $value['money'] * $_var_0['percentage'] / 100;//可返利金额
+				
+	// 			$member = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid = '". $uniacid ."' and id = '".$value['mid']."'");
+
+	// 			if(($value['money']-$value['return_money']) < $r_each){
+	// 				pdo_update('sz_yi_return', array('return_money'=>$value['money'],'status'=>'1'), array('id' => $value['id'], 'uniacid' => $uniacid));
+	// 				m('member')->setCredit($member['openid'],'credit2',$value['money']-$value['return_money']);
+
+	// 				$return_mes[$member['openid']][$key]['return_money_totle']= $value['money']-$value['return_money'];
+		
+
+	// 			}else
+	// 			{
+	// 				pdo_update('sz_yi_return', array('return_money'=>$value['return_money']+$r_each), array('id' => $value['id'], 'uniacid' => $uniacid));
+	// 				m('member')->setCredit($member['openid'],'credit2',$r_each);
+
+	// 				$surplus = $value['money']-$value['return_money']-$r_each;
+
+	// 				$return_mes[$member['openid']][$key]['return_money_totle']= $r_each;
+	// 				$return_mes[$member['openid']][$key]['surplus_money_totle']= $surplus;
+	// 			}
+	// 		}
+			
+	// 		foreach ($return_mes as $key => $list) {
+	// 				$return_money_totle = 0;
+	// 				$surplus_money_totle = 0;
+	// 			foreach ($list as $k => $v) {
+	// 				$return_money_totle += $v['return_money_totle'];
+	// 				$surplus_money_totle += $v['surplus_money_totle'];
+	// 			}
+	// 			if($return_money_totle > 0)
+	// 			{
+	// 				$messages = array(
+	// 					'keyword1' => array(
+	// 						'value' => '返现通知',
+	// 						'color' => '#73a68d'),
+	// 					'keyword2' =>array(
+	// 						'value' => '本次返现金额'.$return_money_totle."元",
+	// 						'color' => '#73a68d'),
+	// 					'keyword3' => array(
+	// 						'value' => "此返单剩余返现金额".$surplus_money_totle."元",
+	// 						'color' => '#73a68d')
+	// 					);
+	// 				m('message')->sendCustomNotice($key, $messages);
+	// 			}
+	// 		}
 
 		}
 
