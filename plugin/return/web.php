@@ -32,6 +32,10 @@ class ReturnWeb extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__);
     }
+    public function notice()
+    {
+        $this->_exec_plugin(__FUNCTION__);
+    }
     public function return_tj()
     {
 
