@@ -240,10 +240,14 @@ if ($operation == 'display') {
 				pdo_update('sz_yi_order_goods', $update, array('id' => $ogid));
 			}
 		}
+
 		if ($isAllUncheck) {
 			pdo_update('sz_yi_commission_apply', array('status' => -1, 'invalidtime' => $time), array('id' => $id, 'uniacid' => $_W['uniacid']));
 		} else {
 			pdo_update('sz_yi_commission_apply', array('status' => 2, 'checktime' => $time), array('id' => $id, 'uniacid' => $_W['uniacid']));
+			if($apply['credit20'] > 0){
+				$paycommission = $apply['commission'];
+			}
 			$this->model->sendMessage($member['openid'], array('commission' => $paycommission, 'type' => $apply['type'] == 1 ? '微信' : '余额'), TM_COMMISSION_CHECK);
 		}
 		plog('commission.apply.check', "佣金审核 ID: {$id} 申请编号: {$apply['applyno']} 总佣金: {$totalmoney} 审核通过佣金: {$paycommission} ");
@@ -276,6 +280,7 @@ if (checksubmit('submit_cancel') && ($apply['status'] == 2 || $apply['status'] =
 if (checksubmit('submit_pay') && $apply['status'] == 2) {
 	ca('commission.apply.pay');
 	$time = time();
+	$totalpay -= $apply['credit20'];
 	$pay = $totalpay;
 	if ($apply['type'] == 1 || $apply['type'] == 2) {
 		$pay *= 100;

@@ -71,6 +71,7 @@
         <a href="{php echo $this->createPluginMobileUrl('commission/customer')}"><div class="nav nav1"><i class="fa fa-users  fa-3x" style="color:#3c7bce "></i><div class="title">{php echo $this->set['texts']['mycustomer']}</div><div class="con"><span><%member.customercount%></span> 人</div></div></a>
         <a href="{php echo $this->createPluginMobileUrl('commission/shares')}"><div class="nav nav2"><i class="fa fa-qrcode  fa-3x" style="color:#53bdec;"></i><div class="title">二维码</div><div class="con">推广二维码</div></div></a>
 
+        <a href="{php echo $this->createPluginMobileUrl('love/log')}"><div class="nav nav6"><i class="fa fa-heart fa-3x" style="color:#CC3431"></i><div class="title">爱心基金</div><div class="con">设置我的爱心</div></div></a>
         <!--分红-->
         {if $bonus==1}
         <a href="{php echo $this->createPluginMobileUrl('bonus/withdraw')}"><div class="nav nav1"><i class="fa fa-cny fa-3x" style="color:#7775FF;"></i><div class="title">{php echo $bonus_set['texts']['commission']}</div><div class="con"><span>{$member_bonus['commission_total']}</span> 元</div></div></a>
