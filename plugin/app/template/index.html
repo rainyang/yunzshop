@@ -90,15 +90,35 @@
 
 							</div>
 						</div>
+					</div>
+				</div>
 
-						<div class="form-group">
-							<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-							<div class="col-sm-9 col-xs-12">
-								<input type="submit" name="submit" value="保存设置" class="btn btn-primary" data-original-title="" title="">
-								<input type="hidden" name="token" value="e784fadb">
-							</div>
+				<div class="panel-heading">下载地址</div>
+				<div class="panel-body">
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-2 control-label">Android </label>
+						<div class="col-sm-9 col-xs-12">
+							<input type="text" name="app[android_url]" class="form-control" value="{$set['app']['base']['android_url']}" autocomplete="off">
+							<span class="help-block"></span>
 						</div>
 					</div>
+
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-2 control-label">IOS</label>
+						<div class="col-sm-9 col-xs-12">
+							<input type="text" name="app[ios_url]" class="form-control" value="{$set['app']['base']['ios_url']}" autocomplete="off">
+							<span class="help-block"></span>
+						</div>
+					</div>
+
+					<div class="form-group">
+						<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+						<div class="col-sm-9 col-xs-12">
+							<input type="submit" name="submit" value="保存设置" class="btn btn-primary" data-original-title="" title="">
+							<input type="hidden" name="token" value="e784fadb">
+						</div>
+					</div>
+				</div>
 				</div>
 			</div>
 		</form>
