@@ -83,7 +83,7 @@
         </div> 
 
         <div class="form-group">
-            <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现比例</label>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">默认比例</label>
 
             <div class="col-sm-8">
                 <div class="input-group">
@@ -94,18 +94,25 @@
                 <span class='help-block'>开启单笔订单时按订单金额的百分比返现，开启订单累计金额返现时按前一天总营业额的百分比返现 </span>
             </div>
         </div>
+
+        <div class='panel-heading'>
+           基础设置
+        </div>
         <div class='panel-body'>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现规律</label>
                 <div class="col-sm-8 col-xs-12">
-                    <label class="radio-inline law"><input type="radio"   name="setdata[returnlaw]" value="1" {if $set['returnlaw'] !=2} checked="checked"{/if} /> 按天返现</label>
+                    <label class="radio-inline law"><input type="radio"   name="setdata[returnlaw]" value="1" {if $set['returnlaw'] ==1} checked="checked"{/if} /> 按天返现</label>
+
+                    <label class="radio-inline law"><input type="radio"   name="setdata[returnlaw]" value="3" {if $set['returnlaw'] ==3} checked="checked"{/if} /> 按周返现</label>
+
                     <label class="radio-inline law"><input type="radio"   name="setdata[returnlaw]" value="2" {if $set['returnlaw'] ==2} checked="checked"{/if} /> 按月返现</label>
                     <span class='help-block'>按天返现会在返单加入队列后每天定时返现一次。按月返现会在返单加入队列后每月返现一次。</span>
                 </div>
             </div>
         </div>
 
-        <div class="form-group" id="return_time" {if $set['returnlaw'] ==2} style="display:none;"{/if}>
+        <div class="form-group" id="return_time" {if $set['returnlaw'] !=1} style="display:none;"{/if}>
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现时间</label>
             <div class="col-sm-8 col-xs-12">
                 <select id="returntime" class="form-control tpl-category-parent" name="setdata[returntime]">
@@ -119,6 +126,21 @@
             </div>
         </div>
 
+        <div class="form-group" id="return_time1" {if $set['returnlaw'] !=3} style="display:none;"{/if}>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现时间</label>
+            <div class="col-sm-8 col-xs-12">
+                <select class="form-control tpl-category-parent" name="setdata[returntimezhou]">
+                <?php for ($i=1; $i <= 7; $i++) {  ?>
+                <?php $m=array('一','二','三','四','五','六','日');?>
+                <?php if($set['returntimezhou']==$i){ ?>
+                    <option value="<?php echo $i;?>" selected>每周<?php echo $m[$i-1];?>执行返利</option>
+                <?php }else{?>
+                    <option value="<?php echo $i;?>" >每周<?php echo $m[$i-1];?>执行返利</option>
+                <?php } }?>
+                </select>
+                 <span class='help-block'>返利会有延迟 最多延迟10分钟</span>
+            </div>
+        </div>
  
 <script type="text/javascript">
     $('.queue').click(function(){
@@ -137,6 +159,14 @@
         }else
         {
             $("#return_time").hide();
+        }
+
+        if($(this).find('input').val() == 3)
+        {
+            $("#return_time1").show();
+        }else
+        {
+            $("#return_time1").hide();
         }
     });
     $('.rule').click(function(){
