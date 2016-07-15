@@ -259,7 +259,6 @@ if (!class_exists('ReturnModel')) {
 					$percentage = $level['level'.$value['agentlevel']]?$level['level'.$value['agentlevel']]:$_var_0['percentage'];
 				}
 			}
-				
 					// $unfinished_record[$percentage] = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");
 					// $finished_record[$percentage] = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");
 				pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + money * ".$percentage." / 100,last_money = money * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");

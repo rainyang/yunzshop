@@ -12,8 +12,10 @@ $member_levels = m('member')->getLevels();
 $distributor_levels = p("commission")->getLevels();
 
 if (checksubmit('submit')) {
-  $_GPC['setdata']['commission'] = json_encode($_GPC['setdata']['commission'], true);
-  $_GPC['setdata']['member'] = json_encode($_GPC['setdata']['member'], true);
+  
+    $_GPC['setdata']['commission'] = json_encode($_GPC['setdata']['commission'], true);
+    $_GPC['setdata']['member'] = json_encode($_GPC['setdata']['member'], true);
+
     $data          = is_array($_GPC['setdata']) ? array_merge($set, $_GPC['setdata']) : array();
     $this->updateSet($data);
     m('cache')->set('template_' . $this->pluginname, $data['style']);
