@@ -4,16 +4,16 @@
 $sale['all'] = getSaleData('sum(price)',array(
     ':uniacid' => $_W['uniacid'])
 );
-$sale['today'] = getSaleData('sum(price)', array(
+$sale['month'] = getSaleData('sum(price)', array(
     ':uniacid' => $_W['uniacid'],
-    ':starttime' => strtotime("-1 day"),
+    ':starttime' => strtotime("-1 month"),
     ':endtime' => time()
 ));
 $count['today_order'] = getSaleData('count(*)', array(
     ':uniacid' => $_W['uniacid'],
     ':starttime' => time()
 ));
-$count['new_member'] = 0;
+$count['new_member'] = '0';
 $count['week_order'] = getSaleData('count(*)', array(
     ':uniacid' => $_W['uniacid'],
     ':starttime' => strtotime("-1 week"),

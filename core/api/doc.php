@@ -1,6 +1,6 @@
 <?php
 namespace Api;
-define("IS_TEST_ALL", true);
+define("IS_API_DOC", true);
 function get_test_para()
 {
     require_once __DIR__ . '/../inc/aes.php';
@@ -18,7 +18,7 @@ function get_test_para()
     );
     $aes = new \Common\Org\Aes();
     $api_name = $_GET['api'];
-    return $aes->siyuan_aes_encode(json_encode($test_para[$api_name], JSON_UNESCAPED_UNICODE));
+    return $aes->siyuan_aes_encode(json_encode($_POST, JSON_UNESCAPED_UNICODE));
 }
 
 ;

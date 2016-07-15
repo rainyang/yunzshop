@@ -26,8 +26,8 @@ class Base
         $res = array('result' => '1',
             'msg' => $msg,
             'data' => $data);
-        if (defined("IS_TEST_ALL")) {
-            echo $_GET['api'] . ":成功/n/r";
+        if (defined("IS_API_DOC")) {
+            exit(json_encode($res, JSON_UNESCAPED_UNICODE));
         } elseif (is_test()) {
             exit(json_encode($res, JSON_UNESCAPED_UNICODE));
         } else {
@@ -40,8 +40,8 @@ class Base
         $res = array('result' => '0',
             'msg' => $msg,
             'data' => []);
-        if (defined("IS_TEST_ALL")) {
-            echo $_GET['api'] . ":错误/n/r";
+        if (defined("IS_API_DOC")) {
+            exit(json_encode($res, JSON_UNESCAPED_UNICODE));
         } elseif (is_test()) {
             exit(json_encode($res, JSON_UNESCAPED_UNICODE));
         } else {
