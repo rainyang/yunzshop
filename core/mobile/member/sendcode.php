@@ -94,9 +94,9 @@ if($op == 'sendcode'){
                 ':uniacid' => $_W['uniacid'],
                 ':mobile' => $mobile
             ));
-    if(!empty($info)){
+    /*if(!empty($info)){
         show_json(0, '该手机号已绑定过');
-    }
+    }*/
     $code = rand(1000, 9999);
     $_SESSION['codetime'] = time();
     $_SESSION['code'] = $code;

@@ -431,8 +431,7 @@ if ($operation == 'display' && $_W['isajax']) {
         $where_orderid = "og.orderid={$orderid}";
     }
     $order_goods = pdo_fetchall('select og.id,g.title, og.goodsid,og.optionid,g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
-        ':uniacid' => $_W['uniacid'],
-        ':orderid' => $orderid
+        ':uniacid' => $_W['uniacid']
     ));
     foreach ($order_goods as $data) {
         if (empty($data['status']) || !empty($data['deleted'])) {
