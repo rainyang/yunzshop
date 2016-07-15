@@ -33,6 +33,7 @@ if ($operation == 'display') {
             
         }
     }
+    
 	if ($status == -1) {
 		ca('commission.apply.view_1');
 	} else {

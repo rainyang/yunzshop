@@ -48,8 +48,6 @@ if ($op == 'display') {
             
         }
     }
-    //echo "<pre>"; print_r($fields);exit;
-    //echo "<pre>"; print_r(iunserializer($data));exit;
     $pindex = max(1, intval($_GPC['page']));
     $psize  = 20;
     $type   = intval($_GPC['type']);
