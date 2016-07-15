@@ -110,8 +110,8 @@ if ($_W['isajax']) {
             }
             $fromcart = 1;
         } else {
-            $sql              = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
-            $data             = pdo_fetch($sql, array(
+            $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+            $data = pdo_fetch($sql, array(
                 ':uniacid' => $uniacid,
                 ':id' => $id
             ));
