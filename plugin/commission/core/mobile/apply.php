@@ -49,7 +49,14 @@ if ($_W['isajax']) {
 			pdo_update('sz_yi_order_goods', array('status' . $o['level'] => 1, 'applytime' . $o['level'] => $time), array('orderid' => $o['orderid'], 'uniacid' => $_W['uniacid']));
 		}
 		$applyno = m('common')->createNO('commission_apply', 'applyno', 'CA');
+
 		$apply = array('uniacid' => $_W['uniacid'], 'applyno' => $applyno, 'orderids' => iserializer($orderids), 'mid' => $member['id'], 'commission' => $commission_ok, 'type' => intval($_GPC['type']), 'status' => 1, 'applytime' => $time);
+		//Author:ym Date:2016-07-15 Content:减去已消费的佣金
+		if($member['credit20'] > 0){
+			$credit20 = - $member['credit20'];
+			m('member')->setCredit($openid, 'credit20', $credit20);
+			$apply['credit20'] = $member['credit20'];
+		}
 		pdo_insert('sz_yi_commission_apply', $apply);
 		$id = pdo_insertid();
 

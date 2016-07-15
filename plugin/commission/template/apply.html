@@ -201,10 +201,12 @@
         </div>
  
         <div class='panel-heading'>
-            提现申请订单信息 共计 <span style="color:red; ">{$totalcount}</span> 个订单 , 金额共计 <span style="color:red; ">{$totalmoney}</span> 元 佣金总计 <span style="color:red; ">{$totalcommission}</span> 元
+            提现申请订单信息 共计 <span style="color:red; ">{$totalcount}</span> 个订单 , 金额共计 <span style="color:red; ">{$totalmoney}</span> 元 佣金总计 <span style="color:red; ">{$totalcommission}</span> 元<span style="color:#FF5C03;">(包括已消费{$apply['credit20']})</span>
             {if $status==1 && cv('commission.apply.check')}
             <a href="javascript:;" onclick="checkall(true)" class="btn btn-primary">批量审核通过</a>
+            {if $apply['credit20'] <= 0}
             <a href="javascript:;" onclick="checkall(false)" class="btn btn-danger">批量审核不通过</a>
+            {/if}
 			{/if}
         </div>
         <div class='panel-body'>
@@ -278,9 +280,10 @@
                                                              {if $g['status1']==-1}
                                                                 <span class='label label-default'>未通过</span>
                                                                 {elseif $g['status1']==1}
-
+                                                                  {if $apply['credit20'] <= 0}
                                                                 <label class='radio-inline'><input type='radio'  class='status1' value='-1'  name="status1[{$g['id']}]" /> 不通过</label>
-                                                                <label class='radio-inline'><input type='radio'  value='2'   name="status1[{$g['id']}]"  /> 通过</label>
+                                                                  {/if}
+                                                                <label class='radio-inline'><input type='radio'  value='2'   name="status1[{$g['id']}]" {if $apply['credit20'] > 0}checked="checked"{/if} /> 通过</label>
 
                                                                 {elseif $g['status1']==2}
                                                                 <span class='label label-success'>通过</span>
@@ -303,9 +306,10 @@
                                                              {if $g['status2']==-1}
                                                                 <span class='label label-default'>未通过</span>
                                                                 {elseif $g['status2']==1}
-
+                                                                  {if $apply['credit20'] <= 0}
                                                                 <label class='radio-inline'><input type='radio' class='status2' value='-1'  name="status2[{$g['id']}]" /> 不通过</label>
-                                                                <label class='radio-inline'><input type='radio'  value='2'  name="status2[{$g['id']}]"  /> 通过</label>
+                                                                  {/if}
+                                                                <label class='radio-inline'><input type='radio'  value='2'  name="status2[{$g['id']}]" {if $apply['credit20'] > 0}checked="checked"{/if} /> 通过</label>
 
                                                                 {elseif $g['status2']==2}
                                                                 <span class='label label-success'>通过</span>
@@ -328,9 +332,10 @@
                                                              {if $g['status3']==-1}
                                                                 <span class='label label-default'>未通过</span>
                                                                 {elseif $g['status3']==1}
-
+                                                                  {if $apply['credit20'] <= 0}
                                                                 <label class='radio-inline'><input type='radio' class='status3' value='-1' name="status3[{$g['id']}]" /> 不通过</label>
-                                                                <label class='radio-inline'><input type='radio' value='2' name="status3[{$g['id']}]"  /> 通过</label>
+                                                                  {/if}
+                                                                <label class='radio-inline'><input type='radio' value='2' name="status3[{$g['id']}]" {if $apply['credit20'] > 0}checked="checked"{/if} /> 通过</label>
 
                                                                 {elseif $g['status3']==2}
                                                                 <span class='label label-success'>通过</span>
@@ -357,7 +362,7 @@
             打款信息
      </div>
     <div class='panel-body'>
-        此次佣金总额:  <span style='color:red'>{$totalcommission}</span> 元    应该打款：<span style='color:red'>{$totalpay}</span> 元 
+        此次佣金总额:  <span style='color:red'>{$totalcommission}</span> 元 已消费<span style='color:red'>{$apply['credit20']}</span> 元   应该打款：<span style='color:red'>{php echo $totalpay-$apply['credit20']}</span> 元 
     </div>
   {/if}
   
@@ -366,7 +371,7 @@
             打款信息
      </div>
     <div class='panel-body'>
-         此次佣金总额:  <span style='color:red'>{$totalcommission}</span> 元    实际打款：<span style='color:red'>{$totalpay}</span> 元 
+         此次佣金总额:  <span style='color:red'>{$totalcommission}</span> 元 已消费<span style='color:red'>{$apply['credit20']}</span> 元   实际打款：<span style='color:red'>{php echo $totalpay-$apply['credit20']}</span> 元 
     </div>
   {/if}
   
