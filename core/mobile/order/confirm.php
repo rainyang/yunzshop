@@ -24,6 +24,7 @@ $plugc           = p("coupon");
 if ($plugc) {
     $hascouponplugin = true;
 }
+
 $diyform_plugin = p("diyform");
 $order_formInfo = false;
 if ($diyform_plugin) {
@@ -37,7 +38,7 @@ if ($diyform_plugin) {
         }
     }
 }
-$carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1", array(
+$carrier_list = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_store") . " WHERE uniacid=:uniacid AND status=1", array(
             ":uniacid" => $_W["uniacid"]
         ));
 
@@ -87,7 +88,7 @@ if ($_W['isajax']) {
             $suppliers = pdo_fetchall('SELECT distinct g.supplier_uid FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc", array(
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
-            ),'supplier_uid');
+            ), 'supplier_uid');
             $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
             $goods = pdo_fetchall($sql, array(
                 ':uniacid' => $uniacid,
@@ -109,8 +110,8 @@ if ($_W['isajax']) {
             }
             $fromcart = 1;
         } else {
-            $sql              = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
-            $data             = pdo_fetch($sql, array(
+            $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+            $data = pdo_fetch($sql, array(
                 ':uniacid' => $uniacid,
                 ':id' => $id
             ));
@@ -177,7 +178,7 @@ if ($_W['isajax']) {
             }
             if (!empty($g['virtual']) || $g['type'] == 2) {
                 $isvirtual = true;
-            }  
+            }
         }
         //多店值分开初始化
         foreach ($suppliers as $key => $val) {
@@ -192,15 +193,15 @@ if ($_W['isajax']) {
             $order_all[$val['supplier_uid']]['storeids']       = array();
             $order_all[$val['supplier_uid']]['dispatch_array'] = array();
             $order_all[$val['supplier_uid']]['supplier_uid'] = $val['supplier_uid'];
-            if($val['supplier_uid']==0){
+            if ($val['supplier_uid']==0) {
                 $order_all[$val['supplier_uid']]['supplier_name'] = $shopset['name'];
-            }else{
+            } else {
                 $supplier_names = pdo_fetch('select username, brandname from ' . tablename('sz_yi_perm_user') . ' where uid='. $val['supplier_uid'] . " and uniacid=" . $_W['uniacid']);
-                if(!empty($supplier_names)){
+                if (!empty($supplier_names)) {
                     $order_all[$val['supplier_uid']]['supplier_name'] = $supplier_names['brandname'] ? $supplier_names['brandname'] : "";
-                }else{
-                    $order_all[$val['supplier_uid']]['supplier_name'] = '';        
-                }       
+                } else {
+                    $order_all[$val['supplier_uid']]['supplier_name'] = '';
+                }
             }
         }
         $member        = m('member')->getMember($openid);
@@ -390,9 +391,9 @@ if ($_W['isajax']) {
                             $param         = $order_all[$val['supplier_uid']]['dispatch_array'][$k]["param"];
                             $areas         = unserialize($order_all[$val['supplier_uid']]['dispatch_data']["areas"]);
                             if (!empty($address)) {
-                                $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $order_all[$val['supplier_uid']]['dispatch_data'],$val['supplier_uid']);
+                                $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $order_all[$val['supplier_uid']]['dispatch_data'], $val['supplier_uid']);
                             } else if (!empty($member["city"])) {
-                                $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $order_all[$val['supplier_uid']]['dispatch_data'],$val['supplier_uid']);
+                                $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $order_all[$val['supplier_uid']]['dispatch_data'], $val['supplier_uid']);
                             } else {
                                 $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getDispatchPrice($param, $order_all[$val['supplier_uid']]['dispatch_data'], -1, $val['supplier_uid']);
                             }
@@ -441,7 +442,7 @@ if ($_W['isajax']) {
                     if ($order_all[$val['supplier_uid']]['realprice'] >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
                         $order_all[$val['supplier_uid']]['saleset']["showenough"]   = true;
                         $order_all[$val['supplier_uid']]['saleset']["enoughmoney"]  = $e["enough"];
-                        $order_all[$val['supplier_uid']]['saleset']["enoughdeduct"] = number_format($e["money"],2);
+                        $order_all[$val['supplier_uid']]['saleset']["enoughdeduct"] = number_format($e["money"], 2);
                         $order_all[$val['supplier_uid']]['realprice'] -= floatval($e["money"]);
                         break;
                     }
@@ -490,11 +491,11 @@ if ($_W['isajax']) {
                     }
                 }
             }
-            $order_all[$val['supplier_uid']]['goodsprice'] = number_format($order_all[$val['supplier_uid']]['goodsprice'],2);
-            $order_all[$val['supplier_uid']]['totalprice'] = number_format($order_all[$val['supplier_uid']]['totalprice'],2);
-            $order_all[$val['supplier_uid']]['discountprice'] = number_format($order_all[$val['supplier_uid']]['discountprice'],2);
-            $order_all[$val['supplier_uid']]['realprice'] = number_format($order_all[$val['supplier_uid']]['realprice'],2);
-            $order_all[$val['supplier_uid']]['dispatch_price'] = number_format($order_all[$val['supplier_uid']]['dispatch_price'],2);
+            $order_all[$val['supplier_uid']]['goodsprice'] = number_format($order_all[$val['supplier_uid']]['goodsprice'], 2);
+            $order_all[$val['supplier_uid']]['totalprice'] = number_format($order_all[$val['supplier_uid']]['totalprice'], 2);
+            $order_all[$val['supplier_uid']]['discountprice'] = number_format($order_all[$val['supplier_uid']]['discountprice'], 2);
+            $order_all[$val['supplier_uid']]['realprice'] = number_format($order_all[$val['supplier_uid']]['realprice'], 2);
+            $order_all[$val['supplier_uid']]['dispatch_price'] = number_format($order_all[$val['supplier_uid']]['dispatch_price'], 2);
         }
         $supplierids = implode(',', array_keys($suppliers));
         show_json(1, array(
@@ -531,7 +532,7 @@ if ($_W['isajax']) {
             'order_all' => $order_all,
             'supplierids' => $supplierids
         ));
-    } else if ($operation == 'getdispatchprice') {
+    } elseif ($operation == 'getdispatchprice') {
         $isverify       = false;
         $isvirtual      = false;
         $deductprice    = 0;
@@ -778,7 +779,7 @@ if ($_W['isajax']) {
                             if (empty($g["dispatchid"])) {
                                 $dispatch_data = m("order")->getDefaultDispatch($supplier_uid);
                             } else {
-                                $dispatch_data = m("order")->getOneDispatch($g["dispatchid"],$supplier_uid);
+                                $dispatch_data = m("order")->getOneDispatch($g["dispatchid"], $supplier_uid);
                             }
                             if (empty($dispatch_data)) {
                                 $dispatch_data = m("order")->getNewDispatch($supplier_uid);
@@ -864,19 +865,17 @@ if ($_W['isajax']) {
             "deductcredit" => $deductcredit,
             "deductmoney" => $deductmoney
         ));
-    } else if ($operation == 'create' && $_W['ispost']) {
-
+    } elseif ($operation == 'create' && $_W['ispost']) {
         $order_data = $_GPC['order'];
         //通用订单号，支付用
-        if(count($order_data) > 1)
+        if (count($order_data) > 1) {
             $ordersn_general    = m('common')->createNO('order', 'ordersn', 'SH');
-        }else{
+        } else {
             $ordersn_general    = "";
         }
         $member       = m('member')->getMember($openid);
         $level         = m('member')->getLevel($openid);
         foreach ($order_data as $key => $order_row) {
-            
             $dispatchtype = intval($order_row['dispatchtype']);
             $addressid    = intval($order_row['addressid']);
             $address      = false;
@@ -1191,7 +1190,7 @@ if ($_W['isajax']) {
                             if (empty($g["dispatchid"])) {
                                 $dispatch_data = m("order")->getDefaultDispatch($g['supplier_uid']);
                             } else {
-                                $dispatch_data = m("order")->getOneDispatch($g["dispatchid"],$g['supplier_uid']);
+                                $dispatch_data = m("order")->getOneDispatch($g["dispatchid"], $g['supplier_uid']);
                             }
                             if (empty($dispatch_data)) {
                                 $dispatch_data = m("order")->getNewDispatch($g['supplier_uid']);
@@ -1220,9 +1219,9 @@ if ($_W['isajax']) {
                         $param         = $dispatch_array[$k]["param"];
                         $areas         = unserialize($dispatch_data["areas"]);
                         if (!empty($address)) {
-                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $dispatch_data,$order_row['supplier_uid']);
+                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $dispatch_data, $order_row['supplier_uid']);
                         } else if (!empty($member["city"])) {
-                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $dispatch_data,$order_row['supplier_uid']);
+                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $dispatch_data, $order_row['supplier_uid']);
                         } else {
                             $dispatch_price += m("order")->getDispatchPrice($param, $dispatch_data, -1, $order_row['supplier_uid']);
                         }
@@ -1481,5 +1480,5 @@ if ($_W['isajax']) {
             'orderid' => $orderid
         ));
     }
-//}
+}
 include $this->template('order/confirm');

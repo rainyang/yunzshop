@@ -6,6 +6,33 @@ $status      = intval($_GPC['status']);
 empty($status) && $status = 1;
 $operation = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 if ($operation == 'display') {
+    $diyform_plugin = p('diyform');
+    if ($diyform_plugin) {
+        $set_config        = $diyform_plugin->getSet();
+        $commission_diyform_open = $set_config['commission_diyform_open'];
+        if ($commission_diyform_open == 1) {
+            $template_flag = 1;
+            $diyform_id    = $set_config['commission_diyform'];
+            if (!empty($diyform_id)) {
+                $formInfo     = $diyform_plugin->getDiyformInfo($diyform_id);
+                $fields       = $formInfo['fields'];
+                $diyform_data = iunserializer($member['diymemberdata']);
+                $f_data       = $diyform_plugin->getDiyformData($diyform_data, $fields, $member);
+            }
+        }
+    }
+    if ($fields) {
+
+        foreach ($fields as $k => $key) {
+            if ($key['tp_name'] == '身份证号' || $key['tp_name'] == '身份证') {
+            	$field[] = array('title' => $key['tp_name'], 'field' => $k, 'width' => 24);
+            } else {
+            	$field[] = array('title' => $key['tp_name'], 'field' => $k, 'width' => 12);
+            }
+
+            
+        }
+    }
 	if ($status == -1) {
 		ca('commission.apply.view_1');
 	} else {
@@ -50,7 +77,7 @@ if ($operation == 'display') {
 	} else {
 		$orderby = 'applytime';
 	}
-	$sql = 'select a.*, m.nickname,m.avatar,m.realname,m.mobile,l.levelname from ' . tablename('sz_yi_commission_apply') . ' a ' . ' left join ' . tablename('sz_yi_member') . ' m on m.id = a.mid' . ' left join ' . tablename('sz_yi_commission_level') . ' l on l.id = m.agentlevel' . " where 1 {$condition} ORDER BY {$orderby} desc ";
+	$sql = 'select a.*, m.nickname,m.avatar,m.diycommissiondata,m.realname,m.mobile,l.levelname from ' . tablename('sz_yi_commission_apply') . ' a ' . ' left join ' . tablename('sz_yi_member') . ' m on m.id = a.mid' . ' left join ' . tablename('sz_yi_commission_level') . ' l on l.id = m.agentlevel' . " where 1 {$condition} ORDER BY {$orderby} desc ";
 	if (empty($_GPC['export'])) {
 		$sql .= '  limit ' . ($pindex - 1) * $psize . ',' . $psize;
 	}
@@ -62,6 +89,29 @@ if ($operation == 'display') {
 		$row['paytime'] = $status >= 3 ? date('Y-m-d H:i', $row['paytime']) : '--';
 		$row['invalidtime'] = $status == -1 ? date('Y-m-d H:i', $row['invalidtime']) : '--';
 		$row['typestr'] = empty($row['type']) ? '余额' : '微信';
+		if ($row['diycommissiondata']) {
+
+            $row['diycommissiondata'] = iunserializer($row['diycommissiondata']);
+            foreach ($row['diycommissiondata'] as $key => $value) {
+                
+                if ($key == 'diyshenfenzheng') {
+
+                    $row[$key] = "'".$value."'";
+
+                } else if (is_array($value)){
+
+                    $row[$key] = "'";
+
+                    foreach ($value as $k => $v) {
+                        $row[$key] .= $v;
+                    }
+                } else {
+
+                    $row[$key] = $value;
+
+                }
+            }
+        }
 	}
 	unset($row);
 	if ($_GPC['export'] == '1') {
@@ -78,7 +128,64 @@ if ($operation == 'display') {
 			$title = '已无效佣金';
 		}
 
-		m('excel')->export($list, array('title' => $title . '数据-' . date('Y-m-d-H-i', time()), 'columns' => array(array('title' => 'ID', 'field' => 'id', 'width' => 12), array('title' => '提现单号', 'field' => 'applyno', 'width' => 24), array('title' => '粉丝', 'field' => 'nickname', 'width' => 12), array('title' => '姓名', 'field' => 'realname', 'width' => 12), array('title' => '手机号码', 'field' => 'mobile', 'width' => 12), array('title' => '提现方式', 'field' => 'typestr', 'width' => 12),array('title' => '申请佣金', 'field' => 'commission', 'width' => 12), array('title' => '申请时间', 'field' => 'applytime', 'width' => 24), array('title' => '审核时间', 'field' => 'checktime', 'width' => 24), array('title' => '打款时间', 'field' => 'paytime', 'width' => 24), array('title' => '设置无效时间', 'field' => 'invalidtime', 'width' => 24))));
+		$columns = array(
+			array(
+				'title' => '提现单号',
+				'field' => 'applyno',
+				'width' => 24
+				),
+			array(
+				'title' => '粉丝', 
+				'field' => 'nickname', 
+				'width' => 12
+				),
+			array(
+				'title' => '姓名', 
+				'field' => 'realname', 
+				'width' => 12
+				),
+			array(
+				'title' => '手机号码', 
+				'field' => 'mobile', 
+				'width' => 12
+				),
+			array(
+				'title' => '提现方式', 
+				'field' => 'typestr', 
+				'width' => 12
+				),
+			array(
+				'title' => '申请佣金', 
+				'field' => 'commission', 
+				'width' => 12
+				),
+			array(
+				'title' => '申请时间', 
+				'field' => 'applytime', 
+				'width' => 24
+				),
+			array(
+				'title' => '审核时间', 
+				'field' => 'checktime', 
+				'width' => 24
+				),
+			array(
+				'title' => '打款时间', 
+				'field' => 'paytime', 
+				'width' => 24
+				),
+			array(
+				'title' => '设置无效时间', 
+				'field' => 'invalidtime', 
+				'width' => 24
+				)
+		);
+		if ($field) {
+        	$columns = array_merge($columns,$field);
+        }
+		m('excel')->export($list,array('title' => $title . '数据-' . date('Y-m-d-H-i', time()), 
+			'columns' => $columns
+		));
 	}
 	$total = pdo_fetchcolumn('select count(a.id) from' . tablename('sz_yi_commission_apply') . ' a ' . ' left join ' . tablename('sz_yi_member') . ' m on m.uid = a.mid' . ' left join ' . tablename('sz_yi_commission_level') . ' l on l.id = m.agentlevel' . " where 1 {$condition}", $params);
 	$pager = pagination($total, $pindex, $psize);
