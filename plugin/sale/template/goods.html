@@ -1,3 +1,21 @@
+{if p('love')}
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">爱心基金</label>
+    <div class="col-sm-4">
+       {ife 'shop.goods' $item}
+        <div class='input-group'>
+            <input type="text" name="love_money"  value="{$item['love_money']}" class="form-control" />
+            <span class="input-group-addon">元</span>
+        </div>
+       <span class="help-block">如果设置0，则不贡献</span>
+          {else}
+          <div class='form-control-static'>
+              {if empty($item['love_money'])}不贡献{else}贡献金额{$item['love_money']}元{/if}
+         </div>
+          {/if}
+    </div>   
+</div>
+{/if}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分抵扣</label>
     <div class="col-sm-4">

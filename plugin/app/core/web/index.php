@@ -16,7 +16,7 @@ if(!is_array($app)) {
 }
 if($_W['ispost']) {
 	//app
-	$app = array_elements(array('switch', 'accept', 'useing'), $_GPC['app']);
+	$app = array_elements(array('switch', 'accept', 'useing', 'android_url', 'ios_url'), $_GPC['app']);
 
 	$set['app']['base'] = $app;
 
