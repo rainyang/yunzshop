@@ -139,12 +139,24 @@ if ($op == 'display') {
                     $row['status'] = "失败";
                 }
             }
+            //自定义表单信息
             if($row['diymemberdata']){
+
                 $row['diymemberdata'] = iunserializer($row['diymemberdata']);
                 foreach ($row['diymemberdata'] as $key => $value) {
-                    $row[$key] = $value;
+                    
+                    if($key == 'diyshenfenzheng'){
+                        $row[$key] = "'".$value."'";
+                    }else if(is_array($value)){
+                        $row[$key] = "'";
+
+                        foreach ($value as $k => $v) {
+                            $row[$key] .= $v;
+                        }
+                    }else{
+                        $row[$key] = $value;
+                    }
                 }
-                
             }
             if ($row['rechargetype'] == 'system') {
                 $row['rechargetype'] = "后台";
