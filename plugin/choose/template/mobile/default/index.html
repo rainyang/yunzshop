@@ -308,6 +308,8 @@ ul, li { list-style:none; margin:0; padding:0 }
                      $('#total').find("p").html('总价：￥' + ret.result.totalprice + ret.result.difference);
                         if(ret.result.difference){
                           $(".channel").hide();                                                       
+                        } else {
+                          $(".channel").show();
                         }
                     },true,true);
                 });

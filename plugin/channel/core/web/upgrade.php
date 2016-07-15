@@ -125,4 +125,8 @@ if(!pdo_fieldexists('sz_yi_chooseagent', 'isopenchannel')) {
 if(!pdo_fieldexists('sz_yi_goods', 'isopenchannel')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isopenchannel` tinyint(1) NOT NULL COMMENT '0关闭1开启';");
 }
+
+if(!pdo_fieldexists('sz_yi_order', 'ischannelpay')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `ischannelpay` tinyint(1) NOT NULL COMMENT '0不是1渠道商采购订单';");
+}
 message('渠道商插件安装成功', $this->createPluginWebUrl('channel/index'), 'success');

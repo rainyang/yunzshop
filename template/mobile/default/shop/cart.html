@@ -256,6 +256,18 @@ body {margin:0px; background:#f8f8f8;width:100%;}
            $(".ico").click(function(){
                     setSelect($(this),$(this).parent().attr('sel'))
            });
+           $('.paysub').click(function(){
+              var total =  calcprice();
+              var ischannelpay = json.result.ischannelpay;
+              if(total<=0){
+                  return;
+              }
+              var ids = [];
+              $('.cart_good[sel=1]').each(function(){
+                   ids.push($(this).data('cartid'));
+              })
+              location.href = core.getUrl('order/confirm',{cartids:ids.join(','),ischannelpay:ischannelpay});
+            })
            $('.shownum').blur(function(){
                
                var maxbuy = parseInt( $(this).closest('.cart_good').data('maxbuy'));
@@ -558,19 +570,6 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                             
                         });
                      
-                        $('.paysub').click(function(){
-                            
-                          var total =  calcprice();
-                          if(total<=0){
-                              return;
-                          }
-                          var ids = [];
-                          $('.cart_good[sel=1]').each(function(){
-                               ids.push($(this).data('cartid'));
-                          })
-                          
-                          location.href = core.getUrl('order/confirm',{cartids:ids.join(',')});
-                        })
                             
                     
             

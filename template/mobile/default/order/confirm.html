@@ -439,7 +439,7 @@ var fromcart = 0;
 
 
 
-        core.json('order/confirm', {id:'{php echo intval($_GPC['id'])}', optionid:'{php echo intval($_GPC['optionid'])}', total:'{php echo intval($_GPC['total'])}',cartids:"{$_GPC['cartids']}"}, function(json){
+        core.json('order/confirm', {id:'{php echo intval($_GPC['id'])}', optionid:'{php echo intval($_GPC['optionid'])}', total:'{php echo intval($_GPC['total'])}',cartids:"{$_GPC['cartids']}",ischannelpay:"{$_GPC['ischannelpay']}"}, function(json){
 
         if(json.status==-1){
             location.href=json.result.url;
@@ -940,9 +940,10 @@ var fromcart = 0;
             var data ={
                 'op': 'create', 
                 'goods': goods,
-				'id':'{$id}',
-				gdid:gdid,
-				diydata:diydata,
+				        'id':'{$id}',
+				        gdid:gdid,
+				        diydata:diydata,
+                ischannelpay:"{$_GPC['ischannelpay']}",
                 'dispatchtype': $("#dispatchtype").val(),
                 'fromcart':fromcart,
                 'cartids':"{$_GPC['cartids']}",
@@ -985,7 +986,7 @@ var fromcart = 0;
             core.json('order/confirm', data, function(create_json) {
 
                 if (create_json.status == 1) {
-                    location.href = "{php echo $this->createMobileUrl('order/pay')}&orderid=" + create_json.result.orderid +"&openid={$openid}";
+                    location.href = "{php echo $this->createMobileUrl('order/pay')}&orderid=" + create_json.result.orderid +"&openid={$openid}&ischannelpay=" + create_json.result.ischannelpay;
                 }  else if (create_json.status == -1) {
                      $('.paysub').html('确认订单').removeAttr('submitting');
                      core.tip.show(create_json.result);

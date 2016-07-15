@@ -32,9 +32,8 @@ if ($_W['isajax']) {
                 $r['stock'] = $r['optionstock'];
             }
             if (p('channel')) {
-                if (!empty($my_info['up_level'])) {
-                    $r['marketprice'] = (($r['marketprice'] * $my_info['up_level']['purchase_discount']/100) - ($r['marketprice'] * $my_info['my_level']['purchase_discount']/100)) * $my_info['up_level']['profit_sharing']/100;
-                } else {
+                $member = m('member')->getInfo($openid);
+                if (!empty($member['ischannel']) && !empty($member['channel_level'])) {
                     $r['marketprice'] = $r['marketprice'] * $my_info['my_level']['purchase_discount']/100;
                 }
             }
@@ -42,14 +41,18 @@ if ($_W['isajax']) {
             $total += $r['total'];
         }
         $difference = '';
+        $ischannelpay = 0;
         if (p('channel')) {
-            $min_price = $my_info['my_level']['min_price'];
-            $difference = $min_price - $totalprice;
-            if ($difference <= 0) {
-                $difference = '';
-            } else {
-                $difference = number_format($difference,2);
-                $difference = "您还需要{$difference}元才可以购买";
+            if (!empty($my_info)) {
+                $ischannelpay = 1;
+                $min_price = $my_info['my_level']['min_price'];
+                $difference = $min_price - $totalprice;
+                if ($difference <= 0) {
+                    $difference = '';
+                } else {
+                    $difference = number_format($difference,2);
+                    $difference = "您还需要{$difference}元才可以购买";
+                }
             }
         }
         unset($r);
@@ -60,7 +63,8 @@ if ($_W['isajax']) {
                 'total' => $total,
                 'list' => $list,
                 'totalprice' => $totalprice,
-                'difference' => $difference
+                'difference' => $difference,
+                'ischannelpay' => $ischannelpay
             ));
         
     } else if ($operation == 'add' && $_W['ispost']) {
