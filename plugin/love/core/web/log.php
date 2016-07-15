@@ -47,7 +47,7 @@ if ($op == 'display') {
 		$logno="and log.paymonth='{$_GPC['$paymonth']}'";
 	}
 	//平台基金
-	$list = pdo_fetchall("select log.*, m.realname,m.avatar,m.weixin,m.nickname,m.mobile,g.groupname,l.levelname from " . tablename('sz_yi_love_log') . " log " . " left join " . tablename('sz_yi_member') . " m on m.openid=log.openid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where log.uniacid=:uniacid {$condition} ORDER BY log.createtime DESC limit " . ($pindex - 1) * $psize . ',' . $psize, $params);
+	$list = pdo_fetchall("select log.*, m.realname,m.avatar,m.weixin,m.nickname,m.mobile,g.groupname,l.levelname from " . tablename('sz_yi_love_log') . " log " . " left join " . tablename('sz_yi_member') . " m on m.openid=log.openid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where log.uniacid=:uniacid and log.status=0 {$condition} ORDER BY log.createtime DESC limit " . ($pindex - 1) * $psize . ',' . $psize, $params);
 	
 	if ($_GPC['export'] == 1) {
 
@@ -100,7 +100,7 @@ if ($op == 'display') {
 		}
 		m('excel')->export($list, array("title" => (empty($type) ? "会员充值数据-" : "会员提现记录") . date('Y-m-d-H-i', time()), "columns" => $columns));
 	}
-	$total = pdo_fetchcolumn("select log.*, m.realname,m.avatar,m.weixin,m.nickname,m.mobile,g.groupname,l.levelname from " . tablename('sz_yi_love_log') . " log " . " left join " . tablename('sz_yi_member') . " m on m.openid=log.openid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where log.uniacid=:uniacid {$condition} ", $params);
+	$total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_love_log') . " log " . " left join " . tablename('sz_yi_member') . " m on m.openid=log.openid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where log.uniacid=:uniacid and log.status=0 {$condition} ", $params);
 	$pager = pagination($total, $pindex, $psize);
 } 
 load()->func('tpl');

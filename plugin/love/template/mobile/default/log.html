@@ -76,7 +76,18 @@ a {text-decoration:none;}
 <div id='container'></div>
 
 <script id='tpl_log' type='text/html'>
-<%each list as log%>
+<%if status==9 %>
+  <%each list as log%>
+     <div class="log_lista" data-goodsid='<%log.id%>'>
+      <div class="left">
+     <div class="inner">
+         <em><%log.title%></em>
+        <span class="right-s"><%log.createtime%></span></div>
+    </div>
+     </div>    
+  <%/each%>
+<%else%>
+  <%each list as log%>
     <div class="log_list" data-goodsid='<%log.goodsid%>' >
        <div class="left">
             <div class="inner">
@@ -94,8 +105,8 @@ a {text-decoration:none;}
             </div>
        </div>
     </div>
-
-    <%/each%>
+  <%/each%>
+<%/if%>
 </script>
 
 <script language="javascript">
@@ -265,6 +276,19 @@ require(['tpl', 'core'], function (tpl, core) {
 
              });
 
+             $('.log_lista').unbind('click').click(function(){
+
+                var goodsid = $(this).data('goodsid');
+                alert(goodsid);
+                if(goodsid > 0){
+                  var url = core.getUrl('plugin/article',{'aid':goodsid});
+                  location.href = url;
+                }
+
+                return;
+
+             });
+
             bindScroller();
 
         }, true);
@@ -299,6 +323,18 @@ require(['tpl', 'core'], function (tpl, core) {
                   var url = core.getUrl('shop/detail',{'id':goodsid});
                   location.href = url;
                 }
+                return;
+
+             });
+
+             $('.log_lista').unbind('click').click(function(){
+
+                var goodsid = $(this).data('goodsid');
+                if(goodsid > 0){
+                  var url = core.getUrl('plugin/article',{'aid':goodsid});
+                  location.href = url;
+                }
+
                 return;
 
              });
