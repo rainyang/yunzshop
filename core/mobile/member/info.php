@@ -5,7 +5,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
-
+//print_r($_GPC);exit;
 $openid         = m('user')->getOpenid();
 $member         = m('member')->getInfo($openid);
 $template_flag  = 0;

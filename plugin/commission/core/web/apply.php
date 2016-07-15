@@ -21,13 +21,13 @@ if ($operation == 'display') {
             }
         }
     }
-    if ($fields) {
+    if($fields){
 
         foreach ($fields as $k => $key) {
-            if ($key['tp_name'] == '身份证号' || $key['tp_name'] == '身份证') {
-            	$field[] = array('title' => $key['tp_name'], 'field' => $k, 'width' => 24);
+            if ( explode($key['tp_name'], '身份证号') > 1  || explode($key['tp_name'], '城市') > 1 || explode($key['tp_name'], '地址') > 1  || explode($key['tp_name'], '区域') > 1  || explode($key['tp_name'], '位置') > 1 ) {
+                $field[] = array('title' => $key['tp_name'] , 'field' => $k , 'width' => 24);
             } else {
-            	$field[] = array('title' => $key['tp_name'], 'field' => $k, 'width' => 12);
+                $field[] = array('title' => $key['tp_name'] , 'field' => $k , 'width' => 12);
             }
 
             
