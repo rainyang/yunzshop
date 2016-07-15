@@ -21,7 +21,7 @@ if ($operation == 'display') {
             }
         }
     }
-    if($fields){
+    if ($fields) {
 
         foreach ($fields as $k => $key) {
             if ( explode($key['tp_name'], '身份证号') > 1  || explode($key['tp_name'], '城市') > 1 || explode($key['tp_name'], '地址') > 1  || explode($key['tp_name'], '区域') > 1  || explode($key['tp_name'], '位置') > 1 ) {
