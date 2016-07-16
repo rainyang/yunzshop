@@ -39,17 +39,15 @@ if ($op == 'display') {
     if($fields){
 
         foreach ($fields as $k => $key) {
-            if($key['tp_name'] == '身份证号' || $key['tp_name'] == '身份证'){
+            if ( explode($key['tp_name'], '身份证号') > 1  || explode($key['tp_name'], '城市') > 1 || explode($key['tp_name'], '地址') > 1  || explode($key['tp_name'], '区域') > 1  || explode($key['tp_name'], '位置') > 1 ) {
                 $field[] = array('title' => $key['tp_name'] , 'field' => $k , 'width' => 24);
-            }else{
+            } else {
                 $field[] = array('title' => $key['tp_name'] , 'field' => $k , 'width' => 12);
             }
 
             
         }
     }
-    //echo "<pre>"; print_r($fields);exit;
-    //echo "<pre>"; print_r(iunserializer($data));exit;
     $pindex = max(1, intval($_GPC['page']));
     $psize  = 20;
     $type   = intval($_GPC['type']);
@@ -139,12 +137,24 @@ if ($op == 'display') {
                     $row['status'] = "失败";
                 }
             }
+            //自定义表单信息
             if($row['diymemberdata']){
+
                 $row['diymemberdata'] = iunserializer($row['diymemberdata']);
                 foreach ($row['diymemberdata'] as $key => $value) {
-                    $row[$key] = $value;
+                    
+                    if($key == 'diyshenfenzheng'){
+                        $row[$key] = "'".$value."'";
+                    }else if(is_array($value)){
+                        $row[$key] = "'";
+
+                        foreach ($value as $k => $v) {
+                            $row[$key] .= $v;
+                        }
+                    }else{
+                        $row[$key] = $value;
+                    }
                 }
-                
             }
             if ($row['rechargetype'] == 'system') {
                 $row['rechargetype'] = "后台";
@@ -192,7 +202,7 @@ if ($op == 'display') {
                 'width' => 12
             )
         );
-        if($field){
+        if ($field) {
             $columns = array_merge($columns,$field);
         }
         if (empty($_GPC['type'])) {

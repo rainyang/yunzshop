@@ -30,23 +30,38 @@ if ($_W['isajax']) {
 		$datastatus =	trim($_GPC['datastatus']);
 		$condition = " ";
 		$params = array(':uniacid' => $uniacid);
-		if($status == 3){
-			$condition .= " and l.openid='{$openid}'";
-		}else if($status == 2){
-			$condition .= " and l.type=1";
-		}else if($status == 5){
-			$condition .= " and l.type=1 and l.openid='{$openid}'";
-		}else if($status == 7){
-			$condition .= " and l.type=2";
-		}else if($status == 8){
-			$condition .= " and l.type=2 and l.openid='{$openid}'";
-		}
-		$list = pdo_fetchall('SELECT m.nickname, g.title, l.money, l.paymonth, l.type, l.goodsid FROM ' . tablename('sz_yi_love_log') . ' l ' . ' left join ' . tablename('sz_yi_goods') . " g on l.goodsid = g.id left join " . tablename('sz_yi_member') . " m on l.openid=m.openid where l.uniacid=:uniacid and l.status=0 {$condition} order by l.id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
-		foreach ($list as $key => &$row) {
-			$row['nickname'] = $row['nickname'] ? $row['nickname'] : "未获取";
-			$row['goodsid'] = $row['goodsid'] ? $row['goodsid'] : 0;
-			if($row['type'] == 2){
-				$row['title'] = "会员爱心贡献";	
+		if($status == 9){
+			$list = pdo_fetchall('SELECT a.id, a.article_title, l.createtime FROM ' . tablename('sz_yi_article') . ' a ' . ' left join ' . tablename('sz_yi_love_log') . " l on a.love_log_id = l.id where l.uniacid=:uniacid and a.love_money>0 {$condition} order by a.id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
+			foreach ($list as $key => &$row) {
+				$row['title'] = $row['article_title'];
+				$row['createtime'] = date("Y-m-d H:i",$row['createtime']);
+			}
+		}else{
+			if($status == 3){
+				$condition .= " and l.openid='{$openid}'";
+			}else if($status == 2){
+				$condition .= " and l.type=1";
+			}else if($status == 5){
+				$condition .= " and l.type=1 and l.openid='{$openid}'";
+			}else if($status == 7){
+				$condition .= " and l.type=2";
+			}else if($status == 8){
+				$condition .= " and l.type=2 and l.openid='{$openid}'";
+			}
+			$list = pdo_fetchall('SELECT m.nickname, g.title, l.money, l.paymonth, l.type, l.goodsid FROM ' . tablename('sz_yi_love_log') . ' l ' . ' left join ' . tablename('sz_yi_goods') . " g on l.goodsid = g.id left join " . tablename('sz_yi_member') . " m on l.openid=m.openid where l.uniacid=:uniacid and l.status=0 {$condition} order by l.id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
+			foreach ($list as $key => &$row) {
+				$row['nickname'] = $row['nickname'] ? $row['nickname'] : "未获取";
+				$row['goodsid'] = $row['goodsid'] ? $row['goodsid'] : 0;
+				if($row['type'] == 2){
+					$row['title'] = "会员爱心贡献";
+					if($row['paymonth'] == 1){
+						$row['title'] .= "积分";
+					}else if($row['paymonth'] == 2){
+						$row['title'] .= "宝币";
+					}else if($row['paymonth'] == 3){
+						$row['title'] .= "佣金";
+					}
+				}
 			}
 		}
 		unset($row);
@@ -84,11 +99,11 @@ if ($_W['isajax']) {
 		  }else{
 		  	show_json(0, array('message' => '余额不足!您可以购买商品来进行捐赠！'));
 		  }
-		}else if($gender==2){
+		}else if($gender==3){
 	      if($member['commission_ok'] > 0 && $member['commission_ok'] >= $pay){
-		  	$donation_credit8 = $pay;
+		  	$donation_credit20 = $pay;
 		  	pdo_insert('sz_yi_love_log',$data);
-		  	m('member')->setCredit($openid, 'credit8', $donation_credit8);
+		  	m('member')->setCredit($openid, 'credit20', $donation_credit20);
 		  	show_json(1, array('url' => $this->createPluginMobileUrl('love/log_detail')));
 		  }else{
 		  	show_json(0, array('message' => '佣金不足!您可以购买商品来进行捐赠！'));
@@ -96,8 +111,8 @@ if ($_W['isajax']) {
 		}
 		exit();
  	}	
+ 	$member['commission_ok'] = number_format($member['commission_ok'], 2);
+	show_json(1, array('list' => $list, 'member' => $member, 'status' => $status));
 }
-$member['commission_ok'] = number_format($member['commission_ok'], 2);
-show_json(1, array('list' => $list, 'member' => $member));
 include $this->template('log');
 	
