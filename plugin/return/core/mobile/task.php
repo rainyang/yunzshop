@@ -47,7 +47,7 @@ foreach ($sets as $val) {
 			
 		
 		}
-
+		
 		if(($set["isreturn"]||$set["isqueue"]) && $isexecute){
 			//p('return')->getmoney($set['orderprice'],$_W['uniacid']);
 			if($set["returnrule"]==1)
@@ -80,4 +80,4 @@ echo "ok...";
  
 
 //定时任务 执行地址
-//http://yu.gxzajy.com/app/index.php?i=19&c=entry&method=task&p=return&m=sz_yi&do=plugin
+//http://yl.yunzshop.com/app/index.php?i=1&c=entry&method=task&p=return&m=sz_yi&do=plugin&twgdh=xjdmg
