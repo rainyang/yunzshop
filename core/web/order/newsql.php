@@ -970,7 +970,7 @@ if(pdo_tableexists('sz_yi_return')) {
     }
     //返现队列表 添加删除队列字段 2016-07-16 杨雷
     if(!pdo_fieldexists('sz_yi_return', 'delete')) {
-        pdo_fetchall("ALTER TABLE ".tablename('sz_yi_return')." ADD `delete` tinyint(1) NOT NULL DEFAULT '0';");
+        pdo_fetchall("ALTER TABLE ".tablename('sz_yi_return')." ADD `delete` TINYINT(1) NULL DEFAULT '0';");
     }
 }
 
