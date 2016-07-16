@@ -176,9 +176,9 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
 <div style="background: white">
 <span style="color:#666;font-size: 12px;line-height: 18px;padding: 10px;display: block;">
 通过收银台支付时,您可以获得额外的奖励!<br/>
-余额奖励:订单总额的{$store['creditpack']}%<br/>
-红包奖励:订单总额的{$store['redpack']}%<br/>
-积分奖励:订单总额的{$store['credit1']}%<br/>
+{if $store['creditpack'] > 0}余额奖励:订单总额的{$store['creditpack']}%<br/>{/if}
+{if $store['redpack'] > 0}红包奖励:订单总额的{$store['redpack']}%<br/>{/if}
+{if $store['credit1'] > 0}积分奖励:订单总额的{$store['credit1']}%<br/>{/if}
 {if !empty($store['couponid'])}
 支付完成之后还有优惠券赠送哦!
 {/if}    
