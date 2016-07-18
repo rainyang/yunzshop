@@ -10,7 +10,7 @@ $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where unia
 $set     = unserialize($setdata['sets']);
 
 $app = $set['app']['base'];
-
+//echo '<pre>';print_r($app);exit;
 if(!is_array($app)) {
 	$app = array();
 }
@@ -22,6 +22,9 @@ if($_W['ispost']) {
 
 	$leancloud = array_elements(array('switch', 'id', 'key', 'master', 'notify'), $_GPC['leancloud']);
 	$set['app']['base']['leancloud'] = $leancloud;
+
+	$wechat = array_elements(array('switch'), $_GPC['wx']);
+	$set['app']['base']['wx'] = $wechat;
 
     $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
         ':uniacid' => $_W['uniacid']
