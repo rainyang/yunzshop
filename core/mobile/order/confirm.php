@@ -1331,7 +1331,8 @@ if ($_W['isajax']) {
         );
         if (p('channel')) {
             if ($ischannelpay == 1) {
-                $order['ischannelpay'] = $ischannelpay;
+                $order['ischannelpay']  = $ischannelpay;
+                $order['channel_id']    = $member['id'];
             }
         }
         if ($diyform_plugin) {
@@ -1403,7 +1404,42 @@ if ($_W['isajax']) {
             }
             if (p('channel')) {
                 if ($ischannelpay == 1) {
-                    $order_goods['channel_id'] = $member['id'];
+                    $my_info                    = p('channel')->getInfo($openid);
+                    $every_turn_price           = $goods['marketprice']/($my_info['my_level']['purchase_discount']/100);
+                    $ischannelstock             = pdo_fetch(
+                        "SELECT * FROM " . tablename('sz_yi_channel_stock') . 
+                        " where uniacid={$_W['uniacid']} 
+                        and openid='{$openid}' 
+                        and goodsid={$goods['goodsid']}
+                    ");
+                    if (empty($ischannelstock)) {
+                        pdo_insert('sz_yi_channel_stock', array(
+                            'uniacid'       => $_W['uniacid'],
+                            'openid'        => $openid,
+                            'goodsid'       => $goods['goodsid'],
+                            'stock_total'   => $goods['total']
+                            ));
+                    } else {
+                        $stock_total = $ischannelstock['stock_total'] + $goods['total'];
+                        pdo_update('sz_yi_channel_stock', array(
+                            'stock_total'   => $stock_total
+                            ), array(
+                            'uniacid'       => $_W['uniacid'],
+                            'openid'        => $openid,
+                            'goodsid'       => $goods['goodsid']
+                            ));
+                    }
+
+                    $stock_log = array(
+                          'uniacid'             => $_W['uniacid'],
+                          'openid'              => $openid,
+                          'goodsid'             => $goods['goodsid'],
+                          'every_turn'          => $goods['total'],
+                          'every_turn_price'    => $goods['marketprice'],
+                          'every_turn_discount' => $my_info['my_level']['purchase_discount'],
+                          'goods_price'         => $every_turn_price
+                        );
+                    pdo_insert('sz_yi_channel_stock_log', $stock_log);
                 }
             }
             pdo_insert('sz_yi_order_goods', $order_goods);
@@ -1436,12 +1472,12 @@ if ($_W['isajax']) {
         if ($pluginc) {
             $pluginc->checkOrderConfirm($orderid);
         }
-        if (p('channel')) {
-            if ($ischannelpay == 1) {
-                $ischannelpay = 1;
-                $order_goods['channel_id'] = $member['id'];
-            }
-        }
+        // if (p('channel')) {
+        //     if ($ischannelpay == 1) {
+        //         $ischannelpay = 1;
+        //         $order_goods['channel_id'] = $member['id'];
+        //     }
+        // }
         show_json(1, array(
             'orderid' => $orderid,
             'ischannelpay' => $ischannelpay
