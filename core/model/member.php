@@ -384,6 +384,9 @@ class Sz_DYi_Member
                 'status' => 0
             );
             $bindMobile = true;
+
+            pdo_insert('sz_yi_member', $member);
+
             /**
              * 分销 绑定app注册用户
              */
@@ -391,37 +394,22 @@ class Sz_DYi_Member
                 /**
                  * 分销商品链接地址
                  */
-                $redireUrl = "http://" . $_SERVER["HTTP_HOST"] . "/app/index.php?i=" . $_GPC['i'] . "&c=entry&p=detail&id=". $_GPC['id'] . "&mid=" . $_GPC['mid'] . "&do=shop&m=sz_yi&access=app";
-
-                header("Location:/app/index.php?i=" . $_W['uniacid'] . "&c=entry&p=bindapp&do=member&m=sz_yi&bindapp=1&redireurl=". urlencode($redireUrl));
-            } else {
-                pdo_insert('sz_yi_member', $member);
+                header("Location:/app/index.php?i=" . $_W['uniacid'] . "&c=entry&p=bindapp&do=member&m=sz_yi&mid=".$_GPC['mid']);
             }
 
-        } else {
-            /**
-             * 分销 绑定app已注册未绑定用户
-             */
-            if (isset($_GPC['access']) && $_GPC['access'] == 'app' && $member['bindapp'] == 0) {
-                /**
-                 * 分销商品链接地址
-                 */
-                $redireUrl = "http://" . $_SERVER["HTTP_HOST"] . "/app/index.php?i=" . $_GPC['i'] . "&c=entry&p=detail&id=".$_GPC['id']."&mid=" . $_GPC['mid'] . "&do=shop&m=sz_yi&access=app";
 
-                header("Location:http://" . $_SERVER["HTTP_HOST"] . "/app/index.php?i=" . $_W['uniacid'] . "&c=entry&p=bindapp&do=member&m=sz_yi&bindapp=2&redireurl=" . urlencode($redireUrl));
-            } else {
-                $upgrade = array();
-                if ($userinfo['nickname'] != $member['nickname']) {
-                    $upgrade['nickname'] = $userinfo['nickname'];
-                }
-                if ($userinfo['avatar'] != $member['avatar']) {
-                    $upgrade['avatar'] = $userinfo['avatar'];
-                }
-                if (!empty($upgrade)) {
-                    pdo_update('sz_yi_member', $upgrade, array(
-                        'id' => $member['id']
-                    ));
-                }
+        } else {
+            $upgrade = array();
+            if ($userinfo['nickname'] != $member['nickname']) {
+                $upgrade['nickname'] = $userinfo['nickname'];
+            }
+            if ($userinfo['avatar'] != $member['avatar']) {
+                $upgrade['avatar'] = $userinfo['avatar'];
+            }
+            if (!empty($upgrade)) {
+                pdo_update('sz_yi_member', $upgrade, array(
+                    'id' => $member['id']
+                ));
             }
         }
         if (p('commission')) {
@@ -431,6 +419,7 @@ class Sz_DYi_Member
         if (p('poster')) {
             p('poster')->checkScan();
         }
+
         if($bindMobile && is_weixin()){
             /*
             $url = "/app/index.php?i={$_W['uniacid']}&c=entry&p=bindmobile&do=member&m=sz_yi";
