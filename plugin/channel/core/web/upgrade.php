@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_level` (
   `min_price` DECIMAL(10,2) NULL COMMENT '最小进货量',
   `profit_sharing` VARCHAR(45) NULL COMMENT '利润分成\n%',
   `become` INT(11) NULL COMMENT '升级条件',
-  'team_total' INT(11) NULL COMMENT '团队人数',
+  `team_total` INT(11) NULL COMMENT '团队人数',
   `goods_id` INT(11) NULL COMMENT '指定商品id',
   `createtime` INT(11) NULL COMMENT '创建时间',
   `updatetime` INT(11) NULL COMMENT '更新时间',
@@ -114,6 +114,10 @@ if(!pdo_fieldexists('sz_yi_order_goods', 'channel_id')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `channel_id` INT(11) DEFAULT '0';");
 }
 
+if(!pdo_fieldexists('sz_yi_order_goods', 'channel_apply_status')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `channel_apply_status` tinyint(1) NOT NULL COMMENT '0未提现1申请中2已提现';");
+}
+
 if(!pdo_fieldexists('sz_yi_af_channel', 'status')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_af_channel')." ADD `status` tinyint(1) NOT NULL COMMENT '0为申请1为通过';");
 }
@@ -128,5 +132,12 @@ if(!pdo_fieldexists('sz_yi_goods', 'isopenchannel')) {
 
 if(!pdo_fieldexists('sz_yi_order', 'ischannelpay')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `ischannelpay` tinyint(1) NOT NULL COMMENT '0不是1渠道商采购订单';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'channel_id')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `channel_id` INT(11) DEFAULT '0';");
+}
+if (!pdo_fieldexists('sz_yi_channel_apply', 'apply_ordergoods_ids')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_channel_apply')." ADD  `apply_ordergoods_ids` text;");
 }
 message('渠道商插件安装成功', $this->createPluginWebUrl('channel/index'), 'success');

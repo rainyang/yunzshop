@@ -42,4 +42,14 @@ class ChannelMobile extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
+
+    public function team()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+
+    public function stock()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 }
