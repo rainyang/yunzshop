@@ -103,6 +103,10 @@ class Sz_DYi_Member
 							mc_credit_update($uid, 'credit2', $info['credit2']);
 							$upgrade['credit2'] = 0;
 						}
+                        if ($info['credit20'] > 0) {
+                            mc_credit_update($uid, 'credit20', $info['credit20']);
+                            $upgrade['credit20'] = 0;
+                        }
 						if (!empty($upgrade)) {
 							pdo_update('sz_yi_member', $upgrade, array('id' => $info['id']));
 						}
@@ -112,7 +116,7 @@ class Sz_DYi_Member
 			$credits = $this->getCredits($openid);
 			$info['credit1'] = $credits['credit1'];
 			$info['credit2'] = $credits['credit2'];
-            $info['credit8'] = $credits['credit8'];
+            $info['credit20'] = $credits['credit20'];
 		}
         return $info;
     }
@@ -314,7 +318,7 @@ class Sz_DYi_Member
             ));
 		}
 	}
-	public function getCredits($openid = '', $type = array('credit1', 'credit2'))
+	public function getCredits($openid = '', $type = array('credit1', 'credit2', 'credit20'))
 	{
 		global $_W;
 		load()->model('mc');
