@@ -65,7 +65,7 @@
                         {if $set['become'] == 1}
                         <div class='input-group'>
                             <span class='input-group-addon'>团队总人数</span>
-                            <input type="text" name="become" class="form-control" value="{$level['become']}" />
+                            <input type="text" name="team_count" class="form-control" value="{$level['team_count']}" />
                             <span class='input-group-addon'>人</span>
                         </div>
                         <div class="help-block">团队下线的总人数达到标准后，自动成为此等级。</div>
@@ -73,7 +73,7 @@
                         {if $set['become'] == 2}
                         <div class='input-group'>
                             <span class='input-group-addon'>累计进货量</span>
-                            <input type="text" name="become" class="form-control" value="{$level['become']}" />
+                            <input type="text" name="team_count" class="form-control" value="{$level['team_count']}" />
                             <span class='input-group-addon'>元</span>
                         </div>
                         <div class="help-block">累计进货金额达到标准后，自动成为此等级。</div>
@@ -81,7 +81,7 @@
                         {if $set['become'] == 3}
                         <div class='input-group'>
                             <span class='input-group-addon'>累计进货次数</span>
-                            <input type="text" name="become" class="form-control" value="{$level['become']}" />
+                            <input type="text" name="order_count" class="form-control" value="{$level['order_count']}" />
                             <span class='input-group-addon'>次</span>
                         </div>
                         <div class="help-block">累计进货次数达到标准后，自动成为此等级。</div>
@@ -90,7 +90,7 @@
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                             <div class="col-sm-6">
-                               <input type='hidden' class='form-control' id='goodsid' name='setdata[become_goodsid]' value="{$set['become_goodsid']}" />
+                               <input type='hidden' class='form-control' id='goodsid' name='goods_id' value="{$level['goods_id']}" />
                                   <div class='input-group'>
                                     <div class='input-group-addon'  style='border:none;background:#fff;'><label class="radio-inline" style='margin-top:-3px;'> 购买商品</label></div>
                                     <input type='text' class='form-control' id='goods' value="{if !empty($goods)}[{$goods['id']}]{$goods['title']}{/if}" readonly />
@@ -201,10 +201,10 @@
                         <td>{$row['level_name']}</td>
                         <td>{$row['level_num']}</td>
                           <td>
-						{if $row['become']==1}{if !empty($row['become'])}团队总人数满 {$row['become']} 人 {else}不自动升级{/if}{/if}
-						{if $row['become']==2}{if !empty($row['become'])}累计进货量达到 {$row['become']} 元 {else}不自动升级{/if}{/if}
-						{if $row['become']==3}{if !empty($row['become'])}累计进货次数达到 {$row['become']} 次 {else}不自动升级{/if}{/if}
-						{if $row['become']==4}{if !empty($row['become'])}指定商品 {$row['become']}  {else}不自动升级{/if}{/if} 
+						{if $row['become']==1}{if !empty($row['team_count'])}团队总人数满 {$row['team_count']} 人 {else}不自动升级{/if}{/if}
+						{if $row['become']==2}{if !empty($row['order_money'])}累计进货量达到 {$row['order_money']} 元 {else}不自动升级{/if}{/if}
+						{if $row['become']==3}{if !empty($row['order_count'])}累计进货次数达到 {$row['order_count']} 次 {else}不自动升级{/if}{/if}
+						{if $row['become']==4}{if !empty($row['goods_id'])}指定商品ID {$row['goods_id']}  {else}不自动升级{/if}{/if} 
                           </td>
                         <td>
                             <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('channel/level', array('op' => 'post', 'id' => $row['id']))}">编辑</a>

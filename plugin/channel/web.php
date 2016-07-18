@@ -5,7 +5,7 @@ if (!defined('IN_IA')) {
 /**
 * channel插件web方法类
 * @package   渠道商插件web公共方法
-* @author    LuckyStar_D<LuckyStar_D@yunzshop.com>
+* @author    LuckyStar_D<duanfuxing@yunzshop.com>
 * @version   v1.0
 */
 class ChannelWeb extends Plugin
@@ -67,12 +67,21 @@ class ChannelWeb extends Plugin
 	{
 		$this->_exec_plugin(__FUNCTION__);
 	}
-	
+
 	/**
 	  * 渠道商申请方法
 	  */
 	 
-	public function af()
+	public function apply()
+	{
+		$this->_exec_plugin(__FUNCTION__);
+	}
+
+	/**
+	  * 渠道商提现方法
+	  */
+	 
+	public function withdraw()
 	{
 		$this->_exec_plugin(__FUNCTION__);
 	}
