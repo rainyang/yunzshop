@@ -996,3 +996,9 @@ if(pdo_tableexists('sz_yi_bonus_level')){
     pdo_query("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `downcountlevel3` int(11) DEFAULT '0';");
   }
 }
+
+    //文章是否在微信显示 2016-07-18 杨雷
+    if(!pdo_fieldexists('sz_yi_article', 'article_state_wx')) {
+        pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article')." ADD `article_state_wx` TINYINT(1) NOT NULL ;");
+    }
+
