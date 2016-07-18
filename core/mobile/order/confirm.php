@@ -281,6 +281,7 @@ if ($_W['isajax']) {
         }
 
         unset($g);
+        //核销
         if ($isverify) {
             $storeids = array();
             foreach ($goods as $g) {
@@ -309,81 +310,89 @@ if ($_W['isajax']) {
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
             ));
-            if (!$isvirtual) {
-                foreach ($goods as $g) {
-                    $sendfree = false;
-                    if (!empty($g["issendfree"])) { //包邮
-                        $sendfree = true;
-                    } else {
-                        if ($g["total"] >= $g["ednum"] && $g["ednum"] > 0) {    //单品满xx件包邮
-                            $gareas = explode(";", $g["edareas"]);  //不参加包邮地区
-                            if (empty($gareas)) {
-                                $sendfree = true;
-                            } else {
-                                if (!empty($address)) {
-                                    if (!in_array($address["city"], $gareas)) {
-                                        $sendfree = true;
-                                    }
-                                } else if (!empty($member["city"])) {
-                                    if (!in_array($member["city"], $gareas)) {
-                                        $sendfree = true;
-                                    }
-                                } else {
+        }
+
+        //如果开启核销并且不支持配送，则没有运费
+        $isDispath = true;
+        if ($isverify && !$isverifysend) {
+            $isDispath = false;
+        }
+
+        if (!$isvirtual && $isDispath) {
+            foreach ($goods as $g) {
+                $sendfree = false;
+                if (!empty($g["issendfree"])) { //包邮
+                    $sendfree = true;
+                } else {
+                    if ($g["total"] >= $g["ednum"] && $g["ednum"] > 0) {    //单品满xx件包邮
+                        $gareas = explode(";", $g["edareas"]);  //不参加包邮地区
+                        if (empty($gareas)) {
+                            $sendfree = true;
+                        } else {
+                            if (!empty($address)) {
+                                if (!in_array($address["city"], $gareas)) {
                                     $sendfree = true;
                                 }
-                            }
-                        }
-                        if ($g["ggprice"] >= floatval($g["edmoney"]) && floatval($g["edmoney"]) > 0) {  //满额包邮
-                            $gareas = unserialize($g["edareas"]);
-                            if (empty($gareas)) {
-                                $sendfree = true;
-                            } else {
-                                if (!empty($address)) {
-                                    if (!in_array($address["city"], $gareas)) {
-                                        $sendfree = true;
-                                    }
-                                } else if (!empty($member["city"])) {
-                                    if (!in_array($member["city"], $gareas)) {
-                                        $sendfree = true;
-                                    }
-                                } else {
+                            } else if (!empty($member["city"])) {
+                                if (!in_array($member["city"], $gareas)) {
                                     $sendfree = true;
                                 }
+                            } else {
+                                $sendfree = true;
                             }
                         }
                     }
-
-                    if (!$sendfree) {   //计算运费
-                        if ($g["dispatchtype"] == 1) {  //统一邮费
-                            if ($g["dispatchprice"] > 0) {
-                                $order_all[$g['supplier_uid']]['dispatch_price'] += $g["dispatchprice"] * $g["total"];
-                            }
-                        } else if ($g["dispatchtype"] == 0) {   //运费模板
-                            if (empty($g["dispatchid"])) {
-                                $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getDefaultDispatch($g['supplier_uid']);
+                    if ($g["ggprice"] >= floatval($g["edmoney"]) && floatval($g["edmoney"]) > 0) {  //满额包邮
+                        $gareas = unserialize($g["edareas"]);
+                        if (empty($gareas)) {
+                            $sendfree = true;
+                        } else {
+                            if (!empty($address)) {
+                                if (!in_array($address["city"], $gareas)) {
+                                    $sendfree = true;
+                                }
+                            } else if (!empty($member["city"])) {
+                                if (!in_array($member["city"], $gareas)) {
+                                    $sendfree = true;
+                                }
                             } else {
-                                $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getOneDispatch($g["dispatchid"], $g['supplier_uid']);
-                            }
-                            if (empty($order_all[$g['supplier_uid']]['dispatch_data'])) {
-                                $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getNewDispatch($g['supplier_uid']);
-                            }
-                            if (!empty($order_all[$g['supplier_uid']]['dispatch_data'])) {
-                                if ($order_all[$g['supplier_uid']]['dispatch_data']["calculatetype"] == 1) {
-                                    $order_all[$g['supplier_uid']]['param'] = $g["total"];
-                                } else {
-                                    $order_all[$g['supplier_uid']]['param'] = $g["weight"] * $g["total"];
-                                }
-                                $dkey = $order_all[$g['supplier_uid']]['dispatch_data']["id"];
-                                if (array_key_exists($dkey, $order_all[$g['supplier_uid']]['dispatch_array'])) {
-                                    $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["param"] += $order_all[$g['supplier_uid']]['param'];
-                                } else {
-                                    $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["data"]  = $order_all[$g['supplier_uid']]['dispatch_data'];
-                                    $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["param"] = $order_all[$g['supplier_uid']]['param'];
-                                }
+                                $sendfree = true;
                             }
                         }
                     }
                 }
+
+                if (!$sendfree) {   //计算运费
+                    if ($g["dispatchtype"] == 1) {  //统一邮费
+                        if ($g["dispatchprice"] > 0) {
+                            $order_all[$g['supplier_uid']]['dispatch_price'] += $g["dispatchprice"] * $g["total"];
+                        }
+                    } else if ($g["dispatchtype"] == 0) {   //运费模板
+                        if (empty($g["dispatchid"])) {
+                            $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getDefaultDispatch($g['supplier_uid']);
+                        } else {
+                            $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getOneDispatch($g["dispatchid"], $g['supplier_uid']);
+                        }
+                        if (empty($order_all[$g['supplier_uid']]['dispatch_data'])) {
+                            $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getNewDispatch($g['supplier_uid']);
+                        }
+                        if (!empty($order_all[$g['supplier_uid']]['dispatch_data'])) {
+                            if ($order_all[$g['supplier_uid']]['dispatch_data']["calculatetype"] == 1) {
+                                $order_all[$g['supplier_uid']]['param'] = $g["total"];
+                            } else {
+                                $order_all[$g['supplier_uid']]['param'] = $g["weight"] * $g["total"];
+                            }
+                            $dkey = $order_all[$g['supplier_uid']]['dispatch_data']["id"];
+                            if (array_key_exists($dkey, $order_all[$g['supplier_uid']]['dispatch_array'])) {
+                                $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["param"] += $order_all[$g['supplier_uid']]['param'];
+                            } else {
+                                $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["data"]  = $order_all[$g['supplier_uid']]['dispatch_data'];
+                                $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["param"] = $order_all[$g['supplier_uid']]['param'];
+                            }
+                        }
+                    }
+                }
+
                 foreach ($suppliers as $key => $val) {
                     if (!empty($order_all[$val['supplier_uid']]['dispatch_array'])) {
                         foreach ($order_all[$val['supplier_uid']]['dispatch_array'] as $k => $v) {
