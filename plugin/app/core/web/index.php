@@ -16,11 +16,11 @@ if(!is_array($app)) {
 }
 if($_W['ispost']) {
 	//app
-	$app = array_elements(array('switch', 'accept', 'useing', 'android_url', 'ios_url'), $_GPC['app']);
+	$app = array_elements(array('accept', 'useing', 'android_url', 'ios_url'), $_GPC['app']);
 
 	$set['app']['base'] = $app;
 
-	$leancloud = array_elements(array('id', 'key', 'master', 'notify'), $_GPC['leancloud']);
+	$leancloud = array_elements(array('switch', 'id', 'key', 'master', 'notify'), $_GPC['leancloud']);
 	$set['app']['base']['leancloud'] = $leancloud;
 
     $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(

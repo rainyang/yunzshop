@@ -16,16 +16,15 @@
 				<div class="panel panel-default">
 					<div class="panel-heading">推送消息</div>
 					<div class="panel-body">
-						<div class="form-group" style="display: none">
-							<label class="col-xs-12 col-sm-3 col-md-2 control-label">APP客户端</label>
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">是否启用</label>
 							<div class="col-sm-9 col-xs-12">
 								<label class="radio-inline">
-									<input type="radio" name="app[switch]" value="1" checked > 开启
+									<input type="radio" name="leancloud[switch]" value="1" {if $set['app']['base']['leancloud']['switch'] == 1} checked {/if}> 开启
 								</label>
 								<label class="radio-inline">
-									<input type="radio" name="app[switch]" value="0"> 关闭
+									<input type="radio" name="leancloud[switch]" value="0" {if empty($set['app']['base']['leancloud']['switch']) || $set['app']['base']['leancloud']['switch'] == 0} checked {/if}> 关闭
 								</label>
-								<span class="help-block">是否使用APP客户端</span>
 							</div>
 						</div>
 
@@ -69,12 +68,12 @@
 							<label class="col-xs-12 col-sm-3 col-md-2 control-label">是否启用</label>
 							<div class="col-sm-9 col-xs-12">
 								<label class="radio-inline">
-									<input type="radio" name="app[accept]" value="0" {if empty($set['app']['base']['accept']) || $set['app']['base']['accept'] == 0} checked {/if}> 关闭
-								</label>
-								<label class="radio-inline">
 									<input type="radio" name="app[accept]" value="1" {if $set['app']['base']['accept'] == 1} checked {/if}> 开启
 								</label>
 
+								<label class="radio-inline">
+									<input type="radio" name="app[accept]" value="0" {if empty($set['app']['base']['accept']) || $set['app']['base']['accept'] == 0} checked {/if}> 关闭
+								</label>
 							</div>
                         </div>
 
@@ -82,12 +81,11 @@
 							<label class="col-xs-12 col-sm-3 col-md-2 control-label">是否必填</label>
 							<div class="col-sm-9 col-xs-12">
 								<label class="radio-inline">
-									<input type="radio" name="app[useing]" value="0" {if empty($set['app']['base']['useing']) || $set['app']['base']['useing'] == 0} checked {/if}> 否
-								</label>
-								<label class="radio-inline">
 									<input type="radio" name="app[useing]" value="1" {if $set['app']['base']['useing'] == 1} checked {/if}> 是
 								</label>
-
+								<label class="radio-inline">
+									<input type="radio" name="app[useing]" value="0" {if empty($set['app']['base']['useing']) || $set['app']['base']['useing'] == 0} checked {/if}> 否
+								</label>
 							</div>
 						</div>
 					</div>
