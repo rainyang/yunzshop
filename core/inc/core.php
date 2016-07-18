@@ -189,6 +189,7 @@ class Core extends WeModuleSite
         $designer = p('designer');
         if ($designer && $_GPC['p'] != 'designer') {
             $menu = $designer->getDefaultMenu();
+            //print_r($menu);exit;
             if (!empty($menu)) {
                 $this->footer['diymenu']   = true;
                 $this->footer['diymenus']  = $menu['menus'];
