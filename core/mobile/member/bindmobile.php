@@ -19,6 +19,7 @@ if (is_weixin()) {
 if ($_W['isajax']) {
     if ($_W['ispost']) {
         $mc = $_GPC['memberdata'];
+        //更换公众号或pc到微信绑定
         $memberall = pdo_fetchall('select id, openid, pwd from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and openid!=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':mobile' => $mc['mobile']));
 
         if (!empty($memberall)) {
@@ -67,13 +68,18 @@ if ($_W['isajax']) {
                 if ($credit2 > 0) {
                     m('member')->setCredit($openid, 'credit2', $credit2);
                 }
-                //修改其它手机号相同用户的上下级关系id为当前微信的。
-                pdo_update('sz_yi_member', array('agentid' => $member['id']), array('agentid' => $info['id'], 'uniacid' => $_W['uniacid']));
+
+                /*
+                 * 删除其他手机号相同用户 
+                 *todo:先删除用户,再把新的用户id更新回老的用户id,避免order表里的agentid等未更新
+                 */
+                pdo_delete('sz_yi_member', array('openid' => $oldopenid));
+
+                //id改回老的。
+                pdo_update('sz_yi_member', array('id' => $info['id']), array('openid' => $openid, 'uniacid' => $_W['uniacid']));
 
                 pdo_update('sz_yi_member', $data, array('openid' => $openid, 'uniacid' => $_W['uniacid']));
 
-                //删除其他手机号相同用户
-                pdo_delete('sz_yi_member', array('openid' => $oldopenid));
                 $mc_member = pdo_fetch('select * from ' . tablename('mc_mapping_fans') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $oldopenid));
 
                 if (!empty($mc_member)) {

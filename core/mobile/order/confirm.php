@@ -166,9 +166,9 @@ if ($_W['isajax']) {
             }
             $data['totalmaxbuy'] = $totalmaxbuy;
             $goods[]             = $data;
-        }
+        }   //购物车或直接购买数据加载完毕
+
         $goods = set_medias($goods, 'thumb');
-        
         foreach ($goods as $g) {
             if ($g['isverify'] == 2) {
                 $isverify = true;
@@ -312,11 +312,11 @@ if ($_W['isajax']) {
             if (!$isvirtual) {
                 foreach ($goods as $g) {
                     $sendfree = false;
-                    if (!empty($g["issendfree"])) {
+                    if (!empty($g["issendfree"])) { //包邮
                         $sendfree = true;
                     } else {
-                        if ($g["total"] >= $g["ednum"] && $g["ednum"] > 0) {
-                            $gareas = explode(";", $g["edareas"]);
+                        if ($g["total"] >= $g["ednum"] && $g["ednum"] > 0) {    //单品满xx件包邮
+                            $gareas = explode(";", $g["edareas"]);  //不参加包邮地区
                             if (empty($gareas)) {
                                 $sendfree = true;
                             } else {
@@ -333,7 +333,7 @@ if ($_W['isajax']) {
                                 }
                             }
                         }
-                        if ($g["ggprice"] >= floatval($g["edmoney"]) && floatval($g["edmoney"]) > 0) {
+                        if ($g["ggprice"] >= floatval($g["edmoney"]) && floatval($g["edmoney"]) > 0) {  //满额包邮
                             $gareas = unserialize($g["edareas"]);
                             if (empty($gareas)) {
                                 $sendfree = true;
@@ -353,12 +353,12 @@ if ($_W['isajax']) {
                         }
                     }
 
-                    if (!$sendfree) {
-                        if ($g["dispatchtype"] == 1) {
+                    if (!$sendfree) {   //计算运费
+                        if ($g["dispatchtype"] == 1) {  //统一邮费
                             if ($g["dispatchprice"] > 0) {
                                 $order_all[$g['supplier_uid']]['dispatch_price'] += $g["dispatchprice"] * $g["total"];
                             }
-                        } else if ($g["dispatchtype"] == 0) {
+                        } else if ($g["dispatchtype"] == 0) {   //运费模板
                             if (empty($g["dispatchid"])) {
                                 $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getDefaultDispatch($g['supplier_uid']);
                             } else {
@@ -402,6 +402,7 @@ if ($_W['isajax']) {
                 }
             }
         }
+
         $sale_plugin   = p('sale');
         $saleset       = false;
         if ($sale_plugin) {
@@ -412,6 +413,7 @@ if ($_W['isajax']) {
         $realprice_total = 0;
         foreach ($suppliers as $key => $val) {
             if ($saleset) {
+                //满额包邮
                 if (!empty($saleset["enoughfree"])) {
                     if (floatval($saleset["enoughorder"]) <= 0) {
                         $order_all[$val['supplier_uid']]['dispatch_price'] = 0;
@@ -451,6 +453,7 @@ if ($_W['isajax']) {
                     $order_all[$val['supplier_uid']]['deductprice2'] += $order_all[$val['supplier_uid']]['dispatch_price'];
                 }
             }
+
             $order_all[$val['supplier_uid']]['hascoupon'] = false;
             if ($hascouponplugin) {
                 $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid']);
