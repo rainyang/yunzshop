@@ -369,16 +369,15 @@ function show_json($status = 1, $return = null)
     }
     die(json_encode($ret));
 }
+
 function is_weixin_show()
 {
     $set = m('common')->getSysset('app');
-
     if(is_weixin())
     {
         if( $set['base']['wx']['switch'] == '1' )
         {
             return false;
-            exit;
         }
     }
     return true;
