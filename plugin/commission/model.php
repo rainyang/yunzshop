@@ -913,10 +913,7 @@ if (!class_exists('CommissionModel')) {
 			//Author:ym Date:2016-04-07 Content:分红提交订单处理
 			$pluginbonus = p("bonus");
 			if(!empty($pluginbonus)){
-				$bonus_set = $pluginbonus->getSet();
-				if(!empty($bonus_set['start'])){
-					$pluginbonus->checkOrderConfirm($orderid);
-				}
+				$pluginbonus->checkOrderConfirm($orderid);
 			}
 			$set = $this->getSet();
 			if (empty($set['level'])) {
@@ -993,10 +990,7 @@ if (!class_exists('CommissionModel')) {
 			//Author:ym Date:2016-04-07 Content:分红支付订单处理
 			$pluginbonus = p("bonus");
 			if(!empty($pluginbonus)){
-				$bonus_set = $pluginbonus->getSet();
-				if(!empty($bonus_set['start'])){
-					$pluginbonus->checkOrderPay($orderid);
-				}
+				$pluginbonus->checkOrderPay($orderid);
 			}
 			$become_child = intval($set['become_child']);
 			$parent = false;
@@ -1184,10 +1178,7 @@ if (!class_exists('CommissionModel')) {
 			//Author:ym Date:2016-04-07 Content:分红完成订单处理
 			$pluginbonus = p("bonus");
 			if(!empty($pluginbonus)){
-				$bonus_set = $pluginbonus->getSet();
-				if(!empty($bonus_set['start'])){
-					$pluginbonus->checkOrderFinish($orderid);
-				}
+				$pluginbonus->checkOrderFinish($orderid);
 			}
 			$time = time();
 			$isagent = $member['isagent'] == 1 && $member['status'] == 1;
@@ -1532,10 +1523,7 @@ if (!class_exists('CommissionModel')) {
 			}
 			$pluginbonus = p("bonus");
 			if(!empty($pluginbonus)){
-				$bonus_set = $pluginbonus->getSet();
-				if(!empty($bonus_set['start'])){
-					$pluginbonus->upgradeLevelByAgent($_var_20);
-				}
+				$pluginbonus->upgradeLevelByAgent($_var_20);
 			}
 			$_var_139 = intval($set['leveltype']);
 			if ($_var_139 < 6 || $_var_139 > 9) {
@@ -1645,10 +1633,7 @@ if (!class_exists('CommissionModel')) {
 			}
 			$pluginbonus = p("bonus");
 			if(!empty($pluginbonus)){
-				$bonus_set = $pluginbonus->getSet();
-				if(!empty($bonus_set['start'])){
-					$pluginbonus->upgradeLevelByAgent($_var_20);
-				}
+				$pluginbonus->upgradeLevelByAgent($_var_20);
 			}
 			$_var_139 = intval($set['leveltype']);
 			if ($_var_139 != 10) {
