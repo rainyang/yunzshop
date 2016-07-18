@@ -47,6 +47,21 @@ class Sz_DYi_Message
         } else {
             $content = $msg;
         }
+
+        /**
+         * app消息通知
+         */
+        $setdata = m("cache")->get("sysset");
+        $set     = unserialize($setdata['sets']);
+
+        $app = $set['app']['base'];
+
+        if (is_app() && !empty($app['leancloud']['switch'])) {
+            pdo_insert('sz_yi_message',array('openid'=>$openid,'title'=>$msg['first']['value'],
+                'contents'=>$content));
+            sent_message(array($openid),$msg['first']['value']);
+        }
+
         if (!empty($url)) {
             $content .= "<a href='{$url}'>点击查看详情</a>";
         }
