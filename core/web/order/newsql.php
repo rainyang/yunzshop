@@ -996,14 +996,9 @@ if(pdo_tableexists('sz_yi_bonus_level')){
     pdo_query("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `downcountlevel3` int(11) DEFAULT '0';");
   }
 }
-//20160718添加 代理商升级条件添加二三级
-if(pdo_tableexists('sz_yi_bonus_level')){
-  //下线二级人数
-  if(!pdo_fieldexists('sz_yi_bonus_level', 'downcountlevel2')) {
-    pdo_query("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `downcountlevel2` int(11) DEFAULT '0';");
-  }
-  //下线三级人数
-  if(!pdo_fieldexists('sz_yi_bonus_level', 'downcountlevel3')) {
-    pdo_query("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `downcountlevel3` int(11) DEFAULT '0';");
-  }
-}
+
+    //文章是否在微信显示 2016-07-18 杨雷
+    if(!pdo_fieldexists('sz_yi_article', 'article_state_wx')) {
+        pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article')." ADD `article_state_wx` TINYINT(1) NOT NULL ;");
+    }
+

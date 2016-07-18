@@ -895,6 +895,11 @@ $(function(){
                                 <input type="text" name="article_keyword" class="form-control judge" value="{if $aid}{$article['article_keyword']}{/if}" placeholder="页面关键字">
                             </div>
                         </div>
+
+                    </div>
+
+                    <div class="line">
+
                         <div class="line2">
                             <div class="input-group form-group">
                                 <span class="input-group-addon"><span style="color:red">*</span> 是否开启</span>
@@ -904,7 +909,18 @@ $(function(){
                                 </div>
                             </div>
                         </div>
+                        <div class="line2">
+                            <div class="input-group form-group">
+                                <div class="form-control">&nbsp;
+                                        <label for="article_state_wx1" class="radio-inline"><input type="radio" name="article_state_wx" value="1" id="article_state_wx1" {if !$aid || $article['article_state_wx']==1}checked="true"{/if}> 开启</label>&nbsp;&nbsp;&nbsp;
+                                        <label for="article_state_wx0" class="radio-inline"><input type="radio" name="article_state_wx" value="0" id="article_state_wx0" {if $aid && $article['article_state_wx']==0}checked="true"{/if}> 关闭(关闭后微信端不显示)</label>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
+
+
                     <div class="line">
                         <div class="input-group form-group"> 
                             <span class="input-group-addon">文章介绍(封面)</span>
