@@ -65,6 +65,7 @@ if ($_W['isajax']) {
         $id       = intval($_GPC['id']);
         $optionid = intval($_GPC['optionid']);
         $total    = intval($_GPC['total']);
+        $ischannelpay = intval($_GPC['ischannelpay']);
         $ids      = '';
         if ($total < 1) {
             $total = 1;
@@ -200,9 +201,17 @@ if ($_W['isajax']) {
         if (!empty($carrier_list)) {
             $carrier = $carrier_list[0];
         }
+        if (p('channel')) {
+            $my_info = p('channel')->getInfo($openid);
+        }
         foreach ($goods as &$g) {
             if (empty($g["total"]) || intval($g["total"]) == "-1") {
                 $g["total"] = 1;
+            }
+            if (p('channel')) {
+                if ($ischannelpay == 1) {
+                    $g['marketprice'] = $g['marketprice'] * $my_info['my_level']['purchase_discount']/100;
+                }
             }
             $gprice    = $g["marketprice"] * $g["total"];
             $discounts = json_decode($g["discounts"], true);
@@ -810,6 +819,7 @@ if ($_W['isajax']) {
             "deductmoney" => $deductmoney
         ));
     } else if ($operation == 'create' && $_W['ispost']) {
+        $ischannelpay = intval($_GPC['ischannelpay']);
         $member       = m('member')->getMember($openid);
         $dispatchtype = intval($_GPC['dispatchtype']);
         $addressid    = intval($_GPC['addressid']);
@@ -1007,6 +1017,12 @@ if ($_W['isajax']) {
             }
             $redprice = $redprice * $goodstotal;
             $redpriceall += $redprice;
+            if (p('channel')) {
+                if ($ischannelpay == 1) {
+                    $my_info = p('channel')->getInfo($openid);
+                    $data['marketprice'] = $data['marketprice'] * $my_info['my_level']['purchase_discount']/100;
+                }
+            }
             $gprice = $data['marketprice'] * $goodstotal;
             $goodsprice += $gprice;
             $discounts = json_decode($data['discounts'], true);
@@ -1313,6 +1329,11 @@ if ($_W['isajax']) {
             "couponprice" => $couponprice,
             'redprice' => $redpriceall
         );
+        if (p('channel')) {
+            if ($ischannelpay == 1) {
+                $order['ischannelpay'] = $ischannelpay;
+            }
+        }
         if ($diyform_plugin) {
             if (is_array($_GPC["diydata"]) && !empty($order_formInfo)) {
                 $diyform_data           = $diyform_plugin->getInsertData($fields, $_GPC["diydata"]);
@@ -1380,6 +1401,11 @@ if ($_W['isajax']) {
             if (p('supplier')) {
                 $order_goods['supplier_uid'] = $goods['supplier_uid'];
             }
+            if (p('channel')) {
+                if ($ischannelpay == 1) {
+                    $order_goods['channel_id'] = $member['id'];
+                }
+            }
             pdo_insert('sz_yi_order_goods', $order_goods);
         }
         if ($deductcredit > 0) {
@@ -1410,8 +1436,15 @@ if ($_W['isajax']) {
         if ($pluginc) {
             $pluginc->checkOrderConfirm($orderid);
         }
+        if (p('channel')) {
+            if ($ischannelpay == 1) {
+                $ischannelpay = 1;
+                $order_goods['channel_id'] = $member['id'];
+            }
+        }
         show_json(1, array(
-            'orderid' => $orderid
+            'orderid' => $orderid,
+            'ischannelpay' => $ischannelpay
         ));
     }
 }

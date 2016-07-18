@@ -184,7 +184,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 <div class="foot-nav" id="total">
   <span>0</span>
   <p>总价：￥0.00</p>
-  <a href="{php echo $this->createMobileUrl('shop/cart')}">选好了</a>
+  <a class='channel' href="{php echo $this->createMobileUrl('shop/cart')}">选好了</a>
 </div>
 {php $show_footer=true;$footer_current =''} 
 {template 'common/footer'}
@@ -195,39 +195,6 @@ ul, li { list-style:none; margin:0; padding:0 }
     var pcate = 'rec';
     var pageid = "{$_GPC['pageid']}";
     require(['tpl', 'core'], function (tpl, core) {
-     
-     /*function bindChildEvents(){
-          $('.category_item').unbind('click').click(function(){
-              if($(this).data('cate')=='back'){
-                 if(pcate!='rec')                  { 
-                    setCategory(pcate);
-                }else{
-                    setCategory('rec');
-                }
-                  return;
-             }
-                        var level = $(this).data('level');
-                        var show = {php echo intval($shopset['catshow'])};
-                        {if intval($shopset['catlevel'])==3}
-                              var ccate = $(this).data('ccate');
-                              var tcate = $(this).data('tcate');
-                             
-                                    if(level==2){
-                                         setCategory(ccate,2);
-                                    }
-                                    else {
-                                      
-                                        location.href = core.getUrl('shop/list',{ccate:ccate,tcate:tcate});     
-                                   }
-                             
-                        {else}
-                                var pcate = $(this).data('pcate');
-                                var ccate = $(this).data('ccate');
-                                location.href = core.getUrl('shop/list',{pcate:pcate,ccate:ccate});
-                        {/if}
-                            
-          })
-     }*/
         function setCategory(){
             $("#navBar").find(".parent_item").find('span').removeClass('fffbg');
             $("#navBar").find(".parent_item").find('span').addClass('ff0000bg');
@@ -338,15 +305,12 @@ ul, li { list-style:none; margin:0; padding:0 }
             require(['core'],function(core){
                 core.json('shop/cart',{op:'display'},function(ret){
                      $('#total').find("span").html(ret.result.total);
-                     $('#total').find("p").html('总价：￥' + ret.result.totalprice);
-                        /*if(ret.status==1){ 
-                            core.tip.show(ret.result.message);                            var cartdiv = $('.cart'); 
-                            if( cartdiv.find('b').length<=0){                                                                                                 cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
-                            } else {
-                                cartdiv.find('b').html(ret.result.cartcount);
-                            }                                                          
-                        } else{                                                                 core.message(ret.result,'','error');
-                        }*/
+                     $('#total').find("p").html('总价：￥' + ret.result.totalprice + ret.result.difference);
+                        if(ret.result.difference){
+                          $(".channel").hide();                                                       
+                        } else {
+                          $(".channel").show();
+                        }
                     },true,true);
                 });
         }

@@ -167,12 +167,31 @@ class Sz_DYi_Order
                     if (!empty($order['virtual']) && $pv) {
                         $pv->pay($order);
                     } else {
-                        pdo_update('sz_yi_order', array(
-                            'status' => 1,
-                            'paytime' => time()
-                        ), array(
-                            'id' => $orderid
-                        ));
+                        if (p('channel')) {
+                            if ($params['ischannelpay'] == 1) {
+                                pdo_update('sz_yi_order', array(
+                                    'status' => 3,
+                                    'paytime' => time()
+                                ), array(
+                                    'id' => $orderid
+                                ));
+                            } else {
+                                pdo_update('sz_yi_order', array(
+                                    'status' => 1,
+                                    'paytime' => time()
+                                ), array(
+                                    'id' => $orderid
+                                ));
+                            }
+                        } else {
+                            pdo_update('sz_yi_order', array(
+                                    'status' => 1,
+                                    'paytime' => time()
+                                ), array(
+                                    'id' => $orderid
+                                ));
+                        }
+                        
                         if ($order['deductcredit2'] > 0) {
                             $shopset = m('common')->getSysset('shop');
                             m('member')->setCredit($order['openid'], 'credit2', -$order['deductcredit2'], array(

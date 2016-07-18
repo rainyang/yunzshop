@@ -15,6 +15,7 @@ if (!class_exists('ChannelModel')) {
 	{
 		/**
 		  * 获取渠道商基础设置
+		  *
       	  * @return array $set
 		  */
 		public function getSet()
@@ -23,7 +24,57 @@ if (!class_exists('ChannelModel')) {
 			return $set;
 		}
 		/**
+		  * 获取自己和上级的渠道商等级详细信息 
+		  *
+		  * @param string $openid 用户openid
+		  * @return array $channel_info
+		  */
+		public function getInfo($openid)
+		{
+			global $_W;
+			$channel_info = array();
+			$member = m('member')->getInfo($openid);
+			if (empty($member)) {
+				return;
+			}
+	        if (!empty($member['ischannel']) && !empty($member['channel_level'])) {
+	            $level = pdo_fetch("select * from " . tablename('sz_yi_channel_level') . " where uniacid={$_W['uniacid']} and id={$member['channel_level']}");
+	            if (!empty($level)) {
+	            	$up_level = $this->getUpChannel($openid);
+	            	$channel_info['my_level'] = $level;
+	            	$channel_info['up_level'] = $up_level;
+	            	return $channel_info;
+	            }
+	        }
+		}
+		/**
+		  * 获取渠道商等级权重大于自己的上级openid
+		  *
+		  * @param string $openid 用户openid
+		  * @return array $up_level
+		  */
+		public function getUpChannel($openid)
+		{
+			global $_W;
+			$member = m('member')->getInfo($openid);
+			$member['level_num'] = pdo_fetchcolumn("select level_num from " . tablename('sz_yi_channel_level') . " where uniacid={$_W['uniacid']} and id={$member['channel_level']}");
+			if (empty($member['agentid'])) {
+				return;
+			}
+			$up_channel = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid={$_W['uniacid']} and id={$member['agentid']}");
+			if (!empty($up_channel['channel_level'])) {
+				$up_level = pdo_fetch("select * from " . tablename('sz_yi_channel_level') . " where uniacid={$_W['uniacid']} and id={$up_channel['channel_level']}");
+				if ($up_level['level_num'] > $member['level_num']) {
+					$up_level['openid'] = $up_channel['openid'];
+					return $up_level;
+				} else {
+					$this->getUpChannel($up_channel['openid']);
+				}
+			}
+		}
+		/**
 		  * 渠道商根据订单升级
+		  *
 		  * @param string $openid 用户openid
 		  */
 		function upgradeLevelByOrder($openid)
@@ -82,6 +133,7 @@ if (!class_exists('ChannelModel')) {
 		}
 		/**
 		  * 获取用户的渠道商等级详情
+		  *
 		  * @param string $openid 用户openid
 		  * @return array $level
 		  */
@@ -100,6 +152,7 @@ if (!class_exists('ChannelModel')) {
 		}
 		/**
 		  * 渠道商根据直属下线升级
+		  *
 		  * @param string $openid 用户openid
 		  */
 		public function upgradeLevelByAgent($openid)
@@ -124,6 +177,7 @@ if (!class_exists('ChannelModel')) {
 		}
 		/**
 		  * 检索该订单完成状态
+		  *
 		  * @param int $orderid 订单的id
 		  */
 		public function checkOrderFinish($orderid = '')
@@ -150,6 +204,7 @@ if (!class_exists('ChannelModel')) {
 		}
 		/**
 		  * 检索该订单支付状态
+		  *
 		  * @param int $orderid 订单的id
 		  */
 		public function checkOrderPay($orderid = '0')
