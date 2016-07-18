@@ -661,6 +661,24 @@ if (!class_exists('BonusModel')) {
 				}
 			}
 
+			//二级分销商人数
+			if(in_array('12', $leveltype)){
+				if(!empty($levelup['downcountlevel2'])){
+					if($member['level2'] < $levelup['downcountlevel2']){
+						$isleveup = false;
+					}
+				}
+			}
+
+			//三级分销商人数
+			if(in_array('13', $leveltype)){
+				if(!empty($levelup['downcountlevel3'])){
+					if($member['level3'] < $levelup['downcountlevel3']){
+						$isleveup = false;
+					}
+				}
+			}
+
 			//分销订单总金额
 			if(in_array('11', $leveltype)){
 				if($levelup['commissionmoney'] > 0){
