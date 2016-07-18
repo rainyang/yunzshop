@@ -3,11 +3,10 @@
     
     
     {ifp 'channel.manage'}<li {if $_GPC['method']=='channel'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('channel/manage')}">渠道商管理</a></li>{/if}
-    {ifp 'channel.af'}<li {if $_GPC['method']=='af'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('channel/af')}">渠道商申请</a></li>{/if}
+    {ifp 'channel.apply'}<li {if $_GPC['method']=='apply'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('channel/apply')}">渠道商申请</a></li>{/if}
     {ifp 'channel.level'}<li {if $_GPC['method']=='level'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('channel/level')}">渠道商等级</a></li>{/if}
-    {ifp 'channel.apply.view1'}<li {if $_GPC['method']=='apply' && ($_GPC['status']==1 || $apply['status']==1)}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('channel/apply',array('status'=>1))}">待审核提现申请</a></li>{/if}
-    {ifp 'channel.apply.view3'}<li {if $_GPC['method']=='apply' && ($_GPC['status']==3 || $apply['status']==3)}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('channel/apply',array('status'=>3))}">已打款提现申请</a></li>{/if}
-    {ifp 'channel.apply.view_1'}<li {if $_GPC['method']=='apply' && ($_GPC['status']==-1 || $apply['status']==-1)}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('channel/apply',array('status'=>-1))}">无效提现申请</a></li>{/if}
+    {ifp 'channel.withdraw.view1'}<li {if $_GPC['method']=='withdraw' && ($_GPC['status']==1 || $apply['status']==1)}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('channel/withdraw',array('status'=>1))}">待审核提现申请</a></li>{/if}
+    {ifp 'channel.withdraw.view3'}<li {if $_GPC['method']=='withdraw' && ($_GPC['status']==3 || $apply['status']==3)}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('channel/withdraw',array('status'=>3))}">已打款提现申请</a></li>{/if}
     {ifp 'channel.set'}<li {if $_GPC['method']=='set'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('channel/set')}">基础设置</a></li>{/if}
     
 </ul>

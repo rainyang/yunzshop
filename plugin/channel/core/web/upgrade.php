@@ -22,14 +22,16 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_level` (
   `min_price` DECIMAL(10,2) NULL COMMENT '最小进货量',
   `profit_sharing` VARCHAR(45) NULL COMMENT '利润分成\n%',
   `become` INT(11) NULL COMMENT '升级条件',
-  'team_total' INT(11) NULL COMMENT '团队人数',
+  `team_count` INT(11) NULL COMMENT '团队人数',
   `goods_id` INT(11) NULL COMMENT '指定商品id',
+  `order_money` INT(11) NULL COMMENT '订单累计金额',
+  `order_count` INT(11) NULL COMMENT '订单累计次数',
   `createtime` INT(11) NULL COMMENT '创建时间',
   `updatetime` INT(11) NULL COMMENT '更新时间',
-  PRIMARY KEY (`id`))
+  PRIMARY KEY (`id`)) 
 ENGINE = MyISAM
-DEFAULT CHARACTER SET = utf8
-COLLATE = utf8_general_ci
+DEFAULT CHARACTER SET = utf8 
+COLLATE = utf8_general_ci 
 COMMENT = '渠道商等级';
 
 
@@ -45,8 +47,8 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_channel` (
   `diychanneldataid` INT(11) NULL,
   `diychannelfields` TEXT NULL,
   `diychanneldata` TEXT NULL,
-  PRIMARY KEY (`id`))
-ENGINE = MyISAM
+  PRIMARY KEY (`id`)) 
+ENGINE = MyISAM 
 COMMENT = '会员申请渠道商';
 
 
@@ -54,14 +56,16 @@ COMMENT = '会员申请渠道商';
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_apply` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `uniacid` INT(11) NOT NULL,
+  `mid` INT(11) NOT NULL,
   `openid` VARCHAR(50) NULL,
+  `applyno` VARCHAR(255) NULL,
   `apply_money` DECIMAL(10,2) NULL COMMENT '申请金额',
   `apply_time` INT(11) NULL COMMENT '申请时间',
   `type` TINYINT(2) NULL COMMENT '提现类型',
   `status` TINYINT(2) NULL COMMENT '申请状态',
   `finish_time` INT(11) NULL COMMENT '完成时间',
-  PRIMARY KEY (`id`))
-ENGINE = MyISAM
+  PRIMARY KEY (`id`)) 
+ENGINE = MyISAM 
 COMMENT = '渠道商申请提现';
 
 
@@ -72,8 +76,8 @@ CREATE TABLE IF NOT EXISTS `mydb`.`ims_sz_yi_channel_stock` (
   `openid` VARCHAR(50) NULL,
   `goodsid` INT(11) NOT NULL COMMENT '商品ID',
   `stock_total` INT(11) NOT NULL COMMENT '库存总数',
-  PRIMARY KEY (`id`))
-ENGINE = MyISAM
+  PRIMARY KEY (`id`)) 
+ENGINE = MyISAM 
 COMMENT = '渠道商库存';
 
 
@@ -87,8 +91,8 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_stock_log` (
   `every_turn_price` DECIMAL(10,2) NULL COMMENT '每次进货单价',
   `every_turn_discount` DECIMAL(10,2) NULL COMMENT '每次进货当前折扣',
   `goods_price` DECIMAL(10,2) NULL COMMENT '进货时商品单价',
-  PRIMARY KEY (`id`))
-ENGINE = MyISAM
+  PRIMARY KEY (`id`)) 
+ENGINE = MyISAM 
 COMMENT = '渠道商进货记录'";
 
 

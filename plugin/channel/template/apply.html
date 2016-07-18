@@ -11,7 +11,7 @@
             <input type="hidden" name="m" value="sz_yi" />
             <input type="hidden" name="do" value="plugin" />
             <input type="hidden" name="p" value="channel" />
-            <input type="hidden" name="method" value="af" />
+            <input type="hidden" name="method" value="apply" />
                  <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">ID</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
@@ -59,8 +59,8 @@
                     <td>{$row['id']}</td>
                     <td>{$row['realname']}</td>
                     <td>{$row['username']}</td>
-                    <td><a href="{php echo $this->createPluginWebUrl('supplier/supplier_detail',array('id' => $row['id']));}" title="会员详情"><i class='fa fa-edit'></i></a></td>
-                    <td><a class="label label-default " href="{php echo $this->createPluginWebUrl('supplier/af',array('op' => 'af_supplier', 'id' => $row['id'], 'status' => 1));}">驳回审核</a><a class="label label-default label-info" href="{php echo $this->createPluginWebUrl('supplier/supplier_for',array('op' => 'af_supplier', 'id' => $row['id'], 'status' => 2));}">审核通过</a>
+                    <td><a href="{php echo $this->createWebUrl('member',array('op'=>'detail', 'id' => $row['id']));}" title="会员详情"><i class='fa fa-edit'></i></a></td>
+                    <td><a class="label label-default " href="{php echo $this->createPluginWebUrl('channel/apply',array('op' => 'reviewed', 'id' => $row['id'], 'status' => 1));}">驳回审核</a><a class="label label-default label-info" href="{php echo $this->createPluginWebUrl('channel/apply',array('op' => 'reviewed', 'id' => $row['id'], 'status' => 2));}">审核通过</a>
                     </td>
                 </tr>
                 {/loop}

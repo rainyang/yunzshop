@@ -15,7 +15,9 @@ if ($operation == 'display') {
 		ca('channel.level.view|channel.level.edit');
 	}
 	$level = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_level') . " WHERE id = '$id'");
-
+	if (!empty($level['goods_id'])) {
+		$goods = pdo_fetch('SELECT id,title FROM ' .tablename('sz_yi_goods') . ' WHERE id = :id', array(':id' => $level['goods_id']));
+	}
 	if (checksubmit('submit')) {
 		if (empty($_GPC['level_name'])) {
 			message('抱歉，请输入等级名称！');
@@ -39,7 +41,11 @@ if ($operation == 'display') {
 			'purchase_discount' => intval($_GPC['purchase_discount']), 
 			'min_price' => intval($_GPC['min_price']), 
 			'profit_sharing' => intval($_GPC['profit_sharing']),
-			'become' => $_GPC['become']
+			'become' => $set['become'],
+			'team_count' => intval($_GPC['team_count']),
+			'order_money' => $_GPC['order_money'],
+			'order_count' => intval($_GPC['order_count']),
+			'goods_id' => intval($_GPC['goods_id']),
 			);
 		if (!empty($id)) {
 			$data['updatetime'] = time();
