@@ -137,14 +137,20 @@ if ($_W['isajax']) {
             pdo_update('sz_yi_member_cart', $data, array(
                 'id' => $data['id']
             ));*/
-            
+            $data['total'] += $total;
             pdo_update('sz_yi_member_cart', array(
-                    'total' => $total
+                    'total' => $data['total']
                 ), array(
                     'uniacid' => $uniacid,
-                    'goodsid' => $id
+                    'goodsid' => $id,
+                    'openid' => $openid,
+                    'optionid' => $optionid,
                 ));
-            
+            $cartcount += $total;
+            show_json(1, array(
+                'message' => '添加成功',
+                'cartcount' => $cartcount
+            ));
         }
         $cartcount = pdo_fetchcolumn('select sum(total) from ' . tablename('sz_yi_member_cart') . ' where openid=:openid and deleted=0 and uniacid=:uniacid and goodsid = :goodsid limit 1', array(
             ':uniacid' => $uniacid,
