@@ -111,4 +111,12 @@ if(!pdo_fieldexists('sz_yi_bonus_level', 'msgtitle')) {
 if(!pdo_fieldexists('sz_yi_bonus_level', 'msgcontent')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `msgcontent` varchar(255) DEFAULT '';");
 }
+//下线二级人数
+if(!pdo_fieldexists('sz_yi_bonus_level', 'downcountlevel2')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `downcountlevel2` int(11) DEFAULT '0';");
+}
+//下线三级人数
+if(!pdo_fieldexists('sz_yi_bonus_level', 'downcountlevel3')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `downcountlevel3` int(11) DEFAULT '0';");
+}
 message('芸众分红插件安装成功', $this->createPluginWebUrl('bonus/agent'), 'success');

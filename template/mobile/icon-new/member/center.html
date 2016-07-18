@@ -61,7 +61,16 @@
         <li><a href="#"><span><%member.credit2%></span><br/>{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}</a></li>
         <li><a href="#"><span><%member.credit1%></span><br/>{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}</a></li>
         <li><a href="#"><span><%counts.couponcount%></span><br/>优惠券</a></li>
-        <li><a href="#" class="recharge" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</a></li>
+
+        <li><a href="#" class="recharge" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</a>
+        {if $member['credit2'] > 0 && empty($set['trade']['transfer'])}
+            <a href="#" class="recharge" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer'))}'">转让</a>
+        {/if} 
+
+        </li>
+       
+                
+                   
     </ul>
 </div>
 <div class="order">

@@ -66,9 +66,11 @@
              <%if trade.closerecharge < 1%>
              <div class="take" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</div>
              <%/if%>
-            {if $member['credit2'] > 0}
+            <%if trade.transfer < 1 && member.credit2 > 0%>
+                
                 <div class="take" style="background:hsl(148, 91%, 42%);margin-right: 5px;" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer'))}'">转让 </div> 
-            {/if} 
+                 
+            <%/if%>
          </div></a>
     <a href="javascript:;"><div class="list1" style="margin:-2px 0px 0; border-bottom:0px;">{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}: <%member.credit1%>
 
