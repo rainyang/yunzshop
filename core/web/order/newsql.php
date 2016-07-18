@@ -984,3 +984,15 @@ if(!pdo_fieldexists('sz_yi_member', 'credit20')) {
 if(!pdo_fieldexists('mc_members', 'credit20')) {
     pdo_fetchall("ALTER TABLE ".tablename('mc_members')." ADD `credit20` DECIMAL(10,2) NOT NULL DEFAULT '0';");
 }
+
+//20160718添加 代理商升级条件添加二三级
+if(pdo_tableexists('sz_yi_bonus_level')){
+  //下线二级人数
+  if(!pdo_fieldexists('sz_yi_bonus_level', 'downcountlevel2')) {
+    pdo_query("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `downcountlevel2` int(11) DEFAULT '0';");
+  }
+  //下线三级人数
+  if(!pdo_fieldexists('sz_yi_bonus_level', 'downcountlevel3')) {
+    pdo_query("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `downcountlevel3` int(11) DEFAULT '0';");
+  }
+}

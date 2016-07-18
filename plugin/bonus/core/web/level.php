@@ -30,6 +30,8 @@ if ($operation == 'display') {
 			'ordercount' => intval($_GPC['ordercount']), 
 			'downcount' => intval($_GPC['downcount']),
 			'downcountlevel1' => intval($_GPC['downcountlevel1']),
+			'downcountlevel2' => intval($_GPC['downcountlevel2']),
+			'downcountlevel3' => intval($_GPC['downcountlevel3']),
 			'content' => intval($_GPC['content']),
 			'premier' => intval($_GPC['premier']),
 			'pcommission' => floatval($_GPC['pcommission']),

@@ -79,7 +79,7 @@ if (!class_exists('BonusModel')) {
 						$masid = $member['id'];
 					}
 					//查询分红人员
-					if(!empty($masid)){
+					if(!empty($masid) && !empty($set['start'])){
 						$parentAgents = $this->getParentAgents($masid, $isdistinction);
 						$range_money = 0;
 						foreach ($levels as $key => $level) {
@@ -462,7 +462,7 @@ if (!class_exists('BonusModel')) {
 		{
 			global $_W, $_GPC;
 			$set = $this->getSet();
-			if(empty($set['start'])){
+			if(empty($set['start']) && empty($set['area_start'])){
 				return;
 			}
 			$this->calculate($orderid);
@@ -472,7 +472,7 @@ if (!class_exists('BonusModel')) {
 		{
 			global $_W, $_GPC;
 			$set = $this->getSet();
-			if(empty($set['start'])){
+			if(empty($set['start']) && empty($set['area_start'])){
 				return;
 			}
 			$order = pdo_fetch('select id,openid,ordersn,goodsprice,agentid,paytime from ' . tablename('sz_yi_order') . ' where id=:id and status>=1 and uniacid=:uniacid limit 1', array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
@@ -521,7 +521,7 @@ if (!class_exists('BonusModel')) {
 			}
 
 			$set = $this->getSet();
-			if(empty($set['start'])){
+			if(empty($set['start']) && empty($set['area_start'])){
 				return;
 			}
 			$order = pdo_fetch('select id,openid,ordersn,goodsprice,agentid,paytime,finishtime from ' . tablename('sz_yi_order') . ' where id=:id and status>=1 and uniacid=:uniacid limit 1', array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
@@ -656,6 +656,24 @@ if (!class_exists('BonusModel')) {
 			if(in_array('9', $leveltype)){
 				if(!empty($levelup['downcountlevel1'])){
 					if($member['level1'] < $levelup['downcountlevel1']){
+						$isleveup = false;
+					}
+				}
+			}
+
+			//二级分销商人数
+			if(in_array('12', $leveltype)){
+				if(!empty($levelup['downcountlevel2'])){
+					if($member['level2'] < $levelup['downcountlevel2']){
+						$isleveup = false;
+					}
+				}
+			}
+
+			//三级分销商人数
+			if(in_array('13', $leveltype)){
+				if(!empty($levelup['downcountlevel3'])){
+					if($member['level3'] < $levelup['downcountlevel3']){
 						$isleveup = false;
 					}
 				}
