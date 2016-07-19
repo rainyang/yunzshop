@@ -1,4 +1,13 @@
 <?php
+/**
+ * 管理后台APP API登录接口
+ *
+ * PHP version 5.6.15
+ *
+ * @package   登录模块
+ * @author    shenyang <shenyang@yunzshop.com>
+ * @version   v1.0
+ */
 $_YZ->validate('username','password');
 $setting = $_W['setting'];
 

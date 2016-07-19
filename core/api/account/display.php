@@ -1,4 +1,13 @@
 <?php
+/**
+ * 管理后台APP API公众号列表接口
+ *
+ * PHP version 5.6.15
+ *
+ * @package   公众号模块
+ * @author    shenyang <shenyang@yunzshop.com>
+ * @version   v1.0
+ */
 //$api->validate('username','password');
 $setting = $_W['setting'];
 $pindex = max(1, intval($_GPC['page']));

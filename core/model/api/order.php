@@ -1,14 +1,13 @@
 <?php
-/*=============================================================================
-#     FileName: order.php
-#         Desc: 订单类
-#       Author: Shenyang
-#        Email: 564345292@qq.com
-#     HomePage: 
-#      Version: 0.0.1
-#   LastChange: 2016-07-18 18:34:01
-#      History:
-=============================================================================*/
+/**
+ * 订单model
+ *
+ * 管理后台 APP API 订单model
+ *
+ * @package   订单模块
+ * @author    shenyang<shenyang@yunzshop.com>
+ * @version   v1.0
+ */
 namespace Api\Model;
 if (!defined('IN_IA')) {
     exit('Access Denied');
@@ -20,7 +19,12 @@ class Order
     {
 
     }
-    protected $name = array(
+    /**
+     * 订单表字段字典
+     *
+     * @var Array
+     */
+    protected $name_map = array(
         'pay_type'=>array(
             '0' => "未支付",
             "1" => "余额支付",
@@ -44,6 +48,13 @@ class Order
             '2' => '换货'
         )
     );
+    /**
+     * 获取订单列表
+     *
+     * 详细描述（略）
+     * @param string $para 查询条件数组
+     * @return array 订单列表
+     */
     public function getList($para)
     {
         global $_W;
@@ -51,6 +62,10 @@ class Order
         $condition['pay_type'] = $this->getPayTypeCondition($para['pay_type']);
         if($para['is_supplier_uid']){
             $condition['supplier'] .= $this->getSupplierCondition($_W['uid']);
+        }
+        if(!empty($para['id'])){
+            $condition['id'] = "AND o.id < {$para['id']}";
+
         }
         $condition['other'] = 'AND o.uniacid = :uniacid and o.deleted=0';
         $paras = array(
@@ -64,34 +79,37 @@ left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid
 left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " 
 left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " 
 left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . "  
-where {$condition_str} ORDER BY o.createtime DESC,o.status DESC  ";
+where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 ";
 
         $list = pdo_fetchall($sql, $paras);
-        $list = $this->formatResult($list);
+        $list = $this->formatOrderList($list);
         return $list;
     }
-    protected function formatResult($order_list){
+    /**
+     * 处理订单列表
+     * 添加包含商品列表,翻译数字字段等
+     *
+     * @param array $order_list 订单列表
+     * @return array 处理过的订单列表
+     */
+    protected function formatOrderList($order_list){
         global $_W;
-        $orderstatus = $this->name['status'];
-        $r_type = $this->name['r_type'];
-        $plugin_diyform = p("diyform");
-
+        $status_name_map = $this->name_map['status'];
+        $r_type = $this->name_map['r_type'];
         foreach ($order_list as & $value) {
-            $s = $value["status"];
             $pt = $value["paytype"];
-            $value["statusvalue"] = $s;
-            $value["status"] = $orderstatus[$value["status"]];
-            if ($pt == 3 && empty($value["statusvalue"])) {
-                $value["status"] = $orderstatus[1];
+            $value["status_name"] = $status_name_map[$value["status"]];
+            if ($pt == 3 && empty($value["status"])) {
+                $value["status"] = $status_name_map[1];
             }
-            if ($s == 1) {
+            if ($value["status"] == 1) {
                 if ($value["isverify"] == 1) {
                     $value["status"] = "待使用";
                 } else if (empty($value["addressid"])) {
                     $value["status"] = "待取货";
                 }
             }
-            if ($s == - 1) {
+            if ($value["status"] == - 1) {
                 $value['status'] = $value['rstatus'];
                 if (!empty($value["refundtime"])) {
                     if ($value['rstatus'] == 1) {
@@ -99,52 +117,74 @@ where {$condition_str} ORDER BY o.createtime DESC,o.status DESC  ";
                     }
                 }
             }
-
-
-            $order_goods = pdo_fetchall("select g.id,g.title,g.thumb,g.goodssn,og.goodssn as option_goodssn, g.productsn,og.productsn as option_productsn, og.total,og.price,og.optionname as optiontitle, og.realprice from " . tablename("sz_yi_order_goods") . " og " . " left join " . tablename("sz_yi_goods") . " g on g.id=og.goodsid " . " where og.uniacid=:uniacid and og.orderid=:orderid ", array(
-                ":uniacid" => $_W["uniacid"],
-                ":orderid" => $value["id"]
-            ));
-            foreach ($order_goods as & $og) {
-
-                $goods = "" . $og["title"] . "";
-                if (!empty($og["optiontitle"])) {
-                    $goods.= " 规格: " . $og["optiontitle"];
-                }
-                if (!empty($og["option_goodssn"])) {
-                    $og["goodssn"] = $og["option_goodssn"];
-                }
-                if (!empty($og["option_productsn"])) {
-                    $og["productsn"] = $og["option_productsn"];
-                }
-                if (!empty($og["goodssn"])) {
-                    $goods.= " 商品编号: " . $og["goodssn"];
-                }
-                if (!empty($og["productsn"])) {
-                    $goods.= " 商品条码: " . $og["productsn"];
-                }
-                $goods.= " 单价: " . ($og["price"] / $og["total"]) . " 折扣后: " . ($og["realprice"] / $og["total"]) . " 数量: " . $og["total"] . " 总价: " . $og["price"] . " 折扣后: " . $og["realprice"] . "";
-                if ($plugin_diyform && !empty($og["diyformfields"]) && !empty($og["diyformdata"])) {
-                    $diyformdata_array = $plugin_diyform->getDatas(iunserializer($og["diyformfields"]) , iunserializer($og["diyformdata"]));
-                    $diyformdata = "";
-                    foreach ($diyformdata_array as $da) {
-                        $diyformdata.= $da["name"] . ": " . $da["value"] . "";
-                    }
-                    $og["goods_diyformdata"] = $diyformdata;
-                }
-                $og['goods_attribute'] = $goods;
-                $og = array_part('id,thumb,title,price,total,goods_attribute',$og);
-            }
-            unset($og);
+            $order_goods = $this->getOrderGoods($value["id"],$_W["uniacid"]);
             $value["goods"] = set_medias($order_goods, "thumb");
-
         }
-        unset($value);
         return $order_list;
     }
+    /**
+     * 获取订单商品列表
+     * 查询,格式化,并返回商品列表
+     *
+     * @param int $order_id 订单表ID
+     * @param int $uniacid  公众号ID
+     * @return array 订单包含的商品列表
+     */
+    protected function getOrderGoods($order_id,$uniacid){
+        $plugin_diyform = p("diyform");
+        $order_goods = pdo_fetchall("select g.id,g.title,g.thumb,g.goodssn,og.goodssn as option_goodssn, g.productsn,og.productsn as option_productsn, og.total,og.price,og.optionname as optiontitle, og.realprice from " . tablename("sz_yi_order_goods") . " og " . " left join " . tablename("sz_yi_goods") . " g on g.id=og.goodsid " . " where og.uniacid=:uniacid and og.orderid=:orderid ", array(
+            ":uniacid" => $uniacid,
+            ":orderid" => $order_id
+        ));
+        foreach ($order_goods as & $og) {
+
+            $goods = "" . $og["title"] . "";
+            if (!empty($og["optiontitle"])) {
+                $goods.= " 规格: " . $og["optiontitle"];
+            }
+            if (!empty($og["option_goodssn"])) {
+                $og["goodssn"] = $og["option_goodssn"];
+            }
+            if (!empty($og["option_productsn"])) {
+                $og["productsn"] = $og["option_productsn"];
+            }
+            if (!empty($og["goodssn"])) {
+                $goods.= " 商品编号: " . $og["goodssn"];
+            }
+            if (!empty($og["productsn"])) {
+                $goods.= " 商品条码: " . $og["productsn"];
+            }
+            $goods.= " 单价: " . ($og["price"] / $og["total"]) . " 折扣后: " . ($og["realprice"] / $og["total"]) . " 数量: " . $og["total"] . " 总价: " . $og["price"] . " 折扣后: " . $og["realprice"] . "";
+            if ($plugin_diyform && !empty($og["diyformfields"]) && !empty($og["diyformdata"])) {
+                $diyformdata_array = $plugin_diyform->getDatas(iunserializer($og["diyformfields"]) , iunserializer($og["diyformdata"]));
+                $diyformdata = "";
+                foreach ($diyformdata_array as $da) {
+                    $diyformdata.= $da["name"] . ": " . $da["value"] . "";
+                }
+                $og["goods_diyformdata"] = $diyformdata;
+            }
+            $og['goods_attribute'] = $goods;
+            $og = array_part('id,thumb,title,price,total,goods_attribute',$og);
+        }
+        return $order_goods;
+    }
+    /**
+     * 返回供应商查询条件
+     * 供应商sql查询条件
+     *
+     * @param int $uid 管理员ID
+     * @return string 供应商sql查询条件字符串
+     */
     protected function getSupplierCondition($uid){
         " and o.supplier_uid={$uid} ";
     }
+    /**
+     * 返回支付方式查询条件
+     * 供应商sql查询条件
+     *
+     * @param int $uid 管理员ID
+     * @return string 支付方式sql查询条件字符串
+     */
     protected function getPayTypeCondition($pay_type){
         $condition='';
         if ($pay_type == "2") {
@@ -154,22 +194,35 @@ where {$condition_str} ORDER BY o.createtime DESC,o.status DESC  ";
         }
         return $condition;
     }
+    /**
+     * 返回订单状态查询条件
+     * 订单状态sql查询条件
+     *
+     * @param int $status 订单状态值
+     * @return string 订单状态sql查询条件字符串
+     */
     protected function getStatusCondition($status)
     {
-
-        if ($status == "-1") {
-            $statuscondition = " AND o.status=-1 and o.refundtime=0";
-        } else if ($status == "4") {
-            $statuscondition = " AND o.refundstate>=0 AND o.refundid<>0";
-        } else if ($status == "5") {
-            $statuscondition = " AND o.refundtime<>0";
-        } else if ($status == "1") {
-            $statuscondition = " AND ( o.status = 1 or (o.status=0 and o.paytype=3) )";
-        } else if ($status == '0') {
-            $statuscondition = " AND o.status = 0 and o.paytype<>3";
-        } else {
-            $statuscondition = " AND o.status = " . intval($status);
+        switch ($status){
+            case "-1":
+                $condition = " AND o.status=-1 and o.refundtime=0";
+                break;
+            case "4":
+                $condition = " AND o.status=-1 and o.refundtime=0";
+                break;
+            case "5":
+                $condition = " AND o.status=-1 and o.refundtime=0";
+                break;
+            case "1":
+                $condition = " AND o.status=-1 and o.refundtime=0";
+                break;
+            case "0":
+                $condition = " AND o.status=-1 and o.refundtime=0";
+                break;
+            default:
+                $condition = " AND o.status = " . intval($status);
         }
-        return $statuscondition;
+        return $condition;
+
     }
 }

@@ -1,4 +1,13 @@
 <?php
+/**
+ * 管理后台APP API商品详情接口
+ *
+ * PHP version 5.6.15
+ *
+ * @package   商品模块
+ * @author    shenyang <shenyang@yunzshop.com>
+ * @version   v1.0
+ */
 //$api->validate('username','password');
 $goodsid = $_GPC['goods_id'];
 $params = array(':uniacid' => $_W['uniacid'], ':goodsid' => $goodsid);

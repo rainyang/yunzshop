@@ -1,4 +1,13 @@
 <?php
+/**
+ * 管理后台APP API商品状态设置接口
+ *
+ * PHP version 5.6.15
+ *
+ * @package   商品模块
+ * @author    shenyang <shenyang@yunzshop.com>
+ * @version   v1.0
+ */
 ca('shop.goods.edit');
 $id   = intval($_GPC['id']);
 $type = $_GPC['type'];

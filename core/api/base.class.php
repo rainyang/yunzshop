@@ -1,10 +1,30 @@
 <?php
+/**
+ * API接口基类
+ *
+ *
+ * @package   API
+ * @author    shenyang<shenyang@yunzshop.com>
+ * @version   v1.0
+ */
 namespace Api;
 class Base
 {
+    /**
+     * 解密后的参数
+     *
+     * @var Array
+     */
     protected $para;
+    /**
+     * PHP报错信息
+     *
+     * @var Array
+     */
     protected $error_info;
-
+    /**
+     * 载入aes加密模块,解密参数
+     */
     public function __construct()
     {
         /*if(!IS_POST){
@@ -15,12 +35,24 @@ class Base
         $this->para = json_decode(urldecode($this->aes->siyuan_aes_decode(str_replace(" ", "+", $_POST['para']))), TRUE);//
         //$this->addLog();
     }
-
+    /**
+     * 返回解密的参数
+     *
+     *
+     * @return array 解密的参数数组
+     */
     public function getPara()
     {
         return $this->para;
     }
-
+    /**
+     * 成功时返回加密过的json字符串
+     *
+     * 详细描述（略）
+     * @param array $data 传递给APP的自定义数据
+     * @param string $msg 提示信息
+     * @return void
+     */
     public function returnSuccess($data = [], $msg = '成功')
     {
         $res = array('result' => '1',
@@ -34,7 +66,13 @@ class Base
             $this->callBackByAes($res);
         }
     }
-
+    /**
+     * 失败时返回加密过的json字符串
+     *
+     * 详细描述（略）
+     * @param string $msg 提示信息
+     * @return void
+     */
     public function returnError($msg = '网络繁忙')
     {
         $res = array('result' => '0',
@@ -48,7 +86,13 @@ class Base
             $this->callBackByAes($res);
         }
     }
-
+    /**
+     * 验证请求参数是否完整
+     *
+     * 详细描述（略）
+     * @param string $expect_keys ','连接的参数名
+     * @return bool 参数是否完整
+     */
     public function validate($expect_keys)
     {
         $expect_keys = explode(',', $expect_keys);
@@ -64,9 +108,11 @@ class Base
     }
 
     /**
-     * @todo    生成经过Aes加密后的字符串
-     * @param    array $json_data
-     * @return    string
+     * 返回加密过的json串
+     *
+     * 详细描述（略）
+     * @param array $json_data 要返回的全部数组
+     * @return void
      */
     protected function callBackByAes($json_data)
     {
@@ -78,7 +124,12 @@ class Base
         //dump($this->getSqlLog());
         exit($return_data);
     }
-
+    /**
+     * 将访问的参数记录的数据库
+     *    todo 建立访问日志表
+     * 详细描述（略）
+     * @return void
+     */
     protected function addLog()
     {
         $data['para'] = $this->para == 'null' ? '' : json_encode($this->para, JSON_UNESCAPED_UNICODE);
@@ -88,7 +139,16 @@ class Base
         $data['is_error'] = "";
         D('ApiLog')->add($data);
     }
-
+    /**
+     * php错误回调函数
+     *
+     * 详细描述（略）
+     * @param int $errno 错误码
+     * @param string $errstr 错误信息
+     * @param string $errfile 发生错误的文件
+     * @param int $errline 发生错误的行数
+     * @return void
+     */
     public function setErrorInfo($errno, $errstr, $errfile, $errline)
     {
         switch ($errno) {
@@ -113,7 +173,12 @@ class Base
             dump($this->error_info);
         }
     }
-
+    /**
+     * 获取访问客户端的IP
+     *
+     * 详细描述（略）
+     * @return string 访问客户端的IP
+     */
     protected function getClientIp()
     {
         if (!empty($_SERVER["HTTP_CLIENT_IP"])) {
