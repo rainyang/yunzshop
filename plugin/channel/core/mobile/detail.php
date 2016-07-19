@@ -11,9 +11,9 @@ if ($_W['isajax']) {
     $goodsid    = intval($_GPC['goodsid']);
     $pindex     = max(1, intval($_GPC['page']));
     $psize      = 20;
-    $condition  = " and `openid`='{$openid}' and uniacid={$_W['uniacid']} and goodsid={$goodsid}";
-    $list       = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_stock_log') . " where 1 {$condition} order by id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
-    $total      = pdo_fetchcolumn("SELECT count(*) FROM " . tablename('sz_yi_channel_stock_log') . " where 1 {$condition} order by id desc ");
+    $condition  = " AND `openid`='{$openid}' AND uniacid={$_W['uniacid']} AND goodsid={$goodsid}";
+    $list       = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_stock_log') . " WHERE 1 {$condition} order by id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+    $total      = pdo_fetchcolumn("SELECT count(*) FROM " . tablename('sz_yi_channel_stock_log') . " WHERE 1 {$condition} order by id desc ");
     if (empty($total)) {
         $total = 0;
     }
