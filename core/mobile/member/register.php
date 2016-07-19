@@ -6,6 +6,9 @@ global $_W, $_GPC;
 $preUrl = $_COOKIE['preUrl'];
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 
+//访问来自app分享
+$from = !empty($_GPC['from']) ? $_GPC['from'] : '';
+
 session_start();
 
 if (m('user')->islogin() != false) {
@@ -122,6 +125,11 @@ if ($_W['isajax']) {
         {
             $preUrl = $this->createMobileUrl('shop');
         }
+
+        if ($from == 'app') {
+            $preUrl = $this->createMobileUrl('shop/download');
+        }
+
         show_json(1, $preUrl);
     }      
 }
