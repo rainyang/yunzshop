@@ -253,6 +253,8 @@ if (!class_exists('ReturnModel')) {
 
 			$current_time = time();
 			foreach ($member_record as $key => $value) {
+				$percentage = $_var_0['percentage'];
+
 				if($_var_0['islevels'] == 1)
 				{
 					if($_var_0['islevel'] == 1)
@@ -265,12 +267,15 @@ if (!class_exists('ReturnModel')) {
 				}
 					// $unfinished_record[$percentage] = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");
 					// $finished_record[$percentage] = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");
+					if($_var_0['degression'] == 1)
+					{
+						pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + (money - return_money) * ".$percentage." / 100,last_money = (money - return_money) * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money > 0.5 and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");
+						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money <= 0.5  and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");
+					}else{
 
-				pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + money * ".$percentage." / 100,last_money = money * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");
-				
-
-				pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");
-
+						pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + money * ".$percentage." / 100,last_money = money * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");
+						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");
+					}
 			}
 			$return_record = pdo_fetchall("SELECT sum(r.money) as money, sum(r.return_money) as return_money, sum(r.last_money) as last_money,m.openid,count(r.id) as count  FROM " . tablename('sz_yi_return') . " r 
 				left join " . tablename('sz_yi_member') . " m on (r.mid = m.id) 
