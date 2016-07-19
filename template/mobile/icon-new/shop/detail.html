@@ -222,7 +222,10 @@ div.flicking_con a.on{background-position:0 -9px}
         <%if commission && goods.nocommission==0 && goods.hidecommission==0%>
         <div class="info1">
             <div class="name"><%if goods.issendfree==1%><span class='label label-free'>包邮</span>&nbsp;<%/if%><%goods.title%></div>
-            <div class="sub1" onclick="location.href='{php echo $this->createPluginMobileUrl('commission/shares',array('goodsid'=>$_GPC['id']))}'"><i class="fa fa-cny"></i><%commission_text%></div>
+            {if is_weixin_show()}
+              <div class="sub1" onclick="location.href='{php echo $this->createPluginMobileUrl('commission/shares',array('goodsid'=>$_GPC['id']))}'"><i class="fa fa-cny"></i><%commission_text%></div>
+            {/if}
+
         </div>
         <%else%>
         <div class="info2"><%if goods.issendfree==1%><span class='label label-free' >包邮</span><%/if%>&nbsp;<%goods.title%></div>

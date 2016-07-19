@@ -82,6 +82,17 @@
             </div>
         </div> 
 
+
+        <div class="form-group"  id="return_degression" {if $set['returnrule'] ==2} style="display:none;"{/if}>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">单笔订单递减返 是否开启</label>
+                <div class="col-sm-8 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="setdata[degression]" value="0" {if $set['degression'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[degression]" value="1" {if $set['degression'] ==1} checked="checked"{/if} /> 开启</label>
+                    <span class='help-block'>如 ：返现金额为100元，第一次返现为（100*返现比例），第二次为（100-已返现金额*返现比例），以此类推。</br>当未返现金剩余0.5元时，将一次性返现给用户。</span>
+                </div>
+
+        </div> 
+
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">默认比例</label>
 
@@ -173,9 +184,12 @@
         if($(this).find('input').val() == 2)
         {
             $("#return_rule").show();
+            $("#return_degression").hide();
+            
         }else
         {
             $("#return_rule").hide();
+            $("#return_degression").show();
         }
     });
 </script>
