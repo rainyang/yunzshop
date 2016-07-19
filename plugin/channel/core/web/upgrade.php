@@ -153,7 +153,12 @@ if(!pdo_fieldexists('sz_yi_order', 'ischannelpay')) {
 if(!pdo_fieldexists('sz_yi_order', 'channel_id')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `channel_id` INT(11) DEFAULT '0';");
 }
+
 if (!pdo_fieldexists('sz_yi_channel_apply', 'apply_ordergoods_ids')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_channel_apply')." ADD  `apply_ordergoods_ids` text;");
+}
+
+if (!pdo_fieldexists('sz_yi_channel_stock_log', 'paytime')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_channel_stock_log')." ADD  `paytime` INT(11) DEFAULT '0';");
 }
 message('渠道商插件安装成功', $this->createPluginWebUrl('channel/index'), 'success');

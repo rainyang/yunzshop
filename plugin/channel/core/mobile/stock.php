@@ -11,27 +11,14 @@ if ($_W['isajax']) {
 	$pindex 	= max(1, intval($_GPC['page']));
 	$psize 		= 20;
 	$condition 	= " and `openid`='{$openid}' and uniacid={$_W['uniacid']}";
-	//$params 	= array(':openid' => $openid, ':uniacid' => $uniacid);
-	$status 	= trim($_GPC['status']);
-	if ($status != '') {
-		$condition .= ' and status=' . intval($status);
-	}
-	$list 		= pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_apply') . " where 1 {$condition} order by id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+	$list 		= pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_stock') . " where 1 {$condition} order by id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
 	$total 		= pdo_fetchcolumn('SELECT count(*) FROM ' . tablename('sz_yi_channel_apply') . " where 1 {$condition}");
 	if (empty($total)) {
 		$total = 0;
 	}
-	foreach ($list as &$row) {
-		$row['apply_money'] = number_format($row['apply_money'],2);
-		if ($row['status'] == 0) {
-			$row['statusstr'] = '待审核';
-			$row['dealtime'] = date('Y-m-d H:i', $row['apply_time']);
-		} else {
-			if ($row['status'] == 1) {
-				$row['statusstr'] = '已打款';
-				$row['dealtime'] = date('Y-m-d H:i', $row['finish_time']);
-			}
-		}
+	foreach ($list as &$rowp) {
+		$sql = 'SELECT title,thumb FROM ' . tablename('sz_yi_goods') . " where id=:goodsid";
+		$rowp['goods'] 		= set_medias(pdo_fetch($sql, array(':goodsid' => $rowp['goodsid'])), 'thumb');
 	}
 	unset($row);
 	show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));

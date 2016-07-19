@@ -1437,7 +1437,8 @@ if ($_W['isajax']) {
                           'every_turn'          => $goods['total'],
                           'every_turn_price'    => $goods['marketprice'],
                           'every_turn_discount' => $my_info['my_level']['purchase_discount'],
-                          'goods_price'         => $every_turn_price
+                          'goods_price'         => $every_turn_price,
+                          'paytime'             => time()
                         );
                     pdo_insert('sz_yi_channel_stock_log', $stock_log);
                 }
