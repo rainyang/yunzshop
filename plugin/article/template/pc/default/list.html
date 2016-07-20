@@ -113,7 +113,7 @@
                                         </div>
                                     </div>
                                 {/if}
-                                <div class="info-article">{php echo htmlspecialchars_decode($article['article_content'])}</div>
+                                <div class="info-article">{php echo $article['resp_desc'] ? $article['resp_desc'] : "编辑比较懒还没有填写介绍..."}</div>
                             </div>
                         </div>
                     </div>
@@ -144,7 +144,7 @@
                                             <img src="{$vv['resp_img']}" />
                                         </div>
                                         <div class="img-title"><h1>{$vv['article_title']}</h1>
-                                            <p>{php echo htmlspecialchars_decode($article['article_content'])}</p>
+                                            <p>{php echo $article['resp_desc'] ? $article['resp_desc'] : "编辑比较懒还没有填写介绍..."}</p>
                                         </div>
                                     </div>
                                 </a>
