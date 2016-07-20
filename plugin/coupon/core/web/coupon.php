@@ -56,13 +56,38 @@ if ($operation == 'display') {
 	$pager = pagination($total, $pindex, $psize);
 } elseif ($operation == 'post') {
 	$id = intval($_GPC['id']);
+	$shopset = m('common')->getSysset('shop');
+	$sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
+	$category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
+	$result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid']);
+
+	$parent = $children = array();
+	if (!empty($category)) {
+	    foreach ($category as $cid => $cate) {
+	        if (!empty($cate['parentid'])) {
+	            $children[$cate['parentid']][] = $cate;
+	        } else {
+	            $parent[$cate['id']] = $cate;
+	        }
+	    }
+	}
+
 	if (empty($id)) {
 		ca('coupon.coupon.add');
 	} else {
 		ca('coupon.coupon.view|coupon.coupon.edit');
 	}
 	if (checksubmit('submit')) {
-		$data = array('uniacid' => $_W['uniacid'], 'couponname' => trim($_GPC['couponname']), 'coupontype' => intval($_GPC['coupontype']), 'catid' => intval($_GPC['catid']), 'timelimit' => intval($_GPC['timelimit']), 'usetype' => intval($_GPC['usetype']), 'returntype' => intval($_GPC['returntype']), 'enough' => trim($_GPC['enough']), 'timedays' => intval($_GPC['timedays']), 'timestart' => strtotime($_GPC['time']['start']), 'timeend' => strtotime($_GPC['time']['end']), 'backtype' => intval($_GPC['backtype']), 'deduct' => trim($_GPC['deduct']), 'discount' => trim($_GPC['discount']), 'backmoney' => trim($_GPC['backmoney']), 'backcredit' => trim($_GPC['backcredit']), 'backredpack' => trim($_GPC['backredpack']), 'backwhen' => intval($_GPC['backwhen']), 'gettype' => intval($_GPC['gettype']), 'getmax' => intval($_GPC['getmax']), 'credit' => intval($_GPC['credit']), 'money' => trim($_GPC['money']), 'usecredit2' => intval($_GPC['usecredit2']), 'total' => intval($_GPC['total']), 'bgcolor' => trim($_GPC['bgcolor']), 'thumb' => save_media($_GPC['thumb']), 'remark' => trim($_GPC['remark']), 'desc' => htmlspecialchars_decode($_GPC['desc']), 'descnoset' => intval($_GPC['descnoset']), 'status' => intval($_GPC['status']), 'resptitle' => trim($_GPC['resptitle']), 'respthumb' => save_media($_GPC['respthumb']), 'respdesc' => trim($_GPC['respdesc']), 'respurl' => trim($_GPC['respurl']), 'pwdkey' => trim($_GPC['pwdkey']), 'pwdwords' => trim($_GPC['pwdwords']), 'pwdask' => trim($_GPC['pwdask']), 'pwdsuc' => trim($_GPC['pwdsuc']), 'pwdfail' => trim($_GPC['pwdfail']), 'pwdfull' => trim($_GPC['pwdfull']), 'pwdurl' => trim($_GPC['pwdurl']), 'pwdtimes' => intval($_GPC['pwdtimes']), 'pwdopen' => intval($_GPC['pwdopen']), 'pwdown' => trim($_GPC['pwdown']), 'pwdexit' => trim($_GPC['pwdexit']), 'pwdexitstr' => trim($_GPC['pwdexitstr']));
+		$data = array('uniacid' => $_W['uniacid'], 'getcashier' => intval($_GPC['getcashier']), 'couponname' => trim($_GPC['couponname']), 'coupontype' => intval($_GPC['coupontype']), 'catid' => intval($_GPC['catid']), 'timelimit' => intval($_GPC['timelimit']), 'usetype' => intval($_GPC['usetype']), 'returntype' => intval($_GPC['returntype']), 'enough' => trim($_GPC['enough']), 'timedays' => intval($_GPC['timedays']), 'timestart' => strtotime($_GPC['time']['start']), 'timeend' => strtotime($_GPC['time']['end']), 'backtype' => intval($_GPC['backtype']), 'deduct' => trim($_GPC['deduct']), 'discount' => trim($_GPC['discount']), 'backmoney' => trim($_GPC['backmoney']), 'backcredit' => trim($_GPC['backcredit']), 'backredpack' => trim($_GPC['backredpack']), 'backwhen' => intval($_GPC['backwhen']), 'gettype' => intval($_GPC['gettype']), 'getmax' => intval($_GPC['getmax']), 'credit' => intval($_GPC['credit']), 'money' => trim($_GPC['money']), 'usecredit2' => intval($_GPC['usecredit2']), 'total' => intval($_GPC['total']), 'bgcolor' => trim($_GPC['bgcolor']), 'thumb' => save_media($_GPC['thumb']), 'remark' => trim($_GPC['remark']), 'desc' => htmlspecialchars_decode($_GPC['desc']), 'descnoset' => intval($_GPC['descnoset']), 'status' => intval($_GPC['status']), 'resptitle' => trim($_GPC['resptitle']), 'respthumb' => save_media($_GPC['respthumb']), 'respdesc' => trim($_GPC['respdesc']), 'respurl' => trim($_GPC['respurl']), 'pwdkey' => trim($_GPC['pwdkey']), 'pwdwords' => trim($_GPC['pwdwords']), 'pwdask' => trim($_GPC['pwdask']), 'pwdsuc' => trim($_GPC['pwdsuc']), 'pwdfail' => trim($_GPC['pwdfail']), 'pwdfull' => trim($_GPC['pwdfull']), 'pwdurl' => trim($_GPC['pwdurl']), 'pwdtimes' => intval($_GPC['pwdtimes']), 'pwdopen' => intval($_GPC['pwdopen']), 'pwdown' => trim($_GPC['pwdown']), 'pwdexit' => trim($_GPC['pwdexit']), 'pwdexitstr' => trim($_GPC['pwdexitstr']));
+		//添加指定分类
+		$data['categoryids'] = iserializer($_GPC['categoryids']);
+		$data['categorynames'] = iserializer($_GPC['categorynames']);
+		//添加指定商品
+		$data['goodsids'] = iserializer($_GPC['goodsids']);
+		$data['goodsnames'] = iserializer($_GPC['goodsnames']);
+		//添加指定收银台
+		$data['cashiersids'] = iserializer($_GPC['cashiersids']);
+		$data['cashiersnames'] = iserializer($_GPC['cashiersnames']);
 		if (!empty($id)) {
 			if (!empty($data['pwdkey'])) {
 				$pwdkey = pdo_fetchcolumn('SELECT pwdkey FROM ' . tablename('sz_yi_coupon') . ' WHERE id=:id and uniacid=:uniacid limit 1 ', array(':id' => $id, ':uniacid' => $_W['uniacid']));
@@ -108,6 +133,12 @@ if ($operation == 'display') {
 		message('更新优惠券成功！', $this->createPluginWebUrl('coupon/coupon'), 'success');
 	}
 	$item = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_coupon') . ' WHERE id =:id and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $id));
+	$item['categoryids'] = unserialize($item['categoryids']);
+	$item['categorynames'] = unserialize($item['categorynames']);
+	$item['goodsids'] = unserialize($item['goodsids']);
+	$item['goodsnames'] = unserialize($item['goodsnames']);
+	$item['cashiersids'] = unserialize($item['cashiersids']);
+	$item['cashiersnames'] = unserialize($item['cashiersnames']);
 	if (empty($item)) {
 		$starttime = time();
 		$endtime = strtotime(date('Y-m-d H:i:s', $starttime) . '+7 days');
