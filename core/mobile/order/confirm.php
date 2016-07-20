@@ -871,11 +871,7 @@ if ($_W['isajax']) {
     } elseif ($operation == 'create' && $_W['ispost']) {
         $order_data = $_GPC['order'];
         //通用订单号，支付用
-        if (count($order_data) > 1) {
-            $ordersn_general    = m('common')->createNO('order', 'ordersn', 'SH');
-        } else {
-            $ordersn_general    = "";
-        }
+        $ordersn_general    = m('common')->createNO('order', 'ordersn', 'SH');
         $member       = m('member')->getMember($openid);
         $level         = m('member')->getLevel($openid);
         foreach ($order_data as $key => $order_row) {
