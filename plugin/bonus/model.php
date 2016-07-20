@@ -422,8 +422,9 @@ if (!class_exists('BonusModel')) {
 
 	        if (in_array('pay', $options)) {
 	            //已打款
-	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=3 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} ORDER BY o.createtime DESC,o.status DESC";
-	            $commission_pay = pdo_fetchcolumn($sql);
+	            //$sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=3 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} ORDER BY o.createtime DESC,o.status DESC";
+	            $sql = "select sum(money) from " . tablename('sz_yi_bonus_log') . " where sendpay=1 and uniacid=:uniacid and openid =:openid ";
+	            $commission_pay = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
 	        }
 
 	        if (in_array('lock', $options)) {
