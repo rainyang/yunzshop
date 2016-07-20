@@ -34,6 +34,11 @@ class Core extends WeModuleSite
         if (is_weixin()) {
             m('member')->checkMember();
         } else {
+            //APP 分销分享地址-用户注册
+            if (isset($_GPC['access']) && $_GPC['access'] == 'app') {
+                header("Location:/app/index.php?i=" . $_W['uniacid'] . "&c=entry&p=register&do=member&m=sz_yi&from=app&mid=".$_GPC['mid']);
+            }
+
             $noLoginList = array('poster', 'postera');
             //微信回调通知要加入开放权限
             if (p('commission') && (!in_array($_GPC['p'], $noLoginList)) && !strpos($_SERVER['SCRIPT_NAME'], 'notify')) {
@@ -428,7 +433,7 @@ class Core extends WeModuleSite
                     $template = m('cache')->getString('template_shop');
                 }
             }
-            
+
             if (empty($template)) {
                 $template = "default";
             }

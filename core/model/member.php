@@ -103,6 +103,10 @@ class Sz_DYi_Member
 							mc_credit_update($uid, 'credit2', $info['credit2']);
 							$upgrade['credit2'] = 0;
 						}
+                        if ($info['credit20'] > 0) {
+                            mc_credit_update($uid, 'credit20', $info['credit20']);
+                            $upgrade['credit20'] = 0;
+                        }
 						if (!empty($upgrade)) {
 							pdo_update('sz_yi_member', $upgrade, array('id' => $info['id']));
 						}
@@ -112,6 +116,7 @@ class Sz_DYi_Member
 			$credits = $this->getCredits($openid);
 			$info['credit1'] = $credits['credit1'];
 			$info['credit2'] = $credits['credit2'];
+            $info['credit20'] = $credits['credit20'];
 		}
         return $info;
     }
@@ -313,7 +318,7 @@ class Sz_DYi_Member
             ));
 		}
 	}
-	public function getCredits($openid = '', $type = array('credit1', 'credit2'))
+	public function getCredits($openid = '', $type = array('credit1', 'credit2', 'credit20'))
 	{
 		global $_W;
 		load()->model('mc');
@@ -379,6 +384,9 @@ class Sz_DYi_Member
                 'status' => 0
             );
             $bindMobile = true;
+
+            pdo_insert('sz_yi_member', $member);
+
             /**
              * 分销 绑定app注册用户
              */
@@ -386,37 +394,29 @@ class Sz_DYi_Member
                 /**
                  * 分销商品链接地址
                  */
-                $redireUrl = "http://" . $_SERVER["HTTP_HOST"] . "/app/index.php?i=" . $_GPC['i'] . "&c=entry&p=detail&id=". $_GPC['id'] . "&mid=" . $_GPC['mid'] . "&do=shop&m=sz_yi&access=app";
-
-                header("Location:/app/index.php?i=" . $_W['uniacid'] . "&c=entry&p=bindapp&do=member&m=sz_yi&bindapp=1&redireurl=". urlencode($redireUrl));
-            } else {
-                pdo_insert('sz_yi_member', $member);
+                header("Location:/app/index.php?i=" . $_W['uniacid'] . "&c=entry&p=bindapp&do=member&m=sz_yi&mid=".$_GPC['mid']);
             }
 
+
         } else {
-            /**
-             * 分销 绑定app已注册未绑定用户
-             */
             if (isset($_GPC['access']) && $_GPC['access'] == 'app' && $member['bindapp'] == 0) {
                 /**
                  * 分销商品链接地址
                  */
-                $redireUrl = "http://" . $_SERVER["HTTP_HOST"] . "/app/index.php?i=" . $_GPC['i'] . "&c=entry&p=detail&id=".$_GPC['id']."&mid=" . $_GPC['mid'] . "&do=shop&m=sz_yi&access=app";
+                header("Location:/app/index.php?i=" . $_W['uniacid'] . "&c=entry&p=bindapp&do=member&m=sz_yi&mid=".$_GPC['mid']);
+            }
 
-                header("Location:http://" . $_SERVER["HTTP_HOST"] . "/app/index.php?i=" . $_W['uniacid'] . "&c=entry&p=bindapp&do=member&m=sz_yi&bindapp=2&redireurl=" . urlencode($redireUrl));
-            } else {
-                $upgrade = array();
-                if ($userinfo['nickname'] != $member['nickname']) {
-                    $upgrade['nickname'] = $userinfo['nickname'];
-                }
-                if ($userinfo['avatar'] != $member['avatar']) {
-                    $upgrade['avatar'] = $userinfo['avatar'];
-                }
-                if (!empty($upgrade)) {
-                    pdo_update('sz_yi_member', $upgrade, array(
-                        'id' => $member['id']
-                    ));
-                }
+            $upgrade = array();
+            if ($userinfo['nickname'] != $member['nickname']) {
+                $upgrade['nickname'] = $userinfo['nickname'];
+            }
+            if ($userinfo['avatar'] != $member['avatar']) {
+                $upgrade['avatar'] = $userinfo['avatar'];
+            }
+            if (!empty($upgrade)) {
+                pdo_update('sz_yi_member', $upgrade, array(
+                    'id' => $member['id']
+                ));
             }
         }
         if (p('commission')) {
@@ -426,6 +426,7 @@ class Sz_DYi_Member
         if (p('poster')) {
             p('poster')->checkScan();
         }
+
         if($bindMobile && is_weixin()){
             /*
             $url = "/app/index.php?i={$_W['uniacid']}&c=entry&p=bindmobile&do=member&m=sz_yi";

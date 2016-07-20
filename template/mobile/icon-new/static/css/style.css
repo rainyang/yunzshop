@@ -283,6 +283,7 @@ footer#footer-nav .menu-list:after {
     float: left;
     padding-bottom: 40px;
     padding: 0 4px 40px;
+    box-sizing: border-box;
 }
 .goods .good {
     width: 48% !important;

@@ -63,6 +63,8 @@ pdo_query($sql);
 $sql = "
 ALTER TABLE `ims_sz_yi_member` ADD `bindapp` tinyint(4) NOT NULL DEFAULT '0';
 ";
-pdo_query($sql);
+if(!pdo_fieldexists('sz_yi_member', 'bindapp')) {
+    pdo_query($sql);
+}
 
 message('芸众APP客户端插件安装成功', $this->createPluginWebUrl('app/index'), 'success');

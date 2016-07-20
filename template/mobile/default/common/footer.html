@@ -4,7 +4,7 @@
 {template 'designer/menu'}
 {else}
 <style type="text/css">
-    {if $this->footer['commission']}
+    {if $this->footer['commission'] && is_weixin_show()}
     footer#footer-nav .menu-list li { width:20%}
     {/if}
  .btnclose {
@@ -33,7 +33,7 @@
                 <ul class="menu-list" style="margin:0">
                     <li {if $footer_current=='first'}class='active'{/if}><a href="{php echo $this->footer['first']['url']}"><i class="fa fa-{php echo $this->footer['first']['ico']}"></i><span>{php echo $this->footer['first']['text']}</span></a></li>
                     <li {if $footer_current=='second'}class='active'{/if} id="shsh"><a{if $shopset['category2']==1} {else} href="{php echo $this->footer['second']['url']}"{/if}><i class="fa fa-{php echo $this->footer['second']['ico']}"></i><span>{php echo $this->footer['second']['text']}</span></a></li>
-                {if $this->footer['commission']}
+                {if $this->footer['commission'] && is_weixin_show()}
                     <li {if $footer_current=='commission'}class='active'{/if}>
                         <a href="{php echo $this->footer['commission']['url']}">
                             <i class="fa fa-{php echo $this->footer['commission']['ico']}"></i>

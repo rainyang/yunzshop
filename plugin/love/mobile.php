@@ -20,4 +20,8 @@ class LoveMobile extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function log_detail()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 }

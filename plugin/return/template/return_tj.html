@@ -80,7 +80,7 @@
             {/loop}
             </tbody>
         </table>
-   <!--      {$pager} -->
+        {$pager}
     </div>
 </div>
 {else if $operation=='detail'}
@@ -98,6 +98,7 @@
                 <th style='width:120px;'>未返现金额</th>
                 <th style='width:120px;'>返利开始时间</th>
                 <th style='width:120px;'>状态</th>
+                <th style='width:120px;'>操作</th>
                 <!-- <th>操作</th> -->
             </tr>
             </thead>
@@ -125,7 +126,7 @@
                             <label class='label label-default'>未完成返利</label>
                             {/if}
                         </td>
-
+                        <td><a href="{php echo $this->createPluginWebUrl('return/return_tj', array('id' => $row['id'], 'op' => 'delete'))}" onclick="return confirm('确认删除此返单？');return false;" class="btn btn-default  btn-sm" title="删除"><i class="fa fa-times"></i></a></td>
                     </tr>
                 {/loop}
             </tbody>

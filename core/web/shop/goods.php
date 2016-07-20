@@ -448,7 +448,9 @@ if ($operation == "change") {
         }else{
             $data['status'] = $_GPC['status'];
         }
-        
+        if(!empty(p('love'))){
+            $data['love_money'] = $_GPC['love_money'];
+        }
         if ($pluginreturn) {
             $data['isreturn'] = intval($_GPC['isreturn']);   //添加全返开关    1:开    0:关
             $data['isreturnqueue'] = intval($_GPC['isreturnqueue']);   //添加全返排列开关    1:开    0:关
@@ -1066,49 +1068,58 @@ m("cache")->set("areas", $areas, "global");
     )));
 }elseif($operation == 'copygoods'){
     $uniacid=$_W['uniacid'];
-    $goodsid1=$_GPC['id'];
-    $goods=pdo_fetch('select * from ' .tablename('sz_yi_goods'). ' where id = '.$goodsid1.' and uniacid='.$uniacid);
-    if(empty($goods)){
+    $goodsid_old=intval($_GPC['id']);
+    $goods=pdo_fetch('select * from ' .tablename('sz_yi_goods'). ' where id = '.$goodsid_old.' and uniacid='.$uniacid);
+    if (empty($goods)) {
         message('未找到此商品，商品复制失败!', $this->createWebUrl('shop/goods') , 'error');
     }
     $goods['id']='';
+    $turn = pdo_fetchall("SELECT id FROM ".tablename('sz_yi_goods')." WHERE title like '%{$goods['title']}%' and uniacid=:uniacid and deleted=0",array('uniacid' => $uniacid));
+    $turncount = count($turn);
+    if ($turncount >= 1) {
+        $goods['title'] = $goods['title'].'___('.$turncount.')';
+    }
     pdo_insert('sz_yi_goods',$goods);
     $goodsid=pdo_insertid();
 
-    $goodsoption=pdo_fetch('select * from ' .tablename('sz_yi_goods_option'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid); 
-    if(!empty($goodsoption)){
-        $goodsoption['id']='';
-        $goodsoption['goodsid']=$goodsid;
-        pdo_insert('sz_yi_goods_option',$goodsoption);   
+    $goodsoption=pdo_fetchall('select * from ' .tablename('sz_yi_goods_option'). ' where goodsid = '.$goodsid_old.' and uniacid='.$uniacid); 
+    if (!empty($goodsoption)) {
+        foreach ($goodsoption as  $value_option) {
+            $value_option['id']='';
+            $value_option['goodsid']=$goodsid;
+            pdo_insert('sz_yi_goods_option',$value_option);   
+        }
+        
     }
     
 
-    $goodscomment=pdo_fetch('select * from ' .tablename('sz_yi_goods_comment'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid);
-    if(!empty($goodscomment)){
-        $goodscomment['id']='';
-        $goodscomment['goodsid']=$goodsid;
-        pdo_insert('sz_yi_goods_comment',$goodscomment);    
+    $goodsparam=pdo_fetchall('select * from ' .tablename('sz_yi_goods_param'). ' where goodsid = '.$goodsid_old.' and uniacid='.$uniacid);
+    if (!empty($goodsparam)) {
+        foreach ($goodsparam as  $value_param) {
+            $value_param['id']='';
+            $value_param['goodsid']=$goodsid;
+            pdo_insert('sz_yi_goods_param',$value_param);   
+        }  
     }
 
 
-    $goodsparam=pdo_fetch('select * from ' .tablename('sz_yi_goods_param'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid);
-    if(!empty($goodsparam)){
-        $goodsparam['id']='';
-        $goodsparam['goodsid']=$goodsid;
-        pdo_insert('sz_yi_goods_param',$goodsparam);   
-    }
-
-
-    $goodsspec=pdo_fetch('select * from ' .tablename('sz_yi_goods_spec'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid);
-    if(!empty($goodsspec)){
-        $goodsspec_item=pdo_fetch('select * from ' .tablename('sz_yi_goods_spec_item'). ' where specid = '.$goodsspec['id'].' and uniacid='.$uniacid);
-        $goodsspec['id']='';
-        pdo_insert('sz_yi_goods_spec',$goodsspec);
-        $goodsspecid=pdo_insertid();
-        $goodsspec_item['specid']=$goodsspecid;
-        $goodsspec_item['id']='';
-        $goodsspec['goodsid']=$goodsid;
-        pdo_insert('sz_yi_goods_spec_item',$goodsspec_item);        
+    $goodsspec=pdo_fetchall('select * from ' .tablename('sz_yi_goods_spec'). ' where goodsid = '.$goodsid_old.' and uniacid='.$uniacid);
+    if (!empty($goodsspec)) {
+        foreach($goodsspec as $value_spec){
+            $goodsspec_item=pdo_fetchall('select * from ' .tablename('sz_yi_goods_spec_item'). ' where specid = '.$value_spec['id'].' and uniacid='.$uniacid);
+            $value_spec['id']='';
+            $value_spec['goodsid']=$goodsid;
+            pdo_insert('sz_yi_goods_spec',$value_spec);
+            $goodsspecid=pdo_insertid();
+           
+            foreach($goodsspec_item as $v){
+                $v['specid']=$goodsspecid;
+                $v['id']='';
+                pdo_insert('sz_yi_goods_spec_item',$v);       
+            }
+                
+        }
+             
     }
 
     

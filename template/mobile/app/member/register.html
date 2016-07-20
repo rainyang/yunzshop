@@ -10,7 +10,7 @@
     .info_main .line .inner { margin-left:80px; }
     .info_main .line .inner input {height:40px; display:block; padding:0px; margin:0px; border:0px; float:left; font-size:16px;}
     .info_main .line .inner .user_sex {line-height:40px;}
-    .register {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+    .register {height:44px; margin:14px 5px; background:#ff6801; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
     .info_sub {height:44px; margin:14px 5px; background:#ccc; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
     .nobindmobile {clear:both;height:44px; margin:14px 5px; background:#ccc; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
     .select { border:1px solid #ccc;height:25px;}
@@ -35,7 +35,9 @@
         <div class="line"><div class="title">验证码</div><div class='info'><div class='inner'><input type="text" id='code' placeholder="请输入验证码"  value="" /><input id="btnSendCode" type="button" style="position: absolute;right: 0;top: 0;" value="发送验证码"  /></div></div></div>
         <div class="line"><div class="title">设置密码</div><div class='info'><div class='inner'><input type="password" id='password' placeholder="请输入您的密码"  value="" /></div></div></div>
         <div class="line"><div class="title">确认密码</div><div class='info'><div class='inner'><input type="password" id='cpassword' placeholder="请确认密码"  value="" /></div></div></div>
-        <div class="line"><input type="hidden" name="from" id="from" value="{php echo $from}"></div>
+       {if $app['accept'] == '1' }
+        <div class="line"><div class="title">推荐码</div><div class='info'><div class='inner'><input id="referral" name="referral" type="text" placeholder="{if $app['useing'] == '0'} 选填项 {else} 必填项 {/if}">  </div></div></div>
+       {/if}
     </div>
     <div class="register">注册</div>
     <div class="info_sub">登录</div>
@@ -43,6 +45,8 @@
 </script>
 <script language="javascript">
     require(['tpl', 'core'], function(tpl, core) {
+        var referral_useing = "{php echo $app['useing']}";
+
         $('#container').html(tpl('member_info'));
             $('.info_sub').click(function(){
                 location.href = "{php echo $this->createMobileUrl('member/login')}";
@@ -62,7 +66,7 @@
                         }
                 }, true, true);
             });
-
+            
             var InterValObj; //timer变量，控制时间
             var count = 60; //间隔函数，1秒执行
             var curCount;//当前剩余秒数
@@ -82,7 +86,7 @@
                              $("#btnSendCode").attr("disabled", "true");
                              $("#btnSendCode").val(curCount + "秒后重新获取验证码");
                              InterValObj = window.setInterval(SetRemainTime, 1000); //启动计时器，1秒执行一次
-                        　　  //向后台发送处理数据
+                        　　  //向后台发送处理数据 
                         }else{
                             core.tip.show(json.result);
                         }
@@ -91,7 +95,7 @@
 
             //timer处理函数
             function SetRemainTime() {
-                if (curCount == 0) {
+                if (curCount == 0) {                
                     window.clearInterval(InterValObj);//停止计时器
                     $("#btnSendCode").removeAttr("disabled");//启用按钮
                     $("#btnSendCode").val("重新发送验证码");
@@ -127,12 +131,19 @@
                        return;
                   }
 
+                  if (referral_useing == "1") {
+                      if( $('#referral').isEmpty()){
+                          core.tip.show('请输入推荐码!');
+                          return;
+                      }
+                  }
+
                   //检验验证码
                  core.json('member/sendcode', {
                         'code': $('#code').val(),
                         'op':'checkcode'
                        }, function(json) {
-
+   
                       if(json.status == 0)
                       {
                        core.tip.show(json.result);
@@ -142,7 +153,6 @@
                                 'mobile': $('#mobile').val(),
                                 'password': $('#password').val(),
                                 'code': $('#code').val(),
-                                'from': $("#from").val()
                            }, function(json) {
                             if(json.status==1){
                                  core.tip.show('注册成功');
@@ -153,7 +163,7 @@
                             }
 
                         },true, true);
-
+                      
                     },true,true);
             });
     })

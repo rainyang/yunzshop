@@ -254,17 +254,24 @@
 					    <br /> -->	
 		                <label class="checkbox checkbox-inline" style="width:240px">
                               <input type="checkbox" name="setdata[leveltype][]" value="8" {if in_array('8', $set['leveltype'])}checked{/if}/> 下级分销商总人数
-                        </label>		
+                        </label>	
+                        <label class="checkbox checkbox-inline" style="width:240px">
+                              <input type="checkbox" name="setdata[leveltype][]" value="11" {if in_array('11', $set['leveltype'])}checked{/if}/> 分销订单总额(完成的订单)
+                        </label>	
 		                <label class="checkbox checkbox-inline" style="width:240px">
                               <input type="checkbox" name="setdata[leveltype][]" value="9" {if in_array('9', $set['leveltype'])}checked{/if}/> 一级分销商人数
+                        </label>
+                        <label class="checkbox checkbox-inline" style="width:240px">
+                              <input type="checkbox" name="setdata[leveltype][]" value="12" {if in_array('12', $set['leveltype'])}checked{/if}/> 二级分销商人数
+                        </label>
+                        <label class="checkbox checkbox-inline" style="width:240px">
+                              <input type="checkbox" name="setdata[leveltype][]" value="13" {if in_array('13', $set['leveltype'])}checked{/if}/> 三级分销商人数
                         </label>
 				        <!-- <br /><br />
 				        <label class="checkbox checkbox-inline" style="width:240px">
                               <input type="checkbox" name="setdata[leveltype][]" value="10" {if $set['leveltype']==10}checked{/if}/> 已提现佣金总金额
                         </label> -->	
-                        <label class="checkbox checkbox-inline" style="width:240px">
-                              <input type="checkbox" name="setdata[leveltype][]" value="11" {if in_array('11', $set['leveltype'])}checked{/if}/> 分销订单总额(完成的订单)
-                        </label>
+                        
                       
                 </div>
             </div>

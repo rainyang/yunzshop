@@ -66,6 +66,21 @@ if(!pdo_fieldexists('sz_yi_af_supplier', 'id')) {
 if(!pdo_fieldexists('sz_yi_supplier_apply', 'id')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_supplier_apply')." MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;");
 }
+if(!pdo_fieldexists('sz_yi_supplier_apply', 'uniacid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_supplier_apply')." ADD `uniacid` int(11) NOT NULL DEFAULT '0';");
+}
+//供应商分账号uniacid
+$suppliers = pdo_fetchall("select uniacid,uid from " . tablename('sz_yi_perm_user') . " where status=1 and roleid=(select id from " . tablename('sz_yi_perm_role') . " where status=1 and status1=1 )");
+if (!empty($suppliers)) {
+  foreach ($suppliers as $value) {
+    $now_sup_apply_ids = pdo_fetchall("select id from " . tablename('sz_yi_supplier_apply') . " where uid={$value['uid']}");
+    if (!empty($now_sup_apply_ids)) {
+      foreach ($now_sup_apply_ids as $val) {
+        pdo_update('sz_yi_supplier_apply', array('uniacid' => $value['uniacid']), array('id' => $val['id']));
+      }
+    }
+  }
+}
 if(!pdo_fieldexists('sz_yi_perm_role', 'status1')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_perm_role')." ADD `status1` tinyint(3) NOT NULL COMMENT '1：供应商开启';");
 }

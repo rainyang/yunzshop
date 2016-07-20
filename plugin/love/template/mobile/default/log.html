@@ -56,9 +56,9 @@ a {text-decoration:none;}
     <div class="nav2 w33"  data-status="9"><a href="#">基金事业</a></div>
 </div>
 <script id='tpl_main' type='text/html'>
-<div class="income"><p>累计基金:<span id='total'>{php echo $gototal+$gomtotal}</span>元</p>
-<p>我的贡献:<span id='metotal'>{php echo $gometotal+$gommetotal}</span>元</p>
-<p id='aassss1'>已用基金:<span id='uselove'>{$uselove}</span>元</p>
+<div class="income"><p>累计基金:<span id='total'>{$total}</span>元</p>
+<p>我的贡献:<span id='metotal'>{$mytotal}</span>元</p>
+<p id='aassss1'>已用基金:<span id='uselove'>{$usetotal}</span>元</p>
 </div>
 <div style="clear:both"></div>
 <div id='aassss' class="income1">
@@ -66,96 +66,47 @@ a {text-decoration:none;}
 </script>
 <script language="javascript">
     require(['tpl', 'core'], function(tpl, core) {    
-        core.pjson('commission/love_log',{},function(json){
+        core.pjson('love/log',{},function(json){
 		   $('#containers').html(  tpl('tpl_main',json.result) );
         },true);    
     })
 
 </script> 
 
-<!-- <div id='hrl'></div>-->
 <div id='container'></div>
 
 <script id='tpl_log' type='text/html'>
-<%if status<7 %>
-
-    <%each list as log%>
-
-    <div class="log_list" data-goodsid='<%log.goodsid%>'>
+<%if status==9 %>
+  <%each list as log%>
+     <div class="log_lista" data-goodsid='<%log.id%>'>
+      <div class="left">
+     <div class="inner">
+         <em><%log.title%></em>
+        <span class="right-s"><%log.createtime%></span></div>
+    </div>
+     </div>    
+  <%/each%>
+<%else%>
+  <%each list as log%>
+    <div class="log_list" data-goodsid='<%log.goodsid%>' >
        <div class="left">
-	          <div class="inner">
+            <div class="inner">
               <p class="name-use"><%log.nickname%></p>
-	            <em>
-              <%if log.lovetype==1%>
+              <em>
               <%log.title%>
-              <%else%>
-              <%log.time%>
-              <%/if%>
               </em>
               <span class="right-s">贡献:
-              <%if log.lovetype==2&&log.type==1%>
-              <%log.love*100%>积分
+              <%if log.paymonth==1%>
+              <%log.money*100%>积分
               <%else%>
-              <%log.love%>元
+              <%log.money%>元
               <%/if%>
               </span>
             </div>
        </div>
     </div>
-
-    <%/each%>
-
- 
-
-<%else%>
-
-  <%if status==7 || status==8 %>
-
-    <%each list as log%>
- 
-     <div class="log_listb" data-goodsid='<%log.id%>'>
-
-      <div class="left">
-
-	   <div class="inner">
-          <p class="name-use"><%log.nickname%></p>
-             <em>
-             <%log.time%>
-             </em>
-             <span class="right-s">贡献：
-	           <%if log.type==1%>
-	           <%log.love*100%>积分</span></div>
-	           <%else%> 
-	           <%log.love%>元</span></div>
-	           <%/if%>
-	  </div>
-      
-     </div>    
-
-   <%/each%>
-
-  <%else%>
-
-     <%each list as log%>
-     <div class="log_lista" data-goodsid='<%log.id%>'>
-
-      <div class="left">
-
-	   <div class="inner">
-         <em><%log.title%></em>
-        <span class="right-s"><%log.createtime%></span></div>
-
-	  </div>
-     </div>    
-
-    <%/each%>
-
+  <%/each%>
 <%/if%>
-
-
-
-<%/if%>
-
 </script>
 
 <script language="javascript">
@@ -172,9 +123,6 @@ require(['tpl', 'core'], function (tpl, core) {
   function bindScroller(){
 
     //加载更多
-
-    
-
     $(window).scroll(function () {
 
         if (loaded) {
@@ -196,7 +144,7 @@ require(['tpl', 'core'], function (tpl, core) {
 
                 page++;
 
-                core.pjson('commission/love_log', {status:current_status,page: page}, function (morejson) {
+                core.pjson('love/log', {status:current_status,page: page}, function (morejson) {
 
                     
 
@@ -228,8 +176,7 @@ require(['tpl', 'core'], function (tpl, core) {
   }
 
     function getLog(status) {
-
-        $('.log_menu .nav').removeClass('navon');
+      $('.log_menu .nav').removeClass('navon');
 
 		if(status==9)$('#containers').css("display","none");
 
@@ -239,45 +186,36 @@ require(['tpl', 'core'], function (tpl, core) {
 
         $('.log_menu .nav[data-status=\'' + status + '\']').addClass('navon');
 
-        core.pjson('commission/love_log', {status:status, page: page}, function (json) {
-
+    core.pjson('love/log', {status:status, page: page}, function (json) {
+       var data = json.result;
 		   if(status==7)
 		   {
-
-  		    var html='<p>我的佣金:<span id="commission_total">'+json.result.commission_total+'</span>元</p>';
-  		        html+='<p>我的积分:<span id="commission_total">'+json.result.credit1+'</span></p>';
-  		        html+='<p>我的宝币:<span id="commission_total">'+json.result.credit2+'</span>元</p>';
+  		    var html='<p>我的佣金:<span id="commission_total">'+data.member.commission_ok+'</span>元</p>';
+  		        html+='<p>我的积分:<span id="commission_total">'+data.member.credit1+'</span></p>';
+  		        html+='<p>我的宝币:<span id="commission_total">'+data.member.credit2+'</span>元</p>';
 
   			  var btnon='<span class="go"><input type="button" onclick="gos()" id="subt" style="border:none;background:#ff771b;line-height:28px;font-size:14px;color:#fff"  value="贡献"/></span>';
 
-  			  var btnoff='<input type="button"  style="border:none;background:none;line-height:20px;font-size:14px" id="subt" disabled="disabled"  value="(您的账户宝币不足)"/>';
+  			  var btnoff='<input type="button"  style="border:none;background:none;line-height:20px;font-size:14px" id="subt" disabled="disabled"  value="(您的没有财富可贡献)"/>';
 
-		      if(json.result.commission_total>0 || json.result.credit2>0){
+		      if(data.member.commission_ok>0 || data.member.credit1>0 || data.member.credit2>0){
                   html+='<div class="gxjj" >捐献类别:';
                   html+='<span class="gender" data-val="1" style="margin:0 4px"><i class="fa fa-check-circle-o" style="color:#0C9;"></i> 积分(1:100)</span>&nbsp;&nbsp;';
                   html+='<span class="gender" data-val="2" style="margin:0 4px"><i class="fa fa-circle-o"></i>宝币<input type="hidden" id="gender" value="1"></span>';
+                  html+='<span class="gender" data-val="3" style="margin:0 4px"><i class="fa fa-circle-o"></i>佣金<input type="hidden" id="gender" value="1"></span>';
                   html+='</div>';
 			      html+='<div class="gxjj">我要贡献:<span id="s"><input type="txt" size="8" name="pay" id="pay" value="" class="text-input"/></span>元&nbsp;'+btnon+'</div>';
-              }
-		      else{
-                html+='<div class="gxjj">我要贡献:<span id="s"><input type="txt" size="8" name="pay" id="pay" value="" class="text-input"/></span>元&nbsp;'+btnoff+'</div>';
-              }
+          }else{
+            html+='<div class="gxjj">我要贡献:<span id="s"><input type="txt" size="8" name="pay" id="pay" value="" class="text-input"/></span>元&nbsp;'+btnoff+'</div>';
+          }
 
     		  $('#aassss').html(html);
-    	 }
-		   else{
+    	 }else{
                var html = '';
                //var html="已用基金:<span id='uselove'>{$uselove}</span>元";
                $('#aassss').html(html);
 		   }
-
-            if (json.result.list.length<=0) {
-			var tpl_empty='<div class="log_no"><i class="fa fa-file-text-o" style="font-size:100px;"></i><br><br><span style="line-height:18px; font-size:16px;">暂无信息~</span></div>';
-                $('#container').html(tpl_empty);
-                return;
-            }
-
-           $('.gender').click(function() {
+       $('.gender').click(function() {
              var $this = $(this);
               var val = $this.data('val');
               $('.gender').find('i').css('color', '#999').removeClass('fa-check-circle-o').addClass('fa-circle-o');
@@ -285,44 +223,54 @@ require(['tpl', 'core'], function (tpl, core) {
               $('#gender').val(val);
             });
 
-
             $('.go').delegate('input','click',function(){
+        var pay=$("#pay").val();
+        var gender=$('#gender').val();
+        var reg = /^\d+$/;
+        if(pay==''){
+         core.tip.show("请输入贡献宝币！");
+         $("#pay").focus();
+        }
+        else if(pay.match(reg))
+        {
+          if(pay=='0'){
+            core.tip.show("请输入大于0的数值！");$("#pay").focus();
+          }
+          else{
+            core.pjson('love/log',{'op':'submit','pay':pay+'#'+gender},function(json){
+              if(json.status == 1){
+                location.href = json.result.url;
+              }else{
+                core.tip.show(json.result);
+              }
+            },true);
+          } 
+       }
+       else
+        {
+         core.tip.show("只能输入数字！");
+         $("#pay").focus();
+        }
+        return;
 
-			  var pay=$("#pay").val();
-			  var type=$('#gender').val();
-			  var reg = /^\d+$/;
-			  if(pay==''){
-			   alert("请输入贡献宝币！");$("#pay").focus();
-			  }
-			  else if(pay.match(reg))
-			  {
-			    if(pay=='0'){
-			  	alert("请输入大于0的数值！");$("#pay").focus();
-			    }
-			    else{
-			    alert("感谢您对合利宝基金事业做出贡献！")
-		        var url = core.getUrl('plugin/commission/love_log',{'op':'submit','pay':pay+'#'+type});
-                location.href = url;
-			    //document.write(url);
-			    } 
-			 }
-			 else
-			  {
-			   alert("只能输入数字！");$("#pay").focus();
-			  }
-			  return;
+        });
 
-		    });
+        if (json.result.list.length<=0) {
+	         var tpl_empty='<div class="log_no"><i class="fa fa-file-text-o" style="font-size:100px;"></i><br><br><span style="line-height:18px; font-size:16px;">暂无信息~</span></div>';
+            $('#container').html(tpl_empty);
+            return;
+        }
+           
 
             $('#container').html(tpl('tpl_log', json.result));
 
              $('.log_list').unbind('click').click(function(){
 
                 var goodsid = $(this).data('goodsid');
-
-                var url = core.getUrl('/app/index.php?i=4&c=entry&p=detail&id='+goodsid+'&do=shop&m=ewei_shop');
-
-                location.href = url;
+                if(goodsid > 0){
+                  var url = core.getUrl('shop/detail',{'id':goodsid});
+                  location.href = url;
+                }
 
                 return;
 
@@ -331,10 +279,11 @@ require(['tpl', 'core'], function (tpl, core) {
              $('.log_lista').unbind('click').click(function(){
 
                 var goodsid = $(this).data('goodsid');
-
-                var url ='/app/index.php?c=site&a=site&do=detail&id='+goodsid+'&i=4';
-
-                location.href = url;
+                alert(goodsid);
+                if(goodsid > 0){
+                  var url = core.getUrl('plugin/article',{'aid':goodsid});
+                  location.href = url;
+                }
 
                 return;
 
@@ -353,7 +302,7 @@ require(['tpl', 'core'], function (tpl, core) {
 		if(status=='')status=1;
 
         $('.sed-nav .nav2[data-status=\'' + status + '\']').addClass('hover');
-        core.pjson('commission/love_log', {status:status, page: page}, function (json) {
+        core.pjson('love/log', {status:status, page: page}, function (json) {
 
             if (json.result.list.length<=0) {
 
@@ -370,11 +319,10 @@ require(['tpl', 'core'], function (tpl, core) {
              $('.log_list').unbind('click').click(function(){
 
                 var goodsid = $(this).data('goodsid');
-
-                var url = core.getUrl('/app/index.php?i=4&c=entry&p=detail&id='+goodsid+'&do=shop&m=ewei_shop');
-
-                location.href = url;
-
+                if(goodsid > 0){
+                  var url = core.getUrl('shop/detail',{'id':goodsid});
+                  location.href = url;
+                }
                 return;
 
              });
@@ -382,10 +330,10 @@ require(['tpl', 'core'], function (tpl, core) {
              $('.log_lista').unbind('click').click(function(){
 
                 var goodsid = $(this).data('goodsid');
-
-                var url ='/app/index.php?c=site&a=site&do=detail&id='+goodsid+'&i=4';
-
-                location.href = url;
+                if(goodsid > 0){
+                  var url = core.getUrl('plugin/article',{'aid':goodsid});
+                  location.href = url;
+                }
 
                 return;
 
@@ -411,11 +359,11 @@ require(['tpl', 'core'], function (tpl, core) {
 
         if(current_status=='2')
 
-		$('.sed-nav').html('<div class="nav2 w50 hover"  data-status="2"><a href="#">会员基金</a></div><div class="nav2 w50"  data-status="5"><a href="#">我的贡献</a></div>');
+		$('.sed-nav').html('<div class="nav2 w50 hover"  data-status="2"><a href="#">所有基金</a></div><div class="nav2 w50"  data-status="5"><a href="#">我的贡献</a></div>');
 
         if(current_status=='7')
 
-		$('.sed-nav').html('<div class="nav2 w50 hover" data-status="7"><a href="#">会员基金</a></div><div class="nav2 w50"  data-status="8"><a href="#">我的贡献</a></div>');
+		$('.sed-nav').html('<div class="nav2 w50 hover" data-status="7"><a href="#">所有基金</a></div><div class="nav2 w50"  data-status="8"><a href="#">我的贡献</a></div>');
 
 		getLog(current_status);
 

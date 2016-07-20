@@ -386,19 +386,21 @@ if ($operation == 'display') {
     );
     pdo_insert('sz_yi_order_goods', $order_goods);
     $this->model->calculateCommission($orderid);
-    if (is_array($carrier)) {
-        $up = array(
-            'realname' => $carrier['carrier_realname'],
-            'mobile' => $carrier['carrier_mobile']
-        );
-        pdo_update('sz_yi_member', $up, array(
-            'id' => $member['id'],
-            'uniacid' => $_W['uniacid']
-        ));
-        if (!empty($member['uid'])) {
-            load()->model('mc');
-            mc_update($member['uid'], $up);
-        }
+    if($store['iscontact'] == 1){
+        if (is_array($carrier)) {
+            $up = array(
+                'realname' => $carrier['carrier_realname'],
+                'mobile' => $carrier['carrier_mobile']
+            );
+            pdo_update('sz_yi_member', $up, array(
+                'id' => $member['id'],
+                'uniacid' => $_W['uniacid']
+            ));
+            if (!empty($member['uid'])) {
+                load()->model('mc');
+                mc_update($member['uid'], $up);
+            }
+        }       
     }
     if ($deductcredit > 0) {
         $shop = m('common')->getSysset('shop');
