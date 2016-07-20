@@ -985,6 +985,25 @@ if(!pdo_fieldexists('mc_members', 'credit20')) {
     pdo_fetchall("ALTER TABLE ".tablename('mc_members')." ADD `credit20` DECIMAL(10,2) NOT NULL DEFAULT '0';");
 }
 
+//提现记录表中记录已消费的佣金金额
+if(!pdo_fieldexists('sz_yi_commission_apply', 'credit20')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_commission_apply')." ADD `credit20` DECIMAL(10,2) NOT NULL DEFAULT '0.00';");
+}
+
+//爱心基金类
+if(!pdo_fieldexists('sz_yi_article_category', 'loveshow')) {
+pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article_category')." ADD `loveshow` tinyint(1) NOT NULL DEFAULT '0'");
+}
+
+//事业基金金额
+if(!pdo_fieldexists('sz_yi_article', 'love_money')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article')." ADD  `love_money`  DECIMAL( 10, 2 ) NOT NULL DEFAULT '0.00' COMMENT '事业基金金额';");
+}
+
+if(!pdo_fieldexists('sz_yi_article', 'love_log_id')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article')." ADD  `love_log_id`  int( 11 ) NOT NULL DEFAULT '0' COMMENT '爱心基金记录id';");
+}
+
 //20160718添加 代理商升级条件添加二三级
 if(pdo_tableexists('sz_yi_bonus_level')){
   //下线二级人数
