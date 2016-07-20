@@ -197,7 +197,7 @@ class Sz_DYi_Order
                     if (!empty($order['virtual']) && $pv) {
                         $pv->pay($order);
                     } else {
-                        pdo_query('update ' . tablename('sz_yi_order') . " set status=1, paytime=".time()." where {$order_update} and uniacid='{$uniacid}' ");
+                        pdo_query('update ' . tablename('sz_yi_order') . " set status=1, paytime=".time().", ordersn_general=ordersn where {$order_update} and uniacid='{$uniacid}' ");
                         if ($order['deductcredit2'] > 0) {
                             $shopset = m('common')->getSysset('shop');
                             m('member')->setCredit($order['openid'], 'credit2', -$order['deductcredit2'], array(
