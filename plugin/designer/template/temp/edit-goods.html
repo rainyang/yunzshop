@@ -6,6 +6,9 @@
         <label style="cursor:pointer; margin-right: 10px;"><input type="radio" name="{{Edit.id}}_style" value="49.5%" ng-model="Edit.params.style" ng-change="changeImg(Edit.id, Edit.params.style)" /> 双排显示</label>
         <label style="cursor:pointer; margin-right: 10px;"><input type="radio" name="{{Edit.id}}_style" value="33.3%" ng-model="Edit.params.style" ng-change="changeImg(Edit.id, Edit.params.style)" /> 三排显示</label>
         <label style="cursor:pointer; margin-right: 10px;"><input type="radio" name="{{Edit.id}}_style" value="hp" ng-model="Edit.params.style" ng-change="changeImg(Edit.id, Edit.params.style)" /> 横排显示</label>
+        <?php if(p('hotel')){?>
+        <label style="cursor:pointer; margin-right: 10px;"><input type="radio" name="{{Edit.id}}_style" value="hotel" ng-model="Edit.params.style" ng-change="changeImg(Edit.id, Edit.params.style)" /> 酒店显示</label>
+        <?php }?>
     </div>
 </div>
 <div class="fe-panel-editor-line">

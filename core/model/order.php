@@ -127,7 +127,7 @@ class Sz_DYi_Order
             ':ordersn_general' => $ordersn,
             ':uniacid' => $uniacid
         ));
-        if(count($orderall) > 0){
+        if(count($orderall) > 1){
             $order = array();
             $order['ordersn'] = $ordersn;
             $orderid = array();
@@ -145,10 +145,7 @@ class Sz_DYi_Order
             $order['virtual'] = $val['virtual'];
             $order['couponid'] = $val['couponid'];
         }else{
-            $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where  ordersn=:ordersn and uniacid=:uniacid limit 1', array(
-                ':uniacid' => $_W['uniacid'],
-                ':ordersn' => $ordersn
-            ));
+            $order   = $orderall[0];
             $orderid = $order['id'];
         }
         //验证paylog里金额是否与订单金额一致

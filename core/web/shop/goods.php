@@ -76,6 +76,7 @@ if (p('commission')) {
         array(':uniacid' => $_W['uniacid'])
     );
 }
+
 $pv        = p('virtual');
 $diyform_plugin = p("diyform");
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
@@ -428,7 +429,8 @@ if ($operation == "change") {
             "ednum"=>intval($_GPC["ednum"]) ,
             "edareas"=>trim($_GPC["edareas"]) ,
             "edmoney"=>trim($_GPC["edmoney"]),
-            "redprice" => $_GPC["redprice"]//红包价格
+            "redprice" => $_GPC["redprice"],//红包价格
+            "deposit"=>$_GPC["deposit"] //房间押金
         );
         if(!empty($_GPC['bonusmoney'])){
             $data['bonusmoney'] = $_GPC['bonusmoney'];
@@ -579,12 +581,54 @@ if ($operation == "change") {
         if (empty($id)) {
             pdo_insert('sz_yi_goods', $data);
             $id = pdo_insertid();
+            //判断是否安装酒店插件
+            if(p('hotel')){
+                if($data['type']=='99'){ //当商品类型为房间时候
+                        $room= array(
+                            'title'=>  trim($_GPC['goodsname']),
+                            'uniacid'=> intval($_W['uniacid']),
+                            'thumb'=> trim($_GPC['thumb']),
+                            'oprice'=> trim($_GPC['marketprice']),
+                            'cprice'=> trim($_GPC['productprice']),
+                            'deposit'=> trim($_GPC['deposit']),     
+                            'goodsid'=>$id,                   
+                         );
+                      pdo_insert('sz_yi_hotel_room', $room);
+                }
+            }
             plog('shop.goods.add', "添加商品 ID: {$id}");
         } else {
             unset($data['createtime']);
             pdo_update('sz_yi_goods', $data, array(
                 'id' => $id
             ));
+            if(p('hotel')){
+                $rooms = pdo_fetch("select * from " . tablename('sz_yi_hotel_room') . " where goodsid=:goodsid and  uniacid=:uniacid", array(
+                      ":goodsid" => $id,":uniacid" => $_W['uniacid']
+                    ));
+                $room= array(
+                            'title'=>  trim($_GPC['goodsname']),
+                            'uniacid'=> intval($_W['uniacid']),
+                            'thumb'=>  trim($_GPC['thumb']),
+                            'oprice'=> trim($_GPC['productprice']),
+                            'cprice'=> trim($_GPC['marketprice']),
+                            'deposit'=> trim($_GPC['deposit']), 
+                            'goodsid'=>$id,                       
+                );
+                if($data['type']=='99'){           
+                    if(!empty($rooms)){    
+                        pdo_update('sz_yi_hotel_room', $room, array(
+                            'id' => $rooms['id']
+                        )); 
+                    }else{ 
+                        pdo_insert('sz_yi_hotel_room', $room);  
+                    }             
+                }else{          
+                    if(!empty($rooms)){    
+                        pdo_query("delete from " . tablename('sz_yi_hotel_room') . " where id={$rooms['id']}");
+                    }
+                }
+            }
             plog('shop.goods.edit', "编辑商品 ID: {$id}");
         }
         $totalstocks         = 0;
@@ -934,6 +978,15 @@ m("cache")->set("areas", $areas, "global");
     ), array(
         'id' => $id
     ));
+    //安装芸众差价，删除房间类型商品同时删除房型表中的商品
+    if(p('hotel')){
+        $rooms = pdo_fetch("select * from " . tablename('sz_yi_hotel_room') . " where goodsid=:goodsid and  uniacid=:uniacid", array(
+                      ":goodsid" => $id,":uniacid" => $_W['uniacid']
+        ));
+        if(!empty($rooms)){    
+            pdo_query("delete from " . tablename('sz_yi_hotel_room') . " where id={$rooms['id']}");
+        }
+    }
     plog('shop.goods.delete', "删除商品 ID: {$id} 标题: {$row['title']} ");
     message('删除成功！', referer(), 'success');
 } elseif ($operation == 'setgoodsproperty') {

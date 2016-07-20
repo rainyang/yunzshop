@@ -15,18 +15,13 @@ $member  = m('member')->getMember($openid);
 $uniacid = $_W['uniacid'];
 $orderid = intval($_GPC['orderid']);
 if(!empty($orderid)){
-	$ordersn_general = pdo_fetchcolumn("select ordersn_general from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
-            ':id' => $orderid,
-            ':uniacid' => $uniacid,
-            ':openid' => $openid
-        ));
-    //有合并订单号，即为合并付款
-    if(!empty($ordersn_general)){
-        $order_all = pdo_fetchall("select * from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid', array(
+	$order_all = pdo_fetchall("select * from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid', array(
             ':ordersn_general' => $ordersn_general,
             ':uniacid' => $uniacid,
             ':openid' => $openid
         ));
+    //有合并订单号，即为合并付款
+    if(count($order_all) > 1){
         $order = array();
         $order['ordersn'] = $ordersn_general;
 		$orderid = array();
@@ -41,11 +36,7 @@ if(!empty($orderid)){
 		$order['cash']		= $val['cash'];
 		$order['openid']		= $val['openid'];
     }else{
-        $order = pdo_fetch("select * from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
-            ':id' => $orderid,
-            ':uniacid' => $uniacid,
-            ':openid' => $openid
-        ));
+        $order = $order_all[0];
     }
 }
 if ($operation == 'display' && $_W['isajax']) {
