@@ -286,6 +286,8 @@ if (!class_exists('ReturnModel')) {
 				{
 					$return_money_totle = $value['last_money'];
 					$surplus_money_totle = $value['money']-$value['return_money'];
+
+					m('member')->setCredit($value['openid'],'credit2',$return_money_totle);
 					$_var_0['single_message'] = str_replace('[返现金额]', $return_money_totle, $_var_0['single_message']);
 					$_var_0['single_message'] = str_replace('[剩余返现金额]', $surplus_money_totle, $_var_0['single_message']);
 					$messages = array(
