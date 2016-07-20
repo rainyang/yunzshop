@@ -822,14 +822,14 @@ var fromcart = 0;
                 core.tip.show("没有任何商品");
                 return;
             }
-            // if (realname== '') {
-            //      core.tip.show("请填写入住人姓名");
-            //      return;
-            // }
-            //   if (!$.isMobile(realmobile)) {
-            //         core.tip.show("请填写正确手机号");
-            //         return;
-            //   }
+            if (realname== '') {
+                 core.tip.show("请填写入住人姓名");
+                 return;
+            }
+              if (!$.isMobile(realmobile)) {
+                    core.tip.show("请填写正确手机号");
+                    return;
+              }
                   
              var diydata = '';
              var gdid = {php echo intval($goods_data_id)};
