@@ -588,8 +588,8 @@ if ($operation == "change") {
                             'title'=>  trim($_GPC['goodsname']),
                             'uniacid'=> intval($_W['uniacid']),
                             'thumb'=> trim($_GPC['thumb']),
-                            'oprice'=> trim($_GPC['marketprice']),
-                            'cprice'=> trim($_GPC['productprice']),
+                            'oprice'=> trim($_GPC['marketprice']), //现价
+                            'cprice'=> trim($_GPC['productprice']),//原价
                             'deposit'=> trim($_GPC['deposit']),     
                             'goodsid'=>$id,                   
                          );
@@ -610,8 +610,8 @@ if ($operation == "change") {
                             'title'=>  trim($_GPC['goodsname']),
                             'uniacid'=> intval($_W['uniacid']),
                             'thumb'=>  trim($_GPC['thumb']),
-                            'oprice'=> trim($_GPC['productprice']),
-                            'cprice'=> trim($_GPC['marketprice']),
+                            'oprice'=> trim($_GPC['marketprice']),
+                            'cprice'=> trim($_GPC['productprice']),
                             'deposit'=> trim($_GPC['deposit']), 
                             'goodsid'=>$id,                       
                 );

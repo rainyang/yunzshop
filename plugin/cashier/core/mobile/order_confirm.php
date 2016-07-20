@@ -85,10 +85,12 @@ if ($operation == 'display') {
     }
     // coupon
     $hascoupon = false;
+    $iscashier = 1;
     if ($hascouponplugin) {
-        $couponcount = $plugc->consumeCouponCount($openid,$orig_price);
+        $couponcount = $plugc->consumeCouponCount($openid,$orig_price,0,$sid,$iscashier);
         $hascoupon   = $couponcount > 0;
     }
+
 
 } else if ($operation == 'get_deduct') {
     if($_W['isajax']){
@@ -136,10 +138,12 @@ if ($operation == 'display') {
         }
         // coupon
         $hascoupon = false;
+        $iscashier = 1;
         if ($hascouponplugin) {
-            $couponcount = $plugc->consumeCouponCount($openid,$orig_price);
+            $couponcount = $plugc->consumeCouponCount($openid,$orig_price,0,$sid,$iscashier);
             $hascoupon   = $couponcount > 0;
         }
+
         $coupon=array(
             'hascouponplugin' => $hascouponplugin,
             'couponcount' => $couponcount,

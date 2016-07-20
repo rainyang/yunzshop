@@ -24,7 +24,8 @@ $plugc           = p("coupon");
 if ($plugc) {
     $hascouponplugin = true;
 }
-
+$goodid = $_GPC['id'];
+$cartid = $_GPC['cartids'];
 $diyform_plugin = p("diyform");
 $order_formInfo = false;
 if ($diyform_plugin) {
@@ -124,8 +125,11 @@ if ($_W['isajax']) {
             }
             $fromcart = 1;
         } else {
-
-            $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+            if(p('hotel')){
+                $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+            }else{   
+                $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+            }
             $data = pdo_fetch($sql, array(
                 ':uniacid' => $uniacid,
                 ':id' => $id
@@ -536,7 +540,7 @@ if ($_W['isajax']) {
 
             $order_all[$val['supplier_uid']]['hascoupon'] = false;
             if ($hascouponplugin) {
-                $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid']);
+                $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
                 $order_all[$val['supplier_uid']]['hascoupon']   = $order_all[$val['supplier_uid']]['couponcount'] > 0;
             }
             $order_all[$val['supplier_uid']]['realprice'] += $order_all[$val['supplier_uid']]['dispatch_price'];
@@ -674,7 +678,7 @@ if ($_W['isajax']) {
         if ($pc) {
             $pset = $pc->getSet();
             if (empty($pset["closemember"])) {
-                $couponcount = $pc->consumeCouponCount($openid, $totalprice, $supplier_uid);
+                $couponcount = $pc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
                 $hascoupon   = $couponcount > 0;
             }
         }
