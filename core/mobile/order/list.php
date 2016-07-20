@@ -4,6 +4,7 @@ if (!defined('IN_IA')) {
 }
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
+$type = $_GPC['type'];
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $r_type = array('0' => '退款', '1' => '退货退款', '2' => '换货');
@@ -29,13 +30,28 @@ if ($_W['isajax']) {
 		} else {
 			$condition .= ' and status<>-1';
 		}
-		$list = pdo_fetchall('select cashier,id,createtime,addressid,ordersn,price,status,iscomment,isverify,verified,verifycode,iscomment,refundid,expresscom,express,expresssn,finishtime,virtual,paytype,expresssn,refundstate,ordersn_general from ' . tablename('sz_yi_order') . " where 1 {$condition} order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
+	    if (p('hotel')) {
+	        if($type=='hotel'){
+	           $condition.= " AND order_type=3";
+	        }else{
+	            $condition.= " AND order_type<>3";
+	        }
+	    }else{          
+	           $condition.= " AND order_type<>3";
+	    }
+		$list = pdo_fetchall('select * from ' . tablename('sz_yi_order') . " where 1 {$condition} order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where 1 {$condition}", $params);
 		$tradeset = m('common')->getSysset('trade');
 		$refunddays = intval($tradeset['refunddays']);
 		$ordersn_general = "";
 		$p_cashier = p('cashier');
 		foreach ($list as $key => &$row) {
+			if (p('hotel')) {
+				if($type=='hotel'){
+					$list[$key]['btime'] = date('Y-m-d',$row['btime']);
+					$list[$key]['etime'] = date('Y-m-d',$row['etime']);
+		        }
+			}
 			if($row['ordersn_general'] == $ordersn_general && !empty($row['ordersn_general']) && $row['status'] == 0){
 				unset($list[$key]);
 				continue;
@@ -136,4 +152,12 @@ if ($_W['isajax']) {
 		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 	}
 }
-include $this->template('order/list');
+if(p('hotel')){
+	if($_GPC['type']=='hotel'){
+			include $this->template('order/list_hotel');
+	}else{
+		include $this->template('order/list');
+	}
+}else{
+	include $this->template('order/list');
+}

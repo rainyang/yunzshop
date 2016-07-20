@@ -26,9 +26,66 @@ if (!class_exists('CommissionModel')) {
 			$set = $this->getSet();
 			$levels = $this->getLevels();
 			$agentid = pdo_fetchcolumn('select agentid from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
-			$goods = pdo_fetchall('select og.id,og.realprice,og.total,g.hascommission,g.nocommission, g.commission1_rate,g.commission1_pay,g.commission2_rate,g.commission2_pay,g.commission3_rate,g.commission3_pay,og.commissions,og.optionid,g.productprice,g.marketprice,g.costprice from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
+			$goods = pdo_fetchall('select og.id,og.realprice,og.total,g.type,g.hascommission,g.nocommission, g.commission1_rate,g.commission1_pay,g.commission2_rate,g.commission2_pay,g.commission3_rate,g.commission3_pay,og.commissions,og.optionid,g.productprice,g.marketprice,g.costprice from ' . tablename('sz_yi_order_goods') . '  og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id = og.goodsid' . ' where og.orderid=:orderid and og.uniacid=:uniacid', array(':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
 			if ($set['level'] > 0) {
-				foreach ($goods as &$cinfo) {
+			    if(p('hotel')&& $goods[0]['type']=='99'){
+			    	$order = pdo_fetch('select id,goodsprice from ' . tablename('sz_yi_order').' where id=:id and uniacid=:uniacid', array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
+			    	$price =$order['goodsprice'];
+			    	foreach ($goods as &$cinfo) {
+					if (empty($cinfo['nocommission']) && $price > 0) {
+						if ($cinfo['hascommission'] == 1) {
+							$cinfo['commission1'] = array('default' => $set['level'] >= 1 ? ($cinfo['commission1_rate'] > 0 ? round($cinfo['commission1_rate'] * $price / 100, 2) . "" : round($cinfo['commission1_pay'] * $cinfo['total'], 2)) : 0);
+							$cinfo['commission2'] = array('default' => $set['level'] >= 2 ? ($cinfo['commission2_rate'] > 0 ? round($cinfo['commission2_rate'] * $price / 100, 2) . "" : round($cinfo['commission2_pay'] * $cinfo['total'], 2)) : 0);
+							$cinfo['commission3'] = array('default' => $set['level'] >= 3 ? ($cinfo['commission3_rate'] > 0 ? round($cinfo['commission3_rate'] * $price / 100, 2) . "" : round($cinfo['commission3_pay'] * $cinfo['total'], 2)) : 0);
+							foreach ($levels as $level) {
+								$cinfo['commission1']['level' . $level['id']] = $cinfo['commission1_rate'] > 0 ? round($cinfo['commission1_rate'] * $price / 100, 2) . "" : round($cinfo['commission1_pay'] * $cinfo['total'], 2);
+								$cinfo['commission2']['level' . $level['id']] = $cinfo['commission2_rate'] > 0 ? round($cinfo['commission2_rate'] * $price / 100, 2) . "" : round($cinfo['commission2_pay'] * $cinfo['total'], 2);
+								$cinfo['commission3']['level' . $level['id']] = $cinfo['commission3_rate'] > 0 ? round($cinfo['commission3_rate'] * $price / 100, 2) . "" : round($cinfo['commission3_pay'] * $cinfo['total'], 2);
+							}
+						} else {
+							$cinfo['commission1'] = array('default' => $set['level'] >= 1 ? round($set['commission1'] * $price / 100, 2) . "" : 0);
+							$cinfo['commission2'] = array('default' => $set['level'] >= 2 ? round($set['commission2'] * $price / 100, 2) . "" : 0);
+							$cinfo['commission3'] = array('default' => $set['level'] >= 3 ? round($set['commission3'] * $price / 100, 2) . "" : 0);
+							foreach ($levels as $level) {
+								$cinfo['commission1']['level' . $level['id']] = $set['level'] >= 1 ? round($level['commission1'] * $price / 100, 2) . "" : 0;
+								$cinfo['commission2']['level' . $level['id']] = $set['level'] >= 2 ? round($level['commission2'] * $price / 100, 2) . "" : 0;
+								$cinfo['commission3']['level' . $level['id']] = $set['level'] >= 3 ? round($level['commission3'] * $price / 100, 2) . "" : 0;
+							}
+						}
+					} else {
+						$cinfo['commission1'] = array('default' => 0);
+						$cinfo['commission2'] = array('default' => 0);
+						$cinfo['commission3'] = array('default' => 0);
+						foreach ($levels as $level) {
+							$cinfo['commission1']['level' . $level['id']] = 0;
+							$cinfo['commission2']['level' . $level['id']] = 0;
+							$cinfo['commission3']['level' . $level['id']] = 0;
+						}
+					}
+					if ($update) {
+						$commissions = array('level1' => 0, 'level2' => 0, 'level3' => 0);
+						if (!empty($agentid)) {
+							$m1 = m('member')->getMember($agentid);
+							if ($m1['isagent'] == 1 && $m1['status'] == 1) {
+								$l1 = $this->getLevel($m1['openid']);
+								$commissions['level1'] = empty($l1) ? round($cinfo['commission1']['default'], 2) : round($cinfo['commission1']['level' . $l1['id']], 2);
+								if (!empty($m1['agentid'])) {
+									$m2 = m('member')->getMember($m1['agentid']);
+									$l2 = $this->getLevel($m2['openid']);
+									$commissions['level2'] = empty($l2) ? round($cinfo['commission2']['default'], 2) : round($cinfo['commission2']['level' . $l2['id']], 2);
+									if (!empty($m2['agentid'])) {
+										$m3 = m('member')->getMember($m2['agentid']);
+										$l3 = $this->getLevel($m3['openid']);
+										$commissions['level3'] = empty($l3) ? round($cinfo['commission3']['default'], 2) : round($cinfo['commission3']['level' . $l3['id']], 2);
+									}
+								}
+							}
+						}
+						pdo_update('sz_yi_order_goods', array('commission1' => iserializer($cinfo['commission1']), 'commission2' => iserializer($cinfo['commission2']), 'commission3' => iserializer($cinfo['commission3']), 'commissions' => iserializer($commissions), 'nocommission' => $cinfo['nocommission']), array('id' => $cinfo['id']));
+					}
+				}
+			    }else{
+				    foreach ($goods as &$cinfo) {
 					$price = $this->calculate_method($cinfo);
 					//$price = $cinfo['realprice'];
 					if (empty($cinfo['nocommission']) && $price > 0) {
@@ -83,6 +140,8 @@ if (!class_exists('CommissionModel')) {
 						pdo_update('sz_yi_order_goods', array('commission1' => iserializer($cinfo['commission1']), 'commission2' => iserializer($cinfo['commission2']), 'commission3' => iserializer($cinfo['commission3']), 'commissions' => iserializer($commissions), 'nocommission' => $cinfo['nocommission']), array('id' => $cinfo['id']));
 					}
 				}
+			    }			
+				
 				unset($cinfo);
 			}
 			return $goods;
@@ -208,7 +267,8 @@ if (!class_exists('CommissionModel')) {
 					$_var_30 += $_var_54['ordermoney'];
 				}
 				if (in_array('ordercount3', $_var_21)) {
-					$_var_55 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=3 and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+
+					$_var_55 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=3  and o.status<>6 and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					$_var_48 += $_var_55['ordercount'];
 					$_var_31 += $_var_55['ordercount'];
 					$_var_32 += $_var_55['ordermoney'];
@@ -227,7 +287,7 @@ if (!class_exists('CommissionModel')) {
 					}
 				}
 				if (in_array('ok', $_var_21)) {
-					$_var_56 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . " where o.agentid=:agentid and o.status>=3 and og.nocommission=0 and ({$_var_24} - o.createtime > {$_var_25}) and og.status1=0  and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					$_var_56 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . " where o.agentid=:agentid and o.status>=3 and o.status<>6 and og.nocommission=0 and ({$_var_24} - o.createtime > {$_var_25}) and og.status1=0  and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					foreach ($_var_56 as $_var_57) {
 						$_var_9 = iunserializer($_var_57['commissions']);
 						$_var_58 = iunserializer($_var_57['commission1']);
@@ -239,7 +299,7 @@ if (!class_exists('CommissionModel')) {
 					}
 				}
 				if (in_array('lock', $_var_21)) {
-					$_var_59 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . " where o.agentid=:agentid and o.status>=3 and og.nocommission=0 and ({$_var_24} - o.createtime <= {$_var_25})  and og.status1=0  and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					$_var_59 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . " where o.agentid=:agentid and o.status>=3 and  o.status<>6 and og.nocommission=0 and ({$_var_24} - o.createtime <= {$_var_25})  and og.status1=0  and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					foreach ($_var_59 as $_var_57) {
 						$_var_9 = iunserializer($_var_57['commissions']);
 						$_var_58 = iunserializer($_var_57['commission1']);
@@ -263,7 +323,7 @@ if (!class_exists('CommissionModel')) {
 					}
 				}
 				if (in_array('check', $_var_21)) {
-					$_var_60 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=3 and og.status1=2 and og.nocommission=0 and o.uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					$_var_60 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=3 and  o.status<>6  and og.status1=2 and og.nocommission=0 and o.uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					foreach ($_var_60 as $_var_57) {
 						$_var_9 = iunserializer($_var_57['commissions']);
 						$_var_58 = iunserializer($_var_57['commission1']);
@@ -275,7 +335,7 @@ if (!class_exists('CommissionModel')) {
 					}
 				}
 				if (in_array('pay', $_var_21)) {
-					$_var_60 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=3 and og.status1=3 and og.nocommission=0 and o.uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					$_var_60 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=3 and  o.status<>6 and og.status1=3 and og.nocommission=0 and o.uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					foreach ($_var_60 as $_var_57) {
 						$_var_9 = iunserializer($_var_57['commissions']);
 						$_var_58 = iunserializer($_var_57['commission1']);
@@ -305,7 +365,7 @@ if (!class_exists('CommissionModel')) {
 						$_var_30 += $_var_62['ordermoney'];
 					}
 					if (in_array('ordercount3', $_var_21)) {
-						$_var_63 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ')  and o.status>=3 and og.status2>=0 and og.nocommission=0 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
+						$_var_63 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ')  and o.status>=3 and o.status<>6 and og.status2>=0 and og.nocommission=0 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
 						$_var_49 += $_var_63['ordercount'];
 						$_var_31 += $_var_63['ordercount'];
 						$_var_32 += $_var_63['ordermoney'];
@@ -324,7 +384,7 @@ if (!class_exists('CommissionModel')) {
 						}
 					}
 					if (in_array('ok', $_var_21)) {
-						$_var_64 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ")  and ({$_var_24} - o.createtime > {$_var_25}) and o.status>=3 and og.status2=0 and og.nocommission=0  and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
+						$_var_64 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ")  and ({$_var_24} - o.createtime > {$_var_25}) and o.status>=3  and  o.status<>6 and og.status2=0 and og.nocommission=0  and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
 						foreach ($_var_64 as $_var_57) {
 							$_var_9 = iunserializer($_var_57['commissions']);
 							$_var_58 = iunserializer($_var_57['commission2']);
@@ -336,7 +396,7 @@ if (!class_exists('CommissionModel')) {
 						}
 					}
 					if (in_array('lock', $_var_21)) {
-						$_var_65 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ")  and ({$_var_24} - o.createtime <= {$_var_25}) and og.status2=0 and o.status>=3 and og.nocommission=0 and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
+						$_var_65 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ")  and ({$_var_24} - o.createtime <= {$_var_25}) and og.status2=0 and o.status>=3  and  o.status<>6 and og.nocommission=0 and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
 						foreach ($_var_65 as $_var_57) {
 							$_var_9 = iunserializer($_var_57['commissions']);
 							$_var_58 = iunserializer($_var_57['commission2']);
@@ -348,7 +408,7 @@ if (!class_exists('CommissionModel')) {
 						}
 					}
 					if (in_array('apply', $_var_21)) {
-						$_var_66 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ')  and o.status>=3 and og.status2=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+						$_var_66 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ')  and o.status>=3 and o.status<>6 and og.status2=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
 						foreach ($_var_66 as $_var_57) {
 							$_var_9 = iunserializer($_var_57['commissions']);
 							$_var_58 = iunserializer($_var_57['commission2']);
@@ -360,7 +420,7 @@ if (!class_exists('CommissionModel')) {
 						}
 					}
 					if (in_array('check', $_var_21)) {
-						$_var_67 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ')  and o.status>=3 and og.status2=2 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+						$_var_67 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ')  and o.status>=3 and o.status<>6 and og.status2=2 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
 						foreach ($_var_67 as $_var_57) {
 							$_var_9 = iunserializer($_var_57['commissions']);
 							$_var_58 = iunserializer($_var_57['commission2']);
@@ -372,7 +432,7 @@ if (!class_exists('CommissionModel')) {
 						}
 					}
 					if (in_array('pay', $_var_21)) {
-						$_var_67 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ')  and o.status>=3 and og.status2=3 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+						$_var_67 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ')  and o.status>=3 and o.status<>6 and og.status2=3 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
 						foreach ($_var_67 as $_var_57) {
 							$_var_9 = iunserializer($_var_57['commissions']);
 							$_var_58 = iunserializer($_var_57['commission2']);
@@ -403,7 +463,7 @@ if (!class_exists('CommissionModel')) {
 						$_var_30 += $_var_69['ordermoney'];
 					}
 					if (in_array('ordercount3', $_var_21)) {
-						$_var_70 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ')  and o.status>=3 and og.status3>=0 and og.nocommission=0 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
+						$_var_70 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ')  and o.status>=3 and o.status<>6 and og.status3>=0 and og.nocommission=0 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
 						$_var_50 += $_var_70['ordercount'];
 						$_var_31 += $_var_70['ordercount'];
 						$_var_32 += $_var_70['ordermoney'];
@@ -422,7 +482,7 @@ if (!class_exists('CommissionModel')) {
 						}
 					}
 					if (in_array('ok', $_var_21)) {
-						$_var_71 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ")  and ({$_var_24} - o.createtime > {$_var_25}) and o.status>=3 and og.status3=0  and og.nocommission=0 and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
+						$_var_71 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ")  and ({$_var_24} - o.createtime > {$_var_25}) and o.status>=3 and o.status<>6 and og.status3=0  and og.nocommission=0 and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
 						foreach ($_var_71 as $_var_57) {
 							$_var_9 = iunserializer($_var_57['commissions']);
 							$_var_58 = iunserializer($_var_57['commission3']);
@@ -434,7 +494,7 @@ if (!class_exists('CommissionModel')) {
 						}
 					}
 					if (in_array('lock', $_var_21)) {
-						$_var_72 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ")  and o.status>=3 and ({$_var_24} - o.createtime > {$_var_25}) and og.status3=0  and og.nocommission=0 and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
+						$_var_72 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ")  and o.status>=3 and o.status<>6 and ({$_var_24} - o.createtime > {$_var_25}) and og.status3=0  and og.nocommission=0 and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
 						foreach ($_var_72 as $_var_57) {
 							$_var_9 = iunserializer($_var_57['commissions']);
 							$_var_58 = iunserializer($_var_57['commission3']);
@@ -446,7 +506,7 @@ if (!class_exists('CommissionModel')) {
 						}
 					}
 					if (in_array('apply', $_var_21)) {
-						$_var_73 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ')  and o.status>=3 and og.status3=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+						$_var_73 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ')  and o.status>=3 and o.status<>6 and og.status3=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
 						foreach ($_var_73 as $_var_57) {
 							$_var_9 = iunserializer($_var_57['commissions']);
 							$_var_58 = iunserializer($_var_57['commission3']);
@@ -458,7 +518,7 @@ if (!class_exists('CommissionModel')) {
 						}
 					}
 					if (in_array('check', $_var_21)) {
-						$_var_74 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ')  and o.status>=3 and og.status3=2 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+						$_var_74 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ')  and o.status>=3 and o.status<>6 and og.status3=2 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
 						foreach ($_var_74 as $_var_57) {
 							$_var_9 = iunserializer($_var_57['commissions']);
 							$_var_58 = iunserializer($_var_57['commission3']);
@@ -488,7 +548,7 @@ if (!class_exists('CommissionModel')) {
 			}
 			//Author:ym Date:2016-04-07 Content:自购完成订单
 			if (in_array('myorder', $_var_21)) {
-				$myorder = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
+				$myorder = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.status<>6 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
 				//Author:ym Date:2016-04-07 Content:自购订单金额
 				$myoedermoney = $myorder['ordermoney'];
 				//Author:ym Date:2016-04-07 Content:自购订单数量
@@ -1375,7 +1435,7 @@ if (!class_exists('CommissionModel')) {
 				if (empty($_var_140['id'])) {
 					$_var_140 = array('levelname' => empty($set['levelname']) ? '普通等级' : $set['levelname'], 'commission1' => $set['commission1'], 'commission2' => $set['commission2'], 'commission3' => $set['commission3']);
 				}
-				$_var_141 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $_var_20));
+				$_var_141 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.status<>6 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $_var_20));
 				$_var_30 = $_var_141['ordermoney'];
 				$_var_29 = $_var_141['ordercount'];
 				if ($_var_139 == 4) {

@@ -17,4 +17,9 @@ class DesignerMobile extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
+
+    public function date()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 }
