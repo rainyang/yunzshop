@@ -62,6 +62,20 @@ if ($operation == "display" || $operation == "create") {
         }
     }
 }
+if ($operation == "date"){
+        global $_GPC, $_W;
+        $id = $_GPC['id'];
+        if ($search_array && !empty($search_array['bdate']) && !empty($search_array['day'])) {
+            $bdate = $search_array['bdate'];
+            $day = $search_array['day'];
+        } else {
+            $bdate = date('Y-m-d');
+            $day = 1;
+        }
+        load()->func('tpl');
+        include $this->template('order/date');
+        exit;
+}
 if ($_W['isajax']) {
     if ($operation == 'display') {
         $id       = intval($_GPC['id']);
@@ -1706,6 +1720,7 @@ if ($_W['isajax']) {
             'orderid' => $orderid
         ));
     }else if ($operation == 'date') {
+        echo 111;exit;
         global $_GPC, $_W;
         $id = $_GPC['id'];
         if ($search_array && !empty($search_array['bdate']) && !empty($search_array['day'])) {
@@ -1717,124 +1732,6 @@ if ($_W['isajax']) {
         }
         load()->func('tpl');
     include $this->template('order/date');
-    exit;
-} else if ($operation == 'ajaxData') {
-        global $_GPC, $_W;
-        $id = $_GPC['id'];
-        $data=  m('hotel')->getSearchArray();
-        switch ($_GPC['ac'])
-        {
-            //选择日期
-            case 'time':
-                $bdate = $_GPC['bdate'];
-                $day = $_GPC['day'];
-                if (!empty($bdate) && !empty($day)) {
-                    $btime = strtotime($bdate);
-                    $etime = $btime + $day * 86400;
-                    $weekarray = array("日", "一", "二", "三", "四", "五", "六");
-                    $data['btime'] = $btime;
-                    $data['etime'] = $etime;
-                    $data['bdate'] = $bdate;
-                    $data['edate'] = date('Y-m-d', $etime);
-                    $data['bweek'] = '星期' . $weekarray[date("w", $btime)];
-                    $data['eweek'] = '星期' . $weekarray[date("w", $etime)];
-                    $data['day'] = $day;        
-                    //setcookie('data',serialize($data),time()+2*7*24*3600);
-                    $_SESSION['data']=$data;
-                    $url = $this->createMobileUrl('order', array('p' =>'confirm','id'=> $id));
-                    die(json_encode(array("result" => 1, "url" => $url)));
-                }
-                break;
-
-            //选择价格和星级
-            case 'price':
-                $price_type = $_GPC['price_type'];
-                $price_value = $_GPC['price_value'];
-
-                if (empty($price_value)) {
-                    $data['price_type'] = 0;
-                } else {
-                    $data['price_type'] = $price_type;
-                }
-                $data['price_value'] = $price_value;
-                insert_cookie($key, $data);
-                die(json_encode(array("result" => 1)));
-                break;
-
-            //选择城市
-            case 'city':
-                $location_p = $_GPC['location_p'];
-                $location_c = $_GPC['location_c'];
-
-                if (!empty($location_p) && !empty($location_c)) {
-
-                    if (strpos($location_p, '市') > -1) {
-                        //直辖市
-                        $data['municipality'] = 1;
-                        $data['city_name'] = $location_p;
-                    } else {
-                        $data['municipality'] = 0;
-                        $data['city_name'] = $location_c;
-                    }
-
-                    $data['location_p'] = $location_p;
-                    $data['location_c'] = $location_c;
-
-                    insert_cookie($key, $data);
-                }
-                $url = $this->createMobileUrl('search');
-                die(json_encode(array("result" => 1, "url" => $url)));
-                break;
-
-            //价格排序
-            case 'orderby':
-                $order_name = $_GPC['order_name'];
-                $order_type = $_GPC['order_type'];
-
-                $data['order_name'] = $order_name;
-                $data['order_type'] = $order_type;
-
-                insert_cookie($key, $data);
-                $url = $this->createMobileUrl('list');
-                die(json_encode(array("result" => 1, "order_type"=>$order_type,"order_name"=>$order_name, "url" => $url)));
-                break;
-
-            //选择品牌商圈
-            case 'brand':
-                $business_id = $_GPC['business_id'];
-                $business_title = $_GPC['business_title'];
-                $brand_id = $_GPC['brand_id'];
-                $brand_title = $_GPC['brand_title'];
-                $keyword = $_GPC['keyword'];
-
-                $data['business_id'] = $business_id;
-                $data['brand_id'] = $brand_id;
-                if (!empty($business_title)) {
-                    $data['business_title'] = $business_title;
-                }
-                if (!empty($brand_title)) {
-                    $data['brand_title'] = $brand_title;
-                }
-                $data['keyword'] = $keyword;
-
-                insert_cookie($key, $data);
-                $url = $this->createMobileUrl('search');
-                die(json_encode(array("result" => 1, "url" => $url)));
-                break;
-
-            //清除品牌商圈信息
-            case 'clear_brand':
-                $data['business_id'] = 0;
-                $data['brand_id'] = 0;
-                $data['business_title'] = '';
-                $data['brand_title'] = '';
-                $data['keyword'] = '';
-
-                insert_cookie($key, $data);
-                $url = $this->createMobileUrl('search');
-                die(json_encode(array("result" => 1, "url" => $url)));
-                break;
-        }
 }
 }
 if(p('hotel') && $goods_data['type']=='99'){ //判断是否开启酒店插件
