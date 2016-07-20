@@ -51,15 +51,14 @@ if ($price_list) {
         foreach($price_list as $k => $v) {  
             if ($v['status'] == 0 || $v['num'] == 0 ) {
                     $goods['has'] +=1 ;   //不可预约              
-            } 
-         
+            }
         } 
     }else{
         if ($price_list['status'] == 0 || $price_list['num'] == 0 ) {
             $goods['has'] +=1 ;   //不可预约        
         }  
         if($price_list['cprice']!= '0.00'){
-            $goods['marketprice']= $price_list['cprice'];
+            $goods['marketprice']= $price_list['oprice'];
         }
     }
 }
