@@ -39,7 +39,8 @@ if ($_W['isajax']) {
 	    }else{          
 	           $condition.= " AND order_type<>3";
 	    }
-		$list = pdo_fetchall('select * from ' . tablename('sz_yi_order') . " where 1 {$condition} order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
+	    //Author:ym Date:2016-07-20 Content:订单分组查询
+		$list = pdo_fetchall('select * from ' . tablename('sz_yi_order') . " where 1 {$condition} group by ordersn_general order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where 1 {$condition}", $params);
 		$tradeset = m('common')->getSysset('trade');
 		$refunddays = intval($tradeset['refunddays']);
@@ -52,10 +53,10 @@ if ($_W['isajax']) {
 					$list[$key]['etime'] = date('Y-m-d',$row['etime']);
 		        }
 			}
-			if($row['ordersn_general'] == $ordersn_general && !empty($row['ordersn_general']) && $row['status'] == 0){
+			/*if($row['ordersn_general'] == $ordersn_general && !empty($row['ordersn_general']) && $row['status'] == 0){
 				unset($list[$key]);
 				continue;
-			}
+			}*/
 			if(!empty($row['ordersn_general']) && $row['status'] == 0){
 				$ordersn_general = $row['ordersn_general'];
 				$row['ordersn'] = $row['ordersn_general'];
