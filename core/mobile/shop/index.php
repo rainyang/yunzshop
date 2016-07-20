@@ -20,21 +20,21 @@ if (empty($this->yzShopSet['ispc']) || isMobile()) {
             if (p('commission')) {
                 $set = p('commission')->getSet();
                 if (!empty($set['level'])) {
-					$member = m('member')->getMember($openid);
-					if (!empty($member) && $member['status'] == 1 && $member['isagent'] == 1) {
-						$_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $member['id']));
-						if (empty($set['become_reg']) && (empty($member['realname']) || empty($member['mobile']))) {
-							$trigger = true;
-						}
-					} else if (!empty($_GPC['mid'])) {
-						$_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $_GPC['mid']));
-					}
-				}
-			}
-			include $this->template('shop/index_diy');
-			exit;
-		}
-	}
+                    $member = m('member')->getMember($openid);
+                    if (!empty($member) && $member['status'] == 1 && $member['isagent'] == 1) {
+                        $_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $member['id']));
+                        if (empty($set['become_reg']) && (empty($member['realname']) || empty($member['mobile']))) {
+                            $trigger = true;
+                        }
+                    } elseif (!empty($_GPC['mid'])) {
+                            $_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $_GPC['mid']));
+                    }
+                }
+            }
+            include $this->template('shop/index_diy');
+            exit;
+        }
+    }
 }
 
 
@@ -197,11 +197,8 @@ if ($_W['isajax']) {
 			$third = pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid",array(':pid' => $id , ':uniacid' => $_W["uniacid"]));
 			show_json(1,array('goods' => $goods,'third' => $third));
 		}
-		
-
 	}
 }
-
 
 $this->setHeader();
 include $this->template('shop/index');
