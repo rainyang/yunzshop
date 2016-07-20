@@ -152,6 +152,7 @@
                         core.json('member/register', {
                                 'mobile': $('#mobile').val(),
                                 'password': $('#password').val(),
+                                'referral': $('#referral').val(),
                                 'code': $('#code').val(),
                            }, function(json) {
                             if(json.status==1){
