@@ -25,12 +25,13 @@
 			<td style="text-align: left;"> <label class="checkbox-inline">
 				<input type="checkbox" class="status_checkbox" value="1" name="status[{$row['id']}]" checked/>有房
 			</label></td>
-			<td style="text-align: left;"><input type="text" name="num[{$row['id']}]" class="price_status form-control" value="{$num[$row['id']]['num']}" /></td>
+			<!-- <td style="text-align: left;"><input type="text" name="num[{$row['id']}]" data="{$row['id']}" class="price_status form-control" value="{$num[$row['id']]['num']}" /></td> -->
+			<td style="text-align: left;"><input type="text" name="num[{$row['id']}]" data="{$row['id']}" class="price_status form-control" value="" /></td>
 		</tr>
 		{/loop}
 		<tr>
 			<td></td>
-			<td colspan='2' style="text-align: left;"><input class="btn btn-primary" id="search_button" type="submit" value="提交价格表"></td>
+			<td colspan='2' style="text-align: left;"><input class="btn btn-primary" id="search_button" type="submit" value="提交房量表"></td>
 		</tr>
 		</tbody>
 	</table>

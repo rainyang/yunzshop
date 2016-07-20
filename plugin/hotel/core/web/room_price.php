@@ -63,8 +63,6 @@ if ($operation =='updatelot_submit') {
                     $week = date('w', $time);
                     if (in_array($week, $days_arr)) {
                         $roomprice =$this->model->getRoomPrice($hotelid, $v, date('Y-m-d', $time));
-
-                       // $roomprice = $this->getRoomPrice($hotelid, $v, date('Y-m-d', $time));
                         $roomprice['oprice'] = $oprices[$v];
                         $roomprice['cprice'] = $cprices[$v];
                         $roomprice['mprice'] = $mprices[$v];

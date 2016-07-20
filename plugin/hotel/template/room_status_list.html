@@ -31,7 +31,8 @@
 		<td colspan='2' style="text-align: center;">房量</td>
 		{loop $date_array $row}
 		<td style="text-align: center">
-			<span class="price_span" >{if $data1['price_list'][$row['time']]['num']==-1}不限{else}{$data1['price_list'][$row['time']]['num']}{/if}</span>
+			<span class="price_span" >
+			{if $data1['price_list'][$row['time']]['num']==-1}不限{else}{$data1['price_list'][$row['time']]['num']}{/if}</span>
             <span class="price_editspan hide">
                <input type="text" date="{$row['date']}" field="num" pricetype="num" hotelid="{$data1['price_list'][$row['time']]['hotelid']}" roomid="{$data1['price_list'][$row['time']]['roomid']}" class="price_input form-control" value="{$data1['price_list'][$row['time']]['num']}" />
             </span>

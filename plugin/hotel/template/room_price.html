@@ -86,7 +86,7 @@
 				var price = $.trim( input.val() );
 				input.parent().parent().find(".price_span").html( price ).removeClass('hide');
 				input.parent().addClass('hide');
-				$.post("{php echo $this->createWebUrl('shop/room_price')}",
+				$.post("{php echo $this->createPluginWebUrl('hotel/room_price')}",
 						{op:'doWebRoom_price',ac: 'submitPrice', roomid:roomid,date:date,price: price,pricetype:pricetype}, function (data) {
 							data = eval("(" + data + ")");
 							if (data.result == 1) {

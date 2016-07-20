@@ -38,5 +38,13 @@ class HotelWeb extends Plugin
 	{
 		$this->_exec_plugin(__FUNCTION__);
 	}
+	public function meet()
+	{
+		$this->_exec_plugin(__FUNCTION__);
+	}
+	public function rest()
+	{
+		$this->_exec_plugin(__FUNCTION__);
+	}
 
 }

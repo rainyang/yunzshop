@@ -211,4 +211,12 @@ if ($_W['isajax']) {
         'set' => $set
     ));
 }
-include $this->template('order/detail');
+if(p('hotel')){
+    if($order['order_type']=='3'){
+          include $this->template('order/detail_hotel');
+      }else{
+        include $this->template('order/detail');
+      }
+}else{
+  include $this->template('order/detail');  
+}

@@ -215,7 +215,7 @@ if ($operation =='updatelot_submit') {
             $price = $_GPC['price'];
             $pricetype = $_GPC['pricetype'];
             $date = $_GPC['date'];
-            $roomprice = m('hotel')->getRoomPrice($hotelid, $roomid, $date);
+            $roomprice = $this->model->getRoomPrice($hotelid, $roomid, $date);
             if ($pricetype == 'num') {
                 $roomprice['num'] = $_GPC['price'];
             } else {
