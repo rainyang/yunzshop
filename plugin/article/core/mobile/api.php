@@ -2,6 +2,13 @@
 global $_W, $_GPC;
 
 $apido = $_GPC['apido'];
+
+$condition = '';
+if(is_weixin())
+{
+	$condition = " and article_state_wx = 1 ";
+}
+
 if ($_W['isajax'] && $_W['ispost']) {
 	if ($apido == 'selectlike') {
 		$aid = intval($_GPC['aid']);
@@ -22,13 +29,14 @@ if ($_W['isajax'] && $_W['ispost']) {
 		if ($article_sys['article_temp'] == 0) {
 			$pindex = max(1, intval($_GPC['page']));
 			$psize = empty($article_sys['article_shownum']) ? '10' : $article_sys['article_shownum'];
-			$articles = pdo_fetchall("SELECT id,article_title,resp_img,article_rule_credit,article_rule_money FROM " . tablename('sz_yi_article') . " WHERE article_state=1 and uniacid=:uniacid limit " . (($pindex - 1) * $psize . ',' . $psize), array(':uniacid' => $_W['uniacid']));
+
+			$articles = pdo_fetchall("SELECT id,article_title,resp_img,article_rule_credit,article_rule_money FROM " . tablename('sz_yi_article') . " WHERE article_state=1 and uniacid=:uniacid {$condition} limit " . (($pindex - 1) * $psize . ',' . $psize), array(':uniacid' => $_W['uniacid']));
 		} elseif ($article_sys['article_temp'] == 1) {
 			$pindex = max(1, intval($_GPC['page']));
 			$psize = empty($article_sys['article_shownum']) ? '10' : $article_sys['article_shownum'];
-			$articles = pdo_fetchall("SELECT distinct article_date_v FROM " . tablename('sz_yi_article') . " WHERE article_state=1 and uniacid=:uniacid order by article_date_v desc limit " . (($pindex - 1) * $psize . ',' . $psize), array(':uniacid' => $_W['uniacid']), 'article_date_v');
+			$articles = pdo_fetchall("SELECT distinct article_date_v FROM " . tablename('sz_yi_article') . " WHERE article_state=1 and uniacid=:uniacid {$condition} order by article_date_v desc limit " . (($pindex - 1) * $psize . ',' . $psize), array(':uniacid' => $_W['uniacid']), 'article_date_v');
 			foreach ($articles as &$a) {
-				$a['articles'] = pdo_fetchall("SELECT id,article_title,article_date_v,resp_img,resp_desc,article_date_v FROM " . tablename('sz_yi_article') . " WHERE article_state=1 and uniacid=:uniacid and article_date_v=:article_date_v order by article_date desc ", array(':uniacid' => $_W['uniacid'], ':article_date_v' => $a['article_date_v']));
+				$a['articles'] = pdo_fetchall("SELECT id,article_title,article_date_v,resp_img,resp_desc,article_date_v FROM " . tablename('sz_yi_article') . " WHERE article_state=1 and uniacid=:uniacid and article_date_v=:article_date_v {$condition} order by article_date desc ", array(':uniacid' => $_W['uniacid'], ':article_date_v' => $a['article_date_v']));
 			}
 			unset($a);
 		} elseif ($article_sys['article_temp'] == 2) {
@@ -39,7 +47,7 @@ if ($_W['isajax'] && $_W['ispost']) {
 			}
 			$pindex = max(1, intval($_GPC['page']));
 			$psize = empty($article_sys['article_shownum']) ? '10' : $article_sys['article_shownum'];
-			$articles = pdo_fetchall("SELECT id,article_title,resp_img,article_rule_credit,article_rule_money,article_author,article_date_v FROM " . tablename('sz_yi_article') . " WHERE article_state=1 and uniacid=:uniacid " . $where . " order by article_date_v desc limit " . (($pindex - 1) * $psize . ',' . $psize), array(':uniacid' => $_W['uniacid']));
+			$articles = pdo_fetchall("SELECT id,article_title,resp_img,article_rule_credit,article_rule_money,article_author,article_date_v FROM " . tablename('sz_yi_article') . " WHERE article_state=1 and uniacid=:uniacid {$condition} " . $where . " order by article_date_v desc limit " . (($pindex - 1) * $psize . ',' . $psize), array(':uniacid' => $_W['uniacid']));
 		}
 		if (!empty($articles)) {
 			include $this->template('more');
@@ -61,7 +69,7 @@ if ($_W['isajax'] && $_W['ispost']) {
 			$where = ' and article_category=' . $cid . ' ';
 		}
 		$limit = empty($article_sys['article_shownum']) ? '10' : $article_sys['article_shownum'];
-		$articles = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_article') . " WHERE article_state=1 and uniacid=:uniacid " . $where . " order by article_date_v desc limit " . $limit, array(':uniacid' => $_W['uniacid']));
+		$articles = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_article') . " WHERE article_state=1 and uniacid=:uniacid {$condition} " . $where . " order by article_date_v desc limit " . $limit, array(':uniacid' => $_W['uniacid']));
 		if (!empty($articles)) {
 			include $this->template('more');
 		}

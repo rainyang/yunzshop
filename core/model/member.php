@@ -399,6 +399,13 @@ class Sz_DYi_Member
 
 
         } else {
+            if (isset($_GPC['access']) && $_GPC['access'] == 'app' && $member['bindapp'] == 0) {
+                /**
+                 * 分销商品链接地址
+                 */
+                header("Location:/app/index.php?i=" . $_W['uniacid'] . "&c=entry&p=bindapp&do=member&m=sz_yi&mid=".$_GPC['mid']);
+            }
+
             $upgrade = array();
             if ($userinfo['nickname'] != $member['nickname']) {
                 $upgrade['nickname'] = $userinfo['nickname'];

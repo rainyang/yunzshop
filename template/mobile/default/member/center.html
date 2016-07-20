@@ -91,10 +91,27 @@
         <a href="{php echo $this->createMobileUrl('order',array('status'=>4))}"><div class="order_pub order_4"><i class="fa fa-money" style="font-size:30px"></i><br>待退款<%if order.status4>0%><span><%order.status4%></span><%/if%></div></a>
     </div>
 </div>
-
+{if p('hotel')}
+<div class="order">
+    <a href="{php echo $this->createMobileUrl('order',array('type'=>'hotel'))}">
+        <div class="list1" style="margin-top:0px;">
+            <i class="fa fa-reorder" style="float:left; line-height:44px;"></i>
+            <span style="float:left;">我的酒店订单</span>
+            <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i>
+            <div class="allorder">查看我的全部订单</div>
+        </div>
+    </a>
+    <div class="order_all">
+        <a href="{php echo $this->createMobileUrl('order',array('status'=>0,'type'=>'hotel'))}"><div class="order_pub order_1" style="border:0px;"><i class="fa fa-credit-card" style="font-size:30px"></i><br>待付款<%if orderhotel.status0>0%><span><%orderhotel.status0%></span><%/if%></div></a>
+        <a href="{php echo $this->createMobileUrl('order',array('status'=>1,'type'=>'hotel'))}"><div class="order_pub order_2"><i class="fa fa-suitcase" style="font-size:30px"></i><br>待确认<%if orderhotel.status1>0%><span><%orderhotel.status1%></span><%/if%></div></a>
+        <a href="{php echo $this->createMobileUrl('order',array('status'=>2,'type'=>'hotel'))}"><div class="order_pub order_3"><i class="fa fa-truck" style="font-size:30px"></i><br>待入住<%if orderhotel.status6>0%><span><%orderhotel.status6%></span><%/if%></div></a>
+        <a href="{php echo $this->createMobileUrl('order',array('status'=>4,'type'=>'hotel'))}"><div class="order_pub order_4"><i class="fa fa-money" style="font-size:30px"></i><br>待退款<%if orderhotel.status4>0%><span><%orderhotel.status4%></span><%/if%></div></a>
+    </div>
+</div>
+{/if}
 
 <div class="cart">
-    {if $hascom}
+    {if $hascom && is_weixin_show()}
             <a href="{php echo $this->createPluginMobileUrl('commission')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-home" style="color:#f10;"></i>{php echo $pset['texts']['center']}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
     <a href="{php echo $this->createMobileUrl('member/info')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-user" style="color:#A6E1EC;"></i>我的资料<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
@@ -114,19 +131,20 @@
             <a href="{php echo $this->createPluginMobileUrl('supplier/orderj')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-road" style="color:#f10;"></i>供应商中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
         {/if}
     {/if}
-    {if $pluginbonus}
+    {if $pluginbonus && is_weixin_show()}
         {if !empty($shopset['bonus_start'])}
             {if empty($bonus_set['bonushow'])}
                 <a href="{php echo $this->createPluginMobileUrl('bonus/index')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-money" style="color:#f10;"></i>{php echo empty($bonus_set['texts']['center']) ? "分红中心" : $bonus_set['texts']['center'];}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
             {/if}
         {/if}
     {/if}
-    
-    <%if shopset.isreturn%>
-    <a href="{php echo $this->createPluginMobileUrl('return/return_log')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-piechart" style="color:#ff9901;"></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
-    <%/if%>
-  
+    {if is_weixin_show()}
+        <%if shopset.isreturn%>
+        <a href="{php echo $this->createPluginMobileUrl('return/return_log')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-piechart" style="color:#ff9901;"></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
+        <%/if%>
+    {/if}
      <%if shopset.isarticle == 1%>
+    
     <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-article" style="color:#ca81d1;"></i><%shopset.article_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
     <%/if%>
  

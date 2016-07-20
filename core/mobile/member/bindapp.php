@@ -35,7 +35,7 @@ if ($_W['isajax']) {
             show_json(0, '该手机号已被注册！');
         }
 
-        pdo_update('sz_yi_member',array('mobile'=>$mobile, 'pwd'=>md5($password)),array('openid'=>$openid));
+        pdo_update('sz_yi_member',array('mobile'=>$mobile, 'pwd'=>md5($password), 'bindapp'=>1),array('openid'=>$openid));
 
         show_json(1,  $this->createMobileUrl('shop/download'));
 

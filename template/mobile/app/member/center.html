@@ -66,7 +66,14 @@
 <script id="member_center" type="text/html">
     <div class="header">
         <div class="user">
-            <div class="user-head"><img src="<%member.avatar%>" /></div>
+            <div class="user-head">
+                <%if member.avatar.length > 0%>
+                <img src="<%member.avatar%>" />
+                <%else%>
+                <img src="../addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg" />
+                <%/if%>
+
+            </div>
             <div class="user-info">
                 <div class="user-name"><%member.nickname%></div>
                 <div class="user-other" {if !empty($set['shop']['levelurl'])}onclick='location.href="{$set['shop']['levelurl']}"'{/if}>[<%level.levelname%>] {if !empty($set['shop']['levelurl'])}<i class='fa fa-question-circle' ></i>{/if}
@@ -141,7 +148,9 @@
     <a href="{php echo $this->createMobileUrl('shop/favorite')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg5"><i class="fa fa-star"></i></span>我的收藏<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i><span class="count"><%counts.favcount%></span></div></a>
     <a href="{php echo $this->createMobileUrl('shop/history')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg6"><i class="fa fa-list"></i></span>我的足迹<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
     <a href="{php echo $this->createMobileUrl('member/notice')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg7"><i class="fa fa-bell"></i></span>消息提醒设置<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
-     <a href="{php echo $this->createMobileUrl('member/pushlist')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg7"><i class="fa fa-share-square-o"></i></span>系统消息<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
+    <a href="{php echo $this->createMobileUrl('member/messagelist')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg2"><i class="fa fa-volume-up"></i></span>订单通知<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
+    <a href="{php echo $this->createMobileUrl('member/pushlist')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg3"><i class="fa fa-share-square-o"></i></span>系统消息<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div>
+
 </div>
     {if isset($set['trade']) && $set['trade']['withdraw']==1}
     <a href="javascript:;" id="btnwithdraw"><div class="list1" style="border-bottom: 0px;"><span class="listbg listbg14"><i class="fa fa-money"></span></i>余额提现<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>    
