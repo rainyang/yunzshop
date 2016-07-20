@@ -24,7 +24,8 @@ $plugc           = p("coupon");
 if ($plugc) {
     $hascouponplugin = true;
 }
-
+$goodid = $_GPC['id'];
+$cartid = $_GPC['cartids'];
 $diyform_plugin = p("diyform");
 $order_formInfo = false;
 if ($diyform_plugin) {
@@ -539,7 +540,7 @@ if ($_W['isajax']) {
 
             $order_all[$val['supplier_uid']]['hascoupon'] = false;
             if ($hascouponplugin) {
-                $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid']);
+                $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
                 $order_all[$val['supplier_uid']]['hascoupon']   = $order_all[$val['supplier_uid']]['couponcount'] > 0;
             }
             $order_all[$val['supplier_uid']]['realprice'] += $order_all[$val['supplier_uid']]['dispatch_price'];
@@ -677,7 +678,7 @@ if ($_W['isajax']) {
         if ($pc) {
             $pset = $pc->getSet();
             if (empty($pset["closemember"])) {
-                $couponcount = $pc->consumeCouponCount($openid, $totalprice, $supplier_uid);
+                $couponcount = $pc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
                 $hascoupon   = $couponcount > 0;
             }
         }

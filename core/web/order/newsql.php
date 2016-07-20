@@ -1070,6 +1070,32 @@ if(pdo_tableexists('sz_yi_bonus_level')){
   }
 }
 
+//优惠券新加字段
+if(!pdo_fieldexists('sz_yi_coupon', 'getcashier')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `getcashier` tinyint(1) NOT NULL DEFAULT '0';");
+}
+if(!pdo_fieldexists('sz_yi_coupon', 'usetype')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `usetype` tinyint(1) NOT NULL DEFAULT '1';");
+}
+if(!pdo_fieldexists('sz_yi_coupon', 'cashiersids')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `cashiersids` text NULL ;");
+}
+if(!pdo_fieldexists('sz_yi_coupon', 'cashiersnames')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `cashiersnames` text NULL ;");
+}
+if(!pdo_fieldexists('sz_yi_coupon', 'categoryids')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `categoryids` text NULL ;");
+}
+if(!pdo_fieldexists('sz_yi_coupon', 'categorynames')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `categorynames` text NULL ;");
+}
+if(!pdo_fieldexists('sz_yi_coupon', 'goodsnames')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `goodsnames` text NULL ;");
+}
+if(!pdo_fieldexists('sz_yi_coupon', 'goodsids')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `goodsids` text NULL ;");
+}
+
 //文章是否在微信显示 2016-07-18 杨雷
 if(!pdo_fieldexists('sz_yi_article', 'article_state_wx')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article')." ADD `article_state_wx` TINYINT(1) NOT NULL ;");
@@ -1143,3 +1169,4 @@ if(!pdo_fieldexists('sz_yi_order', 'order_type')) {
 if(!pdo_fieldexists('sz_yi_order', 'days')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `days`  INT(11) DEFAULT '0' AFTER `order_type`;");
 }
+
