@@ -1523,24 +1523,25 @@ if ($_W['isajax']) {
                 "couponid" => $couponid,
                 "couponprice" => $couponprice,
                 'redprice' => $redpriceall,
-                'checkname'=>$_GPC['realname'],//以下为酒店订单
-                'realmobile'=>$_GPC['realmobile'],
-                'realsex'=>$_GPC['realsex'],
-                'invoice'=>$_GPC['invoice'],
-                'invoiceval'=>$_GPC['invoiceval'],
-                'invoicetext'=>$_GPC['invoicetext'],
-                'num'=>$_GPC['goodscount'],
-                'btime'=>$btime,
-                'etime'=>$etime,
-                'depositprice'=>$_GPC['depositprice'],
-                'depositpricetype'=>$_GPC['depositpricetype'],
-                'roomid'=> $room['id'],
-                'days'=>$days,
+     
             );
-             if(p('hotel')){
+            if(p('hotel')){
                  if($_GPC['type']=='99'){ 
                      $order['order_type']='3';
                      $order['addressid']='9999999';
+                     $order['checkname']=$_GPC['realname'];//以下为酒店订单
+                     $order['realmobile']=$_GPC['realmobile'];
+                     $order['realsex']=$_GPC['realsex'];
+                     $order['invoice']=$_GPC['invoice'];
+                     $order['invoiceval']=$_GPC['invoiceval'];
+                     $order['invoicetext']=$_GPC['invoicetext'];
+                     $order['num']=$_GPC['goodscount'];
+                     $order['btime']=$btime;
+                     $order['etime']=$etime;
+                     $order['depositprice']=$_GPC['depositprice'];
+                     $order['depositpricetype']=$_GPC['depositpricetype'];
+                     $order['roomid']=$room['id'];
+                     $order['days']=$days;
                   }
             }
             if ($diyform_plugin) {
@@ -1719,20 +1720,7 @@ if ($_W['isajax']) {
         show_json(1, array(
             'orderid' => $orderid
         ));
-    }else if ($operation == 'date') {
-        echo 111;exit;
-        global $_GPC, $_W;
-        $id = $_GPC['id'];
-        if ($search_array && !empty($search_array['bdate']) && !empty($search_array['day'])) {
-            $bdate = $search_array['bdate'];
-            $day = $search_array['day'];
-        } else {
-            $bdate = date('Y-m-d');
-            $day = 1;
-        }
-        load()->func('tpl');
-    include $this->template('order/date');
-}
+    }
 }
 if(p('hotel') && $goods_data['type']=='99'){ //判断是否开启酒店插件
         include $this->template('order/confirm_hotel');
