@@ -48,7 +48,6 @@
     
     $(document).on("click",".nav-link-cashier",function(){
         var id = $(this).data("id");
-        alert(id);
         if(id){
             $("#modal-mylink-cashier").attr({"data-id":id});
             $("#modal-mylink-cashier").modal();
