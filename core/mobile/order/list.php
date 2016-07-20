@@ -113,6 +113,42 @@ if ($_W['isajax']) {
 					}
 					break;
 			}
+			if(p('hotel') && $type=="hotel"){
+				switch ($row['status']) {
+				case '-1':
+					$status = '已取消';
+					break;
+				case "0":
+					if ($row['paytype'] == 3) {
+						$status = '待发货';
+					} else {
+						$status = '待付款';
+					}
+					break;
+				case '1':
+					if ($row['isverify'] == 1) {
+						$status = '待使用';
+					} else if (empty($row['addressid'])) {
+						$status = '待取货';
+					} else {
+						$status = '待确认';
+					}
+					break;
+				case '2':
+					$status = '待入住';
+					break;	
+				case '6':
+					$status = '待退房';
+					break;
+				case '3':
+					if (empty($row['iscomment'])) {
+						$status = '待评价';
+					} else {
+						$status = '交易完成';
+					}
+					break;
+			    }
+			}
 			$row['statusstr'] = $status;
 			if ($row['refundstate'] > 0 && !empty($row['refundid'])) {
 				$refund = pdo_fetch('select * from ' . tablename('sz_yi_order_refund') . ' where id=:id and uniacid=:uniacid and orderid=:orderid limit 1', array(':id' => $row['refundid'], ':uniacid' => $uniacid, ':orderid' => $row['id']));
