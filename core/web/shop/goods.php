@@ -430,7 +430,7 @@ if ($operation == "change") {
             "edareas"=>trim($_GPC["edareas"]) ,
             "edmoney"=>trim($_GPC["edmoney"]),
             "redprice" => $_GPC["redprice"],//红包价格
-            "deposit"=>$_GPC["deposit"] //房间押金
+           
         );
         if(!empty($_GPC['bonusmoney'])){
             $data['bonusmoney'] = $_GPC['bonusmoney'];
@@ -454,6 +454,10 @@ if ($operation == "change") {
         if ($pluginreturn) {
             $data['isreturn'] = intval($_GPC['isreturn']);   //添加全返开关    1:开    0:关
             $data['isreturnqueue'] = intval($_GPC['isreturnqueue']);   //添加全返排列开关    1:开    0:关
+        }
+        
+        if(p('hotel')){
+             $data['deposit']=$_GPC["deposit"];//房间押金
         }
         $cateset = m('common')->getSysset('shop');
         $pcates  = array();

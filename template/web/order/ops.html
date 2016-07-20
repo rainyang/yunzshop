@@ -9,7 +9,7 @@
                                          <a class="btn btn-primary btn-sm disbut" href="javascript:;" onclick="send(this)" data-toggle="modal" data-target="#modal-confirmsend">确认发货</a>
 										 </div>
 				{else}
-                                <!-- <a class="btn btn-primary btn-sm disbut" href="{php echo $this->createWebUrl('order', array('op' => 'deal','to'=>'confirmpay','id' => $item['id']))}" onclick="return confirm('确认此订单已付款吗？');return false;">确认付款</a> -->
+                                <a class="btn btn-primary btn-sm disbut" href="{php echo $this->createWebUrl('order', array('op' => 'deal','to'=>'confirmpay','id' => $item['id']))}" onclick="return confirm('确认此订单已付款吗？');return false;">确认付款</a>
                                {/if}
 							   
                                 {/if}
