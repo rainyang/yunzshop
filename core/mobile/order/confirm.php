@@ -1836,7 +1836,7 @@ if ($_W['isajax']) {
                 break;
         }
 }
-//}
+}
 if(p('hotel') && $goods_data['type']=='99'){ //判断是否开启酒店插件
         include $this->template('order/confirm_hotel');
 }else{
