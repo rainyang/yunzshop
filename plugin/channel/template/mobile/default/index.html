@@ -99,10 +99,10 @@
                         return;
                     }
                     $("#order_container").html(tpl('tpl_order', json.result));
-                    $('.order_main').click(function(){
+                    /*$('.order_main').click(function(){
                         var orderid = $(this).closest('.order_main').data('orderid');
                         location.href = core.getUrl('plugin/channel/detail', {orderid: orderid});
-                    });
+                    });*/
                 }, true);
       
     });

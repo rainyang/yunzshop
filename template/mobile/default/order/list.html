@@ -60,7 +60,7 @@
 <script id='tpl_order' type='text/html'>
     <%each list as order%>
     <div class="order_main" data-orderid="<%order.id%>">
-        <div class="title">订单号：<%order.ordersn%><span><%order.statusstr%></span></div>
+        <div class="title"><span style="font-weight:bold;float:left"><%order.ischannelpay%></span>订单号：<%order.ordersn%><span><%order.statusstr%></span></div>
           <%each order.goods as g%>      
             <div class="good">
               <%if order.cashier==1%>

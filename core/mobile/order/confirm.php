@@ -1018,8 +1018,8 @@ if ($_W['isajax']) {
             $redprice = $redprice * $goodstotal;
             $redpriceall += $redprice;
             if (p('channel')) {
+                $my_info = p('channel')->getInfo($openid);
                 if ($ischannelpay == 1) {
-                    $my_info = p('channel')->getInfo($openid);
                     $data['marketprice'] = $data['marketprice'] * $my_info['my_level']['purchase_discount']/100;
                 }
             }
@@ -1329,12 +1329,7 @@ if ($_W['isajax']) {
             "couponprice" => $couponprice,
             'redprice' => $redpriceall
         );
-        if (p('channel')) {
-            if ($ischannelpay == 1) {
-                $order['ischannelpay']  = $ischannelpay;
-                $order['channel_id']    = $member['id'];
-            }
-        }
+
         if ($diyform_plugin) {
             if (is_array($_GPC["diydata"]) && !empty($order_formInfo)) {
                 $diyform_data           = $diyform_plugin->getInsertData($fields, $_GPC["diydata"]);
@@ -1403,8 +1398,8 @@ if ($_W['isajax']) {
                 $order_goods['supplier_uid'] = $goods['supplier_uid'];
             }
             if (p('channel')) {
+                $my_info = p('channel')->getInfo($openid);
                 if ($ischannelpay == 1) {
-                    $my_info                    = p('channel')->getInfo($openid);
                     $every_turn_price           = $goods['marketprice']/($my_info['my_level']['purchase_discount']/100);
                     $ischannelstock             = pdo_fetch(
                         "SELECT * FROM " . tablename('sz_yi_channel_stock') . 
@@ -1441,6 +1436,13 @@ if ($_W['isajax']) {
                           'paytime'             => time()
                         );
                     pdo_insert('sz_yi_channel_stock_log', $stock_log);
+                    $order_goods['ischannelpay']  = $ischannelpay;
+                }
+                if (!empty($my_info['up_level'])) {
+                    $up_member = m('member')->getInfo($my_info['up_level']['openid']);
+                    $order_goods['channel_id'] = $up_member['id'];
+                } else {
+                    $order_goods['channel_id'] = 0;
                 }
             }
             pdo_insert('sz_yi_order_goods', $order_goods);
@@ -1473,12 +1475,6 @@ if ($_W['isajax']) {
         if ($pluginc) {
             $pluginc->checkOrderConfirm($orderid);
         }
-        // if (p('channel')) {
-        //     if ($ischannelpay == 1) {
-        //         $ischannelpay = 1;
-        //         $order_goods['channel_id'] = $member['id'];
-        //     }
-        // }
         show_json(1, array(
             'orderid' => $orderid,
             'ischannelpay' => $ischannelpay

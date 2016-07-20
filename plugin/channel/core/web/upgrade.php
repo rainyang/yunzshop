@@ -22,7 +22,6 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_level` (
   `min_price` DECIMAL(10,2) NULL COMMENT '最小进货量',
   `profit_sharing` VARCHAR(45) NULL COMMENT '利润分成\n%',
   `become` INT(11) NULL COMMENT '升级条件',
-  'team_total' INT(11) NULL COMMENT '团队人数',
   `team_count` INT(11) NULL COMMENT '团队人数',
   `goods_id` INT(11) NULL COMMENT '指定商品id',
   `order_money` INT(11) NULL COMMENT '订单累计金额',
@@ -30,12 +29,9 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_level` (
   `createtime` INT(11) NULL COMMENT '创建时间',
   `updatetime` INT(11) NULL COMMENT '更新时间',
   PRIMARY KEY (`id`))
-  PRIMARY KEY (`id`)) 
 ENGINE = MyISAM
 DEFAULT CHARACTER SET = utf8
 COLLATE = utf8_general_ci
-DEFAULT CHARACTER SET = utf8 
-COLLATE = utf8_general_ci 
 COMMENT = '渠道商等级';
 
 
@@ -53,8 +49,6 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_channel` (
   `diychanneldata` TEXT NULL,
   PRIMARY KEY (`id`))
 ENGINE = MyISAM
-  PRIMARY KEY (`id`)) 
-ENGINE = MyISAM 
 COMMENT = '会员申请渠道商';
 
 
@@ -72,8 +66,6 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_apply` (
   `finish_time` INT(11) NULL COMMENT '完成时间',
   PRIMARY KEY (`id`))
 ENGINE = MyISAM
-  PRIMARY KEY (`id`)) 
-ENGINE = MyISAM 
 COMMENT = '渠道商申请提现';
 
 
@@ -86,8 +78,6 @@ CREATE TABLE IF NOT EXISTS `mydb`.`ims_sz_yi_channel_stock` (
   `stock_total` INT(11) NOT NULL COMMENT '库存总数',
   PRIMARY KEY (`id`))
 ENGINE = MyISAM
-  PRIMARY KEY (`id`)) 
-ENGINE = MyISAM 
 COMMENT = '渠道商库存';
 
 
@@ -103,8 +93,6 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_stock_log` (
   `goods_price` DECIMAL(10,2) NULL COMMENT '进货时商品单价',
   PRIMARY KEY (`id`))
 ENGINE = MyISAM
-  PRIMARY KEY (`id`)) 
-ENGINE = MyISAM 
 COMMENT = '渠道商进货记录'";
 
 
@@ -146,12 +134,8 @@ if(!pdo_fieldexists('sz_yi_goods', 'isopenchannel')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isopenchannel` tinyint(1) NOT NULL COMMENT '0关闭1开启';");
 }
 
-if(!pdo_fieldexists('sz_yi_order', 'ischannelpay')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `ischannelpay` tinyint(1) NOT NULL COMMENT '0不是1渠道商采购订单';");
-}
-
-if(!pdo_fieldexists('sz_yi_order', 'channel_id')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `channel_id` INT(11) DEFAULT '0';");
+if(!pdo_fieldexists('sz_yi_order_goods', 'ischannelpay')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `ischannelpay` tinyint(1) NOT NULL COMMENT '0不是1渠道商采购订单';");
 }
 
 if (!pdo_fieldexists('sz_yi_channel_apply', 'apply_ordergoods_ids')) {

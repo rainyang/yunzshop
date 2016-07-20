@@ -24,9 +24,10 @@ if($_W['isajax']) {
     	}
 		$pindex = max(1, intval($_GPC['page']));
 		$psize = 20;
-    	$sql = "SELECT o.id,o.ordersn,o.price,o.openid,o.status,o.address,o.createtime FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE 1 {$conditionq} AND o.uniacid=".$_W['uniacid']." AND o.channel_id={$member['id']} AND ischannelpay=0 ORDER BY o.createtime DESC,o.status DESC  ";
+    	$sql = "SELECT o.id,o.ordersn,o.price,o.openid,o.status,o.address,o.createtime FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE 1 {$conditionq} AND o.uniacid=".$_W['uniacid']." AND og.channel_id={$member['id']} ORDER BY o.createtime DESC,o.status DESC  ";
     	$sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
     	$list = pdo_fetchall($sql);
+    	//pdo_debug();
     	foreach ($list as &$rowp) {
 			$sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' WHERE og.orderid=:orderid order by og.id asc';
 			$rowp['goods'] 		= set_medias(pdo_fetchall($sql, array(':orderid' => $rowp['id'])), 'thumb');

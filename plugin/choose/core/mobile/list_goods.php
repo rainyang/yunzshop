@@ -7,6 +7,10 @@ $operation  = !empty($_GPC['op']) ? $_GPC['op'] : 'moren';
 $openid     = m('user')->getOpenid();
 $uniacid    = $_W['uniacid'];
 if($_W['isajax']){
+    if (p('channel')) {
+        $member = m('member')->getInfo($openid);
+        $level  = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_level') . " WHERE uniacid={$_W['uniacid']} AND id={$member['channel_level']}");
+    }
     $pageid = $_GPC['pageid'];
     $page   = pdo_fetch('select * from '.tablename('sz_yi_chooseagent'). ' where id=:id and uniacid=:uniacid',array(':uniacid'=>$_W['uniacid'],':id'=>$pageid));
     if (!empty($page['isopenchannel'])) {
@@ -39,5 +43,10 @@ if($_W['isajax']){
         }
     }   
     $goods = m('goods')->getList($args);
+    foreach ($goods as $key => &$value) {
+        $value['channel_price'] = number_format($value['marketprice'] * $level['purchase_discount']/100, 2);
+        $value['channel_price'] = "/采购价：" . $value['channel_price'] . "元";
+    }
+    unset($value);
     show_json(1,array('goods' => $goods));
 }
