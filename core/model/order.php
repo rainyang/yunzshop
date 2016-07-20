@@ -154,7 +154,7 @@ class Sz_DYi_Order
             ':uniacid' => $_W['uniacid'],
             ':module' => 'sz_yi',
             ':fee' => $fee,
-            ':tid' => $order['ordersn']
+            ':tid' => $ordersn
         ));
         if (empty($log)) {
             show_json(-1, '订单金额错误, 请重试!');
