@@ -6,6 +6,7 @@ body {font-family:"Helvetica Neue",Helvetica,"Hiragino Sans GB","Microsoft YaHei
 .rich_mate .href {color:#607fa6;}
 .rich_mate_text {font-family: "微软雅黑";margin-right:8px; margin-bottom:10px; font-size:16px; color:#8c8c8c; float:left;}
 .rich_content {border-top: 1px #E8E8E8 solid;height:auto; font-size:16px; overflow-x: hidden; word-break: break-all;}
+.rich_content p{padding: 10px 0;line-height: 22px;}
 .rich_content img { width:100%; display:block;}
 .rich_content section a {color: inherit;}
 .rich_tool {height:auto; padding-top:15px; line-height:32px; overflow:hidden;}
