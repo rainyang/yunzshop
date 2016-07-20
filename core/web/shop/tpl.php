@@ -29,4 +29,14 @@ if ($tpl == 'option') {
 } else if ($tpl == 'param') {
     $tag = random(32);
     include $this->template('web/shop/tpl/param');
+} else if ($tpl == 'category') {
+    $id = random(31);
+    include $this->template('web/shop/tpl/category');
+} else if ($tpl == 'goods') {
+    $id = random(32);
+    include $this->template('web/shop/tpl/goods');
+} else if ($tpl == 'cashier') {
+    $id = random(32);
+    include $this->template('web/shop/tpl/cashier');
 }
+

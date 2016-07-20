@@ -43,6 +43,16 @@ if ($_W['isajax'] && $_W['ispost']) {
 		} else {
 			die(json_encode(array('result' => 'error')));
 		}
+	} elseif ($apido == 'selectgoods') {
+		$kw = $_GPC['kw'];
+		$goods = pdo_fetchall("SELECT id,title,productprice,marketprice,thumb,hasoption FROM " . tablename('sz_yi_goods') . " WHERE uniacid= :uniacid and status=1 and deleted=0 AND title LIKE :title ", array(':title' => "%{$kw}%", ':uniacid' => $_W['uniacid']));
+		$goods = set_medias($goods, 'thumb');
+		die(json_encode($goods));
+	} elseif ($apido == 'selectcashier') {
+		$kw = $_GPC['kw'];
+		$cashier = pdo_fetchall("SELECT id,name,thumb FROM " . tablename('sz_yi_cashier_store') . " WHERE uniacid= :uniacid AND name LIKE :title ", array(':title' => "%{$kw}%", ':uniacid' => $_W['uniacid']));
+		$cashier = set_medias($cashier, 'thumb');
+		die(json_encode($cashier));
 	} elseif ($apido == 'postcategory') {
 		$cid = intval($_GPC['cid']);
 		$cname = ($_GPC['cname']);

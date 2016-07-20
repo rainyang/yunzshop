@@ -334,7 +334,7 @@ require(['tpl', 'core'], function(tpl, core) {
         
         $(document).on('click','#selectcoupon',function(){
             var money = parseFloat($('.totalprice').html().replace(",", ""));
-            core.pjson('coupon/util', {op: 'query', money: money, type:0}, function (rjson) {
+            core.pjson('coupon/util', {op: 'query', money: money, type:0, cashier:1, sid:"{$sid}"}, function (rjson) {
                 if (rjson.status != 1) {
                     core.tip.show(rjson.result);
                     $('#couponid').val('');
