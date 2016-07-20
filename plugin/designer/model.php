@@ -28,6 +28,7 @@ if (!class_exists('DesignerModel')) {
             $d[$b['k1']][$b['k2']]['sales']    = $cdata['sales'];
             $d[$b['k1']][$b['k2']]['unit']     = $cdata['unit'];
         }
+
         public function getData($page)
         {
             global $_W;
@@ -36,13 +37,109 @@ if (!class_exists('DesignerModel')) {
             $goodsids = array();
             foreach ($d as $k1 => &$dd) {
                 if ($dd['temp'] == 'goods') {
-                    foreach ($dd['data'] as $k2 => $ddd) {
+                    if($dd['params']['style']=='hotel'){                       
+                         if(empty($_SESSION['data'])){
+                            $btime = strtotime(date('Y-m-d'));
+                            $day=1;
+                            $etime = $btime + $day * 86400;
+                            $weekarray = array("日", "一", "二", "三", "四", "五", "六");
+                            $arr['btime'] = $btime;
+                            $arr['etime'] = $etime;
+                            $arr['bdate'] = date('Y-m-d');
+                            $arr['edate'] = date('Y-m-d', $etime);
+                            $arr['bweek'] = '星期' . $weekarray[date("w", $btime)];
+                            $arr['eweek'] = '星期' . $weekarray[date("w", $etime)];
+                            $arr['day'] = $day; 
+                            $_SESSION['data']=$arr;                           
+                         }
+                        $d[$k1]['session'] = $_SESSION['data'];
+                        $d[$k1]['sessionurl'] ="/app/index.php?i=".$_W['uniacid']."&c=entry&method=date&p=designer&op=date&m=sz_yi&do=plugin";
+
+                        //$d[$k1]['sessionurl'] ="/app/index.php?i=".$_W['uniacid']."&c=entry&op=date&p=hotel&do=shop&m=sz_yi";
+                         foreach ($dd['data'] as $k2 => $ddd) {
+                            //选择时间内是否有房
+                            $btime =  $_SESSION['data']['btime'];
+                            $bdate =  $_SESSION['data']['bdate'];
+                            // 住几天
+                            $days =intval( $_SESSION['data']['day']);
+                            // 离店
+                            $etime =  $_SESSION['data']['etime'];
+                            $edate =  $_SESSION['data']['edate'] ;
+                            $date_array = array();
+                            $date_array[0]['date'] = $bdate;
+                            $date_array[0]['day'] = date('j', $btime);
+                            $date_array[0]['time'] = $btime;
+                            $date_array[0]['month'] = date('m',$btime);    
+                            if ($days > 1) {
+                                for($i = 1; $i < $days; $i++) {
+                                $date_array[$i]['time'] = $date_array[$i-1]['time'] + 86400;
+                                $date_array[$i]['date'] = date('Y-m-d', $date_array[$i]['time']);
+                                $date_array[$i]['day'] = date('j', $date_array[$i]['time']);
+                                $date_array[$i]['month'] = date('m', $date_array[$i]['time']);
+                                }
+                            }
+                            $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
+                            $params2 = array(':goodsid' =>$ddd['goodid']);
+                            $room = pdo_fetch($sql2, $params2);
+                            $r_sql = 'SELECT * FROM ' . tablename('sz_yi_hotel_room_price') .
+                            ' WHERE `roomid` = :roomid AND `roomdate` >= :btime AND ' .
+                            ' `roomdate` < :etime';
+                            $params = array(':roomid' => $room['id'],':btime' => $btime, ':etime' => $etime);
+
+                            $price_list = pdo_fetchall($r_sql, $params);
+                            if ($price_list) {
+                                $dd['data'][$k2]['has'] =0;
+                                foreach($price_list as $k => $v) {     
+                                    if ($v['status'] == 0 || $v['num'] == 0 ) {
+                                       $dd['data'][$k2]['has'] +=1 ;   //不可预约              
+                                    } 
+                                }
+                            }
+                            // 当天房价
+                            $today = date('Y-m-d') ;
+                            $today= strtotime($today);           
+                            $sql2 = "SELECT * FROM " . tablename('sz_yi_hotel_room_price') . " as p";
+                            $sql2 .= " WHERE 1 = 1";
+                            $sql2 .= " AND status = 1";
+                            $sql2 .= " AND roomid = ". $room['id'];
+                            $sql2 .= " AND roomdate =" . $today;
+                            $todayprice = pdo_fetch($sql2);  
+                            if($todayprice['oprice']=='0.00' || $todayprice['oprice']==''){
+                            $dd['data'][$k2]['todayoprice'] = $room['oprice'];
+                            }else{
+                              $dd['data'][$k2]['todayoprice'] =$todayprice['oprice'];
+                            }
+                            if($todayprice['cprice']=='0.00' || $todayprice['cprice']==''){
+                              $dd['data'][$k2]['todaycprice'] =  $room['cprice'];
+                            }else{
+                              $dd['data'][$k2]['todaycprice'] =$todayprice['cprice'];
+                            }
+                            $condition2 = ' and `uniacid` = :uniacid AND `goodsid` = :goodsid';
+                            $params2    = array(
+                                ':goodsid' => $ddd['goodid'],
+                                ':uniacid' => $_W['uniacid']
+                            );
+                            $sql2 = "SELECT * FROM " . tablename('sz_yi_goods_param') . " where 1 {$condition2} ";
+                            $dd['data'][$k2]['pram'] = pdo_fetchall($sql2, $params2);
+                            //button url
+                            $dd['data'][$k2]['url'] = "/app/index.php?i=".$_W['uniacid']."&c=entry&p=confirm&do=order&m=sz_yi&id=".$ddd['goodid'];
+                            $dd['data'][$k2]['href'] = "/app/index.php?i=".$_W['uniacid']."&c=entry&p=detail&do=shop&m=sz_yi&id=".$ddd['goodid'];
+                            $goodsids[] = array(
+                                'id' => $ddd['goodid'],
+                                'k1' => $k1,
+                                'k2' => $k2
+                            );
+                        }
+                    }else{
+                        foreach ($dd['data'] as $k2 => $ddd) {
                         $goodsids[] = array(
                             'id' => $ddd['goodid'],
                             'k1' => $k1,
                             'k2' => $k2
                         );
                     }
+                }
+                
                 } elseif ($dd['temp'] == 'richtext') {
                     $dd['content'] = $this->unescape($dd['content']);
                 }
@@ -238,5 +335,54 @@ if (!class_exists('DesignerModel')) {
                 )
             );
         }
+
+     public function getSearchArray(){
+         $search_array =$this->get_cookie($this->_search_key);
+        if (empty($search_array)) {
+            //默认搜索参数
+            $search_array['order_type'] = 1;
+            $search_array['order_name'] = 2;
+            $search_array['location_p'] = $this->_set_info['location_p'];
+            $search_array['location_c'] = $this->_set_info['location_c'];
+            if (strpos($search_array['location_p'], '市') > -1) {
+                //直辖市
+                $search_array['municipality'] = 1;
+                $search_array['city_name'] = $search_array['location_p'];
+            } else {
+                $search_array['municipality'] = 0;
+                $search_array['city_name'] = $search_array['location_c'];
+            }
+            $search_array['business_id'] = 0;
+            $search_array['business_title'] = '';
+            $search_array['brand_id'] = 0;
+            $search_array['brand_title'] = '';
+
+            $weekarray = array("日", "一", "二", "三", "四", "五", "六");
+
+            $date = date('Y-m-d');
+            $time = strtotime($date);
+            $search_array['btime'] = $time;
+            $search_array['etime'] = $time + 86400;
+            $search_array['bdate'] = $date;
+            $search_array['edate'] = date('Y-m-d', $search_array['etime']);
+            $search_array['bweek'] = '星期' . $weekarray[date("w", $time)];
+            $search_array['eweek'] = '星期' . $weekarray[date("w", $search_array['etime'])];
+            $search_array['day'] = 1;
+            $this->insert_cookie($this->_search_key, $search_array);
+        }
+        return $search_array;
+    }
+    public function get_cookie($key)
+    {
+        global $_W;
+        $key = $_W['config']['cookie']['pre'] . $key;
+        return json_decode(base64_decode($_COOKIE[$key]), true);
+    }
+    public  function insert_cookie($key, $data)
+    {
+        global $_W, $_GPC;
+        $session = base64_encode(json_encode($data));
+        isetcookie($key, $session, !empty($_GPC['rember']) ? 7 * 86400 : 0);
+    }
     }
 }

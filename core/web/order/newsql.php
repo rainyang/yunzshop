@@ -140,6 +140,60 @@ PRIMARY KEY (`id`),
 INDEX `idx_uniacid` (`uniacid`) USING BTREE ,
 INDEX `idx_cate` (`cate`) USING BTREE
 ) ENGINE=MyISAM DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_hotel_room') . " (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT '0',
+  `goodsid` int(11) DEFAULT '0',
+  `title` varchar(255) DEFAULT '',
+  `thumb` varchar(255) DEFAULT '',
+  `oprice` decimal(10) DEFAULT '2',
+  `cprice` decimal(10) DEFAULT '2',
+  `deposit` decimal(10) DEFAULT '2',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_hotel_room_price') . " (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `roomid` int(11) DEFAULT '0',
+  `roomdate` int(11) DEFAULT '0',
+  `thisdate` varchar(255) DEFAULT '',
+  `oprice` decimal(10) DEFAULT '2',
+  `cprice` decimal(10) DEFAULT '2',
+  `mprice` decimal(10) DEFAULT '2',
+  `num` varchar(255) DEFAULT '',
+  `status` int(11) DEFAULT '0',
+
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_order_room') . " (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `orderid` int(11) DEFAULT '0',
+  `roomdate` int(11) DEFAULT '0',
+  `thisdate` varchar(255) DEFAULT '',
+  `oprice` decimal(10) DEFAULT '2',
+  `cprice` decimal(10) DEFAULT '2',
+  `mprice` decimal(10) DEFAULT '2',
+  `roomid` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_book') . " (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT '0',
+  `uid` int(11) DEFAULT '0',
+  `mobile` varchar(30) DEFAULT '',
+  `time` varchar(255) DEFAULT '',
+  `contact` text,
+  `goods` int(11) DEFAULT '0',
+  `message` text,
+  `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `type` int(11) DEFAULT '0',
+  `status` int(1) DEFAULT '0',
+  `delete` int(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;
 ";
 pdo_fetchall($sql);
 
@@ -1016,8 +1070,76 @@ if(pdo_tableexists('sz_yi_bonus_level')){
   }
 }
 
-    //文章是否在微信显示 2016-07-18 杨雷
-    if(!pdo_fieldexists('sz_yi_article', 'article_state_wx')) {
-        pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article')." ADD `article_state_wx` TINYINT(1) NOT NULL ;");
-    }
+//文章是否在微信显示 2016-07-18 杨雷
+if(!pdo_fieldexists('sz_yi_article', 'article_state_wx')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article')." ADD `article_state_wx` TINYINT(1) NOT NULL ;");
+}
 
+//商品表增加押金字段
+if(!pdo_fieldexists('sz_yi_goods', 'deposit')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `deposit` decimal DEFAULT '10' AFTER `isreturnqueue`;");
+}
+//订单表增加字段（入住人姓名，电话，性别，发票信息，押金等）
+if(!pdo_fieldexists('sz_yi_order', 'checkname')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `checkname` varchar(255) DEFAULT '' AFTER `ordersn_general`;");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'realmobile')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `realmobile` varchar(255) DEFAULT '' AFTER `checkname`;");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'realsex')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `realsex` INT(1) DEFAULT '0' AFTER `realmobile`;");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'invoice')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `invoice`  INT(1) DEFAULT '0'  AFTER `realsex`;");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'invoiceval')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `invoiceval` INT(1) DEFAULT '0' AFTER `invoice`;");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'invoicetext')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `invoicetext` varchar(255) DEFAULT '' AFTER `invoiceval`;");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'num')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `num` INT(1) DEFAULT '0' AFTER `invoicetext`;");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'btime')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `btime` INT(11) DEFAULT '0' AFTER `num`;");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'etime')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `etime` INT(11) DEFAULT '0' AFTER `btime`;");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'depositprice')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `depositprice` decimal DEFAULT '10' AFTER `etime`;");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'returndepositprice')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `returndepositprice`  decimal DEFAULT '10' AFTER `depositprice`;");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'depositpricetype')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `depositpricetype` INT(1) DEFAULT '0' AFTER `returndepositprice`;");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'room_number')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `room_number` varchar(11) DEFAULT '' AFTER `depositpricetype`;");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'roomid')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `roomid` INT(11) DEFAULT '0' AFTER `room_number`;");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'order_type')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `order_type`  INT(11) DEFAULT '0' AFTER `roomid`;");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'days')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `days`  INT(11) DEFAULT '0' AFTER `order_type`;");
+}

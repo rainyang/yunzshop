@@ -967,8 +967,8 @@ var fromcart = 0;
                 'supplier_uid': supplierarr[i], 
                 'goods': goods,
         				'id':'{$id}',
-        				gdid:gdid,
-        				diydata:diydata,
+        				 gdid:gdid,
+        				 diydata:diydata,
                 'dispatchtype': $("#dispatchtype").val(),
                 'fromcart':fromcart,
                 'cartids':"{$_GPC['cartids']}",
@@ -1009,7 +1009,7 @@ var fromcart = 0;
         	  {/if}
 
           }
-          data = {op:'create', order:order};
+           data = {op:'create', order:order};
           $(this).attr('submitting', '1').html('提交中...');
             core.json('order/confirm', data, function(create_json) {
 
