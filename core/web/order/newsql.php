@@ -1173,3 +1173,8 @@ if(!pdo_fieldexists('sz_yi_order', 'days')) {
 if(!pdo_fieldexists('sz_yi_commission_level', 'withdraw_proportion')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_commission_level')." ADD `withdraw_proportion`  DECIMAL( 10, 2 ) DEFAULT '0.00';");
 }
+
+//代理商添加审核图片字段
+if (!pdo_fieldexists('sz_yi_member', 'check_imgs')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `check_imgs` text DEFAULT '';");
+}
