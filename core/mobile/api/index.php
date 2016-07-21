@@ -8,6 +8,10 @@
 
 global $_W, $_GPC;
 
+
+//app接口文件
+require IA_ROOT.'/addons/sz_yi/core/inc/interface.php';
+
 $uniacid   = $_W['uniacid'];
 
 //轮播图

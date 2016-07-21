@@ -77,8 +77,6 @@ class Core extends WeModuleSite
             LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'].",master");
         }
 
-        //app接口文件
-        require IA_ROOT.'/addons/sz_yi/core/inc/interface.php';
     }
 
     public function sendSms($mobile, $code, $templateType = 'reg')
