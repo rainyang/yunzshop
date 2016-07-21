@@ -49,8 +49,22 @@ if(!empty($pluginbonus)){
 }
 $member = $this->model->getInfo($openid, array('total', 'ordercount0', 'ok', 'myorder'));
 if ($_W['isajax']) {
-	$cansettle = $member['commission_ok'] > 0 && $member['commission_ok'] >= floatval($this->set['withdraw']);
-	$mycansettle = $member['commission_total'] > 0 && $member['myoedermoney'] >= floatval($this->set['consume_withdraw']);
+	//Author:ym Date:2016-07-21 Content:提现消费比例
+	$proportion = true;
+    $member['proportion_money'] = 0;
+    $proportion_money = 0;
+    if(!empty($this->set['withdraw_proportion'])){
+        $withdraw_proportion = empty($level['withdraw_proportion']) ? floatval($this->set['withdraw_proportion']) : $level['withdraw_proportion'];
+        if($member['myordermoney'] < $withdraw_proportion*$member['commission_ok']){
+        	//计算出差额
+            $proportion = false;
+            $proportion_money = $member['commission_ok']*$withdraw_proportion-$member['myordermoney'];
+            $member['proportion_money'] = number_format($proportion_money);
+        }
+    }
+
+	$cansettle = $member['commission_ok'] > 0 && $member['commission_ok'] >= floatval($this->set['withdraw']) && $proportion;
+	$mycansettle = $member['commission_total'] > 0 && $member['myordermoney'] >= floatval($this->set['consume_withdraw']);
 	$commission_ok = $member['commission_ok'];
     $member['nickname'] 	 = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
     $total_all += $member['commission_total'];
@@ -121,7 +135,7 @@ if ($_W['isajax']) {
 	}
 
 
-	show_json(1, array('commission_ok' => $commission_ok,'pricecount'=>$pricecount, 'member' => $member, 'level' => $level, 'cansettle' => $cansettle, 'mycansettle' => $mycansettle, 'settlemoney' => number_format(floatval($this->set['withdraw']), 2), 'mysettlemoney' => number_format(floatval($this->set['consume_withdraw']), 2), 'set' => $this->set,));
+	show_json(1, array('commission_ok' => $commission_ok,'pricecount'=>$pricecount, 'member' => $member, 'level' => $level, 'cansettle' => $cansettle, 'mycansettle' => $mycansettle, 'settlemoney' => number_format(floatval($this->set['withdraw']), 2), 'mysettlemoney' => number_format(floatval($this->set['consume_withdraw']), 2), 'set' => $this->set,'proportion_money' => $proportion_money));
 }
 $plugin_article = p('article');
 if ($plugin_article) {

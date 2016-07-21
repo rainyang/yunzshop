@@ -251,7 +251,7 @@ if (!class_exists('CommissionModel')) {
 			$_var_51 = 0;
 			$_var_52 = 0;
 			$_var_53 = 0;
-			$myoedermoney = 0;
+			$myordermoney = 0;
 			$myordercount = 0;
 			if ($_var_8 >= 1) {
 				if (in_array('ordercount0', $_var_21)) {
@@ -550,7 +550,7 @@ if (!class_exists('CommissionModel')) {
 			if (in_array('myorder', $_var_21)) {
 				$myorder = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.status<>6 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
 				//Author:ym Date:2016-04-07 Content:自购订单金额
-				$myoedermoney = $myorder['ordermoney'];
+				$myordermoney = $myorder['ordermoney'];
 				//Author:ym Date:2016-04-07 Content:自购订单数量
 				$myordercount = $myorder['ordercount'];
 			}
@@ -601,7 +601,7 @@ if (!class_exists('CommissionModel')) {
 			$member['level3'] = $_var_41;
 			$member['level3_agentids'] = $_var_75;
 			$member['agenttime'] = date('Y-m-d H:i', $member['agenttime']);
-			$member['myoedermoney'] = $myoedermoney;
+			$member['myordermoney'] = $myordermoney;
 			$member['myordercount'] = $myordercount;
 			return $member;
 		}

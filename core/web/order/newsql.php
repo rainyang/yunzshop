@@ -1169,4 +1169,7 @@ if(!pdo_fieldexists('sz_yi_order', 'order_type')) {
 if(!pdo_fieldexists('sz_yi_order', 'days')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `days`  INT(11) DEFAULT '0' AFTER `order_type`;");
 }
-
+//分销商升级添加提现比例
+if(!pdo_fieldexists('sz_yi_commission_level', 'withdraw_proportion')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_commission_level')." ADD `withdraw_proportion`  DECIMAL( 10, 2 ) DEFAULT '0.00';");
+}
