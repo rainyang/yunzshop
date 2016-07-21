@@ -4,7 +4,6 @@ if (!defined('IN_IA')) {
 }
 global $_W, $_GPC;
 $openid         = m('user')->getOpenid();
-$member         = m('member')->getInfo($openid);
 $af_channel     = pdo_fetch("SELECT * FROM " . tablename("sz_yi_af_channel") . " WHERE openid='{$openid}' AND uniacid={$_W['uniacid']}");
 $template_flag  = 0;
 $diyform_plugin = p('diyform');
@@ -39,7 +38,6 @@ if ($_W['isajax']) {
             $m_data['status']           = 0;
             $m_data['openid']           = $openid;
             $m_data['uniacid']          = $_W['uniacid'];
-            $m_data['mid']              = $member['id'];
             pdo_insert('sz_yi_af_channel',$m_data);
         } else {
             $channeldata = array(
@@ -47,8 +45,7 @@ if ($_W['isajax']) {
             'mobile'        => $_GPC['channeldata']['mobile'],
             'openid'        => $openid,
             'uniacid'       => $_W['uniacid'],
-            'status'        => 0,
-            'mid'           => $member['id']
+            'status'        => 0
             );
             pdo_insert('sz_yi_af_channel',$channeldata);
         }

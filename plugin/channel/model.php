@@ -43,7 +43,7 @@ if (!class_exists('ChannelModel')) {
 
             $channel_info['channel']['totalmoney'] = pdo_fetchcolumn("SELECT sum(apply_money) FROM " . tablename('sz_yi_channel_apply') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}'");
 
-            $channel_info['channel']['commission_ok'] = pdo_fetchcolumn("SELECT sum(og.price) FROM " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) WHERE o.uniacid={$_W['uniacid']} AND og.channel_id={$member['id']} AND o.status=3 AND og.channel_apply_status=0 AND og.ischannelpay=1");
+            $channel_info['channel']['commission_ok'] = pdo_fetchcolumn("SELECT sum(og.price) FROM " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) WHERE o.uniacid={$_W['uniacid']} AND og.channel_id={$member['id']} AND o.status=3 AND og.channel_apply_status=0");
 
             $channel_info['channel']['mychannels'] = pdo_fetchall("SELECT * FROM " .tablename('sz_yi_member') . " WHERE uniacid={$_W['uniacid']} AND channel_level<>0 AND agentid={$member['id']}");
 
