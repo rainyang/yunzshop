@@ -543,11 +543,9 @@ if ($operation == 'display' && $_W['isajax']) {
     $ps['fee']   = $log['fee'];
     $ps['title'] = $log['title'];
     if ($type == 'storecash') {
-        pdo_update('sz_yi_order', array(
-            'paytype' => 4
-        ), array(
-            'id' => $order['id']
-        ));
+        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=4 where '.$where_update.' and uniacid=:uniacid ', array(
+                    ':uniacid' => $_W['uniacid']
+                ));
         $ret            = array();
         $ret['result']  = 'success';
         $ret['type']    = 'storecash';

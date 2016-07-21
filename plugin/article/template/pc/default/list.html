@@ -77,8 +77,9 @@
 </head>
 
 <body class="{if $article_sys['article_temp']==0}t1{elseif $article_sys['article_temp']==1}t2{elseif $article_sys['article_temp']==2}t3{/if}">
-{if $article_sys['article_temp']==0}
 <div class="all-divbox">
+{if $article_sys['article_temp']==0}
+
     <div class="main">
         {if !empty($article_sys['article_image'])}
             <div>
@@ -112,6 +113,7 @@
                                         </div>
                                     </div>
                                 {/if}
+                                <div class="info-article">{php echo $article['resp_desc'] ? $article['resp_desc'] : "编辑比较懒还没有填写介绍..."}</div>
                             </div>
                         </div>
                     </div>
@@ -137,9 +139,13 @@
                         {loop $v['articles'] $index $vv}
                             {if $index==0}
                                 <a href="{php echo $this->createPluginMobileUrl('article',array('aid'=>$vv['id']))}">
-                                    <div class="img">
-                                        <img src="{$vv['resp_img']}" />
-                                        <div class="img-title"><p>{$vv['article_title']}</p></div>
+                                    <div class="pos-img">
+                                        <div class="img">
+                                            <img src="{$vv['resp_img']}" />
+                                        </div>
+                                        <div class="img-title"><h1>{$vv['article_title']}</h1>
+                                            <p>{php echo $article['resp_desc'] ? $article['resp_desc'] : "编辑比较懒还没有填写介绍..."}</p>
+                                        </div>
                                     </div>
                                 </a>
                             {else}
@@ -166,8 +172,9 @@
         </div>
     </div>
     <div class="list"></div>
+
 {/if}
-</div>
+    </div>
     <div class="add-more" {if $article_sys['article_temp']==2} style="height: 40px"{/if}><a id="add-more" href="javascript:;">加载更多</a></div>
 
 <!-- 弹出 -->

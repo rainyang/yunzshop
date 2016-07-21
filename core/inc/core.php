@@ -76,6 +76,7 @@ class Core extends WeModuleSite
 
             LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'].",master");
         }
+
     }
 
     public function sendSms($mobile, $code, $templateType = 'reg')
@@ -189,6 +190,25 @@ class Core extends WeModuleSite
         $designer = p('designer');
         if ($designer && $_GPC['p'] != 'designer') {
             $menu = $designer->getDefaultMenu();
+            $newmenu = json_decode($menu['menus'], true);
+            foreach ($newmenu as &$val) {
+                if (!empty($val['url'])) {
+                    if (strpos($val['url'], 'commission') !== false) {
+                        $val['url'] = $this->createMobileUrl('member/bindapp', array('op' => 'black'));
+                        $val['title'] = 'APP下载';
+                    }
+                }
+                if (!empty($val['submenu'])) {
+                    foreach ($val['submenu'] as &$sv) {
+                        if (strpos($sv['url'], 'commission') !== false) {
+                            $sv['url'] = $this->createMobileUrl('member/bindapp', array('op' => 'black'));
+                            $sv['title'] = 'APP下载';
+                        }
+                    }
+                }
+            }
+            $menu['menus'] = json_encode($newmenu);
+            //print_r(json_decode($menu['menus'], true));exit;
             if (!empty($menu)) {
                 $this->footer['diymenu']   = true;
                 $this->footer['diymenus']  = $menu['menus'];

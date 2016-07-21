@@ -20,12 +20,12 @@
                             <div class="col-xs-12 col-sm-9 col-md-8 col-lg-12">
 								<table class='table'>
 									<tr>
-										<th style='width:20%;'>商品名称</th>
+										<th style='width:30%;'>商品名称</th>
 										<th style='width:15%;'>单价</th>
 										<th style='width:8%;'>数量</th>
-										<th style='width:10%;'>小计</th>
+										<th style='width:20%;'>小计</th>
 										<th style='width:10%;'>加价或减价</th>
-										<th style='width:10%;'>运费</th>
+										<th style='width:15%;'>运费</th>
 									</tr>
 									{loop $order_goods $key $goods}
 									<tr>
@@ -42,14 +42,12 @@
 										<td valign="top" >
 											<input type='text' class='form-control changeprice_orderprice' name="changegoodsprice[{$goods['id']}]"  /></td>
 										
-										{if $key==0}
-										<td valign="top" rowspan='{php echo count($order_goods)}' style='vertical-align: top' >
-											<input type='text' class='form-control' id='changeprice_dispatchprice' value="{$item['dispatchprice']}" name='changedispatchprice' />
+									
+										<td valign="top" rowspan='{$item['goodsnum'][$goods['orderid']]}' style='vertical-align: top' >
+											<input type='text' class='form-control'  value="{$item['dispatchprice'][$goods['orderid']]}" name='changedispatchprice' />
 											<a href='javascript:;' onclick="$(this).prev().val('0');mc_calc()">直接免运费</a>
 										</td>
-										{else}
-										<td>&nbsp;</td>
-										{/if}
+									
 									</tr>
 									{/loop}
 									<tr>
