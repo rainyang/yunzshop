@@ -125,8 +125,11 @@ if ($_W['isajax']) {
             }
             $fromcart = 1;
         } else {
-
-            $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+            if(p('hotel')){
+                $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+            }else{   
+                $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+            }
             $data = pdo_fetch($sql, array(
                 ':uniacid' => $uniacid,
                 ':id' => $id
@@ -362,6 +365,7 @@ if ($_W['isajax']) {
         }
 
         unset($g);
+        //核销
         if ($isverify) {
             $storeids = array();
             foreach ($goods as $g) {
@@ -390,81 +394,89 @@ if ($_W['isajax']) {
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
             ));
-            if (!$isvirtual) {
-                foreach ($goods as $g) {
-                    $sendfree = false;
-                    if (!empty($g["issendfree"])) { //包邮
-                        $sendfree = true;
-                    } else {
-                        if ($g["total"] >= $g["ednum"] && $g["ednum"] > 0) {    //单品满xx件包邮
-                            $gareas = explode(";", $g["edareas"]);  //不参加包邮地区
-                            if (empty($gareas)) {
-                                $sendfree = true;
-                            } else {
-                                if (!empty($address)) {
-                                    if (!in_array($address["city"], $gareas)) {
-                                        $sendfree = true;
-                                    }
-                                } else if (!empty($member["city"])) {
-                                    if (!in_array($member["city"], $gareas)) {
-                                        $sendfree = true;
-                                    }
-                                } else {
+        }
+
+        //如果开启核销并且不支持配送，则没有运费
+        $isDispath = true;
+        if ($isverify && !$isverifysend) {
+            $isDispath = false;
+        }
+
+        if (!$isvirtual && $isDispath) {
+            foreach ($goods as $g) {
+                $sendfree = false;
+                if (!empty($g["issendfree"])) { //包邮
+                    $sendfree = true;
+                } else {
+                    if ($g["total"] >= $g["ednum"] && $g["ednum"] > 0) {    //单品满xx件包邮
+                        $gareas = explode(";", $g["edareas"]);  //不参加包邮地区
+                        if (empty($gareas)) {
+                            $sendfree = true;
+                        } else {
+                            if (!empty($address)) {
+                                if (!in_array($address["city"], $gareas)) {
                                     $sendfree = true;
                                 }
-                            }
-                        }
-                        if ($g["ggprice"] >= floatval($g["edmoney"]) && floatval($g["edmoney"]) > 0) {  //满额包邮
-                            $gareas = unserialize($g["edareas"]);
-                            if (empty($gareas)) {
-                                $sendfree = true;
-                            } else {
-                                if (!empty($address)) {
-                                    if (!in_array($address["city"], $gareas)) {
-                                        $sendfree = true;
-                                    }
-                                } else if (!empty($member["city"])) {
-                                    if (!in_array($member["city"], $gareas)) {
-                                        $sendfree = true;
-                                    }
-                                } else {
+                            } else if (!empty($member["city"])) {
+                                if (!in_array($member["city"], $gareas)) {
                                     $sendfree = true;
                                 }
+                            } else {
+                                $sendfree = true;
                             }
                         }
                     }
-
-                    if (!$sendfree) {   //计算运费
-                        if ($g["dispatchtype"] == 1) {  //统一邮费
-                            if ($g["dispatchprice"] > 0) {
-                                $order_all[$g['supplier_uid']]['dispatch_price'] += $g["dispatchprice"] * $g["total"];
-                            }
-                        } else if ($g["dispatchtype"] == 0) {   //运费模板
-                            if (empty($g["dispatchid"])) {
-                                $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getDefaultDispatch($g['supplier_uid']);
+                    if ($g["ggprice"] >= floatval($g["edmoney"]) && floatval($g["edmoney"]) > 0) {  //满额包邮
+                        $gareas = unserialize($g["edareas"]);
+                        if (empty($gareas)) {
+                            $sendfree = true;
+                        } else {
+                            if (!empty($address)) {
+                                if (!in_array($address["city"], $gareas)) {
+                                    $sendfree = true;
+                                }
+                            } else if (!empty($member["city"])) {
+                                if (!in_array($member["city"], $gareas)) {
+                                    $sendfree = true;
+                                }
                             } else {
-                                $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getOneDispatch($g["dispatchid"], $g['supplier_uid']);
-                            }
-                            if (empty($order_all[$g['supplier_uid']]['dispatch_data'])) {
-                                $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getNewDispatch($g['supplier_uid']);
-                            }
-                            if (!empty($order_all[$g['supplier_uid']]['dispatch_data'])) {
-                                if ($order_all[$g['supplier_uid']]['dispatch_data']["calculatetype"] == 1) {
-                                    $order_all[$g['supplier_uid']]['param'] = $g["total"];
-                                } else {
-                                    $order_all[$g['supplier_uid']]['param'] = $g["weight"] * $g["total"];
-                                }
-                                $dkey = $order_all[$g['supplier_uid']]['dispatch_data']["id"];
-                                if (array_key_exists($dkey, $order_all[$g['supplier_uid']]['dispatch_array'])) {
-                                    $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["param"] += $order_all[$g['supplier_uid']]['param'];
-                                } else {
-                                    $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["data"]  = $order_all[$g['supplier_uid']]['dispatch_data'];
-                                    $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["param"] = $order_all[$g['supplier_uid']]['param'];
-                                }
+                                $sendfree = true;
                             }
                         }
                     }
                 }
+
+                if (!$sendfree) {   //计算运费
+                    if ($g["dispatchtype"] == 1) {  //统一邮费
+                        if ($g["dispatchprice"] > 0) {
+                            $order_all[$g['supplier_uid']]['dispatch_price'] += $g["dispatchprice"] * $g["total"];
+                        }
+                    } else if ($g["dispatchtype"] == 0) {   //运费模板
+                        if (empty($g["dispatchid"])) {
+                            $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getDefaultDispatch($g['supplier_uid']);
+                        } else {
+                            $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getOneDispatch($g["dispatchid"], $g['supplier_uid']);
+                        }
+                        if (empty($order_all[$g['supplier_uid']]['dispatch_data'])) {
+                            $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getNewDispatch($g['supplier_uid']);
+                        }
+                        if (!empty($order_all[$g['supplier_uid']]['dispatch_data'])) {
+                            if ($order_all[$g['supplier_uid']]['dispatch_data']["calculatetype"] == 1) {
+                                $order_all[$g['supplier_uid']]['param'] = $g["total"];
+                            } else {
+                                $order_all[$g['supplier_uid']]['param'] = $g["weight"] * $g["total"];
+                            }
+                            $dkey = $order_all[$g['supplier_uid']]['dispatch_data']["id"];
+                            if (array_key_exists($dkey, $order_all[$g['supplier_uid']]['dispatch_array'])) {
+                                $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["param"] += $order_all[$g['supplier_uid']]['param'];
+                            } else {
+                                $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["data"]  = $order_all[$g['supplier_uid']]['dispatch_data'];
+                                $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["param"] = $order_all[$g['supplier_uid']]['param'];
+                            }
+                        }
+                    }
+                }
+
                 foreach ($suppliers as $key => $val) {
                     if (!empty($order_all[$val['supplier_uid']]['dispatch_array'])) {
                         foreach ($order_all[$val['supplier_uid']]['dispatch_array'] as $k => $v) {
@@ -1520,24 +1532,25 @@ if ($_W['isajax']) {
                 "couponid" => $couponid,
                 "couponprice" => $couponprice,
                 'redprice' => $redpriceall,
-                'checkname'=>$_GPC['realname'],//以下为酒店订单
-                'realmobile'=>$_GPC['realmobile'],
-                'realsex'=>$_GPC['realsex'],
-                'invoice'=>$_GPC['invoice'],
-                'invoiceval'=>$_GPC['invoiceval'],
-                'invoicetext'=>$_GPC['invoicetext'],
-                'num'=>$_GPC['goodscount'],
-                'btime'=>$btime,
-                'etime'=>$etime,
-                'depositprice'=>$_GPC['depositprice'],
-                'depositpricetype'=>$_GPC['depositpricetype'],
-                'roomid'=> $room['id'],
-                'days'=>$days,
+     
             );
-             if(p('hotel')){
+            if(p('hotel')){
                  if($_GPC['type']=='99'){ 
                      $order['order_type']='3';
                      $order['addressid']='9999999';
+                     $order['checkname']=$_GPC['realname'];//以下为酒店订单
+                     $order['realmobile']=$_GPC['realmobile'];
+                     $order['realsex']=$_GPC['realsex'];
+                     $order['invoice']=$_GPC['invoice'];
+                     $order['invoiceval']=$_GPC['invoiceval'];
+                     $order['invoicetext']=$_GPC['invoicetext'];
+                     $order['num']=$_GPC['goodscount'];
+                     $order['btime']=$btime;
+                     $order['etime']=$etime;
+                     $order['depositprice']=$_GPC['depositprice'];
+                     $order['depositpricetype']=$_GPC['depositpricetype'];
+                     $order['roomid']=$room['id'];
+                     $order['days']=$days;
                   }
             }
             if ($diyform_plugin) {
@@ -1716,20 +1729,7 @@ if ($_W['isajax']) {
         show_json(1, array(
             'orderid' => $orderid
         ));
-    }else if ($operation == 'date') {
-        echo 111;exit;
-        global $_GPC, $_W;
-        $id = $_GPC['id'];
-        if ($search_array && !empty($search_array['bdate']) && !empty($search_array['day'])) {
-            $bdate = $search_array['bdate'];
-            $day = $search_array['day'];
-        } else {
-            $bdate = date('Y-m-d');
-            $day = 1;
-        }
-        load()->func('tpl');
-    include $this->template('order/date');
-}
+    }
 }
 if(p('hotel') && $goods_data['type']=='99'){ //判断是否开启酒店插件
         include $this->template('order/confirm_hotel');

@@ -198,7 +198,7 @@
                               {/if}
                          
                          {/if}
-                         <b><button type="button" class="btn btn-success">{$item['vendor']}</button></b>
+                         <label class="label label-info">{$item['vendor']}</label>
                     <td style='border-bottom:1px solid #ccc;background:#f8f8f8;text-align: center' >
                           {if empty($item['statusvalue'])}
                            {ifp 'order.op.close'}
@@ -311,7 +311,9 @@
             {if empty($item['statusvalue'])}
                             <tr>
                                 <td style='border:none;text-align:right;'></td>
+                                {if $item['ischangePrice'] == 1}
                                 <td  style='border:none;text-align:right;color:green;'><a href="javascript:;" class="btn btn-link " onclick="changePrice('{$item['id']}')">修改价格</a></td>
+                                {/if}
                             </tr>
                             {/if}  {/if}
                         </table>

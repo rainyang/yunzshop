@@ -13,19 +13,19 @@
 	{loop $list $data1}
 	<tr>
 		<td rowspan="2" style="text-align: center;width:100px;">{php echo cutstr($data1['title'], 8)}</td>
-		<td colspan='2'  style="text-align: center;">前台价</td>
+		<td colspan='2'  style="text-align: center;">现价</td>
 		{loop $date_array $row}
 		<td style="text-align: center">
 			<span class="price_span">{$data1['price_list'][$row['time']]['oprice']}</span>
             <span class="price_editspan hide">
-               <input type="text" date="{$row['date']}"  pricetype="oprice" hotelid="{$data1['price_list'][$row['time']]['hotelid']}" roomid="{$data1['price_list'][$row['time']]['roomid']}" class="price_input form-control" value="{$data1['price_list'][$row['time']]['oprice']}" />
+               <input type="text" date="{$row['date']}"  pricetype="oprice" roomid="{$data1['price_list'][$row['time']]['roomid']}" class="price_input form-control" value="{$data1['price_list'][$row['time']]['oprice']}" />
             </span>
 		</td>
 		{/loop}
 		<td></td>
 	</tr>
 	<tr>
-		<td colspan='2' style="text-align: center;">优惠价</td>
+		<td colspan='2' style="text-align: center;">原价</td>
 		{loop $date_array $row}
 		<td style="text-align: center">
 			<span class="price_span">{$data1['price_list'][$row['time']]['cprice']}</span>
