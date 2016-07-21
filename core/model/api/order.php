@@ -12,7 +12,6 @@ namespace Api\Model;
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-
 class Order
 {
     public function __construct()
@@ -20,7 +19,7 @@ class Order
 
     }
     /**
-     * 订单表字段字典
+     * 订单表字段值字典
      *
      * @var Array
      */
@@ -49,6 +48,22 @@ class Order
         )
     );
     /**
+     * 获取订单详情
+     *
+     * 详细描述（略）
+     * @param string $para 查询条件数组
+     * @return array 订单详情数组
+     */
+    public function getInfo($para){
+        $order_info = pdo_fetch("SELECT * FROM " . tablename("sz_yi_order") . " WHERE id = :id and uniacid=:uniacid", array(
+            ":id" => $para['id'],
+            ":uniacid" => $para["uniacid"]
+        ));
+        $order_info["statusvalue"] = $order_info["status"];
+        return $order_info;
+    }
+
+    /**
      * 获取订单列表
      *
      * 详细描述（略）
@@ -58,19 +73,23 @@ class Order
     public function getList($para)
     {
         global $_W;
-        $condition['status'] = $this->getStatusCondition($para['status']);
-        $condition['pay_type'] = $this->getPayTypeCondition($para['pay_type']);
+        if((int)($para['status'])) {
+            $condition['status'] = $this->getStatusCondition($para['status']);
+        }
+        if((int)($para['pay_type'])) {
+            $condition['pay_type'] = $this->getPayTypeCondition($para['pay_type']);
+        }
         if($para['is_supplier_uid']){
             $condition['supplier'] .= $this->getSupplierCondition($_W['uid']);
         }
         if(!empty($para['id'])){
             $condition['id'] = "AND o.id < {$para['id']}";
-
         }
         $condition['other'] = 'AND o.uniacid = :uniacid and o.deleted=0';
         $paras = array(
             ":uniacid" => $_W["uniacid"]
         );
+        
         $condition_str = ' 1 ';
         $condition_str .= implode(' ',$condition);
         $sql = 'select o.ordersn,o.status,o.price ,o.id
@@ -87,7 +106,7 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
     }
     /**
      * 处理订单列表
-     * 添加包含商品列表,翻译数字字段等
+     * 添加包含商品列表,翻译字段数字值等
      *
      * @param array $order_list 订单列表
      * @return array 处理过的订单列表
@@ -96,29 +115,29 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
         global $_W;
         $status_name_map = $this->name_map['status'];
         $r_type = $this->name_map['r_type'];
-        foreach ($order_list as & $value) {
-            $pt = $value["paytype"];
-            $value["status_name"] = $status_name_map[$value["status"]];
-            if ($pt == 3 && empty($value["status"])) {
-                $value["status"] = $status_name_map[1];
+        foreach ($order_list as & $order_item) {
+            $pay_type = $order_item["paytype"];
+            $order_item["status_name"] = $status_name_map[$order_item["status"]];
+            if ($pay_type == 3 && empty($order_item["status"])) {
+                $order_item["status"] = $status_name_map[1];
             }
-            if ($value["status"] == 1) {
-                if ($value["isverify"] == 1) {
-                    $value["status"] = "待使用";
-                } else if (empty($value["addressid"])) {
-                    $value["status"] = "待取货";
+            if ($order_item["status"] == 1) {
+                if ($order_item["isverify"] == 1) {
+                    $order_item["status"] = "待使用";
+                } else if (empty($order_item["addressid"])) {
+                    $order_item["status"] = "待取货";
                 }
             }
-            if ($value["status"] == - 1) {
-                $value['status'] = $value['rstatus'];
-                if (!empty($value["refundtime"])) {
-                    if ($value['rstatus'] == 1) {
-                        $value['status'] = '已' . $r_type[$value['rtype']];
+            if ($order_item["status"] == - 1) {
+                $order_item['status'] = $order_item['rstatus'];
+                if (!empty($order_item["refundtime"])) {
+                    if ($order_item['rstatus'] == 1) {
+                        $order_item['status'] = '已' . $r_type[$order_item['rtype']];
                     }
                 }
             }
-            $order_goods = $this->getOrderGoods($value["id"],$_W["uniacid"]);
-            $value["goods"] = set_medias($order_goods, "thumb");
+            $order_goods = $this->getOrderGoods($order_item["id"],$_W["uniacid"]);
+            $order_item["goods"] = set_medias($order_goods, "thumb");
         }
         return $order_list;
     }
@@ -136,35 +155,36 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
             ":uniacid" => $uniacid,
             ":orderid" => $order_id
         ));
-        foreach ($order_goods as & $og) {
+        foreach ($order_goods as & $goods_item) {
 
-            $goods = "" . $og["title"] . "";
-            if (!empty($og["optiontitle"])) {
-                $goods.= " 规格: " . $og["optiontitle"];
+            $goods = "" . $goods_item["title"] . "";
+            if (!empty($goods_item["optiontitle"])) {
+                $goods.= " 规格: " . $goods_item["optiontitle"];
             }
-            if (!empty($og["option_goodssn"])) {
-                $og["goodssn"] = $og["option_goodssn"];
+            if (!empty($goods_item["option_goodssn"])) {
+                $goods_item["goodssn"] = $goods_item["option_goodssn"];
             }
-            if (!empty($og["option_productsn"])) {
-                $og["productsn"] = $og["option_productsn"];
+            if (!empty($goods_item["option_productsn"])) {
+                $goods_item["productsn"] = $goods_item["option_productsn"];
             }
-            if (!empty($og["goodssn"])) {
-                $goods.= " 商品编号: " . $og["goodssn"];
+            if (!empty($goods_item["goodssn"])) {
+                $goods.= " 商品编号: " . $goods_item["goodssn"];
             }
-            if (!empty($og["productsn"])) {
-                $goods.= " 商品条码: " . $og["productsn"];
+            if (!empty($goods_item["productsn"])) {
+                $goods.= " 商品条码: " . $goods_item["productsn"];
             }
-            $goods.= " 单价: " . ($og["price"] / $og["total"]) . " 折扣后: " . ($og["realprice"] / $og["total"]) . " 数量: " . $og["total"] . " 总价: " . $og["price"] . " 折扣后: " . $og["realprice"] . "";
-            if ($plugin_diyform && !empty($og["diyformfields"]) && !empty($og["diyformdata"])) {
-                $diyformdata_array = $plugin_diyform->getDatas(iunserializer($og["diyformfields"]) , iunserializer($og["diyformdata"]));
+            $goods.= " 单价: " . ($goods_item["price"] / $goods_item["total"]) . " 折扣后: " . ($goods_item["realprice"] / $goods_item["total"]) . " 数量: " . $goods_item["total"] . " 总价: " . $goods_item["price"] . " 折扣后: " . $goods_item["realprice"] . "";
+            if ($plugin_diyform && !empty($goods_item["diyformfields"]) && !empty($goods_item["diyformdata"])) {
+                $diyformdata_array = $plugin_diyform->getDatas(iunserializer($goods_item["diyformfields"]) , iunserializer($goods_item["diyformdata"]));
                 $diyformdata = "";
                 foreach ($diyformdata_array as $da) {
                     $diyformdata.= $da["name"] . ": " . $da["value"] . "";
                 }
-                $og["goods_diyformdata"] = $diyformdata;
+                $goods_item["goods_diyformdata"] = $diyformdata;
             }
-            $og['goods_attribute'] = $goods;
-            $og = array_part('id,thumb,title,price,total,goods_attribute',$og);
+            //todo 应该取goods_option数组
+            $goods_item['goods_attribute'] = $goods;
+            $goods_item = array_part('id,thumb,title,price,total,goods_attribute',$goods_item);
         }
         return $order_goods;
     }
@@ -186,11 +206,10 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
      * @return string 支付方式sql查询条件字符串
      */
     protected function getPayTypeCondition($pay_type){
-        $condition='';
         if ($pay_type == "2") {
-            $condition.= " AND ( o.paytype =21 or o.paytype=22 or o.paytype=23 )";
+            $condition= " AND ( o.paytype =21 or o.paytype=22 or o.paytype=23 )";
         } else {
-            $condition.= " AND o.paytype =" . intval($pay_type);
+            $condition= " AND o.paytype =" . intval($pay_type);
         }
         return $condition;
     }

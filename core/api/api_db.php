@@ -58,18 +58,27 @@ return array(
         )
     ),
     'order' => array(
-    'describe' => '订单',
-    'method' => array(
-        'display' => array(
-            'describe' => '列表',
-            'para' => array(
-                'uid' => '1',
-                'uniacid' => '2',
-                'id' => '1',
-
+        'describe' => '订单',
+        'method' => array(
+            'display' => array(
+                'describe' => '列表',
+                'para' => array(
+                    'uid' => '1',
+                    'uniacid' => '2',
+                    'id' => '0',
+                    'status'=>'2'
+                ),
+                'data' => array()
             ),
-            'data' => array()
+            'detail' => array(
+                'describe' => '详情',
+                'para' => array(
+                    'uid' => '1',
+                    'uniacid' => '2',
+                    'id' => '1',
+                ),
+                'data' => array()
+            )
         )
     )
-)
 );

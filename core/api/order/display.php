@@ -10,12 +10,6 @@
  */
 //$api->validate('username','password');
 $_YZ->ca("order.view.status_1|order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status5");
-$pindex = max(1, intval($_GPC["page"]));
-$psize = 20;
-$sendtype = !isset($_GPC["sendtype"]) ? 0 : $_GPC["sendtype"];
-$paras1 = array(
-    ":uniacid" => $_W["uniacid"]
-);
 
 $order_list = $_YZ->m('order')->getList(
     array(
@@ -28,5 +22,6 @@ $order_list = $_YZ->m('order')->getList(
 if(count($order_list)==0){
     $_YZ->returnSuccess([],'暂无数据');
 }
+
 dump($order_list);
 $_YZ->returnSuccess($order_list);
