@@ -11,7 +11,7 @@ if ($_W['isajax']) {
 	if ($_W['ispost']) {
 		$time = time();
 		$channel_goods = pdo_fetchall("SELECT og.id FROM " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) WHERE og.uniacid={$_W['uniacid']} AND og.channel_id={$member['id']} AND o.status=3 AND og.channel_apply_status=0");
-		$applysn = m('common')->createNO('commission_apply', 'applyno', 'CA');
+		$applyno = m('common')->createNO('commission_apply', 'applyno', 'CA');
 		$apply_ordergoods_ids = array();
         foreach ($channel_goods as $key => $value) {
             $apply_ordergoods_ids[] = $value['id'];
@@ -20,7 +20,7 @@ if ($_W['isajax']) {
 		$apply = array(
 			'openid'				=> $openid,
 			'type'					=> $_GPC['type'],
-			'applysn'				=> $applysn,
+			'applyno'				=> $applyno,
 			'apply_money'			=> $commission_ok,
 			'apply_time'			=> $time,
 			'status' 				=> 0,
@@ -34,7 +34,7 @@ if ($_W['isajax']) {
 				pdo_update('sz_yi_order_goods', array('channel_apply_status' => 1), array('id' => $value['id'], 'uniacid' => $_W['uniacid']));
 			}
 			$tmp_sp_goods 				= $channel_goods;
-			$tmp_sp_goods['applysn'] 	= $applysn;
+			$tmp_sp_goods['applyno'] 	= $applyno;
 			@file_put_contents(IA_ROOT . "/addons/sz_yi/data/channel_goods.log", print_r($tmp_sp_goods, 1), FILE_APPEND);
 		}
 
