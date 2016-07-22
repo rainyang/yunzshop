@@ -98,7 +98,7 @@ if ($operation =='updatelot_submit') {
             $firstday = date('Y-m-01', time());
             //当月最后一天
             $endtime = strtotime(date('Y-m-d', strtotime("$firstday +1 month -1 day")));
-            $rooms = pdo_fetchall("select * from " . tablename("sz_yi_hotel_room") );
+            $rooms = pdo_fetchall("select * from " . tablename("sz_yi_hotel_room")."where uniacid =". $_W['uniacid']);
             include $this->template('room_status_lot');
             exit();
 
