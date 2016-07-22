@@ -46,5 +46,8 @@ class HotelWeb extends Plugin
 	{
 		$this->_exec_plugin(__FUNCTION__);
 	}
-
+	public function prints()
+	{
+		$this->_exec_plugin(__FUNCTION__);
+	}
 }

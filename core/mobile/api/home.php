@@ -54,7 +54,10 @@ $res = array(
     'goods' => $goods,
     'search' => $this->createMobileUrl('shop/list'),
     'msglist' => $this->createMobileUrl('member/messagelist'),
-    'more' => $this->createMobileUrl('shop/list3')
+    'more' => $this->createMobileUrl('shop/list3'),
+    'groups' => $this->createMobileUrl('shop/list',array("order"=>"sales","by"=>"shop")),
+    'distribution' => $this->createPluginMobileUrl('commission'),
+    'bag' => $this->createMobileUrl('shop/cart')
 );
 echo json_encode($res);
 //$app_interface->checkResultAndReturn($res);
