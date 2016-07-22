@@ -1635,18 +1635,21 @@ if ($_W['isajax']) {
                     }
                     $print_order['goods']=$ordergoods;
                     $print_id = $print_order['goods'][0]['print_id'];
-                    $print_detail = pdo_fetch("select * from " . tablename('sz_yi_print_list') . " where uniacid={$_W['uniacid']} and id={$print_id}");
-                    if(!empty($print_detail)){
-                            $member_code = $print_detail['member_code'];
-                            $device_no = $print_detail['print_no'];
-                            $key = $print_detail['key'];
-                            include IA_ROOT.'/addons/sz_yi/core/model/print.php';
-                             //房间金额信息
-                            $sql2 = 'SELECT * FROM ' . tablename('sz_yi_order_room') . ' WHERE `orderid` = :orderid';
-                            $params2 = array(':orderid' => $orderid);
-                            $price_list = pdo_fetchall($sql2, $params2);
-                            $msgNo = testSendFreeMessage($print_order, $member_code, $device_no, $key,$set,$price_list);
+                    if($print_id!=''){
+                        $print_detail = pdo_fetch("select * from " . tablename('sz_yi_print_list') . " where uniacid={$_W['uniacid']} and id={$print_id}");
+                        if(!empty($print_detail)){
+                                $member_code = $print_detail['member_code'];
+                                $device_no = $print_detail['print_no'];
+                                $key = $print_detail['key'];
+                                include IA_ROOT.'/addons/sz_yi/core/model/print.php';
+                                 //房间金额信息
+                                $sql2 = 'SELECT * FROM ' . tablename('sz_yi_order_room') . ' WHERE `orderid` = :orderid';
+                                $params2 = array(':orderid' => $orderid);
+                                $price_list = pdo_fetchall($sql2, $params2);
+                                $msgNo = testSendFreeMessage($print_order, $member_code, $device_no, $key,$set,$price_list);
+                        }
                     }
+   
             }
         }
        
