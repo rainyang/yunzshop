@@ -8,6 +8,21 @@ $apply_id = $_GPC['apply_id'];
 $condition = ' and o.uniacid=:uniacid and o.status>=3';
 if (!empty($apply_id)) {
     $apply_info = pdo_fetch("select * from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and id={$apply_id}");
+    if (empty($apply_info['apply_ordergoods_ids'])) {
+        $ap_id = $apply_info['id'] - 1;
+        $ap_time = pdo_fetchcolumn("select apply_time from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and id={$ap_id}");
+        if (empty($ap_time)) {
+            $ap_time = 0;
+        }
+        $ordergoods_ids = pdo_fetchall("select og.id from " . tablename('sz_yi_order_goods') . " og left join " . tablename('sz_yi_order') . " o on o.id=og.orderid where og.uniacid={$_W['uniacid']} and o.status=3 and og.supplier_uid={$apply_info['uid']} and o.finishtime<{$apply_info['apply_time']} and o.finishtime>{$ap_time}");
+        $ap_og_ids = array();
+        foreach ($ordergoods_ids as $key => $value) {
+            $ap_og_ids[] = $value['id'];
+        }
+        $ap_og_ids = implode(',', $ap_og_ids);
+        pdo_update('sz_yi_supplier_apply', array('apply_ordergoods_ids' => $ap_og_ids), array('uniacid' => $_W['uniacid'], 'id' => $apply_id));
+        $apply_info = pdo_fetch("select * from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and id={$apply_id}");
+    }
     $condition .= " and og.id in ({$apply_info['apply_ordergoods_ids']}) ";
 }
 $suppliers = pdo_fetchall("select * from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and roleid = (select id from " .tablename('sz_yi_perm_role') . " where status1=1 LIMIT 1)");

@@ -177,35 +177,37 @@ $res = array(
 
     ),
     "yue" => array(     //余额
-        "price" => 0,
+        "price" => $member['credit2'],
+        "status" => empty($set['trade']['closerecharge']) ? 1 : 0,
         "url" => $this->createMobileUrl('member/recharge',array('openid'=>$openid)),
     ),
     "jifen" => array(   //积分
-        "total" => 0,
+        "total" => $member['credit1'],
+        "status" => $open_creditshop ? 1 : 0,
         "url" => $this->createPluginMobileUrl('creditshop'),
     ),
     "order" => array(    //订单
         "url" => $this->createMobileUrl('order'),
         "order_status_0" => array(      //待付款
-            "num" => 0,
+            "num" => $order['status0'],
             "url" => $this->createMobileUrl('order',array('status'=>0))
         ),
         "order_status_1" => array(      //待发货
-            "num" => 0,
+            "num" => $order['status1'],
             "url" => $this->createMobileUrl('order',array('status'=>1))
         ),
         "order_status_2" => array(      //待收货
-            "num" => 0,
+            "num" => $order['status2'],
             "url" => $this->createMobileUrl('order',array('status'=>2))
         ),
         "order_status_4" => array(       //待退款
-            "num" => 0,
+            "num" => $order['status4'],
             "url" => $this->createMobileUrl('order',array('status'=>4))
         ),
     ),
     'urls' => array(   //导航栏目
         "fenxiao" => array(      //分销中心
-            "status" => 0,   //0-隐藏,1-显示
+            "status" => $hascom ? 1 : 0,   //0-隐藏,1-显示
             "url" => $this->createPluginMobileUrl('commission')
         ),
         "wodeziliao" => array(    //我的资料
@@ -213,34 +215,34 @@ $res = array(
             "url" => $this->createMobileUrl('member/info')
         ),
         "gongyingshang" => array(  //供应商申请
-            "status" => 0,
+            "status" => p('supplier') ? 1 : 0,
             "url" => $this->createPluginMobileUrl('supplier/af_supplier')
         ),
         "fenhong" => array(   //分红中心
-            "status" => 0,
+            "status" => $pluginbonus && empty($bonus_set['bonushow']) ? 1 : 0,
             "url" => $this->createPluginMobileUrl('bonus/index')
         ),
         "tuijianma" => array(   //我的推荐码
-            "status" => 0,
+            "status" => $app['accept'] ? 1 : 0,
             "url" => $this->createPluginMobileUrl('member/referral')
         ),
         "youhuiquan1" => array(   //领取优惠券
-            "status" => 0,
+            "status" => $hascoupon && $hascouponcenter ? 1 : 0,
             "url" => $this->createPluginMobileUrl('coupon')
         ),
         "youhuiquan2" => array(   //我的优惠券
-            "status" => 0,
-            "num" => 0,
+            "status" => $hascoupon ? 1 : 0,
+            "num" => $counts['couponcount'],
             "url" => $this->createPluginMobileUrl('coupon/my')
         ),
         "gouwuche" => array(   //我的购物车
             "status" => 1,
-            "num" => 0,
+            "num" => $counts['cartcount'],
             "url" => $this->createMobileUrl('shop/cart')
         ),
         "shoucang" => array(   //我的收藏
             "status" => 1,
-            "num" => 0,
+            "num" => $counts['favcount'],
             "url" => $this->createMobileUrl('shop/favorite')
         ),
         "zuji" => array(  //我的足迹
@@ -260,11 +262,11 @@ $res = array(
             "url" => $this->createMobileUrl('member/pushlist')
         ),
         "yuetixian" => array(  //余额提现
-            "status" => 0,
+            "status" => isset($set['trade']) && $set['trade']['withdraw']==1 ? 1 : 0,
             "url" => $this->createMobileUrl('member/withdraw')
         ),
         "chongzhi" => array(  //充值记录
-            "status" => 0,
+            "status" => isset($set['trade']) && ($set['trade']['withdraw']==1 || empty($set['trade']['closerecharge'])) ? 1 : 0,
             "url" => $this->createMobileUrl('member/log')
         ),
         "shouhuodizhi" => array(  //我的地址管理
