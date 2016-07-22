@@ -145,7 +145,7 @@ if ($operation =='updatelot_submit') {
             $params = array();
             $sql = "SELECT r.* FROM " . tablename('sz_yi_hotel_room') . "as r";
             $sql .= " WHERE 1 = 1";
-           // $sql .= " AND r.hotelid = $hotelid";
+            $sql .= " AND uniacid =". $_W['uniacid'];
            // $sql .= " AND r.weid = $weid";
             $list = pdo_fetchall($sql, $params);
             foreach ($list as $key => $value) {
