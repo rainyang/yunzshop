@@ -19,6 +19,7 @@ if ($_W['isajax']) {
         $apply_ordergoods_ids = implode(',', $apply_ordergoods_ids);
 		$apply = array(
 			'openid'				=> $openid,
+			'mid'					=> $member['id'],
 			'type'					=> $_GPC['type'],
 			'applyno'				=> $applyno,
 			'apply_money'			=> $commission_ok,
