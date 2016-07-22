@@ -133,14 +133,20 @@
                 if(!json.result.mycansettle){
                      if(json.result.mysettlemoney>0){
                         core.tip.show('您需要自己购买订单完成，共计'+json.result.mysettlemoney+'元才能申请{php echo $this->set['texts']['withdraw']}!');
-                        return;    
+                        return false;    
                      }
                 }
+
                 if(!json.result.cansettle){
                      if(json.result.settlemoney>0){
-                     core.tip.show('需到'+json.result.settlemoney+'元才能申请{php echo $this->set['texts']['withdraw']}!');    
+                     core.tip.show('需到'+json.result.settlemoney+'元才能申请{php echo $this->set['texts']['withdraw']}!');
+                        return false;    
+                     }else if(json.result.proportion_money>0){
+                        core.tip.show('需在消费'+json.result.proportion_money+'元才能申请提现!');
+                        return false;
                      }else{
-                        core.tip.show('无可提{php echo $this->set['texts']['commission']}!');        
+                        core.tip.show('无可提{php echo $this->set['texts']['commission']}!'); 
+                        return false;       
                      }
                 }
             });

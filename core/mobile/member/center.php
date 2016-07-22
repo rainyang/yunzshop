@@ -10,6 +10,12 @@ $set = m('common')->getSysset(array('trade'));
 $shop_set = m('common')->getSysset(array('shop'));
 $shopset   = m('common')->getSysset('shop');
 
+$setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+	':uniacid' => $_W['uniacid']
+));
+$appset     = unserialize($setdata['sets']);
+$app = $appset['app']['base'];
+
 $member = m('member')->getMember($openid);
 $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
 
@@ -66,7 +72,7 @@ if(!empty($pluginbonus)){
 		$bonus_start = true;
 		$bonus_text = $bonus_set['texts']['center'] ? $bonus_set['texts']['center'] : "分红明细";
 	}
-    
+
 }
 $shopset['bonus_start'] = $bonus_start;
 $shopset['bonus_text'] = $bonus_text;
@@ -98,7 +104,7 @@ if ($plugin_article) {
 // --------------------->
 $reurnset = m('plugin')->getpluginSet('return');
 $shopset['isreturn'] = false;
-if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 || $reurnset['islevelreturn']== 1 ){ 
+if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 || $reurnset['islevelreturn']== 1 ){
 	$shopset['isreturn'] = true;
 }
 if (p('ranking')) {
@@ -106,7 +112,7 @@ if (p('ranking')) {
 
 	$shopset['rankingname'] = $ranking_set['ranking']['rankingname']?$ranking_set['ranking']['rankingname']:"排行榜";
 	$shopset['isranking'] = $ranking_set['ranking']['isranking'];
-} 
+}
 
 $open_creditshop = false;
 $creditshop = p('creditshop');
@@ -154,7 +160,7 @@ if ($_W['isajax']) {
 		$sql .= " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$time} && c.timeend>={$time})) order by d.gettime desc";
 		$counts['couponcount'] = pdo_fetchcolumn($sql, array(':openid' => $openid, ':uniacid' => $_W['uniacid']));
 	}
-	show_json(1, array('member' => $member,'referrer'=>$referrer,'shop_set'=>$shop_set, 'order' => $order,'orderhotel' => $orderhotel, 'level' => $level, 'open_creditshop' => $open_creditshop, 'counts' => $counts, 'shopset' => $shopset, 'trade' => $trade));
+	show_json(1, array('member' => $member,'referrer'=>$referrer,'shop_set'=>$shop_set, 'order' => $order,'orderhotel' => $orderhotel, 'level' => $level, 'open_creditshop' => $open_creditshop, 'counts' => $counts, 'shopset' => $shopset, 'trade' => $trade, 'app'=>$app));
 }
 $pcashier = p('cashier');
 $has_cashier = false;

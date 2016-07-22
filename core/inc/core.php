@@ -76,6 +76,7 @@ class Core extends WeModuleSite
 
             LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'].",master");
         }
+
     }
 
     public function sendSms($mobile, $code, $templateType = 'reg')
@@ -189,26 +190,27 @@ class Core extends WeModuleSite
         $designer = p('designer');
         if ($designer && $_GPC['p'] != 'designer') {
             $menu = $designer->getDefaultMenu();
-            $newmenu = json_decode($menu['menus'], true);
-            // foreach ($newmenu as &$val) {
-            //     if (!empty($val['url'])) {
-            //         if (strpos($val['url'], 'commission') !== false) {
-            //             $val['url'] = $this->createMobileUrl('member/bindapp', array('op' => 'black'));
-            //             $val['title'] = 'APP下载';
-            //         }
-            //     }
-            //     if (!empty($val['submenu'])) {
-            //         foreach ($val['submenu'] as &$sv) {
-            //             if (strpos($sv['url'], 'commission') !== false) {
-            //                 $sv['url'] = $this->createMobileUrl('member/bindapp', array('op' => 'black'));
-            //                 $sv['title'] = 'APP下载';
-            //             }
-            //         }
-            //     }
-            // }
-            $menu['menus'] = json_encode($newmenu);
-            //print_r(json_decode($menu['menus'], true));exit;
             if (!empty($menu)) {
+                if ($is_weixin_show) {
+                    $newmenu = json_decode($menu['menus'], true);
+                    foreach ($newmenu as &$val) {
+                        if (!empty($val['url'])) {
+                            if (strpos($val['url'], 'commission') !== false) {
+                                $val['url'] = $this->createMobileUrl('member/bindapp');
+                                $val['title'] = 'APP下载';
+                            }
+                        }
+                        if (!empty($val['submenu'])) {
+                            foreach ($val['submenu'] as &$sv) {
+                                if (strpos($sv['url'], 'commission') !== false) {
+                                    $sv['url'] = $this->createMobileUrl('member/bindapp');
+                                    $sv['title'] = 'APP下载';
+                                }
+                            }
+                        }
+                    }
+                    $menu['menus'] = json_encode($newmenu);
+                }
                 $this->footer['diymenu']   = true;
                 $this->footer['diymenus']  = $menu['menus'];
                 $this->footer['diyparams'] = $menu['params'];
@@ -251,6 +253,13 @@ class Core extends WeModuleSite
                         'ico' => 'sitemap',
                         'url' => $this->createPluginMobileUrl('commission')
                     );
+                    if ($is_weixin_show) {
+                        $this->footer['commission'] = array(
+                            'text' => 'APP下载',
+                            'ico' => 'sitemap',
+                            'url' => $this->createMobileUrl('member/bindapp')
+                        );
+                    }
                 }
             } else {
                 if (empty($member['agentblack'])) {
@@ -260,6 +269,13 @@ class Core extends WeModuleSite
                             'ico' => 'sitemap',
                             'url' => $this->createPluginMobileUrl('commission/register')
                         );
+                        if ($is_weixin_show) {
+                            $this->footer['commission'] = array(
+                                'text' => 'APP下载',
+                                'ico' => 'sitemap',
+                                'url' => $this->createPluginMobileUrl('member/bindapp')
+                            );
+                        }
                     } else {
                         $this->footer['commission'] = array(
                             'text' => empty($set['closemyshop']) ? $set['texts']['shop'] : $set['texts']['center'],
@@ -469,9 +485,9 @@ class Core extends WeModuleSite
             if (!is_file($source)) {
                 $names      = explode('/', $filename);
                 $pluginname = $names[0];
-                if($pluginname == "designer"){
+                if ($pluginname == "designer") {
                     $ptemplate = $template;
-                }else{
+                } else {
                     $ptemplate  = m('cache')->getString('template_' . $pluginname);
                 }
                 if (empty($ptemplate)) {
@@ -537,5 +553,3 @@ class Core extends WeModuleSite
         }
     }*/
 }
-
-

@@ -97,6 +97,8 @@ class Sz_yiModuleSite extends Core {
     public function doMobileMeet(){ $this->_exec(__FUNCTION__,'index',false); }
     //餐饮
     public function doMobileRest(){ $this->_exec(__FUNCTION__,'index',false); }
+    //接口
+    public function doMobileApi(){ $this->_exec(__FUNCTION__,'index',false); }
     //订单
     //支付成功
     public function payResult($params){  return m('order')->payResult($params); }
