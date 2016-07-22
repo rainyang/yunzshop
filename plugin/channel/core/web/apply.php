@@ -36,7 +36,7 @@ if ($operation == 'reviewed') {
     }
 }
 if (!empty($_GPC['mid'])) {
-    $condition .= ' AND id=:mid';
+    $condition .= ' AND mid=:mid';
     $params[':mid'] = intval($_GPC['mid']);
 }
 if (!empty($_GPC['realname'])) {

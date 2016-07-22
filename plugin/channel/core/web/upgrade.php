@@ -39,6 +39,7 @@ COMMENT = '渠道商等级';
 
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_channel` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `mid` INT(11) NOT NULL,
   `uniacid` INT(11) NOT NULL,
   `openid` VARCHAR(50) NULL,
   `realname` VARCHAR(45) NOT NULL COMMENT '真实姓名',
@@ -70,7 +71,7 @@ COMMENT = '渠道商申请提现';
 
 
 
-CREATE TABLE IF NOT EXISTS `mydb`.`ims_sz_yi_channel_stock` (
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_stock` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `uniacid` INT(11) NOT NULL,
   `openid` VARCHAR(50) NULL,
