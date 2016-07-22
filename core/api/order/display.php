@@ -10,8 +10,8 @@
  */
 //$api->validate('username','password');
 $_YZ->ca("order.view.status_1|order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status5");
-
-$order_list = $_YZ->m('order')->getList(
+$order_model = new \model\api\order();
+$order_list = $order_model->getList(
     array(
         'id'=>intval($_GPC["id"]),
         'status'=>intval($_GPC["status"]),

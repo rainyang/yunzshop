@@ -9,6 +9,15 @@
 
 namespace Api;
 require_once __API_ROOT__ . '/base.class.php';
+spl_autoload_register(function ($class_name) {
+    $name_space = substr($class_name,0,strrpos($class_name,'\\'));
+    $parts = explode('\\', $class_name);
+    if($name_space=='model\api'){
+        array_unshift($parts,__API_ROOT__.'/..');
+        $dir = implode('/',$parts);
+        require $dir.'.php';
+    }
+});
 
 class YZ extends base
 {

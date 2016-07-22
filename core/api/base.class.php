@@ -33,7 +33,7 @@ class Base
         $this->aes = new \Common\Org\Aes();
 
         $this->para = json_decode(urldecode($this->aes->siyuan_aes_decode(str_replace(" ", "+", $_POST['para']))), TRUE);//
-        //$this->addLog();
+        $this->addLog();
     }
     /**
      * 返回解密的参数
@@ -133,11 +133,13 @@ class Base
     protected function addLog()
     {
         $data['para'] = $this->para == 'null' ? '' : json_encode($this->para, JSON_UNESCAPED_UNICODE);
-        $data['api'] = $api_name = __INFO__;
+        $data['api'] = $_GET['api'];
         $data['client_ip'] = $this->getClientIp();
         $data['error_info'] = "";
         $data['is_error'] = "";
-        D('ApiLog')->add($data);
+        $data['date_added'] = date('Y-m-d H:i:s');
+
+        pdo_insert("sz_yi_api_log", $data);
     }
     /**
      * php错误回调函数

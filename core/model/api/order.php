@@ -8,11 +8,11 @@
  * @author    shenyang<shenyang@yunzshop.com>
  * @version   v1.0
  */
-namespace Api\Model;
+namespace model\api;
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-class Order
+class order
 {
     public function __construct()
     {
@@ -54,12 +54,12 @@ class Order
      * @param string $para 查询条件数组
      * @return array 订单详情数组
      */
-    public function getInfo($para){
-        $order_info = pdo_fetch("SELECT * FROM " . tablename("sz_yi_order") . " WHERE id = :id and uniacid=:uniacid", array(
+    public function getInfo($para,$fields='*'){
+        $order_info = pdo_fetch("SELECT {$fields} FROM " . tablename("sz_yi_order") . " WHERE id = :id and uniacid=:uniacid", array(
             ":id" => $para['id'],
             ":uniacid" => $para["uniacid"]
         ));
-        $order_info["statusvalue"] = $order_info["status"];
+        $order_info = $this->formatOrderInfo($order_info);
         return $order_info;
     }
 
@@ -73,6 +73,7 @@ class Order
     public function getList($para)
     {
         global $_W;
+        $condition[] = ' 1';
         if((int)($para['status'])) {
             $condition['status'] = $this->getStatusCondition($para['status']);
         }
@@ -80,7 +81,7 @@ class Order
             $condition['pay_type'] = $this->getPayTypeCondition($para['pay_type']);
         }
         if($para['is_supplier_uid']){
-            $condition['supplier'] .= $this->getSupplierCondition($_W['uid']);
+            $condition['supplier'] = $this->getSupplierCondition($_W['uid']);
         }
         if(!empty($para['id'])){
             $condition['id'] = "AND o.id < {$para['id']}";
@@ -89,10 +90,9 @@ class Order
         $paras = array(
             ":uniacid" => $_W["uniacid"]
         );
-        
-        $condition_str = ' 1 ';
-        $condition_str .= implode(' ',$condition);
-        $sql = 'select o.ordersn,o.status,o.price ,o.id
+
+        $condition_str = implode(' ',$condition);
+        $sql = 'select o.ordersn,o.status,o.price ,o.id as order_id
 from ' . tablename("sz_yi_order") . " o" . " left join " . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " 
 left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " 
 left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " 
@@ -101,7 +101,9 @@ left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.
 where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 ";
 
         $list = pdo_fetchall($sql, $paras);
-        $list = $this->formatOrderList($list);
+        foreach ($list as &$order_item){
+            $order_item = $this->formatOrderInfo($order_item);
+        }
         return $list;
     }
     /**
@@ -111,35 +113,34 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
      * @param array $order_list 订单列表
      * @return array 处理过的订单列表
      */
-    protected function formatOrderList($order_list){
+    protected function formatOrderInfo($order_info){
         global $_W;
         $status_name_map = $this->name_map['status'];
         $r_type = $this->name_map['r_type'];
-        foreach ($order_list as & $order_item) {
-            $pay_type = $order_item["paytype"];
-            $order_item["status_name"] = $status_name_map[$order_item["status"]];
-            if ($pay_type == 3 && empty($order_item["status"])) {
-                $order_item["status"] = $status_name_map[1];
+            $pay_type = $order_info["paytype"];
+            $order_info["status_name"] = $status_name_map[$order_info["status"]];
+            if ($pay_type == 3 && empty($order_info["status"])) {
+                $order_info["status"] = $status_name_map[1];
             }
-            if ($order_item["status"] == 1) {
-                if ($order_item["isverify"] == 1) {
-                    $order_item["status"] = "待使用";
-                } else if (empty($order_item["addressid"])) {
-                    $order_item["status"] = "待取货";
+            if ($order_info["status"] == 1) {
+                if ($order_info["isverify"] == 1) {
+                    $order_info["status"] = "待使用";
+                } else if (empty($order_info["addressid"])) {
+                    $order_info["status"] = "待取货";
                 }
             }
-            if ($order_item["status"] == - 1) {
-                $order_item['status'] = $order_item['rstatus'];
-                if (!empty($order_item["refundtime"])) {
-                    if ($order_item['rstatus'] == 1) {
-                        $order_item['status'] = '已' . $r_type[$order_item['rtype']];
+            if ($order_info["status"] == - 1) {
+                $order_info['status'] = $order_info['rstatus'];
+                if (!empty($order_info["refundtime"])) {
+                    if ($order_info['rstatus'] == 1) {
+                        $order_info['status'] = '已' . $r_type[$order_info['rtype']];
                     }
                 }
             }
-            $order_goods = $this->getOrderGoods($order_item["id"],$_W["uniacid"]);
-            $order_item["goods"] = set_medias($order_goods, "thumb");
-        }
-        return $order_list;
+            $order_goods = $this->getOrderGoods($order_info["order_id"],$_W["uniacid"]);
+            $order_info["goods"] = set_medias($order_goods, "thumb");
+        //dump($order_info);
+        return $order_info;
     }
     /**
      * 获取订单商品列表
@@ -149,9 +150,9 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
      * @param int $uniacid  公众号ID
      * @return array 订单包含的商品列表
      */
-    protected function getOrderGoods($order_id,$uniacid){
+    public function getOrderGoods($order_id,$uniacid){
         $plugin_diyform = p("diyform");
-        $order_goods = pdo_fetchall("select g.id,g.title,g.thumb,g.goodssn,og.goodssn as option_goodssn, g.productsn,og.productsn as option_productsn, og.total,og.price,og.optionname as optiontitle, og.realprice from " . tablename("sz_yi_order_goods") . " og " . " left join " . tablename("sz_yi_goods") . " g on g.id=og.goodsid " . " where og.uniacid=:uniacid and og.orderid=:orderid ", array(
+        $order_goods = pdo_fetchall("select g.id as goods_id,g.title,g.thumb,g.goodssn,og.goodssn as option_goodssn, g.productsn,og.productsn as option_productsn, og.total,og.price,og.optionname as optiontitle, og.realprice from " . tablename("sz_yi_order_goods") . " og " . " left join " . tablename("sz_yi_goods") . " g on g.id=og.goodsid " . " where og.uniacid=:uniacid and og.orderid=:orderid ", array(
             ":uniacid" => $uniacid,
             ":orderid" => $order_id
         ));
@@ -184,7 +185,7 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
             }
             //todo 应该取goods_option数组
             $goods_item['goods_attribute'] = $goods;
-            $goods_item = array_part('id,thumb,title,price,total,goods_attribute',$goods_item);
+            $goods_item = array_part('goods_id,thumb,title,price,total,goods_attribute',$goods_item);
         }
         return $order_goods;
     }
