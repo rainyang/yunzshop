@@ -83,7 +83,7 @@
                 <p><a class="fl">日期：{$value['time']}</a><a  class="fr">状态：{$status[$value['status']]}</a></p>
                 <p><a class="fl">姓名：{$value['contact']}&nbsp;&nbsp;&nbsp;电话:{$value['mobile']}</a></p>
                 <p ><a class="fl">包厢：{$value['goodtitle']}</a></p>
-                <p style="border-bottom:none">
+                <p style="border-bottom:none;min-height:100px;">
                 <a class="fl">备注：{$value['message']}</a>
                  {if $value['status']=='0'}
                 <a href="{$edit}&id={$value['id']}"class="fr" style="color:#f88917">取消预约</a>
@@ -132,8 +132,11 @@
                     if ($('#message').val() == '') {
                         core.tip.show("请填写留言");
                         return;
-                    }                         
-                               
+                    }   
+                    if ($('#message').val().length>60) {
+                        core.tip.show("请填写不大于60字留言");
+                        return;
+                    }             
                 
                      $("#myform").submit();
                 });

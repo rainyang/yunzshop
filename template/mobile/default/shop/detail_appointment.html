@@ -154,13 +154,7 @@ div.flicking_con a.on{background-position:0 -9px}
         <div class="info">
              <div class="left">
                  <img id="chooser_img" src='<%goods.thumb%>'/>
-             </div>
-             <div class="right">
-                   <div class="price">￥<span id='option_price'><%goods.marketprice%></span></div>
-                   <div class="stock">库存:<span id='option_stock'><%goods.total%></span>件</span> </div>
-                   <div class="option">请选择规格</div>
-             </div>
-            <div class="close" onClick="closechoose()"><i class="fa fa-remove-o"></i></div>
+             </div>           
         </div>
         <div class="other">
             <input type='hidden' id='optionid' value='' />
@@ -235,7 +229,7 @@ div.flicking_con a.on{background-position:0 -9px}
                 <%/if%>
             </d>&nbsp;<span id='productpricecontainer'><%if goods.productprice>0%>市场价￥<%/if%><span id='productprice'><%if goods.productprice>0%><%goods.productprice%><%/if%></span></span>
              
-            <span style='float:right'><d id="stockcontainer">库存:<d id="stock"><%goods.total%></d></d> 销量:<%goods.sales%><%goods.unit%></d></span>
+         
         </div>
        
        <%if saleset && saleset.enoughfree=='1' %>
@@ -334,22 +328,9 @@ div.flicking_con a.on{background-position:0 -9px}
    <div id="buytime" class="good_speci" style="display:none"></div>
    <div id="notbuy" class="good_speci" style="display:none"></div>
    
-   <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1'  && goods.groupbuy=='1'  && goods.levelbuy=='1'%> 
-    <div class="good_speci" onClick="choose()">
-                <span id="optiondiv">请选择商品规格及数量</span>
-                <i class="fa fa-angle-right" style="float:right; line-height:44px; font-size:26px;"></i>
-    </div>
-     <%/if%>
+
        
-    <div class="good_shop">
-        <div class="shop1" onclick="location.href='<%detail.btnurl2%>'">
-        <img src='<%detail.logo%>'/>
-        <div class="shop_info"><%detail.shopname%><br><span><%if detail.totaltitle!=''%><%detail.totaltitle%><%else%>全部宝贝 <%goodscount%> 个 <%/if%></span></div></div>
-        <div class="shop2">
-            <div class="sub1" onclick="location.href='<%detail.btnurl1%>'"><i class="fa fa-list"></i> <%if detail.btntext1!=''%><%detail.btntext1%><%else%>查看全部商品 <%/if%></div>
-            <div class="sub2" onclick="location.href='<%detail.btnurl2%>'"> <i class="fa fa-gift" o></i> <%if detail.btntext2!=''%><%detail.btntext2%><%else%>进店逛逛<%/if%></div>
-        </div>
-    </div>
+    
     <div class="good_info2">
         <div class="menu">
             <div id="nav_1" class="nav navon" onClick="tab(1)">图文详情</div>
@@ -382,9 +363,9 @@ div.flicking_con a.on{background-position:0 -9px}
         </div>
         <div class="cs"  style="width:30%"><i class="fa fa-headphones"></i><br><span>客服</span></div>           
                 <%if goods.type==98%>
-                 <a class="buy" href="index.php?i={$uniacid}&c=entry&do=rest&m=sz_yi" style="background: #ff6801">  在线预约</a> 
+                 <a class="buy" href="index.php?i={$uniacid}&c=entry&do=rest&m=sz_yi" style="background: #ff6801;text-decoration:none">  在线预约</a> 
                 <%else%>
-                 <a class="buy" href="index.php?i={$uniacid}&c=entry&do=meet&m=sz_yi" style="background: #ff6801">  在线预约</a> 
+                 <a class="buy" href="index.php?i={$uniacid}&c=entry&do=meet&m=sz_yi" style="background: #ff6801;text-decoration:none">  在线预约</a> 
                 <%/if%>                  
         </div>
       </div>

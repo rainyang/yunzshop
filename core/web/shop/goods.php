@@ -38,10 +38,15 @@ if(!empty($pluginbonus)){
         $bonus_start = 1;
     }
 }
+$isreturn = false;
 $pluginreturn = p('return');
 if ($pluginreturn) {
     $return_set = $pluginreturn->getSet();
+    if($return_set['isqueue'] == 1 || $return_set['isreturn']== 1 || $return_set['islevelreturn']== 1 ){ 
+        $isreturn = true;
+    }
 }
+
 $shopset = m('common')->getSysset('shop');
 $sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
 $category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');

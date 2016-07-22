@@ -194,6 +194,18 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_book') . " (
   `delete` int(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;
+
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_print_list') . " (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT '0',
+  `name` varchar(45) DEFAULT '',
+  `key` varchar(30) DEFAULT '',
+  `print_no` varchar(30) DEFAULT '',
+  `type` int(1) DEFAULT '0',
+  `status` int(3) DEFAULT '0',
+  `member_code` varchar(50) DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='酒店房间价格表' AUTO_INCREMENT=1 ;
 ";
 pdo_fetchall($sql);
 

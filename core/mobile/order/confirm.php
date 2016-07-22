@@ -674,6 +674,7 @@ if ($_W['isajax']) {
     } elseif ($operation == 'getdispatchprice') {
         $isverify       = false;
         $isvirtual      = false;
+        $isverifysend   = false;
         $deductprice    = 0;
         $deductprice2   = 0;
         $deductcredit2  = 0;
@@ -841,6 +842,9 @@ if ($_W['isajax']) {
                 if (!empty($g["virtual"]) || $g["type"] == 2) {
                     $isvirtual = true;
                 }
+                if ($g['isverifysend'] == 1) {
+                    $isverifysend = true;
+                }
                 if ($g["manydeduct"]) {
                     $deductprice += $g["deduct"] * $g["total"];
                 } else {
@@ -856,7 +860,14 @@ if ($_W['isajax']) {
                     }
                 }
             }
-            if ($isverify) {
+            //仅判断核销了，还需要判断支持配送
+            //如果开启核销并且不支持配送，则没有运费
+            $isDispath = true;
+            if ($isverify && !$isverifysend) {
+                $isDispath = false;
+            }
+
+            if ($isverify && $isDispath) {
                 show_json(1, array(
                     "price" => 0,
                     "hascoupon" => $hascoupon,
@@ -1245,6 +1256,9 @@ if ($_W['isajax']) {
                 if ($data['isverify'] == 2) {
                     $isverify = true;
                 }
+                if ($data['isverifysend'] == 1) {
+                    $isverifysend = true;
+                }
                 if (!empty($data["virtual"]) || $data["type"] == 2) {
                     $isvirtual = true;
                 }
@@ -1280,8 +1294,16 @@ if ($_W['isajax']) {
                     }
                 }
             }
-            if (!$isvirtual && !$isverify && $dispatchtype == 0) {
+
+            //如果开启核销并且不支持配送，则没有运费
+            $isDispath = true;
+            if ($isverify && !$isverifysend) {
+                $isDispath = false;
+            }
+
+            if (!$isvirtual && $isDispath && $dispatchtype == 0) {
                 foreach ($allgoods as $g) {
+                    $g["ggprice"] = $ggprice;
                     $sendfree = false;
                     if (!empty($g["issendfree"])) {
                         $sendfree = true;
@@ -1493,7 +1515,6 @@ if ($_W['isajax']) {
                     $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
                     $params2 = array(':goodsid' =>$_GPC['id']);
                     $room = pdo_fetch($sql2, $params2);
-
                     $totalprice =$_GPC['totalprice'];
                     $goodsprice =$_GPC['goodsprice'];
                 }
@@ -1535,7 +1556,7 @@ if ($_W['isajax']) {
      
             );
             if(p('hotel')){
-                 if($_GPC['type']=='99'){ 
+                if($_GPC['type']=='99'){ 
                      $order['order_type']='3';
                      $order['addressid']='9999999';
                      $order['checkname']=$_GPC['realname'];//以下为酒店订单
@@ -1550,8 +1571,8 @@ if ($_W['isajax']) {
                      $order['depositprice']=$_GPC['depositprice'];
                      $order['depositpricetype']=$_GPC['depositpricetype'];
                      $order['roomid']=$room['id'];
-                     $order['days']=$days;
-                  }
+                     $order['days']=$days;                  
+                }
             }
             if ($diyform_plugin) {
                 if (is_array($order_row["diydata"]) && !empty($order_formInfo)) {
@@ -1565,7 +1586,7 @@ if ($_W['isajax']) {
             if (!empty($address)) {
                 $order['address'] = iserializer($address);
             }
-            pdo_insert('sz_yi_order', $order);
+            pdo_insert('sz_yi_order',$order);
             $orderid = pdo_insertid();
             if(p('hotel')){
                  if($_GPC['type']=='99'){  
@@ -1729,7 +1750,20 @@ if ($_W['isajax']) {
         show_json(1, array(
             'orderid' => $orderid
         ));
-    }
+    }else if ($operation == 'date') {
+        echo 111;exit;
+        global $_GPC, $_W;
+        $id = $_GPC['id'];
+        if ($search_array && !empty($search_array['bdate']) && !empty($search_array['day'])) {
+            $bdate = $search_array['bdate'];
+            $day = $search_array['day'];
+        } else {
+            $bdate = date('Y-m-d');
+            $day = 1;
+        }
+        load()->func('tpl');
+    include $this->template('order/date');
+}
 }
 if(p('hotel') && $goods_data['type']=='99'){ //判断是否开启酒店插件
         include $this->template('order/confirm_hotel');
