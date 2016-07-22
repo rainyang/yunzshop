@@ -599,13 +599,19 @@ if ($_W['isajax']) {
             $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
             $params2 = array(':goodsid' => $id);
             $room = pdo_fetch($sql2, $params2);
-            $pricefield ='cprice';
+            $pricefield ='oprice';
             $r_sql = 'SELECT `roomdate`, `num`, `oprice`, `status`, ' . $pricefield . ' AS `m_price` FROM ' . tablename('sz_yi_hotel_room_price') .
             ' WHERE `roomid` = :roomid AND `roomdate` >= :btime AND ' .
             ' `roomdate` < :etime';
             $params = array(':roomid' => $room['id'],':btime' => $btime, ':etime' => $etime);
-            $price_list = pdo_fetchall($r_sql, $params);   
+            $price_list = pdo_fetchall($r_sql, $params);  
+            $this_price = $old_price =  $pricefield == 'cprice' ?  $room['oprice']*$member_p[$_W['member']['groupid']] : $room['roomprice'];
+            if ($this_price == 0) {
+                $this_price = $old_price = $room['oprice'] ;
+            } 
+            $totalprice =  $old_price * $days;
             if ($price_list) {//价格表中存在   
+               // print_r($price_list);exit;
                 $check_date = array();
                 foreach($price_list as $k => $v) {
                     $price_list[$k]['time']=date('Y-m-d',$v['roomdate']);
@@ -623,7 +629,7 @@ if ($_W['isajax']) {
                             }
                         }
                     }
-                }                
+                } 
                 $goodsprice = round($totalprice);
             }else{ 
                 $goodsprice = round($goods[0]['marketprice']) * $days;
