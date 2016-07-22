@@ -108,10 +108,10 @@ class Sz_DYi_User
         $needLoginPList = array('address', 'commission','cart');
 
         //不需要登陆的P方法
-        $noLoginList = array('category', 'login' ,'receive', 'close', 'designer', 'register', 'sendcode', 'bindmobile', 'forget');
+        $noLoginList = array('category', 'login' ,'receive', 'close', 'designer', 'register', 'sendcode', 'bindmobile', 'forget', 'home');
 
         //不需要登陆的do方法
-        $noLoginDoList = array('shop', 'login', 'register', 'api');
+        $noLoginDoList = array('shop', 'login', 'register');
 
         //首页不用判断是否登陆
         if(!$_GPC['p'] && $_GPC["do"]=='shop'){
@@ -123,7 +123,6 @@ class Sz_DYi_User
             return;
         }
          */
-
         //需要登陆
         if((!in_array($_GPC["p"], $noLoginList) && !in_array($_GPC["do"], $noLoginDoList)) or (in_array($_GPC["p"], $needLoginPList))){
             //小店不需要登陆，否则分享出去别人不能直接看到
