@@ -77,8 +77,6 @@ class Core extends WeModuleSite
             LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'].",master");
         }
 
-        //app接口文件
-        require IA_ROOT.'/addons/sz_yi/core/inc/interface.php';
     }
 
     public function sendSms($mobile, $code, $templateType = 'reg')
@@ -192,7 +190,6 @@ class Core extends WeModuleSite
         $designer = p('designer');
         if ($designer && $_GPC['p'] != 'designer') {
             $menu = $designer->getDefaultMenu();
-            //print_r($menu);exit;
             if (!empty($menu)) {
                 if ($is_weixin_show) {
                     $newmenu = json_decode($menu['menus'], true);
