@@ -48,7 +48,7 @@ class InterfaceController
                 throw new Exception('参数不能为空');
             }
             $missing_para = array_diff($rule, array_keys($data));
-            $error_info = [];
+            $error_info = array();
             foreach ($missing_para as $value) {
                 $error_info[] = sprintf("缺少参数:'%s'", $value);
             }

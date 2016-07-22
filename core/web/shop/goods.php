@@ -456,7 +456,7 @@ if ($operation == "change") {
         }else{
             $data['status'] = $_GPC['status'];
         }
-        if(!empty(p('love'))){
+        if(p('love')){
             $data['love_money'] = $_GPC['love_money'];
         }
         if ($pluginreturn) {
