@@ -83,6 +83,11 @@ if(!pdo_fieldexists('sz_yi_goods', 'deposit')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `deposit` decimal DEFAULT '10' AFTER `isreturnqueue`;");
 }
 
+//商品表增加打印机id
+if(!pdo_fieldexists('sz_yi_goods', 'print_id')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `print_id` INT(11) DEFAULT '0' AFTER `deposit`;");
+}
+
 if(!pdo_fieldexists('sz_yi_order', 'checkname')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `checkname` varchar(255) DEFAULT '' AFTER `ordersn_general`;");
 }

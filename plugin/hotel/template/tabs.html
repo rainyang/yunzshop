@@ -6,6 +6,6 @@
 	{ifp 'hotel.meet'}<li {if $_GPC['method']=='meet'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('hotel/meet')}">会议预约</a></li>{/if}
 	{ifp 'hotel.rest'}<li {if $_GPC['method']=='rest'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('hotel/rest')}">餐饮预约</a></li>{/if}
 	{ifp 'hotel.print'}<li {if $_GPC['method']=='prints'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('hotel/prints')}">打印机设置</a></li>{/if}
-	{ifp 'hotel.rest'}<li {if $_GPC['method']=='rest'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('hotel/rest')}">打印设置</a></li>{/if}
-</ul>
+	<!-- {ifp 'hotel.rest'}<li {if $_GPC['method']=='rest'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('hotel/rest')}">打印设置</a></li>{/if}
+</ul> -->
 </div>
