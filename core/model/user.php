@@ -111,7 +111,7 @@ class Sz_DYi_User
         $noLoginList = array('category', 'login' ,'receive', 'close', 'designer', 'register', 'sendcode', 'bindmobile', 'forget', 'home');
 
         //不需要登陆的do方法
-        $noLoginDoList = array('shop', 'login', 'register', 'api');
+        $noLoginDoList = array('shop', 'login', 'register');
 
         //首页不用判断是否登陆
         if(!$_GPC['p'] && $_GPC["do"]=='shop'){
