@@ -160,7 +160,7 @@ div.flicking_con a.on{background-position:0 -9px}
                  <img id="chooser_img" src='<%goods.thumb%>'/>
              </div>
              <div class="right">
-                   <div class="price">￥<span id='option_price'><%goods.marketprice%></span></div>
+                   <div class="price">￥<span id='option_price' option_price = "<%goods.marketprice%>"><%goods.marketprice%></span></div>
                    <div class="stock">库存:<span id='option_stock'><%goods.total%></span>件</span> </div>
                    <div class="option">请选择规格</div>
              </div>
@@ -1214,8 +1214,10 @@ div.flicking_con a.on{background-position:0 -9px}
         }
   });
     }
+
   function addNum(){
     var total = $("#total");
+    var option_price = $("#option_price").attr('option_price');
     if(!total.isInt()){
         total.val("1");
     }
@@ -1231,6 +1233,8 @@ div.flicking_con a.on{background-position:0 -9px}
         num = stock;
     }
     total.val(num);
+    option_price_num = option_price * num ;
+    $("#option_price").html( option_price_num );
 }
   function addNum11(optionid_id,oid){
 
@@ -1255,6 +1259,7 @@ div.flicking_con a.on{background-position:0 -9px}
 }
 function reduceNum(){
     var total = $("#total");
+    var option_price = $("#option_price").attr('option_price');
     if(!total.isInt()){
         total.val("1");
     }
@@ -1264,8 +1269,9 @@ function reduceNum(){
     }
     num--;
     total.val(num);
+    option_price_num = option_price * num ;
+    $("#option_price").html( option_price_num);
 }
-
     function option_selected(){
     var ret= {
         no: "",
