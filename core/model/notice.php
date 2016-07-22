@@ -23,6 +23,7 @@ class Sz_DYi_Notice
         $order = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(
             ':id' => $orderid
         ));
+
         if (empty($order)) {
             return;
         }
@@ -45,8 +46,19 @@ class Sz_DYi_Notice
                 $goods .= " 规格: " . $og['optiontitle'];
             }
             $goods .= ' 单价: ' . ($og['realprice'] / $og['total']) . ' 数量: ' . $og['total'] . ' 总价: ' . $og['realprice'] . "); ";
+            if(p('hotel') && $order['order_type']=='3'){
+                $goods= $og['title'].'   数量：'.$order['num'].'间';
+                 
+            }
         }
         $orderpricestr = ' 订单总价: ' . $order['price'] . '(包含运费:' . $order['dispatchprice'] . ')';
+        if(p('hotel') && $order['order_type']=='3'){
+            if($order['depositpricetype']=='2'){
+               $orderpricestr ='￥' . $order['price'] . '元,另需押金' . $order['depositprice'] . '元(到店付)';                       
+            }else if($order['depositpricetype']=='1'){
+               $orderpricestr = '￥' . $order['price'] . '元,含押金' . $order['depositprice'] . '元(可退)';
+            }
+        }
         $member        = m('member')->getMember($openid);
         $usernotice    = unserialize($member['noticeset']);
         if (!is_array($usernotice)) {
@@ -157,7 +169,7 @@ class Sz_DYi_Notice
                         ),
                         'orderProductPrice' => array(
                             'title' => '退款金额',
-                            'value' => '￥' . $refund['price'] . '元',
+                            'value' => '￥' . $refund['applyprice'] . '元',
                             "color" => "#4a5077"
                         ),
                         'orderProductName' => array(
@@ -247,6 +259,33 @@ class Sz_DYi_Notice
                     "color" => "#4a5077"
                 )
             );
+            if(p('hotel') && $order['order_type']=='3'){
+               $msg = array(
+                    'first' => array(
+                        'value' => "您的订单已取消!",
+                        "color" => "#4a5077"
+                    ),
+                    'orderProductPrice' => array(
+                        'title' => '订单金额',
+                        'value' => '￥' . $order['price'] . '元,另需押金' . $order['depositprice'] . '元(到店付)',
+                        "color" => "#4a5077"
+                    ),
+                    'orderProductName' => array(
+                        'title' => '商品详情',
+                        'value' => $goods,
+                        "color" => "#4a5077"
+                    ),
+                    'orderName' => array(
+                        'title' => '订单编号',
+                        'value' => $order['ordersn'],
+                        "color" => "#4a5077"
+                    ),
+                    'remark' => array(
+                        'value' => "\r\n【" . $shop['name'] . "】欢迎您的再次光临！",
+                        "color" => "#4a5077"
+                    )
+                );
+            }
             if (!empty($tm['cancel']) && empty($usernotice['cancel'])) {
                 m('message')->sendTplNotice($openid, $tm['cancel'], $msg, $detailurl);
             } else if (empty($usernotice['cancel'])) {
@@ -467,6 +506,59 @@ class Sz_DYi_Notice
                         "color" => "#4a5077"
                     )
                 );
+                if(p('hotel') && $order['order_type']=='3'){
+                    $remark = "\r\n您的订单我们已经收到，支付后您就可以到店使用了~~";
+                    $goods= $og['title'].'   数量：'.$order['num'].'间';
+                    if($order['depositpricetype']=='2'){
+                    $keyword6 = array(
+                            'title' => '金额',
+                            'value' => '￥' . $order['price'] . '元,另需押金' . $order['depositprice'] . '元(到店付)',
+                            "color" => "#4a5077"
+                        );
+                    }else if($order['depositpricetype']=='1'){
+                         $keyword6 = array(
+                                'title' => '金额',
+                                'value' => '￥' . $order['price'] . '元,含押金' . $order['depositprice'] . '元(可退)',
+                                "color" => "#4a5077"
+                            );
+                    }
+                    $msg = array(
+                            'first' => array(
+                                'value' => "您的订单已提交成功！",
+                                "color" => "#4a5077"
+                            ),
+                            'keyword1' => array(
+                                'title' => '商家',
+                                'value' => $shop['name'],
+                                "color" => "#4a5077"
+                            ),
+                            'keyword2' => array(
+                                'title' => '下单时间',
+                                'value' => date('Y-m-d H:i:s', $order['createtime']),
+                                "color" => "#4a5077"
+                            ),
+                            'keyword3' => array(
+                                'title' => '房型',
+                                'value' => $goods,
+                                "color" => "#4a5077"
+                            ),
+                            'keyword4' => array(
+                                'title' => '入住时间',
+                                'value' => date('Y-m-d', $order['btime']),
+                                "color" => "#4a5077"
+                            ),
+                            'keyword5' => array(
+                                'title' => '退房时间',
+                                'value' => date('Y-m-d', $order['etime']),
+                                "color" => "#4a5077"
+                            ),
+                            'keyword6' => $keyword6,
+                            'remark' => array(
+                                'value' => $remark,
+                                "color" => "#4a5077"
+                            )
+                        ); 
+                }
                 if (!empty($tm['submit']) && empty($usernotice['submit'])) {
                     m('message')->sendTplNotice($openid, $tm['submit'], $msg, $detailurl);
                 } else if (empty($usernotice['submit'])) {
@@ -657,6 +749,44 @@ class Sz_DYi_Notice
                     "color" => "#4a5077"
                 )
             );
+            if(p('hotel') && $order['order_type']=='3'){
+                $remark = "\r\n【" . $shop['name'] . "】欢迎您的再次光临！";
+                $msg           = array(
+                'first' => array(
+                    'value' => "您已支付成功订单！",
+                    "color" => "#4a5077"
+                ),
+                'keyword1' => array(
+                    'title' => '订单',
+                    'value' => $order['ordersn'],
+                    "color" => "#4a5077"
+                ),
+                'keyword2' => array(
+                    'title' => '支付状态',
+                    'value' => '支付成功',
+                    "color" => "#4a5077"
+                ),
+                'keyword3' => array(
+                    'title' => '支付日期',
+                    'value' => date('Y-m-d H:i:s', $order['paytime']),
+                    "color" => "#4a5077"
+                ),
+                'keyword4' => array(
+                    'title' => '商户',
+                    'value' => $shop['name'],
+                    "color" => "#4a5077"
+                ),
+                'keyword5' => array(
+                    'title' => '金额',
+                    'value' => '￥' . $order['price'] . '元',
+                    "color" => "#4a5077"
+                ),
+                'remark' => array(
+                    'value' => $remark,
+                    "color" => "#4a5077"
+                )
+            );
+            }
             $pay_detailurl = $detailurl;
             if (strexists($pay_detailurl, '/addons/sz_yi/')) {
                 $pay_detailurl = str_replace("/addons/sz_yi/", '/', $pay_detailurl);
@@ -755,6 +885,50 @@ class Sz_DYi_Notice
                     m('message')->sendCustomNotice($openid, $msg, $detailurl);
                 }
             }
+            if(p('hotel') && $order['order_type']=='3'){
+                    $remark = "\r\n您的房间已经确认，您可以到店入住了~~";
+                    $goods= $og['title'].'   数量：'.$order['num'].'间';     
+                    $msg = array(
+                            'first' => array(
+                                'value' => "您的订单已确认！",
+                                "color" => "#4a5077"
+                            ),
+                            'keyword1' => array(
+                                'title' => '商家',
+                                'value' => $shop['name'],
+                                "color" => "#4a5077"
+                            ),
+                            'keyword2' => array(
+                                'title' => '下单时间',
+                                'value' => date('Y-m-d H:i:s', $order['createtime']),
+                                "color" => "#4a5077"
+                            ),
+                            'keyword3' => array(
+                                'title' => '房型',
+                                'value' => $goods,
+                                "color" => "#4a5077"
+                            ),
+                            'keyword4' => array(
+                                'title' => '入住时间',
+                                'value' => date('Y-m-d', $order['btime']),
+                                "color" => "#4a5077"
+                            ),
+                            'keyword5' => array(
+                                'title' => '退房时间',
+                                'value' => date('Y-m-d', $order['etime']),
+                                "color" => "#4a5077"
+                            ),
+                            'keywor6' => array(
+                                'title' => '房间号',
+                                'value' => $order['room_number'],
+                                "color" => "#4a5077"
+                            ),
+                            'remark' => array(
+                                'value' => $remark,
+                                "color" => "#4a5077"
+                            )
+                    ); 
+                }
         } elseif ($order['status'] == 3) {
             $pv = p('virtual');
             if ($pv && !empty($order['virtual'])) {
@@ -1015,6 +1189,50 @@ class Sz_DYi_Notice
                             "color" => "#4a5077"
                         )
                     );
+            if(p('hotel') && $order['order_type']=='3'){
+                    $remark = "\r\n您的订单已经完成，欢迎您下次光临~~";
+                    $goods= $og['title'].'   数量：'.$order['num'].'间';     
+                    $msg = array(
+                            'first' => array(
+                                'value' => "您的订单已完成！",
+                                "color" => "#4a5077"
+                            ),
+                            'keyword1' => array(
+                                'title' => '商家',
+                                'value' => $shop['name'],
+                                "color" => "#4a5077"
+                            ),
+                            'keyword2' => array(
+                                'title' => '下单时间',
+                                'value' => date('Y-m-d H:i:s', $order['createtime']),
+                                "color" => "#4a5077"
+                            ),
+                            'keyword3' => array(
+                                'title' => '房型',
+                                'value' => $goods,
+                                "color" => "#4a5077"
+                            ),
+                            'keyword4' => array(
+                                'title' => '入住时间',
+                                'value' => date('Y-m-d', $order['btime']),
+                                "color" => "#4a5077"
+                            ),
+                            'keyword5' => array(
+                                'title' => '退房时间',
+                                'value' => date('Y-m-d', $order['etime']),
+                                "color" => "#4a5077"
+                            ),
+                            'keywor6' => array(
+                                'title' => '房间号',
+                                'value' => $order['room_number'],
+                                "color" => "#4a5077"
+                            ),
+                            'remark' => array(
+                                'value' => $remark,
+                                "color" => "#4a5077"
+                            )
+                        ); 
+                    }
                     if (!empty($tm['finish']) && empty($usernotice['finish'])) {
                         m('message')->sendTplNotice($openid, $tm['finish'], $msg, $detailurl);
                     } else if (empty($usernotice['finish'])) {

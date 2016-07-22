@@ -190,22 +190,22 @@ class Core extends WeModuleSite
         if ($designer && $_GPC['p'] != 'designer') {
             $menu = $designer->getDefaultMenu();
             $newmenu = json_decode($menu['menus'], true);
-            foreach ($newmenu as &$val) {
-                if (!empty($val['url'])) {
-                    if (strpos($val['url'], 'commission') !== false) {
-                        $val['url'] = $this->createMobileUrl('member/bindapp', array('op' => 'black'));
-                        $val['title'] = 'APP下载';
-                    }
-                }
-                if (!empty($val['submenu'])) {
-                    foreach ($val['submenu'] as &$sv) {
-                        if (strpos($sv['url'], 'commission') !== false) {
-                            $sv['url'] = $this->createMobileUrl('member/bindapp', array('op' => 'black'));
-                            $sv['title'] = 'APP下载';
-                        }
-                    }
-                }
-            }
+            // foreach ($newmenu as &$val) {
+            //     if (!empty($val['url'])) {
+            //         if (strpos($val['url'], 'commission') !== false) {
+            //             $val['url'] = $this->createMobileUrl('member/bindapp', array('op' => 'black'));
+            //             $val['title'] = 'APP下载';
+            //         }
+            //     }
+            //     if (!empty($val['submenu'])) {
+            //         foreach ($val['submenu'] as &$sv) {
+            //             if (strpos($sv['url'], 'commission') !== false) {
+            //                 $sv['url'] = $this->createMobileUrl('member/bindapp', array('op' => 'black'));
+            //                 $sv['title'] = 'APP下载';
+            //             }
+            //         }
+            //     }
+            // }
             $menu['menus'] = json_encode($newmenu);
             //print_r(json_decode($menu['menus'], true));exit;
             if (!empty($menu)) {
