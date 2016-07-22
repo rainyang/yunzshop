@@ -92,9 +92,10 @@ if ($op == 'display') {
     }
     if (!empty($_GPC['rechargetype'])) {
         $_GPC['rechargetype'] = trim($_GPC['rechargetype']);
-        $condition            = " AND log.rechargetype=:rechargetype";
+        $condition .= " AND log.rechargetype=:rechargetype";
         if ($_GPC['rechargetype'] == 'system1') {
-            $condition = " AND log.rechargetype='system' and log.money<0";
+            $_GPC['rechargetype'] = 'system';
+            $condition .= " and log.money<0";
         }
         $params[':rechargetype'] = trim($_GPC['rechargetype']);
     }
@@ -106,6 +107,7 @@ if ($op == 'display') {
         $sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
     }
     $list = pdo_fetchall($sql, $params);
+
     if ($_GPC['export'] == 1) {
         if ($_GPC['type'] == 1) {
             ca('finance.withdraw.export');
