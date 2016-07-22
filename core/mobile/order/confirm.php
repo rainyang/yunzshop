@@ -674,6 +674,7 @@ if ($_W['isajax']) {
     } elseif ($operation == 'getdispatchprice') {
         $isverify       = false;
         $isvirtual      = false;
+        $isverifysend   = false;
         $deductprice    = 0;
         $deductprice2   = 0;
         $deductcredit2  = 0;
@@ -841,6 +842,9 @@ if ($_W['isajax']) {
                 if (!empty($g["virtual"]) || $g["type"] == 2) {
                     $isvirtual = true;
                 }
+                if ($g['isverifysend'] == 1) {
+                    $isverifysend = true;
+                }
                 if ($g["manydeduct"]) {
                     $deductprice += $g["deduct"] * $g["total"];
                 } else {
@@ -856,7 +860,14 @@ if ($_W['isajax']) {
                     }
                 }
             }
-            if ($isverify) {
+            //仅判断核销了，还需要判断支持配送
+            //如果开启核销并且不支持配送，则没有运费
+            $isDispath = true;
+            if ($isverify && !$isverifysend) {
+                $isDispath = false;
+            }
+
+            if ($isverify && $isDispath) {
                 show_json(1, array(
                     "price" => 0,
                     "hascoupon" => $hascoupon,
@@ -1245,6 +1256,9 @@ if ($_W['isajax']) {
                 if ($data['isverify'] == 2) {
                     $isverify = true;
                 }
+                if ($data['isverifysend'] == 1) {
+                    $isverifysend = true;
+                }
                 if (!empty($data["virtual"]) || $data["type"] == 2) {
                     $isvirtual = true;
                 }
@@ -1280,8 +1294,16 @@ if ($_W['isajax']) {
                     }
                 }
             }
-            if (!$isvirtual && !$isverify && $dispatchtype == 0) {
+
+            //如果开启核销并且不支持配送，则没有运费
+            $isDispath = true;
+            if ($isverify && !$isverifysend) {
+                $isDispath = false;
+            }
+
+            if (!$isvirtual && $isDispath && $dispatchtype == 0) {
                 foreach ($allgoods as $g) {
+                    $g["ggprice"] = $ggprice;
                     $sendfree = false;
                     if (!empty($g["issendfree"])) {
                         $sendfree = true;
