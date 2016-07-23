@@ -146,7 +146,11 @@ div.flicking_con a.on{background-position:0 -9px}
          <div class="sort_list">
                 <div class="nav" onclick="location.href='<%shop.url%>'"><i class='fa fa-home'></i> 首页</div>
                 <div class="nav" onclick="location.href='{php echo $this->createMobileUrl('member')}'"><i class='fa fa-user'></i> 会员中心</div>
+                {if is_app()}
+                <div class="nav" onclick="app_share()" style="border:none;"><i class='fa fa-share'></i> 分享</div>
+                {else}
                 <div class="nav" onclick="share()" style="border:none;"><i class='fa fa-share'></i> 分享</div>
+                {/if}
           </div>
     </div>
     <div class="good_choose_layer"></div>
@@ -156,7 +160,7 @@ div.flicking_con a.on{background-position:0 -9px}
                  <img id="chooser_img" src='<%goods.thumb%>'/>
              </div>
              <div class="right">
-                   <div class="price">￥<span id='option_price'><%goods.marketprice%></span></div>
+                   <div class="price">￥<span id='option_price' option_price = "<%goods.marketprice%>"><%goods.marketprice%></span></div>
                    <div class="stock">库存:<span id='option_stock'><%goods.total%></span>件</span> </div>
                    <div class="option">请选择规格</div>
              </div>
@@ -494,6 +498,21 @@ div.flicking_con a.on{background-position:0 -9px}
                     $(this).fadeOut(100);
           })
     }
+
+    function app_share() {
+        var title = "{php echo $_W['shopshare']['title']}";
+        var link = "{php echo $_W['shopshare']['link']}" + "&access=app";
+        var imgurl = "{php echo $_W['shopshare']['imgUrl']}";
+        var desc = "{php echo $_W['shopshare']['desc']}";
+
+        if (typeof PINGPP_IOS_SDK !== 'undefined') {
+            shareLink(title, link, imgurl, desc);
+        } else if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
+            PINGPP_ANDROID_SDK.shareLink(title, link, imgurl, desc);
+        }
+
+    }
+
     function menu(obj){
        
         if($(obj).attr('show')=='1'){
@@ -529,6 +548,7 @@ div.flicking_con a.on{background-position:0 -9px}
         }
     }
     require(['tpl', 'core','jquery.touchslider','swipe'], function(tpl, core) {
+
       function setTimer(goods){
             
             setTimeHtml(goods);
@@ -575,7 +595,7 @@ div.flicking_con a.on{background-position:0 -9px}
             } 
 
         core.json('shop/detail',{id:'{$_GPC['id']}',mid:"{$mid}"},function(json){
-     
+
           tip = core.tip;
           if(json.status<=0){
               core.message('没有找到您想要的宝贝哦~',"{php echo $this->createMobileUrl('shop/list')}",'error');
@@ -1194,8 +1214,10 @@ div.flicking_con a.on{background-position:0 -9px}
         }
   });
     }
+
   function addNum(){
     var total = $("#total");
+    var option_price = $("#option_price").attr('option_price');
     if(!total.isInt()){
         total.val("1");
     }
@@ -1211,6 +1233,8 @@ div.flicking_con a.on{background-position:0 -9px}
         num = stock;
     }
     total.val(num);
+    option_price_num = option_price * num ;
+    $("#option_price").html( option_price_num );
 }
   function addNum11(optionid_id,oid){
 
@@ -1235,6 +1259,7 @@ div.flicking_con a.on{background-position:0 -9px}
 }
 function reduceNum(){
     var total = $("#total");
+    var option_price = $("#option_price").attr('option_price');
     if(!total.isInt()){
         total.val("1");
     }
@@ -1244,8 +1269,9 @@ function reduceNum(){
     }
     num--;
     total.val(num);
+    option_price_num = option_price * num ;
+    $("#option_price").html( option_price_num);
 }
-
     function option_selected(){
     var ret= {
         no: "",
