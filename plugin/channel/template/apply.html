@@ -59,7 +59,7 @@
                     <td>{$row['id']}</td>
                     <td>{$row['realname']}</td>
                     <td>{$row['username']}</td>
-                    <td><a href="{php echo $this->createWebUrl('member',array('op'=>'detail', 'id' => $row['id']));}" title="会员详情"><i class='fa fa-edit'></i></a></td>
+                    <td><a href="{php echo $this->createWebUrl('member',array('op'=>'detail', 'id' => $row['mid']));}" title="会员详情"><i class='fa fa-edit'></i></a></td>
                     <td><a class="label label-default " href="{php echo $this->createPluginWebUrl('channel/apply',array('op' => 'reviewed', 'id' => $row['id'], 'status' => 1));}">驳回审核</a><a class="label label-default label-info" href="{php echo $this->createPluginWebUrl('channel/apply',array('op' => 'reviewed', 'id' => $row['id'], 'status' => 2));}">审核通过</a>
                     </td>
                 </tr>

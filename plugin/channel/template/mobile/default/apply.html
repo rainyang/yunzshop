@@ -20,10 +20,10 @@ input {-webkit-appearance:none; outline:none;}
     <div class="balance_num">￥<%member.commission_ok%></div>
     
     {if empty($this->set['closetocredit'])}
-    <div class="balance_sub balance_sub1 <%if !cansettle%>disabled<%/if%>" data-type="1">提现到余额</div>
+    <div class="balance_sub balance_sub1 <%if !cansettle%>disabled<%/if%>" data-type="0">提现到余额</div>
     {/if}
     
-    <div class="balance_sub balance_sub2 <%if !cansettle%>disabled<%/if%>"  data-type="2">提现到微信钱包</div>
+    <div class="balance_sub balance_sub2 <%if !cansettle%>disabled<%/if%>"  data-type="1">提现到微信钱包</div>
     <div class="balance_sub3" onclick="location.href='{php echo $this->createPluginMobileUrl('channel/log')}'">提现记录</div>
 </script>
 <script language="javascript">
