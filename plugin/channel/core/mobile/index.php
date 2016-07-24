@@ -28,9 +28,13 @@ if($_W['isajax']) {
     	$sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
     	$list = pdo_fetchall($sql);
     	//pdo_debug();
-    	foreach ($list as &$rowp) {
-			$sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' WHERE og.orderid=:orderid order by og.id asc';
+    	foreach ($list as $key => &$rowp) {
+    		$list[$key]['price'] = 0;
+			$sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . " WHERE og.orderid=:orderid AND og.channel_id={$member['id']} order by og.id asc";
 			$rowp['goods'] 		= set_medias(pdo_fetchall($sql, array(':orderid' => $rowp['id'])), 'thumb');
+			foreach ($rowp['goods'] as $value) {
+				$list[$key]['price'] += $value['price'];
+			}
 			$rowp['goodscount'] = count($rowp['goods']);
 	 		if ($rowp['status'] == 0) {
 	 			$rowp['status'] = '待付款';

@@ -12,6 +12,11 @@ if ($_W['isajax']) {
 	$psize 		= 20;
 	$condition 	= " AND `openid`='{$openid}' AND uniacid={$_W['uniacid']}";
 	$list 		= pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE 1 {$condition} order by id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+	foreach ($list as $key => &$value) {
+		$option 				= m('goods')->getOption($value['goodsid'], $value['optionid']);
+		$value['optiontitle'] 	= $option['title'];
+	}
+	unset($value);
 	$total 		= pdo_fetchcolumn('SELECT count(*) FROM ' . tablename('sz_yi_channel_stock') . " WHERE 1 {$condition}");
 	if (empty($total)) {
 		$total = 0;
