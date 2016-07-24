@@ -61,12 +61,12 @@ if ($_W['isajax']) {
                 //获取积分
                 $credit1 = m('member')->getCredit($oldopenid, 'credit1');
                 if ($credit1 > 0) {
-                    m('member')->setCredit($openid, 'credit1', $credit1);
+                    m('member')->setCredit($openid, 'credit1', $credit1, array(0, '会员绑定积分合并，合并过来的积分为：' . $credit1 . " 积分"));
                 }
                 //获取余额
                 $credit2 = m('member')->getCredit($oldopenid, 'credit2');
                 if ($credit2 > 0) {
-                    m('member')->setCredit($openid, 'credit2', $credit2);
+                    m('member')->setCredit($openid, 'credit2', $credit2, array(0, '会员绑定余额合并，合并过来的余额为：' . $credit2 . " 元"));
                 }
 
                 /*

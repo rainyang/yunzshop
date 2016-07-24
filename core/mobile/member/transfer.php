@@ -42,7 +42,7 @@ if ($operation == 'display') {
         $mc_assigns = m('member')->getMember($assigns['openid']);
 
 
-        m('member')->setCredit($assigns['openid'],'credit2',$money);
+        m('member')->setCredit($assigns['openid'],'credit2',$money, array(0, '会员余额转让所得：' . $money . " 元"));
             $messages = array(
                 'keyword1' => array('value' => '转增通知', 
                     'color' => '#73a68d'),

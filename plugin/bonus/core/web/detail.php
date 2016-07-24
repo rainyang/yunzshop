@@ -46,7 +46,7 @@ if($operation == "display"){
 	        ));
         
         if($sendpay == 1){
-        	m('member')->setCredit($value['openid'], 'credit1', $value['integral']);
+        	m('member')->setCredit($value['openid'], 'credit1', $value['integral'], array(0, '代理商重新发放分红，并发放：' . $value['integral'] . " 积分"));
         	$this->model->send_bonus_message($value['openid'], $value['money'], $value['return_money'], $value['integral'], $this->createMobileUrl('member'));
         }
 

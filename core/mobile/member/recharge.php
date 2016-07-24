@@ -225,7 +225,7 @@ if ($operation == 'display' && $_W['isajax']) {
             ), array(
                 'id' => $logid
             ));
-            m('member')->setCredit($openid, 'credit2', $log['money']);
+            m('member')->setCredit($openid, 'credit2', $log['money'], array(0, '会员充值中心充值：' . $log['money'] . " 元"));
             m('member')->setRechargeCredit($openid, $log['money']);
             if (p('sale')) {
                 p('sale')->setRechargeActivity($log);
@@ -285,7 +285,7 @@ if ($operation == 'display' && $_W['isajax']) {
         ), array(
             'id' => $log['id']
         ));
-        m('member')->setCredit($openid, 'credit2', $log['money']);
+        m('member')->setCredit($openid, 'credit2', $log['money'], array(0, '会员余额充值' . $log['money'] . " 元"));
         m('member')->setRechargeCredit($openid, $log['money']);
         if (p('sale')) {
             p('sale')->setRechargeActivity($log);

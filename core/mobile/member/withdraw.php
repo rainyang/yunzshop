@@ -26,7 +26,7 @@ if ($operation == 'display' && $_W['isajax']) {
 	if ($money > $credit) {
 		show_json(0, '提现金额过大!');
 	}
-	m('member')->setCredit($openid, 'credit2', -$money);
+	m('member')->setCredit($openid, 'credit2', -$money, array(0, '余额提现：-' . $money . " 元"));
 	$logno = m('common')->createNO('member_log', 'logno', 'RW');
 	$log = array('uniacid' => $uniacid, 'logno' => $logno, 'openid' => $openid, 'title' => '余额提现', 'type' => 1, 'createtime' => time(), 'status' => 0, 'money' => $money);
 	pdo_insert('sz_yi_member_log', $log);
