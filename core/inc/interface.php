@@ -71,7 +71,7 @@ class InterfaceController
         }
         $this->success($result);
     }
-    public function success($data=[], $msg = '成功')
+    public function success($data=array(), $msg = '成功')
     {
         $res = array('result' => '1',
             'msg' => $msg,
@@ -83,7 +83,7 @@ class InterfaceController
     {
         $res = array('result' => '0',
             'msg' => $msg,
-            'data' => []);
+            'data' => array());
         $this->callBackByAes($res);
     }
 
