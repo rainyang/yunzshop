@@ -4,7 +4,7 @@ if (!defined('IN_IA')) {
 }
 global $_W, $_GPC;
 
-$openid = m('user')->getOpenid();
+$openid = '';
 $set = m('common')->getSysset(array('trade'));
 
 $shop_set = m('common')->getSysset(array('shop'));
@@ -17,6 +17,9 @@ $appset     = unserialize($setdata['sets']);
 $app = $appset['app']['base'];
 
 $member = m('member')->getMember($openid);
+if (empty($member)) {
+	header('Location: '.$this->createMobileUrl('member/login'));
+}
 $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
 
 $uniacid = $_W['uniacid'];
@@ -27,7 +30,9 @@ $hascom = false;
 $supplier_switch = false;
 $supplier_switch_centre = false;
 if (p('merchant')) {
-	$ismerchant = pdo_fetchall("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and member_id={$member['id']}");
+	if (!empty($member['id'])) {
+		$ismerchant = pdo_fetchall("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and member_id={$member['id']}");
+	}
 }
 if (p('supplier')) {
 	$supplier_set = p('supplier')->getSet();
