@@ -123,7 +123,7 @@
 
         <%each goods as g%>
         <div class="good" style="overflow:hidden;background: #ffffff;" data-totalmaxbuy="<%g.totalmaxbuy%>">            
-            <div class='info jiudbookp'  style="float:left;width:50%;border:none"  onclick="location.href='{php echo $this->createMobileUrl('shop/detail_original')}&id=<%g.goodsid%>'">
+            <div class='info jiudbookp'  style="float:left;width:50%;border:none"  onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
                 <div class='inner'>
                        <div class="name">                        
                            <%g.title%></div>    
