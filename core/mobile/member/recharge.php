@@ -118,6 +118,9 @@ if ($operation == 'display' && $_W['isajax']) {
         'payno' => $logno
     ));
 } else if ($operation == 'recharge' && $_W['ispost']) {
+    if (!empty($set['trade']['closerecharge'])) {
+        show_json(-1, '系统未开启账户充值!');
+    }
     $logid = intval($_GPC['logid']);
     if (empty($logid)) {
         show_json(0, '充值出错, 请重试!');
