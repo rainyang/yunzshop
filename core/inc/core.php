@@ -191,7 +191,7 @@ class Core extends WeModuleSite
         if (is_weixin()) {
             //是否强制绑定手机号,只针对微信端
             if (!empty($this->yzShopSet['isbindmobile'])) {
-                if (empty($member) || $member['isbindmobile'] == 0) {
+                if (empty($member) || $member['mobile'] == ""){
                     if ($_GPC['p'] != 'bindmobile' && $_GPC['p'] != 'sendcode') {
                         $bindmobileurl = $this->createMobileUrl('member/bindmobile');
                         redirect($bindmobileurl);
