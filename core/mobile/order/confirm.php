@@ -1539,7 +1539,7 @@ if ($_W['isajax']) {
             if ($redpriceall > 200) {
                 $redpriceall = 200;
             }
-            if(p('hotel')){ //判断如果安装酒店插件订单金额计算
+            if(p('hotel')){//判断如果安装酒店插件订单金额计算
                if($_GPC['type']=='99'){   
                     $btime =  $_SESSION['data']['btime'];
                     // 住几天
@@ -1553,7 +1553,7 @@ if ($_W['isajax']) {
                     $goodsprice =$_GPC['goodsprice'];
                 }
             }
-            $order    = array(
+            $order   = array(
                 'supplier_uid' => $order_row['supplier_uid'],
                 'uniacid' => $uniacid,
                 'openid' => $openid,
