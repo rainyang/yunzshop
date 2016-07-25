@@ -86,7 +86,7 @@ class Sz_DYi_User
         /**
          * app端通过token验证用户身份
          */
-        if  (is_app() && empty($openid) && $_GPC['token']) {
+        if  (empty($_SERVER['HTTP_USER_AGENT']) && empty($openid) && $_GPC['token']) {
             $openid = $_GPC['token'];
         }
 

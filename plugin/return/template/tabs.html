@@ -6,7 +6,7 @@
 
     {ifp 'return.return_tj'}<li {if $_GPC['method']=='return_tj'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('return/return_tj')}">全返统计</a></li>{/if}
     {ifp 'return.queue'}<li {if $_GPC['method']=='queue'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('return/queue')}">排列统计</a></li>{/if}
-
+	{ifp 'return.return_log'}<li {if $_GPC['method']=='return_log'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('return/return_log')}" target="_blank">返现记录</a></li>{/if}
     {ifp 'return.notice'}<li {if $_GPC['method']=='notice'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('return/notice')}">通知设置 </a></li>{/if}
 </ul>
 </div>
