@@ -64,11 +64,28 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_book') . " (
   `delete` int(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='会议餐饮预约表' AUTO_INCREMENT=1 ;
+
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_print_list') . " (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT '0',
+  `name` varchar(45) DEFAULT '',
+  `key` varchar(30) DEFAULT '',
+  `print_no` varchar(30) DEFAULT '',
+  `type` int(1) DEFAULT '0',
+  `status` int(3) DEFAULT '0',
+  `member_code` varchar(50) DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='酒店房间价格表' AUTO_INCREMENT=1 ;
 ";
  pdo_query($sql);
 
 if(!pdo_fieldexists('sz_yi_goods', 'deposit')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `deposit` decimal DEFAULT '10' AFTER `isreturnqueue`;");
+}
+
+//商品表增加打印机id
+if(!pdo_fieldexists('sz_yi_goods', 'print_id')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `print_id` INT(11) DEFAULT '0' AFTER `deposit`;");
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'checkname')) {

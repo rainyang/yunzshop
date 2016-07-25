@@ -24,8 +24,6 @@ $plugc           = p("coupon");
 if ($plugc) {
     $hascouponplugin = true;
 }
-$goodid = $_GPC['id'];
-$cartid = $_GPC['cartids'];
 $diyform_plugin = p("diyform");
 $order_formInfo = false;
 if ($diyform_plugin) {
@@ -39,7 +37,7 @@ if ($diyform_plugin) {
         }
     }
 }
-$carrier_list = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_store") . " WHERE uniacid=:uniacid AND status=1", array(
+$carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1", array(
             ":uniacid" => $_W["uniacid"]
         ));
 
@@ -62,20 +60,6 @@ if ($operation == "display" || $operation == "create") {
             }
         }
     }
-}
-if ($operation == "date"){
-        global $_GPC, $_W;
-        $id = $_GPC['id'];
-        if ($search_array && !empty($search_array['bdate']) && !empty($search_array['day'])) {
-            $bdate = $search_array['bdate'];
-            $day = $search_array['day'];
-        } else {
-            $bdate = date('Y-m-d');
-            $day = 1;
-        }
-        load()->func('tpl');
-        include $this->template('order/date');
-        exit;
 }
 if ($_W['isajax']) {
     if ($operation == 'display') {
@@ -103,7 +87,7 @@ if ($_W['isajax']) {
             $suppliers = pdo_fetchall('SELECT distinct g.supplier_uid FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc", array(
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
-            ), 'supplier_uid');
+            ),'supplier_uid');
             $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
             $goods = pdo_fetchall($sql, array(
                 ':uniacid' => $uniacid,
@@ -125,12 +109,8 @@ if ($_W['isajax']) {
             }
             $fromcart = 1;
         } else {
-            if(p('hotel')){
-                $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
-            }else{   
-                $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
-            }
-            $data = pdo_fetch($sql, array(
+            $sql              = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+            $data             = pdo_fetch($sql, array(
                 ':uniacid' => $uniacid,
                 ':id' => $id
             ));
@@ -248,11 +228,10 @@ if ($_W['isajax']) {
                $data['totalmaxbuy']= $list['num'];   
             }
         }
-             $goods[] = $data;
+         $goods[]             = $data;
         }
-
-       
         $goods = set_medias($goods, 'thumb');
+        
         foreach ($goods as $g) {
             if ($g['isverify'] == 2) {
                 $isverify = true;
@@ -262,7 +241,7 @@ if ($_W['isajax']) {
             }
             if (!empty($g['virtual']) || $g['type'] == 2) {
                 $isvirtual = true;
-            }
+            }  
         }
         //多店值分开初始化
         foreach ($suppliers as $key => $val) {
@@ -277,15 +256,15 @@ if ($_W['isajax']) {
             $order_all[$val['supplier_uid']]['storeids']       = array();
             $order_all[$val['supplier_uid']]['dispatch_array'] = array();
             $order_all[$val['supplier_uid']]['supplier_uid'] = $val['supplier_uid'];
-            if ($val['supplier_uid']==0) {
+            if($val['supplier_uid']==0){
                 $order_all[$val['supplier_uid']]['supplier_name'] = $shopset['name'];
-            } else {
+            }else{
                 $supplier_names = pdo_fetch('select username, brandname from ' . tablename('sz_yi_perm_user') . ' where uid='. $val['supplier_uid'] . " and uniacid=" . $_W['uniacid']);
-                if (!empty($supplier_names)) {
+                if(!empty($supplier_names)){
                     $order_all[$val['supplier_uid']]['supplier_name'] = $supplier_names['brandname'] ? $supplier_names['brandname'] : "";
-                } else {
-                    $order_all[$val['supplier_uid']]['supplier_name'] = '';
-                }
+                }else{
+                    $order_all[$val['supplier_uid']]['supplier_name'] = '';        
+                }       
             }
         }
         $member        = m('member')->getMember($openid);
@@ -365,7 +344,6 @@ if ($_W['isajax']) {
         }
 
         unset($g);
-        //核销
         if ($isverify) {
             $storeids = array();
             foreach ($goods as $g) {
@@ -394,89 +372,81 @@ if ($_W['isajax']) {
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
             ));
-        }
-
-        //如果开启核销并且不支持配送，则没有运费
-        $isDispath = true;
-        if ($isverify && !$isverifysend) {
-            $isDispath = false;
-        }
-
-        if (!$isvirtual && $isDispath) {
-            foreach ($goods as $g) {
-                $sendfree = false;
-                if (!empty($g["issendfree"])) { //包邮
-                    $sendfree = true;
-                } else {
-                    if ($g["total"] >= $g["ednum"] && $g["ednum"] > 0) {    //单品满xx件包邮
-                        $gareas = explode(";", $g["edareas"]);  //不参加包邮地区
-                        if (empty($gareas)) {
-                            $sendfree = true;
-                        } else {
-                            if (!empty($address)) {
-                                if (!in_array($address["city"], $gareas)) {
-                                    $sendfree = true;
-                                }
-                            } else if (!empty($member["city"])) {
-                                if (!in_array($member["city"], $gareas)) {
-                                    $sendfree = true;
-                                }
-                            } else {
+            if (!$isvirtual) {
+                foreach ($goods as $g) {
+                    $sendfree = false;
+                    if (!empty($g["issendfree"])) {
+                        $sendfree = true;
+                    } else {
+                        if ($g["total"] >= $g["ednum"] && $g["ednum"] > 0) {
+                            $gareas = explode(";", $g["edareas"]);
+                            if (empty($gareas)) {
                                 $sendfree = true;
+                            } else {
+                                if (!empty($address)) {
+                                    if (!in_array($address["city"], $gareas)) {
+                                        $sendfree = true;
+                                    }
+                                } else if (!empty($member["city"])) {
+                                    if (!in_array($member["city"], $gareas)) {
+                                        $sendfree = true;
+                                    }
+                                } else {
+                                    $sendfree = true;
+                                }
+                            }
+                        }
+                        if ($g["ggprice"] >= floatval($g["edmoney"]) && floatval($g["edmoney"]) > 0) {
+                            $gareas = unserialize($g["edareas"]);
+                            if (empty($gareas)) {
+                                $sendfree = true;
+                            } else {
+                                if (!empty($address)) {
+                                    if (!in_array($address["city"], $gareas)) {
+                                        $sendfree = true;
+                                    }
+                                } else if (!empty($member["city"])) {
+                                    if (!in_array($member["city"], $gareas)) {
+                                        $sendfree = true;
+                                    }
+                                } else {
+                                    $sendfree = true;
+                                }
                             }
                         }
                     }
-                    if ($g["ggprice"] >= floatval($g["edmoney"]) && floatval($g["edmoney"]) > 0) {  //满额包邮
-                        $gareas = unserialize($g["edareas"]);
-                        if (empty($gareas)) {
-                            $sendfree = true;
-                        } else {
-                            if (!empty($address)) {
-                                if (!in_array($address["city"], $gareas)) {
-                                    $sendfree = true;
-                                }
-                            } else if (!empty($member["city"])) {
-                                if (!in_array($member["city"], $gareas)) {
-                                    $sendfree = true;
-                                }
+
+                    if (!$sendfree) {
+                        if ($g["dispatchtype"] == 1) {
+                            if ($g["dispatchprice"] > 0) {
+                                $order_all[$g['supplier_uid']]['dispatch_price'] += $g["dispatchprice"] * $g["total"];
+                            }
+                        } else if ($g["dispatchtype"] == 0) {
+                            if (empty($g["dispatchid"])) {
+                                $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getDefaultDispatch($g['supplier_uid']);
                             } else {
-                                $sendfree = true;
+                                $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getOneDispatch($g["dispatchid"], $g['supplier_uid']);
+                            }
+                            if (empty($order_all[$g['supplier_uid']]['dispatch_data'])) {
+                                $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getNewDispatch($g['supplier_uid']);
+                            }
+                            if (!empty($order_all[$g['supplier_uid']]['dispatch_data'])) {
+                                if ($order_all[$g['supplier_uid']]['dispatch_data']["calculatetype"] == 1) {
+                                    $order_all[$g['supplier_uid']]['param'] = $g["total"];
+                                } else {
+                                    $order_all[$g['supplier_uid']]['param'] = $g["weight"] * $g["total"];
+                                }
+                                $dkey = $order_all[$g['supplier_uid']]['dispatch_data']["id"];
+                                if (array_key_exists($dkey, $order_all[$g['supplier_uid']]['dispatch_array'])) {
+                                    $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["param"] += $order_all[$g['supplier_uid']]['param'];
+                                } else {
+                                    $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["data"]  = $order_all[$g['supplier_uid']]['dispatch_data'];
+                                    $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["param"] = $order_all[$g['supplier_uid']]['param'];
+                                }
                             }
                         }
                     }
                 }
-
-                if (!$sendfree) {   //计算运费
-                    if ($g["dispatchtype"] == 1) {  //统一邮费
-                        if ($g["dispatchprice"] > 0) {
-                            $order_all[$g['supplier_uid']]['dispatch_price'] += $g["dispatchprice"] * $g["total"];
-                        }
-                    } else if ($g["dispatchtype"] == 0) {   //运费模板
-                        if (empty($g["dispatchid"])) {
-                            $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getDefaultDispatch($g['supplier_uid']);
-                        } else {
-                            $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getOneDispatch($g["dispatchid"], $g['supplier_uid']);
-                        }
-                        if (empty($order_all[$g['supplier_uid']]['dispatch_data'])) {
-                            $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getNewDispatch($g['supplier_uid']);
-                        }
-                        if (!empty($order_all[$g['supplier_uid']]['dispatch_data'])) {
-                            if ($order_all[$g['supplier_uid']]['dispatch_data']["calculatetype"] == 1) {
-                                $order_all[$g['supplier_uid']]['param'] = $g["total"];
-                            } else {
-                                $order_all[$g['supplier_uid']]['param'] = $g["weight"] * $g["total"];
-                            }
-                            $dkey = $order_all[$g['supplier_uid']]['dispatch_data']["id"];
-                            if (array_key_exists($dkey, $order_all[$g['supplier_uid']]['dispatch_array'])) {
-                                $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["param"] += $order_all[$g['supplier_uid']]['param'];
-                            } else {
-                                $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["data"]  = $order_all[$g['supplier_uid']]['dispatch_data'];
-                                $order_all[$g['supplier_uid']]['dispatch_array'][$dkey]["param"] = $order_all[$g['supplier_uid']]['param'];
-                            }
-                        }
-                    }
-                }
-
                 foreach ($suppliers as $key => $val) {
                     if (!empty($order_all[$val['supplier_uid']]['dispatch_array'])) {
                         foreach ($order_all[$val['supplier_uid']]['dispatch_array'] as $k => $v) {
@@ -484,9 +454,9 @@ if ($_W['isajax']) {
                             $param         = $order_all[$val['supplier_uid']]['dispatch_array'][$k]["param"];
                             $areas         = unserialize($order_all[$val['supplier_uid']]['dispatch_data']["areas"]);
                             if (!empty($address)) {
-                                $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $order_all[$val['supplier_uid']]['dispatch_data'], $val['supplier_uid']);
+                                $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $order_all[$val['supplier_uid']]['dispatch_data'],$val['supplier_uid']);
                             } else if (!empty($member["city"])) {
-                                $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $order_all[$val['supplier_uid']]['dispatch_data'], $val['supplier_uid']);
+                                $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $order_all[$val['supplier_uid']]['dispatch_data'],$val['supplier_uid']);
                             } else {
                                 $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getDispatchPrice($param, $order_all[$val['supplier_uid']]['dispatch_data'], -1, $val['supplier_uid']);
                             }
@@ -495,7 +465,6 @@ if ($_W['isajax']) {
                 }
             }
         }
-
         $sale_plugin   = p('sale');
         $saleset       = false;
         if ($sale_plugin) {
@@ -506,7 +475,6 @@ if ($_W['isajax']) {
         $realprice_total = 0;
         foreach ($suppliers as $key => $val) {
             if ($saleset) {
-                //满额包邮
                 if (!empty($saleset["enoughfree"])) {
                     if (floatval($saleset["enoughorder"]) <= 0) {
                         $order_all[$val['supplier_uid']]['dispatch_price'] = 0;
@@ -537,7 +505,7 @@ if ($_W['isajax']) {
                     if ($order_all[$val['supplier_uid']]['realprice'] >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
                         $order_all[$val['supplier_uid']]['saleset']["showenough"]   = true;
                         $order_all[$val['supplier_uid']]['saleset']["enoughmoney"]  = $e["enough"];
-                        $order_all[$val['supplier_uid']]['saleset']["enoughdeduct"] = number_format($e["money"], 2);
+                        $order_all[$val['supplier_uid']]['saleset']["enoughdeduct"] = number_format($e["money"],2);
                         $order_all[$val['supplier_uid']]['realprice'] -= floatval($e["money"]);
                         break;
                     }
@@ -546,10 +514,9 @@ if ($_W['isajax']) {
                     $order_all[$val['supplier_uid']]['deductprice2'] += $order_all[$val['supplier_uid']]['dispatch_price'];
                 }
             }
-
             $order_all[$val['supplier_uid']]['hascoupon'] = false;
             if ($hascouponplugin) {
-                $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
+                $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid']);
                 $order_all[$val['supplier_uid']]['hascoupon']   = $order_all[$val['supplier_uid']]['couponcount'] > 0;
             }
             $order_all[$val['supplier_uid']]['realprice'] += $order_all[$val['supplier_uid']]['dispatch_price'];
@@ -587,11 +554,11 @@ if ($_W['isajax']) {
                     }
                 }
             }
-            $order_all[$val['supplier_uid']]['goodsprice'] = number_format($order_all[$val['supplier_uid']]['goodsprice'], 2);
-            $order_all[$val['supplier_uid']]['totalprice'] = number_format($order_all[$val['supplier_uid']]['totalprice'], 2);
-            $order_all[$val['supplier_uid']]['discountprice'] = number_format($order_all[$val['supplier_uid']]['discountprice'], 2);
-            $order_all[$val['supplier_uid']]['realprice'] = number_format($order_all[$val['supplier_uid']]['realprice'], 2);
-            $order_all[$val['supplier_uid']]['dispatch_price'] = number_format($order_all[$val['supplier_uid']]['dispatch_price'], 2);
+            $order_all[$val['supplier_uid']]['goodsprice'] = number_format($order_all[$val['supplier_uid']]['goodsprice'],2);
+            $order_all[$val['supplier_uid']]['totalprice'] = number_format($order_all[$val['supplier_uid']]['totalprice'],2);
+            $order_all[$val['supplier_uid']]['discountprice'] = number_format($order_all[$val['supplier_uid']]['discountprice'],2);
+            $order_all[$val['supplier_uid']]['realprice'] = number_format($order_all[$val['supplier_uid']]['realprice'],2);
+            $order_all[$val['supplier_uid']]['dispatch_price'] = number_format($order_all[$val['supplier_uid']]['dispatch_price'],2);
         }
         $supplierids = implode(',', array_keys($suppliers));
         if(p('hotel')){
@@ -599,19 +566,13 @@ if ($_W['isajax']) {
             $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
             $params2 = array(':goodsid' => $id);
             $room = pdo_fetch($sql2, $params2);
-            $pricefield ='oprice';
+            $pricefield ='cprice';
             $r_sql = 'SELECT `roomdate`, `num`, `oprice`, `status`, ' . $pricefield . ' AS `m_price` FROM ' . tablename('sz_yi_hotel_room_price') .
             ' WHERE `roomid` = :roomid AND `roomdate` >= :btime AND ' .
             ' `roomdate` < :etime';
             $params = array(':roomid' => $room['id'],':btime' => $btime, ':etime' => $etime);
-            $price_list = pdo_fetchall($r_sql, $params);  
-            $this_price = $old_price =  $pricefield == 'cprice' ?  $room['oprice']*$member_p[$_W['member']['groupid']] : $room['roomprice'];
-            if ($this_price == 0) {
-                $this_price = $old_price = $room['oprice'] ;
-            } 
-            $totalprice =  $old_price * $days;
+            $price_list = pdo_fetchall($r_sql, $params);   
             if ($price_list) {//价格表中存在   
-               // print_r($price_list);exit;
                 $check_date = array();
                 foreach($price_list as $k => $v) {
                     $price_list[$k]['time']=date('Y-m-d',$v['roomdate']);
@@ -629,7 +590,7 @@ if ($_W['isajax']) {
                             }
                         }
                     }
-                } 
+                }                
                 $goodsprice = round($totalprice);
             }else{ 
                 $goodsprice = round($goods[0]['marketprice']) * $days;
@@ -677,10 +638,9 @@ if ($_W['isajax']) {
             'realprice' => number_format($realprice, 2),
             'type'=>$goods[0]['type'],
         ));
-    } elseif ($operation == 'getdispatchprice') {
+    } else if ($operation == 'getdispatchprice') {
         $isverify       = false;
         $isvirtual      = false;
-        $isverifysend   = false;
         $deductprice    = 0;
         $deductprice2   = 0;
         $deductcredit2  = 0;
@@ -694,7 +654,7 @@ if ($_W['isajax']) {
         if ($pc) {
             $pset = $pc->getSet();
             if (empty($pset["closemember"])) {
-                $couponcount = $pc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
+                $couponcount = $pc->consumeCouponCount($openid, $totalprice, $supplier_uid);
                 $hascoupon   = $couponcount > 0;
             }
         }
@@ -848,9 +808,6 @@ if ($_W['isajax']) {
                 if (!empty($g["virtual"]) || $g["type"] == 2) {
                     $isvirtual = true;
                 }
-                if ($g['isverifysend'] == 1) {
-                    $isverifysend = true;
-                }
                 if ($g["manydeduct"]) {
                     $deductprice += $g["deduct"] * $g["total"];
                 } else {
@@ -866,14 +823,7 @@ if ($_W['isajax']) {
                     }
                 }
             }
-            //仅判断核销了，还需要判断支持配送
-            //如果开启核销并且不支持配送，则没有运费
-            $isDispath = true;
-            if ($isverify && !$isverifysend) {
-                $isDispath = false;
-            }
-
-            if ($isverify && $isDispath) {
+            if ($isverify) {
                 show_json(1, array(
                     "price" => 0,
                     "hascoupon" => $hascoupon,
@@ -935,7 +885,7 @@ if ($_W['isajax']) {
                             if (empty($g["dispatchid"])) {
                                 $dispatch_data = m("order")->getDefaultDispatch($supplier_uid);
                             } else {
-                                $dispatch_data = m("order")->getOneDispatch($g["dispatchid"], $supplier_uid);
+                                $dispatch_data = m("order")->getOneDispatch($g["dispatchid"],$supplier_uid);
                             }
                             if (empty($dispatch_data)) {
                                 $dispatch_data = m("order")->getNewDispatch($supplier_uid);
@@ -1021,7 +971,7 @@ if ($_W['isajax']) {
             "deductcredit" => $deductcredit,
             "deductmoney" => $deductmoney
         ));
-    } elseif ($operation == 'create' && $_W['ispost']) {
+    } else if ($operation == 'create' && $_W['ispost']) {
         $order_data = $_GPC['order'];
         if(p('hotel')){ 
             if($_GPC['type']=='99'){
@@ -1030,10 +980,15 @@ if ($_W['isajax']) {
         }  
 
         //通用订单号，支付用
-        $ordersn_general    = m('common')->createNO('order', 'ordersn', 'SH');
+        if(count($order_data) > 1)
+            $ordersn_general    = m('common')->createNO('order', 'ordersn', 'SH');
+        }else{
+            $ordersn_general    = "";
+        }
         $member       = m('member')->getMember($openid);
         $level         = m('member')->getLevel($openid);
         foreach ($order_data as $key => $order_row) {
+            
             $dispatchtype = intval($order_row['dispatchtype']);
             $addressid    = intval($order_row['addressid']);
             $address      = false;
@@ -1147,8 +1102,7 @@ if ($_W['isajax']) {
                         ':goodsid' => $goodsid,
                         ':id' => $optionid
                     ));
-
-                    if (!empty($option)) {                                             
+                    if (!empty($option)) {
                         if ($option['stock'] != -1) {
                             if (empty($option['stock'])) {
                                 show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
@@ -1262,9 +1216,6 @@ if ($_W['isajax']) {
                 if ($data['isverify'] == 2) {
                     $isverify = true;
                 }
-                if ($data['isverifysend'] == 1) {
-                    $isverifysend = true;
-                }
                 if (!empty($data["virtual"]) || $data["type"] == 2) {
                     $isvirtual = true;
                 }
@@ -1300,16 +1251,8 @@ if ($_W['isajax']) {
                     }
                 }
             }
-
-            //如果开启核销并且不支持配送，则没有运费
-            $isDispath = true;
-            if ($isverify && !$isverifysend) {
-                $isDispath = false;
-            }
-
-            if (!$isvirtual && $isDispath && $dispatchtype == 0) {
+            if (!$isvirtual && !$isverify && $dispatchtype == 0) {
                 foreach ($allgoods as $g) {
-                    $g["ggprice"] = $ggprice;
                     $sendfree = false;
                     if (!empty($g["issendfree"])) {
                         $sendfree = true;
@@ -1360,7 +1303,7 @@ if ($_W['isajax']) {
                             if (empty($g["dispatchid"])) {
                                 $dispatch_data = m("order")->getDefaultDispatch($g['supplier_uid']);
                             } else {
-                                $dispatch_data = m("order")->getOneDispatch($g["dispatchid"], $g['supplier_uid']);
+                                $dispatch_data = m("order")->getOneDispatch($g["dispatchid"],$g['supplier_uid']);
                             }
                             if (empty($dispatch_data)) {
                                 $dispatch_data = m("order")->getNewDispatch($g['supplier_uid']);
@@ -1389,9 +1332,9 @@ if ($_W['isajax']) {
                         $param         = $dispatch_array[$k]["param"];
                         $areas         = unserialize($dispatch_data["areas"]);
                         if (!empty($address)) {
-                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $dispatch_data, $order_row['supplier_uid']);
+                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $dispatch_data,$order_row['supplier_uid']);
                         } else if (!empty($member["city"])) {
-                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $dispatch_data, $order_row['supplier_uid']);
+                            $dispatch_price += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $dispatch_data,$order_row['supplier_uid']);
                         } else {
                             $dispatch_price += m("order")->getDispatchPrice($param, $dispatch_data, -1, $order_row['supplier_uid']);
                         }
@@ -1521,8 +1464,8 @@ if ($_W['isajax']) {
                     $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
                     $params2 = array(':goodsid' =>$_GPC['id']);
                     $room = pdo_fetch($sql2, $params2);
+
                     $totalprice =$_GPC['totalprice'];
-                    $goodsprice =$_GPC['goodsprice'];
                 }
             }
             $order    = array(
@@ -1559,26 +1502,24 @@ if ($_W['isajax']) {
                 "couponid" => $couponid,
                 "couponprice" => $couponprice,
                 'redprice' => $redpriceall,
-     
+                'realname'=>$_GPC['realname'],//以下为酒店订单
+                'realmobile'=>$_GPC['realmobile'],
+                'realsex'=>$_GPC['realsex'],
+                'invoice'=>$_GPC['invoice'],
+                'invoiceval'=>$_GPC['invoiceval'],
+                'invoicetext'=>$_GPC['invoicetext'],
+                'num'=>$_GPC['goodscount'],
+                'btime'=>$btime,
+                'etime'=>$etime,
+                'depositprice'=>$_GPC['depositprice'],
+                'depositpricetype'=>$_GPC['depositpricetype'],
+                'roomid'=> $room['id'],
+                'days'=>$days,
             );
-            if(p('hotel')){
-                if($_GPC['type']=='99'){ 
+             if(p('hotel')){
+                 if($_GPC['type']=='99'){ 
                      $order['order_type']='3';
-                     $order['addressid']='9999999';
-                     $order['checkname']=$_GPC['realname'];//以下为酒店订单
-                     $order['realmobile']=$_GPC['realmobile'];
-                     $order['realsex']=$_GPC['realsex'];
-                     $order['invoice']=$_GPC['invoice'];
-                     $order['invoiceval']=$_GPC['invoiceval'];
-                     $order['invoicetext']=$_GPC['invoicetext'];
-                     $order['num']=$_GPC['goodscount'];
-                     $order['btime']=$btime;
-                     $order['etime']=$etime;
-                     $order['depositprice']=$_GPC['depositprice'];
-                     $order['depositpricetype']=$_GPC['depositpricetype'];
-                     $order['roomid']=$room['id'];
-                     $order['days']=$days;                  
-                }
+                  }
             }
             if ($diyform_plugin) {
                 if (is_array($order_row["diydata"]) && !empty($order_formInfo)) {
@@ -1592,7 +1533,7 @@ if ($_W['isajax']) {
             if (!empty($address)) {
                 $order['address'] = iserializer($address);
             }
-            pdo_insert('sz_yi_order',$order);
+            pdo_insert('sz_yi_order', $order);
             $orderid = pdo_insertid();
             if(p('hotel')){
                  if($_GPC['type']=='99'){  
@@ -1614,12 +1555,14 @@ if ($_W['isajax']) {
                             'mprice'=>$value['mprice'],
                         );
                       pdo_insert('sz_yi_order_room', $order_room);
+
                     }
                 }
                 //减去房量
                 $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
                 $params2 = array(':goodsid' =>  $allgoods[0]['goodsid']);
-                $room = pdo_fetch($sql2, $params2);         
+                $room = pdo_fetch($sql2, $params2);          
+               
                 $starttime = $btime;
                 for ($i = 0; $i <  $days; $i++) {
                     $sql = 'SELECT * FROM '. tablename('sz_yi_hotel_room_price'). ' WHERE  roomid = :roomid AND roomdate = :roomdate';
@@ -1628,34 +1571,40 @@ if ($_W['isajax']) {
                     $btime += 86400;
                 } 
                //打印订单      
-                $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
-                //订单信息
-                    $print_order = $order;
-               //  商品信息
-                    $ordergoods = pdo_fetchall("select goodsid,total from " . tablename('sz_yi_order_goods') . " where uniacid=".$_W['uniacid']." and orderid=".$orderid);
-                    foreach ($ordergoods as $key =>$value) {
-                        $ordergoods[$key]['price'] = pdo_fetchcolumn("select marketprice from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
-                        $ordergoods[$key]['goodstitle'] = pdo_fetchcolumn("select title from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
-                        $ordergoods[$key]['totalmoney'] = number_format($ordergoods[$key]['price']*$value['total'],2);
-                        $ordergoods[$key]['print_id'] = pdo_fetchcolumn("select print_id from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
-                    }
-                    $print_order['goods']=$ordergoods;
-                    $print_id = $print_order['goods'][0]['print_id'];
-                    if($print_id!=''){
-                        $print_detail = pdo_fetch("select * from " . tablename('sz_yi_print_list') . " where uniacid={$_W['uniacid']} and id={$print_id}");
-                        if(!empty($print_detail)){
-                                $member_code = $print_detail['member_code'];
-                                $device_no = $print_detail['print_no'];
-                                $key = $print_detail['key'];
-                                include IA_ROOT.'/addons/sz_yi/core/model/print.php';
-                                 //房间金额信息
-                                $sql2 = 'SELECT * FROM ' . tablename('sz_yi_order_room') . ' WHERE `orderid` = :orderid';
-                                $params2 = array(':orderid' => $orderid);
-                                $price_list = pdo_fetchall($sql2, $params2);
-                                $msgNo = testSendFreeMessage($print_order, $member_code, $device_no, $key,$set,$price_list);
-                        }
-                    }
-   
+                //$set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
+                //if($set['print_order']=='1'){
+                    //订单信息
+                    //$print_order = $order;
+                                    //商品信息
+                //     $ordergoods = pdo_fetchall("select goodsid,total from " . tablename('sz_yi_order_goods') . " where uniacid=".$_W['uniacid']." and orderid=".$orderid);
+                //     foreach ($ordergoods as $key =>$value) {
+                //         $ordergoods[$key]['price'] = pdo_fetchcolumn("select marketprice from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+                //         $ordergoods[$key]['goodstitle'] = pdo_fetchcolumn("select title from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+                //         $ordergoods[$key]['totalmoney'] = number_format($ordergoods[$key]['price']*$value['total'],2);
+                //         $ordergoods[$key]['print_id'] = pdo_fetchcolumn("select print_id from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+                //         $ordergoods[$key]['type'] = pdo_fetchcolumn("select type from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+                //     }
+                //     $print_order['goods']=$ordergoods;
+                //     $print_id = $print_order['goods'][0]['print_id'];
+                //     $goodtype = $print_order['goods'][0]['type'];
+                //     $print_detail = pdo_fetch("select * from " . tablename('sz_yi_print_list') . " where uniacid={$_W['uniacid']} and id={$print_id}");
+                //     if(!empty($print_detail)){
+                //           $member_code = $print_detail['member_code'];
+                //           $device_no = $print_detail['print_no'];
+                //           $key = $print_detail['key'];
+                //           include IA_ROOT.'/addons/sz_yi/core/model/print.php';
+                //          if($goodtype=='3'){//类型为房间
+                //              //房间金额信息
+                //             $sql2 = 'SELECT * FROM ' . tablename('sz_yi_order_room') . ' WHERE `orderid` = :orderid';
+                //             $params2 = array(':orderid' => $orderid);
+                //             $price_list = pdo_fetchall($sql2, $params2);
+                //             $msgNo = testSendFreeMessage($print_order, $member_code, $device_no, $key,$set,$price_list);
+                //         }else if($goodtype=='1'){//类型为便利店
+                //             $msgNo = testSendFreeMessageshop($print_order, $member_code, $device_no, $key,$set);
+                //         } 
+                //     }
+                // }
+         //打印订单结束
             }
         }
        
@@ -1749,7 +1698,6 @@ if ($_W['isajax']) {
             'orderid' => $orderid
         ));
     }else if ($operation == 'date') {
-        echo 111;exit;
         global $_GPC, $_W;
         $id = $_GPC['id'];
         if ($search_array && !empty($search_array['bdate']) && !empty($search_array['day'])) {
@@ -1761,11 +1709,132 @@ if ($_W['isajax']) {
         }
         load()->func('tpl');
     include $this->template('order/date');
+    exit;
+} else if ($operation == 'ajaxData') {
+        global $_GPC, $_W;
+        $id = $_GPC['id'];
+        $data=  m('hotel')->getSearchArray();
+        switch ($_GPC['ac'])
+        {
+            //选择日期
+            case 'time':
+                $bdate = $_GPC['bdate'];
+                $day = $_GPC['day'];
+                if (!empty($bdate) && !empty($day)) {
+                    $btime = strtotime($bdate);
+                    $etime = $btime + $day * 86400;
+                    $weekarray = array("日", "一", "二", "三", "四", "五", "六");
+                    $data['btime'] = $btime;
+                    $data['etime'] = $etime;
+                    $data['bdate'] = $bdate;
+                    $data['edate'] = date('Y-m-d', $etime);
+                    $data['bweek'] = '星期' . $weekarray[date("w", $btime)];
+                    $data['eweek'] = '星期' . $weekarray[date("w", $etime)];
+                    $data['day'] = $day;        
+                    //setcookie('data',serialize($data),time()+2*7*24*3600);
+                    $_SESSION['data']=$data;
+                    $url = $this->createMobileUrl('order', array('p' =>'confirm','id'=> $id));
+                    die(json_encode(array("result" => 1, "url" => $url)));
+                }
+                break;
+
+            //选择价格和星级
+            case 'price':
+                $price_type = $_GPC['price_type'];
+                $price_value = $_GPC['price_value'];
+
+                if (empty($price_value)) {
+                    $data['price_type'] = 0;
+                } else {
+                    $data['price_type'] = $price_type;
+                }
+                $data['price_value'] = $price_value;
+                insert_cookie($key, $data);
+                die(json_encode(array("result" => 1)));
+                break;
+
+            //选择城市
+            case 'city':
+                $location_p = $_GPC['location_p'];
+                $location_c = $_GPC['location_c'];
+
+                if (!empty($location_p) && !empty($location_c)) {
+
+                    if (strpos($location_p, '市') > -1) {
+                        //直辖市
+                        $data['municipality'] = 1;
+                        $data['city_name'] = $location_p;
+                    } else {
+                        $data['municipality'] = 0;
+                        $data['city_name'] = $location_c;
+                    }
+
+                    $data['location_p'] = $location_p;
+                    $data['location_c'] = $location_c;
+
+                    insert_cookie($key, $data);
+                }
+                $url = $this->createMobileUrl('search');
+                die(json_encode(array("result" => 1, "url" => $url)));
+                break;
+
+            //价格排序
+            case 'orderby':
+                $order_name = $_GPC['order_name'];
+                $order_type = $_GPC['order_type'];
+
+                $data['order_name'] = $order_name;
+                $data['order_type'] = $order_type;
+
+                insert_cookie($key, $data);
+                $url = $this->createMobileUrl('list');
+                die(json_encode(array("result" => 1, "order_type"=>$order_type,"order_name"=>$order_name, "url" => $url)));
+                break;
+
+            //选择品牌商圈
+            case 'brand':
+                $business_id = $_GPC['business_id'];
+                $business_title = $_GPC['business_title'];
+                $brand_id = $_GPC['brand_id'];
+                $brand_title = $_GPC['brand_title'];
+                $keyword = $_GPC['keyword'];
+
+                $data['business_id'] = $business_id;
+                $data['brand_id'] = $brand_id;
+                if (!empty($business_title)) {
+                    $data['business_title'] = $business_title;
+                }
+                if (!empty($brand_title)) {
+                    $data['brand_title'] = $brand_title;
+                }
+                $data['keyword'] = $keyword;
+
+                insert_cookie($key, $data);
+                $url = $this->createMobileUrl('search');
+                die(json_encode(array("result" => 1, "url" => $url)));
+                break;
+
+            //清除品牌商圈信息
+            case 'clear_brand':
+                $data['business_id'] = 0;
+                $data['brand_id'] = 0;
+                $data['business_title'] = '';
+                $data['brand_title'] = '';
+                $data['keyword'] = '';
+
+                insert_cookie($key, $data);
+                $url = $this->createMobileUrl('search');
+                die(json_encode(array("result" => 1, "url" => $url)));
+                break;
+        }
 }
-}
-if(p('hotel') && $goods_data['type']=='99'){ //判断是否开启酒店插件
-        include $this->template('order/confirm_hotel');
+//}
+if(p('hotel')){ //判断是否开启酒店插件
+   if($goods_data['type']=='99'){//判断是否为房间
+        include $this->template('order/confirm_original');
+   }else{
+        include $this->template('order/confirm');
+   }
 }else{
         include $this->template('order/confirm');
 }
-

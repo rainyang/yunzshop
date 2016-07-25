@@ -40,14 +40,24 @@ foreach ($category as &$c) {
 }
 
 //推荐宝贝
-$args = array('page' => $_GPC['page'], 'pagesize' => 6, 'isrecommand' => 1, 'order' => 'displayorder desc,createtime desc', 'by' => '');
+$args = array('page' => $_GPC['page'], 'pagesize' => 8, 'isrecommand' => 1, 'order' => 'displayorder desc,createtime desc', 'by' => '');
 $goods = m('goods')->getList($args);
+foreach ($goods as &$g) {
+    $g['url'] = $this->createMobileUrl("shop/detail",array('id'=>$g['id']));
+}
 
-//echo '<pre>';print_r($advs);exit;
+//echo '<pre>';print_r($goods);exit;
 $app_interface = new InterfaceController();
 $res = array(
     'advs' => $advs,
     'category' => $category,
-    'goods' => $goods
+    'goods' => $goods,
+    'search' => $this->createMobileUrl('shop/list'),
+    'msglist' => $this->createMobileUrl('member/messagelist'),
+    'more' => $this->createMobileUrl('shop/list3'),
+    'groups' => $this->createMobileUrl('shop/list',array("order"=>"sales","by"=>"shop")),
+    'distribution' => $this->createPluginMobileUrl('commission'),
+    'bag' => $this->createMobileUrl('shop/cart')
 );
-$app_interface->checkResultAndReturn($res);
+echo json_encode($res);
+//$app_interface->checkResultAndReturn($res);

@@ -38,10 +38,15 @@ if(!empty($pluginbonus)){
         $bonus_start = 1;
     }
 }
+$isreturn = false;
 $pluginreturn = p('return');
 if ($pluginreturn) {
     $return_set = $pluginreturn->getSet();
+    if($return_set['isqueue'] == 1 || $return_set['isreturn']== 1 || $return_set['islevelreturn']== 1 ){ 
+        $isreturn = true;
+    }
 }
+
 $shopset = m('common')->getSysset('shop');
 $sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
 $category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
@@ -117,6 +122,9 @@ if ($operation == "change") {
         ca('shop.goods.add');
     }
     $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid']);
+    if(p('hotel')){
+        $print_list =  pdo_fetchall('SELECT * FROM ' . tablename('sz_yi_print_list') . ' WHERE uniacid = :uniacid ', array(':uniacid' => $_W['uniacid']));
+    }
     $id = intval($_GPC['id']);
     if (!empty($id)) {
         ca('shop.goods.edit|shop.goods.view');
@@ -464,6 +472,7 @@ if ($operation == "change") {
         
         if(p('hotel')){
              $data['deposit']=$_GPC["deposit"];//房间押金
+             $data['print_id']=$_GPC["print_id"];//房间押金
         }
         $cateset = m('common')->getSysset('shop');
         $pcates  = array();

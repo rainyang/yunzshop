@@ -70,8 +70,7 @@
     <div class="formsuccess">
         <img src="../addons/sz_yi/template/mobile/default/static/images/iconfont-success.png" alt="" class="iconfont-success">
         <h1>提交成功！</h1>
-<!--         <a href="{$list}" class="formsuccess-btn">返回首页</a>
- -->    </div>
+    </div>
 </div>
 
 {else if $operation=='list'}
@@ -83,7 +82,7 @@
                 <p><a class="fl">日期：{$value['time']}</a><a  class="fr">状态：{$status[$value['status']]}</a></p>
                 <p><a class="fl">姓名：{$value['contact']}&nbsp;&nbsp;&nbsp;电话:{$value['mobile']}</a></p>
                 <p ><a class="fl">包厢：{$value['goodtitle']}</a></p>
-                <p style="border-bottom:none">
+                <p style="border-bottom:none;min-height:100px;">
                 <a class="fl">备注：{$value['message']}</a>
                  {if $value['status']=='0'}
                 <a href="{$edit}&id={$value['id']}"class="fr" style="color:#f88917">取消预约</a>
@@ -105,8 +104,8 @@
     {/if} 
 {/if} 
 <footer class="footer">
-    <a href="{$display}"class="footerleft">预约</a>
-    <a href="{$list}" class="footerright">我的预约</a>
+    <a href="{$display}"class="footerleft" style="color: #fff;background: #f88917;">预约</a>
+    <a href="{$list}" class="footerright" style="color: #fff;background: #f88917;">我的预约</a>
 </footer>  
 
 
@@ -132,8 +131,11 @@
                     if ($('#message').val() == '') {
                         core.tip.show("请填写留言");
                         return;
-                    }                         
-                               
+                    }   
+                    if ($('#message').val().length>60) {
+                        core.tip.show("请填写不大于60字留言");
+                        return;
+                    }             
                 
                      $("#myform").submit();
                 });
