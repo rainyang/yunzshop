@@ -85,7 +85,7 @@ if ($_W['isajax']) {
 		  if($member['credit1'] > 0 && $member['credit1'] >= ($pay*100)){
 		  	$donation_credit1 = -$pay*100;
 		  	pdo_insert('sz_yi_love_log',$data);
-		  	m('member')->setCredit($openid, 'credit1', $donation_credit1);
+		  	m('member')->setCredit($openid, 'credit1', $donation_credit1, array(0, '会员爱心基金贡献：' . $donation_credit1 . " 积分"));
 		  	show_json(1, array('url' => $this->createPluginMobileUrl('love/log_detail')));
 		  }else{
 		  	show_json(0, array('message' => '积分不足!您可以购买商品来进行捐赠！'));
@@ -94,7 +94,7 @@ if ($_W['isajax']) {
 	      if($member['credit2'] > 0 && $member['credit2'] >= $pay){
 		  	$donation_credit2 = -$pay;
 		  	pdo_insert('sz_yi_love_log',$data);
-		  	m('member')->setCredit($openid, 'credit2', $donation_credit2);
+		  	m('member')->setCredit($openid, 'credit2', $donation_credit2, array(0, '会员爱心基金贡献：' . $donation_credit2 . " 元"));
 		  	show_json(1, array('url' => $this->createPluginMobileUrl('love/log_detail')));
 		  }else{
 		  	show_json(0, array('message' => '余额不足!您可以购买商品来进行捐赠！'));

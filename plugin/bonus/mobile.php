@@ -68,4 +68,8 @@ class BonusMobile extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function agent_info()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 }
