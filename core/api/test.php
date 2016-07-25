@@ -13,8 +13,11 @@ function get_test_para()
     $method_name = array_shift($api_name);
 
     $para = $api_db[$group_name]['method'][$method_name]['para'];
+    //var_dump($para);
     return $aes->siyuan_aes_encode(json_encode($para, JSON_UNESCAPED_UNICODE));
 
 }
 $_POST['para'] = get_test_para();
+//var_dump($_POST['para']);
+
 require __DIR__ . "/index.php";

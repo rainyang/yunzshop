@@ -7,7 +7,7 @@
  * @author    shenyang<shenyang@yunzshop.com>
  * @version   v1.0
  */
-namespace Api;
+namespace api;
 class Base
 {
     /**
@@ -31,8 +31,8 @@ class Base
             exit('提交方式不正确');
         }*/
         $this->aes = new \Common\Org\Aes();
-
         $this->para = json_decode(urldecode($this->aes->siyuan_aes_decode(str_replace(" ", "+", $_POST['para']))), TRUE);//
+        //dump($this->para);
         $this->addLog();
     }
     /**

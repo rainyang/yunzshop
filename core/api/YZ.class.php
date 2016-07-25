@@ -7,7 +7,7 @@
  * @version   v1.0
  */
 
-namespace Api;
+namespace api;
 require_once __API_ROOT__ . '/base.class.php';
 spl_autoload_register(function ($class_name) {
     $name_space = substr($class_name,0,strrpos($class_name,'\\'));
