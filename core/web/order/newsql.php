@@ -1195,3 +1195,5 @@ if(!pdo_fieldexists('sz_yi_commission_level', 'withdraw_proportion')) {
 if (!pdo_fieldexists('sz_yi_member', 'check_imgs')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `check_imgs` text DEFAULT '';");
 }
+
+pdo_query('update ' . tablename('sz_yi_order') . ' set ordersn_general = ordersn where ordersn_general=""');
