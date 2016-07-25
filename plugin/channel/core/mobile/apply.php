@@ -24,7 +24,7 @@ if ($_W['isajax']) {
 			'applyno'				=> $applyno,
 			'apply_money'			=> $commission_ok,
 			'apply_time'			=> $time,
-			'status' 				=> 0,
+			'status' 				=> 1,
 			'uniacid'				=> $_W['uniacid'],
 			'apply_ordergoods_ids' 	=> $apply_ordergoods_ids
 			);

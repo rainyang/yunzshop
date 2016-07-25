@@ -1015,11 +1015,11 @@ if ($_W['isajax']) {
                 } else {
                     $rprice = explode("-", $data['redprice']);
                     if ($rprice[1]>200) {
-                        $redprice = rAND($rprice[0]*100, 200*100)/100;
+                        $redprice = rand($rprice[0]*100, 200*100)/100;
                     } else if ($rprice[0]<0) {
-                        $redprice = rAND(0, $rprice[1]*100)/100;
+                        $redprice = rand(0, $rprice[1]*100)/100;
                     } else {
-                        $redprice = rAND($rprice[0]*100, $rprice[1]*100)/100;
+                        $redprice = rand($rprice[0]*100, $rprice[1]*100)/100;
                     }
                 }
             } else {
@@ -1414,7 +1414,7 @@ if ($_W['isajax']) {
                 $order_goods['supplier_uid'] = $goods['supplier_uid'];
             }
             if (p('channel')) {
-                $my_info = p('channel')->getInfo($openid);
+                $my_info = p('channel')->getInfo($openid,$goods['goodsid'],$goods['optionid'],$goods['total']);
                 if ($ischannelpay == 1) {
                     $every_turn_price           = $goods['marketprice']/($my_info['my_level']['purchase_discount']/100);
                     $ischannelstock             = pdo_fetch(
@@ -1460,15 +1460,8 @@ if ($_W['isajax']) {
                 }
                 $order_goods['channel_id'] = 0;
                 if (!empty($my_info['up_level'])) {
-                    $channel_cond = " WHERE uniacid={$_W['uniacid']} AND openid='{$my_info['up_level']['openid']}' AND goodsid={$goods['goodsid']} ";
-                    if (!empty($goods['optionid'])) {
-                        $channel_cond .= " AND optionid={$goods['optionid']}";
-                    }
-                    $channel_stock = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_stock') . $channel_cond);
-                    if (!empty($channel_stock)) {
-                        $up_member = m('member')->getInfo($my_info['up_level']['openid']);
-                        $order_goods['channel_id'] = $up_member['id'];
-                    }
+                    $up_member = m('member')->getInfo($my_info['up_level']['openid']);
+                    $order_goods['channel_id'] = $up_member['id'];
                 }
             }
             pdo_insert('sz_yi_order_goods', $order_goods);

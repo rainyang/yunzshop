@@ -238,7 +238,6 @@ class Sz_DYi_Order
         $cond = "";
         if (p('channel')) {
             $cond    = ',og.channel_id,og.ischannelpay';
-            $my_info = p('channel')->getInfo($order['openid']);
         }
         $goods   = pdo_fetchall("select og.goodsid" . $cond . ",og.total,g.totalcnf,og.realprice, g.credit,og.optionid,g.total as goodstotal,og.optionid,g.sales,g.salesreal from " . tablename('sz_yi_order_goods') . " og " . " left join " . tablename('sz_yi_goods') . " g on g.id=og.goodsid " . " where og.orderid=:orderid and og.uniacid=:uniacid ", array(
             ':uniacid' => $_W['uniacid'],
@@ -270,47 +269,45 @@ class Sz_DYi_Order
                 if (!empty($g['optionid'])) {
                     if (p('channel')) {
                         if (!empty($g['channel_id']) || !empty($g['ischannelpay'])) {
-                            if (!empty($my_info['up_level'])) {
-                                $channel_stock = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} and openid='{$my_info['up_level']['openid']}' and goodsid={$g['goodsid']} and optionid={$g['optionid']}");
-                                if (!empty($channel_stock) && $channel_stock['stock_total'] != -1) {
-                                    $stock = -1;
-                                    if ($stocktype == 1) {
-                                        $stock = $channel_stock['stock_total'] + $g['total'];
-                                    } else if ($stocktype == -1) {
-                                        $stock = $channel_stock['stock_total'] - $g['total'];
-                                    }
-                                    if ($stock != -1) {
-                                        if ($stock < 0) {
-                                            $option = m('goods')->getOption($g['goodsid'], $g['optionid']);
-                                            $option['stock'] = $option['stock'] + $stock;
-                                            $option['stock'] <= 0 && $option['stock'] = 0;
-                                            pdo_update('sz_yi_goods_option', array(
-                                                'stock' => $option['stock']
-                                            ), array(
-                                                'uniacid'   => $_W['uniacid'],
-                                                'goodsid'   => $g['goodsid'],
-                                                'id'        => $g['optionid']
-                                            ));
-                                            pdo_update('sz_yi_channel_stock', array(
-                                                'stock_total' => 0
-                                            ), array(
-                                                'uniacid'   => $_W['uniacid'],
-                                                'goodsid'   => $g['goodsid'],
-                                                'openid'    => $my_info['up_level']['openid'],
-                                                'optionid'  => $g['optionid']
-                                            ));
-                                        } else {
-                                            pdo_update('sz_yi_channel_stock', array(
-                                                'stock_total' => $stock
-                                            ), array(
-                                                'uniacid'   => $_W['uniacid'],
-                                                'goodsid'   => $g['goodsid'],
-                                                'openid'    => $my_info['up_level']['openid'],
-                                                'optionid'  => $g['optionid']
-                                            ));
-                                        }
-                                        $channel = true;
-                                    }
+                            $my_info = p('channel')->getInfo($order['openid'],$g['goodsid'],$g['optionid'],$g['total']);
+                            if (!empty($my_info['up_level']['stock'])) {
+                                $stock = -1;
+                                if ($stocktype == 1) {
+                                    $stock = $my_info['up_level']['stock']['stock_total'] + $g['total'];
+                                } else if ($stocktype == -1) {
+                                    $stock = $my_info['up_level']['stock']['stock_total'] - $g['total'];
+                                }
+                                if ($stock != -1) {
+                                    /*if ($stock < 0) {
+                                        $option = m('goods')->getOption($g['goodsid'], $g['optionid']);
+                                        $option['stock'] = $option['stock'] + $stock;
+                                        $option['stock'] <= 0 && $option['stock'] = 0;
+                                        pdo_update('sz_yi_goods_option', array(
+                                            'stock' => $option['stock']
+                                        ), array(
+                                            'uniacid'   => $_W['uniacid'],
+                                            'goodsid'   => $g['goodsid'],
+                                            'id'        => $g['optionid']
+                                        ));
+                                        pdo_update('sz_yi_channel_stock', array(
+                                            'stock_total' => 0
+                                        ), array(
+                                            'uniacid'   => $_W['uniacid'],
+                                            'goodsid'   => $g['goodsid'],
+                                            'openid'    => $my_info['up_level']['openid'],
+                                            'optionid'  => $g['optionid']
+                                        ));
+                                    } else {*/
+                                    pdo_update('sz_yi_channel_stock', array(
+                                        'stock_total' => $stock
+                                    ), array(
+                                        'uniacid'   => $_W['uniacid'],
+                                        'goodsid'   => $g['goodsid'],
+                                        'openid'    => $my_info['up_level']['openid'],
+                                        'optionid'  => $g['optionid']
+                                    ));
+                                    //}
+                                    $channel = true;
                                 }
                             }
                         }
@@ -340,44 +337,42 @@ class Sz_DYi_Order
                 if (p('channel')) {
                     if (empty($channel)) {
                         if (!empty($g['channel_id']) || !empty($g['ischannelpay'])) {
-                            if (!empty($my_info['up_level'])) {
-                                $channel_stock = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} and openid='{$my_info['up_level']['openid']}' and goodsid={$g['goodsid']}");
-                                if (!empty($channel_stock['stock_total']) && $channel_stock['stock_total'] != -1) {
-                                    $totalstock = -1;
-                                    if ($stocktype == 1) {
-                                        $totalstock = $channel_stock['stock_total'] + $g['total'];
-                                    } else if ($stocktype == -1) {
-                                        $totalstock = $channel_stock['stock_total'] - $g['total'];
-                                    }
-                                    if ($totalstock != -1) {
-                                        if ($totalstock < 0) {
-                                            $goodstotal = pdo_fetchcolumn("SELECT total FROM " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$g['goodsid']}");
-                                            $goodstotal = $goodstotal + $totalstock;
-                                            $goodstotal <= 0 && $goodstotal = 0;
-                                            pdo_update('sz_yi_goods', array(
-                                                'total' => $goodstotal
-                                            ), array(
-                                                'uniacid' => $_W['uniacid'],
-                                                'id' => $g['goodsid']
-                                            ));
-                                            pdo_update('sz_yi_channel_stock', array(
-                                                'stock_total' => 0
-                                            ), array(
-                                                'uniacid' => $_W['uniacid'],
-                                                'goodsid' => $g['goodsid'],
-                                                'openid'  => $my_info['up_level']['openid']
-                                            ));
-                                        } else {
-                                            pdo_update('sz_yi_channel_stock', array(
-                                                'stock_total' => $totalstock
-                                            ), array(
-                                                'uniacid' => $_W['uniacid'],
-                                                'goodsid' => $g['goodsid'],
-                                                'openid'  => $my_info['up_level']['openid']
-                                            ));
-                                        }
-                                        $channels = true;
-                                    }
+                            $my_info = p('channel')->getInfo($order['openid'],$g['goodsid'],0,$g['total']);
+                            if (!empty($my_info['up_level']['stock'])) {
+                                $totalstock = -1;
+                                if ($stocktype == 1) {
+                                    $totalstock = $my_info['up_level']['stock']['stock_total'] + $g['total'];
+                                } else if ($stocktype == -1) {
+                                    $totalstock = $my_info['up_level']['stock']['stock_total'] - $g['total'];
+                                }
+                                if ($totalstock != -1) {
+                                    /*if ($totalstock < 0) {
+                                        $goodstotal = pdo_fetchcolumn("SELECT total FROM " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$g['goodsid']}");
+                                        $goodstotal = $goodstotal + $totalstock;
+                                        $goodstotal <= 0 && $goodstotal = 0;
+                                        pdo_update('sz_yi_goods', array(
+                                            'total' => $goodstotal
+                                        ), array(
+                                            'uniacid' => $_W['uniacid'],
+                                            'id' => $g['goodsid']
+                                        ));
+                                        pdo_update('sz_yi_channel_stock', array(
+                                            'stock_total' => 0
+                                        ), array(
+                                            'uniacid' => $_W['uniacid'],
+                                            'goodsid' => $g['goodsid'],
+                                            'openid'  => $my_info['up_level']['openid']
+                                        ));
+                                    } else {*/
+                                        pdo_update('sz_yi_channel_stock', array(
+                                            'stock_total' => $totalstock
+                                        ), array(
+                                            'uniacid' => $_W['uniacid'],
+                                            'goodsid' => $g['goodsid'],
+                                            'openid'  => $my_info['up_level']['openid']
+                                        ));
+                                    //}
+                                    $channels = true;
                                 }
                             }
                         }

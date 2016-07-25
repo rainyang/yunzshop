@@ -12,7 +12,7 @@ $commission_total 	= $channelinfo['channel']['commission_total'];
 $commission_ok 		= $channelinfo['channel']['commission_ok'];
 $commission_ok 		= number_format($commission_ok, 2);
 $purchaseid			= pdo_fetchcolumn("SELECT id FROM " . tablename('sz_yi_chooseagent') . " WHERE uniacid={$_W['uniacid']} AND isopenchannel=1 LIMIT 1");
-$purchaseurl		= $this->createPluginMobileUrl('choose',array('pageid'=>$purchaseid));
+$purchaseurl		= $this->createPluginMobileUrl('choose',array('pageid'=>$purchaseid, 'ischannelpay' => 1));
 $operation 			= !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if($_W['isajax']) {
  	if ($operation == 'order') {

@@ -130,6 +130,9 @@ if(!is_weixin()){
 $commissionprice = p('commission')->getCommission($goods);
 
 if ($_W['isajax']) {
+    if (p('channel')) {
+        $ischannelpay = intval($_GPC['ischannelpay']);
+    }
     if (empty($goods)) {
         show_json(0);
     }
@@ -212,6 +215,15 @@ if ($_W['isajax']) {
         $options = pdo_fetchall("select id,title,thumb,marketprice,productprice,costprice, stock,weight,specs from " . tablename('sz_yi_goods_option') . " where goodsid=:id order by id asc", array(
             ':id' => $goodsid
         ));
+        if (!empty($ischannelpay) && p('channel')) {
+            foreach ($options as &$value) {
+                $superior_stock = p('channel')->getSuperiorStock($openid, $goodsid, $value['id']);
+                if (!empty($superior_stock['stock_total'])) {
+                    $value['stock'] = $superior_stock['stock_total'];
+                }
+            }
+            unset($value);
+        }
         $options = set_medias($options, 'thumb');
         foreach ($options as $o) {
             if ($maxprice < $o['marketprice']) {

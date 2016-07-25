@@ -43,10 +43,12 @@ if($_W['isajax']){
         }
     }   
     $goods = m('goods')->getList($args);
-    foreach ($goods as $key => &$value) {
-        $value['channel_price'] = number_format($value['marketprice'] * $level['purchase_discount']/100, 2);
-        $value['channel_price'] = "/采购价：" . $value['channel_price'] . "元";
+    if (p('channel')) {
+        foreach ($goods as $key => &$value) {
+            $value['channel_price'] = number_format($value['marketprice'] * $level['purchase_discount']/100, 2);
+            $value['channel_price'] = "/采购价：" . $value['channel_price'] . "元";
+        }
+        unset($value);
     }
-    unset($value);
     show_json(1,array('goods' => $goods));
 }
