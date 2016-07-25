@@ -166,7 +166,7 @@
                                     {if empty($p['parentid'])}
                                         {loop $children2[$p['id']] $c}
                                            {loop $children2[$c['id']] $t}
-                                             <option value="{$t['id']}" {if is_array($cates) && in_array($t['id'],$cates)}selected{/if} >{$p['name']}-{$c['name']}-{$t['name']}</option>
+                                             <option value="{$t['id']}" {if is_array($cates2) && in_array($t['id'],$cates2)}selected{/if} >{$p['name']}-{$c['name']}-{$t['name']}</option>
                                            {/loop}
                                         {/loop}
                                     {/if}
@@ -175,7 +175,7 @@
                                         {loop $category2 $p}
                                             {if empty($p['parentid'])}
                                                 {loop $children2[$p['id']] $c}
-                                                   <option value="{$c['id']}" {if is_array($cates) && in_array($c['id'],$cates)}selected{/if} >{$p['name']}-{$c['name']}</option>
+                                                   <option value="{$c['id']}" {if is_array($cates2) && in_array($c['id'],$cates2)}selected{/if} >{$p['name']}-{$c['name']}</option>
                                                 {/loop}
                                             {/if}
                                         {/loop}
