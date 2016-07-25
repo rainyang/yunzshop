@@ -76,7 +76,35 @@ if ($operation == "date"){
         load()->func('tpl');
         include $this->template('order/date');
         exit;
+}else if ($operation == 'ajaxData') {
+        global $_GPC, $_W;
+        $id = $_GPC['id'];
+        switch ($_GPC['ac'])
+        {
+            //选择日期
+            case 'time':
+                $bdate = $_GPC['bdate'];
+                $day = $_GPC['day'];
+                if (!empty($bdate) && !empty($day)) {
+                    $btime = strtotime($bdate);
+                    $etime = $btime + $day * 86400;
+                    $weekarray = array("日", "一", "二", "三", "四", "五", "六");
+                    $data['btime'] = $btime;
+                    $data['etime'] = $etime;
+                    $data['bdate'] = $bdate;
+                    $data['edate'] = date('Y-m-d', $etime);
+                    $data['bweek'] = '星期' . $weekarray[date("w", $btime)];
+                    $data['eweek'] = '星期' . $weekarray[date("w", $etime)];
+                    $data['day'] = $day;        
+                    //setcookie('data',serialize($data),time()+2*7*24*3600);
+                    $_SESSION['data']=$data;
+                    $url = $this->createMobileUrl('order', array('p' =>'confirm','id'=> $id));
+                    die(json_encode(array("result" => 1, "url" => $url)));
+                }
+                break;
+        }
 }
+
 if ($_W['isajax']) {
     if ($operation == 'display') {
         $id       = intval($_GPC['id']);
@@ -599,13 +627,19 @@ if ($_W['isajax']) {
             $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
             $params2 = array(':goodsid' => $id);
             $room = pdo_fetch($sql2, $params2);
-            $pricefield ='cprice';
+            $pricefield ='oprice';
             $r_sql = 'SELECT `roomdate`, `num`, `oprice`, `status`, ' . $pricefield . ' AS `m_price` FROM ' . tablename('sz_yi_hotel_room_price') .
             ' WHERE `roomid` = :roomid AND `roomdate` >= :btime AND ' .
             ' `roomdate` < :etime';
             $params = array(':roomid' => $room['id'],':btime' => $btime, ':etime' => $etime);
-            $price_list = pdo_fetchall($r_sql, $params);   
+            $price_list = pdo_fetchall($r_sql, $params);  
+            $this_price = $old_price =  $pricefield == 'cprice' ?  $room['oprice']*$member_p[$_W['member']['groupid']] : $room['roomprice'];
+            if ($this_price == 0) {
+                $this_price = $old_price = $room['oprice'] ;
+            } 
+            $totalprice =  $old_price * $days;
             if ($price_list) {//价格表中存在   
+               // print_r($price_list);exit;
                 $check_date = array();
                 foreach($price_list as $k => $v) {
                     $price_list[$k]['time']=date('Y-m-d',$v['roomdate']);
@@ -623,7 +657,7 @@ if ($_W['isajax']) {
                             }
                         }
                     }
-                }                
+                } 
                 $goodsprice = round($totalprice);
             }else{ 
                 $goodsprice = round($goods[0]['marketprice']) * $days;

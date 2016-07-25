@@ -137,7 +137,7 @@ line-height: 20px;font-weight: bold;}
     <input type="hidden" id="followurl" value="<%followurl%>" />
     <input type='hidden' id='followtip' value='<%followtip%>'/>
     <div class="good_choose_layer"></div>
-  <div class="good_choose" style="bottom: 100px">
+  <div class="good_choose" style="z-index: 9999;">
         <div class="info">
              <div class="left">
                  <img id="chooser_img" src='<%goods.thumb%>'/>
@@ -147,7 +147,7 @@ line-height: 20px;font-weight: bold;}
                    <div class="stock">库存:<span id='option_stock'><%goods.total%></span>件</span> </div>
                    <div class="option">请选择规格</div>
              </div>
-            <div class="close" onClick="closechoose()"><i class="fa fa-remove-o"></i></div>
+            <div class="close"><i class="fa fa-remove-o"></i></div>
             <input type="hidden" id="maxbuy" value="<%goods.maxbuy%>"/>
         </div>
         <div class="other">
@@ -169,12 +169,12 @@ line-height: 20px;font-weight: bold;}
                   <div class='label'>购买数量</div>
                   <div class='num'>
                             <button id='btn_minus' ><i class='fa fa-minus'></i></button>
-                            <input type='text' id='total' value='1' />
+                            <input type='text' id='total' value='0' />
                             <button id='btn_plus' ><i class='fa fa-plus'></i></button>
                   </div>
                </div>
         </div>
-        <div class="close" onClick="closechoose()"><i class="fa fa-times-circle-o"></i></div>
+        <div class="close"><i class="fa fa-times-circle-o"></i></div>
         <div class="sub " style="position: absolute;">确认</div>
     </div>
 </script>
@@ -235,7 +235,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 .foot-nav p{ float: left;line-height: 49px;padding-left:20px ;font-weight: bold;}
 .foot-nav a{float: right;height: 30px;background: #fff;line-height: 30px;color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};text-align: center;padding: 0 14px;margin:9px;border-radius: 18px}
 </style>
-<div class="foot-nav" id="total">
+<div class="foot-nav">
   <span id="alltotal">0</span>
   <p id="totalprice">总价：￥0.00</p>
   <a class='channel' href="{php echo $this->createMobileUrl('shop/cart')}">选好了</a>
@@ -282,7 +282,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                                     h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元<i>/'+store[i].unit+'</i></em>';
                                     if (store[i].hasoption == 1) {
-                                        h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div></dd></dl>';
+                                        h +=  '<div style="float:right;width:auto"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div></dd></dl>';
                                     } else {
                                         h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div></dd></dl>';
                                     }
@@ -639,17 +639,18 @@ ul, li { list-style:none; margin:0; padding:0 }
                     require(['core'],function(core){
                       
                         core.json('shop/cart',{op:'add', id:id,total:1},function(ret){
-                            now.attr("data-num",ret.result.cartcount);
-                              setNum();
-                              getTotalPrice();
-                            },true,true);
-                        });
+                          now.attr("data-num",ret.result.cartcount);
+                          setNum();
+                          getTotalPrice();
+                        },true,true);
+                    });
                     
                 })
 
                 $('body').on('click','.subtract',function(){                    
                     var input = $(this).parent().find('.num');
-                    var num = parseInt(input.val()) - 1;
+
+                    var num = input.val() - 1;
 
                     var id  = $(this).attr('data-id');
                     var now =$(this);
@@ -664,12 +665,12 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                     require(['core'],function(core){
                         core.json('shop/cart',{op:'add', id:id,total:-1},function(ret){
-                           now.attr("data-num",ret.result.cartcount);
-                            setNum();
-                            getTotalPrice();
-                            },true,true);
-                        });
-
+                          now.attr("data-num",ret.result.cartcount);
+                          setNum();
+                          getTotalPrice();
+                        },true,true);
+                    });
+                    
                 })         
                  
                  
@@ -769,6 +770,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                     if(specarr.join('_') ==idsarr.join('_') ){
                       
                         optionid = o.id;
+                        
                         stock = o.stock;
                         marketprice = o.marketprice;
                         productprice = o.productprice;
@@ -776,8 +778,15 @@ ul, li { list-style:none; margin:0; padding:0 }
                     }
                     
                 }
-                                
+                 core.json('shop/cart', {id:id, optionid:optionid, op:'gettotal'}, function(json){
+                          var total = json.result;
+                          if(!total){
+                            total = '0'; 
+                          }
+                          $("#total").val(total);
+                        })               
                $("#optionid").val(optionid); 
+              
               
 
                 var num = parseInt($("#total").val() );
@@ -826,6 +835,9 @@ ul, li { list-style:none; margin:0; padding:0 }
         })
     $(document).on('click','.sub',function(){
       choose2();
+    })
+     $(document).on('click','.close',function(){
+      closechoose();
     })
     $(document).on('click','#btn_minus',function(){
       reduceNum();
@@ -912,7 +924,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                           if(action=='cart'){
                                                 require(['core'],function(core){
 
-                                                                           core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val()},function(ret){
+                                                                           core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(), is:'choose'},function(ret){
                                                                                                         if(ret.status==1){
                                                                                                            core.tip.show(ret.result.message);
                                                                                                            var cartdiv = $('.cart');
@@ -996,7 +1008,7 @@ ul, li { list-style:none; margin:0; padding:0 }
         
                   {if !empty($popenid) or !empty($openid)}
 
-                       core.json('shop/cart',{op:'add', id:$('#goodsid').val(),optionid:$('#optionid').val(),total:$('#total').val()},function(ret){
+                       core.json('shop/cart',{op:'add', id:$('#goodsid').val(),optionid:$('#optionid').val(),total:$('#total').val(), is:'choose'},function(ret){
                                                     if(ret.status==1){ 
                                                        core.tip.show(ret.result.message);
                                                        var cartdiv = $('.cart');
