@@ -1196,4 +1196,5 @@ if (!pdo_fieldexists('sz_yi_member', 'check_imgs')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `check_imgs` text DEFAULT '';");
 }
 
+//分单后台合并付款需更新所有通用订单号为空的订单写入订单号
 pdo_query('update ' . tablename('sz_yi_order') . ' set ordersn_general = ordersn where ordersn_general=""');
