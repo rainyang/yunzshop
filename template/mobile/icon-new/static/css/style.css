@@ -325,7 +325,7 @@ footer#footer-nav .menu-list:after {
 .top .topbar .menu .nav i{height: auto!important;line-height: normal!important }
 .top .topbar .menu .navon {border-bottom: 2px solid #f15353!important;}
 .card-price,.main .page .goods .good .price{color: #f15353!important;}
-#left_container{overflow: hidden!important;}
+#left_container{overflow-x: hidden!important;}
 .order_all {height: auto !important}
 .balance_sub4,.balance_sub1,.label-free{background: #f15353 !important}
 .header .user .user-info .user-other{height: 20px !important;font-size: 14px!important}

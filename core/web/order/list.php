@@ -131,7 +131,7 @@ if ($operation == "display") {
         if($type=='hotel'){
            $condition.= " AND o.order_type=3";
         }else{
-            $condition.= " AND o.order_type<>3";
+           $condition.= " AND o.order_type<>3";
         }
     }else{          
            $condition.= " AND o.order_type<>3";

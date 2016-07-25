@@ -76,7 +76,35 @@ if ($operation == "date"){
         load()->func('tpl');
         include $this->template('order/date');
         exit;
+}else if ($operation == 'ajaxData') {
+        global $_GPC, $_W;
+        $id = $_GPC['id'];
+        switch ($_GPC['ac'])
+        {
+            //选择日期
+            case 'time':
+                $bdate = $_GPC['bdate'];
+                $day = $_GPC['day'];
+                if (!empty($bdate) && !empty($day)) {
+                    $btime = strtotime($bdate);
+                    $etime = $btime + $day * 86400;
+                    $weekarray = array("日", "一", "二", "三", "四", "五", "六");
+                    $data['btime'] = $btime;
+                    $data['etime'] = $etime;
+                    $data['bdate'] = $bdate;
+                    $data['edate'] = date('Y-m-d', $etime);
+                    $data['bweek'] = '星期' . $weekarray[date("w", $btime)];
+                    $data['eweek'] = '星期' . $weekarray[date("w", $etime)];
+                    $data['day'] = $day;        
+                    //setcookie('data',serialize($data),time()+2*7*24*3600);
+                    $_SESSION['data']=$data;
+                    $url = $this->createMobileUrl('order', array('p' =>'confirm','id'=> $id));
+                    die(json_encode(array("result" => 1, "url" => $url)));
+                }
+                break;
+        }
 }
+
 if ($_W['isajax']) {
     if ($operation == 'display') {
         $id       = intval($_GPC['id']);
