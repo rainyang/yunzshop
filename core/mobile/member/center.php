@@ -4,7 +4,7 @@ if (!defined('IN_IA')) {
 }
 global $_W, $_GPC;
 
-$openid = '';
+$openid = m('user')->getOpenid();
 $set = m('common')->getSysset(array('trade'));
 
 $shop_set = m('common')->getSysset(array('shop'));
