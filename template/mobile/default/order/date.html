@@ -171,7 +171,7 @@
 
         $("#submitDate").click(function () {
             var bdate = $(".datepicker").val().replace("年","-").replace("月","-").replace("日","");
-                 $.post("{php echo $this->createPluginMobileUrl('designer/date')}",{op:'ajaxData',ac:'time', bdate:bdate, day:Days,},function(data){
+                 $.post("{php echo $this->createMobileUrl('order/confirm')}",{op:'ajaxData',ac:'time', bdate:bdate, day:Days,},function(data){
                 data = eval("(" + data +")");
                 if(data.result==1){
                     history.back(-1);

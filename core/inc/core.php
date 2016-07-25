@@ -187,6 +187,19 @@ class Core extends WeModuleSite
                 header('Location: '.$this->createMobileUrl('member/login', array('op' => 'black')));
             }
         }
+        
+        if (is_weixin()) {
+            //是否强制绑定手机号,只针对微信端
+            if (!empty($this->yzShopSet['isbindmobile'])) {
+                if (empty($member) || $member['isbindmobile'] == 0) {
+                    if ($_GPC['p'] != 'bindmobile' && $_GPC['p'] != 'sendcode') {
+                        $bindmobileurl = $this->createMobileUrl('member/bindmobile');
+                        redirect($bindmobileurl);
+                        exit();
+                    }
+                }
+            }
+        }
         $designer = p('designer');
         if ($designer && $_GPC['p'] != 'designer') {
             $menu = $designer->getDefaultMenu();
@@ -295,18 +308,7 @@ class Core extends WeModuleSite
                 }
             }
         }
-        if (is_weixin()) {
-            //是否强制绑定手机号,只针对微信端
-            if (!empty($this->yzShopSet['isbindmobile'])) {
-                if (empty($member) || $member['isbindmobile'] == 0) {
-                    if ($_GPC['p'] != 'bindmobile' && $_GPC['p'] != 'sendcode') {
-                        $bindmobileurl = $this->createMobileUrl('member/bindmobile');
-                        redirect($bindmobileurl);
-                        exit();
-                    }
-                }
-            }
-        }
+        
     }
     public function createMobileUrl($do, $query = array(), $noredirect = true)
     {
