@@ -188,7 +188,6 @@ $res = array(
             "url" => $this->createPluginMobileUrl('creditshop'),
         ),
     ),
-
     "order" => array(    //订单
         "url" => $this->createMobileUrl('order'),
         "order_status" => array(
