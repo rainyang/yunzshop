@@ -86,7 +86,7 @@ class Sz_DYi_User
         /**
          * app端通过token验证用户身份
          */
-        if  (is_app() && empty($openid) && $_GPC['token']) {
+        if  (empty($_SERVER['HTTP_USER_AGENT']) && empty($openid) && $_GPC['token']) {
             $openid = $_GPC['token'];
         }
 
@@ -108,7 +108,7 @@ class Sz_DYi_User
         $needLoginPList = array('address', 'commission','cart');
 
         //不需要登陆的P方法
-        $noLoginList = array('category', 'login' ,'receive', 'close', 'designer', 'register', 'sendcode', 'bindmobile', 'forget', 'home');
+        $noLoginList = array('category', 'login' ,'receive', 'close', 'designer', 'register', 'sendcode', 'bindmobile', 'forget', "pay_ping", 'home');
 
         //不需要登陆的do方法
         $noLoginDoList = array('shop', 'login', 'register');

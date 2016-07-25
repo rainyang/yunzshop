@@ -118,6 +118,9 @@ if ($operation == 'display' && $_W['isajax']) {
         'payno' => $logno
     ));
 } else if ($operation == 'recharge' && $_W['ispost']) {
+    if (!empty($set['trade']['closerecharge'])) {
+        show_json(-1, '系统未开启账户充值!');
+    }
     $logid = intval($_GPC['logid']);
     if (empty($logid)) {
         show_json(0, '充值出错, 请重试!');
@@ -222,7 +225,7 @@ if ($operation == 'display' && $_W['isajax']) {
             ), array(
                 'id' => $logid
             ));
-            m('member')->setCredit($openid, 'credit2', $log['money']);
+            m('member')->setCredit($openid, 'credit2', $log['money'], array(0, '会员充值中心充值：' . $log['money'] . " 元"));
             m('member')->setRechargeCredit($openid, $log['money']);
             if (p('sale')) {
                 p('sale')->setRechargeActivity($log);
@@ -282,7 +285,7 @@ if ($operation == 'display' && $_W['isajax']) {
         ), array(
             'id' => $log['id']
         ));
-        m('member')->setCredit($openid, 'credit2', $log['money']);
+        m('member')->setCredit($openid, 'credit2', $log['money'], array(0, '会员余额充值' . $log['money'] . " 元"));
         m('member')->setRechargeCredit($openid, $log['money']);
         if (p('sale')) {
             p('sale')->setRechargeActivity($log);

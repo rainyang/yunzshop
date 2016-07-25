@@ -43,8 +43,7 @@ if (!class_exists('ReturnModel')) {
 							$queue = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$uniacid." and goodsid = ".$good['goodsid']." and status = 0 order by queue asc limit 1" );
 
 							pdo_update('sz_yi_order_goods_queue', array('returnid'=>$queueid,'status'=>'1'), array('id' => $queue['id'], 'uniacid' => $uniacid));
-							m('member')->setCredit($queue['openid'],'credit2',$queue['price']);
-
+							$this->setReturnCredit($queue['openid'],'credit2',$queue['price'],'4');
 							$_var_0['queue_price'] = str_replace('[返现金额]', $queue['price'], $_var_0['queue_price']);
 							$messages = array(
 								'keyword1' => array('value' => $_var_0['queue_title']?$_var_0['queue_title']:'排列返现通知',
@@ -84,19 +83,18 @@ if (!class_exists('ReturnModel')) {
 			}
 			if( $money > 0 )
 			{
-				$data = array(
-					'uniacid' => $uniacid,
-	                'mid' => $order_goods[0]['mid'],
-	                'openid' => $order_goods[0]['openid'],
-	                'money' => $money,
-	                'status' => 1,
-	                'returntype' => 1,
-					'create_time'	=> time()
-                );
-				pdo_insert('sz_yi_return_log', $data);
+				// $data = array(
+				// 	'uniacid' => $uniacid,
+	   //              'mid' => $order_goods[0]['mid'],
+	   //              'openid' => $order_goods[0]['openid'],
+	   //              'money' => $money,
+	   //              'status' => 1,
+	   //              'returntype' => 1,
+				// 	'create_time'	=> time()
+    //             );
+				// pdo_insert('sz_yi_return_log', $data);
 
-				m('member')->setCredit($order_goods[0]['openid'],'credit2',$money);
-
+				$this->setReturnCredit($order_goods[0]['openid'],'credit2',$money,'1');
 				$_var_0['member_price'] = str_replace('[排列序号]', $money, $_var_0['member_price']);
 				$_var_0['member_price'] = str_replace('[订单ID]', $orderid, $_var_0['member_price']);
 				$_var_156 = array(
@@ -287,7 +285,7 @@ if (!class_exists('ReturnModel')) {
 					$return_money_totle = $value['last_money'];
 					$surplus_money_totle = $value['money']-$value['return_money'];
 
-					m('member')->setCredit($value['openid'],'credit2',$return_money_totle);
+					$this->setReturnCredit($value['openid'],'credit2',$return_money_totle,'2');
 					$_var_0['single_message'] = str_replace('[返现金额]', $return_money_totle, $_var_0['single_message']);
 					$_var_0['single_message'] = str_replace('[剩余返现金额]', $surplus_money_totle, $_var_0['single_message']);
 					$messages = array(
@@ -342,7 +340,7 @@ if (!class_exists('ReturnModel')) {
 						$return_money_totle = $value['last_money'];
 						$surplus_money_totle = $value['money']-$value['return_money'];
 
-						m('member')->setCredit($value['openid'],'credit2',$return_money_totle);
+						$this->setReturnCredit($value['openid'],'credit2',$return_money_totle,'3');
 					$_var_0['total_messsage'] = str_replace('[返现金额]', $return_money_totle, $_var_0['total_messsage']);
 					$_var_0['total_messsage'] = str_replace('[剩余返现金额]', $surplus_money_totle, $_var_0['total_messsage']);
 					$messages = array(
@@ -381,6 +379,77 @@ if (!class_exists('ReturnModel')) {
 			}
 
 		}
+		/**
+		*	返现打款到余额 记录每次返现金额
+		*	$returntype 返现类型 1：会员等级返现 2：单笔订单返现 3：订单累计金额返现 4：队列排列返现
+		*/
 
+		public function setReturnCredit($openid = '', $credittype = 'credit1', $credits = 0, $returntype = 1, $log = array())
+	    {
+	        global $_W;
+	        load()->model('mc');
+	        $member = m('member')->getMember($openid);
+	        $uid = mc_openid2uid($openid);
+			
+	        if (!empty($uid)) {
+	            $value     = pdo_fetchcolumn("SELECT {$credittype} FROM " . tablename('mc_members') . " WHERE `uid` = :uid", array(
+	                ':uid' => $uid
+	            ));
+	            $newcredit = $credits + $value;
+	            if ($newcredit <= 0) {
+	                $newcredit = 0;
+	            }
+	            pdo_update('mc_members', array(
+	                $credittype => $newcredit
+	            ), array(
+	                'uid' => $uid
+	            ));
+	            if (empty($log) || !is_array($log)) {
+	                $log = array(
+	                    $uid,
+	                    '未记录'
+	                );
+	            }
+	            $data = array(
+	                'uid' => $uid,
+	                'credittype' => $credittype,
+	                'uniacid' => $_W['uniacid'],
+	                'num' => $credits,
+	                'createtime' => TIMESTAMP,
+	                'operator' => intval($log[0]),
+	                'remark' => $log[1]
+	            );
+	            pdo_insert('mc_credits_record', $data);
+	        } else {
+				
+	            $value     = pdo_fetchcolumn("SELECT {$credittype} FROM " . tablename('sz_yi_member') . " WHERE  uniacid=:uniacid and openid=:openid limit 1", array(
+	                ':uniacid' => $_W['uniacid'],
+	                ':openid' => $openid
+	            ));
+
+	            $newcredit = $credits + $value;
+	            if ($newcredit <= 0) {
+	                $newcredit = 0;
+	            }
+	            pdo_update('sz_yi_member', array(
+	                $credittype => $newcredit
+	            ), array(
+	                'uniacid' => $_W['uniacid'],
+	                'openid' => $openid
+	            ));
+	        }
+
+	        $data_log = array(
+					'uniacid' => $_W['uniacid'],
+	                'mid' => $member['id'],
+	                'openid' => $openid,
+	                'money' => $credits,
+	                'status' => 1,
+	                'returntype' => $returntype,
+					'create_time'	=> time()
+                );
+				pdo_insert('sz_yi_return_log', $data_log);
+	        
+	    }
 	}
 }

@@ -26,11 +26,12 @@ if($_W['ispost']) {
 	$wechat = array_elements(array('switch'), $_GPC['wx']);
 	$set['app']['base']['wx'] = $wechat;
 
-    $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
-        ':uniacid' => $_W['uniacid']
-    ));
+
 
     if(pdo_update('sz_yi_sysset', array('sets' => iserializer($set)), array('uniacid' => $_W['uniacid'])) !== false) {
+		$setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+			':uniacid' => $_W['uniacid']
+		));
         m('cache')->set('sysset', $setdata);
 		message('保存设置信息成功. ', 'refresh');
 	} else {

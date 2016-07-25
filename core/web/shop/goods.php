@@ -143,8 +143,14 @@ if ($operation == "change") {
         $noticetype = explode(',', $item['noticetype']);
         if ($shopset['catlevel'] == 3) {
             $cates = explode(',', $item['tcates']);
+            if ($shopset['category2'] == 1) {
+                $cates2 = explode(',', $item['tcates2']);    
+            }
         } else {
             $cates = explode(',', $item['ccates']);
+            if ($shopset['category2'] == 1) {
+                $cates2 = explode(',', $item['ccates2']);    
+            }
         }
         $discounts = json_decode($item['discounts'], true);
         $returns = json_decode($item['returns'], true);
@@ -456,9 +462,9 @@ if ($operation == "change") {
         }else{
             $data['status'] = $_GPC['status'];
         }
-        if(!empty(p('love'))){
-            $data['love_money'] = $_GPC['love_money'];
-        }
+        // if(!empty(p('love'))){
+        //     $data['love_money'] = $_GPC['love_money'];
+        // }
         if ($pluginreturn) {
             $data['isreturn'] = intval($_GPC['isreturn']);   //添加全返开关    1:开    0:关
             $data['isreturnqueue'] = intval($_GPC['isreturnqueue']);   //添加全返排列开关    1:开    0:关
@@ -497,6 +503,9 @@ if ($operation == "change") {
                 }
             }
         }
+        $pcates2  = array();
+        $ccates2  = array();
+        $tcates2  = array();
         if (is_array($_GPC['cates2'])) {
             $postcates2 = $_GPC['cates2'];
             foreach ($postcates2 as $pid) {
@@ -522,22 +531,15 @@ if ($operation == "change") {
                 }
             }
         }
-        if($shopset['category2']==1){
-            $pcates = array_merge($pcates,$pcates2);
-            $ccates = array_merge($ccates,$ccates2);  
-        }
-
-        if($cateset['catlevel'] == 3){
-             if($shopset['category2']==1){
-                 $tcates = array_merge($tcates,$tcates2);
-             }
-            
-        }
+        
        
 
         $data['pcates'] = implode(',', $pcates);
         $data['ccates'] = implode(',', $ccates);
         $data['tcates'] = implode(',', $tcates);
+        $data['pcates2'] = implode(',', $pcates2);
+        $data['ccates2'] = implode(',', $ccates2);
+        $data['tcates2'] = implode(',', $tcates2);
         $content        = htmlspecialchars_decode($_GPC['content']);
         preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg|\.png|\.jpeg]?))[\'|\"].*?[\/]?>/", $content, $imgs);
         $images = array();
@@ -900,15 +902,15 @@ m("cache")->set("areas", $areas, "global");
 
 
     if (!empty($_GPC['category2']['thirdid'])) {
-        $condition .= ' AND (`tcate1` = :tcate2 or tcates = :tcate2)';
+        $condition .= ' AND (`tcate1` = :tcate2 or tcates2 = :tcate2)';
         $params[':tcate2'] = intval($_GPC['category2']['thirdid']);
     }
     if (!empty($_GPC['category2']['childid'])) {
-        $condition .= ' AND (`ccate1` = :ccate2 or ccates = :ccate2)';
+        $condition .= ' AND (`ccate1` = :ccate2 or ccates2 = :ccate2)';
         $params[':ccate2'] = intval($_GPC['category2']['childid']);
     }
     if (!empty($_GPC['category2']['parentid'])) {
-        $condition .= ' AND (`pcate1` = :pcate2 or pcates = :pcate2)' ;
+        $condition .= ' AND (`pcate1` = :pcate2 or pcates2 = :pcate2)' ;
         $params[':pcate2'] = intval($_GPC['category2']['parentid']);
     }
 

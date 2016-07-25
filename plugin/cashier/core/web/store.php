@@ -62,6 +62,8 @@ if ($operation == 'display') {
             'decommission' => trim($_GPC['decommission']),
             'decredits' => trim($_GPC['decredits']),
             'iscontact' => trim($_GPC['iscontact']),
+            'condition' => trim($_GPC['condition']),
+
         );
         if ($pcoupon) {
             $data['coupon_id'] = trim($_GPC['coupon_id']);

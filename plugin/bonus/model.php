@@ -704,7 +704,6 @@ if (!class_exists('BonusModel')) {
 		function sendMessage($openid = '', $data = array(), $message_type = '')
 		{
 			global $_W, $_GPC;
-			
 			$set = $this->getSet();
 			$tm = $set['tm'];
 			$templateid = $tm['templateid'];
@@ -865,11 +864,12 @@ if (!class_exists('BonusModel')) {
 				$interval_day = empty($set['interval_day']) ? 1 : 1+$set['interval_day'];
 				$sendtime = strtotime(date("Y-".date('m')."-".$interval_day." ".$set['senddaytime'].":00:00"));
 			}
-			if($sendtime < $time){
+			if($sendtime > $time){
 				return false;
 			}
+			
 			$day_times      = intval($set['settledays']) * 3600 * 24;
-			$sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and o.finishtime < {$endtime}";
+			$sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.status=0 and o.status>=3 and o.uniacid={$_W['uniacid']} and o.finishtime < {$endtime}";
 			$bonus_member = pdo_fetchall($sql);
 			$totalmoney = 0;
 			if(empty($bonus_member)){
@@ -877,49 +877,51 @@ if (!class_exists('BonusModel')) {
 			}
 			$total = 0;
 			foreach ($bonus_member as $key => $value) {
-				$member = $this->getInfo($value['mid'], array('ok'));
-				$send_money = $member['commission_ok'];
-				if($send_money<=0){
-					continue;
+				$member = $this->getInfo($value['mid'], array('ok', 'pay', 'myorder'));
+				if(!empty($member)){
+					$send_money = $member['commission_ok'];
+					if($send_money<=0){
+						continue;
+					}
+					$islog = true;
+					$sendpay = 1;
+					$level = $this->getlevel($member['openid']);
+					$levelname = empty($level['levelname']) ? "代理" : $level['levelname'];
+					if(empty($set['paymethod'])){
+						m('member')->setCredit($member['openid'], 'credit2', $send_money);
+					}else{
+						$logno = m('common')->createNO('bonus_log', 'logno', 'RB');
+						$result = m('finance')->pay($member['openid'], 1, $send_money * 100, $logno, "【" . $setshop['name']. "】".$levelname."分红");
+						if (is_error($result)) {
+							$sendpay = 0;
+							$sendpay_error = 1;
+						}
+					}
+					pdo_insert('sz_yi_bonus_log', array(
+						"openid" => $member['openid'],
+						"uid" => $member['uid'],
+						"money" => $send_money,
+						"uniacid" => $_W['uniacid'],
+						"paymethod" => $set['paymethod'],
+						"sendpay" => $sendpay,
+						"status" => 1,
+						"ctime" => time(),
+						"send_bonus_sn" => $time
+					));
+					if($sendpay == 1){
+						$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_PAY);
+					}
+					//更新分红订单完成
+					$bonus_goods = array(
+						"status" => 3,
+						"applytime" => $time,
+						"checktime" => $time,
+						"paytime" => $time,
+						"invalidtime" => $time
+						);
+					pdo_update('sz_yi_bonus_goods', $bonus_goods, array('mid' => $member['id'], 'uniacid' => $_W['uniacid']));
+					$totalmoney += $member['commission_ok'];
 				}
-				$islog = true;
-				$sendpay = 1;
-				$level = $this->getlevel($member['openid']);
-				$levelname = empty($level['levelname']) ? "代理" : $level['levelname'];
-				if(empty($set['paymethod'])){
-					m('member')->setCredit($member['openid'], 'credit2', $send_money);
-				}else{
-					$logno = m('common')->createNO('bonus_log', 'logno', 'RB');
-					$result = m('finance')->pay($member['openid'], 1, $send_money * 100, $logno, "【" . $setshop['name']. "】".$levelname."分红");
-			        if (is_error($result)) {
-			            $sendpay = 0;
-			            $sendpay_error = 1;
-			        }
-				}
-				pdo_insert('sz_yi_bonus_log', array(
-		            "openid" => $member['openid'],
-		            "uid" => $member['uid'],
-		            "money" => $send_money,
-		            "uniacid" => $_W['uniacid'],
-		            "paymethod" => $set['paymethod'],
-		            "sendpay" => $sendpay,
-					"status" => 1,
-		            "ctime" => time(),
-		            "send_bonus_sn" => $time
-		        ));
-		        if($sendpay == 1){
-		        	$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_PAY);
-		        }
-		        //更新分红订单完成
-				$bonus_goods = array(
-					"status" => 3,
-					"applytime" => $time,
-					"checktime" => $time,
-					"paytime" => $time,
-					"invalidtime" => $time
-					);
-				pdo_update('sz_yi_bonus_goods', $bonus_goods, array('mid' => $member['id'], 'uniacid' => $_W['uniacid']));
-				$totalmoney += $member['commission_ok'];
 			}
 			$total += 1;
 			if($islog){
@@ -965,10 +967,9 @@ if (!class_exists('BonusModel')) {
 				$sendtime = strtotime(date("Y-".date('m')."-".$interval_day." ".$set['senddaytime'].":00:00"));
 			}
 
-			if($sendtime < $time){
+			if($sendtime > $time){
 				return false;
 			}
-			
 			$ordermoney = pdo_fetchcolumn("select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}");
 
 			$premierlevels = pdo_fetchall("select * from ".tablename('sz_yi_bonus_level')." where uniacid={$_W['uniacid']} and premier=1");
@@ -978,7 +979,7 @@ if (!class_exists('BonusModel')) {
 			    $leveldcount = pdo_fetchcolumn("select count(*) from ".tablename('sz_yi_member')." where uniacid={$_W['uniacid']} and bonuslevel=".$value['id']);
 			    if($leveldcount>0){
 			        //当前等级分总额的百分比
-			        $levelmembermoney = round($orderallmoney*$value['pcommission']/100,2);
+			        $levelmembermoney = round($ordermoney*$value['pcommission']/100,2);
 			        if($levelmembermoney > 0){
 			            //当前等级人数平分该等级比例金额
 			            $membermoney = round($levelmembermoney/$leveldcount,2);
@@ -1002,55 +1003,54 @@ if (!class_exists('BonusModel')) {
 			        }
 				}
 			}
-			if (!empty($_POST)) {
-			    if($totalmoney<=0){
-			        return false;
-			    }
-				foreach ($list as $key => $value) {
-					$send_money = $levelmoneys[$value['bonuslevel']];
-					$sendpay = 1;
-					if(empty($set['paymethod'])){
-						m('member')->setCredit($value['openid'], 'credit2', $send_money);
-					}else{
-						$logno = m('common')->createNO('bonus_log', 'logno', 'RB');
-						$result = m('finance')->pay($value['openid'], 1, $send_money * 100, $logno, "【" . $setshop['name']. "】".$value['levelname']."分红");
-				        if (is_error($result)) {
-				            $sendpay = 0;
-				            $sendpay_error = 1;
-				        }
-					}
-					pdo_insert('sz_yi_bonus_log', array(
-			            "openid" => $value['openid'],
-			            "uid" => $value['uid'],
-			            "money" => $send_money,
-			            "uniacid" => $_W['uniacid'],
-			            "paymethod" => $set['paymethod'],
-			            "sendpay" => $sendpay,
-			            "isglobal" => 1,
-						"status" => 1,
-			            "ctime" => time(),
-			            "send_bonus_sn" => $time
-			        ));
-			        if($sendpay == 1){
-			        	$this->model->sendMessage($value['openid'], array('nickname' => $value['nickname'], 'levelname' => $value['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_GLOBAL_PAY);
-			        }
-				}
-				$log = array(
-			            "uniacid" => $_W['uniacid'],
-			            "money" => $totalmoney,
-			            "status" => 1,
-			            "ctime" => time(),
-			            "sendmonth" => $set['sendmonth'],
-			            "paymethod" => $set['paymethod'],
-			            'type' => 1,
-			            "sendpay_error" => $sendpay_error,
-			            "isglobal" => 1,
-			            'utime' => $daytime,
-			            "send_bonus_sn" => $time,
-			            "total" => $total
-			            );
-			    pdo_insert('sz_yi_bonus', $log);
+			if($totalmoney<=0){
+				return false;
 			}
+			foreach ($list as $key => $value) {
+				$send_money = $levelmoneys[$value['bonuslevel']];
+				$sendpay = 1;
+				if(empty($set['paymethod'])){
+					m('member')->setCredit($value['openid'], 'credit2', $send_money , array(0, '代理商全球发放分红金额：' . $send_money . " 元"));
+				}else{
+					$logno = m('common')->createNO('bonus_log', 'logno', 'RB');
+					$result = m('finance')->pay($value['openid'], 1, $send_money * 100, $logno, "【" . $setshop['name']. "】".$value['levelname']."分红");
+					if (is_error($result)) {
+						$sendpay = 0;
+						$sendpay_error = 1;
+					}
+				}
+				pdo_insert('sz_yi_bonus_log', array(
+					"openid" => $value['openid'],
+					"uid" => $value['uid'],
+					"money" => $send_money,
+					"uniacid" => $_W['uniacid'],
+					"paymethod" => $set['paymethod'],
+					"sendpay" => $sendpay,
+					"isglobal" => 1,
+					"status" => 1,
+					"ctime" => time(),
+					"send_bonus_sn" => $time
+				));
+				if($sendpay == 1){
+					$this->sendMessage($value['openid'], array('nickname' => $value['nickname'], 'levelname' => $value['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_GLOBAL_PAY);
+				}
+
+			}
+			$log = array(
+					"uniacid" => $_W['uniacid'],
+					"money" => $totalmoney,
+					"status" => 1,
+					"ctime" => time(),
+					"sendmonth" => $set['sendmonth'],
+					"paymethod" => $set['paymethod'],
+					'type' => 1,
+					"sendpay_error" => $sendpay_error,
+					"isglobal" => 1,
+					'utime' => $daytime,
+					"send_bonus_sn" => $time,
+					"total" => $total
+					);
+			pdo_insert('sz_yi_bonus', $log);
 		}
 	}
 }

@@ -342,18 +342,25 @@
             {if $pcoupon}
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">赠送优惠券</label>
-                <div class="col-sm-9 col-xs-12">
+                <div class="col-sm-6 col-xs-12">
+                <div class="input-group">
                     {ife 'cashier.store' $item}
+						<span class="input-group-addon">消费满</span>
+        				<input type='text'  value="{$item['condition']}" name='condition' placeholder="如果不填写则无消费条件" class="form-control" />
+                        <span class="input-group-addon">元 赠送</span>
                         <select name="coupon_id" class="form-control">
                             <option value="0">-请选择-</option>
                             {loop $couponList $coupon}
                                 <option value="{$coupon['id']}" {if $coupon['id'] == $item['coupon_id']}selected="selected"{/if}>{$coupon['couponname']}</option>
                             {/loop}
                         </select>
+
                     {else}
                         <div class='form-control-static'>{$item['coupon_id']}</div>
                     {/if}
                 </div>
+                </div>
+
             </div>
             {/if}
         </div>    

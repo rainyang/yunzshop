@@ -115,9 +115,10 @@
                 <th style='width:12%;'>姓名<br/>手机号码</th>
                 <th style='width:10%;'>代理商等级</th>
                 <th style='width:10%;text-align: center;'>区域代理</th>
-                <th style='width:12%;'>累计分红佣金<br/>发放分红佣金</th>
-                <th style='width:12%;;'>下级总数</th>
-                <th style='width:8%;'>关注</th>
+                <th style='width:12%;'>代理累计分红<br/>全部已发放分红</th>
+                <th style='width:7%;;'>下级总数</th>
+                <th style='width:7%;'>关注</th>
+                <th style='width:7%;'>审核</th>
                 <th style='width:10%;'>操作</th>
             </tr>
             </thead>
@@ -165,6 +166,22 @@
                     {else}
                     <label class='label label-success'>已关注</label>
                     {/if}</td>
+                <td>  
+                    {if $row['bonus_status']==9}
+                    {if $row['agentblack']==1}
+                    <span class="label label-default" style='color:#fff;background:black'>黑名单</span>
+                    {else}
+
+                    {ifp 'bonus.agent.check'}
+                    <a class="label label-default" href="{php echo $this->createPluginWebUrl('bonus/agent',array('id' => $row['id'],'op'=>'check'))}" onclick="return confirm('确认要审核此分销商吗?')">未审核</a>
+                    {else}
+                    <span class="label label-default">未审核</span>
+                    {/if}
+                    {/if}
+                    {else}
+                    <span class="label label-success">已审核</span>
+                    {/if}
+                </td>
                 <td  style="overflow:visible;">
 
                     <div class="btn-group btn-group-sm">

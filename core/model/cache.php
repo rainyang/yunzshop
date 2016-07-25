@@ -1,7 +1,7 @@
 <?php
 /*=============================================================================
 #     FileName: cache.php
-#         Desc: »º´æ
+#         Desc: ï¿½ï¿½ï¿½ï¿½
 #       Author: Yunzhong - http://www.yunzshop.com
 #        Email: 913768135@qq.com
 #     HomePage: http://www.yunzshop.com
