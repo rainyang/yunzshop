@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 /*=============================================================================
 #     FileName: 1.4.2.php
@@ -1216,3 +1217,6 @@ if (!pdo_fieldexists('sz_yi_goods', 'tcates')) {
 if (!pdo_fieldexists('sz_yi_goods', 'tcates2')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `tcates2` text DEFAULT '';");
 }
+
+//分单后台合并付款需更新所有通用订单号为空的订单写入订单号
+pdo_query('update ' . tablename('sz_yi_order') . ' set ordersn_general = ordersn where ordersn_general=""');
