@@ -1220,3 +1220,7 @@ if (!pdo_fieldexists('sz_yi_goods', 'tcates2')) {
 
 //分单后台合并付款需更新所有通用订单号为空的订单写入订单号
 pdo_query('update ' . tablename('sz_yi_order') . ' set ordersn_general = ordersn where ordersn_general=""');
+//收银台消费条件
+if (!pdo_fieldexists('sz_yi_cashier_store', 'condition')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_cashier_store')." ADD `condition` decimal(10,2) DEFAULT '0.00';");
+}
