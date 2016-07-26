@@ -96,7 +96,7 @@
                 </div>
 
                 <div class="num">
-                    <span>队列编号:<%log.id%> </span><br/>
+                    <span>队列编号:<%log.queue%> </span><br/>
                     <span>队列状态:<%if log.status == 0%>等待返现<%else%>已返现<%/if%> </span><br/>
  
                 </div>
@@ -182,11 +182,12 @@ function bindScroller(){
                 }
                 $('#tpl_container').html(tpl('tpl_log', json.result));
                 bindScroller();
-                            if(goodsid==0)
-            {
+          
+                type = type=='2'?1:type;
+                
                 $('.credit_nav').removeClass('credit_navon');
                 $('.credit_nav[data-type=' + type + ']').addClass('credit_navon'); 
-            }
+            
             }, true);
         }
 
