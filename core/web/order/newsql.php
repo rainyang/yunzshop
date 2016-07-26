@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 <?php
 /*=============================================================================
 #     FileName: 1.4.2.php
@@ -1228,4 +1227,15 @@ pdo_query('update ' . tablename('sz_yi_order') . ' set ordersn_general = ordersn
 //收银台消费条件
 if (!pdo_fieldexists('sz_yi_cashier_store', 'condition')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_cashier_store')." ADD `condition` decimal(10,2) DEFAULT '0.00';");
+}
+//优惠券指定门店新字段   
+
+if (!pdo_fieldexists('sz_yi_coupon', 'storeids')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `storeids` text DEFAULT '';");
+}
+if (!pdo_fieldexists('sz_yi_coupon', 'storenames')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `storenames` text DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_coupon', 'getstore')) {
+pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `getstore` tinyint(1) NOT NULL DEFAULT '0'");
 }

@@ -38,5 +38,8 @@ if ($tpl == 'option') {
 } else if ($tpl == 'cashier') {
     $id = random(32);
     include $this->template('web/shop/tpl/cashier');
-}
+} else if ($tpl == 'store') {
+    $id = random(32);
+    include $this->template('web/shop/tpl/store');
+} 
 

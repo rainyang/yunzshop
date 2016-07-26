@@ -233,6 +233,7 @@
     {/if}
 
     <div class="addorder_price" >
+      <%each order_all as order%>
 
         <input type="hidden" id="weight" value="<%weight%>" />
         <div class="price" style="border:none;">
@@ -243,27 +244,26 @@
                     <span class="" style="position:static">押金到付</span>
                     <input style="-webkit-appearance:checkbox;" type="checkbox" id="depositpricetype" name="depositpricetype" value="1" class="mar13 fr">
                 </div>
-                    <%if deductcredit>0 || deductcredit2>0  %>
-     <div class="addorder_price" style="margin-top:5px;">
-            <div class="price" style="border:none;">
-            <%if deductcredit>0 %>
-            <div class="line" style="line-height:26px;"><d id="deductcredit_info"><%deductcredit%></d> 积分可抵扣 <d id="deductcredit_money" style='color:#ff6600'><%deductmoney%></d> 元
-                <div id='deductcredit' class="nav" on="0" credit="<%deductcredit%>" money='<%deductmoney%>'><nav></nav></div>
-            </div>
+            <%if order.deductcredit>0 || order.deductcredit2>0  %>
+               <div class="addorder_price" style="margin-top:5px;">
+                    <div class="price" style="border:none;">
+                        <%if  order.deductcredit>0 %>
+                        <div class="line" style="line-height:26px;"><d id="deductcredit_info"><%order.deductcredit%></d> 积分可抵扣 <d id="deductcredit_money" style='color:#ff6600'><%deductmoney%></d> 元
+                            <div id='deductcredit' class="nav" on="0" credit="<%order.deductcredit%>" money='<%order.deductmoney%>'><nav></nav></div>
+                        </div>
+                        <%/if%>
+                        
+                        <%if  order.deductcredit2>0 %>
+                        <div class="line" style="line-height:26px;">余额可抵扣 <d id="deductcredit2_money" style='color:#ff6600'><%order.deductcredit2%></d> 元
+                            <div id='deductcredit2' class="nav" on="0" credit2="<%order.deductcredit2%>"><nav></nav></div>
+                        </div>
+                        <%/if%>             
+                    </div>              
+                </div>
             <%/if%>
-            
-            <%if deductcredit2>0 %>
-            <div class="line" style="line-height:26px;">余额可抵扣 <d id="deductcredit2_money" style='color:#ff6600'><%deductcredit2%></d> 元
-                <div id='deductcredit2' class="nav" on="0" credit2="<%deductcredit2%>"><nav></nav></div>
-            </div>
-            <%/if%>
-     
-        </div>
-      
-    </div>
-    <%/if%>
             <input id="depositprice" value='<%deposit%>' type="hidden">
         </div>
+        <%/each%>
     </div>
     
     <div class="addorder_pay">

@@ -18,6 +18,10 @@ if ($operation == 'display' && $_W['isajax']) {
         'pay',
         'trade'
     ));
+    if (p('sale')) {
+        $sale_set = p('sale')->getSet();
+        $acts = unserialize($sale_set['recharges']);
+    }
     if (!empty($set['trade']['closerecharge'])) {
         show_json(-1, '系统未开启账户充值!');
     }
@@ -115,7 +119,8 @@ if ($operation == 'display' && $_W['isajax']) {
         'app_alipay' => $app_alipay,
         'credit' => $credit,
         'yunpay' => $yunpay,
-        'payno' => $logno
+        'payno' => $logno,
+        'acts' => $acts
     ));
 } else if ($operation == 'recharge' && $_W['ispost']) {
     if (!empty($set['trade']['closerecharge'])) {
