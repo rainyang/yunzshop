@@ -48,6 +48,10 @@ if ($_W['isajax'] && $_W['ispost']) {
 		$goods = pdo_fetchall("SELECT id,title,productprice,marketprice,thumb,hasoption FROM " . tablename('sz_yi_goods') . " WHERE uniacid= :uniacid and status=1 and deleted=0 AND title LIKE :title ", array(':title' => "%{$kw}%", ':uniacid' => $_W['uniacid']));
 		$goods = set_medias($goods, 'thumb');
 		die(json_encode($goods));
+	} elseif ($apido == 'selectstore') {
+		$kw = $_GPC['kw'];
+		$store = pdo_fetchall("SELECT id,storename FROM " . tablename('sz_yi_store') . " WHERE uniacid= :uniacid and status=1  AND (storename LIKE :title or address like :title) ", array(':title' => "%{$kw}%", ':uniacid' => $_W['uniacid']));
+		die(json_encode($store));
 	} elseif ($apido == 'selectcashier') {
 		$kw = $_GPC['kw'];
 		$cashier = pdo_fetchall("SELECT id,name,thumb FROM " . tablename('sz_yi_cashier_store') . " WHERE uniacid= :uniacid AND name LIKE :title ", array(':title' => "%{$kw}%", ':uniacid' => $_W['uniacid']));
