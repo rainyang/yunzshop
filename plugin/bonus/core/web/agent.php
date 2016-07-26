@@ -220,6 +220,9 @@ if ($operation == 'display') {
         'total',
         'pay'
     ));
+    if(!empty($member['check_imgs'])){
+        $check_imgs = set_medias(unserialize($member['check_imgs']));
+    }
     if (checksubmit('submit')) {
         ca('bonus.agent.edit|bonus.agent.check|bonus.agent.agentblack');
         $data = is_array($_GPC['data']) ? $_GPC['data'] : array();
