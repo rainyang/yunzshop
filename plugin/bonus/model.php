@@ -877,7 +877,7 @@ if (!class_exists('BonusModel')) {
 			}
 			$total = 0;
 			foreach ($bonus_member as $key => $value) {
-				$member = $this->getInfo($row['mid'], array('ok', 'pay', 'myorder'));
+				$member = $this->getInfo($value['mid'], array('ok', 'pay', 'myorder'));
 				if(!empty($member)){
 					$send_money = $member['commission_ok'];
 					if($send_money<=0){

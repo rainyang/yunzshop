@@ -23,7 +23,13 @@ if (!class_exists('CashierModel')) {
                 ':uniacid' => $_W['uniacid'],
                 ':ordersn' => $ordersn
             ));
-
+            $store = pdo_fetch(
+                'select s.* from ' . tablename('sz_yi_cashier_order') . ' o inner join ' . tablename('sz_yi_cashier_store') . ' s on o.cashier_store_id = s.id where o.order_id=:orderid and o.uniacid=:uniacid',
+                array(
+                    ':uniacid' => $_W['uniacid'],
+                    ':orderid' => $order['id']
+                )
+            );
             //验证paylog里金额是否与订单金额一致
 
             $log = pdo_fetch('select * from ' . tablename('core_paylog') . ' where `uniacid`=:uniacid and fee=:fee and `module`=:module and `tid`=:tid limit 1',
@@ -64,8 +70,10 @@ if (!class_exists('CashierModel')) {
                     if (p('commission')) {
                         $this->calculateCommission($order['id']);
                     }
+                    if ($order['price'] >= $store['condition']) {
+                        $this->setCoupon($orderid);
+                    }
                     
-                    $this->setCoupon($orderid);
                 }
             }
         }
