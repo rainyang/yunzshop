@@ -718,11 +718,11 @@ if ($_W['isajax']) {
         $hascoupon      = false;
         $couponcount    = 0;
         $pc             = p("coupon");
-        $supplier_uid   = p("supplier_uid");
+        $supplier_uid   = $_GPC("supplier_uid");
         if ($pc) {
             $pset = $pc->getSet();
             if (empty($pset["closemember"])) {
-                $couponcount = $pc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
+                $couponcount = $pc->consumeCouponCount($openid, $totalprice, $supplier_uid, 0, 0, $goodid, $cartid);
                 $hascoupon   = $couponcount > 0;
             }
         }
