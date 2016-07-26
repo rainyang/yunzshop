@@ -411,6 +411,7 @@ if ($_W['isajax']) {
                         ':uniacid' => $_W['uniacid']
                     ));
                 }
+                $stores = $order_all[$val['supplier_uid']]['stores'];
             }
             
             $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
@@ -666,6 +667,7 @@ if ($_W['isajax']) {
             $deposit = $goods[0]['deposit'];
             
         }}
+       
         show_json(1, array(
             'member' => $member,
             //'deductcredit' => $deductcredit,
