@@ -191,7 +191,7 @@ class Core extends WeModuleSite
         if (is_weixin()) {
             //是否强制绑定手机号,只针对微信端
             if (!empty($this->yzShopSet['isbindmobile'])) {
-                if (empty($member) || $member['isbindmobile'] == 0) {
+                if (empty($member) || $member['mobile'] == ""){
                     if ($_GPC['p'] != 'bindmobile' && $_GPC['p'] != 'sendcode') {
                         $bindmobileurl = $this->createMobileUrl('member/bindmobile');
                         redirect($bindmobileurl);
@@ -204,18 +204,18 @@ class Core extends WeModuleSite
         if ($designer && $_GPC['p'] != 'designer') {
             $menu = $designer->getDefaultMenu();
             if (!empty($menu)) {
-                if ($is_weixin_show) {
+                if (!is_weixin_show()) {
                     $newmenu = json_decode($menu['menus'], true);
                     foreach ($newmenu as &$val) {
                         if (!empty($val['url'])) {
-                            if (strpos($val['url'], 'commission') !== false) {
+                            if (strpos($val['url'], 'commission') !== false or strpos($val['url'], 'bonus') !== false) {
                                 $val['url'] = $this->createMobileUrl('member/bindapp');
                                 $val['title'] = 'APP下载';
                             }
                         }
-                        if (!empty($val['submenu'])) {
-                            foreach ($val['submenu'] as &$sv) {
-                                if (strpos($sv['url'], 'commission') !== false) {
+                        if (!empty($val['subMenus'])) {
+                            foreach ($val['subMenus'] as &$sv) {
+                                if (strpos($sv['url'], 'commission') !== false or (strpos($sv['url'], 'bonus') !== false)) {
                                     $sv['url'] = $this->createMobileUrl('member/bindapp');
                                     $sv['title'] = 'APP下载';
                                 }
@@ -241,8 +241,10 @@ class Core extends WeModuleSite
             'ico' => 'list',
             'url' => $this->createMobileUrl('shop/category')
         );
+
         $this->footer['commission'] = false;
-        
+
+
         if (p('commission')) {
             $set = p('commission')->getSet();
             if (empty($set['level'])) {
@@ -266,7 +268,7 @@ class Core extends WeModuleSite
                         'ico' => 'sitemap',
                         'url' => $this->createPluginMobileUrl('commission')
                     );
-                    if ($is_weixin_show) {
+                    if (!is_weixin_show()) {
                         $this->footer['commission'] = array(
                             'text' => 'APP下载',
                             'ico' => 'sitemap',
@@ -282,11 +284,11 @@ class Core extends WeModuleSite
                             'ico' => 'sitemap',
                             'url' => $this->createPluginMobileUrl('commission/register')
                         );
-                        if ($is_weixin_show) {
+                        if (!is_weixin_show()) {
                             $this->footer['commission'] = array(
                                 'text' => 'APP下载',
                                 'ico' => 'sitemap',
-                                'url' => $this->createPluginMobileUrl('member/bindapp')
+                                'url' => $this->createMobileUrl('member/bindapp')
                             );
                         }
                     } else {
@@ -297,10 +299,18 @@ class Core extends WeModuleSite
                                 'mid' => $member['id']
                             )) : $this->createPluginMobileUrl('commission')
                         );
+                        if (!is_weixin_show()) {
+                            $this->footer['commission'] = array(
+                                'text' => 'APP下载',
+                                'ico' => empty($set['closemyshop']) ? 'heart' : 'sitemap',
+                                'url' => $this->createMobileUrl('member/bindapp')
+                            );
+                        }
                     }
                 }
             }
         }
+
         if (strstr($_SERVER['REQUEST_URI'], 'app')) {
             if (!isMobile()) {
                 if ($this->yzShopSet['ispc']==0) {
