@@ -43,7 +43,7 @@ if (!class_exists('ReturnModel')) {
 							$queue = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$uniacid." and goodsid = ".$good['goodsid']." and status = 0 order by queue asc limit 1" );
 
 							pdo_update('sz_yi_order_goods_queue', array('returnid'=>$queueid,'status'=>'1'), array('id' => $queue['id'], 'uniacid' => $uniacid));
-							$this->setReturnCredit($queue['openid'],'credit2',$queue['price'],'4');
+							$this->setReturnCredit($queue['openid'],$_var_0['credit'],$queue['price'],'4');
 							$queue_price_txt= $_var_0['queue_price'];
 							$queue_price_txt = str_replace('[返现金额]', $queue['price'], $queue_price_txt);
 							$messages = array(
@@ -96,7 +96,7 @@ if (!class_exists('ReturnModel')) {
     //             );
 				// pdo_insert('sz_yi_return_log', $data);
 
-				$this->setReturnCredit($order_goods[0]['openid'],'credit2',$money,'1');
+				$this->setReturnCredit($order_goods[0]['openid'],$_var_0['credit'],$money,'1');
 				$member_price_txt = $_var_0['member_price'];
 				$member_price_txt = str_replace('[排列序号]', $money, $member_price_txt);
 				$member_price_txt = str_replace('[订单ID]', $orderid, $member_price_txt);
@@ -290,7 +290,7 @@ if (!class_exists('ReturnModel')) {
 					$return_money_totle = $value['last_money'];
 					$surplus_money_totle = $value['money']-$value['return_money'];
 
-					$this->setReturnCredit($value['openid'],'credit2',$return_money_totle,'2');
+					$this->setReturnCredit($value['openid'],$_var_0['credit'],$return_money_totle,'2');
 					$single_message_txt = $_var_0['single_message'];
 					$single_message_txt = str_replace('[返现金额]', $return_money_totle, $single_message_txt);
 					$single_message_txt = str_replace('[剩余返现金额]', $surplus_money_totle, $single_message_txt);
@@ -346,7 +346,7 @@ if (!class_exists('ReturnModel')) {
 						$return_money_totle = $value['last_money'];
 						$surplus_money_totle = $value['money']-$value['return_money'];
 
-						$this->setReturnCredit($value['openid'],'credit2',$return_money_totle,'3');
+						$this->setReturnCredit($value['openid'],$_var_0['credit'],$return_money_totle,'3');
 					$total_messsage_txt = $_var_0['total_messsage'];
 					$total_messsage_txt = str_replace('[返现金额]', $return_money_totle, $total_messsage_txt);
 					$total_messsage_txt = str_replace('[剩余返现金额]', $surplus_money_totle, $total_messsage_txt);
@@ -450,6 +450,7 @@ if (!class_exists('ReturnModel')) {
 					'uniacid' => $_W['uniacid'],
 	                'mid' => $member['id'],
 	                'openid' => $openid,
+	                'credittype' => $credittype,
 	                'money' => $credits,
 	                'status' => 1,
 	                'returntype' => $returntype,

@@ -2,11 +2,10 @@
 global $_W, $_GPC;
 $operation   = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 $returntype   = empty($_GPC['returntype']) ? '1' : $_GPC['returntype'];
-
 if ($operation == 'display') {
 
     $pindex = max(1, intval($_GPC["page"]));
-    $psize = 2;
+    $psize = 20;
 
     $condition ='';
     if (!empty($_GPC['mid'])) {
