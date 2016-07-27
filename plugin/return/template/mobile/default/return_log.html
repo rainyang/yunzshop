@@ -165,16 +165,17 @@ function bindScroller(){
         });
 }
         function getLog(type) {
-            type = type=='2'?1:type;
-            $('.credit_nav').removeClass('credit_navon');
-            $('.credit_nav[data-type=' + type + ']').addClass('credit_navon'); 
-            
+ 
             core.pjson('return/return_log', {type:type,goodsid:goodsid,page: page}, function (json) {
                 if (json.result.list.length <= 0) {
                     $('#container').html(tpl('tpl_empty'));
                     return;
                 }
                 $('#container').html(tpl('tpl_log', json.result));
+
+                type = type=='2'?1:type;
+                $('.credit_nav').removeClass('credit_navon');
+                $('.credit_nav[data-type=' + type + ']').addClass('credit_navon'); 
                 bindScroller();
             }, true);
         }
