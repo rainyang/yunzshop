@@ -1103,7 +1103,7 @@ var fromcart = 0;
 	         }
 	         if(deductprice>0){
 		        $('.coupondeduct_div[data-id='+supplier_uid+']').show();
-	          $('.coupondeduct_money[data-id='+supplier_uid+']').html(deductprice.toFixed(2));	
+	          $('.coupondeduct_money').html(deductprice.toFixed(2));	
 	         }
 	         return totalprice;
 				
