@@ -411,6 +411,7 @@ if ($_W['isajax']) {
                         ':uniacid' => $_W['uniacid']
                     ));
                 }
+                $stores = $order_all[$val['supplier_uid']]['stores'];
             }
             
             $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
@@ -666,6 +667,7 @@ if ($_W['isajax']) {
             $deposit = $goods[0]['deposit'];
             
         }}
+       
         show_json(1, array(
             'member' => $member,
             //'deductcredit' => $deductcredit,
@@ -718,11 +720,11 @@ if ($_W['isajax']) {
         $hascoupon      = false;
         $couponcount    = 0;
         $pc             = p("coupon");
-        $supplier_uid   = p("supplier_uid");
+        $supplier_uid   = $_GPC("supplier_uid");
         if ($pc) {
             $pset = $pc->getSet();
             if (empty($pset["closemember"])) {
-                $couponcount = $pc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
+                $couponcount = $pc->consumeCouponCount($openid, $totalprice, $supplier_uid, 0, 0, $goodid, $cartid);
                 $hascoupon   = $couponcount > 0;
             }
         }

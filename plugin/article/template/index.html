@@ -457,6 +457,7 @@ $(function(){
                             product_advs_type:$("input[name=product_advs_type]:checked").val(),
                             product_advs_more:$("input[name=product_advs_more]").val(),
                             product_advs_link:$("input[name=product_advs_link]").val(),
+                            love_money:$("input[name=love_money]").val(),
                             product_advs:$.toJSON(advs)
                         }, 
                         dataType:'json',
@@ -894,6 +895,11 @@ $(function(){
                                 <input type="text" name="article_keyword" class="form-control judge" value="{if $aid}{$article['article_keyword']}{/if}" placeholder="页面关键字">
                             </div>
                         </div>
+
+                    </div>
+
+                    <div class="line">
+
                         <div class="line2">
                             <div class="input-group form-group">
                                 <span class="input-group-addon"><span style="color:red">*</span> 是否开启</span>
@@ -903,7 +909,18 @@ $(function(){
                                 </div>
                             </div>
                         </div>
+                        <div class="line2">
+                            <div class="input-group form-group">
+                                <div class="form-control">&nbsp;
+                                        <label for="article_state_wx1" class="radio-inline"><input type="radio" name="article_state_wx" value="1" id="article_state_wx1" {if !$aid || $article['article_state_wx']==1}checked="true"{/if}> 开启</label>&nbsp;&nbsp;&nbsp;
+                                        <label for="article_state_wx0" class="radio-inline"><input type="radio" name="article_state_wx" value="0" id="article_state_wx0" {if $aid && $article['article_state_wx']==0}checked="true"{/if}> 关闭(关闭后微信端不显示)</label>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
+
+
                     <div class="line">
                         <div class="input-group form-group"> 
                             <span class="input-group-addon">文章介绍(封面)</span>
@@ -1087,6 +1104,11 @@ $(function(){
             <div class="fart-editor-content" step="3" style="overflow-y: auto;">
                 <div class="fart-form">
                     <div class="line">
+                            <div class="input-group form-group {if !p('love')}hidden{/if}">
+                                <span class="input-group-addon" style="border-right: 0px;">事业基金捐献</span>
+                                <input class="form-control" type="text" placeholder="" value="{$article['love_money']}" name="love_money">
+                                <span class="input-group-addon" style="border-left: 0px; ">元</span>
+                            </div>
                             <div class="input-group form-group">
                                 <span class="input-group-addon">营销产品显示设置</span> 
                                 <div class="form-control">&nbsp;
@@ -1202,6 +1224,7 @@ $(function(){
                         <td style="text-align:center;">
                         <span class="m_level hidden">{$row['m_level']}</span>
                         <span class="d_level hidden">{$row['d_level']}</span>
+                        <span class="loveshow hidden">{$row['loveshow']}</span>
                             {ifp 'article.cate.editcate'}
                                 <a class='btn btn-default nav-edit' href="javascript:;"><i class="fa fa-edit"></i></a>
                                 {else}-
@@ -1243,6 +1266,20 @@ $(function(){
                         </div>
                     </div>
                     <div id="module-menus"></div>
+                </div>
+            <div class='panel-heading' class="{if !p('love')}hidden{/if}">
+                爱心基金
+            </div>
+                <div class="modal-body {if !p('love')}hidden{/if}">
+                    <div class="form-group" style="overflow:hidden;">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label" style='width: 100px; line-height:34px;'>事业基金</label>
+                        <div class="col-sm-9 col-xs-12" style='width: 450px'>
+                              <select id="loveshow" name='loveshow' class='form-control'>
+                                <option value='0'>不启用该分类为事业基金分类</option>
+                                <option value='1' >启用该分类为事业基金分类</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             <div class='panel-heading'>
                 阅读权限
@@ -1319,7 +1356,7 @@ $(function(){
             var cname = $(this).parent().parent().attr("cname");
             var m_level = $(this).parent().find(".m_level").html();
             var d_level = $(this).parent().find(".d_level").html();
-
+            var loveshow = $(this).parent().find(".loveshow").html();
             if(!cid){
                 alert("参数错误! 点击确定刷新页面");
                 location.reload();
@@ -1330,14 +1367,15 @@ $(function(){
             $("#category_name").val(cname);
             $("#m_level").val(m_level);
             $("#d_level").val(d_level);
+            $("#loveshow").val(loveshow);
             $("#modal-add").modal();
         });
         $(".nav-save").click(function(){
             var cid = $("#category_id").val();
             var cname = $("#category_name").val();
+            var loveshow = $("#loveshow option:selected").val();
             var m_level = $("#m_level option:selected").val();
             var d_level = $("#d_level option:selected").val();
-
             if(!cname){
                 $("#category_name").focus();
                 alert("分类名称不能为空！");
@@ -1346,7 +1384,7 @@ $(function(){
             $.ajax({
                     type: 'POST',
                     url: "{php echo $this->createPluginWebUrl('article',array('method'=>'api','apido'=>'postcategory'))}",
-                    data: {cid:cid,cname:cname,m_level:m_level,d_level:d_level}, 
+                    data: {cid:cid,cname:cname,m_level:m_level,d_level:d_level,loveshow:loveshow}, 
                     dataType:'json',
                     success: function(data){
                         if(data.result=='success-add' && data.cid && data.cname){
@@ -1354,8 +1392,9 @@ $(function(){
                                   html+="<td class='cid'>"+data.cid+"</td>";
                                   html+="<td class='cname'>"+data.cname+"</td>";
                                   html+="<td style='text-align:center;'>";
-                                  html+="<span class='m_level'>"+data.m_level+"</span>";
-                                  html+="<span class='d_level'>"+data.d_level+"</span>";
+                                  html+="<span class='m_level hidden'>"+data.m_level+"</span>";
+                                  html+="<span class='d_level hidden'>"+data.d_level+"</span>";
+                                  html+="<span class='loveshow hidden'>"+data.loveshow+"</span>";
                                   html+="<a class='btn btn-default nav-edit' href='javascript:;'><i class='fa fa-edit'></i></a>";
                                   html+="<a class='btn btn-default nav-del' href='javascript:;'><i class='fa fa-trash-o'></i></a>";
                                   html+="</td>";
@@ -1811,3 +1850,4 @@ $(function(){
 </div>
 </div>
 {template 'web/_footer'}
+
