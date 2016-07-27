@@ -187,7 +187,7 @@ strong, h1, h2{ font-weight: normal;}
     display: block;
     border-radius: 5px;
     padding: 8px 0;
-    width: 48%;
+    width: 100%;
     text-align: center;
 }
 .goto-buy{ border: 1px solid #11cd6e; color: #11cd6e;}
