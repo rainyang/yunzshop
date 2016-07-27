@@ -505,7 +505,6 @@ if ($_W['isajax']) {
                         }
                     }
                 }
-
                 foreach ($suppliers as $key => $val) {
                     if (!empty($order_all[$val['supplier_uid']]['dispatch_array'])) {
                         foreach ($order_all[$val['supplier_uid']]['dispatch_array'] as $k => $v) {
@@ -640,7 +639,6 @@ if ($_W['isajax']) {
             } 
             $totalprice =  $old_price * $days;
             if ($price_list) {//价格表中存在   
-               // print_r($price_list);exit;
                 $check_date = array();
                 foreach($price_list as $k => $v) {
                     $price_list[$k]['time']=date('Y-m-d',$v['roomdate']);
@@ -1746,6 +1744,10 @@ if ($_W['isajax']) {
                     "openid" => $openid,
                     'goods_op_cost_price' => $goods['costprice']
                 );
+                //修改全返插件中房价
+                if(p('hotel') && $_GPC['type']=='99'){
+                     $order_goods['price'] = $goodsprice ;
+                }
                 if ($diyform_plugin) {
                     $order_goods["diyformid"]     = $goods["diyformid"];
                     $order_goods["diyformdata"]   = $goods["diyformdata"];

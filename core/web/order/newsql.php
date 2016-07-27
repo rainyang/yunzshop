@@ -1239,3 +1239,7 @@ if (!pdo_fieldexists('sz_yi_coupon', 'storenames')) {
 if(!pdo_fieldexists('sz_yi_coupon', 'getstore')) {
 pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `getstore` tinyint(1) NOT NULL DEFAULT '0'");
 }
+//返现记录 返现余额积分类型 2016-07-26 杨雷
+if(!pdo_fieldexists('sz_yi_return_log', 'credittype')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_return_log')." ADD `credittype` VARCHAR(60) NOT NULL AFTER `openid`;");
+}
