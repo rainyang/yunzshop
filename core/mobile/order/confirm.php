@@ -61,7 +61,9 @@ if ($operation == "display" || $operation == "create") {
         }
     }
 }
+$ischannelpick = $_GPC['ischannelpick'];
 if ($_W['isajax']) {
+    $ischannelpick = intval($_GPC['ischannelpick']);
     if ($operation == 'display') {
         $id       = intval($_GPC['id']);
         $optionid = intval($_GPC['optionid']);
@@ -173,7 +175,7 @@ if ($_W['isajax']) {
                 $isvirtual = true;
             }
             if (p('channel')) {
-                if ($ischannelpay == 1) {
+                if ($ischannelpay == 1 && empty($ischannelpick)) {
                     $isvirtual = true;
                 }
             }
@@ -676,7 +678,7 @@ if ($_W['isajax']) {
                     }
                 }
                 if (p('channel')) {
-                    if ($ischannelpay == 1) {
+                    if ($ischannelpay == 1 && empty($ischannelpick)) {
                         $isvirtual = true;
                     }
                 }
@@ -831,6 +833,7 @@ if ($_W['isajax']) {
         ));
     } else if ($operation == 'create' && $_W['ispost']) {
         $ischannelpay = intval($_GPC['ischannelpay']);
+        $ischannelpick = intval($_GPC['ischannelpick']);
         $member       = m('member')->getMember($openid);
         $dispatchtype = intval($_GPC['dispatchtype']);
         $addressid    = intval($_GPC['addressid']);
@@ -949,6 +952,10 @@ if ($_W['isajax']) {
                     ':goodsid' => $goodsid,
                     ':id' => $optionid
                 ));
+                if (p('channel') && !empty($ischannelpick)) {
+                    $my_option_stock = p('channel')->getMyOptionStock($openid,$goodsid,$optionid);
+                    $option['stock'] = $my_option_stock;
+                }
                 if (!empty($option)) {
                     if ($option['stock'] != -1) {
                         if (empty($option['stock'])) {
@@ -1073,7 +1080,7 @@ if ($_W['isajax']) {
                 $isvirtual = true;
             }
             if (p('channel')) {
-                if ($ischannelpay == 1) {
+                if ($ischannelpay == 1 && empty($ischannelpick)) {
                     $isvirtual = true;
                 }
             }
@@ -1345,7 +1352,11 @@ if ($_W['isajax']) {
             "couponprice" => $couponprice,
             'redprice' => $redpriceall
         );
-
+        if (p('channel')) {
+            if (!empty($ischannelpick)) {
+                $order['ischannelself'] = 1;
+            }
+        }
         if ($diyform_plugin) {
             if (is_array($_GPC["diydata"]) && !empty($order_formInfo)) {
                 $diyform_data           = $diyform_plugin->getInsertData($fields, $_GPC["diydata"]);
@@ -1415,7 +1426,21 @@ if ($_W['isajax']) {
             }
             if (p('channel')) {
                 $my_info = p('channel')->getInfo($openid,$goods['goodsid'],$goods['optionid'],$goods['total']);
-                if ($ischannelpay == 1) {
+                if (!empty($ischannelpick)) {
+                    $my_option_stock = p('channel')->getMyOptionStock($openid, $goods['goodsid'], $goods['optionid']);
+                    $stock = $my_option_stock - $goods['total'];
+                    pdo_update('sz_yi_channel_stock', 
+                        array(
+                            'stock_total' => $stock
+                        ), 
+                        array(
+                            'uniacid'   => $_W['uniacid'],
+                            'openid'    => $openid,
+                            'goodsid'   => $goods['goodsid'],
+                            'optionid'  => $goods['optionid']
+                        ));
+                }
+                if ($ischannelpay == 1 && empty($ischannelpick)) {
                     $every_turn_price           = $goods['marketprice']/($my_info['my_level']['purchase_discount']/100);
                     $ischannelstock             = pdo_fetch(
                         "SELECT * FROM " . tablename('sz_yi_channel_stock') . 
@@ -1459,9 +1484,11 @@ if ($_W['isajax']) {
                     $order_goods['ischannelpay']  = $ischannelpay;
                 }
                 $order_goods['channel_id'] = 0;
-                if (!empty($my_info['up_level'])) {
-                    $up_member = m('member')->getInfo($my_info['up_level']['openid']);
-                    $order_goods['channel_id'] = $up_member['id'];
+                if (!empty($ischannelpay)) {
+                    if (!empty($my_info['up_level'])) {
+                        $up_member = m('member')->getInfo($my_info['up_level']['openid']);
+                        $order_goods['channel_id'] = $up_member['id'];
+                    }
                 }
             }
             pdo_insert('sz_yi_order_goods', $order_goods);
@@ -1473,7 +1500,23 @@ if ($_W['isajax']) {
                 $shop['name'] . "购物积分抵扣 消费积分: {$deductcredit} 抵扣金额: {$deductmoney} 订单号: {$ordersn}"
             ));
         }
-        if (empty($virtualid)) {
+        if (p('channel') && !empty($ischannelpick)) {
+            //echo "<pre>"; print_r(1);exit;
+        } else {
+            if (empty($virtualid)) {
+                m('order')->setStocksANDCredits($orderid, 0);
+            } else {
+                if (isset($allgoods[0])) {
+                    $vgoods = $allgoods[0];
+                    pdo_update('sz_yi_goods', array(
+                        'sales' => $vgoods['sales'] + $vgoods['total']
+                    ), array(
+                        'id' => $vgoods['goodsid']
+                    ));
+                }
+            }
+        }
+        /*if (empty($virtualid)) {
             m('order')->setStocksANDCredits($orderid, 0);
         } else {
             if (isset($allgoods[0])) {
@@ -1484,19 +1527,27 @@ if ($_W['isajax']) {
                     'id' => $vgoods['goodsid']
                 ));
             }
-        }
+        }*/
         $plugincoupon = p("coupon");
         if ($plugincoupon) {
             $plugincoupon->useConsumeCoupon($orderid);
         }
         m('notice')->sendOrderMessage($orderid);
         $pluginc = p('commission');
-        if ($pluginc) {
-            $pluginc->checkOrderConfirm($orderid);
+        if (p('channel')) {
+            if (empty($ischannelpick)) {
+                if ($pluginc) {
+                    $pluginc->checkOrderConfirm($orderid);
+                }
+            }
         }
+        /*if ($pluginc) {
+            $pluginc->checkOrderConfirm($orderid);
+        }*/
         show_json(1, array(
             'orderid' => $orderid,
-            'ischannelpay' => $ischannelpay
+            'ischannelpay' => $ischannelpay,
+            'ischannelpick' => $ischannelpick
         ));
     }
 }

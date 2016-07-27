@@ -10,9 +10,14 @@ $ordercount 		= $channelinfo['channel']['ordercount'];
 $channelcount		= count($channelinfo['channel']['mychannels']);
 $commission_total 	= $channelinfo['channel']['commission_total'];
 $commission_ok 		= $channelinfo['channel']['commission_ok'];
+$cansettle 			= $commission_ok >= floatval($set['setapplyminmoney']);
 $commission_ok 		= number_format($commission_ok, 2);
+$setapplycycle		= $set['setapplycycle'] *3600;
+$time 				= time();
+$last_apply			= pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_apply') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND (apply_time+{$setapplycycle}>{$time}) ORDER BY id DESC");
 $purchaseid			= pdo_fetchcolumn("SELECT id FROM " . tablename('sz_yi_chooseagent') . " WHERE uniacid={$_W['uniacid']} AND isopenchannel=1 LIMIT 1");
-$purchaseurl		= $this->createPluginMobileUrl('choose',array('pageid'=>$purchaseid, 'ischannelpay' => 1));
+$purchaseurl		= $this->createPluginMobileUrl('choose',array('pageid'=>$purchaseid, 'ischannelpay' => 1,'ischannelpick' => 0));
+$pickingurl			= $this->createPluginMobileUrl('choose',array('pageid'=>$purchaseid, 'ischannelpay' => 0,'ischannelpick' => 1));
 $operation 			= !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if($_W['isajax']) {
  	if ($operation == 'order') {

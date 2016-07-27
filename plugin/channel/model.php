@@ -24,7 +24,19 @@ if (!class_exists('ChannelModel')) {
 			return $set;
 		}
 		/**
-		  * 获取自己和上级的渠道商详细信息 
+		  * 获取我的指定商品库存 
+		  *
+		  * @param string $openid, int $goodsid 商品id int $optionid 规格id
+		  * @return int $stock
+		  */
+		public function getMyOptionStock($openid, $goodsid, $optionid)
+		{
+			global $_W;
+			$stock = pdo_fetchcolumn("SELECT stock_total FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND goodsid={$goodsid} AND optionid={$optionid}");
+			return $stock;
+		}
+		/**
+		  * 获取上级渠道商库存最多的 
 		  *
 		  * @param string $openid, int $goodsid 商品id int $optionid 规格id
 		  * @return array $my_superior
@@ -39,7 +51,7 @@ if (!class_exists('ChannelModel')) {
 			}
 		}
 		/**
-		  * 获取所有上级的id 
+		  * 获取所有上级的openid 
 		  *
 		  * @param string $openid
 		  * @return array $my_agent_openids

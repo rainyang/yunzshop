@@ -131,7 +131,8 @@ $commissionprice = p('commission')->getCommission($goods);
 
 if ($_W['isajax']) {
     if (p('channel')) {
-        $ischannelpay = intval($_GPC['ischannelpay']);
+        $ischannelpay   = intval($_GPC['ischannelpay']);
+        $ischannelpick  = intval($_GPC['ischannelpick']);
     }
     if (empty($goods)) {
         show_json(0);
@@ -206,6 +207,22 @@ if ($_W['isajax']) {
             $items      = pdo_fetchall("select * from " . tablename('sz_yi_goods_spec_item') . " where  `show`=1 and specid=:specid order by displayorder asc", array(
                 ":specid" => $s['id']
             ));
+            if (!empty($ischannelpick) && p('channel')) {
+                $items = array();
+                $my_stock = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND goodsid={$goodsid}");
+                if (!empty($my_stock)) {
+                    $items = array();
+                    foreach ($my_stock as $op) {
+                        if (!empty($op['optionid'])) {
+                            $my_option = m('goods')->getOption($goodsid, $op['optionid']);
+                            //$spec = pdo_fetch('select * from ' . tablename('sz_yi_goods_spec') . " where uniacid={$_W['uniacid']} and goodsid={$goodsid} and id={$my_option['specs']}");
+                            $items[] = pdo_fetch("select * from " . tablename('sz_yi_goods_spec_item') . " where  `show`=1 and id=:id order by displayorder asc", array(
+                                    ":id" => $my_option['specs']
+                                ));
+                        }
+                    }
+                }
+            }
             $s['items'] = set_medias($items, 'thumb');
         }
         unset($s);
@@ -223,6 +240,25 @@ if ($_W['isajax']) {
                 }
             }
             unset($value);
+        }
+        if (!empty($ischannelpick) && p('channel')) {
+            $options = array();
+            $my_stock = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND goodsid={$goodsid}");
+            foreach ($my_stock as $val) {
+                $my_option          = m('goods')->getOption($goodsid, $val['optionid']);
+                $stock_total        = pdo_fetchcolumn("SELECT stock_total FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND goodsid={$goodsid} AND optionid={$val['optionid']}");
+                $my_option['stock'] = $stock_total;
+                $options[]          = $my_option;
+            }
+            /*foreach ($options as &$value) {
+                $my_stock = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND goodsid={$goodsid} AND optionid={$value['id']}");
+                if (empty($my_stock)) {
+                    unset($options[$k]);
+                } else {
+                    $value['stock'] = $my_stock['stock_total'];
+                }
+            }
+            unset($value);*/
         }
         $options = set_medias($options, 'thumb');
         foreach ($options as $o) {

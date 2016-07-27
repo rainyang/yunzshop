@@ -14,6 +14,7 @@ if ($_W['isajax']) {
             )); 
     }
     if ($operation == 'display') {
+        $ischannelpick = intval($_GPC['ischannelpick']);
         if (p('channel')) {
             $my_info = p('channel')->getInfo($openid);
         }
@@ -43,15 +44,17 @@ if ($_W['isajax']) {
         $difference = '';
         $ischannelpay = 0;
         if (p('channel')) {
-            if (!empty($my_info)) {
-                $ischannelpay = 1;
-                $min_price = $my_info['my_level']['min_price'];
-                $difference = $min_price - $totalprice;
-                if ($difference <= 0) {
-                    $difference = '';
-                } else {
-                    $difference = number_format($difference,2);
-                    $difference = "您还需要{$difference}元才可以购买";
+            if (empty($ischannelpick)) {
+                if (!empty($my_info)) {
+                    $ischannelpay = 1;
+                    $min_price = $my_info['my_level']['min_price'];
+                    $difference = $min_price - $totalprice;
+                    if ($difference <= 0) {
+                        $difference = '';
+                    } else {
+                        $difference = number_format($difference,2);
+                        $difference = "您还需要{$difference}元才可以购买";
+                    }
                 }
             }
         }
