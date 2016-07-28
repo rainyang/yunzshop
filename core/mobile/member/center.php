@@ -31,6 +31,13 @@ if (p('supplier')) {
 	$shopset['switch'] = $supplier_set['switch'];
 	$shopset['switch_centre'] = $supplier_set['switch_centre'];
 }
+$ischannel = false;
+if (p('channel')) {
+	$result = m('member')->getInfo($openid);
+	if (!empty($result)) {
+		$ischannel = true;
+	}
+}
 $plugc = p('commission');
 if ($plugc) {
 	$pset = $plugc->getSet();

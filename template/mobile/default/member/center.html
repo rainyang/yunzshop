@@ -101,8 +101,14 @@
     {if p('merchant') && !empty($ismerchant)}
         <a href="{php echo $this->createPluginMobileUrl('merchant/orderj')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-globe" style="color:#f10;"></i>招商员<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
-    <a href="{php echo $this->createPluginMobileUrl('channel/index')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-retweet" style="color:#f10;"></i>渠道中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-    <a href="{php echo $this->createPluginMobileUrl('channel/af_channel')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-arrow-up" style="color:#f10;"></i>申请渠道商<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+</div>
+<div class="cart">
+    {if p('channel') && !empty($ischannel)}
+        <a href="{php echo $this->createPluginMobileUrl('channel/index')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-retweet" style="color:#f10;"></i>渠道中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    {/if}
+    {if p('channel') && empty($ischannel)}
+        <a href="{php echo $this->createPluginMobileUrl('channel/af_channel')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-arrow-up" style="color:#f10;"></i>申请渠道商<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    {/if}
 </div>
 <div class="cart">
     {if p('supplier')}
