@@ -37,6 +37,7 @@ if (p('channel')) {
 	if (!empty($result)) {
 		$ischannel = true;
 	}
+	$channel_set = p('channel')->getSet();
 }
 $plugc = p('commission');
 if ($plugc) {
