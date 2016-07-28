@@ -62,9 +62,12 @@
         <li><a href="#"><span><%member.credit1%></span><br/>{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}</a></li>
         <li><a href="#"><span><%counts.couponcount%></span><br/>优惠券</a></li>
 
-        <li><a href="#" class="{if $member['credit2'] > 0 && empty($set['trade']['transfer'])}recharge-t{else}recharge{/if}" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</a>
+        <li>
+        {if empty($set['trade']['closerecharge'])}
+            <a href="#" class="{if $member['credit2'] > 0 && empty($set['trade']['transfer'])}recharge-t{else}recharge{/if}" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</a>
+        {/if}
         {if $member['credit2'] > 0 && empty($set['trade']['transfer'])}
-            <a href="#" class="recharge-t" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer'))}'">转账</a>
+            <a href="#" class="{if empty($set['trade']['closerecharge'])}recharge-t{else}recharge{/if}" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer'))}'">转账</a>
         {/if} 
 
         </li>

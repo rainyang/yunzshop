@@ -479,83 +479,89 @@ div.flicking_con a.on{background-position:0 -9px}
 
 <script language="javascript">
   function showMoreActivity(){
-     $('#morebtn').hide();
-     $("#moreactivity").fadeIn();
+    $('#morebtn').hide();
+    $("#moreactivity").fadeIn();
  }
  
-    var hasoption = false;
-    var maxbuy = 0;
-    var options = [];
-    var specs = [];
-    var tip = null;
-    var action="";
-    var alpha = 0;
+  var hasoption = false;
+  var maxbuy = 0;
+  var options = [];
+  var specs = [];
+  var tip = null;
+  var action="";
+  var alpha = 0;
 
     
-    function share(){
-        
-           $('#cover').fadeIn(200).unbind('click').click(function(){
-                    $(this).fadeOut(100);
-          })
-    }
-
-    function app_share() {
-        var title = "{php echo $_W['shopshare']['title']}";
-        var link = "{php echo $_W['shopshare']['link']}" + "&access=app";
-        var imgurl = "{php echo $_W['shopshare']['imgUrl']}";
-        var desc = "{php echo $_W['shopshare']['desc']}";
-
-        if (typeof PINGPP_IOS_SDK !== 'undefined') {
-            shareLink(title, link, imgurl, desc);
-        } else if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
-            PINGPP_ANDROID_SDK.shareLink(title, link, imgurl, desc);
-        }
-
-    }
-
-    function menu(obj){
-       
-        if($(obj).attr('show')=='1'){
-            $(obj).removeAttr('show');
-            $('.sort_list').fadeOut(200);
-        }else{
-            $(obj).attr('show','1');  
-            $('.sort_list').fadeIn(200);
-        }
-    }
-    $(function(){
-        $(document.body).click(function(e){
-           var classname = "";
-           
-            if($(e.target).get(0) ){
-                classname =$(e.target).get(0).className;
-            }
-            if(classname!='fa fa-ellipsis-v' && classname!='btn func') {
-                
-                $('.func').removeAttr('show');
-                $('.sort_list').fadeOut(200);
-            }
-        });
+  function share(){
+    $('#cover').fadeIn(200).unbind('click').click(function(){
+      $(this).fadeOut(100);
     })
-    function showStores(obj){
-        if($(obj).attr('show')=='1'){
-            $(obj).next('div').slideUp(100);
-            $(obj).removeAttr('show').find('i').removeClass('fa-angle-down').addClass('fa-angle-up');
-        }
-        else{
-            $(obj).next('div').slideDown(100);
-            $(obj).attr('show','1').find('i').removeClass('fa-angle-up').addClass('fa-angle-down');
-        }
-    }
-    require(['tpl', 'core','jquery.touchslider','swipe'], function(tpl, core) {
+  }
 
-      function setTimer(goods){
-            
-            setTimeHtml(goods);
-            window.timer = setInterval(function(){
-                setTimeHtml(goods);
-            },1000);
-        }
+  function app_share() {
+    var title = "{php echo $_W['shopshare']['title']}";
+    var link = "{php echo $_W['shopshare']['link']}" + "&access=app";
+    var imgurl = "{php echo $_W['shopshare']['imgUrl']}";
+    var desc = "{php echo $_W['shopshare']['desc']}";
+
+    if (typeof PINGPP_IOS_SDK !== 'undefined') {
+
+      shareLink(title, link, imgurl, desc);
+
+    } else if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
+
+      PINGPP_ANDROID_SDK.shareLink(title, link, imgurl, desc);
+    }
+  }
+
+  function menu(obj){
+
+    if($(obj).attr('show')=='1'){
+
+      $(obj).removeAttr('show');
+      $('.sort_list').fadeOut(200);
+
+    }else{
+
+      $(obj).attr('show','1');  
+      $('.sort_list').fadeIn(200);
+    }
+  }
+  $(function(){
+    $(document.body).click(function(e){
+      var classname = "";
+
+      if($(e.target).get(0) ){
+        classname =$(e.target).get(0).className;
+      }
+      if(classname!='fa fa-ellipsis-v' && classname!='btn func') {
+
+        $('.func').removeAttr('show');
+        $('.sort_list').fadeOut(200);
+      }
+    });
+  })
+  function showStores(obj){
+    if($(obj).attr('show')=='1'){
+      $(obj).next('div').slideUp(100);
+      $(obj).removeAttr('show').find('i').removeClass('fa-angle-down').addClass('fa-angle-up');
+    }
+    else{
+      $(obj).next('div').slideDown(100);
+      $(obj).attr('show','1') .find('i').removeClass('fa-angle-up').addClass('fa-angle-down');
+    }
+  }
+
+
+  require(['tpl', 'core','jquery.touchslider','swipe'], function(tpl, core) {
+
+  function setTimer(goods){
+
+  setTimeHtml(goods);
+  window.timer = setInterval(function(){
+  setTimeHtml(goods);
+  },1000);
+  }
         function setTimeHtml(goods){
             var current = Math.floor(new Date().getTime()/1000);
                 var ts = 0;//计算剩余的毫秒数
@@ -1267,11 +1273,11 @@ function reduceNum(){
     total.val(num);
 }
 //加入购物数量价格联动
-function calculate_l(){
+/*function calculate_l(){
   var option_price = $("#option_price").attr('option_price');
   option_price_num = option_price * num ;
   $("#option_price").html( option_price_num);
-}
+}*/
     function option_selected(){
     var ret= {
         no: "",
