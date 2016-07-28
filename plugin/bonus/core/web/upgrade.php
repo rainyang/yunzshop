@@ -94,9 +94,20 @@ if(!pdo_fieldexists('sz_yi_member', 'bonuslevel')) {
 }
 
 if(!pdo_fieldexists('sz_yi_member', 'bonus_area')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_area` TINYINT(1) DEFAULT '0' AFTER `bonuslevel`, ADD `bonus_province` varchar(50) DEFAULT '' AFTER `bonus_area`, ADD `bonus_city` varchar(50) DEFAULT '' AFTER `bonus_province`, ADD `bonus_district` varchar(50) DEFAULT '' AFTER `bonus_city`, ADD `bonus_area_commission` decimal(10,2) DEFAULT '0.00' AFTER `bonus_district`;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_area` TINYINT(1) DEFAULT '0';");
 }
-
+if(!pdo_fieldexists('sz_yi_member', 'bonus_province')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_province` varchar(50) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_member', 'bonus_city')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_city` varchar(50) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_member', 'bonus_district')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_district` varchar(50) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_member', 'bonus_area_commission')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_area_commission` DECIMAL(10,2) DEFAULT '0.00'");
+}
 if(!pdo_fieldexists('sz_yi_goods', 'bonusmoney')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `bonusmoney` DECIMAL(10,2) DEFAULT '0.00' AFTER `costprice`;");
 }

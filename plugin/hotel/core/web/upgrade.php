@@ -125,11 +125,11 @@ if(!pdo_fieldexists('sz_yi_order', 'etime')) {
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'depositprice')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `depositprice` decimal DEFAULT '10' AFTER `etime`;");
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `depositprice` decimal DEFAULT '0' AFTER `etime`;");
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'returndepositprice')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `returndepositprice`  decimal DEFAULT '10' AFTER `depositprice`;");
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `returndepositprice`  decimal DEFAULT '0' AFTER `depositprice`;");
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'depositpricetype')) {
