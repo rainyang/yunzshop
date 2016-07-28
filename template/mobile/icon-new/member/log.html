@@ -14,6 +14,9 @@
     .credit_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
     #credit_loading { padding:10px;color:#666;text-align: center;}
 
+    .order_topbar {height:44px; width:100%; background:#fff; border-bottom:1px solid #e3e3e3;}
+    .order_topbar .nav {height:44px;width:50%;line-height:44px; text-align:center; font-size:14px; float:left; color:#666;}
+    .order_topbar .on {height:42px; color:#f15353; border-bottom:2px solid #f15353;}
 </style>
 <div class="page_topbar">
     <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
@@ -21,9 +24,9 @@
 </div>
 
 {if $trade && $trade['withdraw']==1}
-<div class="credit_tab">
-    <div class="credit_nav {if $_GPC['type']==0}credit_navon{/if}" data-type='0' >充值记录</div>
-    <div class="credit_nav {if $_GPC['type']==1}credit_navon{/if}"  data-type='1'>提现记录</div>
+<div class="order_topbar">
+    <div class="nav {if $_GPC['status']=='0'}on{/if}" data-type="0">充值记录</div>
+    <div class="nav {if $_GPC['status']=='1'}on{/if}" data-type="1">提现记录</div>
 </div>
 {/if}
 
@@ -102,8 +105,8 @@ function bindScroller(){
         });
 }
         function getLog(type) {
-            $('.credit_nav').removeClass('credit_navon');
-            $('.credit_nav[data-type=' + type + ']').addClass('credit_navon');
+            $('.nav').removeClass('on');
+            $('.nav[data-type=' + type + ']').addClass('on');
             core.json('member/log', {type:type,page: page}, function (json) {
                 if (json.result.list.length <= 0) {
                     $('#container').html(tpl('tpl_empty'));
@@ -113,7 +116,7 @@ function bindScroller(){
                 bindScroller();
             }, true);
         }
-        $('.credit_nav').unbind('click').click(function () {
+        $('.nav').unbind('click').click(function () {
             page = 1; current_type = $(this).data('type')
             getLog(current_type);
 
