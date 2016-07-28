@@ -27,7 +27,7 @@ if($operation == 'assigns'){
     }
 }elseif($operation == 'submit'){
     if ($_W['isajax']) {
-        $money = $_GPC['money'];
+        $money = floatval($_GPC['money']);
         if ($money <= 0 || $member['credit2'] < $money){
             show_json(0,'转让金额不正确');
         }
@@ -69,7 +69,7 @@ if($operation == 'assigns'){
                 'assigns_id'     => $assigns_id,
                 'createtime'    => time(),
                 'status'        => 1,
-                'money'         => $_GPC['money']
+                'money'         => $money
             );
             pdo_insert('sz_yi_member_transfer_log', $member_data); 
             show_json(1);
