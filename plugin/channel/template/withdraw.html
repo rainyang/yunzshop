@@ -174,40 +174,10 @@
         </div>
         <div class='panel-body'>
             <table class="table table-hover">
-                       <thead class="navbar-inner">
-                           <tr>
-                               <th>订单号</th>
-                               <th>总金额</th>
-                               <th>商品金额</th>
-                               <th>运费</th>
-                               <th>付款方式</th>                           
-                               <th>下单时间</th>
-                           </tr>
-                       </thead>
+                       
                        <tbody>
                            {loop $list $row}
-                           <tr  style="background: #eee">
-                               <td>{$row['ordersn']}</td>
-                               <td>{$row['price']}</td>
-                               <td>{$row['goodsprice']}</td>
-                               <td>{$row['dispatchprice']}</td>
-                               <td>{if $row['paytype'] == 1}
-                                          <span class="label label-danger">余额支付</span>
-                                             {elseif $row['paytype'] == 11}
-                                          <span class="label label-default">后台付款</span>
-                                      {elseif $row['paytype'] == 21}
-                                          <span class="label label-success">在线支付</span>
-                                          {elseif $row['paytype'] == 22}
-                                          <span class="label label-danger">支付宝支付</span>
-                                            {elseif $row['paytype'] == 22}
-                                          <span class="label label-primary">银联支付</span>
-                                      {elseif $row['paytype'] == 3}
-                                      <span class="label label-primary">货到付款</span>
-                                    {/if}
-                               </td>
-              
-                               <td>{php echo date('Y-m-d H:i',$row['createtime'])}</td>   
-                           </tr>	
+      	
                            <tr >
 
                                <td colspan="6">
@@ -218,7 +188,9 @@
                                                  <th></th>
                                                  <th>单价</th>
                                                  <th>数量</th>
-                                                 <th>总价</th>                                               
+                                                 <th>总价</th>  
+                                                 <th>订单号</th>
+                                                 <th>下单时间</th>                                              
                                              </tr>
                                          </thead>
                                        <tbody>
@@ -230,7 +202,9 @@
                                                <td>原价: {php echo $g['price']/$g['total']}<br/>折扣后:{php echo $g['realprice']/$g['total']}</td>
                                                <td>{$g['total']}</td>
                                                <td><strong>原价:{php echo round($g['price'],2)}<br/>折扣后:{php echo round($g['realprice'],2)}</strong></td>
-                                               <td>
+                                               <td>{$row['ordersn']}
+                                               </td>
+                                               <td>{php echo date('Y-m-d H:i:s',$row['createtime'])}
                                                </td>
                                            </tr>
                                            {/loop}

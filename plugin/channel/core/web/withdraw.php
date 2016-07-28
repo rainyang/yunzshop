@@ -82,10 +82,14 @@ if ($operation == 'display') {
 	if (empty($orderids)) {
 		message('无任何订单，无法查看!', '', 'error');
 	}
-	$list = pdo_fetchall('SELECT id,agentid, ordersn,price,goodsprice, dispatchprice,createtime, paytype FROM ' . tablename('sz_yi_order') . ' where  id in ( ' . $orderids . ' );');
+	$ordergoods_list = pdo_fetchall('SELECT * FROM ' . tablename('sz_yi_order_goods') . ' where  id in ( ' . $orderids . ' ) GROUP BY orderid');
+	foreach ($ordergoods_list as $og) {
+		$list[] = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_order') . ' where  id = :id',array(':id' => $og['orderid']));
+	}
+
 	$totalpay = 0;
 	foreach ($list as &$row) {
-		$row['goods'] = pdo_fetchall('SELECT * FROM ' .tablename('sz_yi_order_goods') . ' WHERE id = :id', array(':id' => $row['id']));
+		$row['goods'] = pdo_fetchall('SELECT * FROM ' .tablename('sz_yi_order_goods') . ' WHERE orderid = :id', array(':id' => $row['id']));
 		$totalpay += $row['price'];
 	}
 	unset($row);

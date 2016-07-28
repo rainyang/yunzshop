@@ -1,6 +1,6 @@
 <?php
 global $_W, $_GPC;
-
+print_r($_W['account']);exit;
 $operation   = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 
 $channellevels = pdo_fetchall('SELECT * FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid = :uniacid ORDER BY level_num DESC',array(':uniacid' => $_W['uniacid']));//渠道商等级
