@@ -13,6 +13,20 @@ if(empty($result)){
 }
 
 $sql = "
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_merchant` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` INT(11) NOT NULL AUTO_INCREMENT,
+  `openid` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL COMMENT '我的openid',
+  `lower_openid` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL COMMENT '下级openid',
+  `commission` DECIMAL(10,2) NULL COMMENT '推荐员分红比例',
+  PRIMARY KEY (`id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci
+COMMENT = '渠道商推荐员';
+
+
+
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_level` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `uniacid` INT(11) NOT NULL AUTO_INCREMENT,

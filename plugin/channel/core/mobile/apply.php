@@ -5,13 +5,14 @@ $openid = m('user')->getOpenid();
 if ($_W['isajax']) {
 	$member 					= m('member')->getMember($openid);
 	$channelinfo 				= $this->model->getInfo($openid);
-	$commission_ok 				= $channelinfo['channel']['commission_ok'];
+	$commission_ok 				= $channelinfo['channel']['commission_ok'] + $channelinfo['channel']['lower_order_money'];
 	$cansettle 					= $commission_ok >= floatval($set['setapplyminmoney']);
 	$member['commission_ok'] 	= number_format($commission_ok, 2);
 	$setapplycycle				= $set['setapplycycle'] *3600;
 	$time 						= time();
 	$last_apply					= pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_apply') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND (apply_time+{$setapplycycle}>{$time}) ORDER BY id DESC");
 	if ($_W['ispost']) {
+		//提现需要出货，推荐，自提运费的订单更改状态。明日在做
 		$time = time();
 		$channel_goods = pdo_fetchall("SELECT og.id FROM " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) WHERE og.uniacid={$_W['uniacid']} AND og.channel_id={$member['id']} AND o.status=3 AND og.channel_apply_status=0");
 		$applyno = m('common')->createNO('commission_apply', 'applyno', 'CA');
@@ -49,6 +50,6 @@ if ($_W['isajax']) {
 	}
 	$returnurl 	= urlencode($this->createPluginMobileUrl('commission/applyg'));
 	$infourl 	= $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
-	show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'last_apply' => $last_apply, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
+	show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'last_apply' => $last_apply, 'set' => $this->set, 'channel_info' => $channelinfo, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
 }
 include $this->template('apply');
