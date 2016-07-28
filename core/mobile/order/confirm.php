@@ -374,6 +374,50 @@ if ($_W['isajax']) {
             $g["ggprice"] = $price;
             $order_all[$g['supplier_uid']]['realprice'] += $price;
             $order_all[$g['supplier_uid']]['goodsprice'] += $gprice;
+            //商品为酒店时候的价格
+            if(p('hotel') && $data['type']=='99'){
+            $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
+            $params2 = array(':goodsid' => $id);
+            $room = pdo_fetch($sql2, $params2);
+            $pricefield ='oprice';
+            $r_sql = 'SELECT `roomdate`, `num`, `oprice`, `status`, ' . $pricefield . ' AS `m_price` FROM ' . tablename('sz_yi_hotel_room_price') .
+            ' WHERE `roomid` = :roomid AND `roomdate` >= :btime AND ' .
+            ' `roomdate` < :etime';
+            $params = array(':roomid' => $room['id'],':btime' => $btime, ':etime' => $etime);
+            $price_list = pdo_fetchall($r_sql, $params);  
+            $this_price = $old_price =  $pricefield == 'cprice' ?  $room['oprice']*$member_p[$_W['member']['groupid']] : $room['roomprice'];
+            if ($this_price == 0) {
+                $this_price = $old_price = $room['oprice'] ;
+            } 
+            $totalprice =  $old_price * $days;
+            if ($price_list) {//价格表中存在   
+                $check_date = array();
+                foreach($price_list as $k => $v) {
+                    $price_list[$k]['time']=date('Y-m-d',$v['roomdate']);
+                    $new_price = $pricefield == 'mprice' ? $this_price : $v['m_price'];
+                    $roomdate = $v['roomdate'];
+                    if ($v['status'] == 0 || $v['num'] == 0 ) {
+                        $has = 0;                   
+                    } else {
+                        if ($new_price && $roomdate) {
+                            if (!in_array($roomdate, $check_date)) {
+                                $check_date[] = $roomdate;
+                                if ($old_price != $new_price) {
+                                    $totalprice = $totalprice - $old_price + $new_price;
+                                }
+                            }
+                        }
+                    }
+                } 
+                $goodsprice = round($totalprice);
+            }else{ 
+                $goodsprice = round($goods[0]['marketprice']) * $days;
+            }          
+            $order_all[$g['supplier_uid']]['realprice'] = $goodsprice;
+            $order_all[$g['supplier_uid']]['goodsprice'] = $goodsprice;
+            $price = $goodsprice;
+          
+        }
             $order_all[$g['supplier_uid']]['total'] += $g["total"];
             if ($g["manydeduct"]) {
                 $order_all[$g['supplier_uid']]['deductprice'] += $g["deduct"] * $g["total"];
@@ -559,7 +603,9 @@ if ($_W['isajax']) {
                         }
                     }
                 }
-
+                if(p('hotel') &&  $data['type']=='99'){
+                    $order_all[$val['supplier_uid']]['dispatch_price']  = 0;
+                }
                 $order_all[$val['supplier_uid']]['saleset'] = $saleset;
                 foreach ($saleset["enoughs"] as $e) {
                     if ($order_all[$val['supplier_uid']]['realprice'] >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
@@ -574,13 +620,13 @@ if ($_W['isajax']) {
                     $order_all[$val['supplier_uid']]['deductprice2'] += $order_all[$val['supplier_uid']]['dispatch_price'];
                 }
             }
-
             $order_all[$val['supplier_uid']]['hascoupon'] = false;
             if ($hascouponplugin) {
                 $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
                 $order_all[$val['supplier_uid']]['hascoupon']   = $order_all[$val['supplier_uid']]['couponcount'] > 0;
             }
             $order_all[$val['supplier_uid']]['realprice'] += $order_all[$val['supplier_uid']]['dispatch_price'];
+
             $realprice_total += $order_all[$val['supplier_uid']]['realprice'];
             $order_all[$val['supplier_uid']]['deductcredit']  = 0;
             $order_all[$val['supplier_uid']]['deductmoney']   = 0;
@@ -597,8 +643,8 @@ if ($_W['isajax']) {
                             $order_all[$val['supplier_uid']]['deductmoney'] = round((intval($credit / $pcredit) + 1) * $pmoney, 2);
                         }
                     }
-                    if ($order_all[$val['supplier_uid']]['deductmoney'] > $deductprice) {
-                        $order_all[$val['supplier_uid']]['deductmoney'] = $deductprice;
+                    if ($order_all[$val['supplier_uid']]['deductmoney'] >$order_all[$g['supplier_uid']]['deductprice']) {
+                        $order_all[$val['supplier_uid']]['deductmoney'] = $order_all[$g['supplier_uid']]['deductprice'];
                     }
                     if ($order_all[$val['supplier_uid']]['deductmoney'] > $order_all[$val['supplier_uid']]['realprice']) {
                         $order_all[$val['supplier_uid']]['deductmoney'] = $order_all[$val['supplier_uid']]['realprice'];
@@ -611,7 +657,7 @@ if ($_W['isajax']) {
                         $order_all[$val['supplier_uid']]['deductcredit2'] = $order_all[$val['supplier_uid']]['realprice'];
                     }
                     if ($order_all[$val['supplier_uid']]['deductcredit2'] > $order_all[$val['supplier_uid']]['deductprice2']) {
-                        $order_all[$val['supplier_uid']]['deductcredit2'] = $order_all[$val['supplier_uid']]['deductprice2'];
+                            $order_all[$val['supplier_uid']]['deductcredit2'] = $order_all[$val['supplier_uid']]['deductprice2'];
                     }
                 }
             }
@@ -620,6 +666,7 @@ if ($_W['isajax']) {
             $order_all[$val['supplier_uid']]['discountprice'] = number_format($order_all[$val['supplier_uid']]['discountprice'], 2);
             $order_all[$val['supplier_uid']]['realprice'] = number_format($order_all[$val['supplier_uid']]['realprice'], 2);
             $order_all[$val['supplier_uid']]['dispatch_price'] = number_format($order_all[$val['supplier_uid']]['dispatch_price'], 2);
+
         }
         $supplierids = implode(',', array_keys($suppliers));
         if(p('hotel')){
@@ -663,9 +710,10 @@ if ($_W['isajax']) {
             }
             $realprice  = $goodsprice+$goods[0]['deposit'];
             $deposit = $goods[0]['deposit'];
-            
+            $order_all[$g['supplier_uid']]['realprice'] = $goodsprice;
+            $order_all[$g['supplier_uid']]['goodsprice'] = $goodsprice;
+          
         }}
-       
         show_json(1, array(
             'member' => $member,
             //'deductcredit' => $deductcredit,
@@ -1278,6 +1326,10 @@ if ($_W['isajax']) {
                     }
                 }
                 $ggprice = 0;
+                if(p('hotel') && $_GPC['type']=='99'){
+                     $gprice =$_GPC['goodsprice'];
+                     $ggpric = $_GPC['goodsprice'];
+                 }
                 if (empty($data['isnodiscount']) && $level['discount'] > 0 && $level['discount'] < 10) {
                     $dprice = round($gprice * $level['discount'] / 10, 2);
                     $discountprice += $gprice - $dprice;
@@ -1549,7 +1601,9 @@ if ($_W['isajax']) {
                     $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
                     $params2 = array(':goodsid' =>$_GPC['id']);
                     $room = pdo_fetch($sql2, $params2);
-                    $totalprice =$_GPC['totalprice'];
+                    if( $discountprice!='0'){
+                        $totalprice =$_GPC['totalprice'] -$discountprice;
+                    }
                     $goodsprice =$_GPC['goodsprice'];
                 }
             }
@@ -1605,7 +1659,13 @@ if ($_W['isajax']) {
                      $order['depositprice']=$_GPC['depositprice'];
                      $order['depositpricetype']=$_GPC['depositpricetype'];
                      $order['roomid']=$room['id'];
-                     $order['days']=$days;                  
+                     $order['days']=$days;        
+                     $order['dispatchprice']=0;              
+                     $order['olddispatchprice']=0;    
+                     $order['deductcredit2']=$_GPC['deductcredit2']; 
+                     $order['deductcredit']=$_GPC['deductcredit'];
+                     $order['deductprice']=$_GPC['deductcredit'];  
+                     
                 }
             }
             if ($diyform_plugin) {
@@ -1737,6 +1797,8 @@ if ($_W['isajax']) {
                 //修改全返插件中房价
                 if(p('hotel') && $_GPC['type']=='99'){
                      $order_goods['price'] = $goodsprice ;
+                     $order_goods['realprice'] = $goodsprice;
+                     $order_goods['oldprice'] = $goodsprice;
                 }
                 if ($diyform_plugin) {
                     $order_goods["diyformid"]     = $goods["diyformid"];
@@ -1781,7 +1843,6 @@ if ($_W['isajax']) {
             'orderid' => $orderid
         ));
     }else if ($operation == 'date') {
-        echo 111;exit;
         global $_GPC, $_W;
         $id = $_GPC['id'];
         if ($search_array && !empty($search_array['bdate']) && !empty($search_array['day'])) {

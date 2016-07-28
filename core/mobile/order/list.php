@@ -28,20 +28,18 @@ if ($_W['isajax']) {
 				$condition .= ' and refundstate>0';
 			}
 		} else {
+
 			$condition .= ' and status<>-1';
 		}
-	    if (p('hotel')) {
-	        if($type=='hotel'){
-	           $condition.= " AND order_type=3";
+	    if (p('hotel') && $type=='hotel') {	        
+	             $condition.= " AND order_type=3";
 	        }else{
 	            $condition.= " AND order_type<>3";
 	        }
-	    }else{          
-	           $condition.= " AND order_type<>3";
-	    }
+	    
 	    //Author:ym Date:2016-07-20 Content:订单分组查询
 		$list = pdo_fetchall('select * from ' . tablename('sz_yi_order') . " where 1 {$condition} group by ordersn_general order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
-		
+		//print_r($list);exit;
 		$total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where 1 {$condition}", $params);
 		$tradeset = m('common')->getSysset('trade');
 		$refunddays = intval($tradeset['refunddays']);
