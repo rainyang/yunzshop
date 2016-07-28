@@ -56,12 +56,18 @@ class orderDetail extends \api\YZ
         $order_info['createtime'] = date("Y-m-d H:i:s", $order_info['createtime']);
         $order_info['paytime'] = ($order_info['paytime'] > 0) ? date("Y-m-d H:i:s", $order_info['paytime']) : '';
 
-        $res_order_info = array_part('price,goods', $order_info);
-        $res_order_info['base'] = array_part('ordersn,status,status_name,order_id,createtime', $order_info);
-        $res_order_info['pay'] = array(
+        $price = $order_info['price'];
+        $goods = $order_info['goods'];
+        $base = array_part('ordersn,order_id,createtime', $order_info);
+        $status = array(
+            'name' => $order_info['status_name'],
+            'value' => $order_info['status'],
+        );
+        $pay = array(
             'name' => $order_info['pay_type_name'],
             'value' => $order_info['paytype'],
         );
+        $res_order_info = compact('price', 'goods', 'base', 'status', 'pay');
         return $res_order_info;
     }
 
@@ -76,12 +82,23 @@ class orderDetail extends \api\YZ
         return $member;
     }
 
-    private function getDispatch($dispatchid, $uniacid)
+    private function getDispatch($order_info)
     {
-        $dispatch = pdo_fetch("SELECT * FROM " . tablename("sz_yi_dispatch") . " WHERE id = :id and uniacid=:uniacid", array(
-            ":id" => $dispatchid,
-            ":uniacid" => $uniacid
-        ));
+        if (empty($order_info['addressid'])) {
+            if ($order_info['isverify'] == 1) {
+                $dispatch = '线下核销';
+            } elseif ($order_info['isvirtual'] == 1) {
+                $dispatch = '虚拟物品';
+            } elseif ($order_info['virtual'] == 1) {
+                $dispatch = '虚拟物品(卡密)自动发货';
+            } elseif ($order_info['dispatchtype'] == 1) {
+                $dispatch = '自提';
+            }
+        } else {
+            if (empty($dispatchtype)) {
+                $dispatch = '自提';
+            }
+        }
         return $dispatch;
     }
 
@@ -97,8 +114,10 @@ class orderDetail extends \api\YZ
                     ":uniacid" => $uniacid
                 ));
             }
-            $address_info = $user["address"];
-            $user["address"] = $user["province"] . " " . $user["city"] . " " . $user["area"] . " " . $user["address"];
+            //dump($user);
+            //$address_info = $user["address"];
+            $user["address"] = array_part('province,city,area,address', $user);
+            //dump($user["address"]);
             $order_info["addressdata"] = array(
                 "addressid" => $order_info["addressid"],
                 "realname" => $user["realname"],
