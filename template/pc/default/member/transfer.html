@@ -41,6 +41,7 @@ input {-webkit-appearance:none; outline:none;}
 
 <script language="javascript">
     require(['tpl', 'core'], function (tpl, core) {
+        var isuser = true;
         $('#assigns').blur(function (){
             if($(this).val())
             {
@@ -57,6 +58,7 @@ input {-webkit-appearance:none; outline:none;}
                     {
                         $('#assigns_name').text('');
                         core.tip.show('受让人ID错误，未查到此人!');
+                        isuser = false;
                         return;
                     }
                 }, true, true);
@@ -79,6 +81,15 @@ input {-webkit-appearance:none; outline:none;}
                
                 core.tip.show('请输入转让金额!');
                 return;
+            }
+            if (money<=0) {
+                core.tip.show('请输入正确的金额!');
+                return; 
+            }
+
+            if (!isuser) {
+                core.tip.show('请输入正确的会员ID!');
+                return; 
             }
             var withdrawmoney = "{$member['credit2']}";
             if( parseFloat(money) > withdrawmoney){

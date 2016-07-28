@@ -10,6 +10,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+@session_start();
 
 $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where  openid=:openid and uniacid=:uniacid limit 1', array(
     ':uniacid' => $_W['uniacid'],
@@ -24,9 +25,9 @@ if($info) {
     }
 
     session_set_cookie_params($lifeTime);
-    @session_start();
+
     $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
-    setcookie($cookieid, base64_encode($info['openid']), '7*24*60*60');
+    setcookie($cookieid, base64_encode($info['openid']), time()+3600*24*7);
 
     echo json_encode(array('status'=>1));
 } else {
