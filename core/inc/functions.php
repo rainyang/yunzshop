@@ -2,8 +2,10 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-load()->func('tpl');
-
+//新版微擎里有方法冲突,tpl_form_field_image在compat.biz里也有...
+if (!defined('IS_API')) {
+    load()->func('tpl');
+}
 function sz_tpl_form_field_date($name, $value = '', $withtime = false)
 {
     $s = '';
