@@ -74,7 +74,7 @@ if ($operation == 'query') {
 			}
 		}
 	} else {
-		$sql = 'select d.id,d.couponid,d.gettime,c.timelimit,c.timedays,c.timestart,c.timeend,c.thumb,c.couponname,c.enough,c.backtype,c.deduct,c.discount,c.backmoney,c.backcredit,c.backredpack,c.bgcolor,c.thumb,c.supplier_uid,c.usetype,c.goodsids,c.categoryids from ' . tablename('sz_yi_coupon_data') . ' d';
+		$sql = 'select d.id,d.couponid,d.gettime,c.timelimit,c.timedays,c.timestart,c.timeend,c.thumb,c.couponname,c.enough,c.backtype,c.deduct,c.discount,c.backmoney,c.backcredit,c.backredpack,c.bgcolor,c.thumb,c.supplier_uid,c.usetype,c.goodsids,c.categoryids,c.storeids,c.getstore from ' . tablename('sz_yi_coupon_data') . ' d';
 		$sql .= ' left join ' . tablename('sz_yi_coupon') . ' c on d.couponid = c.id';
 		$sql .= " where c.supplier_uid=0 and d.openid=:openid and d.uniacid=:uniacid and c.getcashier=0 and c.coupontype={$type} and {$money}>=c.enough and d.used=0 ";
 		$sql .= " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$time} && c.timeend>={$time})) order by d.gettime desc";
@@ -85,32 +85,85 @@ if ($operation == 'query') {
 		if (!empty($_GPC['goodsid'])) {
 			$goodsid = intval($_GPC['goodsid']);
 		}
+		
+		$carrierid = $_GPC['carrierid'] ? intval($_GPC['carrierid']) : 0;
+		
 		foreach ($list as $key => &$row) {
+			$storeids = unserialize($row['storeids']);
 			if ($goodsid) {
-				if ($row['usetype'] == 2) {
+				if ($row['usetype'] == 0) {
+					if ($row['getstore'] == 1) {
+						if ($carrierid != 0) {
+							foreach ($storeids as $vs) {
+								if ($vs == $carrierid) {
+									$b += 1;
+								}
+							}
+							if ($b == 0) {
+								unset($list[$key]);
+							}
+						} else {
+							unset($list[$key]);
+						}
+						
+					}
+				} elseif ($row['usetype'] == 2) {
 					$goodsids = unserialize($row['goodsids']);
 					$a = 0;
+					$b = 0;
 					foreach ($goodsids as $value) {
 						if ($value == $goodsid) {
 							$a += 1;
 						}
 					}
-					if ($a == 0) {
-						unset($list[$key]);
+					if ($row['getstore'] == 1) {
+						if ($carrierid != 0) {
+							foreach ($storeids as $vs) {
+								if ($vs == $carrierid) {
+									$b += 1;
+								}
+							}
+							if ($a == 0 || $b == 0) {
+								unset($list[$key]);
+							}
+						} else {
+							unset($list[$key]);
+						}
+					} else {
+						if ($a == 0) {
+							unset($list[$key]);
+						}
 					}
+					
 				} elseif ($row['usetype'] == 1){
 					$categoryids = unserialize($row['categoryids']);
 					$goods = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_goods')." WHERE id = :id",array(':id' => $goodsid));
+					$a = 0;
 					$b = 0;
 					foreach ($categoryids as $v) {
 						if ($v == $goods['ccate'] || $v == $goods['tcate'] ) {
 							$b += 1;
 						}
 					}
-					if ($b == 0) {
-						unset($list[$key]);
+					if ($row['getstore'] == 1) {
+						if ($carrierid != 0) {
+							foreach ($storeids as $vs) {
+								if ($vs == $carrierid) {
+									$b += 1;
+								}
+							}
+							if ($a == 0 || $b == 0) {
+								unset($list[$key]);
+							}
+						} else {
+							unset($list[$key]);
+						}
+					} else {
+						if ($a == 0) {
+							unset($list[$key]);
+						}
 					}
-
+					
 				}
 			} elseif ($cartids) {
 				if($row['usetype'] == 2){

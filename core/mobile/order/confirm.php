@@ -24,8 +24,8 @@ $plugc           = p("coupon");
 if ($plugc) {
     $hascouponplugin = true;
 }
-$goodid = $_GPC['id'];
-$cartid = $_GPC['cartids'];
+$goodid = $_GPC['id'] ? intval($_GPC['id']) : 0;
+$cartid = $_GPC['cartids'] ? $_GPC['cartids'] : 0;
 $diyform_plugin = p("diyform");
 $order_formInfo = false;
 if ($diyform_plugin) {
@@ -718,11 +718,14 @@ if ($_W['isajax']) {
         $hascoupon      = false;
         $couponcount    = 0;
         $pc             = p("coupon");
-        $supplier_uid   = $_GPC("supplier_uid");
+        $supplier_uid   = $_GPC["supplier_uid"];
+        $coupon_carrierid = intval($_GPC['carrierid']);
+        $goodsid = $_GPC['id'] ? intval($_GPC['id']) : 0;
+        $cartids = $_GPC['cartids'] ? $_GPC['cartids'] : 0;
         if ($pc) {
             $pset = $pc->getSet();
             if (empty($pset["closemember"])) {
-                $couponcount = $pc->consumeCouponCount($openid, $totalprice, $supplier_uid, 0, 0, $goodid, $cartid);
+                $couponcount = $pc->consumeCouponCount($openid, $totalprice, $supplier_uid, 0, 0, $goodsid, $cartids,$coupon_carrierid);
                 $hascoupon   = $couponcount > 0;
             }
         }
@@ -732,6 +735,13 @@ if ($_W['isajax']) {
             ':openid' => $openid,
             ':id' => $addressid
         ));
+        if (!empty($coupon_carrierid)) {
+            show_json(1,array(
+                             "hascoupon" => $hascoupon,
+                            "couponcount" => $couponcount,
+                            )
+            );
+        }
         $member              = m("member")->getMember($openid);
         $level               = m("member")->getLevel($openid);
         $weight              = $_GPC["weight"];
