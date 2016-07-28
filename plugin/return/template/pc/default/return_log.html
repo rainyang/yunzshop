@@ -96,7 +96,7 @@
                 </div>
 
                 <div class="num">
-                    <span>队列编号:<%log.id%> </span><br/>
+                    <span>队列编号:<%log.queue%> </span><br/>
                     <span>队列状态:<%if log.status == 0%>等待返现<%else%>已返现<%/if%> </span><br/>
  
                 </div>
@@ -175,18 +175,17 @@ function bindScroller(){
         function getLog(type) {
 
             core.pjson('return/return_log', {type:type,goodsid:goodsid,page: page}, function (json) {
-                 $("#container").html(tpl('tpl_list'));
+                $("#container").html(tpl('tpl_list'));
+                type = type=='2'?1:type;
+                $('.credit_nav').removeClass('credit_navon');
+                $('.credit_nav[data-type=' + type + ']').addClass('credit_navon'); 
                 if (json.result.list.length <= 0) {
                     $('#tpl_container').html(tpl('tpl_empty'));
                     return;
                 }
                 $('#tpl_container').html(tpl('tpl_log', json.result));
                 bindScroller();
-                            if(goodsid==0)
-            {
-                $('.credit_nav').removeClass('credit_navon');
-                $('.credit_nav[data-type=' + type + ']').addClass('credit_navon'); 
-            }
+              
             }, true);
         }
 

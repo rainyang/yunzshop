@@ -453,9 +453,13 @@
 <script language='javascript'>
     function show_type(flag){
         if (flag == 1) {
+            $('.weight').css("display", "none");
+            $('.fnum').css("display", "");
             $('.show_h').hide();
             $('.show_n').show();
         } else {
+            $('.weight').css("display", "");
+            $('.fnum').css("display", "none");
             $('.show_h').show();
             $('.show_n').hide();
         }
@@ -595,7 +599,6 @@
         current = $(btn).attr('random');
         clearSelects();
         var old_citys = $(btn).prev().val().split(';');
-      
                 
         $('.city').each(function(){
             var parentcheck = false;

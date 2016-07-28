@@ -19,7 +19,19 @@ if ($operation == 'display') {
 		if (empty($_GPC['levelname'])) {
 			message('抱歉，请输入分类名称！');
 		}
-		$data = array('uniacid' => $_W['uniacid'], 'levelname' => $_GPC['levelname'], 'commission1' => $_GPC['commission1'], 'commission2' => $_GPC['commission2'], 'commission3' => $_GPC['commission3'], 'commissionmoney' => $_GPC['commissionmoney'], 'ordermoney' => $_GPC['ordermoney'], 'ordercount' => intval($_GPC['ordercount']), 'downcount' => intval($_GPC['downcount']),);
+		$data = array(
+			'uniacid' => $_W['uniacid'], 
+			'level' => $_GPC['level'],
+			'levelname' => $_GPC['levelname'], 
+			'commission1' => $_GPC['commission1'], 
+			'commission2' => $_GPC['commission2'], 
+			'commission3' => $_GPC['commission3'], 
+			'commissionmoney' => $_GPC['commissionmoney'], 
+			'ordermoney' => $_GPC['ordermoney'], 
+			'ordercount' => intval($_GPC['ordercount']), 
+			'downcount' => intval($_GPC['downcount']), 
+			'withdraw_proportion' => $_GPC['withdraw_proportion']
+			);
 		if (!empty($id)) {
 			pdo_update('sz_yi_commission_level', $data, array('id' => $id, 'uniacid' => $_W['uniacid']));
 			plog('commission.level.edit', "修改分销商等级 ID: {$id}");

@@ -27,6 +27,44 @@ if($goods['tcate']){
     $tcate = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$goods['tcate']." and uniacid=".$uniacid);
 }
 
+if(p('hotel')){//开启酒店插件后 判断当前时间是否有剩余房间可预约
+$sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
+$params2 = array(':goodsid' => $goods['id']);
+$room = pdo_fetch($sql2, $params2);
+//入店
+$btime =  $_SESSION['data']['btime'];
+$bdate =  $_SESSION['data']['bdate'];
+// 住几天
+$days =intval( $_SESSION['data']['day']);
+// 离店
+$etime =  $_SESSION['data']['etime'];
+$edate =  $_SESSION['data']['edate'] ;
+ 
+$r_sql = 'SELECT * FROM ' . tablename('sz_yi_hotel_room_price') .
+' WHERE `roomid` = :roomid AND `roomdate` >= :btime AND ' .
+' `roomdate` < :etime';
+$params = array(':roomid' => $room['id'],':btime' => $btime, ':etime' => $etime);
+$price_list = pdo_fetch($r_sql, $params);
+$goods['has']=0; 
+if ($price_list) {
+    if(is_array($price_list[0])){
+        foreach($price_list as $k => $v) {  
+            if ($v['status'] == 0 || $v['num'] == 0 ) {
+                    $goods['has'] +=1 ;   //不可预约              
+            }
+        } 
+    }else{
+        if ($price_list['status'] == 0 || $price_list['num'] == 0 ) {
+            $goods['has'] +=1 ;   //不可预约        
+        }  
+        if($price_list['cprice']!= '0.00'){
+            $goods['marketprice']= $price_list['oprice'];
+        }
+    }
+}
+
+
+}
 $shop           = set_medias(m('common')->getSysset('shop'), 'logo');
 $shop['url']    = $this->createMobileUrl('shop');
 $mid            = intval($_GPC['mid']);
@@ -448,5 +486,17 @@ if ($com) {
     }
 }
 $this->setHeader();
-include $this->template('shop/detail');
+if(p('hotel')){ //判断是否开启酒店插件
+   if($goods['type']=='99'){//判断是否为房间
+        include $this->template('shop/detail_hotel');
+   }else if($goods['type']=='98'){
+       include $this->template('shop/detail_appointment');
+   }else if($goods['type']=='97'){
+       include $this->template('shop/detail_appointment');
+   }else{
+        include $this->template('shop/detail');
+   }
+}else{
+  include $this->template('shop/detail');
+}
 

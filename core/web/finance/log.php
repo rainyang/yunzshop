@@ -18,7 +18,36 @@ $op      = $operation = $_GPC['op'] ? $_GPC['op'] : 'display';
 $groups  = m('member')->getGroups();
 $levels  = m('member')->getLevels();
 $uniacid = $_W['uniacid'];
+$template_flag = 0;
 if ($op == 'display') {
+    $diyform_plugin = p('diyform');
+    if ($diyform_plugin) {
+        $set_config        = $diyform_plugin->getSet();
+        $user_diyform_open = $set_config['user_diyform_open'];
+        if ($user_diyform_open == 1) {
+            $template_flag = 1;
+            $diyform_id    = $set_config['user_diyform'];
+            if (!empty($diyform_id)) {
+                $formInfo     = $diyform_plugin->getDiyformInfo($diyform_id);
+                $fields       = $formInfo['fields'];
+                $diyform_data = iunserializer($member['diymemberdata']);
+                $f_data       = $diyform_plugin->getDiyformData($diyform_data, $fields, $member);
+            }
+        }
+    }
+
+    if($fields){
+
+        foreach ($fields as $k => $key) {
+            if ( explode($key['tp_name'], '身份证号') > 1  || explode($key['tp_name'], '城市') > 1 || explode($key['tp_name'], '地址') > 1  || explode($key['tp_name'], '区域') > 1  || explode($key['tp_name'], '位置') > 1 ) {
+                $field[] = array('title' => $key['tp_name'] , 'field' => $k , 'width' => 24);
+            } else {
+                $field[] = array('title' => $key['tp_name'] , 'field' => $k , 'width' => 12);
+            }
+
+            
+        }
+    }
     $pindex = max(1, intval($_GPC['page']));
     $psize  = 20;
     $type   = intval($_GPC['type']);
@@ -63,20 +92,22 @@ if ($op == 'display') {
     }
     if (!empty($_GPC['rechargetype'])) {
         $_GPC['rechargetype'] = trim($_GPC['rechargetype']);
-        $condition            = " AND log.rechargetype=:rechargetype";
+        $condition .= " AND log.rechargetype=:rechargetype";
         if ($_GPC['rechargetype'] == 'system1') {
-            $condition = " AND log.rechargetype='system' and log.money<0";
+            $_GPC['rechargetype'] = 'system';
+            $condition .= " and log.money<0";
         }
         $params[':rechargetype'] = trim($_GPC['rechargetype']);
     }
     if ($_GPC['status'] != '') {
         $condition .= ' and log.status=' . intval($_GPC['status']);
     }
-    $sql = "select log.id,m.id as mid, m.realname,m.avatar,m.weixin,log.logno,log.type,log.status,log.rechargetype,m.nickname,m.mobile,g.groupname,log.money,log.createtime,l.levelname from " . tablename('sz_yi_member_log') . " log " . " left join " . tablename('sz_yi_member') . " m on m.openid=log.openid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where 1 {$condition} ORDER BY log.createtime DESC ";
+    $sql = "select log.id,m.id as mid, m.realname,m.diymemberdata,m.avatar,m.weixin,log.logno,log.type,log.status,log.rechargetype,m.nickname,m.mobile,g.groupname,log.money,log.createtime,l.levelname from " . tablename('sz_yi_member_log') . " log " . " left join " . tablename('sz_yi_member') . " m on m.openid=log.openid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where 1 {$condition} ORDER BY log.createtime DESC ";
     if (empty($_GPC['export'])) {
         $sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
     }
     $list = pdo_fetchall($sql, $params);
+
     if ($_GPC['export'] == 1) {
         if ($_GPC['type'] == 1) {
             ca('finance.withdraw.export');
@@ -106,6 +137,25 @@ if ($op == 'display') {
                     $row['status'] = "";
                 } else {
                     $row['status'] = "失败";
+                }
+            }
+            //自定义表单信息
+            if($row['diymemberdata']){
+
+                $row['diymemberdata'] = iunserializer($row['diymemberdata']);
+                foreach ($row['diymemberdata'] as $key => $value) {
+                    
+                    if($key == 'diyshenfenzheng'){
+                        $row[$key] = "'".$value."'";
+                    }else if(is_array($value)){
+                        $row[$key] = "'";
+
+                        foreach ($value as $k => $v) {
+                            $row[$key] .= $v;
+                        }
+                    }else{
+                        $row[$key] = $value;
+                    }
                 }
             }
             if ($row['rechargetype'] == 'system') {
@@ -154,17 +204,21 @@ if ($op == 'display') {
                 'width' => 12
             )
         );
+        if ($field) {
+            $columns = array_merge($columns,$field);
+        }
         if (empty($_GPC['type'])) {
             $columns[] = array(
                 'title' => "充值方式",
                 'field' => 'rechargetype',
                 'width' => 12
             );
-        }
+        }//echo "<pre>"; print_r($list);exit;
         m('excel')->export($list, array(
             "title" => (empty($type) ? "会员充值数据-" : "会员提现记录") . date('Y-m-d-H-i', time()),
             "columns" => $columns
         ));
+
     }
     $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_member_log') . " log " . " left join " . tablename('sz_yi_member') . " m on m.openid=log.openid and m.uniacid= log.uniacid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where 1 {$condition} ", $params);
     $pager = pagination($total, $pindex, $psize);

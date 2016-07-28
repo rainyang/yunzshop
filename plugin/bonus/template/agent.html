@@ -115,9 +115,12 @@
                 <th style='width:12%;'>姓名<br/>手机号码</th>
                 <th style='width:10%;'>代理商等级</th>
                 <th style='width:10%;text-align: center;'>区域代理</th>
-                <th style='width:12%;'>累计分红佣金<br/>发放分红佣金</th>
-                <th style='width:12%;;'>下级总数</th>
-                <th style='width:8%;'>关注</th>
+                <th style='width:12%;'>代理累计分红<br/>全部已发放分红</th>
+                <th style='width:7%;;'>下级总数</th>
+                <th style='width:7%;'>关注</th>
+                {if p('love')}
+                <th style='width:7%;'>审核</th>
+                {/if}
                 <th style='width:10%;'>操作</th>
             </tr>
             </thead>
@@ -165,6 +168,19 @@
                     {else}
                     <label class='label label-success'>已关注</label>
                     {/if}</td>
+                {if p('love')}
+                <td>  
+                    {if $row['bonus_status']==9}
+                        {if $row['agentblack']==1}
+                        <span class="label label-default" style='color:#fff;background:black'>黑名单</span>
+                        {else}
+                            <span class="label label-success">已申请</span>
+                        {/if}
+                    {else}
+                        <span class="label label-default">未申请</span>
+                    {/if}
+                </td>
+                {/if}
                 <td  style="overflow:visible;">
 
                     <div class="btn-group btn-group-sm">
@@ -278,6 +294,18 @@
                 {/if}
             </div>
         </div>
+        {if p('love') && !empty($check_imgs)}
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">申请信息</label>
+            <div class="col-sm-9 col-xs-12">
+                {loop $check_imgs $img}
+                {if !empty($img)}
+                <a href="{$img}" target="_blank"><img src="{$img}" style="height:100px;width:100px;"></a>
+                {/if}
+                {/loop}
+            </div>
+        </div>
+        {/if}
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">代理商等级</label>
             <div class="col-sm-9 col-xs-12">
@@ -387,7 +415,7 @@
                 }
             }
             changearea();
-            cascdeInit("{$member['bonus_province']}", "{$member['bonus_city']}", "{$member['bonus_area']}");
+            cascdeInit("{$member['bonus_province']}", "{$member['bonus_city']}", "{$member['bonus_district']}");
         </script>
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">累计分红佣金</label>

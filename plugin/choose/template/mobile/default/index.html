@@ -19,6 +19,7 @@
 <link href="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.android-ics-2.5.2.css" rel="stylesheet" type="text/css" />
 <link href="../addons/sz_yi/template/mobile/default/static/js/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
 <style type="text/css">
+
   .num{width: 30px;
 border-bottom: 1px #ff0000 solid;
 border-right: 0;
@@ -168,7 +169,11 @@ line-height: 20px;font-weight: bold;}
                   <div class='label'>购买数量</div>
                   <div class='num'>
                             <button id='btn_minus' ><i class='fa fa-minus'></i></button>
+<<<<<<< HEAD
                             <input type='text' id='total' value='1' />
+=======
+                            <input type='text' id='total' value='0' />
+>>>>>>> a2c3b3f8d0ff390490c88462dfb95676f6f62d8a
                             <button id='btn_plus' ><i class='fa fa-plus'></i></button>
                   </div>
                </div>
@@ -236,8 +241,13 @@ ul, li { list-style:none; margin:0; padding:0 }
 </style>
 <div class="foot-nav">
   <span id="alltotal">0</span>
+<<<<<<< HEAD
   {if empty($_GPC['ischannelpick'])}<p id="totalprice">总价：￥0.00</p>{/if}
   <a class='channel' href="{php echo $this->createMobileUrl('shop/cart', array('ischannelpick' => $_GPC['ischannelpick']))}">选好了</a>
+=======
+  <p id="totalprice">总价：￥0.00</p>
+  <a class='channel' href="{php echo $this->createMobileUrl('shop/cart')}">选好了</a>
+>>>>>>> a2c3b3f8d0ff390490c88462dfb95676f6f62d8a
 </div>
 {php $show_footer=true;$footer_current =''} 
 {template 'common/footer'}
@@ -247,6 +257,9 @@ ul, li { list-style:none; margin:0; padding:0 }
     var recommand = [];
     var pcate = 'rec';
     var pageid = "{$_GPC['pageid']}";
+
+
+        
     require(['tpl', 'core'], function (tpl, core) {
         function setCategory(){
             $("#navBar").find(".parent_item").find('span').removeClass('fffbg');
@@ -276,6 +289,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                                         h += '<span style="font-size:10px;">推荐</span></a>';
                                     }
 
+<<<<<<< HEAD
                                     h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'<i>/'+store[i].unit+'</i></em>';
 									if (store[i].hasoption == 1) {
                                         h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div></dd></dl>';
@@ -283,6 +297,15 @@ ul, li { list-style:none; margin:0; padding:0 }
                                         h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div></dd></dl>';
                                     }
 
+=======
+                                    h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元<i>/'+store[i].unit+'</i></em>';
+                                    if (store[i].hasoption == 1) {
+                                        h +=  '<div style="float:right;width:auto"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div></dd></dl>';
+                                    } else {
+                                        h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div></dd></dl>';
+                                    }
+                                    
+>>>>>>> a2c3b3f8d0ff390490c88462dfb95676f6f62d8a
                                 };
                                 $("#infoSection").css("height","auto"); 
                                 $("#navBar").css("height","auto"); 
@@ -299,7 +322,8 @@ ul, li { list-style:none; margin:0; padding:0 }
             }, true);        
         }
 
-        function setNum(){          
+        function setNum(){   
+            
             $.ajax({
                         url:"{php echo $this->createMobileUrl('shop/cart')}", 
                         type:'post',
@@ -360,9 +384,16 @@ ul, li { list-style:none; margin:0; padding:0 }
 
         function getTotalPrice(){
             require(['core'],function(core){
+<<<<<<< HEAD
                 core.json('shop/cart',{op:'display',ischannelpick:"{$_GPC['ischannelpick']}"},function(ret){
                      $('#alltotal').html(ret.result.total);
                      $('#totalprice').html('总价：￥' + ret.result.totalprice + ret.result.difference);
+=======
+                core.json('shop/cart',{op:'display'},function(ret){
+                    
+                     $('#alltotal').html(ret.result.total);
+                     $('#totalprice').html('总价：￥' + ret.result.totalprice);
+>>>>>>> a2c3b3f8d0ff390490c88462dfb95676f6f62d8a
                         if(ret.result.difference){
                           $(".channel").hide();                                                       
                         } else {
@@ -633,11 +664,19 @@ ul, li { list-style:none; margin:0; padding:0 }
                     require(['core'],function(core){
                       
                         core.json('shop/cart',{op:'add', id:id,total:1},function(ret){
+<<<<<<< HEAD
                             now.attr("data-num",ret.result.cartcount);
                               setNum();
                               getTotalPrice();
                             },true,true);
                         });
+=======
+                          now.attr("data-num",ret.result.cartcount);
+                          setNum();
+                          getTotalPrice();
+                        },true,true);
+                    });
+>>>>>>> a2c3b3f8d0ff390490c88462dfb95676f6f62d8a
                     
                 })
 
@@ -659,12 +698,21 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                     require(['core'],function(core){
                         core.json('shop/cart',{op:'add', id:id,total:-1},function(ret){
+<<<<<<< HEAD
                            now.attr("data-num",ret.result.cartcount);
                             setNum();
                             getTotalPrice();
                             },true,true);
                         });
 
+=======
+                          now.attr("data-num",ret.result.cartcount);
+                          setNum();
+                          getTotalPrice();
+                        },true,true);
+                    });
+                    
+>>>>>>> a2c3b3f8d0ff390490c88462dfb95676f6f62d8a
                 })         
                  
                  
@@ -708,7 +756,11 @@ ul, li { list-style:none; margin:0; padding:0 }
    
         $(document).on('click','.canoption',function(){
           var id = $(this).data('id');
+<<<<<<< HEAD
           core.json('shop/detail',{id:id,'ischannelpay':"{$_GPC['ischannelpay']}",'ischannelpick':"{$_GPC['ischannelpick']}"},function (json) { 
+=======
+          core.json('shop/detail',{id:id},function (json) { 
+>>>>>>> a2c3b3f8d0ff390490c88462dfb95676f6f62d8a
             $('#container_specs').html(tpl('tpl_goods_info',json.result));
             $('.good_choose_layer').fadeIn(200);
             $('.good_choose_layer').unbind('click').click(function(){
@@ -764,6 +816,10 @@ ul, li { list-style:none; margin:0; padding:0 }
                     if(specarr.join('_') ==idsarr.join('_') ){
                       
                         optionid = o.id;
+<<<<<<< HEAD
+=======
+                        
+>>>>>>> a2c3b3f8d0ff390490c88462dfb95676f6f62d8a
                         stock = o.stock;
                         marketprice = o.marketprice;
                         productprice = o.productprice;
@@ -780,6 +836,10 @@ ul, li { list-style:none; margin:0; padding:0 }
                         })               
                $("#optionid").val(optionid); 
               
+<<<<<<< HEAD
+=======
+              
+>>>>>>> a2c3b3f8d0ff390490c88462dfb95676f6f62d8a
 
                 var num = parseInt($("#total").val() );
 

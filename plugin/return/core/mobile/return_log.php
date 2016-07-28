@@ -19,8 +19,8 @@ if ($_W['isajax']) {
             $pindex    = max(1, intval($_GPC['page']));
             $psize     = 10;
 
-            $list      = pdo_fetchall("select * from " . tablename('sz_yi_return') . " where uniacid = '" .$_W['uniacid'] . "' and mid = '".$member['id']."' order by create_time desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
-            $total     = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_return') . " where  uniacid = '" .$_W['uniacid'] . "' and mid = '".$member['id']."'");
+            $list      = pdo_fetchall("select * from " . tablename('sz_yi_return') . " where uniacid = '" .$_W['uniacid'] . "' and mid = '".$member['id']."' and `delete` = '0' order by create_time desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+            $total     = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_return') . " where  uniacid = '" .$_W['uniacid'] . "' and mid = '".$member['id']."' and `delete` = '0'");
             foreach ($list as &$row) {
                 $row['createtime'] = date('Y-m-d H:i', $row['create_time']);
             }
@@ -75,9 +75,9 @@ if ($_W['isajax']) {
             $pindex    = max(1, intval($_GPC['page']));
             $psize     = 10;
 
-            $list = pdo_fetchall("select * from " . tablename('sz_yi_return_log') . "  where uniacid = '" .$_W['uniacid'] . "' and openid = '".$openid."'  LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+            $list = pdo_fetchall("select * from " . tablename('sz_yi_return_log') . "  where uniacid = '" .$_W['uniacid'] . "' and openid = '".$openid."' and returntype = 1   LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
 
-            $total     = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_return_log') . " where  uniacid = '" .$_W['uniacid'] . "' and openid = '".$openid."' ");
+            $total     = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_return_log') . " where  uniacid = '" .$_W['uniacid'] . "' and openid = '".$openid."' and returntype = 1 ");
             
             foreach ($list as &$row) {
                 $row['createtime'] = date('Y-m-d H:i', $row['create_time']);

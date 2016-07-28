@@ -38,10 +38,15 @@ if(!empty($pluginbonus)){
         $bonus_start = 1;
     }
 }
+$isreturn = false;
 $pluginreturn = p('return');
 if ($pluginreturn) {
     $return_set = $pluginreturn->getSet();
+    if($return_set['isqueue'] == 1 || $return_set['isreturn']== 1 || $return_set['islevelreturn']== 1 ){ 
+        $isreturn = true;
+    }
 }
+
 $shopset = m('common')->getSysset('shop');
 $sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
 $category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
@@ -76,6 +81,7 @@ if (p('commission')) {
         array(':uniacid' => $_W['uniacid'])
     );
 }
+
 $pv        = p('virtual');
 $diyform_plugin = p("diyform");
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
@@ -116,6 +122,9 @@ if ($operation == "change") {
         ca('shop.goods.add');
     }
     $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid']);
+    if(p('hotel')){
+        $print_list =  pdo_fetchall('SELECT * FROM ' . tablename('sz_yi_print_list') . ' WHERE uniacid = :uniacid ', array(':uniacid' => $_W['uniacid']));
+    }
     $id = intval($_GPC['id']);
     if (!empty($id)) {
         ca('shop.goods.edit|shop.goods.view');
@@ -134,8 +143,14 @@ if ($operation == "change") {
         $noticetype = explode(',', $item['noticetype']);
         if ($shopset['catlevel'] == 3) {
             $cates = explode(',', $item['tcates']);
+            if ($shopset['category2'] == 1) {
+                $cates2 = explode(',', $item['tcates2']);    
+            }
         } else {
             $cates = explode(',', $item['ccates']);
+            if ($shopset['category2'] == 1) {
+                $cates2 = explode(',', $item['ccates2']);    
+            }
         }
         $discounts = json_decode($item['discounts'], true);
         $returns = json_decode($item['returns'], true);
@@ -428,7 +443,8 @@ if ($operation == "change") {
             "ednum"=>intval($_GPC["ednum"]) ,
             "edareas"=>trim($_GPC["edareas"]) ,
             "edmoney"=>trim($_GPC["edmoney"]),
-            "redprice" => $_GPC["redprice"]//红包价格
+            "redprice" => $_GPC["redprice"],//红包价格
+           
         );
         if(!empty($_GPC['bonusmoney'])){
             $data['bonusmoney'] = $_GPC['bonusmoney'];
@@ -446,10 +462,17 @@ if ($operation == "change") {
         }else{
             $data['status'] = $_GPC['status'];
         }
-        
+        // if(!empty(p('love'))){
+        //     $data['love_money'] = $_GPC['love_money'];
+        // }
         if ($pluginreturn) {
             $data['isreturn'] = intval($_GPC['isreturn']);   //添加全返开关    1:开    0:关
             $data['isreturnqueue'] = intval($_GPC['isreturnqueue']);   //添加全返排列开关    1:开    0:关
+        }
+        
+        if(p('hotel')){
+             $data['deposit']=$_GPC["deposit"];//房间押金
+             $data['print_id']=$_GPC["print_id"];//房间押金
         }
         $cateset = m('common')->getSysset('shop');
         $pcates  = array();
@@ -480,6 +503,9 @@ if ($operation == "change") {
                 }
             }
         }
+        $pcates2  = array();
+        $ccates2  = array();
+        $tcates2  = array();
         if (is_array($_GPC['cates2'])) {
             $postcates2 = $_GPC['cates2'];
             foreach ($postcates2 as $pid) {
@@ -505,22 +531,15 @@ if ($operation == "change") {
                 }
             }
         }
-        if($shopset['category2']==1){
-            $pcates = array_merge($pcates,$pcates2);
-            $ccates = array_merge($ccates,$ccates2);  
-        }
-
-        if($cateset['catlevel'] == 3){
-             if($shopset['category2']==1){
-                 $tcates = array_merge($tcates,$tcates2);
-             }
-            
-        }
+        
        
 
         $data['pcates'] = implode(',', $pcates);
         $data['ccates'] = implode(',', $ccates);
         $data['tcates'] = implode(',', $tcates);
+        $data['pcates2'] = implode(',', $pcates2);
+        $data['ccates2'] = implode(',', $ccates2);
+        $data['tcates2'] = implode(',', $tcates2);
         $content        = htmlspecialchars_decode($_GPC['content']);
         preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg|\.png|\.jpeg]?))[\'|\"].*?[\/]?>/", $content, $imgs);
         $images = array();
@@ -577,12 +596,54 @@ if ($operation == "change") {
         if (empty($id)) {
             pdo_insert('sz_yi_goods', $data);
             $id = pdo_insertid();
+            //判断是否安装酒店插件
+            if(p('hotel')){
+                if($data['type']=='99'){ //当商品类型为房间时候
+                        $room= array(
+                            'title'=>  trim($_GPC['goodsname']),
+                            'uniacid'=> intval($_W['uniacid']),
+                            'thumb'=> trim($_GPC['thumb']),
+                            'oprice'=> trim($_GPC['marketprice']), //现价
+                            'cprice'=> trim($_GPC['productprice']),//原价
+                            'deposit'=> trim($_GPC['deposit']),     
+                            'goodsid'=>$id,                   
+                         );
+                      pdo_insert('sz_yi_hotel_room', $room);
+                }
+            }
             plog('shop.goods.add', "添加商品 ID: {$id}");
         } else {
             unset($data['createtime']);
             pdo_update('sz_yi_goods', $data, array(
                 'id' => $id
             ));
+            if(p('hotel')){
+                $rooms = pdo_fetch("select * from " . tablename('sz_yi_hotel_room') . " where goodsid=:goodsid and  uniacid=:uniacid", array(
+                      ":goodsid" => $id,":uniacid" => $_W['uniacid']
+                    ));
+                $room= array(
+                            'title'=>  trim($_GPC['goodsname']),
+                            'uniacid'=> intval($_W['uniacid']),
+                            'thumb'=>  trim($_GPC['thumb']),
+                            'oprice'=> trim($_GPC['marketprice']),
+                            'cprice'=> trim($_GPC['productprice']),
+                            'deposit'=> trim($_GPC['deposit']), 
+                            'goodsid'=>$id,                       
+                );
+                if($data['type']=='99'){           
+                    if(!empty($rooms)){    
+                        pdo_update('sz_yi_hotel_room', $room, array(
+                            'id' => $rooms['id']
+                        )); 
+                    }else{ 
+                        pdo_insert('sz_yi_hotel_room', $room);  
+                    }             
+                }else{          
+                    if(!empty($rooms)){    
+                        pdo_query("delete from " . tablename('sz_yi_hotel_room') . " where id={$rooms['id']}");
+                    }
+                }
+            }
             plog('shop.goods.edit', "编辑商品 ID: {$id}");
         }
         $totalstocks         = 0;
@@ -841,15 +902,15 @@ m("cache")->set("areas", $areas, "global");
 
 
     if (!empty($_GPC['category2']['thirdid'])) {
-        $condition .= ' AND (`tcate1` = :tcate2 or tcates = :tcate2)';
+        $condition .= ' AND (`tcate1` = :tcate2 or tcates2 = :tcate2)';
         $params[':tcate2'] = intval($_GPC['category2']['thirdid']);
     }
     if (!empty($_GPC['category2']['childid'])) {
-        $condition .= ' AND (`ccate1` = :ccate2 or ccates = :ccate2)';
+        $condition .= ' AND (`ccate1` = :ccate2 or ccates2 = :ccate2)';
         $params[':ccate2'] = intval($_GPC['category2']['childid']);
     }
     if (!empty($_GPC['category2']['parentid'])) {
-        $condition .= ' AND (`pcate1` = :pcate2 or pcates = :pcate2)' ;
+        $condition .= ' AND (`pcate1` = :pcate2 or pcates2 = :pcate2)' ;
         $params[':pcate2'] = intval($_GPC['category2']['parentid']);
     }
 
@@ -932,6 +993,15 @@ m("cache")->set("areas", $areas, "global");
     ), array(
         'id' => $id
     ));
+    //安装芸众差价，删除房间类型商品同时删除房型表中的商品
+    if(p('hotel')){
+        $rooms = pdo_fetch("select * from " . tablename('sz_yi_hotel_room') . " where goodsid=:goodsid and  uniacid=:uniacid", array(
+                      ":goodsid" => $id,":uniacid" => $_W['uniacid']
+        ));
+        if(!empty($rooms)){    
+            pdo_query("delete from " . tablename('sz_yi_hotel_room') . " where id={$rooms['id']}");
+        }
+    }
     plog('shop.goods.delete', "删除商品 ID: {$id} 标题: {$row['title']} ");
     message('删除成功！', referer(), 'success');
 } elseif ($operation == 'setgoodsproperty') {
@@ -1013,49 +1083,58 @@ m("cache")->set("areas", $areas, "global");
     )));
 }elseif($operation == 'copygoods'){
     $uniacid=$_W['uniacid'];
-    $goodsid1=$_GPC['id'];
-    $goods=pdo_fetch('select * from ' .tablename('sz_yi_goods'). ' where id = '.$goodsid1.' and uniacid='.$uniacid);
-    if(empty($goods)){
+    $goodsid_old=intval($_GPC['id']);
+    $goods=pdo_fetch('select * from ' .tablename('sz_yi_goods'). ' where id = '.$goodsid_old.' and uniacid='.$uniacid);
+    if (empty($goods)) {
         message('未找到此商品，商品复制失败!', $this->createWebUrl('shop/goods') , 'error');
     }
     $goods['id']='';
+    $turn = pdo_fetchall("SELECT id FROM ".tablename('sz_yi_goods')." WHERE title like '%{$goods['title']}%' and uniacid=:uniacid and deleted=0",array('uniacid' => $uniacid));
+    $turncount = count($turn);
+    if ($turncount >= 1) {
+        $goods['title'] = $goods['title'].'___('.$turncount.')';
+    }
     pdo_insert('sz_yi_goods',$goods);
     $goodsid=pdo_insertid();
 
-    $goodsoption=pdo_fetch('select * from ' .tablename('sz_yi_goods_option'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid); 
-    if(!empty($goodsoption)){
-        $goodsoption['id']='';
-        $goodsoption['goodsid']=$goodsid;
-        pdo_insert('sz_yi_goods_option',$goodsoption);   
+    $goodsoption=pdo_fetchall('select * from ' .tablename('sz_yi_goods_option'). ' where goodsid = '.$goodsid_old.' and uniacid='.$uniacid); 
+    if (!empty($goodsoption)) {
+        foreach ($goodsoption as  $value_option) {
+            $value_option['id']='';
+            $value_option['goodsid']=$goodsid;
+            pdo_insert('sz_yi_goods_option',$value_option);   
+        }
+        
     }
     
 
-    $goodscomment=pdo_fetch('select * from ' .tablename('sz_yi_goods_comment'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid);
-    if(!empty($goodscomment)){
-        $goodscomment['id']='';
-        $goodscomment['goodsid']=$goodsid;
-        pdo_insert('sz_yi_goods_comment',$goodscomment);    
+    $goodsparam=pdo_fetchall('select * from ' .tablename('sz_yi_goods_param'). ' where goodsid = '.$goodsid_old.' and uniacid='.$uniacid);
+    if (!empty($goodsparam)) {
+        foreach ($goodsparam as  $value_param) {
+            $value_param['id']='';
+            $value_param['goodsid']=$goodsid;
+            pdo_insert('sz_yi_goods_param',$value_param);   
+        }  
     }
 
 
-    $goodsparam=pdo_fetch('select * from ' .tablename('sz_yi_goods_param'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid);
-    if(!empty($goodsparam)){
-        $goodsparam['id']='';
-        $goodsparam['goodsid']=$goodsid;
-        pdo_insert('sz_yi_goods_param',$goodsparam);   
-    }
-
-
-    $goodsspec=pdo_fetch('select * from ' .tablename('sz_yi_goods_spec'). ' where goodsid = '.$goodsid1.' and uniacid='.$uniacid);
-    if(!empty($goodsspec)){
-        $goodsspec_item=pdo_fetch('select * from ' .tablename('sz_yi_goods_spec_item'). ' where specid = '.$goodsspec['id'].' and uniacid='.$uniacid);
-        $goodsspec['id']='';
-        pdo_insert('sz_yi_goods_spec',$goodsspec);
-        $goodsspecid=pdo_insertid();
-        $goodsspec_item['specid']=$goodsspecid;
-        $goodsspec_item['id']='';
-        $goodsspec['goodsid']=$goodsid;
-        pdo_insert('sz_yi_goods_spec_item',$goodsspec_item);        
+    $goodsspec=pdo_fetchall('select * from ' .tablename('sz_yi_goods_spec'). ' where goodsid = '.$goodsid_old.' and uniacid='.$uniacid);
+    if (!empty($goodsspec)) {
+        foreach($goodsspec as $value_spec){
+            $goodsspec_item=pdo_fetchall('select * from ' .tablename('sz_yi_goods_spec_item'). ' where specid = '.$value_spec['id'].' and uniacid='.$uniacid);
+            $value_spec['id']='';
+            $value_spec['goodsid']=$goodsid;
+            pdo_insert('sz_yi_goods_spec',$value_spec);
+            $goodsspecid=pdo_insertid();
+           
+            foreach($goodsspec_item as $v){
+                $v['specid']=$goodsspecid;
+                $v['id']='';
+                pdo_insert('sz_yi_goods_spec_item',$v);       
+            }
+                
+        }
+             
     }
 
     

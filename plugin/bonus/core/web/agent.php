@@ -221,6 +221,9 @@ if ($operation == 'display') {
         'total',
         'pay'
     ));
+    if(!empty($member['check_imgs'])){
+        $check_imgs = set_medias(unserialize($member['check_imgs']));
+    }
     if (checksubmit('submit')) {
         ca('bonus.agent.edit|bonus.agent.check|bonus.agent.agentblack');
         $data = is_array($_GPC['data']) ? $_GPC['data'] : array();
@@ -460,26 +463,21 @@ if ($operation == 'display') {
     if (empty($member)) {
         message('未找到会员信息，无法进行审核', '', 'error');
     }
-    if ($member['isagent'] == 1 && $member['status'] == 1) {
-        message('此分销商已经审核通过，无需重复审核!', '', 'error');
+    if ($member['isagent'] == 1 && $member['bonus_status'] < 9) {
+        message('此代理商已经审核通过，无需重复审核!', '', 'error');
     }
     $time = time();
     pdo_update('sz_yi_member', array(
-        'status' => 1,
-        'agenttime' => $time
+        'bonus_status' => 1
     ), array(
         'id' => $member['id'],
         'uniacid' => $_W['uniacid']
     ));
-    $this->model->sendMessage($member['openid'], array(
-        'nickname' => $member['nickname'],
-        'agenttime' => $time
-    ), TM_COMMISSION_BECOME);
     if (!empty($member['agentid'])) {
         $this->model->upgradeLevelByAgent($member['agentid']);
     }
-    plog('bonus.agent.check', "审核分销商 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
-    message('审核分销商成功!', $this->createPluginWebUrl('bonus/agent'), 'success');
+    plog('bonus.agent.check', "审核代理商 <br/>代理商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+    message('审核代理商成功!', $this->createPluginWebUrl('bonus/agent'), 'success');
 }
 load()->func('tpl');
 include $this->template('agent');

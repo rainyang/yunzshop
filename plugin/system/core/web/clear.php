@@ -289,6 +289,23 @@ if (checksubmit('submit')) {
             }
         }
     }
+// echo "<pre>";print_r($_GPC['return']);exit;
+    if (is_array($_GPC['return'])) {
+        foreach ($_GPC['return'] as $data) {
+            if ($data == 'order') {
+                 pdo_query('delete from  ' . tablename('sz_yi_return') . " where returnrule = '1' {$condition}");
+            } else if ($data == 'total') {
+                 pdo_query('delete from  ' . tablename('sz_yi_return') . " where returnrule = '2' {$condition}");
+            } else if ($data == 'queue') {
+                pdo_query('delete from  ' . tablename('sz_yi_order_goods_queue') . " where 1 {$condition}");
+            } else if ($data == 'money') {
+                pdo_query('delete from  ' . tablename('sz_yi_return_money') . " where 1 {$condition}");
+            }
+
+        }
+    }
+    plog('system.save.delete', '清空数据');
+    
     message('数据清理成功!', $this->createPluginWebUrl('system/clear'), 'success');
 }
 $wechats = $this->model->get_wechats();

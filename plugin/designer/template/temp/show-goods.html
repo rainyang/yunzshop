@@ -2,7 +2,7 @@
     <div class="fe-mod-8-title" ng-show="Item.params.showtitle == 0" ng-style="{'color':Item.params.titlecolor,'background-color':Item.params.bgcolor}">{{Item.params.title|| '请填写商品组标题'}}</div>
     <div style="line-height: 170px; text-align: center; color: #999; font-size: 16px;" ng-show="Item.data == ''">一个商品都没有...</div>
     <!-- 默认两种样式 -->
-    <div ng-show="Item.params.style != 'hp'" class="new-goods">
+    <div ng-show="Item.params.style != 'hp'  && Item.params.style != 'hotel'" class="new-goods">
         <div ng-repeat="good in Item.data">
             <div class="fe-mod-8-good good-new" ng-style="{'width':Item.params.style}">
                 <a href="{{Item.params.goodhref}}&id={{good.goodid}}">
@@ -46,4 +46,100 @@
             </a>
         </div>
     </div>
+      <!--酒店样式 -->
+    <div ng-show="Item.params.style == 'hotel'"> 
+        <div id="checkinout">
+                <a id="selinTime" style="font-weight: normal;" href="{{Item.sessionurl}}">
+                    <span class="ico_time"></span>入住:&nbsp;<span id="CheckInDay">{{Item.session.bdate}}</span>              
+                    <span style="margin-left:10px;"></span>退房:&nbsp;<span id="CheckInDay">{{Item.session.edate}}</span>
+                    <span class="span2" style="margin-left:24px;" id="CheckOutDay">住:{{Item.session.day}}晚</span><span class="icon_arrow" style="position:relative; right:10px; top:15px;"></span>
+                </a>
+        </div>
+        <div ng-repeat="good in Item.data" style="height:110px;"> 
+             <ul class="jiudroom" style="height:110px;">
+                 <li>
+                <a href="{{good.href}}&id={{good.goodid}}">
+                <img ng-src="{{good.img}}" alt="" class="roomimg"> 
+                </a>
+                <div class="jiudroom-text" style="height:76px;overflow:hidden">
+                    <h1 style="font-size:16px; color: #333;">{{good.name}}</h1>
+                   <span ng-repeat="prams in good.pram" style="height:110px;"> 
+                    <p>{{prams.title}}:{{prams.value}}</p>
+                    <span>
+                </div>   
+                <div class="jiudroom-price pa">
+                    <ins>￥<i>{{good.todayoprice}}</i></ins>
+                    <del>￥{{good.todaycprice}}</del>                 
+                    <div ng-show="good.has == '0'">
+                    <a  style="display: block;color: #ffffff;" href="{{good.url}}
+                    " class="btnbook" >预定</a> 
+                    </div>
+                     <div ng-show="good.has!='0'">             
+                  <button class="btnbook" style="background: #aaa;color:#fff">预定</button>
+                </div>     
+                </div>                  
+            </li>            
+            </ul>            
+        </div>
+    </div>
 </div>
+<style>
+body {margin:0px; background:#f9f9f9; }
+.fe-mod:hover{border:2px dashed rgba(0,0,0,0); cursor:default;}
+.fe-mod,.fe-mod:hover {border:0px;}
+.fe-mod-cube td {height:auto;}
+.jiudroom {
+    background: #ffffff;
+}
+.jiudroom li .roomimg {
+    position: absolute;
+    height: 85px;
+    width: 85px;
+    left: 10px;
+}
+.jiudroom li {
+    position: relative;
+    padding: 10px 70px 10px 105px;
+    height: 106px;
+    border-bottom: 1px solid #ececec;
+    font-size: 12px;
+}
+.jiudroom-price {
+    right: 10px;
+    top: 10px;
+    width: 70px;
+    text-align: center;
+}
+.pa {
+    position: absolute!important;
+}
+.jiudroom-price ins {
+    text-decoration: none;
+    font-size: 12px;
+    color: #f88917;
+}
+.jiudroom-price del {
+    color: #999999;
+}
+.jiudroom-text h1 {
+    font-size: 16px;
+    margin-bottom: 14px;
+    height: 20px;
+    line-height: 20px;
+    width: 100%;
+    overflow: hidden;
+    font-weight: normal;
+    margin-top: -1px;
+}
+.btnbook {
+    background: #f88917;
+    border-radius: 3px;
+    color: #ffffff;
+    border: none;
+    width: 100%;
+    height: 34px;
+    line-height: 34px;
+    font-size: 14px;
+    margin-top: 5px;
+}
+</style>

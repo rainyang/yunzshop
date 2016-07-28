@@ -70,8 +70,7 @@
 							data-ordersn="{$item['ordersn']}" data-orderid="{$item['id']}" data-ordergoodid="{$g['ordergoodid']}" data-goodid="{$g['id']}" data-goodtitle="{$g['title']}" 
 							data-shorttitle = "{if empty($g['shorttitle'])}-{else}{$g['shorttitle']}{/if}" data-goodnum="{$g['total']}" data-goodssn="{$g['goodssn']}" data-productsn="{$g['productsn']}" data-marketprice="{php echo $g['price']/$g['total']}"
 							data-productprice="{php echo $g['realprice']/$g['total']}" data-total="{$g['total']}" data-goodoption="{if empty($g['optiontitle'])}-{else}{$g['optiontitle']}{/if}" data-goodunit="{if empty($g['unit'])}-{else}{$g['unit']}{/if}"
-							data-realprice="{php echo $g['realprice']/$g['total']}" data-goodweight="{if empty($g['weight'])}-{else}{$g['weight']}{/if}"
-							>
+							data-realprice="{php echo $g['realprice']/$g['total']}" data-goodweight="{if empty($g['weight'])}-{else}{$g['weight']}{/if}" data-goodsprice="{$item['goodsprice']}" data-dispatchprice="{$item['dispatchprice']}" data-discountprice="{$item['discountprice']}" data-deductprice="{$item['deductprice']}" data-deductcredit2="{$item['deductcredit2']}" data-deductenough="{$item['deductenough']}" data-changeprice="{$item['changeprice']}" data-changedispatchprice="{$item['changedispatchprice']}" data-couponprice="{$item['couponprice']}" data-price="{$item['price']}" >
 							<img src="{php echo tomedia($g['thumb'])}" style="width: 50px; height: 50px;border:1px solid #ccc;padding:1px;" > 
 							<span class='goodtitle' >{if empty($g['shorttitle'])}{$g['title']}{else}{$g['shorttitle']}{/if}</span>
 							<span class="editShort" style="position: absolute; bottom: 0; right: 0; background: rgba(0,0,0,0.5); font-size: 12px; color: #FFF; padding-left: 11px; border-radius: 20px 0px 0px 0px; width: 40px; cursor: pointer;" data-do="e">编辑</span>
@@ -86,7 +85,11 @@
 			            	{if $k==0}
 				            	<td rowspan="{php echo count($item['goods'])}"  class="tac"><label class='label label-{$item['css']}'>{$item['paytype']}</label></td>
 								<td  rowspan="{php echo count($item['goods'])}" class="tac">{$item['dispatchname']}</td>
-								<td style='text-align:center;'  rowspan="{php echo count($item['goods'])}">{$item['price']} 元<br/>运费: {$item['dispatchprice']} 元
+								<td style='text-align:center;'  rowspan="{php echo count($item['goods'])}">{$item['price']} 元
+									<br/>运费: {$item['dispatchprice']} 元
+									{if $item['discountprice']>0}
+										<br/>会员折扣: {$item['discountprice']} 元
+									{/if}
 									{if $item['deductprice']>0}
 										<br/>积分抵扣: {$item['deductprice']} 元
 									{/if}
@@ -95,6 +98,15 @@
 									{/if}
 									{if $item['deductenough']>0}
 										<br/>满额立减: {$item['deductenough']} 元
+									{/if}
+									{if $item['changeprice']>0}
+										<br/>改价优惠: {$item['changeprice']} 元
+									{/if}
+									{if $item['changedispatchprice']>0}
+										<br/>运费改价: {$item['changedispatchprice']} 元
+									{/if}
+									{if $item['couponprice']>0}
+										<br/>优惠券优惠: {$item['couponprice']} 元
 									{/if}
 								</td>
 								<td   rowspan="{php echo count($item['goods'])}"  class="tac">
@@ -282,10 +294,21 @@
 						  	var _goodweight = _this.data("goodweight");	// 商品重量
 						  	var _realprice = _this.data("realprice");	// 商品折后价格
                             _realprice = _realprice.toFixed(2);
-						  	
+                            //订单信息
+						  	var _goodsprice = _this.data("goodsprice");	// 商品小计
+						  	var _dispatchprice = _this.data("dispatchprice");	// 运费
+						  	var _discountprice = _this.data("discountprice");	// 会员折扣
+						  	var _deductprice = _this.data("deductprice");	// 积分抵扣
+						  	var _deductcredit2 = _this.data("deductcredit2");	// 余额抵扣
+						  	var _deductenough = _this.data("deductenough");	// 满额立减
+						  	var _changeprice = _this.data("changeprice");	// 改价优惠
+						  	var _changedispatchprice = _this.data("changedispatchprice");	// 运费改价
+						  	var _couponprice = _this.data("couponprice");	// 优惠券优惠
+						  	var _price = _this.data("price");	// 实付费
+
 						  	info.push({'odsn':_ordersn,'goodname':_goodname,'goodshortname':_goodshortname,'goodssn':_goodssn,'productsn':_productsn,
 						  					'marketprice':_marketprice,'productprice':_productprice,'allprice':_allprice,'total':_total,'note':_note,'goodoption':_goodoption,'goodunit':_goodunit,
-						  					'goodweight':_goodweight,'realprice':_realprice});
+						  					'goodweight':_goodweight,'realprice':_realprice,'goodsprice':_goodsprice,'_dispatchprice':_dispatchprice,'_discountprice':_discountprice,'deductprice':_deductprice,'deductcredit2':_deductcredit2,'deductenough':_changeprice,'changedispatchprice':_changedispatchprice,'couponprice':_couponprice,'price':_price});
 						  				console.log(info);	
 						  	_html += '<tr>';
 						  	$.each(values, function(iii,val) {
@@ -647,7 +670,7 @@
 						                        </td>
 						                        <td class="tac" rowspan="{php echo count($order['goods'])}">
 						                        	<label class='label label-{$order['statuscss']} label-oss'>{$order['status']}</label><br />
-						                         	<a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $good['id']))}" >查看详情</a>
+						                         	<a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $order['id']))}" >查看详情</a>
 						                        </td>
 		                        			{/if} 
 		                        			<td  class="tac">

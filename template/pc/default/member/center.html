@@ -62,15 +62,19 @@
         </div>
 </div>
  <div class="cart" style='margin-top:-20px;'>
-     <a href="javascript:;"><div class="list1" style=" border-bottom:0px;border-top:0px;">{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}: <span style='color:#f90'><%member.credit2%></span> 
+     <a href="javascript:;"><div class="list1" style=" border-bottom:0px;border-top:0px;"><%if shopset.credit%><%shopset.credit%><%else%>积分<%/if%>: <span style='color:#f90'><%member.credit2%></span> 
              <%if trade.closerecharge < 1%>
              <div class="take" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</div>
              <%/if%>
+            <%if trade.transfer < 1 && member.credit2 > 0%>
+                
+                <div class="take" style="background:hsl(148, 91%, 42%);margin-right: 5px;" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer'))}'">转让 </div> 
                  
+            <%/if%>
          </div></a>
-    <a href="javascript:;"><div class="list1" style="margin:-2px 0px 0; border-bottom:0px;">{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}: <%member.credit1%>
+    <a href="javascript:;"><div class="list1" style="margin:-2px 0px 0; border-bottom:0px;"><%if shopset.credit1%><%shopset.credit1%><%else%>积分<%/if%>: <%member.credit1%>
 
-            <div class="take1" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}兑换</div>
+            <div class="take1" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'"><%if shopset.credit1%><%shopset.credit1%><%else%>积分<%/if%>兑换</div>
 
         </div></a>
 </div>
@@ -113,7 +117,7 @@
     <%/if%>
 </div>
          <%if shopset.isarticle == 1%>
-    <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-article" style="color:#f10;"></i><%shopset.article_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
+    <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="list1" style="border-bottom:0px;"><i class="fa fa-article" style="color:#f10;"></i><%shopset.article_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
 
     <%/if%>
      <%if shopset.isranking == 1%>

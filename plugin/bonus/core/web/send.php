@@ -20,27 +20,29 @@ $list = pdo_fetchall($sql);
 $totalmoney = 0;
 foreach ($list as $key => &$row) {
 	$member = $this->model->getInfo($row['mid'], array('ok', 'pay', 'myorder'));
-	//Author:ym Date:2016-04-08 Content:需消费一定金额，否则清除该用户不参与分红
-	if($member['myordermoney'] < $set['consume_withdraw'] || empty($member)){
-		unset($list[$key]);
-	}else{
-		if($member['commission_ok'] <= 0){
+	if(!empty($member)){
+		//Author:ym Date:2016-04-08 Content:需消费一定金额，否则清除该用户不参与分红
+		if($member['myordermoney'] < $set['consume_withdraw'] || empty($member)){
 			unset($list[$key]);
 		}else{
-			if(!empty($member['bonuslevel'])){
-				$row['realname'] = pdo_fetchcolumn("select levelname from " . tablename('sz_yi_bonus_level') . " where id=".$member['bonuslevel']);
+			if($member['commission_ok'] <= 0){
+				unset($list[$key]);
 			}else{
-				$row['realname'] = $set['levelname'];
-			}
-			$row['commission_ok'] = $member['commission_ok'];
+				if(!empty($member['bonuslevel'])){
+					$row['realname'] = pdo_fetchcolumn("select levelname from " . tablename('sz_yi_bonus_level') . " where id=".$member['bonuslevel']);
+				}else{
+					$row['realname'] = $set['levelname'];
+				}
+				$row['commission_ok'] = $member['commission_ok'];
 
-			$row['commission_pay'] = $member['commission_pay'];
-			$row['id'] = $member['id'];
-			$row['avatar'] = $member['avatar'];
-			$row['nickname'] = $member['nickname'];
-			$row['realname'] = $member['realname'];
-			$row['mobile'] = $member['mobile'];
-			$totalmoney += $member['commission_ok'];
+				$row['commission_pay'] = $member['commission_pay'];
+				$row['id'] = $member['id'];
+				$row['avatar'] = $member['avatar'];
+				$row['nickname'] = $member['nickname'];
+				$row['realname'] = $member['realname'];
+				$row['mobile'] = $member['mobile'];
+				$totalmoney += $member['commission_ok'];
+			}
 		}
 	}	
 }
@@ -61,7 +63,7 @@ if (!empty($_POST)) {
 		$islog = true;
 		$level = $this->model->getlevel($member['openid']);
 		if(empty($set['paymethod'])){
-			m('member')->setCredit($member['openid'], 'credit2', $send_money);
+			m('member')->setCredit($member['openid'], 'credit2', $send_money, array(0, '代理商分红发放：' . $send_money . " 元"));
 		}else{
 			$logno = m('common')->createNO('bonus_log', 'logno', 'RB');
 			$result = m('finance')->pay($member['openid'], 1, $send_money * 100, $logno, "【" . $setshop['name']. "】".$level['levelname']."分红");
@@ -82,7 +84,15 @@ if (!empty($_POST)) {
             "send_bonus_sn" => $send_bonus_sn
         ));
         if($sendpay == 1){
-        	
+        	if(empty($level)){
+				if($member['bonus_area'] == 1){
+					$level['levelname'] = "省级代理";
+				}else if($member['bonus_area'] == 2){
+					$level['levelname'] = "市级代理";
+				}else if($member['bonus_area'] == 3){
+					$level['levelname'] = "区级代理";
+				}
+			}
         	$this->model->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_PAY);
         }
         //更新分红订单完成

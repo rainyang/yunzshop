@@ -4,6 +4,7 @@ if (!defined('IN_IA')) {
 }
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
+$type = $_GPC['type'];
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $r_type = array('0' => '退款', '1' => '退货退款', '2' => '换货');
@@ -29,6 +30,7 @@ if ($_W['isajax']) {
 		} else {
 			$condition .= ' and status<>-1';
 		}
+<<<<<<< HEAD
 		$conds = '';
 		if (p('channel')) {
 			$conds = ',ischannelself';
@@ -58,6 +60,57 @@ if ($_W['isajax']) {
 				}
 			}
 			unset($value);
+=======
+	    if (p('hotel')) {
+	        if($type=='hotel'){
+	           $condition.= " AND order_type=3";
+	        }else{
+	            $condition.= " AND order_type<>3";
+	        }
+	    }else{          
+	           $condition.= " AND order_type<>3";
+	    }
+	    //Author:ym Date:2016-07-20 Content:订单分组查询
+		$list = pdo_fetchall('select * from ' . tablename('sz_yi_order') . " where 1 {$condition} group by ordersn_general order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
+		
+		$total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where 1 {$condition}", $params);
+		$tradeset = m('common')->getSysset('trade');
+		$refunddays = intval($tradeset['refunddays']);
+		$ordersn_general = "";
+		$p_cashier = p('cashier');
+		foreach ($list as $key => &$row) {
+			if (p('hotel')) {
+				if($type=='hotel'){
+					$list[$key]['btime'] = date('Y-m-d',$row['btime']);
+					$list[$key]['etime'] = date('Y-m-d',$row['etime']);
+		        }
+			}
+			/*if($row['ordersn_general'] == $ordersn_general && !empty($row['ordersn_general']) && $row['status'] == 0){
+				unset($list[$key]);
+				continue;
+			}*/
+			if(!empty($row['ordersn_general']) && $row['status'] == 0){
+				$ordersn_general = $row['ordersn_general'];
+				$row['ordersn'] = $row['ordersn_general'];
+				$orderids = pdo_fetchall("select distinct id from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid', array(
+		            ':ordersn_general' => $ordersn_general,
+		            ':uniacid' => $uniacid,
+		            ':openid' => $openid
+		        ),'id');
+		        $row['price'] = pdo_fetchcolumn("select sum(price) from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid', array(
+		            ':ordersn_general' => $ordersn_general,
+		            ':uniacid' => $uniacid,
+		            ':openid' => $openid
+		        ));
+		        $orderid_where_in = implode(',', array_keys($orderids));
+		        $order_where = "og.orderid in ({$orderid_where_in})";
+			}else{
+				$order_where = "og.orderid = ".$row['id'];
+			}
+			
+			$sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$order_where.' order by og.id asc';
+			$row['goods'] = set_medias(pdo_fetchall($sql), 'thumb');
+>>>>>>> a2c3b3f8d0ff390490c88462dfb95676f6f62d8a
 			if($p_cashier){
 				$row['name'] = set_medias(pdo_fetch('select cs.name,cs.thumb from ' .tablename('sz_yi_cashier_store'). 'cs '.'left join ' .tablename('sz_yi_cashier_order'). ' co on cs.id = co.cashier_store_id where co.order_id=:orderid and co.uniacid=:uniacid', array(':orderid' => $row['id'],':uniacid'=>$_W['uniacid'])), 'thumb');
 			}
@@ -93,6 +146,42 @@ if ($_W['isajax']) {
 						$status = '交易完成';
 					}
 					break;
+			}
+			if(p('hotel') && $type=="hotel"){
+				switch ($row['status']) {
+				case '-1':
+					$status = '已取消';
+					break;
+				case "0":
+					if ($row['paytype'] == 3) {
+						$status = '待发货';
+					} else {
+						$status = '待付款';
+					}
+					break;
+				case '1':
+					if ($row['isverify'] == 1) {
+						$status = '待使用';
+					} else if (empty($row['addressid'])) {
+						$status = '待取货';
+					} else {
+						$status = '待确认';
+					}
+					break;
+				case '2':
+					$status = '待入住';
+					break;	
+				case '6':
+					$status = '待退房';
+					break;
+				case '3':
+					if (empty($row['iscomment'])) {
+						$status = '待评价';
+					} else {
+						$status = '交易完成';
+					}
+					break;
+			    }
 			}
 			$row['statusstr'] = $status;
 			if ($row['refundstate'] > 0 && !empty($row['refundid'])) {
@@ -133,4 +222,12 @@ if ($_W['isajax']) {
 		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 	}
 }
-include $this->template('order/list');
+if(p('hotel')){
+	if($_GPC['type']=='hotel'){
+			include $this->template('order/list_hotel');
+	}else{
+		include $this->template('order/list');
+	}
+}else{
+	include $this->template('order/list');
+}

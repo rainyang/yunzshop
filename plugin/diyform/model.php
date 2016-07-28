@@ -350,29 +350,31 @@ if (!class_exists('DiyformModel')) {
         public function getDatas($fields, $data)
         {
             $diyformfields = array();
-            foreach ($fields as $key => $value) {
-                $tp_value = "";
-                if ($value['data_type'] == 0 || $value['data_type'] == 1 || $value['data_type'] == 2 || $value['data_type'] == 6 || $value['data_type'] == 7) {
-                    $tp_value = str_replace("\n", "<br/>", $data[$key]);
-                } else if ($value['data_type'] == 3 || $value['data_type'] == 8) {
-                    if (is_array($data[$key])) {
-                        foreach ($data[$key] as $k1 => $v1) {
-                            $tp_value .= $v1 . " ";
+            if(is_array($fields) && is_array($data)){
+                foreach ($fields as $key => $value) {
+                    $tp_value = "";
+                    if ($value['data_type'] == 0 || $value['data_type'] == 1 || $value['data_type'] == 2 || $value['data_type'] == 6 || $value['data_type'] == 7) {
+                        $tp_value = str_replace("\n", "<br/>", $data[$key]);
+                    } else if ($value['data_type'] == 3 || $value['data_type'] == 8) {
+                        if (is_array($data[$key])) {
+                            foreach ($data[$key] as $k1 => $v1) {
+                                $tp_value .= $v1 . " ";
+                            }
                         }
-                    }
-                } else if ($value['data_type'] == 5) {
-                    if (is_array($data[$key])) {
-                        foreach ($data[$key] as $k1 => $v1) {
-                            $tp_value .= "<img style='height:25px;padding:1px;border:1px solid #ccc'  src='" . tomedia($v1) . "'/>";
+                    } else if ($value['data_type'] == 5) {
+                        if (is_array($data[$key])) {
+                            foreach ($data[$key] as $k1 => $v1) {
+                                $tp_value .= "<img style='height:25px;padding:1px;border:1px solid #ccc'  src='" . tomedia($v1) . "'/>";
+                            }
                         }
+                    } else if ($value['data_type'] == 9) {
+                        $tp_value = ($data[$key]['province'] != '请选择省份' ? $data[$key]['province'] : '') . " - " . ($data[$key]['city'] != '请选择城市' ? $data[$key]['city'] : '');
                     }
-                } else if ($value['data_type'] == 9) {
-                    $tp_value = ($data[$key]['province'] != '请选择省份' ? $data[$key]['province'] : '') . " - " . ($data[$key]['city'] != '请选择城市' ? $data[$key]['city'] : '');
+                    $diyformfields[] = array(
+                        'name' => $value['tp_name'],
+                        "value" => $tp_value
+                    );
                 }
-                $diyformfields[] = array(
-                    'name' => $value['tp_name'],
-                    "value" => $tp_value
-                );
             }
             return $diyformfields;
         }

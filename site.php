@@ -28,6 +28,10 @@ class Sz_yiModuleSite extends Core {
     public function doWebPlugins(){ $this->_exec(__FUNCTION__,'list'); }
     //系统设置 
     public function doWebSysset(){ $this->_exec(__FUNCTION__,'sysset'); } 
+    //会议入口
+    public function doWebMeet(){ $this->_exec(__FUNCTION__ ,'meet'); }
+    //餐饮入口
+    public function doWebRest(){ $this->_exec(__FUNCTION__ ,'rest'); }
     //插件web入口  
     public function doWebPlugin(){
         global $_W,$_GPC;
@@ -89,6 +93,13 @@ class Sz_yiModuleSite extends Core {
     public function doMobileShop(){ $this->_exec(__FUNCTION__,'index',false); }
     //订单
     public function doMobileOrder(){ $this->_exec(__FUNCTION__,'list',false); }
+    //会议
+    public function doMobileMeet(){ $this->_exec(__FUNCTION__,'index',false); }
+    //餐饮
+    public function doMobileRest(){ $this->_exec(__FUNCTION__,'index',false); }
+    //接口
+    public function doMobileApi(){ $this->_exec(__FUNCTION__,'index',false); }
+    //订单
     //支付成功
     public function payResult($params){  return m('order')->payResult($params); }
     public function getAuthSet() {

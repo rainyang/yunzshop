@@ -9,7 +9,7 @@ if ($operation == 'display') {
     if(empty($_GPC['uid'])){
         $where .= ' and uniacid=' . $_W['uniacid'];
     }else{
-        $where .= ' and uid="' . $_GPC['uid'] . '" and uniacid=' . $_W['uniacid'];
+        $where .= ' and (uid="' . $_GPC['uid'] . '" or username like"%' . $_GPC['uid'] . '%") and uniacid=' . $_W['uniacid'];
     }
     //是否从招商员进入
     if (p('merchant') && !empty($_GPC['member_id'])) {
@@ -21,7 +21,7 @@ if ($operation == 'display') {
         $ismerchant = false;
         $list = pdo_fetchall('select * from ' . tablename('sz_yi_perm_user') . ' where roleid='. $roleid . " " .$where." LIMIT " . ($pindex - 1) * $psize . "," . $psize);
     }
-    $total = count($list);
+    $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_perm_user') . " where roleid={$roleid} and uniacid={$_W['uniacid']}");
     $pager = pagination($total, $pindex, $psize);
 } else if ($operation == 'detail') {
     //提现id

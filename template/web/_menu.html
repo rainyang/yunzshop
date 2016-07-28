@@ -83,24 +83,35 @@
         {/if}
            
         {php $plugins = m('plugin')->getAll()}
-        <?php if (p('supplier')) {
-                $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
-              }?>
+        <?php 
+          //公众号权限设置查询
+          $acid_plugins = pdo_fetchcolumn('select plugins from ' . tablename('sz_yi_perm_plugin') . ' where acid=:uniacid',array(":uniacid" => $_W['uniacid']));
+          if(!empty($acid_plugins)){
+            $plugins_data = explode(',', $acid_plugins);
+
+          }
+          if (p('supplier')) {
+              $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+            }
+
+          ?>
         <li class="dropdown">
            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-cubes'></i> 插件 <i class="fa fa-angle-down"></i></a>
             <ul class="dropdown-menu plug-list">
                 {loop $plugins $plugin}
-                {ifpp $plugin['identity']}
-                     {if p('supplier') && $perm_role == 1}
-                         {if $plugin['identity']=='taobao' || $plugin['identity']=='exhelper'}
-                         <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
+                  {if empty($plugins_data) || in_array($plugin['identity'], $plugins_data)}
+                    {ifpp $plugin['identity']}
+                         {if p('supplier') && $perm_role == 1}
+                             {if $plugin['identity']=='taobao' || $plugin['identity']=='exhelper'}
+                             <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
+                             {/if}
+                         {else}
+                            {if p($plugin['identity'])}
+                             <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
+                             {/if}
                          {/if}
-                     {else}
-                        {if p($plugin['identity'])}
-                         <li><a href="{php echo $this->createWebUrl('plugin',array('p'=>$plugin['identity']))}">{$plugin['name']}</a></li>
-                         {/if}
-                     {/if}
-                {/if}
+                    {/if}
+                  {/if}
                 {/loop}
             </ul>
         </li>

@@ -23,5 +23,10 @@ foreach ($category as $ck => &$cv) {
 	$cv['plugins'] = pdo_fetchall('select * from ' . tablename('sz_yi_plugin') . " where category=:category $cond order by displayorder asc", array(':category' => $ck));
 }
 unset($cv);
+//公众号权限设置查询
+$acid_plugins = pdo_fetchcolumn('select plugins from ' . tablename('sz_yi_perm_plugin') . ' where acid=:uniacid',array(":uniacid" => $_W['uniacid']));
+if(!empty($acid_plugins)){
+	$plugins_data = explode(',', $acid_plugins);
+}
 include $this->template('web/plugins/list');
 exit;

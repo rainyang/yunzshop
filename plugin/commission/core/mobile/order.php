@@ -144,6 +144,8 @@ if ($_W['isajax']) {
 				$row['status'] = '待收货';
 			} else if ($row['status'] == 3) {
 				$row['status'] = '已完成';
+			}else if ($row['status'] == 6) {
+				$row['status'] = '待退房';
 			}
 			if ($orderids[$row['id']]['level'] == 1) {
 				$row['level'] = '一';
