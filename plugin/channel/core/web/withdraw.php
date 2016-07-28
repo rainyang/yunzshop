@@ -72,7 +72,6 @@ if ($operation == 'display') {
 } else if ($operation == 'detail') {
 	$id = intval($_GPC['id']);
 	$apply = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_channel_apply') . ' WHERE uniacid=:uniacid AND id=:id limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $id));
-	//print_r($apply);exit;
 	if (empty($apply)) {
 		message('提现申请不存在!', '', 'error');
 	}
