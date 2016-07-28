@@ -288,11 +288,9 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
         <div class="line">房间数量:<span><span class='goodsprice'><%order.num%>间</span></span></div>
             
         <div class="line">房间小计:<span>￥<span class='goodsprice'>
-            <?php if($order['depositpricetype']=='1'){
-                 echo $order['price']-$order['depositprice'];
-            }else{
-                echo $order['price'];
-            } ?>元</span></span></div>
+            <?php
+                 echo $order['goodsprice'];
+           ?>元</span></span></div>
             
         <div class="line">押金:<span>￥<span class='dispatchprice'><%order.depositprice%> (
             <%if order.depositpricetype==1%>在线支付<%/if%>
