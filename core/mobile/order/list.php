@@ -29,14 +29,35 @@ if ($_W['isajax']) {
 		} else {
 			$condition .= ' and status<>-1';
 		}
-		$list = pdo_fetchall('select cashier,id,createtime,addressid,ordersn,price,status,iscomment,isverify,verified,verifycode,iscomment,refundid,expresscom,express,expresssn,finishtime,virtual,paytype,expresssn,refundstate from ' . tablename('sz_yi_order') . " where 1 {$condition} order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
+		$conds = '';
+		if (p('channel')) {
+			$conds = ',ischannelself';
+		}
+		$list = pdo_fetchall('select cashier,id,createtime,addressid,ordersn,price,status,iscomment,isverify,verified,verifycode,iscomment,refundid,expresscom,express,expresssn,finishtime,virtual,paytype,expresssn,refundstate' . $conds . ' from ' . tablename('sz_yi_order') . " where 1 {$condition} order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where 1 {$condition}", $params);
 		$tradeset = m('common')->getSysset('trade');
 		$refunddays = intval($tradeset['refunddays']);
 		foreach ($list as &$row) {
+			if (!empty($row['ischannelself'])) {
+				$row['ordertype'] = "自提单";
+			}
 			$p_cashier = p('cashier');
-			$sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where og.orderid=:orderid order by og.id asc';
+			$cond = '';
+			if (p('channel')) {
+				$cond = ',og.ischannelpay';
+			}
+			$sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid' . $cond . ' FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where og.orderid=:orderid order by og.id asc';
 			$row['goods'] = set_medias(pdo_fetchall($sql, array(':orderid' => $row['id'])), 'thumb');
+			foreach ($row['goods'] as $key => $value) {
+				if ($key == 0) {
+					if (!empty($value['ischannelpay'])) {
+						if ($value['ischannelpay'] == 1) {
+							$row['ordertype'] = "采购单";
+						}
+					}
+				}
+			}
+			unset($value);
 			if($p_cashier){
 				$row['name'] = set_medias(pdo_fetch('select cs.name,cs.thumb from ' .tablename('sz_yi_cashier_store'). 'cs '.'left join ' .tablename('sz_yi_cashier_order'). ' co on cs.id = co.cashier_store_id where co.order_id=:orderid and co.uniacid=:uniacid', array(':orderid' => $row['id'],':uniacid'=>$_W['uniacid'])), 'thumb');
 			}
