@@ -33,7 +33,7 @@ if ($op == 'display') {
 
         $assigns_member = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid = ". $_W['uniacid'] ." and id = ".$row['assigns_id']);
         $row['assigns_realname'] = $assigns_member['realname']?$assigns_member['realname']:$assigns_member['nickname'];  
-        $row['createtime'] = date("Y-h-d H:i:s",$row['createtime']);
+        $row['createtime'] = date("Y-m-d H:i:s",$row['createtime']);
         
        
     }

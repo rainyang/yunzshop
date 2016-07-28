@@ -270,7 +270,7 @@ if (!class_exists('CouponModel')) {
 			$this->sendBackMessage($_var_5['openid'], $_var_1, $_var_26);
 		}
 
-		function consumeCouponCount($openid, $enough = 0, $supplier_uid = 0, $sid = 0,$iscashier = 0, $goodid = 0, $cartid = 0)
+		function consumeCouponCount($openid, $enough = 0, $supplier_uid = 0, $sid = 0,$iscashier = 0, $goodid = 0, $cartid = 0, $coupon_carrierid = 0)
 		{
 			global $_W, $_GPC;
 			$time = time();
@@ -304,66 +304,114 @@ if (!class_exists('CouponModel')) {
 				$sql = 'select * from ' . tablename('sz_yi_coupon_data') . ' d ' . '  left join ' . tablename('sz_yi_coupon') . ' c on d.couponid = c.id ' . "  where d.openid=:openid and d.uniacid=:uniacid and c.getcashier=0 and c.supplier_uid=:supplier_uid and c.coupontype=0 and {$enough}>=c.enough and d.used=0 " . " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$time} && c.timeend>={$time}))";
 				$allcoupon = pdo_fetchall($sql, array(':openid' => $openid, ':supplier_uid' => $supplier_uid, ':uniacid' => $_W['uniacid']));
 				foreach ($allcoupon as $row) {
-					if ($goodid) {
+					if ($goodid != 0 && $cartid == 0) {
 						$goodsids = unserialize($row['goodsids']);
+						$storeids = unserialize($row['storeids']);
 						$categoryids = unserialize($row['categoryids']);
 						$goods = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_goods')." WHERE id = :id",array(':id' => $goodid));
 						$a = 0;
-						if ($value['usetype'] == 2) {
+						$b = 0;
+						if ($row['usetype'] == 2) {
 							foreach ($goodsids as $v) {
 								if ($v == $goodid) {
 									$a += 1;
 								}
 							}
-							if ($a == 0) {
-								$total -= 1;
+							if ($row['getstore'] == 1) {
+								if ($coupon_carrierid != 0) {
+									foreach ($storeids as $vs) {
+										if ($vs == $coupon_carrierid) {
+											$b += 1;
+										}
+									}
+									if ($a == 0 || $b == 0) {
+										$total -= 1;
+									}
+								} else {
+									$total -= 1;
+								}
+							} else {
+								if ($a == 0) {
+									$total -= 1;
+								}
 							}
-						} elseif ($value['usetype'] == 1) {
+						} elseif ($row['usetype'] == 1) {
 							foreach ($categoryids as $v) {
 								if ($v == $goods['ccate'] || $v == $goods['tcate'] ) {
 									$a += 1;
 								}
 							}
-							if ($a == 0) {
+							if ($row['getstore'] == 1) {
+								if ($coupon_carrierid != 0) {
+									foreach ($storeids as $vs) {
+										if ($vs == $coupon_carrierid) {
+											$b += 1;
+										}
+									}
+									if ($a == 0 || $b == 0) {
+										$total -= 1;
+									}
+								} else {
+									$total -= 1;
+								}
+							} else {
+								if ($a == 0) {
+									$total -= 1;
+								}
+							}
+						} elseif ($row['usetype'] == 0) {
+							if ($coupon_carrierid != 0) {
+								foreach ($storeids as $vs) {
+									if ($vs == $coupon_carrierid) {
+										$b += 1;
+									}
+								}
+								if ($b == 0) {
+									$total -= 1;
+								}
+							} else {
 								$total -= 1;
 							}
 						}
 						
-					} elseif ($cartid){
-						$goodsids = unserialize($row['goodsids']);
-						$cartid = explode(',',$cartid);
-						$categoryids = unserialize($row['categoryids']);
-						$a = 0;
-						if($row['usetype'] == 2){
+					} elseif ($cartid != 0 && $goodid == 0){
+						if ($row['getstore'] == 1) {
+							$total -= 1;
+						} else {
+							$goodsids = unserialize($row['goodsids']);
+							$cartid = explode(',',$cartid);
+							$categoryids = unserialize($row['categoryids']);
+							$a = 0;
+							if($row['usetype'] == 2){
 
-							foreach ($cartid as $value) {
-								$gid = pdo_fetchcolumn("SELECT goodsid FROM ".tablename('sz_yi_member_cart')." WHERE id=:id ",array(':id' => $value));
-								foreach ($goodsids as $v) {
-									if($v == $gid){
-										$a += 1;
+								foreach ($cartid as $value) {
+									$gid = pdo_fetchcolumn("SELECT goodsid FROM ".tablename('sz_yi_member_cart')." WHERE id=:id ",array(':id' => $value));
+									foreach ($goodsids as $v) {
+										if($v == $gid){
+											$a += 1;
+										}
 									}
 								}
-							}
-							if($a == 0){
-								$total -= 1;
-							}	
-						} elseif ($row['usetype'] == 1) {
+								if($a == 0){
+									$total -= 1;
+								}	
+							} elseif ($row['usetype'] == 1) {
 
-							foreach ($categoryids as $v) {
-								foreach ($cartid as $vc) {
-									$gid = pdo_fetchcolumn("SELECT goodsid FROM ".tablename('sz_yi_member_cart')." WHERE id=:id ",array(':id' => $vc));
-									$goods = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_goods')." WHERE id = :id",array(':id' => $gid));
-									if ($v == $goods['ccate'] || $v == $goods['tcate'] ) {
-										$a += 1;
-									}	
+								foreach ($categoryids as $v) {
+									foreach ($cartid as $vc) {
+										$gid = pdo_fetchcolumn("SELECT goodsid FROM ".tablename('sz_yi_member_cart')." WHERE id=:id ",array(':id' => $vc));
+										$goods = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_goods')." WHERE id = :id",array(':id' => $gid));
+										if ($v == $goods['ccate'] || $v == $goods['tcate'] ) {
+											$a += 1;
+										}	
+									}
+									
 								}
-								
-							}
-							if ($a == 0) {
-								$total -= 1;
+								if ($a == 0) {
+									$total -= 1;
+								}
 							}
 						}
-
 					}	
 				}
 		

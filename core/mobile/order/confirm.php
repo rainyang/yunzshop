@@ -24,8 +24,8 @@ $plugc           = p("coupon");
 if ($plugc) {
     $hascouponplugin = true;
 }
-$goodid = $_GPC['id'];
-$cartid = $_GPC['cartids'];
+$goodid = $_GPC['id'] ? intval($_GPC['id']) : 0;
+$cartid = $_GPC['cartids'] ? $_GPC['cartids'] : 0;
 $diyform_plugin = p("diyform");
 $order_formInfo = false;
 if ($diyform_plugin) {
@@ -505,7 +505,6 @@ if ($_W['isajax']) {
                         }
                     }
                 }
-
                 foreach ($suppliers as $key => $val) {
                     if (!empty($order_all[$val['supplier_uid']]['dispatch_array'])) {
                         foreach ($order_all[$val['supplier_uid']]['dispatch_array'] as $k => $v) {
@@ -640,7 +639,6 @@ if ($_W['isajax']) {
             } 
             $totalprice =  $old_price * $days;
             if ($price_list) {//价格表中存在   
-               // print_r($price_list);exit;
                 $check_date = array();
                 foreach($price_list as $k => $v) {
                     $price_list[$k]['time']=date('Y-m-d',$v['roomdate']);
@@ -720,11 +718,14 @@ if ($_W['isajax']) {
         $hascoupon      = false;
         $couponcount    = 0;
         $pc             = p("coupon");
-        $supplier_uid   = $_GPC("supplier_uid");
+        $supplier_uid   = $_GPC["supplier_uid"];
+        $coupon_carrierid = intval($_GPC['carrierid']);
+        $goodsid = $_GPC['id'] ? intval($_GPC['id']) : 0;
+        $cartids = $_GPC['cartids'] ? $_GPC['cartids'] : 0;
         if ($pc) {
             $pset = $pc->getSet();
             if (empty($pset["closemember"])) {
-                $couponcount = $pc->consumeCouponCount($openid, $totalprice, $supplier_uid, 0, 0, $goodid, $cartid);
+                $couponcount = $pc->consumeCouponCount($openid, $totalprice, $supplier_uid, 0, 0, $goodsid, $cartids,$coupon_carrierid);
                 $hascoupon   = $couponcount > 0;
             }
         }
@@ -734,6 +735,13 @@ if ($_W['isajax']) {
             ':openid' => $openid,
             ':id' => $addressid
         ));
+        if (!empty($coupon_carrierid)) {
+            show_json(1,array(
+                             "hascoupon" => $hascoupon,
+                            "couponcount" => $couponcount,
+                            )
+            );
+        }
         $member              = m("member")->getMember($openid);
         $level               = m("member")->getLevel($openid);
         $weight              = $_GPC["weight"];
@@ -1736,6 +1744,10 @@ if ($_W['isajax']) {
                     "openid" => $openid,
                     'goods_op_cost_price' => $goods['costprice']
                 );
+                //修改全返插件中房价
+                if(p('hotel') && $_GPC['type']=='99'){
+                     $order_goods['price'] = $goodsprice ;
+                }
                 if ($diyform_plugin) {
                     $order_goods["diyformid"]     = $goods["diyformid"];
                     $order_goods["diyformdata"]   = $goods["diyformdata"];
