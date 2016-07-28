@@ -23,11 +23,11 @@ if ($_W['isajax']) {
 	}
 	foreach ($list as &$row) {
 		$row['apply_money'] = number_format($row['apply_money'],2);
-		if ($row['status'] == 0) {
+		if ($row['status'] == 1) {
 			$row['statusstr'] = '待审核';
 			$row['dealtime'] = date('Y-m-d H:i', $row['apply_time']);
 		} else {
-			if ($row['status'] == 1) {
+			if ($row['status'] == 3) {
 				$row['statusstr'] = '已打款';
 				$row['dealtime'] = date('Y-m-d H:i', $row['finish_time']);
 			}

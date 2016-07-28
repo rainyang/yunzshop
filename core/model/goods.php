@@ -34,6 +34,7 @@ class Sz_DYi_Goods
         $ids       = !empty($args['ids']) ? trim($args['ids']) : '';
         $sup_uid   = !empty($args['supplier_uid']) ? trim($args['supplier_uid']) : '';
         $isopenchannel   = !empty($args['isopenchannel']) ? trim($args['isopenchannel']) : 0;
+        $ischannelpick   = !empty($args['ischannelpick']) ? trim($args['ischannelpick']) : 0;
         $condition = ' and `uniacid` = :uniacid AND `deleted` = 0 and status=1';
         $params    = array(
             ':uniacid' => $_W['uniacid']
@@ -114,12 +115,22 @@ class Sz_DYi_Goods
         $groupid = intval($member['groupid']);
         $condition .= " and ( ifnull(showlevels,'')='' or FIND_IN_SET( {$levelid},showlevels)<>0 ) ";
         $condition .= " and ( ifnull(showgroups,'')='' or FIND_IN_SET( {$groupid},showgroups)<>0 ) ";
-        if (!$random) {
-            $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} LIMIT " . ($page - 1) * $pagesize . ',' . $pagesize;
+        if (!empty($ischannelpick)) {
+            $list = array();
+            $goodsinfo = pdo_fetchall("SELECT distinct goodsid FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} and openid='{$openid}'");
+            if (!empty($goodsinfo)) {
+                foreach ($goodsinfo as $value) {
+                        $list[] =  pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE uniacid={$_W['uniacid']} AND id={$value['goodsid']}");
+                }
+            }
         } else {
-            $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() LIMIT " . $pagesize;
+            if (!$random) {
+                $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} LIMIT " . ($page - 1) * $pagesize . ',' . $pagesize;
+            } else {
+                $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() LIMIT " . $pagesize;
+            }
+            $list = pdo_fetchall($sql, $params);
         }
-        $list = pdo_fetchall($sql, $params);
         $list = set_medias($list, 'thumb');
         return $list;
     }

@@ -146,4 +146,13 @@ if (!pdo_fieldexists('sz_yi_channel_apply', 'apply_ordergoods_ids')) {
 if (!pdo_fieldexists('sz_yi_channel_stock_log', 'paytime')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_channel_stock_log')." ADD  `paytime` INT(11) DEFAULT '0';");
 }
+
+if(!pdo_fieldexists('sz_yi_channel_stock_log', 'optionid')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_channel_stock_log')." ADD `optionid` INT(11) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_channel_stock', 'optionid')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_channel_stock')." ADD `optionid` INT(11) DEFAULT '0';");
+}
+
 message('渠道商插件安装成功', $this->createPluginWebUrl('channel/index'), 'success');

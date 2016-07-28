@@ -192,7 +192,7 @@
         <div class="top_1">
             <div class="text">累计提现金额：{php echo $commission_total} 元<br>可提现金额（元）（订单完成后可获得）</div>
         </div>
-        <div class="top_2">{php echo $commission_ok}<a {if $commission_ok<=0 }href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('channel/apply')}"{/if} id='withdraw' ><span {if $commission_ok<=0 }class='disabled'{/if} >提现</span></a></div>
+        <div class="top_2">{php echo $commission_ok}<a {if $commission_ok<=0 || empty($cansettle) || !empty($last_apply)}href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('channel/apply')}"{/if} id='withdraw' ><span {if $commission_ok<=0|| empty($cansettle) || !empty($last_apply)}class='disabled'{/if} >提现</span></a></div>
     </div> 
     <div class="menu">  
         <a {php echo "href='".$this->createPluginMobileUrl('channel/log')."'";}><div class="nav nav1"><i class="fa fa-cny fa-3x"></i><div class="title">提现记录</div><div class="con"><span>{php echo $commission_total}</span>元</div></div></a>
@@ -200,6 +200,7 @@
         <a href="{php echo $this->createPluginMobileUrl('channel/team')}"><div class="nav nav1"><i class="fa fa-group  fa-3x" style="color:#98cd37;"></i><div class="title">我的团队</div><div class="con"><span>{php echo $channelcount}</span> 人</div></div></a>
         <a {php echo "href='".$this->createPluginMobileUrl('channel/stock',array('type'=>$_GPC['type']))."'";}><div class="nav nav8"><i class="fa fa-truck"></i><div class="title">商品库存</div></div></a>
         <a href="{php echo $purchaseurl}"><div class="nav nav9"><i class="fa fa-paper-plane"></i><div class="title">我要采购</div></div></a>
+        <a href="{php echo $pickingurl}"><div class="nav nav9"><i class="fa fa-paper-plane-o"></i><div class="title">我要提货</div></div></a>
     </div>
 </script>
 <script language="javascript">
@@ -208,12 +209,18 @@
             var result = json.result;   
             $('#container').html(  tpl('tpl_main',result) );
             $('#withdraw').click(function(){
-                if(!json.result.cansettle){
-                     if(json.result.settlemoney>0){
-                     //core.tip.show('需到'+json.result.settlemoney+'元才能申请提现!');    
-                     }else{
-                        core.tip.show('无可提佣金!');        
-                     }
+                if(!json.result.cansettle || json.result.last_apply){
+                    if (!json.result.cansettle) {
+                        if(json.result.set.setapplyminmoney>0){
+                            core.tip.show('需到'+json.result.set.setapplyminmoney+'元才能申请提现!');    
+                        }else{
+                            core.tip.show('无可提佣金!');        
+                        }  
+                    }
+                     
+                    if (json.result.last_apply) {
+                        core.tip.show('提现周期'+json.result.set.setapplycycle+'小时!'); 
+                    }
                 }
             });
         },true);

@@ -38,11 +38,11 @@ a {text-decoration:none;}
   <div class="log_list" data-goodsid='<%log.goodsid%>'>
     <div class="left">
         <div class='inner'>
-            <%log.goods.title%><br><span>
+            <%log.goods.title%><br>规格：<span style="color:red"><%log.optiontitle%></span>
             <div class="img"><img src="<%log.goods.thumb%>"/></div>
         </div>
     </div>
-    <div class="right">库存(<%log.stock_total%>)<br><span>剩余(<%log.stock_total%>)</span></div>
+    <div class="right">库存(<%log.stock_total%>)<br><span></span></div>
   </div>
     <%/each%>
 </script>
