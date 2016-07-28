@@ -28,7 +28,7 @@ if($info) {
 
     $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
     setcookie($cookieid, base64_encode($info['openid']), time()+3600*24*7);
-    
+
     echo json_encode(array('status'=>1));
 } else {
     echo json_encode(array('status'=>0));
