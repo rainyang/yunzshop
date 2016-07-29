@@ -28,7 +28,7 @@
                 <%each v.children as child%>
                     <div class="items">
                         <dl>
-                            <dt class="second" data-id="<%v.id%>"><%child.name%></dt>
+                            <dt class="second" data-id="<%child.id%>"><%child.name%></dt>
                             {if $set['catleve'] == 3}
                             <dd>
                             <%each child.third as third%>
