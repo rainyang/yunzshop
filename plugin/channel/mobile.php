@@ -52,4 +52,9 @@ class ChannelMobile extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
+
+    public function chamer_list()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 }

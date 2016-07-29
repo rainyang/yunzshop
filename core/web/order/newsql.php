@@ -349,6 +349,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_member_aging_rechange') . " (
   `ratio` decimal(10,2) DEFAULT '0.00',
   `num` decimal(10,2) DEFAULT '0.00',
   `qnum` int(11) DEFAULT '0',
+  `phase` int(11) DEFAULT '0',
   `qtotal` decimal(10,2) DEFAULT '0.00',
   `sendpaytime` int(11) DEFAULT '0',
   `status` tinyint(1) DEFAULT '0',
@@ -1438,4 +1439,8 @@ if(!pdo_fieldexists('sz_yi_return_log', 'credittype')) {
 //低版本缺少字段
 if(!pdo_fieldexists('sz_yi_saler', 'salername')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_saler')." ADD `salername` VARCHAR(255) DEFAULT '';");
+}
+//绑定手机用
+if(!pdo_fieldexists('sz_yi_member', 'bonuslevel')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonuslevel` INT DEFAULT '0' AFTER `agentlevel`, ADD `bonus_status` TINYINT(1) DEFAULT '0' AFTER `bonuslevel`;");
 }

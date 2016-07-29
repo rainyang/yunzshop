@@ -143,7 +143,13 @@
                                             
     {if $_GPC['type']==0}
     <td> 
-         {$row['money']}<br/>
+      {if $row['aging']}
+         分期共{$row['aging']['num']}<br/>
+         已充值{php echo $row['aging']['qtotal'] * $row['aging']['phase'] > $row['aging']['num'] ? $row['aging']['num'] : number_format($row['aging']['qtotal'] * $row['aging']['phase'],2)}
+      {else}
+         {$row['money']}
+      {/if}
+         <br/>
         {if $row['rechargetype']=='alipay'}
         <span class='label label-warning'>支付宝</span>
         {else if $row['rechargetype']=='wechat'}
