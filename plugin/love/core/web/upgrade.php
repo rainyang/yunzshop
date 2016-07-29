@@ -27,6 +27,20 @@ $sql = "CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_love_log') . " (
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='爱心基金记录' AUTO_INCREMENT=1 ;";
 pdo_fetchall($sql);
 
+$sql = "CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_agency') . " (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `openid` varchar(255) DEFAULT '',
+  `uniacid` int(11) DEFAULT '0',
+  `realname` varchar(55) DEFAULT '',
+  `mobile` varchar(255) DEFAULT '',
+  `weixin` varchar(255) DEFAULT '',
+  `productname` varchar(255) DEFAULT '',
+  `username` varchar(255) DEFAULT '',
+  `password` varchar(255) DEFAULT '',
+  `status` tinyint(3) DEFAULT '0' COMMENT '1审核成功2驳回',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
+pdo_fetchall($sql);
 if(!pdo_fieldexists('sz_yi_goods', 'love_money')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `love_money` decimal(10,2) DEFAULT '0.00';");
 }
