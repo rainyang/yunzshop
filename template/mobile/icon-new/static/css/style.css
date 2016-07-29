@@ -398,6 +398,7 @@ footer#footer-nav .menu-list:after {
     margin-bottom: 4px;
 }
 .cart_pay,.operation-bg{z-index: 9}
+.cart_main {padding-bottom: 106px;}
 /*新模版手机提现页面*/
 .cash-box{width: 96%;margin: 2%;background: #fff;overflow: hidden;}
 .balance_price{height: 20px;width: 100%;line-height: 20px;font-size: 16px;color: #666;margin: 16px 10px 0;border-bottom: 1px #eee solid;padding: 0 4px 16px;}
@@ -409,3 +410,18 @@ footer#footer-nav .menu-list:after {
 .cash-input{width: 90%;border: 0;line-height: 30px;font-size: 24px;color: #333;box-sizing: border-box;padding-left: 10px}
 .cash-input-z{width: 70%;border: 0;line-height: 30px;font-size: 24px;color: #333;box-sizing: border-box;padding-left: 10px}
 .balance_sub1,.balance_sub3,.balance_sub10{margin: 10px 2% 0 !important}
+
+/*收货地址页面*/
+.address_addnav{    padding: 0 3% 0 6%!important;position: fixed;bottom: 54px;left: 0;background: #f15353 !important;color: #fff !important;text-align: center;height: 44px !important;line-height: 44px !important;}
+.address_addnav i{    color: #fff;
+    font-size: 22px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    height: 18px;
+    line-height: 18px;
+    margin-left: -74px;
+    margin-top: -9px;
+}
+.address_sub1,.address_sub2,.info_sub,.refund_sub1{margin: 10px 2% 0 !important;width: 96% !important}
+.order_main .sub1,.order_main .sub2{margin: 10px 0 10px 5px !important;}

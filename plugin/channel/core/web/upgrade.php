@@ -15,7 +15,7 @@ if(empty($result)){
 $sql = "
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_merchant` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `uniacid` INT(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` INT(11) NOT NULL,
   `openid` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL COMMENT '我的openid',
   `lower_openid` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL COMMENT '下级openid',
   `commission` DECIMAL(10,2) NULL COMMENT '推荐员分红比例',
@@ -29,7 +29,7 @@ COMMENT = '渠道商推荐员';
 
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_level` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
-  `uniacid` INT(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` INT(11) NOT NULL,
   `level_name` VARCHAR(45) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL COMMENT '等级名称',
   `level_num` INT(1) NULL COMMENT '等级权重',
   `purchase_discount` VARCHAR(45) NULL COMMENT '进货折扣 %',
@@ -98,7 +98,7 @@ COMMENT = '渠道商库存';
 
 
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_stock_log` (
-  `id` INT(11) NOT NULL,
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
   `uniacid` INT(11) NOT NULL,
   `openid` VARCHAR(50) NULL,
   `goodsid` INT(11) NULL COMMENT '商品ID',

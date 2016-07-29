@@ -1,0 +1,108 @@
+{template 'common/header'}
+<title>{if empty($current_category)}全部商品{else}{$current_category['name']}{/if}</title>
+
+<!--导航调用-->
+{template 'common/navigation'}
+<div style="width:100%;background:#fff">
+<div class="w m0a">  
+        <script type="text/html" id="tpl_main_info"> 
+        <div class="categories">
+            <div class="categories-container">
+                <div class="w1210 m0a">
+                <%each category as value%>
+                    <a class="ui-category-item" data-id="<%value.id%>"><%value.name%></a>
+                <%/each%>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="all-ullist">
+        <%each category as v%>
+            <div class="category-item fl" data-id="<%v.id%>">
+                <div class="item-title">
+                    <b></b>
+                    <i></i>
+                    <span><%v.name%></span>
+                </div>
+                <%each v.children as child%>
+                    <div class="items">
+                        <dl>
+                            <dt><%child.name%></dt>
+                            <dd>
+                            <%each child.third as third%>
+                                <a href="#"><%third.name%></a>
+                            <%/each%>
+                            </dd>
+                        </dl>
+                    </div>
+                <%/each%>
+            </div>
+            <%/each%>
+            
+        </div>
+        </script>
+
+
+
+        
+        <div id="category_info"></div>
+        
+            
+        
+            
+
+</div>
+</div></div>
+
+
+
+
+<script language='javascript'>
+
+
+    require(['tpl', 'core'], function (tpl, core) {
+
+        core.json('shop/alllist',{},function(json) {
+        
+
+
+            $('#category_info').html(tpl('tpl_main_info',json.result));  
+
+             var h = $(".categories-container").offset().top;
+ 
+             $(document).scroll(function() {
+                if ($(document).scrollTop() >= h) {
+                        $(".categories-container").css("position","fixed").css("top",148).css("left",0).css("box-shadow","0 2px 5px #d3d3d3"); 
+                        $("#head-fix").css("position","fixed").css("top",40).css("left",0).css("background-color","#fff");
+                        $(".head_top").css("position","fixed").css("top",0).css("left",0);
+                        
+                } else {
+                    $(".categories-container").css("position","static").css("box-shadow","0 0 0"); 
+                    $("#head-fix").css("position","static");
+                    $(".head_top").css("position","static");
+                }
+             });
+
+            $('.ui-category-item').click(function(){
+                var dataid = $(this).data('id');
+                $(this).siblings().removeClass('selected');
+
+                $('.ui-category-item[data-id='+dataid+']').addClass('selected');
+                $('html,body').animate({scrollTop:$('.category-item[data-id='+dataid+']').offset().top - 100},100)
+            })
+
+        });
+        
+    }); $(".orderCell[data-order='{$_GPC['order']}'][data-by='{$_GPC['by']}']").addClass('orderActive');
+
+       
+        
+        
+
+
+        
+
+        
+</script>
+{template 'common/footer'}
