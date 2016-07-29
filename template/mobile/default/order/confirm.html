@@ -442,14 +442,11 @@
 <script type="text/javascript">
 var fromcart = 0;
     require(['tpl', 'core'], function(tpl, core) {
-<<<<<<< HEAD
 
 
 
-        core.json('order/confirm', {id:'{php echo intval($_GPC['id'])}', optionid:'{php echo intval($_GPC['optionid'])}', total:'{php echo intval($_GPC['total'])}',cartids:"{$_GPC['cartids']}",ischannelpay:"{$_GPC['ischannelpay']}",ischannelpick:{$_GPC['ischannelpick']}}, function(json){
-=======
-        core.json('order/confirm', {id:'{php echo intval($_GPC['id'])}', optionid:'{php echo intval($_GPC['optionid'])}', total:'{php echo intval($_GPC['total'])}',cartids:"{$_GPC['cartids']}"}, function(json){
->>>>>>> a2c3b3f8d0ff390490c88462dfb95676f6f62d8a
+        core.json('order/confirm', {id:'{php echo intval($_GPC['id'])}', optionid:'{php echo intval($_GPC['optionid'])}', total:'{php echo intval($_GPC['total'])}',cartids:"{$_GPC['cartids']}",ischannelpay:"{$_GPC['ischannelpay']}",ischannelpick:"{$_GPC['ischannelpick']}"}, function(json){
+
 
         if(json.status==-1){
             location.href=json.result.url;
@@ -986,17 +983,11 @@ var fromcart = 0;
             order[i] ={
                 'supplier_uid': supplierarr[i], 
                 'goods': goods,
-<<<<<<< HEAD
 				        'id':'{$id}',
 				        gdid:gdid,
 				        diydata:diydata,
                 ischannelpay:"{$_GPC['ischannelpay']}",
                 ischannelpick:"{$_GPC['ischannelpick']}",
-=======
-        				'id':'{$id}',
-        				 gdid:gdid,
-        				 diydata:diydata,
->>>>>>> a2c3b3f8d0ff390490c88462dfb95676f6f62d8a
                 'dispatchtype': $("#dispatchtype").val(),
                 'fromcart':fromcart,
                 'cartids':"{$_GPC['cartids']}",
