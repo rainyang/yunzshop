@@ -1440,3 +1440,7 @@ if(!pdo_fieldexists('sz_yi_return_log', 'credittype')) {
 if(!pdo_fieldexists('sz_yi_saler', 'salername')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_saler')." ADD `salername` VARCHAR(255) DEFAULT '';");
 }
+//绑定手机用
+if(!pdo_fieldexists('sz_yi_member', 'bonuslevel')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonuslevel` INT DEFAULT '0' AFTER `agentlevel`, ADD `bonus_status` TINYINT(1) DEFAULT '0' AFTER `bonuslevel`;");
+}
