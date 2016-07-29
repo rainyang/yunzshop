@@ -188,7 +188,10 @@
                         {ifp 'order'}<li><a  href="{php echo $this->createWebUrl('order', array('op' => 'display','member'=>$row['nickname']))}" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>{/if}
                         {ifp 'finance.recharge.credit1'}<li><a href="{php echo $this->createWebUrl('finance/recharge', array('op'=>'credit1','id'=>$row['id']))}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>{/if}
                         {ifp 'finance.recharge.credit2'}<li><a href="{php echo $this->createWebUrl('finance/recharge', array('op'=>'credit2','id'=>$row['id']))}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>{/if}
-		    {ifp 'member.member.black'}
+                        {if p('love')}
+                        <li><a href="{php echo $this->createWebUrl('finance/aging_recharge', array('id'=>$row['id']))}" title='分期充值'><i class='fa fa-money'></i> 分期充值 </a></li>
+                        {/if}
+		                  {ifp 'member.member.black'}
                             {if $row['isblack']==1}
                             <li><a href="{php echo $this->createWebUrl('member/list',array('op'=>'setblack','id' => $row['id'],'black'=>0));}" title='取消黑名单'><i class='fa fa-minus-square'></i> 取消黑名单</a></li>
                             {else}

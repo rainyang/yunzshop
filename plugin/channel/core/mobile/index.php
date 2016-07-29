@@ -9,7 +9,7 @@ $channelinfo 		= $this->model->getInfo($openid);
 $ordercount 		= $channelinfo['channel']['ordercount'];
 $channelcount		= count($channelinfo['channel']['mychannels']);
 $commission_total 	= $channelinfo['channel']['commission_total'];
-$commission_ok 		= $channelinfo['channel']['commission_ok'];
+$commission_ok 		= $channelinfo['channel']['commission_ok'] + $channelinfo['channel']['lower_order_money'];
 $cansettle 			= $commission_ok >= floatval($set['setapplyminmoney']);
 $commission_ok 		= number_format($commission_ok, 2);
 $setapplycycle		= $set['setapplycycle'] *3600;
