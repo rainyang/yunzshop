@@ -40,7 +40,7 @@ spl_autoload_register(function ($class_name) {
 
 require_once __API_ROOT__.'/YZ.class.php';
 
-class Dispatcher
+final class Dispatcher
 {
     private $api_name_arr;
     private $api_name;
@@ -59,7 +59,7 @@ class Dispatcher
 
         return __API_ROOT__ . "/{$controller_group_name}/{$controller_name}.php";
     }
-    
+
     public function getControllerGroupName(){
         $controller_group_name = $this->api_name_arr[0];
         return $controller_group_name;
@@ -67,6 +67,7 @@ class Dispatcher
     public function getControllerName()
     {
         $controller_name = $this->api_name_arr[1];
+       
         return $controller_name;
     }
 
@@ -77,7 +78,7 @@ class Dispatcher
     }
 }
 final class Run{
-    const CONTROLLER_NAME_SPACE='';
+    const CONTROLLER_NAME_SPACE='\\controller\\api\\';
     private $dispatch;
     public function __construct()
     {
@@ -87,13 +88,14 @@ final class Run{
     public function run(){
         require $this->dispatch->getControllerPatch();
         $controller_full_name = $this->getControllerFullName();
-        echo 1;
-        dump(new $controller_full_name);
+        $method_name = $this->dispatch->getMethodName();
+        $controller_obj = new $controller_full_name;
+        $controller_obj->$method_name();
     }
     private function getControllerFullName(){
         $controller_group_name = $this->dispatch->getControllerGroupName();
         $controller_name = $this->dispatch->getControllerName();
-        $controller_full_name = "\\controller\\api\\{$controller_group_name}\\{$controller_name}";
+        $controller_full_name = $this::CONTROLLER_NAME_SPACE."{$controller_group_name}\\{$controller_name}";
         return $controller_full_name;
     }
 }

@@ -8,23 +8,22 @@
  * @author    shenyang <shenyang@yunzshop.com>
  * @version   v1.0
  */
-namespace controller\api;
-class orderDetail extends \api\YZ
+namespace controller\api\order;
+class Detail extends \api\YZ
 {
     public function __construct()
     {
         parent::__construct();
         $this->ca("order.view.status_1|order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status5");
         //$api->validate('username','password');
-        $this->run();
     }
 
-    private function run()
+    public function index()
     {
         $para = $this->getPara();
         $order_info = $this->getOrderInfo($para);
         $member = $this->getMember($order_info['openid'], $para["uniacid"]);
-        $dispatch = $this->getDispatch($order_info["dispatchid"], $para["uniacid"]);
+        $dispatch = $this->getDispatch($order_info);
         $address = $this->getAddressInfo($order_info, $para["uniacid"]);
 
         $order_info = $this->formatOrderInfo($order_info);
@@ -96,7 +95,7 @@ class orderDetail extends \api\YZ
             }
         } else {
             if (empty($dispatchtype)) {
-                $dispatch = '自提';
+                $dispatch = '快递';
             }
         }
         return $dispatch;
@@ -114,7 +113,6 @@ class orderDetail extends \api\YZ
                     ":uniacid" => $uniacid
                 ));
             }
-            //dump($user);
             //$address_info = $user["address"];
             $user["address"] = array_part('province,city,area,address', $user);
             //dump($user["address"]);
@@ -125,10 +123,9 @@ class orderDetail extends \api\YZ
                 "address" => $user["address"],
             );
         }
-        //dump($user);
         return $order_info["addressdata"];
     }
 
 }
 
-new orderDetail();
+//new orderDetail();

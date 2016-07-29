@@ -41,7 +41,7 @@ class order
             "0" => "待付款",
             "1" => "待发货",
             "2" => "待收货",
-            "3" => "完成",
+            "3" => "已完成",
         ),
         'r_type' => array(
             '0' => '退款',
@@ -78,8 +78,8 @@ class order
     {
         global $_W;
         $condition[] = ' 1';
-        if ((int)($para['status'])) {
-            $condition['status'] = $this->getStatusCondition($para['status']);
+        if ($para['status']!=='' ) {
+           $condition['status'] = $this->getStatusCondition((int)$para['status']);
         }
         if ((int)($para['pay_type'])) {
             $condition['pay_type'] = $this->getPayTypeCondition($para['pay_type']);
