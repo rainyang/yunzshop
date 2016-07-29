@@ -3,41 +3,18 @@
 global $_W, $_GPC;
 $openid 			= m('user')->getOpenid();
 if($_W['isajax']) {
-	$status = trim($_GPC['status']);
-	if ($status != ''){
-    	$conditionq = '  AND o.status=' . intval($status);
-	}else {
-		$conditionq = '  AND o.status>=0';	
-	}
+	$channelinfo = $this->model->getInfo($openid);
 	$pindex = max(1, intval($_GPC['page']));
 	$psize = 20;
-	$sql = "SELECT o.id,o.ordersn,o.price,o.openid,o.status,o.address,o.createtime FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE 1 {$conditionq} AND o.uniacid=".$_W['uniacid']." AND og.channel_id={$member['id']} ORDER BY o.createtime DESC,o.status DESC  ";
+	$sql = "SELECT o.id,o.ordersn,o.price,o.openid,o.address,o.createtime FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id " . " WHERE 1 AND o.uniacid=".$_W['uniacid']." AND o.openid in ({$channelinfo['channel']['lower_openids']}) AND og.ischannelpay=1 AND o.status>=3 ORDER BY o.createtime DESC ";
 	$sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
 	$list = pdo_fetchall($sql);
-	//pdo_debug();
 	foreach ($list as $key => &$rowp) {
-		$list[$key]['price'] = 0;
-		$sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . " WHERE og.orderid=:orderid AND og.channel_id={$member['id']} order by og.id asc";
+		$commission = pdo_fetchcolumn("SELECT commission FROM " . tablename('sz_yi_channel_merchant') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND lower_openid='{$rowp['openid']}'");
+		$rowp['commission'] = number_format($rowp['price']*$commission/100,2);
+		$sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . " WHERE og.orderid=:orderid order by og.id asc";
 		$rowp['goods'] 		= set_medias(pdo_fetchall($sql, array(':orderid' => $rowp['id'])), 'thumb');
-		foreach ($rowp['goods'] as $value) {
-			$list[$key]['price'] += $value['price'];
-		}
 		$rowp['goodscount'] = count($rowp['goods']);
- 		if ($rowp['status'] == 0) {
- 			$rowp['status'] = '待付款';
-		} else {
- 			if ($rowp['status'] == 1) {
- 				$rowp['status'] = '已付款';
- 			} else {
- 				if ($rowp['status'] == 2) {
- 					$rowp['status'] = '待收货';
- 				} else {
- 					if ($rowp['status'] == 3) {
- 						$rowp['status'] = '已完成';
- 					}
- 				}
- 			}
-		}
 	}
 show_json(2, array('list' => $list,'pagesize' => $psize));
 }

@@ -157,6 +157,14 @@ if (!pdo_fieldexists('sz_yi_channel_apply', 'apply_ordergoods_ids')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_channel_apply')." ADD  `apply_ordergoods_ids` text;");
 }
 
+if (!pdo_fieldexists('sz_yi_channel_apply', 'apply_cmaorders_ids')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_channel_apply')." ADD  `apply_cmaorders_ids` text;");
+}
+
+if (!pdo_fieldexists('sz_yi_channel_apply', 'apply_selforders_ids')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_channel_apply')." ADD  `apply_selforders_ids` text;");
+}
+
 if (!pdo_fieldexists('sz_yi_channel_stock_log', 'paytime')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_channel_stock_log')." ADD  `paytime` INT(11) DEFAULT '0';");
 }
@@ -169,4 +177,7 @@ if(!pdo_fieldexists('sz_yi_channel_stock', 'optionid')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_channel_stock')." ADD `optionid` INT(11) DEFAULT '0';");
 }
 
+if(!pdo_fieldexists('sz_yi_order', 'iscmas')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `iscmas` INT(11) DEFAULT '0';");
+}
 message('渠道商插件安装成功', $this->createPluginWebUrl('channel/index'), 'success');

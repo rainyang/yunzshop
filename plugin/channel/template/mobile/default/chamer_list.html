@@ -40,20 +40,14 @@
 <script id='tpl_order_list' type='text/html'>
     <div class="page_topbar">
     <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
-    <div class="title">我的订单</div>
+    <div class="title">推荐订单</div>
 </div>
-    <div class="order_topbar">
-        <div class="nav {if $_GPC['status']==''}on{/if}" data-status="">全部</div>
-        <div class="nav {if $_GPC['status']=='1'}on{/if}"  data-status="1">待发货</div>
-        <div class="nav {if $_GPC['status']=='2'}on{/if}"  data-status="2">待收货</div>
-        <div class="nav {if $_GPC['status']=='3'}on{/if}"  data-status="3">已完成</div>
-    </div>
     <div id='order_container'></div>
 </script>
 <script id='tpl_order' type='text/html'>
     <%each list as order%>
     <div class="order_main" data-orderid="<%order.id%>">
-        <div class="title">订单号：<%order.ordersn%><span><%order.status%></span></div>
+        <div class="title">订单号：<%order.ordersn%><span>分红:<%order.commission%></span></div>
         <%each order.goods as g%>      
         <div class="good">
             <div class="img"><img src="<%g.thumb%>"/></div>
@@ -77,7 +71,7 @@
     
 </script>
 <script id='tpl_empty' type='text/html'>
-    <div class="order_no"><i class="fa fa-file-text-o" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">您还没有渠道订单</span></div>
+    <div class="order_no"><i class="fa fa-file-text-o" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">您还没有推荐订单</span></div>
 </script>
 <script language='javascript'>
 
@@ -97,10 +91,6 @@
                         return;
                     }
                     $("#order_container").html(tpl('tpl_order', json.result));
-                    /*$('.order_main').click(function(){
-                        var orderid = $(this).closest('.order_main').data('orderid');
-                        location.href = core.getUrl('plugin/channel/detail', {orderid: orderid});
-                    });*/
                 }, true);
       
     });
