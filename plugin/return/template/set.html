@@ -21,9 +21,8 @@
         <div class="form-group" id="return_queue" {if $set['isqueue'] ==0} style="display:none;"{/if}>
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">队列间隔</label>
             <div class="col-sm-8 col-xs-12">
-                    <input type="text" name="setdata[queue]" class="form-control" value="{$set['queue']}"  />
-                    
-                 <span class='help-block'></span>
+                <input type="text" name="setdata[queue]" class="form-control" value="{$set['queue']}"  />
+                <span class='help-block'></span>
             </div>
         </div>
 
@@ -194,7 +193,16 @@
     });
 </script>
 
-
+<!--             <div class='panel-body'>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现到余额与积分</label>
+                    <div class="col-sm-8 col-xs-12">
+                        <label class="radio-inline"><input type="radio"  name="setdata[credit]" value="credit2" {if $set['credit'] =='credit2'} checked="checked"{/if} /> 余额</label>
+                        <label class="radio-inline"><input type="radio"  name="setdata[credit]" value="credit1" {if $set['credit'] =='credit1'} checked="checked"{/if} /> 积分</label>
+                        <span class='help-block'></span>
+                    </div>
+                </div>
+            </div> -->
 
 
             <div class="form-group"></div>

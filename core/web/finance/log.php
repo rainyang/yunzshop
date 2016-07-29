@@ -102,12 +102,17 @@ if ($op == 'display') {
     if ($_GPC['status'] != '') {
         $condition .= ' and log.status=' . intval($_GPC['status']);
     }
-    $sql = "select log.id,m.id as mid, m.realname,m.diymemberdata,m.avatar,m.weixin,log.logno,log.type,log.status,log.rechargetype,m.nickname,m.mobile,g.groupname,log.money,log.createtime,l.levelname from " . tablename('sz_yi_member_log') . " log " . " left join " . tablename('sz_yi_member') . " m on m.openid=log.openid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where 1 {$condition} ORDER BY log.createtime DESC ";
+    $sql = "select log.id,log.aging_id,m.id as mid, m.realname,m.diymemberdata,m.avatar,m.weixin,log.logno,log.type,log.status,log.rechargetype,m.nickname,m.mobile,g.groupname,log.money,log.createtime,l.levelname from " . tablename('sz_yi_member_log') . " log " . " left join " . tablename('sz_yi_member') . " m on m.openid=log.openid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where 1 {$condition} ORDER BY log.createtime DESC ";
     if (empty($_GPC['export'])) {
         $sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
     }
     $list = pdo_fetchall($sql, $params);
-
+    if(p('love')){
+        foreach ($list as $key => &$value) {
+            $value['aging'] = pdo_fetch("select * from " . tablename('sz_yi_member_aging_rechange') . " where id=".$value['aging_id']);
+        }
+        unset($value);
+    }
     if ($_GPC['export'] == 1) {
         if ($_GPC['type'] == 1) {
             ca('finance.withdraw.export');

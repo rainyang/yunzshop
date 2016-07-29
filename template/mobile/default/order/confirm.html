@@ -442,7 +442,14 @@
 <script type="text/javascript">
 var fromcart = 0;
     require(['tpl', 'core'], function(tpl, core) {
+<<<<<<< HEAD
+
+
+
+        core.json('order/confirm', {id:'{php echo intval($_GPC['id'])}', optionid:'{php echo intval($_GPC['optionid'])}', total:'{php echo intval($_GPC['total'])}',cartids:"{$_GPC['cartids']}",ischannelpay:"{$_GPC['ischannelpay']}",ischannelpick:{$_GPC['ischannelpick']}}, function(json){
+=======
         core.json('order/confirm', {id:'{php echo intval($_GPC['id'])}', optionid:'{php echo intval($_GPC['optionid'])}', total:'{php echo intval($_GPC['total'])}',cartids:"{$_GPC['cartids']}"}, function(json){
+>>>>>>> a2c3b3f8d0ff390490c88462dfb95676f6f62d8a
 
         if(json.status==-1){
             location.href=json.result.url;
@@ -558,6 +565,7 @@ var fromcart = 0;
                     $('.carrier_input_info').hide();
                     $('.addorder_user addorder_user_0').show();
                     $('.addorder_exp').show();
+                    $('#carrierid').val('');
                     getDispatchPrice();
                 }
                 $('#dispatchtype').val(nav);
@@ -577,6 +585,7 @@ var fromcart = 0;
                     $("#carrier_mobile").html(obj.data('mobile'));
                     $("#carrier_address").html(obj.data('address'));
                     $(".choose_carrier").animate({right: "-100%"}, 100);
+                    getDispatchPrice();
                 })
             })
         }
@@ -718,11 +727,15 @@ var fromcart = 0;
                   totalprice:totalprice,
                   addressid: $('#addressid').val(),
                   dispatchid: $('#dispatchid').val(),
+                  carrierid: $('#carrierid').val(),
                   supplier_uid: supplierarr[i],
                   dflag: zt,
+                  id:"{$_GPC['id']}",
+                  cartids:"{$_GPC['cartids']}",
                   goods: $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val()
               }, function(getjson) {
                   if (getjson.status == 1) {
+                    
                       if(zt){
                           $('.dispatchprice[data-id='+supplierarr[i]+']').html('0.00');
                       } else {
@@ -742,13 +755,17 @@ var fromcart = 0;
                       }
 
                       if(getjson.result.hascoupon){
-                        $('.coupondiv[data-id='+supplierarr[i]+']').show();
-                        $('.coupondiv[data-id='+supplierarr[i]+'] .couponcount').html(getjson.result.couponcount);
+                        console.log($('.coupondiv[data-id='+supplierarr[i]+']'));
+                        
+                        $('.coupondiv').show();
+                        $('.coupondiv .couponcount').html(getjson.result.couponcount);
                         bindCouponEvents();
+                        
                       }else{
-                        $("input[data-name='couponid'][data-id="+supplierarr[i]+"]").val('');
-                        $('.couponselect[data-id='+supplierarr[i]+']').html('我要使用优惠券');
-                        $('.coupondiv[data-id='+supplierarr[i]+']').hide();
+                        
+                        $("input[data-name='couponid']").val('');
+                        $('.couponselect').html('我要使用优惠券');
+                        $('.coupondiv').hide();
                       }
 
                       if(getjson.result.deductenough_money>0){
@@ -969,9 +986,17 @@ var fromcart = 0;
             order[i] ={
                 'supplier_uid': supplierarr[i], 
                 'goods': goods,
+<<<<<<< HEAD
+				        'id':'{$id}',
+				        gdid:gdid,
+				        diydata:diydata,
+                ischannelpay:"{$_GPC['ischannelpay']}",
+                ischannelpick:"{$_GPC['ischannelpick']}",
+=======
         				'id':'{$id}',
         				 gdid:gdid,
         				 diydata:diydata,
+>>>>>>> a2c3b3f8d0ff390490c88462dfb95676f6f62d8a
                 'dispatchtype': $("#dispatchtype").val(),
                 'fromcart':fromcart,
                 'cartids':"{$_GPC['cartids']}",
@@ -1017,12 +1042,15 @@ var fromcart = 0;
             core.json('order/confirm', data, function(create_json) {
 
                 if (create_json.status == 1) {
-                    location.href = "{php echo $this->createMobileUrl('order/pay')}&orderid=" + create_json.result.orderid +"&openid={$openid}";
-                }  else if (create_json.status == -1) {
+                  if (create_json.result.ischannelpick) {
+                    location.href = "{php echo $this->createMobileUrl('order/list')}";
+                  } else {
+                    location.href = "{php echo $this->createMobileUrl('order/pay')}&orderid=" + create_json.result.orderid +"&openid={$openid}&ischannelpay=" + create_json.result.ischannelpay;
+                  }
+                } else if (create_json.status == -1) {
                      $('.paysub').html('确认订单').removeAttr('submitting');
                      core.tip.show(create_json.result);
-                }
-                else {
+                } else {
                     $('.paysub').html('确认订单').removeAttr('submitting');
                     core.tip.show("生成订单失败!")
                 }
@@ -1093,7 +1121,7 @@ var fromcart = 0;
 	         }
 	         if(deductprice>0){
 		        $('.coupondeduct_div[data-id='+supplier_uid+']').show();
-	          $('.coupondeduct_money[data-id='+supplier_uid+']').html(deductprice.toFixed(2));	
+	          $('.coupondeduct_money').html(deductprice.toFixed(2));	
 	         }
 	         return totalprice;
 				
@@ -1103,8 +1131,9 @@ var fromcart = 0;
 				  $('.selectcoupon').click( function(){
              var money =parseFloat( $('.totalprice').html().replace(",","") ) ;	
              var supplier_uid = $(this).attr('data-id');
+             var carrierid = $('#carrierid').val();
              console.log(supplier_uid);
- 				     core.pjson('coupon/util', {op: 'query', money: money, type:0, supplier_uid: supplier_uid, goodsid: "{$goodid}", cartids: "{$cartid}"}, function (rjson) {
+ 				     core.pjson('coupon/util', {op: 'query', money: money, type:0, supplier_uid: supplier_uid, goodsid: "{$goodid}", cartids: "{$cartid}", carrierid: carrierid}, function (rjson) {
   							if (rjson.status != 1) {
   								core.tip.show(rjson.result);
   								$("input[data-name='couponid'][data-id="+supplier_uid+"]").val('');

@@ -248,7 +248,7 @@
                <div class="addorder_price" style="margin-top:5px;">
                     <div class="price" style="border:none;">
                         <%if  order.deductcredit>0 %>
-                        <div class="line" style="line-height:26px;"><d id="deductcredit_info"><%order.deductcredit%></d> 积分可抵扣 <d id="deductcredit_money" style='color:#ff6600'><%deductmoney%></d> 元
+                        <div class="line" style="line-height:26px;"><d id="deductcredit_info"><%order.deductcredit%></d> 积分可抵扣 <d id="deductcredit_money" style='color:#ff6600'><%order.deductmoney%></d> 元
                             <div id='deductcredit' class="nav" on="0" credit="<%order.deductcredit%>" money='<%order.deductmoney%>'><nav></nav></div>
                         </div>
                         <%/if%>
@@ -883,13 +883,15 @@ var fromcart = 0;
             
             if($("#deductcredit").length>0){
                 if($("#deductcredit").attr('on')=='1'){
-                      data.deduct = 1;       
+                      data.deduct = 1;  
+                       data.deductcredit =$("#deductcredit_money").html();       
                 }
             }
              
             if($("#deductcredit2").length>0){
                 if($("#deductcredit2").attr('on')=='1'){
                       data.deduct2 = 1;       
+                      data.deductcredit2 =$("#deductcredit2_money").html();       
                 }
             }
        {if $hascouponplugin}
