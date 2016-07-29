@@ -76,6 +76,9 @@ if (!class_exists('CashierModel')) {
                     
                 }
             }
+            if (p('return')) {
+                p('return')->cumulative_order_amount($orderid);
+            }
         }
 
         /**

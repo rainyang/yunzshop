@@ -16,9 +16,8 @@ input {-webkit-appearance:none; outline:none;}
 
 <script id='tpl_main' type='text/html'>
  <div class="balance_img"><i class="fa fa-cny"></i></div>
-    <div class="balance_text">结算金额</div>
+    <div class="balance_text">结算金额=出货(<%channel_info.channel.commission_ok%>)+推荐分红(<%channel_info.channel.lower_order_money%>)-运费(<%channel_info.channel.dispatchprice%>)</div>
     <div class="balance_num">￥<%member.commission_ok%></div>
-    
     {if empty($this->set['closetocredit'])}
     <div class="balance_sub balance_sub1 <%if !cansettle%>disabled<%/if%>" data-type="0">提现到余额</div>
     {/if}
@@ -31,6 +30,7 @@ input {-webkit-appearance:none; outline:none;}
         
         core.pjson('channel/apply',{},function(json){
            var result = json.result;
+           console.log(result);
            $('#container').html(  tpl('tpl_main',json.result) );
            /*if(result.noinfo){
                 core.message('请补充您的资料后才能申请提现!',result.infourl,'warning');
