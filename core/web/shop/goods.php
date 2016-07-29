@@ -462,9 +462,9 @@ if ($operation == "change") {
         }else{
             $data['status'] = $_GPC['status'];
         }
-        // if(!empty(p('love'))){
-        //     $data['love_money'] = $_GPC['love_money'];
-        // }
+        if(p('love')){
+             $data['love_money'] = $_GPC['love_money'];
+        }
         if ($pluginreturn) {
             $data['isreturn'] = intval($_GPC['isreturn']);   //添加全返开关    1:开    0:关
             $data['isreturnqueue'] = intval($_GPC['isreturnqueue']);   //添加全返排列开关    1:开    0:关

@@ -917,7 +917,7 @@ if (!class_exists('BonusModel')) {
 
 					//更新分红订单完成
 					pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
-					$totalmoney += $member['commission_ok'];
+					$totalmoney += $send_money;
 				}
 			}
 			$total += 1;

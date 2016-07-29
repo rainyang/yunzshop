@@ -3,7 +3,16 @@ global $_W, $_GPC;
 $openid = m('user')->getOpenid();
 if ($_W['isajax']) {
 	$member = $this->model->getInfo($openid, array('total', 'ok', 'apply', 'check', 'lock', 'pay', 'myorder'));
-	$cansettle = $member['commission_ok'] > 0 && $member['commission_ok'] >= floatval($this->set['withdraw']) &&  $member['myordermoney'] >= floatval($this->set['consume_withdraw']);
+	if(!empty($this->set['withdraw_proportion'])){
+        $withdraw_proportion = empty($level['withdraw_proportion']) ? floatval($this->set['withdraw_proportion']) : $level['withdraw_proportion'];
+        if($member['myordermoney'] < $withdraw_proportion*$member['commission_ok']){
+        	//计算出差额
+            $proportion = false;
+            $proportion_money = $member['commission_ok']*$withdraw_proportion-$member['myordermoney'];
+            $member['proportion_money'] = number_format($proportion_money);
+        }
+    }
+	$cansettle = $member['commission_ok'] > 0 && $member['commission_ok'] >= floatval($this->set['withdraw']) &&  $member['myordermoney'] >= floatval($this->set['consume_withdraw']) && $proportion;
 	$member['commission_ok'] = number_format($member['commission_ok'], 2);
 	$member['commission_total'] = number_format($member['commission_total'], 2);
 	$member['commission_check'] = number_format($member['commission_check'], 2);

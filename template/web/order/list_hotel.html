@@ -220,18 +220,10 @@
                     入住日期：  {php echo date('Y-m-d',$item['btime'])} <br />
                     离店日期：  {php echo date('Y-m-d',$item['etime'])} <br />
 
-                      房间数量:  {php echo $item['num']}  间<br /> 
+                    房间数量:  {php echo $item['num']}  间<br /> 
                     房价:
+                    ￥ {$item['goodsprice']}                   
 
-                    ￥ 
-                     {if $item['depositpricetype']=='1' }
-                       {php echo $item['price']-$item['depositprice']}
-                     {/if}
-                      {if $item['depositpricetype']!='1' }
-                       {php echo $item['price']}
-                     {/if}
-
-                     
 
                     {php echo $item['roomprice']} <br />
                     押金:
@@ -243,6 +235,19 @@
                        到店付
                      {/if}
                      )<br />
+                      {if $item['discountprice']>0}
+                          会员折扣：-￥{php echo number_format( $item['discountprice'],2)}
+                      {/if}
+                      {if $item['deductprice']>0}                     
+                          积分抵扣：-￥{php echo number_format($item['deductprice'],2)}
+                      {/if}
+                      {if $item['deductcredit2']>0}
+                          余额抵扣：
+                         -￥{php echo number_format($item['deductcredit2'],2)}                            
+                      {/if}
+                      {if $item['deductenough']>0}                        
+                         满额立减：-￥{php echo number_format( $item['deductenough'],2)}
+                      {/if}
                       总计: ￥{php echo $item['price']} 
                       
                     </td>
@@ -261,11 +266,11 @@
                     </td>                       
                     <td   rowspan="{php echo count($item['goods'])}" >
                     <label class='label label-{$item['statuscss']}'>{$item['status']}</label>
-                     {if $item['returndepositprice']!='' && $item['statusvalue']=='3'}
+                     {if $item['returndepositprice']!='0' && $item['statusvalue']=='3'}
                     <label class='label label-{$item['statuscss']}'>押金已退{$item['returndepositprice']}元</label>
 
                      {/if}
-                    {if $item['returndepositprice']=='' && $item['statusvalue']=='3'}
+                    {if $item['returndepositprice']=='0' && $item['statusvalue']=='3'}
                     <label class='label label-{$item['statuscss']}'style="background-color:#E84556">押金未退</label>
                      {/if}
                     <br />

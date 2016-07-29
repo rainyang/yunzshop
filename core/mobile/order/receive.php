@@ -79,4 +79,43 @@ if(!empty($pbonus)){
 		}
 	}
 }
+
+if(p('love')){
+	$time = time();
+	$rechanges = pdo_fetchall("select * from " . tablename('sz_yi_member_aging_rechange') . " where sendpaytime <=".$time." and status=0");
+	$set = m('common')->getSysset('shop');	
+	foreach ($rechanges as $key => $value) {
+		$logno = m('common')->createNO('member_log', 'logno', 'RC');
+		$_W['uniacid'] = $value['uniacid'];
+		$moneyall = pdo_fetchcolumn("select * from " . tablename('sz_yi_member_log') . " where aging_id=".$value['id']." and uniacid=".$_W['uniacid']);
+		$remain = $value['num'] - $moneyall;
+		$edit_rechange = array();
+		if($remain > $value['qnum']){
+			$sendmney = $value['qnum'];
+		}else{
+			$sendmney = $remain;
+			$edit_rechange['status'] = 1;
+		}
+		if($sendmonth == 0){
+			$edit_rechange['sendpaytime'] = mktime($value['sendtime'], 0, 0, date('m'), date('d')+1, date('Y'));
+		}else{
+			$edit_rechange['sendpaytime'] = mktime($value['sendtime'], 0, 0, date('m')+1, 1, date('Y'));
+		}
+
+		exit();
+		$data = array(
+			'openid' => $value['openid'], 
+			'logno' => $logno, 
+			'uniacid' => $_W['uniacid'], 
+			'type' => '0', 
+			'createtime' => TIMESTAMP, 
+			'status' => '1', 
+			'title' => $set['name'] . '会员分期充值', 
+			'money' => $sendmney, 
+			'rechargetype' => 'system'
+			);
+		pdo_insert('sz_yi_member_log', $data);
+		$logid = pdo_insertid();
+	}
+}
 echo "ok...";
