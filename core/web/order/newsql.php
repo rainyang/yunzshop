@@ -349,6 +349,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_member_aging_rechange') . " (
   `ratio` decimal(10,2) DEFAULT '0.00',
   `num` decimal(10,2) DEFAULT '0.00',
   `qnum` int(11) DEFAULT '0',
+  `phase` int(11) DEFAULT '0',
   `qtotal` decimal(10,2) DEFAULT '0.00',
   `sendpaytime` int(11) DEFAULT '0',
   `status` tinyint(1) DEFAULT '0',
