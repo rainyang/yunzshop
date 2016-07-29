@@ -62,7 +62,7 @@
                                     <a class="btn btn-danger btn-sm disbut" href="{php echo $this->createWebUrl('order', array('op' => 'deal','to'=>'redpack','id' => $item['id']))}" onclick="return confirm('确认发送红包吗？');return false;">补发红包</a>
                                     <a>{$item['redprice']}元</a>
                                 {/if}  
-                                {if $item['order_type']=='3' && $item['returndepositprice'] ==''}      
+                                {if $item['order_type']=='3' && $item['returndepositprice'] =='0'}      
                                   <input class='itemid'  type='hidden' value="{$item['id']}"/>                                                       
                                   <a class="btn btn-primary btn-sm disbut" href="javascript:;" onclick="send(this)" data-toggle="modal" data-target="#modal-depositprice">退押金（在线付）</a>
                                   <a class="btn btn-danger btn-sm disbut" href="javascript:;" onclick="send(this)" data-toggle="modal" data-target="#modal-depositprice">退押金（前台付）</a>

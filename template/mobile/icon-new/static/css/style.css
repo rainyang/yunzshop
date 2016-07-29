@@ -181,7 +181,7 @@ footer#footer-nav .menu-list:after {
 
 .page_topbar {    position: relative;height:45px; background:#fff; border-bottom:1px solid #e8e8e8; font-size:16px; line-height:45px; text-align:center; }
 .page_topbar .title {height:45px;;line-height:45px; color:#666; text-align: center;}
-.page_topbar a.back {position:absolute;left:15px;height:45px;line-height:45px;display:block;color:#999; font-size:24px;}
+.page_topbar a.back {text-decoration: none;position:absolute;left:15px;height:45px;line-height:45px;display:block;color:#999; font-size:24px;}
 .page_topbar a.btn { position: absolute;right:10px;height:45px;line-height:45px;display:block;color:#999; font-size:24px; }
 
 
@@ -398,3 +398,14 @@ footer#footer-nav .menu-list:after {
     margin-bottom: 4px;
 }
 .cart_pay,.operation-bg{z-index: 9}
+/*新模版手机提现页面*/
+.cash-box{width: 96%;margin: 2%;background: #fff;overflow: hidden;}
+.balance_price{height: 20px;width: 100%;line-height: 20px;font-size: 16px;color: #666;margin: 16px 10px 0;border-bottom: 1px #eee solid;padding: 0 4px 16px;}
+.balance_price span{ color: #f15353;    font-weight: bold;}
+.cash-num{padding:10px 0 10px 10px;overflow: hidden;width: 100%;box-sizing: border-box; }
+.cash-num-pb{padding-bottom:0 }
+.cash-num-pt{padding-top:0 }
+.cash-num span{color: #000;font-size: 16px;padding-left: 6px;}
+.cash-input{width: 90%;border: 0;line-height: 30px;font-size: 24px;color: #333;box-sizing: border-box;padding-left: 10px}
+.cash-input-z{width: 70%;border: 0;line-height: 30px;font-size: 24px;color: #333;box-sizing: border-box;padding-left: 10px}
+.balance_sub1,.balance_sub3,.balance_sub10{margin: 10px 2% 0 !important}
