@@ -55,17 +55,23 @@ function testSendFreeMessage($print_order,$member_code,$device_no,$key,$set,$pri
 	//file_put_contents($_SERVER['DOCUMENT_ROOT'].'/addons/sz_yi/core/model/1.txt', print_r($print_order,true));
 	//<QRcode# Size=8>http://www.baidu.com</QRcode#>
 	$goods = "";
-	$sum_money = number_format(($print_order['price'] + $print_order['deductcredit']),2);
 	
 	$depositprice = number_format($print_order['depositprice'],2);
 	$type= array(
 		'2'=>'到付',
 		'1'=>'在线付'
 		);
+	if($print_order['depositpricetype']=='1'){
+		$sum_money = number_format(($print_order['goodsprice'] + $print_order['depositprice']),2);
+	}else{
+		$sum_money = number_format(($print_order['goodsprice']),2);
+
+	}
+
     $depositpricetype = $type[$print_order['depositpricetype']];
 	foreach ($price_list  as $value) {
-		$total = $value['cprice']*$print_order['num'];
-		$goods .= $value['cprice']."   ".$print_order['num']."    ".$total."    ".$value['thisdate']."\n";
+		$total = $value['oprice']*$print_order['num'];
+		$goods .= $value['oprice']."   ".$print_order['num']."    ".$total."    ".$value['thisdate']."\n";
 		//$num++;
 	}
 	
@@ -78,14 +84,29 @@ function testSendFreeMessage($print_order,$member_code,$device_no,$key,$set,$pri
        }else{
           $room_price = number_format($print_order['price'],2);
     }
-    if($print_order['deductcredit']!=''){
-    	$room_price= number_format($room_price+$print_order['deductcredit'],2);
-    }
-    if($set['print_order']=='1'){
-         $set['print_text']= '该订单未支付';
+    //余额
+    if($print_order['deductcredit2']!=''){
+    	$deductcredit2= number_format($print_order['deductcredit2'],2);
     }else{
-    	 $set['print_text']= '该订单已支付';
+    	$deductcredit2= '0.00';
     }
+    //会员
+    if($print_order['discountprice']!=''){
+    	$discountprice= number_format($print_order['discountprice'],2);
+    }else{
+    	$discountprice= '0.00';
+    }
+    //积分
+    if($print_order['deductprice']!=''){
+    	$deductprice= number_format($print_order['deductprice'],2);
+    }else{
+    	$deductprice= '0.00';
+    }
+    // if($set['print_order']=='1'){
+    //      $set['print_text']= '该订单未支付';
+    // }else{
+    // 	 $set['print_text']= '该订单已支付';
+    // }
 	$freeMessage = array(
 		'memberCode'=>$member_code, 
 		'msgDetail'=>
@@ -102,12 +123,13 @@ function testSendFreeMessage($print_order,$member_code,$device_no,$key,$set,$pri
 单价   数量   金额    入住日期        
 {$goods}
 ------------------------------
-房间小计：       {$room_price}
+房间小计：       {$print_order['goodsprice']}
 押金：           {$depositprice}({$depositpricetype})
 合计：           {$sum_money}
-优惠券：         -{$print_order['deductcredit']}
+会员优惠：		 {$discountprice}
+余额抵扣： 		 {$deductcredit2}
+积分抵扣： 		 {$deductprice}
 实际支付：       {$print_order['price']}
-{$set['print_text']}
 ------------------------------
 {$set['description']}
 客服服务热线：{$set['phone']}
@@ -124,19 +146,51 @@ function testSendFreeMessage($print_order,$member_code,$device_no,$key,$set,$pri
 //便利店打印
 function testSendFreeMessageshop($print_order,$member_code,$device_no,$key,$set){
 	$goods = "";
-	$sum_money = number_format(($print_order['price'] + $print_order['deductcredit']),2);
 	//$num = 1;
 	foreach ($print_order['goods'] as $value) {
 		$goods .= $value['goodstitle']."\n"."            ".$value['price']."    ".$value['total']."     ".$value['totalmoney']."\n";
 		//$num++;
 	}
-	if($set['print_order']=='1'){
-         $set['print_text']= '该订单未支付';
-    }else{
-    	 $set['print_text']= '该订单已支付';
-    }
+	// if($set['print_order']=='1'){
+ //         $set['print_text']= '该订单未支付';
+ //    }else{
+ //    	 $set['print_text']= '该订单已支付';
+ //    }
 	$msgNo = $print_order['ordersn'];
 	$time = date('Y-m-d H:i:s',$print_order['createtime']);
+	//余额
+    if($print_order['deductcredit2']!=''){
+    	$deductcredit2= number_format($print_order['deductcredit2'],2);
+    }else{
+    	$deductcredit2= '0.00';
+    }
+    //会员
+    if($print_order['discountprice']!=''){
+    	$discountprice= number_format($print_order['discountprice'],2);
+    }else{
+    	$discountprice= '0.00';
+    }
+    //积分
+    if($print_order['deductprice']!=''){
+    	$deductprice= number_format($print_order['deductprice'],2);
+    }else{
+    	$deductprice= '0.00';
+    }
+
+    //运费
+    if($print_order['olddispatchprice']!=''){
+    	$olddispatchprice= number_format($print_order['olddispatchprice'],2);
+    }else{
+    	$olddispatchprice= '0.00';
+    }
+    //房间号
+    if($print_order['room_number']!=''){
+    	$room_number= "配送房间号:  ".  $print_order['room_number'];
+    }else{
+    	$room_number= '';
+    }
+    $sum_money = number_format(($print_order['goodsprice'] + $olddispatchprice),2);
+
 	$freeMessage = array(
 		'memberCode'=>$member_code, 
 		'msgDetail'=>
@@ -145,16 +199,18 @@ function testSendFreeMessageshop($print_order,$member_code,$device_no,$key,$set)
 ------------------------------
 订单编号：{$msgNo}
 下单时间：{$time}
-配送房间号：{$print_order['room_number']}
+{$room_number}
 订单备注：{$print_order['remark']}
 ------------------------------
 商品名称    单价   数量  金额
 {$goods}
 ------------------------------
-合计：                   {$sum_money}
-优惠券：                 -{$print_order['deductcredit']}
-实际支付：               {$print_order['price']}
- {$set['print_text']}
+运费 ：          {$olddispatchprice}
+合计：           {$sum_money}
+会员优惠：		 {$discountprice}
+余额抵扣： 		 {$deductcredit2}
+积分抵扣： 		 {$deductprice}
+实际支付：        {$print_order['price']}
 ------------------------------
 {$set['description']}
 客服服务热线：{$set['phone']}
@@ -162,11 +218,11 @@ function testSendFreeMessageshop($print_order,$member_code,$device_no,$key,$set)
 		'deviceNo'=>$device_no, 
 		'msgNo'=>$msgNo
 	);
-
 	 sendFreeMessage($freeMessage,$key);
 
 	return $msgNo;
 }
+
 //会议打印
 function testSendFreeMessagemeet($data,$member_code,$device_no,$key,$set){
 	$time = date('Y-m-d H:i:s',time());
@@ -190,7 +246,6 @@ function testSendFreeMessagemeet($data,$member_code,$device_no,$key,$set){
 		'deviceNo'=>$device_no, 
 		'msgNo'=>$msgNo
 	);
-
 	 sendFreeMessage($freeMessage,$key);
 
 	return $msgNo;
@@ -218,7 +273,6 @@ function testSendFreeMessagerest($data,$member_code,$device_no,$key,$set){
 		'deviceNo'=>$device_no, 
 		'msgNo'=>$msgNo
 	);
-
 	 sendFreeMessage($freeMessage,$key);
 
 	return $msgNo;
