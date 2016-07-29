@@ -78,11 +78,11 @@
             </div>
         </div>
         <div class="form-group">
-            <label class="col-xs-12 col-sm-3 col-md-2 control-label">充值比例</label>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">充值次数</label>
             <div class="col-sm-6">
                 <div class="input-group">
                     <input class="form-control" type="text" value="" name="ratio">
-                    <div class="input-group-addon">%</div>
+                    <div class="input-group-addon">次</div>
                 </div>
             </div>
         </div>
@@ -120,12 +120,11 @@ $('form').submit(function(){
     }
     var paymethod = $('input[name="paymethod"]:checked').val()==0 ? "余额充值" : "积分充值";
     var sendmonth = $('input[name="sendmonth"]:checked').val()==0 ? "天" : "月";
-    var ratio = $('input[name="ratio"]').val();
+    var qnum = $('input[name="ratio"]').val();
 
-    var qnum = Math.ceil(100/ratio);
     var num = $('input[name="num"]').val();
-    var qtotal = num*qnum/100;
-    var msg = paymethod+"总额"+num+",共充值"+qnum+"期，每"+sendmonth+"充值"+qtotal+",请核对后点击确定";
+    var qtotal = Math.ceil(num/qnum*100)/100;
+    var msg = paymethod+"总额"+num+",共充值"+qnum+"期，每"+sendmonth+"充值"+qtotal.toFixed(2)+",请核对后点击确定";
     if(confirm(msg) == false){
         return false;
     }

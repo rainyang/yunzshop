@@ -940,7 +940,12 @@ if ($operation == "display") {
         ':uniacid' => $_W['uniacid']
     ));
     load()->func("tpl");
-    include $this->template("order_detail");
+    if(p('hotel') && $item['order_type']=='3'){
+         include $this->template("order_detail_hotel");
+    }else{
+         include $this->template("order_detail");
+ 
+    }
     exit;
 } elseif ($operation == 'saveexpress') {
     $id         = intval($_GPC['id']);
