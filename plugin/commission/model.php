@@ -1002,8 +1002,8 @@ if (!class_exists('CommissionModel')) {
 			$pluginchannel = p("channel");
 			if(!empty($pluginchannel)){
 				$channel_set = $pluginchannel->getSet();
-				if(empty($channel_set['become_order'])){
-					$pluginchannel->checkOrderPay($orderid);
+				if ($channel_set['become'] == 2 || $channel_set['become'] == 3) {
+					$pluginchannel->checkOrderFinishOrPay($orderid);
 				}
 			}
 			$become_child = intval($set['become_child']);
@@ -1197,8 +1197,8 @@ if (!class_exists('CommissionModel')) {
 			$pluginchannel = p("channel");
 			if(!empty($pluginchannel)){
 				$channel_set = $pluginchannel->getSet();
-				if(!empty($channel_set['become_order'])){
-					$pluginchannel->checkOrderFinish($orderid);
+				if ($channel_set['become'] == 2 || $channel_set['become'] == 3) {
+					$pluginchannel->checkOrderFinishOrPay($orderid);
 				}
 			}
 			$time = time();

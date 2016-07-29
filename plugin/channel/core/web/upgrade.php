@@ -13,6 +13,20 @@ if(empty($result)){
 }
 
 $sql = "
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_merchant` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` INT(11) NOT NULL AUTO_INCREMENT,
+  `openid` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL COMMENT '我的openid',
+  `lower_openid` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL COMMENT '下级openid',
+  `commission` DECIMAL(10,2) NULL COMMENT '推荐员分红比例',
+  PRIMARY KEY (`id`))
+ENGINE = MyISAM
+DEFAULT CHARACTER SET = utf8
+COLLATE = utf8_general_ci
+COMMENT = '渠道商推荐员';
+
+
+
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_level` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `uniacid` INT(11) NOT NULL AUTO_INCREMENT,
@@ -143,6 +157,14 @@ if (!pdo_fieldexists('sz_yi_channel_apply', 'apply_ordergoods_ids')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_channel_apply')." ADD  `apply_ordergoods_ids` text;");
 }
 
+if (!pdo_fieldexists('sz_yi_channel_apply', 'apply_cmaorders_ids')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_channel_apply')." ADD  `apply_cmaorders_ids` text;");
+}
+
+if (!pdo_fieldexists('sz_yi_channel_apply', 'apply_selforders_ids')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_channel_apply')." ADD  `apply_selforders_ids` text;");
+}
+
 if (!pdo_fieldexists('sz_yi_channel_stock_log', 'paytime')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_channel_stock_log')." ADD  `paytime` INT(11) DEFAULT '0';");
 }
@@ -155,4 +177,7 @@ if(!pdo_fieldexists('sz_yi_channel_stock', 'optionid')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_channel_stock')." ADD `optionid` INT(11) DEFAULT '0';");
 }
 
+if(!pdo_fieldexists('sz_yi_order', 'iscmas')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `iscmas` INT(11) DEFAULT '0';");
+}
 message('渠道商插件安装成功', $this->createPluginWebUrl('channel/index'), 'success');
