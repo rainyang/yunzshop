@@ -375,15 +375,15 @@ function show_json($status = 1, $return = null)
 function is_weixin_show()
 {
     $set = m('common')->getSysset('app');
-    if(is_weixin())
+    $isapp = is_app();
+
+    if( $set['base']['wx']['switch'] == '1' && !$isapp)
     {
-        if( $set['base']['wx']['switch'] == '1' )
-        {
-            return false;
-        }
+        return false;
     }
     return true;
 }
+
 function is_weixin()
 {
     global $_W;
