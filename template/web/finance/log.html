@@ -145,7 +145,7 @@
     <td> 
       {if $row['aging']}
          分期共{$row['aging']['num']}<br/>
-         已充值{php echo $row['aging']['qtotal'] * $row['aging']['phase'] > $row['aging']['num'] ? $row['aging']['num'] : number_format($row['aging']['qtotal'] * $row['aging']['phase'],2)}
+         已充值{php echo $row['aging']['qtotal'] * $row['aging']['phase'] > $row['aging']['num'] ? $row['aging']['num'] : number_format($row['aging']['qtotal'] * $row['aging']['phase'],2)}{php echo $row['paymethod'] == 0 ? " 元" : " 积分"}
       {else}
          {$row['money']}
       {/if}
