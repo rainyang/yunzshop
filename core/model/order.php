@@ -197,7 +197,6 @@ class Sz_DYi_Order
                     if (!empty($order['virtual']) && $pv) {
                         $pv->pay($order);
                     } else {
-<<<<<<< HEAD
                         if (p('channel')) {
                             if ($params['ischannelpay'] == 1) {
                                 pdo_update('sz_yi_order', array(
@@ -223,9 +222,7 @@ class Sz_DYi_Order
                                 ));
                         }
                         
-=======
                         pdo_query('update ' . tablename('sz_yi_order') . " set status=1, paytime=".time().", ordersn_general=ordersn where {$order_update} and uniacid='{$uniacid}' ");
->>>>>>> a2c3b3f8d0ff390490c88462dfb95676f6f62d8a
                         if ($order['deductcredit2'] > 0) {
                             $shopset = m('common')->getSysset('shop');
                             m('member')->setCredit($order['openid'], 'credit2', -$order['deductcredit2'], array(
