@@ -147,9 +147,9 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_hotel_room') . " (
   `goodsid` int(11) DEFAULT '0',
   `title` varchar(255) DEFAULT '',
   `thumb` varchar(255) DEFAULT '',
-  `oprice` decimal(10) DEFAULT '2',
-  `cprice` decimal(10) DEFAULT '2',
-  `deposit` decimal(10) DEFAULT '2',
+  `oprice` decimal(10) DEFAULT '',
+  `cprice` decimal(10) DEFAULT '',
+  `deposit` decimal(10) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;
 
@@ -1300,7 +1300,7 @@ if(!pdo_fieldexists('sz_yi_article', 'article_state_wx')) {
 
 //商品表增加押金字段
 if(!pdo_fieldexists('sz_yi_goods', 'deposit')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `deposit` decimal DEFAULT '10' AFTER `isreturnqueue`;");
+  pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `deposit` decimal DEFAULT '0' AFTER `isreturnqueue`;");
 }
 //商品表增加打印机id
 if(!pdo_fieldexists('sz_yi_goods', 'print_id')) {
@@ -1345,11 +1345,11 @@ if(!pdo_fieldexists('sz_yi_order', 'etime')) {
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'depositprice')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `depositprice` decimal DEFAULT '10' AFTER `etime`;");
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `depositprice` decimal DEFAULT '0' AFTER `etime`;");
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'returndepositprice')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `returndepositprice`  decimal DEFAULT '10' AFTER `depositprice`;");
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `returndepositprice`  decimal DEFAULT '0' AFTER `depositprice`;");
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'depositpricetype')) {
