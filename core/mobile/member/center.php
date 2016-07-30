@@ -3,7 +3,6 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
-
 $openid = m('user')->getOpenid();
 $set = m('common')->getSysset(array('trade'));
 
@@ -47,7 +46,7 @@ if (p('supplier')) {
 $ischannel = false;
 if (p('channel')) {
 	$result = m('member')->getInfo($openid);
-	if (!empty($result)) {
+	if (!empty($result['ischannel'] && !empty($result['channel_level']))) {
 		$ischannel = true;
 	}
 	$channel_set = p('channel')->getSet();
