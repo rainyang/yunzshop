@@ -391,8 +391,12 @@
             {ifp 'commission.apply.pay'}
               {if empty($apply['type'])}
              <input type="submit" name="submit_pay" value="打款到余额账户" class="btn btn-primary col-lg-1"  style='margin-left:10px;' onclick='return pay_credit()'/>
-              {else}
+              {elseif $apply['type'] < 3}
              <input type="submit" name="submit_pay" value="打款到微信钱包" class="btn btn-primary col-lg-1" style='margin-left:10px;' onclick='return pay_weixin()'/>
+              {elseif $apply['type'] == 3}
+             <input type="submit" name="submit_pay" value="打款到支付宝"
+             class="btn btn-primary col-lg-1" style='margin-left:10px;'
+             onclick='return pay_alipay()'/>
              {/if}
              {/if}
         {/if}
@@ -438,6 +442,9 @@ function checkall(ischeck){
         }
         function pay_weixin(){
             return confirm('确认打款到此用户的微信钱包?');     
+        }
+        function pay_alipay(){
+            return confirm('确认打款到此用户的支付宝?');     
         }
 </script>
 
