@@ -1786,6 +1786,7 @@ if ($_W['isajax']) {
 
        
             if (is_array($carrier)) {
+                //todo, carrier_realname和carrier_mobile字段表里有么?
                 $up = array(
                     'realname' => $carrier['carrier_realname'],
                     'mobile' => $carrier['carrier_mobile']
@@ -1793,7 +1794,6 @@ if ($_W['isajax']) {
                 pdo_update('sz_yi_member', $up, array(
                     'id' => $member['id'],
                     'uniacid' => $_W['uniacid']
-
                 ));
                 if (!empty($member['uid'])) {
                     pdo_update('mc_members', $up, array(
