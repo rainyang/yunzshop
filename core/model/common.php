@@ -94,12 +94,14 @@ class Sz_DYi_Common
         global $_W;
         $tid                   = $params['tid'];
         $set                   = array();
-        //if (is_pc()) {
-            $set['service']        = 'create_direct_pay_by_user';
-        //} else {
-            //$set['service']        = 'alipay.wap.create.direct.pay.by.user';
-        //}
         $set['partner']        = $alipay['partner'];
+        $set['seller_id']    = $alipay['account'];
+        if ($_W['os'] == 'windows') {
+            $set['seller_id']    = $alipay['partner'];  //即时到帐情况下sellerid = partner
+            $set['service']        = 'create_direct_pay_by_user';
+        } else {
+            $set['service']        = 'alipay.wap.create.direct.pay.by.user';
+        }
         $set['_input_charset'] = 'utf-8';
         $set['sign_type']      = 'MD5';
         if (empty($type)) {
@@ -112,7 +114,6 @@ class Sz_DYi_Common
         $set['out_trade_no'] = $tid;
         $set['subject']      = $params['title'];
         $set['total_fee']    = $params['fee'];
-        $set['seller_id']    = $alipay['account'];
         $set['payment_type'] = 1;
         $set['body']         = $_W['uniacid'] . ':' . $type;
         $prepares            = array();
