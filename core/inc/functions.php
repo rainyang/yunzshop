@@ -2,8 +2,10 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-load()->func('tpl');
-
+//新版微擎里有方法冲突,tpl_form_field_image在compat.biz里也有...
+if (!defined('IS_API')) {
+    load()->func('tpl');
+}
 function sz_tpl_form_field_date($name, $value = '', $withtime = false)
 {
     $s = '';
@@ -378,15 +380,15 @@ function show_json($status = 1, $return = null)
 function is_weixin_show()
 {
     $set = m('common')->getSysset('app');
-    if(is_weixin())
+    $isapp = is_app();
+
+    if( $set['base']['wx']['switch'] == '1' && !$isapp)
     {
-        if( $set['base']['wx']['switch'] == '1' )
-        {
-            return false;
-        }
+        return false;
     }
     return true;
 }
+
 function is_weixin()
 {
     global $_W;
