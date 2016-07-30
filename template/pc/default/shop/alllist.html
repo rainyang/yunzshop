@@ -28,12 +28,14 @@
                 <%each v.children as child%>
                     <div class="items">
                         <dl>
-                            <dt><%child.name%></dt>
+                            <dt class="second" data-id="<%child.id%>"><%child.name%></dt>
+                            {if $set['catleve'] == 3}
                             <dd>
                             <%each child.third as third%>
                                 <a href="#"><%third.name%></a>
                             <%/each%>
                             </dd>
+                            {/if}
                         </dl>
                     </div>
                 <%/each%>
@@ -90,6 +92,10 @@
 
                 $('.ui-category-item[data-id='+dataid+']').addClass('selected');
                 $('html,body').animate({scrollTop:$('.category-item[data-id='+dataid+']').offset().top - 100},100)
+            })
+            $('.second').click(function(){
+                var did = $(this).data('id');
+                location.href="{php echo $this->createMobileUrl('shop/list')}&ccate="+did;
             })
 
         });

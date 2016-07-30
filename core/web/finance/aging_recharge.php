@@ -15,8 +15,8 @@ if ($op == 'display') {
 		$sendtime = intval($_GPC['sendtime']);
 		$ratio = floatval($_GPC['ratio']);
 		$num = floatval($_GPC['num']);
-		$qnum = ceil(100/$ratio);		//获取共充值多少期
-		$qtotal = $num*$ratio/100;		//获取每期所充值的金额
+		$qnum = intval($ratio);		//获取共充值多少期
+		$qtotal = ceil($num/$qnum*100)/100;		//获取每期所充值的金额
 		if($sendmonth == 0){
 			$sendpaytime = strtotime(date("Y-m-d ".$sendtime.":00:00"));
 		}else{

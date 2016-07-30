@@ -87,11 +87,11 @@ if(p('love')){
 	foreach ($rechanges as $key => $value) {
 		$logno = m('common')->createNO('member_log', 'logno', 'RC');
 		$_W['uniacid'] = $value['uniacid'];
-		$moneyall = pdo_fetchcolumn("select * from " . tablename('sz_yi_member_log') . " where aging_id=".$value['id']." and uniacid=".$_W['uniacid']);
+		$moneyall = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_member_log') . " where aging_id=".$value['id']." and uniacid=".$_W['uniacid']);
 		$remain = $value['num'] - $moneyall;
 		$edit_rechange = array();
-		if($remain > $value['qnum']){
-			$sendmney = $value['qnum'];
+		if($remain > $value['qtotal']){
+			$sendmney = $value['qtotal'];
 		}else{
 			$sendmney = $remain;
 			$edit_rechange['status'] = 1;
@@ -107,21 +107,22 @@ if(p('love')){
 		$edit_rechange['phase'] = $value['phase']+1;
 
 		pdo_update('sz_yi_member_aging_rechange', $edit_rechange, array('id' => $value['id']));
+		$data = array(
+			'openid' => $value['openid'], 
+			'logno' => $logno, 
+			'uniacid' => $_W['uniacid'], 
+			'type' => '0', 
+			'createtime' => $time, 
+			'status' => '1', 
+			'title' => $set['name'] . '会员分期充值', 
+			'money' => $sendmney, 
+			'rechargetype' => 'system',
+			'aging_id' => $value['id']
+			);
+		pdo_insert('sz_yi_member_log', $data);
+
 		if($value['paymethod'] ==0){
 			m('member')->setCredit($value['openid'], 'credit2', $sendmney, array(0, '分期充值余额'));
-			$data = array(
-				'openid' => $value['openid'], 
-				'logno' => $logno, 
-				'uniacid' => $_W['uniacid'], 
-				'type' => '0', 
-				'createtime' => $time, 
-				'status' => '1', 
-				'title' => $set['name'] . '会员分期充值', 
-				'money' => $sendmney, 
-				'rechargetype' => 'system',
-				'aging_id' => $value['id']
-				);
-			pdo_insert('sz_yi_member_log', $data);
 			$logid = pdo_insertid();
 			m('notice')->sendMemberLogMessage($logid);
 		}else{
@@ -145,7 +146,6 @@ if(p('love')){
 			$detailurl  = $this->createMobileUrl('member');
 			m('message')->sendCustomNotice($value['openid'], $msg, $detailurl);
 		}
-
 	}
 }
 echo "ok...";
