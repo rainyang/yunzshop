@@ -149,7 +149,7 @@
                 <form action="" class="jiudbook-form">
                     <div class="jiudbookp">
                         <div class="jiudbook-inpu" style="float:left;width:40%">
-                        <input type="text"  name="realname"  id="realname"placeholder="入住人姓名"></div>
+                        <input type="text" value="<?php echo $member['realname'] ?>" name="realname"  id="realname" placeholder="入住人姓名"></div>
 
                         <div class="jiudbook-sex" style="float:right">
                             <input style="-webkit-appearance:checkbox;" type="radio" id="sexman" name="realsex" value="0" checked >
@@ -160,7 +160,7 @@
                     </div>
                     <div class="jiudbookp">                     
                         <div class="jiudbook-inpu">
-                        <input type="text" placeholder="联系电话"  id="realmobile" name="realmobile"></div>
+                        <input type="text"  value="<?php echo $member['mobile'] ?>" placeholder="联系电话"  id="realmobile" name="realmobile"></div>
                     </div>
                 </form>
               
