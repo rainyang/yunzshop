@@ -419,6 +419,12 @@ if ($operation == 'display' && $_W['isajax']) {
         show_json(1);
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
+    $ischannelpay = intval($_GPC['ischannelpay']);
+    $order = pdo_fetch("select * from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
+        ':id' => $orderid,
+        ':uniacid' => $uniacid,
+        ':openid' => $openid
+    ));
     if(is_array($orderid)){
         $orderids = implode(',', $orderid);
         $where_orderid = "og.orderid in ({$orderids})";
@@ -534,6 +540,11 @@ if ($operation == 'display' && $_W['isajax']) {
         $ret['fee']     = $order['price'];
         $ret['weid']    = $_W['uniacid'];
         $ret['uniacid'] = $_W['uniacid'];
+        if (p('channel')) {
+            if ($ischannelpay == 1) {
+                $ret['ischannelpay'] = $ischannelpay;
+            }
+        }
         $payresult      = $this->payResult($ret);
         show_json(2, $payresult);
     }
@@ -597,6 +608,11 @@ if ($operation == 'display' && $_W['isajax']) {
         $ret['fee']     = $log['fee'];
         $ret['weid']    = $log['weid'];
         $ret['uniacid'] = $log['uniacid'];
+        if (p('channel')) {
+            if ($ischannelpay == 1) {
+                $ret['ischannelpay'] = $ischannelpay;
+            }
+        }
         $pay_result     = $this->payResult($ret);
         show_json(1, $pay_result);
     } else if ($type == 'weixin') {
@@ -622,6 +638,11 @@ if ($operation == 'display' && $_W['isajax']) {
             $ret['weid']    = $log['weid'];
             $ret['uniacid'] = $log['uniacid'];
             $ret['deduct']  = intval($_GPC['deduct']) == 1;
+            if (p('channel')) {
+                if ($ischannelpay == 1) {
+                    $ret['ischannelpay'] = $ischannelpay;
+                }
+            }
             $pay_result     = $this->payResult($ret);
             show_json(1, $pay_result);
         }

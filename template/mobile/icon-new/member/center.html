@@ -62,9 +62,12 @@
         <li><a href="#"><span><%member.credit1%></span><br/>{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}</a></li>
         <li><a href="#"><span><%counts.couponcount%></span><br/>优惠券</a></li>
 
-        <li><a href="#" class="{if $member['credit2'] > 0 && empty($set['trade']['transfer'])}recharge-t{else}recharge{/if}" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</a>
+        <li>
+        {if empty($set['trade']['closerecharge'])}
+            <a href="#" class="{if $member['credit2'] > 0 && empty($set['trade']['transfer'])}recharge-t{else}recharge{/if}" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</a>
+        {/if}
         {if $member['credit2'] > 0 && empty($set['trade']['transfer'])}
-            <a href="#" class="recharge-t" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer'))}'">转账</a>
+            <a href="#" class="{if empty($set['trade']['closerecharge'])}recharge-t{else}recharge{/if}" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer'))}'">转账</a>
         {/if} 
 
         </li>
@@ -165,7 +168,7 @@
     {/if}
     {if is_weixin_show()}
     <%if shopset.isreturn%>
-    <a href="{php echo $this->createPluginMobileUrl('return/return_log')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-piechart" ></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
+    <a href="{php echo $this->createPluginMobileUrl('return/return_queue')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-piechart" ></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
     <%/if%>
     {/if}
     
@@ -203,7 +206,7 @@
     <a href="javascript:;" id="btnwithdraw"><div class="list1" style="border-bottom: 0px;"><i class="fa fa-money"></i>{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}提现<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
     {if isset($set['trade']) && ($set['trade']['withdraw']==1 || empty($set['trade']['closerecharge']))}
-    <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="{if isset($set['trade']) && $set['trade']['withdraw']==1}margin:0px;{/if}"><i class="fa fa-file-text"></i>{if isset($set['trade']) && $set['trade']['withdraw']==1}{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}明细{else}充值记录{/if}
+    <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="{if isset($set['trade']) && $set['trade']['withdraw']==1}margin:0px;{/if}"><i class="fa fa-file-text"></i>{if isset($set['trade']) && $set['trade']['withdraw']==1}充值记录{/if}
             <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
    {/if}
 -->

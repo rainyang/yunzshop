@@ -203,6 +203,57 @@ if ($operation == "display") {
         )
     );
     foreach ($list as & $value) {
+        if(p('hotel') && $value['order_type']=='3'){
+            $orderstatus = array(
+                "-1" => array(
+                    "css" => "default",
+                    "name" => "已关闭"
+                ) ,
+                '0' => array(
+                    "css" => "danger",
+                    "name" => "待付款"
+                ) ,
+                "1" => array(
+                    "css" => "info",
+                    "name" => "待确认"
+                ) ,
+                "2" => array(
+                    "css" => "warning",
+                    "name" => "待入住"
+                ),            
+                "3" => array(
+                    "css" => "success",
+                    "name" => "已完成"
+                ),
+                "6" => array(
+                    "css" => "success",
+                    "name" => "待退房"
+                ),
+            );
+        }else{
+            $orderstatus = array(
+                "-1" => array(
+                    "css" => "default",
+                    "name" => "已关闭"
+                ) ,
+                '0' => array(
+                    "css" => "danger",
+                    "name" => "待付款"
+                ) ,
+                "1" => array(
+                    "css" => "info",
+                    "name" => "待发货"
+                ) ,
+                "2" => array(
+                    "css" => "warning",
+                    "name" => "待收货"
+                ) ,
+                "3" => array(
+                    "css" => "success",
+                    "name" => "已完成"
+                )
+            );
+        }
         $s = $value["status"];
         $pt = $value["paytype"];
         $value["statusvalue"] = $s;
@@ -889,7 +940,12 @@ if ($operation == "display") {
         ':uniacid' => $_W['uniacid']
     ));
     load()->func("tpl");
-    include $this->template("order_detail");
+    if(p('hotel') && $item['order_type']=='3'){
+         include $this->template("order_detail_hotel");
+    }else{
+         include $this->template("order_detail");
+ 
+    }
     exit;
 } elseif ($operation == 'saveexpress') {
     $id         = intval($_GPC['id']);

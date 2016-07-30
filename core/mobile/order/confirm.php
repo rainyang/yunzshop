@@ -2,6 +2,7 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
+
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
@@ -39,6 +40,7 @@ if ($diyform_plugin) {
         }
     }
 }
+
 $carrier_list = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_store") . " WHERE uniacid=:uniacid AND status=1", array(
             ":uniacid" => $_W["uniacid"]
         ));
@@ -48,7 +50,7 @@ if ($operation == "display" || $operation == "create") {
     $show = 1;
     if ($diyform_plugin) {
         if (!empty($id)) {
-            $sql         = "SELECT id as goodsid,type,diyformtype,diyformid,diymode FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+            $sql         = "SELECT id as goodsid,type,diyformtype,diyformid,diymode FROM " . tablename("sz_yi_goods") . " WHERE id=:id AND uniacid=:uniacid  limit 1";
             $goods_data  = pdo_fetch($sql, array(
                 ":uniacid" => $uniacid,
                 ":id" => $id
@@ -63,6 +65,9 @@ if ($operation == "display" || $operation == "create") {
         }
     }
 }
+
+$ischannelpick = $_GPC['ischannelpick'];
+
 if ($operation == "date"){
         global $_GPC, $_W;
         $id = $_GPC['id'];
@@ -105,11 +110,14 @@ if ($operation == "date"){
         }
 }
 
+
 if ($_W['isajax']) {
+    $ischannelpick = intval($_GPC['ischannelpick']);
     if ($operation == 'display') {
         $id       = intval($_GPC['id']);
         $optionid = intval($_GPC['optionid']);
         $total    = intval($_GPC['total']);
+        $ischannelpay = intval($_GPC['ischannelpay']);
         $ids      = '';
         if ($total < 1) {
             $total = 1;
@@ -125,14 +133,18 @@ if ($_W['isajax']) {
             //todo, what? check var. cart store in db.
             $cartids   = $_GPC['cartids'];
             if (!empty($cartids)) {
-                $condition = ' and c.id in (' . $cartids . ')';
+                $condition = ' AND c.id in (' . $cartids . ')';
             }
+
+           // $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " WHERE c.openid=:openid AND  c.deleted=0 AND c.uniacid=:uniacid {$condition} order by c.id desc";
+
 
             $suppliers = pdo_fetchall('SELECT distinct g.supplier_uid FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc", array(
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
             ), 'supplier_uid');
             $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
+
             $goods = pdo_fetchall($sql, array(
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
@@ -153,12 +165,17 @@ if ($_W['isajax']) {
             }
             $fromcart = 1;
         } else {
+
+            //$sql              = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice FROM " . tablename("sz_yi_goods") . " WHERE id=:id AND uniacid=:uniacid  limit 1";
+            //$data             = pdo_fetch($sql, array(
+
             if(p('hotel')){
                 $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             }else{   
                 $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             }
             $data = pdo_fetch($sql, array(
+
                 ':uniacid' => $uniacid,
                 ':id' => $id
             ));
@@ -166,7 +183,7 @@ if ($_W['isajax']) {
             $data['total']    = $total;
             $data['optionid'] = $optionid;
             if (!empty($optionid)) {
-                $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,virtual,stock,weight from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
+                $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,virtual,stock,weight from ' . tablename('sz_yi_goods_option') . ' WHERE id=:id AND goodsid=:goodsid AND uniacid=:uniacid  limit 1', array(
                     ':uniacid' => $uniacid,
                     ':goodsid' => $id,
                     ':id' => $optionid
@@ -194,7 +211,7 @@ if ($_W['isajax']) {
                 }
             }
             if ($data['usermaxbuy'] > 0) {
-                $order_goodscount = pdo_fetchcolumn('select ifnull(sum(og.total),0)  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_order') . ' o on og.orderid=o.id ' . ' where og.goodsid=:goodsid and  o.status>=1 and o.openid=:openid  and og.uniacid=:uniacid ', array(
+                $order_goodscount = pdo_fetchcolumn('select ifnull(sum(og.total),0)  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_order') . ' o on og.orderid=o.id ' . ' WHERE og.goodsid=:goodsid AND  o.status>=1 AND o.openid=:openid  AND og.uniacid=:uniacid ', array(
                     ':goodsid' => $data['goodsid'],
                     ':uniacid' => $uniacid,
                     ':openid' => $openid
@@ -291,6 +308,11 @@ if ($_W['isajax']) {
             if (!empty($g['virtual']) || $g['type'] == 2) {
                 $isvirtual = true;
             }
+            if (p('channel')) {
+                if ($ischannelpay == 1 && empty($ischannelpick)) {
+                    $isvirtual = true;
+                }
+            }
         }
         //多店值分开初始化
         foreach ($suppliers as $key => $val) {
@@ -330,19 +352,29 @@ if ($_W['isajax']) {
         $carrier       = false;
         $carrier_list  = array();
         $dispatch_list = false;
+
         //$dispatch_price = 0;
         //$dispatch_array = array();
         
         //$carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1 and type in(1,3)", array(
         $carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1 and myself_support=1 ", array(
+
             ":uniacid" => $_W["uniacid"]
         ));
         if (!empty($carrier_list)) {
             $carrier = $carrier_list[0];
         }
+        if (p('channel')) {
+            $my_info = p('channel')->getInfo($openid);
+        }
         foreach ($goods as &$g) {
             if (empty($g["total"]) || intval($g["total"]) == "-1") {
                 $g["total"] = 1;
+            }
+            if (p('channel')) {
+                if ($ischannelpay == 1) {
+                    $g['marketprice'] = $g['marketprice'] * $my_info['my_level']['purchase_discount']/100;
+                }
             }
             $gprice    = $g["marketprice"] * $g["total"];
             $discounts = json_decode($g["discounts"], true);
@@ -374,6 +406,50 @@ if ($_W['isajax']) {
             $g["ggprice"] = $price;
             $order_all[$g['supplier_uid']]['realprice'] += $price;
             $order_all[$g['supplier_uid']]['goodsprice'] += $gprice;
+            //商品为酒店时候的价格
+            if(p('hotel') && $data['type']=='99'){
+            $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
+            $params2 = array(':goodsid' => $id);
+            $room = pdo_fetch($sql2, $params2);
+            $pricefield ='oprice';
+            $r_sql = 'SELECT `roomdate`, `num`, `oprice`, `status`, ' . $pricefield . ' AS `m_price` FROM ' . tablename('sz_yi_hotel_room_price') .
+            ' WHERE `roomid` = :roomid AND `roomdate` >= :btime AND ' .
+            ' `roomdate` < :etime';
+            $params = array(':roomid' => $room['id'],':btime' => $btime, ':etime' => $etime);
+            $price_list = pdo_fetchall($r_sql, $params);  
+            $this_price = $old_price =  $pricefield == 'cprice' ?  $room['oprice']*$member_p[$_W['member']['groupid']] : $room['roomprice'];
+            if ($this_price == 0) {
+                $this_price = $old_price = $room['oprice'] ;
+            } 
+            $totalprice =  $old_price * $days;
+            if ($price_list) {//价格表中存在   
+                $check_date = array();
+                foreach($price_list as $k => $v) {
+                    $price_list[$k]['time']=date('Y-m-d',$v['roomdate']);
+                    $new_price = $pricefield == 'mprice' ? $this_price : $v['m_price'];
+                    $roomdate = $v['roomdate'];
+                    if ($v['status'] == 0 || $v['num'] == 0 ) {
+                        $has = 0;                   
+                    } else {
+                        if ($new_price && $roomdate) {
+                            if (!in_array($roomdate, $check_date)) {
+                                $check_date[] = $roomdate;
+                                if ($old_price != $new_price) {
+                                    $totalprice = $totalprice - $old_price + $new_price;
+                                }
+                            }
+                        }
+                    }
+                } 
+                $goodsprice = round($totalprice);
+            }else{ 
+                $goodsprice = round($goods[0]['marketprice']) * $days;
+            }          
+            $order_all[$g['supplier_uid']]['realprice'] = $goodsprice;
+            $order_all[$g['supplier_uid']]['goodsprice'] = $goodsprice;
+            $price = $goodsprice;
+          
+        }
             $order_all[$g['supplier_uid']]['total'] += $g["total"];
             if ($g["manydeduct"]) {
                 $order_all[$g['supplier_uid']]['deductprice'] += $g["deduct"] * $g["total"];
@@ -401,6 +477,7 @@ if ($_W['isajax']) {
                     $order_all[$g['supplier_uid']]['storeids'] = array_merge(explode(',', $g['storeids']), $order_all[$g['supplier_uid']]['storeids']);
                 }
             }
+
             foreach ($suppliers as $key => $val) {
                 if (empty($order_all[$val['supplier_uid']]['storeids'])) {
                     $order_all[$val['supplier_uid']]['stores'] = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where  uniacid=:uniacid and status=1 and myself_support=1', array(
@@ -415,11 +492,12 @@ if ($_W['isajax']) {
             }
             
             $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
+
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
             ));
         } else {
-            $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
+            $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' WHERE openid=:openid AND deleted=0 AND isdefault=1  AND uniacid=:uniacid limit 1', array(
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
             ));
@@ -559,7 +637,9 @@ if ($_W['isajax']) {
                         }
                     }
                 }
-
+                if(p('hotel') &&  $data['type']=='99'){
+                    $order_all[$val['supplier_uid']]['dispatch_price']  = 0;
+                }
                 $order_all[$val['supplier_uid']]['saleset'] = $saleset;
                 foreach ($saleset["enoughs"] as $e) {
                     if ($order_all[$val['supplier_uid']]['realprice'] >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
@@ -574,13 +654,13 @@ if ($_W['isajax']) {
                     $order_all[$val['supplier_uid']]['deductprice2'] += $order_all[$val['supplier_uid']]['dispatch_price'];
                 }
             }
-
             $order_all[$val['supplier_uid']]['hascoupon'] = false;
             if ($hascouponplugin) {
                 $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
                 $order_all[$val['supplier_uid']]['hascoupon']   = $order_all[$val['supplier_uid']]['couponcount'] > 0;
             }
             $order_all[$val['supplier_uid']]['realprice'] += $order_all[$val['supplier_uid']]['dispatch_price'];
+
             $realprice_total += $order_all[$val['supplier_uid']]['realprice'];
             $order_all[$val['supplier_uid']]['deductcredit']  = 0;
             $order_all[$val['supplier_uid']]['deductmoney']   = 0;
@@ -597,8 +677,8 @@ if ($_W['isajax']) {
                             $order_all[$val['supplier_uid']]['deductmoney'] = round((intval($credit / $pcredit) + 1) * $pmoney, 2);
                         }
                     }
-                    if ($order_all[$val['supplier_uid']]['deductmoney'] > $deductprice) {
-                        $order_all[$val['supplier_uid']]['deductmoney'] = $deductprice;
+                    if ($order_all[$val['supplier_uid']]['deductmoney'] >$order_all[$g['supplier_uid']]['deductprice']) {
+                        $order_all[$val['supplier_uid']]['deductmoney'] = $order_all[$g['supplier_uid']]['deductprice'];
                     }
                     if ($order_all[$val['supplier_uid']]['deductmoney'] > $order_all[$val['supplier_uid']]['realprice']) {
                         $order_all[$val['supplier_uid']]['deductmoney'] = $order_all[$val['supplier_uid']]['realprice'];
@@ -611,7 +691,7 @@ if ($_W['isajax']) {
                         $order_all[$val['supplier_uid']]['deductcredit2'] = $order_all[$val['supplier_uid']]['realprice'];
                     }
                     if ($order_all[$val['supplier_uid']]['deductcredit2'] > $order_all[$val['supplier_uid']]['deductprice2']) {
-                        $order_all[$val['supplier_uid']]['deductcredit2'] = $order_all[$val['supplier_uid']]['deductprice2'];
+                            $order_all[$val['supplier_uid']]['deductcredit2'] = $order_all[$val['supplier_uid']]['deductprice2'];
                     }
                 }
             }
@@ -620,6 +700,7 @@ if ($_W['isajax']) {
             $order_all[$val['supplier_uid']]['discountprice'] = number_format($order_all[$val['supplier_uid']]['discountprice'], 2);
             $order_all[$val['supplier_uid']]['realprice'] = number_format($order_all[$val['supplier_uid']]['realprice'], 2);
             $order_all[$val['supplier_uid']]['dispatch_price'] = number_format($order_all[$val['supplier_uid']]['dispatch_price'], 2);
+
         }
         $supplierids = implode(',', array_keys($suppliers));
         if(p('hotel')){
@@ -663,9 +744,10 @@ if ($_W['isajax']) {
             }
             $realprice  = $goodsprice+$goods[0]['deposit'];
             $deposit = $goods[0]['deposit'];
-            
+            $order_all[$g['supplier_uid']]['realprice'] = $goodsprice;
+            $order_all[$g['supplier_uid']]['goodsprice'] = $goodsprice;
+          
         }}
-       
         show_json(1, array(
             'member' => $member,
             //'deductcredit' => $deductcredit,
@@ -730,7 +812,7 @@ if ($_W['isajax']) {
             }
         }
         $addressid           = intval($_GPC["addressid"]);
-        $address     = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where  id=:id and openid=:openid and uniacid=:uniacid limit 1', array(
+        $address     = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' WHERE  id=:id AND openid=:openid AND uniacid=:uniacid limit 1', array(
             ':uniacid' => $uniacid,
             ':openid' => $openid,
             ':id' => $addressid
@@ -819,7 +901,7 @@ if ($_W['isajax']) {
                         "price" => 0
                     ));
                 }
-                $sql  = "SELECT id as goodsid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformid,diyformtype,diymode,dispatchtype,dispatchid,dispatchprice FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+                $sql  = "SELECT id as goodsid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformid,diyformtype,diymode,dispatchtype,dispatchid,dispatchprice FROM " . tablename("sz_yi_goods") . " WHERE id=:id AND uniacid=:uniacid  limit 1";
                 $data = pdo_fetch($sql, array(
                     ":uniacid" => $uniacid,
                     ":id" => $goodsid
@@ -832,7 +914,7 @@ if ($_W['isajax']) {
                 $data["stock"] = $data["total"];
                 $data["total"] = $goodstotal;
                 if (!empty($optionid)) {
-                    $option = pdo_fetch("select id,title,marketprice,goodssn,productsn,stock,virtual,weight from " . tablename("sz_yi_goods_option") . " where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1", array(
+                    $option = pdo_fetch("select id,title,marketprice,goodssn,productsn,stock,virtual,weight from " . tablename("sz_yi_goods_option") . " WHERE id=:id AND goodsid=:goodsid AND uniacid=:uniacid  limit 1", array(
                         ":uniacid" => $uniacid,
                         ":goodsid" => $goodsid,
                         ":id" => $optionid
@@ -901,6 +983,11 @@ if ($_W['isajax']) {
                         $deductprice2 += $g["ggprice"];
                     } else {
                         $deductprice2 += $g["deduct2"];
+                    }
+                }
+                if (p('channel')) {
+                    if ($ischannelpay == 1 && empty($ischannelpick)) {
+                        $isvirtual = true;
                     }
                 }
             }
@@ -1059,11 +1146,13 @@ if ($_W['isajax']) {
             "deductcredit" => $deductcredit,
             "deductmoney" => $deductmoney
         ));
+
     } elseif ($operation == 'create' && $_W['ispost']) {
         $order_data = $_GPC['order'];
         if(p('hotel')){ 
             if($_GPC['type']=='99'){
                 $order_data[] = $_GPC; 
+
             }
         }  
 
@@ -1071,12 +1160,14 @@ if ($_W['isajax']) {
         $ordersn_general    = m('common')->createNO('order', 'ordersn', 'SH');
         $member       = m('member')->getMember($openid);
         $level         = m('member')->getLevel($openid);
+
         foreach ($order_data as $key => $order_row) {
             $dispatchtype = intval($order_row['dispatchtype']);
             $addressid    = intval($order_row['addressid']);
             $address      = false;
             if (!empty($addressid) && $dispatchtype == 0) {
                 $address = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where id=:id and openid=:openid and uniacid=:uniacid   limit 1', array(
+
                     ':uniacid' => $uniacid,
                     ':openid' => $openid,
                     ':id' => $addressid
@@ -1124,14 +1215,17 @@ if ($_W['isajax']) {
                 if ($goodstotal < 1) {
                     $goodstotal = 1;
                 }
+
                 if (empty($goodsid)) {
                     show_json(0, '参数错误，请刷新重试');
                 }
                 $sql  = 'SELECT id as goodsid,costprice,supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
                 $data = pdo_fetch($sql, array(
+
                     ':uniacid' => $uniacid,
                     ':id' => $goodsid
                 ));
+
                 if (empty($data['status']) || !empty($data['deleted'])) {
                     show_json(-1, $data['title'] . '<br/> 已下架!');
                 }
@@ -1145,6 +1239,7 @@ if ($_W['isajax']) {
                 if ($data['maxbuy'] > 0) {
                     if ($goodstotal > $data['maxbuy']) {
                         show_json(-1, $data['title'] . '<br/> 一次限购 ' . $data['maxbuy'] . $unit . "!");
+
                     }
                 }
                 if ($data['usermaxbuy'] > 0) {
@@ -1179,11 +1274,13 @@ if ($_W['isajax']) {
                         show_json(-1, '您所在会员组无法购买<br/>' . $data['title'] . '!');
                     }
                 }
+
                 if (!empty($optionid)) {
                     $option = pdo_fetch('select * from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
                         ':uniacid' => $uniacid,
                         ':goodsid' => $goodsid,
                         ':id' => $optionid
+
                     ));
 
                     if (!empty($option)) {                                             
@@ -1243,12 +1340,14 @@ if ($_W['isajax']) {
                         $data["diyformid"]     = $formInfo["id"];
                     }
                 }
+
                 /**
                  *  红包价格计算
                  */
                 if (strpos($data['redprice'], "%") === false) {
                     if (strpos($data['redprice'], "-") === false) {
                         $redprice = $data['redprice'];
+
                     } else {
                         $rprice = explode("-", $data['redprice']);
                         if ($rprice[1]>200) {
@@ -1287,11 +1386,17 @@ if ($_W['isajax']) {
                         }
                     }
                 }
+
                 $ggprice = 0;
+                if(p('hotel') && $_GPC['type']=='99'){
+                     $gprice =$_GPC['goodsprice'];
+                     $ggpric = $_GPC['goodsprice'];
+                 }
                 if (empty($data['isnodiscount']) && $level['discount'] > 0 && $level['discount'] < 10) {
                     $dprice = round($gprice * $level['discount'] / 10, 2);
                     $discountprice += $gprice - $dprice;
                     $ggprice = $dprice;
+
                 } else {
                     $ggprice = $gprice;
                 }
@@ -1559,10 +1664,13 @@ if ($_W['isajax']) {
                     $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
                     $params2 = array(':goodsid' =>$_GPC['id']);
                     $room = pdo_fetch($sql2, $params2);
-                    $totalprice =$_GPC['totalprice'];
+                    if( $discountprice!='0'){
+                        $totalprice =$_GPC['totalprice'] -$discountprice;
+                    }
                     $goodsprice =$_GPC['goodsprice'];
                 }
             }
+
             $order   = array(
                 'supplier_uid' => $order_row['supplier_uid'],
                 'uniacid' => $uniacid,
@@ -1615,7 +1723,13 @@ if ($_W['isajax']) {
                      $order['depositprice']=$_GPC['depositprice'];
                      $order['depositpricetype']=$_GPC['depositpricetype'];
                      $order['roomid']=$room['id'];
-                     $order['days']=$days;                  
+                     $order['days']=$days;        
+                     $order['dispatchprice']=0;              
+                     $order['olddispatchprice']=0;    
+                     $order['deductcredit2']=$_GPC['deductcredit2']; 
+                     $order['deductcredit']=$_GPC['deductcredit'];
+                     $order['deductprice']=$_GPC['deductcredit'];  
+                     
                 }
             }
             if ($diyform_plugin) {
@@ -1626,6 +1740,7 @@ if ($_W['isajax']) {
                     $order["diyformdata"]   = $idata;
                     $order["diyformid"]     = $order_formInfo["id"];
                 }
+
             }
             if (!empty($address)) {
                 $order['address'] = iserializer($address);
@@ -1665,37 +1780,10 @@ if ($_W['isajax']) {
                     pdo_update('sz_yi_hotel_room_price', array('num' => $day['num'] - $_GPC['goodscount']), array('id' => $day['id']));
                     $btime += 86400;
                 } 
-               //打印订单      
-                $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
-                //订单信息
-                    $print_order = $order;
-               //  商品信息
-                    $ordergoods = pdo_fetchall("select goodsid,total from " . tablename('sz_yi_order_goods') . " where uniacid=".$_W['uniacid']." and orderid=".$orderid);
-                    foreach ($ordergoods as $key =>$value) {
-                        $ordergoods[$key]['price'] = pdo_fetchcolumn("select marketprice from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
-                        $ordergoods[$key]['goodstitle'] = pdo_fetchcolumn("select title from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
-                        $ordergoods[$key]['totalmoney'] = number_format($ordergoods[$key]['price']*$value['total'],2);
-                        $ordergoods[$key]['print_id'] = pdo_fetchcolumn("select print_id from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
-                    }
-                    $print_order['goods']=$ordergoods;
-                    $print_id = $print_order['goods'][0]['print_id'];
-                    if($print_id!=''){
-                        $print_detail = pdo_fetch("select * from " . tablename('sz_yi_print_list') . " where uniacid={$_W['uniacid']} and id={$print_id}");
-                        if(!empty($print_detail)){
-                                $member_code = $print_detail['member_code'];
-                                $device_no = $print_detail['print_no'];
-                                $key = $print_detail['key'];
-                                include IA_ROOT.'/addons/sz_yi/core/model/print.php';
-                                 //房间金额信息
-                                $sql2 = 'SELECT * FROM ' . tablename('sz_yi_order_room') . ' WHERE `orderid` = :orderid';
-                                $params2 = array(':orderid' => $orderid);
-                                $price_list = pdo_fetchall($sql2, $params2);
-                                $msgNo = testSendFreeMessage($print_order, $member_code, $device_no, $key,$set,$price_list);
-                        }
-                    }
    
             }
         }
+
        
             if (is_array($carrier)) {
                 $up = array(
@@ -1705,6 +1793,7 @@ if ($_W['isajax']) {
                 pdo_update('sz_yi_member', $up, array(
                     'id' => $member['id'],
                     'uniacid' => $_W['uniacid']
+
                 ));
                 if (!empty($member['uid'])) {
                     pdo_update('mc_members', $up, array(
@@ -1747,6 +1836,8 @@ if ($_W['isajax']) {
                 //修改全返插件中房价
                 if(p('hotel') && $_GPC['type']=='99'){
                      $order_goods['price'] = $goodsprice ;
+                     $order_goods['realprice'] = $goodsprice;
+                     $order_goods['oldprice'] = $goodsprice;
                 }
                 if ($diyform_plugin) {
                     $order_goods["diyformid"]     = $goods["diyformid"];
@@ -1757,6 +1848,43 @@ if ($_W['isajax']) {
                     $order_goods['supplier_uid'] = $goods['supplier_uid'];
                 }
                 pdo_insert('sz_yi_order_goods', $order_goods);
+            }
+            if(p('hotel')){
+                //打印订单      
+                $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
+                //订单信息
+                $print_order = $order;
+                //商品信息
+                $ordergoods = pdo_fetchall("select * from " . tablename('sz_yi_order_goods') . " where uniacid=".$_W['uniacid']." and orderid=".$orderid);
+                    foreach ($ordergoods as $key =>$value) {
+                        $ordergoods[$key]['price'] = pdo_fetchcolumn("select marketprice from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+                        $ordergoods[$key]['goodstitle'] = pdo_fetchcolumn("select title from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+                        $ordergoods[$key]['totalmoney'] = number_format($ordergoods[$key]['price']*$value['total'],2);
+                        $ordergoods[$key]['print_id'] = pdo_fetchcolumn("select print_id from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+                        $ordergoods[$key]['type'] = pdo_fetchcolumn("select type from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+
+                    }
+                    $print_order['goods']=$ordergoods;
+                    $print_id = $print_order['goods'][0]['print_id'];
+                    $goodtype = $print_order['goods'][0]['type'];
+                    if($print_id!=''){
+                        $print_detail = pdo_fetch("select * from " . tablename('sz_yi_print_list') . " where uniacid={$_W['uniacid']} and id={$print_id}");
+                        if(!empty($print_detail)){
+                                $member_code = $print_detail['member_code'];
+                                $device_no = $print_detail['print_no'];
+                                $key = $print_detail['key'];
+                                include IA_ROOT.'/addons/sz_yi/core/model/print.php';
+                                if($goodtype=='99'){//类型为房间
+                                    //房间金额信息
+                                    $sql2 = 'SELECT * FROM ' . tablename('sz_yi_order_room') . ' WHERE `orderid` = :orderid';
+                                    $params2 = array(':orderid' => $orderid);
+                                    $price_list = pdo_fetchall($sql2, $params2);
+                                    $msgNo = testSendFreeMessage($print_order, $member_code, $device_no, $key,$set,$price_list);
+                                }else if($goodtype=='1'){
+                                     $msgNo = testSendFreeMessageshop($print_order, $member_code, $device_no, $key,$set);
+                                }
+                        }
+                    }
             }
             if ($deductcredit > 0) {
                 $shop = m('common')->getSysset('shop');
@@ -1786,12 +1914,17 @@ if ($_W['isajax']) {
             if ($pluginc) {
                 $pluginc->checkOrderConfirm($orderid);
             }
+
         }
+        /*if ($pluginc) {
+            $pluginc->checkOrderConfirm($orderid);
+        }*/
         show_json(1, array(
-            'orderid' => $orderid
+            'orderid' => $orderid,
+            'ischannelpay' => $ischannelpay,
+            'ischannelpick' => $ischannelpick
         ));
     }else if ($operation == 'date') {
-        echo 111;exit;
         global $_GPC, $_W;
         $id = $_GPC['id'];
         if ($search_array && !empty($search_array['bdate']) && !empty($search_array['day'])) {

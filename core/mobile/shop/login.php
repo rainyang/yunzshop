@@ -23,8 +23,16 @@ if ($operation == 'display') {
 				show_json(0);
 			}
 			$record = user_single($member);
-			$record['uniacid'] = pdo_fetchcolumn("select uniacid from " . tablename('sz_yi_perm_user') . " where uid={$record['uid']}");
-			$record['supplier_status'] = pdo_fetchcolumn("select status1 from " . tablename('sz_yi_perm_role') . " where id=(select roleid from " . tablename('sz_yi_perm_user') . " where uid={$record['uid']})");
+			if(empty($record['uid'])) {
+				show_json(0);
+			}
+
+			$perm_user = pdo_fetch("select roleid,uniacid from " . tablename('sz_yi_perm_user') . " where uid={$record['uid']}");
+			if(empty($perm_user['roleid'])) {
+				show_json(0);
+			}
+			$record['uniacid'] = $perm_user['uniacid'];
+			$record['supplier_status'] = pdo_fetchcolumn("select status1 from " . tablename('sz_yi_perm_role') . " where id=".$perm_user['roleid']);
 			if(!empty($record)) {
 				if($record['status'] == 1) {
 					show_json(0);

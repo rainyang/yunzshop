@@ -105,6 +105,10 @@ if(!pdo_fieldexists('sz_yi_af_supplier', 'status')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_af_supplier')." ADD `status` TINYINT( 3 ) NOT NULL COMMENT '0申请1驳回2通过' AFTER `productname`;");
 }
 
+if (!pdo_fieldexists('sz_yi_supplier_apply', 'apply_ordergoods_ids')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_supplier_apply')." ADD  `apply_ordergoods_ids` text;");
+}
+
 $result = pdo_fetch('select * from ' . tablename('sz_yi_perm_role') . ' where status1=1');
 if(empty($result)){
   $sql = "
@@ -115,6 +119,5 @@ pdo_query($sql);
   $gysdata = array("perms" => 'shop,shop.goods,shop.goods.view,shop.goods.add,shop.goods.edit,shop.goods.delete,shop.dispatch,shop.dispatch.view,shop.dispatch.add,shop.dispatch.edit,shop.dispatch.delete,order,order.view,order.view.status_1,order.view.status0,order.view.status1,order.view.status2,order.view.status3,order.view.status4,order.view.status5,order.view.status9,order.op,order.op.pay,order.op.send,order.op.sendcancel,order.op.finish,order.op.verify,order.op.fetch,order.op.close,order.op.refund,order.op.export,order.op.changeprice,exhelper,exhelper.print,exhelper.print.single,exhelper.print.more,exhelper.exptemp1,exhelper.exptemp1.view,exhelper.exptemp1.add,exhelper.exptemp1.edit,exhelper.exptemp1.delete,exhelper.exptemp1.setdefault,exhelper.exptemp2,exhelper.exptemp2.view,exhelper.exptemp2.add,exhelper.exptemp2.edit,exhelper.exptemp2.delete,exhelper.exptemp2.setdefault,exhelper.senduser,exhelper.senduser.view,exhelper.senduser.add,exhelper.senduser.edit,exhelper.senduser.delete,exhelper.senduser.setdefault,exhelper.short,exhelper.short.view,exhelper.short.save,exhelper.printset,exhelper.printset.view,exhelper.printset.save,exhelper.dosend,taobao,taobao.fetch');
   pdo_update('sz_yi_perm_role', $gysdata, array('rolename' => "供应商", 'status1' => 1));
 }
-
 message('供应商插件安装成功', $this->createPluginWebUrl('supplier/supplier'), 'success');
 

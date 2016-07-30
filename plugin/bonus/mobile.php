@@ -72,4 +72,8 @@ class BonusMobile extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function agency()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 }
