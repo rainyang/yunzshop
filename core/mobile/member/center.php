@@ -46,7 +46,7 @@ if (p('supplier')) {
 $ischannel = false;
 if (p('channel')) {
 	$result = m('member')->getInfo($openid);
-	if (!empty($result['ischannel'] && !empty($result['channel_level']))) {
+	if (!empty($result['ischannel']) && !empty($result['channel_level'])) {
 		$ischannel = true;
 	}
 	$channel_set = p('channel')->getSet();
