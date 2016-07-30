@@ -94,7 +94,11 @@ class Sz_DYi_Common
         global $_W;
         $tid                   = $params['tid'];
         $set                   = array();
-        $set['service']        = 'alipay.wap.create.direct.pay.by.user';
+        //if (is_pc()) {
+            $set['service']        = 'create_direct_pay_by_user';
+        //} else {
+            //$set['service']        = 'alipay.wap.create.direct.pay.by.user';
+        //}
         $set['partner']        = $alipay['partner'];
         $set['_input_charset'] = 'utf-8';
         $set['sign_type']      = 'MD5';
