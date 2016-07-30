@@ -17,9 +17,9 @@ $sql = "CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_hotel_room') . " (
   `goodsid` int(11) DEFAULT '0',
   `title` varchar(255) DEFAULT '',
   `thumb` varchar(255) DEFAULT '',
-  `oprice` decimal(10) DEFAULT '2',
-  `cprice` decimal(10) DEFAULT '2',
-  `deposit` decimal(10) DEFAULT '2',
+  `oprice` decimal(10) DEFAULT '',
+  `cprice` decimal(10) DEFAULT '',
+  `deposit` decimal(10) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 COMMENT='酒店房间表' AUTO_INCREMENT=1 ;
 
@@ -28,9 +28,9 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_hotel_room_price') . " (
   `roomid` int(11) DEFAULT '0',
   `roomdate` int(11) DEFAULT '0',
   `thisdate` varchar(255) DEFAULT '',
-  `oprice` decimal(10) DEFAULT '2',
-  `cprice` decimal(10) DEFAULT '2',
-  `mprice` decimal(10) DEFAULT '2',
+  `oprice` decimal(10) DEFAULT '',
+  `cprice` decimal(10) DEFAULT '',
+  `mprice` decimal(10) DEFAULT '',
   `num` varchar(255) DEFAULT '',
   `status` int(11) DEFAULT '0',
 
@@ -80,7 +80,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_print_list') . " (
  pdo_query($sql);
 
 if(!pdo_fieldexists('sz_yi_goods', 'deposit')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `deposit` decimal DEFAULT '10' AFTER `isreturnqueue`;");
+  pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `deposit` decimal DEFAULT '0' AFTER `isreturnqueue`;");
 }
 
 //商品表增加打印机id
