@@ -8,6 +8,10 @@
 
 global $_W, $_GPC;
 
+require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/qiniu/src/autoload.php';
+use Qiniu\Auth;
+use Qiniu\Storage\UploadManager;
+
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if ($operation == 'display') {
     ca('shop.banner.view');
@@ -53,10 +57,44 @@ if ($operation == 'display') {
             $id = pdo_insertid();
             plog('shop.banner.add', "添加广告 ID: {$id}");
         }
-        message('更新广告成功！', $this->createWebUrl('plugin/app', array(
-            'method'=>'slider',
-            'op' => 'display'
-        )), 'success');
+
+        //七牛上传图片
+        $accessKey = 's6oWzmS-dB32i-GikfHLrsXzsWNCiApx8FVfamWg';
+        $secretKey = 'izjmJVHjsfE8fSyHD_wnZZsO7XLm8b5bB9SAqJl3';
+        $auth = new Auth($accessKey, $secretKey);
+
+        // 空间名
+        $bucket = 'yunzshop';
+
+        // 生成上传Token
+        $expire = 3600 * 24 * 365 * 50;
+        $token = $auth->uploadToken($bucket,null, $expire);
+
+        // 要上传文件的本地路径
+        $filePath =   "../attachment/" . save_media($_GPC['thumb']);
+
+        $file_info = pathinfo($filePath);
+
+        // 上传到七牛后保存的文件名
+        $key = $file_info['basename'];
+
+        // 构建 UploadManager 对象
+        $uploadMgr = new UploadManager();
+
+        list($ret, $err) = $uploadMgr->putFile($token, $key, $filePath);
+
+        if ($err !== null) {
+            message('抱歉,广告上传失败！', $this->createWebUrl('plugin/app', array(
+                'method'=>'slider',
+                'op' => 'display'
+            )), 'error');
+        } else {
+            message('更新广告成功！', $this->createWebUrl('plugin/app', array(
+                'method'=>'slider',
+                'op' => 'display'
+            )), 'success');
+        }
+
     }
     $item = pdo_fetch("select * from " . tablename('sz_yi_banner') . " where id=:id and uniacid=:uniacid limit 1", array(
         ":id" => $id,
