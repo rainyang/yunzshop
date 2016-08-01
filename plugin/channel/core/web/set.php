@@ -10,6 +10,9 @@ if (checksubmit('submit')) {
     if ($_GPC['setdata']['setapplycycle'] < 0  || $_GPC['setdata']['setapplyminmoney'] < 0 || !is_int($_GPC['setdata']['setapplycycle']) || !is_int($_GPC['setdata']['setapplyminmoney'])) {
     	message('渠道商提现设置错误!', referer(), 'error');
     }
+    if ($_GPC['setdata']['setprofitproportion'] < 0 ) || !is_int($_GPC['setdata']['setprofitproportion'])) {
+    	message('渠道商推荐员设置错误!', referer(), 'error');
+    }
     $this->updateSet($data);
     m('cache')->set('template_' . $this->pluginname, $data['style']);
     plog('channel.set', '修改基本设置');
