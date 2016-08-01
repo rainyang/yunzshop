@@ -7,6 +7,9 @@ $level = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_level') . " WH
 if (checksubmit('submit')) {
     $data          = is_array($_GPC['setdata']) ? array_merge($set, $_GPC['setdata']) : array();
     $data['texts'] = is_array($_GPC['texts']) ? $_GPC['texts'] : array();
+    if ($_GPC['setdata']['setapplycycle'] < 0  || $_GPC['setdata']['setapplyminmoney'] < 0 || !is_int($_GPC['setdata']['setapplycycle']) || !is_int($_GPC['setdata']['setapplyminmoney'])) {
+    	message('渠道商提现设置错误!', referer(), 'error');
+    }
     $this->updateSet($data);
     m('cache')->set('template_' . $this->pluginname, $data['style']);
     plog('channel.set', '修改基本设置');
