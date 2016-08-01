@@ -117,7 +117,8 @@ if(p('love')){
 			'title' => $set['name'] . '会员分期充值', 
 			'money' => $sendmney, 
 			'rechargetype' => 'system',
-			'aging_id' => $value['id']
+			'aging_id' => $value['id'],
+			'paymethod' => $value['paymethod']
 			);
 		pdo_insert('sz_yi_member_log', $data);
 

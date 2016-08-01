@@ -408,6 +408,9 @@ if (!pdo_fieldexists('sz_yi_member_log', 'aging_id')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_log')." ADD `aging_id` int(11) DEFAULT '0';");
 }
 
+if (!pdo_fieldexists('sz_yi_member_log', 'paymethod')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_log')." ADD `paymethod` tinyint(1) DEFAULT '0';");
+}
 //pdo_fetchall("UPDATE ".tablename('qrcode')." SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
 
 if (!pdo_fieldexists('sz_yi_member', 'regtype')) {
@@ -419,6 +422,10 @@ if (!pdo_fieldexists('sz_yi_member', 'isbindmobile')) {
 
 if (!pdo_fieldexists('sz_yi_member', 'isjumpbind')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `isjumpbind` tinyint(3) DEFAULT '0';");
+}
+
+if (!pdo_fieldexists('sz_yi_member', 'isagency')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `isagency` tinyint(1) DEFAULT '0';");
 }
 //diy
 if (!pdo_fieldexists('sz_yi_store', 'realname')) {
@@ -1443,4 +1450,8 @@ if(!pdo_fieldexists('sz_yi_saler', 'salername')) {
 //绑定手机用
 if(!pdo_fieldexists('sz_yi_member', 'bonuslevel')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonuslevel` INT DEFAULT '0' AFTER `agentlevel`, ADD `bonus_status` TINYINT(1) DEFAULT '0' AFTER `bonuslevel`;");
+}
+//积分商城优惠券字段
+if(!pdo_fieldexists('sz_yi_creditshop_log', 'couponid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_creditshop_log')." ADD `couponid` INT(11) DEFAULT '0' ;");
 }

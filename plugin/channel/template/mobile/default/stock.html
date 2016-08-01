@@ -13,13 +13,15 @@ a {text-decoration:none;}
 
 .log_title {height:40px; padding:5px; line-height:50px; font-size:16px; color:#666;}
 
-.log_list {height:60px; padding:10px; background:#fff;margin-top:5px;}
-.log_list .left {height:40px; width:100%; float:left; color:#999; margin-right:-20%;font-size:14px;}
-.log_list .left .inner { width:100%;margin-right:-20%}
-.log_list .left .inner .img {height:50px; width:50px; float:left;}
-.log_list .left .inner .img img {height:100%; width:100%;}
+.log_list {height:60px;padding: 8px 76px 8px 76px;background:#fff;margin-top:5px;position: relative;}
+
+.inner h1{font-weight: normal;margin: 0;height: 40px;width: 100%;color: #999;overflow: hidden;font-size: 14px;}
+.inner p{margin: 0;color: #999;}
+.inner p span{margin: 0;color: #505050;}
+.log_list .img {height:60px; width:60px;position: absolute;left: 8px;top: 8px}
+.log_list .img img {height:100%; width:100%;}
 .log_list .left span {color:#666; font-size:14px; line-height:28px;}
-.log_list .right {height:40px; width:20%; float:right; font-size:14px; text-align:right; line-height:18px; margin-left:-20%;}
+.log_list .right {height:40px; width:60px; font-size:14px; text-align:right; line-height:18px;position: absolute;right: 8px;top: 50%;margin-top: -9px}
 .log_list .right span {color:#f90;}
 .log_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
 #log_loading { padding:10px;color:#666;text-align: center;}
@@ -36,13 +38,12 @@ a {text-decoration:none;}
     
     <%each list as log%>
   <div class="log_list" data-goodsid='<%log.goodsid%>'>
-    <div class="left">
         <div class='inner'>
-            <%log.goods.title%><br>规格：<span style="color:red"><%log.optiontitle%></span>
-            <div class="img"><img src="<%log.goods.thumb%>"/></div>
+                <h1><%log.goods.title%></h1>
+                <p>规格：<span><%log.optiontitle%></span></p>
         </div>
-    </div>
-    <div class="right">库存(<%log.stock_total%>)<br><span></span></div>
+        <div class="img"><img src="<%log.goods.thumb%>"/></div>
+        <div class="right">库存(<%log.stock_total%>)</div>            
   </div>
     <%/each%>
 </script>
