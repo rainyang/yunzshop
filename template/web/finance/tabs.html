@@ -9,6 +9,7 @@
     <li class="active"><a href="{php echo $this->createWebUrl('finance/recharge',array('op'=>'credit2'))}">充值余额</a></li>
     {/if}
     {ifp 'finance.recharge.view'}<li {if empty($_GPC['p']) || ( $_GPC['p'] == 'log' && $_GPC['type']==0)} class="active" {/if}><a href="{php echo $this->createWebUrl('finance/log',array('type'=>0))}">充值记录</a></li>{/if}
+    {ifp 'finance.recharge.view'}{if p('love')}<li {if empty($_GPC['p']) || ( $_GPC['p'] == 'aging_log' && $_GPC['type']==0)} class="active" {/if}><a href="{php echo $this->createWebUrl('finance/aging_log',array('type'=>0))}">分期管理</a></li>{/if}{/if}
     {ifp 'finance.withdraw.view'}<li {if $_GPC['p'] == 'log' && $_GPC['type']==1} class="active" {/if}><a href="{php echo $this->createWebUrl('finance/log',array('type'=>1))}">提现申请</a></li>{/if}
     {ifp 'finance.downloadbill'}<li {if $_GPC['p'] == 'downloadbill' } class="active" {/if}><a href="{php echo $this->createWebUrl('finance/downloadbill')}">下载对账单</a></li>{/if}
     <li {if $_GPC['p'] == 'transfer'} class="active" {/if}><a href="{php echo $this->createWebUrl('finance/transfer')}">转让记录</a></li>

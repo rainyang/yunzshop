@@ -408,6 +408,9 @@ if (!pdo_fieldexists('sz_yi_member_log', 'aging_id')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_log')." ADD `aging_id` int(11) DEFAULT '0';");
 }
 
+if (!pdo_fieldexists('sz_yi_member_log', 'paymethod')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_log')." ADD `paymethod` tinyint(1) DEFAULT '0';");
+}
 //pdo_fetchall("UPDATE ".tablename('qrcode')." SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
 
 if (!pdo_fieldexists('sz_yi_member', 'regtype')) {
