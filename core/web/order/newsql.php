@@ -423,6 +423,10 @@ if (!pdo_fieldexists('sz_yi_member', 'isbindmobile')) {
 if (!pdo_fieldexists('sz_yi_member', 'isjumpbind')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `isjumpbind` tinyint(3) DEFAULT '0';");
 }
+
+if (!pdo_fieldexists('sz_yi_member', 'isagency')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `isagency` tinyint(1) DEFAULT '0';");
+}
 //diy
 if (!pdo_fieldexists('sz_yi_store', 'realname')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD `realname` varchar(255) DEFAULT '';");
