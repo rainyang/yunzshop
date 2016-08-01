@@ -1447,3 +1447,7 @@ if(!pdo_fieldexists('sz_yi_saler', 'salername')) {
 if(!pdo_fieldexists('sz_yi_member', 'bonuslevel')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonuslevel` INT DEFAULT '0' AFTER `agentlevel`, ADD `bonus_status` TINYINT(1) DEFAULT '0' AFTER `bonuslevel`;");
 }
+//积分商城优惠券字段
+if(!pdo_fieldexists('sz_yi_creditshop_log', 'couponid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_creditshop_log')." ADD `couponid` INT(11) DEFAULT '0' ;");
+}
