@@ -66,7 +66,7 @@ return array(
                     'uid' => '1',
                     'uniacid' => '2',
                     'order_id' => '0',
-                    'status' => ''
+                    'status' => '-1'
                 ),
                 'data' => array()
             ),

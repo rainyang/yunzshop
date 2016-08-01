@@ -24,6 +24,50 @@ class ChangeStatus extends \api\YZ
             'uniacid' => $para["uniacid"]
         ));
     }
+    public function close(){
+        global $_W, $_GPC;
+        $this->ca("order.op.close");
+        $order = $this->order_info;
+        if ($order["status"] == - 1) {
+            $this->returnError("订单已关闭，无需重复关闭！");
+        } else if ($order["status"] >= 1) {
+            $this->returnError("订单已付款，不能关闭！");
+        }
+        if (!empty($order["transid"])) {
+            changeWechatSend($order["ordersn"], 0, $_GPC["reson"]);
+        }
+        $time = time();
+        if ($order['refundstate'] > 0 && !empty($order['refundid'])) {
+            $data               = array();
+            $data['status']     = -1;
+            $data['refundtime'] = $time;
+            pdo_update('sz_yi_order_refund', $data, array(
+                'id' => $order['refundid'],
+                'uniacid' => $_W['uniacid']
+            ));
+        }
+        pdo_update("sz_yi_order", array(
+            "status" => - 1,
+            'refundstate' => 0,
+            "canceltime" => time() ,
+            "remark" => $order["remark"] . "" . $_GPC["remark"]
+        ) , array(
+            "id" => $order["id"],
+            "uniacid" => $_W["uniacid"]
+        ));
+        if ($order["deductcredit"] > 0) {
+            $shopset = m("common")->getSysset("shop");
+            m("member")->setCredit($order["openid"], "credit1", $order["deductcredit"], array(
+                '0',
+                $shopset["name"] . "购物返还抵扣积分 积分: {$order["deductcredit"]} 抵扣金额: {$order["deductprice"]} 订单号: {$order["ordersn"]}"
+            ));
+        }
+        if (p("coupon") && !empty($order["couponid"])) {
+            p("coupon")->returnConsumeCoupon($order["id"]);
+        }
+        plog("order.op.close", "订单关闭 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
+        $this->returnSuccess("订单关闭操作成功！");
+    }
     public function cancelSend(){
         global $_W, $_GPC;
         $this->ca("order.op.sendcancel");
@@ -79,10 +123,40 @@ class ChangeStatus extends \api\YZ
         plog("order.op.finish", "订单完成 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
         $this->returnSuccess("订单操作成功！");
     }
+    public function getArea(){
+        $xml_string = require __API_ROOT__.'/area.php';
+        //dump($xml_string);exit;
+        $xml = simplexml_load_string($xml_string);
+        $json = json_encode($xml);
+        $array = json_decode($json,TRUE);
+        dump($array);
+    }
+    public function getShippingInfo(){
+        $order = $this->order_info;
+        dump($order);exit;
+
+    }
+    public function getExpressInfo(){
+        //$para = $this->getPara();
+        $order = $this->order_info;
+//dump($order);
+        $address = unserialize($order['address']);
+        $address = array(
+            "addressid" => $address["id"],
+            "realname" => $address["realname"],
+            "mobile" => $address["mobile"],
+            "address" => array_part('province,city,area,address', $address)
+        );
+        $company_list = json_decode(require __API_ROOT__.'/expresscom.php',true);
+        //exit;
+        $res=compact('company_list','address');
+        dump($res);
+        $this->returnSuccess($res);
+    }
     public function confirmSend(){
         $this->ca("order.op.send");
-        global $_W, $_GPC;
-        //$para = $this->getPara();
+        global $_W;
+        $para = $this->getPara();
 
         $order = $this->order_info;
         if (empty($order["addressid"])) {
@@ -93,7 +167,7 @@ class ChangeStatus extends \api\YZ
                 $this->returnError("订单未付款，无法发货！");
             }
         }
-        if (!empty($_GPC["isexpress"]) && empty($_GPC["expresssn"])) {
+        if (!empty($para["isexpress"]) && empty($para["expresssn"])) {
             $this->returnError("请输入快递单号！");
         }
         if (!empty($order["transid"])) {
@@ -101,9 +175,9 @@ class ChangeStatus extends \api\YZ
         }
         pdo_update("sz_yi_order", array(
             "status" => 2,
-            "express" => trim($_GPC["express"]) ,
-            "expresscom" => trim($_GPC["expresscom"]) ,
-            "expresssn" => trim($_GPC["expresssn"]) ,
+            "express" => trim($para["express"]) ,
+            "expresscom" => trim($para["expresscom"]) ,
+            "expresssn" => trim($para["expresssn"]) ,
             "sendtime" => time()
         ) , array(
             "id" => $order["id"],
@@ -127,7 +201,7 @@ class ChangeStatus extends \api\YZ
             }
         }
         m("notice")->sendOrderMessage($order["id"]);
-        plog("order.op.send", "订单发货 ID: {$order["id"]} 订单号: {$order["ordersn"]} <br/>快递公司: {$_GPC["expresscom"]} 快递单号: {$_GPC["expresssn"]}");
+        plog("order.op.send", "订单发货 ID: {$order["id"]} 订单号: {$order["ordersn"]} <br/>快递公司: {$para["expresscom"]} 快递单号: {$para["expresssn"]}");
         $this->returnSuccess("发货操作成功！");
     }
     public function confirmPay()

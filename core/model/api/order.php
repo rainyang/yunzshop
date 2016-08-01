@@ -96,7 +96,7 @@ class order
         );
 
         $condition_str = implode(' ', $condition);
-        $sql = 'select o.ordersn,o.status,o.price ,o.id as order_id
+        $sql = 'select o.ordersn,o.status,o.price ,o.id as order_id,r.rtype,r.status as rstatus
 from ' . tablename("sz_yi_order") . " o" . " left join " . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " 
 left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " 
 left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " 
@@ -120,6 +120,7 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
      */
     protected function formatOrderInfo($order_info)
     {
+        dump($order_info);
         global $_W;
         $status_name_map = $this->name_map['status'];
         $order_info["status_name"] = $status_name_map[$order_info["status"]];
@@ -135,7 +136,7 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
             if ($order_info["isverify"] == 1) {
                 $order_info["status_name"] = "待使用";
             } else if (empty($order_info["addressid"])) {
-                $order_info["status_name"] = "待取货";
+                $order_info["status_name"] = "待发货";
             }
         }
         if ($order_info["status"] == -1) {
@@ -148,6 +149,8 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
         }
         $order_goods = $this->getOrderGoods($order_info["order_id"], $_W["uniacid"]);
         $order_info["goods"] = set_medias($order_goods, "thumb");
+        dump($order_info);
+        //$res_order_info = array_part('ordersn,status,price,order_id,goods',$order_info);
         return $order_info;
     }
 
@@ -243,16 +246,16 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
                 $condition = " AND o.status=-1 and o.refundtime=0";
                 break;
             case "4":
-                $condition = " AND o.status=-1 and o.refundtime=0";
+                $condition = " AND o.refundstate>=0 AND o.refundid<>0";
                 break;
             case "5":
-                $condition = " AND o.status=-1 and o.refundtime=0";
+                $condition = " AND o.refundtime<>0";
                 break;
             case "1":
-                $condition = " AND o.status=-1 and o.refundtime=0";
+                $condition = " AND ( o.status = 1 or (o.status=0 and o.paytype=3) )";
                 break;
             case "0":
-                $condition = " AND o.status=-1 and o.refundtime=0";
+                $condition = " AND o.status = 0 and o.paytype<>3";
                 break;
             default:
                 $condition = " AND o.status = " . intval($status);
