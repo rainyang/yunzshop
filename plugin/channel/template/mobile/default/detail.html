@@ -13,14 +13,13 @@ a {text-decoration:none;}
 
 .log_title {height:40px; padding:5px; line-height:50px; font-size:16px; color:#666;}
 
-.log_list {height:40px; padding:10px; background:#fff;margin-top:5px;}
-.log_list .left {height:40px; width:100%; float:left; color:#999; margin-right:-20%;font-size:14px;}
-.log_list .left .inner { width:100%;margin-right:-20%}
-.log_list .left .inner .img {height:50px; width:50px; float:left;}
-.log_list .left .inner .img img {height:100%; width:100%;}
-.log_list .left span {color:#666; font-size:14px; line-height:28px;}
-.log_list .right {height:40px; width:20%; float:right; font-size:14px; text-align:right; line-height:18px; margin-left:-20%;}
-.log_list .right span {color:#f90;}
+.log_list { padding:10px; background:#fff;margin-top:5px;overflow: hidden;}
+.log_list .inner { width:100%;margin-right:-20%}
+.log_list .inner .img {height:50px; width:50px; float:left;}
+.log_list .inner h1{width: 100%;color: #333;font-size: 14px;margin: 0;font-weight: normal;border-bottom: 1px #eee solid;padding-bottom: 8px;}
+.log_list .inner h1 span{float: right;color: #f15353}
+.log_list .inner p{line-height: 20px;color: #999;width: 100%;padding:8px 0 0;margin: 0}
+
 .log_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
 #log_loading { padding:10px;color:#666;text-align: center;}
 </style>
@@ -36,12 +35,10 @@ a {text-decoration:none;}
     
     <%each list as log%>
   <div class="log_list" data-goodsid='<%log.id%>'>
-    <div class="left">
         <div class='inner'>
-            采购时间：<%log.paytime%><br><span>进货价：<%log.every_turn_price%>(元)折扣：<%log.every_turn_discount%>(%)商品单价：<%log.goods_price%>(元)</span>
+            <h1>采购时间：<%log.paytime%><span>采购数量：(<%log.every_turn%>)</span></h1>
+            <p>进货价：<%log.every_turn_price%>(元)<br>折扣：<%log.every_turn_discount%>(%)<br>商品单价：<%log.goods_price%>(元)</p>
         </div>
-    </div>
-    <div class="right">采购数量：(<%log.every_turn%>)</div>
   </div>
     <%/each%>
 </script>
