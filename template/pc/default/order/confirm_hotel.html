@@ -1,8 +1,9 @@
 {template 'common/header'}
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/template/mobile/default/static/css/jiudian.css">
 <title>确认订单</title>
+{template 'common/navigation'}
 {if !empty($order_formInfo)}
-<script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.core-2.5.2.js" type="text/javascript"></script>
+	 <script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.core-2.5.2.js" type="text/javascript"></script>
 <script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.core-2.5.2-zh.js" type="text/javascript"></script>
 <link href="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.core-2.5.2.css" rel="stylesheet" type="text/css" />
 <link href="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.animation-2.5.2.css" rel="stylesheet" type="text/css" />
@@ -10,6 +11,7 @@
 <script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.datetime-2.5.1-zh.js" type="text/javascript"></script>
 <script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.android-ics-2.5.2.js" type="text/javascript"></script>
 <link href="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.android-ics-2.5.2.css" rel="stylesheet" type="text/css" />
+
 <link href="../addons/sz_yi/template/mobile/default/static/js/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
 <script src="../addons/sz_yi/template/mobile/default/static/js/star-rating.js" type="text/javascript"></script>
 <script src="../addons/sz_yi/static/js/dist/ajaxfileupload.js" type="text/javascript"></script>
@@ -17,21 +19,22 @@
 <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
 <style type="text/css">
     body {margin:0px; background:#efefef;}
-    .addorder_topbar {height:34px; background:#5f6e8b; padding:15px;}
+    .addorder_topbar {height:64px; background:#5f6e8b; padding:15px;}
     .addorder_topbar .ico {height:34px; width:30px; line-height:34px; float:left; font-size:26px; text-align:center; color:#fff;}
+    .addorder_topbar .ico .fa{color: #fff}
     .addorder_topbar .tips {height:34px;  margin-left:10px; font-size:13px; color:#fff; line-height:17px;}
     
-    .addorder_nav { height:30px; padding:10px;}
-    .addorder_nav .nav { padding:2px 5px 2px 5px;; border:1px solid #5f6e8b; color:#5f6e8b; background:#fff; float:left; margin-left:10px;}
-    .addorder_nav .selected { border:1px solid #ff6600; color:#ff6600; }
+    .addorder_nav { height:26px; padding:10px;box-sizing: content-box; background: #fff;margin: 10px 0;}
+    .addorder_nav .nav { padding:2px 5px 2px 5px;; border:1px solid #5f6e8b; color:#5f6e8b; background:#fff; float:left; margin-left:10px;cursor:pointer;}
+    .addorder_nav .selected { border:1px solid #ff6600; color:#ff6600;cursor:pointer; }
     
-    .addorder_user {height:54px;  background:#fff; padding:5px; border-bottom:1px solid #eaeaea;}
+    .addorder_user {height:64px;  background:#fff; padding:5px; border-bottom:1px solid #eaeaea;}
     .addorder_user .info .ico { float:left;  height:50px; width:30px; line-height:50px; font-size:26px; text-align:center; color:#666}
     .addorder_user .info .info1 {height:54px; width:100%; float:left;margin-left:-30px;margin-right:-30px;}
-    .addorder_user .info .info1 .inner { margin-left:30px;margin-right:30px;overflow:hidden;}
-    .addorder_user .info .info1 .inner .user {height:30px; width:100%; font-size:16px; color:#333; line-height:35px;overflow:hidden;}
-    .addorder_user .info .info1 .inner .address {height:20px; width:100%; font-size:14px; color:#999; line-height:20px;overflow:hidden;}
-    .addorder_user .info .ico2 {height:50px;  width:30px; line-height:65px; float:right; font-size:16px; text-align:right; color:#999;}
+    .addorder_user .info .info1 .inner { margin-left:30px;margin-right:30px;overflow:hidden;width: auto;}
+    .addorder_user .info .info1 .inner .user {box-sizing: content-box;height:30px; width:100%; font-size:16px; color:#333; line-height:35px;overflow:hidden;}
+    .addorder_user .info .info1 .inner .address {height:20px; width:100%; font-size:14px; color:#999; line-height:20px;overflow:hidden;border: 0}
+    .addorder_user .info .ico2 {height:50px;  width:30px; line-height:65px; float:right; font-size:16px; text-align:center; color:#999;cursor: pointer;}
     
     .addorder_exp {height:42px;  background:#fff; padding:5px; border-bottom:1px solid #eaeaea; line-height:42px; font-size:16px; color:#333;}
     .addorder_exp .t1 {height:42px; width:auto; float:left;padding-left:10px;}
@@ -39,10 +42,11 @@
     .addorder_exp .ico {height:42px; width:30px;  float:right;text-align:right;color:#999; font-size:16px;margin-top:5px; }
      
     
-    .addorder_good {width:100%;height:auto;padding:10px;background:#fff;  margin-top:10px; border-bottom:1px solid #eaeaea; border-top:1px solid #eaeaea;}
-    .addorder_good .ico {height:6px; width:10%; line-height:36px; float:left; text-align:center;}
-    .addorder_good .shop {height:36px; width:90%; padding-left:10%; border-bottom:1px solid #eaeaea; line-height:36px; font-size:18px; color:#333;}
-    .addorder_good .good {height:50px; width:100%; padding:10px 0px; border-bottom:1px solid #eaeaea;}
+    .addorder_good {height:auto;padding:10px;background:#fff;
+    margin: 0 auto; margin-top:16px; border-bottom:1px solid #eaeaea; border-top:1px solid #eaeaea;}
+    .addorder_good .ico {height:6px; /*width:10%; */line-height:36px; float:left; text-align:center;}
+    .addorder_good .shop {height:36px; width:100%; padding-left:26px; border-bottom:1px solid #eaeaea; line-height:36px; font-size:18px; color:#333;}
+    .addorder_good .good {height:70px; width:100%; padding:10px 0px; border-bottom:1px solid #eaeaea;}
     .addorder_good .img {height:50px; width:50px; float:left;}
     .addorder_good .img img {height:100%; width:100%;}
     .addorder_good .info {width:100%;float:left; margin-left:-50px;margin-right:-60px;}
@@ -53,46 +57,46 @@
     .addorder_good .price { float:right;height:54px;margin-left:-60px;;}
     .addorder_good .price .pnum { height:20px;width:100%;text-align:right;font-size:14px; }
     .addorder_good .price .num { height:20px;width:100%;text-align:right;}
-    .addorder_good input {height:34px; width:97%; padding: 0 5px; background:#f7f7f7;  border:1px solid #e9e9e9; margin:14px 0px 0; -webkit-appearance: none; }
-    .addorder_good .text {height:34px; width:90%; line-height:34px; text-align:right; font-size:16px; color:#999;margin-left: 40px;}
+    .addorder_good input {height:34px; width:100%; padding: 0 5px; background:#f7f7f7;  border:1px solid #e9e9e9; margin:14px 0px 0; -webkit-appearance: none; }
+    .addorder_good .text {height:34px; width:100%; line-height:34px; text-align:right; font-size:16px; color:#999;}
 
-    .addorder_price {width:100%;height:auto;  background:#fff; padding:5px 10px; margin-top:10px; border-bottom:1px solid #eaeaea; border-top:1px solid #eaeaea;}
+    .addorder_price {height:auto;  background:#fff; padding:5px 10px; margin-top:16px; border-bottom:1px solid #eaeaea; border-top:1px solid #eaeaea;}
     .addorder_price .price {height:auto; width:100%; border-bottom:1px solid #eaeaea;}
     .addorder_price .price .line {height:33px; width:100%; font-size:14px; color:#666;}
     .addorder_price .price .line span {height:33px; width:auto; float:right;}
     .addorder_price .all {height:47px; width:100%; line-height:47px; font-size:16px; color:#666;}
     .addorder_price .all span {height:47px; width:auto; float:right; color:#ff771b;}
-    .addorder_pay {width:100%;height:60px;  background:#fff; padding:0px 3%; margin-top:10px; border-top:1px solid #eaeaea;margin-bottom: 0px;overflow: hidden;}
-    .addorder_pay span {height:60px; width:auto;  float:right; line-height:60px; color:#ff771b; font-size:16px;}
+    .addorder_pay {height:60px; width:100%; background:#fff; padding:0px 1%; margin-top:30px; border-top:1px solid #eaeaea;}
+    .addorder_pay span {height:60px; width:auto; margin-right:16px; float:right; line-height:60px; color:#ff771b; font-size:16px;}
     .addorder_pay .paysub {height:40px; width:auto; background:#ff771b; padding:0px 10px; margin-top:10px; border-radius:5px; color:#fff; line-height:40px; float:right;}
-    .chooser {overflow: auto; width: 100%; background:#efefef; position: fixed; top: 0px; right: -100%; z-index: 1;}
-    .chooser .address {height:50px; background:#fff; padding:10px;; border-bottom:1px solid #eaeaea;}
+    .chooser {/*overflow: auto;*/ width: 100%; background:#efefef; /*position: fixed; top: 0px; right: -100%; */z-index: 1;}
+    .chooser .address {box-sizing: content-box;height:50px; background:#fff; padding:10px;; border-bottom:1px solid #eaeaea;width: auto;}
     .chooser .address .ico {float:left; height:50px; width:30px; line-height:50px; float:left; font-size:20px; text-align:center; color:#999;}
     .chooser .address .info {height:50px; width:100%;float:left;margin-left:-30px;margin-right:-30px;}
     .chooser .address .info .inner { margin-left:35px;margin-right:30px;}
     .chooser .address .info .inner .name {height:28px; width:100%; font-size:16px; color:#666; line-height:28px;overflow:hidden;}
     .chooser .address .info .inner .addr {height:22px; width:100%; font-size:14px; color:#999; line-height:22px;overflow: hidden;}
-    .chooser .address .edit {height:50px; width:30px; float:right;margin-left:-30px;text-align:center;line-height:50px;color:#666;}
+    .chooser .address .edit {cursor: pointer;height:50px; width:30px; float:right;margin-left:-30px;text-align:center;line-height:50px;color:#666;}
 
-    .chooser .add_address {height:44px; padding:5px; background:#fff; border-bottom:1px solid #eaeaea; line-height:44px; font-size:16px; color:#666;}
+    .chooser .add_address {box-sizing: content-box;height:44px; padding:5px; background:#fff; border-bottom:1px solid #eaeaea; line-height:44px; font-size:16px; color:#666;cursor: pointer;}
 
    
 
-    .address_main {height:100%; width:100%; background:#fff;  position: fixed; top: 0px; right: -100%; z-index: 1;}
+    .address_main {width: 500px;min-height: 280px;left: 50%;top: 20%;margin-left: -250px;z-index: 999;background:#fff;  position: fixed;border-radius: 5px;    border: 4px solid rgba(0,0,0,.2);}
     .address_main .line {height:44px; margin: 0 5px; border-bottom:1px solid #f0f0f0; line-height:44px;}
 
     .address_main .line input {float:left; height:44px; width:100%; padding:0px; margin:0px; border:0px; outline:none; font-size:16px; color:#666;padding-left:5px;}
-    .address_main .line select  { border:none;height:25px;width:100%;color:#666;font-size:16px;}
+    .address_main .line select  { border:none;height:42px;width:100%;color:#666;font-size:16px;}
     .address_main .address_sub1 {height:44px; margin:14px 5px; background:#ff4f4f; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
     .address_main .address_sub2 {height:44px; margin:14px  5px; background:#ddd; border-radius:4px; text-align:center; font-size:18px; line-height:44px; color:#666; border:1px solid #d4d4d4;}
 .select { -webkit-appearance: none }
 
     .carrier_input_info {height:auto;width:100%; background:#fff; margin-top:14px; border-bottom:1px solid #e8e8e8; border-top:1px solid #e8e8e8;}
-    .carrier_input_info .row { padding:0 10px; height:40px; background:#fff; border-bottom:1px solid #e8e8e8; line-height:40px; color:#999;}
-    .carrier_input_info .row .title {height:40px; width:85px; line-height:40px; color:#444; float:left; font-size:16px;}
+    .carrier_input_info .row { margin:0;padding:0 10px; height:40px; background:#fff; border-bottom:1px solid #e8e8e8; line-height:40px; color:#999;}
+    .carrier_input_info .row .title {height:40px; width:85px; line-height:40px; color:#444; float:left; font-size:14px;}
     .carrier_input_info .row .info { width:100%;float:right;margin-left:-85px; }
-    .carrier_input_info .row .inner { margin-left:85px; }
-    .carrier_input_info .row .inner input {height:30px; color:#666;background:transparent;margin-top:0px; width:100%;border-radius:0;padding:0px; margin:0px; border:0px; float:left; font-size:16px;}
+    .carrier_input_info .row .inner { margin-left:85px;margin-bottom: 0 }
+    .carrier_input_info .row .inner input {height:30px; color:#666;background:transparent;margin-top:0px; width:100%;border-radius:0;padding:0px; margin:0px; border:0px; float:left; font-size:14px;}
  
     .addorder_price .line .nav {height:22px; width:40px; background:#ccc; margin:3px 0px; float:right; border-radius:40px;}
 .addorder_price .line .on {background:#4ad966;}
@@ -100,26 +104,57 @@
 .addorder_price .line .nav .on {margin-left:19px;}
 .cnum {height:22px; width:81px; border:1px solid #e2e2e2; }
 .cnum .leftnav {height:20px; width:19px; float:left; border-right:1px solid #e2e2e2; background:#eee; color:#6b6b6b; text-align:center; line-height:20px; font-size:18px; font-weight:bold;}
-.cnum .shownum {height:20px; width:40px; float:left;  border:0px; margin:0px; padding:0px; text-align:center;}
+.cnum .shownum {height:20px; width:40px;    line-height: 20px; float:left;  border:0px; margin:0px; padding:0px; text-align:center;}
 .cnum .rightnav {height:20px; width:19px; float:right; border-left:1px solid #e2e2e2; background:#eee; color:#6b6b6b; text-align:center; line-height:20px; font-size:18px; font-weight:bold;}
 
 .couponcount {float:right; margin-top:8px;  margin-right: 5px; height:16px; width:16px; background:#f30; border-radius:8px; font-size:12px; color:#fff; line-height:16px; text-align: center;}
-
+.mark_layer{    height: 100%;
+    width: 100%;
+    background: rgba(0,0,0,0.3);
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 10;}
 </style>
 
-<div id='confirm_container' style="margin-bottom:0px;"></div>
-<script id='tpl_confirm_info' type='text/html'>  
-     <section>
-        <div class="jiudwrap">
-            <!-- 预定日期begin -->            
-            <div id="checkinout">
-                <div id="selinTime"  style="font-weight: normal;" onClick="location.href='{php echo $this->createMobileUrl('order', array('id' => $id,'op' => 'date','p'=>'confirm'))}'">
-                    <span  class="ico_time"></span>入住:&nbsp;<span id="CheckInDay">{if ($_SESSION['data']['bdate'] != '')}{$_SESSION['data']['bdate']}{else}--{/if}</span>
-                     <span ></span>退房:&nbsp;<span id="CheckInDay">{if ($_SESSION['data']['edate'] != '')}{$_SESSION['data']['edate']}{else}--{/if}</span>
-                    <span class="span2" id="CheckOutDay">{if ($_SESSION['data']['day'] != '')}住:{$_SESSION['data']['day']}晚{else}--{/if}</span><span
-                        class="icon_arrow" style="position:relative; right:10px; top:15px;"></span>
+<div id='carrier_container'></div>
+<div id='dispatch_container'></div>
+<div id='confirm_container'></div>
+
+<script id='tpl_carrier_list' type='text/html'>
+    <div class="chooser choose_carrier">
+        <%each carrier_list as carrier index%>
+        <div class="address carrier"
+             data-index='<%index%>'
+             data-id='<%carrier.id%>'
+             data-realname='<%carrier.storename%>'
+             data-mobile='<%carrier.tel%>'
+             data-address='<%carrier.address%>' 
+             >
+            <div class="ico" ><%if selectedCarrierIndex==index%><i class="fa fa-check" style="color:#0c9"></i><%/if%></div>
+            <div class="info">
+                <div class='inner'>
+                    <div class="name"><%carrier.storename%>(<%carrier.tel%>)</div>
+                    <div class="addr"><%carrier.address%></div>
                 </div>
             </div>
+        </div>
+        <%/each%>
+    </div>
+</script>
+
+
+<script id='tpl_confirm_info' type='text/html'>
+     <section>
+    <!-- 预定日期begin -->            
+    <div id="checkinout">
+        <div id="selinTime"  style="font-weight: normal;" onClick="location.href='{php echo $this->createMobileUrl('order', array('id' => $id,'op' => 'date','p'=>'confirm'))}'">
+            <span  class="ico_time"></span>入住:&nbsp;<span id="CheckInDay">{if ($_SESSION['data']['bdate'] != '')}{$_SESSION['data']['bdate']}{else}--{/if}</span>
+             <span ></span>退房:&nbsp;<span id="CheckInDay">{if ($_SESSION['data']['edate'] != '')}{$_SESSION['data']['edate']}{else}--{/if}</span>
+            <span class="span2" id="CheckOutDay">{if ($_SESSION['data']['day'] != '')}住:{$_SESSION['data']['day']}晚{else}--{/if}</span><span
+                class="icon_arrow" style="position:relative; right:10px; top:15px;"></span>
+        </div>
+    </div>
 
         <%each goods as g%>
         <div class="good" style="overflow:hidden;background: #ffffff;" data-totalmaxbuy="<%g.totalmaxbuy%>">            
@@ -144,13 +179,13 @@
             </div>
         </div>
         <%/each%>
-            <!-- 房型姓名电话begin -->
+
+                    <!-- 房型姓名电话begin -->
             <div class="jiudbook-info">             
                 <form action="" class="jiudbook-form">
                     <div class="jiudbookp">
                         <div class="jiudbook-inpu" style="float:left;width:40%">
                         <input type="text" value="<?php echo $member['realname'] ?>" name="realname"  id="realname" placeholder="入住人姓名"></div>
-                        <input id="type" value="<%type%>" type="hidden">
 
                         <div class="jiudbook-sex" style="float:right">
                             <input style="-webkit-appearance:checkbox;" type="radio" id="sexman" name="realsex" value="0" checked >
@@ -167,6 +202,8 @@
               
             </div>
             <!-- 房型姓名电话over -->
+
+   <!-- 房型姓名电话over -->
             <!-- 发票，支付begin -->
             <div class="jiudbook-info" style="border-top:none" >
                 <div class="jiudbookp">
@@ -217,35 +254,56 @@
             <!-- 底部按钮over -->
 
         </div>
-    </section>
-    <div class="addorder_good">  
-        <input type="hidden" id="goods" value="<%each goods as g%><%g.goodsid%>,<%g.optionid%>,<%g.total%>|<%/each%>"/>
-        <div class="text">共 <span id="goodscount"><%total%></span> 间房间 合计：<span style="color:#ff771b;">￥<span class='goodsprice' style="color:#ff771b;"><%goodsprice%></span></span></div>
-    </div>
-{if !empty($order_formInfo)}
-     <div class="carrier_input_info" >
-         {template 'diyform/formcss'}
-          <style type='text/css'>
-                     .diyform_main .dline { margin:0 10px;}
-                     .diyform_main .dline .dtitle { color:#666;}
-             </style>
-    {template 'diyform/formfields'}
-     </div>
-    {/if}
-
+    </section>     
     <div class="addorder_price" >
-      <%each order_all as order%>
-
         <input type="hidden" id="weight" value="<%weight%>" />
         <div class="price" style="border:none;">
             <div class="line" style="line-height:26px;">房间金额<span>￥<span class='goodsprice'><%goodsprice%></span></span></div>
            
             <div class="line" style="line-height:26px;">+押金<span>￥<span class='depositprice'><%deposit%></span></span></div> 
-            <div class="jiudbookp" style="border:none;position:static">
-                    <span class="" style="position:static">押金到付</span>
+            <div class="jiudbookp" style="border:none;position:static;line-height:20px;">
+                    <span class="" style="position:static;margin-right: 4px;">押金到付</span>
                     <input style="-webkit-appearance:checkbox;" type="checkbox" id="depositpricetype" name="depositpricetype" value="1" class="mar13 fr">
-                </div>
-            <%if order.deductcredit>0 || order.deductcredit2>0  %>
+                                <input id="depositprice" value='<%deposit%>' type="hidden">
+</div>
+        </div>
+    </div>   
+     <div class="addorder_good">  
+        <input type="hidden" id="goods" value="<%each goods as g%><%g.goodsid%>,<%g.optionid%>,<%g.total%>|<%/each%>"/>
+        <div class="text">共 <span id="goodscount"><%total%></span> 间房间 合计：<span style="color:#ff771b;">￥<span class='goodsprice' style="color:#ff771b;"><%goodsprice%></span></span></div>
+    </div>  
+	<%each order_all as order%>   
+    <div class="addorder_price" >
+        <input type="hidden" data-id="<%order.supplier_uid%>" data-name="weight" value="<%weight%>" />
+        <div class="price" style="border:none;">        
+            <%if order.discountprice>0%>
+            <div class="line" style="line-height:26px;">-会员折扣(<d class='memberdiscount'><%discount%></d>折)<span>-￥<span class='discountprice' data-id='<%order.supplier_uid%>'><%order.discountprice%></span></span></div>
+            <%/if%>
+  		      <%if order.saleset%>
+            <div class="deductenough"  data-id='<%order.supplier_uid%>' class="line" style="line-height:26px;<%if !order.saleset.showenough %>display:none<%/if%>"  >-单笔满 <d style='color:#ff6600' class="deductenough_enough" data-id='<%order.supplier_uid%>'><%saleset.enoughmoney%></d> 元立减  <span>-￥<span class="deductenough_money"  data-id='<%order.supplier_uid%>'><%saleset.enoughdeduct%></span><span></div>
+            <%/if%>
+				   {if $hascouponplugin}
+			       <div class="coupondeduct_div"  data-id='<%order.supplier_uid%>' class="line" style="line-height:26px;display:none"><d class='coupondeduct_text'></d><span>-￥<span class="coupondeduct_money">0</span><span></div>
+				   {/if}
+            
+        </div>
+    </div>
+	<input type="hidden" data-id="<%order.supplier_uid%>" data-name="couponid" value="" />
+     <div class="addorder_price coupondiv"  data-id="<%order.supplier_uid%>" style="margin-top:5px;<%if !order.hascoupon%>display:none<%/if%>" >
+        <div class="price" style="border:none;">
+            <div class="line selectcoupon" style="line-height:32px;" data-id="<%order.supplier_uid%>">
+			           <d class="couponselect" data-id="<%order.supplier_uid%>">我要使用优惠券</d>
+                <div class="ico2" style="float:right;color:#999;margin-top:2px;"><i class='fa fa-angle-right fa-2x'></i></div>
+                <div class="couponcount"><%order.couponcount%></div>
+            </div>
+        </div>
+    </div>
+   
+	
+    <%if order.deductcredit>0 || order.deductcredit2>0  %>
+     <div class="addorder_price" style="margin-top:5px;">
+            <div class="price" style="border:none;">
+             <%if order.deductcredit>0 || order.deductcredit2>0  %>
                <div class="addorder_price" style="margin-top:5px;">
                     <div class="price" style="border:none;">
                         <%if  order.deductcredit>0 %>
@@ -262,43 +320,24 @@
                     </div>              
                 </div>
             <%/if%>
-            <input id="depositprice" value='<%deposit%>' type="hidden">
+	 
         </div>
-        <%/each%>
+      
     </div>
-    
+    <%/if%>
+
+<%/each%>	
     <div class="addorder_pay">
         <!--<div class="paysub">确认订单</div>-->
         <span>需付：￥<t class='totalprice'><%realprice%></t>元</span>
+            <input id="type" value="<%type%>" type="hidden">
+
     </div> 
-    <input id="type" value="<%type%>" type="hidden">
-    <div style="height:60px;"><div>
-            <div class="jiudbottom-popupwrap" id="list_content" style="display:none">
-                <h1>内容<span class="fr">价格</span></h1>
-                   <%if has==0%>
-                        <p style="text-align:center;margin-top:30px;font-size:16px;">暂无内容</p>
-                   <%else%>
-                    <ul>  
-                        <%each price_list as g%>
-                            <li>
-                                <span><%g.time%></span>
-                                <span class="text-c"><span class="text-cl"><%total%></span>间</span>
-                                <span class="fr">￥<%g.m_price%>/间</span>
-                            </li>
-                        <%/each%>     
-                    </ul>
-                    <%/if%>             
-                                
-            </div>
 </script>
 
-{if $hascouponplugin}
-{template 'coupon/chooser'}
-{/if}
 <script type="text/javascript">
 var fromcart = 0;
     require(['tpl', 'core'], function(tpl, core) {
-
 
 
         core.json('order/confirm', {id:'{php echo intval($_GPC['id'])}', optionid:'{php echo intval($_GPC['optionid'])}', total:'{php echo intval($_GPC['total'])}',cartids:"{$_GPC['cartids']}"}, function(json){
@@ -364,7 +403,7 @@ var fromcart = 0;
                 $('.goodsprice').html( marketprice.toFixed(2) );
                
                 if( $('.memberdiscount').length>0){
-                                var discountprice = marketprice - parseFloat( $('.memberdiscount').html().replace(",","") ) / 10 * marketprice;
+                 var discountprice = marketprice - parseFloat( $('.memberdiscount').html().replace(",","") ) / 10 * marketprice;
                 $('.discountprice').html( discountprice.toFixed(2) );
             }
                 var zt =  $('.addorder_nav .selected').data('nav') =='1';
