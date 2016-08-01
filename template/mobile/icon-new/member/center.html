@@ -175,7 +175,12 @@
             <a href="{php echo $this->createPluginMobileUrl('supplier/orderj')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-road"></i>供应商中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
         {/if}
     {/if}
-
+    {if p('channel') && !empty($ischannel)}
+        <a href="{php echo $this->createPluginMobileUrl('channel/index')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-retweet" style="color:#f10;"></i>渠道中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    {/if}
+    {if p('channel') && empty($ischannel) && empty($channel_set['closeregisterchannel'])}
+        <a href="{php echo $this->createPluginMobileUrl('channel/af_channel')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-arrow-up" style="color:#f10;"></i>申请渠道商<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    {/if}
     {if $pluginbonus && is_weixin_show()}
         {if !empty($shopset['bonus_start'])}
             {if empty($bonus_set['bonushow'])}

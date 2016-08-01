@@ -20,14 +20,17 @@ if ($operation == 'result') {
 
     echo json_encode($url);
 } elseif ($operation == 'adv') { //引导广告位图片
-    $banner = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_banner') . "  ORDER BY `id` DESC");
-    $adv_img = array('android_src' => 'http://' . $_SERVER['HTTP_HOST'] . '/attachment/'.$banner[0]['thumb'],
-                     'ios_src'     => 'http://' . $_SERVER['HTTP_HOST'] . '/attachment/'.$banner[0]['thumb']
+    $qiniu_domain = "http://7xwyfd.com1.z0.glb.clouddn.com/";
+
+    $banner = pdo_fetch("SELECT * FROM " . tablename('sz_yi_banner') . "  ORDER BY `id` DESC");
+
+    $file_info = pathinfo($banner['thumb']);
+
+    $adv_img = array('android_src' => $qiniu_domain.$file_info['basename'],
+                     'ios_src'     => $qiniu_domain.$file_info['basename']
                     );
 
-    // $adv_img = array('android_src' => 'http://' . $_SERVER['HTTP_HOST'] . '/addons/sz_yi/template/mobile/app/static/images/downlotu.png',
-    //                  'ios_src'     => 'http://' . $_SERVER['HTTP_HOST'] . '/addons/sz_yi/template/mobile/app/static/images/downlotu.png'
-    //                 );
+
 
     echo json_encode($adv_img);
 }

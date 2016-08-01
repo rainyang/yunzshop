@@ -17,7 +17,7 @@
     .order_main .good  .img img {height:100%; width:100%;}
     .order_main .good  .info {width:100%;float:left; margin-left:-50px;margin-right:-60px;}
     .order_main .good .info .inner { margin-left:60px;margin-right:60px; }
-    .order_main .good .info .inner .name {height:32px; width:100%; float:left; font-size:12px; color:#555;overflow:hidden;}
+    .order_main .good .info .inner .name {height:38px; width:100%; float:left; font-size:12px; color:#555;overflow:hidden;}
     .order_main .good .info .inner .option {height:18px; width:100%; float:left; font-size:12px; color:#888;overflow:hidden;word-break: break-all}
     .order_main .good span { color:#666;}
     .order_main .good  .price { float:right;width:60px;;height:54px;margin-left:-60px;;}
@@ -119,15 +119,32 @@
 
     a {text-decoration:none;}
 
-    .topbar {height:40px; padding:10px; background:#fff;}
+    .topbar {height:40px; padding:10px;background: #f15353 !important;}
 
-    .topbar .user_face {height:40px; width:40px; background:#ccc; float:left;}
+
+    .topbar .user_face {
+    border: 2px solid #fff;
+    height: 48px;
+    width: 48px;
+    background: #fff;
+    margin: 6px auto;
+    border-radius: 50px;
+}
 
     .topbar .user_face img {height:100%; width:100%;}
 
-    .topbar .user_info {height:40px; width:auto; float:left; margin-left:12px;}
+    .topbar .user_info {
+    width: 100%;
+    text-align: center;
+}
 
-    .topbar .user_info .user_name {height:24px; width:100%; font-size:16px; line-height:24px; color:#666;}
+    .topbar .user_info .user_name {
+    height: 24px;
+    width: 100%;
+    font-size: 14px;
+    line-height: 24px;
+    color: #fff;
+}
 
        .topbar .user_info .user_name span { font-size:14px; color:#ff6600}
 
@@ -180,6 +197,7 @@
 .gold_sub {height:44px; width:94%; background:#31cd00; line-height:44px; font-size:18px; color:#fff; text-align:center; margin:16px 3%; border-radius:5px;}
 .gold_sub1 {height:44px; width:94%; background:#ccc; line-height:44px; font-size:18px; color:#fff; text-align:center; margin:16px 3%; border-radius:5px;}
 </style>
+
 <div id='container'></div>
 <script id='tpl_main' type='text/html'>
     <div class="topbar">
@@ -187,22 +205,29 @@
         <div class="user_info">
             <div class="user_name"><%member.realname%></div>
         </div>
-    </div> 
-    <div class="top">
-        <div class="top_1">
-            <div class="text">累计提现金额：{php echo $commission_total} 元<br>可提现金额（元）（订单完成后可获得）</div>
-        </div>
-        <div class="top_2">{php echo $commission_ok}<a {if $commission_ok<=0 || empty($cansettle) || !empty($last_apply)}href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('channel/apply')}"{/if} id='withdraw' ><span {if $commission_ok<=0|| empty($cansettle) || !empty($last_apply)}class='disabled'{/if} >提现</span></a></div>
-    </div> 
+    </div>
+    <div class="comm-center">
+    <ul>
+        <li><a href="#"><span>{php echo $commission_ok}</span><br/>可提现金额</a></li>
+        <li><a href="#"><span>{php echo $commission_total}</span><br/>累计提现金额</a></li>
+
+        <li><a class="recharge" {if $commission_ok<=0 || empty($cansettle) || !empty($last_apply)}href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('channel/apply')}"{/if} id='withdraw' ><p style="margin:0" class="disabled" {if $commission_ok<=0|| empty($cansettle) || !empty($last_apply)}{/if} >提现</p></a>
+        </li>
+    </ul>
+    </div>
+
+
+
+
     <div class="menu">  
-        <a {php echo "href='".$this->createPluginMobileUrl('channel/log')."'";}><div class="nav nav1"><i class="fa fa-cny fa-3x"></i><div class="title">提现记录</div><div class="con"><span>{php echo $commission_total}</span>元</div></div></a>
-        <a {php echo "href='".$this->createPluginMobileUrl('channel/index',array('op' => 'order','type'=>$_GPC['type']))."'";}><div class="nav nav3"><i class="fa fa-list fa-3x"></i><div class="title">我的订单</div><div class="con"><span>{$ordercount}</span>个订单</div></div></a>
-        <a href="{php echo $this->createPluginMobileUrl('channel/team')}"><div class="nav nav1"><i class="fa fa-group  fa-3x" style="color:#98cd37;"></i><div class="title">我的团队</div><div class="con"><span>{php echo $channelcount}</span> 人</div></div></a>
-        <a {php echo "href='".$this->createPluginMobileUrl('channel/stock',array('type'=>$_GPC['type']))."'";}><div class="nav nav8"><i class="fa fa-truck"></i><div class="title">商品库存</div></div></a>
-        <a href="{php echo $purchaseurl}"><div class="nav nav9"><i class="fa fa-paper-plane"></i><div class="title">我要采购</div></div></a>
-        <a href="{php echo $pickingurl}"><div class="nav nav9"><i class="fa fa-paper-plane-o"></i><div class="title">我要提货</div></div></a>
+        <a {php echo "href='".$this->createPluginMobileUrl('channel/log')."'";}><div class="nav nav1"><i class="fa  iconfont icon-record" style="background:#BC7BFF;"></i><div class="title">提现记录</div><div class="con"><span>{php echo $commission_total}</span>元</div></div></a>
+        <a {php echo "href='".$this->createPluginMobileUrl('channel/index',array('op' => 'order','type'=>$_GPC['type']))."'";}><div class="nav nav1"><i class="fa iconfont icon-dingdan" style="background:#F981A7;"></i><div class="title">我的订单</div><div class="con"><span>{$ordercount}</span>个订单</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('channel/team')}"><div class="nav nav1"><i class="fa iconfont icon-hezuotuandui" style="background:#ff6e03;"></i><div class="title">我的团队</div><div class="con"><span>{php echo $channelcount}</span> 人</div></div></a>
+        <a {php echo "href='".$this->createPluginMobileUrl('channel/stock',array('type'=>$_GPC['type']))."'";}><div class="nav nav1"><i class="fa iconfont icon-stock" style="background:#58d5d9;"></i><div class="title">商品库存</div></div></a>
+        <a href="{php echo $purchaseurl}"><div class="nav nav1"><i class="fa iconfont icon-purchase" style="background:#ffb13b;"></i><div class="title">我要采购</div></div></a>
+        <a href="{php echo $pickingurl}"><div class="nav nav1"><i class="fa iconfont icon-take"style="background:#ff3877;"></i><div class="title">我要提货</div></div></a>
         {if !empty($channelinfo['channel']['lower_openids'])}
-            <a href="{php echo $this->createPluginMobileUrl('channel/chamer_list')}"><div class="nav nav9"><i class="fa fa-server"></i><div class="title">推荐订单</div></div></a>
+            <a href="{php echo $this->createPluginMobileUrl('channel/chamer_list')}"><div class="nav nav1"><i class="fa iconfont icon-dingdan" style="background:#7775FF;"></i><div class="title">推荐订单</div></div></a>
         {/if}
     </div>
 </script>
