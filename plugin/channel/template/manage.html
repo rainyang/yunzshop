@@ -206,9 +206,9 @@
         </div>
         {if $member['channeltime']!='1970-01-01 08:00'}
         <div class="form-group">
-            <label class="col-xs-12 col-sm-3 col-md-2 control-label">成为代理时间</label>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">成为渠道商时间</label>
             <div class="col-sm-9 col-xs-12">
-                <div class='form-control-static'>{if !strexists('1970',$member['channeltime'])}{$member['channeltime']}{else}----------{/if}</div>
+                <div class='form-control-static'>{if !strexists('1970',$member['channeltime'])}{php echo date('Y-m-d H:i:s', $member['channeltime']);}{else}----------{/if}</div>
             </div>
         </div>
         {/if}
