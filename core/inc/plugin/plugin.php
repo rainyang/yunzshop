@@ -76,20 +76,28 @@ class Plugin extends Core
                 $compile = IA_ROOT . "/data/tpl/web/default/{$filename}.tpl.php";
             }
         } else {
-            $global_template = m('cache')->getString('template_shop');
-            if (empty($global_template)) {
+            if (is_app()) {
+                $template = m('cache')->getString('app_template_shop');
+            } else {
+                if (!isMobile() && $set['ispc']) {
+                    $template = m('cache')->getString('template_shop_pc');
+                } else {
+                    $template = m('cache')->getString('template_shop');
+                }
+            }
+            /*if (empty($global_template)) {
                 $global_template = "default";
             }
             if (!is_dir(IA_ROOT . "/addons/sz_yi/template/{$tmplateType}/" . $global_template)) {
                 $global_template = "default";
-            }
-            $template = m('cache')->getString('template_' . $this->pluginname);
+            }*/
+            //$template = m('cache')->getString('template_' . $this->pluginname);
             if (empty($template)) {
                 $template = "default";
             }
-            if (!is_dir(IA_ROOT . '/addons/sz_yi/plugin/' . $this->pluginname . "/template/{$tmplateType}/" . $template)) {
+            /*if (!is_dir(IA_ROOT . '/addons/sz_yi/plugin/' . $this->pluginname . "/template/{$tmplateType}/" . $template)) {
                 $template = "default";
-            }
+            }*/
             $compile = IA_ROOT . "/data/app/sz_yi/plugin/" . $this->pluginname . "/{$template}/{$tmplateType}/{$filename}.tpl.php";
             $source  = $defineDir . "/plugin/" . $this->pluginname . "/template/{$tmplateType}/{$template}/{$filename}.html";
             if (!is_file($source)) {
@@ -98,8 +106,8 @@ class Plugin extends Core
             }
 
             if (!is_file($source)) {
-                $source  = $defineDir . "/template/{$tmplateType}/{$global_template}/{$filename}.html";
-                $compile = IA_ROOT . "/data/app/sz_yi/{$global_template}/{$filename}.tpl.php";
+                $source  = $defineDir . "/template/{$tmplateType}/{$template}/{$filename}.html";
+                $compile = IA_ROOT . "/data/app/sz_yi/{$template}/{$filename}.tpl.php";
             }
 
             if (!is_file($source)) {

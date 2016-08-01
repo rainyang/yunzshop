@@ -96,7 +96,12 @@
          <%/if%>
     </div>
      <div class="order_main1" >
+        <%if order.order_type=='3'%>
+         <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('order/list',array('type'=>'hotel'))}'">订单详情</span>
+        <%/if%> 
+        <%if order.order_type!='3'%>
          <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('order/list')}'">订单详情</span>
+        <%/if%> 
          <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('shop')}'">返回首页</span>
      </div>
 </script>
@@ -123,8 +128,8 @@
         <div class="line"><div class="label">需到付</div><div class="info"><div class='inner'><span style='color:#ff6600'>￥<%order.price%>元</span></div></div></div>
     </div>
      <div class="order_main1" >
-         <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('order/detail')}&id=<%order.id%>'">订单详情</span>
-         <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('shop')}'">返回首页</span>
+         <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('order/detail')}&id=<%order.id%>'">订单详情2</span>
+         <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('shop')}'">返回首页2</span>
      </div>
 </script>
  
