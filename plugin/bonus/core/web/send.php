@@ -44,6 +44,9 @@ foreach ($list as $key => &$row) {
 				$totalmoney += $member['commission_ok'];
 			}
 		}
+	}else{
+		//Author:ym Date:2016-08-02 Content:如未查询到该用户则被删除
+		unset($list[$key]);
 	}	
 }
 unset($row);

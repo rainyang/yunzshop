@@ -26,10 +26,42 @@ if (!class_exists('BonusModel')) {
 			return $set;
 		}
 
+		//查看下级是否有相同的等级
+		public function getChildAgents_level($id, $level_id){
+            global $_W;
+            $sql = "select id, agentid, bonuslevel from " . tablename('sz_yi_member') . " where agentid={$id} and uniacid=".$_W['uniacid'];
+            $agents =  pdo_fetchall($sql);
+            foreach ($agents as $agent) {
+            	if($agent['bonuslevel'] == $level_id){
+            		return true;
+            	}else{
+            		if($agent['agentid'] > 0){
+            			 $this->getChildAgents_level($agent['id'], $level_id);
+            		}
+            	}
+            }
+        }
+
+        //查看下级是否有相同的等级
+		public function getParentAgents_level($agentid, $level_id){
+            global $_W;
+            $sql = "select id, agentid, bonuslevel from " . tablename('sz_yi_member') . " where agentid={$agentid} and uniacid=".$_W['uniacid'];
+            $agents =  pdo_fetchall($sql);
+            foreach ($agents as $agent) {
+            	if($agent['bonuslevel'] == $level_id){
+            		return true;
+            	}else{
+            		if($agent['agentid'] > 0){
+            			 $this->getChildAgents_level($agent['id'], $level_id);
+            		}
+            	}
+            }
+        }
+
 		//获取上级代理信息
         public function getParentAgents($id, $isdistinction, $level = -1){
             global $_W;
-            $sql = "select id, agentid, bonuslevel, bonus_status from " . tablename('sz_yi_member') . " where id={$id} and uniacid=".$_W['uniacid'];
+            $sql = "select id, agentid, bonuslevel, bonus_status, isagency from " . tablename('sz_yi_member') . " where id={$id} and uniacid=".$_W['uniacid'];
             $parentAgent =  pdo_fetch($sql);
             if(empty($parentAgent)){
                 return $this->parentAgents;
@@ -39,10 +71,16 @@ if (!class_exists('BonusModel')) {
 	            		$agentlevel = pdo_fetchcolumn("select level from " . tablename('sz_yi_bonus_level') . " where id=".$parentAgent['bonuslevel']);
 		            	if(empty($this->parentAgents[$parentAgent['bonuslevel']]) && $level < $agentlevel){
 		        			$this->parentAgents[$parentAgent['bonuslevel']] = $parentAgent['id'];
+		        			if(p('love') && $parentAgent['isagency'] < 2){
+		        				unset($this->parentAgents[$parentAgent['bonuslevel']]);
+		        			}
 		        		}
 	        		}else{
 		            	if(empty($this->parentAgents[$parentAgent['bonuslevel']])){
 		        			$this->parentAgents[$parentAgent['bonuslevel']] = $parentAgent['id'];
+		        			if(p('love') && $parentAgent['isagency'] < 2){
+		        				unset($this->parentAgents[$parentAgent['bonuslevel']]);
+		        			}
 		        		}
 	        		}
         		}
