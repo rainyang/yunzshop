@@ -48,9 +48,9 @@
             <div class="user-info">
                 <div class="user-name"><%member.nickname%>[会员ID:<%member.id%>]</div>
                 <div class="user-other" {if !empty($set['shop']['levelurl'])}onclick='location.href="{$set['shop']['levelurl']}"'{/if}>[<%level.levelname%>] {if !empty($set['shop']['levelurl'])}<i class='fa fa-question-circle' ></i>{/if}
-                <%if shop_set.shop.isreferrer%>
-                    <br>[推荐人：<%referrer.realname%>]
-                <%/if%>
+                    <%if shop_set.shop.isreferrer%>
+                        [推荐人：<%referrer.realname%>]
+                    <%/if%>
                 </div>
             </div>
             <div class="set" onclick='location.href="{php echo $this->createMobileUrl('member/info')}"'><i class="iconfont icon-cog"></i></div>
