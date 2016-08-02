@@ -176,7 +176,7 @@
         {/if}
     {/if}
     {if p('channel') && !empty($ischannel)}
-        <a href="{php echo $this->createPluginMobileUrl('channel/index')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-retweet" style="color:#f10;"></i>渠道中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('channel/index')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-channel" ></i>渠道中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
     {if p('channel') && empty($ischannel) && empty($channel_set['closeregisterchannel'])}
         <a href="{php echo $this->createPluginMobileUrl('channel/af_channel')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-arrow-up" style="color:#f10;"></i>申请渠道商<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
@@ -238,7 +238,7 @@
     <a href="{php echo $this->createPluginMobileUrl('merchant/orderj')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-globe" style="color:#f10;"></i>招商员<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 {/if}
 {if $has_cashier}
-    <a href="{php echo $this->createPluginMobileUrl('cashier/qrcode_list')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-money" style="color:#f10;"></i>收银台<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    <a href="{php echo $this->createPluginMobileUrl('cashier/qrcode_list')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-web-price"></i>收银台<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 {/if}
 {if !is_weixin()}
 <a href="{php echo $this->createMobileUrl('member/logout')}"><div class="list1"><i class="iconfont icon-sign-out"></i>退出<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
