@@ -1073,13 +1073,14 @@ ul, li { list-style:none; margin:0; padding:0 }
     // }
     var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
     var num = parseInt(total.val() ) + 1;
-
-                  if(num>maxbuy && maxbuy>0){
-        tip.show("您最多可购买 " + maxbuy + " 件!");
+    var maxbuy = $('#maxbuy').val();
+    
+    if(num>maxbuy && maxbuy>0){
+        core.tip.show("您最多可购买 " + maxbuy + " 件!");
         num = maxbuy;
     }
     else if(num>stock && stock!=-1){
-        tip.show("您最多可购买 " + stock + " 件");
+        core.tip.show("您最多可购买 " + stock + " 件");
         num = stock;
     }
     total.val(num);
@@ -1093,11 +1094,11 @@ ul, li { list-style:none; margin:0; padding:0 }
     var num = parseInt(total.val() );
     if(num>maxbuy && maxbuy>0){
 
-        tip.show("您最多可购买 " + maxbuy + " 件!");
+        core.tip.show("您最多可购买 " + maxbuy + " 件!");
         num = maxbuy;
     }
     else if(num>stock && stock!=-1){
-        tip.show("您最多可购买 " + stock + " 件");
+        core.tip.show("您最多可购买 " + stock + " 件");
         num = stock;
     }
     total.val(num);
