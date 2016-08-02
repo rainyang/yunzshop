@@ -127,7 +127,9 @@ class ChangeStatus extends \api\YZ
         $xml_string = require __API_ROOT__.'/area.php';
         //dump($xml_string);exit;
         $xml = simplexml_load_string($xml_string);
-        $json = json_encode($xml);
+        $json = json_encode($xml,JSON_UNESCAPED_UNICODE);
+        dump($json);exit;
+
         $array = json_decode($json,TRUE);
         dump($array);
     }

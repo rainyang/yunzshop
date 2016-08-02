@@ -66,7 +66,7 @@ return array(
                     'uid' => '1',
                     'uniacid' => '2',
                     'order_id' => '0',
-                    'status' => '-1'
+                    'status' => ''
                 ),
                 'data' => array()
             ),
@@ -75,7 +75,7 @@ return array(
                 'para' => array(
                     'uid' => '1',
                     'uniacid' => '2',
-                    'order_id' => '1',
+                    'order_id' => '19',
                 ),
                 'data' => array()
             ),
@@ -85,7 +85,11 @@ return array(
                 'para' => array(
                     'uid' => '1',
                     'uniacid' => '2',
-                    'order_id' => '1',
+                    'order_id' => '19',
+                    'changegoodsprice'=>array(
+                        '17'=>'-23'
+                    ),
+                    'changedispatchprice'=>'6'
                 ),
                 'data' => array()
             ),

@@ -96,7 +96,7 @@ class order
         );
 
         $condition_str = implode(' ', $condition);
-        $sql = 'select o.ordersn,o.status,o.price ,o.id as order_id,r.rtype,r.status as rstatus
+        $sql = 'select o.ordersn,o.status,o.price ,o.id as order_id,o.changedispatchprice,o.changeprice
 from ' . tablename("sz_yi_order") . " o" . " left join " . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " 
 left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " 
 left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " 
@@ -120,7 +120,7 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
      */
     protected function formatOrderInfo($order_info)
     {
-        dump($order_info);
+        //dump($order_info);
         global $_W;
         $status_name_map = $this->name_map['status'];
         $order_info["status_name"] = $status_name_map[$order_info["status"]];
@@ -140,7 +140,7 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
             }
         }
         if ($order_info["status"] == -1) {
-            $order_info['status'] = $order_info['rstatus'];
+            //$order_info['status'] = $order_info['rstatus'];
             if (!empty($order_info["refundtime"])) {
                 if ($order_info['rstatus'] == 1) {
                     $order_info['status_name'] = '已' . $r_type[$order_info['rtype']];
@@ -149,7 +149,7 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
         }
         $order_goods = $this->getOrderGoods($order_info["order_id"], $_W["uniacid"]);
         $order_info["goods"] = set_medias($order_goods, "thumb");
-        dump($order_info);
+        //dump($order_info);
         //$res_order_info = array_part('ordersn,status,price,order_id,goods',$order_info);
         return $order_info;
     }

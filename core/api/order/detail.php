@@ -35,17 +35,22 @@ class Detail extends \api\YZ
     private function getOrderInfo($para)
     {
         $order_model = new \model\api\order();
-        $fields = 'ordersn,status,price,id as order_id,openid,addressid,dispatchid,createtime,paytime,dispatchprice,deductenough,paytype';
+        $fields = 'ordersn,status,price,id as order_id,openid,addressid,dispatchid,createtime,paytime,dispatchprice,deductenough,paytype,changeprice,changedispatchprice,goodsprice,olddispatchprice';
         $order_info = $order_model->getInfo(array(
             'id' => $para["order_id"],
             'uniacid' => $para["uniacid"]
         ), $fields);
         $order_info['price'] = array(
-            'price' => $order_info['price'] - $order_info['dispatchprice'],
-            'dispatchprice' => $order_info['dispatchprice'],
-            'deductenough' => $order_info['deductenough'],
-            'total_price' => $order_info['price'] - $order_info['dispatchprice'] - $order_info['deductenough']
+            'goodsprice'=>$order_info['goodsprice'],//商品小计
+            'olddispatchprice'=>$order_info['olddispatchprice'],//运费
+            'price' => $order_info['price'],//应收
+            'deductenough' => $order_info['deductenough'],//满减
+            'changeprice'=>$order_info['changeprice'],//改价
+            'changedispatchprice'=>$order_info['changedispatchprice'],//改运费
         );
+        array_map(function($item){
+            return number_format( $item,2);
+        },$order_info['price']);
         $order_info['goods'] = $order_model->getOrderGoods($para["order_id"], $para["uniacid"]);
         return $order_info;
     }

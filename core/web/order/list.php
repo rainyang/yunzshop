@@ -1275,6 +1275,7 @@ if ($operation == "display") {
         include $this->template("web/order/changeprice");
         exit;
     } else if ($to == "confirmchangeprice") {
+        var_dump($_GPC);exit;
         $changegoodsprice = $_GPC["changegoodsprice"];
         if (!is_array($changegoodsprice)) {
             message("未找到改价内容!", '', "error");
