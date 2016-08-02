@@ -104,7 +104,7 @@
     <div class="order_all">
         <a href="{php echo $this->createMobileUrl('order',array('status'=>0,'type'=>'hotel'))}"><div class="order_pub order_1" style="border:0px;"><i class="fa fa-credit-card" style="font-size:30px"></i><br>待付款<%if orderhotel.status0>0%><span><%orderhotel.status0%></span><%/if%></div></a>
         <a href="{php echo $this->createMobileUrl('order',array('status'=>1,'type'=>'hotel'))}"><div class="order_pub order_2"><i class="fa fa-suitcase" style="font-size:30px"></i><br>待确认<%if orderhotel.status1>0%><span><%orderhotel.status1%></span><%/if%></div></a>
-        <a href="{php echo $this->createMobileUrl('order',array('status'=>2,'type'=>'hotel'))}"><div class="order_pub order_3"><i class="fa fa-truck" style="font-size:30px"></i><br>待入住<%if orderhotel.status6>0%><span><%orderhotel.status6%></span><%/if%></div></a>
+        <a href="{php echo $this->createMobileUrl('order',array('status'=>2,'type'=>'hotel'))}"><div class="order_pub order_3"><i class="fa fa-truck" style="font-size:30px"></i><br>待入住<%if orderhotel.status2>0%><span><%orderhotel.status2%></span><%/if%></div></a>
         <a href="{php echo $this->createMobileUrl('order',array('status'=>4,'type'=>'hotel'))}"><div class="order_pub order_4"><i class="fa fa-money" style="font-size:30px"></i><br>待退款<%if orderhotel.status4>0%><span><%orderhotel.status4%></span><%/if%></div></a>
     </div>
 </div>

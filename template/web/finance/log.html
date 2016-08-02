@@ -80,6 +80,18 @@
                 </div>
                </div>
                 {/if}
+                {if p('love')}
+               <div class="form-group">
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">充值内容</label>
+                <div class="col-sm-8 col-lg-9 col-xs-12">
+                       <select name='paymethod' class='form-control'>
+                         <option value='' {if $_GPC['paymethod']==''}selected{/if}></option>
+                         <option value='0' {if $_GPC['paymethod']=='0'}selected{/if}>余额</option>
+                         <option value='1' {if $_GPC['paymethod']=='1'}selected{/if}>积分</option>
+                    </select>
+                </div>
+               </div>
+                {/if}
                  <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">状态</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
@@ -145,7 +157,7 @@
     <td> 
       {if $row['aging']}
          分期共{$row['aging']['num']}<br/>
-         已充值{php echo $row['aging']['qtotal'] * $row['aging']['phase'] > $row['aging']['num'] ? $row['aging']['num'] : number_format($row['aging']['qtotal'] * $row['aging']['phase'],2)}{php echo $row['paymethod'] == 0 ? " 元" : " 积分"}
+         已充值{php echo $row['aging']['qtotal'] * $row['aging']['phase'] > $row['aging']['num'] ? $row['aging']['num'] : number_format($row['aging']['qtotal'] * $row['aging']['phase'],2)}{php echo $row['aging']['paymethod'] == 0 ? " 元" : " 积分"}
       {else}
          {$row['money']}
       {/if}
@@ -166,7 +178,13 @@
     {/if}
                     
                     <td>
-                        {$row['money']}<br/>
+                        {if $row['aging']}
+                           {$row['money']}(第{$row['aging']['phase']}期)<br/>
+                           共{$row['aging']['qnum']}期
+                        {else}
+                           {$row['money']}
+                        {/if}
+                        <br/>
                         {if $row['status']==0}
                         <span class='label label-default'>{if $row['type']==1}申请中{else}未充值{/if}</span>
                         {else if $row['status']==1}
