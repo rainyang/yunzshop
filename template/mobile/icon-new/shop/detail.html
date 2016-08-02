@@ -197,7 +197,7 @@ div.flicking_con a.on{background-position:0 -9px}
                </div>
         </div>
         <div class="close" onClick="closechoose()"><i class="iconfont icon-close"></i></div>
-        <div class="sub " onClick="choose2()">确认</div>
+        <div class="sub confirm_option" onClick="choose2()">确认</div>
     </div>
 
     <div class="good_img">
@@ -824,10 +824,10 @@ div.flicking_con a.on{background-position:0 -9px}
                 }
                 if(ret.no==''){
                     if(stock==0){
-                       $('.sub').addClass('disabled').html('库存不足,无法购买');
+                       $('.confirm_option').addClass('disabled').html('库存不足,无法购买');
                     }
                     else{
-                     $('.sub').removeClass('disabled').html('确认');
+                     $('.confirm_option').removeClass('disabled').html('确认');
                     }
                 } 
                 $("#marketprice").html(marketprice);
@@ -1082,7 +1082,7 @@ div.flicking_con a.on{background-position:0 -9px}
                 return;
             }
         if(!direct){
-            if($('.sub').hasClass('disabled')){
+            if($('.confirm_option').hasClass('disabled')){
                return;
             }
             else{
