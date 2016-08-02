@@ -3,7 +3,6 @@
 <style type="text/css">
     body {margin:0px; background:#efefef; -moz-appearance:none;}
 
-
     .detail_topbar {height:44px; background:#5f6e8b; padding:15px;}
     .detail_topbar .ico {height:44px; width:30px; line-height:34px; float:left; font-size:26px; text-align:center; color:#fff;}
     .detail_topbar .tips {height:34px;  margin-left:10px; font-size:13px; color:#fff; line-height:17px;}
@@ -43,7 +42,7 @@
     .detail_price .price .line span {height:26px; width:auto; float:right;}
     
    
-    .detail_pay {height:60px; width:94%; background:#fff; padding:0px 3%; margin-top:30px; border-top:1px solid #eaeaea;position:fixed;bottom:0px}
+    .detail_pay {height:60px; width:94%; background:#fff; padding:0px 3%; margin-top:30px; border-top:1px solid #eaeaea;bottom:0px}
     .detail_pay span {height:60px; width:auto; margin-right:16px; float:right; line-height:60px; color:#ff771b; font-size:16px;}
     .detail_pay .paysub {height:38px; width:auto;margin-left:5px; background:#ff771b; padding:0px 10px; margin-top:10px; border-radius:5px; color:#fff; line-height:38px; float:right;}
     
@@ -115,12 +114,7 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
 <div class="detail_topbar">
     <div class="ico"><i class="fa fa-file-text-o"></i></div>
     <div class="tips">
-         <%if order.status==0 && order.paytype!=3%>等待付款<%/if%>
-        <%if order.paytype==3 && order.status==0%>到店付款，等待确认<%/if%>
-        <%if order.status==1%>已付款<%/if%>
-        <%if order.status==2 %>已确认<%/if%>
-        <%if order.status==3%>交易完成<%/if%>
-        <%if order.status==-1%>交易关闭<%/if%>
+
         <br>
         <span>订单金额: ￥<%order.price%><span><br/>
         <span>押金: ￥<%order.depositprice%>
@@ -130,132 +124,17 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
             )
         <%order.returndepositpricename%>
         <span><br/></div>
-      
-</div>
-  <%if show==1%>
-    <%if order.isverify==1 || order.virtual!='0'%>    
-    <div class="detail_user">
-        <div class="info" >
-            <div class="ico"><i class="fa fa-user"></i></div>
-                <div class='info1'>
-                     <div class='inner'>
-                         <div class="user">联系人:  <%carrier.carrier_realname%></div>
-                         <div class="address">联系电话: <span id='carrier_address'><%carrier.carrier_mobile%></span></div>
-                     </div>
-                 </div>
-            </div>
-          </div>
-    </div>
-    <%/if%>
-<%/if%>
-
-    <%if order.isverify==1%>
-    <div class="store_title" onclick="showStores(this)" show="1" >适用的门店
-         <i class="fa fa-angle-down" style="float:right; line-height:44px; font-size:26px;"></i>
-    </div>
-  
-    
-      <div class="stores">
-      <%each stores as store index%>
-     <%if index<=1%>
-     <div class="store" >
-             <div class="info">
-             <div class="ico"><i class="fa fa-building-o"></i></div>
-             <div class='info1'>
-                 <div class='inner'>
-                     <div class="user"><%store.storename%></div>
-                     <div class="address">地址: <%store.address%></div>
-                     <div class="tel">电话: <%store.tel%></div>
-                 </div>
-             </div>
-             <a href="http://api.map.baidu.com/marker?location=<%store.lat%>,<%store.lng%>&title=<%store.storename%>&name=<%store.storename%>&content=<%store.address%>&output=html"><div class="ico2"><i class='fa fa-map-marker'></i></div></a>
-             <a href="tel:<%store.tel%>"><div class="ico3" ><i class='fa fa-phone'></i></div></a>
-        </div>
-       </div>
-     <%/if%>
-     <%/each%> 
-         <div id='store_more' style="display:none">
-      <%each stores as store index%>
-     <%if index>1%>
-     <div class="store" >
-             <div class="info">
-             <div class="ico"><i class="fa fa-building-o"></i></div>
-             <div class='info1'>
-                 <div class='inner'>
-                     <div class="user"><%store.storename%></div>
-                     <div class="address">地址: <%store.address%></div>
-                     <div class="tel">电话: <%store.tel%></div>
-                 </div>
-             </div>
-             <a href="http://api.map.baidu.com/marker?location=<%store.lat%>,<%store.lng%>&title=<%store.storename%>&name=<%store.storename%>&content=<%store.address%>&output=html"><div class="ico2"><i class='fa fa-map-marker'></i></div></a>
-             <a href="tel:<%store.tel%>"><div class="ico3" ><i class='fa fa-phone'></i></div></a>
-        </div>
-       </div>
-     <%/if%>
-     <%/each%> 
-         </div>
-    <%if stores.length>=3%>
-     <div class="store_more" onclick="$('#store_more').show();$(this).remove()">显示更多 <i class="fa fa-angle-double-down"></i></div>
-     <%/if%> 
-      </div>
-    
-   
-    <%else%>
-    
-    
- 
-
-
- <!--<%if order.addressid!=0%>
-<div class="detail_user">
-    <input type='hidden' id='addressid' value='<%address.id%>' />
-    <div class="info">
-        <div class="ico"><i class="fa fa-map-marker"></i></div>
-         <div class='info1'>
-                 <div class='inner'>
-                        <div class="user">收件人：<span id='address_realname'><%address.realname%></span>(<span id='address_mobile'><%address.mobile%></span>)</div>
-                        <div class="address"><span id='address_address'><%address.address%></span></div>
-                 </div>
-             </div>
-   
-    </div>
-</div>
- <%/if%>-->
- 
- <%if order.dispatchtype==1%>
- <div class="detail_user">
-     <input type='hidden' id='carrierindex' value='0' />
-    <div class="info" id='carrier_select' >
-        <div class="ico"><i class="fa fa-map-marker"></i></div>
-            <div class='info1'>
-                 <div class='inner'>
-                     <div class="user">自提地点：<span id='carrier_realname'><%carrier.realname%></span>(<span id='carrier_mobile'><%carrier.mobile%></span>)</div>
-                     <div class="address"><span id='carrier_address'><%carrier.address%></span></div>
-                 </div>
-         </div>
-    </div>
-</div>
- <%/if%>
- <%/if%>
- 
- 
-
-<!--<span>diyform</span>-->
-{if $diyform_flag == 1 && count($goods)==1}
-{php $datas = iunserializer($goods[0]['diyformdata'])}
-<div class="diyform_info">
-{loop $goods[0]['diyformfields'] $value}
-<div class='dline   {$value['tp_css']}'>
-        <div class='dtitle'>{$value['tp_name']}：</div>
-        <div class='dinfo'>
-            <div class='dinner'>
-                   {$value['tp_value']}
-            </div>
+        <div class="fr right-zt" style="font-size: 18px;float: right;color:#fff">
+            <%if order.status==0 && order.paytype!=3%>等待付款<%/if%>
+            <%if order.paytype==3 && order.status==0%>到店付款，等待确认<%/if%>
+            <%if order.status==1%>待确认<%/if%>
+            <%if order.status==2 %>待入住<%/if%>
+            <%if order.status==6 %>待退房<%/if%>
+            <%if order.status==3%>交易完成<%/if%>
+            <%if order.status==-1%>交易关闭<%/if%>
         </div>
 </div>
-{/loop}
-</div>
-{/if}   
+
 <div class="detail_good">
     <div class="ico"><i class="fa fa-gift" style="color:#666; font-size:20px;"></i></div>
     <div class="shop"><%set.name%></div>
@@ -277,7 +156,6 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
     <%/each%>
 </div> 
 
-  <%if order.order_type=='3'%>
 
 <div class="detail_price" >
     <input type="hidden" id="weight" value="<%weight%>" />
@@ -323,10 +201,9 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
             <%if order.depositpricetype==1%>含押金<%/if%>
             <%if order.depositpricetype==2%>不含押金<%/if%>
             ):<span><span class='dispatchprice' style='color:#ff6600'>￥<%order.price%></span></span></div>
-      </div> 
+        </div> 
 </div>
 
-    <%/if%>
 
     <%if order.status==3%>
     <div class="detail_price" style="margin-top:15px;height:80px;">
@@ -336,55 +213,49 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
     </div>
     </div>
      <%/if%>
-     <div style="height:80px;"></div>
      
 <div class="detail_pay">
-      <%if order.status==0%>
-      <%if order.paytype!=3%>
-        <div class="paysub" onclick="location.href ='{php echo $this->createMobileUrl('order/pay')}&orderid=<%order.id%>&openid={$openid}'">付款</div>
-           <%/if%>
-           <div class="paysub1 order_cancel" style='position:relative;width:63px;'>
-               <span style='position:absolute;display:block;width:70px;top:-10px;color:#5f6e8b'>取消订单</span>
-           <select>
-               <option value="">不取消了</option>
-               <option value="我不想买了">我不想买了</option>
-               <option value="信息填写错误，重新拍">信息填写错误，重新拍</option>
-               <option value="同城见面交易">同城见面交易</option>
-               <option value="其他原因">其他原因</option>
-           </select>
-             </div>
-      <%/if%>
-  
-      
-      <%if order.status==2 %>
-             <div class="paysub order_complete">确认</div>
-             <!--<%if order.expresssn!=''%>
-             <div class="paysub1 order_express">查看物流</div>
-             <%/if%>-->
-      <%/if%>
-      <%if order.status==3 && order.iscomment==0%>
-             <div class="paysub1 order_comment">评价</div>
-      <%/if%>
-      <%if order.status==3 && order.iscomment==1%>
-             <div class="paysub1 order_comment">追加评价</div>
-      <%/if%>
-      <%if order.status==3  || order.status==-1%>
-             <div class="paysub1 order_delete">删除订单</div>
-      <%/if%>
-      <%if order.canrefund%>
-         <%if order.refundid!=0%>
-               <div class="paysub order_refund">退款申请中</div>
-         <%else%>
-               <div class="paysub order_refund">申请退款</div>
-         <%/if%>
-      <%/if%> 
-       <%if order.isverify=='1' %>
-              <%if order.verified!='1'%>
-                      <%if order.status==1%>
-                       <div class="paysub1" onclick="VerifyHandler.verify('{$_GPC['id']}')" style='float:left'><i class="fa fa-qrcode"></i> 确认使用</div>
-                       <%/if%>
+        <%if order.status==0%>
+            <%if order.paytype!=3%>
+                 <div class="paysub" onclick="location.href ='{php echo $this->createMobileUrl('order/pay')}&orderid=<%order.id%>&openid={$openid}'">付款</div>
             <%/if%>
-      <%/if%>
+            <div class="paysub1 order_cancel" style='position:relative;width:63px;'>
+               <span style='position:absolute;display:block;width:70px;top:-10px;color:#5f6e8b'>取消订单</span>
+               <select>
+                   <option value="">不取消了</option>
+                   <option value="我不想买了">我不想买了</option>
+                   <option value="信息填写错误，重新拍">信息填写错误，重新拍</option>
+                   <option value="同城见面交易">同城见面交易</option>
+                   <option value="其他原因">其他原因</option>
+               </select>
+            </div>
+        <%/if%> 
+        <%if order.status==2 %>
+                 <div class="paysub order_completehotel">确认入住</div>
+        <%/if%>
+        <%if order.status==3 && order.iscomment==0%>
+             <div class="paysub1 order_comment">评价</div>
+        <%/if%>
+        <%if order.status==3 && order.iscomment==1%>
+             <div class="paysub1 order_comment">追加评价</div>
+        <%/if%>
+        <%if order.status==3  || order.status==-1%>
+             <div class="paysub1 order_delete">删除订单</div>
+        <%/if%>
+        <%if order.canrefund%>
+            <%if order.refundid!=0%>
+                   <div class="paysub order_refund">退款申请中</div>
+            <%else%>
+                   <div class="paysub order_refund">申请退款</div>
+            <%/if%>
+        <%/if%> 
+        <%if order.isverify=='1' %>
+            <%if order.verified!='1'%>
+                <%if order.status==1%>
+                    <div class="paysub1" onclick="VerifyHandler.verify('{$_GPC['id']}')" style='float:left'><i class="fa fa-qrcode"></i> 确认使用</div>
+                <%/if%>
+            <%/if%>
+       <%/if%>
 </div>
 </script>
 {if p('verify')}
@@ -471,11 +342,11 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
                        location.href = core.getUrl('order/express',{id:'{$_GPC['id']}'});
                   });
                 
-                 $(".order_complete").click(function(){
+                 $(".order_completehotel").click(function(){
   
-                      core.tip.confirm('是否确认?',function(){
+                      core.tip.confirm('是否确认入住?',function(){
                       
-                         core.json('order/op',{'op':'complete', orderid:'{$_GPC['id']}'},function(json){
+                         core.json('order/op',{'op':'completehotel', orderid:'{$_GPC['id']}'},function(json){
                                  if(json.status==1){
                                       location.reload();
                                       return;

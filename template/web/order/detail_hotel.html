@@ -69,12 +69,8 @@
                             <tr>
                                 <td  style='border:none;text-align:right;'>房间金额：</td>
                                 <td  style='border:none;text-align:right;;'>
-                                ￥{if $item['depositpricetype']=='1' }
-                                       {php echo $item['price']-$item['depositprice']}
-                                    {/if}
-                                    {if $item['depositpricetype']!='1' }
-                                       {php echo $item['price']}
-                                    {/if}
+                                                               ￥{php echo $item['goodsprice']}
+
                                 </td>
                             </tr>
                             <tr>
@@ -87,13 +83,13 @@
                                  {/if})  
                                  </td>
                             </tr>
+                                               
+                             {if $item['discountprice']>0}
                             <tr>
-                                <td  style='border:none;text-align:right;'>总计：</td>
-                                <td  style='border:none;text-align:right;;'>￥{php echo number_format( $item['price'],2)} 
-                                 </td>
+                                <td  style='border:none;text-align:right;'>会员折扣：</td>
+                                <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['discountprice'],2)}</td>
                             </tr>
-                         
-        
+                            {/if}
                             
                             {if $item['deductprice']>0}
                             <tr>
@@ -119,6 +115,11 @@
                                 <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['couponprice'],2)}</td>
                             </tr>
                             {/if}
+                            <tr>
+                                <td  style='border:none;text-align:right;'>应收款：</td>
+                                <td  style='border:none;text-align:right;;'>￥{php echo number_format( $item['price'],2)} 
+                                 </td>
+                            </tr> 
                             {if intval($item['changeprice'])!=0}
                             <tr>
                                 <td  style='border:none;text-align:right;'>卖家改价：</td>

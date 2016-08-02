@@ -51,11 +51,15 @@
 		  <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">默认级别名称</label>
                 <div class="col-sm-9 col-xs-12">
-                    <select  class="form-control" name="setdata[culate_method]">
+                    {if empty($level)}
+                    请填写<a href="{php echo $this->createPluginWebUrl('channel/level')}">渠道商等级</a>
+                    {else}
+                    <select  class="form-control" name="setdata[default_level]">
                         {loop $level $row}
-                        <option value="{$row['id']}" {if empty($set['default_level'] == $row['id'])}selected{/if}>{$row['level_name']} -- {$row['level_num']}</option>
+                        <option value="{$row['id']}" {if $set['default_level'] == $row['id']}selected{/if}>{$row['level_name']} -- {$row['level_num']}</option>
                         {/loop}
                     </select>
+                    {/if}
                     <span class="help-block">申请成为渠道商的默认等级</span>
                 </div>
             </div> 
@@ -64,7 +68,7 @@
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">渠道商等级升级依据</label>
                 <div class="col-sm-9 col-xs-12">      
                         <label class="radio radio-inline" style="width:240px">
-                              <input type="radio" name="setdata[become]" value="1" {if $set['become'] == 1}checked{/if}/> 团队总人数
+                              <input type="radio" name="setdata[become]" value="1" {if $set['become'] == 1 || empty($set['become'])}checked{/if}/> 团队总人数
                         </label>										
 		                <label class="radio radio-inline" style="width:240px">
                               <input type="radio" name="setdata[become]" value="2" {if $set['become'] == 2}checked{/if}/> 累计进货量（金额）
@@ -123,7 +127,7 @@
               <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9">
-                        <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" onclick='return formcheck()' />
+                        <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
                         <input type="hidden" name="token" value="{$_W['token']}" />
                     </div>
               </div>

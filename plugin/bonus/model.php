@@ -918,9 +918,10 @@ if (!class_exists('BonusModel')) {
 					//更新分红订单完成
 					pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
 					$totalmoney += $send_money;
+					$total += 1;
 				}
 			}
-			$total += 1;
+			
 			if($islog){
 				$log = array(
 			            "uniacid" => $_W['uniacid'],
@@ -993,7 +994,8 @@ if (!class_exists('BonusModel')) {
 			//Author:ym Date:2016-04-08 Content:需消费一定金额，否则清除该用户不参与分红
 			if(!empty($set['consume_withdraw'])){
 				foreach ($list as $key => $row) {  
-			        $myorder = pdo_fetchcolumn('select sum(og.realprice) as ordermoney as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $row['openid']));
+			        $myorder = pdo_fetchcolumn('select sum(og.realprice) as ordermoney from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.uniacid=:uniacid limit 1', array(':uniacid' => $row['uniacid'], ':openid' => $row['openid']));
+
 			        if($myorder < floatval($set['consume_withdraw'])){
 			            unset($list[$key]);
 			            continue;
@@ -1028,10 +1030,10 @@ if (!class_exists('BonusModel')) {
 					"ctime" => time(),
 					"send_bonus_sn" => $time
 				));
+				$total += 1;
 				if($sendpay == 1){
 					$this->sendMessage($value['openid'], array('nickname' => $value['nickname'], 'levelname' => $value['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_GLOBAL_PAY);
 				}
-
 			}
 			$log = array(
 					"uniacid" => $_W['uniacid'],

@@ -19,7 +19,7 @@ if ($_W['isajax']) {
 	$commission_ok = 0;
 	foreach ($suppliers as $key => $value) {
 	    $commissions = pdo_fetchcolumn("select commissions from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and supplier_uid={$value['supplier_uid']} and member_id={$member['id']}");
-	    $order_total_price = pdo_fetchcolumn("select sum(price) from " . tablename('sz_yi_order') . " where uniacid={$_W['uniacid']} and status = 3 and userdeleted = 0 and deleted = 0 and supplier_uid = {$value['supplier_uid']} and merchant_apply_status = 0 ");
+	    $order_total_price = pdo_fetchcolumn("select sum(goodsprice) from " . tablename('sz_yi_order') . " where uniacid={$_W['uniacid']} and status = 3 and userdeleted = 0 and deleted = 0 and supplier_uid = {$value['supplier_uid']} and merchant_apply_status = 0 ");
 	    $commission_ok += $commissions * $order_total_price/100;
 
 	}

@@ -61,7 +61,6 @@
                 <th style='width:10%;text-align: center'>粉丝</th>
                 <th style='width:13%;'>姓名<br/>手机号码</th>
                 <th style='width:12%;'>渠道商等级<br/>下级渠道商</th>
-                <th style='width:10%;'>累计佣金<br/>打款佣金</th>
                 <th style='width:7%'>操作</th>
             </tr>
             </thead>
@@ -92,11 +91,6 @@
                 <td>{$row['level_name']} -- {$row['level_num']}
                     <br/>
                     总计：{$row['levelcount']} 人
-                </td>
-                <td>
-                    <label class="label label-primary">{$row['channel_total']}</label>
-                    <br/>
-                    <label class="label label-danger">{$row['channel_pay']}</label>
                 </td>
                 <td  style="overflow:visible;">
 
@@ -186,19 +180,19 @@
                 {/if}
             </div>
         </div>
-        <!-- <div class="form-group">
+        <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">累计佣金</label>
             <div class="col-sm-9 col-xs-12">
-                <div class='form-control-static'> {$member['channel_total']}</div>
+                <div class='form-control-static'> {$channel_info['channel']['commission_total']}</div>
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group">r
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">已打款佣金</label>
             <div class="col-sm-9 col-xs-12">
-                <div class='form-control-static'> {$member['channel_pay']}</div>
+                <div class='form-control-static'> {$channel_info['channel']['commission_pay_total']}</div>
             </div>
         </div>
- -->        <div class="form-group">
+       <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">注册时间</label>
             <div class="col-sm-9 col-xs-12">
                 <div class='form-control-static'>{php echo date('Y-m-d H:i:s', $member['createtime']);}</div>
@@ -206,9 +200,9 @@
         </div>
         {if $member['channeltime']!='1970-01-01 08:00'}
         <div class="form-group">
-            <label class="col-xs-12 col-sm-3 col-md-2 control-label">成为代理时间</label>
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">成为渠道商时间</label>
             <div class="col-sm-9 col-xs-12">
-                <div class='form-control-static'>{if !strexists('1970',$member['channeltime'])}{$member['channeltime']}{else}----------{/if}</div>
+                <div class='form-control-static'>{if !strexists('1970',$member['channeltime'])}{php echo date('Y-m-d H:i:s', $member['channeltime']);}{else}----------{/if}</div>
             </div>
         </div>
         {/if}

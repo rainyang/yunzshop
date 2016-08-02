@@ -149,7 +149,8 @@
                 <form action="" class="jiudbook-form">
                     <div class="jiudbookp">
                         <div class="jiudbook-inpu" style="float:left;width:40%">
-                        <input type="text"  name="realname"  id="realname"placeholder="入住人姓名"></div>
+                        <input type="text" value="<?php echo $member['realname'] ?>" name="realname"  id="realname" placeholder="入住人姓名"></div>
+                        <input id="type" value="<%type%>" type="hidden">
 
                         <div class="jiudbook-sex" style="float:right">
                             <input style="-webkit-appearance:checkbox;" type="radio" id="sexman" name="realsex" value="0" checked >
@@ -160,7 +161,7 @@
                     </div>
                     <div class="jiudbookp">                     
                         <div class="jiudbook-inpu">
-                        <input type="text" placeholder="联系电话"  id="realmobile" name="realmobile"></div>
+                        <input type="text"  value="<?php echo $member['mobile'] ?>" placeholder="联系电话"  id="realmobile" name="realmobile"></div>
                     </div>
                 </form>
               
@@ -826,11 +827,15 @@ var fromcart = 0;
                  core.tip.show("请填写入住人姓名");
                  return;
             }
-              if (!$.isMobile(realmobile)) {
-                    core.tip.show("请填写正确手机号");
-                    return;
-              }
-                  
+
+            if (realmobile.length!='11') {
+                core.tip.show('请输入正确的联系电话!');
+                return;
+            } 
+            if (!$('#realmobile').isMobile()) {
+                core.tip.show('请输入正确的联系电话!');
+                return;
+            }   
              var diydata = '';
              var gdid = {php echo intval($goods_data_id)};
                         {if !empty($order_formInfo)}

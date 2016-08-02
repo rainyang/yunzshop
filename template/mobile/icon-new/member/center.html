@@ -92,7 +92,24 @@
         <a href="{php echo $this->createMobileUrl('order',array('status'=>4))}"><div class="order_pub order_4"><i class="fa"></i><br>待退款<%if order.status4>0%><span><%order.status4%></span><%/if%></div></a>
     </div>
 </div>
-
+{if p('hotel')}
+<div class="order">
+    <a href="{php echo $this->createMobileUrl('order',array('type'=>'hotel'))}">
+        <div class="list1" style="margin-top:0px;">
+            <i class="fa fa-reorder" style="float:left; line-height:44px;"></i>
+            <span style="float:left;">我的酒店订单</span>
+            <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i>
+            <div class="allorder">查看我的全部订单</div>
+        </div>
+    </a>
+      <div class="order_all">
+        <a href="{php echo $this->createMobileUrl('order',array('status'=>0,'type'=>'hotel'))}"><div class="order_pub order_1" style="border:0px;"><i class="fa" ></i><br>待付款<%if orderhotel.status0>0%><span><%orderhotel.status0%></span><%/if%></div></a>
+        <a href="{php echo $this->createMobileUrl('order',array('status'=>1,'type'=>'hotel'))}"><div class="order_pub order_2"><i class="fa" ></i><br>待确认<%if orderhotel.status1>0%><span><%orderhotel.status1%></span><%/if%></div></a>
+        <a href="{php echo $this->createMobileUrl('order',array('status'=>2,'type'=>'hotel'))}"><div class="order_pub order_3"><i class="fa"></i><br>待入住<%if orderhotel.status6>0%><span><%orderhotel.status6%></span><%/if%></div></a>
+        <a href="{php echo $this->createMobileUrl('order',array('status'=>4,'type'=>'hotel'))}"><div class="order_pub order_4"><i class="fa"></i><br>待退款<%if orderhotel.status4>0%><span><%orderhotel.status4%></span><%/if%></div></a>
+    </div>
+</div>
+{/if}
 <div class="cart new-ullist">
     <ul>
         {if $hascom && is_weixin_show()}
@@ -158,7 +175,12 @@
             <a href="{php echo $this->createPluginMobileUrl('supplier/orderj')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-road"></i>供应商中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
         {/if}
     {/if}
-
+    {if p('channel') && !empty($ischannel)}
+        <a href="{php echo $this->createPluginMobileUrl('channel/index')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-retweet" style="color:#f10;"></i>渠道中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    {/if}
+    {if p('channel') && empty($ischannel) && empty($channel_set['closeregisterchannel'])}
+        <a href="{php echo $this->createPluginMobileUrl('channel/af_channel')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="fa fa-arrow-up" style="color:#f10;"></i>申请渠道商<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    {/if}
     {if $pluginbonus && is_weixin_show()}
         {if !empty($shopset['bonus_start'])}
             {if empty($bonus_set['bonushow'])}
@@ -206,7 +228,7 @@
     <a href="javascript:;" id="btnwithdraw"><div class="list1" style="border-bottom: 0px;"><i class="fa fa-money"></i>{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}提现<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
     {if isset($set['trade']) && ($set['trade']['withdraw']==1 || empty($set['trade']['closerecharge']))}
-    <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="{if isset($set['trade']) && $set['trade']['withdraw']==1}margin:0px;{/if}"><i class="fa fa-file-text"></i>{if isset($set['trade']) && $set['trade']['withdraw']==1}{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}明细{else}充值记录{/if}
+    <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="{if isset($set['trade']) && $set['trade']['withdraw']==1}margin:0px;{/if}"><i class="fa fa-file-text"></i>{if isset($set['trade']) && $set['trade']['withdraw']==1}充值记录{/if}
             <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
    {/if}
 -->

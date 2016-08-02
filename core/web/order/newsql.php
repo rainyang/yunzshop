@@ -147,9 +147,9 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_hotel_room') . " (
   `goodsid` int(11) DEFAULT '0',
   `title` varchar(255) DEFAULT '',
   `thumb` varchar(255) DEFAULT '',
-  `oprice` decimal(10) DEFAULT '2',
-  `cprice` decimal(10) DEFAULT '2',
-  `deposit` decimal(10) DEFAULT '2',
+  `oprice` decimal(10) DEFAULT '',
+  `cprice` decimal(10) DEFAULT '',
+  `deposit` decimal(10) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARACTER SET=utf8 COLLATE=utf8_general_ci;
 
@@ -349,6 +349,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_member_aging_rechange') . " (
   `ratio` decimal(10,2) DEFAULT '0.00',
   `num` decimal(10,2) DEFAULT '0.00',
   `qnum` int(11) DEFAULT '0',
+  `phase` int(11) DEFAULT '0',
   `qtotal` decimal(10,2) DEFAULT '0.00',
   `sendpaytime` int(11) DEFAULT '0',
   `status` tinyint(1) DEFAULT '0',
@@ -407,6 +408,9 @@ if (!pdo_fieldexists('sz_yi_member_log', 'aging_id')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_log')." ADD `aging_id` int(11) DEFAULT '0';");
 }
 
+if (!pdo_fieldexists('sz_yi_member_log', 'paymethod')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_log')." ADD `paymethod` tinyint(1) DEFAULT '0';");
+}
 //pdo_fetchall("UPDATE ".tablename('qrcode')." SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
 
 if (!pdo_fieldexists('sz_yi_member', 'regtype')) {
@@ -418,6 +422,10 @@ if (!pdo_fieldexists('sz_yi_member', 'isbindmobile')) {
 
 if (!pdo_fieldexists('sz_yi_member', 'isjumpbind')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `isjumpbind` tinyint(3) DEFAULT '0';");
+}
+
+if (!pdo_fieldexists('sz_yi_member', 'isagency')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD    `isagency` tinyint(1) DEFAULT '0';");
 }
 //diy
 if (!pdo_fieldexists('sz_yi_store', 'realname')) {
@@ -1299,7 +1307,7 @@ if(!pdo_fieldexists('sz_yi_article', 'article_state_wx')) {
 
 //商品表增加押金字段
 if(!pdo_fieldexists('sz_yi_goods', 'deposit')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `deposit` decimal DEFAULT '10' AFTER `isreturnqueue`;");
+  pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `deposit` decimal DEFAULT '0' AFTER `isreturnqueue`;");
 }
 //商品表增加打印机id
 if(!pdo_fieldexists('sz_yi_goods', 'print_id')) {
@@ -1344,11 +1352,11 @@ if(!pdo_fieldexists('sz_yi_order', 'etime')) {
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'depositprice')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `depositprice` decimal DEFAULT '10' AFTER `etime`;");
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `depositprice` decimal DEFAULT '0' AFTER `etime`;");
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'returndepositprice')) {
-  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `returndepositprice`  decimal DEFAULT '10' AFTER `depositprice`;");
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `returndepositprice`  decimal DEFAULT '0' AFTER `depositprice`;");
 }
 
 if(!pdo_fieldexists('sz_yi_order', 'depositpricetype')) {
@@ -1438,4 +1446,12 @@ if(!pdo_fieldexists('sz_yi_return_log', 'credittype')) {
 //低版本缺少字段
 if(!pdo_fieldexists('sz_yi_saler', 'salername')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_saler')." ADD `salername` VARCHAR(255) DEFAULT '';");
+}
+//绑定手机用
+if(!pdo_fieldexists('sz_yi_member', 'bonuslevel')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonuslevel` INT DEFAULT '0' AFTER `agentlevel`, ADD `bonus_status` TINYINT(1) DEFAULT '0' AFTER `bonuslevel`;");
+}
+//积分商城优惠券字段
+if(!pdo_fieldexists('sz_yi_creditshop_log', 'couponid')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_creditshop_log')." ADD `couponid` INT(11) DEFAULT '0' ;");
 }
