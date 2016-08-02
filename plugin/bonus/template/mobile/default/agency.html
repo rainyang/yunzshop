@@ -110,6 +110,10 @@
                         }
                     },true,true);
                 })
+          {if empty($level)}
+                core.message('没有等级可申请了！',"{php echo $this->createPluginMobileUrl('commission')}",'warning');
+                return;
+          {/if}
 
     })
 </script>
