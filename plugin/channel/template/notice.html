@@ -72,6 +72,66 @@
                      模板变量: [昵称] [旧等级]  [旧等级采购折扣] [新等级] [新等级采购折扣]  [时间]
                 </div>
             </div>
+            
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">渠道商零售订单通知</label>
+                <div class="col-sm-9 col-xs-12">
+                      <input type="text" name="tm[channel_retailtitle]" class="form-control" value="{$set['tm']['channel_retailtitle']}" />
+                     <div class="help-block">标题，默认"渠道商零售订单通知"</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    <textarea  name="tm[channel_retail]" class="form-control" >{$set['tm']['channel_retail']}</textarea>
+                     模板变量: [订单号] [昵称] [时间] [商品]
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">渠道商采购通知</label>
+                <div class="col-sm-9 col-xs-12">
+                      <input type="text" name="tm[channel_purchasetitle]" class="form-control" value="{$set['tm']['channel_purchasetitle']}" />
+                     <div class="help-block">标题，默认"渠道商采购通知"</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    <textarea  name="tm[channel_purchase]" class="form-control" >{$set['tm']['channel_purchase']}</textarea>
+                     模板变量: [订单号] [昵称] [时间] [渠道等级] [商品]
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">下级渠道商采购通知</label>
+                <div class="col-sm-9 col-xs-12">
+                      <input type="text" name="tm[channel_lowerpurchasetitle]" class="form-control" value="{$set['tm']['channel_lowerpurchasetitle']}" />
+                     <div class="help-block">标题，默认"下级渠道商采购通知"</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    <textarea  name="tm[channel_lowerpurchase]" class="form-control" >{$set['tm']['channel_lowerpurchase']}</textarea>
+                     模板变量: [订单号] [昵称] [时间] [渠道等级] [商品]
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">渠道商自提通知</label>
+                <div class="col-sm-9 col-xs-12">
+                      <input type="text" name="tm[channel_picktitle]" class="form-control" value="{$set['tm']['channel_picktitle']}" />
+                     <div class="help-block">标题，默认"渠道商自提通知"</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    <textarea  name="tm[channel_pick]" class="form-control" >{$set['tm']['channel_pick']}</textarea>
+                     模板变量: [订单号] [昵称] [时间] [渠道等级] [商品]
+                </div>
+            </div>
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
             <div class="col-sm-9">

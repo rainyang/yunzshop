@@ -277,6 +277,37 @@ if (!class_exists('ChannelModel')) {
 			if (empty($member)) {
 				return;
 			}
+
+			$order_goods = pdo_fetchall("SELECT channel_id, ischannelpay FROM " . tablename('sz_yi_order_goods') . " WHERE uniacid={$_W['uniacid']} AND orderid={$orderid}");
+			foreach ($order_goods as $og) {
+				$goods = '';
+				$pricetotal = 0;
+				$goods .= "" . $og['title'] . '( ';
+                if (!empty($og['optiontitle'])) {
+                    $goods .= " 规格: " . $og['optiontitle'];
+                }
+                $goods .= ' 单价: ' . ($og['realprice'] / $og['total']) . ' 数量: ' . $og['total'] . ' 总价: ' . $og['realprice'] . "); ";
+				$pricetotal += $og['realprice'];
+				$level = $this->getLevel($openid);
+				$message = array(
+					'nickname' 		=> $member['nickname'],
+                    'ordersn' 		=> $order['ordersn'],
+                    'price' 		=> $pricetotal,
+                    'goods' 		=> $goods,
+                    'level_name'	=> $level['level_name']
+					);
+				if (!empty($og['ischannelpay'])) {
+					if (!empty($og['channel_id'])) {
+						$up_openid = pdo_fetchcolumn("SELECT openid FROM " . tablename('sz_yi_member') . " WHERE uniacid={$_W['uniacid']} AND id={$og['channel_id']}");
+						$this->sendMessage($up_openid, $message, TM_LOWERCHANNEL_ORDER);
+					} else {
+						$this->sendMessage($up_openid, $message, TM_CHANNELPURCHASE_ORDER);
+					}
+				} else if (!empty($og['channel_id'])) {
+					$this->sendMessage($up_openid, $message, TM_CHANNELRETAIL_ORDER);
+				}
+			}
+
 			if ($set['become'] == 2 || $set['become'] == 3) {
 				$level = $this->getLevel($openid);
 				$orderinfo = pdo_fetch('SELECT sum(og.realprice) AS ordermoney,count(distinct og.orderid) AS ordercount FROM ' . tablename('sz_yi_order') . ' o ' . ' LEFT JOIN  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' WHERE o.openid=:openid AND o.status>=3 AND o.uniacid=:uniacid AND og.ischannelpay=1 limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
@@ -346,6 +377,30 @@ if (!class_exists('ChannelModel')) {
 				$message = str_replace('[新等级]', $data['newlevelname'], $message);
 				$message = str_replace('[新等级采购折扣]', $data['new_purchase_discount'], $message);
 				$msg = array('keyword1' => array('value' => !empty($tm['channel_upgradetitle']) ? $tm['channel_upgradetitle'] : '渠道商等级升级通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
+			} else if ($message_type == TM_LOWERCHANNEL_ORDER && !empty($tm['channel_lowerpurchase'])) {
+				$message = $tm['channel_lowerpurchase'];
+				$message = str_replace('[昵称]', $data['nickname'], $message);
+				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
+				$message = str_replace('[订单号]', $data['ordersn'], $message);
+				$message = str_replace('[渠道等级]', $data['level_name'], $message);
+				$message = str_replace('[商品]', $data['goods'], $message);
+				$msg = array('keyword1' => array('value' => !empty($tm['channel_upgradetitle']) ? $tm['channel_upgradetitle'] : '下级渠道商采购通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
+			} else if ($message_type == TM_CHANNELPURCHASE_ORDER && !empty($tm['channel_purchase'])) {
+				$message = $tm['channel_purchase'];
+				$message = str_replace('[昵称]', $data['nickname'], $message);
+				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
+				$message = str_replace('[订单号]', $data['ordersn'], $message);
+				$message = str_replace('[渠道等级]', $data['level_name'], $message);
+				$message = str_replace('[商品]', $data['goods'], $message);
+				$msg = array('keyword1' => array('value' => !empty($tm['channel_upgradetitle']) ? $tm['channel_upgradetitle'] : '渠道商采购通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
+			} else if ($message_type == TM_CHANNELRETAIL_ORDER && !empty($tm['channel_retail'])) {
+				$message = $tm['channel_retail'];
+				$message = str_replace('[昵称]', $data['nickname'], $message);
+				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
+				$message = str_replace('[订单号]', $data['ordersn'], $message);
+				$message = str_replace('[渠道等级]', $data['level_name'], $message);
+				$message = str_replace('[商品]', $data['goods'], $message);
+				$msg = array('keyword1' => array('value' => !empty($tm['channel_upgradetitle']) ? $tm['channel_upgradetitle'] : '下级渠道商采购通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
 			}
 			m('message')->sendCustomNotice($openid, $msg);
 		}
