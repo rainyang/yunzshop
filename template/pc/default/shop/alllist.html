@@ -1,9 +1,43 @@
 {template 'common/header'}
 <title>{if empty($current_category)}全部分类{else}{$current_category['name']}{/if}</title>
+<style>
+.head_top {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    z-index: 99;
 
+}
+    
+
+#head-fix {
+    position: fixed;
+    top: 30px;
+    left: 0px;
+    background-color: rgb(255, 255, 255);
+    z-index: 99;
+}
+
+#big_container {
+    margin-top: 164px;
+}
+
+.categories {
+        padding: 10px 0 30px;
+    position: fixed;
+    z-index: 99;
+}
+
+.all-ullist {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+    top: 70px;
+}
+</style>
 <!--导航调用-->
 {template 'common/navigation'}
-<div style="width:100%;background:#fff">
+<div id="big_container" style="width:100%;background:#fff">
 <div class="w m0a">  
         <script type="text/html" id="tpl_main_info"> 
         <div class="categories">
@@ -67,38 +101,35 @@
 
         core.json('shop/alllist',{},function(json) {
         
-
-
             $('#category_info').html(tpl('tpl_main_info',json.result));  
 
-                var h = $(".categories-container").offset().top;
+                
                 $('.second').mouseover(function (){
                     $(this).css('cursor','pointer');
                 })
-                $(document).scroll(function() {
-                    if ($(document).scrollTop() >= h) {
-                            $(".categories-container").css("position","fixed").css("top",148).css("left",0).css("box-shadow","0 2px 5px #d3d3d3"); 
-                            $("#head-fix").css("position","fixed").css("top",40).css("left",0).css("background-color","#fff");
-                            $(".head_top").css("position","fixed").css("top",0).css("left",0);
-                            
-                    } else {
-                        $(".categories-container").css("position","static").css("box-shadow","0 0 0"); 
-                        $("#head-fix").css("position","static");
-                        $(".head_top").css("position","static");
-                    }
-                });
+
 
                 $('.ui-category-item').click(function(){
                     var dataid = $(this).data('id');
                     $(this).siblings().removeClass('selected');
 
                     $('.ui-category-item[data-id='+dataid+']').addClass('selected');
-                    $('html,body').animate({scrollTop:$('.category-item[data-id='+dataid+']').offset().top - 100},100)
+                    $('html,body').animate({scrollTop:$('.category-item[data-id='+dataid+']').offset().top + 100},100)
                 })
                 $('.second').click(function(){
                     var did = $(this).data('id');
                     location.href="{php echo $this->createMobileUrl('shop/list')}&ccate="+did;
                 })
+                $(document).scroll(function() {
+                    if ($(document).scrollTop() >= h) {
+                            $(".categories-container").css("position","fixed").css("box-shadow","0 2px 5px #d3d3d3"); 
+                            
+                            
+                    } else {
+                        $(".categories-container").css("position","static").css("box-shadow","0 0 0"); 
+                        
+                    }
+                });
 
         });
         

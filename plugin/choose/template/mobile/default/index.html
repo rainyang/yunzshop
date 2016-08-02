@@ -175,7 +175,7 @@ line-height: 20px;font-weight: bold;}
                </div>
         </div>
         <div class="close"><i class="fa fa-times-circle-o"></i></div>
-        <div class="sub " style="position: absolute;">确认</div>
+        <div class="sub" style="position: absolute;">确认</div>
     </div>
 </script>
 <div class="center">
@@ -848,12 +848,15 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                     core.tip.show("您最多可购买 " + maxbuy + " 件!");
                     num = maxbuy;
+                    $("#total").val(num);
+                    return;
                 }
                 else if(num>stock && stock!=-1){
                     core.tip.show("您最多可购买 " + stock + " 件");
                     num = stock;
+                    $("#total").val(num);
+                    return;
                 }
-                $("#total").val(num);
 
                 if(stock!="-1"){
                     $("#stockcontainer").html("库存:<span id='stock'>" + stock + "</span>");
@@ -1026,6 +1029,22 @@ ul, li { list-style:none; margin:0; padding:0 }
         } else {
              var action = "";
         }
+        var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+        var num = parseInt($('#total').val() );
+        var maxbuy = $('#maxbuy').val();
+        
+        if(num>maxbuy && maxbuy>0){
+            core.tip.show("您最多可购买 " + maxbuy + " 件!");
+            num = maxbuy;
+            $('#total').val(num);
+            return;
+        }
+        else if(num>stock && stock!=-1){
+            core.tip.show("您最多可购买 " + stock + " 件");
+            num = stock;
+            $('#total').val(num);
+            return;
+        }
         
                 var specselected  = '';
                 
@@ -1120,13 +1139,14 @@ ul, li { list-style:none; margin:0; padding:0 }
     // }
     var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
     var num = parseInt(total.val() ) + 1;
-
-                  if(num>maxbuy && maxbuy>0){
-        tip.show("您最多可购买 " + maxbuy + " 件!");
+    var maxbuy = $('#maxbuy').val();
+    
+    if(num>maxbuy && maxbuy>0){
+        core.tip.show("您最多可购买 " + maxbuy + " 件!");
         num = maxbuy;
     }
     else if(num>stock && stock!=-1){
-        tip.show("您最多可购买 " + stock + " 件");
+        core.tip.show("您最多可购买 " + stock + " 件");
         num = stock;
     }
     total.val(num);
@@ -1140,11 +1160,11 @@ ul, li { list-style:none; margin:0; padding:0 }
     var num = parseInt(total.val() );
     if(num>maxbuy && maxbuy>0){
 
-        tip.show("您最多可购买 " + maxbuy + " 件!");
+        core.tip.show("您最多可购买 " + maxbuy + " 件!");
         num = maxbuy;
     }
     else if(num>stock && stock!=-1){
-        tip.show("您最多可购买 " + stock + " 件");
+        core.tip.show("您最多可购买 " + stock + " 件");
         num = stock;
     }
     total.val(num);

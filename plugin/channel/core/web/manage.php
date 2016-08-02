@@ -30,6 +30,7 @@ if ($operation == 'display') {
     ca('channel.manage.view');
     $id = intval($_GPC['id']);
     $member = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member') . ' WHERE id = :id' , array(':id' => $id));
+    $channel_info = $this->model->getInfo($member['openid']);
     if (checksubmit('submit')) {
         ca('channel.manage.edit|channel.manage.check|channel.manage.manageblack');
         $data = is_array($_GPC['data']) ? $_GPC['data'] : array();

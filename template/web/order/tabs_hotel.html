@@ -26,7 +26,7 @@
 
     {ifp 'order.view.status6'}
     <li {if $operation == 'display' && $status == '6'}class="active"{/if}>
-        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 6,'type' => 'hotel'))}">待退房<em>({$totals['status2']})</em></a>
+        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 6,'type' => 'hotel'))}">待退房<em>({$totals['status6']})</em></a>
     </li>
     {/if}
 

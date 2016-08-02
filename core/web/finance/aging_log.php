@@ -103,7 +103,7 @@ if ($op == 'display') {
         $condition .= ' and ag.paymethod=' . intval($_GPC['paymethod']);
     }
 
-    $sql = "select ag.id,ag.qnum,ag.phase,m.id as mid, m.realname,m.diymemberdata,m.avatar,m.weixin,ag.status,m.nickname,m.mobile,g.groupname,ag.num,ag.createtime,l.levelname from " . tablename('sz_yi_member_aging_rechange') . " ag " . " left join " . tablename('sz_yi_member') . " m on m.openid=ag.openid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where 1 {$condition} ORDER BY ag.createtime DESC ";
+    $sql = "select ag.id,ag.qnum,ag.phase,ag.paymethod,m.id as mid, m.realname,m.diymemberdata,m.avatar,m.weixin,ag.status,m.nickname,m.mobile,g.groupname,ag.num,ag.createtime,l.levelname from " . tablename('sz_yi_member_aging_rechange') . " ag " . " left join " . tablename('sz_yi_member') . " m on m.openid=ag.openid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where 1 {$condition} ORDER BY ag.createtime DESC ";
     $sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
     $list = pdo_fetchall($sql, $params);
     
