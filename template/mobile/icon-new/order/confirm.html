@@ -220,7 +220,7 @@
           <div id='address_container'></div>
         <%/if%>
            <%if carrier%>
-              <div class="addorder_user addorder_user_1" style='display:none'>
+              <div class="addorder_user addorder_user_1" <%if isverifysend%>style='display:none'<%/if%>>
                 <input type='hidden' id='carrierindex' value='0' />
                 <input type='hidden' id='carrierid' value='<%carrier.id%>' />
                 <div class="info" id='carrier_select' >
