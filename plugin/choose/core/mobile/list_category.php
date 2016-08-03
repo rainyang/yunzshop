@@ -32,17 +32,27 @@ if ($operation == 'category') {
 			$parent_category = pdo_fetchall("select a.id,a.parentid,a.name,a.level from " . tablename('sz_yi_category') . " a left join  " .tablename('sz_yi_goods'). " b on (a.id = b.pcate )  where a.parentid=0 and a.uniacid=:uniacid and b.isopenchannel = '".$isopenchannel."' group by a.id ", array(
 			    ':uniacid' => $_W['uniacid'] 
 			));
-			foreach ($parent_category as $v){
-				$ids[] = $v['id'];
+			$ids = 0;
+			if (!empty($parent_category)) {
+				$ids = array();
+				foreach ($parent_category as $v){
+					$ids[] = $v['id'];
+				}
+				$ids = implode(',',$ids);
 			}
-			$sql = 'select a.id,a.parentid,a.name,a.level from ' . tablename('sz_yi_category') . ' a left join  ' .tablename('sz_yi_goods'). ' b on a.id = b.ccate where a.parentid in('.implode(',',$ids).') and a.uniacid=:uniacid and  b.uniacid=:uniacid and b.isopenchannel = "'.$isopenchannel.'" group by a.id ';
+			$sql = 'select a.id,a.parentid,a.name,a.level from ' . tablename('sz_yi_category') . ' a left join  ' .tablename('sz_yi_goods'). ' b on a.id = b.ccate where a.parentid in('.$ids.') and a.uniacid=:uniacid and  b.uniacid=:uniacid and b.isopenchannel = "'.$isopenchannel.'" group by a.id ';
 			$children_category = pdo_fetchall($sql, array(
 			    ':uniacid' => $_W['uniacid']
 			));
-			foreach ($children_category as $v1){
-				$ids1[] = $v1['id'];
+			$ids1 = 0;
+			if (!empty($children_category)) {
+				$ids1 = array();
+				foreach ($children_category as $v1){
+					$ids1[] = $v1['id'];
+				}
+				$ids1 = implode(',', $ids1);
 			}
-			$sql1 = 'select a.id,a.parentid,a.name,a.level from ' . tablename('sz_yi_category') . ' a left join  ' .tablename('sz_yi_goods'). ' b on a.id = b.tcate where a.parentid in('.implode(',',$ids1).') and a.uniacid=:uniacid and  b.uniacid=:uniacid and b.isopenchannel = "'.$isopenchannel.'" group by a.id ';
+			$sql1 = 'select a.id,a.parentid,a.name,a.level from ' . tablename('sz_yi_category') . ' a left join  ' .tablename('sz_yi_goods'). ' b on a.id = b.tcate where a.parentid in('.$ids1.') and a.uniacid=:uniacid and  b.uniacid=:uniacid and b.isopenchannel = "'.$isopenchannel.'" group by a.id ';
 			$third_category = pdo_fetchall($sql1, array(
 			    ':uniacid' => $_W['uniacid']
 			));
