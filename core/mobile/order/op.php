@@ -95,7 +95,29 @@ if ($_W['isajax']) {
 		}
 
 		show_json(1);
-	} else if ($operation == 'delivery') {
+	}else if ($operation == 'completehotel') {
+		    $orderid = intval($_GPC['orderid']);
+
+	        $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
+	            ':id' => $orderid,
+	            ':uniacid' => $uniacid,
+	            ':openid' => $openid
+	        ));
+	        if (empty($order)) {
+	            show_json(0, '订单未找到!');
+	        }
+		if ($order['status'] != 2) {
+			show_json(0, '订单未确认，不能确认入住!');
+
+		}
+		pdo_update('sz_yi_order', array(
+            'status' => 6,
+        ), array(
+            'id' => $order['id'],
+            'uniacid' => $uniacid
+        ));
+        show_json(1);
+	}  else if ($operation == 'delivery') {
 	        if ($_W['ispost']) {
 	            $refundid = intval($_GPC['id']);
 	            $orderid  = intval($_GPC['orderid']);

@@ -26,9 +26,9 @@
 {if $operation=='display'}
 
    <div class="formwap">
-           <img src="../addons/sz_yi/template/mobile/default/static/images/meet.jpg">
+           <img  style="width: 80%;height: 300px; margin-left: 10%;" src="../addons/sz_yi/template/mobile/default/static/images/meet.jpg">
 
-        <form class="formbrink" method="post" id="myform" action="{$action}"> 
+        <form class="formbrink" method="post" id="myform" action="{$action}" style="width: 80%;margin-left: 10%;">  
          <div class="formdiv">
             <label for="">日期</label>
             <input name="time" id="onetime" placeholder="点击选择日期" style="margin-left: 9px;border: 0;line-height: 30px;width: 30%;height:26px; font-size: 12px;margin-left:66px;margin-top:3px;float:left">
@@ -74,9 +74,9 @@
 </div>
 
 {else if $operation=='list'}
-    <img src="../addons/sz_yi/template/mobile/default/static/images/meet.jpg">
+    <img style="width: 80%;height: 300px; margin-left: 10%;" src="../addons/sz_yi/template/mobile/default/static/images/meet.jpg">
      {if $mymeet!=''}
-    <ul class="content"> 
+    <ul class="content" style="width: 84%;margin-left: 8%;"> 
         {loop $mymeet $key $value}   
             <li>
                 <p><a class="fl">日期：{$value['time']}</a><a  class="fr">状态：{$status[$value['status']]}</a></p>
@@ -104,8 +104,8 @@
     {/if} 
 {/if} 
 <footer class="footer">
-    <a href="{$display}"class="footerleft" >预约</a>
-    <a href="{$list}" class="footerright" >我的预约</a>
+    <a href="{$display}"class="footerleft" style="color:#f88917">预约</a>
+    <a href="{$list}" class="footerright" style="color:#f88917" >我的预约</a>
 </footer>  
 
 

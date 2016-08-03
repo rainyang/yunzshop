@@ -397,6 +397,7 @@ footer#footer-nav .menu-list:after {
     font-size: 20px;
     margin-bottom: 4px;
 }
+
 .cart_pay,.operation-bg{z-index: 9}
 .cart_main {padding-bottom: 106px;}
 /*新模版手机提现页面*/
@@ -425,3 +426,4 @@ footer#footer-nav .menu-list:after {
 }
 .address_sub1,.address_sub2,.info_sub,.refund_sub1{margin: 10px 2% 0 !important;width: 96% !important}
 .order_main .sub1,.order_main .sub2{margin: 10px 0 10px 5px !important;}
+

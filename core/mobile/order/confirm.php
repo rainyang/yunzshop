@@ -712,6 +712,8 @@ if ($_W['isajax']) {
             $r_sql = 'SELECT `roomdate`, `num`, `oprice`, `status`, ' . $pricefield . ' AS `m_price` FROM ' . tablename('sz_yi_hotel_room_price') .
             ' WHERE `roomid` = :roomid AND `roomdate` >= :btime AND ' .
             ' `roomdate` < :etime';
+            $btime =  $_SESSION['data']['btime'];           
+            $etime =  $_SESSION['data']['etime'];
             $params = array(':roomid' => $room['id'],':btime' => $btime, ':etime' => $etime);
             $price_list = pdo_fetchall($r_sql, $params);  
             $this_price = $old_price =  $pricefield == 'cprice' ?  $room['oprice']*$member_p[$_W['member']['groupid']] : $room['roomprice'];
@@ -1160,7 +1162,6 @@ if ($_W['isajax']) {
         $ordersn_general    = m('common')->createNO('order', 'ordersn', 'SH');
         $member       = m('member')->getMember($openid);
         $level         = m('member')->getLevel($openid);
-
         foreach ($order_data as $key => $order_row) {
             $dispatchtype = intval($order_row['dispatchtype']);
             $addressid    = intval($order_row['addressid']);
@@ -1666,6 +1667,8 @@ if ($_W['isajax']) {
                     $room = pdo_fetch($sql2, $params2);
                     if( $discountprice!='0'){
                         $totalprice =$_GPC['totalprice'] -$discountprice;
+                    }else{
+                        $totalprice =$_GPC['totalprice'];
                     }
                     $goodsprice =$_GPC['goodsprice'];
                 }
@@ -1707,6 +1710,7 @@ if ($_W['isajax']) {
                 'redprice' => $redpriceall,
      
             );
+
             if(p('hotel')){
                 if($_GPC['type']=='99'){ 
                      $order['order_type']='3';

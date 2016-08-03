@@ -155,7 +155,9 @@ if ($_W['isajax']) {
 	if($shop_set['shop']['isreferrer'] ){
 		if($member['agentid']>0){
 			$referrer = pdo_fetch("select * from " . tablename("sz_yi_member") . " where uniacid=".$_W['uniacid']." and id = '".$member['agentid']."' ");
-			$referrer['realname'] = mb_substr($referrer['realname'], 0, 6, 'utf-8');
+			$nickname = $referrer['nickname'] ? $referrer['nickname'] :  $referrer['realname'];
+			$nickname = $nickname ? $nickname :  $referrer['mobile'];
+			$referrer['realname'] = mb_substr($nickname, 0, 6, 'utf-8');
 		}else
 		{
 			$referrer['realname'] = "总店";
