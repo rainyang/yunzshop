@@ -1150,6 +1150,8 @@ if ($_W['isajax']) {
         ));
 
     } elseif ($operation == 'create' && $_W['ispost']) {
+        $ischannelpay = intval($_GPC['ischannelpay']);
+        $ischannelpick = intval($_GPC['ischannelpick']);
         $order_data = $_GPC['order'];
         if(p('hotel')){ 
             if($_GPC['type']=='99'){
@@ -1283,7 +1285,10 @@ if ($_W['isajax']) {
                         ':id' => $optionid
 
                     ));
-
+                    if (p('channel') && !empty($ischannelpick)) {
+                        $my_option_stock = p('channel')->getMyOptionStock($openid,$goodsid,$optionid);
+                        $option['stock'] = $my_option_stock;
+                    }
                     if (!empty($option)) {                                             
                         if ($option['stock'] != -1) {
                             if (empty($option['stock'])) {
@@ -1365,6 +1370,12 @@ if ($_W['isajax']) {
                 }
                 $redprice = $redprice * $goodstotal;
                 $redpriceall += $redprice;
+                if (p('channel')) {
+                    $my_info = p('channel')->getInfo($openid);
+                    if ($ischannelpay == 1) {
+                        $data['marketprice'] = $data['marketprice'] * $my_info['my_level']['purchase_discount']/100;
+                    }
+                }
                 $gprice = $data['marketprice'] * $goodstotal;
                 $goodsprice += $gprice;
                 $discounts = json_decode($data['discounts'], true);
@@ -1411,6 +1422,11 @@ if ($_W['isajax']) {
                 }
                 if (!empty($data["virtual"]) || $data["type"] == 2) {
                     $isvirtual = true;
+                }
+                if (p('channel')) {
+                    if ($ischannelpay == 1 && empty($ischannelpick)) {
+                        $isvirtual = true;
+                    }
                 }
                 if ($data["manydeduct"]) {
                     $deductprice += $data["deduct"] * $data["total"];
@@ -1710,7 +1726,11 @@ if ($_W['isajax']) {
                 'redprice' => $redpriceall,
      
             );
-
+            if (p('channel')) {
+                if (!empty($ischannelpick)) {
+                    $order['ischannelself'] = 1;
+                }
+            }
             if(p('hotel')){
                 if($_GPC['type']=='99'){ 
                      $order['order_type']='3';
@@ -1851,6 +1871,73 @@ if ($_W['isajax']) {
                 if (p('supplier')) {
                     $order_goods['supplier_uid'] = $goods['supplier_uid'];
                 }
+                if (p('channel')) {
+                    $my_info = p('channel')->getInfo($openid,$goods['goodsid'],$goods['optionid'],$goods['total']);
+                    if (!empty($ischannelpick)) {
+                        $my_option_stock = p('channel')->getMyOptionStock($openid, $goods['goodsid'], $goods['optionid']);
+                        $stock = $my_option_stock - $goods['total'];
+                        pdo_update('sz_yi_channel_stock', 
+                            array(
+                                'stock_total' => $stock
+                            ), 
+                            array(
+                                'uniacid'   => $_W['uniacid'],
+                                'openid'    => $openid,
+                                'goodsid'   => $goods['goodsid'],
+                                'optionid'  => $goods['optionid']
+                            ));
+                    }
+                    if ($ischannelpay == 1 && empty($ischannelpick)) {
+                        $every_turn_price           = $goods['marketprice']/($my_info['my_level']['purchase_discount']/100);
+                        $ischannelstock             = pdo_fetch(
+                            "SELECT * FROM " . tablename('sz_yi_channel_stock') . 
+                            " WHERE uniacid={$_W['uniacid']} 
+                            AND openid='{$openid}' 
+                            AND goodsid={$goods['goodsid']}
+                            AND optionid={$goods['optionid']}
+                        ");
+                        if (empty($ischannelstock)) {
+                            pdo_insert('sz_yi_channel_stock', array(
+                                'uniacid'       => $_W['uniacid'],
+                                'openid'        => $openid,
+                                'goodsid'       => $goods['goodsid'],
+                                'optionid'      => $goods['optionid'],
+                                'stock_total'   => $goods['total']
+                                ));
+                        } else {
+                            $stock_total = $ischannelstock['stock_total'] + $goods['total'];
+                            pdo_update('sz_yi_channel_stock', array(
+                                'stock_total'   => $stock_total
+                                ), array(
+                                'uniacid'       => $_W['uniacid'],
+                                'openid'        => $openid,
+                                'optionid'      => $goods['optionid'],
+                                'goodsid'       => $goods['goodsid']
+                                ));
+                        }
+
+                        $stock_log = array(
+                              'uniacid'             => $_W['uniacid'],
+                              'openid'              => $openid,
+                              'goodsid'             => $goods['goodsid'],
+                              'optionid'            => $goods['optionid'],
+                              'every_turn'          => $goods['total'],
+                              'every_turn_price'    => $goods['marketprice'],
+                              'every_turn_discount' => $my_info['my_level']['purchase_discount'],
+                              'goods_price'         => $every_turn_price,
+                              'paytime'             => time()
+                            );
+                        pdo_insert('sz_yi_channel_stock_log', $stock_log);
+                        $order_goods['ischannelpay']  = $ischannelpay;
+                    }
+                    $order_goods['channel_id'] = 0;
+                    if (!empty($ischannelpay)) {
+                        if (!empty($my_info['up_level'])) {
+                            $up_member = m('member')->getInfo($my_info['up_level']['openid']);
+                            $order_goods['channel_id'] = $up_member['id'];
+                        }
+                    }
+                }
                 pdo_insert('sz_yi_order_goods', $order_goods);
             }
             if(p('hotel')){
@@ -1897,7 +1984,23 @@ if ($_W['isajax']) {
                     $shop['name'] . "购物积分抵扣 消费积分: {$deductcredit} 抵扣金额: {$deductmoney} 订单号: {$ordersn}"
                 ));
             }
-            if (empty($virtualid)) {
+            if (p('channel') && !empty($ischannelpick)) {
+                //echo "<pre>"; print_r(1);exit;
+            } else {
+                if (empty($virtualid)) {
+                    m('order')->setStocksANDCredits($orderid, 0);
+                } else {
+                    if (isset($allgoods[0])) {
+                        $vgoods = $allgoods[0];
+                        pdo_update('sz_yi_goods', array(
+                            'sales' => $vgoods['sales'] + $vgoods['total']
+                        ), array(
+                            'id' => $vgoods['goodsid']
+                        ));
+                    }
+                }
+            }
+            /*if (empty($virtualid)) {
                 m('order')->setStocksAndCredits($orderid, 0);
             } else {
                 if (isset($allgoods[0])) {
@@ -1908,7 +2011,7 @@ if ($_W['isajax']) {
                         'id' => $vgoods['goodsid']
                     ));
                 }
-            }
+            }*/
             $plugincoupon = p("coupon");
             if ($plugincoupon) {
                 $plugincoupon->useConsumeCoupon($orderid);
