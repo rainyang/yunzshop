@@ -383,11 +383,11 @@ if($goods['tcate']){
             $storeids = array_merge(explode(',', $goods['storeids']), $storeids);
         }
         if (empty($storeids)) {
-            $stores = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where  uniacid=:uniacid and status=1', array(
+            $stores = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where  uniacid=:uniacid and status=1 and myself_support=1', array(
                 ':uniacid' => $_W['uniacid']
             ));
         } else {
-            $stores = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where id in (' . implode(',', $storeids) . ') and uniacid=:uniacid and status=1', array(
+            $stores = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where id in (' . implode(',', $storeids) . ') and uniacid=:uniacid and status=1 and myself_support=1', array(
                 ':uniacid' => $_W['uniacid']
             ));
         }

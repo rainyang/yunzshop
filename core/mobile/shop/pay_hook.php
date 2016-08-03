@@ -88,12 +88,19 @@ do{
             echo '支付状态不正确';
             break;
         }
-        if(!pdo_update('sz_yi_order',array('status'=>1),array('ordersn'=>$pay_info['order_no']))){
+
+        $pay_type = array(
+            "wx" => 21,
+            "alipay" => 22
+        );
+
+        if(!pdo_update('sz_yi_order',array('status'=>1,'paytype'=>$pay_type[$pay_info['channel']]),array('ordersn'=>$pay_info['order_no']))){
             echo '订单状态改变失败';
             $res['status'] = 500;
             $res['msg'] = "Internal Server Error";
             break;
         }else{
+            m('notice')->sendOrderMessage($order_info['id']);
             echo '成功';
             $res['status'] = 200;
             $res['msg'] = "ok";
