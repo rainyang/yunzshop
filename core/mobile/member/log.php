@@ -27,7 +27,7 @@ if ($_W['isajax']) {
                 $aging = pdo_fetch("select * from " . tablename('sz_yi_member_aging_rechange') . " where id=".$row['aging_id']);
                 if(!empty($aging)){
                     $paymethod = $aging['paymethod'] == 0 ? " 元" : " 积分";
-                    $row['money'] = $aging['num'].",第".$aging['phase']."期金额".$row['money'].$paymethod;
+                    $row['money'] = $aging['num']."(共".$aging['qnum']."期),已充第".$aging['phase']."期".$row['money'].$paymethod;
                 }
             }else{
                  $row['money'] = $row['money']. " 元";
