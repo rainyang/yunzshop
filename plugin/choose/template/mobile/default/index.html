@@ -2,6 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link href="../addons/sz_yi/static/font/iconfont.css" rel="stylesheet">
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" /><meta charset="utf-8" />
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
 <meta content="yes" name="apple-mobile-web-app-capable" />
@@ -177,6 +178,30 @@ line-height: 20px;font-weight: bold;}
         <div class="close"><i class="fa fa-times-circle-o"></i></div>
         <div class="sub" style="position: absolute;">确认</div>
     </div>
+</script>
+<div id="container_detail" style="display:none" class="mark-good"></div>
+<script type="text/html" id="tpl_detail">
+
+<div class="good-tcbox">
+  <div class="tctop-img">
+    <img src="<%good.thumb%>">
+    <div class="tc-titbg">
+        <h1><%good.title%></h1>
+        <p>¥<%good.productprice%></p>
+    </div>
+    <div class="close" onclick="closechoose()">×</div>
+    </div>
+    <div class="tcguige">
+      <ul>
+          <li>编号：<%good.gooodssn%></li>
+          <%each specs as spec%>
+          <li><%spec.title%>：<%each spec.sub as item%><%item.title%>/<%/each%></li>
+          <%/each%> 
+      </ul>
+      <p class="last-tcprice">建议零售价：<i>¥<%good.marketprice%></i>元</p>
+  </div>
+</div>
+
 </script>
 <div class="center">
     <div class="notice">
@@ -663,7 +688,15 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                 $('body').on('click','.dataIn',function(){
                     var id  = $(this).attr('data-id');
-                    location.href=core.getUrl('shop/detail',{id:id});
+                    {if $detail == 0}
+                      location.href=core.getUrl('shop/detail',{id:id});
+                    {else}
+                      core.pjson('choose/list_goods',{id: id, op: 'getdetail'},function(json){
+                        var json = json.result;
+                        $('#container_detail').html(tpl('tpl_detail', json));
+                        $('#container_detail').show();
+                      })
+                    {/if}
                 })                
 
                 $('body').on('click','.close-pos',function(){
@@ -905,6 +938,7 @@ ul, li { list-style:none; margin:0; padding:0 }
       function closechoose(){
           $('.good_choose_layer').fadeOut(100);
           $('.good_choose').fadeOut(100); 
+          $('#container_detail').hide();
         }
             function choose(act){
                           if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
