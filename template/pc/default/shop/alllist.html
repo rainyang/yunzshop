@@ -114,22 +114,13 @@
                     $(this).siblings().removeClass('selected');
 
                     $('.ui-category-item[data-id='+dataid+']').addClass('selected');
-                    $('html,body').animate({scrollTop:$('.category-item[data-id='+dataid+']').offset().top + 100},100)
+                    $('html,body').animate({scrollTop:$('.category-item[data-id='+dataid+']').offset().top - 250},100)
                 })
                 $('.second').click(function(){
                     var did = $(this).data('id');
                     location.href="{php echo $this->createMobileUrl('shop/list')}&ccate="+did;
                 })
-                $(document).scroll(function() {
-                    if ($(document).scrollTop() >= h) {
-                            $(".categories-container").css("position","fixed").css("box-shadow","0 2px 5px #d3d3d3"); 
-                            
-                            
-                    } else {
-                        $(".categories-container").css("position","static").css("box-shadow","0 0 0"); 
-                        
-                    }
-                });
+                
 
         });
         

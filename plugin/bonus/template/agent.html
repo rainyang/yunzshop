@@ -170,13 +170,17 @@
                     {/if}</td>
                 {if p('love')}
                 <td>  
-                    {if $row['bonus_status']==9}
+                    {if $row['isagency']==1}
                         {if $row['agentblack']==1}
                         <span class="label label-default" style='color:#fff;background:black'>黑名单</span>
                         {else}
-                            <span class="label label-success">已申请</span>
+                            <span class="label label-warning">已申请</span>
                         {/if}
-                    {else}
+                    {/if}
+                    {if $row['isagency']==2}
+                    <span class="label label-success">已审批</span>
+                    {/if}
+                    {if $row['isagency']==0}
                         <span class="label label-default">未申请</span>
                     {/if}
                 </td>
@@ -305,6 +309,17 @@
                 {/loop}
             </div>
         </div>
+        {if $member['isagency']==1}
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">审核</label>
+            <div class="col-sm-9 col-xs-12">
+                <label class="radio-inline">
+                    <label class="radio-inline"><input type="radio" class="isglobal" name="isagency" value="0" checked="checked" /> 驳回</label>
+                    <label class="radio-inline"><input type="radio" class="isglobal"  name="isagency" value="1" /> 通过</label>
+                </label>
+            </div>
+        </div>
+        {/if}
         {/if}
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">代理商等级</label>

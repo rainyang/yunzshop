@@ -21,7 +21,11 @@ class BonusMobile extends Plugin
         $openid = m('user')->getOpenid();
         $isbonus = $this->model->isLevel($openid);
         if($isbonus == false && $_GPC['method'] != 'register'){
-            redirect($this->createPluginMobileUrl('bonus/register'));
+            if($_GPC['method'] == 'agent_info' || $_GPC['method'] == 'agency'){
+                
+            }else{
+                redirect($this->createPluginMobileUrl('bonus/register'));
+            }
         }
     }
     public function index()
