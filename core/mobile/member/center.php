@@ -4,8 +4,8 @@ if (!defined('IN_IA')) {
 }
 global $_W, $_GPC;
 $openid = m('user')->getOpenid();
-$set = m('common')->getSysset(array('trade'));
-
+//Author:ym Date:2016-08-03 Content:重复调用了三次，代码需优化
+$set = m('common')->getSysset(array('trade','shop'));
 $shop_set = m('common')->getSysset(array('shop'));
 $shopset   = m('common')->getSysset('shop');
 
