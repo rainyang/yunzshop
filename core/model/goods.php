@@ -32,6 +32,7 @@ class Sz_DYi_Goods
         $order     = !empty($args['order']) ? $args['order'] : ' displayorder desc,createtime desc';
         $orderby   = !empty($args['by']) ? $args['by'] : '';
         $ids       = !empty($args['ids']) ? trim($args['ids']) : '';
+        $id       = !empty($args['id']) ? trim($args['id']) : '0';
         $sup_uid   = !empty($args['supplier_uid']) ? trim($args['supplier_uid']) : '';
         $isopenchannel   = !empty($args['isopenchannel']) ? trim($args['isopenchannel']) : 0;
         $ischannelpick   = !empty($args['ischannelpick']) ? trim($args['ischannelpick']) : 0;
@@ -41,6 +42,10 @@ class Sz_DYi_Goods
         );
         if (!empty($ids)) {
             $condition .= " and id in ( " . $ids . ")";
+        }
+        if (!empty($id)) {
+            $condition .= " and id = :id";
+            $params[':id'] = intval($id);
         }
         if (!empty($sup_uid)) {
             $condition .= " and supplier_uid = :supplier_uid ";

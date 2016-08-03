@@ -56,27 +56,7 @@ class Core extends WeModuleSite
              * 设置app端使用模板文件夹
              */
             $_W['template'] = 'app';
-
-            /**
-             * 后台设置绑定,重新定义uniacid值
-             */
-
-            //$_W['uniacid'];
-
-            /**
-             * 推送 leancloud配置
-             */
-
-            require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
-
-            $setdata = m("cache")->get("sysset");
-            $set     = unserialize($setdata['sets']);
-
-            $app = $set['app']['base'];
-
-            LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'].",master");
         }
-
     }
 
     public function sendSms($mobile, $code, $templateType = 'reg')
