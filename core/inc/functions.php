@@ -735,6 +735,16 @@ function tpl_form_field_category_level2($name, $parents, $children, $parentid, $
  * @return array
  */
 function sent_message($customer_id_array,$message){
+    require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
+
+    $setdata = m("cache")->get("sysset");
+    $set     = unserialize($setdata['sets']);
+
+    $app = $set['app']['base'];
+
+    LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'].",master");
+
+
     $customer_id_array_str = json_encode($customer_id_array,JSON_UNESCAPED_UNICODE);
     $post_data = '{"from_peer": "58",
                 "to_peers": '.$customer_id_array_str.',

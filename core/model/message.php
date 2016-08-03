@@ -110,7 +110,7 @@ class Sz_DYi_Message
 
         $app = $set['app']['base'];
 
-        if (is_app() && !empty($app['leancloud']['switch'])) {
+        if (!empty($app['leancloud']['switch'])) {
             $this->appSendContent($openid, $msg, $content);
         }
 

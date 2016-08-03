@@ -1455,3 +1455,10 @@ if(!pdo_fieldexists('sz_yi_member', 'bonuslevel')) {
 if(!pdo_fieldexists('sz_yi_creditshop_log', 'couponid')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_creditshop_log')." ADD `couponid` INT(11) DEFAULT '0' ;");
 }
+//快速选购新加简单详情以及全部商品字段
+if(!pdo_fieldexists('sz_yi_chooseagent', 'detail')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_chooseagent')." ADD `detail` INT(11) DEFAULT '0' ;");
+}
+if(!pdo_fieldexists('sz_yi_chooseagent', 'allgoods')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_chooseagent')." ADD `allgoods` INT(11) DEFAULT '0' ;");
+}
