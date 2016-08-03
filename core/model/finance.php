@@ -3,7 +3,44 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 class Sz_DYi_Finance {
-    public function pay($openid = '', $paytype = 0, $money = 0, $trade_no = '', $desc = '') {
+    //$params, $alipay = array(), $type = 0, $openid = ''
+    public function alipay_build($openid = '', $paytype = 0, $money = 0, $trade_no = '', $desc = '')
+    {
+        global $_W;
+        $set                   = array();
+        $set['partner']        = $alipay['partner'];
+        //$set['seller_id']    = $alipay['partner'];  //即时到帐情况下sellerid = partner
+        $set['service']        = 'batch_trans_notify';
+        $set['_input_charset'] = 'utf-8';
+        $set['sign_type']      = 'MD5';
+        $set['notify_url']     = $_W['siteroot'] . "addons/sz_yi/payment/alipay/notify.php";
+        $set['email']          = '3303063404@qq.com';
+        $set['account_name']   = '哈尔滨思卓信息科技有限公司';
+        $set['pay_date']       = '20160803';
+        $set['batch_no']       = '20160803001';
+        $set['batch_fee']      = 15.00;
+        $set['batch_num']      = 1;
+        $set['detail_data']    = '20160803001^18646588292^矫春艳^15.00^备注说明1';
+        $prepares            = array();
+        foreach ($set as $key => $value) {
+            if ($key != 'sign' && $key != 'sign_type') {
+                $prepares[] = "{$key}={$value}";
+            }
+        }
+        sort($prepares);
+        $string = implode($prepares, '&');
+        $string .= $alipay['secret'];
+        $set['sign'] = md5($string);
+        $url = 'https://mapi.alipay.com/gateway.do' . '?' . http_build_query($set, '', '&');
+        echo $url;exit;
+        load()->func('communication');
+        $resp = ihttp_request($url);
+        print_r($resp);
+        exit;
+    }
+
+    public function pay($openid = '', $paytype = 0, $money = 0, $trade_no = '', $desc = '')
+    {
         global $_W, $_GPC;
         if (empty($openid)) {
             return error(-1, 'openid不能为空');
@@ -26,6 +63,9 @@ class Sz_DYi_Finance {
                 return error(1, '没有设定支付参数');
             }
             $pay = m('common')->getSysset('pay');
+            if ($paytype == 3) {
+                $this->alipay_build($openid, $paytype, $money, $trade_no, $desc);
+            }
             $wechat = $setting['payment']['wechat'];
             $sql = 'SELECT `key`,`secret` FROM ' . tablename('account_wechats') . ' WHERE `uniacid`=:uniacid limit 1';
             $row = pdo_fetch($sql, array(
@@ -87,7 +127,7 @@ class Sz_DYi_Finance {
             if (empty($resp['content'])) {
                 return error(-2, '网络错误');
             } else {
-                $arr = json_decode(json_encode((array)simplexml_load_string($resp['content'])) , true);
+                $arr = json_decode(json_encode((array)simplexml_load_string($resp['content'])), true);
                 $xml = '<?xml version="1.0" encoding="utf-8"?>' . $resp['content'];
                 $dom = new DOMDocument();
                 if ($dom->loadXML($xml)) {
@@ -194,7 +234,7 @@ class Sz_DYi_Finance {
         if (empty($resp['content'])) {
             return error(-2, '网络错误');
         } else {
-            $arr = json_decode(json_encode((array)simplexml_load_string($resp['content'])) , true);
+            $arr = json_decode(json_encode((array)simplexml_load_string($resp['content'])), true);
             $xml = '<?xml version="1.0" encoding="utf-8"?>' . $resp['content'];
             $dom = new DOMDocument();
             if ($dom->loadXML($xml)) {
@@ -204,7 +244,7 @@ class Sz_DYi_Finance {
                 if (strtolower($code) == 'success' && strtolower($ret) == 'success') {
                     //发送成功
                     return true;
-                } else { 
+                } else {
                     if ($xpath->evaluate('string(//xml/return_msg)') == $xpath->evaluate('string(//xml/err_code_des)')) {
                         $error = $xpath->evaluate('string(//xml/return_msg)');
                     } else {
@@ -225,17 +265,16 @@ class Sz_DYi_Finance {
                                 'keyword2' => array('value' => '【订单编号】' . $row['ordersn'], 'color' => '#73a68d'),
                                 'remark' => array('value' => '购物赠送红包发送失败！失败原因：'.$error)
                             );
-                            pdo_update('sz_yi_order', 
+                            pdo_update('sz_yi_order',
                                 array(
                                     'redstatus' => $error
-                                ), 
+                                ),
                                 array(
                                     'id' => $orderid
                                 )
                             );
                             m('message')->sendCustomNotice($openid, $_var_156);
                         }
-                        
                     }
                     
                     return error(-2, $error);
@@ -246,7 +285,8 @@ class Sz_DYi_Finance {
         }
     }
 
-    public function refund($openid, $out_trade_no, $out_refund_no, $totalmoney, $refundmoney = 0) {
+    public function refund($openid, $out_trade_no, $out_refund_no, $totalmoney, $refundmoney = 0)
+    {
         global $_W, $_GPC;
         if (empty($openid)) {
             return error(-1, 'openid不能为空');
@@ -315,7 +355,7 @@ class Sz_DYi_Finance {
         if (empty($resp['content'])) {
             return error(-2, '网络错误');
         } else {
-            $arr = json_decode(json_encode((array)simplexml_load_string($resp['content'])) , true);
+            $arr = json_decode(json_encode((array)simplexml_load_string($resp['content'])), true);
             $xml = '<?xml version="1.0" encoding="utf-8"?>' . $resp['content'];
             $dom = new DOMDocument();
             if ($dom->loadXML($xml)) {
@@ -338,7 +378,8 @@ class Sz_DYi_Finance {
         }
     }
 
-    public function downloadbill($starttime, $endtime, $type = 'ALL') {
+    public function downloadbill($starttime, $endtime, $type = 'ALL')
+    {
         global $_W, $_GPC;
         $dates = array();
         $startdate = date('Ymd', $starttime);
@@ -386,7 +427,8 @@ class Sz_DYi_Finance {
         die($content);
     }
 
-    private function downloadday($date, $row, $wechat, $type) {
+    private function downloadday($date, $row, $wechat, $type)
+    {
         $url = 'https://api.mch.weixin.qq.com/pay/downloadbill';
         $pars = array();
         $pars['appid'] = $row['key'];
@@ -419,7 +461,8 @@ class Sz_DYi_Finance {
         }
     }
 
-    public function closeOrder($out_trade_no = '') {
+    public function closeOrder($out_trade_no = '')
+    {
         global $_W, $_GPC;
         $setting = uni_setting($_W['uniacid'], array(
             'payment'
@@ -454,7 +497,7 @@ class Sz_DYi_Finance {
         if (empty($resp['content'])) {
             return error(-2, '网络错误');
         } else {
-            $arr = json_decode(json_encode((array)simplexml_load_string($resp['content'])) , true);
+            $arr = json_decode(json_encode((array)simplexml_load_string($resp['content'])), true);
             $xml = '<?xml version="1.0" encoding="utf-8"?>' . $resp['content'];
             $dom = new DOMDocument();
             if ($dom->loadXML($xml)) {
@@ -478,7 +521,8 @@ class Sz_DYi_Finance {
         }
     }
 
-    public function isWeixinPay($out_trade_no) {
+    public function isWeixinPay($out_trade_no)
+    {
         global $_W, $_GPC;
         $setting = uni_setting($_W['uniacid'], array(
             'payment'
@@ -513,7 +557,7 @@ class Sz_DYi_Finance {
         if (empty($resp['content'])) {
             return error(-2, '网络错误');
         } else {
-            $arr = json_decode(json_encode((array)simplexml_load_string($resp['content'])) , true);
+            $arr = json_decode(json_encode((array)simplexml_load_string($resp['content'])), true);
             $xml = '<?xml version="1.0" encoding="utf-8"?>' . $resp['content'];
             $dom = new DOMDocument();
             if ($dom->loadXML($xml)) {
@@ -537,7 +581,8 @@ class Sz_DYi_Finance {
         }
     }
 
-    function isAlipayNotify($gpc) {
+    public function isAlipayNotify($gpc)
+    {
         global $_W;
         $notify_id = trim($gpc['notify_id']);
         $notify_sign = trim($gpc['sign']);
@@ -614,4 +659,3 @@ class Sz_DYi_Finance {
         return implode('&', $params);
     }
 }
-
