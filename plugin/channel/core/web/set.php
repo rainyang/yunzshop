@@ -7,10 +7,10 @@ $level = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_level') . " WH
 if (checksubmit('submit')) {
     $data          = is_array($_GPC['setdata']) ? array_merge($set, $_GPC['setdata']) : array();
     $data['texts'] = is_array($_GPC['texts']) ? $_GPC['texts'] : array();
-    if ($_GPC['setdata']['setapplycycle'] < 0  || $_GPC['setdata']['setapplyminmoney'] < 0 || !is_int($_GPC['setdata']['setapplycycle']) || !is_int($_GPC['setdata']['setapplyminmoney'])) {
+    if ($_GPC['setdata']['setapplycycle'] < 0  || $_GPC['setdata']['setapplyminmoney'] < 0 || !is_numeric($_GPC['setdata']['setapplycycle']) || !is_numeric($_GPC['setdata']['setapplyminmoney'])) {
     	message('渠道商提现设置错误!', referer(), 'error');
     }
-    if ($_GPC['setdata']['setprofitproportion'] < 0 ) || !is_int($_GPC['setdata']['setprofitproportion'])) {
+    if ($_GPC['setdata']['setprofitproportion'] < 0 || !is_numeric($_GPC['setdata']['setprofitproportion'])) {
     	message('渠道商推荐员设置错误!', referer(), 'error');
     }
     $this->updateSet($data);
