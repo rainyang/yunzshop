@@ -27,8 +27,8 @@ border-top: 0;
 border-left: 0;
 text-align: center;
 margin: 0 4px;
-float: left;
-height: 20px;}
+float: right;
+height: 20px;    margin-top: 4px;}
 .subtract,.add{border-radius: 100px;
 border: 1px {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if} solid;
 width: 20px;
@@ -37,7 +37,7 @@ display: inline-block;
 color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};
 text-align: center;
 line-height: 20px;
-float: left;
+float: right;margin-top: 4px;
 }
 .fffbg{position: absolute;
 right: 4px;
@@ -65,7 +65,7 @@ line-height: 20px;font-weight: bold;}
   color: #fff;
   background-color:{if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if}; 
 }
-
+#page_allMenu section article dl{margin-bottom: 0;padding-bottom: 0;    height: auto;    overflow: hidden;}
 #page_allMenu section article dl dd em.eys{ color: #A8A8A8 !important;font-size: 12px;font-weight: normal;padding-top: 10px}
 #page_allMenu section article dl dd em{ color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};font-weight: bold;font-size: 14px}
 #page_allMenu section article dl dd em i{ font-style: normal;color: #666;font-size: 12px}
@@ -175,7 +175,7 @@ line-height: 20px;font-weight: bold;}
                </div>
         </div>
         <div class="close"><i class="fa fa-times-circle-o"></i></div>
-        <div class="sub " style="position: absolute;">确认</div>
+        <div class="sub" style="position: absolute;">确认</div>
     </div>
 </script>
 <div class="center">
@@ -234,6 +234,8 @@ ul, li { list-style:none; margin:0; padding:0 }
 .foot-nav span{ width: 30px;height: 30px;border-radius: 100px;border: 1px #fff solid;color: #fff;float: left;margin: 9px;text-align: center;line-height: 30px;font-weight: bold;}
 .foot-nav p{ float: left;line-height: 49px;padding-left:20px ;font-weight: bold;}
 .foot-nav a{float: right;height: 30px;background: #fff;line-height: 30px;color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};text-align: center;padding: 0 14px;margin:9px;border-radius: 18px}
+.right-choose{height: 30px;line-height: 30px;text-align: right;}
+
 </style>
 <div class="foot-nav">
   <span id="alltotal">0</span>
@@ -275,6 +277,10 @@ ul, li { list-style:none; margin:0; padding:0 }
                             if (store.length) {                                                             
                                 for (var i = 0; i < store.length ;i++ ) {
 
+
+                                    h += '<div class="all-choosegood">';
+
+                                    
                                     h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
 
                                     if (store[i].isrecommand != 0) {
@@ -282,13 +288,19 @@ ul, li { list-style:none; margin:0; padding:0 }
                                     }
 
 
-                                    h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'<i>/'+store[i].unit+'</i></em>';
-									                 if (store[i].hasoption == 1) {
-                                        h +=  '<div style="float:right;width:auto"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div></dd></dl>';
+                                    h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
+
+                                    if (store[i].hasoption == 1) {
+                                        h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
                                     } else {
-                                        h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div></dd></dl>';
+                                        h +=  '<div class="right-choose"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div>';
                                     }
 
+
+									                  h += '</dd></dl>';
+
+                                    
+                                    h += '</div>';
 
                                 };
                                 $("#infoSection").css("height","auto"); 
@@ -486,18 +498,30 @@ ul, li { list-style:none; margin:0; padding:0 }
                             if (store.length) {                                                             
                                 for (var i = 0; i < store.length ;i++ ) {
 
+                                     h += '<div class="all-choosegood">';
+
+                                    
                                     h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
 
                                     if (store[i].isrecommand != 0) {
                                         h += '<span style="font-size:10px;">推荐</span></a>';
                                     }
 
-                                    h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'<i>/'+store[i].unit+'</i></em>';
+
+                                    h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
+
                                     if (store[i].hasoption == 1) {
-                                        h +=  '<div style="float:right;width:auto"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div></dd></dl>';
+                                        h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
                                     } else {
-                                        h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div></dd></dl>';
+                                        h +=  '<div class="right-choose"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div>';
                                     }
+
+
+                                    h += '</dd></dl>';
+
+                                    
+                                    h += '</div>';
+
                                 };
                                 $("#infoSection").css("height","auto");
                                 //$("#navBar").css("height","auto");
@@ -535,19 +559,30 @@ ul, li { list-style:none; margin:0; padding:0 }
                                 if (store.length) {                                                             
                                     for (var i = 0; i < store.length ;i++ ) {
 
-                                        h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
+                                         h += '<div class="all-choosegood">';
 
-                                        if (store[i].isrecommand != 0) {
-                                            h += '<span style="font-size:10px;">推荐</span></a>';
-                                        }
+                                    
+                                    h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
 
-                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'<i>/'+store[i].unit+'</i></em>';
+                                    if (store[i].isrecommand != 0) {
+                                        h += '<span style="font-size:10px;">推荐</span></a>';
+                                    }
 
-                                        if (store[i].hasoption == 1) {
-                                        h +=  '<div style="float:right;width:auto"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div></dd></dl>';
-                                        } else {
-                                            h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div></dd></dl>';
-                                        }
+
+                                    h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
+
+                                    if (store[i].hasoption == 1) {
+                                        h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
+                                    } else {
+                                        h +=  '<div class="right-choose"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div>';
+                                    }
+
+
+                                    h += '</dd></dl>';
+
+                                    
+                                    h += '</div>';
+
                                     };
                                     $("#infoSection").css("height","auto");
                                     //$("#navBar").css("height","auto");
@@ -586,19 +621,31 @@ ul, li { list-style:none; margin:0; padding:0 }
                                 if (store.length) {                                                             
                                     for (var i = 0; i < store.length ;i++ ) {
 
-                                        h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
+                                       h += '<div class="all-choosegood">';
 
-                                        if (store[i].isrecommand != 0) {
-                                            h += '<span style="font-size:10px;">推荐</span></a>';
-                                        }
+                                    
+                                    h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
 
-                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'<i>/'+store[i].unit+'</i></em>';
+                                    if (store[i].isrecommand != 0) {
+                                        h += '<span style="font-size:10px;">推荐</span></a>';
+                                    }
 
-                                        if (store[i].hasoption == 1) {
-                                        h +=  '<div style="float:right;width:auto"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div></dd></dl>';
-                                        } else {
-                                            h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div></dd></dl>';
-                                        }
+
+                                    h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
+
+                                    if (store[i].hasoption == 1) {
+                                        h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
+                                    } else {
+                                        h +=  '<div class="right-choose"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div>';
+                                    }
+
+
+                                    h += '</dd></dl>';
+
+                                    
+                                    h += '</div>';
+
+
                                     };
                                     $("#infoSection").css("height","auto");
                                     //$("#navBar").css("height","auto");
@@ -801,12 +848,15 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                     core.tip.show("您最多可购买 " + maxbuy + " 件!");
                     num = maxbuy;
+                    $("#total").val(num);
+                    return;
                 }
                 else if(num>stock && stock!=-1){
                     core.tip.show("您最多可购买 " + stock + " 件");
                     num = stock;
+                    $("#total").val(num);
+                    return;
                 }
-                $("#total").val(num);
 
                 if(stock!="-1"){
                     $("#stockcontainer").html("库存:<span id='stock'>" + stock + "</span>");
@@ -979,6 +1029,22 @@ ul, li { list-style:none; margin:0; padding:0 }
         } else {
              var action = "";
         }
+        var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+        var num = parseInt($('#total').val() );
+        var maxbuy = $('#maxbuy').val();
+        
+        if(num>maxbuy && maxbuy>0){
+            core.tip.show("您最多可购买 " + maxbuy + " 件!");
+            num = maxbuy;
+            $('#total').val(num);
+            return;
+        }
+        else if(num>stock && stock!=-1){
+            core.tip.show("您最多可购买 " + stock + " 件");
+            num = stock;
+            $('#total').val(num);
+            return;
+        }
         
                 var specselected  = '';
                 
@@ -1073,13 +1139,14 @@ ul, li { list-style:none; margin:0; padding:0 }
     // }
     var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
     var num = parseInt(total.val() ) + 1;
-
-                  if(num>maxbuy && maxbuy>0){
-        tip.show("您最多可购买 " + maxbuy + " 件!");
+    var maxbuy = $('#maxbuy').val();
+    
+    if(num>maxbuy && maxbuy>0){
+        core.tip.show("您最多可购买 " + maxbuy + " 件!");
         num = maxbuy;
     }
     else if(num>stock && stock!=-1){
-        tip.show("您最多可购买 " + stock + " 件");
+        core.tip.show("您最多可购买 " + stock + " 件");
         num = stock;
     }
     total.val(num);
@@ -1093,11 +1160,11 @@ ul, li { list-style:none; margin:0; padding:0 }
     var num = parseInt(total.val() );
     if(num>maxbuy && maxbuy>0){
 
-        tip.show("您最多可购买 " + maxbuy + " 件!");
+        core.tip.show("您最多可购买 " + maxbuy + " 件!");
         num = maxbuy;
     }
     else if(num>stock && stock!=-1){
-        tip.show("您最多可购买 " + stock + " 件");
+        core.tip.show("您最多可购买 " + stock + " 件");
         num = stock;
     }
     total.val(num);

@@ -278,7 +278,7 @@ class LeanClient {
                                  $headers);
 
         $req = curl_init($url);
-        curl_setopt($req, CURLOPT_SSL_VERIFYPEER, true);
+        curl_setopt($req, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($req, CURLOPT_HTTPHEADER, $headersList);
         curl_setopt($req, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($req, CURLOPT_TIMEOUT, self::$apiTimeout);

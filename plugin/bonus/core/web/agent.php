@@ -263,6 +263,13 @@ if ($operation == 'display') {
         plog('bonus.agent.edit', "修改分销商 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
         if(!empty($data['bonuslevel'])){
             $data['bonus_status'] = 1;
+            if($_GPC['isagency'] == 1){
+               $data['isagency'] =2;
+            }else if($_GPC['isagency'] == 0){
+                $data['isagency'] =-1;
+            }else{
+               $data['isagency'] =2;
+            }
         }
         pdo_update('sz_yi_member', $data, array(
             'id' => $id,
