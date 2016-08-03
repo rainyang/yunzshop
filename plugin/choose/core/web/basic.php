@@ -23,6 +23,8 @@ if ($op == 'display') {
   $ccate     = !empty($_GPC['category']['childid']) ? $_GPC['category']['childid'] : '';
   $tcate     = !empty($_GPC['category']['thirdid']) ? $_GPC['category']['thirdid'] : '';
   $color     = !empty($_GPC['color']) ? $_GPC['color'] : '';
+  $detail     = !empty($_GPC['detail']) ? intval($_GPC['detail']) : '';
+  $allgoods     = !empty($_GPC['allgoods']) ? intval($_GPC['allgoods']) : '';
     $sql="select u.* from ".tablename('sz_yi_perm_user')." u left join " .tablename('sz_yi_perm_role'). " r on r.id = u.roleid where r.status1=1 and u.uniacid = :uniacid";
     $agent=pdo_fetchall($sql,array(':uniacid'=>$_W['uniacid']));
     if(checksubmit('submit')){
@@ -40,8 +42,9 @@ if ($op == 'display') {
             'savetime'=>$date,
             'agentname'=>$agentname['username'],
             'uniacid'=>$_W['uniacid'],
-            'color'=>$color
-
+            'color'=>$color,
+            'detail'=>$detail,
+            'allgoods'=>$allgoods
             ));
             message('快速选购页添加成功!', $this->createPluginWebUrl('choose'), 'success');
           }else{
@@ -56,7 +59,9 @@ if ($op == 'display') {
               'pcate'=>$pcate,
               'ccate'=>$ccate,
               'tcate'=>$tcate,
-              'color'=>$color
+              'color'=>$color,
+              'detail'=>$detail,
+              'allgoods'=>$allgoods
 
               ));
               message('快速选购页添加成功!', $this->createPluginWebUrl('choose'), 'success');
@@ -68,7 +73,9 @@ if ($op == 'display') {
               'savetime'=>$date,
               'agentname'=>'未设置',
               'uniacid'=>$_W['uniacid'],
-              'color'=>$color
+              'color'=>$color,
+              'detail'=>$detail,
+              'allgoods'=>$allgoods  
               ));
               message('快速选购页添加成功!', $this->createPluginWebUrl('choose'), 'success');
             }
@@ -81,6 +88,8 @@ if ($op == 'display') {
   $ccate     = !empty($_GPC['category']['childid']) ? $_GPC['category']['childid'] : '';
   $tcate     = !empty($_GPC['category']['thirdid']) ? $_GPC['category']['thirdid'] : '';
   $color     = !empty($_GPC['color']) ? $_GPC['color'] : '';
+  $detail     = !empty($_GPC['detail']) ? intval($_GPC['detail']) : '';
+  $allgoods     = !empty($_GPC['allgoods']) ? intval($_GPC['allgoods']) : '';
   $sql="select u.* from ".tablename('sz_yi_perm_user')." u left join " .tablename('sz_yi_perm_role'). " r on r.id = u.roleid where r.status1=1 and u.uniacid = :uniacid";
   $agent=pdo_fetchall($sql,array(':uniacid'=>$_W['uniacid']));
   $open=pdo_fetch('select * from ' .tablename('sz_yi_chooseagent'). ' where id=' .$_GPC['pageid']);
@@ -104,7 +113,9 @@ if ($op == 'display') {
                   'pcate'     => '',
                   'ccate'     => '',
                   'tcate'     => '',
-                  'color'     => $color                 
+                  'color'     => $color,
+                  'detail'=>$detail,
+                  'allgoods'=>$allgoods                  
                   ),array('id'=>$_GPC['pageid'],'uniacid'=>$_W['uniacid']));
           message('快速选购页修改成功!',$this->createPluginWebUrl('choose'), 'success');
         }
@@ -119,7 +130,9 @@ if ($op == 'display') {
                   'pcate'=>'',
                   'ccate'=>'',
                   'tcate'=>'',
-                  'color'=>$color                 
+                  'color'=>$color ,
+                  'detail'=>$detail,
+                  'allgoods'=>$allgoods               
 
                   ),array('id'=>$_GPC['pageid'],'uniacid'=>$_W['uniacid']));
 
@@ -136,7 +149,9 @@ if ($op == 'display') {
                   'pcate'=>$pcate,
                   'ccate'=>$ccate,
                   'tcate'=>$tcate,
-                  'color'=>$color
+                  'color'=>$color,
+                  'detail'=>$detail,
+                  'allgoods'=>$allgoods  
 
                   ),array('id'=>$_GPC['pageid'],'uniacid'=>$_W['uniacid']));
                   message('快速选购页修改成功!', $this->createPluginWebUrl('choose'), 'success');
@@ -150,7 +165,9 @@ if ($op == 'display') {
                   'pcate'=>'',
                   'ccate'=>'',
                   'tcate'=>'',
-                  'color'=>$color
+                  'color'=>$color,
+                  'detail'=>$detail,
+                  'allgoods'=>$allgoods  
 
                   ),array('id'=>$_GPC['pageid'],'uniacid'=>$_W['uniacid']));
                   message('快速选购页修改成功!', $this->createPluginWebUrl('choose'), 'success');

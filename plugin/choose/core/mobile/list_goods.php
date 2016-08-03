@@ -6,13 +6,14 @@ global $_W, $_GPC;
 $operation  = !empty($_GPC['op']) ? $_GPC['op'] : 'moren';
 $openid     = m('user')->getOpenid();
 $uniacid    = $_W['uniacid'];
+$specs = array();
 if($_W['isajax']){
     if (p('channel')) {
         $member = m('member')->getInfo($openid);
         $level  = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_level') . " WHERE uniacid={$_W['uniacid']} AND id={$member['channel_level']}");
         $ischannelpick = $_GPC['ischannelpick'];
     }
-    $pageid = $_GPC['pageid'];
+    $pageid = intval($_GPC['pageid']);
     $page   = pdo_fetch('select * from '.tablename('sz_yi_chooseagent'). ' where id=:id and uniacid=:uniacid',array(':uniacid'=>$_W['uniacid'],':id'=>$pageid));
     if (!empty($page['isopenchannel'])) {
         $args = array(
@@ -34,19 +35,28 @@ if($_W['isajax']){
             'supplier_uid'  => $page['uid']
             );
         }else{
-            if($operation == 'moren'){
+            if ($operation == 'moren') {
                     $args = array(
-                    'pcate' => $_GPC['pcate']
+                        'pcate' => $_GPC['pcate']
                     ); 
-            }else if($operation == 'second'){
+            } else if($operation == 'second') {
                     $args=array(
-                    'pcate' => $page['pcate'],
-                    'ccate' => $_GPC['ccate']
+                        'pcate' => $page['pcate'],
+                        'ccate' => $_GPC['ccate']
                     );
-            }else if ($operation == 'third') {
+            } else if ($operation == 'third') {
                 $args = array(
-                'tcate' => $_GPC['tcate']
+                    'tcate' => $_GPC['tcate']
                 );
+            } else if ($operation == 'getdetail') {
+                $args = array(
+                    'id' => intval($_GPC['id'])
+                );
+                $specs = pdo_fetchall("SELECT * FROM ".tablename('sz_yi_goods_spec')." WHERE goodsid=:id and uniacid=:uniacid",array(':id' => $args['id'], ':uniacid' => $_W['uniacid']));
+                foreach ($specs as $key => $item) {
+                    $specs[$key]['sub'] = pdo_fetchall("SELECT * FROM ".tablename('sz_yi_goods_spec_item')." WHERE specid=:specid and uniacid=:uniacid",array(':specid' => $item['id'], ':uniacid' => $_W['uniacid']));
+                }
+                $good = set_medias(pdo_fetch("SELECT * FROM ".tablename('sz_yi_goods')." WHERE id=".$args['id']),'thumb');
             }
         }
     }   
@@ -62,5 +72,5 @@ if($_W['isajax']){
         }
         unset($value);
     }
-    show_json(1,array('goods' => $goods));
+    show_json(1,array('goods' => $goods, 'specs' => $specs, 'good' => $good));
 }
