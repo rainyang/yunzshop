@@ -94,7 +94,7 @@ do{
             "alipay" => 22
         );
 
-        if(!pdo_update('sz_yi_order',array('status'=>1,'paytype'=>$pay_info['channel']),array('ordersn'=>$pay_info['order_no']))){
+        if(!pdo_update('sz_yi_order',array('status'=>1,'paytype'=>$pay_type[$pay_info['channel']]),array('ordersn'=>$pay_info['order_no']))){
             echo '订单状态改变失败';
             $res['status'] = 500;
             $res['msg'] = "Internal Server Error";
