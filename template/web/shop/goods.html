@@ -48,7 +48,7 @@
 				    <div class="col-sm-10 col-xs-12 text-right">
 						<input type="submit" name="submit" value="保存商品"
 	                    class="btn btn-primary" onclick="return formcheck()" />
-						<input type="button" name="back" onclick='history.back()' {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
+						<input type="button" name="back" {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
 						<input type="hidden" name="token" value="{$_W['token']}" />
 				    </div>
 				</div>
@@ -85,7 +85,7 @@
 					<input type="submit" name="submit" value="保存商品" class="btn btn-primary col-lg-1" onclick="return formcheck()" style="float: right;margin-left: 8px;" />
 					<input type="hidden" name="token" value="{$_W['token']}" />
 					{/if}
-					<input type="button" name="back" onclick='history.back()' {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
+					<input type="button" name="back"  {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
 
         		</div>
             </div>
@@ -114,6 +114,10 @@
 				}
 			}
 		})
+
+		$("input[name='back']").click(function () {
+			location.href = "{php echo $this->createWebUrl('shop/goods')}";
+		});
 	})
 			var category = {php echo json_encode($children)};
 	window.optionchanged = false;
