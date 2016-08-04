@@ -4,11 +4,32 @@ if (!defined('IN_IA')) {
 }
 class Sz_DYi_Finance {
     //$params, $alipay = array(), $type = 0, $openid = ''
+    function getHttpResponseGET($url,$cacert_url) {
+        $curl = curl_init($url);
+        curl_setopt($curl, CURLOPT_HEADER, 1); // 过滤HTTP头
+        curl_setopt($curl,CURLOPT_RETURNTRANSFER, 1);// 显示输出结果
+        @curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($curl, CURLOPT_USERAGENT, 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:9.0.1) Gecko/20100101 Firefox/9.0.1');
+        /*
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);//SSL证书认证
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);//严格认证
+        curl_setopt($curl, CURLOPT_CAINFO,$cacert_url);//证书地址
+         */
+
+        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($curl, CURLOPT_SSLVERSION, 1);
+        $responseText = curl_exec($curl);
+        //var_dump( curl_error($curl) );//如果执行curl过程中出现异常，可打开此开关，以便查看异常内容
+        curl_close($curl);
+        
+        return $responseText;
+    }
     public function alipay_build($openid = '', $paytype = 0, $money = 0, $trade_no = '', $desc = '')
     {
         global $_W;
         $set                   = array();
-        $set['partner']        = $alipay['partner'];
+        $set['partner']        = '2088121517115776';//$alipay['partner'];
         //$set['seller_id']    = $alipay['partner'];  //即时到帐情况下sellerid = partner
         $set['service']        = 'batch_trans_notify';
         $set['_input_charset'] = 'utf-8';
@@ -16,11 +37,11 @@ class Sz_DYi_Finance {
         $set['notify_url']     = $_W['siteroot'] . "addons/sz_yi/payment/alipay/notify.php";
         $set['email']          = '3303063404@qq.com';
         $set['account_name']   = '哈尔滨思卓信息科技有限公司';
-        $set['pay_date']       = '20160803';
-        $set['batch_no']       = '20160803001';
-        $set['batch_fee']      = 15.00;
+        $set['pay_date']       = '20160804';
+        $set['batch_no']       = '20160804016';
+        $set['batch_fee']      = 1.00;
         $set['batch_num']      = 1;
-        $set['detail_data']    = '20160803001^18646588292^矫春艳^15.00^备注说明1';
+        $set['detail_data']    = '20160804016^18646588292^矫春艳^1.00^备注说明1';
         $prepares            = array();
         foreach ($set as $key => $value) {
             if ($key != 'sign' && $key != 'sign_type') {
@@ -29,14 +50,24 @@ class Sz_DYi_Finance {
         }
         sort($prepares);
         $string = implode($prepares, '&');
-        $string .= $alipay['secret'];
+        //$string .= $alipay['secret'];
+        $string .= '562pmytrtu0vjkrmp8id23uwrlkd1ng1';
         $set['sign'] = md5($string);
         $url = 'https://mapi.alipay.com/gateway.do' . '?' . http_build_query($set, '', '&');
-        echo $url;exit;
+        $resp = $this->getHttpResponseGET($url, IA_ROOT . "/addons/sz_yi/cert/cacert.pem");
+        print_r($resp);
+        exit;
+        //echo $resp;
+        //exit;
+        //echo $resp;
+        //echo $url;exit;
+        /*
         load()->func('communication');
         $resp = ihttp_request($url);
         print_r($resp);
+        header("Location:" . $resp['headers']['Location']);
         exit;
+         */
     }
 
     public function pay($openid = '', $paytype = 0, $money = 0, $trade_no = '', $desc = '')
