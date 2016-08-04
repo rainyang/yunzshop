@@ -1873,7 +1873,7 @@ if ($_W['isajax']) {
                 }
                 if (p('channel')) {
                     $my_info = p('channel')->getInfo($openid,$goods['goodsid'],$goods['optionid'],$goods['total']);
-                    if (!empty($ischannelpick)) {
+                    /*if (!empty($ischannelpick)) {
                         $my_option_stock = p('channel')->getMyOptionStock($openid, $goods['goodsid'], $goods['optionid']);
                         $stock = $my_option_stock - $goods['total'];
                         pdo_update('sz_yi_channel_stock', 
@@ -1886,7 +1886,7 @@ if ($_W['isajax']) {
                                 'goodsid'   => $goods['goodsid'],
                                 'optionid'  => $goods['optionid']
                             ));
-                    }
+                    }*/
                     if ($ischannelpay == 1 && empty($ischannelpick)) {
                         $every_turn_price           = $goods['marketprice']/($my_info['my_level']['purchase_discount']/100);
                         $channel_cond = '';
