@@ -17,7 +17,6 @@ if ($_W['isajax']) {
 	if ($level >= 1) {
 		$conditionb= ")  ";
 	}
-
 	$pindex = max(1, intval($_GPC['page']));
 	$psize = 20;
 	$list = array();
