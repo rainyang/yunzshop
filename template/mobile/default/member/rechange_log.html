@@ -1,10 +1,10 @@
 {template 'common/header'}
-<title>{if $trade && $trade['withdraw']==1}{php echo $shopset1['credit']}明细{else}充值记录{/if}</title>
+<title>分期记录</title>
 <style type="text/css">
     body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
     .credit_list {height:40px; width:94%; background:#fff; padding:10px 3%;margin-top:5px;}
     
-    .credit_list .info {height:40px; width:70%; float:left;  font-size:16px; color:#666; line-height:20px; text-align:left;}
+    .credit_list .info {height:40px; width:100%; float:left;  font-size:16px; color:#666; line-height:20px; text-align:left;}
     .credit_list .info span {font-size:14px; color:#999;}
     .credit_list .num {height:40px; border-left:1px solid #eaeaea; width:20%;line-height:40px; float:right; text-align:right; font-size:16px; color:#666;}
     .credit_list .num span {font-size:14px; color:#999;}
@@ -14,18 +14,19 @@
     .credit_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
     #credit_loading { padding:10px;color:#666;text-align: center;}
 
+    .order_topbar {height:44px; width:100%; background:#fff; border-bottom:1px solid #e3e3e3;}
+    .order_topbar .nav {height:44px;width:50%;line-height:44px; text-align:center; font-size:14px; float:left; color:#666;}
+    .order_topbar .on {height:42px; color:#f15353; border-bottom:2px solid #f15353;}
 </style>
 <div class="page_topbar">
     <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
-    <div class="title">{if $trade && $trade['withdraw']==1}{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}明细{else}充值记录{/if}</div>
+    <div class="title">分期记录</div>
 </div>
 
-{if $trade && $trade['withdraw']==1}
-<div class="credit_tab">
-    <div class="credit_nav {if $_GPC['type']==0}credit_navon{/if}" data-type='0' >充值记录</div>
-    <div class="credit_nav {if $_GPC['type']==1}credit_navon{/if}"  data-type='1'>提现记录</div>
+<div class="order_topbar">
+    <div class="nav {if $_GPC['paymethod']=='0'}on{/if}" data-type="0">余额记录</div>
+    <div class="nav {if $_GPC['paymethod']=='1'}on{/if}" data-type="1">积分记录</div>
 </div>
-{/if}
 
 <div id='container'></div>
 
@@ -33,30 +34,8 @@
     <%each list as log%>
     <div class="credit_list">
         <div class="info">
-            <span>
-                <%if log.type==0%>充值金额: <%/if%> 
-                <%if log.type==1%>提现金额: <%/if%> 
-                <%if log.type==2%>佣金打款: <%/if%> 
-                <%log.money%> 元</span>
-            <br/><span><%log.createtime%></span></div>
-        <div class="num">
-            <%if log.status==0%> 
-            <span><%if log.type==0%>未充值<%else%>申请中<%/if%></span>
-           <%/if%>
-           <%if log.status==1%>
-            <span>   
-                <%if log.type==0%>充值成功<%/if%> 
-                <%if log.type==1%>提现成功<%/if%> 
-                <%if log.type==2%>打款成功<%/if%> 
-            </span>
-           <%/if%>
-           <%if log.status==-1%>
-            <span><%if log.type==1%>提现失败<%/if%></span>
-         <%/if%>
-           <%if log.status==3%>
-            <span><%if log.type==0%>充值退款<%/if%></span>
-           <%/if%>
-           
+            <span><%log.money%></span>
+            <br/><span><%log.createtime%></span>
         </div>
     </div>
     <%/each%>
@@ -68,7 +47,7 @@
 <script language="javascript">
     var page = 1;
     var scrolled = false;
-   var current_type = "{php echo intval($_GPC['type'])}";
+   var paymethod = "{php echo intval($_GPC['paymethod'])}";
     require(['tpl', 'core'], function (tpl, core) {
 
 function bindScroller(){
@@ -86,7 +65,7 @@ function bindScroller(){
                     stop = false; scrolled = true;
                     $('#container').append('<div id="credit_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载...</div>');
                     page++;
-                    core.json('member/log', {type:current_type,page: page}, function (json) {
+                    core.json('member/rechange_log', {paymethod:paymethod,page: page}, function (json) {
                         stop = true;
                         $('#credit_loading').remove();
                         $("#container").append(tpl('tpl_log', morejson.result));
@@ -102,9 +81,9 @@ function bindScroller(){
         });
 }
         function getLog(type) {
-            $('.credit_nav').removeClass('credit_navon');
-            $('.credit_nav[data-type=' + type + ']').addClass('credit_navon');
-            core.json('member/log', {type:type,page: page}, function (json) {
+            $('.nav').removeClass('on');
+            $('.nav[data-type=' + type + ']').addClass('on');
+            core.json('member/rechange_log', {paymethod:type,page: page}, function (json) {
                 if (json.result.list.length <= 0) {
                     $('#container').html(tpl('tpl_empty'));
                     return;
@@ -113,12 +92,12 @@ function bindScroller(){
                 bindScroller();
             }, true);
         }
-        $('.credit_nav').unbind('click').click(function () {
-            page = 1; current_type = $(this).data('type')
-            getLog(current_type);
+        $('.nav').unbind('click').click(function () {
+            page = 1; paymethod = $(this).data('type')
+            getLog(paymethod);
 
         });
-        getLog(current_type);
+        getLog(paymethod);
     })
 </script>
 {php $show_footer=true}
