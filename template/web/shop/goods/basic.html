@@ -654,13 +654,13 @@
 {/if}
 {if p('channel')}
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否支持货到付款</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否支持渠道商采购</label>
     <div class="col-sm-6 col-xs-6">
         {ife 'shop.goods' $item}
         <label class="radio-inline"><input type="radio" name="isopenchannel" value="0" {if $item['isopenchannel'] == 0}checked="true"{/if}  /> 不支持</label>
         <label class="radio-inline"><input type="radio" name="isopenchannel" value="1" {if $item['isopenchannel'] == 1}checked="true"{/if}   /> 支持</label>
            {else}
-           <div class='form-control-static'>{if empty($item['cash']) || $item['cash'] == 1}不支持{else}支持{/if}</div>
+           <div class='form-control-static'>{if $item['isopenchannel'] ==  0}不支持{else}支持{/if}</div>
          {/if}
     </div>
 </div>

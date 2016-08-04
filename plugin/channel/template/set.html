@@ -102,18 +102,25 @@
 		    <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">渠道商等级升级依据</label>
                 <div class="col-sm-9 col-xs-12">      
+                        
                         <label class="radio radio-inline" style="width:240px">
-                              <input type="checkbox" name="setdata[become]" value="1" {if $set['become'] == 1 || empty($set['become'])}checked{/if}/> 团队总人数
-                        </label>										
-		                <label class="radio radio-inline" style="width:240px">
-                              <input type="checkbox" name="setdata[become]" value="2" {if $set['become'] == 2}checked{/if}/> 累计进货量（金额）
+                              <input class="become" type="radio" name="setdata[become]" value="1" {if $set['become'] == 1}checked{/if}/> 指定商品
                         </label>
                         <label class="radio radio-inline" style="width:240px">
-                              <input type="checkbox" name="setdata[become]" value="3" {if $set['become'] == 3}checked{/if}/> 累计进货次数（次）
+                              <input class="become" type="radio" name="setdata[become]" value="2" {if $set['become'] == 2}checked{/if}/> 其他
+                        </label>
+                        <br>
+                        <div style="display: none;" class="become_other">
+                        <label class="radio radio-inline" style="width:240px">
+                              <input type="checkbox" name="setdata[become_other][]" value="1" {if in_array(1,$set['become_other'])}checked{/if}/> 团队总人数
+                        </label>                                        
+                        <label class="radio radio-inline" style="width:240px">
+                              <input type="checkbox" name="setdata[become_other][]" value="2" {if in_array(2,$set['become_other'])}checked{/if}/> 累计进货量（金额）
                         </label>
                         <label class="radio radio-inline" style="width:240px">
-                              <input type="radio" name="setdata[become]" value="4" {if $set['become'] == 4}checked{/if}/> 指定商品
+                              <input type="checkbox" name="setdata[become_other][]" value="3" {if in_array(3,$set['become_other'])}checked{/if}/> 累计进货次数（次）
                         </label>
+                        </div>
                 </div>
             </div>
             <div class="form-group">
@@ -171,5 +178,21 @@
 </form>
 </div>
 </div>
-
+<script type="text/javascript">
+    $(document).ready(function(){
+        $(".become").change(function(){
+            if($(".become:checked").val() == 2){
+                $(".become_other").show();
+            }else{
+                $(".become_other").hide(); 
+            } 
+        })
+        if($(".become:checked").val() == 2){
+                $(".become_other").show();
+            }else{
+                $(".become_other").hide(); 
+            } 
+        
+    })
+</script>
 {template 'web/_footer'}

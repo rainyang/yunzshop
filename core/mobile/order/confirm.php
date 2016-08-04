@@ -1889,13 +1889,11 @@ if ($_W['isajax']) {
                     }
                     if ($ischannelpay == 1 && empty($ischannelpick)) {
                         $every_turn_price           = $goods['marketprice']/($my_info['my_level']['purchase_discount']/100);
-                        $ischannelstock             = pdo_fetch(
-                            "SELECT * FROM " . tablename('sz_yi_channel_stock') . 
-                            " WHERE uniacid={$_W['uniacid']} 
-                            AND openid='{$openid}' 
-                            AND goodsid={$goods['goodsid']}
-                            AND optionid={$goods['optionid']}
-                        ");
+                        $channel_cond = '';
+                        if (!empty($goods['optionid'])) {
+                            $channel_cond = " AND optionid={$goods['optionid']}";
+                        }
+                        $ischannelstock             = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND goodsid={$goods['goodsid']} {$channel_cond}");
                         if (empty($ischannelstock)) {
                             pdo_insert('sz_yi_channel_stock', array(
                                 'uniacid'       => $_W['uniacid'],
@@ -1925,8 +1923,10 @@ if ($_W['isajax']) {
                               'every_turn_price'    => $goods['marketprice'],
                               'every_turn_discount' => $my_info['my_level']['purchase_discount'],
                               'goods_price'         => $every_turn_price,
-                              'paytime'             => time()
+                              'paytime'             => time(),
+                              'type'                => 1
                             );
+                        // type==1  进货
                         pdo_insert('sz_yi_channel_stock_log', $stock_log);
                         $order_goods['ischannelpay']  = $ischannelpay;
                     }
@@ -1985,7 +1985,7 @@ if ($_W['isajax']) {
                 ));
             }
             if (p('channel') && !empty($ischannelpick)) {
-                //echo "<pre>"; print_r(1);exit;
+                p('channel')->deductChannelStock($orderid);
             } else {
                 if (empty($virtualid)) {
                     m('order')->setStocksANDCredits($orderid, 0);
