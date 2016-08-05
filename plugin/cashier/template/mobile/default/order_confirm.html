@@ -195,7 +195,7 @@ body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearanc
 </div>
 
 {if $hascouponplugin}
-{template 'coupon/chooser'}
+{template 'coupon/chooser_cashier'}
 {/if}
 <script>
 require(['tpl', 'core'], function(tpl, core) {
@@ -349,7 +349,7 @@ require(['tpl', 'core'], function(tpl, core) {
                         calctotalprice();
                     }
                     CouponChooser.confirmCallback = function(){
-                        calctotalprice();
+                        calctotalprice(100);
                     }
                     CouponChooser.open( rjson.result );
                 }
