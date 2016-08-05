@@ -229,3 +229,16 @@ ul{list-style:none;}
     background-color: #fff;
 }
 }
+
+.prod-nav {    background-color: hsl(0, 0%, 96%);
+    border-bottom: 1px solid hsl(0, 0%, 87%);
+    height: 44px;
+    margin-bottom: 10px; 
+    line-height:44px;
+    margin: 0 auto;
+}
+
+.prod-nav li{padding-left:15px}
+
+.panel-center{width: 98%;margin: 8px auto;}
+

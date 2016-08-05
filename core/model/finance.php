@@ -9,13 +9,13 @@ class Sz_DYi_Finance {
         $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_HEADER, 1 ); // 过滤HTTP头
         curl_setopt($curl,CURLOPT_RETURNTRANSFER, 1);// 显示输出结果
-	curl_setopt($curl, CURLOPT_NOBODY, 1);
-	@curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
+        curl_setopt($curl, CURLOPT_NOBODY, 1);
+        @curl_setopt($curl, CURLOPT_FOLLOWLOCATION, 1);
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, true);//SSL证书认证
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, 2);//严格认证
         curl_setopt($curl, CURLOPT_CAINFO,$cacert_url);//证书地址
         //$responseText = curl_exec($curl);
-	$info = curl_getinfo($curl,CURLINFO_EFFECTIVE_URL);
+        $info = curl_getinfo($curl,CURLINFO_EFFECTIVE_URL);
 
         //var_dump( curl_error($curl) );//如果执行curl过程中出现异常，可打开此开关，以便查看异常内容
         curl_close($curl);
@@ -32,8 +32,8 @@ class Sz_DYi_Finance {
         $set['_input_charset'] = 'utf-8';
         $set['sign_type']      = 'MD5';
         $set['notify_url']     = $_W['siteroot'] . "addons/sz_yi/payment/alipay/notify.php";
-        $set['email']          = '3303063404@qq.com';
-        $set['account_name']   = '哈尔滨思卓信息科技有限公司';
+        $set['email']          = '3303063404@qq.com';   //付款方账号
+        $set['account_name']   = '哈尔滨思卓信息科技有限公司';  //付款方姓名
         $set['pay_date']       = '20160804';
         $set['batch_no']       = '20160804004';
         $set['batch_fee']      = 2.00;
@@ -52,7 +52,7 @@ class Sz_DYi_Finance {
         $set['sign'] = md5($string);
         $url = 'https://mapi.alipay.com/gateway.do' . '?' . http_build_query($set, '', '&');
         $resp = $this->getHttpResponseGET($url, IA_ROOT . "/addons/sz_yi/cert/cacert.pem");
-	header("Location:" . $resp);
+        header("Location:" . $resp);
         exit;
         //echo $resp;
         //exit;
