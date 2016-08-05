@@ -1,4 +1,5 @@
 <div class="ulleft-nav">
+<div class="addtit-name">商品管理</div>
 <ul class="nav nav-tabs">
     {ifp 'shop.goods.view'}<li {if $_GPC['p'] == 'goods' || empty($_GPC['p'])} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods')}">商品管理</a></li>{/if}
     {ifp 'shop.category.view'}<li {if $_GPC['p'] == 'category'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/category')}">商品分类管理</a></li>{/if}

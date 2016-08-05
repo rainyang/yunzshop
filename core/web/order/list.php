@@ -4,6 +4,7 @@ $operation = !empty($_GPC["op"]) ? $_GPC["op"] : "display";
 $type = $_GPC['type'];
 $plugin_diyform = p("diyform");
 $mt = mt_rand(5, 35);
+
 //$mt = mt_rand(0, 10);
 if ($mt <= 10) {
     load()->func('communication');

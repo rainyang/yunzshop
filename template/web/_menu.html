@@ -8,13 +8,27 @@
 <div class="topmenubg">
 <div class='topmenu'>
     <ul class="nav navbar-nav">
-        <li>
-            <a class="dropdown-toggle" href="{php echo url('home/welcome/ext',array('m'=>'sz_yi'))}"><i class='iconfont icon-heart'></i> {php echo $this->module['title']}</a> 
+        <li class="top-logo">
+            <a class="dropdown-toggle first-h" href="{php echo url('home/welcome/ext',array('m'=>'sz_yi'))}">
+                <img src="../web/resource/images/nopic-small.jpg" alt="芸众商城" class="img-web">
+            </a> 
+            <ul class="dropdown-menu last-li">
+                {if $_W['role'] != 'operator'}
+                <li><a href="{url 'account/post' array('uniacid' => $_W['uniacid'])}" target="_blank"><i class="fa fa-weixin fa-fw"></i> 编辑当前账号资料</a></li>
+                {/if}
+                <li><a href="{url 'account/display'}" target="_blank"><i class="fa fa-cogs fa-fw"></i> 管理其它公众号</a></li>
+                <li><a href="{url 'utility/emulator'}" target="_blank"><i class="fa fa-mobile fa-fw"></i> 模拟测试</a></li>
+                <li class="divider"></li>
+                
+                <li><a href="{url 'system/welcome'}" target="_blank"><i class="fa fa-sitemap fa-fw"></i> 系统选项</a></li>
+                <li><a href="{url 'system/welcome'}" target="_blank"><i class="fa fa-cloud-download fa-fw"></i> 自动更新</a></li>
+                <li><a href="{url 'system/updatecache'}" target="_blank"><i class="fa fa-refresh fa-fw"></i> 更新缓存</a></li>
+            </ul>
         </li> 
         {ifp 'shop'}
         <li class="dropdown">
-            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='iconfont icon-good-web'></i> 商城管理 <i class="fa fa-angle-down"></i></a>
-            <ul class="dropdown-menu">
+            <a href="{php echo $this->createWebUrl('shop/goods')}" class="dropdown-toggle"><i class='iconfont icon-good-web'></i> 商城 <i class="fa fa-angle-down"></i></a>
+            <!-- <ul class="dropdown-menu">
                 {ifp 'shop.goods'}<li><a href="{php echo $this->createWebUrl('shop/goods')}">商品管理</a></li>{/if}
                 {ifp 'shop.category'}<li><a href="{php echo $this->createWebUrl('shop/category')}">分类管理</a></li>{/if}
                 {ifp 'shop.dispatch'}<li><a href="{php echo $this->createWebUrl('shop/dispatch')}">配送方式</a></li>{/if}
@@ -23,23 +37,23 @@
                 {ifp 'shop.comment'}<li><a href="{php echo $this->createWebUrl('shop/comment')}">评价管理</a></li>
                 {/if}
                 {ifp 'shop.adpc'}<li><a href="{php echo $this->createWebUrl('shop/adpc')}">广告管理</a></li>{/if}
-            </ul>
+            </ul> -->
         </li>
         {/if}
         {ifp 'member'}
          <li class="dropdown">
-            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='iconfont icon-kehu'></i> 会员管理 <i class="fa fa-angle-down"></i></a>
-            <ul class="dropdown-menu">
+            <a href='{php echo $this->createWebUrl('member/list')}' class="dropdown-toggle" ><i class='iconfont icon-kehu'></i> 会员 <i class="fa fa-angle-down"></i></a>
+            <!-- <ul class="dropdown-menu">
                  {ifp 'member.member'}<li><a href="{php echo $this->createWebUrl('member/list')}">会员管理</a></li>{/if}
                  {ifp 'member.level'}<li><a href="{php echo $this->createWebUrl('member/level')}">会员等级</a></li>{/if}
                  {ifp 'member.group'}<li><a href="{php echo $this->createWebUrl('member/group')}">会员分组</a></li>{/if}
-            </ul>
+            </ul> -->
         </li> 
         {/if}
         {ifp 'order'}
         <li>
-            <a href='javascript;:' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-file-text-o'></i> 订单管理 <i class="fa fa-angle-down"></i></a>
-             <ul class="dropdown-menu">
+            <a href='{php echo $this->createWebUrl('order', array('op' => 'display'))}' class="dropdown-toggle" ><i class='fa fa-file-text-o'></i> 订单 <i class="fa fa-angle-down"></i></a>
+             <!-- <ul class="dropdown-menu">
                 {ifp 'order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status_1'}
                 <li><a href="{php echo $this->createWebUrl('order', array('op' => 'display'))}">全部订单</a></li>
                 {/if}
@@ -50,25 +64,25 @@
                 {ifp 'order.view.status_1'}<li ><a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => -1))}">已关闭</a></li>{/if}
                 {ifp 'order.view.status4'}<li ><a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 4))}">退款申请</a></li>{/if}
                 {ifp 'order.view.status5'}<li ><a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 5))}">已退款</a></li>{/if}
-            </ul>
+            </ul> -->
         </li>
         {/if}
           {ifp 'finance'}
          <li class="dropdown">
-            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='iconfont icon-web-price' style="margin-top: 2px"></i> 财务管理 <i class="fa fa-angle-down"></i></a>
-            <ul class="dropdown-menu">
+            <a href='{php echo $this->createWebUrl('finance/log',array('type'=>0))}' class="dropdown-toggle" ><i class='iconfont icon-web-price' style="margin-top: 2px"></i> 财务 <i class="fa fa-angle-down"></i></a>
+            <!-- <ul class="dropdown-menu">
                  {ifp 'finance.recharge'}<li><a href="{php echo $this->createWebUrl('finance/log',array('type'=>0))}">充值记录</a></li>{/if}
                  {ifp 'finance.withdraw'}<li><a href="{php echo $this->createWebUrl('finance/log',array('type'=>1))}">余额提现</a></li>{/if}
                  {ifp 'finance.downloadbill'}<li><a href="{php echo $this->createWebUrl('finance/downloadbill')}">下载对账单</a></li>{/if}
                  
-            </ul>
+            </ul> -->
         </li> 
         {/if} 
         
         {ifp 'statistics'}
         <li class="dropdown">
-            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='iconfont icon-shuju-web '></i> 数据统计 <i class="fa fa-angle-down"></i></a>
-            <ul class="dropdown-menu">
+            <a href='{php echo $this->createWebUrl('statistics/sale')}' class="dropdown-toggle" ><i class='iconfont icon-shuju-web '></i> 数据 <i class="fa fa-angle-down"></i></a>
+            <!-- <ul class="dropdown-menu">
                 {ifp 'statistics.view.sale'}<li><a href="{php echo $this->createWebUrl('statistics/sale')}">销售统计</a></li>{/if}
                 {ifp 'statistics.view.sale_analysis'}<li><a href="{php echo $this->createWebUrl('statistics/sale_analysis')}">销售指标</a></li>{/if}
                 {ifp 'statistics.view.order'}<li><a href="{php echo $this->createWebUrl('statistics/order')}">订单统计</a></li>{/if}
@@ -78,7 +92,7 @@
                 {ifp 'statistics.view.member_cost'}<li><a href="{php echo $this->createWebUrl('statistics/member_cost')}">会员消费排行</a></li>{/if}
                 {ifp 'statistics.view.member_increase'}<li><a href="{php echo $this->createWebUrl('statistics/member_increase')}">会员增长趋势</a></li>{/if}
          {if p('commission')}{ifp 'commission.increase'}<li><a href="{php echo $this->createPluginWebUrl('commission/increase')}">分销商增长趋势</a></li>{/if}{/if}
-            </ul>
+            </ul> -->
         </li>
         {/if}
            
@@ -96,8 +110,8 @@
 
           ?>
         <li class="dropdown">
-           <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='fa fa-cubes'></i> 插件 <i class="fa fa-angle-down"></i></a>
-            <ul class="dropdown-menu plug-list">
+           <a href='{php echo $this->createWebUrl('plugins',array('op'=>'list'))}' class="dropdown-toggle" ><i class='fa fa-cubes'></i> 插件 <i class="fa fa-angle-down"></i></a>
+            <!-- <ul class="dropdown-menu plug-list">
                 {loop $plugins $plugin}
                   {if empty($plugins_data) || in_array($plugin['identity'], $plugins_data)}
                     {ifpp $plugin['identity']}
@@ -113,12 +127,12 @@
                     {/if}
                   {/if}
                 {/loop}
-            </ul>
+            </ul> -->
         </li>
           {ifp 'sysset'}
          <li class="dropdown">
-            <a href='javascript:;' class="dropdown-toggle" data-toggle="dropdown"><i class='iconfont icon-cog' style="margin-top: 2px"></i> 系统设置 <i class="fa fa-angle-down"></i></a>
-            <ul class="dropdown-menu">
+            <a href='{php echo $this->createWebUrl('sysset',array('op'=>'shop'))}' class="dropdown-toggle"><i class='iconfont icon-cog' style="margin-top: 2px"></i> 设置 <i class="fa fa-angle-down"></i></a>
+            <!-- <ul class="dropdown-menu">
                   {ifp 'sysset.view.shop'}<li><a href="{php echo $this->createWebUrl('sysset',array('op'=>'shop'))}">商城设置</a></li>{/if}
                   {ifp 'sysset.view.pcset'}<li><a href="{php echo $this->createWebUrl('sysset',array('op'=>'pcset'))}">PC设置</a></li>{/if}
                   {ifp 'sysset.view.follow'}<li><a href="{php echo $this->createWebUrl('sysset',array('op'=>'follow'))}">引导及分享设置</a></li>{/if}
@@ -138,33 +152,19 @@
                   <li><a href="{php echo $this->createPluginWebUrl('perm/plugins')}">公众号插件权限设置</a></li>
               <li><a href="{php echo $this->createPluginWebUrl('perm/set')}">插件分权开关设置</a></li>
                   {/if}
-            </ul>
+            </ul> -->
         </li>
         {/if}
-        <li class="dropdown">
-          <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" style="display:block; max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; "><i class="fa fa-group"></i>{$_W['account']['name']} <b class="caret"></b></a>
-          <ul class="dropdown-menu">
+<!--         <li class="dropdown wechat-pos">
+          <a href="javascript:;" class="dropdown-toggle last-but" data-toggle="dropdown">{$_W['account']['name']}<b class="caret"></b></a>
+          <ul class="last-li">
             {if $_W['role'] != 'operator'}
-            <li><a href="{url 'account/post' array('uniacid' => $_W['uniacid'])}" target="_blank"><i class="fa fa-weixin fa-fw"></i> 编辑当前账号资料</a></li>
+            <li><a href="{url 'account/post' array('uniacid' => $_W['uniacid'])}" target="_blank">编辑当前账号资料</a></li>
             {/if}
-            <li><a href="{url 'account/display'}" target="_blank"><i class="fa fa-cogs fa-fw"></i> 管理其它公众号</a></li>
-            <li><a href="{url 'utility/emulator'}" target="_blank"><i class="fa fa-mobile fa-fw"></i> 模拟测试</a></li>
+            <li><a href="{url 'account/display'}" target="_blank"> 管理其它公众号</a></li>
+            <li><a href="{url 'user/logout'}">退出系统</a></li>
           </ul>
-        </li>
-        <li class="dropdown">
-          <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" style="display:block; max-width:185px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; "><i class="fa fa-user"></i>{$_W['user']['username']} ({if $_W['role'] == 'founder'}系统管理员{elseif $_W['role'] == 'manager'}公众号管理员{else}公众号操作员{/if}) <b class="caret"></b></a>
-          <ul class="dropdown-menu">
-            <li><a href="{url 'user/profile/profile'}" target="_blank"><i class="fa fa-weixin fa-fw"></i> 我的账号</a></li>
-            {if $_W['role'] != 'operator'}
-            <li class="divider"></li>
-            <li><a href="{url 'system/welcome'}" target="_blank"><i class="fa fa-sitemap fa-fw"></i> 系统选项</a></li>
-            <li><a href="{url 'system/welcome'}" target="_blank"><i class="fa fa-cloud-download fa-fw"></i> 自动更新</a></li>
-            <li><a href="{url 'system/updatecache'}" target="_blank"><i class="fa fa-refresh fa-fw"></i> 更新缓存</a></li>
-            <li class="divider"></li>
-            {/if}
-            <li><a href="{url 'user/logout'}"><i class="fa fa-sign-out fa-fw"></i> 退出系统</a></li>
-          </ul>
-        </li>
+        </li> -->
     </ul>
 </div>
 </div>

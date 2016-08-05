@@ -330,6 +330,12 @@ if ($operation == 'display' && $_W['isajax']) {
     }
     $plid        = $log['plid'];
     $param_title = $set['shop']['name'] . "订单: " . $order['ordersn'];
+    if(is_array($orderid)){
+        $orderids = implode(',', $orderid);
+        $where_update = "id in ({$orderids})";
+    }else{
+        $where_update = "id={$orderid}";
+    }
     if ($type == 'weixin') {
         if (empty($set['pay']['weixin'])) {
             show_json(0, '未开启微信支付!');
@@ -351,12 +357,6 @@ if ($operation == 'display' && $_W['isajax']) {
         $setting = uni_setting($_W['uniacid'], array(
             'payment'
         ));
-        if(is_array($orderid)){
-            $orderids = implode(',', $orderid);
-            $where_update = "id in ({$orderids})";
-        }else{
-            $where_update = "id={$orderid}";
-        }
         //微信下
         if (is_weixin()) {
             if (is_array($setting['payment'])) {
