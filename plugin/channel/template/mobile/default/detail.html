@@ -8,7 +8,7 @@ a {text-decoration:none;}
 .log_top .num { float:right;color:#666;height:44px;line-height:44px;padding-right:5px;}
     
 .log_menu {height:44px; background:#fff;}
-.log_menu .nav {height:44px; width:33%; border-bottom:1px solid #f1f1f1;background:#fff; border-left:1px solid #f1f1f1; float:left; line-height:44px; font-size:14px; color:#666; text-align:center;}
+.log_menu .nav {height:44px; width:27%; border-bottom:1px solid #f1f1f1;background:#fff; border-left:1px solid #f1f1f1; float:left; line-height:44px; font-size:14px; color:#666; text-align:center;}
 .log_menu .navon {height:42px; color:#ff771b; border-bottom:2px solid #ff771b;}
 
 .log_title {height:40px; padding:5px; line-height:50px; font-size:16px; color:#666;}
@@ -27,7 +27,12 @@ a {text-decoration:none;}
 <div class="log_top">
        <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> 采购记录(<span id='total'></span>)</div>
 </div>
-
+<div class="log_menu">
+        <div class="nav navon" style="border-left:0px;width:18%;" data-status='1'>采购</div>
+        <div class="nav"  data-status='2'>出货</div>
+        <div class="nav"  data-status='3'>零售</div>
+        <div class="nav"  data-status='4'>自提</div>
+</div>
 <div id='container'></div>
 
 <script id='tpl_log' type='text/html'>
@@ -36,8 +41,20 @@ a {text-decoration:none;}
     <%each list as log%>
   <div class="log_list" data-goodsid='<%log.id%>'>
         <div class='inner'>
-            <h1>采购时间：<%log.paytime%><span>采购数量：(<%log.every_turn%>)</span></h1>
-            <p>进货价：<%log.every_turn_price%>(元)<br>折扣：<%log.every_turn_discount%>(%)<br>商品单价：<%log.goods_price%>(元)</p>
+            <h1><%if log.type==1%>采购时间<%/if%>
+                <%if log.type==2%>出货时间<%/if%>
+                <%if log.type==3%>零售时间<%/if%>
+                <%if log.type==4%>自提时间<%/if%>
+            ：<%log.paytime%><span>
+            <%if log.type==1%>采购数量<%/if%>
+            <%if log.type==2%>出货数量<%/if%>
+            <%if log.type==3%>零售数量<%/if%>
+            <%if log.type==4%>自提数量<%/if%>
+            ：(<%log.every_turn%>)</span></h1>
+            <p><%if log.type==1%>采购价<%/if%>
+                <%if log.type==2%>出货价<%/if%>
+                <%if log.type==3%>零售价<%/if%>
+                <%if log.type==4%>自提价<%/if%>：<%log.every_turn_price%>(元)<br>折扣：<%log.every_turn_discount%>(%)<br>商品单价：<%log.goods_price%>(元)</p>
         </div>
   </div>
     <%/each%>
@@ -83,9 +100,8 @@ function bindScroller(){
 function getLog(status) {
     $('.log_menu .nav').removeClass('navon');
     $('.log_menu .nav[data-status=\'' + status + '\']').addClass('navon');
-    core.pjson('channel/detail', {page: page,goodsid:"{$_GPC['goodsid']}"}, function (json) {
+    core.pjson('channel/detail', {page: page,goodsid:"{$_GPC['goodsid']}",status:status}, function (json) {
         $('#total').html( json.result.total);
-        $('#commissioncount').html( json.result.commissioncount);
         if (!json.result.list.length) {
             $('#container').html(tpl('tpl_empty'));
             return;
@@ -99,7 +115,7 @@ $('.log_menu .nav').unbind('click').click(function () {
                 page = 1; current_status = $(this).data('status')
                 getLog(current_status);
             });
-    getLog('');
+    getLog('1');
 
 })
 </script>
