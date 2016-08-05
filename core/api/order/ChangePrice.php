@@ -75,7 +75,6 @@ class ChangePrice extends \api\YZ
         if ($orderprice < 0) {
             $this->returnError("订单实际支付价格不能小于0元！", '', "error");
         }
-        dump($changegoodsprice);
         foreach ($changegoodsprice as $ogid => $change) {
             $og = pdo_fetch("select price,realprice from " . tablename("sz_yi_order_goods") . " where id=:ogid and uniacid=:uniacid limit 1", array(
                 ":ogid" => $ogid,
@@ -132,6 +131,13 @@ class ChangePrice extends \api\YZ
             }
         }
         plog("order.op.changeprice", "订单号： {$order_info["ordersn"]} <br/> 价格： {$order_info["price"]} -> {$orderprice}");
-        $this->returnSuccess("订单改价成功!");
+
+        $order_model = new \model\api\order();
+        $this->order_info = $order_model->getInfo(array(
+            'id' => $para['order_id'],
+            'uniacid' => $para['uniacid'],
+        ));
+        $order_info = $order_model->getPriceInfo($order_info);
+        $this->returnSuccess($order_info,"订单改价成功!");
     }
 }

@@ -9,6 +9,7 @@
  * @version   v1.0
  */
 namespace api;
+define('IN_SYS',true);
 define("__API_ROOT__", __DIR__);
 define("__BASE_ROOT__", __DIR__ . "/../../../..");
 //echo phpinfo();
@@ -17,6 +18,8 @@ require_once __BASE_ROOT__ . '/addons/sz_yi/defines.php';
 require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/functions.php';
 require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/plugin/plugin_model.php';
 require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/aes.php';
+require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/core.php';
+
 global $_W, $_GPC, $_YZ;
 
 $_GET['api'] = ltrim($_GET['api'], '/');
@@ -89,6 +92,7 @@ final class Run{
         require $this->dispatch->getControllerPatch();
         $controller_full_name = $this->getControllerFullName();
         $method_name = $this->dispatch->getMethodName();
+        
         $controller_obj = new $controller_full_name;
         $controller_obj->$method_name();
     }

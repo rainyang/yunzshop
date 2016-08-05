@@ -18,47 +18,22 @@ class Display extends \api\YZ
     }
     public function index()
     {
-        $list = array(
+        $list[] = array(
             'uniacid'=>'2',
             'name'=>'沈阳的secretgarden',
+            'thumb'=>'/headimg_2.jpg?t='.time(),
+            'setmeal'=>'未设置'
         );
-        return $list;
+        $list = set_medias($list, "thumb");
+        $this->returnSuccess($list);
     }
     public function index1()
     {
         global $_W,$_GPC;
-//$api->validate('username','password');
-        $setting = $_W['setting'];
-        $pindex = max(1, intval($_GPC['page']));
-        $psize = 15;
-        $start = ($pindex - 1) * $psize;
+
         $condition = '';
         $pars = array();
-        /*
-        $keyword = trim($para['keyword']);
-        $s_uniacid = intval($para['s_uniacid']);
 
-        if(!empty($keyword)) {
-            $condition =" AND a.`name` LIKE :name";
-            $pars[':name'] = "%{$keyword}%";
-        }
-        if(!empty($s_uniacid)) {
-            $condition =" AND a.`uniacid` = :uniacid";
-            $pars[':uniacid'] = $s_uniacid;
-        }
-
-        if(!empty($para['expiretime'])) {
-            $expiretime = intval($para['expiretime']);
-            $condition .= " AND a.`uniacid` IN(SELECT uniacid FROM " .tablename('uni_account_users') . " WHERE role = 'owner' AND uid IN (SELECT uid FROM " .tablename('users'). " WHERE endtime > :time AND endtime < :endtime))";
-            $pars[':time'] = time();
-            $pars[':endtime'] = time()+86400*$expiretime;
-        }
-        if ($para['type'] == '3') {
-            $condition .= " AND b.type = 3";
-        } elseif($para['type'] == '1') {
-            $condition .= " AND b.type <> 3";
-        }
-        */
         $_W['isfounder'] = $this->isFonder();
 
 

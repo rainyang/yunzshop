@@ -78,8 +78,8 @@ class order
     {
         global $_W;
         $condition[] = ' 1';
-        if ($para['status']!=='' ) {
-           $condition['status'] = $this->getStatusCondition((int)$para['status']);
+        if ($para['status'] !== '') {
+            $condition['status'] = $this->getStatusCondition((int)$para['status']);
         }
         if ((int)($para['pay_type'])) {
             $condition['pay_type'] = $this->getPayTypeCondition($para['pay_type']);
@@ -96,14 +96,14 @@ class order
         );
 
         $condition_str = implode(' ', $condition);
-        $sql = 'select o.ordersn,o.status,o.price ,o.id as order_id,o.changedispatchprice,o.changeprice
-from ' . tablename("sz_yi_order") . " o" . " left join " . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " 
+        $sql = 'select o.ordersn,o.status,o.price ,o.id as order_id,o.changedispatchprice,o.changeprice,r.rtype,r.status as rstatus
+from ' . tablename("sz_yi_order") . " o" . " 
+left join " . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " 
 left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " 
 left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " 
 left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " 
 left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . "  
-where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 ";
-
+where {$condition_str} ORDER BY o.id DESC LIMIT 0,10 ";
         $list = pdo_fetchall($sql, $paras);
         foreach ($list as &$order_item) {
             $order_item = $this->formatOrderInfo($order_item);
@@ -140,6 +140,7 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
             }
         }
         if ($order_info["status"] == -1) {
+            //dump(order_info['rstatus']);
             //$order_info['status'] = $order_info['rstatus'];
             if (!empty($order_info["refundtime"])) {
                 if ($order_info['rstatus'] == 1) {
@@ -148,10 +149,54 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
             }
         }
         $order_goods = $this->getOrderGoods($order_info["order_id"], $_W["uniacid"]);
-        $order_info["goods"] = set_medias($order_goods, "thumb");
+        $order_info["goods"] = $order_goods;
         //dump($order_info);
         //$res_order_info = array_part('ordersn,status,price,order_id,goods',$order_info);
         return $order_info;
+    }
+
+    public function getRefundInfo($orer_id, $uniacid)
+    {
+        $refund = pdo_fetch("SELECT * FROM " . tablename("sz_yi_order_refund") . " WHERE orderid = :orderid and uniacid=:uniacid order by id desc", array(
+            ":orderid" => $orer_id,
+            ":uniacid" => $uniacid
+        ));
+        //dump($refund);
+        if (!empty($refund)) {
+            if (!empty($refund['imgs'])) {
+                $refund['imgs'] = iunserializer($refund['imgs']);
+            }
+            $refund['refundtype'] = array(
+                'name' => $this->name_map['r_type'][$refund['refundtype']],
+                'value' => $refund['refundtype'],
+            );
+            if ($refund['status'] == 0 || $refund['status'] >= 3) {
+                $refund['refund_name'] = '处理申请';
+            } elseif ($refund['status'] == -1) {
+                $refund['refund_name'] = '已拒绝';
+            } elseif ($refund['status'] == -2) {
+                $refund['refund_name'] = '客户取消';
+            } elseif ($refund['status'] == 1) {
+                $refund['refund_name'] = '已完成';
+            }
+        }
+        return $refund;
+    }
+
+    public function getPriceInfo($order_info)
+    {
+        $price_info = array(
+            'goodsprice' => $order_info['goodsprice'],//商品小计
+            'olddispatchprice' => $order_info['olddispatchprice'],//运费
+            'price' => $order_info['price'],//应收
+            'deductenough' => $order_info['deductenough'],//满减
+            'changeprice' => $order_info['changeprice'],//改价
+            'changedispatchprice' => $order_info['changedispatchprice'],//改运费
+        );
+        array_map(function ($item) {
+            return number_format($item, 2);
+        }, $price_info);
+        return $price_info;
     }
 
     /**
@@ -200,6 +245,7 @@ where {$condition_str} ORDER BY o.id,o.createtime DESC,o.status DESC LIMIT 0,10 
             $goods_item['goods_attribute'] = $goods;
             $goods_item = array_part('goods_id,thumb,title,price,total,goods_attribute', $goods_item);
         }
+        $order_goods = set_medias($order_goods, "thumb");
         return $order_goods;
     }
 

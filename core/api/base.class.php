@@ -55,6 +55,16 @@ class Base
      */
     public function returnSuccess($data = [], $msg = '成功')
     {
+        if(is_array($data)){
+            array_walk_recursive($data,function(&$item){
+                if(is_null($item)){
+                    $item = '';
+                }
+            });
+        }elseif(is_null($data)){
+            $data = '';
+        }
+
         $res = array('result' => '1',
             'msg' => $msg,
             'data' => $data);
@@ -119,6 +129,7 @@ class Base
         if (isset($_GET['is_test'])) {
             dump($json_data);
         }
+
         $return_data = str_replace('"', '', $this->aes->siyuan_aes_encode(json_encode($json_data, JSON_UNESCAPED_UNICODE)));
         //dump($json_data);
         //dump($this->getSqlLog());

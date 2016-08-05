@@ -57,6 +57,7 @@ return array(
             )
         )
     ),
+
     'order' => array(
         'describe' => '订单',
         'method' => array(
@@ -66,7 +67,16 @@ return array(
                     'uid' => '1',
                     'uniacid' => '2',
                     'order_id' => '0',
-                    'status' => ''
+                    'status' => '4'
+                ),
+                'data' => array()
+            ),
+            'Express' => array(
+                'describe' => '配送信息',
+                'para' => array(
+                    'uid' => '1',
+                    'uniacid' => '2',
+                    'order_id' => '50',
                 ),
                 'data' => array()
             ),
@@ -75,7 +85,7 @@ return array(
                 'para' => array(
                     'uid' => '1',
                     'uniacid' => '2',
-                    'order_id' => '19',
+                    'order_id' => '22',
                 ),
                 'data' => array()
             ),
@@ -85,7 +95,7 @@ return array(
                 'para' => array(
                     'uid' => '1',
                     'uniacid' => '2',
-                    'order_id' => '19',
+                    'order_id' => '21',
                     'changegoodsprice'=>array(
                         '17'=>'-23'
                     ),
@@ -99,7 +109,8 @@ return array(
                 'para' => array(
                     'uid' => '1',
                     'uniacid' => '2',
-                    'order_id' => '1',
+                    'order_id' => '30',
+                    'refundstatus' => '2',
                 ),
                 'data' => array()
             )

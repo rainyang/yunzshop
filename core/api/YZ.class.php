@@ -61,7 +61,9 @@ class YZ extends base
         global $_W, $_GPC;
         $this->_W = $_W;
         $this->_GPC = $_GPC;
-        $_GPC = array_merge($_GPC, $this->para);
+        if(is_array($this->para)){
+            $_GPC = array_merge($_GPC, $this->para);
+        }
         $_W['uid'] = $this->para['uid'];
         if (isset($this->para['uniacid'])) {
             $_W['uniacid'] = $this->para['uniacid'];

@@ -908,7 +908,8 @@ if ($operation == "display") {
         $cashier_stores = pdo_fetchall("select id,name from " . tablename("sz_yi_cashier_store") . " where uniacid=:uniacid ", array(
             ":uniacid" => $_W["uniacid"]
         ));
-    }    
+    }
+    //dump($list);exit;
     load()->func("tpl");
     include $this->template("web/order/list");
     exit;
@@ -1275,7 +1276,6 @@ if ($operation == "display") {
         include $this->template("web/order/changeprice");
         exit;
     } else if ($to == "confirmchangeprice") {
-        var_dump($_GPC);exit;
         $changegoodsprice = $_GPC["changegoodsprice"];
         if (!is_array($changegoodsprice)) {
             message("未找到改价内容!", '', "error");

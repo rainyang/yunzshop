@@ -11,6 +11,7 @@
 namespace controller\api\order;
 class Detail extends \api\YZ
 {
+    //private $order_info;
     public function __construct()
     {
         parent::__construct();
@@ -25,9 +26,9 @@ class Detail extends \api\YZ
         $member = $this->getMember($order_info['openid'], $para["uniacid"]);
         $dispatch = $this->getDispatch($order_info);
         $address = $this->getAddressInfo($order_info, $para["uniacid"]);
-
+        $refund = $this->getRefundInfo($order_info["order_id"], $para["uniacid"]);
         $order_info = $this->formatOrderInfo($order_info);
-        $res = compact('order_info', 'member', 'dispatch', 'address');
+        $res = compact('order_info', 'member', 'dispatch', 'address','refund');
         dump($res);
         $this->returnSuccess($res);
     }
@@ -40,21 +41,21 @@ class Detail extends \api\YZ
             'id' => $para["order_id"],
             'uniacid' => $para["uniacid"]
         ), $fields);
-        $order_info['price'] = array(
-            'goodsprice'=>$order_info['goodsprice'],//商品小计
-            'olddispatchprice'=>$order_info['olddispatchprice'],//运费
-            'price' => $order_info['price'],//应收
-            'deductenough' => $order_info['deductenough'],//满减
-            'changeprice'=>$order_info['changeprice'],//改价
-            'changedispatchprice'=>$order_info['changedispatchprice'],//改运费
-        );
-        array_map(function($item){
-            return number_format( $item,2);
-        },$order_info['price']);
+        //$this->order_info = $order_info;
+        $order_price = $order_model->getPriceInfo($order_info);
+        $order_info["price"] = $order_price;
+
         $order_info['goods'] = $order_model->getOrderGoods($para["order_id"], $para["uniacid"]);
+        dump($order_info);
         return $order_info;
     }
-
+    private function getRefundInfo($order_id,$uniacid){
+        $order_model = new \model\api\order();
+        $refund = $order_model->getRefundInfo($order_id, $uniacid);
+        $res = array_part('refundtype,applyprice,reason,content,status,refund_name',$refund);
+        //type,类型 applyprice 金额  原因 reason 说明 content 
+        return $res ? $res : (object) array();
+    }
     private function formatOrderInfo($order_info)
     {
         $order_info['createtime'] = date("Y-m-d H:i:s", $order_info['createtime']);
@@ -71,7 +72,7 @@ class Detail extends \api\YZ
             'name' => $order_info['pay_type_name'],
             'value' => $order_info['paytype'],
         );
-        $res_order_info = compact('price', 'goods', 'base', 'status', 'pay');
+        $res_order_info = compact('price', 'goods', 'base', 'status', 'pay','refundstate');
         return $res_order_info;
     }
 
