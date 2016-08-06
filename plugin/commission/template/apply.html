@@ -25,6 +25,7 @@
                            {if $status>=1}<option value='applytime' {if $_GPC['timetype']=='applytime'}selected{/if}>申请时间</option>{/if}
                            {if $status>=2}<option value='checktime' {if $_GPC['timetype']=='checktime'}selected{/if}>审核时间</option>{/if}
                            {if $status>=3}<option value='paytime' {if $_GPC['timetype']=='paytime'}selected{/if}>打款时间</option>{/if}
+                           {if $status>=4}<option value='paytime' {if $_GPC['timetype']=='finshtime'}selected{/if}>到款时间</option>{/if}
                        </select> 
                      </div>
                     
@@ -97,6 +98,9 @@
                     {if $status>=3}
                     <th style='width:10%;'>打款时间</th>
                     {/if}
+                    {if $status>=4}
+                    <th style='width:10%;'>到款时间</th>
+                    {/if}
                        {if $status==-1}
                     <th style='width:10%;'>设置无效时间</th>
                     {/if}
@@ -121,6 +125,9 @@
                      {/if}
                     {if $status>=3}
                     <td>{$row['paytime']}</td>
+                    {/if}
+                    {if $status>=4}
+                    <td>{$row['finshtime']}</td>
                     {/if}
                         {if $status==-1}
                     <td>{$row['invalidtime']}</td>
@@ -195,12 +202,17 @@
                 {else if $apply['status']==2}
                 <span class='label label-success'>审核完毕，准备打款</span>
                 {else if $apply['status']==3}
-                <span class='label label-warning'>已打款</span>
+                <span class='label label-warning'>已打款</span>                
+                {else if $apply['status']==4}
+                <span class='label label-warning'>已到款</span>
                 {/if}
+
                 {if $apply['status']>=1}<b>申请时间: </b> {php echo date('Y-m-d H:i', $apply['applytime'])}{/if}
                  {if $apply['status']>=2}<b>审核时间: </b> {php echo date('Y-m-d H:i', $apply['checktime'])}{/if}
                   {if $apply['status']>=3}<b>打款时间: </b> {php echo date('Y-m-d H:i', $apply['paytime'])}{/if}
+                  {if $apply['status']>=4}<b>到款时间: </b> {php echo date('Y-m-d H:i', $apply['finshtime'])}{/if}
       </p>
+
     </div>
         </div>
  
@@ -297,6 +309,7 @@
                                                           </span>
                                                         <span class='input-group-addon'>备注</span>  
                                                         <input type='text' class='form-control' name='content1[{$g['id']}]' style='width:200px;' value="{$g['content1']}">
+
                                                    </div></p>
                                                    {/if}
                                                    
@@ -373,6 +386,9 @@
    {if $apply['status']==3}
      <div class='panel-heading'>
             打款信息
+            {if $apply['reason']!=''}
+            <span style="color:red"> 失败原因：{$apply['reason']}</span>
+            {/if}
      </div>
     <div class='panel-body'>
          此次佣金总额:  <span style='color:red'>{$totalcommission}</span> 元 已消费<span style='color:red'>{$apply['credit20']}</span> 元   实际打款：<span style='color:red'>{php echo $totalpay-$apply['credit20']}</span> 元 
@@ -410,6 +426,11 @@
             {/if}
      
         {/if}
+         {if $apply['status']==3 &&   $apply['type'] == 3}
+            <input type="submit" name="submit_pay" value="重新打款到支付宝"
+             class="btn btn-primary col-lg-1" style='margin-left:10px;'
+             onclick='return pay_alipay()'/>
+         {/if}
         
         <input type="button" class="btn btn-default" name="submit" onclick="history.go(-1)" value="返回" style='margin-left:10px;' />
         <input type="hidden" name="token" value="{$_W['token']}" />
