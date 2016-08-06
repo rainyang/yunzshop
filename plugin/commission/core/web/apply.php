@@ -385,6 +385,7 @@ if (checksubmit('submit_cancel') && ($apply['status'] == 2 || $apply['status'] =
 	plog('commission.apply.cancel', "重新审核申请 ID: {$id} 申请编号: {$apply['applyno']} ");
 	message('撤销审核处理成功!', $this->createPluginWebUrl('commission/apply', array('status' => 1)), 'success');
 }
+//打款处理
 if (checksubmit('submit_pay') && $apply['status'] == 2) {
 	ca('commission.apply.pay');
 	$time = time();

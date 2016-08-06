@@ -1729,6 +1729,7 @@ if ($_W['isajax']) {
             if (p('channel')) {
                 if (!empty($ischannelpick)) {
                     $order['ischannelself'] = 1;
+                    $order['status']        = 1;
                 }
             }
             if(p('hotel')){
@@ -1810,6 +1811,7 @@ if ($_W['isajax']) {
 
        
             if (is_array($carrier)) {
+                //todo, carrier_realname和carrier_mobile字段表里有么?
                 $up = array(
                     'realname' => $carrier['carrier_realname'],
                     'mobile' => $carrier['carrier_mobile']
@@ -1817,7 +1819,6 @@ if ($_W['isajax']) {
                 pdo_update('sz_yi_member', $up, array(
                     'id' => $member['id'],
                     'uniacid' => $_W['uniacid']
-
                 ));
                 if (!empty($member['uid'])) {
                     pdo_update('mc_members', $up, array(
@@ -1873,7 +1874,7 @@ if ($_W['isajax']) {
                 }
                 if (p('channel')) {
                     $my_info = p('channel')->getInfo($openid,$goods['goodsid'],$goods['optionid'],$goods['total']);
-                    if (!empty($ischannelpick)) {
+                    /*if (!empty($ischannelpick)) {
                         $my_option_stock = p('channel')->getMyOptionStock($openid, $goods['goodsid'], $goods['optionid']);
                         $stock = $my_option_stock - $goods['total'];
                         pdo_update('sz_yi_channel_stock', 
@@ -1886,7 +1887,7 @@ if ($_W['isajax']) {
                                 'goodsid'   => $goods['goodsid'],
                                 'optionid'  => $goods['optionid']
                             ));
-                    }
+                    }*/
                     if ($ischannelpay == 1 && empty($ischannelpick)) {
                         $every_turn_price           = $goods['marketprice']/($my_info['my_level']['purchase_discount']/100);
                         $channel_cond = '';
@@ -2017,10 +2018,23 @@ if ($_W['isajax']) {
                 $plugincoupon->useConsumeCoupon($orderid);
             }
             m('notice')->sendOrderMessage($orderid);
-            $pluginc = p('commission');
+            if (p('channel')) {
+                if (empty($ischannelpick)) {
+                    $pluginc = p('commission');
+                    if ($pluginc) {
+                        $pluginc->checkOrderConfirm($orderid);
+                    }
+                }
+            } else {
+                $pluginc = p('commission');
+                if ($pluginc) {
+                    $pluginc->checkOrderConfirm($orderid);
+                }
+            }
+            /*$pluginc = p('commission');
             if ($pluginc) {
                 $pluginc->checkOrderConfirm($orderid);
-            }
+            }*/
 
         }
         /*if ($pluginc) {

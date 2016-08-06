@@ -85,7 +85,11 @@
         <div class="sub">
             <%if order.status==0%>
 			<%if order.paytype!=3%>
+        <%if order.cashier == 1%>
+            <div class="sub1" onclick="location.href='{php echo $this->createPluginMobileUrl('cashier/order_pay')}&orderid=<%order.id%>&openid={$openid}'">付款</div>
+        <%else%>
             <div class="sub1" onclick="location.href='{php echo $this->createMobileUrl('order/pay')}&orderid=<%order.id%>&openid={$openid}'">付款</div>
+        <%/if%>
 			<%/if%>
             <div class="sub2 order_cancel" style='position:relative;width:56px;'>
                 <span style='position:absolute;display:block;width:56px;'>取消订单</span>

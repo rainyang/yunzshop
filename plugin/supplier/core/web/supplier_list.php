@@ -6,6 +6,9 @@ global $_W, $_GPC;
 
 $apply_id = $_GPC['apply_id'];
 $condition = ' o.uniacid=:uniacid and o.status>=3';
+if(p('hotel')){
+ $condition = ' o.uniacid=:uniacid and o.status>=3  and o.status<>4 and o.status<>6';
+}
 if (!empty($apply_id)) {
     $apply_info = pdo_fetch("select * from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and id={$apply_id}");
     if (empty($apply_info['apply_ordergoods_ids'])) {

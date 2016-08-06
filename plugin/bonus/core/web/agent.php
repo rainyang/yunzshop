@@ -374,6 +374,15 @@ if ($operation == 'display') {
     if ($_GPC['isagent'] != '') {
         $condition .= ' and dm.isagent=' . intval($_GPC['isagent']);
     }
+    if($_GPC['bonus_area'] != ''){
+        if($_GPC['bonus_area'] == 1){
+            $condition .= " and dm.bonus_area=1";
+        }else if($_GPC['bonus_area'] == 2){
+            $condition .= " and dm.bonus_area=2";
+        }else if($_GPC['bonus_area'] == 3){
+            $condition .= " and dm.bonus_area=3";
+        }
+    }
     if ($_GPC['status'] != '') {
         $condition .= ' and dm.status=' . intval($_GPC['status']);
     }
@@ -381,8 +390,8 @@ if ($operation == 'display') {
         $starttime = strtotime('-1 month');
         $endtime   = time();
     }
-    if (!empty($_GPC['agentlevel'])) {
-        $condition .= ' and dm.agentlevel=' . intval($_GPC['agentlevel']);
+    if (!empty($_GPC['bonuslevel'])) {
+        $condition .= ' and dm.bonuslevel=' . intval($_GPC['bonuslevel']);
     }
     if ($_GPC['parentid'] == '0') {
         $condition .= ' and dm.agentid=0';
@@ -406,34 +415,27 @@ if ($operation == 'display') {
     $list   = array();
     if ($hasagent) {
         $total = pdo_fetchcolumn("select count(dm.id) from" . tablename('sz_yi_member') . " dm " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.agentid " . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid" . " where dm.uniacid =" . $_W['uniacid'] . "  {$condition}", $params);
-        $list  = pdo_fetchall("select dm.*,p.nickname as parentname,p.avatar as parentavatar  from " . tablename('sz_yi_member') . " dm " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.agentid " . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid  and f.uniacid={$_W['uniacid']}" . " where dm.uniacid = " . $_W['uniacid'] . "  {$condition}   ORDER BY dm.agenttime desc limit " . ($pindex - 1) * $psize . ',' . $psize, $params);
+        $list  = pdo_fetchall("select dm.*,p.nickname as parentname,p.avatar as parentavatar,dm.bonuslevel  from " . tablename('sz_yi_member') . " dm " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.agentid " . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid  and f.uniacid={$_W['uniacid']}" . " where dm.uniacid = " . $_W['uniacid'] . "  {$condition}   ORDER BY dm.agenttime desc limit " . ($pindex - 1) * $psize . ',' . $psize, $params);
         $pager = pagination($total, $pindex, $psize);
+
+        $plc_commission = p('commission');
+        
         foreach ($list as &$row) {
             $info              = $this->model->getInfo($row['openid'], array(
                 'total',
                 'pay'
             ));
-            $row['levelcount'] = $info['agentcount'];
-            if ($this->set['level'] >= 1) {
-                $row['level1'] = $info['level1'];
-            }
-            if ($this->set['level'] >= 2) {
-                $row['level2'] = $info['level2'];
-            }
-            if ($this->set['level'] >= 3) {
-                $row['level3'] = $info['level3'];
-            }
+            $commission_info = $plc_commission->getInfo($row['openid'], array());
             $row['credit1']          = m('member')->getCredit($row['openid'], 'credit1');
             $row['credit2']          = m('member')->getCredit($row['openid'], 'credit2');
             $row['commission_total'] = $info['commission_total'];
             $row['commission_pay']   = $info['commission_pay'];
             $row['followed']         = m('user')->followed($row['openid']);
-            if ($row['agentid'] == $member['id']) {
-                $row['level'] = 1;
-            } else if (in_array($row['agentid'], array_keys($member['level1_agentids']))) {
-                $row['level'] = 2;
-            } else if (in_array($row['agentid'], array_keys($member['level2_agentids']))) {
-                $row['level'] = 3;
+            $row['levelname'] = pdo_fetchcolumn("select levelname from" . tablename('sz_yi_bonus_level') . " where uniacid =" . $_W['uniacid'] . "  and id=".$row['bonuslevel']);
+            if(empty($row['levelname'])){
+                $row['levelcount'] = $commission_info['agentcount'];
+            }else{
+                $row['levelcount'] = $info['agentcount'];
             }
         }
     }
