@@ -17,9 +17,8 @@ class Sz_DYi_Finance {
         //$responseText = curl_exec($curl);
         $info = curl_getinfo($curl,CURLINFO_EFFECTIVE_URL);
         //var_dump( curl_error($curl) );//如果执行curl过程中出现异常，可打开此开关，以便查看异常内容
-        curl_close($curl);
-        
-        echo  $info;exit;
+        curl_close($curl);        
+        return $info;
     }
     
     public function alipay_build($openid = '', $paytype = 0, $money = 0, $trade_no = '', $desc = '',$alipay='',$alipayname='',$applyid='')
@@ -55,7 +54,8 @@ class Sz_DYi_Finance {
         $set['service']        = 'batch_trans_notify';
         $set['_input_charset'] = 'utf-8';
         $set['sign_type']      = 'MD5';
-        $set['notify_url']=   $_W['siteroot'] ."addons/sz_yi/payment/alipay/alipay_build/notify_url.php";
+        //$set['notify_url']     = $_W['siteroot'] . "addons/sz_yi/payment/alipay/notify.php";
+        $set['notify_url']=    $_W['siteroot'] ."addons/sz_yi/payment/alipay/alipay_build/notify_url.php";
         $set['email']          = $email;
         $set['account_name']   = $account_name;
         $set['pay_date']       = $pay_date;
@@ -75,13 +75,19 @@ class Sz_DYi_Finance {
         $string .=  $secret;
         $set['sign'] = md5($string);
         $url = 'https://mapi.alipay.com/gateway.do' . '?' . http_build_query($set, '', '&');
-        $resp = $this->getHttpResponseGET($url, IA_ROOT . "/addons/sz_yi/cert/cacert.pem");   
-        header("Location:" . $resp);  
-        exit; 
-        load()->func('communication');
-        $resp = ihttp_request($url);
-        echo $resp;exit;
+
+        $resp = $this->getHttpResponseGET($url, IA_ROOT . "/addons/sz_yi/cert/cacert.pem");
+        header("Location:" . $resp);
         exit;
+        //echo $resp;
+        //exit;
+        //echo $resp;
+        //echo $url;exit;
+
+       // load()->func('communication');
+       // $resp = ihttp_request($url);
+       // echo $resp;exit;
+       // exit;
         //header("Location:" . $resp['headers']['Location']);
               
         // echo $resp;

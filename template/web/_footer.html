@@ -23,7 +23,7 @@
     function check_sz_yi_upgrade() {
   
         require(['util'], function (util) {
-            if (util.cookie.get('checkeweishopupgrade_sys')) {
+            if (util.cookie.get('checksz_yiupgrade_sys')) {
                 return;
             }
             $.post('{php echo $this->createWebUrl("sysset/upgrade",array("op"=>"check"))}', function (ret) {
@@ -32,7 +32,7 @@
                 
                 if (ret && ret.result == '1') { 
                     if(ret.filecount>0){
-                        var html = '<div id="ewei-shop-upgrade-tips" class="upgrade-tips" style="top:50px;left:0;position:fixed"><a href="{php echo $this->createWebUrl("sysset/upgrade")}">{php echo $this->module["title"]}检测到新版本 ' + ret.version;
+                        var html = '<div id="sz-yi-upgrade-tips" class="upgrade-tips" style="top:0px;left:0;position:fixed"><a href="{php echo $this->createWebUrl("sysset/upgrade")}">{php echo $this->module["title"]}检测到新版本 ' + ret.version;
                         html+=',请尽快更新！</a><span class="tips-close" style="background:#ff6600;" onclick="check_sz_yi_upgrade_hide();"><i class="fa fa-times-circle"></i></span></div>';
                         $('body').prepend(html);
                    }
@@ -43,8 +43,8 @@
 
     function check_sz_yi_upgrade_hide() {
         require(['util'], function (util) {
-            util.cookie.set('checkeweishopupgrade_sys', 1, 3600);
-            $('#ewei-shop-upgrade-tips').hide();
+            util.cookie.set('checksz_yiupgrade_sys', 1, 3600);
+            $('#sz-yi-upgrade-tips').hide();
         });
     }
     $(function () {

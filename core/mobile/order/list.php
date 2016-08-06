@@ -54,12 +54,6 @@ if ($_W['isajax']) {
 					$list[$key]['etime'] = date('Y-m-d',$row['etime']);
 		        }
 			}
-			if (p('channel')) {
-				if ($row['ischannelself'] == 1) {
-					$row['ordertype'] = "自提单";
-				}
-			}
-			
 			/*if($row['ordersn_general'] == $ordersn_general && !empty($row['ordersn_general']) && $row['status'] == 0){
 				unset($list[$key]);
 				continue;
@@ -82,17 +76,20 @@ if ($_W['isajax']) {
 			}else{
 				$order_where = "og.orderid = ".$row['id'];
 			}
-			
-			$sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$order_where.' order by og.id asc';
+			$channel_cond = '';
+			if (p('channel')) {
+				if ($row['ischannelself'] == 1) {
+					$row['ordertype'] = "自提单";
+				}
+				$channel_cond = ',og.ischannelpay';
+			}
+			$sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid' . $channel_cond . ' FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$order_where.' order by og.id asc';
 			$row['goods'] = set_medias(pdo_fetchall($sql), 'thumb');
 			foreach ($row['goods'] as $k => $value) {
-				if ($k == 0) {
-					if (!empty($value['ischannelpay'])) {
-						if ($value['ischannelpay'] == 1) {
-							$row['ordertype'] = "采购单";
-						}
-					}
+				if ($value['ischannelpay'] == 1) {
+					$row['ordertype'] = "采购单";
 				}
+				break;
 			}
 			if($p_cashier){
 				$row['name'] = set_medias(pdo_fetch('select cs.name,cs.thumb from ' .tablename('sz_yi_cashier_store'). 'cs '.'left join ' .tablename('sz_yi_cashier_order'). ' co on cs.id = co.cashier_store_id where co.order_id=:orderid and co.uniacid=:uniacid', array(':orderid' => $row['id'],':uniacid'=>$_W['uniacid'])), 'thumb');

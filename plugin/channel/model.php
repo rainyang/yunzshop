@@ -284,6 +284,7 @@ if (!class_exists('ChannelModel')) {
                 	'openid'		=> $openid,
                     'goodsid'       => $og['goodsid'],
                     'order_goodsid' => $og['id'],
+                    'every_turn'	=> $og['total'],
                     'uniacid'       => $_W['uniacid'],
                     'type'          => 4,
                     'paytime'		=> time()

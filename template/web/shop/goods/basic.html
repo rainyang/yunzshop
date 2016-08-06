@@ -1,14 +1,3 @@
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
-    <div class="col-sm-9 col-xs-12">
-        {ife 'shop.goods' $item}
-        <input type="text" name="displayorder" id="displayorder" class="form-control" value="{$item['displayorder']}" />
-        <span class='help-block'>数字越大，排名越靠前,如果为空，默认排序方式为创建时间</span>
-        {else}
-        <div class='form-control-static'>{$item['displayorder']}</div>
-        {/if}
-    </div>
-</div>
 <!-- 供货商start -->
 {if p('supplier')}
   {if $perm_role == 0}
@@ -23,12 +12,24 @@
           <option value="{$row['uid']}" {if $item['supplier_uid']==$row['uid']}selected="selected"{/if}>{$row['realname']}/{$row['username']}</option>
           {/loop}
         </select>
-          <span class='help-block'>选择供货商</span>
+          <span class='help-block'>供货商可自行管理商品及订单发货等</span>
       </div>
   </div>
   {/if}
 {/if}
 <!-- 供货商end -->
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
+    <div class="col-sm-9 col-xs-12">
+        {ife 'shop.goods' $item}
+        <input type="text" name="displayorder" id="displayorder" class="form-control" value="{$item['displayorder']}" />
+        <span class='help-block'>数字大的排名在前,默认排序方式为创建时间</span>
+        {else}
+        <div class='form-control-static'>{$item['displayorder']}</div>
+        {/if}
+    </div>
+</div>
+
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>商品名称</label>
     <div class="col-sm-9 col-xs-12">
