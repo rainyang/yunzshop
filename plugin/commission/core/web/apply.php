@@ -88,6 +88,7 @@ if ($operation == 'display') {
 		$row['applytime'] = ($status >= 1 || $status == -1) ? date('Y-m-d H:i', $row['applytime']) : '--';
 		$row['checktime'] = $status >= 2 ? date('Y-m-d H:i', $row['checktime']) : '--';
 		$row['paytime'] = $status >= 3 ? date('Y-m-d H:i', $row['paytime']) : '--';
+		$row['finshtime'] = $status >= 4 ? date('Y-m-d H:i', $row['finshtime']) : '--';
 		$row['invalidtime'] = $status == -1 ? date('Y-m-d H:i', $row['invalidtime']) : '--';
 		$row['typestr'] = empty($row['type']) ? '余额' : '微信';
 		if ($row['diycommissiondata']) {

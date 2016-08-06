@@ -418,7 +418,7 @@
     <%/if%>
     <div class="addorder_price" style="margin-top:5px;">
             <div class="price" style="border:none;">
-            <div class="line" style="line-height:26px;">商品小计 <span>￥<span class='goodsprice' data-id="<%order.supplier_uid%>"><%order.realprice%></span></span>
+            <div class="line" style="line-height:26px;">商品小计 <span>￥<span class='goodspricesubtotal' data-id="<%order.supplier_uid%>"><%order.realprice%></span></span>
             </div>
         </div>
       
@@ -721,6 +721,8 @@ var fromcart = 0;
                   var num = parseInt( $('.shownum').val());
                   $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val(goodsid + "," + optionid +"," + num + '|');
               }
+
+              var supplier_uid =  supplierarr[i];
               core.json('order/confirm', {
                   op: 'getdispatchprice',
                   totalprice:totalprice,
@@ -776,7 +778,7 @@ var fromcart = 0;
                         $('.deductenough_money[data-id='+supplierarr[i]+']').html( '0');
                         $('.deductenough_enough[data-id='+supplierarr[i]+']').html( '0');
                       }
-                      calctotalprice(supplierarr[i]);
+                      calctotalprice(supplier_uid);
                       if( $('.shownum').length>0){
                         var goodsinfo = $('#goods').val().split('|')[0];
                         var goods = goodsinfo.split(',');

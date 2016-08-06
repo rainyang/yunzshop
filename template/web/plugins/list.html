@@ -1,28 +1,40 @@
 {template 'web/_header'}
 
 {template 'web/shop/tabs'}
-<div class='panel panel-default pdl96' style='margin-top:10px;'>
+<div class='panel-default pdl236'>
+    <div class="right-titpos">
+        <ul class="add-snav">
+            <li class="active"><a href="#">插件中心</a></li>
+        </ul>
+    </div>
+    <div class="right-addbox">
     {loop $category $ck $cv}
 	 {if count($cv['plugins'])<=0}{php continue;}{/if}
-    <div class="panel-heading">
+
+    <div class="unit-head">
         {$cv['name']}
     </div>
-    <div class='panel-body'>
+    <div class="unit-list">
+            <ul>
         {loop $cv['plugins'] $plugin}
         {if empty($plugins_data) || in_array($plugin['identity'], $plugins_data)}
             {ifpp $plugin['identity']}
                 {if p($plugin['identity'])}
-                <a class='btn btn-default' href="{php echo $this->createPluginWebUrl($plugin['identity'])}" title="{$plugin['name']}">
-                    <i class="fa fa-external-link-square fa-2x"></i>
-                    <br/>
-                    <span>{$plugin['name']}</span>
+                <li>
+                <a href="{php echo $this->createPluginWebUrl($plugin['identity'])}" title="{$plugin['name']}">
+                    <i class="iconfont icon-{$plugins_icon[$plugin['identity']]} {$ck}"></i>
+                    <h1>{$plugin['name']}</h1>
+                    <p>厂家入驻，平台统一销售</p>
                 </a>
+                </li>
                 {/if}
             {/if}
         {/if}
         {/loop}
-    </div>
+    </ul>
+        </div>
 	{/loop}
+  </div>
 </div>
 
 
