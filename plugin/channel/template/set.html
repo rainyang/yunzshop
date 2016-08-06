@@ -65,30 +65,67 @@
                     <span class="help-block">申请成为渠道商的默认等级</span>
                 </div>
             </div> 
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">成为渠道商条件</label>
-                <div class="col-sm-9 col-xs-12">  
-                        <label class="radio radio-inline" style="width:240px">
-                              <input type="radio" name="setdata[become_condition]"value="5" {if $set['become_condition'] == 5 || empty($set['become_condition'])}checked{/if}/> 申请
-                        </label>
-                        <label class="radio radio-inline" style="width:240px">
-                              <input type="radio" name="setdata[become_condition]" value="1" {if $set['become_condition'] == 1}checked{/if}/> 团队总人数
-                        </label>                                        
-                        <label class="radio radio-inline" style="width:240px">
-                              <input type="radio" name="setdata[become_condition]" value="2" {if $set['become_condition'] == 2}checked{/if}/> 累计进货量（金额）
-                        </label>
-                        <label class="radio radio-inline" style="width:240px">
-                              <input type="radio" name="setdata[become_condition]" value="3" {if $set['become_condition'] == 3}checked{/if}/> 累计进货次数（次）
-                        </label>
-                        <label class="radio radio-inline" style="width:240px">
-                              <input type="radio" name="setdata[become_condition]" value="4" {if $set['become_condition'] == 4}checked{/if}/> 指定商品
-                        </label>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">成为渠道商</label>
+                    <div class="col-sm-6">
+                         <div class='input-group' style='border:none;margin-left:-12px;'>
+                            <div class='input-group-addon'  style='border:none;background:#fff;float:left;'><label class="radio-inline" style='margin-top:-3px;'><input type="radio"  name="setdata[become_condition]" value="1" {if $set['become_condition'] == 1 || empty($set['become_condition'])} checked="checked"{/if} /> 申请</label></div>
+                        </div>
+                    </div>
                 </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <div class="col-sm-6">
+                         <div class='input-group' style='border:none;margin-left:-12px;'>
+                            <div class='input-group-addon'  style='border:none;background:#fff;'><label class="radio-inline" style='margin-top:-3px;'><input type="radio"  name="setdata[become_condition]" value="2" {if $set['become_condition'] == 2} checked="checked"{/if} /> 团队总人数达到</label></div>
+                            <input type='text' class='form-control' name='setdata[become_condition_team]' value="{$set['become_condition_team']}" />
+                            <div class='input-group-addon'  style='border:none;background:#fff;'>人</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <div class="col-sm-6">
+                         <div class='input-group' style='border:none;margin-left:-12px;'>
+                            <div class='input-group-addon'  style='border:none;background:#fff;'><label class="radio-inline" style='margin-top:-3px;'><input type="radio"  name="setdata[become_condition]" value="3" {if $set['become_condition'] == 3} checked="checked"{/if} /> 累计进货量达到</label></div>
+                            <input type='text' class='form-control' name='setdata[become_condition_money]' value="{$set['become_condition_money']}" />
+                            <div class='input-group-addon'  style='border:none;background:#fff;'>元</div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <div class="col-sm-6">
+                          <div class='input-group' style='border:none;margin-left:-12px;'>
+                            <div class='input-group-addon'  style='border:none;background:#fff;'><label class="radio-inline" style='margin-top:-3px;'><input type="radio"  name="setdata[become_condition]" value="4" {if $set['become_condition'] == 4} checked="checked"{/if} /> 累计进货次数达到</label></div>
+                            <input type='text' class='form-control' name='setdata[become_condition_count]' value="{$set['become_condition_count']}" />
+                            <div class='input-group-addon'  style='border:none;background:#fff;'>次</div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Author:Y.yang Date:2016-04-08 Content:购买指定商品成为分销商 -->
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                    <div class="col-sm-6">
+                       <input type='hidden' class='form-control' id='goodsid' name='setdata[become_condition_goodsid]' value="{$set['become_condition_goodsid']}" />
+                          <div class='input-group' style='border:none;margin-left:-12px;'>
+                            <div class='input-group-addon'  style='border:none;background:#fff;'><label class="radio-inline" style='margin-top:-3px;'><input type="radio"  name="setdata[become_condition]" value="5" {if $set['become_condition'] == 5} checked="checked"{/if} /> 购买指定商品</label></div>
+                            <input type='text' class='form-control' id='goods' value="{if !empty($goods)}[{$goods['id']}]{$goods['title']}{/if}" readonly />
+                            <div class="input-group-btn">
+                                <button type="button" onclick="$('#modal-goods').modal()" class="btn btn-default" >选择商品</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                 <div class="col-sm-9 col-xs-12">
-                    <label class="radio-inline"><input type="radio"  name="setdata[become_order]" value="0" {if $set['become_order'] ==0} checked="checked"{/if} /> 付款后</label>
-                    <label class="radio-inline"><input type="radio"  name="setdata[become_order]" value="1" {if $set['become_order'] ==1} checked="checked"{/if} /> 完成后</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[become_condition_order]" value="0" {if $set['become_order'] ==0} checked="checked"{/if} /> 付款后</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[become_condition_order]" value="1" {if $set['become_order'] ==1 || empty($set['become_order'])} checked="checked"{/if} /> 完成后</label>
                     <span class="help-block">成为渠道商订单的计算方式</span>
                 </div>
             </div>
@@ -176,9 +213,44 @@
 
     </div>
 </form>
+<!-- Author:Y.yang Date:2016-04-08 Content:购买指定商品成为分销商，（选择商品的输入框和JS） -->
+<div id="modal-goods"  class="modal fade" tabindex="-1">
+    <div class="modal-dialog" style='width: 920px;'>
+        <div class="modal-content">
+            <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择商品</h3></div>
+            <div class="modal-body" >
+                <div class="row"> 
+                    <div class="input-group"> 
+                        <input type="text" class="form-control" name="keyword" value="" id="search-kwd-goods" placeholder="请输入商品名称" />
+                        <span class='input-group-btn'><button type="button" class="btn btn-default" onclick="search_goods();">搜索</button></span>
+                    </div>
+                </div>
+                <div id="module-menus-goods" style="padding-top:5px;"></div>
+            </div>
+            <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
+        </div>
+    </div>
+</div>
 </div>
 </div>
 <script type="text/javascript">
+    function search_goods() {
+        if( $.trim($('#search-kwd-goods').val())==''){
+             Tip.focus('#search-kwd-goods','请输入关键词');
+             return;
+        }
+        $("#module-goods").html("正在搜索....")
+        $.get('{php echo $this->createWebUrl('shop/query')}', {
+            keyword: $.trim($('#search-kwd-goods').val())
+        }, function(dat){
+            $('#module-menus-goods').html(dat);
+        });
+    }
+    function select_good(o) {
+        $("#goodsid").val(o.id);
+        $("#goods").val( "[" + o.id + "]" + o.title);
+        $("#modal-goods .close").click();
+    }
     $(document).ready(function(){
         $(".become").change(function(){
             if($(".become:checked").val() == 2){
@@ -194,5 +266,8 @@
             } 
         
     })
+
+    
+    
 </script>
 {template 'web/_footer'}

@@ -14,6 +14,14 @@
 .label {white-space: normal;text-align: left;line-height: 16px}
 </style>
 <div class="rightlist">
+<!-- 新增加右侧顶部三级菜单 -->
+<div class="right-titpos">
+	<ul class="add-snav">
+		<li class="active"><a href="#">订单管理</a></li>
+		<li><a href="#">订单详情</a></li>
+	</ul>
+</div>
+<!-- 新增加右侧顶部三级菜单结束 -->
 <div class="main">
     <form class="form-horizontal form" action="" method="post">
         {if $item['transid']}<div  class="alert alert-error"><i class="fa fa-lightbulb"></i> 此为微信支付订单，必须要提交发货状态！</div>{/if}
@@ -21,9 +29,6 @@
         <input type="hidden" name="token" value="{$_W['token']}" />
         <input type="hidden" name="dispatchid" value="{$dispatch['id']}" />
         <div class="panel panel-default">
-            <div class="panel-heading">
-                订单信息
-            </div>
             <div class="panel-body">
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">粉丝 :</label>

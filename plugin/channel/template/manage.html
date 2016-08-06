@@ -99,6 +99,7 @@
                         <ul class="dropdown-menu dropdown-menu-left" role="menu" style='z-index: 99999'>
                             {ifp 'member.member.view'}<li><a href="{php echo $this->createWebUrl('member',array('op'=>'detail', 'id' => $row['id']));}" title='会员信息'><i class='fa fa-user'></i> 会员信息</a></li>   {/if}
                             {ifp 'channel.manage.view'}<li><a href="{php echo $this->createPluginWebUrl('channel/manage/detail',array('id' => $row['id']));}" title='详细信息'><i class='fa fa-edit'></i> 详细信息</a>  </li>   {/if}
+                            {ifp 'channel.inventory.view'}<li><a href="{php echo $this->createPluginWebUrl('channel/inventory',array('id' => $row['id']));}" title='详细信息'><i class='fa fa-edit'></i> 库存管理</a>  </li>   {/if}
                             {ifp 'channel.manage.delete'}<li><a href="{php echo $this->createPluginWebUrl('channel/manage/delete',array('id' => $row['id']));}" title="删除" onclick="return confirm('确定要删除该渠道商吗？');"><i class='fa fa-remove'></i> &nbsp;删除渠道商</a></li>{/if}
 
                         </ul>

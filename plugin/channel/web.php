@@ -90,4 +90,11 @@ class ChannelWeb extends Plugin
 	{
 		$this->_exec_plugin(__FUNCTION__);
 	}
+	/**
+	  * 渠道商库存管理
+	  */
+	public function inventory()
+	{
+		$this->_exec_plugin(__FUNCTION__);
+	}
 }

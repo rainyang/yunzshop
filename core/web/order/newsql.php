@@ -361,6 +361,34 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_member_aging_rechange') . " (
 ";
 pdo_fetchall($sql);
 
+//供应商
+pdo_fetchall("
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_supplier` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `openid` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `uniacid` int(11) NOT NULL,
+  `realname` varchar(55) CHARACTER SET utf8 NOT NULL,
+  `mobile` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `weixin` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `productname` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `username` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `status` tinyint(3) NOT NULL COMMENT '1审核成功2驳回',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_apply` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uid` int(11) NOT NULL COMMENT '供应商id',
+  `uniacid` int(11) NOT NULL,
+  `type` int(11) NOT NULL COMMENT '1手动2微信',
+  `applysn` varchar(255) NOT NULL COMMENT '提现单号',
+  `apply_money` int(11) NOT NULL COMMENT '申请金额',
+  `apply_time` int(11) NOT NULL COMMENT '申请时间',
+  `status` tinyint(3) NOT NULL COMMENT '0为申请状态1为完成状态',
+  `finish_time` int(11) NOT NULL COMMENT '完成时间',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+
 pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_member')." CHANGE  `pwd`  `pwd` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;");
 
 if (!pdo_fieldexists('sz_yi_goods', 'cates')) {
@@ -1068,33 +1096,7 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_withdraw')." (
 ";
 pdo_fetchall($sql);
 
-//供应商
-pdo_fetchall("
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_supplier` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `openid` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `uniacid` int(11) NOT NULL,
-  `realname` varchar(55) CHARACTER SET utf8 NOT NULL,
-  `mobile` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `weixin` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `productname` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `username` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `password` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `status` tinyint(3) NOT NULL COMMENT '1审核成功2驳回',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_apply` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uid` int(11) NOT NULL COMMENT '供应商id',
-  `uniacid` int(11) NOT NULL,
-  `type` int(11) NOT NULL COMMENT '1手动2微信',
-  `applysn` varchar(255) NOT NULL COMMENT '提现单号',
-  `apply_money` int(11) NOT NULL COMMENT '申请金额',
-  `apply_time` int(11) NOT NULL COMMENT '申请时间',
-  `status` tinyint(3) NOT NULL COMMENT '0为申请状态1为完成状态',
-  `finish_time` int(11) NOT NULL COMMENT '完成时间',
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+
 
 
 if(!pdo_fieldexists('sz_yi_perm_user', 'banknumber')) {
@@ -1131,10 +1133,10 @@ $result = pdo_fetch('select * from ' . tablename('sz_yi_perm_role') . ' where st
 if(empty($result)){
   $sql = "
 INSERT INTO " . tablename('sz_yi_perm_role') . " (`rolename`, `status`, `status1`, `perms`, `deleted`) VALUES
-('供应商', 1, 1, 'shop,shop.goods,shop.goods.view,shop.goods.add,shop.goods.edit,shop.goods.delete,order,order.view,order.view.status_1,order.view.status0,order.view.status1,order.view.status2,order.view.status3,order.view.status4,order.view.status5,order.view.status9,order.op,order.op.send,order.op.sendcancel,order.op.verify,order.op.fetch,order.op.close,order.op.refund,order.op.export,order.op.changeprice,exhelper,exhelper.print,exhelper.print.single,exhelper.print.more,exhelper.exptemp1,exhelper.exptemp1.view,exhelper.exptemp1.add,exhelper.exptemp1.edit,exhelper.exptemp1.delete,exhelper.exptemp1.setdefault,exhelper.exptemp2,exhelper.exptemp2.view,exhelper.exptemp2.add,exhelper.exptemp2.edit,exhelper.exptemp2.delete,exhelper.exptemp2.setdefault,exhelper.senduser,exhelper.senduser.view,exhelper.senduser.add,exhelper.senduser.edit,exhelper.senduser.delete,exhelper.senduser.setdefault,exhelper.short,exhelper.short.view,exhelper.short.save,exhelper.printset,exhelper.printset.view,exhelper.printset.save,exhelper.dosend,taobao,taobao.fetch', 0);";
-  pdo_query($sql);
+('供应商', 1, 1, 'shop,shop.goods,shop.goods.view,shop.goods.add,shop.goods.edit,shop.goods.delete,shop.dispatch,shop.dispatch.view,shop.dispatch.add,shop.dispatch.edit,shop.dispatch.delete,order,order.view,order.view.status_1,order.view.status0,order.view.status1,order.view.status2,order.view.status3,order.view.status4,order.view.status5,order.view.status9,order.op,order.op.pay,order.op.send,order.op.sendcancel,order.op.finish,order.op.verify,order.op.fetch,order.op.close,order.op.refund,order.op.export,order.op.changeprice,exhelper,exhelper.print,exhelper.print.single,exhelper.print.more,exhelper.exptemp1,exhelper.exptemp1.view,exhelper.exptemp1.add,exhelper.exptemp1.edit,exhelper.exptemp1.delete,exhelper.exptemp1.setdefault,exhelper.exptemp2,exhelper.exptemp2.view,exhelper.exptemp2.add,exhelper.exptemp2.edit,exhelper.exptemp2.delete,exhelper.exptemp2.setdefault,exhelper.senduser,exhelper.senduser.view,exhelper.senduser.add,exhelper.senduser.edit,exhelper.senduser.delete,exhelper.senduser.setdefault,exhelper.short,exhelper.short.view,exhelper.short.save,exhelper.printset,exhelper.printset.view,exhelper.printset.save,exhelper.dosend,taobao,taobao.fetch,coupon,coupon.coupon,coupon.coupon.add,coupon.coupon.edit,coupon.coupon.view,coupon.coupon.delete,coupon.coupon.send,coupon.category,coupon.category.view,coupon.category.add,coupon.category.edit,coupon.category.delete,coupon.log,coupon.log.view,coupon.log.export', 0);";
+pdo_query($sql);
 }else{
-  $gysdata = array("perms" => 'shop,shop.goods,shop.goods.view,shop.goods.add,shop.goods.edit,shop.goods.delete,order,order.view,order.view.status_1,order.view.status0,order.view.status1,order.view.status2,order.view.status3,order.view.status4,order.view.status5,order.view.status9,order.op,order.op.send,order.op.sendcancel,order.op.verify,order.op.fetch,order.op.close,order.op.refund,order.op.export,order.op.changeprice,exhelper,exhelper.print,exhelper.print.single,exhelper.print.more,exhelper.exptemp1,exhelper.exptemp1.view,exhelper.exptemp1.add,exhelper.exptemp1.edit,exhelper.exptemp1.delete,exhelper.exptemp1.setdefault,exhelper.exptemp2,exhelper.exptemp2.view,exhelper.exptemp2.add,exhelper.exptemp2.edit,exhelper.exptemp2.delete,exhelper.exptemp2.setdefault,exhelper.senduser,exhelper.senduser.view,exhelper.senduser.add,exhelper.senduser.edit,exhelper.senduser.delete,exhelper.senduser.setdefault,exhelper.short,exhelper.short.view,exhelper.short.save,exhelper.printset,exhelper.printset.view,exhelper.printset.save,exhelper.dosend,taobao,taobao.fetch');
+  $gysdata = array("perms" => 'shop,shop.goods,shop.goods.view,shop.goods.add,shop.goods.edit,shop.goods.delete,shop.dispatch,shop.dispatch.view,shop.dispatch.add,shop.dispatch.edit,shop.dispatch.delete,order,order.view,order.view.status_1,order.view.status0,order.view.status1,order.view.status2,order.view.status3,order.view.status4,order.view.status5,order.view.status9,order.op,order.op.pay,order.op.send,order.op.sendcancel,order.op.finish,order.op.verify,order.op.fetch,order.op.close,order.op.refund,order.op.export,order.op.changeprice,exhelper,exhelper.print,exhelper.print.single,exhelper.print.more,exhelper.exptemp1,exhelper.exptemp1.view,exhelper.exptemp1.add,exhelper.exptemp1.edit,exhelper.exptemp1.delete,exhelper.exptemp1.setdefault,exhelper.exptemp2,exhelper.exptemp2.view,exhelper.exptemp2.add,exhelper.exptemp2.edit,exhelper.exptemp2.delete,exhelper.exptemp2.setdefault,exhelper.senduser,exhelper.senduser.view,exhelper.senduser.add,exhelper.senduser.edit,exhelper.senduser.delete,exhelper.senduser.setdefault,exhelper.short,exhelper.short.view,exhelper.short.save,exhelper.printset,exhelper.printset.view,exhelper.printset.save,exhelper.dosend,taobao,taobao.fetch,coupon,coupon.coupon,coupon.coupon.add,coupon.coupon.edit,coupon.coupon.view,coupon.coupon.delete,coupon.coupon.send,coupon.category,coupon.category.view,coupon.category.add,coupon.category.edit,coupon.category.delete,coupon.log,coupon.log.view,coupon.log.export');
   pdo_update('sz_yi_perm_role', $gysdata, array('rolename' => "供应商", 'status1' => 1));
 }
 
@@ -1461,6 +1463,13 @@ if(!pdo_fieldexists('sz_yi_chooseagent', 'detail')) {
 }
 if(!pdo_fieldexists('sz_yi_chooseagent', 'allgoods')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_chooseagent')." ADD `allgoods` INT(11) DEFAULT '0' ;");
+}
+//优惠劵添加供应商id
+if(!pdo_fieldexists('sz_yi_coupon', 'supplier_uid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD  `supplier_uid`  int(11) DEFAULT '0';");
+}
+if(!pdo_fieldexists('sz_yi_category', 'supplier_uid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_category')." ADD  `supplier_uid`  int(11) DEFAULT '0';");
 }
 
 //转让记录表 2016-7-12 杨雷

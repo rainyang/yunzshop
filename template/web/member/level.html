@@ -3,15 +3,21 @@
 {template 'web/member/tabs'}
 <div class="rightlist">
 {if $operation == 'post'}
+<!-- 新增加右侧顶部三级菜单 -->
+<div class="right-titpos">
+	<ul class="add-snav">
+		<li class="active"><a href="#">会员管理</a></li>
+		<li><a href="#">等级设置</a></li>
+	</ul>
+</div>
+<!-- 新增加右侧顶部三级菜单结束 -->
+
 
 <div class="main">
 
     <form {ife 'member.level' $level}action="" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data">
         <input type="hidden" name="id" value="{$level['id']}" />
         <div class='panel panel-default'>
-            <div class='panel-heading'>
-                会员等级设置
-            </div>
             <div class='panel-body'>
                  <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">等级权重</label>
@@ -119,12 +125,16 @@
     })
     </script>
 {elseif $operation == 'display'}
-
+<!-- 新增加右侧顶部三级菜单 -->
+<div class="right-titpos">
+	<ul class="add-snav">
+		<li class="active"><a href="#">会员管理</a></li>
+		<li><a href="#">会员等级</a></li>
+	</ul>
+</div>
+<!-- 新增加右侧顶部三级菜单结束 -->
                <form action="" method="post" onsubmit="return formcheck(this)">
      <div class='panel panel-default'>
-            <div class='panel-heading'>
-                会员等级设置
-            </div>
                  <div class='panel-body'>
                     <table class="table">
                         <thead>
