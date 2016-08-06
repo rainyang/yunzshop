@@ -128,7 +128,7 @@ ul{list-style:none;}
 .fart-editor-menu nav{width: 33.33333% !important;}
 .fe-save-main {width: 1032px !important;}
 .edui-editor{z-index: 0 !important;}
-.fe-save-submit,.fe-save-submit2{margin:14px 0 0px 4px !important;width: 80px !important;height: 34px !important;line-height: 34px !important;font-size: 14px !important;}
+.fe-save-submit,.fe-save-submit2,.fe-save-submit3{margin:14px 0 0px 4px !important;width: 80px !important;height: 34px !important;line-height: 34px !important;font-size: 14px !important;}
 .page-heading {
     padding: 5px 0;
     border-bottom: 1px solid #ccc;

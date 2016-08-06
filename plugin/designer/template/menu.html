@@ -188,7 +188,7 @@
         <!-- 页面底部保存栏 -->
         <div class="fe-save">
             <div class="fe-save-main">
-                <div class="fe-save-submit fr" onclick="history.back()">返回列表</div>
+                <div class="fe-save-submit3 fr">返回列表</div>
                 <div class="fe-save-submit fr" ng-click="save()" style="margin-left:160px">保存菜单</div>
             </div>
              {template 'modal'}
@@ -212,7 +212,11 @@
                 preview(preview_id);
             }
         });
-  
+
+        $(".fe-save-submit3").click(function() {
+            location.href = "{php echo $this->createPluginWebUrl('designer/menu')}";
+        });
+
        $(".fe-save-info-type-ok").click(function(){
            var pagetype = $(this).data("type");
            if(pagetype!='2' || pagetype!='3'){
