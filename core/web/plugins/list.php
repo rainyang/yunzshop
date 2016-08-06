@@ -28,5 +28,35 @@ $acid_plugins = pdo_fetchcolumn('select plugins from ' . tablename('sz_yi_perm_p
 if(!empty($acid_plugins)){
 	$plugins_data = explode(',', $acid_plugins);
 }
+// 新增加的icon样式
+$plugins_icon = array(
+	"supplier" => "supplier", 
+	"commission" => "sitemap",
+	"system" => "cog",
+	"creditshop" => "database",
+	"article" => "article",
+	"yunpay" => "yunpay",
+	"exhelper" => "street-view",
+	"verify" => "verify",
+	"qiniu" => "qiniu",
+	"taobao" => "taobao",
+	"tmessage" => "tmessage",
+	"coupon" => "tags",
+	"diyform" => "diyform",
+	"perm" => "perm",
+	"poster" => "w-poster",
+	"designer" => "w-designer",
+	"app" => "app",
+	"sale" => "w-sale",
+	"channel" => "channel",
+	"return" => "web-price",
+	"virtual" => "virtual",
+	"ranking" => "ranking",
+	"fans" => "fensi",
+	"hotel" => "hotel",
+	"bonus" => "fh",
+	"customer" => "kehu",
+
+	);
 include $this->template('web/plugins/list');
 exit;

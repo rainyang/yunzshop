@@ -190,7 +190,7 @@ ul{list-style:none;}
 .first-h{padding:0 !important}
 .topmenu .nav .first-h:hover{background: none}
 .topmenu .nav .last-but:hover{background: #535353;color: #CACACA!important}
-.pdl96{padding:0 6px 6px  96px}
+.pdl236{padding:0 0 0 230px}
 
 .top-logo{padding: 14px 0}
 .addtit-name{line-height: 49px;border-bottom:1px #e0e0e0 solid;background: #F3F3F3;text-align: center;}
@@ -199,7 +199,7 @@ ul{list-style:none;}
 .add-snav li{float: left;}
 .add-snav li a {
     height: 50px;
-    padding: 0 20px;
+    padding: 0 16px;
     min-width: 0;
     border: none;
     background: transparent;
@@ -242,4 +242,48 @@ ul{list-style:none;}
 .prod-nav li{padding-left:15px}
 
 .panel-center{width: 98%;margin: 8px auto;}
+.ml140{margin-left: 140px}
+/*插件修改图标*/
+.unit-head{
+    padding: 0 15px;
+    line-height: 50px;
+}
+.unit-list{overflow: hidden;}
+.unit-list ul li{float: left;background: #f8f8f8;width: 290px;margin:0 0 1% 1%;height: 60px;padding-left:60px;position: relative; }
+.unit-list ul li a i{color: #fff;
+    border-radius: 4px;
+    width: 40px;
+    height: 40px;
+    line-height: 42px;
+    text-align: center;
+    font-size: 22px;
+    position: absolute;    display: inline-block;
+    left: 10px;
+    top: 10px;}
+.unit-list ul li a h1{float: left;
+    width: 100%;
+    display: block;
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+    padding: 12px 0 4px;
+}
+.unit-list ul li a p{float: left;
+        display: block;
+    float: left;
+    font-size: 12px;
+    color: #666;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+.icon-yunpay,.icon-virtual,.icon-tmessage,.icon-diyform{font-size: 18px !important;}
+.biz{background-color: #f15353}
+.sale{background-color: #F7923B}
+.tool{background-color: #ff5898}
+.help{background-color: #58CAF6}
+
+
+
+
 
