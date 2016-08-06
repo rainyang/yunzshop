@@ -37,7 +37,8 @@ ul{list-style:none;}
 .input-group-addon{border: 0;background: none}
 .form-control{font-size: 12px;border-radius: 2px !important;height: 30px}
 .table{margin-bottom: 6px}
-.nav>li{width: 100%}
+/*.nav>li{width: 100%}*/
+.topmenu ul li{width: 100%}
 .nav-tabs>li>a{border: 0;border-radius: 0 }
 .dropdown-menu{left: 0;right:0;}
 .nav-tabs>li>a:hover{border: 0;background: none}
