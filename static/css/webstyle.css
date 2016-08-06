@@ -152,7 +152,7 @@ ul{list-style:none;}
 .text-pinfo{ background: none;color: #ed5565 }
 .upgrade-tips{z-index:2 !important;}
 .table .label {display: inline-block;margin-bottom: 2px;border-radius: 2px;}
-.option_stock_all,.input-group-addon{padding: 6px !important}
+.option_stock_all/*,.input-group-addon*/{padding: 6px !important}
 .plug-list{min-width:600px;}
 .plug-list li{ width: 25%;float: left}
 
@@ -249,8 +249,8 @@ ul{list-style:none;}
     padding: 0 15px;
     line-height: 50px;
 }
-.unit-list{overflow: hidden;}
-.unit-list ul li{float: left;background: #f8f8f8;width: 290px;margin:0 0 1% 1%;height: 60px;padding-left:60px;position: relative; }
+.unit-list{overflow: hidden}
+.unit-list ul li{float: left;background: #f8f8f8;width:32%;margin:0 0 1% 1%;height: 60px;padding-left:60px;position: relative; }
 .unit-list ul li a i{color: #fff;
     border-radius: 4px;
     width: 40px;
