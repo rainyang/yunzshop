@@ -1462,3 +1462,25 @@ if(!pdo_fieldexists('sz_yi_chooseagent', 'detail')) {
 if(!pdo_fieldexists('sz_yi_chooseagent', 'allgoods')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_chooseagent')." ADD `allgoods` INT(11) DEFAULT '0' ;");
 }
+// 会员表增加 支付宝信息字段
+
+if(!pdo_fieldexists('sz_yi_member', 'alipay')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD `alipay`  varchar(255) DEFAULT '0' AFTER `isagency`;");
+}
+
+if(!pdo_fieldexists('sz_yi_member', 'alipayname')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD `alipayname`  varchar(255) DEFAULT '0' AFTER `alipay`;");
+}
+
+//分销提现表增加 字段
+if(!pdo_fieldexists('sz_yi_commission_apply', 'alipay')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_commission_apply')." ADD `alipay`  varchar(255) DEFAULT '0' AFTER `credit20`;");
+}
+
+if(!pdo_fieldexists('sz_yi_commission_apply', 'alipayname')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_commission_apply')." ADD `alipayname`  varchar(255) DEFAULT '0' AFTER `alipay`;");
+}
+
+if(!pdo_fieldexists('sz_yi_commission_apply', 'batch_no')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_commission_apply')." ADD `batch_no`  varchar(255) DEFAULT '0' AFTER `alipayname`;");
+}
