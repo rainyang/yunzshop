@@ -20,7 +20,7 @@ if ($_W['isajax']) {
     if ($_W['ispost']) {
         $mc = $_GPC['memberdata'];
         //更换公众号或pc到微信绑定
-        $memberall = pdo_fetchall('select id, openid, pwd, level, agentlevel, bonuslevel from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and openid!=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':mobile' => $mc['mobile']));
+        $memberall = pdo_fetchall('select id, openid, pwd, level, agentlevel, bonuslevel, createtime from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and openid!=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':mobile' => $mc['mobile']));
 
         if (!empty($memberall)) {
             foreach ($memberall as $key => $info) {
@@ -48,7 +48,7 @@ if ($_W['isajax']) {
                 }
 
                 //更新微信记录里的手机号等为pc的手机号
-                $member = pdo_fetch('select id, mobile, pwd, credit1, credit2, level, agentlevel, bonuslevel from ' . tablename('sz_yi_member') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+                $member = pdo_fetch('select id, mobile, pwd, credit1, credit2, level, agentlevel, bonuslevel, createtime from ' . tablename('sz_yi_member') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
                 $data = array('isbindmobile' => 1);
                 if ($member['mobile'] != $mc['mobile'] || !empty($mc['mobile'])) {
                     $data['mobile'] = $mc['mobile'];
@@ -105,14 +105,19 @@ if ($_W['isajax']) {
                     } 
                 }
 
-                /*
-                 * 删除其他手机号相同用户 
-                 *todo:先删除用户,再把新的用户id更新回老的用户id,避免order表里的agentid等未更新
-                 */
+                //删除其他手机号相同用户信息
                 pdo_delete('sz_yi_member', array('openid' => $oldopenid));
 
-                //id改回老的。
-                pdo_update('sz_yi_member', array('id' => $info['id']), array('openid' => $openid, 'uniacid' => $_W['uniacid']));
+                //当前用户是否大于其他用户
+                if($member['createtime'] > $info['createtime']){
+                    //大于则使用老的用户id
+                    pdo_update('sz_yi_member', array('id' => $info['id']), array('openid' => $openid, 'uniacid' => $_W['uniacid']));
+                    //修改新用户，所有用户agentid为老的用户id
+                    pdo_update('sz_yi_member', array('agentid' => $info['id']), array('agentid' => $member['id'], 'uniacid' => $_W['uniacid']));
+                }else{
+                    //修改老用户的agentid改为新用户id
+                    pdo_update('sz_yi_member', array('agentid' => $member['id']), array('agentid' => $info['id'], 'uniacid' => $_W['uniacid']));
+                }
 
                 pdo_update('sz_yi_member', $data, array('openid' => $openid, 'uniacid' => $_W['uniacid']));
 
