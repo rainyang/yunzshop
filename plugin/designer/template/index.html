@@ -14,7 +14,7 @@
 </div>
 
 <div class="rightlist">
-   
+
 {if $op=='display'}
 <!-- 筛选区域 -->
 <div class="panel panel-info">
@@ -86,8 +86,8 @@
                                 {/if}
                             </td>
                             <td style=" text-align:  center;position:relative">
-                                <a href="javascript:;" onclick="preview({$page['id']})">预览</a> - 
-                               <a href="javascript:;" data-url="{php echo $this->createPluginMobileUrl('designer',array('pageid'=>$page['id']))}" class="js-clip" title="复制链接">复制链接</a>	   
+                                <a href="javascript:;" onclick="preview({$page['id']})">预览</a> -
+                               <a href="javascript:;" data-url="{php echo $this->createPluginMobileUrl('designer',array('pageid'=>$page['id']))}" class="js-clip" title="复制链接">复制链接</a>
                                 {ifp 'designer.page.edit'}- <a href="{php echo $this->createPluginWebUrl('designer',array('op'=>'post','pageid'=>$page['id']))}">编辑</a>{/if}
                                 {ifp 'designer.page.delete'}- <a href="javascript:;" onclick="delpage({$page['id']})">删除</a>{/if}
                             </td>
@@ -95,11 +95,11 @@
                     {/loop}
                 {else}
                     {ifp 'designer.page.edit'}
-                    <tr> 
+                    <tr>
                         <td style="text-align: center; line-height: 100px;" colspan="8">亲~您还没有添加自定义页面哦~您可以尝试 ↙ 左下角的 “<a href="{php echo $this->createPluginWebUrl('designer', array('op' => 'post'))}">添加一个新页面</a>”</td>
                     </tr>
                     {/if}
-                {/if}     
+                {/if}
                 {ifp 'designer.page.edit'}
                     <tr>
                         <td colspan="8">
@@ -132,7 +132,7 @@
                                 </div>
                     </div>
                 </div>
-        <!-- 预览 end -->    
+        <!-- 预览 end -->
 <script type="text/javascript">
     function preview(pageid){
         var url = "{php echo $this->createPluginMobileUrl('designer')}&preview=1&pageid="+pageid;
@@ -192,8 +192,8 @@
                     </div>
             </div>
         <div class="fe">
-         
-            
+
+
             <div class="fe-phone">
                 <div class="fe-phone-left"></div>
                 <div class="fe-phone-center">
@@ -229,7 +229,7 @@
                 <div class="fe-phone-right"></div>
             </div>
             <div class="fe-panel">
-                
+
                 <!-- editor start -->
                 <div class="fe-panel-editor" ng-show="focus">
                     <div class="fe-panel-editor-ico"></div>
@@ -370,7 +370,7 @@ UE.registerUI('myinsertimage',function(editor, uiName) {
     });
     return btn;
 },
-19);	
+19);
 </script>
 
 <script>
@@ -389,7 +389,7 @@ UE.registerUI('myinsertimage',function(editor, uiName) {
                 $(this).siblings().find(".fe-save-main-radio").removeClass("fe-save-main-radio2").text("");
            }
            $("input[name=pagetype]").val(pagetype);
-       }); 
+       });
     });
 
     function switchtab(tag,n){
@@ -435,7 +435,7 @@ UE.registerUI('myinsertimage',function(editor, uiName) {
     }
     function cloneArr(arr){
         var newArr = [];
-        $(arr).each(function(i,val){ 
+        $(arr).each(function(i,val){
             newArr.push(clone(val));
         });
         return newArr;
@@ -456,7 +456,7 @@ UE.registerUI('myinsertimage',function(editor, uiName) {
             }
         })
     }
- 
+
     var myModel = angular.module('FoxEditor',['ng.ueditor'], function($compileProvider) {
     // configure new 'compile' directive by passing a directive
     // factory function. The factory function injects the '$compile'
@@ -511,13 +511,13 @@ UE.registerUI('myinsertimage',function(editor, uiName) {
             $scope.system = [{$system}];
             $scope.pages = [{$pageinfo}];
             $scope.Items = [{$data}];
- 
+
             $scope.underscore = null;
             require(['underscore'],function(underscore){
                 $scope.underscore = underscore;
             });
             $scope.hasCube = function(Item){
-             
+
             	 var has = false;
                  var row=0,col = 0;
             	 for(var i=row;i<4;i++){
@@ -529,7 +529,7 @@ UE.registerUI('myinsertimage',function(editor, uiName) {
                     }
                 }
                 return has;
-                
+
 
             }
 
@@ -552,7 +552,7 @@ UE.registerUI('myinsertimage',function(editor, uiName) {
                     error: function(){
                         alert('操作失败~请刷新页面重试！');
                     }
-                });     
+                });
             }
 
             $(document).on('click','.c_id',function(){
@@ -574,7 +574,7 @@ UE.registerUI('myinsertimage',function(editor, uiName) {
                     error: function(){
                         alert('操作失败~请刷新页面重试！');
                     }
-                });     
+                });
             });
 
 $(document).on('click','.chooseclick',function(){
@@ -606,13 +606,13 @@ $(document).on('click','.chooseclick',function(){
 });
 
             $scope.showSelection = function(Edit, row,col){
-             
+
                 Edit.params.currentPos = {row: row,col: col};
                 Edit.params.selection = {};
                 var maxrow = 4,maxcol = 4,end =false;
-                
+
                 for(var i=row;i<=3;i++){
-                	
+
                     if ($scope.underscore.isUndefined(Edit.params.layout[i][col]) || !$scope.underscore.isUndefined(Edit.params.layout[i][col]) && !Edit.params.layout[i][col].isempty) {
                         maxrow = i;
                         end =true;
@@ -621,22 +621,22 @@ $(document).on('click','.chooseclick',function(){
                         break;
                     }
                 }
-          
+
                 end =false;
                 for(var j=col;j<=3;j++){
                     if ( $scope.underscore.isUndefined(Edit.params.layout[row][j]) || !$scope.underscore.isUndefined(Edit.params.layout[row][j]) && !Edit.params.layout[row][j].isempty) {
                         maxcol = j;
                         end =true;
-                    } 
+                    }
                     if(end){
                         break;
                     }
                 }
-                
+
                 var f = -1,g = 1;
-              
+
                 for (var i = row; i < maxrow; i++) {
-	                
+
                     var y = 1;
                     Edit.params.selection[g] = {};
                     for (var j = col; j < maxcol; j++) {
@@ -650,10 +650,10 @@ $(document).on('click','.chooseclick',function(){
                       else{
                           f = j - 1
                       }
-                    } 
+                    }
                     g++;
                 }
-                
+
                 $(".layout-table li").removeClass("selected");
                 $scope.modalobj = $("#"+Edit.id+"-modal-cube-layout").modal({show:true});
                 $('#'+Edit.id+'-modal-cube-layout').find(".layout-table").unbind('mouseover').mouseover(function(a) {
@@ -666,7 +666,7 @@ $(document).on('click','.chooseclick',function(){
                         }).addClass("selected")
                     }
                 });
-                
+
                 return true;
             }
             $scope.selectLayout = function(Edit, currentRow, currentCol, rows, cols) {
@@ -683,12 +683,12 @@ $(document).on('click','.chooseclick',function(){
                     for (var j = parseInt(currentCol); j < parseInt(currentCol) + parseInt(cols); j++) {
                         if( currentRow != i || currentCol != j)  {
                             delete Edit.params.layout[i][j];
-                        } 
+                        }
             	}
                 }
                 Edit.params.showIndex++;
                 $scope.modalobj.modal('hide');
-                $scope.changeItem(Edit, currentRow,currentCol);   
+                $scope.changeItem(Edit, currentRow,currentCol);
                 return true;
             }
             $scope.changeItem = function(Edit,row,col){
@@ -715,12 +715,12 @@ $(document).on('click','.chooseclick',function(){
                                 }
                             }
                         });
-                        
+
                     });
                 }
             }
-             
-             
+
+
             // 1.1 添加一条子级(good,picture,banner)
             $scope.addItemChild =function(type,Mid){
                 if(type && Mid){
@@ -770,7 +770,7 @@ $(document).on('click','.chooseclick',function(){
                                     if(Type=='cube'){
                                         m.params.currentLayout.imgurl = data['url'];
                                         $("div[mid="+Mid+"]").mouseover();
-                                        
+
                                     }else{
                                         angular.forEach(m.data, function(c,index2) {
                                             if(c.id==Cid){
@@ -785,7 +785,7 @@ $(document).on('click','.chooseclick',function(){
                     });
                 });
             }
-           
+
             $scope.chooseUrlCube = function(Mid,Cid){
                 var Items = $scope.Items;
                 angular.forEach(Items, function(m) {
@@ -844,7 +844,7 @@ $(document).on('click','.chooseclick',function(){
                     }
                 });
             }
-            
+
             $scope.focus = 'M0000000000000';
 
             $scope.keyword = function(val,Eid){
@@ -923,7 +923,7 @@ $(document).on('click','.chooseclick',function(){
                 });
             }
             $scope.selectGoods = [];
-            
+
             $scope.load = function(){}
             $scope.changeImg = function(Mid,n){
                 width = parseInt($(".fe-mod-move").width());
@@ -938,21 +938,21 @@ $(document).on('click','.chooseclick',function(){
             }
             $scope.setfocus = function(Mid,e){
                 $scope.focus = Mid;
-                ccc = $("div[id="+Mid+"]").offset().top; 
+                ccc = $("div[id="+Mid+"]").offset().top;
                 ddd = (ccc-280)>=0?(ccc-280):0;
                 $(".fe-panel-editor").css("margin-top",ddd+"px");
                 $(document.body).animate({scrollTop:ccc-100},500);
             }
             $scope.drag = function(Mid){
-                var container = $("#editor");                
+                var container = $("#editor");
                 var del = container.find(".fe-mod-move");
                 del.off("mousedown").mousedown(function(e) {
                     $scope.focus = Mid;
                     if(e.which != 1 || $(e.target).is("textarea") || window.kp_only) return;
-                    e.preventDefault(); 
+                    e.preventDefault();
                     var x = e.pageX;
                     var y = e.pageY;
-                    var _this = $(this).parent(); 
+                    var _this = $(this).parent();
                     var w = _this.width();
                     var h = _this.height();
                     var w2 = w/2;
@@ -1020,13 +1020,13 @@ $(document).on('click','.chooseclick',function(){
                                         return false;
                                     }
                                 });
-                            });	
+                            });
                             $scope.Items = newarr;
                         });
                     });
                 });
             }
-            
+
             $scope.addItem = function(Nid){
                 var Mid = 'M'+new Date().getTime();
                 var Navs = $scope.navs;
@@ -1037,7 +1037,7 @@ $(document).on('click','.chooseclick',function(){
                         newother = !clone(n.other)?'':clone(n.other);
                         newcontent = !clone(n.content)?'':clone(n.content);
                         if(Nid=='cube'){
-                            for (row = 0; row < 4; row++) { 
+                            for (row = 0; row < 4; row++) {
                                 for (newparams.layout[row] = {}, col = 0; col < 4; col++) {
                                     newparams.layout[row][col] = {cols: 1,rows: 1,isempty: !0,imgurl: "",classname: ""};
                                 }
@@ -1057,13 +1057,13 @@ $(document).on('click','.chooseclick',function(){
                             $scope.Items.push(newitem);
                         }
                         else{
-                           $scope.Items.splice(insertindex+1, 0, newitem);             
+                           $scope.Items.splice(insertindex+1, 0, newitem);
                         }
                         //$("div[id="+newitem.id+"]").trigger('ng-click');
                         setTimeout(function(){
-                       $scope.setfocus(newitem.id,null);     
+                       $scope.setfocus(newitem.id,null);
                         },100);
-                       
+
                         //console.log($scope.Items);
                     }
                 });
@@ -1174,7 +1174,7 @@ $(document).on('click','.chooseclick',function(){
                     });
                 });
             }
-            
+
             $scope.pageImg = function(Mid,type){
                 require(['jquery', 'util'], function($, util){
                     util.image('',function(data){
@@ -1193,10 +1193,10 @@ $(document).on('click','.chooseclick',function(){
                         initswipe($(this));
                  })
                  $('.fe-mod-8-main-img img').each(function(){
-                     $(this).height($(this).width());    
+                     $(this).height($(this).width());
                  });
                  $('.fe-mod-12 img').each(function(){
-                     $(this).height($(this).width());    
+                     $(this).height($(this).width());
                  });
             });
     }]);
@@ -1209,7 +1209,7 @@ $(document).on('click','.chooseclick',function(){
                 });
             }
         };
-    });  
+    });
 
     myModel.directive("onFinishRenderFilters",function($timeout){
         return{
