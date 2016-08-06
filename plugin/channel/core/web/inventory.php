@@ -125,6 +125,8 @@ if ($operation == 'display') {
 } elseif ($operation == 'detail') {
     $stockid = $_GPC['id']; 
     $stock = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_channel_stock') . ' WHERE id = :id AND uniacid = :uniacid', array(':id' => $stockid, ':uniacid' => $_W['uniacid']));
+    $list = $this->model->getMyOptionStockLog($stock['openid'],$stock['goodsid'],$stock['optionid']);
+    //print_r($list);exit;
 }
 load()->func('tpl');
 include $this->template('inventory');
