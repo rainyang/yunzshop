@@ -7,6 +7,13 @@ global $_W, $_GPC;
 //check_shop_auth
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $type = intval($_GPC['type']);
+//Author:ym Date:2016-08-05 Content:添加供应商判断
+$perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+if($perm_role == 1){
+    $supplier_uid = $_W['uid'];
+}else{
+    $supplier_uid = 0;
+}
 if ($operation == 'display') {
 	ca('coupon.coupon.view');
 	if (!empty($_GPC['displayorder'])) {
@@ -43,7 +50,7 @@ if ($operation == 'display') {
 		$condition .= ' AND coupontype = :coupontype';
 		$params[':coupontype'] = intval($_GPC['type']);
 	}
-	$sql = 'SELECT * FROM ' . tablename('sz_yi_coupon') . ' ' . " where  1 and {$condition} ORDER BY displayorder DESC,id DESC LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
+	$sql = 'SELECT * FROM ' . tablename('sz_yi_coupon') . ' ' . " where  1 and {$condition} and supplier_uid={$supplier_uid} ORDER BY displayorder DESC,id DESC LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
 	$list = pdo_fetchall($sql, $params);
 	foreach ($list as &$row) {
 		$row['gettotal'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_coupon_data') . ' where couponid=:couponid and uniacid=:uniacid limit 1', array(':couponid' => $row['id'], ':uniacid' => $_W['uniacid']));
@@ -52,12 +59,12 @@ if ($operation == 'display') {
 		$row['pwdoks'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_coupon_guess') . ' where couponid=:couponid and uniacid=:uniacid and ok=1 limit 1', array(':couponid' => $row['id'], ':uniacid' => $_W['uniacid']));
 	}
 	unset($row);
-	$total = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_coupon') . " where 1 and {$condition}", $params);
+	$total = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_coupon') . " where 1 and {$condition} and supplier_uid={$supplier_uid}", $params);
 	$pager = pagination($total, $pindex, $psize);
 } elseif ($operation == 'post') {
 	$id = intval($_GPC['id']);
 	$shopset = m('common')->getSysset('shop');
-	$sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
+	$sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid and supplier_uid='.$supplier_uid.' ORDER BY `parentid`, `displayorder` DESC';
 	$category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
 	$result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid']);
 

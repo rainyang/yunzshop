@@ -132,7 +132,7 @@ if ($_W['isajax']) {
 	}
 	$list = array();
 	if (!empty($orderids)) {
-		$list = pdo_fetchall("select id,ordersn,openid,createtime,status from " . tablename('sz_yi_order') . "  where uniacid ={$_W['uniacid']} and id in ( " . implode(',', array_keys($orderids)) . ") order by id desc");
+		$list = pdo_fetchall("select id,ordersn,openid,createtime,status from " . tablename('sz_yi_order') . "  where uniacid ={$_W['uniacid']} and status<>4 and id in ( " . implode(',', array_keys($orderids)) . ") order by id desc");
 		foreach ($list as &$row) {
 			$row['commission'] = number_format($orderids[$row['id']]['commission'], 2);
 			$row['createtime'] = date('Y-m-d H:i', $row['createtime']);
@@ -147,6 +147,7 @@ if ($_W['isajax']) {
 			}else if ($row['status'] == 6) {
 				$row['status'] = '待退房';
 			}
+
 			if ($orderids[$row['id']]['level'] == 1) {
 				$row['level'] = '一';
 			} else if ($orderids[$row['id']]['level'] == 2) {

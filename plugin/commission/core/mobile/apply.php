@@ -1,6 +1,7 @@
 <?php
 global $_W, $_GPC;
 $openid = m('user')->getOpenid();
+$member = $this->model->getInfo($openid, array('ok'));
 if ($_W['isajax']) {
 	$level = $this->set['level'];
 	$closewithdrawcheck = $this->set['closewithdrawcheck'];
@@ -10,8 +11,8 @@ if ($_W['isajax']) {
 	$commission_ok = $member['commission_ok'];
 	$cansettle = $commission_ok >= floatval($this->set['withdraw']);
 	$member['commission_ok'] = number_format($commission_ok, 2);
+	$operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 	if ($_W['ispost']) {
-
 		$orderids = array();
 		if ($level >= 1) {
 			$level1_orders = pdo_fetchall('select distinct o.id from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . " where o.agentid=:agentid and o.status>=3  and og.status1=0 and og.nocommission=0 and ({$time} - o.createtime > {$day_times}) and o.uniacid=:uniacid  group by o.id", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
@@ -51,6 +52,12 @@ if ($_W['isajax']) {
 		$applyno = m('common')->createNO('commission_apply', 'applyno', 'CA');
 
 		$apply = array('uniacid' => $_W['uniacid'], 'applyno' => $applyno, 'orderids' => iserializer($orderids), 'mid' => $member['id'], 'commission' => $commission_ok, 'type' => intval($_GPC['type']), 'status' => 1, 'applytime' => $time);
+		if($_GPC['alipay']!='' &&  $_GPC['alipayname']!=''){
+			$apply = array('uniacid' => $_W['uniacid'], 'applyno' => $applyno, 'orderids' => iserializer($orderids), 'mid' => $member['id'], 'commission' => $commission_ok, 'type' => intval($_GPC['type']),'alipay' => $_GPC['alipay'],'alipayname' => $_GPC['alipayname'], 'status' => 1, 'applytime' => $time);
+		}else{
+		    $apply = array('uniacid' => $_W['uniacid'], 'applyno' => $applyno, 'orderids' => iserializer($orderids), 'mid' => $member['id'], 'commission' => $commission_ok, 'type' => intval($_GPC['type']), 'status' => 1, 'applytime' => $time);
+	
+		}
 		//Author:ym Date:2016-07-15 Content:减去已消费的佣金
 		if($member['credit20'] > 0){
 			$credit20 = - $member['credit20'];
@@ -59,7 +66,6 @@ if ($_W['isajax']) {
 		}
 		pdo_insert('sz_yi_commission_apply', $apply);
 		$id = pdo_insertid();
-
 		//佣金提现免审核自动打款
 		if ($closewithdrawcheck > 0) {
 			//填写免审核限额则开启自动打款
