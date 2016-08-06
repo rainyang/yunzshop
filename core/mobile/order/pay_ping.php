@@ -56,7 +56,7 @@ require_once('../addons/sz_yi/plugin/pingpp/init.php');
 
     $orderNo = $input_data['order_no'];
 
-    if (substr($orderNo,0,2) == 'RC') {
+    if (substr($orderNo,0,2) == 'RC') { //充值
         $log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `logno`=:logno and `uniacid`=:uniacid limit 1', array(
             ':uniacid' => $uniacid,
             ':logno' => $orderNo

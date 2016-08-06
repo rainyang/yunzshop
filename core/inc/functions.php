@@ -735,6 +735,10 @@ function tpl_form_field_category_level2($name, $parents, $children, $parentid, $
  * @return array
  */
 function sent_message($customer_id_array,$message){
+    if (empty($customer_id_array) || empty($message)) {
+       return false;
+    }
+
     require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
 
     $setdata = m("cache")->get("sysset");
