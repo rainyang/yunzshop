@@ -29,6 +29,8 @@ input {-webkit-appearance:none; outline:none;}
     <%if member.commission_ok >= 1 && member.commission_ok <= 200%>
     <div class="balance_sub balance_sub4 <%if !cansettle%>disabled<%/if%>"  data-type="2">{php echo $this->set['texts']['withdraw']}到微信红包</div>
     <%/if%>
+    <div class="balance_sub balance_sub3 <%if !cansettle%>disabled<%/if%>"
+    data-type="3">{php echo $this->set['texts']['withdraw']}到支付宝</div>
     <div class="balance_sub3" onclick="location.href='{php echo $this->createPluginMobileUrl('commission/log')}'">{php echo $this->set['texts']['withdraw']}记录</div>
 </script>
 <script language="javascript">

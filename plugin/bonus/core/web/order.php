@@ -392,6 +392,7 @@ if ($operation == "display") {
         
     }
     unset($value);
+    
     if ($_GPC["export"] == 1) {
         ca("order.op.export");
         plog("order.op.export", "导出订单");

@@ -1,11 +1,11 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * User: dingran
  * Date: 16/7/20
  * Time: 下午5:10
  */
-
 class  ucException extends Exception
 {
     public function errorMessage()
@@ -21,9 +21,10 @@ class InterfaceController
     public $error_info = '';
     public $limit;
 
-    public function __construct() {
+    public function __construct()
+    {
 
-        if(method_exists($this,'_initialize'))
+        if (method_exists($this, '_initialize'))
             $this->_initialize();
     }
 
@@ -32,7 +33,7 @@ class InterfaceController
         /*        if ($this->request->server['REQUEST_METHOD'] != 'POST') {
                     exit('提交方式不正确');
                 }*/
-        require IA_ROOT.'/addons/sz_yi/core/inc/aes.php';
+        require IA_ROOT . '/addons/sz_yi/core/inc/aes.php';
         $this->aes = new \Aes('', '');
 
         if ($this->request->server['REQUEST_METHOD'] == 'POST') {
@@ -62,16 +63,18 @@ class InterfaceController
         }
     }
 
-    public function checkResultAndReturn($result){
-        if($result === null){
+    public function checkResultAndReturn($result)
+    {
+        if ($result === null) {
             $this->error('网络繁忙');
         }
-        if(empty($result)){
+        if (empty($result)) {
             $this->error('暂无数据');
         }
         $this->success($result);
     }
-    public function success($data=array(), $msg = '成功')
+
+    public function success($data = array(), $msg = '成功')
     {
         $res = array('result' => '1',
             'msg' => $msg,
@@ -110,7 +113,7 @@ class InterfaceController
 
     public function addLog()
     {
-        $data['para'] = $this->para=='null' ? '' : json_encode($this->para, JSON_UNESCAPED_UNICODE);
+        $data['para'] = $this->para == 'null' ? '' : json_encode($this->para, JSON_UNESCAPED_UNICODE);
         $data['interface'] = $interface_name = $this->getInterfaceName();
         $data['client_ip'] = $this->getClientIp();
         $data['error_info'] = json_encode($this->error_info, JSON_UNESCAPED_UNICODE);
@@ -162,17 +165,20 @@ class InterfaceController
             dump($this->error_info);
         }*/
     }
-    public function sent_message($customer_id_array,$message){
-        $customer_id_array_str = json_encode($customer_id_array,JSON_UNESCAPED_UNICODE);
+
+    public function sent_message($customer_id_array, $message)
+    {
+        $customer_id_array_str = json_encode($customer_id_array, JSON_UNESCAPED_UNICODE);
         $post_data = '{"from_peer": "58",
-                "to_peers": '.$customer_id_array_str.',
-                "message": "{\"_lctype\":-1,\"_lctext\":\"'.$message.'\", \"_lcattrs\":{ \"clientId\":\"58\", \"clientName\":\"优产助手\", \"clientIcon\":\"http://192.168.1.108/image/icon.png\" }}"
+                "to_peers": ' . $customer_id_array_str . ',
+                "message": "{\"_lctype\":-1,\"_lctext\":\"' . $message . '\", \"_lcattrs\":{ \"clientId\":\"58\", \"clientName\":\"优产助手\", \"clientIcon\":\"http://192.168.1.108/image/icon.png\" }}"
                 , "conv_id": "56ced170816dfa46979cbc23", "transient": false}';
-        $data = json_decode($post_data,true);
+        $data = json_decode($post_data, true);
         $lean_push = new LeanCloud\LeanMessage($data);
         $response = $lean_push->send();
         return $response;
     }
+
     /*    public function __after(){
             echo 'after';exit;
         }*/

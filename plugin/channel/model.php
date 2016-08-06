@@ -32,7 +32,11 @@ if (!class_exists('ChannelModel')) {
 		public function getMyOptionStock($openid, $goodsid, $optionid)
 		{
 			global $_W;
-			$stock = pdo_fetchcolumn("SELECT stock_total FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND goodsid={$goodsid} AND optionid={$optionid}");
+			$cond = '';
+			if (!empty($optionid)) {
+				$cond = " AND optionid={$optionid}";
+			}
+			$stock = pdo_fetchcolumn("SELECT stock_total FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND goodsid={$goodsid}" . $cond);
 			return $stock;
 		}
 		/**
@@ -105,6 +109,8 @@ if (!class_exists('ChannelModel')) {
 			$channel_info['channel']['lower_order_money'] = $lower_order_money;
 
 			$channel_info['channel']['dispatchprice'] = pdo_fetchcolumn("SELECT ifnull(sum(dispatchprice),0) FROM " . tablename('sz_yi_order') . " WHERE uniacid={$_W['uniacid']} AND status>=3 AND iscmas=0 AND ischannelself=1 AND openid='{$openid}'");
+
+			$channel_info['channel']['order_total_price'] = number_format(pdo_fetchcolumn("SELECT ifnull(sum(price),0) FROM " . tablename('sz_yi_order_goods') . " WHERE uniacid={$_W['uniacid']} AND channel_id={$member['id']}"),2);
 
             $channel_info['channel']['ordercount'] = pdo_fetchcolumn("SELECT count(o.id) FROM " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) WHERE og.channel_id={$member['id']} AND o.userdeleted=0 AND o.deleted=0 AND o.uniacid={$_W['uniacid']} ");
 
@@ -252,6 +258,48 @@ if (!class_exists('ChannelModel')) {
 					//通知
 				}
 			}
+		}
+		/**
+		  * 渠道商自提扣除自己库存
+		  *
+		  * @param int $orderid 订单的id
+		  */
+		public function deductChannelStock($orderid)
+		{
+			global $_W;
+			$openid = pdo_fetchcolumn("SELECT openid FROM " . tablename('sz_yi_order') . " WHERE uniacid={$_W['uniacid']} AND id={$orderid}");
+            $order_goods = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_order_goods') . " WHERE uniacid={$_W['uniacid']} AND orderid={$orderid}");
+            foreach ($order_goods as $og) {
+                $channel_cond = " WHERE uniacid={$_W['uniacid']} AND goodsid={$og['goodsid']} AND openid='{$openid}'";
+                if (!empty($og['optionid'])) {
+                    $channel_cond .= " AND optionid={$og['optionid']}";
+                }
+                $channel_stock = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_stock') . $channel_cond);
+                $data = array(
+                    'uniacid'   => $_W['uniacid'],
+                    'openid'    => $openid,
+                    'goodsid'   => $og['goodsid']
+                    );
+                $log_data = array(
+                	'openid'		=> $openid,
+                    'goodsid'       => $og['goodsid'],
+                    'order_goodsid' => $og['id'],
+                    'every_turn'	=> $og['total'],
+                    'uniacid'       => $_W['uniacid'],
+                    'type'          => 4,
+                    'paytime'		=> time()
+                    );
+                if (!empty($channel_stock)) {
+                    $stock_total = $channel_stock['stock_total'] - $og['total'];
+                    if (!empty($og['optionid'])) {
+                        $data['optionid']       = $og['optionid'];
+                        $log_data['optionid']   = $og['optionid'];
+                        
+                    }
+                    pdo_update('sz_yi_channel_stock', array('stock_total' => $stock_total), $data);
+                    pdo_insert('sz_yi_channel_stock_log', $log_data);
+                }
+            }
 		}
 		/**
 		  * 根据进货金额或进货次数升级

@@ -206,7 +206,10 @@
     <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-cny"></i>{if isset($set['trade']) && $set['trade']['withdraw']==1}{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}明细{else}充值记录{/if}
             <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
    {/if}
-
+   {if p('love')}
+   <a href="{php echo $this->createMobileUrl('member/rechange_log')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-cny"></i>分期记录
+    <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    {/if}
 </div>
 {if $hascoupon}
 <!--

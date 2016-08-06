@@ -121,9 +121,9 @@ a:focus{outline:none; -moz-outline:none}
 .big-menu .btn-group>.btn{border-radius:0; width:33.5%; text-align:center; border-top:0;}
 /*更新提醒*/
 .upgrade-tips{width:100%; position:absolute; top:0; text-align:center; z-index:99999;}
-.upgrade-tips a{display:inline-block; margin:0 auto; height:25px; line-height:25px; padding:0 5px; color:#FFF; background:#EE5023; }
+.upgrade-tips a{display:inline-block; margin:0 auto; height:35px; line-height:35px; padding:0 5px 0 10px; color:#FFF; background:#EE5023;border-radius: 0 0 0 4px;}
 .upgrade-tips a.module{background:#3C9D40;}
-.upgrade-tips span{display:inline-block; height:25px; line-height:25px; background:#328233; padding:0 10px; color:#FFF; cursor:pointer;}
+.upgrade-tips span{display:inline-block; height:35px; line-height:35px; background:#328233; padding:0 10px; color:#FFF; cursor:pointer;}
 
 /*多图上传*/
 .multi-img-details{margin-top:.5em;}
@@ -301,6 +301,5 @@ p.module-brief{margin-bottom:10px; font-size:12px;}
 p.module-description{display:block;padding:3px 10px;}
 
 .require{color:red; margin-right:5px}
-
 
 

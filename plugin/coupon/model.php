@@ -312,18 +312,28 @@ if (!class_exists('CouponModel')) {
 						$a = 0;
 						$b = 0;
 						if ($row['usetype'] == 2) {
-							foreach ($goodsids as $v) {
-								if ($v == $goodid) {
-									$a += 1;
+							if (!empty($goodsids)) {
+								foreach ($goodsids as $v) {
+									if ($v == $goodid) {
+										$a += 1;
+									}
 								}
+							} else {
+								$a += 1;
 							}
+							
 							if ($row['getstore'] == 1) {
 								if ($coupon_carrierid != 0) {
-									foreach ($storeids as $vs) {
-										if ($vs == $coupon_carrierid) {
-											$b += 1;
-										}
+									if (!empty($storeids)) {
+										foreach ($storeids as $vs) {
+											if ($vs == $coupon_carrierid) {
+												$b += 1;
+											}
+										}	
+									} else {
+										$b += 1;
 									}
+									
 									if ($a == 0 || $b == 0) {
 										$total -= 1;
 									}
@@ -336,18 +346,28 @@ if (!class_exists('CouponModel')) {
 								}
 							}
 						} elseif ($row['usetype'] == 1) {
-							foreach ($categoryids as $v) {
-								if ($v == $goods['ccate'] || $v == $goods['tcate'] ) {
-									$a += 1;
-								}
+							if (!empty($categoryids)) {
+								foreach ($categoryids as $v) {
+									if ($v == $goods['ccate'] || $v == $goods['tcate'] ) {
+										$a += 1;
+									}
+								}	
+							} else {
+								$a += 1;
 							}
+							
 							if ($row['getstore'] == 1) {
 								if ($coupon_carrierid != 0) {
-									foreach ($storeids as $vs) {
-										if ($vs == $coupon_carrierid) {
-											$b += 1;
-										}
+									if (!empty($storeids)) {
+										foreach ($storeids as $vs) {
+											if ($vs == $coupon_carrierid) {
+												$b += 1;
+											}
+										}	
+									} else {
+										$b += 1;
 									}
+									
 									if ($a == 0 || $b == 0) {
 										$total -= 1;
 									}
@@ -360,17 +380,24 @@ if (!class_exists('CouponModel')) {
 								}
 							}
 						} elseif ($row['usetype'] == 0) {
-							if ($coupon_carrierid != 0) {
-								foreach ($storeids as $vs) {
-									if ($vs == $coupon_carrierid) {
+							if ($row['getstore'] == 1) {
+								if ($coupon_carrierid != 0) {
+									if (!empty($storeids)) {
+										foreach ($storeids as $vs) {
+											if ($vs == $coupon_carrierid) {
+												$b += 1;
+											}
+										}	
+									} else {
 										$b += 1;
 									}
-								}
-								if ($b == 0) {
+									
+									if ($a == 0 || $b == 0) {
+										$total -= 1;
+									}
+								} else {
 									$total -= 1;
 								}
-							} else {
-								$total -= 1;
 							}
 						}
 						
@@ -382,31 +409,40 @@ if (!class_exists('CouponModel')) {
 							$cartid = explode(',',$cartid);
 							$categoryids = unserialize($row['categoryids']);
 							$a = 0;
-							if($row['usetype'] == 2){
+							if ($row['usetype'] == 2) {
 
 								foreach ($cartid as $value) {
 									$gid = pdo_fetchcolumn("SELECT goodsid FROM ".tablename('sz_yi_member_cart')." WHERE id=:id ",array(':id' => $value));
-									foreach ($goodsids as $v) {
-										if($v == $gid){
-											$a += 1;
-										}
+									if (!empty($goodsids)) {
+										foreach ($goodsids as $v) {
+											if ($v == $gid) {
+												$a += 1;
+											}
+										}	
+									} else {
+										$a += 1;
 									}
+									
 								}
 								if($a == 0){
 									$total -= 1;
 								}	
 							} elseif ($row['usetype'] == 1) {
-
-								foreach ($categoryids as $v) {
-									foreach ($cartid as $vc) {
-										$gid = pdo_fetchcolumn("SELECT goodsid FROM ".tablename('sz_yi_member_cart')." WHERE id=:id ",array(':id' => $vc));
-										$goods = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_goods')." WHERE id = :id",array(':id' => $gid));
-										if ($v == $goods['ccate'] || $v == $goods['tcate'] ) {
-											$a += 1;
-										}	
-									}
-									
+								if (!empty($categoryids)) {
+									foreach ($categoryids as $v) {
+										foreach ($cartid as $vc) {
+											$gid = pdo_fetchcolumn("SELECT goodsid FROM ".tablename('sz_yi_member_cart')." WHERE id=:id ",array(':id' => $vc));
+											$goods = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_goods')." WHERE id = :id",array(':id' => $gid));
+											if ($v == $goods['ccate'] || $v == $goods['tcate'] ) {
+												$a += 1;
+											}	
+										}
+										
+									}	
+								} else {
+									$a += 1;
 								}
+								
 								if ($a == 0) {
 									$total -= 1;
 								}

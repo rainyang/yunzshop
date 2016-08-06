@@ -84,7 +84,16 @@ if (!class_exists('CommissionModel')) {
 								}
 							}
 						}
-						pdo_update('sz_yi_order_goods', array('commission1' => iserializer($cinfo['commission1']), 'commission2' => iserializer($cinfo['commission2']), 'commission3' => iserializer($cinfo['commission3']), 'commissions' => iserializer($commissions), 'nocommission' => $cinfo['nocommission']), array('id' => $cinfo['id']));
+						pdo_update('sz_yi_order_goods', 
+							array(
+								'commission1' => iserializer($cinfo['commission1']), 
+								'commission2' => iserializer($cinfo['commission2']), 
+								'commission3' => iserializer($cinfo['commission3']), 
+								'commissions' => iserializer($commissions), 
+								'nocommission' => $cinfo['nocommission']), 
+							array(
+								'id' => $cinfo['id']
+							));
 					}
 				}
 			    			
@@ -126,36 +135,36 @@ if (!class_exists('CommissionModel')) {
 			}
 		}
 
-		public function getOrderCommissions($_var_1 = 0, $_var_16 = 0)
+		public function getOrderCommissions($orderid = 0, $ordergoodsid = 0)
 		{
 			global $_W;
 			$set = $this->getSet();
-			$_var_4 = pdo_fetchcolumn('select agentid from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $_var_1));
-			$_var_5 = pdo_fetch('select commission1,commission2,commission3 from ' . tablename('sz_yi_order_goods') . ' where id=:id and orderid=:orderid and uniacid=:uniacid and nocommission=0 limit 1', array(':id' => $_var_16, ':orderid' => $_var_1, ':uniacid' => $_W['uniacid']));
-			$_var_9 = array('level1' => 0, 'level2' => 0, 'level3' => 0);
+			$agentid = pdo_fetchcolumn('select agentid from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(':id' => $orderid));
+			$commissions = pdo_fetch('select commission1,commission2,commission3 from ' . tablename('sz_yi_order_goods') . ' where id=:id and orderid=:orderid and uniacid=:uniacid and nocommission=0 limit 1', array(':id' => $ordergoodsid, ':orderid' => $orderid, ':uniacid' => $_W['uniacid']));
+			$OrderCommissions = array('level1' => 0, 'level2' => 0, 'level3' => 0);
 			if ($set['level'] > 0) {
-				$_var_17 = iunserializer($_var_5['commission1']);
-				$_var_18 = iunserializer($_var_5['commission2']);
-				$_var_19 = iunserializer($_var_5['commission3']);
-				if (!empty($_var_4)) {
-					$_var_10 = m('member')->getMember($_var_4);
-					if ($_var_10['isagent'] == 1 && $_var_10['status'] == 1) {
-						$_var_11 = $this->getLevel($_var_10['openid']);
-						$_var_9['level1'] = empty($_var_11) ? round($_var_17['default'], 2) : round($_var_17['level' . $_var_11['id']], 2);
-						if (!empty($_var_10['agentid'])) {
-							$_var_12 = m('member')->getMember($_var_10['agentid']);
-							$_var_13 = $this->getLevel($_var_12['openid']);
-							$_var_9['level2'] = empty($_var_13) ? round($_var_18['default'], 2) : round($_var_18['level' . $_var_13['id']], 2);
-							if (!empty($_var_12['agentid'])) {
-								$_var_14 = m('member')->getMember($_var_12['agentid']);
-								$_var_15 = $this->getLevel($_var_14['openid']);
-								$_var_9['level3'] = empty($_var_15) ? round($_var_19['default'], 2) : round($_var_19['level' . $_var_15['id']], 2);
+				$commission1 = iunserializer($commissions['commission1']);
+				$commission2 = iunserializer($commissions['commission2']);
+				$commission3 = iunserializer($commissions['commission3']);
+				if (!empty($agentid)) {
+					$m1 = m('member')->getMember($agentid);
+					if ($m1['isagent'] == 1 && $m1['status'] == 1) {
+						$level1 = $this->getLevel($m1['openid']);
+						$OrderCommissions['level1'] = empty($level1) ? round($commission1['default'], 2) : round($commission1['level' . $level1['id']], 2);
+						if (!empty($m1['agentid'])) {
+							$m2 = m('member')->getMember($m1['agentid']);
+							$level2 = $this->getLevel($m2['openid']);
+							$OrderCommissions['level2'] = empty($level2) ? round($commission2['default'], 2) : round($commission2['level' . $level2['id']], 2);
+							if (!empty($m2['agentid'])) {
+								$m3 = m('member')->getMember($m2['agentid']);
+								$level3 = $this->getLevel($m3['openid']);
+								$OrderCommissions['level3'] = empty($level3) ? round($commission3['default'], 2) : round($commission3['level' . $level3['id']], 2);
 							}
 						}
 					}
 				}
 			}
-			return $_var_9;
+			return $OrderCommissions;
 		}
 
 		public function getInfo($openid, $_var_21 = null)

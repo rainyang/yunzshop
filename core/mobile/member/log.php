@@ -20,18 +20,8 @@ if ($_W['isajax']) {
         );
         $list      = pdo_fetchall("select * from " . tablename('sz_yi_member_log') . " where 1 {$condition} order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
         $total     = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member_log') . " where 1 {$condition}", $params);
-        $plu_love = p('love');
         foreach ($list as &$row) {
             $row['createtime'] = date('Y-m-d H:i', $row['createtime']);
-            if($plu_love){
-                $aging = pdo_fetch("select * from " . tablename('sz_yi_member_aging_rechange') . " where id=".$row['aging_id']);
-                if(!empty($aging)){
-                    $paymethod = $aging['paymethod'] == 0 ? " 元" : " 积分";
-                    $row['money'] = $aging['num']."(共".$aging['qnum']."期),已充第".$aging['phase']."期".$row['money'].$paymethod;
-                }
-            }else{
-                 $row['money'] = $row['money']. " 元";
-            }
         }
         unset($row);
         show_json(1, array(

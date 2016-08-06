@@ -374,7 +374,7 @@ if ($operation == "change") {
         if (empty($_GPC['thumbs'])) {
             $_GPC['thumbs'] = array();
         }
-        if ($_GPC['isverifysend'] == 0) {
+        if ($_GPC['isverify'] == 2 && $_GPC['isverifysend'] == 0) {
             if (!empty($_GPC['storeids'])) {
                 $storeids = explode($_GPC['storeids']);
                 $a = 0;
