@@ -22,7 +22,7 @@ class Sz_DYi_Finance {
     }
     
     public function alipay_build($openid = '', $paytype = 0, $money = 0, $trade_no = '', $desc = '',$alipay='',$alipayname='',$applyid='')
-    {
+    {    
         global $_W;
         $setting = uni_setting($_W['uniacid'], array('payment'));
         if (is_array($setting['payment'])) {
@@ -54,8 +54,7 @@ class Sz_DYi_Finance {
         $set['service']        = 'batch_trans_notify';
         $set['_input_charset'] = 'utf-8';
         $set['sign_type']      = 'MD5';
-        //$set['notify_url']     = $_W['siteroot'] . "addons/sz_yi/payment/alipay/notify.php";
-        $set['notify_url']=    $_W['siteroot'] ."addons/sz_yi/payment/alipay/alipay_build/notify_url.php";
+        $set['notify_url']      = $_W['siteroot'] . "addons/sz_yi/payment/alipay/notify_alipay.php";
         $set['email']          = $email;
         $set['account_name']   = $account_name;
         $set['pay_date']       = $pay_date;
@@ -73,14 +72,11 @@ class Sz_DYi_Finance {
         $string = implode($prepares, '&');
         //$string .= $alipay['secret'];
         $string .=  $secret;
-        $set['sign'] = md5($string);
+        $set['sign'] = md5($string);       
         $url = 'https://mapi.alipay.com/gateway.do' . '?' . http_build_query($set, '', '&');
-
         $resp = $this->getHttpResponseGET($url, IA_ROOT . "/addons/sz_yi/cert/cacert.pem");
         header("Location:" . $resp);
         exit;
-        //echo $resp;
-        //exit;
         //echo $resp;
         //echo $url;exit;
 
@@ -90,11 +86,10 @@ class Sz_DYi_Finance {
        // exit;
         //header("Location:" . $resp['headers']['Location']);
               
-        // echo $resp;
-        // echo $url;
+
         // $apply= array('status'=>'3','batch_no'=>$set['batch_no']);
         // pdo_update('sz_yi_commission_apply', $apply, array('id' =>$applyid));
-         exit;
+         //exit;
     }
 
     public function pay($openid = '', $paytype = 0, $money = 0, $trade_no = '', $desc = '',$alipay = '',$alipayname='',$applyid='')

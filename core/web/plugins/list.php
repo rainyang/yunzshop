@@ -14,7 +14,7 @@ $cond = '';
 if (p('supplier')) {
     $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
     if($perm_role != 0){
-        $cond = " and identity in ('exhelper','taobao') ";
+        $cond = " and identity in ('exhelper','taobao','coupon') ";
     }
 }
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
