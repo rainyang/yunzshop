@@ -421,8 +421,8 @@ if (checksubmit('submit_pay') && $apply['status'] == 2) {
 		} else {
 			message('红包提现金额限制1-200元！', '', 'error');
 		}
-	} else {
-		$result = m('finance')->pay($member['openid'], $apply['type'], $pay, $apply['applyno']);
+	} else {		
+		$result = m('finance')->pay($member['openid'], $apply['type'], $pay, $apply['applyno'],'',$apply['alipay'],$apply['alipayname'],$apply['id']);
 	}
 	
 	if (is_error($result)) {

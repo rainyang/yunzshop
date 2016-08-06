@@ -1614,7 +1614,7 @@ if ($_W['isajax']) {
             $deductmoney   = 0;
             $deductcredit2 = 0;
             if ($sale_plugin) {
-                if (!empty($_GPC['deduct'])) {
+                if (isset($_GPC['order']) && !empty($_GPC['order'][0]['deduct'])) {
                     $credit  = m('member')->getCredit($openid, 'credit1');
                     $saleset = $sale_plugin->getSet();
                     if (!empty($saleset['creditdeduct'])) {

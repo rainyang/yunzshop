@@ -65,8 +65,9 @@
         <div class="line"><div class="label">支付金额</div><div class="info"><div class="inner"><div style='color:#ff6600'>￥<span id="orderprice" price="<%order.price%>"><%order.price%></span>元</div></div></div></div>
     </div>
     <!-- 支付方式begin -->
-    <h1 class="payway-h1">请选择支付方式：</h1>
+
     <%if order.price>0%>
+    <h1 class="payway-h1">请选择支付方式：</h1>
     <div class="order_main">
         <%if app_alipay.success%>
         <div class="line payline">
@@ -110,10 +111,10 @@
         <%/if%>
     </div>
 
-    <div class="button order_sub10" >确定支付</div>
+
     <%/if%>
 
-
+    <div class="button order_sub10" >确定支付</div>
     <!-- 支付方式over -->
 </script>
 
@@ -262,17 +263,43 @@
 
                         break;
                     default:
-                        var channel = 'alipay';
-
-                        if (typeof PINGPP_IOS_SDK !== 'undefined') {
-                            PINGPP_IOS_SDK.callPay(channel, amount,ordersn);
-                        } else if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
-                            PINGPP_ANDROID_SDK.callPay(channel, amount,ordersn);
-                        }
+                        core.tip.confirm('确认要立即付款?',function(){
+                            $('.button').attr('submitting',1);
+                            core.json('order/pay',{
+                                op:'complete',
+                                orderid:'{$_GPC['orderid']}',
+                                type:'credit'
+                            },function(pay_json){
+                                if(pay_json.status==1){
+                                    $('#container').html(tpl('tpl_order_pay',pay_json.result));
+                                    return;
+                                }
+                                core.tip.show(pay_json.result);
+                                $('.button').removeAttr('submitting');
+                            },true,true);
+                        })
 
                 }
             });
 
+
+            $('.order_subc').click(function(){
+                core.tip.confirm('确认要立即付款?',function(){
+                    $('.button').attr('submitting',1);
+                    core.json('order/pay',{
+                        op:'complete',
+                        orderid:'{$_GPC['orderid']}',
+                        type:'credit'
+                    },function(pay_json){
+                        if(pay_json.status==1){
+                            $('#container').html(tpl('tpl_order_pay',pay_json.result));
+                            return;
+                        }
+                        core.tip.show(pay_json.result);
+                        $('.button').removeAttr('submitting');
+                    },true,true);
+                })
+            });
 
         },true)
     });

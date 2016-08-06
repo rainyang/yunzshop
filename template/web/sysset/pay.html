@@ -121,6 +121,46 @@
                         {/if}
                     </div>
                 </div>
+                <div id='alipay' {if empty($set['pay']['alipay'])}style="display:none"{/if}>
+           <!--           <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">CERT证书文件</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="hidden" name="pay[weixin_cert]" value="{$set['pay']['weixin_cert']}"/>
+                            {ifp 'sysset.save.pay'}
+
+                            <input type="file" name="weixin_cert_file" class="form-control" />
+                            <span class="help-block">
+                                {if !empty($sec['cert'])}
+                                <span class='label label-success'>已上传</span>
+                                {else}
+                                <span class='label label-danger'>未上传</span>
+                                {/if}
+                                下载证书 cert.zip 中的 apiclient_cert.pem 文件</span>
+                            {else}
+                           {if !empty($sec['cert'])}
+                            <span class='label label-success'>已上传</span>
+                            {else}
+                            <span class='label label-danger'>未上传</span>
+                            {/if}
+                            {/if}
+
+                        </div>
+                    </div> -->
+ 
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">付款账号:</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input class="col-sm-6" type="text" name="pay[alipay_number]" value="{$set['pay']['alipay_number']}"/>
+                        </div>  
+                    </div>   
+                    <div class="form-group">              
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">付款账户名：</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input class="col-sm-6" type="text" name="pay[alipay_name]" value="{$set['pay']['alipay_name']}"/>
+                  
+                        </div>
+                    </div>
+                </div>
 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额支付</label>
@@ -167,6 +207,14 @@
                         }
                         else {
                             $("#certs").hide();
+                        }
+                    })
+                    $(":radio[name='pay[alipay]']").click(function () {
+                        if ($(this).val() == 1) {
+                            $("#alipay").show();
+                        }
+                        else {
+                            $("#alipay").hide();
                         }
                     })
 

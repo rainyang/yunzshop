@@ -258,6 +258,7 @@ class Sz_DYi_Order
             }
         }
     }
+    
     function setStocksAndCredits($orderid = '', $type = 0)
     {
         global $_W;

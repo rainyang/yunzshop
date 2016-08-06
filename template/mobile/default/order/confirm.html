@@ -418,7 +418,7 @@
     <%/if%>
     <div class="addorder_price" style="margin-top:5px;">
             <div class="price" style="border:none;">
-            <div class="line" style="line-height:26px;">商品小计 <span>￥<span class='goodspricesubtotal' data-id="<%order.supplier_uid%>"><%order.realprice%></span></span>
+            <div class="line" style="line-height:26px;">商品小计 <span>￥<span class='goodsprice' data-id="<%order.supplier_uid%>"><%order.realprice%></span></span>
             </div>
         </div>
       
@@ -1017,7 +1017,7 @@ var fromcart = 0;
                       order[i].deduct = 1;       
                 }
             }
-             
+            
             if($('.deductcredit2[data-id='+supplierarr[i]+']').length>0){
                 if($('.deductcredit2[data-id='+supplierarr[i]+']').attr('on')=='1'){
                       order[i].deduct2 = 1;       

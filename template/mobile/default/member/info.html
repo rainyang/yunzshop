@@ -71,6 +71,8 @@
         <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><input type="text" id='mobile' placeholder="请输入您的手机号码"  value="<%mobile%>" /></div></div></div>
         <%/if%>
         <div class="line"><div class="title">微信号</div><div class='info'><div class='inner'><input type="text"  id='weixin' placeholder="请输入微信号" value="<%weixin%>"/></div></div></div>
+        <div class="line"><div class="title">支付宝帐号</div><div class='info'><div class='inner'><input type="text"  id='alipay' placeholder="请输入支付宝帐号" value="<%alipay%>"/></div></div></div>
+        <div class="line"><div class="title">账号姓名</div><div class='info'><div class='inner'><input type="text"  id='alipayname' placeholder="请输入账号姓名" value="<%alipayname%>"/></div></div></div>
         <div class="line">
             <div class="title">性别</div><div class='info'><div class='inner'>
             <span class="gender" data-val="1"><i class="fa <%if gender=='1'%>fa-check-circle-o<%else%>fa-circle-o<%/if%>" <%if gender=='1'%>style="color:#0C9;"<%/if%>></i> 男</span>&nbsp;&nbsp;
@@ -160,6 +162,8 @@
                             'avatar': $("#img0").val(),
                             'mobile': $('#mobile').val(),
                             'weixin': $('#weixin').val(),
+                            'alipay': $('#alipay').val(),
+                            'alipayname': $('#alipayname').val(),
                             'gender': $('#gender').val(),
                             'birthyear': $('#birthday').val().length>0?birthday[0]:0,
                             'birthmonth': $('#birthday').val().length>0?birthday[1]:0,

@@ -1462,3 +1462,42 @@ if(!pdo_fieldexists('sz_yi_chooseagent', 'detail')) {
 if(!pdo_fieldexists('sz_yi_chooseagent', 'allgoods')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_chooseagent')." ADD `allgoods` INT(11) DEFAULT '0' ;");
 }
+
+//转让记录表 2016-7-12 杨雷
+$sql = "
+CREATE TABLE IF NOT EXISTS " .  tablename('sz_yi_member_transfer_log') . "  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL,
+  `openid` varchar(255) NOT NULL,
+  `tosell_id` int(11) DEFAULT NULL COMMENT '出让人id',
+  `assigns_id` int(11) DEFAULT NULL COMMENT '受让人id',
+  `createtime` int(11) NOT NULL,
+  `status` tinyint(3) NOT NULL COMMENT '-1 失败 0 进行中 1 成功',
+  `money` decimal(10,2) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+";
+pdo_fetchall($sql);
+
+// 会员表增加 支付宝信息字段
+
+if(!pdo_fieldexists('sz_yi_member', 'alipay')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD `alipay`  varchar(255) DEFAULT '0' AFTER `isagency`;");
+}
+
+if(!pdo_fieldexists('sz_yi_member', 'alipayname')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD `alipayname`  varchar(255) DEFAULT '0' AFTER `alipay`;");
+}
+
+//分销提现表增加 字段
+if(!pdo_fieldexists('sz_yi_commission_apply', 'alipay')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_commission_apply')." ADD `alipay`  varchar(255) DEFAULT '0' AFTER `credit20`;");
+}
+
+if(!pdo_fieldexists('sz_yi_commission_apply', 'alipayname')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_commission_apply')." ADD `alipayname`  varchar(255) DEFAULT '0' AFTER `alipay`;");
+}
+
+if(!pdo_fieldexists('sz_yi_commission_apply', 'batch_no')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_commission_apply')." ADD `batch_no`  varchar(255) DEFAULT '0' AFTER `alipayname`;");
+}
