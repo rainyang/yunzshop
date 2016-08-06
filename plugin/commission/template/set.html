@@ -198,6 +198,17 @@
                 </div>
             </div>
 
+            {if p('love')} 
+            <!-- Author:ym Date:2016-08-06 Content:消费天数 -->
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">消费天数</label>
+                <div class="col-sm-9 col-xs-12">
+                    <input class="form-control" type="text" value="{$set['withdraw_day']}" name="setdata[withdraw_day]">
+                    <span class="help-block">完成收货多少天后订单才计入已消费</span>
+                </div>
+            </div>
+            {/if}
+
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启提现到余额</label>
                 <div class="col-sm-9 col-xs-12">
