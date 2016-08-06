@@ -92,13 +92,19 @@ if ($operation == 'query') {
 			$storeids = unserialize($row['storeids']);
 			if ($goodsid) {
 				if ($row['usetype'] == 0) {
+					$b = 0;
 					if ($row['getstore'] == 1) {
 						if ($carrierid != 0) {
-							foreach ($storeids as $vs) {
-								if ($vs == $carrierid) {
-									$b += 1;
-								}
+							if (!empty($storeids)) {
+								foreach ($storeids as $vs) {
+									if ($vs == $carrierid) {
+										$b += 1;
+									}
+								}	
+							} else {
+								$b += 1;
 							}
+							
 							if ($b == 0) {
 								unset($list[$key]);
 							}
@@ -111,18 +117,28 @@ if ($operation == 'query') {
 					$goodsids = unserialize($row['goodsids']);
 					$a = 0;
 					$b = 0;
-					foreach ($goodsids as $value) {
-						if ($value == $goodsid) {
-							$a += 1;
+					if (!empty($goodsids)) {
+						foreach ($goodsids as $value) {
+							if ($value == $goodsid) {
+								$a += 1;
+							}
 						}
+					} else {
+						$a += 1;
 					}
+					
 					if ($row['getstore'] == 1) {
 						if ($carrierid != 0) {
-							foreach ($storeids as $vs) {
-								if ($vs == $carrierid) {
-									$b += 1;
+							if (!empty($storeids)) {
+								foreach ($storeids as $vs) {
+									if ($vs == $carrierid) {
+										$b += 1;
+									}
 								}
+							} else {
+								$b += 1;
 							}
+							
 							if ($a == 0 || $b == 0) {
 								unset($list[$key]);
 							}
@@ -140,18 +156,29 @@ if ($operation == 'query') {
 					$goods = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_goods')." WHERE id = :id",array(':id' => $goodsid));
 					$a = 0;
 					$b = 0;
-					foreach ($categoryids as $v) {
-						if ($v == $goods['ccate'] || $v == $goods['tcate'] ) {
-							$b += 1;
+					if (!empty($categoryids)) {
+						echo 1;exit;
+						foreach ($categoryids as $v) {
+							if ($v == $goods['ccate'] || $v == $goods['tcate'] ) {
+								$a += 1;
+							}
 						}
+					} else {
+						$a += 1;
 					}
+					
 					if ($row['getstore'] == 1) {
 						if ($carrierid != 0) {
-							foreach ($storeids as $vs) {
-								if ($vs == $carrierid) {
-									$b += 1;
-								}
+							if (!empty($storeids)) {
+								foreach ($storeids as $vs) {
+									if ($vs == $carrierid) {
+										$b += 1;
+									}
+								}	
+							} else {
+								$b += 1;
 							}
+							
 							if ($a == 0 || $b == 0) {
 								unset($list[$key]);
 							}
@@ -172,11 +199,16 @@ if ($operation == 'query') {
 					$a = 0;
 					foreach ($cartid as $value) {
 						$gid = pdo_fetchcolumn("SELECT goodsid FROM ".tablename('sz_yi_member_cart')." WHERE id=:id ",array(':id' => $value));
-						foreach ($goodsids as $v) {
-							if($v == $gid){
-								$a += 1;
-							}
+						if (!empty($goodsids)) {
+							foreach ($goodsids as $v) {
+								if($v == $gid){
+									$a += 1;
+								}
+							}	
+						} else {
+							$a += 1;
 						}
+						
 					}
 					if($a == 0){
 						unset($list[$key]);
@@ -185,16 +217,20 @@ if ($operation == 'query') {
 					$categoryids = unserialize($row['categoryids']);
 					$cartid = explode(',',$cartids);
 					$b = 0;
-					foreach ($categoryids as $v) {
-						foreach ($cartid as $vc) {
-							$gid = pdo_fetchcolumn("SELECT goodsid FROM ".tablename('sz_yi_member_cart')." WHERE id=:id ",array(':id' => $vc));
-							$goods = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_goods')." WHERE id = :id",array(':id' => $gid));
-							if ($v == $goods['ccate'] || $v == $goods['tcate'] ) {
-								$b += 1;
-							}	
-						}
-						
+					if (!empty($categoryids)) {
+						foreach ($categoryids as $v) {
+							foreach ($cartid as $vc) {
+								$gid = pdo_fetchcolumn("SELECT goodsid FROM ".tablename('sz_yi_member_cart')." WHERE id=:id ",array(':id' => $vc));
+								$goods = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_goods')." WHERE id = :id",array(':id' => $gid));
+								if ($v == $goods['ccate'] || $v == $goods['tcate'] ) {
+									$b += 1;
+								}	
+							}
+						}	
+					} else {
+						$b += 1;
 					}
+					
 					if ($b == 0) {
 						unset($list[$key]);
 					}

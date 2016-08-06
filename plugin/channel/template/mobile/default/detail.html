@@ -51,10 +51,10 @@ a {text-decoration:none;}
             <%if log.type==3%>零售数量<%/if%>
             <%if log.type==4%>自提数量<%/if%>
             ：(<%log.every_turn%>)</span></h1>
-            <p><%if log.type==1%>采购价<%/if%>
-                <%if log.type==2%>出货价<%/if%>
-                <%if log.type==3%>零售价<%/if%>
-                <%if log.type==4%>自提价<%/if%>：<%log.every_turn_price%>(元)<br>折扣：<%log.every_turn_discount%>(%)<br>商品单价：<%log.goods_price%>(元)</p>
+            <p><%if log.type==1%>采购价：<%/if%>
+                <%if log.type==2%>出货价：<%/if%>
+                <%if log.type==3%>零售价：<%/if%>
+                <%if log.type==4%><%/if%><%if log.type!=4%><%log.every_turn_price%>(元)<br>折扣：<%log.every_turn_discount%>(%)<br>商品单价：<%log.goods_price%>(元)<%/if%></p>
         </div>
   </div>
     <%/each%>

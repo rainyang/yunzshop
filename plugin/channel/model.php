@@ -40,6 +40,22 @@ if (!class_exists('ChannelModel')) {
 			return $stock;
 		}
 		/**
+		  * 获取我的指定商品库存明细 
+		  *
+		  * @param string $openid, int $goodsid 商品id int $optionid 规格id
+		  * @return array $stock_log
+		  */
+		public function getMyOptionStockLog($openid, $goodsid, $optionid)
+		{
+			global $_W;
+			$cond = '';
+			if (!empty($optionid)) {
+				$cond = " AND sl.optionid={$optionid}";
+			}
+			$stock_log = pdo_fetchall("SELECT g.thumb,g.title,sl.* FROM " . tablename('sz_yi_channel_stock_log') . "sl left join  " . tablename('sz_yi_goods') . " g on sl.goodsid = g.id WHERE sl.uniacid={$_W['uniacid']} AND sl.openid='{$openid}' AND sl.goodsid={$goodsid}" . $cond);
+			return $stock_log;
+		}
+		/**
 		  * 获取上级渠道商库存最多的 
 		  *
 		  * @param string $openid, int $goodsid 商品id int $optionid 规格id
@@ -284,6 +300,7 @@ if (!class_exists('ChannelModel')) {
                 	'openid'		=> $openid,
                     'goodsid'       => $og['goodsid'],
                     'order_goodsid' => $og['id'],
+                    'every_turn'	=> $og['total'],
                     'uniacid'       => $_W['uniacid'],
                     'type'          => 4,
                     'paytime'		=> time()

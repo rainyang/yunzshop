@@ -1,6 +1,7 @@
 {template 'web/_header'}
-<div class='panel panel-default pdl96' style='margin-top:10px;'>
 
+{template 'web/shop/tabs'}
+<div class='panel panel-default pdl96' style='margin-top:10px;'>
     {loop $category $ck $cv}
 	 {if count($cv['plugins'])<=0}{php continue;}{/if}
     <div class="panel-heading">

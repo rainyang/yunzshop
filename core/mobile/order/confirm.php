@@ -1614,7 +1614,7 @@ if ($_W['isajax']) {
             $deductmoney   = 0;
             $deductcredit2 = 0;
             if ($sale_plugin) {
-                if (!empty($_GPC['deduct'])) {
+                if (isset($_GPC['order']) && !empty($_GPC['order'][0]['deduct'])) {
                     $credit  = m('member')->getCredit($openid, 'credit1');
                     $saleset = $sale_plugin->getSet();
                     if (!empty($saleset['creditdeduct'])) {
@@ -1729,6 +1729,7 @@ if ($_W['isajax']) {
             if (p('channel')) {
                 if (!empty($ischannelpick)) {
                     $order['ischannelself'] = 1;
+                    $order['status']        = 1;
                 }
             }
             if(p('hotel')){
@@ -2017,10 +2018,23 @@ if ($_W['isajax']) {
                 $plugincoupon->useConsumeCoupon($orderid);
             }
             m('notice')->sendOrderMessage($orderid);
-            $pluginc = p('commission');
+            if (p('channel')) {
+                if (empty($ischannelpick)) {
+                    $pluginc = p('commission');
+                    if ($pluginc) {
+                        $pluginc->checkOrderConfirm($orderid);
+                    }
+                }
+            } else {
+                $pluginc = p('commission');
+                if ($pluginc) {
+                    $pluginc->checkOrderConfirm($orderid);
+                }
+            }
+            /*$pluginc = p('commission');
             if ($pluginc) {
                 $pluginc->checkOrderConfirm($orderid);
-            }
+            }*/
 
         }
         /*if ($pluginc) {
