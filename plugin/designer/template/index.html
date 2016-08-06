@@ -204,7 +204,7 @@
                                 <div ng-include="'../addons/sz_yi/plugin/designer/template/temp/show-'+page.temp+'.html'" id="{{page.id}}" mid="{{page.id}}" ng-click="setfocus(page.id,$event)"></div>
                             </div>
                             <div style="height: 50px;" ng-show="pages[0].params.guide==1"></div>
-                            <div ng-repeat="Item in Items" class="fe-mod-repeat" ng-mouseover="over(Item.id)" ng-mouseleave="out(Item.id)">
+                            <div ng-repeat="Item in Items" class=it"fe-mod-repeat" ng-mouseover="over(Item.id)" ng-mouseleave="out(Item.id)">
                                 <div class="fe-mod-move" ng-mouseover="drag(Item.id)" ng-click="setfocus(Item.id,$event)"></div>
                                 <div ng-include="'../addons/sz_yi/plugin/designer/template/temp/show-'+Item.temp+'.html'" class="fe-mod-parent" id="{{Item.id}}" ng-show="Item" mid="{{Item.id}}" on-finish-render-filters></div>
                                 <div class="fe-mod-del" ng-click="delItem(Item.id)">移除</div>
