@@ -1557,7 +1557,7 @@ if ($operation == "display") {
         $orderupdate["changeprice"] = $item["changeprice"] + $changeprice;
         if ($dispatchprice != $item["dispatchprice"]) {
             $orderupdate["dispatchprice"] = $dispatchprice;
-            $orderupdate["changedispatchprice"]+= $changedispatchprice;
+            $orderupdate["changedispatchprice"]+= ($dispatchprice - $item["olddispatchprice"]);
         }
         if (!empty($orderupdate)) {
             pdo_update("sz_yi_order", $orderupdate, array(
