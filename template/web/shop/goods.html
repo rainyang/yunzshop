@@ -13,14 +13,7 @@
     .tab-pane {padding:20px 0 20px 0;}
 </style>
 <div class="main rightlist">
-<!-- 新增加右侧顶部三级菜单 -->
-<div class="right-titpos">
-	<ul class="add-snav">
-		<li class="active"><a href="#">商品管理</a></li>
-		<li><a href="#">发布商品</a></li>
-	</ul>
-</div>
-<!-- 新增加右侧顶部三级菜单结束 -->
+
 
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
         <div class="panel panel-default panel-center">
@@ -242,20 +235,10 @@
 {elseif $operation == 'display'}
 
 <div class="main rightlist">
-	<!-- 新增加右侧顶部三级菜单 -->
-<div class="right-titpos">
-	<ul class="add-snav">
-		<li class="active"><a href="#">商品管理</a></li>
-		<li><a href="#">全部商品</a></li>
-	</ul>
-</div>
-<!-- 新增加右侧顶部三级菜单结束 -->
+
 <div class="right-addbox"><!-- 此处是右侧内容新包一层div -->
 
     <div class="panel panel-info">
-        <div class="panel-heading">
-			<a class='btn btn-primary' href="{php echo $this->createWebUrl('shop/goods',array('op'=>'post'))}"><i class='fa fa-plus'></i> 发布商品</a>
-            </div>
         <div class="panel-body">
             <form action="./index.php" method="get" class="form-horizontal" role="form">
                 <input type="hidden" name="c" value="site" />
@@ -367,7 +350,7 @@
 				<table class="table table-hover">
 					<thead class="navbar-inner">
 						<tr>
-							<th width="6%">ID</th>
+							<th width="3%">ID</th>
 							<th width="6%">排序</th>
 							<th width="6%">商品</th>
 							<th width="26%">&nbsp;</th>

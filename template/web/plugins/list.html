@@ -1,12 +1,6 @@
 {template 'web/_header'}
-
-{template 'web/shop/tabs'}
+{template 'web/plugins/tabs'}
 <div class='panel-default pdl236'>
-    <div class="right-titpos">
-        <ul class="add-snav">
-            <li class="active"><a href="#">插件中心</a></li>
-        </ul>
-    </div>
     <div class="right-addbox">
     {loop $category $ck $cv}
 	 {if count($cv['plugins'])<=0}{php continue;}{/if}

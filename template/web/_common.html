@@ -21,3 +21,104 @@ win.document.write($(txt).val());
 win.document.close();
 }
 </script>
+<div class="topmenubg_header">
+<div class="topmenu_header">
+    <ul class="nav navbar-nav">
+        <li style="margin-right:40px">
+            <a class="dropdown-toggle" style="color:#000" href="./index.php?c=home&amp;a=welcome&amp;do=ext&amp;m=sz_yi"><i class="iconfont icon-heart"></i> 芸众商城</a> 
+        </li> 
+			{ifp 'shop.goods.view'}<li {if $_GPC['p'] == 'goods' || empty($_GPC['p'])} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods')}"><i class="iconfont icon-good-web"></i> 商城<i class="fa fa-angle-down"></i></a></li>{/if}
+        </li>
+		{php $plugins = m('plugin')->getAll()}
+        <?php 
+          //公众号权限设置查询
+          $acid_plugins = pdo_fetchcolumn('select plugins from ' . tablename('sz_yi_perm_plugin') . ' where acid=:uniacid',array(":uniacid" => $_W['uniacid']));
+          if(!empty($acid_plugins)){
+            $plugins_data = explode(',', $acid_plugins);
+          }
+          if (p('supplier')) {
+              $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+            }
+          ?>
+		{loop $plugins $plugin}
+			{if $plugin['identity'] == 'commission'}
+				{ifpp $plugin['identity']}
+				{if p($plugin['identity'])}
+				 <li>
+					<a href='{php echo $this->createPluginWebUrl('commission')}' class="dropdown-toggle" ><i class='iconfont icon-web-price' style="margin-top: 2px"></i> <span>分销</span> <i class="fa fa-angle-down"></i></a>
+				</li> 
+				{/if}        
+				{/if}
+			{/if}
+
+			{if $plugin['identity'] == 'bonus'}
+				{ifpp $plugin['identity']}
+				{if p($plugin['identity'])}
+				<li>
+					<a href='{php echo $this->createPluginWebUrl('bonus')}' class="dropdown-toggle" ><i class='fa fa-gavel'></i> <span>分红</span><i class="fa fa-angle-down"></i></a>
+				</li>
+				{/if}        
+				{/if}
+			{/if}
+
+			{if $plugin['identity'] == 'supplier'}
+				{ifpp $plugin['identity']}
+				{if p($plugin['identity'])}
+				<li>
+					<a href='{php echo $this->createPluginWebUrl('supplier')}' class="dropdown-toggle" ><i class='fa fa-gavel'></i> <span>供应商</span><i class="fa fa-angle-down"></i></a>
+				</li>
+				{/if}        
+				{/if}
+			{/if}
+		{/loop}
+
+		{ifp 'member'}
+         <li class="dropdown">
+            <a href='{php echo $this->createWebUrl('member/list')}' class="dropdown-toggle" ><i class='fa fa-users'></i> 会员 <i class="fa fa-angle-down"></i></a>
+        </li> 
+        {/if}
+
+         {ifp 'order'}
+        <li>
+            <a href='{php echo $this->createWebUrl('order', array('op' => 'display'))}' class="dropdown-toggle" ><i class='fa fa-file-text-o'></i> 订单 <i class="fa fa-angle-down"></i></a>
+        </li>
+        {/if}
+         {ifp 'finance'}
+         <li class="dropdown">
+            <a href='{php echo $this->createWebUrl('finance/log',array('type'=>0))}' class="dropdown-toggle" ><i class='iconfont icon-web-price' style="margin-top: 2px"></i> 财务 <i class="fa fa-angle-down"></i></a>
+        </li> 
+        {/if} 
+        
+        {ifp 'statistics'}
+        <li class="dropdown">
+            <a href='{php echo $this->createWebUrl('statistics/sale')}' class="dropdown-toggle" ><i class='iconfont icon-shuju-web '></i> 数据 <i class="fa fa-angle-down"></i></a>
+        </li>
+        {/if}                   
+
+<li class="dropdown">
+          <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" style="display:block; max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; "><i class="fa fa-group"></i>{$_W['account']['name']} <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            {if $_W['role'] != 'operator'}
+            <li><a href="{url 'account/post' array('uniacid' => $_W['uniacid'])}" target="_blank"><i class="fa fa-weixin fa-fw"></i> 编辑当前账号资料</a></li>
+            {/if}
+            <li><a href="{url 'account/display'}" target="_blank"><i class="fa fa-cogs fa-fw"></i> 管理其它公众号</a></li>
+            <li><a href="{url 'utility/emulator'}" target="_blank"><i class="fa fa-mobile fa-fw"></i> 模拟测试</a></li>
+          </ul>
+        </li>
+        <li class="dropdown" style="float:right;margin-right:15px">
+          <a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown" style="display:block; max-width:185px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; "><i class="fa fa-user"></i>{$_W['user']['username']} ({if $_W['role'] == 'founder'}系统管理员{elseif $_W['role'] == 'manager'}公众号管理员{else}公众号操作员{/if}) <b class="caret"></b></a>
+          <ul class="dropdown-menu">
+            <li><a href="{url 'user/profile/profile'}" target="_blank"><i class="fa fa-weixin fa-fw"></i> 我的账号</a></li>
+            {if $_W['role'] != 'operator'}
+            <li class="divider"></li>
+            <li><a href="{url 'system/welcome'}" target="_blank"><i class="fa fa-sitemap fa-fw"></i> 系统选项</a></li>
+            <li><a href="{url 'system/welcome'}" target="_blank"><i class="fa fa-cloud-download fa-fw"></i> 自动更新</a></li>
+            <li><a href="{url 'system/updatecache'}" target="_blank"><i class="fa fa-refresh fa-fw"></i> 更新缓存</a></li>
+            <li class="divider"></li>
+            {/if}
+            <li><a href="{url 'user/logout'}"><i class="fa fa-sign-out fa-fw"></i> 退出系统</a></li>
+          </ul>
+        </li>
+    </ul>
+</div>
+</div>
