@@ -1,4 +1,4 @@
-html,body,h1,h2,h3{font-family:arial, 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', '宋体', \5b8b\4f53, Tahoma, Arial, Helvetica, STHeiti}
+/*html,body,h1,h2,h3{font-family:arial, 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', '宋体', \5b8b\4f53, Tahoma, Arial, Helvetica, STHeiti}*/
 .ng-cloak{display:none;}
 body{overflow-y:scroll;background:#f9f9f9;}
 a:hover{text-decoration:none;}
@@ -120,10 +120,10 @@ a:focus{outline:none; -moz-outline:none}
 .big-menu .btn-group{width:100%;}
 .big-menu .btn-group>.btn{border-radius:0; width:33.5%; text-align:center; border-top:0;}
 /*更新提醒*/
-.upgrade-tips{width:100%; position:absolute; top:0; text-align:center; z-index:99999;}
-.upgrade-tips a{display:inline-block; margin:0 auto; height:35px; line-height:35px; padding:0 5px 0 10px; color:#FFF; background:#EE5023;border-radius: 0 0 0 4px;}
+.upgrade-tips{width:100%; position:absolute; bottom:0; text-align:center; z-index:99999;}
+.upgrade-tips a{display:inline-block; margin:0 auto; height:35px; line-height:35px; padding:0 5px 0 10px; color:#FFF; background:#EE5023;border-radius: 4px 0 0 0;}
 .upgrade-tips a.module{background:#3C9D40;}
-.upgrade-tips span{display:inline-block; height:35px; line-height:35px; background:#328233; padding:0 10px; color:#FFF; cursor:pointer;}
+.upgrade-tips span{display:inline-block; height:35px; line-height:35px; background:#328233; padding:0 10px; color:#FFF; cursor:pointer;border-radius: 0 4px 0 0;}
 
 /*多图上传*/
 .multi-img-details{margin-top:.5em;}
