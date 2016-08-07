@@ -103,7 +103,7 @@ z-index: 2;position: fixed;
 .nav-tabs>li>a{border: 0;border-radius: 0 }
 .dropdown-menu{left: 0;right:0;}
 .nav-tabs>li>a:hover{border: 0;background: none}
-.nav-tabs>li>a:hover{    background: hsl(0, 0%, 93%);
+.nav-tabs>li>a:hover{    background: hsl(110, 55%, 59%, 0.54);
     border: 1px solid hsl(0, 0%, 93%);
     border-right: 1px solid hsl(0, 0%, 93%);
     border-left: 3px solid hsl(0, 0%, 93%);}
@@ -175,7 +175,7 @@ z-index: 2;position: fixed;
 /*.input-group .form-control{width: 100px}*/
 .wid100 .form-control,.wid100{width: 100px !important}
 .row{margin:0;}
-.fe-panel{width: 660px !important}
+.fe-panel{width: 457px !important}
 /*.form-control{padding: 0;text-align:center;}*/
 /*.clearfix{padding-bottom: 100px}*/
 .progress {background-color: #E6E6E6;}
