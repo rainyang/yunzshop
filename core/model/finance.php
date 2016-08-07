@@ -72,10 +72,14 @@ class Sz_DYi_Finance {
         $string = implode($prepares, '&');
         //$string .= $alipay['secret'];
         $string .=  $secret;
-        $set['sign'] = md5($string);       
+        $set['sign'] = md5($string);   
+
         $url = 'https://mapi.alipay.com/gateway.do' . '?' . http_build_query($set, '', '&');
         $resp = $this->getHttpResponseGET($url, IA_ROOT . "/addons/sz_yi/cert/cacert.pem");
         header("Location:" . $resp);
+        //修改状态为打款中状态
+        $apply= array('status'=>'3','batch_no'=>$set['batch_no'],'paytime'=>time());
+        pdo_update('sz_yi_commission_apply', $apply, array('id' =>$applyid));
         exit;
         //echo $resp;
         //echo $url;exit;
