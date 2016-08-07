@@ -641,15 +641,39 @@ if ($_W['isajax']) {
                     $order_all[$val['supplier_uid']]['dispatch_price']  = 0;
                 }
                 $order_all[$val['supplier_uid']]['saleset'] = $saleset;
-                foreach ($saleset["enoughs"] as $e) {
-                    if ($order_all[$val['supplier_uid']]['realprice'] >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
+
+                //满额条件为多个时,$saleset["enoughs"]才有值
+                if (!empty($saleset["enoughs"])) {
+                    //取满额条件值最大的1个条件
+                    $tmp_money = 0;
+
+                    foreach ($saleset["enoughs"] as $e) {
+                        if ($order_all[$val['supplier_uid']]['realprice'] >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
+                            if ($e["enough"] > $tmp_money) {
+                                $tmp_money = $e["enough"];
+
+                                $order_all[$val['supplier_uid']]['saleset']["showenough"]   = true;
+                                $order_all[$val['supplier_uid']]['saleset']["enoughmoney"]  = $e["enough"];
+                                $order_all[$val['supplier_uid']]['saleset']["enoughdeduct"] = number_format($e["money"], 2);
+                                $final_money = $e["money"];
+
+                                //确定匹配的满额条件,页面显示
+                                $saleset['enoughmoney'] = $e["enough"];
+                                $saleset['enoughdeduct'] = number_format($e["money"], 2);
+                            }
+                        }
+                    }
+
+                    $order_all[$val['supplier_uid']]['realprice'] -= floatval($final_money);
+                } else { //1个满额条件
+                    if ($order_all[$val['supplier_uid']]['realprice'] >= floatval($saleset["enoughmoney"]) && floatval($saleset["enoughdeduct"]) > 0) {
                         $order_all[$val['supplier_uid']]['saleset']["showenough"]   = true;
-                        $order_all[$val['supplier_uid']]['saleset']["enoughmoney"]  = $e["enough"];
-                        $order_all[$val['supplier_uid']]['saleset']["enoughdeduct"] = number_format($e["money"], 2);
-                        $order_all[$val['supplier_uid']]['realprice'] -= floatval($e["money"]);
-                        break;
+                        $order_all[$val['supplier_uid']]['saleset']["enoughmoney"]  = $saleset["enough"];
+                        $order_all[$val['supplier_uid']]['saleset']["enoughdeduct"] = number_format($saleset["money"], 2);
+                        $order_all[$val['supplier_uid']]['realprice'] -= floatval($saleset["money"]);
                     }
                 }
+
                 if (empty($saleset["dispatchnodeduct"])) {
                     $order_all[$val['supplier_uid']]['deductprice2'] += $order_all[$val['supplier_uid']]['dispatch_price'];
                 }
