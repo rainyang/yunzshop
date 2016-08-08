@@ -126,7 +126,7 @@ if (!class_exists('ChannelModel')) {
 
 			$channel_info['channel']['dispatchprice'] = pdo_fetchcolumn("SELECT ifnull(sum(dispatchprice),0) FROM " . tablename('sz_yi_order') . " WHERE uniacid={$_W['uniacid']} AND status>=3 AND iscmas=0 AND ischannelself=1 AND openid='{$openid}'");
 
-			$channel_info['channel']['order_total_price'] = number_format(pdo_fetchcolumn("SELECT ifnull(sum(price),0) FROM " . tablename('sz_yi_order_goods') . " WHERE uniacid={$_W['uniacid']} AND channel_id={$member['id']}"),2);
+			$channel_info['channel']['order_total_price'] = number_format(pdo_fetchcolumn("SELECT ifnull(sum(price),0) FROM " . tablename('sz_yi_order_goods') . " WHERE uniacid=:uniacid AND channel_id=:channel_id",array(':uniacid' => $_W['uniacid'], ':channel_id' => $member['id'])),2);
 
             $channel_info['channel']['ordercount'] = pdo_fetchcolumn("SELECT count(o.id) FROM " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) WHERE og.channel_id={$member['id']} AND o.userdeleted=0 AND o.deleted=0 AND o.uniacid={$_W['uniacid']} ");
 
