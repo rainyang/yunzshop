@@ -63,6 +63,7 @@ z-index: 2;position: fixed;
     word-wrap: break-word;
     word-break: normal;
 }
+.nav .open>a, .nav .open>a:hover, .nav .open>a:focus{border-color: hsl(24, 100%, 50%);background: none}
 
 .nav.nav-tabs li{width: 100%;margin-bottom: 5px;}
 .nav-tabs>li.active>a,.nav-tabs>li.active>a:hover{
@@ -99,7 +100,7 @@ z-index: 2;position: fixed;
 .form-control{font-size: 12px;border-radius: 2px !important;height: 30px}
 .table{margin-bottom: 6px; margin-left:13px;}
 /*.nav>li{width: 100%}*/
-.topmenu ul li{width: 100%}
+.topmenu ul li{width: 100%; text-align: center;}
 .nav-tabs>li>a{border: 0;border-radius: 0 }
 .dropdown-menu{left: 0;right:0;}
 .nav-tabs>li>a:hover{border: 0;background: none}
@@ -218,7 +219,7 @@ z-index: 2;position: fixed;
 .tpl-category-container select{margin-bottom: 4px}
 .navbar-nav{margin: 0;}
 .navbar-nav .iconfont,.navbar-nav .fa{margin: 0 2px}
-.navbar-nav>li>a {
+.topmenubg_header .navbar-nav>li>a {
     padding: 0px 10px;
 /*    margin: 3px 0;*/
     text-align: center;
@@ -292,7 +293,7 @@ padding: 20px 20px 10px;
 }
 .add-snav li.active a {
     color: #333;
-    border-bottom: 2px solid #0099FC;
+    border-bottom: 2px solid #FF6600;
 }
 .right-addbox{    width: 97.4%;
     margin: 15px;
