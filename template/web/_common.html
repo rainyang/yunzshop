@@ -27,7 +27,7 @@ win.document.close();
         <li style="margin-right:40px">
             <a style="color:#000" href="./index.php?c=home&amp;a=welcome&amp;do=ext&amp;m=sz_yi"><i class="iconfont icon-heart"></i> 芸众商城</a> 
         </li> 
-			{ifp 'shop.goods.view'}<li {if $_GPC['p'] == 'goods' || empty($_GPC['p'])} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods')}" class="dropdown-toggle"><i class="iconfont icon-good-web"></i> 商城<i class="fa fa-angle-down"></i></a></li>{/if}
+			{ifp 'shop.goods.view'}<li {if $_GPC['p'] == 'goods' || empty($_GPC['p'])} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods')}" class="dropdown-toggle"><i class="iconfont icon-good-web"></i>商品<i class="fa fa-angle-down"></i></a></li>{/if}
         </li>
 		{php $plugins = m('plugin')->getAll()}
         <?php 

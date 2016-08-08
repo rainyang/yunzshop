@@ -30,7 +30,10 @@ ul{list-style:none;}
 .topmenu>ul>li>a>span {
     color:#fff;
 }
-.topmenu_header{position:fixed;z-index:3;height:50px;background-color:#fff;border-bottom: 1px solid hsl(0, 0%, 87%);width:100%}
+.navbar-nav>li {
+    float: left;
+}
+.topmenu_header{    min-width: 1000px;position:fixed;z-index:3;height:50px;background-color:#fff;border-bottom: 1px solid hsl(0, 0%, 87%);width:100%}
 .topmenu_header a{z-index:9; color:#000}
 .topmenu_header .dropdown{    float: left;
     position: relative;
