@@ -28,7 +28,7 @@ ul{list-style:none;}
 }
 .topmenu ul li a i{color: #fff}
 .topmenu>ul>li>a>span {
-    color:#fff;
+    color:rgba(255,255,255,.8);
 }
 .navbar-nav>li {
     float: left;
@@ -282,7 +282,7 @@ padding: 20px 20px 10px;
     margin-bottom: 5px;
 }
 .addtit-name{font-weight:700}
-.right-titpos{background: #fff;border-bottom: 1px #e0e0e0 solid;height: 50px;}
+.right-titpos{background: #FAFAFA;border-bottom: 1px #e0e0e0 solid;height: 50px;}
 .add-snav{width: 98%;margin: 0 1%;line-height: 50px;}
 .add-snav li{float: left;}
 .add-snav li a {
@@ -291,7 +291,7 @@ padding: 20px 20px 10px;
     min-width: 0;
     border: none;
     background: transparent;
-    font-size: 14px;
+    font-size: 12px;
     color: #666666;
     line-height: 48px;
     display: block;
