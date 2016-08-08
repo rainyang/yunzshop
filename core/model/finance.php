@@ -61,7 +61,7 @@ class Sz_DYi_Finance {
         $set['batch_no']       = m('common')->createNO('member_log', 'batch_no', '');
         $set['batch_fee']      = $money;
         $set['batch_num']      = 1;
-        $set['detail_data']    = $set['batch_no'].'^'.$alipay.'^'.$alipayname.'^'.$money.'^备注说明';
+        $set['detail_data']    = $set['batch_no'].'^'.$alipay.'^'.$alipayname.'^'.$money.'^佣金提现';
         $prepares            = array();
         foreach ($set as $key => $value) {
             if ($key != 'sign' && $key != 'sign_type') {
