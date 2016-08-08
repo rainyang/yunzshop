@@ -92,6 +92,9 @@ $plugins_desc = array(
 	"channel" => "虚拟库存，人、货、钱一体化管理",
 );
 
+if(!pdo_fieldexists('sz_yi_plugin', 'desc')) {
+	pdo_fetchall("ALTER TABLE ".tablename('sz_yi_plugin')." ADD `desc` varchar(800) NULL");
+}
 $sql = "select * from ".tablename('sz_yi_plugin');
 $plugin_list = pdo_fetchall($sql);
 foreach ($plugin_list as $pl) {
