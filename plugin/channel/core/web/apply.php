@@ -24,12 +24,12 @@ if ($operation == 'reviewed') {
             message($msg, $this->createPluginWebUrl('channel/apply'), 'success');
         } else {
             $channellevel = pdo_fetch('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid = :uniacid ORDER BY level_num ASC', array(':uniacid' => $_W['uniacid']));//渠道商等级
-            if (!empty($set['default_level']) {
+            if (!empty($set['default_level'])) {
                 $become_level = $set['default_level'];
             } else {
                 $become_level = $channellevel['id'];
             }
-            if (!empty($channellevel)) {
+            if (!empty($become_level)) {
                 $msg = '审核通过成功'; 
                 pdo_update('sz_yi_af_channel',array('status' => $status), array('id' => $id, 'uniacid' => $_W['uniacid']));               
                 pdo_update('sz_yi_member',array('ischannel' => 1 , 'channel_level' => $become_level, 'channeltime' => time()), array('openid' => $openid, 'uniacid' => $_W['uniacid']));
