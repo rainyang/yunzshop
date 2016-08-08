@@ -1016,9 +1016,22 @@ if (!class_exists('CommissionModel')) {
 			$pluginchannel = p("channel");
 			if(!empty($pluginchannel)){
 				$channel_set = $pluginchannel->getSet();
-				if ($channel_set['become'] == 2 || $channel_set['become'] == 3) {
-					$pluginchannel->checkOrderFinishOrPay($orderid);
+				if (empty($member['ischannel'])) {
+					if ($set['become_condition'] == 3 || $set['become_condition'] == 4) {
+						$pluginchannel->becomeChannelByOrder($openid, $orderid);
+					} elseif ($set['become_condition'] == 2) {
+						$pluginchannel->becomeChannelByAgent($openid);
+					} elseif ($set['become_condition'] == 5) {
+						$pluginchannel->becomeChannelByGood($openid, $orderid);
+					}				
+				} else {
+					if ($channel_set['become'] == 1) {
+						$pluginchannel->upgradelevelByGood($openid,$orderid);
+					} elseif ($channel_set['become'] == 2) {
+						$pluginchannel->upgradelevelByOther($openid,$orderid);
+					}
 				}
+				
 			}
 			$become_child = intval($set['become_child']);
 			$parent = false;
@@ -1211,9 +1224,22 @@ if (!class_exists('CommissionModel')) {
 			$pluginchannel = p("channel");
 			if(!empty($pluginchannel)){
 				$channel_set = $pluginchannel->getSet();
-				if ($channel_set['become'] == 2 || $channel_set['become'] == 3) {
-					$pluginchannel->checkOrderFinishOrPay($orderid);
+				if (empty($member['ischannel'])) {
+					if ($set['become_condition'] == 3 || $set['become_condition'] == 4) {
+						$pluginchannel->becomeChannelByOrder($openid, $orderid);
+					} elseif ($set['become_condition'] == 2) {
+						$pluginchannel->becomeChannelByAgent($openid);
+					} elseif ($set['become_condition'] == 5) {
+						$pluginchannel->becomeChannelByGood($openid, $orderid);
+					}				
+				} else {
+					if ($channel_set['become'] == 1) {
+						$pluginchannel->upgradelevelByGood($openid,$orderid);
+					} elseif ($channel_set['become'] == 2) {
+						$pluginchannel->upgradelevelByOther($openid,$orderid);
+					}
 				}
+				
 			}
 			$time = time();
 			$isagent = $member['isagent'] == 1 && $member['status'] == 1;
@@ -1561,11 +1587,24 @@ if (!class_exists('CommissionModel')) {
 				$pluginbonus->upgradeLevelByAgent($_var_20);
 			}
 			$pluginchannel = p('channel');
-			if (!empty($pluginchannel)) {
+			if(!empty($pluginchannel)){
 				$channel_set = $pluginchannel->getSet();
-				if ($channel_set['become'] == 1) {
-					$pluginchannel->upgradeLevelByAgent($_var_20);
+				if (empty($member['ischannel'])) {
+					if ($set['become_condition'] == 3 || $set['become_condition'] == 4) {
+						$pluginchannel->becomeChannelByOrder($openid, $orderid);
+					} elseif ($set['become_condition'] == 2) {
+						$pluginchannel->becomeChannelByAgent($openid);
+					} elseif ($set['become_condition'] == 5) {
+						$pluginchannel->becomeChannelByGood($openid, $orderid);
+					}				
+				} else {
+					if ($channel_set['become'] == 1) {
+						$pluginchannel->upgradelevelByGood($openid,$orderid);
+					} elseif ($channel_set['become'] == 2) {
+						$pluginchannel->upgradelevelByOther($openid,$orderid);
+					}
 				}
+				
 			}
 			$_var_139 = intval($set['leveltype']);
 			if ($_var_139 < 6 || $_var_139 > 9) {
