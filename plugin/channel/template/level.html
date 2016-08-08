@@ -207,7 +207,7 @@
 						{if $row['become']==1}{if !empty($row['goods_id'])}指定商品ID {$row['goods_id']}  {else}不自动升级{/if}{/if} 
                         {if $row['become']==2}
                             {if in_array(1,$set['become_other'])}团队总人数满 {$row['team_count']} 人  {else}不自动升级{/if} | 
-                            {if in_array(2,$set['become_other'])}累计进货量达到 {$row['order_money']} 元 {else}不自动升级{/if} | 
+                            {if in_array(2,$set['become_other'])}累计进货量达到 {$row['order_money']} 元 {else}不自动升级{/if} |
                             {if in_array(3,$set['become_other'])}累计进货次数达到 {$row['order_count']} 次 {else}不自动升级{/if}
                         {/if} 
                           </td>

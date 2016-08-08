@@ -68,7 +68,7 @@
             {loop $list $row}
             <tr>
                 <td>{$row['id']}</td>
-                <td  {if !empty($row['manageid'])}title='ID: {$row['manageid']}'{/if} style="text-align: center;">
+                <td  {if !empty($row['agentid'])}title='ID: {$row['agentid']}'{/if} style="text-align: center;">
                 {if empty($row['manageid'])}
                 {if $row['ismanage']==1}
                 <label class='label label-primary'>总店</label>
@@ -90,7 +90,7 @@
                 <td>{$row['realname']} <br/> {$row['mobile']}</td>
                 <td>{$row['level_name']} -- {$row['level_num']}
                     <br/>
-                    总计：{$row['levelcount']} 人
+                    总计：{$row['downcount']} 人
                 </td>
                 <td  style="overflow:visible;">
 
