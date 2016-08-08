@@ -48,6 +48,13 @@ if($operation == 'post'){
                 $data['password'] = $pwd['password'];
                 pdo_insert('uni_account_users', array('uid' => $data['uid'], 'uniacid' => $data['uniacid'], 'role' => 'operator'));
                 pdo_insert('sz_yi_perm_user', $data);
+                $insert = array(
+                    'uniacid'       => $_W['uniacid'],
+                    'uid'           => $data['uid'],
+                    'type'          => 'sz_yi',
+                    'permission'    => 'sz_yi_menu_shop|sz_yi_menu_order|sz_yi_menu_plugins'
+                );
+                pdo_insert('users_permission', $insert);
                 $id = pdo_insertid();
                 plog('perm.user.add', "添加操作员 ID: {$id} 用户名: {$data['username']} ");
             }
