@@ -319,6 +319,7 @@ class Sz_DYi_Order
                                     $channel = true;
                                 }
                                 $goods_price = pdo_fetchcolumn("SELECT marketprice FROM " . tablename('sz_yi_goods') . " WHERE uniacid={$_W['uniacid']} AND id={$g['goodsid']}");
+                                $up_mem = m('member')->getInfo($my_info['up_channel']['openid']);
                                 $log_data = array(
                                     'goodsid'       => $g['goodsid'],
                                     'optionid'      => $g['optionid'],
@@ -326,7 +327,8 @@ class Sz_DYi_Order
                                     'uniacid'       => $_W['uniacid'],
                                     'every_turn'    => $g['total'],
                                     'goods_price'   => $goods_price,
-                                    'surplus_stock' => $stock
+                                    'surplus_stock' => $stock,
+                                    'mid'           => $up_mem['id']
                                     );
                                 if (!empty($g['ischannelpay'])) {
                                     $log_data['every_turn_price'] = $goods_price*$my_info['my_level']['purchase_discount']/100;
@@ -386,13 +388,15 @@ class Sz_DYi_Order
                                     $channels = true;
                                 }
                                 $goods_price = pdo_fetchcolumn("SELECT marketprice FROM " . tablename('sz_yi_goods') . " WHERE uniacid={$_W['uniacid']} AND id={$g['goodsid']}");
+                                $up_mem = m('member')->getInfo($my_info['up_channel']['openid']);
                                 $log_data = array(
                                     'goodsid'       => $g['goodsid'],
                                     'order_goodsid' => $g['id'],
                                     'uniacid'       => $_W['uniacid'],
                                     'every_turn'    => $g['total'],
                                     'goods_price'   => $goods_price,
-                                    'surplus_stock' => $totalstock
+                                    'surplus_stock' => $totalstock,
+                                    'mid'           => $up_mem['id']
                                     );
                                 if (!empty($g['ischannelpay'])) {
                                     $log_data['every_turn_price'] = $goods_price*$my_info['my_level']['purchase_discount']/100;
