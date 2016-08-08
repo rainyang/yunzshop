@@ -28,7 +28,7 @@ ul{list-style:none;}
 }
 .topmenu ul li a i{color: #fff}
 .topmenu>ul>li>a>span {
-    color:#fff;
+    color:rgba(255,255,255,.8);
 }
 .navbar-nav>li {
     float: left;
