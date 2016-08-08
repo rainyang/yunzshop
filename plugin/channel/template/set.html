@@ -110,8 +110,8 @@
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                 <div class="col-sm-9 col-xs-12">
-                    <label class="radio-inline"><input type="radio"  name="setdata[become_condition_order]" value="0" {if $set['become_order'] ==0} checked="checked"{/if} /> 付款后</label>
-                    <label class="radio-inline"><input type="radio"  name="setdata[become_condition_order]" value="1" {if $set['become_order'] ==1 || empty($set['become_order'])} checked="checked"{/if} /> 完成后</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[become_condition_order]" value="0" {if $set['become_condition_order'] ==0} checked="checked"{/if} /> 付款后</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[become_condition_order]" value="1" {if $set['become_condition_order'] ==1} checked="checked"{/if} /> 完成后</label>
                     <span class="help-block">成为渠道商订单的计算方式</span>
                 </div>
             </div>
