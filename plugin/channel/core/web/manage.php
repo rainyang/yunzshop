@@ -21,10 +21,13 @@ if ($operation == 'display') {
     if (!empty($_GPC['channel_level'])) {//渠道商等级
         $condition .= ' AND dm.channel_level=' . intval($_GPC['channel_level']);
     }
-    $sql = "SELECT dm.*,dm.nickname,dm.avatar,l.level_name,l.level_num,p.nickname AS parentname,p.avatar AS parentavatar FROM " . tablename('sz_yi_member') . " dm " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.channel_id " . " left join " . tablename('sz_yi_channel_level') . " l on l.id = dm.channel_level" . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid AND f.uniacid={$_W['uniacid']}" . " WHERE dm.uniacid = " . $_W['uniacid'] . " AND dm.ischannel =1  {$condition} ORDER BY dm.channeltime DESC";
+    $sql = "SELECT dm.*,dm.nickname,dm.avatar,l.level_name,l.level_num,p.nickname AS parentname,p.avatar AS parentavatar FROM " . tablename('sz_yi_member') . " dm " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.agentid " . " left join " . tablename('sz_yi_channel_level') . " l on l.id = dm.channel_level" . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid AND f.uniacid={$_W['uniacid']}" . " WHERE dm.uniacid = " . $_W['uniacid'] . " AND dm.ischannel =1  {$condition} ORDER BY dm.channeltime DESC";
     $list  = pdo_fetchall($sql, $params);
+    foreach ($list as $key => $row) {
+        $list[$key]['downcount'] = pdo_fetchcolumn('SELECT count(*) FROM ' . tablename('sz_yi_member') . ' WHERE agentid = :agentid', array(':agentid' => $list[$key]['id']));
+    }
     $total = pdo_fetchcolumn("SELECT count(dm.id) FROM" . tablename('sz_yi_member') . " dm  " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.channel_id " . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid" . " WHERE dm.uniacid =" . $_W['uniacid'] . " AND dm.ischannel =1 {$condition}", $params);
-    
+    //print_r($list);exit;
     
 } else if ($operation == 'detail') {
     ca('channel.manage.view');
@@ -40,6 +43,24 @@ if ($operation == 'display') {
         ));
         message('保存成功!', $this->createPluginWebUrl('channel/manage'), 'success');
     }
+} else if ($operation == 'delete') {
+    ca('channel.manage.delete');
+    $id     = intval($_GPC['id']);
+    $member = pdo_fetch("SELECT * FROM " . tablename('sz_yi_member') . " WHERE uniacid=:uniacid AND id=:id limit 1 ", array(
+        ':uniacid' => $_W['uniacid'],
+        ':id' => $id
+    ));
+    if (empty($member)) {
+        message('会员不存在，无法取消渠道商资格!', $this->createPluginWebUrl('channel/manage'), 'error');
+    }
+    pdo_update('sz_yi_member', array(
+        'ischannel' => 0,
+        'channel_level' => 0
+    ), array(
+        'id' => $_GPC['id']
+    ));
+    plog('channel.manage.delete', "取消渠道商资格 <br/>渠道商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+    message('删除成功！', $this->createPluginWebUrl('channel/manage'), 'success');
 }
 load()->func('tpl');
 include $this->template('manage');
