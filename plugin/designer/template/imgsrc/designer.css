@@ -91,6 +91,25 @@ nav,.fe-panel-editor-sub1,.fe-phone-main,.fe-panel-editor-del,.fe-panel-editor-g
     overflow: hidden;
 }
 
+.comp-thumb {
+    float: left;
+    width: 60px;
+    height: 60px;
+    cursor: move;
+    text-align: center;
+    margin: 0 10px 10px 0;
+    border: 1px dotted hsl(204, 72%, 73%);
+    padding: 5px;
+    border-radius: 5px;
+    background: hsl(0, 0%, 98%);
+}
+
+.fe-panel-menu nav i{
+    font-size: 26px;
+    color: hsl(208, 71%, 64%);
+    margin-bottom: 2px;
+}
+
 .fe-panel-menu nav {
     float: left;
     width: 60px;
