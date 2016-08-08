@@ -3,10 +3,8 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 class Sz_DYi_Finance {
-    //$params, $alipay = array(), $type = 0, $openid = ''
     function getHttpResponseGET($url, $cacert_url) 
     {
-        $curl = curl_init($url);
         curl_setopt($curl, CURLOPT_HEADER, 1 ); // 过滤HTTP头
         curl_setopt($curl,CURLOPT_RETURNTRANSFER, 1);// 显示输出结果
         curl_setopt($curl, CURLOPT_NOBODY, 1);
@@ -17,9 +15,11 @@ class Sz_DYi_Finance {
         //$responseText = curl_exec($curl);
         $info = curl_getinfo($curl,CURLINFO_EFFECTIVE_URL);
         //var_dump( curl_error($curl) );//如果执行curl过程中出现异常，可打开此开关，以便查看异常内容
-        curl_close($curl);        
+        curl_close($curl);       
         return $info;
+
     }
+
     //分销中心批量付款提现
     public function alipay_build($openid = '', $paytype = 0, $money = 0, $trade_no = '', $desc = '',$alipay='',$alipayname='',$applyid='')
     {    
@@ -35,7 +35,6 @@ class Sz_DYi_Finance {
                 $secret = '';
             }
         }
-        $secret = '562pmytrtu0vjkrmp8id23uwrlkd1ng1';
          $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
         ':uniacid' => $_W['uniacid']
             ));
@@ -80,19 +79,6 @@ class Sz_DYi_Finance {
         $apply= array('status'=>'3','batch_no'=>$set['batch_no'],'paytime'=>time());
         pdo_update('sz_yi_commission_apply', $apply, array('id' =>$applyid));
         exit;
-        //echo $resp;
-        //echo $url;exit;
-
-       // load()->func('communication');
-       // $resp = ihttp_request($url);
-       // echo $resp;exit;
-       // exit;
-        //header("Location:" . $resp['headers']['Location']);
-              
-
-        // $apply= array('status'=>'3','batch_no'=>$set['batch_no']);
-        // pdo_update('sz_yi_commission_apply', $apply, array('id' =>$applyid));
-         //exit;
     }
 
     //余额提现 支付宝付款
