@@ -20,8 +20,12 @@ require '../../../../framework/bootstrap.inc.php';
 require '../../../../addons/sz_yi/defines.php';
 require '../../../../addons/sz_yi/core/inc/functions.php';
 require '../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
-$_W['uniacid'] = $_GET['uniacid'];
-$setting = uni_setting($_W['uniacid'], array('payment'));
+$str =  'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+$t1 = mb_strpos($str,'notify_finance');
+$t2 = mb_strpos($str,'.php');
+$s = mb_substr($str,$t1,$t2-$t1);
+$uniacid =  str_replace('notify_finance', '', $s);
+$setting = uni_setting($uniacid, array('payment'));
 if (is_array($setting['payment'])) {
     $options = $setting['payment']['alipay'];
     if(!empty($options)){
@@ -39,19 +43,15 @@ $alipayNotify = new AlipayNotify($alipay_config);
 $verify_result = $alipayNotify->verifyNotify();
 
 if($verify_result) {//验证成功
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//请在这里加上商户的业务逻辑程序代
-	 require '../../../../framework/bootstrap.inc.php';
-	 require '../../../../addons/sz_yi/defines.php';
-	 require '../../../../addons/sz_yi/core/inc/functions.php';
-	 require '../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
  	
 	//——请根据您的业务逻辑来编写程序（以下代码仅作参考）——
 	
     //获取支付宝的通知返回参数，可参考技术文档中服务器异步通知参数列表
 	
 	//批量付款数据中转账成功的详细信息
-
 	$success_details = $_POST['success_details']; //成功信息
 	$batch_no = $_POST['batch_no']; //批次号
 	if($success_details!=''){
