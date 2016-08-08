@@ -5,7 +5,7 @@
     {loop $category $ck $cv}
 	 {if count($cv['plugins'])<=0}{php continue;}{/if}
 
-    <div class="unit-head">
+    <div class="unit-head" id="{$ck}">
         {$cv['name']}
     </div>
     <div class="unit-list">
@@ -18,7 +18,7 @@
                 <a href="{php echo $this->createPluginWebUrl($plugin['identity'])}" title="{$plugin['name']}">
                     <i class="iconfont icon-{$plugins_icon[$plugin['identity']]} {$ck}"></i>
                     <h1>{$plugin['name']}</h1>
-                    <p>厂家入驻，平台统一销售</p>
+                    <p>{$plugin['desc']}</p>
                 </a>
                 </li>
                 {/if}
@@ -30,6 +30,21 @@
 	{/loop}
   </div>
 </div>
-
-
+<script>
+$('a[href*=#]').click(function() {
+   if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'')
+   && location.hostname == this.hostname) {
+     var $target = $(this.hash);
+     $target = $target.length && $target
+     || $('[name=' + this.hash.slice(1) +']');
+     if ($target.length) {
+       var targetOffset = $target.offset().top;
+       var obj = document.documentElement; 
+           obj = document.body
+      $(obj).animate({scrollTop: targetOffset}, 700);
+       return false;
+     }
+   }
+});
+</script>
 {template 'web/_footer'}
