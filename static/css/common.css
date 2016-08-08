@@ -60,7 +60,7 @@ a:focus{outline:none; -moz-outline:none}
 .welcome-container .shortcut a span{display:block;font-size:1em;overflow:hidden;white-space:nowrap;}
 .welcome-container .account img{width:6em;height:6em;}
 .nav.nav-tabs{margin-bottom:20px; border-color:#428bca;}
-.nav-tabs>li>a:hover{border-color:#eee #eee #428bca #eee;}
+/*.nav-tabs>li>a:hover{border-color:#eee #eee #428bca #eee;}*/
 /*.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus{color:#FFF; background-color:#428bca; border-color:#428bca;}
 */.page-header{padding-bottom:0;}
 .page-header:first-child{margin-top:0;}

@@ -77,12 +77,16 @@ if ($_W['isajax']) {
         if ($total <= 0) {
             $old_total = pdo_fetchcolumn( "SELECT total FROM ".tablename('sz_yi_member_cart')." where goodsid=:id and uniacid=:uniacid and openid=:openid",array(':id' => $id, ':uniacid' => $uniacid, ':openid' => $openid) );
             $total = $old_total + $total;
-            $sql = "update " . tablename('sz_yi_member_cart') . ' set total= '.$total.' where uniacid=:uniacid and openid=:openid and goodsid = :goodsid';
-            pdo_query($sql, array(
-                ':uniacid' => $uniacid,
-                'goodsid' => $id,
-                ':openid' => $openid
-            ));
+            if ($total <= 0) {
+                pdo_delete('sz_yi_member_cart',array('goodsid' => $id, 'openid' => $openid, 'uniacid' => $uniacid));  
+            } else {
+                $sql = "update " . tablename('sz_yi_member_cart') . ' set total= '.$total.' where uniacid=:uniacid and openid=:openid and goodsid = :goodsid';
+                pdo_query($sql, array(
+                    ':uniacid' => $uniacid,
+                    ':goodsid' => $id,
+                    ':openid' => $openid
+                ));
+            }
 
             
             show_json(1, array(
