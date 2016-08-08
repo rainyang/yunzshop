@@ -312,6 +312,7 @@ if (!class_exists('ChannelModel')) {
                         $log_data['optionid']   = $og['optionid'];
                         
                     }
+                    $log_data['surplus_stock']	= $stock_total;
                     pdo_update('sz_yi_channel_stock', array('stock_total' => $stock_total), $data);
                     pdo_insert('sz_yi_channel_stock_log', $log_data);
                 }

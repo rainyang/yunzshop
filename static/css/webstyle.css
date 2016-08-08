@@ -26,22 +26,27 @@ ul{list-style:none;}
     font-size: 20px;
     margin-bottom: 3px;
 }
-
+.topmenu ul li a i{color: #fff}
 .topmenu>ul>li>a>span {
-    color:hsla(0, 0%, 100%, 0.8);
+    color:#fff;
 }
-.topmenu_header{position:fixed;z-index:3;height:50px;background-color:#fff;border-bottom: 1px solid hsl(0, 0%, 87%);width:100%}
+.navbar-nav>li {
+    float: left;
+}
+.topmenu_header{    min-width: 1000px;position:fixed;z-index:3;height:50px;background-color:#fff;border-bottom: 1px solid hsl(0, 0%, 87%);width:100%}
 .topmenu_header a{z-index:9; color:#000}
 .topmenu_header .dropdown{    float: left;
     position: relative;
     height: 50px;
     }
+.topmenu_header ul li a:first-child{background: none}
 .topmenu_header .dropdown-toggle:hover{z-index:9; color:hsl(24, 100%, 50%);background-color:#fff !important;
     display: block;
     height: 50px;
     border-bottom: 3px solid hsl(24, 100%, 50%);
     transition: all .15s ease-in-out;
 }
+.topmenu_header .dropdown-toggle:hover i{color: #F60}
 .dropdown,.open{float: left;}
 .container-fluid{padding: 0}
 .ulleft-nav{
@@ -63,6 +68,7 @@ z-index: 2;position: fixed;
     word-wrap: break-word;
     word-break: normal;
 }
+.nav .open>a, .nav .open>a:hover, .nav .open>a:focus{border-color: hsl(24, 100%, 50%);background: none}
 
 .nav.nav-tabs li{width: 100%;margin-bottom: 5px;}
 .nav-tabs>li.active>a,.nav-tabs>li.active>a:hover{
@@ -99,7 +105,7 @@ z-index: 2;position: fixed;
 .form-control{font-size: 12px;border-radius: 2px !important;height: 30px}
 .table{margin-bottom: 6px; margin-left:13px;}
 /*.nav>li{width: 100%}*/
-.topmenu ul li{width: 100%}
+.topmenu ul li{width: 100%; text-align: center;}
 .nav-tabs>li>a{border: 0;border-radius: 0 }
 .dropdown-menu{left: 0;right:0;}
 .nav-tabs>li>a:hover{border: 0;background: none}
@@ -218,7 +224,7 @@ z-index: 2;position: fixed;
 .tpl-category-container select{margin-bottom: 4px}
 .navbar-nav{margin: 0;}
 .navbar-nav .iconfont,.navbar-nav .fa{margin: 0 2px}
-.navbar-nav>li>a {
+.topmenubg_header .navbar-nav>li>a {
     padding: 0px 10px;
 /*    margin: 3px 0;*/
     text-align: center;
@@ -292,7 +298,7 @@ padding: 20px 20px 10px;
 }
 .add-snav li.active a {
     color: #333;
-    border-bottom: 2px solid #0099FC;
+    border-bottom: 2px solid #FF6600;
 }
 .right-addbox{    width: 97.4%;
     margin: 15px;
