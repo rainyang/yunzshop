@@ -386,7 +386,7 @@ if ($operation == "change") {
             }
             if ($_GPC['isverify'] == 2 && $_GPC['isverifysend'] == 0) {
                 if (!empty($_GPC['storeids'])) {
-                    $storeids = explode($_GPC['storeids']);
+                    $storeids = $_GPC['storeids'];
                     $a = 0;
                     foreach ($storeids as $v) {
                         $stores = pdo_fetch("SELECT * FROM " . tablename('sz_yi_store') . " WHERE id=" . $v);
