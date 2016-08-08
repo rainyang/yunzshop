@@ -21,29 +21,29 @@ require '../../../../addons/sz_yi/defines.php';
 require '../../../../addons/sz_yi/core/inc/functions.php';
 require '../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
 $str =  'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
-$t1 = mb_strpos($str,'notify_alipay');
+$t1 = mb_strpos($str,'notify_finance');
 $t2 = mb_strpos($str,'.php');
 $s = mb_substr($str,$t1,$t2-$t1);
-$uniacid =  str_replace('notify_alipay', '', $s);
+$uniacid =  str_replace('notify_finance', '', $s);
 $setting = uni_setting($uniacid, array('payment'));
- if (is_array($setting['payment'])) {
-        $options = $setting['payment']['alipay'];
-        if(!empty($options)){
-            $partner = $options['partner'];
-            $secret = $options['secret'];
-        }else{
-            $partner = '';
-            $secret = '';
-        }
-} 
-$alipay_config['partner']		= $partner;
-$alipay_config['key']			= $secret;
-
+if (is_array($setting['payment'])) {
+    $options = $setting['payment']['alipay'];
+    if(!empty($options)){
+        $partner = $options['partner'];
+        $secret = $options['secret'];
+    }else{
+        $partner = '';
+        $secret = '';
+    }
+}
+$alipay_config['partner'] = $partner;
+$alipay_config['key'] =  $secret;
 //计算得出通知验证结果
 $alipayNotify = new AlipayNotify($alipay_config);
 $verify_result = $alipayNotify->verifyNotify();
 
 if($verify_result) {//验证成功
+
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//请在这里加上商户的业务逻辑程序代
  	
@@ -52,26 +52,19 @@ if($verify_result) {//验证成功
     //获取支付宝的通知返回参数，可参考技术文档中服务器异步通知参数列表
 	
 	//批量付款数据中转账成功的详细信息
-
 	$success_details = $_POST['success_details']; //成功信息
 	$batch_no = $_POST['batch_no']; //批次号
-	$notify_time = $_POST['notify_time']; //通知时间
 	if($success_details!=''){
-		$success_details = explode('^',$success_details); 
-		$apply= array('status'=>'4','finshtime'=>strtotime($notify_time));
- 	    pdo_update('sz_yi_commission_apply', $apply, array('batch_no' =>$batch_no));
+		$log= array('status'=>'1');
+ 	    pdo_update('sz_yi_member_log', $log, array('batch_no' =>$batch_no));
 	}
 
 	//批量付款数据中转账失败的详细信息
 	$fail_details = $_POST['fail_details']; //失败信息
 
-    if($fail_details!=''){
-   		$fail_details = explode('^',$fail_details); 
-   		if($fail_details['5']=='transfer_amount_not_enough'){
-   			$fail_details['5']='账户余额不足';
-   		}
-		$apply= array('status'=>'3','reason'=>$fail_details['5']);
- 	    pdo_update('sz_yi_commission_apply', $apply, array('batch_no' =>$batch_no));
+    if($fail_details!=''){   	
+		$log= array('status'=>'2');
+ 	    pdo_update('sz_yi_member_log', $log, array('batch_no' =>$batch_no));
     }
 
 	//判断是否在商户网站中已经做过了这次通知返回的处理

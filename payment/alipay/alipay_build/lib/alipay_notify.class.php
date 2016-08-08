@@ -16,6 +16,7 @@
 require_once("alipay_core.function.php");
 require_once("alipay_md5.function.php");
 
+
 class AlipayNotify {
     /**
      * HTTPS形式消息验证地址

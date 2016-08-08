@@ -1877,8 +1877,8 @@ if ($_W['isajax']) {
                 //修改全返插件中房价
                 if(p('hotel') && $_GPC['type']=='99'){
                      $order_goods['price'] = $goodsprice ;
-                     $order_goods['realprice'] = $goodsprice;
-                     $order_goods['oldprice'] = $goodsprice;
+                     $order_goods['realprice'] = $goodsprice-$discountprice;
+                     $order_goods['oldprice'] = $goodsprice-$discountprice;
                 }
                 if ($diyform_plugin) {
                     $order_goods["diyformid"]     = $goods["diyformid"];
