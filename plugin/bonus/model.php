@@ -356,13 +356,13 @@ if (!class_exists('BonusModel')) {
             $day_times        = intval($set['settledays']) * 3600 * 24;
         	if (in_array('ok', $options)) {
 	            //可提现佣金
-	            $sql = "select sum(o.price) as money from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
+	            $sql = "select sum(o.price) as money from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3   and o.status<>6 and o.status<>5 and o.status<>4 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
 	            $commission_ok = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
 	        }
 
 	        if (in_array('total', $options)) {
 	            //累计佣金
-	            $sql = "select sum(o.price) as money from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where o.status>=1 and o.uniacid=:uniacid  ORDER BY o.createtime DESC,o.status DESC";
+	            $sql = "select sum(o.price) as money from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where o.status>=1 and  and o.status<>5 and o.status<>4 and o.uniacid=:uniacid  ORDER BY o.createtime DESC,o.status DESC";
 	            $commission_total = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
 	        }
 	        if (in_array('pay', $options)) {
@@ -414,47 +414,47 @@ if (!class_exists('BonusModel')) {
             $this->agents     = array();
             if (in_array('totaly', $options)) {
 	            //预计佣金
-	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=0 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and cg.bonus_area = 0";
+	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=0  and o.status<>4 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and cg.bonus_area = 0";
 	            $commission_totaly = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
 	        }
 
 	        if (in_array('totaly_area', $options)) {
 	            //预计区域代理佣金
-	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=0 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and cg.bonus_area!=0";
+	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=0 and o.status<>4  and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and cg.bonus_area!=0";
 	            $commission_totaly_area = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
 	        }
 
 	        if (in_array('ok', $options)) {
 	            //可提现佣金
-	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.finishtime > {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
+	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3  and o.status<>4  and o.status<>5 and o.status<>6 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.finishtime > {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
 	            $commission_ok = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
 	        }
 
 	        if (in_array('total', $options)) {
 	            //累计佣金
-	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where o.status>=1 and o.uniacid=:uniacid and cg.mid = {$agentid} ORDER BY o.createtime DESC,o.status DESC";
+	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where o.status>=1 and o.status<>4 and o.uniacid=:uniacid and cg.mid = {$agentid} ORDER BY o.createtime DESC,o.status DESC";
 	            $commission_total = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
 	        }
 
 	        if (in_array('ordercount', $options)) {
 	            //佣金订单统计
-	            $ordercount = pdo_fetchcolumn('select count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_bonus_goods') . ' cg on cg.orderid=o.id  where o.status>=0 and cg.status>=0 and o.uniacid='.$_W['uniacid'].' and cg.mid ='.$agentid.' and cg.bonus_area=0 limit 1');
+	            $ordercount = pdo_fetchcolumn('select count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_bonus_goods') . ' cg on cg.orderid=o.id  where o.status>=0  and o.status<>4 and o.status<>5 and cg.status>=0 and o.uniacid='.$_W['uniacid'].' and cg.mid ='.$agentid.' and cg.bonus_area=0 limit 1');
 	        }
 
 	        if (in_array('ordercount_area', $options)) {
 	            //佣金订单统计
-	            $ordercount_area = pdo_fetchcolumn('select count(distinct o.id) as ordercount_area from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_bonus_goods') . ' cg on cg.orderid=o.id  where o.status>=0 and cg.status>=0 and o.uniacid='.$_W['uniacid'].' and cg.mid ='.$agentid.' and cg.bonus_area!=0 limit 1');
+	            $ordercount_area = pdo_fetchcolumn('select count(distinct o.id) as ordercount_area from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_bonus_goods') . ' cg on cg.orderid=o.id  where o.status>=0 and o.status<>4 and o.status<>5 and cg.status>=0 and o.uniacid='.$_W['uniacid'].' and cg.mid ='.$agentid.' and cg.bonus_area!=0 limit 1');
 	        }
 
 	        if (in_array('apply', $options)) {
 	            //待审核佣金
-	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=1 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.finishtime <= {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
+	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=1 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3  and o.status<>4 and o.status<>5 and o.status<>6 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.finishtime <= {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
 	            $commission_apply = pdo_fetchcolumn($sql);
 	        }
 
 	        if (in_array('check', $options)) {
 	            //待打款佣金
-	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=2 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.finishtime <= {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
+	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=2 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.status<>4 and o.status<>5 and o.status<>6 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.finishtime <= {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
 	            $commission_check = pdo_fetchcolumn($sql);
 	        }
 

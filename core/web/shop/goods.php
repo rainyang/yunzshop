@@ -126,7 +126,6 @@ if ($operation == "change") {
         }
         $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid']);
         if (p('hotel')) {
-            exit('1111');
             $print_list = pdo_fetchall('SELECT * FROM ' . tablename('sz_yi_print_list') . ' WHERE uniacid = :uniacid ',
                 array(':uniacid' => $_W['uniacid']));
         }

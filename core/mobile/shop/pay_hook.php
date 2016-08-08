@@ -80,29 +80,29 @@ do{
 
         if (substr($pay_info['order_no'],0,2) == 'RC') {
             if ($pay_info['channel'] == 'wx') {
-
+                $pay_type = 'wechat';
             } elseif ($pay_info['channel'] == 'alipay') {
-                file_put_contents("/tmp/a.log",$openid);
-                $log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `logno`=:logno and `uniacid`=:uniacid limit 1', array(
-                    ':uniacid' => $uniacid,
-                    ':logno' => $pay_info['order_no']
-                ));
-                if (!empty($log) && empty($log['status'])) {
-                    pdo_update('sz_yi_member_log', array(
-                        'status' => 1,
-                        'rechargetype' => 'alipay'
-                    ), array(
-                        'id' => $log['id']
-                    ));
-                    m('member')->setCredit($log['openid'], 'credit2', $log['money']);
-                    m('member')->setRechargeCredit($log['openid'], $log['money']);
-                    if (p('sale')) {
-                        p('sale')->setRechargeActivity($log);
-                    }
-                    m('notice')->sendMemberLogMessage($log['id']);
-                }
+                $pay_type = 'alipay';
             }
 
+            $log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `logno`=:logno and `uniacid`=:uniacid limit 1', array(
+                ':uniacid' => $uniacid,
+                ':logno' => $pay_info['order_no']
+            ));
+            if (!empty($log) && empty($log['status'])) {
+                pdo_update('sz_yi_member_log', array(
+                    'status' => 1,
+                    'rechargetype' => $pay_type
+                ), array(
+                    'id' => $log['id']
+                ));
+                m('member')->setCredit($log['openid'], 'credit2', $log['money']);
+                m('member')->setRechargeCredit($log['openid'], $log['money']);
+                if (p('sale')) {
+                    p('sale')->setRechargeActivity($log);
+                }
+                m('notice')->sendMemberLogMessage($log['id']);
+            }
         } else {
 
             $order_info = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND ordersn=:ordersn", array(
