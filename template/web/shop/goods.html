@@ -13,14 +13,7 @@
     .tab-pane {padding:20px 0 20px 0;}
 </style>
 <div class="main rightlist">
-<!-- 新增加右侧顶部三级菜单 -->
-<div class="right-titpos">
-	<ul class="add-snav">
-		<li class="active"><a href="#">商品管理</a></li>
-		<li><a href="#">发布商品</a></li>
-	</ul>
-</div>
-<!-- 新增加右侧顶部三级菜单结束 -->
+
 
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
         <div class="panel panel-default panel-center">
@@ -242,19 +235,10 @@
 {elseif $operation == 'display'}
 
 <div class="main rightlist">
-	<!-- 新增加右侧顶部三级菜单 -->
-<div class="right-titpos">
-	<ul class="add-snav">
-		<li class="active"><a href="#">三级菜单</a></li>
-		<li><a href="#">三级菜单</a></li>
-		<li><a href="#">三级菜单</a></li>
-	</ul>
-</div>
-<!-- 新增加右侧顶部三级菜单结束 -->
+
 <div class="right-addbox"><!-- 此处是右侧内容新包一层div -->
 
     <div class="panel panel-info">
-        <div class="panel-heading">筛选</div>
         <div class="panel-body">
             <form action="./index.php" method="get" class="form-horizontal" role="form">
                 <input type="hidden" name="c" value="site" />
@@ -264,13 +248,13 @@
                 <input type="hidden" name="p"  value="goods" />
                 <input type="hidden" name="op" value="display" />
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">关键字</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">关键字</label>
                     <div class="col-xs-12 col-sm-8 col-lg-9">
                         <input class="form-control" name="keyword" id="" type="text" value="{$_GPC['keyword']}">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">状态</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">状态</label>
                     <div class="col-xs-12 col-sm-8 col-lg-9">
                         <select name="status" class='form-control'>
 							<option value="" {if $_GPC['status'] == ''} selected{/if}></option>
@@ -281,7 +265,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">商品类型</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">商品类型</label>
 
                     <div class="col-xs-12 col-sm-8 col-lg-9">
                         {loop $product_attr_list $product_attr_key
@@ -300,7 +284,7 @@
 				
                 <div class="form-group">
 
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">供应商</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">供应商</label>
 
                     <div class="col-xs-12 col-sm-8 col-lg-9">
                 {if p('supplier')}
@@ -323,7 +307,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">分类</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">分类</label>
                     <div class="col-sm-8 col-xs-12">
                         {if intval($shopset['catlevel'])==3}
 						{php echo tpl_form_field_category_level3('category', $parent, $children, $params[':pcate'], $params[':ccate'], $params[':tcate'])}
@@ -339,7 +323,7 @@
                 </div>
                 {if $shopset['category2'] == 1}
 				<div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">{$shopset['category2name']}分类</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">{$shopset['category2name']}分类</label>
                     <div class="col-sm-8 col-xs-12">
                         {if intval($shopset['catlevel'])==3}
 						{php echo tpl_form_field_category_level3('category2', $parent2, $children2, $params[':pcate2'], $params[':ccate2'], $params[':tcate2'])}
@@ -360,18 +344,13 @@
     <style>
         .label{cursor:pointer;}
     </style>
-	<div class="panel panel-default">
-        <div class="panel-body">
-			<a class='btn btn-primary' href="{php echo $this->createWebUrl('shop/goods',array('op'=>'post'))}"><i class='fa fa-plus'></i> 添加商品</a>
-        </div>
-	</div>
     <form action="" method="post">
 		<div class="panel panel-default">
 			<div class="panel-body table-responsive">
 				<table class="table table-hover">
 					<thead class="navbar-inner">
 						<tr>
-							<th width="6%">ID</th>
+							<th width="3%">ID</th>
 							<th width="6%">排序</th>
 							<th width="6%">商品</th>
 							<th width="26%">&nbsp;</th>
@@ -525,7 +504,8 @@
 						<tr>
 							<td colspan='10'>
 								{ifp 'shop.goods.add'}
-								<a class='btn btn-primary' href="{php echo $this->createWebUrl('shop/goods',array('op'=>'post'))}"><i class='fa fa-plus'></i> 添加商品</a>
+								<a class='btn btn-primary' href="{php echo
+                                    $this->createWebUrl('shop/goods',array('op'=>'post'))}"><i class='fa fa-plus'></i> 发布商品</a>
 								{/if}
 								{ifp 'shop.goods.edit'}
 								<input name="submit" type="submit" class="btn btn-default" value="提交排序">

@@ -2,6 +2,14 @@
 <div class="w1200 m0a">
 {template 'web/sysset/tabs'}
 <div class="main rightlist">
+<!-- 新增加右侧顶部三级菜单 -->
+<div class="right-titpos">
+	<ul class="add-snav">
+		<li class="active"><a href="#">短信设置</a></li>
+	</ul>
+</div>
+<!-- 新增加右侧顶部三级菜单结束 -->
+    <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <input type='hidden' name='setid' value="{$set['id']}" />
         <input type='hidden' name='op' value="sms" />
@@ -87,7 +95,9 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">短信签名:</label>
                         <div class="col-sm-9 col-xs-12">
                             {ifp 'sysset.save.sms'}
-                            <input type="text" name="sms[signname]" class="form-control" value="{$set['sms']['signname']}" placeholder="注册验证" />
+                            <input type="text" name="sms[signname]"
+                            class="form-control"
+                            value="{$set['sms']['signname']}" placeholder="例如: 注册验证" />
                             {else}
                             <input type="hidden" name="sms[signname]" value="{$set['sms']['signname']}"/>
                             <div class='form-control-static'>{$set['sms']['signname']}</div>
@@ -98,7 +108,7 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">注册短信模板ID:</label>
                         <div class="col-sm-9 col-xs-12">
                             {ifp 'sysset.save.sms'}
-                            <input type="text" name="sms[templateCode]" class="form-control" value="{$set['sms']['templateCode']}"  placeholder="SMS_5057806" />
+                            <input type="text" name="sms[templateCode]" class="form-control" value="{$set['sms']['templateCode']}"  placeholder="例如: SMS_5057806" />
                             {else}
                             <input type="hidden" name="sms[templateCode]" value="{$set['sms']['templateCode']}"/>
                             <div class='form-control-static'>{$set['sms']['templateCode']}</div>
@@ -109,7 +119,7 @@
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">找回密码短信模板ID:</label>
                         <div class="col-sm-9 col-xs-12">
                             {ifp 'sysset.save.sms'}
-                            <input type="text" name="sms[templateCodeForget]" class="form-control" value="{$set['sms']['templateCodeForget']}"  placeholder="SMS_5057806" />
+                            <input type="text" name="sms[templateCodeForget]" class="form-control" value="{$set['sms']['templateCodeForget']}"  placeholder="例如: SMS_5057806" />
                             {else}
                             <input type="hidden" name="sms[templateCodeForget]" value="{$set['sms']['templateCodeForget']}"/>
                             <div class='form-control-static'>{$set['sms']['templateCodeForget']}</div>

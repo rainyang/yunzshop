@@ -4,7 +4,14 @@
 {template 'web/member/tabs'}
 <div class="rightlist">
 {if $operation=='display'}
-
+<!-- 新增加右侧顶部三级菜单 -->
+<div class="right-titpos">
+	<ul class="add-snav">
+		<li class="active"><a href="#">会员管理</a></li>
+		<li><a href="#">全部会员</a></li>
+	</ul>
+</div>
+<!-- 新增加右侧顶部三级菜单结束 -->
 <div class="panel panel-info">
     <div class="panel-heading">筛选</div>
     <div class="panel-body">
@@ -215,7 +222,14 @@
 </div>
 </div>
 {else if $operation=='detail'}
-
+<!-- 新增加右侧顶部三级菜单 -->
+<div class="right-titpos">
+	<ul class="add-snav">
+		<li class="active"><a href="#">会员管理</a></li>
+		<li><a href="#">会员详情</a></li>
+	</ul>
+</div>
+<!-- 新增加右侧顶部三级菜单结束 -->
 <form {if 'member.member.edit'}action="" method='post'{/if} class='form-horizontal'>
     <input type="hidden" name="id" value="{$member['id']}">
     <input type="hidden" name="op" value="detail">
@@ -224,9 +238,6 @@
     <input type="hidden" name="m" value="sz_yi" />
     <input type="hidden" name="do" value="member" />
     <div class='panel panel-default'>
-        <div class='panel-heading'>
-            会员详细信息
-        </div>
         <div class='panel-body'>
              <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">粉丝</label>
