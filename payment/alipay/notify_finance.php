@@ -16,24 +16,24 @@
  */
 require_once("alipay_build/alipay.config.php");
 require_once("alipay_build/lib/alipay_notify.class.php");
-require '../../../../framework/bootstrap.inc.php';
-require '../../../../addons/sz_yi/defines.php';
-require '../../../../addons/sz_yi/core/inc/functions.php';
-require '../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
-$_W['uniacid'] = $_GET['uniacid'];
-$setting = uni_setting($_W['uniacid'], array('payment'));
-if (is_array($setting['payment'])) {
-    $options = $setting['payment']['alipay'];
-    if(!empty($options)){
-        $partner = $options['partner'];
-        $secret = $options['secret'];
-    }else{
-        $partner = '';
-        $secret = '';
-    }
-}
-$alipay_config['partner'] = $partner;
-$alipay_config['key'] =  $secret;
+// require '../../../../framework/bootstrap.inc.php';
+// require '../../../../addons/sz_yi/defines.php';
+// require '../../../../addons/sz_yi/core/inc/functions.php';
+// require '../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
+// $_W['uniacid'] = $_GET['uniacid'];
+// $setting = uni_setting($_W['uniacid'], array('payment'));
+// if (is_array($setting['payment'])) {
+//     $options = $setting['payment']['alipay'];
+//     if(!empty($options)){
+//         $partner = $options['partner'];
+//         $secret = $options['secret'];
+//     }else{
+//         $partner = '';
+//         $secret = '';
+//     }
+// }
+// $alipay_config['partner'] = $partner;
+// $alipay_config['key'] =  $secret;
 //计算得出通知验证结果
 $alipayNotify = new AlipayNotify($alipay_config);
 $verify_result = $alipayNotify->verifyNotify();

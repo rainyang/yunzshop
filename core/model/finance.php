@@ -127,7 +127,7 @@ class Sz_DYi_Finance {
         $set['service']        = 'batch_trans_notify';
         $set['_input_charset'] = 'utf-8';
         $set['sign_type']      = 'MD5';
-        $set['notify_url']      = $_W['siteroot'] . "addons/sz_yi/payment/alipay/notify_finance.php?uniacid=".$_W['uniacid'];
+        $set['notify_url']      = $_W['siteroot'] . "addons/sz_yi/payment/alipay/notify_finance.php";
         $set['email']          = $email;
         $set['account_name']   = $account_name;
         $set['pay_date']       = $pay_date;
