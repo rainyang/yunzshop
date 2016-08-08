@@ -476,7 +476,7 @@ if ($operation == "change") {
                 "edareas" => trim($_GPC["edareas"]),
                 "edmoney" => trim($_GPC["edmoney"]),
                 "redprice" => $_GPC["redprice"],//红包价格
-                "ispopenchannel" => intval($_GPC["isopenchannel"])
+                "isopenchannel" => intval($_GPC["isopenchannel"])
 
             );
             if (!empty($_GPC['bonusmoney'])) {
