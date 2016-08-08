@@ -277,7 +277,8 @@ if ($op == 'display') {
         if(empty($member['alipay']) || empty($member['alipayname'])){
             message('待收款人未填写支付宝信息!', '', 'error');
         }
-        $result = m('finance')->alipay_finance($log['money'],$member['alipay'],$member['alipayname']);
+        $result = m('finance')->alipay_finance($log['money'],$member['alipay'],$member['alipayname'],$log['id']);
+        
         m('notice')->sendMemberLogMessage($log['id']);
         plog('finance.withdraw.withdraw', "余额提现 ID: {$log['id']} 方式: 支付宝 金额: {$log['money']} <br/>会员信息:  ID: {$member['id']} / {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
         message('支付宝提现成功!', referer(), 'success');

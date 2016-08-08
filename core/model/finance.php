@@ -96,10 +96,9 @@ class Sz_DYi_Finance {
     }
 
     //余额提现 支付宝付款
-    public function alipay_finance($money=0,$alipay='',$alipayname='')
+    public function alipay_finance($money=0,$alipay='',$alipayname='',$logid='')
     {    
         global $_W;
-
         $setting = uni_setting($_W['uniacid'], array('payment'));
         if (is_array($setting['payment'])) {
             $options = $setting['payment']['alipay'];
@@ -128,7 +127,7 @@ class Sz_DYi_Finance {
         $set['service']        = 'batch_trans_notify';
         $set['_input_charset'] = 'utf-8';
         $set['sign_type']      = 'MD5';
-        $set['notify_url']      = $_W['siteroot'] . "addons/sz_yi/payment/alipay/notify_finance.php?id=1";
+        $set['notify_url']      = $_W['siteroot'] . "addons/sz_yi/payment/alipay/notify_finance.php?uniacid=".$_W['uniacid'];
         $set['email']          = $email;
         $set['account_name']   = $account_name;
         $set['pay_date']       = $pay_date;
@@ -159,6 +158,8 @@ class Sz_DYi_Finance {
         $url = 'https://mapi.alipay.com/gateway.do' . '?' . http_build_query($set, '', '&');
         $resp = $this->getHttpResponseGET($url, IA_ROOT . "/addons/sz_yi/cert/cacert.pem");
         header("Location:".$resp);
+        $apply= array('batch_no'=>$set['batch_no']);
+        pdo_update('sz_yi_member_log', $apply, array('id' =>$logid));
         exit;
     }
     public function pay($openid = '', $paytype = 0, $money = 0, $trade_no = '', $desc = '',$alipay = '',$alipayname='',$applyid='')
