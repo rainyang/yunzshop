@@ -328,7 +328,7 @@
 								{$item['every_turn']}
 							</td>
 							<td >{php echo $item['every_turn']*$item['every_turn_discount']}</td>
-							<td >{if $item['stock_sold_sum']} {$item['stock_sold_sum']} {else} 0{/if}</td>
+							<td >{$item['surplus_stock']}</td>
 							<td >
 								{if $item['type'] == 1}进货
 								{elseif $item['type'] == 2}划拨

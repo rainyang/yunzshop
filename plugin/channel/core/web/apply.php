@@ -27,6 +27,11 @@ if ($operation == 'reviewed') {
                 $msg = '审核通过成功'; 
                 pdo_update('sz_yi_af_channel',array('status' => $status), array('id' => $id, 'uniacid' => $_W['uniacid']));               
                 pdo_update('sz_yi_member',array('ischannel' => 1 , 'channel_level' => $channellevel['id'], 'channeltime' => time()), array('openid' => $openid, 'uniacid' => $_W['uniacid']));
+                $msg_data = array(
+                    'msg'   => $msg,
+                    'time'  => time()
+                    );
+                $this->model->sendMessage($openid, $msg, TM_CHANNEL_BECOME);
                 message($msg, $this->createPluginWebUrl('channel/apply'), 'success');
             } else {
                 $msg = '请先填写渠道商等级！';
