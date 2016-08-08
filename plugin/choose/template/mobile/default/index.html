@@ -219,6 +219,15 @@ line-height: 20px;font-weight: bold;}
         </article>
     </section>
 </div>
+<script id='cart_empty' type='text/html'>
+     <div class="cart_top">
+    <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> </div>
+</div>
+ <div class="card_no" style="margin-left:80px;margin-top:100px"><br>暂时没有相关商品~</div>
+
+
+
+     </script>
  <style type="text/css">
 ul, li { list-style:none; margin:0; padding:0 }
 
@@ -298,6 +307,10 @@ ul, li { list-style:none; margin:0; padding:0 }
                             var h = '';
                             
                             var store = result.goods;
+                            if(store.length<=0){
+                               $('#pInfo').html(  tpl('cart_empty') );
+                                return;
+                            }
 
                             if (store.length) {                                                             
                                 for (var i = 0; i < store.length ;i++ ) {
