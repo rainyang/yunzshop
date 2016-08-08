@@ -36,7 +36,7 @@ class Detail extends \api\YZ
     private function getOrderInfo($para)
     {
         $order_model = new \model\api\order();
-        $fields = 'ordersn,status,price,id as order_id,openid,addressid,dispatchid,createtime,paytime,dispatchprice,deductenough,paytype,changeprice,changedispatchprice,goodsprice,olddispatchprice';
+        $fields = 'ordersn,status,price,id as order_id,openid,addressid,dispatchid,createtime,paytime,dispatchprice,deductenough,paytype,changeprice,changedispatchprice,goodsprice,olddispatchprice,address';
         $order_info = $order_model->getInfo(array(
             'id' => $para["order_id"],
             'uniacid' => $para["uniacid"]
@@ -107,9 +107,9 @@ class Detail extends \api\YZ
         return $dispatch;
     }
 
-    private function getAddressInfo($order_info, $uniacid)
+    private function getAddressInfo($order_info)
     {
-        if (empty($order_info["addressid"])) {
+        /*if (empty($order_info["addressid"])) {
             $user = unserialize($order_info["carrier"]);
         } else {
             $user = iunserializer($order_info["address"]);
@@ -128,8 +128,19 @@ class Detail extends \api\YZ
                 "mobile" => $user["mobile"],
                 "address" => $user["address"],
             );
+        }*/
+        $address_info = unserialize($order_info['address']);
+        if(empty($address_info)){
+            return (object)array();
         }
-        return $order_info["addressdata"];
+        $address = array_part('province,city,area,address', $address_info);
+        $address_info = array(
+            "addressid" => $address_info["id"],
+            "realname" => $address_info["realname"],
+            "mobile" => $address_info["mobile"],
+            "address" => $address
+        );
+        return $address_info;
     }
 
 }

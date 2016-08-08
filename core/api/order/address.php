@@ -9,43 +9,39 @@
  * @version   v1.0
  */
 namespace controller\api\order;
-class address extends \api\YZ
+class Address extends \api\YZ
 {
     public function __construct()
     {
         parent::__construct();
     }
     function save(){
-        $province = $_GPC["province"];
-        $realname = $_GPC["realname"];
-        $mobile = $_GPC["mobile"];
-        $city = $_GPC["city"];
-        $area = $_GPC["area"];
-        $address = trim($_GPC["address"]);
-        $id = intval($_GPC["id"]);
+        $para = $this->getPara();
+        $province = $para["province"];
+        $realname = $para["realname"];
+        $mobile = $para["mobile"];
+        $city = $para["city"];
+        $area = $para["area"];
+        $address = trim($para["address"]);
+        $id = intval($para["order_id"]);
         if (!empty($id))
         {
             if (empty($realname))
             {
-                $ret = "请填写收件人姓名！";
-                show_json(0, $ret);
+                $this->returnError('请填写收件人姓名！');
             }
-
             if (empty($mobile)) {
-                $ret = "请填写收件人手机！";
-                show_json(0, $ret);
+                $this->returnError('请填写收件人手机！');
             }
             if ($province == "请选择省份") {
-                $ret = "请选择省份！";
-                show_json(0, $ret);
+                $this->returnError('请选择省份！');
             }
             if (empty($address)) {
-                $ret = "请填写详细地址！";
-                show_json(0, $ret);
+                $this->returnError('请填写详细地址！');
             }
             $item = pdo_fetch("SELECT address FROM " . tablename("sz_yi_order") . " WHERE id = :id and uniacid=:uniacid", array(
                 ":id" => $id,
-                ":uniacid" => $_W["uniacid"]
+                ":uniacid" => $para["uniacid"]
             ));
 
             $address_array = iunserializer($item["address"]);
@@ -60,13 +56,11 @@ class address extends \api\YZ
                 "address" => $address_array
             ), array(
                 "id" => $id,
-                "uniacid" => $_W["uniacid"]
+                "uniacid" => $para["uniacid"]
             ));
-            $ret = "修改成功";
-            show_json(1, $ret);
+            $this->returnSuccess($para,'修改成功');
         } else {
-            $ret = "Url参数错误！请重试！";
-            show_json(0, $ret);
+            $this->returnError('Url参数错误！请重试！');
         }
     }
 }

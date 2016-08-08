@@ -31,6 +31,11 @@ return array(
                 'para' => array(
                     'uid' => '1',
                     'uniacid' => '2',
+                    'goods_id'=> '',
+                    'status'=>'1',
+                    'pcate'=>'1',
+                    'ccate'=>'2',
+                    'keyword'=>'4'
                 ),
                 'data' => array()
             ),
@@ -42,7 +47,19 @@ return array(
                     'goods_id' => '3',
                 ),
                 'data' => array()
-            ))
+            ),
+            'SetProperty' => array(
+                'describe' => '设置商品属性',
+                'para' => array(
+                    'uid' => '1',
+                    'uniacid' => '2',
+                    'goods_id' => '2',
+                    'status' => '1',
+                ),
+                'data' => array()
+            )
+        )
+
     ),
     'statistics' => array(
         'describe' => '统计',
@@ -85,7 +102,7 @@ return array(
                 'para' => array(
                     'uid' => '1',
                     'uniacid' => '2',
-                    'order_id' => '22',
+                    'order_id' => '50',
                 ),
                 'data' => array()
             ),
@@ -113,7 +130,23 @@ return array(
                     'refundstatus' => '2',
                 ),
                 'data' => array()
-            )
+            ),
+            'Address' => array(
+                'describe' => '保存',
+                'para' => array(
+                    'uid' => '1',
+                    'uniacid' => '2',
+                    'province' => '北京市',
+                    'realname' => '丰田染发',
+                    'mobile' => '15046154567',
+                    'city' => '北京市辖区',
+                    'area' => '东城区',
+                    'address' => '地址',
+                    'order_id' => '50',
+                ),
+                'data' => array()
+            ),
+
         )
     )
 );

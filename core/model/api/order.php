@@ -87,8 +87,8 @@ class order
         if ($para['is_supplier_uid']) {
             $condition['supplier'] = $this->getSupplierCondition($_W['uid']);
         }
-        if (!empty($para['id'])) {
-            $condition['id'] = "AND o.id < {$para['id']}";
+        if (!empty($para['order_id'])) {
+            $condition['id'] = "AND o.id < {$para['order_id']}";
         }
         $condition['other'] = 'AND o.uniacid = :uniacid and o.deleted=0';
         $paras = array(

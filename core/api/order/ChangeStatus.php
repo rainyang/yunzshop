@@ -12,6 +12,7 @@ namespace controller\api\order;
 class ChangeStatus extends \api\YZ
 {
     private $order_info;
+
     public function __construct()
     {
         parent::__construct();
@@ -24,11 +25,13 @@ class ChangeStatus extends \api\YZ
             'uniacid' => $para["uniacid"]
         ));
     }
-    public function close(){
+
+    public function close()
+    {
         global $_W, $_GPC;
         $this->ca("order.op.close");
         $order = $this->order_info;
-        if ($order["status"] == - 1) {
+        if ($order["status"] == -1) {
             $this->returnError("订单已关闭，无需重复关闭！");
         } else if ($order["status"] >= 1) {
             $this->returnError("订单已付款，不能关闭！");
@@ -38,8 +41,8 @@ class ChangeStatus extends \api\YZ
         }
         $time = time();
         if ($order['refundstate'] > 0 && !empty($order['refundid'])) {
-            $data               = array();
-            $data['status']     = -1;
+            $data = array();
+            $data['status'] = -1;
             $data['refundtime'] = $time;
             pdo_update('sz_yi_order_refund', $data, array(
                 'id' => $order['refundid'],
@@ -47,11 +50,11 @@ class ChangeStatus extends \api\YZ
             ));
         }
         pdo_update("sz_yi_order", array(
-            "status" => - 1,
+            "status" => -1,
             'refundstate' => 0,
-            "canceltime" => time() ,
+            "canceltime" => time(),
             "remark" => $order["remark"] . "" . $_GPC["remark"]
-        ) , array(
+        ), array(
             "id" => $order["id"],
             "uniacid" => $_W["uniacid"]
         ));
@@ -67,14 +70,16 @@ class ChangeStatus extends \api\YZ
         }
         plog("order.op.close", "订单关闭 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
         $res = array(
-            'status'=>array(
-                'name'=>'已关闭',
-                'value'=>'-1',
+            'status' => array(
+                'name' => '已关闭',
+                'value' => '-1',
             )
         );
-        $this->returnSuccess($res,"订单关闭操作成功！");
+        $this->returnSuccess($res, "订单关闭操作成功！");
     }
-    public function cancelSend(){
+
+    public function cancelSend()
+    {
         global $_W, $_GPC;
         $this->ca("order.op.sendcancel");
         $order = $this->order_info;
@@ -88,20 +93,22 @@ class ChangeStatus extends \api\YZ
         pdo_update("sz_yi_order", array(
             "status" => 1,
             "sendtime" => 0
-        ) , array(
+        ), array(
             "id" => $order["id"],
             "uniacid" => $_W["uniacid"]
         ));
         plog("order.op.sencancel", "订单取消发货 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
         $res = array(
-            'status'=>array(
-                'name'=>'待发货',
-                'value'=>'1',
+            'status' => array(
+                'name' => '待发货',
+                'value' => '1',
             )
         );
-        $this->returnSuccess($res,"取消发货操作成功！");
+        $this->returnSuccess($res, "取消发货操作成功！");
     }
-    public function finish(){
+
+    public function finish()
+    {
         global $_W;
         $this->ca("order.op.finish");
         $order = $this->order_info;
@@ -109,7 +116,7 @@ class ChangeStatus extends \api\YZ
         pdo_update("sz_yi_order", array(
             "status" => 3,
             "finishtime" => time()
-        ) , array(
+        ), array(
             "id" => $order["id"],
             "uniacid" => $_W["uniacid"]
         ));
@@ -129,76 +136,103 @@ class ChangeStatus extends \api\YZ
 
         // 订单确认收货后自动发送红包
         if ($order["redprice"] > 0) {
-            m('finance')->sendredpack($order['openid'], $order["redprice"]*100, $order["id"], $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
+            m('finance')->sendredpack($order['openid'], $order["redprice"] * 100, $order["id"], $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
         }
 
         plog("order.op.finish", "订单完成 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
         $res = array(
-            'status'=>array(
-                'name'=>'已完成',
-                'value'=>'3',
+            'status' => array(
+                'name' => '已完成',
+                'value' => '3',
             )
         );
-        $this->returnSuccess($res,"订单操作成功！");
+        $this->returnSuccess($res, "订单操作成功！");
     }
-    public function getCounty(){
+
+    public function getCounty()
+    {
         $list = pdo_fetchall("SELECT * FROM " . tablename("county"));
-        $list = json_encode($list,JSON_UNESCAPED_UNICODE);
-    dump($list);exit;
+        $list = json_encode($list, JSON_UNESCAPED_UNICODE);
+        dump($list);
+        exit;
         return $list;
     }
-    public function getP(){
+
+    public function getP()
+    {
         $list = pdo_fetchall("SELECT * FROM " . tablename("province"));
-        $list = json_encode($list,JSON_UNESCAPED_UNICODE);
-        dump($list);exit;
+        $list = json_encode($list, JSON_UNESCAPED_UNICODE);
+        dump($list);
+        exit;
         return $list;
     }
-    public function getC(){
-    $list = pdo_fetchall("SELECT * FROM " . tablename("city"));
-    $list = json_encode($list,JSON_UNESCAPED_UNICODE);
-    dump($list);exit;
-    return $list;
-}
-    public function getArea(){
-        $xml_string = require __API_ROOT__.'/area.php';
+
+    public function getC()
+    {
+        $list = pdo_fetchall("SELECT * FROM " . tablename("city"));
+        $list = json_encode($list, JSON_UNESCAPED_UNICODE);
+        dump($list);
+        exit;
+        return $list;
+    }
+
+    public function getR()
+    {
+        $list = pdo_fetchall("SELECT * FROM " . tablename("region"));
+        $list = json_encode($list, JSON_UNESCAPED_UNICODE);
+        dump($list);
+        exit;
+        return $list;
+    }
+
+    public function getArea()
+    {
+        $xml_string = require __API_ROOT__ . '/area.php';
         //dump($xml_string);exit;
         $xml = simplexml_load_string($xml_string);
 
         $xml = json_encode($xml);
-        $xml = json_decode($xml,true);
+        $xml = json_decode($xml, true);
         //dump($xml);exit;
         $this->test($xml['province']);
     }
-    public function test($province_list){
+
+    public function test($province_list)
+    {
         unset($province_list[0]);
         foreach ($province_list as $province) {
             $province_name = $province['@attributes']['name'];
-            pdo_insert('province',['name'=>$province_name]);
+            pdo_insert('province', ['name' => $province_name]);
             $province_id = pdo_insertid();
             foreach ($province['city'] as $city) {
                 $city_name = $city['@attributes']['name'];
-                pdo_insert('city',[
-                    'name'=>$city_name,
-                    'pid'=>$province_id
+                pdo_insert('city', [
+                    'name' => $city_name,
+                    'pid' => $province_id
                 ]);
                 $city_id = pdo_insertid();
                 foreach ($city['county'] as $county) {
                     $county_name = $county['@attributes']['name'];
-                    pdo_insert('county',[
-                        'name'=>$county_name,
-                        'pid'=>$city_id
+                    pdo_insert('county', [
+                        'name' => $county_name,
+                        'pid' => $city_id
                     ]);
                 }
             }
         }
 
     }
-    public function getShippingInfo(){
+
+    public function getShippingInfo()
+    {
         $order = $this->order_info;
-        dump($order);exit;
+        dump($order);
+        exit;
 
     }
-    public function getExpressInfo(){
+
+    public function getExpressInfo()
+    {
         //$para = $this->getPara();
         $order = $this->order_info;
 //dump($order);
@@ -209,13 +243,15 @@ class ChangeStatus extends \api\YZ
             "mobile" => $address["mobile"],
             "address" => array_part('province,city,area,address', $address)
         );
-        $company_list = json_decode(require __API_ROOT__.'/expresscom.php',true);
+        $company_list = json_decode(require __API_ROOT__ . '/expresscom.php', true);
         //exit;
-        $res=compact('company_list','address');
+        $res = compact('company_list', 'address');
         dump($res);
         $this->returnSuccess($res);
     }
-    public function confirmSend(){
+
+    public function confirmSend()
+    {
         $this->ca("order.op.send");
         global $_W;
         $para = $this->getPara();
@@ -237,11 +273,11 @@ class ChangeStatus extends \api\YZ
         }
         pdo_update("sz_yi_order", array(
             "status" => 2,
-            "express" => trim($para["express"]) ,
-            "expresscom" => trim($para["expresscom"]) ,
-            "expresssn" => trim($para["expresssn"]) ,
+            "express" => trim($para["express"]),
+            "expresscom" => trim($para["expresscom"]),
+            "expresssn" => trim($para["expresssn"]),
             "sendtime" => time()
-        ) , array(
+        ), array(
             "id" => $order["id"],
             "uniacid" => $_W["uniacid"]
         ));
@@ -251,13 +287,13 @@ class ChangeStatus extends \api\YZ
             ));
             if (!empty($zym_var_35)) {
                 pdo_update("sz_yi_order_refund", array(
-                    "status" => - 1
-                ) , array(
+                    "status" => -1
+                ), array(
                     "id" => $order["refundid"]
                 ));
                 pdo_update("sz_yi_order", array(
                     "refundid" => 0
-                ) , array(
+                ), array(
                     "id" => $order["id"]
                 ));
             }
@@ -265,13 +301,14 @@ class ChangeStatus extends \api\YZ
         m("notice")->sendOrderMessage($order["id"]);
         plog("order.op.send", "订单发货 ID: {$order["id"]} 订单号: {$order["ordersn"]} <br/>快递公司: {$para["expresscom"]} 快递单号: {$para["expresssn"]}");
         $res = array(
-            'status'=>array(
-                'name'=>'待收货',
-                'value'=>'2',
+            'status' => array(
+                'name' => '待收货',
+                'value' => '2',
             )
         );
-        $this->returnSuccess($res,"发货操作成功！");
+        $this->returnSuccess($res, "发货操作成功！");
     }
+
     public function confirmPay()
     {
         $this->ca("order.op.pay");
@@ -318,14 +355,16 @@ class ChangeStatus extends \api\YZ
         }
         plog("order.op.pay", "订单确认付款 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
         $res = array(
-            'status'=>array(
-                'name'=>'待发货',
-                'value'=>'1',
+            'status' => array(
+                'name' => '待发货',
+                'value' => '1',
             )
         );
-        $this->returnSuccess($res,"确认订单付款操作成功！");
+        $this->returnSuccess($res, "确认订单付款操作成功！");
     }
-    function changeWechatSend($zym_var_2, $zym_var_4, $zym_var_1 = '') {
+
+    function changeWechatSend($zym_var_2, $zym_var_4, $zym_var_1 = '')
+    {
         global $_W;
         $zym_var_3 = pdo_fetch("SELECT plid, openid, tag FROM " . tablename("core_paylog") . " WHERE tid = '{$zym_var_2}' AND status = 1 AND type = 'wechat'");
         if (!empty($zym_var_3["openid"])) {
@@ -352,7 +391,7 @@ class ChangeStatus extends \api\YZ
             $zym_var_19 = '';
             foreach ($zym_var_14 as $zym_var_33 => $zym_var_31) {
                 $zym_var_33 = strtolower($zym_var_33);
-                $zym_var_19.= "{$zym_var_33}={$zym_var_31}&";
+                $zym_var_19 .= "{$zym_var_33}={$zym_var_31}&";
             }
             $zym_var_7["app_signature"] = sha1(rtrim($zym_var_19, "&"));
             $zym_var_7["sign_method"] = "sha1";
@@ -363,7 +402,9 @@ class ChangeStatus extends \api\YZ
             }
         }
     }
-    public function refund(){
+
+    public function refund()
+    {
         global $_W;
         $this->ca('order.op.refund');
         $para = $this->getPara();
@@ -422,11 +463,11 @@ class ChangeStatus extends \api\YZ
             unset($_obscure_aa35d7d734313632d43532d5d4d9d636['openid']);
             unset($_obscure_aa35d7d734313632d43532d5d4d9d636['isdefault']);
             unset($_obscure_aa35d7d734313632d43532d5d4d9d636['deleted']);
-            $_obscure_aa35d7d734313632d43532d5d4d9d636                    = iserializer($_obscure_aa35d7d734313632d43532d5d4d9d636);
-            $data['reply']           = '';
-            $data['refundaddress']   = $_obscure_aa35d7d734313632d43532d5d4d9d636;
+            $_obscure_aa35d7d734313632d43532d5d4d9d636 = iserializer($_obscure_aa35d7d734313632d43532d5d4d9d636);
+            $data['reply'] = '';
+            $data['refundaddress'] = $_obscure_aa35d7d734313632d43532d5d4d9d636;
             $data['refundaddressid'] = $_obscure_a935d631d53636373730d433d4d433d6;
-            $data['message']         = $_obscure_d53335d73033d5d7d8383530d938d634;
+            $data['message'] = $_obscure_d53335d73033d5d7d8383530d938d634;
             if (empty($refund['operatetime'])) {
                 $data['operatetime'] = $time;
             }
@@ -438,10 +479,10 @@ class ChangeStatus extends \api\YZ
             ));
             m('notice')->sendOrderMessage($order['id'], true);
         } else if ($refundstatus == 5) {
-            $data['rexpress']    = $para['rexpress'];
+            $data['rexpress'] = $para['rexpress'];
             $data['rexpresscom'] = $para['rexpresscom'];
-            $data['rexpresssn']  = trim($para['rexpresssn']);
-            $data['status']      = 5;
+            $data['rexpresssn'] = trim($para['rexpresssn']);
+            $data['status'] = 5;
             if ($refund['status'] != 5 && empty($refund['returntime'])) {
                 $data['returntime'] = $time;
             }
@@ -450,16 +491,16 @@ class ChangeStatus extends \api\YZ
             ));
             m('notice')->sendOrderMessage($order['id'], true);
         } else if ($refundstatus == 10) {
-            $_obscure_acd53337d9d5d6d930343734d43739d7['status']     = 1;
+            $_obscure_acd53337d9d5d6d930343734d43739d7['status'] = 1;
             $_obscure_acd53337d9d5d6d930343734d43739d7['refundtime'] = $time;
             pdo_update('sz_yi_order_refund', $_obscure_acd53337d9d5d6d930343734d43739d7, array(
                 'id' => $order['refundid'],
                 'uniacid' => $uniacid
             ));
-            $_obscure_aa343731d63230d534d9d5d73630d438                = array();
+            $_obscure_aa343731d63230d534d9d5d73630d438 = array();
             $_obscure_aa343731d63230d534d9d5d73630d438['refundstate'] = 0;
-            $_obscure_aa343731d63230d534d9d5d73630d438['status']      = 1;
-            $_obscure_aa343731d63230d534d9d5d73630d438['refundtime']  = $time;
+            $_obscure_aa343731d63230d534d9d5d73630d438['status'] = 1;
+            $_obscure_aa343731d63230d534d9d5d73630d438['refundtime'] = $time;
             pdo_update('sz_yi_order', $_obscure_aa343731d63230d534d9d5d73630d438, array(
                 'id' => $order['id'],
                 'uniacid' => $uniacid
@@ -529,10 +570,10 @@ class ChangeStatus extends \api\YZ
                     ));
                 }
             }
-            $data['reply']      = '';
-            $data['status']     = 1;
+            $data['reply'] = '';
+            $data['status'] = 1;
             $data['refundtype'] = $refundtype;
-            $data['price']      = $realprice;
+            $data['price'] = $realprice;
             $data['refundtime'] = $time;
             pdo_update('sz_yi_order_refund', $data, array(
                 'id' => $order['refundid']
@@ -574,11 +615,11 @@ class ChangeStatus extends \api\YZ
                 'uniacid' => $uniacid
             ));
         } else if ($refundstatus == 2) {
-            $refundtype               = 2;
-            $data['reply']      = '';
-            $data['status']     = 1;
+            $refundtype = 2;
+            $data['reply'] = '';
+            $data['status'] = 1;
             $data['refundtype'] = $refundtype;
-            $data['price']      = $refund['applyprice'];
+            $data['price'] = $refund['applyprice'];
             $data['refundtime'] = $time;
             pdo_update('sz_yi_order_refund', $data, array(
                 'id' => $order['refundid']
@@ -608,7 +649,7 @@ class ChangeStatus extends \api\YZ
                 ));
             }
         }
-        $this->returnSuccess([],'退款申请处理成功!');
+        $this->returnSuccess([], '退款申请处理成功!');
     }
 }
 
