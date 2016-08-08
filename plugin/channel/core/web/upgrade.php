@@ -192,4 +192,8 @@ if(!pdo_fieldexists('sz_yi_channel_stock_log', 'order_goodsid')) {
 if(!pdo_fieldexists('sz_yi_channel_stock_log', 'surplus_stock')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_channel_stock_log')." ADD `surplus_stock` INT(11) DEFAULT '0';");
 }
+
+if(!pdo_fieldexists('sz_yi_channel_stock_log', 'mid')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_channel_stock_log')." ADD `mid` INT(11) DEFAULT '0';");
+}
 message('渠道商插件安装成功', $this->createPluginWebUrl('channel/index'), 'success');

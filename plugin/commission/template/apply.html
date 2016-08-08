@@ -233,8 +233,7 @@
                                <th>总金额</th>
                                <th>商品金额</th>
                                <th>运费</th>
-                               <th>付款方式</th>
-                           
+                               <th>付款方式</th>                           
                                <th>下单时间</th>
                            </tr>
                        </thead>
@@ -243,8 +242,8 @@
                            <tr  style="background: #eee">
                                <td>{$row['ordersn']}</td>
                                <td>{$row['price']}</td>
-                               <td>{$row['goodsprice']}</td>
-                               <td>{$row['dispatchprice']}</td>
+                               <td>{$row['goodsprice']}</td>                       
+                               <td>运费：{$row['dispatchprice']}</td>
                                <td>{if $row['paytype'] == 1}
                                           <span class="label label-danger">余额支付</span>
                                              {elseif $row['paytype'] == 11}
@@ -266,7 +265,7 @@
 
                                <td colspan="6">
                                    <table width="100%">
-                    <thead class="navbar-inner">
+                                       <thead class="navbar-inner">
                                              <tr>
                                                  <th style='width:60px;'>商品</th>
                                                  <th></th>
@@ -283,10 +282,25 @@
                                                <td style='height:60px;'><img src="{php echo tomedia($g['thumb'])}" style="width: 50px; height: 50px;border:1px solid #ccc;padding:1px;"></td>
                                                <td><span>{$g['title']}</span><br/><span>{$g['optionname']}</span>
                                                </td>
-                                               <td>原价: {php echo $g['price']/$g['total']}<br/>折扣后:{php echo $g['realprice']/$g['total']}</td>
+                                               {if p('hotel') && $row['order_type']=='3'} 
+                                               <td>
+                                                 房价: {php echo $g['price']/$g['total']}<br/>
+                                                 折扣后 ：{php echo $g['realprice']/$g['total']}<br/>
+                                                 押金:{php echo $row['depositprice']}
+                                               </td>
+                                               <td>{$g['total']}</td>
+                                               <td>
+                                               <strong>
+                                               进店日期:{php echo date('Y-m-d',$row['btime'])}<br/>
+                                               离店日期:{php echo date('Y-m-d',$row['etime'])}</strong>
+                                               </td>
+                                               <td>
+                                                {else}
+                                               <td>: {php echo $g['price']/$g['total']}<br/>折扣后:{php echo $g['realprice']/$g['total']}</td>
                                                <td>{$g['total']}</td>
                                                <td><strong>原价:{php echo round($g['price'],2)}<br/>折扣后:{php echo round($g['realprice'],2)}</strong></td>
                                                <td>
+                                             {/if}
                                                    {if $this->set['level']>=1 && $row['level']==1}<p>
                                                    <div class='input-group'>
                                                        <span class='input-group-addon'>一级佣金</span>

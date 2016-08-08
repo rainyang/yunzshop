@@ -20,7 +20,7 @@ class Sz_DYi_Finance {
         curl_close($curl);        
         return $info;
     }
-    
+    //分销中心批量付款提现
     public function alipay_build($openid = '', $paytype = 0, $money = 0, $trade_no = '', $desc = '',$alipay='',$alipayname='',$applyid='')
     {    
         global $_W;
@@ -35,6 +35,7 @@ class Sz_DYi_Finance {
                 $secret = '';
             }
         }
+        $secret = '562pmytrtu0vjkrmp8id23uwrlkd1ng1';
          $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
         ':uniacid' => $_W['uniacid']
             ));
@@ -49,8 +50,7 @@ class Sz_DYi_Finance {
         $pay_date = date('Ymd',time());
 
         $set                   = array();
-        $set['partner']        =  $partner;//$alipay['partner'];
-        //$set['seller_id']    = $alipay['partner'];  //即时到帐情况下sellerid = partner
+        $set['partner']        =  $partner;
         $set['service']        = 'batch_trans_notify';
         $set['_input_charset'] = 'utf-8';
         $set['sign_type']      = 'MD5';
@@ -58,7 +58,7 @@ class Sz_DYi_Finance {
         $set['email']          = $email;
         $set['account_name']   = $account_name;
         $set['pay_date']       = $pay_date;
-        $set['batch_no']       = m('common')->createNO('commission_apply', 'batch_no', '');
+        $set['batch_no']       = m('common')->createNO('member_log', 'batch_no', '');
         $set['batch_fee']      = $money;
         $set['batch_num']      = 1;
         $set['detail_data']    = $set['batch_no'].'^'.$alipay.'^'.$alipayname.'^'.$money.'^备注说明';
@@ -73,7 +73,6 @@ class Sz_DYi_Finance {
         //$string .= $alipay['secret'];
         $string .=  $secret;
         $set['sign'] = md5($string);   
-
         $url = 'https://mapi.alipay.com/gateway.do' . '?' . http_build_query($set, '', '&');
         $resp = $this->getHttpResponseGET($url, IA_ROOT . "/addons/sz_yi/cert/cacert.pem");
         header("Location:" . $resp);
@@ -96,6 +95,73 @@ class Sz_DYi_Finance {
          //exit;
     }
 
+    //余额提现 支付宝付款
+    public function alipay_finance($money=0,$alipay='',$alipayname='',$logid='')
+    {    
+        global $_W;
+        $setting = uni_setting($_W['uniacid'], array('payment'));
+        if (is_array($setting['payment'])) {
+            $options = $setting['payment']['alipay'];
+            if(!empty($options)){
+                $partner = $options['partner'];
+                $secret = $options['secret'];
+            }else{
+                $partner = '';
+                $secret = '';
+            }
+        }
+        $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+        ':uniacid' => $_W['uniacid']
+            ));
+        $setpay     = unserialize($setdata['sets']);
+         if (!empty($setpay['pay'])) {
+            $email = $setpay['pay']['alipay_number'];
+            $account_name = $setpay['pay']['alipay_name'];
+        }else{
+            $email ='';
+            $account_name = '';
+        }
+        $pay_date = date('Ymd',time());
+        $set                   = array();
+        $set['partner']        =  $partner;//$alipay['partner'];
+        $set['service']        = 'batch_trans_notify';
+        $set['_input_charset'] = 'utf-8';
+        $set['sign_type']      = 'MD5';
+        $set['notify_url']      = $_W['siteroot'] . "addons/sz_yi/payment/alipay/notify_finance.php?uniacid=".$_W['uniacid'];
+        $set['email']          = $email;
+        $set['account_name']   = $account_name;
+        $set['pay_date']       = $pay_date;
+        $set['batch_no']       = m('common')->createNO('member_log', 'batch_no', '');
+        $set['batch_fee']      = $money;
+        $set['batch_num']      = 1;
+        $set['detail_data']    = $set['batch_no'].'^'.$alipay.'^'.$alipayname.'^'.$money.'^余额提现';
+        $prepares            = array(); 
+        foreach ($set as $key => $value) {
+            if ($key != 'sign' && $key != 'sign_type') {
+                $prepares[] = "{$key}={$value}";
+            }
+        }
+        sort($prepares);
+        $string = implode($prepares, '&');
+        // $cert = IA_ROOT . "/addons/sz_yi/cert/cacert.pem";
+        // if(empty($cert)){
+        //     message('未上传完整的支付宝支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
+        // }
+        // if(empty($set['partner']) || empty($secret)){
+        //     message('未填写完整的支付宝合作者身份或校验密钥，请到支付宝支付参数中设置!', '', 'error');
+        // }
+        if( empty($set['email'])  || empty($set['account_name'])){
+            message('未填写完整的支付宝付款账号或付款账户名，请到【系统设置】->【支付设置】中设置!', '', 'error');
+        }
+        $string .=  $secret;
+        $set['sign'] = md5($string);  
+        $url = 'https://mapi.alipay.com/gateway.do' . '?' . http_build_query($set, '', '&');
+        $resp = $this->getHttpResponseGET($url, IA_ROOT . "/addons/sz_yi/cert/cacert.pem");
+        header("Location:".$resp);
+        $apply= array('batch_no'=>$set['batch_no']);
+        pdo_update('sz_yi_member_log', $apply, array('id' =>$logid));
+        exit;
+    }
     public function pay($openid = '', $paytype = 0, $money = 0, $trade_no = '', $desc = '',$alipay = '',$alipayname='',$applyid='')
     { 
         global $_W, $_GPC;

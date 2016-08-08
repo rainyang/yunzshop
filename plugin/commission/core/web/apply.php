@@ -90,7 +90,18 @@ if ($operation == 'display') {
 		$row['paytime'] = $status >= 3 ? date('Y-m-d H:i', $row['paytime']) : '--';
 		$row['finshtime'] = $status >= 4 ? date('Y-m-d H:i', $row['finshtime']) : '--';
 		$row['invalidtime'] = $status == -1 ? date('Y-m-d H:i', $row['invalidtime']) : '--';
-		$row['typestr'] = empty($row['type']) ? '余额' : '微信';
+		//$row['typestr'] = empty($row['type']) ? '余额' : '微信';
+		switch ($row['type']) {
+		case '0':
+			$row['typestr'] = '余额';
+			break;
+		case "1":
+			$row['typestr'] ='微信';
+			break;
+		case '3':
+			$row['typestr'] ='支付宝';
+			break;	
+	    }
 		if ($row['diycommissiondata']) {
 
             $row['diycommissiondata'] = iunserializer($row['diycommissiondata']);
@@ -238,6 +249,9 @@ if ($operation == 'display') {
 		$ids[] = $o['orderid'];
 	}
 	$list = pdo_fetchall('select id,agentid, ordersn,price,goodsprice, dispatchprice,createtime, paytype from ' . tablename('sz_yi_order') . ' where  id in ( ' . implode(',', $ids) . ' );');
+	if(p('hotel')){
+		$list = pdo_fetchall('select id,agentid, ordersn,price,goodsprice, dispatchprice,createtime, paytype,order_type,depositprice,btime,etime from ' . tablename('sz_yi_order') . ' where  id in ( ' . implode(',', $ids) . ' );');
+	}
 	$totalcommission = 0;
 	$totalpay = 0;
 	foreach ($list as &$row) {
