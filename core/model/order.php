@@ -325,7 +325,8 @@ class Sz_DYi_Order
                                     'order_goodsid' => $g['id'],
                                     'uniacid'       => $_W['uniacid'],
                                     'every_turn'    => $g['total'],
-                                    'goods_price'   => $goods_price
+                                    'goods_price'   => $goods_price,
+                                    'surplus_stock' => $stock
                                     );
                                 if (!empty($g['ischannelpay'])) {
                                     $log_data['every_turn_price'] = $goods_price*$my_info['my_level']['purchase_discount']/100;
@@ -390,7 +391,8 @@ class Sz_DYi_Order
                                     'order_goodsid' => $g['id'],
                                     'uniacid'       => $_W['uniacid'],
                                     'every_turn'    => $g['total'],
-                                    'goods_price'   => $goods_price
+                                    'goods_price'   => $goods_price,
+                                    'surplus_stock' => $totalstock
                                     );
                                 if (!empty($g['ischannelpay'])) {
                                     $log_data['every_turn_price'] = $goods_price*$my_info['my_level']['purchase_discount']/100;

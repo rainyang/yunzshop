@@ -188,9 +188,9 @@
 							<td >{if $item['stock_sold_sum']} {$item['stock_sold_sum']} {else} 0{/if}</td>
 
 							<td style="position:relative;" width="20%">
-								<a href="{php echo $this->createPluginWebUrl('channel/inventory', array('id' => $item['stockid'] ,'op' =>'detail'))}"  title="库存明细" class="btn btn-default btn-smjs-clip"><i class="fa fa-article"></i></a>
+								<a href="{php echo $this->createPluginWebUrl('channel/inventory', array('id' => $item['stockid'] ,'op' =>'detail'))}"  title="库存明细" class="btn btn-default btn-smjs-clip">库存明细</a>
 								<a href="{php echo $this->createPluginWebUrl('channel/inventory', array('op' => 'delete', 'id' => $item['stockid']))}" onclick="return confirm('确认删除此商品库存？');
-										return false;" class="btn btn-default  btn-sm" title="删除"><i class="fa fa-times"></i></a>
+										return false;"  title="删除" class="btn btn-default btn-smjs-clip">删除库存商品</a>
 							</td>
 						</tr>
 						<tr>
@@ -328,7 +328,7 @@
 								{$item['every_turn']}
 							</td>
 							<td >{php echo $item['every_turn']*$item['every_turn_discount']}</td>
-							<td >{if $item['stock_sold_sum']} {$item['stock_sold_sum']} {else} 0{/if}</td>
+							<td >{$item['surplus_stock']}</td>
 							<td >
 								{if $item['type'] == 1}进货
 								{elseif $item['type'] == 2}划拨

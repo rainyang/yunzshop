@@ -8,13 +8,13 @@
 <div class='topmenu'>
     <ul class="nav navbar-nav">
         <li>
-            <a href="{php echo $this->createWebUrl('shop/goods')}" class="dropdown-toggle"><i class='fa fa-tachometer'></i>
+            <a href="{php echo $this->createWebUrl('shop/index')}" class="dropdown-toggle"><i class='fa fa-tachometer'></i>
                 <span>概况</span> <i class="fa fa-angle-down"></i></a>
         </li>
         {ifp 'shop'}
         <li>
             <a href="{php echo $this->createWebUrl('shop/goods')}" class="dropdown-toggle"><i class='fa fa-tasks'></i>
-                <span>商城</span> <i class="fa fa-angle-down"></i></a>
+                <span>商品</span> <i class="fa fa-angle-down"></i></a>
         </li>
         {/if}
         {ifp 'order'}
