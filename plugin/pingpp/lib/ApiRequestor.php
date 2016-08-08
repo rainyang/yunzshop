@@ -337,7 +337,7 @@ class ApiRequestor
 
     private function caBundle()
     {
-        return dirname(__FILE__) . '/../data/ca-certificates.crt';
+        return dirname(__FILE__) . '/../datas/ca-certificates.crt';
     }
 
     private function privateKey()
