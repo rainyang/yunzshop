@@ -114,7 +114,9 @@ if ($_W['isajax']) {
                     'status' => 1,
                     'isagent' => 1
                 );
-
+                if($referral['id'] != 0){
+                    $this->upgradeLevelByAgent($referral['id']);
+                }
                 pdo_update('sz_yi_member', $m_data, array("mobile" => $mobile, "uniacid" => $_W['uniacid']));
                 m('member')->responseReferral($this->yzShopSet, $referral, $member);
             }
