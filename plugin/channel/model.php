@@ -52,7 +52,7 @@ if (!class_exists('ChannelModel')) {
 			if (!empty($optionid)) {
 				$cond = " AND sl.optionid={$optionid}";
 			}
-			$stock_log = pdo_fetchall("SELECT g.thumb,g.title,sl.* FROM " . tablename('sz_yi_channel_stock_log') . "sl left join  " . tablename('sz_yi_goods') . " g on sl.goodsid = g.id WHERE sl.uniacid={$_W['uniacid']} AND sl.openid='{$openid}' AND sl.goodsid={$goodsid}" . $cond);
+			$stock_log = pdo_fetchall("SELECT g.thumb,g.title,sl.*,m.nickname,m.avatar FROM " . tablename('sz_yi_channel_stock_log') . "sl left join  " . tablename('sz_yi_member') . " m ON sl.mid = m.id LEFT JOIN " . tablename('sz_yi_goods') . " g on sl.goodsid = g.id WHERE sl.uniacid={$_W['uniacid']} AND sl.openid='{$openid}' AND sl.goodsid={$goodsid}" . $cond);
 			return $stock_log;
 		}
 		/**
@@ -126,7 +126,7 @@ if (!class_exists('ChannelModel')) {
 
 			$channel_info['channel']['dispatchprice'] = pdo_fetchcolumn("SELECT ifnull(sum(dispatchprice),0) FROM " . tablename('sz_yi_order') . " WHERE uniacid={$_W['uniacid']} AND status>=3 AND iscmas=0 AND ischannelself=1 AND openid='{$openid}'");
 
-			$channel_info['channel']['order_total_price'] = number_format(pdo_fetchcolumn("SELECT ifnull(sum(price),0) FROM " . tablename('sz_yi_order_goods') . " WHERE uniacid={$_W['uniacid']} AND channel_id={$member['id']}"),2);
+			$channel_info['channel']['order_total_price'] = number_format(pdo_fetchcolumn("SELECT ifnull(sum(price),0) FROM " . tablename('sz_yi_order_goods') . " WHERE uniacid=:uniacid AND channel_id=:channel_id",array(':uniacid' => $_W['uniacid'], ':channel_id' => $member['id'])),2);
 
             $channel_info['channel']['ordercount'] = pdo_fetchcolumn("SELECT count(o.id) FROM " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) WHERE og.channel_id={$member['id']} AND o.userdeleted=0 AND o.deleted=0 AND o.uniacid={$_W['uniacid']} ");
 
@@ -565,17 +565,18 @@ if (!class_exists('ChannelModel')) {
 			} elseif ($set['become_condition_order'] == 1){
 				$condtion .= ' AND o.status >= 3';
 			}
-            $goods = pdo_fetchall('SELECT og.goodsid FROM ' . tablename('sz_yi_order_goods') . '  og LEFT JOIN ' . tablename('sz_yi_order') . '  o  ON og.orderid = o.id WHERE o.id=:orderid AND o.openid = :openid AND og.uniacid=:uniacid ' . $condtion, array(
+            $goods = pdo_fetch('SELECT og.goodsid FROM ' . tablename('sz_yi_order_goods') . '  og LEFT JOIN ' . tablename('sz_yi_order') . '  o  ON og.orderid = o.id WHERE o.id=:orderid AND o.openid = :openid AND og.uniacid=:uniacid AND og.goodsid = :goodsid' . $condtion, array(
                 ':orderid' => $orderid,
                 ':uniacid' => $_W['uniacid'],
-                ':openid' => $openid
+                ':openid' => $openid,
+                ':goodsid' => $set['become_condition_goodsid']
             ));
             $up_level_num = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid AND id = :id', array(':uniacid' => $_W['uniacid'],':id' => $set['default_level']));
 			if (!$up_level_num) {
 				$up_level_num = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid ORDER BY level_num ASC LIMIT 1', array(':uniacid' => $_W['uniacid']));
 			}
             if ($set['become_condition'] == 5) {
-            	if (in_array($set['become_condition_goodsid'],$goods)) {
+            	if ($goods) {
             		pdo_update('sz_yi_member', array('ischannel' => 1,'channel_level' => $up_level_num), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
             	}
             }
@@ -598,20 +599,21 @@ if (!class_exists('ChannelModel')) {
 			if (empty($member)) {
 				return;
 			}
-			if ($set['become_condition_order'] == 0) {
+			if ($set['become_order'] == 0) {
 				$condtion .= ' AND o.status >= 1';
-			} elseif ($set['become_condition_order'] == 1){
+			} elseif ($set['become_order'] == 1){
 				$condtion .= ' AND o.status >= 3';
 			}
             
             $my_level = $this->getLevel($openid);
             $up_level = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid AND level_num > :level_num ORDER BY level_num ASC LIMIT 1', array(':uniacid' => $_W['uniacid'],':level_num' => $my_level['level_num']));
-            if ($up_level && $up_level['goodsid'] && $up_level['become'] == 1) {
+
+            if ($up_level && $up_level['goods_id'] && $up_level['become'] == 1) {
             	$goods = pdo_fetch('SELECT og.goodsid FROM ' . tablename('sz_yi_order_goods') . '  og LEFT JOIN ' . tablename('sz_yi_order') . '  o  ON og.orderid = o.id WHERE o.id=:orderid AND o.openid = :openid AND og.uniacid=:uniacid AND og.goodsid = :goodsid' . $condtion . ' LIMIT 1', array(
 	                ':orderid' => $orderid,
 	                ':uniacid' => $_W['uniacid'],
 	                ':openid' => $openid,
-	                ':goodsid' => $up_level['goodsid']
+	                ':goodsid' => $up_level['goods_id']
 	            ));
 	            if ($goods) {
 	            	pdo_update('sz_yi_member', array('ischannel' => 1,'channel_level' => $up_level['id']), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
@@ -639,9 +641,9 @@ if (!class_exists('ChannelModel')) {
 			if (empty($member)) {
 				return;
 			}
-			if ($set['become_condition_order'] == 0) {
+			if ($set['become_order'] == 0) {
 				$condtion .= ' AND o.status >= 1';
-			} elseif ($set['become_condition_order'] == 1){
+			} elseif ($set['become_order'] == 1){
 				$condtion .= ' AND o.status >= 3';
 			}
 			$my_level = $this->getLevel($openid);
@@ -677,6 +679,7 @@ if (!class_exists('ChannelModel')) {
 						$status[3]['status'] = 0;
 					}
             	}
+            	
             	$finish_status = 0;
             	foreach ($status as $row) {
             		if ($row['status'] == 1) {
