@@ -105,7 +105,7 @@
 }
 .code-dov{
 	width:160px;height:198px;position:absolute;right:0;top:32px;    background-color: #fff;    border: 1px solid rgba(0,0,0,.15);
-    border-radius: 4px;box-shadow: 0 6px 12px rgba(0,0,0,.175);display:none
+    border-radius: 4px;box-shadow: 0 6px 12px rgba(0,0,0,.175);display:none;z-index:99
 }
 .code-dov h1{
 font-size: 12px;
