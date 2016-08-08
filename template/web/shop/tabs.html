@@ -1,5 +1,5 @@
 <div class="ulleft-nav">
-<div class="addtit-name"><a ng-if="checkPriv('shop_goods_add')" class="btn btn-success ng-scope" ui-sref="shop.goods.add.step({step:1})" href="/shop/goods/add/step/1"><i class="fa fa-plus"></i> 发布商品</a></div>
+<div class="addtit-name"><a  class="btn btn-success ng-scope"  href="{php echo $this->createWebUrl('shop/goods',array('op'=>'post'))}"><i class="fa fa-plus"></i> 发布商品</a></div>
 <ul class="nav nav-tabs">
     {ifp 'shop.goods.view'}<li {if ($_GPC['p'] == 'goods' || empty($_GPC['p'])) && $_GPC['status'] == 1} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods', array('status'=>1))}">出售中商品</a></li>{/if}
     {ifp 'shop.goods.view'}<li {if ($_GPC['p'] == 'goods' || empty($_GPC['p'])) && $_GPC['status'] == 0} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods', array('status'=>0))}">已下架商品</a></li>{/if}

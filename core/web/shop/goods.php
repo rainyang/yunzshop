@@ -385,7 +385,7 @@ if ($operation == "change") {
             }
             if ($_GPC['isverify'] == 2 && $_GPC['isverifysend'] == 0) {
                 if (!empty($_GPC['storeids'])) {
-                    $storeids = explode($_GPC['storeids']);
+                    $storeids = $_GPC['storeids'];
                     $a = 0;
                     foreach ($storeids as $v) {
                         $stores = pdo_fetch("SELECT * FROM " . tablename('sz_yi_store') . " WHERE id=" . $v);
@@ -475,6 +475,7 @@ if ($operation == "change") {
                 "edareas" => trim($_GPC["edareas"]),
                 "edmoney" => trim($_GPC["edmoney"]),
                 "redprice" => $_GPC["redprice"],//红包价格
+                "isopenchannel" => intval($_GPC["isopenchannel"])
 
             );
             if (!empty($_GPC['bonusmoney'])) {

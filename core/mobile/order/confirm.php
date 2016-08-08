@@ -1930,7 +1930,11 @@ if ($_W['isajax']) {
                                 'goodsid'       => $goods['goodsid']
                                 ));
                         }
-
+                        $op_where = '';
+                        if (!empty($goods['optionid'])) {
+                            $op_where = " AND optionid={$goods['optionid']}";
+                        }
+                        $surplus_stock = pdo_fetchcolumn("SELECT stock_total FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND goodsid={$goods['goodsid']} {$op_where}");
                         $stock_log = array(
                               'uniacid'             => $_W['uniacid'],
                               'openid'              => $openid,
@@ -1941,7 +1945,8 @@ if ($_W['isajax']) {
                               'every_turn_discount' => $my_info['my_level']['purchase_discount'],
                               'goods_price'         => $every_turn_price,
                               'paytime'             => time(),
-                              'type'                => 1
+                              'type'                => 1,
+                              'surplus_stock'       => $surplus_stock
                             );
                         // type==1  进货
                         pdo_insert('sz_yi_channel_stock_log', $stock_log);
