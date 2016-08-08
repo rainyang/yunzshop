@@ -1,7 +1,7 @@
 /*新增店铺首页概况*/
 .w-shop{
 	margin: 0;
-    padding: 60px 6px 6px 70px;
+    padding: 65px 6px 6px 75px;
     min-width:940px
 }
 .w-shoptit{
@@ -152,10 +152,11 @@ font-size: 12px;
     background-color: #f9f9f9;
 }
 .w-pricelist{
-	padding: 20px 10px;
+	padding: 10px 10px;
     background: #F8F8F8;
     margin-bottom: 40px;
     text-align: center;
+border: 1px dotted hsl(0, 0%, 93%);
 }
 .w-pricelist>ul{
     list-style: none;
@@ -175,7 +176,8 @@ font-size: 12px;
 }
 .w-pricelist li a span {
     color: #38f;
-    cursor: pointer;font-size: 26px;
+    cursor: pointer;font-size: 16px;
+    font-weight:200;
 }
 .w-pricelist li a .unit {
     font-size: 18px;color: #38f;    font-style: normal;
