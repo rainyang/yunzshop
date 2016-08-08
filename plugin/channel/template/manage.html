@@ -95,16 +95,10 @@
                 <td  style="overflow:visible;">
 
                     <div class="btn-group btn-group-sm">
-                        {ifp 'member.member.view'}<a href="{php echo $this->createWebUrl('member',array('op'=>'detail', 'id' => $row['id']));}" title='会员信息' class="btn btn-default dropdown-toggle"><i class='fa fa-user'></i> 会员信息</a>   {/if}
-                        {ifp 'member.member.view'}<a href="{php echo $this->createPluginWebUrl('channel/manage/detail',array('id' => $row['id']));}" title='详细信息' class="btn btn-default dropdown-toggle"><i class='fa fa-user'></i> 详细信息</a>   {/if}<a href="{ifp 'member.member.view'}<a href="{php echo $this->createWebUrl('member',array('op'=>'detail', 'id' => $row['id']));}" title='库存管理' class="btn btn-default dropdown-toggle"><i class='fa fa-user'></i> 库存管理</a>   {/if}<a href="{ifp 'member.member.view'}<a href="{php echo $this->createWebUrl('member',array('op'=>'detail', 'id' => $row['id']));}" title='取消渠道商' class="btn btn-default dropdown-toggle"><i class='fa fa-user'></i> 取消渠道商</a>   {/if}"></a>"></a>
-                        <a class="btn btn-default dropdown-toggle" href="javascript:;">操作 <span class="caret"></span></a>
-                        <ul class="dropdown-menu dropdown-menu-left" role="menu" style='z-index: 99999'>
-                            {ifp 'member.member.view'}<li><a href="{php echo $this->createWebUrl('member',array('op'=>'detail', 'id' => $row['id']));}" title='会员信息'><i class='fa fa-user'></i> 会员信息</a></li>   {/if}
-                            {ifp 'channel.manage.view'}<li><a href="{php echo $this->createPluginWebUrl('channel/manage/detail',array('id' => $row['id']));}" title='详细信息'><i class='fa fa-edit'></i> 详细信息</a>  </li>   {/if}
-                            {ifp 'channel.inventory.view'}<li><a href="{php echo $this->createPluginWebUrl('channel/inventory',array('id' => $row['id']));}" title='详细信息'><i class='fa fa-edit'></i> 库存管理</a>  </li>   {/if}
-                            {ifp 'channel.manage.delete'}<li><a href="{php echo $this->createPluginWebUrl('channel/manage/delete',array('id' => $row['id']));}" title="删除" onclick="return confirm('确定要删除该渠道商吗？');"><i class='fa fa-remove'></i> &nbsp;删除渠道商</a></li>{/if}
-
-                        </ul>
+                        {ifp 'member.member.view'}<a class="btn btn-default dropdown-toggle" href="{php echo $this->createWebUrl('member',array('op'=>'detail', 'id' => $row['id']));}" title='会员信息'> 会员信息</a>   {/if}
+                        {ifp 'member.member.view'}<a class="btn btn-default dropdown-toggle" href="{php echo $this->createPluginWebUrl('channel/manage/detail',array('id' => $row['id']));}" title='详细信息'>详细信息</a>   {/if}
+                        {ifp 'member.member.view'}<a class="btn btn-default dropdown-toggle" href="{php echo $this->createPluginWebUrl('channel/inventory',array('id' => $row['id']));}" title='库存管理'> 库存管理</a>   {/if}
+                        {ifp 'member.member.view'}<a class="btn btn-default dropdown-toggle" href="{php echo $this->createPluginWebUrl('channel/manage/delete',array('id' => $row['id']));}" title='取消渠道商' onclick="return confirm('确定要取消该渠道商吗？');">取消渠道商</a>   {/if}                       
                     </div>
 
 
