@@ -114,7 +114,6 @@
 							<th width="16%">我的库存</th>
 							<th width="16%">累计进货量</th>
 							<th width="16%">累计销售量</th>
-							<th width="10%">销量</th>
 							<th width="20%">操作</th>
 						</tr>
 					</thead>
@@ -187,7 +186,6 @@
 							</td>
 							<td >{if $item['stock_sum']} {$item['stock_sum']} {else} 0{/if}</td>
 							<td >{if $item['stock_sold_sum']} {$item['stock_sold_sum']} {else} 0{/if}</td>
-							<td >{$item['salesreal']}</td>
 
 							<td style="position:relative;" width="20%">
 								<a href="{php echo $this->createPluginWebUrl('channel/inventory', array('id' => $item['stockid'] ,'op' =>'detail'))}"  title="库存明细" class="btn btn-default btn-smjs-clip"><i class="fa fa-article"></i></a>

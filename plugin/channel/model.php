@@ -468,5 +468,221 @@ if (!class_exists('ChannelModel')) {
 			}
 			m('message')->sendCustomNotice($openid, $msg);
 		}
+		/**
+		  * 团队人数达到**成为渠道商
+		  *
+		  * @param string $openid 用户openid
+		  */
+		function becomeChannelByAgent($openid){
+			global $_W;
+			if (empty($openid)) {
+				return false;
+			}
+			$set = $this->getSet();
+			$member = m('member')->getMember($openid);
+			if (empty($member)) {
+				return;
+			}
+			$my_agents = pdo_fetchcolumn("SELECT count(*) FROM " . tablename('sz_yi_member') . " WHERE uniacid={$_W['uniacid']} AND agentid={$member['id']} AND ischannel=1 AND channel_level>0");
+			if (!empty($set['default_level']) && !empty($set['become_condition_team'])) {
+				if ($my_agents >= $set['become_condition_team']) {
+					$up_level_num = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid AND id = :id', array(':uniacid' => $_W['uniacid'],':id' => $set['default_level']));
+					if (!$up_level_num) {
+						$up_level_num = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid ORDER BY level_num ASC LIMIT 1', array(':uniacid' => $_W['uniacid']));
+					}	
+					pdo_update('sz_yi_member', array('ischannel' => 1,'channel_level' => $up_level_num), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
+				}				
+					
+				$this->getChannelNum($openid);
+				//通知
+			}
+		}
+		/**
+		  * 累计进货(元/次)达到**成为渠道商
+		  *
+		  * @param string $openid 用户openid int $orderid 订单id
+		  */
+		function becomeChannelByOrder($openid, $orderid){
+			global $_W;
+			if (empty($openid) || empty($orderid)) {
+				return false;
+			}
+			$set = $this->getSet();
+			$member = m('member')->getMember($openid);
+			if (empty($member)) {
+				return;
+			}
+			if ($set['become_condition_order'] == 0) {
+				$condtion .= ' AND o.status >= 1';
+			} elseif ($set['become_condition_order'] == 1){
+				$condtion .= ' AND o.status >= 3';
+			}
+			$orderinfo = pdo_fetch('SELECT sum(og.realprice) AS ordermoney,count(distinct og.orderid) AS ordercount FROM ' . tablename('sz_yi_order') . ' o ' . ' LEFT JOIN  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' WHERE o.openid=:openid ' . $condtion . ' AND o.uniacid=:uniacid AND og.ischannelpay=1 limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+			$up_level_num = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid AND id = :id', array(':uniacid' => $_W['uniacid'],':id' => $set['default_level']));
+			if (!$up_level_num) {
+				$up_level_num = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid ORDER BY level_num ASC LIMIT 1', array(':uniacid' => $_W['uniacid']));
+			}
+			if ($set['become_condition'] == 3) {
+				if ($orderinfo['ordermoney'] >= $set['become_condition_money']) {
+					pdo_update('sz_yi_member', array('ischannel' => 1,'channel_level' => $up_level_num), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
+				}
+			} elseif ($set['become_condition'] == 4){
+				if ($orderinfo['ordercount'] >= $set['become_condition_money']) {
+					pdo_update('sz_yi_member', array('ischannel' => 1,'channel_level' => $up_level_num), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
+				}
+			}
+			$this->getChannelNum($openid);
+			//通知
+		}
+		/**
+		  * 购买指定商品成为渠道商
+		  *
+		  * @param string $openid 用户openid int $orderid 订单id
+		  */
+		function becomeChannelByGood($openid, $orderid)
+        {
+            // 如果购买的商品可以指定成为分销商
+            global $_W;
+            $set = $this->getSet();
+            if (empty($openid) || empty($orderid)) {
+				return false;
+			}
+			$member = m('member')->getMember($openid);
+			if (empty($member)) {
+				return;
+			}
+			if ($set['become_condition_order'] == 0) {
+				$condtion .= ' AND o.status >= 1';
+			} elseif ($set['become_condition_order'] == 1){
+				$condtion .= ' AND o.status >= 3';
+			}
+            $goods = pdo_fetchall('SELECT og.goodsid FROM ' . tablename('sz_yi_order_goods') . '  og LEFT JOIN ' . tablename('sz_yi_order') . '  o  ON og.orderid = o.id WHERE o.id=:orderid AND o.openid = :openid AND og.uniacid=:uniacid ' . $condtion, array(
+                ':orderid' => $orderid,
+                ':uniacid' => $_W['uniacid'],
+                ':openid' => $openid
+            ));
+            $up_level_num = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid AND id = :id', array(':uniacid' => $_W['uniacid'],':id' => $set['default_level']));
+			if (!$up_level_num) {
+				$up_level_num = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid ORDER BY level_num ASC LIMIT 1', array(':uniacid' => $_W['uniacid']));
+			}
+            if ($set['become_condition'] == 5) {
+            	if (in_array($set['become_condition_goodsid'],$goods)) {
+            		pdo_update('sz_yi_member', array('ischannel' => 1,'channel_level' => $up_level_num), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
+            	}
+            }
+            $this->getChannelNum($openid);
+			//通知          
+        }
+        /**
+		  * 购买指定商品升级渠道商
+		  *
+		  * @param string $openid 用户openid int $orderid 订单id
+		  */
+        function upgradelevelByGood($openid, $orderid)
+        {
+            global $_W;
+            $set = $this->getSet();
+            if (empty($openid) || empty($orderid)) {
+				return false;
+			}
+			$member = m('member')->getMember($openid);
+			if (empty($member)) {
+				return;
+			}
+			if ($set['become_condition_order'] == 0) {
+				$condtion .= ' AND o.status >= 1';
+			} elseif ($set['become_condition_order'] == 1){
+				$condtion .= ' AND o.status >= 3';
+			}
+            
+            $my_level = $this->getLevel($openid);
+            $up_level = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid AND level_num > :level_num ORDER BY level_num ASC LIMIT 1', array(':uniacid' => $_W['uniacid'],':level_num' => $my_level['level_num']));
+            if ($up_level && $up_level['goodsid'] && $up_level['become'] == 1) {
+            	$goods = pdo_fetch('SELECT og.goodsid FROM ' . tablename('sz_yi_order_goods') . '  og LEFT JOIN ' . tablename('sz_yi_order') . '  o  ON og.orderid = o.id WHERE o.id=:orderid AND o.openid = :openid AND og.uniacid=:uniacid AND og.goodsid = :goodsid' . $condtion . ' LIMIT 1', array(
+	                ':orderid' => $orderid,
+	                ':uniacid' => $_W['uniacid'],
+	                ':openid' => $openid,
+	                ':goodsid' => $up_level['goodsid']
+	            ));
+	            if ($goods) {
+	            	pdo_update('sz_yi_member', array('ischannel' => 1,'channel_level' => $up_level['id']), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
+	            	$this->getChannelNum($openid);
+					//通知  
+	            }
+            } else {
+            	return;
+            }        
+        }
+        /**
+		  * 其他方式(团队人数、累计进货量、累计进货次数)升级渠道商（可多选）
+		  *
+		  * @param string $openid 用户openid int $orderid 订单id
+		  */
+        function upgradelevelByOther($openid, $orderid = '')
+        {
+            // 如果购买的商品可以指定成为分销商
+            global $_W;
+            $set = $this->getSet();
+            if (empty($openid)) {
+				return false;
+			}
+			$member = m('member')->getMember($openid);
+			if (empty($member)) {
+				return;
+			}
+			if ($set['become_condition_order'] == 0) {
+				$condtion .= ' AND o.status >= 1';
+			} elseif ($set['become_condition_order'] == 1){
+				$condtion .= ' AND o.status >= 3';
+			}
+			$my_level = $this->getLevel($openid);
+			$up_level_num = $my_level['level_num'] + 1;
+			$channel_level = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_level') . " WHERE uniacid={$_W['uniacid']} AND level_num={$up_level_num}");
+			$status = array();
+            if ($set['become'] == 2) {//其他方式
+            	if (in_array(1,$set['become_other'])) {//团队总人数
+            		$my_agents = pdo_fetchcolumn("SELECT count(*) FROM " . tablename('sz_yi_member') . " WHERE uniacid={$_W['uniacid']} AND agentid={$member['id']} AND ischannel=1 AND channel_level>0");		
+					if ($my_agents >= $channel_level['team_count']) {
+						$status[1]['status'] = 1;
+					} else {
+						$status[1]['status'] = 0;
+					}
+            	}
+            	if (in_array(2,$set['become_other'])) {//累计进货量(金额)
+					$orderinfo = pdo_fetch('SELECT sum(og.realprice) AS ordermoney,count(distinct og.orderid) AS ordercount FROM ' . tablename('sz_yi_order') . ' o ' . ' LEFT JOIN  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' WHERE o.openid=:openid AND ' . $condtion . ' AND o.uniacid=:uniacid AND og.ischannelpay=1 limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+					$ordermoney = $orderinfo['ordermoney'];
+					//$ordercount = $orderinfo['ordercount'];
+					if ($ordermoney >= $channel_level['order_money']) {
+						$status[2]['status'] = 1;
+					} else {
+						$status[2]['status'] = 0;
+					}
+            	}
+            	if (in_array(3,$set['become_other'])) {//累计进货次数(次)
+            		$orderinfo = pdo_fetch('SELECT sum(og.realprice) AS ordermoney,count(distinct og.orderid) AS ordercount FROM ' . tablename('sz_yi_order') . ' o ' . ' LEFT JOIN  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' WHERE o.openid=:openid AND ' . $condtion . ' AND o.uniacid=:uniacid AND og.ischannelpay=1 limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+					//$ordermoney = $orderinfo['ordermoney'];
+					$ordercount = $orderinfo['ordercount'];
+					if ($ordercount >= $channel_level['order_count']) {
+						$status[3]['status'] = 1;
+					} else {
+						$status[3]['status'] = 0;
+					}
+            	}
+            	$finish_status = 0;
+            	foreach ($status as $row) {
+            		if ($row['status'] == 1) {
+            			$finish_status = 1;
+            		} else {
+            			$finish_status = 0;
+            			break;
+            		}
+            	}
+            	if ($finish_status == 1) {
+            		pdo_update('sz_yi_member', array('channel_level' => $channel_level['id']), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
+					$this->getChannelNum($openid);
+					//通知
+            	}				
+            }        
+        }
 	}
 }

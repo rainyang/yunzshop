@@ -83,9 +83,9 @@ body {margin:0px; background:#f9f9f9; }
             $scope.system = [{$system}];
             $scope.Items = [{$data}];
             $scope.show = '1';
-            
+
             $scope.hasCube = function(Item){
-             
+
             	 var has = false;
                  var row=0,col = 0;
             	 for(var i=row;i<4;i++){
@@ -97,19 +97,19 @@ body {margin:0px; background:#f9f9f9; }
                     }
                 }
                 return has;
-                
+
 
             }
-            
+
             $scope.$on('ngRepeatFinished',function(){
                 $('.fe-mod-2 .swipe').each(function(){
                         initswipe($(this));
                  });
                  $('.fe-mod-8-main-img img').each(function(){
-                     $(this).height($(this).width());    
+                     $(this).height($(this).width());
                  });
                  $('.fe-mod-12 img').each(function(){
-                     $(this).height($(this).width());    
+                     $(this).height($(this).width());
                  });
                  $('.fe-mod-cube table  tr').each(function(){
                  	if( $(this).children().length<=0){
@@ -117,10 +117,10 @@ body {margin:0px; background:#f9f9f9; }
                  	}
                  });
             });
-          
-          
+
+
     }]);
-    
+
     app.directive('stringHtml' , function(){
         return function(scope , el , attr){
             if(attr.stringHtml){
@@ -129,7 +129,7 @@ body {margin:0px; background:#f9f9f9; }
                 });
             }
         };
-    });  
+    });
     app.directive("onFinishRenderFilters",function($timeout){
         return{
             restrict: 'A',

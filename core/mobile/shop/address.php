@@ -22,7 +22,7 @@ if ($_W['isajax']) {
 		$psize = 20;
 		$condition = ' and openid=:openid and deleted=0 and  `uniacid` = :uniacid  ';
 		$params = array(':uniacid' => $_W['uniacid'], ':openid' => $openid);
-		$sql = 'SELECT COUNT(*) FROM ' . tablename('sz_yi_member_address') . " where 1 $condition";
+		$sql = 'SELECT COUNT(1) FROM ' . tablename('sz_yi_member_address') . " where 1 $condition";
 		$total = pdo_fetchcolumn($sql, $params);
 		$list = array();
 		if (!empty($total)) {
