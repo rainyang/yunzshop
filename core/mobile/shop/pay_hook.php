@@ -11,6 +11,7 @@ if (!defined('IN_IA')) {
 }
 
 global $_W, $_GPC;
+
 $uniacid        = $_W['uniacid'];
 
 require_once('../addons/sz_yi/plugin/pingpp/init.php');
@@ -77,34 +78,64 @@ do{
         $order_data['pay_id'] = $pay_info['id'];
         $order_data['order_id'] = $pay_info['order_no'];
 
-        $order_info = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND ordersn=:ordersn", array(
-            'uniacid'=> $uniacid,
-            'ordersn'=> $pay_info['order_no']
-        ));
+        if (substr($pay_info['order_no'],0,2) == 'RC') {
+            if ($pay_info['channel'] == 'wx') {
 
-        if($order_info['status']!=0){
-            $res['status'] = 500;
-            $res['msg'] = "Internal Server Error";
-            echo '支付状态不正确';
-            break;
+            } elseif ($pay_info['channel'] == 'alipay') {
+                file_put_contents("/tmp/a.log",$openid);
+                $log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `logno`=:logno and `uniacid`=:uniacid limit 1', array(
+                    ':uniacid' => $uniacid,
+                    ':logno' => $pay_info['order_no']
+                ));
+                if (!empty($log) && empty($log['status'])) {
+                    pdo_update('sz_yi_member_log', array(
+                        'status' => 1,
+                        'rechargetype' => 'alipay'
+                    ), array(
+                        'id' => $log['id']
+                    ));
+                    m('member')->setCredit($log['openid'], 'credit2', $log['money']);
+                    m('member')->setRechargeCredit($log['openid'], $log['money']);
+                    if (p('sale')) {
+                        p('sale')->setRechargeActivity($log);
+                    }
+                    m('notice')->sendMemberLogMessage($log['id']);
+                }
+            }
+
+        } else {
+
+            $order_info = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND ordersn=:ordersn", array(
+                'uniacid'=> $uniacid,
+                'ordersn'=> $pay_info['order_no']
+            ));
+
+            if($order_info['status']!=0){
+                $res['status'] = 500;
+                $res['msg'] = "Internal Server Error";
+                echo '支付状态不正确';
+                break;
+            }
+
+            $pay_type = array(
+                "wx" => 21,
+                "alipay" => 22
+            );
+
+            if(!pdo_update('sz_yi_order',array('status'=>1,'paytype'=>$pay_type[$pay_info['channel']]),array('ordersn'=>$pay_info['order_no']))){
+                echo '订单状态改变失败';
+                $res['status'] = 500;
+                $res['msg'] = "Internal Server Error";
+                break;
+            }else{
+                m('notice')->sendOrderMessage($order_info['id']);
+                echo '成功';
+                $res['status'] = 200;
+                $res['msg'] = "ok";
+            }
         }
 
-        $pay_type = array(
-            "wx" => 21,
-            "alipay" => 22
-        );
 
-        if(!pdo_update('sz_yi_order',array('status'=>1,'paytype'=>$pay_type[$pay_info['channel']]),array('ordersn'=>$pay_info['order_no']))){
-            echo '订单状态改变失败';
-            $res['status'] = 500;
-            $res['msg'] = "Internal Server Error";
-            break;
-        }else{
-            m('notice')->sendOrderMessage($order_info['id']);
-            echo '成功';
-            $res['status'] = 200;
-            $res['msg'] = "ok";
-        }
     }
 }while(0);
 header("HTTP/1.1 ".$res['status']." ".$res['msg']);
