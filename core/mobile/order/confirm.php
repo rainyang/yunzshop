@@ -1930,7 +1930,11 @@ if ($_W['isajax']) {
                                 'goodsid'       => $goods['goodsid']
                                 ));
                         }
-                        $surplus_stock = pdo_fetchcolumn("SELECT stock_total FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND goodsid={$goods['goodsid']} AND optionid={$goods['optionid']}");
+                        $op_where = '';
+                        if (!empty($goods['optionid'])) {
+                            $op_where = " AND optionid={$goods['optionid']}";
+                        }
+                        $surplus_stock = pdo_fetchcolumn("SELECT stock_total FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND goodsid={$goods['goodsid']} {$op_where}");
                         $stock_log = array(
                               'uniacid'             => $_W['uniacid'],
                               'openid'              => $openid,

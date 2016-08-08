@@ -305,6 +305,7 @@
 							<th width="16%">数量</th>
 							<th width="16%">金额</th>
 							<th width="16%">库存余量</th>
+							<th width="16%">交易方</th>
 							<th width="10%">类型</th>
 						</tr>
 					</thead>
@@ -328,6 +329,7 @@
 								{$item['every_turn']}
 							</td>
 							<td >{php echo $item['every_turn']*$item['every_turn_discount']}</td>
+							<td >{$item['surplus_stock']}</td>
 							<td >{$item['surplus_stock']}</td>
 							<td >
 								{if $item['type'] == 1}进货
