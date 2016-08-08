@@ -16,7 +16,7 @@
      {ifp 'virtual.set'}<li {if $_GPC['method']=='set' && $_GPC['p'] == 'virtual'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('virtual/set')}" style="cursor: pointer;">卡密设置</a></li>{/if}
 
     <li class="step"></li>
-    <li {if $_GPC['p'] == 'taobao'} class="active" {/if}><a href="{php echo $this->createPluginWebUrl('taobao')}">外部商品导入</a></li>
+    <li {if $_GPC['p'] == 'taobao'} class="active" {/if}><a href="{php echo $this->createPluginWebUrl('taobao')}">淘宝商品导入</a></li>
 <!--
     {ifp 'shop.dispatch.view'}<li {if $_GPC['p'] == 'dispatch'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/dispatch')}">配送方式</a></li>{/if}
     {ifp 'shop.adv.view'}<li {if $_GPC['p'] == 'adv'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/adv')}">幻灯片管理</a></li>{/if}

@@ -36,7 +36,6 @@
  
             <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">按月份/日期</label>
-
                 <div class="col-sm-2">
                     <select id='year' name="year" class="form-control">
                         <option value=''>未选年份</option>
@@ -106,9 +105,6 @@
         })
         
     $(function () {
-   
-        
-        
         $('#container').highcharts({
         chart: {
             type: 'line'
@@ -120,9 +116,9 @@
             text: ''
         },
         colors: [
-'#0061a5',
-'#ff0000'
-],
+		'#0061a5',
+		'#ff0000'
+		],
         xAxis: {
             categories: [    {loop $datas $key $row}
                    {if $key>0},{/if}"{$row['date']}"

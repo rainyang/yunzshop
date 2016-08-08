@@ -3,6 +3,7 @@ if (!defined("IN_IA")) {
     print ("Access Denied");
 }
 global $_W, $_GPC;
+$_GPC['status'] = !isset($_GPC['status']) ? 1 : $_GPC['status'];
 
 $mt = mt_rand(5, 35);
 if ($mt <= 10) {

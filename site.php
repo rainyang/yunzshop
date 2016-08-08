@@ -19,7 +19,7 @@ class Sz_yiModuleSite extends Core
     //商城管理 
     public function doWebShop()
     {
-        $this->_exec(__FUNCTION__, 'goods');
+        $this->_exec(__FUNCTION__, 'index');
     }
 
     //订单管理  
