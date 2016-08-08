@@ -26,9 +26,9 @@ ul{list-style:none;}
     font-size: 20px;
     margin-bottom: 3px;
 }
-
+.topmenu ul li a i{color: #fff}
 .topmenu>ul>li>a>span {
-    color:hsla(0, 0%, 100%, 0.8);
+    color:#fff;
 }
 .topmenu_header{position:fixed;z-index:3;height:50px;background-color:#fff;border-bottom: 1px solid hsl(0, 0%, 87%);width:100%}
 .topmenu_header a{z-index:9; color:#000}
@@ -36,12 +36,14 @@ ul{list-style:none;}
     position: relative;
     height: 50px;
     }
+.topmenu_header ul li a:first-child{background: none}
 .topmenu_header .dropdown-toggle:hover{z-index:9; color:hsl(24, 100%, 50%);background-color:#fff !important;
     display: block;
     height: 50px;
     border-bottom: 3px solid hsl(24, 100%, 50%);
     transition: all .15s ease-in-out;
 }
+.topmenu_header .dropdown-toggle:hover i{color: #F60}
 .dropdown,.open{float: left;}
 .container-fluid{padding: 0}
 .ulleft-nav{
