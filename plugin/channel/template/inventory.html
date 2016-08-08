@@ -330,7 +330,7 @@
 							</td>
 							<td >{php echo $item['every_turn']*$item['every_turn_discount']}</td>
 							<td >{$item['surplus_stock']}</td>
-							<td >{$item['surplus_stock']}</td>
+							<td ><img src="{php echo tomedia($item['avatar'])}" style="width:40px;height:40px;padding:1px;border:1px solid #ccc;"  />{$item['nickname']}</td>
 							<td >
 								{if $item['type'] == 1}进货
 								{elseif $item['type'] == 2}划拨

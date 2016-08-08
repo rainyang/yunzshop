@@ -52,7 +52,7 @@ if (!class_exists('ChannelModel')) {
 			if (!empty($optionid)) {
 				$cond = " AND sl.optionid={$optionid}";
 			}
-			$stock_log = pdo_fetchall("SELECT g.thumb,g.title,sl.* FROM " . tablename('sz_yi_channel_stock_log') . "sl left join  " . tablename('sz_yi_goods') . " g on sl.goodsid = g.id WHERE sl.uniacid={$_W['uniacid']} AND sl.openid='{$openid}' AND sl.goodsid={$goodsid}" . $cond);
+			$stock_log = pdo_fetchall("SELECT g.thumb,g.title,sl.*,m.nickname,m.avatar FROM " . tablename('sz_yi_channel_stock_log') . "sl left join  " . tablename('sz_yi_member') . " m ON sl.mid = m.id LEFT JOIN " . tablename('sz_yi_goods') . " g on sl.goodsid = g.id WHERE sl.uniacid={$_W['uniacid']} AND sl.openid='{$openid}' AND sl.goodsid={$goodsid}" . $cond);
 			return $stock_log;
 		}
 		/**
