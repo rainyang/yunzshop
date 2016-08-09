@@ -1511,3 +1511,21 @@ if(!pdo_fieldexists('sz_yi_commission_apply', 'batch_no')) {
     pdo_query("ALTER TABLE ".tablename('sz_yi_commission_apply')." ADD `batch_no`  varchar(255) DEFAULT '' AFTER `alipayname`;");
 }
 
+
+//分销商折扣  2016-8-8 杨雷
+if(!pdo_fieldexists('sz_yi_goods', 'discounttype')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `discounttype` TINYINT NOT NULL AFTER;");
+}
+if(!pdo_fieldexists('sz_yi_goods', 'discounts2')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `discounts2` TEXT NOT NULL AFTER;");
+}
+if(!pdo_fieldexists('sz_yi_goods', 'returns2')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returns2` TEXT NOT NULL AFTER;");
+}
+if(!pdo_fieldexists('sz_yi_goods', 'returntype')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returntype` TINYINT NOT NULL AFTER;");
+}
+if(!pdo_fieldexists('sz_yi_goods', 'discountway')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `discountway` TINYINT NOT NULL AFTER;");
+}
+

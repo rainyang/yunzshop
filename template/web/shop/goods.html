@@ -200,7 +200,86 @@
 			alert('规格数据有变动，请重新点击 [刷新规格项目表] 按钮!');
 			return false;
 		}
+		var discountway = $('input:radio[name=discountway]:checked').val();
+		var discounttype = $('input:radio[name=discounttype]:checked').val();
+		var returntype = $('input:radio[name=returntype]:checked').val();
+		var marketprice = $('input:text[name=marketprice]').val();
+		var isreturn = false;
+
+		// Tip.focus("#goodsname", "请输入商品名称!");
+		// 		return false;
+
+        if(discountway == 1){
+        	if(discounttype == 1){
+	        	$(".discounts").each(function(){
+	                if(parseFloat($(this).val()) <= 0 || parseFloat($(this).val()) >= 10){
+	                	$(this).val('');
+						isreturn = true;
+						alert('请输入正确折扣！');
+						return false;
+	                }
+				});
+        	}else{
+	        	$(".discounts2").each(function(){
+	                if(parseFloat($(this).val()) <= 0 || parseFloat($(this).val()) >= 10){
+	                	$(this).val('');
+						isreturn = true;
+						alert('请输入正确折扣！');
+						return false;
+	                }
+				});
+        	}
+
+
+        }else{
+        	if(discounttype == 1){
+	        	$(".discounts").each(function(){
+	                if( parseFloat($(this).val()) < 0 || parseFloat($(this).val()) >= parseFloat(marketprice)){
+	                	$(this).val('');
+						isreturn = true;
+						alert('请输入正确折扣金额！');
+						return false;
+	                }
+				});
+        	}else{
+	        	$(".discounts2").each(function(){
+	                if( parseFloat($(this).val()) < 0 || parseFloat($(this).val()) >= parseFloat(marketprice)){
+	                	$(this).val('');
+						isreturn = true;
+						alert('请输入正确折扣金额！');
+						return false;
+	                }
+				});   		
+        	}
+
+
+        }
+    	if(returntype == 1){
+	    	$(".returns").each(function(){
+	            if( parseFloat($(this).val()) < 0 || parseFloat($(this).val()) >= parseFloat(marketprice)){
+	                $(this).val('');
+					isreturn = true;
+					alert('请输入正确返现金额！');
+					return false;
+	            }
+			});
+    	}else{
+    		$(".returns2").each(function(){
+	            if( parseFloat($(this).val()) < 0 || parseFloat($(this).val()) >= parseFloat(marketprice)){
+	                $(this).val('');
+					isreturn = true;
+					alert('请输入正确返现金额！');
+					return false;
+	            }
+			});
+    	}
+
+
+ 		if(isreturn){
+ 			return false;
+ 		}
 		return true;
+ 
 	}
 
 	function checkoption() {
