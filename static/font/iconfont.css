@@ -1,10 +1,10 @@
 
 @font-face {font-family: "iconfont";
-  src: url('iconfont.eot?t=1470624747'); /* IE9*/
-  src: url('iconfont.eot?t=1470624747#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('iconfont.woff?t=1470624747') format('woff'), /* chrome, firefox */
-  url('iconfont.ttf?t=1470624747') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('iconfont.svg?t=1470624747#iconfont') format('svg'); /* iOS 4.1- */
+  src: url('iconfont.eot?t=1470734438'); /* IE9*/
+  src: url('iconfont.eot?t=1470734438#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1470734438') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1470734438') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1470734438#iconfont') format('svg'); /* iOS 4.1- */
 }
 
 .iconfont {
@@ -17,6 +17,7 @@
 }
 .icon-sign-out:before { content: "\e603"; }
 .icon-admin:before { content: "\e629"; }
+.icon-tool:before { content: "\e643"; }
 .icon-tongji:before { content: "\e614"; }
 .icon-taobao:before { content: "\e630"; }
 .icon-list:before { content: "\e600"; }
