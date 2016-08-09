@@ -319,7 +319,7 @@ class Sz_DYi_Order
                                     $channel = true;
                                 }
                                 $goods_price = pdo_fetchcolumn("SELECT marketprice FROM " . tablename('sz_yi_goods') . " WHERE uniacid={$_W['uniacid']} AND id={$g['goodsid']}");
-                                $up_mem = m('member')->getInfo($my_info['up_channel']['openid']);
+                                $up_mem = m('member')->getInfo($order['openid']);
                                 $log_data = array(
                                     'goodsid'       => $g['goodsid'],
                                     'optionid'      => $g['optionid'],
@@ -330,6 +330,9 @@ class Sz_DYi_Order
                                     'surplus_stock' => $stock,
                                     'mid'           => $up_mem['id']
                                     );
+                                if (!empty($my_info['up_level'])) {
+                                    $log_data['openid'] = $my_info['up_level']['openid'];
+                                }
                                 if (!empty($g['ischannelpay'])) {
                                     $log_data['every_turn_price'] = $goods_price*$my_info['my_level']['purchase_discount']/100;
                                     $log_data['every_turn_discount'] = $my_info['my_level']['purchase_discount'];
