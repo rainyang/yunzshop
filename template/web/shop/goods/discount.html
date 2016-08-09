@@ -146,44 +146,195 @@
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
     <div class="col-sm-6 col-xs-6">
       <div class='alert alert-info'>
-    只有当折扣大于0，小于10的情况下才能生效，否则按自身会员等级折扣计算<br/>（折扣填写0.1-10之间）
-</div>
+        只有当折扣大于0，小于10的情况下才能生效，否则按自身会员等级折扣计算<br/>（折扣填写0.1-10之间
+      </div>
     </div>
 </div>  
 
+<div class='panel-heading'>
+    等级折扣
+</div>
+
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级折扣{if p('return')}-返现{/if}</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">折扣类型</label>
     <div class="col-sm-6 col-xs-6">
-        <div class='input-group'>
-           <div class='input-group-addon'>默认等级</div>
-           <input type='text' name='discounts[default]' class="form-control" value="{php echo $discounts['default']}" />
-           <div class='input-group-addon'>折</div>
-{if p('return')}
-           <div class='input-group-addon'>返现</div>
-           <input type='text' name='returns[default]' class="form-control" value="{php echo $returns['default']}" />
-           <div class='input-group-addon'>元 </div>
-{/if}
-       </div>
+      <label class="radio-inline">
+        <input type="radio" name="discounttype" value="1" {if $discounttype == 1} checked="true" {/if} /> 会员等级
+      </label>
+      {if !empty($com_set['level'])}
+        <label class="radio-inline">
+          <input type="radio" name="discounttype" value="2" {if $discounttype == 2} checked="true" {/if} /> 分销商等级
+        </label>
+      {/if}
     </div>
 </div>   
+
+    <div class="form-group">
+      <label class="col-xs-12 col-sm-3 col-md-2 control-label">折扣方式</label>
+      <div class="col-sm-6 col-xs-6">
+        <div class='input-group'>
+         <label class="radio-inline">
+             <input type="radio" name="discountway" value="1" {if $discountway == 1} checked="true" {/if} /> 折扣
+           </label>
+           {if !empty($com_set['level'])}
+             <label class="radio-inline">
+               <input type="radio" name="discountway" value="2" {if $discountway == 2} checked="true" {/if} /> 固定金额
+             </label>
+           {/if}
+        </div>
+      </div> 
+    </div> 
+    <div id="ismember"  {if $discounttype != 1} style="display:none" {/if}>
+      <div class="form-group">
+         <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级折扣</label>
+         <div class="col-sm-6 col-xs-6">
+             <div class='input-group'>
+                <div class='input-group-addon'>默认等级</div>
+                <input type='text' name='discounts[default]' class="form-control discounts" value="{php echo $discounts['default']}" />
+                <div class='input-group-addon waytxt'>{if $discountway == 1}折{else}元{/if}</div>
+            </div>
+         </div>
+      </div>   
+      {loop $levels $level}
+        <div class="form-group">
+           <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+           <div class="col-sm-6 col-xs-6">
+               <div class='input-group'>
+                  <div class='input-group-addon'>{$level['levelname']}</div>
+                  <input type='text' name='discounts[level{$level['id']}]' class="form-control discounts"  value="{php echo $discounts['level'.$level['id']]}" />
+                  <div class='input-group-addon waytxt'>{if $discountway == 1}折{else}元{/if}</div>
+              </div>
+           </div>
+        </div>   
+      {/loop}
+    </div>
+
+    <div id="isdistribution"  {if $discounttype != 2} style="display:none" {/if}>
+      <div class="form-group">
+         <label class="col-xs-12 col-sm-3 col-md-2 control-label">分销商等级折扣</label>
+         <div class="col-sm-6 col-xs-6">
+             <div class='input-group'>
+                <div class='input-group-addon'>默认等级</div>
+                <input type='text' name='discounts2[default]' class="form-control discounts2" value="{php echo $discounts2['default']}" />
+                <div class='input-group-addon waytxt'>{if $discountway == 1}折{else}元{/if}</div>
+            </div>
+         </div>
+      </div>   
+      {loop $distributor_levels $level}
+      <div class="form-group">
+         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+         <div class="col-sm-6 col-xs-6">
+             <div class='input-group'>
+                <div class='input-group-addon'>{$level['levelname']}</div>
+                <input type='text' name='discounts2[level{$level['id']}]' class="form-control discounts2"  value="{php echo $discounts2['level'.$level['id']]}" />
+                <div class='input-group-addon waytxt'>{if $discountway == 1}折{else}元{/if}</div>
+            </div>
+         </div>
+      </div>   
+      {/loop}
+    </div>
+ 
+
+{if p('return')}
+  <div class='panel-heading'>
+      等级返现
+  </div>
+  <div class="form-group">
+      <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现类型</label>
+      <div class="col-sm-6 col-xs-6">
+          <label class="radio-inline">
+            <input type="radio" name="returntype" value="1" {if $returntype == 1} checked="true" {/if} /> 会员等级
+          </label>
+          {if !empty($com_set['level'])}
+            <label class="radio-inline">
+              <input type="radio" name="returntype" value="2" {if $returntype == 2} checked="true" {/if} /> 分销商等级
+            </label>
+          {/if}
+      </div>
+  </div> 
+  <div id="ismember2"  {if $returntype != 1} style="display:none" {/if}>
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级返现</label>
+        <div class="col-sm-6 col-xs-6">
+            <div class='input-group'>
+              <div class='input-group-addon'>默认等级-返现</div>
+              <input type='text' name='returns[default]' class="form-control returns" value="{php echo $returns['default']}" />
+              <div class='input-group-addon'>元 </div>
+           </div>
+        </div>
+    </div>   
     {loop $levels $level}
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
-    <div class="col-sm-6 col-xs-6">
-        <div class='input-group'>
-           <div class='input-group-addon'>{$level['levelname']}</div>
-           <input type='text' name='discounts[level{$level['id']}]' class="form-control"  value="{php echo $discounts['level'.$level['id']]}" />
-           <div class='input-group-addon'>折</div>
-{if p('return')}
-           <div class='input-group-addon'>返现</div>
-           <input type='text' name='returns[level{$level['id']}]' class="form-control"  value="{php echo $returns['level'.$level['id']]}" />
-           <div class='input-group-addon'>元</div>
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+        <div class="col-sm-6 col-xs-6">
+            <div class='input-group'>
+              <div class='input-group-addon'>{$level['levelname']}-返现</div>
+              <input type='text' name='returns[level{$level['id']}]' class="form-control returns"  value="{php echo $returns['level'.$level['id']]}" />
+              <div class='input-group-addon'>元</div>
+           </div>
+        </div>
+    </div>   
+    {/loop}
+  </div>
+  <div id="isdistribution2"  {if $returntype != 2} style="display:none" {/if}>
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">分销商等级返现</label>
+        <div class="col-sm-6 col-xs-6">
+            <div class='input-group'>
+               <div class='input-group-addon'>默认等级-返现</div>
+               <input type='text' name='returns2[default]' class="form-control returns2" value="{php echo $returns2['default']}" />
+               <div class='input-group-addon'>元 </div>
+           </div>
+        </div>
+    </div>   
+    {loop $distributor_levels $level}
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+        <div class="col-sm-6 col-xs-6">
+            <div class='input-group'>
+              <div class='input-group-addon'>{$level['levelname']}-返现</div>
+              <input type='text' name='returns2[level{$level['id']}]' class="form-control returns2" value="{php echo $returns2['level'.$level['id']]}" />
+              <div class='input-group-addon'>元</div>
+
+           </div>
+        </div>
+    </div>   
+    {/loop}
+  </div>
 {/if}
-       </div>
-    </div>
-</div>   
-{/loop}
+
 <script language='javascript'>
+    $('input[name="discounttype"]').click(function(){
+      var discounttype = $('input:radio[name=discounttype]:checked').val();
+      if(discounttype == 1){
+        $('#isdistribution').hide();
+        $('#ismember').show();
+      }else{
+        $('#ismember').hide();
+        $('#isdistribution').show();
+      }
+    });
+    $('input[name="returntype"]').click(function(){
+      var returntype = $('input:radio[name=returntype]:checked').val();
+      if(returntype == 1){
+        $('#isdistribution2').hide();
+        $('#ismember2').show();
+      }else{
+        $('#ismember2').hide();
+        $('#isdistribution2').show();
+      }
+    });
+
+    $('input[name="discountway"]').click(function(){
+      var discountway = $('input:radio[name=discountway]:checked').val();
+      if(discountway == 1){
+        $('.waytxt').html('折');
+      }else{
+        $('.waytxt').html('元');
+      }
+    });
+ 
+
     $('.chkall').click(function(){
         var checked =$(this).get(0).checked;
         if(checked) {
