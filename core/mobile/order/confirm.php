@@ -777,7 +777,7 @@ if ($_W['isajax']) {
             'weight' => $weight / $buytotal,
             'set' => $shopset,
             'fromcart' => $fromcart,
-            'haslevel' => !empty($level['id']) && $level['discount'] > 0 && $level['discount'] < 10,
+            'haslevel' => !empty($level) && $level['discount'] > 0 && $level['discount'] < 10,
             'total' => $total,
             //"dispatchprice" => number_format($dispatch_price, 2),
             'totalprice' => number_format($totalprice, 2),

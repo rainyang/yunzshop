@@ -5,6 +5,13 @@ if ($operation == 'display') {
     $pindex    = max(1, intval($_GPC['page']));
     $psize     = 20;
 
+    $daytime = strtotime(date("Y-m-d 00:00:00"));
+    $stattime = $daytime - 86400;
+    $endtime = $daytime - 1;
+    $sql = "select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}  ORDER BY o.finishtime DESC,o.status DESC";
+    $ordermoney = pdo_fetchcolumn($sql);
+    $ordermoney = floatval($ordermoney);
+
     $params    = array();
     $condition = '';
     if (!empty($_GPC['mid'])) {
@@ -25,6 +32,7 @@ if ($operation == 'display') {
     $list_group=pdo_fetchall(" select * from " .tablename('sz_yi_return'). " r 
         left join " . tablename('sz_yi_member') . " m on (r.mid = m.id ) where r.uniacid= " .$_W['uniacid']. "  {$condition1}  group by mid  limit " . ($pindex - 1) * $psize . ',' . $psize ,$params);
     $pager           = pagination($total, $pindex, $psize);
+    $totals = 0;
     foreach( $list_group as $row1){
         $infomation=pdo_fetch("select * from " .tablename('sz_yi_member'). "  where uniacid=" .$_W['uniacid']. " and id=" .$row1['mid'] );
        $list_group1[$row1['mid']]= pdo_fetchall(" select * from " .tablename('sz_yi_return'). " where uniacid=" .$_W['uniacid']. " and  mid = ".$row1['mid']);
@@ -44,7 +52,10 @@ if ($operation == 'display') {
        $asd[$row1['mid']]['avatar']=$infomation['avatar'];
        $asd[$row1['mid']]['mid']=$infomation['id'];
 
-       $asd[$row1['mid']]['unreturnmoney']=$asd[$row1['mid']]['money1'] - $asd[$row1['mid']]['return_money1'];   
+       $asd[$row1['mid']]['unreturnmoney']=$asd[$row1['mid']]['money1'] - $asd[$row1['mid']]['return_money1'];
+        $m_totals = pdo_fetchall("select * from" . tablename('sz_yi_return') . " r 
+        left join " . tablename('sz_yi_member') . " m on (r.mid = m.id ) where r.uniacid =" . $_W['uniacid'] ." and r.mid = ".$row1['mid'],$params);
+        $totals += count($m_totals);   
     }
     unset($row);
 
