@@ -204,9 +204,9 @@ if (!class_exists('ChannelModel')) {
 			global $_W;
 			$set = $this->getSet();
 			//不为空为关闭
-			/*if (!empty($set['closerecommenderchannel'])) {
+			if (!empty($set['closerecommenderchannel'])) {
 				return;
-			}*/
+			}
 			$member = m('member')->getInfo($openid);
 			$my_channel_level = $this->getLevel($openid);
 			if (empty($member['agentid'])) {
@@ -283,8 +283,8 @@ if (!class_exists('ChannelModel')) {
 		public function deductChannelStock($orderid)
 		{
 			global $_W;
-			$openid = pdo_fetchcolumn("SELECT openid FROM " . tablename('sz_yi_order') . " WHERE uniacid={$_W['uniacid']} AND id={$orderid}");
 			$my_info = $this->model->getInfo($openid);
+			$openid = pdo_fetchcolumn("SELECT openid FROM " . tablename('sz_yi_order') . " WHERE uniacid={$_W['uniacid']} AND id={$orderid}");
             $order_goods = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_order_goods') . " WHERE uniacid={$_W['uniacid']} AND orderid={$orderid}");
             foreach ($order_goods as $og) {
                 $channel_cond = " WHERE uniacid={$_W['uniacid']} AND goodsid={$og['goodsid']} AND openid='{$openid}'";
@@ -503,7 +503,7 @@ if (!class_exists('ChannelModel')) {
 				}				
 					
 				$this->getChannelNum($openid);
-				$this->model->sendMessage($openid, array('nickname'	=> $member['nickname']), TM_CHANNEL_BECOME);
+				//通知
 			}
 		}
 		/**
@@ -541,7 +541,7 @@ if (!class_exists('ChannelModel')) {
 				}
 			}
 			$this->getChannelNum($openid);
-			$this->model->sendMessage($openid, array('nickname'	=> $member['nickname']), TM_CHANNEL_BECOME);
+			//通知
 		}
 		/**
 		  * 购买指定商品成为渠道商
@@ -581,7 +581,7 @@ if (!class_exists('ChannelModel')) {
             	}
             }
             $this->getChannelNum($openid);
-			$this->model->sendMessage($openid, array('nickname'	=> $member['nickname']), TM_CHANNEL_BECOME);          
+			//通知          
         }
         /**
 		  * 购买指定商品升级渠道商
@@ -618,7 +618,7 @@ if (!class_exists('ChannelModel')) {
 	            if ($goods) {
 	            	pdo_update('sz_yi_member', array('ischannel' => 1,'channel_level' => $up_level['id']), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
 	            	$this->getChannelNum($openid);
-					$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'oldlevelname' => $my_level['level_name'], 'old_purchase_discount' => $my_level['purchase_discount'], 'newlevelname' => $up_level['level_name'], 'new_purchase_discount' => $up_level['purchase_discount']), TM_CHANNEL_UPGRADE); 
+					//通知  
 	            }
             } else {
             	return;
@@ -692,7 +692,7 @@ if (!class_exists('ChannelModel')) {
             	if ($finish_status == 1) {
             		pdo_update('sz_yi_member', array('channel_level' => $channel_level['id']), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
 					$this->getChannelNum($openid);
-					$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'oldlevelname' => $my_level['level_name'], 'old_purchase_discount' => $my_level['purchase_discount'], 'newlevelname' => $channel_level['level_name'], 'new_purchase_discount' => $channel_level['purchase_discount']), TM_CHANNEL_UPGRADE);
+					//通知
             	}				
             }        
         }
