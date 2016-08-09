@@ -190,12 +190,12 @@
         <%if isverifysend%>
           <%if carrier_list.length>0%>
               <div class="addorder_nav">
-                <div class="nav selected" data-nav='0'>配送核销</div>
-                <div class="nav"  data-nav='1'>上门自提</div>
+                <div class="nav selected" data-nav='1'>上门自提</div>
+                <div class="nav"  data-nav='0'>配送核销</div>
               </div>
           <%/if%>
 
-          <div class="addorder_user addorder_user_0">
+          <div class="addorder_user addorder_user_0" <%if isverifysend%>style='display:none'<%/if%>>
             <input type='hidden' id='addressid' value='<%address.id%>' />
             <div class="info" id='address_select' <%if !address %>style='display:none'<%/if%>>
                <div class="ico"><i class="iconfont icon-map-marker"></i></div>
@@ -220,7 +220,7 @@
           <div id='address_container'></div>
         <%/if%>
            <%if carrier%>
-              <div class="addorder_user addorder_user_1" <%if isverifysend%>style='display:none'<%/if%>>
+              <div class="addorder_user addorder_user_1" >
                 <input type='hidden' id='carrierindex' value='0' />
                 <input type='hidden' id='carrierid' value='<%carrier.id%>' />
                 <div class="info" id='carrier_select' >
@@ -235,7 +235,7 @@
                 </div>
               </div>
               <div id='address_container'></div>
-              <div class="carrier_input_info" style='display:none' >
+              <div class="carrier_input_info" >
                   <div class="row">
                     <div class='title'>提货人姓名</div>
                     <div class='info'>
