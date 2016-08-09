@@ -122,22 +122,22 @@
                     </div>
                 </div>
                 <div id='alipay' {if empty($set['pay']['alipay'])}style="display:none"{/if}>
-           <!--           <div class="form-group">
+                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">CERT证书文件</label>
                         <div class="col-sm-9 col-xs-12">
-                            <input type="hidden" name="pay[weixin_cert]" value="{$set['pay']['weixin_cert']}"/>
+                            <input type="hidden" name="pay[alipay_cert]" value="{$set['pay']['alipay_cert']}"/>
                             {ifp 'sysset.save.pay'}
 
-                            <input type="file" name="weixin_cert_file" class="form-control" />
+                            <input type="file" name="alipay_cert_file" class="form-control" />
                             <span class="help-block">
-                                {if !empty($sec['cert'])}
+                                {if file_exists($cert)}
                                 <span class='label label-success'>已上传</span>
                                 {else}
                                 <span class='label label-danger'>未上传</span>
                                 {/if}
-                                下载证书 cert.zip 中的 apiclient_cert.pem 文件</span>
+                                下载证书 cert.zip 中的 cacert.pem 文件</span>
                             {else}
-                           {if !empty($sec['cert'])}
+                            {if file_exists($cert)}
                             <span class='label label-success'>已上传</span>
                             {else}
                             <span class='label label-danger'>未上传</span>
@@ -145,7 +145,7 @@
                             {/if}
 
                         </div>
-                    </div> -->
+                    </div>
  
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">付款账号:</label>
