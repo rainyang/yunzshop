@@ -221,12 +221,12 @@
         <%if isverifysend%>
           <%if carrier_list.length>0%>
               <div class="addorder_nav">
-                <div class="nav selected" data-nav='1'>上门自提</div>
-                <div class="nav"  data-nav='0'>配送核销</div>
+                <div class="nav selected" data-nav='0'>配送核销</div>
+                <div class="nav"  data-nav='1'>上门自提</div>
               </div>
           <%/if%>
 
-          <div class="addorder_user addorder_user_0" <%if isverifysend%>style='display:none'<%/if%>>
+          <div class="addorder_user addorder_user_0">
             <input type='hidden' id='addressid' value='<%address.id%>' />
             <div class="info" id='address_select' <%if !address %>style='display:none'<%/if%>>
                <div class="ico"><i class="fa fa-map-marker"></i></div>
@@ -251,7 +251,7 @@
           <div id='address_container'></div>
         <%/if%>
            <%if carrier%>
-              <div class="addorder_user addorder_user_1">
+              <div class="addorder_user addorder_user_1" <%if isverifysend%>style='display:none'<%/if%>>
                 <input type='hidden' id='carrierindex' value='0' />
                 <input type='hidden' id='carrierid' value='<%carrier.id%>' />
                 <div class="info" id='carrier_select' >
@@ -266,7 +266,7 @@
                 </div>
               </div>
               <div id='address_container'></div>
-              <div class="carrier_input_info"  >
+              <div class="carrier_input_info" <%if isverifysend%>style='display:none'<%/if%> >
                   <div class="row">
                     <div class='title'>提货人姓名</div>
                     <div class='info'>
@@ -415,7 +415,7 @@
      <div class="addorder_price coupondiv"  data-id="<%order.supplier_uid%>" style="margin-top:5px;<%if !order.hascoupon%>display:none<%/if%>" >
         <div class="price" style="border:none;">
             <div class="line selectcoupon" style="line-height:32px;" data-id="<%order.supplier_uid%>">
-			           <d class="couponselect" data-id="<%order.supplier_uid%>">我要使用优惠券</d>
+			           <d id="couponselect" data-id="<%order.supplier_uid%>">我要使用优惠券</d>
                 <div class="ico2" style="float:right;color:#999;margin-top:2px;"><i class='fa fa-angle-right fa-2x'></i></div>
                 <div class="couponcount"><%order.couponcount%></div>
             </div>
@@ -742,13 +742,14 @@ var fromcart = 0;
               //重新获取运费
               if( $('.shownum').length>0){
                   totalprice = parseFloat( $('.marketprice').html() ) * parseInt($('.shownum').val());
-                  var goodsinfo = $('#goods').val().split('|')[0];
+                  var goodsinfo = $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val().split('|')[0];
                   var goods = goodsinfo.split(',');
                   var goodsid = goods[0];
                   var optionid = goods[1];
                   var num = parseInt( $('.shownum').val());
                   $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val(goodsid + "," + optionid +"," + num + '|');
               }
+              var supplier_uid = supplierarr[i];
               core.json('order/confirm', {
                   op: 'getdispatchprice',
                   totalprice:totalprice,
@@ -756,47 +757,48 @@ var fromcart = 0;
                   dispatchid: $('#dispatchid').val(),
                   supplier_uid: supplierarr[i],
                   dflag: zt,
-                  goods: $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val()
+                  goods: $("input[data-name='goods'][data-id="+supplier_uid+"]").val()
               }, function(getjson) {
                   if (getjson.status == 1) {
                       if(zt){
-                          $('.dispatchprice[data-id='+supplierarr[i]+']').html('0.00');
+                          $('.dispatchprice[data-id='+supplier_uid+']').html('0.00');
                       } else {
-                          $('.dispatchprice[data-id='+supplierarr[i]+']').html(getjson.result.price);
+                          $('.dispatchprice[data-id='+supplier_uid+']').html(getjson.result.price);
                       }
 
                       if(getjson.result.deductcredit){
-                          $('.deductcredit_money[data-id='+supplierarr[i]+']').html( getjson.result.deductmoney);
-                          $('.deductcredit_info[data-id='+supplierarr[i]+']').html( getjson.result.deductcredit);
-                          $('.deductcredit[data-id='+supplierarr[i]+']').attr('credit',getjson.result.deductcredit);
-                          $('.deductcredit[data-id='+supplierarr[i]+']').attr('money',getjson.result.deductmoney);
+                          $('.deductcredit_money[data-id='+supplier_uid+']').html( getjson.result.deductmoney);
+                          $('.deductcredit_info[data-id='+supplier_uid+']').html( getjson.result.deductcredit);
+                          $('.deductcredit[data-id='+supplier_uid+']').attr('credit',getjson.result.deductcredit);
+                          $('.deductcredit[data-id='+supplier_uid+']').attr('money',getjson.result.deductmoney);
                       }
 
                       if(getjson.result.deductcredit2){
-                          $('.deductcredit2_money[data-id='+supplierarr[i]+']').html( getjson.result.deductcredit2);
-                          $('.deductcredit2[data-id='+supplierarr[i]+']').attr('credit2',getjson.result.deductcredit2);
+                          $('.deductcredit2_money[data-id='+supplier_uid+']').html( getjson.result.deductcredit2);
+                          $('.deductcredit2[data-id='+supplier_uid+']').attr('credit2',getjson.result.deductcredit2);
                       }
 
                       if(getjson.result.hascoupon){
-                        $('.coupondiv[data-id='+supplierarr[i]+']').show();
-                        $('.coupondiv[data-id='+supplierarr[i]+'] .couponcount').html(getjson.result.couponcount);
+                        $('.coupondiv[data-id='+supplier_uid+']').show();
+                        $('.coupondiv[data-id='+supplier_uid+'] .couponcount').html(getjson.result.couponcount);
                         bindCouponEvents();
                       }else{
-                        $("input[data-name='couponid'][data-id="+supplierarr[i]+"]").val('');
-                        $('.couponselect[data-id='+supplierarr[i]+']').html('我要使用优惠券');
-                        $('.coupondiv[data-id='+supplierarr[i]+']').hide();
+                        $("input[data-name='couponid'][data-id="+supplier_uid+"]").val('');
+                        $('#couponselect[data-id='+supplier_uid+']').html('我要使用优惠券');
+                        $('.coupondiv[data-id='+supplier_uid+']').hide();
                       }
 
                       if(getjson.result.deductenough_money>0){
-                        $('.deductenough[data-id='+supplierarr[i]+']').show();
-                        $('.deductenough_money[data-id='+supplierarr[i]+']').html( getjson.result.deductenough_money);
-                        $('.deductenough_enough[data-id='+supplierarr[i]+']').html( getjson.result.deductenough_enough);
+                        $('.deductenough[data-id='+supplier_uid+']').show();
+                        $('.deductenough_money[data-id='+supplier_uid+']').html( getjson.result.deductenough_money);
+                        $('.deductenough_enough[data-id='+supplier_uid+']').html( getjson.result.deductenough_enough);
                       } else{
-                        $('.deductenough[data-id='+supplierarr[i]+']').hide();
-                        $('.deductenough_money[data-id='+supplierarr[i]+']').html( '0');
-                        $('.deductenough_enough[data-id='+supplierarr[i]+']').html( '0');
+                        $('.deductenough[data-id='+supplier_uid+']').hide();
+                        $('.deductenough_money[data-id='+supplier_uid+']').html( '0');
+                        $('.deductenough_enough[data-id='+supplier_uid+']').html( '0');
                       }
-                      calctotalprice(supplierarr[i]);
+                      alert(supplier_uid);
+                      calctotalprice(supplier_uid);
                       if( $('.shownum').length>0){
                         var goodsinfo = $('#goods').val().split('|')[0];
                         var goods = goodsinfo.split(',');
@@ -1127,9 +1129,9 @@ var fromcart = 0;
   	       if($("input[data-name='couponid'][data-id="+supplier_uid+"]").val()=='' ||  $("input[data-name='couponid'][data-id="+supplier_uid+"]").val()=='0')   {
   			     return totalprice;
   	       }
-	         var deduct   = parseFloat( $('.couponselect[data-id='+supplier_uid+']').data('deduct') );
-           var discount = parseFloat( $('.couponselect[data-id='+supplier_uid+']').data('discount') );
-           var backtype = parseFloat( $('.couponselect[data-id='+supplier_uid+']').data('backtype') );
+	         var deduct   = parseFloat( $('#couponselect[data-id='+supplier_uid+']').data('deduct') );
+           var discount = parseFloat( $('#couponselect[data-id='+supplier_uid+']').data('discount') );
+           var backtype = parseFloat( $('#couponselect[data-id='+supplier_uid+']').data('backtype') );
 	         var deductprice = 0;
 	         if(deduct>0 && backtype==0){ //抵扣
       		   if(deduct>totalprice){
@@ -1154,7 +1156,7 @@ var fromcart = 0;
 	         }
 	         if(deductprice>0){
 		        $('.coupondeduct_div[data-id='+supplier_uid+']').show();
-	          $('.coupondeduct_money[data-id='+supplier_uid+']').html(deductprice.toFixed(2));	
+	          $('.coupondeduct_money').html(deductprice.toFixed(2));	
 	         }
 	         return totalprice;
 				
