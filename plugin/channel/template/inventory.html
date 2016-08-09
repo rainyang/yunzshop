@@ -328,14 +328,29 @@
 							<td>
 								{$item['every_turn']}
 							</td>
-							<td >{php echo $item['every_turn']*$item['every_turn_discount']}</td>
+							<td >
+								{if $item['every_turn_discount'] == 0}
+									——
+								{else}
+									{php echo $item['every_turn']*$item['every_turn_discount']}
+								{/if}
+							</td>
 							<td >{$item['surplus_stock']}</td>
-							<td ><img src="{php echo tomedia($item['avatar'])}" style="width:40px;height:40px;padding:1px;border:1px solid #ccc;"  />{$item['nickname']}</td>
+
+							<td >
+							{if empty($item['mid'])}
+								总店
+							{else}
+								<img src="{php echo tomedia($item['avatar'])}" style="width:40px;height:40px;padding:1px;border:1px solid #ccc;"  />{$item['nickname']}
+							{/if}
+							</td>
 							<td >
 								{if $item['type'] == 1}进货
 								{elseif $item['type'] == 2}划拨
 								{elseif $item['type'] == 3}零售
 								{elseif $item['type'] == 4}自提
+								{elseif $item['type'] == 5}后台增加
+								{elseif $item['type'] == 6}后台减少
 								{/if}
 							</td>
 
