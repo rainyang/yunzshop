@@ -209,6 +209,20 @@ footer#footer-nav .menu-list:after {
 .new-list ul li div img{width: 34px;height: 34px;border-radius: 50px;display: inline-block;margin:8px 5px 0 0;float: left;}
 .new-list ul li div em{float: left;line-height: 50px;font-style: normal;font-size: 14px;}
 .down-list{margin: 10px;background: #eb5f5f;color: #fff;line-height: 30px;text-align: center;font-size: 12px;display: block;text-decoration: none;border-radius: 2px}
+.notice nav{position: fixed;
+    left: 0;
+    width: 22%;
+    bottom: 99px;
+    min-height: 100px;
+    top: 26px;}
+#page_allMenu section article{height: 100%;
+    position: fixed;
+    right: 0;
+    width: 78%;
+    bottom: 99px;
+    top: 26px;
+    box-sizing: border-box;
+    margin:0 }
 #page_allMenu section article dl dt h3{height: 16px;overflow: hidden;}
 #page_allMenu section article dl dd span, .content b{left: -71px !important;top: -25px !important;}
 .goods {

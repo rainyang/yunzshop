@@ -20,8 +20,9 @@
 <!--             <div class="panel-heading">
                 {if empty($item['id'])}添加商品{else}编辑商品{/if}
             </div> -->
-<div class="ul-nav-tab">
-	<ul class="prod-nav nav-tabs" id="myTab">
+            
+<div class="right-titpos">
+	<ul class="add-snav" id="myTab">
     	<li class="active" ><a href="#tab_basic">基本信息</a></li>
         <li><a href="#tab_des">商品描述</a></li>
         <li><a href="#tab_param">属性</a></li>
@@ -562,7 +563,7 @@
 							</td>
 						</tr>
 						<tr>
-						<td  colspan="10" style="text-align: right;padding: 6px 0;border-top:none;">
+						<td  colspan="10" style="text-align: right;padding: 6px 30px;border-top:none;">
 						<label data='{$item['isnew']}' class='label label-default text-default {if $item['isnew']==1}label-info text-pinfo{else}{/if}'   {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'new')"{/if}>新品</label>-
 
 						<label data='{$item['ishot']}' class='label label-default text-default {if $item['ishot']==1}label-info text-pinfo{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'hot')"{/if}>热卖</label>-

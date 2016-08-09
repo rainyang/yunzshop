@@ -1,59 +1,7 @@
-﻿@charset "utf-8";
-body,h1,h2,h3,h4,h5,h6,strong,hr,i,em,b,p,blockquote,dl,dt,dd,ul,ol,li,pre,form,fieldset,legend,button,th,td,img,a,tr,img {
-	margin:0;padding:0;border:0;outline:none;list-style:none;font-family: 微软雅黑, Microsoft Yahei;font-weight: normal;
-	font-style:normal;color:#888888;font-size:14px}
-a {font-size:14px;text-decoration:none !important;outline: none !important;}
-a:hover,a:visited,a:active,a:link{outline: none}
-input::-webkit-input-placeholder {
-color: #9e9e9e !important; /* WebKit browsers /
-}
-
-input:-moz-placeholder {
-color: #9e9e9e !important; / Mozilla Firefox 4 to 18 /
-}
-input::-moz-placeholder {
-color: #9e9e9e !important; / Mozilla Firefox 19+ /
-}
-input:-ms-input-placeholder {
-color: #9e9e9e !important; / Internet Explorer 10+ */
-}
-a:hover,.w-input,textarea,.sig-button,.dev-table>ul>li>a {
-	-webkit-transition-property:all;
-	-moz-transition-property:all;
-	transition-property:all;
-	-webkit-transition-timing-function:ease-in-out;
-	transition-timing-function:ease-in-out;
-	-moz-transition-timing-function:ease-in-out;
-	-webkit-transition-duration:0.30s;
-	-moz-transition-duration:0.30s;
-	transition-duration:0.30s;
-}
-.fs12{ font-size:12px}
-.black {color: #000!important;}
-.red{ color:#e72119 !important}
-.blue{ color:#3366cc!important}
-.tal{ text-align:left}
-.tac{ text-align:center!important}
-img{ max-width: 100%; display: block;}
-button{	cursor: pointer; font-family: 微软雅黑, Microsoft Yahei;}
-textarea{ font-family: 微软雅黑, Microsoft Yahei;}
-input{	
-	color: #585858; 
-	font-family: 微软雅黑, Microsoft Yahei;
-	font-size: 14px;
-	outline: none;
-}
-.clearfix{	clear: both;}
-.fl{ float: left!important;}
-.fr{ float: right!important;}
-.m0a{ margin:0 auto!important;}
-.pd80{ padding-top:80px}
-.w{width: 100%;max-width: 940px;min-width: 940px;}
-.bor-none{ border:none}
 /*新增店铺首页概况*/
 .w-shop{
 	margin: 0;
-    padding: 60px 6px 6px 70px;
+    padding: 65px 6px 6px 75px;
     min-width:940px
 }
 .w-shoptit{
@@ -75,6 +23,7 @@ input{
     line-height: 30px;
     font-weight: 700;
     margin: 0;
+    color: #333;
 }
 .shop-intro>p {
     margin-bottom: 0;
@@ -131,7 +80,7 @@ input{
     display: inline-block;
     padding: 6px 12px;
     margin-bottom: 0;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 400;
     line-height: 1.42857143;
     text-align: center;
@@ -155,8 +104,8 @@ input{
 	display:block
 }
 .code-dov{
-	width:160px;height:198px;position:absolute;right:0;top:34px;    background-color: #fff;    border: 1px solid rgba(0,0,0,.15);
-    border-radius: 4px;box-shadow: 0 6px 12px rgba(0,0,0,.175);display:none
+	width:160px;height:198px;position:absolute;right:0;top:32px;    background-color: #fff;    border: 1px solid rgba(0,0,0,.15);
+    border-radius: 4px;box-shadow: 0 6px 12px rgba(0,0,0,.175);display:none;z-index:99
 }
 .code-dov h1{
 font-size: 12px;
@@ -203,10 +152,11 @@ font-size: 12px;
     background-color: #f9f9f9;
 }
 .w-pricelist{
-	padding: 20px 10px;
+	padding: 10px 10px;
     background: #F8F8F8;
     margin-bottom: 40px;
     text-align: center;
+border: 1px dotted hsl(0, 0%, 93%);
 }
 .w-pricelist>ul{
     list-style: none;
@@ -226,10 +176,11 @@ font-size: 12px;
 }
 .w-pricelist li a span {
     color: #38f;
-    cursor: pointer;font-size: 26px;
+    cursor: pointer;font-size: 16px;
+    font-weight:200;
 }
 .w-pricelist li a .unit {
-    font-size: 18px;color: #38f;
+    font-size: 18px;color: #38f;    font-style: normal;
 }
 .w-pricelist li h6{
 	color:#333

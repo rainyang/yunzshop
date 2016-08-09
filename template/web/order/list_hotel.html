@@ -215,7 +215,10 @@
                     <td class="goods_info">
                          <img src="{php echo tomedia($g['thumb'])}"> 
                     </td>
-                 
+                    <td valign='top'  style='border-left:none;text-align: left;;'  >
+                        {$g['title']}
+                      
+                    </td>
                     <td style='border-left:none;width:30%'>
                     入住日期：  {php echo date('Y-m-d',$item['btime'])} <br />
                     离店日期：  {php echo date('Y-m-d',$item['etime'])} <br />

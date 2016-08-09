@@ -90,7 +90,18 @@ if ($operation == 'display') {
 		$row['paytime'] = $status >= 3 ? date('Y-m-d H:i', $row['paytime']) : '--';
 		$row['finshtime'] = $status >= 4 ? date('Y-m-d H:i', $row['finshtime']) : '--';
 		$row['invalidtime'] = $status == -1 ? date('Y-m-d H:i', $row['invalidtime']) : '--';
-		$row['typestr'] = empty($row['type']) ? '余额' : '微信';
+		//$row['typestr'] = empty($row['type']) ? '余额' : '微信';
+		switch ($row['type']) {
+		case '0':
+			$row['typestr'] = '余额';
+			break;
+		case "1":
+			$row['typestr'] ='微信';
+			break;
+		case '3':
+			$row['typestr'] ='支付宝';
+			break;	
+	    }
 		if ($row['diycommissiondata']) {
 
             $row['diycommissiondata'] = iunserializer($row['diycommissiondata']);
@@ -238,6 +249,9 @@ if ($operation == 'display') {
 		$ids[] = $o['orderid'];
 	}
 	$list = pdo_fetchall('select id,agentid, ordersn,price,goodsprice, dispatchprice,createtime, paytype from ' . tablename('sz_yi_order') . ' where  id in ( ' . implode(',', $ids) . ' );');
+	if(p('hotel')){
+		$list = pdo_fetchall('select id,agentid, ordersn,price,goodsprice, dispatchprice,createtime, paytype,order_type,depositprice,btime,etime from ' . tablename('sz_yi_order') . ' where  id in ( ' . implode(',', $ids) . ' );');
+	}
 	$totalcommission = 0;
 	$totalpay = 0;
 	foreach ($list as &$row) {
@@ -407,7 +421,7 @@ if (checksubmit('submit_cancel') && ($apply['status'] == 2 || $apply['status'] =
 	message('撤销审核处理成功!', $this->createPluginWebUrl('commission/apply', array('status' => 1)), 'success');
 }
 //打款处理
-if (checksubmit('submit_pay') && $apply['status'] == 2) {
+if ($apply['status'] == 2  && checksubmit('submit_pay') ) {
 	ca('commission.apply.pay');
 	$time = time();
 	$totalpay -= $apply['credit20'];
@@ -460,7 +474,37 @@ if (checksubmit('submit_pay') && $apply['status'] == 2) {
 	$this->model->upgradeLevelByCommissionOK($member['openid']);
 	plog('commission.apply.pay', "佣金打款 ID: {$id} 申请编号: {$apply['applyno']} 总佣金: {$totalcommission} 审核通过佣金: {$totalpay} ");
 	message('佣金打款处理成功!', $this->createPluginWebUrl('commission/apply', array('status' => $apply['status'])), 'success');
-} elseif ($operation == 'changecommissionmodal') {
+}else if ($apply['status'] == 3 && checksubmit('submit_pay') ) {
+	ca('commission.apply.pay');
+	$time = time();
+	$totalpay -= $apply['credit20'];
+	$pay = $totalpay;
+	if ($apply['type'] == 1 || $apply['type'] == 2) {
+		$pay *= 100;
+	} 
+	if ($apply['type'] == 2) {
+		if ($pay <= 20000 && $pay >= 1) {
+			$result = m('finance')->sendredpack($member['openid'], $pay, 0, $desc = '佣金提现金额', $act_name = '佣金提现金额', $remark = '佣金提现金额以红包形式发送');
+		} else {
+			message('红包提现金额限制1-200元！', '', 'error');
+		}
+	} else {		
+		$result = m('finance')->pay($member['openid'], $apply['type'], $pay, $apply['applyno'],'',$apply['alipay'],$apply['alipayname'],$apply['id']);
+	}
+	
+	if (is_error($result)) {
+		if (strexists($result['message'], '系统繁忙')) {
+			$updateno['applyno'] = $apply['applyno'] = m('common')->createNO('commission_apply', 'applyno', 'CA');
+			pdo_update('sz_yi_commission_apply', $updateno, array('id' => $apply['id']));
+			$result = m('finance')->pay($member['openid'], $apply['type'], $pay, $apply['applyno']);
+			if (is_error($result)) {
+				message($result['message'], '', 'error');
+			}
+		}
+		message($result['message'], '', 'error');
+	}
+
+}  elseif ($operation == 'changecommissionmodal') {
 	$id = intval($_GPC['id']);
 	$set = $this->getSet();
 	$order = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $id, ':uniacid' => $_W['uniacid']));
