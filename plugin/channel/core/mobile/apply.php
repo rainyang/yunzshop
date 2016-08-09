@@ -16,30 +16,33 @@ if ($_W['isajax']) {
 		//出货单
 		$channel_goods = pdo_fetchall("SELECT og.id FROM " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) WHERE og.uniacid={$_W['uniacid']} AND og.channel_id={$member['id']} AND o.status=3 AND og.channel_apply_status=0");
 		$applyno = m('common')->createNO('commission_apply', 'applyno', 'CA');
-		$apply_ordergoods_ids = array();
+		$apply_ordergoods_ids ='';
 		if (!empty($channel_goods)) {
+			$apply_ordergoods_ids =array();
 			foreach ($channel_goods as $key => $value) {
 	            $apply_ordergoods_ids[] = $value['id'];
 	        }
 	        $apply_ordergoods_ids = implode(',', $apply_ordergoods_ids);
 		}
         //推荐单
-        $apply_cmaorders_ids = array();
+        $apply_cmaorders_ids = '';
         $cma_orders = array();
         if (!empty($channelinfo['channel']['lower_openids'])) {
         	$cma_orders = pdo_fetchall("SELECT o.id FROM " . tablename('sz_yi_order') . " o LEFT JOIN " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid={$_W['uniacid']} AND o.status>=3 AND og.ischannelpay=1 AND o.openid in ({$channelinfo['channel']['lower_openids']})");
         	if (!empty($cma_orders)) {
-        		foreach ($cma_orders as $key => $value) {
+        		$apply_cmaorders_ids = array();
+        		foreach ($cma_orders as $value) {
 	        		$apply_cmaorders_ids[] = $value['id'];
 	        	}
 	        	$apply_cmaorders_ids = implode(',', $apply_cmaorders_ids);
         	}
         }
         //自提运费单
-        $apply_selforders_ids = array();
+        $apply_selforders_ids = '';
         $selforders = pdo_fetchall("SELECT id FROM " . tablename('sz_yi_order') . " WHERE uniacid={$_W['uniacid']} AND status>=3 AND openid='{$openid}' AND ischannelself=1");
         if (!empty($selforders)) {
-        	foreach ($selforders as $key => $value) {
+        	$apply_selforders_ids = array();
+        	foreach ($selforders as $value) {
 	        	$apply_selforders_ids[] = $value['id'];
 	        }
 	        $apply_selforders_ids = implode(',', $apply_selforders_ids);
@@ -74,7 +77,7 @@ if ($_W['isajax']) {
 
 		$returnurl 	= urlencode($this->createPluginMobileUrl('channel/orderj'));
 		$infourl 	= $this->createPluginMobileUrl('channel/orderj', array('returnurl' => $returnurl));
-		$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 2 ? '微信' : '线下'), TM_COMMISSION_APPLY);
+		$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 0 ? '余额' : '微信'), TM_COMMISSION_APPLY);
 		show_json(1, '已提交,请等待审核!');
 	}
 	$returnurl 	= urlencode($this->createPluginMobileUrl('commission/applyg'));
