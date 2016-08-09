@@ -77,6 +77,9 @@ class Sz_DYi_Finance {
         if( empty($set['email']) || empty($set['account_name'])){
             message('未填写完整的支付宝付款账号或付款账户名，请到【系统设置】->【支付设置】中设置!', '', 'error');
         }
+        if( empty($alipay) || empty($alipayname)){
+            message('未填写完整的收款人支付宝账号或姓名!', '', 'error');
+        }
         //$string .= $alipay['secret'];
         $string .=  $secret;
         $set['sign'] = md5($string);   
