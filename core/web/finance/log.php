@@ -275,7 +275,7 @@ if ($op == 'display') {
         ca('finance.withdraw.withdraw');
         $member = m('member')->getInfo($log['openid']);
         if(empty($member['alipay']) || empty($member['alipayname'])){
-            message('待收款人未填写支付宝信息!', '', 'error');
+            message('未填写完整收款人的支付宝账号或姓名!', '', 'error');
         }
         $result = m('finance')->alipay_finance($log['money'],$member['alipay'],$member['alipayname'],$log['id']);
         
