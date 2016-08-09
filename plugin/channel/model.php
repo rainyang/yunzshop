@@ -204,9 +204,9 @@ if (!class_exists('ChannelModel')) {
 			global $_W;
 			$set = $this->getSet();
 			//不为空为关闭
-			if (!empty($set['closerecommenderchannel'])) {
+			/*if (!empty($set['closerecommenderchannel'])) {
 				return;
-			}
+			}*/
 			$member = m('member')->getInfo($openid);
 			$my_channel_level = $this->getLevel($openid);
 			if (empty($member['agentid'])) {

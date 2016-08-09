@@ -58,6 +58,7 @@ $plugins_icon = array(
 	"bonus" => "fh",
 	"customer" => "kehu",
 	"cashier" => "web-price",
+	"merchant" => "admin",
 
 	);
 $plugins_desc = array(

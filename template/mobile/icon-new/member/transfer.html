@@ -21,8 +21,9 @@ input {-webkit-appearance:none; outline:none;}
 <div class="cash-box">
     <div class="balance_price">您的当前余额
         <span id="credit">￥{$member['credit2']}</span>
-    </div>
-    <div class="cash-num cash-num-pb"><span>受让人ID</span><input type="text" id="money" value='' class="cash-input-z"/></div>
+    </div> 
+    <div class="cash-num cash-num-pb"><span>受让人ID</span><input type="text" id="assigns" value='' class="cash-input-z" 
+        onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"/></div>
     <div class="cash-num cash-num-pt"><span>转账金额</span><input type="text" id="money" value='' class="cash-input-z"/></div>
 </div>
 <div class="button balance_sub1">确认转账</div>
@@ -34,6 +35,7 @@ input {-webkit-appearance:none; outline:none;}
 
 <script language="javascript">
     require(['tpl', 'core'], function (tpl, core) {
+        var isuser = true;
         $('#assigns').blur(function (){
             if($(this).val())
             {
@@ -48,7 +50,9 @@ input {-webkit-appearance:none; outline:none;}
                     }else
                     {
                         $('#assigns_name').text('');
+
                         core.tip.show('受让人ID错误，未查到此人!');
+                        isuser = false;
                         return;
                     }
                 }, true, true);
@@ -71,6 +75,16 @@ input {-webkit-appearance:none; outline:none;}
                
                 core.tip.show('请输入转让金额!');
                 return;
+            }
+
+            if (money<=0) {
+                core.tip.show('请输入正确的金额!');
+                return; 
+            }
+
+            if (!isuser) {
+                core.tip.show('请输入正确的会员ID!');
+                return; 
             }
             var withdrawmoney = "{$member['credit2']}";
             if( parseFloat(money) > withdrawmoney){
