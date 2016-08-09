@@ -138,6 +138,7 @@ if ($operation == "change") {
         }
         $levels = m('member')->getLevels();
         $groups = m('member')->getGroups();
+        $distributor_levels = p("commission")->getLevels();
         if (!empty($id)) {
             $item = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE id = :id", array(
                 ':id' => $id
@@ -159,6 +160,11 @@ if ($operation == "change") {
             }
             $discounts = json_decode($item['discounts'], true);
             $returns = json_decode($item['returns'], true);
+            $discounts2 = json_decode($item['discounts2'], true);
+            $returns2 = json_decode($item['returns2'], true);
+            $discounttype = $item['discounttype'];
+            $discountway = $item['discountway'];
+            $returntype = $item['returntype'];
             $allspecs = pdo_fetchall("select * from " . tablename('sz_yi_goods_spec') . " where goodsid=:id order by displayorder asc",
                 array(
                     ":id" => $id
@@ -406,6 +412,54 @@ if ($operation == "change") {
                     }
                 }
             }
+            if($_GPC['discountway'] == 1){
+                if($_GPC['discounttype'] == 1){
+                    foreach ($_GPC['discounts'] as $value) {
+                        if (!empty($value)) {
+                            if($value <= 0 || $value >= 10){
+                                message('请输入正确折扣！');
+                            }
+                        }
+                    }
+                }else{
+                    foreach ($_GPC['discounts2'] as $value) {
+                        if (!empty($value)) {
+                            if($value <= 0 || $value >= 10){
+                                message('请输入正确折扣！');
+                            }
+                        }
+                    } 
+                }
+            }else{
+                if($_GPC['discounttype'] == 1){
+                    foreach ($_GPC['discounts'] as $value) {
+                        if($value > $_GPC['marketprice'] || $value < 0){
+                            message('请输入正确折扣金额！');
+                        }
+                    }
+                }else{
+                    foreach ($_GPC['discounts2'] as $value) {
+                        if($value > $_GPC['marketprice'] || $value < 0){
+                            message('请输入正确折扣金额！');
+                        }
+                    } 
+                }
+
+
+            }
+            if($_GPC['returntype']){
+                foreach ($_GPC['returns'] as $value) {
+                    if($value > $_GPC['marketprice'] || $value < 0){
+                        message('请输入正确返现金额！');
+                    }
+                }
+            }else{
+                foreach ($_GPC['returns2'] as $value) {
+                    if($value > $_GPC['marketprice'] || $value < 0){
+                        message('请输入正确返现金额！');
+                    }
+                } 
+            }
             $data = array(
                 'uniacid' => intval($_W['uniacid']),
                 'displayorder' => intval($_GPC['displayorder']),
@@ -464,7 +518,12 @@ if ($operation == "change") {
                 "deduct2" => $_GPC["deduct2"],
                 'virtual' => intval($_GPC['type']) == 3 ? intval($_GPC['virtual']) : 0,
                 'discounts' => is_array($_GPC['discounts']) ? json_encode($_GPC['discounts']) : "",
+                'discounts2' => is_array($_GPC['discounts2']) ? json_encode($_GPC['discounts2']) : "",
+                'discounttype' => $_GPC['discounttype'],
+                'discountway' => $_GPC['discountway'],
+                'returntype' => $_GPC['returntype'],
                 'returns' => is_array($_GPC['returns']) ? json_encode($_GPC['returns']) : "",
+                'returns2' => is_array($_GPC['returns2']) ? json_encode($_GPC['returns2']) : "",
                 'detail_logo' => save_media($_GPC['detail_logo']),
                 'detail_shopname' => trim($_GPC['detail_shopname']),
                 'detail_totaltitle' => trim($_GPC['detail_totaltitle']),
