@@ -23,13 +23,13 @@ input {-webkit-appearance:none; outline:none;}
     <div class="balance_sub balance_sub1 <%if !cansettle%>disabled<%/if%>" data-type="0">{php echo $this->set['texts']['widthdraw']}到账户余额</div>
     {/if}
     
-    <div class="balance_sub balance_sub2 <%if !cansettle%>disabled<%/if%>"  data-type="1">{php echo $this->set['texts']['withdraw']}到微信钱包</div>
+    <!--<div class="balance_sub balance_sub2 <%if !cansettle%>disabled<%/if%>"  data-type="1">{php echo $this->set['texts']['withdraw']}到微信钱包</div>-->
     <div class="balance_sub3" onclick="location.href='{php echo $this->createPluginMobileUrl('commission/log')}'">{php echo $this->set['texts']['withdraw']}记录</div>
 </script>
 <script language="javascript">
     require(['tpl', 'core'], function(tpl, core) {
         
-        core.pjson('commission/apply',{},function(json){
+        core.pjson('bonus/apply',{},function(json){
            var result = json.result;
            $('#container').html(  tpl('tpl_main',json.result) );
            if(result.noinfo){
@@ -47,10 +47,10 @@ input {-webkit-appearance:none; outline:none;}
                    core.tip.confirm('确认要申请{php echo $this->set['texts']['widthdraw']}? {php echo $this->set['texts']['withdraw']}申请通过之后给您打款后会通知您到的微信.',function(){
                        
                        $('.balance_sub').attr('saving',1).html('正在处理中...');
-                        core.pjson('commission/apply',{type:type},function(pjson){
+                        core.pjson('bonus/apply',{type:type},function(pjson){
                               if(pjson.status=='1'){
                                    core.tip.show( pjson.result );
-                                   location.href = core.getUrl('plugin/commission/withdraw');
+                                   location.href = core.getUrl('plugin/bonus/withdraw');
                               }
                                
                        },true,true);
