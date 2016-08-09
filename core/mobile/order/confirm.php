@@ -777,7 +777,7 @@ if ($_W['isajax']) {
             'weight' => $weight / $buytotal,
             'set' => $shopset,
             'fromcart' => $fromcart,
-            'haslevel' => !empty($level) && $level['discount'] > 0 && $level['discount'] < 10,
+            'haslevel' => !empty($level['id']) && $level['discount'] > 0 && $level['discount'] < 10,
             'total' => $total,
             //"dispatchprice" => number_format($dispatch_price, 2),
             'totalprice' => number_format($totalprice, 2),
@@ -1679,7 +1679,8 @@ if ($_W['isajax']) {
                     $verifycode = random(8, true);
                 }
             }
-            $carrier  = $_GPC['carrier'];
+            
+            $carrier  = $_GPC['order'][0]['carrier'];
             $carriers = is_array($carrier) ? iserializer($carrier) : iserializer(array());
             if ($totalprice <= 0) {
                 $totalprice = 0;

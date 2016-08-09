@@ -101,7 +101,26 @@ if ($op == 'display') {
       if(($_GPC['openclose']==1 && $pcate!='') || ($_GPC['openchannel']==1 && $pcate!='') || ($_GPC['openchannel']==1 && $_GPC['openclose']==1)){
         message('供应商、分类、渠道商之中只能指定选择一个！', $this->createPluginWebUrl('choose/basic',array('op'=>'change','pageid'=>$_GPC['pageid'])), 'error');
       }else{
-        $openchannel = $_GPC['openchannel'];
+
+        if (!empty($_GPC['openchannel'])) {
+          $openchannel = $_GPC['openchannel'];
+          pdo_update('sz_yi_chooseagent',array(
+                  'pagename'  => $_GPC['pagename'],  
+                  'isopen'    => $_GPC['openclose'],
+                  'isopenchannel' => $openchannel,
+                  'uid'       => '',
+                  'savetime'  => $date,
+                  'agentname' => '',
+                  'pcate'     => '',
+                  'ccate'     => '',
+                  'tcate'     => '',
+                  'color'     => $color,
+                  'detail'    =>$detail,
+                  'allgoods'  =>$allgoods                  
+                  ),array('id'=>$_GPC['pageid'],'uniacid'=>$_W['uniacid']));
+          message('快速选购页修改成功!',$this->createPluginWebUrl('choose'), 'success');
+        }
+
         if($_GPC['openclose']==1){
             $agentname=pdo_fetch('select username from ' .tablename('sz_yi_perm_user'). ' where uid=:uid and uniacid=:uniacid',array(':uid'=>$_GPC['uid'],':uniacid'=>$_W['uniacid']));
             pdo_update('sz_yi_chooseagent',array(

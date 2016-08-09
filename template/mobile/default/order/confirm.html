@@ -191,7 +191,7 @@
 	
 	 {if $show==1}
       <%if isverify%>
-          <input type="hidden"  id="dispatchtype" value="0" />
+          <input type="hidden"  id="dispatchtype" value="1" />
         <%if isverifysend%>
           <%if carrier_list.length>0%>
               <div class="addorder_nav">
@@ -337,7 +337,8 @@
             <div class='info' onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
                 <div class='inner'>
                        <div class="name">
-                           <%if g.isnodiscount=='0' && haslevel%><span style='color:red'>[折扣]</span><%/if%>
+                           <%if g.isnodiscount=='0' && haslevel%><span style='color:red'>
+                           <%if g.discountway == 1%>[折扣]<%else%>[立减]<%/if%></span><%/if%>
                            <%g.title%></div>     
                        <div class='option'><%if g.optionid!='0'%>规格:  <%g.optiontitle%><%/if%></div>
                 </div>
@@ -351,6 +352,9 @@
                 <%/if%>
             </div>
         </div>
+        <input type="hidden" data-id="discountway<%order.supplier_uid%>" value="<%g.discountway%>" />
+        <input type="hidden" data-id="discounttype<%order.supplier_uid%>" value="<%g.discounttype%>" />
+        <input type="hidden" data-id="discount<%order.supplier_uid%>" value="<%g.discount%>" />
         <%/each%>
         <input type="hidden"  data-id="<%order.supplier_uid%>" data-name="goods" value="<%each order.goods as g%><%g.goodsid%>,<%g.optionid%>,<%g.total%>|<%/each%>"/>
         <input type="text" data-id="<%order.supplier_uid%>" data-name="remark" placeholder="给卖家留言" />
@@ -374,7 +378,8 @@
             <div class="line" style="line-height:26px;">+运费<span>￥<span class='dispatchprice' data-id="<%order.supplier_uid%>"><%order.dispatch_price%></span></span></div>
             <%/if%>
             <%if order.discountprice>0%>
-            <div class="line" style="line-height:26px;">-会员折扣(<d class='memberdiscount'><%discount%></d>折)<span>-￥<span class='discountprice' data-id='<%order.supplier_uid%>'><%order.discountprice%></span></span></div>
+            <div class="line" style="line-height:26px;"> -优惠 
+            <span>-￥<span class='discountprice' data-id="<%order.supplier_uid%>"><%order.discountprice%></span></span></div>
             <%/if%>
   		      <%if order.saleset%>
             <div class="deductenough"  data-id='<%order.supplier_uid%>' class="line" style="line-height:26px;<%if !order.saleset.showenough %>display:none<%/if%>"  >-单笔满 <d style='color:#ff6600' class="deductenough_enough" data-id='<%order.supplier_uid%>'><%saleset.enoughmoney%></d> 元立减  <span>-￥<span class="deductenough_money"  data-id='<%order.supplier_uid%>'><%saleset.enoughdeduct%></span><span></div>
@@ -473,10 +478,30 @@ var fromcart = 0;
                     $('#goodscount').html(num);
                 marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") ) * num;
                 $('.goodsprice').html( marketprice.toFixed(2) );
-                if( $('.memberdiscount').length>0){
-                                var discountprice = marketprice - parseFloat( $('.memberdiscount').html().replace(",","") ) / 10 * marketprice;
+                    var supplierids = $("#supplierids").val();
+                    var supplierarr = new Array();
+                    supplierarr = supplierids.split(",");
+
+                    var discount = '';
+                    var discountway = '';
+                    var discountprice = 0;
+
+                    for (var i = 0; i < supplierarr.length; i++) {
+                        discount = $('input[data-id=discount'+i+']').val();
+                        discountway = $('input[data-id=discountway'+i+']').val();
+                        if (discountway == 1) {
+                            if( $('input[data-id=discount'+i+']').length>0){
+                                discountprice += marketprice - parseFloat( discount.replace(",","") ) / 10 * marketprice;
+                                
+                            }
+                        } else {
+                            if( $('input[data-id=discount'+i+']').length>0){
+                                discountprice += parseFloat( discount.replace(",","") ) * num;
+                            }
+                        }   
+                    }
+
                 $('.discountprice').html( discountprice.toFixed(2) );
-            }
                 var zt =  $('.addorder_nav .selected').data('nav') =='1';
                 getDispatchPrice(zt);
                 
@@ -500,10 +525,30 @@ var fromcart = 0;
                 $('#goodscount').html(num);
                 var marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") ) * num;
                 $('.goodsprice').html( marketprice.toFixed(2) );
-                     if( $('.memberdiscount').length>0){
-                var discountprice = marketprice - parseFloat( $('.memberdiscount').html().replace(",","") ) / 10 * marketprice;
+                    var supplierids = $("#supplierids").val();
+                    var supplierarr = new Array();
+                    supplierarr = supplierids.split(",");
+
+                    var discount = '';
+                    var discountway = '';
+                    var discountprice = 0;
+
+                    for (var i = 0; i < supplierarr.length; i++) {
+                        discount = $('input[data-id=discount'+i+']').val();
+                        discountway = $('input[data-id=discountway'+i+']').val();
+                        if (discountway == 1) {
+                            if( $('input[data-id=discount'+i+']').length>0){
+                                discountprice += marketprice - parseFloat( discount.replace(",","") ) / 10 * marketprice;
+                                
+                            }
+                        } else {
+                            if( $('input[data-id=discount'+i+']').length>0){
+                                discountprice += parseFloat( discount.replace(",","") ) * num;
+                            }
+                        }   
+                    }
+
                 $('.discountprice').html( discountprice.toFixed(2) );
-                     }
                var zt =  $('.addorder_nav .selected').data('nav') =='1';
                 getDispatchPrice(zt);
 
@@ -533,10 +578,30 @@ var fromcart = 0;
                 $('#goodscount').html(num);
                    marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") ) * num;
                 $('.goodsprice').html( marketprice.toFixed(2) );
-                     if( $('.memberdiscount').length>0){
-                var discountprice = marketprice - parseFloat( $('.memberdiscount').html().replace(",","") ) / 10 * marketprice;
+                    var supplierids = $("#supplierids").val();
+                    var supplierarr = new Array();
+                    supplierarr = supplierids.split(",");
+
+                    var discount = '';
+                    var discountway = '';
+                    var discountprice = 0;
+
+                    for (var i = 0; i < supplierarr.length; i++) {
+                        discount = $('input[data-id=discount'+i+']').val();
+                        discountway = $('input[data-id=discountway'+i+']').val();
+                        if (discountway == 1) {
+                            if( $('input[data-id=discount'+i+']').length>0){
+                                discountprice += marketprice - parseFloat( discount.replace(",","") ) / 10 * marketprice;
+                                
+                            }
+                        } else {
+                            if( $('input[data-id=discount'+i+']').length>0){
+                                discountprice += parseFloat( discount.replace(",","") ) * num;
+                            }
+                        }   
+                    }
+
                 $('.discountprice').html( discountprice.toFixed(2) );
-                     }
           
                var zt =  $('.addorder_nav .selected').data('nav') =='1';
                 getDispatchPrice(zt);

@@ -329,7 +329,7 @@
 								{$item['every_turn']}
 							</td>
 							<td >
-								{if $item['every_turn_discount'] == 0}
+								{if $item['every_turn_discount'] == 0 && $item['goods_price'] == 0}
 									——
 								{else}
 									{php echo $item['every_turn']*$item['every_turn_discount']}
