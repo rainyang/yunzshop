@@ -5,7 +5,7 @@
     {ifp 'sysset.view.pcset'}<li {if $_GPC['op']=='pcset'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'pcset'))}">PC端设置</a></li>{/if}
     {ifp 'sysset.view.follow'}<li  {if $_GPC['op']=='follow'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'follow'))}">引导分享</a></li>{/if}
     {ifp 'sysset.view.notice'}<li  {if $_GPC['op']=='notice'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'notice'))}">消息提醒</a></li>{/if}
-    {ifp 'sysset.view.trade'}<li  {if $_GPC['op']=='trade'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'trade'))}">交易是指</a></li>{/if}
+    {ifp 'sysset.view.trade'}<li  {if $_GPC['op']=='trade'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'trade'))}">交易设置</a></li>{/if}
     {ifp 'sysset.view.pay'}<li  {if $_GPC['op']=='pay'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'pay'))}">支付方式</a></li>{/if}
     {ifp 'sysset.view.template'}<li  {if $_GPC['op']=='template'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'template'))}">模板设置</a></li>{/if}
     {ifp 'sysset.view.member'}<li  {if $_GPC['op']=='member'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'member'))}">会员设置</a></li>{/if}
