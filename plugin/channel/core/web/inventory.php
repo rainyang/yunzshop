@@ -117,11 +117,35 @@ if ($operation == 'display') {
 } elseif ($operation == 'change') {
     $stockid = $_GPC['stockid'];
     $value = $_GPC['value'];
+    $stock_before = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_channel_stock') . ' WHERE id = :id', array(':id' => $stockid));
     pdo_update('sz_yi_channel_stock', array(
         'stock_total' => $value
     ), array(
         'id' => $stockid
     ));
+    if ($value >= $stock_before['stock_total']) {
+        $every_turn = $value - $stock_before['stock_total'];
+        $type = 5;//加库存
+    } elseif ($value <= $stock_before['stock_total']) {
+        $every_turn = $stock_before['stock_total'] - $value;
+        $type = 6;//减库存
+    }
+    $data = array(
+        'uniacid' => $_W['uniacid'],
+        'openid'  => $stock_before['openid'],
+        'goodsid' => $stock_before['goodsid'],
+        'every_turn' => $every_turn,
+        'every_turn_price' => 0,
+        'every_turn_discount' => 0,
+        'goods_price' => 0,
+        'paytime' => time(),
+        'optionid' => $stock_before['optionid'],
+        'type' => $type,
+        'order_goodsid' => 0,
+        'surplus_stock' => $value,
+        'mid' => 0
+        );
+    pdo_insert('sz_yi_channel_stock_log',$data);
 } elseif ($operation == 'detail') {
     $stockid = $_GPC['id']; 
     $stock = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_channel_stock') . ' WHERE id = :id AND uniacid = :uniacid', array(':id' => $stockid, ':uniacid' => $_W['uniacid']));
