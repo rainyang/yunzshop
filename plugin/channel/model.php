@@ -470,10 +470,13 @@ if (!class_exists('ChannelModel')) {
 						$up_level_num = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid ORDER BY level_num ASC LIMIT 1', array(':uniacid' => $_W['uniacid']));
 					}	
 					pdo_update('sz_yi_member', array('ischannel' => 1,'channel_level' => $up_level_num), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
+					$this->getChannelNum($openid);
+					$this->sendMessage($openid, array('nickname' => $member['nickname']), TM_CHANNEL_BECOME);
+				} else {
+					return;
 				}				
 					
-				$this->getChannelNum($openid);
-				$this->sendMessage($openid, array('nickname' => $member['nickname']), TM_CHANNEL_BECOME);
+				
 			}
 		}
 		/**
@@ -504,14 +507,19 @@ if (!class_exists('ChannelModel')) {
 			if ($set['become_condition'] == 3) {
 				if ($orderinfo['ordermoney'] >= $set['become_condition_money']) {
 					pdo_update('sz_yi_member', array('ischannel' => 1,'channel_level' => $up_level_num), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
+					$this->getChannelNum($openid);
+					$this->sendMessage($openid, array('nickname' => $member['nickname']), TM_CHANNEL_BECOME);
 				}
 			} elseif ($set['become_condition'] == 4){
 				if ($orderinfo['ordercount'] >= $set['become_condition_money']) {
 					pdo_update('sz_yi_member', array('ischannel' => 1,'channel_level' => $up_level_num), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
+					$this->getChannelNum($openid);
+					$this->sendMessage($openid, array('nickname' => $member['nickname']), TM_CHANNEL_BECOME);
 				}
+			} else {
+				return;
 			}
-			$this->getChannelNum($openid);
-			$this->sendMessage($openid, array('nickname' => $member['nickname']), TM_CHANNEL_BECOME);
+			
 		}
 		/**
 		  * 购买指定商品成为渠道商
@@ -548,10 +556,13 @@ if (!class_exists('ChannelModel')) {
             if ($set['become_condition'] == 5) {
             	if ($goods) {
             		pdo_update('sz_yi_member', array('ischannel' => 1,'channel_level' => $up_level_num), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
+            		$this->getChannelNum($openid);
+					$this->sendMessage($openid, array('nickname' => $member['nickname']), TM_CHANNEL_BECOME); 
             	}
+            }else{
+            	return;
             }
-            $this->getChannelNum($openid);
-			$this->sendMessage($openid, array('nickname' => $member['nickname']), TM_CHANNEL_BECOME);          
+                     
         }
         /**
 		  * 购买指定商品升级渠道商
@@ -663,6 +674,8 @@ if (!class_exists('ChannelModel')) {
             		pdo_update('sz_yi_member', array('channel_level' => $channel_level['id']), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
 					$this->getChannelNum($openid);
 					$this->sendMessage($openid, array('nickname' => $member['nickname'], 'oldlevelname' => $my_level['level_name'], 'old_purchase_discount' => $my_level['purchase_discount'], 'newlevelname' => $channel_level['level_name'], 'new_purchase_discount' => $channel_level['purchase_discount']), TM_CHANNEL_UPGRADE);
+            	} else {
+            		return;
             	}				
             }        
         }
