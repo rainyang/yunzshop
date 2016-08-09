@@ -80,12 +80,12 @@
 		<div class="widget-body">
 			<table class="table table-hover" style="margin-left: 0">
 				<thead>
-					<tr><th>商品名称</th><th>销量</th><th>上架时间</th></tr>
+					<tr><th>商品名称</th><th>销量</th><th>销售金额</th></tr>
 				</thead>
 				<tbody>
-					<tr class="ng-scope"><td class="ng-binding">原味乳酪夹心饼干</td><td class="ng-binding">11</td><td class="ng-binding">2016-07-27 09:39:52</td></tr>
-					<tr class="ng-scope"><td class="ng-binding">纸巾</td><td class="ng-binding">6</td><td class="ng-binding">2016-06-16 14:02:41</td></tr>
-					<tr class="ng-scope"><td class="ng-binding">皖北土鸡蛋</td><td class="ng-binding">5</td><td class="ng-binding">2016-06-12 10:44:12</td></tr>
+                    {loop $goods_list $key $row}
+					<tr class="ng-scope"><td class="ng-binding">{$row['title']}</td><td class="ng-binding">{$row['count']}</td><td class="ng-binding">{$row['money']}</td></tr>
+               {/loop}
 				</tbody>
 			</table>
 		</div>
@@ -150,14 +150,12 @@ $(function () {
             x: -20
         },
         xAxis: {
-            categories: ['2016-08-01', '2016-08-02', '2016-08-03', '2016-08-04', '2016-08-05', '2016-08-01','2016-08-01', '2016-08-01']
-/*
+            //categories: ['2016-08-01', '2016-08-02', '2016-08-03', '2016-08-04', '2016-08-05', '2016-08-01','2016-08-01', '2016-08-01']
             categories: [
-                {loop $datas $key $row}
-                   {if $key>0},{/if}"{$row['date']}"
-               {/loop}]
+                {loop $alllist $key $row}
+                   {if $key>0},{/if}"{$row['createdate']}"
+               {/loop}
             ]
-*/
         },
         yAxis: {
             title: {
@@ -182,13 +180,33 @@ $(function () {
         series: [
             {
                 name: '总订单',
-                data: [1.0, 6, 9.5, 34.5, 10.2, 51.5, 25.2, 26.5]
+                data: [
+                  {loop $alllist $key $row}
+                   {if $key>0},{/if}{$row['total']}
+                  {/loop}
+                ]
             }, {
                 name: '已完成',
-                data: [-0.2, 0.8, 5.7, 11.3, 17.0, 22.0, 24.8, 24.1]
+                data: [
+                  {loop $finishlist $key $row}
+                   {if $key>0},{/if}{$row['total']}
+                  {/loop}
+                ]
             }, {
                 name: '已发货',
-                data: [-0.9, 0.6, 3.5, 8.4, 13.5, 17.0, 18.6, 17.9]
+                data: [
+                  {loop $sendlist $key $row}
+                   {if $key>0},{/if}{$row['total']}
+                  {/loop}
+                ]
+            }, 
+            {
+                name: '已付款',
+                data: [
+                  {loop $paylist $key $row}
+                   {if $key>0},{/if}{$row['total']}
+                  {/loop}
+                ]
             }
         ]
     });
