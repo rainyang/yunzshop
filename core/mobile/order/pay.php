@@ -103,18 +103,18 @@ if ($operation == 'display' && $_W['isajax']) {
         'success' => false
     );
     if (isset($set['pay']) && $set['pay']['app_alipay'] == 1) {
-        if (is_array($setting['payment']['ping']) && $setting['payment']['ping']['switch']) {
+        //if (is_array($setting['payment']['ping']) && $setting['payment']['ping']['switch']) {
             $app_alipay['success'] = true;
-        }
+        //}
     }
 
     $app_wechat = array(
         'success' => false
     );
     if (isset($set['pay']) && $set['pay']['app_weixin'] == 1) {
-        if (is_array($setting['payment']['ping']) && $setting['payment']['ping']['switch']) {
+        //if (is_array($setting['payment']['ping']) && $setting['payment']['ping']['switch']) {
             $app_wechat['success'] = true;
-        }
+        //}
     }
     load()->model('payment');
     $setting = uni_setting($_W['uniacid'], array(
@@ -613,6 +613,7 @@ if ($operation == 'display' && $_W['isajax']) {
                 $ret['ischannelpay'] = $ischannelpay;
             }
         }
+        
         $pay_result     = $this->payResult($ret);
         show_json(1, $pay_result);
     } else if ($type == 'weixin') {
