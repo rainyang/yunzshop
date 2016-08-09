@@ -613,6 +613,7 @@ if ($operation == 'display' && $_W['isajax']) {
                 $ret['ischannelpay'] = $ischannelpay;
             }
         }
+        
         $pay_result     = $this->payResult($ret);
         show_json(1, $pay_result);
     } else if ($type == 'weixin') {

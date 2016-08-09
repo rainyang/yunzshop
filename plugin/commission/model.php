@@ -1015,13 +1015,14 @@ if (!class_exists('CommissionModel')) {
 			}
 			$pluginchannel = p("channel");
 			if(!empty($pluginchannel)){
+				$pluginchannel->checkOrderFinishOrPay($orderid);
 				$channel_set = $pluginchannel->getSet();
 				if (empty($member['ischannel'])) {
-					if ($set['become_condition'] == 3 || $set['become_condition'] == 4) {
+					if ($channel_set['become_condition'] == 3 || $channel_set['become_condition'] == 4) {
 						$pluginchannel->becomeChannelByOrder($openid, $orderid);
-					} elseif ($set['become_condition'] == 2) {
+					} elseif ($channel_set['become_condition'] == 2) {
 						$pluginchannel->becomeChannelByAgent($openid);
-					} elseif ($set['become_condition'] == 5) {
+					} elseif ($channel_set['become_condition'] == 5) {
 						$pluginchannel->becomeChannelByGood($openid, $orderid);
 					}				
 				} else {
