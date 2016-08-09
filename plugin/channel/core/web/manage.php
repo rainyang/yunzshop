@@ -26,7 +26,7 @@ if ($operation == 'display') {
     foreach ($list as $key => $row) {
         $list[$key]['downcount'] = pdo_fetchcolumn('SELECT count(*) FROM ' . tablename('sz_yi_member') . ' WHERE agentid = :agentid', array(':agentid' => $list[$key]['id']));
     }
-    $total = pdo_fetchcolumn("SELECT count(dm.id) FROM" . tablename('sz_yi_member') . " dm  " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.channel_id " . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid" . " WHERE dm.uniacid =" . $_W['uniacid'] . " AND dm.ischannel =1 {$condition}", $params);
+    $total = pdo_fetchcolumn("SELECT count(dm.id) FROM" . tablename('sz_yi_member') . " dm  " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.agentid " . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid" . " WHERE dm.uniacid =" . $_W['uniacid'] . " AND dm.ischannel =1 {$condition}", $params);
     //print_r($list);exit;
     
 } else if ($operation == 'detail') {

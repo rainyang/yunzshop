@@ -70,11 +70,21 @@ class Sz_DYi_Finance {
         }
         sort($prepares);
         $string = implode($prepares, '&');
+        $cert = IA_ROOT . "/addons/sz_yi/cert/cacert.pem";
+        if((!file_exists($cert))) {
+            message('未上传完整的支付宝支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
+        }
+        if( empty($set['email']) || empty($set['account_name'])){
+            message('未填写完整的支付宝付款账号或付款账户名，请到【系统设置】->【支付设置】中设置!', '', 'error');
+        }
+        if( empty($alipay) || empty($alipayname)){
+            message('未填写完整的收款人支付宝账号或姓名!', '', 'error');
+        }
         //$string .= $alipay['secret'];
         $string .=  $secret;
         $set['sign'] = md5($string);   
         $url = 'https://mapi.alipay.com/gateway.do' . '?' . http_build_query($set, '', '&');
-        $resp = $this->getHttpResponseGET($url, IA_ROOT . "/addons/sz_yi/cert/cacert.pem");
+        $resp = $this->getHttpResponseGET($url,$cert);
         header("Location:" . $resp);
         //修改状态为打款中状态
         $apply= array('status'=>'3','batch_no'=>$set['batch_no'],'paytime'=>time());
@@ -144,10 +154,11 @@ class Sz_DYi_Finance {
         }
         sort($prepares);
         $string = implode($prepares, '&');
-        // $cert = IA_ROOT . "/addons/sz_yi/cert/cacert.pem";
-        // if(empty($cert)){
-        //     message('未上传完整的支付宝支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
-        // }
+        $cert = IA_ROOT . "/addons/sz_yi/cert/cacert.pem";
+
+        if((!file_exists($cert))) {
+            message('未上传完整的支付宝支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
+        }
         // if(empty($set['partner']) || empty($secret)){
         //     message('未填写完整的支付宝合作者身份或校验密钥，请到支付宝支付参数中设置!', '', 'error');
         // }
@@ -157,13 +168,14 @@ class Sz_DYi_Finance {
         $string .=  $secret;
         $set['sign'] = md5($string);  
         $url = 'https://mapi.alipay.com/gateway.do' . '?' . http_build_query($set, '', '&');
-        $resp = $this->getHttpResponseGET($url, IA_ROOT . "/addons/sz_yi/cert/cacert.pem");
+        $resp = $this->getHttpResponseGET($url,$cert);
         header("Location:".$resp);
         $apply= array('batch_no'=>$set['batch_no']);
         pdo_update('sz_yi_member_log', $apply, array('id' =>$logid));
         file_put_contents(dirname(__FILE__)." . '/../../payment/alipay/notify_finance".$_W['uniacid'].".php","<?php include('notify_finance.php'); ?>");   
         exit;
     }
+
     public function pay($openid = '', $paytype = 0, $money = 0, $trade_no = '', $desc = '',$alipay = '',$alipayname='',$applyid='')
     { 
         global $_W, $_GPC;

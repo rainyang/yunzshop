@@ -2083,6 +2083,20 @@ if ($_W['isajax']) {
 }
 }
 if(p('hotel') && $goods_data['type']=='99'){ //判断是否开启酒店插件
+      if(empty($_SESSION['data'])){
+            $btime = strtotime(date('Y-m-d'));
+            $day=1;
+            $etime = $btime + $day * 86400;
+            $weekarray = array("日", "一", "二", "三", "四", "五", "六");
+            $arr['btime'] = $btime;
+            $arr['etime'] = $etime;
+            $arr['bdate'] = date('Y-m-d');
+            $arr['edate'] = date('Y-m-d', $etime);
+            $arr['bweek'] = '星期' . $weekarray[date("w", $btime)];
+            $arr['eweek'] = '星期' . $weekarray[date("w", $etime)];
+            $arr['day'] = $day; 
+            $_SESSION['data']=$arr;                           
+         }
         include $this->template('order/confirm_hotel');
 }else{
         include $this->template('order/confirm');
