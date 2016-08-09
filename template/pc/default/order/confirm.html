@@ -363,7 +363,7 @@
             <div class='info' onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
                 <div class='inner'>
                        <div class="name">
-                           <%if g.isnodiscount=='0' && haslevel%><span style='color:red'>[折扣]</span><%/if%>
+                           <%if g.isnodiscount=='0' && haslevel%><span style='color:red'><%if g.discountway == 1%>[折扣]<%else%>[立减]<%/if%></span><%/if%>
                            <%g.title%></div>     
                        <div class='option'><%if g.optionid!='0'%>规格:  <%g.optiontitle%><%/if%></div>
                 </div>
@@ -876,7 +876,7 @@ var fromcart = 0;
                       }
                       calctotalprice(supplier_uid);
                       if( $('.shownum').length>0){
-                        var goodsinfo = $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val().split('|')[0];
+                        var goodsinfo = $("input[data-name='goods'][data-id="+supplier_uid+"]").val().split('|')[0];
                         var goods = goodsinfo.split(',');
                         var goodsid = goods[0];
                         var optionid = goods[1];
