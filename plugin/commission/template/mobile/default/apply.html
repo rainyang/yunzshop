@@ -76,18 +76,23 @@ input {-webkit-appearance:none; outline:none;}
                    var type= $(this).data('type');
                    var alipay  = $("#alipay").val();
                    var alipayname  = $("#alipayname").val();
-                   core.tip.confirm('确认要申请提现？</br>收款账号:{php echo $member['alipay']}</br>收款账号:{php echo $member['alipayname']}</br>如更改账号请前往人中心我的资料中修改',function(){                       
-                       $('.balance_subapply').attr('saving',1).html('正在处理中...');
-                        core.pjson('commission/apply',{alipay:alipay,alipayname:alipayname,type:type},function(pjson){
-                              if(pjson.status=='1'){
-                                   core.tip.show(pjson.result);
-                                   location.href = core.getUrl('plugin/commission/withdraw');
-                              }else{
-                                   core.message(json.result,"{php echo $this->createPluginMobileUrl('commission/withdraw')}" ,'error');
-                              }
-                               
-                       },true,true);
-                   });
+                   if(alipay=='' || alipayname=='' ){
+                     alert('您个人中心我的资料中未填写支付宝账号或姓名')
+                   }else{
+                  core.tip.confirm('确认要申请提现？</br>收款账号:{php echo $member['alipay']}</br>收款姓名:{php echo $member['alipayname']}</br>如更改账号请前往人中心我的资料中修改',function(){                       
+                         $('.balance_subapply').attr('saving',1).html('正在处理中...');
+                          core.pjson('commission/apply',{alipay:alipay,alipayname:alipayname,type:type},function(pjson){
+                                if(pjson.status=='1'){
+                                     core.tip.show(pjson.result);
+                                     location.href = core.getUrl('plugin/commission/withdraw');
+                                }else{
+                                     core.message(json.result,"{php echo $this->createPluginMobileUrl('commission/withdraw')}" ,'error');
+                                }
+                                 
+                         },true,true);
+                     });
+                   }
+    
                })
            }
         },true);

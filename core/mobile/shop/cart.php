@@ -74,6 +74,7 @@ if ($_W['isajax']) {
         $id    = intval($_GPC['id']);
         $is    = $_GPC['is'] ? $_GPC['is'] : '';
         $total = intval($_GPC['total']);
+        $type = $_GPC['type'];
         if ($total <= 0) {
             $old_total = pdo_fetchcolumn( "SELECT total FROM ".tablename('sz_yi_member_cart')." where goodsid=:id and uniacid=:uniacid and openid=:openid",array(':id' => $id, ':uniacid' => $uniacid, ':openid' => $openid) );
             $total = $old_total + $total;
@@ -172,7 +173,7 @@ if ($_W['isajax']) {
             pdo_update('sz_yi_member_cart', $data, array(
                 'id' => $data['id']
             ));*/
-            if ($is == 'choose') {
+            if ($is == 'choose' || $type == 'propertychange') {
                 $data['total'] = $total;
             } else {
                 $data['total'] += $total;
