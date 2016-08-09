@@ -27,7 +27,7 @@ win.document.close();
         <li style="margin-right:40px">
             <a style="color:#000" href="./index.php?c=home&amp;a=welcome&amp;do=ext&amp;m=sz_yi"><i class="iconfont icon-heart"></i> 芸众商城</a> 
         </li> 
-			{ifp 'shop.goods.view'}<li {if $_GPC['p'] == 'goods' || empty($_GPC['p'])} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods')}" class="dropdown-toggle"><i class="iconfont icon-good-web"></i>商品<i class="fa fa-angle-down"></i></a></li>{/if}
+			{ifp 'shop.goods.view'}<li {if $_GPC['p'] == 'goods' || empty($_GPC['p'])} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods')}" class="dropdown-toggle">商品</a></li>{/if}
         </li>
 		{php $plugins = m('plugin')->getAll()}
         <?php 
@@ -44,8 +44,8 @@ win.document.close();
 			{if $plugin['identity'] == 'commission'}
 				{ifpp $plugin['identity']}
 				{if p($plugin['identity'])}
-				 <li>
-					<a href='{php echo $this->createPluginWebUrl('commission')}' class="dropdown-toggle" ><i class='iconfont icon-web-price' style="margin-top: 2px"></i> <span>分销</span> <i class="fa fa-angle-down"></i></a>
+				 <li {if $_GPC['p'] == 'commission'} class="active" {/if}>
+					<a href='{php echo $this->createPluginWebUrl('commission')}' class="dropdown-toggle" > <span>分销</span> <i class="fa fa-angle-down"></i></a>
 				</li> 
 				{/if}        
 				{/if}
@@ -54,8 +54,8 @@ win.document.close();
 			{if $plugin['identity'] == 'bonus'}
 				{ifpp $plugin['identity']}
 				{if p($plugin['identity'])}
-				<li>
-					<a href='{php echo $this->createPluginWebUrl('bonus')}' class="dropdown-toggle" ><i class='fa fa-gavel'></i> <span>分红</span><i class="fa fa-angle-down"></i></a>
+				 <li {if $_GPC['p'] == 'bonus'} class="active" {/if}>
+					<a href='{php echo $this->createPluginWebUrl('bonus')}' class="dropdown-toggle" ><span>分红</span><i class="fa fa-angle-down"></i></a>
 				</li>
 				{/if}        
 				{/if}
@@ -64,8 +64,8 @@ win.document.close();
 			{if $plugin['identity'] == 'supplier'}
 				{ifpp $plugin['identity']}
 				{if p($plugin['identity'])}
-				<li>
-					<a href='{php echo $this->createPluginWebUrl('supplier')}' class="dropdown-toggle" ><i class='fa fa-gavel'></i> <span>供应商</span><i class="fa fa-angle-down"></i></a>
+				 <li {if $_GPC['p'] == 'supplier'} class="active" {/if}>
+					<a href='{php echo $this->createPluginWebUrl('supplier')}' class="dropdown-toggle" ><span>供应商</span><i class="fa fa-angle-down"></i></a>
 				</li>
 				{/if}        
 				{/if}
@@ -73,25 +73,25 @@ win.document.close();
 		{/loop}
 
 		{ifp 'member'}
-         <li class="dropdown">
-            <a href='{php echo $this->createWebUrl('member/list')}' class="dropdown-toggle" ><i class='fa fa-users'></i> 会员 <i class="fa fa-angle-down"></i></a>
+		<li {if $_GPC['do'] == 'member'} class="active" {/if}>
+            <a href='{php echo $this->createWebUrl('member/list')}' class="dropdown-toggle" > 会员 <i class="fa fa-angle-down"></i></a>
         </li> 
         {/if}
 
          {ifp 'order'}
-        <li>
-            <a href='{php echo $this->createWebUrl('order', array('op' => 'display'))}' class="dropdown-toggle" ><i class='fa fa-file-text-o'></i> 订单 <i class="fa fa-angle-down"></i></a>
+		<li {if $_GPC['do'] == 'order'} class="active" {/if}>
+            <a href='{php echo $this->createWebUrl('order', array('op' => 'display'))}' class="dropdown-toggle" > 订单 <i class="fa fa-angle-down"></i></a>
         </li>
         {/if}
          {ifp 'finance'}
-         <li class="dropdown">
-            <a href='{php echo $this->createWebUrl('finance/log',array('type'=>0))}' class="dropdown-toggle" ><i class='iconfont icon-web-price' style="margin-top: 2px"></i> 财务 <i class="fa fa-angle-down"></i></a>
+		<li {if $_GPC['do'] == 'finance'} class="active" {/if}>
+            <a href='{php echo $this->createWebUrl('finance/log',array('type'=>0))}' class="dropdown-toggle" > 财务 <i class="fa fa-angle-down"></i></a>
         </li> 
         {/if} 
         
         {ifp 'statistics'}
-        <li class="dropdown">
-            <a href='{php echo $this->createWebUrl('statistics/sale')}' class="dropdown-toggle" ><i class='iconfont icon-shuju-web '></i> 数据 <i class="fa fa-angle-down"></i></a>
+		<li {if $_GPC['do'] == 'statistics'} class="active" {/if}>
+            <a href='{php echo $this->createWebUrl('statistics/sale')}' class="dropdown-toggle" > 数据 <i class="fa fa-angle-down"></i></a>
         </li>
         {/if}                   
 

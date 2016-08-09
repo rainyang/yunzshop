@@ -20,6 +20,7 @@ if ($_W['isajax']) {
 			show_json(0, '订单未找到!');
 		}
 		$log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(':uniacid' => $uniacid, ':module' => 'sz_yi', ':tid' => $order['ordersn']));
+
 		if (!empty($log) && $log['status'] != '0') {
 			show_json(0, '订单已支付, 无需重复支付!');
 		}
