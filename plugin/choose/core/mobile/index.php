@@ -25,7 +25,6 @@ if ($commission) {
 }
 $color = pdo_fetch('select color from ' .tablename('sz_yi_chooseagent'). ' where id=:id and uniacid=:uniacid',array(':id' => $pageid, ':uniacid' => $_W['uniacid']));	
 $detail = pdo_fetchcolumn('select detail from ' .tablename('sz_yi_chooseagent'). ' where id=:id and uniacid=:uniacid',array(':id' => $pageid, ':uniacid' => $_W['uniacid']));	
-echo $detail;exit;
 $_W['shopshare'] = array(
     'title' => !empty($shopset['share']["title"]) ? $shopset['share']["title"] : $shopset['shop']['name'],
     'imgUrl' => !empty($shopset['share']['icon']) ? tomedia($shopset['share']['icon']) : tomedia($shopset['shop']['logo']),
