@@ -411,7 +411,7 @@
             <%if order.discountprice>0%>
             <div class="line" style="line-height:26px;">
              -优惠 
-            <span>-￥<span class='discountprice'><%order.discountprice%></span></span></div>
+            <span>-￥<span class='discountprice' data-id="<%order.supplier_uid%>"><%order.discountprice%></span></span></div>
             <%/if%>
   		      <%if order.saleset%>
             <div class="deductenough"  data-id='<%order.supplier_uid%>' class="line" style="line-height:26px;<%if !order.saleset.showenough %>display:none<%/if%>"  >-单笔满 <d style='color:#ff6600' class="deductenough_enough" data-id='<%order.supplier_uid%>'><%saleset.enoughmoney%></d> 元立减  <span>-￥<span class="deductenough_money"  data-id='<%order.supplier_uid%>'><%saleset.enoughdeduct%></span><span></div>
