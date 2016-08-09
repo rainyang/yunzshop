@@ -1534,7 +1534,20 @@ if(!pdo_fieldexists('sz_yi_goods', 'discountway')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `discountway` TINYINT NOT NULL AFTER;");
 }
 
-
 if(!pdo_fieldexists('sz_yi_member_log', 'batch_no')) {
     pdo_query("ALTER TABLE ".tablename('sz_yi_member_log')." ADD `batch_no`  varchar(255) DEFAULT '' AFTER `paymethod`;");
 }
+pdo_fetchall("CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_commission_log') . " (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT '0',
+  `applyid` int(11) DEFAULT '0',
+  `mid` int(11) DEFAULT '0',
+  `commission` decimal(10,2) DEFAULT '0.00',
+  `createtime` int(11) DEFAULT '0',
+  `commission_pay` decimal(10,2) DEFAULT '0.00',
+  PRIMARY KEY (`id`),
+  KEY `idx_uniacid` (`uniacid`),
+  KEY `idx_applyid` (`applyid`),
+  KEY `idx_mid` (`mid`),
+  KEY `idx_createtime` (`createtime`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;");
