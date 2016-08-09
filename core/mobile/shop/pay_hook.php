@@ -78,13 +78,16 @@ do{
         $order_data['pay_id'] = $pay_info['id'];
         $order_data['order_id'] = $pay_info['order_no'];
 
-        if (substr($pay_info['order_no'],0,2) == 'RC') {
-            if ($pay_info['channel'] == 'wx') {
-                $pay_type = 'wechat';
-            } elseif ($pay_info['channel'] == 'alipay') {
-                $pay_type = 'alipay';
-            }
+        if ($pay_info['channel'] == 'wx') {
+            $pay_type = 'wechat';
+            $pay_type_num = 21;
 
+        } elseif ($pay_info['channel'] == 'alipay') {
+            $pay_type = 'alipay';
+            $pay_type_num = 22;
+        }
+
+        if (substr($pay_info['order_no'],0,2) == 'RC') {
             $log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `logno`=:logno and `uniacid`=:uniacid limit 1', array(
                 ':uniacid' => $uniacid,
                 ':logno' => $pay_info['order_no']
@@ -104,12 +107,47 @@ do{
                 m('notice')->sendMemberLogMessage($log['id']);
             }
         } else {
-
             $order_info = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND ordersn=:ordersn", array(
                 'uniacid'=> $uniacid,
                 'ordersn'=> $pay_info['order_no']
             ));
 
+            pdo_query('update ' . tablename('sz_yi_order') . ' set paytype='. $pay_type_num .' where ordersn_general=:ordersn_general and uniacid=:uniacid ', array(
+                ':uniacid' => $uniacid,
+                ':ordersn_general' => $order_info['ordersn_general']
+            ));
+
+            $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
+                ':uniacid' => $uniacid,
+                ':module' => 'sz_yi',
+                ':tid' => $order_info['ordersn_general']
+            ));
+
+            if ($log['status'] != 1) {
+                $record           = array();
+                $record['status'] = '1';
+                $record['type']   = 'alipay';
+                pdo_update('core_paylog', $record, array(
+                    'plid' => $log['plid']
+                ));
+                $ret            = array();
+                $ret['result']  = 'success';
+                $ret['type']    = $pay_type;
+                $ret['from']    = 'return';
+                $ret['tid']     = $log['tid'];
+                $ret['user']    = $log['openid'];
+                $ret['fee']     = $log['fee'];
+                $ret['weid']    = $log['weid'];
+                $ret['uniacid'] = $log['uniacid'];
+                $this->payResult($ret);
+
+                m('notice')->sendOrderMessage($order_info['id']);
+                echo '成功';
+                $res['status'] = 200;
+                $res['msg'] = "ok";
+            }
+
+/*
             if($order_info['status']!=0){
                 $res['status'] = 500;
                 $res['msg'] = "Internal Server Error";
@@ -133,6 +171,7 @@ do{
                 $res['status'] = 200;
                 $res['msg'] = "ok";
             }
+*/
         }
 
 
