@@ -16,6 +16,28 @@
  */
 require_once("alipay_build/alipay.config.php");
 require_once("alipay_build/lib/alipay_notify.class.php");
+require '../../../../framework/bootstrap.inc.php';
+require '../../../../addons/sz_yi/defines.php';
+require '../../../../addons/sz_yi/core/inc/functions.php';
+require '../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
+$str =  'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
+$t1 = mb_strpos($str,'notify_alipay');
+$t2 = mb_strpos($str,'.php');
+$s = mb_substr($str,$t1,$t2-$t1);
+$uniacid =  str_replace('notify_alipay', '', $s);
+$setting = uni_setting($uniacid, array('payment'));
+ if (is_array($setting['payment'])) {
+        $options = $setting['payment']['alipay'];
+        if(!empty($options)){
+            $partner = $options['partner'];
+            $secret = $options['secret'];
+        }else{
+            $partner = '';
+            $secret = '';
+        }
+} 
+$alipay_config['partner']		= $partner;
+$alipay_config['key']			= $secret;
 
 //计算得出通知验证结果
 $alipayNotify = new AlipayNotify($alipay_config);
@@ -24,10 +46,6 @@ $verify_result = $alipayNotify->verifyNotify();
 if($verify_result) {//验证成功
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//请在这里加上商户的业务逻辑程序代
-	 require '../../../../framework/bootstrap.inc.php';
-	 require '../../../../addons/sz_yi/defines.php';
-	 require '../../../../addons/sz_yi/core/inc/functions.php';
-	 require '../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
  	
 	//——请根据您的业务逻辑来编写程序（以下代码仅作参考）——
 	

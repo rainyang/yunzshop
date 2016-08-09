@@ -20,11 +20,11 @@ class Sz_DYi_Finance {
         curl_close($curl);        
         return $info;
     }
-    
+
     //分销中心批量付款提现
     public function alipay_build($openid = '', $paytype = 0, $money = 0, $trade_no = '', $desc = '',$alipay='',$alipayname='',$applyid='')
     {    
-        global $_W;
+        global $_W;       
         $setting = uni_setting($_W['uniacid'], array('payment'));
         if (is_array($setting['payment'])) {
             $options = $setting['payment']['alipay'];
@@ -54,14 +54,14 @@ class Sz_DYi_Finance {
         $set['service']        = 'batch_trans_notify';
         $set['_input_charset'] = 'utf-8';
         $set['sign_type']      = 'MD5';
-        $set['notify_url']      = $_W['siteroot'] . "addons/sz_yi/payment/alipay/notify_alipay.php";
+        $set['notify_url']      = $_W['siteroot'] . "addons/sz_yi/payment/alipay/notify_alipay".$_W['uniacid'].".php";
         $set['email']          = $email;
         $set['account_name']   = $account_name;
         $set['pay_date']       = $pay_date;
         $set['batch_no']       = m('common')->createNO('member_log', 'batch_no', '');
         $set['batch_fee']      = $money;
         $set['batch_num']      = 1;
-        $set['detail_data']    = $set['batch_no'].'^'.$alipay.'^'.$alipayname.'^'.$money.'^备注说明';
+        $set['detail_data']    = $set['batch_no'].'^'.$alipay.'^'.$alipayname.'^'.$money.'^佣金提现';
         $prepares            = array();
         foreach ($set as $key => $value) {
             if ($key != 'sign' && $key != 'sign_type') {
@@ -79,6 +79,7 @@ class Sz_DYi_Finance {
         //修改状态为打款中状态
         $apply= array('status'=>'3','batch_no'=>$set['batch_no'],'paytime'=>time());
         pdo_update('sz_yi_commission_apply', $apply, array('id' =>$applyid));
+        file_put_contents(dirname(__FILE__)." . '/../../payment/alipay/notify_alipay".$_W['uniacid'].".php","<?php include('notify_alipay.php'); ?>");   
         exit;
         //echo $resp;
         //echo $url;exit;
@@ -127,7 +128,7 @@ class Sz_DYi_Finance {
         $set['service']        = 'batch_trans_notify';
         $set['_input_charset'] = 'utf-8';
         $set['sign_type']      = 'MD5';
-        $set['notify_url']      = $_W['siteroot'] . "addons/sz_yi/payment/alipay/notify_finance.php";
+        $set['notify_url']      = $_W['siteroot'] . "addons/sz_yi/payment/alipay/notify_finance".$_W['uniacid'].".php";
         $set['email']          = $email;
         $set['account_name']   = $account_name;
         $set['pay_date']       = $pay_date;
@@ -160,6 +161,7 @@ class Sz_DYi_Finance {
         header("Location:".$resp);
         $apply= array('batch_no'=>$set['batch_no']);
         pdo_update('sz_yi_member_log', $apply, array('id' =>$logid));
+        file_put_contents(dirname(__FILE__)." . '/../../payment/alipay/notify_finance".$_W['uniacid'].".php","<?php include('notify_finance.php'); ?>");   
         exit;
     }
     public function pay($openid = '', $paytype = 0, $money = 0, $trade_no = '', $desc = '',$alipay = '',$alipayname='',$applyid='')
