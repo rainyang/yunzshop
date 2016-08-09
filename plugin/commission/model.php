@@ -212,27 +212,27 @@ if (!class_exists('CommissionModel')) {
 			$myordercount = 0;
 			if ($_var_8 >= 1) {
 				if (in_array('ordercount0', $_var_21)) {
-					$_var_54 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=0  and o.status<>5 and o.status<>4  and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					$_var_54 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=0 and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					$_var_42 += $_var_54['ordercount'];
 					$_var_27 += $_var_54['ordercount'];
 					$_var_28 += $_var_54['ordermoney'];
 				}
 				if (in_array('ordercount', $_var_21)) {
-					$_var_54 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=1  and o.status<>5 and o.status<>4  and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					$_var_54 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=1 and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					$_var_45 += $_var_54['ordercount'];
 					$_var_29 += $_var_54['ordercount'];
 					$_var_30 += $_var_54['ordermoney'];
 				}
 				if (in_array('ordercount3', $_var_21)) {
 
-					$_var_55 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=3  and o.status<>5 and o.status<>4 and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					$_var_55 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=3  and o.status<>6 and o.status<>5 and o.status<>4 and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					$_var_48 += $_var_55['ordercount'];
 					$_var_31 += $_var_55['ordercount'];
 					$_var_32 += $_var_55['ordermoney'];
 					$_var_51 += $_var_55['ordermoney'];
 				}
 				if (in_array('total', $_var_21)) {
-					$_var_56 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=1  and o.status<>4 and o.status<>5 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					$_var_56 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					foreach ($_var_56 as $_var_57) {
 						$_var_9 = iunserializer($_var_57['commissions']);
 						$_var_58 = iunserializer($_var_57['commission1']);
@@ -241,7 +241,6 @@ if (!class_exists('CommissionModel')) {
 						} else {
 							$commission_total += isset($_var_9['level1']) ? floatval($_var_9['level1']) : 0;
 						}
-
 					}
 				}
 				if (in_array('ok', $_var_21)) {
