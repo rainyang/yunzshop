@@ -74,7 +74,7 @@ if ($_W['isajax']) {
 
 		$returnurl 	= urlencode($this->createPluginMobileUrl('channel/orderj'));
 		$infourl 	= $this->createPluginMobileUrl('channel/orderj', array('returnurl' => $returnurl));
-		$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 2 ? '微信' : '线下'), TM_COMMISSION_APPLY);
+		$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 0 ? '余额' : '微信'), TM_COMMISSION_APPLY);
 		show_json(1, '已提交,请等待审核!');
 	}
 	$returnurl 	= urlencode($this->createPluginMobileUrl('commission/applyg'));
