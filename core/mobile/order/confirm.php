@@ -1955,12 +1955,12 @@ if ($_W['isajax']) {
                         $order_goods['ischannelpay']  = $ischannelpay;
                     }
                     $order_goods['channel_id'] = 0;
-                    if (!empty($ischannelpay)) {
+                    //if (!empty($ischannelpay)) {
                         if (!empty($my_info['up_level'])) {
                             $up_member = m('member')->getInfo($my_info['up_level']['openid']);
                             $order_goods['channel_id'] = $up_member['id'];
                         }
-                    }
+                    //}
                 }
                 pdo_insert('sz_yi_order_goods', $order_goods);
             }

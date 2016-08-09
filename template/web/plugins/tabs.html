@@ -4,7 +4,7 @@
 {loop $category $ck $cv}
 {if count($cv['plugins'])<=0}{php continue;}{/if}
 <li>
-<a href="{php echo $this->createPluginWebUrl($plugin['identity'])}" title="{$plugin['name']}">
+<a href="#{$ck}" name="{$cv['name']}">
         {$cv['name']}
 </a>
 </li>
