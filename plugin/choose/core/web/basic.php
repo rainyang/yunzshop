@@ -114,8 +114,8 @@ if ($op == 'display') {
                   'ccate'     => '',
                   'tcate'     => '',
                   'color'     => $color,
-                  'detail'=>$detail,
-                  'allgoods'=>$allgoods                  
+                  'detail'    =>$detail,
+                  'allgoods'  =>$allgoods                  
                   ),array('id'=>$_GPC['pageid'],'uniacid'=>$_W['uniacid']));
           message('快速选购页修改成功!',$this->createPluginWebUrl('choose'), 'success');
         }

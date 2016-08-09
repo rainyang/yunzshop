@@ -1679,7 +1679,8 @@ if ($_W['isajax']) {
                     $verifycode = random(8, true);
                 }
             }
-            $carrier  = $_GPC['carrier'];
+            print_r($_GPC['order'][0]['carrier']);exit;
+            $carrier  = $_GPC['order'][0]['carrier'];
             $carriers = is_array($carrier) ? iserializer($carrier) : iserializer(array());
             if ($totalprice <= 0) {
                 $totalprice = 0;
