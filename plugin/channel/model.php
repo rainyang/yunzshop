@@ -380,35 +380,6 @@ if (!class_exists('ChannelModel')) {
 					$this->sendMessage($up_openid, $message, TM_CHANNELRETAIL_ORDER);
 				}
 			}
-
-			if ($set['become'] == 2 || $set['become'] == 3) {
-				$level = $this->getLevel($openid);
-				$orderinfo = pdo_fetch('SELECT sum(og.realprice) AS ordermoney,count(distinct og.orderid) AS ordercount FROM ' . tablename('sz_yi_order') . ' o ' . ' LEFT JOIN  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' WHERE o.openid=:openid AND o.status>=3 AND o.uniacid=:uniacid AND og.ischannelpay=1 limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
-				$ordermoney = $orderinfo['ordermoney'];
-				$ordercount = $orderinfo['ordercount'];
-				$up_level_num = $level['level_num'] + 1;
-				$up_level = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_channel_level') . " WHERE uniacid=:uniacid  AND level_num=:level_num", array(':uniacid' => $_W['uniacid'],':level_num' => $up_level_num));
-				if (empty($up_level)) {
-					return;
-				}
-				if (!empty($level['id'])) {
-					if ($level['id'] == $up_level['id']) {
-						return;
-					}
-				}
-				if ($set['become'] == 2) {
-					if ($up_level['team_count'] > $ordermoney) {
-						return;
-					}
-				} else if ($set['become'] == 3) {
-					if ($up_level['team_count'] > $ordercount) {
-						return;
-					}
-				}
-				pdo_update('sz_yi_member', array('channel_level' => $up_level['id']), array('id' => $member['id']));
-				$this->getChannelNum($member['openid']);
-				$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'oldlevelname' => $level['level_name'], 'old_purchase_discount' => $level['purchase_discount'], 'newlevelname' => $up_level['level_name'], 'new_purchase_discount' => $up_level['purchase_discount']), TM_CHANNEL_UPGRADE);
-			}
 		}
 		/**
 		  * 渠道商通知
