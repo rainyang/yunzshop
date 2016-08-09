@@ -1537,7 +1537,8 @@ if(!pdo_fieldexists('sz_yi_goods', 'discountway')) {
 if(!pdo_fieldexists('sz_yi_member_log', 'batch_no')) {
     pdo_query("ALTER TABLE ".tablename('sz_yi_member_log')." ADD `batch_no`  varchar(255) DEFAULT '' AFTER `paymethod`;");
 }
-pdo_fetchall("CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_commission_log') . " (
+//代理商提现记录
+pdo_fetchall("CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_bonus_log') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `applyid` int(11) DEFAULT '0',
@@ -1551,3 +1552,43 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_commission_log') .
   KEY `idx_mid` (`mid`),
   KEY `idx_createtime` (`createtime`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;");
+//渠道商所需字段
+if(!pdo_fieldexists('sz_yi_member', 'ischannel')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD `ischannel` INT(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_member', 'channel_level')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD `channel_level` INT(1) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_member', 'channeltime')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_member')." ADD `channeltime` INT(11) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'ischannelself')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `ischannelself` INT(11) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order_goods', 'channel_id')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `channel_id` INT(11) DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_order_goods', 'channel_apply_status')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `channel_apply_status` tinyint(1) NOT NULL COMMENT '0未提现1申请中2已提现';");
+}
+
+if(!pdo_fieldexists('sz_yi_chooseagent', 'isopenchannel')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_chooseagent')." ADD `isopenchannel` tinyint(1) NOT NULL COMMENT '0关闭1开启';");
+}
+
+if(!pdo_fieldexists('sz_yi_goods', 'isopenchannel')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isopenchannel` tinyint(1) NOT NULL COMMENT '0关闭1开启';");
+}
+
+if(!pdo_fieldexists('sz_yi_order_goods', 'ischannelpay')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `ischannelpay` tinyint(1) NOT NULL COMMENT '0不是1渠道商采购订单';");
+}
+
+if(!pdo_fieldexists('sz_yi_order', 'iscmas')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_order')." ADD `iscmas` INT(11) DEFAULT '0';");
+}
