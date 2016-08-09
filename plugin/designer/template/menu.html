@@ -5,11 +5,12 @@
 <link href="../addons/sz_yi/plugin/designer/template/imgsrc/menu.css" rel="stylesheet">
 <div class="ulleft-nav">
 <ul class="nav nav-tabs">
-<div class="addtit-name"> 装修</div>
-    <li ><a href="{php echo $this->createPluginWebUrl('designer')}" >店铺装修</a></li>
-    <li class="active"><a href="{php echo $this->createPluginWebUrl('designer/menu')}" >自定义菜单</a></li>
+<div class="addtit-name"> 店铺页面装修<article>发挥创意装修完美的店铺</article></div>
+    <li><a href="{php echo $this->createPluginWebUrl('designer')}" >店铺装修</a></li>
+   <li class="active"><a href="{php echo $this->createPluginWebUrl('designer/menu')}" >自定义菜单</a></li>
 </ul>
 </div>
+
 <div class="rightlist">
 {if $op=='display'}
 <!-- 筛选区域 -->
@@ -162,7 +163,7 @@
 <div class='panel panel-default' ng-app="FoxEditor" style="background: #f2f2f2">
     <div class='panel-heading'> 菜单编辑 {if $_GPC['menuid']!=''}(ID: {$_GPC['menuid']}){/if}</div>
     <div class='panel-body' ng-controller="FoxController">
-        <div class="fe">
+        <div class="fe" style="margin-left:30px">
            
             <div class="fe-phone">
                 <div class="fe-phone-left"></div>
