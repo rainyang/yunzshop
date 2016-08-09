@@ -57,7 +57,7 @@ $plugins_icon = array(
 	"hotel" => "hotel",
 	"bonus" => "fh",
 	"customer" => "kehu",
-	"cashier" => "",
+	"cashier" => "web-price",
 
 	);
 $plugins_desc = array(
