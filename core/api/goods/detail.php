@@ -11,7 +11,7 @@
 namespace controller\api\goods;
 class Detail extends \api\YZ
 {
-    //private $order_info;
+    private $order_info;
     public function __construct()
     {
         parent::__construct();
@@ -24,10 +24,15 @@ class Detail extends \api\YZ
         $goodsid = $para['goods_id'];
         $params = array(':uniacid' => $para['uniacid'], ':goodsid' => $goodsid);
 //缩略图,名,价格,原价,库存,销量,描述,编号,条码,减库存方式,红包价格,赠送积分,单次最多购买量,最多购买量,库存,销量
-        $fields = 'thumb,title,marketprice,productprice,id,goodssn,content,totalcnf,redprice,credit,maxbuy,usermaxbuy,total,sales';
+        $fields = 'id as goods_id,status';
         $goods = pdo_fetch("SELECT {$fields} FROM " . tablename('sz_yi_goods') . " WHERE id = :id limit 1", array(
             ':id' => $goodsid
         ));
+        //$c = new \Core();exit;
+        $goods['url'] = "http://sy.yunzshop.com/app/index.php?i=2&c=entry&p=detail&id={$goods['goods_id']}&do=shop&m=sz_yi";//$c->createMobileUrl('shop/detail', array('id' => $goods['id']));
+        //require IA_ROOT.'/web/common/template.func.php';
+
+        //include $c->template('web/order/express');
         dump($goods);
         $this->returnSuccess($goods);
     }

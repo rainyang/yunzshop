@@ -74,7 +74,31 @@ return array(
             )
         )
     ),
-
+    'commission' => array(
+        'describe' => '分销商',
+        'method' => array(
+            'Agent' => array(
+                'describe' => '列表',
+                'para' => array(
+                    'uid' => '1',
+                    'uniacid' => '2',
+                    'member_id' => '0',
+                    'status'=>'1'
+                ),
+                'data' => array()
+            ),
+            'Apply' => array(
+                'describe' => '列表',
+                'para' => array(
+                    'uid' => '1',
+                    'uniacid' => '2',
+                    'member_id' => '0',
+                    'status'=>'1'
+                ),
+                'data' => array()
+            ),
+        )
+    ),
     'order' => array(
         'describe' => '订单',
         'method' => array(
