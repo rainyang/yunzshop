@@ -1513,7 +1513,7 @@ if(!pdo_fieldexists('sz_yi_commission_apply', 'batch_no')) {
 }
 //到账时间
 if(!pdo_fieldexists('sz_yi_commission_apply', 'finshtime')) {
-    pdo_query("ALTER TABLE ".tablename('sz_yi_commission_apply')." ADD `finshtime`  int(11) DEFAULT '' AFTER `checktime`;");
+    pdo_query("ALTER TABLE ".tablename('sz_yi_commission_apply')." ADD `finshtime`  int(11) DEFAULT '0' AFTER `checktime`;");
 }
 
 if(!pdo_fieldexists('sz_yi_member_log', 'batch_no')) {
