@@ -133,6 +133,7 @@ if ($operation == 'display') {
 			}
 		}
 		pdo_update('sz_yi_channel_apply', array('status' => 3, 'finish_time' => $time), array('id' => $id, 'uniacid' => $_W['uniacid']));
+		$this->model->sendMessage($member['openid'], array('commission' => $pay, 'type' => $apply['type'] == 0?'余额':'微信'), TM_CHANNEL_APPLY_FINISH);
 		$log = array('uniacid' => $_W['uniacid'], 'applyid' => $apply['id'], 'mid' => $member['id'], 'channel' => $totalchannel, 'channel_pay' => $totalpay, 'createtime' => $time);
 		plog('channel.apply.pay', "佣金打款 ID: {$id} 申请编号: {$apply['applyno']} 总佣金: {$totalchannel} 审核通过佣金: {$totalpay} ");
 		message('佣金打款处理成功!', $this->createPluginWebUrl('channel/apply', array('status' => $apply['status'])), 'success');

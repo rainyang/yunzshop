@@ -363,7 +363,7 @@
             <div class='info' onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
                 <div class='inner'>
                        <div class="name">
-                           <%if g.isnodiscount=='0' && haslevel%><span style='color:red'>[折扣]</span><%/if%>
+                           <%if g.isnodiscount=='0' && haslevel%><span style='color:red'><%if g.discountway == 1%>[折扣]<%else%>[立减]<%/if%></span><%/if%>
                            <%g.title%></div>     
                        <div class='option'><%if g.optionid!='0'%>规格:  <%g.optiontitle%><%/if%></div>
                 </div>
@@ -377,8 +377,17 @@
                 <%/if%>
             </div>
         </div>
+
+        <input type="hidden" data-id="discountway<%order.supplier_uid%>" value="<%g.discountway%>" />
+        <input type="hidden" data-id="discounttype<%order.supplier_uid%>" value="<%g.discounttype%>" />
+        <input type="hidden" data-id="discount<%order.supplier_uid%>" value="<%g.discount%>" />
+
+
         <%/each%>
         <input type="hidden"  data-id="<%order.supplier_uid%>" data-name="goods" value="<%each order.goods as g%><%g.goodsid%>,<%g.optionid%>,<%g.total%>|<%/each%>"/>
+
+
+
         <input type="text" data-id="<%order.supplier_uid%>" data-name="remark" placeholder="给卖家留言" />
         <div class="text">共 <span id="goodscount"><%order.total%></span> 件商品 合计：<span style="color:#ff771b;">￥<span class='goodsprice' data-id="<%order.supplier_uid%>" style="color:#ff771b;"><%order.goodsprice%></span></span></div>
     </div>
@@ -400,7 +409,9 @@
             <div class="line" style="line-height:26px;">+运费<span>￥<span class='dispatchprice' data-id="<%order.supplier_uid%>"><%order.dispatch_price%></span></span></div>
             <%/if%>
             <%if order.discountprice>0%>
-            <div class="line" style="line-height:26px;">-会员折扣(<d class='memberdiscount'><%discount%></d>折)<span>-￥<span class='discountprice' data-id='<%order.supplier_uid%>'><%order.discountprice%></span></span></div>
+            <div class="line" style="line-height:26px;">
+             -优惠 
+            <span>-￥<span class='discountprice' data-id="<%order.supplier_uid%>"><%order.discountprice%></span></span></div>
             <%/if%>
   		      <%if order.saleset%>
             <div class="deductenough"  data-id='<%order.supplier_uid%>' class="line" style="line-height:26px;<%if !order.saleset.showenough %>display:none<%/if%>"  >-单笔满 <d style='color:#ff6600' class="deductenough_enough" data-id='<%order.supplier_uid%>'><%saleset.enoughmoney%></d> 元立减  <span>-￥<span class="deductenough_money"  data-id='<%order.supplier_uid%>'><%saleset.enoughdeduct%></span><span></div>
@@ -415,7 +426,7 @@
      <div class="addorder_price coupondiv"  data-id="<%order.supplier_uid%>" style="margin-top:5px;<%if !order.hascoupon%>display:none<%/if%>" >
         <div class="price" style="border:none;">
             <div class="line selectcoupon" style="line-height:32px;" data-id="<%order.supplier_uid%>">
-			           <d class="couponselect" data-id="<%order.supplier_uid%>">我要使用优惠券</d>
+			           <d id="couponselect" data-id="<%order.supplier_uid%>">我要使用优惠券</d>
                 <div class="ico2" style="float:right;color:#999;margin-top:2px;"><i class='fa fa-angle-right fa-2x'></i></div>
                 <div class="couponcount"><%order.couponcount%></div>
             </div>
@@ -493,10 +504,32 @@ var fromcart = 0;
                     $('#goodscount').html(num);
                 marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") ) * num;
                 $('.goodsprice').html( marketprice.toFixed(2) );
-                if( $('.memberdiscount').length>0){
-                                var discountprice = marketprice - parseFloat( $('.memberdiscount').html().replace(",","") ) / 10 * marketprice;
+
+                    var supplierids = $("#supplierids").val();
+                    var supplierarr = new Array();
+                    supplierarr = supplierids.split(",");
+
+                    var discount = '';
+                    var discountway = '';
+                    var discountprice = 0;
+
+                    for (var i = 0; i < supplierarr.length; i++) {
+                        discount = $('input[data-id=discount'+i+']').val();
+                        discountway = $('input[data-id=discountway'+i+']').val();
+                        if (discountway == 1) {
+                            if( $('input[data-id=discount'+i+']').length>0){
+                                discountprice += marketprice - parseFloat( discount.replace(",","") ) / 10 * marketprice;
+                                
+                            }
+                        } else {
+                            if( $('input[data-id=discount'+i+']').length>0){
+                                discountprice += parseFloat( discount.replace(",","") ) * num;
+                            }
+                        }   
+                    }
+
                 $('.discountprice').html( discountprice.toFixed(2) );
-            }
+
                 var zt =  $('.addorder_nav .selected').data('nav') =='1';
                 getDispatchPrice(zt);
                 
@@ -520,10 +553,33 @@ var fromcart = 0;
                 $('#goodscount').html(num);
                 var marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") ) * num;
                 $('.goodsprice').html( marketprice.toFixed(2) );
-                     if( $('.memberdiscount').length>0){
-                var discountprice = marketprice - parseFloat( $('.memberdiscount').html().replace(",","") ) / 10 * marketprice;
+
+                    var supplierids = $("#supplierids").val();
+                    var supplierarr = new Array();
+                    supplierarr = supplierids.split(",");
+
+                    var discount = '';
+                    var discountway = '';
+                    var discountprice = 0;
+
+                    for (var i = 0; i < supplierarr.length; i++) {
+                        discount = $('input[data-id=discount'+i+']').val();
+                        discountway = $('input[data-id=discountway'+i+']').val();
+                        if (discountway == 1) {
+                            if( $('input[data-id=discount'+i+']').length>0){
+                                discountprice += marketprice - parseFloat( discount.replace(",","") ) / 10 * marketprice;
+                                
+                            }
+                        } else {
+                            if( $('input[data-id=discount'+i+']').length>0){
+                                discountprice += parseFloat( discount.replace(",","") ) * num;
+                            }
+                        }   
+                    }
+
                 $('.discountprice').html( discountprice.toFixed(2) );
-                     }
+
+
                var zt =  $('.addorder_nav .selected').data('nav') =='1';
                 getDispatchPrice(zt);
 
@@ -553,10 +609,31 @@ var fromcart = 0;
                 $('#goodscount').html(num);
                    marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") ) * num;
                 $('.goodsprice').html( marketprice.toFixed(2) );
-                     if( $('.memberdiscount').length>0){
-                var discountprice = marketprice - parseFloat( $('.memberdiscount').html().replace(",","") ) / 10 * marketprice;
+
+                    var supplierids = $("#supplierids").val();
+                    var supplierarr = new Array();
+                    supplierarr = supplierids.split(",");
+
+                    var discount = '';
+                    var discountway = '';
+                    var discountprice = 0;
+
+                    for (var i = 0; i < supplierarr.length; i++) {
+                        discount = $('input[data-id=discount'+i+']').val();
+                        discountway = $('input[data-id=discountway'+i+']').val();
+                        if (discountway == 1) {
+                            if( $('input[data-id=discount'+i+']').length>0){
+                                discountprice += marketprice - parseFloat( discount.replace(",","") ) / 10 * marketprice;
+                                
+                            }
+                        } else {
+                            if( $('input[data-id=discount'+i+']').length>0){
+                                discountprice += parseFloat( discount.replace(",","") ) * num;
+                            }
+                        }   
+                    }
+
                 $('.discountprice').html( discountprice.toFixed(2) );
-                     }
           
                var zt =  $('.addorder_nav .selected').data('nav') =='1';
                 getDispatchPrice(zt);
@@ -742,13 +819,14 @@ var fromcart = 0;
               //重新获取运费
               if( $('.shownum').length>0){
                   totalprice = parseFloat( $('.marketprice').html() ) * parseInt($('.shownum').val());
-                  var goodsinfo = $('#goods').val().split('|')[0];
+                  var goodsinfo = $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val().split('|')[0];
                   var goods = goodsinfo.split(',');
                   var goodsid = goods[0];
                   var optionid = goods[1];
                   var num = parseInt( $('.shownum').val());
                   $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val(goodsid + "," + optionid +"," + num + '|');
               }
+              var supplier_uid = supplierarr[i];
               core.json('order/confirm', {
                   op: 'getdispatchprice',
                   totalprice:totalprice,
@@ -756,49 +834,49 @@ var fromcart = 0;
                   dispatchid: $('#dispatchid').val(),
                   supplier_uid: supplierarr[i],
                   dflag: zt,
-                  goods: $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val()
+                  goods: $("input[data-name='goods'][data-id="+supplier_uid+"]").val()
               }, function(getjson) {
                   if (getjson.status == 1) {
                       if(zt){
-                          $('.dispatchprice[data-id='+supplierarr[i]+']').html('0.00');
+                          $('.dispatchprice[data-id='+supplier_uid+']').html('0.00');
                       } else {
-                          $('.dispatchprice[data-id='+supplierarr[i]+']').html(getjson.result.price);
+                          $('.dispatchprice[data-id='+supplier_uid+']').html(getjson.result.price);
                       }
 
                       if(getjson.result.deductcredit){
-                          $('.deductcredit_money[data-id='+supplierarr[i]+']').html( getjson.result.deductmoney);
-                          $('.deductcredit_info[data-id='+supplierarr[i]+']').html( getjson.result.deductcredit);
-                          $('.deductcredit[data-id='+supplierarr[i]+']').attr('credit',getjson.result.deductcredit);
-                          $('.deductcredit[data-id='+supplierarr[i]+']').attr('money',getjson.result.deductmoney);
+                          $('.deductcredit_money[data-id='+supplier_uid+']').html( getjson.result.deductmoney);
+                          $('.deductcredit_info[data-id='+supplier_uid+']').html( getjson.result.deductcredit);
+                          $('.deductcredit[data-id='+supplier_uid+']').attr('credit',getjson.result.deductcredit);
+                          $('.deductcredit[data-id='+supplier_uid+']').attr('money',getjson.result.deductmoney);
                       }
 
                       if(getjson.result.deductcredit2){
-                          $('.deductcredit2_money[data-id='+supplierarr[i]+']').html( getjson.result.deductcredit2);
-                          $('.deductcredit2[data-id='+supplierarr[i]+']').attr('credit2',getjson.result.deductcredit2);
+                          $('.deductcredit2_money[data-id='+supplier_uid+']').html( getjson.result.deductcredit2);
+                          $('.deductcredit2[data-id='+supplier_uid+']').attr('credit2',getjson.result.deductcredit2);
                       }
 
                       if(getjson.result.hascoupon){
-                        $('.coupondiv[data-id='+supplierarr[i]+']').show();
-                        $('.coupondiv[data-id='+supplierarr[i]+'] .couponcount').html(getjson.result.couponcount);
+                        $('.coupondiv[data-id='+supplier_uid+']').show();
+                        $('.coupondiv[data-id='+supplier_uid+'] .couponcount').html(getjson.result.couponcount);
                         bindCouponEvents();
                       }else{
-                        $("input[data-name='couponid'][data-id="+supplierarr[i]+"]").val('');
-                        $('.couponselect[data-id='+supplierarr[i]+']').html('我要使用优惠券');
-                        $('.coupondiv[data-id='+supplierarr[i]+']').hide();
+                        $("input[data-name='couponid'][data-id="+supplier_uid+"]").val('');
+                        $('#couponselect[data-id='+supplier_uid+']').html('我要使用优惠券');
+                        $('.coupondiv[data-id='+supplier_uid+']').hide();
                       }
 
                       if(getjson.result.deductenough_money>0){
-                        $('.deductenough[data-id='+supplierarr[i]+']').show();
-                        $('.deductenough_money[data-id='+supplierarr[i]+']').html( getjson.result.deductenough_money);
-                        $('.deductenough_enough[data-id='+supplierarr[i]+']').html( getjson.result.deductenough_enough);
+                        $('.deductenough[data-id='+supplier_uid+']').show();
+                        $('.deductenough_money[data-id='+supplier_uid+']').html( getjson.result.deductenough_money);
+                        $('.deductenough_enough[data-id='+supplier_uid+']').html( getjson.result.deductenough_enough);
                       } else{
-                        $('.deductenough[data-id='+supplierarr[i]+']').hide();
-                        $('.deductenough_money[data-id='+supplierarr[i]+']').html( '0');
-                        $('.deductenough_enough[data-id='+supplierarr[i]+']').html( '0');
+                        $('.deductenough[data-id='+supplier_uid+']').hide();
+                        $('.deductenough_money[data-id='+supplier_uid+']').html( '0');
+                        $('.deductenough_enough[data-id='+supplier_uid+']').html( '0');
                       }
-                      calctotalprice(supplierarr[i]);
+                      calctotalprice(supplier_uid);
                       if( $('.shownum').length>0){
-                        var goodsinfo = $('#goods').val().split('|')[0];
+                        var goodsinfo = $("input[data-name='goods'][data-id="+supplier_uid+"]").val().split('|')[0];
                         var goods = goodsinfo.split(',');
                         var goodsid = goods[0];
                         var optionid = goods[1];
@@ -1127,9 +1205,9 @@ var fromcart = 0;
   	       if($("input[data-name='couponid'][data-id="+supplier_uid+"]").val()=='' ||  $("input[data-name='couponid'][data-id="+supplier_uid+"]").val()=='0')   {
   			     return totalprice;
   	       }
-	         var deduct   = parseFloat( $('.couponselect[data-id='+supplier_uid+']').data('deduct') );
-           var discount = parseFloat( $('.couponselect[data-id='+supplier_uid+']').data('discount') );
-           var backtype = parseFloat( $('.couponselect[data-id='+supplier_uid+']').data('backtype') );
+	         var deduct   = parseFloat( $('#couponselect[data-id='+supplier_uid+']').data('deduct') );
+           var discount = parseFloat( $('#couponselect[data-id='+supplier_uid+']').data('discount') );
+           var backtype = parseFloat( $('#couponselect[data-id='+supplier_uid+']').data('backtype') );
 	         var deductprice = 0;
 	         if(deduct>0 && backtype==0){ //抵扣
       		   if(deduct>totalprice){
@@ -1154,7 +1232,7 @@ var fromcart = 0;
 	         }
 	         if(deductprice>0){
 		        $('.coupondeduct_div[data-id='+supplier_uid+']').show();
-	          $('.coupondeduct_money[data-id='+supplier_uid+']').html(deductprice.toFixed(2));	
+	          $('.coupondeduct_money').html(deductprice.toFixed(2));	
 	         }
 	         return totalprice;
 				
@@ -1390,4 +1468,4 @@ var fromcart = 0;
   });*/
 </script>
 <!-- foot -->
-{template 'common/bottom'}W
+{template 'common/bottom'}

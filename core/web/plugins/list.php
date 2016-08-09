@@ -53,12 +53,13 @@ $plugins_icon = array(
 	"return" => "web-price",
 	"virtual" => "virtual",
 	"ranking" => "ranking",
-	"fans" => "fensi",
+	"fans" => "tool",
 	"hotel" => "hotel",
 	"bonus" => "fh",
 	"customer" => "kehu",
 	"cashier" => "web-price",
-
+	"merchant" => "admin",
+	"love" => "fensi",
 	);
 $plugins_desc = array(
 	"supplier" => "厂家入驻，平台统一销售", 

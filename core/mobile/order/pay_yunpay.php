@@ -27,12 +27,12 @@ $shopset = m('common')->getSysset('shop');
         $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
             ':uniacid' => $uniacid,
             ':module' => 'sz_yi',
-            ':tid' => $order['ordersn']
+            ':tid' => $order['ordersn_general']
         ));
         if (!empty($log) && $log['status'] != '0') {
             show_json(0, '订单已支付, 无需重复支付!');
         }
-        $param_title     = $shopset['name'] . "订单: " . $order['ordersn'];
+        $param_title     = $shopset['name'] . "订单: " . $order['ordersn_general'];
         $yunpay         = array(
             'success' => false
         );

@@ -6,7 +6,7 @@ global $_W, $_GPC;
 @session_start();
 setcookie('preUrl', $_W['siteurl']);
 $openid         = m('user')->getOpenid();
-//$popenid        = m('user')->islogin();
+$popenid        = m('user')->islogin();
 $openid         = $openid?$openid:$popenid;
 $member         = m('member')->getMember($openid);
 $uniacid        = $_W['uniacid'];
@@ -344,22 +344,50 @@ if ($_W['isajax']) {
         );
         pdo_insert('sz_yi_member_history', $history);
     }
-    $level     = m('member')->getLevel($openid);
-    $discounts = json_decode($goods['discounts'], true);
-    if (is_array($discounts)) {
-        if (!empty($level['id'])) {
-            if ($discounts['level' . $level['id']] > 0 && $discounts['level' . $level['id']] < 10) {
-                $level['discount'] = $discounts['level' . $level['id']];
-            }
-        } else {
-            $level['levelname'] = empty($shopset['levelname']) ? '普通会员' : $shopset['levelname'];
-            if ($discounts['default'] > 0 && $discounts['default'] < 10) {
-                $level['discount'] = $discounts['default'];
+    
+
+    if ($goods['discounttype'] == 1) {
+        $level     = m('member')->getLevel($openid);
+        $discounts = json_decode($goods['discounts'], true);
+        //会员等级折扣
+        if (is_array($discounts)) {
+            if (!empty($level['id'])) {
+                if ($discounts['level' . $level['id']] > 0 && $discounts['level' . $level['id']] < 10) {
+                    $level['discount'] = $discounts['level' . $level['id']];
+                }
             } else {
-                $level['discount'] = 10;
+                $level['levelname'] = empty($shopset['levelname']) ? '普通会员' : $shopset['levelname'];
+                if ($discounts['default'] > 0 && $discounts['default'] < 10) {
+                    $level['discount'] = $discounts['default'];
+                } else {
+                    $level['discount'] = 10;
+                }
             }
+            $level['discounttxt'] = "会员折扣";
+        }
+    } else {
+        $level     = p("commission")->getLevel($openid);
+        $discounts = json_decode($goods['discounts2'], true);
+        //分销商等级折扣
+        if (is_array($discounts)) {
+            if (!empty($level['id'])) {
+                if ($discounts['level' . $level['id']] > 0 && $discounts['level' . $level['id']] < 10) {
+                    $level['discount'] = $discounts['level' . $level['id']];
+                }
+            } else {
+                $level['levelname'] = empty($shopset['levelname']) ? '普通会员' : $shopset['levelname'];
+                if ($discounts['default'] > 0 && $discounts['default'] < 10) {
+                    $level['discount'] = $discounts['default'];
+                } else {
+                    $level['discount'] = 10;
+                }
+            }
+            $level['discounttxt'] = "分销商折扣";
         }
     }
+    $level['discountway'] = $goods['discountway'];
+
+
     $comment = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods_comment')." where goodsid=:id and uniacid=:uniacid",array(':id' => $goodsid , ':uniacid' => $uniacid)),'headimgurl');
     $commentcount = pdo_fetchcolumn("select count(id) from ".tablename('sz_yi_goods_comment')." where goodsid=:id and uniacid=:uniacid",array(':id' => $goodsid , ':uniacid' => $uniacid));
 

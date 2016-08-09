@@ -11,6 +11,7 @@
     .ad2 {display: none;}
 </style>
 <div class="w1200 m0a">
+<div class="rightlist">
        <form class="form-horizontal form" action="" method="post">
         {if $item['transid']}<div  class="alert alert-error"><i class="fa fa-lightbulb"></i> 此为微信支付订单，必须要提交发货状态！</div>{/if}
         <input type="hidden" name="id" value="{$item['id']}" />
@@ -584,7 +585,7 @@
                 </table>
             </div>
         </div> 
-
+</div> 
         <script language="javascript">
             function showDiyInfo(obj){
                 var hide = $(obj).attr('hide');
