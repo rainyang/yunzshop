@@ -473,7 +473,7 @@ if (!class_exists('ChannelModel')) {
 				}				
 					
 				$this->getChannelNum($openid);
-				//通知
+				$this->sendMessage($openid, array('nickname' => $member['nickname']), TM_CHANNEL_BECOME);
 			}
 		}
 		/**
@@ -511,7 +511,7 @@ if (!class_exists('ChannelModel')) {
 				}
 			}
 			$this->getChannelNum($openid);
-			//通知
+			$this->sendMessage($openid, array('nickname' => $member['nickname']), TM_CHANNEL_BECOME);
 		}
 		/**
 		  * 购买指定商品成为渠道商
@@ -551,7 +551,7 @@ if (!class_exists('ChannelModel')) {
             	}
             }
             $this->getChannelNum($openid);
-			//通知          
+			$this->sendMessage($openid, array('nickname' => $member['nickname']), TM_CHANNEL_BECOME);          
         }
         /**
 		  * 购买指定商品升级渠道商
@@ -588,7 +588,7 @@ if (!class_exists('ChannelModel')) {
 	            if ($goods) {
 	            	pdo_update('sz_yi_member', array('ischannel' => 1,'channel_level' => $up_level['id']), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
 	            	$this->getChannelNum($openid);
-					//通知  
+					$this->sendMessage($openid, array('nickname' => $member['nickname'], 'oldlevelname' => $my_level['level_name'], 'old_purchase_discount' => $my_level['purchase_discount'], 'newlevelname' => $up_level['level_name'], 'new_purchase_discount' => $up_level['purchase_discount']), TM_CHANNEL_UPGRADE);  
 	            }
             } else {
             	return;
@@ -662,7 +662,7 @@ if (!class_exists('ChannelModel')) {
             	if ($finish_status == 1) {
             		pdo_update('sz_yi_member', array('channel_level' => $channel_level['id']), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
 					$this->getChannelNum($openid);
-					//通知
+					$this->sendMessage($openid, array('nickname' => $member['nickname'], 'oldlevelname' => $my_level['level_name'], 'old_purchase_discount' => $my_level['purchase_discount'], 'newlevelname' => $channel_level['level_name'], 'new_purchase_discount' => $channel_level['purchase_discount']), TM_CHANNEL_UPGRADE);
             	}				
             }        
         }
