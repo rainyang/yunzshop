@@ -506,7 +506,9 @@ var fromcart = 0;
                 getDispatchPrice(zt);
                 
             })
-            
+            if ($('#isverify').val()=='true') {
+                getDispatchPrice(true);   
+            }
              $('.rightnav').click(function(){
                 var maxbuy = parseInt( $(this).closest('.good').data('totalmaxbuy'));
              
@@ -1217,4 +1219,3 @@ var fromcart = 0;
   }, true,true);
 });
 </script>
-
