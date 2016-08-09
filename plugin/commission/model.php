@@ -1015,7 +1015,7 @@ if (!class_exists('CommissionModel')) {
 			}
 			$pluginchannel = p("channel");
 			if(!empty($pluginchannel)){
-
+				$pluginchannel->checkOrderFinishOrPay($orderid);
 				$channel_set = $pluginchannel->getSet();
 				if (empty($member['ischannel'])) {
 					if ($channel_set['become_condition'] == 3 || $channel_set['become_condition'] == 4) {
