@@ -25,7 +25,8 @@ win.document.close();
 <div class="topmenu_header">
     <ul class="nav navbar-nav">
         <li style="margin-right:40px">
-            <a style="color:#000" href="./index.php?c=home&amp;a=welcome&amp;do=ext&amp;m=sz_yi"><i class="iconfont icon-heart"></i> 芸众商城</a> 
+            <a class="dropdown-toggle" href="{php echo url('home/welcome/ext',array('m'=>'sz_yi'))}"><i class='iconfont icon-heart'></i> {php echo $this->module['title']}</a> 
+
         </li> 
 			{ifp 'shop.goods.view'}<li {if ($_GPC['p'] == 'goods' || empty($_GPC['p'])) && $_GPC['do'] != 'order'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods')}" class="dropdown-toggle">商品</a></li>{/if}
         </li>
