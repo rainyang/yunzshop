@@ -777,7 +777,7 @@ if ($_W['isajax']) {
             'weight' => $weight / $buytotal,
             'set' => $shopset,
             'fromcart' => $fromcart,
-            'haslevel' => !empty($level['id']) && $level['discount'] > 0 && $level['discount'] < 10,
+            'haslevel' => !empty($level) && $level['discount'] > 0 && $level['discount'] < 10,
             'total' => $total,
             //"dispatchprice" => number_format($dispatch_price, 2),
             'totalprice' => number_format($totalprice, 2),
@@ -1679,8 +1679,7 @@ if ($_W['isajax']) {
                     $verifycode = random(8, true);
                 }
             }
-            
-            $carrier  = $_GPC['order'][0]['carrier'];
+            $carrier  = $_GPC['carrier'];
             $carriers = is_array($carrier) ? iserializer($carrier) : iserializer(array());
             if ($totalprice <= 0) {
                 $totalprice = 0;
@@ -1936,7 +1935,7 @@ if ($_W['isajax']) {
                             $op_where = " AND optionid={$goods['optionid']}";
                         }
                         $surplus_stock = pdo_fetchcolumn("SELECT stock_total FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND goodsid={$goods['goodsid']} {$op_where}");
-                        $up_mem = m('member')->getInfo($my_info['up_channel']['openid']);
+                        $up_mem = m('member')->getInfo($my_info['up_level']['openid']);
                         $stock_log = array(
                               'uniacid'             => $_W['uniacid'],
                               'openid'              => $openid,
@@ -2002,6 +2001,7 @@ if ($_W['isajax']) {
                         }
                     }
             }
+            
             if ($deductcredit > 0) {
                 $shop = m('common')->getSysset('shop');
                 m('member')->setCredit($openid, 'credit1', -$deductcredit, array(
