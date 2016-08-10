@@ -39,6 +39,7 @@ if(!empty($orderid)){
 		$order['status']	= $val['status'];
 		$order['cash']		= $val['cash'];
 		$order['openid']		= $val['openid'];
+        $order['pay_ordersn']        = $val['pay_ordersn'];
     }else{
         $order = $order_all[0];
     }
@@ -248,11 +249,11 @@ if ($operation == 'display' && $_W['isajax']) {
     if($member['credit2'] < $order['deductcredit2'] && $order['deductcredit2'] > 0){
         show_json(0, '余额不足，请充值后在试！');
     }
-
+    $pay_ordersn = $order['pay_ordersn'] ? $order['pay_ordersn'] : $ordersn_general;
     $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
         ':uniacid' => $uniacid,
         ':module' => 'sz_yi',
-        ':tid' => $ordersn_general
+        ':tid' => $pay_ordersn
     ));
     if (empty($log)) {
         show_json(0, '支付出错,请重试!');
@@ -418,11 +419,6 @@ if ($operation == 'display' && $_W['isajax']) {
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
     $ischannelpay = intval($_GPC['ischannelpay']);
-    $order = pdo_fetch("select * from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
-        ':id' => $orderid,
-        ':uniacid' => $uniacid,
-        ':openid' => $openid
-    ));
     if(is_array($orderid)){
         $orderids = implode(',', $orderid);
         $where_orderid = "og.orderid in ({$orderids})";
@@ -509,11 +505,11 @@ if ($operation == 'display' && $_W['isajax']) {
     if ($member['credit2'] < $order['deductcredit2'] && $order['deductcredit2'] > 0) {
         show_json(0, '余额不足，请充值后在试！');
     }
-
+     $pay_ordersn = $order['pay_ordersn'] ? $order['pay_ordersn'] : $ordersn_general;
     $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
         ':uniacid' => $uniacid,
         ':module' => 'sz_yi',
-        ':tid' => $ordersn_general
+        ':tid' => $pay_ordersn
     ));
     if (empty($log)) {
         show_json(0, '支付出错,请重试!');
@@ -615,7 +611,7 @@ if ($operation == 'display' && $_W['isajax']) {
         $pay_result     = $this->payResult($ret);
         show_json(1, $pay_result);
     } else if ($type == 'weixin') {
-        $ordersn = $order['ordersn_general'];
+        $ordersn = $pay_ordersn;
         if (!empty($order['ordersn2'])) {
             $ordersn .= "GJ" . sprintf("%02d", $order['ordersn2']);
         }
@@ -642,7 +638,33 @@ if ($operation == 'display' && $_W['isajax']) {
                     $ret['ischannelpay'] = $ischannelpay;
                 }
             }
-            $pay_result     = $this->payResult($ret);
+            //$pay_result     = $this->payResult($ret);
+            $price = $order['price'];
+            $order = pdo_fetch("select * from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
+                ':id' => $orderid,
+                ':uniacid' => $uniacid,
+                ':openid' => $openid
+            ));
+            $order['price'] = $price;
+            $address = false;
+            if (empty($order['dispatchtype'])) {
+                $address = pdo_fetch('select realname,mobile,address from ' . tablename('sz_yi_member_address') . ' where id=:id limit 1', array(
+                    ':id' => $order['addressid']
+                ));
+            }
+            $carrier = false;
+            if ($order['dispatchtype'] == 1 || $order['isvirtual'] == 1) {
+                $carrier = unserialize($order['carrier']);
+            }
+            $pay_result = array(
+                    'result' => 'success',
+                    'order' => $order,
+                    'address' => $address,
+                    'carrier' => $carrier,
+                    'virtual' => $order['virtual'],
+                    'goods'=>$orderdetail
+
+                );
             show_json(1, $pay_result);
         }
         show_json(0, '支付出错,请重试!');
