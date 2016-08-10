@@ -199,12 +199,12 @@ class Sz_DYi_Order
                     } else {
                         if (p('channel')) {
                             if ($params['ischannelpay'] == 1) {
-                                pdo_query('update ' . tablename('sz_yi_order') . " set status=3, paytime=".time().", finishtime=".time().", ordersn_general=ordersn where {$order_update} and uniacid='{$uniacid}' ");
+                                pdo_query('update ' . tablename('sz_yi_order') . " set status=3, paytime=".time().", finishtime=".time().", pay_ordersn=ordersn_general, ordersn_general=ordersn where {$order_update} and uniacid='{$uniacid}' ");
                             } else {
-                                pdo_query('update ' . tablename('sz_yi_order') . " set status=1, paytime=".time().", ordersn_general=ordersn where {$order_update} and uniacid='{$uniacid}' ");
+                                pdo_query('update ' . tablename('sz_yi_order') . " set status=1, paytime=".time().", pay_ordersn=ordersn_general, ordersn_general=ordersn where {$order_update} and uniacid='{$uniacid}' ");
                             }
                         } else {
-                            pdo_query('update ' . tablename('sz_yi_order') . " set status=1, paytime=".time().", ordersn_general=ordersn where {$order_update} and uniacid='{$uniacid}' ");
+                            pdo_query('update ' . tablename('sz_yi_order') . " set status=1, paytime=".time().", pay_ordersn=ordersn_general, ordersn_general=ordersn where {$order_update} and uniacid='{$uniacid}' ");
                         }
                         if ($order['deductcredit2'] > 0) {
                             $shopset = m('common')->getSysset('shop');

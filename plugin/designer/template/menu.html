@@ -162,8 +162,8 @@
 <!-- 编辑页面 -->
 <div class='panel panel-default' ng-app="FoxEditor" style="background: #f2f2f2">
     <div class='panel-heading'> 菜单编辑 {if $_GPC['menuid']!=''}(ID: {$_GPC['menuid']}){/if}</div>
-    <div class='panel-body' ng-controller="FoxController">
-        <div class="fe" style="margin-left:30px">
+    <div class='panel-body' ng-controller="FoxController" style="padding:8px">
+        <div class="fe" style="margin-left:0">
            
             <div class="fe-phone">
                 <div class="fe-phone-left"></div>
@@ -178,7 +178,7 @@
                 </div>
                 <div class="fe-phone-right"></div>
             </div>
-            <div class="fe-panel">
+            <div class="fe-panel" style="width:538px !important">
               
                 <!-- editor start -->
                 <div class="fe-panel-editor" ng-show="focus" >

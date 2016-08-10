@@ -53,8 +53,8 @@
 <div class="head fl wfs">
     <div class="wrapper">
         <a class="logo" href="{php echo $this->createMobileUrl('shop/index')}">
-            {if $this->yzShopSet['pclogo']}
-                <img src="{php echo $_W['siteroot'] . "attachment/" . $this->yzShopSet['pclogo']}" style="width:270px;height:60px;" title="{php echo $this->yzShopSet['pctitle']}">
+            {if $this->yzImages['pclogo']}
+                <img src="{php echo $this->yzImages['pclogo']}" style="width:270px;height:60px;" title="{php echo $this->yzShopSet['pctitle']}">
             {else}
                 <img src="../addons/sz_yi/template/pc/default/static/images/logo.png" title="" alt="我是默认logo">
             {/if}
