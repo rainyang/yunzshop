@@ -678,17 +678,17 @@ if ($operation == 'display' && $_W['isajax']) {
         $ret['uniacid'] = $log['uniacid'];
         $this->payResult($ret);
     }
-    if(is_array($orderid)){
-        $url     = $this->createMobileUrl('order/list');
-    }else{
-        $orderid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid', array(
-            ':ordersn' => $log['tid'],
-            ':uniacid' => $_W['uniacid']
-        ));
-        $url     = $this->createMobileUrl('order/detail', array(
-            'id' => $orderid
-        ));
-    }
+    // if(is_array($orderid)){
+        $url     = $this->createMobileUrl('order/list',array('status' => 1));
+    // }else{
+    //     $orderid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid', array(
+    //         ':ordersn' => $log['tid'],
+    //         ':uniacid' => $_W['uniacid']
+    //     ));
+    //     $url     = $this->createMobileUrl('order/detail', array(
+    //         'id' => $orderid
+    //     ));
+    // }
     die("<script>top.window.location.href='{$url}'</script>");
 } else if ($operation == 'returnyunpay') {
 
