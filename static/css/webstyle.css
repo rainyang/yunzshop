@@ -12,7 +12,7 @@ ul{list-style:none;}
 .m0a{margin:0 auto }
 .mrt4{margin-top: 4px;display: block;}
 .fr{float: right !important;;}
-.rightlist{/*width: 100%;*/margin: 56px 6px 6px 186px;padding-bottom: 125px;min-width: 940px;/*background: #fff;border: 1px #e0e0e0 solid*/}
+.rightlist{/*width: 100%;*/margin: 56px 6px 6px 186px;padding-bottom: 125px;min-width: 1008px;/*background: #fff;border: 1px #e0e0e0 solid*/}
 .topmenubg_yy{z-index: 3;position: fixed;left: 0;top: 0;bottom: 0; width:60px;background: #22B3EA;}
 .topmenubg{z-index: 3;position: fixed;left: 0;top: 49px;bottom: 0; width:60px;background: hsl(0, 0%, 20%);}
 .topmenubg a{font-size:12px !important;}
@@ -114,7 +114,7 @@ z-index: 2;position: fixed;
 /*.nav>li{width: 100%}*/
 .topmenu ul li{width: 100%; text-align: center;}
 .nav-tabs>li>a{border: 0;border-radius: 0 }
-.dropdown-menu{left: 0;right:0;}
+.dropdown-menu{/*left: 0;*/right:0;}
 .nav-tabs>li>a:hover{border: 0;background: none}
 .nav-tabs>li>a:hover{
     background: #eee;
@@ -225,7 +225,7 @@ z-index: 2;position: fixed;
     position: relative;line-height: 50px;height: 50px;}
 .page-heading h2{ font-size: 16px;position: absolute;left: 0;padding: 0;margin: 0;line-height: 50px;}
 .page-heading .pull-right{padding-right: 10px}
-.w1200{width: 100% !important;overflow: hidden;padding: 0px 0px 0px 60px;min-width: 940px;box-sizing: border-box;}
+.w1200{width: 100% !important;overflow: hidden;padding: 0px 0px 0px 60px;min-width: 1260px;box-sizing: border-box;}
 .input-group{margin-bottom: 4px;z-index: 1}
 .mart7{margin-top: 7px}
 .tpl-category-container select{margin-bottom: 4px}
@@ -399,8 +399,11 @@ padding: 20px 20px 10px;
 .sale{background-color: #F7923B}
 .tool{background-color: #ff5898}
 .help{background-color: #58CAF6}
-
-
-
-
-
+.fe-panel-editor {padding: 0px !important;}
+.fe-panel-menu nav {padding: 5px 0 !important;}
+.fe-panel-editor-line2-right {width: auto !important;}
+.fe-panel-editor-con label{float: left;}
+.fe-panel-editor-name{width: 82px !important}
+.fe-panel-editor-input2{width: 40px !important;padding-left: 2px !important}
+.fe-panel {margin-left: 10px !important;}
+.btn-group .dropdown-menu-left{right: 0}
