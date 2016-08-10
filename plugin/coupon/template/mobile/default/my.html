@@ -7,7 +7,7 @@
 
     .tab {height:30px; font-size:13px;background:#fff;padding-right: -2px;}
     .nav {height:30px;border-bottom:2px solid #fff;  width:33.3%;  background:#fff; color:#666; text-align:center; line-height:30px; float:left;}
-    .navon { border-bottom:2px solid #ff6801;  }
+    .navon { border-bottom:2px solid #f15353;  color:#f15353;}
     .no {height:100px; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
     #coupon_loading { padding:10px;color:#666;text-align: center;}
    .coupon_no {height:100px;  margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
@@ -25,14 +25,12 @@
     <div class="nav {if $used==1 && $past!=1}navon{/if}"  onclick="location.href='{php echo $this->createPluginMobileUrl('coupon/my',array('used'=>1))}'">已使用</div>
     <div class="nav {if $past==1}navon{/if}"  onclick="location.href='{php echo $this->createPluginMobileUrl('coupon/my',array('past'=>1))}'">已过期</div>
 </div>
-{if empty($set['closecenter'])}
+<div id='container'></div>
+<script id='tpl_empty' type='text/html'>
+	<div class="coupon_no"><i class="fa fa-credit-card" style="font-size:80px;"></i><br><span style="line-height:18px; font-size:16px;">您还没有优惠券~</span></div>
+  {if empty($set['closecenter'])}
 <div class="coupon_more" onclick="location.href = '{php echo $this->createPluginMobileUrl('coupon')}'"><i class="fa fa-gift"></i> 赶紧去领券中心看看更多优惠券~</div>
 {/if}
-<div id='container'></div>
-
-
-<script id='tpl_empty' type='text/html'>
-	<div class="coupon_no"><i class="fa fa-credit-card" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">您还没有优惠券~</span></div>
 </script>
 <script id='tpl_list' type='text/html'>
 <%each list as coupon%>
