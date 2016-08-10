@@ -1102,8 +1102,9 @@ if ($operation == "display") {
             $item['couponprice'] += $v['couponprice'];
             $item['price'] += $v['price'];
         }
-        
-        $item['ordersn'] = $item['ordersn_general'];
+        if(count($order_all) > 1){
+            $item['ordersn'] = $item['ordersn_general'];
+        }
         $orderid_where_in = implode(',', $orderids);
         $order_where = "o.orderid in ({$orderid_where_in})";
         $remark_where = "id in ({$orderid_where_in})";
