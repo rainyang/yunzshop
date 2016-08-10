@@ -39,5 +39,21 @@ $paylist = pdo_fetchall($sql, $paras);
 //销售排行
 $sql = "SELECT g.id,g.title,g.thumb,(select ifnull(sum(og.price),0) from  " . tablename("sz_yi_order_goods") . " og left join " . tablename("sz_yi_order") . " o on og.orderid=o.id  where o.status>=1 and og.goodsid=g.id  and og.uniacid=:uniacid )  as money,(select ifnull(sum(og.total),0) from  " . tablename("sz_yi_order_goods") . " og left join " . tablename("sz_yi_order") . " o on og.orderid=o.id  where o.status>=1 and og.goodsid=g.id  and og.uniacid=:uniacid ) as count  from " . tablename("sz_yi_goods") . " g  where 1  and g.uniacid=:uniacid  order by money desc LIMIT 3";
 $goods_list = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']));
+
+$day_price = pdo_fetchcolumn("SELECT ifnull(sum(price),0) as day_price FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid and status>=1 and FROM_UNIXTIME(createtime, '%Y-%m-%d') = curdate()", array(
+                ':uniacid' => $_W['uniacid']
+            ));
+
+$day_cnt = pdo_fetchcolumn("SELECT ifnull(count(1),0) as day_price FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid and status>=0 and FROM_UNIXTIME(createtime, '%Y-%m-%d') = curdate()", array(
+                ':uniacid' => $_W['uniacid']
+            ));
+
+$day_nopay_price = pdo_fetchcolumn("SELECT ifnull(sum(price),0) as day_price FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid and status=0 and FROM_UNIXTIME(createtime, '%Y-%m-%d') = curdate()", array(
+                ':uniacid' => $_W['uniacid']
+            ));
+
+$day_no_dispatch = pdo_fetchcolumn("SELECT ifnull(sum(price),0) as day_price FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid and status=1 and FROM_UNIXTIME(createtime, '%Y-%m-%d') = curdate()", array(
+                ':uniacid' => $_W['uniacid']
+            ));
 load()->func('tpl');
 include $this->template('web/shop/index');
