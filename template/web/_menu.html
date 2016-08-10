@@ -29,27 +29,21 @@
         </li> 
 		{/if}
 
-{loop $plugins $plugin}
-	{if $plugin['identity'] == 'sale'}
-		{ifpp $plugin['identity']}
-        {if p($plugin['identity'])}
+        {if p('commission')}
+            {ifp 'sale'}
          <li>
             <a href='{php echo $this->createPluginWebUrl('sale')}' class="dropdown-toggle" ><i class='fa fa-gift' style="margin-top: 2px"></i> <span>营销</span> <i class="fa fa-angle-down"></i></a>
         </li> 
-        {/if}        
+            {/if}        
 		{/if}
-	{/if}
 
-	{if $plugin['identity'] == 'designer'}
-		{ifpp $plugin['identity']}
-        {if p($plugin['identity'])}
+	   {if p('designer')}
+            {ifp 'sale'}
 		<li>
             <a href='{php echo $this->createPluginWebUrl('designer')}' class="dropdown-toggle" ><i class='fa fa-gavel'></i> <span>装修</span><i class="fa fa-angle-down"></i></a>
         </li>
-        {/if}        
+            {/if}        
 		{/if}
-	{/if}
-{/loop}
         
 
         <li>
