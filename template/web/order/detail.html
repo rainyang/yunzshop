@@ -58,13 +58,14 @@
                         <p class="form-control-static">{$item['ordersn']} </p>
                     </div>
                 </div>
+                {if $item['pay_ordersn']}
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付单号 :</label>
                     <div class="col-sm-9 col-xs-12">
-                        <p class="form-control-static">{$item['ordersn_general']} </p>
+                        <p class="form-control-static">{$item['pay_ordersn']} </p>
                     </div>
                 </div>
-                
+                {/if}
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单金额 :</label>
                     <div class="col-sm-9 col-xs-12">
