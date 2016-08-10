@@ -131,7 +131,6 @@ if ($operation == 'display' && $_W['isajax']) {
             }
         }
     }
-
     //扫码
     if (!isMobile() && isset($set['pay']) && $set['pay']['weixin'] == 1) {
         if (isset($set['pay']) && $set['pay']['weixin'] == 1) {
@@ -160,7 +159,6 @@ if ($operation == 'display' && $_W['isajax']) {
             $yunpay['success'] = true;
         }
     }
-
     $unionpay = array(
         'success' => false
     );

@@ -33,6 +33,11 @@ ul{list-style:none;}
 .navbar-nav>li {
     float: left;
 }
+.alert-danger{
+    color: hsl(1, 4%, 19%);
+    background-color: hsl(64, 43%, 91%);
+    border-color: hsl(53, 1%, 86%);
+}
 .topmenu_header{    min-width: 1000px;position:fixed;z-index:3;height:50px;background-color:#fff;border-bottom: 1px solid hsl(0, 0%, 87%);width:100%}
 .topmenu_header a{z-index:9; color:#000}
 .topmenu_header .dropdown{    float: left;
@@ -40,11 +45,12 @@ ul{list-style:none;}
     height: 50px;
     }
 .topmenu_header ul li a:first-child{background: none}
-.topmenu_header .dropdown-toggle:hover{z-index:9; color:hsl(24, 100%, 50%);background-color:#fff !important;
+.topmenu_header .dropdown-toggle:hover, .topmenubg_header .active{z-index:9; color:hsl(24, 100%, 50%);background-color:#fff !important;
     display: block;
     height: 50px;
     border-bottom: 3px solid hsl(24, 100%, 50%);
     transition: all .15s ease-in-out;
+	color:red;
 }
 .topmenu_header .dropdown-toggle:hover i{color: #F60}
 .dropdown,.open{float: left;}

@@ -9,10 +9,16 @@
     {ifp 'sysset.view.shop'}<li {if $_GPC['op']=='shop'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'shop'))}">商城设置</a></li>{/if}
     {ifp 'shop.notice.view'}<li {if $_GPC['p'] == 'notice'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/notice')}">公告管理</a></li>{/if}
     {ifp 'shop.adpc.view'}<li {if $_GPC['p'] == 'adpc'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/adpc')}">广告管理</a></li>{/if}
+    {ifp 'sysset.view.member'}<li  {if $_GPC['op']=='member'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'member'))}">会员设置</a></li>{/if}
+    {ifp 'sysset.view.template'}<li  {if $_GPC['op']=='template'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'template'))}">模板设置</a></li>{/if}
     {ifp 'shop.adv.view'}<li {if $_GPC['p'] == 'adv'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/adv')}">幻灯片管理</a></li>{/if}
+    {ifp 'sysset.view.category'}<li  {if $_GPC['op']=='category'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'category'))}">分类层级</a></li>{/if}
+    {ifp 'sysset.view.contact'}<li  {if $_GPC['op']=='contact'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'contact'))}">联系方式</a></li>{/if}
+    {ifp 'sysset.view.sms'}<li  {if $_GPC['op']=='sms'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'sms'))}">短信设置</a></li>{/if}
 	</ul>
 </div>
 <!-- 新增加右侧顶部三级菜单结束 -->
+
      <form action="" method="post">
 <div class="panel panel-default">
     <div class="panel-body table-responsive">

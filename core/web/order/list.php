@@ -489,12 +489,14 @@ if ($operation == "display") {
                     $value['name'] = set_medias(pdo_fetch('select cs.name,cs.thumb from ' .tablename('sz_yi_cashier_store'). 'cs '.'left join ' .tablename('sz_yi_cashier_order'). ' co on cs.id = co.cashier_store_id where co.order_id=:orderid and co.uniacid=:uniacid', array(':orderid' => $value['id'],':uniacid'=>$_W['uniacid'])), 'thumb');
         }
 
-        if ($value["dispatchtype"] == 1 || !empty($value["isverify"]) || !empty($value["virtual"]) || !empty($value["isvirtual"])|| $value['cashier'] == 1) {
+        if (($value["dispatchtype"] == 1 && !empty($value["isverify"])) || !empty($value["virtual"]) || !empty($value["isvirtual"])|| $value['cashier'] == 1) {
             $value["address"] = '';
             $carrier = iunserializer($value["carrier"]);
             if (is_array($carrier)) {
                 $value["addressdata"]["realname"] = $value["realname"] = $carrier["carrier_realname"];
                 $value["addressdata"]["mobile"] = $value["mobile"] = $carrier["carrier_mobile"];
+                $value["addressdata"]["address"] = $value["address"] = $carrier["address"];
+
             }
         } else {
             $address = iunserializer($value["address"]);
