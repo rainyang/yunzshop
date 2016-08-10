@@ -4,7 +4,7 @@
 <div class="main rightlist">
 <!-- 新增加右侧顶部三级菜单 -->
 <div class="right-titpos">
-	<ul class="add-snav">
+	<ul class="add-shopnav">
     {ifp 'sysset.view.shop'}<li {if $_GPC['op']=='shop'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'shop'))}">商城设置</a></li>{/if}
     {ifp 'shop.notice.view'}<li {if $_GPC['p'] == 'notice'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/notice')}">公告管理</a></li>{/if}
     {ifp 'shop.adpc.view'}<li {if $_GPC['p'] == 'adpc'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/adpc')}">广告管理</a></li>{/if}
