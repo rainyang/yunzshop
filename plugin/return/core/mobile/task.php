@@ -3,13 +3,13 @@ global $_W, $_GPC;
 set_time_limit(0);
 
 //创建文件锁
-$tmpdir = IA_ROOT . "/addons/sz_yi/tmp/reutrn/" . date('ymd');
+$tmpdir = IA_ROOT . "/addons/sz_yi/tmp/reutrn";
 $file   = $tmpdir."/filelock.txt";
 if (!is_dir($tmpdir)) {
     mkdirs($tmpdir);
 }
 if (!file_exists($file)) {
-    fopen($file,'w');
+    touch($file);
 
     $sets = pdo_fetchall('select uniacid from ' . tablename('sz_yi_sysset'));
     foreach ($sets as $val) {
