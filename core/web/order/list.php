@@ -436,7 +436,7 @@ if ($operation == "display") {
                 $value['price'] += $v['price'];
             }
             
-            $value['ordersn'] = $value['ordersn_general'];
+            //$value['ordersn'] = $value['ordersn_general'];
             $orderid_where_in = implode(',', $orderids);
             $order_where = "og.orderid in ({$orderid_where_in})";
         }else{
@@ -1103,7 +1103,7 @@ if ($operation == "display") {
             $item['price'] += $v['price'];
         }
         
-        $item['ordersn'] = $item['ordersn_general'];
+        //$item['ordersn'] = $item['ordersn_general'];
         $orderid_where_in = implode(',', $orderids);
         $order_where = "o.orderid in ({$orderid_where_in})";
         $remark_where = "id in ({$orderid_where_in})";
