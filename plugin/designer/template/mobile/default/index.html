@@ -23,7 +23,6 @@ body {margin:0px; background:#f9f9f9; }
 </head>
 <body >
     <div ng-controller="MainCtrl">
-        {if !is_app()}
         <!-- 浮动按钮 -->
         <div class="fe-floatico" style="position: fixed;" ng-style="{'width':pages[0].params.floatwidth,'top':pages[0].params.floattop}" ng-class="{'fe-floatico-right':pages[0].params.floatstyle=='right'}" ng-show="pages[0].params.floatico==1">
             <a href="{{pages[0].params.floathref || 'javascript:;'}}">
@@ -45,7 +44,6 @@ body {margin:0px; background:#f9f9f9; }
                     </div>
                 </div>
             </a>
-        {/if}
         {/if}
         <div ng-repeat="Item in Items" class="fe-mod-repeat">
             <div ng-include="'../addons/sz_yi/plugin/designer/template/temp/show-'+Item.temp+'.html'" class="fe-mod-parent" id="{{Item.id}}" mid="{{Item.id}}" on-finish-render-filters></div>

@@ -7,6 +7,8 @@
 <meta content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" id="viewport" name="viewport">
 <meta name="format-detection" content="telephone=no" />
 <link href="../addons/sz_yi/plugin/article/template/imgsrc/mobile.css" rel="stylesheet">
+<link rel="stylesheet" type="text/css" href="../addons/sz_yi/template/mobile/default/static/css/style.css">
+<link href="../addons/sz_yi/static/font/iconfont.css" rel="stylesheet">
 <script type="text/javascript" src="../addons/sz_yi/static/js/dist/jquery-1.11.1.min.js"></script>
 <script>
     $(function(){
@@ -152,6 +154,10 @@
         {/loop}	 
         <div class="append"></div>
 {elseif $article_sys['article_temp']==2} 
+<div class="page_topbar">
+<a href="javascript:;" class="back" onclick="history.back()"><i class='iconfont icon-chevron-left'></i></a>
+<div class="title">文章管理</div>
+</div>
     <div class="topbar">
         <div class="block"></div>
         <div class="menu-main">
