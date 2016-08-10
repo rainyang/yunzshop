@@ -231,6 +231,10 @@ if ($op == 'display') {
         ));
 
     }
+    $set           = m('common')->getSysset(array(
+        'shop',
+        'pay'
+    ));
     $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_member_log') . " log " . " left join " . tablename('sz_yi_member') . " m on m.openid=log.openid and m.uniacid= log.uniacid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where 1 {$condition} ", $params);
     $pager = pagination($total, $pindex, $psize);
 } else if ($op == 'pay') {

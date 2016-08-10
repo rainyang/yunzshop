@@ -2,6 +2,10 @@
 global $_W, $_GPC;
 $openid = m('user')->getOpenid();
 $member = $this->model->getInfo($openid, array('ok'));
+$settingalipay =   m('common')->getSysset(array(
+        'shop',
+        'pay'
+));
 if ($_W['isajax']) {
 	$level = $this->set['level'];
 	$closewithdrawcheck = $this->set['closewithdrawcheck'];
@@ -139,6 +143,7 @@ if ($_W['isajax']) {
 	}
 	$returnurl = urlencode($this->createPluginMobileUrl('commission/apply'));
 	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
+    //print_r($settingalipay);exit;
 	show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
 }
 include $this->template('apply');
