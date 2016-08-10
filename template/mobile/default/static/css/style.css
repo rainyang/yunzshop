@@ -426,4 +426,13 @@ footer#footer-nav .menu-list:after {
 }
 .address_sub1,.address_sub2,.info_sub,.refund_sub1{margin: 10px 2% 0 !important;width: 96% !important}
 .order_main .sub1,.order_main .sub2{margin: 10px 0 10px 5px !important;}
-
+.return_navon{border-bottom: 2px #f15353 solid;color: #f15353!important;background: none!important}
+.new-returnnav{height: 44px!important;
+    margin: 0!important; 
+    border-bottom: 1px solid #e3e3e3!important;
+    border-top: 0!important;
+    border-radius: 0!important; 
+    font-size: 14px!important;
+    background: #fff!important;
+    padding-right: -2px!important;
+    margin-bottom: 5px!important;}
