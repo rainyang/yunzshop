@@ -436,7 +436,7 @@ if ($operation == "display") {
                 $value['price'] += $v['price'];
             }
             
-            //$value['ordersn'] = $value['ordersn_general'];
+            $value['ordersn'] = $value['ordersn_general'];
             $orderid_where_in = implode(',', $orderids);
             $order_where = "og.orderid in ({$orderid_where_in})";
         }else{
@@ -1103,7 +1103,7 @@ if ($operation == "display") {
             $item['price'] += $v['price'];
         }
         
-        //$item['ordersn'] = $item['ordersn_general'];
+        $item['ordersn'] = $item['ordersn_general'];
         $orderid_where_in = implode(',', $orderids);
         $order_where = "o.orderid in ({$orderid_where_in})";
         $remark_where = "id in ({$orderid_where_in})";
@@ -2185,12 +2185,15 @@ function order_list_refund($item)
         ));
         m('notice')->sendOrderMessage($item['id'], true);
     } else if ($refundstatus == 1) {
-        $ordersn_general = $item['ordersn_general'];
-        $ordersn_count = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
-            'ordersn_general' => $ordersn_general,
-            ':uniacid' => $uniacid
-        ));
-
+        if(!empty($item['pay_ordersn'])){
+            $pay_ordersn = $item['pay_ordersn'];
+            $ordersn_count = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
+                'pay_ordersn' => $pay_ordersn,
+                ':uniacid' => $uniacid
+            ));
+        }else{
+           $pay_ordersn = $ordersn; 
+        }
         $ordersn = $item['ordersn'];
 
         if (!empty($item['ordersn2'])) {
@@ -2225,12 +2228,15 @@ function order_list_refund($item)
                 message('多笔合并付款订单，请使用手动退款。', '', 'error');
             }
             $realprice = round($realprice - $item['deductcredit2'], 2);
-            $result = m('finance')->refund($item['openid'], $ordersn_general, $refund['refundno'], $item['price'] * 100, $realprice * 100);
+            $result = m('finance')->refund($item['openid'], $pay_ordersn, $refund['refundno'], $item['price'] * 100, $realprice * 100);
             $refundtype = 2;
         } else {
             if ($realprice < 1) {
                 message('退款金额必须大于1元，才能使用微信企业付款退款!', '', 'error');
             }
+            /*if ($ordersn_count > 1) {
+                message('多笔合并微信付款订单，请使用手动退款。', '', 'error');
+            }*/
             $realprice = round($realprice - $item['deductcredit2'], 2);
             $result = m('finance')->pay($item['openid'], 1, $realprice * 100, $refund['refundno'], $shopset['name'] . "退款: {$realprice}元 订单号: " . $item['ordersn']);
             $refundtype = 1;
