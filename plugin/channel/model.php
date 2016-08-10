@@ -187,7 +187,7 @@ if (!class_exists('ChannelModel')) {
 					}
 					$up_stock = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid=:uniacid AND openid=:openid {$condtion} AND stock_total>=:stock_total", array(':uniacid' => $_W['uniacid'], ':openid' => $up_channel['openid'], ':stock_total' => $total));
 				} else {
-					$up_stock = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid=:uniacid AND openid=:openid AND stock_total>0", array(':uniacid' => $_W['uniacid'], ':openid' => $up_channel['openid']));
+					$up_stock = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid=:uniacid AND openid=:openid AND stock_total>0", array(':uniacid' => $_W['uniacid'], ':openid' => $up_channel['openid']));
 				}
 				if ($up_level['level_num'] > $member['level_num'] && !empty($up_stock)) {
 					$up_level['openid'] = $up_channel['openid'];
