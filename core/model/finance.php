@@ -72,7 +72,7 @@ class Sz_DYi_Finance {
         $string = implode($prepares, '&');
         $cert = IA_ROOT . "/addons/sz_yi/cert/cacert.pem";
         if((!file_exists($cert))) {
-            message('未上传完整的支付宝支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
+            message('缺少支付宝证书文件!', '', 'error');
         }
         if( empty($set['email']) || empty($set['account_name'])){
             message('未填写完整的支付宝付款账号或付款账户名，请到【系统设置】->【支付设置】中设置!', '', 'error');
@@ -157,7 +157,7 @@ class Sz_DYi_Finance {
         $cert = IA_ROOT . "/addons/sz_yi/cert/cacert.pem";
 
         if((!file_exists($cert))) {
-            message('未上传完整的支付宝支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');
+            message('缺少支付宝证书文件!', '', 'error');
         }
         // if(empty($set['partner']) || empty($secret)){
         //     message('未填写完整的支付宝合作者身份或校验密钥，请到支付宝支付参数中设置!', '', 'error');
