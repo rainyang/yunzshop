@@ -615,7 +615,7 @@ if ($operation == 'display' && $_W['isajax']) {
         $pay_result     = $this->payResult($ret);
         show_json(1, $pay_result);
     } else if ($type == 'weixin') {
-        $ordersn = $order['ordersn'];
+        $ordersn = $order['ordersn_general'];
         if (!empty($order['ordersn2'])) {
             $ordersn .= "GJ" . sprintf("%02d", $order['ordersn2']);
         }
