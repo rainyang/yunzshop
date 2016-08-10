@@ -9,31 +9,25 @@ input {-webkit-appearance:none; outline:none;}
 .balance_list {height:auto; width:100%; text-align:center; color:#92b5d6; font-size:16px; margin-top:80px;}
 .balance_sub1 {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .balance_sub2 {height:44px; margin:14px 5px; background:#f49c06; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
-.balance_sub3 {height:44px; margin:14px 5px;background:#e2cb04; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+.balance_sub3 {height:44px; margin:14px 5px;background:#e2cb04; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff; }
 
 </style>
 <div id="container"></div>
+<div class="page_topbar">
+<a href="javascript:;" class="back" onclick="history.back()"><i class='iconfont icon-chevron-left'></i></a>
+<div class="title">余额转账</div>
+</div>
 
-
-   <div class="balance_img"><i class="fa fa-cny"></i></div>
-   <div class="balance_text">您的当前余额</div>
-   <div class="balance_num">￥<span id="credit">{$member['credit2']}</span></div>
-
-   <div class="balance_num" style="height:30px;">
-        <span style="width:30%; height:38px;font-size:16px; float: left;">受让人ID</span>
-        <input type="text" id="assigns" value='' style="width:20%; float: left; height:38px; font-size:16px; margin:auto; border:1px solid #eee; padding:0px 2%;"
-        onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"/>
-        <span id="assigns_name" style="width:40%; height:38px;font-size:16px; float: left;"></span>
-    </div>
-
-   <div class="balance_num" style="height:30px;">
-       <span style="width:30%; height:38px;font-size:16px; float: left;">转让金额</span>
-       <input type="text" id="money" value='' style="width:60%; float: left; height:38px; font-size:16px; margin:auto; border:1px solid #eee; padding:0px 2%;" placeholder="转让金额"/>
-   </div>
-
-
-   <div class="button balance_sub1">确认转让</div>
-<div class="balance_sub3" onclick="location.href='{php echo $this->createMobileUrl('member/transfer_log',array('type'=>1))}'">转让记录</div>
+<div class="cash-box">
+    <div class="balance_price">您的当前余额
+        <span id="credit">￥{$member['credit2']}</span>
+    </div> 
+    <div class="cash-num cash-num-pb"><span>受让人ID</span><input type="text" id="assigns" value='' class="cash-input-z" 
+        onkeyup="this.value=this.value.replace(/\D/g,'')" onafterpaste="this.value=this.value.replace(/\D/g,'')"/></div>
+    <div class="cash-num cash-num-pt"><span>转账金额</span><input type="text" id="money" value='' class="cash-input-z"/></div>
+</div>
+<div class="button balance_sub1">确认转账</div>
+<div class="balance_sub3" onclick="location.href='{php echo $this->createMobileUrl('member/transfer_log',array('type'=>1))}'">转账记录</div>
 
 <!-- 
 <div class="balance_text">每周二到帐，每周一个账户只申请提现一次，每周申请提现截止时间为周日晚上12点前申请。</div> -->
