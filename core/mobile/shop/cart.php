@@ -42,11 +42,10 @@ if ($_W['isajax']) {
             $total += $r['total'];
         }
         $difference = '';
-        $ischannelpay = 0;
+        $ischannelpay = $_GPC['ischannelpay'];
         if (p('channel')) {
             if (empty($ischannelpick)) {
-                if (!empty($my_info)) {
-                    $ischannelpay = 1;
+                //if (!empty($ischannelpay)) {
                     $min_price = $my_info['my_level']['min_price'];
                     $difference = $min_price - $totalprice;
                     if ($difference <= 0) {
@@ -55,7 +54,7 @@ if ($_W['isajax']) {
                         $difference = number_format($difference,2);
                         $difference = "您还需要{$difference}元才可以购买";
                     }
-                }
+                //}
             }
         }
         unset($r);
@@ -66,8 +65,7 @@ if ($_W['isajax']) {
                 'total' => $total,
                 'list' => $list,
                 'totalprice' => $totalprice,
-                'difference' => $difference,
-                //'ischannelpay' => $ischannelpay
+                'difference' => $difference
             ));
         
     } else if ($operation == 'add' && $_W['ispost']) {
