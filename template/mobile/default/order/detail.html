@@ -363,7 +363,7 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
       
 	
         <%if order.discountprice>0%>
-        <div class="line">会员折扣:<span>-￥<span class='discountprice'><%order.discountprice%></span></span></div>
+        <div class="line">优惠:<span>-￥<span class='discountprice'><%order.discountprice%></span></span></div>
         <%/if%>
         <%if order.deductprice>0%>
         <div class="line">{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}抵扣:<span>-￥<span class='deductprice'><%order.deductprice%></span></span></div>

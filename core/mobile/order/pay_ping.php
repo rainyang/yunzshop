@@ -73,10 +73,18 @@ require_once('../addons/sz_yi/plugin/pingpp/init.php');
         $body = $log['title'];
     } else {
         $order_info          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid and openid=:openid limit 1', array(
-            'ordersn' => $orderNo,
+            ':ordersn' => $orderNo,
             ':uniacid' => $uniacid,
             ':openid' => $input_data['openid']
         ));
+
+        if (empty($order_info)) {
+            $order_info          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid limit 1', array(
+                ':ordersn_general' => $orderNo,
+                ':uniacid' => $uniacid,
+                ':openid' => $input_data['openid']
+            ));
+        }
 
         $amount = (int)($order_info['price'] * 100);
         $subject = '商品订单';

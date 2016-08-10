@@ -40,11 +40,12 @@ ul{list-style:none;}
     height: 50px;
     }
 .topmenu_header ul li a:first-child{background: none}
-.topmenu_header .dropdown-toggle:hover{z-index:9; color:hsl(24, 100%, 50%);background-color:#fff !important;
+.topmenu_header .dropdown-toggle:hover, .topmenubg_header .active{z-index:9; color:hsl(24, 100%, 50%);background-color:#fff !important;
     display: block;
     height: 50px;
     border-bottom: 3px solid hsl(24, 100%, 50%);
     transition: all .15s ease-in-out;
+	color:red;
 }
 .topmenu_header .dropdown-toggle:hover i{color: #F60}
 .dropdown,.open{float: left;}

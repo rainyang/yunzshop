@@ -6,7 +6,7 @@ global $_W, $_GPC;
 @session_start();
 setcookie('preUrl', $_W['siteurl']);
 $openid         = m('user')->getOpenid();
-//$popenid        = m('user')->islogin();
+$popenid        = m('user')->islogin();
 $openid         = $openid?$openid:$popenid;
 $member         = m('member')->getMember($openid);
 $uniacid        = $_W['uniacid'];

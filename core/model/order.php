@@ -328,7 +328,8 @@ class Sz_DYi_Order
                                     'every_turn'    => $g['total'],
                                     'goods_price'   => $goods_price,
                                     'surplus_stock' => $stock,
-                                    'mid'           => $up_mem['id']
+                                    'mid'           => $up_mem['id'],
+                                    'paytime'       => time()
                                     );
                                 if (!empty($my_info['up_level'])) {
                                     $log_data['openid'] = $my_info['up_level']['openid'];
@@ -391,7 +392,7 @@ class Sz_DYi_Order
                                     $channels = true;
                                 }
                                 $goods_price = pdo_fetchcolumn("SELECT marketprice FROM " . tablename('sz_yi_goods') . " WHERE uniacid={$_W['uniacid']} AND id={$g['goodsid']}");
-                                $up_mem = m('member')->getInfo($my_info['up_channel']['openid']);
+                                $up_mem = m('member')->getInfo($order['openid']);
                                 $log_data = array(
                                     'goodsid'       => $g['goodsid'],
                                     'order_goodsid' => $g['id'],
@@ -399,8 +400,12 @@ class Sz_DYi_Order
                                     'every_turn'    => $g['total'],
                                     'goods_price'   => $goods_price,
                                     'surplus_stock' => $totalstock,
-                                    'mid'           => $up_mem['id']
+                                    'mid'           => $up_mem['id'],
+                                    'paytime'       => time()
                                     );
+                                if (!empty($my_info['up_level'])) {
+                                    $log_data['openid'] = $my_info['up_level']['openid'];
+                                }
                                 if (!empty($g['ischannelpay'])) {
                                     $log_data['every_turn_price'] = $goods_price*$my_info['my_level']['purchase_discount']/100;
                                     $log_data['every_turn_discount'] = $my_info['my_level']['purchase_discount'];
