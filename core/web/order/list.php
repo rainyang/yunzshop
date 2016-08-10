@@ -2185,12 +2185,15 @@ function order_list_refund($item)
         ));
         m('notice')->sendOrderMessage($item['id'], true);
     } else if ($refundstatus == 1) {
-        $pay_ordersn = $item['pay_ordersn'];
-        $ordersn_count = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
-            'pay_ordersn' => $pay_ordersn,
-            ':uniacid' => $uniacid
-        ));
-
+        if(!empty($item['pay_ordersn'])){
+            $pay_ordersn = $item['pay_ordersn'];
+            $ordersn_count = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
+                'pay_ordersn' => $pay_ordersn,
+                ':uniacid' => $uniacid
+            ));
+        }else{
+           $pay_ordersn = $ordersn; 
+        }
         $ordersn = $item['ordersn'];
 
         if (!empty($item['ordersn2'])) {
@@ -2225,7 +2228,7 @@ function order_list_refund($item)
                 message('多笔合并付款订单，请使用手动退款。', '', 'error');
             }
             $realprice = round($realprice - $item['deductcredit2'], 2);
-            $result = m('finance')->refund($item['openid'], $ordersn_general, $refund['refundno'], $item['price'] * 100, $realprice * 100);
+            $result = m('finance')->refund($item['openid'], $pay_ordersn, $refund['refundno'], $item['price'] * 100, $realprice * 100);
             $refundtype = 2;
         } else {
             if ($realprice < 1) {
