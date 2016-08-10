@@ -274,7 +274,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 <div class="foot-nav">
   <span id="alltotal">0</span>
   {if empty($_GPC['ischannelpick'])}<p id="totalprice">总价：￥0.00</p>{/if}
-  <a class='channel' href="{php echo $this->createMobileUrl('shop/cart', array('ischannelpick' => $_GPC['ischannelpick']))}">选好了</a>
+  <a class='channel' href="{php echo $this->createMobileUrl('shop/cart', array('ischannelpick' => $_GPC['ischannelpick'], 'ischannelpay' => $_GPC['ischannelpay']))}">选好了</a>
 
 </div>
 {php $show_footer=true;$footer_current =''} 
@@ -419,7 +419,7 @@ ul, li { list-style:none; margin:0; padding:0 }
         function getTotalPrice(){
             require(['core'],function(core){
 
-                core.json('shop/cart',{op:'display',ischannelpick:"{$_GPC['ischannelpick']}"},function(ret){
+                core.json('shop/cart',{op:'display',ischannelpick:"{$_GPC['ischannelpick']}", ischannelpay:"{$_GPC['ischannelpay']}"},function(ret){
                      $('#alltotal').html(ret.result.total);
                      $('#totalprice').html('总价：￥' + ret.result.totalprice + ret.result.difference);
 

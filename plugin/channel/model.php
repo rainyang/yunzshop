@@ -165,25 +165,29 @@ if (!class_exists('ChannelModel')) {
 		public function getUpChannel($openid, $goodsid='', $optionid='', $total='')
 		{
 			global $_W;
+			if (empty($total)) {
+				$total = 0;
+			}
 			$member = m('member')->getInfo($openid);
-			$member['level_num'] = pdo_fetchcolumn("SELECT level_num FROM " . tablename('sz_yi_channel_level') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $member['channel_level']));
-			if (empty($member['level_num'])) {
+			if (empty($member['channel_level'])) {
 				$member['level_num'] = -1;
+			} else {
+				$member['level_num'] = pdo_fetchcolumn("SELECT level_num FROM " . tablename('sz_yi_channel_level') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $member['channel_level']));
 			}
 			if (empty($member['agentid'])) {
 				return;
 			}
 			$up_channel = pdo_fetch("SELECT * FROM " . tablename('sz_yi_member') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $member['agentid']));
 			if (!empty($up_channel['channel_level'])) {
-				$up_level = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_level') . " WHERE uniacid={$_W['uniacid']} AND id={$up_channel['channel_level']}");
+				$up_level = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_level') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $up_channel['channel_level']));
 				if (!empty($goodsid)) {
 					$condtion = " AND goodsid={$goodsid}";
 					if (!empty($optionid)) {
 						$condtion = " AND goodsid={$goodsid} AND optionid={$optionid} AND stock_total>={$total}";
 					}
-					$up_stock = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$up_channel['openid']}' AND stock_total>0 {$condtion} AND stock_total>={$total}");
+					$up_stock = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid=:uniacid AND openid=:openid {$condtion} AND stock_total>=:stock_total", array(':uniacid' => $_W['uniacid'], ':openid' => $up_channel['openid'], ':stock_total' => $total));
 				} else {
-					$up_stock = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$up_channel['openid']}' AND stock_total>0");
+					$up_stock = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid=:uniacid AND openid=:openid AND stock_total>0", array(':uniacid' => $_W['uniacid'], ':openid' => $up_channel['openid']));
 				}
 				if ($up_level['level_num'] > $member['level_num'] && !empty($up_stock)) {
 					$up_level['openid'] = $up_channel['openid'];
