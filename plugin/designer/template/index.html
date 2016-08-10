@@ -186,7 +186,7 @@
 <!-- 编辑页面 -->
 <div class='panel panel-default' ng-app="SZ_YIEditor">
     <!--<div class='panel-heading'> 页面编辑 {if $_GPC['pageid']!=''}(ID: {$_GPC['pageid']}){/if}</div>-->
-    <div class='panel-body' ng-controller="SZ_YIController">
+    <div class='panel-body' ng-controller="SZ_YIController" style="padding:8px">
            <div class="fe-panel-menu">
                     <div ng-repeat="nav in navs">
                         <nav ng-click="addItem(nav.id)"><div class="comp-icon"><i class="fa {{nav.icon}}"></i></div><span ng-bind="nav.name"></span></nav>
