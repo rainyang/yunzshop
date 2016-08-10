@@ -7,13 +7,13 @@ a {text-decoration:none;}
 .page_topbar a.back {position:absolute;left:15px;height:45px;line-height:45px;display:block;color:#999; font-size:24px;}
 .page_topbar a.btn { position: absolute;right:10px;height:45px;line-height:45px;display:block;color:#999; font-size:24px; }
 
-.index_sub {height:40px; background:#fff; border-top:1px solid #eee;color:#f90; border-bottom:1px solid #eee; line-height:40px; text-align: center;}
+.index_sub {height:40px; background:#fff; color:#f90; border-bottom:1px solid #e3e3e3; line-height:40px; text-align: center;}
 .index_sub a {height:40px; width:45%; display:inline-block; text-align:center; line-height:40px; font-size:14px; color:#777;}
 .index_sub a { color:#666; }
 .index_sub a i { color:#eee;border:1px solid #eee;padding:4px; width:8px;height:8px; border-radius: 8px; font-size:8px;margin-top:-2px; }
 .index_sub a d {color:#f90;}
 
-.top {height:198px; background:#fff; border-top:1px solid #eee; border-bottom:1px solid #eee; margin-top:12px;}
+.top {height:198px; background:#fff; border-top:1px solid #eee; border-bottom:1px solid #eee; margin-top:10px;}
 .top .left {height:198px; width:40%; margin-left:-1px; border-right:1px solid #eee; float:left;}
 .top .left .info {height:178px; padding:10px;}
 .top .left .info .classs {height:16px; font-size:10px; color:#999;}
