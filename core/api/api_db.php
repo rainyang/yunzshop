@@ -82,7 +82,7 @@ return array(
                 'para' => array(
                     'uid' => '1',
                     'uniacid' => '2',
-                    'member_id' => '0',
+                    'member_id' => '3',
                     'status'=>'1'
                 ),
                 'data' => array()
@@ -92,7 +92,7 @@ return array(
                 'para' => array(
                     'uid' => '1',
                     'uniacid' => '2',
-                    'member_id' => '0',
+                    'commission_apply_id' => '0',
                     'status'=>'1'
                 ),
                 'data' => array()

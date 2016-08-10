@@ -37,9 +37,8 @@ class commission extends \CommissionModel
         }
         if (isset($para['id']) && !empty($para['id'])) {
             $condition['id'] = "AND dm.id<{$para['id']}";
-
         }
-        $condition['status'] = " AND dm.uniacid = {$para['uniacid']} AND dm.isagent =1 ";
+        $condition['other'] = " AND dm.uniacid = {$para['uniacid']} AND dm.isagent =1 ";
         $condition_str = implode(' ', $condition);
 
         //todo 从配置中读取
@@ -55,6 +54,8 @@ class commission extends \CommissionModel
 
     private function formatInfo($info)
     {
+        $info['status_value'] = $info['status'];
+
         $info['status'] = array(
             'name' => $this->name_map['status'][$info['status']],
             'value' => $info['status']
