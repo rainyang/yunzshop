@@ -489,12 +489,14 @@ if ($operation == "display") {
                     $value['name'] = set_medias(pdo_fetch('select cs.name,cs.thumb from ' .tablename('sz_yi_cashier_store'). 'cs '.'left join ' .tablename('sz_yi_cashier_order'). ' co on cs.id = co.cashier_store_id where co.order_id=:orderid and co.uniacid=:uniacid', array(':orderid' => $value['id'],':uniacid'=>$_W['uniacid'])), 'thumb');
         }
 
-        if ($value["dispatchtype"] == 1 || !empty($value["isverify"]) || !empty($value["virtual"]) || !empty($value["isvirtual"])|| $value['cashier'] == 1) {
+        if (($value["dispatchtype"] == 1 && !empty($value["isverify"])) || !empty($value["virtual"]) || !empty($value["isvirtual"])|| $value['cashier'] == 1) {
             $value["address"] = '';
             $carrier = iunserializer($value["carrier"]);
             if (is_array($carrier)) {
                 $value["addressdata"]["realname"] = $value["realname"] = $carrier["carrier_realname"];
                 $value["addressdata"]["mobile"] = $value["mobile"] = $carrier["carrier_mobile"];
+                $value["addressdata"]["address"] = $value["address"] = $carrier["address"];
+
             }
         } else {
             $address = iunserializer($value["address"]);
@@ -2183,7 +2185,14 @@ function order_list_refund($item)
         ));
         m('notice')->sendOrderMessage($item['id'], true);
     } else if ($refundstatus == 1) {
+        $ordersn_general = $item['ordersn_general'];
+        $ordersn_count = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
+            'ordersn_general' => $ordersn_general,
+            ':uniacid' => $uniacid
+        ));
+
         $ordersn = $item['ordersn'];
+
         if (!empty($item['ordersn2'])) {
             $var = sprintf('%02d', $item['ordersn2']);
             $ordersn .= 'GJ' . $var;
@@ -2212,8 +2221,11 @@ function order_list_refund($item)
             ));
             $result = true;
         } else if ($item['paytype'] == 21) {
+            if ($ordersn_count > 1) {
+                message('多笔合并付款订单，请使用手动退款。', '', 'error');
+            }
             $realprice = round($realprice - $item['deductcredit2'], 2);
-            $result = m('finance')->refund($item['openid'], $ordersn, $refund['refundno'], $item['price'] * 100, $realprice * 100);
+            $result = m('finance')->refund($item['openid'], $ordersn_general, $refund['refundno'], $item['price'] * 100, $realprice * 100);
             $refundtype = 2;
         } else {
             if ($realprice < 1) {

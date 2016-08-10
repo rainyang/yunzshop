@@ -243,7 +243,7 @@ footer#footer-nav .menu-list:after {
 .tc-titbg{height: 30px;position: absolute;bottom: 0px;left: 0;width: 100%;background: rgba(0,0,0,0.3)}
 .tc-titbg h1{overflow: hidden;height: 30px;float:left;line-height: 30px;color: #fff;font-size: 14px;width: 74%;font-weight:normal;}
 .tc-titbg p{border-radius: 6px 6px 0 0;float: right;color: #fdc02e;width: 26%;line-height: 30px;font-size: 14px;font-weight:bold}
-.close {
+.easylist-close{
     position: absolute;
     right: 10px;
     top: 10px;
