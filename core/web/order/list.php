@@ -1,5 +1,6 @@
 <?php
 global $_W, $_GPC;
+include("newsql.php");
 $operation = !empty($_GPC["op"]) ? $_GPC["op"] : "display";
 $type = $_GPC['type'];
 $plugin_diyform = p("diyform");
