@@ -7,19 +7,34 @@ input {-webkit-appearance:none; outline:none;}
 .balance_text {height:20px; width:100%; margin-top:16px; text-align:center; line-height:20px; font-size:16px; color:#666;}
 .balance_num {height:24px; width:100%; margin-top:10px; text-align:center; line-height:24px; font-size:22px; color:#444;}
 
-.balance_sub1 {height:44px; width:94%; margin:14px 3% 0px; background:#ff6600; border-radius:4px; text-align:center; font-size:18px; line-height:44px; color:#fff; box-shadow:#eee 1px 1px 3px;}
-.balance_sub2 {height:44px; width:94%; margin:14px 3% 0px; background:#31cd00; border-radius:4px; text-align:center; font-size:18px; line-height:44px; color:#fff;}
-.balance_sub3 {height:44px; width:94%; margin:14px 3% 0px; background:#31cd00; border-radius:4px; text-align:center; font-size:18px; line-height:44px; color:#666; box-shadow:#eee 1px 1px 3px;}
-.balance_sub4 {height:44px; width:94%; margin:14px 3% 0px; background:#cc0000; border-radius:4px; text-align:center; font-size:18px; line-height:44px; color:#fff; box-shadow:#eee 1px 1px 3px;}
+.balance_sub1 {height:44px; width:94%; margin:14px 3% 0px; background:#ff6600; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff; box-shadow:#eee 1px 1px 3px;}
+.balance_sub2 {height:44px; width:94%; margin:14px 3% 0px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+.balance_sub3 {
+    height: 44px;
+    margin: 14px 5px;
+    background: #e2cb04;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 16px;
+    line-height: 44px;
+    color: #fff;
+}
+.balance_sub4 {height:44px; width:94%; margin:14px 3% 0px; background:#cc0000; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff; box-shadow:#eee 1px 1px 3px;}
 .disabled { background:#ccc;}
 </style>
 <div id='container'></div>
 
 <script id='tpl_main' type='text/html'>
- <div class="balance_img"><i class="fa fa-cny"></i></div>
-    <div class="balance_text">我的{php echo $this->set['texts']['commission_ok']}</div>
-    <div class="balance_num">￥<%member.commission_ok%></div>
-    
+<div class="page_topbar">
+<a href="javascript:;" class="back" onclick="history.back()"><i class='iconfont icon-chevron-left'></i></a>
+<div class="title">佣金提现</div>
+</div>
+<div class="cash-box">
+    <div class="balance_price">我的{php echo $this->set['texts']['commission_ok']}
+        <span id="credit">￥<%member.commission_ok%></span>
+    </div>
+    <div class="cash-num"><span>￥</span><input type="text" id="money" value='' class="cash-input"/></div>
+</div>
     {if empty($this->set['closetocredit'])}
     <div class="balance_sub balance_sub1 <%if !cansettle%>disabled<%/if%>" data-type="0">{php echo $this->set['texts']['widthdraw']}到账户余额</div>
     {/if}

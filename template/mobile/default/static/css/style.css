@@ -410,7 +410,7 @@ footer#footer-nav .menu-list:after {
 .cash-num span{color: #000;font-size: 16px;padding-left: 6px;}
 .cash-input{width: 90%;border: 0;line-height: 30px;font-size: 24px;color: #333;box-sizing: border-box;padding-left: 10px}
 .cash-input-z{width: 70%;border: 0;line-height: 30px;font-size: 24px;color: #333;box-sizing: border-box;padding-left: 10px}
-.balance_sub1,.balance_sub3,.balance_sub10{margin: 10px 2% 0 !important}
+.balance_sub1,.balance_sub3,.balance_sub10,.balance_sub2,.balance_sub4{margin: 10px 2% 0 !important}
 
 /*收货地址页面*/
 .address_addnav{    padding: 0 3% 0 6%!important;position: fixed;bottom: 54px;left: 0;background: #f15353 !important;color: #fff !important;text-align: center;height: 44px !important;line-height: 44px !important;}
