@@ -19,6 +19,7 @@ if ($_W['isajax']) {
 		if (empty($order)) {
 			show_json(0, '订单未找到!');
 		}
+		$order_price = pdo_fetchcolumn("select price from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid limit 1', array(':ordersn_general' => $order['ordersn_general'], ':uniacid' => $uniacid, ':openid' => $openid));
 		$log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(':uniacid' => $uniacid, ':module' => 'sz_yi', ':tid' => $order['ordersn_general']));
 		if (!empty($log) && $log['status'] != '0') {
 			show_json(0, '订单已支付, 无需重复支付!');
@@ -28,7 +29,7 @@ if ($_W['isajax']) {
 		$params = array();
 		$params['tid'] = $log['tid'];
 		$params['user'] = $openid;
-		$params['fee'] = $order['price'];
+		$params['fee'] = $order_price;
 		$params['title'] = $param_title;
 		load()->func('communication');
 		load()->model('payment');
