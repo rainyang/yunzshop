@@ -264,7 +264,7 @@ body {margin:0px; background:#f8f8f8;width:100%;}
               }
               var ids = [];
               $('.cart_good[sel=1]').each(function(){
-                   ids.push($(this).data('cartid'));
+                   ids.push($(this).data('goodsid'));
               })
               location.href = core.getUrl('order/confirm',{cartids:ids.join(','),ischannelpay:ischannelpay,ischannelpick:"{$_GPC['ischannelpick']}"});
             })

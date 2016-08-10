@@ -189,7 +189,7 @@ line-height: 20px;font-weight: bold;}
         <h1><%good.title%></h1>
         <p>¥<%good.productprice%></p>
     </div>
-    <div class="close" onclick="closechoose()">×</div>
+    <div class="easylist-close" onclick="closechoose()">×</div>
     </div>
     <div class="tcguige">
       <ul>
@@ -726,21 +726,23 @@ ul, li { list-style:none; margin:0; padding:0 }
                     var maxbuy = input.attr('data-maxbuy');
                     $(this).parent().find('.subtract').show();
                     input.show();                    
-                                       
+                                      
                     if (num > stock) {
                       core.tip.show("您最多可购买 " + num + " 件!");
                       input.val(stock); 
                       return;
                       
                       
-                    }                   
-                    if (num > maxbuy){
-                      core.tip.show("您最多可购买 " + maxbuy + " 件!");
-                      input.val(maxbuy); 
-                      return;
-                      
-                      
-                    }   
+                    }  
+                    {if $ischannelpay}                 
+	                    if (num > maxbuy){
+	                      core.tip.show("您最多可购买 " + maxbuy + " 件!");
+	                      input.val(maxbuy); 
+	                      return;
+	                      
+	                     
+	                    }
+                    {/if}   
                     if (num == 1) {
                         type = 'add';
                     } else {
@@ -776,14 +778,15 @@ ul, li { list-style:none; margin:0; padding:0 }
                       num = stock;
                       
                       
-                    }                   
-                    if (num > maxbuy){
-                      core.tip.show("您最多可购买 " + maxbuy + " 件!");
-                      num = maxbuy;
-                      
-                      
-                    }                   
-
+                    }  
+                    {if $ischannelpay}                 
+	                    if (num > maxbuy){
+	                      core.tip.show("您最多可购买 " + maxbuy + " 件!");
+	                      num = maxbuy;
+	                      
+	                      
+	                    }                   
+                    {/if}
                     if (num == 1) {
                         type = 'add';
                     } else {
