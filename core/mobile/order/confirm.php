@@ -40,13 +40,13 @@ if ($diyform_plugin) {
         }
     }
 }
-
 $carrier_list = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_store") . " WHERE uniacid=:uniacid AND status=1", array(
             ":uniacid" => $_W["uniacid"]
         ));
 
 if ($operation == "display" || $operation == "create") {
-    $id   = intval($_GPC["id"]);
+   
+    $id   = $operation == "create" ? intval($_GPC["order"][0]["id"]) : intval($_GPC["id"]);
     $show = 1;
     if ($diyform_plugin) {
         if (!empty($id)) {
@@ -60,7 +60,7 @@ if ($operation == "display" || $operation == "create") {
             $diymode     = $goods_data["diymode"];
             if (!empty($diyformtype) && !empty($diyformid)) {
                 $formInfo      = $diyform_plugin->getDiyformInfo($diyformid);
-                $goods_data_id = intval($_GPC["gdid"]);
+                $goods_data_id   = $operation == "create" ? intval($_GPC["order"][0]["gdid"]) : intval($_GPC["gdid"]);
             }
         }
     }
@@ -70,7 +70,7 @@ $ischannelpick = $_GPC['ischannelpick'];
 
 if ($operation == "date"){
         global $_GPC, $_W;
-        $id = $_GPC['id'];
+        $id   = intval($_GPC["id"]);
         if ($search_array && !empty($search_array['bdate']) && !empty($search_array['day'])) {
             $bdate = $search_array['bdate'];
             $day = $search_array['day'];
@@ -83,7 +83,7 @@ if ($operation == "date"){
         exit;
 }else if ($operation == 'ajaxData') {
         global $_GPC, $_W;
-        $id = $_GPC['id'];
+        $id   = intval($_GPC["id"]);
         switch ($_GPC['ac'])
         {
             //选择日期
@@ -114,7 +114,7 @@ if ($operation == "date"){
 if ($_W['isajax']) {
     $ischannelpick = intval($_GPC['ischannelpick']);
     if ($operation == 'display') {
-        $id       = intval($_GPC['id']);
+        $id   = intval($_GPC["id"]);
         $optionid = intval($_GPC['optionid']);
         $total    = intval($_GPC['total']);
         $ischannelpay = intval($_GPC['ischannelpay']);
@@ -1679,7 +1679,7 @@ if ($_W['isajax']) {
                     $verifycode = random(8, true);
                 }
             }
-            $carrier  = $_GPC['carrier'];
+            $carrier  = $_GPC['order'][0]['carrier'];
             $carriers = is_array($carrier) ? iserializer($carrier) : iserializer(array());
             if ($totalprice <= 0) {
                 $totalprice = 0;

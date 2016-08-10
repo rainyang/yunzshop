@@ -9,6 +9,11 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if ($operation == 'display') {
 	ca('coupon.category.view');
 	if (!empty($_GPC['catname'])) {
+		foreach ($_GPC['catname'] as $a) {
+			if (empty($a)) {
+				message('分类更新失败，分类名不能为空！', $this->createPluginWebUrl('coupon/category', array('op' => 'display')), 'error');
+			}
+		}
 		ca('coupon.category.edit|coupon.category.add');
 		foreach ($_GPC['catid'] as $k => $v) {
 			$data = array('name' => trim($_GPC['catname'][$k]), 'displayorder' => $_GPC['displayorder'][$k], 'status' => intval($_GPC['status'][$k]), 'uniacid' => $_W['uniacid']);
