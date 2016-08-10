@@ -3,23 +3,39 @@
 <style type="text/css">
     body {margin:0px; background:#eee; font-family:'微软雅黑'; }
     a {text-decoration:none;}
-    .topbar {height:40px; padding:10px; background:#fff;}
-    .topbar .user_face {height:40px; width:40px; background:#ccc; float:left;}
+    .topbar {height:40px; padding:10px; background: #f15353 !important;}
+    .topbar .user_face {border: 2px solid #fff;height:48px; width:48px; background:#fff;margin:6px auto;border-radius:50px }
     .topbar .user_face img {height:100%; width:100%;}
-    .topbar .user_info {height:40px; width:auto; float:left; margin-left:12px;}
-    .topbar .user_info .user_name {height:24px; width:100%; font-size:16px; line-height:24px; color:#666;}
-       .topbar .user_info .user_name span { font-size:14px; color:#ff6600}
-    .topbar .user_info .user_date {height:14px; width:100%; font-size:14px; line-height:14px; color:#999;}
+    .topbar .user_info {height:40px; width:auto;width: 100%;text-align: center;}
+    .topbar .user_info .user_name {height:24px; width:100%; font-size:14px; line-height:24px; color:#fff;}
+       .topbar .user_info .user_name span { font-size:14px; color:#FFE10F}
+    .topbar .user_info .user_date {height:14px; width:100%; font-size:14px; line-height:14px; color:#fff;}
 
-    .top {height:180px;padding:5px; background:#cc3431;}
-    .top .top_1 {height:114px; width:100%;}
-    .top .top_1 .text {height:114px; width:auto; float:left; color:#fff; line-height:50px; font-size:14px; color:#fff;}
-    .top .top_1 .ico {height:40px; width:30px; background:url(../addons/sz_yi/plugin/commission/template/mobile/default/static/images/gold_ico2.png) 0px 10px no-repeat; margin-bottom:74px; float:right;}
+    .top {height:142px;padding:5px; background:#cc3431;}
+    .top .top_1 {height:96px; width:100%;border-bottom:1px #FF9393 solid }
+    .top .top_1 .text {height:30px; width:100%; float:left; color:#fff; line-height:30px; font-size:14px; color:#fff;}
+    .pr-jine em{font-size: 40px;
+    line-height: 66px;
+    color: #FFF700;
+    float: left;
+    font-style: normal;}
+    .pr-jine a span {
+    height: 28px;
+    color: #fff;
+    width: auto;
+    font-size: 14px;
+    line-height: 28px;
+    margin: 20px 0 0 20px;
+    padding: 0px 15px;
+    float: left;
+    border: 1px #fff solid;
+    border-radius: 50px;
+}
+    .pr-jine a{float: right ;}
     .topbonus {height:40px;padding:5px; background:#cc3431;}
     .topbonus .top_1 {height:40px; width:100%;}
     .topbonus .top_1 .text {height:40px; width:auto; float:left; color:#fff; line-height:20px; font-size:14px; color:#fff;}
-    .topbonus .top_1 .ico {height:40px; width:30px; background:url(../addons/sz_yi/plugin/commission/template/mobile/default/static/images/gold_ico2.png) 0px 10px no-repeat; margin-bottom:74px; float:right;}
-    .top .top_2 {height:66px; width:100%; font-size:40px; line-height:66px; color:#fff;}
+    .top .top_2 {height:50px; width:100%; font-size:14px; line-height:50px; color:#fff;}
     .top .top_2 span {height:32px; color:#fff; width:auto; border:1px solid #fff; font-size:14px; line-height:32px; margin-top:17px; padding:0px 15px;  float:right; border-radius:5px;}
     .top .top_2 .disabled { color:#999;border:1px solid #999;}
     .menu {overflow:hidden; background:#fff;}
@@ -34,7 +50,7 @@
 </style>
 <div id='container' style="padding-bottom: 55px"></div>
 <script id='tpl_main' type='text/html'>
-    <div class="topbar">
+    <div class="topbar header">
         <div class="user_face"><img src="<%member.avatar%>"></div>
         <div class="user_info">
             <div class="user_name" <%if set.levelurl!=''%>onclick='location.href="<%set.levelurl%>"'<%/if%>><%member.nickname%> <span>[<%if level%><%level.levelname%><%else%>
@@ -44,18 +60,16 @@
             <div class="user_date">加入时间：<%member.agenttime%></div>
         </div>
     </div> 
-    <div class="top">
-        <div class="top_1">
-            <div class="text">
-            {php echo $this->set['texts']['commission_total']}：<%member.total_all%> 元<br>{php echo $this->set['texts']['commission_ok']}（元）
-            <%if member.proportion_money%>
-                您需在消费<%member.proportion_money%>元才可以提现
-            <%/if%>
-            </div>
-            <a href="{php echo $this->createPluginMobileUrl('commission/withdraw')}"><div class="ico"></div></a>
-        </div>
-        <div class="top_2"><%member.commission_ok%><a <%if commission_ok<=0 || commission_ok< set.withdraw || commission_ok< set.consume_withdraw %>href="javascript:;"<%else%>href="{php echo $this->createPluginMobileUrl('commission/apply')}"<%/if%> id='withdraw' ><span <%if commission_ok<=0 || commission_ok< set.withdraw%>class='disabled'<%/if%> >{php echo $this->set['texts']['withdraw']}</span></a></div>
-    </div>
+
+
+<div class="comm-center">
+    <ul>
+        <li><a href="#"><span><%member.total_all%></span><br/>{php echo $this->set['texts']['commission_total']}</a></li>
+        <li><a href="#"><span><%member.commission_ok%></span><br/>{php echo $this->set['texts']['commission_ok']}</a></li>
+        <li><a class="recharge" <%if commission_ok<=0 || commission_ok< set.withdraw || commission_ok< set.consume_withdraw %>href="javascript:;"<%else%>href="{php echo $this->createPluginMobileUrl('commission/apply')}"<%/if%> id='withdraw' ><p style="margin:0" <%if commission_ok<=0 || commission_ok< set.withdraw%>class='disabled'<%/if%> >{php echo $this->set['texts']['withdraw']}</p style="margin:0"></a></li>
+    </ul>
+</div>
+
 
     <!--<div class="topbonus">
         <div class="top_1">
@@ -67,49 +81,43 @@
     </div>-->
     
     <div class="menu">  
-        <a href="{php echo $this->createPluginMobileUrl('commission/withdraw')}"><div class="nav nav1"><i class="fa fa-cny fa-3x" style="color:#ff9901;"></i><div class="title">{php echo $this->set['texts']['commission1']}</div><div class="con"><span><%member.commission_total%></span> 元</div></div></a>
-        <a href="{php echo $this->createPluginMobileUrl('commission/order')}"><div class="nav nav1"><i class="fa fa-list fa-3x" style="color:#ffcb05;"></i><div class="title">{php echo $this->set['texts']['order']}</div><div class="con"><span><%member.ordercount0%></span> 个</div></div></a>
-        <a href="{php echo $this->createPluginMobileUrl('commission/log')}"><div class="nav nav2"><i class="fa fa-random  fa-3x" style="color:#ca81d1;"></i><div class="title">{php echo $this->set['texts']['commission_detail']}</div><div class="con">{php echo $this->set['texts']['commission']}明细</div></div></a>        
+        <a href="{php echo $this->createPluginMobileUrl('commission/withdraw')}"><div class="nav nav1"><i class="fa iconfont icon-cny"  style="background:#BC7BFF;"></i><div class="title">{php echo $this->set['texts']['commission1']}</div><div class="con"><span><%member.commission_total%></span> 元</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('commission/order')}"><div class="nav nav1"><i class="fa iconfont icon-dingdan" style="background:#F981A7;"></i><div class="title">{php echo $this->set['texts']['order']}</div><div class="con"><span><%member.ordercount0%></span> 个</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('commission/log')}"><div class="nav nav2"><i class="fa fa-random  fa-3x" style="background:#ff6e03;"></i><div class="title">{php echo $this->set['texts']['commission_detail']}</div><div class="con">{php echo $this->set['texts']['commission']}明细</div></div></a>        
         
-        <a href="{php echo $this->createPluginMobileUrl('commission/team')}"><div class="nav nav1"><i class="fa fa-user  fa-3x" style="color:#98cd37;"></i><div class="title">{php echo $this->set['texts']['myteam']}</div><div class="con"><span><%member.agentcount%></span> 人</div></div></a>
-        <a href="{php echo $this->createPluginMobileUrl('commission/customer')}"><div class="nav nav1"><i class="fa fa-users  fa-3x" style="color:#3c7bce "></i><div class="title">{php echo $this->set['texts']['mycustomer']}</div><div class="con"><span><%member.customercount%></span> 人</div></div></a>
-        <a href="{php echo $this->createPluginMobileUrl('commission/shares')}"><div class="nav nav2"><i class="fa fa-qrcode  fa-3x" style="color:#53bdec;"></i><div class="title">二维码</div><div class="con">推广二维码</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('commission/team')}"><div class="nav nav1"><i class="fa iconfont icon-hezuotuandui" style="background:#58d5d9;"></i><div class="title">{php echo $this->set['texts']['myteam']}</div><div class="con"><span><%member.agentcount%></span> 人</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('commission/customer')}"><div class="nav nav1"><i class="fa iconfont icon-kehu" style="background:#ffb13b;"></i><div class="title">{php echo $this->set['texts']['mycustomer']}</div><div class="con"><span><%member.customercount%></span> 人</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('commission/shares')}"><div class="nav nav2"><i class="fa fa-qrcode  fa-3x" style="background:#ff3877;"></i><div class="title">二维码</div><div class="con">推广二维码</div></div></a>
         {if p('love')}
-        <a href="{php echo $this->createPluginMobileUrl('love/log')}"><div class="nav nav6"><i class="fa fa-heart fa-3x" style="color:#CC3431"></i><div class="title">爱心基金</div><div class="con">设置我的爱心</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('love/log')}"><div class="nav nav1"><i class="fa fa-heart fa-3x" style="background:#CC3431"></i><div class="title">爱心基金</div><div class="con">设置我的爱心</div></div></a>
         {/if}
         <!--分红-->
         {if $bonus==1}
-        <a href="{php echo $this->createPluginMobileUrl('bonus/withdraw')}"><div class="nav nav1"><i class="fa fa-cny fa-3x" style="color:#7775FF;"></i><div class="title">{php echo $bonus_set['texts']['commission']}</div><div class="con"><span>{$member_bonus['commission_total']}</span> 元</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('bonus/withdraw')}"><div class="nav nav1"><i class="fa fa-cny fa-3x" style="background:#7775FF;"></i><div class="title">{php echo $bonus_set['texts']['commission']}</div><div class="con"><span>{$member_bonus['commission_total']}</span> 元</div></div></a>
         {if $level}
-        <a href="{php echo $this->createPluginMobileUrl('bonus/order')}"><div class="nav nav1"><i class="fa fa-list fa-3x" style="color:#40BD56;"></i><div class="title">{php echo $bonus_set['texts']['order']}</div><div class="con"><span>{$member_bonus['ordercount0']}</span> 个</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('bonus/order')}"><div class="nav nav1"><i class="fa fa-list fa-3x" style="background:#40BD56;"></i><div class="title">{php echo $bonus_set['texts']['order']}</div><div class="con"><span>{$member_bonus['ordercount0']}</span> 个</div></div></a>
         {/if}
         {if $member['bonus_area']}
-        <a href="{php echo $this->createPluginMobileUrl('bonus/order_area')}"><div class="nav nav1"><i class="fa fa-list fa-3x" style="color:#A6D044;"></i><div class="title">{php echo $bonus_set['texts']['order_area']}</div><div class="con"><span>{$member_bonus['ordercount_area0']}</span> 个</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('bonus/order_area')}"><div class="nav nav1"><i class="fa fa-list fa-3x" style="background:#A6D044;"></i><div class="title">{php echo $bonus_set['texts']['order_area']}</div><div class="con"><span>{$member_bonus['ordercount_area0']}</span> 个</div></div></a>
         {/if}
-        <a href="{php echo $this->createPluginMobileUrl('bonus/log')}"><div class="nav nav1"><i class="fa fa-random  fa-3x" style="color:#FF3D3D;"></i><div class="title">{php echo $bonus_set['texts']['commission_detail']}</div><div class="con">{php echo $bonus_set['texts']['commission']}明细</div></div></a>        
-        <a href="{php echo $this->createPluginMobileUrl('bonus/customer')}"><div class="nav nav1"><i class="fa fa-users  fa-3x" style="color:#F758C6;"></i><div class="title">{php echo $bonus_set['texts']['mycustomer']}</div><div class="con"><span>{$member_bonus['customercount']}</span> 人</div></div></a> 
+        <a href="{php echo $this->createPluginMobileUrl('bonus/log')}"><div class="nav nav1"><i class="fa fa-random  fa-3x"style="background:#FF3D3D;"></i><div class="title">{php echo $bonus_set['texts']['commission_detail']}</div><div class="con">{php echo $bonus_set['texts']['commission']}明细</div></div></a>      
+        <a href="{php echo $this->createPluginMobileUrl('bonus/customer')}"><div class="nav nav1"><i class="fa fa-users  fa-3x"style="background:#F758C6;"></i><div class="title">{php echo $bonus_set['texts']['mycustomer']}</div><div class="con"><span>{$member_bonus['customercount']}</span> 人</div></div></a> 
         <!--/分红-->
         {/if}
         <%if set.closemyshop!='1'%>
-        {if !is_app()}
-        <a href="{php echo $this->createPluginMobileUrl('commission/myshop/set')}"><div class="nav nav1"><i class="fa fa-cog  fa-3x" style="color:#aadaf6;"></i><div class="title">小店设置</div><div class="con">设置我的小店</div></div></a>
-        {/if}
+        <a href="{php echo $this->createPluginMobileUrl('commission/myshop/set')}"><div class="nav nav1"><i class="fa iconfont icon-cog  fa-3x"style="background:#43BFF1;"></i><div class="title">小店设置</div><div class="con">设置我的小店</div></div></a>
         <%if set.openselect%>
-                <a href="{php echo $this->createPluginMobileUrl('commission/myshop/select')}"><div class="nav nav1"><i class="fa fa-star  fa-3x" style="color:#f3d110"></i><div class="title">自选商品</div><div class="con">选择我喜欢的商品</div></div></a>
+                <a href="{php echo $this->createPluginMobileUrl('commission/myshop/select')}"><div class="nav nav1"><i class="fa iconfont icon-bag"style="background:#FF8989;"></i><div class="title">自选商品</div><div class="con">选择我喜欢的商品</div></div></a>
         <%/if%>
-
-    
-    {if p('article') && $isarticle}
-        <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="nav nav1"><i class="fa fa-article  fa-3x" style="color:#68DCC1"></i><div class="title">{$article_text}</div><div class="con">{$article_title}</div></div></a>    
- 
-    {/if} 
-   
-        <a href="#"><div class="nav nav1"><i class="fa fa-time fa-3x" style="color:#FF8282;"></i><div class="title">订单总计</div><div class="con"><span><%pricecount%></span> 元</div></div></a>
-        {if p('love')}
-        <a href="{php echo $this->createPluginMobileUrl('bonus/agent_info')}"><div class="nav nav6"><i class="fa fa-file-photo-o fa-3x" style="color:#6450db"></i><div class="title">代理申请</div><div class="con">代理商申请</div></div></a>
-        {/if}
-<%/if%>
+        {if p('article') && $isarticle}
+            <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="nav nav1"><i class="fa fa-article  fa-3x" style="background:#ff3877;"></i><div class="title">{$article_text}</div><div class="con">{$article_title}</div></div></a>    
+        {/if} 
+        <a href="#"><div class="nav nav1"><i class="fa iconfont icon-tongji" style="background:#2886FB;"></i><div class="title">订单总计</div><div class="con"><span><%pricecount%></span> 元</div></div></a>
         
+<%/if%>
+      {if p('love')}
+        <a href="{php echo $this->createPluginMobileUrl('bonus/agent_info')}"><div class="nav nav1"><i class="fa fa-file-photo-o fa-3x" style="background:#6450db"></i><div class="title">代理申请</div><div class="con">代理商申请</div></div></a>
+        {/if}  
         
     </div>
 </script>
