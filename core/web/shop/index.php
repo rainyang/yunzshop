@@ -1,6 +1,5 @@
 <?php
 global $_W, $_GPC;
-
 $qrcode = m('qrcode')->createShopQrcode();
 $url = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=shop';
 

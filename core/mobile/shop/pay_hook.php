@@ -108,9 +108,16 @@ do{
             }
         } else {
             $order_info = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND ordersn=:ordersn", array(
-                'uniacid'=> $uniacid,
-                'ordersn'=> $pay_info['order_no']
+                ':uniacid'=> $uniacid,
+                ':ordersn'=> $pay_info['order_no']
             ));
+
+            if (empty($order_info)) {
+                $order_info = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND ordersn_general=:ordersn_general", array(
+                    ':uniacid'=> $uniacid,
+                    ':ordersn_general'=> $pay_info['order_no']
+                ));
+            }
 
             pdo_query('update ' . tablename('sz_yi_order') . ' set paytype='. $pay_type_num .' where ordersn_general=:ordersn_general and uniacid=:uniacid ', array(
                 ':uniacid' => $uniacid,
