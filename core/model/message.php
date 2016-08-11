@@ -70,7 +70,14 @@ class Sz_DYi_Message
                     /**
                      * app消息通知
                      */
-                     $this->appSendContent($touser, $postdata, $tp_list['content']);
+                    $setdata = m("cache")->get("sysset");
+                    $set     = unserialize($setdata['sets']);
+
+                    $app = $set['app']['base'];
+
+                    if (!empty($app['leancloud']['switch'])) {
+                        $this->appSendContent($touser, $postdata, $tp_list['content']);
+                    }
                 }
             }
         }
