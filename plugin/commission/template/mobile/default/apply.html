@@ -80,7 +80,9 @@ input {-webkit-appearance:none; outline:none;}
                               if(pjson.status=='1'){
                                    core.tip.show( pjson.result );
                                    location.href = core.getUrl('plugin/commission/withdraw');
-                              }
+                              }else{
+                                   core.message(pjson.result,"{php echo $this->createPluginMobileUrl('commission/apply')}" ,'error');
+                                }
                                
                        },true,true);
                    });
@@ -104,7 +106,7 @@ input {-webkit-appearance:none; outline:none;}
                                      core.tip.show(pjson.result);
                                      location.href = core.getUrl('plugin/commission/withdraw');
                                 }else{
-                                     core.message(json.result,"{php echo $this->createPluginMobileUrl('commission/withdraw')}" ,'error');
+                                     core.message(pjson.result,"{php echo $this->createPluginMobileUrl('commission/apply')}" ,'error');
                                 }
                                  
                          },true,true);
