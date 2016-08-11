@@ -1890,20 +1890,6 @@ if ($_W['isajax']) {
                 }
                 if (p('channel')) {
                     $my_info = p('channel')->getInfo($openid,$goods['goodsid'],$goods['optionid'],$goods['total']);
-                    /*if (!empty($ischannelpick)) {
-                        $my_option_stock = p('channel')->getMyOptionStock($openid, $goods['goodsid'], $goods['optionid']);
-                        $stock = $my_option_stock - $goods['total'];
-                        pdo_update('sz_yi_channel_stock', 
-                            array(
-                                'stock_total' => $stock
-                            ), 
-                            array(
-                                'uniacid'   => $_W['uniacid'],
-                                'openid'    => $openid,
-                                'goodsid'   => $goods['goodsid'],
-                                'optionid'  => $goods['optionid']
-                            ));
-                    }*/
                     if ($ischannelpay == 1 && empty($ischannelpick)) {
                         $every_turn_price           = $goods['marketprice']/($my_info['my_level']['purchase_discount']/100);
                         $channel_cond = '';
@@ -1963,6 +1949,21 @@ if ($_W['isajax']) {
                     //}
                 }
                 pdo_insert('sz_yi_order_goods', $order_goods);
+                if (p('channel')) {
+                    if (!empty($order_goods['channel_id']) && empty($order_goods['ischannelpay'])) {
+                        $order_goods_id = pdo_insertid();
+                        $profit = ($order_goods['price'] - $order_goods['price'] * $my_info['up_level']['purchase_discount']/100) * $my_info['up_level']['profit_sharing']/100 + ($order_goods['price'] * $my_info['up_level']['purchase_discount']/100);
+                        $profit_data = array(
+                            'uniacid'           => $_W['uniacid'],
+                            'order_goods_id'    => $order_goods_id,
+                            'goods_price'       => $order_goods['price'],
+                            'discount'          => $my_info['up_level']['purchase_discount'],
+                            'profit_ratio'      => $my_info['up_level']['profit_sharing'],
+                            'profit'            => $profit
+                            );
+                        pdo_insert('sz_yi_channel_order_goods_profit', $profit_data);
+                    }
+                }
             }
             if(p('hotel')){
                 //打印订单      
