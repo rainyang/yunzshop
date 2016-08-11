@@ -290,6 +290,14 @@ padding: 20px 20px 10px;
 }
 .addtit-name{font-weight:700}
 .right-titpos{background: #FAFAFA;border-bottom: 1px #e0e0e0 solid;height: 50px;}
+.right-titpos-fixed{    background: #FAFAFA;
+    border-bottom: 1px #e0e0e0 solid;
+    height: 50px;
+    position: fixed;
+    width: 100%;
+    left: 240px;
+    top: 50px;
+    z-index: 9;    min-width: 960px;}
 .add-snav{width: 98%;margin: 0 1%;line-height: 50px;}
 .add-snav li{float: left;}
 .add-snav li a {
