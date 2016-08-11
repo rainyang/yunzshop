@@ -60,6 +60,9 @@ class Base
                 if(is_null($item)){
                     $item = '';
                 }
+                if(is_float($item) || is_int($item)){
+                    $item = (string)$item;
+                }
             });
         }elseif(is_null($data)){
             $data = '';

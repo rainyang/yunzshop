@@ -16,18 +16,35 @@ require __API_ROOT__ . '/../../plugin/commission/model.php';
 
 class commissionApply extends \CommissionModel
 {
+    /**
+     * 订单表字段值字典
+     *
+     * @var Array
+     */
     protected $name_map = array(
         'status' => array(
-            "" => "",
-
+            '-1' => "未通过",
+            '0' =>"未知",
+            '1' =>"审核中",
+            "2" => "已通过",
+            "3" => "已打款",
+        ),
+        'type' => array(
+            '0' => '余额',
+            '1' => '微信',
         )
     );
 
     public function __construct()
     {
-
     }
-
+    public function getBaseInfo($uniacid,$id,$fields='*'){
+        $apply = pdo_fetch('select '.$fields.' from ' . tablename('sz_yi_commission_apply') . ' where uniacid=:uniacid and id=:id limit 1', array(':uniacid' => $uniacid, ':id' => $id));
+        $apply['applytime'] = date('Y-m-d H:i',$apply['applytime']);
+        $apply['type_name'] = $this->name_map['type'][$apply['type']];
+        $apply['status_name'] = $this->name_map['status'][$apply['status']];
+        return $apply;
+    }
     public function getList($para){
         $condition[] = 'WHERE 1';
         $params = array();
@@ -65,7 +82,7 @@ class commissionApply extends \CommissionModel
         $row['checktime'] = $row['status'] >= 2 ? date('Y-m-d H:i', $row['checktime']) : '--';
         $row['paytime'] = $row['status'] >= 3 ? date('Y-m-d H:i', $row['paytime']) : '--';
         $row['invalidtime'] = $row['status'] == -1 ? date('Y-m-d H:i', $row['invalidtime']) : '--';
-        $row['typestr'] = empty($row['type']) ? '余额' : '微信';
+        $row['typestr'] = $this->name_map['type'][$row['type']];
         return $row;
     }
 

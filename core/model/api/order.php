@@ -49,7 +49,9 @@ class order
             '2' => '换货'
         )
     );
-
+    public function getPayTypeName(){
+        return $this->name_map['pay_type'];
+    }
     /**
      * 获取订单详情
      *
