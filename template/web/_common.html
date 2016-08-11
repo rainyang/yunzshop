@@ -31,14 +31,14 @@ win.document.close();
 			{ifp 'shop.goods.view'}<li {if ($_GPC['p'] == 'goods' || empty($_GPC['p'])) && $_GPC['do'] != 'order'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods')}" class="dropdown-toggle">商品</a></li>{/if}
         </li>
       {if p('commission')}
-  			{ifp 'commission'}
+  			{ifpp 'commission'}
   				 <li {if $_GPC['p'] == 'commission'} class="active" {/if}>
   					<a href='{php echo $this->createPluginWebUrl('commission')}' class="dropdown-toggle" > <span>分销</span> <i class="fa fa-angle-down"></i></a>
   				</li> 
   			{/if}
       {/if}
 			{if p('bonus')}
-        {ifp 'bonus'}
+        {ifpp 'bonus'}
 				 <li {if $_GPC['p'] == 'bonus'} class="active" {/if}>
 					<a href='{php echo $this->createPluginWebUrl('bonus')}' class="dropdown-toggle" ><span>分红</span><i class="fa fa-angle-down"></i></a>
 				</li>
@@ -46,7 +46,7 @@ win.document.close();
 			{/if}
 
 			{if p('supplier')}
-        {ifp 'supplier'}
+        {ifpp 'supplier'}
 				 <li {if $_GPC['p'] == 'supplier'} class="active" {/if}>
 					<a href='{php echo $this->createPluginWebUrl('supplier')}' class="dropdown-toggle" ><span>供应商</span><i class="fa fa-angle-down"></i></a>
 				</li>

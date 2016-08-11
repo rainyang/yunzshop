@@ -236,8 +236,44 @@ class Sz_DYi_Order
                         }   
                     }
                 }
-                
-                
+                //支付后订单打印
+                if(p('hotel')){
+                //打印订单      
+                $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
+                //订单信息
+                $print_order = $order;
+                //商品信息
+                $ordergoods = pdo_fetchall("select * from " . tablename('sz_yi_order_goods') . " where uniacid=".$_W['uniacid']." and orderid=".$orderid);
+                    foreach ($ordergoods as $key =>$value) {
+                        //$ordergoods[$key]['price'] = pdo_fetchcolumn("select marketprice from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+                        $ordergoods[$key]['goodstitle'] = pdo_fetchcolumn("select title from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+                        $ordergoods[$key]['totalmoney'] = number_format($ordergoods[$key]['price']*$value['total'],2);
+                        $ordergoods[$key]['print_id'] = pdo_fetchcolumn("select print_id from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+                        $ordergoods[$key]['type'] = pdo_fetchcolumn("select type from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+
+                    }
+                    $print_order['goods']=$ordergoods;
+                    $print_id = $print_order['goods'][0]['print_id'];
+                    $goodtype = $print_order['goods'][0]['type'];
+                    if($print_id!=''){
+                        $print_detail = pdo_fetch("select * from " . tablename('sz_yi_print_list') . " where uniacid={$_W['uniacid']} and id={$print_id}");
+                        if(!empty($print_detail) &&  $print_detail['status']=='0'){//是否存在打印机，以及判断是否为支付前打印
+                                $member_code = $print_detail['member_code'];
+                                $device_no = $print_detail['print_no'];
+                                $key = $print_detail['key'];
+                                include IA_ROOT.'/addons/sz_yi/core/model/print.php';
+                                if($goodtype=='99'){//类型为房间
+                                    //房间金额信息
+                                    $sql2 = 'SELECT * FROM ' . tablename('sz_yi_order_room') . ' WHERE `orderid` = :orderid';
+                                    $params2 = array(':orderid' => $orderid);
+                                    $price_list = pdo_fetchall($sql2, $params2);
+                                    $msgNo = testSendFreeMessage($print_order, $member_code, $device_no, $key,$set,$price_list);
+                                }else if($goodtype=='1'){
+                                     $msgNo = testSendFreeMessageshop($print_order, $member_code, $device_no, $key,$set);
+                                }
+                        }
+                    }
+                }
                 $orderdetail=pdo_fetch("select o.dispatchprice,o.ordersn,o.price,og.optionname as optiontitle,og.optionid,og.total from " .tablename('sz_yi_order'). " o left join " .tablename('sz_yi_order_goods').  "og on og.orderid = o.id where {$orderdetail_where} and o.uniacid=:uniacid",array(':uniacid'=>$_W['uniacid']));
                 $sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where ' . $goods_where . ' order by og.id asc';
                 $orderdetail['goods1'] = set_medias(pdo_fetchall($sql), 'thumb');

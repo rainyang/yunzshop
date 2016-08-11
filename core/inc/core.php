@@ -49,7 +49,7 @@ class Core extends WeModuleSite
             }
         }
         $this->yzShopSet = m('common')->getSysset('shop');
-        $this->yzImages = set_medias(m('common')->getSysset('shop'), array('logo', 'img', 'pclogo'));
+        $this->yzImages = set_medias(m('common')->getSysset('shop'), array('logo', 'img', 'pclogo', 'reglogo'));
 
         if (is_app()) {
             /**
