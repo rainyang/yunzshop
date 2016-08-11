@@ -296,7 +296,7 @@ padding: 20px 20px 10px;
     width: 100%;
     left: 240px;
     top: 50px;
-    z-index: 9;}
+    z-index: 9;    min-width: 960px;}
 .add-snav{width: 98%;margin: 0 1%;line-height: 50px;}
 .add-snav li{float: left;}
 .add-snav li a {
