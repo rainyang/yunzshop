@@ -16,10 +16,10 @@ if ($operation == 'display') {
         $ismerchant = true;
         $member_id = intval($_GPC['member_id']);
         $uids = p('merchant')->getAllSupplierUids($_GPC['member_id']);
-        $list = pdo_fetchall('select * from ' . tablename('sz_yi_perm_user') . ' where roleid='. $roleid . " and uniacid={$_W['uniacid']} and uid in ({$uids}) LIMIT " . ($pindex - 1) * $psize . "," . $psize);
+        $list = pdo_fetchall('select * from ' . tablename('sz_yi_perm_user') . ' where roleid='. $roleid . " and uniacid={$_W['uniacid']} and uid in ({$uids}) ORDER BY uid DESC LIMIT " . ($pindex - 1) * $psize . "," . $psize);
     } else {
         $ismerchant = false;
-        $list = pdo_fetchall('select * from ' . tablename('sz_yi_perm_user') . ' where roleid='. $roleid . " " .$where." LIMIT " . ($pindex - 1) * $psize . "," . $psize);
+        $list = pdo_fetchall('select * from ' . tablename('sz_yi_perm_user') . ' where roleid='. $roleid . " " .$where." ORDER BY uid DESC LIMIT " . ($pindex - 1) * $psize . "," . $psize);
     }
     $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_perm_user') . " where roleid={$roleid} and uniacid={$_W['uniacid']}");
     $pager = pagination($total, $pindex, $psize);
@@ -66,6 +66,7 @@ if ($operation == 'display') {
                 $uid = pdo_fetchcolumn("select uid from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and openid='{$openid}'");
             }
             $uid = pdo_fetchcolumn("select uid from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and openid='{$openid}'");
+            $supplierinfo['uid'] = $uid;
         }
         if(!empty($supplierinfo['openid'])){
             $saler = m('member')->getInfo($supplierinfo['openid']);
@@ -100,7 +101,7 @@ if ($operation == 'display') {
             }
         }
         //累积申请佣金
-        $supinfo = $this->model->getSupplierInfo($uid);
+        $supinfo = $this->model->getSupplierInfo($supplierinfo['uid']);
         $totalmoney = $supinfo['totalmoney'];
         $totalmoneyok = $supinfo['costmoney'];
         if(checksubmit('submit')){
@@ -110,26 +111,15 @@ if ($operation == 'display') {
                 $result = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and openid='{$data['openid']}'");
                 //判断微信是否已绑定
                 if (!empty($result)) {
-                    if ($data['openid'] != $supplierinfo['openid']) {
+                    if ($result['uid'] != $supplierinfo['uid']) {
                         message('该微信已绑定，请更换!', $this->createPluginWebUrl('supplier/supplier'), 'error');
-                    } else {
-                        pdo_update('sz_yi_perm_user', $data, array(
-                            'openid' => $openid
-                        ));
-                        message('保存成功!', $this->createPluginWebUrl('supplier/supplier'), 'success');
                     }
-                } else {
-                    pdo_update('sz_yi_perm_user', $data, array(
-                        'openid' => $openid
-                    ));
-                    message('保存成功!', $this->createPluginWebUrl('supplier/supplier'), 'success');
                 }
-            } else {
-                pdo_update('sz_yi_perm_user', $data, array(
-                        'uid' => $uid
-                    ));
-                message('保存成功!', $this->createPluginWebUrl('supplier/supplier'), 'success');
             }
+            pdo_update('sz_yi_perm_user', $data, array(
+                    'uid' => $supplierinfo['uid']
+                ));
+            message('保存成功!', $this->createPluginWebUrl('supplier/supplier'), 'success');
         }
     }
 } else if ($operation == 'merchant') {
