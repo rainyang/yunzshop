@@ -132,8 +132,12 @@ if (!class_exists('ChannelModel')) {
 
             $channel_info['channel']['commission_total'] = number_format(pdo_fetchcolumn("SELECT sum(apply_money) FROM " . tablename('sz_yi_channel_apply') . " WHERE uniacid=:uniacid AND openid=:openid", array(':uniacid' => $_W['uniacid'], ':openid' => $openid)), 2);
             $channel_info['channel']['commission_pay_total'] = number_format(pdo_fetchcolumn("SELECT sum(apply_money) FROM " . tablename('sz_yi_channel_apply') . " WHERE uniacid=:uniacid AND openid=:openid AND status = 3", array(':uniacid' => $_W['uniacid'], ':openid' => $openid)), 2);
-
-            $channel_info['channel']['commission_ok'] = pdo_fetchcolumn("SELECT ifnull(sum(og.price),0) FROM " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) WHERE o.uniacid=:uniacid AND og.channel_id=:channel_id AND o.status=3 AND og.channel_apply_status=0 ", array(':uniacid' => $_W['uniacid'], ':channel_id' => $member['id']));
+            //零售金额
+            $retail_commission = pdo_fetchcolumn("SELECT ifnull(sum(ogp.profit),0) FROM " . tablename('sz_yi_channel_order_goods_profit') . " ogp LEFT JOIN " . tablename('sz_yi_order_goods') . " og ON og.id=ogp.order_goods_id LEFT JOIN " .tablename('sz_yi_order') . " o ON (o.id=og.orderid) WHERE o.uniacid=:uniacid AND og.channel_id=:channel_id AND o.status=3 AND og.channel_apply_status=0 AND og.ischannelpay=0 ", array(':uniacid' => $_W['uniacid'], ':channel_id' => $member['id']));
+            //下级采购金额
+            $purchase_commission = pdo_fetchcolumn("SELECT ifnull(sum(og.price),0) FROM " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) WHERE o.uniacid=:uniacid AND og.channel_id=:channel_id AND o.status=3 AND og.channel_apply_status=0 AND og.ischannelpay=1 ", array(':uniacid' => $_W['uniacid'], ':channel_id' => $member['id']));
+            
+            $channel_info['channel']['commission_ok'] = $retail_commission + $purchase_commission;
 
             $channel_info['channel']['mychannels'] = pdo_fetchall("SELECT * FROM " .tablename('sz_yi_member') . " WHERE uniacid=:uniacid AND channel_level<>0 AND agentid=:agentid", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 
@@ -151,6 +155,7 @@ if (!class_exists('ChannelModel')) {
             	$channel_info['up_level'] = $up_level;
             	return $channel_info;
             } else {
+            	$channel_info['my_level'] = array();
             	$up_level = $this->getUpChannel($openid);
             	$channel_info['up_level'] = $up_level;
             	return $channel_info;
