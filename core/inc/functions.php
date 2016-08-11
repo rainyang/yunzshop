@@ -735,7 +735,9 @@ function tpl_form_field_category_level2($name, $parents, $children, $parentid, $
  * @return array
  */
 function sent_message($customer_id_array,$message){
-    if (empty($customer_id_array) || empty($message)) {
+    preg_match_all('/[\x{4e00}-\x{9fff}]+/u', $message, $matches);
+
+    if (empty($customer_id_array) || empty($matches[0])) {
        return false;
     }
 
