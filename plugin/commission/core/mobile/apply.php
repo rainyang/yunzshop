@@ -58,7 +58,22 @@ if ($_W['isajax']) {
 				}
 			}
 		}
-		$time = time();
+		$settingalipay =   m('common')->getSysset(array(
+        'shop',
+        'pay'
+		));
+		if( $_GPC['type'] =='2'){
+			if($settingalipay['pay']['weixin']!='1' || $settingalipay['pay']['weixin_withdrawals']!='1' ){
+				show_json('0', '商家未开启微信支付或微信红包提现功能！!');
+			}
+
+		}
+		if( $_GPC['type'] =='3'){
+			if($settingalipay['pay']['alipay']!='1' || $settingalipay['pay']['alipay_withdrawals']!='1' ){
+				show_json('0', '商家未开启支付宝支付或支付宝提现功能！!');
+			}
+		}
+		 $time = time();
 		foreach ($orderids as $o) {
 			pdo_update('sz_yi_order_goods', array('status' . $o['level'] => 1, 'applytime' . $o['level'] => $time), array('orderid' => $o['orderid'], 'uniacid' => $_W['uniacid']));
 		}
@@ -71,6 +86,7 @@ if ($_W['isajax']) {
 		    $apply = array('uniacid' => $_W['uniacid'], 'applyno' => $applyno, 'orderids' => iserializer($orderids), 'mid' => $member['id'], 'commission' => $commission_ok, 'type' => intval($_GPC['type']), 'status' => 1, 'applytime' => $time);
 	
 		}
+	
 		//Author:ym Date:2016-07-15 Content:减去已消费的佣金
 		if($member['credit20'] > 0){
 			$credit20 = - $member['credit20'];
