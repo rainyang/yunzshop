@@ -3,8 +3,9 @@
 <style type="text/css">
     body {margin:0px; background:#eee; font-family:'微软雅黑'; }
     a {text-decoration:none;}
- 
- 
+
+    .fx_top {height:44px; width:100%;  background:#f8f8f8;  border-bottom:1px solid #e3e3e3;}
+    .fx_top .title {height:44px; width:auto;margin-left:10px; float:left; font-size:16px; line-height:44px; color:#666;}
     
 .gold_top {height:154px; width:94%; background:#f15353; padding:10px 3% 0px;}
 .gold_top .title {height:36px; width:100%; font-size:16px; color:#fff; padding-top:10px;}
@@ -20,6 +21,11 @@
 
 
 </style>
+{if is_app()}
+<div class="fx_top">
+    <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> 分销佣金</div>
+</div>
+{/if}
 <div id='container'></div>
  
 <script id='tpl_main' type='text/html'>

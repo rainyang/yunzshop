@@ -2,6 +2,10 @@
 <title>分享页面</title>
 <style type="text/css">
 body {margin:0px; background:#f4f4f4;}
+.share_top {height:44px; width:100%;  background:#f8f8f8;  border-bottom:1px solid #e3e3e3;}
+.share_top .title {height:44px; width:auto;margin-left:10px; float:left; font-size:16px; line-height:44px; color:#666;}
+.share_top .num { float:right;color:#666;height:44px;line-height:44px;padding-right:5px;}
+
 .top {height:68px; background:#fff; border-bottom:#e3e3e3; overflow:hidden;}
 .top .ico {height:44px; width:44px; margin:12px; background:#fe9900; border-radius:44px; font-size:30px; line-height:44px; text-align:center; color:#fff; float:left;}
 .top .info1 {height:44px; padding:12px 0px; float:left;}
@@ -39,7 +43,7 @@ body {margin:0px; background:#f4f4f4;}
 }
 
 </style>
-<div class="cart_top">
+<div class="share_top">
     <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> 分享推荐</div>
 </div>
  {if !empty($goods)}
