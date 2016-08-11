@@ -30,15 +30,15 @@
 		{/if}
 
         {if p('commission')}
-            {ifp 'sale'}
+            {ifpp 'commission'}
          <li>
-            <a href='{php echo $this->createPluginWebUrl('sale')}' class="dropdown-toggle" ><i class='fa fa-gift' style="margin-top: 2px"></i> <span>营销</span> <i class="fa fa-angle-down"></i></a>
+            <a href='{php echo $this->createPluginWebUrl('commission')}' class="dropdown-toggle" ><i class='fa fa-gift' style="margin-top: 2px"></i> <span>营销</span> <i class="fa fa-angle-down"></i></a>
         </li> 
             {/if}        
 		{/if}
 
 	   {if p('designer')}
-            {ifp 'sale'}
+            {ifpp 'designer'}
 		<li>
             <a href='{php echo $this->createPluginWebUrl('designer')}' class="dropdown-toggle" ><i class='fa fa-gavel'></i> <span>装修</span><i class="fa fa-angle-down"></i></a>
         </li>
