@@ -209,8 +209,10 @@
                         {/if}
                         {if $row['type']==1 && $row['status']==0}
                         {ifp 'finance.withdraw.withdraw'}
+                         {if $set['pay']['weixin']==1 && $set['pay']['weixin_withdrawals']==1}
                         <a class='btn btn-default' style="margin-bottom: 2px" onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('finance/log',array('op'=>'pay','paytype'=>'wechat','id' => $row['id']));}">微信提现</a>
-                        {if $set['pay']['alipay']==1}
+                          {/if} 
+                        {if $set['pay']['alipay']==1 && $set['pay']['alipay_withdrawals']==1}
 
                          <a class='btn btn-default' style="margin-bottom: 2px" onclick="return confirm('确认支付宝提现?')" href="{php echo $this->createWebUrl('finance/log',array('op'=>'pay','paytype'=>'alipay','id' => $row['id']));}">支付宝提现</a>
                          {/if}		
