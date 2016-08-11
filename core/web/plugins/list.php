@@ -60,6 +60,7 @@ $plugins_icon = array(
 	"cashier" => "web-price",
 	"merchant" => "admin",
 	"love" => "fensi",
+	"choose" => "choose",
 	);
 $plugins_desc = array(
 	"supplier" => "厂家入驻，平台统一销售", 

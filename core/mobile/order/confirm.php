@@ -857,10 +857,9 @@ if ($_W['isajax']) {
         if ($sale_plugin && $supplier_uid==0) {
             if ($saleset) {
                 foreach ($saleset["enoughs"] as $e) {
-                    if ($totalprice >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
+                    if ($totalprice >= floatval($e["enough"]) && floatval($e["money"]) > 0 && floatval($e["enough"]) >= $deductenough_enough) {
                         $deductenough_money  = floatval($e["money"]);
                         $deductenough_enough = floatval($e["enough"]);
-                        break;
                     }
                 }
                 if (!empty($saleset['enoughfree'])) {
