@@ -49,6 +49,15 @@
                             <div class="help-block">默认为1</div>
                         </div>
                     </div> -->
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">打印设置</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <label class='radio-inline'><input type='radio' name='status' value='0' {if $item['status']=='0'}checked{/if} /> 订单支付后</label>
+                            <label class='radio-inline'><input type='radio' name='status' value='1' {if $item['status']=='1'}checked{/if}/> 订单支付前</label>
+                        </div>
+                    </div>
+                </div>
+
                 </div>
             </div>
             <div class="form-group">

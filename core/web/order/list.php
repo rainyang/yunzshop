@@ -1875,6 +1875,34 @@ function order_list_finish($order) {
         "id" => $order["id"],
         "uniacid" => $_W["uniacid"]
     ));
+
+    //到付 赠送积分
+    if ($order['paytype'] == 3) {
+       $goods   = pdo_fetchall("select og.id,og.total,og.realprice, g.credit from " . tablename('sz_yi_order_goods') . " og " . " left join " . tablename('sz_yi_goods') . " g on g.id=og.goodsid " . " where og.orderid=:orderid and og.uniacid=:uniacid ", array(
+            ':uniacid' => $_W['uniacid'],
+            ':orderid' => $order["id"]
+        ));
+
+        $credits = 0;
+        foreach ($goods as $g) {
+            $gcredit = trim($g['credit']);
+            if (!empty($gcredit)) {
+                if (strexists($gcredit, '%')) {
+                    $credits += intval(floatval(str_replace('%', '', $gcredit)) / 100 * $g['realprice']);
+                } else {
+                    $credits += intval($g['credit']) * $g['total'];
+                }
+            }
+        }
+        if ($credits > 0) {
+            $shopset = m('common')->getSysset('shop');
+            m('member')->setCredit($order['openid'], 'credit1', $credits, array(
+                0,
+                $shopset['name'] . '购物积分 订单号: ' . $order['ordersn']
+            ));
+        }
+    }
+
     m("member")->upgradeLevel($order["openid"]);
     m("notice")->sendOrderMessage($order["id"]);
     if (p("coupon") && !empty($order["couponid"])) {
@@ -1884,6 +1912,8 @@ function order_list_finish($order) {
     if (p("commission")) {
         p("commission")->checkOrderFinish($order["id"]);
     }
+
+
 
     if (p("return")) {
         p("return")->cumulative_order_amount($order["id"]);
