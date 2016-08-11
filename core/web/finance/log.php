@@ -248,6 +248,10 @@ if ($op == 'display') {
     if (empty($log)) {
         message('未找到记录!', '', 'error');
     }
+    $set           = m('common')->getSysset(array(
+        'shop',
+        'pay'
+    ));
     $member = m('member')->getMember($log['openid']);
     if ($paytype == 'manual') {
         ca('finance.withdraw.withdraw');
@@ -262,6 +266,12 @@ if ($op == 'display') {
         message('手动提现完成!', referer(), 'success');
     } else if ($paytype == 'wechat') {
         ca('finance.withdraw.withdraw');
+        if($set['pay']['weixin']!='1'){
+            message('您未开启微信支付功能!', '', 'error');
+        }
+        if( $set['pay']['weixin_withdrawals']!='1'){
+            message('您未开启微信红包提现功能!', '', 'error');
+        }
         $result = m('finance')->pay($log['openid'], 1, $log['money'] * 100, $log['logno'], $set['name'] . '余额提现');
         if (is_error($result)) {
             message('微信钱包提现失败: ' . $result['message'], '', 'error');
@@ -278,11 +288,18 @@ if ($op == 'display') {
     }else if ($paytype == 'alipay') {
         ca('finance.withdraw.withdraw');
         $member = m('member')->getInfo($log['openid']);
-        if(empty($member['alipay']) || empty($member['alipayname'])){
-            message('未填写完整收款人的支付宝账号或姓名!', '', 'error');
+        if($set['pay']['alipay']!='1'){
+            message('您未开启支付宝支付功能!', '', 'error');
         }
+        if( $set['pay']['alipay_withdrawals']!='1'){
+            message('您未开启支付宝提现功能!', '', 'error');
+        }
+
+        if(empty($member['alipay']) || empty($member['alipayname'])){
+            message('该用户未填写完整的收款支付宝账号或姓名!', '', 'error');
+        }     
         $result = m('finance')->alipay_finance($log['money'],$member['alipay'],$member['alipayname'],$log['id']);
-        
+       
         m('notice')->sendMemberLogMessage($log['id']);
         plog('finance.withdraw.withdraw', "余额提现 ID: {$log['id']} 方式: 支付宝 金额: {$log['money']} <br/>会员信息:  ID: {$member['id']} / {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
         message('支付宝提现成功!', referer(), 'success');

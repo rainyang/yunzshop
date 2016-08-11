@@ -20,20 +20,21 @@ for ($i = 0; $i < 7; $i++) {
 }
 
 //7日订单
-$paras = array();
-$sql = "SELECT IFNULL(total, 0) as total, date_format(d.createdate, '%Y-%m-%d') as createdate FROM " . tablename("sz_yi_temp_date") . " d left join (SELECT FROM_UNIXTIME(createtime, '%Y-%m-%d') createtime,COUNT(*) as total FROM " . tablename("sz_yi_order") . " WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= FROM_UNIXTIME(createtime, '%Y-%m-%d') GROUP BY FROM_UNIXTIME(createtime, '%Y-%m-%d')) as o on date_format(d.createdate, '%Y-%m-%d') = date_format(o.createtime, '%Y-%m-%d') order by date_format(d.createdate, '%Y-%m-%d')";
+$paras = array(':uniacid' => $_W['uniacid']);
+$sql = "SELECT IFNULL(total, 0) as total, date_format(d.createdate, '%Y-%m-%d') as createdate FROM " . tablename("sz_yi_temp_date") . " d left join (SELECT FROM_UNIXTIME(createtime, '%Y-%m-%d') createtime,COUNT(*) as total,uniacid FROM " . tablename("sz_yi_order") . " WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= FROM_UNIXTIME(createtime, '%Y-%m-%d') GROUP BY FROM_UNIXTIME(createtime, '%Y-%m-%d')) as o on date_format(d.createdate, '%Y-%m-%d') = date_format(o.createtime, '%Y-%m-%d') and uniacid=:uniacid order by date_format(d.createdate, '%Y-%m-%d')";
+
 $alllist = pdo_fetchall($sql, $paras);
 
 //已完成订单
-$sql = "SELECT IFNULL(total, 0) as total, date_format(d.createdate, '%Y-%m-%d') as createdate FROM " . tablename("sz_yi_temp_date") . " d left join (SELECT FROM_UNIXTIME(createtime, '%Y-%m-%d') createtime,COUNT(*) as total FROM " . tablename("sz_yi_order") . " WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= FROM_UNIXTIME(createtime, '%Y-%m-%d') AND STATUS = 3 GROUP BY FROM_UNIXTIME(createtime, '%Y-%m-%d')) as o on date_format(d.createdate, '%Y-%m-%d') = date_format(o.createtime, '%Y-%m-%d') order by date_format(d.createdate, '%Y-%m-%d')";
+$sql = "SELECT IFNULL(total, 0) as total, date_format(d.createdate, '%Y-%m-%d') as createdate FROM " . tablename("sz_yi_temp_date") . " d left join (SELECT FROM_UNIXTIME(createtime, '%Y-%m-%d') createtime,COUNT(*) as total,uniacid FROM " . tablename("sz_yi_order") . " WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= FROM_UNIXTIME(createtime, '%Y-%m-%d') AND STATUS = 3 GROUP BY FROM_UNIXTIME(createtime, '%Y-%m-%d')) as o on date_format(d.createdate, '%Y-%m-%d') = date_format(o.createtime, '%Y-%m-%d') and uniacid=:uniacid order by date_format(d.createdate, '%Y-%m-%d')";
 $finishlist = pdo_fetchall($sql, $paras);
 
 //已发货订单
-$sql = "SELECT IFNULL(total, 0) as total, date_format(d.createdate, '%Y-%m-%d') as createdate FROM " . tablename("sz_yi_temp_date") . " d left join (SELECT FROM_UNIXTIME(createtime, '%Y-%m-%d') createtime,COUNT(*) as total FROM " . tablename("sz_yi_order") . " WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= FROM_UNIXTIME(createtime, '%Y-%m-%d') AND STATUS = 2 GROUP BY FROM_UNIXTIME(createtime, '%Y-%m-%d')) as o on date_format(d.createdate, '%Y-%m-%d') = date_format(o.createtime, '%Y-%m-%d') order by date_format(d.createdate, '%Y-%m-%d')";
+$sql = "SELECT IFNULL(total, 0) as total, date_format(d.createdate, '%Y-%m-%d') as createdate FROM " . tablename("sz_yi_temp_date") . " d left join (SELECT FROM_UNIXTIME(createtime, '%Y-%m-%d') createtime,COUNT(*) as total,uniacid FROM " . tablename("sz_yi_order") . " WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= FROM_UNIXTIME(createtime, '%Y-%m-%d') AND STATUS = 2 GROUP BY FROM_UNIXTIME(createtime, '%Y-%m-%d')) as o on date_format(d.createdate, '%Y-%m-%d') = date_format(o.createtime, '%Y-%m-%d') and uniacid=:uniacid order by date_format(d.createdate, '%Y-%m-%d')";
 $sendlist = pdo_fetchall($sql, $paras);
 
 //已付款订单
-$sql = "SELECT IFNULL(total, 0) as total, date_format(d.createdate, '%Y-%m-%d') as createdate FROM " . tablename("sz_yi_temp_date") . " d left join (SELECT FROM_UNIXTIME(createtime, '%Y-%m-%d') createtime,COUNT(*) as total FROM " . tablename("sz_yi_order") . " WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= FROM_UNIXTIME(createtime, '%Y-%m-%d') AND STATUS = 1 GROUP BY FROM_UNIXTIME(createtime, '%Y-%m-%d')) as o on date_format(d.createdate, '%Y-%m-%d') = date_format(o.createtime, '%Y-%m-%d') order by date_format(d.createdate, '%Y-%m-%d')";
+$sql = "SELECT IFNULL(total, 0) as total, date_format(d.createdate, '%Y-%m-%d') as createdate FROM " . tablename("sz_yi_temp_date") . " d left join (SELECT FROM_UNIXTIME(createtime, '%Y-%m-%d') createtime,COUNT(*) as total,uniacid FROM " . tablename("sz_yi_order") . " WHERE DATE_SUB(CURDATE(), INTERVAL 7 DAY) <= FROM_UNIXTIME(createtime, '%Y-%m-%d') AND STATUS = 1 GROUP BY FROM_UNIXTIME(createtime, '%Y-%m-%d')) as o on date_format(d.createdate, '%Y-%m-%d') = date_format(o.createtime, '%Y-%m-%d') and uniacid=:uniacid order by date_format(d.createdate, '%Y-%m-%d')";
 $paylist = pdo_fetchall($sql, $paras);
 
 //销售排行
@@ -44,7 +45,7 @@ $day_price = pdo_fetchcolumn("SELECT ifnull(sum(price),0) as day_price FROM " . 
                 ':uniacid' => $_W['uniacid']
             ));
 
-$day_cnt = pdo_fetchcolumn("SELECT ifnull(count(1),0) as day_price FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid and status>=0 and FROM_UNIXTIME(createtime, '%Y-%m-%d') = curdate()", array(
+$day_cnt = pdo_fetchcolumn("SELECT ifnull(count(1),0) as day_price FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid and FROM_UNIXTIME(createtime, '%Y-%m-%d') = curdate()", array(
                 ':uniacid' => $_W['uniacid']
             ));
 

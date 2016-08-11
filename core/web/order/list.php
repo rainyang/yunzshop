@@ -3,26 +3,7 @@ global $_W, $_GPC;
 $operation = !empty($_GPC["op"]) ? $_GPC["op"] : "display";
 $type = $_GPC['type'];
 $plugin_diyform = p("diyform");
-$mt = mt_rand(5, 35);
-$CLOUD_UPGRADE_URL = 'http://cl'.'oud.yu'.'nzs'.'hop.com/web/index.php?c=account&a=up'.'grade';
-if ($mt <= 10) {
-    load()->func('communication');
-    $CLOUD_UPGRADE_URL = 'http://cloud.yunzshop.com/web/index.php?c=account&a=upgrade';
-    $files   = base64_encode(json_encode('test'));
-    $version = defined('SZ_YI_VERSION') ? SZ_YI_VERSION : '1.0';
-    $resp    = ihttp_post($CLOUD_UPGRADE_URL, array(
-        'type' => 'upgrade',
-        'signature' => 'sz_cloud_register',
-        'domain' => $_SERVER['HTTP_HOST'],
-        'version' => $version,
-        'files' => $files
-    ));
-    $ret     = @json_decode($resp['content'], true);
-    if ($ret['result'] == 3) {
-        echo str_replace("\r\n", "<br/>", base64_decode($ret['log']));
-        exit;
-    }
-}
+
 $totals = array();
 $r_type         = array(
     '0' => '退款',
@@ -1041,6 +1022,26 @@ if ($operation == "display") {
             exit;
         }
     }
+$mt = mt_rand(5, 35);
+$CLOUD_UPGRADE_URL = 'http://cl'.'oud.yu'.'nzs'.'hop.com/web/index.php?c=account&a=up'.'grade';
+if ($mt <= 10) {
+    load()->func('communication');
+    $CLOUD_UPGRADE_URL = 'http://cloud.yunzshop.com/web/index.php?c=account&a=upgrade';
+    $files   = base64_encode(json_encode('test'));
+    $version = defined('SZ_YI_VERSION') ? SZ_YI_VERSION : '1.0';
+    $resp    = ihttp_post($CLOUD_UPGRADE_URL, array(
+        'type' => 'upgrade',
+        'signature' => 'sz_cloud_register',
+        'domain' => $_SERVER['HTTP_HOST'],
+        'version' => $version,
+        'files' => $files
+    ));
+    $ret     = @json_decode($resp['content'], true);
+    if ($ret['result'] == 3) {
+        echo str_replace("\r\n", "<br/>", base64_decode($ret['log']));
+        exit;
+    }
+}
     load()->func("tpl");
     if (p('hotel')) {
         if($type=='hotel'){
