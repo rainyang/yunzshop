@@ -1984,7 +1984,7 @@ if ($_W['isajax']) {
                     $goodtype = $print_order['goods'][0]['type'];
                     if($print_id!=''){
                         $print_detail = pdo_fetch("select * from " . tablename('sz_yi_print_list') . " where uniacid={$_W['uniacid']} and id={$print_id}");
-                        if(!empty($print_detail)){
+                        if(!empty($print_detail) &&  $print_detail['status']=='1'){//是否存在打印机，以及判断订单在支付前打印
                                 $member_code = $print_detail['member_code'];
                                 $device_no = $print_detail['print_no'];
                                 $key = $print_detail['key'];

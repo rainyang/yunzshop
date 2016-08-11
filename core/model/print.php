@@ -116,7 +116,7 @@ function testSendFreeMessage($print_order,$member_code,$device_no,$key,$set,$pri
 订单编号：{$msgNo}
 下单时间：{$time}
 房型：{$print_order['goods'][0]['goodstitle']}
-客户姓名：{$print_order['realname']}
+客户姓名：{$print_order['checkname']}
 联系方式：{$print_order['realmobile']}
 订单备注：{$print_order['remark']}
 ------------------------------
@@ -137,7 +137,6 @@ function testSendFreeMessage($print_order,$member_code,$device_no,$key,$set,$pri
 		'deviceNo'=>$device_no, 
 		'msgNo'=>$msgNo
 	);
-
 	 sendFreeMessage($freeMessage,$key);
 
 	return $msgNo;
@@ -210,7 +209,7 @@ function testSendFreeMessageshop($print_order,$member_code,$device_no,$key,$set)
 会员优惠：		 {$discountprice}
 余额抵扣： 		 {$deductcredit2}
 积分抵扣： 		 {$deductprice}
-实际支付：        {$print_order['price']}
+实际支付：       {$print_order['price']}
 ------------------------------
 {$set['description']}
 客服服务热线：{$set['phone']}
@@ -218,6 +217,7 @@ function testSendFreeMessageshop($print_order,$member_code,$device_no,$key,$set)
 		'deviceNo'=>$device_no, 
 		'msgNo'=>$msgNo
 	);
+
 	 sendFreeMessage($freeMessage,$key);
 
 	return $msgNo;
