@@ -548,7 +548,11 @@ ul, li { list-style:none; margin:0; padding:0 }
                                     }
 
 
-                                    h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
+                                    {if $ischannelpay == 1}
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
+                                    {else}
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元/'+store[i].unit+'</em></dd><dd>';
+                                    {/if}
 
                                     if (store[i].hasoption == 1) {
                                         h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
@@ -609,8 +613,11 @@ ul, li { list-style:none; margin:0; padding:0 }
                                     }
 
 
-                                    h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
-
+                                    {if $ischannelpay == 1}
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
+                                    {else}
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元/'+store[i].unit+'</em></dd><dd>';
+                                    {/if}
                                     if (store[i].hasoption == 1) {
                                         h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
                                     } else {
@@ -671,7 +678,11 @@ ul, li { list-style:none; margin:0; padding:0 }
                                     }
 
 
-                                    h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
+                                    {if $ischannelpay == 1}
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
+                                    {else}
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元/'+store[i].unit+'</em></dd><dd>';
+                                    {/if}
 
                                     if (store[i].hasoption == 1) {
                                         h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
