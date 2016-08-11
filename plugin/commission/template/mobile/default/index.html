@@ -107,7 +107,7 @@
         <%if set.closemyshop!='1'%>
         {if !is_app()}
         <a href="{php echo $this->createPluginMobileUrl('commission/myshop/set')}"><div class="nav nav1"><i class="fa iconfont icon-cog  fa-3x"style="background:#43BFF1;"></i><div class="title">小店设置</div><div class="con">设置我的小店</div></div></a>
-       {/if}
+        {/if}
         <%if set.openselect%>
                 <a href="{php echo $this->createPluginMobileUrl('commission/myshop/select')}"><div class="nav nav1"><i class="fa iconfont icon-bag"style="background:#FF8989;"></i><div class="title">自选商品</div><div class="con">选择我喜欢的商品</div></div></a>
         <%/if%>
@@ -129,7 +129,7 @@
         
         
         core.pjson('commission',{},function(json){
-            var result = json.result;   
+            var result = json.result;
             $('#container').html(  tpl('tpl_main',result) );
             $('#withdraw').click(function(){
                 if(!json.result.mycansettle){
