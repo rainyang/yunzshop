@@ -693,8 +693,8 @@ if ($_W['isajax']) {
                             $order_all[$val['supplier_uid']]['deductmoney'] = round((intval($credit / $pcredit) + 1) * $pmoney, 2);
                         }
                     }
-                    if ($order_all[$val['supplier_uid']]['deductmoney'] >$order_all[$g['supplier_uid']]['deductprice']) {
-                        $order_all[$val['supplier_uid']]['deductmoney'] = $order_all[$g['supplier_uid']]['deductprice'];
+                    if ($order_all[$val['supplier_uid']]['deductmoney'] >$order_all[$val['supplier_uid']]['deductprice']) {
+                        $order_all[$val['supplier_uid']]['deductmoney'] = $order_all[$val['supplier_uid']]['deductprice'];
                     }
                     if ($order_all[$val['supplier_uid']]['deductmoney'] > $order_all[$val['supplier_uid']]['realprice']) {
                         $order_all[$val['supplier_uid']]['deductmoney'] = $order_all[$val['supplier_uid']]['realprice'];
