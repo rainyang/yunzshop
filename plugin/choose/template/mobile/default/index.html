@@ -333,11 +333,11 @@ ul, li { list-style:none; margin:0; padding:0 }
                                     if (store[i].hasoption == 1) {
                                         h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
                                     } else {
-                                        h +=  '<div class="right-choose"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a><input type="text" style="display:none;" class="num" data-id="'+store[i].id+'" value="0" data-stock="'+store[i].stock+'" data-maxbuy="'+store[i].maxbuy+'"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a></div>';
+                                        h +=  '<div class="right-choose"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a><input type="text" style="display:none;" class="num" data-id="'+store[i].id+'" value="0" data-stock="'+store[i].total+'" data-maxbuy="'+store[i].maxbuy+'"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a></div>';
                                     }
 
 
-									                  h += '</dd></dl>';
+                                    h += '</dd></dl>';
 
                                     
                                     h += '</div>';
@@ -557,7 +557,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                                     if (store[i].hasoption == 1) {
                                         h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
                                     } else {
-                                        h +=  '<div class="right-choose"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a><input type="text" style="display:none;" class="num" data-id="'+store[i].id+'" value="0" data-stock="'+store[i].stock+'" data-maxbuy="'+store[i].maxbuy+'"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a></div>';
+                                        h +=  '<div class="right-choose"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a><input type="text" style="display:none;" class="num" data-id="'+store[i].id+'" value="0" data-stock="'+store[i].total+'" data-maxbuy="'+store[i].maxbuy+'"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a></div>';
                                     }
 
 
@@ -621,7 +621,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                                     if (store[i].hasoption == 1) {
                                         h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
                                     } else {
-                                        h +=  '<div class="right-choose"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a><input type="text" style="display:none;" class="num" data-id="'+store[i].id+'" value="0" data-stock="'+store[i].stock+'" data-maxbuy="'+store[i].maxbuy+'"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a></div>';
+                                        h +=  '<div class="right-choose"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a><input type="text" style="display:none;" class="num" data-id="'+store[i].id+'" value="0" data-stock="'+store[i].total+'" data-maxbuy="'+store[i].maxbuy+'"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a></div>';
                                     }
 
 
@@ -687,7 +687,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                                     if (store[i].hasoption == 1) {
                                         h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
                                     } else {
-                                        h +=  '<div class="right-choose"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a><input type="text" style="display:none;" class="num" data-id="'+store[i].id+'" value="0" data-stock="'+store[i].stock+'" data-maxbuy="'+store[i].maxbuy+'"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a></div>';
+                                        h +=  '<div class="right-choose"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a><input type="text" style="display:none;" class="num" data-id="'+store[i].id+'" value="0" data-stock="'+store[i].total+'" data-maxbuy="'+store[i].maxbuy+'"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a></div>';
                                     }
 
 
@@ -741,20 +741,22 @@ ul, li { list-style:none; margin:0; padding:0 }
                     input.show();                    
                                       
                     if (num > stock) {
-                      core.tip.show("您最多可购买 " + num + " 件!");
+                      core.tip.show("您最多可购买 " + stock + " 件!");
+                      
                       input.val(stock); 
                       return;
                       
                       
                     }  
                     {if $ischannelpay == 0}                 
-	                    if (num > maxbuy){
-	                      core.tip.show("您最多可购买 " + maxbuy + " 件!");
-	                      input.val(maxbuy); 
-	                      return;
-	                      
-	                     
-	                    }
+                      if (num > maxbuy){
+                        core.tip.show("您最多可购买 " + maxbuy + " 件!");
+                        
+                        input.val(maxbuy); 
+                        return;
+                        
+                       
+                      }
                     {/if}   
                     if (num == 1) {
                         type = 'add';
@@ -776,7 +778,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                 })
                 $('body').on('input propertychange','.num',function(){
                   
-                   
+                    var input = $(this);
                     var num = parseInt($(this).val());
                     var id  = $(this).attr('data-id');
                     var type = '';
@@ -787,18 +789,21 @@ ul, li { list-style:none; margin:0; padding:0 }
                       return;
                     }
                     if (num > stock) {
-                      core.tip.show("您最多可购买 " + num + " 件!");
-                      num = stock;
+                      core.tip.show("您最多可购买 " + stock + " 件!");
                       
+                      
+                      input.val(stock);
+                      return;
                       
                     }  
                     {if $ischannelpay == 0}                 
-	                    if (num > maxbuy){
-	                      core.tip.show("您最多可购买 " + maxbuy + " 件!");
-	                      num = maxbuy;
-	                      
-	                      
-	                    }                   
+                      if (num > maxbuy){
+                        core.tip.show("您最多可购买 " + maxbuy + " 件!");
+                        
+                        input.val(maxbuy);
+                        return;
+                        
+                      }                   
                     {/if}
                     if (num == 1) {
                         type = 'add';
