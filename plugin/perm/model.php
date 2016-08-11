@@ -154,7 +154,7 @@ if (!class_exists('PermModel')) {
 					$allow = false;
 				}
 			} else {
-				$allow = false;
+				$allow = true;
 			}
 			if (!$allow) {
 				return false;
