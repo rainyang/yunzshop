@@ -9,6 +9,7 @@ if (!$_W['isfounder']) {
     message('您无权操作!', '', 'error');
 }
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
+    $plugins = m('plugin')->getAll();
 load()->model('user');
 if ($operation == 'display') {
     $pindex    = max(1, intval($_GPC['page']));
@@ -40,7 +41,6 @@ if ($operation == 'display') {
     unset($row);
     $total   = pdo_fetchcolumn("SELECT count(*) FROM " . tablename('sz_yi_perm_plugin') . " p  " . " left join " . tablename('users') . " u on p.uid = u.uid  " . " left join " . tablename('account_wechats') . " ac on p.acid = ac.acid  " . " WHERE 1 {$condition} ", $params);
     $pager   = pagination($total, $pindex, $psize);
-    $plugins = m('plugin')->getAll();
 	
 } elseif ($operation == 'post') {
 	
