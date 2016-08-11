@@ -289,7 +289,8 @@ padding: 20px 20px 10px;
     margin-bottom: 5px;
 }
 .addtit-name{font-weight:700}
-.right-titpos{    background: #FAFAFA;
+.right-titpos{background: #FAFAFA;border-bottom: 1px #e0e0e0 solid;height: 50px;}
+.right-titpos-fixed{    background: #FAFAFA;
     border-bottom: 1px #e0e0e0 solid;
     height: 50px;
     position: fixed;
