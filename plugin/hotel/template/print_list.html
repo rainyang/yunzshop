@@ -16,6 +16,7 @@
                                 <th>打印机名称</th>
                                 <th>机器号</th>
                                 <th>打印机key</th>
+                                <th>打印设置</th>
                                 <th style="width:150px; text-align:right;">修改/删除</th>
                             </tr>
                         </thead>
@@ -25,6 +26,8 @@
                                 <td>{$item['name']}</td>
                                 <td>{$item['print_no']}</td>
                                 <td>{$item['key']}</td>
+                                <td>{if $item['status']=='0'}订单支付后{/if}
+                                {if $item['status']=='1'}订单支付前{/if}</td>
                                 <td style="text-align:right;">
                                     <a href="{php echo $this->createPluginWebUrl('hotel/prints', array('op' => 'print_post', 'id' => $item['id']))}" class="btn btn-default btn-sm" title="编辑" data-toggle="tooltip" data-placement="top" ><i class="fa fa-edit"> </i></a>
                                     <a href="{php echo $this->createPluginWebUrl('hotel/prints', array('op' => 'print_del', 'id' => $item['id']))}" class="btn btn-default btn-sm" title="删除" data-toggle="tooltip" data-placement="top" onclick="if(!confirm('删除后将不可恢复，确定删除吗?')) return false;"><i class="fa fa-times"> </i></a>
