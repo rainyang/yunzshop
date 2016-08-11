@@ -84,6 +84,37 @@ if ($operation == "display") {
             $condition.= " AND o.paytype =" . intval($_GPC["paytype"]);
         }
     }
+    //商品名称检索订单
+    if (!empty($_GPC["good_name"])) {
+        $conditionsp_goods = pdo_fetchall("select og.orderid from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_goods') . " g on (g.id=og.goodsid) where og.uniacid={$_W['uniacid']} and g.title LIKE '%{$_GPC["good_name"]}%' group by og.orderid ");
+        $conditionsp_goodsid = '';
+        foreach ($conditionsp_goods as $value) {
+            $conditionsp_goodsid .= "'".$value['orderid']."', ";
+        }
+        //判断商品名称是否存在 不存在订单ID等于空
+        if (!empty($conditionsp_goodsid)) {
+            $condition .= " AND o.id in (".substr($conditionsp_goodsid,0,-2).") ";
+        }else {
+            $condition .= " AND o.id = '' ";
+        }
+       
+    }
+    //商品ID检索
+    if (!empty($_GPC["good_id"])) {
+        $conditionsp_goods = pdo_fetchall("select og.orderid from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_goods') . " g on (g.id=og.goodsid) where og.uniacid={$_W['uniacid']} and g.id = '{$_GPC["good_id"]}' group by og.orderid ");
+        $conditionsp_goodsid = '';
+        foreach ($conditionsp_goods as $value) {
+            $conditionsp_goodsid .= "'".$value['orderid']."', ";
+        }
+        //判断商品ID是否存在 不存在订单ID等于空
+        if (!empty($conditionsp_goodsid)) {
+            $condition .= " AND o.id in (".substr($conditionsp_goodsid,0,-2).") ";
+        }else {
+            $condition .= " AND o.id = '' ";
+        } 
+    }
+
+
     if (!empty($_GPC["keyword"])) {
         $_GPC["keyword"] = trim($_GPC["keyword"]);
         $condition.= " AND o.ordersn LIKE '%{$_GPC["keyword"]}%'";

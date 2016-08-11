@@ -5,7 +5,7 @@ $openid = m('user')->getOpenid();
 if ($_W['isajax']) {
 	$member 					= m('member')->getMember($openid);
 	$channelinfo 				= $this->model->getInfo($openid);
-	$commission_ok 				= $channelinfo['channel']['commission_ok'] + $channelinfo['channel']['lower_order_money'];
+	$commission_ok 				= $channelinfo['channel']['commission_ok'] + $channelinfo['channel']['lower_order_money'] - $channelinfo['channel']['dispatchprice'];
 	$cansettle 					= $commission_ok >= floatval($set['setapplyminmoney']);
 	$member['commission_ok'] 	= number_format($commission_ok, 2);
 	$setapplycycle				= $set['setapplycycle'] *3600;
