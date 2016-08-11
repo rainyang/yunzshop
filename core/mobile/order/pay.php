@@ -638,8 +638,8 @@ if ($operation == 'display' && $_W['isajax']) {
                     $ret['ischannelpay'] = $ischannelpay;
                 }
             }
-            $pay_result     = $this->payResult($ret);
-            if(empty($pay_result)){
+            
+            if(!empty($order['pay_ordersn'])){
                 $price = $order['price'];
                 $order = pdo_fetch("select * from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
                     ':id' => $orderid,
@@ -666,6 +666,8 @@ if ($operation == 'display' && $_W['isajax']) {
                     'goods'=>$orderdetail
 
                 );
+            }else{
+                $pay_result     = $this->payResult($ret);
             }
             show_json(1, $pay_result);
         }

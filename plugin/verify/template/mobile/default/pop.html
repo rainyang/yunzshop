@@ -53,7 +53,7 @@
                           return; 
                       }
                       clearInterval( VerifyHandler.verifytimer);
-                      core.message('扫描核销完成!',"{php echo $this->createMobileUrl('order/detail',array('id'=>$_GPC['id']))}",'success');
+                      core.message('扫描核销完成!',"{php echo $this->createMobileUrl('order/detail')}&id="+orderid,'success');
                 },false,true);
             });
          },close:function(){
