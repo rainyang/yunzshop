@@ -95,7 +95,17 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_stock` (
 ENGINE = MyISAM
 COMMENT = '渠道商库存';
 
-
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_order_goods_profit` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` INT(11) NOT NULL,
+  `order_goods_id` INT(11) NOT NULL COMMENT '商品ID',
+  `goods_price` DECIMAL(10,2) NULL COMMENT '商品总额',
+  `discount` DECIMAL(10,2) NULL COMMENT '折扣',
+  `profit_ratio` DECIMAL(10,2) NULL COMMENT '利润比例',
+  `profit` DECIMAL(10,2) NULL COMMENT '利润',
+  PRIMARY KEY (`id`))
+ENGINE = MyISAM
+COMMENT = '渠道商商品利润';
 
 CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_stock_log` (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
