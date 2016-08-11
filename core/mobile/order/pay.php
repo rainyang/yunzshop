@@ -638,25 +638,26 @@ if ($operation == 'display' && $_W['isajax']) {
                     $ret['ischannelpay'] = $ischannelpay;
                 }
             }
-            //$pay_result     = $this->payResult($ret);
-            $price = $order['price'];
-            $order = pdo_fetch("select * from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
-                ':id' => $orderid,
-                ':uniacid' => $uniacid,
-                ':openid' => $openid
-            ));
-            $order['price'] = $price;
-            $address = false;
-            if (empty($order['dispatchtype'])) {
-                $address = pdo_fetch('select realname,mobile,address from ' . tablename('sz_yi_member_address') . ' where id=:id limit 1', array(
-                    ':id' => $order['addressid']
+            $pay_result     = $this->payResult($ret);
+            if(empty($pay_result)){
+                $price = $order['price'];
+                $order = pdo_fetch("select * from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
+                    ':id' => $orderid,
+                    ':uniacid' => $uniacid,
+                    ':openid' => $openid
                 ));
-            }
-            $carrier = false;
-            if ($order['dispatchtype'] == 1 || $order['isvirtual'] == 1) {
-                $carrier = unserialize($order['carrier']);
-            }
-            $pay_result = array(
+                $order['price'] = $price;
+                $address = false;
+                if (empty($order['dispatchtype'])) {
+                    $address = pdo_fetch('select realname,mobile,address from ' . tablename('sz_yi_member_address') . ' where id=:id limit 1', array(
+                        ':id' => $order['addressid']
+                    ));
+                }
+                $carrier = false;
+                if ($order['dispatchtype'] == 1 || $order['isvirtual'] == 1) {
+                    $carrier = unserialize($order['carrier']);
+                }
+                $pay_result = array(
                     'result' => 'success',
                     'order' => $order,
                     'address' => $address,
@@ -665,6 +666,7 @@ if ($operation == 'display' && $_W['isajax']) {
                     'goods'=>$orderdetail
 
                 );
+            }
             show_json(1, $pay_result);
         }
         show_json(0, '支付出错,请重试!');
