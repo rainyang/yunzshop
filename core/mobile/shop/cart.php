@@ -37,6 +37,11 @@ if ($_W['isajax']) {
                 if (!empty($member['ischannel']) && !empty($member['channel_level'])) {
                     $r['marketprice'] = $r['marketprice'] * $my_info['my_level']['purchase_discount']/100;
                 }
+                //自提库存替换
+                if ($ischannelpick == 1) {
+                    $my_stock = p('channel')->getMyOptionStock($openid, $r['goodsid'], $r['optionid']);
+                    $r['stock'] = $my_stock;
+                }
             }
             $totalprice += $r['marketprice'] * $r['total'];
             $total += $r['total'];

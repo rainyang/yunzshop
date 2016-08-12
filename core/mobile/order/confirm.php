@@ -1292,7 +1292,6 @@ if ($_W['isajax']) {
                         show_json(-1, '您所在会员组无法购买<br/>' . $data['title'] . '!');
                     }
                 }
-
                 if (!empty($optionid)) {
                     $option = pdo_fetch('select * from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
                         ':uniacid' => $uniacid,
@@ -1331,6 +1330,10 @@ if ($_W['isajax']) {
                         }
                     }
                 } else {
+                    if (p('channel') && !empty($ischannelpick)) {
+                        $channel_stock = p('channel')->getMyOptionStock($openid, $data['goodsid'], 0);
+                        $data['stock'] = $channel_stock;
+                    }
                     if ($data['stock'] != -1) {
                         if (empty($data['stock'])) {
                             show_json(-1, $data['title'] . "<br/>库存不足!");
@@ -1940,12 +1943,10 @@ if ($_W['isajax']) {
                         $order_goods['ischannelpay']  = $ischannelpay;
                     }
                     $order_goods['channel_id'] = 0;
-                    //if (!empty($ischannelpay)) {
-                        if (!empty($my_info['up_level'])) {
-                            $up_member = m('member')->getInfo($my_info['up_level']['openid']);
-                            $order_goods['channel_id'] = $up_member['id'];
-                        }
-                    //}
+                    if (!empty($my_info['up_level'])) {
+                        $up_member = m('member')->getInfo($my_info['up_level']['openid']);
+                        $order_goods['channel_id'] = $up_member['id'];
+                    }
                 }
                 pdo_insert('sz_yi_order_goods', $order_goods);
                 if (p('channel')) {
