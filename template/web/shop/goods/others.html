@@ -45,6 +45,7 @@
                     </div>
                 </div>
                 {if p('hotel')}
+                    {if $hotelstatus=='1'}
                         <div class="form-group">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">打印机</label>
                               <div class="col-sm-9 col-xs-12">
@@ -59,7 +60,7 @@
                                   <span class='help-block'>选择打印机</span>
                               </div>
                           </div>
-                {/if}
+                {/if}{/if}
  <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">通知方式</label>
         <div class="col-sm-9 col-xs-12">

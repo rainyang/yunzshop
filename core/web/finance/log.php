@@ -268,10 +268,7 @@ if ($op == 'display') {
         ca('finance.withdraw.withdraw');
         if($set['pay']['weixin']!='1'){
             message('您未开启微信支付功能!', '', 'error');
-        }
-        if( $set['pay']['weixin_withdrawals']!='1'){
-            message('您未开启微信红包提现功能!', '', 'error');
-        }
+        }    
         $result = m('finance')->pay($log['openid'], 1, $log['money'] * 100, $log['logno'], $set['name'] . '余额提现');
         if (is_error($result)) {
             message('微信钱包提现失败: ' . $result['message'], '', 'error');
