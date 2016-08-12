@@ -253,7 +253,7 @@
 </div>
 {/if}
 
-<div class="copyright">版权所有 ©{if empty($set['shop']['name'])}{$_W['account']['name']}{else}{$set['shop']['name']}{/if} </div>
+<div class="copyright">版权所有 ©{if empty($set['shop']['copyright'])}{$set['shop']['name']}{else}{$set['shop']['copyright']}{/if} </div>
 </script>
 <script language="javascript">
     require(['tpl', 'core'], function(tpl, core) {
