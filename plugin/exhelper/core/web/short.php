@@ -4,7 +4,10 @@ if (!defined("IN_IA")) {
     print("Access Denied");
 }
 global $_W, $_GPC;
-
+$perm_role = 0;
+if (p('supplier')) {
+    $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+}
 $shopset  = m("common")->getSysset("shop");
 $sql      = "SELECT * FROM " . tablename("sz_yi_category") . " WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC";
 $category = pdo_fetchall($sql, array(
@@ -40,7 +43,12 @@ if ($operation == "display") {
     }
     $pindex    = max(1, intval($_GPC["page"]));
     $psize     = 20;
-    $condition = " WHERE `uniacid` = :uniacid AND `deleted` = :deleted";
+    if ($perm_role == 0) {
+        $condition = " WHERE `uniacid` = :uniacid AND `deleted` = :deleted";
+    }
+    if ($perm_role == 1) {
+        $condition = " WHERE `uniacid` = :uniacid AND `deleted` = :deleted and supplier_uid={$_W['uid']}";
+    }
     $params    = array(
         ":uniacid" => $_W["uniacid"],
         ":deleted" => '0'

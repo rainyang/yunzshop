@@ -1,5 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
+<div class="rightlist">
 {if $operation == 'post'}
 
 <script type="text/javascript" src="resource/js/lib/jquery-ui-1.10.3.min.js"></script>
@@ -15,6 +17,8 @@
                     <br/>使用情况：
                     <br/>会员资料 ({if $use_flag1}正在使用{else}未使用{/if})
                     <br/>分销商申请资料 ({if $use_flag2}正在使用{else}未使用{/if})
+                    <br/>会员申请供应商资料 ({if $supplier_flag1}正在使用{else}未使用{/if})
+                    <br/>会员申请渠道商表单 ({if $channel_flag1}正在使用{else}未使用{/if})
                     <br/>商城商品({if $datacount3>0}{php echo $datacount3}种商品正在使用{else}未使用{/if})</div>
                 {/if}
                 {/if}
@@ -95,7 +99,7 @@
                     <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  />
                     <input type="hidden" name="token" value="{$_W['token']}" />
                     {/if}
-                    <a href="{php echo $this->createPluginWebUrl('diyform')}"  {ife 'diyform.temp' $item}style='margin-left:10px;'{/if}><span class="btn btn-default" style='margin-left:10px;'>返回列表</span></a>
+                    <a href="{php echo $this->createPluginWebUrl('diyform')}"  {ife 'diyform.temp' $item}{/if}><span class="btn btn-default" style='margin-left:10px;'>返回列表</span></a>
                 </div>
             </div>
         </div>
@@ -276,6 +280,12 @@
                     {if $item['use_flag2']}
                         分销商申请资料
                     {/if}
+                    {if $item['supplier_flag1']}
+                        申请供应商资料
+                    {/if}
+                    {if $item['channel_flag1']}
+                        申请渠道商
+                    {/if}
                     {if $item['datacount3']}
                         {php echo $item['datacount3']}种商品
                     {/if}
@@ -309,11 +319,11 @@
     {/if}
     {ifp 'diyform.temp.add'}
     <div class='panel-footer'>
-        <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('diyform/temp', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新模版</a>
+        <a class='btn btn-primary' href="{php echo $this->createPluginWebUrl('diyform/temp', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新模版</a>
         <span style="line-height:32px;background-size:13583px; font-size:12px; margin-left: 10px;">温馨提示：点击数据可以查看哦~~</span>
     </div>
     {/if}
-</div>
+
 
 <script language="javascript">
 
@@ -344,9 +354,7 @@ function del_temp(id) {
 {else if $operation == 'addtype'}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label" ><span style='color:red'>*</span></label>
-    <div class="col-sm-9 col-xs-12" style="width:5%">
-        <a class="btn btn-default" href='javascript:;' onclick='removeType(this)'><i class='icon icon-remove fa fa-times'></i> 删除</a>
-    </div>
+
     <div class="col-sm-9 col-xs-12" style="width:15%">
         <input type="text" name="tp_kw[]" class="form-control" value="{$group['groupname']}" placeholder="键值，例：keywords{$kw}" />
     </div>
@@ -611,6 +619,8 @@ function del_temp(id) {
         <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('diyform', array('op' => 'postdata','typeid'=>$_GPC['typeid']))}"><i class="fa fa-plus"></i> 添加数据</a>
     </div>
 </div>
-
+</div>
 {/if}
-{template 'common/footer'}
+</div>
+</div>
+{template 'web/_footer'}

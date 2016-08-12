@@ -99,9 +99,9 @@
 
 {if $v1['data_type'] == 9}
     var citys{php echo $i} = new Array();
-    citys{php echo $i}[0] = $('#sel-provance{php echo $i}').val();
-    citys{php echo $i}[1] = $('#sel-city{php echo $i}').val();
-
+    citys{php echo $i}[0] = $('#sel-provance').val();
+    citys{php echo $i}[1] = $('#sel-city').val();
+    citys{php echo $i}[2] = $('#sel-area').val();
     {if $v1['tp_must'] == 1}
         if(citys{php echo $i}[0]=='请选择省份'){
         core.tip.show('请选择{php echo $v1['tp_name']}!');
@@ -122,7 +122,7 @@ var diydata = {
 {else if $v1['data_type'] == 5}
 '{php echo $k1}': images{php echo $i},
 {else if $v1['data_type'] == 8}
-'{php echo $k1}_0': $('#field_data{php echo $i}_0').val(),'{php echo $i}_1': $('#field_data{php echo $i}_1').val(),
+'{php echo $k1}_0': $('#field_data{php echo $i}_0').val(),'{php echo $k1}_1': $('#field_data{php echo $i}_1').val(),
 {else if $v1['data_type'] == 9}
 '{php echo $k1}': citys{php echo $i},
 {else}

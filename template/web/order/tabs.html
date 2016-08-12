@@ -1,56 +1,60 @@
-<ul class="nav nav-tabs">
+<div class="ulleft-nav">
+<div class="addtit-name">订单管理</div>
+<ul class="nav nav-tabs" {if !empty($bonusagentid)}style="display:none;"{/if}>
       {ifp 'order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status_1'}
     <li {if $operation == 'display' && $status == '' && $_GPC['refund']!='1'}class="active"{/if}>
-        <a href="{php echo $this->createWebUrl('order', array('op' => 'display'))}">全部订单({$totals['all']})</a>
+        <a href="{php echo $this->createWebUrl('order', array('op' => 'display'))}">全部订单<em>({$totals['all']})</em></a>
     </li>
     {/if}
     
     {ifp 'order.view.status0'}
     <li {if $operation == 'display' && $status == '0'}class="active"{/if}>
-        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 0))}">待付款({$totals['status0']})</a>
+        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 0))}">待付款<em>({$totals['status0']})</em></a>
     </li>
     {/if}
     
     {ifp 'order.view.status1'}
     <li {if $operation == 'display' && $status == '1'} class="active"{/if}>
-        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 1))}">待发货({$totals['status1']})</a>
+        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 1))}">待发货<em>({$totals['status1']})</em></a>
     </li>
     {/if}
     
     {ifp 'order.view.status2'}
     <li {if $operation == 'display' && $status == '2'}class="active"{/if}>
-        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 2))}">待收货({$totals['status2']})</a>
+        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 2))}">待收货<em>({$totals['status2']})</em></a>
     </li>
     {/if}
     
     {ifp 'order.view.status3'}
     <li {if $operation == 'display' && $status == '3'}class="active"{/if}>
-        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 3))}">已完成({$totals['status3']})</a>
+        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 3))}">已完成<em>({$totals['status3']})</em></a>
     </li>
     {/if}
     
      {ifp 'order.view.status_1'}
     <li {if $operation == 'display' && $status == '-1'}class="active"{/if}>
-        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => -1))}">已关闭({$totals['status_1']})</a>
+        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => -1))}">已关闭<em>({$totals['status_1']})</em></a>
     </li>
     {/if}
       
     
     {ifp 'order.view.status4'}
      <li {if $operation == 'display' && $status== '4'}class="active"{/if}>
-        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 4))}">退款申请({$totals['status4']})</a>
+        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 4))}">退款申请<em>({$totals['status4']})</em></a>
     </li>
     {/if}
      
     {ifp 'order.view.status5'}
     <li {if $operation == 'display' && $status == '5'}class="active"{/if}>
-        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 5))}">已退款({$totals['status5']})</a>
+        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 5))}">已退款<em>({$totals['status5']})</em></a>
     </li>
     {/if}
     {ifp 'order.view.status9'}
+    {if !empty($perm_role)}
     <li {if $operation == 'display' && $status == '9'}class="active"{/if}>
-        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 9))}">提现申请状态({if $totals['status9']}{$totals['status9']}{else}0{/if})</a>
+        <a href="{php echo $this->createWebUrl('order', array('op' => 'display', 'status' => 9))}">提现申请状态<em>({if $totals['status9']}{$totals['status9']}{else}0{/if})</em></a>
     </li>
+    {/if}
     {/if}
     {if $operation == 'detail'}
     <li class="active">
@@ -58,3 +62,4 @@
     </li>
     {/if}
 </ul>
+</div>

@@ -1,3 +1,4 @@
+{if $operation != 'black'}
 {template 'common/header'}
 <title>会员登录</title>
 <style type="text/css">
@@ -9,8 +10,8 @@
     .info_main .line .inner { margin-left:80px; }
     .info_main .line .inner input {height:40px; width:100%;display:block; padding:0px; margin:0px; border:0px; float:left; font-size:16px;}
     .info_main .line .inner .user_sex {line-height:40px;}
-    .info_sub {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
-    .register {height:44px; margin:14px 5px; background:#ccc; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+    .info_sub {height:44px; margin:14px 5px; background:#f15353; border-radius:2px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+    .register {height:44px; margin:14px 5px; background:#ccc; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#292929;}
     .select { border:1px solid #ccc;height:25px;}
     .forget {color: #999;padding: 10px 20px 0 0;float: right;};
 </style>
@@ -68,6 +69,13 @@
                            } 
                        }, function(json) {
                         if(json.status==1){
+                            open_id = json.result.open_id;
+                            if (typeof PINGPP_IOS_SDK !== 'undefined') {
+                                PINGPP_IOS_SDK.appLogin(open_id);
+                            } else if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
+                                PINGPP_ANDROID_SDK.appLogin(open_id);
+                            }
+
                              core.tip.show('登录成功');
                              //console.log(json.result.preurl);
                              location.href=json.result.preurl;
@@ -82,5 +90,20 @@
 
     })
 </script>
-
 {template 'common/footer'}
+{/if}
+{if $operation == 'black'}
+{template 'common/header'}
+<style type="text/css">
+.ok {height:200px; padding-top:65px;}
+.ok .ico {height:65px; width:65px; margin:auto; border:3px solid #32cd32; border-radius:55px; color:#32cd32; font-size:50px; text-align:center; line-height:65px;}
+.ok .text {height:20px; margin-top:30px; font-size:16px; color:#666; line-height:20px; text-align:center;}
+.ok .sub {height:32px; width:145px; background:#e53c39; margin:20px auto; border-radius:20px; color:#fff; line-height:32px; text-align:center; font-size:16px;}
+</style>
+<title>禁止访问</title>
+<div id='container'></div>
+  <div class="ok">
+    <div class="ico"><i class="fa fa-check"></i></div>
+          <div class="text">禁止访问，请联系客服！</div>
+    </div>
+{/if}

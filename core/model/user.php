@@ -82,6 +82,14 @@ class Sz_DYi_User
         @session_start();
         $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
         $openid   = base64_decode($_COOKIE[$cookieid]);
+
+        /**
+         * app端通过token验证用户身份
+         */
+        if  (empty($_SERVER['HTTP_USER_AGENT']) && empty($openid) && $_GPC['token']) {
+            $openid = $_GPC['token'];
+        }
+
         if (!empty($openid)) {
             return $openid;
         }
@@ -90,12 +98,17 @@ class Sz_DYi_User
 
     function getUserInfo(){
         global $_W, $_GPC;
-
+        if($_GPC['p'] == 'return' && $_GPC["method"]=='task'){
+            return;
+        }
+        if($_GPC['p'] == 'ranking' && $_GPC["method"]=='commission'){
+            return;
+        }
         //需要登陆的P方法
-        $needLoginPList = array('address', 'cart', 'commission');
+        $needLoginPList = array('address', 'commission','cart');
 
         //不需要登陆的P方法
-        $noLoginList = array('category', 'login', 'designer', 'register', 'sendcode', 'bindmobile', 'forget', 'article');
+        $noLoginList = array('category', 'login' ,'receive', 'close', 'designer', 'register', 'sendcode', 'bindmobile', 'forget', "pay_ping", 'home');
 
         //不需要登陆的do方法
         $noLoginDoList = array('shop', 'login', 'register');
@@ -105,17 +118,23 @@ class Sz_DYi_User
             return;
         }
 
+        /*
+        if($_GPC["c"]=='entry'){
+            return;
+        }
+         */
         //需要登陆
         if((!in_array($_GPC["p"], $noLoginList) && !in_array($_GPC["do"], $noLoginDoList)) or (in_array($_GPC["p"], $needLoginPList))){
             //小店不需要登陆，否则分享出去别人不能直接看到
             if(($_GPC['method'] != 'myshop') or ($_GPC['c'] != 'entry')){
                 $openid = $this->isLogin();
-                if(!$openid){  //未登录
+                if(!$openid && $_GPC['p'] != 'cart'){  //未登录
                     if($_GPC['do'] != 'runtasks'){
                         setcookie('preUrl', $_W['siteurl']);
                     }
                     $mid = ($_GPC['mid']) ? "&mid=".$_GPC['mid'] : "";
                     $url = "/app/index.php?i={$_W['uniacid']}&c=entry&p=login&do=member&m=sz_yi".$mid;
+
                     redirect($url);
                 }
                 else{
@@ -124,9 +143,19 @@ class Sz_DYi_User
                         //'nickname' => '小萝莉',
                         'headimgurl' => '',
                     );
+
                     return $userinfo;
                 }
             }
+        } elseif (is_app() && $_GPC["p"] == 'index' && $_GPC["do"] == 'shop') {
+            $openid = $this->isLogin();
+            $userinfo = array(
+                'openid' => $openid,
+                //'nickname' => '小萝莉',
+                'headimgurl' => '',
+            );
+
+            return $userinfo;
         }
     }
 

@@ -1,14 +1,3 @@
-﻿<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
-    <div class="col-sm-9 col-xs-12">
-        {ife 'shop.goods' $item}
-        <input type="text" name="displayorder" id="displayorder" class="form-control" value="{$item['displayorder']}" />
-        <span class='help-block'>数字越大，排名越靠前,如果为空，默认排序方式为创建时间</span>
-        {else}
-        <div class='form-control-static'>{$item['displayorder']}</div>
-        {/if}
-    </div>
-</div>
 <!-- 供货商start -->
 {if p('supplier')}
   {if $perm_role == 0}
@@ -23,12 +12,24 @@
           <option value="{$row['uid']}" {if $item['supplier_uid']==$row['uid']}selected="selected"{/if}>{$row['realname']}/{$row['username']}</option>
           {/loop}
         </select>
-          <span class='help-block'>选择供货商</span>
+          <span class='help-block'>供货商可自行管理商品及订单发货等</span>
       </div>
   </div>
   {/if}
 {/if}
 <!-- 供货商end -->
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
+    <div class="col-sm-9 col-xs-12">
+        {ife 'shop.goods' $item}
+        <input type="text" name="displayorder" id="displayorder" class="form-control" value="{$item['displayorder']}" />
+        <span class='help-block'>数字大的排名在前,默认排序方式为创建时间</span>
+        {else}
+        <div class='form-control-static'>{$item['displayorder']}</div>
+        {/if}
+    </div>
+</div>
+
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>商品名称</label>
     <div class="col-sm-9 col-xs-12">
@@ -44,7 +45,7 @@
     <div class="col-sm-8 col-xs-12">
         {if $shopset['catlevel']==3}
              {ife 'shop.goods' $item}
-             {php echo tpl_form_field_category_3level('category', $parent, $children, $item['pcate'], $item['ccate'], $item['tcate'])}
+             {php echo tpl_form_field_category_level3('category', $parent, $children, $item['pcate'], $item['ccate'], $item['tcate'])}
              {else}
               <div class='form-control-static'>
                    {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category').' where id=:id limit 1',array(':id'=>$item['pcate']))} -
@@ -55,7 +56,7 @@
 
         {else}
             {ife 'shop.goods' $item}
-            {php echo tpl_form_field_category_2level('category', $parent, $children, $item['pcate'], $item['ccate'])}
+            {php echo tpl_form_field_category_level2('category', $parent, $children, $item['pcate'], $item['ccate'])}
             {else}
               <div class='form-control-static'>
                    {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category').' where id=:id limit 1',array(':id'=>$item['pcate']))} -
@@ -65,8 +66,34 @@
         {/if}
     </div>
 </div>
+{if $shopset['category2']==1}
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>{$shopset['category2name']}分类</label>
+    <div class="col-sm-8 col-xs-12">
+        {if $shopset['catlevel']==3}
+             {ife 'shop.goods' $item}
+             {php echo tpl_form_field_category_level3('category2', $parent2, $children2, $item['pcate1'], $item['ccate1'], $item['tcate1'])}
+             {else}
+              <div class='form-control-static'>
+                   {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category2').' where id=:id limit 1',array(':id'=>$item['pcate1']))} -
+                   {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category2').' where id=:id limit 1',array(':id'=>$item['ccate1']))} -
+                   {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category2').' where id=:id limit 1',array(':id'=>$item['tcate1']))}
+              </div>
+             {/if}
 
-
+        {else}
+            {ife 'shop.goods' $item}
+            {php echo tpl_form_field_category_level2('category2', $parent2, $children2, $item['pcate1'], $item['ccate1'])}
+            {else}
+              <div class='form-control-static'>
+                   {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category2').' where id=:id limit 1',array(':id'=>$item['pcate1']))} -
+                   {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category2').' where id=:id limit 1',array(':id'=>$item['ccate1']))}
+              </div>
+            {/if}
+        {/if}
+    </div>
+</div>
+{/if}
 <link href="../addons/sz_yi/static/js/dist/select2/select2.css" rel="stylesheet">
 <link href="../addons/sz_yi/static/js/dist/select2/select2-bootstrap.css" rel="stylesheet">
 <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2.min.js"></script>
@@ -127,11 +154,75 @@
 
     </div>
 </div>
+{if $shopset['category2']==1}
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">其他{$shopset['category2name']}分类</label>
+    <div class="col-sm-8 col-xs-12">
+
+            {ife 'shop.goods' $item}
+
+               <select id="cates2" name='cates2[]' class="form-control" multiple="" >
+                {if intval($shopset['catlevel'])==3}
+                        {loop $category2 $p}
+                                    {if empty($p['parentid'])}
+                                        {loop $children2[$p['id']] $c}
+                                           {loop $children2[$c['id']] $t}
+                                             <option value="{$t['id']}" {if is_array($cates2) && in_array($t['id'],$cates2)}selected{/if} >{$p['name']}-{$c['name']}-{$t['name']}</option>
+                                           {/loop}
+                                        {/loop}
+                                    {/if}
+                                {/loop}
+                                {else}
+                                        {loop $category2 $p}
+                                            {if empty($p['parentid'])}
+                                                {loop $children2[$p['id']] $c}
+                                                   <option value="{$c['id']}" {if is_array($cates2) && in_array($c['id'],$cates2)}selected{/if} >{$p['name']}-{$c['name']}</option>
+                                                {/loop}
+                                            {/if}
+                                        {/loop}
+                             {/if}
+                  </select>
+
+            {else}
+
+              <div class='form-control-static'>
+                         {if intval($shopset['catlevel'])==3}
+                            {loop $category2 $p}
+                                {if empty($p['parentid'])}
+                                    {loop $children2[$p['id']] $c}
+                                       {loop $children2[$c['id']] $t}
+                                         {if is_array($cates) && in_array($t['id'],$cates)}{$p['name']}-{$c['name']}-{$t['name']}; {/if}
+                                       {/loop}
+                                    {/loop}
+                                {/if}
+                            {/loop}
+                            {else}
+                                    {loop $category2 $p}
+                                        {if empty($p['parentid'])}
+                                            {loop $children2[$p['id']] $c}
+                                               {if is_array($cates) && in_array($c['id'],$cates)}{$p['name']}-{$c['name']}; {/if}
+                                            {/loop}
+                                        {/if}
+                                    {/loop}
+                         {/if}
+            </div>
+         {/if}
+
+    </div>
+</div>
+{/if}
 <script language="javascript">
     $(function(){
             $('#cates').select2({
               search:true,
               placeholder: "请选择其他商品分类",
+              allowClear: true
+           });
+    })
+    $(function(){
+            $('#cates2').select2({
+              search:true,
+              placeholder: "请选择其他{$shopset['category2name']}分类",
               allowClear: true
            });
     })
@@ -143,6 +234,12 @@
          <div style="float: left" id="ttttype">
             <label for="isshow3" class="radio-inline"><input type="radio" name="type" value="1" id="isshow3" {if empty($item['type']) || $item['type'] == 1}checked="true"{/if} onclick="$('#product').show();$('#type_virtual').hide()" /> 实体商品</label>
             <label for="isshow4" class="radio-inline"><input type="radio" name="type" value="2" id="isshow4"  {if $item['type'] == 2}checked="true"{/if}  onclick="$('#product').hide();$('#type_virtual').hide()" /> 虚拟商品</label>
+            <!-- 安装酒店插件新增 三种类型 -->
+            {if p('hotel')}
+            <label for="isshow3" class="radio-inline"><input type="radio" name="type" value="99" id="isshow3" {if empty($item['type']) || $item['type'] == 99}checked="true"{/if} onclick="$('#product').show();$('#type_virtual').hide()" /> 酒店房型</label>
+            <label for="isshow3" class="radio-inline"><input type="radio" name="type" value="98" id="isshow3" {if empty($item['type']) || $item['type'] == 98}checked="true"{/if} onclick="$('#product').show();$('#type_virtual').hide()" /> 餐饮</label>
+            <label for="isshow3" class="radio-inline"><input type="radio" name="type" value="97" id="isshow3" {if empty($item['type']) || $item['type'] == 97}checked="true"{/if} onclick="$('#product').show();$('#type_virtual').hide()" /> 会议</label>
+            {/if}
             {if p('virtual')}
             <label for="isshow5" class="radio-inline"><input type="radio" name="type" value="3" id="isshow5"  {if $item['type'] == 3}checked="true"{/if}  onclick="$('#type_virtual').show();" /> 虚拟物品(卡密)</label>
             {/if}
@@ -225,10 +322,10 @@
       {ife 'shop.goods' $item}
     <div class="col-sm-4 col-xs-6">
 
-        {php echo tpl_form_field_date('timestart', !empty($item['timestart']) ? date('Y-m-d H:i',$item['timestart']) : date('Y-m-d H:i'), 1)}
+        {php echo sz_tpl_form_field_date('timestart', !empty($item['timestart']) ? date('Y-m-d H:i',$item['timestart']) : date('Y-m-d H:i'), 1)}
     </div>
     <div class="col-sm-4 col-xs-6">
-        {php echo tpl_form_field_date('timeend', !empty($item['timeend']) ? date('Y-m-d H:i',$item['timeend']) : date('Y-m-d H:i'), 1)}
+        {php echo sz_tpl_form_field_date('timeend', !empty($item['timeend']) ? date('Y-m-d H:i',$item['timeend']) : date('Y-m-d H:i'), 1)}
     </div>
       {else}
        <div class="col-sm-6 col-xs-6">
@@ -339,6 +436,20 @@
              {ife 'bonus.goods' $item}
           <span class='help-block'>填写分红金额，不填写则为现价计算</span>
           {/if}
+        {/if}
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">红包价格</label>
+    <div class="col-sm-6 col-xs-12">
+        {ife 'shop.goods' $item}
+        <div class="input-group">
+            <input type="text" name="redprice" id="redprice" class="form-control" value="{$item['redprice']}" />
+            <span class="input-group-addon"></span>
+        </div>
+    <div class='help-block'>只填写数字为指定金额：10 ; 填写数字后带‘%’为现价百分比：10% ; 填写区间‘-’为此区间随机金额：10-50; 注意：红包金额最大不得超过200元 ; 如果一个订单购买多个商品，则每个商品的红包金额相加发一个红包，如果相加金额超过200则只发200元。</div>
+        {else}
+         <div class='form-control-static'>{$item['redprice']} </div>
         {/if}
     </div>
 </div>
@@ -472,9 +583,9 @@
     {ife 'shop.goods' $item}
     <label class="radio-inline" style="float: left;"><input type="radio" name="dispatchtype" value="1" {if $item['dispatchtype'] == 1}checked="true"{/if}  /> 统一邮费</label>
 
-    <div class="input-group form-group" style="width: 180px; float: left; margin: 0px 20px 0px 10px;">
+    <div class="input-group form-group" style="width: 180px; float: left;">
 
-        <input type="text" name="dispatchprice" id="dispatchprice" class="form-control" value="{$item['dispatchprice']}" />
+        <input type="text" name="dispatchprice" style="margin:0 10px;" id="dispatchprice" class="form-control" value="{$item['dispatchprice']}" />
         <span class="input-group-addon">元</span>
     </div>
 
@@ -494,7 +605,33 @@
     {/if}
 </div>
 </div>
-
+<!-- 全返开关 begin -->
+<!-- From:LuckStar.D    Date:2016/04/27   Content:加入全返开关,  ims_sz_yi_goods 加入isreturn字段-->
+{if $isreturn}
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否全返</label>
+    <div class="col-sm-6 col-xs-6">
+        {ife 'shop.goods' $item}
+        <label class="radio-inline"><input type="radio" name="isreturn" value="1" {if $item['isreturn'] == 1}checked="true"{/if}  /> 是</label>
+        <label class="radio-inline"><input type="radio" name="isreturn" value="0" {if $item['isreturn'] == 0}checked="true"{/if}  /> 否</label>
+           {else}
+           <div class='form-control-static'>{if $item['isreturn']}是{else}否{/if}</div>
+         {/if}
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否排列全返</label>
+    <div class="col-sm-6 col-xs-6">
+        {ife 'shop.goods' $item}
+        <label class="radio-inline"><input type="radio" name="isreturnqueue" value="1" {if $item['isreturnqueue'] == 1}checked="true"{/if}  /> 是</label>
+        <label class="radio-inline"><input type="radio" name="isreturnqueue" value="0" {if $item['isreturnqueue'] == 0}checked="true"{/if}  /> 否</label>
+           {else}
+           <div class='form-control-static'>{if $item['isreturn']}是{else}否{/if}</div>
+         {/if}
+    </div>
+</div>
+{/if}
+<!-- 全返开关 end -->
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否支持货到付款</label>
     <div class="col-sm-6 col-xs-6">
@@ -506,6 +643,29 @@
          {/if}
     </div>
 </div>
+<!-- 安装酒店插件需要添加房间押金金额-->
+ {if p('hotel')}
+<div class="form-group">
+    <label class="col-xs-6 col-sm-3 col-md-2 control-label">房间押金</label>
+    <div class="input-group">
+            <input type="text" name="deposit" id="deposit" class="form-control" value="{$item['deposit']}" />
+            <span class="input-group-addon">元</span>
+    </div>
+</div>
+{/if}
+{if p('channel')}
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否支持渠道商采购</label>
+    <div class="col-sm-6 col-xs-6">
+        {ife 'shop.goods' $item}
+        <label class="radio-inline"><input type="radio" name="isopenchannel" value="0" {if $item['isopenchannel'] == 0}checked="true"{/if}  /> 不支持</label>
+        <label class="radio-inline"><input type="radio" name="isopenchannel" value="1" {if $item['isopenchannel'] == 1}checked="true"{/if}   /> 支持</label>
+           {else}
+           <div class='form-control-static'>{if $item['isopenchannel'] ==  0}不支持{else}支持{/if}</div>
+         {/if}
+    </div>
+</div>
+{/if}
 {if $perm_role == 0}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否上架</label>

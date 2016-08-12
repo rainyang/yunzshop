@@ -133,7 +133,8 @@ class Sz_DYi_Excel
         if (PHP_SAPI == 'cli') {
             die('This example should only be run from a Web Browser');
         }
-        require_once IA_ROOT . '/framework/library/phpexcel/PHPExcel.php';
+        ob_end_clean();
+        require_once IA_ROOT . '/addons/sz_yi/core/inc/phpexcel/PHPExcel.php';
         $excel = new PHPExcel();
         $excel->getProperties()->setCreator("芸众商城")->setLastModifiedBy("芸众商城")->setTitle("Office 2007 XLSX Test Document")->setSubject("Office 2007 XLSX Test Document")->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")->setKeywords("office 2007 openxml php")->setCategory("report file");
         $sheet  = $excel->setActiveSheetIndex(0);
@@ -149,13 +150,18 @@ class Sz_DYi_Excel
             $len = count($params['columns']);
             for ($i = 0; $i < $len; $i++) {
                 $value = $row[$params['columns'][$i]['field']];
+                if ($params['columns'][$i]['field'] == 'nickname') {
+                    $value = @iconv("utf-8", "gbk", $value);
+                    $value = @iconv("gbk", "utf-8", $value);
+                }
                 $sheet->setCellValue($this->column($i, $rownum), $value);
             }
             $rownum++;
         }
         $excel->getActiveSheet()->setTitle($params['title']);
-        $filename = urlencode($params['title'] . '-' . date('Y-m-d H:i', time()));
-        header('Content-Type: application/octet-stream');
+        $filename = $params['title'] . '-' . date('Y-m-d H:i', time());
+        header('Content-Type: application/vnd.ms-excel');
+        //header('Content-Type: application/octet-stream');
         header('Content-Disposition: attachment;filename="' . $filename . '.xls"');
         header('Cache-Control: max-age=0');
         $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel5');
@@ -165,30 +171,30 @@ class Sz_DYi_Excel
     public function import($excefile)
     {
         global $_W;
-        require_once IA_ROOT . '/framework/library/phpexcel/PHPExcel.php';
-        require_once IA_ROOT . '/framework/library/phpexcel/PHPExcel/IOFactory.php';
-        require_once IA_ROOT . '/framework/library/phpexcel/PHPExcel/Reader/Excel5.php';
+        require_once IA_ROOT . '/addons/sz_yi/core/inc/phpexcel/PHPExcel.php';
+        require_once IA_ROOT . '/addons/sz_yi/core/inc/phpexcel/PHPExcel/IOFactory.php';
+        require_once IA_ROOT . '/addons/sz_yi/core/inc/phpexcel/PHPExcel/Reader/Excel5.php';
         $path = IA_ROOT . "/addons/sz_yi/data/tmp/";
         if (!is_dir($path)) {
             load()->func('file');
             mkdirs($path, '0777');
         }
-        $file     = time() . $_W['uniacid'] . ".xlsx";
+        $file     = time() . $_W['uniacid'] . ".xls";
         $filename = $_FILES[$excefile]['name'];
         $tmpname  = $_FILES[$excefile]['tmp_name'];
         if (empty($tmpname)) {
             message('请选择要上传的Excel文件!', '', 'error');
         }
         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-        if ($ext != 'xlsx') {
-            message('请上传 xlsx 格式的Excel文件!', '', 'error');
+        if ($ext != 'xls') {
+            message('请上传 xls 格式的Excel文件!', '', 'error');
         }
         $uploadfile = $path . $file;
         $result     = move_uploaded_file($tmpname, $uploadfile);
         if (!$result) {
             message('上传Excel 文件失败, 请重新上传!', '', 'error');
         }
-        $reader             = PHPExcel_IOFactory::createReader('Excel2007');
+        $reader             = PHPExcel_IOFactory::createReader('Excel5');
         $excel              = $reader->load($uploadfile);
         $sheet              = $excel->getActiveSheet();
         $highestRow         = $sheet->getHighestRow();

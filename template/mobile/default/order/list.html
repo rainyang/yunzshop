@@ -4,11 +4,11 @@
     body {margin:0px; background:#efefef; -moz-appearance:none; -webkit-appearance: none;}
     .order_topbar {height:44px; width:100%; background:#fff; border-bottom:1px solid #e3e3e3;}
     .order_topbar .nav {height:44px; {if $_GPC['status']!=4}width:20%;{else}width:50%;{/if} line-height:44px; text-align:center; font-size:14px; float:left; color:#666;}
-    .order_topbar .on {height:42px; color:#ff771b; border-bottom:2px solid #ff771b;}
+    .order_topbar .on {height:42px; color:#f15353; border-bottom:2px solid #f15353;}
     .order_noinfo {height:20px; width:150px; background:url(img/order_img1.png) top center no-repeat; margin:50px auto 0px; padding-top:100px; line-height:20px; font-size:14px; text-align:center; color:#c9c9c9;}
     .order_main {height:auto; width:94%; background:#fff; padding:0px 3%; margin-top:16px; border-bottom:1px solid #e2e2e2; border-top:1px solid #e2e2e2;}
     .order_main .title {height:42px; width:100%; border-bottom:1px solid #e2e2e2; font-size:14px; line-height:42px; color:#666;}
-    .order_main .title span {height:42px; width:auto; float:right; color:#ff771b;}
+    .order_main .title span {height:42px; width:auto; float:right; color:#f15353;}
    
 
     .order_main .good {height:50px; width:100%; padding:10px 0px; border-bottom:1px solid #eaeaea;}
@@ -31,11 +31,12 @@
     select { width:80px;height:30px;position:absolute;left:0; filter:alpha(Opacity=0); opacity: 0;-webkit-appearance: none;background:#fff; -webkit-tap-highlight-color: transparent };
     .order_no {height:40px; width:100%;  padding-top:180px; margin:50px 0px;}
 
-    .order_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
+    .order_no {height:100px; width:100%; margin:50px 0px 60px; color:#BFBFBF; font-size:12px; text-align:center;}
     .order_no_menu {height:40px; width:100%; text-align:center;}
-    .order_no_nav {height:38px;padding:10px; width:100px; background:#eee; border:1px solid #d4d4d4; border-radius:5px; text-align:center; line-height:38px; color:#666;}
+    .order_no_nav {height:34px;padding:6px 20px;background:#eee; border:1px solid #d4d4d4; border-radius:5px; text-align:center; line-height:34px; color:#666;font-size: 16px}
     #order_loading { width:94%;padding:10px;color:#666;text-align: center;}
-
+.no-icon .fa{ font-size: 80px;padding-bottom: 20px}
+.no-icon span{color: #929292;line-height: 20px;font-size: 14px}
 </style>
 <div id='container'></div>
 <script id='tpl_order_list' type='text/html'>
@@ -61,21 +62,26 @@
     <%each list as order%>
     <div class="order_main" data-orderid="<%order.id%>">
         <div class="title">订单号：<%order.ordersn%><span><%order.statusstr%></span></div>
-        <%each order.goods as g%>      
-        <div class="good">
-            <div class="img"  onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'"><img src="<%g.thumb%>"/></div>
-            <div class='info' onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
-                <div class='inner'>
-                       <div class="name"><%g.title%></div>     
-                       <div class='option'><%if g.optionid!='0'%>规格:  <%g.optiontitle%><%/if%></div>
+          <%each order.goods as g%>      
+            <div class="good">
+              <%if order.cashier==1%>
+                <div class="img"  ><img src="<%order.name.thumb%>"/></div>
+                <div class='info' >
+              <%else%>
+                <div class="img" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'"><img src="<%g.thumb%>"/></div>
+                <div class='info'onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
+              <%/if%>  
+                    <div class='inner'>
+                           <div class="name"><%if order.cashier==1%><%order.name.name%><span style="color:red">(收银台支付)</span><%else%><%g.title%><%/if%></div>     
+                           <div class='option'><%if g.optionid!='0'%>规格:  <%g.optiontitle%><%/if%></div>
+                    </div>
+                </div>
+                <div class="price">
+                    <div class='pnum'><span class='marketprice'>￥<%g.price%></span></div>
+                    <div class='pnum'><span class='total'>×<%g.total%></span></div>
                 </div>
             </div>
-            <div class="price">
-                <div class='pnum'><span class='marketprice'>￥<%g.price%></span></div>
-                <div class='pnum'><span class='total'>×<%g.total%></span></div>
-            </div>
-        </div>
-        <%/each%>
+          <%/each%>
         <div class="info1">共 <%order.goodscount%> 件商品&nbsp;实付：<span>￥<%order.price%></span></div>
         <div class="sub">
             <%if order.status==0%>
@@ -114,11 +120,7 @@
                    <div class="sub2 order_delete">删除订单</div>
             <%/if%>
                <%if order.canrefund%>
-                    <%if order.refundid!=0%>
-                    <div class="sub1 order_refund">退款申请中</div>
-                    <%else%>
-                    <div class="sub1 order_refund">申请退款</div>
-                  <%/if%>
+                    <div class="sub1 order_refund"><%order.refund_button%></div>
             <%/if%>
       
 
@@ -128,7 +130,7 @@
     
 </script>
 <script id='tpl_empty' type='text/html'>
-    <div class="order_no"><i class="fa fa-file-text-o" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">您还没有相关订单</span><br>可以去看看哪些想买的</div>
+    <div class="order_no no-icon"><i class="fa fa-file-text-o"></i><br><span>您还没有相关订单</span><br>可以去看看哪些想买的</div>
     <div class="order_no_menu">
 
         <span class="order_no_nav"  onclick="location.href='{php echo $this->getUrl()}'">随便逛逛</span>

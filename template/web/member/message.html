@@ -1,0 +1,326 @@
+{template 'web/_header'}
+{template 'web/member/tabs'}
+{if $operation == 'post'}
+
+<div class="main">
+    <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
+        <div class='panel panel-default'>
+            <div class='panel-heading'>
+                会员消息群发模版设置
+            </div>
+            <div class='panel-body'>
+                
+                <input type="hidden" name="tp_id" value="{$list['id']}" />
+                
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label" ><span style='color:red'>*</span> 模版名称</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" name="tp_title" class="form-control" value="{$list['title']}" placeholder="模版名称，例：新品上市通知群发（自定义）" />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label" ><span style='color:red'>*</span> 模版消息ID</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" name="tp_template_id" class="form-control" value="{$list['template_id']}" placeholder="模版消息ID，例：P8MxRKmW7wdejmZl14-swiGmsJVrFJiWYM7zKSPXq4I" />
+                    </div> 
+                </div> 
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label" ><span style='color:red'>*</span>first.DATA(头部标题)</label>
+                    <div class="col-sm-6" >
+                        <input type="text" name="tp_first" class="form-control" value="{$list['first']}" placeholder="" />
+                    </div>
+                       <div class="col-sm-3" style="width:30%; ">
+                           {php echo tpl_form_field_color('firstcolor', $list['firstcolor'])}
+                    </div>
+                </div>
+                  
+                {loop $data $list2}
+                    {template 'web/member/message_type'}
+                {/loop}
+                
+                <div id="type-items"></div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label" ></label>
+                    <div class="col-sm-9 col-xs-12">
+                        <a class="btn btn-default btn-add-type" href="javascript:;" onclick="addType();"><i class="fa fa-plus" title=""></i> 增加一条键</a>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label" >remark.DATA(尾部描述)</label>
+                    <div class="col-sm-6">
+                        <input type="text" name="tp_remark" class="form-control" value="{$list['remark']}" placeholder="" />
+                     
+                    </div>
+                    <div class="col-sm-3" style="width:30%; ">
+                           {php echo tpl_form_field_color('remarkcolor', $list['remarkcolor'])}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label" ><span style='color:red'>*</span>消息链接</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="text" name="tp_url" class="form-control" value="{$list['url']}" placeholder="" />
+                    </div>
+                </div>
+                  <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label" ></label>
+                    <div class="col-sm-9 col-xs-12">
+                       <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1"  />
+	     <input type="hidden" name="token" value="{$_W['token']}" />
+                       <input type="submit" name="submitsend" value="提交并使用此模板立即进行群发" class="btn btn-success" style="margin-left:10px;"  />
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+     
+    </form>
+</div>
+<script language='javascript'>
+    var kw = 1;
+    function addType() {
+        $(".btn-add-type").button("loading");
+        $.ajax({
+            url: "{php echo $this->createWebUrl('member/message',array('op'=>'addtype'))}&kw="+kw,
+            cache: false
+        }).done(function (html) {
+            $(".btn-add-type").button("reset");
+            $("#type-items").append(html);
+        });
+        kw++;
+    }
+    function removeType(obj) {
+        $(obj).parent().parent().remove();
+    } 
+ 
+
+        $('form').submit(function(){
+    
+            if($(':input[name=tp_title]').isEmpty()){
+                Tip.focus($(':input[name=tp_title]'),'请输入模板名称!');
+                return false;
+            }
+            if($(':input[name=tp_first]').isEmpty()){
+                Tip.focus($(':input[name=tp_first]'),'请输入first.DATA!');
+                return false;
+            }
+            return true;
+      });
+ 
+    </script>
+
+{elseif $operation == 'display'}
+
+               <form action="" method="post" onsubmit="return formcheck(this)">
+     <div class='panel panel-default'>
+            <div class='panel-heading'>
+                会员消息群发模版列表
+            </div>
+         <div class='panel-body'>
+
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>群发消息模版名称</th>
+                        <th>发送次数</th>
+                        <th>发送人数</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {loop $list $row}
+                    <tr>
+                        <td>{$row['title']}</td>
+                        <td>{php echo number_format($row['sendtimes'])}</td>
+                        <td>{php echo number_format($row['sendcount'])}</td>
+                        <td>
+                            <a class='btn btn-default' href="{php echo $this->createWebUrl('member/message', array('op' => 'post', 'id' => $row['id']))}">编辑</a>
+                            <a class='btn btn-default'  href="{php echo $this->createWebUrl('member/message', array('op' => 'delete', 'id' => $row['id']))}" onclick="return confirm('确认删除此模版吗？');return false;">删除</a>
+                            <a class='btn btn-default' style="background: #428bca; border: 0px; color: #fff;" href="{php echo $this->createWebUrl('member/message', array('op' => 'send', 'id' => $row['id']))}">发送</a></td>
+                    </tr>
+                    {/loop}
+                 
+                </tbody>
+            </table>
+  
+         </div>
+           <div class='panel-footer'>
+                            <a class='btn btn-default' href="{php echo $this->createWebUrl('member/message', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新模版</a>
+         </div>
+     </div>
+       </form>
+ 
+{else if $operation == 'addtype'}
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label" ><span style='color:red'>*</span></label>
+                    <div class="col-sm-9 col-xs-12" style="width:5%">
+                        <a class="btn btn-default" href='javascript:;' onclick='removeType(this)'><i class='icon icon-remove fa fa-times'></i> 删除</a>
+                    </div>
+                    <div class="col-sm-9 col-xs-12" style="width:15%">
+                        <input type="text" name="tp_kw[]" class="form-control" value="{$group['groupname']}" placeholder="键值，例：keywords{$kw}" />
+                    </div>
+                    <div class="col-sm-9 col-xs-12" style="width:40%">
+                        <input type="text" name="tp_value[]" class="form-control" value="{$group['groupname']}" placeholder="请在此输入对应的值" />
+                    </div>
+                    <div class="col-sm-9 col-xs-12" style="width:30%; ">
+                        {php echo tpl_form_field_color('tp_color[]', $value=$settings['maincolor'])}
+                    </div>
+                </div>
+{elseif $operation == 'send'}
+ 
+        <div class="main">
+            <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
+
+                <div class='panel panel-default'>
+                    <div class='panel-heading'>
+                        会员消息群发
+                    </div>
+                
+                    <div class='panel-body'>
+                         <div class="alert alert-info">
+                             <p>根据选择的用户群体不同，发送时间会不相同，发送期间请耐心等待! </p>
+                             <p>模板消息群发有风险，请谨慎使用，大用户量建议使用公众平台推送!</p>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label" >模版名称</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <input type="text" name="tp_title" class="form-control" value="{$send['title']}(ID:{$send['id']})" placeholder="" readonly />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label" >发送类型</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <label class="radio-inline"><input type="radio" name="send1" value="1"  checked /> 按openid发送</label>
+                                <label class="radio-inline"><input type="radio" name="send1" value="2"    /> 按用户等级发送</label>
+                                <label class="radio-inline"><input type="radio" name="send1" value="3"  /> 按用户分组等级发送</label>
+                                <label class="radio-inline"><input type="radio" name="send1" value="4" />全部发送</label>
+                            </div>
+                        </div>
+                         <div class="form-group choose choose_1">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label" >会员openid</label>
+                            <div class="col-sm-9 col-xs-12">
+                                <textarea name="send_openid" class="form-control" style="height:250px;" placeholder="一行一个" id="value_1"></textarea>
+                            </div>
+                        </div>
+           
+                        <div class="form-group choose choose_2" style='display: none' >
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label" >选择会员等级</label>
+                            <div class="col-sm-8 col-lg-9 col-xs-12">
+                                <select name="send_level" class="form-control" id="value_2" >
+                                            <option value="0">全部</option>
+                                            {loop $list $type}
+                                            <option value="{$type['id']}">{$type['levelname']}</option>
+                                            {/loop}
+                                    </select>
+                            </div>
+                        </div>
+                        <div class="form-group choose choose_3" style='display:none '>
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label" >选择会员分组</label>
+                            <div class="col-sm-8 col-lg-9 col-xs-12">
+                                    <select name="send_group" class="form-control"  id="value_3">
+                                            <option value="0">全部</option>
+                                            {loop $list2 $type2}
+                                            <option value="{$type2['id']}">{$type2['groupname']}</option>
+                                            {/loop}
+                                    </select>
+                            </div>
+                        </div>
+                       
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label" ></label>
+                            <div class="col-sm-9 col-xs-12">
+                                <div class="help-block">       
+                                    <input type="button" name="button" value="发送" class="btn btn-primary col-lg-4"  onclick="send()"/>
+                                    <input type="hidden" name="token" value="{$_W['token']}" /></div>
+                            </div>
+                        </div>
+ 
+                </div>
+           
+                    <script>
+                        $(function(){
+                            $(':radio[name=send1]').click(function(){
+                                var v = $(this).val();
+                                 $(".choose").hide();
+                                 $(".choose_"+v).show();
+                            })
+                        })
+                      
+                         var openids = [];
+                        function send(){
+                              var btn = $('input[type=button]');
+                            if(btn.attr('sending')=='1'){
+                                return;
+                            }
+                            
+                            var c = $('input[name=send1]:checked').val();
+                            var v = $('#value_'+c).val();
+                            if(c==1 && v==''){
+                                alert('请输入要群发的用户Openid!');
+                                return;
+                            }
+                            btn.removeClass('btn-primary').val('正在获取发送的用户Openid...').attr('sending',1);
+                            $.ajax({
+                                url: "{php echo $this->createWebUrl('member/message')}",
+                                type:'post',
+                                dataType:'json',
+                                data: {'op':'fetch',class1:c,value1:v,id:"{$send['id']}"},
+                                success:function(result){
+                                    openids = result.openids;
+                                    btn.val('共要发送给 ' + openids.length + " 个用户，准备发送!");
+                                    sendmessage();
+                                }
+                            });
+                        }
+                        var current = 0;
+                        var failed = [];
+                        var failmsg = "";
+                        var succeed = 0;
+                        function sendmessage(){
+                           var btn = $('input[type=button]');
+                              
+                            if(current>openids.length-1){
+                                if(failed.length>0){
+                                    var msg = '发送成功 ' + succeed + ' 个用户，失败 ' + failed.length + " 个用户:\r\n";
+                                    msg+=failmsg;
+                                    msg+="\r\n 是否继续发送失败的用户? ";
+                                   if(confirm(msg)) {
+                                       current = 0 ;succeed=0;
+                                       openids = failed;
+                                       failed=[];
+                                       btn.val('共要发送给 ' + openids.length + " 个用户，准备发送!");
+                                       sendmessage();
+                                       return;
+                                   }
+                                   location.reload();
+                                   
+                                } else{
+                                    alert('发送成功 ' + succeed + ' 个用户!' );
+                                    location.reload();
+                                }
+                            }
+                            var openid = openids[current];
+                            $.ajax({
+                                url: "{php echo $this->createWebUrl('member/message')}",
+                                type:'post',
+                                data: {'op':'sendmessage','openid':openid, id:"{$send['id']}"},
+                                dataType:'json',
+                                success:function(result2){
+                                  if(result2.result=='1'){
+                                       succeed++;
+                                  }
+                                  else{
+                                      failmsg+= result2.openid + "  " + result2.message;
+                                      failed.push(result2.openid);
+                                  }
+                                  btn.val('已经发送 ' + current + " / " + openids.length + " 个用户...");
+                                  current++;
+                                  sendmessage();
+                              }
+                            });
+                        }
+                    </script>
+            </form>
+        </div>
+{/if}
+{template 'common/footer'}

@@ -1,4 +1,5 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
 {if $operation == 'post'}
 <script language='javascript' src="../addons/sz_yi/plugin/poster/static/js/designer.js"></script>
@@ -52,7 +53,7 @@
     .context-menu-list { z-index:9999;}
 
 </style>
-<div class="main">
+<div class="main rightlist">
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
         <input type="hidden" name="id" value="{$item['id']}" />
         <div class='panel panel-default'>
@@ -136,7 +137,7 @@
                     <div class="col-sm-9 col-xs-12">
                         <table style='width:100%;'>
                                 <tr>
-                                    <td style='width:320px;padding:10px;' valign='top'>
+                                    <td style='width:320px;' valign='top'>
                                         <div id='poster'>
                                           {if !empty($item['bg'])}
                                           <img src='{php echo tomedia($item['bg'])}' class='bg'/>
@@ -170,7 +171,7 @@
                                         </div>
                                         
                                     </td>
-                                    <td valign='top' style='padding:10px;'>
+                                    <td valign='top'>
                                         {ife 'poster' $item}
                                           <div class='panel panel-default'>
                                               <div class='panel-body'>
@@ -184,12 +185,12 @@
                                                     
                                                 </div>
                                                     <div class="form-group">
-                                                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">海报元素</label>
+                                                        <label class="col-xs-12 col-sm-3 col-md-3 control-label">海报元素</label>
                                                         <div class="col-sm-9 col-xs-12">
-                                                             <button class='btn btn-default btn-com' type='button' data-type='head' >头像</button>
-                                                             <button class='btn btn-default btn-com' type='button' data-type='nickname' >昵称</button>
-                                                             <button class='btn btn-default btn-com' type='button' data-type='qr' >二维码</button>
-                                                             <button class='btn btn-default btn-com' type='button' data-type='img' >图片</button>
+                                                             <button class='btn btn-default btn-com' type='button' data-type='head' style="margin-bottom: 4px" >头像</button>
+                                                             <button class='btn btn-default btn-com' type='button' data-type='nickname'  style="margin-bottom: 4px">昵称</button>
+                                                             <button class='btn btn-default btn-com' type='button' data-type='qr'  style="margin-bottom: 4px">二维码</button>
+                                                             <button class='btn btn-default btn-com' type='button' data-type='img'  style="margin-bottom: 4px">图片</button>
                                                              <span id="goodsparams" style="display:none">
                                                                   <button class='btn btn-default btn-com' type='button' data-type='title' >商品名称</button>    
                                                                   <button class='btn btn-default btn-com' type='button' data-type='thumb' >商品图片</button>    
@@ -200,7 +201,7 @@
                                                     </div>
                                                   <div id='qrset' style='display:none'>
                                                    <div class="form-group">
-                                                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">二维码尺寸</label>
+                                                        <label class="col-xs-12 col-sm-3 col-md-3 control-label">二维码尺寸</label>
                                                          <div class="col-sm-9 col-xs-12">
                                                              <select id='qrsize' class='form-control'>
                                                                  <option value='1'>1</option>
@@ -217,16 +218,16 @@
                                                   
                                                   <div id='nameset' style='display:none'>
                                                    <div class="form-group">
-                                                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">昵称颜色</label>
-                                                         <div class="col-sm-9 col-xs-12">
+                                                        <label class="col-xs-12 col-sm-3 col-md-3 control-label">昵称颜色</label>
+                                                         <div class="col-sm-9 col-xs-12 wid100">
                                                               {php echo tpl_form_field_color('color')}
                                                         </div>
                                                     
                                                     </div>
                                                     <div class="form-group">
-                                                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">昵称大小</label>
+                                                        <label class="col-xs-12 col-sm-3 col-md-3 control-label">昵称大小</label>
                                                         <div class="col-sm-4">
-                                                             <div class='input-group'>
+                                                             <div class='input-group wid100'>
                                                                  <input type="text" id="namesize" class="form-control namesize" placeholder="例如: 14,16"  />
                                                                  <div class='input-group-addon'>px</div>
                                                             </div>
@@ -234,7 +235,7 @@
                                                     </div>
                                              </div>
                                                      <div class="form-group" id="imgset" style="display:none">
-                                                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">图片设置</label>
+                                                        <label class="col-xs-12 col-sm-3 col-md-3 control-label">图片设置</label>
                                                         <div class="col-sm-9 col-xs-12">
                                                               {php echo tpl_form_field_image('img')}
                                                         </div>
@@ -602,7 +603,8 @@
 
       </div>
 </div>
-				{/if}		  
+				{/if}		
+
 				
 <script language='javascript'>
     $('form').submit(function(){
@@ -920,6 +922,7 @@
 	
     </script>
 {elseif $operation == 'display'}
+<div class="rightlist">
   <div class="panel panel-info">
         <div class="panel-heading">筛选</div>
         <div class="panel-body">
@@ -932,13 +935,13 @@
                 <input type="hidden" name="method" value="index" />
                 <input type="hidden" name="op" value="display" />
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">海报名称</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">海报名称</label>
                     <div class="col-xs-12 col-sm-8 col-lg-9">
                         <input class="form-control" name="keyword" id="" type="text" value="{$_GPC['keyword']}">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">海报类型</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">海报类型</label>
                     <div class="col-xs-12 col-sm-8 col-lg-9">
                         <select name="type" class='form-control'>
                             <option value="" {if $_GPC['type'] == ''} selected{/if}></option>
@@ -948,6 +951,9 @@
                             <option value="4" {if $_GPC['type'] == '4'} selected{/if}>关注</option>
                         </select>
                     </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
                     <div class="col-xs-12 col-sm-2 col-lg-2">
                         <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
                     </div>
@@ -974,7 +980,7 @@
                         <th>扫描次数</th>
                         <th>吸引关注数</th>
                         <th>是否默认</th>
-                        <th>操作</th>
+                        <th width="20%">操作</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -1020,7 +1026,7 @@
                     <tr>
                         <td colspan="6">
                             {ifp 'poster.add'}
-                                 <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('poster', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加海报</a>
+                                 <a class='btn btn-primary' href="{php echo $this->createPluginWebUrl('poster', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加海报</a>
                             {/if}
                             {ifp 'poster.clear'}
                                  <input type="submit" name="submit" value="清除当前公众号海报缓存" class="btn btn-danger" onclick="return confirm('确认要清除海报缓存?')" />
@@ -1035,5 +1041,7 @@
       
      </div>
          </form> 
+         </div>
 {/if}
+</div>
 {template 'web/_footer'}

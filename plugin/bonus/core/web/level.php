@@ -30,9 +30,14 @@ if ($operation == 'display') {
 			'ordercount' => intval($_GPC['ordercount']), 
 			'downcount' => intval($_GPC['downcount']),
 			'downcountlevel1' => intval($_GPC['downcountlevel1']),
+			'downcountlevel2' => intval($_GPC['downcountlevel2']),
+			'downcountlevel3' => intval($_GPC['downcountlevel3']),
 			'content' => intval($_GPC['content']),
 			'premier' => intval($_GPC['premier']),
 			'pcommission' => floatval($_GPC['pcommission']),
+			'msgtitle' => trim($_GPC['msgtitle']),
+			'msgcontent' => trim($_GPC['msgcontent']),
+			'status' => intval($_GPC['status'])
 			);
 		if (!empty($id)) {
 			pdo_update('sz_yi_bonus_level', $data, array('id' => $id, 'uniacid' => $_W['uniacid']));
@@ -47,8 +52,10 @@ if ($operation == 'display') {
 } elseif ($operation == 'delete') {
 	ca('bonus.level.delete');
 	$id = intval($_GPC['id']);
-	$level = pdo_fetch("SELECT id,levelname FROM " . tablename('sz_yi_bonus_level') . " WHERE id = '$id'");
-	if (empty($level)) {
+    if($id){
+	  $level = pdo_fetch("SELECT id,levelname FROM " . tablename('sz_yi_bonus_level') . " WHERE uniacid =:uniacid and id=:id", array(':uniacid' => $_W['uniacid'], ':id' =>$id));
+    }
+    if (empty($level)) {
 		message('抱歉，等级不存在或是已经被删除！', $this->createPluginWebUrl('bonus/level', array('op' => 'display')), 'error');
 	}
 	pdo_delete('sz_yi_bonus_level', array('id' => $id, 'uniacid' => $_W['uniacid']));

@@ -1,5 +1,15 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'web/statistics/tabs'}
+<div class="rightlist">
+<!-- 新增加右侧顶部三级菜单 -->
+<div class="right-titpos">
+	<ul class="add-snav">
+		<li class="active"><a href="#">数据统计</a></li>
+		<li><a href="#">商品销售排行</a></li>
+	</ul>
+</div>
+<!-- 新增加右侧顶部三级菜单结束 -->
 <div class="panel panel-info">
     <div class="panel-heading">查询商品销售量和销售额，默认排序为销售额从高到低</div>
     <div class="panel-body">
@@ -10,14 +20,25 @@
             <input type="hidden" name="do" value="statistics" />
             <input type="hidden" name="p"  value="goods_rank" />
              <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">商品名称</label>
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">商品名称</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                       <input name="title" type="text"  class="form-control" value="{$_GPC['title']}">
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">下单时间</label>
-                  <div class="col-sm-1">
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">分类</label>
+                <div class="col-sm-8 col-lg-9 col-xs-12">
+                    {if intval($shopset['catlevel'])==3}
+                    {php echo tpl_form_field_category_3level('category', $parent, $children, $pcate, $ccate, $tcate)}
+                    {else}
+                    {php echo tpl_form_field_category_2level('category', $parent, $children, $pcate, $ccate)}
+                    {/if}
+                </div>
+            </div>
+            <div class="form-group">
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">下单时间</label>
+                  <div class="col-sm-2">
                             <label class="radio-inline">
                                 <input type="radio" name="searchtime" value="0" {if empty($_GPC['searchtime'])}checked{/if}>不搜索
                             </label> 
@@ -25,13 +46,13 @@
                                 <input type="radio" name="searchtime" value="1" {if !empty($_GPC['searchtime'])}checked{/if}>搜索
                             </label>
                 </div> 
-                <div class="col-sm-8 col-lg-9 col-xs-12">
+                <div class="col-sm-8 col-lg-7 col-xs-12">
                         {php echo tpl_form_field_daterange('datetime', array('starttime'=>date('Y-m-d H:i',$starttime),'endtime'=>date('Y-m-d H:i',$endtime)), true)}
                 </div>
             </div>
              
             <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">排序方式</label>
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">排序方式</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                     <label class='radio-inline'>
                         <input type='radio' name='orderby' value='0' {if empty($_GPC['orderby'])}checked{/if}/> 按销售额
@@ -44,7 +65,7 @@
             </div>
             
             <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label"></label>
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                     <button class="btn btn-default" ><i class="fa fa-search"></i> 搜索</button>
                      <input type="hidden" name="token" value="{$_W['token']}" />
@@ -87,5 +108,7 @@
         </table>
         {$pager}
     </div>		
+</div>
+</div>
 </div>
 {template 'web/_footer'}

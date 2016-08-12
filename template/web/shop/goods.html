@@ -1,41 +1,65 @@
 ﻿{template 'web/_header'}
-{template 'web/shop/tabs'}
-<script type="text/javascript" src="resource/js/lib/jquery-ui-1.10.3.min.js"></script>
+<div class="w1200 m0a">
 
+{template 'web/shop/tabs'}
+{if $operation != 'post'}
+{else}
+
+{/if}
+<script type="text/javascript" src="resource/js/lib/jquery-ui-1.10.3.min.js"></script>
+<link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/font-awesome.min.css">
 {if $operation == 'post'}
 <style type='text/css'>
     .tab-pane {padding:20px 0 20px 0;}
-</style>
-<div class="main">
-    <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                {if empty($item['id'])}添加商品{else}编辑商品{/if}
-            </div>
-            <div class="panel-body">
-                <ul class="nav nav-arrow-next nav-tabs" id="myTab">
-                    <li class="active" ><a href="#tab_basic">基本信息</a></li>
-                    <li><a href="#tab_des">商品描述</a></li>
-                    <li><a href="#tab_param">自定义属性</a></li>
-                    <li><a href="#tab_option">商品规格</a></li>
-                    <li><a href="#tab_discount">会员权限及折扣设置</a></li>
-					<li><a href="#tab_share">分享及关注设置</a></li>
-                    <li><a href="#tab_others">其他设置</a></li>
 
-                    {if p('verify')}
-					<li><a href="#tab_verify">线下核销设置</a></li>
-                    {/if}
-                    {if !empty($com_set['level'])}
-                    <li><a href="#tab_sell">分销设置</a></li>
-                    {/if}
-                    {if p('sale')}
-					<li><a href="#tab_sale">营销设置</a></li>
-                    {/if}
-                    <li><a href="#tab_detaildiy">详情页店铺信息设置</a></li>
-                    {if p('diyform')}
-					<li><a href="#tab_diyform">自定义表单</a></li>
-                    {/if}
-                </ul> 
+</style>
+<div class="main rightlist">
+
+
+    <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
+        <div class="panel panel-default panel-center">
+<!--             <div class="panel-heading">
+                {if empty($item['id'])}添加商品{else}编辑商品{/if}
+            </div> -->
+            
+<div class="right-titpos-fixed">
+	<ul class="add-shopnav" id="myTab">
+    	<li class="active" ><a href="#tab_basic">基本信息</a></li>
+        <li><a href="#tab_des">商品描述</a></li>
+        <li><a href="#tab_param">属性</a></li>
+        <li><a href="#tab_option">商品规格</a></li>
+        <li><a href="#tab_discount">权限折扣</a></li>
+		<li><a href="#tab_share">分享关注</a></li>
+        <li><a href="#tab_others">消息通知</a></li>
+
+        {if p('verify')}
+		<li><a href="#tab_verify">线下核销</a></li>
+        {/if}
+        {if !empty($com_set['level'])}
+        <li><a href="#tab_sell">分销{if $bonus_start}分红{/if}</a></li>
+        {/if}
+        {if p('sale')}
+		<li><a href="#tab_sale">营销</a></li>
+        {/if}
+        <li><a href="#tab_detaildiy">店铺</a></li>
+        {if p('diyform')}
+		<li><a href="#tab_diyform">自定义表单</a></li>
+        {/if}
+    </ul> 
+</div>
+<div style="padding-top:50px">
+            <div class="panel-body">
+                <!--
+                <div class="good-tit">
+				    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+				    <div class="col-sm-10 col-xs-12 text-right">
+						<input type="submit" name="submit" value="保存商品"
+	                    class="btn btn-primary" onclick="return formcheck()" />
+						<input type="button" name="back" {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
+						<input type="hidden" name="token" value="{$_W['token']}" />
+				    </div>
+				</div>
+                -->
                 <div class="tab-content">
                     <div class="tab-pane  active" id="tab_basic">{template 'web/shop/goods/basic'}</div>
                     <div class="tab-pane" id="tab_des">{template 'web/shop/goods/des'}</div>
@@ -64,16 +88,17 @@
                     {/if}
 
                 </div>
+		        <div class="form-group col-sm-12 mrleft40 border-t" style="text-align: right;">
+					{ife 'shop.goods' $item}
+					<input type="submit" name="submit" value="发布商品" class="btn btn-primary col-lg-1" onclick="return formcheck()" style="float: right;margin-left: 8px;" />
+					<input type="hidden" name="token" value="{$_W['token']}" />
+					{/if}
+					<input type="button" name="back"  {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
+
+        		</div>
             </div>
         </div>
-        <div class="form-group col-sm-12">
-			{ife 'shop.goods' $item}
-			<input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" onclick="return formcheck()" />
-			<input type="hidden" name="token" value="{$_W['token']}" />
-			{/if}
-			<input type="button" name="back" onclick='history.back()' {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
-
-        </div>
+        
     </form>
 </div>
 
@@ -97,6 +122,10 @@
 				}
 			}
 		})
+
+		$("input[name='back']").click(function () {
+			location.href = "{php echo $this->createWebUrl('shop/goods')}";
+		});
 	})
 			var category = {php echo json_encode($children)};
 	window.optionchanged = false;
@@ -122,20 +151,6 @@
 				Tip.focus("#goodsname", "请输入商品名称!");
 				return false;
 		}
-		{if $shopset['catlevel'] == 3}
-		if ($("#category_third").val() == '0') {
-		$('#myTab a[href="#tab_basic"]').tab('show');
-				Tip.focus("#category_third", "请选择完整商品分类!");
-				return false;
-		}
-		{else}
-		if ($("#category_child").val() == '0') {
-			$('#myTab a[href="#tab_basic"]').tab('show');
-			Tip.focus("#category_child", "请选择完整商品分类!");
-			return false;
-		}
-
-		{/if}
 
 		{if empty($id)}
 		if ($.trim($(':input[name="thumb"]').val()) == '') {
@@ -188,7 +203,86 @@
 			alert('规格数据有变动，请重新点击 [刷新规格项目表] 按钮!');
 			return false;
 		}
+		var discountway = $('input:radio[name=discountway]:checked').val();
+		var discounttype = $('input:radio[name=discounttype]:checked').val();
+		var returntype = $('input:radio[name=returntype]:checked').val();
+		var marketprice = $('input:text[name=marketprice]').val();
+		var isreturn = false;
+
+		// Tip.focus("#goodsname", "请输入商品名称!");
+		// 		return false;
+
+        if(discountway == 1){
+        	if(discounttype == 1){
+	        	$(".discounts").each(function(){
+	                if(parseFloat($(this).val()) <= 0 || parseFloat($(this).val()) >= 10){
+	                	$(this).val('');
+						isreturn = true;
+						alert('请输入正确折扣！');
+						return false;
+	                }
+				});
+        	}else{
+	        	$(".discounts2").each(function(){
+	                if(parseFloat($(this).val()) <= 0 || parseFloat($(this).val()) >= 10){
+	                	$(this).val('');
+						isreturn = true;
+						alert('请输入正确折扣！');
+						return false;
+	                }
+				});
+        	}
+
+
+        }else{
+        	if(discounttype == 1){
+	        	$(".discounts").each(function(){
+	                if( parseFloat($(this).val()) < 0 || parseFloat($(this).val()) >= parseFloat(marketprice)){
+	                	$(this).val('');
+						isreturn = true;
+						alert('请输入正确折扣金额！');
+						return false;
+	                }
+				});
+        	}else{
+	        	$(".discounts2").each(function(){
+	                if( parseFloat($(this).val()) < 0 || parseFloat($(this).val()) >= parseFloat(marketprice)){
+	                	$(this).val('');
+						isreturn = true;
+						alert('请输入正确折扣金额！');
+						return false;
+	                }
+				});   		
+        	}
+
+
+        }
+    	if(returntype == 1){
+	    	$(".returns").each(function(){
+	            if( parseFloat($(this).val()) < 0 || parseFloat($(this).val()) >= parseFloat(marketprice)){
+	                $(this).val('');
+					isreturn = true;
+					alert('请输入正确返现金额！');
+					return false;
+	            }
+			});
+    	}else{
+    		$(".returns2").each(function(){
+	            if( parseFloat($(this).val()) < 0 || parseFloat($(this).val()) >= parseFloat(marketprice)){
+	                $(this).val('');
+					isreturn = true;
+					alert('请输入正确返现金额！');
+					return false;
+	            }
+			});
+    	}
+
+
+ 		if(isreturn){
+ 			return false;
+ 		}
 		return true;
+ 
 	}
 
 	function checkoption() {
@@ -219,12 +313,14 @@
 	}
 
 </script>
-
+{template 'web/sysset/mylink'}
 {elseif $operation == 'display'}
 
-<div class="main">
+<div class="main rightlist">
+
+<div class="right-addbox"><!-- 此处是右侧内容新包一层div -->
+
     <div class="panel panel-info">
-        <div class="panel-heading">筛选</div>
         <div class="panel-body">
             <form action="./index.php" method="get" class="form-horizontal" role="form">
                 <input type="hidden" name="c" value="site" />
@@ -234,13 +330,13 @@
                 <input type="hidden" name="p"  value="goods" />
                 <input type="hidden" name="op" value="display" />
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">关键字</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">关键字</label>
                     <div class="col-xs-12 col-sm-8 col-lg-9">
                         <input class="form-control" name="keyword" id="" type="text" value="{$_GPC['keyword']}">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">状态</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">状态</label>
                     <div class="col-xs-12 col-sm-8 col-lg-9">
                         <select name="status" class='form-control'>
 							<option value="" {if $_GPC['status'] == ''} selected{/if}></option>
@@ -251,19 +347,77 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-1 control-label">分类</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">商品类型</label>
+
+                    <div class="col-xs-12 col-sm-8 col-lg-9">
+                        {loop $product_attr_list $product_attr_key
+                        $product_attr_name}
+                            <label for="{$product_attr_key}"
+                                style="font-weight:100; margin-left:10px;">
+                            <input type="checkbox"  {if
+                                   @in_array($product_attr_key, $product_attr)}
+                            checked="checked"{/if} name="product_attr[]"
+                            value="{$product_attr_key}" id="{$product_attr_key}" />
+                            {$product_attr_name}
+                            </label>
+                        {/loop}
+                    </div>
+                </div>
+				
+                <div class="form-group">
+
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">供应商</label>
+
+                    <div class="col-xs-12 col-sm-8 col-lg-9">
+                {if p('supplier')}
+                  {if $perm_role == 0}
+                       <select name='supplier_uid' class='form-control'>
+                          <option value="0" {if $_GPC['supplier_uid']==0}selected="selected"{/if}>
+                            所有商品
+                          </option>
+                          <option value="9999" {if $_GPC['supplier_uid']==9999}selected="selected"{/if}>
+                              平台商品
+                          </option>
+                          {loop $result $row}
+                          <option value="{$row['uid']}" {if $_GPC['supplier_uid']==$row['uid']}selected="selected"{/if}>{$row['realname']}/{$row['username']}</option>
+                          {/loop}
+                        </select>
+
+                         {/if}
+                {/if}
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">分类</label>
                     <div class="col-sm-8 col-xs-12">
                         {if intval($shopset['catlevel'])==3}
-						{php echo tpl_form_field_category_3level('category', $parent, $children, $params[':pcate'], $params[':ccate'], $params[':tcate'])}
+						{php echo tpl_form_field_category_level3('category', $parent, $children, $params[':pcate'], $params[':ccate'], $params[':tcate'])}
 						{else}
-						{php echo tpl_form_field_category_2level('category', $parent, $children, $params[':pcate'], $params[':ccate'])}
+						{php echo tpl_form_field_category_level2('category', $parent, $children, $params[':pcate'], $params[':ccate'])}
+						{/if}
+                    </div>
+                    {if $shopset['category2'] != 1}
+                    <div class="col-xs-12 col-sm-2 col-lg-2">
+                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                    </div>
+                    {/if}
+                </div>
+                {if $shopset['category2'] == 1}
+				<div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">{$shopset['category2name']}分类</label>
+                    <div class="col-sm-8 col-xs-12">
+                        {if intval($shopset['catlevel'])==3}
+						{php echo tpl_form_field_category_level3('category2', $parent2, $children2, $params[':pcate2'], $params[':ccate2'], $params[':tcate2'])}
+						{else}
+						{php echo tpl_form_field_category_level2('category2', $parent2, $children2, $params[':pcate2'], $params[':ccate2'])}
 						{/if}
                     </div>
                     <div class="col-xs-12 col-sm-2 col-lg-2">
                         <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
                     </div>
                 </div>
-
+				{/if}
                 <div class="form-group">
                 </div>
             </form>
@@ -272,47 +426,39 @@
     <style>
         .label{cursor:pointer;}
     </style>
-	<div class="panel panel-default">
-        <div class="panel-body">
-			<a class='btn btn-default' href="{php echo $this->createWebUrl('shop/goods',array('op'=>'post'))}"><i class='fa fa-plus'></i> 添加商品</a>
-        </div>
-	</div>
     <form action="" method="post">
 		<div class="panel panel-default">
 			<div class="panel-body table-responsive">
 				<table class="table table-hover">
 					<thead class="navbar-inner">
 						<tr>
-							<th style="width:60px;">ID</th>
-							<th style="width:80px;">排序</th>
-							<th style="width:60px;">商品</th>
-							<th  style="width:300px;">&nbsp;</th>
-							<th  style="width:200px;" >商品属性</th>
-							<th >价格</th>
-							<th >库存</th>
-							<th >实际销量</th>
-							<th >商品编码</th>
-							<th >商品条码</th>
-							<th >状态(点击可修改)</th>
-							<th style="">操作</th>
+							<th width="3%">ID</th>
+							<th width="6%">排序</th>
+							<th width="6%">商品</th>
+							<th width="26%">&nbsp;</th>
+							<th width="16%">价格<br/>库存</th>
+
+							<th width="10%">销量</th>
+							<th width="10%">状态</th>
+							<th width="20%">操作</th>
 						</tr>
 					</thead>
 					<tbody>
 						{loop $list $item}
 						<tr>
 
-							<td>{$item['id']}</td>
-							<td>
+							<td width="6%">{$item['id']}</td>
+							<td width="6%">
 								{ifp 'shop.goods.edit'}
 								<input type="text" class="form-control" name="displayorder[{$item['id']}]" value="{$item['displayorder']}">
 								{else}
 								{$item['displayorder']} 
 								{/if}
 							</td>
-							<td title="{$item['title']}">
+							<td width="6%" title="{$item['title']}">
 								<img src="{php echo tomedia($item['thumb'])}" style="width:40px;height:40px;padding:1px;border:1px solid #ccc;"  />
 							</td>
-							<td title="{$item['title']}" class='tdedit'>
+							<td title="{$item['title']}" class='tdedit' width="26%">
 								{if !empty($category[$item['pcate']])}
 								<span class="text-danger">[{$category[$item['pcate']]['name']}]</span>
 								{/if}
@@ -321,6 +467,15 @@
 								{/if}
 								{if !empty($category[$item['tcate']]) && intval($shopset['catlevel'])==3}
 								<span class="text-info">[{$category[$item['tcate']]['name']}]</span>
+								{/if}
+								{if !empty($category2[$item['pcate1']])}
+								<b>,</b> <span class="text-danger">[{$category2[$item['pcate1']]['name']}]</span>
+								{/if}
+								{if !empty($category2[$item['ccate1']])}
+								<span class="text-info">[{$category2[$item['ccate1']]['name']}]</span>
+								{/if}
+								{if !empty($category2[$item['tcate1']]) && intval($shopset['catlevel'])==3}
+								<span class="text-info">[{$category2[$item['tcate1']]['name']}]</span>
 								{/if}
 								<br/>
 								{ifp 'shop.goods.edit'}
@@ -336,20 +491,7 @@
 								{$item['title']}
 								{/if}
 							</td>
-							<td>
-
-								<label data='{$item['isnew']}' class='label label-default {if $item['isnew']==1}label-info{else}{/if}'   {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'new')"{/if}>新品</label>
-								<label data='{$item['ishot']}' class='label label-default {if $item['ishot']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'hot')"{/if}>热卖</label>
-								<label data='{$item['isrecommand']}' class='label label-default {if $item['isrecommand']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'recommand')"{/if}>推荐</label>
-								<label data='{$item['isdiscount']}' class='label label-default {if $item['isdiscount']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'discount')"{/if}>促销</label>
-								<br/>
-								<label data='{$item['issendfree']}' class='label label-default {if $item['issendfree']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'sendfree')"{/if}>包邮</label>
-								<label data='{$item['istime']}' class='label label-default {if $item['istime']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'time')"{/if}>限时卖</label>
-								<label data='{$item['isnodiscount']}' class='label label-default {if $item['isnodiscount']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'nodiscount')"{/if}>不参与折扣</label>
-
-
-							</td>
-							<td class='tdedit'>
+							<td class='tdedit' width="16%">
 								{if $item['hasoption']==1}
 								{ifp 'shop.goods.edit'}
 								<span class='tip' title='多规格不支持快速修改'>{$item['marketprice']}</span>
@@ -369,10 +511,7 @@
 								{else}
 								{$item['marketprice']}
 								{/if}{/if}
-
-							</td>
-
-							<td class='tdedit'>
+								<br/>
 								{if $item['hasoption']==1}
 								{ifp 'shop.goods.edit'}
 								<span class='tip' title='多规格不支持快速修改'>{$item['total']}</span>
@@ -395,58 +534,12 @@
 
 							</td>
 
-
-							<td>{$item['salesreal']}</td>
-							<td class='tdedit'>
-								{if $item['hasoption']==1}
-								{ifp 'shop.goods.edit'}
-								<span class='tip' title='多规格不支持快速修改'>{$item['goodssn']}</span>
-								{else}
-								{$item['goodssn']}
-								{/if}
-								{else}
-								{ifp 'shop.goods.edit'}
-
-								<span class=' fa-edit-item' style='cursor:pointer'><i class='fa fa-pencil' style="display:none"></i> <span class="title">{$item['goodssn']}</span> </span>
-								<div class="input-group" style="display:none" data-goodsid="{$item['id']}">
-									<input type='text' class='form-control' value="{$item['goodssn']}"   />
-									<div class="input-group-btn">
-										<button type="button" class="btn btn-default" data-goodsid='{$item['id']}' data-type="goodssn"><i class="fa fa-check"></i></button>
-									</div>
-								</div>
-								{else}
-								{$item['goodssn']}
-								{/if}{/if}
-
-							</td>
-							<td class='tdedit'>
-								{if $item['hasoption']==1}
-								{ifp 'shop.goods.edit'}
-								<span class='tip' title='多规格不支持快速修改'>{$item['productsn']}</span>
-								{else}
-								{$item['productsn']}
-								{/if}
-								{else}
-								{ifp 'shop.goods.edit'}
-
-								<span class=' fa-edit-item' style='cursor:pointer'><i class='fa fa-pencil' style="display:none"></i> <span class="title">{$item['productsn']}</span> </span>
-								<div class="input-group" style="display:none" data-goodsid="{$item['id']}">
-									<input type='text' class='form-control' value="{$item['productsn']}"   />
-									<div class="input-group-btn">
-										<button type="button" class="btn btn-default" data-goodsid='{$item['id']}' data-type="productsn"><i class="fa fa-check"></i></button>
-									</div>
-								</div>
-								{else}
-								{$item['productsn']}
-								{/if}{/if}
-
-							</td>
-							<td>
+							<td >{$item['salesreal']}</td>
+							<td >
 
                                 {if p('supplier')}
                                 {if $_W['isfounder'] == 1}
                                     <label data='{$item['status']}' class='label  label-default {if $item['status']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'status')"{/if}>{if $item['status']==1}上架{else}下架{/if}</label>
-                                    <label data='{$item['type']}' class='label  label-default {if $item['type']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'type')"{/if}>{if $item['type']==1}实体物品{else}虚拟物品{/if}</label>
                                 {else}
                                     <?php $roleid = pdo_fetchcolumn('select id from' . tablename('sz_yi_perm_role') . ' where status1=1')?>
                                     <?php $userroleid = pdo_fetchcolumn('select roleid from' . tablename('sz_yi_perm_user') . ' where uid=' . $_W['uid'])?>
@@ -457,29 +550,46 @@
                                     {/if}
                                     {if $item['status']==1}上架{else}下架{/if}
                                     </label>
-                                    <label data='{$item['type']}' class='label  label-default {if $item['type']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'type')"{/if}>{if $item['type']==1}实体物品{else}虚拟物品{/if}</label>
                                 {/if}
                             {else}
                                 <label data='{$item['status']}' class='label  label-default {if $item['status']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'status')"{/if}>{if $item['status']==1}上架{else}下架{/if}</label>
-                                <label data='{$item['type']}' class='label  label-default {if $item['type']==1}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'type')"{/if}>{if $item['type']==1}实体物品{else}虚拟物品{/if}</label>
                             {/if}
 
 							</td>
-							<td style="position:relative;">
+							<td style="position:relative;" width="20%">
 								<a href="javascript:;" data-url="{php echo $this->createMobileUrl('shop/detail', array('id' => $item['id']))}"  title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>
+								{ifp 'shop.goods.copy'}<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'] ,'op' =>'copygoods'))}"  title="复制商品" class="btn btn-default btn-smjs-clip"><i class="fa fa-article"></i></a>{/if}
 								{ifp 'shop.goods.edit|shop.goods.view'}<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'], 'op' => 'post'))}"class="btn btn-sm btn-default" title="{ifp 'shop.goods.edit'}编辑{else}查看{/if}"><i class="fa fa-pencil"></i></a>{/if}
 								{ifp 'shop.goods.delete'}<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'], 'op' => 'delete'))}" onclick="return confirm('确认删除此商品？');
 										return false;" class="btn btn-default  btn-sm" title="删除"><i class="fa fa-times"></i></a>{/if}
 							</td>
 						</tr>
+						<tr>
+						<td  colspan="10" style="text-align: right;padding: 6px 30px;border-top:none;">
+						<label data='{$item['isnew']}' class='label label-default text-default {if $item['isnew']==1}label-info text-pinfo{else}{/if}'   {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'new')"{/if}>新品</label>-
+
+						<label data='{$item['ishot']}' class='label label-default text-default {if $item['ishot']==1}label-info text-pinfo{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'hot')"{/if}>热卖</label>-
+
+						<label data='{$item['isrecommand']}' class='label label-default text-default {if $item['isrecommand']==1}label-info text-pinfo{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'recommand')"{/if}>推荐</label>-
+
+						<label data='{$item['isdiscount']}' class='label label-default text-default {if $item['isdiscount']==1}label-info text-pinfo{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'discount')"{/if}>促销</label>-
+
+						<label data='{$item['issendfree']}' class='label label-default text-default {if $item['issendfree']==1}label-info text-pinfo{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'sendfree')"{/if}>包邮</label>-
+
+						<label data='{$item['istime']}' class='label label-default text-default {if $item['istime']==1}label-info text-pinfo{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'time')"{/if}>限时卖</label>-
+
+						<label data='{$item['isnodiscount']}' class='label label-default text-default {if $item['isnodiscount']==1}label-info text-pinfo{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'nodiscount')"{/if}>不参与折扣</label>
+
+						</td>
+						</tr>
 						{/loop}
 						<tr>
-							<td colspan='9'>
+							<td colspan='10'>
 								{ifp 'shop.goods.add'}
-								<a class='btn btn-default' href="{php echo $this->createWebUrl('shop/goods',array('op'=>'post'))}"><i class='fa fa-plus'></i> 添加商品</a>
+								<a class='btn btn-primary' href="{php echo $this->createWebUrl('shop/goods',array('op'=>'post'))}"><i class='fa fa-plus'></i> 发布商品</a>
 								{/if}
 								{ifp 'shop.goods.edit'}
-								<input name="submit" type="submit" class="btn btn-primary" value="提交排序">
+								<input name="submit" type="submit" class="btn btn-default" value="提交排序">
 								<input type="hidden" name="token" value="{$_W['token']}" />
 								{/if}
 
@@ -493,6 +603,9 @@
 			</div>
 		</div>
 	</form>
+</div>
+</div>
+</div>
 </div>
 <script type="text/javascript">
 	function fastChange(id, type, value) {
@@ -565,7 +678,7 @@
 			}
 			$(obj).attr("data", d.data);
 			if (d.result == 1) {
-				$(obj).toggleClass("label-info");
+				$(obj).toggleClass("label-info text-pinfo");
 			}
 		}
 		, "json"

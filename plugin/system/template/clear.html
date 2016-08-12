@@ -1,9 +1,12 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
+
 {template 'tabs'}
 <link href="../addons/sz_yi/static/js/dist/select2/select2.css" rel="stylesheet">
 <link href="../addons/sz_yi/static/js/dist/select2/select2-bootstrap.css" rel="stylesheet">
 <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2.min.js"></script>
 <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2_locale_zh-CN.js"></script>
+<div class="rightlist">
 <div class="main">
     <form id="dataform" action="" method="post" class="form-horizontal form">
         <div class="panel panel-default">
@@ -11,6 +14,7 @@
                 数据清理工具
             </div>
             <div class="panel-body">
+            	{if $_W['isfounder']}
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">选择公众号</label>
                     <div class="col-sm-9">
@@ -23,6 +27,7 @@
 						</select>
                     </div>
                 </div>
+                {/if}
 				<div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">
 			    <label>
@@ -89,7 +94,7 @@
    				
 	    <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">   <label>
-				 <input type='checkbox'  class="checkline-all" value="commission" /> 芸众分销
+				 <input type='checkbox'  class="checkline-all" value="commission" />&nbsp;　分销
 			    </label>	</label>
                     <div class="col-sm-9">
 			    <label class="checkbox-inline">
@@ -246,7 +251,7 @@
 		{if p('coupon')}
 		 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><label>
-				 <input type='checkbox'  class="checkline-all" value="coupon"  /> 超级券
+				 <input type='checkbox'  class="checkline-all" value="coupon"  />　超级券
 			    </label></label>
                     <div class="col-sm-9">
 			    <label class="checkbox-inline">
@@ -277,7 +282,29 @@
 				 <input type='checkbox' value="log" name="postera[]" /> 关注记录
 			    </label>	
 			 </div>
-	    </div>	
+	    </div>
+
+		<div class="form-group">
+			<label class="col-xs-12 col-sm-3 col-md-2 control-label">
+				<label>
+					<input type='checkbox'  class="checkline-all" value="return" /> 全返
+				</label>
+			</label>
+			<div class="col-sm-9">
+				<label class="checkbox-inline">
+					<input type='checkbox' value="order" name="return[]" /> 单笔订单返现队列
+				</label>	
+				<label class="checkbox-inline">
+					<input type='checkbox' value="total" name="return[]" /> 订单累计金额返现队列
+				</label>	
+				<label class="checkbox-inline">
+					<input type='checkbox' value="queue" name="return[]" /> 排列返现队列
+				</label>
+				<label class="checkbox-inline">
+					<input type='checkbox' value="money" name="return[]" /> 订单累计金额
+				</label>					
+			</div>
+		</div>
 				<div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9">
@@ -290,14 +317,18 @@
 
     </form>
 </div>
+</div>
+</div>
 <script type="text/javascript">
 
 	$(function () {
+		{if $_W['isfounder']}
 		$('#wechatid').select2({
 			search: true,
 			placeholder: "请选择公众号",
 			allowClear: true
 		});
+		{/if}
 		$('.checkline-all').click(function(){
 			var checked  =$(this).get(0).checked;
 			 
@@ -307,9 +338,9 @@
 			})
 		})
 	})
-
+	
 	function formcheck() {
-
+		{if $_W['isfounder']}
 		if ($("#wechatid").val() == '') {
 			alert("请选择要清除的公众号!");
 			return false;
@@ -319,8 +350,11 @@
 			wechatname = '全部公众号';
 		}
 		return confirm('您选择的公众号是: ' + wechatname + ' ，是否确认操作?');
+		{else}
+		return confirm('您是否确认操作?');
+		{/if}
 	}
- 
+ 	
 </script>
 
 {template 'web/_footer'}

@@ -14,7 +14,7 @@
     .detail_user .info .info1 {height:54px; width:100%; float:left;margin-left:-30px;margin-right:-30px;}
     .detail_user .info .info1 .inner { margin-left:30px;margin-right:30px;overflow:hidden;}
     .detail_user .info .info1 .inner .user {height:30px; width:100%; font-size:16px; color:#333; line-height:35px;overflow:hidden;}
-    .detail_user .info .info1 .inner .address {height:20px; width:100%; font-size:14px; color:#999; line-height:20px;overflow:hidden;}
+    .detail_user .info .info1 .inner .address {height:20px; width:100%; font-size:14px; color:#999; line-height:20px;overflow:hidden;margin:0;border:0;}
     .detail_user .info .ico2 {height:50px; width:30px;padding-top:15px; float:right; font-size:16px; text-align:right; color:#999;}
 
     .detail_exp {height:42px; width:94%; background:#fff; padding:0px 3%; border-bottom:1px solid #eaeaea; line-height:42px; font-size:16px; color:#333;}
@@ -25,13 +25,13 @@
     .detail_good {height:auto;padding:10px;background:#fff;  margin-top:16px; border-top:1px solid #eaeaea;}
     .detail_good .ico {height:6px; width:10%; line-height:36px; float:left; text-align:center;}
     .detail_good .shop {height:36px; width:90%; padding-left:10%; border-bottom:1px solid #eaeaea; line-height:36px; font-size:18px; color:#333;}
-    .detail_good .good {height:50px; width:100%; padding:10px 0px; border-bottom:1px solid #eaeaea;}
+    .detail_good .good {if $order['cashier']==1}{height:100px; width:100%; padding:10px 0px; border-bottom:1px solid #eaeaea;}{else}{height:50px; width:100%; padding:10px 0px; border-bottom:1px solid #eaeaea;}{/if}
     .detail_good .img {height:50px; width:50px; float:left;}
     .detail_good .img img {height:100%; width:100%;}
     .detail_good .info {width:100%;float:left; margin-left:-50px;margin-right:-60px;}
     .detail_good .info .inner { margin-left:60px;margin-right:60px; }
     .detail_good .info .inner .name {height:32px; width:100%; float:left; font-size:12px; color:#555;overflow:hidden;}
-    .detail_good .info .inner .option {height:16px; width:100%; float:left; font-size:12px; color:#888;overflow:hidden;word-break: break-all}
+    .detail_good .info .inner .option {if $order['cashier']==1}{height:22px; width:100%; float:left; font-size:12px; color:#888;overflow:hidden;word-break: break-all}{else}{height:16px; width:100%; float:left; font-size:12px; color:#888;overflow:hidden;word-break: break-all}{/if}
     .detail_good span { color:#666;}
     .detail_good .price { float:right;width:60px;;height:54px;margin-left:-60px;;}
     .detail_good .price .pnum { height:20px;width:100%;text-align:right;font-size:14px; }
@@ -43,7 +43,7 @@
     .detail_price .price .line span {height:26px; width:auto; float:right;}
     
    
-    .detail_pay {height:60px; width:94%; background:#fff; padding:0px 3%; margin-top:30px; border-top:1px solid #eaeaea;position:fixed;bottom:0px}
+    .detail_pay {height:60px; width:100%; background:#fff; padding:0px 1%; margin-top:30px; border-top:1px solid #eaeaea;position:fixed;bottom:0px;max-width: 720px;box-sizing: border-box;}
     .detail_pay span {height:60px; width:auto; margin-right:16px; float:right; line-height:60px; color:#ff771b; font-size:16px;}
     .detail_pay .paysub {height:38px; width:auto;margin-left:5px; background:#ff771b; padding:0px 10px; margin-top:10px; border-radius:5px; color:#fff; line-height:38px; float:right;}
     
@@ -144,7 +144,7 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
 <%/if%>
 
     <%if order.isverify==1%>
-    <div class="store_title" onclick="showStores(this)" show="1" >适用的门店
+   <!--  <div class="store_title" onclick="showStores(this)" show="1" >适用的门店
          <i class="fa fa-angle-down" style="float:right; line-height:44px; font-size:26px;"></i>
     </div>
   
@@ -191,16 +191,8 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
     <%if stores.length>=3%>
      <div class="store_more" onclick="$('#store_more').show();$(this).remove()">显示更多 <i class="fa fa-angle-double-down"></i></div>
      <%/if%> 
-      </div>
-    
-   
-    <%else%>
-    
-	
- 
-
-
- <%if order.addressid!=0%>
+      </div> -->
+     <%if order.addressid!=0%>
 <div class="detail_user">
     <input type='hidden' id='addressid' value='<%address.id%>' />
     <div class="info">
@@ -229,7 +221,56 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
          </div>
     </div>
 </div>
+
+<div class="detail_user">
+     <input type='hidden' id='carrierindex' value='0' />
+    <div class="info" id='carrier_select' >
+            <div class='info1'>
+                 <div class='inner'>
+                     <div class="user" style="font-size: 14px;padding-left: 10px">提货人姓名：<span id='carrier_realname' ><%carrier.carrier_realname%></span></div>
+                     <div class="user" style="font-size: 14px;padding-left: 10px">提货人手机：<span id='carrier_mobile'><%carrier.carrier_mobile%></span></div>
+                 </div>
+         </div>
+    </div>
+</div>
  <%/if%>
+   
+    <%else%>
+    
+	
+ 
+
+
+ <%if order.addressid!=0%>
+<div class="detail_user">
+    <input type='hidden' id='addressid' value='<%address.id%>' />
+    <div class="info">
+        <div class="ico"><i class="fa fa-map-marker"></i></div>
+         <div class='info1'>
+                 <div class='inner'>
+                        <div class="user">收件人：<span id='address_realname'><%address.realname%></span>(<span id='address_mobile'><%address.mobile%></span>)</div>
+                        <div class="address"><span id='address_address'><%address.address%></span></div>
+                 </div>
+             </div>
+   
+    </div>
+</div>
+ <%/if%>
+ 
+<!--  <%if order.dispatchtype==1%>
+ <div class="detail_user">
+     <input type='hidden' id='carrierindex' value='0' />
+    <div class="info" id='carrier_select' >
+        <div class="ico"><i class="fa fa-map-marker"></i></div>
+            <div class='info1'>
+                 <div class='inner'>
+                     <div class="user">自提地点：<span id='carrier_realname'><%carrier.realname%></span>(<span id='carrier_mobile'><%carrier.mobile%></span>)</div>
+                     <div class="address"><span id='carrier_address'><%carrier.address%></span></div>
+                 </div>
+         </div>
+    </div>
+</div>
+ <%/if%> -->
  <%/if%>
  
  
@@ -255,13 +296,26 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
     <div class="shop"><%set.name%></div>
     <%each goods as g%>
      <div class="good">
-            <div class="img"  onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'"><img src="<%g.thumb%>"/></div>
-            <div class='info' onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
-                <div class='inner'>
-                       <div class="name"><%g.title%></div>     
-                       <div class='option'><%if g.optionid!='0'%>规格:  <%g.optiontitle%><%/if%></div>
-                </div>
-            </div>
+            <%if order.cashier==1%>
+              <div class="img"  ><img src="<%order.name.thumb%>"/></div>
+              <div class='info' >
+              <div class='inner'>
+                         <div class="name"><%order.name.name%><span style="color:red">(收银台支付)</span></div>     
+                         <div class='option'><%order.name.contact%></div>
+                         <div class='option'><%order.name.mobile%></div>
+                         <div class='option'><%order.name.address%></div>
+                  </div>
+              </div>
+            <%else%>
+              <div class="img" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'"><img src="<%g.thumb%>"/></div>
+              <div class='info'onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
+             
+                  <div class='inner'>
+                         <div class="name"><%if order.cashier==1%><%order.name.name%><span style="color:red">(收银台支付)</span><%else%><%g.title%><%/if%></div>     
+                         <div class='option'><%if g.optionid!='0'%>规格:  <%g.optiontitle%><%/if%></div>
+                  </div>
+              </div>
+            <%/if%> 
             <div class="price">
                 <div class='pnum'><span class='marketprice'>￥<%g.price%></span></div>
                 <div class='pnum'><span class='total'>×<%g.total%></span></div>
@@ -302,20 +356,25 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
 <div class="detail_price" >
     <input type="hidden" id="weight" value="<%weight%>" />
     <div class="price">
+		<div class="line">订单编号:<span><span class='goodsprice'><%order.ordersn%></span></span></div>
         <div class="line">商品小计:<span>￥<span class='goodsprice'><%order.goodsprice%></span></span></div>
         	
         <div class="line">运费:<span>￥<span class='dispatchprice'><%order.olddispatchprice%></span></span></div>
       
 	
         <%if order.discountprice>0%>
-        <div class="line">会员折扣:<span>-￥<span class='discountprice'><%order.discountprice%></span></span></div>
+        <div class="line">优惠:<span>-￥<span class='discountprice'><%order.discountprice%></span></span></div>
         <%/if%>
         <%if order.deductprice>0%>
-        <div class="line">积分抵扣:<span>-￥<span class='deductprice'><%order.deductprice%></span></span></div>
+        <div class="line">{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}抵扣:<span>-￥<span class='deductprice'><%order.deductprice%></span></span></div>
         <%/if%>
         <%if order.deductcredit2>0%>
-        <div class="line">余额抵扣:<span>-￥<span class='deductprice2'><%order.deductcredit2%></span></span></div>
+        <div class="line">{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}抵扣:<span>-￥<span class='deductprice2'><%order.deductcredit2%></span></span></div>
         <%/if%>
+        <%if order.deductenough!=0%>
+        <div class="line">满额立减：<span><%if order.deductenough>0%>-<%/if%>￥<span class='deductenough'><%order.deductenough%></span></span></div>
+        <%/if%>
+        
         <%if order.changeprice!=0%>
         <div class="line">改价优惠:<span><%if order.changeprice>0%>+<%/if%>￥<span class='changeprice2'><%order.changeprice%></span></span></div>
         <%/if%>
@@ -375,11 +434,7 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
              <div class="paysub1 order_delete">删除订单</div>
       <%/if%>
       <%if order.canrefund%>
-         <%if order.refundid!=0%>
-               <div class="paysub order_refund">退款申请中</div>
-         <%else%>
-               <div class="paysub order_refund">申请退款</div>
-         <%/if%>
+            <div class="paysub order_refund"><%order.refund_button%></div>
       <%/if%> 
        <%if order.isverify=='1' %>
               <%if order.verified!='1'%>
@@ -503,7 +558,8 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
                          },true,true);
                  });
 
-         }, true, true);
+         },true, true);
    });
 </script>
 {template 'common/footer'}
+

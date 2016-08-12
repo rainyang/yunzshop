@@ -1,6 +1,7 @@
 <?php
 //芸众商城 QQ:913768135
 global $_W, $_GPC;
+ca('yunpay.yunpay');
 $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
     ':uniacid' => $_W['uniacid']
 ));

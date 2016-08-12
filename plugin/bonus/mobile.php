@@ -16,16 +16,17 @@ class BonusMobile extends Plugin
     public function __construct()
     {
         parent::__construct('bonus');
-        $this->set = $this->getSet();
         global $_GPC;
-        /*if ($_GPC['method'] != 'register' && $_GPC['method'] != 'myshop') {
-            $openid = m('user')->getOpenid();
-            $member = m('member')->getMember($openid);
-            if ($member['isagent'] != 1 || $member['status'] != 1) {
-                header('location:' . $this->createPluginMobileUrl('commission/register'));
-                exit;
+        $this->set = $this->getSet();
+        $openid = m('user')->getOpenid();
+        $isbonus = $this->model->isLevel($openid);
+        if($isbonus == false && $_GPC['method'] != 'register'){
+            if($_GPC['method'] == 'agent_info' || $_GPC['method'] == 'agency'){
+                
+            }else{
+                redirect($this->createPluginMobileUrl('bonus/register'));
             }
-        }*/
+        }
     }
     public function index()
     {
@@ -40,6 +41,10 @@ class BonusMobile extends Plugin
         $this->_exec_plugin(__FUNCTION__, false);
     }
     public function order()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function order_area()
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
@@ -64,6 +69,14 @@ class BonusMobile extends Plugin
         $this->_exec_plugin(__FUNCTION__, false);
     }
     public function log()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function agent_info()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function agency()
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }

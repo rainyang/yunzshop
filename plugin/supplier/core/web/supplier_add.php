@@ -1,19 +1,7 @@
 <?php
 global $_W, $_GPC;
-$perms = pdo_fetch('select * from ' . tablename('sz_yi_perm_role') . ' where status1 = 1');
-if(empty($perms)){
-    $data = array(
-        'rolename' => '供应商',
-        'status' => 1,
-        'status1' => 1,
-        'perms' => 'shop,shop.goods,shop.goods.view,shop.goods.add,shop.goods.edit,shop.goods.delete,order,order.view,order.view.status_1,order.view.status0,order.view.status1,order.view.status2,order.view.status3,order.view.status4,order.view.status5,order.view.status9,order.op,order.op.pay,order.op.send,order.op.sendcancel,order.op.finish,order.op.verify,order.op.fetch,order.op.close,order.op.refund,order.op.export,order.op.changeprice',
-        'deleted' => 0
-        );
-    pdo_insert('sz_yi_perm_role' , $data);
-    $logid = pdo_insertid();
-}else{
-    $logid = $perms['id'];
-}
+//查询供应商角色权限id
+$permid = $this->model->getSupplierPermId();
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 load()->model('user');
 if($operation == 'post'){
@@ -36,7 +24,7 @@ if($operation == 'post'){
         $data = array(
             'uniacid' => $_W['uniacid'], 
             'username' => trim($_GPC['username']), 
-            'roleid' => $logid, 
+            'roleid' => $permid, 
             'status' => 1, 
             'perms' => is_array($_GPC['perms']) ? implode(',', $_GPC['perms']) : '');
         if (!empty($su_info['id'])) {
@@ -60,6 +48,13 @@ if($operation == 'post'){
                 $data['password'] = $pwd['password'];
                 pdo_insert('uni_account_users', array('uid' => $data['uid'], 'uniacid' => $data['uniacid'], 'role' => 'operator'));
                 pdo_insert('sz_yi_perm_user', $data);
+                $insert = array(
+                    'uniacid'       => $_W['uniacid'],
+                    'uid'           => $data['uid'],
+                    'type'          => 'sz_yi',
+                    'permission'    => 'sz_yi_menu_shop|sz_yi_menu_order|sz_yi_menu_plugins'
+                );
+                pdo_insert('users_permission', $insert);
                 $id = pdo_insertid();
                 plog('perm.user.add', "添加操作员 ID: {$id} 用户名: {$data['username']} ");
             }
@@ -75,6 +70,7 @@ if($operation == 'post'){
         message('抱歉，操作员不存在或是已经被删除！', $this->createPluginWebUrl('supplier/supplier'), 'error');
     }
     pdo_delete('sz_yi_perm_user', array('id' => $id, 'uniacid' => $_W['uniacid']));
+    pdo_delete('users', array('uid' => $item['uid']));
     plog('supplier.supplier.delete', "删除操作员 ID: {$id} 用户名: {$item['username']} ");
     message('操作员删除成功！', $this->createPluginWebUrl('supplier/supplier'), 'success');
 }

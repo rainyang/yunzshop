@@ -7,6 +7,13 @@ global $_W, $_GPC;
 //check_shop_auth
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $type = intval($_GPC['type']);
+//Author:ym Date:2016-08-05 Content:添加供应商判断
+$perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+if($perm_role == 1){
+    $supplier_uid = $_W['uid'];
+}else{
+    $supplier_uid = 0;
+}
 if ($operation == 'display') {
 	ca('coupon.coupon.view');
 	if (!empty($_GPC['displayorder'])) {
@@ -43,7 +50,7 @@ if ($operation == 'display') {
 		$condition .= ' AND coupontype = :coupontype';
 		$params[':coupontype'] = intval($_GPC['type']);
 	}
-	$sql = 'SELECT * FROM ' . tablename('sz_yi_coupon') . ' ' . " where  1 and {$condition} ORDER BY displayorder DESC,id DESC LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
+	$sql = 'SELECT * FROM ' . tablename('sz_yi_coupon') . ' ' . " where  1 and {$condition} and supplier_uid={$supplier_uid} ORDER BY displayorder DESC,id DESC LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
 	$list = pdo_fetchall($sql, $params);
 	foreach ($list as &$row) {
 		$row['gettotal'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_coupon_data') . ' where couponid=:couponid and uniacid=:uniacid limit 1', array(':couponid' => $row['id'], ':uniacid' => $_W['uniacid']));
@@ -52,17 +59,45 @@ if ($operation == 'display') {
 		$row['pwdoks'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_coupon_guess') . ' where couponid=:couponid and uniacid=:uniacid and ok=1 limit 1', array(':couponid' => $row['id'], ':uniacid' => $_W['uniacid']));
 	}
 	unset($row);
-	$total = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_coupon') . " where 1 and {$condition}", $params);
+	$total = pdo_fetchcolumn('SELECT COUNT(*) FROM ' . tablename('sz_yi_coupon') . " where 1 and {$condition} and supplier_uid={$supplier_uid}", $params);
 	$pager = pagination($total, $pindex, $psize);
 } elseif ($operation == 'post') {
 	$id = intval($_GPC['id']);
+	$shopset = m('common')->getSysset('shop');
+	$sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid and supplier_uid='.$supplier_uid.' ORDER BY `parentid`, `displayorder` DESC';
+	$category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
+	$result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid']);
+
+	$parent = $children = array();
+	if (!empty($category)) {
+	    foreach ($category as $cid => $cate) {
+	        if (!empty($cate['parentid'])) {
+	            $children[$cate['parentid']][] = $cate;
+	        } else {
+	            $parent[$cate['id']] = $cate;
+	        }
+	    }
+	}
+
 	if (empty($id)) {
 		ca('coupon.coupon.add');
 	} else {
 		ca('coupon.coupon.view|coupon.coupon.edit');
 	}
 	if (checksubmit('submit')) {
-		$data = array('uniacid' => $_W['uniacid'], 'couponname' => trim($_GPC['couponname']), 'coupontype' => intval($_GPC['coupontype']), 'catid' => intval($_GPC['catid']), 'timelimit' => intval($_GPC['timelimit']), 'usetype' => intval($_GPC['usetype']), 'returntype' => intval($_GPC['returntype']), 'enough' => trim($_GPC['enough']), 'timedays' => intval($_GPC['timedays']), 'timestart' => strtotime($_GPC['time']['start']), 'timeend' => strtotime($_GPC['time']['end']), 'backtype' => intval($_GPC['backtype']), 'deduct' => trim($_GPC['deduct']), 'discount' => trim($_GPC['discount']), 'backmoney' => trim($_GPC['backmoney']), 'backcredit' => trim($_GPC['backcredit']), 'backredpack' => trim($_GPC['backredpack']), 'backwhen' => intval($_GPC['backwhen']), 'gettype' => intval($_GPC['gettype']), 'getmax' => intval($_GPC['getmax']), 'credit' => intval($_GPC['credit']), 'money' => trim($_GPC['money']), 'usecredit2' => intval($_GPC['usecredit2']), 'total' => intval($_GPC['total']), 'bgcolor' => trim($_GPC['bgcolor']), 'thumb' => save_media($_GPC['thumb']), 'remark' => trim($_GPC['remark']), 'desc' => htmlspecialchars_decode($_GPC['desc']), 'descnoset' => intval($_GPC['descnoset']), 'status' => intval($_GPC['status']), 'resptitle' => trim($_GPC['resptitle']), 'respthumb' => save_media($_GPC['respthumb']), 'respdesc' => trim($_GPC['respdesc']), 'respurl' => trim($_GPC['respurl']), 'pwdkey' => trim($_GPC['pwdkey']), 'pwdwords' => trim($_GPC['pwdwords']), 'pwdask' => trim($_GPC['pwdask']), 'pwdsuc' => trim($_GPC['pwdsuc']), 'pwdfail' => trim($_GPC['pwdfail']), 'pwdfull' => trim($_GPC['pwdfull']), 'pwdurl' => trim($_GPC['pwdurl']), 'pwdtimes' => intval($_GPC['pwdtimes']), 'pwdopen' => intval($_GPC['pwdopen']), 'pwdown' => trim($_GPC['pwdown']), 'pwdexit' => trim($_GPC['pwdexit']), 'pwdexitstr' => trim($_GPC['pwdexitstr']));
+		$data = array('uniacid' => $_W['uniacid'], 'getcashier' => intval($_GPC['getcashier']), 'getstore' => intval($_GPC['getstore']), 'couponname' => trim($_GPC['couponname']), 'coupontype' => intval($_GPC['coupontype']), 'catid' => intval($_GPC['catid']), 'timelimit' => intval($_GPC['timelimit']), 'usetype' => intval($_GPC['usetype']), 'returntype' => intval($_GPC['returntype']), 'enough' => trim($_GPC['enough']), 'timedays' => intval($_GPC['timedays']), 'timestart' => strtotime($_GPC['time']['start']), 'timeend' => strtotime($_GPC['time']['end']), 'backtype' => intval($_GPC['backtype']), 'deduct' => trim($_GPC['deduct']), 'discount' => trim($_GPC['discount']), 'backmoney' => trim($_GPC['backmoney']), 'backcredit' => trim($_GPC['backcredit']), 'backredpack' => trim($_GPC['backredpack']), 'backwhen' => intval($_GPC['backwhen']), 'gettype' => intval($_GPC['gettype']), 'getmax' => intval($_GPC['getmax']), 'credit' => intval($_GPC['credit']), 'money' => trim($_GPC['money']), 'usecredit2' => intval($_GPC['usecredit2']), 'total' => intval($_GPC['total']), 'bgcolor' => trim($_GPC['bgcolor']), 'thumb' => save_media($_GPC['thumb']), 'remark' => trim($_GPC['remark']), 'desc' => htmlspecialchars_decode($_GPC['desc']), 'descnoset' => intval($_GPC['descnoset']), 'status' => intval($_GPC['status']), 'resptitle' => trim($_GPC['resptitle']), 'respthumb' => save_media($_GPC['respthumb']), 'respdesc' => trim($_GPC['respdesc']), 'respurl' => trim($_GPC['respurl']), 'pwdkey' => trim($_GPC['pwdkey']), 'pwdwords' => trim($_GPC['pwdwords']), 'pwdask' => trim($_GPC['pwdask']), 'pwdsuc' => trim($_GPC['pwdsuc']), 'pwdfail' => trim($_GPC['pwdfail']), 'pwdfull' => trim($_GPC['pwdfull']), 'pwdurl' => trim($_GPC['pwdurl']), 'pwdtimes' => intval($_GPC['pwdtimes']), 'pwdopen' => intval($_GPC['pwdopen']), 'pwdown' => trim($_GPC['pwdown']), 'pwdexit' => trim($_GPC['pwdexit']), 'pwdexitstr' => trim($_GPC['pwdexitstr']));
+		//添加指定分类
+		$data['categoryids'] = iserializer($_GPC['categoryids']);
+		$data['categorynames'] = iserializer($_GPC['categorynames']);
+		//添加指定商品
+		$data['goodsids'] = iserializer($_GPC['goodsids']);
+		$data['goodsnames'] = iserializer($_GPC['goodsnames']);
+		//添加指定收银台
+		$data['cashiersids'] = iserializer($_GPC['cashiersids']);
+		$data['cashiersnames'] = iserializer($_GPC['cashiersnames']);
+		//添加指定核销门店
+		$data['storeids'] = iserializer($_GPC['storeids']);
+		$data['storenames'] = iserializer($_GPC['storenames']);
 		if (!empty($id)) {
 			if (!empty($data['pwdkey'])) {
 				$pwdkey = pdo_fetchcolumn('SELECT pwdkey FROM ' . tablename('sz_yi_coupon') . ' WHERE id=:id and uniacid=:uniacid limit 1 ', array(':id' => $id, ':uniacid' => $_W['uniacid']));
@@ -108,6 +143,14 @@ if ($operation == 'display') {
 		message('更新优惠券成功！', $this->createPluginWebUrl('coupon/coupon'), 'success');
 	}
 	$item = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_coupon') . ' WHERE id =:id and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $id));
+	$item['categoryids'] = unserialize($item['categoryids']);
+	$item['categorynames'] = unserialize($item['categorynames']);
+	$item['goodsids'] = unserialize($item['goodsids']);
+	$item['goodsnames'] = unserialize($item['goodsnames']);
+	$item['cashiersids'] = unserialize($item['cashiersids']);
+	$item['cashiersnames'] = unserialize($item['cashiersnames']);
+	$item['storeids'] = unserialize($item['storeids']);
+	$item['storenames'] = unserialize($item['storenames']);
 	if (empty($item)) {
 		$starttime = time();
 		$endtime = strtotime(date('Y-m-d H:i:s', $starttime) . '+7 days');

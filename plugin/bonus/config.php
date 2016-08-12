@@ -5,5 +5,5 @@ if (!defined('IN_IA')) {
 return array(
     'version' => '1.0',
     'id' => 'bonus',
-    'name' => '亚美分红'
+    'name' => '芸众分红'
 );

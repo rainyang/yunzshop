@@ -69,4 +69,3 @@ if ($template_flag == 1) {
 } else {
     include $this->template('member/info');
 }
-

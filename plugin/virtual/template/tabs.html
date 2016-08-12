@@ -1,3 +1,4 @@
+<div class="ulleft-nav">
 <ul class="nav nav-tabs">
     
     {ifp 'virtual.temp'}<li {if $_GPC['method']=='temp'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('virtual/temp')}" style="cursor: pointer;">模板管理</a></li>{/if}
@@ -8,3 +9,4 @@
     {/if}
      {ifp 'virtual.set'}<li {if $_GPC['method']=='set'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('virtual/set')}" style="cursor: pointer;">基础设置</a></li>{/if}
 </ul>
+</div>

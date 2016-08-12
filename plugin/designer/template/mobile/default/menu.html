@@ -68,11 +68,12 @@
                         location.href = menu.url;
                          return;
                     }
+
                     var current = $(event.currentTarget).closest('li').find('.sub');
                     var h = current.height();
                     $scope.clear();
                     var bgalpha = $scope.params.bgalpha ;
-                    if( !$.isNumber(bgalpha) || parseFloat(bgalpha )>1){
+                    if( !$.isNumeric(bgalpha) || parseFloat(bgalpha )>1){
                         bgalpha = 1;
                     }
           

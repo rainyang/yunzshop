@@ -6,5 +6,5 @@ if (!defined('IN_IA')) {
 return array(
     'version' => '1.0',
     'id' => 'sale',
-    'name' => '营销宝'
+    'name' => '云支付'
 );

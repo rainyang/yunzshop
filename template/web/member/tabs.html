@@ -1,3 +1,5 @@
+<div class="ulleft-nav">
+<div class="addtit-name">会员管理</div>
 <ul class="nav nav-tabs">
     <li {if ($_GPC['p'] == 'list' || empty($_GPC['p']))} class="active" {/if}><a href="{php echo $this->createWebUrl('member/list',array('isagent'=>0))}">会员管理</a></li>
     
@@ -13,3 +15,4 @@
     <li {if $_GPC['p'] == 'group'} class="active" {/if}><a href="{php echo $this->createWebUrl('member/group')}">会员分组</a></li>
    
 </ul> 
+</div>

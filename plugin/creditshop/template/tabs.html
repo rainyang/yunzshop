@@ -1,3 +1,4 @@
+<div class="ulleft-nav">
 <ul class="nav nav-tabs">
     
     {ifp 'creditshop.cover'}<li {if $_GPC['method']=='cover'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('creditshop/cover')}">积分商城入口设置</a></li>{/if}
@@ -8,5 +9,5 @@
     {ifp 'creditshop.log.view1'}<li {if $_GPC['method']=='log' && $type==1}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('creditshop/log',array('type'=>1))}">抽奖记录</a></li>{/if}
     {ifp 'creditshop.notice'}<li  {if $_GPC['method']=='notice'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('creditshop/notice')}">通知设置</a></li>{/if}
     {ifp 'creditshop.set'}<li {if $_GPC['method']=='set'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('creditshop/set')}">基础设置</a></li>{/if}
-    
 </ul>
+</div>

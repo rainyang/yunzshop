@@ -1,9 +1,8 @@
 {template 'web/_header'}
-<ul class="nav nav-tabs">
-    <li class="active"><a href="javascript:;">淘宝宝贝助手</a></li>
-</ul>
+<div class="w1200 m0a">
+{template 'web/shop/tabs'}
 
-<div class="main">
+<div class="main rightlist">
     <form id="dataform" action="" method="post" class="form-horizontal form">
         <div class="panel panel-default">
             <div class="panel-heading">
@@ -27,9 +26,9 @@
 
                     <div class="col-sm-9">
                            {if $shopset['catlevel']==3}
-        {php echo tpl_form_field_category_3level('category', $parent, $children,0,0,0)}
+        {php echo tpl_form_field_category_level3('category', $parent, $children,0,0,0)}
         {else}
-        {php echo tpl_form_field_category_2level('category', $parent, $children,0,0)}
+        {php echo tpl_form_field_category_level2('category', $parent, $children,0,0)}
         {/if}
                     </div>
 
@@ -43,11 +42,15 @@
 
             </div>
         </div>
-        <div class="form-group col-sm-12">
-            <input id="btn_submit" type="button"  value="立即获取" class="btn btn-primary col-lg-12"  onclick="formcheck()"/>
-            <input type="hidden" name="token" value="{$_W['token']}" />
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label"> </label>
+            <div class="col-sm-9">
+                 <input id="btn_submit" type="button"  value="立即获取" class="btn btn-primary col-lg-12"  onclick="formcheck()"/>
+                 <input type="hidden" name="token" value="{$_W['token']}" />
+            </div>
         </div>
     </form>
+</div>
 </div>
 <script type="text/javascript">
  

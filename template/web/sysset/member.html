@@ -1,6 +1,24 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'web/sysset/tabs'}
-<div class="main">
+<div class="main rightlist">
+<!-- 新增加右侧顶部三级菜单 -->
+<div class="right-titpos">
+	<ul class="add-shopnav">
+    {ifp 'sysset.view.shop'}<li {if $_GPC['op']=='shop'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'shop'))}">商城设置</a></li>{/if}
+    {ifp 'shop.notice.view'}<li {if $_GPC['p'] == 'notice'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/notice')}">公告管理</a></li>{/if}
+    {ifp 'shop.adpc.view'}<li {if $_GPC['p'] == 'adpc'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/adpc')}">广告管理</a></li>{/if}
+    {ifp 'sysset.view.member'}<li  {if $_GPC['op']=='member'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'member'))}">会员设置</a></li>{/if}
+    {ifp 'sysset.view.template'}<li  {if $_GPC['op']=='template'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'template'))}">模板设置</a></li>{/if}
+    {ifp 'shop.adv.view'}<li {if $_GPC['p'] == 'adv'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/adv')}">幻灯片管理</a></li>{/if}
+    {ifp 'sysset.view.category'}<li  {if $_GPC['op']=='category'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'category'))}">分类层级</a></li>{/if}
+    {ifp 'sysset.view.contact'}<li  {if $_GPC['op']=='contact'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'contact'))}">联系方式</a></li>{/if}
+    {ifp 'sysset.view.sms'}<li  {if $_GPC['op']=='sms'}class="active"{/if}><a href="{php echo $this->createWebUrl('sysset',array('op'=>'sms'))}">短信设置</a></li>{/if}
+	</ul>
+</div>
+<!-- 新增加右侧顶部三级菜单结束 -->
+
+    <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <input type='hidden' name='setid' value="{$set['id']}" />
         <input type='hidden' name='op' value="member" />
@@ -24,14 +42,19 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级说明连接</label>
                     <div class="col-sm-9 col-xs-12">
                         {ifp 'sysset.save.member'}
-                        <input type="text" name="shop[levelurl]" class="form-control" value="{$set['shop']['levelurl']}" />
+                        <div class="input-group ">
+                            <input class="form-control" type="text" data-id="PAL-00010" placeholder="请填写指向的链接 (请以http://开头, 不填则不显示)" value="{$set['shop']['levelurl']}" name="shop[levelurl]">
+                            <span class="input-group-btn">
+                                <button class="btn btn-default nav-link" type="button" data-id="PAL-00010" >选择链接</button>
+                            </span>
+                        </div>
                         {else}
                         <input type="hidden" name="shop[levelurl]" value="{$set['shop']['levelurl']}" />
                         <div class='form-control-static'>{$set['shop']['levelurl']}</div>
                         {/if}
                     </div>
                 </div>
-                	<div class="form-group">
+                <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员等级升级依据</label>
                     <div class="col-sm-9 col-xs-12">
                         {ifp 'sysset.save.member'}
@@ -54,6 +77,43 @@
                         {/if}
                     </div>
                 </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">强制绑定手机</label>
+                    <div class="col-sm-9 col-xs-12">
+                        {ifp 'sysset.save.member'}
+                        <label class="radio radio-inline">
+                              <input type="radio" name="shop[isbindmobile]" value="0" {if empty($set['shop']['isbindmobile'])}checked{/if}/> 否
+                        </label>
+                       <label class="radio radio-inline">
+                              <input type="radio" name="shop[isbindmobile]" value="1" {if $set['shop']['isbindmobile']==1}checked{/if}/> 是
+                        </label>
+                        <span class="help-block">进入商城是否强制绑定手机号</span> 
+                        {/if}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员中心显示推荐人</label>
+                    <div class="col-sm-9 col-xs-12">
+                        {ifp 'sysset.save.member'}
+                        <label class="radio radio-inline">
+                              <input type="radio" name="shop[isreferrer]" value="0" {if empty($set['shop']['isreferrer'])}checked{/if}/> 否
+                        </label>
+                       <label class="radio radio-inline">
+                              <input type="radio" name="shop[isreferrer]" value="1" {if $set['shop']['isreferrer']==1}checked{/if}/> 是
+                        </label>
+                        <span class="help-block">会员中心显示推荐人</span> 
+                        {/if}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">清除重复会员</label>
+                    <div class="col-sm-9 col-xs-12">
+                        {ifp 'sysset.save.member'}
+                        <a class="btn btn-warning" href="{php echo $this->createWebUrl('member/query', array('op' => 'delfans'))}" data-original-title="" title="">清除</a>
+                        <span class="help-block">如会员管理中有重复的会员并id重复的信息,请点击清除</span> 
+                        {/if}
+                    </div>
+                </div>
                        <div class="form-group"></div>
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
@@ -69,4 +129,6 @@
         </div>     
     </form>
 </div>
+</div>
+{template 'web/sysset/mylink'}
 {template 'web/_footer'}     

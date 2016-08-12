@@ -1,13 +1,21 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 <script language="javascript">require(['underscore']);</script>
 <!-- 导入CSS样式 -->
 <link href="../addons/sz_yi/plugin/designer/template/imgsrc/designer.css" rel="stylesheet">
 <!-- 头部选项卡 -->
+
+<div class="ulleft-nav">
 <ul class="nav nav-tabs">
+<div class="addtit-name"> 店铺页面装修<article>发挥创意装修完美的店铺</article></div>
     <li {if $_GPC['op']=='display' || empty($_GPC['op'])}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('designer')}" >店铺装修</a></li>
    {if $_GPC['op']=='post'}<li class="active"><a href="#">页面编辑</a></li>{/if}
    <li ><a href="{php echo $this->createPluginWebUrl('designer/menu')}" >自定义菜单</a></li>
 </ul>
+</div>
+
+<div class="rightlist">
+   
 {if $op=='display'}
 <!-- 筛选区域 -->
 <div class="panel panel-info">
@@ -45,7 +53,7 @@
                     <th style="text-align: center;">页面创建时间</th>
                     <th style=" text-align: center;">最后修改时间</th>
                     <th style="text-align: center;">是否默认</th>
-                    <th style="text-align: center;">操作</th>
+                    <th style="text-align: center;width: 26%">操作</th>
                 </tr>
             </thead>
             <tbody>
@@ -96,8 +104,8 @@
                 {ifp 'designer.page.edit'}
                     <tr>
                         <td colspan="8">
-                            <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('designer', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加一个新页面</a>
-                            <span>Tips:自定义页面启用默认后将代替系统默认页面(商城首页、商品列表、商品详细)，同一个类型的页面仅允许设置一个默认页面</span>
+                            <a class='btn btn-primary' href="{php echo $this->createPluginWebUrl('designer', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新页面</a>
+                            <span>Tips:自定义页面启用默认后将代替系统默认页面(商城首页)，同一个类型的页面仅允许设置一个默认页面</span>
                         </td>
                     </tr>
                 {/if}
@@ -176,17 +184,15 @@
 </script>
 {elseif $op=='post'}
 <!-- 编辑页面 -->
-<div class='panel panel-default' ng-app="FoxEditor" style="background: #f2f2f2">
-    <div class='panel-heading'> 页面编辑 {if $_GPC['pageid']!=''}(ID: {$_GPC['pageid']}){/if}</div>
-    <div class='panel-body' ng-controller="FoxController">
+<div class='panel panel-default' ng-app="SZ_YIEditor">
+    <!--<div class='panel-heading'> 页面编辑 {if $_GPC['pageid']!=''}(ID: {$_GPC['pageid']}){/if}</div>-->
+    <div class='panel-body' ng-controller="SZ_YIController" style="padding:8px">
            <div class="fe-panel-menu">
                     <div ng-repeat="nav in navs">
-                        <nav ng-bind="nav.name" ng-click="addItem(nav.id)"></nav>
+                        <nav ng-click="addItem(nav.id)"><div class="comp-icon"><i class="fa {{nav.icon}}"></i></div><span ng-bind="nav.name"></span></nav>
                     </div>
             </div>
         <div class="fe">
-         
-            
             <div class="fe-phone">
                 <div class="fe-phone-left"></div>
                 <div class="fe-phone-center">
@@ -273,16 +279,16 @@
                         <div class="fe-save-main-text" style="color:#999; cursor: no-drop;">商品详细</div>
                     </div>
                     <input name="pagetype" type="hidden" value="{if empty($datas['pagetype'])}1{else}{$datas['pagetype']}{/if}" />
-                    <input name="pagename" type="text" style="height: 30px; width: 300px; border: 1px solid #bbb; border-radius: 3px; margin: 4px 10px; outline: none; padding-left: 10px;" placeholder="页面名称：快来给你的页面起一个响亮的名字" value="{$datas['pagename']}"/>
+                    <input name="pagename" type="text" style="height: 30px; width: 300px; border: 1px solid #bbb; border-radius: 3px; margin: 4px 10px; outline: none; padding-left: 10px;" placeholder="页面名称：输入页面名称" value="{$datas['pagename']}"/>
                 </div>
                 <div class="fe-save-submit2" ng-click="save(2)">保存并预览</div>
-                <div class="fe-save-submit" ng-click="save(1)">保存</div>
+                <div class="fe-save-submit save-submit" ng-click="save(1)">保存</div>
+                <div class="fe-back" onclick="history.back()">返回列表</div>
             </div>
             <div class="fe-save-fold" onclick="fold()"></div>
             <div class="fe-save-gotop" onclick="$(document.body).animate({scrollTop:0},500)"><i class="fa fa-angle-up"></i><br>返回顶部</div>
              {template 'modal'}
         </div>
-    </div>
 <!-- editor template  page start -->
 <script type="text/ng-template" id="edit-topbar.html">{template 'temp/edit-topbar'}</script>
 <script type="text/ng-template" id="edit-shop.html">{template 'temp/edit-shop'}</script>
@@ -298,6 +304,7 @@
 <script type="text/ng-template" id="edit-richtext.html">{template 'temp/edit-richtext'}</script>
 <script type="text/ng-template" id="edit-cube.html">{template 'temp/edit-cube'}</script>
 <!-- editor template page end -->
+</div>
 </div>
 <script type="text/javascript" src="../addons/sz_yi/plugin/designer/template/imgsrc/angular.min.js"></script>
 <script type="text/javascript" src="../addons/sz_yi/plugin/designer/template/imgsrc/angular-ueditor.js"></script>
@@ -449,31 +456,55 @@ UE.registerUI('myinsertimage',function(editor, uiName) {
         })
     }
  
-    var myModel = angular.module('FoxEditor',['ng.ueditor']);
-    myModel.controller('FoxController', ['$scope', function($scope){
+    var myModel = angular.module('SZ_YIEditor',['ng.ueditor'], function($compileProvider) {
+    // configure new 'compile' directive by passing a directive
+    // factory function. The factory function injects the '$compile'
+    $compileProvider.directive('compile', function($compile) {
+      // directive factory creates a link function
+      return function(scope, element, attrs) {
+        scope.$watch(
+          function(scope) {
+             // watch the 'compile' expression for changes
+            return scope.$eval(attrs.compile);
+          },
+          function(value) {
+            // when the 'compile' expression changes
+            // assign it into the current DOM
+            element.html(value);
+            // compile the new DOM and link it to the current
+            // scope.
+            // NOTE: we only compile .childNodes so that
+            // we don't get into infinite loop compiling ourselves
+            $compile(element.contents())(scope);
+          }
+        );
+      };
+    });
+  });
+    myModel.controller('SZ_YIController', ['$scope', function($scope){
             $scope.navs = [
-                {id:'notice',name:'公告',params:{color:'',bgcolor:'',notice:'',noticehref:'',scroll:'0'}},
-                {id:'banner',name:'轮播',params:{shape:'',align:'center',scroll:'2',bgcolor:''},
+                {id:'notice', icon:'fa-bullhorn',name:'公告',params:{color:'',bgcolor:'',notice:'',noticehref:'',scroll:'0'}},
+                {id:'banner', icon:'fa-bullhorn',name:'轮播',params:{shape:'',align:'center',scroll:'2',bgcolor:''},
                    data:[
                        {id:'B0000000000001',imgurl:'../addons/sz_yi/plugin/designer/template/imgsrc/init-data/init-image-3.jpg',hrefurl:'http://www.baidu.com',sysurl:'url',},
                        {id:'B0000000000002',imgurl:'../addons/sz_yi/plugin/designer/template/imgsrc/init-data/init-image-2.jpg',hrefurl:'http://www.qq.com',sysurl:'url'},
                        {id:'B0000000000003',imgurl:'../addons/sz_yi/plugin/designer/template/imgsrc/init-data/init-image-6.jpg',hrefurl:'http://www.sina.com',sysurl:'url'}
                    ]
                 },
-                {id:'title',name:'标题',params:{title1:'',title2:'',showtitle2:'1',fontsize1:'18px',fontsize2:'14px',align:'left',color:'#000',}},
-                {id:'search',name:'搜索框',params:{placeholder:'搜索：输入关键字在店内搜索',style:'style1','color':'','bgcolor':'','bordercolor':'',searchurl:'{php echo $this->createMobileUrl("shop/list")}',uniacid:'{$_W["uniacid"]}'}},
-                {id:'line',name:'辅助线',params:{height:'2px',style:'dashed',color:'#000'}},
-                {id:'blank',name:'辅助空白',params:{height:'100px',bgcolor:''}},
-                {id:'shop',name:'店招',params:{style:'1',bgimg:'../addons/sz_yi/plugin/designer/template/imgsrc/init-data/init-image-1.jpg',logo:'1',name:'1',menu:'1',navcolor:''},
+                {id:'title', icon:'fa-bold',name:'标题',params:{title1:'',title2:'',showtitle2:'1',fontsize1:'18px',fontsize2:'14px',align:'left',color:'#000',}},
+                {id:'search', icon:'fa-search',name:'搜索框',params:{placeholder:'搜索：输入关键字在店内搜索',style:'style1','color':'','bgcolor':'','bordercolor':'',searchurl:'{php echo $this->createMobileUrl("shop/list")}',uniacid:'{$_W["uniacid"]}'}},
+                {id:'line', icon:'fa-bullhorn',name:'辅助线',params:{height:'2px',style:'dashed',color:'#000'}},
+                {id:'blank', icon:'fa-square-o',name:'辅助空白',params:{height:'100px',bgcolor:''}},
+                {id:'shop', icon:'fa-bookmark',name:'店招',params:{style:'1',bgimg:'../addons/sz_yi/plugin/designer/template/imgsrc/init-data/init-image-1.jpg',logo:'1',name:'1',menu:'1',navcolor:''},
                    data:['{php echo $this->createMobileUrl("shop/index")}','{php echo $this->createMobileUrl("shop/list")}','{php echo $this->createMobileUrl("shop/list",array("isdiscount"=>"1"))}','{php echo $this->createMobileUrl("shop/notice")}']
                 },
-                {id:'goods',name:'商品组',params:{style:'50%',showtitle:'0',titlecolor:'',bgcolor:'',showname:'1',title:'',option:'sale-rx',buysub:'buy-3',price:'1',goodhref:'{php echo $this->createMobileUrl("shop/detail")}'},data:[]},
-                {id:'richtext',name:'富文本',params:{bgcolor:'',},content:''},
-                {id:'menu',name:'按钮组',params:{num:'20%',style:'0',bgcolor:'#fff',},
+                {id:'goods', icon:'fa-tasks',name:'商品组',params:{style:'50%',showtitle:'0',titlecolor:'',bgcolor:'',showname:'1',title:'',option:'sale-rx',buysub:'buy-3',price:'1',goodhref:'{php echo $this->createMobileUrl("shop/detail")}'},data:[]},
+                {id:'richtext', icon:'fa-font',name:'富文本',params:{bgcolor:'',},content:''},
+                {id:'menu', icon:'fa-bullhorn',name:'按钮组',params:{num:'20%',style:'0',bgcolor:'#fff',},
                     data:[{id:'F0000000000001',imgurl:'',text:'',hrefurl:'',color:''},{id:'F0000000000002',imgurl:'',text:'',hrefurl:'',color:''},{id:'F0000000000003',imgurl:'',text:'',hrefurl:'',color:''},{id:'F0000000000004',imgurl:'',text:'',hrefurl:'',color:''},{id:'F0000000000005',imgurl:'',text:'',hrefurl:'',color:''}]
                 },
-                {id:'picture',name:'单图',params:{},data:[{id:'P0000000000001',imgurl:'../addons/sz_yi/plugin/designer/template/imgsrc/init-data/init-image-4.jpg',hrefurl:'',option:'0'}]},
-                {id: "cube",name: "图片魔方",params: {bgcolor:'',layout: {},showIndex: 0,selection: {},currentPos: {},currentLayout: {isempty: !0}},data:[]}
+                {id:'picture', icon:'fa-file-image-o',name:'单图',params:{},data:[{id:'P0000000000001',imgurl:'../addons/sz_yi/plugin/designer/template/imgsrc/init-data/init-image-4.jpg',hrefurl:'',option:'0'}]},
+                {id: "cube", icon:'fa-picture-o',name: "图片组合",params: {bgcolor:'',layout: {},showIndex: 0,selection: {},currentPos: {},currentLayout: {isempty: !0}},data:[]}
             ];
             $scope.shop = {uniacid:'{$_W["uniacid"]}'};
             $scope.system = [{$system}];
@@ -500,6 +531,79 @@ UE.registerUI('myinsertimage',function(editor, uiName) {
                 
 
             }
+
+            $scope.selectChild = function(cid){
+                var category_id = cid;
+                $.ajax({
+                    type: 'POST',
+                    dataType:'json',
+                    url: "{php echo $this->createPluginWebUrl('designer',array('op'=>'iscategory','level'=>2,))}",
+                    data: {categoryid:category_id},
+                    success: function(josn){
+                        if(josn.success==1){
+                            $('.categorynull2').html('');
+                            $('.category2'+category_id).html(josn.html);
+                        }
+                        else{
+                            alert(josn.html);
+                        }
+                    },
+                    error: function(){
+                        alert('操作失败~请刷新页面重试！');
+                    }
+                });     
+            }
+
+            $(document).on('click','.c_id',function(){
+                var category_id = $(this).attr('data-cid');
+                $.ajax({
+                    type: 'POST',
+                    dataType:'json',
+                    url: "{php echo $this->createPluginWebUrl('designer',array('op'=>'iscategory','level'=>3))}",
+                    data: {categoryid:category_id},
+                    success: function(josn){
+                        if(josn.success==1){
+                            $('.categorynull3').html('');
+                            $('.category3'+category_id).html(josn.html);
+                        }
+                        else{
+                            alert(josn.html);
+                        }
+                    },
+                    error: function(){
+                        alert('操作失败~请刷新页面重试！');
+                    }
+                });     
+            });
+
+$(document).on('click','.chooseclick',function(){
+    var hid = $(this).attr('data-id');
+    var type= '4';
+
+    var Mid = $('#floating-link').attr("Mid");
+    var Cid =  $('#floating-link').attr("Cid");
+    var T =  $('#floating-link').attr("T");
+    var url = $("#fe-tab-link-"+type+" #fe-tab-link-li-"+hid).data("href");
+    if(url && Mid && Cid){
+        angular.forEach($scope.Items, function(m,index1) {
+            if(m.id==Mid){
+                if(T=='cube'){
+                    m.params.currentLayout.url = url;
+                    $("div[mid="+Mid+"]").mouseover();
+                }else{
+                    angular.forEach(m.data, function(c,index2) {
+                        if(c.id==Cid){
+                            c.hrefurl = url;
+                        }
+                    });
+                }
+            }
+        });
+        $('#floating-link').attr({"Mid":'',"Cid":'',T:''});
+        $('#floating-link .close').click();
+    }
+});
+
             $scope.showSelection = function(Edit, row,col){
              
                 Edit.params.currentPos = {row: row,col: col};
@@ -1002,7 +1106,7 @@ UE.registerUI('myinsertimage',function(editor, uiName) {
                    $scope.focus = 'M0000000000000';
                    return;
                }
-               $(".fe-save-submit").text('保存中...').addClass("fe-save-disabled").data('saving','1');
+               $(".save-submit").text('保存中...').addClass("fe-save-disabled").data('saving','1');
                $(".fe-save-submit2").css("color","#bbb");
                if($(".fe-save-submit").data('saving')==1){
                     $.ajax({
@@ -1024,12 +1128,12 @@ UE.registerUI('myinsertimage',function(editor, uiName) {
                                     location.href = "{php echo $this->createPluginWebUrl('designer',array('op'=>'post'))}&pageid="+data;
                                 }
                             }
-                            $(".fe-save-submit").text('保存').removeClass("fe-save-disabled").data('saving','0');
+                            $(".save-submit").text('保存').removeClass("fe-save-disabled").data('saving','0');
                             $(".fe-save-submit2").css("color","#4bb5fb")
                         }
                         ,error: function(){
                             alert('保存失败请重试');
-                            $(".fe-save-submit").text('保存').removeClass("fe-save-disabled").data('saving','0');
+                            $(".save-submit").text('保存').removeClass("fe-save-disabled").data('saving','0');
                             $(".fe-save-submit2").css("color","#4bb5fb")
                         }
                     });
@@ -1122,5 +1226,7 @@ UE.registerUI('myinsertimage',function(editor, uiName) {
 
 {/if}
 
-{template 'common/footer'}
+</div>
+</div>
+{template 'web/_footer'}
 

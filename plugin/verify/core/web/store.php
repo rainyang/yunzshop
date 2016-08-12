@@ -16,6 +16,7 @@ if ($operation == 'display') {
     }
     unset($row);
 } elseif ($operation == 'post') {
+    $myself_support = !empty($_GPC['myself_support']) ? $_GPC['myself_support'] : '0';
     $id = intval($_GPC['id']);
     if (empty($id)) {
         ca('verify.store.add');
@@ -34,8 +35,30 @@ if ($operation == 'display') {
             'tel' => trim($_GPC['tel']),
             'lng' => $_GPC['map']['lng'],
             'lat' => $_GPC['map']['lat'],
-            'status' => intval($_GPC['status'])
+            'status' => intval($_GPC['status']),
+            'myself_support' => intval($myself_support)
         );
+        if ($data['myself_support'] == 0) {
+            $goods = pdo_fetchall(" SELECT * FROM ".tablename('sz_yi_goods')." WHERE uniacid=:uniacid and isverify=2",array(':uniacid' => $_W['uniacid']));
+            $a = 0;
+            foreach ($goods as $g) {
+                if (!empty($g['storeids'])) {
+                    $storeids = explode($g['storeids']);
+                    foreach ($storeids as $ids) {
+                        if ($ids == $id && $g['isverifysend'] == 1) {
+                            $a += 1;
+                        }
+                    }
+                } else {
+                    if ($g['isverifysend'] == 1) {
+                        $a += 1;
+                    }
+                }
+            }
+            if ($a == 0) {
+                message('由于此门店所支持的商品都不支持配送核销选项，为了避免出现错误，所以您要填写支持自提！');
+            }
+        }
         if (!empty($id)) {
             pdo_update('sz_yi_store', $data, array(
                 'id' => $id,

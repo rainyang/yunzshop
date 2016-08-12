@@ -24,10 +24,41 @@ function upload_cert($fileinput)
                 $errinput = 'KEY文件格式错误';
             } else if ($fileinput == 'weixin_root_file') {
                 $errinput = 'ROOT文件格式错误';
-            }
+            } 
             message($errinput . ',请重新上传!', '', 'error');
         }
         return file_get_contents($tmp_name);
+    }
+    return "";
+}
+
+function upload_alipay_cert($fileinput)
+{
+    global $_W;
+    $path = IA_ROOT . "/addons/sz_yi/cert";
+    load()->func('file');
+    mkdirs($path, '0777');
+    $f           = $fileinput . '_' . $_W['uniacid'] . '.pem';
+    $outfilename = $path . "/" . $f;
+    $filename    = $_FILES[$fileinput]['name'];
+    $tmp_name    = $_FILES[$fileinput]['tmp_name'];
+    if (!empty($filename) && !empty($tmp_name)) {
+        $ext = strtolower(substr($filename, strrpos($filename, '.')));
+        if ($ext != '.pem') {
+            $errinput = "";
+            if ($fileinput == 'weixin_cert_file') {
+                $errinput = "CERT文件格式错误";
+            } else if ($fileinput == 'weixin_key_file') {
+                $errinput = 'KEY文件格式错误';
+            } else if ($fileinput == 'weixin_root_file') {
+                $errinput = 'ROOT文件格式错误';
+            } else if ($fileinput == 'alipay_cert_file') {
+                $errinput = '支付宝CERT文件格式错误';
+            }
+            message($errinput . ',请重新上传!', '', 'error');
+        }
+        $filename = 'cacert.pem';
+        move_uploaded_file($tmp_name, dirname(__FILE__)."/../../../cert/".$filename);
     }
     return "";
 }
@@ -41,19 +72,33 @@ $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where unia
 ));
 $set     = unserialize($setdata['sets']);
 $oldset  = unserialize($setdata['sets']);
-
 if ($op == 'template') {
     $styles = array();
+    //主题列表
     $dir    = IA_ROOT . "/addons/sz_yi/template/mobile/";
     if ($handle = opendir($dir)) {
         while (($file = readdir($handle)) !== false) {
-            if ($file != ".." && $file != ".") {
+            if ($file != ".." && $file != "." && $file != "app") {
                 if (is_dir($dir . "/" . $file)) {
                     $styles[] = $file;
                 }
             }
         }
         closedir($handle);
+    }
+
+    $styles_pc = array();
+    //主题列表
+    $dir_pc    = IA_ROOT . "/addons/sz_yi/template/pc/";
+    if ($handle_pc = opendir($dir_pc)) {
+        while (($file_pc = readdir($handle_pc)) !== false) {
+            if ($file_pc != ".." && $file_pc != "." && $file_pc != "app") {
+                if (is_dir($dir_pc . "/" . $file_pc)) {
+                    $styles_pc[] = $file_pc;
+                }
+            }
+        }
+        closedir($handle_pc);
     }
 } else if ($op == 'notice') {
     $salers = array();
@@ -71,6 +116,17 @@ if ($op == 'template') {
 } else if ($op == 'pay') {
     $sec = m('common')->getSec();
     $sec = iunserializer($sec['sec']);
+    //支付宝证书
+    $cert = IA_ROOT . "/addons/sz_yi/cert/cacert.pem";
+} else if($op == 'pcset'){
+
+    //默认首页导航内容
+    if(empty($set['shop']['hmenu_name'])){
+        $set['shop']['hmenu_name'] = array('首页', '全部商品', '店铺公告', '成为分销商', '会员中心');
+        $set['shop']['hmenu_url']  = array($this->createMobileUrl('shop/index'), $this->createMobileUrl('shop/list', array('order' => 'sales', 'by' => 'desc')), $this->createMobileUrl('shop/notice'), $this->createPluginMobileUrl('commission'), $this->createMobileUrl('member/info'));
+        $set['shop']['hmenu_id']   = array('yz01', 'yz02', 'yz03', 'yz04', 'yz05');
+    }
+
 }
 if (checksubmit()) {
     if ($op == 'shop') {
@@ -81,13 +137,56 @@ if (checksubmit()) {
         $set['shop']['logo']    = save_media($shop['logo']);
         $set['shop']['signimg'] = save_media($shop['signimg']);
         $set['shop']['diycode'] = trim($shop['diycode']);
+        $set['shop']['copyright']  = trim($shop['copyright']);
+        $set['shop']['credit']  = trim($shop['credit']);
+        $set['shop']['credit1']  = trim($shop['credit1']);
         plog('sysset.save.shop', '修改系统设置-商城设置');
+    }
+    elseif ($op == 'pcset') {
+        //echo "<pre>"; print_r($_GPC['pcset']);exit;
+        $custom                    = is_array($_GPC['pcset']) ? $_GPC['pcset'] : array();
+        $set['shop']['ispc']       = trim($custom['ispc']);
+        $set['shop']['pctitle']    = trim($custom['pctitle']);
+        $set['shop']['pckeywords'] = trim($custom['pckeywords']);
+        $set['shop']['pcdesc']     = trim($custom['pcdesc']);
+        $set['shop']['pccopyright']  = trim($custom['pccopyright']);
+        $set['shop']['index']      = $custom['index'];
+        $set['shop']['pclogo']     = save_media($custom['pclogo']);
+        $set['shop']['reglogo']    = save_media($custom['reglogo']);
+        $set['shop']['hmenu_name'] = $custom['hmenu_name'];
+        $set['shop']['hmenu_url']  = $custom['hmenu_url'];
+        $set['shop']['hmenu_id']   = $custom['hmenu_id'];
+        $set['shop']['fmenu_name'] = $custom['fmenu_name'];
+        $set['shop']['fmenu_url']  = $custom['fmenu_url'];
+        $set['shop']['fmenu_id']   = $custom['fmenu_id'];
+
+        $set['shop']['reccredit']  = $custom['reccredit'];
+        $set['shop']['recmoney']   = $custom['recmoney'];
+        $set['shop']['subcredit']  = $custom['subcredit'];
+        $set['shop']['submoney']   = $custom['submoney'];
+        $set['shop']['paytype']    = $custom['paytype'];
+        $set['shop']['isreferral'] = $custom['isreferral'];
+
+        $set['shop']['templateid']      = $custom['templateid'];
+        $set['shop']['subtext']         = $custom['subtext'];
+        $set['shop']['entrytext']       = $custom['entrytext'];
+        $set['shop']['subpaycontent']   = $custom['subpaycontent'];
+        $set['shop']['recpaycontent']   = $custom['recpaycontent'];
+        $set['shop']['referrallogo']   = $custom['referrallogo'];
+
+        plog('sysset.save.sms', '修改系统设置-PC设置');
     }
     elseif ($op == 'sms') {
         $sms                    = is_array($_GPC['sms']) ? $_GPC['sms'] : array();
+        $set['sms']['type']     = $sms['type'];
         $set['sms']['account']  = $sms['account'];
         $set['sms']['password'] = $sms['password'];
-        //print_r($set);exit;
+        $set['sms']['appkey']   = $sms['appkey'];
+        $set['sms']['secret']   = $sms['secret'];
+        $set['sms']['signname'] = $sms['signname'];
+        $set['sms']['product']  = $sms['product'];
+        $set['sms']['templateCode'] = $sms['templateCode'];
+        $set['sms']['templateCodeForget'] = $sms['templateCodeForget'];
         plog('sysset.save.sms', '修改系统设置-短信设置');
     } elseif ($op == 'follow') {
         $set['share']         = is_array($_GPC['share']) ? $_GPC['share'] : array();
@@ -116,16 +215,26 @@ if (checksubmit()) {
         }
         plog('sysset.save.trade', '修改系统设置-交易设置');
     } elseif ($op == 'pay') {
-	
         $pluginy = p('yunpay');
         if($pluginy){
             $pay = $set['pay']['yunpay'];
         }
+
+        $pluginapp = p('app');
+        if($pluginapp){
+            $app_weixin = $set['pay']['app_weixin'];
+            $app_alipay = $set['pay']['app_alipay'];
+        }
+
         $set['pay'] = is_array($_GPC['pay']) ? $_GPC['pay'] : array();
         if($pluginy){
             $set['pay']['yunpay'] = $pay;
         }
-		
+
+        if($pluginapp){
+            $set['pay']['app_weixin'] = $app_weixin;
+            $set['pay']['app_alipay'] = $app_alipay;
+        }
         if ($_FILES['weixin_cert_file']['name']) {
             $sec['cert'] = upload_cert('weixin_cert_file');
         }
@@ -134,6 +243,10 @@ if (checksubmit()) {
         }
         if ($_FILES['weixin_root_file']['name']) {
             $sec['root'] = upload_cert('weixin_root_file');
+        }
+        if ($_FILES['alipay_cert_file']['name']) {
+            //上传文件
+             upload_alipay_cert('alipay_cert_file');
         }
         if (empty($sec['cert']) || empty($sec['key']) || empty($sec['root'])) {
         }
@@ -147,27 +260,36 @@ if (checksubmit()) {
     } elseif ($op == 'template') {
         $shop                 = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['style'] = save_media($shop['style']);
+        $set['shop']['style_pc'] = save_media($shop['style_pc']);
+        $set['shop']['theme'] = trim($shop['theme']);
         m('cache')->set('template_shop', $set['shop']['style']);
-        plog('sysset.save.pay', '修改系统设置-模板设置');
+        m('cache')->set('template_shop_pc', $set['shop']['style_pc']);
+        m('cache')->set('theme_shop', $set['shop']['theme']);
+        plog('sysset.save.template', '修改系统设置-模板设置');
     } elseif ($op == 'member') {
         $shop                     = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['levelname'] = trim($shop['levelname']);
         $set['shop']['levelurl']  = trim($shop['levelurl']);
-        plog('sysset.save.pay', '修改系统设置-会员设置');
+        $set['shop']['leveltype']  = trim($shop['leveltype']);
+        plog('sysset.save.member', '修改系统设置-会员设置');
+        $set['shop']['isbindmobile']   = intval($shop['isbindmobile']);
+        $set['shop']['isreferrer']   = intval($shop['isreferrer']);
     } elseif ($op == 'category') {
         $shop                     = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['catlevel']  = trim($shop['catlevel']);
         $set['shop']['catshow']   = intval($shop['catshow']);
         $set['shop']['catadvimg'] = save_media($shop['catadvimg']);
         $set['shop']['catadvurl'] = trim($shop['catadvurl']);
-        plog('sysset.save.pay', '修改系统设置-分类层级设置');
+        $set['shop']['category2'] = intval($shop['category2']);
+        $set['shop']['category2name'] = trim($shop['category2name']);
+        plog('sysset.save.category', '修改系统设置-分类层级设置');
     } elseif ($op == 'contact') {
         $shop                       = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['qq']          = trim($shop['qq']);
         $set['shop']['address']     = trim($shop['address']);
         $set['shop']['phone']       = trim($shop['phone']);
         $set['shop']['description'] = trim($shop['description']);
-        plog('sysset.save.pay', '修改系统设置-联系方式设置');
+        plog('sysset.save.contact', '修改系统设置-联系方式设置');
     }
     $data = array(
         'uniacid' => $_W['uniacid'],
@@ -188,6 +310,8 @@ if (checksubmit()) {
         'op' => $op
     )), 'success');
 }
+
+
 load()->func('tpl');
 include $this->template('web/sysset/' . $op);
 exit;

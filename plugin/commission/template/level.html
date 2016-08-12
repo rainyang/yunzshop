@@ -1,5 +1,8 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
+<div class="rightlist">
+
 <div class='alert alert-info'>
     提示: 没有设置等级的分销商将按默认设置计算提成。商品指定的佣金金额的优先级仍是最高的，也就是说只要商品指定了佣金金额就按商品的佣金金额来计算，不受等级影响
 </div>
@@ -12,6 +15,14 @@
                 分销商等级设置
             </div>
             <div class='panel-body'>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">等级权重</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input class="form-control" type="text" value="{$level['level']}" name="level">
+                        <span class="help-block">等级权重，数字越大级别越高。手机绑定必填此项</span>
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 等级名称</label>
                     <div class="col-sm-9 col-xs-12">
@@ -114,15 +125,30 @@
                         <span class='help-block'>分销商升级条件，不填写默认为不自动升级</span>
                     </div>
                 </div>
-                
-
+                {if $set['withdraw_proportion']}
+                <!-- Author:ym Date:2016-07-21 Content:提现比例 -->
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现比例</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <div class="input-group">
+                            <div class="input-group-addon">提现 1 ：消费 </div>
+                            <input class="form-control" type="text" value="{$level['withdraw_proportion']}" name="withdraw_proportion">
+                        </div>
+                        <span class="help-block">提现与消费的比例差，空则可以任意提现</span>
+                    </div>
+                </div>
+                {/if}
             </div>
         </div>
-        <div class="form-group col-sm-12">
-	<input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
-	<input type="hidden" name="token" value="{$_W['token']}" />
-	</div>
+        <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">&nbsp;</label>
+                    <div class="col-sm-9 col-xs-12">
+                        <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" />
+                        <input type="hidden" name="token" value="{$_W['token']}" />
+                    </div>
+        </div>
     </form>
+</div>
 </div>
 <script language='javascript'>
     $('form').submit(function(){
@@ -188,9 +214,10 @@
 
          </div>
          <div class='panel-footer'>
-                            <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('commission/level', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新等级</a>
+                            <a class='btn btn-primary' href="{php echo $this->createPluginWebUrl('commission/level', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新等级</a>
          </div>
      </div>
          </form>
 {/if}
+</div>
 {template 'web/_footer'}

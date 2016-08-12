@@ -86,6 +86,8 @@ if (!class_exists('CouponModel')) {
 				if ($_var_1['total'] <= 0) {
 					return error(-1, '优惠券数量不足');
 				}
+				//只有优惠劵数量不等于-1的情况下减数量
+				$_var_1['total'] -= 1;
 			}
 			if (!$_var_1['canget']) {
 				return error(-1, '您已超出领取次数限制');
@@ -110,6 +112,8 @@ if (!class_exists('CouponModel')) {
 				$_var_10 = $this->getSet();
 				$this->sendMessage($_var_1, 1, $_var_6, $_var_10['templateid']);
 			}
+			
+			pdo_update('sz_yi_coupon', array('total' => $_var_1['total']), array('uniacid' => $_W['uniacid'], 'id' => $_var_5['couponid']));
 			$_var_16 = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=member';
 			if ($_var_1['coupontype'] == 0) {
 				$_var_16 = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=shop&p=list';
@@ -266,12 +270,191 @@ if (!class_exists('CouponModel')) {
 			$this->sendBackMessage($_var_5['openid'], $_var_1, $_var_26);
 		}
 
-		function consumeCouponCount($_var_25, $_var_32 = 0)
+		function consumeCouponCount($openid, $enough = 0, $supplier_uid = 0, $sid = 0,$iscashier = 0, $goodid = 0, $cartid = 0, $coupon_carrierid = 0)
 		{
 			global $_W, $_GPC;
-			$_var_33 = time();
-			$_var_34 = 'select count(*) from ' . tablename('sz_yi_coupon_data') . ' d ' . '  left join ' . tablename('sz_yi_coupon') . ' c on d.couponid = c.id ' . "  where d.openid=:openid and d.uniacid=:uniacid and  c.coupontype=0 and {$_var_32}>=c.enough and d.used=0 " . " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$_var_33} && c.timeend>={$_var_33}))";
-			return pdo_fetchcolumn($_var_34, array(':openid' => $_var_25, ':uniacid' => $_W['uniacid']));
+			$time = time();
+			if ($iscashier == 1) {
+				$sqlcount = 'select count(*) from ' . tablename('sz_yi_coupon_data') . ' d ' . '  left join ' . tablename('sz_yi_coupon') . ' c on d.couponid = c.id ' . "  where d.openid=:openid and d.uniacid=:uniacid and c.getcashier=1 and c.supplier_uid=:supplier_uid and c.coupontype=0 and {$enough}>=c.enough and d.used=0 " . " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$time} && c.timeend>={$time}))";
+				$sql = 'select * from ' . tablename('sz_yi_coupon_data') . ' d ' . '  left join ' . tablename('sz_yi_coupon') . ' c on d.couponid = c.id ' . "  where d.openid=:openid and d.uniacid=:uniacid and c.getcashier=1 and c.supplier_uid=:supplier_uid and c.coupontype=0 and {$enough}>=c.enough and d.used=0 " . " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$time} && c.timeend>={$time}))";
+				$total = pdo_fetchcolumn($sqlcount, array(':openid' => $openid, ':supplier_uid' => $supplier_uid, ':uniacid' => $_W['uniacid']));
+				$allcoupon = pdo_fetchall($sqlcount, array(':openid' => $openid, ':supplier_uid' => $supplier_uid, ':uniacid' => $_W['uniacid']));
+				foreach ($allcoupon as $value) {
+					$cashierids = unserialize($value['cashiersids']);
+					$a = 0;
+					if (!empty($cashierids)) {
+						foreach ($cashierids as $v) {
+							if ($v == $sid) {
+								$a += 1;
+							}
+						}
+						if ($a == 0) {
+							$total -= 1;
+						}
+					}
+
+					
+				}
+				return $total;
+					
+
+			} else {
+				$sqlcount = 'select count(*) from ' . tablename('sz_yi_coupon_data') . ' d ' . '  left join ' . tablename('sz_yi_coupon') . ' c on d.couponid = c.id ' . "  where d.openid=:openid and d.uniacid=:uniacid and c.getcashier=0 and c.supplier_uid=:supplier_uid and c.coupontype=0 and {$enough}>=c.enough and d.used=0 " . " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$time} && c.timeend>={$time}))";
+				$total = pdo_fetchcolumn($sqlcount, array(':openid' => $openid, ':supplier_uid' => $supplier_uid, ':uniacid' => $_W['uniacid']));
+				$sql = 'select * from ' . tablename('sz_yi_coupon_data') . ' d ' . '  left join ' . tablename('sz_yi_coupon') . ' c on d.couponid = c.id ' . "  where d.openid=:openid and d.uniacid=:uniacid and c.getcashier=0 and c.supplier_uid=:supplier_uid and c.coupontype=0 and {$enough}>=c.enough and d.used=0 " . " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$time} && c.timeend>={$time}))";
+				$allcoupon = pdo_fetchall($sql, array(':openid' => $openid, ':supplier_uid' => $supplier_uid, ':uniacid' => $_W['uniacid']));
+				foreach ($allcoupon as $row) {
+					if ($goodid != 0 && $cartid == 0) {
+						$goodsids = unserialize($row['goodsids']);
+						$storeids = unserialize($row['storeids']);
+						$categoryids = unserialize($row['categoryids']);
+						$goods = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_goods')." WHERE id = :id",array(':id' => $goodid));
+						$a = 0;
+						$b = 0;
+						if ($row['usetype'] == 2) {
+							if (!empty($goodsids)) {
+								foreach ($goodsids as $v) {
+									if ($v == $goodid) {
+										$a += 1;
+									}
+								}
+							} else {
+								$a += 1;
+							}
+							
+							if ($row['getstore'] == 1) {
+								if ($coupon_carrierid != 0) {
+									if (!empty($storeids)) {
+										foreach ($storeids as $vs) {
+											if ($vs == $coupon_carrierid) {
+												$b += 1;
+											}
+										}	
+									} else {
+										$b += 1;
+									}
+									
+									if ($a == 0 || $b == 0) {
+										$total -= 1;
+									}
+								} else {
+									$total -= 1;
+								}
+							} else {
+								if ($a == 0) {
+									$total -= 1;
+								}
+							}
+						} elseif ($row['usetype'] == 1) {
+							if (!empty($categoryids)) {
+								foreach ($categoryids as $v) {
+									if ($v == $goods['ccate'] || $v == $goods['tcate'] ) {
+										$a += 1;
+									}
+								}	
+							} else {
+								$a += 1;
+							}
+							
+							if ($row['getstore'] == 1) {
+								if ($coupon_carrierid != 0) {
+									if (!empty($storeids)) {
+										foreach ($storeids as $vs) {
+											if ($vs == $coupon_carrierid) {
+												$b += 1;
+											}
+										}	
+									} else {
+										$b += 1;
+									}
+									
+									if ($a == 0 || $b == 0) {
+										$total -= 1;
+									}
+								} else {
+									$total -= 1;
+								}
+							} else {
+								if ($a == 0) {
+									$total -= 1;
+								}
+							}
+						} elseif ($row['usetype'] == 0) {
+							if ($row['getstore'] == 1) {
+								if ($coupon_carrierid != 0) {
+									if (!empty($storeids)) {
+										foreach ($storeids as $vs) {
+											if ($vs == $coupon_carrierid) {
+												$b += 1;
+											}
+										}	
+									} else {
+										$b += 1;
+									}
+									
+									if ($a == 0 || $b == 0) {
+										$total -= 1;
+									}
+								} else {
+									$total -= 1;
+								}
+							}
+						}
+						
+					} elseif ($cartid != 0 && $goodid == 0){
+						if ($row['getstore'] == 1) {
+							$total -= 1;
+						} else {
+							$goodsids = unserialize($row['goodsids']);
+							$cartid = explode(',',$cartid);
+							$categoryids = unserialize($row['categoryids']);
+							$a = 0;
+							if ($row['usetype'] == 2) {
+
+								foreach ($cartid as $value) {
+									$gid = pdo_fetchcolumn("SELECT goodsid FROM ".tablename('sz_yi_member_cart')." WHERE id=:id ",array(':id' => $value));
+									if (!empty($goodsids)) {
+										foreach ($goodsids as $v) {
+											if ($v == $gid) {
+												$a += 1;
+											}
+										}	
+									} else {
+										$a += 1;
+									}
+									
+								}
+								if($a == 0){
+									$total -= 1;
+								}	
+							} elseif ($row['usetype'] == 1) {
+								if (!empty($categoryids)) {
+									foreach ($categoryids as $v) {
+										foreach ($cartid as $vc) {
+											$gid = pdo_fetchcolumn("SELECT goodsid FROM ".tablename('sz_yi_member_cart')." WHERE id=:id ",array(':id' => $vc));
+											$goods = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_goods')." WHERE id = :id",array(':id' => $gid));
+											if ($v == $goods['ccate'] || $v == $goods['tcate'] ) {
+												$a += 1;
+											}	
+										}
+										
+									}	
+								} else {
+									$a += 1;
+								}
+								
+								if ($a == 0) {
+									$total -= 1;
+								}
+							}
+						}
+					}	
+				}
+		
+				
+				return $total;
+			}
+			
 		}
 
 		function useConsumeCoupon($_var_35 = 0)

@@ -1,13 +1,65 @@
 <?php
 global $_W, $_GPC;
-//check_shop_auth('http://120.26.212.219/api.php', $this->pluginname);
+$openid = m('user')->getOpenid();
+$member = m('member')->getMember($openid);
 load()->func('tpl');
-// echo 'hello';exit;
 $aid = intval($_GPC['aid']);
+$member_levels = m('member')->getLevels();
+$distributor_levels = p("commission")->getLevels();
+
+$condition = '';
+if(is_weixin())
+{
+	$condition = " and article_state_wx = 1 ";
+}
 if (!empty($aid)) {
-	$article = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article') . " WHERE id=:aid and article_state=1 and uniacid=:uniacid limit 1 ", array(':aid' => $aid, ':uniacid' => $_W['uniacid']));
+	$article = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article') . " WHERE id=:aid and article_state=1 and uniacid=:uniacid ".$condition." limit 1 ", array(':aid' => $aid, ':uniacid' => $_W['uniacid']));
 	
 	if (!empty($article)) {
+		
+		//文章分类阅读权限
+		$category = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article_category') . " WHERE uniacid=:uniacid and id = '" .$article['article_category']. "'", array(':uniacid' => $_W['uniacid']));
+		$article['isread'] = false;
+		if($category['m_level'] == 0)
+		{
+			$article['isread'] = true;
+		}elseif($category['m_level'] == $member['level']){
+			$article['isread'] = true;
+		}
+		if($member['isagent'] == 1)
+		{
+			if($category['d_level'] == 0)
+			{
+				$article['isread'] = true;
+			}elseif($category['d_level'] == $member['agentlevel']){
+				$article['isread'] = true;
+			}
+			
+		}
+
+		foreach ($member_levels as $key => $value) {
+			if($category['m_level'] == $value['id'])
+			{
+				$article['m_message'] = "成为“".$value['levelname']."”等级的会员";
+			}
+		}
+		if($category['d_level'] == 0)
+		{
+			$article['d_message'] = "成为分销商！";
+		}else{
+			foreach ($distributor_levels as $key => $value) {
+				if($category['d_level'] == $value['id'])
+				{
+					$article['d_message'] = "成为“".$value['levelname']."”等级的分销商";
+				}
+			}
+		}
+		//是否有阅读权限
+		if(!$article['isread'])
+		{
+			$messages = "您没有阅读权限！".$article['m_message']."或".$article['d_message'];
+			message($messages,$this->createPluginMobileUrl('article/article'),'warning');		
+		}
 		
 		//根据地区设置文章权限：@phpdb.net
 		//读取文章的设置：
@@ -141,7 +193,8 @@ if (!empty($aid)) {
 		}*/
 
 	} else {
-		die('没有查询到文章信息！请检查URL后重试！');
+		$url = $this->createPluginMobileUrl('article/article');
+    	die("<script>top.window.location.href='{$url}'</script>");
 	}
 } else {
 	die('url参数错误！');

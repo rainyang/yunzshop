@@ -24,7 +24,7 @@
         <div class="modal-content">
             <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择链接</h3></div>
             <div class="modal-body" >
-                <ul class="nav nav-tabs">
+                <ul class="nav nav-pills">
                     <li id="fe-tab-link-nav-1" class="active"><a href="javascript:switchtab('fe-tab-link',1);">商城页面</a></li>
                     <li id="fe-tab-link-nav-2"><a href="javascript:switchtab('fe-tab-link',2);">商品链接</a></li>
                     <!--<li id="fe-tab-link-nav-3"><a href="javascript:switchtab('fe-tab-link',3);">公告链接</a></li>-->
@@ -70,19 +70,41 @@
                         <div id="fe-tab-link-li-38" class="btn btn-default" ng-click="chooseLink(1, 38)" data-href="{php echo $this->createPluginMobileUrl('commission/myshop',array('op'=>'set'))}">小店设置</div>
                         <div id="fe-tab-link-li-39" class="btn btn-default" ng-click="chooseLink(1, 39)" data-href="{php echo $this->createPluginMobileUrl('commission/myshop',array('op'=>'select'))}">自选商品</div>
                         {/if}
+                        {if p('bonus')}
+                        <div class="page-header">
+                            <h4><i class="fa fa-folder-open-o"></i> 分红链接</h4>
+                        </div>
                         
-						
-		    {if p('coupon')}
+                        <div id="fe-tab-link-li-40" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 40)" data-href="{php echo $this->createPluginMobileUrl('bonus')}">分红中心</div>
+                        <div id="fe-tab-link-li-41" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 41)" data-href="{php echo $this->createPluginMobileUrl('bonus/withdraw')}">分红佣金</div>
+                        <div id="fe-tab-link-li-42" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 42)" data-href="{php echo $this->createPluginMobileUrl('bonus/order')}">分红订单</div>
+                        <div id="fe-tab-link-li-43" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 43)" data-href="{php echo $this->createPluginMobileUrl('bonus/team')}">我的下线</div>
+                        <div id="fe-tab-link-li-44" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 44)" data-href="{php echo $this->createPluginMobileUrl('bonus/log')}">分红明细</div>
+                        <div id="fe-tab-link-li-45" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 45)" data-href="{php echo $this->createPluginMobileUrl('bonus/ordercount_area')}">区域订单</div>
+                        {/if}
+                        {if p('coupon')}
                         <div class="page-header">
                             <h4><i class="fa fa-folder-open-o"></i> 超级券链接</h4>
                         </div>
                         
-                        <div id="fe-tab-link-li-40" class="btn btn-default" ng-click="chooseLink(1, 40)" data-href="{php echo $this->createPluginMobileUrl('coupon')}">优惠券领取中心</div>
-		    <div id="fe-tab-link-li-41" class="btn btn-default" ng-click="chooseLink(1, 41)" data-href="{php echo $this->createPluginMobileUrl('coupon/my')}">我的优惠券</div>
+                        <div id="fe-tab-link-li-46" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 46)" data-href="{php echo $this->createPluginMobileUrl('coupon')}">优惠券领取中心</div>
+                        <div id="fe-tab-link-li-47" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 47)" data-href="{php echo $this->createPluginMobileUrl('coupon/my')}">我的优惠券</div>
                         {/if}
-                        
-                        
-                        
+                            <div class="page-header">
+                                <h4><i class="fa fa-folder-open-o"></i> 其它插件页面</h4>
+                            </div>
+                            {if p('return')}
+                            <div id="fe-tab-link-li-48" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 48)" data-href="{php echo $this->createPluginMobileUrl('return/return_log')}">全返明细</div>
+                            {/if}
+                            {if p('supplier')}
+                            <div id="fe-tab-link-li-49" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 49)" data-href="{php echo $this->createPluginMobileUrl('supplier/af_supplier')}">供应商申请</div>
+                            {/if}
+                            {if p('ranking')}
+                             <div id="fe-tab-link-li-50" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 50)" data-href="{php echo $this->createPluginMobileUrl('ranking/ranking')}">排行榜</div>
+                            {/if}
+                            {if p('creditshop')}
+                             <div id="fe-tab-link-li-51" class="btn btn-default mylink-nav" ng-click="chooseLink(1, 51)" data-href="{php echo $this->createPluginMobileUrl('creditshop')}">积分商城</div>
+                            {/if}
                     </div>
 
                     <div class="fe-tab-link" id="fe-tab-link-2">
@@ -123,31 +145,24 @@
                     </div>
                     <div class="fe-tab-link" id="fe-tab-link-4">
                         {loop $categorys $category}
-                        {if empty($category['parentid'])}
-                        <div class="fe-tab-link-line">
-                            <div class="fe-tab-link-sub"><a href="javascript:;" ng-click="chooseLink(4, {$category['id']})">选择</a></div>
-                            <div class="fe-tab-link-text" id="fe-tab-link-li-{$category['id']}" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$category['id']))}">{$category['name']}</div>
-                        </div>
-                        {loop $categorys $category2}
-                        {if $category2['parentid']==$category['id']}
-                        <div class="fe-tab-link-line">
-                            <div class="fe-tab-link-sub"><a href="javascript:;" ng-click="chooseLink(4, {$category2['id']})">选择</a></div>
-                            <div class="fe-tab-link-text" id="fe-tab-link-li-{$category2['id']}" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$category['id'],'ccate'=>$category2['id']))}"><span style='height:10px; width: 10px; margin-left: 10px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>{$category2['name']}</div>
-                        </div>
-                        {loop $categorys $category3}
-                        {if $category3['parentid']==$category2['id']}
-                        <div class="fe-tab-link-line">
-                            <div class="fe-tab-link-sub"><a href="javascript:;" ng-click="chooseLink(4, {$category3['id']})">选择</a></div>
-                            <div class="fe-tab-link-text" id="fe-tab-link-li-{$category3['id']}" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$category['id'],'ccate'=>$category2['id'],'tcate'=>$category3['id']))}"><span style='height:10px; width: 10px; margin-left: 30px; margin-right: 10px; display:inline-block; border-bottom: 1px dashed #ddd; border-left: 1px dashed #ddd;'></span>{$category3['name']}</div>
-                        </div>
-                        {/if}
+                            {if empty($category['parentid'])}
+                                <div class="fe-tab-link-line">
+                                    <div class="fe-tab-link-sub">
+                                        <a href="javascript:;" data-cid="{$category['id']}"  ng-click="selectChild({$category['id']})">下一级</a>
+                                        <a href="javascript:;" ng-click="chooseLink(4, {$category['id']})">选择</a>
+                                    </div>
+                                    <div class="fe-tab-link-text" id="fe-tab-link-li-{$category['id']}" data-href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$category['id']))}">
+                                        {$category['name']}
+                                    </div>
+                                </div>
+                                <div class="categorynull2 category2{$category['id']}"></div>
+                                
+
+                            {/if}
                         {/loop}
-                        {/if}
-                        {/loop}
-                        {/if}
-                        {/loop}
+
                     </div>
-                  
+
                     <div class="fe-tab-link" id="fe-tab-link-5">
                         {loop $pages $pagelink}
                         <div class="fe-tab-link-line">

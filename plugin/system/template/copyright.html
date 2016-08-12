@@ -11,7 +11,8 @@
                 底部版权设置
             </div>
             <div class="panel-body">
-	 <div class="form-group">
+                {ifp 'system.copyright.view'}
+	           <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">选择公众号</label>
                     <div class="col-sm-9">
 						<select id='wechatid' name='wechatid' class='form-control' onchange="location.href= '{php echo $this->createPluginWebUrl('system/copyright')}&wechatid=' + $(this).val()" >
@@ -23,6 +24,7 @@
 						</select>
                     </div>
                 </div>
+                {/if}
 	      <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">背景颜色</label>
                     <div class="col-sm-9">

@@ -1,25 +1,74 @@
 <?php
-
-
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+@session_start();
+setcookie('preUrl', $_W['siteurl']);
 $openid         = m('user')->getOpenid();
 $popenid        = m('user')->islogin();
-
+$openid         = $openid?$openid:$popenid;
 $member         = m('member')->getMember($openid);
 $uniacid        = $_W['uniacid'];
 $goodsid        = intval($_GPC['id']);
+$params = array(':uniacid' => $_W['uniacid'], ':goodsid' => $goodsid);
+$sql = 'SELECT count(id) FROM ' . tablename('sz_yi_order_comment') . ' where 1 and uniacid = :uniacid and goodsid=:goodsid and deleted=0 ORDER BY `id` DESC';
+$commentcount = pdo_fetchcolumn($sql, $params);
 $goods          = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE id = :id limit 1", array(
     ':id' => $goodsid
 ));
+if($goods['pcate']){
+    $pcate = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$goods['pcate']." and uniacid=".$uniacid);
+}
+if($goods['ccate']){
+    $ccate = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$goods['ccate']." and uniacid=".$uniacid);
+}
+if($goods['tcate']){
+    $tcate = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$goods['tcate']." and uniacid=".$uniacid);
+}
+
+if(p('hotel')){//开启酒店插件后 判断当前时间是否有剩余房间可预约
+$sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
+$params2 = array(':goodsid' => $goods['id']);
+$room = pdo_fetch($sql2, $params2);
+//入店
+$btime =  $_SESSION['data']['btime'];
+$bdate =  $_SESSION['data']['bdate'];
+// 住几天
+$days =intval( $_SESSION['data']['day']);
+// 离店
+$etime =  $_SESSION['data']['etime'];
+$edate =  $_SESSION['data']['edate'] ;
+ 
+$r_sql = 'SELECT * FROM ' . tablename('sz_yi_hotel_room_price') .
+' WHERE `roomid` = :roomid AND `roomdate` >= :btime AND ' .
+' `roomdate` < :etime';
+$params = array(':roomid' => $room['id'],':btime' => $btime, ':etime' => $etime);
+$price_list = pdo_fetch($r_sql, $params);
+$goods['has']=0; 
+if ($price_list) {
+    if(is_array($price_list[0])){
+        foreach($price_list as $k => $v) {  
+            if ($v['status'] == 0 || $v['num'] == 0 ) {
+                    $goods['has'] +=1 ;   //不可预约              
+            }
+        } 
+    }else{
+        if ($price_list['status'] == 0 || $price_list['num'] == 0 ) {
+            $goods['has'] +=1 ;   //不可预约        
+        }  
+        if($price_list['cprice']!= '0.00'){
+            $goods['marketprice']= $price_list['oprice'];
+        }
+    }
+}
+
+
+}
 $shop           = set_medias(m('common')->getSysset('shop'), 'logo');
 $shop['url']    = $this->createMobileUrl('shop');
 $mid            = intval($_GPC['mid']);
-
 $shopset = m('common')->getSysset('shop');
-
 $opencommission = false;
 if (p('commission')) {
     if (empty($member['agentblack'])) {
@@ -98,7 +147,31 @@ if (isset($imgs[1])) {
     }
     $goods['content'] = $html;
 }
+$levelid           = $member['level'];
+$groupid           = $member['groupid'];
+if(!is_weixin()){
+    //禁止浏览的商品
+    if ($goods['showlevels'] != '') {
+        $showlevels = explode(',', $goods['showlevels']);
+        if (!in_array($levelid, $showlevels)) {
+            message('当前商品禁止访问，请联系客服……', $this->createMobileUrl('shop/index'), 'error');
+        }
+    }
+    if ($goods['showgroups'] != '') {
+        $showgroups = explode(',', $goods['showgroups']);
+        if (!in_array($groupid, $showgroups)) {
+            message('当前商品禁止访问，请联系客服……', $this->createMobileUrl('shop/index'), 'error');
+        }
+    }
+}
+//分销佣金
+$commissionprice = p('commission')->getCommission($goods);
+
 if ($_W['isajax']) {
+    if (p('channel')) {
+        $ischannelpay   = intval($_GPC['ischannelpay']);
+        $ischannelpick  = intval($_GPC['ischannelpick']);
+    }
     if (empty($goods)) {
         show_json(0);
     }
@@ -116,8 +189,8 @@ if ($_W['isajax']) {
             $goods['userbuy'] = 0;
         }
     }
-    $levelid           = $member['level'];
-    $groupid           = $member['groupid'];
+    
+
     $goods['levelbuy'] = '1';
     if ($goods['buylevels'] != '') {
         $buylevels = explode(',', $goods['buylevels']);
@@ -172,6 +245,22 @@ if ($_W['isajax']) {
             $items      = pdo_fetchall("select * from " . tablename('sz_yi_goods_spec_item') . " where  `show`=1 and specid=:specid order by displayorder asc", array(
                 ":specid" => $s['id']
             ));
+            if (!empty($ischannelpick) && p('channel')) {
+                $items = array();
+                $my_stock = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND goodsid={$goodsid}");
+                if (!empty($my_stock)) {
+                    $items = array();
+                    foreach ($my_stock as $op) {
+                        if (!empty($op['optionid'])) {
+                            $my_option = m('goods')->getOption($goodsid, $op['optionid']);
+                            //$spec = pdo_fetch('select * from ' . tablename('sz_yi_goods_spec') . " where uniacid={$_W['uniacid']} and goodsid={$goodsid} and id={$my_option['specs']}");
+                            $items[] = pdo_fetch("select * from " . tablename('sz_yi_goods_spec_item') . " where  `show`=1 and id=:id order by displayorder asc", array(
+                                    ":id" => $my_option['specs']
+                                ));
+                        }
+                    }
+                }
+            }
             $s['items'] = set_medias($items, 'thumb');
         }
         unset($s);
@@ -181,6 +270,34 @@ if ($_W['isajax']) {
         $options = pdo_fetchall("select id,title,thumb,marketprice,productprice,costprice, stock,weight,specs from " . tablename('sz_yi_goods_option') . " where goodsid=:id order by id asc", array(
             ':id' => $goodsid
         ));
+        if (!empty($ischannelpay) && p('channel')) {
+            foreach ($options as &$value) {
+                $superior_stock = p('channel')->getSuperiorStock($openid, $goodsid, $value['id']);
+                if (!empty($superior_stock['stock_total'])) {
+                    $value['stock'] = $superior_stock['stock_total'];
+                }
+            }
+            unset($value);
+        }
+        if (!empty($ischannelpick) && p('channel')) {
+            $options = array();
+            $my_stock = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND goodsid={$goodsid}");
+            foreach ($my_stock as $val) {
+                $my_option          = m('goods')->getOption($goodsid, $val['optionid']);
+                $stock_total        = pdo_fetchcolumn("SELECT stock_total FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND goodsid={$goodsid} AND optionid={$val['optionid']}");
+                $my_option['stock'] = $stock_total;
+                $options[]          = $my_option;
+            }
+            /*foreach ($options as &$value) {
+                $my_stock = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND goodsid={$goodsid} AND optionid={$value['id']}");
+                if (empty($my_stock)) {
+                    unset($options[$k]);
+                } else {
+                    $value['stock'] = $my_stock['stock_total'];
+                }
+            }
+            unset($value);*/
+        }
         $options = set_medias($options, 'thumb');
         foreach ($options as $o) {
             if ($maxprice < $o['marketprice']) {
@@ -211,6 +328,12 @@ if ($_W['isajax']) {
         ':uniacid' => $uniacid,
         ':openid' => $openid
     ));
+
+    //我的足迹
+    $history_goods = set_medias(pdo_fetchall('select g.* from ' . tablename('sz_yi_member_history') . ' h '.' left join '.tablename('sz_yi_goods').' g on h.goodsid = g.id  where  h.uniacid=:uniacid and h.openid=:openid and h.deleted=0 and g.deleted = 0  order by h.createtime desc limit 5', array(
+        ':uniacid' => $uniacid,
+        ':openid' => $openid
+    )),'thumb');
     if ($history <= 0) {
         $history = array(
             'uniacid' => $uniacid,
@@ -221,22 +344,66 @@ if ($_W['isajax']) {
         );
         pdo_insert('sz_yi_member_history', $history);
     }
-    $level     = m('member')->getLevel($openid);
-    $discounts = json_decode($goods['discounts'], true);
-    if (is_array($discounts)) {
-        if (!empty($level['id'])) {
-            if ($discounts['level' . $level['id']] > 0 && $discounts['level' . $level['id']] < 10) {
-                $level['discount'] = $discounts['level' . $level['id']];
-            }
-        } else {
-            $level['levelname'] = empty($shopset['levelname']) ? '普通会员' : $shopset['levelname'];
-            if ($discounts['default'] > 0 && $discounts['default'] < 10) {
-                $level['discount'] = $discounts['default'];
+    
+
+    if ($goods['discounttype'] == 1) {
+        $level     = m('member')->getLevel($openid);
+        $discounts = json_decode($goods['discounts'], true);
+        //会员等级折扣
+        if (is_array($discounts)) {
+            if (!empty($level['id'])) {
+                if ($discounts['level' . $level['id']] > 0 && $discounts['level' . $level['id']] < 10) {
+                    $level['discount'] = $discounts['level' . $level['id']];
+                }
             } else {
-                $level['discount'] = 10;
+                $level['levelname'] = empty($shopset['levelname']) ? '普通会员' : $shopset['levelname'];
+                if ($discounts['default'] > 0 && $discounts['default'] < 10) {
+                    $level['discount'] = $discounts['default'];
+                } else {
+                    $level['discount'] = 10;
+                }
             }
+            $level['discounttxt'] = "会员折扣";
+        }
+    } else {
+        $level     = p("commission")->getLevel($openid);
+        $discounts = json_decode($goods['discounts2'], true);
+        //分销商等级折扣
+        if (is_array($discounts)) {
+            if (!empty($level['id'])) {
+                if ($discounts['level' . $level['id']] > 0 && $discounts['level' . $level['id']] < 10) {
+                    $level['discount'] = $discounts['level' . $level['id']];
+                }
+            } else {
+                $level['levelname'] = empty($shopset['levelname']) ? '普通会员' : $shopset['levelname'];
+                if ($discounts['default'] > 0 && $discounts['default'] < 10) {
+                    $level['discount'] = $discounts['default'];
+                } else {
+                    $level['discount'] = 10;
+                }
+            }
+            $level['discounttxt'] = "分销商折扣";
         }
     }
+    $level['discountway'] = $goods['discountway'];
+
+
+    $comment = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods_comment')." where goodsid=:id and uniacid=:uniacid",array(':id' => $goodsid , ':uniacid' => $uniacid)),'headimgurl');
+    $commentcount = pdo_fetchcolumn("select count(id) from ".tablename('sz_yi_goods_comment')." where goodsid=:id and uniacid=:uniacid",array(':id' => $goodsid , ':uniacid' => $uniacid));
+
+    //热卖商品
+if($goods['tcate']){
+     $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where tcate=:tcate and pcate=:pcate and ccate=:ccate and uniacid=:uniacid and deleted = 0   order by sales desc limit 10",array(':uniacid' => $uniacid , ':tcate' => $goods['tcate'] , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
+ }else if ($goods['ccate']){
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate and ccate=:ccate and uniacid=:uniacid and deleted = 0 order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] , ':ccate' => $goods['ccate'])),'thumb');
+ }else if ($goods['pcate']){
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate  and uniacid=:uniacid and deleted = 0 order by sales desc limit 10",array(':uniacid' => $uniacid , ':pcate' => $goods['pcate'] )),'thumb');
+ }else{
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where uniacid=:uniacid and deleted = 0 order by sales desc limit 10",array(':uniacid' => $uniacid )),'thumb');
+ }
+   
+    $category = m('shop')->getCategory();
+    
     $stores = array();
     if ($goods['isverify'] == 2) {
         $storeids = array();
@@ -244,11 +411,11 @@ if ($_W['isajax']) {
             $storeids = array_merge(explode(',', $goods['storeids']), $storeids);
         }
         if (empty($storeids)) {
-            $stores = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where  uniacid=:uniacid and status=1', array(
+            $stores = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where  uniacid=:uniacid and status=1 and myself_support=1', array(
                 ':uniacid' => $_W['uniacid']
             ));
         } else {
-            $stores = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where id in (' . implode(',', $storeids) . ') and uniacid=:uniacid and status=1', array(
+            $stores = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where id in (' . implode(',', $storeids) . ') and uniacid=:uniacid and status=1 and myself_support=1', array(
                 ':uniacid' => $_W['uniacid']
             ));
         }
@@ -285,7 +452,12 @@ if ($_W['isajax']) {
             ':openid' => $openid
         )),
         'isfavorite' => $fcount > 0,
-        'stores' => $stores
+        'stores' => $stores,
+        'comment' => $comment,
+        'commentcount' => $commentcount,
+        'ishot' => $ishot,
+        'history' => $history_goods,
+        'category' => $category
     );
     $commission = p('commission');
     if ($commission) {
@@ -309,7 +481,9 @@ if ($_W['isajax']) {
         'btntext2' => trim($goods['detail_btntext2']),
         'btnurl2' => !empty($goods['detail_btnurl2']) ? $goods['detail_btnurl2'] : $shop['url']
     );
-    show_json(1, $ret);
+
+        show_json(1, $ret);
+
 }
 $_W['shopshare'] = array(
     'title' => !empty($goods['share_title']) ? $goods['share_title'] : $goods['title'],
@@ -340,5 +514,17 @@ if ($com) {
     }
 }
 $this->setHeader();
-include $this->template('shop/detail');
+if(p('hotel')){ //判断是否开启酒店插件
+   if($goods['type']=='99'){//判断是否为房间
+        include $this->template('shop/detail_hotel');
+   }else if($goods['type']=='98'){
+       include $this->template('shop/detail_appointment');
+   }else if($goods['type']=='97'){
+       include $this->template('shop/detail_appointment');
+   }else{
+        include $this->template('shop/detail');
+   }
+}else{
+  include $this->template('shop/detail');
+}
 

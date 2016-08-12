@@ -103,6 +103,10 @@ class Sz_DYi_Member
 							mc_credit_update($uid, 'credit2', $info['credit2']);
 							$upgrade['credit2'] = 0;
 						}
+                        if ($info['credit20'] > 0) {
+                            mc_credit_update($uid, 'credit20', $info['credit20']);
+                            $upgrade['credit20'] = 0;
+                        }
 						if (!empty($upgrade)) {
 							pdo_update('sz_yi_member', $upgrade, array('id' => $info['id']));
 						}
@@ -112,6 +116,7 @@ class Sz_DYi_Member
 			$credits = $this->getCredits($openid);
 			$info['credit1'] = $credits['credit1'];
 			$info['credit2'] = $credits['credit2'];
+            $info['credit20'] = $credits['credit20'];
 		}
         return $info;
     }
@@ -121,6 +126,123 @@ class Sz_DYi_Member
         $openid = m('user')->getOpenid();
         $member = $this->getMember($openid);
         return $member['id'];
+    }
+    public function responseReferral($set,$referral,$member)
+    {
+        global $_W;
+
+
+        $subpaycontent = $set['subpaycontent'];
+        if (empty($subpaycontent)) {
+            $subpaycontent = '您通过 [nickname]的推荐码注册账号的奖励';
+        }
+        $subpaycontent = str_replace("[nickname]", $referral['mobile'], $subpaycontent);
+
+        $recpaycontent = $set['recpaycontent'];
+        if (empty($recpaycontent)) {
+            $recpaycontent = '推荐 [nickname] 使用推荐码注册账号的奖励';
+        }
+        $recpaycontent = str_replace("[nickname]", $member['mobile'], $recpaycontent);
+
+        if ($set['subcredit'] > 0) {
+            m('member')->setCredit($member['openid'], 'credit1', $set['subcredit'], array(
+                0,
+                '推荐码注册积分+' . $set['subcredit']
+            ));
+        }
+        if ($set['submoney'] > 0) {
+            $pay = $set['submoney'];
+            if ($set['paytype'] == 1) {
+                $pay *= 100;
+            }
+            m('finance')->pay($member['openid'], $set['paytype'], $pay, '', $subpaycontent);
+        }
+        if ($set['reccredit'] > 0) {
+            m('member')->setCredit($referral['openid'], 'credit1', $set['reccredit'], array(
+                0,
+                '分享推荐码注册积分+' . $set['reccredit']
+            ));
+        }
+        if ($set['recmoney'] > 0) {
+            $pay = $set['recmoney'];
+            if ($set['paytype'] == 1) {
+                $pay *= 100;
+            }
+            m('finance')->pay($referral['openid'], $set['paytype'], $pay, '', $recpaycontent);
+        }
+            if (!empty($set['subtext'])) {
+                $subtext = $set['subtext'];
+                $subtext = str_replace("[nickname]", $member['mobile'], $subtext);
+                $subtext = str_replace("[credit]", $set['reccredit'], $subtext);
+                $subtext = str_replace("[money]", $set['recmoney'], $subtext);
+
+                if (!empty($set['templateid'])) {
+                    m('message')->sendTplNotice($referral['openid'], $set['templateid'], array(
+                        'first' => array(
+                            'value' => "推荐注册奖励到账通知",
+                            "color" => "#4a5077"
+                        ),
+                        'keyword1' => array(
+                            'value' => '推荐奖励',
+                            "color" => "#4a5077"
+                        ),
+                        'keyword2' => array(
+                            'value' => $subtext,
+                            "color" => "#4a5077"
+                        ),
+                        'remark' => array(
+                            'value' => "\r\n谢谢您对我们的支持！",
+                            "color" => "#4a5077"
+                        )
+                    ), '');
+                } else {
+                    m('message')->sendCustomNotice($referral['openid'], $subtext);
+                }
+            }
+            if (!empty($set['entrytext'])) {
+                $entrytext = $set['entrytext'];
+                $entrytext = str_replace("[nickname]", $member['mobile'], $entrytext);
+                $entrytext = str_replace("[credit]", $set['subcredit'], $entrytext);
+                $entrytext = str_replace("[money]", $set['submoney'], $entrytext);
+
+                if (!empty($set['templateid'])) {
+                    m('message')->sendTplNotice($member['openid'], $set['templateid'], array(
+                        'first' => array(
+                            'value' => "使用推荐码奖励到账通知",
+                            "color" => "#4a5077"
+                        ),
+                        'keyword1' => array(
+                            'value' => '使用推荐码奖励',
+                            "color" => "#4a5077"
+                        ),
+                        'keyword2' => array(
+                            'value' => $entrytext,
+                            "color" => "#4a5077"
+                        ),
+                        'remark' => array(
+                            'value' => "\r\n谢谢您对我们的支持！",
+                            "color" => "#4a5077"
+                        )
+                    ), '');
+                } else {
+                    m('message')->sendCustomNotice($openid, $entrytext);
+                }
+            }
+   // [isreferrer] => 1
+   //  [reccredit] => 1
+   //  [recmoney] => 3
+   //  [subcredit] => 2
+   //  [submoney] => 4
+   //  [paytype] => 1
+   //  [isreferral] => 1
+   //  [templateid] =>  OPENTM200605630
+   //  [subtext] => [nickname] 通过您的推荐码注册账号! 获得了 [credit] 个积分,[money]元奖励!
+   //  [entrytext] => 您使用了 [nickname] 的推荐码注册账号! 获得了 [credit] 个积分,[money]元奖励!
+   //  [subpaycontent] => 您通过 [nickname]的推荐码注册账号的奖励
+   //  [recpaycontent] => 推荐 [nickname] 使用推荐码注册账号的奖励
+   //  [referrallogo] => images/1/2016/05/jr0KuPXRPQ04XgxpXXP40p4CUp1QzU.png
+
+
     }
     public function setCredit($openid = '', $credittype = 'credit1', $credits = 0, $log = array())
     {
@@ -196,7 +318,7 @@ class Sz_DYi_Member
             ));
 		}
 	}
-	public function getCredits($openid = '', $type = array('credit1', 'credit2'))
+	public function getCredits($openid = '', $type = array('credit1', 'credit2', 'credit20'))
 	{
 		global $_W;
 		load()->model('mc');
@@ -209,6 +331,7 @@ class Sz_DYi_Member
 		}
 
     }
+
     public function checkMember($openid = '')
     {
         global $_W, $_GPC;
@@ -261,8 +384,28 @@ class Sz_DYi_Member
                 'status' => 0
             );
             $bindMobile = true;
+
             pdo_insert('sz_yi_member', $member);
+
+            /**
+             * 分销 绑定app注册用户
+             */
+            if (isset($_GPC['access']) && $_GPC['access'] == 'app') {
+                /**
+                 * 分销商品链接地址
+                 */
+                header("Location:/app/index.php?i=" . $_W['uniacid'] . "&c=entry&p=bindapp&do=member&m=sz_yi&mid=".$_GPC['mid']);
+            }
+
+
         } else {
+            if (isset($_GPC['access']) && $_GPC['access'] == 'app' && $member['bindapp'] == 0) {
+                /**
+                 * 分销商品链接地址
+                 */
+                header("Location:/app/index.php?i=" . $_W['uniacid'] . "&c=entry&p=bindapp&do=member&m=sz_yi&mid=".$_GPC['mid']);
+            }
+
             $upgrade = array();
             if ($userinfo['nickname'] != $member['nickname']) {
                 $upgrade['nickname'] = $userinfo['nickname'];
@@ -283,6 +426,7 @@ class Sz_DYi_Member
         if (p('poster')) {
             p('poster')->checkScan();
         }
+
         if($bindMobile && is_weixin()){
             /*
             $url = "/app/index.php?i={$_W['uniacid']}&c=entry&p=bindmobile&do=member&m=sz_yi";
@@ -414,4 +558,9 @@ class Sz_DYi_Member
 		fwrite($open,$str);
 		fclose($open);
 	}
+
+
+
+
+
 }

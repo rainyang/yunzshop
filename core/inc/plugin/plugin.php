@@ -1,7 +1,7 @@
 <?php
 /*=============================================================================
 #     FileName: plugin.php
-#         Desc:  
+#         Desc:
 #       Author: Yunzhong - http://www.yunzshop.com
 #        Email: 913768135@qq.com
 #     HomePage: http://www.yunzshop.com
@@ -26,9 +26,9 @@ class Plugin extends Core
         if (strexists($_SERVER['REQUEST_URI'], '/web/')) {
             cpa($this->pluginname);
         } else if (strexists($_SERVER['REQUEST_URI'], '/app/')) {
-            
-                $this->setFooter();  
-	}
+
+                $this->setFooter();
+	    }
         $this->module['title'] = pdo_fetchcolumn('select title from ' . tablename('modules') . " where name='sz_yi' limit 1");
     }
     private function loadModel()
@@ -51,6 +51,14 @@ class Plugin extends Core
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
         global $_W;
+        $tmplateType = (isMobile()) ? 'mobile' : 'pc';
+        if(strstr($_SERVER['REQUEST_URI'],'app')){
+            if(!isMobile()){
+                if($this->yzShopSet['ispc']==0){
+                    $tmplateType = 'mobile';
+                }
+            }
+        }
         $defineDir = IA_ROOT . "/addons/sz_yi/";
         if (defined('IN_SYS')) {
             $source  = IA_ROOT . "/addons/sz_yi/plugin/" . $this->pluginname . "/template/{$filename}.html";
@@ -68,36 +76,46 @@ class Plugin extends Core
                 $compile = IA_ROOT . "/data/tpl/web/default/{$filename}.tpl.php";
             }
         } else {
-            $global_template = m('cache')->getString('template_shop');
-            if (empty($global_template)) {
+            if (is_app()) {
+                $template = m('cache')->getString('app_template_shop');
+            } else {
+                if (!isMobile() && $set['ispc']) {
+                    $template = m('cache')->getString('template_shop_pc');
+                } else {
+                    $template = m('cache')->getString('template_shop');
+                }
+            }
+            /*if (empty($global_template)) {
                 $global_template = "default";
             }
-            if (!is_dir(IA_ROOT . '/addons/sz_yi/template/mobile/' . $global_template)) {
+            if (!is_dir(IA_ROOT . "/addons/sz_yi/template/{$tmplateType}/" . $global_template)) {
                 $global_template = "default";
-            }
-            $template = m('cache')->getString('template_' . $this->pluginname);
+            }*/
+            //$template = m('cache')->getString('template_' . $this->pluginname);
             if (empty($template)) {
                 $template = "default";
             }
-            if (!is_dir(IA_ROOT . '/addons/sz_yi/plugin/' . $this->pluginname . "/template/mobile/" . $template)) {
+            /*if (!is_dir(IA_ROOT . '/addons/sz_yi/plugin/' . $this->pluginname . "/template/{$tmplateType}/" . $template)) {
                 $template = "default";
-            }
-            $compile = IA_ROOT . "/data/app/sz_yi/plugin/" . $this->pluginname . "/{$template}/mobile/{$filename}.tpl.php";
-            $source  = $defineDir . "/plugin/" . $this->pluginname . "/template/mobile/{$template}/{$filename}.html";
+            }*/
+            $compile = IA_ROOT . "/data/app/sz_yi/plugin/" . $this->pluginname . "/{$template}/{$tmplateType}/{$filename}.tpl.php";
+            $source  = $defineDir . "/plugin/" . $this->pluginname . "/template/{$tmplateType}/{$template}/{$filename}.html";
             if (!is_file($source)) {
-                $source  = $defineDir . "/plugin/" . $this->pluginname . "/template/mobile/default/{$filename}.html";
-                $compile = IA_ROOT . "/data/app/sz_yi/plugin/" . $this->pluginname . "/default/mobile/{$filename}.tpl.php";
+                $source  = $defineDir . "/plugin/" . $this->pluginname . "/template/{$tmplateType}/default/{$filename}.html";
+                $compile = IA_ROOT . "/data/app/sz_yi/plugin/" . $this->pluginname . "/default/{$tmplateType}/{$filename}.tpl.php";
             }
+
             if (!is_file($source)) {
-                $source  = $defineDir . "/template/mobile/{$global_template}/{$filename}.html";
-                $compile = IA_ROOT . "/data/app/sz_yi/{$global_template}/{$filename}.tpl.php";
+                $source  = $defineDir . "/template/{$tmplateType}/{$template}/{$filename}.html";
+                $compile = IA_ROOT . "/data/app/sz_yi/{$template}/{$filename}.tpl.php";
             }
+
             if (!is_file($source)) {
-                $source  = $defineDir . "/template/mobile/default/{$filename}.html";
+                $source  = $defineDir . "/template/{$tmplateType}/default/{$filename}.html";
                 $compile = IA_ROOT . "/data/app/sz_yi/default/{$filename}.tpl.php";
             }
             if (!is_file($source)) {
-                $source  = $defineDir . "/template/mobile/{$filename}.html";
+                $source  = $defineDir . "/template/{$tmplateType}/{$filename}.html";
                 $compile = IA_ROOT . "/data/app/sz_yi/{$filename}.tpl.php";
             }
             if (!is_file($source)) {
@@ -107,12 +125,13 @@ class Plugin extends Core
                 if (empty($ptemplate)) {
                     $ptemplate = "default";
                 }
-                if (!is_dir(IA_ROOT . '/addons/sz_yi/plugin/' . $pluginname . "/template/mobile/" . $ptemplate)) {
+                if (!is_dir(IA_ROOT . '/addons/sz_yi/plugin/' . $pluginname . "/template/{$tmplateType}/" . $ptemplate)) {
                     $ptemplate = "default";
                 }
                 $pfilename = $names[1];
-                $source    = IA_ROOT . "/addons/sz_yi/plugin/" . $pluginname . "/template/mobile/" . $ptemplate . "/{$pfilename}.html";
+                $source    = IA_ROOT . "/addons/sz_yi/plugin/" . $pluginname . "/template/{$tmplateType}/" . $ptemplate . "/{$pfilename}.html";
             }
+
         }
         if (!is_file($source)) {
             exit("Error: template source '{$filename}' is not exist!");

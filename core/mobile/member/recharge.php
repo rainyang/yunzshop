@@ -1,22 +1,27 @@
 <?php
-
-
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
+$shopset   = m('common')->getSysset('shop');
 if (empty($openid)) {
     $openid = $_GPC['openid'];
 }
 $uniacid = $_W['uniacid'];
 if ($operation == 'display' && $_W['isajax']) {
+    //$payno = 'CZ'. date('YmdHis') . random(6, true);
+
     $set = m('common')->getSysset(array(
         'shop',
         'pay',
         'trade'
     ));
+    if (p('sale')) {
+        $sale_set = p('sale')->getSet();
+        $acts = unserialize($sale_set['recharges']);
+    }
     if (!empty($set['trade']['closerecharge'])) {
         show_json(-1, '系统未开启账户充值!');
     }
@@ -66,15 +71,40 @@ if ($operation == 'display' && $_W['isajax']) {
         }
     }
 
-    $pluginy = p('yunpay');
-    if ($pluginy) {
-        $yunpay = array(
-            'success' => false
-        );
+    $app_alipay = array(
+        'success' => false
+    );
+    if (isset($set['pay']) && $set['pay']['app_alipay'] == 1) {
+        load()->model('payment');
+        $setting = uni_setting($_W['uniacid'], array(
+            'payment'
+        ));
+        if (is_array($setting['payment']['ping']) && $setting['payment']['ping']['switch']) {
+            $app_alipay['success'] = true;
+        }
+    }
 
+    $app_wechat = array(
+        'success' => false
+    );
+    if (isset($set['pay']) && $set['pay']['app_weixin'] == 1) {
+        load()->model('payment');
+        $setting = uni_setting($_W['uniacid'], array(
+            'payment'
+        ));
+        if (is_array($setting['payment']['ping']) && $setting['payment']['ping']['switch']) {
+            $app_wechat['success'] = true;
+        }
+    }
+
+    $pluginy = p('yunpay');
+    $yunpay = array(
+        'success' => false
+    );
+    if ($pluginy) {
         $yunpayinfo = $pluginy->getYunpay();
-        
-        if (isset($yunpayinfo) && $yunpayinfo['switch']) {
+
+        if (isset($yunpayinfo) && @$yunpayinfo['switch']) {
             $yunpay['success'] = true;
         }
     }
@@ -85,10 +115,17 @@ if ($operation == 'display' && $_W['isajax']) {
         'isweixin' => is_weixin(),
         'wechat' => $wechat,
         'alipay' => $alipay,
+        'app_wechat' => $app_wechat,
+        'app_alipay' => $app_alipay,
         'credit' => $credit,
-        'yunpay' => $yunpay
+        'yunpay' => $yunpay,
+        'payno' => $logno,
+        'acts' => $acts
     ));
 } else if ($operation == 'recharge' && $_W['ispost']) {
+    if (!empty($set['trade']['closerecharge'])) {
+        show_json(-1, '系统未开启账户充值!');
+    }
     $logid = intval($_GPC['logid']);
     if (empty($logid)) {
         show_json(0, '充值出错, 请重试!');
@@ -97,11 +134,15 @@ if ($operation == 'display' && $_W['isajax']) {
     if (empty($money)) {
         show_json(0, '请填写充值金额!');
     }
+    if ($money <= 0) {
+        show_json(0, '充值金额需大于0');
+    }
     $type = $_GPC['type'];
     if (!in_array($type, array(
         'weixin',
         'alipay',
-        'yunpay'
+        'yunpay',
+        'ping'
     ))) {
         show_json(0, '未找到支付方式');
     }
@@ -117,6 +158,10 @@ if ($operation == 'display' && $_W['isajax']) {
     $couponid = intval($_GPC['couponid']);
 	if($log['money'] <= 0){
         pdo_update('sz_yi_member_log', array('money' => $money, 'couponid' => $couponid), array('id' => $log['id']));
+    }else{
+       if($log['money']!=$money){
+            show_json(0, '充值异常, 请重试!');
+       }
     }
 
     $set = m('common')->getSysset(array(
@@ -164,15 +209,20 @@ if ($operation == 'display' && $_W['isajax']) {
         show_json(1);
     } else if ($type == 'yunpay') {
         show_json(1);
+    } else if ($type == 'ping') {
+        show_json(1);
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
     $logid = intval($_GPC['logid']);
-    $log   = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `id`=:id and `uniacid`=:uniacid limit 1', array(
+    $log   = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `id`=:id and `openid`=:openid and `uniacid`=:uniacid limit 1', array(
         ':uniacid' => $uniacid,
+        ':openid' => $openid,
         ':id' => $logid
     ));
+
     if (!empty($log) && empty($log['status'])) {
         $payquery = m('finance')->isWeixinPay($log['logno']);
+
         if (!is_error($payquery)) {
             pdo_update('sz_yi_member_log', array(
                 'status' => 1,
@@ -180,7 +230,7 @@ if ($operation == 'display' && $_W['isajax']) {
             ), array(
                 'id' => $logid
             ));
-            m('member')->setCredit($openid, 'credit2', $log['money']);
+            m('member')->setCredit($openid, 'credit2', $log['money'], array(0, '会员充值中心充值：' . $log['money'] . " 元"));
             m('member')->setRechargeCredit($openid, $log['money']);
             if (p('sale')) {
                 p('sale')->setRechargeActivity($log);
@@ -240,7 +290,7 @@ if ($operation == 'display' && $_W['isajax']) {
         ), array(
             'id' => $log['id']
         ));
-        m('member')->setCredit($openid, 'credit2', $log['money']);
+        m('member')->setCredit($openid, 'credit2', $log['money'], array(0, '会员余额充值' . $log['money'] . " 元"));
         m('member')->setRechargeCredit($openid, $log['money']);
         if (p('sale')) {
             p('sale')->setRechargeActivity($log);
@@ -254,4 +304,3 @@ if ($operation == 'display' && $_W['isajax']) {
 if ($operation == 'display') {
     include $this->template('member/recharge');
 }
-

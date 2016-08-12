@@ -25,9 +25,28 @@ if($op == 'sendcode'){
     $_SESSION['codetime'] = time();
     $_SESSION['code'] = $code;
     $_SESSION['code_mobile'] = $mobile;
-    $content = "您的安全码是：". $code ."。请不要把安全码泄露给其他人。如非本人操作，可不用理会！";
-    $issendsms = $this->sendSms($mobile, $content);
-    show_json(1);
+    //$content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
+    $issendsms = $this->sendSms($mobile, $code);
+    //print_r($issendsms);
+
+    $set = m('common')->getSysset();
+    //互亿无线
+    if($set['sms']['type'] == 1){
+        if($issendsms['SubmitResult']['code'] == 2){
+            show_json(1);
+        }
+        else{
+            show_json(0, $issendsms['SubmitResult']['msg']);
+        }
+    }
+    else{
+        if(isset($issendsms['result']['success'])){
+            show_json(1);
+        }
+        else{
+            show_json(0, $issendsms['msg']);
+        }
+    }
 }else if ($op == 'forgetcode'){
     $mobile = $_GPC['mobile'];
     if(empty($mobile)){
@@ -46,27 +65,62 @@ if($op == 'sendcode'){
     $_SESSION['codetime'] = time();
     $_SESSION['code'] = $code;
     $_SESSION['code_mobile'] = $mobile;
-    $content = "您的安全码是：". $code ."。请不要把安全码泄露给其他人。如非本人操作，可不用理会！";
-    $issendsms = $this->sendSms($mobile, $content);
-    show_json(1);
+    //$content = "您的安全码是：". $code ."。请不要把安全码泄露给其他人。如非本人操作，可不用理会！";
+    $issendsms = $this->sendSms($mobile, $code, 'forget');
+    $set = m('common')->getSysset();
+    //互亿无线
+    if($set['sms']['type'] == 1){
+        if($issendsms['SubmitResult']['code'] == 2){
+            show_json(1);
+        }
+        else{
+            show_json(0, $issendsms['SubmitResult']['msg']);
+        }
+    }
+    else{
+        if(isset($issendsms['result']['success'])){
+            show_json(1);
+        }
+        else{
+            show_json(0, $issendsms['msg']);
+        }
+    }
 }else if ($op == 'bindmobilecode'){
     $mobile = $_GPC['mobile'];
     if(empty($mobile)){
         show_json(0, '请填入手机号');
     }
-    $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where mobile=:mobile and pwd!="" and uniacid=:uniacid limit 1', array(
+    $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where mobile=:mobile and pwd!="" and uniacid=:uniacid and isbindmobile=1 limit 1', array(
                 ':uniacid' => $_W['uniacid'],
                 ':mobile' => $mobile
             ));
-    //print_r($info);
-    
+    /*if(!empty($info)){
+        show_json(0, '该手机号已绑定过');
+    }*/
     $code = rand(1000, 9999);
     $_SESSION['codetime'] = time();
     $_SESSION['code'] = $code;
     $_SESSION['code_mobile'] = $mobile;
-    $content = "您的安全码是：". $code ."。请不要把安全码泄露给其他人。如非本人操作，可不用理会！";
-    $issendsms = $this->sendSms($mobile, $content);
-    show_json(1);
+    //$content = "您的安全码是：". $code ."。请不要把安全码泄露给其他人。如非本人操作，可不用理会！";
+    $issendsms = $this->sendSms($mobile, $code);
+    $set = m('common')->getSysset();
+    //互亿无线
+    if($set['sms']['type'] == 1){
+        if($issendsms['SubmitResult']['code'] == 2){
+            show_json(1);
+        }
+        else{
+            show_json(0, $issendsms['SubmitResult']['msg']);
+        }
+    }
+    else{
+        if(isset($issendsms['result']['success'])){
+            show_json(1);
+        }
+        else{
+            show_json(0, $issendsms['msg']);
+        }
+    }
 }else if ($op == 'checkcode'){
     $code = $_GPC['code']; 
 

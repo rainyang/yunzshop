@@ -45,7 +45,7 @@ class Sz_DYi_Common
             pdo_query("ALTER TABLE  ".tablename('sz_yi_member')." CHANGE  `pwd`  `pwd` VARCHAR( 100 ) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;");
         }
         pdo_query("UPDATE `ims_sz_yi_plugin` SET `name` = '芸众分销' WHERE `identity` = 'commission'");
-        pdo_query("UPDATE `ims_qrcode` SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
+        //pdo_query("UPDATE `ims_qrcode` SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
 
         if(!pdo_fieldexists('sz_yi_goods', 'cates')) {
             pdo_query("ALTER TABLE ".tablename('sz_yi_goods')." ADD     `cates` text;");
@@ -94,8 +94,14 @@ class Sz_DYi_Common
         global $_W;
         $tid                   = $params['tid'];
         $set                   = array();
-        $set['service']        = 'alipay.wap.create.direct.pay.by.user';
         $set['partner']        = $alipay['partner'];
+        $set['seller_id']    = $alipay['account'];
+        if ($_W['os'] == 'windows') {
+            $set['seller_id']    = $alipay['partner'];  //即时到帐情况下sellerid = partner
+            $set['service']        = 'create_direct_pay_by_user';
+        } else {
+            $set['service']        = 'alipay.wap.create.direct.pay.by.user';
+        }
         $set['_input_charset'] = 'utf-8';
         $set['sign_type']      = 'MD5';
         if (empty($type)) {
@@ -108,7 +114,6 @@ class Sz_DYi_Common
         $set['out_trade_no'] = $tid;
         $set['subject']      = $params['title'];
         $set['total_fee']    = $params['fee'];
-        $set['seller_id']    = $alipay['account'];
         $set['payment_type'] = 1;
         $set['body']         = $_W['uniacid'] . ':' . $type;
         $prepares            = array();
@@ -201,7 +206,7 @@ class Sz_DYi_Common
             $package['total_fee']        = $params['fee'] * 100;
             $package['spbill_create_ip'] = CLIENT_IP;
             $package['notify_url']       = $_W['siteroot'] . "addons/sz_yi/payment/wechat/notify.php";
-            $package['trade_type']       = 'JSAPI';
+            $package['trade_type']       = ($params['trade_type'] == 'NATIVE') ? 'NATIVE' : 'JSAPI';
             $package['openid']           = $_W['fans']['from_user'];
             ksort($package, SORT_STRING);
             $string1 = '';
@@ -231,6 +236,11 @@ class Sz_DYi_Common
             $wOpt['nonceStr']  = random(8) . "";
             $wOpt['package']   = 'prepay_id=' . $prepayid;
             $wOpt['signType']  = 'MD5';
+
+            if($params['trade_type'] == 'NATIVE'){
+                $code_url = (array)$xml->code_url;
+                $wOpt['code_url']  = $code_url[0];
+            }
             ksort($wOpt, SORT_STRING);
             foreach ($wOpt as $key => $v) {
                 $string .= "{$key}={$v}&";
@@ -357,5 +367,57 @@ class Sz_DYi_Common
             $file = $path . "/" . date('H') . '.log';
             file_put_contents($file, $log, FILE_APPEND);
         }
+    }
+
+    public function checkClose()
+    {
+        if (strexists($_SERVER['REQUEST_URI'], '/web/')) {
+            return;
+        }
+        $shop = $this->getSysset('shop');
+        if (!empty($shop['close'])) {
+            if (!empty($shop['closeurl'])) {
+                header('location: ' . $shop['closeurl']);
+                exit;
+            }
+            die("<!DOCTYPE html>
+                    <html>
+                        <head>
+                            <meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=0'>
+                            <title>抱歉，商城暂时关闭</title><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1, user-scalable=0'><link rel='stylesheet' type='text/css' href='https://res.wx.qq.com/connect/zh_CN/htmledition/style/wap_err1a9853.css'>
+                        </head>
+                        <body>
+                        <style type='text/css'>
+                        body { background:#fbfbf2; color:#333;}
+                        img { display:block; width:100%;}
+                        .header {
+                        width:100%; padding:10px 0;text-align:center;font-weight:bold;}
+                        </style>
+                        <div class='page_msg'>
+                        
+                        <div class='inner'><span class='msg_icon_wrp'><i class='icon80_smile'></i></span>{$shop['closedetail']}</div></div>
+                        </body>
+                    </html>");
+        }
+    }
+
+    public function mylink(){
+        global $_W;
+        $mylink['designer'] = p('designer');
+        $mylink['categorys'] = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_article_category') . " WHERE uniacid=:uniacid ", array(':uniacid' => $_W['uniacid']));
+        if ($mylink['designer']) {
+            $mylink['diypages'] = pdo_fetchall("SELECT id,pagetype,setdefault,pagename FROM " . tablename('sz_yi_designer') . " WHERE uniacid=:uniacid order by setdefault desc  ", array(':uniacid' => $_W['uniacid']));
+        }
+        $mylink['article_sys'] = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article_sys') . " WHERE uniacid=:uniacid limit 1 ", array(':uniacid' => $_W['uniacid']));
+        $mylink['article_sys']['article_area'] = json_decode($mylink['article_sys']['article_area'],true);
+        $mylink['area_count'] = sizeof($mylink['article_sys']['article_area']);
+        if ($mylink['area_count'] == 0){
+            //没有设定地区的时候的默认值：
+            $mylink['article_sys']['article_area'][0]['province'] = '';
+            $mylink['article_sys']['article_area'][0]['city'] = '';
+            $mylink['area_count'] = 1;
+        }
+        $mylink['goodcates'] = pdo_fetchall("SELECT id,name,parentid FROM " . tablename('sz_yi_category') . " WHERE enabled=:enabled and uniacid= :uniacid  ", array(':uniacid' => $_W['uniacid'], ':enabled' => '1'));
+        return $mylink;
     }
 }

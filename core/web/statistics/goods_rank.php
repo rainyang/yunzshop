@@ -5,6 +5,19 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 
 ca('statistics.view.goods_rank');
+$shopset = m('common')->getSysset('shop');
+$sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
+$category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
+$parent = $children = array();
+if (!empty($category)) {
+    foreach ($category as $cid => $cate) {
+        if (!empty($cate['parentid'])) {
+            $children[$cate['parentid']][] = $cate;
+        } else {
+            $parent[$cate['id']] = $cate;
+        }
+    }
+}
 $pindex    = max(1, intval($_GPC['page']));
 $psize     = 20;
 $params    = array();
@@ -21,6 +34,18 @@ if (!empty($_GPC['datetime'])) {
 	}
 }
 $condition1 = ' and g.uniacid=:uniacid';
+if (!empty($_GPC['category']['thirdid'])) {
+	$tcate = intval($_GPC['category']['thirdid']);
+    $condition1 .= " AND g.tcate = {$tcate}";
+}
+if (!empty($_GPC['category']['childid'])) {
+	$ccate = intval($_GPC['category']['childid']);
+    $condition1 .= " AND g.ccate = {$ccate}";
+}
+if (!empty($_GPC['category']['parentid'])) {
+	$pcate = intval($_GPC['category']['parentid']);
+    $condition1 .= " AND g.pcate = {$pcate}";
+}
 $params1 = array(':uniacid' => $_W['uniacid']);
 if (!empty($_GPC['title'])) {
 	$condition1 .= ' and g.title like :title';
@@ -31,6 +56,7 @@ $sql = 'SELECT g.id,g.title,g.thumb,' . '(select ifnull(sum(og.price),0) from  '
 if (empty($_GPC['export'])) {
 	$sql .= 'LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
 }
+//echo "<pre>"; print_r($sql);exit;
 $list = pdo_fetchall($sql, $params1);
 $total = pdo_fetchcolumn('select  count(*) from ' . tablename('sz_yi_goods') . ' g ' . " where 1 {$condition1} ", $params1);
 $pager = pagination($total, $pindex, $psize);
@@ -42,7 +68,7 @@ if ($_GPC['export'] == 1) {
 		$row['createtime'] = date('Y-m-d H:i', $row['createtime']);
 	}
 	unset($row);
-	m('excel')->export($list, array('title' => '商品销售报告-' . date('Y-m-d-H-i', time()), 'columns' => array(array('title' => '商品名称', 'field' => 'title', 'width' => 36), array('title' => '数量', 'field' => 'count', 'width' => 12), array('title' => '价格', 'field' => 'money', 'width' => 12))));
+	m('excel')->export($list, array('title' => '商品销售报告-' . date('Y-m-d-H-i', time()), 'columns' => array(array('title' => '商品名称', 'field' => 'title', 'width' => 36), array('title' => '销售量', 'field' => 'count', 'width' => 12), array('title' => '销售额', 'field' => 'money', 'width' => 12))));
 }
 load()->func('tpl');
 include $this->template('web/statistics/goods_rank');

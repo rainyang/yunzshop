@@ -24,6 +24,7 @@
 .order_sub5 {height:30px; width:35%;padding:5px 10px 5px 10px; border:1px solid #ccc; border-radius:4px; text-align:center; font-size:16px; line-height:30px; color:#333; }
 .order_sub6 {height:44px; margin:14px 5px; background:#07c4d0; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 
+.order_sub7 {height:44px; margin:14px 5px; background:#07c4d0; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .order_subc {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 </style>
 
@@ -44,7 +45,7 @@
     <%if alipay.success%><div class="button order_sub2" >支付宝支付</div><%/if%>
     
     <%if credit.success %>
-        <div class="button order_sub3">余额支付(当前余额:<%credit.current%>)</div>
+        <div class="button order_sub3">{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}支付(当前{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}:<%credit.current%>)</div>
         <input type="hidden" id="credit" value="<%credit.current%>" />
         <%if credit.current<=0%>
         <div class="button order_sub4" onclick="location.href='{php echo $this->createMobileUrl('member/recharge')}&returnurl=<%returnurl%>'">账户充值</div>
@@ -55,6 +56,7 @@
     
     <div class="button order_subc"  <%if order.price>0%>style="display:none"<%/if%>>确认支付</div>
     <%if cash.success%><div class="button order_sub6" >货到付款</div><%/if%>
+    <%if storecash.success%><div class="button order_sub7" >到店支付</div><%/if%>
 </script>
 
 <script id='tpl_order_pay' type='text/html'>
@@ -96,7 +98,12 @@
          <%/if%>
     </div>
      <div class="order_main1" >
+         <%if order.order_type=='3'%>
+         <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('order/list',array('type'=>'hotel'))}'">订单详情</span>
+        <%/if%> 
+        <%if order.order_type!='3'%>
          <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('order/list')}'">订单详情</span>
+        <%/if%>       
          <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('shop')}'">返回首页</span>
      </div>
 </script>
@@ -223,6 +230,29 @@
                });})
            }
            
+            if(result.storecash.success){
+               $(".order_sub7").click(function(){
+                   if($(this).attr('submitting')=='1'){
+                       return;
+                   }
+                   core.tip.confirm('确认要到店支付?',function(){
+                       $('.button').attr('submitting',1);
+                    core.json('order/pay',{
+                        op:'complete',
+                        orderid:'{$_GPC['orderid']}',
+                        type:'storecash'
+                    },function(pay_json){
+                        if(pay_json.status==2){
+                           $('#container').html(tpl('tpl_order_cash',pay_json.result));
+                           return;
+                        }
+                        core.tip.show(pay_json.result);
+                        $('.button').removeAttr('submitting');
+                    },true,true);
+               });})
+            }
+           
+
            if(result.wechat.success){
                 $('.order_sub1').click(function(){   
                         if($(this).attr('submitting')=='1'){

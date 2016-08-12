@@ -2,6 +2,8 @@
 global $_W, $_GPC;
 $operation   = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 if ($operation == 'display') {
+	$pindex = max(1, intval($_GPC['page']));
+	$psize = 20;
 	$where = '';
 	if(!empty($_GPC['uid'])){
 		$where .= ' and p.uid=' . $_GPC['uid'];
@@ -9,12 +11,14 @@ if ($operation == 'display') {
 	if(!empty($_GPC['applysn'])){
 		$where .= ' and a.applysn=' . $_GPC['applysn'];
 	} 
-
-    //修复p.*问题, 直接p.*和a.* id会有冲突,字段名也不对，没有telephone. By RainYang
-	$list = pdo_fetchall('select a.*,p.accountname, mobile as telephone, accountbank, banknumber   from ' . tablename('sz_yi_supplier_apply') . ' a left join ' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid where a.status=0 and p.uniacid=' . $_W['uniacid'] . $where);
-    $total = count($list);
+	//提现列表
+	$list = pdo_fetchall('select a.*,p.accountname, mobile as telephone, accountbank, banknumber   from ' . tablename('sz_yi_supplier_apply') . ' a left join ' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid where a.status=0 and p.uniacid=' . $_W['uniacid'] . $where . '  limit ' . ($pindex - 1) * $psize . ',' . $psize);
+	//总数
+	$total = pdo_fetchcolumn('select count(a.id) from ' . tablename('sz_yi_supplier_apply') . ' a left join ' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid where a.status=0 and p.uniacid=' . $_W['uniacid'] . $where);
+	//分页
+    $pager = pagination($total, $pindex, $psize);
 } else if ($operation == 'detail') {
-	$id = intval($_GPC['id']);
+	$id = intval($_GPC['applyid']);
 	if(!empty($id)){
 		$set     = m('common')->getSysset('shop');
 		$apply = pdo_fetch('select * from ' . tablename('sz_yi_supplier_apply') . ' where id = '.$id);
@@ -33,6 +37,7 @@ if ($operation == 'display') {
 		pdo_update('sz_yi_supplier_apply', $data, array(
 				'id' => $id
 			));
+		pdo_query('update ' . tablename('sz_yi_order_goods') . " set supplier_apply_status=1 where id in ({$apply['apply_ordergoods_ids']})");
 		$msg = $apply['type'] == 1 ? '手动打款成功' : '提现到微信钱包成功!';
 		p('supplier')->sendMessage($openid, array('money' => $apply['apply_money'], 'type' => $msg), TM_SUPPLIER_PAY);
 		message($msg, $this->createPluginWebUrl('supplier/supplier_apply'), 'success');

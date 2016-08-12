@@ -16,6 +16,10 @@
 </style>
 <div id='container'></div>
 <script id='tpl_main'  type='text/html'>
+<div class="page_topbar">
+<a href="javascript:;" class="back" onclick="history.back()"><i class='iconfont icon-chevron-left'></i></a>
+<div class="title">积分商城</div>
+</div>
     <%if advs.length>0%>
     <div class="banner">
 
@@ -114,10 +118,10 @@
            <a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>">
                 <div class="good">
                     <div class="info">
+                        <div class="img"><img src="<%value.thumb%>"/></div>
                         <div class="classs"><%value.subtitle%><%if value.type=='1'%><span class="span1">抽奖</span><%/if%></div>
                         <div class="name"><%value.title%></div>
                         <div class="price"><%value.credit%><i class="fa fa-database"></i></div>
-                        <div class="img"><img src="<%value.thumb%>"/></div>
                     </div>
                 </div>
             </a>

@@ -6,17 +6,17 @@
  
  
     
-.gold_top {height:168px; width:94%; background:#cc3431; padding:10px 3% 0px;}
-.gold_top .title {height:77px; width:100%; font-size:16px; color:#fff; padding-top:10px;}
-.gold_top .num {height:40px; width:100%; font-size:34px; line-height:40px; color:#fff;}
-.gold_top .num a {height:40px; width:auto; background:url(../addons/sz_yi/plugin/commission/template/mobile/default/static/images/gold_ico1.png) right 16px no-repeat; float:right; padding-right:26px; line-height:50px; color:#fff; font-size:16px;}
-.gold_top .num2 {height:40px; width:100%; color:#fff; line-height:40px; font-size:16px; border-top:1px solid #eee;}
-.gold_num {height:auto; padding:10px; background:#fff; border-top:1px dashed #eaeaea; font-size:16px; color:#999;}
+.gold_top {height:154px; width:94%; background:#f15353; padding:10px 3% 0px;}
+.gold_top .title {height:36px; width:100%; font-size:16px; color:#fff; padding-top:10px;}
+.gold_top .num {height:66px; width:100%; font-size:34px; line-height:66px; color:#fff;}
+.gold_top .num a {height: 28px;width: auto;float: right;padding: 0 10px;line-height: 28px;color: #fff;font-size: 14px;border: 1px #fff solid;border-radius: 50px;text-align: center;margin: 20px 0 0 20px;}
+.gold_top .num2 {height:40px; width:100%; color:#fff; line-height:40px; font-size:14px; border-top:1px #FF9393 solid;}
+.gold_num {height:auto; padding:10px; background:#fff; border-top:1px dashed #eaeaea; font-size:14px; color:#999;}
 .gold_num .nav {height:70px; width:45%; padding-left:5%; float:left; border-right:1px solid #eaeaea;}
-.gold_num .nav .title {height:30px; width:100%; color:#333; font-size:14px; line-height:30px;}
+.gold_num .nav .title {height:30px; width:100%; color:#333; font-size:14px; line-height:30px}
 .gold_num .nav .num {height:20px; width:100%; color:#666; font-size:20px; line-height:16px;}
 .gold_num .nav .tip {height:20px; width:90%; color:#666; font-size:12px; line-height:20px; color:#999;}
-.gold_sub {height:44px; width:94%; background:#31cd00; line-height:44px; font-size:18px; color:#fff; text-align:center; margin:16px 3%; border-radius:5px;}
+.gold_sub {height:44px; width:94%; background:#f15353; line-height:44px; font-size:18px; color:#fff; text-align:center; margin:16px 3%; border-radius:5px;}
 
 
 </style>
@@ -37,7 +37,7 @@
         <%if set.settledays>0%><div class="nav" style="border:0px; width:44%;"><div class="title">{php echo $this->set['texts']['commission_lock']}</div><div class="num"><%member.commission_lock%></div><div class='tip'>未到结算期{php echo $this->set['texts']['commission']}</div></div><%/if%>
     </div>
     <div class="gold_num">买家确认收货后，立即获得{php echo $this->set['texts']['commission1']}。<%if set.settledays>0%>结算期（<%set.settledays%>天）后，{php echo $this->set['texts']['commission']}可{php echo $this->set['texts']['withdraw']}。结算期内，买家退货，{php echo $this->set['texts']['commission']}将自动扣除。<%/if%>
-        <%if set.consume_withdraw>0%><br/><br/>注意： 需自购订单完成，共计 <span style='color:red'><%set.withdraw%></span> 元后才能得分红<br/><%/if%>
+        <%if set.consume_withdraw>0%><br/><br/>注意： 需自购订单完成，共计 <span style='color:red'><%set.consume_withdraw%></span> 元后才能得分红<br/><%/if%>
     </div> 
 </div>
 

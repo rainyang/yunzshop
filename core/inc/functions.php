@@ -2,6 +2,108 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
+//新版微擎里有方法冲突,tpl_form_field_image在compat.biz里也有...
+if (!defined('IS_API')) {
+    load()->func('tpl');
+}
+function sz_tpl_form_field_date($name, $value = '', $withtime = false)
+{
+    $s = '';
+    if (!defined('TPL_INIT_DATA')) {
+        $s = '
+			<script type="text/javascript">
+				require(["datetimepicker"], function(){
+					$(function(){
+						$(".datetimepicker").each(function(){
+							var option = {
+								lang : "zh",
+								step : "30",
+								timepicker : ' . (!empty($withtime) ? "true" : "false") .
+			',closeOnDateSelect : true,
+			format : "Y-m-d' . (!empty($withtime) ? ' H:i:s"' : '"') .
+			'};
+			$(this).datetimepicker(option);
+		});
+	});
+});
+</script>';
+		define('TPL_INIT_DATA', true);
+	}
+	$withtime = empty($withtime) ? false : true;
+	if (!empty($value)) {
+		$value = strexists($value, '-') ? strtotime($value) : $value;
+	} else {
+		$value = TIMESTAMP;
+	}
+	$value = ($withtime ? date('Y-m-d H:i:s', $value) : date('Y-m-d', $value));
+	$s .= '<input type="text" name="' . $name . '"  value="'.$value.'" placeholder="请选择日期时间" class="datetimepicker form-control" style="padding-left:12px;" />';
+	return $s;
+}
+
+function isMobile() {
+    // 如果有HTTP_X_WAP_PROFILE则一定是移动设备
+    if (isset ($_SERVER['HTTP_X_WAP_PROFILE'])){
+        return true;
+    }
+    //如果via信息含有wap则一定是移动设备,部分服务商会屏蔽该信息
+    if (isset ($_SERVER['HTTP_VIA'])) {
+        //找不到为flase,否则为true
+        if (stristr($_SERVER['HTTP_VIA'], "wap")) {
+            return true;
+        }
+    }
+    //判断手机发送的客户端标志,兼容性有待提高
+    if (isset ($_SERVER['HTTP_USER_AGENT'])) {
+        $clientkeywords = array (
+            'nokia',
+            'sony',
+            'ericsson',
+            'mot',
+            'samsung',
+            'htc',
+            'sgh',
+            'lg',
+            'sharp',
+            'sie-',
+            'philips',
+            'panasonic',
+            'alcatel',
+            'lenovo',
+            'iphone',
+            'ipod',
+            'blackberry',
+            'meizu',
+            'android',
+            'netfront',
+            'symbian',
+            'ucweb',
+            'windowsce',
+            'palm',
+            'operamini',
+            'operamobi',
+            'openwave',
+            'nexusone',
+            'cldc',
+            'midp',
+            'wap',
+            'mobile',
+            'WindowsWechat'
+        );
+        // 从HTTP_USER_AGENT中查找手机浏览器的关键字
+        if (preg_match("/(" . implode('|', $clientkeywords) . ")/i", strtolower($_SERVER['HTTP_USER_AGENT']))) {
+            return true;
+        }
+    }
+    //协议法，因为有可能不准确，放到最后判断
+    if (isset ($_SERVER['HTTP_ACCEPT'])) {
+        // 如果只支持wml并且不支持html那一定是移动设备
+        // 如果支持wml和html但是wml在html之前则是移动设备
+        if ((strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') !== false) && (strpos($_SERVER['HTTP_ACCEPT'], 'text/html') === false || (strpos($_SERVER['HTTP_ACCEPT'], 'vnd.wap.wml') < strpos($_SERVER['HTTP_ACCEPT'], 'text/html')))) {
+            return true;
+        }
+    }
+    return false;
+}
 
 function chmod_dir($dir,$chmod='') {
     if(is_dir($dir)) {
@@ -34,11 +136,45 @@ function curl_download($url, $dir) {
     return $res;
 }
 
-function send_sms($account, $pwd, $mobile, $content) 
-{		
-   $smsrs = file_get_contents('http://115.29.33.155/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
-  
+function send_sms($account, $pwd, $mobile, $code)
+{
+    $content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
+    //$smsrs = file_get_contents('http://115.29.33.155/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
+    $smsrs = file_get_contents('http://106.ihuyi.cn/webservice/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
+
    return xml_to_array($smsrs);
+}
+
+function send_sms_alidayu($mobile, $code, $templateType){
+    $set = m('common')->getSysset();
+    include IA_ROOT . "/addons/sz_yi/alifish/TopSdk.php";
+    //$appkey = '23355246';
+    //$secret = '0c34a4887d2f52a6365a266bb3b38d25';
+
+    switch ($templateType) {
+        case 'reg':
+            $templateCode = $set['sms']['templateCode'];
+            break;
+        case 'forget':
+            $templateCode = $set['sms']['templateCodeForget'];
+            break;
+        default:
+            $templateCode = $set['sms']['templateCode'];
+            break;
+    }
+
+    $c = new TopClient;
+    $c->appkey = $set['sms']['appkey'];
+    $c->secretKey = $set['sms']['secret'];
+    $req = new AlibabaAliqinFcSmsNumSendRequest;
+    $req->setExtend("123456");
+    $req->setSmsType("normal");
+    $req->setSmsFreeSignName($set['sms']['signname']);
+    $req->setSmsParam("{\"code\":\"{$code}\",\"product\":\"{$set['sms']['product']}\"}");
+    $req->setRecNum($mobile);
+    $req->setSmsTemplateCode($templateCode);
+    $resp = $c->execute($req);
+    return objectArray($resp);
 }
 
 function xml_to_array($xml)
@@ -50,7 +186,7 @@ function xml_to_array($xml)
             $subxml= $matches[2][$i];
             $key = $matches[1][$i];
                     if(preg_match( $reg, $subxml )){
-                            $arr[$key] = $this->xml_to_array( $subxml );
+                            $arr[$key] = xml_to_array( $subxml );
                     }else{
                             $arr[$key] = $subxml;
                     }
@@ -80,15 +216,22 @@ function m($name = '')
 }
 function isEnablePlugin($name){
     $plugins = m("cache")->getArray("plugins", "global");
-    foreach($plugins as $p){
-        if($p['identity'] == $name){
-            if($p['status']){
-                return true;
-            }
-            else{
-                return false;
+    if($plugins){
+        foreach($plugins as $p){
+            if($p['identity'] == $name){
+                if($p['status']){
+                    return true;
+                }
+                else{
+                    return false;
+                }
             }
         }
+    }else{
+        return pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_plugin') . ' where identity=:identity and status=1', array(
+            ':identity' => $name
+        ));
+
     }
 }
 function p($name = '')
@@ -112,6 +255,8 @@ function p($name = '')
             }
         }
     }
+
+    
     static $_plugins = array();
     if (isset($_plugins[$name])) {
         return $_plugins[$name];
@@ -145,6 +290,7 @@ function byte_format($input, $dec = 0)
 }
 function save_media($url)
 {
+    load()->func('file');
     $config = array(
         'qiniu' => false
     );
@@ -164,6 +310,10 @@ function save_media($url)
         return $url;
     }
     return $url;
+}
+function save_remote($url)
+{
+    
 }
 function is_array2($array)
 {
@@ -226,8 +376,25 @@ function show_json($status = 1, $return = null)
     }
     die(json_encode($ret));
 }
+
+function is_weixin_show()
+{
+    $set = m('common')->getSysset('app');
+    $isapp = is_app();
+
+    if( $set['base']['wx']['switch'] == '1' && !$isapp)
+    {
+        return false;
+    }
+    return true;
+}
+
 function is_weixin()
 {
+    global $_W;
+    if ($_W['uniaccount']['level'] == 1 OR $_W['uniaccount']['level'] == 3) {
+        return false;
+    }
     if (empty($_SERVER['HTTP_USER_AGENT']) || strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') === false && strpos($_SERVER['HTTP_USER_AGENT'], 'Windows Phone') === false) {
         return false;
     }
@@ -391,14 +558,39 @@ function plog($type = '', $op = '')
         $perm->log($type, $op);
     }
 }
-function tpl_form_field_category_3level($name, $parents, $children, $parentid, $childid, $thirdid)
+//stdClass Object 转 数组
+function objectArray($array){
+    if(is_object($array)){
+        $array = (array)$array;
+    }
+    if(is_array($array)){
+        foreach($array as $key=>$value){
+            $array[$key] = objectArray($value);
+        }
+    }
+    return $array;
+}
+
+if(!function_exists('tpl_form_field_category_3level')){
+    function tpl_form_field_category_3level($name, $parents, $children, $parentid, $childid, $thirdid){
+        return tpl_form_field_category_level3($name, $parents, $children, $parentid, $childid, $thirdid);
+    }
+}
+
+if(function_exists('tpl_form_field_category_2level') == false){
+    function tpl_form_field_category_2level($name, $parents, $children, $parentid, $childid, $thirdid){
+        return tpl_form_field_category_level2($name, $parents, $children, $parentid, $childid, $thirdid);
+    }
+}
+
+function tpl_form_field_category_level3($name, $parents, $children, $parentid, $childid, $thirdid)
 {
     $html = '
 <script type="text/javascript">
 	window._' . $name . ' = ' . json_encode($children) . ';
 </script>';
     if (!defined('TPL_INIT_CATEGORY_THIRD')) {
-        $html .= '	
+        $html .= '
 <script type="text/javascript">
 	function renderCategoryThird(obj, name){
 		var index = obj.options[obj.selectedIndex].value;
@@ -408,7 +600,7 @@ function tpl_form_field_category_3level($name, $parents, $children, $parentid, $
 			var html = \'<option value="0">请选择二级分类</option>\';
                                                       var html1 = \'<option value="0">请选择三级分类</option>\';
 			if (!window[\'_\'+name] || !window[\'_\'+name][index]) {
-				$selectChild.html(html); 
+				$selectChild.html(html);
                                                                         $selectThird.html(html1);
 				return false;
 			}
@@ -460,8 +652,8 @@ function tpl_form_field_category_3level($name, $parents, $children, $parentid, $
         }
     }
     $html .= '
-		</select> 
-	</div> 
+		</select>
+	</div>
                   <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
 		<select class="form-control tpl-category-child" id="' . $name . '_third" name="' . $name . '[thirdid]">
 			<option value="0">请选择三级分类</option>';
@@ -475,4 +667,108 @@ function tpl_form_field_category_3level($name, $parents, $children, $parentid, $
 	</div>
 </div>';
     return $html;
+}
+
+function tpl_form_field_category_level2($name, $parents, $children, $parentid, $childid){
+    $html = '
+        <script type="text/javascript">
+            window._' . $name . ' = ' . json_encode($children) . ';
+        </script>';
+            if (!defined('TPL_INIT_CATEGORY')) {
+                $html .= '
+        <script type="text/javascript">
+            function renderCategory(obj, name){
+                var index = obj.options[obj.selectedIndex].value;
+                require([\'jquery\', \'util\'], function($, u){
+                    $selectChild = $(\'#\'+name+\'_child\');
+                    var html = \'<option value="0">请选择二级分类</option>\';
+                    if (!window[\'_\'+name] || !window[\'_\'+name][index]) {
+                        $selectChild.html(html);
+                        return false;
+                    }
+                    for(var i=0; i< window[\'_\'+name][index].length; i++){
+                        html += \'<option value="\'+window[\'_\'+name][index][i][\'id\']+\'">\'+window[\'_\'+name][index][i][\'name\']+\'</option>\';
+                    }
+                    $selectChild.html(html);
+                });
+            }
+        </script>
+                    ';
+                define('TPL_INIT_CATEGORY', true);
+            }
+
+            $html .=
+                '<div class="row row-fix tpl-category-container">
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <select class="form-control tpl-category-parent" id="' . $name . '_parent" name="' . $name . '[parentid]" onchange="renderCategory(this,\'' . $name . '\')">
+                    <option value="0">请选择一级分类</option>';
+            $ops = '';
+            foreach ($parents as $row) {
+                $html .= '
+                    <option value="' . $row['id'] . '" ' . (($row['id'] == $parentid) ? 'selected="selected"' : '') . '>' . $row['name'] . '</option>';
+            }
+            $html .= '
+                </select>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
+                <select class="form-control tpl-category-child" id="' . $name . '_child" name="' . $name . '[childid]">
+                    <option value="0">请选择二级分类</option>';
+            if (!empty($parentid) && !empty($children[$parentid])) {
+                foreach ($children[$parentid] as $row) {
+                    $html .= '
+                    <option value="' . $row['id'] . '"' . (($row['id'] == $childid) ? 'selected="selected"' : '') . '>' . $row['name'] . '</option>';
+                }
+            }
+            $html .= '
+                </select>
+            </div>
+        </div>
+    ';
+    return $html;
+}
+
+/**
+ * 推送消息
+ *
+ * @param $customer_id_array
+ * @param $message
+ * @return array
+ */
+function sent_message($customer_id_array,$message){
+    preg_match_all('/[\x{4e00}-\x{9fff}]+/u', $message, $matches);
+
+    if (empty($customer_id_array) || empty($matches[0])) {
+       return false;
+    }
+
+    require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
+
+    $setdata = m("cache")->get("sysset");
+    $set     = unserialize($setdata['sets']);
+
+    $app = $set['app']['base'];
+
+    LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'].",master");
+
+
+    $customer_id_array_str = json_encode($customer_id_array,JSON_UNESCAPED_UNICODE);
+    $post_data = '{"from_peer": "58",
+                "to_peers": '.$customer_id_array_str.',
+                "message": "{\"_lctype\":-1,\"_lctext\":\"'.$message.'\", \"_lcattrs\":{ \"clientId\":\"58\", \"clientName\":\"商城助手\", \"clientIcon\":\"http://192.168.1.108/image/icon.png\" }}"
+                , "conv_id": "5721da8b71cfe4006b3f362b", "transient": false}';
+    $data = json_decode($post_data,true);
+    $lean_push = new LeanCloud\LeanMessage($data);
+    $response = $lean_push->send();
+    return $response;
+}
+
+function is_app()
+{
+    $agent = strtolower($_SERVER['HTTP_USER_AGENT']);
+    $yunzhong = (strpos($agent, 'yunzhong')) ? true : false;
+    if($yunzhong) {
+        return true;
+    }
+
+    return false;
 }

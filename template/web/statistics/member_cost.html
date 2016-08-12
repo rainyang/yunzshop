@@ -1,6 +1,15 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'web/statistics/tabs'}
-
+<div class="rightlist">
+<!-- 新增加右侧顶部三级菜单 -->
+<div class="right-titpos">
+	<ul class="add-snav">
+		<li class="active"><a href="#">数据统计</a></li>
+		<li><a href="#">会员消费排行</a></li>
+	</ul>
+</div>
+<!-- 新增加右侧顶部三级菜单结束 -->
 <div class="panel panel-info">
     <div class="panel-heading">会员消费排行</div>
     <div class="panel-body">
@@ -12,20 +21,20 @@
             <input type="hidden" name="do" value="statistics" />
             <input type="hidden" name="p" value="member_cost" />
                 <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">会员名/手机号</label>
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员名/手机号</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                       <input name="realname" type="text"  class="form-control" value="{$_GPC['realname']}">
                 </div>
             </div>
                <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">类型</label>
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">类型</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                     <label class="radio-inline"><input type="radio" name="orderby" value="ordercount" {if $_GPC['orderby'] == 'ordercount'}checked{/if}>订单数</label>
                     <label class="radio-inline"><input type="radio" name="orderby" value="ordermoney" {if empty($_GPC['orderby']) || $_GPC['orderby'] == 'ordermoney'}checked{/if}>消费金额</label>
                 </div>
             </div> 
             <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label"></label>
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                     <button class="btn btn-default" ><i class="fa fa-search"></i> 搜索</button>
                     <input type="hidden" name="token" value="{$_W['token']}" />
@@ -72,5 +81,7 @@
         </table>
         {$pager}
     </div>
+</div>
+</div>
 </div>
 {template 'web/_footer'}

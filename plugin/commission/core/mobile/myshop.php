@@ -6,6 +6,11 @@ $openid  = m('user')->getOpenid();
 $member  = m('member')->getMember($openid);
 $set     = $this->set;
 $uniacid = $_W['uniacid'];
+if(!isMobile() && $this->yzShopSet['ispc']==1){
+  $shopurl = $this->createMobileUrl('shop', array('mid' => $mid));
+  header('location: ' . $shopurl);
+  exit;
+}
 if (!empty($mid)) {
 	if (!$this->model->isAgent($mid)) {
 		header('location: ' . $this->createMobileUrl('shop'));
@@ -71,7 +76,6 @@ if ($op == 'display') {
 	} else if (!empty($mid)) {
 		$_W['shopshare']['link'] = $this->createPluginMobileUrl('commission/myshop', array('mid' => $_GPC['mid']));
 	}
-	$this->setHeader();
 	include $this->template('myshop');
 } else if ($op == 'goods') {
 	if ($_W['isajax']) {

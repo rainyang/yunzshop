@@ -3,12 +3,47 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+load()->model('user');
+$operation   = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 $pindex    = max(1, intval($_GPC['page']));
 $psize     = 20;
 $condition = " and uniacid=:uniacid";
 $params    = array(
     ':uniacid' => $_W['uniacid']
 );
+if ($operation == 'af_supplier') {
+    $status = $_GPC['status'];
+    $id = $_GPC['id'];
+    $openid = pdo_fetchcolumn("select openid from " . tablename('sz_yi_af_supplier') . " where uniacid={$_W['uniacid']} and id={$id}");
+    if (empty($openid)) {
+        message('没有该条申请记录', $this->createPluginWebUrl('supplier/supplier_for'), 'error');
+    } else {
+        pdo_update('sz_yi_af_supplier',array('status' => $status), array('id' => $id, 'uniacid' => $_W['uniacid']));
+        if ($status == 1) {
+            $msg = '驳回申请成功';
+        } else {
+            $data = array();
+            $msg = '审核通过成功';
+            $supplier_usre = pdo_fetch("select * from " . tablename('sz_yi_af_supplier') . " where uniacid={$_W['uniacid']} and id={$id}");
+            $data['uid'] = user_register(array('username' => $supplier_usre['username'], 'password' => $supplier_usre['password']));
+            $pwd = pdo_fetch('select password from ' . tablename('users') . ' where uid=:uid' , array(
+                ':uid' => $data['uid']
+                ));
+            $perm_role = pdo_fetch("select id,status from " . tablename('sz_yi_perm_role') . " where status1=1 and status=1");
+            $data['password'] = $pwd['password'];
+            $data['openid'] = $supplier_usre['openid'];
+            $data['username'] = $supplier_usre['username'];
+            $data['roleid'] = $perm_role['id'];
+            $data['status'] = $perm_role['status'];
+            $data['uniacid'] = $_W['uniacid'];
+            $data['perms'] = '';
+            pdo_insert('uni_account_users', array('uid' => $data['uid'], 'uniacid' => $supplier_usre['uniacid'], 'role' => 'operator'));
+            pdo_insert('sz_yi_perm_user', $data);
+        }
+        $this->model->sendSupplierInform($openid,$status);
+        message($msg, $this->createPluginWebUrl('supplier/supplier_for'), 'success');
+    }
+}
 if (!empty($_GPC['mid'])) {
     $condition .= ' and id=:mid';
     $params[':mid'] = intval($_GPC['mid']);
@@ -18,7 +53,7 @@ if (!empty($_GPC['realname'])) {
     $condition .= ' and realname like :realname';
     $params[':realname'] = "%{$_GPC['realname']}%";
 }
-$sql = "select * from " . tablename('sz_yi_af_supplier') . " where 1 {$condition}";
+$sql = "select * from " . tablename('sz_yi_af_supplier') . " where 1 and status=0 {$condition}";
 if (empty($_GPC['export'])) {
     $sql .= " limit " . ($pindex - 1) * $psize . ',' . $psize;
 }
@@ -52,11 +87,21 @@ if ($_GPC['export1'] == '1') {
                 'title' => '产品名称',
                 'field' => 'productname',
                 'width' => 12
+            ),
+            array(
+                'title' => '用户名',
+                'field' => 'productname',
+                'width' => 12
+            ),
+            array(
+                'title' => '密码',
+                'field' => 'productname',
+                'width' => 12
             )
         )
     ));
 }
-$total           = count($list);
+$total           = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_af_supplier') . " where 1 and status=0 {$condition}",$params);
 $pager           = pagination($total, $pindex, $psize);
 load()->func('tpl');
 include $this->template('supplier_for');

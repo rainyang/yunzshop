@@ -1,0 +1,18 @@
+{template 'common/header'}
+<title>支付成功</title>
+<link rel="stylesheet" href="../addons/sz_yi/template/mobile/app/static/css/fenxiao.css" />
+<section>
+    <div class="fenxwap">
+        <div class="paysuccess-wrap">
+            <img src="../addons/sz_yi/template/mobile/app/static/images/paysuccess.png" alt="">
+            <h1>支付成功</h1>
+        </div>
+        <div class="btn-paysuccess">
+            <a href="{php echo $this->createMobileUrl('shop/list')}" class="goto-buy fl">继续购物</a>
+            <a href="{php echo $this->createMobileUrl('order')}" class="goto-check fr">查看订单</a>
+        </div>
+        <div class="payseccess-notice"><i>!</i>安全提醒：{$shop_name}不会以任何理由要求您提供银行卡信息或支付额外费用，请谨慎防钓鱼链接或诈骗电话。</div>
+    </div>
+</section>
+{php $show_footer = true}
+{template 'common/footer'}

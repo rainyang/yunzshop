@@ -7,13 +7,17 @@ global $_W, $_GPC;
 $op = $_GPC['op'];
 if ($op == 'list') {
     $cate = $_GPC['cate'];
+    $condition = '';
+    if (p('supplier')) {
+        $condition .= " and uid={$_W['uid']}";
+    }
     if (!empty($cate)) {
         if ($cate == 1) {
             ca('exhelper.exptemp1');
         } elseif ($cate == 2) {
             ca('exhelper.exptemp2');
         }
-        $list = pdo_fetchall('SELECT * FROM ' . tablename('sz_yi_exhelper_express') . ' WHERE type=:type and uniacid=:uniacid ORDER BY isdefault desc , id DESC', array(':type' => $cate, ':uniacid' => $_W['uniacid']));
+        $list = pdo_fetchall('SELECT * FROM ' . tablename('sz_yi_exhelper_express') . " WHERE type=:type and uniacid=:uniacid {$condition} ORDER BY isdefault desc , id DESC", array(':type' => $cate, ':uniacid' => $_W['uniacid']));
     }
 } elseif ($op == 'delete') {
     $id = intval($_GPC['id']);
@@ -68,6 +72,9 @@ if ($op == 'list') {
     }
     if ($_W['isajax'] && $_W['ispost']) {
         $data = array('uniacid' => $_W['uniacid'], 'expressname' => trim($_GPC['expressname']), 'datas' => trim($_POST['datas']), 'isdefault' => intval($_GPC['isdefault']), 'width' => intval($_GPC['width']), 'height' => intval($_GPC['height']), 'bg' => $_GPC['bg']);
+        if (p('supplier')) {
+            $data['uid'] = $_W['uid'];
+        }
         if ($cate == 1) {
             $data['express'] = $_GPC['express'];
             $data['expresscom'] = $_GPC['expresscom'];

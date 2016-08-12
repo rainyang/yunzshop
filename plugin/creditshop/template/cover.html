@@ -1,9 +1,11 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
+<div class="rightlist">
 <form id="setform"  action="" method="post" class="form-horizontal form" onclick='return formcheck()'>
     <div class='panel panel-default'>
            <div class='panel-heading'>
-            积分商城心入口设置
+            积分商城入口设置
         </div>
         <div class='panel-body'>
            <div class="form-group">
@@ -62,6 +64,7 @@
      
     </div>
 </form>
+</div>
 <script language='javascript'>
     $(function(){
         $('form').submit(function(){

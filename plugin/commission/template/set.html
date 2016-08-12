@@ -1,5 +1,7 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'tabs'}
+<div class="rightlist">
 <form id="setform"  action="" method="post" class="form-horizontal form">
     <div class='panel panel-default'>
            <div class='panel-heading'>
@@ -59,7 +61,18 @@
                     <span class='help-block'>开启分销内购，分销商自己购买商品，享受一级佣金，上级享受二级佣金，上上级享受三级佣金</span>
                 </div>
             </div>
-            
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">佣金计算方式</label>
+                <div class="col-sm-4">
+                    <select  class="form-control" name="setdata[culate_method]">
+                        <option value="0" {if empty($set['culate_method'])}selected{/if}>实付款金额</option>
+                        <option value="1" {if $set['culate_method']==1}selected{/if}>商品原价</option>
+                        <option value="2" {if $set['culate_method']==2}selected{/if} >商品现价</option>
+                        <option value="3" {if $set['culate_method']==3}selected{/if} >商品成本价</option>
+                        <option value="4" {if $set['culate_method']==4}selected{/if} >商品利润（实付款金额-成本价）</option>
+                    </select>
+                </div>
+            </div>
         </div>
         <div class='panel-heading'>
             分销设置
@@ -173,6 +186,29 @@
                 </div>
             </div>
 
+            <!-- Author:ym Date:2016-07-21 Content:提现比例 -->
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现比例</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="input-group">
+                        <div class="input-group-addon">提现 1 ：消费 </div>
+                        <input class="form-control" type="text" value="{$set['withdraw_proportion']}" name="setdata[withdraw_proportion]">
+                    </div>
+                    <span class="help-block">提现与消费的比例差，空则可以任意提现</span>
+                </div>
+            </div>
+
+            {if p('love')} 
+            <!-- Author:ym Date:2016-08-06 Content:消费天数 -->
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">消费天数</label>
+                <div class="col-sm-9 col-xs-12">
+                    <input class="form-control" type="text" value="{$set['withdraw_day']}" name="setdata[withdraw_day]">
+                    <span class="help-block">完成收货多少天后订单才计入已消费</span>
+                </div>
+            </div>
+            {/if}
+
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启提现到余额</label>
                 <div class="col-sm-9 col-xs-12">
@@ -181,6 +217,17 @@
                     <span class="help-block">是否允许用户佣金提现到余额，否则只允许微信提现</span>
                 </div>
             </div>
+            <!-- 提现免审核金额  不填写则需要审核  填写金额 则0-金额内可免审核自动打款 -->
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现审核限制</label>
+                <div class="col-sm-9 col-xs-12">
+                    <!-- <label class="radio-inline"><input type="radio"  name="setdata[closewithdrawcheck]" value="0" {if $set['closewithdrawcheck'] ==0} checked="checked"{/if} /> 开启</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[closewithdrawcheck]" value="1" {if $set['closewithdrawcheck'] ==1} checked="checked"{/if} /> 关闭</label> -->
+                    <input type="text" name="setdata[closewithdrawcheck]" class="form-control" value="{$set['closewithdrawcheck']}"  />
+                    <span class="help-block">提现金额少于等于自定义的限制金额，则提现不需要审核。否则需要审核。</span>
+                </div>
+            </div>
+
                <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">结算天数</label>
                 <div class="col-sm-9 col-xs-12">
@@ -311,7 +358,7 @@
             样式设置
         </div>
         <div class='panel-body'>
-             <div class="form-group">
+             <!-- <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">模板选择</label>
         <div class="col-sm-9 col-xs-12">
             <select class='form-control' name='setdata[style]'>
@@ -320,7 +367,7 @@
                 {/loop}
             </select>
         </div>
-    </div>
+    </div> -->
    
        
             <div class="form-group">
@@ -535,6 +582,7 @@
         
     </div>
 </form>
+
 <!-- Author:Y.yang Date:2016-04-08 Content:购买指定商品成为分销商，（选择商品的输入框和JS） -->
 <div id="modal-goods"  class="modal fade" tabindex="-1">
     <div class="modal-dialog" style='width: 920px;'>
@@ -552,6 +600,8 @@
             <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
         </div>
     </div>
+</div>
+</div>
 </div>
 <script language='javascript'>
       function search_goods() {

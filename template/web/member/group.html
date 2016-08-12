@@ -1,14 +1,22 @@
 {template 'web/_header'}
+<div class="w1200 m0a">
 {template 'web/member/tabs'}
-
+<div class="rightlist">
 {if $operation == 'post'}
-<div class="main">
+<!-- 新增加右侧顶部三级菜单 -->
+<div class="right-titpos">
+	<ul class="add-snav">
+		<li class="active"><a href="#">会员管理</a></li>
+		<li><a href="#">分组设置</a></li>
+	</ul>
+</div>
+<!-- 新增加右侧顶部三级菜单结束 -->
+
+<div class="main"> 
+
     <form {ife 'member.group' $group}action="" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data">
         <input type="hidden" name="id" value="{$group['id']}" />
         <div class='panel panel-default'>
-            <div class='panel-heading'>
-                会员分组设置
-            </div>
             <div class='panel-body'>
                
                 <div class="form-group">
@@ -38,6 +46,7 @@
         </div>
   
     </form>
+    
 </div>
 <script language='javascript'>
     $('form').submit(function(){
@@ -49,11 +58,16 @@
     })
     </script>
 {elseif $operation == 'display'}
+<!-- 新增加右侧顶部三级菜单 -->
+<div class="right-titpos">
+	<ul class="add-snav">
+		<li class="active"><a href="#">会员管理</a></li>
+		<li><a href="#">会员分组</a></li>
+	</ul>
+</div>
+<!-- 新增加右侧顶部三级菜单结束 -->
                <form action="" method="post" onsubmit="return formcheck(this)">
      <div class='panel panel-default'>
-            <div class='panel-heading'>
-                会员分组设置
-            </div>
          <div class='panel-body'>
 
             <table class="table">
@@ -90,10 +104,13 @@
          </div>
          {if 'member.group.add'}
            <div class='panel-footer'>
-                            <a class='btn btn-default' href="{php echo $this->createWebUrl('member/group', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新分组</a>
+                            <a class='btn btn-primary' href="{php echo $this->createWebUrl('member/group', array('op' => 'post'))}"><i class="fa fa-plus"></i> 添加新分组</a>
          </div>
          {/if}
      </div>
        </form>
+       
 {/if}
+</div>
+</div>
 {template 'web/_footer'}

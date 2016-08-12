@@ -1,0 +1,9 @@
+<div class="ulleft-nav">
+<ul class="nav nav-tabs"> 
+    {ifp 'ranking.set'}<li {if $_GPC['method']=='set'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('ranking/set')}">基础设置</a></li>{/if}
+
+    {ifp 'ranking.set'}<li {if $_GPC['method']=='commission'}class="active"{/if}><a href="{php echo $this->createPluginMobileUrl('ranking/commission',array(type=>1))}">更新佣金排名</a></li>{/if}
+
+
+</ul>
+</div>

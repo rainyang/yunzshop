@@ -63,6 +63,10 @@ class CommissionMobile extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function myshopset()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
     public function log()
     {
         $this->_exec_plugin(__FUNCTION__, false);
