@@ -725,8 +725,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                     var stock = input.attr('data-stock');
                     var maxbuy = input.attr('data-maxbuy');
                     $(this).parent().find('.subtract').show();
-                    input.show();                    
-                                      
+                    input.show();                 
                     if (num > stock) {
                       core.tip.show("您最多可购买 " + num + " 件!");
                       input.val(stock); 
