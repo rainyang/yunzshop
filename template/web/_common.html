@@ -32,24 +32,30 @@ win.document.close();
         </li>
       {if p('commission')}
   			{ifpp 'commission'}
+          {ifp 'commission'}
   				 <li {if $_GPC['p'] == 'commission'} class="active" {/if}>
   					<a href='{php echo $this->createPluginWebUrl('commission')}' class="dropdown-toggle" > <span>分销</span> <i class="fa fa-angle-down"></i></a>
-  				</li> 
+  				</li>
+          {/if} 
   			{/if}
       {/if}
 			{if p('bonus')}
         {ifpp 'bonus'}
+          {ifp 'bonus'}
 				 <li {if $_GPC['p'] == 'bonus'} class="active" {/if}>
 					<a href='{php echo $this->createPluginWebUrl('bonus')}' class="dropdown-toggle" ><span>分红</span><i class="fa fa-angle-down"></i></a>
 				</li>
+          {/if}
 				{/if}        
 			{/if}
 
 			{if p('supplier')}
         {ifpp 'supplier'}
+          {ifpp 'supplier'}
 				 <li {if $_GPC['p'] == 'supplier'} class="active" {/if}>
 					<a href='{php echo $this->createPluginWebUrl('supplier')}' class="dropdown-toggle" ><span>供应商</span><i class="fa fa-angle-down"></i></a>
 				</li>
+          {/if}
 				{/if}        
 			{/if}
 
