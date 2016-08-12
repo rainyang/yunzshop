@@ -145,7 +145,7 @@
 
 {else if $operation=='detail'}
 
-<form {ifp 'commission.apply.check|commission.apply.pay|commission.apply.cancel'}action="" method='post'{/if} class='form-horizontal'  target= "_blank">
+<form {ifp 'commission.apply.check|commission.apply.pay|commission.apply.cancel'}action="" method='post'{/if} class='form-horizontal' id="form">
     <input type="hidden" name="id" value="{$member['id']}">
     <input type="hidden" name="op" value="detail">
     <input type="hidden" name="c" value="site" />
@@ -483,10 +483,11 @@ function checkall(ischeck){
             return confirm('确认打款到此用户的微信钱包?');     
         }
         function pay_alipay(){
+          $("#form").attr("target", "_blank");
             return confirm('确认打款到此用户的支付宝?');     
         }
-
         function pay_alipay2(){
+          $("#form").attr("target", "_blank");
           return   confirm('确认再次打款到此用户的支付宝?');
       }
 </script>
