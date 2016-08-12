@@ -380,7 +380,7 @@
             <div class="deductenough"  data-id='<%order.supplier_uid%>' class="line" style="line-height:26px;<%if !order.saleset.showenough %>display:none<%/if%>"  >-单笔满 <d style='color:#f15353' class="deductenough_enough" data-id='<%order.supplier_uid%>'><%saleset.enoughmoney%></d> 元立减  <span>-￥<span class="deductenough_money"  data-id='<%order.supplier_uid%>'><%saleset.enoughdeduct%></span><span></div>
             <%/if%>
 				   {if $hascouponplugin}
-			       <div class="coupondeduct_div"  data-id='<%order.supplier_uid%>' class="line" style="line-height:26px;display:none"><d class='coupondeduct_text'></d><span>-￥<span class="coupondeduct_money">0</span><span></div>
+			       <div class="coupondeduct_div"  data-id='<%order.supplier_uid%>' class="line" style="line-height:26px;display:none"><d class='coupondeduct_text' data-id='<%order.supplier_uid%>'></d><span>-￥<span class="coupondeduct_money"  data-id='<%order.supplier_uid%>'>0</span><span></div>
 				   {/if}
             
         </div>
@@ -1112,7 +1112,6 @@ var fromcart = 0;
              var money =parseFloat( $('.totalprice').html().replace(",","") ) ;	
              var supplier_uid = $(this).attr('data-id');
 			 var carrierid = $('#carrierid').val();
-             console.log(supplier_uid);
  				     core.pjson('coupon/util', {op: 'query', money: money, type:0, supplier_uid: supplier_uid, goodsid: "{$goodid}", cartids: "{$cartid}", carrierid: carrierid}, function (rjson) {
   							if (rjson.status != 1) {
   								core.tip.show(rjson.result);

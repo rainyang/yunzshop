@@ -34,7 +34,6 @@ input {-webkit-appearance:none; outline:none;}
     <div class="balance_price">我的{php echo $this->set['texts']['commission_ok']}
         <span id="credit">￥<%member.commission_ok%></span>
     </div>
-    <div class="cash-num"><span>￥</span><input type="text" id="money" value='' class="cash-input"/></div>
 </div>
     {if empty($this->set['closetocredit'])}
     <div class="balance_sub balance_sub1 <%if !cansettle%>disabled<%/if%>" data-type="0">{php echo $this->set['texts']['widthdraw']}到账户余额</div>
