@@ -501,7 +501,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                      }
         }*/
 
-        core.pjson('choose/list_category',{op:'category',level:3,pageid:pageid}, function (json) {
+        core.pjson('choose/list_category',{op:'category',ischannelpick:"{$_GPC['ischannelpick']}",level:3,pageid:pageid}, function (json) {
                  result = json.result;
                  category = result.category;
                  if (result) {
@@ -750,12 +750,12 @@ ul, li { list-style:none; margin:0; padding:0 }
                     {if $ischannelpay == 0}                 
 
 	                    if (num > maxbuy && maxbuy > 0){
-	                      core.tip.show("您最多可购买 " + maxbuy + " 件!");
-	                      input.val(maxbuy); 
-	                      return;
-	                      
-	                     
-	                    }
+                        core.tip.show("您最多可购买 " + maxbuy + " 件!");
+                        input.val(maxbuy); 
+                        return;
+                        
+                       
+                      }
 
                     {/if}   
                     if (num == 1) {
@@ -798,6 +798,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                     }  
                     {if $ischannelpay == 0}                 
 
+<<<<<<< HEAD
 	                    if (num > maxbuy && maxbuy > 0){
 	                      core.tip.show("您最多可购买 " + maxbuy + " 件!");
 	                     
@@ -805,6 +806,15 @@ ul, li { list-style:none; margin:0; padding:0 }
 	                      return;
 	                      
 	                    }                   
+=======
+                      if (num > maxbuy && maxbuy > 0){
+                        core.tip.show("您最多可购买 " + maxbuy + " 件!");
+                       
+                        input.val(maxbuy);
+                        return;
+                        
+                      }                   
+>>>>>>> channel_bug
 
                     {/if}
                     if (num == 1) {
