@@ -7,24 +7,53 @@ input {-webkit-appearance:none; outline:none;}
 .balance_text {height:20px; width:100%; margin-top:16px; text-align:center; line-height:20px; font-size:16px; color:#666;}
 .balance_num {height:24px; width:100%; margin-top:10px; text-align:center; line-height:24px; font-size:22px; color:#444;}
 
-.balance_sub1 {height:44px; width:94%; margin:14px 3% 0px; background:#ff6600; border-radius:4px; text-align:center; font-size:18px; line-height:44px; color:#fff; box-shadow:#eee 1px 1px 3px;}
-.balance_sub2 {height:44px; width:94%; margin:14px 3% 0px; background:#31cd00; border-radius:4px; text-align:center; font-size:18px; line-height:44px; color:#fff;}
-.balance_sub3 {height:44px; width:94%; margin:14px 3% 0px; background:#ffffff; border-radius:4px; text-align:center; font-size:18px; line-height:44px; color:#666; box-shadow:#eee 1px 1px 3px;}
+.balance_sub1 {height:44px; width:94%; margin:14px 3% 0px; background:#ff6600; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff; box-shadow:#eee 1px 1px 3px;}
+.balance_sub2 {height:44px; width:94%; margin:14px 3% 0px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+.balance_sub3 {
+    height: 44px;
+    margin: 14px 5px;
+    background: #e2cb04;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 16px;
+    line-height: 44px;
+    color: #fff;
+}
+.balance_sub4 {height:44px; width:94%; margin:14px 3% 0px; background:#cc0000; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff; box-shadow:#eee 1px 1px 3px;}
 .disabled { background:#ccc;}
 </style>
+
 <div id='container'></div>
 
 <script id='tpl_main' type='text/html'>
- <div class="balance_img"><i class="fa fa-cny"></i></div>
-    <div class="balance_text">我的{php echo $this->set['texts']['commission_ok']}</div>
-    <div class="balance_num">￥<%member.commission_ok%></div>
-    
+<div class="page_topbar">
+<a href="javascript:;" class="back" onclick="history.back()"><i class='iconfont icon-chevron-left'></i></a>
+<div class="title">佣金提现</div>
+</div>
+<div class="cash-box">
+    <div class="balance_price">我的{php echo $this->set['texts']['commission_ok']}
+        <span id="credit">￥<%member.commission_ok%></span>
+    </div>
+    <div class="cash-num"><span>￥</span><input type="text" id="money" value='' class="cash-input"/></div>
+</div>
     {if empty($this->set['closetocredit'])}
     <div class="balance_sub balance_sub1 <%if !cansettle%>disabled<%/if%>" data-type="0">{php echo $this->set['texts']['widthdraw']}到账户余额</div>
     {/if}
     
     <div class="balance_sub balance_sub2 <%if !cansettle%>disabled<%/if%>"  data-type="1">{php echo $this->set['texts']['withdraw']}到微信钱包</div>
+    {if $settingalipay['pay']['weixin']=='1'  &&  $settingalipay['pay']['weixin_withdrawals']=='1'}
+    <%if member.commission_ok >= 1 && member.commission_ok <= 200%>
+    <div class="balance_sub balance_sub4 <%if !cansettle%>disabled<%/if%>"  data-type="2">{php echo $this->set['texts']['withdraw']}到微信红包</div>
+    <%/if%>
+    {/if}
+    {if $settingalipay['pay']['alipay']=='1'  &&  $settingalipay['pay']['alipay_withdrawals']=='1'}
+    <div style="background: #31cd00" class="balance_subapply balance_sub3 <%if !cansettle%>disabled<%/if%>"
+    data-type="3">{php echo $this->set['texts']['withdraw']}到支付宝</div>
+    {/if}
     <div class="balance_sub3" onclick="location.href='{php echo $this->createPluginMobileUrl('commission/log')}'">{php echo $this->set['texts']['withdraw']}记录</div>
+    <input value="{php echo $member['alipay']}" id="alipay" type="hidden">
+    <input value="{php echo $member['alipayname']}" id="alipayname" type="hidden">
+
 </script>
 <script language="javascript">
     require(['tpl', 'core'], function(tpl, core) {
@@ -51,10 +80,39 @@ input {-webkit-appearance:none; outline:none;}
                               if(pjson.status=='1'){
                                    core.tip.show( pjson.result );
                                    location.href = core.getUrl('plugin/commission/withdraw');
-                              }
+                              }else{
+                                   core.message(pjson.result,"{php echo $this->createPluginMobileUrl('commission/apply')}" ,'error');
+                                }
                                
                        },true,true);
                    });
+               })
+
+
+               $('.balance_subapply').click(function(){
+                   if($('.balance_subapply').attr('saving')=='1'){
+                       return;
+                   }
+                   var type= $(this).data('type');
+                   var alipay  = $("#alipay").val();
+                   var alipayname  = $("#alipayname").val();
+                   if(alipay=='' || alipayname=='' ){
+                     alert('您个人中心我的资料中未填写支付宝账号或姓名')
+                   }else{
+                  core.tip.confirm('确认要申请提现？</br>收款账号:{php echo $member['alipay']}</br>收款姓名:{php echo $member['alipayname']}</br>如更改账号请前往人中心我的资料中修改',function(){                       
+                         $('.balance_subapply').attr('saving',1).html('正在处理中...');
+                          core.pjson('commission/apply',{alipay:alipay,alipayname:alipayname,type:type},function(pjson){
+                                if(pjson.status=='1'){
+                                     core.tip.show(pjson.result);
+                                     location.href = core.getUrl('plugin/commission/withdraw');
+                                }else{
+                                     core.message(pjson.result,"{php echo $this->createPluginMobileUrl('commission/apply')}" ,'error');
+                                }
+                                 
+                         },true,true);
+                     });
+                   }
+    
                })
            }
         },true);
