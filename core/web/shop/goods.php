@@ -29,6 +29,12 @@ if ($mt <= 10) {
 if (p('supplier')) {
     $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
 }
+if (p('hotel')) {
+    $hotel = p('hotel');
+    $hotelstatus = $hotel->check_plugin('hotel');
+}
+   
+
 //  END
 //分红
 $pluginbonus = p("bonus");

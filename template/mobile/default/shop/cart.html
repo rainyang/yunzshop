@@ -240,7 +240,7 @@ body {margin:0px; background:#f8f8f8;width:100%;}
 
     require(['tpl', 'core'], function(tpl, core) {
       
-        core.json('shop/cart',{},function(json){
+        core.json('shop/cart',{ischannelpick:"{$_GPC['ischannelpick']}"},function(json){
             if(json.result.total<=0){
                $('#container').html(  tpl('cart_empty') );
                 return;
@@ -350,6 +350,9 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                 else if(stock!='-1' && stock!='' && num>stock){
                     num=stock;
                     core.tip.show("您最多购买 " + stock + "件");
+                }else if (stock == 0) {
+                    num=0;
+                    core.tip.show("库存不足");
                 }
                 input.val(num);
    

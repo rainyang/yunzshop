@@ -12,6 +12,9 @@ if ($_W['isajax']) {
 	$time 						= time();
 	$last_apply					= pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_apply') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}' AND (apply_time+{$setapplycycle}>{$time}) ORDER BY id DESC");
 	if ($_W['ispost']) {
+		if ($commission_ok <= 0) {
+			show_json(0, '没有可提现金额');
+		}
 		$time = time();
 		//出货单
 		$channel_goods = pdo_fetchall("SELECT og.id FROM " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) WHERE og.uniacid={$_W['uniacid']} AND og.channel_id={$member['id']} AND o.status=3 AND og.channel_apply_status=0");

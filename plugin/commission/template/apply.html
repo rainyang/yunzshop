@@ -145,7 +145,7 @@
 
 {else if $operation=='detail'}
 
-<form {ifp 'commission.apply.check|commission.apply.pay|commission.apply.cancel'}action="" method='post'{/if} class='form-horizontal'>
+<form {ifp 'commission.apply.check|commission.apply.pay|commission.apply.cancel'}action="" method='post'{/if} class='form-horizontal' id="form">
     <input type="hidden" name="id" value="{$member['id']}">
     <input type="hidden" name="op" value="detail">
     <input type="hidden" name="c" value="site" />
@@ -443,7 +443,7 @@
          {if $apply['status']==3 &&   $apply['type'] == 3}
             <input type="submit" name="submit_pay" value="重新打款到支付宝"
              class="btn btn-primary col-lg-1" style='margin-left:10px;'
-             onclick='return pay_alipay2()'/>
+             onclick='return pay_alipay2()' target="_blank"/>
          {/if}
         
         <input type="button" class="btn btn-default" name="submit" onclick="history.go(-1)" value="返回" style='margin-left:10px;' />
@@ -483,11 +483,12 @@ function checkall(ischeck){
             return confirm('确认打款到此用户的微信钱包?');     
         }
         function pay_alipay(){
+          $("#form").attr("target", "_blank");
             return confirm('确认打款到此用户的支付宝?');     
         }
-
         function pay_alipay2(){
-          return confirm('确认再次打款到此用户的支付宝?');     
+          $("#form").attr("target", "_blank");
+          return   confirm('确认再次打款到此用户的支付宝?');
       }
 </script>
 
