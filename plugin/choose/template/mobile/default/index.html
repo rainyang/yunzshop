@@ -749,13 +749,14 @@ ul, li { list-style:none; margin:0; padding:0 }
                     }  
                     {if $ischannelpay == 0}                 
 
+
 	                    if (num > maxbuy && maxbuy > 0){
-                        core.tip.show("您最多可购买 " + maxbuy + " 件!");
-                        input.val(maxbuy); 
-                        return;
-                        
-                       
-                      }
+	                      core.tip.show("您最多可购买 " + maxbuy + " 件!");
+	                      input.val(maxbuy); 
+	                      return;
+	                      
+	                     
+	                    }
 
                     {/if}   
                     if (num == 1) {
@@ -798,15 +799,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                     }  
                     {if $ischannelpay == 0}                 
 
-<<<<<<< HEAD
-	                    if (num > maxbuy && maxbuy > 0){
-	                      core.tip.show("您最多可购买 " + maxbuy + " 件!");
-	                     
-	                      input.val(maxbuy);
-	                      return;
-	                      
-	                    }                   
-=======
+
                       if (num > maxbuy && maxbuy > 0){
                         core.tip.show("您最多可购买 " + maxbuy + " 件!");
                        
@@ -814,7 +807,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                         return;
                         
                       }                   
->>>>>>> channel_bug
+
 
                     {/if}
                     if (num == 1) {
