@@ -20,7 +20,8 @@ if ($operation == 'reviewed') {
         message('没有该条申请记录', $this->createPluginWebUrl('channel/apply'), 'error');
     } else {
         if ($status == 1) {
-            $msg = '驳回申请成功';
+            $msg = '驳回申请,并删除申请资料';
+            pdo_delete('sz_yi_af_channel', array('openid' => $openid));
             message($msg, $this->createPluginWebUrl('channel/apply'), 'success');
         } else {
             $channellevel = pdo_fetch('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid = :uniacid ORDER BY level_num ASC', array(':uniacid' => $_W['uniacid']));//渠道商等级

@@ -120,7 +120,7 @@ if (!class_exists('ChannelModel')) {
 					$lower_order_money = number_format($lower_order_money*$set['setprofitproportion']/100,2);
 				} else {
 					$lower_openids = 0;
-					$lower_order_money = 0;
+					$lower_order_money = '0.00';
 				}
 				$channel_info['channel']['lower_openids'] = $lower_openids;
 				$channel_info['channel']['lower_order_money'] = $lower_order_money;
