@@ -38,18 +38,6 @@ if($operation == 'assigns'){
         ));
         if ($assigns) {
             $mc_assigns = m('member')->getMember($assigns['openid']);
-            m('member')->setCredit($assigns['openid'],'credit2',$money, array(0, '会员余额转让所得：' . $money . " 元"));
-            $messages = array(
-                'keyword1' => array(
-                    'value' => '转增通知', 
-                    'color' => '#73a68d'
-                ),
-                'keyword2' => array(
-                    'value' => $member['nickname'].'向你转增金额'.$money."元！",
-                    'color' => '#73a68d'
-                )
-            );
-            m('message')->sendCustomNotice($assigns['openid'], $messages);
             m('member')->setCredit($member['openid'],'credit2',-$money);
             $messages = array(
                 'keyword1' => array(
@@ -62,6 +50,18 @@ if($operation == 'assigns'){
                 )
             );
             m('message')->sendCustomNotice($member['openid'], $messages);
+            m('member')->setCredit($assigns['openid'],'credit2',$money, array(0, '会员余额转让所得：' . $money . " 元"));
+            $messages = array(
+                'keyword1' => array(
+                    'value' => '转增通知', 
+                    'color' => '#73a68d'
+                ),
+                'keyword2' => array(
+                    'value' => $member['nickname'].'向你转增金额'.$money."元！",
+                    'color' => '#73a68d'
+                )
+            );
+            m('message')->sendCustomNotice($assigns['openid'], $messages);
             $member_data = array(
                 'uniacid'       => $_W['uniacid'],
                 'openid'        => $openid,
