@@ -501,7 +501,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                      }
         }*/
 
-        core.pjson('choose/list_category',{op:'category',level:3,pageid:pageid}, function (json) {
+        core.pjson('choose/list_category',{op:'category',ischannelpick:"{$_GPC['ischannelpick']}",level:3,pageid:pageid}, function (json) {
                  result = json.result;
                  category = result.category;
                  if (result) {
@@ -738,8 +738,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                     var stock = input.attr('data-stock');
                     var maxbuy = input.attr('data-maxbuy');
                     $(this).parent().find('.subtract').show();
-                    input.show();                    
-                                      
+                    input.show();                 
                     if (num > stock) {
                       core.tip.show("您最多可购买 " + stock + " 件!");
                       
@@ -750,7 +749,8 @@ ul, li { list-style:none; margin:0; padding:0 }
                     }  
                     {if $ischannelpay == 0}                 
 
-	                    if (num > maxbuy && maxbuy != 0){
+
+	                    if (num > maxbuy && maxbuy > 0){
 	                      core.tip.show("您最多可购买 " + maxbuy + " 件!");
 	                      input.val(maxbuy); 
 	                      return;
@@ -799,12 +799,15 @@ ul, li { list-style:none; margin:0; padding:0 }
                     }  
                     {if $ischannelpay == 0}                 
 
-	                    if (num > maxbuy && maxbuy != 0){
-	                      core.tip.show("您最多可购买 " + maxbuy + " 件!");
-	                      num = maxbuy;
-	                      
-	                      
-	                    }                   
+
+                      if (num > maxbuy && maxbuy > 0){
+                        core.tip.show("您最多可购买 " + maxbuy + " 件!");
+                       
+                        input.val(maxbuy);
+                        return;
+                        
+                      }                   
+
 
                     {/if}
                     if (num == 1) {

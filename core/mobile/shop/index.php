@@ -197,6 +197,10 @@ if ($_W['isajax']) {
 			$third = pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid",array(':pid' => $id , ':uniacid' => $_W["uniacid"]));
 			show_json(1,array('goods' => $goods,'third' => $third));
 		}
+	} elseif ($operation == 'property_goods'){
+		$property = $_GPC['property'];
+		$property_goods = set_medias(pdo_fetchall("SELECT * FROM ".tablename('sz_yi_goods')." WHERE deleted=0 and status=1 and uniacid=:uniacid and {$property}=1",array(':uniacid' => $_W['uniacid'])),'thumb');
+		show_json(1,$property_goods);
 	}
 }
 
