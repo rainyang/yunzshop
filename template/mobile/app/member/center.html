@@ -154,17 +154,24 @@
     <a href="{php echo $this->createMobileUrl('shop/history')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg6"><i class="fa fa-list"></i></span>我的足迹<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
     <a href="{php echo $this->createMobileUrl('member/notice')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg7"><i class="fa fa-bell"></i></span>消息提醒设置<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
     <a href="{php echo $this->createMobileUrl('member/messagelist')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg2"><i class="fa fa-volume-up"></i></span>订单通知<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
-    <a href="{php echo $this->createMobileUrl('member/pushlist')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg3"><i class="fa fa-share-square-o"></i></span>系统消息<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div>
+    <a href="{php echo $this->createMobileUrl('member/pushlist')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg3"><i class="fa fa-share-square-o"></i></span>系统消息<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
 
 </div>
+
+    <div class="cart">
     {if isset($set['trade']) && $set['trade']['withdraw']==1}
-    <a href="javascript:;" id="btnwithdraw"><div class="list1" style="border-bottom: 0px;"><span class="listbg listbg14"><i class="fa fa-money"></span></i>余额提现<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>    
+    <a href="javascript:;" id="btnwithdraw"><div class="list1" style="border-bottom: 0px;"><span class="listbg listbg14"><i class="fa fa-money"></i></span>余额提现<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
     {/if}
     {if isset($set['trade']) && ($set['trade']['withdraw']==1 || empty($set['trade']['closerecharge']))}
-    <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="{if isset($set['trade']) && $set['trade']['withdraw']==1}margin:0px;{/if}">
+    <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="{if isset($set['trade']) && $set['trade']['withdraw']==1}margin:0px;border-bottom:0px;{/if}">
     <span class="listbg listbg8"><i class="fa fa-file-text"></i></span>{if isset($set['trade']) && $set['trade']['withdraw']==1}余额明细{else}充值记录{/if}
             <i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>    
    {/if}
+        <%if shopset.isreturn%>
+    <a href="{php echo $this->createPluginMobileUrl('return/return_queue')}"><div class="list1" style="margin:0px;border-bottom:0px;"><span class="listbg listbg1"><i class="fa fa-piechart" ></i></span>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
+        <%/if%>
+</div>
+
     
 <a href="{php echo $this->createMobileUrl('shop/address')}">
 <div class="list1">
