@@ -29,7 +29,7 @@ if($operation == 'assigns'){
     if ($_W['isajax']) {
         //创建文件锁
         $tmpdir = IA_ROOT . "/addons/sz_yi/tmp/member";
-        $file   = $tmpdir."/filelock.txt";
+        $file   = $tmpdir."/".$member['openid'].".txt";
         if (!is_dir($tmpdir)) {
             mkdirs($tmpdir);
         }
