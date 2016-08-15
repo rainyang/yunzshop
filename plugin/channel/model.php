@@ -506,7 +506,7 @@ if (!class_exists('ChannelModel')) {
 				return;
 			}
 			if ($set['become_condition_order'] == 0) {
-				$condtion .= ' AND o.status >= 1';
+				$condtion .= ' AND o.status >= 1 AND o.status < 3';
 			} elseif ($set['become_condition_order'] == 1){
 				$condtion .= ' AND o.status >= 3';
 			}

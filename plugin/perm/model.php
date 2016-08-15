@@ -135,19 +135,23 @@ if (!class_exists('PermModel')) {
 		{
 			global $_W, $_GPC;
 			$permset = m('cache')->getString('permset', 'global');
-			if (empty($permset)) {
+			$acid = pdo_fetchcolumn("SELECT acid FROM " . tablename('account_wechats') . " WHERE `uniacid`=:uniacid LIMIT 1", array(':uniacid' => $_W['uniacid']));
+			$ac_perm = pdo_fetch('select  plugins from ' . tablename('sz_yi_perm_plugin') . ' where acid=:acid limit 1', array(':acid' => $acid));
+			if (empty($permset) && empty($ac_perm)) {
 				return true;
 			}
-			if ($_W['role'] == 'founder') {
+
+			if ($_W['role'] == 'founder' && $pluginname == "perm") {
 				return true;
 			}
+
 			$isopen = $this->isopen($pluginname);
 			if (!$isopen) {
 				return false;
 			}
+
 			$allow = true;
-			$acid = pdo_fetchcolumn("SELECT acid FROM " . tablename('account_wechats') . " WHERE `uniacid`=:uniacid LIMIT 1", array(':uniacid' => $_W['uniacid']));
-			$ac_perm = pdo_fetch('select  plugins from ' . tablename('sz_yi_perm_plugin') . ' where acid=:acid limit 1', array(':acid' => $acid));
+			
 			if (!empty($ac_perm)) {
 				$allow_plugins = explode(',', $ac_perm['plugins']);
 				if (!in_array($pluginname, $allow_plugins)) {
