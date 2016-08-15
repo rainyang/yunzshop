@@ -1650,14 +1650,19 @@ if ($_W['isajax']) {
                 show_json(0, '未找到任何商品');
             }
             $deductenough = 0;
+            /*获取满额队列中符合条件的最大值*/
+            $tmp_money = 0;
             if ($saleset) {
                 foreach ($saleset["enoughs"] as $e) {
                     if ($totalprice >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
+                        if ($e["enough"] > $tmp_money) {
+                            $tmp_money = $e["enough"];
+                        }
                         $deductenough = floatval($e["money"]);
                         if ($deductenough > $totalprice) {
                             $deductenough = $totalprice;
                         }
-                        break;
+
                     }
                 }
             }
