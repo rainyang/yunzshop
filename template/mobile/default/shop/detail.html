@@ -873,7 +873,7 @@ div.flicking_con a.on{background-position:0 -9px}
                 
            
     $('.cs').click(function(){
-            location.href='{php echo $shopset['cservice']}&metadata={"name":"{php echo $member['nickname']}","tel":"{php echo $member['mobile']}","address":"{php echo $member['province']}"}';
+            location.href='{php echo $shopset['cservice']}&metadata={"name":"{php echo htmlspecialchars($member['nickname'],ENT_QUOTES)}","tel":"{php echo $member['mobile']}","address":"{php echo $member['province']}"}';
     });
     
                 $('.like').click(function(){
