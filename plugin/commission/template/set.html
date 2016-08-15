@@ -376,7 +376,15 @@
                     {php echo tpl_form_field_image('setdata[regbg]',$set['regbg'],'../addons/sz_yi/plugin/commission/template/mobile/default/static/images/bg.png')}
                 </div>
             </div>
-      
+            <!-- Author:ym Date:2016-08-15 Content:开启超级海报关注二维码 -->
+           <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">关注二维码</label>
+                <div class="col-sm-9 col-xs-12">
+                    <label class="radio-inline"><input type="radio"  name="setdata[attention_qr]" value="0" {if empty($set['attention_qr'])} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[attention_qr]" value="1" {if $set['attention_qr'] ==1} checked="checked"{/if} /> 开启</label>
+                    <span class="help-block">是否开启超级海报中关注二维码为分销商的推广二维码</span>
+                </div> 
+           </div>
         </div>
            <div class='panel-heading'>
             文字设置

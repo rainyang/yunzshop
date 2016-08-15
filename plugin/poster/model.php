@@ -57,10 +57,9 @@ if (!class_exists('PosterModel')) {
                 ));
             }
         }
-        public function createCommissionPoster($openid, $goodsid = 0)
+        public function createCommissionPoster($openid, $goodsid = 0, $type=2)
         {
             global $_W;
-            $type = 2;
             if (!empty($goodsid)) {
                 $type = 3;
             }
