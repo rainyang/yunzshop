@@ -945,6 +945,12 @@ if ($_W['isajax']) {
             $saleset = $sale_plugin->getSet();
             $saleset["enoughs"] = $sale_plugin->getEnoughs();
         }
+
+        //总价-优惠
+        if (empty($g["isnodiscount"]) && floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+            $totalprice = round(floatval($level["discount"]) / 10 * $totalprice, 2);
+        }
+        
         if ($sale_plugin && $supplier_uid==0) {
             if ($saleset) {
                 foreach ($saleset["enoughs"] as $e) {
