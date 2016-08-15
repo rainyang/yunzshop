@@ -32,11 +32,17 @@ class commissionApply extends \CommissionModel
         'type' => array(
             '0' => '余额',
             '1' => '微信',
+        ),
+        'commission_name' => array(
+            '1' => '一级佣金',
+            '2' => '二级佣金',
+            '3' => '三金佣金',
         )
     );
 
     public function __construct()
     {
+        parent::__construct('commission');
     }
     public function getBaseInfo($uniacid,$id,$fields='*'){
         $apply = pdo_fetch('select '.$fields.' from ' . tablename('sz_yi_commission_apply') . ' where uniacid=:uniacid and id=:id limit 1', array(':uniacid' => $uniacid, ':id' => $id));

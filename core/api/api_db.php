@@ -92,8 +92,11 @@ return array(
                 'para' => array(
                     'uid' => '1',
                     'uniacid' => '2',
-                    'commission_apply_id' => '2',
-                    'status'=>'1'
+                    'commission_apply_id' => '3',
+                    'status'=>array(
+                        '59'=>'2',
+                        '60'=>'2'
+                    )
                 ),
                 'data' => array()
             ),

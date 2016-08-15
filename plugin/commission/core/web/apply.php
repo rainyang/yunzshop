@@ -116,7 +116,7 @@ if ($operation == 'display') {
 			if ($o['orderid'] == $row['id']) {
 				$row['level'] = $o['level'];
 				break;
-			}
+			}	
 		}
 		$goods = pdo_fetchall('SELECT og.id,g.thumb,og.price,og.realprice, og.total,g.title,o.paytype,og.optionname,og.commission1,og.commission2,og.commission3,og.commissions,og.status1,og.status2,og.status3,og.content1,og.content2,og.content3 from ' . tablename('sz_yi_order_goods') . ' og' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid  ' . ' left join ' . tablename('sz_yi_order') . ' o on o.id=og.orderid  ' . ' where og.uniacid = :uniacid and og.orderid=:orderid and og.nocommission=0 order by og.createtime  desc ', array(':uniacid' => $_W['uniacid'], ':orderid' => $row['id']));
 		foreach ($goods as &$g) {
@@ -173,6 +173,7 @@ if ($operation == 'display') {
 	$totalcount = $total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_member') . ' m on o.openid = m.openid ' . ' left join ' . tablename('sz_yi_member_address') . ' a on a.id = o.addressid ' . ' where o.id in ( ' . implode(',', $ids) . ' );');
 	if (checksubmit('submit_check') && $apply['status'] == 1) {
 		ca('commission.apply.check');
+		dump($_GPC);exit;
 		$paycommission = 0;
 		$ogids = array();
 		foreach ($list as $row) {
