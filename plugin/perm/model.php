@@ -15,6 +15,7 @@ if (!class_exists('PermModel')) {
 				'statistics' => array('text' => '数据统计', 'child' => array('view' => array('text' => '浏览权限', 'sale' => '销售指标', 'sale_analysis' => '销售统计', 'order' => '订单统计', 'goods' => '商品销售统计', 'goods_rank' => '商品销售排行', 'goods_trans' => '商品销售转化率', 'member_cost' => '会员消费排行', 'member_increase' => '会员增长趋势'), 'export' => array('text' => '导出', 'sale' => '导出销售统计-log', 'order' => '导出订单统计-log', 'goods' => '导出商品销售统计-log', 'goods_rank' => '导出商品销售排行-log', 'goods_trans' => '商品销售转化率-log', 'member_cost' => '会员消费排行-log'),)),
 				'sysset' => array('text' => '系统设置', 'child' => array('view' => array('text' => '浏览', 'shop' => '商城设置', 'follow' => '引导及分享设置', 'notice' => '模板消息设置', 'trade' => '交易设置', 'pay' => '支付方式设置', 'template' => '模板设置', 'member' => '会员设置', 'category' => '分类层级设置', 'contact' => '联系方式设置'), 'save' => array('text' => '修改', 'shop' => '修改商城设置-log', 'follow' => '修改引导及分享设置-log', 'notice' => '修改模板消息设置-log', 'trade' => '修改交易设置-log', 'pay' => '修改支付方式设置-log', 'template' => '模板设置-log', 'member' => '会员设置-log', 'category' => '分类层级设置-log', 'contact' => '联系方式设置-log'))),
 				'return' => array('text' => '全返插件', 'child' => array('view' => array('text' => '浏览'), 'save' => array('text' => '修改', 'set' => '设置参数-log' ))),
+				'yubbi' => array('text' => '云币插件', 'child' => array('view' => array('text' => '浏览'), 'save' => array('text' => '修改', 'set' => '设置参数-log' ))),
 				'system' => array('text' => '系统工具', 'child' => array('view' => array('text' => '浏览'), 'save' => array('text' => '操作', 'delete' => '清空数据-log' ))),
 			);
 			$plugins = m('plugin')->getAll();

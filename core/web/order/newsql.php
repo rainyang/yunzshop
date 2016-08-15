@@ -1699,3 +1699,12 @@ INSERT INTO " . tablename('sz_yi_perm_role') . " (`rolename`, `status`, `status1
     $gysdata = array("perms" => 'shop,shop.goods,shop.goods.view,shop.goods.add,shop.goods.edit,shop.goods.delete,shop.dispatch,shop.dispatch.view,shop.dispatch.add,shop.dispatch.edit,shop.dispatch.delete,order,order.view,order.view.status_1,order.view.status0,order.view.status1,order.view.status2,order.view.status3,order.view.status4,order.view.status5,order.view.status9,order.op,order.op.pay,order.op.send,order.op.sendcancel,order.op.finish,order.op.verify,order.op.fetch,order.op.close,order.op.refund,order.op.export,order.op.changeprice,exhelper,exhelper.print,exhelper.print.single,exhelper.print.more,exhelper.exptemp1,exhelper.exptemp1.view,exhelper.exptemp1.add,exhelper.exptemp1.edit,exhelper.exptemp1.delete,exhelper.exptemp1.setdefault,exhelper.exptemp2,exhelper.exptemp2.view,exhelper.exptemp2.add,exhelper.exptemp2.edit,exhelper.exptemp2.delete,exhelper.exptemp2.setdefault,exhelper.senduser,exhelper.senduser.view,exhelper.senduser.add,exhelper.senduser.edit,exhelper.senduser.delete,exhelper.senduser.setdefault,exhelper.short,exhelper.short.view,exhelper.short.save,exhelper.printset,exhelper.printset.view,exhelper.printset.save,exhelper.dosend,taobao,taobao.fetch');
     pdo_update('sz_yi_perm_role', $gysdata, array('rolename' => "供应商", 'status1' => 1));
 }
+
+//2016-8-15 商品是否返虚拟币  虚拟币返现比例 
+if (!pdo_fieldexists('sz_yi_goods', 'yunbi_consumption')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `yunbi_consumption` DECIMAL(5,3) NOT NULL AFTER `isopenchannel`;");
+}
+if (!pdo_fieldexists('sz_yi_goods', 'isyunbi')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isyunbi` TINYINT(1) NOT NULL DEFAULT '0' AFTER `yunbi_consumption`;");
+}
+
