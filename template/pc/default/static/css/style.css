@@ -233,3 +233,7 @@ footer#footer-nav .menu-list:after {
 .new-list ul li div img{width: 34px;height: 34px;border-radius: 50px;display: inline-block;margin:8px 5px 0 0;float: left;}
 .new-list ul li div em{float: left;line-height: 50px;font-style: normal;font-size: 14px;}
 .down-list{margin: 10px;background: #eb55f;color: #fff;line-height: 30px;text-align: center;font-size: 12px;display: block;text-decoration: none;border-radius: 2px}
+/*退款申请页面*/
+.refund_main .line .label{line-height: 44px;color: #333}
+.refund_main .line select{margin-top: 0 !important;line-height: 44px;height: 44px!important}
+.refund_main .line{overflow: hidden;}
