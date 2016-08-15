@@ -109,46 +109,40 @@ if (!class_exists('ChannelModel')) {
 			}
 			$ischannelmerchant = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_channel_merchant') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}'");
 			$set = $this->getSet();
-			if (!empty($member['ischannel']) && !empty($member['channel_level'])) {
-				if (!empty($ischannelmerchant)) {
-					$lower_openids = array();
-					foreach ($ischannelmerchant as $value) {
-						$lower_openids[] = "'".$value['lower_openid']."'";
-					}
-					$lower_openids = implode(',', $lower_openids);
-					$lower_order_money = pdo_fetchcolumn("SELECT sum(og.price) FROM " . tablename('sz_yi_order') . " o LEFT JOIN " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=:uniacid AND o.status>=3 AND o.iscmas=0 AND og.ischannelpay=1 AND o.openid in ({$lower_openids})", array(':uniacid' => $_W['uniacid']));
-					$lower_order_money = number_format($lower_order_money*$set['setprofitproportion']/100,2);
-				} else {
-					$lower_openids = 0;
-					$lower_order_money = '0.00';
+			if (!empty($ischannelmerchant)) {
+				$lower_openids = array();
+				foreach ($ischannelmerchant as $value) {
+					$lower_openids[] = "'".$value['lower_openid']."'";
 				}
-				$channel_info['channel']['lower_openids'] = $lower_openids;
-				$channel_info['channel']['lower_order_money'] = $lower_order_money;
-
-				$channel_info['channel']['dispatchprice'] = pdo_fetchcolumn("SELECT ifnull(sum(dispatchprice),0) FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND status>=3 AND iscmas=0 AND ischannelself=1 AND openid=:openid", array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
-
-				$channel_info['channel']['order_total_price'] = number_format(pdo_fetchcolumn("SELECT ifnull(sum(price),0) FROM " . tablename('sz_yi_order_goods') . " WHERE uniacid=:uniacid AND channel_id=:channel_id",array(':uniacid' => $_W['uniacid'], ':channel_id' => $member['id'])),2);
-
-	            $channel_info['channel']['ordercount'] = pdo_fetchcolumn("SELECT count(o.id) FROM " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) WHERE og.channel_id=:channel_id AND o.userdeleted=0 AND o.deleted=0 AND o.uniacid=:uniacid ", array(':channel_id' => $member['id'], ':uniacid' => $_W['uniacid']));
-
-	            $channel_info['channel']['commission_total'] = number_format(pdo_fetchcolumn("SELECT sum(apply_money) FROM " . tablename('sz_yi_channel_apply') . " WHERE uniacid=:uniacid AND openid=:openid", array(':uniacid' => $_W['uniacid'], ':openid' => $openid)), 2);
-	            $channel_info['channel']['commission_pay_total'] = number_format(pdo_fetchcolumn("SELECT sum(apply_money) FROM " . tablename('sz_yi_channel_apply') . " WHERE uniacid=:uniacid AND openid=:openid AND status = 3", array(':uniacid' => $_W['uniacid'], ':openid' => $openid)), 2);
-	            //零售金额
-	            $retail_commission = pdo_fetchcolumn("SELECT ifnull(sum(ogp.profit),0) FROM " . tablename('sz_yi_channel_order_goods_profit') . " ogp LEFT JOIN " . tablename('sz_yi_order_goods') . " og ON og.id=ogp.order_goods_id LEFT JOIN " .tablename('sz_yi_order') . " o ON (o.id=og.orderid) WHERE o.uniacid=:uniacid AND og.channel_id=:channel_id AND o.status=3 AND og.channel_apply_status=0 AND og.ischannelpay=0 ", array(':uniacid' => $_W['uniacid'], ':channel_id' => $member['id']));
-	            //下级采购金额
-	            $purchase_commission = pdo_fetchcolumn("SELECT ifnull(sum(og.price),0) FROM " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) WHERE o.uniacid=:uniacid AND og.channel_id=:channel_id AND o.status=3 AND og.channel_apply_status=0 AND og.ischannelpay=1 ", array(':uniacid' => $_W['uniacid'], ':channel_id' => $member['id']));
-	            
-	            $channel_info['channel']['commission_ok'] = $retail_commission + $purchase_commission;
-
-	            $channel_info['channel']['mychannels'] = pdo_fetchall("SELECT * FROM " .tablename('sz_yi_member') . " WHERE uniacid=:uniacid AND channel_level<>0 AND agentid=:agentid", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
-
-	            $level = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_level') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $member['channel_level']));
-	            $channel_info['my_level'] = $level;
+				$lower_openids = implode(',', $lower_openids);
+				$lower_order_money = pdo_fetchcolumn("SELECT sum(og.price) FROM " . tablename('sz_yi_order') . " o LEFT JOIN " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=:uniacid AND o.status>=3 AND o.iscmas=0 AND og.ischannelpay=1 AND o.openid in ({$lower_openids})", array(':uniacid' => $_W['uniacid']));
+				$lower_order_money = number_format($lower_order_money*$set['setprofitproportion']/100,2);
+			} else {
+				$lower_openids = 0;
+				$lower_order_money = 0;
 			}
-			$up_level = $this->getUpChannel($openid, $goodsid, $optionid, $total);
-			$channel_info['up_level'] = $up_level;
-            return $channel_info;
-            /*if (!empty($level)) {
+			$channel_info['channel']['lower_openids'] = $lower_openids;
+			$channel_info['channel']['lower_order_money'] = $lower_order_money;
+
+			$channel_info['channel']['dispatchprice'] = pdo_fetchcolumn("SELECT ifnull(sum(dispatchprice),0) FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND status>=3 AND iscmas=0 AND ischannelself=1 AND openid=:openid", array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+
+			$channel_info['channel']['order_total_price'] = number_format(pdo_fetchcolumn("SELECT ifnull(sum(price),0) FROM " . tablename('sz_yi_order_goods') . " WHERE uniacid=:uniacid AND channel_id=:channel_id",array(':uniacid' => $_W['uniacid'], ':channel_id' => $member['id'])),2);
+
+            $channel_info['channel']['ordercount'] = pdo_fetchcolumn("SELECT count(o.id) FROM " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) WHERE og.channel_id=:channel_id AND o.userdeleted=0 AND o.deleted=0 AND o.uniacid=:uniacid ", array(':channel_id' => $member['id'], ':uniacid' => $_W['uniacid']));
+
+            $channel_info['channel']['commission_total'] = number_format(pdo_fetchcolumn("SELECT sum(apply_money) FROM " . tablename('sz_yi_channel_apply') . " WHERE uniacid=:uniacid AND openid=:openid", array(':uniacid' => $_W['uniacid'], ':openid' => $openid)), 2);
+            $channel_info['channel']['commission_pay_total'] = number_format(pdo_fetchcolumn("SELECT sum(apply_money) FROM " . tablename('sz_yi_channel_apply') . " WHERE uniacid=:uniacid AND openid=:openid AND status = 3", array(':uniacid' => $_W['uniacid'], ':openid' => $openid)), 2);
+            //零售金额
+            $retail_commission = pdo_fetchcolumn("SELECT ifnull(sum(ogp.profit),0) FROM " . tablename('sz_yi_channel_order_goods_profit') . " ogp LEFT JOIN " . tablename('sz_yi_order_goods') . " og ON og.id=ogp.order_goods_id LEFT JOIN " .tablename('sz_yi_order') . " o ON (o.id=og.orderid) WHERE o.uniacid=:uniacid AND og.channel_id=:channel_id AND o.status=3 AND og.channel_apply_status=0 AND og.ischannelpay=0 ", array(':uniacid' => $_W['uniacid'], ':channel_id' => $member['id']));
+            //下级采购金额
+            $purchase_commission = pdo_fetchcolumn("SELECT ifnull(sum(og.price),0) FROM " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) WHERE o.uniacid=:uniacid AND og.channel_id=:channel_id AND o.status=3 AND og.channel_apply_status=0 AND og.ischannelpay=1 ", array(':uniacid' => $_W['uniacid'], ':channel_id' => $member['id']));
+            
+            $channel_info['channel']['commission_ok'] = $retail_commission + $purchase_commission;
+
+            $channel_info['channel']['mychannels'] = pdo_fetchall("SELECT * FROM " .tablename('sz_yi_member') . " WHERE uniacid=:uniacid AND channel_level<>0 AND agentid=:agentid", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+
+            $level = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_level') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $member['channel_level']));
+            if (!empty($level)) {
             	if (!empty($goodsid)) {
             		$up_level = $this->getUpChannel($openid, $goodsid, $optionid='', $total);
             		if (!empty($optionid)) {
@@ -165,7 +159,7 @@ if (!class_exists('ChannelModel')) {
             	$up_level = $this->getUpChannel($openid);
             	$channel_info['up_level'] = $up_level;
             	return $channel_info;
-            }*/
+            }
 		}
 		/**
 		  * 获取渠道商等级权重与库存条件满足的上级openid
@@ -263,6 +257,34 @@ if (!class_exists('ChannelModel')) {
 			return $level;
 		}
 		/**
+		  * 渠道商根据直属下线升级
+		  *
+		  * @param string $openid 用户openid
+		  */
+		public function upgradeLevelByAgent($openid)
+		{
+			global $_W;
+			if (empty($openid)) {
+				return false;
+			}
+			$set = $this->getSet();
+			$member = m('member')->getMember($openid);
+			if (empty($member)) {
+				return;
+			}
+			$my_agents = pdo_fetchcolumn("SELECT count(*) FROM " . tablename('sz_yi_member') . " WHERE uniacid={$_W['uniacid']} AND agentid={$member['id']} AND ischannel=1 AND channel_level>0");
+			if ($set['become'] == 1) {
+				$my_level = $this->getLevel($openid);
+				$up_level_num = $my_level['level_num'] + 1;
+				$channel_level = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_level') . " WHERE uniacid={$_W['uniacid']} AND level_num={$up_level_num}");
+				if ($my_agents >= $channel_level['team_count']) {
+					pdo_update('sz_yi_member', array('channel_level' => $channel_level['id']), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
+					$this->getChannelNum($member['openid']);
+					//通知
+				}
+			}
+		}
+		/**
 		  * 渠道商自提扣除自己库存
 		  *
 		  * @param int $orderid 订单的id
@@ -271,10 +293,6 @@ if (!class_exists('ChannelModel')) {
 		{
 			global $_W;
 			$openid = pdo_fetchcolumn("SELECT openid FROM " . tablename('sz_yi_order') . " WHERE uniacid={$_W['uniacid']} AND id={$orderid}");
-			$member = m('member')->getInfo($openid);
-			if (empty($member['ischannel']) && empty($member['channel_level'])) {
-				return;
-			}
 			$my_info = $this->getInfo($openid);
             $order_goods = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_order_goods') . " WHERE uniacid={$_W['uniacid']} AND orderid={$orderid}");
             foreach ($order_goods as $og) {
@@ -306,9 +324,6 @@ if (!class_exists('ChannelModel')) {
                     );
                 if (!empty($channel_stock)) {
                     $stock_total = $channel_stock['stock_total'] - $og['total'];
-                    if ($stock_total < 0) {
-                    	return;
-                    }
                     if (!empty($og['optionid'])) {
                         $data['optionid']       = $og['optionid'];
                         $log_data['optionid']   = $og['optionid'];
@@ -370,8 +385,9 @@ if (!class_exists('ChannelModel')) {
 						$this->sendMessage($openid, $message, TM_CHANNELPURCHASE_ORDER);
 					}
 				} else if (!empty($og['channel_id'])) {
-					$up_openid = pdo_fetchcolumn("SELECT openid FROM " . tablename('sz_yi_member') . " WHERE uniacid={$_W['uniacid']} AND id={$og['channel_id']}");
-					$this->sendMessage($up_openid, $message, TM_CHANNELRETAIL_ORDER);
+					$up_member = pdo_fetch("SELECT openid,nickname FROM " . tablename('sz_yi_member') . " WHERE uniacid={$_W['uniacid']} AND id={$og['channel_id']}");
+					$message['up_nickname'] = $up_member['nickname'];
+					$this->sendMessage($up_member['openid'], $message, TM_CHANNELRETAIL_ORDER);
 				}
 			}
 		}
@@ -432,12 +448,13 @@ if (!class_exists('ChannelModel')) {
 				$msg = array('keyword1' => array('value' => !empty($tm['channel_upgradetitle']) ? $tm['channel_upgradetitle'] : '渠道商采购通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
 			} else if ($message_type == TM_CHANNELRETAIL_ORDER && !empty($tm['channel_retail'])) {
 				$message = $tm['channel_retail'];
+				$message = str_replace('[上级昵称]', $data['up_nickname'], $message);
 				$message = str_replace('[昵称]', $data['nickname'], $message);
 				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
 				$message = str_replace('[订单号]', $data['ordersn'], $message);
 				$message = str_replace('[渠道等级]', $data['level_name'], $message);
 				$message = str_replace('[商品]', $data['goods'], $message);
-				$msg = array('keyword1' => array('value' => !empty($tm['channel_upgradetitle']) ? $tm['channel_upgradetitle'] : '下级渠道商采购通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
+				$msg = array('keyword1' => array('value' => !empty($tm['channel_retailtitle']) ? $tm['channel_retailtitle'] : '渠道商零售订单通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
 			}
 			m('message')->sendCustomNotice($openid, $msg);
 		}
@@ -456,14 +473,14 @@ if (!class_exists('ChannelModel')) {
 			if (empty($member)) {
 				return;
 			}
-			$my_agents = pdo_fetchcolumn("SELECT count(*) FROM " . tablename('sz_yi_member') . " WHERE uniacid={$_W['uniacid']} AND agentid={$member['id']} AND ischannel=1 AND channel_level>0");
+			$my_agents = pdo_fetchcolumn("SELECT count(*) FROM " . tablename('sz_yi_member') . " WHERE uniacid=:uniacid AND agentid=:id", array(':uniacid' => $_W['uniacid'], ':id' => $member['id']));
 			if (!empty($set['default_level']) && !empty($set['become_condition_team'])) {
 				if ($my_agents >= $set['become_condition_team']) {
-					$up_level_num = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid AND id = :id', array(':uniacid' => $_W['uniacid'],':id' => $set['default_level']));
-					if (!$up_level_num) {
-						$up_level_num = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid ORDER BY level_num ASC LIMIT 1', array(':uniacid' => $_W['uniacid']));
+					$up_level_id = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid AND id = :id', array(':uniacid' => $_W['uniacid'],':id' => $set['default_level']));
+					if (!$up_level_id) {
+						$up_level_id = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid ORDER BY level_num ASC LIMIT 1', array(':uniacid' => $_W['uniacid']));
 					}	
-					pdo_update('sz_yi_member', array('ischannel' => 1,'channel_level' => $up_level_num), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
+					pdo_update('sz_yi_member', array('ischannel' => 1,'channel_level' => $up_level_id), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
 					$this->getChannelNum($openid);
 					$this->sendMessage($openid, array('nickname' => $member['nickname']), TM_CHANNEL_BECOME);
 				} else {
@@ -489,11 +506,11 @@ if (!class_exists('ChannelModel')) {
 				return;
 			}
 			if ($set['become_condition_order'] == 0) {
-				$condtion .= ' AND o.status >= 1 AND o.status < 3';
+				$condtion .= ' AND o.status >= 1';
 			} elseif ($set['become_condition_order'] == 1){
 				$condtion .= ' AND o.status >= 3';
 			}
-			$orderinfo = pdo_fetch('SELECT sum(og.realprice) AS ordermoney,count(distinct og.orderid) AS ordercount FROM ' . tablename('sz_yi_order') . ' o ' . ' LEFT JOIN  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' WHERE o.openid=:openid ' . $condtion . ' AND o.uniacid=:uniacid AND og.ischannelpay=1 limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+			$orderinfo = pdo_fetch('SELECT sum(og.realprice) AS ordermoney,count(distinct og.orderid) AS ordercount FROM ' . tablename('sz_yi_order') . ' o ' . ' LEFT JOIN  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' WHERE o.openid=:openid ' . $condtion . ' AND o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
 			$up_level_num = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid AND id = :id', array(':uniacid' => $_W['uniacid'],':id' => $set['default_level']));
 			if (!$up_level_num) {
 				$up_level_num = pdo_fetchcolumn('SELECT id FROM ' . tablename('sz_yi_channel_level') . ' WHERE uniacid=:uniacid ORDER BY level_num ASC LIMIT 1', array(':uniacid' => $_W['uniacid']));
@@ -505,7 +522,7 @@ if (!class_exists('ChannelModel')) {
 					$this->sendMessage($openid, array('nickname' => $member['nickname']), TM_CHANNEL_BECOME);
 				}
 			} elseif ($set['become_condition'] == 4){
-				if ($orderinfo['ordercount'] >= $set['become_condition_money']) {
+				if ($orderinfo['ordercount'] >= $set['become_condition_count']) {
 					pdo_update('sz_yi_member', array('ischannel' => 1,'channel_level' => $up_level_num), array('uniacid' => $_W['uniacid'], 'openid' => $openid));
 					$this->getChannelNum($openid);
 					$this->sendMessage($openid, array('nickname' => $member['nickname']), TM_CHANNEL_BECOME);
