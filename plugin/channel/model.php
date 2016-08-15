@@ -263,34 +263,6 @@ if (!class_exists('ChannelModel')) {
 			return $level;
 		}
 		/**
-		  * 渠道商根据直属下线升级
-		  *
-		  * @param string $openid 用户openid
-		  */
-		public function upgradeLevelByAgent($openid)
-		{
-			global $_W;
-			if (empty($openid)) {
-				return false;
-			}
-			$set = $this->getSet();
-			$member = m('member')->getMember($openid);
-			if (empty($member)) {
-				return;
-			}
-			$my_agents = pdo_fetchcolumn("SELECT count(*) FROM " . tablename('sz_yi_member') . " WHERE uniacid={$_W['uniacid']} AND agentid={$member['id']} AND ischannel=1 AND channel_level>0");
-			if ($set['become'] == 1) {
-				$my_level = $this->getLevel($openid);
-				$up_level_num = $my_level['level_num'] + 1;
-				$channel_level = pdo_fetch("SELECT * FROM " . tablename('sz_yi_channel_level') . " WHERE uniacid={$_W['uniacid']} AND level_num={$up_level_num}");
-				if ($my_agents >= $channel_level['team_count']) {
-					pdo_update('sz_yi_member', array('channel_level' => $channel_level['id']), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
-					$this->getChannelNum($member['openid']);
-					//通知
-				}
-			}
-		}
-		/**
 		  * 渠道商自提扣除自己库存
 		  *
 		  * @param int $orderid 订单的id
