@@ -259,3 +259,6 @@ footer#footer-nav .menu-list:after {
 }
 
 .cart_pay,.operation-bg{z-index: 9}
+.order_main .inner input {
+	-webkit-appearance: radio;
+}
