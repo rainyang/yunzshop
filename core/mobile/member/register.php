@@ -84,6 +84,10 @@ if ($_W['isajax']) {
                 'regtype' => 2,
             );
 
+            if (is_app()) {
+                $member_data['bindapp'] = 1;
+            }
+
             if (!is_weixin()) {
                 $member_data['nickname'] = $mobile;
                 $member_data['avatar'] = "http://".$_SERVER ['HTTP_HOST']. '/addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg';
