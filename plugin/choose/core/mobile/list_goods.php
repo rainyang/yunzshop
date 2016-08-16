@@ -59,7 +59,8 @@ if($_W['isajax']){
                 $good = set_medias(pdo_fetch("SELECT * FROM ".tablename('sz_yi_goods')." WHERE id=".$args['id']),'thumb');
             }
         }
-    }   
+    }  
+    $args['isverify'] = 1; 
     $goods = m('goods')->getList($args);
     if (p('channel')) {
         foreach ($goods as $key => &$value) {
