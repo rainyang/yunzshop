@@ -3,6 +3,7 @@ global $_W, $_GPC;
 $openid = m('user')->getOpenid();
 if ($_W['isajax']) {
 	$member = $this->model->getInfo($openid, array('total', 'ok', 'apply', 'check', 'lock', 'pay', 'myorder'));
+	$proportion = true;
 	if(!empty($this->set['withdraw_proportion'])){
         $withdraw_proportion = empty($level['withdraw_proportion']) ? floatval($this->set['withdraw_proportion']) : $level['withdraw_proportion'];
         if($member['myordermoney'] < $withdraw_proportion*$member['commission_ok']){
