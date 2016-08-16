@@ -157,5 +157,28 @@ if (!class_exists('HotelModel')) {
         }
         return $new_array;
     }
+
+
+    public function check_plugin($pluginname = '')
+        {
+            global $_W, $_GPC;
+            $acid = pdo_fetchcolumn("SELECT acid FROM " . tablename('account_wechats') . " WHERE `uniacid`=:uniacid LIMIT 1", array(':uniacid' => $_W['uniacid']));
+            $ac_perm = pdo_fetch('select  plugins from ' . tablename('sz_yi_perm_plugin') . ' where acid=:acid limit 1', array(':acid' => $acid));
+            if ($_W['role'] == 'founder') {
+                return true;
+            }
+            if (!empty($ac_perm)) {
+                $allow_plugins = explode(',', $ac_perm['plugins']);
+                if (!in_array($pluginname, $allow_plugins)) {
+                    $allow = false;
+                }else{
+                   $allow = true; 
+                }
+            } else {
+                $allow = false;
+            }
+            return  $allow;
+        }
+
  }
 }

@@ -47,6 +47,9 @@ class Sz_DYi_Goods
             $condition .= " and id = :id";
             $params[':id'] = intval($id);
         }
+        if (!empty($args['isverify'])) {
+            $condition .= " and isverify = 1";
+        }
         if (!empty($sup_uid)) {
             $condition .= " and supplier_uid = :supplier_uid ";
             $params[':supplier_uid'] = intval($sup_uid);
@@ -125,7 +128,9 @@ class Sz_DYi_Goods
             $goodsinfo = pdo_fetchall("SELECT distinct goodsid FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} and openid='{$openid}'");
             if (!empty($goodsinfo)) {
                 foreach ($goodsinfo as $value) {
-                        $list[] =  pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE uniacid={$_W['uniacid']} AND id={$value['goodsid']}");
+                        $channel_goods =  pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE uniacid={$_W['uniacid']} AND id={$value['goodsid']}");
+                        $channel_goods['total'] = p('channel')->getMyOptionStock($openid, $value['goodsid'], 0);
+                        $list[] = $channel_goods;
                 }
             }
         } else {

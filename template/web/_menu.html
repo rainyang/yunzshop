@@ -29,19 +29,23 @@
         </li> 
 		{/if}
 
-        {if p('commission')}
-            {ifpp 'commission'}
+        {if p('sale')}
+            {ifpp 'sale'}
+                {ifp 'sale'}
          <li>
-            <a href='{php echo $this->createPluginWebUrl('commission')}' class="dropdown-toggle" ><i class='fa fa-gift' style="margin-top: 2px"></i> <span>营销</span> <i class="fa fa-angle-down"></i></a>
+            <a href='{php echo $this->createPluginWebUrl('sale')}' class="dropdown-toggle" ><i class='fa fa-gift' style="margin-top: 2px"></i> <span>营销</span> <i class="fa fa-angle-down"></i></a>
         </li> 
+                {/if} 
             {/if}        
 		{/if}
 
 	   {if p('designer')}
             {ifpp 'designer'}
+                {ifp 'designer'}
 		<li>
             <a href='{php echo $this->createPluginWebUrl('designer')}' class="dropdown-toggle" ><i class='fa fa-gavel'></i> <span>装修</span><i class="fa fa-angle-down"></i></a>
         </li>
+                {/if}
             {/if}        
 		{/if}
         

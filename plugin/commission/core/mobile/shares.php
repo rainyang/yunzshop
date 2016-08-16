@@ -65,7 +65,11 @@ if (empty($infourl) && $_W['isajax']) {
         }
     } else {
         if ($p) {
-            $img = $p->createCommissionPoster($openid);
+        	if(!empty($set['attention_qr'])){
+	            $img = $p->createCommissionPoster($openid, 0, 4);
+	        }else{
+	        	$img = $p->createCommissionPoster($openid);
+	        }
         }
         if (empty($img)) {
             $img = $this->model->createShopImage($shop_set);

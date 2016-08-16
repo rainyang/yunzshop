@@ -20,7 +20,8 @@ if ($operation == 'af_supplier') {
     } else {
         pdo_update('sz_yi_af_supplier',array('status' => $status), array('id' => $id, 'uniacid' => $_W['uniacid']));
         if ($status == 1) {
-            $msg = '驳回申请成功';
+            $msg = '驳回申请,并删除申请资料';
+            pdo_delete('sz_yi_af_supplier', array('openid' => $openid));
         } else {
             $data = array();
             $msg = '审核通过成功';

@@ -46,7 +46,7 @@
                             <input type="text" name="min_price" class="form-control" value="{$level['min_price']}" />
                             <span class='input-group-addon'>元</span>
                         </div>
-                        <div class="help-block">该等级权重从总店进货的折扣，只填0-100的数字即可。例：50代表50%</div>
+                        <div class="help-block">每次采购的最低限额</div>
                     </div>
                 </div>
                 <div class="form-group">
@@ -56,7 +56,7 @@
                             <input type="text" name="profit_sharing" class="form-control" value="{$level['profit_sharing']}" />
                             <span class='input-group-addon'>%</span>
                         </div>
-                        <div class="help-block">（下线进货价-他的进货价）* 利润分成 = 利润。例：（900-800）* 50% = 50元；</div>
+                        <div class="help-block">（下线(非渠道商)购物价-他的进货价）* 利润分成 = 利润。例：（900-800）* 50% = 50元；</div>
                     </div>
                 </div>
                 <div class="form-group">

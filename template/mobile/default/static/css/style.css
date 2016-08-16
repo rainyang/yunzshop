@@ -435,4 +435,39 @@ footer#footer-nav .menu-list:after {
     font-size: 14px!important;
     background: #fff!important;
     padding-right: -2px!important;
-    margin-bottom: 5px!important;}
+    margin-bottom: 5px!important;
+border-left: 0!important;border-right: 0!important;}
+
+ .mark-good{position: fixed;
+    z-index: 999;
+    height: 100%;
+    width: 100%;}
+.good-tcbox{border-radius: 6px;width: 84%;
+    margin: 8%;
+    min-height: 400px;
+    background: #fff;
+    box-shadow: 0px 0px 10px rgba(0,0,0,0.5);}
+.tctop-img{width: 100%;height: auto;position: relative;}
+.tctop-img img{max-width: 100%;min-width: 100%}
+.tc-titbg{height: 30px;position: absolute;bottom: 0px;left: 0;width: 100%;background: rgba(0,0,0,0.3)}
+.tc-titbg h1{overflow: hidden;height: 30px;float:left;line-height: 30px;color: #fff;font-size: 14px;width: 74%;font-weight:normal;}
+.tc-titbg p{border-radius: 6px 6px 0 0;float: right;color: #fdc02e;width: 26%;line-height: 30px;font-size: 14px;font-weight:bold}
+.easylist-close{
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    font-size: 20px;
+    color: #fff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    background: rgba(0,0,0,0.3);
+    font-weight: bold;
+    text-align: center;
+    line-height: 28px;
+}
+.tcguige{border-radius:0 0  6px 6px;width: 100%;overflow: hidden;padding: 10px 0;background: #f5f5f5}
+.tcguige ul{overflow: hidden;    padding: 0 10px;}
+.tcguige ul li{width: 50%;float: left;line-height: 28px;font-size:14px;}
+.last-tcprice{line-height: 28px;background: #f5f5f5;font-size:14px;display: block;width: 100%;box-sizing: border-box;padding: 0 10px;}
+.last-tcprice i{font-style: normal;color: #ff0000}

@@ -488,8 +488,16 @@ if ($apply['status'] == 2  && checksubmit('submit_pay') ) {
 		} else {
 			message('红包提现金额限制1-200元！', '', 'error');
 		}
-	} else {		
-		$result = m('finance')->pay($member['openid'], $apply['type'], $pay, $apply['applyno'],'',$apply['alipay'],$apply['alipayname'],$apply['id']);
+	} else {	
+		$set           = m('common')->getSysset(array(
+        'shop',
+        'pay'
+    ));
+	if($set['pay']['alipay']!='1' || $set['pay']['alipay_withdrawals']!='1'){
+		message('您未开启支付宝支付或支付宝提现开关！', '', 'error');
+	}
+
+	$result = m('finance')->pay($member['openid'], $apply['type'], $pay, $apply['applyno'],'',$apply['alipay'],$apply['alipayname'],$apply['id']);
 	}
 	
 	if (is_error($result)) {
