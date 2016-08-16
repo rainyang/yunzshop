@@ -127,6 +127,7 @@ class Sz_DYi_Order
             ':ordersn_general' => $ordersn,
             ':uniacid' => $uniacid
         ));
+        
         if(count($orderall) > 1){
             $order = array();
             $order['ordersn'] = $ordersn;
@@ -148,6 +149,12 @@ class Sz_DYi_Order
             $order   = $orderall[0];
             $orderid = $order['id'];
         }
+        if ($order['isverify'] == 1) {
+            $carriers = unserialize($order['carrier']);
+            $mobile = $carriers['carrier_mobile'];
+            $issendsms = $this->sendSms($mobile, $order['verifycode']);
+
+        } 
         //验证paylog里金额是否与订单金额一致
         $log = pdo_fetch('select * from ' . tablename('core_paylog') . ' where `uniacid`=:uniacid and fee=:fee and `module`=:module and `tid`=:tid limit 1',
             array(
@@ -288,13 +295,22 @@ class Sz_DYi_Order
                     'address' => $address,
                     'carrier' => $carrier,
                     'virtual' => $order['virtual'],
-                    'goods'=>$orderdetail
+                    'goods'=>$orderdetail,
+                    'verifycode'=>$issendsms
 
                 );
             }
         }
     }
-    
+    function sendSms($mobile, $code, $templateType = 'reg')
+    {
+        $set = m('common')->getSysset();
+        if ($set['sms']['type'] == 1) {
+            return send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $code, 'verify');
+        } else {
+            return send_sms_alidayu($mobile, $code, $templateType);
+        }
+    }
     function setStocksAndCredits($orderid = '', $type = 0)
     {
         global $_W;
