@@ -71,20 +71,20 @@ if ($operation == 'category') {
 			$third_category = pdo_fetchall($sql1, array(':uniacid'=>$uniacid));
 		}
 		if($page['isopen']==1){//判断是否开启供应商
-		    $parent_category = pdo_fetchall("select a.id,a.parentid,a.name,a.level from " . tablename('sz_yi_category') . " a left join  " .tablename('sz_yi_goods'). " b on (a.id = b.pcate )  where a.parentid=0 and a.uniacid=:uniacid and b.supplier_uid = '".$sup_uid."' group by a.id ", array(
+		    $parent_category = pdo_fetchall("select a.id,a.parentid,a.name,a.level from " . tablename('sz_yi_category') . " a left join  " .tablename('sz_yi_goods'). " b on (a.id = b.pcate )  where a.parentid=0 and a.uniacid=:uniacid and b.isverify=1 and  b.supplier_uid = '".$sup_uid."' group by a.id ", array(
 			    ':uniacid' => $_W['uniacid'] 
 			));
 			foreach ($parent_category as $v){
 				$ids[] = $v['id'];
 			}
-			$sql = 'select a.id,a.parentid,a.name,a.level from ' . tablename('sz_yi_category') . ' a left join  ' .tablename('sz_yi_goods'). ' b on a.id = b.ccate where a.parentid in('.implode(',',$ids).') and a.uniacid=:uniacid and  b.uniacid=:uniacid and b.supplier_uid = "'.$sup_uid.'" group by a.id ';
+			$sql = 'select a.id,a.parentid,a.name,a.level from ' . tablename('sz_yi_category') . ' a left join  ' .tablename('sz_yi_goods'). ' b on a.id = b.ccate where a.parentid in('.implode(',',$ids).') and a.uniacid=:uniacid and b.isverify=1 and  b.uniacid=:uniacid and b.supplier_uid = "'.$sup_uid.'" group by a.id ';
 			$children_category = pdo_fetchall($sql, array(
 			    ':uniacid' => $_W['uniacid']
 			));
 			foreach ($children_category as $v1){
 				$ids1[] = $v1['id'];
 			}
-			$sql1 = 'select a.id,a.parentid,a.name,a.level from ' . tablename('sz_yi_category') . ' a left join  ' .tablename('sz_yi_goods'). ' b on a.id = b.tcate where a.parentid in('.implode(',',$ids1).') and a.uniacid=:uniacid and  b.uniacid=:uniacid and b.supplier_uid = "'.$sup_uid.'" group by a.id ';
+			$sql1 = 'select a.id,a.parentid,a.name,a.level from ' . tablename('sz_yi_category') . ' a left join  ' .tablename('sz_yi_goods'). ' b on a.id = b.tcate where a.parentid in('.implode(',',$ids1).') and b.isverify=1 and a.uniacid=:uniacid and  b.uniacid=:uniacid and b.supplier_uid = "'.$sup_uid.'" group by a.id ';
 			$third_category = pdo_fetchall($sql1, array(
 			    ':uniacid' => $_W['uniacid']
 			));
@@ -142,7 +142,8 @@ if ($operation == 'category') {
 			$args = array(           
             'ccate' => $category['id'],
             'supplier_uid'=>$sup_uid,
-            'isopenchannel' => $isopenchannel
+            'isopenchannel' => $isopenchannel,
+            'isverify' 	=> 1
 	        );
 	        $goods    = m('goods')->getList($args);
 	        $conut = 0;
