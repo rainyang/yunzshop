@@ -110,7 +110,7 @@ line-height: 20px;font-weight: bold;}
                     </dd>
                   </dl> 
             <!-- 三级分类 -->
-                    {if intval($shopset['catlevel'])==3}
+                    {if intval($shopset['shop']['catlevel'])==3}
                        <div class="nav-sanj" date-type="1">
                               
                           <%each value1.sub1 as value2%>
@@ -1024,7 +1024,10 @@ ul, li { list-style:none; margin:0; padding:0 }
     $(document).on('click','.sub',function(){
       choose2();
     })
-     $(document).on('click','.close',function(){
+    $(document).on('click','.close',function(){
+      closechoose();
+    })
+    $(document).on('click','.easylist-close',function(){
       closechoose();
     })
     $(document).on('click','#btn_minus',function(){
