@@ -96,7 +96,7 @@ class Sz_DYi_Common
         $set                   = array();
         $set['partner']        = $alipay['partner'];
         $set['seller_id']    = $alipay['account'];
-        if ($_W['os'] == 'windows') {
+        if (!isMobile()) {
             $set['seller_id']    = $alipay['partner'];  //即时到帐情况下sellerid = partner
             $set['service']        = 'create_direct_pay_by_user';
         } else {
