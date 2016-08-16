@@ -36,7 +36,12 @@ if ($operation == 'display') {
                 session_set_cookie_params($lifeTime);
                 
                 $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
-                setcookie($cookieid, base64_encode($info['openid']));
+                if (is_app()) {
+                    setcookie($cookieid, base64_encode($info['openid']), time()+3600*24*7);
+                } else {
+                    setcookie($cookieid, base64_encode($info['openid']));
+                }
+
                 setcookie('member_mobile', $info['mobile']);
                 if(!isMobile()){
                     $openid = base64_decode($_COOKIE[$cookieid]);
