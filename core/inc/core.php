@@ -57,6 +57,8 @@ class Core extends WeModuleSite
              */
             $_W['template'] = 'app';
         }
+
+        
     }
 
     public function sendSms($mobile, $code, $templateType = 'reg')
@@ -169,6 +171,13 @@ class Core extends WeModuleSite
         }
         
         if (is_weixin()) {
+            //url未有mid重新跳转当前页并添加,无分享接口用户使用
+            if(empty($_GPC['mid']) && !$_W['isajax']){
+                if($member['isagent'] == 1 && $member['status'] == 1){
+                    header("Location: ". $_W['siteroot'] . 'app/index.php?'.$_SERVER['QUERY_STRING']."&mid=".$member['id']);
+                    exit();
+                }
+            }
             //是否强制绑定手机号,只针对微信端
             if (!empty($this->yzShopSet['isbindmobile'])) {
                 if (empty($member) || $member['mobile'] == ""){
