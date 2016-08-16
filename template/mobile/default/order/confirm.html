@@ -191,16 +191,19 @@
 	
 	 {if $show==1}
       <%if isverify%>
-          <input type="hidden"  id="dispatchtype" value="1" />
+          
         <%if isverifysend%>
           <%if carrier_list.length>0%>
+              <input type="hidden"  id="dispatchtype" value="1" />
               <div class="addorder_nav">
                 <div class="nav selected" data-nav='1'>上门自提</div>
                 <div class="nav"  data-nav='0'>配送核销</div>
               </div>
+          <%else%>
+              <input type="hidden"  id="dispatchtype" value="0" />  
           <%/if%>
 
-          <div class="addorder_user addorder_user_0" <%if isverifysend%>style='display:none'<%/if%>>
+          <div class="addorder_user addorder_user_0" <%if isverifysend && carrier_list.length>0%>style='display:none'<%/if%>>
             <input type='hidden' id='addressid' value='<%address.id%>' />
             <div class="info" id='address_select' <%if !address %>style='display:none'<%/if%>>
                <div class="ico"><i class="iconfont icon-map-marker"></i></div>

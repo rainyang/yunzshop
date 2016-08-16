@@ -143,7 +143,7 @@ function send_sms($account, $pwd, $mobile, $code, $type = 'check')
         //$smsrs = file_get_contents('http://115.29.33.155/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
         $smsrs = file_get_contents('http://106.ihuyi.cn/webservice/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));   
     } elseif ($type == 'verify') {
-        $content = "您的核销码是：". $code ."。请把此信息中的核销码出示给核销员进行核销操作！";
+        $content = "您的核销码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
         //$smsrs = file_get_contents('http://115.29.33.155/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
         $smsrs = file_get_contents('http://106.ihuyi.cn/webservice/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
     }
