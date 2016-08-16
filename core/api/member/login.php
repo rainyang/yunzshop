@@ -19,9 +19,8 @@ class Login extends \api\YZ
     }
     public function index(){
         global $_W,$_GPC;
-        $setting = $_W['setting'];
-
-        $_GPC['username'] = trim($_GPC['username']);
+        $para = $this->getPara();
+        $para['username'] = trim($para['username']);
         $record = user_single($_GPC);
         if(!empty($record)) {
             if($record['status'] == 1) {
@@ -45,8 +44,10 @@ class Login extends \api\YZ
                 header('Location:' . url('account/switch', array('uniacid' => $record['uniacid'])));
                 die;
             }
+            $profile = pdo_fetch('SELECT * FROM '.tablename('users_profile').' WHERE `uid` = :uid LIMIT 1',array(':uid' => $record['uid']));
+            dump($profile);
         }
-        $record = array_part('uid,username',$record);
+        $record = array_part('uid,username,tel',$record);
         $this->returnSuccess($record);
     }
 }

@@ -47,6 +47,10 @@ class commissionApply extends \CommissionModel
     public function getBaseInfo($uniacid,$id,$fields='*'){
         $apply = pdo_fetch('select '.$fields.' from ' . tablename('sz_yi_commission_apply') . ' where uniacid=:uniacid and id=:id limit 1', array(':uniacid' => $uniacid, ':id' => $id));
         $apply['applytime'] = date('Y-m-d H:i',$apply['applytime']);
+        $apply['checktime'] = date('Y-m-d H:i',$apply['checktime']);
+        $apply['paytime'] = date('Y-m-d H:i',$apply['paytime']);
+        $apply['invalidtime'] = date('Y-m-d H:i',$apply['invalidtime']);
+
         $apply['type_name'] = $this->name_map['type'][$apply['type']];
         $apply['status_name'] = $this->name_map['status'][$apply['status']];
         return $apply;
@@ -75,11 +79,11 @@ class commissionApply extends \CommissionModel
 
         //realname,price,type,time
         $sql = 'select a.id as commission_apply_id,a.status,a.commission,m.avatar,m.realname,applytime,checktime,invalidtime,paytime,type from ' . tablename('sz_yi_commission_apply') . ' a ' . ' left join ' . tablename('sz_yi_member') . ' m on m.id = a.mid' . ' left join ' . tablename('sz_yi_commission_level') . ' l on l.id = m.agentlevel' . " {$condition_str} ORDER BY {$orderby} desc ";
-
         $list = pdo_fetchall($sql, $params);
         foreach ($list as &$row) {
             $row = $this->formatInfo($row);
         }
+        dump($list);
         return $list;
     }
     private function formatInfo($row)
@@ -91,5 +95,11 @@ class commissionApply extends \CommissionModel
         $row['typestr'] = $this->name_map['type'][$row['type']];
         return $row;
     }
-
+    public function getAgentLevel($mid){
+        $agentLevel = parent::getLevel($mid);
+        if (empty($agentLevel['id'])) {
+            $agentLevel = array('levelname' => empty($this->set['levelname']) ? '普通等级' : $this->set['levelname'], 'commission1' => $this->set['commission1'], 'commission2' => $this->set['commission2'], 'commission3' => $this->set['commission3']);
+        }
+        return $agentLevel;
+    }
 }

@@ -34,6 +34,6 @@ class member
         ));
         return $info;
     }
-
+    
 
 }

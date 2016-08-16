@@ -94,8 +94,8 @@ return array(
                     'uniacid' => '2',
                     'commission_apply_id' => '3',
                     'status'=>array(
-                        '59'=>'2',
-                        '60'=>'2'
+                        '57'=>'2',
+                        '58'=>'2',
                     )
                 ),
                 'data' => array()
