@@ -70,7 +70,8 @@ if ($_W['isajax']) {
                 'total' => $total,
                 'list' => $list,
                 'totalprice' => $totalprice,
-                'difference' => $difference
+                'difference' => $difference,
+                'ischannelpay' => $ischannelpay
             ));
         
     } else if ($operation == 'add' && $_W['ispost']) {
