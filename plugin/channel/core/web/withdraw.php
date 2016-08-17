@@ -97,7 +97,7 @@ if ($operation == 'display') {
 
 		ca('channel.apply.pay');
 		$time = time();
-		$pay = $totalpay;
+		$pay = $apply['apply_money'];
 		if ($apply['type'] == 1 || $apply['type'] == 2) {
 			$pay *= 100;
 		} 
