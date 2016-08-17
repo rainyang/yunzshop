@@ -18,5 +18,8 @@ class YunbiMobile extends Plugin
     {    
         $this->_exec_plugin(__FUNCTION__, false);
     }
-
+    public function yunbi_log()
+    {    
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 }

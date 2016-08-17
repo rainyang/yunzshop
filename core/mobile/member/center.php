@@ -124,6 +124,7 @@ $shopset['isyunbi'] = false;
 if($yunbiset['isyunbi'] == 1 ){
 	$shopset['isyunbi'] = true;
 }
+$yunbi_title = $yunbiset['yunbi_title']?$yunbiset['yunbi_title']:'云币';
 if (p('ranking')) {
 	$ranking_set = p('ranking')->getSet();
 

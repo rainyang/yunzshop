@@ -52,18 +52,13 @@ if ($_W['isajax']) {
 	        }
 	        //虚拟币抵扣记录
             $data_log = array(
-                'uniacid'       => $uniacid,
-                'mid'           => $member['id'],
+                'id'           => $member['id'],
                 'openid'        => $openid,
                 'credittype'    => 'virtual_currency',
                 'money'         => $order['deductyunbi'],
-                'status'        => 1,
-                'returntype'    => 4,
-                'create_time'   => time(),
                 'remark'        => "购物返还抵扣".$yunbiset['yunbi_title']." ".$yunbiset['yunbi_title'].": {$order['deductyunbi']} 抵扣金额: {$order['deductyunbimoney']} 订单号: {$order['ordersn']}"
             );
-            pdo_insert('sz_yi_yunbi_log', $data_log);
-
+			$this->addYunbiLog($uniacid,$data_log,'4');
 	        if (p('coupon') && !empty($order['couponid'])) {
 	            p('coupon')->returnConsumeCoupon($orderid);
 	        }

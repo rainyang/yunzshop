@@ -470,3 +470,54 @@ footer#footer-nav .menu-list:after {
 .tcguige ul li{width: 50%;float: left;line-height: 28px;font-size:14px;}
 .last-tcprice{line-height: 28px;background: #f5f5f5;font-size:14px;display: block;width: 100%;box-sizing: border-box;padding: 0 10px;}
 .last-tcprice i{font-style: normal;color: #ff0000}
+/*虚拟云币*/
+.yunb-list{height: auto;
+width: 100%;
+background: #fff;
+margin-top: 10px;overflow: hidden;
+border-bottom: 1px solid #e3e3e3;
+border-top: 1px solid #e3e3e3;
+padding: 0 5px;box-sizing: border-box;}
+.yunb-list ul li {
+    float: left;
+    width: 32.333%;
+    box-sizing: border-box;
+    margin:0 0.5%;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+}
+.yunb-nav{
+    color: #fff !important;
+    background: #f15353 !important;
+}
+.yunb-list ul li a{
+    color: #333;
+    display: block;
+    text-align: left;
+    line-height: 14px;
+    padding: 10px 0;
+    border-radius: 4px;
+    background: #f6f6f6
+}
+.yunb-list ul li i {
+    border-radius: 10px;
+    color: #fff;
+    font-size: 20px;
+    height: 30px;
+    line-height: 30px;
+    margin-bottom: 4px;
+    width: 30px;
+    float: left;
+    margin: 0px 6px 0 8px;
+    text-align: center;
+    border-radius: 4px;
+}
+
+
+
+
+
+
+
+

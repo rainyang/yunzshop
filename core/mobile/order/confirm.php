@@ -2136,18 +2136,13 @@ if ($_W['isajax']) {
             }
             //虚拟币抵扣记录
             $data_log = array(
-                'uniacid'       => $uniacid,
-                'mid'           => $member['id'],
+                'id'           => $member['id'],
                 'openid'        => $openid,
                 'credittype'    => 'virtual_currency',
                 'money'         => $deductyunbi,
-                'status'        => 1,
-                'returntype'    => 3,
-                'create_time'   => time(),
                 'remark'        => "购物".$yunbiset['yunbi_title']."抵扣 消费".$yunbiset['yunbi_title'].": {$deductyunbi} 抵扣金额: {$deductyunbimoney} 订单号: {$ordersn}"
             );
-            pdo_insert('sz_yi_yunbi_log', $data_log);
-            
+            $this->addYunbiLog($uniacid,$data_log,'3');
             if (p('channel') && !empty($ischannelpick)) {
                 p('channel')->deductChannelStock($orderid);
             } else {

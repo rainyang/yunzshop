@@ -2153,16 +2153,13 @@ function order_list_close($order) {
             }
             //虚拟币抵扣记录
             $data_log = array(
-                'uniacid'       => $_W["uniacid"],
+                'id'            => '',
                 'openid'        => $value['openid'],
                 'credittype'    => 'virtual_currency',
                 'money'         => $value['deductyunbi'],
-                'status'        => 1,
-                'returntype'    => 4,
-                'create_time'   => time(),
                 'remark'        => "购物返还抵扣".$yunbiset['yunbi_title']." ".$yunbiset['yunbi_title'].": {$value['deductyunbi']} 抵扣金额: {$value['deductyunbimoney']} 订单号: {$value['ordersn']}"
             );
-            pdo_insert('sz_yi_yunbi_log', $data_log);
+            $this->addYunbiLog($_W["uniacid"],$data_log,'4');
 
         if (p("coupon") && !empty($value["couponid"])) {
             p("coupon")->returnConsumeCoupon($value["id"]);
@@ -2354,16 +2351,13 @@ function order_list_refund($item)
         }
         //虚拟币抵扣记录
         $data_log = array(
-            'uniacid'       => $_W["uniacid"],
+            'id'            => '',
             'openid'        => $item['openid'],
             'credittype'    => 'virtual_currency',
             'money'         => $item['deductyunbi'],
-            'status'        => 1,
-            'returntype'    => 4,
-            'create_time'   => time(),
             'remark'        => "购物返还抵扣".$yunbiset['yunbi_title']." ".$yunbiset['yunbi_title'].": {$item['deductyunbi']} 抵扣金额: {$item['deductyunbimoney']} 订单号: {$item['ordersn']}"
         );
-        pdo_insert('sz_yi_yunbi_log', $data_log);
+        $this->addYunbiLog($_W["uniacid"],$data_log,'4');
 
         if (!empty($refundtype)) {
             if ($item['deductcredit2'] > 0) {

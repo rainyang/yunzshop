@@ -28,14 +28,40 @@ if (!file_exists($file)) {
                     $isexecute = true;
                 }
             }
-            if ( $isexecute) {
+            if ( $isexecute ) {
                 //虚拟币返现到余额
+                p('yunbi')->PerformYunbiReturn($set, $_W['uniacid']);
                 echo "uniacid:".$_W['uniacid'];
                 echo "虚拟币返现到余额成功！</br>";
             } else {
                 echo "uniacid:".$_W['uniacid'];
                 echo "虚拟币返现到余额失败！</br>";
             }
+        } elseif (!empty($set) && $set['isreturn_or_remove'] == 1) {
+            //清除虚拟币
+            $remove_times = explode("||",$set['yunbi_remove_times']);
+            $isexecute = false;
+            foreach ($remove_times as $k => $v) {
+                $removes = explode("号",$v);
+                if (date('d') == $removes['0'] && date('H') == $removes['1'] ) {
+                    if (!isset($set['remove_d']) || $set['remove_d'] != date('d')) {
+                        //$data  = array_merge($set, array('current_d'=>date('d')));
+                        $set['remove_d'] = date('d');
+                        $this->updateSet($set);
+                        $isexecute = true;
+                    }
+                }
+            }
+            if ( $isexecute ) {
+                //清除虚拟币
+                p('yunbi')->RemoveYunbi($set, $_W['uniacid']);
+                echo "uniacid:".$_W['uniacid'];
+                echo "虚拟币清除成功！</br>";
+            } else {
+                echo "uniacid:".$_W['uniacid'];
+                echo "虚拟币清除失败！</br>";
+            }
+
         }
         //分销下线获得虚拟币
         if (!empty($set) && $set['isdistribution']) {
