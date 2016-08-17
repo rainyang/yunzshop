@@ -17,7 +17,7 @@ class goods
 {
     public function __construct()
     {
-
+        
     }
 
     public function getList($para, $fields)
@@ -54,9 +54,6 @@ class goods
 
         $sql = "SELECT {$fields} FROM " . tablename('sz_yi_goods') . $condition_str;
         $sql .= 'ORDER BY `id` DESC,`status` DESC, `displayorder` DESC  ';
-
-        dump($sql);
-        dump($params);
 
         $list = pdo_fetchall($sql, $params);
         foreach ($list as &$goods_item) {

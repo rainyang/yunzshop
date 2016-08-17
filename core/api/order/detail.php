@@ -78,12 +78,14 @@ class Detail extends \api\YZ
 
     private function getMember($openid, $uniacid)
     {
-        $member_model = new \model\api\member();
-        $member = $member_model->getInfo(array(
-            'openid' => $openid,
-            'uniacid' => $uniacid
-        ),
-            'id as member_id,realname,weixin,mobile,nickname,avatar');
+        $member_model = new \model\api\user();
+        $member = $member_model->getInfo(
+            array(
+                'openid' => $openid,
+                'uniacid' => $uniacid
+            ),
+            'id as member_id,realname,weixin,mobile,nickname,avatar'
+        );
         return $member;
     }
 

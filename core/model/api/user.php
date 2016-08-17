@@ -12,7 +12,7 @@ namespace model\api;
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-class member
+class user
 {
     public function __construct()
     {
@@ -35,5 +35,13 @@ class member
         return $info;
     }
     
-
+    public function saveProfile($uid,$profile){
+        $exist = pdo_fetchcolumn('SELECT COUNT(*) FROM '.tablename('users_profile').' WHERE `uid` = :uid',array(':uid' => $uid));
+        if($exist == '0') {
+            $profile['uid'] = $uid;
+            pdo_insert('users_profile', $profile);
+        } else {
+            pdo_update('users_profile', $profile, array('uid' => $uid));
+        }
+    }
 }

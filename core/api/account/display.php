@@ -16,7 +16,7 @@ class Display extends \api\YZ
         parent::__construct();
     
     }
-    public function index()
+    public function index1()
     {
         $list[] = array(
             'uniacid'=>'2',
@@ -27,7 +27,7 @@ class Display extends \api\YZ
         $list = set_medias($list, "thumb");
         $this->returnSuccess($list);
     }
-    public function index1()
+    public function index()
     {
         global $_W,$_GPC;
 
@@ -42,18 +42,17 @@ class Display extends \api\YZ
             $pars[':uid'] = $_W['uid'];
         }
 
-        $tsql = "SELECT COUNT(*) FROM " . tablename('uni_account') . " as a LEFT JOIN" . tablename('account') . " as b ON a.default_acid = b.acid WHERE a.default_acid <> 0 {$condition}";
-        $total = pdo_fetchcolumn($tsql, $pars);
-//$pager = pagination($total, $pindex, $psize);
-        $sql = "SELECT * FROM " . tablename('uni_account') . " as a LEFT JOIN" . tablename('account') . " as b ON a.default_acid = b.acid WHERE a.default_acid <> 0 {$condition} ORDER BY a.`rank` DESC, a.`uniacid` DESC LIMIT {$start}, {$psize}";
+        $sql = "SELECT a.uniacid,a.name FROM " . tablename('uni_account') . " as a LEFT JOIN" . tablename('account') . " as b ON a.default_acid = b.acid WHERE a.default_acid <> 0 {$condition} ORDER BY a.`rank` DESC, a.`uniacid` DESC ";
         $list = pdo_fetchall($sql, $pars);
+
         if (!empty($list)) {
             foreach ($list as $unia => &$account) {
-                $account['details'] = uni_accounts($account['uniacid']);
-                $account['role'] = uni_permission($_W['uid'], $account['uniacid']);
-                $account['setmeal'] = uni_setmeal($account['uniacid']);
+                $setmeal = uni_setmeal($account['uniacid']);
+                $account['setmeal'] = $setmeal['timelimit'];
+                $account['thumb'] = "headimg_{$account['uniacid']}.jpg";
             }
         }
+        $list = set_medias($list, "thumb");
         /*
         if(!$_W['isfounder']) {
             $stat = user_account_permission();

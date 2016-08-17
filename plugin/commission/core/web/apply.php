@@ -173,6 +173,7 @@ if ($operation == 'display') {
 	$totalcount = $total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_member') . ' m on o.openid = m.openid ' . ' left join ' . tablename('sz_yi_member_address') . ' a on a.id = o.addressid ' . ' where o.id in ( ' . implode(',', $ids) . ' );');
 	if (checksubmit('submit_check') && $apply['status'] == 1) {
 		ca('commission.apply.check');
+		dump($_GPC);exit;
 		$paycommission = 0;
 		$ogids = array();
 		foreach ($list as $row) {

@@ -1,16 +1,33 @@
 <?php
 return array(
-    'member' => array(
+    'user' => array(
         'describe' => '管理员',
         'method' => array(
             'Login' => array(
                 'describe' => '登录',
                 'para' => array(
                     'username' => 'admin',
-                    'password' => 'admin'
+                    'password' => '111111',
+                    'mobile' => '18545571024'
                 ),
                 'data' => array()
-            ))
+            ),
+            'Profile' => array(
+                'describe' => '修改密码',
+                'para' => array(
+                    'uid' => '1',
+                    'uniacid' => '2',
+                    'old_password' => 'admin',
+                    'new_password' => 'admin',
+                    'realname'=>'沈阳',
+                    'nickname'=>'yang',
+                    'qq'=>'564345292',
+                    'mobile'=>'18545571024'
+    
+                ),
+                'data' => array()
+            ),
+        )
     ),
     'account' => array(
         'describe' => '公众号',
@@ -31,11 +48,11 @@ return array(
                 'para' => array(
                     'uid' => '1',
                     'uniacid' => '2',
-                    'goods_id'=> '',
-                    'status'=>'1',
-                    'pcate'=>'1',
-                    'ccate'=>'2',
-                    'keyword'=>'4'
+                    'goods_id' => '',
+                    'status' => '1',
+                    'pcate' => '1',
+                    'ccate' => '2',
+                    'keyword' => '4'
                 ),
                 'data' => array()
             ),
@@ -83,7 +100,7 @@ return array(
                     'uid' => '1',
                     'uniacid' => '2',
                     'member_id' => '3',
-                    'status'=>'1'
+                    'status' => '1'
                 ),
                 'data' => array()
             ),
@@ -93,9 +110,9 @@ return array(
                     'uid' => '1',
                     'uniacid' => '2',
                     'commission_apply_id' => '3',
-                    'status'=>array(
-                        '57'=>'2',
-                        '58'=>'2',
+                    'status' => array(
+                        '57' => '2',
+                        '58' => '2',
                     )
                 ),
                 'data' => array()
@@ -140,10 +157,10 @@ return array(
                     'uid' => '1',
                     'uniacid' => '2',
                     'order_id' => '21',
-                    'changegoodsprice'=>array(
-                        '17'=>'-23'
+                    'changegoodsprice' => array(
+                        '17' => '-23'
                     ),
-                    'changedispatchprice'=>'6'
+                    'changedispatchprice' => '6'
                 ),
                 'data' => array()
             ),
