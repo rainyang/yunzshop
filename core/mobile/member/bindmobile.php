@@ -20,7 +20,7 @@ if ($_W['isajax']) {
     if ($_W['ispost']) {
         $mc = $_GPC['memberdata'];
         //更换公众号或pc到微信绑定
-        $memberall = pdo_fetchall('select id, openid, pwd, level, agentlevel, bonuslevel, createtime from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and openid!=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':mobile' => $mc['mobile']));
+        $memberall = pdo_fetchall('select id, openid, pwd, level, agentlevel, bonuslevel, createtime, bindapp from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and openid!=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':mobile' => $mc['mobile']));
 
         if (!empty($memberall)) {
             foreach ($memberall as $key => $info) {
@@ -48,7 +48,7 @@ if ($_W['isajax']) {
                 }
 
                 //更新微信记录里的手机号等为pc的手机号
-                $member = pdo_fetch('select id, mobile, pwd, credit1, credit2, level, agentlevel, bonuslevel, createtime from ' . tablename('sz_yi_member') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+                $member = pdo_fetch('select id, mobile, pwd, credit1, credit2, level, agentlevel, bonuslevel, createtime, bindapp from ' . tablename('sz_yi_member') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
                 $data = array('isbindmobile' => 1);
                 if ($member['mobile'] != $mc['mobile'] || !empty($mc['mobile'])) {
                     $data['mobile'] = $mc['mobile'];
@@ -117,6 +117,10 @@ if ($_W['isajax']) {
                 }else{
                     //修改老用户的agentid改为新用户id
                     pdo_update('sz_yi_member', array('agentid' => $member['id']), array('agentid' => $info['id'], 'uniacid' => $_W['uniacid']));
+                }
+
+                if ($info['bindapp'] == 1 || $member['bindapp'] == 1) {
+                    $data['bindapp'] = 1;
                 }
 
                 pdo_update('sz_yi_member', $data, array('openid' => $openid, 'uniacid' => $_W['uniacid']));

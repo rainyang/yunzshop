@@ -6,7 +6,7 @@ if($_W['isajax']) {
 	$channelinfo = $this->model->getInfo($openid);
 	$pindex = max(1, intval($_GPC['page']));
 	$psize = 20;
-	$sql = "SELECT o.id,o.ordersn,o.price,o.openid,o.address,o.createtime FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id " . " WHERE 1 AND o.uniacid=".$_W['uniacid']." AND o.openid in ({$channelinfo['channel']['lower_openids']}) AND og.ischannelpay=1 AND o.status>=3 ORDER BY o.createtime DESC ";
+	$sql = "SELECT o.id,o.ordersn,o.price,o.openid,o.address,o.createtime FROM " . tablename('sz_yi_order') . " o " . " RIGHT JOIN  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid AND og.ischannelpay=1 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id " . " WHERE 1 AND o.uniacid=".$_W['uniacid']." AND o.openid in ({$channelinfo['channel']['lower_openids']}) AND o.status>=3 group by o.id ORDER BY o.createtime DESC ";
 	$sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
 	$list = pdo_fetchall($sql);
 	foreach ($list as $key => &$rowp) {
