@@ -140,16 +140,22 @@ function send_sms($account, $pwd, $mobile, $code, $type = 'check')
 {
     if ($type == 'check') {
         $content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
-        //$smsrs = file_get_contents('http://115.29.33.155/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
-        $smsrs = file_get_contents('http://106.ihuyi.cn/webservice/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));   
+           
     } elseif ($type == 'verify') {
-        $content = "您的核销码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
-        //$smsrs = file_get_contents('http://115.29.33.155/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
-        $smsrs = file_get_contents('http://106.ihuyi.cn/webservice/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
+        $verify_set = m('common')->getSetData();
+        $allset = iunserializer($verify_set['plugins']);
+        if (is_array($allset) && !empty($allset['verify']['code_template'])) {
+            $content = sprintf($allset['verify']['code_template'], $code);
+        } else {
+            $content = "您的核销码是：".$code."。请把此信息中的核销码出示给核销员进行核销操作！";
+
+        }
+        
     }
     
-
-   return xml_to_array($smsrs);
+    //$smsrs = file_get_contents('http://115.29.33.155/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
+    $smsrs = file_get_contents('http://106.ihuyi.cn/webservice/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
+    return xml_to_array($smsrs);
 }
 
 function send_sms_alidayu($mobile, $code, $templateType){
