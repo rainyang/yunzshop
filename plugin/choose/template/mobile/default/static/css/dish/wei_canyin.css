@@ -724,12 +724,16 @@ figure[hidden] {
 }
 
 #page_allMenu nav {
-	overflow-y: auto;
-	margin: 0;
-	width: 22%;
-	float: left;
-	background-color: #e4e4e6;
-	-webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+    margin: 0;
+    width: 22%;
+    float: left;
+    background-color: #DADADA;
+    -webkit-overflow-scrolling: touch;
+    /* height: 100px; */
+    position: fixed;
+    top: 71px;
+    bottom: 99px;
 }
 
 #page_allMenu nav dl {
@@ -761,19 +765,21 @@ figure[hidden] {
 
 
 #page_allMenu section {
-	overflow-y: auto;
-	margin: 0;
-	width: 78%;
-	float: left;
-	background-color: #fff;
-	-webkit-overflow-scrolling: touch;
+    background-color: #fff;
+    padding: 0 5px 10px;
+    position: fixed;
+    left: 22%;
+    width: 78%;
+    box-sizing: border-box;
+    top: 70px;
+    bottom: 100px;
+    overflow-y: scroll;
 }
 
 #page_allMenu section article {
 	border-top: 1px solid #e7eaeb;
 	background-color: #fff;
-	padding: 0 5px 30px;
-	margin-bottom: 15px;
+	padding: 0 5px;
 }
 
 #page_allMenu section article .h2 {
@@ -897,6 +903,7 @@ figure[hidden] {
 	font-size: 14px;
 	margin-bottom: 10px;
 	margin-top: 8px;
+	height:18px
 }
 
 #page_allMenu .footFix {
