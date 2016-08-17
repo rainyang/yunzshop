@@ -133,7 +133,7 @@ if ($_W['isajax']) {
             //todo, what? check var. cart store in db.
             $cartids   = $_GPC['cartids'];
             if (!empty($cartids)) {
-                $condition = ' AND c.id in (' . $cartids . ')';
+                $condition = ' and c.id in (' . $cartids . ')';
             }
 
            // $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " WHERE c.openid=:openid AND  c.deleted=0 AND c.uniacid=:uniacid {$condition} order by c.id desc";
@@ -143,7 +143,8 @@ if ($_W['isajax']) {
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
             ), 'supplier_uid');
-            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
+            
+            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,g.discounts,g.discounts2,g.discounttype,g.discountway,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
 
             $goods = pdo_fetchall($sql, array(
                 ':uniacid' => $uniacid,
@@ -170,9 +171,9 @@ if ($_W['isajax']) {
             //$data             = pdo_fetch($sql, array(
 
             if(p('hotel')){
-                $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+                $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             }else{   
-                $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+                $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             }
             $data = pdo_fetch($sql, array(
 
@@ -377,32 +378,123 @@ if ($_W['isajax']) {
                 }
             }
             $gprice    = $g["marketprice"] * $g["total"];
+
             $discounts = json_decode($g["discounts"], true);
-            if (is_array($discounts)) {
-                if (!empty($level["id"])) {
-                    if (floatval($discounts["level" . $level["id"]]) > 0 && floatval($discounts["level" . $level["id"]]) < 10) {
-                        $level["discount"] = floatval($discounts["level" . $level["id"]]);
-                    } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
-                        $level["discount"] = floatval($level["discount"]);
-                    } else {
-                        $level["discount"] = 0;
+            $discountway = $g['discountway'];
+            $discounttype = $g['discounttype'];
+            if ($discountway == 1) {
+                //折扣
+                if ($g["discounttype"] == 1) {
+                    //会员等级折扣
+                    $level          = m("member")->getLevel($openid);
+                    $discounts = json_decode($g["discounts"], true);
+                    if (is_array($discounts)) {
+                        if (!empty($level["id"])) {
+                            if (floatval($discounts["level" . $level["id"]]) > 0 && floatval($discounts["level" . $level["id"]]) < 10) {
+                                $level["discount"] = floatval($discounts["level" . $level["id"]]);
+                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+                                $level["discount"] = floatval($level["discount"]);
+                            } else {
+                                $level["discount"] = 0;
+                            }
+                        } else {
+                            if (floatval($discounts["default"]) > 0 && floatval($discounts["default"]) < 10) {
+                                $level["discount"] = floatval($discounts["default"]);
+                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+                                $level["discount"] = floatval($level["discount"]);
+                            } else {
+                                $level["discount"] = 0;
+                            }
+                        }
                     }
                 } else {
-                    if (floatval($discounts["default"]) > 0 && floatval($discounts["default"]) < 10) {
-                        $level["discount"] = floatval($discounts["default"]);
-                    } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
-                        $level["discount"] = floatval($level["discount"]);
-                    } else {
-                        $level["discount"] = 0;
+                    //分销商等级折扣
+                    $level     = p("commission")->getLevel($openid);
+                    $discounts = json_decode($g['discounts2'], true);
+                    if (is_array($discounts)) {
+                        if (!empty($level["id"])) {
+                            if (floatval($discounts["level" . $level["id"]]) > 0 && floatval($discounts["level" . $level["id"]]) < 10) {
+                                $level["discount"] = floatval($discounts["level" . $level["id"]]);
+                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+                                $level["discount"] = floatval($level["discount"]);
+                            } else {
+                                $level["discount"] = 0;
+                            }
+                        } else {
+                            if (floatval($discounts["default"]) > 0 && floatval($discounts["default"]) < 10) {
+                                $level["discount"] = floatval($discounts["default"]);
+                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+                                $level["discount"] = floatval($level["discount"]);
+                            } else {
+                                $level["discount"] = 0;
+                            }
+                        }
                     }
                 }
-            }
-            if (empty($g["isnodiscount"]) && floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
-                $price = round(floatval($level["discount"]) / 10 * $gprice, 2);
-                $order_all[$g['supplier_uid']]['discountprice'] += $gprice - $price;
+                if (empty($g["isnodiscount"]) && floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+                    $price = round(floatval($level["discount"]) / 10 * $gprice, 2);
+                    $order_all[$g['supplier_uid']]['discountprice'] += $gprice - $price;
+                } else {
+                    $price = $gprice;
+                }
+
             } else {
-                $price = $gprice;
+                //立减
+                if ($g["discounttype"] == 1) {
+                    //会员等级立减
+                    $level          = m("member")->getLevel($openid);
+                    $discounts = json_decode($g["discounts"], true);
+                    if (is_array($discounts)) {
+                        if (!empty($level["id"])) {
+                            if (floatval($discounts["level" . $level["id"]]) < $g['marketprice'] ) {
+                                $level["discount"] = floatval($discounts["level" . $level["id"]]);
+                            } else if (floatval($level["discount"]) < $g['marketprice']) {
+                                $level["discount"] = floatval($level["discount"]);
+                            } else {
+                                $level["discount"] = 0;
+                            }
+                        } else {
+                            if (floatval($discounts["default"]) < $g['marketprice']) {
+                                $level["discount"] = floatval($discounts["default"]);
+                            } else if (floatval($level["discount"]) < $g['marketprice']) {
+                                $level["discount"] = floatval($level["discount"]);
+                            } else {
+                                $level["discount"] = 0;
+                            }
+                        }
+                    }
+                } else {
+                    //分销商等级立减
+                    $level     = p("commission")->getLevel($openid);
+                    $discounts = json_decode($g['discounts2'], true);
+                    if (is_array($discounts)) {
+                        if (!empty($level["id"])) {
+                            if (floatval($discounts["level" . $level["id"]]) < $g['marketprice']) {
+                                $level["discount"] = floatval($discounts["level" . $level["id"]]);
+                            } else if (floatval($level["discount"]) < $g['marketprice']) {
+                                $level["discount"] = floatval($level["discount"]);
+                            } else {
+                                $level["discount"] = 0;
+                            }
+                        } else {
+                            if (floatval($discounts["default"]) < $g['marketprice']) {
+                                $level["discount"] = floatval($discounts["default"]);
+                            } else if (floatval($level["discount"]) < $g['marketprice']) {
+                                $level["discount"] = floatval($level["discount"]);
+                            } else {
+                                $level["discount"] = 0;
+                            }
+                        }
+                    }
+                }
+            if (empty($g["isnodiscount"]) && floatval($level["discount"]) < $g['marketprice']) {
+                    $price = round(floatval($gprice - $level["discount"] * $g["total"]), 2);
+                    $order_all[$g['supplier_uid']]['discountprice'] += $gprice - $price;
+                } else {
+                    $price = $gprice;
+                }
             }
+            $g["discount"] = $level["discount"];
             $g["ggprice"] = $price;
             $order_all[$g['supplier_uid']]['realprice'] += $price;
             $order_all[$g['supplier_uid']]['goodsprice'] += $gprice;
@@ -854,6 +946,12 @@ if ($_W['isajax']) {
             $saleset = $sale_plugin->getSet();
             $saleset["enoughs"] = $sale_plugin->getEnoughs();
         }
+
+        //总价-优惠
+        if (empty($g["isnodiscount"]) && floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+            $totalprice = round(floatval($level["discount"]) / 10 * $totalprice, 2);
+        }
+        
         if ($sale_plugin && $supplier_uid==0) {
             if ($saleset) {
                 foreach ($saleset["enoughs"] as $e) {
@@ -1237,7 +1335,7 @@ if ($_W['isajax']) {
                 if (empty($goodsid)) {
                     show_json(0, '参数错误，请刷新重试');
                 }
-                $sql  = 'SELECT id as goodsid,costprice,supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
+                $sql  = 'SELECT id as goodsid,costprice,supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,discounts2,discountway,discounttype,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
                 $data = pdo_fetch($sql, array(
 
                     ':uniacid' => $uniacid,
@@ -1292,7 +1390,6 @@ if ($_W['isajax']) {
                         show_json(-1, '您所在会员组无法购买<br/>' . $data['title'] . '!');
                     }
                 }
-
                 if (!empty($optionid)) {
                     $option = pdo_fetch('select * from ' . tablename('sz_yi_goods_option') . ' where id=:id and goodsid=:goodsid and uniacid=:uniacid  limit 1', array(
                         ':uniacid' => $uniacid,
@@ -1331,6 +1428,10 @@ if ($_W['isajax']) {
                         }
                     }
                 } else {
+                    if (p('channel') && !empty($ischannelpick)) {
+                        $channel_stock = p('channel')->getMyOptionStock($openid, $data['goodsid'], 0);
+                        $data['stock'] = $channel_stock;
+                    }
                     if ($data['stock'] != -1) {
                         if (empty($data['stock'])) {
                             show_json(-1, $data['title'] . "<br/>库存不足!");
@@ -1393,40 +1494,126 @@ if ($_W['isajax']) {
                 }
                 $gprice = $data['marketprice'] * $goodstotal;
                 $goodsprice += $gprice;
-                $discounts = json_decode($data['discounts'], true);
-                if (is_array($discounts)) {
-                    if (!empty($level["id"])) {
-                        if (floatval($discounts["level" . $level["id"]]) > 0 && floatval($discounts["level" . $level["id"]]) < 10) {
-                            $level["discount"] = floatval($discounts["level" . $level["id"]]);
-                        } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
-                            $level["discount"] = floatval($level["discount"]);
-                        } else {
-                            $level["discount"] = 0;
-                        }
-                    } else {
-                        if (floatval($discounts["default"]) > 0 && floatval($discounts["default"]) < 10) {
-                            $level["discount"] = floatval($discounts["default"]);
-                        } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
-                            $level["discount"] = floatval($level["discount"]);
-                        } else {
-                            $level["discount"] = 0;
-                        }
-                    }
-                }
-
                 $ggprice = 0;
                 if(p('hotel') && $_GPC['type']=='99'){
                      $gprice =$_GPC['goodsprice'];
                      $ggpric = $_GPC['goodsprice'];
                  }
+            if ($data['discountway'] == 1) {
+                //折扣
+                if ($data['discounttype'] == 1) {
+                    //会员等级折扣
+                    $discounts      = json_decode($data['discounts'], true);
+                    $level          = m('member')->getLevel($openid);
+                    if (is_array($discounts)) {
+                        if (!empty($level["id"])) {
+                            if (floatval($discounts["level" . $level["id"]]) > 0 && floatval($discounts["level" . $level["id"]]) < 10) {
+                                $level["discount"] = floatval($discounts["level" . $level["id"]]);
+                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+                                $level["discount"] = floatval($level["discount"]);
+                            } else {
+                                $level["discount"] = 0;
+                            }
+                        } else {
+                            if (floatval($discounts["default"]) > 0 && floatval($discounts["default"]) < 10) {
+                                $level["discount"] = floatval($discounts["default"]);
+                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+                                $level["discount"] = floatval($level["discount"]);
+                            } else {
+                                $level["discount"] = 0;
+                            }
+                        }
+                    }
+                } else {
+                    //分销商等级折扣
+                    $discounts      = json_decode($data['discounts2'], true);
+                    $level     = p("commission")->getLevel($openid);
+                    if (is_array($discounts)) {
+                        if (!empty($level["id"])) {
+                            if (floatval($discounts["level" . $level["id"]]) > 0 && floatval($discounts["level" . $level["id"]]) < 10) {
+                                $level["discount"] = floatval($discounts["level" . $level["id"]]);
+                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+                                $level["discount"] = floatval($level["discount"]);
+                            } else {
+                                $level["discount"] = 0;
+                            }
+                        } else {
+                            if (floatval($discounts["default"]) > 0 && floatval($discounts["default"]) < 10) {
+                                $level["discount"] = floatval($discounts["default"]);
+                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+                                $level["discount"] = floatval($level["discount"]);
+                            } else {
+                                $level["discount"] = 0;
+                            }
+                        }
+                    }
+                }
                 if (empty($data['isnodiscount']) && $level['discount'] > 0 && $level['discount'] < 10) {
                     $dprice = round($gprice * $level['discount'] / 10, 2);
                     $discountprice += $gprice - $dprice;
                     $ggprice = $dprice;
-
                 } else {
                     $ggprice = $gprice;
                 }
+            } else {
+                //立减
+               if ($data['discounttype'] == 1) {
+                    //会员等级立减
+                    $discounts      = json_decode($data['discounts'], true);
+                    $level          = m('member')->getLevel($openid);
+                    if (is_array($discounts)) {
+                        if (!empty($level["id"])) {
+                            if (floatval($discounts["level" . $level["id"]]) > 0 && floatval($discounts["level" . $level["id"]]) < 10) {
+                                $level["discount"] = floatval($discounts["level" . $level["id"]]);
+                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+                                $level["discount"] = floatval($level["discount"]);
+                            } else {
+                                $level["discount"] = 0;
+                            }
+                        } else {
+                            if (floatval($discounts["default"]) > 0 && floatval($discounts["default"]) < 10) {
+                                $level["discount"] = floatval($discounts["default"]);
+                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+                                $level["discount"] = floatval($level["discount"]);
+                            } else {
+                                $level["discount"] = 0;
+                            }
+                        }
+                    }
+                } else {
+                    //分销商等级立减
+                    $discounts      = json_decode($data['discounts2'], true);
+                    $level     = p("commission")->getLevel($openid);
+                    if (is_array($discounts)) {
+                        if (!empty($level["id"])) {
+                            if (floatval($discounts["level" . $level["id"]]) < $data['marketprice']) {
+                                $level["discount"] = floatval($discounts["level" . $level["id"]]);
+                            } else if (floatval($level["discount"]) < $data['marketprice']) {
+                                $level["discount"] = floatval($level["discount"]);
+                            } else {
+                                $level["discount"] = 0;
+                            }
+                        } else {
+                            if (floatval($discounts["default"]) < $data['marketprice']) {
+                                $level["discount"] = floatval($discounts["default"]);
+                            } else if (floatval($level["discount"]) < $data['marketprice']) {
+                                $level["discount"] = floatval($level["discount"]);
+                            } else {
+                                $level["discount"] = 0;
+                            }
+                        }
+                    }
+                }      
+                if (empty($data['isnodiscount']) && $level['discount'] < $data['marketprice']) {
+                    $dprice = round($gprice - $level['discount'] * $goodstotal, 2);
+                    $discountprice += $gprice - $dprice;
+                    $ggprice = $dprice;
+                } else {
+                    $ggprice = $gprice;
+                }
+
+            }
+
                 $data["realprice"] = $ggprice;
                 $totalprice += $ggprice;
                 if ($data['isverify'] == 2) {
@@ -1464,14 +1651,19 @@ if ($_W['isajax']) {
                 show_json(0, '未找到任何商品');
             }
             $deductenough = 0;
+            /*获取满额队列中符合条件的最大值*/
+            $tmp_money = 0;
             if ($saleset) {
                 foreach ($saleset["enoughs"] as $e) {
                     if ($totalprice >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
+                        if ($e["enough"] > $tmp_money) {
+                            $tmp_money = $e["enough"];
+                        }
                         $deductenough = floatval($e["money"]);
                         if ($deductenough > $totalprice) {
                             $deductenough = $totalprice;
                         }
-                        break;
+
                     }
                 }
             }
@@ -1940,12 +2132,10 @@ if ($_W['isajax']) {
                         $order_goods['ischannelpay']  = $ischannelpay;
                     }
                     $order_goods['channel_id'] = 0;
-                    //if (!empty($ischannelpay)) {
-                        if (!empty($my_info['up_level'])) {
-                            $up_member = m('member')->getInfo($my_info['up_level']['openid']);
-                            $order_goods['channel_id'] = $up_member['id'];
-                        }
-                    //}
+                    if (!empty($my_info['up_level'])) {
+                        $up_member = m('member')->getInfo($my_info['up_level']['openid']);
+                        $order_goods['channel_id'] = $up_member['id'];
+                    }
                 }
                 pdo_insert('sz_yi_order_goods', $order_goods);
                 if (p('channel')) {

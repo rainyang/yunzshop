@@ -32,7 +32,7 @@ if ($_W['isajax']) {
 				$row['dealtime'] = date('Y-m-d H:i', $row['checktime']);
 			} else if ($row['status'] == 3) {
 				$row['statusstr'] = '已打款';
-				$row['dealtime'] = date('Y-m-d H:i', $row['checktime']);
+				$row['dealtime'] = date('Y-m-d H:i', $row['paytime']);
 			} else if ($row['status'] == -1) {
 				$row['dealtime'] = date('Y-m-d H:i', $row['invalidtime']);
 				$row['statusstr'] = '无效';

@@ -45,6 +45,7 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_store')." (
   `creditpack` decimal(10,2) DEFAULT '0.00' COMMENT '消费者在商家支付完成后，获得的余额奖励百分比',
   `condition` decimal(10,2) DEFAULT '0.00' COMMENT '使用优惠券条件',
   `iscontact` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否填写联系人信息',
+  `isreturn` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否加入全返',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 

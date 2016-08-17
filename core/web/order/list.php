@@ -2261,7 +2261,7 @@ function order_list_refund($item)
 
         if (!empty($item['ordersn2'])) {
             $var = sprintf('%02d', $item['ordersn2']);
-            $ordersn .= 'GJ' . $var;
+            $pay_ordersn .= 'GJ' . $var;
         }
         $realprice = $refund['applyprice'];
         $goods = pdo_fetchall('SELECT g.id,g.credit, o.total,o.realprice FROM ' . tablename('sz_yi_order_goods') . ' o left join ' . tablename('sz_yi_goods') . ' g on o.goodsid=g.id ' . ' WHERE o.orderid=:orderid and o.uniacid=:uniacid', array(

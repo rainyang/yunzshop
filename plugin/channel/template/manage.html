@@ -69,7 +69,7 @@
             <tr>
                 <td>{$row['id']}</td>
                 <td  {if !empty($row['agentid'])}title='ID: {$row['agentid']}'{/if} style="text-align: center;">
-                {if empty($row['manageid'])}
+                {if empty($row['agentid'])}
                 {if $row['ismanage']==1}
                 <label class='label label-primary'>总店</label>
                 {else}

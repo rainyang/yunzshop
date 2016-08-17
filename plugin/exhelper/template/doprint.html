@@ -66,7 +66,7 @@
 							<input type="radio" name="searchtime" value="0">不搜索
 						</label>
 						<label class="radio-inline">
-							<input type="radio" name="searchtime" value="1" checked="" >搜索
+							<input type="radio" name="searchtime" value="1">搜索
 						</label>
 						</div>
 						<div style="height: 34px; float: left;">
@@ -93,9 +93,9 @@
 								});
 							</script>
 
-							<input type="hidden" value="{php echo date('Y-m-d H:m')}" name="time[start]">
+							<input type="hidden" value="{php echo date('Y-m-d H:m', strtotime('-1 month'))}" name="time[start]">
 							<input type="hidden" value="{php echo date('Y-m-d H:m')}" name="time[end]">
-							<button type="button" class="btn btn-default daterange daterange-time" data-original-title="" title=""><span class="date-title"><?php echo date('Y-m-d H:i:s',time())?> 至 <?php echo date('Y-m-d H:i:s',time())?></span> <i class="fa fa-calendar"></i></button>
+							<button type="button" class="btn btn-default daterange daterange-time" data-original-title="" title=""><span class="date-title"><?php echo date('Y-m-d H:i:s', strtotime("-1 month"))?> 至 <?php echo date('Y-m-d H:i:s',time())?></span> <i class="fa fa-calendar"></i></button>
 						</div>
 						<div style="height: 34px; width: 150px; float: left; padding-left: 5px;">
 							<button id="search-btn" onclick="search()" class="btn btn-primary" type="button" data-original-title="" title=""><i class="fa fa-search"></i> 搜索</button>
