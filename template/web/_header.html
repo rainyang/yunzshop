@@ -4,9 +4,9 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>{php if(isset($title)) $_W['page']['title'] = $title}{if !empty($_W['page']['title'])}{$_W['page']['title']} - {/if}{if empty($_W['page']['copyright']['sitename'])}{if IMS_FAMILY != 'x'}分销商城{/if}{else}{$_W['page']['copyright']['sitename']}{/if}</title>
-	<meta name="keywords" content="{if empty($_W['page']['copyright']['keywords'])}{if IMS_FAMILY != 'x'}分销商城{/if}{else}{$_W['page']['copyright']['keywords']}{/if}" />
-	<meta name="description" content="{if empty($_W['page']['copyright']['description'])}{if IMS_FAMILY != 'x'}分销商城{/if}{else}{$_W['page']['copyright']['description']}{/if}" />
+	<title>{php if(isset($title)) $_W['page']['title'] = $title}{if !empty($_W['page']['title'])}{$_W['page']['title']} - {/if}{$_W['account']['name']}</title>
+	<meta name="keywords" content="{if empty($_W['page']['copyright']['keywords'])}{if IMS_FAMILY != 'x'}{$_W['account']['name']}{/if}{else}{$_W['page']['copyright']['keywords']}{/if}" />
+	<meta name="description" content="{if empty($_W['page']['copyright']['description'])}{if IMS_FAMILY != 'x'}{$_W['account']['name']}{/if}{else}{$_W['page']['copyright']['description']}{/if}" />
 	<link rel="shortcut icon" href="{$_W['siteroot']}{$_W['config']['upload']['attachdir']}/{if !empty($_W['setting']['copyright']['icon'])}{$_W['setting']['copyright']['icon']}{else}images/global/wechat.jpg{/if}" />
 	<link href="../addons/sz_yi/static/resource/css/bootstrap.min.css" rel="stylesheet">
 	<link href="../addons/sz_yi/static/resource/css/font-awesome.min.css" rel="stylesheet">
