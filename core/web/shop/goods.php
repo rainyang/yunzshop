@@ -577,6 +577,8 @@ if ($operation == "change") {
             if ($pluginyunbi) {
                 $data['isyunbi'] = intval($_GPC['isyunbi']);   //返虚拟币开关    1:开    0:关
                 $data['yunbi_consumption'] = floatval($_GPC['yunbi_consumption']);  //虚拟币 返现比例 
+                $data['yunbi_deduct'] = floatval($_GPC['yunbi_deduct']);  //虚拟币最高抵扣 
+                
             }
             if (p('hotel')) {
                 $data['deposit'] = $_GPC["deposit"];//房间押金

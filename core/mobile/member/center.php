@@ -119,6 +119,11 @@ $shopset['isreturn'] = false;
 if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 || $reurnset['islevelreturn']== 1 ){
 	$shopset['isreturn'] = true;
 }
+$yunbiset = m('plugin')->getpluginSet('yunbi');
+$shopset['isyunbi'] = false;
+if($yunbiset['isyunbi'] == 1 ){
+	$shopset['isyunbi'] = true;
+}
 if (p('ranking')) {
 	$ranking_set = p('ranking')->getSet();
 

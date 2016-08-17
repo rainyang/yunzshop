@@ -59,6 +59,10 @@
 <div class="money-center">
     <ul>
         <li><a href="#"><span><%member.credit2%></span><br/>{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}</a></li>
+        {if $shopset['isyunbi']}
+            <li><a href="#"><span><%member.virtual_currency%></span><br/>{if $yunbiset['yunbi_title']}{$yunbiset['yunbi_title']}{else}云币{/if}</a></li>
+        {/if}
+
         <li><a href="#"><span><%member.credit1%></span><br/>{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}</a></li>
         <li><a href="#"><span><%counts.couponcount%></span><br/>优惠券</a></li>
 

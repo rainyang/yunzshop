@@ -25,6 +25,9 @@ class YunbiWeb extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__);
     }
-
+    public function deduct()
+    {
+        $this->_exec_plugin(__FUNCTION__);
+    }
   
 }

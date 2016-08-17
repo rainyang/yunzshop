@@ -2,6 +2,8 @@
 <ul class="nav nav-tabs"> 
     {ifp 'yunbi.set'}<li {if $_GPC['method']=='set'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/set')}">云币设置</a></li>{/if}
 
+    {ifp 'yunbi.set'}<li {if $_GPC['method']=='deduct'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/deduct')}">抵扣设置</a></li>{/if}
+
 
 
 
