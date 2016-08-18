@@ -48,7 +48,7 @@ if($operation == "display"){
 	$pager = pagination($total, $pindex, $psize);
 }else if($operation == "afresh"){
 	ca('bonus.detail.afresh');
-	$logs = pdo_fetchall("select * from " . tablename('sz_yi_bonus_log') . " where uniacid=:uniacid and send_bonus_sn =:sn and isglobal=:isglobal", $params);
+	$logs = pdo_fetchall("select * from " . tablename('sz_yi_bonus_log') . " where uniacid=:uniacid and send_bonus_sn =:sn and isglobal=:isglobal and sendpay=0", $params);
 	$sendpay_error = 0;
 	foreach ($logs as $key => $value) {
 		$sendpay = 1;
@@ -66,10 +66,19 @@ if($operation == "display"){
 	        ));
         
         if($sendpay == 1){
-        	m('member')->setCredit($value['openid'], 'credit1', $value['integral'], array(0, '代理商重新发放分红，并发放：' . $value['integral'] . " 积分"));
-        	$this->model->send_bonus_message($value['openid'], $value['money'], $value['return_money'], $value['integral'], $this->createMobileUrl('member'));
+        	$member = m('member')->getInfo($value['openid']);
+        	$level = $this->model->getlevel($member['openid']);
+        	if(empty($level)){
+				if($member['bonus_area'] == 1){
+					$level['levelname'] = "省级代理";
+				}else if($member['bonus_area'] == 2){
+					$level['levelname'] = "市级代理";
+				}else if($member['bonus_area'] == 3){
+					$level['levelname'] = "区级代理";
+				}
+			}
+        	$this->model->sendMessage($value['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $value['money'], 'type' => "微信钱包", TM_BONUS_PAY);
         }
-
 	}
 	pdo_update('sz_yi_bonus', array(
             "sendpay_error" => $sendpay_error,
