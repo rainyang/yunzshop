@@ -108,19 +108,6 @@ class Sz_DYi_Message
             $content = $msg;
         }
 
-        /**
-         * app消息通知
-         */
-
-        $setdata = m("cache")->get("sysset");
-        $set     = unserialize($setdata['sets']);
-
-        $app = $set['app']['base'];
-
-        if (!empty($app['leancloud']['switch'])) {
-            $this->appSendContent($openid, $msg, $content);
-        }
-
         if (!empty($url)) {
             $content .= "<a href='{$url}'>点击查看详情</a>";
         }
@@ -132,6 +119,45 @@ class Sz_DYi_Message
             )
         ));
 
+    }
+
+    public function sendCustomAppNotice($openid, $msg, $url = '', $account = null)
+    {
+        /**
+         * app消息通知
+         */
+
+        $setdata = m("cache")->get("sysset");
+        $set     = unserialize($setdata['sets']);
+
+        $app = $set['app']['base'];
+
+        if (!empty($app['switch']) && !empty($app['leancloud']['switch'])) {
+            if (!$account) {
+                $account = m('common')->getAccount();
+            }
+            if (!$account) {
+                return;
+            }
+            $content = "";
+            if (is_array($msg)) {
+                foreach ($msg as $key => $value) {
+                    if (!empty($value['title'])) {
+                        $content .= $value['title'] . ":" . $value['value'] . "\n";
+                    } else {
+                        $content .= $value['value'] . "\n";
+                        if ($key == 0) {
+                            $content .= "\n";
+                        }
+                    }
+                }
+            } else {
+                $content = $msg;
+            }
+
+
+            $this->appSendContent($openid, $msg, $content);
+        }
     }
     public function sendImage($openid, $mediaid)
     {
