@@ -77,7 +77,7 @@ if($operation == "display"){
 					$level['levelname'] = "区级代理";
 				}
 			}
-        	$this->model->sendMessage($value['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $value['money'], 'type' => "微信钱包", TM_BONUS_PAY);
+        	$this->model->sendMessage($value['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $value['money'], 'type' => "微信钱包"), TM_BONUS_PAY);
         }
 	}
 	pdo_update('sz_yi_bonus', array(
