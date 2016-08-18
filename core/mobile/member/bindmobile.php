@@ -19,6 +19,12 @@ if (is_weixin()) {
 if ($_W['isajax']) {
     if ($_W['ispost']) {
         $mc = $_GPC['memberdata'];
+        //查询其它已绑定该手机的微信号
+        $isbindmobile = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and uniacid=:uniacid and isbindmobile=1', array(':uniacid' => $_W['uniacid'], ':mobile' => $mc['mobile']));
+        if(!empty($isbindmobile)){
+            show_json(0, array());
+        }
+        
         //更换公众号或pc到微信绑定
         $memberall = pdo_fetchall('select id, openid, pwd, level, agentlevel, bonuslevel, createtime, bindapp from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and openid!=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':mobile' => $mc['mobile']));
 
