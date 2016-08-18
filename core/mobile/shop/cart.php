@@ -38,15 +38,15 @@ if ($_W['isajax']) {
                 $r['stock'] = $r['optionstock'];
             }
             if (p('channel')) {
-                if (empty($r['isopenchannel'])) {
-                    $verify_goods_ischannelpick .= 1;
-                }
                 $member = m('member')->getInfo($openid);
                 if (!empty($member['ischannel']) && !empty($member['channel_level'])) {
                     $r['marketprice'] = $r['marketprice'] * $my_info['my_level']['purchase_discount']/100;
                 }
                 //自提库存替换
                 if ($ischannelpick == 1) {
+                    if (empty($r['isopenchannel'])) {
+                        $verify_goods_ischannelpick .= 1;
+                    }
                     $my_stock = p('channel')->getMyOptionStock($openid, $r['goodsid'], $r['optionid']);
                     $r['stock'] = $my_stock;
                 }
