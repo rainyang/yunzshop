@@ -48,7 +48,7 @@ if ($operation == 'display') {
 
 } elseif ( $_W['isajax'] && $operation == 'log') {
    $pindex = max(1, intval($_GPC['page']));
-    $psize = 5;
+    $psize = 10;
     $total = pdo_fetchcolumn("select count(yl.id) from" . tablename('sz_yi_yunbi_log') . " yl
         left join " . tablename('sz_yi_member') . " m on( yl.openid=m.openid ) 
         where yl.uniacid = :uniacid and yl.returntype = :type and yl.money > 0 and m.id = :mid ", array(

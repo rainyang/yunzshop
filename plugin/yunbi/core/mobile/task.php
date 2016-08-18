@@ -49,6 +49,7 @@ if (!file_exists($file)) {
                         $set['remove_d'] = date('d');
                         $this->updateSet($set);
                         $isexecute = true;
+                        break;
                     }
                 }
             }

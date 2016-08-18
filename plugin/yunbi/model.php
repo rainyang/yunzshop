@@ -141,8 +141,6 @@ if (!class_exists('YunbiModel')) {
 				array(':updatetime' => $current_time,':uniacid' => $uniacid
 			));	
 			foreach ($update_member as $key => $value) {
-
-
 				$data_log = array(
 	                'id' 			=> $value['id'],
 	                'openid' 		=> $value['openid'],
@@ -162,8 +160,11 @@ if (!class_exists('YunbiModel')) {
 				m('message')->sendCustomNotice($value['openid'], $messages);
 			}
 		}
-
-				
+		/*
+		 * 添加 虚拟币log
+		 * type 1:购物获得 2:分销下线获得 3:购物抵扣 4:返还抵扣 5:返现到余额 6:清除明细
+		 * data log数组
+		 */	
 		public function addYunbiLog ($uniacid,$data=array(),$type){
 			$data_log = array(
 				'uniacid' 		=> $uniacid,
@@ -178,7 +179,7 @@ if (!class_exists('YunbiModel')) {
 			);
 			pdo_insert('sz_yi_yunbi_log', $data_log);
 		}
-
+		
 		public function MoneySumTotal($conditions='',$mid='') {
 			global $_W, $_GPC;
 			if (!empty($mid)) {
@@ -186,12 +187,8 @@ if (!class_exists('YunbiModel')) {
 			        ':uniacid' => $_W['uniacid'],
 			        ':mid' => $mid
 			    ));
-			} else {
-			    $total = pdo_fetchcolumn("select sum(money) as money from" . tablename('sz_yi_yunbi_log') . " where uniacid = :uniacid ".$conditions." and money > 0 ", array(
-			        ':uniacid' => $_W['uniacid']
-			    ));
-			}
-		    return $total;
+			} 
+		    return !empty($total)?$total:'0';
 		}
 	}
 }
