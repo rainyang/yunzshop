@@ -143,10 +143,10 @@
                     <td>
                                             {ifp 'coupon.log.view'}
                                             <a href="{php echo $this->createPluginWebUrl('coupon/log',array('coupon'=>$row['id']))}">
-                                                 {$row['usetotal']} / {$row['gettotal']} / {if $row['total']==-1}无限数量{else}{php echo $row['total']}{/if}
+                                                 {$row['usetotal']} / {$row['gettotal']} / {if $row['total']==-1}无限数量{else}{php echo $row['lasttotal']}{/if}
                                             </a>
                                             {else}
-                                             {$row['usetotal']} / {$row['gettotal']} / {if $row['total']==-1}无限数量{else}{php echo $row['total']}{/if}
+                                             {$row['usetotal']} / {$row['gettotal']} / {if $row['total']==-1}无限数量{else}{php echo $row['lasttotal']}{/if}
                                             {/if}
                                       
                      <td>{if $row['gettype']==0}

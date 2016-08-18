@@ -597,7 +597,9 @@
         <select class="form-control tpl-category-parent" id="dispatchid" name="dispatchid">
             <option value="0">默认模板</option>
             {loop $dispatch_data $dispatch_item}
-            {php $dispath_name = $dispatch_item['supplier_uid']==0 ? " (总店)" : " (供应商)";}
+
+            {php $dispath_name = $dispatch_item['supplier_uid']==0 ? "(总店)" : "(供应商)";}
+
             <option value="{$dispatch_item['id']}" {if $item['dispatchid'] == $dispatch_item['id']}selected="true"{/if}>{$dispatch_item['dispatchname']}{php echo $data['supplier_uid']==0 ? $dispath_name : ""}</option>
             {/loop}
         </select>
