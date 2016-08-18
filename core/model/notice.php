@@ -85,6 +85,7 @@ class Sz_DYi_Notice
                     m("message")->sendTplNotice($openid, $tm["refund"], $msg, $detailurl);
                 } else if (empty($usernotice["refund"])) {
                     m("message")->sendCustomNotice($openid, $msg, $detailurl);
+                    m('message')->sendCustomAppNotice($openid, $msg, $detailurl);
                 }
             } else if ($refund["status"] == 3) {
                 $_var_17 = iunserializer($refund["refundaddress"]);
@@ -94,6 +95,7 @@ class Sz_DYi_Notice
                     m("message")->sendTplNotice($openid, $tm["refund"], $msg, $detailurl);
                 } else if (empty($usernotice["refund"])) {
                     m("message")->sendCustomNotice($openid, $msg, $detailurl);
+                    m('message')->sendCustomAppNotice($openid, $msg, $detailurl);
                 }
             } else if ($refund["status"] == 5) {
                 if (!empty($order["address"])) {
@@ -113,6 +115,7 @@ class Sz_DYi_Notice
                     m("message")->sendTplNotice($openid, $tm["send"], $msg, $detailurl);
                 } else if (empty($usernotice["send"])) {
                     m("message")->sendCustomNotice($openid, $msg, $detailurl);
+                    m('message')->sendCustomAppNotice($openid, $msg, $detailurl);
                 }
                 } else if ($refund['status'] == 1) {
             if ($refund["rtype"] == 2) {
@@ -156,6 +159,7 @@ class Sz_DYi_Notice
                         m('message')->sendTplNotice($openid, $tm['refund1'], $msg, $detailurl);
                     } else if (empty($usernotice['refund1'])) {
                         m('message')->sendCustomNotice($openid, $msg, $detailurl);
+                        m('message')->sendCustomAppNotice($openid, $msg, $detailurl);
                     }
                 } elseif ($refund['status'] == -1) {
                     $remark = "\n驳回原因: " . $refund['reply'];
@@ -191,6 +195,7 @@ class Sz_DYi_Notice
                         m('message')->sendTplNotice($openid, $tm['refund2'], $msg, $detailurl);
                     } else if (empty($usernotice['refund2'])) {
                         m('message')->sendCustomNotice($openid, $msg, $detailurl);
+                        m('message')->sendCustomAppNotice($openid, $msg, $detailurl);
                     }
                 }
                 return;
@@ -290,6 +295,7 @@ class Sz_DYi_Notice
                 m('message')->sendTplNotice($openid, $tm['cancel'], $msg, $detailurl);
             } else if (empty($usernotice['cancel'])) {
                 m('message')->sendCustomNotice($openid, $msg, $detailurl);
+                m('message')->sendCustomAppNotice($openid, $msg, $detailurl);
             }
         } else if ($order['status'] == 0) {
             $newtype = explode(',', $tm['newtype']);
@@ -334,6 +340,7 @@ class Sz_DYi_Notice
                             m('message')->sendTplNotice($tmopenid, $tm['new'], $msg, '', $account);
                         } else {
                             m('message')->sendCustomNotice($tmopenid, $msg, '', $account);
+                            m('message')->sendCustomAppNotice($openid, $msg, $detailurl);
                         }
                     }
                 }
@@ -386,6 +393,7 @@ class Sz_DYi_Notice
                                 m('message')->sendTplNotice($og['noticeopenid'], $tm['new'], $msg, '', $account);
                             } else {
                                 m('message')->sendCustomNotice($og['noticeopenid'], $msg, '', $account);
+                                m('message')->sendCustomAppNotice($openid, $msg, $detailurl);
                             }
                         }
                     }
@@ -423,11 +431,13 @@ class Sz_DYi_Notice
                 );
 
                 m('message')->sendCustomNotice($store_openid, $msg, '', $account);
+                m('message')->sendCustomAppNotice($store_openid, $msg);
                 
                 foreach ($store_waiter as  $value) {
                     $waiter_openid = pdo_fetchcolumn(" select openid from ".tablename('sz_yi_member')." where id = ".$value['member_id']);
                     
                     m('message')->sendCustomNotice($waiter_openid, $msg, '', $account);
+                    m('message')->sendCustomAppNotice($waiter_openid, $msg);
                       
                 }
             }
@@ -475,6 +485,7 @@ class Sz_DYi_Notice
                     )
                 ); 
                 m('message')->sendCustomNotice($openid, $msg, $detailurl);
+                m('message')->sendCustomAppNotice($openid, $msg);
             }else{
                 $msg = array(
                     'first' => array(
@@ -563,6 +574,7 @@ class Sz_DYi_Notice
                     m('message')->sendTplNotice($openid, $tm['submit'], $msg, $detailurl);
                 } else if (empty($usernotice['submit'])) {
                     m('message')->sendCustomNotice($openid, $msg, $detailurl);
+                    m('message')->sendCustomAppNotice($openid, $msg);
                 }
             }
             
@@ -610,6 +622,7 @@ class Sz_DYi_Notice
                             m('message')->sendTplNotice($tmopenid, $tm['new'], $msg, '', $account);
                         } else {
                             m('message')->sendCustomNotice($tmopenid, $msg, '', $account);
+                            m('message')->sendCustomAppNotice($tmopenid, $msg);
                         }
                     }
                 }
@@ -661,10 +674,12 @@ class Sz_DYi_Notice
                 );
             
                 m('message')->sendCustomNotice($store_openid, $msg, '', $account);
+                m('message')->sendCustomAppNotice($store_openid, $msg);
                 foreach ($store_waiter as  $value) {
                     $waiter_openid = pdo_fetchcolumn(" select openid from ".tablename('sz_yi_member')." where id = ".$value['member_id']);
                     
                     m('message')->sendCustomNotice($waiter_openid, $msg, '', $account);
+                    m('message')->sendCustomAppNotice($waiter_openid, $msg);
                       
                 }
             }else{
@@ -705,6 +720,7 @@ class Sz_DYi_Notice
                             m('message')->sendTplNotice($og['noticeopenid'], $tm['new'], $msg, '', $account);
                         } else {
                             m('message')->sendCustomNotice($og['noticeopenid'], $msg, '', $account);
+                            m('message')->sendCustomAppNotice($og['noticeopenid'], $msg);
                         }
                     }
                 }
@@ -798,6 +814,7 @@ class Sz_DYi_Notice
                 m('message')->sendTplNotice($openid, $tm['pay'], $msg, $pay_detailurl);
             } else if (empty($usernotice['pay'])) {
                 m('message')->sendCustomNotice($openid, $msg, $pay_detailurl);
+                m('message')->sendCustomAppNotice($openid, $msg);
             }
             if ($order['dispatchtype'] == 1 && empty($order['isverify'])) {
                 $carrier = iunserializer($order['carrier']);
@@ -838,6 +855,7 @@ class Sz_DYi_Notice
                     m('message')->sendTplNotice($openid, $tm['carrier'], $msg, $detailurl);
                 } else if (empty($usernotice['carrier'])) {
                     m('message')->sendCustomNotice($openid, $msg, $detailurl);
+                    m('message')->sendCustomAppNotice($openid, $msg);
                 }
             }
         } elseif ($order['status'] == 2) {
@@ -883,6 +901,7 @@ class Sz_DYi_Notice
                     m('message')->sendTplNotice($openid, $tm['send'], $msg, $detailurl);
                 } else if (empty($usernotice['send'])) {
                     m('message')->sendCustomNotice($openid, $msg, $detailurl);
+                    m('message')->sendCustomAppNotice($openid, $msg);
                 }
             }
             if(p('hotel') && $order['order_type']=='3'){
@@ -964,6 +983,7 @@ class Sz_DYi_Notice
                     m('message')->sendTplNotice($openid, $pvset['tm']['send'], $msg, $detailurl);
                 } else if (empty($usernotice['finish'])) {
                     m('message')->sendCustomNotice($openid, $msg, $detailurl);
+                    m('message')->sendCustomAppNotice($openid, $msg);
                 }
                 $first   = "买家购买的商品已经自动发货!";
                 $remark  = "\r\n发货信息:" . $virtual_str;
@@ -1016,6 +1036,7 @@ class Sz_DYi_Notice
                                 m('message')->sendTplNotice($tmopenid, $tm['finish'], $msg, '', $account);
                             } else {
                                 m('message')->sendCustomNotice($tmopenid, $msg, '', $account);
+                                m('message')->sendCustomAppNotice($openid, $msg);
                             }
                         }
                     }
@@ -1068,6 +1089,7 @@ class Sz_DYi_Notice
                             m('message')->sendTplNotice($og['noticeopenid'], $tm['finish'], $msg, '', $account);
                         } else {
                             m('message')->sendCustomNotice($og['noticeopenid'], $msg, '', $account);
+                            m('message')->sendCustomAppNotice($og['noticeopenid'], $msg);
                         }
                     }
                 }
@@ -1145,11 +1167,13 @@ class Sz_DYi_Notice
                     );
                     m('message')->sendCustomNotice($openid, $msg, $detailurl);
                     m('message')->sendCustomNotice($store_openid, $msg1, '', $account);
+                    m('message')->sendCustomAppNotice($openid, $msg);
                     
                     foreach ($store_waiter as  $value) {
                         $waiter_openid = pdo_fetchcolumn(" select openid from ".tablename('sz_yi_member')." where id = ".$value['member_id']);
                         
                         m('message')->sendCustomNotice($waiter_openid, $msg1, '', $account);
+                        m('message')->sendCustomAppNotice($waiter_openid, $msg);
                           
                     }
                 }else{
@@ -1237,6 +1261,7 @@ class Sz_DYi_Notice
                         m('message')->sendTplNotice($openid, $tm['finish'], $msg, $detailurl);
                     } else if (empty($usernotice['finish'])) {
                         m('message')->sendCustomNotice($openid, $msg, $detailurl);
+                        m('message')->sendCustomAppNotice($openid, $msg);
                     }
                 }
                 
@@ -1298,6 +1323,7 @@ class Sz_DYi_Notice
                                 m('message')->sendTplNotice($tmopenid, $tm['finish'], $msg, '', $account);
                             } else {
                                 m('message')->sendCustomNotice($tmopenid, $msg, '', $account);
+                                m('message')->sendCustomAppNotice($tmopenid, $msg);
                             }
                         }
                     }
@@ -1350,6 +1376,7 @@ class Sz_DYi_Notice
                             m('message')->sendTplNotice($og['noticeopenid'], $tm['finish'], $msg, '', $account);
                         } else {
                             m('message')->sendCustomNotice($og['noticeopenid'], $msg, '', $account);
+                            m('message')->sendCustomAppNotice($og['noticeopenid'], $msg);
                         }
                     }
                 }
@@ -1402,6 +1429,7 @@ class Sz_DYi_Notice
             m('message')->sendTplNotice($openid, $tm['upgrade'], $msg, $detailurl);
         } else if (empty($usernotice['upgrade'])) {
             m('message')->sendCustomNotice($openid, $msg, $detailurl);
+            m('message')->sendCustomAppNotice($openid, $msg);
         }
     }
     public function sendMemberLogMessage($log_id = '')
