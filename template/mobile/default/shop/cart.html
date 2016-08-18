@@ -262,6 +262,10 @@ body {margin:0px; background:#f8f8f8;width:100%;}
            $('.paysub').click(function(){
               var total =  calcprice();
               var ischannelpay = json.result.ischannelpay;
+              if (json.result.verify_goods_ischannelpick) {
+                  core.tip.show("请移除非自提商品");
+                  return;
+              }
               if(total<=0){
                   return;
               }
@@ -540,6 +544,7 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                                     else{
                                         core.tip.show('移动失败');
                                     }
+                                    location.href=core.getUrl('shop/cart');
                                },true,true);
                            });
                         })
@@ -574,6 +579,7 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                                     else{
                                         core.tip.show('删除失败');
                                     }
+                                    location.href=core.getUrl('shop/cart');
                                },true,true);
                                
                            });
