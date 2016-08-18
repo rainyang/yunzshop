@@ -931,17 +931,18 @@ pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returns` TEXT DEFAUL
 }
 
 //添加全返记录表 2016-06-14
-pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_return_log')." (
+pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_return_log'). " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `uniacid` int(11) NOT NULL,
-  `mid` int(11) NOT NULL,
-  `openid` varchar(255) NOT NULL,
-  `money` decimal(10,2) NOT NULL,
-  `status` tinyint(2) NOT NULL DEFAULT '0',
-  `returntype` tinyint(2) NOT NULL DEFAULT '0',
-  `create_time` int(11) NOT NULL, 
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+  `uniacid` int(11) DEFAULT '0',
+  `mid` int(11) DEFAULT '0',
+  `openid` varchar(255) DEFAULT '',
+  `money` decimal(10,2) DEFAULT '0.00',
+  `status` tinyint(2) DEFAULT '0',
+  `returntype` tinyint(2) DEFAULT '0',
+  `create_time` int(11) DEFAULT '0', 
+  PRIMARY KEY (`id`),
+  KEY `idx_uniacid` (`uniacid`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;");
 
 if (!pdo_fieldexists('sz_yi_coupon', 'supplier_uid')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_coupon')." ADD `supplier_uid` INT(11) DEFAULT '0';");
@@ -1503,19 +1504,19 @@ if(!pdo_fieldexists('sz_yi_category', 'supplier_uid')) {
 
 //分销商折扣  2016-7-29 杨雷
 if(!pdo_fieldexists('sz_yi_goods', 'discounttype')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `discounttype` TINYINT NOT NULL;");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `discounttype` TINYINT DEFAULT '0';");
 }
 if(!pdo_fieldexists('sz_yi_goods', 'discounts2')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `discounts2` TEXT NOT NULL;");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `discounts2` TEXT  DEFAULT '';");
 }
 if(!pdo_fieldexists('sz_yi_goods', 'returns2')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returns2` TEXT NOT NULL;");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returns2` TEXT DEFAULT '';");
 }
 if(!pdo_fieldexists('sz_yi_goods', 'returntype')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returntype` TINYINT NOT NULL;");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `returntype` TINYINT DEFAULT '0';");
 }
 if(!pdo_fieldexists('sz_yi_goods', 'discountway')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `discountway` TINYINT NOT NULL;");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `discountway` TINYINT DEFAULT '0';");
 }
 
 pdo_fetchall("UPDATE ".tablename('sz_yi_goods')." SET  `discounttype` =1,`returntype` =1,`discountway` =1 WHERE discounttype = 0 AND returntype = 0 AND discountway = 0;");
@@ -1571,6 +1572,7 @@ $plugins_desc = array(
   "verify" => "线上下单门店提货，配送核销",
   "qiniu" => "高效的附件存储方案",
   "taobao" => "一键批量导入淘宝商品",
+  "choose" => "快速购买多件商品",
   "tmessage" => "微信无限制模板消息群发",
   "coupon" => "设置多种使用范围的优惠券",
   "diyform" => "高效灵活收集信息",
@@ -1596,6 +1598,12 @@ $sql = "select * from ".tablename('sz_yi_plugin');
 $plugin_list = pdo_fetchall($sql);
 foreach ($plugin_list as $pl) {
   if ($pl['identity'] == "cashier" && $pl['category'] == 0) {
+    $data = array('category' => 'biz');
+    pdo_update('sz_yi_plugin', $data, array(
+      'identity' => $pl['identity']
+    ));
+  }
+    if ($pl['identity'] == "choose" && $pl['category'] == 0) {
     $data = array('category' => 'biz');
     pdo_update('sz_yi_plugin', $data, array(
       'identity' => $pl['identity']
@@ -1632,6 +1640,11 @@ if(!pdo_fieldexists('sz_yi_article', 'love_money')) {
 
 if(!pdo_fieldexists('sz_yi_article', 'love_log_id')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_article')." ADD  `love_log_id`  int( 11 ) NOT NULL DEFAULT '0' COMMENT '爱心基金记录id';");
+}
+
+//商品事业基金金额
+if(!pdo_fieldexists('sz_yi_goods', 'love_money')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD  `love_money`  DECIMAL( 10, 2 ) NOT NULL DEFAULT '0.00' COMMENT '事业基金金额';");
 }
 
 //代理商提现记录
@@ -1700,6 +1713,8 @@ INSERT INTO " . tablename('sz_yi_perm_role') . " (`rolename`, `status`, `status1
     pdo_update('sz_yi_perm_role', $gysdata, array('rolename' => "供应商", 'status1' => 1));
 }
 
+rmdirs(IA_ROOT. "/data/tpl/app/sz_yi");
+
 //2016-8-14 余额转让记录增表 加转让人当前余额 受让人当前余额
 if(!pdo_fieldexists('sz_yi_member_transfer_log', 'tosell_current_credit')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_member_transfer_log')." ADD `tosell_current_credit` DECIMAL(10,2) NOT NULL AFTER `money`;");
@@ -1709,3 +1724,10 @@ if(!pdo_fieldexists('sz_yi_member_transfer_log', 'assigns_current_credit')) {
 }
 
 
+if (!pdo_fieldexists('sz_yi_member', 'bank')) {
+    pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_member')." ADD  `bank` VARCHAR( 255 ) DEFAULT '' COMMENT '开户行';");
+}
+
+if (!pdo_fieldexists('sz_yi_member', 'bank_num')) {
+    pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_member')." ADD  `bank_num` VARCHAR( 100 ) DEFAULT '' COMMENT '银行卡号';");
+}

@@ -47,6 +47,9 @@ class Sz_DYi_Goods
             $condition .= " and id = :id";
             $params[':id'] = intval($id);
         }
+        if (!empty($args['isverify'])) {
+            $condition .= " and isverify = 1";
+        }
         if (!empty($sup_uid)) {
             $condition .= " and supplier_uid = :supplier_uid ";
             $params[':supplier_uid'] = intval($sup_uid);

@@ -435,7 +435,8 @@ footer#footer-nav .menu-list:after {
     font-size: 14px!important;
     background: #fff!important;
     padding-right: -2px!important;
-    margin-bottom: 5px!important;}
+    margin-bottom: 5px!important;
+border-left: 0!important;border-right: 0!important;}
 
  .mark-good{position: fixed;
     z-index: 999;

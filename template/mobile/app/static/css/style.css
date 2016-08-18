@@ -86,6 +86,7 @@ footer#footer-nav {
     	height:34px; 
     	width:100%; 
     	float:left;
+		margin-left:0
     }
     .search1 .topbar1 .left { 
     	margin-right: 65px;
@@ -99,6 +100,7 @@ footer#footer-nav {
     	padding:0 0 0 10px; 
     	background:transparent;
     	background:#e3e3e5;
+		border-radius:0
     }
     .search1 .topbar1 .right { 
     	position:relative; 
@@ -231,13 +233,32 @@ footer#footer-nav .menu-list:after {
 
 
 .cart_top {height:44px; width:100%;  background:#f8f8f8;  border-bottom:1px solid #e3e3e3;}
-.cart_top .title {height:44px; width:auto;margin-left:10px; float:left; font-size:16px; line-height:44px; color:#666;}
+.cart_top .title {height:44px; width:100%!important;margin-left:10px; float:left; font-size:16px; line-height:44px; color:#666;}
 .cart_top .nav {height:30px; width:auto;background:#fff; padding:0px 10px; border:1px solid #e3e3e3; border-radius:5px; float:right; line-height:30px; margin:6px 0px 0px 16px; color:#666; font-size:14px;}
 
 .ico {
-	line-height: 50px;
+	line-height: 36px;
 }
 
 .address_list .btn .edit, .address_list .btn .remove {
 	line-height: 42px;
+}
+
+.operation-bg .nav {
+	height: 30px;
+	width: auto;
+	background: #fff;
+	padding: 0px 10px;
+	border: 1px solid #e3e3e3;
+	border-radius: 2px;
+	float: right;
+	line-height: 30px;
+	margin: 10px 6px 0 0;
+	color: #666;
+	font-size: 14px;
+}
+
+.cart_pay,.operation-bg{z-index: 9}
+.order_main .inner input {
+	-webkit-appearance: radio;
 }

@@ -154,7 +154,7 @@ class Sz_DYi_Excel
                     $value = @iconv("utf-8", "gbk", $value);
                     $value = @iconv("gbk", "utf-8", $value);
                 }
-                $sheet->setCellValue($this->column($i, $rownum), $value);
+                $sheet->setCellValueExplicit($this->column($i, $rownum), $value, PHPExcel_Cell_DataType::TYPE_STRING);
             }
             $rownum++;
         }
