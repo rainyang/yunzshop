@@ -179,12 +179,18 @@ if (!class_exists('YunbiModel')) {
 			pdo_insert('sz_yi_yunbi_log', $data_log);
 		}
 
-		public function MoneySumTotal($conditions='',$mid) {
+		public function MoneySumTotal($conditions='',$mid='') {
 			global $_W, $_GPC;
-		    $total = pdo_fetchcolumn("select sum(money) as money from" . tablename('sz_yi_yunbi_log') . " where uniacid = :uniacid ".$conditions." and money > 0 and mid = :mid ", array(
-		        ':uniacid' => $_W['uniacid'],
-		        ':mid' => $mid
-		    ));
+			if (!empty($mid)) {
+			    $total = pdo_fetchcolumn("select sum(money) as money from" . tablename('sz_yi_yunbi_log') . " where uniacid = :uniacid ".$conditions." and money > 0 and mid = :mid ", array(
+			        ':uniacid' => $_W['uniacid'],
+			        ':mid' => $mid
+			    ));
+			} else {
+			    $total = pdo_fetchcolumn("select sum(money) as money from" . tablename('sz_yi_yunbi_log') . " where uniacid = :uniacid ".$conditions." and money > 0 ", array(
+			        ':uniacid' => $_W['uniacid']
+			    ));
+			}
 		    return $total;
 		}
 	}

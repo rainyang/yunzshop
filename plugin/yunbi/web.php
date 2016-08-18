@@ -29,5 +29,8 @@ class YunbiWeb extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__);
     }
-  
+    public function yunbi_log()
+    {
+        $this->_exec_plugin(__FUNCTION__);
+    } 
 }
