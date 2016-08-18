@@ -27,7 +27,7 @@
     .credit_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
     #credit_loading { padding:10px;color:#666;text-align: center;}
 
-    .cart {height:auto; width:100%; background:#fff; margin-top:10px; border-bottom:1px solid #e3e3e3;}
+
     .new-ullist ul li {height:auto; width:33%; }
     .new-ullist ul li i {
         border-radius: 10px;
@@ -45,55 +45,62 @@
 <div id="container" class="rightlist"> </div></div>
 
 <script id='tpl_list' type='text/html'>
-    <div class="money-center">
-        <ul>
-            <li>
-                <a href="#"><span>{$member['virtual_currency']}</span><br/>{$yunbi_title}</a>
-            </li>
-            <li>
-                <a href="#"><span>{$cumulative_total}</span><br/>累计获得</a>
-            </li>
-            <li>
-                <a href="#"><span>{$deduct_return}</span><br/>抵扣返现</a>
-            </li>
-            <li>
-                <a href="#"><span>{$remove_total}次</span><br/>清除次数</a>
-            </li>           
-        </ul>
+    
+    <div class="pc-cen" style="padding-left:0">
+        <div class="top-fx"> 
+            <div class="top_2">
+                <div class="tx-name">累计可用{$yunbi_title}</div>
+                <div class="pr-jine">
+                    <em>{$member['virtual_currency']}</em>
+                </div>
+            </div>
+            <div class="top_1">
+                <div class="text">
+                    累计获得：{$cumulative_total}
+                </div>
+                <div class="text">
+                    抵扣返现：{$deduct_return}
+                </div>
+                <div class="text">
+                    清除次数：{$remove_total}次
+                </div>
+            </div>
+        </div>
     </div>
+
     <div class="yunb-list ">
         <ul>
-            <li>
+                <li>
                 <a href="#" class="nav" data-type='1' >
-                    <i class="fa iconfont icon-user" style="background:#BC7BFF"></i>{$shopping}<br/>购物获得
+                    <i class="fa iconfont icon-cart" style="background:#ff9901"></i>{$shopping}<br/>购物获得
                 </a>
             </li>
             <li>
                 <a href="#" class="nav" data-type='2' >
-                    <i class="fa iconfont icon-user" style="background:#BC7BFF"></i>{$offline}<br/>分销下线获得
+                    <i class="fa iconfont icon-sitemap" style="background:#FF6C9C"></i>{$offline}<br/>分销下线获得
                 </a>
             </li>
             <li>
                 <a href="#" class="nav" data-type='3' >
-                    <i class="fa iconfont icon-user" style="background:#BC7BFF"></i>-{$deduct}<br/>购物抵扣
+                    <i class="fa iconfont icon-bag" style="background:#ca81d1"></i>-{$deduct}<br/>购物抵扣
                 </a>
             </li>
             <li>
                 <a href="#" class="nav" data-type='4' >
-                    <i class="fa iconfont icon-user" style="background:#BC7BFF"></i>{$return_deduct}<br/>抵扣返还
+                    <i class="fa iconfont icon-record" style="background:#FF6441"></i>{$return_deduct}<br/>抵扣返还
                 </a>
             </li>
             <li>
                 <a href="#" class="nav" data-type='5' >
-                    <i class="fa iconfont icon-user" style="background:#BC7BFF"></i>-{$return}<br/>返现到余额
+                    <i class="fa iconfont icon-database" style="background:#ffcb05"></i>-{$return}<br/>返现到余额
                 </a>
             </li>
             <li>
                 <a href="#" class="nav" data-type='6' >
-                    <i class="fa iconfont icon-user" style="background:#BC7BFF"></i>-{$remove}<br/>清除明细
+                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>-{$remove}<br/>清除明细
                 </a>
             </li>
-        </ul>
+            </ul>
     </div>
     <div id='tpl_container'></div>
 </script>   
@@ -133,10 +140,6 @@
     <script id='tpl_empty' type='text/html'>
         <div class="credit_no"><i class="fa fa-file-text-o" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">暂时没有任何记录~</span></div>
     </script>
-
-
-<div class="copyright">版权所有 ©{if empty($set['shop']['copyright'])}{$set['shop']['name']}{else}{$set['shop']['copyright']}{/if} </div>
-
 <script language="javascript">
     var page = 1;
     var scrolled = false;
@@ -193,7 +196,5 @@
         getLog(type);
     });
 </script>
-                
 {php $show_footer=true}
-{php $footer_current='member'}
-{template 'common/footer'}
+{template 'common/bottom'}
