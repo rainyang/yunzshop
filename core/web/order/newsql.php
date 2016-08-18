@@ -1707,6 +1707,9 @@ if (!pdo_fieldexists('sz_yi_goods', 'yunbi_consumption')) {
 if (!pdo_fieldexists('sz_yi_goods', 'isyunbi')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isyunbi` TINYINT(1) NOT NULL DEFAULT '0' AFTER `yunbi_consumption`;");
 }
+if (!pdo_fieldexists('sz_yi_goods', 'yunbi_deduct')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `yunbi_deduct` DECIMAL(10,2) NOT NULL AFTER `isyunbi`;");
+}
 
 if (!pdo_fieldexists('sz_yi_member', 'virtual_currency')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `virtual_currency` DECIMAL(10,2) NOT NULL AFTER `isagency`;");
