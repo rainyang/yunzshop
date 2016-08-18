@@ -237,3 +237,59 @@ footer#footer-nav .menu-list:after {
 .refund_main .line .label{line-height: 44px;color: #333}
 .refund_main .line select{margin-top: 0 !important;line-height: 44px;height: 44px!important}
 .refund_main .line{overflow: hidden;}
+
+/*虚拟云币*/
+
+.money-center{background: #fff;border-bottom: 1px solid #e3e3e3;border-top: 1px solid #e3e3e3;margin-top: 10px;overflow: hidden;}
+
+.money-center ul li{ float: left;width: 25%;margin:10px 0;border-right: 1px solid #e3e3e3;box-sizing: border-box;}
+.money-center ul li:last-child{border: 0}
+.money-center ul li a{color: #8c8c8c;text-align: center;display: block;}
+.money-center ul li a span{color: #222;font-size: 16px}
+
+.yunb-list{height: auto;
+width: 100%;
+background: #fff;
+margin-top: 10px;overflow: hidden;
+border-bottom: 1px solid #e3e3e3;
+border-top: 1px solid #e3e3e3;
+padding: 0 5px;box-sizing: border-box;}
+
+.yunb-list ul li {
+    float: left;
+    width: 32.333%;
+    box-sizing: border-box;
+    margin:0 0.5%;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+    z-index: 999;
+}
+.yunb-nav{
+    color: #fff !important;
+    background: #f15353 !important;
+}
+.yunb-list ul li a{
+    color: #333;
+    display: block;
+    text-align: left;
+    line-height: 14px;
+    padding: 10px 0;
+    border-radius: 4px;
+    background: #f6f6f6
+}
+.yunb-list ul li i {
+    border-radius: 10px;
+    color: #fff;
+    font-size: 20px;
+    height: 30px;
+    line-height: 30px;
+    margin-bottom: 4px;
+    width: 30px;
+    float: left;
+    margin: 0px 6px 0 8px;
+    text-align: center;
+    border-radius: 4px;
+}
+
+
