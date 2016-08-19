@@ -3,8 +3,8 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+ca('hotel.meet');
 
-ca('shop.join.view');
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 load()->model('user');
 if ($operation == 'display') {
@@ -46,14 +46,6 @@ if ($operation == 'display') {
    
 
  
-} elseif ($operation == 'detail') {
-    ca('shop.join.detail');
-    $id    = intval($_GPC['id']);
-    $item  = pdo_fetch("SELECT * FROM " . tablename('join') . " WHERE id =:id and uniacid=:uniacid limit 1 ", array(
-        ':id' => $id,
-        ':uniacid' => $_W['uniacid']
-    ));
-     
 }
 load()->func('tpl');
 include $this->template('meet');

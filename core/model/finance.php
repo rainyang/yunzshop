@@ -760,8 +760,14 @@ class Sz_DYi_Finance {
         if ($notify_sign != $sign) {
             return false;
         }
+        $arrContextOptions=array(
+            "ssl"=>array(
+                "verify_peer"=>false,
+                "verify_peer_name"=>false,
+            ),
+        ); 
         $url = "https://mapi.alipay.com/gateway.do?service=notify_verify&partner={$alipay['partner']}&notify_id={$notify_id}";
-        $resp = @file_get_contents($url);
+        $resp = file_get_contents($url, false, stream_context_create($arrContextOptions));
         return preg_match("/true$/i", $resp);
     }
 
