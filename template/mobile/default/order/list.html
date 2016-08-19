@@ -162,6 +162,7 @@
                             core.json('order/op', {'op': 'cancel', orderid: orderid, reason: reason}, function(json) {
 
                                 if (json.status == 1) {
+                                    core.tip.show('取消成功！');
                                     $(".order_main[data-orderid='" + orderid + "']").remove();
                                 }
                                 else {
