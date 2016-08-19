@@ -28,10 +28,10 @@ if ($op == 'search') {
     $printstate2 = $_GPC['printstate2'];
     $sendtype = !isset($_GPC['sendtype']) ? 0 : $_GPC['sendtype'];
     if ($perm_role == 0) {
-        $condition = ' o.uniacid = :uniacid and o.addressid<>0 and o.deleted=0';
+        $condition = ' o.uniacid = :uniacid and o.deleted=0';
     }
     if ($perm_role == 1) {
-        $condition = " o.uniacid = :uniacid and o.addressid<>0 and o.deleted=0 and o.supplier_uid={$_W['uid']}";
+        $condition = " o.uniacid = :uniacid and o.deleted=0 and o.supplier_uid={$_W['uid']}";
     }
     $paras = array(':uniacid' => $_W['uniacid']);
     if (empty($starttime) || empty($endtime)) {
@@ -87,7 +87,8 @@ if ($op == 'search') {
     if ($printstate2 != '') {
         $condition .= ' AND o.printstate2=' . $printstate2 . ' ';
     }
-    $sql = 'select o.* ,a.realname,m.nickname, d.dispatchname,m.nickname,r.status as refundstatus from ' . tablename('sz_yi_order') . ' o' . ' left join ' . tablename('sz_yi_order_refund') . ' r on r.orderid=o.id and ifnull(r.status,-1)<>-1' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid ' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_dispatch') . ' d on d.id = o.dispatchid ' . " where {$condition} ORDER BY o.createtime DESC,o.status DESC  ";
+    $sql = 'select o.* ,a.realname,m.nickname, d.dispatchname,m.nickname,r.status as refundstatus from ' . tablename('sz_yi_order') . ' o' . ' left join ' . tablename('sz_yi_order_refund') . ' r on r.orderid=o.id and ifnull(r.status,-1)<>-1' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid ' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id and a.deleted = 0' . ' left join ' . tablename('sz_yi_dispatch') . ' d on d.id = o.dispatchid ' . " where {$condition} ORDER BY o.createtime DESC,o.status DESC  ";
+
     $orders = pdo_fetchall($sql, $paras);
     if ($type == 1) {
         $list = array();
@@ -129,7 +130,7 @@ if ($op == 'search') {
                 $orders[$i]['dispatchname'] = '快递';
             }
             if ($order['isverify'] == 1) {
-                $orders[i]['dispatchname'] = '线下核销';
+                $orders[$i]['dispatchname'] = '线下核销';
             } else {
                 if (!empty($order['virtual'])) {
                     $orders[$i]['dispatchname'] = '虚拟物品(卡密)<br/>自动发货';

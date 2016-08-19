@@ -418,6 +418,9 @@ if ($operation == 'display' && $_W['isajax']) {
         show_json(1);
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
+    $pset = m('common')->getSysset();
+    $verify_set = m('common')->getSetData();
+    $allset = iunserializer($verify_set['plugins']);
     $ischannelpay = intval($_GPC['ischannelpay']);
     if(is_array($orderid)){
         $orderids = implode(',', $orderid);
@@ -539,11 +542,11 @@ if ($operation == 'display' && $_W['isajax']) {
                 $ret['ischannelpay'] = $ischannelpay;
             }
         }
-        $payresult      = $this->payResult($ret);
+        $pay_result      = $this->payResult($ret);
         $set = m('common')->getSysset();
     //互亿无线
-        if($set['sms']['type'] == 1){
-            if($pay_result['verifycode']['SubmitResult']['code'] == 2){
+        if($pset['sms']['type'] == 1){
+            if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0){
                 show_json(2, $pay_result);
             }
             else{
@@ -551,7 +554,7 @@ if ($operation == 'display' && $_W['isajax']) {
             }
         }
         else{
-            if(isset($pay_result['verifycode']['result']['success'])){
+            if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0){
                 show_json(2, $pay_result);
             }
             else{
@@ -577,11 +580,11 @@ if ($operation == 'display' && $_W['isajax']) {
         $ret['fee']     = $order['price'];
         $ret['weid']    = $_W['uniacid'];
         $ret['uniacid'] = $_W['uniacid'];
-        $payresult      = $this->payResult($ret);
+        $pay_result      = $this->payResult($ret);
         $set = m('common')->getSysset();
-    //互亿无线
-        if($set['sms']['type'] == 1){
-            if($pay_result['verifycode']['SubmitResult']['code'] == 2){
+        //互亿无线
+        if($pset['sms']['type'] == 1){
+            if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0){
                 show_json(2, $pay_result);
             }
             else{
@@ -589,7 +592,7 @@ if ($operation == 'display' && $_W['isajax']) {
             }
         }
         else{
-            if(isset($pay_result['verifycode']['result']['success'])){
+            if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0){
                 show_json(2, $pay_result);
             }
             else{
@@ -643,10 +646,10 @@ if ($operation == 'display' && $_W['isajax']) {
         }
         
         $pay_result     = $this->payResult($ret);
-        $set = m('common')->getSysset();
+        
     //互亿无线
-        if($set['sms']['type'] == 1){
-            if($pay_result['verifycode']['SubmitResult']['code'] == 2){
+        if($pset['sms']['type'] == 1){
+            if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0){
                 show_json(1, $pay_result);
             }
             else{
@@ -654,7 +657,7 @@ if ($operation == 'display' && $_W['isajax']) {
             }
         }
         else{
-            if(isset($pay_result['verifycode']['result']['success'])){
+            if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0){
                 show_json(1, $pay_result);
             }
             else{
@@ -723,8 +726,8 @@ if ($operation == 'display' && $_W['isajax']) {
             } 
             $set = m('common')->getSysset();
             if (!empty($pay_result['verifycode'])) {
-                if($set['sms']['type'] == 1){
-                    if($pay_result['verifycode']['SubmitResult']['code'] == 2){
+                if($pset['sms']['type'] == 1){
+                    if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0){
                         show_json(1, $pay_result);
                     }
                     else{
@@ -732,7 +735,7 @@ if ($operation == 'display' && $_W['isajax']) {
                     }
                 }
                 else{
-                    if(isset($pay_result['verifycode']['result']['success'])){
+                    if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0){
                         show_json(1, $pay_result);
                     }
                     else{

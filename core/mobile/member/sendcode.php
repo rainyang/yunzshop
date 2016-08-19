@@ -90,6 +90,10 @@ if($op == 'sendcode'){
     if(empty($mobile)){
         show_json(0, '请填入手机号');
     }
+    $isbindmobile = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and uniacid=:uniacid and isbindmobile=1', array(':uniacid' => $_W['uniacid'], ':mobile' => $mobile));
+    if(!empty($isbindmobile)){
+        show_json(0, '该手机已经绑定其它微信号了!');
+    }
     $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where mobile=:mobile and pwd!="" and uniacid=:uniacid and isbindmobile=1 limit 1', array(
                 ':uniacid' => $_W['uniacid'],
                 ':mobile' => $mobile

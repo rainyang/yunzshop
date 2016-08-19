@@ -27,8 +27,8 @@ if ($op == 'query') {
 	$ds = pdo_fetchall('SELECT id,avatar,nickname,openid,realname,mobile FROM ' . tablename('sz_yi_member') . " WHERE 1 {$condition} order by createtime desc", $params);
     //print_r($ds);exit;
 	include $this->template('web/member/query');
-} else if ($op == 'delfans') {
-	$member_ids = pdo_fetchall('SELECT id, openid FROM ' . tablename('sz_yi_member') . " WHERE 1 {$condition} order by id asc", $params);
+} else if ($op == 'delbindmobile') {
+	/*$member_ids = pdo_fetchall('SELECT id, openid FROM ' . tablename('sz_yi_member') . " WHERE 1 {$condition} order by id asc", $params);
 	foreach ($member_ids as $key => $val) {
 		$params[':openid'] = $val['openid'];
 		$mcount = pdo_fetchcolumn('SELECT count(*) FROM ' . tablename('mc_mapping_fans') . " WHERE 1 {$condition} and openid=:openid", $params);
@@ -41,8 +41,10 @@ if ($op == 'query') {
 			pdo_query('DELETE FROM ' . tablename('mc_mapping_fans') . " WHERE 1 {$condition} and openid=:openid and fanid != ".$myid, $params);
 		}
 
-	}
-	message('更新重复会员成功', $this->createWebUrl('sysset', array(
+	}*/
+	pdo_update('sz_yi_member', array('isbindmobile' => 0), array('uniacid' => $_W['uniacid']));
+	message('清除手机绑定记录成功', $this->createWebUrl('sysset', array(
             'op' => 'member'
         )), 'success');
 }
+

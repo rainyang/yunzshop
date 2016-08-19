@@ -38,8 +38,9 @@ input {-webkit-appearance:none; outline:none;}
     {if empty($this->set['closetocredit'])}
     <div class="balance_sub balance_sub1 <%if !cansettle%>disabled<%/if%>" data-type="0">{php echo $this->set['texts']['widthdraw']}到账户余额</div>
     {/if}
-    
+    {if empty($this->set['closetowechatwallet'])}
     <div class="balance_sub balance_sub2 <%if !cansettle%>disabled<%/if%>"  data-type="1">{php echo $this->set['texts']['withdraw']}到微信钱包</div>
+    {/if}
     {if $settingalipay['pay']['weixin']=='1'  &&  $settingalipay['pay']['weixin_withdrawals']=='1'}
     <%if member.commission_ok >= 1 && member.commission_ok <= 200%>
     <div class="balance_sub balance_sub4 <%if !cansettle%>disabled<%/if%>"  data-type="2">{php echo $this->set['texts']['withdraw']}到微信红包</div>

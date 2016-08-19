@@ -149,10 +149,13 @@ class Sz_DYi_Order
             $order   = $orderall[0];
             $orderid = $order['id'];
         }
-        if ($order['isverify'] == 1) {
+        $verify_set = m('common')->getSetData();
+        $allset = iunserializer($verify_set['plugins']);
+        if ($order['isverify'] == 1 && $allset['verify']['sendcode'] == 1) {
             $carriers = unserialize($order['carrier']);
             $mobile = $carriers['carrier_mobile'];
-            $issendsms = $this->sendSms($mobile, $order['verifycode']);
+            $type = 'verify';
+            $issendsms = $this->sendSms($mobile, $order['verifycode'], 'reg', $type);
 
         } 
         //验证paylog里金额是否与订单金额一致
@@ -302,11 +305,11 @@ class Sz_DYi_Order
             }
         }
     }
-    function sendSms($mobile, $code, $templateType = 'reg')
+    function sendSms($mobile, $code, $templateType = 'reg', $type = 'check')
     {
         $set = m('common')->getSysset();
         if ($set['sms']['type'] == 1) {
-            return send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $code, 'verify');
+            return send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $code, $type);
         } else {
             return send_sms_alidayu($mobile, $code, $templateType);
         }

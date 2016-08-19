@@ -9,6 +9,7 @@ $settingalipay =   m('common')->getSysset(array(
 if ($_W['isajax']) {
 	$level = $this->set['level'];
 	$closewithdrawcheck = $this->set['closewithdrawcheck'];
+	$creditnocheck = $this->set['creditnocheck'];
 	$member = $this->model->getInfo($openid, array('ok'));
 	$time = time();
 	$day_times = intval($this->set['settledays']) * 3600 * 24;
@@ -96,10 +97,10 @@ if ($_W['isajax']) {
 		pdo_insert('sz_yi_commission_apply', $apply);
 		$id = pdo_insertid();
 		//佣金提现免审核自动打款
-		if ($closewithdrawcheck > 0) {
+		if ($closewithdrawcheck > 0 || $creditnocheck == 1) {
 			//填写免审核限额则开启自动打款
-			if ($commission_ok <= $closewithdrawcheck) {
-				//提现金额在0-审核金额之内则自动打款
+			if ($commission_ok <= $closewithdrawcheck || $apply['type'] == 0) {
+				//提现金额在0-审核金额之内则自动打款或开启余额自动打款
 				$time = time();
 				$pay = $commission_ok;
 				if ($apply['type'] == 1 || $apply['type'] == 2) {
@@ -137,7 +138,7 @@ if ($_W['isajax']) {
 				$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 0 ? '余额' : '微信'), TM_COMMISSION_PAY);
 				$this->model->upgradeLevelByCommissionOK($openid);
 				plog('commission.apply.pay', "佣金打款 ID: {$id} 申请编号: {$apply['applyno']} 总佣金: {$commission_ok} 审核通过佣金: {$commission_ok} ");
-				message('佣金打款处理成功!', $this->createPluginWebUrl('commission/apply', array('status' => $apply['status'])), 'success');
+				// message('佣金打款处理成功!', $this->createPluginWebUrl('commission/apply', array('status' => $apply['status'])), 'success');
 				show_json(1, '已自动打款!');
 			} else {
 				//开启审核走正常流程

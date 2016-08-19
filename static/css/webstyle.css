@@ -205,13 +205,13 @@ z-index: 2;position: fixed;
 .label-success {background-color: #46CB2F;}
 .panel{box-shadow:0 0 0!important;}
 .fart-main{width: 100% !important;}
-.fart-editor{width: 60%!important;}
-.fart-preview{width: 38%!important;}
+.fart-editor{width: 60% !important;}
+.fart-preview{width: 400px !important;}
 .fart-editor-content .nav1,.fart-editor-content .nav2{width: 50%!important;}
 .fart-editor-content .con1,.fart-editor-content .con2{width: 50%!important;}
-.fart-editor-content .con2 .con{width: 440px !important;}
-.fart-editor-content .con2 .tab{width: 60px !important;}
-.fart-editor-content .con2 .tab .nav{font-size: 14px !important;}
+.fart-editor-content .con2 .con{width: 84% !important;}
+.fart-editor-content .con2 .tab{width: 16% !important;}
+.fart-editor-content .con2 .tab .nav{font-size: 12px !important;}
 .fart-form {padding: 10px !important;}
 .fart-form .line2 {width: 380px !important;}
 .fart-editor-menu nav{width: 33.33333% !important;}
@@ -297,7 +297,7 @@ padding: 20px 20px 10px;
     width: 100%;
     left: 240px;
     top: 50px;
-    z-index: 9;    min-width: 960px;}
+    z-index: 2;    min-width: 960px;}
 .add-snav{width: 98%;margin: 0 1%;line-height: 50px;}
 .add-snav li{float: left;}
 .add-snav li a {
