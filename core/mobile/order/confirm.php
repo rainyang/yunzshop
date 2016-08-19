@@ -438,24 +438,21 @@ if ($_W['isajax']) {
                 //立减
                 if ($g["discounttype"] == 1) {
                     //会员等级立减
-                    $level          = m("member")->getLevel($openid);
+                    $level = m("member")->getLevel($openid);
+                    $level['discount'] = 0;
                     $discounts = json_decode($g["discounts"], true);
                     if (is_array($discounts)) {
                         if (!empty($level["id"])) {
                             if (floatval($discounts["level" . $level["id"]]) < $g['marketprice'] ) {
                                 $level["discount"] = floatval($discounts["level" . $level["id"]]);
-                            } else if (floatval($level["discount"]) < $g['marketprice']) {
+                            } elseif (floatval($level["discount"]) < $g['marketprice']) {
                                 $level["discount"] = floatval($level["discount"]);
-                            } else {
-                                $level["discount"] = 0;
                             }
                         } else {
-                            if (floatval($discounts["default"]) < $g['marketprice']) {
+                            if (floatval($discounts["default"]) > 0 && floatval($discounts["default"]) < $g['marketprice']) {
                                 $level["discount"] = floatval($discounts["default"]);
-                            } else if (floatval($level["discount"]) < $g['marketprice']) {
+                            } elseif (floatval($level["discount"]) > 0 && floatval($level["discount"]) < $g['marketprice']) {
                                 $level["discount"] = floatval($level["discount"]);
-                            } else {
-                                $level["discount"] = 0;
                             }
                         }
                     }
@@ -1560,6 +1557,7 @@ if ($_W['isajax']) {
                     //会员等级立减
                     $discounts      = json_decode($data['discounts'], true);
                     $level          = m('member')->getLevel($openid);
+                    $level['discount'] = 0;
                     if (is_array($discounts)) {
                         if (!empty($level["id"])) {
                             if (floatval($discounts["level" . $level["id"]]) > 0 && floatval($discounts["level" . $level["id"]]) < $data['marketprice']) {
