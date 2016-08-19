@@ -1335,13 +1335,23 @@ if ($_W['isajax']) {
                 if (empty($goodsid)) {
                     show_json(0, '参数错误，请刷新重试');
                 }
-                $sql  = 'SELECT id as goodsid,costprice,supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,discounts2,discountway,discounttype,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
+                $channel_condtion = '';
+                if (p('channel')) {
+                    $channel_condtion = 'isopenchannel,';
+                }
+                $sql  = 'SELECT id as goodsid,costprice,' . $channel_condtion . 'supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,discounts2,discountway,discounttype,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
                 $data = pdo_fetch($sql, array(
 
                     ':uniacid' => $uniacid,
                     ':id' => $goodsid
                 ));
-
+                if (p('channel')) {
+                    if ($ischannelpay == 1) {
+                        if (empty($data['isopenchannel'])) {
+                            show_json(-1, $data['title'] . '<br/> 不支持采购!请前往购物车移除该商品！');
+                        }
+                    }
+                }
                 if (empty($data['status']) || !empty($data['deleted'])) {
                     show_json(-1, $data['title'] . '<br/> 已下架!');
                 }

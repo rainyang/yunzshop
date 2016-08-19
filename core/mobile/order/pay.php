@@ -542,7 +542,7 @@ if ($operation == 'display' && $_W['isajax']) {
                 $ret['ischannelpay'] = $ischannelpay;
             }
         }
-        $payresult      = $this->payResult($ret);
+        $pay_result      = $this->payResult($ret);
         $set = m('common')->getSysset();
     //互亿无线
         if($pset['sms']['type'] == 1){
@@ -580,9 +580,9 @@ if ($operation == 'display' && $_W['isajax']) {
         $ret['fee']     = $order['price'];
         $ret['weid']    = $_W['uniacid'];
         $ret['uniacid'] = $_W['uniacid'];
-        $payresult      = $this->payResult($ret);
+        $pay_result      = $this->payResult($ret);
         $set = m('common')->getSysset();
-    //互亿无线
+        //互亿无线
         if($pset['sms']['type'] == 1){
             if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0){
                 show_json(2, $pay_result);

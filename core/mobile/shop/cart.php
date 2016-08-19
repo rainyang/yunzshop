@@ -26,8 +26,13 @@ if ($_W['isajax']) {
         $list       = array();
         $total      = 0;
         $totalprice = 0;
-        $sql        = 'SELECT f.id,f.total,f.goodsid,g.total as stock, o.stock as optionstock, g.maxbuy,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,g.productprice,o.title as optiontitle,f.optionid,o.specs FROM ' . tablename('sz_yi_member_cart') . ' f ' . ' left join ' . tablename('sz_yi_goods') . ' g on f.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on f.optionid = o.id ' . ' where 1 ' . $condition . ' ORDER BY `id` DESC ';
+        $channel_condtion = '';
+        if (p('channel')) {
+            $channel_condtion = 'g.isopenchannel,';
+        }
+        $sql        = 'SELECT f.id,f.total,' . $channel_condtion . 'f.goodsid,g.total as stock, o.stock as optionstock, g.maxbuy,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,g.productprice,o.title as optiontitle,f.optionid,o.specs FROM ' . tablename('sz_yi_member_cart') . ' f ' . ' left join ' . tablename('sz_yi_goods') . ' g on f.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on f.optionid = o.id ' . ' where 1 ' . $condition . ' ORDER BY `id` DESC ';
         $list       = pdo_fetchall($sql, $params);
+        $verify_goods_ischannelpick = '';
         foreach ($list as &$r) {
             if (!empty($r['optionid'])) {
                 $r['stock'] = $r['optionstock'];
@@ -39,6 +44,9 @@ if ($_W['isajax']) {
                 }
                 //自提库存替换
                 if ($ischannelpick == 1) {
+                    if (empty($r['isopenchannel'])) {
+                        $verify_goods_ischannelpick .= 1;
+                    }
                     $my_stock = p('channel')->getMyOptionStock($openid, $r['goodsid'], $r['optionid']);
                     $r['stock'] = $my_stock;
                 }
@@ -71,7 +79,8 @@ if ($_W['isajax']) {
                 'list' => $list,
                 'totalprice' => $totalprice,
                 'difference' => $difference,
-                'ischannelpay' => $ischannelpay
+                'ischannelpay' => $ischannelpay,
+                'verify_goods_ischannelpick' => $verify_goods_ischannelpick
             ));
         
     } else if ($operation == 'add' && $_W['ispost']) {
