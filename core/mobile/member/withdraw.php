@@ -57,10 +57,12 @@ if ($operation == 'display' && $_W['isajax']) {
 	    ));
 	    m('notice')->sendMemberLogMessage($log['id']);
 	    plog('finance.withdraw.withdraw', "余额提现 ID: {$log['id']} 方式: 微信 金额: {$log['money']} <br/>会员信息:  ID: {$member['id']} / {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");	
+	    show_json(1);
 	} else {
 		m('notice')->sendMemberLogMessage($logid);
+		show_json(2);
 	}
     
-	show_json(1);
+	
 }
 include $this->template('member/withdraw');
