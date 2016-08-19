@@ -55,6 +55,7 @@ if ($operation == 'display') {
 	foreach ($list as &$row) {
 		$row['gettotal'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_coupon_data') . ' where couponid=:couponid and uniacid=:uniacid limit 1', array(':couponid' => $row['id'], ':uniacid' => $_W['uniacid']));
 		$row['usetotal'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_coupon_data') . ' where used = 1 and couponid=:couponid and uniacid=:uniacid limit 1', array(':couponid' => $row['id'], ':uniacid' => $_W['uniacid']));
+		$row['lasttotal'] = $row['total'] - $row['gettotal'];
 		$row['pwdjoins'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_coupon_guess') . ' where couponid=:couponid and uniacid=:uniacid limit 1', array(':couponid' => $row['id'], ':uniacid' => $_W['uniacid']));
 		$row['pwdoks'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_coupon_guess') . ' where couponid=:couponid and uniacid=:uniacid and ok=1 limit 1', array(':couponid' => $row['id'], ':uniacid' => $_W['uniacid']));
 	}

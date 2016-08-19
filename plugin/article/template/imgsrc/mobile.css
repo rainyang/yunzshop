@@ -22,7 +22,7 @@ body {font-family:"Helvetica Neue",Helvetica,"Hiragino Sans GB","Microsoft YaHei
 .rich_sift_goods .dots {height: 12px; width: 100%; position: absolute; bottom: 14px; left: 0; text-align: center;}
 .rich_sift_goods .dots a {height: 12px; width: 12px; background: rgba(0,0,0,0.3); display: inline-block; border-radius: 12px;}
 .rich_sift_goods .dots .on {background: rgba(0,0,0,0.5);}
-.rich_sift_text {height: 60px; line-height:50px; font-size:16px; color:#607fa6; text-align:center;}
+.rich_sift_text { line-height:30px; font-size:16px; color:#607fa6; text-align:center;padding: 10px 0}
 .rich_sift_text a {color:#607fa6; text-decoration: none;} 
 
 /* Swipe 2 styles */

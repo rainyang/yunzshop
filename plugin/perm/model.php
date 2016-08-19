@@ -141,7 +141,7 @@ if (!class_exists('PermModel')) {
 				return true;
 			}
 
-			if ($_W['role'] == 'founder' && $pluginname == "perm") {
+			if ($_W['role'] == 'founder') {
 				return true;
 			}
 

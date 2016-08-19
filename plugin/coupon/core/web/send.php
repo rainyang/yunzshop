@@ -22,6 +22,7 @@ if (checksubmit('submit')) {
 		$plog = "发放优惠券 ID: {$id} 方式: 指定 OPENID 人数: " . count($openids);
 	} elseif ($class1 == 2) {
 		$where = '';
+		$value1 = $_GPC['send_level'];
 		if ($value1 != '') {
 			$where .= ' and level =' . intval($_GPC['send_level']);
 		}
@@ -35,6 +36,7 @@ if (checksubmit('submit')) {
 		$plog = "发放优惠券 ID: {$id} 方式: 等级-{$levelname} 人数: " . count($member);
 	} elseif ($class1 == 3) {
 		$where = '';
+		$value1 = $_GPC['send_group'];
 		if ($value1 != '') {
 			$where .= ' and groupid =' . intval($_GPC['send_group']);
 		}
@@ -52,6 +54,7 @@ if (checksubmit('submit')) {
 		$plog = "发放优惠券 ID: {$id}  方式: 全部会员  分组:{$groupname} 人数: " . count($member);
 	} elseif ($class1 == 5) {
 		$where = '';
+		$value1 = $_GPC['send_agentlevel'];
 		if ($value1 != '') {
 			$where .= ' and agentlevel =' . intval($_GPC['send_agentlevel']);
 		}

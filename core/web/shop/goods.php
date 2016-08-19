@@ -380,8 +380,11 @@ if ($operation == "change") {
         //         'op' => 'post'
         //     )), 'error');
         // }
-        $dispatch_data = pdo_fetchall("select * from" . tablename("sz_yi_dispatch") . "where uniacid =:uniacid and enabled = 1 order by displayorder desc",
-            array(":uniacid" => $_W["uniacid"]));
+        $dispatch_data_where = "";
+        if($data['supplier_uid'] != 0){
+            $dispatch_data_where = " and supplier_uid=" . $data['supplier_uid'];
+        }
+        $dispatch_data = pdo_fetchall("select * from" . tablename("sz_yi_dispatch") . "where uniacid =:uniacid and enabled = 1 ".$dispatch_data_where." order by displayorder desc", array(":uniacid" => $_W["uniacid"]));
         if (checksubmit("submit")) {
             if ($diyform_plugin) {
                 if ($_GPC["type"] == 1 && $_GPC["diyformtype"] == 2) {

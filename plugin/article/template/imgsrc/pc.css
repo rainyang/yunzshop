@@ -15,7 +15,7 @@ body {font-family:"Helvetica Neue",Helvetica,"Hiragino Sans GB","Microsoft YaHei
 .rich_tool_like {height:13px; width:13px; margin-left:8px; background:url('./like.png') 0 0 no-repeat; background-size:100% auto; display:inline-block;}
 .rich_tool_likeon {background-position:0 -18px;}
 .rich_tool_text {margin-right:10px; font-size:16px; color:#8c8c8c; text-decoration:none; float:left;}
-.rich_sift {background:#eee; padding:30px 15px 0px; border-top:1px solid #e4e4e4;  max-width: 700px; margin: auto; }
+.rich_sift {border-top:1px solid #e4e4e4;  max-width: 1200px; margin: auto; }
 .rich_sift fieldset {height:0px; border:0px; border-top:1px dotted #ccc; text-align:center;}
 .rich_sift legend {padding:0px 10px; color:#999;}
 .rich_sift_goods {min-height:10px; background:#fff; margin-top:12px; padding:6px; position: relative;}
@@ -23,7 +23,7 @@ body {font-family:"Helvetica Neue",Helvetica,"Hiragino Sans GB","Microsoft YaHei
 .rich_sift_goods .dots {height: 12px; width: 100%; position: absolute; bottom: 14px; left: 0; text-align: center;}
 .rich_sift_goods .dots a {height: 12px; width: 12px; background: rgba(0,0,0,0.3); display: inline-block; border-radius: 12px;}
 .rich_sift_goods .dots .on {background: rgba(0,0,0,0.5);}
-.rich_sift_text {height: 60px; line-height:50px; font-size:16px; color:#607fa6; text-align:center;}
+.rich_sift_text {line-height:30px; font-size:16px; color:#607fa6; text-align:center;overflow: hidden;}
 .rich_sift_text a {color:#607fa6; text-decoration: none;} 
 
 /* Swipe 2 styles */
