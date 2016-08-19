@@ -34,7 +34,7 @@
                 <div class="col-sm-8 col-lg-12 col-xs-12">
                     <div class='input-group'>
                         <div class='input-group-addon'>订单号</div>
-                        <input class="form-control" name="keyword" type="text" value="{$_GPC['keyword']}" placeholder="订单号">
+                        <input class="form-control" name="keyword" type="text" value="{$_GPC['keyword']}" placeholder="订单号/支付单号">
                         <div class='input-group-addon'>商品名称</div>
                         <input class="form-control" name="good_name" type="text" value="{$_GPC['good_name']}" placeholder="商品名称">
                         <div class='input-group-addon'>商品ID</div>
@@ -180,7 +180,10 @@
   <table class='table' style='float:left;border:1px solid #ccc;margin-top:5px;margin-bottom:0px;table-layout: fixed;'>
                 <tr >
                     <td colspan='8'  style='border-bottom:1px solid #ccc;background:#f8f8f8;' > 
-                        <b>订单编号:</b>  {$item['ordersn']}     
+                        <b>订单编号:</b>  {$item['ordersn_general']} 
+                        {if $item['pay_ordersn']}
+                        <b>支付单号:</b>  {$item['pay_ordersn']} 
+                        {/if}
                         <b>下单时间:  </b>{php echo date('Y-m-d H:i:s', $item['createtime'])}
                         {if !empty($item['refundstate'])}<label class='label label-danger'>{$r_type[$item['rtype']]}申请</label>{/if}
                         {if $item['rstatus'] == 4}<label class='label label-primary'>客户已经寄出快递</label>{/if}
