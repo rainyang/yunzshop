@@ -26,6 +26,12 @@ body {margin:0px; background:#f8f8f8; -moz-appearance:none;}
 </style>
 <div id='container'></div>
 <script id='favorite_empty' type='text/html'>
+    {if is_app()}
+    <div class="page_topbar">
+        <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
+        <div class="title">我的收藏</div>
+    </div>
+    {/if}
      <div class="favorite_no"><i class="fa fa-favorite" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">您没有浏览过任何商品</span><br>主人快去给我找点东西吧</div>
 <div class="favorite_no_menu">
    <div class="favorite_no_nav" onclick="location.href='{php echo $this->createMobileUrl('member')}'">个人中心</div>
