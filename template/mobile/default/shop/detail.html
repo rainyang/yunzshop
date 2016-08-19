@@ -287,7 +287,7 @@ div.flicking_con a.on{background-position:0 -9px}
             <div class='left'>
                 <%if level.discountway == 1 && level.discount<10%>
                     <i class='fa fa-user'></i> <%level.discounttxt%> <span style='color:#ff6600'><%level.discount%></span> 折优惠(<%level.levelname%>)
-                <%else%>
+                <%else if  level.discountway == 2 %>
                     <i class='fa fa-user'></i> <%level.discounttxt%>  <span style='color:#ff6600'><%level.discount%></span> 元(<%level.levelname%>)
                 <%/if%>
             </div>
