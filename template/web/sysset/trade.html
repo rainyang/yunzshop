@@ -205,7 +205,7 @@
                     <div class="col-sm-9 col-xs-12">
                         {ifp 'sysset.save.trade'}
                         <input type="text" name="trade[withdrawautomoney]" class="form-control" value="{$set['trade']['withdrawautomoney']}" />
-                        <span class='help-block'>余额满多少才能自动打款,空或0不限制</span>
+                        <span class='help-block'>提现金额少于等于自定义的限制金额，则提现不需要审核，否则需要审核。</span>
                         {else}
                         <input type="hidden" name="trade[withdrawautomoney]" value="{$set['trade']['withdrawautomoney']}"/>
                         <div class='form-control-static'>
