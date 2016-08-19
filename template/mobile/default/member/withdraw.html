@@ -75,16 +75,17 @@ input {-webkit-appearance:none; outline:none;}
                    
                     $(this).attr('submitting', 1);
                     core.json('member/withdraw', {op: 'submit', money: money}, function (rjson) {
-                        if(rjson.status!=1){
+                        if (rjson.status!=1) {
                             $(this).removeAttr('submitting');
                             core.tip.show(rjson.result);
                             return;
+                        } else if (rjson.status == 1) {
+                            core.message('免审核提现已成功，请尽快核实金额!',"{php echo $this->createMobileUrl('member')}",'success');
+                        } else if(rjson.status == 2) {
+                            core.message('提现申请提交成功，请等待审核!',"{php echo $this->createMobileUrl('member')}",'success');   
                         }
-                        {if $set['trade']['withdrawnocheck'] == 1}
-                        core.message('免审核提现已成功，请尽快核实金额!',"{php echo $this->createMobileUrl('member')}",'success');
-                        {else}
-                        core.message('提现申请提交成功，请等待审核!',"{php echo $this->createMobileUrl('member')}",'success');
-                        {/if}
+                        
+                        
                     }, true, true);
  
             });
