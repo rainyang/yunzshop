@@ -42,8 +42,7 @@ if (!file_exists($file)) {
             $remove_times = explode("||",$set['yunbi_remove_times']);
             $isexecute = false;
             foreach ($remove_times as $k => $v) {
-                $removes = explode("号",$v);
-                if (date('d') == $removes['0'] && date('H') == $removes['1'] ) {
+                if (str_replace(array("日","点"),"",$v) == date('dH')) {
                     if (!isset($set['remove_d']) || $set['remove_d'] != date('d')) {
                         //$data  = array_merge($set, array('current_d'=>date('d')));
                         $set['remove_d'] = date('d');
