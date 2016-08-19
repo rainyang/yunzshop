@@ -232,14 +232,14 @@
     <div class="col-sm-9 col-xs-12">
         {ife 'shop.goods' $item}
          <div style="float: left" id="ttttype">
-            <label for="isshow3" class="radio-inline"><input type="radio" name="type" value="1" id="isshow3" {if empty($item['type']) || $item['type'] == 1}checked="true"{/if} onclick="$('#product').show();$('#type_virtual').hide()" /> 实体商品</label>
-            <label for="isshow4" class="radio-inline"><input type="radio" name="type" value="2" id="isshow4"  {if $item['type'] == 2}checked="true"{/if}  onclick="$('#product').hide();$('#type_virtual').hide()" /> 虚拟商品</label>
+            <label for="isshow3" class="radio-inline"><input type="radio" name="type" value="1" id="isshow3" {if empty($item['type']) || $item['type'] == 1}checked="true"{/if} onclick="$('#product').show();$('#type_virtual').hide();$('#divdeposit').hide();" /> 实体商品</label>
+            <label for="isshow4" class="radio-inline"><input type="radio" name="type" value="2" id="isshow4"  {if $item['type'] == 2}checked="true"{/if}  onclick="$('#product').hide();$('#type_virtual').hide();$('#divdeposit').hide()" /> 虚拟商品</label>
             <!-- 安装酒店插件新增 三种类型 -->
             {if p('hotel')}
             {if $hotelstatus=='1'}
-            <label for="isshow3" class="radio-inline"><input type="radio" name="type" value="99" id="isshow3" {if empty($item['type']) || $item['type'] == 99}checked="true"{/if} onclick="$('#product').show();$('#type_virtual').hide()" /> 酒店房型</label>
-            <label for="isshow3" class="radio-inline"><input type="radio" name="type" value="98" id="isshow3" {if empty($item['type']) || $item['type'] == 98}checked="true"{/if} onclick="$('#product').show();$('#type_virtual').hide()" /> 餐饮</label>
-            <label for="isshow3" class="radio-inline"><input type="radio" name="type" value="97" id="isshow3" {if empty($item['type']) || $item['type'] == 97}checked="true"{/if} onclick="$('#product').show();$('#type_virtual').hide()" /> 会议</label>
+            <label for="isshow8" class="radio-inline"><input type="radio" name="type" value="99" id="isshow8" {if $item['type'] == 99}checked="true"{/if} onclick="$('#divdeposit').show();$('#type_virtual').hide()" /> 酒店房型</label>
+            <label for="isshow6" class="radio-inline"><input type="radio" name="type" value="98" id="isshow6" {if $item['type'] == 98}checked="true"{/if} onclick="$('#type_virtual').hide();$('#divdeposit').hide()" /> 餐饮</label>
+            <label for="isshow7" class="radio-inline"><input type="radio" name="type" value="97" id="isshow7" {if $item['type'] == 97}checked="true"{/if} onclick="$('#type_virtual').hide();$('#divdeposit').hide()" /> 会议</label>
             {/if}
              {/if}
             {if p('virtual')}
@@ -634,6 +634,8 @@
 </div>
 {/if}
 <!-- 全返开关 end -->
+<!-- 判断货到付款开关知否开启 -->
+{if $shoppay['cash']}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否支持货到付款</label>
     <div class="col-sm-6 col-xs-6">
@@ -645,10 +647,11 @@
          {/if}
     </div>
 </div>
+{/if}
 <!-- 安装酒店插件需要添加房间押金金额-->
   {if p('hotel')}
-            {if $hotelstatus=='1'}
-       <div class="form-group">
+        {if $hotelstatus=='1'}
+       <div class="form-group" id="divdeposit" style="display:none">
     <label class="col-xs-6 col-sm-3 col-md-2 control-label">房间押金</label>
     <div class="input-group">
             <input type="text" name="deposit" id="deposit" class="form-control" value="{$item['deposit']}" />
