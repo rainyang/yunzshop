@@ -343,20 +343,16 @@ if ($_W['isajax']) {
             'createtime' => time()
         );
         pdo_insert('sz_yi_member_history', $history);
-    }
+    }    
     
-    
-    $level['discount'] = 0;
     //是否折扣权限
     if ($goods['discountway'] && $goods['discounttype']) {
-        if ($goods['discountway'] == 1) {
-            $level['discount'] = 10;
-        }
         $comp_value = ($goods['discountway'] == 1) ? 10 : $goods['marketprice'];
         
         //会员OR分销商
         if ($goods['discounttype'] == 1) {
             $level     = m('member')->getLevel($openid);
+
             $levelname = "普通会员";
             $discounts = json_decode($goods['discounts'], true);
             $level['discounttxt'] = ($goods['discountway'] == 1) ? "会员折扣" : "会员立减";
@@ -366,8 +362,13 @@ if ($_W['isajax']) {
             $discounts = json_decode($goods['discounts2'], true);
             $level['discounttxt'] = ($goods['discountway'] == 1) ? "分销商折扣" : "分销商立减";
         } 
-        $level['levelname'] = empty($level['levelname']) ? $levelname : $level['levelname'];
 
+        $level['discount'] = 0;
+        if ($goods['discountway'] == 1) {
+            $level['discount'] = 10;
+        }
+
+        $level['levelname'] = empty($level['levelname']) ? $levelname : $level['levelname'];
         //会员等级折扣
         if (($member['isagent'] == 1 && $member['status'] == 1) || $goods['discounttype'] == 1) {
             if (is_array($discounts)) {
@@ -383,7 +384,6 @@ if ($_W['isajax']) {
             }
         }
     }
-
     $level['discountway'] = $goods['discountway'];
 
     $comment = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods_comment')." where goodsid=:id and uniacid=:uniacid",array(':id' => $goodsid , ':uniacid' => $uniacid)),'headimgurl');
