@@ -481,7 +481,7 @@ if (!class_exists('CouponModel')) {
 		{
 			global $_W;
 			if (!is_array($_var_36)) {
-				$_var_36 = pdo_fetch('select id,openid,ordersn,createtime,couponid,status,finishtime from ' . tablename('sz_yi_order') . ' where id=:id and status>=0 and uniacid=:uniacid limit 1', array(':id' => intval($_var_36), ':uniacid' => $_W['uniacid']));
+				$_var_36 = pdo_fetch('select id,openid,ordersn,createtime,couponid,status,finishtime from ' . tablename('sz_yi_order') . ' where id=:id and status=-1 and uniacid=:uniacid limit 1', array(':id' => intval($_var_36), ':uniacid' => $_W['uniacid']));
 			}
 			if (empty($_var_36)) {
 				return;
