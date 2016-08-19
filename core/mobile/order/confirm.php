@@ -1341,7 +1341,6 @@ if ($_W['isajax']) {
                 }
                 $sql  = 'SELECT id as goodsid,costprice,' . $channel_condtion . 'supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,discounts2,discountway,discounttype,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
                 $data = pdo_fetch($sql, array(
-
                     ':uniacid' => $uniacid,
                     ':id' => $goodsid
                 ));
@@ -1507,6 +1506,7 @@ if ($_W['isajax']) {
                 $ggprice = 0;
                 if(p('hotel') && $_GPC['type']=='99'){
                      $gprice =$_GPC['goodsprice'];
+                     //todo, $ggpric是啥
                      $ggpric = $_GPC['goodsprice'];
                  }
             if ($data['discountway'] == 1) {
@@ -1573,17 +1573,17 @@ if ($_W['isajax']) {
                     $level          = m('member')->getLevel($openid);
                     if (is_array($discounts)) {
                         if (!empty($level["id"])) {
-                            if (floatval($discounts["level" . $level["id"]]) > 0 && floatval($discounts["level" . $level["id"]]) < 10) {
+                            if (floatval($discounts["level" . $level["id"]]) > 0 && floatval($discounts["level" . $level["id"]]) < $data['marketprice']) {
                                 $level["discount"] = floatval($discounts["level" . $level["id"]]);
-                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < $data['marketprice']) {
                                 $level["discount"] = floatval($level["discount"]);
                             } else {
                                 $level["discount"] = 0;
                             }
                         } else {
-                            if (floatval($discounts["default"]) > 0 && floatval($discounts["default"]) < 10) {
+                            if (floatval($discounts["default"]) > 0 && floatval($discounts["default"]) < $data['marketprice']) {
                                 $level["discount"] = floatval($discounts["default"]);
-                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
+                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < $data['marketprice']) {
                                 $level["discount"] = floatval($level["discount"]);
                             } else {
                                 $level["discount"] = 0;
