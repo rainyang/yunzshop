@@ -4,6 +4,10 @@ $operation = !empty($_GPC["op"]) ? $_GPC["op"] : "display";
 $type = $_GPC['type'];
 $plugin_diyform = p("diyform");
 
+$yunbi_plugin   = p('yunbi');
+if ($yunbi_plugin) {
+    $yunbiset = $yunbi_plugin->getSet();
+}
 $totals = array();
 $r_type         = array(
     '0' => '退款',
@@ -2139,6 +2143,24 @@ function order_list_close($order) {
                 $shopset["name"] . "购物返还抵扣积分 积分: {$value["deductcredit"]} 抵扣金额: {$value["deductprice"]} 订单号: {$value["ordersn"]}"
             ));
         }
+
+            if ($value['deductyunbimoney'] > 0) {
+                $shopset = m('common')->getSysset('shop');
+                m('member')->setCredit($value['openid'], 'virtual_currency', $value['deductyunbi'], array(
+                    '0',
+                    $shopset['name'] . "购物返还抵扣".$yunbiset['yunbi_title']." ".$yunbiset['yunbi_title'].": {$value['deductyunbi']} 抵扣金额: {$value['deductyunbimoney']} 订单号: {$value['ordersn']}"
+                ));
+            }
+            //虚拟币抵扣记录
+            $data_log = array(
+                'id'            => '',
+                'openid'        => $value['openid'],
+                'credittype'    => 'virtual_currency',
+                'money'         => $value['deductyunbi'],
+                'remark'        => "购物返还抵扣".$yunbiset['yunbi_title']." ".$yunbiset['yunbi_title'].": {$value['deductyunbi']} 抵扣金额: {$value['deductyunbimoney']} 订单号: {$value['ordersn']}"
+            );
+            $this->addYunbiLog($_W["uniacid"],$data_log,'4');
+
         if (p("coupon") && !empty($value["couponid"])) {
             p("coupon")->returnConsumeCoupon($value["id"]);
         }
@@ -2319,6 +2341,24 @@ function order_list_refund($item)
                 $shopset['name'] . "购物返还抵扣积分 积分: {$item['deductcredit']} 抵扣金额: {$item['deductprice']} 订单号: {$item['ordersn']}"
             ));
         }
+        
+        if ($item['deductyunbimoney'] > 0) {
+            $shopset = m('common')->getSysset('shop');
+            m('member')->setCredit($item['openid'], 'virtual_currency', $item['deductyunbi'], array(
+                '0',
+                $shopset['name'] . "购物返还抵扣".$yunbiset['yunbi_title']." ".$yunbiset['yunbi_title'].": {$item['deductyunbi']} 抵扣金额: {$item['deductyunbimoney']} 订单号: {$item['ordersn']}"
+            ));
+        }
+        //虚拟币抵扣记录
+        $data_log = array(
+            'id'            => '',
+            'openid'        => $item['openid'],
+            'credittype'    => 'virtual_currency',
+            'money'         => $item['deductyunbi'],
+            'remark'        => "购物返还抵扣".$yunbiset['yunbi_title']." ".$yunbiset['yunbi_title'].": {$item['deductyunbi']} 抵扣金额: {$item['deductyunbimoney']} 订单号: {$item['ordersn']}"
+        );
+        $this->addYunbiLog($_W["uniacid"],$data_log,'4');
+
         if (!empty($refundtype)) {
             if ($item['deductcredit2'] > 0) {
                 m('member')->setCredit($item['openid'], 'credit2', $item['deductcredit2'], array(

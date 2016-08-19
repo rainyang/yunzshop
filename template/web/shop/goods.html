@@ -41,6 +41,9 @@
         {if p('sale')}
 		<li><a href="#tab_sale">营销</a></li>
         {/if}
+        {if $isreturn || $isyunbi}
+		<li><a href="#tab_return">返现虚拟币</a></li>
+        {/if}
         <li><a href="#tab_detaildiy">店铺</a></li>
         {if p('diyform')}
 		<li><a href="#tab_diyform">自定义表单</a></li>
@@ -82,7 +85,7 @@
                     {if p('sale')}
                     <div class="tab-pane" id="tab_sale">{template 'sale/goods'}</div>
                     {/if}
-
+					<div class="tab-pane" id="tab_return">{template 'web/shop/goods/return'}</div>
                     {if p('diyform')}
                     <div class="tab-pane" id="tab_diyform">{template 'diyform/goods'}</div>
                     {/if}

@@ -20,6 +20,10 @@ $order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' wher
     ':openid' => $openid
 ));
 
+$yunbi_plugin   = p('yunbi');
+if ($yunbi_plugin) {
+    $yunbiset = $yunbi_plugin->getSet();
+}
 if(!empty($orderisyb['ordersn_general']) && $orderisyb['status']==0){
     $order_all = pdo_fetchall("select * from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid', array(
         ':ordersn_general' => $orderisyb['ordersn_general'],
