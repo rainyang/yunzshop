@@ -32,7 +32,7 @@ if ($operation == 'display' && $_W['isajax']) {
 	pdo_insert('sz_yi_member_log', $logdata);
 	$logid = pdo_insertid();
 	//余额提现自动打款到微信账户
-	if ($set['trade']['withdrawnocheck'] == 1) {
+	if ($set['trade']['withdrawnocheck'] == 1 && (empty($set['trade']['withdrawautomoney']) || $money >= $set['trade']['withdrawautomoney'])) {
 		$log     = pdo_fetch('select * from ' . tablename('sz_yi_member_log') . ' where id=:id and uniacid=:uniacid limit 1', array(
 	        ':id' => $logid,
 	        ':uniacid' => $uniacid
