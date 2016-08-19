@@ -411,22 +411,18 @@ if ($_W['isajax']) {
                     //分销商等级折扣
                     $level     = p("commission")->getLevel($openid);
                     $discounts = json_decode($g['discounts2'], true);
-                    if (is_array($discounts)) {
-                        if (!empty($level["id"])) {
-                            if (floatval($discounts["level" . $level["id"]]) > 0 && floatval($discounts["level" . $level["id"]]) < 10) {
-                                $level["discount"] = floatval($discounts["level" . $level["id"]]);
-                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
-                                $level["discount"] = floatval($level["discount"]);
+                    //是分销商
+                    $level["discount"] = 0;
+                    if ($member['isagent'] == 1 && $member['status'] == 1) {
+                        if (is_array($discounts)) {
+                            if (!empty($level["id"])) {
+                                if (floatval($discounts["level" . $level["id"]]) > 0 && floatval($discounts["level" . $level["id"]]) < 10) {
+                                    $level["discount"] = floatval($discounts["level" . $level["id"]]);
+                                }
                             } else {
-                                $level["discount"] = 0;
-                            }
-                        } else {
-                            if (floatval($discounts["default"]) > 0 && floatval($discounts["default"]) < 10) {
-                                $level["discount"] = floatval($discounts["default"]);
-                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
-                                $level["discount"] = floatval($level["discount"]);
-                            } else {
-                                $level["discount"] = 0;
+                                if (floatval($discounts["default"]) > 0 && floatval($discounts["default"]) < 10) {
+                                    $level["discount"] = floatval($discounts["default"]);
+                                }
                             }
                         }
                     }
@@ -467,22 +463,18 @@ if ($_W['isajax']) {
                     //分销商等级立减
                     $level     = p("commission")->getLevel($openid);
                     $discounts = json_decode($g['discounts2'], true);
-                    if (is_array($discounts)) {
-                        if (!empty($level["id"])) {
-                            if (floatval($discounts["level" . $level["id"]]) < $g['marketprice']) {
-                                $level["discount"] = floatval($discounts["level" . $level["id"]]);
-                            } else if (floatval($level["discount"]) < $g['marketprice']) {
-                                $level["discount"] = floatval($level["discount"]);
+                    //是分销商
+                    $level["discount"] = 0;
+                    if ($member['isagent'] == 1 && $member['status'] == 1) {
+                        if (is_array($discounts)) {
+                            if (!empty($level["id"])) {
+                                if (floatval($discounts["level" . $level["id"]]) < $g['marketprice']) {
+                                    $level["discount"] = floatval($discounts["level" . $level["id"]]);
+                                }
                             } else {
-                                $level["discount"] = 0;
-                            }
-                        } else {
-                            if (floatval($discounts["default"]) < $g['marketprice']) {
-                                $level["discount"] = floatval($discounts["default"]);
-                            } else if (floatval($level["discount"]) < $g['marketprice']) {
-                                $level["discount"] = floatval($level["discount"]);
-                            } else {
-                                $level["discount"] = 0;
+                                if (floatval($discounts["default"]) < $g['marketprice']) {
+                                    $level["discount"] = floatval($discounts["default"]);
+                                }
                             }
                         }
                     }
@@ -1538,22 +1530,19 @@ if ($_W['isajax']) {
                     //分销商等级折扣
                     $discounts      = json_decode($data['discounts2'], true);
                     $level     = p("commission")->getLevel($openid);
-                    if (is_array($discounts)) {
-                        if (!empty($level["id"])) {
-                            if (floatval($discounts["level" . $level["id"]]) > 0 && floatval($discounts["level" . $level["id"]]) < 10) {
-                                $level["discount"] = floatval($discounts["level" . $level["id"]]);
-                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
-                                $level["discount"] = floatval($level["discount"]);
+
+                    //是分销商
+                    $level["discount"] = 0;
+                    if ($member['isagent'] == 1 && $member['status'] == 1) {
+                        if (is_array($discounts)) {
+                            if (!empty($level["id"])) {
+                                if (floatval($discounts["level" . $level["id"]]) > 0 && floatval($discounts["level" . $level["id"]]) < 10) {
+                                    $level["discount"] = floatval($discounts["level" . $level["id"]]);
+                                }
                             } else {
-                                $level["discount"] = 0;
-                            }
-                        } else {
-                            if (floatval($discounts["default"]) > 0 && floatval($discounts["default"]) < 10) {
-                                $level["discount"] = floatval($discounts["default"]);
-                            } else if (floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
-                                $level["discount"] = floatval($level["discount"]);
-                            } else {
-                                $level["discount"] = 0;
+                                if (floatval($discounts["default"]) > 0 && floatval($discounts["default"]) < 10) {
+                                    $level["discount"] = floatval($discounts["default"]);
+                                }
                             }
                         }
                     }
@@ -1594,22 +1583,19 @@ if ($_W['isajax']) {
                     //分销商等级立减
                     $discounts      = json_decode($data['discounts2'], true);
                     $level     = p("commission")->getLevel($openid);
-                    if (is_array($discounts)) {
-                        if (!empty($level["id"])) {
-                            if (floatval($discounts["level" . $level["id"]]) < $data['marketprice']) {
-                                $level["discount"] = floatval($discounts["level" . $level["id"]]);
-                            } else if (floatval($level["discount"]) < $data['marketprice']) {
-                                $level["discount"] = floatval($level["discount"]);
+
+                    //是分销商
+                    $level["discount"] = 0;
+                    if ($member['isagent'] == 1 && $member['status'] == 1) {
+                        if (is_array($discounts)) {
+                            if (!empty($level["id"])) {
+                                if (floatval($discounts["level" . $level["id"]]) < $data['marketprice']) {
+                                    $level["discount"] = floatval($discounts["level" . $level["id"]]);
+                                }
                             } else {
-                                $level["discount"] = 0;
-                            }
-                        } else {
-                            if (floatval($discounts["default"]) < $data['marketprice']) {
-                                $level["discount"] = floatval($discounts["default"]);
-                            } else if (floatval($level["discount"]) < $data['marketprice']) {
-                                $level["discount"] = floatval($level["discount"]);
-                            } else {
-                                $level["discount"] = 0;
+                                if (floatval($discounts["default"]) < $data['marketprice']) {
+                                    $level["discount"] = floatval($discounts["default"]);
+                                }
                             }
                         }
                     }
