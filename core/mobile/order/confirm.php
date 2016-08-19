@@ -825,7 +825,7 @@ if ($_W['isajax']) {
             $order_all[$val['supplier_uid']]['deductyunbi'] = 0;
             $order_all[$val['supplier_uid']]['deductyunbimoney'] = 0;
             if ($yunbi_plugin && $yunbiset['isdeduct']) {
-                $virtual_currency = m('member')->getCredit($openid, 'virtual_currency');
+                $virtual_currency = $member['virtual_currency'];//m('member')->getCredit($openid, 'virtual_currency');
                 $ycredit = 1;
                 $ymoney  = round(floatval($yunbiset['money']), 2);
                 if ($ycredit > 0 && $ymoney > 0) {
@@ -1305,7 +1305,7 @@ if ($_W['isajax']) {
             $deductyunbi = 0;
             $deductyunbimoney = 0;
             if ($yunbi_plugin && $yunbiset['isdeduct']) {
-                $virtual_currency = m('member')->getCredit($openid, 'virtual_currency');
+                $virtual_currency = $member['virtual_currency'];//m('member')->getCredit($openid, 'virtual_currency');
                 $ycredit = 1;
                 $ymoney  = round(floatval($yunbiset['money']), 2);
                 if ($ycredit > 0 && $ymoney > 0) {
@@ -1745,7 +1745,7 @@ if ($_W['isajax']) {
                 $deductyunbimoney = 0;
                 if ($yunbi_plugin && $yunbiset['isdeduct']) {
                     if (isset($_GPC['order']) && !empty($_GPC['order'][0]['yunbi'])) {
-                        $virtual_currency  = m('member')->getCredit($openid, 'virtual_currency');
+                        $virtual_currency  = $member['virtual_currency'];//m('member')->getCredit($openid, 'virtual_currency');
                         $ycredit = 1;
                         $ymoney  = round(floatval($yunbiset['money']), 2);
                         if ($ycredit > 0 && $ymoney > 0) {
@@ -2341,11 +2341,8 @@ if ($_W['isajax']) {
 
             if ($deductyunbi > 0) {
                 $shop = m('common')->getSysset('shop');
-                m('member')->setCredit($openid, 'virtual_currency', -$deductyunbi, array(
-                    '0',
-                    $shop['name'] . "购物".$yunbiset['yunbi_title']."抵扣 消费".$yunbiset['yunbi_title'].": {$deductyunbi} 抵扣金额: {$deductyunbimoney} 订单号: {$ordersn}"
-                ));
-            
+
+                p('yunbi')->setVirtualCurrency($openid,-$deductyunbi);
                 //虚拟币抵扣记录
                 $data_log = array(
                     'id'           => $member['id'],

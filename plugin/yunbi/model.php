@@ -41,9 +41,7 @@ if (!class_exists('YunbiModel')) {
 				{
 					return false;
 				}
-
-				
-				pdo_fetchall("update ".tablename('sz_yi_member')." set `virtual_currency` = virtual_currency + ".$virtual_currency." where `uniacid` =  " . $_W['uniacid'] . " AND openid = '".$order_goods[0]['openid']."' ");
+				$this->setVirtualCurrency($order_goods[0]['openid'],$virtual_currency);
 
 	        	$data_log = array(
 	                'id' 			=> $order_goods[0]['id'],
@@ -193,5 +191,11 @@ if (!class_exists('YunbiModel')) {
 			} 
 		    return !empty($total)?$total:'0';
 		}
+
+		public function setVirtualCurrency($openid='',$currency) {
+			global $_W, $_GPC;
+			pdo_fetchall("update ".tablename('sz_yi_member')." set `virtual_currency` = virtual_currency + ".$currency." where `uniacid` =  " . $_W['uniacid'] . " AND openid = '".$openid."' ");
+		}
+
 	}
 }
