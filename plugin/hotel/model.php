@@ -180,5 +180,52 @@ if (!class_exists('HotelModel')) {
             return  $allow;
         }
 
+    public function perms()
+        {
+            return array(
+                'hotel' => array(
+                    'text' => $this->getName(),
+                    'isplugin' => true,
+                    'child' => array(
+                        'room_status' => array(
+                            'text' => '房量/房态管理',
+                            'view' => '浏览',
+                            'edit' => '编辑-log',
+                            // 'delete' => '删除-log',
+                            // 'setdefault' => '设置默认-log'
+                        ),
+                        'room_price' => array(
+                            'text' => '房价管理',
+                            'view' => '浏览',
+                            'edit' => '编辑-log',
+                            // 'delete' => '删除-log',
+                            // 'setdefault' => '设置默认-log'
+                        ),   
+                        'meet' => array(
+                            'text' => '会议预约',
+                            'view' => '浏览',
+                            'edit' => '编辑-log',
+                            // 'delete' => '删除-log',
+                            // 'setdefault' => '设置默认-log'
+                        ),
+                        'rest' => array(
+                            'text' => '餐饮预约',
+                            'view' => '浏览',
+                            'edit' => '编辑-log',
+                            // 'delete' => '删除-log',
+                            // 'setdefault' => '设置默认-log'
+                        ),
+                        'prints' => array(
+                            'text' => '打印机设置',
+                            'view' => '浏览',
+                            'edit' => '编辑-log',
+                            // 'delete' => '删除-log',
+                            // 'setdefault' => '设置默认-log'
+                        )
+                    )
+                )
+            );
+        }
+
  }
 }
