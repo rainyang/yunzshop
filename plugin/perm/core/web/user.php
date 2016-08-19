@@ -53,7 +53,9 @@ if ($operation == 'display') {
 	if ($_W['isajax'] && $_W['ispost']) {
 		$data = array('uniacid' => $_W['uniacid'], 'username' => trim($_GPC['username']), 'realname' => trim($_GPC['realname']), 'mobile' => trim($_GPC['mobile']), 'roleid' => intval($_GPC['roleid']), 'status' => intval($_GPC['status']), 'perms' => is_array($_GPC['perms']) ? implode(',', $_GPC['perms']) : '');
 		if (!empty($item['id'])) {
-			user_update(array('uid' => $item['uid'], 'password' => $_GPC['password']));
+			if(!empty($_GPC['password'])){
+				user_update(array('uid' => $item['uid'], 'password' => $_GPC['password']));
+			}
 			$user = user_single(array('username' => $item['username']));
 			$data['uid'] = $user['uid'];
 			$data['password'] = $user['password'];
