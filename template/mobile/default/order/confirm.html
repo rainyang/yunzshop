@@ -382,7 +382,7 @@
             <%/if%>
             <%if order.discountprice>0%>
             <div class="line" style="line-height:26px;">
-              -优惠 
+              优惠 
               <span>-￥<span class='discountprice' data-id="<%order.supplier_uid%>"><%order.discountprice%></span></span></div>
             <%/if%>
   		      <%if order.saleset%>
@@ -1153,7 +1153,7 @@ var fromcart = 0;
       		   }
        		   deductprice = deduct;
       		   totalprice-=deduct;
-      		   $('.coupondeduct_text[data-id='+supplier_uid+']').html('-优惠券优惠');
+      		   $('.coupondeduct_text[data-id='+supplier_uid+']').html('优惠券优惠');
 	         }else if(discount>0 && backtype==1){//打折
       		   deductprice = totalprice *  (1 - discount/10 );
       		   if(deductprice>totalprice){
@@ -1163,7 +1163,7 @@ var fromcart = 0;
         			   deductprice = 0;
         		 }
     		     totalprice-=deductprice;		
-		         $('.coupondeduct_text[data-id='+supplier_uid+']').html('-优惠券折扣(' + discount + '折)');
+		         $('.coupondeduct_text[data-id='+supplier_uid+']').html('优惠券折扣(' + discount + '折)');
 	         }
 	         if(deductprice>0){
 		        $('.coupondeduct_div[data-id='+supplier_uid+']').show();
