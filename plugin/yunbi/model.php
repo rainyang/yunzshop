@@ -41,7 +41,10 @@ if (!class_exists('YunbiModel')) {
 				{
 					return false;
 				}
-				m('member')->setCredit($order_goods[0]['openid'],'virtual_currency',$virtual_currency);
+
+				
+				pdo_fetchall("update ".tablename('sz_yi_member')." set `virtual_currency` = virtual_currency + ".$virtual_currency." where `uniacid` =  " . $uniacid . " AND openid = '".$order_goods[0]['openid']."' ");
+
 	        	$data_log = array(
 	                'id' 			=> $order_goods[0]['id'],
 	                'openid' 		=> $order_goods[0]['openid'],

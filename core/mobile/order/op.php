@@ -82,7 +82,6 @@ if ($_W['isajax']) {
 		if (p('yunbi')) {
 			p('yunbi')->GetVirtualCurrency($orderid);
 		}
-		echo "<pre>";print_r('调试');exit;
 		if ($order['refundstate'] > 0 && !empty($order['refundid'])) {
             $change_refund               = array();
             $change_refund['status']     = -2;
