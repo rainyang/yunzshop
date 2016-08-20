@@ -120,7 +120,12 @@ body {margin:0px; background:#f8f8f8;width:100%;}
                  <div class="img" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%value.goodsid%>'"><img src="<%value.thumb%>"/></div>
                  <div class="info">
                      <div class='inner' >
-                    <div class="name" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%value.goodsid%>'"><%if value.isopenchannel == 0%>(<span style='color:red'>不支持采购</span>)<%/if%><%value.title%></div>
+                    <div class="name" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%value.goodsid%>'">
+                    {if p('channel') && $member['ischannel']}
+                    <%if value.isopenchannel == 0%>(<span style='color:red'>不支持采购</span>)<%/if%>
+                    {/if}
+                    <%value.title%>
+                    </div>
                         <%if value.optionid!='0'%>
                          <div class="optionsel">
                             <div class='content'>
