@@ -515,6 +515,72 @@ class Sz_DYi_Finance {
         }
     }
 
+    // 支付宝退款 
+    public function alipayrefund($openid, $trade_no, $out_refund_no,$refundmoney = 0){
+        global $_W;       
+        $setting = uni_setting($_W['uniacid'], array('payment'));
+        if (is_array($setting['payment'])) {
+            $options = $setting['payment']['alipay'];
+            if(!empty($options)){
+                $partner = $options['partner'];
+                $secret = $options['secret'];
+            }else{
+                $partner = '';
+                $secret = '';
+            }
+        }
+        $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+        ':uniacid' => $_W['uniacid']
+            ));
+        $setpay     = unserialize($setdata['sets']);
+         if (!empty($setpay['pay'])) {
+            $email = $setpay['pay']['alipay_number'];
+            $account_name = $setpay['pay']['alipay_name'];
+        }else{
+            $email ='';
+            $account_name = '';
+        }
+        $set                   = array();
+        $set['service']        = 'refund_fastpay_by_platform_pwd';//批量退款
+        $set['partner']        =  $partner;
+        $set['_input_charset'] = 'utf-8';
+        $set['sign_type']      = 'MD5';
+        $set['notify_url']     = $_W['siteroot'] . "addons/sz_yi/payment/alipay/refund_alipay".$_W['uniacid'].".php";
+        $set['seller_email']   = $email;  //付款账号邮箱
+        $set['seller_user_id']   = $partner;  // 2088 开头
+        $set['refund_date']    = date('Y-m-d H:i:s',time()); //退款时间
+        $set['batch_no']       = m('common')->createNO('member_log', 'batch_no', '');
+        $set['batch_fee']      = $refundmoney;
+        $set['batch_num']      = 1;
+        $set['detail_data']    = $trade_no.'^'.$refundmoney.'^订单退款';
+        $prepares            = array();
+        foreach ($set as $key => $value) {
+            if ($key != 'sign' && $key != 'sign_type') {
+                $prepares[] = "{$key}={$value}";
+            }
+        }
+        sort($prepares);
+        $string = implode($prepares, '&');   
+        $string .=  $secret;
+        $set['sign'] = md5($string);   
+        $cert = IA_ROOT . "/addons/sz_yi/cert/cacert.pem";
+        if((!file_exists($cert))) {
+            message('缺少支付宝证书文件!', '', 'error');
+        }
+        if(empty($set['seller_email'])){
+            message('未填写完整的支付宝付款账号或付款账户名，请到【系统设置】->【支付设置】中设置!', '', 'error');
+        }
+        //print_r($set);exit;
+        $url = 'https://mapi.alipay.com/gateway.do' . '?' . http_build_query($set, '', '&');
+        $resp = $this->getHttpResponseGET($url,$cert);
+        header("Location:" . $resp);
+        //修改状态为打款中状态
+        $refund= array('batch_no'=>$set['batch_no'],'returntime'=>time());
+        pdo_update('sz_yi_order_refund', $refund, array('refundno' =>$out_refund_no));
+        file_put_contents(dirname(__FILE__)." . '/../../payment/alipay/refund_alipay".$_W['uniacid'].".php","<?php include('refund_alipay.php'); ?>");   
+        exit;  
+
+    }
     public function downloadbill($starttime, $endtime, $type = 'ALL')
     {
         global $_W, $_GPC;

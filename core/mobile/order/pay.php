@@ -749,11 +749,14 @@ if ($operation == 'display' && $_W['isajax']) {
         show_json(0, '支付出错,请重试!');
         
     }
-} else if ($operation == 'return') {
+} else if ($operation == 'return') {    
     $tid = $_GPC['out_trade_no'];
     if (!m('finance')->isAlipayNotify($_GET)) {
         die('支付出现错误，请重试!');
     }
+    //保存支付宝交易号
+    $orders = array('trade_no'=>$_GPC['trade_no']);
+    pdo_update('sz_yi_order', $orders, array('ordersn_general' =>$tid,'uniacid'=>$uniacid));
     $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
         ':uniacid' => $uniacid,
         ':module' => 'sz_yi',

@@ -372,7 +372,7 @@ if ($operation == "display") {
         ) ,
         "1" => array(
             "css" => "info",
-            "name" => "待确认"
+            "name" => "待发货"
         ) ,
         "2" => array(
             "css" => "warning",
@@ -2298,7 +2298,14 @@ function order_list_refund($item)
             $realprice = round($realprice - $item['deductcredit2'], 2);
             $result = m('finance')->refund($item['openid'], $pay_ordersn, $refund['refundno'], $item['price'] * 100, $realprice * 100);
             $refundtype = 2;
-        } else {
+        }  else if ($item['paytype'] == 22) {
+            if ($ordersn_count > 1) {
+                message('多笔合并付款订单，请使用手动退款。', '', 'error');
+            }
+            $realprice = round($realprice - $item['deductcredit2'], 2);
+            m('finance')->alipayrefund($item['openid'], $item['trade_no'], $refund['refundno'],$realprice);
+            exit;
+        }else {
             if ($realprice < 1) {
                 message('退款金额必须大于1元，才能使用微信企业付款退款!', '', 'error');
             }
