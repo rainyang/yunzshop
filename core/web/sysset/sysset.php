@@ -138,6 +138,7 @@ if (checksubmit()) {
         $set['shop']['signimg'] = save_media($shop['signimg']);
         $set['shop']['diycode'] = trim($shop['diycode']);
         $set['shop']['copyright']  = trim($shop['copyright']);
+         $set['shop']['footercontent']  = trim($shop['footercontent']);
         $set['shop']['credit']  = trim($shop['credit']);
         $set['shop']['credit1']  = trim($shop['credit1']);
         plog('sysset.save.shop', '修改系统设置-商城设置');

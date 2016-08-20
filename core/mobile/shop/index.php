@@ -2,14 +2,29 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-
 global $_W, $_GPC;
-
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'index';
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $designer  = p('designer');
 $shopset   = m('common')->getSysset('shop');
+$html = $shopset['footercontent'];
+preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg]?))[\'|\"].*?[\/]?>/", $html, $imgs);
+if (isset($imgs[1])) {
+    foreach ($imgs[1] as $img) {
+        $im       = array(
+            "old" => $img,
+            "new" => tomedia($img)
+        );
+        $images[] = $im;
+    }
+    if (isset($images)) {
+        foreach ($images as $img) {
+            $html = str_replace($img['old'], $img['new'], $html);
+        }
+    }
+    $shopset['footercontent'] = $html;
+}
 if (empty($this->yzShopSet['ispc']) || isMobile()) {
     if ($designer) {
         $pagedata = $designer->getPage();
@@ -36,7 +51,6 @@ if (empty($this->yzShopSet['ispc']) || isMobile()) {
         }
     }
 }
-
 
 if ($operation == 'index') {
 	$advs = pdo_fetchall('select id,advname,link,thumb,thumb_pc from ' . tablename('sz_yi_adv') . ' where uniacid=:uniacid and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
