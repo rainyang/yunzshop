@@ -1731,3 +1731,8 @@ if (!pdo_fieldexists('sz_yi_member', 'bank')) {
 if (!pdo_fieldexists('sz_yi_member', 'bank_num')) {
     pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_member')." ADD  `bank_num` VARCHAR( 100 ) DEFAULT '' COMMENT '银行卡号';");
 }
+
+//收银台是否加入全返字段
+if (!pdo_fieldexists('sz_yi_cashier_store', 'isreturn')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_cashier_store')." ADD `isreturn` tinyint(1) DEFAULT '0';");
+}
