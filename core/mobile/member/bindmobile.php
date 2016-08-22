@@ -26,7 +26,7 @@ if ($_W['isajax']) {
         }
         
         //更换公众号或pc到微信绑定
-        $memberall = pdo_fetchall('select id, openid, pwd, level, agentlevel, bonuslevel, createtime, bindapp from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and openid!=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':mobile' => $mc['mobile']));
+        $memberall = pdo_fetchall('select id, openid, pwd, level, agentlevel, bonuslevel, createtime, bindapp, status, isagent from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and openid!=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':mobile' => $mc['mobile']));
 
         if (!empty($memberall)) {
             foreach ($memberall as $key => $info) {
@@ -54,7 +54,7 @@ if ($_W['isajax']) {
                 }
 
                 //更新微信记录里的手机号等为pc的手机号
-                $member = pdo_fetch('select id, mobile, pwd, credit1, credit2, level, agentlevel, bonuslevel, createtime, bindapp from ' . tablename('sz_yi_member') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+                $member = pdo_fetch('select id, mobile, pwd, credit1, credit2, level, agentlevel, bonuslevel, createtime, bindapp, status, isagent from ' . tablename('sz_yi_member') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
                 $data = array('isbindmobile' => 1);
                 if ($member['mobile'] != $mc['mobile'] || !empty($mc['mobile'])) {
                     $data['mobile'] = $mc['mobile'];
@@ -77,14 +77,17 @@ if ($_W['isajax']) {
 
                 //会员等级对比
                 if(!empty($info['level'])){
-                    $newlevel = "";
+                   /* $newlevel = "";
                     $oldlevel = pdo_fetchcolumn('select level from ' . tablename('sz_yi_member_level') . ' where id=:id and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':id' => $info['level']));
                     if(!empty($member['level'])){
                         $newlevel = pdo_fetchcolumn('select level from ' . tablename('sz_yi_member_level') . ' where id=:id and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':id' => $member['level']));
                     }
                     if(empty($newlevel) || $oldlevel > $newlevel){
                        $data['level'] = $oldlevel;
-                    } 
+                    } */
+                    if(empty($member['level']) || $info['level'] > $member['level']){
+                        $data['level'] = $info['level'];
+                    }
                 }
 
                 //分销等级对比
@@ -96,7 +99,7 @@ if ($_W['isajax']) {
                     }
                     if(empty($newagentlevel) || $oldagentlevel > $newagentlevel){
                        $data['agentlevel'] = $oldagentlevel;
-                    } 
+                    }
                 }
 
                 //代理等级对比
@@ -125,10 +128,21 @@ if ($_W['isajax']) {
                     pdo_update('sz_yi_member', array('agentid' => $member['id']), array('agentid' => $info['id'], 'uniacid' => $_W['uniacid']));
                 }
 
+                //是否绑定app
                 if ($info['bindapp'] == 1 || $member['bindapp'] == 1) {
                     $data['bindapp'] = 1;
                 }
 
+                //分销状态
+                if ($info['status'] == 1 || $member['status'] == 1) {
+                    $data['status'] = 1;
+                }
+
+                //是否分销商
+                if ($info['isagent'] == 1 || $member['isagent'] == 1) {
+                    $data['isagent'] = 1;
+                }
+               
                 pdo_update('sz_yi_member', $data, array('openid' => $openid, 'uniacid' => $_W['uniacid']));
 
                 $mc_member = pdo_fetch('select * from ' . tablename('mc_mapping_fans') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $oldopenid));
