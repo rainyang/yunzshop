@@ -7,6 +7,8 @@ $op     = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $tempdo = empty($_GPC['tempdo']) ? "" : $_GPC['tempdo'];
 $pageid = empty($_GPC['pageid']) ? "" : $_GPC['pageid'];
 $apido  = empty($_GPC['apido']) ? "" : $_GPC['apido'];
+
+
 if ($op == 'display') {
     ca('designer.page.view');
     $page     = empty($_GPC['page']) ? "" : $_GPC['page'];
