@@ -1867,6 +1867,9 @@ function order_list_confirmsend1($order) {
      if (p("return")) {
         p("return")->cumulative_order_amount($order["id"]);
     }
+    if (p('yunbi')) {
+        p('yunbi')->GetVirtualCurrency($order["id"]);
+    }
     plog("order.op.fetch", "订单确认取货 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
     message("发货操作成功！", order_list_backurl() , "success");
 }
@@ -1958,7 +1961,9 @@ function order_list_finish($order) {
     if (p("return")) {
         p("return")->cumulative_order_amount($order["id"]);
     }
-
+    if (p('yunbi')) {
+        p('yunbi')->GetVirtualCurrency($order['id']);
+    }
     // 订单确认收货后自动发送红包
     if ($order["redprice"] > 0) {
         m('finance')->sendredpack($order['openid'], $order["redprice"]*100, $order["id"], $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');

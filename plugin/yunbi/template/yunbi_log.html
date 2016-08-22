@@ -6,10 +6,10 @@
 <div class="right-titpos-fixed">
     <ul class="add-shopnav" id="myTab">
         <li {if $_GPC['yunbitype']=='1'}class="active"{/if} ><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'1'))}">购物获得{$set['yunbi_title']}</a></li>
-        <li {if $_GPC['yunbitype']=='2'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'2'))}">分销下线获得{$set['yunbi_title']}</a></li>
+        <li {if $_GPC['yunbitype']=='2'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'2'))}">下线获得{$set['yunbi_title']}</a></li>
         <li {if $_GPC['yunbitype']=='3'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'3'))}">购物{$set['yunbi_title']}抵扣</a></li>
         <li {if $_GPC['yunbitype']=='4'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'4'))}">{$set['yunbi_title']}抵扣返还</a></li>
-        <li {if $_GPC['yunbitype']=='5'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'5'))}">{$set['yunbi_title']}返现到余额</a></li>
+        <li {if $_GPC['yunbitype']=='5'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'5'))}">{$set['yunbi_title']}转入余额</a></li>
         <li {if $_GPC['yunbitype']=='6'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'6'))}">清除{$set['yunbi_title']}明细</a></li>
     </ul> 
 </div>

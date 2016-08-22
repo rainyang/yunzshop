@@ -28,6 +28,9 @@ if (!file_exists($file)) {
                     $isexecute = true;
                 }
             }
+            if ($_GPC['testtype'] == 'return') {
+                $isexecute = true;
+            }
             if ( $isexecute ) {
                 //虚拟币返现到余额
                 p('yunbi')->PerformYunbiReturn($set, $_W['uniacid']);
@@ -37,7 +40,8 @@ if (!file_exists($file)) {
                 echo "uniacid:".$_W['uniacid'];
                 echo "虚拟币返现到余额失败！</br>";
             }
-        } elseif (!empty($set) && $set['isreturn_or_remove'] == 1) {
+        } 
+        if (!empty($set) && $set['isreturn_or_remove'] == 1) {
             //清除虚拟币
             $remove_times = explode("||",$set['yunbi_remove_times']);
             $isexecute = false;
@@ -52,6 +56,9 @@ if (!file_exists($file)) {
                     }
                 }
             }
+            if ($_GPC['testtype'] == 'remove') {
+                $isexecute = true;
+            }
             if ( $isexecute ) {
                 //清除虚拟币
                 p('yunbi')->RemoveYunbi($set, $_W['uniacid']);
@@ -63,6 +70,7 @@ if (!file_exists($file)) {
             }
 
         }
+
         //分销下线获得虚拟币
         if (!empty($set) && $set['isdistribution']) {
             $isdistribution = false;
@@ -70,6 +78,9 @@ if (!file_exists($file)) {
                     $set['distribution_d'] = date('d');
                     $this->updateSet($set);
                     $isdistribution = true;
+            }
+            if ($_GPC['testtype'] == 'distribution') {
+                $isdistribution = true;
             }
             if ( $isdistribution) {
                 //分销商获得虚拟币
