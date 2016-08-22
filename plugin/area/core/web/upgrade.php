@@ -7,7 +7,7 @@ $result = pdo_fetchcolumn('select id from ' . tablename('sz_yi_plugin') . ' wher
 if(empty($result)){
     $displayorder_max = pdo_fetchcolumn('select max(displayorder) from ' . tablename('sz_yi_plugin'));
     $displayorder = $displayorder_max + 1;
-    $sql = "INSERT INTO " . tablename('sz_yi_plugin') . " (`displayorder`,`identity`,`name`,`version`,`author`,`status`) VALUES(". $displayorder .",'area','商品区域','1.0','官方','1');";
+    $sql = "INSERT INTO " . tablename('sz_yi_plugin') . " (`displayorder`,`identity`,`name`,`version`,`author`,`status`,'category') VALUES(". $displayorder .",'area','商品区域','1.0','官方','1','sale');";
   pdo_query($sql);
 }
 $sql = "
@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_category_area')." (
   `enabled` tinyint(1) DEFAULT '1' COMMENT '是否开启',
   `ishome` tinyint(3) DEFAULT '0',
   `advimg` varchar(255) DEFAULT '',
-  `advurl` varchar(500) DEFAULT '',
+  `advurl` varchar(500) DEFAULT '', 
   `level` tinyint(3) DEFAULT '0',
   `advimg_pc` varchar(255) DEFAULT NULL,
   `advurl_pc` varchar(500) DEFAULT NULL,
