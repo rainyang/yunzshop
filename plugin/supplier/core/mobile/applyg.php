@@ -1,6 +1,7 @@
 <?php
 global $_W, $_GPC;
 $openid = m('user')->getOpenid();
+$shopset   = m('common')->getSysset('pay');
 if ($_W['isajax']) {
 	$member = m('member')->getMember($openid);
 	$supplieruser = $this->model->getSupplierUidAndUsername($openid);
