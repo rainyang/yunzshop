@@ -524,22 +524,25 @@ class Sz_DYi_Finance {
             if(!empty($options)){
                 $partner = $options['partner'];
                 $secret = $options['secret'];
+                $email = $options['account'];
+
             }else{
                 $partner = '';
                 $secret = '';
+                $email ='';
             }
         }
         $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
         ':uniacid' => $_W['uniacid']
             ));
         $setpay     = unserialize($setdata['sets']);
-         if (!empty($setpay['pay'])) {
-            $email = $setpay['pay']['alipay_number'];
-            $account_name = $setpay['pay']['alipay_name'];
-        }else{
-            $email ='';
-            $account_name = '';
-        }
+        //  if (!empty($setpay['pay'])) {
+        //     $email = $setpay['pay']['alipay_number'];
+        //     $account_name = $setpay['pay']['alipay_name'];
+        // }else{
+        //     $email ='';
+        //     $account_name = '';
+        // }
         $set                   = array();
         $set['service']        = 'refund_fastpay_by_platform_pwd';//批量退款
         $set['partner']        =  $partner;

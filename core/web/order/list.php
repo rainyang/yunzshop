@@ -2299,6 +2299,17 @@ function order_list_refund($item)
             $result = m('finance')->refund($item['openid'], $pay_ordersn, $refund['refundno'], $item['price'] * 100, $realprice * 100);
             $refundtype = 2;
         }  else if ($item['paytype'] == 22) {
+            $set           = m('common')->getSysset(array(               
+                'pay'
+            ));
+        $setting = uni_setting($_W['uniacid'], array('payment'));
+            if(!$set['pay']['alipay']){
+                message('您未开启支付宝支付', '', 'error');
+            }
+
+            if(!$setting['payment']['alipay']['switch']){
+                message('您未开启支付宝无线支付', '', 'error');
+            }
             if ($ordersn_count > 1) {
                 message('多笔合并付款订单，请使用手动退款。', '', 'error');
             }
