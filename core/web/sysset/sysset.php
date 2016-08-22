@@ -138,19 +138,37 @@ if (checksubmit()) {
         $set['shop']['signimg'] = save_media($shop['signimg']);
         $set['shop']['diycode'] = trim($shop['diycode']);
         $set['shop']['copyright']  = trim($shop['copyright']);
-         $set['shop']['footercontent']  = trim($shop['footercontent']);
         $set['shop']['credit']  = trim($shop['credit']);
         $set['shop']['credit1']  = trim($shop['credit1']);
         plog('sysset.save.shop', '修改系统设置-商城设置');
     }
     elseif ($op == 'pcset') {
-        //echo "<pre>"; print_r($_GPC['pcset']);exit;
         $custom                    = is_array($_GPC['pcset']) ? $_GPC['pcset'] : array();
         $set['shop']['ispc']       = trim($custom['ispc']);
         $set['shop']['pctitle']    = trim($custom['pctitle']);
         $set['shop']['pckeywords'] = trim($custom['pckeywords']);
         $set['shop']['pcdesc']     = trim($custom['pcdesc']);
+
+        $footercontent = htmlspecialchars_decode($custom['footercontent']);
+        preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg|\.png|\.jpeg]?))[\'|\"].*?[\/]?>/", $footercontent,
+        $imgs);
+        $images = array();
+        if (isset($imgs[1])) {
+            foreach ($imgs[1] as $img) {
+            $im = array(
+                "old" => $img,
+                "new" => save_media($img)
+            );
+            $images[] = $im;
+            }
+        }
+        foreach ($images as $img) {
+            $footercontent = str_replace($img['old'], $img['new'], $footercontent);
+        }
+        $set['shop']['pccopyright'] =  $pccopyright;
         $set['shop']['pccopyright']  = trim($custom['pccopyright']);
+        $set['shop']['footercontent']  = trim($footercontent);
+
         $set['shop']['index']      = $custom['index'];
         $set['shop']['pclogo']     = save_media($custom['pclogo']);
         $set['shop']['reglogo']    = save_media($custom['reglogo']);

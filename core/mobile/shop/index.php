@@ -8,6 +8,7 @@ $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $designer  = p('designer');
 $shopset   = m('common')->getSysset('shop');
+//print_r($shopset);exit;
 $html = $shopset['footercontent'];
 preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg]?))[\'|\"].*?[\/]?>/", $html, $imgs);
 if (isset($imgs[1])) {
@@ -23,8 +24,9 @@ if (isset($imgs[1])) {
             $html = str_replace($img['old'], $img['new'], $html);
         }
     }
-    $shopset['footercontent'] = $html;
 }
+ $shopset['footercontent'] = $html;
+
 if (empty($this->yzShopSet['ispc']) || isMobile()) {
     if ($designer) {
         $pagedata = $designer->getPage();
