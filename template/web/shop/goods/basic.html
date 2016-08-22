@@ -94,6 +94,23 @@
     </div>
 </div>
 {/if}
+{if p('area')}
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>商品区域</label>
+    <div class="col-sm-8 col-xs-12">
+        
+             {ife 'shop.goods' $item}
+             {php echo tpl_form_field_category_level3('category_area', $parent_area, $children_area, $item['pcate_area'], $item['ccate_area'], $item['tcate_area'])}
+             {else}
+              <div class='form-control-static'>
+                   {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category_area').' where id=:id limit 1',array(':id'=>$item['pcate_area']))} -
+                   {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category_area').' where id=:id limit 1',array(':id'=>$item['ccate_area']))} -
+                   {php echo pdo_fetchcolumn('select name from '.tablename('sz_yi_category_area').' where id=:id limit 1',array(':id'=>$item['tcate_area']))}
+              </div>
+             {/if}
+    </div>
+</div>
+{/if}
 <link href="../addons/sz_yi/static/js/dist/select2/select2.css" rel="stylesheet">
 <link href="../addons/sz_yi/static/js/dist/select2/select2-bootstrap.css" rel="stylesheet">
 <script language="javascript" src="../addons/sz_yi/static/js/dist/select2/select2.min.js"></script>

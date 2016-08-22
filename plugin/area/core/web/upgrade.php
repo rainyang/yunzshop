@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_category_area')." (
   `advimg_pc` varchar(255) DEFAULT NULL,
   `advurl_pc` varchar(500) DEFAULT NULL,
   `supplier_uid` int(11) DEFAULT '0',
+  `detail` text DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_uniacid` (`uniacid`),
   KEY `idx_displayorder` (`displayorder`),

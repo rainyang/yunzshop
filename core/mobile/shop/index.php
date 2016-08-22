@@ -100,6 +100,7 @@ if ($operation == 'index') {
 			}
 	    }
 	}
+
 	$index_name = array(
 		'isrecommand' 	=> '精品推荐',
 		'isnew' 		=> '新上商品',
@@ -115,6 +116,12 @@ if ($operation == 'index') {
 		} else if ($c['level'] == 2) {
 			$c['url'] = $this->createMobileUrl('shop/list', array('ccate' => $c['id']));
 		}
+	}
+	foreach ($category_area as &$d) {
+		$d['thumb'] = tomedia($d['thumb']);
+		
+		$d['url'] = $this->createMobileUrl('shop/area_list', array('pcate_area' => $d['id']));
+		
 	}
 	/*广告与商品*/
 	//精品推荐
@@ -193,7 +200,7 @@ if ($operation == 'index') {
 if ($_W['isajax']) {
 	if ($operation == 'index') {
 
-		show_json(1, array('set' => $set, 'advs' => $advs, 'category' => $category, 'is_read' => $is_read));
+		show_json(1, array('set' => $set, 'advs' => $advs, 'category' => $category, 'is_read' => $is_read, 'category_area' => $category_area));
 	} else if ($operation == 'goods') {
 		$type = $_GPC['type'];
 		show_json(1, array('goods' => $goods, 'pagesize' => $args['pagesize']));
