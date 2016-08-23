@@ -664,19 +664,20 @@ if ($_W['isajax']) {
                         }
                     }
                 }
-                foreach ($suppliers as $key => $val) {
-                    if (!empty($order_all[$val['supplier_uid']]['dispatch_array'])) {
-                        foreach ($order_all[$val['supplier_uid']]['dispatch_array'] as $k => $v) {
-                            $order_all[$val['supplier_uid']]['dispatch_data'] = $order_all[$val['supplier_uid']]['dispatch_array'][$k]["data"];
-                            $param         = $order_all[$val['supplier_uid']]['dispatch_array'][$k]["param"];
-                            $areas         = unserialize($order_all[$val['supplier_uid']]['dispatch_data']["areas"]);
-                            if (!empty($address)) {
-                                $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $order_all[$val['supplier_uid']]['dispatch_data'], $val['supplier_uid']);
-                            } else if (!empty($member["city"])) {
-                                $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $order_all[$val['supplier_uid']]['dispatch_data'], $val['supplier_uid']);
-                            } else {
-                                $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getDispatchPrice($param, $order_all[$val['supplier_uid']]['dispatch_data'], -1, $val['supplier_uid']);
-                            }
+            }
+
+            foreach ($suppliers as $key => $val) {
+                if (!empty($order_all[$val['supplier_uid']]['dispatch_array'])) {
+                    foreach ($order_all[$val['supplier_uid']]['dispatch_array'] as $k => $v) {
+                        $order_all[$val['supplier_uid']]['dispatch_data'] = $order_all[$val['supplier_uid']]['dispatch_array'][$k]["data"];
+                        $param         = $order_all[$val['supplier_uid']]['dispatch_array'][$k]["param"];
+                        $areas         = unserialize($order_all[$val['supplier_uid']]['dispatch_data']["areas"]);
+                        if (!empty($address)) {
+                            $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $address["city"], $param, $order_all[$val['supplier_uid']]['dispatch_data'], $val['supplier_uid']);
+                        } else if (!empty($member["city"])) {
+                            $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getCityDispatchPrice($areas, $member["city"], $param, $order_all[$val['supplier_uid']]['dispatch_data'], $val['supplier_uid']);
+                        } else {
+                            $order_all[$val['supplier_uid']]['dispatch_price'] += m("order")->getDispatchPrice($param, $order_all[$val['supplier_uid']]['dispatch_data'], -1, $val['supplier_uid']);
                         }
                     }
                 }
