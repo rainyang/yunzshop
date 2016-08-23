@@ -28,7 +28,11 @@ if ($operation == 'display' && $_W['isajax']) {
 	}
 	m('member')->setCredit($openid, 'credit2', -$money, array(0, '余额提现：-' . $money . " 元"));
 	$logno = m('common')->createNO('member_log', 'logno', 'RW');
-	$logdata = array('uniacid' => $uniacid, 'logno' => $logno, 'openid' => $openid, 'title' => '余额提现', 'type' => 1, 'createtime' => time(), 'status' => 0, 'money' => $money);
+
+	$poundage = $money * $set['trade']['poundage'] / 100;
+	$actual = $money - $poundage;
+
+	$logdata = array('uniacid' => $uniacid, 'logno' => $logno, 'openid' => $openid, 'title' => '余额提现', 'type' => 1, 'createtime' => time(), 'status' => 0, 'money' => $actual, 'poundage' => $poundage, 'withdrawal_money' => $money );
 	pdo_insert('sz_yi_member_log', $logdata);
 	$logid = pdo_insertid();
 	//余额提现自动打款到微信账户
