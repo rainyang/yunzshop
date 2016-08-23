@@ -36,7 +36,7 @@ class Detail extends \api\YZ
     private function getOrderInfo($para)
     {
         $order_model = new \model\api\order();
-        $fields = 'ordersn,status,price,id as order_id,openid,addressid,dispatchid,createtime,paytime,dispatchprice,deductenough,paytype,changeprice,changedispatchprice,goodsprice,olddispatchprice,address';
+        $fields = 'ordersn,status,price,id as order_id,openid,addressid,dispatchid,createtime,paytime,dispatchprice,deductenough,paytype,changeprice,changedispatchprice,goodsprice,olddispatchprice,address,isverify,isvirtual,virtual,dispatchtype';
         $order_info = $order_model->getInfo(array(
             'id' => $para["order_id"],
             'uniacid' => $para["uniacid"]
@@ -63,7 +63,7 @@ class Detail extends \api\YZ
 
         $price = $order_info['price'];
         $goods = $order_info['goods'];
-        $base = array_part('ordersn,order_id,createtime', $order_info);
+        $base = array_part('ordersn,order_id,createtime,isverify,isvirtual', $order_info);
         $status = array(
             'name' => $order_info['status_name'],
             'value' => $order_info['status'],
@@ -91,6 +91,7 @@ class Detail extends \api\YZ
 
     private function getDispatch($order_info)
     {
+        //dump($order_info);
         if (empty($order_info['addressid'])) {
             if ($order_info['isverify'] == 1) {
                 $dispatch = '线下核销';
@@ -111,37 +112,24 @@ class Detail extends \api\YZ
 
     private function getAddressInfo($order_info)
     {
-        /*if (empty($order_info["addressid"])) {
-            $user = unserialize($order_info["carrier"]);
-        } else {
-            $user = iunserializer($order_info["address"]);
-            if (!is_array($user)) {
-                $user = pdo_fetch("SELECT * FROM " . tablename("sz_yi_member_address") . " WHERE id = :id and uniacid=:uniacid", array(
-                    ":id" => $order_info['addressid'],
-                    ":uniacid" => $uniacid
-                ));
-            }
-            //$address_info = $user["address"];
-            $user["address"] = array_part('province,city,area,address', $user);
-            //dump($user["address"]);
-            $order_info["addressdata"] = array(
-                "addressid" => $order_info["addressid"],
-                "realname" => $user["realname"],
-                "mobile" => $user["mobile"],
-                "address" => $user["address"],
-            );
-        }*/
+        $uniacid = $this->uniacid;
         $address_info = unserialize($order_info['address']);
-        if(empty($address_info)){
-            return (object)array();
+        if (!is_array($address_info)) {
+            $address_info = pdo_fetchcolumn("SELECT * FROM " . tablename("sz_yi_member_address") . " WHERE id = :id and uniacid=:uniacid", array(
+                ":id" => $order_info['addressid'],
+                ":uniacid" => $uniacid
+            ));
         }
         $address = array_part('province,city,area,address', $address_info);
         $address_info = array(
             "addressid" => $address_info["id"],
             "realname" => $address_info["realname"],
             "mobile" => $address_info["mobile"],
-            "address" => $address
+            "address" => $address?$address:''
         );
+
+
+
         return $address_info;
     }
 

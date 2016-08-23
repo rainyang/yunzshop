@@ -49,9 +49,12 @@ class order
             '2' => '换货'
         )
     );
-    public function getPayTypeName(){
+
+    public function getPayTypeName()
+    {
         return $this->name_map['pay_type'];
     }
+
     /**
      * 获取订单详情
      *
@@ -98,7 +101,7 @@ class order
         );
 
         $condition_str = implode(' ', $condition);
-        $sql = 'select o.ordersn,o.status,o.price ,o.id as order_id,o.changedispatchprice,o.changeprice,r.rtype,r.status as rstatus
+        $sql = 'select o.ordersn,o.status,o.price ,o.id as order_id,o.changedispatchprice,o.changeprice,r.rtype,r.status as rstatus,o.isverify,o.isvirtual
 from ' . tablename("sz_yi_order") . " o" . " 
 left join " . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " 
 left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " 
@@ -138,7 +141,7 @@ where {$condition_str} ORDER BY o.id DESC LIMIT 0,10 ";
             if ($order_info["isverify"] == 1) {
                 $order_info["status_name"] = "待使用";
             } else if (empty($order_info["addressid"])) {
-                $order_info["status_name"] = "待发货";
+                $order_info["status_name"] = "待取货";
             }
         }
         if ($order_info["status"] == -1) {
@@ -181,6 +184,9 @@ where {$condition_str} ORDER BY o.id DESC LIMIT 0,10 ";
             } elseif ($refund['status'] == 1) {
                 $refund['refund_name'] = '已完成';
             }
+        }
+        if (empty($refund)) {
+            $refund = array('imgs', 'refundtype' => array('name' => '', 'value' => ''), 'status', 'refund_name');
         }
         return $refund;
     }

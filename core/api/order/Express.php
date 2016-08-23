@@ -26,7 +26,7 @@ class Express extends \api\YZ
     public function index(){
         global $_W;
         $order_info = $this->order_info;
-
+//dump($order_info);
         $order_info['url'] = $_W['siteurl']."/wap/&express={$order_info['express']}&expresssn={$order_info['expresssn']}";
         $order_info = array_part('expresscom,expresssn,url',$order_info);
 

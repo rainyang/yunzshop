@@ -116,33 +116,62 @@ class Sz_DYi_Order
      */
     public function payResult($params)
     {
-        //file_put_contents($_SERVER['DOCUMENT_ROOT'].'/addons/sz_yi/1.txt', print_r($params,true));exit;
         global $_W;
         $fee     = $params['fee'];
+        $uniacid = $_W['uniacid'];
         $data    = array(
             'status' => $params['result'] == 'success' ? 1 : 0
         );
         $ordersn = $params['tid'];
-        $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where  ordersn=:ordersn and uniacid=:uniacid limit 1', array(
-            ':uniacid' => $_W['uniacid'],
-            ':ordersn' => $ordersn
+        $orderall = pdo_fetchall("select * from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid', array(
+            ':ordersn_general' => $ordersn,
+            ':uniacid' => $uniacid
         ));
 
+        if(count($orderall) > 1){
+            $order = array();
+            $order['ordersn'] = $ordersn;
+            $orderid = array();
+            foreach ($orderall as $key => $val) {
+                $order['price']           += $val['price'];
+                $order['deductcredit2']   += $val['deductcredit2'];
+                $order['ordersn2']        += $val['ordersn2'];
+                $orderid[]                 = $val['id'];
+            }
+            $order['dispatchtype'] = $val['dispatchtype'];
+            $order['addressid'] = $val['addressid'];
+            $order['isvirtual'] = $val['isvirtual'];
+            $order['carrier'] = $val['carrier'];
+            $order['status'] = $val['status'];
+            $order['virtual'] = $val['virtual'];
+            $order['couponid'] = $val['couponid'];
+        }else{
+            $order   = $orderall[0];
+            $orderid = $order['id'];
+        }
+        $verify_set = m('common')->getSetData();
+        $allset = iunserializer($verify_set['plugins']);
+        if ($order['isverify'] == 1 && $allset['verify']['sendcode'] == 1) {
+            $carriers = unserialize($order['carrier']);
+            $mobile = $carriers['carrier_mobile'];
+            $type = 'verify';
+            $issendsms = $this->sendSms($mobile, $order['verifycode'], 'reg', $type);
+
+        }
         //验证paylog里金额是否与订单金额一致
         $log = pdo_fetch('select * from ' . tablename('core_paylog') . ' where `uniacid`=:uniacid and fee=:fee and `module`=:module and `tid`=:tid limit 1',
             array(
-            ':uniacid' => $_W['uniacid'],
-            ':module' => 'sz_yi',
-            ':fee' => $fee,
-            ':tid' => $order['ordersn']
-        ));
-
+                ':uniacid' => $_W['uniacid'],
+                ':module' => 'sz_yi',
+                ':fee' => $fee,
+                ':tid' => $ordersn
+            ));
         if (empty($log)) {
             show_json(-1, '订单金额错误, 请重试!');
             exit;
         }
 
-        $orderid = $order['id'];
+        //$orderid = $order['id'];
         if ($params['from'] == 'return') {
             $address = false;
             if (empty($order['dispatchtype'])) {
@@ -162,17 +191,31 @@ class Sz_DYi_Order
                     'carrier' => $carrier
                 );
             } else {
+                //多供应商支付成功条件
+                if(is_array($orderid)){
+                    $orderids     = implode(',', $orderid);
+                    $order_update = "id in ({$orderids})";
+                    $orderdetail_where = "o.id in ({$orderids})";
+                    $goods_where = "og.orderid in ({$orderids})";
+                }else{
+                    $order_update = "id = ".$orderid;
+                    $orderdetail_where = "o.id = {$orderid}";
+                    $goods_where = "og.orderid = {$orderid}";
+                }
                 if ($order['status'] == 0) {
                     $pv = p('virtual');
                     if (!empty($order['virtual']) && $pv) {
                         $pv->pay($order);
                     } else {
-                        pdo_update('sz_yi_order', array(
-                            'status' => 1,
-                            'paytime' => time()
-                        ), array(
-                            'id' => $orderid
-                        ));
+                        if (p('channel')) {
+                            if ($params['ischannelpay'] == 1) {
+                                pdo_query('update ' . tablename('sz_yi_order') . " set status=3, paytime=".time().", finishtime=".time().", pay_ordersn=ordersn_general, ordersn_general=ordersn where {$order_update} and uniacid='{$uniacid}' ");
+                            } else {
+                                pdo_query('update ' . tablename('sz_yi_order') . " set status=1, paytime=".time().", pay_ordersn=ordersn_general, ordersn_general=ordersn where {$order_update} and uniacid='{$uniacid}' ");
+                            }
+                        } else {
+                            pdo_query('update ' . tablename('sz_yi_order') . " set status=1, paytime=".time().", pay_ordersn=ordersn_general, ordersn_general=ordersn where {$order_update} and uniacid='{$uniacid}' ");
+                        }
                         if ($order['deductcredit2'] > 0) {
                             $shopset = m('common')->getSysset('shop');
                             m('member')->setCredit($order['openid'], 'credit2', -$order['deductcredit2'], array(
@@ -180,23 +223,74 @@ class Sz_DYi_Order
                                 $shopset['name'] . "余额抵扣: {$order['deductcredit2']} 订单号: " . $order['ordersn']
                             ));
                         }
-                        $this->setStocksAndCredits($orderid, 1);
-                        if (p('coupon') && !empty($order['couponid'])) {
-                            p('coupon')->backConsumeCoupon($order['id']);
-                        }
-                        m('notice')->sendOrderMessage($orderid);
-                        if (p('commission')) {
-                            p('commission')->checkOrderPay($order['id']);
+                        if(is_array($orderid)){
+                            foreach ($orderall as $k => $v) {
+                                $this->setStocksAndCredits($v['id'], 1);
+                                if (p('coupon') && !empty($v['couponid'])) {
+                                    p('coupon')->backConsumeCoupon($v['id']);
+                                }
+                                m('notice')->sendOrderMessage($v['id']);
+                                if (p('commission')) {
+                                    p('commission')->checkOrderPay($v['id']);
+                                }
+                            }
+                        }else{
+                            $this->setStocksAndCredits($orderid, 1);
+                            if (p('coupon') && !empty($order['couponid'])) {
+                                p('coupon')->backConsumeCoupon($orderid);
+                            }
+                            m('notice')->sendOrderMessage($orderid);
+                            if (p('commission')) {
+                                p('commission')->checkOrderPay($orderid);
+                            }
                         }
                     }
                 }
-                
-                if(p('supplier')){
-                    p('supplier')->order_split($orderid);
+                //支付后订单打印
+                if(p('hotel')){
+                    //打印订单
+                    $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
+                    //订单信息
+                    $print_order = $order;
+                    //商品信息
+                    $ordergoods = pdo_fetchall("select * from " . tablename('sz_yi_order_goods') . " where uniacid=".$_W['uniacid']." and orderid=".$orderid);
+                    foreach ($ordergoods as $key =>$value) {
+                        //$ordergoods[$key]['price'] = pdo_fetchcolumn("select marketprice from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+                        $ordergoods[$key]['goodstitle'] = pdo_fetchcolumn("select title from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+                        $ordergoods[$key]['totalmoney'] = number_format($ordergoods[$key]['price']*$value['total'],2);
+                        $ordergoods[$key]['print_id'] = pdo_fetchcolumn("select print_id from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+                        $ordergoods[$key]['type'] = pdo_fetchcolumn("select type from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
+
+                    }
+                    $print_order['goods']=$ordergoods;
+                    $print_id = $print_order['goods'][0]['print_id'];
+                    $goodtype = $print_order['goods'][0]['type'];
+                    if($print_id!=''){
+                        $print_detail = pdo_fetch("select * from " . tablename('sz_yi_print_list') . " where uniacid={$_W['uniacid']} and id={$print_id}");
+                        if(!empty($print_detail) &&  $print_detail['status']=='0'){//是否存在打印机，以及判断是否为支付前打印
+                            $member_code = $print_detail['member_code'];
+                            $device_no = $print_detail['print_no'];
+                            $key = $print_detail['key'];
+                            include IA_ROOT.'/addons/sz_yi/core/model/print.php';
+                            if($goodtype=='99'){//类型为房间
+                                //房间金额信息
+                                $sql2 = 'SELECT * FROM ' . tablename('sz_yi_order_room') . ' WHERE `orderid` = :orderid';
+                                $params2 = array(':orderid' => $orderid);
+                                $price_list = pdo_fetchall($sql2, $params2);
+                                $msgNo = testSendFreeMessage($print_order, $member_code, $device_no, $key,$set,$price_list);
+                            }else if($goodtype=='1'){
+                                $msgNo = testSendFreeMessageshop($print_order, $member_code, $device_no, $key,$set);
+                            }
+                        }
+                    }
                 }
-                $orderdetail=pdo_fetch("select o.dispatchprice,o.ordersn,o.price,og.optionname as optiontitle,og.optionid,og.total from " .tablename('sz_yi_order'). " o left join " .tablename('sz_yi_order_goods').  "og on og.orderid = o.id  where o.id = :id and o.uniacid=:uniacid",array(':id'=>$orderid,':uniacid'=>$_W['uniacid']));
-                $sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where og.orderid=:orderid order by og.id asc';
-                $orderdetail['goods1'] = set_medias(pdo_fetchall($sql, array(':orderid' => $orderid)), 'thumb');
+                $orderdetail=pdo_fetch("select o.dispatchprice,o.ordersn,o.price,og.optionname as optiontitle,og.optionid,og.total from " .tablename('sz_yi_order'). " o left join " .tablename('sz_yi_order_goods').  "og on og.orderid = o.id where {$orderdetail_where} and o.uniacid=:uniacid",array(':uniacid'=>$_W['uniacid']));
+                $sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where ' . $goods_where . ' order by og.id asc';
+                $orderdetail['goods1'] = set_medias(pdo_fetchall($sql), 'thumb');
+                $pluginlove = p('love');
+                if($pluginlove){
+                    $pluginlove->checkOrder($goods_where, $order['openid'], 0);
+                }
                 $orderdetail['goodscount'] = count($orderdetail['goods1']);
                 return array(
                     'result' => 'success',
@@ -204,7 +298,8 @@ class Sz_DYi_Order
                     'address' => $address,
                     'carrier' => $carrier,
                     'virtual' => $order['virtual'],
-                    'goods'=>$orderdetail
+                    'goods'=>$orderdetail,
+                    'verifycode'=>$issendsms
 
                 );
             }

@@ -105,14 +105,14 @@ return array(
                 'data' => array()
             ),
             'Apply' => array(
-                'describe' => '列表',
+                'describe' => '提现申请',
                 'para' => array(
                     'uid' => '1',
                     'uniacid' => '2',
                     'commission_apply_id' => '3',
                     'status' => array(
-                        '57' => '2',
-                        '58' => '2',
+                        '59' => '2',
+                        '60' => '2',
                     )
                 ),
                 'data' => array()
@@ -128,7 +128,7 @@ return array(
                     'uid' => '1',
                     'uniacid' => '2',
                     'order_id' => '0',
-                    'status' => '4'
+                    'status' => ''
                 ),
                 'data' => array()
             ),
@@ -137,7 +137,7 @@ return array(
                 'para' => array(
                     'uid' => '1',
                     'uniacid' => '2',
-                    'order_id' => '50',
+                    'order_id' => '49',
                 ),
                 'data' => array()
             ),
@@ -146,7 +146,7 @@ return array(
                 'para' => array(
                     'uid' => '1',
                     'uniacid' => '2',
-                    'order_id' => '50',
+                    'order_id' => '63',
                 ),
                 'data' => array()
             ),
@@ -170,7 +170,7 @@ return array(
                 'para' => array(
                     'uid' => '1',
                     'uniacid' => '2',
-                    'order_id' => '30',
+                    'order_id' => '72',
                     'refundstatus' => '2',
                 ),
                 'data' => array()

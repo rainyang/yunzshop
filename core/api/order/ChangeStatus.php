@@ -158,44 +158,7 @@ class ChangeStatus extends \api\YZ
         return $list;
     }
 
-    public function getP()
-    {
-        $list = pdo_fetchall("SELECT * FROM " . tablename("province"));
-        $list = json_encode($list, JSON_UNESCAPED_UNICODE);
-        dump($list);
-        exit;
-        return $list;
-    }
 
-    public function getC()
-    {
-        $list = pdo_fetchall("SELECT * FROM " . tablename("city"));
-        $list = json_encode($list, JSON_UNESCAPED_UNICODE);
-        dump($list);
-        exit;
-        return $list;
-    }
-
-    public function getR()
-    {
-        $list = pdo_fetchall("SELECT * FROM " . tablename("region"));
-        $list = json_encode($list, JSON_UNESCAPED_UNICODE);
-        dump($list);
-        exit;
-        return $list;
-    }
-
-    public function getArea()
-    {
-        $xml_string = require __API_ROOT__ . '/area.php';
-        //dump($xml_string);exit;
-        $xml = simplexml_load_string($xml_string);
-
-        $xml = json_encode($xml);
-        $xml = json_decode($xml, true);
-        //dump($xml);exit;
-        $this->test($xml['province']);
-    }
 
     public function test($province_list)
     {
@@ -308,7 +271,62 @@ class ChangeStatus extends \api\YZ
         );
         $this->returnSuccess($res, "发货操作成功！");
     }
-
+    function confirmFetch() {
+        $para = $this->getPara();
+        $order = $this->order_info;
+        $this->ca("order.op.fetch");
+        if ($order["status"] != 1) {
+            $this->returnError("订单未付款，无法确认取货！");
+        }
+        $now_time = time();
+        $update_data = array(
+            "status" => 3,
+            "sendtime" => $now_time,
+            "finishtime" => $now_time
+        );
+        if ($order["isverify"] == 1) {
+            $update_data["verified"] = 1;
+            $update_data["verifytime"] = $now_time;
+            $update_data["verifyopenid"] = "";
+        }
+        pdo_update("sz_yi_order", $update_data, array(
+            "id" => $order["id"],
+            "uniacid" => $para["uniacid"]
+        ));
+        if (!empty($order["refundid"])) {
+            $update_result = pdo_fetch("select * from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
+                ":id" => $order["refundid"]
+            ));
+            if (!empty($update_result)) {
+                pdo_update("sz_yi_order_refund", array(
+                    "status" => - 1
+                ) , array(
+                    "id" => $order["refundid"]
+                ));
+                pdo_update("sz_yi_order", array(
+                    "refundid" => 0
+                ) , array(
+                    "id" => $order["id"]
+                ));
+            }
+        }
+        m("member")->upgradeLevel($order["openid"]);
+        m("notice")->sendOrderMessage($order["id"]);
+        if (p("commission")) {
+            p("commission")->checkOrderFinish($order["id"]);
+        }
+        if (p("return")) {
+            p("return")->cumulative_order_amount($order["id"]);
+        }
+        plog("order.op.fetch", "订单确认取货 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
+        $res = array(
+            'status' => array(
+                'name' => '已完成',
+                'value' => '3',
+            )
+        );
+        $this->returnSuccess($res,"发货操作成功！");
+    }
     public function confirmPay()
     {
         $this->ca("order.op.pay");

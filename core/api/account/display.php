@@ -14,22 +14,23 @@ class Display extends \api\YZ
     public function __construct()
     {
         parent::__construct();
-    
     }
+
     public function index1()
     {
         $list[] = array(
-            'uniacid'=>'2',
-            'name'=>'沈阳的secretgarden',
-            'thumb'=>'/headimg_2.jpg?t='.time(),
-            'setmeal'=>'未设置'
+            'uniacid' => '2',
+            'name' => '沈阳的secretgarden',
+            'thumb' => '/headimg_2.jpg?t=' . time(),
+            'setmeal' => '未设置'
         );
         $list = set_medias($list, "thumb");
         $this->returnSuccess($list);
     }
+
     public function index()
     {
-        global $_W,$_GPC;
+        global $_W, $_GPC;
 
         $condition = '';
         $pars = array();

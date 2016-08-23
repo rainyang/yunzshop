@@ -26,7 +26,7 @@ class commission extends \CommissionModel
 
     public function __construct()
     {
-
+        parent::__construct('commission');
     }
     public function getList($para)
     {
