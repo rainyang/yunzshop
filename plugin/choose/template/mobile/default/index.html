@@ -159,7 +159,7 @@ line-height: 20px;font-weight: bold;}
                 <div class="spec"><%spec.title%></div>
                 <div class="spec_items options_<%spec.id%>"  title="<%spec.title%>">
                       <%each spec.items as o%>
-                      <div  class="option option_<%spec.id%>" specid='<%spec.id%>' oid="<%o.id%>" sel='false' title='<%o.title%>' thumb='<%o.thumb%>'><%o.title%></div>
+                      <div class="option option_<%spec.id%>" specid='<%spec.id%>' oid="<%o.id%>" sel='false' title='<%o.title%>' thumb='<%o.thumb%>' style='cursor:pointer;'><%o.title%></div>
                      <%/each%>
                 </div>
                 <%/each%>
@@ -175,8 +175,8 @@ line-height: 20px;font-weight: bold;}
                   </div>
                </div>
         </div>
-        <div class="close"><i class="fa fa-times-circle-o"></i></div>
-        <div class="sub" style="position: absolute;">确认</div>
+        <div class="close" style="cursor:pointer;"><i class="fa fa-times-circle-o"></i></div>
+        <div class="sub" style="position:absolute;cursor:pointer;">确认</div>
     </div>
 </script>
 <div id="container_detail" style="display:none" class="mark-good"></div>
