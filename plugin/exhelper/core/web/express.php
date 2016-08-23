@@ -42,12 +42,21 @@ if ($op == 'list') {
     } elseif ($type == 2) {
         ca('exhelper.exptemp2.setdefault');
     }
-    $item = pdo_fetch('SELECT id,expressname,type FROM ' . tablename('sz_yi_exhelper_express') . ' WHERE id=:id AND uniacid=:uniacid', array(':id' => $id, ':uniacid' => $_W['uniacid']));
+    $cond = '';
+    if (p('supplier')) {
+        $cond = ',uid';
+    }
+    $item = pdo_fetch('SELECT id,expressname,type'.$cond.' FROM ' . tablename('sz_yi_exhelper_express') . ' WHERE id=:id AND uniacid=:uniacid', array(':id' => $id, ':uniacid' => $_W['uniacid']));
     if (empty($item)) {
         message('抱歉，快递单不存在或是已经被删除！', $this->createPluginWebUrl('exhelper/express', array('op' => 'list' . $type)), 'error');
     }
-    pdo_update('sz_yi_exhelper_express', array('isdefault' => 0), array('type' => $type, 'uniacid' => $_W['uniacid']));
-    pdo_update('sz_yi_exhelper_express', array('isdefault' => 1), array('id' => $id));
+    if (empty($item['uid'])) {
+        pdo_update('sz_yi_exhelper_express', array('isdefault' => 0), array('type' => $type, 'uniacid' => $_W['uniacid']));
+        pdo_update('sz_yi_exhelper_express', array('isdefault' => 1), array('id' => $id));
+    } else {
+        pdo_update('sz_yi_exhelper_express', array('isdefault' => 0), array('type' => $type, 'uniacid' => $_W['uniacid'], 'uid' => $item['uid']));
+        pdo_update('sz_yi_exhelper_express', array('isdefault' => 1), array('id' => $id, 'uid' => $item['uid']));
+    }
     plog('exhelper.express.delete', "设置快递单默认信息 ID: {$id} 快递单: {$item['expressname']} ");
     message('设置成功！', $this->createPluginWebUrl('exhelper/express', array('op' => 'list', 'cate' => $type)), 'success');
 } elseif ($op == 'post') {
@@ -97,8 +106,13 @@ if ($op == 'list') {
             }
         }
         if (!empty($data['isdefault'])) {
-            pdo_update('sz_yi_exhelper_express', array('isdefault' => 0), array('type' => $cate, 'uniacid' => $_W['uniacid']));
-            pdo_update('sz_yi_exhelper_express', array('isdefault' => 1), array('type' => $cate, 'id' => $id));
+            if (empty($data['uid'])) {
+                pdo_update('sz_yi_exhelper_express', array('isdefault' => 0), array('type' => $cate, 'uniacid' => $_W['uniacid']));
+                pdo_update('sz_yi_exhelper_express', array('isdefault' => 1), array('type' => $cate, 'id' => $id));
+            } else {
+                pdo_update('sz_yi_exhelper_express', array('isdefault' => 0), array('type' => $cate, 'uniacid' => $_W['uniacid'], 'uid' => $data['uid']));
+                pdo_update('sz_yi_exhelper_express', array('isdefault' => 1), array('type' => $cate, 'id' => $id, 'uid' => $data['uid']));
+            }
         }
         die(json_encode(array('id' => $id)));
     }

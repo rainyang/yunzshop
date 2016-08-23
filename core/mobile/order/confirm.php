@@ -1495,8 +1495,6 @@ if ($_W['isajax']) {
                 $ggprice = 0;
                 if(p('hotel') && $_GPC['type']=='99'){
                      $gprice =$_GPC['goodsprice'];
-                     //todo, $ggpric是啥
-                     $ggpric = $_GPC['goodsprice'];
                  }
             if ($data['discountway'] == 1) {
                 //折扣
