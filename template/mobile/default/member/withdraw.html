@@ -75,7 +75,7 @@ input {-webkit-appearance:none; outline:none;}
                    
                     $(this).attr('submitting', 1);
                     core.json('member/withdraw', {op: 'submit', money: money}, function (rjson) {
-                        if (rjson.status!=1) {
+                        if (rjson.status == 0) {
                             $(this).removeAttr('submitting');
                             core.tip.show(rjson.result);
                             return;

@@ -43,11 +43,11 @@ if ($operation == 'display' && $_W['isajax']) {
 
 	    $member = m('member')->getMember($log['openid']);
 		if($set['pay']['weixin']!='1'){
-	        show_json(0,'商城未开启微信支付功能!');
+	        show_json(0,'商城未开启微信支付功能,请联系管理员手动打款!');
 	    }    
 	    $result = m('finance')->pay($log['openid'], 1, $log['money'] * 100, $log['logno'], $set['name'] . '余额提现');
 	    if (is_error($result)) {
-	        show_json(0,'微信钱包提现失败: ' . $result['message']);
+	        show_json(0,'微信钱包提现失败: ' . $result['message'].'请联系管理员手动打款！');
 	    }
 	    pdo_update('sz_yi_member_log', array(
 	        'status' => 1
