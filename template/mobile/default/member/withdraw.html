@@ -10,6 +10,12 @@ input {-webkit-appearance:none; outline:none;}
 .balance_sub1 {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .balance_sub2 {height:44px; margin:14px 5px; background:#f49c06; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .balance_sub3 {height:44px; margin:14px 5px;background:#e2cb04; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+.page_poundage {position: relative;
+height: 45px;
+background: #fff;
+border-bottom: 1px solid #e8e8e8;
+font-size: 16px;
+line-height: 45px;padding-left:10px;}
 
 </style>
 <div id="container"></div>
@@ -24,6 +30,11 @@ input {-webkit-appearance:none; outline:none;}
     </div>
     <div class="cash-num"><span>￥</span><input type="text" id="money" value='' class="cash-input"/></div>
 </div>
+{if $set['trade']['poundage'] > 0}
+<div class="page_poundage">
+    提现手续费：{$set['trade']['poundage']}%
+</div>
+{/if}
 <div class="button balance_sub1">确认提现</div>
 <div class="balance_sub3" onclick="location.href='{php echo $this->createMobileUrl('member/log',array('type'=>1))}'">提现记录</div>
 </script>

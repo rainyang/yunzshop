@@ -4,9 +4,9 @@
     body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
     .credit_list {box-sizing: content-box;height:40px; width:94%; background:#F7F7F7; padding:10px 3%;margin-top:5px;}
     
-    .credit_list .info {height:40px; width:70%; float:left;  font-size:16px; color:#666; line-height:20px; text-align:left;}
+    .credit_list .info {height:40px; width:50%; float:left;  font-size:16px; color:#666; line-height:20px; text-align:left;}
     .credit_list .info span {font-size:14px; color:#999;}
-    .credit_list .num {height:40px; border-left:1px solid #eaeaea; width:20%;line-height:40px; float:right; text-align:right; font-size:16px; color:#666;}
+    .credit_list .num {height:40px; border-left:1px solid #eaeaea; width:49%;line-height:20px; float:right; text-align:right; font-size:16px; color:#666;}
     .credit_list .num span {font-size:14px; color:#999;}
     .credit_tab {height:30px; margin:5px; border:1px solid #ff6801; border-radius:5px; overflow:hidden;font-size:13px;background:#fff;padding-right: -2px;}
     .credit_nav {height:30px; width:50%;  background:#fff; color:#666; text-align:center; line-height:30px; float:left;}
@@ -50,6 +50,9 @@
         <div class="num">
             <%if log.status==0%> 
             <span><%if log.type==0%>未充值<%else%>申请中<%/if%></span>
+            <%if log.type==1%>
+                <br/><span>手续费：<%if log.poundage > 0 %><%log.poundage%><%else%>0<%/if%>元</span>
+            <%/if%>
            <%/if%>
            <%if log.status==1%>
             <span>   
@@ -57,9 +60,15 @@
                 <%if log.type==1%>提现成功<%/if%> 
                 <%if log.type==2%>打款成功<%/if%> 
             </span>
+            <%if log.type==1%>
+                <br/><span>手续费：<%if log.poundage > 0 %><%log.poundage%><%else%>0<%/if%>元</span>
+            <%/if%>
            <%/if%>
            <%if log.status==-1%>
             <span><%if log.type==1%>提现失败<%/if%></span>
+            <%if log.type==1%>
+                <br/><span>手续费：<%if log.poundage > 0 %><%log.poundage%><%else%>0<%/if%>元</span>
+            <%/if%>
          <%/if%>
            <%if log.status==3%>
             <span><%if log.type==0%>充值退款<%/if%></span>
