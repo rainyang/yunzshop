@@ -21,7 +21,7 @@ class Sale extends \api\YZ
     public function index(){
         global $_W;
         $sale['all'] = $this->getSaleData('sum(price)',array(
-                ':uniacid' => $_W['uniacid'])
+            ':uniacid' => $_W['uniacid'])
         );
         $sale['month'] = $this->getSaleData('sum(price)', array(
             ':uniacid' => $_W['uniacid'],

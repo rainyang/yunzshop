@@ -338,6 +338,12 @@ class ChangeStatus extends \api\YZ
         $virtual = p("virtual");
         if (!empty($order["virtual"]) && $virtual) {
             $virtual->pay($order);
+            $res = array(
+                'status' => array(
+                    'name' => '已完成',
+                    'value' => '3',
+                )
+            );
         } else {
             /*pdo_update("sz_yi_order", array(
             "status" => 1,
@@ -370,14 +376,15 @@ class ChangeStatus extends \api\YZ
             $ret['weid'] = $_W['uniacid'];
             $ret['uniacid'] = $_W['uniacid'];
             $payresult = m('order')->payResult($ret);
+            $res = array(
+                'status' => array(
+                    'name' => '待发货',
+                    'value' => '1',
+                )
+            );
         }
         plog("order.op.pay", "订单确认付款 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
-        $res = array(
-            'status' => array(
-                'name' => '待发货',
-                'value' => '1',
-            )
-        );
+
         $this->returnSuccess($res, "确认订单付款操作成功！");
     }
 
@@ -668,6 +675,39 @@ class ChangeStatus extends \api\YZ
             }
         }
         $this->returnSuccess([], '退款申请处理成功!');
+    }
+    public function sendRedPack(){
+        //$para = $this->getPara();
+        $order = $this->order_info;
+        if (empty($order['redstatus'])) {
+            //如果该字段为空则表示已经发送过
+            $this->returnError("红包已发送，不可重复发送！");
+        }
+
+        if ($order["redprice"] > 0 ) {
+            //订单红包价格字段大于0则正常发送红包
+            if ($order["redprice"] >= 1 && $order["redprice"] <= 200) {
+                //红包价格必须在1-200元之间
+                $result = m('finance')->sendredpack($order['openid'], $order["redprice"]*100, $order["id"], $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
+                if (is_error($result)) {
+                    $this->returnError($result['message']);
+                } else {
+                    //如果发送失败则更新订单红包状态字段，字段为空则表示发送成功
+                    pdo_update('sz_yi_order',
+                        array(
+                            'redstatus' => ""
+                        ),
+                        array(
+                            'id' => $order["id"]
+                        )
+                    );
+                    $this->returnSuccess("红包补发成功！");
+                }
+            } else {
+                $this->returnError("红包金额错误！发送失败！红包金额在1-200元之间！");
+            }
+
+        }
     }
 }
 

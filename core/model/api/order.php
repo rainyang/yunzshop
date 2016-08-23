@@ -82,6 +82,7 @@ class order
     public function getList($para)
     {
         global $_W;
+        //dump($para);
         $condition[] = ' 1';
         if ($para['status'] !== '') {
             $condition['status'] = $this->getStatusCondition((int)$para['status']);
@@ -92,8 +93,8 @@ class order
         if ($para['is_supplier_uid']) {
             $condition['supplier'] = $this->getSupplierCondition($_W['uid']);
         }
-        if (!empty($para['order_id'])) {
-            $condition['id'] = "AND o.id < {$para['order_id']}";
+        if (!empty($para['id'])) {
+            $condition['id'] = "AND o.id < {$para['id']}";
         }
         $condition['other'] = 'AND o.uniacid = :uniacid and o.deleted=0';
         $paras = array(
@@ -101,7 +102,7 @@ class order
         );
 
         $condition_str = implode(' ', $condition);
-        $sql = 'select o.ordersn,o.status,o.price ,o.id as order_id,o.changedispatchprice,o.changeprice,r.rtype,r.status as rstatus,o.isverify,o.isvirtual
+        $sql = 'select o.ordersn,o.status,o.price ,o.id as order_id,o.changedispatchprice,o.changeprice,r.rtype,r.status as rstatus,o.isverify,o.isvirtual,o.addressid
 from ' . tablename("sz_yi_order") . " o" . " 
 left join " . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " 
 left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " 
@@ -127,37 +128,123 @@ where {$condition_str} ORDER BY o.id DESC LIMIT 0,10 ";
     {
         //dump($order_info);
         global $_W;
-        $status_name_map = $this->name_map['status'];
-        $order_info["status_name"] = $status_name_map[$order_info["status"]];
-
-        $pay_type_name_map = $this->name_map['pay_type'];
         $pay_type = $order_info["paytype"];
-        $order_info["pay_type_name"] = $pay_type_name_map[$pay_type];
-        $r_type = $this->name_map['r_type'];
-        if ($pay_type == 3 && empty($order_info["status"])) {
-            $order_info["status"] = $status_name_map[1];
-        }
-        if ($order_info["status"] == 1) {
-            if ($order_info["isverify"] == 1) {
-                $order_info["status_name"] = "待使用";
-            } else if (empty($order_info["addressid"])) {
-                $order_info["status_name"] = "待取货";
-            }
-        }
-        if ($order_info["status"] == -1) {
-            //dump(order_info['rstatus']);
-            //$order_info['status'] = $order_info['rstatus'];
-            if (!empty($order_info["refundtime"])) {
-                if ($order_info['rstatus'] == 1) {
-                    $order_info['status_name'] = '已' . $r_type[$order_info['rtype']];
-                }
-            }
-        }
+        $order_status = $order_info["status"];
+
+        $order_info["status_name"] = $this->_getStatusName($order_info["status"], $pay_type, $order_info);
+        $order_info['pay_type_name'] = $this->_getPayTypeName($pay_type);
+        $order_info['button_info'] = $this->_getButton($pay_type, $order_status, $order_info['addressid'], $order_info['isverify'], $order_info['redstatus']);
+
         $order_goods = $this->getOrderGoods($order_info["order_id"], $_W["uniacid"]);
         $order_info["goods"] = $order_goods;
         //dump($order_info);
         //$res_order_info = array_part('ordersn,status,price,order_id,goods',$order_info);
         return $order_info;
+    }
+
+    private function _getStatusName($order_status, $pay_type, $order_info)
+    {
+        //todo 需要重构提取出其余的order_info 
+        $status_name_map = $this->name_map['status'];
+        $status_name = $status_name_map[$order_status];
+
+        $r_type = $this->name_map['r_type'];
+        if ($pay_type == 3 && empty($order_status)) {
+            $order_status = $status_name_map[1];
+        }
+        if ($order_status == 1) {
+            if (!empty($order_info["addressid"])) {
+                $status_name = "待使用";
+
+                if ($order_info["isverify"] == 1) {
+                    $status_name = "待使用";
+                } else {
+                    $status_name = "待取货";
+
+                }
+            }
+        }
+        if ($order_status == -1) {
+            //dump(order_info['rstatus']);
+            //$order_info['status'] = $order_info['rstatus'];
+            if (!empty($order_info["refundtime"])) {
+                if ($order_info['rstatus'] == 1) {
+                    $status_name = '已' . $r_type[$order_info['rtype']];
+                }
+            }
+        }
+        return $status_name;
+    }
+
+    private function _getButton($pay_type, $order_status, $address_id, $is_verify, $red_status)
+    {
+        $button_mapping = array(
+            '' => '',
+            '确认付款' => 1,// order/ChangeStatus/confirmPay
+            '确认发货' => 2,// order/ChangeStatus/confirmSend
+            '确认核销' => 3,// order/ChangeStatus/confirmFetch
+            '确认取货' => 4,// order/ChangeStatus/confirmFetch
+            '确认收货' => 5,// order/ChangeStatus/order/ChangeStatus/finish
+            '取消发货' => 6,// order/ChangeStatus/order/ChangeStatus/cancelSend
+            '补发红包' => 7,// order/ChangeStatus/sendRedPack
+            '查看物流' => 8
+        );
+        $button_name = '';
+        if (empty($order_status)) {
+            if (cv('order.op.pay')) {
+                if ($pay_type == 3) {
+                    $button_name = '确认发货';
+                } else {
+                    $button_name = '确认付款';
+                }
+            }
+        } elseif ($order_status == 1) {
+            if (!empty($address_id)) {
+                if (cv('order.op.send')) {
+                    $button_name = '确认发货';
+                }
+            } else {
+                if ($is_verify) {
+                    if (cv('order.op.verify')) {
+                        $button_name = '确认核销';
+                    }
+                } else {
+                    if (cv('order.op.fetch')) {
+                        $button_name = '确认取货';
+                    }
+                }
+            }
+
+        } elseif ($order_status == 2) {
+            if (!empty($address_id)) {
+                //此处不懂为什么显示查看物流,保留代码以防返工
+                /*if (cv('order.op.sendcancel')) {
+                    $button_name = '取消发货';
+                }*/
+                //if (cv('order.op.sendcancel')) {
+                $button_name = '查看物流';
+                //}
+            }
+        } elseif ($order_status == 3) {
+            /*if (!empty($red_status)) {
+                $button_name = '补发红包';
+            }*/
+            if (!empty($address_id)) {
+                $button_name = '查看物流';
+            }
+        }
+
+        $value = $button_mapping[$button_name];
+        $name = $button_name;
+        $button = compact('name', 'value');
+        return $button;
+    }
+
+    private function _getPayTypeName($pay_type)
+    {
+        $pay_type_name_map = $this->name_map['pay_type'];
+        $pay_type_name = $pay_type_name_map[$pay_type];
+        return $pay_type_name;
     }
 
     public function getRefundInfo($orer_id, $uniacid)

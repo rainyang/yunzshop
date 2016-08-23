@@ -20,15 +20,15 @@ class Display extends \api\YZ
 
     public function index()
     {
-        global $_GPC;
+        $para = $this->getPara();
 //$api->validate('username','password');
         $this->ca("order.view.status_1|order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status5");
         $order_model = new \model\api\order();
         $order_list = $order_model->getList(
             array(
-                'id' => intval($_GPC["id"]),
-                'status' => $_GPC["status"],
-                'paytype' => intval($_GPC["paytype"]),
+                'id' => intval($para["order_id"]),
+                'status' => $para["status"],
+                'paytype' => intval($para["paytype"]),
                 'is_supplier_uid' => $this->isSupplier()
             )
         );
