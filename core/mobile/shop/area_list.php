@@ -53,6 +53,9 @@ if ($operation == 'index') {
 
 
 if ($_W['isajax']) {  
+    $childrenid = !empty($_GPC['ccate_area']) ? $_GPC['ccate_area'] : ''; 
+    $parentid = !empty($_GPC['pcate_area']) ? $_GPC['pcate_area'] : ''; 
+
     if (!empty($_GPC['ccate_area'])) {
         $current_category = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=:id and uniacid=:uniacid order by displayorder DESC', array(
             ':id' => intval($_GPC['ccate_area']),
@@ -63,6 +66,8 @@ if ($_W['isajax']) {
             ':id' => intval($_GPC['ccate_area']),
             ':uniacid' => $_W['uniacid']
         ));
+        $parent = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=0 and uniacid=:uniacid order by displayorder DESC', array(':uniacid' => $_W['uniacid'])); 
+        $children = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=:id and uniacid=:uniacid order by displayorder DESC', array(':uniacid' => $_W['uniacid'], ':id' => intval($_GPC['pcate_area']))); 
     } elseif (!empty($_GPC['pcate_area'])) {
         $current_category = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=:id 
             and uniacid=:uniacid order by displayorder DESC', array(
@@ -76,13 +81,16 @@ if ($_W['isajax']) {
         ));
         $parent = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=0 and uniacid=:uniacid order by displayorder DESC', array(':uniacid' => $_W['uniacid'])); 
         $children = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=:id and uniacid=:uniacid order by displayorder DESC', array(':uniacid' => $_W['uniacid'], ':id' => intval($_GPC['pcate_area']))); 
+    
     } 
     
     show_json(1, array(
         'category' => $category,
         'current_category' => $current_category,
         'parent' => $parent,
-        'children' => $children
+        'children' => $children,
+        'parentid' => $parentid,
+        'childrenid' => $childrenid
     ));
 }
 include $this->template('shop/area_list');

@@ -111,20 +111,28 @@ div.addinfo{height:18px;}
      <!--搜索-->
     <select id="province">
     <%each parent as value%>
-      <option value="<%value.id%>"<%if value.id=={$_GPC['pcate_area']}%>selected="true"<%/if%>><%value.name%></option>
+      <option value="<%value.id%>"<%if value.id==parentid%>selected="true"<%/if%>><%value.name%></option>
     <%/each%>  
     </select>
   
     <select id="city">
     <option value="" selected="true">请选择城市</option>
      <%each children as value1%>
-      <option value="<%value1.id%>"><%value1.name%></option>
+      <option value="<%value1.id%>"<%if value1.id==childrenid%>selected="true"<%/if%>><%value1.name%></option>
     <%/each%>
     </select>
   
     <div class="main">
         <div class="class1">
-        
+        <%each current_category as v%>
+            <a href="<%v.url%>">
+                  <div class="class2">
+                     <div class="class3">
+                        <div class="text"><%v.name%></div>
+                    </div>
+                   </div>
+            </a>
+        <%/each%>
         </div>  
 
         
@@ -153,97 +161,31 @@ div.addinfo{height:18px;}
     require(['core', 'tpl'], function (core, tpl) {
       core.json('shop/area_list',{pcate_area:"{$_GPC['pcate_area']}"},function(json){
           if (json.status == 1) {
-              var h = '';
-              var category = json.result.current_category;
-              if (category.length>0) {                                                             
-                  for (var i = 0; i < category.length ;i++ ) {
 
-                      h +=     '<a href="'+category[i].url+'">';
-                      h +=          '<div class="class2">';
-                      h +=              '<div class="class3">';
-                      h +=                  '<div class="text">'+category[i].name+'</div>';
-                      h +=              '</div>';
-                      h +=          '</div>';
-                      h +=     '</a>';
-                      
-                  };
-                 
-
-              } 
               
               $('#container').html(tpl('tpl_main',json.result));
-              $('.class1').html(h);
+              
           }
       })
       
       $(document).on("change","#province",function(){
         core.json('shop/area_list',{pcate_area:$(this).val()},function(pjson){
-            if (json.status == 1) {
-              var h = '';
-              var b = '';
-              var category = pjson.result.current_category;
-              var children = pjson.result.children;
-              if (category.length) {                                                             
-                  for (var i = 0; i < category.length ;i++ ) {
+            if (pjson.status == 1) {
 
-                      h +=     '<a href="'+category[i].url+'">';
-                      h +=          '<div class="class2">';
-                      h +=              '<div class="class3">';
-                      h +=                  '<div class="text">'+category[i].name+'</div>';
-                      h +=              '</div>';
-                      h +=          '</div>';
-                      h +=     '</a>';
-                      
-                  };
-                 
-              } 
-
-              if (children.length) {                                                             
-                  for (var i = 0; i < children.length ;i++ ) {
-
-                     
-
-                      b +=  '<option value="'+children[i].id+'">'+children[i].name+'</option>';
-                      
-                      
-                  };
-                 
-              }
               $('#container').html(tpl('tpl_main',pjson.result));
-              $('.class1').html('');
-              $('.class1').html(h);
-              $('#city').html('');
-              $('#city').html(b);
+       
             }
         })  
       })
 
       
       $(document).on("change","#city",function(){
+      	
         
-        core.json('shop/area_list',{ccate_area:$(this).val()},function(cjson){
-            if (json.status == 1) {
-              var h = '';
+        core.json('shop/area_list',{ccate_area:$(this).val(), pcate_area:$('#province').val()},function(cjson){
+            if (cjson.status == 1) {
               
-              var category = cjson.result.current_category;
-              if (category.length) {                                                             
-                  for (var i = 0; i < category.length ;i++ ) {
-
-                      h +=     '<a href="'+category[i].url+'">';
-                      h +=          '<div class="class2">';
-                      h +=              '<div class="class3">';
-                      h +=                  '<div class="text">'+category[i].name+'</div>';
-                      h +=              '</div>';
-                      h +=          '</div>';
-                      h +=     '</a>';
-                      
-                  };
-                 
-
-              } 
               $('#container').html(tpl('tpl_main',cjson.result)); 
-              $('.class1').html('');
-              $('.class1').html(h);
             }
         })  
       })
