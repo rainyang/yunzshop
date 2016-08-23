@@ -192,16 +192,16 @@
                         <div class="col-sm-9 col-xs-12">
                             {ifp 'sysset.save.trade'}
                             <div class='input-group'>
-                                <input type="text" name="trade[poundage]" class="form-control" value="{$set['trade']['poundage']}" />
+                                <input type="text" name="trade[poundage]" class="form-control" value="{$set['trade']['poundage']}" onkeyup="value=value.replace(/[^\d.]/g,'');if(value >= 100){value=''}" onafterpaste="value=value.replace(/[^\d.]/g,'');if(value >= 100){value=''"/>
                                 <span class='input-group-addon'>%</span>
                             </div>
                             {else}
                                 <input type="hidden" name="trade[poundage]" value="{$set['trade']['poundage']}"/>
+                                <div class='form-control-static'>{$set['trade']['poundage']}%</div>
                             {/if}
                         </div>
                     </div>
                 </div>
-
 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启余额提现自动打款</label>
