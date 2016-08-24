@@ -131,7 +131,7 @@
                     <th style='width:12%;' class='hidden-xs'>等级/分组</th>
                     <th style='width:12%;'>{if $_GPC['type']==1}提现时间{else}充值时间{/if}</th>
                     {if $_GPC['type']==0}<th style='width:12%;'>充值方式</th>{/if}
-                    <th style='width:12%;'>{if $_GPC['type']==1}提现{else}充值{/if}状态</th>
+                    <th style='width:12%;'>{if $_GPC['type']==1}提现{else}充值{/if}状态{if $_GPC['type']==1}&&手续费{/if}</th>
                     <th style='width:12%;'>操作</th>
                 </tr>
             </thead>
@@ -183,6 +183,7 @@
                            共{$row['aging']['qnum']}期
                         {else}
                            {$row['money']}
+                           {if $_GPC['type']==1}/手续费：{if $row['poundage'] > 0}{$row['poundage']}{else}0{/if}{/if}
                         {/if}
                         <br/>
                         {if $row['status']==0}

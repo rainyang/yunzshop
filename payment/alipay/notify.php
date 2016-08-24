@@ -10,6 +10,7 @@ if (!empty($_POST)) {
 	require '../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
 	$body = $_POST['body'];
     $total_fee = $_POST['total_fee'];
+	$trade_no = $_POST['trade_no'];
 	$strs = explode(':', $body);
 	$_W['uniacid'] = $_W['weid'] = intval($strs[0]);
 	$type = intval($strs[1]);
@@ -75,6 +76,8 @@ if (!empty($_POST)) {
 									$record = array();
 									$record['status'] = '1';
 									pdo_update('core_paylog', $record, array('plid' => $log['plid']));
+									$orders = array('trade_no'=>$trade_no);
+   									pdo_update('sz_yi_order', $orders, array('ordersn_general' =>$tid,'uniacid'=>$log['uniacid']));
 									exit('success');
 								}
 							} else {
