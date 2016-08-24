@@ -45,7 +45,6 @@ $carrier_list = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_store") . " WHE
         ));
 
 if ($operation == "display" || $operation == "create") {
-   
     $id   = $operation == "create" ? intval($_GPC["order"][0]["id"]) : intval($_GPC["id"]);
     $show = 1;
     if ($diyform_plugin) {
@@ -68,48 +67,46 @@ if ($operation == "display" || $operation == "create") {
 
 $ischannelpick = $_GPC['ischannelpick'];
 
-if ($operation == "date"){
-        global $_GPC, $_W;
-        $id   = intval($_GPC["id"]);
-        if ($search_array && !empty($search_array['bdate']) && !empty($search_array['day'])) {
-            $bdate = $search_array['bdate'];
-            $day = $search_array['day'];
-        } else {
-            $bdate = date('Y-m-d');
-            $day = 1;
-        }
-        load()->func('tpl');
-        include $this->template('order/date');
-        exit;
-}else if ($operation == 'ajaxData') {
-        global $_GPC, $_W;
-        $id   = intval($_GPC["id"]);
-        switch ($_GPC['ac'])
-        {
-            //选择日期
-            case 'time':
-                $bdate = $_GPC['bdate'];
-                $day = $_GPC['day'];
-                if (!empty($bdate) && !empty($day)) {
-                    $btime = strtotime($bdate);
-                    $etime = $btime + $day * 86400;
-                    $weekarray = array("日", "一", "二", "三", "四", "五", "六");
-                    $data['btime'] = $btime;
-                    $data['etime'] = $etime;
-                    $data['bdate'] = $bdate;
-                    $data['edate'] = date('Y-m-d', $etime);
-                    $data['bweek'] = '星期' . $weekarray[date("w", $btime)];
-                    $data['eweek'] = '星期' . $weekarray[date("w", $etime)];
-                    $data['day'] = $day;        
-                    //setcookie('data',serialize($data),time()+2*7*24*3600);
-                    $_SESSION['data']=$data;
-                    $url = $this->createMobileUrl('order', array('p' =>'confirm','id'=> $id));
-                    die(json_encode(array("result" => 1, "url" => $url)));
-                }
-                break;
-        }
+if ($operation == "date") {
+    global $_GPC, $_W;
+    $id   = intval($_GPC["id"]);
+    if ($search_array && !empty($search_array['bdate']) && !empty($search_array['day'])) {
+        $bdate = $search_array['bdate'];
+        $day = $search_array['day'];
+    } else {
+        $bdate = date('Y-m-d');
+        $day = 1;
+    }
+    load()->func('tpl');
+    include $this->template('order/date');
+    exit;
+} elseif ($operation == 'ajaxData') {
+    global $_GPC, $_W;
+    $id   = intval($_GPC["id"]);
+    switch ($_GPC['ac']) {
+        //选择日期
+        case 'time':
+            $bdate = $_GPC['bdate'];
+            $day = $_GPC['day'];
+            if (!empty($bdate) && !empty($day)) {
+                $btime = strtotime($bdate);
+                $etime = $btime + $day * 86400;
+                $weekarray = array("日", "一", "二", "三", "四", "五", "六");
+                $data['btime'] = $btime;
+                $data['etime'] = $etime;
+                $data['bdate'] = $bdate;
+                $data['edate'] = date('Y-m-d', $etime);
+                $data['bweek'] = '星期' . $weekarray[date("w", $btime)];
+                $data['eweek'] = '星期' . $weekarray[date("w", $etime)];
+                $data['day'] = $day;
+                //setcookie('data',serialize($data),time()+2*7*24*3600);
+                $_SESSION['data']=$data;
+                $url = $this->createMobileUrl('order', array('p' =>'confirm','id'=> $id));
+                die(json_encode(array("result" => 1, "url" => $url)));
+            }
+            break;
+    }
 }
-
 
 if ($_W['isajax']) {
     $ischannelpick = intval($_GPC['ischannelpick']);
@@ -166,13 +163,12 @@ if ($_W['isajax']) {
             }
             $fromcart = 1;
         } else {
-
             //$sql              = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice FROM " . tablename("sz_yi_goods") . " WHERE id=:id AND uniacid=:uniacid  limit 1";
             //$data             = pdo_fetch($sql, array(
 
-            if(p('hotel')){
+            if (p('hotel')) {
                 $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
-            }else{   
+            } else {
                 $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             }
             $data = pdo_fetch($sql, array(
@@ -230,71 +226,71 @@ if ($_W['isajax']) {
                 }
             }
             $data['totalmaxbuy'] = $totalmaxbuy;
-            if(p('hotel')){ 
-                if($data['type']=='99'){              
-                $btime =  $_SESSION['data']['btime'];
-                $bdate =  $_SESSION['data']['bdate'];
-                // 住几天
-                $days =intval( $_SESSION['data']['day']);
-                // 离店
-                $etime =  $_SESSION['data']['etime'];
-                $edate =  $_SESSION['data']['edate'] ;
-                $date_array = array();
-                $date_array[0]['date'] = $bdate;
-                $date_array[0]['day'] = date('j', $btime);
-                $date_array[0]['time'] = $btime;
-                $date_array[0]['month'] = date('m',$btime);   
+            if (p('hotel')) {
+                if ($data['type']=='99') {
+                    $btime =  $_SESSION['data']['btime'];
+                    $bdate =  $_SESSION['data']['bdate'];
+                    // 住几天
+                    $days = intval($_SESSION['data']['day']);
+                    // 离店
+                    $etime =  $_SESSION['data']['etime'];
+                    $edate =  $_SESSION['data']['edate'] ;
+                    $date_array = array();
+                    $date_array[0]['date'] = $bdate;
+                    $date_array[0]['day'] = date('j', $btime);
+                    $date_array[0]['time'] = $btime;
+                    $date_array[0]['month'] = date('m', $btime);
 
-                if ($days > 1) {
-                    for($i = 1; $i < $days; $i++) {
-                        $date_array[$i]['time'] = $date_array[$i-1]['time'] + 86400;
-                        $date_array[$i]['date'] = date('Y-m-d', $date_array[$i]['time']);
-                        $date_array[$i]['day'] = date('j', $date_array[$i]['time']);
-                        $date_array[$i]['month'] = date('m', $date_array[$i]['time']);
+                    if ($days > 1) {
+                        for ($i = 1; $i < $days; $i++) {
+                            $date_array[$i]['time'] = $date_array[$i-1]['time'] + 86400;
+                            $date_array[$i]['date'] = date('Y-m-d', $date_array[$i]['time']);
+                            $date_array[$i]['day'] = date('j', $date_array[$i]['time']);
+                            $date_array[$i]['month'] = date('m', $date_array[$i]['time']);
+                        }
                     }
-                }
-                $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
-                $params2 = array(':goodsid' => $id);
-                $room = pdo_fetch($sql2, $params2);
-          
-                $sql = 'SELECT `id`, `roomdate`, `num`, `status` FROM ' . tablename('sz_yi_hotel_room_price') . ' WHERE `roomid` = :roomid
-                AND `roomdate` >= :btime AND `roomdate` < :etime AND `status` = :status';
+                    $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
+                    $params2 = array(':goodsid' => $id);
+                    $room = pdo_fetch($sql2, $params2);
+              
+                    $sql = 'SELECT `id`, `roomdate`, `num`, `status` FROM ' . tablename('sz_yi_hotel_room_price') . ' WHERE `roomid` = :roomid
+                    AND `roomdate` >= :btime AND `roomdate` < :etime AND `status` = :status';
 
-                $params = array(':roomid' => $room['id'], ':btime' => $btime, ':etime' => $etime, ':status' => '1');
-                $room_date_list = pdo_fetchall($sql, $params);
-                $flag = intval($room_date_list);
-                $list = array();
-                $max_room = 5;//最大预约房间数
-                $is_order = 1;
-                if ($flag == 1) {
-                    for($i = 0; $i < $days; $i++) {
-                        $k = $date_array[$i]['time'];
-                        foreach ($room_date_list as $p_key => $p_value) {
-                            // 判断价格表中是否有当天的数据
-                            if($p_value['roomdate'] == $k) {
-                                $room_num = $p_value['num'];
-                                if (empty($room_num)) {
-                                    $is_order = 0;
-                                    $max_room = 0;
-                                    $list['num'] = 0;
-                                    $list['date'] =  $date_array[$i]['date'];
-                                } else if ($room_num > 0 && $room_num < $max_room) {
-                                    $max_room = $room_num;
-                                    $list['num'] =  $room_num;
-                                    $list['date'] =  $date_array[$i]['date'];
-                                }else {
-                                    $list['num'] =  $max_room;
-                                    $list['date'] =  $date_array[$i]['date'];
+                    $params = array(':roomid' => $room['id'], ':btime' => $btime, ':etime' => $etime, ':status' => '1');
+                    $room_date_list = pdo_fetchall($sql, $params);
+                    $flag = intval($room_date_list);
+                    $list = array();
+                    $max_room = 5;//最大预约房间数
+                    $is_order = 1;
+                    if ($flag == 1) {
+                        for ($i = 0; $i < $days; $i++) {
+                            $k = $date_array[$i]['time'];
+                            foreach ($room_date_list as $p_key => $p_value) {
+                                // 判断价格表中是否有当天的数据
+                                if ($p_value['roomdate'] == $k) {
+                                    $room_num = $p_value['num'];
+                                    if (empty($room_num)) {
+                                        $is_order = 0;
+                                        $max_room = 0;
+                                        $list['num'] = 0;
+                                        $list['date'] =  $date_array[$i]['date'];
+                                    } else if ($room_num > 0 && $room_num < $max_room) {
+                                        $max_room = $room_num;
+                                        $list['num'] =  $room_num;
+                                        $list['date'] =  $date_array[$i]['date'];
+                                    } else {
+                                        $list['num'] =  $max_room;
+                                        $list['date'] =  $date_array[$i]['date'];
+                                    }
+                                    break;
                                 }
-                                break;
                             }
                         }
                     }
-               }   
-               $data['totalmaxbuy']= $list['num'];   
+                    $data['totalmaxbuy']= $list['num'];
+                }
             }
-        }
-             $goods[] = $data;
+            $goods[] = $data;
         }
 
        
@@ -340,7 +336,7 @@ if ($_W['isajax']) {
             }
         }
         $member        = m('member')->getMember($openid);
-        $level          = m("member")->getLevel($openid);
+        $level         = m("member")->getLevel($openid);
         //$weight         = 0;
         //$total          = 0;
         //$goodsprice     = 0;
@@ -433,7 +429,6 @@ if ($_W['isajax']) {
                 } else {
                     $price = $gprice;
                 }
-
             } else {
                 //立减
                 if ($g["discounttype"] == 1) {
@@ -443,7 +438,7 @@ if ($_W['isajax']) {
                     $discounts = json_decode($g["discounts"], true);
                     if (is_array($discounts)) {
                         if (!empty($level["id"])) {
-                            if (floatval($discounts["level" . $level["id"]]) < $g['marketprice'] ) {
+                            if (floatval($discounts["level" . $level["id"]]) < $g['marketprice']) {
                                 $level["discount"] = floatval($discounts["level" . $level["id"]]);
                             } elseif (floatval($level["discount"]) < $g['marketprice']) {
                                 $level["discount"] = floatval($level["discount"]);
@@ -476,61 +471,63 @@ if ($_W['isajax']) {
                         }
                     }
                 }
-            if (empty($g["isnodiscount"]) && floatval($level["discount"]) < $g['marketprice']) {
+                if (empty($g["isnodiscount"]) && floatval($level["discount"]) < $g['marketprice']) {
                     $price = round(floatval($gprice - $level["discount"] * $g["total"]), 2);
                     $order_all[$g['supplier_uid']]['discountprice'] += $gprice - $price;
                 } else {
                     $price = $gprice;
                 }
             }
+
             $g["discount"] = $level["discount"];
             $g["ggprice"] = $price;
             $order_all[$g['supplier_uid']]['realprice'] += $price;
             $order_all[$g['supplier_uid']]['goodsprice'] += $gprice;
             //商品为酒店时候的价格
-            if(p('hotel') && $data['type']=='99'){
-            $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
-            $params2 = array(':goodsid' => $id);
-            $room = pdo_fetch($sql2, $params2);
-            $pricefield ='oprice';
-            $r_sql = 'SELECT `roomdate`, `num`, `oprice`, `status`, ' . $pricefield . ' AS `m_price` FROM ' . tablename('sz_yi_hotel_room_price') .
-            ' WHERE `roomid` = :roomid AND `roomdate` >= :btime AND ' .
-            ' `roomdate` < :etime';
-            $params = array(':roomid' => $room['id'],':btime' => $btime, ':etime' => $etime);
-            $price_list = pdo_fetchall($r_sql, $params);  
-            $this_price = $old_price =  $pricefield == 'cprice' ?  $room['oprice']*$member_p[$_W['member']['groupid']] : $room['roomprice'];
-            if ($this_price == 0) {
-                $this_price = $old_price = $room['oprice'] ;
-            } 
-            $totalprice =  $old_price * $days;
-            if ($price_list) {//价格表中存在   
-                $check_date = array();
-                foreach($price_list as $k => $v) {
-                    $price_list[$k]['time']=date('Y-m-d',$v['roomdate']);
-                    $new_price = $pricefield == 'mprice' ? $this_price : $v['m_price'];
-                    $roomdate = $v['roomdate'];
-                    if ($v['status'] == 0 || $v['num'] == 0 ) {
-                        $has = 0;                   
-                    } else {
-                        if ($new_price && $roomdate) {
-                            if (!in_array($roomdate, $check_date)) {
-                                $check_date[] = $roomdate;
-                                if ($old_price != $new_price) {
-                                    $totalprice = $totalprice - $old_price + $new_price;
+            if (p('hotel') && $data['type']=='99') {
+                $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
+                $params2 = array(':goodsid' => $id);
+                $room = pdo_fetch($sql2, $params2);
+                $pricefield ='oprice';
+                $r_sql = 'SELECT `roomdate`, `num`, `oprice`, `status`, ' . $pricefield . ' AS `m_price` FROM ' . tablename('sz_yi_hotel_room_price') .
+                ' WHERE `roomid` = :roomid AND `roomdate` >= :btime AND ' .
+                ' `roomdate` < :etime';
+                $params = array(':roomid' => $room['id'],':btime' => $btime, ':etime' => $etime);
+                $price_list = pdo_fetchall($r_sql, $params);
+                $this_price = $old_price =  $pricefield == 'cprice' ?  $room['oprice']*$member_p[$_W['member']['groupid']] : $room['roomprice'];
+                if ($this_price == 0) {
+                    $this_price = $old_price = $room['oprice'] ;
+                }
+                $totalprice =  $old_price * $days;
+                //价格表中存在
+                if ($price_list) {
+                    $check_date = array();
+                    foreach ($price_list as $k => $v) {
+                        $price_list[$k]['time']=date('Y-m-d', $v['roomdate']);
+                        $new_price = $pricefield == 'mprice' ? $this_price : $v['m_price'];
+                        $roomdate = $v['roomdate'];
+                        if ($v['status'] == 0 || $v['num'] == 0 ) {
+                            $has = 0;                   
+                        } else {
+                            if ($new_price && $roomdate) {
+                                if (!in_array($roomdate, $check_date)) {
+                                    $check_date[] = $roomdate;
+                                    if ($old_price != $new_price) {
+                                        $totalprice = $totalprice - $old_price + $new_price;
+                                    }
                                 }
                             }
                         }
-                    }
-                } 
-                $goodsprice = round($totalprice);
-            }else{ 
-                $goodsprice = round($goods[0]['marketprice']) * $days;
-            }          
-            $order_all[$g['supplier_uid']]['realprice'] = $goodsprice;
-            $order_all[$g['supplier_uid']]['goodsprice'] = $goodsprice;
-            $price = $goodsprice;
-          
-        }
+                    } 
+                    $goodsprice = round($totalprice);
+                } else { 
+                    $goodsprice = round($goods[0]['marketprice']) * $days;
+                }          
+                $order_all[$g['supplier_uid']]['realprice'] = $goodsprice;
+                $order_all[$g['supplier_uid']]['goodsprice'] = $goodsprice;
+                $price = $goodsprice;
+            }
+
             $order_all[$g['supplier_uid']]['total'] += $g["total"];
             if ($g["manydeduct"]) {
                 $order_all[$g['supplier_uid']]['deductprice'] += $g["deduct"] * $g["total"];
@@ -539,7 +536,7 @@ if ($_W['isajax']) {
             }
             if ($g["deduct2"] == 0) {
                 $order_all[$g['supplier_uid']]['deductprice2'] += $price;
-            } else if ($g["deduct2"] > 0) {
+            } elseif ($g["deduct2"] > 0) {
                 if ($g["deduct2"] > $price) {
                     $order_all[$g['supplier_uid']]['deductprice2'] += $price;
                 } else {
@@ -593,16 +590,6 @@ if ($_W['isajax']) {
         if (!$isvirtual && $isDispath) {
             //购买的商品是否都是统一运费的,如果是,取最低统一运费价
             foreach ($goods as $g) {
-                //多个商品不同统一运费时，取最低价统一运费收取
-                if (!isset($order_all[$g['supplier_uid']]['isAllSameDispath'])) {
-                    $order_all[$g['supplier_uid']]['isAllSameDispath'] = true;
-                }
-
-                if (!isset($order_all[$g['supplier_uid']]['minDispathPrice'])) {
-                    $order_all[$g['supplier_uid']]['minDispathPrice'] = $g["dispatchprice"];
-                }
-
-                $order_all[$g['supplier_uid']]['minDispathPrice'] = ($order_all[$g['supplier_uid']]['minDispathPrice'] > $g["dispatchprice"]) ? $g["dispatchprice"] : $order_all[$g['supplier_uid']]['minDispathPrice'];
 
                 $sendfree = false;
                 if (!empty($g["issendfree"])) { //包邮
@@ -650,11 +637,17 @@ if ($_W['isajax']) {
                     if ($g["dispatchtype"] == 1) {  //统一邮费
                         if ($g["dispatchprice"] > 0) {
                             //$order_all[$g['supplier_uid']]['dispatch_price'] += $g["dispatchprice"] * $g["total"];
+                            //$order_all[$g['supplier_uid']]['dispatch_price'] += $g["dispatchprice"];
                             //改为统一运费同一个商品只收取一次运费
-                            $order_all[$g['supplier_uid']]['dispatch_price'] += $g["dispatchprice"];
+                            if (!isset($order_all[$g['supplier_uid']]['minDispathPrice'])) {
+                                $order_all[$g['supplier_uid']]['minDispathPrice'] = $g["dispatchprice"];
+                            }
+
+                            $order_all[$g['supplier_uid']]['dispatch_price'] = ($order_all[$g['supplier_uid']]['minDispathPrice'] > $g["dispatchprice"]) ? $g["dispatchprice"] : $order_all[$g['supplier_uid']]['minDispathPrice'];
+
                         }
                     } else if ($g["dispatchtype"] == 0) {   //运费模板
-                        $order_all[$g['supplier_uid']]['isAllSameDispath'] = false;
+                        //$order_all[$g['supplier_uid']]['isAllSameDispath'] = false;
                         if (empty($g["dispatchid"])) {
                             $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getDefaultDispatch($g['supplier_uid']);
                         } else {
@@ -679,10 +672,6 @@ if ($_W['isajax']) {
                         }
                     }
                 }
-            }
-
-            if ($order_all[$g['supplier_uid']]['isAllSameDispath']) {
-                $order_all[$g['supplier_uid']]['dispatch_price'] = $order_all[$g['supplier_uid']]['minDispathPrice'];
             }
 
             foreach ($suppliers as $key => $val) {
