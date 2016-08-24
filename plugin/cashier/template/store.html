@@ -372,8 +372,8 @@
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否加入全返</label>
                 <div class="col-sm-9 col-xs-12">
                     {ife 'cashier.store' $item}
-                        <label class="radio-inline"><input type="radio"  name="iscontact" value="0" {if $item['isreturn'] ==0} checked="checked"{/if} /> 否</label>
-                        <label class="radio-inline"><input type="radio"  name="iscontact" value="1" {if $item['isreturn'] ==1} checked="checked"{/if} /> 是</label> 
+                        <label class="radio-inline"><input type="radio"  name="isreturn" value="0" {if $item['isreturn'] ==0} checked="checked"{/if} /> 否</label>
+                        <label class="radio-inline"><input type="radio"  name="isreturn" value="1" {if $item['isreturn'] ==1} checked="checked"{/if} /> 是</label> 
                     {else}
                         <div class='form-control-static'>{if $item['isreturn'] == 1}是{else}否{/if}</div>
                     {/if}
