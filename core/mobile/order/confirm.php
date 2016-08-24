@@ -592,14 +592,17 @@ if ($_W['isajax']) {
 
         if (!$isvirtual && $isDispath) {
             //购买的商品是否都是统一运费的,如果是,取最低统一运费价
-            $isAllSameDispath = true;
             foreach ($goods as $g) {
                 //多个商品不同统一运费时，取最低价统一运费收取
-                if (!isset($minDispathPrice)) {
-                    $minDispathPrice = $g["dispatchprice"];
+                if (!isset($order_all[$g['supplier_uid']]['isAllSameDispath'])) {
+                    $order_all[$g['supplier_uid']]['isAllSameDispath'] = true;
                 }
 
-                $minDispathPrice = ($minDispathPrice > $g["dispatchprice"]) ? $g["dispatchprice"] : $minDispathPrice;
+                if (!isset($order_all[$g['supplier_uid']]['minDispathPrice'])) {
+                    $order_all[$g['supplier_uid']]['minDispathPrice'] = $g["dispatchprice"];
+                }
+
+                $order_all[$g['supplier_uid']]['minDispathPrice'] = ($order_all[$g['supplier_uid']]['minDispathPrice'] > $g["dispatchprice"]) ? $g["dispatchprice"] : $order_all[$g['supplier_uid']]['minDispathPrice'];
 
                 $sendfree = false;
                 if (!empty($g["issendfree"])) { //包邮
@@ -651,7 +654,7 @@ if ($_W['isajax']) {
                             $order_all[$g['supplier_uid']]['dispatch_price'] += $g["dispatchprice"];
                         }
                     } else if ($g["dispatchtype"] == 0) {   //运费模板
-                        $isAllSameDispath = false;
+                        $order_all[$g['supplier_uid']]['isAllSameDispath'] = false;
                         if (empty($g["dispatchid"])) {
                             $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getDefaultDispatch($g['supplier_uid']);
                         } else {
@@ -678,8 +681,8 @@ if ($_W['isajax']) {
                 }
             }
 
-            if ($isAllSameDispath) {
-                $dispatch_price = $minDispathPrice;
+            if ($order_all[$g['supplier_uid']]['isAllSameDispath']) {
+                $order_all[$g['supplier_uid']]['dispatch_price'] = $order_all[$g['supplier_uid']]['minDispathPrice'];
             }
 
             foreach ($suppliers as $key => $val) {
