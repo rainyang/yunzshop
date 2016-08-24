@@ -7,8 +7,13 @@ $aid = intval($_GPC['aid']);
 $member_levels = m('member')->getLevels();
 $distributor_levels = p("commission")->getLevels();
 
+$condition = '';
+if(is_weixin())
+{
+	$condition = " and article_state_wx = 1 ";
+}
 if (!empty($aid)) {
-	$article = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article') . " WHERE id=:aid and article_state=1 and uniacid=:uniacid limit 1 ", array(':aid' => $aid, ':uniacid' => $_W['uniacid']));
+	$article = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article') . " WHERE id=:aid and article_state=1 and uniacid=:uniacid ".$condition." limit 1 ", array(':aid' => $aid, ':uniacid' => $_W['uniacid']));
 	
 	if (!empty($article)) {
 		
@@ -188,7 +193,8 @@ if (!empty($aid)) {
 		}*/
 
 	} else {
-		die('没有查询到文章信息！请检查URL后重试！');
+		$url = $this->createPluginMobileUrl('article/article');
+    	die("<script>top.window.location.href='{$url}'</script>");
 	}
 } else {
 	die('url参数错误！');

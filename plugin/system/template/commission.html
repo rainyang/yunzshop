@@ -13,7 +13,7 @@
                 分销关系修改
             </div>
             <div class="panel-body">
-            	{ifp 'system.commission.view'}
+            	{if $_W['isfounder']}
 	 			<div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 选择公众号</label>
                     <div class="col-sm-9">
@@ -118,7 +118,7 @@
 	 }else{
 		 $('#modalTitle').html("选择会员");
 	 }
-	 {ifp 'system.commission.view'}
+	 {if $_W['isfounder']}
 	 if($('#wechatid').isEmpty()){
 		 alert('请选择公众号!');
 		 return;
@@ -131,7 +131,7 @@
 	 $("#modal-module-menus-notice").modal();
  }
  function formcheck(){
- 	{ifp 'system.commission.view'}
+ 	{if $_W['isfounder']}
 	 if($('#wechatid').isEmpty()){
 		 alert('请选择公众号!');
 		 return false;
@@ -186,15 +186,16 @@
 	 }
 	 $("#modal-module-menus-notice .close").click();
 	}
- 
+{if $_W['isfounder']}
  $(function () {
 		$('#wechatid').select2({
 			search: true,
 			placeholder: "请选择公众号",
 			allowClear: true
 		});
-		 
+	 
 	})
+{/if}	
 </script>
 
 {template 'web/_footer'}

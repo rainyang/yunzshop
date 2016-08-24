@@ -2,8 +2,10 @@
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
-load()->func('tpl');
-
+//新版微擎里有方法冲突,tpl_form_field_image在compat.biz里也有...
+if (!defined('IS_API')) {
+    load()->func('tpl');
+}
 function sz_tpl_form_field_date($name, $value = '', $withtime = false)
 {
     $s = '';
@@ -134,13 +136,26 @@ function curl_download($url, $dir) {
     return $res;
 }
 
-function send_sms($account, $pwd, $mobile, $code)
+function send_sms($account, $pwd, $mobile, $code, $type = 'check')
 {
-    $content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
+    if ($type == 'check') {
+        $content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
+           
+    } elseif ($type == 'verify') {
+        $verify_set = m('common')->getSetData();
+        $allset = iunserializer($verify_set['plugins']);
+        if (is_array($allset) && !empty($allset['verify']['code_template'])) {
+            $content = sprintf($allset['verify']['code_template'], $code);
+        } else {
+            $content = "您的核销码是：".$code."。请把此信息中的核销码出示给核销员进行核销操作！";
+
+        }
+        
+    }
+    
     //$smsrs = file_get_contents('http://115.29.33.155/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
     $smsrs = file_get_contents('http://106.ihuyi.cn/webservice/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
-
-   return xml_to_array($smsrs);
+    return xml_to_array($smsrs);
 }
 
 function send_sms_alidayu($mobile, $code, $templateType){
@@ -225,6 +240,11 @@ function isEnablePlugin($name){
                 }
             }
         }
+    }else{
+        return pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_plugin') . ' where identity=:identity and status=1', array(
+            ':identity' => $name
+        ));
+
     }
 }
 function p($name = '')
@@ -249,6 +269,7 @@ function p($name = '')
         }
     }
 
+    
     static $_plugins = array();
     if (isset($_plugins[$name])) {
         return $_plugins[$name];
@@ -368,8 +389,25 @@ function show_json($status = 1, $return = null)
     }
     die(json_encode($ret));
 }
+
+function is_weixin_show()
+{
+    $set = m('common')->getSysset('app');
+    $isapp = is_app();
+
+    if( $set['base']['wx']['switch'] == '1' && !$isapp)
+    {
+        return false;
+    }
+    return true;
+}
+
 function is_weixin()
 {
+    global $_W;
+    if ($_W['uniaccount']['level'] == 1 OR $_W['uniaccount']['level'] == 3) {
+        return false;
+    }
     if (empty($_SERVER['HTTP_USER_AGENT']) || strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') === false && strpos($_SERVER['HTTP_USER_AGENT'], 'Windows Phone') === false) {
         return false;
     }
@@ -710,6 +748,22 @@ function tpl_form_field_category_level2($name, $parents, $children, $parentid, $
  * @return array
  */
 function sent_message($customer_id_array,$message){
+    preg_match_all('/[\x{4e00}-\x{9fff}]+/u', $message, $matches);
+
+    if (empty($customer_id_array) || empty($matches[0])) {
+       return false;
+    }
+
+    require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
+
+    $setdata = m("cache")->get("sysset");
+    $set     = unserialize($setdata['sets']);
+
+    $app = $set['app']['base'];
+
+    LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'].",master");
+
+
     $customer_id_array_str = json_encode($customer_id_array,JSON_UNESCAPED_UNICODE);
     $post_data = '{"from_peer": "58",
                 "to_peers": '.$customer_id_array_str.',

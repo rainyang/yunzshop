@@ -33,6 +33,10 @@ input {-webkit-appearance:none; outline:none;}
       {if !empty($openid)}
       <div class="balance_sub balance_sub2 <%if !cansettle%>disabled<%/if%>"  data-type="1">{php echo $this->set['texts']['withdraw']}到微信钱包</div>
       <div class="balance_sub balance_sub2 <%if !cansettle%>disabled<%/if%>"  data-type="2">{php echo $this->set['texts']['withdraw']}到微信红包</div>
+      <div class="balance_subapply  balance_sub2 <%if !cansettle%>disabled<%/if%>"  data-type="3">{php echo $this->set['texts']['withdraw']}到支付宝</div>
+    <input value="{php echo $member['alipay']}" id="alipay" type="hidden">
+    <input value="{php echo $member['alipayname']}" id="alipayname" type="hidden">
+
       {/if}
     </div>
     
@@ -66,6 +70,31 @@ input {-webkit-appearance:none; outline:none;}
                                
                        },true,true);
                    });
+               })
+             $('.balance_subapply').click(function(){
+                   if($('.balance_subapply').attr('saving')=='1'){
+                       return;
+                   }
+                   var type= $(this).data('type');
+                   var alipay  = $("#alipay").val();
+                   var alipayname  = $("#alipayname").val();
+                   if(alipay=='' || alipayname=='' ){
+                     alert('您个人中心我的资料中未填写支付宝账号或姓名')
+                   }else{
+                  core.tip.confirm('确认要申请提现？</br>收款账号:{php echo $member['alipay']}</br>收款姓名:{php echo $member['alipayname']}</br>如更改账号请前往人中心我的资料中修改',function(){                       
+                         $('.balance_subapply').attr('saving',1).html('正在处理中...');
+                          core.pjson('commission/apply',{alipay:alipay,alipayname:alipayname,type:type},function(pjson){
+                                if(pjson.status=='1'){
+                                     core.tip.show(pjson.result);
+                                     location.href = core.getUrl('plugin/commission/withdraw');
+                                }else{
+                                     core.message(json.result,"{php echo $this->createPluginMobileUrl('commission/withdraw')}" ,'error');
+                                }
+                                 
+                         },true,true);
+                     });
+                   }
+    
                })
            }
         },true);

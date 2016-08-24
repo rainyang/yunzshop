@@ -16,8 +16,7 @@
     .address_list .btn { width:45px; float:right;margin-left:-45px;z-index:2;position: relative;}
     .address_list .btn .edit,.address_list .btn .remove {height:50px; float:right; color:#999; font-size:18px;margin-top:5px;}
     .address_list .btn .edit { margin-right:10px;}
-    
-.address_addnav {height:40px;  border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; margin-top:14px; line-height:40px; color:#666; }
+
 .address_main {height:auto;width:94%; padding:0px 3%; border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; margin-top:14px; background:#fff;}
 .address_main .line {height:44px; width:100%; border-bottom:1px solid #f0f0f0; line-height:44px;}
 
@@ -31,14 +30,14 @@
 
 <script id='address_list' type='text/html'>
     <div class="page_topbar">
-        <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
+        <a href="javascript:;" class="back" onclick="history.back()"><i class="iconfont icon-chevron-left"></i></a>
         <div class="title">收货地址管理</div>
     </div>
     
    <%each list as value%>
    <div class="address_list" 
         data-addressid="<%value.id%>">
-        <div class="ico" ><i class="fa <%if value.isdefault=='1'%>fa-check-circle-o<%else%>fa-circle-o<%/if%>" <%if value.isdefault=='1'%>style="color:#0c9"<%/if%>></i></div>
+        <div class="ico" ><i class="iconfont <%if value.isdefault=='1'%>icon-check-circle-o<%else%>icon-circle-o<%/if%>" <%if value.isdefault=='1'%>style="color:#f15353"<%/if%>></i></div>
         <div class="info">
             <div class='inner'>
                <div class="addr"><%value.address%></div>
@@ -46,12 +45,12 @@
             </div>
         </div>
         <div class='btn'>
-            <div class="remove" ><i class="fa fa-remove" style="margin-top:13px"></i></div>
-            <div class="edit"><i class="fa fa-pencil" style="margin-top:14px"></i></div>
+            <div class="remove" ><i class="iconfont icon-remove" style="margin-top:13px"></i></div>
+            <div class="edit"><i class="iconfont icon-pencil" style="margin-top:14px"></i></div>
         </div>
     </div>
   <%/each%>
-  <a href="javascript:;" id='new_address'><div class="address_addnav"><i class="fa fa-plus-circle" style="color:#999; margin:10px 10px 0 8px; font-size:18px;"></i>新增收货地址</div></a>
+  <a href="javascript:;" id='new_address'><div class="address_addnav"><i class="iconfont icon-plus-circle" ></i><span>新增收货地址</span></div></a>
 </script>
 <script id='address_data' type='text/html'>
  
@@ -161,8 +160,8 @@
                  $('.ico').click(function(){
                      var id =$(this).closest('.address_list').data('addressid');
                  
-                      $('.ico i').removeClass('fa-check-circle-o').addClass('fa-circle-o').css('color','#999');
-                          $('.address_list[data-addressid='+id +'] .ico i').removeClass('fa-circle-o').addClass('fa-check-circle-o').css('color','#0c9');
+                      $('.ico i').removeClass('icon-check-circle-o').addClass('icon-circle-o').css('color','#999');
+                          $('.address_list[data-addressid='+id +'] .ico i').removeClass('icon-circle-o').addClass('icon-check-circle-o').css('color','#f15353');
                          core.json('shop/address',{op:'setdefault',id:id},function(json){
                           if(json.status==1){
                               core.tip.show('设置默认地址成功');
@@ -185,7 +184,7 @@
                                 if(json.status==1){
                                     if(json.result && json.result.defaultid){
                                         $('.ico i').removeClass('fa-check-circle-o').addClass('fa-circle-o').css('color','#999');
-                                        $('.address_list[data-addressid='+json.result.defaultid +'] .ico i').removeClass('fa-circle-o').addClass('fa-check-circle-o').css('color','#0c9');
+                                        $('.address_list[data-addressid='+json.result.defaultid +'] .ico i').removeClass('fa-circle-o').addClass('fa-check-circle-o').css('color','#f15353');
                                     }
                                     core.tip.show('删除成功');
                                 }

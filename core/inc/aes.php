@@ -1,16 +1,21 @@
 <?php
-namespace Common\Org;
-class Aes {
+/**
+ * Created by PhpStorm.
+ * User: dingran
+ * Date: 16/7/20
+ * Time: 下午5:55
+ */
 
+class Aes{
     private $key; //密钥名称
     private $val; //密钥值
-    public function __construct($key='',$val=''){
+    public function __construct($key,$val){
         if($key && $val){
             $this->key = $key;
             $this->val = $val;
         }else{
-            $this->key = "hrbin-yunzs-2016";        //密钥名称
-          //  $this->val = "siyuan-rzky-2012";  //密钥值
+            $this->key = "hrbin-uchat-2015";	//密钥名称
+            //$this->val = "ruiyun-rzky-2014";	//密钥值
         }
         $this->out	=	'';
     }

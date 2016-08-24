@@ -6,7 +6,24 @@ global $_W, $_GPC;
 $preUrl = $_COOKIE['preUrl'];
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 
+//访问来自app分享
+$from = !empty($_GPC['from']) ? $_GPC['from'] : '';
+
 session_start();
+
+if (m('user')->islogin() != false) {
+    header('location: ' . $this->createMobileUrl('member'));
+}
+
+//获取APP参数设置
+if (is_app()) {
+    $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+        ':uniacid' => $_W['uniacid']
+    ));
+    $set     = unserialize($setdata['sets']);
+
+    $app = $set['app']['base'];
+}
 if ($_W['isajax']) {
     if ($_W['ispost']) {
         $mobile = !empty($_GPC['mobile']) ? $_GPC['mobile'] : show_json(0, '手机号不能为空！');
@@ -31,7 +48,15 @@ if ($_W['isajax']) {
         }
         //使用推荐码 是否开启
         $isreferraltrue = false;
-        if ($this->yzShopSet['isreferral'] == 1 && !empty($_GPC['referral'])) {
+
+        //判断APP,PC是否开启推荐码功能
+        if (is_app()) {
+            $isreferral = $app['accept'];
+        } else {
+            $isreferral = $this->yzShopSet['isreferral'];
+        }
+
+        if ($isreferral == 1 && !empty($_GPC['referral'])) {
             $referral = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where referralsn=:referralsn and uniacid=:uniacid limit 1', array(
                         ':uniacid' => $_W['uniacid'],
                         ':referralsn' => $_GPC['referral']
@@ -59,6 +84,15 @@ if ($_W['isajax']) {
                 'regtype' => 2,
             );
 
+            if (is_app()) {
+                $member_data['bindapp'] = 1;
+            }
+
+            if (!is_weixin()) {
+                $member_data['nickname'] = $mobile;
+                $member_data['avatar'] = "http://".$_SERVER ['HTTP_HOST']. '/addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg';
+            }
+
             pdo_insert('sz_yi_member', $member_data);
             $openid = $member_data['openid'];
         } else {
@@ -84,7 +118,9 @@ if ($_W['isajax']) {
                     'status' => 1,
                     'isagent' => 1
                 );
-
+                if($referral['id'] != 0){
+                    $this->upgradeLevelByAgent($referral['id']);
+                }
                 pdo_update('sz_yi_member', $m_data, array("mobile" => $mobile, "uniacid" => $_W['uniacid']));
                 m('member')->responseReferral($this->yzShopSet, $referral, $member);
             }
@@ -100,6 +136,11 @@ if ($_W['isajax']) {
         {
             $preUrl = $this->createMobileUrl('shop');
         }
+
+        if ($from == 'app') {
+            $preUrl = $this->createMobileUrl('shop/download');
+        }
+
         show_json(1, $preUrl);
     }      
 }

@@ -17,7 +17,7 @@
 
     .main .page {width:100%; background:#eee; }
     .main .page .topbar {height:28px; width:100%; background:#f9f9f9; padding:8px 0;}
-    .main .page .topbar .list1,    .main .page .topbar .list2 {height:28px; width:10%; float:left; margin-left:3%; line-height:28px; font-size:18px; text-align:left; color:#999;}
+    .main .page .topbar .list1,    .main .page .topbar .list2 {height:28px; width:10%; float:left; margin-left:3%; line-height:28px; font-size:24px; text-align:left; color:#999;}
     .main .page .topbar .name {height:28px; width:54%; padding-left:10%; margin:auto; text-align:center; float:left; font-size:16px; line-height:28px; color:#666;}
     .main .page .topbar .sort {height:28px; width:10%; float:right; font-size:18px; line-height:28px; padding-top:5px; text-align:right; color:#999;}
     .main .page .topbar .search {height:28px; width:10%; float:right; margin-right:3%; font-size:18px; line-height:25px; text-align:right; color:#999;}
@@ -44,9 +44,6 @@
     .main .page .goods .good .price span {height:23px; width:auto; padding:2px 6px; color:#cccccc; font-size:12px; border-radius:5px; text-decoration: line-through}
     .main .page .copyright {height:40px; width:100%; text-align:center; line-height:40px; font-size:12px; color:#999; margin-top:10px;float:left;}
 
-    .main .page .sort_list {height:100px; width:90px; background:rgba(51,51,51,0.8); border-radius:5px; position:absolute; top:50px; right:5%; display:none;z-index:999}
-    .main .page .sort_list .nav {height:25px; width:90px; line-height:25px; font-size:12px; color:#fff; text-align:center;}
-    .main .page .sort_list .navon {color:#ff6600;}
 
     #list_loading { width:94%;padding:10px;color:#666;text-align: center;float:right;}
     .list_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
@@ -117,19 +114,15 @@ div.addinfo{height:18px;}
 </div>
     <div class="main">
         <div id='category_container'></div>
+        
         <div class='page'>
             <!--排序div-->
-            <div class="sort_list">
-                <div class="nav navon"  data-order='sales' data-by='desc'>销量从高到低</div>
-                <div class="nav" data-order='marketprice' data-by='asc'>价格从低到高</div>
-                <div class="nav "  data-order='marketprice' data-by='desc'>价格从高到低</div>
-                <div class="nav"  data-order='score' data-by='asc'>评价从高到低</div>
-            </div>
+            
             <!--topbar-->
             <div class="topbar">
                 {if !empty($myshop['selectcategory']) || empty($myshop)}
                 <div class="list1">
-                  <i class="fa fa-list-ul"><br><span class="f12" style="position:relative; bottom:5px;">分类</span></i>
+                  <i class="iconfont icon-list-ul" style="font-size: 22px"></i>
 				  
                 </div>
                 {else}
@@ -139,8 +132,13 @@ div.addinfo{height:18px;}
                 
                 {/if}
                 <div class="name">{if empty($current_category)}全部商品{else}{$current_category['name']}{/if}</div>
-                <div class="search"><i class="fa fa-search"></i></div>
-                <div class="sort"><i class="fa fa-sort-numeric-desc" style="float:right;"></i></div>
+                <div class="search"><i class="iconfont icon-search" style="font-size: 22px"></i></div>
+            </div>
+            <div class="sort_list sort_listnew">
+                <div class="nav navon"  data-order='sales' data-by='desc'>销量从高到低</div>
+                <div class="nav" data-order='marketprice' data-by='asc'>价格从低到高</div>
+                <div class="nav "  data-order='marketprice' data-by='desc'>价格从高到低</div>
+                <div class="nav"  data-order='score' data-by='asc'>评价从高到低</div>
             </div>
            <!-- <div id="category_group"></div> -->
             <!--商品列表-->
@@ -217,7 +215,7 @@ div.addinfo{height:18px;}
 </script>
 <script id='tpl_category_list' type='text/html'>
      <div class="category">
-        <div class="title category_item" data-name='全部商品'><i class="fa fa-list-ul"></i> 全部分类<i class="fa fa-angle-left close" style="font-size:26px; float:right; line-height:44px; margin-right:20px;"></i></div>
+        <div class="title category_item" data-name='全部商品'><i class="iconfont icon-list-ul"></i> 全部分类<i class="fa fa-angle-left close" style="font-size:26px; float:right; line-height:44px; margin-right:20px;"></i></div>
         <div class="all">
         <p class='category_item' data-isnew='1' data-name='新上宝贝'><i class="fa fa-cart-plus"></i> 新上宝贝</p>
         <p class='category_item' data-isrecommand='1'  data-name='推荐宝贝'><i class="fa fa-heart"></i> 推荐宝贝</p>

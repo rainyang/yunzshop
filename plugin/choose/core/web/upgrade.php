@@ -24,9 +24,12 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_chooseagent` (
   `tcate` int(11) DEFAULT NULL,
   `pagename` varchar(255) DEFAULT NULL,
   `color` varchar(255) DEFAULT NULL,
+  `detail` int(11) DEFAULT  '0',
+  `allgoods` int(11) DEFAULT  '0',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
 ";
 pdo_query($sql);
+
 
 message('芸众快速选购插件安装成功', $this->createPluginWebUrl('choose/index'), 'success');

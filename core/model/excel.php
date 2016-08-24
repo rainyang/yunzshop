@@ -150,7 +150,11 @@ class Sz_DYi_Excel
             $len = count($params['columns']);
             for ($i = 0; $i < $len; $i++) {
                 $value = $row[$params['columns'][$i]['field']];
-                $sheet->setCellValue($this->column($i, $rownum), $value);
+                if ($params['columns'][$i]['field'] == 'nickname') {
+                    $value = @iconv("utf-8", "gbk", $value);
+                    $value = @iconv("gbk", "utf-8", $value);
+                }
+                $sheet->setCellValueExplicit($this->column($i, $rownum), $value, PHPExcel_Cell_DataType::TYPE_STRING);
             }
             $rownum++;
         }
@@ -175,22 +179,22 @@ class Sz_DYi_Excel
             load()->func('file');
             mkdirs($path, '0777');
         }
-        $file     = time() . $_W['uniacid'] . ".xlsx";
+        $file     = time() . $_W['uniacid'] . ".xls";
         $filename = $_FILES[$excefile]['name'];
         $tmpname  = $_FILES[$excefile]['tmp_name'];
         if (empty($tmpname)) {
             message('请选择要上传的Excel文件!', '', 'error');
         }
         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
-        if ($ext != 'xlsx') {
-            message('请上传 xlsx 格式的Excel文件!', '', 'error');
+        if ($ext != 'xls') {
+            message('请上传 xls 格式的Excel文件!', '', 'error');
         }
         $uploadfile = $path . $file;
         $result     = move_uploaded_file($tmpname, $uploadfile);
         if (!$result) {
             message('上传Excel 文件失败, 请重新上传!', '', 'error');
         }
-        $reader             = PHPExcel_IOFactory::createReader('Excel2007');
+        $reader             = PHPExcel_IOFactory::createReader('Excel5');
         $excel              = $reader->load($uploadfile);
         $sheet              = $excel->getActiveSheet();
         $highestRow         = $sheet->getHighestRow();

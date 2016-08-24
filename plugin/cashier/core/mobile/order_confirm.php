@@ -85,10 +85,12 @@ if ($operation == 'display') {
     }
     // coupon
     $hascoupon = false;
+    $iscashier = 1;
     if ($hascouponplugin) {
-        $couponcount = $plugc->consumeCouponCount($openid,$orig_price);
+        $couponcount = $plugc->consumeCouponCount($openid,$orig_price,0,$sid,$iscashier);
         $hascoupon   = $couponcount > 0;
     }
+
 
 } else if ($operation == 'get_deduct') {
     if($_W['isajax']){
@@ -136,10 +138,12 @@ if ($operation == 'display') {
         }
         // coupon
         $hascoupon = false;
+        $iscashier = 1;
         if ($hascouponplugin) {
-            $couponcount = $plugc->consumeCouponCount($openid,$orig_price);
+            $couponcount = $plugc->consumeCouponCount($openid,$orig_price,0,$sid,$iscashier);
             $hascoupon   = $couponcount > 0;
         }
+
         $coupon=array(
             'hascouponplugin' => $hascouponplugin,
             'couponcount' => $couponcount,
@@ -386,19 +390,21 @@ if ($operation == 'display') {
     );
     pdo_insert('sz_yi_order_goods', $order_goods);
     $this->model->calculateCommission($orderid);
-    if (is_array($carrier)) {
-        $up = array(
-            'realname' => $carrier['carrier_realname'],
-            'mobile' => $carrier['carrier_mobile']
-        );
-        pdo_update('sz_yi_member', $up, array(
-            'id' => $member['id'],
-            'uniacid' => $_W['uniacid']
-        ));
-        if (!empty($member['uid'])) {
-            load()->model('mc');
-            mc_update($member['uid'], $up);
-        }
+    if($store['iscontact'] == 1){
+        if (is_array($carrier)) {
+            $up = array(
+                'realname' => $carrier['carrier_realname'],
+                'mobile' => $carrier['carrier_mobile']
+            );
+            pdo_update('sz_yi_member', $up, array(
+                'id' => $member['id'],
+                'uniacid' => $_W['uniacid']
+            ));
+            if (!empty($member['uid'])) {
+                load()->model('mc');
+                mc_update($member['uid'], $up);
+            }
+        }       
     }
     if ($deductcredit > 0) {
         $shop = m('common')->getSysset('shop');

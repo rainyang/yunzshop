@@ -37,6 +37,7 @@ if ($operation == 'display') {
 		pdo_update('sz_yi_supplier_apply', $data, array(
 				'id' => $id
 			));
+		pdo_query('update ' . tablename('sz_yi_order_goods') . " set supplier_apply_status=1 where id in ({$apply['apply_ordergoods_ids']})");
 		$msg = $apply['type'] == 1 ? '手动打款成功' : '提现到微信钱包成功!';
 		p('supplier')->sendMessage($openid, array('money' => $apply['apply_money'], 'type' => $msg), TM_SUPPLIER_PAY);
 		message($msg, $this->createPluginWebUrl('supplier/supplier_apply'), 'success');

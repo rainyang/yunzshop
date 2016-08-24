@@ -58,6 +58,30 @@
                 </div>
         </div>
         
+        {if p('channel')}
+        <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启采购商品</label>
+                <div class="col-sm-9 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="openchannel" value="1" {if $open['isopenchannel'] ==1} checked="checked"{/if} /> 开启</label>
+                    <label class="radio-inline"><input type="radio"  name="openchannel" value="0" {if $open['isopenchannel'] ==0} checked="checked"{/if} /> 关闭</label> 
+                </div>
+        </div>
+        {/if}
+        <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否显示简单详情</label>
+                <div class="col-sm-9 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="detail" value="1" {if $open['detail'] ==1} checked="checked"{/if} /> 是</label>
+                    <label class="radio-inline"><input type="radio"  name="detail" value="0" {if $open['detail'] ==0} checked="checked"{/if} /> 否</label> 
+                </div>
+        </div>
+        <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否显示全部商品</label>
+                <div class="col-sm-9 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="allgoods" value="1" {if $open['allgoods'] ==1} checked="checked"{/if} /> 是</label>
+                    <label class="radio-inline"><input type="radio"  name="allgoods" value="0" {if $open['allgoods'] ==0} checked="checked"{/if} /> 否</label> 
+                </div>
+        </div>
+
 		<div class="form-group" id="agentchoose">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">请选择指定供应商</label>
                 

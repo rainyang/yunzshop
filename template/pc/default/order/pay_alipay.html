@@ -19,7 +19,9 @@ function showIframe(url,w,h){
     var objT=Number(st)+(Number(ch)-Number(objH))/2;
     var objL=Number(sl)+(Number(cw)-Number(objW))/2;
     $("#alipayFrame").css('left',objL);
+    <?php if ($_W['os'] != 'windows') { ?>
     $("#alipayFrame").css('top',objT);
+    <?php }?>
     $("#alipayFrame").attr("src", url)
     //添加背景遮罩
     $("<div id='alipayFrameBg' style='background-color: #fff;display:block;z-index:3;position:absolute;left:0px;top:0px;'/>").prependTo('body'); 
@@ -55,7 +57,11 @@ var logid = "{$logid}";
                  return;
             }
             var height =$(document.body).height();
-             showIframe(result.alipay.url,"100%",height);
+            <?php if ($_W['os'] != 'windows') { ?>
+                showIframe(result.alipay.url,"100%",height);
+            <?php } else { ?>
+                showIframe(result.alipay.url,"100%",900);
+            <?php }?>
              },true,true);
      });
 </script>

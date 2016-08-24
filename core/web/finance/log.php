@@ -18,7 +18,36 @@ $op      = $operation = $_GPC['op'] ? $_GPC['op'] : 'display';
 $groups  = m('member')->getGroups();
 $levels  = m('member')->getLevels();
 $uniacid = $_W['uniacid'];
+$template_flag = 0;
 if ($op == 'display') {
+    $diyform_plugin = p('diyform');
+    if ($diyform_plugin) {
+        $set_config        = $diyform_plugin->getSet();
+        $user_diyform_open = $set_config['user_diyform_open'];
+        if ($user_diyform_open == 1) {
+            $template_flag = 1;
+            $diyform_id    = $set_config['user_diyform'];
+            if (!empty($diyform_id)) {
+                $formInfo     = $diyform_plugin->getDiyformInfo($diyform_id);
+                $fields       = $formInfo['fields'];
+                $diyform_data = iunserializer($member['diymemberdata']);
+                $f_data       = $diyform_plugin->getDiyformData($diyform_data, $fields, $member);
+            }
+        }
+    }
+
+    if($fields){
+
+        foreach ($fields as $k => $key) {
+            if ( explode($key['tp_name'], '身份证号') > 1  || explode($key['tp_name'], '城市') > 1 || explode($key['tp_name'], '地址') > 1  || explode($key['tp_name'], '区域') > 1  || explode($key['tp_name'], '位置') > 1 ) {
+                $field[] = array('title' => $key['tp_name'] , 'field' => $k , 'width' => 24);
+            } else {
+                $field[] = array('title' => $key['tp_name'] , 'field' => $k , 'width' => 12);
+            }
+
+            
+        }
+    }
     $pindex = max(1, intval($_GPC['page']));
     $psize  = 20;
     $type   = intval($_GPC['type']);
@@ -63,20 +92,33 @@ if ($op == 'display') {
     }
     if (!empty($_GPC['rechargetype'])) {
         $_GPC['rechargetype'] = trim($_GPC['rechargetype']);
-        $condition            = " AND log.rechargetype=:rechargetype";
+        $condition .= " AND log.rechargetype=:rechargetype";
         if ($_GPC['rechargetype'] == 'system1') {
-            $condition = " AND log.rechargetype='system' and log.money<0";
+            $_GPC['rechargetype'] = 'system';
+            $condition .= " and log.money<0";
         }
         $params[':rechargetype'] = trim($_GPC['rechargetype']);
     }
     if ($_GPC['status'] != '') {
         $condition .= ' and log.status=' . intval($_GPC['status']);
     }
-    $sql = "select log.id,m.id as mid, m.realname,m.avatar,m.weixin,log.logno,log.type,log.status,log.rechargetype,m.nickname,m.mobile,g.groupname,log.money,log.createtime,l.levelname from " . tablename('sz_yi_member_log') . " log " . " left join " . tablename('sz_yi_member') . " m on m.openid=log.openid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where 1 {$condition} ORDER BY log.createtime DESC ";
+
+    //搜索充值内容
+    if ($_GPC['paymethod'] !="") {
+        $condition .= ' and log.paymethod=' . intval($_GPC['paymethod']);
+    }
+
+    $sql = "select log.id,log.aging_id,m.id as mid, m.realname,m.diymemberdata,m.avatar,m.weixin,log.logno,log.type,log.status,log.rechargetype,m.nickname,m.mobile,g.groupname,log.money,log.createtime,l.levelname from " . tablename('sz_yi_member_log') . " log " . " left join " . tablename('sz_yi_member') . " m on m.openid=log.openid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where 1 {$condition} ORDER BY log.createtime DESC ";
     if (empty($_GPC['export'])) {
         $sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
     }
     $list = pdo_fetchall($sql, $params);
+    if(p('love')){
+        foreach ($list as $key => &$value) {
+            $value['aging'] = pdo_fetch("select * from " . tablename('sz_yi_member_aging_rechange') . " where id=".$value['aging_id']);
+        }
+        unset($value);
+    }
     if ($_GPC['export'] == 1) {
         if ($_GPC['type'] == 1) {
             ca('finance.withdraw.export');
@@ -106,6 +148,25 @@ if ($op == 'display') {
                     $row['status'] = "";
                 } else {
                     $row['status'] = "失败";
+                }
+            }
+            //自定义表单信息
+            if($row['diymemberdata']){
+
+                $row['diymemberdata'] = iunserializer($row['diymemberdata']);
+                foreach ($row['diymemberdata'] as $key => $value) {
+                    
+                    if($key == 'diyshenfenzheng'){
+                        $row[$key] = "'".$value."'";
+                    }else if(is_array($value)){
+                        $row[$key] = "'";
+
+                        foreach ($value as $k => $v) {
+                            $row[$key] .= $v;
+                        }
+                    }else{
+                        $row[$key] = $value;
+                    }
                 }
             }
             if ($row['rechargetype'] == 'system') {
@@ -154,18 +215,26 @@ if ($op == 'display') {
                 'width' => 12
             )
         );
+        if ($field) {
+            $columns = array_merge($columns,$field);
+        }
         if (empty($_GPC['type'])) {
             $columns[] = array(
                 'title' => "充值方式",
                 'field' => 'rechargetype',
                 'width' => 12
             );
-        }
+        }//echo "<pre>"; print_r($list);exit;
         m('excel')->export($list, array(
             "title" => (empty($type) ? "会员充值数据-" : "会员提现记录") . date('Y-m-d-H-i', time()),
             "columns" => $columns
         ));
+
     }
+    $set           = m('common')->getSysset(array(
+        'shop',
+        'pay'
+    ));
     $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_member_log') . " log " . " left join " . tablename('sz_yi_member') . " m on m.openid=log.openid and m.uniacid= log.uniacid" . " left join " . tablename('sz_yi_member_group') . " g on m.groupid=g.id" . " left join " . tablename('sz_yi_member_level') . " l on m.level =l.id" . " where 1 {$condition} ", $params);
     $pager = pagination($total, $pindex, $psize);
 } else if ($op == 'pay') {
@@ -179,6 +248,10 @@ if ($op == 'display') {
     if (empty($log)) {
         message('未找到记录!', '', 'error');
     }
+    $set           = m('common')->getSysset(array(
+        'shop',
+        'pay'
+    ));
     $member = m('member')->getMember($log['openid']);
     if ($paytype == 'manual') {
         ca('finance.withdraw.withdraw');
@@ -193,6 +266,9 @@ if ($op == 'display') {
         message('手动提现完成!', referer(), 'success');
     } else if ($paytype == 'wechat') {
         ca('finance.withdraw.withdraw');
+        if($set['pay']['weixin']!='1'){
+            message('您未开启微信支付功能!', '', 'error');
+        }    
         $result = m('finance')->pay($log['openid'], 1, $log['money'] * 100, $log['logno'], $set['name'] . '余额提现');
         if (is_error($result)) {
             message('微信钱包提现失败: ' . $result['message'], '', 'error');
@@ -206,7 +282,25 @@ if ($op == 'display') {
         m('notice')->sendMemberLogMessage($log['id']);
         plog('finance.withdraw.withdraw', "余额提现 ID: {$log['id']} 方式: 微信 金额: {$log['money']} <br/>会员信息:  ID: {$member['id']} / {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
         message('微信钱包提现成功!', referer(), 'success');
-    } else if ($paytype == 'refuse') {
+    }else if ($paytype == 'alipay') {
+        ca('finance.withdraw.withdraw');
+        $member = m('member')->getInfo($log['openid']);
+        if($set['pay']['alipay']!='1'){
+            message('您未开启支付宝支付功能!', '', 'error');
+        }
+        if( $set['pay']['alipay_withdrawals']!='1'){
+            message('您未开启支付宝提现功能!', '', 'error');
+        }
+
+        if(empty($member['alipay']) || empty($member['alipayname'])){
+            message('该用户未填写完整的收款支付宝账号或姓名!', '', 'error');
+        }     
+        $result = m('finance')->alipay_finance($log['money'],$member['alipay'],$member['alipayname'],$log['id']);
+       
+        m('notice')->sendMemberLogMessage($log['id']);
+        plog('finance.withdraw.withdraw', "余额提现 ID: {$log['id']} 方式: 支付宝 金额: {$log['money']} <br/>会员信息:  ID: {$member['id']} / {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+        message('支付宝提现成功!', referer(), 'success');
+    }else if ($paytype == 'refuse') {
         ca('finance.withdraw.withdraw');
         pdo_update('sz_yi_member_log', array(
             'status' => -1

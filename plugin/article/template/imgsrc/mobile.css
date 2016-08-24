@@ -22,7 +22,7 @@ body {font-family:"Helvetica Neue",Helvetica,"Hiragino Sans GB","Microsoft YaHei
 .rich_sift_goods .dots {height: 12px; width: 100%; position: absolute; bottom: 14px; left: 0; text-align: center;}
 .rich_sift_goods .dots a {height: 12px; width: 12px; background: rgba(0,0,0,0.3); display: inline-block; border-radius: 12px;}
 .rich_sift_goods .dots .on {background: rgba(0,0,0,0.5);}
-.rich_sift_text {height: 60px; line-height:50px; font-size:16px; color:#607fa6; text-align:center;}
+.rich_sift_text { line-height:30px; font-size:16px; color:#607fa6; text-align:center;padding: 10px 0}
 .rich_sift_text a {color:#607fa6; text-decoration: none;} 
 
 /* Swipe 2 styles */
@@ -70,12 +70,13 @@ body {font-family:"Helvetica Neue",Helvetica,"Hiragino Sans GB","Microsoft YaHei
 /* 以下是文章列表样式3 */
 .t3 {background: #fff;}
 .t3 a {color: inherit; text-decoration: none;}
-.t3 .topbar {height: 48px; width: 100%; background: #f90; padding-top: 0px; position: fixed; top: 0;}
-.t3 .topbar .menu-main {height: 48px; background: #fff; padding: 0; overflow-x: auto; white-space:nowrap; -webkit-overflow-scrolling:touch;}
-.t3 .topbar .menu-main nav {height:48px; width:auto; padding:0px 10px; background:none; display:inline-block; line-height:44px; color:#666;}
-.t3 .topbar .menu-main .on {height: 40px; border-bottom: 2px solid #0cc; color: #0cc;}
+.t3 .topbar {height: 48px; width: 100%; background: #efefef; padding-top: 0px;text-align: left;}
+.t3 .topbar .menu-main {border-bottom: 1px solid #e3e3e3;
+    margin-bottom: 10px;height: 42px; background: #fff; padding: 0; overflow-x: auto; white-space:nowrap; -webkit-overflow-scrolling:touch;}
+.t3 .topbar .menu-main nav {height:42px; width:auto; padding:0px 10px; background:none; display:inline-block; line-height:42px; color:#666;}
+.t3 .topbar .menu-main .on {height: 40px; border-bottom: 2px solid #f15353; color: #f15353;}
 .t3 .topbar .block {height: 5px; width: 100%; position: absolute; bottom: 0; left: 0; background: #fff; border-top: 1px solid #eee; z-index: 999;}
-.t3 .list {height: auto; padding: 0 8px; margin-top: 42px;}
+.t3 .list {height: auto; padding: 0 8px;}
 .t3 .list .line {height: 80px; border-bottom: 1px solid #f0f0f0; padding: 8px 0;}
 .t3 .list .line .img {height: 80px; width: 80px; background: #eee; float: left;}
 .t3 .list .line .img img {height: 100%; width: 100%; display: block;}

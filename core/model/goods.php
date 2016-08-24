@@ -1,7 +1,7 @@
 <?php
 /*=============================================================================
 #     FileName: goods.php
-#         Desc: 商品类
+#         Desc: 脡脤脝路脌脿
 #       Author: Yunzhong - http://www.yunzshop.com
 #        Email: 913768135@qq.com
 #     HomePage: http://www.yunzshop.com
@@ -32,7 +32,10 @@ class Sz_DYi_Goods
         $order     = !empty($args['order']) ? $args['order'] : ' displayorder desc,createtime desc';
         $orderby   = !empty($args['by']) ? $args['by'] : '';
         $ids       = !empty($args['ids']) ? trim($args['ids']) : '';
+        $id       = !empty($args['id']) ? trim($args['id']) : '0';
         $sup_uid   = !empty($args['supplier_uid']) ? trim($args['supplier_uid']) : '';
+        $isopenchannel   = !empty($args['isopenchannel']) ? trim($args['isopenchannel']) : 0;
+        $ischannelpick   = !empty($args['ischannelpick']) ? trim($args['ischannelpick']) : 0;
         $condition = ' and `uniacid` = :uniacid AND `deleted` = 0 and status=1';
         $params    = array(
             ':uniacid' => $_W['uniacid']
@@ -40,9 +43,20 @@ class Sz_DYi_Goods
         if (!empty($ids)) {
             $condition .= " and id in ( " . $ids . ")";
         }
+        if (!empty($id)) {
+            $condition .= " and id = :id";
+            $params[':id'] = intval($id);
+        }
+        if (!empty($args['isverify'])) {
+            $condition .= " and isverify = 1";
+        }
         if (!empty($sup_uid)) {
             $condition .= " and supplier_uid = :supplier_uid ";
             $params[':supplier_uid'] = intval($sup_uid);
+        }
+        if (!empty($isopenchannel)) {
+            $condition .= " and isopenchannel = :isopenchannel ";
+            $params[':isopenchannel'] = intval($isopenchannel);
         }
         $isnew = !empty($args['isnew']) ? 1 : 0;
         if (!empty($isnew)) {
@@ -109,12 +123,24 @@ class Sz_DYi_Goods
         $groupid = intval($member['groupid']);
         $condition .= " and ( ifnull(showlevels,'')='' or FIND_IN_SET( {$levelid},showlevels)<>0 ) ";
         $condition .= " and ( ifnull(showgroups,'')='' or FIND_IN_SET( {$groupid},showgroups)<>0 ) ";
-        if (!$random) {
-            $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} LIMIT " . ($page - 1) * $pagesize . ',' . $pagesize;
+        if (!empty($ischannelpick)) {
+            $list = array();
+            $goodsinfo = pdo_fetchall("SELECT distinct goodsid FROM " . tablename('sz_yi_channel_stock') . " WHERE uniacid={$_W['uniacid']} and openid='{$openid}'");
+            if (!empty($goodsinfo)) {
+                foreach ($goodsinfo as $value) {
+                        $channel_goods =  pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE uniacid={$_W['uniacid']} AND id={$value['goodsid']}");
+                        $channel_goods['total'] = p('channel')->getMyOptionStock($openid, $value['goodsid'], 0);
+                        $list[] = $channel_goods;
+                }
+            }
         } else {
-            $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() LIMIT " . $pagesize;
+            if (!$random) {
+                $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} LIMIT " . ($page - 1) * $pagesize . ',' . $pagesize;
+            } else {
+                $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() LIMIT " . $pagesize;
+            }
+            $list = pdo_fetchall($sql, $params);
         }
-        $list = pdo_fetchall($sql, $params);
         $list = set_medias($list, 'thumb');
         return $list;
     }

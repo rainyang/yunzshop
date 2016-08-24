@@ -22,8 +22,8 @@
     .take1 {height:30px; width:auto; padding:0 10px; line-height:30px; font-size:16px; float:right; background:#00cc00; border-radius:5px; margin-top:5px; color:#fff;}
 
     .order { width:100%; background:#fff; margin-top: 10px; border-bottom:1px solid #ddd;}
-    .order_all {height: 56px; width:100%; padding: 5px 0px; color:#666;}
-    .order_all i{ color:#999;}
+    .apporder_all {height: 56px; width:100%; padding: 5px 0px; color:#666;}
+    .apporder_all i{ color:#999;}
     .order_pub {height:18px; float:left; padding-top:5px; text-align:center; color:#666; position:relative;}
     .order_pub span {height:16px; width:16px; background:#f30; border-radius:8px; position:absolute; top:0; right:25%; font-size:12px; color:#fff; line-height:16px;}
     .order_1 {width:24%;}
@@ -59,6 +59,10 @@
     .listbg13{ background: #FFB355;}
     .listbg14{ background: #76A0FF;}
 
+    .fa-star {
+        color: #fff !important;
+    }
+
 
 </style>
 
@@ -66,7 +70,14 @@
 <script id="member_center" type="text/html">
     <div class="header">
         <div class="user">
-            <div class="user-head"><img src="<%member.avatar%>" /></div>
+            <div class="user-head">
+                <%if member.avatar.length > 0%>
+                <img src="<%member.avatar%>" />
+                <%else%>
+                <img src="../addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg" />
+                <%/if%>
+
+            </div>
             <div class="user-info">
                 <div class="user-name"><%member.nickname%></div>
                 <div class="user-other" {if !empty($set['shop']['levelurl'])}onclick='location.href="{$set['shop']['levelurl']}"'{/if}>[<%level.levelname%>] {if !empty($set['shop']['levelurl'])}<i class='fa fa-question-circle' ></i>{/if}
@@ -98,7 +109,7 @@
             <div class="allorder">查看全部订单</div>
         </div>
     </a>
-    <div class="order_all">
+    <div class="apporder_all">
         <a href="{php echo $this->createMobileUrl('order',array('status'=>0))}"><div class="order_pub order_1" style="border:0px; font-size: 13px"><i class="fa fa-credit-card" style="font-size:24px; margin-bottom: 5px"></i><br>待付款<%if order.status0>0%><span><%order.status0%></span><%/if%></div></a>
         <a href="{php echo $this->createMobileUrl('order',array('status'=>1))}"><div class="order_pub order_2" style="font-size: 13px"><i class="fa fa-truck" style="font-size:24px; margin-bottom: 5px"></i><br>待发货<%if order.status1>0%><span><%order.status1%></span><%/if%></div></a>
         <a href="{php echo $this->createMobileUrl('order',array('status'=>2))}"><div class="order_pub order_3" style="font-size: 13px"><i class="fa fa-suitcase" style="font-size:24px; margin-bottom: 5px"></i><br>待收货<%if order.status2>0%><span><%order.status2%></span><%/if%></div></a>
@@ -126,6 +137,11 @@
     <a href="{php echo $this->createPluginMobileUrl('bonus/index')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg11"><i class="fa fa-money"></i></span>{php echo empty($bonus_set['texts']['center']) ? "分红明细" : $bonus_set['texts']['center'];}<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
     {/if}
     {/if}
+
+    {if $app['accept'] == 1}
+    <a href="{php echo $this->createMobileUrl('member/referral')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg8"><i class="fa fa-barcode"></i></span>我的推荐码<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
+    {/if}
+
 </div>
 {if $hascoupon}
 <div class="cart">
@@ -141,16 +157,25 @@
     <a href="{php echo $this->createMobileUrl('shop/favorite')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg5"><i class="fa fa-star"></i></span>我的收藏<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i><span class="count"><%counts.favcount%></span></div></a>
     <a href="{php echo $this->createMobileUrl('shop/history')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg6"><i class="fa fa-list"></i></span>我的足迹<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
     <a href="{php echo $this->createMobileUrl('member/notice')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg7"><i class="fa fa-bell"></i></span>消息提醒设置<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
-     <a href="{php echo $this->createMobileUrl('member/pushlist')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg7"><i class="fa fa-share-square-o"></i></span>系统消息<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
+    <a href="{php echo $this->createMobileUrl('member/messagelist')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg2"><i class="fa fa-volume-up"></i></span>订单通知<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
+    <a href="{php echo $this->createMobileUrl('member/pushlist')}"><div class="list1" style="margin:0px; border-bottom:0px;"><span class="listbg listbg3"><i class="fa fa-share-square-o"></i></span>系统消息<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
+
 </div>
+
+    <div class="cart">
     {if isset($set['trade']) && $set['trade']['withdraw']==1}
-    <a href="javascript:;" id="btnwithdraw"><div class="list1" style="border-bottom: 0px;"><span class="listbg listbg14"><i class="fa fa-money"></span></i>余额提现<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>    
+    <a href="javascript:;" id="btnwithdraw"><div class="list1" style="border-bottom: 0px;"><span class="listbg listbg14"><i class="fa fa-money"></i></span>余额提现<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
     {/if}
     {if isset($set['trade']) && ($set['trade']['withdraw']==1 || empty($set['trade']['closerecharge']))}
-    <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="{if isset($set['trade']) && $set['trade']['withdraw']==1}margin:0px;{/if}">
+    <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="{if isset($set['trade']) && $set['trade']['withdraw']==1}margin:0px;border-bottom:0px;{/if}">
     <span class="listbg listbg8"><i class="fa fa-file-text"></i></span>{if isset($set['trade']) && $set['trade']['withdraw']==1}余额明细{else}充值记录{/if}
             <i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>    
    {/if}
+        <%if shopset.isreturn%>
+    <a href="{php echo $this->createPluginMobileUrl('return/return_queue')}"><div class="list1" style="margin:0px;border-bottom:0px;"><span class="listbg listbg1"><i class="fa fa-piechart" ></i></span>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
+        <%/if%>
+</div>
+
     
 <a href="{php echo $this->createMobileUrl('shop/address')}">
 <div class="list1">
@@ -159,7 +184,9 @@
     <i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i>
 </div>
 </a>
-
+{if $has_cashier}
+    <a href="{php echo $this->createPluginMobileUrl('cashier/qrcode_list')}"><div class="list1"><span class="listbg listbg2"><i class="fa fa-money"></i></span>收银台<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+{/if}
 {if !is_weixin()}
 <a href="javascript:;" id="logout"><div class="list1"><span class="listbg listbg10"><i class="fa fa-sign-out"></i></span>退出<i class="fa fa-angle-right" style="color:#999; font-size:18px; float:right; line-height:44px;"></i></div></a>
 {/if}

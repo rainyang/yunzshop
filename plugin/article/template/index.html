@@ -1,6 +1,6 @@
 {template 'web/_header'}
+{php echo date("Y-m-d H:i:s", 1469430449)}
 <div class="w1200 m0a">
-
 <div class="ulleft-nav">
 <ul class="nav nav-tabs">
     <li {if $_GPC['op']=='' || $_GPC['op']=='display'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('article')}" style="cursor: pointer;">文章管理</a></li>
@@ -18,7 +18,6 @@
     {if $_GPC['op']=='list_share'}<li class="active"><a href="javascript:;" style="cursor: pointer;">分享记录</a></li>{/if}
 </ul>
 </div>
-
 <div class="rightlist">
 {if $operation == 'display'}
 <div class="main">
@@ -457,6 +456,7 @@ $(function(){
                             product_advs_type:$("input[name=product_advs_type]:checked").val(),
                             product_advs_more:$("input[name=product_advs_more]").val(),
                             product_advs_link:$("input[name=product_advs_link]").val(),
+                            love_money:$("input[name=love_money]").val(),
                             product_advs:$.toJSON(advs)
                         }, 
                         dataType:'json',
@@ -577,7 +577,7 @@ $(function(){
                         {/if}
                         <li role="presentation" style="display: block;"><a aria-controls="link_diy" role="tab" data-toggle="tab" href="#link_article" aria-expanded="false">营销文章</a></li>
                         <li role="presentation" style="display: block;"><a aria-controls="link_other" role="tab" data-toggle="tab" href="#link_other" aria-expanded="false">自定义链接</a></li>
-                    </ul>	
+                    </ul>   
                 </div>
                  <div class="modal-body tab-content">
                      <div role="tabpanel" class="tab-pane link_system active" id="link_system">
@@ -845,27 +845,27 @@ $(function(){
                         <span class='help-block'>奖励规则提示：分享后，好友点击进入后，才算成功分享一次。</span>
                     </div>
                     <div class="line">
-						<div class="line2">
+                        <div class="line2">
                             <div class="input-group form-group">
                                 <span class="input-group-addon" style="border-right: 0px;">最高累计奖金</span> 
                                 <input type="text" name="article_rule_money_total"  class="form-control" value="{if $aid}{$article['article_rule_money_total']}{/if}" placeholder="">
                                 <span class="input-group-addon" style="border-left: 0px; ">元</span> 
                                 
                             </div>
-							
+                            
                         </div>
-						
-						<div class="line2">
+                        
+                        <div class="line2">
                             <div class="input-group form-group">
                                 <span class="input-group-addon" style="border-right: 0px;">截止目前累计奖励金额</span> 
                                 <input type="text" name="article_rule_userd_money"  class="form-control" value="{if $aid}{$article['article_rule_userd_money']}{/if}" placeholder="">
                                 <span class="input-group-addon" style="border-left: 0px; ">元</span> 
                                 
                             </div>
-							
+                            
                         </div>
-					</div>
-					
+                    </div>
+                    
                     <div class="line">
                         <div class="line2" style="margin-right: 10px; width: 500px;">
                             <div class="input-group form-group">
@@ -894,6 +894,11 @@ $(function(){
                                 <input type="text" name="article_keyword" class="form-control judge" value="{if $aid}{$article['article_keyword']}{/if}" placeholder="页面关键字">
                             </div>
                         </div>
+
+                    </div>
+
+                    <div class="line">
+
                         <div class="line2">
                             <div class="input-group form-group">
                                 <span class="input-group-addon"><span style="color:red">*</span> 是否开启</span>
@@ -903,7 +908,18 @@ $(function(){
                                 </div>
                             </div>
                         </div>
+                        <div class="line2">
+                            <div class="input-group form-group">
+                                <div class="form-control">&nbsp;
+                                        <label for="article_state_wx1" class="radio-inline"><input type="radio" name="article_state_wx" value="1" id="article_state_wx1" {if !$aid || $article['article_state_wx']==1}checked="true"{/if}> 开启</label>&nbsp;&nbsp;&nbsp;
+                                        <label for="article_state_wx0" class="radio-inline"><input type="radio" name="article_state_wx" value="0" id="article_state_wx0" {if $aid && $article['article_state_wx']==0}checked="true"{/if}> 关闭(关闭后微信端不显示)</label>
+                                </div>
+                            </div>
+                        </div>
+
                     </div>
+
+
                     <div class="line">
                         <div class="input-group form-group"> 
                             <span class="input-group-addon">文章介绍(封面)</span>
@@ -1087,6 +1103,11 @@ $(function(){
             <div class="fart-editor-content" step="3" style="overflow-y: auto;">
                 <div class="fart-form">
                     <div class="line">
+                            <div class="input-group form-group {if !p('love')}hidden{/if}">
+                                <span class="input-group-addon" style="border-right: 0px;">事业基金捐献</span>
+                                <input class="form-control" type="text" placeholder="" value="{$article['love_money']}" name="love_money">
+                                <span class="input-group-addon" style="border-left: 0px; ">元</span>
+                            </div>
                             <div class="input-group form-group">
                                 <span class="input-group-addon">营销产品显示设置</span> 
                                 <div class="form-control">&nbsp;
@@ -1202,6 +1223,7 @@ $(function(){
                         <td style="text-align:center;">
                         <span class="m_level hidden">{$row['m_level']}</span>
                         <span class="d_level hidden">{$row['d_level']}</span>
+                        <span class="loveshow hidden">{$row['loveshow']}</span>
                             {ifp 'article.cate.editcate'}
                                 <a class='btn btn-default nav-edit' href="javascript:;"><i class="fa fa-edit"></i></a>
                                 {else}-
@@ -1243,6 +1265,20 @@ $(function(){
                         </div>
                     </div>
                     <div id="module-menus"></div>
+                </div>
+            <div class='panel-heading' class="{if !p('love')}hidden{/if}">
+                爱心基金
+            </div>
+                <div class="modal-body {if !p('love')}hidden{/if}">
+                    <div class="form-group" style="overflow:hidden;">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label" style='width: 100px; line-height:34px;'>事业基金</label>
+                        <div class="col-sm-9 col-xs-12" style='width: 450px'>
+                              <select id="loveshow" name='loveshow' class='form-control'>
+                                <option value='0'>不启用该分类为事业基金分类</option>
+                                <option value='1' >启用该分类为事业基金分类</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             <div class='panel-heading'>
                 阅读权限
@@ -1319,7 +1355,7 @@ $(function(){
             var cname = $(this).parent().parent().attr("cname");
             var m_level = $(this).parent().find(".m_level").html();
             var d_level = $(this).parent().find(".d_level").html();
-
+            var loveshow = $(this).parent().find(".loveshow").html();
             if(!cid){
                 alert("参数错误! 点击确定刷新页面");
                 location.reload();
@@ -1330,14 +1366,15 @@ $(function(){
             $("#category_name").val(cname);
             $("#m_level").val(m_level);
             $("#d_level").val(d_level);
+            $("#loveshow").val(loveshow);
             $("#modal-add").modal();
         });
         $(".nav-save").click(function(){
             var cid = $("#category_id").val();
             var cname = $("#category_name").val();
+            var loveshow = $("#loveshow option:selected").val();
             var m_level = $("#m_level option:selected").val();
             var d_level = $("#d_level option:selected").val();
-
             if(!cname){
                 $("#category_name").focus();
                 alert("分类名称不能为空！");
@@ -1346,7 +1383,7 @@ $(function(){
             $.ajax({
                     type: 'POST',
                     url: "{php echo $this->createPluginWebUrl('article',array('method'=>'api','apido'=>'postcategory'))}",
-                    data: {cid:cid,cname:cname,m_level:m_level,d_level:d_level}, 
+                    data: {cid:cid,cname:cname,m_level:m_level,d_level:d_level,loveshow:loveshow}, 
                     dataType:'json',
                     success: function(data){
                         if(data.result=='success-add' && data.cid && data.cname){
@@ -1354,8 +1391,9 @@ $(function(){
                                   html+="<td class='cid'>"+data.cid+"</td>";
                                   html+="<td class='cname'>"+data.cname+"</td>";
                                   html+="<td style='text-align:center;'>";
-                                  html+="<span class='m_level'>"+data.m_level+"</span>";
-                                  html+="<span class='d_level'>"+data.d_level+"</span>";
+                                  html+="<span class='m_level hidden'>"+data.m_level+"</span>";
+                                  html+="<span class='d_level hidden'>"+data.d_level+"</span>";
+                                  html+="<span class='loveshow hidden'>"+data.loveshow+"</span>";
                                   html+="<a class='btn btn-default nav-edit' href='javascript:;'><i class='fa fa-edit'></i></a>";
                                   html+="<a class='btn btn-default nav-del' href='javascript:;'><i class='fa fa-trash-o'></i></a>";
                                   html+="</td>";
@@ -1398,89 +1436,89 @@ $(function(){
                 <div class="help-block">公众平台模板消息编号: OPENTM200605630 (同分销 任务处理通知 一个模板id)</div>
             </div>
         </div>
-		
-		{loop $article_sys['article_area'] $area_key $area_item}
-		<div class="form-group district_html" style="{if $area_key==0}padding-top:20px;{/if}">
+        
+        {loop $article_sys['article_area'] $area_key $area_item}
+        <div class="form-group district_html" style="{if $area_key==0}padding-top:20px;{/if}">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">{if $area_key==0}可阅读的地区{/if}</label>
             <div class="col-sm-9 col-xs-12 " >
-				
-				<div class="row row-fix tpl-district-container">
-					<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-						<select name="birth[province]"  data-value="{$area_item['province']}" class="form-control tpl-province">
-						</select>
-					</div>
-					<div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
-						<select name="birth[city]" data-value="{$area_item['city']}" class="form-control tpl-city">
-						</select>
-					</div>
-					<div class="col-sm-1">
-						<input type="button" class="btn btn-default" value="删除" onclick="$(this).parent().parent().parent().remove();" />
-					</div>
-				</div> 
+                
+                <div class="row row-fix tpl-district-container">
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <select name="birth[province]"  data-value="{$area_item['province']}" class="form-control tpl-province">
+                        </select>
+                    </div>
+                    <div class="col-xs-12 col-sm-4 col-md-4 col-lg-4">
+                        <select name="birth[city]" data-value="{$area_item['city']}" class="form-control tpl-city">
+                        </select>
+                    </div>
+                    <div class="col-sm-1">
+                        <input type="button" class="btn btn-default" value="删除" onclick="$(this).parent().parent().parent().remove();" />
+                    </div>
+                </div> 
 
             </div>
         </div>
-		{/loop}
-	    <div class="form-group" style="padding-top:20px;">
+        {/loop}
+        <div class="form-group" style="padding-top:20px;">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
             <div class="col-sm-9 col-xs-12">
                 <input type="button" name="" class="btn btn-default" value="添加新区域" onclick="addDistrict();" />
-				<input value="{$area_count}" type="hidden" id="distrist_index">
+                <input value="{$area_count}" type="hidden" id="distrist_index">
             </div>
         </div>
-		
-		<script type="text/javascript">
-			function addDistrict(){
-				
-				require(["jquery", "district"], function($, dis){
-					//alert(objIndex);
-					var objIndex = $('#distrist_index').val();
-					
-					if (objIndex > 0){
-						//复制html：
-						html = '<div class="form-group district_html" style="padding-top:0px;"><label class="col-xs-12 col-sm-3 col-md-2 control-label"></label><div class="col-sm-9 col-xs-12 " ><div class="row row-fix tpl-district-container"><div class="col-xs-12 col-sm-4 col-md-4 col-lg-4"><select name="birth[province]" data-value="" class="form-control tpl-province"></select></div><div class="col-xs-12 col-sm-4 col-md-4 col-lg-4"><select name="birth[city]" data-value="" class="form-control tpl-city"></select></div><div class="col-sm-1"><input type="button" class="btn btn-default" value="删除" onclick="$(this).parent().parent().parent().remove();" /></div></div> </div></div>';
-						//alert(html);
-						prevIndex = objIndex - 1;
-						$('.district_html').eq(prevIndex).after(html);
-					}
-					
-					var contain = $('.tpl-district-container')[objIndex];
-					var elms = {};
-					elms.province = $(contain).find(".tpl-province")[0];
-					elms.city = $(contain).find(".tpl-city")[0];
+        
+        <script type="text/javascript">
+            function addDistrict(){
+                
+                require(["jquery", "district"], function($, dis){
+                    //alert(objIndex);
+                    var objIndex = $('#distrist_index').val();
+                    
+                    if (objIndex > 0){
+                        //复制html：
+                        html = '<div class="form-group district_html" style="padding-top:0px;"><label class="col-xs-12 col-sm-3 col-md-2 control-label"></label><div class="col-sm-9 col-xs-12 " ><div class="row row-fix tpl-district-container"><div class="col-xs-12 col-sm-4 col-md-4 col-lg-4"><select name="birth[province]" data-value="" class="form-control tpl-province"></select></div><div class="col-xs-12 col-sm-4 col-md-4 col-lg-4"><select name="birth[city]" data-value="" class="form-control tpl-city"></select></div><div class="col-sm-1"><input type="button" class="btn btn-default" value="删除" onclick="$(this).parent().parent().parent().remove();" /></div></div> </div></div>';
+                        //alert(html);
+                        prevIndex = objIndex - 1;
+                        $('.district_html').eq(prevIndex).after(html);
+                    }
+                    
+                    var contain = $('.tpl-district-container')[objIndex];
+                    var elms = {};
+                    elms.province = $(contain).find(".tpl-province")[0];
+                    elms.city = $(contain).find(".tpl-city")[0];
 
-					var vals = {};
-					vals.province = $(elms.province).attr("data-value");
-					vals.city = $(elms.city).attr("data-value");
+                    var vals = {};
+                    vals.province = $(elms.province).attr("data-value");
+                    vals.city = $(elms.city).attr("data-value");
 
-					dis.render(elms, vals, {withTitle: true});
-					
-					objIndex++;
-					$('#distrist_index').val(objIndex);
-				});
-				
-			}
-			
-			
-			require(["jquery", "district"], function($, dis){
-				
-				$('.tpl-district-container').each(function(objIndex){
-					var elms = {};
-					elms.province = $(this).find(".tpl-province")[0];
-					elms.city = $(this).find(".tpl-city")[0];
+                    dis.render(elms, vals, {withTitle: true});
+                    
+                    objIndex++;
+                    $('#distrist_index').val(objIndex);
+                });
+                
+            }
+            
+            
+            require(["jquery", "district"], function($, dis){
+                
+                $('.tpl-district-container').each(function(objIndex){
+                    var elms = {};
+                    elms.province = $(this).find(".tpl-province")[0];
+                    elms.city = $(this).find(".tpl-city")[0];
 
-					var vals = {};
-					vals.province = $(elms.province).attr("data-value");
-					vals.city = $(elms.city).attr("data-value");
+                    var vals = {};
+                    vals.province = $(elms.province).attr("data-value");
+                    vals.city = $(elms.city).attr("data-value");
 
-					dis.render(elms, vals, {withTitle: true});
-				
-				});
-				
-			});
-			//addDistrict();
-		</script>
-		
+                    dis.render(elms, vals, {withTitle: true});
+                
+                });
+                
+            });
+            //addDistrict();
+        </script>
+        
         <div class="form-group" style="padding-top:20px;">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">文章列表标题</label>
             <div class="col-sm-9 col-xs-12">
@@ -1547,19 +1585,19 @@ $(function(){
             var article_temp = $("input[name=article_temp]:checked").val();
 
 
-			//读取区域设置的：
-			var article_province = '';
-			$('.tpl-province').each(function(){
-				article_province += $(this).val() + ',';
-			});
-			
-			var article_city = '';
-			$('.tpl-city').each(function(){
-				article_city += $(this).val() + ',';
-			});
-		
-			
-			
+            //读取区域设置的：
+            var article_province = '';
+            $('.tpl-province').each(function(){
+                article_province += $(this).val() + ',';
+            });
+            
+            var article_city = '';
+            $('.tpl-city').each(function(){
+                article_city += $(this).val() + ',';
+            });
+        
+            
+            
             if(!article_title){
                 $("input[name=article_title]").focus();
                 alert('文章封面标题不能为空！');
@@ -1811,3 +1849,4 @@ $(function(){
 </div>
 </div>
 {template 'web/_footer'}
+

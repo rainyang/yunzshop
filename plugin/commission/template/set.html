@@ -186,12 +186,52 @@
                 </div>
             </div>
 
+            <!-- Author:ym Date:2016-07-21 Content:提现比例 -->
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现比例</label>
+                <div class="col-sm-9 col-xs-12">
+                    <div class="input-group">
+                        <div class="input-group-addon">提现 1 ：消费 </div>
+                        <input class="form-control" type="text" value="{$set['withdraw_proportion']}" name="setdata[withdraw_proportion]">
+                    </div>
+                    <span class="help-block">提现与消费的比例差，空则可以任意提现</span>
+                </div>
+            </div>
+
+            {if p('love')} 
+            <!-- Author:ym Date:2016-08-06 Content:消费天数 -->
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">消费天数</label>
+                <div class="col-sm-9 col-xs-12">
+                    <input class="form-control" type="text" value="{$set['withdraw_day']}" name="setdata[withdraw_day]">
+                    <span class="help-block">完成收货多少天后订单才计入已消费</span>
+                </div>
+            </div>
+            {/if}
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启提现到微信钱包</label>
+                <div class="col-sm-9 col-xs-12">
+                    <label class="radio-inline"><input type="radio"  name="setdata[closetowechatwallet]" value="0" {if $set['closetowechatwallet'] ==0} checked="checked"{/if} /> 开启</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[closetowechatwallet]" value="1" {if $set['closetowechatwallet'] ==1} checked="checked"{/if} /> 关闭</label>
+                    <span class="help-block">是否允许用户佣金提现到微信钱包</span>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启提现到余额</label>
                 <div class="col-sm-9 col-xs-12">
                     <label class="radio-inline"><input type="radio"  name="setdata[closetocredit]" value="0" {if $set['closetocredit'] ==0} checked="checked"{/if} /> 开启</label>
                     <label class="radio-inline"><input type="radio"  name="setdata[closetocredit]" value="1" {if $set['closetocredit'] ==1} checked="checked"{/if} /> 关闭</label>
                     <span class="help-block">是否允许用户佣金提现到余额，否则只允许微信提现</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启佣金提现到余额免审核</label>
+                <div class="col-sm-9 col-xs-12">
+                    <label class="radio-inline"><input type="radio"  name="setdata[creditnocheck]" value="1" {if $set['creditnocheck'] ==1} checked="checked"{/if} /> 开启</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[creditnocheck]" value="0" {if $set['creditnocheck'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <span class="help-block">是否允许余额提现免审核</span>
                 </div>
             </div>
             <!-- 提现免审核金额  不填写则需要审核  填写金额 则0-金额内可免审核自动打款 -->
@@ -335,7 +375,7 @@
             样式设置
         </div>
         <div class='panel-body'>
-             <div class="form-group">
+             <!-- <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">模板选择</label>
         <div class="col-sm-9 col-xs-12">
             <select class='form-control' name='setdata[style]'>
@@ -344,7 +384,7 @@
                 {/loop}
             </select>
         </div>
-    </div>
+    </div> -->
    
        
             <div class="form-group">
@@ -353,7 +393,15 @@
                     {php echo tpl_form_field_image('setdata[regbg]',$set['regbg'],'../addons/sz_yi/plugin/commission/template/mobile/default/static/images/bg.png')}
                 </div>
             </div>
-      
+            <!-- Author:ym Date:2016-08-15 Content:开启超级海报关注二维码 -->
+           <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">关注二维码</label>
+                <div class="col-sm-9 col-xs-12">
+                    <label class="radio-inline"><input type="radio"  name="setdata[attention_qr]" value="0" {if empty($set['attention_qr'])} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[attention_qr]" value="1" {if $set['attention_qr'] ==1} checked="checked"{/if} /> 开启</label>
+                    <span class="help-block">是否开启超级海报中关注二维码为分销商的推广二维码</span>
+                </div> 
+           </div>
         </div>
            <div class='panel-heading'>
             文字设置

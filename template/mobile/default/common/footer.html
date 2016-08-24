@@ -4,7 +4,7 @@
 {template 'designer/menu'}
 {else}
 <style type="text/css">
-    {if $this->footer['commission']}
+    {if $this->footer['commission'] && is_weixin_show()}
     footer#footer-nav .menu-list li { width:20%}
     {/if}
  .btnclose {
@@ -28,21 +28,22 @@
 #show{display: none; position: fixed; bottom:52px; left: 20%; width: 20%; height: 72px; padding: 1px; border: 1px solid #BDBDBD; background-color: white; z-index:1002; }
    .doubule{ display: block;width: 100%;text-align: center;border-bottom: 1px solid #BDBDBD;height: 36px;color: #333;line-height: 36px;text-decoration: none;font-size: 12px}    
 </style>
+<link href="../addons/sz_yi/static/font/iconfont.css" rel="stylesheet">
 
 <footer id="footer-nav">
                 <ul class="menu-list" style="margin:0">
-                    <li {if $footer_current=='first'}class='active'{/if}><a href="{php echo $this->footer['first']['url']}"><i class="fa fa-{php echo $this->footer['first']['ico']}"></i><span>{php echo $this->footer['first']['text']}</span></a></li>
-                    <li {if $footer_current=='second'}class='active'{/if} id="shsh"><a{if $shopset['category2']==1} {else} href="{php echo $this->footer['second']['url']}"{/if}><i class="fa fa-{php echo $this->footer['second']['ico']}"></i><span>{php echo $this->footer['second']['text']}</span></a></li>
-                {if $this->footer['commission']}
+                    <li {if $footer_current=='first'}class='active'{/if}><a href="{php echo $this->footer['first']['url']}"><i class="iconfont icon-{php echo $this->footer['first']['ico']}"></i><span>{php echo $this->footer['first']['text']}</span></a></li>
+                    <li {if $footer_current=='second'}class='active'{/if} id="shsh"><a{if $shopset['category2']==1} {else} href="{php echo $this->footer['second']['url']}"{/if}><i class="iconfont icon-{php echo $this->footer['second']['ico']}"></i><span>{php echo $this->footer['second']['text']}</span></a></li>
+                {if $this->footer['commission'] && is_weixin_show()}
                     <li {if $footer_current=='commission'}class='active'{/if}>
                         <a href="{php echo $this->footer['commission']['url']}">
-                            <i class="fa fa-{php echo $this->footer['commission']['ico']}"></i>
+                            <i class="iconfont icon-{php echo $this->footer['commission']['ico']}"></i>
                             <span>{php echo $this->footer['commission']['text']}</span>
                         </a>
                     </li>
                  {/if}
-                    <li {if $footer_current=='cart'}class='active'{/if}><a href="{php echo $this->createMobileUrl('shop/cart')}"><i class="fa fa-shopping-cart"></i><span>购物车</span></a></li>
-                    <li {if $footer_current=='member'}class='active'{/if}><a href="{php echo $this->createMobileUrl('member')}"><i class="fa fa-user"></i><span>会员中心</span></a></li>
+                    <li {if $footer_current=='cart'}class='active'{/if}><a href="{php echo $this->createMobileUrl('shop/cart')}"><i class="iconfont icon-cart"></i><span>购物车</span></a></li>
+                    <li {if $footer_current=='member'}class='active'{/if}><a href="{php echo $this->createMobileUrl('member')}"><i class="iconfont icon-user"></i><span>会员中心</span></a></li>
                 </ul>
 </footer>
 {if $shopset['category2']==1}

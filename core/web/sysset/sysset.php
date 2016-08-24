@@ -24,10 +24,41 @@ function upload_cert($fileinput)
                 $errinput = 'KEY文件格式错误';
             } else if ($fileinput == 'weixin_root_file') {
                 $errinput = 'ROOT文件格式错误';
-            }
+            } 
             message($errinput . ',请重新上传!', '', 'error');
         }
         return file_get_contents($tmp_name);
+    }
+    return "";
+}
+
+function upload_alipay_cert($fileinput)
+{
+    global $_W;
+    $path = IA_ROOT . "/addons/sz_yi/cert";
+    load()->func('file');
+    mkdirs($path, '0777');
+    $f           = $fileinput . '_' . $_W['uniacid'] . '.pem';
+    $outfilename = $path . "/" . $f;
+    $filename    = $_FILES[$fileinput]['name'];
+    $tmp_name    = $_FILES[$fileinput]['tmp_name'];
+    if (!empty($filename) && !empty($tmp_name)) {
+        $ext = strtolower(substr($filename, strrpos($filename, '.')));
+        if ($ext != '.pem') {
+            $errinput = "";
+            if ($fileinput == 'weixin_cert_file') {
+                $errinput = "CERT文件格式错误";
+            } else if ($fileinput == 'weixin_key_file') {
+                $errinput = 'KEY文件格式错误';
+            } else if ($fileinput == 'weixin_root_file') {
+                $errinput = 'ROOT文件格式错误';
+            } else if ($fileinput == 'alipay_cert_file') {
+                $errinput = '支付宝CERT文件格式错误';
+            }
+            message($errinput . ',请重新上传!', '', 'error');
+        }
+        $filename = 'cacert.pem';
+        move_uploaded_file($tmp_name, dirname(__FILE__)."/../../../cert/".$filename);
     }
     return "";
 }
@@ -55,6 +86,20 @@ if ($op == 'template') {
         }
         closedir($handle);
     }
+
+    $styles_pc = array();
+    //主题列表
+    $dir_pc    = IA_ROOT . "/addons/sz_yi/template/pc/";
+    if ($handle_pc = opendir($dir_pc)) {
+        while (($file_pc = readdir($handle_pc)) !== false) {
+            if ($file_pc != ".." && $file_pc != "." && $file_pc != "app") {
+                if (is_dir($dir_pc . "/" . $file_pc)) {
+                    $styles_pc[] = $file_pc;
+                }
+            }
+        }
+        closedir($handle_pc);
+    }
 } else if ($op == 'notice') {
     $salers = array();
     if (isset($set['notice']['openid'])) {
@@ -71,6 +116,8 @@ if ($op == 'template') {
 } else if ($op == 'pay') {
     $sec = m('common')->getSec();
     $sec = iunserializer($sec['sec']);
+    //支付宝证书
+    $cert = IA_ROOT . "/addons/sz_yi/cert/cacert.pem";
 } else if($op == 'pcset'){
 
     //默认首页导航内容
@@ -168,7 +215,6 @@ if (checksubmit()) {
         }
         plog('sysset.save.trade', '修改系统设置-交易设置');
     } elseif ($op == 'pay') {
-
         $pluginy = p('yunpay');
         if($pluginy){
             $pay = $set['pay']['yunpay'];
@@ -189,7 +235,6 @@ if (checksubmit()) {
             $set['pay']['app_weixin'] = $app_weixin;
             $set['pay']['app_alipay'] = $app_alipay;
         }
-
         if ($_FILES['weixin_cert_file']['name']) {
             $sec['cert'] = upload_cert('weixin_cert_file');
         }
@@ -198,6 +243,10 @@ if (checksubmit()) {
         }
         if ($_FILES['weixin_root_file']['name']) {
             $sec['root'] = upload_cert('weixin_root_file');
+        }
+        if ($_FILES['alipay_cert_file']['name']) {
+            //上传文件
+             upload_alipay_cert('alipay_cert_file');
         }
         if (empty($sec['cert']) || empty($sec['key']) || empty($sec['root'])) {
         }
@@ -211,8 +260,10 @@ if (checksubmit()) {
     } elseif ($op == 'template') {
         $shop                 = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['style'] = save_media($shop['style']);
+        $set['shop']['style_pc'] = save_media($shop['style_pc']);
         $set['shop']['theme'] = trim($shop['theme']);
         m('cache')->set('template_shop', $set['shop']['style']);
+        m('cache')->set('template_shop_pc', $set['shop']['style_pc']);
         m('cache')->set('theme_shop', $set['shop']['theme']);
         plog('sysset.save.template', '修改系统设置-模板设置');
     } elseif ($op == 'member') {

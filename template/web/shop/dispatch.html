@@ -1,8 +1,15 @@
 {template 'web/_header'}
 <div class="w1200 m0a">
-{template 'web/shop/tabs'}
+{template 'web/shop/dispatch_tabs'}
 {if $operation == 'display'}
 <div class="rightlist">
+    	<!-- 新增加右侧顶部三级菜单 -->
+<div class="right-titpos">
+	<ul class="add-snav">
+		<li class="active"><a href="#">配送方式</a></li>
+	</ul>
+</div>
+<!-- 新增加右侧顶部三级菜单结束 -->   
 <form action="" method="post">
 <div class="main panel panel-default">
     <div class="panel-body table-responsive">
@@ -78,13 +85,17 @@
 
 {elseif $operation == 'post'}
 <div class="main rightlist">
+    	<!-- 新增加右侧顶部三级菜单 -->
+<div class="right-titpos">
+	<ul class="add-snav">
+		<li class="active"><a href="#">配送方式设置</a></li>
+	</ul>
+</div>
+<!-- 新增加右侧顶部三级菜单结束 -->   
     <form {ife 'shop.dispatch' $dispatch}action="" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data" onsubmit='return formcheck()'>
         <input type="hidden" name="id" value="{$dispatch['id']}" />
  
         <div class="panel panel-default">
-            <div class="panel-heading">
-                配送方式设置
-            </div>
             <div class="panel-body">
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
@@ -453,9 +464,13 @@
 <script language='javascript'>
     function show_type(flag){
         if (flag == 1) {
+            $('.weight').css("display", "none");
+            $('.fnum').css("display", "");
             $('.show_h').hide();
             $('.show_n').show();
         } else {
+            $('.weight').css("display", "");
+            $('.fnum').css("display", "none");
             $('.show_h').show();
             $('.show_n').hide();
         }
@@ -595,7 +610,6 @@
         current = $(btn).attr('random');
         clearSelects();
         var old_citys = $(btn).prev().val().split(';');
-      
                 
         $('.city').each(function(){
             var parentcheck = false;

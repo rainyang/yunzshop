@@ -12,7 +12,7 @@ if ($operation == 'display') {
 	$page = empty($_GPC['page']) ? "" : $_GPC['page'];
 	$pindex = max(1, intval($page));
 	$psize = 15;
-	$articles = pdo_fetchall("SELECT a.id,a.article_title,a.article_category,a.article_keyword,a.article_date,a.article_readnum,a.article_likenum,a.article_state,c.category_name FROM " . tablename('sz_yi_article') . " a left join " . tablename('sz_yi_article_category') . " c on c.id=a.article_category  WHERE a.uniacid= :uniacid " . $select_title . $select_category . " order by article_date desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, array(':uniacid' => $_W['uniacid']));
+	$articles = pdo_fetchall("SELECT a.id,a.article_title,a.article_category,a.article_keyword,a.article_date,a.article_readnum,a.article_likenum,a.article_state,a.article_state_wx,c.category_name FROM " . tablename('sz_yi_article') . " a left join " . tablename('sz_yi_article_category') . " c on c.id=a.article_category  WHERE a.uniacid= :uniacid " . $select_title . $select_category . " order by article_date desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, array(':uniacid' => $_W['uniacid']));
 	$total = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article') . " a left join " . tablename('sz_yi_article_category') . " c on c.id=a.article_category  WHERE a.uniacid= :uniacid " . $select_title . $select_category, array(':uniacid' => $_W['uniacid']));
 	$pager = pagination($total, $pindex, $psize);
 	$articlenum = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article') . " WHERE uniacid= :uniacid ", array(':uniacid' => $_W['uniacid']));

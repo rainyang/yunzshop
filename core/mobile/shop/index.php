@@ -20,21 +20,21 @@ if (empty($this->yzShopSet['ispc']) || isMobile()) {
             if (p('commission')) {
                 $set = p('commission')->getSet();
                 if (!empty($set['level'])) {
-					$member = m('member')->getMember($openid);
-					if (!empty($member) && $member['status'] == 1 && $member['isagent'] == 1) {
-						$_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $member['id']));
-						if (empty($set['become_reg']) && (empty($member['realname']) || empty($member['mobile']))) {
-							$trigger = true;
-						}
-					} else if (!empty($_GPC['mid'])) {
-						$_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $_GPC['mid']));
-					}
-				}
-			}
-			include $this->template('shop/index_diy');
-			exit;
-		}
-	}
+                    $member = m('member')->getMember($openid);
+                    if (!empty($member) && $member['status'] == 1 && $member['isagent'] == 1) {
+                        $_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $member['id']));
+                        if (empty($set['become_reg']) && (empty($member['realname']) || empty($member['mobile']))) {
+                            $trigger = true;
+                        }
+                    } elseif (!empty($_GPC['mid'])) {
+                            $_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $_GPC['mid']));
+                    }
+                }
+            }
+            include $this->template('shop/index_diy');
+            exit;
+        }
+    }
 }
 
 
@@ -52,7 +52,6 @@ if ($operation == 'index') {
 	$advs_pc = set_medias($adv_pc, 'thumb,thumb_pc');
     $category = pdo_fetchall('select id,name,thumb,parentid,level from ' . tablename('sz_yi_category') . ' where uniacid=:uniacid and ishome=1 and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
 	$category = set_medias($category, 'thumb');
-	
 	$index_name = array(
 		'isrecommand' 	=> '精品推荐',
 		'isnew' 		=> '新上商品',
@@ -168,11 +167,11 @@ if ($_W['isajax']) {
 		show_json(1,array('category' => $category));
 	} else if ($operation == 'category_recommend'){
 
-		$category = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=0 and uniacid=".$_W['uniacid']),'advimg');
+		$category = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=0 and uniacid=".$_W['uniacid']),'advimg_pc');
 
 		foreach ($category as $key => $value) {
 			$children = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=:pid and uniacid=:uniacid",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"])),'advimg');
-			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 limit 8",array(':pcate' => $value['id'] , ':uniacid' => $_W['uniacid'])) , 'thumb');
+			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 and deleted = 0 limit 8",array(':pcate' => $value['id'] , ':uniacid' => $_W['uniacid'])) , 'thumb');
 			$category[$key]['goods'] = $goods;
 			foreach($children as $key1 => $value1){
 				$category[$key]['children'][$key1] = $value1;
@@ -187,21 +186,22 @@ if ($_W['isajax']) {
 		$id = $_GPC['id'];
 		$aid = $_GPC['aid'];
 		if($aid){
-			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 limit 8",array(':pcate' => $aid , ':uniacid' => $_W['uniacid'])) , 'thumb');
+			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 and deleted = 0 limit 8",array(':pcate' => $aid , ':uniacid' => $_W['uniacid'])) , 'thumb');
 			show_json(1,array('goods' => $goods));	
 		}else{
 			if(empty($id)){
 				show_json(0);
 			}
-			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where ccate=:ccate and uniacid=:uniacid",array(':ccate' => $id , ':uniacid' => $_W['uniacid'])) , 'thumb');
+			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where ccate=:ccate and uniacid=:uniacid and deleted = 0",array(':ccate' => $id , ':uniacid' => $_W['uniacid'])) , 'thumb');
 			$third = pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid",array(':pid' => $id , ':uniacid' => $_W["uniacid"]));
 			show_json(1,array('goods' => $goods,'third' => $third));
 		}
-		
-
+	} elseif ($operation == 'property_goods'){
+		$property = $_GPC['property'];
+		$property_goods = set_medias(pdo_fetchall("SELECT * FROM ".tablename('sz_yi_goods')." WHERE deleted=0 and status=1 and uniacid=:uniacid and {$property}=1",array(':uniacid' => $_W['uniacid'])),'thumb');
+		show_json(1,$property_goods);
 	}
 }
-
 
 $this->setHeader();
 include $this->template('shop/index');

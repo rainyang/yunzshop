@@ -57,10 +57,9 @@ if (!class_exists('PosterModel')) {
                 ));
             }
         }
-        public function createCommissionPoster($openid, $goodsid = 0)
+        public function createCommissionPoster($openid, $goodsid = 0, $type=2)
         {
             global $_W;
-            $type = 2;
             if (!empty($goodsid)) {
                 $type = 3;
             }
@@ -308,11 +307,19 @@ if (!class_exists('PosterModel')) {
             $md5  = md5(json_encode(array(
                 'openid' => $member['openid'],
                 'goodsid' => $qr['goodsid'],
-		'bg' => $poster['bg'], 
+                'bg' => $poster['bg'], 
                 'data' => $poster['data'],
                 'version' => 1
             )));
             $file = $md5 . '.png';
+            file_put_contents(IA_ROOT . '/addons/sz_yi/test_model.log', print_r(array(
+                'openid' => $member['openid'],
+                'goodsid' => $qr['goodsid'],
+                'bg' => $poster['bg'], 
+                'data' => $poster['data'],
+                'version' => 1,
+                'file' => $file
+            ), 1), FILE_APPEND);
             if (!is_file($path . $file) || $qr['qrimg'] != $qr['current_qrimg']) {
                 set_time_limit(0);
                 @ini_set('memory_limit', '256M');

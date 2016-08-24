@@ -91,6 +91,16 @@ class Sz_DYi_User
         }
 
         if (!empty($openid)) {
+            //微信端绑定手机号,导致原来openid不存在,需重新登录
+            if (is_app()) {
+                $result = pdo_fetch("select id from " . tablename('sz_yi_member') . ' WHERE  openid=:openid and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+
+                if (empty($result)) {
+                    setcookie($cookieid, '', time()-1);
+                    header("Location:/app/index.php?i=" . $_W['uniacid'] . "&c=entry&p=login&do=member&m=sz_yi");
+                    exit;
+                }
+            }
             return $openid;
         }
         return false;
@@ -108,7 +118,7 @@ class Sz_DYi_User
         $needLoginPList = array('address', 'commission','cart');
 
         //不需要登陆的P方法
-        $noLoginList = array('category', 'login' ,'receive', 'close', 'designer', 'register', 'sendcode', 'bindmobile', 'forget');
+        $noLoginList = array('category', 'login' ,'receive', 'close', 'designer', 'register', 'sendcode', 'bindmobile', 'forget', "pay_ping", 'home');
 
         //不需要登陆的do方法
         $noLoginDoList = array('shop', 'login', 'register');
@@ -123,7 +133,6 @@ class Sz_DYi_User
             return;
         }
          */
-
         //需要登陆
         if((!in_array($_GPC["p"], $noLoginList) && !in_array($_GPC["do"], $noLoginDoList)) or (in_array($_GPC["p"], $needLoginPList))){
             //小店不需要登陆，否则分享出去别人不能直接看到
@@ -135,6 +144,7 @@ class Sz_DYi_User
                     }
                     $mid = ($_GPC['mid']) ? "&mid=".$_GPC['mid'] : "";
                     $url = "/app/index.php?i={$_W['uniacid']}&c=entry&p=login&do=member&m=sz_yi".$mid;
+
                     redirect($url);
                 }
                 else{

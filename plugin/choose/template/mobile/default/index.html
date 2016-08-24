@@ -2,18 +2,25 @@
 <!DOCTYPE html>
 <html>
 <head>
+<link href="../addons/sz_yi/static/font/iconfont.css" rel="stylesheet">
 <meta content="text/html; charset=utf-8" http-equiv="Content-Type" /><meta charset="utf-8" />
 <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
 <meta content="yes" name="apple-mobile-web-app-capable" />
 <meta content="black" name="apple-mobile-web-app-status-bar-style" />
 <meta name="format-detection" content="telephone=no"/>
-<title>{$shopset['name']}</title>
+<title>{$pagename}</title>
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/plugin/choose/template/mobile/default/static/css/dish/wei_dialog.css" media="all" />
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/plugin/choose/template/mobile/default/static/css/dish/wei_canyin.css" media="all" />
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/plugin/choose/template/mobile/default/static/css/dish/home.css" media="all">
 <script type="text/javascript" src="../addons/sz_yi/plugin/choose/template/mobile/default/static/js/dish/jquery-1.8.3.min.js"></script>
 <script type="text/javascript" src="../addons/sz_yi/plugin/choose/template/mobile/default/static/js/dish/wei_webapp_v2_common.js"></script>
+
+<link href="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.core-2.5.2.css" rel="stylesheet" type="text/css" />
+<link href="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.animation-2.5.2.css" rel="stylesheet" type="text/css" />
+<link href="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.android-ics-2.5.2.css" rel="stylesheet" type="text/css" />
+<link href="../addons/sz_yi/template/mobile/default/static/js/star-rating.css" media="all" rel="stylesheet" type="text/css"/>
 <style type="text/css">
+
   .num{width: 30px;
 border-bottom: 1px #ff0000 solid;
 border-right: 0;
@@ -21,8 +28,8 @@ border-top: 0;
 border-left: 0;
 text-align: center;
 margin: 0 4px;
-float: left;
-height: 20px;}
+float: right;
+height: 20px;    margin-top: 4px;}
 .subtract,.add{border-radius: 100px;
 border: 1px {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if} solid;
 width: 20px;
@@ -31,7 +38,7 @@ display: inline-block;
 color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};
 text-align: center;
 line-height: 20px;
-float: left;
+float: right;margin-top: 4px;
 }
 .fffbg{position: absolute;
 right: 4px;
@@ -59,7 +66,7 @@ line-height: 20px;font-weight: bold;}
   color: #fff;
   background-color:{if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if}; 
 }
-
+#page_allMenu section article dl{margin-bottom: 0;padding-bottom: 0;    height: auto;    overflow: hidden;}
 #page_allMenu section article dl dd em.eys{ color: #A8A8A8 !important;font-size: 12px;font-weight: normal;padding-top: 10px}
 #page_allMenu section article dl dd em{ color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};font-weight: bold;font-size: 14px}
 #page_allMenu section article dl dd em i{ font-style: normal;color: #666;font-size: 12px}
@@ -103,7 +110,7 @@ line-height: 20px;font-weight: bold;}
                     </dd>
                   </dl> 
             <!-- 三级分类 -->
-                    {if intval($shopset['catlevel'])==3}
+                    {if intval($shopset['shop']['catlevel'])==3}
                        <div class="nav-sanj" date-type="1">
                               
                           <%each value1.sub1 as value2%>
@@ -124,6 +131,78 @@ line-height: 20px;font-weight: bold;}
     <%/each%>
 
 </script>
+<div id='container_specs'></div>
+<script id="tpl_goods_info" type="text/html">
+    <input type="hidden" id="followed" value="<%followed%>" />
+    <input type="hidden" id="needfollow" value="<%goods.needfollow%>" />
+    <input type="hidden" id="followurl" value="<%followurl%>" />
+    <input type='hidden' id='followtip' value='<%followtip%>'/>
+    <div class="good_choose_layer"></div>
+  <div class="good_choose" style="z-index: 9999;">
+        <div class="info">
+             <div class="left">
+                 <img id="chooser_img" src='<%goods.thumb%>'/>
+             </div>
+             <div class="right">
+                   <div class="price">￥<span id='option_price'><%goods.marketprice%></span></div>
+                   <div class="stock">库存:<span id='option_stock'><%goods.total%></span>件</span> </div>
+                   <div class="option">请选择规格</div>
+             </div>
+            <div class="close"><i class="fa fa-remove-o"></i></div>
+            <input type="hidden" id="maxbuy" value="<%goods.maxbuy%>"/>
+        </div>
+        <div class="other">
+            <input type='hidden' id='optionid' value='' />
+            <input type='hidden' id='goodsid' value='<%goods.id%>' />
+                <%each specs as spec%>
+                <input type='hidden' name="optionid[]" class='optionid optionid_<%spec.id%>' value="" title="<%spec.title%>">
+                <div class="spec"><%spec.title%></div>
+                <div class="spec_items options_<%spec.id%>"  title="<%spec.title%>">
+                      <%each spec.items as o%>
+                      <div  class="option option_<%spec.id%>" specid='<%spec.id%>' oid="<%o.id%>" sel='false' title='<%o.title%>' thumb='<%o.thumb%>'><%o.title%></div>
+                     <%/each%>
+                </div>
+                <%/each%>
+
+                
+
+                <div class='number'>
+                  <div class='label'>购买数量</div>
+                  <div class='num'>
+                            <button id='btn_minus' ><i class='fa fa-minus'></i></button>
+                            <input type='text' id='total' value='0' />
+                            <button id='btn_plus' ><i class='fa fa-plus'></i></button>
+                  </div>
+               </div>
+        </div>
+        <div class="close"><i class="fa fa-times-circle-o"></i></div>
+        <div class="sub" style="position: absolute;">确认</div>
+    </div>
+</script>
+<div id="container_detail" style="display:none" class="mark-good"></div>
+<script type="text/html" id="tpl_detail">
+
+<div class="good-tcbox">
+  <div class="tctop-img">
+    <img src="<%good.thumb%>">
+    <div class="tc-titbg">
+        <h1><%good.title%></h1>
+        <p>¥<%good.productprice%></p>
+    </div>
+    <div class="easylist-close" onclick="closechoose()">×</div>
+    </div>
+    <div class="tcguige">
+      <ul>
+          <li>编号：<%good.gooodssn%></li>
+          <%each specs as spec%>
+          <li><%spec.title%>：<%each spec.sub as item%><%item.title%>/<%/each%></li>
+          <%/each%> 
+      </ul>
+      <p class="last-tcprice">建议零售价：<i>¥<%good.marketprice%></i>元</p>
+  </div>
+</div>
+
+</script>
 <div class="center">
     <div class="notice">
     <!-- <img src="../addons/sz_yi/template/mobile/default/static/css/dish/img/notice.png" class="not-pos"> -->
@@ -140,6 +219,15 @@ line-height: 20px;font-weight: bold;}
         </article>
     </section>
 </div>
+<script id='cart_empty' type='text/html'>
+     <div class="cart_top">
+    <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> </div>
+</div>
+ <div class="card_no" style="margin-left:80px;margin-top:100px"><br>暂时没有相关商品~</div>
+
+
+
+     </script>
  <style type="text/css">
 ul, li { list-style:none; margin:0; padding:0 }
 
@@ -180,11 +268,14 @@ ul, li { list-style:none; margin:0; padding:0 }
 .foot-nav span{ width: 30px;height: 30px;border-radius: 100px;border: 1px #fff solid;color: #fff;float: left;margin: 9px;text-align: center;line-height: 30px;font-weight: bold;}
 .foot-nav p{ float: left;line-height: 49px;padding-left:20px ;font-weight: bold;}
 .foot-nav a{float: right;height: 30px;background: #fff;line-height: 30px;color: {if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};text-align: center;padding: 0 14px;margin:9px;border-radius: 18px}
+.right-choose{height: 30px;line-height: 30px;text-align: right;}
+
 </style>
-<div class="foot-nav" id="total">
-  <span>0</span>
-  <p>总价：￥0.00</p>
-  <a href="{php echo $this->createMobileUrl('shop/cart')}">选好了</a>
+<div class="foot-nav">
+  <span id="alltotal">0</span>
+  {if empty($_GPC['ischannelpick'])}<p id="totalprice">总价：￥0.00</p>{/if}
+  <a class='channel' href="{php echo $this->createMobileUrl('shop/cart', array('ischannelpick' => $_GPC['ischannelpick'], 'ischannelpay' => $_GPC['ischannelpay']))}">选好了</a>
+
 </div>
 {php $show_footer=true;$footer_current =''} 
 {template 'common/footer'}
@@ -194,40 +285,10 @@ ul, li { list-style:none; margin:0; padding:0 }
     var recommand = [];
     var pcate = 'rec';
     var pageid = "{$_GPC['pageid']}";
+
+
+        
     require(['tpl', 'core'], function (tpl, core) {
-     
-     /*function bindChildEvents(){
-          $('.category_item').unbind('click').click(function(){
-              if($(this).data('cate')=='back'){
-                 if(pcate!='rec')                  { 
-                    setCategory(pcate);
-                }else{
-                    setCategory('rec');
-                }
-                  return;
-             }
-                        var level = $(this).data('level');
-                        var show = {php echo intval($shopset['catshow'])};
-                        {if intval($shopset['catlevel'])==3}
-                              var ccate = $(this).data('ccate');
-                              var tcate = $(this).data('tcate');
-                             
-                                    if(level==2){
-                                         setCategory(ccate,2);
-                                    }
-                                    else {
-                                      
-                                        location.href = core.getUrl('shop/list',{ccate:ccate,tcate:tcate});     
-                                   }
-                             
-                        {else}
-                                var pcate = $(this).data('pcate');
-                                var ccate = $(this).data('ccate');
-                                location.href = core.getUrl('shop/list',{pcate:pcate,ccate:ccate});
-                        {/if}
-                            
-          })
-     }*/
         function setCategory(){
             $("#navBar").find(".parent_item").find('span').removeClass('fffbg');
             $("#navBar").find(".parent_item").find('span').addClass('ff0000bg');
@@ -240,25 +301,47 @@ ul, li { list-style:none; margin:0; padding:0 }
              
             var pcate = $("#navBar").find(".parent_item").first().data('cate');
 
-            core.pjson('choose/list_goods',{pcate:pcate,pageid:pageid,op:'moren'}, function (json) {
+            core.pjson('choose/list_goods',{pcate:pcate,pageid:pageid,ischannelpick:"{$_GPC['ischannelpick']}",op:'moren'}, function (json) {
                             result = json.result;
                             
                             var h = '';
                             
                             var store = result.goods;
+                            if(store.length<=0){
+                               $('#pInfo').html(  tpl('cart_empty') );
+                                return;
+                            }
 
                             if (store.length) {                                                             
                                 for (var i = 0; i < store.length ;i++ ) {
 
+
+                                    h += '<div class="all-choosegood">';
+
+                                    
                                     h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
 
                                     if (store[i].isrecommand != 0) {
                                         h += '<span style="font-size:10px;">推荐</span></a>';
                                     }
 
-                                    h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元<i>/'+store[i].unit+'</i></em>';
+                                    {if $ischannelpay == 1}
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
+                                    {else}
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元/'+store[i].unit+'</em></dd><dd>';
+                                    {/if}
+                                    if (store[i].hasoption == 1) {
+                                        h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
+                                    } else {
+                                        h +=  '<div class="right-choose"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a><input type="text" style="display:none;" class="num" data-id="'+store[i].id+'" value="0" data-stock="'+store[i].total+'" data-maxbuy="'+store[i].maxbuy+'"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a></div>';
+                                    }
 
-                                    h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div></dd></dl>';
+
+                                    h += '</dd></dl>';
+
+                                    
+                                    h += '</div>';
+
                                 };
                                 $("#infoSection").css("height","auto"); 
                                 $("#navBar").css("height","auto"); 
@@ -275,7 +358,8 @@ ul, li { list-style:none; margin:0; padding:0 }
             }, true);        
         }
 
-        function setNum(){          
+        function setNum(){   
+            
             $.ajax({
                         url:"{php echo $this->createMobileUrl('shop/cart')}", 
                         type:'post',
@@ -336,17 +420,16 @@ ul, li { list-style:none; margin:0; padding:0 }
 
         function getTotalPrice(){
             require(['core'],function(core){
-                core.json('shop/cart',{op:'display'},function(ret){
-                     $('#total').find("span").html(ret.result.total);
-                     $('#total').find("p").html('总价：￥' + ret.result.totalprice);
-                        /*if(ret.status==1){ 
-                            core.tip.show(ret.result.message);                            var cartdiv = $('.cart'); 
-                            if( cartdiv.find('b').length<=0){                                                                                                 cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
-                            } else {
-                                cartdiv.find('b').html(ret.result.cartcount);
-                            }                                                          
-                        } else{                                                                 core.message(ret.result,'','error');
-                        }*/
+
+                core.json('shop/cart',{op:'display',ischannelpick:"{$_GPC['ischannelpick']}", ischannelpay:"{$_GPC['ischannelpay']}"},function(ret){
+                     $('#alltotal').html(ret.result.total);
+                     $('#totalprice').html('总价：￥' + ret.result.totalprice + ret.result.difference);
+
+                        if(ret.result.difference){
+                          $(".channel").hide();                                                       
+                        } else {
+                          $(".channel").show();
+                        }
                     },true,true);
                 });
         }
@@ -418,7 +501,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                      }
         }*/
 
-        core.pjson('choose/list_category',{op:'category',level:3,pageid:pageid}, function (json) {
+        core.pjson('choose/list_category',{op:'category',ischannelpick:"{$_GPC['ischannelpick']}",level:3,pageid:pageid}, function (json) {
                  result = json.result;
                  category = result.category;
                  if (result) {
@@ -455,15 +538,34 @@ ul, li { list-style:none; margin:0; padding:0 }
                             if (store.length) {                                                             
                                 for (var i = 0; i < store.length ;i++ ) {
 
+                                     h += '<div class="all-choosegood">';
+
+                                    
                                     h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
 
                                     if (store[i].isrecommand != 0) {
                                         h += '<span style="font-size:10px;">推荐</span></a>';
                                     }
 
-                                    h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元<i>/'+store[i].unit+'</i></em>';
 
-                                    h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div></dd></dl>';
+                                    {if $ischannelpay == 1}
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
+                                    {else}
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元/'+store[i].unit+'</em></dd><dd>';
+                                    {/if}
+
+                                    if (store[i].hasoption == 1) {
+                                        h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
+                                    } else {
+                                        h +=  '<div class="right-choose"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a><input type="text" style="display:none;" class="num" data-id="'+store[i].id+'" value="0" data-stock="'+store[i].total+'" data-maxbuy="'+store[i].maxbuy+'"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a></div>';
+                                    }
+
+
+                                    h += '</dd></dl>';
+
+                                    
+                                    h += '</div>';
+
                                 };
                                 $("#infoSection").css("height","auto");
                                 //$("#navBar").css("height","auto");
@@ -501,15 +603,33 @@ ul, li { list-style:none; margin:0; padding:0 }
                                 if (store.length) {                                                             
                                     for (var i = 0; i < store.length ;i++ ) {
 
-                                        h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
+                                         h += '<div class="all-choosegood">';
 
-                                        if (store[i].isrecommand != 0) {
-                                            h += '<span style="font-size:10px;">推荐</span></a>';
-                                        }
+                                    
+                                    h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
 
-                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元<i>/'+store[i].unit+'</i></em>';
+                                    if (store[i].isrecommand != 0) {
+                                        h += '<span style="font-size:10px;">推荐</span></a>';
+                                    }
 
-                                        h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div></dd></dl>';
+
+                                    {if $ischannelpay == 1}
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
+                                    {else}
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元/'+store[i].unit+'</em></dd><dd>';
+                                    {/if}
+                                    if (store[i].hasoption == 1) {
+                                        h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
+                                    } else {
+                                        h +=  '<div class="right-choose"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a><input type="text" style="display:none;" class="num" data-id="'+store[i].id+'" value="0" data-stock="'+store[i].total+'" data-maxbuy="'+store[i].maxbuy+'"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a></div>';
+                                    }
+
+
+                                    h += '</dd></dl>';
+
+                                    
+                                    h += '</div>';
+
                                     };
                                     $("#infoSection").css("height","auto");
                                     //$("#navBar").css("height","auto");
@@ -548,15 +668,35 @@ ul, li { list-style:none; margin:0; padding:0 }
                                 if (store.length) {                                                             
                                     for (var i = 0; i < store.length ;i++ ) {
 
-                                        h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
+                                       h += '<div class="all-choosegood">';
 
-                                        if (store[i].isrecommand != 0) {
-                                            h += '<span style="font-size:10px;">推荐</span></a>';
-                                        }
+                                    
+                                    h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
 
-                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元<i>/'+store[i].unit+'</i></em>';
+                                    if (store[i].isrecommand != 0) {
+                                        h += '<span style="font-size:10px;">推荐</span></a>';
+                                    }
 
-                                        h +=  '<div style="float:right;width:auto"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a><input type="text" style="display:none;" class="num" value="0"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a></div></dd></dl>';
+
+                                    {if $ischannelpay == 1}
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
+                                    {else}
+                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元/'+store[i].unit+'</em></dd><dd>';
+                                    {/if}
+
+                                    if (store[i].hasoption == 1) {
+                                        h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
+                                    } else {
+                                        h +=  '<div class="right-choose"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a><input type="text" style="display:none;" class="num" data-id="'+store[i].id+'" value="0" data-stock="'+store[i].total+'" data-maxbuy="'+store[i].maxbuy+'"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a></div>';
+                                    }
+
+
+                                    h += '</dd></dl>';
+
+                                    
+                                    h += '</div>';
+
+
                                     };
                                     $("#infoSection").css("height","auto");
                                     //$("#navBar").css("height","auto");
@@ -574,7 +714,15 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                 $('body').on('click','.dataIn',function(){
                     var id  = $(this).attr('data-id');
-                    location.href=core.getUrl('shop/detail',{id:id});
+                    {if $detail == 0}
+                      location.href=core.getUrl('shop/detail',{id:id});
+                    {else}
+                      core.pjson('choose/list_goods',{id: id, op: 'getdetail'},function(json){
+                        var json = json.result;
+                        $('#container_detail').html(tpl('tpl_detail', json));
+                        $('#container_detail').show();
+                      })
+                    {/if}
                 })                
 
                 $('body').on('click','.close-pos',function(){
@@ -587,10 +735,30 @@ ul, li { list-style:none; margin:0; padding:0 }
                     var id  = $(this).attr('data-id');
                     var type = '';
                     var now =$(this);
+                    var stock = input.attr('data-stock');
+                    var maxbuy = input.attr('data-maxbuy');
                     $(this).parent().find('.subtract').show();
-                    input.show();                    
-                    input.val(num);                    
+                    input.show();                 
+                    if (num > stock) {
+                      core.tip.show("您最多可购买 " + stock + " 件!");
+                      
+                      input.val(stock); 
+                      return;
+                      
+                      
+                    }  
+                    {if $ischannelpay == 0}                 
 
+
+	                    if (num > maxbuy && maxbuy > 0){
+	                      core.tip.show("您最多可购买 " + maxbuy + " 件!");
+	                      input.val(maxbuy); 
+	                      return;
+	                      
+	                     
+	                    }
+
+                    {/if}   
                     if (num == 1) {
                         type = 'add';
                     } else {
@@ -598,19 +766,75 @@ ul, li { list-style:none; margin:0; padding:0 }
                     };
 
                     require(['core'],function(core){
+                      
+                        core.json('shop/cart',{op:'add', id:id,total:1},function(ret){
 
-                        core.json('shop/cart',{op:'add', id:id,total:num},function(ret){
                             now.attr("data-num",ret.result.cartcount);
                               setNum();
                               getTotalPrice();
                             },true,true);
                         });
+
+                    
+                })
+                $('body').on('input propertychange','.num',function(){
+                  
+                    var input = $(this);
+                    var num = parseInt($(this).val());
+                    var id  = $(this).attr('data-id');
+                    var type = '';
+                    var stock = $(this).attr('data-stock');
+                    var maxbuy = $(this).attr('data-maxbuy');
+                    var now =$(this);
+                    if (!num) {
+                      return;
+                    }
+                    if (num > stock) {
+                      core.tip.show("您最多可购买 " + stock + " 件!");
+                      
+                      
+                      input.val(stock);
+                      return;
+                      
+                    }  
+                    {if $ischannelpay == 0}                 
+
+
+                      if (num > maxbuy && maxbuy > 0){
+                        core.tip.show("您最多可购买 " + maxbuy + " 件!");
+                       
+                        input.val(maxbuy);
+                        return;
+                        
+                      }                   
+
+
+                    {/if}
+                    if (num == 1) {
+                        type = 'add';
+                    } else {
+                        type = 'updatenum';                       
+                    };
+
+                    require(['core'],function(core){
+                      
+                        core.json('shop/cart',{op:'add', id:id, total:num, type:'propertychange'},function(ret){
+
+                            now.attr("data-num",ret.result.cartcount);
+                              setNum();
+                              getTotalPrice();
+                            },true,true);
+                        });
+
                     
                 })
 
+
+
                 $('body').on('click','.subtract',function(){                    
                     var input = $(this).parent().find('.num');
-                    var num = parseInt(input.val()) - 1;
+
+                    var num = input.val() - 1;
 
                     var id  = $(this).attr('data-id');
                     var now =$(this);
@@ -624,13 +848,14 @@ ul, li { list-style:none; margin:0; padding:0 }
                     };
 
                     require(['core'],function(core){
+                        core.json('shop/cart',{op:'add', id:id,total:-1},function(ret){
 
-                        core.json('shop/cart',{op:'add', id:id,total:num},function(ret){
-                            now.attr("data-num",ret.result.cartcount);
+                           now.attr("data-num",ret.result.cartcount);
                             setNum();
                             getTotalPrice();
                             },true,true);
                         });
+
 
                 })         
                  
@@ -671,7 +896,446 @@ ul, li { list-style:none; margin:0; padding:0 }
                 }
 
         });
-     
-    });
 
+   
+        $(document).on('click','.canoption',function(){
+          var id = $(this).data('id');
+          core.json('shop/detail',{id:id,'ischannelpay':"{$_GPC['ischannelpay']}",'ischannelpick':"{$_GPC['ischannelpick']}"},function (json) { 
+            $('#container_specs').html(tpl('tpl_goods_info',json.result));
+            $('.good_choose_layer').fadeIn(200);
+            $('.good_choose_layer').unbind('click').click(function(){
+            $('.good_choose_layer').fadeOut(100);
+            $('.good_choose').fadeOut(100); 
+            })
+            $('.good_choose').fadeIn(200);
+            var maxbuy = json.result.goods.maxbuy;
+
+            $(document).on('click','.option',function(){
+               
+              var specid = $(this).attr("specid");
+              var oid = $(this).attr("oid");
+              $(".optionid_"+specid).val(oid);
+              $(".options_" + specid + "  .option").removeClass("on").attr("sel", "false");
+              $(this).addClass("on").attr("sel", "true");
+              addNum1('optionid_spec.id'+specid,oid)
+              var titles='已选: ';
+                 $('.spec_items').each(function(){
+                                 if($(this).find('.on').length>0){
+                    titles+= $(this).find('.on').attr('title')+";";   
+                            }
+                 });
+                             
+              $('.good_choose .info .right .option').html(titles);
+            var thumb = $(this).attr('thumb');
+            if(thumb!=''){
+               $("#chooser_img").attr('src',thumb);
+            }
+            else{ 
+               $("#chooser_img").attr('src',json.result.goods.thumb);
+            }
+            setoptions();
+            var optionid = "";
+            var stock =0;
+            var marketprice = 0;
+            var productprice = 0;
+            var ret = option_selected();
+            var options = json.result.options;
+            var stock =json.result.goods.stock;
+            if(ret.no==''){
+                var len = options.length;
+                for(var i=0;i<len;i++) {
+                    var o = options[i];
+                    var ids = ret.all.join("_");
+                                
+                                var specarr = o.specs.split('_').sort();
+                                var idsarr = ret.all.sort();
+                              
+                                
+                                
+                             
+                    if(specarr.join('_') ==idsarr.join('_') ){
+                      
+                        optionid = o.id;
+                        stock = o.stock;
+                        marketprice = o.marketprice;
+                        productprice = o.productprice;
+                        break;
+                    }
+                    
+                }
+                 core.json('shop/cart', {id:id, optionid:optionid, op:'gettotal'}, function(json){
+                          var total = json.result;
+                          if(!total){
+                            total = '0'; 
+                          }
+                          $("#total").val(total);
+                        })               
+               $("#optionid").val(optionid); 
+              
+
+                var num = parseInt($("#total").val() );
+
+
+                if(num>maxbuy && maxbuy>0){
+
+                    core.tip.show("您最多可购买 " + maxbuy + " 件!");
+                    num = maxbuy;
+                    $("#total").val(num);
+                    return;
+                }
+                else if(num>stock && stock!=-1){
+                    core.tip.show("您最多可购买 " + stock + " 件");
+                    num = stock;
+                    $("#total").val(num);
+                    return;
+                }
+
+                if(stock!="-1"){
+                    $("#stockcontainer").html("库存:<span id='stock'>" + stock + "</span>");
+                }
+                else{
+                  $("#stockcontainer").html("<span id='stock'></span>");
+                }
+                if(ret.no==''){
+                    if(stock==0){
+                       $('.sub').addClass('disabled').html('库存不足,无法购买');
+                    }
+                    else{
+                     $('.sub').removeClass('disabled').html('确认');
+                    }
+                } 
+                $("#marketprice").html(marketprice);
+                
+                $("#option_price").html(marketprice);   
+                $("#option_stock").html(stock); 
+                 
+                $("#productprice").html(productprice);
+                if(productprice<=0){
+                $('#productpricecontainer').html("");
+                }
+                else{
+            
+                   $('#productpricecontainer').html("市场价￥<span id='productprice'>" + productprice + "</span>");
+                }
+            }
+        });
+          }, true);
+        })
+    $(document).on('click','.sub',function(){
+      choose2();
+    })
+    $(document).on('click','.close',function(){
+      closechoose();
+    })
+    $(document).on('click','.easylist-close',function(){
+      closechoose();
+    })
+    $(document).on('click','#btn_minus',function(){
+      reduceNum();
+    })
+    $(document).on('click','#btn_plus',function(){
+      addNum();
+    })
+      var maxbuy = $('#maxbuy').val();
+      function closechoose(){
+          $('.good_choose_layer').fadeOut(100);
+          $('.good_choose').fadeOut(100); 
+          $('#container_detail').hide();
+        }
+            function choose(act){
+                          if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
+                                require(['core'],function(core){
+                                    core.tip.confirm($('#followtip').val(),function(){
+                                        location.href = $('#followurl').val();
+                                        return;
+                                    }) 
+                                });
+                             return;
+                          }
+                   action = act;
+                         if(!action){
+                                     
+                                $('.good_choose_layer').fadeIn(200);
+                                $('.good_choose_layer').unbind('click').click(function(){
+                                    $('.good_choose_layer').fadeOut(100);
+                                    $('.good_choose').fadeOut(100); 
+                                })
+                                $('.good_choose').fadeIn(200);
+                                return;
+                         }
+                         var specselected  = '';
+  if( action=='cart'){
+             $('.good_choose_layer').fadeIn(200);
+                             $('.good_choose_layer').unbind('click').click(function(){
+                                   closechoose();
+                             })
+               $('.good_choose').fadeIn(200);
+               return;   
+             }else{
+            {if !empty($formInfo)}
+                 $('.good_choose_layer').fadeIn(200);
+                             $('.good_choose_layer').unbind('click').click(function(){
+                                   closechoose();
+                             })
+               $('.good_choose').fadeIn(200);
+               return;
+            {/if}
+             
+                $('.spec_items').each(function(){
+                             var self = $(this);
+                                            if( $(this).find('.on').length<=0){
+                                 specselected = self.attr('title');
+                                 return false;
+                              }
+                });  
+             if(specselected!='') {
+               $('.good_choose_layer').fadeIn(200);
+                             $('.good_choose_layer').unbind('click').click(function(){
+                                   closechoose();
+                             })
+               $('.good_choose').fadeIn(200);
+               return;
+             }
+            
+         }
+ 
+
+                      var diymode = {php echo intval($diymode)};
+
+                      if(specselected!='' || diymode==1) {
+                             if (specselected == '') {
+                                 $('#goods_spec').hide();
+                             }
+
+                             $('.good_choose_layer').fadeIn(200);
+                             $('.good_choose_layer').unbind('click').click(function(){
+                                 closechoose();
+                             })
+                        $('.good_choose').fadeIn(200);
+                      } else{
+                          if(action=='cart'){
+                              require(['core'],function(core){
+
+                                core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(), is:'choose'},function(ret){
+                                      if(ret.status==1){
+                                        core.tip.show(ret.result.message);
+                                        var cartdiv = $('.cart');
+                                                                                                                      
+                                      } else{
+                                        core.message(ret.result,'','error');
+                                      }
+                                },true,true);
+                              });
+                          }else if(action=='buy'){
+                              location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+                          }
+
+                      }
+    }
+        function setoptions(){
+             var titles = '';
+                 
+                 
+             titles+='已选: ';
+                 $('.spec_items').each(function(){
+                    titles+= $(this).find('.on').attr('title')+";";   
+                 });
+                 
+                                             titles+='数量:' + $('#total').val();
+                 $("#optiondiv").html(titles);
+        }
+    function choose2(direct,close){
+         require(['core'],function(core){
+             
+            if(close){
+
+                closechoose();
+                return;
+            }
+        if(!direct){
+            if($('.sub').hasClass('disabled')){
+
+               return;
+            }
+            else{
+                setoptions();
+            }
+                                      
+          
+        } else {
+             var action = "";
+        }
+        var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+        var num = parseInt($('#total').val() );
+        var maxbuy = $('#maxbuy').val();
+        
+        if(num>maxbuy && maxbuy>0){
+            core.tip.show("您最多可购买 " + maxbuy + " 件!");
+            num = maxbuy;
+            $('#total').val(num);
+            return;
+        }
+        else if(num>stock && stock!=-1){
+            core.tip.show("您最多可购买 " + stock + " 件");
+            num = stock;
+            $('#total').val(num);
+            return;
+        }
+        
+                var specselected  = '';
+                
+        $('.spec_items').each(function(){
+                
+                  var self = $(this);
+                  if( $(this).find('.on').length<=0){
+                    
+                      specselected = self.attr('title');
+                      return false;
+                  }
+                  });  
+                                if( specselected!=''){
+
+                                      require(['core'],function(core){
+                                         core.tip.show('请选择' + specselected) ;
+                                      });
+                                      return;
+                      }
+                               
+                           
+                              
+        
+                 var data = {};
+                 
+                 
+        
+                  {if !empty($popenid) or !empty($openid)}
+
+                       core.json('shop/cart',{op:'add', id:$('#goodsid').val(),optionid:$('#optionid').val(),total:$('#total').val(), is:'choose'},function(ret){
+                                                    if(ret.status==1){ 
+                                                       core.tip.show(ret.result.message);
+                                                       var cartdiv = $('.cart');
+                                                                           if( cartdiv.find('b').length<=0){
+                                                                              cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
+                                                                           }
+                                                                           else {
+                                                                              cartdiv.find('b').html(ret.result.cartcount);
+                                                                           } closechoose();
+                                                                          setNum();
+                                                                          getTotalPrice();
+
+                                                   } else{
+                                                       core.message(ret.result,'','error');
+                                                   }
+                           },true,true);
+                                
+                  {else}
+                        location.href = "{php echo $this->createMobileUrl('member/login')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+                  {/if}
+        //end openid
+                                            
+        if(action=='buy'){
+ 
+               {if !empty($formInfo)}
+                  
+                {template 'diyform/common_js_data'}
+
+                var data ={
+                    'op': 'create',
+                    'id': {$_GPC['id']},
+                    'diydata': diydata
+                };
+
+                require(['core'],function(core){
+                    core.json('shop/detail', data, function(create_json) {
+                        if (create_json.status == 1) {
+                            location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val()+ "&gdid="+create_json.result.goods_data_id;
+                        } else {
+                            core.tip.show("提交失败!")
+                        }
+
+                        return false;
+
+                    }, true, true);
+                })
+
+                {else}
+                    location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+                {/if}
+
+        } else {
+            closechoose();
+        }
+  });
+  
+    }
+  function addNum(){
+    var total = $("#total");
+    // if(!total.isInt()){
+    //     total.val("1");
+    // }
+    var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+    var num = parseInt(total.val() ) + 1;
+    var maxbuy = $('#maxbuy').val();
+    
+    if(num>maxbuy && maxbuy>0){
+        core.tip.show("您最多可购买 " + maxbuy + " 件!");
+        num = maxbuy;
+    }
+    else if(num>stock && stock!=-1){
+        core.tip.show("您最多可购买 " + stock + " 件");
+        num = stock;
+    }
+    total.val(num);
+}
+  function addNum1(optionid_id,oid){
+    
+    $("."+optionid_id).val(oid);
+    var total = $("#total");
+    var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+
+    var num = parseInt(total.val() );
+    if(num>maxbuy && maxbuy>0){
+
+        core.tip.show("您最多可购买 " + maxbuy + " 件!");
+        num = maxbuy;
+    }
+    else if(num>stock && stock!=-1){
+        core.tip.show("您最多可购买 " + stock + " 件");
+        num = stock;
+    }
+    total.val(num);
+}
+function reduceNum(){
+    var total = $("#total");
+    // if(!total.isInt()){
+    //     total.val("1");
+    // }
+    var num = parseInt( total.val() );
+    if(num-1<=0){
+        return;
+    }
+    num--;
+    total.val(num);
+}
+
+    function option_selected(){
+      var ret= {
+          no: "",
+          all: []
+      };
+      $(".optionid").each(function(){
+                ret.all.push($(this).val());
+                if($(this).val()==''){
+                    ret.no = $(this).attr("title");
+                    return false;
+                }
+               
+    })
+      return ret;
+    } 
+    })
+ 
+
+
+            
 </script>

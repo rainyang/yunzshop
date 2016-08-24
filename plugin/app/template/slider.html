@@ -116,7 +116,7 @@
                             <div class="col-sm-9 col-xs-12">
                                 {ife 'shop.banner' $item}
                                 {php echo tpl_form_field_image('thumb', $item['thumb'])}
-                                <span class='help-block'>建议尺寸:640 * 350 , 请将所有广告图片尺寸保持一致</span>
+                                <span class='help-block'>建议尺寸:1080 * 365, 大小<=4M , 请将所有广告图片尺寸保持一致</span>
                                 {else}
                                 {if !empty($item['thumb'])}
                                 <a href='{php echo tomedia($item['thumb'])}' target='_blank'>
@@ -126,7 +126,7 @@
                                 {/if}
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="display: none">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">广告连接</label>
                             <div class="col-sm-9 col-xs-12">
                                 {ife 'shop.banner' $item}
@@ -136,15 +136,15 @@
                                 {/if}
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="display: none">
                             <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否显示</label>
                             <div class="col-sm-9 col-xs-12">
                                 {ife 'shop.banner' $item}
                                 <label class='radio-inline'>
-                                    <input type='radio' name='enabled' value=1' {if $item['enabled']==1}checked{/if} /> 是
+                                    <input type='radio' name='enabled' value=1' checked  /> 是
                                 </label>
                                 <label class='radio-inline'>
-                                    <input type='radio' name='enabled' value=0' {if $item['enabled']==0}checked{/if} /> 否
+                                    <input type='radio' name='enabled' value=0'  /> 否
                                 </label>
                                 {else}
                                 <div class='form-control-static'>{if empty($item['enabled'])}否{else}是{/if}</div>

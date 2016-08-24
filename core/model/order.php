@@ -127,7 +127,7 @@ class Sz_DYi_Order
             ':ordersn_general' => $ordersn,
             ':uniacid' => $uniacid
         ));
-
+        
         if(count($orderall) > 1){
             $order = array();
             $order['ordersn'] = $ordersn;
@@ -157,15 +157,15 @@ class Sz_DYi_Order
             $type = 'verify';
             $issendsms = $this->sendSms($mobile, $order['verifycode'], 'reg', $type);
 
-        }
+        } 
         //验证paylog里金额是否与订单金额一致
         $log = pdo_fetch('select * from ' . tablename('core_paylog') . ' where `uniacid`=:uniacid and fee=:fee and `module`=:module and `tid`=:tid limit 1',
             array(
-                ':uniacid' => $_W['uniacid'],
-                ':module' => 'sz_yi',
-                ':fee' => $fee,
-                ':tid' => $ordersn
-            ));
+            ':uniacid' => $_W['uniacid'],
+            ':module' => 'sz_yi',
+            ':fee' => $fee,
+            ':tid' => $ordersn
+        ));
         if (empty($log)) {
             show_json(-1, '订单金额错误, 请重试!');
             exit;
@@ -243,17 +243,17 @@ class Sz_DYi_Order
                             if (p('commission')) {
                                 p('commission')->checkOrderPay($orderid);
                             }
-                        }
+                        }   
                     }
                 }
                 //支付后订单打印
                 if(p('hotel')){
-                    //打印订单
-                    $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
-                    //订单信息
-                    $print_order = $order;
-                    //商品信息
-                    $ordergoods = pdo_fetchall("select * from " . tablename('sz_yi_order_goods') . " where uniacid=".$_W['uniacid']." and orderid=".$orderid);
+                //打印订单      
+                $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
+                //订单信息
+                $print_order = $order;
+                //商品信息
+                $ordergoods = pdo_fetchall("select * from " . tablename('sz_yi_order_goods') . " where uniacid=".$_W['uniacid']." and orderid=".$orderid);
                     foreach ($ordergoods as $key =>$value) {
                         //$ordergoods[$key]['price'] = pdo_fetchcolumn("select marketprice from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
                         $ordergoods[$key]['goodstitle'] = pdo_fetchcolumn("select title from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
@@ -268,19 +268,19 @@ class Sz_DYi_Order
                     if($print_id!=''){
                         $print_detail = pdo_fetch("select * from " . tablename('sz_yi_print_list') . " where uniacid={$_W['uniacid']} and id={$print_id}");
                         if(!empty($print_detail) &&  $print_detail['status']=='0'){//是否存在打印机，以及判断是否为支付前打印
-                            $member_code = $print_detail['member_code'];
-                            $device_no = $print_detail['print_no'];
-                            $key = $print_detail['key'];
-                            include IA_ROOT.'/addons/sz_yi/core/model/print.php';
-                            if($goodtype=='99'){//类型为房间
-                                //房间金额信息
-                                $sql2 = 'SELECT * FROM ' . tablename('sz_yi_order_room') . ' WHERE `orderid` = :orderid';
-                                $params2 = array(':orderid' => $orderid);
-                                $price_list = pdo_fetchall($sql2, $params2);
-                                $msgNo = testSendFreeMessage($print_order, $member_code, $device_no, $key,$set,$price_list);
-                            }else if($goodtype=='1'){
-                                $msgNo = testSendFreeMessageshop($print_order, $member_code, $device_no, $key,$set);
-                            }
+                                $member_code = $print_detail['member_code'];
+                                $device_no = $print_detail['print_no'];
+                                $key = $print_detail['key'];
+                                include IA_ROOT.'/addons/sz_yi/core/model/print.php';
+                                if($goodtype=='99'){//类型为房间
+                                    //房间金额信息
+                                    $sql2 = 'SELECT * FROM ' . tablename('sz_yi_order_room') . ' WHERE `orderid` = :orderid';
+                                    $params2 = array(':orderid' => $orderid);
+                                    $price_list = pdo_fetchall($sql2, $params2);
+                                    $msgNo = testSendFreeMessage($print_order, $member_code, $device_no, $key,$set,$price_list);
+                                }else if($goodtype=='1'){
+                                     $msgNo = testSendFreeMessageshop($print_order, $member_code, $device_no, $key,$set);
+                                }
                         }
                     }
                 }
@@ -289,7 +289,7 @@ class Sz_DYi_Order
                 $orderdetail['goods1'] = set_medias(pdo_fetchall($sql), 'thumb');
                 $pluginlove = p('love');
                 if($pluginlove){
-                    $pluginlove->checkOrder($goods_where, $order['openid'], 0);
+                   $pluginlove->checkOrder($goods_where, $order['openid'], 0);
                 }
                 $orderdetail['goodscount'] = count($orderdetail['goods1']);
                 return array(
@@ -305,13 +305,26 @@ class Sz_DYi_Order
             }
         }
     }
+    function sendSms($mobile, $code, $templateType = 'reg', $type = 'check')
+    {
+        $set = m('common')->getSysset();
+        if ($set['sms']['type'] == 1) {
+            return send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $code, $type);
+        } else {
+            return send_sms_alidayu($mobile, $code, $templateType);
+        }
+    }
     function setStocksAndCredits($orderid = '', $type = 0)
     {
         global $_W;
         $order   = pdo_fetch('select id,ordersn,price,openid,dispatchtype,addressid,carrier,status from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(
             ':id' => $orderid
         ));
-        $goods   = pdo_fetchall("select og.goodsid,og.total,g.totalcnf,og.realprice, g.credit,og.optionid,g.total as goodstotal,og.optionid,g.sales,g.salesreal from " . tablename('sz_yi_order_goods') . " og " . " left join " . tablename('sz_yi_goods') . " g on g.id=og.goodsid " . " where og.orderid=:orderid and og.uniacid=:uniacid ", array(
+        $cond = "";
+        if (p('channel')) {
+            $cond    = ',og.channel_id,og.ischannelpay';
+        }
+        $goods   = pdo_fetchall("select og.id,og.goodsid" . $cond . ",og.total,g.totalcnf,og.realprice, g.credit,og.optionid,g.total as goodstotal,og.optionid,g.sales,g.salesreal from " . tablename('sz_yi_order_goods') . " og " . " left join " . tablename('sz_yi_goods') . " g on g.id=og.goodsid " . " where og.orderid=:orderid and og.uniacid=:uniacid ", array(
             ':uniacid' => $_W['uniacid'],
             ':orderid' => $orderid
         ));
@@ -339,41 +352,147 @@ class Sz_DYi_Order
             }
             if (!empty($stocktype)) {
                 if (!empty($g['optionid'])) {
-                    $option = m('goods')->getOption($g['goodsid'], $g['optionid']);
-                    if (!empty($option) && $option['stock'] != -1) {
-                        $stock = -1;
-                        if ($stocktype == 1) {
-                            $stock = $option['stock'] + $g['total'];
-                        } else if ($stocktype == -1) {
-                            $stock = $option['stock'] - $g['total'];
-                            $stock <= 0 && $stock = 0;
+                    if (p('channel')) {
+                        if (!empty($g['channel_id'])) {
+                            $my_info = p('channel')->getInfo($order['openid'],$g['goodsid'],$g['optionid'],$g['total']);
+                            if (!empty($my_info['up_level']['stock'])) {
+                                $stock = -1;
+                                if ($stocktype == 1) {
+                                    $stock = $my_info['up_level']['stock']['stock_total'] + $g['total'];
+                                } else if ($stocktype == -1) {
+                                    $stock = $my_info['up_level']['stock']['stock_total'] - $g['total'];
+                                }
+                                if ($stock != -1) {
+                                    pdo_update('sz_yi_channel_stock', array(
+                                        'stock_total' => $stock
+                                    ), array(
+                                        'uniacid'   => $_W['uniacid'],
+                                        'goodsid'   => $g['goodsid'],
+                                        'openid'    => $my_info['up_level']['openid'],
+                                        'optionid'  => $g['optionid']
+                                    ));
+                                    $channel = true;
+                                }
+                                $goods_price = pdo_fetchcolumn("SELECT marketprice FROM " . tablename('sz_yi_goods') . " WHERE uniacid={$_W['uniacid']} AND id={$g['goodsid']}");
+                                $up_mem = m('member')->getInfo($order['openid']);
+                                $log_data = array(
+                                    'goodsid'       => $g['goodsid'],
+                                    'optionid'      => $g['optionid'],
+                                    'order_goodsid' => $g['id'],
+                                    'uniacid'       => $_W['uniacid'],
+                                    'every_turn'    => $g['total'],
+                                    'goods_price'   => $goods_price,
+                                    'surplus_stock' => $stock,
+                                    'mid'           => $up_mem['id'],
+                                    'paytime'       => time()
+                                    );
+                                if (!empty($my_info['up_level'])) {
+                                    $log_data['openid'] = $my_info['up_level']['openid'];
+                                }
+                                if (!empty($g['ischannelpay'])) {
+                                    $log_data['every_turn_price'] = $goods_price*$my_info['my_level']['purchase_discount']/100;
+                                    $log_data['every_turn_discount'] = $my_info['my_level']['purchase_discount'];
+                                    $log_data['type'] = 2;
+                                    pdo_insert('sz_yi_channel_stock_log', $log_data);
+                                } else {
+                                    $log_data['every_turn_price'] = $goods_price;
+                                    $log_data['every_turn_discount'] = 0;
+                                    $log_data['type'] = 3;
+                                    pdo_insert('sz_yi_channel_stock_log', $log_data);
+                                }
+                            }
                         }
-                        if ($stock != -1) {
-                            pdo_update('sz_yi_goods_option', array(
-                                'stock' => $stock
-                            ), array(
-                                'uniacid' => $_W['uniacid'],
-                                'goodsid' => $g['goodsid'],
-                                'id' => $g['optionid']
-                            ));
+                    }
+                    if (empty($channel)) {
+                        $option = m('goods')->getOption($g['goodsid'], $g['optionid']);
+                        if (!empty($option) && $option['stock'] != -1) {
+                            $stock = -1;
+                            if ($stocktype == 1) {
+                                $stock = $option['stock'] + $g['total'];
+                            } else if ($stocktype == -1) {
+                                $stock = $option['stock'] - $g['total'];
+                                $stock <= 0 && $stock = 0;
+                            }
+                            if ($stock != -1) {
+                                pdo_update('sz_yi_goods_option', array(
+                                    'stock' => $stock
+                                ), array(
+                                    'uniacid' => $_W['uniacid'],
+                                    'goodsid' => $g['goodsid'],
+                                    'id' => $g['optionid']
+                                ));
+                            }
                         }
                     }
                 }
-                if (!empty($g['goodstotal']) && $g['goodstotal'] != -1) {
-                    $totalstock = -1;
-                    if ($stocktype == 1) {
-                        $totalstock = $g['goodstotal'] + $g['total'];
-                    } else if ($stocktype == -1) {
-                        $totalstock = $g['goodstotal'] - $g['total'];
-                        $totalstock <= 0 && $totalstock = 0;
+                if (p('channel')) {
+                    if (empty($channel)) {
+                        if (!empty($g['channel_id'])) {
+                            $my_info = p('channel')->getInfo($order['openid'],$g['goodsid'],0,$g['total']);
+                            if (!empty($my_info['up_level']['stock'])) {
+                                $totalstock = -1;
+                                if ($stocktype == 1) {
+                                    $totalstock = $my_info['up_level']['stock']['stock_total'] + $g['total'];
+                                } else if ($stocktype == -1) {
+                                    $totalstock = $my_info['up_level']['stock']['stock_total'] - $g['total'];
+                                }
+                                if ($totalstock != -1) {
+                                    pdo_update('sz_yi_channel_stock', array(
+                                        'stock_total' => $totalstock
+                                    ), array(
+                                        'uniacid' => $_W['uniacid'],
+                                        'goodsid' => $g['goodsid'],
+                                        'openid'  => $my_info['up_level']['openid']
+                                    ));
+                                    $channels = true;
+                                }
+                                $goods_price = pdo_fetchcolumn("SELECT marketprice FROM " . tablename('sz_yi_goods') . " WHERE uniacid={$_W['uniacid']} AND id={$g['goodsid']}");
+                                $up_mem = m('member')->getInfo($order['openid']);
+                                $log_data = array(
+                                    'goodsid'       => $g['goodsid'],
+                                    'order_goodsid' => $g['id'],
+                                    'uniacid'       => $_W['uniacid'],
+                                    'every_turn'    => $g['total'],
+                                    'goods_price'   => $goods_price,
+                                    'surplus_stock' => $totalstock,
+                                    'mid'           => $up_mem['id'],
+                                    'paytime'       => time()
+                                    );
+                                if (!empty($my_info['up_level'])) {
+                                    $log_data['openid'] = $my_info['up_level']['openid'];
+                                }
+                                if (!empty($g['ischannelpay'])) {
+                                    $log_data['every_turn_price'] = $goods_price*$my_info['my_level']['purchase_discount']/100;
+                                    $log_data['every_turn_discount'] = $my_info['my_level']['purchase_discount'];
+                                    $log_data['type'] = 2;
+                                    pdo_insert('sz_yi_channel_stock_log', $log_data);
+                                } else {
+                                    $log_data['every_turn_price'] = $goods_price;
+                                    $log_data['every_turn_discount'] = 0;
+                                    $log_data['type'] = 3;
+                                    pdo_insert('sz_yi_channel_stock_log', $log_data);
+                                }
+                            }
+                        }
                     }
-                    if ($totalstock != -1) {
-                        pdo_update('sz_yi_goods', array(
-                            'total' => $totalstock
-                        ), array(
-                            'uniacid' => $_W['uniacid'],
-                            'id' => $g['goodsid']
-                        ));
+                }
+                if (empty($channels)) {
+                    if (!empty($g['goodstotal']) && $g['goodstotal'] != -1) {
+                        $totalstock = -1;
+                        if ($stocktype == 1) {
+                            $totalstock = $g['goodstotal'] + $g['total'];
+                        } else if ($stocktype == -1) {
+                            $totalstock = $g['goodstotal'] - $g['total'];
+                            $totalstock <= 0 && $totalstock = 0;
+                        }
+                        if ($totalstock != -1) {
+                            pdo_update('sz_yi_goods', array(
+                                'total' => $totalstock
+                            ), array(
+                                'uniacid' => $_W['uniacid'],
+                                'id' => $g['goodsid']
+                            ));
+                        }
                     }
                 }
             }

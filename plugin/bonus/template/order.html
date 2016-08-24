@@ -125,7 +125,7 @@
                     <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
                     <input type="hidden" name="token" value="{$_W['token']}" />
                     <!-- <button type="submit" name="export" value="1" class="btn btn-primary">导出 Excel</button>
-					<a class="btn btn-warning" href="{php echo $this->createWebUrl('order/export')}">自定义导出</a> -->
+                    <a class="btn btn-warning" href="{php echo $this->createWebUrl('order/export')}">自定义导出</a> -->
                 </div>
 
             </div>
@@ -153,7 +153,7 @@
                         <b>订单编号:</b>  {$item['ordersn']}     
                         <b>下单时间:  </b>{php echo date('Y-m-d H:i:s', $item['createtime'])}
                         {if !empty($item['refundstate'])}<label class='label label-danger'>{$r_type[$item['rtype']]}申请</label>{/if}
-			            {if $item['rstatus'] == 4}<label class='label label-primary'>客户已经寄出快递</label>{/if}
+                        {if $item['rstatus'] == 4}<label class='label label-primary'>客户已经寄出快递</label>{/if}
                         {if $item['bonus_range_money_all'] > 0}
                             <b>代理分红佣金:</b> {$item['bonus_range_money_all']}元
                         {/if}
@@ -168,6 +168,7 @@
       <table class='table' style='float:left;border:1px solid #ccc;border-top:none;table-layout: fixed;'>
 
 {loop $item['goods'] $k $g}
+        {if $item['order_type']!='3'}
                 <tr class='trbody'>
                     <td class="goods_info">
                          <img src="{php echo tomedia($g['thumb'])}"> 
@@ -177,7 +178,7 @@
                         <br/>{$g['goodssn']}
                     </td>
                     <td style='border-left:none;text-align:left;/*width:150px*/'>原价: {php echo number_format( $g['price']/$g['total'],2)} <br />应付: {php echo number_format($g['realprice']/$g['total'],2)}
-        <br/>数量: {$g['total']}           
+                    <br/>数量: {$g['total']}           
                     </td>
                     
                     {if $k==0}
@@ -191,17 +192,17 @@
                              <br/>
                         {$item['addressdata']['realname']}<br/>{$item['addressdata']['mobile']}</td>
                     <td rowspan="{php echo count($item['goods'])}"    >
-					{if $item['statusvalue'] > 0}
-		            <label class='label label-{$item['css']}'>{$item['paytype']}</label><br/>
-		            {else if $item['statusvalue'] == 0}
-		            {if $item['paytypevalue'] == 3}
-		            <label class='label label-default'>货到付款</label><br/>
-		            {else}
-		            <label class='label label-default'>未支付</label><br/>
-		            {/if}
-		            {else if $item['statusvalue'] == -1}
-		            <label class='label label-default'>{$item['paytype']}</label><br/>
-		            {/if}
+                    {if $item['statusvalue'] > 0}
+                    <label class='label label-{$item['css']}'>{$item['paytype']}</label><br/>
+                    {else if $item['statusvalue'] == 0}
+                    {if $item['paytypevalue'] == 3}
+                    <label class='label label-default'>货到付款</label><br/>
+                    {else}
+                    <label class='label label-default'>未支付</label><br/>
+                    {/if}
+                    {else if $item['statusvalue'] == -1}
+                    <label class='label label-default'>{$item['paytype']}</label><br/>
+                    {/if}
                                        {$item['dispatchname']}
                                        {if $item['addressid']!=0 && $item['statusvalue']>=2}<br/>
                                        <button type='button' class='btn btn-default btn-sm' onclick='express_find(this,"{$item['id']}")' >查看物流</button>
@@ -279,6 +280,124 @@
                     <a href="{php echo $this->createPluginWebUrl('bonus/order', array('op' => 'detail', 'id' => $item['id'], 'bonusagentid' => $bonusagentid))}"   >查看详情</a></td>
             {/if} 
         </tr>
+        
+        {else}
+           <tr class='trbody'>
+                    <td class="goods_info">
+                         <img src="{php echo tomedia($g['thumb'])}"> 
+                    </td>
+                    <td valign='top'  style='border-left:none;text-align: left;/*width:400px*/;'  >
+                        {$g['title']}{if !empty($g['optiontitle'])}<br/><span class="label label-primary sizebg">{$g['optiontitle']}</span>{/if}
+                        <br/>{$g['goodssn']}
+                    </td>
+                                      <td style='border-left:none;width:30%'>
+                    入住日期：  {php echo date('Y-m-d',$item['btime'])} <br />
+                    离店日期：  {php echo date('Y-m-d',$item['etime'])} <br />
+
+                    房间数量:  {php echo $item['num']}  间<br /> 
+                  
+                      
+                    </td>                
+                    {if $k==0}
+                     <td style='width:250px'>
+                  
+                           {php echo $item['checkname']} <br />
+                      {php echo $item['realmobile']}    
+                    </td>
+                    <td rowspan="{php echo count($item['goods'])}"    >
+                    {if $item['statusvalue'] > 0}
+                    <label class='label label-{$item['css']}'>{$item['paytype']}</label><br/>
+                    {else if $item['statusvalue'] == 0}
+                    {if $item['paytypevalue'] == 3}
+                    <label class='label label-default'>货到付款</label><br/>
+                    {else}
+                    <label class='label label-default'>未支付</label><br/>
+                    {/if}
+                    {else if $item['statusvalue'] == -1}
+                    <label class='label label-default'>{$item['paytype']}</label><br/>
+                    {/if}
+                           
+                    </td>
+                    <td  rowspan="{php echo count($item['goods'])}" style='width:18%;'>
+                        <table style='width:100%;'>
+                            <tr>
+                                <td  style='border:none;text-align:right;'>房间小计：</td>
+                                <td  style='border:none;text-align:right;;'>￥{php echo number_format( $item['goodsprice'] ,2)}</td>
+                            </tr>
+                            <tr>
+                                <td  style='border:none;text-align:right;'>押金：</td>
+                                <td  style='border:none;text-align:right;;'> 
+                    ￥ {php echo $item['depositprice']} (
+                      {if $item['depositpricetype']=='1' }
+                       在线付
+                      {/if}
+                      {if $item['depositpricetype']!='1' }
+                       到店付
+                     {/if})</td>
+                            </tr>
+                            {if $item['discountprice']>0}
+                            <tr>
+                                <td  style='border:none;text-align:right;'>会员折扣：</td>
+                                <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['discountprice'],2)}</td>
+                            </tr>
+                            {/if}
+                            {if $item['deductprice']>0}
+                            <tr>
+                                <td  style='border:none;text-align:right;'>积分抵扣：</td>
+                                <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['deductprice'],2)}</td>
+                            </tr>
+                            {/if}
+                            {if $item['deductcredit2']>0}
+                            <tr>
+                                <td  style='border:none;text-align:right;'>余额抵扣：</td>
+                                <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['deductcredit2'],2)}</td>
+                            </tr> 
+                            {/if}
+                            {if $item['deductenough']>0}
+                            <tr>
+                                <td  style='border:none;text-align:right;'>满额立减：</td>
+                                <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['deductenough'],2)}</td>
+                            </tr>
+                            {/if}
+                            {if $item['couponprice']>0}
+                            <tr>
+                                <td  style='border:none;text-align:right;'>优惠券优惠：</td>
+                                <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['couponprice'],2)}</td>
+                            </tr>
+                            {/if}
+                            {if intval($item['changeprice'])!=0}
+                            <tr>
+                                <td  style='border:none;text-align:right;'>卖家改价：</td>
+                                <td  style='border:none;text-align:right;;'><span style="{if 0<$item['changeprice']}color:green{else}color:red{/if}">{if 0<$item['changeprice']}+{else}-{/if}￥{php echo number_format(abs($item['changeprice']),2)}</span></td>
+                            </tr>
+                                 {/if}
+                            {if intval($item['changedispatchprice'])!=0}
+                            <tr>
+                                <td  style='border:none;text-align:right;'>卖家改运费：</td>
+                                <td  style='border:none;text-align:right;;'><span style="{if 0<$item['changedispatchprice']}color:green{else}color:red{/if}">{if 0<$item['changedispatchprice']}+{else}-{/if}￥{php echo abs($item['changedispatchprice'])}</span></td>
+                            </tr>
+                                 {/if} 
+                        <tr>
+                                <td style='border:none;text-align:right;'>应收款：</td>
+                                <td  style='border:none;text-align:right;color:green;'>￥{php echo number_format($item['price'],2)}</td>
+                            </tr>
+                                    {ifp 'order.op.changeprice'}
+            {if empty($item['statusvalue'])}
+                            <tr>
+                                <td style='border:none;text-align:right;'></td>
+                                <td  style='border:none;text-align:right;color:green;'></td>
+                            </tr>
+                            {/if}  {/if}
+                        </table>
+                 
+                 
+     
+                    </td>
+                    <td   rowspan="{php echo count($item['goods'])}" ><label class='label label-{$item['statuscss']}'>{$item['status']}</label><br />
+                    <a href="{php echo $this->createPluginWebUrl('bonus/order', array('op' => 'detail', 'id' => $item['id'], 'bonusagentid' => $bonusagentid))}"   >查看详情</a></td>
+            {/if} 
+        </tr>
+        {/if}
     {/loop}
    </table>
 {/loop}
@@ -387,7 +506,7 @@
             modal.find('.mobile').html(addressdata.mobile);
             modal.find('.address').html(addressdata.address);
     }
-	$(function () {
+    $(function () {
         $('.select2').select2({
             search: true,
             placeholder: "请选择门店",

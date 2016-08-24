@@ -61,7 +61,10 @@ if ($operation == 'display') {
             'deredpack' => trim($_GPC['deredpack']),
             'decommission' => trim($_GPC['decommission']),
             'decredits' => trim($_GPC['decredits']),
-            'iscontact' => trim($_GPC['iscontact']),
+            'iscontact' => intval($_GPC['iscontact']),
+            'condition' => trim($_GPC['condition']),
+            'isreturn' => intval($_GPC['isreturn']),
+
         );
         if ($pcoupon) {
             $data['coupon_id'] = trim($_GPC['coupon_id']);
@@ -69,7 +72,7 @@ if ($operation == 'display') {
         if (!empty($id)) {
             $cashier_stores = pdo_fetch(' select * from ' .tablename('sz_yi_cashier_store'). ' where id='.$id);
             $oldopenid = pdo_fetchcolumn('select openid from ' .tablename('sz_yi_member'). ' where id='.$cashier_stores['member_id']);
-            if($cashier_stores['member_id'] != $data['member_id']){
+            if ($cashier_stores['member_id'] != $data['member_id']) {
                 $_var_156 = array(
                                 'keyword1' => array('value' => '收银台商户通知', 'color' => '#73a68d'),
                                 'keyword2' => array('value' => '【商户名称】' . $cashier_stores['name'], 'color' => '#73a68d'),

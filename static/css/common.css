@@ -1,4 +1,4 @@
-html,body,h1,h2,h3{font-family:arial, 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', '宋体', \5b8b\4f53, Tahoma, Arial, Helvetica, STHeiti}
+/*html,body,h1,h2,h3{font-family:arial, 'Hiragino Sans GB', 'Microsoft Yahei', '微软雅黑', '宋体', \5b8b\4f53, Tahoma, Arial, Helvetica, STHeiti}*/
 .ng-cloak{display:none;}
 body{overflow-y:scroll;background:#f9f9f9;}
 a:hover{text-decoration:none;}
@@ -60,7 +60,7 @@ a:focus{outline:none; -moz-outline:none}
 .welcome-container .shortcut a span{display:block;font-size:1em;overflow:hidden;white-space:nowrap;}
 .welcome-container .account img{width:6em;height:6em;}
 .nav.nav-tabs{margin-bottom:20px; border-color:#428bca;}
-.nav-tabs>li>a:hover{border-color:#eee #eee #428bca #eee;}
+/*.nav-tabs>li>a:hover{border-color:#eee #eee #428bca #eee;}*/
 /*.nav-tabs>li.active>a, .nav-tabs>li.active>a:hover, .nav-tabs>li.active>a:focus{color:#FFF; background-color:#428bca; border-color:#428bca;}
 */.page-header{padding-bottom:0;}
 .page-header:first-child{margin-top:0;}
@@ -120,10 +120,10 @@ a:focus{outline:none; -moz-outline:none}
 .big-menu .btn-group{width:100%;}
 .big-menu .btn-group>.btn{border-radius:0; width:33.5%; text-align:center; border-top:0;}
 /*更新提醒*/
-.upgrade-tips{width:100%; position:absolute; top:0; text-align:center; z-index:99999;}
-.upgrade-tips a{display:inline-block; margin:0 auto; height:25px; line-height:25px; padding:0 5px; color:#FFF; background:#EE5023; }
+.upgrade-tips{width:100%; position:absolute; bottom:0; text-align:center; z-index:99999;}
+.upgrade-tips a{display:inline-block; margin:0 auto; height:35px; line-height:35px; padding:0 5px 0 10px; color:#FFF; background:#EE5023;border-radius: 4px 0 0 0;}
 .upgrade-tips a.module{background:#3C9D40;}
-.upgrade-tips span{display:inline-block; height:25px; line-height:25px; background:#328233; padding:0 10px; color:#FFF; cursor:pointer;}
+.upgrade-tips span{display:inline-block; height:35px; line-height:35px; background:#328233; padding:0 10px; color:#FFF; cursor:pointer;border-radius: 0 4px 0 0;}
 
 /*多图上传*/
 .multi-img-details{margin-top:.5em;}
@@ -246,7 +246,7 @@ a:focus{outline:none; -moz-outline:none}
 .notice-show h6{font-size:24px;}
 
 /*图片弹出框*/
-#modal-webuploader{z-index:1000000000}
+#modal-webuploader,#modal-fileUploader{z-index:1000000000!important;}
 
 /*表单验证插件*/
 .bv-form .help-block{margin-bottom: 0}
@@ -301,6 +301,5 @@ p.module-brief{margin-bottom:10px; font-size:12px;}
 p.module-description{display:block;padding:3px 10px;}
 
 .require{color:red; margin-right:5px}
-
 
 

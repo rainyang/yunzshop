@@ -240,7 +240,11 @@ div.flicking_con a.on{background-position:0 -9px}
         <%if goods.isnodiscount=='0' && level.discount>0 && level.discount<10%>
              <div class="other">
                 <div class='left'>
-                    <i class='fa fa-user'></i> 会员折扣 <span style='color:#ff6600'><%level.discount%></span> 折优惠(<%level.levelname%>)
+                <%if level.discountway == 1%>
+                    <i class='fa fa-user'></i> <%level.discounttxt%> <span style='color:#ff6600'><%level.discount%></span> 折优惠(<%level.levelname%>)
+                <%else%>
+                    <i class='fa fa-user'></i> <%level.discounttxt%> 立减 <span style='color:#ff6600'><%level.discount%></span> 元(<%level.levelname%>)
+                <%/if%>
                 </div>
              </div> 
         <%/if%>
@@ -856,7 +860,7 @@ div.flicking_con a.on{background-position:0 -9px}
             });
 
         $('.cs').click(function(){
-            location.href='{php echo $this->yzShopSet['cservice']}&metadata={"name":"{php echo $member['realname']}","tel":"{php echo $member['mobile']}","address":"{php echo $member['province']}"}';
+            location.href='{php echo $this->yzShopSet['cservice']}&metadata={"name":"{php echo htmlspecialchars($member['realname'], ENT_QUOTES)}","tel":"{php echo $member['mobile']}","address":"{php echo $member['province']}"}';
         });
                 
            

@@ -7,7 +7,7 @@ body {margin:0px; background:#f8f8f8; -moz-appearance:none;}
 .favorite_top {height:44px; background:#f8f8f8; padding:0px 3%; border-bottom:1px solid #e3e3e3;}
 .favorite_top .title {height:44px; width:auto; float:left; font-size:16px; line-height:44px; color:#666;}
 .favorite_top .nav {height:30px; width:auto; background:#fff; padding:0px 10px; border:1px solid #e3e3e3; border-radius:5px; float:right; line-height:30px; margin:6px 0px 0px 16px; color:#666; font-size:14px;}
-.favorite_main {height:auto; width:100%;background:#fff; border-bottom:1px solid #e3e3e3;}
+.favorite_main {height:auto; width:100%;background:#fff; }
 .favorite_good {height:80px; width:100%; padding:10px 0px; border-bottom:1px solid #e3e3e3;}
 .favorite_good .ico {margin-left:10px;height:20px; width:30px;  float:left ; font-size:24px;margin-top:25px;color:#666;z-index:2;position: relative;}
 .favorite_good .img {height:80px; width:80px; background:#f99; float:left;z-index:2;position: relative;}
@@ -26,6 +26,12 @@ body {margin:0px; background:#f8f8f8; -moz-appearance:none;}
 </style>
 <div id='container'></div>
 <script id='favorite_empty' type='text/html'>
+    {if is_app()}
+    <div class="page_topbar">
+        <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
+        <div class="title">我的收藏</div>
+    </div>
+    {/if}
      <div class="favorite_no"><i class="fa fa-favorite" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">您没有浏览过任何商品</span><br>主人快去给我找点东西吧</div>
 <div class="favorite_no_menu">
    <div class="favorite_no_nav" onclick="location.href='{php echo $this->createMobileUrl('member')}'">个人中心</div>
@@ -34,7 +40,7 @@ body {margin:0px; background:#f8f8f8; -moz-appearance:none;}
 </script>
 <script id="favorite_main" type="text/html">
       <div class="favorite_top">
-        <div class="title" onclick='history.back()'> <i class='fa fa-chevron-left'></i> 我的收藏(<%total%>)</div>
+        <div class="title" onclick='history.back()'> <i class='iconfont icon-chevron-left'></i> 我的收藏(<%total%>)</div>
         <div class="nav" id="removefavorite">删除</div>
     </div>
     <div class="favorite_main"></div>
@@ -44,7 +50,7 @@ body {margin:0px; background:#f8f8f8; -moz-appearance:none;}
   
         <%each list as value%> 
         <div class="favorite_good" data-favoriteid="<%value.id%>" sel='0'>
-            <div class="ico"><i class="fa fa-circle-o" ></i></div>
+            <div class="ico"><i class="iconfont icon-circle-o" ></i></div>
             <div class="img" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%value.goodsid%>'"><img src="<%value.thumb%>"/></div>
             <div class="info" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%value.goodsid%>'">
                 <div class="inner">
@@ -55,7 +61,7 @@ body {margin:0px; background:#f8f8f8; -moz-appearance:none;}
                 </div>
             </div>
             <div class="right remove">
-                <i class="fa fa-times"></i>
+                <i class="iconfont icon-remove"></i>
             </div>
         </div>
       <%/each%>
@@ -66,10 +72,10 @@ body {margin:0px; background:#f8f8f8; -moz-appearance:none;}
  
     function setSelect(obj, sel){
             if(sel=='1'){
-                         obj.find('i').addClass('fa-circle-o').removeClass('fa-check-circle-o').css('color', '#666');
+                         obj.find('i').addClass('icon-circle-o').removeClass('icon-check-circle-o').css('color', '#666');
                     }
                     else{
-                         obj.find('i').removeClass('fa-circle-o').addClass('fa-check-circle-o').css('color', '#0c9');
+                         obj.find('i').removeClass('icon-circle-o').addClass('icon-check-circle-o').css('color', '#f15353');
                     }
                     sel =sel==1?0:1;
                     obj.parent().attr('sel',sel);

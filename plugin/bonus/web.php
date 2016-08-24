@@ -39,7 +39,14 @@ class BonusWeb extends Plugin
 		} else if (cv('bonus.order')) {
 			header('location: ' . $this->createPluginWebUrl('bonus/order'));
 			exit;
+		} else if (cv('bonus.goods_rank')) {
+			header('location: ' . $this->createPluginWebUrl('bonus/goods_rank'));
+			exit;
+		} else if (cv('bonus.apply')) {
+			header('location: ' . $this->createPluginWebUrl('bonus/apply'));
+			exit;
 		}
+		
 	}
 
 	public function upgrade()
@@ -89,4 +96,13 @@ class BonusWeb extends Plugin
 	{
 		$this->_exec_plugin(__FUNCTION__);
 	}
+	public function goods_rank()
+	{
+		$this->_exec_plugin(__FUNCTION__);
+	}
+	public function apply()
+	{
+		$this->_exec_plugin(__FUNCTION__);
+	}
+	
 }

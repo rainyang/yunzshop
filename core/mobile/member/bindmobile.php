@@ -19,7 +19,14 @@ if (is_weixin()) {
 if ($_W['isajax']) {
     if ($_W['ispost']) {
         $mc = $_GPC['memberdata'];
-        $memberall = pdo_fetchall('select id, openid, pwd from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and openid!=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':mobile' => $mc['mobile']));
+        //查询其它已绑定该手机的微信号
+        $isbindmobile = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and uniacid=:uniacid and isbindmobile=1', array(':uniacid' => $_W['uniacid'], ':mobile' => $mc['mobile']));
+        if(!empty($isbindmobile)){
+            show_json(0, array());
+        }
+        
+        //更换公众号或pc到微信绑定
+        $memberall = pdo_fetchall('select id, openid, pwd, level, agentlevel, bonuslevel, createtime, bindapp, status, isagent from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and openid!=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':mobile' => $mc['mobile']));
 
         if (!empty($memberall)) {
             foreach ($memberall as $key => $info) {
@@ -47,7 +54,7 @@ if ($_W['isajax']) {
                 }
 
                 //更新微信记录里的手机号等为pc的手机号
-                $member = pdo_fetch('select id, mobile, pwd, credit1, credit2 from ' . tablename('sz_yi_member') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+                $member = pdo_fetch('select id, mobile, pwd, credit1, credit2, level, agentlevel, bonuslevel, createtime, bindapp, status, isagent from ' . tablename('sz_yi_member') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
                 $data = array('isbindmobile' => 1);
                 if ($member['mobile'] != $mc['mobile'] || !empty($mc['mobile'])) {
                     $data['mobile'] = $mc['mobile'];
@@ -60,20 +67,84 @@ if ($_W['isajax']) {
                 //获取积分
                 $credit1 = m('member')->getCredit($oldopenid, 'credit1');
                 if ($credit1 > 0) {
-                    m('member')->setCredit($openid, 'credit1', $credit1);
+                    m('member')->setCredit($openid, 'credit1', $credit1, array(0, '会员绑定积分合并，合并过来的积分为：' . $credit1 . " 积分"));
                 }
                 //获取余额
                 $credit2 = m('member')->getCredit($oldopenid, 'credit2');
                 if ($credit2 > 0) {
-                    m('member')->setCredit($openid, 'credit2', $credit2);
+                    m('member')->setCredit($openid, 'credit2', $credit2, array(0, '会员绑定余额合并，合并过来的余额为：' . $credit2 . " 元"));
                 }
-                //修改其它手机号相同用户的上下级关系id为当前微信的。
-                pdo_update('sz_yi_member', array('agentid' => $member['id']), array('agentid' => $info['id'], 'uniacid' => $_W['uniacid']));
 
+                //会员等级对比
+                if(!empty($info['level'])){
+                   /* $newlevel = "";
+                    $oldlevel = pdo_fetchcolumn('select level from ' . tablename('sz_yi_member_level') . ' where id=:id and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':id' => $info['level']));
+                    if(!empty($member['level'])){
+                        $newlevel = pdo_fetchcolumn('select level from ' . tablename('sz_yi_member_level') . ' where id=:id and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':id' => $member['level']));
+                    }
+                    if(empty($newlevel) || $oldlevel > $newlevel){
+                       $data['level'] = $oldlevel;
+                    } */
+                    if(empty($member['level']) || $info['level'] > $member['level']){
+                        $data['level'] = $info['level'];
+                    }
+                }
+
+                //分销等级对比
+                if(!empty($info['agentlevel'])){
+                    $newagentlevel = "";
+                    $oldagentlevel = pdo_fetchcolumn('select level from ' . tablename('sz_yi_commission_level') . ' where id=:id and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':id' => $info['agentlevel']));
+                    if(!empty($member['agentlevel'])){
+                        $newagentlevel = pdo_fetchcolumn('select level from ' . tablename('sz_yi_commission_level') . ' where id=:id and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':id' => $member['agentlevel']));
+                    }
+                    if(empty($newagentlevel) || $oldagentlevel > $newagentlevel){
+                       $data['agentlevel'] = $oldagentlevel;
+                    }
+                }
+
+                //代理等级对比
+                if(!empty($info['bonuslevel'])){
+                    $newbonuslevel = "";
+                    $oldbonuslevel = pdo_fetchcolumn('select level from ' . tablename('sz_yi_bonus_level') . ' where id=:id and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':id' => $info['bonuslevel']));
+                    if(!empty($member['bonuslevel'])){
+                        $newbonuslevel = pdo_fetchcolumn('select level from ' . tablename('sz_yi_bonus_level') . ' where id=:id and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':id' => $member['bonuslevel']));
+                    }
+                    if(empty($newbonuslevel) || $oldbonuslevel > $newbonuslevel){
+                       $data['bonuslevel'] = $oldbonuslevel;
+                    } 
+                }
+
+                //删除其他手机号相同用户信息
+                pdo_delete('sz_yi_member', array('openid' => $oldopenid));
+
+                //当前用户是否大于其他用户
+                if($member['createtime'] > $info['createtime']){
+                    //大于则使用老的用户id
+                    pdo_update('sz_yi_member', array('id' => $info['id']), array('openid' => $openid, 'uniacid' => $_W['uniacid']));
+                    //修改新用户，所有用户agentid为老的用户id
+                    pdo_update('sz_yi_member', array('agentid' => $info['id']), array('agentid' => $member['id'], 'uniacid' => $_W['uniacid']));
+                }else{
+                    //修改老用户的agentid改为新用户id
+                    pdo_update('sz_yi_member', array('agentid' => $member['id']), array('agentid' => $info['id'], 'uniacid' => $_W['uniacid']));
+                }
+
+                //是否绑定app
+                if ($info['bindapp'] == 1 || $member['bindapp'] == 1) {
+                    $data['bindapp'] = 1;
+                }
+
+                //分销状态
+                if ($info['status'] == 1 || $member['status'] == 1) {
+                    $data['status'] = 1;
+                }
+
+                //是否分销商
+                if ($info['isagent'] == 1 || $member['isagent'] == 1) {
+                    $data['isagent'] = 1;
+                }
+               
                 pdo_update('sz_yi_member', $data, array('openid' => $openid, 'uniacid' => $_W['uniacid']));
 
-                //删除其他手机号相同用户
-                pdo_delete('sz_yi_member', array('openid' => $oldopenid));
                 $mc_member = pdo_fetch('select * from ' . tablename('mc_mapping_fans') . ' where openid=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $oldopenid));
 
                 if (!empty($mc_member)) {

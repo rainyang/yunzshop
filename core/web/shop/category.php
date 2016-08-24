@@ -125,7 +125,9 @@ if ($operation == 'display') {
             'parentid' => intval($parentid),
             'thumb' => save_media($_GPC['thumb']),
             'advimg' => save_media($_GPC['advimg']),
+            'advimg_pc' => save_media($_GPC['advimg_pc']),
             'advurl' => trim($_GPC['advurl']),
+            'advurl_pc' => trim($_GPC['advurl_pc']),
             'level' => $level
         );
         if (!empty($id)) {

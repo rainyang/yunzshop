@@ -20,28 +20,33 @@ $list = pdo_fetchall($sql);
 $totalmoney = 0;
 foreach ($list as $key => &$row) {
 	$member = $this->model->getInfo($row['mid'], array('ok', 'pay', 'myorder'));
-	//Author:ym Date:2016-04-08 Content:需消费一定金额，否则清除该用户不参与分红
-	if($member['myordermoney'] < $set['consume_withdraw'] || empty($member)){
-		unset($list[$key]);
-	}else{
-		if($member['commission_ok'] <= 0){
+	if(!empty($member)){
+		//Author:ym Date:2016-04-08 Content:需消费一定金额，否则清除该用户不参与分红
+		if($member['myordermoney'] < $set['consume_withdraw'] || empty($member)){
 			unset($list[$key]);
 		}else{
-			if(!empty($member['bonuslevel'])){
-				$row['realname'] = pdo_fetchcolumn("select levelname from " . tablename('sz_yi_bonus_level') . " where id=".$member['bonuslevel']);
+			if($member['commission_ok'] <= 0){
+				unset($list[$key]);
 			}else{
-				$row['realname'] = $set['levelname'];
-			}
-			$row['commission_ok'] = $member['commission_ok'];
+				if(!empty($member['bonuslevel'])){
+					$row['realname'] = pdo_fetchcolumn("select levelname from " . tablename('sz_yi_bonus_level') . " where id=".$member['bonuslevel']);
+				}else{
+					$row['realname'] = $set['levelname'];
+				}
+				$row['commission_ok'] = $member['commission_ok'];
 
-			$row['commission_pay'] = $member['commission_pay'];
-			$row['id'] = $member['id'];
-			$row['avatar'] = $member['avatar'];
-			$row['nickname'] = $member['nickname'];
-			$row['realname'] = $member['realname'];
-			$row['mobile'] = $member['mobile'];
-			$totalmoney += $member['commission_ok'];
+				$row['commission_pay'] = $member['commission_pay'];
+				$row['id'] = $member['id'];
+				$row['avatar'] = $member['avatar'];
+				$row['nickname'] = $member['nickname'];
+				$row['realname'] = $member['realname'];
+				$row['mobile'] = $member['mobile'];
+				$totalmoney += $member['commission_ok'];
+			}
 		}
+	}else{
+		//Author:ym Date:2016-08-02 Content:如未查询到该用户则被删除
+		unset($list[$key]);
 	}	
 }
 unset($row);
@@ -55,13 +60,13 @@ if (!empty($_POST)) {
 		message("发放人数为0，不能发放。", "", "error");
 	}
 	foreach ($count as $key => $value) {
-		$member = $this->model->getInfo($value['mid'], array('ok', 'pay'));
+		$member = $this->model->getInfo($value['mid'], array('ok', 'pay', 'ordergoods'));
 		$send_money = $member['commission_ok'];
 		$sendpay = 1;
 		$islog = true;
 		$level = $this->model->getlevel($member['openid']);
 		if(empty($set['paymethod'])){
-			m('member')->setCredit($member['openid'], 'credit2', $send_money);
+			m('member')->setCredit($member['openid'], 'credit2', $send_money, array(0, '代理商分红发放：' . $send_money . " 元"));
 		}else{
 			$logno = m('common')->createNO('bonus_log', 'logno', 'RB');
 			$result = m('finance')->pay($member['openid'], 1, $send_money * 100, $logno, "【" . $setshop['name']. "】".$level['levelname']."分红");
@@ -82,18 +87,22 @@ if (!empty($_POST)) {
             "send_bonus_sn" => $send_bonus_sn
         ));
         if($sendpay == 1){
-        	
+        	if(empty($level)){
+				if($member['bonus_area'] == 1){
+					$level['levelname'] = "省级代理";
+				}else if($member['bonus_area'] == 2){
+					$level['levelname'] = "市级代理";
+				}else if($member['bonus_area'] == 3){
+					$level['levelname'] = "区级代理";
+				}
+			}
         	$this->model->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_PAY);
         }
         //更新分红订单完成
-		$bonus_goods = array(
-			"status" => 3,
-			"applytime" => $time,
-			"checktime" => $time,
-			"paytime" => $time,
-			"invalidtime" => $time
-			);
-		pdo_update('sz_yi_bonus_goods', $bonus_goods, array('mid' => $member['id'], 'uniacid' => $_W['uniacid']));
+		$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and ({$time} - o.finishtime > {$day_times})", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
+
+		//更新分红订单完成
+		pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
 	}
 	if($islog){
 		$log = array(

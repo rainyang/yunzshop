@@ -2,6 +2,14 @@
 <div class="w1200 m0a">
 {template 'web/sysset/tabs'}
 <div class="main rightlist">
+<!-- 新增加右侧顶部三级菜单 -->
+<div class="right-titpos">
+	<ul class="add-snav">
+		<li class="active"><a href="#">交易设置</a></li>
+	</ul>
+</div>
+<!-- 新增加右侧顶部三级菜单结束 -->
+    <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <input type='hidden' name='setid' value="{$set['id']}" />
         <input type='hidden' name='op' value="trade" />
@@ -152,6 +160,19 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启余额转账</label>
+                    <div class="col-sm-9 col-xs-12">
+                        {ifp 'sysset.save.trade'}
+                        <label class='radio-inline'><input type='radio' name='trade[transfer]' value='0' {if empty($set['trade']['transfer'])}checked{/if}/> 开启</label>
+                        <label class='radio-inline'><input type='radio' name='trade[transfer]' value='1' {if $set['trade']['transfer']=='1'}checked{/if} /> 关闭</label>
+                        <span class='help-block'>是否允许用户对账户余额进行转账</span>
+                        {else}
+                        <input type="hidden" name="trade[withdraw]" value="{$set['trade']['withdraw']}"/>
+                        <div class='form-control-static'>{if $set['trade']['transfer']==1}关闭{else}开启{/if}</div>
+                        {/if}
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启余额提现</label>
                     <div class="col-sm-9 col-xs-12">
                         {ifp 'sysset.save.trade'}
@@ -164,6 +185,36 @@
                         {/if}
                     </div>
                 </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启余额提现自动打款</label>
+                    <div class="col-sm-9 col-xs-12">
+                        {ifp 'sysset.save.trade'}
+                        <label class='radio-inline'><input type='radio' name='trade[withdrawnocheck]' value='1' {if $set['trade']['withdrawnocheck']==1}checked{/if}/> 开启</label>
+                        <label class='radio-inline'><input type='radio' name='trade[withdrawnocheck]' value='0' {if $set['trade']['withdrawnocheck']==0}checked{/if} /> 关闭</label>
+                        <span class='help-block'>是否允许用户余额提现时无需审核，直接打款。注：只支持微信钱包提现！</span>
+                        {else}
+                        <input type="hidden" name="trade[withdraw]" value="{$set['trade']['withdraw']}"/>
+                        <div class='form-control-static'>{if $set['trade']['withdrawnocheck']==1}开启{else}关闭{/if}</div>
+                        {/if}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额提现自动打款限制</label>
+                    <div class="col-sm-9 col-xs-12">
+                        {ifp 'sysset.save.trade'}
+                        <input type="text" name="trade[withdrawautomoney]" class="form-control" value="{$set['trade']['withdrawautomoney']}" />
+                        <span class='help-block'>提现金额少于等于自定义的限制金额，则提现不需要审核，否则需要审核。</span>
+                        {else}
+                        <input type="hidden" name="trade[withdrawautomoney]" value="{$set['trade']['withdrawautomoney']}"/>
+                        <div class='form-control-static'>
+                            {if empty($set['trade']['withdrawautomoney'])}不限制{else}{$set['trade']['withdrawautomoney']} 元 {/if}
+                        </div>
+                        {/if}
+                    </div>
+                </div>
+
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">余额提现限制</label>
                     <div class="col-sm-9 col-xs-12">

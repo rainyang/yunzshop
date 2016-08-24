@@ -14,35 +14,50 @@
 		<form id="baseform" method="post" class="form-horizontal form">
 			<div class="rightlist">
 				<div class="panel panel-default">
-					<div class="panel-heading">APP客户端设置</div>
+					<div class="panel-heading">客户端</div>
 					<div class="panel-body">
 						<div class="form-group">
-							<label class="col-xs-12 col-sm-3 col-md-2 control-label">APP客户端</label>
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">是否启用</label>
 							<div class="col-sm-9 col-xs-12">
 								<label class="radio-inline">
 									<input type="radio" name="app[switch]" value="1" {if $set['app']['base']['switch'] == 1} checked {/if}> 开启
 								</label>
+
 								<label class="radio-inline">
 									<input type="radio" name="app[switch]" value="0" {if empty($set['app']['base']['switch']) || $set['app']['base']['switch'] == 0} checked {/if}> 关闭
 								</label>
-								<span class="help-block">是否使用APP客户端</span>
 							</div>
 						</div>
-
-						<!--<div class="form-group">
-							<label class="col-xs-12 col-sm-3 col-md-2 control-label">选择使用的公众平台</label>
+					</div>
+					<div class="panel-heading">微信</div>
+					<div class="panel-body">
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">是否隐藏分销功能</label>
 							<div class="col-sm-9 col-xs-12">
-									<select class="form-control tpl-category-parent" id="category_parent" name="app[platformid]" onchange="renderCategory(this,'category')">
-										<option value="0">请选择一级分类</option>
-										{loop $list $r}
-										<option value="{$r['uniacid']}" {if $set['app']['base']['platformid'] == $r['uniacid']} selected {/if}>{$r['name']}</option>
-										{/loop}
-									</select>
+								<label class="radio-inline">
+									<input type="radio" name="wx[switch]" value="1" {if $set['app']['base']['wx']['switch'] == 1} checked {/if}> 开启
+								</label>
 
-
-								<span class="help-block">允许APP客户端访问的公众账号</span>
+								<label class="radio-inline">
+									<input type="radio" name="wx[switch]" value="0" {if empty($set['app']['base']['wx']['switch']) || $set['app']['base']['wx']['switch'] == 0} checked {/if}> 关闭
+								</label>
 							</div>
-						</div>-->
+						</div>
+					</div>
+
+					<div class="panel-heading">推送消息</div>
+					<div class="panel-body">
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">是否启用</label>
+							<div class="col-sm-9 col-xs-12">
+								<label class="radio-inline">
+									<input type="radio" name="leancloud[switch]" value="1" {if $set['app']['base']['leancloud']['switch'] == 1} checked {/if}> 开启
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="leancloud[switch]" value="0" {if empty($set['app']['base']['leancloud']['switch']) || $set['app']['base']['leancloud']['switch'] == 0} checked {/if}> 关闭
+								</label>
+							</div>
+						</div>
 
 						<div class="form-group">
 							<label class="col-xs-12 col-sm-3 col-md-2 control-label">LeanCloud App ID</label>
@@ -75,6 +90,53 @@
 								<span class="help-block"></span>
 							</div>
 						</div>
+					</div>
+
+					<div class="panel-heading">推荐码</div>
+					<div class="panel-body">
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">是否启用</label>
+							<div class="col-sm-9 col-xs-12">
+								<label class="radio-inline">
+									<input type="radio" name="app[accept]" value="1" {if $set['app']['base']['accept'] == 1} checked {/if}> 开启
+								</label>
+
+								<label class="radio-inline">
+									<input type="radio" name="app[accept]" value="0" {if empty($set['app']['base']['accept']) || $set['app']['base']['accept'] == 0} checked {/if}> 关闭
+								</label>
+							</div>
+                        </div>
+
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">是否必填</label>
+							<div class="col-sm-9 col-xs-12">
+								<label class="radio-inline">
+									<input type="radio" name="app[useing]" value="1" {if $set['app']['base']['useing'] == 1} checked {/if}> 是
+								</label>
+								<label class="radio-inline">
+									<input type="radio" name="app[useing]" value="0" {if empty($set['app']['base']['useing']) || $set['app']['base']['useing'] == 0} checked {/if}> 否
+								</label>
+							</div>
+						</div>
+					</div>
+
+					<div class="panel-heading">下载地址</div>
+					<div class="panel-body">
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">Android </label>
+							<div class="col-sm-9 col-xs-12">
+								<input type="text" name="app[android_url]" class="form-control" value="{$set['app']['base']['android_url']}" autocomplete="off">
+								<span class="help-block"></span>
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label class="col-xs-12 col-sm-3 col-md-2 control-label">IOS</label>
+							<div class="col-sm-9 col-xs-12">
+								<input type="text" name="app[ios_url]" class="form-control" value="{$set['app']['base']['ios_url']}" autocomplete="off">
+								<span class="help-block"></span>
+							</div>
+						</div>
 
 						<div class="form-group">
 							<label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
@@ -84,6 +146,7 @@
 							</div>
 						</div>
 					</div>
+				</div>
 				</div>
 			</div>
 		</form>

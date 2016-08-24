@@ -187,12 +187,12 @@ strong, h1, h2{ font-weight: normal;}
     display: block;
     border-radius: 5px;
     padding: 8px 0;
-    width: 48%;
+    width: 100%;
     text-align: center;
 }
 .goto-buy{ border: 1px solid #11cd6e; color: #11cd6e;}
 .goto-repay{ border: 1px solid #ff5373; color: #ff5373;}
-.goto-check{ border: 1px solid #888888; color: #888888;}
+.goto-check{ border: 1px solid #888888; color: #888888; margin-top: 15px;}
 .payseccess-notice{
     padding: 30px 3% 0;
     font-size: 12px;
@@ -274,7 +274,7 @@ strong, h1, h2{ font-weight: normal;}
 .yznews .yzread h1, .yzread .yznews-list, .yzread .yznews-more{ color: #999999; }
 
 /*消息详情*/
-.yznews-detail{ padding: 20px 10px;}
+.yznews-detail{ padding: 20px 10px;background: #fff}
 .yznews-detail h1{
     font-size: 15px; 
     width: 100%; 
@@ -284,6 +284,7 @@ strong, h1, h2{ font-weight: normal;}
     font-size: 13px; 
     line-height: 25px; 
 }
+.yznews-detail p a{display: block;}
 .yznews-detail time{ font-size: 12px; color: #999999; display: block; margin: 10px 0;}
 
 

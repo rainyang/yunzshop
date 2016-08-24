@@ -94,9 +94,20 @@ if(!pdo_fieldexists('sz_yi_member', 'bonuslevel')) {
 }
 
 if(!pdo_fieldexists('sz_yi_member', 'bonus_area')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_area` TINYINT(1) DEFAULT '0' AFTER `bonuslevel`, ADD `bonus_province` varchar(50) DEFAULT '' AFTER `bonus_area`, ADD `bonus_city` varchar(50) DEFAULT '' AFTER `bonus_province`, ADD `bonus_district` varchar(50) DEFAULT '' AFTER `bonus_city`, ADD `bonus_area_commission` decimal(10,2) DEFAULT '0.00' AFTER `bonus_district`;");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_area` TINYINT(1) DEFAULT '0';");
 }
-
+if(!pdo_fieldexists('sz_yi_member', 'bonus_province')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_province` varchar(50) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_member', 'bonus_city')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_city` varchar(50) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_member', 'bonus_district')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_district` varchar(50) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_member', 'bonus_area_commission')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_area_commission` DECIMAL(10,2) DEFAULT '0.00'");
+}
 if(!pdo_fieldexists('sz_yi_goods', 'bonusmoney')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `bonusmoney` DECIMAL(10,2) DEFAULT '0.00' AFTER `costprice`;");
 }
@@ -111,4 +122,37 @@ if(!pdo_fieldexists('sz_yi_bonus_level', 'msgtitle')) {
 if(!pdo_fieldexists('sz_yi_bonus_level', 'msgcontent')) {
   pdo_query("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `msgcontent` varchar(255) DEFAULT '';");
 }
+//下线二级人数
+if(!pdo_fieldexists('sz_yi_bonus_level', 'downcountlevel2')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `downcountlevel2` int(11) DEFAULT '0';");
+}
+//下线三级人数
+if(!pdo_fieldexists('sz_yi_bonus_level', 'downcountlevel3')) {
+  pdo_query("ALTER TABLE ".tablename('sz_yi_bonus_level')." ADD `downcountlevel3` int(11) DEFAULT '0';");
+}
+
+pdo_fetchall("CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_bonus_apply') . " (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT '0',
+  `applyno` varchar(255) DEFAULT '',
+  `mid` int(11) DEFAULT '0' COMMENT '会员ID',
+  `type` tinyint(3) DEFAULT '0' COMMENT '0 余额 1 微信',
+  `orderids` text,
+  `commission` decimal(10,2) DEFAULT '0.00',
+  `commission_pay` decimal(10,2) DEFAULT '0.00',
+  `content` text,
+  `status` tinyint(3) DEFAULT '0' COMMENT '-1 无效 0 未知 1 正在申请 2 审核通过 3 已经打款',
+  `applytime` int(11) DEFAULT '0',
+  `checktime` int(11) DEFAULT '0',
+  `paytime` int(11) DEFAULT '0',
+  `invalidtime` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `idx_uniacid` (`uniacid`),
+  KEY `idx_mid` (`mid`),
+  KEY `idx_checktime` (`checktime`),
+  KEY `idx_paytime` (`paytime`),
+  KEY `idx_applytime` (`applytime`),
+  KEY `idx_status` (`status`),
+  KEY `idx_invalidtime` (`invalidtime`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;");
 message('芸众分红插件安装成功', $this->createPluginWebUrl('bonus/agent'), 'success');

@@ -1,15 +1,3 @@
-﻿
-<div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
-    <div class="col-sm-9 col-xs-12">
-        {ife 'shop.goods' $item}
-        <input type="text" name="displayorder" id="displayorder" class="form-control" value="{$item['displayorder']}" />
-        <span class='help-block'>数字越大，排名越靠前,如果为空，默认排序方式为创建时间</span>
-        {else}
-        <div class='form-control-static'>{$item['displayorder']}</div>
-        {/if}
-    </div>
-</div>
 <!-- 供货商start -->
 {if p('supplier')}
   {if $perm_role == 0}
@@ -24,12 +12,24 @@
           <option value="{$row['uid']}" {if $item['supplier_uid']==$row['uid']}selected="selected"{/if}>{$row['realname']}/{$row['username']}</option>
           {/loop}
         </select>
-          <span class='help-block'>选择供货商</span>
+          <span class='help-block'>供货商可自行管理商品及订单发货等</span>
       </div>
   </div>
   {/if}
 {/if}
 <!-- 供货商end -->
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
+    <div class="col-sm-9 col-xs-12">
+        {ife 'shop.goods' $item}
+        <input type="text" name="displayorder" id="displayorder" class="form-control" value="{$item['displayorder']}" />
+        <span class='help-block'>数字大的排名在前,默认排序方式为创建时间</span>
+        {else}
+        <div class='form-control-static'>{$item['displayorder']}</div>
+        {/if}
+    </div>
+</div>
+
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>商品名称</label>
     <div class="col-sm-9 col-xs-12">
@@ -167,7 +167,7 @@
                                     {if empty($p['parentid'])}
                                         {loop $children2[$p['id']] $c}
                                            {loop $children2[$c['id']] $t}
-                                             <option value="{$t['id']}" {if is_array($cates) && in_array($t['id'],$cates)}selected{/if} >{$p['name']}-{$c['name']}-{$t['name']}</option>
+                                             <option value="{$t['id']}" {if is_array($cates2) && in_array($t['id'],$cates2)}selected{/if} >{$p['name']}-{$c['name']}-{$t['name']}</option>
                                            {/loop}
                                         {/loop}
                                     {/if}
@@ -176,7 +176,7 @@
                                         {loop $category2 $p}
                                             {if empty($p['parentid'])}
                                                 {loop $children2[$p['id']] $c}
-                                                   <option value="{$c['id']}" {if is_array($cates) && in_array($c['id'],$cates)}selected{/if} >{$p['name']}-{$c['name']}</option>
+                                                   <option value="{$c['id']}" {if is_array($cates2) && in_array($c['id'],$cates2)}selected{/if} >{$p['name']}-{$c['name']}</option>
                                                 {/loop}
                                             {/if}
                                         {/loop}
@@ -232,8 +232,16 @@
     <div class="col-sm-9 col-xs-12">
         {ife 'shop.goods' $item}
          <div style="float: left" id="ttttype">
-            <label for="isshow3" class="radio-inline"><input type="radio" name="type" value="1" id="isshow3" {if empty($item['type']) || $item['type'] == 1}checked="true"{/if} onclick="$('#product').show();$('#type_virtual').hide()" /> 实体商品</label>
-            <label for="isshow4" class="radio-inline"><input type="radio" name="type" value="2" id="isshow4"  {if $item['type'] == 2}checked="true"{/if}  onclick="$('#product').hide();$('#type_virtual').hide()" /> 虚拟商品</label>
+            <label for="isshow3" class="radio-inline"><input type="radio" name="type" value="1" id="isshow3" {if empty($item['type']) || $item['type'] == 1}checked="true"{/if} onclick="$('#product').show();$('#type_virtual').hide();$('#divdeposit').hide();" /> 实体商品</label>
+            <label for="isshow4" class="radio-inline"><input type="radio" name="type" value="2" id="isshow4"  {if $item['type'] == 2}checked="true"{/if}  onclick="$('#product').hide();$('#type_virtual').hide();$('#divdeposit').hide()" /> 虚拟商品</label>
+            <!-- 安装酒店插件新增 三种类型 -->
+            {if p('hotel')}
+            {if $hotelstatus=='1'}
+            <label for="isshow8" class="radio-inline"><input type="radio" name="type" value="99" id="isshow8" {if $item['type'] == 99}checked="true"{/if} onclick="$('#divdeposit').show();$('#type_virtual').hide()" /> 酒店房型</label>
+            <label for="isshow6" class="radio-inline"><input type="radio" name="type" value="98" id="isshow6" {if $item['type'] == 98}checked="true"{/if} onclick="$('#type_virtual').hide();$('#divdeposit').hide()" /> 餐饮</label>
+            <label for="isshow7" class="radio-inline"><input type="radio" name="type" value="97" id="isshow7" {if $item['type'] == 97}checked="true"{/if} onclick="$('#type_virtual').hide();$('#divdeposit').hide()" /> 会议</label>
+            {/if}
+             {/if}
             {if p('virtual')}
             <label for="isshow5" class="radio-inline"><input type="radio" name="type" value="3" id="isshow5"  {if $item['type'] == 3}checked="true"{/if}  onclick="$('#type_virtual').show();" /> 虚拟物品(卡密)</label>
             {/if}
@@ -455,7 +463,7 @@
             <input type="text" name="weight" id="weight" class="form-control" value="{$item['weight']}" />
             <span class="input-group-addon">克</span>
         </div>
-		<div class='help-block'>商品重量设置空或0，则为包邮，如启用多规格，多规格内也需进行设置</div>
+    <div class='help-block'>商品重量设置空或0，则为包邮，如启用多规格，多规格内也需进行设置</div>
         {else}
          <div class='form-control-static'>{$item['weight']} 克</div>
         {/if}
@@ -504,7 +512,7 @@
             <span class="input-group-addon">件</span>
 
         </div>
-			   <span class="help-block">用户单次购买此商品数量限制</span>
+         <span class="help-block">用户单次购买此商品数量限制</span>
                     {else}
         <div class='form-control-static'>{$item['maxbuy']} 件</div>
         {/if}
@@ -519,7 +527,7 @@
             <input type="text" name="usermaxbuy" class="form-control" value="{$item['usermaxbuy']}" />
             <span class="input-group-addon">件</span>
         </div>
-			<span class="help-block">用户购买过的此商品数量限制</span>
+      <span class="help-block">用户购买过的此商品数量限制</span>
         {else}
         <div class='form-control-static'>{$item['usermaxbuy']} 件</div>
         {/if}
@@ -534,7 +542,7 @@
             <input type="text" name="sales" id="sales" class="form-control" value="{$item['sales']}" />
             <span class="input-group-addon">件</span>
         </div>
-			    <span class="help-block">物品虚拟出售数，会员下单此数据就增加, 无论是否支付</span>
+          <span class="help-block">物品虚拟出售数，会员下单此数据就增加, 无论是否支付</span>
             {else}
         <div class='form-control-static'>{$item['sales']} 件</div>
         {/if}
@@ -549,8 +557,8 @@
             <span class="input-group-addon">分</span>
         </div>
         <p class="help-block">会员购物赠送的积分, 如果不填写或填写0，则默认为不赠送积分，如果带%则为按成交价格的比例计算积分</p>
-		<p class="help-block">如: 购买2件，设置10 积分, 不管成交价格是多少， 则购买后获得20积分</p>
-		<p class="help-block">如: 购买2件，设置10%积分, 成交价格2 * 200= 400， 则购买后获得 40 积分（400*10%）</p>
+    <p class="help-block">如: 购买2件，设置10 积分, 不管成交价格是多少， 则购买后获得20积分</p>
+    <p class="help-block">如: 购买2件，设置10%积分, 成交价格2 * 200= 400， 则购买后获得 40 积分（400*10%）</p>
                {else}
         <div class='form-control-static'>{$item['credit']} 分</div>
         {/if}
@@ -589,7 +597,10 @@
         <select class="form-control tpl-category-parent" id="dispatchid" name="dispatchid">
             <option value="0">默认模板</option>
             {loop $dispatch_data $dispatch_item}
-            <option value="{$dispatch_item['id']}" {if $item['dispatchid'] == $dispatch_item['id']}selected="true"{/if}>{$dispatch_item['dispatchname']}</option>
+
+            {php $dispath_name = $dispatch_item['supplier_uid']==0 ? "(总店)" : "(供应商)";}
+
+            <option value="{$dispatch_item['id']}" {if $item['dispatchid'] == $dispatch_item['id']}selected="true"{/if}>{$dispatch_item['dispatchname']}{php echo $data['supplier_uid']==0 ? $dispath_name : ""}</option>
             {/loop}
         </select>
     </div>
@@ -601,7 +612,7 @@
 </div>
 <!-- 全返开关 begin -->
 <!-- From:LuckStar.D    Date:2016/04/27   Content:加入全返开关,  ims_sz_yi_goods 加入isreturn字段-->
-{if p('return')}
+{if $isreturn}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否全返</label>
     <div class="col-sm-6 col-xs-6">
@@ -626,6 +637,8 @@
 </div>
 {/if}
 <!-- 全返开关 end -->
+<!-- 判断货到付款开关知否开启 -->
+{if $shoppay['cash']}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否支持货到付款</label>
     <div class="col-sm-6 col-xs-6">
@@ -637,6 +650,32 @@
          {/if}
     </div>
 </div>
+{/if}
+<!-- 安装酒店插件需要添加房间押金金额-->
+  {if p('hotel')}
+        {if $hotelstatus=='1'}
+       <div class="form-group" id="divdeposit" style="display:none">
+    <label class="col-xs-6 col-sm-3 col-md-2 control-label">房间押金</label>
+    <div class="input-group">
+            <input type="text" name="deposit" id="deposit" class="form-control" value="{$item['deposit']}" />
+            <span class="input-group-addon">元</span>
+    </div>
+</div>
+{/if}
+{/if}
+{if p('channel')}
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否支持渠道商采购</label>
+    <div class="col-sm-6 col-xs-6">
+        {ife 'shop.goods' $item}
+        <label class="radio-inline"><input type="radio" name="isopenchannel" value="0" {if $item['isopenchannel'] == 0}checked="true"{/if}  /> 不支持</label>
+        <label class="radio-inline"><input type="radio" name="isopenchannel" value="1" {if $item['isopenchannel'] == 1}checked="true"{/if}   /> 支持</label>
+           {else}
+           <div class='form-control-static'>{if $item['isopenchannel'] ==  0}不支持{else}支持{/if}</div>
+         {/if}
+    </div>
+</div>
+{/if}
 {if $perm_role == 0}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否上架</label>

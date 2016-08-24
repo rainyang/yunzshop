@@ -80,6 +80,18 @@
                 </div>
                </div>
                 {/if}
+                {if p('love')}
+               <div class="form-group">
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">充值内容</label>
+                <div class="col-sm-8 col-lg-9 col-xs-12">
+                       <select name='paymethod' class='form-control'>
+                         <option value='' {if $_GPC['paymethod']==''}selected{/if}></option>
+                         <option value='0' {if $_GPC['paymethod']=='0'}selected{/if}>余额</option>
+                         <option value='1' {if $_GPC['paymethod']=='1'}selected{/if}>积分</option>
+                    </select>
+                </div>
+               </div>
+                {/if}
                  <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">状态</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
@@ -143,7 +155,13 @@
                                             
     {if $_GPC['type']==0}
     <td> 
-         {$row['money']}<br/>
+      {if $row['aging']}
+         分期共{$row['aging']['num']}<br/>
+         已充值{php echo $row['aging']['qtotal'] * $row['aging']['phase'] > $row['aging']['num'] ? $row['aging']['num'] : number_format($row['aging']['qtotal'] * $row['aging']['phase'],2)}{php echo $row['aging']['paymethod'] == 0 ? " 元" : " 积分"}
+      {else}
+         {$row['money']}
+      {/if}
+         <br/>
         {if $row['rechargetype']=='alipay'}
         <span class='label label-warning'>支付宝</span>
         {else if $row['rechargetype']=='wechat'}
@@ -160,7 +178,13 @@
     {/if}
                     
                     <td>
-                        {$row['money']}<br/>
+                        {if $row['aging']}
+                           {$row['money']}(第{$row['aging']['phase']}期)<br/>
+                           共{$row['aging']['qnum']}期
+                        {else}
+                           {$row['money']}
+                        {/if}
+                        <br/>
                         {if $row['status']==0}
                         <span class='label label-default'>{if $row['type']==1}申请中{else}未充值{/if}</span>
                         {else if $row['status']==1}
@@ -185,7 +209,13 @@
                         {/if}
                         {if $row['type']==1 && $row['status']==0}
                         {ifp 'finance.withdraw.withdraw'}
-                        <a class='btn btn-default' style="margin-bottom: 2px" onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('finance/log',array('op'=>'pay','paytype'=>'wechat','id' => $row['id']));}">微信提现</a>		
+                         {if $set['pay']['weixin']==1}
+                        <a class='btn btn-default' style="margin-bottom: 2px" onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('finance/log',array('op'=>'pay','paytype'=>'wechat','id' => $row['id']));}" >微信提现</a>
+                          {/if} 
+                        {if $set['pay']['alipay']==1 && $set['pay']['alipay_withdrawals']==1}
+
+                         <a class='btn btn-default' style="margin-bottom: 2px" onclick="return confirm('确认支付宝提现?')" href="{php echo $this->createWebUrl('finance/log',array('op'=>'pay','paytype'=>'alipay','id' => $row['id']));}"  target= "_blank">支付宝提现</a>
+                         {/if}		
                         <a class='btn btn-default' style="margin-bottom: 2px" onclick="return confirm('确认手动提现完成?')" href="{php echo $this->createWebUrl('finance/log',array('op'=>'pay','paytype'=>'manual','id' => $row['id']));}">手动提现</a>		
                         <a class='btn btn-default' style="margin-bottom: 2px" onclick="return confirm('确认拒绝提现申请?')" href="{php echo $this->createWebUrl('finance/log',array('op'=>'pay','paytype'=>'refuse','id' => $row['id']));}">拒绝</a>		
                         {/if}

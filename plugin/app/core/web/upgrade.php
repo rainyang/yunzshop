@@ -14,7 +14,7 @@ $result = pdo_fetchcolumn('select id from ' . tablename('sz_yi_plugin') . ' wher
 if(empty($result)){
     $displayorder_max = pdo_fetchcolumn('select max(displayorder) from ' . tablename('sz_yi_plugin'));
     $displayorder = $displayorder_max + 1;
-    $sql = "INSERT INTO " . tablename('sz_yi_plugin') . " (`displayorder`,`identity`,`name`,`version`,`author`,`status`) VALUES(". $displayorder .",'app','APP客户端','1.0','官方','1');";
+    $sql = "INSERT INTO " . tablename('sz_yi_plugin') . " (`displayorder`,`identity`,`name`,`version`,`author`,`status`, `category`) VALUES(". $displayorder .",'app','APP客户端','1.0','官方','1', 'biz');";
     pdo_query($sql);
 }
 
@@ -63,6 +63,8 @@ pdo_query($sql);
 $sql = "
 ALTER TABLE `ims_sz_yi_member` ADD `bindapp` tinyint(4) NOT NULL DEFAULT '0';
 ";
-pdo_query($sql);
+if(!pdo_fieldexists('sz_yi_member', 'bindapp')) {
+    pdo_query($sql);
+}
 
 message('芸众APP客户端插件安装成功', $this->createPluginWebUrl('app/index'), 'success');

@@ -79,4 +79,74 @@ if(!empty($pbonus)){
 		}
 	}
 }
+//自动分期充值
+if(p('love')){
+	$time = time();
+	$rechanges = pdo_fetchall("select * from " . tablename('sz_yi_member_aging_rechange') . " where sendpaytime <=".$time." and status=0");
+	$set = m('common')->getSysset('shop');	
+	foreach ($rechanges as $key => $value) {
+		$logno = m('common')->createNO('member_log', 'logno', 'RC');
+		$_W['uniacid'] = $value['uniacid'];
+		$moneyall = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_member_log') . " where aging_id=".$value['id']." and uniacid=".$_W['uniacid']);
+		$remain = $value['num'] - $moneyall;
+		$edit_rechange = array();
+		if($remain > $value['qtotal']){
+			$sendmney = $value['qtotal'];
+		}else{
+			$sendmney = $remain;
+			$edit_rechange['status'] = 1;
+		}
+		if($sendmney<=0){
+			continue;
+		}
+		if($sendmonth == 0){
+			$edit_rechange['sendpaytime'] = mktime($value['sendtime'], 0, 0, date('m'), date('d')+1, date('Y'));
+		}else{
+			$edit_rechange['sendpaytime'] = mktime($value['sendtime'], 0, 0, date('m')+1, 1, date('Y'));
+		}
+		$edit_rechange['phase'] = $value['phase']+1;
+
+		pdo_update('sz_yi_member_aging_rechange', $edit_rechange, array('id' => $value['id']));
+		$data = array(
+			'openid' => $value['openid'], 
+			'logno' => $logno, 
+			'uniacid' => $_W['uniacid'], 
+			'type' => '0', 
+			'createtime' => $time, 
+			'status' => '1', 
+			'title' => $set['name'] . '会员分期充值', 
+			'money' => $sendmney, 
+			'rechargetype' => 'system',
+			'aging_id' => $value['id'],
+			'paymethod' => $value['paymethod']
+			);
+		pdo_insert('sz_yi_member_log', $data);
+
+		if($value['paymethod'] ==0){
+			m('member')->setCredit($value['openid'], 'credit2', $sendmney, array(0, '分期充值余额'));
+			$logid = pdo_insertid();
+			m('notice')->sendMemberLogMessage($logid);
+		}else{
+			m('member')->setCredit($value['openid'], 'credit1', $sendmney, array(0, '分期充值积分'));
+			$msg = array(
+			    'first' => array(
+			        'value' => "后台会员分期充值积分！",
+			        "color" => "#4a5077"
+			    ),
+			    'keyword1' => array(
+			        'title' => '分期积分充值',
+			        'value' => "后台会员分期充值积分:" .$sendmney . "积分!",
+			        "color" => "#4a5077"
+			    ),
+			    'remark' => array(
+			        'value' => "\r\n我们已为您充值积分，请您登录个人中心查看。",
+			        "color" => "#4a5077"
+			    )
+			);
+
+			$detailurl  = $this->createMobileUrl('member');
+			m('message')->sendCustomNotice($value['openid'], $msg, $detailurl);
+		}
+	}
+}
 echo "ok...";

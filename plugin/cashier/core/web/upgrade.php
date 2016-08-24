@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_order')." (
   `uniacid` int(11) NOT NULL,
   `cashier_store_id` int(11) NOT NULL,
   PRIMARY KEY (`order_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='收银台商户订单';
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='收银台商户订单';
 
 CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_store')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -43,9 +43,11 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_store')." (
   `decommission` tinyint(1) NOT NULL DEFAULT '0' COMMENT '扣除佣金金额',
   `decredits` tinyint(1) NOT NULL DEFAULT '0' COMMENT '扣除奖励余额金额',
   `creditpack` decimal(10,2) DEFAULT '0.00' COMMENT '消费者在商家支付完成后，获得的余额奖励百分比',
+  `condition` decimal(10,2) DEFAULT '0.00' COMMENT '使用优惠券条件',
   `iscontact` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否填写联系人信息',
+  `isreturn` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否加入全返',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 
 CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_withdraw')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -57,7 +59,7 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_withdraw')." (
   `status` int(1) unsigned NOT NULL DEFAULT '0' COMMENT '提现状态 0 生成 1 成功 2 失败',
   `create_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='收银台商户提现表';
+) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COMMENT='收银台商户提现表';
 ";
 pdo_query($sql);
 if(!pdo_fieldexists('sz_yi_order', 'cashier')) {
@@ -95,7 +97,7 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_store_waiter
   `createtime` varchar(255) DEFAULT NULL,
   `savetime` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 
 
 message('芸众收银台插件安装成功', $this->createPluginWebUrl('cashier/index'), 'success');

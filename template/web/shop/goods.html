@@ -1,57 +1,65 @@
 ﻿{template 'web/_header'}
 <div class="w1200 m0a">
 
-{if $operation != 'post'}
 {template 'web/shop/tabs'}
+{if $operation != 'post'}
 {else}
-<div class="ulleft-nav">
-	<ul class="nav nav-tabs" id="myTab">
-    	<li class="active" ><a href="#tab_basic">基本信息</a></li>
-        <li><a href="#tab_des">商品描述</a></li>
-        <li><a href="#tab_param">自定义属性</a></li>
-        <li><a href="#tab_option">商品规格</a></li>
-        <li><a href="#tab_discount">会员权限及折扣设置</a></li>
-		<li><a href="#tab_share">分享及关注设置</a></li>
-        <li><a href="#tab_others">其他设置</a></li>
 
-        {if p('verify')}
-		<li><a href="#tab_verify">线下核销设置</a></li>
-        {/if}
-        {if !empty($com_set['level'])}
-        <li><a href="#tab_sell">分销{if $bonus_start}分红{/if}设置</a></li>
-        {/if}
-        {if p('sale')}
-		<li><a href="#tab_sale">营销设置</a></li>
-        {/if}
-        <li><a href="#tab_detaildiy">详情页店铺信息设置</a></li>
-        {if p('diyform')}
-		<li><a href="#tab_diyform">自定义表单</a></li>
-        {/if}
-    </ul> 
-</div>
 {/if}
 <script type="text/javascript" src="resource/js/lib/jquery-ui-1.10.3.min.js"></script>
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/static/css/font-awesome.min.css">
 {if $operation == 'post'}
 <style type='text/css'>
     .tab-pane {padding:20px 0 20px 0;}
+
 </style>
 <div class="main rightlist">
+
+
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data">
-        <div class="panel panel-default">
+        <div class="panel panel-default panel-center">
 <!--             <div class="panel-heading">
                 {if empty($item['id'])}添加商品{else}编辑商品{/if}
             </div> -->
+            
+<div class="right-titpos-fixed">
+	<ul class="add-shopnav" id="myTab">
+    	<li class="active" ><a href="#tab_basic">基本信息</a></li>
+        <li><a href="#tab_des">商品描述</a></li>
+        <li><a href="#tab_param">属性</a></li>
+        <li><a href="#tab_option">商品规格</a></li>
+        <li><a href="#tab_discount">权限折扣</a></li>
+		<li><a href="#tab_share">分享关注</a></li>
+        <li><a href="#tab_others">消息通知</a></li>
+
+        {if p('verify')}
+		<li><a href="#tab_verify">线下核销</a></li>
+        {/if}
+        {if !empty($com_set['level'])}
+        <li><a href="#tab_sell">分销{if $bonus_start}分红{/if}</a></li>
+        {/if}
+        {if p('sale')}
+		<li><a href="#tab_sale">营销</a></li>
+        {/if}
+        <li><a href="#tab_detaildiy">店铺</a></li>
+        {if p('diyform')}
+		<li><a href="#tab_diyform">自定义表单</a></li>
+        {/if}
+    </ul> 
+</div>
+<div style="padding-top:50px">
             <div class="panel-body">
+                <!--
                 <div class="good-tit">
 				    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
 				    <div class="col-sm-10 col-xs-12 text-right">
 						<input type="submit" name="submit" value="保存商品"
 	                    class="btn btn-primary" onclick="return formcheck()" />
-						<input type="button" name="back" onclick='history.back()' {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
+						<input type="button" name="back" {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
 						<input type="hidden" name="token" value="{$_W['token']}" />
 				    </div>
 				</div>
+                -->
                 <div class="tab-content">
                     <div class="tab-pane  active" id="tab_basic">{template 'web/shop/goods/basic'}</div>
                     <div class="tab-pane" id="tab_des">{template 'web/shop/goods/des'}</div>
@@ -82,10 +90,10 @@
                 </div>
 		        <div class="form-group col-sm-12 mrleft40 border-t" style="text-align: right;">
 					{ife 'shop.goods' $item}
-					<input type="submit" name="submit" value="保存商品" class="btn btn-primary col-lg-1" onclick="return formcheck()" style="float: right;margin-left: 8px;" />
+					<input type="submit" name="submit" value="发布商品" class="btn btn-primary col-lg-1" onclick="return formcheck()" style="float: right;margin-left: 8px;" />
 					<input type="hidden" name="token" value="{$_W['token']}" />
 					{/if}
-					<input type="button" name="back" onclick='history.back()' {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
+					<input type="button" name="back"  {ifp 'shop.goods.add|shop.goods.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
 
         		</div>
             </div>
@@ -114,6 +122,10 @@
 				}
 			}
 		})
+
+		$("input[name='back']").click(function () {
+			location.href = "{php echo $this->createWebUrl('shop/goods')}";
+		});
 	})
 			var category = {php echo json_encode($children)};
 	window.optionchanged = false;
@@ -191,7 +203,86 @@
 			alert('规格数据有变动，请重新点击 [刷新规格项目表] 按钮!');
 			return false;
 		}
+		var discountway = $('input:radio[name=discountway]:checked').val();
+		var discounttype = $('input:radio[name=discounttype]:checked').val();
+		var returntype = $('input:radio[name=returntype]:checked').val();
+		var marketprice = $('input:text[name=marketprice]').val();
+		var isreturn = false;
+
+		// Tip.focus("#goodsname", "请输入商品名称!");
+		// 		return false;
+
+        if(discountway == 1){
+        	if(discounttype == 1){
+	        	$(".discounts").each(function(){
+	                if(parseFloat($(this).val()) <= 0 || parseFloat($(this).val()) >= 10){
+	                	$(this).val('');
+						isreturn = true;
+						alert('请输入正确折扣！');
+						return false;
+	                }
+				});
+        	}else{
+	        	$(".discounts2").each(function(){
+	                if(parseFloat($(this).val()) <= 0 || parseFloat($(this).val()) >= 10){
+	                	$(this).val('');
+						isreturn = true;
+						alert('请输入正确折扣！');
+						return false;
+	                }
+				});
+        	}
+
+
+        }else{
+        	if(discounttype == 1){
+	        	$(".discounts").each(function(){
+	                if( parseFloat($(this).val()) < 0 || parseFloat($(this).val()) >= parseFloat(marketprice)){
+	                	$(this).val('');
+						isreturn = true;
+						alert('请输入正确折扣金额！');
+						return false;
+	                }
+				});
+        	}else{
+	        	$(".discounts2").each(function(){
+	                if( parseFloat($(this).val()) < 0 || parseFloat($(this).val()) >= parseFloat(marketprice)){
+	                	$(this).val('');
+						isreturn = true;
+						alert('请输入正确折扣金额！');
+						return false;
+	                }
+				});   		
+        	}
+
+
+        }
+    	if(returntype == 1){
+	    	$(".returns").each(function(){
+	            if( parseFloat($(this).val()) < 0 || parseFloat($(this).val()) >= parseFloat(marketprice)){
+	                $(this).val('');
+					isreturn = true;
+					alert('请输入正确返现金额！');
+					return false;
+	            }
+			});
+    	}else{
+    		$(".returns2").each(function(){
+	            if( parseFloat($(this).val()) < 0 || parseFloat($(this).val()) >= parseFloat(marketprice)){
+	                $(this).val('');
+					isreturn = true;
+					alert('请输入正确返现金额！');
+					return false;
+	            }
+			});
+    	}
+
+
+ 		if(isreturn){
+ 			return false;
+ 		}
 		return true;
+ 
 	}
 
 	function checkoption() {
@@ -226,8 +317,10 @@
 {elseif $operation == 'display'}
 
 <div class="main rightlist">
+
+<div class="right-addbox"><!-- 此处是右侧内容新包一层div -->
+
     <div class="panel panel-info">
-        <div class="panel-heading">筛选</div>
         <div class="panel-body">
             <form action="./index.php" method="get" class="form-horizontal" role="form">
                 <input type="hidden" name="c" value="site" />
@@ -237,13 +330,13 @@
                 <input type="hidden" name="p"  value="goods" />
                 <input type="hidden" name="op" value="display" />
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">关键字</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">关键字</label>
                     <div class="col-xs-12 col-sm-8 col-lg-9">
                         <input class="form-control" name="keyword" id="" type="text" value="{$_GPC['keyword']}">
                     </div>
                 </div>
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">状态</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">状态</label>
                     <div class="col-xs-12 col-sm-8 col-lg-9">
                         <select name="status" class='form-control'>
 							<option value="" {if $_GPC['status'] == ''} selected{/if}></option>
@@ -254,7 +347,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">商品类型</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">商品类型</label>
 
                     <div class="col-xs-12 col-sm-8 col-lg-9">
                         {loop $product_attr_list $product_attr_key
@@ -273,7 +366,7 @@
 				
                 <div class="form-group">
 
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">供应商</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">供应商</label>
 
                     <div class="col-xs-12 col-sm-8 col-lg-9">
                 {if p('supplier')}
@@ -296,7 +389,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">分类</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">分类</label>
                     <div class="col-sm-8 col-xs-12">
                         {if intval($shopset['catlevel'])==3}
 						{php echo tpl_form_field_category_level3('category', $parent, $children, $params[':pcate'], $params[':ccate'], $params[':tcate'])}
@@ -312,7 +405,7 @@
                 </div>
                 {if $shopset['category2'] == 1}
 				<div class="form-group">
-                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-1 control-label">{$shopset['category2name']}分类</label>
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">{$shopset['category2name']}分类</label>
                     <div class="col-sm-8 col-xs-12">
                         {if intval($shopset['catlevel'])==3}
 						{php echo tpl_form_field_category_level3('category2', $parent2, $children2, $params[':pcate2'], $params[':ccate2'], $params[':tcate2'])}
@@ -333,18 +426,13 @@
     <style>
         .label{cursor:pointer;}
     </style>
-	<div class="panel panel-default">
-        <div class="panel-body">
-			<a class='btn btn-primary' href="{php echo $this->createWebUrl('shop/goods',array('op'=>'post'))}"><i class='fa fa-plus'></i> 添加商品</a>
-        </div>
-	</div>
     <form action="" method="post">
 		<div class="panel panel-default">
 			<div class="panel-body table-responsive">
 				<table class="table table-hover">
 					<thead class="navbar-inner">
 						<tr>
-							<th width="6%">ID</th>
+							<th width="3%">ID</th>
 							<th width="6%">排序</th>
 							<th width="6%">商品</th>
 							<th width="26%">&nbsp;</th>
@@ -477,7 +565,7 @@
 							</td>
 						</tr>
 						<tr>
-						<td  colspan="10" style="text-align: right;padding: 6px 0;border-top:none;">
+						<td  colspan="10" style="text-align: right;padding: 6px 30px;border-top:none;">
 						<label data='{$item['isnew']}' class='label label-default text-default {if $item['isnew']==1}label-info text-pinfo{else}{/if}'   {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'new')"{/if}>新品</label>-
 
 						<label data='{$item['ishot']}' class='label label-default text-default {if $item['ishot']==1}label-info text-pinfo{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'hot')"{/if}>热卖</label>-
@@ -498,7 +586,7 @@
 						<tr>
 							<td colspan='10'>
 								{ifp 'shop.goods.add'}
-								<a class='btn btn-primary' href="{php echo $this->createWebUrl('shop/goods',array('op'=>'post'))}"><i class='fa fa-plus'></i> 添加商品</a>
+								<a class='btn btn-primary' href="{php echo $this->createWebUrl('shop/goods',array('op'=>'post'))}"><i class='fa fa-plus'></i> 发布商品</a>
 								{/if}
 								{ifp 'shop.goods.edit'}
 								<input name="submit" type="submit" class="btn btn-default" value="提交排序">
@@ -515,6 +603,8 @@
 			</div>
 		</div>
 	</form>
+</div>
+</div>
 </div>
 </div>
 <script type="text/javascript">

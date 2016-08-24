@@ -41,8 +41,26 @@
                             {if !empty($saler)}<img  style="width:100px;height:100px;border:1px solid #ccc;padding:1px" src="{$saler['avatar']}"/>{else}无{/if}
                          </div>
                         {/if}
+     
                     </div>
                 </div>
+                {if p('hotel')}
+                    {if $hotelstatus=='1'}
+                        <div class="form-group">
+                            <label class="col-xs-12 col-sm-3 col-md-2 control-label">打印机</label>
+                              <div class="col-sm-9 col-xs-12">
+                                <select name='print_id' class='form-control' id="print_id">
+                                  <option value="">
+                                      请选择打印机
+                                  </option>
+                                  {loop $print_list $row}
+                                  <option value="{$row['id']}" {if $item['print_id']!='' && $item['print_id']==$row['id']}selected="selected"{/if}{if $item['print_id']=='' && $row['type']==0}selected="selected"{/if}>{$row['name']}</option>
+                                  {/loop}
+                                </select>
+                                  <span class='help-block'>选择打印机</span>
+                              </div>
+                          </div>
+                {/if}{/if}
  <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">通知方式</label>
         <div class="col-sm-9 col-xs-12">

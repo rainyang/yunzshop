@@ -20,6 +20,7 @@ class Core extends WeModuleSite
     public $footer = array();
     public $header = null;
     public $yzShopSet = array();
+    public $yzImages = array();
     public function __construct()
     {
         global $_W, $_GPC;
@@ -33,6 +34,11 @@ class Core extends WeModuleSite
         if (is_weixin()) {
             m('member')->checkMember();
         } else {
+            //APP 分销分享地址-用户注册
+            if (isset($_GPC['access']) && $_GPC['access'] == 'app') {
+                header("Location:/app/index.php?i=" . $_W['uniacid'] . "&c=entry&p=register&do=member&m=sz_yi&from=app&mid=".$_GPC['mid']);
+            }
+
             $noLoginList = array('poster', 'postera');
             //微信回调通知要加入开放权限
             if (p('commission') && (!in_array($_GPC['p'], $noLoginList)) && !strpos($_SERVER['SCRIPT_NAME'], 'notify')) {
@@ -43,32 +49,16 @@ class Core extends WeModuleSite
             }
         }
         $this->yzShopSet = m('common')->getSysset('shop');
+        $this->yzImages = set_medias(m('common')->getSysset('shop'), array('logo', 'img', 'pclogo', 'reglogo'));
 
         if (is_app()) {
             /**
              * 设置app端使用模板文件夹
              */
             $_W['template'] = 'app';
-
-            /**
-             * 后台设置绑定,重新定义uniacid值
-             */
-
-            //$_W['uniacid'];
-
-            /**
-             * 推送 leancloud配置
-             */
-
-            require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
-
-            $setdata = m("cache")->get("sysset");
-            $set     = unserialize($setdata['sets']);
-
-            $app = $set['app']['base'];
-
-            LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'].",master");
         }
+
+        
     }
 
     public function sendSms($mobile, $code, $templateType = 'reg')
@@ -173,10 +163,56 @@ class Core extends WeModuleSite
             return;
         }
         $openid = m('user')->getOpenid();
+        $member  = m('member')->getMember($openid);
+        if (!empty($member['isblack'])) {
+            if ($_GPC['op'] != 'black') {
+                header('Location: '.$this->createMobileUrl('member/login', array('op' => 'black')));
+            }
+        }
+        
+        if (is_weixin()) {
+            //url未有mid重新跳转当前页并添加,无分享接口用户使用
+            if(empty($_GPC['mid']) && !$_W['isajax']){
+                if($member['isagent'] == 1 && $member['status'] == 1){
+                    header("Location: ". $_W['siteroot'] . 'app/index.php?'.$_SERVER['QUERY_STRING']."&mid=".$member['id']);
+                    exit();
+                }
+            }
+            //是否强制绑定手机号,只针对微信端
+            if (!empty($this->yzShopSet['isbindmobile'])) {
+                if (empty($member) || $member['mobile'] == ""){
+                    if ($_GPC['p'] != 'bindmobile' && $_GPC['p'] != 'sendcode') {
+                        $bindmobileurl = $this->createMobileUrl('member/bindmobile');
+                        redirect($bindmobileurl);
+                        exit();
+                    }
+                }
+            }
+        }
         $designer = p('designer');
         if ($designer && $_GPC['p'] != 'designer') {
             $menu = $designer->getDefaultMenu();
             if (!empty($menu)) {
+                if (!is_weixin_show()) {
+                    $newmenu = json_decode($menu['menus'], true);
+                    foreach ($newmenu as &$val) {
+                        if (!empty($val['url'])) {
+                            if (strpos($val['url'], 'commission') !== false or strpos($val['url'], 'bonus') !== false) {
+                                $val['url'] = $this->createMobileUrl('member/bindapp');
+                                $val['title'] = 'APP下载';
+                            }
+                        }
+                        if (!empty($val['subMenus'])) {
+                            foreach ($val['subMenus'] as &$sv) {
+                                if (strpos($sv['url'], 'commission') !== false or (strpos($sv['url'], 'bonus') !== false)) {
+                                    $sv['url'] = $this->createMobileUrl('member/bindapp');
+                                    $sv['title'] = 'APP下载';
+                                }
+                            }
+                        }
+                    }
+                    $menu['menus'] = json_encode($newmenu);
+                }
                 $this->footer['diymenu']   = true;
                 $this->footer['diymenus']  = $menu['menus'];
                 $this->footer['diyparams'] = $menu['params'];
@@ -196,12 +232,8 @@ class Core extends WeModuleSite
         );
 
         $this->footer['commission'] = false;
-        $member  = m('member')->getMember($openid);
-        if (!empty($member['isblack'])) {
-            if ($_GPC['op'] != 'black') {
-                header('Location: '.$this->createMobileUrl('member/login', array('op' => 'black')));
-            }
-        }
+
+
         if (p('commission')) {
             $set = p('commission')->getSet();
             if (empty($set['level'])) {
@@ -225,6 +257,13 @@ class Core extends WeModuleSite
                         'ico' => 'sitemap',
                         'url' => $this->createPluginMobileUrl('commission')
                     );
+                    if (!is_weixin_show()) {
+                        $this->footer['commission'] = array(
+                            'text' => 'APP下载',
+                            'ico' => 'sitemap',
+                            'url' => $this->createMobileUrl('member/bindapp')
+                        );
+                    }
                 }
             } else {
                 if (empty($member['agentblack'])) {
@@ -234,6 +273,13 @@ class Core extends WeModuleSite
                             'ico' => 'sitemap',
                             'url' => $this->createPluginMobileUrl('commission/register')
                         );
+                        if (!is_weixin_show()) {
+                            $this->footer['commission'] = array(
+                                'text' => 'APP下载',
+                                'ico' => 'sitemap',
+                                'url' => $this->createMobileUrl('member/bindapp')
+                            );
+                        }
                     } else {
                         $this->footer['commission'] = array(
                             'text' => empty($set['closemyshop']) ? $set['texts']['shop'] : $set['texts']['center'],
@@ -242,10 +288,18 @@ class Core extends WeModuleSite
                                 'mid' => $member['id']
                             )) : $this->createPluginMobileUrl('commission')
                         );
+                        if (!is_weixin_show()) {
+                            $this->footer['commission'] = array(
+                                'text' => 'APP下载',
+                                'ico' => empty($set['closemyshop']) ? 'heart' : 'sitemap',
+                                'url' => $this->createMobileUrl('member/bindapp')
+                            );
+                        }
                     }
                 }
             }
         }
+
         if (strstr($_SERVER['REQUEST_URI'], 'app')) {
             if (!isMobile()) {
                 if ($this->yzShopSet['ispc']==0) {
@@ -253,18 +307,7 @@ class Core extends WeModuleSite
                 }
             }
         }
-        if (is_weixin()) {
-            //是否强制绑定手机号,只针对微信端
-            if (!empty($this->yzShopSet['isbindmobile'])) {
-                if (empty($member) || $member['isbindmobile'] == 0) {
-                    if ($_GPC['p'] != 'bindmobile' && $_GPC['p'] != 'sendcode') {
-                        $bindmobileurl = $this->createMobileUrl('member/bindmobile');
-                        redirect($bindmobileurl);
-                        exit();
-                    }
-                }
-            }
-        }
+        
     }
     public function createMobileUrl($do, $query = array(), $noredirect = true)
     {
@@ -420,7 +463,11 @@ class Core extends WeModuleSite
             if (is_app()) {
                 $template = m('cache')->getString('app_template_shop');
             } else {
-                $template = m('cache')->getString('template_shop');
+                if (!isMobile() && $set['ispc']) {
+                    $template = m('cache')->getString('template_shop_pc');
+                } else {
+                    $template = m('cache')->getString('template_shop');
+                }
             }
 
             if (empty($template)) {
@@ -429,18 +476,19 @@ class Core extends WeModuleSite
             if (!is_dir(IA_ROOT . '/addons/sz_yi/template/'.$tmplateType.'/' . $template)) {
                 $template = "default";
             }
+
             $compile = IA_ROOT . "/data/tpl/app/sz_yi/{$template}/{$tmplateType}/{$filename}.tpl.php";
             $source  = IA_ROOT . "/addons/{$name}/template/{$tmplateType}/{$template}/{$filename}.html";
-
+//echo $source;exit;
             if (!is_file($source)) {
                 $source = IA_ROOT . "/addons/{$name}/template/{$tmplateType}/default/{$filename}.html";
             }
             if (!is_file($source)) {
                 $names      = explode('/', $filename);
                 $pluginname = $names[0];
-                if($pluginname == "designer"){
+                if ($pluginname == "designer") {
                     $ptemplate = $template;
-                }else{
+                } else {
                     $ptemplate  = m('cache')->getString('template_' . $pluginname);
                 }
                 if (empty($ptemplate)) {
@@ -506,4 +554,3 @@ class Core extends WeModuleSite
         }
     }*/
 }
-
