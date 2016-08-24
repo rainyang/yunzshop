@@ -17,6 +17,8 @@ if ($operation == 'display') {
             and uniacid=:uniacid order by displayorder DESC', array(
             ':id' => intval($_GPC['tcate_area']), ':uniacid' => $_W['uniacid']
         )),'thumb');
+        $times = $category['times'] + 1;
+        pdo_update('sz_yi_category_area', array('times' => $times), array('id' => $category['id'], 'uniacid' => $_W['uniacid']));
        
     } else if (!empty($_GPC['ccate_area'])) {
         $category = set_medias(pdo_fetch('select * from ' . tablename('sz_yi_category_area') . ' where id=:id 
@@ -24,7 +26,8 @@ if ($operation == 'display') {
             ':id' => intval($_GPC['ccate_area']),
             ':uniacid' => $_W['uniacid']
         )),'thumb');
-        
+        $times = $category['times'] + 1;
+        pdo_update('sz_yi_category_area', array('times' => $times), array('id' => $category['id'], 'uniacid' => $_W['uniacid']));
 
 
     }
