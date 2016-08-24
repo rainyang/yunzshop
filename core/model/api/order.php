@@ -68,7 +68,7 @@ class order
             ":id" => $para['id'],
             ":uniacid" => $para["uniacid"]
         ));
-        $order_info = $this->formatOrderInfo($order_info);
+        $order_info = $this->_formatOrderInfo($order_info);
         return $order_info;
     }
 
@@ -85,13 +85,13 @@ class order
         //dump($para);
         $condition[] = ' 1';
         if ($para['status'] !== '') {
-            $condition['status'] = $this->getStatusCondition((int)$para['status']);
+            $condition['status'] = $this->_getStatusCondition((int)$para['status']);
         }
         if ((int)($para['pay_type'])) {
-            $condition['pay_type'] = $this->getPayTypeCondition($para['pay_type']);
+            $condition['pay_type'] = $this->_getPayTypeCondition($para['pay_type']);
         }
         if ($para['is_supplier_uid']) {
-            $condition['supplier'] = $this->getSupplierCondition($_W['uid']);
+            $condition['supplier'] = $this->_getSupplierCondition($_W['uid']);
         }
         if (!empty($para['id'])) {
             $condition['id'] = "AND o.id < {$para['id']}";
@@ -112,19 +112,19 @@ left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.
 where {$condition_str} ORDER BY o.id DESC LIMIT 0,10 ";
         $list = pdo_fetchall($sql, $paras);
         foreach ($list as &$order_item) {
-            $order_item = $this->formatOrderInfo($order_item);
+            $order_item = $this->_formatOrderInfo($order_item);
         }
         return $list;
     }
 
     /**
-     * 处理订单列表
+     * 处理订单详情
      * 添加包含商品列表,翻译字段数字值等
      *
      * @param array $order_list 订单列表
      * @return array 处理过的订单列表
      */
-    protected function formatOrderInfo($order_info)
+    private function _formatOrderInfo($order_info)
     {
         //dump($order_info);
         global $_W;
@@ -132,8 +132,12 @@ where {$condition_str} ORDER BY o.id DESC LIMIT 0,10 ";
         $order_status = $order_info["status"];
 
         $order_info["status_name"] = $this->_getStatusName($order_info["status"], $pay_type, $order_info);
+        $refund_name = $this->_getRefundName($order_status, $order_info["rstatus"], $order_info["refundtime"], $order_info["rtype"]);
+        $order_info["status_name"] = !empty($refund_name) ? $refund_name : $order_info["status_name"];//建议退款状态另起一个字段名,不要占用status_name
+
         $order_info['pay_type_name'] = $this->_getPayTypeName($pay_type);
         $order_info['button_info'] = $this->_getButton($pay_type, $order_status, $order_info['addressid'], $order_info['isverify'], $order_info['redstatus']);
+
 
         $order_goods = $this->getOrderGoods($order_info["order_id"], $_W["uniacid"]);
         $order_info["goods"] = $order_goods;
@@ -147,36 +151,44 @@ where {$condition_str} ORDER BY o.id DESC LIMIT 0,10 ";
         //todo 需要重构提取出其余的order_info 
         $status_name_map = $this->name_map['status'];
         $status_name = $status_name_map[$order_status];
-
-        $r_type = $this->name_map['r_type'];
-        if ($pay_type == 3 && empty($order_status)) {
-            $order_status = $status_name_map[1];
-        }
-        if ($order_status == 1) {
-            if (!empty($order_info["addressid"])) {
-                $status_name = "待使用";
-
-                if ($order_info["isverify"] == 1) {
-                    $status_name = "待使用";
-                } else {
-                    $status_name = "待取货";
-
+        switch ($order_status) {
+            case "0":
+                if ($pay_type == 3) {
+                    $status_name = '待发货';
                 }
-            }
-        }
-        if ($order_status == -1) {
-            //dump(order_info['rstatus']);
-            //$order_info['status'] = $order_info['rstatus'];
-            if (!empty($order_info["refundtime"])) {
-                if ($order_info['rstatus'] == 1) {
-                    $status_name = '已' . $r_type[$order_info['rtype']];
+                break;
+            case '1':
+                if ($order_info['isverify'] == 1) {
+                    $status_name = '待使用';
+                } else if (empty($order_info['addressid'])) {
+                    $status_name = '待取货';
                 }
-            }
+                break;
+            case '3':
+                if (empty($order_info['iscomment'])) {
+                    $status_name = '待评价';
+                }
+                break;
         }
         return $status_name;
     }
 
-    private function _getButton($pay_type, $order_status, $address_id, $is_verify, $red_status)
+    private function _getRefundName($order_status, $refund_status, $refund_time, $refund_type)
+    {
+        $refund_type_name_mapping = $this->name_map['r_type'];
+        if ($order_status == -1) {
+            //dump(order_info['rstatus']);
+            //$order_info['status'] = $order_info['rstatus'];
+            if (!empty($refund_time)) {
+                if ($refund_status == 1) {
+                    $refund_name = '已' . $refund_type_name_mapping[$refund_type];
+                }
+            }
+        }
+        return $refund_name;
+    }
+
+    private function _getButton($pay_type, $order_status, $address_id, $is_verify, $red_status = 0)
     {
         $button_mapping = array(
             '' => '',
@@ -351,7 +363,7 @@ where {$condition_str} ORDER BY o.id DESC LIMIT 0,10 ";
      * @param int $uid 管理员ID
      * @return string 供应商sql查询条件字符串
      */
-    protected function getSupplierCondition($uid)
+    protected function _getSupplierCondition($uid)
     {
         " and o.supplier_uid={$uid} ";
     }
@@ -363,7 +375,7 @@ where {$condition_str} ORDER BY o.id DESC LIMIT 0,10 ";
      * @param int $uid 管理员ID
      * @return string 支付方式sql查询条件字符串
      */
-    protected function getPayTypeCondition($pay_type)
+    protected function _getPayTypeCondition($pay_type)
     {
         if ($pay_type == "2") {
             $condition = " AND ( o.paytype =21 or o.paytype=22 or o.paytype=23 )";
@@ -380,7 +392,7 @@ where {$condition_str} ORDER BY o.id DESC LIMIT 0,10 ";
      * @param int $status 订单状态值
      * @return string 订单状态sql查询条件字符串
      */
-    protected function getStatusCondition($status)
+    protected function _getStatusCondition($status)
     {
         switch ($status) {
             case "-1":

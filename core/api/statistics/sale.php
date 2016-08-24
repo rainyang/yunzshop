@@ -11,31 +11,41 @@
 //$api->validate('username','password');
 //$this->ca('statistics.view.sale');
 namespace controller\api\statistics;
+use model\api\commission;
+
 class Sale extends \api\YZ
 {
+    private $member_model;
     public function __construct()
     {
         parent::__construct();
+        $this->member_model = new \model\api\member();
         //$api->validate('username','password');
     }
     public function index(){
         global $_W;
+        $first_time_of_today = strtotime(date('Y-m-d',time()));
         $sale['all'] = $this->getSaleData('sum(price)',array(
             ':uniacid' => $_W['uniacid'])
         );
         $sale['month'] = $this->getSaleData('sum(price)', array(
             ':uniacid' => $_W['uniacid'],
-            ':starttime' => strtotime("-1 month"),
+            ':starttime' => strtotime("-1 month",$first_time_of_today),
             ':endtime' => time()
         ));
-        $count['today_order'] = $this->getSaleData('count(*)', array(
+        $count['yesterday_order'] = $this->getSaleData('count(*)', array(
             ':uniacid' => $_W['uniacid'],
-            ':starttime' => time()
+            ':starttime' => strtotime("-1 day",$first_time_of_today),
+            ':endtime' => $first_time_of_today,
+
         ));
-        $count['new_member'] = '0';
+        $count['new_member'] = $this->member_model->getCount(array(
+            'uniacid' => $_W['uniacid'],
+            'createtime' => $first_time_of_today,
+        ));
         $count['week_order'] = $this->getSaleData('count(*)', array(
             ':uniacid' => $_W['uniacid'],
-            ':starttime' => strtotime("-1 week"),
+            ':starttime' => strtotime("-1 week",$first_time_of_today),
             ':endtime' => time()
         ));
 

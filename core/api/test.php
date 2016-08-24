@@ -6,7 +6,7 @@ function get_test_para()
     require_once __DIR__ . '/../inc/aes.php';
     $api_db = require_once __DIR__ . '/api_db.php';
 //dump($api_db);exit;
-    $aes = new \Common\Org\Aes();
+    $aes = new \Aes('hrbin-yunzs-2016','');
     $api_name = explode('/',$_GET['api']);
     $group_name = array_shift($api_name);
     $method_name = array_shift($api_name);

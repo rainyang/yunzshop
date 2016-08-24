@@ -330,7 +330,7 @@ class ChangeStatus extends \api\YZ
     public function confirmPay()
     {
         $this->ca("order.op.pay");
-        global $_W;
+        $para = $this->getPara();
         $order = $this->order_info;
         if ($order["status"] > 1) {
             $this->returnError("订单已付款，不需重复付款！");
@@ -361,21 +361,70 @@ class ChangeStatus extends \api\YZ
             if (p("commission")) {
             p("commission")->checkOrderPay($order["id"]);
             }*/
-            $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
-                ':uniacid' => $_W['uniacid'],
-                ':module' => 'sz_yi',
-                ':tid' => $order['ordersn']
+            $ordersn_general = pdo_fetchcolumn("select ordersn_general from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid limit 1', array(
+                ':id' => $order["id"],
+                ':uniacid' => $para["uniacid"]
             ));
-            pdo_update("sz_yi_order", array('paytype' => '11'), array('uniacid' => $_W['uniacid'], 'id' => $order['id']));
-            $ret = array();
-            $ret['result'] = 'success';
-            $ret['from'] = 'return';
-            $ret['tid'] = $log['tid'];
-            $ret['user'] = $order['openid'];
-            $ret['fee'] = $order['price'];
-            $ret['weid'] = $_W['uniacid'];
-            $ret['uniacid'] = $_W['uniacid'];
-            $payresult = m('order')->payResult($ret);
+            $order_all = pdo_fetchall("select * from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid', array(
+                ':ordersn_general' => $ordersn_general,
+                ':uniacid' => $para["uniacid"]
+            ));
+            $plugin_coupon = p("coupon");
+            $plugin_commission = p("commission");
+            $orderid = array();
+            foreach ($order_all as $key => $val) {
+                m("order")->setStocksAndCredits($val["id"], 1);
+                m("notice")->sendOrderMessage($val["id"]);
+                if ($plugin_coupon && !empty($val["couponid"])) {
+                    $plugin_coupon->backConsumeCoupon($val["id"]);
+                }
+                if ($plugin_commission) {
+                    $plugin_commission->checkOrderPay($val["id"]);
+                }
+                $price           += $val['price'];
+                $orderid[]                 = $val['id'];
+            }
+            $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
+                ':uniacid' => $para['uniacid'],
+                ':module' => 'sz_yi',
+                ':tid' => $ordersn_general
+            ));
+            if (!empty($log) && $log['status'] != '0') {
+                $this->returnError('订单已支付, 无需重复支付!');
+            }
+            if (!empty($log) && $log['status'] == '0') {
+                pdo_delete('core_paylog', array(
+                    'plid' => $log['plid']
+                ));
+                $log = null;
+            }
+            if (empty($log)) {
+                $log = array(
+                    'uniacid' => $para['uniacid'],
+                    'openid' => $order['openid'],
+                    'module' => "sz_yi",
+                    'tid' => $ordersn_general,
+                    'fee' => $price,
+                    'status' => 0
+                );
+                pdo_insert('core_paylog', $log);
+            }
+            if(is_array($orderid)){
+                $orderids = implode(',', $orderid);
+                $where_update = "id in ({$orderids})";
+            }
+            pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=11 where '.$where_update.' and uniacid=:uniacid ', array(
+                ':uniacid' => $para['uniacid']
+            ));
+            $ret            = array();
+            $ret['result']  = 'success';
+            $ret['from']    = 'return';
+            $ret['tid']     = $log['tid'];
+            $ret['user']    = $order['openid'];
+            $ret['fee']     = $price;
+            $ret['weid']    = $para['uniacid'];
+            $ret['uniacid'] = $para['uniacid'];
+            $payresult      = m('order')->payResult($ret);
             $res = array(
                 'status' => array(
                     'name' => '待发货',
@@ -384,8 +433,8 @@ class ChangeStatus extends \api\YZ
             );
         }
         plog("order.op.pay", "订单确认付款 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
-
-        $this->returnSuccess($res, "确认订单付款操作成功！");
+        $this->returnSuccess($res,"确认订单付款操作成功！");
+        exit;
     }
 
     function changeWechatSend($zym_var_2, $zym_var_4, $zym_var_1 = '')

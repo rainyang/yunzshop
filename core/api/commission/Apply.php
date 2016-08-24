@@ -56,7 +56,8 @@ class Apply extends \api\YZ
         $para = $this->getPara();
         $apply = $this->apply_info;
         if ($apply['status'] != 2 ) {
-            $this->returnError('此操作与提现申请状态不符');
+            echo 1;
+            $this->returnError('此操作与提现申请状态不符');exit;
         }
         $order = $apply['order_list'];
         $member = $this->member;
@@ -109,7 +110,7 @@ class Apply extends \api\YZ
         $log = array('uniacid' => $para['uniacid'], 'applyid' => $apply['id'], 'mid' => $member['id'], 'commission' => $totalcommission, 'commission_pay' => $totalpay, 'createtime' => $now_time);
         pdo_insert('sz_yi_commission_log', $log);
         $this->commission_model->sendMessage($member['openid'], array('commission' => $totalpay, 'type' => $apply['type'] == 1 ? '微信' : '余额'), TM_COMMISSION_PAY);
-        $this->commission_apply_model->upgradeLevelByCommissionOK($member['openid']);
+        $this->commission_model->upgradeLevelByCommissionOK($member['openid']);
         plog('commission.apply.pay', "佣金打款 ID: {$para['commission_apply_id']} 申请编号: {$apply['applyno']} 总佣金: {$totalcommission} 审核通过佣金: {$totalpay} ");
         $this->returnSuccess('佣金打款处理成功!');
     }

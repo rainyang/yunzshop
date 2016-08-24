@@ -71,8 +71,7 @@ class Express extends \api\YZ
         $c = new \Core();
         $c->modulename = 'sz_yi';
         require IA_ROOT.'/web/common/template.func.php';
-
-        include $c->template('web/order/express');
+        include $c->template('order/express');
         exit;
     }
     private function getList($company_name, $sn) {

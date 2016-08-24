@@ -30,7 +30,7 @@ class Base
         /*if(!IS_POST){
             exit('提交方式不正确');
         }*/
-        $this->aes = new \Common\Org\Aes();
+        $this->aes = new \Aes('hrbin-yunzs-2016','');
         $this->para = json_decode(urldecode($this->aes->siyuan_aes_decode(str_replace(" ", "+", $_POST['para']))), TRUE);//
         //dump($this->para);
         $this->addLog();

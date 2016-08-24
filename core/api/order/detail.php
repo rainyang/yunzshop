@@ -36,7 +36,7 @@ class Detail extends \api\YZ
     private function getOrderInfo($para)
     {
         $order_model = new \model\api\order();
-        $fields = 'ordersn,status,price,id as order_id,openid,addressid,dispatchid,createtime,paytime,dispatchprice,deductenough,paytype,changeprice,changedispatchprice,goodsprice,olddispatchprice,address,isverify,isvirtual,virtual,dispatchtype';
+        $fields = 'ordersn,status,price,id as order_id,openid,addressid,dispatchid,createtime,paytime,dispatchprice,deductenough,paytype,changeprice,changedispatchprice,goodsprice,olddispatchprice,address,isverify,isvirtual,virtual,dispatchtype,redstatus';
         $order_info = $order_model->getInfo(array(
             'id' => $para["order_id"],
             'uniacid' => $para["uniacid"]
@@ -46,8 +46,74 @@ class Detail extends \api\YZ
         $order_info["price"] = $order_price;
 
         $order_info['goods'] = $order_model->getOrderGoods($para["order_id"], $para["uniacid"]);
+        unset($order_info['button_info']);
+        $order_info['buttons'] = $this->_getButton($order_info["paytype"], $order_info["status"], $order_info['addressid'], $order_info['isverify'], $order_info['redstatus']);
+
         dump($order_info);
         return $order_info;
+    }
+    private function _getButton($pay_type, $order_status, $address_id, $is_verify, $red_status = 0)
+    {
+        $button_mapping = array(
+            '' => '',
+            '确认付款' => 1,// order/ChangeStatus/confirmPay
+            '确认发货' => 2,// order/ChangeStatus/confirmSend
+            '确认核销' => 3,// order/ChangeStatus/confirmFetch
+            '确认取货' => 4,// order/ChangeStatus/confirmFetch
+            '确认收货' => 5,// order/ChangeStatus/order/ChangeStatus/finish
+            '取消发货' => 6,// order/ChangeStatus/order/ChangeStatus/cancelSend
+            '补发红包' => 7,// order/ChangeStatus/sendRedPack
+            '查看物流' => 8,
+            '关闭订单' => 9,
+        );
+        $button_name_array = [];
+        $button_array = [];
+        if (empty($order_status)) {
+            if (cv('order.op.pay')) {
+                if ($pay_type == 3) {
+                    $button_name_array[] = '确认发货';
+                } else {
+                    $button_name_array[] = '确认付款';
+                }
+            }
+            if (cv('order.op.close')) {
+                $button_name_array[] = '关闭订单';
+            }
+        } elseif ($order_status == 1) {
+            if (!empty($address_id)) {
+                if (cv('order.op.send')) {
+                    $button_name_array[] = '确认发货';
+                }
+            } else {
+                if ($is_verify) {
+                    if (cv('order.op.verify')) {
+                        $button_name_array[] = '确认核销';
+                    }
+                } else {
+                    if (cv('order.op.fetch')) {
+                        $button_name_array[] = '确认取货';
+                    }
+                }
+            }
+
+        } elseif ($order_status == 2) {
+            if (cv('order.op.finish')) {
+                $button_name_array[] = '确认收货';
+            }
+            if (!empty($address_id)) {
+                if (cv('order.op.sendcancel')) {
+                    $button_name_array[] = '取消发货';
+                }
+            }
+        } elseif ($order_status == 3) {
+
+        }
+        foreach ($button_name_array as $button_name){
+            $value = $button_mapping[$button_name];
+            $name = $button_name;
+            $button_array[] = compact('name', 'value');
+        }
+        return $button_array;
     }
     private function getRefundInfo($order_id,$uniacid){
         $order_model = new \model\api\order();
@@ -72,7 +138,8 @@ class Detail extends \api\YZ
             'name' => $order_info['pay_type_name'],
             'value' => $order_info['paytype'],
         );
-        $res_order_info = compact('price', 'goods', 'base', 'status', 'pay','refundstate');
+        $buttons = $order_info['buttons'];
+        $res_order_info = compact('price', 'goods', 'base', 'status', 'pay','refundstate','buttons');
         return $res_order_info;
     }
 

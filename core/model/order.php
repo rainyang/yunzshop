@@ -127,7 +127,7 @@ class Sz_DYi_Order
             ':ordersn_general' => $ordersn,
             ':uniacid' => $uniacid
         ));
-        
+        //dump($orderall);exit;
         if(count($orderall) > 1){
             $order = array();
             $order['ordersn'] = $ordersn;
