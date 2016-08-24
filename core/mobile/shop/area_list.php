@@ -68,6 +68,11 @@ if ($_W['isajax']) {
         ));
         $parent = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=0 and uniacid=:uniacid order by displayorder DESC', array(':uniacid' => $_W['uniacid'])); 
         $children = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=:id and uniacid=:uniacid order by displayorder DESC', array(':uniacid' => $_W['uniacid'], ':id' => intval($_GPC['pcate_area']))); 
+        foreach ($current_category as &$value) {
+            
+            $value['url'] = $this->createMobileUrl('shop/area')."&tcate_area=";
+            
+        }
     } elseif (!empty($_GPC['pcate_area'])) {
         $current_category = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=:id 
             and uniacid=:uniacid order by displayorder DESC', array(
@@ -81,6 +86,11 @@ if ($_W['isajax']) {
         ));
         $parent = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=0 and uniacid=:uniacid order by displayorder DESC', array(':uniacid' => $_W['uniacid'])); 
         $children = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=:id and uniacid=:uniacid order by displayorder DESC', array(':uniacid' => $_W['uniacid'], ':id' => intval($_GPC['pcate_area']))); 
+        foreach ($current_category as &$value) {
+            
+            $value['url'] = $this->createMobileUrl('shop/area')."&ccate_area=";
+            
+        }
     
     } 
     
