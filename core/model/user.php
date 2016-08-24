@@ -91,6 +91,16 @@ class Sz_DYi_User
         }
 
         if (!empty($openid)) {
+            //微信端绑定手机号,导致原来openid不存在,需重新登录
+            if (is_app()) {
+                $result = pdo_fetch("select id from " . tablename('sz_yi_member') . ' WHERE  openid=:openid and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+
+                if (empty($result)) {
+                    setcookie($cookieid, '', time()-1);
+                    header("Location:/app/index.php?i=" . $_W['uniacid'] . "&c=entry&p=login&do=member&m=sz_yi");
+                    exit;
+                }
+            }
             return $openid;
         }
         return false;
