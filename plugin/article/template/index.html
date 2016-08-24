@@ -3,11 +3,12 @@
 <div class="w1200 m0a">
 <div class="ulleft-nav">
 <ul class="nav nav-tabs">
-    <li {if $_GPC['op']=='' || $_GPC['op']=='display'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('article')}" style="cursor: pointer;">文章管理</a></li>
+    <li {if $_GPC['op']=='' || $_GPC['op']=='display'}class="active"{/if}><a href="{if empty($_SESSION['helper'])}{php echo $this->createPluginWebUrl('article')}{else}{php echo $this->createPluginWebUrl('article', array('is_helper' => 1))}{/if}" style="cursor: pointer;">文章管理</a></li>
     {ifp 'article.page.add'}
         <li {if $_GPC['op']=='post'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('article',array('op'=>'post'))}" style="cursor: pointer;">{if $_GPC['aid']}编辑文章{else}添加文章{/if}</a></li>
     {/if}
     <li {if $_GPC['op']=='category'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('article',array('op'=>'category'))}" style="cursor: pointer;">分类管理</a></li>
+    {if empty($_SESSION['helper'])}
     {ifp 'article.page.otherset'}
         <li {if $_GPC['op']=='other'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('article',array('op'=>'other'))}" style="cursor: pointer;">其他设置</a></li>
     {/if}
@@ -16,6 +17,7 @@
     {/if}
     {if $_GPC['op']=='list_read'}<li class="active"><a href="javascript:;" style="cursor: pointer;">阅读/点赞记录</a></li>{/if}
     {if $_GPC['op']=='list_share'}<li class="active"><a href="javascript:;" style="cursor: pointer;">分享记录</a></li>{/if}
+    {/if}
 </ul>
 </div>
 <div class="rightlist">
@@ -798,6 +800,7 @@ $(function(){
                         </div>
                     </div>
                     <div class="line">
+                        {if empty($_SESSION['helper'])}
                         <div class="line2" style="margin-right: 10px;">
                             <div class="input-group form-group">
                                 <span class="input-group-addon">虚拟阅读量</span>
@@ -810,6 +813,7 @@ $(function(){
                                 <input type="number" name="article_likenum_v" class="form-control judge" value="{if $aid}{$article['article_likenum_v']}{/if}" placeholder="页面点赞数 = 真实点赞数 + 虚拟阅读数" bind-in="art_like" bind-de="54321">
                             </div>
                         </div>
+                        {/if}
                     </div>
                     <div class="line">
                         <div class="input-group form-group">
@@ -819,6 +823,7 @@ $(function(){
                         </div>
                     </div>
                     
+                    {if empty($_SESSION['helper'])}
                     <div class="line">
                         <div class="line2" style="margin-right: 10px;">
                             <div class="input-group form-group">
@@ -865,7 +870,8 @@ $(function(){
                             
                         </div>
                     </div>
-                    
+                    {/if}
+
                     <div class="line">
                         <div class="line2" style="margin-right: 10px; width: 500px;">
                             <div class="input-group form-group">
