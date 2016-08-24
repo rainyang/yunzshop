@@ -1116,7 +1116,16 @@ if ($_W['isajax']) {
                 ));
             }
             if (!empty($allgoods)) {
+                //购买的商品是否都是统一运费的,如果是,取最低统一运费价
+                $isAllSameDispath = true;
                 foreach ($allgoods as $g) {
+                    //多个商品不同统一运费时，取最低价统一运费收取
+                    if (!isset($minDispathPrice)) {
+                        $$minDispathPrice = $g["dispatchprice"];
+                    }
+
+                    $minDispathPrice = ($minDispathPrice > $g["dispatchprice"]) ? $g["dispatchprice"] : $minDispathPrice;
+
                     $sendfree = false;
                     if (!empty($g["issendfree"])) {
                         $sendfree = true;
@@ -1169,6 +1178,7 @@ if ($_W['isajax']) {
                                 $dispatch_price += $g["dispatchprice"];
                             }
                         } else if ($g["dispatchtype"] == 0) {
+                            $isAllSameDispath = false;
                             if (empty($g["dispatchid"])) {
                                 $dispatch_data = m("order")->getDefaultDispatch($supplier_uid);
                             } else {
@@ -1195,6 +1205,11 @@ if ($_W['isajax']) {
                         }
                     }
                 }
+                
+                if ($isAllSameDispath) {
+                    $dispatch_price = $minDispathPrice;
+                }
+
                 if (!empty($dispatch_array)) {
                     foreach ($dispatch_array as $k => $v) {
                         $dispatch_data = $dispatch_array[$k]["data"];
