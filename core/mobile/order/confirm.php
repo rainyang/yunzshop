@@ -591,6 +591,8 @@ if ($_W['isajax']) {
         }
 
         if (!$isvirtual && $isDispath) {
+            //购买的商品是否都是统一运费的,如果是,取最低统一运费价
+            $isAllSameDispath = true;
             foreach ($goods as $g) {
                 $sendfree = false;
                 if (!empty($g["issendfree"])) { //包邮
@@ -642,6 +644,7 @@ if ($_W['isajax']) {
                             $order_all[$g['supplier_uid']]['dispatch_price'] += $g["dispatchprice"];
                         }
                     } else if ($g["dispatchtype"] == 0) {   //运费模板
+                        $isAllSameDispath = false;
                         if (empty($g["dispatchid"])) {
                             $order_all[$g['supplier_uid']]['dispatch_data'] = m("order")->getDefaultDispatch($g['supplier_uid']);
                         } else {
@@ -1161,6 +1164,7 @@ if ($_W['isajax']) {
                     if (!$sendfree) {
                         if ($g["dispatchtype"] == 1) {
                             if ($g["dispatchprice"] > 0) {
+                                //$dispatch_price += $g["dispatchprice"] * $g["total"];
                                 $dispatch_price += $g["dispatchprice"] * $g["total"];
                             }
                         } else if ($g["dispatchtype"] == 0) {
