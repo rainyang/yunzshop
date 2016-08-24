@@ -56,8 +56,7 @@ class Apply extends \api\YZ
         $para = $this->getPara();
         $apply = $this->apply_info;
         if ($apply['status'] != 2 ) {
-            echo 1;
-            $this->returnError('此操作与提现申请状态不符');exit;
+            $this->returnError('此操作与提现申请状态不符');
         }
         $order = $apply['order_list'];
         $member = $this->member;
