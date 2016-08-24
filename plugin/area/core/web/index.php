@@ -129,7 +129,8 @@ if ($operation == 'display') {
             'advurl' => trim($_GPC['advurl']),
             'advurl_pc' => trim($_GPC['advurl_pc']),
             'level' => $level,
-            'detail' => $_GPC['detail']
+            'detail' => $_GPC['detail'],
+            'create_time' => time()
         );
         if (!empty($id)) {
             unset($data['parentid']);
