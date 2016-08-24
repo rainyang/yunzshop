@@ -637,7 +637,9 @@ if ($_W['isajax']) {
                 if (!$sendfree) {   //计算运费
                     if ($g["dispatchtype"] == 1) {  //统一邮费
                         if ($g["dispatchprice"] > 0) {
-                            $order_all[$g['supplier_uid']]['dispatch_price'] += $g["dispatchprice"] * $g["total"];
+                            //$order_all[$g['supplier_uid']]['dispatch_price'] += $g["dispatchprice"] * $g["total"];
+                            //改为统一运费同一个商品只收取一次运费
+                            $order_all[$g['supplier_uid']]['dispatch_price'] += $g["dispatchprice"];
                         }
                     } else if ($g["dispatchtype"] == 0) {   //运费模板
                         if (empty($g["dispatchid"])) {
