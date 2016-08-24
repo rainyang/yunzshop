@@ -1162,6 +1162,8 @@ if ($_W['isajax']) {
                         }
                     }
                     if (!$sendfree) {
+                        //统一运费
+                        print_r($g["dispatchtype"]);exit;
                         if ($g["dispatchtype"] == 1) {
                             if ($g["dispatchprice"] > 0) {
                                 //$dispatch_price += $g["dispatchprice"] * $g["total"];
