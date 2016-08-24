@@ -594,6 +594,13 @@ if ($_W['isajax']) {
             //购买的商品是否都是统一运费的,如果是,取最低统一运费价
             $isAllSameDispath = true;
             foreach ($goods as $g) {
+                //多个商品不同统一运费时，取最低价统一运费收取
+                if (!isset($minDispathPrice)) {
+                    $minDispathPrice = $g["dispatchprice"];
+                }
+
+                $minDispathPrice = ($minDispathPrice > $g["dispatchprice"]) ? $g["dispatchprice"] : $minDispathPrice;
+
                 $sendfree = false;
                 if (!empty($g["issendfree"])) { //包邮
                     $sendfree = true;
@@ -669,6 +676,10 @@ if ($_W['isajax']) {
                         }
                     }
                 }
+            }
+
+            if ($isAllSameDispath) {
+                $dispatch_price = $minDispathPrice;
             }
 
             foreach ($suppliers as $key => $val) {
