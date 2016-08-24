@@ -1121,7 +1121,7 @@ if ($_W['isajax']) {
                 foreach ($allgoods as $g) {
                     //多个商品不同统一运费时，取最低价统一运费收取
                     if (!isset($minDispathPrice)) {
-                        $$minDispathPrice = $g["dispatchprice"];
+                        $minDispathPrice = $g["dispatchprice"];
                     }
 
                     $minDispathPrice = ($minDispathPrice > $g["dispatchprice"]) ? $g["dispatchprice"] : $minDispathPrice;
