@@ -1222,6 +1222,7 @@ if ($_W['isajax']) {
                 
                 if ($isAllSameDispath) {
                     $dispatch_price = $minDispathPrice;
+                    unset($minDispathPrice);
                 }
 
                 if (!empty($dispatch_array)) {
@@ -1295,7 +1296,6 @@ if ($_W['isajax']) {
         if(p('hotel')){ 
             if($_GPC['type']=='99'){
                 $order_data[] = $_GPC; 
-
             }
         }  
 
@@ -1704,7 +1704,16 @@ if ($_W['isajax']) {
             }
 
             if (!$isvirtual && $isDispath && $dispatchtype == 0) {
+                //购买的商品是否都是统一运费的,如果是,取最低统一运费价
+                $isAllSameDispath = true;
                 foreach ($allgoods as $g) {
+                    //多个商品不同统一运费时，取最低价统一运费收取
+                    if (!isset($minDispathPrice)) {
+                        $minDispathPrice = $g["dispatchprice"];
+                    }
+
+                    $minDispathPrice = ($minDispathPrice > $g["dispatchprice"]) ? $g["dispatchprice"] : $minDispathPrice;
+
                     $g["ggprice"] = $ggprice;
                     $sendfree = false;
                     if (!empty($g["issendfree"])) {
@@ -1753,6 +1762,7 @@ if ($_W['isajax']) {
                                 $dispatch_price += $g["dispatchprice"] * $g["total"];
                             }
                         } else if ($g["dispatchtype"] == 0) {
+                            $isAllSameDispath = false;
                             if (empty($g["dispatchid"])) {
                                 $dispatch_data = m("order")->getDefaultDispatch($g['supplier_uid']);
                             } else {
@@ -1779,6 +1789,13 @@ if ($_W['isajax']) {
                         }
                     }
                 }
+
+                //todo
+                if ($isAllSameDispath) {
+                    $dispatch_price = $minDispathPrice;
+                    unset($minDispathPrice);
+                }
+
                 if (!empty($dispatch_array)) {
                     foreach ($dispatch_array as $k => $v) {
                         $dispatch_data = $dispatch_array[$k]["data"];
