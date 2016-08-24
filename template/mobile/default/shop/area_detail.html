@@ -104,126 +104,15 @@ div.addinfo{height:18px;}
              
              
              
-    </div> 
-<div id='container'></div>
 
-<script id='tpl_main' type='text/html'>
-     <!--搜索-->
-    <select id="province">
-    <%each parent as value%>
-      <option value="<%value.id%>"<%if value.id==parentid%>selected="true"<%/if%>><%value.name%></option>
-    <%/each%>  
-    </select>
-  
-    <select id="city">
-    <option value="" selected="true">请选择城市</option>
-     <%each children as value1%>
-      <option value="<%value1.id%>"<%if value1.id==childrenid%>selected="true"<%/if%>><%value1.name%></option>
-    <%/each%>
-    </select>
-  
-    <div class="main">
-    
-        <div class="class1">
-        <%each current_category as v%>
-            <a href="<%v.url%><%v.id%>">
-                  <div class="class2">
-                     <div class="class3">
-                        <div class="text"><%v.name%></div>
-                    </div>
-                   </div>
-            </a>
-        <%/each%>
-        </div>  
-    
-        
-        
-        <div class='page'>
+<div id='container'>
+<span>{$category['name']}</span>
+<img src="{$category['thumb']}">>
+<p>{$category['detail']}</p>
+
+</div>
 
 
-            <div class="copyright">版权所有 © {if !empty($set['copyright'])}{$set['copyright']}{else}{$_W['account']['name']}{/if}</div>
-        </div>
-        
-    </div>
-</script>
-<div id='category_container'></div> 
-
-
-
-<script id='tpl_empty' type='text/html'>
- <div class="list_no"><i class="fa fa-shopping-cart" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">暂时没有相关区域</span><br>主人快去给我找点其他东西吧</div>
-<div class="list_no_menu">
-        <div class="list_no_nav" onclick="location.href='{php echo $this->createMobileUrl('shop/list')}'">看看其他的</div>
- </div>
-</script>
-<script language='javascript'>
-    require(['core', 'tpl'], function (core, tpl) {
-      core.json('shop/area_list',{pcate_area:"{$_GPC['pcate_area']}"},function(json){
-          if (json.status == 1) {
-
-              
-              $('#container').html(tpl('tpl_main',json.result));
-              if (json.result.current_category.length<=0) {
-                    loaded = true;
-                    $(window).scroll = null;
-                    $('#category_container').html(tpl('tpl_empty'));
-                    $('.main').hide();
-                    return;
-               
-              }
-              
-          }
-      })
-      
-      $(document).on("change","#province",function(){
-        core.json('shop/area_list',{pcate_area:$(this).val()},function(pjson){
-            if (pjson.status == 1) {
-
-                $('#container').html(tpl('tpl_main',pjson.result));
-                if (pjson.result.current_category.length<=0) {
-                    loaded = true;
-                    $(window).scroll = null;
-                    $('#category_container').html(tpl('tpl_empty'));
-                    $('.main').hide();
-                    return;
-               
-                } else {
-                    $('#category_container').html('');
-                }
-            }
-        })  
-      })
-
-      
-      $(document).on("change","#city",function(){
-      	
-        
-        core.json('shop/area_list',{ccate_area:$(this).val(), pcate_area:$('#province').val()},function(cjson){
-            if (cjson.status == 1) {
-              
-                 
-                if (cjson.result.current_category.length<=0) {
-                    loaded = true;
-                    $(window).scroll = null;
-                    $('#category_container').html(tpl('tpl_empty'));
-                    $('.main').hide();
-                    return;
-               
-                } else {
-                    $('#category_container').html('');
-                }
-
-                $('#container').html(tpl('tpl_main',cjson.result));
-            }
-        })  
-      })
-
-      
-    });
-        
-
-    
-</script>
 {php $show_copyright=true; $show_footer = true;}
 {template 'common/footer'}
 
