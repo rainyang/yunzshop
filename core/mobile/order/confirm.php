@@ -1304,6 +1304,7 @@ if ($_W['isajax']) {
         $member       = m('member')->getMember($openid);
         $level         = m('member')->getLevel($openid);
         foreach ($order_data as $key => $order_row) {
+            unset($minDispathPrice);
             $dispatchtype = intval($order_row['dispatchtype']);
             $addressid    = intval($order_row['addressid']);
             $address      = false;
@@ -2026,42 +2027,41 @@ if ($_W['isajax']) {
             pdo_insert('sz_yi_order',$order);
             $orderid = pdo_insertid();
             if(p('hotel')){
-                 if($_GPC['type']=='99'){  
-                //像订单管理房间信息表插入数据
-                $r_sql = 'SELECT * FROM ' . tablename('sz_yi_hotel_room_price') .
-                ' WHERE `roomid` = :roomid AND `roomdate` >= :btime AND ' .
-                ' `roomdate` < :etime';
-                $params = array(':roomid' => $room['id'],':btime' => $btime, ':etime' => $etime);
-                $price_list = pdo_fetchall($r_sql, $params);  
-                if($price_list!=''){
-                    foreach ($price_list as $key => $value) {
-                        $order_room = array(
-                            'orderid'=>$orderid ,
-                            'roomid'=>$room['id'],
-                            'roomdate'=>$value['roomdate'],
-                            'thisdate'=>$value['thisdate'],
-                            'oprice'=>$value['oprice'],
-                            'cprice'=>$value['cprice'],
-                            'mprice'=>$value['mprice'],
-                        );
-                      pdo_insert('sz_yi_order_room', $order_room);
+                if($_GPC['type']=='99'){
+                    //像订单管理房间信息表插入数据
+                    $r_sql = 'SELECT * FROM ' . tablename('sz_yi_hotel_room_price') .
+                    ' WHERE `roomid` = :roomid AND `roomdate` >= :btime AND ' .
+                    ' `roomdate` < :etime';
+                    $params = array(':roomid' => $room['id'],':btime' => $btime, ':etime' => $etime);
+                    $price_list = pdo_fetchall($r_sql, $params);  
+                    if($price_list!=''){
+                        foreach ($price_list as $key => $value) {
+                            $order_room = array(
+                                'orderid'=>$orderid ,
+                                'roomid'=>$room['id'],
+                                'roomdate'=>$value['roomdate'],
+                                'thisdate'=>$value['thisdate'],
+                                'oprice'=>$value['oprice'],
+                                'cprice'=>$value['cprice'],
+                                'mprice'=>$value['mprice'],
+                            );
+                          pdo_insert('sz_yi_order_room', $order_room);
+                        }
                     }
+                    //减去房量
+                    $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
+                    $params2 = array(':goodsid' =>  $allgoods[0]['goodsid']);
+                    $room = pdo_fetch($sql2, $params2);         
+                    $starttime = $btime;
+                    for ($i = 0; $i <  $days; $i++) {
+                        $sql = 'SELECT * FROM '. tablename('sz_yi_hotel_room_price'). ' WHERE  roomid = :roomid AND roomdate = :roomdate';
+                        $day = pdo_fetch($sql, array(':roomid' => $room['id'], ':roomdate' => $btime));
+                        pdo_update('sz_yi_hotel_room_price', array('num' => $day['num'] - $_GPC['goodscount']), array('id' => $day['id']));
+                        $btime += 86400;
+                    } 
+       
                 }
-                //减去房量
-                $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
-                $params2 = array(':goodsid' =>  $allgoods[0]['goodsid']);
-                $room = pdo_fetch($sql2, $params2);         
-                $starttime = $btime;
-                for ($i = 0; $i <  $days; $i++) {
-                    $sql = 'SELECT * FROM '. tablename('sz_yi_hotel_room_price'). ' WHERE  roomid = :roomid AND roomdate = :roomdate';
-                    $day = pdo_fetch($sql, array(':roomid' => $room['id'], ':roomdate' => $btime));
-                    pdo_update('sz_yi_hotel_room_price', array('num' => $day['num'] - $_GPC['goodscount']), array('id' => $day['id']));
-                    $btime += 86400;
-                } 
-   
             }
-        }
-
        
             if (is_array($carrier)) {
                 //todo, carrier_realname和carrier_mobile字段表里有么?
