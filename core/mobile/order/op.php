@@ -6,12 +6,18 @@ global $_W, $_GPC;
 
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
+$member    = m("member")->getMember($openid);
 $uniacid   = $_W['uniacid'];
 $shopset   = m('common')->getSysset('shop');
+
+$yunbi_plugin   = p('yunbi');
+if ($yunbi_plugin) {
+    $yunbiset = $yunbi_plugin->getSet();
+}
 if ($_W['isajax']) {
 	if ($operation == 'cancel') {
 		$orderid = intval($_GPC['orderid']);
-		$order   = pdo_fetch('select id,ordersn,openid,status,deductcredit,deductprice,couponid from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
+		$order   = pdo_fetch('select id,ordersn,openid,status,deductcredit,deductprice,deductyunbi,deductyunbimoney,couponid from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
 	            ':id' => $orderid,
 	            ':uniacid' => $uniacid,
 	            ':openid' => $openid
@@ -37,6 +43,19 @@ if ($_W['isajax']) {
 	                $shop['name'] . "购物返还抵扣积分 积分: {$order['deductcredit']} 抵扣金额: {$order['deductprice']} 订单号: {$order['ordersn']}"
 	            ));
 	        }
+	       	if ($order['deductyunbimoney'] > 0) {
+	            $shop = m('common')->getSysset('shop');
+	            p('yunbi')->setVirtualCurrency($order['openid'],$order['deductyunbi']);
+		        //虚拟币抵扣记录
+	            $data_log = array(
+	                'id'           => $member['id'],
+	                'openid'        => $openid,
+	                'credittype'    => 'virtual_currency',
+	                'money'         => $order['deductyunbi'],
+	                'remark'        => "购物返还抵扣".$yunbiset['yunbi_title']." ".$yunbiset['yunbi_title'].": {$order['deductyunbi']} 抵扣金额: {$order['deductyunbimoney']} 订单号: {$order['ordersn']}"
+	            );
+            }
+			p('yunbi')->addYunbiLog($uniacid,$data_log,'4');
 	        if (p('coupon') && !empty($order['couponid'])) {
 	            p('coupon')->returnConsumeCoupon($orderid);
 	        }
@@ -116,6 +135,9 @@ if ($_W['isajax']) {
 			p('return')->cumulative_order_amount($orderid);
 		}
 
+		if (p('yunbi')) {
+			p('yunbi')->GetVirtualCurrency($orderid);
+		}
 		//购买商品赠送红包
 		if($order['redprice'] > 0) {
 			//订单红包价格字段大于0执行发送红包
