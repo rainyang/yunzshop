@@ -131,6 +131,10 @@ class Sz_DYi_User
             return;
         }
 
+        //帮助中心不需要登录
+        if (!empty($_GPC['is_helper'] && $_GPC['p'] == 'article')) {
+            return;
+        }
         /*
         if($_GPC["c"]=='entry'){
             return;

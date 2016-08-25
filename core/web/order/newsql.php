@@ -1714,7 +1714,7 @@ INSERT INTO " . tablename('sz_yi_perm_role') . " (`rolename`, `status`, `status1
 }
 
 
-rmdirs(IA_ROOT. "/data/tpl/app/sz_yi");
+//@rmdirs(IA_ROOT. "/data/tpl/app/sz_yi");
 
 //2016-8-14 余额转让记录增表 加转让人当前余额 受让人当前余额
 if(!pdo_fieldexists('sz_yi_member_transfer_log', 'tosell_current_credit')) {
@@ -1781,5 +1781,5 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_yunbi_log') . " (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 
-
+echo  "完成虚拟币添加数据库！";
 
