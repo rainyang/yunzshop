@@ -14,20 +14,29 @@ $(function () {
 
     //全部分类
     var $nodesLi = $(".kinds_lists").find("li");
-
     $nodesLi.hover(function () {
-        $(this).addClass('act');
+        $(this).addClass('act');        
         $(this).find('.sideBox').show();
         $(this).find(".Line").show();
         $(this).find(".potiner_h").hide();
-        //$(this).css("backgroundImage", "url(http://res.360kad.com/theme/default/img/product/2016new/liIconHover.png)");
+        $id = $(this).attr("id");
+        $id = ($id.substring($id.length-1,$id.length));
+        if($id==0){
+           $margin = 1;  
+        } else if($id>0 && $id<5){
+           $margin =$id*40+1; 
+        }else if($id>4 && $id<10){
+           $margin = $id*40; 
+        }
         $(this).find('.potiner_h').prev("a").css('color', '#036dde');
+        $(this).find('.sideBox').css('margin-top',"-"+$margin+"px");
+
+        
     }, function () {
         $(this).removeClass('act');
         $(this).find('.sideBox').hide();
         $(this).find(".Line").hide();
-        $(this).find(".potiner_h").show();
-       // $(this).css("backgroundImage", "url(http://res.360kad.com/theme/default/img/product/2016new/liIcon.png)");
+        $(this).find(".potiner_h").show();       
         $(this).find('.potiner_h').prev("a").css('color', '#ffffff');
     });
 

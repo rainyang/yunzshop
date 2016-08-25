@@ -76,7 +76,7 @@ overflow: hidden;
 min-height:379px;
 }
 .catename{ background: url(../images/abor_bg.png) left center no-repeat; white-space: nowrap;}
-.itmes_wrap .leftSide{position:absolute;left:0;top:40px;width: 180px;border-top:0;background:#036dde;height:399px;border-bottom:1px solid #036dde;z-index:30; }
+.itmes_wrap .leftSide{position:absolute;left:0;top:38px;width: 180px;border-top:0;background:#036dde;height:399px;border-bottom:1px solid #036dde;z-index:30; }
 .itmes_wrap .leftSide li a{font-size: 16px;color: #333;font-family:"Microsoft YaHei";}
 
 .itmes_wrap .leftSide li.act{border-right:0px;color: #036dde;background: #ffffff;}

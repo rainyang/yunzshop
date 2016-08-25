@@ -8,12 +8,12 @@
             <div class="leftSide">
                 <ul id="kinds_lists" class="kinds_lists">
                 {loop $categorylist $key1 $row1}
-                    <li style="border-top-width: 0px;  background-position: 20px 10px;" class="">
+                    <li style="border-top-width: 0px;  background-position: 20px 10px;" class="" id="bg<?php  echo $key1;?>">
                         <a href="{php echo $this->createMobileUrl('shop/cate_man',array("categoryid" => $row1['id']))}" target="_blank" style="color: rgb(255, 255, 255); padding-left: 34px;">{$row1['name']}</a>
                          <i class="potiner_h" style="display: block;">&gt;</i>
                          <samp class="Line" style="display: none;"></samp>                      
                         <samp class="blueLine"></samp>
-                        <div class="sideBox" style="top: -1px; display: none; background: rgb(255, 255, 255);">
+                        <div class="sideBox margin<?php  echo $key1;?>" style="display: none; background: rgb(255, 255, 255);" >
                             <!--专科用药左侧-->
                             <div class="nodeLists nodeLists-zxL">
                                 <div class="top">
@@ -288,11 +288,11 @@
                         {loop $value['children']  $row2}
                         <li><a href="{php echo $this->createMobileUrl('shop/list',array("ccate" => $row2['id']))}" target="_blank" style="color:#f7082a">{$row2['name']}</a></li>
                         {/loop}
-                        {loop $value['third']  $row3}
+                     <!--    {loop $value['third']  $row3}
                             {loop $row3  $row4}
                                <li><a href="{php echo $this->createMobileUrl('shop/list',array("ccate" => $row4['id']))}" target="_blank">{$row4['name']}</a></li>
                             {/loop}
-                        {/loop}
+                        {/loop} -->
                   <!--        {loop $value['goods']  $row3}
                         <li><a href="http://www.360kad.com/Category_15537911/Index.aspx?kzone=f1_wz15" target="_blank" style="color:#">{$row3['title']}</a></li>
                          {/loop} -->
