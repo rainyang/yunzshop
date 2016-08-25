@@ -102,7 +102,33 @@ body {margin:0px; background:#f9f9f9; }
                 
 
             }
-            
+            require(['tpl', 'core'], function (tpl, core) {
+
+
+                $(document).on('click', '.select_place_bg', function () {
+                    $('.select_place_bg').hide();
+                    $('.index_tabBox').hide();
+                });
+                $scope.areaClick = function() {
+                    $.ajax({
+                        type: 'POST',
+                        dataType:'json',
+                        url: "{php echo $this->createMobileUrl('shop/area_list',array('op'=>'getcategory'))}",
+                        success: function(data){
+                            console.log(data);
+                            if(data.status==1){
+
+                                $('#container').html(tpl('tpl_log', data));
+                            }else{
+                                alert(data.result);
+                            }
+
+                        },error: function(){
+                            alert('未检测到相关数据11！');
+                        }
+                    });
+                }
+            });
             $scope.$on('ngRepeatFinished',function(){
                 $('.fe-mod-2 .swipe').each(function(){
                         initswipe($(this));
