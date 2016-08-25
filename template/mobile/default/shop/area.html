@@ -144,7 +144,7 @@ div.addinfo{height:18px;}
             <div class="goods_banner_box">
                 <div class="goods_banner goods_banner_shop">
                     <div class="gbn_li">
-                        <a class="banner_hd banner_hd1" href="javascript:void(0);" style="color:orange" data-id="">综合排序</a>
+                        <a class="banner_hd banner_hd1" href="javascript:void(0);" style="color:orange" >综合排序</a>
                         <div class="banner_cont banner_cont1">
                             <a href="javascript:list_sort(0);" class="active">综合排序</a>
                             <a href="javascript:list_sort(1);">最新上架</a>
@@ -242,12 +242,12 @@ div.addinfo{height:18px;}
         getGoods();
 
         $('.banner_hd1').click(function(){
-            if ($(this).data('id') == '') {
+            if ($(this).attr('data-id') == '') {
                 $('.banner_cont1').show();
-                $(this).attr('data-id') = 1;
+                $(this).attr('data-id', 1);
             } else {
                 $('.banner_cont1').hide();
-                $(this).attr('data-id') = '';
+                $(this).attr('data-id', '');
             }
             
         });
