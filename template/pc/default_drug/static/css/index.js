@@ -466,23 +466,23 @@ $(function () {
 
     })
 
-    $(window).scroll(function () {
-        var $docuScrolV = $(document).scrollTop();
-        if ($docuScrolV >= 600) {
-            $("#fixed_B .leftSide").addClass("newSide");
+    // $(window).scroll(function () {
+    //     var $docuScrolV = $(document).scrollTop();
+    //     if ($docuScrolV >= 600) {
+    //         $("#fixed_B .leftSide").addClass("newSide");
 
-            $fixed_searchBox.show();
-            $searchForm.css({ "position": "fixed", "top": 5, "z-index": 8 });
-            $(".header_l").css({ "width": "295px", "float": "left" });
-        } else {
-            $("#fixed_B .leftSide").hide();
-            $("#fixed_B .leftSide").removeClass("newSide");
-            $fixed_searchBox.hide();
-            $searchForm.css({ "position": "", "top": "", "z-index": "" });
-            $(".header_l").css({ "width": "342px", "float": "left" });
+    //         $fixed_searchBox.show();
+    //         $searchForm.css({ "position": "fixed", "top": 5, "z-index": 8 });
+    //         $(".header_l").css({ "width": "295px", "float": "left" });
+    //     } else {
+    //         $("#fixed_B .leftSide").hide();
+    //         $("#fixed_B .leftSide").removeClass("newSide");
+    //         $fixed_searchBox.hide();
+    //         $searchForm.css({ "position": "", "top": "", "z-index": "" });
+    //         $(".header_l").css({ "width": "342px", "float": "left" });
 
-        }
-    });
+    //     }
+    // });
 
 
 

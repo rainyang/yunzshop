@@ -25,14 +25,16 @@
             <div class="wrapper_l">
                 <div class="wrapper_l_top">
                     {loop $category $row}
-                        {loop $row['children'] $key $row1}         
+                        {loop $row['children'] $key $row1}   
+                        {if $key<4}      
                     <h3 class="prod_title"><a href="{php echo $this->createMobileUrl('shop/list',array("ccate" => $row1['id']))}" target="_blank">{$row1['name']}</a></h3>                               
                     <ul class="main_illness">
                         {loop $row['third'][$key] $row2}         
                         <li><a href="{php echo $this->createMobileUrl('shop/list',array("tcate" => $row2['id']))}" target="_blank">{$row2['name']}</a></li>
                         {/loop}
-                    </ul>     
-                       {/loop}                
+                    </ul>
+                       {/loop} 
+                       {/if}               
                     {/loop}
                 
                 </div>

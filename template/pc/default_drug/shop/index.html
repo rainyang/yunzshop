@@ -24,42 +24,47 @@
                                             <span class="title">
                                             <a href="{php echo $this->createMobileUrl('shop/list',array("ccate" => $row2['id']))}" target="_blank">{$row2['name']}</a></span> <i></i>
                                         </h3>
+                                         {if $row2['goods']!=''}
                                          <p style="margin-left:66px;">
                                           <span class="sub-nodeList" style="width:700px;">
-                                              {if $row2['goods']!=''}
-                                                 {loop $row2['goods'] $rowx} 
+                                               {loop $row2['goods'] $rowx} 
                                                   <a target="_blank" href="{php echo $this->createMobileUrl('shop/detail')}&id={$rowx['id']}">{$rowx['title']}</a>
-                                                 {/loop}
-                                                {/if}
+                                                {/loop}
+                                                
                                           </span>
                                           </p>
                                           <div style="clear:both"></div>
+                                          {/if}
                                               {loop $row2['children'] $key3 $row3}
-                                                     <p >
+                                                   {if $row3['goods']!=''}
+                                                     <p>
                                                         <a class="bigTitle" style="margin-left:-20px;" target="_blank" href="{php echo $this->createMobileUrl('shop/list',array("tcate" => $row3['id']))}">{$row3['name']}</a>
                                                         <span class="sub-nodeList">
-                                                        {if $row3['goods']!=''}
+                                                       
                                                           {loop $row3['goods'] $rowx}
                                                            <a target="_blank" href="{php echo $this->createMobileUrl('shop/detail')}&id={$rowx['id']}">{$rowx['title']}</a>
                                                            {/loop}
-                                                          {/if}                                                          
+                                                                                                              
                                                         </span>
                                                       </p>
+                                                       {/if}     
                                                {/loop}                                          
                                     </div>
                                     {/loop}
                                 {else} 
+                                   {if $row1['goods']!=''}
                                 <div class="topL">
                                           <p style="margin-left:66px;" >                                         
                                           <span class="sub-nodeList " style="width:700px;"> 
-                                               {if $row1['goods']!=''}
+                                            
                                                     {loop $row1['goods'] $rowx} 
                                                       <a  target="_blank" style="float:left" href="{php echo $this->createMobileUrl('shop/detail')}&id={$rowx['id']}">{$rowx['title']}</a>
                                                     {/loop}
-                                               {/if}
+                                            
                                           </span>                                          
                                            </p>
                                   </div></br>
+                                     {/if}
                                {/if}
 
                                 </div>
@@ -280,11 +285,13 @@
                     <div class="louLink">
                         <!--部件开始:pro_label,分组:广告部件-->
                       <ul>
-                         {loop $value['children']  $row2}
+                        {loop $value['children']  $row2}
                         <li><a href="{php echo $this->createMobileUrl('shop/list',array("ccate" => $row2['id']))}" target="_blank" style="color:#f7082a">{$row2['name']}</a></li>
                         {/loop}
-                         {loop $value['third']  $row3}
-                        <li><a href="{php echo $this->createMobileUrl('shop/list',array("ccate" => $row2['id']))}" target="_blank">{$row3['name']}</a></li>
+                        {loop $value['third']  $row3}
+                            {loop $row3  $row4}
+                               <li><a href="{php echo $this->createMobileUrl('shop/list',array("ccate" => $row4['id']))}" target="_blank">{$row4['name']}</a></li>
+                            {/loop}
                         {/loop}
                   <!--        {loop $value['goods']  $row3}
                         <li><a href="http://www.360kad.com/Category_15537911/Index.aspx?kzone=f1_wz15" target="_blank" style="color:#">{$row3['title']}</a></li>

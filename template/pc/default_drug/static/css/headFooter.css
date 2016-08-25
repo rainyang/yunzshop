@@ -92,7 +92,9 @@ min-height:379px;
 .itmes_wrap .leftSide .topL p.pt14{padding-top: 14px;}
 .itmes_wrap .leftSide .topL p a{float:left;padding:0 4px;font-size: 12px;color:#959595;background: url(../images/abor_bg.png) left center no-repeat;white-space: nowrap;}
 .itmes_wrap .leftSide .bottom p a{display:inline;float:left;padding:0 4px;font-size: 12px;color:#959595;background:url(http://res.360kad.com/theme/default/img/2014newKad/abor_bg.png) left center no-repeat;white-space: nowrap;}
-.itmes_wrap .leftSide .topL p .bigTitle{padding-right:16px;padding-left: 0;width:86px;text-align:right;color:#ff0000;background: none;font: bold 12px/20px "";}
+.itmes_wrap .leftSide .topL p .bigTitle{ padding-right: 16px; padding-left: 50px; width: 86px; text-align: center;    color: #ff0000;
+    background: none;
+    font: bold 12px/20px "";}
 .itmes_wrap .leftSide .sub-nodeList{float:left;width: 200px;display:inline;display:block;}
 .itmes_wrap .leftSide .top .pt5{padding-top: 5px;}
 .itmes_wrap .leftSide .topL p a:hover,.itmes_wrap .advStation .other_msg a:hover{color:#ff0000;}
@@ -110,7 +112,8 @@ background: url("http://res.360kad.com/theme/default/img/2014newKad/newKad_allbg
 .itmes_wrap .leftSide .bottom p a{line-height: 22px;background:url(http://res.360kad.com/theme/default/img/2014newKad/abor_bg.png) right center no-repeat;white-space: nowrap;}
 /*中西药品特有*/
 .itmes_wrap .leftSide .nodeLists-zxL{float:left;width:390px;padding-bottom:10px;}
-.itmes_wrap .leftSide .nodeLists-zxL .topL,.itmes_wrap .leftSide .nodeLists-zxL .topL p{width:600px;}
+.itmes_wrap .leftSide .nodeLists-zxL .top{width:800px;}
+.itmes_wrap .leftSide .nodeLists-zxL .topL,.itmes_wrap .leftSide .nodeLists-zxL .topL p{width:380px;}
 .itmes_wrap .leftSide .nodeLists-zxL .topL h3{width:360px;} 
 /*.itmes_wrap .leftSide .nodeLists-zxL .sub-nodeList{width:280px;}
 */

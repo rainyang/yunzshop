@@ -8,23 +8,6 @@ $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $designer  = p('designer');
 $shopset   = m('common')->getSysset('shop');
-$html = $shopset['footercontent'];
-preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg]?))[\'|\"].*?[\/]?>/", $html, $imgs);
-if (isset($imgs[1])) {
-    foreach ($imgs[1] as $img) {
-        $im       = array(
-            "old" => $img,
-            "new" => tomedia($img)
-        );
-        $images[] = $im;
-    }
-    if (isset($images)) {
-        foreach ($images as $img) {
-            $html = str_replace($img['old'], $img['new'], $html);
-        }
-    }
-}
-$shopset['footercontent'] = $html;
 if (empty($this->yzShopSet['ispc']) || isMobile()) {
     if ($designer) {
         $pagedata = $designer->getPage();
@@ -91,7 +74,7 @@ if ($operation == 'index') {
 	//pc模板楼层分类获取
 	if(!empty($categoryfloor)){
 		foreach ($categoryfloor as $key => $value) {
-			$children = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where ishome=1  and enabled=1 and parentid=:pid and uniacid=:uniacid  limit 10",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"])),'advimg');
+			$children = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where ishome=1  and enabled=1 and parentid=:pid and uniacid=:uniacid  limit 20",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"])),'advimg');
 			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and ishot =1 and deleted = 0 limit 9",array(':pcate' => $value['id'] , ':uniacid' => $_W['uniacid'])) , 'thumb');
 			$categoryfloor[$key]['goods'] = $goods;
 			if(!empty($goods)){
@@ -105,12 +88,14 @@ if ($operation == 'index') {
 			$categoryfloor[$key]['key'] = $key;
 			foreach($children as $key1 => $value1){
 				$categoryfloor[$key]['children'][$key1] = $value1;
-				$third = set_medias(pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and ishome=1  and enabled=1 and uniacid=:uniacid  limit 10",array(':pid' => $value1['id'] , ':uniacid' => $_W["uniacid"])),'advimg');
-				$categoryfloor[$key]['third'] = $third;
+				$third = set_medias(pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and ishome=1  and enabled=1 and uniacid=:uniacid  limit 20",array(':pid' => $value1['id'] , ':uniacid' => $_W["uniacid"])),'advimg');		
+				if(!empty($third)){
+					$categoryfloor[$key]['third'][$key1] = $third;
+
+				}		
 			}
 	    }
 	}
-
 	$index_name = array(
 		'isrecommand' 	=> '精品推荐',
 		'isnew' 		=> '新上商品',
