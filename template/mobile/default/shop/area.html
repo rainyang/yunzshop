@@ -144,13 +144,15 @@ div.addinfo{height:18px;}
             <div class="goods_banner_box">
                 <div class="goods_banner goods_banner_shop">
                     <div class="gbn_li">
-                        <a class="banner_hd banner_hd1" href="javascript:void(0);" style="color:orange" >综合排序</a>
+                        <a class="banner_hd banner_hd1" style="color:orange" >
+                        {$_GPC['word']}
+                        </a>
                         <div class="banner_cont banner_cont1">
-                            <a href="javascript:list_sort(0);" class="active">综合排序</a>
-                            <a href="javascript:list_sort(1);">最新上架</a>
-                            <a href="javascript:list_sort(4);">销量高到低</a>
-                            <a href="javascript:list_sort(3);">价格高到低</a>
-                            <a href="javascript:list_sort(2);">价格低到高</a>
+                            <a class="options active" data-id="0">综合排序</a>
+                            <a class="options" data-id="1">最新上架</a>
+                            <a class="options" data-id="2">销量高到低</a>
+                            <a class="options" data-id="3">价格高到低</a>
+                            <a class="options" data-id="4">价格低到高</a>
                         </div>
                     </div>
                     
@@ -159,7 +161,7 @@ div.addinfo{height:18px;}
             <div class="productlist_shop">
                 <ul class="goodslist" id="goodslist">
                 {loop $goods $g}
-                    <li class="page0" style="width:48%; overflow: hide;"><dl class="foodlistdl"><dd class="foodimg"><a href="{php echo $this->createMobileUrl('shop/detail',array('id'=>$g['id'], 'my'=>$_GPC['my']))}" class="a" target="_self"><img class="lazy" src="{$g['thumb']}" onerror="isExitsImg_nopic(this)"><span class="txtlbl" style="display: none; background-color: rgb(255, 0, 0);"></span></a></dd><dt class="foodtitle"><a href="{php echo $this->createMobileUrl('shop/detail',array('id'=>$g['id'], 'my'=>$_GPC['my']))}" target="_self" class="name a">{$g['title']}</a></dt><dd class="foodprice"><span class="price"><i>¥</i>{if $g['productprice']>0 && $g['marketprice']!=$g['productprice']}<span>￥{$g['productprice']}</span>{/if}</span><span class="indexname">{$g['unit']}</span><span class="xiaoliang fukuan">{$g['sales']}人付款</span></dd><dd class="freeshipping"><a href="{php echo $this->createMobileUrl('shop/detail',array('id'=>$g['id'], 'my'=>$_GPC['my']))}" class="a diqu" target="_self"><span class="diqu_sxs">浙江 杭州市 </span>{if $g['issendfree'] == 1}<span class="baoyou">包邮</span>{/if}</a></dd></dl>
+                    <li class="page0" style="width:48%; overflow: hide;"><dl class="foodlistdl"><dd class="foodimg"><a href="{php echo $this->createMobileUrl('shop/detail',array('id'=>$g['id'], 'my'=>$_GPC['my']))}" class="a" target="_self"><img class="lazy" src="{$g['thumb']}" onerror="isExitsImg_nopic(this)"><span class="txtlbl" style="display: none; background-color: rgb(255, 0, 0);"></span></a></dd><dt class="foodtitle"><a href="{php echo $this->createMobileUrl('shop/detail',array('id'=>$g['id'], 'my'=>$_GPC['my']))}" target="_self" class="name a">{$g['title']}</a></dt><dd class="foodprice"><span class="price"><i>¥</i>{$g['marketprice']}</span><span class="indexname">{$g['unit']}</span><span class="xiaoliang fukuan">{$g['sales']}人付款</span></dd><dd class="freeshipping"><a href="{php echo $this->createMobileUrl('shop/detail',array('id'=>$g['id'], 'my'=>$_GPC['my']))}" class="a diqu" target="_self"><span class="diqu_sxs">{$g['pcate_name']} {$g['ccate_name']} {$g['tcate_name']} </span>{if $g['issendfree'] == 1}<span class="baoyou">包邮</span>{/if}</a></dd></dl>
                     </li>
                 {/loop}
                 </ul>
@@ -251,7 +253,15 @@ div.addinfo{height:18px;}
             }
             
         });
+        $('.options').click(function(){
+            var status = $(this).attr('data-id');
+            var word = $(this).html();
+            $('.banner_cont1').hide();
+            $('.banner_cont1').attr('data-id', '');
+            location.href="{php echo $this->createMobileUrl('shop/area',array('ccate_area' => $_GPC['ccate_area'], 'tcate_area' => $_GPC['tcate_area']))}&word="+word+"&status="+status;
 
+        })
+        
       
     });
         
