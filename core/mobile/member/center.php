@@ -114,18 +114,22 @@ if ($plugin_article) {
 // 	$shopset['isreturn'] = true;
 // }
 // --------------------->
-$reurnset = m('plugin')->getpluginSet('return');
-$shopset['isreturn'] = false;
-if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 || $reurnset['islevelreturn']== 1 ){
-	$shopset['isreturn'] = true;
+if (p('return')) {
+	$reurnset = m('plugin')->getpluginSet('return');
+	$shopset['isreturn'] = false;
+	if($reurnset['isqueue'] == 1 || $reurnset['isreturn']== 1 || $reurnset['islevelreturn']== 1 ){
+		$shopset['isreturn'] = true;
+	}
 }
-$yunbiset = m('plugin')->getpluginSet('yunbi');
-$shopset['isyunbi'] = false;
-if($yunbiset['isyunbi'] == 1 ){
-	$shopset['isyunbi'] = true;
+if (p('yunbi')) {
+	$yunbiset = m('plugin')->getpluginSet('yunbi');
+	$shopset['isyunbi'] = false;
+	if($yunbiset['isyunbi'] == 1 ){
+		$shopset['isyunbi'] = true;
+	}
+	$yunbi_title = $yunbiset['yunbi_title']?$yunbiset['yunbi_title']:'云币';
+	$shopset['yunbi_title'] = $yunbi_title;
 }
-$yunbi_title = $yunbiset['yunbi_title']?$yunbiset['yunbi_title']:'云币';
-$shopset['yunbi_title'] = $yunbi_title;
 if (p('ranking')) {
 	$ranking_set = p('ranking')->getSet();
 
