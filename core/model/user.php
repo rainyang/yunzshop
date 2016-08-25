@@ -132,7 +132,7 @@ class Sz_DYi_User
         }
 
         //帮助中心不需要登录
-        if (!empty($_GPC['is_helper'])) {
+        if (!empty($_GPC['is_helper'] && $_GPC['p'] == 'article')) {
             return;
         }
         /*
