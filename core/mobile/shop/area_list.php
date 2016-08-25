@@ -48,6 +48,19 @@ if ($operation == 'index') {
             ':uniacid' => $_W['uniacid']
         ));
     }   
+} elseif ($operation == 'getcategory') {
+    $sql = 'SELECT * FROM ' . tablename('sz_yi_category_area') . ' WHERE `uniacid` = :uniacid AND level = "1" ORDER BY `parentid`, `displayorder` DESC';
+    $category_area = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
+    if ($category_area) {
+        foreach ($category_area as &$value) {
+            $value['link'] = $this->createMobileUrl('shop/area_list',array('pcate_area'=>$value['id']));
+        }
+        unset($value);
+        show_json(1, $category_area);
+    }else {
+        show_json(0,"为检测到相应数据！");
+    }
+
 }
 
 
