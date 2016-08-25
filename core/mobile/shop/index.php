@@ -110,6 +110,7 @@ if ($operation == 'index') {
 			}
 	    }
 	}
+
 	$index_name = array(
 		'isrecommand' 	=> '精品推荐',
 		'isnew' 		=> '新上商品',

@@ -94,7 +94,6 @@ if($op == 'sendcode'){
     if(!empty($isbindmobile)){
         show_json(0, '该手机已经绑定其它微信号了!');
     }
-    
     $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where mobile=:mobile and pwd!="" and uniacid=:uniacid and isbindmobile=1 limit 1', array(
                 ':uniacid' => $_W['uniacid'],
                 ':mobile' => $mobile

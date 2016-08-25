@@ -148,16 +148,19 @@ class Sz_DYi_Order
         }else{
             $order   = $orderall[0];
             $orderid = $order['id'];
+            $verify_set = m('common')->getSetData();
+            $allset = iunserializer($verify_set['plugins']);
+            if ($order['isverify'] == 1 && $allset['verify']['sendcode'] == 1) {
+                $carriers = unserialize($order['carrier']);
+                $mobile = $carriers['carrier_mobile'];
+                $type = 'verify';
+                $order_goods = pdo_fetch("SELECT * FROM ".tablename('sz_yi_order_goods')." WHERE orderid=:id and uniacid=:uniacid", array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
+                $goodstitle = pdo_fetchcolumn("SELECT title FROM ".tablename('sz_yi_goods')." WHERE id=:id and uniacid=:uniacid",array(':id' => $order_goods['goodsid'], ':uniacid' => $_W['uniacid']));
+                $issendsms = $this->sendSms($mobile, $order['verifycode'], 'reg', $type, $carriers['carrier_realname'],$goodstitle);
+                
+            }
         }
-        $verify_set = m('common')->getSetData();
-        $allset = iunserializer($verify_set['plugins']);
-        if ($order['isverify'] == 1 && $allset['verify']['sendcode'] == 1) {
-            $carriers = unserialize($order['carrier']);
-            $mobile = $carriers['carrier_mobile'];
-            $type = 'verify';
-            $issendsms = $this->sendSms($mobile, $order['verifycode'], 'reg', $type);
 
-        } 
         //验证paylog里金额是否与订单金额一致
         $log = pdo_fetch('select * from ' . tablename('core_paylog') . ' where `uniacid`=:uniacid and fee=:fee and `module`=:module and `tid`=:tid limit 1',
             array(
@@ -305,11 +308,11 @@ class Sz_DYi_Order
             }
         }
     }
-    function sendSms($mobile, $code, $templateType = 'reg', $type = 'check')
+    function sendSms($mobile, $code, $templateType = 'reg', $type = 'check', $name, $title)
     {
         $set = m('common')->getSysset();
         if ($set['sms']['type'] == 1) {
-            return send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $code, $type);
+            return send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $code, $type, $name, $title);
         } else {
             return send_sms_alidayu($mobile, $code, $templateType);
         }
