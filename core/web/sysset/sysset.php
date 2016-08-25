@@ -143,13 +143,14 @@ if (checksubmit()) {
         plog('sysset.save.shop', '修改系统设置-商城设置');
     }
     elseif ($op == 'pcset') {
-        //echo "<pre>"; print_r($_GPC['pcset']);exit;
         $custom                    = is_array($_GPC['pcset']) ? $_GPC['pcset'] : array();
         $set['shop']['ispc']       = trim($custom['ispc']);
         $set['shop']['pctitle']    = trim($custom['pctitle']);
         $set['shop']['pckeywords'] = trim($custom['pckeywords']);
         $set['shop']['pcdesc']     = trim($custom['pcdesc']);
+        $set['shop']['pccopyright'] =  $pccopyright;
         $set['shop']['pccopyright']  = trim($custom['pccopyright']);
+        $set['shop']['footercontent']  = trim(htmlspecialchars_decode($custom['footercontent']));
         $set['shop']['index']      = $custom['index'];
         $set['shop']['pclogo']     = save_media($custom['pclogo']);
         $set['shop']['reglogo']    = save_media($custom['reglogo']);

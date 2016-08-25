@@ -115,77 +115,77 @@
     <%/if%>
     <%if recommands.length>0%>
     <div class="index_title"><span>推荐专区</span></div>
-        <div class="list">
-           <%each recommands as value%>
-           <a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>">
-                <div class="good">
-                    <div class="info">
-                        <div class="classs"><%value.subtitle%><%if value.type=='1'%><span class="span1">抽奖</span><%/if%></div>
-                        <div class="name"><%value.title%></div>
-                        <div class="price"><%value.credit%><i class="fa fa-database"></i></div>
-                        <div class="img"><img src="<%value.thumb%>"/></div>
-                    </div>
-                </div>
-            </a>
+        <div class="integral-pos">
+        <ul> 
+        <%each recommands as value%>
+          <li>
+                <a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>"><img src="<%value.thumb%>"></a>
+                <!--<h1>提供商家<span>抽奖</span></h1>-->
+                <p class="integral-name"><%value.title%></p>
+                <p class="integral-num">需扣减积分：<span><%value.credit%></span></p>
+                <div class="integral-but"><a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>">马上兑换</a></div>
+        
+            
+            </li>
             <%/each%>
-        </div>
+          </ul>
+      </div>
+          
     <%/if%>
     
     <%if vips.length>0%>
     <div class="index_title"><span>特权专区</span></div>
-        <div class="list">
+        <div class="integral-pos">
+        <ul> 
            <%each vips as value%>
-           <a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>">
-                <div class="good">
-                    <div class="info">
-                        <div class="classs"><%value.subtitle%><%if value.type=='1'%><span class="span1">抽奖</span><%/if%></div>
-                        <div class="name"><%value.title%></div>
-                        <div class="price"><%value.credit%><i class="fa fa-database"></i></div>
-                        <div class="img"><img src="<%value.thumb%>"/></div>
-                    </div>
-                </div>
-            </a>
+            <li>
+                <a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>"><img src="<%value.thumb%>"></a>
+                <!--<h1>提供商家<span>抽奖</span></h1>-->
+                <p class="integral-name"><%value.title%></p>
+                <p class="integral-num">需扣减积分：<span><%value.credit%></span></p>
+                <div class="integral-but"><a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>">马上兑换</a></div>
+            
+            </li>
             <%/each%>
-        </div>
+            </ul>
+      </div>
     <%/if%>
     
     <%if times.length>0%>
     <div class="index_title"><span>限时活动</span></div>
-        <div class="list">
-           <%each times as value%>
-           <a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>">
-                <div class="good">
-                    <div class="info">
-                        <div class="classs"><%value.subtitle%><%if value.type=='1'%><span class="span1">抽奖</span><%/if%></div>
-                        <div class="name"><%value.title%></div>
-                        <div class="price"><%value.credit%><i class="fa fa-database"></i></div>
-                        <div class="img"><img src="<%value.thumb%>"/></div>
-                    </div>
-                </div>
-            </a>
-            <%/each%>
-        </div>
+        <div class="integral-pos">
+          <ul> 
+             <%each times as value%>
+                <li>
+                    <a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>"><img src="<%value.thumb%>"></a>
+                    <!--<h1>提供商家<span>抽奖</span></h1>-->
+                    <p class="integral-name"><%value.title%></p>
+                    <p class="integral-num">需扣减积分：<span><%value.credit%></span></p>
+                    <div class="integral-but"><a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>">马上兑换</a></div>
+                </li>
+              <%/each%>
+          </ul>
+      </div>
     <%/if%>
     
     <%if reccategory.length>0%>
         <%each reccategory as rc%>
-                <%if rc.goods.length>0%>
-                <div class="index_title"><span><%rc.name%></span></div>
-                    <div class="list">
+          <%if rc.goods.length>0%>
+              <div class="index_title"><span><%rc.name%></span></div>
+              <div class="integral-pos">
+                    <ul> 
                        <%each rc.goods as value%>
-                       <a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>">
-                            <div class="good">
-                                <div class="info">
-                                    <div class="classs"><%value.subtitle%><%if value.type=='1'%><span class="span1">抽奖</span><%/if%></div>
-                                    <div class="name"><%value.title%></div>
-                                    <div class="price"><%value.credit%><i class="fa fa-database"></i></div>
-                                    <div class="img"><img src="<%value.thumb%>"/></div>
-                                </div>
-                            </div>
-                        </a>
-                        <%/each%>
-                    </div>
-                  <%/if%>
+                        <li>
+                          <a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>"><img src="<%value.thumb%>"></a>
+                          <!--<h1>提供商家<span>抽奖</span></h1>-->
+                          <p class="integral-name"><%value.title%></p>
+                          <p class="integral-num">需扣减积分：<span><%value.credit%></span></p>
+                          <div class="integral-but"><a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>">马上兑换</a></div>           
+                       </li>
+                      <%/each%>
+                    </ul>
+              </div>
+         <%/if%>
         <%/each%>
     <%/if%>
     
