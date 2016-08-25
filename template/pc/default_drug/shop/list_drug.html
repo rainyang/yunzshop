@@ -10,7 +10,7 @@
             {/loop}
         </p>
         <!--科室-->
-        <ul class="clearfix ksBoxs" id="ksBoxs" style="position: relative; height: 1337px;">
+        <ul class="clearfix ksBoxs" id="ksBoxs" style="position: relative; margin-bottom:30px;">
         {loop $categoryfloor $key $value}    
              <li style="float:left;width: 584px">
                 <h3><a target="_blank" href="{php echo $this->createMobileUrl('shop/cate_man',array("categoryid" => $value['id']))}">{$value['name']}</a></h3>

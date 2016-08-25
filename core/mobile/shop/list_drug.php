@@ -10,21 +10,21 @@ $openid     = m('user')->getOpenid();
 $uniacid    = $_W['uniacid'];
 $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
 $shopset   = m('common')->getSysset('shop');
-$categoryblock = pdo_fetchall('select id,name,level,ishome,enabled from ' . tablename('sz_yi_category') . ' where level<>1 and  ishome=:ishome  and enabled=:enabled 
+$categoryblock = pdo_fetchall('select id,name,level,isrecommand,enabled from ' . tablename('sz_yi_category') . ' where level<>1 and  isrecommand=:isrecommand  and enabled=:enabled 
     and uniacid=:uniacid order by displayorder desc ', array(
-    ':ishome' => '1',
+    ':isrecommand' => '1',
     ':enabled' => '1',
     ':uniacid' => $_W['uniacid']
 ));
 
-$categoryfloor = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where parentid=0 and ishome=1 and enabled=1 and uniacid=".$_W['uniacid']),'advimg');
+$categoryfloor = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where parentid=0 and enabled=1 and uniacid=".$_W['uniacid']),'advimg');
 //pc模板楼层分类获取
 foreach ($categoryfloor as $key => $value) {
-    $children = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=:pid and uniacid=:uniacid",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"])),'advimg');
+    $children = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where  parentid=:pid and   enabled=1 and uniacid=:uniacid",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"])),'advimg');
     if(!empty($categoryfloor)){
         foreach($children as $key1 => $value1){
         $categoryfloor[$key]['children'][$key1] = $value1;
-        $third = set_medias(pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and ishome=1 and uniacid=:uniacid",array(':pid' => $value1['id'] , ':uniacid' => $_W["uniacid"])),'advimg');
+        $third = set_medias(pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and  enabled=1 and uniacid=:uniacid",array(':pid' => $value1['id'] , ':uniacid' => $_W["uniacid"])),'advimg');
         if( $third){
               $categoryfloor[$key]['third'][$key1] = $third;
         }

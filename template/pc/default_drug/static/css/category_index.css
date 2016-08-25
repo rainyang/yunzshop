@@ -61,7 +61,7 @@ table{ border:none;}
 .wrapContainer .categoryTitle ul li.act a,.categoryTitle ul li.act a:hover{color:#fff;}
 .wrapContainer .mainContent .mainH3{padding:20px 0 18px;font-size:20px;text-align: center;color:#666;font-family:"微软雅黑";}
 .wrapContainer .mainContent .ksList{padding-left: 48px;}
-.wrapContainer .mainContent .ksList a{display:inline;float: left;margin:0 18px 10px;width: 100px;height: 44px;line-height: 44px;color:#005aa0;text-align: center;border: 1px solid #d4d4d4;border-radius: 3px;}
+.wrapContainer .mainContent .ksList a{display:inline;float: left;margin:0 18px 10px;width: 100px;height: 44px;line-height: 44px;color:#005aa0;text-align: center;border: 1px solid #d4d4d4;border-radius: 3px;overflow: hidden}
 .wrapContainer .mainContent .ksList a:hover{color:#e40001;text-decoration: underline;}
 /*科室*/
 .wrapContainer .mainContent .ksBoxs li{display:inline;float:left;margin:16px 16px 0 0;width: 590px;border: 1px solid #ccc;}
