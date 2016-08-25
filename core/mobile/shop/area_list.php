@@ -57,10 +57,10 @@ if ($_W['isajax']) {
     $parentid = !empty($_GPC['pcate_area']) ? $_GPC['pcate_area'] : ''; 
 
     if (!empty($_GPC['ccate_area'])) {
-        $current_category = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=:id and uniacid=:uniacid order by displayorder DESC', array(
+        $current_category = set_medias(pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=:id and uniacid=:uniacid order by displayorder DESC', array(
             ':id' => intval($_GPC['ccate_area']),
             ':uniacid' => $_W['uniacid']
-        ));
+        )), 'thumb');
         $category = pdo_fetch('select * from ' . tablename('sz_yi_category_area') . ' where id=:id 
             and uniacid=:uniacid order by displayorder DESC', array(
             ':id' => intval($_GPC['ccate_area']),
@@ -70,15 +70,15 @@ if ($_W['isajax']) {
         $children = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=:id and uniacid=:uniacid order by displayorder DESC', array(':uniacid' => $_W['uniacid'], ':id' => intval($_GPC['pcate_area']))); 
         foreach ($current_category as &$value) {
             
-            $value['url'] = $this->createMobileUrl('shop/area')."&tcate_area=";
+            $value['url'] = $this->createMobileUrl('shop/area')."&word=综合排序&tcate_area=";
             
         }
     } elseif (!empty($_GPC['pcate_area'])) {
-        $current_category = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=:id 
+        $current_category = set_medias(pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=:id 
             and uniacid=:uniacid order by displayorder DESC', array(
             ':id' => intval($_GPC['pcate_area']),
             ':uniacid' => $_W['uniacid']
-        ));
+        )), 'thumb');
         $category = pdo_fetch('select * from ' . tablename('sz_yi_category_area') . ' where id=:id 
             and uniacid=:uniacid order by displayorder DESC', array(
             ':id' => intval($_GPC['pcate_area']),
@@ -88,7 +88,7 @@ if ($_W['isajax']) {
         $children = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=:id and uniacid=:uniacid order by displayorder DESC', array(':uniacid' => $_W['uniacid'], ':id' => intval($_GPC['pcate_area']))); 
         foreach ($current_category as &$value) {
             
-            $value['url'] = $this->createMobileUrl('shop/area')."&ccate_area=";
+            $value['url'] = $this->createMobileUrl('shop/area')."&word=综合排序&ccate_area=";
             
         }
     
