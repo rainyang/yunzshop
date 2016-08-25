@@ -148,27 +148,9 @@ if (checksubmit()) {
         $set['shop']['pctitle']    = trim($custom['pctitle']);
         $set['shop']['pckeywords'] = trim($custom['pckeywords']);
         $set['shop']['pcdesc']     = trim($custom['pcdesc']);
-
-        $footercontent = htmlspecialchars_decode($custom['footercontent']);
-        preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg|\.png|\.jpeg]?))[\'|\"].*?[\/]?>/", $footercontent,
-        $imgs);
-        $images = array();
-        if (isset($imgs[1])) {
-            foreach ($imgs[1] as $img) {
-            $im = array(
-                "old" => $img,
-                "new" => save_media($img)
-            );
-            $images[] = $im;
-            }
-        }
-        foreach ($images as $img) {
-            $footercontent = str_replace($img['old'], $img['new'], $footercontent);
-        }
         $set['shop']['pccopyright'] =  $pccopyright;
         $set['shop']['pccopyright']  = trim($custom['pccopyright']);
-        $set['shop']['footercontent']  = trim($footercontent);
-
+        $set['shop']['footercontent']  = trim(htmlspecialchars_decode($custom['footercontent']));
         $set['shop']['index']      = $custom['index'];
         $set['shop']['pclogo']     = save_media($custom['pclogo']);
         $set['shop']['reglogo']    = save_media($custom['reglogo']);
