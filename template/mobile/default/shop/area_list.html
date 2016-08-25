@@ -104,46 +104,51 @@ div.addinfo{height:18px;}
              
              
              
-    </div> 
+            <link rel="stylesheet" type="text/css" href="../addons/sz_yi/template/mobile/default/static/css/area.css">
+
 <div id='container'></div>
 
 <script id='tpl_main' type='text/html'>
      <!--搜索-->
-    <select id="province">
-    <%each parent as value%>
-      <option value="<%value.id%>"<%if value.id==parentid%>selected="true"<%/if%>><%value.name%></option>
-    <%/each%>  
-    </select>
-  
-    <select id="city">
-    <option value="" selected="true">请选择城市</option>
-     <%each children as value1%>
-      <option value="<%value1.id%>"<%if value1.id==childrenid%>selected="true"<%/if%>><%value1.name%></option>
-    <%/each%>
-    </select>
-  
-    <div class="main">
-    
-        <div class="class1">
-        <%each current_category as v%>
-            <a href="<%v.url%><%v.id%>">
-                  <div class="class2">
-                     <div class="class3">
-                        <div class="text"><%v.name%></div>
-                    </div>
-                   </div>
-            </a>
-        <%/each%>
-        </div>  
-    
-        
-        
-        <div class='page'>
-
-
-            <div class="copyright">版权所有 © {if !empty($set['copyright'])}{$set['copyright']}{else}{$_W['account']['name']}{/if}</div>
+    <div class="city_page">
+        <div class="main_select">
+                
+            <span class="selecttext">选省份找特产：</span> 
+            <div class="DivSelect">
+                <select id="province">
+                    <%each parent as value%>
+                      <option value="<%value.id%>"<%if value.id==parentid%>selected="true"<%/if%>><%value.name%></option>
+                    <%/each%>  
+                </select>
+            </div>
+            <div class="DivSelect DivSelect2">
+                <select id="city">
+                    <option value="" selected="true">请选择城市</option>
+                     <%each children as value1%>
+                      <option value="<%value1.id%>"<%if value1.id==childrenid%>selected="true"<%/if%>><%value1.name%></option>
+                    <%/each%>
+                </select>
+            </div>
         </div>
-        
+    
+        <div class="main_selectArea">
+            <div class="main_list">
+                <div class="listtext"><p>精心为您挑选<span><span id="lblcity">{$category['name']}</span></span>各县土特产</p></div>
+                <div class="listtuwen">
+                            <%each current_category as v%>
+                            <a class="areaname" href="<%v.url%><%v.id%>" target="_self">
+                                <dl>
+                                    <dd class="listimg"><img src="<%v.thumb%>"></dd>
+                                    <dt><span class="areaname"><%v.name%></span><span>特产</span></dt>
+                                    <dd class="listsummary"><%v.description%></dd>
+                                </dl>
+                             </a>
+                            <%/each%>
+                            
+                        
+                </div>
+            </div>
+        </div>
     </div>
 </script>
 <div id='category_container'></div> 
@@ -167,7 +172,7 @@ div.addinfo{height:18px;}
                     loaded = true;
                     $(window).scroll = null;
                     $('#category_container').html(tpl('tpl_empty'));
-                    $('.main').hide();
+                    $('.main_selectArea').hide();
                     return;
                
               }
@@ -184,7 +189,7 @@ div.addinfo{height:18px;}
                     loaded = true;
                     $(window).scroll = null;
                     $('#category_container').html(tpl('tpl_empty'));
-                    $('.main').hide();
+                    $('.main_selectArea').hide();
                     return;
                
                 } else {
@@ -206,7 +211,7 @@ div.addinfo{height:18px;}
                     loaded = true;
                     $(window).scroll = null;
                     $('#category_container').html(tpl('tpl_empty'));
-                    $('.main').hide();
+                    $('.main_selectArea').hide();
                     return;
                
                 } else {
