@@ -57,13 +57,13 @@
             height: 30px;
             line-height: 30px;
             float: left;
-            padding: 4px 0 0 46px;
+            padding: 6px 0px 0 46px;
             font-size: 14px;
             font-family: "微软雅黑";
         }
 
 .main_illness {
-    height: 55px;
+    height: 58px;
     padding: 0 24px;
     clear: both;
 }
