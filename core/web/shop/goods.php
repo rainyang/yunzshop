@@ -53,7 +53,14 @@ if ($pluginreturn) {
         $isreturn = true;
     }
 }
-
+$isyunbi = false;
+$pluginyunbi = p('yunbi');
+if ($pluginyunbi) {
+    $yunbi_set = $pluginyunbi->getSet();
+    if ($yunbi_set['isyunbi'] == 1 ) {
+        $isyunbi = true;
+    }
+}
 $shopset = m('common')->getSysset('shop');
 $shoppay = m('common')->getSysset('pay');
 $sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
@@ -571,7 +578,12 @@ if ($operation == "change") {
                 $data['isreturn'] = intval($_GPC['isreturn']);   //添加全返开关    1:开    0:关
                 $data['isreturnqueue'] = intval($_GPC['isreturnqueue']);   //添加全返排列开关    1:开    0:关
             }
-
+            if ($pluginyunbi) {
+                $data['isyunbi'] = intval($_GPC['isyunbi']);   //返虚拟币开关    1:开    0:关
+                $data['yunbi_consumption'] = floatval($_GPC['yunbi_consumption']);  //虚拟币 返现比例 
+                $data['yunbi_deduct'] = floatval($_GPC['yunbi_deduct']);  //虚拟币最高抵扣 
+                
+            }
             if (p('hotel')) {
                 $data['deposit'] = $_GPC["deposit"];//房间押金
                 $data['print_id'] = $_GPC["print_id"];//房间押金

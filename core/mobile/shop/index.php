@@ -52,7 +52,6 @@ if ($operation == 'index') {
 	$advs_pc = set_medias($adv_pc, 'thumb,thumb_pc');
     $category = pdo_fetchall('select id,name,thumb,parentid,level from ' . tablename('sz_yi_category') . ' where uniacid=:uniacid and ishome=1 and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
 	$category = set_medias($category, 'thumb');
-
 	$index_name = array(
 		'isrecommand' 	=> '精品推荐',
 		'isnew' 		=> '新上商品',

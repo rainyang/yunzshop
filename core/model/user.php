@@ -111,6 +111,9 @@ class Sz_DYi_User
         if($_GPC['p'] == 'return' && $_GPC["method"]=='task'){
             return;
         }
+        if($_GPC['p'] == 'yunbi' && $_GPC["method"]=='task'){
+            return;
+        }
         if($_GPC['p'] == 'ranking' && $_GPC["method"]=='commission'){
             return;
         }

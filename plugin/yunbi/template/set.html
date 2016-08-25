@@ -1,0 +1,155 @@
+{template 'web/_header'}
+<div class="w1200 m0a">
+{template 'tabs'}
+<div class="rightlist">
+<form id="setform"  action="" method="post" class="form-horizontal form">
+    <div class='panel panel-default'>
+        <div class='panel-heading'>
+           基础设置
+        </div>
+        <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启</label>
+                <div class="col-sm-8 col-xs-12">
+                    <label class="radio-inline"><input type="radio" name="setdata[isyunbi]" value="0" {if $set['isyunbi'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline"><input type="radio" name="setdata[isyunbi]" value="1" {if $set['isyunbi'] ==1} checked="checked"{/if} /> 开启</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">自定义名称</label>
+            <div class="col-sm-9 col-xs-12">
+                <input class="form-control yunbititle" type="text" value="{php echo $set['yunbi_title']}" name="setdata[yunbi_title]">
+            </div>
+        </div>
+
+
+        <div class='panel-heading'>
+           <p class="yunbi"> 获得{if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if} </p>
+        </div>
+        <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">消费获得</label>
+                <div class="col-sm-8 col-xs-12">
+                    <label class="radio-inline"><input type="radio" name="setdata[isconsumption]" value="0" {if $set['isconsumption'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline"><input type="radio" name="setdata[isconsumption]" value="1" {if $set['isconsumption'] ==1} checked="checked"{/if} /> 开启</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">消费获得比例</label>
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <input type="text" name="setdata[consumption]" class="form-control" value="{$set['consumption']}"  />
+                    <div class="input-group-addon">%</div>
+                </div>
+                <span class='help-block'>订单返还多少
+                <b class="yunbi"> {if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if} </b>的百分比，也可以设置单个商品返还多少
+                <b class="yunbi"> {if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if} </b>！优先级：单个商品设置大于订单统一设置 </span>
+            </div>
+        </div>
+
+        <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">分销下线获得</label>
+                <div class="col-sm-8 col-xs-12">
+                    <label class="radio-inline"><input type="radio" name="setdata[isdistribution]" value="0" {if $set['isdistribution'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline"><input type="radio" name="setdata[isdistribution]" value="1" {if $set['isdistribution'] ==1} checked="checked"{/if} /> 开启</label>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">分销下线获得金额</label>
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <input type="text" name="setdata[distribution]" class="form-control" value="{$set['distribution']}"  />
+                    <div class="input-group-addon"></div>
+                </div>
+                <span class='help-block'>每天每个分销商直接下线可获得的金额</span>
+            </div>
+        </div>
+
+        <div class='panel-heading'>
+           返现与清除
+        </div>
+        <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现&清除</label>
+                <div class="col-sm-8 col-xs-12">
+                    <label class="radio-inline return_remove"><input type="radio"  name="setdata[isreturn_or_remove]" value="0" {if $set['isreturn_or_remove'] ==0} checked="checked"{/if} /> 返现</label>
+                    <label class="radio-inline return_remove"><input type="radio"  name="setdata[isreturn_or_remove]" value="1" {if $set['isreturn_or_remove'] ==1} checked="checked"{/if} /> 清除</label>
+                </div>
+            </div>
+        </div>
+
+        <div id="yunbi_return" {if $set['isreturn_or_remove'] ==1} style="display:none;"{/if}>
+            <div class="form-group" >
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现比例</label>
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <input type="text" name="setdata[yunbi_return]" class="form-control" value="{$set['yunbi_return']}"  />
+                        <div class="input-group-addon">%</div>
+                    </div>
+                    <span class='help-block'>每天按照
+                    <b class="yunbi"> {if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if} </b>
+                    数值*百分比定时返现到余额</span>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现时间</label>
+                <div class="col-sm-8 col-xs-12">
+                    <select class="form-control tpl-category-parent" name="setdata[yunbi_returntime]">
+                    <?php for ($i=0; $i <= 23; $i++) { if($set['yunbi_returntime']==$i){?>
+                        <option value="<?php echo $i;?>" selected>每天<?php echo $i;?>点执行返利</option>
+                    <?php }else{?>
+                        <option value="<?php echo $i;?>" >每天<?php echo $i;?>点执行返利</option>
+                    <?php } }?>
+                    </select>
+                     <span class='help-block'>返现会有延迟 最多延迟10分钟</span>
+                </div>
+            </div>
+        </div>
+
+        <div id="yunbi_remove" {if $set['isreturn_or_remove'] ==0} style="display:none;"{/if}>
+            <div class="form-group" >
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">清除时间</label>
+                <div class="col-sm-8">
+                    <textarea name="setdata[yunbi_remove_times]" class="form-control" >{$set['yunbi_remove_times']}</textarea>
+                    <span class='help-block'>如：15日下午6点设置：15日18点，30日上午9点设置：30日09点，如有多个用 || 分割，如：15日18点||30日09点。</span>
+
+                </div>
+            </div>
+        </div>
+
+            <div class="form-group"></div>
+               <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+            <div class="col-sm-9">
+                <input type="submit" name="submit" value="提交" class="btn btn-primary col-lg-1" onclick='return formcheck()' />
+                <input type="hidden" name="token" value="{$_W['token']}" />
+            </div>
+        </div>
+        
+    </div>
+</form>
+</div>
+</div>
+
+<script type="text/javascript">
+    $('.yunbititle').change(function(){
+        $(".yunbi").html($(this).val());
+    });
+    $('.return_remove').click(function(){
+        if($(this).find('input').val() == 0)
+        {
+            $("#yunbi_return").show();
+            $("#yunbi_remove").hide();
+        }else
+        {
+            $("#yunbi_return").hide();
+            $("#yunbi_remove").show();
+        }
+    });
+</script>
+{template 'web/_footer'}

@@ -237,3 +237,77 @@ footer#footer-nav .menu-list:after {
 .refund_main .line .label{line-height: 44px;color: #333}
 .refund_main .line select{margin-top: 0 !important;line-height: 44px;height: 44px!important}
 .refund_main .line{overflow: hidden;}
+
+/*虚拟云币*/
+
+.money-center{background: #fff;border-bottom: 1px solid #e3e3e3;border-top: 1px solid #e3e3e3;margin-top: 10px;overflow: hidden;}
+
+.money-center ul li{ float: left;width: 25%;margin:10px 0;border-right: 1px solid #e3e3e3;box-sizing: border-box;}
+.money-center ul li:last-child{border: 0}
+.money-center ul li a{color: #8c8c8c;text-align: center;display: block;}
+.money-center ul li a span{color: #222;font-size: 16px}
+
+.yunb-list{height: auto;
+width: 100%;
+background: #fff;
+margin-top: 10px;overflow: hidden;
+border-bottom: 1px solid #e3e3e3;
+border-top: 1px solid #e3e3e3;
+padding: 0 5px;box-sizing: border-box;}
+.yunb-list ul li {
+    float: left;
+    width: 32.333%;
+    box-sizing: border-box;
+    margin:0 0.5%;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 14px;
+}
+.yunb-nav{
+    background: #ECECEC !important;
+}
+.yunb-list ul li a{
+    color: #333;
+    display: block;
+    text-align: left;
+    line-height: 14px;
+    padding: 10px 0;
+    border-radius: 4px;
+    background: #f6f6f6
+}
+.yunb-list ul li i {
+    border-radius: 10px;
+    color: #fff;
+    font-size: 16px;
+    height: 28px;
+    line-height: 30px;
+    margin-bottom: 4px;
+    width: 28px;
+    float: left;
+    margin: 0px 6px 0 8px;
+    text-align: center;
+    border-radius: 4px;
+}
+
+
+.pc-cen{ width: 100%;position: relative;padding-left: 312px;border-top:3px solid #ff7700;border-bottom: 1px #eee solid;}
+.topbar {height:100%;padding: 30px 6px;position: absolute;left: 0;top: 0;background:#fcfbf7;width: 312px;border-right: 1px solid #eeeeee;}
+.topbar .user_face {height:100px; width:100px; background:#ccc; float:left;border-radius:50px; }
+.topbar .user_face img {height:100%; width:100%;border-radius:50px;}
+.topbar .user_info {height:40px; width:187px; float:left; margin-left:12px;}
+.topbar .user_info .user_name {cursor: pointer;padding: 14px 0 0;width:100%; font-size:18px; line-height:24px; color:#222;}
+.topbar .user_info .user_date {height:14px; width:100%; font-size:12px; line-height:14px; color:#999;}
+.topbar .user_info .user-dj{font-size:14px; color:#ff7700;display: block;padding: 0 0 4px;}
+.top-fx {height:158px;padding:20px 30px;}
+.top-fx .top_1 {height:40px; width:100%;}
+.top-fx .top_1 .text {height:40px; width:auto; float:left;line-height:40px; font-size:14px; color:#666666;margin-right: 5px}
+.top-fx .top_1 .ico {height:40px; width:30px; background:url(../addons/sz_yi/plugin/commission/template/mobile/default/static/images/gold_ico2.png) 0px 10px no-repeat; margin-bottom:74px; float:right;}
+.topbonus {height:40px;padding:5px; background:#cc3431;}
+.topbonus .top_1 {height:40px; width:100%;}
+.topbonus .top_1 .text {height:40px; width:auto; float:left; color:#fff; line-height:20px; font-size:14px; color:#fff;}
+.topbonus .top_1 .ico {height:40px; width:30px; background:url(../addons/sz_yi/plugin/commission/template/mobile/default/static/images/gold_ico2.png) 0px 10px no-repeat; margin-bottom:74px; float:right;}
+.top-fx .top_2 {width:100%; border-bottom: 1px #eeeeee solid;overflow: hidden;}
+.top-fx .top_2 .pr-jine em{font-size:40px; line-height:66px; color:#ff8208;float: left;font-style: normal;}
+.top-fx .top_2 .tx-name{line-height: 12px;font-size: 12px;color: #a9a9a9;}
+.top-fx .top_2 span {height:28px; color:#fff; width:auto; background-color: #0ae;font-size:14px; line-height:28px; margin:20px 0 0 20px; padding:0px 15px;  float:left; border-radius:5px;}
+.top-fx .top_2 .disabled { background: #ccc}

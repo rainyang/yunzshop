@@ -132,6 +132,14 @@ if (!class_exists('VirtualModel')) {
             ), array(
                 'id' => $order['id']
             ));
+
+        if (p('return')) {
+            p('return')->cumulative_order_amount($order['id']);
+        }
+
+        if (p('yunbi')) {
+            p('yunbi')->GetVirtualCurrency($order['id']);
+        }
             if ($order['deductcredit2'] > 0) {
                 $shopset = m('common')->getSysset('shop');
                 m('member')->setCredit($order['openid'], 'credit2', -$order['deductcredit2'], array(

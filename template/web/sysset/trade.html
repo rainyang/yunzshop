@@ -9,7 +9,7 @@
 	</ul>
 </div>
 <!-- 新增加右侧顶部三级菜单结束 -->
-    <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
+    <!-- <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" > -->
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <input type='hidden' name='setid' value="{$set['id']}" />
         <input type='hidden' name='op' value="trade" />
@@ -183,6 +183,23 @@
                         <input type="hidden" name="trade[withdraw]" value="{$set['trade']['withdraw']}"/>
                         <div class='form-control-static'>{if $set['trade']['withdraw']==1}开启{else}关闭{/if}</div>
                         {/if}
+                    </div>
+                </div>
+
+                <div class='panel-body'>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">提现手续费</label>
+                        <div class="col-sm-9 col-xs-12">
+                            {ifp 'sysset.save.trade'}
+                            <div class='input-group'>
+                                <input type="text" name="trade[poundage]" class="form-control" value="{$set['trade']['poundage']}" onkeyup="value=value.replace(/[^\d.]/g,'');if(value >= 100){value=''}" onafterpaste="value=value.replace(/[^\d.]/g,'');if(value >= 100){value=''"/>
+                                <span class='input-group-addon'>%</span>
+                            </div>
+                            {else}
+                                <input type="hidden" name="trade[poundage]" value="{$set['trade']['poundage']}"/>
+                                <div class='form-control-static'>{$set['trade']['poundage']}%</div>
+                            {/if}
+                        </div>
                     </div>
                 </div>
 

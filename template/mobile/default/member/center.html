@@ -57,28 +57,31 @@
         </div>
     </div>
 <div class="money-center">
-    <ul>
-        <li><a href="#"><span><%member.credit2%></span><br/>{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}</a></li>
-        <li><a href="#"><span><%member.credit1%></span><br/>{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}</a></li>
-        <li><a href="#"><span><%counts.couponcount%></span><br/>优惠券</a></li>
-
-        <li>
-        {if empty($set['trade']['closerecharge'])}
-            <a href="#" class="{if $member['credit2'] > 0 && empty($set['trade']['transfer'])}recharge-t{else}recharge{/if}" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</a>
+    <div class="list1" style="margin-top:0px;border-bottom: 1px solid #ECECEC;">
+            <i class="iconfont icon-virtual" style="float:left; line-height:44px;"></i>
+            <span style="float:left;">我的帐号</span>
+            <div class="allorder">{if empty($set['trade']['closerecharge'])}
+            <a href="#" class="recharge-ybut" onclick="location.href='{php echo $this->createMobileUrl('member/recharge',array('openid'=>$openid))}'">充值</a>
         {/if}
         {if $member['credit2'] > 0 && empty($set['trade']['transfer'])}
-            <a href="#" class="{if empty($set['trade']['closerecharge'])}recharge-t{else}recharge{/if}" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer'))}'">转账</a>
+            <a href="#" class="recharge-ybut" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer'))}'">转账</a>
         {/if} 
+</div>
+    </div>
+    <ul>
+        <li><a href="#"><span><%member.credit2%></span><br/>{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}</a></li>
+        {if $shopset['isyunbi']}
+            <li><a href="#"><span><%member.virtual_currency%></span><br/>{$yunbi_title}</a></li>
+        {/if}
 
-        </li>
-       
-                
-                   
+        <li><a href="#"><span><%member.credit1%></span><br/>{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}</a></li>
+        <li><a href="#"><span><%counts.couponcount%></span><br/>优惠券</a></li>     
+               
     </ul>
 </div>
 <div class="order">
     <a href="{php echo $this->createMobileUrl('order')}">
-        <div class="list1" style="margin-top:0px;">
+        <div class="list1" style="margin-top:0px;border-bottom: 1px solid #ECECEC;">
             <i class="fa fa-reorder" style="float:left; line-height:44px;"></i>
             <span style="float:left;">我的订单</span>
             <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i>
@@ -198,7 +201,10 @@
     <a href="{php echo $this->createPluginMobileUrl('return/return_queue')}"><div class="list1" style="margin:0px;"><i class="fa fa-piechart" ></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
     <%/if%>
     {/if}
-    
+        {if $shopset['isyunbi']}
+            <a href="{php echo $this->createPluginMobileUrl('yunbi/yunbi_log',array('type'=>'1'))}"><div class="list1" style="margin:0px;"><i class="fa fa-piechart" ></i>{$yunbi_title}明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+           
+        {/if} 
   
      <%if shopset.isarticle == 1%>
     <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-article"></i><%shopset.article_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>

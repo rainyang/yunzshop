@@ -38,8 +38,8 @@
                     <div class="form-group">
                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">消费码短信模板</label>
                        <div class="col-sm-9 col-xs-12">
-                           <input type="text" name="data[code_template]" class="form-control" value="{if $set['code_template']}{$set['code_template']}{else}您的核销码是：%s。请把此信息中的核销码出示给核销员进行核销操作！{/if}" />
-                           <span class='help-block'>注意：如不填写则模板默认为输入框中内容 ，其中“ %s ”为消费码变量，请勿更改，并且此模板必须和短信模板保持一致！</span>
+                           <input type="text" name="data[code_template]" class="form-control" value="{if $set['code_template']}{$set['code_template']}{else}您订购的商品是：%s，联系人：%s，电话：%s，核销码为：%s。{/if}" />
+                           <span class='help-block'>注意：如不填写则模板默认为输入框中内容 ，其中“ %s ”为消费码变量，请勿更改，所有标点符号均为全角符号，模板中不能有空格！并且此模板必须和短信模板保持一致！另外此模板只支持“互亿无线”使用！</span>
                        </div>
                     </div>
  

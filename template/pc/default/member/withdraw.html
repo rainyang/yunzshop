@@ -10,7 +10,12 @@ input {-webkit-appearance:none; outline:none;}
 .balance_sub1 {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .balance_sub2 {height:44px; margin:14px 5px; background:#f49c06; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .balance_sub3 {height:44px; margin:14px 5px;background:#e2cb04; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
-
+.page_poundage {position: relative;
+height: 45px;
+background: #fff;
+border-bottom: 1px solid #e8e8e8;
+font-size: 16px;
+line-height: 45px;padding-left:10px;}
 </style>
 <div id="container" class="rightlist"></div>
 
@@ -18,6 +23,11 @@ input {-webkit-appearance:none; outline:none;}
    <div class="balance_img"><i class="fa fa-cny"></i></div>
    <div class="balance_text">您的当前{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}</div>
    <div class="balance_num">￥<span id="credit"><%credit%></span></div>
+    {if $set['trade']['poundage'] > 0}
+        <div class="page_poundage">
+            提现手续费：{$set['trade']['poundage']}%
+        </div>
+    {/if}
    <div class="balance_num" style="height:30px;">
    <input type="text" id="money" value='' style="width:90%; height:38px; font-size:20px; margin:auto; border:1px solid #eee; padding:0px 2%; text-align:center;" placeholder="请输入提现的金额"/></div>
    <div class="button balance_sub1">确认提现</div>
