@@ -753,7 +753,7 @@ $(function(){
         <div class="fart-editor-menu">
             <nav step="1" class="navon">① 编辑文章内容</nav>
             <nav step="2" id="nav-step-2">② 设置文章及页面信息</nav>
-            <nav step="3">③ 设置营销内容</nav>
+            {if empty($_SESSION['helper'])}<nav step="3">③ 设置营销内容</nav>{/if}
         </div>
         <div id="fart-editor-content">
             <div class="fart-editor-content" step="2">
