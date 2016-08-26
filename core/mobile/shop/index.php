@@ -49,6 +49,7 @@ if ($operation == 'index') {
 	$advs_pc = set_medias($adv_pc, 'thumb,thumb_pc');
     $category = pdo_fetchall('select id,name,thumb,parentid,level from ' . tablename('sz_yi_category') . ' where uniacid=:uniacid and ishome=1 and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
 	$category = set_medias($category, 'thumb');
+
 	//首页获取全部分类导航条
 	$categorylist = m('shop')->getCategory();
 	if(!empty($categorylist)){
@@ -100,6 +101,7 @@ if ($operation == 'index') {
 			}
 	    }
 	}
+
 	$index_name = array(
 		'isrecommand' 	=> '精品推荐',
 		'isnew' 		=> '新上商品',
@@ -115,6 +117,12 @@ if ($operation == 'index') {
 		} else if ($c['level'] == 2) {
 			$c['url'] = $this->createMobileUrl('shop/list', array('ccate' => $c['id']));
 		}
+	}
+	foreach ($category_area as &$d) {
+		$d['thumb'] = tomedia($d['thumb']);
+		
+		$d['url'] = $this->createMobileUrl('shop/area_list', array('pcate_area' => $d['id']));
+		
 	}
 	/*广告与商品*/
 	//精品推荐
@@ -193,7 +201,7 @@ if ($operation == 'index') {
 if ($_W['isajax']) {
 	if ($operation == 'index') {
 
-		show_json(1, array('set' => $set, 'advs' => $advs, 'category' => $category, 'is_read' => $is_read));
+		show_json(1, array('set' => $set, 'advs' => $advs, 'category' => $category, 'is_read' => $is_read, 'category_area' => $category_area));
 	} else if ($operation == 'goods') {
 		$type = $_GPC['type'];
 		show_json(1, array('goods' => $goods, 'pagesize' => $args['pagesize']));
