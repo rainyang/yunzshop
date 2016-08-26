@@ -220,7 +220,7 @@
                         orderid:'{$_GPC['orderid']}',
                         type:'cash'
                     },function(pay_json){
-                        if(pay_json.status==2){
+                        if(pay_json.status==1){
                            $('#container').html(tpl('tpl_order_cash',pay_json.result));
                            return;
                         }
@@ -242,7 +242,7 @@
                         orderid:'{$_GPC['orderid']}',
                         type:'storecash'
                     },function(pay_json){
-                        if(pay_json.status==2){
+                        if(pay_json.status==1){
                            $('#container').html(tpl('tpl_order_cash',pay_json.result));
                            return;
                         }
