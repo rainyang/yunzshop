@@ -132,9 +132,11 @@ if (p('yunbi')) {
 }
 if (p('ranking')) {
 	$ranking_set = p('ranking')->getSet();
-
-	$shopset['rankingname'] = $ranking_set['ranking']['rankingname']?$ranking_set['ranking']['rankingname']:"排行榜";
-	$shopset['isranking'] = $ranking_set['ranking']['isranking'];
+	if ($ranking_set['ranking']['isranking'] && ($ranking_set['ranking']['isintegral'] || $ranking_set['ranking']['isexpense'] || $ranking_set['ranking']['iscommission'])) {
+		$shopset['isranking'] = true;
+		$shopset['rankingname'] = $ranking_set['ranking']['rankingname']?$ranking_set['ranking']['rankingname']:"排行榜";
+		//$shopset['isranking'] = $ranking_set['ranking']['isranking'];		
+	}
 }
 
 $open_creditshop = false;
