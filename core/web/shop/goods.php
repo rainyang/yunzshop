@@ -89,19 +89,21 @@ if (!empty($category2)) {
         }
     }
 }
-
-$sql = 'SELECT * FROM ' . tablename('sz_yi_category_area') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
-$category_area = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
-$parent_area = $children_area = array();
-if (!empty($category_area)) {
-    foreach ($category_area as $cid => $cate_area) {
-        if (!empty($cate_area['parentid'])) {
-            $children_area[$cate_area['parentid']][] = $cate_area;
-        } else {
-            $parent_area[$cate_area['id']] = $cate_area;
+if (p('area')) {
+    $sql = 'SELECT * FROM ' . tablename('sz_yi_category_area') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
+    $category_area = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
+    $parent_area = $children_area = array();
+    if (!empty($category_area)) {
+        foreach ($category_area as $cid => $cate_area) {
+            if (!empty($cate_area['parentid'])) {
+                $children_area[$cate_area['parentid']][] = $cate_area;
+            } else {
+                $parent_area[$cate_area['id']] = $cate_area;
+            }
         }
-    }
+    }    
 }
+
 
 if (p('commission')) {
     $commissionLevels = pdo_fetchall(
