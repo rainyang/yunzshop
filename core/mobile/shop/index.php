@@ -118,12 +118,7 @@ if ($operation == 'index') {
 			$c['url'] = $this->createMobileUrl('shop/list', array('ccate' => $c['id']));
 		}
 	}
-	foreach ($category_area as &$d) {
-		$d['thumb'] = tomedia($d['thumb']);
-		
-		$d['url'] = $this->createMobileUrl('shop/area_list', array('pcate_area' => $d['id']));
-		
-	}
+	
 	/*广告与商品*/
 	//精品推荐
 	$ads_pc = array();
@@ -201,7 +196,7 @@ if ($operation == 'index') {
 if ($_W['isajax']) {
 	if ($operation == 'index') {
 
-		show_json(1, array('set' => $set, 'advs' => $advs, 'category' => $category, 'is_read' => $is_read, 'category_area' => $category_area));
+		show_json(1, array('set' => $set, 'advs' => $advs, 'category' => $category, 'is_read' => $is_read));
 	} else if ($operation == 'goods') {
 		$type = $_GPC['type'];
 		show_json(1, array('goods' => $goods, 'pagesize' => $args['pagesize']));
