@@ -120,4 +120,5 @@ if (!empty($_POST)) {
     }
     message("代理商分红发放成功", $this->createPluginWebUrl('bonus/detail', array("sn" => $send_bonus_sn)), "success");
 }
+$pager = pagination($total, $pindex, $psize);
 include $this->template('send');
