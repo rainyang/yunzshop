@@ -2165,8 +2165,9 @@ function order_list_close($order) {
                     'money'         => $value['deductyunbi'],
                     'remark'        => "购物返还抵扣".$yunbiset['yunbi_title']." ".$yunbiset['yunbi_title'].": {$value['deductyunbi']} 抵扣金额: {$value['deductyunbimoney']} 订单号: {$value['ordersn']}"
                 );
+                p('yunbi')->addYunbiLog($_W["uniacid"],$data_log,'4');
             }
-            p('yunbi')->addYunbiLog($_W["uniacid"],$data_log,'4');
+            
 
         if (p("coupon") && !empty($value["couponid"])) {
             p("coupon")->returnConsumeCoupon($value["id"]);
@@ -2379,8 +2380,9 @@ function order_list_refund($item)
                 'money'         => $item['deductyunbi'],
                 'remark'        => "购物返还抵扣".$yunbiset['yunbi_title']." ".$yunbiset['yunbi_title'].": {$item['deductyunbi']} 抵扣金额: {$item['deductyunbimoney']} 订单号: {$item['ordersn']}"
             );
+            p('yunbi')->addYunbiLog($_W["uniacid"],$data_log,'4');
         }
-        p('yunbi')->addYunbiLog($_W["uniacid"],$data_log,'4');
+        
 
         if (!empty($refundtype)) {
             if ($item['deductcredit2'] > 0) {
