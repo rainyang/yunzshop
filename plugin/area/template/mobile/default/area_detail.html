@@ -118,12 +118,12 @@ div.addinfo{height:18px;}
             <img alt="" src="{$category['thumb']}">
             
         </p> 
-        <div>{$category['detail']}</div>    
+        <div>{php echo htmlspecialchars_decode($category['detail'])}</div>    
           
     </div>
     <div id="Panel1">
     
-        <div class="jd_gg"><a href="{if $category['level'] == 2}{php echo $this->createMobileUrl('shop/area', array('ccate_area' => $category['id']))}{else}{php echo $this->createMobileUrl('shop/area', array('tcate_area' => $category['id']))}{/if}">寻找{$category['name']}的特产</a></div>
+        <div class="jd_gg"><a href="{if $category['level'] == 2}{php echo $this->createPluginMobileUrl('area/area', array('ccate_area' => $category['id'], 'word' => '综合排序'))}{else}{php echo $this->createPluginMobileUrl('area/area', array('tcate_area' => $category['id'], 'word' => '综合排序'))}{/if}">寻找{$category['name']}的特产</a></div>
                 
     </div>
     <div class="readnum">阅读：{$category['times']}</div>

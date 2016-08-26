@@ -114,7 +114,16 @@ class Sz_DYi_User
         if($_GPC['p'] == 'ranking' && $_GPC["method"]=='commission'){
             return;
         }
-        //需要登陆的P方法
+        if($_GPC['p'] == 'area' && $_GPC["method"]=='area_list'){
+            return;
+        }
+        if($_GPC['p'] == 'area' && $_GPC["method"]=='area'){
+            return;
+        }
+        if($_GPC['p'] == 'area' && $_GPC["method"]=='area_detail'){
+            return;
+        }
+        //需要登陆的P方法                  
         $needLoginPList = array('address', 'commission','cart');
 
         //不需要登陆的P方法
