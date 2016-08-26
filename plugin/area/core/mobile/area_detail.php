@@ -30,6 +30,22 @@ if ($operation == 'display') {
 
     $times = $category['times'] + 1;
     pdo_update('sz_yi_category_area', array('times' => $times), array('id' => $category['id'], 'uniacid' => $_W['uniacid']));
-   
+    $html = $category['detail'];
+    preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg]?))[\'|\"].*?[\/]?>/", $html, $imgs);
+    if (isset($imgs[1])) {
+        foreach ($imgs[1] as $img) {
+            $im       = array(
+                "old" => $img,
+                "new" => tomedia($img)
+            );
+            $images[] = $im;
+        }
+        if (isset($images)) {
+            foreach ($images as $img) {
+                $html = str_replace($img['old'], $img['new'], $html);
+            }
+        }
+        $category['detail'] = $html;
+    }
 }    
 include $this->template('area/area_detail');
