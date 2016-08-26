@@ -148,7 +148,7 @@ div.addinfo{height:18px;}
                         {$_GPC['word']}
                         </a>
                         <div class="banner_cont banner_cont1">
-                            <a class="options active" data-id="0">综合排序</a>
+                            <a class="options" data-id="0">综合排序</a>
                             <a class="options" data-id="1">最新上架</a>
                             <a class="options" data-id="2">销量高到低</a>
                             <a class="options" data-id="3">价格高到低</a>
@@ -258,7 +258,7 @@ div.addinfo{height:18px;}
             var word = $(this).html();
             $('.banner_cont1').hide();
             $('.banner_cont1').attr('data-id', '');
-            location.href="{php echo $this->createMobileUrl('shop/area',array('ccate_area' => $_GPC['ccate_area'], 'tcate_area' => $_GPC['tcate_area']))}&word="+word+"&status="+status;
+            location.href="{php echo $this->createPluginMobileUrl('area/area',array('ccate_area' => $_GPC['ccate_area'], 'tcate_area' => $_GPC['tcate_area']))}&word="+word+"&status="+status;
 
         })
         

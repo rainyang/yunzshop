@@ -22,14 +22,14 @@ if ($operation == 'display') {
         $category = set_medias(pdo_fetch('select * from ' . tablename('sz_yi_category_area') . ' where id=:id 
             and uniacid=:uniacid order by displayorder DESC', $params),'thumb');
         
-        $category['url'] = $this->createMobileUrl('shop/area_detail')."&tcate_area=";
+        $category['url'] = $this->createPluginMobileUrl('area/area_detail')."&tcate_area=";
     } else if (!empty($_GPC['ccate_area'])) {
         $condition .= " and ccate_area=:id";
         $params[':id'] = intval($_GPC['ccate_area']);
         $category = set_medias(pdo_fetch('select * from ' . tablename('sz_yi_category_area') . ' where id=:id 
             and uniacid=:uniacid order by displayorder DESC', $params),'thumb');
         
-        $category['url'] = $this->createMobileUrl('shop/area_detail')."&ccate_area=";
+        $category['url'] = $this->createPluginMobileUrl('area/area_detail')."&ccate_area=";
 
     }
     if (!empty($_GPC['status'])) {
@@ -63,4 +63,4 @@ if ($operation == 'display') {
     $pindex = max(1, intval($_GPC['page']));
     $pager = pagination($total, $pindex, $args['pagesize']);
 }    
-include $this->template('shop/area');
+include $this->template('area/area');
