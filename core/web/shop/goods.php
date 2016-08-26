@@ -502,9 +502,6 @@ if ($operation == "change") {
                 'pcate1' => intval($_GPC['category2']['parentid']),
                 'ccate1' => intval($_GPC['category2']['childid']),
                 'tcate1' => intval($_GPC['category2']['thirdid']),
-                'pcate_area' => intval($_GPC['category_area']['parentid']),
-                'ccate_area' => intval($_GPC['category_area']['childid']),
-                'tcate_area' => intval($_GPC['category_area']['thirdid']),
                 'thumb' => save_media($_GPC['thumb']),
                 'type' => intval($_GPC['type']),
                 'isrecommand' => intval($_GPC['isrecommand']),
@@ -573,6 +570,11 @@ if ($operation == "change") {
                 "isopenchannel" => intval($_GPC["isopenchannel"])
 
             );
+            if (p('area')) {
+                $data['pcate_area'] = intval($_GPC['category_area']['parentid']);
+                $data['ccate_area'] = intval($_GPC['category_area']['childid']);
+                $data['tcate_area'] = intval($_GPC['category_area']['thirdid']);
+            }
             if (!empty($_GPC['bonusmoney'])) {
                 $data['bonusmoney'] = $_GPC['bonusmoney'];
             }
