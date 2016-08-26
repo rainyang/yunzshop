@@ -26,8 +26,6 @@ if ($op == 'display') {
         ':name' => "%{$kw}%"
     ));
 
-    $sql = 'SELECT * FROM ' . tablename('sz_yi_category_area') . ' WHERE `uniacid` = :uniacid AND level = "1" ORDER BY `parentid`, `displayorder` DESC';
-    $category_area = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
     $pager    = pagination($total, $pindex, $psize);
 } elseif ($op == 'post') {
     $menus     = pdo_fetchall("SELECT id,menuname,isdefault FROM " . tablename('sz_yi_designer_menu') . " WHERE uniacid= :uniacid  ", array(
