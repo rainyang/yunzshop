@@ -10,23 +10,20 @@ class AreaMobile extends Plugin
 		parent::__construct('area');
 	}
 
-	public function index()
+	public function area()
 	{
 		$this->_exec_plugin(__FUNCTION__, false);
 	}
 
-	public function api()
+	public function area_list()
 	{
 		$this->_exec_plugin(__FUNCTION__, false);
 	}
 
-	public function article()
+	public function area_detail()
 	{
 		$this->_exec_plugin(__FUNCTION__, false);
 	}
 
-	public function report()
-	{
-		$this->_exec_plugin(__FUNCTION__, false);
-	}
+	
 }

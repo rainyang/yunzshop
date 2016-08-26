@@ -2,7 +2,7 @@
 <title>{$category['name']}</title>
 <style type="text/css">
 
-    body {margin:0px; width:100%; height:100%; background:#efefef; color:#fff; }
+    body {margin:0px; width:100%; height:100%; background:white; color:#fff; }
     html {}
     .main {height:100%; width:100%; background:#fff; }
     .main .category {height:100%; width:60%; background:rgba(0,0,0,0.8);  position:fixed; left:-60%; top:0; z-index:9999;overflow-y: auto;}
@@ -105,7 +105,7 @@ div.addinfo{height:18px;}
              
              
             <link rel="stylesheet" type="text/css" href="../addons/sz_yi/template/mobile/default/static/css/area.css">
-
+<body>
 <div id='container'></div>
 
 <script id='tpl_main' type='text/html'>
@@ -161,9 +161,10 @@ div.addinfo{height:18px;}
         <div class="list_no_nav" onclick="location.href='{php echo $this->createMobileUrl('shop/list')}'">看看其他的</div>
  </div>
 </script>
+</body>
 <script language='javascript'>
     require(['core', 'tpl'], function (core, tpl) {
-      core.json('shop/area_list',{pcate_area:"{$_GPC['pcate_area']}"},function(json){
+      core.pjson('area/area_list',{pcate_area:"{$_GPC['pcate_area']}"},function(json){
           if (json.status == 1) {
 
               
@@ -181,7 +182,7 @@ div.addinfo{height:18px;}
       })
       
       $(document).on("change","#province",function(){
-        core.json('shop/area_list',{pcate_area:$(this).val()},function(pjson){
+        core.pjson('area/area_list',{pcate_area:$(this).val()},function(pjson){
             if (pjson.status == 1) {
 
                 $('#container').html(tpl('tpl_main',pjson.result));
@@ -203,7 +204,7 @@ div.addinfo{height:18px;}
       $(document).on("change","#city",function(){
       	
         
-        core.json('shop/area_list',{ccate_area:$(this).val(), pcate_area:$('#province').val()},function(cjson){
+        core.pjson('area/area_list',{ccate_area:$(this).val(), pcate_area:$('#province').val()},function(cjson){
             if (cjson.status == 1) {
               
                  

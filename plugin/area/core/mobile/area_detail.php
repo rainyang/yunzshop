@@ -48,4 +48,4 @@ if ($operation == 'display') {
         $category['detail'] = $html;
     }
 }    
-include $this->template('shop/area_detail');
+include $this->template('area/area_detail');
