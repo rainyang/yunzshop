@@ -53,12 +53,12 @@ if ($operation == 'index') {
     $category_area = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
     if ($category_area) {
         foreach ($category_area as &$value) {
-            $value['link'] = $this->createMobileUrl('shop/area_list',array('pcate_area'=>$value['id']));
+            $value['link'] = $this->createPluginMobileUrl('area/area_list',array('pcate_area'=>$value['id']));
         }
         unset($value);
         show_json(1, $category_area);
     }else {
-        show_json(0,"为检测到相应数据！");
+        show_json(0,"未检测到相应数据！");
     }
 
 }
@@ -83,7 +83,7 @@ if ($_W['isajax']) {
         $children = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=:id and uniacid=:uniacid order by displayorder DESC', array(':uniacid' => $_W['uniacid'], ':id' => intval($_GPC['pcate_area']))); 
         foreach ($current_category as &$value) {
             
-            $value['url'] = $this->createMobileUrl('shop/area')."&word=综合排序&tcate_area=";
+            $value['url'] = $this->createPluginMobileUrl('area/area')."&word=综合排序&tcate_area=";
             
         }
     } elseif (!empty($_GPC['pcate_area'])) {
@@ -101,7 +101,7 @@ if ($_W['isajax']) {
         $children = pdo_fetchall('select * from ' . tablename('sz_yi_category_area') . ' where parentid=:id and uniacid=:uniacid order by displayorder DESC', array(':uniacid' => $_W['uniacid'], ':id' => intval($_GPC['pcate_area']))); 
         foreach ($current_category as &$value) {
             
-            $value['url'] = $this->createMobileUrl('shop/area')."&word=综合排序&ccate_area=";
+            $value['url'] = $this->createPluginMobileUrl('area/area')."&word=综合排序&ccate_area=";
             
         }
     
@@ -116,4 +116,4 @@ if ($_W['isajax']) {
         'childrenid' => $childrenid
     ));
 }
-include $this->template('shop/area_list');
+include $this->template('area/area_list');

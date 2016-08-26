@@ -113,7 +113,7 @@ body {margin:0px; background:#f9f9f9; }
                     $.ajax({
                         type: 'POST',
                         dataType:'json',
-                        url: "{php echo $this->createMobileUrl('shop/area_list',array('op'=>'getcategory'))}",
+                        url: "{php echo $this->createPluginMobileUrl('area/area_list',array('op'=>'getcategory'))}",
                         success: function(data){
                             console.log(data);
                             if(data.status==1){
@@ -124,7 +124,7 @@ body {margin:0px; background:#f9f9f9; }
                             }
 
                         },error: function(){
-                            alert('未检测到相关数据11！');
+                            alert('未检测到相关数据！');
                         }
                     });
                 }
