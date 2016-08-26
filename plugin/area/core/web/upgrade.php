@@ -30,6 +30,8 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_category_area')." (
   `advurl_pc` varchar(500) DEFAULT NULL,
   `supplier_uid` int(11) DEFAULT '0',
   `detail` text DEFAULT NULL,
+  `times` int(11) DEFAULT '0',
+  `create_time` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `idx_uniacid` (`uniacid`),
   KEY `idx_displayorder` (`displayorder`),
@@ -41,6 +43,18 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_category_area')." (
 
 ";
 pdo_query($sql);
+
+if(!pdo_fieldexists('sz_yi_goods', 'pcate_area')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `pcate_area` int(11) NOT NULL DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_goods', 'ccate_area')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `ccate_area` int(11) NOT NULL DEFAULT '0';");
+}
+
+if(!pdo_fieldexists('sz_yi_goods', 'tcate_area')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `tcate_area` int(11) NOT NULL DEFAULT '0';");
+}
 
 
 
