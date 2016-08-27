@@ -49,6 +49,7 @@ if ($operation == 'index') {
 	$advs_pc = set_medias($adv_pc, 'thumb,thumb_pc');
     $category = pdo_fetchall('select id,name,thumb,parentid,level from ' . tablename('sz_yi_category') . ' where uniacid=:uniacid and ishome=1 and enabled=1 order by displayorder desc', array(':uniacid' => $uniacid));
 	$category = set_medias($category, 'thumb');
+
 	//首页获取全部分类导航条
 	$categorylist = m('shop')->getCategory();
 	if(!empty($categorylist)){
@@ -100,6 +101,7 @@ if ($operation == 'index') {
 			}
 	    }
 	}
+
 	$index_name = array(
 		'isrecommand' 	=> '精品推荐',
 		'isnew' 		=> '新上商品',
@@ -116,6 +118,7 @@ if ($operation == 'index') {
 			$c['url'] = $this->createMobileUrl('shop/list', array('ccate' => $c['id']));
 		}
 	}
+	
 	/*广告与商品*/
 	//精品推荐
 	$ads_pc = array();
