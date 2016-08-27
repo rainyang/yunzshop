@@ -150,7 +150,7 @@ if (!class_exists('ReturnModel')) {
 				} else {
 					$order_price = $order['price'];
 					$order_goods = array();
-					$m = m('member')->getMember($openid);
+					$m = m('member')->getMember($order['openid']);
 					$order_goods[0]['openid'] = $order['openid'];
 					$order_goods[0]['mid'] = $m['id'];
 					$is_goods_return = true;
