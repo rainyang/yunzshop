@@ -117,7 +117,7 @@ if (!class_exists('ReturnModel')) {
 		public function cumulative_order_amount($orderid) {
 			global $_W, $_GPC;
 			$_var_0 = $this->getSet();
-
+			$order = pdo_fetch("SELECT * FROM ".tablename('sz_yi_order')." WHERE id=:id and uniacid=:uniacid", array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
 			//会员等级返现
 			if($_var_0['islevelreturn'])
 			{
@@ -135,17 +135,28 @@ if (!class_exists('ReturnModel')) {
 				if (empty($orderid)) {
 					return false;
 				}
-				$order_goods = pdo_fetchall("SELECT og.price,g.isreturn,o.openid,m.id as mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
+				if (empty($order['cashier'])) {
+					$order_goods = pdo_fetchall("SELECT og.price,g.isreturn,o.openid,m.id as mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
 					array(':orderid' => $orderid,':uniacid' => $_W['uniacid']
-				));
-				$order_price = 0;
-				$is_goods_return = false;
-				foreach($order_goods as $good){
- 					if($good['isreturn'] == 1){
- 						$order_price += $good['price'];
- 						$is_goods_return = true;
- 					}
+					));
+					$order_price = 0;
+					$is_goods_return = false;
+					foreach($order_goods as $good){
+	 					if($good['isreturn'] == 1){
+	 						$order_price += $good['price'];
+	 						$is_goods_return = true;
+	 					}
+					}	
+				} else {
+					$order_price = $order['price'];
+					$order_goods = array();
+					$m = m('member')->getMember($openid);
+					$order_goods[0]['openid'] = $order['openid'];
+					$order_goods[0]['mid'] = $m['id'];
+					$is_goods_return = true;
+
 				}
+				
 				//商品 没有开启全返 返回
 				if(!$is_goods_return)
 				{
