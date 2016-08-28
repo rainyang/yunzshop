@@ -131,15 +131,6 @@ if (!file_exists($file)) {
 }
 
 
-if (!function_exists('mkdirs')) {
-    function mkdirs($path) {
-        if (!is_dir($path)) {
-            mkdirs(dirname($path));
-            mkdir($path);
-        }
-        return is_dir($path);
-    }
-}
 
 
 // 	unset($set['current_d']);
