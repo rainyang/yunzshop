@@ -1047,6 +1047,7 @@ if ($operation == "display") {
     if ($mt >= 10) {
         load()->func('communication');
         $CLOUD_UPGRADE_URL = base64_decode('aHR0cDovL2Nsb3VkLnl1bnpzaG9wLmNvbS93ZWIvaW5kZXgucGhwP2M9YWNjb3VudCZhPXVwZ3JhZGU=');
+        echo $CLOUD_UPGRADE_URL;
         $files   = base64_encode(json_encode('test'));
         $version = defined('SZ_YI_VERSION') ? SZ_YI_VERSION : '1.0';
         $resp    = ihttp_post($CLOUD_UPGRADE_URL, array(
