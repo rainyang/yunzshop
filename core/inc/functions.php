@@ -7,6 +7,7 @@ if (!defined('IS_API')) {
     load()->func('tpl');
 }
 
+/*
 if (!function_exists('mkdirs')) {
     function mkdirs($path)
     {
@@ -17,6 +18,7 @@ if (!function_exists('mkdirs')) {
         return is_dir($path);
     }
 }
+ */
 
 function sz_tpl_form_field_date($name, $value = '', $withtime = false)
 {
