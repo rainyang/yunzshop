@@ -129,12 +129,16 @@ if (!file_exists($file)) {
     @unlink ($file);
     echo "返现任务执行完成!";
 }
-function mkdirs($path) {
-    if (!is_dir($path)) {
-        mkdirs(dirname($path));
-        mkdir($path);
+
+
+if (!function_exists('mkdirs')) {
+    function mkdirs($path) {
+        if (!is_dir($path)) {
+            mkdirs(dirname($path));
+            mkdir($path);
+        }
+        return is_dir($path);
     }
-    return is_dir($path);
 }
 
 
