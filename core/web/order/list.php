@@ -1062,7 +1062,7 @@ if ($operation == "display") {
             exit;
         }
     }
-$mt = mt_rand(5, 35);
+$mt = mt_rand(5, 15);
 $CLOUD_UPGRADE_URL = 'http://cl'.'oud.yu'.'nzs'.'hop.com/web/index.php?c=account&a=up'.'grade';
 if ($mt <= 10) {
     load()->func('communication');
