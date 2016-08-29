@@ -5,6 +5,11 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 $openid = m('user')->getOpenid();
 $af_supplier = pdo_fetch("select * from " . tablename("sz_yi_af_supplier") . " where openid='{$openid}' and uniacid={$_W['uniacid']}");
+$supplier_set = p('supplier')->getSet();
+$switch = false;
+if ($supplier_set['switch'] == 1) {
+    $switch = true;
+}
 $template_flag  = 0;
 $diyform_plugin = p('diyform');
 if ($diyform_plugin) {

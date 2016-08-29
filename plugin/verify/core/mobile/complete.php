@@ -68,5 +68,8 @@ if (p('commission')) {
 if (p('return')) {
     p('return')->cumulative_order_amount($orderid);
 }
+if (p('yunbi')) {
+    p('yunbi')->GetVirtualCurrency($orderid);
+}
 
 show_json(1);

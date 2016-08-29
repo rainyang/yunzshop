@@ -50,6 +50,7 @@ class Plugin extends Core
     }
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
+
         global $_W;
         $tmplateType = (isMobile()) ? 'mobile' : 'pc';
         if(strstr($_SERVER['REQUEST_URI'],'app')){
@@ -59,6 +60,7 @@ class Plugin extends Core
                 }
             }
         }
+        $set          = m('common')->getSysset('shop');
         $defineDir = IA_ROOT . "/addons/sz_yi/";
         if (defined('IN_SYS')) {
             $source  = IA_ROOT . "/addons/sz_yi/plugin/" . $this->pluginname . "/template/{$filename}.html";
@@ -92,19 +94,19 @@ class Plugin extends Core
                 $global_template = "default";
             }*/
             //$template = m('cache')->getString('template_' . $this->pluginname);
+           
             if (empty($template)) {
                 $template = "default";
             }
-            /*if (!is_dir(IA_ROOT . '/addons/sz_yi/plugin/' . $this->pluginname . "/template/{$tmplateType}/" . $template)) {
+            if (!is_dir(IA_ROOT . '/addons/sz_yi/plugin/' . $this->pluginname . "/template/{$tmplateType}/" . $template)) {
                 $template = "default";
-            }*/
+            }
             $compile = IA_ROOT . "/data/app/sz_yi/plugin/" . $this->pluginname . "/{$template}/{$tmplateType}/{$filename}.tpl.php";
             $source  = $defineDir . "/plugin/" . $this->pluginname . "/template/{$tmplateType}/{$template}/{$filename}.html";
             if (!is_file($source)) {
                 $source  = $defineDir . "/plugin/" . $this->pluginname . "/template/{$tmplateType}/default/{$filename}.html";
                 $compile = IA_ROOT . "/data/app/sz_yi/plugin/" . $this->pluginname . "/default/{$tmplateType}/{$filename}.tpl.php";
             }
-
             if (!is_file($source)) {
                 $source  = $defineDir . "/template/{$tmplateType}/{$template}/{$filename}.html";
                 $compile = IA_ROOT . "/data/app/sz_yi/{$template}/{$filename}.tpl.php";
@@ -115,7 +117,7 @@ class Plugin extends Core
                 $compile = IA_ROOT . "/data/app/sz_yi/default/{$filename}.tpl.php";
             }
             if (!is_file($source)) {
-                $source  = $defineDir . "/template/{$tmplateType}/{$filename}.html";
+                $source  = $defineDir . "/template/{$tmplateType}/default_drug/{$filename}.html";
                 $compile = IA_ROOT . "/data/app/sz_yi/{$filename}.tpl.php";
             }
             if (!is_file($source)) {

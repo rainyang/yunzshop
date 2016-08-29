@@ -432,7 +432,17 @@
             </div>
         </div>
     </div>
-   
+      <%if order.deductyunbi>0%>
+     <div class="addorder_price" style="margin-top:5px;">
+        <div class="price" style="border:none;">
+            <%if order.deductyunbi>0 %>
+              <div class="line" style="line-height:26px;"><d class="deductyunbi_info" data-id="<%order.supplier_uid%>"><%order.deductyunbi%></d> {$yunbiset['yunbi_title']}可抵扣 <d class="deductyunbi_money" data-id="<%order.supplier_uid%>" style='color:#f15353'><%order.deductyunbimoney%></d> 元
+                  <div class="nav deductyunbi" data-id="<%order.supplier_uid%>" on="0" credit="<%order.deductyunbi%>" money='<%order.deductyunbimoney%>'><nav></nav></div>
+              </div>
+            <%/if%>
+        </div>
+    </div>
+   <%/if%>
 	
     <%if order.deductcredit>0 || order.deductcredit2>0  %>
      <div class="addorder_price" style="margin-top:5px;">
@@ -849,7 +859,12 @@ var fromcart = 0;
                           $('.deductcredit[data-id='+supplier_uid+']').attr('credit',getjson.result.deductcredit);
                           $('.deductcredit[data-id='+supplier_uid+']').attr('money',getjson.result.deductmoney);
                       }
-
+                      if(getjson.result.deductyunbi){
+                          $('.deductyunbi_money[data-id='+supplier_uid+']').html( getjson.result.deductyunbimoney);
+                          $('.deductyunbi_info[data-id='+supplier_uid+']').html( getjson.result.deductyunbi);
+                          $('.deductyunbi[data-id='+supplier_uid+']').attr('credit',getjson.result.deductyunbi);
+                          $('.deductyunbi[data-id='+supplier_uid+']').attr('money',getjson.result.deductyunbimoney);
+                      }
                       if(getjson.result.deductcredit2){
                           $('.deductcredit2_money[data-id='+supplier_uid+']').html( getjson.result.deductcredit2);
                           $('.deductcredit2[data-id='+supplier_uid+']').attr('credit2',getjson.result.deductcredit2);
@@ -1001,6 +1016,13 @@ var fromcart = 0;
                      
                 }
             }   
+            var deductyunbi = 0;
+            if($('.deductyunbi[data-id='+supplier_uid+']').length>0){
+                if($('.deductyunbi[data-id='+supplier_uid+']').attr('on')=='1'){
+                    deductyunbi = parseFloat( $('.deductyunbi[data-id='+supplier_uid+']').attr('money').replace(',','') )
+                } 
+            } 
+
             var deductprice2 = 0;
 
             if($('.deductcredit2[data-id='+supplier_uid+']').length>0){
@@ -1009,7 +1031,7 @@ var fromcart = 0;
                      }
              }
             
-            totalprice = totalprice - deductprice - deductprice2;
+            totalprice = totalprice - deductprice - deductprice2 - deductyunbi;
             if(totalprice<=0){ 
                 totalprice = 0;
             }
@@ -1140,7 +1162,11 @@ var fromcart = 0;
                       order[i].deduct = 1;       
                 }
             }
-             
+            if($('.deductyunbi[data-id='+supplierarr[i]+']').length>0){
+                if($('.deductyunbi[data-id='+supplierarr[i]+']').attr('on')=='1'){
+                      order[i].yunbi = 1;       
+                }
+            }  
             if($('.deductcredit2[data-id='+supplierarr[i]+']').length>0){
                 if($('.deductcredit2[data-id='+supplierarr[i]+']').attr('on')=='1'){
                       order[i].deduct2 = 1;       
@@ -1183,6 +1209,20 @@ var fromcart = 0;
                } 
                calctotalprice(supplier_uid);
         });
+        //虚拟币抵扣
+        $('.deductyunbi').click(function(){
+               var on = $(this).attr('on')=='0'?'1':'0';
+               var supplier_uid = $(this).attr('data-id');
+               $(this).attr('on',on);
+               if(on=='1'){
+                     $(this).addClass('on').find('nav').addClass('on');
+               }
+               else{
+                     $(this).removeClass('on').find('nav').removeClass('on');
+               } 
+               calctotalprice(supplier_uid);
+        });
+        
         //余额抵扣
         $('.deductcredit2').click(function(){
                var on = $(this).attr('on')=='0'?'1':'0';

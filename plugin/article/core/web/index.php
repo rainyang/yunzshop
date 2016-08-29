@@ -5,43 +5,64 @@ load()->func('tpl');
 
 $member_levels = m('member')->getLevels();
 $distributor_levels = p("commission")->getLevels();
-
+session_start();
 if ($operation == 'display') {
+	if (empty($_GPC['is_helper'])) {
+		unset($_SESSION['helper']);
+	}
 	$select_category = empty($_GPC['category']) ? '' : " and a.article_category=" . intval($_GPC['category']) . " ";
 	$select_title = empty($_GPC['keyword']) ? '' : " and a.article_title LIKE '%" . $_GPC['keyword'] . "%' ";
 	$page = empty($_GPC['page']) ? "" : $_GPC['page'];
 	$pindex = max(1, intval($page));
 	$psize = 15;
-	$articles = pdo_fetchall("SELECT a.id,a.article_title,a.article_category,a.article_keyword,a.article_date,a.article_readnum,a.article_likenum,a.article_state,a.article_state_wx,c.category_name FROM " . tablename('sz_yi_article') . " a left join " . tablename('sz_yi_article_category') . " c on c.id=a.article_category  WHERE a.uniacid= :uniacid " . $select_title . $select_category . " order by article_date desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, array(':uniacid' => $_W['uniacid']));
-	$total = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article') . " a left join " . tablename('sz_yi_article_category') . " c on c.id=a.article_category  WHERE a.uniacid= :uniacid " . $select_title . $select_category, array(':uniacid' => $_W['uniacid']));
+
+	if (!empty($_SESSION['helper'])) {
+		$cond = ' AND is_helper=' . $_SESSION['helper'];
+		$condtion = ' AND a.is_helper=' . $_SESSION['helper'] . ' AND c.is_helper=' . $_SESSION['helper'];
+	} else {
+		$cond = ' AND is_helper=0';
+		$condtion = ' AND a.is_helper=0 AND c.is_helper=0';
+	}
+	$articles = pdo_fetchall("SELECT a.id,a.article_title,a.article_category,a.article_keyword,a.article_date,a.article_readnum,a.article_likenum,a.article_state,a.article_state_wx,c.category_name FROM " . tablename('sz_yi_article') . " a left join " . tablename('sz_yi_article_category') . " c on c.id=a.article_category  WHERE a.uniacid= :uniacid " . $select_title . $select_category . $condtion . " order by article_date desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, array(':uniacid' => $_W['uniacid']));
+	$total = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article') . " a left join " . tablename('sz_yi_article_category') . " c on c.id=a.article_category  WHERE a.uniacid= :uniacid " . $select_title . $select_category . $condtion, array(':uniacid' => $_W['uniacid']));
 	$pager = pagination($total, $pindex, $psize);
-	$articlenum = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article') . " WHERE uniacid= :uniacid ", array(':uniacid' => $_W['uniacid']));
-	$categorys = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_article_category') . " WHERE uniacid=:uniacid ", array(':uniacid' => $_W['uniacid']));
+	$articlenum = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article') . " WHERE uniacid= :uniacid {$cond} ", array(':uniacid' => $_W['uniacid']));
+	$categorys = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_article_category') . " WHERE uniacid=:uniacid {$cond} ", array(':uniacid' => $_W['uniacid']));
 } elseif ($operation == 'post') {
-	$categorys = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_article_category') . " WHERE uniacid=:uniacid ", array(':uniacid' => $_W['uniacid']));
+	if (!empty($_SESSION['helper'])) {
+		$condtion = ' AND is_helper=1';
+	} else {
+		$condtion = ' AND is_helper=0';
+	}
+	$categorys = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_article_category') . " WHERE uniacid=:uniacid {$condtion} ", array(':uniacid' => $_W['uniacid']));
 	$aid = intval($_GPC['aid']);
 	if (!empty($aid)) {
-		$article = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article') . " WHERE id=:aid and uniacid=:uniacid limit 1 ", array(':aid' => $aid, ':uniacid' => $_W['uniacid']));
+		$article = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article') . " WHERE id=:aid and uniacid=:uniacid {$condtion} limit 1 ", array(':aid' => $aid, ':uniacid' => $_W['uniacid']));
 		$article['product_advs'] = htmlspecialchars_decode($article['product_advs']);
 		$advs = json_decode($article['product_advs'], true);
 	}
 	$mp = pdo_fetch("SELECT acid,uniacid,name FROM " . tablename('account_wechats') . " WHERE uniacid=:uniacid ", array(':uniacid' => $_W['uniacid']));
-	$goodcates = pdo_fetchall("SELECT id,name,parentid FROM " . tablename('sz_yi_category') . " WHERE enabled=:enabled and uniacid= :uniacid  ", array(':uniacid' => $_W['uniacid'], ':enabled' => '1'));
-	$articles = pdo_fetchall("SELECT id,article_title,article_category FROM " . tablename('sz_yi_article') . " WHERE uniacid=:uniacid ", array(':uniacid' => $_W['uniacid']));
+	$goodcates = pdo_fetchall("SELECT id,name,parentid FROM " . tablename('sz_yi_category') . " WHERE enabled=:enabled and uniacid= :uniacid ", array(':uniacid' => $_W['uniacid'], ':enabled' => '1'));
+	$articles = pdo_fetchall("SELECT id,article_title,article_category FROM " . tablename('sz_yi_article') . " WHERE uniacid=:uniacid {$condtion} ", array(':uniacid' => $_W['uniacid']));
 	$article_sys = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article_sys') . " WHERE uniacid=:uniacid limit 1 ", array(':uniacid' => $_W['uniacid']));
 	$designer = p('designer');
 	if ($designer) {
 		$diypages = pdo_fetchall("SELECT id,pagetype,setdefault,pagename FROM " . tablename('sz_yi_designer') . " WHERE uniacid=:uniacid order by setdefault desc  ", array(':uniacid' => $_W['uniacid']));
 	}
 } elseif ($operation == 'category') {
+	if (!empty($_SESSION['helper'])) {
+		$condtion = ' AND is_helper=1';
+	} else {
+		$condtion = ' AND is_helper=0';
+	}
 	$kw = $_GPC['keyword'];
 	$page = empty($_GPC['page']) ? "" : $_GPC['page'];
 	$pindex = max(1, intval($page));
 	$psize = 15;
-	$list = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_article_category') . " WHERE category_name LIKE :name and uniacid=:uniacid order by id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, array(':name' => "%{$kw}%", ':uniacid' => $_W['uniacid']));
-	$total = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article_category') . " WHERE category_name LIKE :name and uniacid=:uniacid ", array(':name' => "%{$kw}%", ':uniacid' => $_W['uniacid']));
+	$list = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_article_category') . " WHERE category_name LIKE :name and uniacid=:uniacid {$condtion} order by id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, array(':name' => "%{$kw}%", ':uniacid' => $_W['uniacid']));
+	$total = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article_category') . " WHERE category_name {$condtion} LIKE :name and uniacid=:uniacid ", array(':name' => "%{$kw}%", ':uniacid' => $_W['uniacid']));
 	$pager = pagination($total, $pindex, $psize);
-	$categorynum = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article_category') . " WHERE uniacid= :uniacid ", array(':uniacid' => $_W['uniacid']));
+	$categorynum = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article_category') . " WHERE uniacid= :uniacid {$condtion} ", array(':uniacid' => $_W['uniacid']));
 } elseif ($operation == 'other') {
 	ca('article.page.otherset');
 	$article_sys = pdo_fetch("SELECT * FROM " . tablename('sz_yi_article_sys') . " WHERE uniacid=:uniacid limit 1 ", array(':uniacid' => $_W['uniacid']));
@@ -93,10 +114,15 @@ if ($operation == 'display') {
 	if (!empty($kw)) {
 		$where .= " and cons like '%" . $kw . "%'";
 	}
+	if (!empty($_SESSION['helper'])) {
+		$condtion = ' AND is_helper=1';
+	} else {
+		$condtion = ' AND is_helper=0';
+	}
 	$page = empty($_GPC['page']) ? "" : $_GPC['page'];
 	$pindex = max(1, intval($page));
 	$psize = 15;
-	$datas = pdo_fetchall("SELECT r.id,r.mid,r.openid,r.aid,r.cate,r.cons,u.nickname,a.article_title FROM " . tablename('sz_yi_article_report') . " r left join " . tablename('sz_yi_member') . " u on u.id=r.mid left join " . tablename("sz_yi_article") . " a on a.id=r.aid where r.uniacid=:uniacid " . $where . ' order by id desc limit ' . ($pindex - 1) * $psize . ',' . $psize, array(":uniacid" => $_W['uniacid']));
+	$datas = pdo_fetchall("SELECT r.id,r.mid,r.openid,r.aid,r.cate,r.cons,u.nickname,a.article_title FROM " . tablename('sz_yi_article_report') . " r left join " . tablename('sz_yi_member') . " u on u.id=r.mid left join " . tablename("sz_yi_article") . " a on a.id=r.aid where r.uniacid=:uniacid " . $where . $condtion . ' order by id desc limit ' . ($pindex - 1) * $psize . ',' . $psize, array(":uniacid" => $_W['uniacid']));
 	$total = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article_report') . " where uniacid=:uniacid " . $where, array(':uniacid' => $_W['uniacid']));
 	$pager = pagination($total, $pindex, $psize);
 	$reportnum = pdo_fetchcolumn("SELECT COUNT(*) FROM " . tablename('sz_yi_article_report') . " WHERE uniacid= :uniacid ", array(':uniacid' => $_W['uniacid']));

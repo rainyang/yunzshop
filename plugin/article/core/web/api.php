@@ -1,6 +1,7 @@
 <?php
 global $_W, $_GPC;
 $apido = $_GPC['apido'];
+session_start();
 if ($_W['isajax'] && $_W['ispost']) {
 	if ($apido == 'delarticle') {
 		ca('article.page.delete');
@@ -75,6 +76,9 @@ if ($_W['isajax'] && $_W['ispost']) {
 				 "d_level" => $d_level,
 				 "loveshow" => $loveshow
 				 );
+			if (!empty($_SESSION['helper'])) {
+				$arr['is_helper'] = 1;
+			}
 			if (empty($cid)) {
 				ca('article.cate.addcate');
 				pdo_insert('sz_yi_article_category', $arr);
@@ -90,7 +94,6 @@ if ($_W['isajax'] && $_W['ispost']) {
 		}
 	} elseif ($apido == 'save') {
 		$data = $_GPC['data'];
-		// print_r($data);exit;
 		$content = htmlspecialchars_decode($content);
 		$content = m('common')->html_images($_GPC['content']);
 		$content = htmlspecialchars($content);
@@ -139,6 +142,9 @@ if ($_W['isajax'] && $_W['ispost']) {
 			$arr['product_advs_link'] = $product_advs_link;
 			$arr['product_advs'] = $product_advs;
 			$arr['resp_img'] = save_media($arr['resp_img']);
+			if (!empty($_SESSION['helper'])) {
+				$arr['is_helper'] = 1;
+			}
 			if (empty($arr['id'])) {
 				$arr['article_date'] = date('Y-m-d H:i:s');
 				ca('article.page.add');

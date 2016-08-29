@@ -125,3 +125,20 @@ background:-moz-linear-gradient(top,rgba(0,0,0,0.0),rgba(0,0,0,0.8));
 .record_line .info .result {height:20px; line-height:20px; font-size:12px; color:#f90; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;  content:"..."}
 .record_line .info .price {height:20px; line-height:20px; font-size:14px; color:#999; overflow: hidden; white-space: nowrap; text-overflow: ellipsis;  content:"..."}
 .record_line .go {height:60px; width:20px; float:right; color:#ccc;line-height:60px; text-align: center; font-size:32px;}
+
+/*新改积分页面*/
+.integral-pos{padding: 20px;background: #fff;overflow: hidden;margin:10px 0 0;}
+.integral-pos ul li {width: 220px;float: left;margin-top: 30px;background: #fff;margin-left:10px;}
+.integral-pos ul li a {display: block;text-align: center;}
+.integral-pos ul li a img {width: 204px;height: 204px;padding: 4px;border: 1px solid #E8E8E8;}
+.integral-pos ul li h1{line-height: 30px;font-size: 14px;padding-left: 10px;color: #666}
+.integral-pos ul li h1 span{ background: #f15353;font-size: 12px;color: #fff;padding: 4px 6px;border-radius: 2px;margin-left: 4px}
+.integral-name{line-height: 20px;height: 20px;overflow: hidden;font-size: 14px;color: #333;padding-left: 10px}
+.integral-num{line-height: 20px;height: 20px;overflow: hidden;font-size: 12px;color: #999;padding-left: 10px}
+.integral-num span{color: #f15353;font-weight: bold;}
+.integral-but{margin-top: 10px}
+.integral-but a {width: 115px;height: 34px;line-height: 34px;background: #f15353;border-radius: 4px;font-size: 12px;color: #fff;text-align: center;margin: 0 auto;}
+
+
+
+
