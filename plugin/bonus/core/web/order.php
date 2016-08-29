@@ -340,14 +340,14 @@ if ($operation == "display") {
                 "address" => $value["address"],
             );
         }
-        $bonus_area_money_all = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods')." where orderid=:orderid and uniacid=:uniacid and bonus_area!=0", array(':orderid' => $value['id'], ":uniacid" => $_W['uniacid']));
-        $bonus_range_money_all = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods')." where orderid=:orderid and uniacid=:uniacid and bonus_area=0", array(':orderid' => $value['id'], ":uniacid" => $_W['uniacid']));
-        if($bonus_area_money_all > 0 && $bonus_range_money_all > 0){
-            $bonus_money_all = $bonus_area_money_all + $bonus_range_money_all;
+        $bonus_area_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods')." where orderid=:orderid and uniacid=:uniacid and bonus_area!=0 and mid=:mid", array(':orderid' => $value['id'], ":uniacid" => $_W['uniacid'], ":mid" => $bonusagentid));
+        $bonus_range_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods')." where orderid=:orderid and uniacid=:uniacid and bonus_area=0 and mid=:mid", array(':orderid' => $value['id'], ":uniacid" => $_W['uniacid'], ":mid" => $bonusagentid));
+        if($bonus_area_money > 0 && $bonus_range_money > 0){
+            $bonus_money_all = $bonus_area_money + $bonus_range_money;
             $value['bonus_money_all'] = floatval($bonus_money_all);
         }
-        $value['bonus_area_money_all'] = floatval($bonus_area_money_all);
-        $value['bonus_range_money_all'] = floatval($bonus_range_money_all);
+        $value['bonus_area_money'] = floatval($bonus_area_money);
+        $value['bonus_range_money'] = floatval($bonus_range_money);
         $commission1 = - 1;
         $commission2 = - 1;
         $commission3 = - 1;
