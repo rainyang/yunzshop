@@ -78,8 +78,10 @@ if (empty($infourl) && $_W['isajax']) {
     die($img);
 }
 
-if (is_app()) {
+if (is_app() && empty($_GPC['scan_qr'])) {
 	include $this->template('app_shares');
+} else if ($_GPC['scan_qr']) {
+	include $this->template('scan_qr');
 } else {
 	include $this->template('shares');
 }

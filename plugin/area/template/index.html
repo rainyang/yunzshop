@@ -3,6 +3,7 @@
 <div class="ulleft-nav">
 <ul class="nav nav-tabs">
     <li {if $_GPC['op']=='' || $_GPC['op']=='display'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('area')}" style="cursor: pointer;">区域管理</a></li>
+    <li {if $_GPC['op']=='statistics'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('area/statistics', array('op' => 'statistics'))}" style="cursor: pointer;">销售统计</a></li>
     
 </ul>
 </div>
@@ -23,12 +24,12 @@
                 <div class="col-sm-9 col-xs-12">
                     <p class='form-control-static'><a href='javascript:;' title='点击复制连接' id='cp'>
                            {if empty($parent)}
-                           {php echo $this->createMobileUrl('shop/list',array('pcate1'=>$item['id']))}
+                           {php echo $this->createPluginMobileUrl('area/area',array('pcate_area'=>$item['id'], 'word'=>'综合排序'))}
                            {else}
                                {if empty($parent1)}
-                                 {php echo $this->createMobileUrl('shop/list',array('ccate1'=>$item['id']))}
+                                 {php echo $this->createPluginMobileUrl('area/area',array('ccate_area'=>$item['id'], 'word'=>'综合排序'))}
                                {else}
-                                 {php echo $this->createMobileUrl('shop/list',array('tcate1'=>$item['id']))}
+                                 {php echo $this->createPluginMobileUrl('area/area',array('tcate_area'=>$item['id'], 'word'=>'综合排序'))}
                                {/if}
                            {/if}
                         </a>
