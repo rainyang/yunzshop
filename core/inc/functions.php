@@ -6,6 +6,20 @@ if (!defined('IN_IA')) {
 if (!defined('IS_API')) {
     load()->func('tpl');
 }
+
+/*
+if (!function_exists('mkdirs')) {
+    function mkdirs($path)
+    {
+        if (!is_dir($path)) {
+            mkdirs(dirname($path));
+            mkdir($path);
+        }
+        return is_dir($path);
+    }
+}
+ */
+
 function sz_tpl_form_field_date($name, $value = '', $withtime = false)
 {
     $s = '';

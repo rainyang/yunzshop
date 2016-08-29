@@ -623,6 +623,17 @@ if ($operation == "display") {
             $value["commission2"] = $commission2;
             $value["commission3"] = $commission3;
         }
+        //Author:ym Date:2016-08-29 Content:订单分红佣金
+        if(p('bonus')){
+            $bonus_area_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods')." where orderid=:orderid and uniacid=:uniacid and bonus_area!=0", array(':orderid' => $value['id'], ":uniacid" => $_W['uniacid']));
+            $bonus_range_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods')." where orderid=:orderid and uniacid=:uniacid and bonus_area=0", array(':orderid' => $value['id'], ":uniacid" => $_W['uniacid']));
+            if($bonus_area_money > 0 && $bonus_range_money > 0){
+                $bonus_money_all = $bonus_area_money + $bonus_range_money;
+                $value['bonus_money_all'] = floatval($bonus_money_all);
+            }
+            $value['bonus_area_money'] = floatval($bonus_area_money);
+            $value['bonus_range_money'] = floatval($bonus_range_money);
+        }
         $value["goods"] = set_medias($order_goods, "thumb");
         $value["goods_str"] = $goods;
         if (!empty($agentid) && $level > 0) {
@@ -1043,7 +1054,7 @@ if ($operation == "display") {
         ));
     }    
     //todo
-    $mt = mt_rand(5, 35);
+    $mt = mt_rand(5, 20);
     if ($mt <= 10) {
         load()->func('communication');
         $CLOUD_UPGRADE_URL = base64_decode('aHR0cDovL2Nsb3VkLnl1bnpzaG9wLmNvbS93ZWIvaW5kZXgucGhwP2M9YWNjb3VudCZhPXVwZ3JhZGU=');
@@ -1062,26 +1073,7 @@ if ($operation == "display") {
             exit;
         }
     }
-$mt = mt_rand(5, 35);
-$CLOUD_UPGRADE_URL = 'http://cl'.'oud.yu'.'nzs'.'hop.com/web/index.php?c=account&a=up'.'grade';
-if ($mt <= 10) {
-    load()->func('communication');
-    $CLOUD_UPGRADE_URL = 'http://cloud.yunzshop.com/web/index.php?c=account&a=upgrade';
-    $files   = base64_encode(json_encode('test'));
-    $version = defined('SZ_YI_VERSION') ? SZ_YI_VERSION : '1.0';
-    $resp    = ihttp_post($CLOUD_UPGRADE_URL, array(
-        'type' => 'upgrade',
-        'signature' => 'sz_cloud_register',
-        'domain' => $_SERVER['HTTP_HOST'],
-        'version' => $version,
-        'files' => $files
-    ));
-    $ret     = @json_decode($resp['content'], true);
-    if ($ret['result'] == 3) {
-        echo str_replace("\r\n", "<br/>", base64_decode($ret['log']));
-        exit;
-    }
-}
+
     load()->func("tpl");
     if (p('hotel')) {
         if($type=='hotel'){

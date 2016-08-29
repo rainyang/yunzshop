@@ -187,24 +187,7 @@
                         <b>下单时间:  </b>{php echo date('Y-m-d H:i:s', $item['createtime'])}
                         {if !empty($item['refundstate'])}<label class='label label-danger'>{$r_type[$item['rtype']]}申请</label>{/if}
                         {if $item['rstatus'] == 4}<label class='label label-primary'>客户已经寄出快递</label>{/if}
-                        {if !empty($agentid)}
-                         <b>分销订单级别:</b> {$item['level']}级 <b>分销佣金:</b> {$item['commission']} 元
                         
-                         {/if}
-                         {if !empty($level)}
-                            
-                              {if empty($agentid)}
-                              {if $item['commission1']!=-1}<b>1级佣金:</b> {$item['commission1']} 元 {/if}
-                              {if $item['commission2']!=-1}<b>2级佣金:</b> {$item['commission2']} 元 {/if}
-                              {if $item['commission3']!=-1}<b>3级佣金:</b> {$item['commission3']} 元 {/if}
-                              {/if}
-                              {if !empty($item['agentid'])}
-                            {ifp 'commission.changecommission'}
-                            <a href='javascript:;' class='btn btn-default' onclick="commission_change('{$item['id']}')">修改佣金</a>
-                            {/if}
-                              {/if}
-                         
-                         {/if}
                          <label class="label label-info">{$item['vendor']}</label>
                     <td style='border-bottom:1px solid #ccc;background:#f8f8f8;text-align: center' >
                           {if empty($item['statusvalue'])}
@@ -334,6 +317,40 @@
                     {template 'web/order/ops'}
                      </td>
             {/if} 
+        </tr>
+        <tr>
+            <td colspan="4">
+                {if !empty($level)}
+                <i class="iconfont icon-sitemap biz" style="color:#fff;background-color: #3366FF;"></i>
+                 <b style="color:#3366FF">分销佣金:</b>
+                      {if empty($agentid)}
+                      {if $item['commission1']!=-1}<b>1级佣金:</b> {$item['commission1']} 元 {/if}
+                      {if $item['commission2']!=-1}<b>2级佣金:</b> {$item['commission2']} 元 {/if}
+                      {if $item['commission3']!=-1}<b>3级佣金:</b> {$item['commission3']} 元 {/if}
+                      {/if}
+                      {if !empty($item['agentid'])}
+                    {ifp 'commission.changecommission'}
+                    <a href='javascript:;' class='btn btn-default' onclick="commission_change('{$item['id']}')">修改佣金</a>
+                    {/if}
+                      {/if}
+                 
+                 {/if}
+            </td>
+            <td colspan="4">
+                {if $item['bonus_range_money'] > 0 || $item['bonus_area_money'] > 0}
+                    <i class="iconfont icon-fh biz" style="color:#fff;background-color: #FF3300;"></i>
+                    <b style="color:#FF3300">分红佣金:</b>
+                    {if $item['bonus_range_money'] > 0}
+                        <b>订单代理分红:</b> {$item['bonus_range_money']}元
+                    {/if}
+                    {if $item['bonus_area_money'] > 0}
+                        <b>订单区域分红:</b> {$item['bonus_area_money']}元
+                    {/if}
+                    {if $item['bonus_range_money'] > 0 && $item['bonus_area_money'] > 0}
+                        <b>订单总分红:</b> {$item['bonus_money_all']}元
+                    {/if} 
+                {/if} 
+            </td>
         </tr>
     {/loop}
    </table>
