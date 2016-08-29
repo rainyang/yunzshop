@@ -123,10 +123,12 @@ class YZ extends base
         if (!$uid) {
             $uid = $this->uid;
         }
-        if (!p('supplier'))
+        if (!p('supplier')){
             return false;
-        if (!p('supplier')->verifyUserIsSupplier($uid))
+        }
+        if (!p('supplier')->verifyUserIsSupplier($uid)){
             return false;
+        }
         return true;
     }
     /**

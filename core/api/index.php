@@ -9,7 +9,7 @@
  * @version   v1.0
  */
 namespace api;
-define('IN_SYS',true);
+define('IN_SYS', true);
 define("__API_ROOT__", __DIR__);
 define("__BASE_ROOT__", __DIR__ . "/../../../..");
 require_once __BASE_ROOT__ . '/framework/bootstrap.inc.php';
@@ -20,25 +20,45 @@ require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/aes.php';
 require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/core.php';
 
 $_GET['api'] = ltrim($_GET['api'], '/');
-spl_autoload_register(function ($class_name) {
 
-    $name_space = substr($class_name, 0, strrpos($class_name, '\\'));
-
-    $class_name_parts = explode('\\', $class_name);
-    if ($name_space == 'api\model') {
-        array_unshift($class_name_parts, __API_ROOT__ . '/..');
-        $dir = implode('/', $class_name_parts);
-        require $dir . '.php';
-
-    } elseif ($name_space == 'controller\api') {
-
-        //array_unshift($parts,__API_ROOT__.'/'.$_GET['api']);
-        //$dir = implode('/',$class_name_parts);
-        //require $dir.'.php';
+class AutoLoader
+{
+    public function __construct()
+    {
+        spl_autoload_register(array($this, 'spl_autoload_register'));
     }
-});
+    //private $namespace;
+    public function spl_autoload_register($full_class_name)
+    {
+        $namespace = substr($full_class_name, 0, strrpos($full_class_name, '\\'));//最后一个'\'之前 是命名空间
 
-require_once __API_ROOT__.'/controller/YZ.class.php';
+        $dir = self::_mapNamespaceToDir($namespace);
+        dump($dir);
+        $class_name = $this->_getClassName($full_class_name);
+        dump($class_name);
+        require "{$dir}/{$class_name}.php";
+    }
+    private function _getClassName($full_class_name){
+        $array = explode('\\',$full_class_name);
+        $name = array_pop($array);
+        return $name;
+    }
+    private function _mapNamespaceToDir($namespace)
+    {
+        $dir = '';
+        switch ($namespace) {
+            case 'Util':
+                $dir = __API_ROOT__ . '/../inc/';
+                break;
+            default:
+                break;
+        }
+        $dir .= str_replace('\\','/', $namespace);// 明明空间中的\ 转换为目录的/
+        return $dir;
+    }
+}
+
+require_once __API_ROOT__ . '/controller/YZ.class.php';
 
 final class Dispatcher
 {
@@ -49,7 +69,7 @@ final class Dispatcher
     {
         $this->api_name = $api_name;
         $this->api_name_arr = explode('/', $api_name);
-        
+
     }
 
     public function getControllerPatch()
@@ -60,14 +80,16 @@ final class Dispatcher
         return __API_ROOT__ . "/controller/{$controller_group_name}/{$controller_name}.php";
     }
 
-    public function getControllerGroupName(){
+    public function getControllerGroupName()
+    {
         $controller_group_name = $this->api_name_arr[0];
         return $controller_group_name;
     }
+
     public function getControllerName()
     {
         $controller_name = $this->api_name_arr[1];
-       
+
         return $controller_name;
     }
 
@@ -77,27 +99,42 @@ final class Dispatcher
         return $method_name;
     }
 }
-final class Run{
-    const CONTROLLER_NAME_SPACE='\\api\\controller\\';
+
+final class Run
+{
+    const CONTROLLER_NAME_SPACE = '\\api\\controller\\';
     private $dispatch;
+
     public function __construct()
     {
         $this->dispatch = new Dispatcher($_GET['api']);
+        //todo 感觉应该使用静态方法
+        new AutoLoader();
         $this->run();
     }
-    public function run(){
+
+    private function spl_autoload_register()
+    {
+
+    }
+
+    public function run()
+    {
         require $this->dispatch->getControllerPatch();
-        $controller_full_name = $this->getControllerFullName();
+        $controller_full_name = $this->_getControllerFullName();
         $method_name = $this->dispatch->getMethodName();
         $controller_obj = new $controller_full_name;
         $controller_obj->$method_name();
     }
-    private function getControllerFullName(){
+
+    private function _getControllerFullName()
+    {
         $controller_group_name = $this->dispatch->getControllerGroupName();
         $controller_name = $this->dispatch->getControllerName();
-        $controller_full_name = $this::CONTROLLER_NAME_SPACE."{$controller_group_name}\\{$controller_name}";
+        $controller_full_name = $this::CONTROLLER_NAME_SPACE . "{$controller_group_name}\\{$controller_name}";
         return $controller_full_name;
     }
 }
+
 new Run();
 
