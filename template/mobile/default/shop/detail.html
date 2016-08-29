@@ -557,16 +557,6 @@ div.flicking_con a.on{background-position:0 -9px}
       PINGPP_ANDROID_SDK.app_share_QrCode(qr_url, qr_imgurl);
   }
 
-  //扫描二维码-保存图片页面
-  function share_qq_space_to_url() {
-      location.href = qr_url;
-  }
-
-  //扫描二维码-点击保存图片
-  function share_qq_space_to_url() {
-      PINGPP_ANDROID_SDK.app_save_QrCode(qr_imgurl);
-  }
-
   /*****************
    * IOS
    * @param callback
@@ -713,12 +703,7 @@ div.flicking_con a.on{background-position:0 -9px}
                     webapp_share();
                 } else {
                     setupWebViewJavascriptBridge(function(bridge) {
-                        var title = "{php echo $_W['shopshare']['title']}";
-                        var link = "{php echo $_W['shopshare']['link']}" + "&access=app";
-                        var imgurl = "{php echo $_W['shopshare']['imgUrl']}";
-                        var desc = "{php echo $_W['shopshare']['desc']}";
-
-                        var resData = [title,link,imgurl,desc];
+                        var resData = [title,link,imgurl,desc,imgurls];
 
                         //启动页
                         bridge.callHandler("webapp_share",'',function(response)

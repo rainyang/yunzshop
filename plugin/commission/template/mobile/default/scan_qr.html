@@ -97,7 +97,8 @@ body {margin:0px; background:#f4f4f4;}
     <!-- 底部浮层 结束 -->
     <script language="javascript">
         require(['core'],function(core){
-           
+            var qr_imgurl = '';
+
            if( "{$infourl}"!=''){
                 core.message('您需要完善您的资料才能继续!',"{$infourl}","warning");
                 return;
@@ -112,23 +113,15 @@ body {margin:0px; background:#f4f4f4;}
             });
 
             $("#btn3").click(function () {
-                var title = "{php echo $_W['shopshare']['title']}";
-                var link = "{php echo $_W['shopshare']['link']}" + "&access=app";
-                var imgurl = "{php echo $_W['shopshare']['imgUrl']}";
-                var desc = "{php echo $_W['shopshare']['desc']}";
-
-                if (typeof PINGPP_IOS_SDK !== 'undefined') {
-                    shareLink(title, link, imgurl, desc);
-                } else if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
-                    PINGPP_ANDROID_SDK.shareLink(title, link, imgurl, desc);
-                }
+                PINGPP_ANDROID_SDK.app_save_QrCode(qr_imgurl);
             });
 
             core.tip.show('正在生成海报，请稍后...','middle',0);
             $.ajax({
                 url:'', 
                 type:'post',
-                success:function(img){ 
+                success:function(img){
+                    qr_imgurl = img;
                     $("#posterimg").attr('src',img).show();
                     core.tip.show(false);
                 }
