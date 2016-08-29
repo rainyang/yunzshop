@@ -1,7 +1,7 @@
 <?php
 global $_W, $_GPC;
 set_time_limit(0);
-
+load()->func('file');
 //创建文件锁
 $tmpdir = IA_ROOT . "/addons/sz_yi/tmp/reutrn";
 $file   = $tmpdir."/filelock.txt";
@@ -10,7 +10,6 @@ if (!is_dir($tmpdir)) {
 }
 $return_log = $tmpdir."/return_log.txt";
 $log_content = array();
-
 if (!file_exists($file)) {
     //$fp = fopen($file, "r+");
     touch($file);
