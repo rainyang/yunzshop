@@ -487,9 +487,12 @@ div.flicking_con a.on{background-position:0 -9px}
 <script language="javascript">
     var title = "{php echo $_W['shopshare']['title']}";
     var link = "{php echo $_W['shopshare']['link']}" + "&access=app";
+    /*
+    var href = "{php echo $_W['shopshare']['link']}" + "&access=app";
+    var link = "<a href=\"" + href + "\">" + title + "</a>";
+    */
     var imgurl = "{php echo $_W['shopshare']['imgUrl']}";
     var desc = "{php echo $_W['shopshare']['desc']}";
-
 
     var imgurls = '';
 
@@ -574,9 +577,6 @@ div.flicking_con a.on{background-position:0 -9px}
       setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
   }
 
-  setupWebViewJavascriptBridge(function(bridge) {
-
-  })
 
     function menu(obj){
        
@@ -703,6 +703,7 @@ div.flicking_con a.on{background-position:0 -9px}
                     webapp_share();
                 } else {
                     setupWebViewJavascriptBridge(function(bridge) {
+                        var imgurls = z;
                         var resData = [title,link,imgurl,desc,imgurls];
 
                         //启动页
@@ -727,6 +728,7 @@ div.flicking_con a.on{background-position:0 -9px}
 
                         //二维码
                         bridge.registerHandler("shareRQCode", function(data){
+                            var resData = [qr_url, qr_imgurl];
                             bridge.callHandler("share_RQCode_result",resData,function(response)
                             {
                             });
@@ -749,6 +751,7 @@ div.flicking_con a.on{background-position:0 -9px}
 
                         //复制链接
                         bridge.registerHandler("share_copy", function(data){
+                            var resData = [link];
                             bridge.callHandler("share_copy_result",resData,function(response)
                             {
                             });

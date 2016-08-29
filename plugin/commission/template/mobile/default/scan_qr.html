@@ -96,7 +96,27 @@ body {margin:0px; background:#f4f4f4;}
     <div id='cover'><img src='../addons/sz_yi/static/images/guide.png' style='width:100%;' /></div>
     <!-- 底部浮层 结束 -->
     <script language="javascript">
+
+
+        /*****************
+         * IOS
+         * @param callback
+         * @returns {*}
+         */
+
+        function setupWebViewJavascriptBridge(callback) {
+            if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+            if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+            window.WVJBCallbacks = [callback];
+            var WVJBIframe = document.createElement('iframe');
+            WVJBIframe.style.display = 'none';
+            WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__';
+            document.documentElement.appendChild(WVJBIframe);
+            setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+        }
+
         require(['core'],function(core){
+
             var qr_imgurl = '';
 
            if( "{$infourl}"!=''){
@@ -113,7 +133,12 @@ body {margin:0px; background:#f4f4f4;}
             });
 
             $("#btn3").click(function () {
-                PINGPP_ANDROID_SDK.app_save_QrCode(qr_imgurl);
+                if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
+                    PINGPP_ANDROID_SDK.app_save_QrCode(qr_imgurl);
+                } else {
+                    saveImage(qr_imgurl);
+                }
+
             });
 
             core.tip.show('正在生成海报，请稍后...','middle',0);
