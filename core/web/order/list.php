@@ -623,6 +623,17 @@ if ($operation == "display") {
             $value["commission2"] = $commission2;
             $value["commission3"] = $commission3;
         }
+        //Author:ym Date:2016-08-29 Content:订单分红佣金
+        if(p('bonus')){
+            $bonus_area_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods')." where orderid=:orderid and uniacid=:uniacid and bonus_area!=0", array(':orderid' => $value['id'], ":uniacid" => $_W['uniacid']));
+            $bonus_range_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods')." where orderid=:orderid and uniacid=:uniacid and bonus_area=0", array(':orderid' => $value['id'], ":uniacid" => $_W['uniacid']));
+            if($bonus_area_money > 0 && $bonus_range_money > 0){
+                $bonus_money_all = $bonus_area_money + $bonus_range_money;
+                $value['bonus_money_all'] = floatval($bonus_money_all);
+            }
+            $value['bonus_area_money'] = floatval($bonus_area_money);
+            $value['bonus_range_money'] = floatval($bonus_range_money);
+        }
         $value["goods"] = set_medias($order_goods, "thumb");
         $value["goods_str"] = $goods;
         if (!empty($agentid) && $level > 0) {
