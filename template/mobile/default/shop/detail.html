@@ -147,12 +147,13 @@ div.flicking_con a.on{background-position:0 -9px}
                 <div class="nav" onclick="location.href='<%shop.url%>'"><i class='fa fa-home'></i> 首页</div>
                 <div class="nav" onclick="location.href='{php echo $this->createMobileUrl('member')}'"><i class='fa fa-user'></i> 会员中心</div>
              {if is_app()}
-              <div class="nav" onclick="app_share()" style="border:none;"><i class='fa fa-share'></i> 分享</div>
+              <div class="nav" id="webapp_share" style="border:none;"><i class='fa fa-share'></i> 分享</div>
               {else}
              <div class="nav" onclick="share()" style="border:none;"><i class='fa fa-share'></i> 分享</div>
              {/if}
           </div>
     </div>
+
     <div class="good_choose_layer"></div>
     <div class="good_choose">
         <div class="info">
@@ -482,7 +483,19 @@ div.flicking_con a.on{background-position:0 -9px}
     </div>
 </script>
 
+
 <script language="javascript">
+    var title = "{php echo $_W['shopshare']['title']}";
+    var link = "{php echo $_W['shopshare']['link']}" + "&access=app";
+    var imgurl = "{php echo $_W['shopshare']['imgUrl']}";
+    var desc = "{php echo $_W['shopshare']['desc']}";
+
+
+    var imgurls = '';
+
+    var qr_url = "{php echo $this->createPluginMobileUrl('commission/shares',array('goodsid'=>$_GPC['id'], 'scan_qr'=>1))}";
+    var qr_imgurl = "";
+
   function showMoreActivity(){
      $('#morebtn').hide();
      $("#moreactivity").fadeIn();
@@ -504,22 +517,77 @@ div.flicking_con a.on{background-position:0 -9px}
           })
     }
 
-  function app_share() {
-
-      var title = "{php echo $_W['shopshare']['title']}";
-      var link = "{php echo $_W['shopshare']['link']}" + "&access=app";
-      var imgurl = "{php echo $_W['shopshare']['imgUrl']}";
-      var desc = "{php echo $_W['shopshare']['desc']}";
-
-      if (typeof PINGPP_IOS_SDK !== 'undefined') {
-          shareLink(title, link, imgurl, desc);
-
-      } else if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
-
-          PINGPP_ANDROID_SDK.shareLink(title, link, imgurl, desc);
-
-      }
+  //启动分享页面
+  function webapp_share() {
+      PINGPP_ANDROID_SDK.webapp_share();
   }
+
+  //QQ好友分享
+  function share_qq() {
+      PINGPP_ANDROID_SDK.app_share_qq(title, link, imgurl, desc);
+  }
+
+  //微信分享
+  function share_wx() {
+      PINGPP_ANDROID_SDK.app_share_wx(title, link, imgurl, desc);
+  }
+
+  //微信朋友圈-卡片分享
+  function share_wx_card() {
+      PINGPP_ANDROID_SDK.app_share_wx_card(title, link, imgurl, desc);
+  }
+
+  //微信朋友圈-多图分享
+  function share_wx_images() {
+      PINGPP_ANDROID_SDK.app_share_wx_images(link, imgurls);
+  }
+
+  //QQ空间分享
+  function share_qq_space() {
+      PINGPP_ANDROID_SDK.app_share_qq_space(title, link, imgurl, desc);
+  }
+
+  //复制地址
+  function share_copy_link() {
+      PINGPP_ANDROID_SDK.app_share_copy_link(link);
+  }
+
+  //扫描二维码 控制器webapp、app
+  function share_erweima() {
+      PINGPP_ANDROID_SDK.app_share_QrCode(qr_url, qr_imgurl);
+  }
+
+  //扫描二维码-保存图片页面
+  function share_qq_space_to_url() {
+      location.href = qr_url;
+  }
+
+  //扫描二维码-点击保存图片
+  function share_qq_space_to_url() {
+      PINGPP_ANDROID_SDK.app_save_QrCode(qr_imgurl);
+  }
+
+  /*****************
+   * IOS
+   * @param callback
+   * @returns {*}
+   */
+
+  function setupWebViewJavascriptBridge(callback) {
+      if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+      if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+      window.WVJBCallbacks = [callback];
+      var WVJBIframe = document.createElement('iframe');
+      WVJBIframe.style.display = 'none';
+      WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__';
+      document.documentElement.appendChild(WVJBIframe);
+      setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+  }
+
+  setupWebViewJavascriptBridge(function(bridge) {
+
+  })
+
     function menu(obj){
        
         if($(obj).attr('show')=='1'){
@@ -555,6 +623,14 @@ div.flicking_con a.on{background-position:0 -9px}
         }
     }
     require(['tpl', 'core','jquery.touchslider','swipe'], function(tpl, core) {
+        $.ajax({
+            url:"{php echo $this->createPluginMobileUrl('commission/shares')}",
+            type:'post',
+            success:function(img){
+                qr_imgurl = img;
+            }
+        })
+
       function setTimer(goods){
             
             setTimeHtml(goods);
@@ -629,8 +705,73 @@ div.flicking_con a.on{background-position:0 -9px}
           $('.good_topbar .btn').css("background","rgba(237,237,237,"+ (0.6-alpha) + ")");
         });
         
-          $('#container').html(  tpl('goods_info',json.result) ); 
-    
+          $('#container').html(  tpl('goods_info',json.result) );
+
+            //分享
+            $("#webapp_share").click(function() {
+                if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
+                    webapp_share();
+                } else {
+                    setupWebViewJavascriptBridge(function(bridge) {
+                        var title = "{php echo $_W['shopshare']['title']}";
+                        var link = "{php echo $_W['shopshare']['link']}" + "&access=app";
+                        var imgurl = "{php echo $_W['shopshare']['imgUrl']}";
+                        var desc = "{php echo $_W['shopshare']['desc']}";
+
+                        var resData = [title,link,imgurl,desc];
+
+                        //启动页
+                        bridge.callHandler("webapp_share",'',function(response)
+                        {
+
+                        });
+
+                        //微信分享
+                        bridge.registerHandler("sharewx", function(data){
+                            bridge.callHandler("share_wx_result",resData,function(response)
+                            {
+                            });
+                        })
+
+                        //微信朋友圈
+                        bridge.registerHandler("sharefriend", function(data){
+                            bridge.callHandler("share_friend_result",resData,function(response)
+                            {
+                            });
+                        })
+
+                        //二维码
+                        bridge.registerHandler("shareRQCode", function(data){
+                            bridge.callHandler("share_RQCode_result",resData,function(response)
+                            {
+                            });
+                        })
+
+
+                        //QQ分享
+                        bridge.registerHandler("share_qq_firend", function(data){
+                            bridge.callHandler("share_qq_firend_result",resData,function(response)
+                            {
+                            });
+                        })
+
+                        //QQ空间
+                        bridge.registerHandler("share_qq_zone", function(data){
+                            bridge.callHandler("share_qq_zone_result",resData,function(response)
+                            {
+                            });
+                        })
+
+                        //复制链接
+                        bridge.registerHandler("share_copy", function(data){
+                            bridge.callHandler("share_copy_result",resData,function(response)
+                            {
+                            });
+                        })
+                    })
+                }
+            });
+
           var bh = $(document.body).height() - 50;
           $('.good_choose').css('max-height',bh); 
           $('.good_choose .other').css('max-height',bh-175);
@@ -644,6 +785,7 @@ div.flicking_con a.on{background-position:0 -9px}
            var z = []; 
            $(".main_image img").each(function() {
                 z.push($(this).attr("src"));
+                imgurls = JSON.stringify(z);
             });
             var current;
             if (isWX) {
