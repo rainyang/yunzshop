@@ -254,6 +254,9 @@ if (!class_exists('ReturnModel')) {
 		
 		//单笔订单返现
 		public function setOrderReturn($_var_0=array(),$uniacid=''){
+			$tmpdir = IA_ROOT . "/addons/sz_yi/tmp/reutrn";
+			$return_log = $tmpdir."/return_jog.txt";
+			$log_content[] = date("Y-m-d H:i:s")."公众号ID：".$uniacid." 单笔订单返现开始==============\r\n";
 			$member_record = pdo_fetchall("SELECT r.mid, m.level, m.agentlevel, m.openid FROM " . tablename('sz_yi_return') . " r 
 				left join " . tablename('sz_yi_member') . " m on (r.mid = m.id) 
 			 WHERE r.uniacid = '". $uniacid ."' and r.returnrule = '".$_var_0['returnrule']."' and r.delete = '0'  group by r.mid");
@@ -268,7 +271,9 @@ if (!class_exists('ReturnModel')) {
 					$level = json_decode($_var_0['commission'], true);
 				}
 			}
-
+			$log_content[] = "单笔返现队列人：";
+			$log_content[] = var_export($member_record,true);
+			$log_content[] = "\r\n";
 			$current_time = time();
 			foreach ($member_record as $key => $value) {
 				$percentage = $_var_0['percentage'];
@@ -293,11 +298,14 @@ if (!class_exists('ReturnModel')) {
 						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");
 						pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + money * ".$percentage." / 100,last_money = money * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$_var_0['returnrule']."' and mid = '".$value['mid']."' ");
 					}
+					
 			}
 			$return_record = pdo_fetchall("SELECT sum(r.money) as money, sum(r.return_money) as return_money, sum(r.last_money) as last_money,m.openid,count(r.id) as count  FROM " . tablename('sz_yi_return') . " r 
 				left join " . tablename('sz_yi_member') . " m on (r.mid = m.id) 
 			 WHERE r.uniacid = '". $uniacid ."' and r.updatetime = '".$current_time."' and r.returnrule = '".$_var_0['returnrule']."' and r.delete = '0'  group by r.mid");
-
+			$log_content[] = "单笔返现内容：";
+			$log_content[] = var_export($return_record,true);
+			$log_content[] = "\r\n";
 			foreach ($return_record as $key => $value) {
 				if($value['last_money'] > 0)
 				{
@@ -319,11 +327,16 @@ if (!class_exists('ReturnModel')) {
 					m('message')->sendCustomNotice($value['openid'], $messages);
 				}
 			}	
+			$log_content[] = date("Y-m-d H:i:s")."公众号ID：".$uniacid." 单笔订单返现完成==============\r\n\r\n\r\n\r\n";
+			file_put_contents($return_log,$log_content,FILE_APPEND);
 
 		}
 
 		//订单累计金额返现
 		public function setOrderMoneyReturn($_var_0=array(),$uniacid=''){
+			$tmpdir = IA_ROOT . "/addons/sz_yi/tmp/reutrn";
+			$return_log = $tmpdir."/return_jog.txt";
+			$log_content[] = date("Y-m-d H:i:s")."公众号ID：".$uniacid." 订单累计返现开始==============\r\n";
 			//昨天成交金额
 			$daytime = strtotime(date("Y-m-d 00:00:00"));
 			$stattime = $daytime - 86400;
@@ -331,13 +344,17 @@ if (!class_exists('ReturnModel')) {
 			$sql = "select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$uniacid} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}  ORDER BY o.finishtime DESC,o.status DESC";
 			$ordermoney = pdo_fetchcolumn($sql);
 			$ordermoney = floatval($ordermoney);
+			$log_content[] = "昨日成交金额：".$ordermoney."\r\n";
 			$r_ordermoney = $ordermoney * $_var_0['percentage'] / 100;//可返利金额
+			$log_content[] = "可返现金额：".$r_ordermoney."\r\n";
 			//返利队列
 			$queue_count = pdo_fetchcolumn("select count(1) from " . tablename('sz_yi_return') . " where uniacid = '". $uniacid ."' and status = 0 and `delete` = '0' and returnrule = '".$_var_0['returnrule']."'");
+			$log_content[] = "可返现队列数：".$queue_count."\r\n";
 			if($r_ordermoney>0 && $queue_count)
 			{
 				$r_each = $r_ordermoney / $queue_count;//每个队列返现金额
 				$r_each = sprintf("%.2f", $r_each);
+				$log_content[] = "每个队列返现金额：".$r_each."\r\n";
 				$current_time = time();
 
 				// $unfinished_record = pdo_fetchall("SELECT mid,count(1) as count FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - return_money) > '".$r_each."' and returnrule = '".$_var_0['returnrule']."' group by mid ");
@@ -348,6 +365,10 @@ if (!class_exists('ReturnModel')) {
 				$return_record = pdo_fetchall("SELECT sum(r.money) as money, sum(r.return_money) as return_money, sum(r.last_money) as last_money,m.openid,count(r.id) as count  FROM " . tablename('sz_yi_return') . " r 
 					left join " . tablename('sz_yi_member') . " m on (r.mid = m.id) 
 				 WHERE r.uniacid = '". $uniacid ."' and r.updatetime = '".$current_time."' and r.returnrule = '".$_var_0['returnrule']."' and r.delete = '0'  group by r.mid");
+				$log_content[] ="SELECT sum(r.money) as money, sum(r.return_money) as return_money, sum(r.last_money) as last_money,m.openid,count(r.id) as count  FROM " . tablename('sz_yi_return') . " r 
+					left join " . tablename('sz_yi_member') . " m on (r.mid = m.id) 
+				 WHERE r.uniacid = '". $uniacid ."' and r.updatetime = '".$current_time."' and r.returnrule = '".$_var_0['returnrule']."' and r.delete = '0'  group by r.mid \r\n";
+				$log_content[] = "订单累计金额返现内容：".var_export($return_record,true)."\r\n";
 				foreach ($return_record as $key => $value) {
 					if($value['last_money'] > 0)
 					{
@@ -370,6 +391,8 @@ if (!class_exists('ReturnModel')) {
 					}
 				}		
 			}
+			$log_content[] = date("Y-m-d H:i:s")."公众号ID：".$uniacid." 订单累计返现完成==============\r\n\r\n";
+			file_put_contents($return_log,$log_content,FILE_APPEND);
 		}
 
 		// 查询可参加返利的 加入返利队列
