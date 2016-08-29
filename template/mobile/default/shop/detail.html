@@ -135,6 +135,7 @@ div.flicking_con a.on{background-position:0 -9px}
     <input type="hidden" id="needfollow" value="<%goods.needfollow%>" />
     <input type="hidden" id="followurl" value="<%followurl%>" />
     <input type='hidden' id='followtip' value='<%followtip%>'/>
+    <%if is_admin != 1 %>
     <div class="good_topbar">
         <div class="left">
             <div class="btn back" onclick="history.back();"><i class="fa fa-chevron-left"></i></div>
@@ -153,6 +154,7 @@ div.flicking_con a.on{background-position:0 -9px}
              {/if}
           </div>
     </div>
+    <%/if%>
     <div class="good_choose_layer"></div>
     <div class="good_choose">
         <div class="info">
@@ -226,7 +228,7 @@ div.flicking_con a.on{background-position:0 -9px}
         <%if commission && goods.nocommission==0 && goods.hidecommission==0%>
         <div class="info1">
             <div class="name"><%if goods.issendfree==1%><span class='label label-free'>包邮</span>&nbsp;<%/if%><%goods.title%></div>
-            {if is_weixin_show()}
+            {if is_weixin_show()&&empty($_GPC['is_admin']) }
               <div class="sub1" onclick="location.href='{php echo $this->createPluginMobileUrl('commission/shares',array('goodsid'=>$_GPC['id']))}'"><i class="fa fa-cny"></i><%commission_text%></div>
             {/if}
 
@@ -382,9 +384,8 @@ div.flicking_con a.on{background-position:0 -9px}
             <div class="con" id="con_4"><div id='recommand_container'></div></div>
         </div>
     </div>
- 
- 
-    <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1' && goods.groupbuy=='1'  && goods.levelbuy=='1'%>
+
+    <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1' && goods.groupbuy=='1'  && goods.levelbuy=='1' && is_admin!='1' %>
     <div class="good_bottom">
      
         <div class="like" >
@@ -600,7 +601,7 @@ div.flicking_con a.on{background-position:0 -9px}
                return i;    
             } 
 
-        core.json('shop/detail',{id:'{$_GPC['id']}',mid:"{$mid}"},function(json){
+        core.json('shop/detail',{id:'{$_GPC['id']}',mid:"{$mid}",is_admin:'{$_GPC['is_admin']}'},function(json){
      
           tip = core.tip;
           if(json.status<=0){

@@ -25,7 +25,7 @@ spl_autoload_register(function ($class_name) {
     $name_space = substr($class_name, 0, strrpos($class_name, '\\'));
 
     $class_name_parts = explode('\\', $class_name);
-    if ($name_space == 'model\api') {
+    if ($name_space == 'api\model') {
         array_unshift($class_name_parts, __API_ROOT__ . '/..');
         $dir = implode('/', $class_name_parts);
         require $dir . '.php';
@@ -38,7 +38,7 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
-require_once __API_ROOT__.'/YZ.class.php';
+require_once __API_ROOT__.'/controller/YZ.class.php';
 
 final class Dispatcher
 {
@@ -57,7 +57,7 @@ final class Dispatcher
         $controller_group_name = $this->getControllerGroupName();
         $controller_name = $this->getControllerName();
 
-        return __API_ROOT__ . "/{$controller_group_name}/{$controller_name}.php";
+        return __API_ROOT__ . "/controller/{$controller_group_name}/{$controller_name}.php";
     }
 
     public function getControllerGroupName(){
@@ -78,7 +78,7 @@ final class Dispatcher
     }
 }
 final class Run{
-    const CONTROLLER_NAME_SPACE='\\controller\\api\\';
+    const CONTROLLER_NAME_SPACE='\\api\\controller\\';
     private $dispatch;
     public function __construct()
     {
@@ -89,7 +89,6 @@ final class Run{
         require $this->dispatch->getControllerPatch();
         $controller_full_name = $this->getControllerFullName();
         $method_name = $this->dispatch->getMethodName();
-        
         $controller_obj = new $controller_full_name;
         $controller_obj->$method_name();
     }
