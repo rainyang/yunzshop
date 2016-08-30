@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?> 
+<?php
+$a = '<?xml version="1.0" encoding="utf-8"?> 
  <address>
 <province name="请选择省份">
 	<city name="请选择城市">
@@ -414,7 +415,7 @@
   <county name="汾阳市" /> 
   </city>
   </province>
- <province name="内蒙古自治区">
+ <province name="内蒙古区">
  <city name="呼和浩特市">
   <county name="市辖区" /> 
   <county name="新城区" /> 
@@ -433,7 +434,7 @@
   <county name="昆都仑区" /> 
   <county name="青山区" /> 
   <county name="石拐区" /> 
-  <county name="白云鄂博矿区" /> 
+  <county name="白云矿区" /> 
   <county name="九原区" /> 
   <county name="土默特右旗" /> 
   <county name="固阳县" /> 
@@ -480,8 +481,6 @@
   <county name="杭锦旗" /> 
   <county name="乌审旗" /> 
   <county name="伊金霍洛旗" /> 
-  <county name="康巴什新区" /> 
-
   </city>
  <city name="呼伦贝尔市">
   <county name="市辖区" /> 
@@ -2589,7 +2588,7 @@
   <county name="罗定市" /> 
   </city>
   </province>
- <province name="广西壮族自治区">
+ <province name="广西区">
  <city name="南宁市">
   <county name="市辖区" /> 
   <county name="兴宁区" /> 
@@ -2707,7 +2706,6 @@
   <county name="昭平县" /> 
   <county name="钟山县" /> 
   <county name="富川瑶族自治县" /> 
-  <county name="平桂管理区" /> 
   </city>
  <city name="河池市">
   <county name="市辖区" /> 
@@ -2794,12 +2792,11 @@
   <county name="黔江区" /> 
   <county name="长寿区" />
   <county name="璧山区" />
-  <county name="江津新区" />
-  <county name="铜梁区" /> 
   </city>
  <city name="重庆辖县">
   <county name="綦江县" /> 
   <county name="潼南县" /> 
+  <county name="铜梁县" /> 
   <county name="大足县" /> 
   <county name="荣昌县" />
   <county name="梁平县" /> 
@@ -3081,7 +3078,6 @@
   <county name="息烽县" /> 
   <county name="修文县" /> 
   <county name="清镇市" /> 
-  <county name="金阳新区" />
   </city>
  <city name="六盘水市">
   <county name="钟山区" /> 
@@ -3351,7 +3347,7 @@
   <county name="维西傈僳族自治县" /> 
   </city>
   </province>
- <province name="西藏自治区">
+ <province name="西藏区">
  <city name="拉萨市">
   <county name="市辖区" /> 
   <county name="城关区" /> 
@@ -3770,7 +3766,7 @@
   <county name="天峻县" /> 
   </city>
   </province>
- <province name="宁夏回族自治区">
+ <province name="宁夏区">
  <city name="银川市">
   <county name="市辖区" /> 
   <county name="兴庆区" /> 
@@ -3808,7 +3804,7 @@
   <county name="海原县" /> 
   </city>
   </province>
- <province name="新疆维吾尔自治区">
+ <province name="新疆区">
  <city name="乌鲁木齐市">
   <county name="市辖区" /> 
   <county name="天山区" /> 
@@ -3964,4 +3960,5 @@
     <city name="望德堂区"></city>
     <city name="风顺堂区"></city>
   </province>
-  </address>
+  </address>';
+return $a;

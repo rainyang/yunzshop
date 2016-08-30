@@ -10,6 +10,7 @@ class CommissionWeb extends Plugin
 	{
 		parent::__construct('commission');
 		$this->set = $this->getSet();
+
 	}
 
 	public function index()
