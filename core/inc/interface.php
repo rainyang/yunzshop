@@ -33,7 +33,6 @@ class InterfaceController
         /*        if ($this->request->server['REQUEST_METHOD'] != 'POST') {
                     exit('提交方式不正确');
                 }*/
-        require IA_ROOT . '/addons/sz_yi/core/inc/aes.php';
         $this->aes = new \Aes('', '');
 
         if ($this->request->server['REQUEST_METHOD'] == 'POST') {
