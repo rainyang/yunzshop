@@ -33,30 +33,31 @@ function sz_tpl_form_field_date($name, $value = '', $withtime = false)
 								lang : "zh",
 								step : "30",
 								timepicker : ' . (!empty($withtime) ? "true" : "false") .
-			',closeOnDateSelect : true,
+            ',closeOnDateSelect : true,
 			format : "Y-m-d' . (!empty($withtime) ? ' H:i:s"' : '"') .
-			'};
+            '};
 			$(this).datetimepicker(option);
 		});
 	});
 });
 </script>';
-		define('TPL_INIT_DATA', true);
-	}
-	$withtime = empty($withtime) ? false : true;
-	if (!empty($value)) {
-		$value = strexists($value, '-') ? strtotime($value) : $value;
-	} else {
-		$value = TIMESTAMP;
-	}
-	$value = ($withtime ? date('Y-m-d H:i:s', $value) : date('Y-m-d', $value));
-	$s .= '<input type="text" name="' . $name . '"  value="'.$value.'" placeholder="请选择日期时间" class="datetimepicker form-control" style="padding-left:12px;" />';
-	return $s;
+        define('TPL_INIT_DATA', true);
+    }
+    $withtime = empty($withtime) ? false : true;
+    if (!empty($value)) {
+        $value = strexists($value, '-') ? strtotime($value) : $value;
+    } else {
+        $value = TIMESTAMP;
+    }
+    $value = ($withtime ? date('Y-m-d H:i:s', $value) : date('Y-m-d', $value));
+    $s .= '<input type="text" name="' . $name . '"  value="' . $value . '" placeholder="请选择日期时间" class="datetimepicker form-control" style="padding-left:12px;" />';
+    return $s;
 }
 
-function isMobile() {
+function isMobile()
+{
     // 如果有HTTP_X_WAP_PROFILE则一定是移动设备
-    if (isset ($_SERVER['HTTP_X_WAP_PROFILE'])){
+    if (isset ($_SERVER['HTTP_X_WAP_PROFILE'])) {
         return true;
     }
     //如果via信息含有wap则一定是移动设备,部分服务商会屏蔽该信息
@@ -68,7 +69,7 @@ function isMobile() {
     }
     //判断手机发送的客户端标志,兼容性有待提高
     if (isset ($_SERVER['HTTP_USER_AGENT'])) {
-        $clientkeywords = array (
+        $clientkeywords = array(
             'nokia',
             'sony',
             'ericsson',
@@ -119,19 +120,20 @@ function isMobile() {
     return false;
 }
 
-function chmod_dir($dir,$chmod='') {
-    if(is_dir($dir)) {
-        if($handle = opendir($dir)) {
-            while(false !== ($file = readdir($handle))) {
-                if(is_dir($dir.'/'.$file)) {
-                    if($file != '.' && $file != '..') {
-                        $path = $dir.'/'.$file;
-                        $chmod ? chmod($path,$chmod) : FALSE;
+function chmod_dir($dir, $chmod = '')
+{
+    if (is_dir($dir)) {
+        if ($handle = opendir($dir)) {
+            while (false !== ($file = readdir($handle))) {
+                if (is_dir($dir . '/' . $file)) {
+                    if ($file != '.' && $file != '..') {
+                        $path = $dir . '/' . $file;
+                        $chmod ? chmod($path, $chmod) : FALSE;
                         chmod_dir($path);
                     }
-                }else{
-                    $path = $dir.'/'.$file;
-                    $chmod ? chmod($path,$chmod) : FALSE;
+                } else {
+                    $path = $dir . '/' . $file;
+                    $chmod ? chmod($path, $chmod) : FALSE;
                 }
             }
         }
@@ -139,12 +141,13 @@ function chmod_dir($dir,$chmod='') {
     }
 }
 
-function curl_download($url, $dir) {
+function curl_download($url, $dir)
+{
     $ch = curl_init($url);
     $fp = fopen($dir, "wb");
     curl_setopt($ch, CURLOPT_FILE, $fp);
     curl_setopt($ch, CURLOPT_HEADER, 0);
-    $res=curl_exec($ch);
+    $res = curl_exec($ch);
     curl_close($ch);
     fclose($fp);
     return $res;
@@ -153,26 +156,27 @@ function curl_download($url, $dir) {
 function send_sms($account, $pwd, $mobile, $code, $type = 'check', $name, $title, $total, $tel)
 {
     if ($type == 'check') {
-        $content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
-           
+        $content = "您的验证码是：" . $code . "。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
+
     } elseif ($type == 'verify') {
         $verify_set = m('common')->getSetData();
         $allset = iunserializer($verify_set['plugins']);
         if (is_array($allset) && !empty($allset['verify']['code_template'])) {
             $content = sprintf($allset['verify']['code_template'], $code, $title, $total, $name, $mobile, $tel);
         } else {
-            $content = "提醒您，您的核销码为：".$code."，订购的票型是：".$title."，数量：".$total."张，购票人：".$name."，电话：".$mobile."，门店电话：".$tel."。请妥善保管，验票使用！";
+            $content = "提醒您，您的核销码为：" . $code . "，订购的票型是：" . $title . "，数量：" . $total . "张，购票人：" . $name . "，电话：" . $mobile . "，门店电话：" . $tel . "。请妥善保管，验票使用！";
 
         }
-        
+
     }
-    
+
     //$smsrs = file_get_contents('http://115.29.33.155/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
-    $smsrs = file_get_contents('http://106.ihuyi.cn/webservice/sms.php?method=Submit&account='.$account.'&password='.$pwd.'&mobile=' . $mobile . '&content='.urldecode($content));
+    $smsrs = file_get_contents('http://106.ihuyi.cn/webservice/sms.php?method=Submit&account=' . $account . '&password=' . $pwd . '&mobile=' . $mobile . '&content=' . urldecode($content));
     return xml_to_array($smsrs);
 }
 
-function send_sms_alidayu($mobile, $code, $templateType){
+function send_sms_alidayu($mobile, $code, $templateType)
+{
     $set = m('common')->getSysset();
     include IA_ROOT . "/addons/sz_yi/alifish/TopSdk.php";
     //$appkey = '23355246';
@@ -207,25 +211,27 @@ function send_sms_alidayu($mobile, $code, $templateType){
 function xml_to_array($xml)
 {
     $reg = "/<(\w+)[^>]*>([\\x00-\\xFF]*)<\\/\\1>/";
-    if(preg_match_all($reg, $xml, $matches)){
-            $count = count($matches[0]);
-            for($i = 0; $i < $count; $i++){
-            $subxml= $matches[2][$i];
+    if (preg_match_all($reg, $xml, $matches)) {
+        $count = count($matches[0]);
+        for ($i = 0; $i < $count; $i++) {
+            $subxml = $matches[2][$i];
             $key = $matches[1][$i];
-                    if(preg_match( $reg, $subxml )){
-                            $arr[$key] = xml_to_array( $subxml );
-                    }else{
-                            $arr[$key] = $subxml;
-                    }
+            if (preg_match($reg, $subxml)) {
+                $arr[$key] = xml_to_array($subxml);
+            } else {
+                $arr[$key] = $subxml;
             }
+        }
     }
     return $arr;
 }
 
-function redirect($url, $sec=0){
+function redirect($url, $sec = 0)
+{
     echo "<meta http-equiv=refresh content='{$sec}; url={$url}'>";
     exit;
 }
+
 function m($name = '')
 {
     static $_modules = array();
@@ -237,33 +243,35 @@ function m($name = '')
         die(' Model ' . $name . ' Not Found!');
     }
     require $model;
-    $class_name      = 'Sz_DYi_' . ucfirst($name);
+    $class_name = 'Sz_DYi_' . ucfirst($name);
     $_modules[$name] = new $class_name();
     return $_modules[$name];
 }
-function isEnablePlugin($name){
+
+function isEnablePlugin($name)
+{
     $plugins = m("cache")->getArray("plugins", "global");
-    if($plugins){
-        foreach($plugins as $p){
-            if($p['identity'] == $name){
-                if($p['status']){
+    if ($plugins) {
+        foreach ($plugins as $p) {
+            if ($p['identity'] == $name) {
+                if ($p['status']) {
                     return true;
-                }
-                else{
+                } else {
                     return false;
                 }
             }
         }
-    }else{
+    } else {
         return pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_plugin') . ' where identity=:identity and status=1', array(
             ':identity' => $name
         ));
 
     }
 }
+
 function p($name = '')
 {
-    if(!isEnablePlugin($name)){
+    if (!isEnablePlugin($name)) {
         return false;
     }
     if ($name != 'perm' && !IN_MOBILE) {
@@ -273,7 +281,7 @@ function p($name = '')
             if (is_file($perm_model_file)) {
                 require $perm_model_file;
                 $perm_class_name = 'PermModel';
-                $_perm_model     = new $perm_class_name('perm');
+                $_perm_model = new $perm_class_name('perm');
             }
         }
         if ($_perm_model) {
@@ -283,7 +291,7 @@ function p($name = '')
         }
     }
 
-    
+
     static $_plugins = array();
     if (isset($_plugins[$name])) {
         return $_plugins[$name];
@@ -293,10 +301,11 @@ function p($name = '')
         return false;
     }
     require $model;
-    $class_name      = ucfirst($name) . 'Model';
+    $class_name = ucfirst($name) . 'Model';
     $_plugins[$name] = new $class_name($name);
     return $_plugins[$name];
 }
+
 function byte_format($input, $dec = 0)
 {
     $prefix_arr = array(
@@ -306,8 +315,8 @@ function byte_format($input, $dec = 0)
         'G',
         'T'
     );
-    $value      = round($input, $dec);
-    $i          = 0;
+    $value = round($input, $dec);
+    $i = 0;
     while ($value > 1024) {
         $value /= 1024;
         $i++;
@@ -315,6 +324,7 @@ function byte_format($input, $dec = 0)
     $return_str = round($value, $dec) . $prefix_arr[$i];
     return $return_str;
 }
+
 function save_media($url)
 {
     load()->func('file');
@@ -338,10 +348,12 @@ function save_media($url)
     }
     return $url;
 }
+
 function save_remote($url)
 {
-    
+
 }
+
 function is_array2($array)
 {
     if (is_array($array)) {
@@ -352,6 +364,7 @@ function is_array2($array)
     }
     return false;
 }
+
 function set_medias($list = array(), $fields = null)
 {
     if (empty($fields)) {
@@ -384,15 +397,18 @@ function set_medias($list = array(), $fields = null)
         return $list;
     }
 }
+
 function get_last_day($year, $month)
 {
     return date('t', strtotime("{$year}-{$month} -1"));
 }
+
 function show_message($msg = '', $url = '', $type = 'success')
 {
     $scripts = "<script language='javascript'>require(['core'],function(core){ core.message('" . $msg . "','" . $url . "','" . $type . "')})</script>";
     die($scripts);
 }
+
 function show_json($status = 1, $return = null)
 {
     $ret = array(
@@ -409,8 +425,7 @@ function is_weixin_show()
     $set = m('common')->getSysset('app');
     $isapp = is_app();
 
-    if( $set['base']['wx']['switch'] == '1' && !$isapp)
-    {
+    if ($set['base']['wx']['switch'] == '1' && !$isapp) {
         return false;
     }
     return true;
@@ -427,6 +442,7 @@ function is_weixin()
     }
     return true;
 }
+
 function b64_encode($obj)
 {
     if (is_array($obj)) {
@@ -434,6 +450,7 @@ function b64_encode($obj)
     }
     return urlencode(base64_encode($obj));
 }
+
 function b64_decode($str, $is_array = true)
 {
     $str = base64_decode(urldecode($str));
@@ -442,6 +459,7 @@ function b64_decode($str, $is_array = true)
     }
     return $str;
 }
+
 function create_image($img)
 {
     $ext = strtolower(substr($img, strrpos($img, '.')));
@@ -454,31 +472,34 @@ function create_image($img)
     }
     return $thumb;
 }
+
 function get_authcode()
 {
     $auth = get_auth();
     return empty($auth['code']) ? '' : $auth['code'];
 }
+
 function get_auth()
 {
     global $_W;
-    $set  = pdo_fetch('select sets from ' . tablename('sz_yi_sysset') . ' order by id asc limit 1');
+    $set = pdo_fetch('select sets from ' . tablename('sz_yi_sysset') . ' order by id asc limit 1');
     $sets = iunserializer($set['sets']);
     if (is_array($sets)) {
         return is_array($sets['auth']) ? $sets['auth'] : array();
     }
     return array();
 }
+
 function check_shop_auth($url = '', $type = 's')
 {
     global $_W, $_GPC;
     if ($_W['ispost'] && $_GPC['do'] != 'auth') {
         $auth = get_auth();
         load()->func('communication');
-        $domain  = $_SERVER['HTTP_HOST'];
-        $ip      = gethostbyname($domain);
+        $domain = $_SERVER['HTTP_HOST'];
+        $ip = gethostbyname($domain);
         $setting = setting_load('site');
-        $id      = isset($setting['site']['key']) ? $setting['site']['key'] : '0';
+        $id = isset($setting['site']['key']) ? $setting['site']['key'] : '0';
         if (empty($type) || $type == 's') {
             $post_data = array(
                 'type' => $type,
@@ -497,20 +518,21 @@ function check_shop_auth($url = '', $type = 's')
                 'domain' => $domain
             );
         }
-        $resp   = ihttp_post($url, $post_data);
+        $resp = ihttp_post($url, $post_data);
         $status = $resp['content'];
         if ($status != '1') {
             message(base64_decode('6K+35Yiw5b6u6LWe5a6Y5pa56LSt5LmwLeS6uuS6uuWVhuWfjuaooeWdly1iYnMuMDEyd3ouY29tIQ=='), '', 'error');
         }
     }
 }
+
 $my_scenfiles = array();
 function my_scandir($dir)
 {
     global $my_scenfiles;
     if ($handle = opendir($dir)) {
         while (($file = readdir($handle)) !== false) {
-            if ($file != ".." && $file != "." && $file != ".git"  && $file != "tmp") {
+            if ($file != ".." && $file != "." && $file != ".git" && $file != "tmp") {
                 if (is_dir($dir . "/" . $file)) {
                     my_scandir($dir . "/" . $file);
                 } else {
@@ -521,6 +543,7 @@ function my_scandir($dir)
         closedir($handle);
     }
 }
+
 function shop_template_compile($from, $to, $inmodule = false)
 {
     $path = dirname($to);
@@ -534,6 +557,7 @@ function shop_template_compile($from, $to, $inmodule = false)
     }
     file_put_contents($to, $content);
 }
+
 function shop_template_parse($str, $inmodule = false)
 {
     $str = template_parse($str, $inmodule);
@@ -542,6 +566,7 @@ function shop_template_parse($str, $inmodule = false)
     $str = preg_replace('/{ife\s+(\S+)\s+(\S+)}/', '<?php if( ce($1 ,$2) ) { ?>', $str);
     return $str;
 }
+
 function ce($permtype = '', $item = null)
 {
     $perm = p('perm');
@@ -550,6 +575,7 @@ function ce($permtype = '', $item = null)
     }
     return true;
 }
+
 function cv($permtypes = '')
 {
     $perm = p('perm');
@@ -558,12 +584,14 @@ function cv($permtypes = '')
     }
     return true;
 }
+
 function ca($permtypes = '')
 {
     if (!cv($permtypes)) {
         message('您没有权限操作，请联系管理员!', '', 'error');
     }
 }
+
 function cp($pluginname = '')
 {
     $perm = p('perm');
@@ -572,12 +600,14 @@ function cp($pluginname = '')
     }
     return true;
 }
+
 function cpa($pluginname = '')
 {
     if (!cp($pluginname)) {
         message('您没有权限操作，请联系管理员!', '', 'error');
     }
 }
+
 function plog($type = '', $op = '')
 {
     $perm = p('perm');
@@ -585,27 +615,31 @@ function plog($type = '', $op = '')
         $perm->log($type, $op);
     }
 }
+
 //stdClass Object 转 数组
-function objectArray($array){
-    if(is_object($array)){
+function objectArray($array)
+{
+    if (is_object($array)) {
         $array = (array)$array;
     }
-    if(is_array($array)){
-        foreach($array as $key=>$value){
+    if (is_array($array)) {
+        foreach ($array as $key => $value) {
             $array[$key] = objectArray($value);
         }
     }
     return $array;
 }
 
-if(!function_exists('tpl_form_field_category_3level')){
-    function tpl_form_field_category_3level($name, $parents, $children, $parentid, $childid, $thirdid){
+if (!function_exists('tpl_form_field_category_3level')) {
+    function tpl_form_field_category_3level($name, $parents, $children, $parentid, $childid, $thirdid)
+    {
         return tpl_form_field_category_level3($name, $parents, $children, $parentid, $childid, $thirdid);
     }
 }
 
-if(function_exists('tpl_form_field_category_2level') == false){
-    function tpl_form_field_category_2level($name, $parents, $children, $parentid, $childid, $thirdid){
+if (function_exists('tpl_form_field_category_2level') == false) {
+    function tpl_form_field_category_2level($name, $parents, $children, $parentid, $childid, $thirdid)
+    {
         return tpl_form_field_category_level2($name, $parents, $children, $parentid, $childid, $thirdid);
     }
 }
@@ -696,13 +730,14 @@ function tpl_form_field_category_level3($name, $parents, $children, $parentid, $
     return $html;
 }
 
-function tpl_form_field_category_level2($name, $parents, $children, $parentid, $childid){
+function tpl_form_field_category_level2($name, $parents, $children, $parentid, $childid)
+{
     $html = '
         <script type="text/javascript">
             window._' . $name . ' = ' . json_encode($children) . ';
         </script>';
-            if (!defined('TPL_INIT_CATEGORY')) {
-                $html .= '
+    if (!defined('TPL_INIT_CATEGORY')) {
+        $html .= '
         <script type="text/javascript">
             function renderCategory(obj, name){
                 var index = obj.options[obj.selectedIndex].value;
@@ -721,32 +756,32 @@ function tpl_form_field_category_level2($name, $parents, $children, $parentid, $
             }
         </script>
                     ';
-                define('TPL_INIT_CATEGORY', true);
-            }
+        define('TPL_INIT_CATEGORY', true);
+    }
 
-            $html .=
-                '<div class="row row-fix tpl-category-container">
+    $html .=
+        '<div class="row row-fix tpl-category-container">
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                 <select class="form-control tpl-category-parent" id="' . $name . '_parent" name="' . $name . '[parentid]" onchange="renderCategory(this,\'' . $name . '\')">
                     <option value="0">请选择一级分类</option>';
-            $ops = '';
-            foreach ($parents as $row) {
-                $html .= '
+    $ops = '';
+    foreach ($parents as $row) {
+        $html .= '
                     <option value="' . $row['id'] . '" ' . (($row['id'] == $parentid) ? 'selected="selected"' : '') . '>' . $row['name'] . '</option>';
-            }
-            $html .= '
+    }
+    $html .= '
                 </select>
             </div>
             <div class="col-xs-12 col-sm-6 col-md-6 col-lg-6">
                 <select class="form-control tpl-category-child" id="' . $name . '_child" name="' . $name . '[childid]">
                     <option value="0">请选择二级分类</option>';
-            if (!empty($parentid) && !empty($children[$parentid])) {
-                foreach ($children[$parentid] as $row) {
-                    $html .= '
-                    <option value="' . $row['id'] . '"' . (($row['id'] == $childid) ? 'selected="selected"' : '') . '>' . $row['name'] . '</option>';
-                }
-            }
+    if (!empty($parentid) && !empty($children[$parentid])) {
+        foreach ($children[$parentid] as $row) {
             $html .= '
+                    <option value="' . $row['id'] . '"' . (($row['id'] == $childid) ? 'selected="selected"' : '') . '>' . $row['name'] . '</option>';
+        }
+    }
+    $html .= '
                 </select>
             </div>
         </div>
@@ -761,29 +796,30 @@ function tpl_form_field_category_level2($name, $parents, $children, $parentid, $
  * @param $message
  * @return array
  */
-function sent_message($customer_id_array,$message){
+function sent_message($customer_id_array, $message)
+{
     preg_match_all('/[\x{4e00}-\x{9fff}]+/u', $message, $matches);
 
     if (empty($customer_id_array) || empty($matches[0])) {
-       return false;
+        return false;
     }
 
-    require IA_ROOT.'/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
+    require IA_ROOT . '/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
 
     $setdata = m("cache")->get("sysset");
-    $set     = unserialize($setdata['sets']);
+    $set = unserialize($setdata['sets']);
 
     $app = $set['app']['base'];
 
-    LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'].",master");
+    LeanCloud\LeanClient::initialize($app['leancloud']['id'], $app['leancloud']['key'], $app['leancloud']['master'] . ",master");
 
 
-    $customer_id_array_str = json_encode($customer_id_array,JSON_UNESCAPED_UNICODE);
+    $customer_id_array_str = json_encode($customer_id_array, JSON_UNESCAPED_UNICODE);
     $post_data = '{"from_peer": "58",
-                "to_peers": '.$customer_id_array_str.',
-                "message": "{\"_lctype\":-1,\"_lctext\":\"'.$message.'\", \"_lcattrs\":{ \"clientId\":\"58\", \"clientName\":\"商城助手\", \"clientIcon\":\"http://192.168.1.108/image/icon.png\" }}"
+                "to_peers": ' . $customer_id_array_str . ',
+                "message": "{\"_lctype\":-1,\"_lctext\":\"' . $message . '\", \"_lcattrs\":{ \"clientId\":\"58\", \"clientName\":\"商城助手\", \"clientIcon\":\"http://192.168.1.108/image/icon.png\" }}"
                 , "conv_id": "5721da8b71cfe4006b3f362b", "transient": false}';
-    $data = json_decode($post_data,true);
+    $data = json_decode($post_data, true);
     $lean_push = new LeanCloud\LeanMessage($data);
     $response = $lean_push->send();
     return $response;
@@ -793,9 +829,160 @@ function is_app()
 {
     $agent = strtolower($_SERVER['HTTP_USER_AGENT']);
     $yunzhong = (strpos($agent, 'yunzhong')) ? true : false;
-    if($yunzhong) {
+    if ($yunzhong) {
         return true;
     }
 
     return false;
+}
+
+/**
+ * 浏览器友好的变量输出
+ * @param mixed $var 变量
+ * @param boolean $echo 是否输出 默认为True 如果为false 则返回输出字符串
+ * @param string $label 标签 默认为空
+ * @param boolean $strict 是否严谨 默认为true
+ * @return void|string
+ */
+if (!function_exists("dump")) {
+
+    function dump($var, $echo = true, $label = null, $strict = true)
+    {
+        if (!defined('IS_TEST')) {
+            return;
+        }
+        $label = ($label === null) ? '' : rtrim($label) . ' ';
+        if (!$strict) {
+            if (ini_get('html_errors')) {
+                $output = print_r($var, true);
+                $output = '<pre>' . $label . htmlspecialchars($output, ENT_QUOTES) . '</pre>';
+            } else {
+                $output = $label . print_r($var, true);
+            }
+        } else {
+            ob_start();
+            var_dump($var);
+            $output = ob_get_clean();
+            if (!extension_loaded('xdebug')) {
+                $output = preg_replace('/\]\=\>\n(\s+)/m', '] => ', $output);
+                $output = '<pre>' . $label . htmlspecialchars($output, ENT_QUOTES) . '</pre>';
+            }
+        }
+        if ($echo) {
+            echo($output);
+            return null;
+        } else
+            return $output;
+    }
+}
+if (!function_exists("is_test")) {
+
+    function is_test()
+    {
+        return defined('IS_TEST');
+    }
+}
+if (!function_exists("array_part")) {
+    function array_part($key, $array)
+    {
+        if (is_string($key)) {
+            $key = explode(',', $key);
+        }
+        if (!is_array($array)) {
+            $array = array();
+        }
+        foreach ($key as $key_item) {
+            if (isset($array[$key_item])) {
+                $res_array[$key_item] = $array[$key_item];
+            } else {
+                $res_array[$key_item] = '';
+            }
+        }
+        return $res_array;
+    }
+}
+if (!function_exists("array_column")) {
+
+    function array_column($input = null, $columnKey = null, $indexKey = null)
+    {
+        // Using func_get_args() in order to check for proper number of
+        // parameters and trigger errors exactly as the built-in array_column()
+        // does in PHP 5.5.
+        $argc = func_num_args();
+        $params = func_get_args();
+        if ($argc < 2) {
+            trigger_error("array_column() expects at least 2 parameters, {$argc} given", E_USER_WARNING);
+            return null;
+        }
+        if (!is_array($params[0])) {
+            trigger_error(
+                'array_column() expects parameter 1 to be array, ' . gettype($params[0]) . ' given',
+                E_USER_WARNING
+            );
+            return null;
+        }
+        if (!is_int($params[1])
+            && !is_float($params[1])
+            && !is_string($params[1])
+            && $params[1] !== null
+            && !(is_object($params[1]) && method_exists($params[1], '__toString'))
+        ) {
+            trigger_error('array_column(): The column key should be either a string or an integer', E_USER_WARNING);
+            return false;
+        }
+        if (isset($params[2])
+            && !is_int($params[2])
+            && !is_float($params[2])
+            && !is_string($params[2])
+            && !(is_object($params[2]) && method_exists($params[2], '__toString'))
+        ) {
+            trigger_error('array_column(): The index key should be either a string or an integer', E_USER_WARNING);
+            return false;
+        }
+        $paramsInput = $params[0];
+        $paramsColumnKey = ($params[1] !== null) ? (string)$params[1] : null;
+        $paramsIndexKey = null;
+        if (isset($params[2])) {
+            if (is_float($params[2]) || is_int($params[2])) {
+                $paramsIndexKey = (int)$params[2];
+            } else {
+                $paramsIndexKey = (string)$params[2];
+            }
+        }
+        $resultArray = array();
+        foreach ($paramsInput as $row) {
+            $key = $value = null;
+            $keySet = $valueSet = false;
+            if ($paramsIndexKey !== null && array_key_exists($paramsIndexKey, $row)) {
+                $keySet = true;
+                $key = (string)$row[$paramsIndexKey];
+            }
+            if ($paramsColumnKey === null) {
+                $valueSet = true;
+                $value = $row;
+            } elseif (is_array($row) && array_key_exists($paramsColumnKey, $row)) {
+                $valueSet = true;
+                $value = $row[$paramsColumnKey];
+            }
+            if ($valueSet) {
+                if ($keySet) {
+                    $resultArray[$key] = $value;
+                } else {
+                    $resultArray[] = $value;
+                }
+            }
+        }
+        return $resultArray;
+    }
+}
+if (!function_exists("pdo_sql_debug")) {
+
+    function pdo_sql_debug($sql, $placeholders)
+    {
+        foreach ($placeholders as $k => $v) {
+            $sql = preg_replace('/' . $k . '/', "'" . $v . "'", $sql);
+        }
+        dump($sql);
+        return $sql;
+    }
 }
