@@ -3,10 +3,6 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
-$push = new \Util\Push();
-$res = $push->send("标题","内容",[]);
-dump($res);
-exit;
 @session_start();
 setcookie('preUrl', $_W['siteurl']);
 $openid         = m('user')->getOpenid();
