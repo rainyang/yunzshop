@@ -38,7 +38,7 @@ input[type="button"], input[type="submit"], input[type="reset"] {-webkit-appeara
 .search input[type="text"] { outline: none; font-size: 12px; font-weight: 400; color: #7E7E81; width: 54%; height: 30px;margin-top:2px; border: 1px solid #B5B5B5; border-right:0px;background:url('../image/search_icon.png') 5px no-repeat; background-size:15px; padding-left:2em; padding-right:5px; float:left; border-radius:5px 0px 0px 5px; box-sizing: initial;}
 .search_btn{ float:left; width:25%; height:32px; margin-top:2px; background:#3EB134; font-size:14px; color:#fff; border-radius:0px 5px 5px 0px; border: 1px solid #3EB134;}
 
-.main{ background:#FBFBFB; padding:0px 0px 50px;}
+.main{ background:#FBFBFB; padding:0px 0px 50px;    overflow: hidden;}
 
 /*幻灯片new*/ 
 .mainslider{ width:100%; height:4.6875rem; margin:0 auto; position:relative; overflow:hidden; z-index:2001;}
@@ -183,7 +183,7 @@ input[type="button"], input[type="submit"], input[type="reset"] {-webkit-appeara
 .gbn_li .index_tabBox .hd .on{ background:#3EB134; color:#fff;}
 
 /** 商品列表公用 goods,shop,详情页同店推荐 **/
-.goodslist{overflow:hidden;background:#FBFBFB;}
+.goodslist{overflow:hidden;}
 .goodslist li{width:50%;float:left; position:relative;}
 .foodlistdl{margin:4px 2px 0px 2px;overflow:hidden;background:#fff;}
 .foodtitle,.foodprice,.freeshipping{overflow:hidden;margin:0 5px;white-space: nowrap; height:22px; line-height:22px;}

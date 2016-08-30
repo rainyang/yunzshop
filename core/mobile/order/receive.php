@@ -29,6 +29,13 @@ foreach ($sets as $set) {
 		if (!empty($orderids)) {
 			pdo_query('update ' . tablename('sz_yi_order') . ' set status=3,finishtime=' . time() . ' where id in (' . $orderids . ')');
 			foreach ($orders as $orderid => $o) {
+				if (p('return')) {
+					p('return')->cumulative_order_amount($orderid);
+				}
+
+				if (p('yunbi')) {
+					p('yunbi')->GetVirtualCurrency($orderid);
+				}
 				m('notice')->sendOrderMessage($orderid);
 				if ($pcoupon) {
 					if (!empty($o['couponid'])) {

@@ -3,6 +3,7 @@
 <div class="ulleft-nav">
 <ul class="nav nav-tabs">
     <li {if $_GPC['op']=='' || $_GPC['op']=='display'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('area')}" style="cursor: pointer;">区域管理</a></li>
+    <li {if $_GPC['op']=='statistics'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('area/statistics', array('op' => 'statistics'))}" style="cursor: pointer;">销售统计</a></li>
     
 </ul>
 </div>

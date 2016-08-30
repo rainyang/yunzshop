@@ -127,7 +127,7 @@ class Sz_DYi_Order
             ':ordersn_general' => $ordersn,
             ':uniacid' => $uniacid
         ));
-        
+        //dump($orderall);exit;
         if(count($orderall) > 1){
             $order = array();
             $order['ordersn'] = $ordersn;
@@ -156,7 +156,8 @@ class Sz_DYi_Order
                 $type = 'verify';
                 $order_goods = pdo_fetch("SELECT * FROM ".tablename('sz_yi_order_goods')." WHERE orderid=:id and uniacid=:uniacid", array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
                 $goodstitle = pdo_fetchcolumn("SELECT title FROM ".tablename('sz_yi_goods')." WHERE id=:id and uniacid=:uniacid",array(':id' => $order_goods['goodsid'], ':uniacid' => $_W['uniacid']));
-                $issendsms = $this->sendSms($mobile, $order['verifycode'], 'reg', $type, $carriers['carrier_realname'],$goodstitle);
+                $store = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_store')." WHERE id=".$order['storeid']);
+                $issendsms = $this->sendSms($mobile, $order['verifycode'], 'reg', $type, $carriers['carrier_realname'],$goodstitle, $order_goods['total'], $store['tel']);
                 
             }
         }
@@ -308,11 +309,11 @@ class Sz_DYi_Order
             }
         }
     }
-    function sendSms($mobile, $code, $templateType = 'reg', $type = 'check', $name, $title)
+    function sendSms($mobile, $code, $templateType = 'reg', $type = 'check', $name, $title, $total, $tel)
     {
         $set = m('common')->getSysset();
         if ($set['sms']['type'] == 1) {
-            return send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $code, $type, $name, $title);
+            return send_sms($set['sms']['account'], $set['sms']['password'], $mobile, $code, $type, $name, $title, $total, $tel);
         } else {
             return send_sms_alidayu($mobile, $code, $templateType);
         }
