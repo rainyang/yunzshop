@@ -50,6 +50,9 @@ class AutoLoader
             case 'Util':
                 $dir = __API_ROOT__ . '/../inc/';
                 break;
+            case 'LeanCloud':
+                $dir = __API_ROOT__ . '/../inc/plugin/vendor/';
+                break;
             default:
                 break;
         }
