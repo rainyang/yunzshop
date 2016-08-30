@@ -100,10 +100,12 @@ if (!file_exists($file)) {
             $d_validation   = $tmpdirs."/d_".date("Ymd").$_W['uniacid'].".txt";
             if (!file_exists($d_validation)) {
                         $this->updateSet($set);
-                if (!isset($set['distribution_d']) || $set['distribution_d'] != date('d')) {
+                if (date('H') == $set['distribution_returntime']) {
+                    if (!isset($set['distribution_d']) || $set['distribution_d'] != date('d')) {
                         $set['distribution_d'] = date('d');
                         $this->updateSet($set);
                         $isdistribution = true;
+                    }
                 }
             }else{
                 echo "uniacid:".$_W['uniacid'];
