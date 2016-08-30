@@ -31,12 +31,12 @@ class AutoLoader
     public function spl_autoload_register($full_class_name)
     {
         $namespace = substr($full_class_name, 0, strrpos($full_class_name, '\\'));//最后一个'\'之前 是命名空间
-
+        if(empty($namespace)){
+            return false;
+        }
         $dir = self::_mapNamespaceToDir($namespace);
-        dump($dir);
         $class_name = $this->_getClassName($full_class_name);
-        dump($class_name);
-        require "{$dir}/{$class_name}.php";
+        require __API_ROOT__."/../{$dir}/{$class_name}.php";
     }
     private function _getClassName($full_class_name){
         $array = explode('\\',$full_class_name);

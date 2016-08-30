@@ -20,6 +20,7 @@ class Login extends \api\YZ
 
     public function index()
     {
+        load()->model('user');
         global $_W, $_GPC;
         $para = $this->getPara();
         $para['username'] = trim($para['username']);
