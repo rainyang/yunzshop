@@ -111,10 +111,22 @@ class Sz_DYi_User
         if($_GPC['p'] == 'return' && $_GPC["method"]=='task'){
             return;
         }
+        if($_GPC['p'] == 'yunbi' && $_GPC["method"]=='task'){
+            return;
+        }
         if($_GPC['p'] == 'ranking' && $_GPC["method"]=='commission'){
             return;
         }
-        //需要登陆的P方法
+        if($_GPC['p'] == 'area' && $_GPC["method"]=='area_list'){
+            return;
+        }
+        if($_GPC['p'] == 'area' && $_GPC["method"]=='area'){
+            return;
+        }
+        if($_GPC['p'] == 'area' && $_GPC["method"]=='area_detail'){
+            return;
+        }
+        //需要登陆的P方法                  
         $needLoginPList = array('address', 'commission','cart');
 
         //不需要登陆的P方法
@@ -128,6 +140,10 @@ class Sz_DYi_User
             return;
         }
 
+        //帮助中心不需要登录
+        if (!empty($_GPC['is_helper']) && $_GPC['p'] == 'article') {
+            return;
+        }
         /*
         if($_GPC["c"]=='entry'){
             return;

@@ -53,7 +53,14 @@ if ($pluginreturn) {
         $isreturn = true;
     }
 }
-
+$isyunbi = false;
+$pluginyunbi = p('yunbi');
+if ($pluginyunbi) {
+    $yunbi_set = $pluginyunbi->getSet();
+    if ($yunbi_set['isyunbi'] == 1 ) {
+        $isyunbi = true;
+    }
+}
 $shopset = m('common')->getSysset('shop');
 $shoppay = m('common')->getSysset('pay');
 $sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
@@ -82,6 +89,21 @@ if (!empty($category2)) {
         }
     }
 }
+if (p('area')) {
+    $sql = 'SELECT * FROM ' . tablename('sz_yi_category_area') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
+    $category_area = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
+    $parent_area = $children_area = array();
+    if (!empty($category_area)) {
+        foreach ($category_area as $cid => $cate_area) {
+            if (!empty($cate_area['parentid'])) {
+                $children_area[$cate_area['parentid']][] = $cate_area;
+            } else {
+                $parent_area[$cate_area['id']] = $cate_area;
+            }
+        }
+    }    
+}
+
 
 if (p('commission')) {
     $commissionLevels = pdo_fetchall(
@@ -132,7 +154,7 @@ if ($operation == "change") {
         } else {
             ca('shop.goods.add');
         }
-        $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid']);
+        $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid'] . ' AND roleid=(select id from ' . tablename('sz_yi_perm_role') . ' where status1=1)');
         if (p('hotel')) {
             $print_list = pdo_fetchall('SELECT * FROM ' . tablename('sz_yi_print_list') . ' WHERE uniacid = :uniacid ',
                 array(':uniacid' => $_W['uniacid']));
@@ -548,6 +570,11 @@ if ($operation == "change") {
                 "isopenchannel" => intval($_GPC["isopenchannel"])
 
             );
+            if (p('area')) {
+                $data['pcate_area'] = intval($_GPC['category_area']['parentid']);
+                $data['ccate_area'] = intval($_GPC['category_area']['childid']);
+                $data['tcate_area'] = intval($_GPC['category_area']['thirdid']);
+            }
             if (!empty($_GPC['bonusmoney'])) {
                 $data['bonusmoney'] = $_GPC['bonusmoney'];
             }
@@ -571,7 +598,12 @@ if ($operation == "change") {
                 $data['isreturn'] = intval($_GPC['isreturn']);   //添加全返开关    1:开    0:关
                 $data['isreturnqueue'] = intval($_GPC['isreturnqueue']);   //添加全返排列开关    1:开    0:关
             }
-
+            if ($pluginyunbi) {
+                $data['isyunbi'] = intval($_GPC['isyunbi']);   //返虚拟币开关    1:开    0:关
+                $data['yunbi_consumption'] = floatval($_GPC['yunbi_consumption']);  //虚拟币 返现比例 
+                $data['yunbi_deduct'] = floatval($_GPC['yunbi_deduct']);  //虚拟币最高抵扣 
+                
+            }
             if (p('hotel')) {
                 $data['deposit'] = $_GPC["deposit"];//房间押金
                 $data['print_id'] = $_GPC["print_id"];//房间押金

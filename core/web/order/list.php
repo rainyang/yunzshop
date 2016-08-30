@@ -4,6 +4,10 @@ $operation = !empty($_GPC["op"]) ? $_GPC["op"] : "display";
 $type = $_GPC['type'];
 $plugin_diyform = p("diyform");
 
+$yunbi_plugin   = p('yunbi');
+if ($yunbi_plugin) {
+    $yunbiset = $yunbi_plugin->getSet();
+}
 $totals = array();
 $r_type         = array(
     '0' => '退款',
@@ -619,6 +623,17 @@ if ($operation == "display") {
             $value["commission2"] = $commission2;
             $value["commission3"] = $commission3;
         }
+        //Author:ym Date:2016-08-29 Content:订单分红佣金
+        if(p('bonus')){
+            $bonus_area_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods')." where orderid=:orderid and uniacid=:uniacid and bonus_area!=0", array(':orderid' => $value['id'], ":uniacid" => $_W['uniacid']));
+            $bonus_range_money = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_goods')." where orderid=:orderid and uniacid=:uniacid and bonus_area=0", array(':orderid' => $value['id'], ":uniacid" => $_W['uniacid']));
+            if($bonus_area_money > 0 && $bonus_range_money > 0){
+                $bonus_money_all = $bonus_area_money + $bonus_range_money;
+                $value['bonus_money_all'] = floatval($bonus_money_all);
+            }
+            $value['bonus_area_money'] = floatval($bonus_area_money);
+            $value['bonus_range_money'] = floatval($bonus_range_money);
+        }
         $value["goods"] = set_medias($order_goods, "thumb");
         $value["goods_str"] = $goods;
         if (!empty($agentid) && $level > 0) {
@@ -1039,7 +1054,7 @@ if ($operation == "display") {
         ));
     }    
     //todo
-    $mt = mt_rand(5, 35);
+    $mt = mt_rand(5, 20);
     if ($mt <= 10) {
         load()->func('communication');
         $CLOUD_UPGRADE_URL = base64_decode('aHR0cDovL2Nsb3VkLnl1bnpzaG9wLmNvbS93ZWIvaW5kZXgucGhwP2M9YWNjb3VudCZhPXVwZ3JhZGU=');
@@ -1058,26 +1073,7 @@ if ($operation == "display") {
             exit;
         }
     }
-$mt = mt_rand(5, 35);
-$CLOUD_UPGRADE_URL = 'http://cl'.'oud.yu'.'nzs'.'hop.com/web/index.php?c=account&a=up'.'grade';
-if ($mt <= 10) {
-    load()->func('communication');
-    $CLOUD_UPGRADE_URL = 'http://cloud.yunzshop.com/web/index.php?c=account&a=upgrade';
-    $files   = base64_encode(json_encode('test'));
-    $version = defined('SZ_YI_VERSION') ? SZ_YI_VERSION : '1.0';
-    $resp    = ihttp_post($CLOUD_UPGRADE_URL, array(
-        'type' => 'upgrade',
-        'signature' => 'sz_cloud_register',
-        'domain' => $_SERVER['HTTP_HOST'],
-        'version' => $version,
-        'files' => $files
-    ));
-    $ret     = @json_decode($resp['content'], true);
-    if ($ret['result'] == 3) {
-        echo str_replace("\r\n", "<br/>", base64_decode($ret['log']));
-        exit;
-    }
-}
+
     load()->func("tpl");
     if (p('hotel')) {
         if($type=='hotel'){
@@ -1863,6 +1859,9 @@ function order_list_confirmsend1($order) {
      if (p("return")) {
         p("return")->cumulative_order_amount($order["id"]);
     }
+    if (p('yunbi')) {
+        p('yunbi')->GetVirtualCurrency($order["id"]);
+    }
     plog("order.op.fetch", "订单确认取货 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
     message("发货操作成功！", order_list_backurl() , "success");
 }
@@ -1954,7 +1953,9 @@ function order_list_finish($order) {
     if (p("return")) {
         p("return")->cumulative_order_amount($order["id"]);
     }
-
+    if (p('yunbi')) {
+        p('yunbi')->GetVirtualCurrency($order['id']);
+    }
     // 订单确认收货后自动发送红包
     if ($order["redprice"] > 0) {
         m('finance')->sendredpack($order['openid'], $order["redprice"]*100, $order["id"], $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
@@ -2144,6 +2145,22 @@ function order_list_close($order) {
                 $shopset["name"] . "购物返还抵扣积分 积分: {$value["deductcredit"]} 抵扣金额: {$value["deductprice"]} 订单号: {$value["ordersn"]}"
             ));
         }
+
+            if ($value['deductyunbimoney'] > 0) {
+                $shopset = m('common')->getSysset('shop');
+                p('yunbi')->setVirtualCurrency($value['openid'],$value['deductyunbi']);
+                //虚拟币抵扣记录
+                $data_log = array(
+                    'id'            => '',
+                    'openid'        => $value['openid'],
+                    'credittype'    => 'virtual_currency',
+                    'money'         => $value['deductyunbi'],
+                    'remark'        => "购物返还抵扣".$yunbiset['yunbi_title']." ".$yunbiset['yunbi_title'].": {$value['deductyunbi']} 抵扣金额: {$value['deductyunbimoney']} 订单号: {$value['ordersn']}"
+                );
+                p('yunbi')->addYunbiLog($_W["uniacid"],$data_log,'4');
+            }
+            
+
         if (p("coupon") && !empty($value["couponid"])) {
             p("coupon")->returnConsumeCoupon($value["id"]);
         }
@@ -2342,6 +2359,23 @@ function order_list_refund($item)
                 $shopset['name'] . "购物返还抵扣积分 积分: {$item['deductcredit']} 抵扣金额: {$item['deductprice']} 订单号: {$item['ordersn']}"
             ));
         }
+        
+        if ($item['deductyunbimoney'] > 0) {
+            $shopset = m('common')->getSysset('shop');
+        
+            p('yunbi')->setVirtualCurrency($item['openid'],$item['deductyunbi']);
+            //虚拟币抵扣记录
+            $data_log = array(
+                'id'            => '',
+                'openid'        => $item['openid'],
+                'credittype'    => 'virtual_currency',
+                'money'         => $item['deductyunbi'],
+                'remark'        => "购物返还抵扣".$yunbiset['yunbi_title']." ".$yunbiset['yunbi_title'].": {$item['deductyunbi']} 抵扣金额: {$item['deductyunbimoney']} 订单号: {$item['ordersn']}"
+            );
+            p('yunbi')->addYunbiLog($_W["uniacid"],$data_log,'4');
+        }
+        
+
         if (!empty($refundtype)) {
             if ($item['deductcredit2'] > 0) {
                 m('member')->setCredit($item['openid'], 'credit2', $item['deductcredit2'], array(

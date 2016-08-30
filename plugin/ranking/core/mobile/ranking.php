@@ -32,7 +32,17 @@ if($set['iscommission'] == 1)
 }
 $style_width = 100 / $style_width_type;
 
-$_GPC['type'] = $_GPC['type']?$_GPC['type']:0;
+
+if ($set['isintegral']) {
+    $type = 0;
+} elseif ($set['isexpense']) {
+    $type = 1;
+}else {
+    $type = 2;
+}
+
+$_GPC['type'] = $_GPC['type']?$_GPC['type']:$type;
+
 $default_avatar = "../addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg";
 if ($_W['isajax']) {
     if ($operation == 'display') {

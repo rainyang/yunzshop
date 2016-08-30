@@ -52,7 +52,7 @@ if (empty($infourl)) {
 		}
 	}
 }
-$share_my_Url = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=plugin&p=commission&method=myshop&mid=' . $member['id'];
+$share_my_Url = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&do=shop&m=sz_yi&p=detail&id='.$_GPC['goodsid'].'&mid=' . $member['id'];
 if (empty($infourl) && $_W['isajax']) {
     $p = p('poster');
     $shareUrl = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=plugin&p=commission&method=myshop&mid=' . $member['id'];
@@ -78,8 +78,10 @@ if (empty($infourl) && $_W['isajax']) {
     die($img);
 }
 
-if (is_app()) {
+if (is_app() && empty($_GPC['scan_qr'])) {
 	include $this->template('app_shares');
+} else if ($_GPC['scan_qr']) {
+	include $this->template('scan_qr');
 } else {
 	include $this->template('shares');
 }

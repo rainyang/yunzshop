@@ -6,6 +6,20 @@ if (!defined('IN_IA')) {
 if (!defined('IS_API')) {
     load()->func('tpl');
 }
+
+/*
+if (!function_exists('mkdirs')) {
+    function mkdirs($path)
+    {
+        if (!is_dir($path)) {
+            mkdirs(dirname($path));
+            mkdir($path);
+        }
+        return is_dir($path);
+    }
+}
+ */
+
 function sz_tpl_form_field_date($name, $value = '', $withtime = false)
 {
     $s = '';
@@ -136,7 +150,7 @@ function curl_download($url, $dir) {
     return $res;
 }
 
-function send_sms($account, $pwd, $mobile, $code, $type = 'check')
+function send_sms($account, $pwd, $mobile, $code, $type = 'check', $name, $title, $total, $tel)
 {
     if ($type == 'check') {
         $content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
@@ -145,9 +159,9 @@ function send_sms($account, $pwd, $mobile, $code, $type = 'check')
         $verify_set = m('common')->getSetData();
         $allset = iunserializer($verify_set['plugins']);
         if (is_array($allset) && !empty($allset['verify']['code_template'])) {
-            $content = sprintf($allset['verify']['code_template'], $code);
+            $content = sprintf($allset['verify']['code_template'], $code, $title, $total, $name, $mobile, $tel);
         } else {
-            $content = "您的核销码是：".$code."。请把此信息中的核销码出示给核销员进行核销操作！";
+            $content = "提醒您，您的核销码为：".$code."，订购的票型是：".$title."，数量：".$total."张，购票人：".$name."，电话：".$mobile."，门店电话：".$tel."。请妥善保管，验票使用！";
 
         }
         
