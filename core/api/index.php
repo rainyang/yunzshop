@@ -116,11 +116,6 @@ final class Run
         $this->run();
     }
 
-    private function spl_autoload_register()
-    {
-
-    }
-
     public function run()
     {
         require $this->dispatch->getControllerPatch();

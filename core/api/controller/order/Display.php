@@ -22,7 +22,6 @@ class Display extends \api\YZ
     {
         $para = $this->getPara();
 //$api->validate('username','password');
-        $this->ca("order.view.status_1|order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status5");
         $order_model = new \api\model\order();
         $order_list = $order_model->getList(
             array(
