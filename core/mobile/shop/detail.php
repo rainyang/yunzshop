@@ -176,6 +176,14 @@ if ($_W['isajax']) {
         show_json(0);
     }
     $goods              = set_medias($goods, 'thumb');
+    if (p('yunbi')) {
+        $yunbi_set = p('yunbi')->getSet();
+        if (!empty($yunbi_set['isdeduct']) && !empty($goods['isforceyunbi']) && $member['virtual_currency'] >= $goods['yunbi_deduct']) {
+            $goods['isforceyunbi'] = 1;
+        } else {
+            $goods['isforceyunbi'] = 0;
+        }
+    }
     $goods['canbuy']    = !empty($goods['status']) && empty($goods['deleted']);
     $goods['timestate'] = '';
     $goods['userbuy']   = '1';

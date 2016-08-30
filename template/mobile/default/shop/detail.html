@@ -408,6 +408,7 @@ div.flicking_con a.on{background-position:0 -9px}
             </div>
             
             <div class="add" onclick="choose('cart')">加入购物车</div>
+            <input type="hidden" value="<%goods.isforceyunbi%>" id='isforceyunbi'>
             <%/if%>
             <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:85%'<%/if%>>立即购买</div>
         <%/if%>
@@ -992,6 +993,11 @@ div.flicking_con a.on{background-position:0 -9px}
         $('.good_choose').fadeOut(100); 
         }
     function choose(act){
+      var isforceyunbi = $('#isforceyunbi').val();
+      if (!isforceyunbi) {
+          tip.show("云币不足,不允许加入购物车和购买");
+          return;
+      }
                           if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
                                 require(['core'],function(core){
                                     core.tip.confirm($('#followtip').val(),function(){

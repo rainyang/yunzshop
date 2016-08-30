@@ -113,7 +113,7 @@ if($operation == 'assigns'){
                         'id'            => $member['id'],
                         'openid'        => $openid,
                         'credittype'    => '',
-                        'money'         => $moneys,
+                        'money'         => $money,
                         'remark'        => "转让{$title}:{$moneys}"
                     );
                     p('yunbi')->addYunbiLog($_W['uniacid'], $data, '8');
