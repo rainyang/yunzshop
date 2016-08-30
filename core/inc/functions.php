@@ -150,7 +150,7 @@ function curl_download($url, $dir) {
     return $res;
 }
 
-function send_sms($account, $pwd, $mobile, $code, $type = 'check', $name, $title)
+function send_sms($account, $pwd, $mobile, $code, $type = 'check', $name, $title, $total, $tel)
 {
     if ($type == 'check') {
         $content = "您的验证码是：". $code ."。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
@@ -159,9 +159,9 @@ function send_sms($account, $pwd, $mobile, $code, $type = 'check', $name, $title
         $verify_set = m('common')->getSetData();
         $allset = iunserializer($verify_set['plugins']);
         if (is_array($allset) && !empty($allset['verify']['code_template'])) {
-            $content = sprintf($allset['verify']['code_template'], $title, $name, $mobile, $code);
+            $content = sprintf($allset['verify']['code_template'], $code, $title, $total, $name, $mobile, $tel);
         } else {
-            $content = "您订购的商品是：".$title."，联系人：".$name."，电话：".$mobile."，核销码为：".$code."。";
+            $content = "提醒您，您的核销码为：".$code."，订购的票型是：".$title."，数量：".$total."张，购票人：".$name."，电话：".$mobile."，门店电话：".$tel."。请妥善保管，验票使用！";
 
         }
         
