@@ -303,6 +303,9 @@ if ($op == 'display') {
             message('此会员有下线存在，无法删除! ', '', 'error');
         }
     }
+    if (p('return')) {
+        pdo_query("update  " . tablename('sz_yi_return') . " set `delete` = '1' WHERE `uniacid` = '". $_W['uniacid'] ."' and `mid` = '".$_GPC['id']."'");
+    }
     pdo_delete('sz_yi_member', array(
         'id' => $_GPC['id']
     ));

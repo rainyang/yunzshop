@@ -1,5 +1,6 @@
 <?php
 global $_W, $_GPC;
+load()->func('file');
 set_time_limit(0);
 //创建文件锁
 $tmpdir = IA_ROOT . "/addons/sz_yi/tmp/yunbi";

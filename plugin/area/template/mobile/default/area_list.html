@@ -133,7 +133,7 @@ div.addinfo{height:18px;}
     
         <div class="main_selectArea">
             <div class="main_list">
-                <div class="listtext"><p>精心为您挑选<span><span id="lblcity">{$category['name']}</span></span>各县土特产</p></div>
+                <div class="listtext"><p>精心为您挑选<span><span id="lblcity"><%category.name%></span></span>各县土特产</p></div>
                 <div class="listtuwen">
                             <%each current_category as v%>
                             <a class="areaname" href="<%v.url%><%v.id%>" target="_self">
@@ -186,6 +186,7 @@ div.addinfo{height:18px;}
             if (pjson.status == 1) {
 
                 $('#container').html(tpl('tpl_main',pjson.result));
+                $('title').html(pjson.result.category.name);
                 if (pjson.result.current_category.length<=0) {
                     loaded = true;
                     $(window).scroll = null;

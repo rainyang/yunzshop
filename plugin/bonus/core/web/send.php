@@ -8,16 +8,16 @@ $pindex    = max(1, intval($_GPC['page']));
 $psize     = 20;
 $day_times        = intval($set['settledays']) * 3600 * 24;
 $daytime = strtotime(date("Y-m-d 00:00:00"));
-$sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times})  ORDER BY o.finishtime DESC,o.status DESC";
+$sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 left join ".tablename('sz_yi_member')." m on cg.mid=m.id where 1 and m.id!=0 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times})  ORDER BY o.finishtime DESC,o.status DESC";
 $count = pdo_fetchall($sql);
-
 $setshop = m('common')->getSysset('shop');
-if (empty($_GPC['export'])) {
+if ($operation != "sub_bonus") {
     $sql .= " limit " . ($pindex - 1) * $psize . ',' . $psize;
 }
 $p = p('commission')->getSet();
 $list = pdo_fetchall($sql);
 $totalmoney = 0;
+$real_total = 0;
 foreach ($list as $key => &$row) {
 	$member = $this->model->getInfo($row['mid'], array('ok', 'pay', 'myorder'));
 	if(!empty($member)){
@@ -42,6 +42,7 @@ foreach ($list as $key => &$row) {
 				$row['realname'] = $member['realname'];
 				$row['mobile'] = $member['mobile'];
 				$totalmoney += $member['commission_ok'];
+				$real_total +=1;
 			}
 		}
 	}else{
@@ -50,17 +51,20 @@ foreach ($list as $key => &$row) {
 	}	
 }
 unset($row);
-$total = count($list);
+$total = count($count);
 $send_bonus_sn = time();
 $sendpay_error = 0;
 $bonus_money = 0;
 if (!empty($_POST)) {
 	$islog = false;
-	if($total<=0){
+	if($real_total<=0){
 		message("发放人数为0，不能发放。", "", "error");
 	}
 	foreach ($count as $key => $value) {
 		$member = $this->model->getInfo($value['mid'], array('ok', 'pay', 'ordergoods'));
+		if(empty($member)){
+			continue;
+		}
 		$send_money = $member['commission_ok'];
 		$sendpay = 1;
 		$islog = true;
@@ -114,10 +118,11 @@ if (!empty($_POST)) {
 	            "sendpay_error" => $sendpay_error,
 	            'utime' => $daytime,
 	            "send_bonus_sn" => $send_bonus_sn,
-	            "total" => $total
+	            "total" => $real_total
 	            );
 	    pdo_insert('sz_yi_bonus', $log);
     }
     message("代理商分红发放成功", $this->createPluginWebUrl('bonus/detail', array("sn" => $send_bonus_sn)), "success");
 }
+$pager = pagination($total, $pindex, $psize);
 include $this->template('send');
