@@ -13,6 +13,7 @@ if(!empty($_GPC['id'])){
 $store = pdo_fetch('select * from ' . tablename('sz_yi_cashier_store') . ' where uniacid=:uniacid and id=:id', array(
     ':uniacid' => $_W['uniacid'], ':id' => $id
 ));
+$couponname = pdo_fetchcolumn(" SELECT couponname FROM ".tablename('sz_yi_coupon')." WHERE id=".$store['couponid']);
 if (p('commission')) {
     $com_set = p('commission')->getSet();
 }

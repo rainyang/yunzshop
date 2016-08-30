@@ -121,9 +121,9 @@ div.addinfo{height:18px;}
                 <ul><li class="on">1</li></ul>
             </div>
             <div class="bd">
-                <div class="tempWrap" style="overflow:hidden; position:relative;"><ul style="width: 375px; position: relative; overflow: hidden; padding: 0px; margin: 0px; transition-duration: 200ms; transform: translate(0px, 0px) translateZ(0px);">
+                <div class="tempWrap" style="overflow:hidden; position:relative;"><ul style="width: 100%; position: relative; overflow: hidden; padding: 0px; margin: 0px; transition-duration: 200ms; transform: translate(0px, 0px) translateZ(0px);">
                     
-                            <li style="display: table-cell; vertical-align: top; width: 375px;"><a href="{$category['url']}{$category['id']}" target="_self" title="{$category['name']}简介">
+                            <li style="display: table-cell; vertical-align: top; width: 100%;"><a href="{$category['url']}{$category['id']}" target="_self" title="{$category['name']}简介">
                                 <img src="{$category['thumb']}"><span class="localintro">查看{$category['name']}简介介绍</span></a></li>
                         
                 </ul></div>
@@ -161,7 +161,7 @@ div.addinfo{height:18px;}
             <div class="productlist_shop">
                 <ul class="goodslist" id="goodslist">
                 {loop $goods $g}
-                    <li class="page0" style="width:48%; overflow: hide;"><dl class="foodlistdl"><dd class="foodimg"><a href="{php echo $this->createMobileUrl('shop/detail',array('id'=>$g['id'], 'my'=>$_GPC['my']))}" class="a" target="_self"><img class="lazy" src="{$g['thumb']}" onerror="isExitsImg_nopic(this)"><span class="txtlbl" style="display: none; background-color: rgb(255, 0, 0);"></span></a></dd><dt class="foodtitle"><a href="{php echo $this->createMobileUrl('shop/detail',array('id'=>$g['id'], 'my'=>$_GPC['my']))}" target="_self" class="name a">{$g['title']}</a></dt><dd class="foodprice"><span class="price"><i>¥</i>{$g['marketprice']}</span><span class="indexname">{$g['unit']}</span><span class="xiaoliang fukuan">{$g['sales']}人付款</span></dd><dd class="freeshipping"><a href="{php echo $this->createMobileUrl('shop/detail',array('id'=>$g['id'], 'my'=>$_GPC['my']))}" class="a diqu" target="_self"><span class="diqu_sxs">{$g['pcate_name']} {$g['ccate_name']} {$g['tcate_name']} </span>{if $g['issendfree'] == 1}<span class="baoyou">包邮</span>{/if}</a></dd></dl>
+                    <li class="page0" style="overflow: hide;"><dl class="foodlistdl"><dd class="foodimg"><a href="{php echo $this->createMobileUrl('shop/detail',array('id'=>$g['id'], 'my'=>$_GPC['my']))}" class="a" target="_self"><img class="lazy" src="{$g['thumb']}" onerror="isExitsImg_nopic(this)"><span class="txtlbl" style="display: none; background-color: rgb(255, 0, 0);"></span></a></dd><dt class="foodtitle"><a href="{php echo $this->createMobileUrl('shop/detail',array('id'=>$g['id'], 'my'=>$_GPC['my']))}" target="_self" class="name a">{$g['title']}</a></dt><dd class="foodprice"><span class="price"><i>¥</i>{$g['marketprice']}</span><span class="indexname">{$g['unit']}</span><span class="xiaoliang fukuan">{$g['sales']}人付款</span></dd><dd class="freeshipping"><a href="{php echo $this->createMobileUrl('shop/detail',array('id'=>$g['id'], 'my'=>$_GPC['my']))}" class="a diqu" target="_self"><span class="diqu_sxs">{$g['pcate_name']} {$g['ccate_name']} {$g['tcate_name']} </span>{if $g['issendfree'] == 1}<span class="baoyou">包邮</span>{/if}</a></dd></dl>
                     </li>
                 {/loop}
                 </ul>

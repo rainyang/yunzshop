@@ -1,10 +1,10 @@
-﻿<!--头部调用-->
+<!--头部调用-->
 {template 'common/header'}
 
 <title>{$goods['title']}</title>
 {template 'common/navigation'}
 <style type="text/css">
-body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none; -webkit-appearance: none;}
+body {margin:0px; background:#fff; font-family:'微软雅黑'; -moz-appearance:none; -webkit-appearance: none;}
 ul,li {padding:0px; margin:0px;}
 .good_topbar { width:100%;position:fixed; top:0px; height:40px;z-index: 8;line-height:35px;}
 .good_topbar .left { float:left; width:30px;height:30px;margin-left:10px;margin-top:5px;}
@@ -14,11 +14,13 @@ ul,li {padding:0px; margin:0px;}
 
 .good_img {height:300px; width:100%; background:#ccc;}
 .good_img img {height:100%; width:100%;}
-.good_info1 {height:auto; width:100%; background:#fff; padding:0px 3%;/* border-bottom:1px solid #e2e2e2;*/}
-.good_info1 .info1 {height:80px; width:100%; border-bottom:1px dashed #f3f3f3; padding:20px 0px;}
-.good_info1 .info1 .name {height:38px; width:65%; border-right:1px solid #e3e3e3; float:left; font-size:14px; color:#666;}
-.good_info1 .info1 .sub1 {height:38px; width:30%; background:#ff6500; float:right; border-radius:5px; color:#fff; text-align:center; line-height:38px;}
-.good_info1 .info1 .sub1 i {height:16px; width:16px; margin-right:2px; background:#fff; border-radius:5px; color:#ff6500; line-height:18px; font-size:14px;}
+.good_info1 {height:auto; width:100%; width:535px !important; padding-left:30px;/* border-bottom:1px solid #e2e2e2;*/}
+.good_info1 .info1 {width:100%; border-bottom:1px dashed #f3f3f3; padding-bottom:10px;}
+.good_info1 .info1 .name {font-size:18px; color:#333; }
+.fx_sub1 {height:38px; float:left;  width:35%; background:#ff6500; border-radius:5px; color:#fff; text-align:center; margin:10px 10px 10px 0 ; line-height:38px;}
+.fx_sub1 i {height:16px; width:16px; margin-right:2px; background:#fff; border-radius:5px; color:#ff6500; line-height:18px; font-size:14px;}
+.fx_num { float:left; margin-top:10px; line-height:38px;}
+.fx_num em { color:#ec0405;}
 .good_info1 .info2  {height:38px; width:100%; border-bottom:1px dashed #f3f3f3; padding:11px 0px;color:#666;}
 .good_info1 .price {h    background-color: #F3F3F3;
     padding: 10px;background-color: #F3F3F3;
@@ -33,22 +35,22 @@ ul,li {padding:0px; margin:0px;}
 .good_info1 .other1 .right .inner { margin-left:80px;}
 .good_speci {height:44px; width:100%; overflow: hidden; background:#fff; padding:0px 3%; margin-top:14px; border-bottom:1px solid #e2e2e2;  line-height:44px; color:#666; font-size:14px;}
 
-.good_shop {height:118px; width:100%; background:#fff; padding:0px 1%; margin-top:14px; border-bottom:1px solid #e2e2e2;}
-.good_shop .shop1 {height:70px; width:100%; padding:10px 0px; }
+.good_shop {height:118px; width:100%; padding:0 8px; background:#fff; padding:0px 1%; margin-top:-1px; margin-bottom:10px; border:1px solid #ededed;}
+.good_shop .shop1 {height:70px; width:100%; padding:10px 8px; }
 .good_shop .shop1 img {height:50px; width:50px; margin-right:10px; float:left;}
 .good_shop .shop1 .shop_info {height:50px; width:auto; float:left; font-size:16px; color:#666; line-height:25px;}
 .good_shop .shop1 .shop_info span {font-size:14px; color:#ccc;}
-.good_shop .shop2 {height:59px; width:100%;}
+.good_shop .shop2 {height:59px; width:100%;  padding:0 8px;}
 .good_shop .shop2 .sub1 {height:37px; width:49%; float:left; border:1px solid #e2e2e2; border-radius:3px; text-align:center; line-height:37px; font-size:16px; color:#999;cursor: pointer;}
 .good_shop .shop2 .sub2 {height:37px; width:49%; float:right; border:1px solid #e2e2e2; border-radius:3px; text-align:center; line-height:37px; font-size:16px; color:#999;cursor: pointer;}
 
-.good_info2 {height:auto; width:100%; background:#fff; margin-top:14px; }
+.good_info2 {height:auto; width:100%;  }
 .good_info2 .menu {height:40px; width:100%;}
 .good_info2 .menu .nav {height:37px; width:25%;  float:left; font-size:14px; color:#666; text-align:center; line-height:37px;cursor: pointer;}
 .good_info2 .menu .navon {color:#ff6500; height:40px; line-height:40px;}
-.good_info2 .tab_con {height:auto; width:100%; padding:10px; overflow: hidden;}
+.good_info2 .tab_con {height:auto; width:100%; overflow: hidden;}
 .good_info2 .tab_con .con {height:auto; display:none;color:#333;word-break:break-all;}
-.good_info2 .tab_con .con .param { padding:10px; border-bottom:1px solid #ccc}
+.good_info2 .tab_con .con .param { width:50%; float:left; padding:10px; border-bottom:1px solid #ccc}
 .good_info2 .tab_con #con_1 img { width:100%;outline-width:0px;  vertical-align:top; display:block}
 .tab_con p{ margin:0 }
 
@@ -64,7 +66,7 @@ ul,li {padding:0px; margin:0px;}
 .good_copyright {font-size:14px; line-height:14px; padding:10px 0px; text-align:center; color:#aaa; padding-bottom:60px;}
 
 /**以下是图片轮播代码**/
-.good_img{overflow:hidden;position:relative;width:100%;}
+.good_img{overflow:hidden;position:relative;width:100%; margin:0 !important;}
 .main_image{width:100%;position:relative;top:0;left:0;width:100%;}
 .main_image ul{;position:absolute;top:0;left:0;width:100%;}
 .main_image li{float:left;width:100%;}
@@ -95,8 +97,8 @@ div.flicking_con a.on{background-position:0 -9px}
 .comment .imgs img { padding:1px;border:1px solid #ccc;float:left;margin-right:5px;}
 #comment_loading { width:100%;padding:10px;color:#666;text-align: center;} 
 #recommand_container  {height:auto; width:100%; background:#fff; overflow:hidden;float:left;} 
-#recommand_container .good {height:auto; width:295px; padding:10px; float:left;box-sizing: border-box;}
-#recommand_container .good img {height:295px; width:100%;}
+#recommand_container .good {height:auto; width:260px; padding:10px; float:left;box-sizing: border-box;}
+#recommand_container .good img {height:260px; width:100%;}
 #recommand_container .good .name {height:20px; width:100%; font-size:14px; line-height:20px; color:#666; overflow:hidden;}
 #recommand_container .good .price {height:20px; width:100%; color:#f03; font-size:14px;    text-align: left;}
 #recommand_container .good .price span {color:#aaa; font-size:12px; text-decoration:line-through;float: right;}
@@ -118,6 +120,47 @@ div.flicking_con a.on{background-position:0 -9px}
 .sort_list .nav {height:30px; padding:0px 10px; border-bottom:1px solid #696d6f; color:#c6c7c8; line-height:30px; font-size:13px;}
 .label-free {background:#ff6801;color:#fff;padding:3px;border-radius: 5px; font-size:12px;}
 
+<!--增加--CSSS-->
+.crumb span, .crumb a { display: inline-block; color:#666; vertical-align: middle; }
+.crumb .c { white-space: nowrap; overflow: hidden; display: block;  display: inline-block; }
+.crumb .divide { font-family: Simsun; margin: 0 5px; }
+.detail_col { width:1200px; margin:0 auto;}
+.detail_lc { width:995px; float:left;}
+.detail_rc { float:right; width:180px;}
+.detail_extrc{float: right; width: 180px;}
+.detail_cc {width:790px; float:left;}
+.detail_lcol { width:210px; padding-right:10px; float:left;}
+.goods-side-warp  {width: 120px;padding-left:40px; border-left:#ededed 1px solid; margin-bottom:20px; }
+.goods-side {  width: 120px; text-align: center; }
+.goods-side-tit { position: relative; line-height: 30px; }
+.goods-side-tit span { position: relative; display: inline-block; padding: 0 10px; background: #fff; color: #999; }
+.goods-side-tit s { position: absolute; top: 15px; width: 100%; right: 0; height: 0; overflow: hidden; border-top: 1px dotted #999; }
+.goods-side-bd { padding-bottom: 4px; }
+.goods-side-slides-wrap { position: relative; height: 450px; overflow: hidden; }
+.goods-side-bd ul { width: 100%; left: 0; }
+.goods-side-bd li { position: relative; width: 120px; height: 140px; margin: 0 auto 10px; }
+.goods-side-bd .slidepic { width: 120px; height: 120px; background: #fff; position: relative; }
+.goods-side-bd .slidepic img { max-width: 100%; max-height: 100%; margin: auto; position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.goods-side-bd .slideprice { position: relative; width:120px; margin-top: -20px; height: 20px; text-align: center; overflow: hidden; white-space: nowrap; -ms-text-overflow: ellipsis; text-overflow: ellipsis; font-family: Arial; font-size: 12px; line-height: 20px; color: #000; background: #fff; opacity: 0.8; filter: alpha(opacity=80);  }
+.goods-side-bd .slideprice span { padding-left: 4px; }
+.goods-side-bd .slidename { height: 20px; text-align: center; overflow: hidden; white-space: nowrap; -ms-text-overflow: ellipsis; text-overflow: ellipsis; font-size: 12px; line-height: 24px; }
+.goods-side-slides-nav { margin: auto; font-size: 0; }
+.goods-side-slides-nav .prev, .goods-side-slides-nav .next { width: 50%; height: 25px; display: inline-block; *display: inline; *zoom: 1; background: url("../images/hdside-nav.gif") no-repeat 50% 0; cursor: pointer; }
+.goods-side-slides-nav .next { background-position: 50% -25px; }
+.detailshop_hd { height:42px; line-height:42px; padding:0 10px; background-color:#fff; font-size:16px; color:#333; border:#ededed 1px solid; }
+.detail_hd { height:32px; line-height:32px; padding:0 10px; background-color:#333; color:#fff; border:#ededed 1px solid;}
+.hot_goods_list { border:#ededed 1px solid; margin-top:-1px; padding:8px; margin-bottom:10px;}
+.hot_goods_list .item_pic img { width:100%; }
+.hot_goods_list .item_price { line-height:26px;}
+.hot_goods_list .item_price em { color:#ec0405; font-size:12px;}
+.hot_goods_list .item_price .price { float:left;}
+.hot_goods_list .item_price .sales { float:right;}
+.hot_goods_list .item_title { max-height:32px; overflow:hidden; margin-bottom:10px; }
+.category_warp { border:#ededed 1px solid; margin-top:-1px; margin-bottom:10px;}
+.category_warp .level1 a { display:block; height:34px; line-height:34px; background-color:#f4f4f4; padding:0 12px; color:#333;}
+.category_warp .level2 { padding:3px 8px 3px 12px;  }
+.category_warp .level2 a { display:block; height:28px; line-height:28px; background-color:#fff; color:#666;}
+.category_warp .level2 .divide { font-family: Simsun; margin: 0 5px; }
 </style>
 
   {if !empty($formInfo)}
@@ -133,9 +176,10 @@ div.flicking_con a.on{background-position:0 -9px}
 <script src="../addons/sz_yi/template/mobile/default/static/js/star-rating.js" type="text/javascript"></script>
 <script src="../addons/sz_yi/static/js/dist/ajaxfileupload.js" type="text/javascript"></script>
 <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
+
 {/if}
 
-<div id='container'style="width:1200px;margin:120px auto 0"></div>
+<div id='container'style="width:1200px;margin: 0 auto"></div>
 <div id='cover'><img src='../addons/sz_yi/static/images/guide.png' style='width:100%;' /></div>
 
 <script id='goods_info'  type='text/html'>
@@ -143,22 +187,28 @@ div.flicking_con a.on{background-position:0 -9px}
     <input type="hidden" id="needfollow" value="<%goods.needfollow%>" />
     <input type="hidden" id="followurl" value="<%followurl%>" />
     <input type='hidden' id='followtip' value='<%followtip%>'/>
-    <!--<div class="good_topbar">
-        <div class="left">
-            <div class="btn back" onclick="history.back();"><i class="fa fa-chevron-left"></i></div>
-        </div>
-        <div class="right">
-            <div class="btn cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i></div>
-            <div class="btn func" onclick="menu(this)" ><i class="fa fa-ellipsis-v"></i></div>
-        </div>
-         <div class="sort_list">
-                <div class="nav" onclick="location.href='<%shop.url%>'"><i class='fa fa-home'></i> 首页</div>
-                <div class="nav" onclick="location.href='{php echo $this->createMobileUrl('member')}'"><i class='fa fa-user'></i> 会员中心</div>
-                <div class="nav" onclick="share()" style="border:none;"><i class='fa fa-share'></i> 分享</div>
-          </div>
-    </div>-->
+	
+<div class="crumb" style=" line-height:50px;">
+    <span class="t">您的位置：</span>
+    <a class="c" href="{php echo $this->createMobileUrl('shop')}">首页</a>
+    {if $pcate}
+	<span class="divide">&gt;</span>
+    <a class="c" href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$goods['pcate']))}">{$pcate}</a>
+	{/if}
+    {if $ccate}
+    <span class="divide">&gt;</span>
+    <a class="c" href="{php echo $this->createMobileUrl('shop/list',array('ccate'=>$goods['ccate']))}">{$ccate}</a>
+	{/if}
+	{if $tcate}
+	<span class="divide">&gt;</span>
+    <a class="c" href="{php echo $this->createMobileUrl('shop/list',array('tcate'=>$goods['tcate']))}">{$tcate}</a>
+    {/if}
+<span class="divide">&gt;</span>
+<span style="color:#666;font-size:12px;">{$goods['title']}</span>
+</div>
 
-<div style="display:block;overflow:hidden;width: 1200px;background-color: #fff;">
+<div class="detail_col clearfix">
+<div class="detail_lc">
     <div class="good_img" >
         <%if pics.length>1%>
         <div class="flicking_con">
@@ -180,8 +230,7 @@ div.flicking_con a.on{background-position:0 -9px}
     <div class="good_info1">
         <%if commission && goods.nocommission==0 && goods.hidecommission==0%>
         <div class="info1">
-            <div class="name"><%if goods.issendfree==1%><span class='label label-free'>包邮</span>&nbsp;<%/if%><%goods.title%></div>
-            <div class="sub1" onclick="location.href='{php echo $this->createPluginMobileUrl('commission/shares',array('goodsid'=>$_GPC['id']))}'"><i class="fa fa-cny"></i><%commission_text%></div>
+            <div class="name"><%if goods.issendfree==1%><span class='label label-free'>包邮</span>&nbsp;<%/if%><%goods.title%></div>            
         </div>
         <%else%>
         <div class="info2"><%if goods.issendfree==1%><span class='label label-free' >包邮</span><%/if%>&nbsp;<%goods.title%></div>
@@ -193,7 +242,7 @@ div.flicking_con a.on{background-position:0 -9px}
                 <%else%>
                 <%goods.marketprice%>
                 <%/if%>
-            </d>&nbsp;<span id='productpricecontainer'><%if goods.productprice>0%>市场价￥<%/if%><span id='productprice'><%if goods.productprice>0%><%goods.productprice%><%/if%></span></span>
+                <span id='productpricecontainer'><%if goods.productprice>0%>市场价￥<%/if%><span id='productprice'><%if goods.productprice>0%><%goods.productprice%><%/if%></span></span>
              
             <span style='float:right'><d id="stockcontainer">库存:<d id="stock"><%goods.total%></d></d> 销量:<%goods.sales%><%goods.unit%></d></span>
         </div>
@@ -310,22 +359,81 @@ div.flicking_con a.on{background-position:0 -9px}
 
                 <%if goods.canaddcart%><div class="add" onclick="choose2('cart')">加入购物车</div><%/if%>
                 <div class="buy" onclick="choose2('buy')" <%if !goods.canaddcart%>style='width:50%'<%/if%>>立即购买</div>
-        </div>
-    <%/if%>
-        <div class="good_bottom">
-            <div class="like" >
+				
+				<div class="like" >
                 <i class="fa <%if isfavorite%>fa-star<%else%>fa-star-o<%/if%>" <%if isfavorite==1%>style="color:#f90"<%/if%>></i>
                 <br><span>收藏</span>
             </div>
+			
+			
             {if $this->yzShopSet['cservice']}
             <div class="cs" ><i class="fa fa-headphones"></i><br><span>客服</span></div>
             {/if}
         </div>
+    <%/if%>
+
+	<div class="good_bottom">
+    {if $goods['hidecommission'] == 0}
+	<div class="fx_sub1" onclick="location.href='{php echo $this->createPluginMobileUrl('commission/shares',array('goodsid'=>$_GPC['id']))}'"><i class="fa fa-cny"></i><%commission_text%></div>
+    {/if}
+	<div class="fx_num">您的下级购买此商品后,您将获得分销佣金：<em>{$commissionprice}</em>元</div>
+	</div>
+	
+       
 
       </div>
-    </div>
+    </div>     
 
-      <%if goods.isverify=='2'%>
+
+<div class="detail_rc">
+
+<div class="goods-side-warp">
+<div class="goods-side">
+                <div class="goods-side-tit"><s></s><span>看了又看</span></div>
+                <div id="J_GoodsSideSlide" class="goods-side-bd" style="position: relative;">
+                    <div class="goods-side-slides-wrap">
+                        <ul>
+                                <%each history as item%>								
+								<li>
+                                    <a href="{php echo $this->createMobileUrl('shop/detail')}&id=<%item.id%>">									
+                                        <div class="slidepic">
+                                            <img src="<%item.thumb%>">
+                                        </div>
+                                        <div class="slideprice">
+                                            ¥<span><%item.marketprice%></span>
+                                        </div>
+                                        <div class="slidename">
+                                        <%item.title%>
+                                        </div>
+                                    </a>
+                                </li>
+								<%/each%>							
+                               </ul>
+                    </div>
+                    <div class="goods-side-slides-nav">
+                        <div class="prev"></div>
+                        <div class="next"></div>
+                    </div>
+                </div>
+            </div>
+
+
+</div>
+</div>
+
+</div>
+   <!--<div id="buytime" class="good_speci" style="display:none"></div>
+
+   <div id="notbuy" class="good_speci" style="display:none"></div>
+   
+   <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1'  && goods.groupbuy=='1'  && goods.levelbuy=='1'%> 
+    <div class="good_speci" onClick="choose()">
+                <span id="optiondiv">请选择商品规格及数量</span>
+                <i class="fa fa-angle-right" style="float:right; line-height:44px; font-size:26px;"></i>
+    </div>
+     <%/if%>-->
+
+<%if goods.isverify=='2'%>
      <div class="good_speci" onclick="showStores(this)" show="1">适用的门店
          <i class="fa fa-angle-down" style="float:right; line-height:44px; font-size:26px;"></i>
      </div>
@@ -373,17 +481,87 @@ div.flicking_con a.on{background-position:0 -9px}
      <%/if%>
       </div>
      <%/if%>
-</div>
-   <!--<div id="buytime" class="good_speci" style="display:none"></div>
-   <div id="notbuy" class="good_speci" style="display:none"></div>
-   
-   <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1'  && goods.groupbuy=='1'  && goods.levelbuy=='1'%> 
-    <div class="good_speci" onClick="choose()">
-                <span id="optiondiv">请选择商品规格及数量</span>
-                <i class="fa fa-angle-right" style="float:right; line-height:44px; font-size:26px;"></i>
+
+<div class="detail_col clearfix">
+<div class="detail_lcol"> 
+	
+	<div class="detailshop_hd">
+	 店铺信息
+	</div>
+	
+	<div class="good_shop">
+        <div class="shop1" onclick="location.href='<%detail.btnurl2%>'">
+        <img src='<%detail.logo%>'/>
+        <div class="shop_info"><%detail.shopname%><br><span><%if detail.totaltitle!=''%><%detail.totaltitle%><%else%>全部宝贝 <%goodscount%> 个 <%/if%></span></div></div>
+        <div class="shop2">
+            <div class="sub1" onclick="location.href='<%detail.btnurl1%>'"><i class="fa fa-list"></i> <%if detail.btntext1!=''%><%detail.btntext1%><%else%>全部商品 <%/if%></div>
+            <div class="sub2" onclick="location.href='<%detail.btnurl2%>'"> <i class="fa fa-gift" o></i> <%if detail.btntext2!=''%><%detail.btntext2%><%else%>进店逛逛<%/if%></div>
+        </div>
     </div>
-     <%/if%>-->
-       
+	
+	<div class="detail_hd">
+	 商品分类
+	</div>
+	
+	
+
+	
+
+<div class="category_warp">	
+
+
+
+<dl>
+        <dd class="level1"><a class="category_item" href="{php echo $this->createMobileUrl('shop/list')}" style="background-color:#fff;color:#333;">全部商品</a></dd>
+    </dl>
+
+<%each category as value%>
+    <dl>
+        <dd class="level1"><a href="{php echo $this->createMobileUrl('shop/list')}&pcate=<%value.id%>"><%value.name%></a></dd>
+    </dl>
+         <div>
+                
+            <%each value.children as value1%>   
+                  <dl >  
+                    <dd class="level2"><a href="{php echo $this->createMobileUrl('shop/list')}&ccate=<%value1.id%>"><span class="divide">&gt;</span><%value1.name%></a>
+                    
+                    </dd>
+                   </dl>           
+            <%/each%>    
+                
+        </div>
+
+    <%/each%>
+
+</div>
+	
+	
+	
+	<div class="detail_hd">
+	 热销商品
+	</div>
+	 <ul class="hot_goods_list">
+		<%each ishot as item%>								
+		<li>
+			<a href="{php echo $this->createMobileUrl('shop/detail')}&id=<%item.id%>">									
+				<div class="item_pic">
+					<img src="<%item.thumb%>">
+				</div>
+				<div class="item_price clearfix">
+					<span class="price">¥<%item.marketprice%></span> <span class="sales">已售:<em><%item.sales%></em></span>
+				</div>
+				<div class="item_title">
+				<%item.title%>
+				</div>
+			</a>
+		</li>
+		<%/each%>							
+	   </ul>
+	   
+	   
+	
+</div> 
+<div class="detail_cc">       
     <div class="good_info2">
         <div class="menu">
             <div id="nav_1" class="nav navon" onClick="tab(1)">图文详情</div>
@@ -392,7 +570,7 @@ div.flicking_con a.on{background-position:0 -9px}
             <div id="nav_4" class="nav" onClick="tab(4)" style="border-right:0px; width:24%">同店推荐</div>
         </div>
         <div class="tab_con">
-            <div class="con" id="con_1"  style='display:block'><%=goods.content%></div>
+            <div class="con" id="con_1"  style='display:block; padding:10px 0;'><%=goods.content%></div>
             <div class="con" id="con_2">
                 <%if params.length<=0%>
                  无任何产品参数
@@ -405,8 +583,12 @@ div.flicking_con a.on{background-position:0 -9px}
             <div class="con" id="con_4"><div id='recommand_container'></div></div>
         </div>
     </div>
- 
- 
+ </div>
+<div class="detail_extrc">
+	
+</div>
+</div>
+</div> 
 
 </script>
 <script id='tpl_comment' type='text/html'>
@@ -860,7 +1042,7 @@ div.flicking_con a.on{background-position:0 -9px}
             });
 
         $('.cs').click(function(){
-            location.href='{php echo $this->yzShopSet['cservice']}&metadata={"name":"{php echo htmlspecialchars($member['realname'], ENT_QUOTES)}","tel":"{php echo $member['mobile']}","address":"{php echo $member['province']}"}';
+            location.href='{php echo $this->yzShopSet['cservice']}&metadata={"name":"{php echo $member['realname']}","tel":"{php echo $member['mobile']}","address":"{php echo $member['province']}"}';
         });
                 
            

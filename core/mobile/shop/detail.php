@@ -428,6 +428,7 @@ if($goods['tcate']){
         $saleset['enoughs'] = $sale_plugin->getEnoughs();
     }
     $ret        = array(
+        'is_admin' => $_GPC['is_admin'],
         'goods' => $goods,
         'followed' => $followed ? 1 : 0,
         'followurl' => $followurl,

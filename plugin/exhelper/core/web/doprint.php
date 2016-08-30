@@ -328,6 +328,7 @@ if ($op == 'search') {
 } elseif ($op == 'getOrderState') {
     if ($_W['ispost']) {
         $ordersns = $_GPC['ordersns'];
+        echo "<pre>"; print_r($ordersns);exit;
         $type = $_GPC['type'];
         $arr = array();
         foreach ($ordersns as $ordersn) {
@@ -336,6 +337,7 @@ if ($op == 'search') {
         }
         $printTemp = pdo_fetch('SELECT id,type,expressname,express,expresscom FROM ' . tablename('sz_yi_exhelper_express') . ' WHERE type=:type and isdefault=1 and uid=:uid limit 1', array(':type' => 1, ':uid' => $_W['uid']));
         die(json_encode(array('printTemp' => $printTemp, 'datas' => $arr)));
+        echo "<pre>"; print_r($printTemp);exit;
     }
 } elseif ($op == 'dosend') {
     if ($_W['ispost']) {

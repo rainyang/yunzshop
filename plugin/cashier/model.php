@@ -79,6 +79,9 @@ if (!class_exists('CashierModel')) {
             if (p('return') && $store['isreturn'] == 1) {
                 p('return')->cumulative_order_amount($orderid);
             }
+            if (p('commission')) {
+                p('commission')->upgradeLevelByOrder($orderid);
+            }
         }
 
         /**

@@ -154,13 +154,13 @@
                         <b>下单时间:  </b>{php echo date('Y-m-d H:i:s', $item['createtime'])}
                         {if !empty($item['refundstate'])}<label class='label label-danger'>{$r_type[$item['rtype']]}申请</label>{/if}
                         {if $item['rstatus'] == 4}<label class='label label-primary'>客户已经寄出快递</label>{/if}
-                        {if $item['bonus_range_money_all'] > 0}
-                            <b>代理分红佣金:</b> {$item['bonus_range_money_all']}元
+                        {if $item['bonus_range_money'] > 0}
+                            <b>代理分红佣金:</b> {$item['bonus_range_money']}元
                         {/if}
-                        {if $item['bonus_area_money_all'] > 0}
-                            <b>区域分红佣金:</b> {$item['bonus_area_money_all']}元
+                        {if $item['bonus_area_money'] > 0}
+                            <b>区域分红佣金:</b> {$item['bonus_area_money']}元
                         {/if}
-                        {if $item['bonus_range_money_all'] > 0 && $item['bonus_area_money_all'] > 0}
+                        {if $item['bonus_range_money'] > 0 && $item['bonus_area_money'] > 0}
                             <b>总分红佣金:</b> {$item['bonus_money_all']}元
                         {/if} 
                 </tr>

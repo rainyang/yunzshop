@@ -10,9 +10,9 @@ class Aes{
     private $key; //密钥名称
     private $val; //密钥值
     public function __construct($key,$val){
-        if($key && $val){
+        if($key ){//&& $val){
             $this->key = $key;
-            $this->val = $val;
+            //$this->val = $val;
         }else{
             $this->key = "hrbin-uchat-2015";	//密钥名称
             //$this->val = "ruiyun-rzky-2014";	//密钥值

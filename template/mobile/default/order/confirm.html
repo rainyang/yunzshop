@@ -854,7 +854,7 @@ var fromcart = 0;
                       }
                       calctotalprice(supplier_uid);
                       if( $('.shownum').length>0){
-                        var goodsinfo = $('#goods').val().split('|')[0];
+                        var goodsinfo = $("input[data-name='goods'][data-id="+supplier_uid+"]").val().split('|')[0];
                         var goods = goodsinfo.split(',');
                         var goodsid = goods[0];
                         var optionid = goods[1];
