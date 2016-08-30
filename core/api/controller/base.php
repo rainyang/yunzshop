@@ -33,7 +33,7 @@ class Base
         $this->aes = new \Aes('hrbin-yunzs-2016','');
         $this->para = json_decode(urldecode($this->aes->siyuan_aes_decode(str_replace(" ", "+", $_POST['para']))), TRUE);//
         //dump($this->para);
-        $this->addLog();
+        //$this->addLog();
     }
     /**
      * 返回解密的参数
