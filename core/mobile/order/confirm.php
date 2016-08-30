@@ -1796,12 +1796,11 @@ if ($_W['isajax']) {
                     if ($totalprice >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
                         if ($e["enough"] > $tmp_money) {
                             $tmp_money = $e["enough"];
+                            $deductenough = floatval($e["money"]);
+                            if ($deductenough > $totalprice) {
+                                $deductenough = $totalprice;
+                            }
                         }
-                        $deductenough = floatval($e["money"]);
-                        if ($deductenough > $totalprice) {
-                            $deductenough = $totalprice;
-                        }
-
                     }
                 }
             }

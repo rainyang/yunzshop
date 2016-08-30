@@ -146,11 +146,17 @@ class Sz_DYi_Excel
             }
         }
         $rownum++;
+
         foreach ($list as $row) {
             $len = count($params['columns']);
             for ($i = 0; $i < $len; $i++) {
                 $value = $row[$params['columns'][$i]['field']];
                 if ($params['columns'][$i]['field'] == 'nickname') {
+                    $value = @iconv("utf-8", "gbk", $value);
+                    $value = @iconv("gbk", "utf-8", $value);
+                }
+
+                if ($params['columns'][$i]['field'] == 'realname') {
                     $value = @iconv("utf-8", "gbk", $value);
                     $value = @iconv("gbk", "utf-8", $value);
                 }
