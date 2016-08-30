@@ -209,6 +209,33 @@
     </ul> 
 </script>
 <script language='javascript'>
+    var update_version = 0;
+    /*****************
+     * IOS
+     * @param callback
+     * @returns {*}
+     */
+
+    function setupWebViewJavascriptBridge(callback) {
+        if (window.WebViewJavascriptBridge) { return callback(WebViewJavascriptBridge); }
+        if (window.WVJBCallbacks) { return window.WVJBCallbacks.push(callback); }
+        window.WVJBCallbacks = [callback];
+        var WVJBIframe = document.createElement('iframe');
+        WVJBIframe.style.display = 'none';
+        WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__';
+        document.documentElement.appendChild(WVJBIframe);
+        setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
+    }
+
+        setupWebViewJavascriptBridge(function(bridge) {
+            //0-不更新;1-更新
+            var resData = [update_version];
+            bridge.callHandler("updateVersionHandler",resData,function(response)
+            {
+            });
+        })
+
+
     var page = 1;
     var loaded = false;
     var stop = true;
