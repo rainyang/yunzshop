@@ -184,7 +184,7 @@ if (!class_exists('YunbiModel')) {
 		public function MoneySumTotal($conditions='',$mid='') {
 			global $_W, $_GPC;
 			if (!empty($mid)) {
-			    $total = pdo_fetchcolumn("select sum(money) as money from" . tablename('sz_yi_yunbi_log') . " where uniacid = :uniacid ".$conditions." and money > 0 and mid = :mid ", array(
+			    $total = pdo_fetchcolumn("select sum(money) as money from" . tablename('sz_yi_yunbi_log') . " where uniacid = :uniacid ".$conditions." and money <> 0 and mid = :mid ", array(
 			        ':uniacid' => $_W['uniacid'],
 			        ':mid' => $mid
 			    ));

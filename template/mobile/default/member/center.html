@@ -66,6 +66,9 @@
         {if $member['credit2'] > 0 && empty($set['trade']['transfer'])}
             <a href="#" class="recharge-ybut" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer'))}'">转账</a>
         {/if} 
+        {if $member['virtual_currency'] > 0 && p('yunbi')}
+            <a href="#" class="recharge-ybut" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer', 'yunbi' => 1))}'">{if !empty($shopset['yunbi_title'])}{php echo $shopset['yunbi_title']}{else}云币{/if}转账</a>
+        {/if}
 </div>
     </div>
     <ul>

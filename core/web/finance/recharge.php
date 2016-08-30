@@ -68,6 +68,24 @@ if ($op == 'credit1') {
 	$set = m('common')->getSysset(); //商城信息
 	$profile['credit2'] = m('member')->getCredit($profile['openid'], 'credit2'); //查询当前余额
 	
+} else if ($op == 'virtual_currency') {
+	$plugin_yunbi = p('yunbi');
+	if ($plugin_yunbi) {
+		$plugin_set = $plugin_yunbi->getSet();
+	}
+	$title = $plugin_set['yunbi_title'] ? $plugin_set['yunbi_title'] : '云币';
+	if ($_W['ispost']) {
+		$plugin_yunbi->setVirtualCurrency($profile['openid'], $_GPC['num']);
+		$data = array(
+			'id' => $profile['id'],
+			'openid' => $profile['openid'],
+			'virtual_currency' => '',
+			'money' => $_GPC['num'],
+			'remark' => "充值{$title}:{$_GPC['num']}"
+			);
+		$plugin_yunbi->addYunbiLog($_W['uniacid'], $data, '7');
+		message('充值成功!', referer(), 'success');
+	}
 }
 //日志记录
 function writelog($str,$title='Error')

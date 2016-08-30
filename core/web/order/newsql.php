@@ -1714,7 +1714,7 @@ INSERT INTO " . tablename('sz_yi_perm_role') . " (`rolename`, `status`, `status1
 }
 
 
-@rmdirs(IA_ROOT. "/data/tpl/app/sz_yi");
+//@rmdirs(IA_ROOT. "/data/tpl/app/sz_yi");
 
 //2016-8-14 余额转让记录增表 加转让人当前余额 受让人当前余额
 if(!pdo_fieldexists('sz_yi_member_transfer_log', 'tosell_current_credit')) {
