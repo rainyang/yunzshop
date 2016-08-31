@@ -38,6 +38,9 @@ if (!pdo_fieldexists('sz_yi_order', 'deductyunbi')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `deductyunbi` DECIMAL(10,2) NOT NULL AFTER `deductyunbimoney`;");
 }
 
+if (!pdo_fieldexists('sz_yi_goods', 'isforceyunbi')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isforceyunbi` TINYINT(1) NOT NULL DEFAULT '0';");
+}
 pdo_fetchall("CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_yunbi_log') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
