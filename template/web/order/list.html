@@ -257,6 +257,18 @@
                                 <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['discountprice'],2)}</td>
                             </tr>
                             {/if}
+                            {if $item['deductyunbi']>0}
+                            <tr>
+                                <td  style='border:none;text-align:right;'>使用{if !empty($yunbiset['yunbi_title'])}{php echo $yunbiset['yunbi_title']}{else}云币{/if}：</td>
+                                <td  style='border:none;text-align:right;;'>￥{php echo $item['deductyunbi']}</td>
+                            </tr>
+                            {/if}
+                            {if $item['deductyunbimoney']>0}
+                            <tr>
+                                <td  style='border:none;text-align:right;'>{if !empty($yunbiset['yunbi_title'])}{php echo $yunbiset['yunbi_title']}{else}云币{/if}抵扣：</td>
+                                <td  style='border:none;text-align:right;;'>-￥{php echo $item['deductyunbimoney']}</td>
+                            </tr>
+                            {/if}
                             {if $item['deductprice']>0}
                             <tr>
                                 <td  style='border:none;text-align:right;'>积分抵扣：</td>
