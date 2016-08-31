@@ -1128,6 +1128,8 @@ div.flicking_con a.on{background-position:0 -9px}
       if (!isforceyunbi) {
           tip.show("云币不足,不允许加入购物车和购买");
           return;
+      } else {
+          isyunbipay = 1;
       }
                           if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
                                 require(['core'],function(core){
@@ -1219,7 +1221,7 @@ div.flicking_con a.on{background-position:0 -9px}
                                                                                },true,true);
                                                  });
                                     }else if(action=='buy'){
-                                         location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+                                         location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
                                     }
 
                       }
