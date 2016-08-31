@@ -54,10 +54,12 @@ body {margin:0px; width:100%;background:#f4f4f4; font-family:'微软雅黑';}
               <span><i class="fa fa-qrcode"></i></span>
             <nav >二维码</nav>
         </div>
+        {if !is_app()}
         <div class="sub" id='fav'>
             <span><i class="fa fa-star-o"></i></span>
             <nav>收藏本店</nav>
         </div>
+        {/if}
         {if $shop['selectcategory']==1}
         <div class="sub" onclick="location.href='{php echo $this->createMobileUrl('shop/category',array('shopid'=>$shop['mid']))}'">
             <span><i class="fa fa-list-ul"></i></span>
