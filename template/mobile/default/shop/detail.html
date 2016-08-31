@@ -1327,7 +1327,7 @@ div.flicking_con a.on{background-position:0 -9px}
                 require(['core'],function(core){
                     core.json('shop/detail', data, function(create_json) {
                         if (create_json.status == 1) {
-                            location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val()+ "&gdid="+create_json.result.goods_data_id;
+                            location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val()+ "&gdid="+create_json.result.goods_data_id+"&isyunbipay=" + isyunbipay;
                         } else {
                             core.tip.show("提交失败!")
                         }
