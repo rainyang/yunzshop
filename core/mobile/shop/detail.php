@@ -183,6 +183,8 @@ if ($_W['isajax']) {
         } else {
             $goods['isforceyunbi'] = 0;
         }
+    } else {
+        $goods['isforceyunbi'] = 1;
     }
     $goods['canbuy']    = !empty($goods['status']) && empty($goods['deleted']);
     $goods['timestate'] = '';

@@ -37,14 +37,17 @@ if ($_W['isajax']) {
         $sql        = 'SELECT f.id,f.total,' . $channel_condtion . $yunbi_condtion . 'f.goodsid,g.total as stock, o.stock as optionstock, g.maxbuy,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,g.productprice,o.title as optiontitle,f.optionid,o.specs FROM ' . tablename('sz_yi_member_cart') . ' f ' . ' left join ' . tablename('sz_yi_goods') . ' g on f.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on f.optionid = o.id ' . ' where 1 ' . $condition . ' ORDER BY `id` DESC ';
         $list       = pdo_fetchall($sql, $params);
         $verify_goods_ischannelpick = '';
-        $virtual_currency = 0;
+        $virtual_currency = 1;
         foreach ($list as &$r) {
             if (!empty($r['optionid'])) {
                 $r['stock'] = $r['optionstock'];
             }
             if (p('yunbi')) {
-                if (!empty($r['isforceyunbi'])) {
-                    $virtual_currency += $r['yunbi_deduct'];
+                $yunbi_set = p('yunbi')->getSet();
+                if (!empty($yunbi_set['isdeduct'])) {
+                    if (!empty($r['isforceyunbi'])) {
+                        $virtual_currency += $r['yunbi_deduct'];
+                    }
                 }
             }
             if (p('channel')) {
@@ -65,7 +68,7 @@ if ($_W['isajax']) {
             $total += $r['total'];
         }
         if (!empty($virtual_currency) && $member['virtual_currency'] >= $virtual_currency) {
-            $virtual_currency = 1;
+            $virtual_currency = 0;
         }
         $difference = '';
         $ischannelpay = $_GPC['ischannelpay'];
