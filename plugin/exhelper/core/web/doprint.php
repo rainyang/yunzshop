@@ -328,14 +328,16 @@ if ($op == 'search') {
 } elseif ($op == 'getOrderState') {
     if ($_W['ispost']) {
         $ordersns = $_GPC['ordersns'];
+        echo "<pre>"; print_r($ordersns);exit;
         $type = $_GPC['type'];
         $arr = array();
         foreach ($ordersns as $ordersn) {
             $orderinfo = pdo_fetch('SELECT id,status,expresssn,expresscom FROM ' . tablename('sz_yi_order') . ' WHERE ordersn=:ordersn and status>-1 and uniacid=:uniacid limit 1', array('ordersn' => $ordersn, ':uniacid' => $_W['uniacid']));
             $arr[] = array('ordersn' => $ordersn, 'status' => $orderinfo['status'], 'expresssn' => $orderinfo['expresssn'], 'expresscom' => $orderinfo['expresscom']);
         }
-        $printTemp = pdo_fetch('SELECT id,type,expressname,express,expresscom FROM ' . tablename('sz_yi_exhelper_express') . ' WHERE type=:type and isdefault=1 and uniacid=:uniacid limit 1', array(':type' => 1, ':uniacid' => $_W['uniacid']));
+        $printTemp = pdo_fetch('SELECT id,type,expressname,express,expresscom FROM ' . tablename('sz_yi_exhelper_express') . ' WHERE type=:type and isdefault=1 and uid=:uid limit 1', array(':type' => 1, ':uid' => $_W['uid']));
         die(json_encode(array('printTemp' => $printTemp, 'datas' => $arr)));
+        echo "<pre>"; print_r($printTemp);exit;
     }
 } elseif ($op == 'dosend') {
     if ($_W['ispost']) {

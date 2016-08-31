@@ -3,7 +3,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
-
+ca('hotel.prints');
 $op      = empty($_GPC['op']) ? 'print_list' : trim($_GPC['op']);
 $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
     ':uniacid' => $_W['uniacid']

@@ -229,6 +229,7 @@
         <%/if%>
            <%if carrier%>
               <div class="addorder_user addorder_user_1" >
+                <input type="hidden" id="dispatchtype" value="1" />
                 <input type='hidden' id='carrierindex' value='0' />
                 <input type='hidden' id='carrierid' value='<%carrier.id%>' />
                 <div class="info" id='carrier_select' >
@@ -854,7 +855,7 @@ var fromcart = 0;
                       }
                       calctotalprice(supplier_uid);
                       if( $('.shownum').length>0){
-                        var goodsinfo = $('#goods').val().split('|')[0];
+                        var goodsinfo = $("input[data-name='goods'][data-id="+supplier_uid+"]").val().split('|')[0];
                         var goods = goodsinfo.split(',');
                         var goodsid = goods[0];
                         var optionid = goods[1];

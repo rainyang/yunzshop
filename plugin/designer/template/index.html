@@ -303,6 +303,7 @@
 <script type="text/ng-template" id="edit-goods.html">{template 'temp/edit-goods'}</script>
 <script type="text/ng-template" id="edit-richtext.html">{template 'temp/edit-richtext'}</script>
 <script type="text/ng-template" id="edit-cube.html">{template 'temp/edit-cube'}</script>
+<script type="text/ng-template" id="edit-area.html">{template 'temp/edit-area'}</script>
 <!-- editor template page end -->
 </div>
 </div>
@@ -504,7 +505,10 @@ UE.registerUI('myinsertimage',function(editor, uiName) {
                     data:[{id:'F0000000000001',imgurl:'',text:'',hrefurl:'',color:''},{id:'F0000000000002',imgurl:'',text:'',hrefurl:'',color:''},{id:'F0000000000003',imgurl:'',text:'',hrefurl:'',color:''},{id:'F0000000000004',imgurl:'',text:'',hrefurl:'',color:''},{id:'F0000000000005',imgurl:'',text:'',hrefurl:'',color:''}]
                 },
                 {id:'picture', icon:'fa-file-image-o',name:'单图',params:{},data:[{id:'P0000000000001',imgurl:'../addons/sz_yi/plugin/designer/template/imgsrc/init-data/init-image-4.jpg',hrefurl:'',option:'0'}]},
-                {id: "cube", icon:'fa-picture-o',name: "图片组合",params: {bgcolor:'',layout: {},showIndex: 0,selection: {},currentPos: {},currentLayout: {isempty: !0}},data:[]}
+                {id: "cube", icon:'fa-picture-o',name: "图片组合",params: {bgcolor:'',layout: {},showIndex: 0,selection: {},currentPos: {},currentLayout: {isempty: !0}},data:[]},
+                {if p('area')}
+                    {id: "area", icon:'fa-area',name: "商品区域",params: {isarea:'{p("area")}',height:'',showtitle2:'1'},data:['../addons/sz_yi/plugin/designer/template/imgsrc/choose_city.png','24px']}
+                {/if}                
             ];
             $scope.shop = {uniacid:'{$_W["uniacid"]}'};
             $scope.system = [{$system}];

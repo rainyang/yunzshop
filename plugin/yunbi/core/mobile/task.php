@@ -1,5 +1,6 @@
 <?php
 global $_W, $_GPC;
+load()->func('file');
 set_time_limit(0);
 //创建文件锁
 $tmpdir = IA_ROOT . "/addons/sz_yi/tmp/yunbi";
@@ -131,13 +132,8 @@ if (!file_exists($file)) {
     @unlink ($file);
     echo "返现任务执行完成!";
 }
-function mkdirs($path) {
-    if (!is_dir($path)) {
-        mkdirs(dirname($path));
-        mkdir($path);
-    }
-    return is_dir($path);
-}
+
+
 
 
 // 	unset($set['current_d']);

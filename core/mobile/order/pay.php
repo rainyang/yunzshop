@@ -545,21 +545,25 @@ if ($operation == 'display' && $_W['isajax']) {
         $pay_result      = $this->payResult($ret);
         $set = m('common')->getSysset();
     //互亿无线
-        if($pset['sms']['type'] == 1){
-            if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0){
-                show_json(2, $pay_result);
+        if (!empty($pay_result['verifycode'])) {
+            if($pset['sms']['type'] == 1){
+                if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
+                    show_json(1, $pay_result);
+                }
+                else{
+                    show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
+                }
             }
             else{
-                show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
+                if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
+                    show_json(1, $pay_result);
+                }
+                else{
+                    show_json(0, $pay_result['verifycode']['msg']);
+                }
             }
-        }
-        else{
-            if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0){
-                show_json(2, $pay_result);
-            }
-            else{
-                show_json(0, $pay_result['verifycode']['msg']);
-            }
+        } else {
+            show_json(1, $pay_result);
         }
     }
     $ps          = array();
@@ -583,21 +587,25 @@ if ($operation == 'display' && $_W['isajax']) {
         $pay_result      = $this->payResult($ret);
         $set = m('common')->getSysset();
         //互亿无线
-        if($pset['sms']['type'] == 1){
-            if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0){
-                show_json(2, $pay_result);
+        if (!empty($pay_result['verifycode'])) {
+            if($pset['sms']['type'] == 1){
+                if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
+                    show_json(1, $pay_result);
+                }
+                else{
+                    show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
+                }
             }
             else{
-                show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
+                if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
+                    show_json(1, $pay_result);
+                }
+                else{
+                    show_json(0, $pay_result['verifycode']['msg']);
+                }
             }
-        }
-        else{
-            if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0){
-                show_json(2, $pay_result);
-            }
-            else{
-                show_json(0, $pay_result['verifycode']['msg']);
-            }
+        } else {
+            show_json(1, $pay_result);
         }
     }
     $ps          = array();
@@ -648,21 +656,25 @@ if ($operation == 'display' && $_W['isajax']) {
         $pay_result     = $this->payResult($ret);
         
     //互亿无线
-        if($pset['sms']['type'] == 1){
-            if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0){
-                show_json(1, $pay_result);
+        if (!empty($pay_result['verifycode'])) {
+            if($pset['sms']['type'] == 1){
+                if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
+                    show_json(1, $pay_result);
+                }
+                else{
+                    show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
+                }
             }
             else{
-                show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
+                if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
+                    show_json(1, $pay_result);
+                }
+                else{
+                    show_json(0, $pay_result['verifycode']['msg']);
+                }
             }
-        }
-        else{
-            if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0){
-                show_json(1, $pay_result);
-            }
-            else{
-                show_json(0, $pay_result['verifycode']['msg']);
-            }
+        } else {
+            show_json(1, $pay_result);
         }
        
     } else if ($type == 'weixin') {
@@ -727,7 +739,7 @@ if ($operation == 'display' && $_W['isajax']) {
             $set = m('common')->getSysset();
             if (!empty($pay_result['verifycode'])) {
                 if($pset['sms']['type'] == 1){
-                    if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0){
+                    if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
                         show_json(1, $pay_result);
                     }
                     else{
@@ -735,7 +747,7 @@ if ($operation == 'display' && $_W['isajax']) {
                     }
                 }
                 else{
-                    if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0){
+                    if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
                         show_json(1, $pay_result);
                     }
                     else{
@@ -749,11 +761,14 @@ if ($operation == 'display' && $_W['isajax']) {
         show_json(0, '支付出错,请重试!');
         
     }
-} else if ($operation == 'return') {
+} else if ($operation == 'return') {    
     $tid = $_GPC['out_trade_no'];
     if (!m('finance')->isAlipayNotify($_GET)) {
         die('支付出现错误，请重试!');
     }
+    //保存支付宝交易号
+    $trade_no = array('trade_no'=>$_GPC['trade_no']);
+    pdo_update('sz_yi_order', $trade_no, array('pay_ordersn' =>$_GPC['out_trade_no'],'uniacid'=>$uniacid));
     $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
         ':uniacid' => $uniacid,
         ':module' => 'sz_yi',

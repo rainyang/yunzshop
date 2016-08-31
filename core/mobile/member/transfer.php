@@ -3,6 +3,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+load()->func('file');
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $member = m('member')->getMember($openid);
@@ -160,13 +161,5 @@ if($operation == 'assigns'){
             
         }
     }
-}
-
-function mkdirs($path) {
-    if (!is_dir($path)) {
-        mkdirs(dirname($path));
-        mkdir($path);
-    }
-    return is_dir($path);
 }
 include $this->template('member/transfer');

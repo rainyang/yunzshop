@@ -1733,6 +1733,12 @@ if (!pdo_fieldexists('sz_yi_member', 'bank_num')) {
     pdo_fetchall("ALTER TABLE  ".tablename('sz_yi_member')." ADD  `bank_num` VARCHAR( 100 ) DEFAULT '' COMMENT '银行卡号';");
 }
 
+
+//收银台是否加入全返字段
+if (!pdo_fieldexists('sz_yi_cashier_store', 'isreturn')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_cashier_store')." ADD `isreturn` tinyint(1) DEFAULT '0';");
+}
+
 //2016-8-15 商品是否返虚拟币  虚拟币返现比例 
 if (!pdo_fieldexists('sz_yi_goods', 'yunbi_consumption')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `yunbi_consumption` DECIMAL(5,3) NOT NULL AFTER `isopenchannel`;");
@@ -1775,5 +1781,5 @@ pdo_fetchall("CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_yunbi_log') . " (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;");
 
-
+echo  "完成虚拟币添加数据库！";
 

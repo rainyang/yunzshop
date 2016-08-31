@@ -185,6 +185,8 @@ if ($_W['isajax']) {
         } else {
             $goods['isforce'] = '';
         }
+    } else {
+        $goods['isforceyunbi'] = 1;
     }
     $goods['canbuy']    = !empty($goods['status']) && empty($goods['deleted']);
     $goods['timestate'] = '';
@@ -438,6 +440,7 @@ if($goods['tcate']){
         $saleset['enoughs'] = $sale_plugin->getEnoughs();
     }
     $ret        = array(
+        'is_admin' => $_GPC['is_admin'],
         'goods' => $goods,
         'followed' => $followed ? 1 : 0,
         'followurl' => $followurl,

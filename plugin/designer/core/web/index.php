@@ -7,6 +7,7 @@ $op     = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $tempdo = empty($_GPC['tempdo']) ? "" : $_GPC['tempdo'];
 $pageid = empty($_GPC['pageid']) ? "" : $_GPC['pageid'];
 $apido  = empty($_GPC['apido']) ? "" : $_GPC['apido'];
+
 if ($op == 'display') {
     ca('designer.page.view');
     $page     = empty($_GPC['page']) ? "" : $_GPC['page'];
@@ -24,8 +25,10 @@ if ($op == 'display') {
         ':uniacid' => $_W['uniacid'],
         ':name' => "%{$kw}%"
     ));
+
     $pager    = pagination($total, $pindex, $psize);
 } elseif ($op == 'post') {
+    echo "<pre>"; print_r(123);exit;
     $menus     = pdo_fetchall("SELECT id,menuname,isdefault FROM " . tablename('sz_yi_designer_menu') . " WHERE uniacid= :uniacid  ", array(
         ':uniacid' => $_W['uniacid']
     ));

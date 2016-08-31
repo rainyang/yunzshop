@@ -89,6 +89,21 @@ if (!empty($category2)) {
         }
     }
 }
+if (p('area')) {
+    $sql = 'SELECT * FROM ' . tablename('sz_yi_category_area') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
+    $category_area = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
+    $parent_area = $children_area = array();
+    if (!empty($category_area)) {
+        foreach ($category_area as $cid => $cate_area) {
+            if (!empty($cate_area['parentid'])) {
+                $children_area[$cate_area['parentid']][] = $cate_area;
+            } else {
+                $parent_area[$cate_area['id']] = $cate_area;
+            }
+        }
+    }    
+}
+
 
 if (p('commission')) {
     $commissionLevels = pdo_fetchall(
@@ -139,7 +154,7 @@ if ($operation == "change") {
         } else {
             ca('shop.goods.add');
         }
-        $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid']);
+        $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid'] . ' AND roleid=(select id from ' . tablename('sz_yi_perm_role') . ' where status1=1)');
         if (p('hotel')) {
             $print_list = pdo_fetchall('SELECT * FROM ' . tablename('sz_yi_print_list') . ' WHERE uniacid = :uniacid ',
                 array(':uniacid' => $_W['uniacid']));
@@ -555,6 +570,11 @@ if ($operation == "change") {
                 "isopenchannel" => intval($_GPC["isopenchannel"])
 
             );
+            if (p('area')) {
+                $data['pcate_area'] = intval($_GPC['category_area']['parentid']);
+                $data['ccate_area'] = intval($_GPC['category_area']['childid']);
+                $data['tcate_area'] = intval($_GPC['category_area']['thirdid']);
+            }
             if (!empty($_GPC['bonusmoney'])) {
                 $data['bonusmoney'] = $_GPC['bonusmoney'];
             }
