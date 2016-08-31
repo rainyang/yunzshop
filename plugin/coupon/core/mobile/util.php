@@ -299,5 +299,12 @@ if ($operation == 'query') {
 	
 	
 	unset($row);
-	show_json(1, array('coupons' => $list, 'supplier_uid' => $supplier_uid));
-}
+	$suppliers = pdo_fetchall('SELECT distinct g.supplier_uid FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc", array(
+                ':uniacid' => $_W['uniacid'],
+                ':openid' => $openid
+            ), 'supplier_uid');
+	foreach ($suppliers as $key => $value) {
+		$suppliers[$key] = $value['supplier_uid'];
+	}
+	show_json(1, array('coupons' => $list, 'supplier_uid' => $supplier_uid, 'supplier_uids' => $suppliers));
+} 
