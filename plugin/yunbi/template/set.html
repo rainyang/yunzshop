@@ -26,6 +26,15 @@
         <div class='panel-heading'>
            <p class="yunbi"> {if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if}转让 </p>
         </div>
+        <div class='form-group'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启</label>
+                <div class="col-sm-8 col-xs-12">
+                    <label class="radio-inline"><input type="radio" name="setdata[isbot]" value="0" {if $set['isbot'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline"><input type="radio" name="setdata[isbot]" value="1" {if $set['isbot'] ==1} checked="checked"{/if} /> 开启</label>
+                </div>
+            </div>
+        </div>
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">转让限制(最少额度)</label>
             <div class="col-sm-8">
@@ -94,7 +103,7 @@
         </div>
 
         <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现时间</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">分销下线获得时间</label>
                 <div class="col-sm-8 col-xs-12">
                     <select class="form-control tpl-category-parent" name="setdata[distribution_returntime]">
                     <?php for ($i=0; $i <= 23; $i++) { if($set['distribution_returntime']==$i){?>
