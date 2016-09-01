@@ -1547,11 +1547,6 @@ if ($_W['isajax']) {
                         }
                     }
                 }
-                if (p('yunbi')) {
-                    if (!empty($isyunbipay)) {
-                        $data['marketprice'] -= $data['yunbi_deduct'];
-                    }
-                }
                 $data["diyformdataid"] = 0;
                 $data["diyformdata"]   = iserializer(array());
                 $data["diyformfields"] = iserializer(array());
@@ -1763,7 +1758,28 @@ if ($_W['isajax']) {
                 $deductyunbi = 0;
                 $deductyunbimoney = 0;
                 if ($yunbi_plugin && $yunbiset['isdeduct']) {
-                    if (isset($_GPC['order']) && !empty($_GPC['order'][0]['yunbi'])) {
+                    if (empty($isyunbipay)) {
+                        if (isset($_GPC['order']) && !empty($_GPC['order'][0]['yunbi'])) {
+                            $virtual_currency  = $member['virtual_currency'];//m('member')->getCredit($openid, 'virtual_currency');
+                            $ycredit = 1;
+                            $ymoney  = round(floatval($yunbiset['money']), 2);
+                            if ($ycredit > 0 && $ymoney > 0) {
+                                if ($virtual_currency % $ycredit == 0) {
+                                    $deductyunbimoney = round(intval($virtual_currency / $ycredit) * $ymoney * $data["total"], 2);
+                                } else {
+                                    $deductyunbimoney = round((intval($virtual_currency / $ycredit) + 1) * $ymoney * $data["total"], 2);
+                                }
+                            }
+                            if ($deductyunbimoney > $yunbideductprice) {
+                                $deductyunbimoney = $yunbideductprice;
+                            }
+                            if ($deductyunbimoney > $totalprice) {
+                                $deductyunbimoney = $totalprice;
+                            }
+                            $deductyunbi = round($deductyunbimoney / $ymoney * $ycredit, 2);
+                            
+                        }
+                    } else {
                         $virtual_currency  = $member['virtual_currency'];//m('member')->getCredit($openid, 'virtual_currency');
                         $ycredit = 1;
                         $ymoney  = round(floatval($yunbiset['money']), 2);
@@ -1781,7 +1797,6 @@ if ($_W['isajax']) {
                             $deductyunbimoney = $totalprice;
                         }
                         $deductyunbi = round($deductyunbimoney / $ymoney * $ycredit, 2);
-                        
                     }
                     $totalprice -= $deductyunbimoney;
                 }

@@ -284,7 +284,13 @@ div.flicking_con a.on{background-position:0 -9px}
             </div>
        </div>
         <%/if%> 
-        
+      <%if goods.isforceyunbi%>
+      <div class="other">
+        <div class='left'>
+          <span><i class='fa fa-cube'></i> 强制:{if $yunbi_set['yunbi_title']}{$yunbi_set['yunbi_title']}{else}云币{/if}:<span style='color:#ff6600'><%goods.yunbi_deduct%></span>余额:<span style='color:#ff6600'><%goods.marketprice-goods.yunbi_deduct%></span> 元</span>
+        </div>
+      </div>
+      <%/if%>
       <%if goods.isnodiscount=='0' && level.discount>0%>
          <div class="other">
             <div class='left'>
@@ -410,7 +416,7 @@ div.flicking_con a.on{background-position:0 -9px}
             </div>
             
             <div class="add" onclick="choose('cart')">加入购物车</div>
-            <input type="hidden" value="<%goods.isforceyunbi%>" id='isforceyunbi'>
+            <input type="hidden" value="<%goods.isforce%>" id='isforce'>
             <%/if%>
             <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:85%'<%/if%>>立即购买</div>
         <%/if%>
@@ -703,6 +709,7 @@ div.flicking_con a.on{background-position:0 -9px}
             $("#webapp_share").click(function() {
                 if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
                     webapp_share();
+                    PINGPP_ANDROID_SDK.shareLink(title, link, imgurl, desc);
                 } else {
                     setupWebViewJavascriptBridge(function(bridge) {
                         var imgurls = z;
@@ -1124,8 +1131,8 @@ div.flicking_con a.on{background-position:0 -9px}
         $('.good_choose').fadeOut(100); 
         }
     function choose(act){
-      var isforceyunbi = $('#isforceyunbi').val();
-      if (!isforceyunbi) {
+      var isforce = $('#isforce').val();
+      if (!isforce) {
           tip.show("云币不足,不允许加入购物车和购买");
           return;
       } else {
