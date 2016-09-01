@@ -89,9 +89,10 @@ if ($_W['isajax']) {
         unset($r);
         $list       = set_medias($list, 'thumb');
         $totalprice = number_format($totalprice, 2);
-        
+        $counttotal = pdo_fetchcolumn('SELECT count(*) FROM '.tablename('sz_yi_store_goods')." WHERE storeid=:storeid and uniacid=:uniacid",array(':storeid'=>intval($_GPC['id']), ':uniacid'=>$_W['uniacid']));
             show_json(1, array(
                 'total' => $total,
+                'counttotal' => $counttotal,
                 'list' => $list,
                 'totalprice' => $totalprice,
                 'difference' => $difference,
@@ -218,6 +219,7 @@ if ($_W['isajax']) {
                     'goodsid' => $id,
                     'openid' => $openid,
                     'optionid' => $optionid,
+            		'storeid' => $storeid
                 ));
             $cartcount += $total;
             show_json(1, array(
@@ -387,7 +389,7 @@ if ($_W['isajax']) {
             ':openid' => $openid
         ));
         foreach ($data as &$row) {
-            $row['total'] =pdo_fetchcolumn("select sum(total) from " . tablename('sz_yi_store_goods') . ' where openid=:openid and deleted=0 and  uniacid=:uniacid and goodsid=:id limit 1', 
+            $row['total'] =pdo_fetchcolumn("select count(total) from " . tablename('sz_yi_store_goods') . ' where openid=:openid and deleted=0 and  uniacid=:uniacid and goodsid=:id limit 1', 
                 array(
                     ':uniacid' => $uniacid,
                     ':openid' => $openid,
@@ -412,7 +414,7 @@ if ($_W['isajax']) {
 
             $conut = 0;
             foreach ($goods as $key => $good) {
-                $cartcount = pdo_fetchcolumn('select sum(total) from ' . tablename('sz_yi_store_goods') . ' where openid=:openid and deleted=0 and uniacid=:uniacid and goodsid = :goodsid limit 1', array(
+                $cartcount = pdo_fetchcolumn('select count(total) from ' . tablename('sz_yi_store_goods') . ' where openid=:openid and deleted=0 and uniacid=:uniacid and goodsid = :goodsid limit 1', array(
                     ':uniacid' => $_W['uniacid'],
                     'goodsid' => $good['id'],
                     ':openid' => $openid

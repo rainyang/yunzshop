@@ -420,8 +420,8 @@ ul, li { list-style:none; margin:0; padding:0 }
         function getTotalPrice(){
             require(['core'],function(core){
 
-                core.pjson('verify/add',{op:'display',ischannelpick:"{$_GPC['ischannelpick']}", ischannelpay:"{$_GPC['ischannelpay']}"},function(ret){
-                     $('#alltotal').html(ret.result.total);
+                core.pjson('verify/add',{op:'display',ischannelpick:"{$_GPC['ischannelpick']}", ischannelpay:"{$_GPC['ischannelpay']}", id:"{$_GPC['id']}"},function(ret){
+                     $('#alltotal').html(ret.result.counttotal);
                      $('#totalprice').html('总价：￥' + ret.result.totalprice + ret.result.difference);
 
                         if(ret.result.difference){
