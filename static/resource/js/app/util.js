@@ -516,7 +516,7 @@
 	 * base64options: base64(json($options))
 	 * options: {tabs: {'browser': 'active', 'upload': '', 'remote': ''}
 	 **/
-	util.image = function(val, callback, base64options, options) {
+	util.image = function(val, callback,options, base64options ) {
 		var opts = {
 			type :'image',
 			direct : false,

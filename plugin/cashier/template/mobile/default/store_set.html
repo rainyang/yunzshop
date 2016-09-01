@@ -33,7 +33,11 @@
             <div class="title">商户名称</div>
             <div class='info'>
                 <div class='inner'>
+                {if $store['centercan'] == 1}
                     <input type="text" id='name' placeholder="请输入店名"  value="<%name%>" />
+                {else}
+                    <div><%name%></div>
+                {/if}
                 </div>
             </div>
         </div>
@@ -41,7 +45,11 @@
             <div class="title">联系人</div>
             <div class='info'>
                 <div class='inner'>
+                {if $store['centercan'] == 1}
                     <input type="text" id='contact' placeholder="请输入您的姓名"  value="<%contact%>" />
+                {else}
+                    <div><%contact%></div>
+                {/if}
                 </div>
             </div>
         </div>
@@ -49,7 +57,11 @@
             <div class="title">手机号码</div>
             <div class='info'>
                 <div class='inner'>
+                {if $store['centercan'] == 1}
                     <input type="text" id='mobile' placeholder="请输入您的手机号码"  value="<%mobile%>" />
+                {else}
+                    <div><%mobile%></div>
+                {/if}    
                 </div>
             </div>
         </div>
@@ -57,7 +69,11 @@
             <div class="title">地址</div>
             <div class='info'>
                 <div class='inner'>
+                {if $store['centercan'] == 1}
                     <input type="text" id='address' placeholder="请输入您的商户地址"  value="<%address%>" />
+                {else}
+                    <div><%address%></div>
+                {/if}    
                 </div>
             </div>
         </div>
@@ -65,7 +81,11 @@
             <div class="title">允许使用积分(%)</div>
             <div class='info'>
                 <div class='inner'>
+                {if $store['centercan'] == 1}
                     <input type="text" id='deduct_credit1' value="<%deduct_credit1%>" />
+                {else}
+                    <div><%deduct_credit1%></div>
+                {/if}    
                 </div>
             </div>
         </div>
@@ -73,7 +93,11 @@
             <div class="title">允许使用余额(%)</div>
             <div class='info'>
                 <div class='inner'>
+                {if $store['centercan'] == 1}
                     <input type="text" id='deduct_credit2' value="<%deduct_credit2%>" />
+                {else}
+                    <div><%deduct_credit2%></div> 
+                {/if}       
                 </div>
             </div>
         </div>
@@ -82,7 +106,11 @@
             <div class="title">一级分销佣金比例</div>
             <div class='info'>
                 <div class='inner'>
+                {if $store['centercan'] == 1}
                     <input type="text" id='commission1_rate' value="<%commission1_rate%>" />
+                {else}
+                    <div><%commission1_rate%></div>
+                {/if}    
                 </div>
             </div>
         </div>
@@ -92,7 +120,11 @@
             <div class="title">二级分销佣金比例</div>
             <div class='info'>
                 <div class='inner'>
+                {if $store['centercan'] == 1}
                     <input type="text" id='commission2_rate' value="<%commission2_rate%>" />
+                {else}
+                    <div><%commission2_rate%></div>
+                {/if}
                 </div>
             </div>
         </div>
@@ -102,7 +134,11 @@
             <div class="title">三级分销佣金比例</div>
             <div class='info'>
                 <div class='inner'>
+                {if $store['centercan'] == 1}
                     <input type="text" id='commission3_rate' value="<%commission3_rate%>" />
+                {else}
+                    <div><%commission3_rate%></div>
+                {/if}
                 </div>
             </div>
         </div>
@@ -119,7 +155,11 @@
             <div class="title">红包奖励(最小消费)</div>
             <div class='info'>
                 <div class='inner'>
+                {if $store['centercan'] == 1}
                     <input type="text" id='redpack_min' value="<%redpack_min%>" placeholder="小于该金额没有红包奖励" />
+                {else}
+                    <div><%redpack_min%></div>
+                {/if}    
                 </div>
             </div>
         </div>
@@ -127,7 +167,11 @@
             <div class="title">红包奖励(奖励百分比)</div>
             <div class='info'>
                 <div class='inner'>
+                {if $store['centercan'] == 1}
                     <input type="text" id='redpack' value="<%redpack%>" />
+                {else}
+                    <div><%redpack%></div>
+                {/if}    
                 </div>
             </div>
         </div>
@@ -135,20 +179,28 @@
             <div class="title">余额奖励(奖励百分比)</div>
             <div class='info'>
                 <div class='inner'>
+                {if $store['centercan'] == 1}
                     <input type="text" id='creditpack' value="<%creditpack%>" />
+                {else}
+                    <div><%creditpack%></div>  
+                {/if} 
                 </div>
             </div>
         </div>
         {if $pcoupon}
         <div class="line">
-            <div class="title">优惠券</div>
+            <div class="title">赠送优惠券</div>
             <div class='info'>
                 <div class='inner'>
                     <select name="coupon_id" id="coupon_id" class="form-control">
+                    {if $store['centercan'] == 1}
                         <option value="0">-请选择-</option>
                         {loop $couponList $coupon}
                             <option value="{$coupon['id']}">{$coupon['couponname']}</option>
                         {/loop}
+                    {else}
+                        <div>{$couponname}</div>
+                    {/if}    
                     </select>
                 </div>
             </div>

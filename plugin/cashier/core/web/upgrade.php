@@ -46,6 +46,7 @@ CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_store')." (
   `condition` decimal(10,2) DEFAULT '0.00' COMMENT '使用优惠券条件',
   `iscontact` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否填写联系人信息',
   `isreturn` tinyint(1) NOT NULL DEFAULT '0' COMMENT '是否加入全返',
+  `centercan` tinyint(1) NOT NULL DEFAULT '1' COMMENT '会员中心是够可以编辑',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
 

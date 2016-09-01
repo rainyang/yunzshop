@@ -64,6 +64,7 @@ if ($operation == 'display') {
             'iscontact' => intval($_GPC['iscontact']),
             'condition' => trim($_GPC['condition']),
             'isreturn' => intval($_GPC['isreturn']),
+            'centercan' => intval($_GPC['centercan'])
 
         );
         if ($pcoupon) {

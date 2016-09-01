@@ -412,7 +412,8 @@
         <div class="price" style="border:none;">
             <%if order.deductyunbi>0 %>
               <div class="line" style="line-height:26px;"><d class="deductyunbi_info" data-id="<%order.supplier_uid%>"><%order.deductyunbi%></d> {$yunbiset['yunbi_title']}可抵扣 <d class="deductyunbi_money" data-id="<%order.supplier_uid%>" style='color:#f15353'><%order.deductyunbimoney%></d> 元
-                  <div class="nav deductyunbi" data-id="<%order.supplier_uid%>" on="0" credit="<%order.deductyunbi%>" money='<%order.deductyunbimoney%>'><nav></nav></div>
+                  {if empty($_GPC['isyunbipay'])}<div class="nav deductyunbi" data-id="<%order.supplier_uid%>" on="0" credit="<%order.deductyunbi%>" money='<%order.deductyunbimoney%>'><nav></nav></div>
+                  {/if}
               </div>
             <%/if%>
         </div>
@@ -464,7 +465,7 @@
 <script type="text/javascript">
 var fromcart = 0;
     require(['tpl', 'core'], function(tpl, core) {
-        core.json('order/confirm', {id:'{php echo intval($_GPC['id'])}', optionid:'{php echo intval($_GPC['optionid'])}', total:'{php echo intval($_GPC['total'])}',cartids:"{$_GPC['cartids']}",ischannelpay:"{$_GPC['ischannelpay']}",ischannelpick:"{$_GPC['ischannelpick']}"}, function(json){
+        core.json('order/confirm', {id:'{php echo intval($_GPC['id'])}', optionid:'{php echo intval($_GPC['optionid'])}', total:'{php echo intval($_GPC['total'])}',cartids:"{$_GPC['cartids']}",ischannelpay:"{$_GPC['ischannelpay']}",ischannelpick:"{$_GPC['ischannelpick']}",isyunbipay:"{$_GPC['isyunbipay']}"}, function(json){
 
         if(json.status==-1){
             location.href=json.result.url;
@@ -1114,7 +1115,7 @@ var fromcart = 0;
         	  {/if}
 
           }
-           data = {op:'create', order:order, ischannelpay:"{$_GPC['ischannelpay']}", ischannelpick:"{$_GPC['ischannelpick']}"};
+           data = {op:'create', order:order, ischannelpay:"{$_GPC['ischannelpay']}", ischannelpick:"{$_GPC['ischannelpick']}",isyunbipay:"{$_GPC['isyunbipay']}"};
           $(this).attr('submitting', '1').html('提交中...');
             core.json('order/confirm', data, function(create_json) {
 
@@ -1224,7 +1225,7 @@ var fromcart = 0;
 				  $('.selectcoupon').click( function(){
              var money =parseFloat( $('.totalprice').html().replace(",","") ) ;	
              var supplier_uid = $(this).attr('data-id');
-			 var carrierid = $('#carrierid').val();
+			       var carrierid = $('#carrierid').val();
  				     core.pjson('coupon/util', {op: 'query', money: money, type:0, supplier_uid: supplier_uid, goodsid: "{$goodid}", cartids: "{$cartid}", carrierid: carrierid}, function (rjson) {
   							if (rjson.status != 1) {
   								core.tip.show(rjson.result);

@@ -438,7 +438,63 @@
           </div> 
         </div>　
     </div>      
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否指定供应商</label>
+        <div class="col-sm-9 col-xs-12" >
+          {ife 'coupon.coupon' $item}
+            <label class="radio-inline">
+                <input type="radio" name="getsupplier" value="0" {if $item['getsupplier'] == 0}checked="true"{/if}  onclick="$('.getsupplierarea').hide()"/> 否
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="getsupplier" value="1" {if $item['getsupplier'] == 1}checked="true"{/if} onclick="$('.getsupplierarea').show()" /> 是
+            </label>
+            <span class='help-block' style="color:red">注:选择"是"之后, 如不继续选择指定供应商,则默认支持所有供应商使用!</span>
+          {else} 
+            <div class='form-control-static'>
+               {if $item['getsupplier']==1}是{else}否{/if}
+            </div>
+          {/if}
+        </div>
 
+    </div>
+
+   <div class="form-group">
+      <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+        <div class="col-sm-7 getsupplier getsupplierarea" {if $item['getsupplier']!=1}style='display:none'{/if}>
+          <div class='input-group'>
+            <div id="supplier">
+            <table class="table">
+              <tbody id="param-itemssupplier">
+              {loop $item[supplierids] $k $v}
+              <tr>
+                  <td>
+                      <a href="javascript:;" class="fa fa-move" title="拖动调整此显示顺序" ><i class="fa fa-arrows"></i></a>&nbsp;
+                      <a href="javascript:;" onclick="deleteParam(this)" style="margin-top:10px;"  title="删除"><i class='fa fa-times'></i></a>
+                  </td>
+                  <td colspan="2">
+                      <input type="hidden" class="form-control" name="supplierids[]" data-id="{$v}" data-name="supplierids"  value="{$v}" style="width:200px;float:left"  />
+                   
+                      <input class="form-control" type="text" data-id="{$v}" data-name="suppliernames" name="suppliernames[]"  value="{$item[suppliernames][$k]}" style="width:200px;float:left">
+                      <span class="input-group-btn">
+                          <button class="btn btn-default nav-link-supplier" type="button" data-id="{$v}" >选择供应商</button>
+                      </span>
+                  </td>
+              </tr>
+              {/loop}               
+              </tbody>
+              <tbody>
+                  <tr>
+                      <td colspan="3">
+                          <a href="javascript:;" id='add-param_supplier' onclick="addParam('supplier')" style="margin-top:10px;" class="btn btn-primary"  title="添加供应商"><i class='fa fa-plus'></i> 添加供应商</a>
+                      </td>
+                  </tr>
+              </tbody>
+            </table> 
+              </div>
+          </div> 
+        </div>
+        </div>　
+        
 
     <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">适用范围</label>
@@ -508,7 +564,8 @@
                             </tbody>
                         </table> 
                     </div>
-                </div>  </div> 
+                </div> 
+                </div> 
                     <div class="col-sm-7 usetype usetype2"  {if $item['usetype']!=2}style='display:none'{/if}>
                       <div class='input-group'>
     
@@ -546,7 +603,7 @@
                           </div>
                       </div>
                          
-                    </div>　
+                    </div>　</div>
                   {else}
                       <div class='form-control-static'>
                         {if $item['usetype']==0}
@@ -564,6 +621,7 @@
 {template 'web/sysset/selectcategory'}    
 {template 'web/sysset/selectcashier'}
 {template 'web/sysset/selectstore'}
+{template 'web/sysset/selectsupplier'}
 <script type="text/javascript">
     $(function() {
         $("#chkoption").click(function() {
@@ -701,7 +759,7 @@
                             <a href='javascript:preview_html("#desc")' class="btn btn-default">查看内容</a>
                             {/if}
   </div>
-    </div>   </div>
+    </div>   
                <div class='panel-heading'>
             推送消息 (发放或用户从领券中心获得后的消息推送，如果标题为空就不推送消息)
         </div>
