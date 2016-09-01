@@ -702,6 +702,7 @@ div.flicking_con a.on{background-position:0 -9px}
             $("#webapp_share").click(function() {
                 if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
                     webapp_share();
+                    PINGPP_ANDROID_SDK.shareLink(title, link, imgurl, desc);
                 } else {
                     setupWebViewJavascriptBridge(function(bridge) {
                         var imgurls = z;
