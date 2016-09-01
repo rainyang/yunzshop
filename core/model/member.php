@@ -407,10 +407,10 @@ class Sz_DYi_Member
             }
 
             $upgrade = array();
-            if ($userinfo['nickname'] != $member['nickname']) {
+            if (!empty($userinfo['nickname']) && $userinfo['nickname'] != $member['nickname']) {
                 $upgrade['nickname'] = $userinfo['nickname'];
             }
-            if ($userinfo['avatar'] != $member['avatar']) {
+            if (!empty($userinfo['avatar']) && $userinfo['avatar'] != $member['avatar']) {
                 $upgrade['avatar'] = $userinfo['avatar'];
             }
             if (!empty($upgrade)) {
