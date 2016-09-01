@@ -288,6 +288,37 @@ class Sz_DYi_Order
                         }
                     }
                 }
+                $ordergoods = pdo_fetch("select * from " . tablename('sz_yi_order_goods') . " where uniacid=".$_W['uniacid']." and orderid=".$orderid);
+                $goods = pdo_fetch("select id,title,type from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$ordergoods['goodsid']}");
+                //善种子商品接口
+                if($goods['type']=='30' || $goods['type']=='31'){
+                    $member = m('member')->getInfo($order['openid']);
+                    $memberbind = pdo_fetch("select * from " . tablename('sz_yi_sxh_member') . " where uniacid={$_W['uniacid']} and userid={$member['id']}");
+                    $keys='sxhsz201608';  
+                    $url='http://api-test-monitor.shanxinhui.com/User/UserApi/user_seed_pay';   
+                    $post_data = array(               
+                        "bindname" => $memberbind['username'],
+                        "phone" => $memberbind['mobile'],
+                        "productid" => $goods['type'],
+                        "productname" => $goods['title'],
+                        "productnum" => $ordergoods['total'],
+                        "totalnum" =>   $order['price'],
+                        "orderid" => date('YmdHis',time()),
+                        "pay_time" => time(),
+                        "mcid" => $_W['uniacid'],
+                        "password" =>md5($memberbind['username'].$keys),
+                        "timestamp" => date('YmdHis',time()),
+                    );
+                    $ch = curl_init();
+                    curl_setopt($ch, CURLOPT_URL, $url);
+                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+                    curl_setopt($ch, CURLOPT_POST, 0);
+                    curl_setopt($ch, CURLOPT_POSTFIELDS,$post_data);
+                    $output = curl_exec($ch);
+                    curl_close($ch);
+                    $output = json_decode($output,true);
+                    //print_r($output);exit;
+                }
                 $orderdetail=pdo_fetch("select o.dispatchprice,o.ordersn,o.price,og.optionname as optiontitle,og.optionid,og.total from " .tablename('sz_yi_order'). " o left join " .tablename('sz_yi_order_goods').  "og on og.orderid = o.id where {$orderdetail_where} and o.uniacid=:uniacid",array(':uniacid'=>$_W['uniacid']));
                 $sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where ' . $goods_where . ' order by og.id asc';
                 $orderdetail['goods1'] = set_medias(pdo_fetchall($sql), 'thumb');

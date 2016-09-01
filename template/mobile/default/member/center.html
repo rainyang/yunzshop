@@ -259,9 +259,15 @@
 {if $has_cashier}
     <a href="{php echo $this->createPluginMobileUrl('cashier/qrcode_list')}"><div class="list1" style="margin:0px; "><i class="iconfont icon-web-price"></i>收银台<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 {/if}
+<%if member.is_bind==0%>
+ <a href="{php echo $this->createMobileUrl('member/bind')}"><div class="list1" style="margin:0px; "><i class="iconfont icon-web-price"></i>账户绑定<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+<%else%>
+ <a href="{php echo $this->createMobileUrl('member/sxh')}"><div class="list1" style="margin:0px; "><i class="iconfont icon-web-price"></i>善心汇账户<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+<%/if%>
+
 {if !is_weixin()}
 <div class="cart">
-<a href="{php echo $this->createMobileUrl('member/logout')}"><div class="list1"><i class="iconfont icon-sign-out"></i>退出<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+<a href="{php echo $this->createMobileUrl('member/sxh')}"><div class="list1"><i class="iconfont icon-sign-out"></i>退出<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 </div>
 {/if}
 

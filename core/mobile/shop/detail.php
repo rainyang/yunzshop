@@ -219,7 +219,7 @@ if ($_W['isajax']) {
         }
     }
     $goods['canaddcart'] = true;
-    if ($goods['isverify'] == 2 || $goods['type'] == 2 || $goods['type'] == 3) {
+    if ($goods['isverify'] == 2 || $goods['type'] == 2 || $goods['type'] == 3|| $goods['type'] == 30|| $goods['type'] == 31) {
         $goods['canaddcart'] = false;
     }
     $pics     = array(
