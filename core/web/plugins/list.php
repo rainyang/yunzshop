@@ -61,6 +61,9 @@ $plugins_icon = array(
 	"merchant" => "admin",
 	"love" => "fensi",
 	"choose" => "choose",
+	"helper" => "help",
+	"yunbi" => "coin",
+	"area" => "region",
 	);
 $plugins_desc = array(
 	"supplier" => "厂家入驻，平台统一销售", 
