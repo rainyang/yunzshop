@@ -27,11 +27,15 @@ if ($operation == 'display') {
         ':uniacid' => $_W['uniacid'],
         ':id' => $id
     ));
+    $member = pdo_fetch('SELECT id,nickname FROM ' . tablename('sz_yi_member') . " WHERE uniacid=:uniacid AND id=:id",
+        array(':uniacid' => $_W['uniacid'], ':id' => $item['member_id'])
+    );
     if (checksubmit('submit')) {
         $data = array(
             'uniacid' => $_W['uniacid'],
             'storename' => trim($_GPC['storename']),
             'address' => trim($_GPC['address']),
+            'member_id' => intval($_GPC['member_id']),
             'tel' => trim($_GPC['tel']),
             'lng' => $_GPC['map']['lng'],
             'lat' => $_GPC['map']['lat'],

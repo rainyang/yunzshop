@@ -25,4 +25,16 @@ class VerifyMobile extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function index()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function mystore()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function add()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 }

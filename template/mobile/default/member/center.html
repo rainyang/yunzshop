@@ -130,6 +130,13 @@
                 </a>
             </li>
         {/if}
+        {if $issupervisor}
+            <li>
+                <a href="{php echo $this->createPluginMobileUrl('verify', array('id' => $verify['id']))}">
+                    <i class="fa iconfont icon-sitemap" style="background:#f15353"></i><br/>店长中心
+                </a>
+            </li>
+        {/if}
         <li>
         <a href="{php echo $this->createMobileUrl('member/info')}">
         <i class="fa iconfont icon-user" style="background:#BC7BFF"></i><br/>我的资料

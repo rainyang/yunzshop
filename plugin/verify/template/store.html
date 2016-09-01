@@ -32,6 +32,22 @@
                     </div>
                 </div>
                 <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>绑定店长微信</label>
+                    <div class="col-sm-9 col-xs-12">
+                        {ife 'cashier.store' $item}
+                            <input type="hidden" class="form-control" id="member_id" name="member_id" value="{$item['member_id']}" />
+                            <div class='input-group' style='border:none;'>
+                            <input type="text" class="form-control" id="member" value="{if !empty($member)}{$member['nickname']}{/if}" readonly />
+                            <div class="input-group-btn">
+                                <button type="button" onclick="$('#modal-members').modal()" class="btn btn-default" >选择会员</button>
+                            </div>
+                            </div>
+                        {else}
+                            <div class='form-control-static'>{$item['wechat']}</div>
+                        {/if}
+                    </div>
+                </div>
+                <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">门店电话</label>
                     <div class="col-sm-9 col-xs-12">
                                {ife 'verify.store' $item}
@@ -93,7 +109,23 @@
                        <input type="button" name="back" onclick='history.back()' {ifp 'verify.store.add|verify.store.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
                     </div>
             </div>
-                      
+            <div id="modal-members"  class="modal fade" tabindex="-1">
+                <div class="modal-dialog" style='width: 920px;'>
+                    <div class="modal-content">
+                        <div class="modal-header"><button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button><h3>选择会员</h3></div>
+                        <div class="modal-body" >
+                            <div class="row"> 
+                                <div class="input-group"> 
+                                    <input type="text" class="form-control" name="keyword" value="" id="search-member" placeholder="请输入会员名" />
+                                    <span class='input-group-btn'><button type="button" class="btn btn-default" onclick="search_member();">搜索</button></span>
+                                </div>
+                            </div>
+                            <div id="module-members" style="padding-top:5px;"></div>
+                        </div>
+                        <div class="modal-footer"><a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a></div>
+                    </div>
+                </div>
+            </div>        
                       
                 
             </div>
@@ -109,6 +141,23 @@
         }
         return true;
     })
+function search_member() {
+    if ($.trim($('#search-member').val()) == '') {
+        Tip.focus('#search-member', '请输入关键词');
+        return;
+    }
+    $("#module-members").html("正在搜索....")
+    $.get('{php echo $this->createPluginWebUrl('cashier/store/getmembers')}', {
+        keyword: $.trim($('#search-member').val())
+    }, function (dat) {
+        $('#module-members').html(dat);
+    });
+}
+function select_member(o) {
+    $("#member_id").val(o.id);
+    $("#member").val(o.nickname);
+    $("#modal-members .close").click();
+}
     </script>
 {elseif $operation == 'display'}
                <form action="" method="post" onsubmit="return formcheck(this)">
