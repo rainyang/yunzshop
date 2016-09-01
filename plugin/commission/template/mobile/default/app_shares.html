@@ -44,7 +44,7 @@ body {margin:0px; background:#f4f4f4;}
 
 </style>
 <div class="share_top">
-    <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> 分享推荐</div>
+    <div class="title" id="goback" ><i class='fa fa-chevron-left'></i> 分享推荐</div>
 </div>
  {if !empty($goods)}
       <div class="top">
@@ -128,10 +128,6 @@ body {margin:0px; background:#f4f4f4;}
         var qr_url = "{php echo $this->createPluginMobileUrl('commission/shares',array('goodsid'=>$_GPC['id'], 'scan_qr'=>1))}";
         var qr_imgurl = "";
 
-        //启动分享页面
-        function webapp_share() {
-            PINGPP_ANDROID_SDK.webapp_share();
-        }
 
         //QQ好友分享
         function share_qq() {
@@ -168,6 +164,12 @@ body {margin:0px; background:#f4f4f4;}
             PINGPP_ANDROID_SDK.app_share_QrCode(qr_url, qr_imgurl);
         }
 
+        //启动分享页面
+        function webapp_share_link() {
+            PINGPP_ANDROID_SDK.webapp_share_link();
+        }
+
+
         /*****************
          * IOS
          * @param callback
@@ -198,6 +200,18 @@ body {margin:0px; background:#f4f4f4;}
             });
             $('#btn2').click(function(){
                   core.tip.alert('长按图片收藏，然后发送给好友') ;
+            });
+
+            $("#goback").click(function() {
+                if (typeof PINGPP_IOS_SDK !== 'undefined') {
+                    setupWebViewJavascriptBridge(function(bridge) {
+                        bridge.callHandler("goback",'1',function(response)
+                        {
+                        });
+                    });
+                }
+                history.back();
+
             });
 
             $("#btn3").click(function () {
@@ -264,7 +278,7 @@ body {margin:0px; background:#f4f4f4;}
                     });
                     shareLink(title, link, imgurl, desc);
                 } else if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
-                    webapp_share();
+                    webapp_share_link();
                     PINGPP_ANDROID_SDK.shareLink(title, link, imgurl, desc);
                 }
             });
