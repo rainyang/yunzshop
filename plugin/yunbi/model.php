@@ -19,6 +19,7 @@ if (!class_exists('YunbiModel')) {
 				if (empty($orderid)) {
 					return false;
 				}
+				echo "<pre>";print_r($set);exit;
 				$order_goods = pdo_fetchall("SELECT g.isyunbi,g.yunbi_consumption,o.openid,o.price,o.dispatchprice,m.id,m.openid as mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
 					array(':orderid' => $orderid,':uniacid' => $_W['uniacid']
 				));
