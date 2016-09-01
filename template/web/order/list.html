@@ -160,7 +160,7 @@
         <table class='table' style='float:left;margin-bottom:0;table-layout: fixed;line-height: 40px;height: 40px'>
                  <tr class='trhead'>
                     <td colspan='8' style="text-align: left;">
-                        订单数: {$total}  订单金额: <span style="color:red">{if $totalmoney>0}{$totalmoney}{else}0{/if}</span>元&nbsp;{if $perm_role == 1}结算金额: <span style="color:red">{if $costmoney>0}{$costmoney}</span>元 &nbsp;<a class="btn btn-default" href="{php echo $this->createWebUrl('order/list',array('applytype'=>1))}">提现</a><a class='btn btn-default' onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('order/list',array('applytype'=>2));}">微信提现</a>{else}没有可提现金额{/if}{/if}                        
+                        订单数: {$total}  订单金额: <span style="color:red">{if $totalmoney>0}{$totalmoney}{else}0{/if}</span>元&nbsp;{if $perm_role == 1}结算金额: <span style="color:red">{if $costmoney>0}{$costmoney}</span>元 &nbsp;<a class="btn btn-default" href="{php echo $this->createWebUrl('order/list',array('applytype'=>1))}">提现</a>{if !empty($shopset['weixin'])}<a class='btn btn-default' onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('order/list',array('applytype'=>2));}">微信提现</a>{/if}{else}没有可提现金额{/if}{/if}                        
                     </td>
                 </tr>
         </table>
@@ -257,6 +257,18 @@
                                 <td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['discountprice'],2)}</td>
                             </tr>
                             {/if}
+                            {if $item['deductyunbi']>0}
+                            <tr>
+                                <td  style='border:none;text-align:right;'>使用{if !empty($yunbiset['yunbi_title'])}{php echo $yunbiset['yunbi_title']}{else}云币{/if}：</td>
+                                <td  style='border:none;text-align:right;;'>￥{php echo $item['deductyunbi']}</td>
+                            </tr>
+                            {/if}
+                            {if $item['deductyunbimoney']>0}
+                            <tr>
+                                <td  style='border:none;text-align:right;'>{if !empty($yunbiset['yunbi_title'])}{php echo $yunbiset['yunbi_title']}{else}云币{/if}抵扣：</td>
+                                <td  style='border:none;text-align:right;;'>-￥{php echo $item['deductyunbimoney']}</td>
+                            </tr>
+                            {/if}
                             {if $item['deductprice']>0}
                             <tr>
                                 <td  style='border:none;text-align:right;'>积分抵扣：</td>
@@ -318,11 +330,15 @@
                      </td>
             {/if} 
         </tr>
+        
+    {/loop}
         <tr>
             <td colspan="4">
                 {if !empty($level)}
-                <i class="iconfont icon-sitemap biz" style="color:#fff;background-color: #3366FF;"></i>
-                 <b style="color:#3366FF">分销佣金:</b>
+                    {if !empty($item['agentid'])}
+                    <i class="iconfont icon-sitemap biz" style="color:#fff;background-color: #3366FF;"></i>
+                     <b style="color:#3366FF">分销佣金:</b>
+                     {/if}
                       {if empty($agentid)}
                       {if $item['commission1']!=-1}<b>1级佣金:</b> {$item['commission1']} 元 {/if}
                       {if $item['commission2']!=-1}<b>2级佣金:</b> {$item['commission2']} 元 {/if}
@@ -352,7 +368,6 @@
                 {/if} 
             </td>
         </tr>
-    {/loop}
    </table>
 {/loop}
             

@@ -8,6 +8,9 @@ $type = $_GPC['type'];
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $r_type = array('0' => '退款', '1' => '退货退款', '2' => '换货');
+if (p('yunbi')) {
+	$yunbi_set = p('yunbi')->getSet();
+}
 if ($_W['isajax']) {
 	if ($operation == 'display') {
 		$pindex = max(1, intval($_GPC['page']));

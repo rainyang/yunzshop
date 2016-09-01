@@ -29,7 +29,7 @@ if (checksubmit('submit')) {
                 pdo_query('delete from  ' . tablename('sz_yi_goods_spec') . " where 1 {$condition}");
                 pdo_query('delete from  ' . tablename('sz_yi_goods_spec_item') . " where 1 {$condition}");
                 pdo_query('delete from  ' . tablename('sz_yi_goods_comment') . " where 1 {$condition}");
-                if (table_exists('sz_yi_goods_comment')) {
+                if (pdo_tableexists('sz_yi_goods_comment')) {
                     pdo_query('delete from  ' . tablename('sz_yi_goods_comment') . " where 1 {$condition}");
                 }
             } else if ($data == 'category') {
@@ -55,7 +55,7 @@ if (checksubmit('submit')) {
                 pdo_query('delete from  ' . tablename('sz_yi_order') . " where 1 {$condition}");
                 pdo_query('delete from  ' . tablename('sz_yi_order_goods') . " where 1 {$condition}");
                 pdo_query('delete from  ' . tablename('sz_yi_order_refund') . " where 1 {$condition}");
-                if (table_exists('sz_yi_order_comment')) {
+                if (pdo_tableexists('sz_yi_order_comment')) {
                     pdo_query('delete from  ' . tablename('sz_yi_order_comment') . " where 1 {$condition}");
                 }
             } else if ($data == 'memberlevel') {

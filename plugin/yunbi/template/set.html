@@ -23,6 +23,38 @@
             </div>
         </div>
 
+        <div class='panel-heading'>
+           <p class="yunbi"> {if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if}转让 </p>
+        </div>
+        <div class='form-group'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启</label>
+                <div class="col-sm-8 col-xs-12">
+                    <label class="radio-inline"><input type="radio" name="setdata[isbot]" value="0" {if $set['isbot'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline"><input type="radio" name="setdata[isbot]" value="1" {if $set['isbot'] ==1} checked="checked"{/if} /> 开启</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">转让限制(最少额度)</label>
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <input type="text" name="setdata[bot_limit]" class="form-control" value="{$set['bot_limit']}"  />
+                    <div class="input-group-addon"></div>
+                </div>
+                <span class='help-block'>转让{if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if}最少额度</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">转让限制(倍数)</label>
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <input type="text" name="setdata[bot_fold]" class="form-control" value="{$set['bot_fold']}"  />
+                    <div class="input-group-addon"></div>
+                </div>
+                <span class='help-block'>转让{if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if}的倍数</span>
+            </div>
+        </div>
 
         <div class='panel-heading'>
            <p class="yunbi"> 获得{if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if} </p>
@@ -69,6 +101,20 @@
                 <span class='help-block'>每天每个分销商直接下线可获得的金额</span>
             </div>
         </div>
+
+        <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">分销下线获得时间</label>
+                <div class="col-sm-8 col-xs-12">
+                    <select class="form-control tpl-category-parent" name="setdata[distribution_returntime]">
+                    <?php for ($i=0; $i <= 23; $i++) { if($set['distribution_returntime']==$i){?>
+                        <option value="<?php echo $i;?>" selected>每天<?php echo $i;?>点执行返利</option>
+                    <?php }else{?>
+                        <option value="<?php echo $i;?>" >每天<?php echo $i;?>点执行返利</option>
+                    <?php } }?>
+                    </select>
+                     <span class='help-block'>返现会有延迟 最多延迟10分钟</span>
+                </div>
+            </div>
 
         <div class='panel-heading'>
            返现与清除

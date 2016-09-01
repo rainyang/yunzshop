@@ -114,6 +114,21 @@
                     <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>-{$remove}<br/>清除明细
                 </a>
             </li>
+            <li>
+                <a href="#" class="nav" data-type='7' >
+                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>-{$remove}<br/>充值明细
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav" data-type='8' >
+                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>-{$remove}<br/>转赠明细
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav" data-type='9' >
+                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>-{$remove}<br/>获得明细
+                </a>
+            </li>
             </ul>
         </div>
     
@@ -135,6 +150,12 @@
                                 -
                             <%else if log.returntype == 6%>
                                 -
+                            <%else if log.returntype == 7%>
+                                +
+                            <%else if log.returntype == 8%>
+                                -
+                            <%else if log.returntype == 9%>
+                                +
                             <%/if%>
                         <%log.money%> </p>
                         <span>时间：<%log.create_time%></span>

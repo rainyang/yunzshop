@@ -26,7 +26,9 @@ if($goods['ccate']){
 if($goods['tcate']){
     $tcate = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$goods['tcate']." and uniacid=".$uniacid);
 }
-
+if (p('yunbi')) {
+    $yunbi_set = p('yunbi')->getSet();
+}
 if(p('hotel')){//开启酒店插件后 判断当前时间是否有剩余房间可预约
 $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
 $params2 = array(':goodsid' => $goods['id']);
@@ -176,6 +178,16 @@ if ($_W['isajax']) {
         show_json(0);
     }
     $goods              = set_medias($goods, 'thumb');
+    if (p('yunbi')) {
+        $yunbi_set = p('yunbi')->getSet();
+        if (!empty($yunbi_set['isdeduct']) && !empty($goods['isforceyunbi']) && $member['virtual_currency'] >= $goods['yunbi_deduct']) {
+            $goods['isforce'] = '1';
+        } else {
+            $goods['isforce'] = '';
+        }
+    } else {
+        $goods['isforceyunbi'] = 1;
+    }
     $goods['canbuy']    = !empty($goods['status']) && empty($goods['deleted']);
     $goods['timestate'] = '';
     $goods['userbuy']   = '1';
@@ -428,6 +440,7 @@ if($goods['tcate']){
         $saleset['enoughs'] = $sale_plugin->getEnoughs();
     }
     $ret        = array(
+        'is_admin' => $_GPC['is_admin'],
         'goods' => $goods,
         'followed' => $followed ? 1 : 0,
         'followurl' => $followurl,

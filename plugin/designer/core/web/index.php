@@ -28,6 +28,7 @@ if ($op == 'display') {
 
     $pager    = pagination($total, $pindex, $psize);
 } elseif ($op == 'post') {
+    echo "<pre>"; print_r(123);exit;
     $menus     = pdo_fetchall("SELECT id,menuname,isdefault FROM " . tablename('sz_yi_designer_menu') . " WHERE uniacid= :uniacid  ", array(
         ':uniacid' => $_W['uniacid']
     ));

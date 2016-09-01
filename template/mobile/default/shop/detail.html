@@ -135,6 +135,7 @@ div.flicking_con a.on{background-position:0 -9px}
     <input type="hidden" id="needfollow" value="<%goods.needfollow%>" />
     <input type="hidden" id="followurl" value="<%followurl%>" />
     <input type='hidden' id='followtip' value='<%followtip%>'/>
+    <%if is_admin != 1 %>
     <div class="good_topbar">
         <div class="left">
             <div class="btn back" onclick="history.back();"><i class="fa fa-chevron-left"></i></div>
@@ -153,6 +154,7 @@ div.flicking_con a.on{background-position:0 -9px}
              {/if}
           </div>
     </div>
+    <%/if%>
 
     <div class="good_choose_layer"></div>
     <div class="good_choose">
@@ -227,7 +229,7 @@ div.flicking_con a.on{background-position:0 -9px}
         <%if commission && goods.nocommission==0 && goods.hidecommission==0%>
         <div class="info1">
             <div class="name"><%if goods.issendfree==1%><span class='label label-free'>包邮</span>&nbsp;<%/if%><%goods.title%></div>
-            {if is_weixin_show()}
+            {if is_weixin_show()&&empty($_GPC['is_admin']) }
               <div class="sub1" onclick="location.href='{php echo $this->createPluginMobileUrl('commission/shares',array('goodsid'=>$_GPC['id']))}'"><i class="fa fa-cny"></i><%commission_text%></div>
             {/if}
 
@@ -282,7 +284,13 @@ div.flicking_con a.on{background-position:0 -9px}
             </div>
        </div>
         <%/if%> 
-        
+      <%if goods.isforceyunbi%>
+      <div class="other">
+        <div class='left'>
+          <span><i class='fa fa-cube'></i> 强制:{if $yunbi_set['yunbi_title']}{$yunbi_set['yunbi_title']}{else}云币{/if}:<span style='color:#ff6600'><%goods.yunbi_deduct%></span>余额:<span style='color:#ff6600'><%goods.marketprice-goods.yunbi_deduct%></span> 元</span>
+        </div>
+      </div>
+      <%/if%>
       <%if goods.isnodiscount=='0' && level.discount>0%>
          <div class="other">
             <div class='left'>
@@ -383,9 +391,8 @@ div.flicking_con a.on{background-position:0 -9px}
             <div class="con" id="con_4"><div id='recommand_container'></div></div>
         </div>
     </div>
- 
- 
-    <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1' && goods.groupbuy=='1'  && goods.levelbuy=='1'%>
+
+    <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1' && goods.groupbuy=='1'  && goods.levelbuy=='1' && is_admin!='1' %>
     <div class="good_bottom">
      
         <div class="like" >
@@ -409,6 +416,7 @@ div.flicking_con a.on{background-position:0 -9px}
             </div>
             
             <div class="add" onclick="choose('cart')">加入购物车</div>
+            <input type="hidden" value="<%goods.isforce%>" id='isforce'>
             <%/if%>
             <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:85%'<%/if%>>立即购买</div>
         <%/if%>
@@ -487,9 +495,12 @@ div.flicking_con a.on{background-position:0 -9px}
 <script language="javascript">
     var title = "{php echo $_W['shopshare']['title']}";
     var link = "{php echo $_W['shopshare']['link']}" + "&access=app";
+    /*
+    var href = "{php echo $_W['shopshare']['link']}" + "&access=app";
+    var link = "<a href=\"" + href + "\">" + title + "</a>";
+    */
     var imgurl = "{php echo $_W['shopshare']['imgUrl']}";
     var desc = "{php echo $_W['shopshare']['desc']}";
-
 
     var imgurls = '';
 
@@ -557,16 +568,6 @@ div.flicking_con a.on{background-position:0 -9px}
       PINGPP_ANDROID_SDK.app_share_QrCode(qr_url, qr_imgurl);
   }
 
-  //扫描二维码-保存图片页面
-  function share_qq_space_to_url() {
-      location.href = qr_url;
-  }
-
-  //扫描二维码-点击保存图片
-  function share_qq_space_to_url() {
-      PINGPP_ANDROID_SDK.app_save_QrCode(qr_imgurl);
-  }
-
   /*****************
    * IOS
    * @param callback
@@ -584,9 +585,6 @@ div.flicking_con a.on{background-position:0 -9px}
       setTimeout(function() { document.documentElement.removeChild(WVJBIframe) }, 0)
   }
 
-  setupWebViewJavascriptBridge(function(bridge) {
-
-  })
 
     function menu(obj){
        
@@ -676,7 +674,7 @@ div.flicking_con a.on{background-position:0 -9px}
                return i;    
             } 
 
-        core.json('shop/detail',{id:'{$_GPC['id']}',mid:"{$mid}"},function(json){
+        core.json('shop/detail',{id:'{$_GPC['id']}',mid:"{$mid}",is_admin:'{$_GPC['is_admin']}'},function(json){
      
           tip = core.tip;
           if(json.status<=0){
@@ -711,14 +709,11 @@ div.flicking_con a.on{background-position:0 -9px}
             $("#webapp_share").click(function() {
                 if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
                     webapp_share();
+                    PINGPP_ANDROID_SDK.shareLink(title, link, imgurl, desc);
                 } else {
                     setupWebViewJavascriptBridge(function(bridge) {
-                        var title = "{php echo $_W['shopshare']['title']}";
-                        var link = "{php echo $_W['shopshare']['link']}" + "&access=app";
-                        var imgurl = "{php echo $_W['shopshare']['imgUrl']}";
-                        var desc = "{php echo $_W['shopshare']['desc']}";
-
-                        var resData = [title,link,imgurl,desc];
+                        var imgurls = z;
+                        var resData = [title,link,imgurl,desc,imgurls];
 
                         //启动页
                         bridge.callHandler("webapp_share",'',function(response)
@@ -742,6 +737,7 @@ div.flicking_con a.on{background-position:0 -9px}
 
                         //二维码
                         bridge.registerHandler("shareRQCode", function(data){
+                            var resData = [qr_url, qr_imgurl];
                             bridge.callHandler("share_RQCode_result",resData,function(response)
                             {
                             });
@@ -764,6 +760,7 @@ div.flicking_con a.on{background-position:0 -9px}
 
                         //复制链接
                         bridge.registerHandler("share_copy", function(data){
+                            var resData = [link];
                             bridge.callHandler("share_copy_result",resData,function(response)
                             {
                             });
@@ -1134,6 +1131,13 @@ div.flicking_con a.on{background-position:0 -9px}
         $('.good_choose').fadeOut(100); 
         }
     function choose(act){
+      var isforce = $('#isforce').val();
+      if (!isforce) {
+          tip.show("云币不足,不允许加入购物车和购买");
+          return;
+      } else {
+          isyunbipay = 1;
+      }
                           if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
                                 require(['core'],function(core){
                                     core.tip.confirm($('#followtip').val(),function(){
@@ -1224,7 +1228,7 @@ div.flicking_con a.on{background-position:0 -9px}
                                                                                },true,true);
                                                  });
                                     }else if(action=='buy'){
-                                         location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+                                         location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
                                     }
 
                       }
@@ -1330,7 +1334,7 @@ div.flicking_con a.on{background-position:0 -9px}
                 require(['core'],function(core){
                     core.json('shop/detail', data, function(create_json) {
                         if (create_json.status == 1) {
-                            location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val()+ "&gdid="+create_json.result.goods_data_id;
+                            location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val()+ "&gdid="+create_json.result.goods_data_id+"&isyunbipay=" + isyunbipay;
                         } else {
                             core.tip.show("提交失败!")
                         }

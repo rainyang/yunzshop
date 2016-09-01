@@ -146,6 +146,7 @@ class Sz_DYi_Excel
             }
         }
         $rownum++;
+
         foreach ($list as $row) {
             $len = count($params['columns']);
             for ($i = 0; $i < $len; $i++) {
@@ -154,6 +155,28 @@ class Sz_DYi_Excel
                     $value = @iconv("utf-8", "gbk", $value);
                     $value = @iconv("gbk", "utf-8", $value);
                 }
+
+                if ($params['columns'][$i]['field'] == 'realname') {
+                    $value = @iconv("utf-8", "gbk", $value);
+                    $value = @iconv("gbk", "utf-8", $value);
+                }
+
+                if ($params['columns'][$i]['field'] == 'expresssn') {
+                    $value = @iconv("utf-8", "gbk", $value);
+                    $value = @iconv("gbk", "utf-8", $value);
+                }
+
+                if ($params['columns'][$i]['field'] == 'remark') {
+                    $value = @iconv("utf-8", "gbk", $value);
+                    $value = @iconv("gbk", "utf-8", $value);
+                }
+
+                if ($params['columns'][$i]['field'] == 'salerinfo') {
+                    $value = @iconv("utf-8", "gbk", $value);
+                    $value = @iconv("gbk", "utf-8", $value);
+                }
+
+
                 $sheet->setCellValueExplicit($this->column($i, $rownum), $value, PHPExcel_Cell_DataType::TYPE_STRING);
             }
             $rownum++;

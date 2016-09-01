@@ -158,7 +158,7 @@ if (!class_exists('ReturnModel')) {
 				}
 				
 				//商品 没有开启全返 返回
-				if(!$is_goods_return)
+				if(!$is_goods_return && empty($order['cashier']))
 				{
 					return false;
 				}

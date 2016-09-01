@@ -407,7 +407,22 @@ if ($operation == "change") {
             $dispatch_data_where = " and supplier_uid=" . $data['supplier_uid'];
         }
         $dispatch_data = pdo_fetchall("select * from" . tablename("sz_yi_dispatch") . "where uniacid =:uniacid and enabled = 1 ".$dispatch_data_where." order by displayorder desc", array(":uniacid" => $_W["uniacid"]));
+        foreach ($dispatch_data as $key => &$value) {
+            $value['supplier_name'] = pdo_fetchcolumn("select username from" . tablename("sz_yi_perm_user") . "where uniacid =:uniacid and  uid = ".$value['supplier_uid'], array(":uniacid" => $_W["uniacid"]));
+        }
+        unset($value);
         if (checksubmit("submit")) {
+            if($_GPC['dispatchtype']==0){
+                if ($perm_role == 1) {
+                    $supplier_uid = $_W['uid'];
+                } else {
+                    $supplier_uid = $_GPC['supplier_uid'];
+                }
+                $is_dispatch = pdo_fetchcolumn("select count(*) from" . tablename("sz_yi_dispatch") . "where uniacid =:uniacid and enabled = 1 and id=:id and supplier_uid = ".$supplier_uid, array(":uniacid" => $_W["uniacid"], ":id" => $_GPC['dispatchid']));
+                if(empty($is_dispatch)){
+                    message("选择供应商与运费模板不匹配！请重新选择！");
+                }
+            }
             if ($diyform_plugin) {
                 if ($_GPC["type"] == 1 && $_GPC["diyformtype"] == 2) {
                     message("替换模式只试用于虚拟物品类型，实体物品无效！请重新选择！");
@@ -602,7 +617,8 @@ if ($operation == "change") {
                 $data['isyunbi'] = intval($_GPC['isyunbi']);   //返虚拟币开关    1:开    0:关
                 $data['yunbi_consumption'] = floatval($_GPC['yunbi_consumption']);  //虚拟币 返现比例 
                 $data['yunbi_deduct'] = floatval($_GPC['yunbi_deduct']);  //虚拟币最高抵扣 
-                
+                //1开启强制使用云币，0关闭
+                $data['isforceyunbi'] = intval($_GPC['isforceyunbi']);
             }
             if (p('hotel')) {
                 $data['deposit'] = $_GPC["deposit"];//房间押金

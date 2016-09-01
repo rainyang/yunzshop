@@ -41,5 +41,8 @@ if ($tpl == 'option') {
 } else if ($tpl == 'store') {
     $id = random(32);
     include $this->template('web/shop/tpl/store');
-} 
+} else if ($tpl == 'supplier') {
+    $id = random(32);
+    include $this->template('web/shop/tpl/supplier');
+}
 
