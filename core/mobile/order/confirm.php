@@ -1715,15 +1715,15 @@ if ($_W['isajax']) {
                                 }
                             }
                         }
-                    }      
-                    if (empty($data['isnodiscount']) && $level['discount'] < $data['marketprice']) {
-                        $dprice = round($gprice - $level['discount'] * $goodstotal, 2);
-                        $discountprice += $gprice - $dprice;
-                        $ggprice = $dprice;
-                    } else {
-                        $ggprice = $gprice;
                     }
-                }
+               }
+               if (empty($data['isnodiscount']) && $level['discount'] < $data['marketprice']) {
+                   $dprice = round($gprice - $level['discount'] * $goodstotal, 2);
+                   $discountprice += $gprice - $dprice;
+                   $ggprice = $dprice;
+               } else {
+                   $ggprice = $gprice;
+               }
             }
                 $data["realprice"] = $ggprice;
                 $totalprice += $ggprice;
