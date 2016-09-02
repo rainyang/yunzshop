@@ -287,7 +287,7 @@ div.flicking_con a.on{background-position:0 -9px}
       <%if goods.isforceyunbi>0%>
       <div class="other">
         <div class='left'>
-          <span><i class='fa fa-cube'></i> 强制:{if $yunbi_set['yunbi_title']}{$yunbi_set['yunbi_title']}{else}云币{/if}:<span style='color:#ff6600'><%goods.yunbi_deduct%></span>余额:<span style='color:#ff6600'><%goods.marketprice-goods.yunbi_deduct%></span> 元</span>
+          <span><i class='fa fa-cube'></i> 强制({if $yunbi_set['yunbi_title']}{$yunbi_set['yunbi_title']}{else}云币{/if}抵扣):<span style='color:#ff6600'><%goods.yunbi_deduct%> 元</span>
         </div>
       </div>
       <%/if%>
@@ -429,8 +429,9 @@ div.flicking_con a.on{background-position:0 -9px}
             <div class="add" onclick="choose('cart')">加入购物车</div>
             <%/if%>
             <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:85%'<%/if%>>立即购买</div>
-            <input type="hidden" value="<%goods.isforce%>" id='isforce'>
         <%/if%>
+        <input type="hidden" value="<%goods.isforce%>" id='isforce'>
+        <input type="hidden" value="<%goods.yunbi_num%>" id='yunbi_num'>
 </div>
     <%/if%>
 
@@ -1143,8 +1144,9 @@ div.flicking_con a.on{background-position:0 -9px}
         }
     function choose(act){
       var isforce = $('#isforce').val();
+      var yunbi_num = $('#yunbi_num').val();
       if (!isforce) {
-          tip.show("云币不足,不允许加入购物车和购买");
+          tip.show("强制使用"+yunbi_num+"{if $yunbi_set['yunbi_title']}{$yunbi_set['yunbi_title']}{else}云币{/if}");
           return;
       } else {
           isyunbipay = 1;
