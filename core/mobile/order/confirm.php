@@ -1724,6 +1724,7 @@ if ($_W['isajax']) {
                } else {
                    $ggprice = $gprice;
                }
+
             }
                 $data["realprice"] = $ggprice;
                 $totalprice += $ggprice;
