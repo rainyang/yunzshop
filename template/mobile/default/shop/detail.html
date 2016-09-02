@@ -284,7 +284,7 @@ div.flicking_con a.on{background-position:0 -9px}
             </div>
        </div>
         <%/if%> 
-      <%if goods.isforceyunbi%>
+      <%if goods.isforceyunbi>0%>
       <div class="other">
         <div class='left'>
           <span><i class='fa fa-cube'></i> 强制:{if $yunbi_set['yunbi_title']}{$yunbi_set['yunbi_title']}{else}云币{/if}:<span style='color:#ff6600'><%goods.yunbi_deduct%></span>余额:<span style='color:#ff6600'><%goods.marketprice-goods.yunbi_deduct%></span> 元</span>
@@ -400,15 +400,27 @@ div.flicking_con a.on{background-position:0 -9px}
             <br><span>收藏</span>
         </div>
         <%if shopset.cservice%>
+        {if !is_app()}
             <div class="cs" ><i class="fa fa-headphones"></i><br><span>客服</span></div>
+        {/if}
             <%if goods.canaddcart%>
             <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa iconfont icon-cart" style="font-size: 18px"></i><br><span>购物车</span>
                 <%if cartcount>0%><b><%cartcount%></b><%/if%>
             </div>
-            
-            <div class="add" onclick="choose('cart')" <%if shopset.cservice &&  goods.canaddcart%>style="width:28%"<%/if%>>加入购物车</div>
+
+            {if is_app()}
+        <div class="add" onclick="choose('cart')">加入购物车</div>
+            {else}
+            <div class="add" onclick="choose('cart')"  <%if shopset.cservice &&  goods.canaddcart%>style="width:28%"<%/if%>>加入购物车</div>
+            {/if}
             <%/if%>
-            <div class="buy" onclick="choose('buy')" <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%else%>style="width:70%"<%/if%>>立即购买</div>
+
+    {if is_app()}
+    <div class="buy" onclick="choose('buy')">立即购买</div>
+    {else}
+            <div class="buy" onclick="choose('buy')"  <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%else%>style="width:70%"<%/if%>>立即购买</div>
+    {/if}
+    <input type="hidden" value="<%goods.isforce%>" id='isforce'>
         <%else%>
             <%if goods.canaddcart%>
             <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
