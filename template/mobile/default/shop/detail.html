@@ -416,9 +416,9 @@ div.flicking_con a.on{background-position:0 -9px}
             </div>
             
             <div class="add" onclick="choose('cart')">加入购物车</div>
-            <input type="hidden" value="<%goods.isforce%>" id='isforce'>
             <%/if%>
             <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:85%'<%/if%>>立即购买</div>
+            <input type="hidden" value="<%goods.isforce%>" id='isforce'>
         <%/if%>
 </div>
     <%/if%>
@@ -1246,6 +1246,7 @@ div.flicking_con a.on{background-position:0 -9px}
                  $("#optiondiv").html(titles);
         }
     function choose2(direct,close){
+      var isforce = $('#isforce').val();
          require(['core'],function(core){
              
             if(close){
@@ -1345,7 +1346,7 @@ div.flicking_con a.on{background-position:0 -9px}
                 })
 
                 {else}
-                    location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+                    location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
                 {/if}
 
                     } else {

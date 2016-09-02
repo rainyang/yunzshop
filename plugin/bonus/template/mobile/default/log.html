@@ -34,7 +34,7 @@ a {text-decoration:none;}
   <div class="log_list"
        data-applyid='<%log.id%>'>
     <div class="left"><div class='inner'>编号: <%log.send_bonus_sn%>（<%if log.paymethod>0%>微信钱包<%else%>余额<%/if%>）<%if log.isglobal==1%>全球分红<%/if%><br><span>
-                分红{php echo $this->set['texts']['commission']}: <%log.commission%> 
+                {php echo $this->set['texts']['commission']}: <%log.commission%> 
                 分红时间:
                 <%log.dealtime%></span></div></div>
    <div class="right">+<%log.money%><br><span><%log.statusstr%></span></div>
