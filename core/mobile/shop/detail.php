@@ -186,7 +186,7 @@ if ($_W['isajax']) {
             $goods['isforce'] = '';
         }
     } else {
-        $goods['isforceyunbi'] = 1;
+        $goods['isforce'] = 1;
     }
     $goods['canbuy']    = !empty($goods['status']) && empty($goods['deleted']);
     $goods['timestate'] = '';
