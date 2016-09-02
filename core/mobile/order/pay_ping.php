@@ -179,8 +179,6 @@ require_once('../addons/sz_yi/plugin/pingpp/init.php');
         if ($e->getHttpStatus() != NULL) {
             header('Status: ' . $e->getHttpStatus());
             echo $e->getHttpBody();
-        } else {
-            echo $e->getMessage();
         }
     }
 
