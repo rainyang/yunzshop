@@ -10,7 +10,7 @@ if(!isMobile() && $this->yzShopSet['ispc']==1){
   header('location: ' . $shopurl);
   exit;
 }
-$id = intval($_GPC{'id'});
+$id = intval($_GPC{'storeid'});
 $store = pdo_fetch('SELECT * FROM '.tablename('sz_yi_store')." WHERE id=".$id);
 
 
