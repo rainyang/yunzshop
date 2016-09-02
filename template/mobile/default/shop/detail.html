@@ -1246,6 +1246,7 @@ div.flicking_con a.on{background-position:0 -9px}
                  $("#optiondiv").html(titles);
         }
     function choose2(direct,close){
+      var isforce = $('#isforce').val();
          require(['core'],function(core){
              
             if(close){
@@ -1345,7 +1346,7 @@ div.flicking_con a.on{background-position:0 -9px}
                 })
 
                 {else}
-                    location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+                    location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
                 {/if}
 
                     } else {
