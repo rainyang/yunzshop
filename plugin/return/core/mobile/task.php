@@ -1,7 +1,7 @@
 <?php
 global $_W, $_GPC;
 set_time_limit(0);
-
+load()->func('file');
 //创建文件锁
 $tmpdir = IA_ROOT . "/addons/sz_yi/tmp/reutrn";
 $file   = $tmpdir."/filelock.txt";
@@ -115,13 +115,7 @@ if (!file_exists($file)) {
     @unlink ($file);
 }
 
-function mkdirs($path) {
-    if (!is_dir($path)) {
-        mkdirs(dirname($path));
-        mkdir($path);
-    }
-    return is_dir($path);
-}
+
 
 
 // 	unset($set['current_d']);
