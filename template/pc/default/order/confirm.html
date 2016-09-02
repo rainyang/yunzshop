@@ -1290,7 +1290,7 @@ var fromcart = 0;
   								calctotalprice(supplier_uid); 
   								return;
   							}
-  							if(rjson.result.coupons.length>0){
+  							if(rjson.result.coupons.length>0 || $.makeArray(rjson.result.coupons).length>0){
   								CouponChooser.cancelCallback = function(){
   									$('.coupondeduct_div[data-id='+supplier_uid+']').hide();
   									$('.coupondeduct_text[data-id='+supplier_uid+']').html('');
