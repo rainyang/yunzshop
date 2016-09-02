@@ -284,7 +284,7 @@ div.flicking_con a.on{background-position:0 -9px}
             </div>
        </div>
         <%/if%> 
-      <%if goods.isforceyunbi%>
+      <%if goods.isforceyunbi>0%>
       <div class="other">
         <div class='left'>
           <span><i class='fa fa-cube'></i> 强制:{if $yunbi_set['yunbi_title']}{$yunbi_set['yunbi_title']}{else}云币{/if}:<span style='color:#ff6600'><%goods.yunbi_deduct%></span>余额:<span style='color:#ff6600'><%goods.marketprice-goods.yunbi_deduct%></span> 元</span>

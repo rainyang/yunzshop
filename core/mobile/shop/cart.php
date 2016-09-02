@@ -67,8 +67,8 @@ if ($_W['isajax']) {
             $totalprice += $r['marketprice'] * $r['total'];
             $total += $r['total'];
         }
-        if (!empty($virtual_currency) && $member['virtual_currency'] >= $virtual_currency) {
-            $virtual_currency = 0;
+        if (!empty($virtual_currency) && $member['virtual_currency'] < $virtual_currency) {
+            $virtual_currency = '';
         }
         $difference = '';
         $ischannelpay = $_GPC['ischannelpay'];
