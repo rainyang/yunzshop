@@ -167,7 +167,7 @@ require_once('../addons/sz_yi/plugin/pingpp/init.php');
                 'order_no' => $orderNo,
                 'currency' => 'cny',
                 'extra' => $extra,
-                'channel' => $channel,
+
                 'client_ip' => $_SERVER['REMOTE_ADDR'],
                 'app' => array('id' => $app_id)
             )
@@ -179,8 +179,8 @@ require_once('../addons/sz_yi/plugin/pingpp/init.php');
         if ($e->getHttpStatus() != NULL) {
             header('Status: ' . $e->getHttpStatus());
             echo $e->getHttpBody();
-        } else {
-            echo $e->getMessage();
+            file_put_contents("/tmp/2.log",print_r(array("status"=>$e->getHttpStatus(), "body"=>$e->getHttpBody()), FILE_APPEND));
+            file_put_contents("/tmp/1.log", $e->getJsonBody, FILE_APPEND);
         }
     }
 
