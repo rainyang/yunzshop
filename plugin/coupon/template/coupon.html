@@ -603,8 +603,19 @@
                           </div>
                       </div>
                          
-                    </div>　</div>
+                    </div>　
+                    {else}
+                      <div class='form-control-static'>
+                        {if $item['usetype']==0}
+                        支持商城所有商品使用!
+                        {else if $item['usetype']==1}
+                        
+                        {else if $item['usetype']==2}
 
+                        {/if}
+                      </div>
+                  {/if}
+</div>
 
 
 <div id="goods" style="display: none"></div>
@@ -923,17 +934,7 @@
 
 
 
-                  {else}
-                      <div class='form-control-static'>
-                        {if $item['usetype']==0}
-                        支持商城所有商品使用!
-                        {else if $item['usetype']==1}
-                        
-                        {else if $item['usetype']==2}
-
-                        {/if}
-                      </div>
-                  {/if}
+                  
 
 
 {template 'web/sysset/selectgoods'}
