@@ -382,7 +382,7 @@
         </div>　
     </div>  
 
-	<div class="form-group">
+  <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否指定核销门店</label>
         <div class="col-sm-9 col-xs-12" >
           {ife 'coupon.coupon' $item}
@@ -402,7 +402,7 @@
 
     </div>
 
-	 <div class="form-group">
+   <div class="form-group">
       <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
         <div class="col-sm-7 getstore getstorearea" {if $item['getstore']!=1}style='display:none'{/if}>
           <div class='input-group'>
@@ -604,56 +604,8 @@
                       </div>
                          
                     </div>　</div>
-                  {else}
-                      <div class='form-control-static'>
-                        {if $item['usetype']==0}
-                        支持商城所有商品使用!
-                        {else if $item['usetype']==1}
-                        
-                        {else if $item['usetype']==2}
-
-                        {/if}
-                      </div>
-                  {/if}
 
 
-{template 'web/sysset/selectgoods'}
-{template 'web/sysset/selectcategory'}    
-{template 'web/sysset/selectcashier'}
-{template 'web/sysset/selectstore'}
-{template 'web/sysset/selectsupplier'}
-<script type="text/javascript">
-    $(function() {
-        $("#chkoption").click(function() {
-            var obj = $(this);
-            if (obj.get(0).checked) {
-                $("#tboption").show();
-                $(".trp").hide();
-            }
-            else {
-                $("#tboption").hide();
-                $(".trp").show();
-            }
-        });
-    })
-
-    function addParam(type) {
-        var url = "{php echo $this->createWebUrl('shop/tpl')}&tpl="+type;
-        $.ajax({
-            "url": url,
-            success: function(data) {
-                $('#param-items'+type).append(data);
-            }
-        });
-        return;
-    }
-    function deleteParam(o) {
-        $(o).parent().parent().remove();
-    }
-    function saveadd(o) {
-        $(o).parent().parent().remove();
-    }
-</script>
 
 <div id="goods" style="display: none"></div>
 
@@ -715,9 +667,9 @@
                 </div>
    </div>
    
-　     
+　    </div>  
     　
-　     <div class='panel-heading'>
+        <div class='panel-heading'>
             使用说明
         </div>
         <div class='panel-body'>
@@ -759,7 +711,8 @@
                             <a href='javascript:preview_html("#desc")' class="btn btn-default">查看内容</a>
                             {/if}
   </div>
-    </div>   
+    </div>
+    </div>    
                <div class='panel-heading'>
             推送消息 (发放或用户从领券中心获得后的消息推送，如果标题为空就不推送消息)
         </div>
@@ -967,6 +920,60 @@
                 </div>
             </div>   
       </div>
+
+
+
+                  {else}
+                      <div class='form-control-static'>
+                        {if $item['usetype']==0}
+                        支持商城所有商品使用!
+                        {else if $item['usetype']==1}
+                        
+                        {else if $item['usetype']==2}
+
+                        {/if}
+                      </div>
+                  {/if}
+
+
+{template 'web/sysset/selectgoods'}
+{template 'web/sysset/selectcategory'}    
+{template 'web/sysset/selectcashier'}
+{template 'web/sysset/selectstore'}
+{template 'web/sysset/selectsupplier'}
+<script type="text/javascript">
+    $(function() {
+        $("#chkoption").click(function() {
+            var obj = $(this);
+            if (obj.get(0).checked) {
+                $("#tboption").show();
+                $(".trp").hide();
+            }
+            else {
+                $("#tboption").hide();
+                $(".trp").show();
+            }
+        });
+    })
+
+    function addParam(type) {
+        var url = "{php echo $this->createWebUrl('shop/tpl')}&tpl="+type;
+        $.ajax({
+            "url": url,
+            success: function(data) {
+                $('#param-items'+type).append(data);
+            }
+        });
+        return;
+    }
+    function deleteParam(o) {
+        $(o).parent().parent().remove();
+    }
+    function saveadd(o) {
+        $(o).parent().parent().remove();
+    }
+</script>
+
             
             <div class="form-group"></div>
             <div class="form-group">
