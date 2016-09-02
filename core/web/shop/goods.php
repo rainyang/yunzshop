@@ -414,9 +414,9 @@ if ($operation == "change") {
         if (checksubmit("submit")) {
             if($_GPC['dispatchtype']==0){
                 if ($perm_role == 1) {
-                    $supplier_uid = $_W['uid'];
+                    $supplier_uid = intval($_W['uid']);
                 } else {
-                    $supplier_uid = $_GPC['supplier_uid'];
+                    $supplier_uid = intval($_GPC['supplier_uid']);
                 }
                 $is_dispatch = pdo_fetchcolumn("select count(*) from" . tablename("sz_yi_dispatch") . "where uniacid =:uniacid and enabled = 1 and id=:id and supplier_uid = ".$supplier_uid, array(":uniacid" => $_W["uniacid"], ":id" => $_GPC['dispatchid']));
                 if(empty($is_dispatch)){
