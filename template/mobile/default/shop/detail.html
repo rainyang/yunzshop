@@ -420,6 +420,7 @@ div.flicking_con a.on{background-position:0 -9px}
     {else}
             <div class="buy" onclick="choose('buy')"  <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%else%>style="width:70%"<%/if%>>立即购买</div>
     {/if}
+    <input type="hidden" value="<%goods.isforce%>" id='isforce'>
         <%else%>
             <%if goods.canaddcart%>
             <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
