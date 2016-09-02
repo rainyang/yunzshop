@@ -416,9 +416,9 @@ div.flicking_con a.on{background-position:0 -9px}
             </div>
             
             <div class="add" onclick="choose('cart')">加入购物车</div>
-            <input type="hidden" value="<%goods.isforce%>" id='isforce'>
             <%/if%>
             <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:85%'<%/if%>>立即购买</div>
+            <input type="hidden" value="<%goods.isforce%>" id='isforce'>
         <%/if%>
 </div>
     <%/if%>
