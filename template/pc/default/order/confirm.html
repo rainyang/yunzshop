@@ -432,6 +432,15 @@
             </div>
         </div>
     </div>
+    <div class="addorder_price coupondiv"  data-id="<%order.supplier_uid%>" style="margin-top:5px;<%if order.hascoupon%>display:none<%/if%>" >
+        <div class="price" style="border:none;">
+            <div class="line selectcoupon1" style="line-height:32px;" data-id="<%order.supplier_uid%>">
+                 <d class="couponselect" data-id="<%order.supplier_uid%>">没有符合使用条件的优惠券~</d>
+                <div class="ico2" style="float:right;color:#999;margin-top:2px;"><i class='fa fa-angle-right fa-2x'></i></div>
+                <div class="couponcount"><%order.couponcount%></div>
+            </div>
+        </div>
+    </div>
       <%if order.deductyunbi>0%>
      <div class="addorder_price" style="margin-top:5px;">
         <div class="price" style="border:none;">
