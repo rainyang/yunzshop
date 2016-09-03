@@ -70,14 +70,18 @@ if ($op == 'credit1') {
 	
 } else if ($op == 'virtual_currency') {
 	$money = intval($_GPC['num']);
-	$money = $money <= 0 ? 0 : $money;
 	$plugin_yunbi = p('yunbi');
 	if ($plugin_yunbi) {
 		$plugin_set = $plugin_yunbi->getSet();
 	}
 	$title = $plugin_set['yunbi_title'] ? $plugin_set['yunbi_title'] : '云币';
 	if ($_W['ispost']) {
-		if ($money <= 0) {
+		if ($money < 0) {
+			$poor = $profile['virtual_currency'] + $money;
+			if ($poor < 0) {
+				message("最多扣除{$profile['virtual_currency']}{$title}", referer(), 'error');
+			}
+		} else if ($money == 0) {
 			message('请输入正确的金额!', referer(), 'error');
 		}
 		$plugin_yunbi->setVirtualCurrency($profile['openid'], $money);

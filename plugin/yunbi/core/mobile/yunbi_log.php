@@ -45,6 +45,9 @@ if ($operation == 'display') {
     $return_deduct = p('yunbi') -> MoneySumTotal(" and returntype = '4' ",$member['id']);
     $return        = p('yunbi') -> MoneySumTotal(" and returntype = '5' ",$member['id']);
     $remove        = p('yunbi') -> MoneySumTotal(" and returntype = '6' ",$member['id']);
+    $recharge      = p('yunbi') -> MoneySumTotal(" and returntype = '7' ",$member['id']);
+    $presented     = p('yunbi') -> MoneySumTotal(" and returntype = '8' ",$member['id']);
+    $acquisition   = p('yunbi') -> MoneySumTotal(" and returntype = '9' ",$member['id']);
 
 } elseif ( $_W['isajax'] && $operation == 'log') {
    $pindex = max(1, intval($_GPC['page']));
