@@ -82,7 +82,7 @@
                 </div>
             </div>
           <%/each%>
-        <div class="info1">共 <%order.goodscount%> 件商品&nbsp;实付：<span>￥<%order.price%></span>&nbsp;<%if order.deductyunbi%>使用{if !empty($yunbi_set['yunbi_title'])}{php echo $yunbi_set['yunbi_title']}{else}云币{/if}:<span>￥<%order.deductyunbi%></span>&nbsp;{if !empty($yunbi_set['yunbi_title'])}{php echo $yunbi_set['yunbi_title']}{else}云币{/if}抵扣:<span>￥<%order.deductyunbimoney%></span>&nbsp;元<%/if%></div>
+        <div class="info1">共 <%order.goodscount%> 件商品&nbsp;实付：<span>￥<%order.price%></span>&nbsp;<%if order.deductyunbi%>{if !empty($yunbi_set['yunbi_title'])}{php echo $yunbi_set['yunbi_title']}{else}云币{/if}抵扣:<span>￥<%order.deductyunbimoney%></span>&nbsp;元<%/if%></div>
         <div class="sub">
             <%if order.status==0%>
 			<%if order.paytype!=3%>
