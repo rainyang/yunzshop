@@ -1,5 +1,5 @@
 {template 'common/header'}
-<title>{if !empty($_GPC['yunbi'])}{if !empty($shopset['yunbi_title'])}{php echo $shopset['yunbi_title']}{else}云币{/if}{else}余额{/if}转让</title>
+<title>{if !empty($_GPC['yunbi'])}{$title}{else}余额{/if}转让</title>
 <style type="text/css">
 body {margin:0px; background:#efefef; -moz-appearance:none;}
 input {-webkit-appearance:none; outline:none;}
@@ -15,11 +15,11 @@ input {-webkit-appearance:none; outline:none;}
 <div id="container"></div>
 <div class="page_topbar">
 <a href="javascript:;" class="back" onclick="history.back()"><i class='iconfont icon-chevron-left'></i></a>
-<div class="title">{if !empty($_GPC['yunbi'])}{if !empty($shopset['yunbi_title'])}{php echo $shopset['yunbi_title']}{else}云币{/if}{else}余额{/if}转让</div>
+<div class="title">{if !empty($_GPC['yunbi'])}{$title}{else}余额{/if}转让</div>
 </div>
 
 <div class="cash-box">
-    <div class="balance_price">您的当前{if !empty($_GPC['yunbi'])}{if !empty($shopset['yunbi_title'])}{php echo $shopset['yunbi_title']}{else}云币{/if}{else}余额{/if}
+    <div class="balance_price">您的当前{if !empty($_GPC['yunbi'])}{$title}{else}余额{/if}
         <span id="credit">￥{if !empty($_GPC['yunbi'])}{$member['virtual_currency']}{else}{$member['credit2']}{/if}</span>
     </div> 
     <div class="cash-num cash-num-pb"><span>受让人ID</span><input type="text" id="assigns" value='' class="cash-input-z" 
