@@ -433,6 +433,7 @@ div.flicking_con a.on{background-position:0 -9px}
         <%/if%>
         <input type="hidden" value="<%goods.isforce%>" id='isforce'>
         <input type="hidden" value="<%goods.yunbi_num%>" id='yunbi_num'>
+        <input type="hidden" value="<%goods.isforceyunbi%>" id='isforceyunbi'>
 </div>
     <%/if%>
 
@@ -1150,7 +1151,11 @@ div.flicking_con a.on{background-position:0 -9px}
           tip.show("强制使用"+yunbi_num+"{if $yunbi_set['yunbi_title']}{$yunbi_set['yunbi_title']}{else}云币{/if}");
           return;
       } else {
-          isyunbipay = 1;
+          if ($('#isforceyunbi').val() != 0) {
+            isyunbipay = 1;
+          } else {
+            isyunbipay = 0;
+          }
       }
                           if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
                                 require(['core'],function(core){
