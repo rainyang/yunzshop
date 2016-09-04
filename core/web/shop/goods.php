@@ -1266,7 +1266,7 @@ if ($operation == "change") {
         if (empty($goods)) {
             message('未找到此商品，商品复制失败!', $this->createWebUrl('shop/goods'), 'error');
         }
-        $goods['id'] = '';
+        unset($goods['id']);
         $turn = pdo_fetchall("SELECT id FROM " . tablename('sz_yi_goods') . " WHERE title like '%{$goods['title']}%' and uniacid=:uniacid and deleted=0",
             array('uniacid' => $uniacid));
         $turncount = count($turn);
@@ -1279,7 +1279,7 @@ if ($operation == "change") {
         $goodsoption = pdo_fetchall('select * from ' . tablename('sz_yi_goods_option') . ' where goodsid = ' . $goodsid_old . ' and uniacid=' . $uniacid);
         if (!empty($goodsoption)) {
             foreach ($goodsoption as $value_option) {
-                $value_option['id'] = '';
+                unset($value_option['id']);
                 $value_option['goodsid'] = $goodsid;
                 pdo_insert('sz_yi_goods_option', $value_option);
             }
@@ -1290,7 +1290,7 @@ if ($operation == "change") {
         $goodsparam = pdo_fetchall('select * from ' . tablename('sz_yi_goods_param') . ' where goodsid = ' . $goodsid_old . ' and uniacid=' . $uniacid);
         if (!empty($goodsparam)) {
             foreach ($goodsparam as $value_param) {
-                $value_param['id'] = '';
+                unset($value_param['id']);
                 $value_param['goodsid'] = $goodsid;
                 pdo_insert('sz_yi_goods_param', $value_param);
             }
@@ -1300,14 +1300,14 @@ if ($operation == "change") {
         if (!empty($goodsspec)) {
             foreach ($goodsspec as $value_spec) {
                 $goodsspec_item = pdo_fetchall('select * from ' . tablename('sz_yi_goods_spec_item') . ' where specid = ' . $value_spec['id'] . ' and uniacid=' . $uniacid);
-                $value_spec['id'] = '';
+                unset($value_spec['id']);
                 $value_spec['goodsid'] = $goodsid;
                 pdo_insert('sz_yi_goods_spec', $value_spec);
                 $goodsspecid = pdo_insertid();
 
                 foreach ($goodsspec_item as $v) {
                     $v['specid'] = $goodsspecid;
-                    $v['id'] = '';
+                    unset($v['id']);
                     pdo_insert('sz_yi_goods_spec_item', $v);
                 }
             }
