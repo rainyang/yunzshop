@@ -18,6 +18,7 @@ require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/functions.php';
 require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/plugin/plugin_model.php';
 require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/aes.php';
 require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/core.php';
+require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/plugin/vendor/leancloud/src/autoload.php';
 
 $_GET['api'] = ltrim($_GET['api'], '/');
 
@@ -33,9 +34,9 @@ class AutoLoader
         $namespace = substr($full_class_name, 0, strrpos($full_class_name, '\\'));//最后一个'\'之前 是命名空间
 
         $dir = self::_mapNamespaceToDir($namespace);
-        dump($dir);
+        //dump($dir);
         $class_name = $this->_getClassName($full_class_name);
-        dump($class_name);
+        //dump($class_name);
         require "{$dir}/{$class_name}.php";
     }
     private function _getClassName($full_class_name){

@@ -54,7 +54,7 @@ class Sale extends \api\YZ
         dump($rse);
         $this->returnSuccess($rse);
     }
-    private function getSaleData($countfield, $map = [])
+    private function getSaleData($countfield, $map = array())
     {
         $condition = '1';
         if(isset($map[':uniacid'])){

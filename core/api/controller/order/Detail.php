@@ -66,8 +66,8 @@ class Detail extends \api\YZ
             '查看物流' => 8,
             '关闭订单' => 9,
         );
-        $button_name_array = [];
-        $button_array = [];
+        $button_name_array = array();
+        $button_array = array();
         if (empty($order_status)) {
             if (cv('order.op.pay')) {
                 if ($pay_type == 3) {

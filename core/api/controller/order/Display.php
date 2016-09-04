@@ -33,7 +33,7 @@ class Display extends \api\YZ
             )
         );
         if (count($order_list) == 0) {
-            $this->returnSuccess([], '暂无数据');
+            $this->returnSuccess(array(), '暂无数据');
         }
 
         dump($order_list);
