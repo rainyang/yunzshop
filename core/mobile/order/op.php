@@ -46,7 +46,7 @@ if ($_W['isajax']) {
 	       	if ($order['deductyunbimoney'] > 0) {
 	            $shop = m('common')->getSysset('shop');
 	            p('yunbi')->setVirtualCurrency($order['openid'],$order['deductyunbi']);
-		        //虚拟币抵扣记录
+		        //虚拟币抵扣记录 
 	            $data_log = array(
 	                'id'           => $member['id'],
 	                'openid'        => $openid,

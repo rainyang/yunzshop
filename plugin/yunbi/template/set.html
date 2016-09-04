@@ -221,13 +221,16 @@
     });
 
     $('.direct_indirect').click(function(){
+
+
         if($(this).find('input').val() == 0)
         {
+
             $("#yunbi_return").show();
             $("#yunbi_remove").hide();
             $(".returnremove").show();
             $(".indirect").hide();
-                       
+            $('input[name="setdata[isreturn_or_remove]"]:eq(0)').click();     
             $(".acquisition").html('返现与清除');
             
         }else
@@ -236,7 +239,7 @@
             $("#yunbi_remove").hide();
             $(".returnremove").hide();
             $(".indirect").show();
-            
+            $('input[name="setdata[isreturn_or_remove]"]:eq(3)').click();
             $(".acquisition").html('间接转入');
         }
     });

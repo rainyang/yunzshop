@@ -19,51 +19,121 @@ if (!class_exists('YunbiModel')) {
 				if (empty($orderid)) {
 					return false;
 				}
-				echo "<pre>";print_r($set);exit;
-				$order_goods = pdo_fetchall("SELECT g.isyunbi,g.yunbi_consumption,o.openid,o.price,o.dispatchprice,m.id,m.openid as mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
+				
+				$order_goods = pdo_fetchall("SELECT g.isyunbi,g.yunbi_consumption,g.yunbi_commission,o.openid,o.price,o.dispatchprice,m.id,m.openid as mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
 					array(':orderid' => $orderid,':uniacid' => $_W['uniacid']
 				));
 				if (empty($order_goods)) {
 					return false;
 				}
 				$virtual_currency = 0;
+				$virtual_agent = 0;
 				foreach($order_goods as $good){
- 					if($good['isyunbi'] == 1){
- 						if ($good['yunbi_consumption'] > 0) {
- 							$virtual_currency += ($good['price'] - $good['dispatchprice']) * $good['yunbi_consumption'] / 100;
- 						} else {
+					if($good['isyunbi'] == 1){
+						if ($good['yunbi_consumption'] > 0) {
+							$virtual_currency += ($good['price'] - $good['dispatchprice']) * $good['yunbi_consumption'] / 100;
+						} else {
 							$virtual_currency += ($good['price'] - $good['dispatchprice']) * $set['consumption'] / 100;
- 						}
- 						$is_goods_return = true;
- 					}
+						}
+						$is_goods_return = true;
+						if ($good['yunbi_commission'] > 0) {
+							$virtual_agent += ( $good['price'] - $good['dispatchprice'] ) * $good['yunbi_commission'] / 100;
+						}
+					}
 				}
 				//商品 没有返消费币 返回
 				if(!$is_goods_return)
 				{
 					return false;
 				}
-				$this->setVirtualCurrency($order_goods[0]['openid'],$virtual_currency);
+				if ($set['acquisition'] == 0) {
+					//echo "直接获得";
+					$this->setVirtualCurrency($order_goods[0]['openid'],$virtual_currency);
+					$data_log = array(
+				        'id' 			=> $order_goods[0]['id'],
+				        'openid' 		=> $order_goods[0]['openid'],
+				        'credittype' 	=> 'virtual_currency',
+				        'money' 		=> $virtual_currency,
+						'remark'		=> '购物获得'.$virtual_currency.$set['yunbi_title']
+				    );
+					$this->addYunbiLog($_W['uniacid'],$data_log,'1');
 
-	        	$data_log = array(
-	                'id' 			=> $order_goods[0]['id'],
-	                'openid' 		=> $order_goods[0]['openid'],
-	                'credittype' 	=> 'virtual_currency',
-	                'money' 		=> $virtual_currency,
-					'remark'		=> '购物获得'.$virtual_currency.$set['yunbi_title']
-                );
-				$this->addYunbiLog($_W['uniacid'],$data_log,'1');
+					$messages = array(
+						'keyword1' => array(
+							'value' => '购物获得'.$set['yunbi_title'].'通知',
+							'color' => '#73a68d'),
+						'keyword2' =>array(
+							'value' => '本次获得'.$virtual_currency.$set['yunbi_title'],
+							'color' => '#73a68d')
+						);
+					m('message')->sendCustomNotice($order_goods[0]['openid'], $messages);
 
-				$messages = array(
-					'keyword1' => array(
-						'value' => '购物获得'.$set['yunbi_title'].'通知',
-						'color' => '#73a68d'),
-					'keyword2' =>array(
-						'value' => '本次获得'.$virtual_currency.$set['yunbi_title'],
-						'color' => '#73a68d')
-					);
-				m('message')->sendCustomNotice($order_goods[0]['openid'], $messages);
+				} else {		
+					//echo "间接获得";
+					$this->setVirtualCurrency($order_goods[0]['openid'],$virtual_currency,'virtual_temporary');
+					$this->setVirtualCurrency($order_goods[0]['openid'],$virtual_currency,'virtual_temporary_total');
+					$data_log = array(
+				        'id' 			=> $order_goods[0]['id'],
+				        'openid' 		=> $order_goods[0]['openid'],
+				        'credittype' 	=> 'virtual_temporary',
+				        'money' 		=> $virtual_currency,
+						'remark'		=> '购物-间接获得'.$virtual_currency.$set['yunbi_title']
+				    );
+					$this->addYunbiLog($_W['uniacid'],$data_log,'1');
+
+					$messages = array(
+						'keyword1' => array(
+							'value' => '购物获得'.$set['yunbi_title'].'通知',
+							'color' => '#73a68d'),
+						'keyword2' =>array(
+							'value' => '本次获得'.$virtual_currency.'虚拟币,等待转入'.$set['yunbi_title'],
+							'color' => '#73a68d')
+						);
+					m('message')->sendCustomNotice($order_goods[0]['openid'], $messages);
+
+					if ( $virtual_agent > 0) {
+						$member = m('member')->getMember($order_goods[0]['openid']);
+						$agentinfo = m('member')->getMember($member['agentid']);
+						$this->setVirtualCurrency($agentinfo['openid'],$virtual_agent,'virtual_temporary');
+						$this->setVirtualCurrency($agentinfo['openid'],$virtual_agent,'virtual_temporary_total');
+						$data_log = array(
+					        'id' 			=> $agentinfo['id'],
+					        'openid' 		=> $agentinfo['openid'],
+					        'credittype' 	=> 'virtual_temporary',
+					        'money' 		=> $virtual_agent,
+							'remark'		=> '购物-分销上级-间接获得'.$virtual_agent.$set['yunbi_title']
+					    );
+						$this->addYunbiLog($_W['uniacid'],$data_log,'1');
+						$messages = array(
+							'keyword1' => array(
+								'value' => '分销上级获得'.$set['yunbi_title'].'通知',
+								'color' => '#73a68d'),
+							'keyword2' =>array(
+								'value' => '本次获得'.$virtual_agent.'虚拟币,等待转入'.$set['yunbi_title'],
+								'color' => '#73a68d')
+						);
+						m('message')->sendCustomNotice($agentinfo['openid'], $messages);
+					}
+				}
+
 			}
 		}
+		// //购物间接获得虚拟币
+		// public function setIndirect ($order_goods=array()){
+		// 	global $_W, $_GPC;
+		// 	$set = $this->getSet();
+
+
+		// }
+		// //购物直接获得虚拟币
+		// public function setDirect ($order_goods=array()){
+		// 	global $_W, $_GPC;
+		// 	$set = $this->getSet();
+			
+		// }
+
+
+
 		//分销商获得虚拟币
 		public function GetVirtual_Currency($set,$uniacid) {
 			global $_W, $_GPC;
@@ -193,9 +263,12 @@ if (!class_exists('YunbiModel')) {
 		    return !empty($total)?$total:'0';
 		}
 
-		public function setVirtualCurrency($openid='',$currency) {
+		public function setVirtualCurrency($openid='',$currency,$fieldname='') {
 			global $_W, $_GPC;
-			pdo_fetchall("update ".tablename('sz_yi_member')." set `virtual_currency` = virtual_currency + ".$currency." where `uniacid` =  " . $_W['uniacid'] . " AND openid = '".$openid."' ");
+			if (empty($fieldname)) {
+				$fieldname = 'virtual_currency';
+			}
+			pdo_fetchall("update ".tablename('sz_yi_member')." set ".$fieldname." = ".$fieldname." + ".$currency." where `uniacid` =  " . $_W['uniacid'] . " AND openid = '".$openid."' ");
 		}
 
 	}

@@ -56,7 +56,17 @@
         <b class="yunbi"> {if $yunbi_set['yunbi_title'] }{$yunbi_set['yunbi_title']}{else}云币{/if} </b>的百分比！优先级：单个商品设置大于订单统一设置 </span>
     </div>
 </div>
-
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">消费上级获得{if $yunbi_set['yunbi_title'] }{$yunbi_set['yunbi_title']}{else}云币{/if}比例</label>
+    <div class="col-sm-8">
+        <div class="input-group">
+            <input type="text" name="yunbi_commission" class="form-control" value="{$item['yunbi_commission']}"  />
+            <div class="input-group-addon">%</div>
+        </div>
+        <span class='help-block'>购买商品上级多少
+        <b class="yunbi"> {if $yunbi_set['yunbi_title'] }{$yunbi_set['yunbi_title']}{else}云币{/if} </b>的百分比！0 或 为空时上级不获得{if $yunbi_set['yunbi_title'] }{$yunbi_set['yunbi_title']}{else}云币{/if} </span>
+    </div>
+</div>
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">{$yunbi_set['yunbi_title']}抵扣</label>
     <div class="col-sm-4">
