@@ -674,7 +674,7 @@ var fromcart = 0;
                     $("#carrier_mobile").html(obj.data('mobile'));
                     $("#carrier_address").html(obj.data('address'));
                     $(".choose_carrier").animate({right: "-100%"}, 100);
-                    getDispatchPrice();
+                    getDispatchPrice(true);
                 })
             })
         }

@@ -21,7 +21,7 @@ class Test extends \api\YZ
     }
     public function index(){
         $push_obj = new \Util\Push();
-        $res = $push_obj->send('标题','内容',[]);
+        $res = $push_obj->send('标题','内容',array());
         dump($res);
     }
     public function changePassword(){

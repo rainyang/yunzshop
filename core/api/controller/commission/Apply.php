@@ -145,7 +145,7 @@ class Apply extends \api\YZ
         }
         pdo_update('sz_yi_commission_apply', array('status' => 1, 'checktime' => 0, 'invalidtime' => 0), array('id' => $para['commission_apply_id'], 'uniacid' => $para['uniacid']));
         plog('commission.apply.cancel', "重新审核申请 ID: {$para['commission_apply_id']} 申请编号: {$apply['applyno']} ");
-        $this->returnSuccess([], '撤销审核处理成功!');
+        $this->returnSuccess(array(), '撤销审核处理成功!');
     }
 
     public function check()

@@ -43,6 +43,7 @@ if (!class_exists('YunbiModel')) {
 				}
 				$this->setVirtualCurrency($order_goods[0]['openid'],$virtual_currency);
 
+
 	        	$data_log = array(
 	                'id' 			=> $order_goods[0]['id'],
 	                'openid' 		=> $order_goods[0]['openid'],

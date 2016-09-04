@@ -407,7 +407,7 @@ if (!class_exists('CouponModel')) {
 											$b += 1;
 										}
 										
-										if ($a == 0 || $b == 0) {
+										if ($b == 0) {
 											$total -= 1;
 										}
 									} else {
