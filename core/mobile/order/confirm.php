@@ -976,13 +976,6 @@ if ($_W['isajax']) {
             ':openid' => $openid,
             ':id' => $addressid
         ));
-        if (!empty($coupon_carrierid)) {
-            show_json(1,array(
-                             "hascoupon" => $hascoupon,
-                            "couponcount" => $couponcount,
-                            )
-            );
-        }
         $member              = m("member")->getMember($openid);
         $level               = m("member")->getLevel($openid);
         $weight              = $_GPC["weight"];
