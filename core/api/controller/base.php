@@ -53,7 +53,7 @@ class Base
      * @param string $msg 提示信息
      * @return void
      */
-    public function returnSuccess($data = [], $msg = '成功')
+    public function returnSuccess($data = array(), $msg = '成功')
     {
         if(is_array($data)){
             array_walk_recursive($data,function(&$item){
@@ -90,7 +90,7 @@ class Base
     {
         $res = array('result' => '0',
             'msg' => $msg,
-            'data' => []);
+            'data' => array());
         if (defined("IS_API_DOC")) {
             exit(json_encode($res, JSON_UNESCAPED_UNICODE));
         } elseif (is_test()) {

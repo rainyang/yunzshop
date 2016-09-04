@@ -45,7 +45,7 @@ class SetProperty extends \api\YZ
             'id' => $id
         ));
         plog('shop.goods.delete', "删除商品 ID: {$id} 标题: {$row['title']} ");
-        $this->returnSuccess([],'删除成功！');
+        $this->returnSuccess(array(),'删除成功！');
     }
     public function index()
     {

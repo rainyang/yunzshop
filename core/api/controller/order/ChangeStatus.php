@@ -165,21 +165,21 @@ class ChangeStatus extends \api\YZ
         unset($province_list[0]);
         foreach ($province_list as $province) {
             $province_name = $province['@attributes']['name'];
-            pdo_insert('province', ['name' => $province_name]);
+            pdo_insert('province', array('name' => $province_name));
             $province_id = pdo_insertid();
             foreach ($province['city'] as $city) {
                 $city_name = $city['@attributes']['name'];
-                pdo_insert('city', [
+                pdo_insert('city', array(
                     'name' => $city_name,
                     'pid' => $province_id
-                ]);
+                ));
                 $city_id = pdo_insertid();
                 foreach ($city['county'] as $county) {
                     $county_name = $county['@attributes']['name'];
-                    pdo_insert('county', [
+                    pdo_insert('county', array(
                         'name' => $county_name,
                         'pid' => $city_id
-                    ]);
+                    ));
                 }
             }
         }
@@ -723,7 +723,7 @@ class ChangeStatus extends \api\YZ
                 ));
             }
         }
-        $this->returnSuccess([], '退款申请处理成功!');
+        $this->returnSuccess(array(), '退款申请处理成功!');
     }
     public function sendRedPack(){
         //$para = $this->getPara();
