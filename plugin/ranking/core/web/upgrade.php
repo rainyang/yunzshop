@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 global $_W;
 
 $result = pdo_fetchcolumn('select id from ' . tablename('sz_yi_plugin') . ' where identity=:identity', array(':identity' => 'ranking'));
