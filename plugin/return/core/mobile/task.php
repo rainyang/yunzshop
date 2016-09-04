@@ -15,7 +15,9 @@ if (!file_exists($file)) {
     touch($file);
     //if (flock($fp, LOCK_EX)) {  // 进行排它型锁定
         $log_content[] = date("Y-m-d H:i:s")."返现开始========\r\n";
-        $sets = pdo_fetchall('select uniacid from ' . tablename('sz_yi_sysset'));
+        //$sets = pdo_fetchall('select uniacid from ' . tablename('sz_yi_sysset'));
+        $sql = "SELECT * FROM ". tablename('uni_account'). " as a LEFT JOIN". tablename('account'). " as b ON a.default_acid = b.acid WHERE a.default_acid <> 0 ORDER BY a.`rank` DESC, a.`uniacid` DESC ";
+        $sets = pdo_fetchall($sql);
         foreach ($sets as $k => $val) {
             $tmpdirs = IA_ROOT . "/addons/sz_yi/tmp/reutrn/".date("Ymd");
             if (!is_dir($tmpdirs)) {
