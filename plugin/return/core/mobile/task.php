@@ -2,6 +2,7 @@
 global $_W, $_GPC;
 set_time_limit(0);
 load()->func('file');
+
 //创建文件锁
 $tmpdir = IA_ROOT . "/addons/sz_yi/tmp/reutrn";
 $file   = $tmpdir."/filelock.txt";
@@ -14,7 +15,8 @@ if (!file_exists($file)) {
     //$fp = fopen($file, "r+");
     touch($file);
     //if (flock($fp, LOCK_EX)) {  // 进行排它型锁定
-        $log_content[] = date("Y-m-d H:i:s")."返现开始========\r\n";
+        $log_content[] = date("Y-m-d H:i:s")."返现开始========================\r\n";
+        $log_content[] = "当前域名：".$_SERVER['SERVER_NAME'].$_SERVER['REQUEST_URI'];
         //$sets = pdo_fetchall('select uniacid from ' . tablename('sz_yi_sysset'));
         $sql = "SELECT * FROM ". tablename('uni_account'). " as a LEFT JOIN". tablename('account'). " as b ON a.default_acid = b.acid WHERE a.default_acid <> 0 ORDER BY a.`rank` DESC, a.`uniacid` DESC ";
         $sets = pdo_fetchall($sql);
