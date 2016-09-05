@@ -85,7 +85,7 @@
     </ul>
 </div>
 <div class="order">
-    <a href="{php echo $this->createMobileUrl('order')}">
+    <a href="{php echo $this->createMobileUrl('order')}" class="a-center">
         <div class="list1" style="margin-top:0px;border-bottom: 1px solid #ECECEC;">
             <i class="fa fa-reorder" style="float:left; line-height:44px;"></i>
             <span style="float:left;">我的订单</span>
@@ -104,7 +104,7 @@
 <%if memberhotel==1%>
 <div class="order">
     <a href="{php echo $this->createMobileUrl('order',array('type'=>'hotel'))}">
-        <div class="list1" style="margin-top:0px;">
+        <div class="list1" style="border-bottom: 1px solid #ECECEC;">
             <i class="fa fa-reorder" style="float:left; line-height:44px;"></i>
             <span style="float:left;">我的酒店订单</span>
             <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i>
