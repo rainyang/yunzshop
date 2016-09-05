@@ -524,8 +524,14 @@ padding: 0 5px;box-sizing: border-box;}
     text-align: center;
     border-radius: 4px;
 }
+.a-center{height: 46px;background: #fff;display: block;}
+.a-center:link {background: #fff}/* 未被访问的链接 */
 
+.a-center:visited {background: #fff}/* 已被访问的链接 */
 
+.a-center:hover {background: #fff}/* 鼠标指针移动到链接上 */
+
+.a-center:active {background: #fff}/* 正在被点击的链接 */
 
 
 

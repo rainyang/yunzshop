@@ -418,7 +418,11 @@ if ($operation == "change") {
                 } else {
                     $supplier_uid = intval($_GPC['supplier_uid']);
                 }
-                $is_dispatch = pdo_fetchcolumn("select count(*) from" . tablename("sz_yi_dispatch") . "where uniacid =:uniacid and enabled = 1 and id=:id and supplier_uid = ".$supplier_uid, array(":uniacid" => $_W["uniacid"], ":id" => $_GPC['dispatchid']));
+                $dispatch_where = "";
+                if(intval($_GPC['dispatchid']) != 0){
+                    $dispatch_where = " and id= ".$_GPC['dispatchid'];
+                }
+                $is_dispatch = pdo_fetchcolumn("select count(*) from" . tablename("sz_yi_dispatch") . "where uniacid =:uniacid and enabled = 1 and  supplier_uid =:supplier_uid".$dispatch_where, array(":uniacid" => $_W["uniacid"], ":supplier_uid" => $supplier_uid));
                 if(empty($is_dispatch)){
                     message("选择供应商与运费模板不匹配！请重新选择！");
                 }
