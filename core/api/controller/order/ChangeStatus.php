@@ -206,7 +206,7 @@ class ChangeStatus extends \api\YZ
             "mobile" => $address["mobile"],
             "address" => array_part('province,city,area,address', $address)
         );
-        $company_list = json_decode(require __API_ROOT__ . '/expresscom.php', true);
+        $company_list = json_decode(require __API_ROOT__ . '/source/expresscom.php', true);
         //exit;
         $res = compact('company_list', 'address');
         dump($res);
