@@ -61,6 +61,7 @@ if($_W['isajax']){
         }
     }  
     $args['isverify'] = 1; 
+    $args['choose'] = 1;
     $goods = m('goods')->getList($args);
     if (p('channel')) {
         foreach ($goods as $key => &$value) {
