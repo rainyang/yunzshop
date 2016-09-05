@@ -39,7 +39,7 @@
     .addorder_exp .ico {height:42px; width:30px;  float:right;text-align:right;color:#999; font-size:16px;margin-top:5px; }
      
     
-    .addorder_good {height:auto;padding:10px;background:#fff;  margin-top:16px; border-bottom:1px solid #eaeaea; border-top:1px solid #eaeaea;}
+    .addorder_good {height:auto;padding:10px;background:#fff;  margin:10px 0; border-bottom:1px solid #eaeaea; border-top:1px solid #eaeaea;}
     .addorder_good .ico {height:6px; width:10%; line-height:36px; float:left; text-align:center;}
     .addorder_good .shop {height:36px; width:90%; padding-left:10%; border-bottom:1px solid #eaeaea; line-height:36px; font-size:14px; color:#333;}
     .addorder_good .good {height:50px; width:100%; padding:10px 0px; border-bottom:1px solid #eaeaea;}
@@ -56,8 +56,8 @@
     .addorder_good input {height:34px; width:97%; padding: 0 5px; background:#f7f7f7;  border:1px solid #e9e9e9; margin:14px 0px 0; -webkit-appearance: none; }
     .addorder_good .text {height:34px; width:100%; line-height:34px; text-align:right; font-size:14px; color:#999;}
 
-    .addorder_price {height:auto;  background:#fff; padding:5px 10px; margin-top:16px; border-bottom:1px solid #eaeaea; border-top:1px solid #eaeaea;}
-    .addorder_price .price {height:auto; width:100%; border-bottom:1px solid #eaeaea;}
+    .addorder_price {height:auto;  background:#fff; padding:5px 10px;}
+    .addorder_price .price {border-bottom: 1px solid #eaeaea;height:auto; width:100%; border-bottom:1px solid #eaeaea;}
     .addorder_price .price .line {height:33px; width:100%; font-size:14px; color:#666;}
     .addorder_price .price .line span {height:33px; width:auto; float:right;}
     .addorder_price .all {height:47px; width:100%; line-height:47px; font-size:16px; color:#666;}
@@ -398,7 +398,8 @@
         </div>
     </div>
 	<input type="hidden" data-id="<%order.supplier_uid%>" data-name="couponid" value="" />
-     <div class="addorder_price coupondiv"  data-id="<%order.supplier_uid%>" style="margin-top:5px;<%if !order.hascoupon%>display:none<%/if%>" >
+     <div></div>
+     <div class="addorder_price coupondiv"  data-id="<%order.supplier_uid%>" style="<%if !order.hascoupon%>display:none<%/if%>" >
         <div class="price" style="border:none;">
             <div class="line selectcoupon" style="line-height:32px;" data-id="<%order.supplier_uid%>">
 			           <d class="couponselect" data-id="<%order.supplier_uid%>">我要使用优惠券</d>
@@ -407,7 +408,7 @@
             </div>
         </div>
     </div>
-    <div class="addorder_price coupondiv" style="margin-top:5px;<%if order.hascoupon%>display:none<%/if%>" >
+    <div class="addorder_price coupondiv" style="<%if order.hascoupon%>display:none<%/if%>" >
         <div class="price" style="border:none;">
             <div class="line selectcoupon1" style="line-height:32px;" data-id="<%order.supplier_uid%>">
                  <d class="couponselect" data-id="<%order.supplier_uid%>">没有符合使用条件的优惠券~</d>
@@ -417,7 +418,7 @@
         </div>
     </div>
    <%if order.deductyunbi>0%>
-     <div class="addorder_price" style="margin-top:5px;">
+     <div class="addorder_price">
         <div class="price" style="border:none;">
             <%if order.deductyunbi>0 %>
               <div class="line" style="line-height:26px;"><d class="deductyunbi_info" data-id="<%order.supplier_uid%>"><%order.deductyunbi%></d> {$yunbiset['yunbi_title']}可抵扣 <d class="deductyunbi_money" data-id="<%order.supplier_uid%>" style='color:#f15353'><%order.deductyunbimoney%></d> 元
@@ -430,7 +431,7 @@
    <%/if%>
 	
     <%if order.deductcredit>0 || order.deductcredit2>0  %>
-     <div class="addorder_price" style="margin-top:5px;">
+     <div class="addorder_price">
             <div class="price" style="border:none;">
             <%if order.deductcredit>0 %>
             <div class="line" style="line-height:26px;"><d class="deductcredit_info" data-id="<%order.supplier_uid%>"><%order.deductcredit%></d> {if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}可抵扣 <d class="deductcredit_money" data-id="<%order.supplier_uid%>" style='color:#f15353'><%order.deductmoney%></d> 元
@@ -448,7 +449,7 @@
       
     </div>
     <%/if%>
-    <div class="addorder_price" style="margin-top:5px;">
+    <div class="addorder_price">
             <div class="price" style="border:none;">
             <div class="line" style="line-height:26px;">商品小计 <span>￥<span class='goodspricesubtotal' data-id="<%order.supplier_uid%>"><%order.realprice%></span></span>
             </div>
