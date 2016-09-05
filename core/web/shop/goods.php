@@ -412,7 +412,7 @@ if ($operation == "change") {
         }
         unset($value);
         if (checksubmit("submit")) {
-            if($_GPC['dispatchtype']==0  && $_GPC["type"] != 2){
+            if($_GPC['dispatchtype']==0  && $_GPC["type"] == 1){
                 if ($perm_role == 1) {
                     $supplier_uid = intval($_W['uid']);
                 } else {
