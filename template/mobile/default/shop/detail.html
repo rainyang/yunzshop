@@ -284,7 +284,13 @@ div.flicking_con a.on{background-position:0 -9px}
             </div>
        </div>
         <%/if%> 
-        
+      <%if goods.isforceyunbi>0%>
+      <div class="other">
+        <div class='left'>
+          <span><i class='fa fa-cube'></i> 强制({if $yunbi_set['yunbi_title']}{$yunbi_set['yunbi_title']}{else}云币{/if}抵扣):<span style='color:#ff6600'><%goods.yunbi_deduct%> 元</span>
+        </div>
+      </div>
+      <%/if%>
       <%if goods.isnodiscount=='0' && level.discount>0%>
          <div class="other">
             <div class='left'>
@@ -394,15 +400,27 @@ div.flicking_con a.on{background-position:0 -9px}
             <br><span>收藏</span>
         </div>
         <%if shopset.cservice%>
+        {if !is_app()}
             <div class="cs" ><i class="fa fa-headphones"></i><br><span>客服</span></div>
+        {/if}
             <%if goods.canaddcart%>
             <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa iconfont icon-cart" style="font-size: 18px"></i><br><span>购物车</span>
                 <%if cartcount>0%><b><%cartcount%></b><%/if%>
             </div>
-            
-            <div class="add" onclick="choose('cart')" <%if shopset.cservice &&  goods.canaddcart%>style="width:28%"<%/if%>>加入购物车</div>
+
+            {if is_app()}
+        <div class="add" onclick="choose('cart')">加入购物车</div>
+            {else}
+            <div class="add" onclick="choose('cart')"  <%if shopset.cservice &&  goods.canaddcart%>style="width:28%"<%/if%>>加入购物车</div>
+            {/if}
             <%/if%>
-            <div class="buy" onclick="choose('buy')" <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%else%>style="width:70%"<%/if%>>立即购买</div>
+
+    {if is_app()}
+    <div class="buy" onclick="choose('buy')">立即购买</div>
+    {else}
+            <div class="buy" onclick="choose('buy')"  <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%else%>style="width:70%"<%/if%>>立即购买</div>
+    {/if}
+    <input type="hidden" value="<%goods.isforce%>" id='isforce'>
         <%else%>
             <%if goods.canaddcart%>
             <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
@@ -410,10 +428,12 @@ div.flicking_con a.on{background-position:0 -9px}
             </div>
             
             <div class="add" onclick="choose('cart')">加入购物车</div>
-            <input type="hidden" value="<%goods.isforceyunbi%>" id='isforceyunbi'>
             <%/if%>
             <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:85%'<%/if%>>立即购买</div>
         <%/if%>
+        <input type="hidden" value="<%goods.isforce%>" id='isforce'>
+        <input type="hidden" value="<%goods.yunbi_num%>" id='yunbi_num'>
+        <input type="hidden" value="<%goods.isforceyunbi%>" id='isforceyunbi'>
 </div>
     <%/if%>
 
@@ -703,6 +723,7 @@ div.flicking_con a.on{background-position:0 -9px}
             $("#webapp_share").click(function() {
                 if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
                     webapp_share();
+                    PINGPP_ANDROID_SDK.shareLink(title, link, imgurl, desc);
                 } else {
                     setupWebViewJavascriptBridge(function(bridge) {
                         var imgurls = z;
@@ -1124,12 +1145,17 @@ div.flicking_con a.on{background-position:0 -9px}
         $('.good_choose').fadeOut(100); 
         }
     function choose(act){
-      var isforceyunbi = $('#isforceyunbi').val();
-      if (!isforceyunbi) {
-          tip.show("云币不足,不允许加入购物车和购买");
+      var isforce = $('#isforce').val();
+      var yunbi_num = $('#yunbi_num').val();
+      if (!isforce) {
+          tip.show("强制使用"+yunbi_num+"{if $yunbi_set['yunbi_title']}{$yunbi_set['yunbi_title']}{else}云币{/if}");
           return;
       } else {
-          isyunbipay = 1;
+          if ($('#isforceyunbi').val() != 0) {
+            isyunbipay = 1;
+          } else {
+            isyunbipay = 0;
+          }
       }
                           if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
                                 require(['core'],function(core){
@@ -1239,6 +1265,7 @@ div.flicking_con a.on{background-position:0 -9px}
                  $("#optiondiv").html(titles);
         }
     function choose2(direct,close){
+      var isforce = $('#isforce').val();
          require(['core'],function(core){
              
             if(close){
@@ -1338,7 +1365,7 @@ div.flicking_con a.on{background-position:0 -9px}
                 })
 
                 {else}
-                    location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+                    location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
                 {/if}
 
                     } else {

@@ -78,6 +78,14 @@
 								<td  style='border:none;text-align:right;'>运费：</td>
 								<td  style='border:none;text-align:right;;'>￥{php echo number_format( $item['olddispatchprice'],2)}</td>
 							</tr>
+
+                            {if $item['deductyunbimoney']>0}
+                            <tr>
+                                <td  style='border:none;text-align:right;'>{if !empty($yunbiset['yunbi_title'])}{php echo $yunbiset['yunbi_title']}{else}云币{/if}抵扣：</td>
+                                <td  style='border:none;text-align:right;;'>-￥{php echo $item['deductyunbimoney']}</td>
+                            </tr>
+                            {/if}
+
 							{if $item['discountprice']>0}
 							<tr>
 								<td  style='border:none;text-align:right;'>会员折扣：</td>

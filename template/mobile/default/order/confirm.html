@@ -407,6 +407,15 @@
             </div>
         </div>
     </div>
+    <div class="addorder_price coupondiv" style="margin-top:5px;<%if order.hascoupon%>display:none<%/if%>" >
+        <div class="price" style="border:none;">
+            <div class="line selectcoupon1" style="line-height:32px;" data-id="<%order.supplier_uid%>">
+                 <d class="couponselect" data-id="<%order.supplier_uid%>">没有符合使用条件的优惠券~</d>
+                <div class="ico2" style="float:right;color:#999;margin-top:2px;"><i class='fa fa-angle-right fa-2x'></i></div>
+                <div class="couponcount"><%order.couponcount%></div>
+            </div>
+        </div>
+    </div>
    <%if order.deductyunbi>0%>
      <div class="addorder_price" style="margin-top:5px;">
         <div class="price" style="border:none;">
@@ -472,6 +481,9 @@ var fromcart = 0;
             return;
         }
         $('#confirm_container').html(tpl('tpl_confirm_info', json.result));
+	        if ($('#dispatchtype').val() == 1) {   //自提没有运费
+	        	getDispatchPrice(true);
+	        }
             {if !empty($order_formInfo)}
                 {template 'diyform/common_js'}
             {/if} 
@@ -662,7 +674,7 @@ var fromcart = 0;
                     $("#carrier_mobile").html(obj.data('mobile'));
                     $("#carrier_address").html(obj.data('address'));
                     $(".choose_carrier").animate({right: "-100%"}, 100);
-                    getDispatchPrice();
+                    getDispatchPrice(true);
                 })
             })
         }
@@ -1225,7 +1237,7 @@ var fromcart = 0;
 				  $('.selectcoupon').click( function(){
              var money =parseFloat( $('.totalprice').html().replace(",","") ) ;	
              var supplier_uid = $(this).attr('data-id');
-			 var carrierid = $('#carrierid').val();
+			       var carrierid = $('#carrierid').val();
  				     core.pjson('coupon/util', {op: 'query', money: money, type:0, supplier_uid: supplier_uid, goodsid: "{$goodid}", cartids: "{$cartid}", carrierid: carrierid}, function (rjson) {
   							if (rjson.status != 1) {
   								core.tip.show(rjson.result);
@@ -1233,7 +1245,7 @@ var fromcart = 0;
   								calctotalprice(supplier_uid); 
   								return;
   							}
-  							if(rjson.result.coupons.length>0){
+  							if(rjson.result.coupons.length>0 || $.makeArray(rjson.result.coupons).length>0){
   								CouponChooser.cancelCallback = function(){
   									$('.coupondeduct_div[data-id='+supplier_uid+']').hide();
   									$('.coupondeduct_text[data-id='+supplier_uid+']').html('');

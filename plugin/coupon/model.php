@@ -272,6 +272,7 @@ if (!class_exists('CouponModel')) {
 
 		function consumeCouponCount($openid, $enough = 0, $supplier_uid = 0, $sid = 0,$iscashier = 0, $goodid = 0, $cartid = 0, $coupon_carrierid = 0)
 		{
+
 			global $_W, $_GPC;
 			$time = time();
 			if ($iscashier == 1) {
@@ -311,7 +312,7 @@ if (!class_exists('CouponModel')) {
 					$goods = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_goods')." WHERE id = :id",array(':id' => $goodid));
 					$a = 0;
 					$b = 0;
-					
+
 					if ($goodid != 0 && $cartid == 0) {
 						if (!empty($supplier_uid)) {
 							if (!empty($supplierids) && $row['getsupplier'] == 1) {
@@ -406,7 +407,7 @@ if (!class_exists('CouponModel')) {
 											$b += 1;
 										}
 										
-										if ($a == 0 || $b == 0) {
+										if ($b == 0) {
 											$total -= 1;
 										}
 									} else {
@@ -417,6 +418,7 @@ if (!class_exists('CouponModel')) {
 						}	
 						
 					} elseif ($cartid != 0 && $goodid == 0){
+						
 						
 						if (!empty($supplier_uid)) {
 							if (!empty($supplierids) && $row['getsupplier'] == 1) {
@@ -431,33 +433,42 @@ if (!class_exists('CouponModel')) {
 								}
 							}
 						} else {
-							$cartid = explode(',',$cartid);
-							$a = 0;
+							
+							$cartids = explode(',',$cartid);
+						
 							if ($row['usetype'] == 2) {
-
-								foreach ($cartid as $value) {
-									$gid = pdo_fetchcolumn("SELECT goodsid FROM ".tablename('sz_yi_member_cart')." WHERE id=:id ",array(':id' => 293));
+								
+								foreach ($cartids as $key => $value) {
+									$gid = pdo_fetchcolumn("SELECT goodsid FROM ".tablename('sz_yi_member_cart')." WHERE id=:id ",array(':id' => $value));
 									$info_uid = pdo_fetchcolumn("SELECT supplier_uid FROM ".tablename('sz_yi_goods')." WHERE id=".$gid);
 									if (!empty($info_uid)) {
-										$a = 0;
-									} elseif (!empty($goodsids)) {
+										unset($cartids[$key]);
+									} 
+
+								}	
+								foreach ($cartids as $c) {
+									$gid1 = pdo_fetchcolumn("SELECT goodsid FROM ".tablename('sz_yi_member_cart')." WHERE id=:id ",array(':id' => $c));
+									if (!empty($goodsids)) {
 										foreach ($goodsids as $v) {
-											if ($v == $gid) {
+											if ($v == $gid1) {
 												$a += 1;
 											}
 										}	
 									} else {
 										$a += 1;
-									}
-									
+									}	
 								}
-								if($a == 0){
+								
+									
+								if ($a == 0) {
 									$total -= 1;
+									
 								}	
+
 							} elseif ($row['usetype'] == 1) {
 								if (!empty($categoryids)) {
 									foreach ($categoryids as $v) {
-										foreach ($cartid as $vc) {
+										foreach ($cartid1 as $vc) {
 											$gid = pdo_fetchcolumn("SELECT goodsid FROM ".tablename('sz_yi_member_cart')." WHERE id=:id ",array(':id' => $vc));
 											$goods = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_goods')." WHERE id = :id",array(':id' => $gid));
 											if ($v == $goods['ccate'] || $v == $goods['tcate'] ) {
@@ -470,15 +481,12 @@ if (!class_exists('CouponModel')) {
 									$a += 1;
 								}
 								
-								if ($a == 0) {
-									$total -= 1;
+								if ($a > 0) {
+									$total += 1;
 								}
 							}
 						}	
 					}
-						
-					
-					
 				}
 		
 				

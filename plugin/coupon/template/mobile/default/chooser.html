@@ -92,6 +92,7 @@
 		 
 		  $('#coupon_chooser .coupon_item').removeClass('coupon_selected');
 		  $('#coupon_chooser .coupon_item[data-couponid=' +couponid +']' ).addClass('coupon_selected');
+
 			   
 		   $('#coupon_chooser .coupon_item').unbind('click').click(function(){
 			   $('#coupon_chooser .coupon_item').removeClass('coupon_selected');
@@ -116,15 +117,37 @@
 			   }
 		   });
 		   $('#coupon_chooser .coupon_confirm').unbind('click').click(function(){
-			   if($("input[data-name='couponid'][data-id="+result.supplier_uid+"]")=='' || $("input[data-name='couponid'][data-id="+result.supplier_uid+"]")=='0'){
-				   core.tip.show('请选择优惠券!');
-				   return;
-			   }
-			   $('#coupon_chooser .coupon_item').removeClass('coupon_selected');
+			    if($("input[data-name='couponid'][data-id="+result.supplier_uid+"]").val()=='' || $("input[data-name='couponid'][data-id="+result.supplier_uid+"]").val()=='0'){
+				    core.tip.show('请选择优惠券!');
+				    return;
+			    }
+				var r = false;
+			   	$.each(result.supplier_uids,function(b){
+			   		
+			   		
+			   		if ($("input[data-name='couponid'][data-id="+result.supplier_uid+"]").val() == $("input[data-name='couponid'][data-id="+b+"]").val() && b != result.supplier_uid) {
+			   			r = true;
+			   			return;
+			   		}
+			   	})
+			   	if (r) {
+		   			core.tip.show('此优惠券已经被选中，请选择其他优惠券！');
+		   			return;
+			   	}
+			   
+			   	$('#coupon_chooser .coupon_item').removeClass('coupon_selected');
+
 			   CouponChooser.close();
 			   if(CouponChooser.confirmCallback){
 				   CouponChooser.confirmCallback();
 			   }
+		   		
+		   	
+		   			
+			   	
+
+			    
+			   
 		   });
 		   
 		 

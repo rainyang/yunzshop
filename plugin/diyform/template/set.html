@@ -158,11 +158,11 @@
                         <option value="0" {if $set['supplier_diyform']==0}selected{/if}>--选择自定义表单--</option>
                         {if p('supplier')}
                         {loop $supplier_form_list $key $value}
-                        <option value="{$value['id']}" {if $set['user_diyform']==$value['id']}selected{/if}>{$value['title']}</option>
+                        <option value="{$value['id']}" {if $set['supplier_diyform']==$value['id']}selected{/if}>{$value['title']}</option>
                         {/loop}
                         {else}
                         {loop $form_list $key $value}
-                        <option value="{$value['id']}" {if $set['user_diyform']==$value['id']}selected{/if}>{$value['title']}</option>
+                        <option value="{$value['id']}" {if $set['supplier_diyform']==$value['id']}selected{/if}>{$value['title']}</option>
                         {/loop}
                         {/if}
                     </select>    

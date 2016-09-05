@@ -56,7 +56,7 @@
             </div>
             <div class="top_1">
                 <div class="text">
-                    累计获得：{$cumulative_total}
+                    累计{$yunbi_title}：{$cumulative_total}
                 </div>
 
                 {if $yunbiset['acquisition'] == 1}
@@ -88,7 +88,7 @@
             </li>
             <li>
                 <a href="#" class="nav" data-type='3' >
-                    <i class="fa iconfont icon-bag" style="background:#ca81d1"></i>-{$deduct}<br/>购物抵扣
+                    <i class="fa iconfont icon-bag" style="background:#ca81d1"></i>{$deduct}<br/>购物抵扣
                 </a>
             </li>
             <li>
@@ -109,26 +109,24 @@
                     </a>
                 </li>
             {/if}
-
-
             <li>
                 <a href="#" class="nav" data-type='6' >
-                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>-{$remove}<br/>清除明细
+                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>{$remove}<br/>清除明细
                 </a>
             </li>
             <li>
                 <a href="#" class="nav" data-type='7' >
-                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>-{$remove}<br/>充值明细
+                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>{$recharge}<br/>充值明细
                 </a>
             </li>
             <li>
                 <a href="#" class="nav" data-type='8' >
-                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>-{$remove}<br/>转赠明细
+                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>{$presented}<br/>转赠明细
                 </a>
             </li>
             <li>
                 <a href="#" class="nav" data-type='9' >
-                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>-{$remove}<br/>获得明细
+                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>{$acquisition}<br/>获赠明细
                 </a>
             </li>
             </ul>

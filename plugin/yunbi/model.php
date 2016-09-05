@@ -115,7 +115,6 @@ if (!class_exists('YunbiModel')) {
 						m('message')->sendCustomNotice($agentinfo['openid'], $messages);
 					}
 				}
-
 			}
 		}
 
