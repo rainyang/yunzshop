@@ -22,6 +22,23 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_merchant_apply` (
   `apply_time` int(11) NOT NULL,
   `finish_time` int(11) NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_merchant_level` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL,
+  `level_name` varchar(100) CHARACTER SET utf8 NOT NULL COMMENT '等级名称',
+  `commission` decimal(10,2) DEFAULT '0.00' COMMENT '比例',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_merchant_center` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL,
+  `openid` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `realname` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `mobile` varchar(50) CHARACTER SET utf8 NOT NULL,
+  `level_id` int(11) NOT NULL,
+  `center_id` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
 pdo_query($sql);
 $info = pdo_fetch('select * from ' . tablename('sz_yi_plugin') . ' where identity= "merchant"  order by id desc limit 1');

@@ -26,7 +26,9 @@ if($goods['ccate']){
 if($goods['tcate']){
     $tcate = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$goods['tcate']." and uniacid=".$uniacid);
 }
+$yunbi = 0;
 if (p('yunbi')) {
+    $yunbi = 1;
     $yunbi_set = p('yunbi')->getSet();
 }
 if(p('hotel')){//开启酒店插件后 判断当前时间是否有剩余房间可预约

@@ -1145,9 +1145,14 @@ div.flicking_con a.on{background-position:0 -9px}
         $('.good_choose').fadeOut(100); 
         }
     function choose(act){
+      {if empty($openid)}
+        location.href = "{php echo $this->createMobileUrl('member/login')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+        return;
+      {/if}
       var isforce = $('#isforce').val();
       var yunbi_num = $('#yunbi_num').val();
-      if (!isforce) {
+      var plugin = "{$yunbi}";
+      if (plugin == "1" && !isforce) {
           tip.show("强制使用"+yunbi_num+"{if $yunbi_set['yunbi_title']}{$yunbi_set['yunbi_title']}{else}云币{/if}");
           return;
       } else {
