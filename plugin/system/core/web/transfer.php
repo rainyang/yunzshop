@@ -2,9 +2,12 @@
 global $_W, $_GPC;
 $wechatid1 = intval($_GPC['wechatid1']);
 if (!$_W['isfounder']) {
+    message('无权访问!');
+    /*
     if($wechatid1 == 0){
         $wechatid1 = $_W['uniacid'];
     }
+     */
 }
 $wechatid   = intval($_GPC['wechatid']);
 $transtype  = intval($_GPC['transtype']);
