@@ -77,7 +77,7 @@ if (!empty($_POST)) {
 									$record['status'] = '1';
 									pdo_update('core_paylog', $record, array('plid' => $log['plid']));
 									$orders = array('trade_no'=>$trade_no);
-   									pdo_update('sz_yi_order', $orders, array('ordersn_general' =>$tid,'uniacid'=>$log['uniacid']));
+   									pdo_update('sz_yi_order', $orders, array('pay_ordersn' =>$tid,'uniacid'=>$log['uniacid']));
 									exit('success');
 								}
 							} else {
