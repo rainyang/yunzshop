@@ -111,7 +111,70 @@ div.flicking_con a.on{background-position:0 -9px}
 .label-free {background:#ff6801;color:#fff;padding:3px;border-radius: 5px; font-size:12px;}
 
 </style>
+<style>
+/*last-act*/
+.last-act { position: fixed; z-index: 997; top: 55px; left: 0; right: 0; }
+.last-act .last-user { background: rgba(0, 0, 0, 0.5); line-height: 32px; height: 32px; border-radius: 16px;
+ padding: 0 20px 0 42px; border: 1px solid rgba(255, 255, 255, 0.3); position: relative; font-size: 13px; width: auto !important; max-width: 100% !important; }
+.last-act .last-user .act-link { display: block; position: absolute; left: 0; top: 0; right: 0; bottom: 0; z-index: 1; }
+.last-act .last-user .user-avatar { position: absolute; width: 32px; height: 32px; border-radius: 50%; left: 0; top: 0; 
+border: 1px solid rgba(255, 255, 255, 0.5); }
+.last-act .last-user p { margin: 0; display: block; vertical-align: top;color:#fff; }
+.last-act .last-user span.act-timer { margin-left: 10px; vertical-align: top; }
+.last-act .last-user span.act-name { display: inline-block; max-width: 4em; overflow: hidden; -o-text-overflow: ellipsis; text-overflow: ellipsis; 
+word-break: keep-all; white-space: nowrap; vertical-align: top; }
+</style>
+<input type="hidden" id="lastOrderUrl" value="{php echo $this->createMobileUrl('shop/lastorder',array('op'=>'display'),true)}"/>
+<script type="text/javascript">
+    function lastPurchaseUser(url) {
+        if (!url || url == '' || url == undefined)
+        {
+            return ;
+        }
+        jQuery.ajax({
+                type : 'POST',
+                url : url,
+                data:{'g_id':{php echo $goodsid;}},
+                dataType : 'json',
+                 error: function(XMLHttpRequest, textStatus, errorThrown) {
+                
+                       },
+                success : function(data) {
+                    //alert(data.status);
+                    if ((data.status == 1 || data.status == '1') && data.result) {
+                        var actData = data.result;
 
+                        $lastAct = jQuery('<div class="last-act">'
+                                + ' <div class="container clearfix">'
+                                + '     <div class="pull-left last-user text-overflow">'
+                                + '         <a href="" class="act-link"></a>'
+                                + '         <img src="" class="user-avatar">'
+                                + '         <p class="color-fff clearfix">'
+                                + '             <span class="act-name"></span>下了<span class="act-count"></span>笔订单 <span class="act-timer"></span>'
+                                + '         </p>' + '       </div>' + ' </div>' + '</div>');
+
+                        $lastAct.find('.user-avatar').attr({
+                            'src' : actData.avatar
+                        });
+                        $lastAct.find('p').find('.act-name').text(
+                                actData.nickname);
+                        $lastAct.find('p').find('.act-count').text(1);
+                        $lastAct.find('p').find('.act-timer').text(actData.time);
+                        jQuery('body').append($lastAct);
+                        //lastAddTime = actData.addtime;
+                        setTimeout(function() {
+                            jQuery('body').find('.last-act').remove();
+                        }, 10000);
+                    } else {
+
+                        jQuery('body').find('.last-act').remove();
+                    }
+                }
+            });
+    }
+    var lou=$("#lastOrderUrl").val();
+    setInterval("lastPurchaseUser('"+lou+"')", 15000);
+</script>
   {if !empty($formInfo)}
 <script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.core-2.5.2.js" type="text/javascript"></script>
 <script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.core-2.5.2-zh.js" type="text/javascript"></script>

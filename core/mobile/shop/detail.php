@@ -29,6 +29,7 @@ if($goods['tcate']){
 if (p('yunbi')) {
     $yunbi_set = p('yunbi')->getSet();
 }
+
 if(p('hotel')){//开启酒店插件后 判断当前时间是否有剩余房间可预约
 $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
 $params2 = array(':goodsid' => $goods['id']);
