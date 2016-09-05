@@ -86,7 +86,7 @@ if (!class_exists('YunbiModel')) {
 							'value' => '购物获得'.$set['yunbi_title'].'通知',
 							'color' => '#73a68d'),
 						'keyword2' =>array(
-							'value' => '本次获得'.$virtual_currency.'虚拟币,等待转入'.$set['yunbi_title'],
+							'value' => '本次获得'.$virtual_currency.'待转'.$set['yunbi_title'].',等待转入'.$set['yunbi_title'],
 							'color' => '#73a68d')
 						);
 					m('message')->sendCustomNotice($order_goods[0]['openid'], $messages);
@@ -109,7 +109,7 @@ if (!class_exists('YunbiModel')) {
 								'value' => '分销上级获得'.$set['yunbi_title'].'通知',
 								'color' => '#73a68d'),
 							'keyword2' =>array(
-								'value' => '本次获得'.$virtual_agent.'虚拟币,等待转入'.$set['yunbi_title'],
+								'value' => '本次获得'.$virtual_agent.'待转'.$set['yunbi_title'].',等待转入'.$set['yunbi_title'],
 								'color' => '#73a68d')
 						);
 						m('message')->sendCustomNotice($agentinfo['openid'], $messages);
@@ -118,21 +118,6 @@ if (!class_exists('YunbiModel')) {
 
 			}
 		}
-		// //购物间接获得虚拟币
-		// public function setIndirect ($order_goods=array()){
-		// 	global $_W, $_GPC;
-		// 	$set = $this->getSet();
-
-
-		// }
-		// //购物直接获得虚拟币
-		// public function setDirect ($order_goods=array()){
-		// 	global $_W, $_GPC;
-		// 	$set = $this->getSet();
-			
-		// }
-
-
 
 		//分销商获得虚拟币
 		public function GetVirtual_Currency($set,$uniacid) {
@@ -194,14 +179,52 @@ if (!class_exists('YunbiModel')) {
 							'value' => $set['yunbi_title'].'返现通知',
 							'color' => '#73a68d'),
 						'keyword2' =>array(
-							'value' => '本次返现到月'.$value['last_money'].$set['yunbi_title'].",余额获得：".$value['last_money']."元",
+							'value' => '本次返现到余额'.$value['last_money'].$set['yunbi_title'].",余额获得：".$value['last_money']."元",
 							'color' => '#73a68d')
 						);
 					m('message')->sendCustomNotice($value['openid'], $messages);
 				}
 			}
 		}
+		//临时虚拟币转入到云币
+		public function PerformYunbiInto($set,$uniacid){
+			global $_W, $_GPC;
+			$current_time = time();
+			if ($set['isreturn_or_remove'] == 3) {
+				//小于等于返现比例
+				pdo_fetchall("update ".tablename('sz_yi_member')."  set virtual_currency = virtual_currency + virtual_temporary, last_money =  virtual_temporary ,updatetime = " .$current_time. ", `virtual_temporary` = 0 where `uniacid` =  " . $uniacid ." AND virtual_temporary <= (virtual_temporary_total * " .$set['yunbi_return']. " / 100) AND virtual_temporary > 0;");
+				//大于返现比例
+				pdo_fetchall("update ".tablename('sz_yi_member')."  set virtual_currency = virtual_currency + (virtual_temporary_total * " .$set['yunbi_return']. " / 100), last_money =  (virtual_temporary_total * " .$set['yunbi_return']. " / 100) ,updatetime = " .$current_time. ", `virtual_temporary` = virtual_temporary - (virtual_temporary_total * " .$set['yunbi_return']. " / 100) where `uniacid` =  " . $uniacid ." AND virtual_temporary > 0;");
+				//上级获得相应数量的云币
+				$sql = "update ".tablename('sz_yi_member')." as m join (select sm.agentid, sm.id as smid from ".tablename('sz_yi_member')." sm where sm.`uniacid` =  " . $uniacid . " AND sm.updatetime = " .$current_time. " ) as ac on m.id = ac.agentid set `virtual_currency` = virtual_currency + " . $set['the_superior_obtain'] . ", last_money = last_money + " . $set['the_superior_obtain'] . ",updatetime = " .$current_time. " where m.`uniacid` =  " . $uniacid . " AND status = '1' AND isagent = '1' ";
+				pdo_fetchall($sql);
 
+				$update_member = pdo_fetchall("SELECT id, uniacid, openid, last_money, updatetime FROM " . tablename('sz_yi_member') . " WHERE updatetime = :updatetime and uniacid = :uniacid ",
+					array(':updatetime' => $current_time,':uniacid' => $uniacid
+				));	
+				foreach ($update_member as $key => $value) {
+					$data_log = array(
+		                'id' 			=> $value['id'],
+		                'openid' 		=> $value['openid'],
+		                'credittype' 	=> 'virtual_currency',
+		                'money' 		=> $value['last_money'],
+						'remark'		=> "待转".$set['yunbi_title']."转入".$set['yunbi_title'].",增加".$value['last_money']
+	                );
+	                $this->addYunbiLog($uniacid,$data_log,'10');// 10 虚拟币转入云币
+					$messages = array(
+						'keyword1' => array(
+							'value' => $set['yunbi_title'].'转入通知',
+							'color' => '#73a68d'),
+						'keyword2' =>array(
+							'value' => '本次共转入'.$value['last_money'].'到'.$set['yunbi_title'],
+							'color' => '#73a68d')
+						);
+					m('message')->sendCustomNotice($value['openid'], $messages);
+				}
+
+			}
+			
+		}
 		//虚拟币清除
 		public function RemoveYunbi($set,$uniacid){
 			global $_W, $_GPC;
@@ -242,7 +265,7 @@ if (!class_exists('YunbiModel')) {
 				'uniacid' 		=> $uniacid,
 			    'mid' 			=> $data['id'],
 			    'openid' 		=> $data['openid'],
-			    'credittype' 	=> $data['virtual_currency'],
+			    'credittype' 	=> $data['credittype'],
 			    'money' 		=> $data['money'],
 			    'status' 		=> 1,
 			    'returntype' 	=> $type,

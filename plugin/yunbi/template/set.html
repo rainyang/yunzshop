@@ -163,6 +163,22 @@
                     </span>
                 </div>
             </div>
+
+            <div class='indirect'  {if $set['acquisition'] == 0} style="display:none;" {/if}>
+                <div class="form-group ">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">间接转入上级获得</label>
+                    <div class="col-sm-8">
+                        <div class="input-group">
+                            <input type="text" name="setdata[the_superior_obtain]" class="form-control" value="{$set['the_superior_obtain']}"  />
+                            <div class="input-group-addon">个</div>
+                        </div>
+                        <span class='help-block' >间接转入时<b class="yunbi"> {if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if} </b>时，上级获得
+                        <b class="yunbi"> {if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if}个数 </b>
+                        </span>
+                    </div>
+                </div>
+            </div>
+
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">执行时间</label>
                 <div class="col-sm-8 col-xs-12">

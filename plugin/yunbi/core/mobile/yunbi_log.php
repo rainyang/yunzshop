@@ -31,7 +31,7 @@ if($shop_set['shop']['isreferrer'] ){
 
 if ($operation == 'display') {
 
-    $cumulative_total   = p('yunbi') -> MoneySumTotal(" and returntype in ('1','2','4','7','9') ",$member['id']);
+    $cumulative_total   = p('yunbi') -> MoneySumTotal(" and returntype in ('1','2','4','7','9','10') ",$member['id']);
     $deduct_return      = p('yunbi') -> MoneySumTotal(" and returntype in ('3','5') ",$member['id']);
 
     $remove_total = pdo_fetchcolumn("select count(1) as money from" . tablename('sz_yi_yunbi_log') . " where uniacid = :uniacid and returntype = '6' and money <> 0 and mid = :mid ", array(
@@ -45,6 +45,7 @@ if ($operation == 'display') {
     $return_deduct = p('yunbi') -> MoneySumTotal(" and returntype = '4' ",$member['id']);
     $return        = p('yunbi') -> MoneySumTotal(" and returntype = '5' ",$member['id']);
     $remove        = p('yunbi') -> MoneySumTotal(" and returntype = '6' ",$member['id']);
+    $into           = p('yunbi') -> MoneySumTotal(" and returntype = '10' ",$member['id']);
 
 } elseif ( $_W['isajax'] && $operation == 'log') {
    $pindex = max(1, intval($_GPC['page']));

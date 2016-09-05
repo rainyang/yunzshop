@@ -9,7 +9,11 @@
         <li {if $_GPC['yunbitype']=='2'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'2'))}">下线获得{$set['yunbi_title']}</a></li>
         <li {if $_GPC['yunbitype']=='3'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'3'))}">购物{$set['yunbi_title']}抵扣</a></li>
         <li {if $_GPC['yunbitype']=='4'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'4'))}">{$set['yunbi_title']}抵扣返还</a></li>
-        <li {if $_GPC['yunbitype']=='5'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'5'))}">{$set['yunbi_title']}转入余额</a></li>
+        {if $set['acquisition'] == 0}
+            <li {if $_GPC['yunbitype']=='5'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'5'))}">{$set['yunbi_title']}转入余额</a></li>
+        {else}
+            <li {if $_GPC['yunbitype']=='10'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'10'))}">待转{$set['yunbi_title']}转入{$set['yunbi_title']}</a></li>
+        {/if}
         <li {if $_GPC['yunbitype']=='6'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'6'))}">清除{$set['yunbi_title']}明细</a></li>
         <li {if $_GPC['yunbitype']=='7'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'7'))}">充值{$set['yunbi_title']}明细</a></li>
         <li {if $_GPC['yunbitype']=='8'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'8'))}">转赠{$set['yunbi_title']}明细</a></li>

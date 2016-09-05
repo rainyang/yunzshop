@@ -58,6 +58,12 @@
                 <div class="text">
                     累计获得：{$cumulative_total}
                 </div>
+
+                {if $yunbiset['acquisition'] == 1}
+                    <div class="text">
+                        待转{$yunbi_title}：{$member['virtual_temporary']}
+                    </div>
+                {/if}
                 <div class="text">
                     抵扣返现：{$deduct_return}
                 </div>
@@ -90,11 +96,21 @@
                     <i class="fa iconfont icon-record" style="background:#FF6441"></i>{$return_deduct}<br/>抵扣返还
                 </a>
             </li>
-            <li>
-                <a href="#" class="nav" data-type='5' >
-                    <i class="fa iconfont icon-database" style="background:#ffcb05"></i>-{$return}<br/>返现到余额
-                </a>
-            </li>
+            {if $yunbiset['acquisition'] == 0}
+                <li>
+                    <a href="#" class="nav" data-type='5' >
+                        <i class="fa iconfont icon-database" style="background:#ffcb05"></i>-{$return}<br/>返现到余额
+                    </a>
+                </li>
+            {else}
+                <li>
+                    <a href="#" class="nav" data-type='10' >
+                        <i class="fa iconfont icon-database" style="background:#ffcb05"></i>-{$into}<br/>转入{$yunbiset['yunbi_title']}
+                    </a>
+                </li>
+            {/if}
+
+
             <li>
                 <a href="#" class="nav" data-type='6' >
                     <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>-{$remove}<br/>清除明细

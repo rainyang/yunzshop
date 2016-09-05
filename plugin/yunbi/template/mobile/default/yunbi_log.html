@@ -70,6 +70,11 @@
                 <li>
                     <a href="#"><span>{$member['virtual_currency']}</span><br/>{$yunbi_title}</a>
                 </li>
+                {if $yunbiset['acquisition'] == 1}
+                    <li>
+                        <a href="#"><span>{$member['virtual_temporary']}</span><br/>待转{$yunbi_title}</a>
+                    </li>
+                {/if}
                 <li>
                     <a href="#"><span>{$cumulative_total}</span><br/>累计获得</a>
                 </li>
@@ -104,29 +109,38 @@
                     <i class="fa iconfont icon-record" style="background:#FF6441"></i>{$return_deduct}<br/>抵扣返还
                 </a>
             </li>
-            <li>
-                <a href="#" class="nav" data-type='5' >
-                    <i class="fa iconfont icon-database" style="background:#ffcb05"></i>-{$return}<br/>转入余额
-                </a>
-            </li>
+
+            {if $yunbiset['acquisition'] == 0}
+                <li>
+                    <a href="#" class="nav" data-type='5' >
+                        <i class="fa iconfont icon-database" style="background:#ffcb05"></i>{$return}<br/>转入余额
+                    </a>
+                </li>
+            {else}
+                <li>
+                    <a href="#" class="nav" data-type='10' >
+                        <i class="fa iconfont icon-database" style="background:#ffcb05"></i>{$into}<br/>转入{$yunbiset['yunbi_title']}
+                    </a>
+                </li>
+            {/if}
             <li>
                 <a href="#" class="nav" data-type='6' >
-                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>-{$remove}<br/>清除明细
+                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>{$remove}<br/>清除明细
                 </a>
             </li>
             <li>
                 <a href="#" class="nav" data-type='7' >
-                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>-{$remove}<br/>充值明细
+                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>{$remove}<br/>充值明细
                 </a>
             </li>
             <li>
                 <a href="#" class="nav" data-type='8' >
-                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>-{$remove}<br/>转赠明细
+                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>{$remove}<br/>转赠明细
                 </a>
             </li>
             <li>
                 <a href="#" class="nav" data-type='9' >
-                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>-{$remove}<br/>获得明细
+                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>{$remove}<br/>获得明细
                 </a>
             </li>
             </ul>
@@ -156,6 +170,8 @@
                                 -
                             <%else if log.returntype == 9%>
                                 +
+                            <%else if log.returntype == 10%>
+                                +
                             <%/if%>
                         <%log.money%> </p>
                         <span>时间：<%log.create_time%></span>
@@ -174,6 +190,8 @@
                                 返现到余额<br>{$yunbi_title}
                             <%else if log.returntype == 6%>
                                 清除所有<br>{$yunbi_title}
+                            <%else if log.returntype == 10%>
+                                待转{$yunbi_title}转入<br>{$yunbi_title}
                             <%/if%>
                         </span>
                     </div>
