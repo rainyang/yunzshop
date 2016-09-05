@@ -16,10 +16,10 @@ if ($_W['isajax']) {
             $showtime = "1分钟前";
         } else {
             if ($time < 3600 ) {
-                $showtime = floor($time/60)."分钟前";
+                $showtime = ceil($time/60)."分钟前";
             } else {
                 if ($time < 86400) {
-                    $showtime = floor($time/3600)."小时前";
+                    $showtime = ceil($time/3600)."小时前";
                 }
                 // } else {
                 //     if ($time < 2592000) {
