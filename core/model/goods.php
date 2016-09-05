@@ -29,6 +29,7 @@ class Sz_DYi_Goods
         $page      = !empty($args['page']) ? intval($args['page']) : 1;
         $pagesize  = !empty($args['pagesize']) ? intval($args['pagesize']) : 10;
         $random    = !empty($args['random']) ? $args['random'] : false;
+        $choose    = !empty($args['choose']) ? $args['choose'] : false;
         $order     = !empty($args['order']) ? $args['order'] : ' displayorder desc,createtime desc';
         $orderby   = !empty($args['by']) ? $args['by'] : '';
         $ids       = !empty($args['ids']) ? trim($args['ids']) : '';
@@ -137,7 +138,12 @@ class Sz_DYi_Goods
             if (!$random) {
                 $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} LIMIT " . ($page - 1) * $pagesize . ',' . $pagesize;
             } else {
-                $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() LIMIT " . $pagesize;
+                if ($choose) {
+                    $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() ";
+                } else {
+                    $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() LIMIT " . $pagesize;
+                }
+                
             }
             $list = pdo_fetchall($sql, $params);
         }
