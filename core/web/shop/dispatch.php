@@ -21,17 +21,20 @@ if ($mt <= 10) {
         exit;
     }
 }
-$perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
-if($perm_role == 1){
-    $supplier_uid = $_W['uid'];
-}else{
-    $supplier_uid = 0;
+$supplier_uid = 0;
+$supplier_cond = '';
+if (p('supplier')) {
+    $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+    if($perm_role == 1){
+        $supplier_uid = $_W['uid'];
+    }
+    $supplier_cond = " AND supplier_uid = {$supplier_uid}";
 }
 if ($operation == "display") { 
     ca("shop.dispatch.view"); 
     if (!empty($_GPC["displayorder"])) { ca("shop.dispatch.edit"); foreach ($_GPC["displayorder"] as $id => $displayorder) { pdo_update("sz_yi_dispatch", array("displayorder" => $displayorder), array("id" => $id)); } plog("shop.dispatch.edit","批量修改配送方式排序"); message("分类排序更新成功！", $this->createWebUrl("shop/dispatch", array("op" => "display")), "success"); 
     } 
-    $list = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_dispatch") . " WHERE uniacid = '{$_W["uniacid"]}' and dispatchtype=0 and supplier_uid = {$supplier_uid} ORDER BY id asc"); 
+    $list = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_dispatch") . " WHERE uniacid = '{$_W["uniacid"]}' and dispatchtype=0 {$supplier_cond} ORDER BY id asc"); 
 } elseif ($operation == "post") { 
     $id = intval($_GPC["id"]); 
     if(empty($id)){ 
