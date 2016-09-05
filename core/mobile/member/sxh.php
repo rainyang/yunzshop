@@ -5,6 +5,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
+load()->func('communication');
 $openid         = m('user')->getOpenid();
 $member         = m('member')->getInfo($openid);
 $key            = 'sxhsz201608'; 
@@ -15,14 +16,8 @@ $post_data = array(
 "password" => md5($memberbind['username'].$key),
 "timestamp" => date('YmdHis',time()),
 );
-$ch = curl_init();
-curl_setopt($ch, CURLOPT_URL, $url);
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-curl_setopt($ch, CURLOPT_POST, 0);
-curl_setopt($ch, CURLOPT_POSTFIELDS,$post_data);
-$output = curl_exec($ch);
-curl_close($ch);
-$output =  json_decode($output,true);
+$output = ihttp_request($url,$post_data, null, 1);
+$output = json_decode($output['content'],true);
 $sjblog = pdo_fetchall("select * from " . tablename('sz_yi_sjb_log') . " where uniacid={$_W['uniacid']} and uid={$member['uid']}");
 foreach ($sjblog as $keys=> $value) {
 	$bindcredit += $value['accountnum'];
@@ -44,16 +39,8 @@ if ($_W['isajax']) {
 		"password" =>md5($memberbind['username'].$key),
 		"timestamp" => date('YmdHis',time()),
 		);
-		//print_r($post_data);exit;
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POST, 0);
-		curl_setopt($ch, CURLOPT_POSTFIELDS,$post_data);
-		$output2 = curl_exec($ch);
-		curl_close($ch);
-		$output2 =  json_decode($output2,true);
-		//print_r($output2);exit;
+		$output2 = ihttp_request($url,$post_data, null, 1);
+		$output2 = json_decode($output2['content'],true);
 		if ($output2['status']==0) { 
 			$afterbalance = ($output['data']['accountnum']-$memberdata['accountnum']);
 		    $log = array(

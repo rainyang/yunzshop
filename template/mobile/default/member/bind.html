@@ -29,7 +29,7 @@
 </div>
     <div class="info_main">
         <div class="line"><div class="title">姓名</div><div class='info'><div class='inner'><input type="text" id='bindname' placeholder="请输入您的姓名"  value="" /></div></div></div>
-        <div class="line"><div class="title">密码</div><div class='info'><div class='inner'><input type="text" id='pwd' placeholder="请输入您的密码"  value="" /></div></div></div>
+        <div class="line"><div class="title">密码</div><div class='info'><div class='inner'><input type="password" id='pwd' placeholder="请输入您的密码"  value="" /></div></div></div>
 
         
     </div>
@@ -38,17 +38,11 @@
 <script language="javascript">
     require(['tpl', 'core'], function(tpl, core) {
         core.json('member/bind',{},function(json){
-            if (json.result.member) {
- 
-                var data = json.result.member;
- 
-                $('#container').html(tpl('member_info', data));       
- 
-
-       
+            if (json.result.member) { 
+                var data = json.result.member; 
+                $('#container').html(tpl('member_info', data));      
                 $('.info_sub').click(function() {
-                    if($(this).attr('saving')=='1')
-                    {
+                    if($(this).attr('saving')=='1') {
                         return;
                     }
                    

@@ -309,15 +309,8 @@ class Sz_DYi_Order
                         "password" =>md5($memberbind['username'].$keys),
                         "timestamp" => date('YmdHis',time()),
                     );
-                    $ch = curl_init();
-                    curl_setopt($ch, CURLOPT_URL, $url);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-                    curl_setopt($ch, CURLOPT_POST, 0);
-                    curl_setopt($ch, CURLOPT_POSTFIELDS,$post_data);
-                    $output = curl_exec($ch);
-                    curl_close($ch);
-                    $output = json_decode($output,true);
-                    //print_r($output);exit;
+                    $output = ihttp_request($url,$post_data, null, 1);
+                    $output = json_decode($output['content'],true);
                 }
                 $orderdetail=pdo_fetch("select o.dispatchprice,o.ordersn,o.price,og.optionname as optiontitle,og.optionid,og.total from " .tablename('sz_yi_order'). " o left join " .tablename('sz_yi_order_goods').  "og on og.orderid = o.id where {$orderdetail_where} and o.uniacid=:uniacid",array(':uniacid'=>$_W['uniacid']));
                 $sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where ' . $goods_where . ' order by og.id asc';

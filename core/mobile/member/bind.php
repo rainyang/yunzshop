@@ -1,14 +1,12 @@
 <?php
-
-
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
-$openid         = m('user')->getOpenid();
-$member         = m('member')->getInfo($openid);
-$key            = 'sxhsz201608';  
-
+load()->func('communication');
+$openid = m('user')->getOpenid();
+$member = m('member')->getInfo($openid);
+$key    = 'sxhsz201608';
 if ($_W['isajax']) {
     if ($_W['ispost']) {
         $memberdata = $_GPC['memberdata'];
@@ -19,14 +17,8 @@ if ($_W['isajax']) {
 		"password" =>md5($memberdata['bindname'].$key),
 		"timestamp" => date('YmdHis',time()),
 		);
-		$ch = curl_init();
-		curl_setopt($ch, CURLOPT_URL, $url);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_POST, 0);
-		curl_setopt($ch, CURLOPT_POSTFIELDS,$post_data);
-		$output = curl_exec($ch);
-		curl_close($ch);
-		$output =  json_decode($output,true);
+		$output = ihttp_request($url,$post_data, null, 1);
+		$output = json_decode($output['content'],true);
 		if ($output['status']==0) {   
 			pdo_update('sz_yi_member', array('is_bind' =>'1'), array(
 	           'openid' => $openid,
