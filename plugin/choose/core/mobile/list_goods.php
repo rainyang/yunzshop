@@ -37,16 +37,20 @@ if($_W['isajax']){
         }else{
             if ($operation == 'moren') {
                     $args = array(
-                        'pcate' => $_GPC['pcate']
+                        'pcate' => $_GPC['pcate'],
+                        'storeid' => $page['storeid']
+
                     ); 
             } else if($operation == 'second') {
                     $args=array(
                         'pcate' => $page['pcate'],
-                        'ccate' => $_GPC['ccate']
+                        'ccate' => $_GPC['ccate'],
+                        'storeid' => $page['storeid']
                     );
             } else if ($operation == 'third') {
                 $args = array(
-                    'tcate' => $_GPC['tcate']
+                    'tcate' => $_GPC['tcate'],
+                    'storeid' => $page['storeid']
                 );
             } else if ($operation == 'getdetail') {
                 $args = array(
@@ -60,7 +64,10 @@ if($_W['isajax']){
             }
         }
     }  
-    $args['isverify'] = 1; 
+    if (empty($page['isstore']) && !empty($_GPC['storeid'])) {
+        $args['isverify'] = 1; 
+    }
+    
     $goods = m('goods')->getList($args);
     if (p('channel')) {
         foreach ($goods as $key => &$value) {

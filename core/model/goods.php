@@ -36,6 +36,7 @@ class Sz_DYi_Goods
         $sup_uid   = !empty($args['supplier_uid']) ? trim($args['supplier_uid']) : '';
         $isopenchannel   = !empty($args['isopenchannel']) ? trim($args['isopenchannel']) : 0;
         $ischannelpick   = !empty($args['ischannelpick']) ? trim($args['ischannelpick']) : 0;
+        $storeid = !empty($args['storeid']) ? trim($args['storeid']) : '';
         $condition = ' and `uniacid` = :uniacid AND `deleted` = 0 and status=1';
         $params    = array(
             ':uniacid' => $_W['uniacid']
@@ -73,6 +74,11 @@ class Sz_DYi_Goods
         $isdiscount = !empty($args['isdiscount']) ? 1 : 0;
         if (!empty($isdiscount)) {
             $condition .= " and isdiscount=1";
+        }
+        $storeid = !empty($args['storeid']) ? intval($args['storeid']) : 0;
+        if (!empty($storeid)) {
+            $condition .= " and :storeid in (storeids)";
+            $params[':storeid'] =  intval($storeid) ;
         }
         $istime = !empty($args['istime']) ? 1 : 0;
         if (!empty($istime)) {

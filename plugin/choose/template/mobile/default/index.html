@@ -301,7 +301,7 @@ ul, li { list-style:none; margin:0; padding:0 }
              
             var pcate = $("#navBar").find(".parent_item").first().data('cate');
 
-            core.pjson('choose/list_goods',{pcate:pcate,pageid:pageid,ischannelpick:"{$_GPC['ischannelpick']}",op:'moren'}, function (json) {
+            core.pjson('choose/list_goods',{pcate:pcate,pageid:pageid,ischannelpick:"{$_GPC['ischannelpick']}",op:'moren', storeid:"{$_GPC['storeid']}"}, function (json) {
                             result = json.result;
                             
                             var h = '';
@@ -529,7 +529,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                      cate = $(this).data('cate');
                      //console.log(pcate);
-                     core.pjson('choose/list_goods',{'pcate':cate,pageid:pageid,op:'moren'}, function (json) {
+                     core.pjson('choose/list_goods',{'pcate':cate,pageid:pageid,op:'moren', storeid:"{$_GPC['storeid']}"}, function (json) {
                             result = json.result;                           
                             var h = '';
                             
@@ -593,7 +593,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                          cate = $(this).data('cate');
                          //console.log(pcate);
-                         core.pjson('choose/list_goods',{'ccate':cate,pageid:pageid,op:'second'}, function (json) {
+                         core.pjson('choose/list_goods',{'ccate':cate,pageid:pageid,op:'second',storeid:"{$_GPC['storeid']}"}, function (json) {
                                 result = json.result;
                                                         
                                 var h = '';
@@ -658,7 +658,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                          cate = $(this).data('cate');
                          //console.log(pcate);
-                         core.pjson('choose/list_goods',{'tcate':cate,pageid:pageid,op:'third'}, function (json) {
+                         core.pjson('choose/list_goods',{'tcate':cate,pageid:pageid,op:'third',storeid:"{$_GPC['storeid']}"}, function (json) {
                                 result = json.result;
                                                         
                                 var h = '';
