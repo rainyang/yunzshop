@@ -8,8 +8,9 @@ $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $designer  = p('designer');
 $shopset   = m('common')->getSysset('shop');
-if (p('yunbi')) {
-	$yunbi_set = p('yunbi')->getSet();
+$plugin_yunbi = p('yunbi');
+if ($plugin_yunbi) {
+	$yunbi_set = $plugin_yunbi->getSet();
 }
 if (empty($this->yzShopSet['ispc']) || isMobile()) {
     if ($designer) {

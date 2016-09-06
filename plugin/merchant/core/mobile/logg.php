@@ -9,9 +9,13 @@ $openid = m('user')->getOpenid();
 $member = m('member')->getMember($openid);
 $uniacid = $_W['uniacid'];
 if ($_W['isajax']) {
+	$iscenter = intval($_GPC['iscenter']);
 	$pindex = max(1, intval($_GPC['page']));
 	$psize = 20;
 	$condition = " and `member_id`=:id and uniacid=:uniacid";
+	if (!empty($iscenter)) {
+		$condition .= " and iscenter=1";
+	}
 	$params = array(':id' => $member['id'], ':uniacid' => $uniacid);
 	$status = trim($_GPC['status']);
 	if ($status != '') {

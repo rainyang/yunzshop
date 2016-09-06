@@ -104,7 +104,7 @@
             if (len >= total) {
                 $("#btn_submit").val("立即获取").addClass("btn-primary").removeAttr("disabled");
                 if (confirm('商品已经获取成功, 是否跳转到商品管理?')) {
-                      location.href = "{php echo $this->createWebUrl('shop/goods')}";
+                      location.href = "{php echo $this->createWebUrl('shop/goods',array('status'=>0))}";
                 }
                 else {
                      location.reload();
