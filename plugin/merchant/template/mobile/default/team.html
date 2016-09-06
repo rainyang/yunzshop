@@ -72,7 +72,7 @@ function bindScroller(){
                     stop = false;
                     $('#container').append('<div id="team_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载...</div>');
                     page++;
-                    core.pjson('merchant/team', {page: page}, function (morejson) {
+                    core.pjson('merchant/team', {page: page,iscenter:"{$_GPC['iscenter']}"}, function (morejson) {
                         stop = true;
                         $('#team_loading').remove();
                         $("#container").append(tpl('tpl_team', morejson.result));
@@ -90,7 +90,7 @@ function bindScroller(){
         function getTeam(level) {
             $('.team_nav').removeClass('team_navon');
             $('.team_nav[data-level=' + level + ']').addClass('team_navon');
-            core.pjson('merchant/team', {page: page}, function (json) {
+            core.pjson('merchant/team', {page: page,iscenter:"{$_GPC['iscenter']}"}, function (json) {
                 if (json.result.list.length <= 0) {
                     $('#container').html(tpl('tpl_empty'));
                     return;

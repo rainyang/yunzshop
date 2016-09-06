@@ -45,6 +45,15 @@ $info = pdo_fetch('select * from ' . tablename('sz_yi_plugin') . ' where identit
 if (!pdo_fieldexists('sz_yi_order', 'merchant_apply_status')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD     `merchant_apply_status` tinyint(3) DEFAULT '0';");
 }
+if (!pdo_fieldexists('sz_yi_merchants', 'center_id')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_merchants')." ADD `center_id` int(11) DEFAULT '0';");
+}
+if (!pdo_fieldexists('sz_yi_merchant_apply', 'iscenter')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_merchant_apply')." ADD `iscenter` int(11) DEFAULT '0';");
+}
+if (!pdo_fieldexists('sz_yi_order', 'center_apply_status')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `center_apply_status` tinyint(3) DEFAULT '0';");
+}
 if(!$info){
     $sql = "INSERT INTO " . tablename('sz_yi_plugin'). " (`displayorder`, `identity`, `name`, `version`, `author`, `status`, `category`) VALUES(0, 'merchant', '招商员', '1.0', '官方', 1, 'biz');";
     pdo_query($sql);

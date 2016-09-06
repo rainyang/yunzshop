@@ -8,82 +8,74 @@ if ($operation == 'display') {
 	$condition = "";
 	if (!empty($_GPC['realname'])) {
 		$_GPC['realname'] = trim($_GPC['realname']);
-		$condition .= ' and (realname like :realname or nickname like :realname or mobile like :realname)';
+		$condition .= ' and (mc.realname like :realname or mc.mobile like :realname)';
 		$params[':realname'] = "%{$_GPC['realname']}%";
 	}
-	$ids = "";
-	$member_ids = pdo_fetchall("select distinct member_id from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']}");
-	if (!empty($_GPC['mid'])) {
-		$ids = intval($_GPC['mid']);
-	} else {
-		foreach ($member_ids as $key => $value) {
-			if ($key == 0) {
-				$ids .= $value['member_id'];
-			} else {
-				$ids .= ','.$value['member_id'];
-			}
-		}
-	}
-	if (empty($ids)) {
-		$ids = 0;
-	}
-	$sql = "select id, avatar, nickname, realname, mobile from " . tablename('sz_yi_member') . " where uniacid={$_W['uniacid']} and id in ({$ids}) {$condition}";
+	$sql = "SELECT m.avatar, mc.* FROM " . tablename('sz_yi_merchant_center') . " mc LEFT JOIN " . tablename('sz_yi_member') . " m ON mc.openid=m.openid WHERE mc.uniacid={$_W['uniacid']} {$condition}";
 	if (empty($_GPC['export'])) {
 		$sql .= '  limit ' . ($pindex - 1) * $psize . ',' . $psize;
 	}
 	$list = pdo_fetchall($sql, $params);
 	foreach ($list as &$value) {
-		$suppliers = pdo_fetchall("select distinct supplier_uid from " . tablename('sz_yi_merchants') . " where member_id={$value['id']} and uniacid={$_W['uniacid']}");
-		$value['commissions'] = pdo_fetchcolumn("select commissions from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and member_id={$value['id']}");
-		$value['commission_ok'] = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_merchant_apply') . " where uniacid={$_W['uniacid']} and status=1 and member_id={$value['id']}");
-		$value['suppliercount'] = count($suppliers);
-		$value['ordercount'] = 0;
-		$value['commission_total'] = 0;
-		foreach ($suppliers as $val) {
-			$value['ordercount'] += pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_order') . " where uniacid={$_W['uniacid']} and status=3 and supplier_uid={$val['supplier_uid']}");
-			$com_total = pdo_fetchcolumn("select sum(price) from " . tablename('sz_yi_order') . " where uniacid={$_W['uniacid']} and status=3 and supplier_uid={$val['supplier_uid']}");
-			$com_total = number_format($value['commissions']*$com_total/100,2);
-			$value['commission_total'] += $com_total;
+		if (!empty($value['center_id'])) {
+			$agent = pdo_fetch("SELECT m.avatar,mc.realname FROM " . tablename('sz_yi_merchant_center') . " mc LEFT JOIN " . tablename('sz_yi_member') . " m ON mc.openid=m.openid WHERE mc.uniacid=:uniacid AND mc.id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $value['center_id']));
+			$value['agent_avatar'] = $agent['avatar'];
+			$value['agent_realname'] = $agent['realname'];
+			$value['merchant_count'] = count($this->model->getCenterMerchants($value['id']));
+		}
+		if (!empty($value['level_id'])) {
+			$value['level'] = pdo_fetch("SELECT * FROM " . tablename('sz_yi_merchant_level') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $value['level_id']));
 		}
 	}
 	unset($value);
 	if ($_GPC['export'] == '1') {
-		m('excel')->export($list, array('title' => '招商员' . '数据-' . date('Y-m-d-H-i', time()), 'columns' => array(array('title' => 'ID', 'field' => 'id', 'width' => 12), array('title' => '粉丝', 'field' => 'nickname', 'width' => 12), array('title' => '姓名', 'field' => 'realname', 'width' => 12), array('title' => '手机号码', 'field' => 'mobile', 'width' => 12), array('title' => '供应商数', 'field' => 'suppliercount', 'width' => 12), array('title' => '订单数', 'field' => 'ordercount', 'width' => 12), array('title' => '佣金比例', 'field' => 'commissions', 'width' => 12), array('title' => '累积佣金', 'field' => 'commission_total', 'width' => 12), array('title' => '打款佣金', 'field' => 'commission_ok', 'width' => 12))));
+		m('excel')->export($list, array('title' => '招商中心' . '数据-' . date('Y-m-d-H-i', time()), 'columns' => array(array('title' => 'ID', 'field' => 'id', 'width' => 12), array('title' => '粉丝', 'field' => 'nickname', 'width' => 12), array('title' => '姓名', 'field' => 'realname', 'width' => 12), array('title' => '手机号码', 'field' => 'mobile', 'width' => 12), array('title' => '供应商数', 'field' => 'suppliercount', 'width' => 12), array('title' => '订单数', 'field' => 'ordercount', 'width' => 12), array('title' => '佣金比例', 'field' => 'commissions', 'width' => 12), array('title' => '累积佣金', 'field' => 'commission_total', 'width' => 12), array('title' => '打款佣金', 'field' => 'commission_ok', 'width' => 12))));
 	}
 	$total = count($list);
 	$pager = pagination($total, $pindex, $psize);
-} else if ($operation == 'merchant_sp') {
-	$member_id = intval($_GPC['member_id']);
-	$supplier_uids = pdo_fetchall("select distinct supplier_uid from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and member_id={$member_id}");
-	$uids = "";
-	foreach ($supplier_uids as $key => $value) {
-		if ($key == 0) {
-			$uids .= $value['supplier_uid'];
-		} else {
-			$uids .= ','.$value['supplier_uid'];
-		}
-	}
 } else if ($operation == 'add_center_post') {
-	$center_id = intval($_GPC['center_id']);
-	$levels = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_merchant_level') . " WHERE uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
+	$center_id 		= intval($_GPC['center_id']);
+	$center_member 	= pdo_fetch("SELECT m.avatar,mc.realname FROM " . tablename('sz_yi_merchant_center') . " mc LEFT JOIN " . tablename('sz_yi_member') . " m ON mc.openid=m.openid WHERE mc.uniacid=:uniacid AND mc.id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $center_id));
+	$id 			= intval($_GPC['id']);
+	$levels 		= pdo_fetchall("SELECT * FROM " . tablename('sz_yi_merchant_level') . " WHERE uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
+	$centerinfo 	= pdo_fetch("SELECT * FROM " . tablename('sz_yi_merchant_center') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $id));
 	if(checksubmit('submit')){
         $data = is_array($_GPC['data']) ? $_GPC['data'] : array();
         if (empty($data['openid'])) {
         	message('请选择微信角色!', $this->createPluginWebUrl('merchant/center'), 'error');
         }
         if (!empty($data['openid'])) {
-            $result = pdo_fetch("select * from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and openid='{$data['openid']}'");
+            $result = pdo_fetch("select * from " . tablename('sz_yi_merchant_center') . " where uniacid={$_W['uniacid']} and openid='{$data['openid']}'");
             if (!empty($result)) {
-                if ($result['uid'] != $supplierinfo['uid']) {
-                    message('该微信已绑定，请更换!', $this->createPluginWebUrl('supplier/supplier'), 'error');
+                if ($result['id'] != $centerinfo['id']) {
+                    message('该微信已绑定，请更换!', $this->createPluginWebUrl('merchant/center'), 'error');
                 }
             }
         }
-        pdo_update('sz_yi_perm_user', $data, array(
-                'uid' => $supplierinfo['uid']
+        $data['uniacid'] 	= $_W['uniacid'];
+        $data['center_id'] 	= $center_id;
+        if (empty($id)) {
+        	pdo_insert('sz_yi_merchant_center',$data);
+        } else {
+        	pdo_update('sz_yi_merchant_center', $data, array(
+                'id' => $id
             ));
-        message('保存成功!', $this->createPluginWebUrl('supplier/supplier'), 'success');
+        }
+        message('保存成功!', $this->createPluginWebUrl('merchant/center'), 'success');
     }
+} else if ($operation == 'delete') {
+	$id = intval($_GPC['id']);
+	if (empty($id)) {
+		message('该招商中心不存在!', $this->createPluginWebUrl('merchant/center'), 'error');
+	} else {
+		$center_agents = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_merchant_center') . " WHERE uniacid=:uniacid AND center_id=:center_id", array(':uniacid' => $_W['uniacid'], 'center_id' => $id));
+		if (!empty($center_agents)) {
+			message('存在下级招商中心，不能删除!', $this->createPluginWebUrl('merchant/center'), 'error');
+		} else {
+			pdo_delete('sz_yi_merchant_center', array('uniacid' => $_W['uniacid'], 'id' => $id));
+			message('删除成功!', $this->createPluginWebUrl('merchant/center'), 'success');
+		}
+	}
 }
 load()->func('tpl');
 include $this->template('center');
