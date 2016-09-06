@@ -77,7 +77,7 @@ class Sz_DYi_Goods
         }
         $storeid = !empty($args['storeid']) ? intval($args['storeid']) : 0;
         if (!empty($storeid)) {
-            $condition .= " and :storeid in (storeids)";
+            $condition .= " and :storeid in (storeids) or (storeids is NUll or storeids= '')";
             $params[':storeid'] =  intval($storeid) ;
         }
         $istime = !empty($args['istime']) ? 1 : 0;

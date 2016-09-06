@@ -76,28 +76,15 @@ if ($operation == 'category') {
 			foreach ($parent_category as $v) {
 				$ids[] = $v['id'];
 			}
-			$sql = 'SELECT c.id,c.parentid,c.name,c.level FROM ' . tablename('sz_yi_category') . ' c left join ' .tablename('sz_yi_goods'). ' g on c.id = g.ccate '.' WHERE c.uniacid=:uniacid AND c.parentid in ('.implode(',',$ids).') and g.id in ('.$goodsid.')' ;
-			$children_category = pdo_fetchall($sql, array(':uniacid' => $uniacid));	
-			echo '<pre>';print_r($children_category);exit;
-			foreach ($children_category as $v1) {
-				$ids1[] = $v1['id'];
-			}
-			$sql1 = 'SELECT id,parentid,name,level FROM ' . tablename('sz_yi_category') . ' c left join ' .tablename('sz_yi_goods'). ' g on c.id = g.tcate '.' WHERE c.uniacid=:uniacid AND c.parentid in ('.implode(',',$ids1).') and g.id in ('.$goodsid.')' ;
-			$third_category = pdo_fetchall($sql1, array(':uniacid' => $uniacid));
-		} else {
-			$parent_category = pdo_fetchall('SELECT id,parentid,name,level FROM ' . tablename('sz_yi_category') . ' WHERE uniacid=:uniacid AND parentid=0  ', array(':uniacid' => $uniacid));
-			foreach ($parent_category as $v) {
-				$ids[] = $v['id'];
-			}
 			$sql = 'SELECT id,parentid,name,level FROM ' . tablename('sz_yi_category') . ' WHERE uniacid=:uniacid AND parentid in ('.implode(',',$ids).') ' ;
 			$children_category = pdo_fetchall($sql, array(':uniacid' => $uniacid));	
+			//echo '<pre>';print_r($children_category);exit;
 			foreach ($children_category as $v1) {
 				$ids1[] = $v1['id'];
 			}
 			$sql1 = 'SELECT id,parentid,name,level FROM ' . tablename('sz_yi_category') . ' WHERE uniacid=:uniacid AND parentid in ('.implode(',',$ids1).') ' ;
 			$third_category = pdo_fetchall($sql1, array(':uniacid' => $uniacid));
-		}
-		if ($page['isopen']==1) {//判断是否开启供应商
+		} elseif ($page['isopen']==1) {//判断是否开启供应商
 		    $parent_category = pdo_fetchall("SELECT a.id,a.parentid,a.name,a.level FROM " . tablename('sz_yi_category') . " a LEFT JOIN  " .tablename('sz_yi_goods'). " b ON (a.id = b.pcate )  WHERE a.parentid=0 AND a.uniacid=:uniacid AND b.isverify=1 AND  b.supplier_uid = :sup_uid GROUP BY a.id ", array(
 			    ':uniacid' => $_W['uniacid'],
 			    ':sup_uid' => $sup_uid
@@ -165,6 +152,18 @@ if ($operation == 'category') {
 				}
 				$sql1 = 'SELECT id,parentid,name,level FROM ' . tablename('sz_yi_category') .' WHERE uniacid=:uniacid  AND parentid in('.implode(',',$ids).') ' ;
 				$third_category = pdo_fetchall($sql1, array(':uniacid' => $uniacid));		
+			} else {
+				$parent_category = pdo_fetchall('SELECT id,parentid,name,level FROM ' . tablename('sz_yi_category') . ' WHERE uniacid=:uniacid AND parentid=0 ', array(':uniacid' => $uniacid));
+				foreach ($parent_category as $v) {
+					$ids[] = $v['id'];
+				}
+				$sql = 'SELECT id,parentid,name,level FROM ' . tablename('sz_yi_category') . ' WHERE uniacid=:uniacid AND parentid in ('.implode(',',$ids).') ' ;
+				$children_category = pdo_fetchall($sql, array(':uniacid' => $uniacid));	
+				foreach ($children_category as $v1) {
+					$ids1[] = $v1['id'];
+				}
+				$sql1 = 'SELECT id,parentid,name,level FROM ' . tablename('sz_yi_category') . ' WHERE uniacid=:uniacid AND parentid in ('.implode(',',$ids1).') ' ;
+				$third_category = pdo_fetchall($sql1, array(':uniacid' => $uniacid));	
 			}
 		}
 		foreach ($parent_category as $key => $category) {

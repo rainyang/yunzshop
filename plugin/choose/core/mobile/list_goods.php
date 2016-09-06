@@ -69,6 +69,16 @@ if($_W['isajax']){
     }
     
     $goods = m('goods')->getList($args);
+    //替换门店商品库存（没有规格的商品）
+    if ($page['isstore'] == 1) {
+        foreach ($goods as $key => &$row) {
+            $store_goods = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_store_goods')." WHERE goodsid=:goodsid and uniacid=:uniacid and optionid=0 and storeid=:storeid", array(':goodsid' => $row['id'], ':uniacid' => $_W['uniacid'], ':storeid' => intval($page['storeid'])));
+            if ($store_goods) {
+                $goods[$key]['total'] = $store_goods['total'];
+            }
+
+        }
+    }
     if (p('channel')) {
         foreach ($goods as $key => &$value) {
             if (empty($ischannelpick)) {

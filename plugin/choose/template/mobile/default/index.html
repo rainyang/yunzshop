@@ -900,7 +900,7 @@ ul, li { list-style:none; margin:0; padding:0 }
    
         $(document).on('click','.canoption',function(){
           var id = $(this).data('id');
-          core.json('shop/detail',{id:id,'ischannelpay':"{$_GPC['ischannelpay']}",'ischannelpick':"{$_GPC['ischannelpick']}"},function (json) { 
+          core.json('shop/detail',{id:id,'ischannelpay':"{$_GPC['ischannelpay']}",'ischannelpick':"{$_GPC['ischannelpick']}", storeid:"{$page['storeid']}"},function (json) { 
             $('#container_specs').html(tpl('tpl_goods_info',json.result));
             $('.good_choose_layer').fadeIn(200);
             $('.good_choose_layer').unbind('click').click(function(){

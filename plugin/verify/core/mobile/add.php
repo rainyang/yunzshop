@@ -349,7 +349,7 @@ if ($_W['isajax']) {
                 ':openid' => $openid
             ));
             if (!empty($goodsid)) {
-                $fav = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member_favorite') . ' where goodsid=:goodsid and uniacid=:uniacid and openid=:openid and deleted=0 limit 1 ', array(
+                $fav = pdo_fetchcolumn('select sum(*) from ' . tablename('sz_yi_member_favorite') . ' where goodsid=:goodsid and uniacid=:uniacid and openid=:openid and deleted=0 limit 1 ', array(
                     ':goodsid' => $goodsid,
                     ':uniacid' => $uniacid,
                     ':openid' => $openid
@@ -389,7 +389,7 @@ if ($_W['isajax']) {
             ':openid' => $openid
         ));
         foreach ($data as &$row) {
-            $row['total'] =pdo_fetchcolumn("select count(total) from " . tablename('sz_yi_store_goods') . ' where openid=:openid and deleted=0 and  uniacid=:uniacid and goodsid=:id limit 1', 
+            $row['total'] =pdo_fetchcolumn("select sum(total) from " . tablename('sz_yi_store_goods') . ' where openid=:openid and deleted=0 and  uniacid=:uniacid and goodsid=:id limit 1', 
                 array(
                     ':uniacid' => $uniacid,
                     ':openid' => $openid,
@@ -414,7 +414,7 @@ if ($_W['isajax']) {
 
             $conut = 0;
             foreach ($goods as $key => $good) {
-                $cartcount = pdo_fetchcolumn('select count(total) from ' . tablename('sz_yi_store_goods') . ' where openid=:openid and deleted=0 and uniacid=:uniacid and goodsid = :goodsid limit 1', array(
+                $cartcount = pdo_fetchcolumn('select sum(total) from ' . tablename('sz_yi_store_goods') . ' where openid=:openid and deleted=0 and uniacid=:uniacid and goodsid = :goodsid limit 1', array(
                     ':uniacid' => $_W['uniacid'],
                     'goodsid' => $good['id'],
                     ':openid' => $openid
