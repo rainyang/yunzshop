@@ -46,6 +46,12 @@ require_once('../addons/sz_yi/plugin/pingpp/init.php');
       'openid' => $_POST['token']
   );
 
+    if (empty($input_data['openid'])) {
+        $openid = m('user')->getOpenid();
+
+        $input_data['openid'] = $openid;
+    }
+
     if (empty($input_data['channel'])) {
         echo 'channel is empty';
         exit();

@@ -3,6 +3,7 @@
 <style type="text/css">
  body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearance:none;}
 </style>
+<script language="javascript" src="../addons/sz_yi/static/js/ap.js"></script>
 <script language="javascript">
 function showIframe(url,w,h){
     //添加iframe
@@ -55,8 +56,10 @@ var logid = "{$logid}";
                  return;
             }
             var height =$(document.body).height();
-             showIframe(result.alipay.url,"100%",height);
-             },true,true);
+            //showIframe(result.alipay.url,"100%",height);
+            //15.2支付宝提供解决微信向支付宝支付问题
+            _AP.pay(result.alipay.url);
+        },true,true);
      });
 </script>
 {template 'common/footer'}
