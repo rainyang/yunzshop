@@ -9,7 +9,8 @@
     {ifp 'bonus.apply.view3'}<li {if $_GPC['method']=='apply' && ($_GPC['status']==4 || $apply['status']==4)}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('bonus/apply',array('status'=>4))}">已到款提现</a></li>{/if}
     {ifp 'bonus.apply.view_1'}<li {if $_GPC['method']=='apply' && ($_GPC['status']==-1 || $apply['status']==-1)}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('bonus/apply',array('status'=>-1))}">无效提现</a></li>{/if}
     {else}
-	{ifp 'bonus.send'}<li {if $_GPC['method']=='send'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('bonus/send')}">代理分红</a></li>{/if}
+	{ifp 'bonus.send'}<li {if $_GPC['method']=='send'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('bonus/send')}">团队分红</a></li>{/if}
+    {ifp 'bonus.sendarea'}<li {if $_GPC['method']=='sendarea'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('bonus/sendarea')}">地区分红</a></li>{/if}
 	{ifp 'bonus.sendall'}<li {if $_GPC['method']=='sendall'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('bonus/sendall')}">全球分红</a></li>{/if}
 	{ifp 'bonus.detail'}<li {if $_GPC['method']=='detail'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('bonus/detail/list')}">分红明细</a></li>{/if}
     {ifp 'bonus.notice'}<li  {if $_GPC['method']=='notice'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('bonus/notice')}">通知设置</a></li>{/if}

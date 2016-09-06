@@ -88,9 +88,14 @@ if($operation == "display"){
 	        ));
 	message("分红重新发放成功", $this->createPluginWebUrl('bonus/detail', array("sn" => $sn)), "success");
 }else if($operation == "list"){
-	$totalmoney = pdo_fetchcolumn("select sum(money) as totalmoney from " . tablename('sz_yi_bonus') . " where uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
+	$type = intval($_GPC['type']);
+	$sendwhere = "";
+	if($type != 0){
+		$sendwhere = " and type=".$type;
+	}
+	$totalmoney = pdo_fetchcolumn("select sum(money) as totalmoney from " . tablename('sz_yi_bonus') . " where uniacid=:uniacid".$sendwhere, array(':uniacid' => $_W['uniacid']));
 	$pindex    = max(1, intval($_GPC['page']));
 	$psize     = 20;
-	$list  = pdo_fetchall('select * from ' . tablename('sz_yi_bonus') . " where uniacid={$_W["uniacid"]} order by id desc limit " . ($pindex - 1) * $psize . ',' . $psize);
+	$list  = pdo_fetchall('select * from ' . tablename('sz_yi_bonus') . " where uniacid={$_W["uniacid"]}".$sendwhere." order by id desc limit " . ($pindex - 1) * $psize . ',' . $psize);
 }
 include $this->template('detail');

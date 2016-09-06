@@ -10,16 +10,16 @@
         <div class='panel-body'>
 
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">股权代理分红</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">团队分红</label>
                 <div class="col-sm-6">
                     <select  class="form-control" name="setdata[start]">
-                        <option value="0" {if empty($set['start'])}selected{/if}>不开启股权代理分红</option>
-                        <option value="1" {if $set['start']==1}selected{/if}>开启股权代理分红</option>
+                        <option value="0" {if empty($set['start'])}selected{/if}>不开启团队分红</option>
+                        <option value="1" {if $set['start']==1}selected{/if}>开启团队分红</option>
                     </select>
                 </div>
             </div> 
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">股权代理级差</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">团队分红级差</label>
                 <div class="col-sm-9 col-xs-12">
                      <label class="radio-inline"><input type="radio"  name="setdata[isdistinction]" value="0" {if $set['isdistinction'] ==0} checked="checked"{/if} /> 是</label>
                     <label class="radio-inline"><input type="radio"  name="setdata[isdistinction]" value="1" {if $set['isdistinction'] ==1} checked="checked"{/if} /> 否</label>
@@ -27,16 +27,16 @@
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区代理分红</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区分红</label>
                 <div class="col-sm-6">
                     <select  class="form-control" name="setdata[area_start]">
-                        <option value="0" {if empty($set['area_start'])}selected{/if}>不开启地区代理分红</option>
-                        <option value="1" {if $set['area_start']==1}selected{/if}>开启地区代理分红</option>
+                        <option value="0" {if empty($set['area_start'])}selected{/if}>不开启地区分红</option>
+                        <option value="1" {if $set['area_start']==1}selected{/if}>开启地区分红</option>
                     </select>
                 </div>
             </div>
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区代理级差</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区分红级差</label>
                 <div class="col-sm-9 col-xs-12">
                      <label class="radio-inline"><input type="radio" class="distinction_area"  name="setdata[isdistinction_area]" value="0" {if $set['isdistinction_area'] ==0} checked="checked"{/if} /> 是</label>
                     <label class="radio-inline"><input type="radio" class="distinction_area"  name="setdata[isdistinction_area]" value="1" {if $set['isdistinction_area'] ==1} checked="checked"{/if} /> 否</label>
@@ -305,10 +305,16 @@
             文字设置
         </div>
         <div class='panel-body'>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红中心</label>
+                    <div class="col-sm-9 col-xs-12">
+                            <input type="text" name="texts[center]" class="form-control" value="{php echo empty($set['texts']['center'])?'分红中心':$set['texts']['center']}"  />
+                    </div>
+              </div>
               <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">代理商名称</label>
                     <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="texts[agent]" class="form-control" value="{php echo empty($set['texts']['agent'])?'分红代理商':$set['texts']['agent']}"  />
+                            <input type="text" name="texts[agent]" class="form-control" value="{php echo empty($set['texts']['agent'])?'代理商':$set['texts']['agent']}"  />
                     </div>
               </div>
               <div class="form-group">
@@ -317,12 +323,7 @@
                             <input type="text" name="texts[premiername]" class="form-control" value="{php echo empty($set['texts']['premiername'])?'全球分红':$set['texts']['premiername']}"  />
                     </div>
               </div>
-            <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红中心</label>
-                    <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="texts[center]" class="form-control" value="{php echo empty($set['texts']['center'])?'分销中心':$set['texts']['center']}"  />
-                    </div>
-              </div>
+            
               <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红佣金</label>
                     <div class="col-sm-9 col-xs-12">
@@ -330,44 +331,44 @@
                     </div>
               </div>
              <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">累计分红佣金</label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">累计团队地区分红佣金</label>
                     <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="texts[commission_total]" class="form-control" value="{php echo empty($set['texts']['commission_total'])?'累计分红佣金':$set['texts']['commission_total']}"  />
+                            <input type="text" name="texts[commission_total]" class="form-control" value="{php echo empty($set['texts']['commission_total'])?'累计团队地区分红佣金':$set['texts']['commission_total']}"  />
                     </div>
               </div>
                 <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">待分红佣金</label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">团队地区待分红佣金</label>
                     <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="texts[commission_ok]" class="form-control" value="{php echo empty($set['texts']['commission_ok'])?'待分红佣金':$set['texts']['commission_ok']}"  />
+                            <input type="text" name="texts[commission_ok]" class="form-control" value="{php echo empty($set['texts']['commission_ok'])?'团队地区待分红佣金':$set['texts']['commission_ok']}"  />
+                    </div>
+              </div>
+			  <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">团队地区已分红佣金</label>
+                    <div class="col-sm-9 col-xs-12">
+                            <input type="text" name="texts[commission_pay]" class="form-control" value="{php echo empty($set['texts']['commission_pay'])?'团队地区已分红佣金':$set['texts']['commission_pay']}"/>
                     </div>
               </div>
               <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">冻结分红佣金</label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">团队地区全球分红明细</label>
                     <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="texts[commission_lock]" class="form-control" value="{php echo empty($set['texts']['commission_lock'])?'冻结分红佣金':$set['texts']['commission_lock']}"/>
-                    </div>
-              </div>
-			       <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">已分红佣金</label>
-                    <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="texts[commission_pay]" class="form-control" value="{php echo empty($set['texts']['commission_pay'])?'已分红佣金':$set['texts']['commission_pay']}"/>
-                    </div>
-              </div>
-              <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红明细</label>
-                    <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="texts[commission_detail]" class="form-control" value="{php echo empty($set['texts']['commission_detail'])?'分红明细':$set['texts']['commission_detail']}"/>
+                            <input type="text" name="texts[commission_detail]" class="form-control" value="{php echo empty($set['texts']['commission_detail'])?'团队地区全球分红明细':$set['texts']['commission_detail']}"/>
                     </div>
               </div>
                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红订单</label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">团队分红订单</label>
                     <div class="col-sm-9 col-xs-12">
-                            <input type="text" name="texts[order]" class="form-control" value="{php echo empty($set['texts']['order'])?'分红订单':$set['texts']['order']}"  />
+                            <input type="text" name="texts[order]" class="form-control" value="{php echo empty($set['texts']['order'])?'团队订单':$set['texts']['order']}"  />
+                    </div>
+              </div>
+              <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区分红订单</label>
+                    <div class="col-sm-9 col-xs-12">
+                            <input type="text" name="texts[order_area]" class="form-control" value="{php echo empty($set['texts']['order_area'])?'地区订单':$set['texts']['order_area']}"  />
                     </div>
               </div>
               
                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">我的下线</label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">团队无限级下线</label>
                     <div class="col-sm-9 col-xs-12">
                             <input type="text" name="texts[mycustomer]" class="form-control" value="{php echo empty($set['texts']['mycustomer'])?'我的下线':$set['texts']['mycustomer']}"  />
                     </div>
