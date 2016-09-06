@@ -48,8 +48,6 @@
                 <th style='width:10%;text-align: center'>上级</th>
                 <th style='width:10%;text-align: center'>粉丝</th>
                 <th style='width:13%;'>姓名<br/>手机号码</th>
-                <th style='width:8%;'>招商员数</th>
-                <th style='width:8%;'>订单数(完成)</th>
                 <th style='width:12%;'>等级名称<br/>佣金比例</th>
                 <th style='width:10%;'>累计佣金<br/>打款佣金</th>
                 <th style='width:7%'>操作</th>
@@ -74,8 +72,6 @@
                     {if empty($row['realname'])}未填写{else}{$row['realname']}{/if}
                 </td>
                 <td>{$row['mobile']}</td>
-                <td><label class="label label-primary">{if !empty($row['merchant_count'])}{$row['merchant_count']}{else}0{/if}</label></td>
-                <td><label class="label label-primary">{$row['ordercount']}</label></td>
                 <td>{$row['level']['level_name']}<br/>{$row['level']['commission']}%</td>
                 <td>
                     <label class="label label-primary">

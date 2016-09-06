@@ -33,8 +33,13 @@ if ($_W['isajax']) {
 		}
 		unset($row);
 	} else {
-		$child_centers = $this->model->getChildCenters($openid);
-		echo "<pre>"; print_r($child_centers);exit;
+		$list = $this->model->getChildCenters($openid);
+		foreach ($list as &$val) {
+			if (!empty($val['level_id'])) {
+				$val['level'] = pdo_fetch("SELECT * FROM " . tablename('sz_yi_merchant_level') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $val['level_id']));
+			}
+		}
+		unset($val);
 	}
 	show_json(1, array('list' => $list, 'pagesize' => $psize));
 }

@@ -26,6 +26,9 @@ if ($operation == 'display') {
 		if (!empty($value['level_id'])) {
 			$value['level'] = pdo_fetch("SELECT * FROM " . tablename('sz_yi_merchant_level') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $value['level_id']));
 		}
+		$member_id = pdo_fetchcolumn("SELECT id FROM " . tablename('sz_yi_member') . " WHERE uniacid=:uniacid AND openid=:openid", array(':uniacid' => $_W['uniacid'], ':openid' => $value['openid']));
+		$value['commission_total'] = pdo_fetchcolumn("SELECT sum(money) FROM " . tablename('sz_yi_merchant_apply') . " WHERE uniacid=:uniacid AND member_id=:member_id", array(':uniacid' => $_W['uniacid'], ':member_id' => $member_id));
+		$value['commission_ok'] = pdo_fetchcolumn("SELECT sum(money) FROM " . tablename('sz_yi_merchant_apply') . " WHERE uniacid=:uniacid AND member_id=:member_id AND status=1", array(':uniacid' => $_W['uniacid'], ':member_id' => $member_id));
 	}
 	unset($value);
 	if ($_GPC['export'] == '1') {
