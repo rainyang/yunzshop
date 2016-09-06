@@ -276,10 +276,11 @@ if (!class_exists('CouponModel')) {
 			global $_W, $_GPC;
 			$time = time();
 			if ($iscashier == 1) {
+				return 1;
 				$sqlcount = 'select count(*) from ' . tablename('sz_yi_coupon_data') . ' d ' . '  left join ' . tablename('sz_yi_coupon') . ' c on d.couponid = c.id ' . "  where d.openid=:openid and d.uniacid=:uniacid and c.getcashier=1 and c.coupontype=0 and {$enough}>=c.enough and d.used=0 " . " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$time} && c.timeend>={$time}))";
 				$sql = 'select * from ' . tablename('sz_yi_coupon_data') . ' d ' . '  left join ' . tablename('sz_yi_coupon') . ' c on d.couponid = c.id ' . "  where d.openid=:openid and d.uniacid=:uniacid and c.getcashier=1 and c.coupontype=0 and {$enough}>=c.enough and d.used=0 " . " and (   (c.timelimit = 0 and ( c.timedays=0 or c.timedays*86400 + d.gettime >=unix_timestamp() ) )  or  (c.timelimit =1 and c.timestart<={$time} && c.timeend>={$time}))";
-				$total = pdo_fetchcolumn($sqlcount, array(':openid' => $openid, ':supplier_uid' => $supplier_uid, ':uniacid' => $_W['uniacid']));
-				$allcoupon = pdo_fetchall($sqlcount, array(':openid' => $openid, ':supplier_uid' => $supplier_uid, ':uniacid' => $_W['uniacid']));
+				$total = pdo_fetchcolumn($sqlcount, array(':openid' => $openid, ':uniacid' => $_W['uniacid']));
+				$allcoupon = pdo_fetchall($sqlcount, array(':openid' => $openid, ':uniacid' => $_W['uniacid']));
 				foreach ($allcoupon as $value) {
 					$cashierids = unserialize($value['cashiersids']);
 					$a = 0;
