@@ -109,6 +109,7 @@ if (!empty($_POST)) {
             "uniacid" => $_W['uniacid'],
             "money" => $totalmoney,
             "status" => 1,
+            "type" => 4,
             "ctime" => time(),
             "sendmonth" => $set['sendmonth'],
             "paymethod" => $set['paymethod'],

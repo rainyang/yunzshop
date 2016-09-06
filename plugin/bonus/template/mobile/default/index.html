@@ -74,7 +74,9 @@
                     {/if}
                 {/if}
                 {if $set['levelurl']!=''}<i class='fa fa-question-circle' {if !empty($set['levelurl'])}onclick='location.href="{$set['levelurl']}"'{/if}></i></span>{/if}</div>
+                {if $member['agenttime']}
                 <div class="user_date">加入时间：{php echo date("Y-m-d", $member['agenttime'])}</div>
+                {/if}
     </div>
  </div>
 <div class="comm-center">
