@@ -1,6 +1,6 @@
 <?php
 global $_W, $_GPC;
-ca('bonus.send.view');
+ca('bonus.sendarea.view');
 $operation = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 $set = $this->getSet();
 $time             = time();
@@ -8,7 +8,7 @@ $pindex    = max(1, intval($_GPC['page']));
 $psize     = 20;
 $day_times        = intval($set['settledays']) * 3600 * 24;
 $daytime = strtotime(date("Y-m-d 00:00:00"));
-$sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 left join ".tablename('sz_yi_member')." m on cg.mid=m.id where 1 and m.id!=0 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times}) and cg.bonus_area=0 ORDER BY o.finishtime DESC,o.status DESC";
+$sql = "select distinct cg.mid from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 left join ".tablename('sz_yi_member')." m on cg.mid=m.id where 1 and m.id!=0 and o.status>=3 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times}) and cg.bonus_area!=0  ORDER BY o.finishtime DESC,o.status DESC";
 $count = pdo_fetchall($sql);
 $setshop = m('common')->getSysset('shop');
 if ($operation != "sub_bonus") {
@@ -70,7 +70,7 @@ if (!empty($_POST)) {
 		$islog = true;
 		$level = $this->model->getlevel($member['openid']);
 		if(empty($set['paymethod'])){
-			m('member')->setCredit($member['openid'], 'credit2', $send_money, array(0, '团队分红发放：' . $send_money . " 元"));
+			m('member')->setCredit($member['openid'], 'credit2', $send_money, array(0, '地区分红发放：' . $send_money . " 元"));
 		}else{
 			$logno = m('common')->createNO('bonus_log', 'logno', 'RB');
 			$result = m('finance')->pay($member['openid'], 1, $send_money * 100, $logno, "【" . $setshop['name']. "】".$level['levelname']."分红");
@@ -100,10 +100,10 @@ if (!empty($_POST)) {
 					$level['levelname'] = "区级代理";
 				}
 			}
-        	$this->model->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_PAY);
+        	$this->model->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_PAY_AREA);
         }
         //更新分红订单完成
-		$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and ({$time} - o.finishtime > {$day_times}) and cg.bonus_area=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
+		$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and ({$time} - o.finishtime > {$day_times}) and cg.bonus_area!=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
 
 		//更新分红订单完成
 		pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
@@ -113,7 +113,7 @@ if (!empty($_POST)) {
 	            "uniacid" => $_W['uniacid'],
 	            "money" => $totalmoney,
 	            "status" => 1,
-	            "type" => 2,
+	            "type" => 3,
 	            "ctime" => time(),
 	            "paymethod" => $set['paymethod'],
 	            "sendpay_error" => $sendpay_error,
@@ -123,7 +123,7 @@ if (!empty($_POST)) {
 	            );
 	    pdo_insert('sz_yi_bonus', $log);
     }
-    message("团队分红发放成功", $this->createPluginWebUrl('bonus/detail', array("sn" => $send_bonus_sn)), "success");
+    message("地区分红发放成功", $this->createPluginWebUrl('bonus/detail', array("sn" => $send_bonus_sn)), "success");
 }
 $pager = pagination($total, $pindex, $psize);
-include $this->template('send');
+include $this->template('sendarea');
