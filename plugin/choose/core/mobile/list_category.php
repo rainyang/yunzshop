@@ -63,15 +63,17 @@ if ($operation == 'category') {
 			));
 
 		} elseif (!empty($isstore)) {
-			$goodsids = pdo_fetchall("SELECT goodsid FROM ".tablename('sz_yi_store_goods')." WHERE storeid=:storeid and uniacid=:uniacid", array(':uniacid' => $_W['uniacid'], ':storeid' => $page['storeid']));
+			$goodsids = pdo_fetchall("SELECT distinct goodsid FROM ".tablename('sz_yi_store_goods')." WHERE storeid=:storeid and uniacid=:uniacid", array(':uniacid' => $_W['uniacid'], ':storeid' => $page['storeid']));
 			
 			$goodsid = array();
+
 			foreach ($goodsids as $row) {
+				
 				$goodsid[] = $row['goodsid'];
 			}
 			$goodsid = implode(',', $goodsid);
 			
-			$parent_category = pdo_fetchall('SELECT c.id,c.parentid,c.name,c.level FROM ' . tablename('sz_yi_category') . ' c left join ' .tablename('sz_yi_goods'). ' g on c.id = g.pcate '.' WHERE c.uniacid=:uniacid AND c.parentid=0 and g.id in ('.$goodsid.') ', array(':uniacid' => $uniacid));
+			$parent_category = pdo_fetchall('SELECT distinct c.id,c.parentid,c.name,c.level FROM ' . tablename('sz_yi_category') . ' c left join ' .tablename('sz_yi_goods'). ' g on c.id = g.pcate '.' WHERE c.uniacid=:uniacid AND c.parentid=0 and g.id in ('.$goodsid.') ', array(':uniacid' => $uniacid));
 			
 			foreach ($parent_category as $v) {
 				$ids[] = $v['id'];
