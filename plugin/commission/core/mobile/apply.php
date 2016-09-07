@@ -97,7 +97,7 @@ if ($_W['isajax']) {
 		pdo_insert('sz_yi_commission_apply', $apply);
 		$id = pdo_insertid();
 		//佣金提现免审核自动打款
-		if ($closewithdrawcheck > 0 || $creditnocheck == 1) {
+		if ($creditnocheck == 1) {
 			//填写免审核限额则开启自动打款
 			if ($commission_ok <= $closewithdrawcheck || $apply['type'] == 0) {
 				//提现金额在0-审核金额之内则自动打款或开启余额自动打款

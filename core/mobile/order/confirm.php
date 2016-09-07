@@ -115,6 +115,7 @@ if ($yunbi_plugin) {
 
 if ($_W['isajax']) {
     $ischannelpick = intval($_GPC['ischannelpick']);
+    $isyunbipay = intval($_GPC['isyunbipay']);
     if ($operation == 'display') {
         $id   = intval($_GPC["id"]);
         $optionid = intval($_GPC['optionid']);
@@ -302,7 +303,7 @@ if ($_W['isajax']) {
 
        
         $goods = set_medias($goods, 'thumb');
-        foreach ($goods as $g) {
+        foreach ($goods as &$g) {
             if ($g['isverify'] == 2) {
                 $isverify = true;
             }
@@ -315,6 +316,11 @@ if ($_W['isajax']) {
             if (p('channel')) {
                 if ($ischannelpay == 1 && empty($ischannelpick)) {
                     $isvirtual = true;
+                }
+            }
+            if (p('yunbi')) {
+                if (!empty($isyunbipay)) {
+                    $g['marketprice'] -= $g['yunbi_deduct'];
                 }
             }
         }
@@ -970,13 +976,6 @@ if ($_W['isajax']) {
             ':openid' => $openid,
             ':id' => $addressid
         ));
-        if (!empty($coupon_carrierid)) {
-            show_json(1,array(
-                             "hascoupon" => $hascoupon,
-                            "couponcount" => $couponcount,
-                            )
-            );
-        }
         $member              = m("member")->getMember($openid);
         $level               = m("member")->getLevel($openid);
         $weight              = $_GPC["weight"];
@@ -1352,6 +1351,7 @@ if ($_W['isajax']) {
     } elseif ($operation == 'create' && $_W['ispost']) {
         $ischannelpay = intval($_GPC['ischannelpay']);
         $ischannelpick = intval($_GPC['ischannelpick']);
+        $isyunbipay = intval($_GPC['isyunbipay']);
         $order_data = $_GPC['order'];
         if(p('hotel')){ 
             if($_GPC['type']=='99'){
@@ -1424,10 +1424,13 @@ if ($_W['isajax']) {
                 }
 
                 $channel_condtion = '';
+                $yunbi_condtion = '';
                 if (p('channel')) {
                     $channel_condtion = 'isopenchannel,';
                 }
-
+                if (p('yunbi')) {
+                    $yunbi_condtion = 'isforceyunbi,yunbi_deduct,';
+                }
                 $sql  = 'SELECT id as goodsid,costprice,' . $channel_condtion . 'supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,discounts2,discountway,discounttype,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice, yunbi_deduct FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
 
                 $data = pdo_fetch($sql, array(
@@ -1705,15 +1708,16 @@ if ($_W['isajax']) {
                                 }
                             }
                         }
-                    }      
-                    if (empty($data['isnodiscount']) && $level['discount'] < $data['marketprice']) {
-                        $dprice = round($gprice - $level['discount'] * $goodstotal, 2);
-                        $discountprice += $gprice - $dprice;
-                        $ggprice = $dprice;
-                    } else {
-                        $ggprice = $gprice;
                     }
-                }
+               }
+               if (empty($data['isnodiscount']) && $level['discount'] < $data['marketprice']) {
+                   $dprice = round($gprice - $level['discount'] * $goodstotal, 2);
+                   $discountprice += $gprice - $dprice;
+                   $ggprice = $dprice;
+               } else {
+                   $ggprice = $gprice;
+               }
+
             }
                 $data["realprice"] = $ggprice;
                 $totalprice += $ggprice;
@@ -1748,7 +1752,28 @@ if ($_W['isajax']) {
                 $deductyunbi = 0;
                 $deductyunbimoney = 0;
                 if ($yunbi_plugin && $yunbiset['isdeduct']) {
-                    if (isset($_GPC['order']) && !empty($_GPC['order'][0]['yunbi'])) {
+                    if (empty($isyunbipay)) {
+                        if (isset($_GPC['order']) && !empty($_GPC['order'][0]['yunbi'])) {
+                            $virtual_currency  = $member['virtual_currency'];//m('member')->getCredit($openid, 'virtual_currency');
+                            $ycredit = 1;
+                            $ymoney  = round(floatval($yunbiset['money']), 2);
+                            if ($ycredit > 0 && $ymoney > 0) {
+                                if ($virtual_currency % $ycredit == 0) {
+                                    $deductyunbimoney = round(intval($virtual_currency / $ycredit) * $ymoney * $data["total"], 2);
+                                } else {
+                                    $deductyunbimoney = round((intval($virtual_currency / $ycredit) + 1) * $ymoney * $data["total"], 2);
+                                }
+                            }
+                            if ($deductyunbimoney > $yunbideductprice) {
+                                $deductyunbimoney = $yunbideductprice;
+                            }
+                            if ($deductyunbimoney > $totalprice) {
+                                $deductyunbimoney = $totalprice;
+                            }
+                            $deductyunbi = round($deductyunbimoney / $ymoney * $ycredit, 2);
+                            
+                        }
+                    } else {
                         $virtual_currency  = $member['virtual_currency'];//m('member')->getCredit($openid, 'virtual_currency');
                         $ycredit = 1;
                         $ymoney  = round(floatval($yunbiset['money']), 2);
@@ -1766,7 +1791,6 @@ if ($_W['isajax']) {
                             $deductyunbimoney = $totalprice;
                         }
                         $deductyunbi = round($deductyunbimoney / $ymoney * $ycredit, 2);
-                        
                     }
                     $totalprice -= $deductyunbimoney;
                 }

@@ -26,6 +26,11 @@ if($goods['ccate']){
 if($goods['tcate']){
     $tcate = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$goods['tcate']." and uniacid=".$uniacid);
 }
+$yunbi = 0;
+if (p('yunbi')) {
+    $yunbi = 1;
+    $yunbi_set = p('yunbi')->getSet();
+}
 
 if(p('hotel')){//开启酒店插件后 判断当前时间是否有剩余房间可预约
 $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
@@ -176,6 +181,19 @@ if ($_W['isajax']) {
         show_json(0);
     }
     $goods              = set_medias($goods, 'thumb');
+    if (p('yunbi')) {
+        $yunbi_set = p('yunbi')->getSet();
+        if (!empty($yunbi_set['isdeduct']) && !empty($goods['isforceyunbi']) && $member['virtual_currency'] < $goods['yunbi_deduct']) {
+            $goods['isforce'] = '';
+        } else {
+            $goods['isforce'] = '1';
+        }
+        if (!empty($goods['yunbi_deduct'])) {
+            $goods['yunbi_num'] = $goods['yunbi_deduct']/$yunbi_set['money'];
+        }
+    } else {
+        $goods['isforce'] = '1';
+    }
     $goods['canbuy']    = !empty($goods['status']) && empty($goods['deleted']);
     $goods['timestate'] = '';
     $goods['userbuy']   = '1';

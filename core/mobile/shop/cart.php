@@ -27,15 +27,29 @@ if ($_W['isajax']) {
         $total      = 0;
         $totalprice = 0;
         $channel_condtion = '';
+        $yunbi_condtion = '';
         if (p('channel')) {
             $channel_condtion = 'g.isopenchannel,';
         }
-        $sql        = 'SELECT f.id,f.total,' . $channel_condtion . 'f.goodsid,g.total as stock, o.stock as optionstock, g.maxbuy,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,g.productprice,o.title as optiontitle,f.optionid,o.specs FROM ' . tablename('sz_yi_member_cart') . ' f ' . ' left join ' . tablename('sz_yi_goods') . ' g on f.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on f.optionid = o.id ' . ' where 1 ' . $condition . ' ORDER BY `id` DESC ';
+        if (p('yunbi')) {
+            $yunbi_condtion = 'g.isforceyunbi,g.yunbi_deduct,';
+        }
+        $sql        = 'SELECT f.id,f.total,' . $channel_condtion . $yunbi_condtion . 'f.goodsid,g.total as stock, o.stock as optionstock, g.maxbuy,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,g.productprice,o.title as optiontitle,f.optionid,o.specs FROM ' . tablename('sz_yi_member_cart') . ' f ' . ' left join ' . tablename('sz_yi_goods') . ' g on f.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on f.optionid = o.id ' . ' where 1 ' . $condition . ' ORDER BY `id` DESC ';
         $list       = pdo_fetchall($sql, $params);
         $verify_goods_ischannelpick = '';
         foreach ($list as &$r) {
             if (!empty($r['optionid'])) {
                 $r['stock'] = $r['optionstock'];
+            }
+            if (p('yunbi')) {
+                $yunbi_set = p('yunbi')->getSet();
+                if (!empty($yunbi_set['isdeduct']) && !empty($r['isforceyunbi']) && $member['virtual_currency'] < $r['yunbi_deduct']) {
+                    $virtual_currency = '';
+                } else {
+                    $virtual_currency = '1';
+                }
+            } else {
+                $virtual_currency = '1';
             }
             if (p('channel')) {
                 $member = m('member')->getInfo($openid);
@@ -80,7 +94,8 @@ if ($_W['isajax']) {
                 'totalprice' => $totalprice,
                 'difference' => $difference,
                 'ischannelpay' => $ischannelpay,
-                'verify_goods_ischannelpick' => $verify_goods_ischannelpick
+                'verify_goods_ischannelpick' => $verify_goods_ischannelpick,
+                'virtual_currency' => $virtual_currency
             ));
         
     } else if ($operation == 'add' && $_W['ispost']) {

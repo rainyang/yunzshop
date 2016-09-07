@@ -42,13 +42,14 @@ class YZ extends base
      */
     public function __construct()
     {
+        global $_W,$_GPC;
         parent::__construct();
         $this->uid = $this->para['uid'];
         if (isset($this->uniacid)) {
             $this->uniacid = $this->para['uniacid'];
         }
         $this->set_WAnd_GPC();
-
+        require IA_ROOT . '/web/common/bootstrap.sys.inc.php';
     }
     /**
      * 返回解密的参数
@@ -65,9 +66,12 @@ class YZ extends base
             $_GPC = array_merge($_GPC, $this->para);
         }
         $_W['uid'] = $this->para['uid'];
+        $_GPC['__uid'] = $this->para['uid'];
         if (isset($this->para['uniacid'])) {
             $_W['uniacid'] = $this->para['uniacid'];
+            $_GPC['__uniacid'] = $this->para['uniacid'];
         }
+
     }
     /**
      * 判断管理员是否为正版用户

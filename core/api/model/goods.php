@@ -23,7 +23,7 @@ class goods
     public function getList($para, $fields)
     {
         $condition[] = 'WHERE 1';
-        $params = [];
+        $params = array();
         if (isset($para['keyword']) && $para['keyword'] !== '') {
             $para['keyword'] = trim($para['keyword']);
             $condition['title'] = ' AND `title` LIKE :title';
@@ -77,7 +77,7 @@ class goods
                 ");
         foreach ($tree as &$item) {
             $ccate_list = json_decode($item['ccate_list'], true);
-            $item['ccate_list'] = $ccate_list ? $ccate_list : [];
+            $item['ccate_list'] = $ccate_list ? $ccate_list : array();
             array_unshift($item['ccate_list'], array(
                     'ccate' => '',
                     'name' => '全部',

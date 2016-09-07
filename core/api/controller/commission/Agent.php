@@ -49,7 +49,7 @@ class Agent extends \api\YZ
             $commission_model->upgradeLevelByAgent($member['agentid']);
         }
         plog('commission.agent.check', "审核分销商 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
-        $this->returnSuccess([],'审核分销商成功!');
+        $this->returnSuccess(array(),'审核分销商成功!');
     }
     public function index()
     {
