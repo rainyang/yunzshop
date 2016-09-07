@@ -51,5 +51,11 @@ if (!class_exists('VerifyModel')) {
                 )
             );
         }
+        public function getInfo($storeid = 0)
+        {
+            global $_W, $_GPC;
+            $store_info = pdo_fetchall("SELECT * FROM ".tablename('sz_yi_store')." WHERE id=:storeid and uniacid=:uniacid", array(':stoerid' => $storeid, ':uniacid' => $_W['uniacid']));
+            return $store_info;   
+        }
     }
 }
