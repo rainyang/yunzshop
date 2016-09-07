@@ -15,8 +15,8 @@ class MerchantWeb extends Plugin
 	public function index()
 	{
 		global $_W;
-		if (cv('merchant.merchants')) {
-			header('location: ' . $this->createPluginWebUrl('merchant/merchants'));
+		if (cv('merchant.center')) {
+			header('location: ' . $this->createPluginWebUrl('merchant/center'));
 			exit;
 		}
 	}
@@ -42,6 +42,14 @@ class MerchantWeb extends Plugin
 		$this->_exec_plugin(__FUNCTION__);
 	}
 	public function merchant_apply_finish()
+	{
+		$this->_exec_plugin(__FUNCTION__);
+	}
+	public function center()
+	{
+		$this->_exec_plugin(__FUNCTION__);
+	}
+	public function level()
 	{
 		$this->_exec_plugin(__FUNCTION__);
 	}

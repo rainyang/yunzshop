@@ -11,8 +11,9 @@ $uniacid    = $_W['uniacid'];
 $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
 $commission = p('commission');
 $shopset   = m('common')->getSysset('shop');
-if (p('yunbi')) {
-    $yunbi_set = p('yunbi')->getSet();
+$plugin_yunbi = p('yunbi');
+if ($plugin_yunbi) {
+    $yunbi_set = $plugin_yunbi->getSet();
 }
 if ($commission) {
     $shopid = intval($_GPC['shopid']);

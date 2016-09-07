@@ -25,6 +25,7 @@ if ($operation == 'display') {
         $value['apply_time'] = date('Y-m-d H:i:s',$value['apply_time']);
         $value['type'] = '微信';
     }
+    unset($value);
     if ($_GPC['export'] == '1') {
         m('excel')->export($list, array('title' => '待审核佣金' . '数据-' . date('Y-m-d-H-i', time()), 'columns' => array(array('title' => 'ID', 'field' => 'id', 'width' => 12), array('title' => '提现单号', 'field' => 'applysn', 'width' => 24), array('title' => '粉丝', 'field' => 'nickname', 'width' => 12), array('title' => '姓名', 'field' => 'realname', 'width' => 12), array('title' => '手机号码', 'field' => 'mobile', 'width' => 12), array('title' => '提现方式', 'field' => 'type', 'width' => 12),array('title' => '申请佣金', 'field' => 'money', 'width' => 12), array('title' => '申请时间', 'field' => 'apply_time', 'width' => 24))));
     }
