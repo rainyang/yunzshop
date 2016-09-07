@@ -525,7 +525,7 @@ class Sz_DYi_Order
                     }
                 }
                 if (!empty($order['storeid'])) {
-                    $store_goods = pdo_fetch("SELECT * FROM ".tablename('sz_yi_store_goods')." WHERE goodsid=:goodsid storeid=:storeid and optionid=0", array(':goodsid' => $g['goodsid'], ':storeid' => $order['storeid']));
+                    $store_goods = pdo_fetch("SELECT * FROM ".tablename('sz_yi_store_goods')." WHERE goodsid=:goodsid and storeid=:storeid and optionid=0", array(':goodsid' => $g['goodsid'], ':storeid' => $order['storeid']));
                     if (!empty($store_goods['total']) && $store_goods['total'] != -1) {
                         $totalstock = -1;
                         if ($stocktype == 1) {

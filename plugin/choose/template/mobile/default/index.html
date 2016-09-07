@@ -301,7 +301,7 @@ ul, li { list-style:none; margin:0; padding:0 }
              
             var pcate = $("#navBar").find(".parent_item").first().data('cate');
 
-            core.pjson('choose/list_goods',{pcate:pcate,pageid:pageid,ischannelpick:"{$_GPC['ischannelpick']}",op:'moren', storeid:"{$_GPC['storeid']}"}, function (json) {
+            core.pjson('choose/list_goods',{pcate:pcate,pageid:pageid,ischannelpick:"{$_GPC['ischannelpick']}",op:'moren'}, function (json) {
                             result = json.result;
                             
                             var h = '';
@@ -529,7 +529,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                      cate = $(this).data('cate');
                      //console.log(pcate);
-                     core.pjson('choose/list_goods',{'pcate':cate,pageid:pageid,op:'moren', storeid:"{$_GPC['storeid']}"}, function (json) {
+                     core.pjson('choose/list_goods',{'pcate':cate,pageid:pageid,op:'moren'}, function (json) {
                             result = json.result;                           
                             var h = '';
                             
@@ -593,7 +593,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                          cate = $(this).data('cate');
                          //console.log(pcate);
-                         core.pjson('choose/list_goods',{'ccate':cate,pageid:pageid,op:'second',storeid:"{$_GPC['storeid']}"}, function (json) {
+                         core.pjson('choose/list_goods',{'ccate':cate,pageid:pageid,op:'second'}, function (json) {
                                 result = json.result;
                                                         
                                 var h = '';
@@ -658,7 +658,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                          cate = $(this).data('cate');
                          //console.log(pcate);
-                         core.pjson('choose/list_goods',{'tcate':cate,pageid:pageid,op:'third',storeid:"{$_GPC['storeid']}"}, function (json) {
+                         core.pjson('choose/list_goods',{'tcate':cate,pageid:pageid,op:'third'}, function (json) {
                                 result = json.result;
                                                         
                                 var h = '';
@@ -900,7 +900,7 @@ ul, li { list-style:none; margin:0; padding:0 }
    
         $(document).on('click','.canoption',function(){
           var id = $(this).data('id');
-          core.json('shop/detail',{id:id,'ischannelpay':"{$_GPC['ischannelpay']}",'ischannelpick':"{$_GPC['ischannelpick']}", storeid:"{$page['storeid']}"},function (json) { 
+          core.json('shop/detail',{id:id,'ischannelpay':"{$_GPC['ischannelpay']}",'ischannelpick':"{$_GPC['ischannelpick']}", storeid:"{$color['storeid']}"},function (json) { 
             $('#container_specs').html(tpl('tpl_goods_info',json.result));
             $('.good_choose_layer').fadeIn(200);
             $('.good_choose_layer').unbind('click').click(function(){

@@ -309,10 +309,10 @@ if ($_W['isajax']) {
             unset($value);*/
         } elseif (!empty($_GPC['storeid'])) {
             $options = array();
-            $my_stock = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_store_goods') . " WHERE uniacid={$_W['uniacid']} AND storeid='{intval($_GPC['storeid'])}' AND goodsid={$goodsid}");
+            $my_stock = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_store_goods') . " WHERE uniacid=:uniacid AND storeid=:storeid AND goodsid=:goodsid", array(':uniacid' => $_W['uniacid'], ':storeid' => intval($_GPC['storeid']), ':goodsid' => $goodsid));
             foreach ($my_stock as $val) {
                 $my_option          = m('goods')->getOption($goodsid, $val['optionid']);
-                $stock_total        = pdo_fetchcolumn("SELECT total FROM " . tablename('sz_yi_store_goods') . " WHERE uniacid={$_W['uniacid']} AND goodsid={$goodsid} AND optionid={$val['optionid']}");
+                $stock_total        = pdo_fetchcolumn("SELECT total FROM " . tablename('sz_yi_store_goods') . " WHERE uniacid=:uniacid AND goodsid=:goodsid AND optionid=:optionid", array(':uniacid' => $_W['uniacid'], ':goodsid' => $goodsid, ':optionid' => $val['optionid']));
                 $my_option['stock'] = $stock_total;
                 $options[]          = $my_option;
             }

@@ -15,6 +15,15 @@ if($_W['isajax']){
     }
     $pageid = intval($_GPC['pageid']);
     $page   = pdo_fetch('select * from '.tablename('sz_yi_chooseagent'). ' where id=:id and uniacid=:uniacid',array(':uniacid'=>$_W['uniacid'],':id'=>$pageid));
+    $goodsids = pdo_fetchall("SELECT distinct goodsid FROM ".tablename('sz_yi_store_goods')." WHERE storeid=:storeid and uniacid=:uniacid", array(':uniacid' => $_W['uniacid'], ':storeid' => $page['storeid']));
+            
+    $goodsid = array();
+
+    foreach ($goodsids as $row) {
+        
+        $goodsid[] = $row['goodsid'];
+    }
+    $goodsid = implode(',', $goodsid);
     if (!empty($page['isopenchannel'])) {
         $args = array(
             'isopenchannel' => $page['isopenchannel']
@@ -38,19 +47,19 @@ if($_W['isajax']){
             if ($operation == 'moren') {
                     $args = array(
                         'pcate' => $_GPC['pcate'],
-                        'storeid' => $page['storeid']
+                        'goodsids' => $goodsid
 
                     ); 
             } else if($operation == 'second') {
                     $args=array(
                         'pcate' => $page['pcate'],
                         'ccate' => $_GPC['ccate'],
-                        'storeid' => $page['storeid']
+                        'goodsids' => $goodsid
                     );
             } else if ($operation == 'third') {
                 $args = array(
                     'tcate' => $_GPC['tcate'],
-                    'storeid' => $page['storeid']
+                    'goodsids' => $goodsid
                 );
             } else if ($operation == 'getdetail') {
                 $args = array(
@@ -64,8 +73,10 @@ if($_W['isajax']){
             }
         }
     }  
-    if (empty($page['isstore']) && !empty($_GPC['storeid'])) {
-        $args['isverify'] = 1; 
+    if (empty($page['isstore']) && empty($_GPC['storeid'])) {
+        $args['isverify'] = 1;
+    } elseif (!empty($page['isstore']) || !empty($_GPC['storeid'])) {
+        $args['isverify'] = 2;
     }
     
     $goods = m('goods')->getList($args);
