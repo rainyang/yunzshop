@@ -72,9 +72,9 @@ class Base
             'msg' => $msg,
             'data' => $data);
         if (defined("IS_API_DOC")) {
-            exit(json_encode($res, JSON_UNESCAPED_UNICODE));
+            exit(json_encode_ex($res));
         } elseif (is_test()) {
-            exit(json_encode($res, JSON_UNESCAPED_UNICODE));
+            exit(json_encode_ex($res));
         } else {
             $this->callBackByAes($res);
         }
@@ -92,9 +92,9 @@ class Base
             'msg' => $msg,
             'data' => array());
         if (defined("IS_API_DOC")) {
-            exit(json_encode($res, JSON_UNESCAPED_UNICODE));
+            exit(json_encode_ex($res));
         } elseif (is_test()) {
-            exit(json_encode($res, JSON_UNESCAPED_UNICODE));
+            exit(json_encode_ex($res));
         } else {
             $this->callBackByAes($res);
         }
@@ -132,8 +132,7 @@ class Base
         if (isset($_GET['is_test'])) {
             dump($json_data);
         }
-
-        $return_data = str_replace('"', '', $this->aes->siyuan_aes_encode(json_encode($json_data, JSON_UNESCAPED_UNICODE)));
+        $return_data = str_replace('"', '', $this->aes->siyuan_aes_encode(json_encode_ex($json_data)));
         //dump($json_data);
         //dump($this->getSqlLog());
         exit($return_data);
@@ -146,7 +145,7 @@ class Base
      */
     protected function addLog()
     {
-        $data['para'] = $this->para == 'null' ? '' : json_encode($this->para, JSON_UNESCAPED_UNICODE);
+        $data['para'] = $this->para == 'null' ? '' : json_encode_ex($this->para);
         $data['api'] = $_GET['api'];
         $data['client_ip'] = $this->getClientIp();
         $data['error_info'] = "";
