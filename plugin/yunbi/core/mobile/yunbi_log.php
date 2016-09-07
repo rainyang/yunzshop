@@ -31,7 +31,7 @@ if($shop_set['shop']['isreferrer'] ){
 
 if ($operation == 'display') {
 
-    $cumulative_total   = p('yunbi') -> MoneySumTotal(" and returntype in ('1','2','4','7','9','10') ",$member['id']);
+    $cumulative_total   = p('yunbi') -> MoneySumTotal(" and returntype in ('1','2','4','7','9','10','12') ",$member['id']);
     $deduct_return      = p('yunbi') -> MoneySumTotal(" and returntype in ('3','5') ",$member['id']);
 
     $remove_total = pdo_fetchcolumn("select count(1) as money from" . tablename('sz_yi_yunbi_log') . " where uniacid = :uniacid and returntype = '6' and money <> 0 and mid = :mid ", array(
@@ -56,20 +56,19 @@ if ($operation == 'display') {
 } elseif ( $_W['isajax'] && $operation == 'log') {
    $pindex = max(1, intval($_GPC['page']));
     $psize = 10;
+    $type = $_GPC['type']=='8'?"8,9":$_GPC['type'];
     $total = pdo_fetchcolumn("select count(yl.id) from" . tablename('sz_yi_yunbi_log') . " yl
         left join " . tablename('sz_yi_member') . " m on( yl.openid=m.openid ) 
-        where yl.uniacid = :uniacid and yl.returntype = :type and yl.money <> 0 and m.id = :mid ", array(
+        where yl.uniacid = :uniacid and yl.returntype in ( ".$type." ) and yl.money <> 0 and m.id = :mid ", array(
         ':uniacid' => $_W['uniacid'],
-        ':type' => $_GPC['type'],
         ':mid' => $member['id']
     ));
 
     $list = pdo_fetchall("select yl.*, m.id as mid, m.realname , m.mobile  from" . tablename('sz_yi_yunbi_log') . " yl
         left join " . tablename('sz_yi_member') . " m on( yl.openid=m.openid ) 
-        where yl.uniacid = :uniacid and yl.returntype = :type and yl.money <> 0 and m.id = :mid order by create_time desc LIMIT " . ($pindex - 1) * $psize . "," . $psize,
+        where yl.uniacid = :uniacid and yl.returntype in ( ".$type." ) and yl.money <> 0 and m.id = :mid order by create_time desc LIMIT " . ($pindex - 1) * $psize . "," . $psize,
         array(
             ':uniacid' => $_W['uniacid'],
-            ':type' => $_GPC['type'],
             ':mid' => $member['id']
         ));
     foreach ($list as &$row) {

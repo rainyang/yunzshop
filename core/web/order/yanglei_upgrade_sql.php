@@ -25,3 +25,7 @@ if(!pdo_fieldexists('sz_yi_goods', 'yunbi_commission')) {
 if(pdo_fieldexists('sz_yi_goods', 'yunbi_consumption')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')."CHANGE `yunbi_consumption` `yunbi_consumption` DECIMAL(6,3) NOT NULL;");
 }
+//2016-09-07 购买人ID
+if(!pdo_fieldexists('sz_yi_member_log', 'buy_mid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_log')."ADD `buy_mid` INT NOT NULL AFTER `status`;");
+}

@@ -205,6 +205,77 @@
             </div>
         </div>
 
+
+        <div class='panel-heading'>
+           <p class="yunbi"> {if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if}交易 </p>
+        </div>
+
+        <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启</label>
+                <div class="col-sm-8 col-xs-12">
+                    <label class="radio-inline"><input type="radio" name="setdata[istrading]" value="0" {if $set['istrading'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline"><input type="radio" name="setdata[istrading]" value="1" {if $set['istrading'] ==1} checked="checked"{/if} /> 开启</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">交易限制(最少额度)</label>
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <input type="text" name="setdata[trading_limit]" class="form-control" value="{$set['trading_limit']}"  />
+                    <div class="input-group-addon"></div>
+                </div>
+                <span class='help-block'>交易<b class="yunbi"> {if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if} </b>最少额度</span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">交易限制(倍数)</label>
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <input type="text" name="setdata[trading_fold]" class="form-control" value="{$set['trading_fold']}"  />
+                    <div class="input-group-addon"></div>
+                </div>
+                <span class='help-block'>交易<b class="yunbi"> {if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if} </b>的倍数</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">交易手续费</label>
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <input type="text" name="setdata[poundage]" class="form-control" value="{$set['poundage']}"  />
+                    <div class="input-group-addon">%</div>
+                </div>
+                <span class='help-block'>交易<b class="yunbi"> {if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if} </b>平台收取手续费</span>
+            </div>
+        </div>
+        <div class="form-group">
+           <label class="col-xs-12 col-sm-3 col-md-2 control-label"><b class="yunbi"> {if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if} </b>交易比例</label>
+           <div class="col-sm-5">
+               <div class='input-group'>
+                       <input type="hidden" name="setdata[credit]" value="1" class="form-control" />
+                       <span class='input-group-addon'>1个{$set['yunbi_title']} 等于</span>
+                       <input type="text" name="setdata[trading_money]"  value="{$set['trading_money']}" class="form-control" />
+                       <span class='input-group-addon'>元</span>
+               </div>
+               <span class='help-block'>{$set['yunbi_title']}交易比例设置</span>
+           </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">公司代购时间</label>
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <input type="text" name="setdata[recycling]" class="form-control" value="{$set['recycling']}"  />
+                    <div class="input-group-addon">小时</div>
+                </div>
+                <span class='help-block'>交易<b class="yunbi"> {if $set['yunbi_title'] }{$set['yunbi_title']}{else}云币{/if} </b>后，超过多少小时公司代购</span>
+            </div>
+        </div>
+
+
+
             <div class="form-group"></div>
                <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>

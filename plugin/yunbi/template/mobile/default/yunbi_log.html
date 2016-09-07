@@ -65,7 +65,21 @@
             <div class="set" onclick='location.href="{php echo $this->createMobileUrl('member/info')}"'><i class="iconfont icon-cog"></i></div>
         </div>
     </div>
+
+
         <div class="money-center">
+            <div class="list1" style="margin-top:0px;border-bottom: 1px solid #ECECEC;">
+            <i class="iconfont icon-virtual" style="float:left; line-height:44px;"></i>
+            <span style="float:left;">我的{$yunbi_title}</span>
+            <div class="allorder">
+                <a href="#" class="recharge-ybut" onclick="location.href='{php echo $this->createPluginMobileUrl('yunbi/yunbi_trading')}'">{$yunbi_title}交易</a>
+            {if !empty($yunbiset['isbot'])}
+                {if $member['virtual_currency'] > 0 && p('yunbi')}
+                    <a href="#" class="recharge-ybut" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer', 'yunbi' => 1))}'">{if !empty($yunbi_title)}{php echo $yunbi_title}{else}云币{/if}转账</a>
+                {/if}
+            {/if}
+            </div>
+            </div>
             <ul>
                 <li>
                     <a href="#"><span>{$member['virtual_currency']}</span><br/>{$yunbi_title}</a>
@@ -136,7 +150,7 @@
             </li>
             <li>
                 <a href="#" class="nav" data-type='8' >
-                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>{$presented}<br/>转赠明细
+                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>转赠明细<br/>获赠明细
                 </a>
             </li>
             <li>
@@ -191,6 +205,10 @@
                                 返现到余额<br>{$yunbi_title}
                             <%else if log.returntype == 6%>
                                 清除所有<br>{$yunbi_title}
+                            <%else if log.returntype == 8%>
+                                <%log.remark%>
+                            <%else if log.returntype == 9%>
+                                <%log.remark%>
                             <%else if log.returntype == 10%>
                                 待转{$yunbi_title}转入<br>{$yunbi_title}
                             <%/if%>

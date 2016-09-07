@@ -222,7 +222,6 @@ if (!class_exists('YunbiModel')) {
 				}
 
 			}
-			
 		}
 		//虚拟币清除
 		public function RemoveYunbi($set,$uniacid){
@@ -260,13 +259,14 @@ if (!class_exists('YunbiModel')) {
 		 * data log数组
 		 */	
 		public function addYunbiLog ($uniacid,$data=array(),$type){
+			$status = isset($data['status'])?$data['status']:'1';
 			$data_log = array(
 				'uniacid' 		=> $uniacid,
 			    'mid' 			=> $data['id'],
 			    'openid' 		=> $data['openid'],
 			    'credittype' 	=> $data['credittype'],
 			    'money' 		=> $data['money'],
-			    'status' 		=> 1,
+			    'status' 		=> $status,
 			    'returntype' 	=> $type,
 				'create_time'	=> time(),
 				'remark'		=> $data['remark']
@@ -284,7 +284,13 @@ if (!class_exists('YunbiModel')) {
 			} 
 		    return !empty($total)?$total:'0';
 		}
-
+		public function CountTotal($conditions='') {
+			global $_W, $_GPC;
+			    $total = pdo_fetchcolumn("select count(1) as money from" . tablename('sz_yi_yunbi_log') . " where uniacid = :uniacid ".$conditions." and money <> 0 ", array(
+			        ':uniacid' => $_W['uniacid']
+			    ));
+		    return !empty($total)?$total:'0';
+		}
 		public function setVirtualCurrency($openid='',$currency,$fieldname='') {
 			global $_W, $_GPC;
 			if (empty($fieldname)) {
