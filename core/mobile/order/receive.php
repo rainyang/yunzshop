@@ -78,24 +78,23 @@ if(!empty($pbonus)){
 			$bonus_data = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=0 and uniacid=".$_W['uniacid']." and bonus_area=0  order by id desc");
 			$bonus_data_area = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=0 and uniacid=".$_W['uniacid']." and bonus_area!=0  order by id desc");
 			$bonus_data_isglobal = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=1 and uniacid=".$_W['uniacid']."  order by id desc");
-			}
-			if(!empty($bonus_set['start'])){
-				//团队分红
-				if(empty($bonus_data)){
-					$pbonus->autosend();
-				}
-				//地区分红
-				if(empty($bonus_data_area)){
-					$pbonus->autosendarea();
-				}
-				//全球分红
-				if(empty($bonus_data_isglobal)){
-					$pbonus->autosendall();
-				}
-			}
-		}
-	}
-	@unlink ($file);
+        }
+        if(!empty($bonus_set['start'])){
+            //团队分红
+            if(empty($bonus_data)){
+                $pbonus->autosend();
+            }
+            //地区分红
+            if(empty($bonus_data_area)){
+                $pbonus->autosendarea();
+            }
+            //全球分红
+            if(empty($bonus_data_isglobal)){
+                $pbonus->autosendall();
+            }
+        }
+        @unlink ($file);
+    }
 }
 //自动分期充值
 if(p('love')){
