@@ -15,7 +15,7 @@ if (!class_exists('SupplierModel')) {
                 return '';
             }
             //uid下的所有招商员
-            $merchants = pdo_fetchall("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and supplier_uid={$uid}");
+            $merchants = pdo_fetchall("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and supplier_uid={$uid} ORDER BY id DESC");
             //循环赋予头像等信息
             foreach ($merchants as &$value) {
                 $merchants_member = m('member')->getMember($value['openid']);
@@ -34,6 +34,13 @@ if (!class_exists('SupplierModel')) {
             //权限id
             $roleid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_perm_role') . ' where status1=1');
             return $roleid;
+        }
+
+        public function AllSuppliers(){
+            global $_W, $_GPC;
+            $roleid = $this->getRoleId();
+            $all_suppliers = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_perm_user') . " WHERE uniacid=:uniacid AND roleid=:roleid", array(':uniacid' => $_W['uniacid'], ':roleid' => $roleid));
+            return $all_suppliers;
         }
 
         //获取供应商订单佣金相关数据

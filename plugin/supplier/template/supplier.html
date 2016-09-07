@@ -496,33 +496,9 @@
 <div class="rightlist">
 <div class="panel panel-info">
     <div class="panel-heading"></div>
-    <!-- <div class="panel-body">
-        <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
-            <input type="hidden" name="c" value="site" />
-            <input type="hidden" name="a" value="entry" />
-            <input type="hidden" name="m" value="sz_yi" />
-            <input type="hidden" name="do" value="plugin" />
-            <input type="hidden" name="p" value="supplier" />
-            <input type="hidden" name="method" value="supplier" />
-            <input type="hidden" name="op" value="display" />
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">招商员搜索</label>
-                <div class="col-sm-8 col-lg-9 col-xs-12">
-                    <input type="text" class="form-control"  name="uid" value="{$_GPC['uid']}" placeholder='搜索供货商ID'/> 
-                </div>
-            </div>
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
-                <div class="col-sm-8 col-lg-9 col-xs-12">
-                       <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
-                    <input type="hidden" name="token" value="{$_W['token']}" />
-                </div>
-            </div>    
-        </form>
-    </div> -->
 </div>
 <div class="panel panel-default">
-    <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('supplier/supplier', array('op' => 'merchant_post','uid' => $uid))}">添加招商员</a> 
+    <a class='btn btn-default' href="{if !empty($uid)}{php echo $this->createPluginWebUrl('supplier/supplier', array('op' => 'merchant_post','uid' => $uid))}{else if !empty($center_id)}{php echo $this->createPluginWebUrl('supplier/supplier', array('op' => 'merchant_post','center_id' => $center_id))}{/if}">添加招商员</a> 
 </div>
 <div class="panel panel-default">
     <div class="panel-heading">总数：{$total}</div>
@@ -535,6 +511,9 @@
                     <th style='width:50px;'>头像</th>
                     <th style='width:100px;'>昵称</th>
                     <th style='width:100px;'>真实姓名</th>
+                    {if !empty($center_id)}
+                    <th style='width:100px;'>供应商</th>
+                    {/if}
                     <th style='width:150px;'>电话</th>
                     <th>操作</th>
                 </tr>
@@ -548,6 +527,9 @@
                             <td><img src="{$row['avatar']}" style='width:30px;height:30px;padding:1px;border:1px solid #ccc' /><br/></td>
                             <td>{$row['nickname']}</td>
                             <td>{$row['realname']}</td>
+                            {if !empty($center_id)}
+                            <td>{$row['username']}</td>
+                            {/if}
                             <td>{$row['mobile']}</td>
                             <td><a class='btn btn-default' href="{php echo $this->createPluginWebUrl('supplier/supplier', array('op' => 'merchant_delete','id' => $row['id']))}">删除</a></td>
                         </tr>
@@ -637,6 +619,18 @@
                     <input type="text" name="data[commissions]" class="form-control" value="" placeholder="请输入佣金比例(%)" />
                 </div>
             </div>
+            {if !empty($all_suppliers)}
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">供应商</label>
+                <div class="col-sm-9 col-xs-12">
+                    <select name='data[supplier_uid]' class='form-control'>
+                        {loop $all_suppliers $supplier}
+                        <option value='{$supplier['uid']}'>{$supplier['username']}</option>
+                        {/loop}
+                    </select>
+                </div>
+            </div>
+            {/if}
             <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
