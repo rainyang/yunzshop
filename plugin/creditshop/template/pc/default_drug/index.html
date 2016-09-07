@@ -1,6 +1,6 @@
 {template 'common/header_center'}
 <link href="../addons/sz_yi/plugin/creditshop/template/pc/default/images/css.css" rel="stylesheet" type="text/css"/>
-<title>积分商城</title>
+<title>{php echo SZ_YI_INTEGRAL}商城</title>
 
 <style type="text/css">
 
@@ -43,8 +43,8 @@
     </div>
     <%/if%>
     <div class="jf-tit">
-        <h2>我的积分</h2>
-        <span>可用积分<a href="{php echo $this->createPluginMobileUrl('creditshop/creditlog')}"><%credit%></a>分</span>
+        <h2>我的{php echo SZ_YI_INTEGRAL}</h2>
+        <span>可用{php echo SZ_YI_INTEGRAL}<a href="{php echo $this->createPluginMobileUrl('creditshop/creditlog')}"><%credit%></a>分</span>
         <a class="tx-list" href="{php echo $this->createPluginMobileUrl('creditshop/log')}"> 兑换记录</a>
     </div>
     <%if tops.length>0%>
@@ -122,7 +122,7 @@
                 <a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>"><img src="<%value.thumb%>"></a>
                 <!--<h1>提供商家<span>抽奖</span></h1>-->
                 <p class="integral-name"><%value.title%></p>
-                <p class="integral-num">需扣减积分：<span><%value.credit%></span></p>
+                <p class="integral-num">需扣减{php echo SZ_YI_INTEGRAL}：<span><%value.credit%></span></p>
                 <div class="integral-but"><a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>">马上兑换</a></div>
         
             
@@ -142,7 +142,7 @@
                 <a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>"><img src="<%value.thumb%>"></a>
                 <!--<h1>提供商家<span>抽奖</span></h1>-->
                 <p class="integral-name"><%value.title%></p>
-                <p class="integral-num">需扣减积分：<span><%value.credit%></span></p>
+                <p class="integral-num">需扣减{php echo SZ_YI_INTEGRAL}：<span><%value.credit%></span></p>
                 <div class="integral-but"><a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>">马上兑换</a></div>
             
             </li>
@@ -160,7 +160,7 @@
                     <a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>"><img src="<%value.thumb%>"></a>
                     <!--<h1>提供商家<span>抽奖</span></h1>-->
                     <p class="integral-name"><%value.title%></p>
-                    <p class="integral-num">需扣减积分：<span><%value.credit%></span></p>
+                    <p class="integral-num">需扣减{php echo SZ_YI_INTEGRAL}：<span><%value.credit%></span></p>
                     <div class="integral-but"><a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>">马上兑换</a></div>
                 </li>
               <%/each%>
@@ -179,7 +179,7 @@
                           <a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>"><img src="<%value.thumb%>"></a>
                           <!--<h1>提供商家<span>抽奖</span></h1>-->
                           <p class="integral-name"><%value.title%></p>
-                          <p class="integral-num">需扣减积分：<span><%value.credit%></span></p>
+                          <p class="integral-num">需扣减{php echo SZ_YI_INTEGRAL}：<span><%value.credit%></span></p>
                           <div class="integral-but"><a href="{php echo $this->createPluginMobileUrl('creditshop/detail')}&id=<%value.id%>">马上兑换</a></div>           
                        </li>
                       <%/each%>

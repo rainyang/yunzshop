@@ -74,7 +74,7 @@
             <li><a href="#"><span><%member.virtual_currency%></span><br/>{$yunbi_title}</a></li>
         {/if}
 
-        <li><a href="#"><span><%member.credit1%></span><br/>{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}</a></li>
+        <li><a href="#"><span><%member.credit1%></span><br/>{if $shopset['credit1']}{$shopset['credit1']}{else}{php echo SZ_YI_INTEGRAL}{/if}</a></li>
         <li><a href="#"><span><%counts.couponcount%></span><br/>优惠券</a></li>     
                
     </ul>
@@ -162,7 +162,7 @@
 {if $open_creditshop}
         <li>
         <a href="#" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">
-        <i class="fa iconfont icon-database" style="background:#28c870"></i><br/>积分商城
+        <i class="fa iconfont icon-database" style="background:#28c870"></i><br/>{php echo SZ_YI_INTEGRAL}商城
         </a>
         </li>
 {/if}

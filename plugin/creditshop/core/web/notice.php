@@ -11,7 +11,7 @@ if (checksubmit('submit')) {
         $set['tm']['openids'] = implode(",", $_GPC['openids']);
     }
     $this->updateSet($set);
-    plog('creditshop.notice.save', '修改积分商城通知设置');
+    plog('creditshop.notice.save', '修改'.SZ_YI_INTEGRAL.'商城通知设置');
     message('设置保存成功!', referer(), 'success');
 }
 $salers = array();

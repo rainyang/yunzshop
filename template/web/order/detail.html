@@ -87,7 +87,7 @@
 							
 							{if $item['deductprice']>0}
 							<tr>
-								<td  style='border:none;text-align:right;'>积分抵扣：</td>
+								<td  style='border:none;text-align:right;'>{php echo SZ_YI_INTEGRAL}抵扣：</td>
 								<td  style='border:none;text-align:right;;'>-￥{php echo number_format( $item['deductprice'],2)}</td>
 							</tr>
 							{/if}
@@ -150,7 +150,7 @@
 						  打 {$coupon['discount']} 折
 						  {else if $coupon['backtype']==2}
 						  {if $coupon['backmoney']>0}返 {$coupon['backmoney']} 余额;{/if}
-						  {if $coupon['backcredit']>0}返 {$coupon['backcredit']} 积分;{/if}
+						  {if $coupon['backcredit']>0}返 {$coupon['backcredit']} {php echo SZ_YI_INTEGRAL};{/if}
 						  {if $coupon['backredpack']>0}返 {$coupon['backredpack']} 红包;{/if}
 						  <b>返利方式: </b>
 						    {if $item['backwhen']==0}

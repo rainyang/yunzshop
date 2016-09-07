@@ -111,7 +111,7 @@ if (!class_exists('CreditshopModel')) {
                 if ($goods['canbuy']) {
                     if ($credit < $goods['credit'] && $goods['credit'] > 0) {
                         $goods['canbuy'] = false;
-                        $goods['buymsg'] = "积分不足";
+                        $goods['buymsg'] = SZ_YI_INTEGRAL."不足";
                     }
                 }
                 if ($goods['canbuy']) {

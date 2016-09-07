@@ -202,7 +202,7 @@ if ($operation == 'display') {
 	}
 	pdo_update('sz_yi_creditshop_log', array('status' => 3, 'usetime' => time(), 'expresscom' => $_GPC['expresscom'], 'expresssn' => $_GPC['expresssn'], 'express' => $_GPC['express']), array('id' => $id));
 	$this->model->sendMessage($id);
-	plog('creditshop.log.exchange', "积分商城兑换 兑换记录ID: {$id}");
+	plog('creditshop.log.exchange', "善金币商城兑换 兑换记录ID: {$id}");
 	message('兑换成功!', $this->createPluginWebUrl('creditshop/log', array('type' => $goods['type'])), 'success');
 }
 load()->func('tpl');

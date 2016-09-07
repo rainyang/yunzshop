@@ -1,6 +1,6 @@
 {template 'common/header'}
 {template '_header'}
-<title>我的积分</title>
+<title>我的{php echo SZ_YI_INTEGRAL}</title>
 
 <style type='text/css'>
   body { background:#fff }
@@ -19,24 +19,24 @@
 <script id='tpl_main' type='text/html'>
  <div class="page_topbar">
     <a href="{php echo $this->createPluginMobileUrl('creditshop')}" class="back"><i class="fa fa-angle-left"></i></a>
-    <div class="title">我的积分</div>
+    <div class="title">我的{php echo SZ_YI_INTEGRAL}</div>
 </div>
 
     {if !empty($this->set['crediturl'])}
-    <div class="my_rule"><a href="{php echo $this->set['crediturl']}"><i class="fa fa-question-circle" style="padding-right:5px;"></i>积分说明</a></div>
+    <div class="my_rule"><a href="{php echo $this->set['crediturl']}"><i class="fa fa-question-circle" style="padding-right:5px;"></i>{php  echo SZ_YI_INTEGRAL}说明</a></div>
     {/if}
        <div class='my_int_container'>
     <div class="my_int">
-        <div class="text">积分</div>
+        <div class="text">{php echo SZ_YI_INTEGRAL}</div>
         <div class="num">{$credit}</div>
     </div>
     </div>
    
     <div class="my_shop">
-        <a href="{php echo $this->createPluginMobileUrl('creditshop')}"><i class="fa fa-shopping-cart"></i> 积分商城</a>
+        <a href="{php echo $this->createPluginMobileUrl('creditshop')}"><i class="fa fa-shopping-cart"></i> {php echo SZ_YI_INTEGRAL}商城</a>
         <a href="{php echo $this->createPluginMobileUrl('creditshop/log')}"><i class="fa fa-align-justify"></i> 兑换记录</a>
     </div>
-    <div class="index_title" style="margin-top: 10px;"><span style="background:#fff;">积分明细</span></div>
+    <div class="index_title" style="margin-top: 10px;"><span style="background:#fff;">{php echo SZ_YI_INTEGRAL}明细</span></div>
     <div id="my_line_list">
         
     </div>

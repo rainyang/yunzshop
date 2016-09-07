@@ -111,7 +111,7 @@ if ($_W['isajax']) {
 		$params['tid'] = $dispatchno;
 		$params['user'] = $openid;
 		$params['fee'] = $goods['dispatch'];
-		$params['title'] = $set['shop']['name'] . (empty($goods['type']) ? '积分兑换' : '积分抽奖') . ' 支付运费单号:' . $dispatchno;
+		$params['title'] = $set['shop']['name'] . (empty($goods['type']) ? '善金币兑换' : '善金币抽奖') . ' 支付运费单号:' . $dispatchno;
 		load()->model('payment');
 		$setting = uni_setting($_W['uniacid'], array('payment'));
 		if (is_array($setting['payment'])) {
