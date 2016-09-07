@@ -867,8 +867,10 @@ if (!class_exists('BonusModel')) {
 				}
 				$message = str_replace('[昵称]', $member['nickname'], $message);
 				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
-				$message = str_replace('[旧等级]', $data['oldlevel']['levelname'], $message);
-				$message = str_replace('[旧分红比例]', $data['oldlevel']['agent_money'] . '%', $message);
+				$old_level_name = $data['oldlevel']['levelname'] ? $data['oldlevel']['levelname'] : "普通等级";
+				$message = str_replace('[旧等级]', $old_level_name, $message);
+				$old_agent_money = floatval($data['oldlevel']['agent_money']);
+				$message = str_replace('[旧分红比例]', $old_agent_money . '%', $message);
 				$message = str_replace('[新等级]', $data['newlevel']['levelname'], $message);
 				$message = str_replace('[新分红比例]', $data['newlevel']['agent_money'] . '%', $message);
 				$tm['bonus_upgradetitle'] = !empty($tm['bonus_upgradetitle']) ? $tm['bonus_upgradetitle'] : '代理商等级升级通知';
