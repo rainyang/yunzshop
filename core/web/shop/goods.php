@@ -154,7 +154,7 @@ if ($operation == "change") {
         } else {
             ca('shop.goods.add');
         }
-        $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid'] . ' AND roleid=(select id from ' . tablename('sz_yi_perm_role') . ' where status1=1)');
+        $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid'] . ' AND roleid in (select id from ' . tablename('sz_yi_perm_role') . ' where status1=1)');
         if (p('hotel')) {
             $print_list = pdo_fetchall('SELECT * FROM ' . tablename('sz_yi_print_list') . ' WHERE uniacid = :uniacid ',
                 array(':uniacid' => $_W['uniacid']));
@@ -412,7 +412,7 @@ if ($operation == "change") {
         }
         unset($value);
         if (checksubmit("submit")) {
-            if($_GPC['dispatchtype']==0){
+            if($_GPC['dispatchtype']==0  && $_GPC["type"] == 1){
                 if ($perm_role == 1) {
                     $supplier_uid = intval($_W['uid']);
                 } else {
@@ -429,7 +429,7 @@ if ($operation == "change") {
             }
             if ($diyform_plugin) {
                 if ($_GPC["type"] == 1 && $_GPC["diyformtype"] == 2) {
-                    message("替换模式只试用于虚拟物品类型，实体物品无效！请重新选择！");
+                    message("替换模式只适用于虚拟物品类型，实体物品无效！请重新选择！");
                 }
             }
             if (empty($_GPC['goodsname'])) {

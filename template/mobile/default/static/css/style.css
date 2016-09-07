@@ -435,7 +435,7 @@ footer#footer-nav .menu-list:after {
     margin-left: -74px;
     margin-top: -9px;
 }
-.address_sub1,.address_sub2,.info_sub,.refund_sub1{margin: 10px 2% 0 !important;width: 96% !important}
+.address_sub1,.address_sub2,.info_sub,.refund_sub1,.register{margin: 10px 2% 0 !important;width: 96% !important}
 .order_main .sub1,.order_main .sub2{margin: 10px 0 10px 5px !important;}
 .return_navon{border-bottom: 2px #f15353 solid;color: #f15353!important;background: none!important}
 .new-returnnav{height: 44px!important;

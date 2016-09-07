@@ -211,7 +211,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                 <div class="nav" onclick="location.href='<%shop.url%>'"><i class='fa fa-home'></i> 首页</div>
                 <div class="nav" onclick="location.href='{php echo $this->createMobileUrl('member')}'"><i class='fa fa-user'></i> 会员中心</div>
              {if is_app()}
-              <div class="nav" id="webapp_share" style="border:none;"><i class='fa fa-share'></i> 分享</div>
+              <div class="nav" id="webapp_share" style="border:none;" onclick="web_app_share()"><i class='fa fa-share'></i> 分享</div>
               {else}
              <div class="nav" onclick="share()" style="border:none;"><i class='fa fa-share'></i> 分享</div>
              {/if}
@@ -697,6 +697,71 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             $(obj).attr('show','1').find('i').removeClass('fa-angle-up').addClass('fa-angle-down');
         }
     }
+
+    //分享
+    function web_app_share() {
+        if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
+            webapp_share();
+            PINGPP_ANDROID_SDK.shareLink(title, link, imgurl, desc);
+        } else {
+            setupWebViewJavascriptBridge(function(bridge) {
+                //var imgurls = z;
+                var resData = [title,link,imgurl,desc,imgurls];
+
+                //启动页
+                bridge.callHandler("webapp_share",'',function(response)
+                {
+
+                });
+
+                //微信分享
+                bridge.registerHandler("sharewx", function(data){
+                    bridge.callHandler("share_wx_result",resData,function(response)
+                    {
+                    });
+                })
+
+                //微信朋友圈
+                bridge.registerHandler("sharefriend", function(data){
+                    bridge.callHandler("share_friend_result",resData,function(response)
+                    {
+                    });
+                })
+
+                //二维码
+                bridge.registerHandler("shareRQCode", function(data){
+                    var resData = [qr_url, qr_imgurl];
+                    bridge.callHandler("share_RQCode_result",resData,function(response)
+                    {
+                    });
+                })
+
+
+                //QQ分享
+                bridge.registerHandler("share_qq_firend", function(data){
+                    bridge.callHandler("share_qq_firend_result",resData,function(response)
+                    {
+                    });
+                })
+
+                //QQ空间
+                bridge.registerHandler("share_qq_zone", function(data){
+                    bridge.callHandler("share_qq_zone_result",resData,function(response)
+                    {
+                    });
+                })
+
+                //复制链接
+                bridge.registerHandler("share_copy", function(data){
+                    var resData = [link];
+                    bridge.callHandler("share_copy_result",resData,function(response)
+                    {
+                    });
+                })
+            })
+        }
+    }
+
     require(['tpl', 'core','jquery.touchslider','swipe'], function(tpl, core) {
         $.ajax({
             url:"{php echo $this->createPluginMobileUrl('commission/shares')}",
@@ -782,69 +847,6 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         
           $('#container').html(  tpl('goods_info',json.result) );
 
-            //分享
-            $("#webapp_share").click(function() {
-                if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
-                    webapp_share();
-                    PINGPP_ANDROID_SDK.shareLink(title, link, imgurl, desc);
-                } else {
-                    setupWebViewJavascriptBridge(function(bridge) {
-                        var imgurls = z;
-                        var resData = [title,link,imgurl,desc,imgurls];
-
-                        //启动页
-                        bridge.callHandler("webapp_share",'',function(response)
-                        {
-
-                        });
-
-                        //微信分享
-                        bridge.registerHandler("sharewx", function(data){
-                            bridge.callHandler("share_wx_result",resData,function(response)
-                            {
-                            });
-                        })
-
-                        //微信朋友圈
-                        bridge.registerHandler("sharefriend", function(data){
-                            bridge.callHandler("share_friend_result",resData,function(response)
-                            {
-                            });
-                        })
-
-                        //二维码
-                        bridge.registerHandler("shareRQCode", function(data){
-                            var resData = [qr_url, qr_imgurl];
-                            bridge.callHandler("share_RQCode_result",resData,function(response)
-                            {
-                            });
-                        })
-
-
-                        //QQ分享
-                        bridge.registerHandler("share_qq_firend", function(data){
-                            bridge.callHandler("share_qq_firend_result",resData,function(response)
-                            {
-                            });
-                        })
-
-                        //QQ空间
-                        bridge.registerHandler("share_qq_zone", function(data){
-                            bridge.callHandler("share_qq_zone_result",resData,function(response)
-                            {
-                            });
-                        })
-
-                        //复制链接
-                        bridge.registerHandler("share_copy", function(data){
-                            var resData = [link];
-                            bridge.callHandler("share_copy_result",resData,function(response)
-                            {
-                            });
-                        })
-                    })
-                }
-            });
 
           var bh = $(document.body).height() - 50;
           $('.good_choose').css('max-height',bh); 
@@ -859,7 +861,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
            var z = []; 
            $(".main_image img").each(function() {
                 z.push($(this).attr("src"));
-                imgurls = JSON.stringify(z);
+                imgurls = z;//JSON.stringify(z);
             });
             var current;
             if (isWX) {

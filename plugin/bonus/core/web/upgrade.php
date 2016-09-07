@@ -80,6 +80,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_bonus_log') . " (
   `logno` varchar(255) DEFAULT '',
   `send_bonus_sn` int(11) DEFAULT '0',
   `paymethod` tinyint(1) DEFAULT '0',
+  `type` tinyint(1) DEFAULT '0',
   `isglobal` tinyint(1) DEFAULT '0',
   `status` tinyint(1) DEFAULT '0',
   `sendpay` tinyint(1) DEFAULT '0',
