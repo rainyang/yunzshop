@@ -58,7 +58,7 @@ if ($operation == 'display') {
 		} else {
 			pdo_insert('sz_yi_creditshop_goods', $data);
 			$id = pdo_insertid();
-			plog('creditshop.goods.add', "添加善金币商城商品 ID: {$id}  <br/>商品名称: {$data['title']}");
+			plog('creditshop.goods.add', "添加{SZ_YI_INTEGRAL}商城商品 ID: {$id}  <br/>商品名称: {$data['title']}");
 		}
 		message('更新商品成功！', $this->createPluginWebUrl('creditshop/goods', array('op' => 'post', 'id' => $id)), 'success');
 	}
@@ -94,7 +94,7 @@ if ($operation == 'display') {
 		message('抱歉，商品不存在或是已经被删除！', $this->createPluginWebUrl('creditshop/goods', array('op' => 'display')), 'error');
 	}
 	pdo_update('sz_yi_creditshop_goods', array('deleted' => 1), array('id' => $id, 'uniacid' => $_W['uniacid']));
-	plog('creditshop.goods.delete', "删除善金币商城商品 ID: {$id}  <br/>商品名称: {$item['title']} ");
+	plog('creditshop.goods.delete', "删除{SZ_YI_INTEGRAL}商城商品 ID: {$id}  <br/>商品名称: {$item['title']} ");
 	message('商品删除成功！', $this->createPluginWebUrl('creditshop/goods', array('op' => 'display')), 'success');
 } elseif ($operation == 'setgoodsproperty') {
 	ca('creditshop.goods.edit');
@@ -113,7 +113,7 @@ if ($operation == 'display') {
 		} else if ($type == 'status') {
 			$typestr = '上下架';
 		}
-		plog('creditshop.goods.edit', "修改善金币商城商品{$typestr}状态   ID: {$id}");
+		plog('creditshop.goods.edit', "修改{SZ_YI_INTEGRAL}商城商品{$typestr}状态   ID: {$id}");
 		die(json_encode(array('result' => 1, 'data' => $data)));
 	}
 	die(json_encode(array('result' => 0)));
