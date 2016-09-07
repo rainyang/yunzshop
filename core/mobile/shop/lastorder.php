@@ -7,7 +7,7 @@ global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if ($_W['isajax']) {
     if ($operation == 'display') {
-        $ret = pdo_fetchall("SELECT m.nickname,m.avatar,o.createtime FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m on o.openid = m.openid WHERE o.createtime >= :time ORDER BY o.createtime DESC LIMIT 1",array(':time' => time()-86400));
+        $ret = pdo_fetchall("SELECT m.nickname,m.avatar,o.createtime FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m on o.openid = m.openid WHERE o.createtime >= :time AND m.uniacid = :uniacid ORDER BY o.createtime DESC LIMIT 1",array(':time' => time()-86400,':uniacid' => $_W['uniacid']));
         $count = count($ret);
         $num = rand(0,$count-1);
         $time = time() - $ret[$num]['createtime'];
