@@ -83,6 +83,7 @@ class PHPExcel_Shared_CodePage
 			case 1258:	return 'CP1258';			break;	//	ANSI Vietnamese
 			case 1361:	return 'CP1361';			break;	//	ANSI Korean (Johab)
 			case 10000:	return 'MAC';				break;	//	Apple Roman
+			case 10008: return 'MAC';               break;  //  Simplified Chinese (GB 2312)
 			case 10006:	return 'MACGREEK';			break;	//	Macintosh Greek
 			case 10007:	return 'MACCYRILLIC';		break;	//	Macintosh Cyrillic
 			case 10029:	return 'MACCENTRALEUROPE';	break;	//	Macintosh Central Europe
