@@ -1725,7 +1725,7 @@ if ($_W['isajax']) {
                 if ($data['isverify'] == 2) {
                     $isverify = true;
                 }
-                if ($data['isverifysend'] == 1) {
+                if (empty($dispatchtype) && $isverify) {
                     $isverifysend = true;
                 }
                 if (!empty($data["virtual"]) || $data["type"] == 2) {
