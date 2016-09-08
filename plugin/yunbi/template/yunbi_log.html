@@ -18,6 +18,8 @@
         <li {if $_GPC['yunbitype']=='7'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'7'))}">充值{$set['yunbi_title']}明细</a></li>
         <li {if $_GPC['yunbitype']=='8'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'8'))}">转赠{$set['yunbi_title']}明细</a></li>
         <li {if $_GPC['yunbitype']=='9'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'9'))}">获得{$set['yunbi_title']}明细</a></li>
+        <li {if $_GPC['yunbitype']=='11'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'11'))}">{$set['yunbi_title']}交易记录出让</a></li>
+        <li {if $_GPC['yunbitype']=='12'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('yunbi/yunbi_log',array('yunbitype'=>'12'))}">{$set['yunbi_title']}交易记录收购</a></li>
     </ul> 
 </div>
 
@@ -85,7 +87,7 @@
                         <td> {if $_GPC['yunbitype']=='1'||$_GPC['yunbitype']=='2'||$_GPC['yunbitype']=='4'||$_GPC['yunbitype']=='7'||$_GPC['yunbitype']=='9'}+{else}-{/if}{$row['money']}</td>
                         <td>{$row['create_time']}</td>
                         <td>{$row['remark']}</td>
-                        <td>{if $row['status']==0}等待返现{else}已完成{/if}</td>
+                        <td>{$row['status_text']}</td>
 
                     </tr>
                 {/loop}

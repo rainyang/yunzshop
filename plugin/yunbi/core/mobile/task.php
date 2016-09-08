@@ -163,9 +163,17 @@ if (!file_exists($file)) {
                 echo "uniacid:".$_W['uniacid'];
                 echo "分销下线获得虚拟币失败！</br>";
             }
-
         }
-        
+        //公司回购
+        if (!empty($set) && $set['recycling'] >= '1') {
+            p('yunbi')->PerformRecycling($set, $_W['uniacid']);
+            echo "uniacid:".$_W['uniacid'];
+            echo "公司回购成功！</br>";
+        }else{
+            echo "uniacid:".$_W['uniacid'];
+            echo "公司回购失败！</br>";
+        }
+
     }
     @unlink ($file);
     echo "返现任务执行完成!";

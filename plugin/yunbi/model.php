@@ -274,6 +274,33 @@ if (!class_exists('YunbiModel')) {
 			pdo_insert('sz_yi_yunbi_log', $data_log);
 		}
 		
+		public function PerformRecycling($set,$uniacid) {
+			global $_W, $_GPC;
+			$recycling = (int)$set['recycling'] * 3600;
+
+
+		    $trading = pdo_fetchall("select * from" . tablename('sz_yi_yunbi_log') . " where uniacid = :uniacid and returntype = :returntype and money <> 0 and status = :status AND create_time <= :create_time", array(
+                ':uniacid' => $uniacid,
+                ':returntype' => '11',
+                'status' => '0',
+                'create_time' => time()-$recycling
+            ));
+            if ($trading) {
+	          	foreach ($trading as $row) {
+	          		$price = $row['money'] * $set['trading_money'] / $set['credit'];
+    				$poundage = $price * $set['poundage'] / 100;
+				    $sql = "update ".tablename('sz_yi_yunbi_log')."  set status = 3 where `uniacid` =  " . $uniacid ." AND status = '0' AND id = ".$row['id'];
+			        pdo_fetchall($sql);
+			        $result = m('member')->setCredit($row['openid'], 'credit2', $price - $poundage, array(
+			            $_W['member']['uid'],
+			            '出让'.$yunbi_title.'-公司回购-余额获得:' . $price - $poundage . '手续费:' .$poundage
+			        ));
+			        // 出售人推送信息
+	    		}	
+            }
+
+            
+		}
 		public function MoneySumTotal($conditions='',$mid='') {
 			global $_W, $_GPC;
 			if (!empty($mid)) {

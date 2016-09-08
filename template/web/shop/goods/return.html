@@ -89,4 +89,24 @@
          {/if}
     </div>
 </div>
+<div class='panel-heading'>
+   报单设置
+</div>
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><p class="yunbi">是否使用报单</p></label>
+    <div class="col-sm-6 col-xs-6">
+        <label class="radio-inline"><input type="radio" name="isdeclaration" value="1" {if $item['isdeclaration'] == 1}checked="true"{/if}  /> 是</label>
+        <label class="radio-inline"><input type="radio" name="isdeclaration" value="0" {if $item['isdeclaration'] == 0}checked="true"{/if}  /> 否</label>
+    </div>
+</div>
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">保单人获得{$yunbi_set['yunbi_title']}</label>
+    <div class="col-sm-4">
+        <div class='input-group'>
+            <input type="text" name="virtual_declaration"  value="{$item['virtual_declaration']}" class="form-control" />
+            <span class="input-group-addon">{$yunbi_set['yunbi_title']}</span>
+        </div>
+       <span class="help-block">报单人可获得{$yunbi_set['yunbi_title']}数量</span>
+    </div>   
+</div> 
 {/if}

@@ -29,3 +29,10 @@ if(pdo_fieldexists('sz_yi_goods', 'yunbi_consumption')) {
 if(!pdo_fieldexists('sz_yi_member_log', 'buy_mid')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_log')."ADD `buy_mid` INT NOT NULL AFTER `status`;");
 }
+//2016-09-08 是否开启报单
+if (!pdo_fieldexists('sz_yi_goods', 'isdeclaration')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isdeclaration` TINYINT(1) NOT NULL DEFAULT '0';");
+}
+if (!pdo_fieldexists('sz_yi_goods', 'virtual_declaration')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `virtual_declaration` DECIMAL(10,2) NOT NULL AFTER `isdeclaration`;");
+}

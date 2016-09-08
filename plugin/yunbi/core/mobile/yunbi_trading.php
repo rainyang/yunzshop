@@ -239,7 +239,7 @@ if ($operation == 'display') {
         pdo_fetchall($sql);
         $result = m('member')->setCredit($trading['openid'], 'credit2', $fee - $poundage, array(
             $_W['member']['uid'],
-            '出让'.$yunbi_title.'-余额获得:' . $fee . '手续费:' .$poundage
+            '出让'.$yunbi_title.'-余额获得:' . $fee - $poundage . '手续费:' .$poundage
         ));
         // 出售人推送信息
         show_json(1);

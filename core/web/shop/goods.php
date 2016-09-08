@@ -625,6 +625,9 @@ if ($operation == "change") {
                 $data['yunbi_deduct'] = floatval($_GPC['yunbi_deduct']);  //虚拟币最高抵扣 
                 //1开启强制使用云币，0关闭
                 $data['isforceyunbi'] = intval($_GPC['isforceyunbi']);
+                //是否使用保单
+                $data['isdeclaration'] = intval($_GPC['isdeclaration']);
+                $data['virtual_declaration'] = floatval($_GPC['virtual_declaration']);
             }
             if (p('hotel')) {
                 $data['deposit'] = $_GPC["deposit"];//房间押金
