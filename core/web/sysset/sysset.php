@@ -63,10 +63,12 @@ function upload_alipay_cert($fileinput)
     return "";
 }
 $op      = empty($_GPC['op']) ? 'shop' : trim($_GPC['op']);
+/*
 if ($op == 'datamove') {
     $up = m('common')->dataMove();
     exit('迁移成功');
 }
+ */
 $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
     ':uniacid' => $_W['uniacid']
 ));
