@@ -30,7 +30,7 @@ class Detail extends \api\YZ
             ':id' => $goodsid
         ));
         //$c = new \Core();exit;
-        $goods['url'] = $_W['siteroot']."/app/index.php?i=2&c=entry&p=detail&id={$goods['goods_id']}&do=shop&m=sz_yi&is_admin=1";//$c->createMobileUrl('shop/detail', array('id' => $goods['id']));
+        $goods['url'] = $_W['siteroot']."app/index.php?i=2&c=entry&p=detail&id={$goods['goods_id']}&do=shop&m=sz_yi&is_admin=1&i={$para['uniacid']}";//$c->createMobileUrl('shop/detail', array('id' => $goods['id']));
         //require IA_ROOT.'/web/common/template.func.php';
 
         //include $c->template('web/order/express');
