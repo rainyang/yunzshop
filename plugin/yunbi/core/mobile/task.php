@@ -67,7 +67,6 @@ if (!file_exists($file)) {
                 foreach ($remove_times as $k => $v) {
                     if (str_replace(array("日","点"),"",$v) == date('dH')) {
                         if (!isset($set['remove_d']) || $set['remove_d'] != date('d')) {
-                            //$data  = array_merge($set, array('current_d'=>date('d')));
                             $set['remove_d'] = date('d');
                             $this->updateSet($set);
                             $isexecute = true;
@@ -105,9 +104,8 @@ if (!file_exists($file)) {
                 if (!file_exists($yunbi_into)) {
                     $isexecute = false;
                     if (date('H') == $set['yunbi_returntime']) {
-                        if (!isset($set['current_d']) || $set['current_d'] != date('d')) {
-                            //$data  = array_merge($set, array('current_d'=>date('d')));
-                            $set['current_d'] = date('d');
+                        if (!isset($set['into_d']) || $set['into_d'] != date('d')) {
+                            $set['into_d'] = date('d');
                             $this->updateSet($set);
                             $isexecute = true;
                         }

@@ -193,7 +193,18 @@ div.flicking_con a.on{background-position:0 -9px}
                          {template 'diyform/formfields'}
                 </div>
                 {/if}
-
+               <%if goods.isdeclaration == '1'%>
+                  <div class="diyform_main">
+                    <div class="dline " style="border:none">
+                      <div class="dtitle">保单人：</div>
+                      <div class="dinfo">
+                        <div class="dinner ">
+                          <input id="declaration" type="text" value="" placeholder="请输入ID\名称" name="declaration">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <%/if%>
                 <div class='number'>
                   <div class='label'>购买数量</div>
                   <div class='num'>
@@ -431,6 +442,7 @@ div.flicking_con a.on{background-position:0 -9px}
             <%/if%>
             <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:85%'<%/if%>>立即购买</div>
         <%/if%>
+        <input type="hidden" value="<%goods.isdeclaration%>" id='isdeclaration'>
         <input type="hidden" value="<%goods.isforce%>" id='isforce'>
         <input type="hidden" value="<%goods.yunbi_num%>" id='yunbi_num'>
         <input type="hidden" value="<%goods.isforceyunbi%>" id='isforceyunbi'>
@@ -1157,100 +1169,105 @@ div.flicking_con a.on{background-position:0 -9px}
             isyunbipay = 0;
           }
       }
-                          if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
-                                require(['core'],function(core){
-                                    core.tip.confirm($('#followtip').val(),function(){
-                                        location.href = $('#followurl').val();
-                                        return;
-                                    }) 
-                                });
-                             return;
-                          }
-                   action = act;
-                         if(!action){
-                                     
-                                $('.good_choose_layer').fadeIn(200);
-                                $('.good_choose_layer').unbind('click').click(function(){
-                                    $('.good_choose_layer').fadeOut(100);
-                                    $('.good_choose').fadeOut(100); 
-                                })
-                                $('.good_choose').fadeIn(200);
-                                return;
-                         }
-                         var specselected  = '';
-  if( action=='cart'){
-             $('.good_choose_layer').fadeIn(200);
-                             $('.good_choose_layer').unbind('click').click(function(){
-                                   closechoose();
-                             })
-               $('.good_choose').fadeIn(200);
-               return;   
-             }else{
-            {if !empty($formInfo)}
+            if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
+                  require(['core'],function(core){
+                      core.tip.confirm($('#followtip').val(),function(){
+                          location.href = $('#followurl').val();
+                          return;
+                      }) 
+                  });
+               return;
+            }
+            action = act;
+            if(!action){
+                       
+                  $('.good_choose_layer').fadeIn(200);
+                  $('.good_choose_layer').unbind('click').click(function(){
+                      $('.good_choose_layer').fadeOut(100);
+                      $('.good_choose').fadeOut(100); 
+                  })
+                  $('.good_choose').fadeIn(200);
+                  return;
+            }
+            var specselected  = '';
+            if( action=='cart'){
                  $('.good_choose_layer').fadeIn(200);
-                             $('.good_choose_layer').unbind('click').click(function(){
-                                   closechoose();
-                             })
-               $('.good_choose').fadeIn(200);
-               return;
-            {/if}
-             
+                   $('.good_choose_layer').unbind('click').click(function(){
+                         closechoose();
+                   })
+                  $('.good_choose').fadeIn(200);
+                   return;   
+            }else{
+                {if !empty($formInfo)}
+                  $('.good_choose_layer').fadeIn(200);
+                       $('.good_choose_layer').unbind('click').click(function(){
+                             closechoose();
+                       })
+                  $('.good_choose').fadeIn(200);
+                  return;
+                {/if}
                 $('.spec_items').each(function(){
-                             var self = $(this);
-                                            if( $(this).find('.on').length<=0){
-                                 specselected = self.attr('title');
-                                 return false;
-                              }
+                   var self = $(this);
+                    if( $(this).find('.on').length<=0){
+                       specselected = self.attr('title');
+                       return false;
+                    }
                 });  
-             if(specselected!='') {
-               $('.good_choose_layer').fadeIn(200);
-                             $('.good_choose_layer').unbind('click').click(function(){
-                                   closechoose();
-                             })
-               $('.good_choose').fadeIn(200);
-               return;
-             }
-            
-         }
- 
+                 if(specselected!='') {
+                   $('.good_choose_layer').fadeIn(200);
+                                 $('.good_choose_layer').unbind('click').click(function(){
+                                       closechoose();
+                                 })
+                   $('.good_choose').fadeIn(200);
+                   return;
+                 }
+                  var isdeclaration = $('#isdeclaration').val();
+                  if (isdeclaration == 1) {
+                     $('.good_choose_layer').fadeIn(200);
+                        $('.good_choose_layer').unbind('click').click(function(){
+                             closechoose();
+                         })
+                     $('.good_choose').fadeIn(200);
+                     return;
+                  }
 
-                      var diymode = {php echo intval($diymode)};
+            }
+          var diymode = {php echo intval($diymode)};
 
-                      if(specselected!='' || diymode==1) {
-                             if (specselected == '') {
-                                 $('#goods_spec').hide();
-                             }
+          if(specselected!='' || diymode==1) {
+                 if (specselected == '') {
+                     $('#goods_spec').hide();
+                 }
 
-                             $('.good_choose_layer').fadeIn(200);
-                             $('.good_choose_layer').unbind('click').click(function(){
-                                 closechoose();
-                             })
-                        $('.good_choose').fadeIn(200);
-                      } else{
-                          if(action=='cart'){
-                                                require(['core'],function(core){
+                 $('.good_choose_layer').fadeIn(200);
+                 $('.good_choose_layer').unbind('click').click(function(){
+                     closechoose();
+                 })
+            $('.good_choose').fadeIn(200);
+          } else{
+              if(action=='cart'){
+                require(['core'],function(core){
+                    core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val()},function(ret){
+                        if(ret.status==1){
+                           core.tip.show(ret.result.message);
+                           var cartdiv = $('.cart');
+                               if( cartdiv.find('b').length<=0){
+                                  cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
+                               }
+                               else {
+                                  cartdiv.find('b').html(ret.result.cartcount);
+                               }
 
-                                                                           core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val()},function(ret){
-                                                                                                        if(ret.status==1){
-                                                                                                           core.tip.show(ret.result.message);
-                                                                                                           var cartdiv = $('.cart');
-                                                                                                                               if( cartdiv.find('b').length<=0){
-                                                                                                                                  cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
-                                                                                                                               }
-                                                                                                                               else {
-                                                                                                                                  cartdiv.find('b').html(ret.result.cartcount);
-                                                                                                                               }
+                       } else{
+                           core.message(ret.result,'','error');
+                       }
+                    },true,true);
+                 });
+              }else if(action=='buy'){
+               location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
+              }
 
-                                                                                                       } else{
-                                                                                                           core.message(ret.result,'','error');
-                                                                                                       }
-                                                                               },true,true);
-                                                 });
-                                    }else if(action=='buy'){
-                                         location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
-                                    }
-
-                      }
+          }
     }
         function setoptions(){
              var titles = '';
@@ -1265,6 +1282,7 @@ div.flicking_con a.on{background-position:0 -9px}
                  $("#optiondiv").html(titles);
         }
     function choose2(direct,close){
+      alert(isyunbipay);
       var isforce = $('#isforce').val();
          require(['core'],function(core){
              
@@ -1317,25 +1335,25 @@ div.flicking_con a.on{background-position:0 -9px}
                     };
                 {/if}
         //openid
-                                {if !empty($popenid) or !empty($openid)}
-                                                                           core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
-                                                                                                        if(ret.status==1){ 
-                                                                                                           core.tip.show(ret.result.message);
-                                                                                                           var cartdiv = $('.cart');
-                                                                                                                               if( cartdiv.find('b').length<=0){
-                                                                                                                                  cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
-                                                                                                                               }
-                                                                                                                               else {
-                                                                                                                                  cartdiv.find('b').html(ret.result.cartcount);
-                                                                                                                               } closechoose();
+                            {if !empty($popenid) or !empty($openid)}
+                               core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
+                                      if(ret.status==1){ 
+                                         core.tip.show(ret.result.message);
+                                         var cartdiv = $('.cart');
+                                             if( cartdiv.find('b').length<=0){
+                                                cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
+                                             }
+                                             else {
+                                                cartdiv.find('b').html(ret.result.cartcount);
+                                             } closechoose();
 
-                                                                                                       } else{
-                                                                                                           core.message(ret.result,'','error');
-                                                                                                       }
-                                                                               },true,true);
+                                     } else{
+                                         core.message(ret.result,'','error');
+                                     }
+                                  },true,true);
                                 
                             {else}
-                                         location.href = "{php echo $this->createMobileUrl('member/login')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+                                location.href = "{php echo $this->createMobileUrl('member/login')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
                             {/if}
         //end openid
                                             
@@ -1345,12 +1363,14 @@ div.flicking_con a.on{background-position:0 -9px}
                   
                 {template 'diyform/common_js_data'}
 
+                var declaration = $('#declaration').val()?$('#declaration').val():'';
+
                 var data ={
                     'op': 'create',
                     'id': {$_GPC['id']},
-                    'diydata': diydata
+                    'diydata': diydata,
+                    'declaration':declaration
                 };
-
                 require(['core'],function(core){
                     core.json('shop/detail', data, function(create_json) {
                         if (create_json.status == 1) {
