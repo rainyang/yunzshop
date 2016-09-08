@@ -78,10 +78,12 @@
 
         </div></a>
 <%if shopset.isyunbi%>
-   <a href="javascript:;"><div class="list1" style="margin:-2px 0px 0; border-bottom:0px;"><%shopset.yunbi_title%>: <%member.virtual_currency%>
+   <a href="javascript:;"><div class="list1" style="margin:-2px 0px 0; border-bottom:0px;"><%shopset.yunbi_title%>: <%member.virtual_currency%>{if $member['virtual_currency'] > 0 && p('yunbi')}
+    <div class="take" style="background:hsl(148, 91%, 42%);margin-right: 5px;" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer', 'yunbi' => 1))}'">{if !empty($shopset['yunbi_title'])}{php echo $shopset['yunbi_title']}{else}云币{/if}转让 </div>
+    {/if}
         </div></a>
+         
 <%/if%>
-        
 </div>
 <div class="order">
     <a href="{php echo $this->createMobileUrl('order')}">
