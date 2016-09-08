@@ -47,7 +47,7 @@ function get_test_para()
 
     $para = $api_db[$group_name]['method'][$method_name]['para'];
     //var_dump($para);
-    return $aes->siyuan_aes_encode(json_encode($para, JSON_UNESCAPED_UNICODE));
+    return $aes->siyuan_aes_encode(json_encode($para));
 
 }
 $_POST['para'] = get_test_para();
