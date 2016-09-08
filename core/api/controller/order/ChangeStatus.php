@@ -159,7 +159,6 @@ class ChangeStatus extends \api\YZ
     }
 
 
-
     public function test($province_list)
     {
         unset($province_list[0]);
@@ -206,10 +205,13 @@ class ChangeStatus extends \api\YZ
             "mobile" => $address["mobile"],
             "address" => array_part('province,city,area,address', $address)
         );
-        $company_json = file_get_contents( __API_ROOT__ . '/source/expresscom.json');
+        $company_json = file_get_contents(__API_ROOT__ . '/source/expresscom.json');
         $company_list = json_decode($company_json, true);
         //exit;
-        $res = compact('company_list', 'address');
+        $res = array(
+            'company_list' => $company_list,
+            'address' => $address
+        );
         dump($res);
         $this->returnSuccess($res);
     }
@@ -272,7 +274,9 @@ class ChangeStatus extends \api\YZ
         );
         $this->returnSuccess($res, "发货操作成功！");
     }
-    function confirmFetch() {
+
+    function confirmFetch()
+    {
         $para = $this->getPara();
         $order = $this->order_info;
         $this->ca("order.op.fetch");
@@ -300,13 +304,13 @@ class ChangeStatus extends \api\YZ
             ));
             if (!empty($update_result)) {
                 pdo_update("sz_yi_order_refund", array(
-                    "status" => - 1
-                ) , array(
+                    "status" => -1
+                ), array(
                     "id" => $order["refundid"]
                 ));
                 pdo_update("sz_yi_order", array(
                     "refundid" => 0
-                ) , array(
+                ), array(
                     "id" => $order["id"]
                 ));
             }
@@ -326,8 +330,9 @@ class ChangeStatus extends \api\YZ
                 'value' => '3',
             )
         );
-        $this->returnSuccess($res,"发货操作成功！");
+        $this->returnSuccess($res, "发货操作成功！");
     }
+
     public function confirmPay()
     {
         $this->ca("order.op.pay");
@@ -382,8 +387,8 @@ class ChangeStatus extends \api\YZ
                 if ($plugin_commission) {
                     $plugin_commission->checkOrderPay($val["id"]);
                 }
-                $price           += $val['price'];
-                $orderid[]                 = $val['id'];
+                $price += $val['price'];
+                $orderid[] = $val['id'];
             }
             $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
                 ':uniacid' => $para['uniacid'],
@@ -410,22 +415,22 @@ class ChangeStatus extends \api\YZ
                 );
                 pdo_insert('core_paylog', $log);
             }
-            if(is_array($orderid)){
+            if (is_array($orderid)) {
                 $orderids = implode(',', $orderid);
                 $where_update = "id in ({$orderids})";
             }
-            pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=11 where '.$where_update.' and uniacid=:uniacid ', array(
+            pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=11 where ' . $where_update . ' and uniacid=:uniacid ', array(
                 ':uniacid' => $para['uniacid']
             ));
-            $ret            = array();
-            $ret['result']  = 'success';
-            $ret['from']    = 'return';
-            $ret['tid']     = $log['tid'];
-            $ret['user']    = $order['openid'];
-            $ret['fee']     = $price;
-            $ret['weid']    = $para['uniacid'];
+            $ret = array();
+            $ret['result'] = 'success';
+            $ret['from'] = 'return';
+            $ret['tid'] = $log['tid'];
+            $ret['user'] = $order['openid'];
+            $ret['fee'] = $price;
+            $ret['weid'] = $para['uniacid'];
             $ret['uniacid'] = $para['uniacid'];
-            $payresult      = m('order')->payResult($ret);
+            $payresult = m('order')->payResult($ret);
             $res = array(
                 'status' => array(
                     'name' => '待发货',
@@ -434,7 +439,7 @@ class ChangeStatus extends \api\YZ
             );
         }
         plog("order.op.pay", "订单确认付款 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
-        $this->returnSuccess($res,"确认订单付款操作成功！");
+        $this->returnSuccess($res, "确认订单付款操作成功！");
         exit;
     }
 
@@ -726,7 +731,9 @@ class ChangeStatus extends \api\YZ
         }
         $this->returnSuccess(array(), '退款申请处理成功!');
     }
-    public function sendRedPack(){
+
+    public function sendRedPack()
+    {
         //$para = $this->getPara();
         $order = $this->order_info;
         if (empty($order['redstatus'])) {
@@ -734,11 +741,11 @@ class ChangeStatus extends \api\YZ
             $this->returnError("红包已发送，不可重复发送！");
         }
 
-        if ($order["redprice"] > 0 ) {
+        if ($order["redprice"] > 0) {
             //订单红包价格字段大于0则正常发送红包
             if ($order["redprice"] >= 1 && $order["redprice"] <= 200) {
                 //红包价格必须在1-200元之间
-                $result = m('finance')->sendredpack($order['openid'], $order["redprice"]*100, $order["id"], $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
+                $result = m('finance')->sendredpack($order['openid'], $order["redprice"] * 100, $order["id"], $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
                 if (is_error($result)) {
                     $this->returnError($result['message']);
                 } else {
