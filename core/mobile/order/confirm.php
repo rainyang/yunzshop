@@ -129,6 +129,7 @@ if ($_W['isajax']) {
         $isverify  = false;
         $isvirtual = false;
         $changenum = false;
+        $dispatchsend = false;
         $goods     = array();
 
         if (empty($id)) {   //购物车,否则是直接购买的
@@ -147,7 +148,7 @@ if ($_W['isajax']) {
                 ':openid' => $openid
             ), 'supplier_uid');
 
-            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,discounts2,discounttype,discountway,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid, g.yunbi_deduct FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
+            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,discounts2,discounttype,discountway,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid, g.yunbi_deduct, g.dispatchsend FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
 
             $goods = pdo_fetchall($sql, array(
                 ':uniacid' => $uniacid,
@@ -301,7 +302,7 @@ if ($_W['isajax']) {
             $goods[] = $data;
         }
 
-       
+        $dispatchsend = false;
         $goods = set_medias($goods, 'thumb');
         foreach ($goods as &$g) {
             if ($g['isverify'] == 2) {
@@ -309,6 +310,9 @@ if ($_W['isajax']) {
             }
             if ($g['isverifysend'] == 1) {
                 $isverifysend = true;
+            }
+            if ($g['dispatchsend'] == 1) {
+                $dispatchsend = true;
             }
             if (!empty($g['virtual']) || $g['type'] == 2) {
                 $isvirtual = true;
@@ -934,6 +938,7 @@ if ($_W['isajax']) {
             'dispatch_list' => $dispatch_list,
             'isverify' => $isverify,
             'isverifysend' => $isverifysend,
+            'dispatchsend' => $dispatchsend,
             'stores' => $stores,
             'isvirtual' => $isvirtual,
             'changenum' => $changenum,
@@ -950,6 +955,7 @@ if ($_W['isajax']) {
         $isverify       = false;
         $isvirtual      = false;
         $isverifysend   = false;
+        $dispatchsend   = false;
         $deductprice    = 0;
         $deductprice2   = 0;
         $deductcredit2  = 0;
@@ -1134,6 +1140,9 @@ if ($_W['isajax']) {
                 }
                 if ($g['isverifysend'] == 1) {
                     $isverifysend = true;
+                }
+                if ($g['dispatchsend'] == 1) {
+                    $dispatchsend = true;
                 }
                 if ($g["manydeduct"]) {
                     $deductprice += $g["deduct"] * $g["total"];
@@ -1375,7 +1384,7 @@ if ($_W['isajax']) {
             $dispatchtype = intval($order_row['dispatchtype']);
             $addressid    = intval($order_row['addressid']);
             $address      = false;
-            if (!empty($addressid) && $dispatchtype == 0) {
+            if (!empty($addressid) && ($dispatchtype == 0 || $dispatchtype == 2)) {
                 $address = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where id=:id and openid=:openid and uniacid=:uniacid   limit 1', array(
 
                     ':uniacid' => $uniacid,
@@ -1414,6 +1423,7 @@ if ($_W['isajax']) {
             $isvirtual = false;
             $isverify  = false;
             $isverifysend  = false;
+            $dispatchsend  = false;
             foreach ($goodsarr as $g) {
                 if (empty($g)) {
                     continue;
@@ -1739,6 +1749,11 @@ if ($_W['isajax']) {
                 if ($data['isverifysend'] == 1) {
                     $isverifysend = true;
                 }
+                if ($dispatchtype == 2) {
+                    $dispatchsend = true;
+                    $isverify = false;
+                    $dispatchtype = 0;
+                }
                 if (!empty($data["virtual"]) || $data["type"] == 2) {
                     $isvirtual = true;
                 }
@@ -1822,7 +1837,7 @@ if ($_W['isajax']) {
 
             //如果开启核销并且不支持配送，则没有运费
             $isDispath = true;
-            if ($isverify && !$isverifysend) {
+            if ($isverify && !$isverifysend && !$dispatchsend) {
                 $isDispath = false;
             }
 

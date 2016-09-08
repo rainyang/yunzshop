@@ -554,6 +554,7 @@ if ($operation == "change") {
                 'buygroups' => is_array($_GPC['buygroups']) ? implode(",", $_GPC['buygroups']) : '',
                 'isverify' => intval($_GPC['isverify']),
                 'isverifysend' => intval($_GPC['isverifysend']),
+                'dispatchsend' => intval($_GPC['dispatchsend']),
                 'storeids' => is_array($_GPC['storeids']) ? implode(',', $_GPC['storeids']) : '',
                 'noticeopenid' => trim($_GPC['noticeopenid']),
                 'noticetype' => is_array($_GPC['noticetype']) ? implode(",", $_GPC['noticetype']) : '',
