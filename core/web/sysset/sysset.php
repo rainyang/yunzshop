@@ -204,6 +204,7 @@ if (checksubmit()) {
         }
         plog('sysset.save.notice', '修改系统设置-模板消息通知设置');
     } elseif ($op == 'trade') {
+        //print_r($_GPC['trade']);exit;
         $set['trade'] = is_array($_GPC['trade']) ? $_GPC['trade'] : array();
         if (!$_W['isfounder']) {
             unset($set['trade']['receivetime']);
