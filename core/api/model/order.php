@@ -248,7 +248,10 @@ where {$condition_str} ORDER BY o.id DESC LIMIT 0,10 ";
 
         $value = $button_mapping[$button_name];
         $name = $button_name;
-        $button = compact('name', 'value');
+        $button = array(
+            'name'=>$name,
+            'value'=>$value
+        );
         return $button;
     }
 
