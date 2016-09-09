@@ -32,7 +32,7 @@ if ($operation == 'display') {
 	}
 	unset($value);
 	if ($_GPC['export'] == '1') {
-		m('excel')->export($list, array('title' => '招商中心' . '数据-' . date('Y-m-d-H-i', time()), 'columns' => array(array('title' => 'ID', 'field' => 'id', 'width' => 12), array('title' => '粉丝', 'field' => 'nickname', 'width' => 12), array('title' => '姓名', 'field' => 'realname', 'width' => 12), array('title' => '手机号码', 'field' => 'mobile', 'width' => 12), array('title' => '供应商数', 'field' => 'suppliercount', 'width' => 12), array('title' => '订单数', 'field' => 'ordercount', 'width' => 12), array('title' => '佣金比例', 'field' => 'commissions', 'width' => 12), array('title' => '累积佣金', 'field' => 'commission_total', 'width' => 12), array('title' => '打款佣金', 'field' => 'commission_ok', 'width' => 12))));
+		m('excel')->export($list, array('title' => '招商中心' . '数据-' . date('Y-m-d-H-i', time()), 'columns' => array(array('title' => 'ID', 'field' => 'id', 'width' => 12), array('title' => '粉丝', 'field' => 'nickname', 'width' => 12), array('title' => '姓名', 'field' => 'realname', 'width' => 12), array('title' => '手机号码', 'field' => 'mobile', 'width' => 12), array('title' => '上级', 'field' => 'agent_realname', 'width' => 12), array('title' => '累积佣金', 'field' => 'commission_total', 'width' => 12), array('title' => '打款佣金', 'field' => 'commission_ok', 'width' => 12))));
 	}
 	$total = count($list);
 	$pager = pagination($total, $pindex, $psize);
