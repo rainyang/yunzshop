@@ -46,6 +46,13 @@ if (!class_exists('VerifyModel')) {
                             'add' => '添加-log',
                             'edit' => '修改-log',
                             'delete' => '删除-log'
+                        ) ,
+                        'withdraw' => array(
+                            'text' => '提现',
+                            'view' => '浏览',
+                            'add' => '添加-log',
+                            'edit' => '修改-log',
+                            'delete' => '删除-log'
                         )
                     )
                 )

@@ -37,4 +37,12 @@ class VerifyMobile extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function order()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function withdraw()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 }

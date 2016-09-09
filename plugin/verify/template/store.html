@@ -34,7 +34,7 @@
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>绑定店长微信</label>
                     <div class="col-sm-9 col-xs-12">
-                        {ife 'cashier.store' $item}
+                        {ife 'verify.store' $item}
                             <input type="hidden" class="form-control" id="member_id" name="member_id" value="{$item['member_id']}" />
                             <div class='input-group' style='border:none;'>
                             <input type="text" class="form-control" id="member" value="{if !empty($member)}{$member['nickname']}{/if}" readonly />
@@ -44,6 +44,16 @@
                             </div>
                         {else}
                             <div class='form-control-static'>{$item['wechat']}</div>
+                        {/if}
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>平台提成</label>
+                    <div class="col-sm-9 col-xs-12">
+                        {ife 'verify.store' $item}
+                            <input type="text" name="balance" class="form-control" value="{$item['balance']}" />%
+                        {else}
+                            <div class='form-control-static'>{$item['balance']}</div>
                         {/if}
                     </div>
                 </div>
