@@ -77,7 +77,7 @@ function bindScroller(){
                     stop = false;
                     $('#container').append('<div id="log_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载...</div>');
                     page++;
-                    core.pjson('merchant/logg', {status:current_status,page: page}, function (morejson) {
+                    core.pjson('merchant/logg', {status:current_status,page: page,iscenter:"{$_GPC['iscenter']}"}, function (morejson) {
                         stop = true;
                         $('#log_loading').remove();
                         $("#container").append(tpl('tpl_log', morejson.result));
@@ -95,7 +95,7 @@ function bindScroller(){
         function getLog(status) {
             $('.log_menu .nav').removeClass('navon');
             $('.log_menu .nav[data-status=\'' + status + '\']').addClass('navon');
-            core.pjson('merchant/logg', {status:status, page: page}, function (json) {
+            core.pjson('merchant/logg', {status:status, page: page,iscenter:"{$_GPC['iscenter']}"}, function (json) {
                 $('#total').html( json.result.total);
                 $('#commissioncount').html( json.result.commissioncount);
                 if (!json.result.list.length) {

@@ -12,6 +12,7 @@ namespace api\controller\order;
 class ChangePrice extends \api\YZ
 {
     private $order_info;
+
     public function __construct()
     {
         parent::__construct();
@@ -32,9 +33,9 @@ class ChangePrice extends \api\YZ
         //缩略图,标题,价格 数量,小计, 应收,运费,实入
         $order_info = $this->order_info;
         $order_price = array(
-            'total_price'=>$order_info['price'],
-            'price'=>$order_info['price']-$order_info['dispatchprice'],
-            'dispatchprice'=>$order_info['dispatchprice']
+            'total_price' => $order_info['price'],
+            'price' => $order_info['price'] - $order_info['dispatchprice'],
+            'dispatchprice' => $order_info['dispatchprice']
         );
 
         $order_goods = pdo_fetchall("select og.id as order_goods_id,g.title,g.thumb,og.total,og.price,og.realprice,og.total*og.price as total_price from " . tablename("sz_yi_order_goods") . " og " . " left join " . tablename("sz_yi_goods") . " g on g.id=og.goodsid " . " where og.uniacid=:uniacid and og.orderid=:orderid ", array(
@@ -43,12 +44,16 @@ class ChangePrice extends \api\YZ
         ));
         //$order_goods = $order_model->getOrderGoods($para["order_id"], $para["uniacid"]);
 
-
-        $res = compact('order_goods', 'order_price');
+        $res = array(
+            'order_goods' => $order_goods,
+            'order_price' => $order_price
+        );
         dump($res);
         $this->returnSuccess($res);
     }
-    public function confirm(){
+
+    public function confirm()
+    {
         $para = $this->getPara();
 //dump($para);exit;
         $order_info = $this->order_info;
@@ -60,7 +65,7 @@ class ChangePrice extends \api\YZ
         }
         $changeprice = 0;
         foreach ($changegoodsprice as $ogid => $change) {
-            $changeprice+= floatval($change);
+            $changeprice += floatval($change);
         }
         $dispatchprice = floatval($para["changedispatchprice"]);
         if ($dispatchprice < 0) {
@@ -70,7 +75,7 @@ class ChangePrice extends \api\YZ
         $changedispatchprice = 0;
         if ($dispatchprice != $order_info["dispatchprice"]) {
             $changedispatchprice = $dispatchprice - $order_info["dispatchprice"];
-            $orderprice+= $changedispatchprice;
+            $orderprice += $changedispatchprice;
         }
         if ($orderprice < 0) {
             $this->returnError("订单实际支付价格不能小于0元！", '', "error");
@@ -100,7 +105,7 @@ class ChangePrice extends \api\YZ
         $orderupdate["changeprice"] = $order_info["changeprice"] + $changeprice;
         if ($dispatchprice != $order_info["dispatchprice"]) {
             $orderupdate["dispatchprice"] = $dispatchprice;
-            $orderupdate["changedispatchprice"]+= $changedispatchprice;
+            $orderupdate["changedispatchprice"] += $changedispatchprice;
         }
         if (!empty($orderupdate)) {
             pdo_update("sz_yi_order", $orderupdate, array(
@@ -119,7 +124,7 @@ class ChangePrice extends \api\YZ
                 pdo_update("sz_yi_order_goods", array(
                     "realprice" => $realprice,
                     "changeprice" => $changeprice
-                ) , array(
+                ), array(
                     "id" => $ogid
                 ));
             }
@@ -138,6 +143,6 @@ class ChangePrice extends \api\YZ
             'uniacid' => $para['uniacid'],
         ));
         $order_info = $order_model->getPriceInfo($order_info);
-        $this->returnSuccess($order_info,"订单改价成功!");
+        $this->returnSuccess($order_info, "订单改价成功!");
     }
 }

@@ -63,10 +63,12 @@ function upload_alipay_cert($fileinput)
     return "";
 }
 $op      = empty($_GPC['op']) ? 'shop' : trim($_GPC['op']);
+/*
 if ($op == 'datamove') {
     $up = m('common')->dataMove();
     exit('迁移成功');
 }
+ */
 $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
     ':uniacid' => $_W['uniacid']
 ));
@@ -204,6 +206,7 @@ if (checksubmit()) {
         }
         plog('sysset.save.notice', '修改系统设置-模板消息通知设置');
     } elseif ($op == 'trade') {
+        //print_r($_GPC['trade']);exit;
         $set['trade'] = is_array($_GPC['trade']) ? $_GPC['trade'] : array();
         if (!$_W['isfounder']) {
             unset($set['trade']['receivetime']);

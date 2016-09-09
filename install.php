@@ -158,7 +158,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_commission_shop') . " (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_coupon` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_coupon') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `catid` int(11) DEFAULT '0',
@@ -221,7 +221,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_coupon` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_coupon_category` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_coupon_category') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `name` varchar(255) DEFAULT '',
@@ -235,7 +235,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_coupon_category` (
 
 
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_coupon_data` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_coupon_data') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `openid` varchar(255) DEFAULT '',
@@ -254,7 +254,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_coupon_data` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_coupon_guess` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_coupon_guess') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `couponid` int(11) DEFAULT '0',
@@ -269,7 +269,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_coupon_guess` (
 
 
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_coupon_log` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_coupon_log') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `logno` varchar(255) DEFAULT '',
@@ -291,7 +291,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_coupon_log` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_creditshop_adv` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_creditshop_adv') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `advname` varchar(50) DEFAULT '',
@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_creditshop_adv` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_creditshop_category` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_creditshop_category') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0' COMMENT '所属帐号',
   `name` varchar(50) DEFAULT NULL COMMENT '分类名称',
@@ -324,7 +324,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_creditshop_category` (
 
 
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_creditshop_goods` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_creditshop_goods') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `displayorder` int(11) DEFAULT '0',
@@ -395,7 +395,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_creditshop_goods` (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_creditshop_log` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_creditshop_log') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `logno` varchar(255) DEFAULT '',
@@ -441,7 +441,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_designer') . " (
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_designer_menu` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_designer_menu') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `menuname` varchar(255) DEFAULT '',
@@ -1254,7 +1254,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_poster_scan') . " (
   FULLTEXT KEY `idx_openid` (`openid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_postera` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_postera') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `type` tinyint(3) DEFAULT '0' COMMENT '1 首页 2 小店 3 商城 4 自定义',
@@ -1304,7 +1304,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_postera` (
 
 
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_postera_log` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_postera_log') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `openid` varchar(255) DEFAULT '',
@@ -1329,7 +1329,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_postera_log` (
 
 
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_postera_qr` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_postera_qr') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `acid` int(10) unsigned NOT NULL,
   `openid` varchar(100) NOT NULL DEFAULT '',
@@ -1654,14 +1654,14 @@ INSERT INTO " . tablename('sz_yi_plugin'). " (`id`, `displayorder`, `identity`, 
 (12, 12, 'article', '文章营销', '1.0', '官方', 1);";
 pdo_fetchall($sql);
 
-//pdo_fetchall("UPDATE `ims_qrcode` SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
+//pdo_fetchall("UPDATE `" . tablename('qrcode'). "` SET `name` = 'SZ_YI_POSTER_QRCODE', `keyword`='SZ_YI_POSTER' WHERE `keyword` = 'EWEI_SHOP_POSTER'");
 
 if (!pdo_fieldexists('sz_yi_goods', 'cates')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `cates` text;");
 }
 
 $sql = "
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_supplier` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_af_supplier'). " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `openid` varchar(255) CHARACTER SET utf8 NOT NULL,
   `uniacid` int(11) NOT NULL,
@@ -1674,7 +1674,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_supplier` (
   `status` tinyint(3) NOT NULL COMMENT '1审核成功2驳回',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_apply` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_supplier_apply'). " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL COMMENT '供应商id',
   `uniacid` int(11) NOT NULL,

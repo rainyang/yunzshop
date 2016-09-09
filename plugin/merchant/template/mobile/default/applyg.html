@@ -42,10 +42,10 @@ input {-webkit-appearance:none; outline:none;}
                    core.tip.confirm('确认要申请提现? 提现申请通过之后给您打款后会通知您到的微信.',function(){
                        
                        $('.balance_sub').attr('saving',1).html('正在处理中...');
-                        core.pjson('merchant/applyg',{type:type},function(pjson){
+                        core.pjson('merchant/applyg',{type:type,iscenter:"{$_GPC['iscenter']}"},function(pjson){
                               if(pjson.status=='1'){
                                    core.tip.show( pjson.result );
-                                   location.href = core.getUrl('plugin/merchant/orderj');
+                                   location.href = core.getUrl('plugin/merchant/index');
                               }
                                
                        },true,true);

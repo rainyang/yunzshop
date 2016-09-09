@@ -20,6 +20,7 @@ class Detail extends \api\YZ
 
     public function index()
     {
+        global $_W;
         $para= $this->getPara();
         $goodsid = $para['goods_id'];
         $params = array(':uniacid' => $para['uniacid'], ':goodsid' => $goodsid);
@@ -29,7 +30,7 @@ class Detail extends \api\YZ
             ':id' => $goodsid
         ));
         //$c = new \Core();exit;
-        $goods['url'] = "http://sy.yunzshop.com/app/index.php?i=2&c=entry&p=detail&id={$goods['goods_id']}&do=shop&m=sz_yi&is_admin=1";//$c->createMobileUrl('shop/detail', array('id' => $goods['id']));
+        $goods['url'] = $_W['siteroot']."app/index.php?i=2&c=entry&p=detail&id={$goods['goods_id']}&do=shop&m=sz_yi&is_admin=1&i={$para['uniacid']}";//$c->createMobileUrl('shop/detail', array('id' => $goods['id']));
         //require IA_ROOT.'/web/common/template.func.php';
 
         //include $c->template('web/order/express');

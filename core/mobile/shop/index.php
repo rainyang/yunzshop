@@ -8,8 +8,9 @@ $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $designer  = p('designer');
 $shopset   = m('common')->getSysset('shop');
-if (p('yunbi')) {
-	$yunbi_set = p('yunbi')->getSet();
+$plugin_yunbi = p('yunbi');
+if ($plugin_yunbi) {
+	$yunbi_set = $plugin_yunbi->getSet();
 }
 if (empty($this->yzShopSet['ispc']) || isMobile()) {
     if ($designer) {
@@ -224,7 +225,7 @@ if ($_W['isajax']) {
 		$category = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=0 and uniacid=".$_W['uniacid']),'advimg_pc');
 
 		foreach ($category as $key => $value) {
-			$children = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=:pid and uniacid=:uniacid",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"])),'advimg');
+			$children = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=:pid and uniacid=:uniacid limit 8",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"])),'advimg');
 			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 and deleted = 0 limit 8",array(':pcate' => $value['id'] , ':uniacid' => $_W['uniacid'])) , 'thumb');
 			$category[$key]['goods'] = $goods;
 			foreach($children as $key1 => $value1){

@@ -149,6 +149,16 @@ if ($_W['isajax']) {
         }
     }
     $order['canrefund'] = $canrefund;
+	
+	if("" == trim($order['address'], "\"") && isset($order['openid'])){
+		$order['address'] = pdo_fetch('select realname,mobile,address from ' . tablename('sz_yi_member_address') . ' where uniacid=:uniacid and openid=:openid and deleted = 0', array(
+                    ':uniacid' => $_W['uniacid'],
+					':openid' => $order['openid']
+                ));
+		$order['address'] = iunserializer($order['address']);
+		$order['address'] = json_encode($order['address']);
+	}
+	
     show_json(1, array(
         'order' => $order,
         'goods' => $goods,
@@ -161,7 +171,7 @@ if ($_W['isajax']) {
 }
 function order_list_confirmsend($zym_var_32) {
     global $_W, $_GPC;
-    if (empty($zym_var_32["addressid"])) {
+    if (empty($zym_var_32["addressid"]) && $zym_var_32["isvirtual"]!=1) {
         message("无收货地址，无法发货！");
     }
     if ($zym_var_32["paytype"] != 3) {

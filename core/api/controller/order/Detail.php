@@ -28,7 +28,13 @@ class Detail extends \api\YZ
         $address = $this->getAddressInfo($order_info, $para["uniacid"]);
         $refund = $this->getRefundInfo($order_info["order_id"], $para["uniacid"]);
         $order_info = $this->formatOrderInfo($order_info);
-        $res = compact('order_info', 'member', 'dispatch', 'address','refund');
+        $res = array(
+            'order_info' => $order_info,
+            'member' => $member,
+            'dispatch' => $dispatch,
+            'address' => $address,
+            'refund' => $refund
+        );
         dump($res);
         $this->returnSuccess($res);
     }
@@ -52,6 +58,7 @@ class Detail extends \api\YZ
         dump($order_info);
         return $order_info;
     }
+
     private function _getButton($pay_type, $order_status, $address_id, $is_verify, $red_status = 0)
     {
         $button_mapping = array(
@@ -108,20 +115,26 @@ class Detail extends \api\YZ
         } elseif ($order_status == 3) {
 
         }
-        foreach ($button_name_array as $button_name){
+        foreach ($button_name_array as $button_name) {
             $value = $button_mapping[$button_name];
             $name = $button_name;
-            $button_array[] = compact('name', 'value');
+            $button_array[] = array(
+                'name' => $name,
+                'value' => $value
+            );
         }
         return $button_array;
     }
-    private function getRefundInfo($order_id,$uniacid){
+
+    private function getRefundInfo($order_id, $uniacid)
+    {
         $order_model = new \api\model\order();
         $refund = $order_model->getRefundInfo($order_id, $uniacid);
-        $res = array_part('refundtype,applyprice,reason,content,status,refund_name',$refund);
+        $res = array_part('refundtype,applyprice,reason,content,status,refund_name', $refund);
         //type,类型 applyprice 金额  原因 reason 说明 content 
-        return $res ? $res : (object) array();
+        return $res ? $res : (object)array();
     }
+
     private function formatOrderInfo($order_info)
     {
         $order_info['createtime'] = date("Y-m-d H:i:s", $order_info['createtime']);
@@ -139,7 +152,15 @@ class Detail extends \api\YZ
             'value' => $order_info['paytype'],
         );
         $buttons = $order_info['buttons'];
-        $res_order_info = compact('price', 'goods', 'base', 'status', 'pay','refundstate','buttons');
+        $res_order_info = array(
+            'price'=>$price,
+            'goods'=>$goods,
+            'base'=>$base,
+            'status'=>$status,
+            'pay'=>$pay,
+            'refundstate'=>$refundstate,
+            'buttons'=>$buttons
+        );
         return $res_order_info;
     }
 
@@ -192,9 +213,8 @@ class Detail extends \api\YZ
             "addressid" => $address_info["id"],
             "realname" => $address_info["realname"],
             "mobile" => $address_info["mobile"],
-            "address" => $address?$address:''
+            "address" => $address ? $address : ''
         );
-
 
 
         return $address_info;

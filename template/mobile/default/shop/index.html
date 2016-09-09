@@ -143,7 +143,7 @@
     <div class="good" data-goodsid='<%g.id%>'>
         <div class='img'><img src="<%g.thumb%>"></div>
         <div class="name"><%g.title%></div>
-        <div class="price">￥<%g.marketprice%> <%if g.productprice>0 && g.marketprice!=g.productprice%><span>￥<%g.productprice%></span><%/if%><%if g.isforceyunbi%>{if !empty($yunbi_set['yunbi_title'])}{php echo $yunbi_set['yunbi_title']}{else}云币{/if}:<%g.yunbi_deduct%><%/if%></div>
+        <div class="price">￥<%g.marketprice%> <%if g.productprice>0 && g.marketprice!=g.productprice%><span>￥<%g.productprice%></span><%/if%>{if $plugin_yunbi}<%if g.isforceyunbi == 1%>{if !empty($yunbi_set['yunbi_title'])}{php echo $yunbi_set['yunbi_title']}{else}云币{/if}:<%g.yunbi_deduct%><%/if%>{/if}</div>
     </div>
     <%/each%>
 
