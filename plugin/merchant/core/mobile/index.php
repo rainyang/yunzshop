@@ -23,7 +23,11 @@ if($_W['isajax']) {
 		$psize = 20;
 		$center_info = $this->model->getInfo($openid);
 		$supplier_uids = $center_info['supplier_uids'];
-    	$sql = "select o.id,o.ordersn,o.price,o.openid,o.status,o.address,o.createtime from " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 " . " where 1 {$conditionq} and o.uniacid=".$_W['uniacid']." and o.supplier_uid in ({$supplier_uids}) ORDER BY o.createtime DESC,o.status DESC  ";
+		$supplier_cond = " AND o.supplier_uid in ({$supplier_uids})";
+		if ($supplier_uids == 0) {
+			$supplier_cond = " AND o.supplier_uid < 0";
+		}
+    	$sql = "select o.id,o.ordersn,o.price,o.openid,o.status,o.address,o.createtime from " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 " . " where 1 {$conditionq} {$supplier_cond} and o.uniacid=".$_W['uniacid']."  ORDER BY o.createtime DESC,o.status DESC  ";
     	$sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
     	$list = pdo_fetchall($sql);
     	foreach ($list as $key => &$rowp) {
