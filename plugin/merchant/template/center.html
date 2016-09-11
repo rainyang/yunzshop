@@ -1,6 +1,63 @@
 {template 'web/_header'}
 <div class="w1200 m0a">
 {template 'tabs'}
+{if $operation=='center_centers'}
+<div class="rightlist">
+<div class="panel panel-info">
+    <div class="panel-heading"></div>
+</div>
+<div class="panel panel-default">
+    <a class='btn btn-default' href="{php echo $this->createPluginWebUrl('merchant/center', array('op' => 'add_center_post', 'center_id' => $_GPC['center_id']))}">添加招商中心</a> 
+</div>
+<div class="panel panel-default">
+    <div class="panel-heading">总数：{$total}</div>
+    <div class="panel-body">
+        <table class="table table-hover table-responsive">
+            <thead class="navbar-inner" >
+                <tr>
+                <th style='width:4%;'>会员ID</th>
+                <th style='width:10%;text-align: center'>上级</th>
+                <th style='width:10%;text-align: center'>粉丝</th>
+                <th style='width:13%;'>手机号码</th>
+                <th style='width:12%;'>等级名称<br/>佣金比例</th>
+                <th style='width:10%;'>累计佣金<br/>打款佣金</th>
+            </tr>
+            </thead>
+            <tbody>
+                {loop $list $row}
+            <tr>
+                <td>{$row['id']}</td>
+                <td style="text-align: center;">
+                    {if !empty($row['agent_avatar'])}
+                    <img src='{$row['agent_avatar']}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' /><br/>
+                    {else}
+                    <label class="label label-primary">总店</label>
+                    {/if}
+                    {if !empty($row['agent_realname'])}{$row['agent_realname']}{/if}
+                </td>
+                <td style="text-align: center;">
+                    {if !empty($row['avatar'])}
+                    <img src='{$row['avatar']}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' /><br/>
+                    {/if}
+                    {if empty($row['realname'])}未填写{else}{$row['realname']}{/if}
+                </td>
+                <td>{$row['mobile']}</td>
+                <td>{$row['level']['level_name']}<br/>{$row['level']['commission']}%</td>
+                <td>
+                    <label class="label label-primary">
+                    {if !empty($row['commission_total'])}{$row['commission_total']}元{else}0元{/if}</label><br/>
+                    <label class="label label-danger">
+                    {if !empty($row['commission_ok'])}{$row['commission_ok']}元{else}0元{/if}</label>
+                </td>
+            </tr>
+            {/loop}
+            </tbody>
+        </table>
+        {$pager}
+    </div>
+</div>
+</div>
+{/if}
 {if $operation=='display'}
 <div class="rightlist">
 <div class="panel panel-info">
@@ -47,7 +104,7 @@
                 <th style='width:4%;'>会员ID</th>
                 <th style='width:10%;text-align: center'>上级</th>
                 <th style='width:10%;text-align: center'>粉丝</th>
-                <th style='width:13%;'>姓名<br/>手机号码</th>
+                <th style='width:13%;'>手机号码</th>
                 <th style='width:12%;'>等级名称<br/>佣金比例</th>
                 <th style='width:10%;'>累计佣金<br/>打款佣金</th>
                 <th style='width:7%'>操作</th>
@@ -61,7 +118,7 @@
                     {if !empty($row['agent_avatar'])}
                     <img src='{$row['agent_avatar']}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' /><br/>
                     {else}
-                    总店
+                    <label class="label label-primary">总店</label>
                     {/if}
                     {if !empty($row['agent_realname'])}{$row['agent_realname']}{/if}
                 </td>
@@ -83,7 +140,7 @@
                     <div class="btn-group btn-group-sm">
                         <a class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false" href="javascript:;">操作 <span class="caret"></span></a>
                         <ul class="dropdown-menu dropdown-menu-left" role="menu" style='z-index: 99999'>
-                            <li><a  href="{php echo $this->createPluginWebUrl('merchant/center',array('op'=>'add_center_post','center_id' => $row['id']));}" title='添加招商中心'><i class='fa fa-list'></i> 添加招商中心</a></li>
+                            <li><a  href="{php echo $this->createPluginWebUrl('merchant/center',array('op'=>'center_centers','center_id' => $row['id']));}" title='添加招商中心'><i class='fa fa-list'></i> 添加招商中心</a></li>
                             <li><a href="{php echo $this->createPluginWebUrl('supplier/supplier/merchant', array('center_id' => $row['id']));}" title='招商员'><i class='fa fa-th'></i> 添加招商员</a></li>
                             <li><a href="{php echo $this->createPluginWebUrl('merchant/center', array('op' => 'delete', 'id' => $row['id']))}" title="删除" onclick="return confirm('确定要删除吗？');"><i class='fa fa-remove'></i> &nbsp;删除</a></li>
                         </ul>

@@ -39,6 +39,15 @@ if (!class_exists('MerchantModel')) {
 			return $info;
 		}
 
+		public function getOpenid($center_id){
+			global $_W;
+			if (empty($center_id)) {
+				return;
+			}
+			$center = pdo_fetchcolumn("SELECT openid FROM " . tablename('sz_yi_merchant_center') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $center_id));
+			return $center;
+		}
+
 		public function getChildCenters($openid){
 			global $_W;
 			if (empty($openid)) {
