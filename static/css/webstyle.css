@@ -13,6 +13,9 @@ ul{list-style:none;}
 .mrt4{margin-top: 4px;display: block;}
 .fr{float: right !important;;}
 .rightlist{/*width: 100%;*/margin: 56px 6px 6px 186px;padding-bottom: 125px;min-width: 1008px;/*background: #fff;border: 1px #e0e0e0 solid*/}
+.rightlist2{margin: 52px 6px 6px 250px;
+    padding-bottom: 125px;
+    min-width: 1008px;}
 .topmenubg_yy{z-index: 3;position: fixed;left: 0;top: 0;bottom: 0; width:60px;background: #22B3EA;}
 .topmenubg{z-index: 3;position: fixed;left: 0;top: 49px;bottom: 0; width:60px;background: hsl(0, 0%, 20%);}
 .topmenubg a{font-size:12px !important;}
