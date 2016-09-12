@@ -27,16 +27,16 @@ $totalprices = 0;
 if ($orderidss) {
     // 累计支付金额
     $orderids = substr($orderids,0,-1);
-    $totalprices = pdo_fetch('SELECT SUM(price) AS tprice FROM ' . tablename('sz_yi_order') . ' WHERE uniacid = ' . $_W['uniacid'] . ' AND id IN ( '.$orderids.' ) AND status = 3');
+    $totalprices = pdo_fetch('SELECT SUM(price) AS tprice FROM ' . tablename('sz_yi_order') . ' WHERE uniacid = :uniacid AND id IN ( '.$orderids.' ) AND status = 3', array(':uniacid' => $_W['uniacid']));
     $totalprices = $totalprices['tprice'];
     // 已经提现的金额
-    $totalwithdraw = pdo_fetchall('SELECT money FROM ' . tablename('sz_yi_store_withdraw') . ' WHERE uniacid = ' . $_W['uniacid'] . ' AND store_id = ' . $id);
+    $totalwithdraw = pdo_fetchall('SELECT money FROM ' . tablename('sz_yi_store_withdraw') . ' WHERE uniacid = :uniacid AND store_id = :id', array(':id' => $id));
     foreach ($totalwithdraw as  $value) {
         $totalwithdraws += $value['money'];
     }
     //扣除平台提成的金额
     if (!empty($store['balance'])) {
-        $totalwithdrawprice = $totalprices - $totalprice * ($store['balance']/100);
+        $totalwithdrawprice = $totalprices - $totalprices * ($store['balance']/100);
     } else {
         $totalwithdrawprice = $totalprices;
     }

@@ -27,7 +27,7 @@ $store = pdo_fetch("SELECT * FROM ".tablename('sz_yi_store')." WHERE id=:id and 
          $totalwithdrawprice = $totalcanwithdraw;
      }
      //已经提现的金额
-     $totalwithdraw = pdo_fetchall('SELECT money FROM ' . tablename('sz_yi_store_withdraw') . ' WHERE uniacid = ' . $_W['uniacid'] . ' AND store_id = ' . $id);
+     $totalwithdraw = pdo_fetchall('SELECT money FROM ' . tablename('sz_yi_store_withdraw') . ' WHERE uniacid = :uniacid AND store_id = :id AND status = 1', array(':uniacid' => $_W['uniacid'], ':id' => $id));
      foreach ($totalwithdraw as  $value) {
          $totalwithdraws += $value['money'];
      }
