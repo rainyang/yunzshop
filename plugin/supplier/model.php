@@ -71,7 +71,15 @@ if (!class_exists('SupplierModel')) {
                     }
                 }
             }*/
-            $supplierinfo['costmoney'] = number_format(pdo_fetchcolumn("select ifnull(sum(o.basis_money),sum(og.price)) from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0"),2);
+            $sp_goods = pdo_fetchall("select og.price,o.basis_money from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0");
+            foreach ($sp_goods as $value) {
+                if (empty($value['basis_money'])) {
+                    $supplierinfo['costmoney'] += $value['price'];
+                } else {
+                    $supplierinfo['costmoney'] += $value['basis_money'];
+                }
+            }
+            $supplierinfo['costmoney'] = number_format($supplierinfo['costmoney'],2);
             $supplierinfo['totalmoney'] = pdo_fetchcolumn("select sum(apply_money) from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and uid={$uid}");
             return $supplierinfo;
         }
