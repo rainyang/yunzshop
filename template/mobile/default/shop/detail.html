@@ -111,7 +111,6 @@ div.flicking_con a.on{background-position:0 -9px}
 .label-free {background:#ff6801;color:#fff;padding:3px;border-radius: 5px; font-size:12px;}
 
 </style>
-
   {if !empty($formInfo)}
 <script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.core-2.5.2.js" type="text/javascript"></script>
 <script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.core-2.5.2-zh.js" type="text/javascript"></script>
@@ -183,10 +182,10 @@ div.flicking_con a.on{background-position:0 -9px}
 
             <!--<span>diyform</span>-->
 
-            
+            {template 'diyform/formcss'}
                 {if !empty($formInfo)}
                 <div id="diyform_container" >
-             {template 'diyform/formcss'}
+             
              <style type='text/css'>
                      .diyform_main { float:left;}
              </style>
@@ -199,7 +198,8 @@ div.flicking_con a.on{background-position:0 -9px}
                       <div class="dtitle">保单人：</div>
                       <div class="dinfo">
                         <div class="dinner ">
-                          <input id="declaration" type="text" value="" placeholder="请输入ID\名称" name="declaration">
+                          <input id="declaration" onchange="declaration()" type="text" value="" placeholder="请输入ID\名称" name="declaration">
+                          <input type='hidden' name="declaration_mid" id="declaration_mid" class='' value="" title="12">
                         </div>
                       </div>
                     </div>
@@ -1282,7 +1282,6 @@ div.flicking_con a.on{background-position:0 -9px}
                  $("#optiondiv").html(titles);
         }
     function choose2(direct,close){
-      alert(isyunbipay);
       var isforce = $('#isforce').val();
          require(['core'],function(core){
              
@@ -1300,76 +1299,75 @@ div.flicking_con a.on{background-position:0 -9px}
                                       
           
         } else {
-                            action = "";
-                      }
+              action = "";
+        }
         
-                var specselected  = '';
+          var specselected  = '';
                 
         $('.spec_items').each(function(){
                 
                    var self = $(this);
          if( $(this).find('.on').length<=0){
-                                          specselected = self.attr('title');
-                                          return false;
-                      }
-                               });  
-                                if( specselected!=''){
-                                      require(['core'],function(core){
-                                         core.tip.show('请选择' + specselected) ;
-                                      });
-                                      return;
-                      }
-                               
+            specselected = self.attr('title');
+            return false;
+          }
+        });  
+        if( specselected!=''){
+          require(['core'],function(core){
+             core.tip.show('请选择' + specselected) ;
+          });
+          return;
+        }
+                   
                            
                               
         if(action=='cart'){
-                 var data = {};
-                 
-                 {if !empty($formInfo)}
-                 
-                    {template 'diyform/common_js_data'}
-
-                         data = {
-                        'diyformid': "{$goods['diyformid']}",
-                        'diydata':diydata
-                    };
-                {/if}
+           var data = {};
+           {if !empty($formInfo)}
+              {template 'diyform/common_js_data'}
+                data = {
+                  'diyformid': "{$goods['diyformid']}",
+                  'diydata':diydata
+                };
+          {/if}
         //openid
-                            {if !empty($popenid) or !empty($openid)}
-                               core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
-                                      if(ret.status==1){ 
-                                         core.tip.show(ret.result.message);
-                                         var cartdiv = $('.cart');
-                                             if( cartdiv.find('b').length<=0){
-                                                cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
-                                             }
-                                             else {
-                                                cartdiv.find('b').html(ret.result.cartcount);
-                                             } closechoose();
+          {if !empty($popenid) or !empty($openid)}
+             core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
+                    if(ret.status==1){ 
+                       core.tip.show(ret.result.message);
+                       var cartdiv = $('.cart');
+                           if( cartdiv.find('b').length<=0){
+                              cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
+                           }
+                           else {
+                              cartdiv.find('b').html(ret.result.cartcount);
+                           } closechoose();
 
-                                     } else{
-                                         core.message(ret.result,'','error');
-                                     }
-                                  },true,true);
-                                
-                            {else}
-                                location.href = "{php echo $this->createMobileUrl('member/login')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
-                            {/if}
+                   } else{
+                       core.message(ret.result,'','error');
+                   }
+                },true,true);
+              
+          {else}
+              location.href = "{php echo $this->createMobileUrl('member/login')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+          {/if}
         //end openid
                                             
-                                    }else if(action=='buy'){
- 
-               {if !empty($formInfo)}
-                  
-                {template 'diyform/common_js_data'}
-
-                var declaration = $('#declaration').val()?$('#declaration').val():'';
-
+        }else if(action=='buy'){
+          var isdeclaration = $('#isdeclaration').val();
+          var formInfo = false;
+          {if !empty($formInfo)}
+            formInfo = true;
+          {/if}
+           if (formInfo || isdeclaration) {
+              {template 'diyform/common_js_data'}
+                //declaration();
+                var declaration_mid = $('#declaration_mid').val();
                 var data ={
                     'op': 'create',
                     'id': {$_GPC['id']},
                     'diydata': diydata,
-                    'declaration':declaration
+                    'declaration_mid':declaration_mid
                 };
                 require(['core'],function(core){
                     core.json('shop/detail', data, function(create_json) {
@@ -1384,15 +1382,33 @@ div.flicking_con a.on{background-position:0 -9px}
                     }, true, true);
                 })
 
-                {else}
+            }else {
                     location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
-                {/if}
+            }
 
                     } else {
                              closechoose();
         }
   });
     }
+  function declaration(){
+    var iscontinue = false; 
+      require(['core'],function(core){
+          core.json('shop/detail', {'op':'getmember','mid':$('#declaration').val()}, function(m_json) {
+              if (m_json.status == 1) {
+                  $('#declaration_mid').val(m_json.result.mid);
+                  iscontinue = true; 
+              } else {
+                  core.tip.show("用户不存在!");
+                  return false;
+              }
+          }, true, true);
+      });
+      if(!iscontinue){
+          return false;
+      }
+  }
+
   function addNum(){
     var total = $("#total");
     if(!total.isInt()){

@@ -15,32 +15,70 @@ if (!class_exists('YunbiModel')) {
 		public function GetVirtualCurrency($orderid) {
 			global $_W, $_GPC;
 			$set = $this->getSet();
-			if ($set['isyunbi'] == 1 && $set['isconsumption'] == 1) {
-				if (empty($orderid)) {
-					return false;
-				}
-				
-				$order_goods = pdo_fetchall("SELECT g.isyunbi,g.yunbi_consumption,g.yunbi_commission,o.openid,o.price,o.dispatchprice,m.id,m.openid as mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
-					array(':orderid' => $orderid,':uniacid' => $_W['uniacid']
-				));
-				if (empty($order_goods)) {
-					return false;
-				}
-				$virtual_currency = 0;
-				$virtual_agent = 0;
-				foreach($order_goods as $good){
-					if($good['isyunbi'] == 1){
-						if ($good['yunbi_consumption'] > 0) {
-							$virtual_currency += ($good['price'] - $good['dispatchprice']) * $good['yunbi_consumption'] / 100;
-						} else {
-							$virtual_currency += ($good['price'] - $good['dispatchprice']) * $set['consumption'] / 100;
-						}
-						$is_goods_return = true;
-						if ($good['yunbi_commission'] > 0) {
-							$virtual_agent += ( $good['price'] - $good['dispatchprice'] ) * $good['yunbi_commission'] / 100;
-						}
+
+			if (empty($orderid)) {
+				return false;
+			}
+			$order_goods = pdo_fetchall("SELECT g.isyunbi,g.yunbi_consumption,g.yunbi_commission,o.openid,o.price,o.dispatchprice,m.id,m.openid as mid ,g.isdeclaration,g.virtual_declaration,og.declaration_mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
+				array(':orderid' => $orderid,':uniacid' => $_W['uniacid']
+			));
+			if (empty($order_goods)) {
+				return false;
+			}
+
+			$virtual_currency = 0;
+			$virtual_agent = 0;
+			$declaration = array();
+			foreach($order_goods as $good){
+				if($good['isyunbi'] == 1){
+					if ($good['yunbi_consumption'] > 0) {
+						$virtual_currency += ($good['price'] - $good['dispatchprice']) * $good['yunbi_consumption'] / 100;
+					} else {
+						$virtual_currency += ($good['price'] - $good['dispatchprice']) * $set['consumption'] / 100;
+					}
+					$is_goods_return = true;
+					if ($good['yunbi_commission'] > 0) {
+						$virtual_agent += ( $good['price'] - $good['dispatchprice'] ) * $good['yunbi_commission'] / 100;
 					}
 				}
+
+				if ($good['isdeclaration'] == '1') {
+					//$virtual_declaration += $good['virtual_declaration'];
+					$declaration[$good['declaration_mid']] += $good['virtual_declaration'];
+				}
+			}
+
+			if ($declaration) {
+				foreach ($declaration as $key => $value) {
+					if ($value > 0) {
+
+						$declaration_info = m('member')->getMember($key);
+						$this->setVirtualCurrency($declaration_info['openid'],$value);
+						$declaration_log = array(
+					        'id' 			=> $declaration_info['id'],
+					        'openid' 		=> $declaration_info['openid'],
+					        'credittype' 	=> 'virtual_currency',
+					        'money' 		=> $value,
+							'remark'		=> '保单获得'.$value.$set['yunbi_title']
+					    );
+						$this->addYunbiLog($_W['uniacid'],$declaration_log,'13');
+
+						$declaration = array(
+							'keyword1' => array(
+								'value' => '保单获得'.$set['yunbi_title'].'通知',
+								'color' => '#73a68d'),
+							'keyword2' =>array(
+								'value' => '本次获得'.$value.$set['yunbi_title'],
+								'color' => '#73a68d')
+							);
+						m('message')->sendCustomNotice($declaration_info['openid'], $declaration);
+					}
+				}
+			}
+
+
+
+			if ($set['isyunbi'] == 1 && $set['isconsumption'] == 1) {
 				//商品 没有返消费币 返回
 				if(!$is_goods_return)
 				{
@@ -94,25 +132,27 @@ if (!class_exists('YunbiModel')) {
 					if ( $virtual_agent > 0) {
 						$member = m('member')->getMember($order_goods[0]['openid']);
 						$agentinfo = m('member')->getMember($member['agentid']);
-						$this->setVirtualCurrency($agentinfo['openid'],$virtual_agent,'virtual_temporary');
-						$this->setVirtualCurrency($agentinfo['openid'],$virtual_agent,'virtual_temporary_total');
-						$data_log = array(
-					        'id' 			=> $agentinfo['id'],
-					        'openid' 		=> $agentinfo['openid'],
-					        'credittype' 	=> 'virtual_temporary',
-					        'money' 		=> $virtual_agent,
-							'remark'		=> '购物-分销上级-间接获得'.$virtual_agent.$set['yunbi_title']
-					    );
-						$this->addYunbiLog($_W['uniacid'],$data_log,'1');
-						$messages = array(
-							'keyword1' => array(
-								'value' => '分销上级获得'.$set['yunbi_title'].'通知',
-								'color' => '#73a68d'),
-							'keyword2' =>array(
-								'value' => '本次获得'.$virtual_agent.'待转'.$set['yunbi_title'].',等待转入'.$set['yunbi_title'],
-								'color' => '#73a68d')
-						);
-						m('message')->sendCustomNotice($agentinfo['openid'], $messages);
+						if ($agentinfo) {
+							$this->setVirtualCurrency($agentinfo['openid'],$virtual_agent,'virtual_temporary');
+							$this->setVirtualCurrency($agentinfo['openid'],$virtual_agent,'virtual_temporary_total');
+							$data_log = array(
+						        'id' 			=> $agentinfo['id'],
+						        'openid' 		=> $agentinfo['openid'],
+						        'credittype' 	=> 'virtual_temporary',
+						        'money' 		=> $virtual_agent,
+								'remark'		=> '购物-分销上级-间接获得'.$virtual_agent.$set['yunbi_title']
+						    );
+							$this->addYunbiLog($_W['uniacid'],$data_log,'1');
+							$messages = array(
+								'keyword1' => array(
+									'value' => '分销上级获得'.$set['yunbi_title'].'通知',
+									'color' => '#73a68d'),
+								'keyword2' =>array(
+									'value' => '本次获得'.$virtual_agent.'待转'.$set['yunbi_title'].',等待转入'.$set['yunbi_title'],
+									'color' => '#73a68d')
+							);
+							m('message')->sendCustomNotice($agentinfo['openid'], $messages);
+						}
 					}
 				}
 			}

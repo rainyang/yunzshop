@@ -36,3 +36,13 @@ if (!pdo_fieldexists('sz_yi_goods', 'isdeclaration')) {
 if (!pdo_fieldexists('sz_yi_goods', 'virtual_declaration')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `virtual_declaration` DECIMAL(10,2) NOT NULL AFTER `isdeclaration`;");
 }
+if (!pdo_fieldexists('sz_yi_diyform_temp', 'declaration_mid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_diyform_temp')." ADD `declaration_mid` INT NOT NULL AFTER `diyformdata`;");
+}
+if (!pdo_fieldexists('sz_yi_order_goods', 'declaration_mid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `declaration_mid` INT NOT NULL AFTER `rankingstatus`;");
+}
+
+
+
+

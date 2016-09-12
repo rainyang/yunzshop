@@ -154,8 +154,8 @@
                 </a>
             </li>
             <li>
-                <a href="#" class="nav" data-type='9' >
-                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>{$acquisition}<br/>获赠明细
+                <a href="#" class="nav" data-type='13' >
+                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>{$declaration}<br/>保单获得
                 </a>
             </li>
             </ul>
@@ -211,6 +211,8 @@
                                 <%log.remark%>
                             <%else if log.returntype == 10%>
                                 待转{$yunbi_title}转入<br>{$yunbi_title}
+                            <%else if log.returntype == 13%>
+                            保单获得<br>{$yunbi_title}
                             <%/if%>
                         </span>
                     </div>
