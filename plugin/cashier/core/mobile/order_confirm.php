@@ -359,7 +359,9 @@ if ($operation == 'display') {
         "couponprice" => $couponprice,
         'cashier' => 1,
         'cashierid' => $sid,
-        'redprice' => $totalprice*($store['redpack']/100)
+        'redprice' => $totalprice*($store['redpack']/100),
+        'ordersn_general' =>  $ordersn,
+        'pay_ordersn' => $ordersn
     );
     if($store['deredpack']==1){
         $order['deredpack']=1;
