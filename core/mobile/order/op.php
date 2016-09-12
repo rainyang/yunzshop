@@ -63,8 +63,8 @@ if ($_W['isajax']) {
 	    } else if ($operation == 'complete') {
 
 	        $orderid = intval($_GPC['orderid']);
-		if (p('yunbi')) {
-			p('yunbi')->GetVirtualCurrency($orderid);
+		if (p('beneficence')) {
+			p('beneficence')->GetVirtualBeneficence($orderid);
 		}
 		echo "<pre>";print_r('----');exit;
 	        $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
