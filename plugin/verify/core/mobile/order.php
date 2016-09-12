@@ -1,4 +1,4 @@
-<?php
+<?php                                                                         1
 global $_W, $_GPC;
 $openid = m('user')->getOpenid();
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'order';

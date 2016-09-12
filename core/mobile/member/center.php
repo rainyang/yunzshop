@@ -208,5 +208,7 @@ $verify = pdo_fetch('SELECT * FROM '.tablename('sz_yi_store')." WHERE uniacid=:u
 if ($verify) {
 	$issupervisor = true;
 }
+$verifyset  = m('common')->getSetData();
+$allset = iunserializer($verifyset['plugins']);
 
 include $this->template('member/center');

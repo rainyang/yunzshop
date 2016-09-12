@@ -9,7 +9,7 @@
     .credit_list .num {height:40px; border-left:1px solid #eaeaea; width:40%;line-height:20px; float:right; text-align:left; font-size:16px; color:#666;}
     .credit_list .num span {font-size:14px; color:#999;}
     .credit_tab {height:30px; margin:5px; border:1px solid #eb5f5f; border-radius:2px; overflow:hidden;font-size:13px;background:#fff;padding-right: -2px;}
-    .credit_nav {height:30px; width:{$style_width}%;background:#fff; color:#666; text-align:center; line-height:30px; float:left;}
+    .credit_nav {height:30px; width:100%;background:#fff; color:#666; text-align:center; line-height:30px; float:left;}
     .credit_navon {color:#fff; background:#eb5f5f;}
     .credit_no {height:100px; width:100%; margin:50px 0px 60px; color:#ccc; font-size:12px; text-align:center;}
     #credit_loading { padding:10px;color:#666;text-align: center;}
@@ -18,13 +18,10 @@
 </style>
 <div class="page_topbar">
     <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
-    <div class="title">{$set['rankingname']}</div>
+    <div class="title">门店销售排行</div>
 </div>
 
-<div class="credit_tab">
 
-
-</div>
 
 
 
@@ -44,28 +41,28 @@
                             <li>
                                 <span class="one-icon"><img src="../addons/sz_yi/static/images/01.png"></span>
                                 <div><img src="<%log.avatar%>"><em><%log.storename%></em></div>
-                                <p>交易额<i class="red"><%log.totalprice%></i></p>
+                                <p>成交金额：<i class="red"><%log.price%></i></p>
                             </li>
                         <%else if log.number == 2%>
                             <li>
                                 <span class="one-icon"><img src="../addons/sz_yi/static/images/02.png"></span>
                                 <div><img src="<%log.avatar%>"><em><%log.storename%></em></div>
-                                <p>交易额：<i class="red"><%log.totalprice%></i></p>
+                                <p>成交金额：<i class="red"><%log.price%></i></p>
                             </li>
                         <%else if log.number == 3%>
                             <li>
                                 <span class="one-icon"><img src="../addons/sz_yi/static/images/03.png"></span>
                                 <div><img src="<%log.avatar%>"><em><%log.storename%></em></div>
-                                <p>交易额：<i class="red"><%log.totalprice%></i></p>
+                                <p>成交金额：<i class="red"><%log.price%></i></p>
                             </li>
                         <%else%>
                             <li>
                                 <span class="one-icon"><%log.number%></span>
                                 <div><img src="<%log.avatar%>"><em><%log.storename%></em></div>
-                                <p>交易额：<i class="red"><%log.totalprice%></i></p>
+                                <p>成交金额：<i class="red"><%log.price%></i></p>
                             </li>
                         <%/if%>
-                    <%/if%>
+
                 <%/each%>
 
 
@@ -100,18 +97,18 @@ function bindScroller(){
                     stop = false; scrolled = true;
                     $('#container').append('<div id="credit_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载...</div>');
                     page++;
-   
-                    core.pjson('ranking/ranking', {type: current_type,page: page}, function (json) {
+
+                    core.pjson('verify/ranking', {type: current_type,page: page}, function (json) {
                         stop = true;
                         $('#credit_loading').remove();
                         $("#container").append(tpl('tpl_log', json.result));
-                     
+
                         var m_num = json.result.m_credit1!=0?json.result.m_num:'未上榜';
                         var m_avatar = json.result.m_avatar?json.result.m_avatar:'../addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg';
                         var m_credit1 = json.result.m_credit1!=0?json.result.m_credit1:'0';
                         $('#m_num').html(m_num);
                         $('#m_avatar').attr('src',m_avatar);
-                        $('#m_credit1').html(json.result.m_credit_name+":"+m_credit1); 
+                        $('#m_credit1').html(json.result.m_credit_name+":"+m_credit1);
                             if(page==10)
                             {
                                $('#credit_loading').remove();
@@ -122,7 +119,7 @@ function bindScroller(){
                                 $(window).scroll = null;
                                 return;
                             }
-                        
+
                         if (json.result.list.length < json.result.pagesize) {
                             $('#credit_loading').remove();
                             //$('#credit_loading').html('已经加载完全部记录');
@@ -157,9 +154,9 @@ function bindScroller(){
                 var m_credit1 = json.result.m_credit1!=0?json.result.m_credit1:'0';
                     $('#m_num').html(m_num);
                     $('#m_avatar').attr('src',m_avatar);
-                    $('#m_credit1').html(json.result.m_credit_name+":"+m_credit1);                   
-               
-  
+                    $('#m_credit1').html(json.result.m_credit_name+":"+m_credit1);
+
+
 
                 bindScroller();
             }, true);

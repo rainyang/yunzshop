@@ -18,21 +18,36 @@ $default_avatar = "../addons/sz_yi/template/mobile/default/static/images/photo-m
 if ($_W['isajax']) {
     if ($operation == 'display') {
 
-            $pindex    = max(1, intval($_GPC['page']));
-            $psize     = 10;
+        $pindex    = max(1, intval($_GPC['page']));
+        $psize     = 10;
+        $stores = pdo_fetchall("SELECT id,storename,member_id FROM ".tablename('sz_yi_store')." WHERE uniacid=:uniacid and status = 1", array(':uniacid' => $_W['uniacid']));
+        foreach ($stores as $key => $val) {
+            $totalprice = pdo_fetchall(" SELECT price FROM " .tablename('sz_yi_order'). " WHERE storeid=:id and uniacid=:uniacid and status = 3 ", array(':uniacid' => $_W['uniacid'], ':id' => $val['id']));
+            foreach ($totalprice as $value) {
+                $price += $value['price'];
 
-            $list      = pdo_fetchall("SELECT s.*, SUM(o.price) AS totalprice FROM " .tablename('sz_yi_store'). " s LEFT JOIN " .tablename('sz_yi_order). " o ON s.id = o.storeid WHERE S.uniacid = {$_W['uniacid']} ORDER BY totalprice DESC LIMIT " . ($pindex - 1) * $psize . "," . $psize);
-            $total     = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_store') . " where status =1 and uniacid = '.$_W['uniacid'];
-            foreach ($list as $k => &$row) {
-                 $row['number'] = ($k+1) + ($pindex - 1) * $psize;
             }
-            unset($row);
+            $stores[$key]['price'] = $price;
+            unset($stores[$key]['id']);
 
-            show_json(1, array(
-                'total' => $total,
-                'list' => $list,
-                'pagesize' => $psize
-            ));
+        }
+        $condition = array();
+        foreach ($stores as $v) {
+            $condition[] = $v['price'];
+        }
+        array_multisort($condition, SORT_DESC, $stores);
+
+        $total     = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_store') . " where status =1 and uniacid = ".$_W['uniacid']);
+        foreach ($stores as $k => &$row) {
+            $row['number'] = ($k+1) + ($pindex - 1) * $psize;
+            $row['avatar'] = !empty($row['avatar'])?$row['avatar']:$default_avatar;
+        }
+        unset($row);
+        show_json(1, array(
+            'total' => $total,
+            'list' => $stores,
+            'pagesize' => $psize
+        ));
 
 
 
