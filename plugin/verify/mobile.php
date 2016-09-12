@@ -53,4 +53,8 @@ class VerifyMobile extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function ranking()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 }
