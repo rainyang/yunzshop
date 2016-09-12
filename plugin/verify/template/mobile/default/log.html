@@ -1,5 +1,5 @@
 {template 'common/header'}
-<title>{php echo $this->set['texts']['commission_detail']}</title>
+<title>提现明细</title>
 <style type="text/css">
 body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
 a {text-decoration:none;}
@@ -106,12 +106,7 @@ function bindScroller(){
              
               
                 $('#container').html(tpl('tpl_log', json.result));
-                 $('.log_list').unbind('click').click(function(){
-                    var applyid = $(this).data('applyid');
-                    var url = core.getUrl('plugin/verify/log',{'op':'detail','id':applyid});
-                    location.href = url;
-                    return;
-                 });
+
                
         
                 bindScroller();
@@ -126,5 +121,5 @@ function bindScroller(){
 
     })
 </script>
-{php $show_footer=true;$footer_current ='commission'}
+{php $show_footer=true;}
 {template 'common/footer'}

@@ -30,7 +30,7 @@ if ($orderidss) {
     $totalprices = pdo_fetch('SELECT SUM(price) AS tprice FROM ' . tablename('sz_yi_order') . ' WHERE uniacid = :uniacid AND id IN ( '.$orderids.' ) AND status = 3', array(':uniacid' => $_W['uniacid']));
     $totalprices = $totalprices['tprice'];
     // 已经提现的金额
-    $totalwithdraw = pdo_fetchall('SELECT money FROM ' . tablename('sz_yi_store_withdraw') . ' WHERE uniacid = :uniacid AND store_id = :id', array(':id' => $id));
+    $totalwithdraw = pdo_fetchall('SELECT money FROM ' . tablename('sz_yi_store_withdraw') . ' WHERE uniacid = :uniacid AND store_id = :id', array(':id' => $id, ':uniacid' => $_W['uniacid']));
     foreach ($totalwithdraw as  $value) {
         $totalwithdraws += $value['money'];
     }

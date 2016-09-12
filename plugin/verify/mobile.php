@@ -49,4 +49,8 @@ class VerifyMobile extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function my_pocket()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 }

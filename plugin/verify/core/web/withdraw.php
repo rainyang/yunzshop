@@ -57,7 +57,7 @@ if ($operation == 'display') {
         }
     }
 
-    $sql   = "select w.id, s.storename, m.nickname, m.avatar, m.weixin, w.withdraw_no, w.money, w.create_time, w.status from " . tablename('sz_yi_store') . " s left join " . tablename('sz_yi_store_withdraw') . " w on s.id=w.store_id  left join " . tablename('sz_yi_member') . " m on m.id=s.member_id where 1 {$condition}";
+    $sql   = "select w.id, s.storename, m.nickname, m.avatar, m.weixin, w.withdraw_no, w.money, w.create_time, w.status, s.member_id from " . tablename('sz_yi_store') . " s left join " . tablename('sz_yi_store_withdraw') . " w on s.id=w.store_id  left join " . tablename('sz_yi_member') . " m on m.id=s.member_id where 1 {$condition}";
     $list  = pdo_fetchall($sql, $params);
     $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_store') . " s left join " . tablename('sz_yi_store_withdraw') . " w on s.id=w.store_id left join " . tablename('sz_yi_member') . " m on m.id=s.member_id where 1 {$condition}", $params);
     $pager = pagination($total, $pindex, $psize);
