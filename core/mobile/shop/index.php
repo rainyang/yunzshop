@@ -226,7 +226,7 @@ if ($_W['isajax']) {
 
 		foreach ($category as $key => $value) {
 			$children = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=:pid and uniacid=:uniacid limit 8",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"])),'advimg');
-			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 and deleted = 0 limit 8",array(':pcate' => $value['id'] , ':uniacid' => $_W['uniacid'])) , 'thumb');
+			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 and deleted = 0 and status = 1 limit 8",array(':pcate' => $value['id'] , ':uniacid' => $_W['uniacid'])) , 'thumb');
 			$category[$key]['goods'] = $goods;
 			foreach($children as $key1 => $value1){
 				$category[$key]['children'][$key1] = $value1;
@@ -241,14 +241,14 @@ if ($_W['isajax']) {
 		$id = $_GPC['id'];
 		$aid = $_GPC['aid'];
 		if($aid){
-			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 and deleted = 0 limit 8",array(':pcate' => $aid , ':uniacid' => $_W['uniacid'])) , 'thumb');
+			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 and deleted = 0 and status = 1 limit 8",array(':pcate' => $aid , ':uniacid' => $_W['uniacid'])) , 'thumb');
 			show_json(1,array('goods' => $goods));	
 		}else{
 			if(empty($id)){
 				show_json(0);
 			}
-			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where ccate=:ccate and uniacid=:uniacid and deleted = 0",array(':ccate' => $id , ':uniacid' => $_W['uniacid'])) , 'thumb');
-			$third = pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid",array(':pid' => $id , ':uniacid' => $_W["uniacid"]));
+			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where ccate=:ccate and uniacid=:uniacid and deleted = 0 and status = 1",array(':ccate' => $id , ':uniacid' => $_W['uniacid'])) , 'thumb');
+			$third = pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid and enabled = 1",array(':pid' => $id , ':uniacid' => $_W["uniacid"]));
 			show_json(1,array('goods' => $goods,'third' => $third));
 		}
 	} elseif ($operation == 'property_goods'){
