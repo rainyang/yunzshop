@@ -59,7 +59,10 @@ if (!class_exists('MerchantModel')) {
 			}
 			$childs = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_merchant_center') . " WHERE uniacid=:uniacid AND center_id=:center_id", array(':uniacid' => $_W['uniacid'], ':center_id' => $center['id']));
 			if (!empty($childs)) {
-				$this->child_centers = array_merge($childs, $this->child_centers);
+				$data = array();
+				foreach ($childs as $key => $value) {
+					$this->child_centers[$value['id']] = $value;
+				}
 				foreach ($childs as $val) {
 					return $this->getChildCenters($val['openid']);
 				}
@@ -80,6 +83,7 @@ if (!class_exists('MerchantModel')) {
 					$ids[] = $val['id'];
 				}
 				$center_ids = implode(',', $ids);
+				$center_ids .= ",".$center['id'];
 				$supplier_uids = pdo_fetchall("SELECT distinct supplier_uid FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND center_id in ({$center_ids})", array(':uniacid' => $_W['uniacid']));
 				if (!empty($supplier_uids)) {
 					$uids = array();
