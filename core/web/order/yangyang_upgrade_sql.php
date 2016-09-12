@@ -10,3 +10,7 @@ if(!pdo_fieldexists('sz_yi_article_category', 'is_helper')) {
 if (!pdo_fieldexists('sz_yi_goods', 'isforceyunbi')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isforceyunbi` TINYINT(1) NOT NULL DEFAULT '0';");
 }
+
+if (!pdo_fieldexists('sz_yi_order', 'basis_money')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `basis_money` decimal(10,2) DEFAULT NULL;");
+}
