@@ -177,7 +177,7 @@ if (checksubmit()) {
         $set['shop']['recpaycontent']   = $custom['recpaycontent'];
         $set['shop']['referrallogo']   = $custom['referrallogo'];
 
-        plog('sysset.save.sms', '修改系统设置-PC设置');
+        plog('sysset.save.pcset', '修改系统设置-PC设置');
     }
     elseif ($op == 'sms') {
         $sms                    = is_array($_GPC['sms']) ? $_GPC['sms'] : array();
@@ -188,6 +188,7 @@ if (checksubmit()) {
         $set['sms']['secret']   = $sms['secret'];
         $set['sms']['signname'] = $sms['signname'];
         $set['sms']['product']  = $sms['product'];
+        $set['sms']['forget']   = $sms['forget'];
         $set['sms']['templateCode'] = $sms['templateCode'];
         $set['sms']['templateCodeForget'] = $sms['templateCodeForget'];
         plog('sysset.save.sms', '修改系统设置-短信设置');
