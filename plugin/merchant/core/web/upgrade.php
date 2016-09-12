@@ -2,7 +2,7 @@
 //金额不能用int, apply表少uniacid字段
 global $_W;
 $sql = "
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_merchants` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_merchants') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `openid` varchar(255) CHARACTER SET utf8 NOT NULL,
   `uniacid` int(11) NOT NULL,
@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_merchants` (
   `commissions` decimal(10,2) DEFAULT '0.00',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_merchant_apply` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_merchant_apply') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `applysn` varchar(255) NOT NULL COMMENT '提现单号',
@@ -23,14 +23,14 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_merchant_apply` (
   `finish_time` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_merchant_level` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_merchant_level') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `level_name` varchar(100) CHARACTER SET utf8 NOT NULL COMMENT '等级名称',
   `commission` decimal(10,2) DEFAULT '0.00' COMMENT '比例',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_merchant_center` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_merchant_center') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `openid` varchar(255) CHARACTER SET utf8 NOT NULL,
