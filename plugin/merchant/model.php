@@ -76,6 +76,7 @@ if (!class_exists('MerchantModel')) {
 			if (empty($openid)) {
 				return;
 			}
+			$center = $this->isCenter($openid);
 			$child_centers = $this->getChildCenters($openid);
 			if (!empty($child_centers)) {
 				$ids = array();
