@@ -11,6 +11,8 @@ if ($_W['isajax']) {
 	$cansettle = $costmoney >= 1;
 	$member['commission_ok'] = number_format($costmoney, 2);
 	if ($_W['ispost']) {
+		$supplierinfo = $this->model->getSupplierInfo($uid);
+		$costmoney = $supplierinfo['costmoney'];
 		$time = time();
 		$sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0");
 		$applyno = m('common')->createNO('commission_apply', 'applyno', 'CA');
