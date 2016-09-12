@@ -483,7 +483,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
     {else}
             <div class="buy" onclick="choose('buy')"  <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%else%>style="width:70%"<%/if%>>立即购买</div>
     {/if}
-    <input type="hidden" value="<%goods.isforce%>" id='isforce'>
+
         <%else%>
             <%if goods.canaddcart%>
             <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
@@ -1399,7 +1399,9 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                                                                                                                                   cartdiv.find('b').html(ret.result.cartcount);
                                                                                                                                } closechoose();
 
-                                                                                                       } else{
+                                                                                                       } else if (ret.status==0) {
+                                                                                   core.tip.show(ret.result.message);
+                                                                               } else{
                                                                                                            core.message(ret.result,'','error');
                                                                                                        }
                                                                                },true,true);

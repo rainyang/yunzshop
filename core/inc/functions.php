@@ -185,9 +185,11 @@ function send_sms_alidayu($mobile, $code, $templateType)
     switch ($templateType) {
         case 'reg':
             $templateCode = $set['sms']['templateCode'];
+            $params = @explode("\n", $set['sms']['product']);
             break;
         case 'forget':
             $templateCode = $set['sms']['templateCodeForget'];
+            $params = @explode("\n", $set['sms']['forget']);
             break;
         default:
             $templateCode = $set['sms']['templateCode'];
@@ -201,10 +203,23 @@ function send_sms_alidayu($mobile, $code, $templateType)
     $req->setExtend("123456");
     $req->setSmsType("normal");
     $req->setSmsFreeSignName($set['sms']['signname']);
-    $req->setSmsParam("{\"code\":\"{$code}\",\"product\":\"{$set['sms']['product']}\"}");
+    if (is_array($params)) {
+        $nparam['code'] = "{$code}";
+        foreach ($params as $param) {
+            $param = trim($param);
+            $explode_param = explode("=", $param);
+            $nparam[$explode_param[0]] = "{$explode_param[1]}";
+        }
+        //print_r(json_encode($nparam));exit;
+        $req->setSmsParam(json_encode($nparam));
+    } else {
+        $req->setSmsParam("{\"code\":\"{$code}\",\"product\":\"{$set['sms']['product']}\"}");
+    }
+
     $req->setRecNum($mobile);
     $req->setSmsTemplateCode($templateCode);
     $resp = $c->execute($req);
+    //print_r($resp);exit;
     return objectArray($resp);
 }
 

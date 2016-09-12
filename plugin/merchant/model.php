@@ -23,16 +23,29 @@ if (!class_exists('MerchantModel')) {
 				$supplier_uids = 0;
 			}
 			$info['supplier_uids'] = $supplier_uids;
-			$info['ordercount'] = pdo_fetchcolumn("SELECT count(o.id) FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." AND o.supplier_uid in ({$supplier_uids}) ORDER BY o.createtime DESC,o.status DESC ");
+			$supplier_cond = " AND o.supplier_uid in ({$supplier_uids}) ";
+			if ($info['supplier_uids'] == 0) {
+				$supplier_cond = " AND o.supplier_uid < 0 ";
+			}
+			$info['ordercount'] = pdo_fetchcolumn("SELECT count(o.id) FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} ORDER BY o.createtime DESC,o.status DESC ");
 			$this->child_centers = array();
 			$centers = $this->getChildCenters($openid);
 			$info['centercount'] = count($centers);
 			$info['commission_total'] = number_format(pdo_fetchcolumn("SELECT sum(money) FROM " . tablename('sz_yi_merchant_apply') . " WHERE uniacid=:uniacid AND member_id=:member_id AND iscenter=1", array(':uniacid' => $_W['uniacid'], ':member_id' => $member['id'])), 2);
-			$info['commission_ok'] = number_format(pdo_fetchcolumn("SELECT sum(og.price) FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." AND o.supplier_uid in ({$supplier_uids}) AND center_apply_status=0 ORDER BY o.createtime DESC,o.status DESC ")*$info['levelinfo']['commission']/100, 2);
-			$info['order_total_price'] = number_format(pdo_fetchcolumn("SELECT sum(og.price) FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." AND o.supplier_uid in ({$supplier_uids}) ORDER BY o.createtime DESC,o.status DESC "), 2);
+			$info['commission_ok'] = number_format(pdo_fetchcolumn("SELECT sum(og.price) FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} AND center_apply_status=0 ORDER BY o.createtime DESC,o.status DESC ")*$info['levelinfo']['commission']/100, 2);
+			$info['order_total_price'] = number_format(pdo_fetchcolumn("SELECT sum(og.price) FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} ORDER BY o.createtime DESC,o.status DESC "), 2);
 			$order_ids = pdo_fetchall("SELECT o.id FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." AND o.supplier_uid in ({$supplier_uids}) AND center_apply_status=0 ORDER BY o.createtime DESC,o.status DESC ");
 			$info['order_ids'] = $order_ids;
 			return $info;
+		}
+
+		public function getOpenid($center_id){
+			global $_W;
+			if (empty($center_id)) {
+				return;
+			}
+			$center = pdo_fetchcolumn("SELECT openid FROM " . tablename('sz_yi_merchant_center') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $center_id));
+			return $center;
 		}
 
 		public function getChildCenters($openid){

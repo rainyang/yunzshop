@@ -2424,7 +2424,7 @@ if ($_W['isajax']) {
             }
             m('notice')->sendOrderMessage($orderid);
             if (p('channel')) {
-                if (empty($ischannelpick)) {
+                if (empty($ischannelpay)) {
                     $pluginc = p('commission');
                     if ($pluginc) {
                         $pluginc->checkOrderConfirm($orderid);

@@ -121,7 +121,7 @@ if ($op == 'template') {
     //支付宝证书
     $cert = IA_ROOT . "/addons/sz_yi/cert/cacert.pem";
 } else if($op == 'pcset'){
-
+    ca('sysset.view.pcset');
     //默认首页导航内容
     if(empty($set['shop']['hmenu_name'])){
         $set['shop']['hmenu_name'] = array('首页', '全部商品', '店铺公告', '成为分销商', '会员中心');
@@ -177,7 +177,7 @@ if (checksubmit()) {
         $set['shop']['recpaycontent']   = $custom['recpaycontent'];
         $set['shop']['referrallogo']   = $custom['referrallogo'];
 
-        plog('sysset.save.sms', '修改系统设置-PC设置');
+        plog('sysset.save.pcset', '修改系统设置-PC设置');
     }
     elseif ($op == 'sms') {
         $sms                    = is_array($_GPC['sms']) ? $_GPC['sms'] : array();
@@ -188,6 +188,7 @@ if (checksubmit()) {
         $set['sms']['secret']   = $sms['secret'];
         $set['sms']['signname'] = $sms['signname'];
         $set['sms']['product']  = $sms['product'];
+        $set['sms']['forget']   = $sms['forget'];
         $set['sms']['templateCode'] = $sms['templateCode'];
         $set['sms']['templateCodeForget'] = $sms['templateCodeForget'];
         plog('sysset.save.sms', '修改系统设置-短信设置');
