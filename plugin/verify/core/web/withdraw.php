@@ -76,10 +76,12 @@ if ($operation == 'display') {
     if ($paytype == 'manual') {
         ca('caisher.withdraw.withdraw');
         pdo_update('sz_yi_store_withdraw', array(
-            'status' => 1
+            'status' => 1,
+            'apply_time' => time()
         ), array(
             'id' => $id,
             'uniacid' => $uniacid
+
         ));
         // TODO: 要不要给提现的用户发一条通知  要
          $_var_157 = array(
@@ -97,7 +99,8 @@ if ($operation == 'display') {
             message('微信钱包提现失败: ' . $result['message'], '', 'error');
         }
         pdo_update('sz_yi_cashier_withdraw', array(
-            'status' => 1
+            'status' => 1,
+            'apply_time' => time()
         ), array(
             'id' => $id,
             'uniacid' => $uniacid
@@ -114,7 +117,8 @@ if ($operation == 'display') {
     } else if ($paytype == 'refuse') {
         ca('caisher.withdraw.withdraw');
         pdo_update('sz_yi_store_withdraw', array(
-            'status' => 2
+            'status' => 2,
+            'refuse_time' => time()
         ), array(
             'id' => $id,
             'uniacid' => $uniacid

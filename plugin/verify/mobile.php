@@ -45,4 +45,8 @@ class VerifyMobile extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function log()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 }
