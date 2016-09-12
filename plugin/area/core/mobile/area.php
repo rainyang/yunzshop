@@ -20,14 +20,14 @@ if ($operation == 'display') {
         $condition .= " and tcate_area=:id";
         $params[':id'] = intval($_GPC['tcate_area']);
         $category = set_medias(pdo_fetch('select * from ' . tablename('sz_yi_category_area') . ' where id=:id 
-            and uniacid=:uniacid order by displayorder DESC', $params),'thumb');
+            and uniacid=:uniacid order by displayorder DESC', $params),array('thumb', 'advimg'));
         
         $category['url'] = $this->createPluginMobileUrl('area/area_detail')."&tcate_area=";
     } else if (!empty($_GPC['ccate_area'])) {
         $condition .= " and ccate_area=:id";
         $params[':id'] = intval($_GPC['ccate_area']);
         $category = set_medias(pdo_fetch('select * from ' . tablename('sz_yi_category_area') . ' where id=:id 
-            and uniacid=:uniacid order by displayorder DESC', $params),'thumb');
+            and uniacid=:uniacid order by displayorder DESC', $params),array('thumb', 'advimg'));
         
         $category['url'] = $this->createPluginMobileUrl('area/area_detail')."&ccate_area=";
 
