@@ -418,6 +418,9 @@ if ($_W['isajax']) {
                                 $level["discount"] = 0;
                             }
                         }
+                        if (p('channel') && $ischannelpay == 1) {
+                            $level["discount"] = 10;
+                        }
                     }
                 } else {
                     //分销商等级折扣
@@ -1632,6 +1635,9 @@ if ($_W['isajax']) {
                                 } else {
                                     $level["discount"] = 0;
                                 }
+                            }
+                            if (p('channel') && $ischannelpay == 1) {
+                                $level["discount"] = 10;
                             }
                         }
 
