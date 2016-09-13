@@ -18,6 +18,8 @@ if (!class_exists('MerchantModel')) {
 			}
 			$member = m('member')->getInfo($openid);
 			$info['levelinfo'] = pdo_fetch("SELECT * FROM " . tablename('sz_yi_merchant_level') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $center['level_id']));
+			$this->child_centers = array();
+			$centers = $this->getChildCenters($openid);
 			$supplier_uids = $this->getChildSupplierUids($openid);
 			if (empty($supplier_uids)) {
 				$supplier_uids = 0;
@@ -28,8 +30,7 @@ if (!class_exists('MerchantModel')) {
 				$supplier_cond = " AND o.supplier_uid < 0 ";
 			}
 			$info['ordercount'] = pdo_fetchcolumn("SELECT count(o.id) FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} AND o.status>=1 ORDER BY o.createtime DESC,o.status DESC ");
-			$this->child_centers = array();
-			$centers = $this->getChildCenters($openid);
+
 			$info['centercount'] = count($centers);
 			$info['merchantcount'] = count($this->getCenterMerchants($center['id']));
 			$info['commission_total'] = number_format(pdo_fetchcolumn("SELECT sum(money) FROM " . tablename('sz_yi_merchant_apply') . " WHERE uniacid=:uniacid AND member_id=:member_id AND iscenter=1", array(':uniacid' => $_W['uniacid'], ':member_id' => $member['id'])), 2);
@@ -101,18 +102,20 @@ if (!class_exists('MerchantModel')) {
 					$center_ids .= ",".$center['id'];
 				}
 				$supplier_uids = pdo_fetchall("SELECT distinct supplier_uid FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND center_id in ({$center_ids})", array(':uniacid' => $_W['uniacid']));
-				if (!empty($supplier_uids)) {
-					$uids = array();
-					foreach ($supplier_uids as $val) {
-						$uids[] = $val['supplier_uid'];
-					}
-					$supplier_uids = implode(',', $uids);
-				}
-				if (empty($supplier_uids)) {
-					$supplier_uids = 0;
-				}
-				return $supplier_uids;
+			} else {
+				$supplier_uids = pdo_fetchall("SELECT distinct supplier_uid FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND center_id=:center_id", array(':uniacid' => $_W['uniacid'], ':center_id' => $center['id']));
 			}
+			if (!empty($supplier_uids)) {
+				$uids = array();
+				foreach ($supplier_uids as $val) {
+					$uids[] = $val['supplier_uid'];
+				}
+				$supplier_uids = implode(',', $uids);
+			}
+			if (empty($supplier_uids)) {
+				$supplier_uids = 0;
+			}
+			return $supplier_uids;
 		}
 
 		//会员id下的所有供应商的supplier_uid
