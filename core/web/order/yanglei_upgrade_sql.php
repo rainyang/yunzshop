@@ -40,7 +40,7 @@ if (!pdo_fieldexists('sz_yi_diyform_temp', 'declaration_mid')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_diyform_temp')." ADD `declaration_mid` INT NOT NULL AFTER `diyformdata`;");
 }
 if (!pdo_fieldexists('sz_yi_order_goods', 'declaration_mid')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `declaration_mid` INT NOT NULL AFTER `rankingstatus`;");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `declaration_mid` INT NOT NULL AFTER `isdeclaration`;");
 }
 
 
