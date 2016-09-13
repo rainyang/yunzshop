@@ -207,4 +207,11 @@ if ($pcashier) {
         $has_cashier = true;
     }
 }
+$verify = pdo_fetch('SELECT * FROM '.tablename('sz_yi_store')." WHERE uniacid=:uniacid and status=1 and member_id=:member_id", array(':uniacid' => $_W['uniacid'], ':member_id' => $member['id']));
+if ($verify) {
+	$issupervisor = true;
+}
+$verifyset  = m('common')->getSetData();
+$allset = iunserializer($verifyset['plugins']);
+
 include $this->template('member/center');

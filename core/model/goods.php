@@ -48,8 +48,11 @@ class Sz_DYi_Goods
             $condition .= " and id = :id";
             $params[':id'] = intval($id);
         }
-        if (!empty($args['isverify'])) {
-            $condition .= " and isverify = 1";
+        if (!empty($args['isverify']) && $args['isverify'] == 1) {
+            $condition .= " and isverify = '1' ";
+        }
+        if (!empty($args['isverify']) && $args['isverify'] == 2) {
+            $condition .= " and isverify = '2' ";
         }
         if (!empty($sup_uid)) {
             $condition .= " and supplier_uid = :supplier_uid ";
@@ -74,6 +77,11 @@ class Sz_DYi_Goods
         $isdiscount = !empty($args['isdiscount']) ? 1 : 0;
         if (!empty($isdiscount)) {
             $condition .= " and isdiscount=1";
+        }
+        $goodsids = !empty($args['goodsid']) ? ($args['goodsid']) : 0;
+        if (!empty($storeid)) {
+            $condition .= " and id in (:goodsids)";
+            $params[':goodsids'] =  $goodsids ;
         }
         $istime = !empty($args['istime']) ? 1 : 0;
         if (!empty($istime)) {
