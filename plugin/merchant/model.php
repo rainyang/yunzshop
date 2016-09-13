@@ -27,7 +27,7 @@ if (!class_exists('MerchantModel')) {
 			if ($info['supplier_uids'] == 0) {
 				$supplier_cond = " AND o.supplier_uid < 0 ";
 			}
-			$info['ordercount'] = pdo_fetchcolumn("SELECT count(o.id) FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} ORDER BY o.createtime DESC,o.status DESC ");
+			$info['ordercount'] = pdo_fetchcolumn("SELECT count(o.id) FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} AND o.status>=1 ORDER BY o.createtime DESC,o.status DESC ");
 			$this->child_centers = array();
 			$centers = $this->getChildCenters($openid);
 			$info['centercount'] = count($centers);

@@ -14,7 +14,7 @@ if ($uids == 0) {
 }
 $_GPC['type'] = $_GPC['type'] ? $_GPC['type'] : 0;
 //订单数量
-$ordercount0 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where supplier_uid in ({$uids}) and userdeleted=0 and deleted=0 and uniacid={$_W['uniacid']} ");
+$ordercount0 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where {$cond} and userdeleted=0 and deleted=0 and uniacid={$_W['uniacid']} ");
 //已提现佣金总和
 $commission_total=number_format(pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_merchant_apply') . " where uniacid={$_W['uniacid']} and member_id={$member['id']} and status=1"), 2);
 $apply_total = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_merchant_apply') . " where uniacid={$_W['uniacid']} and member_id={$member['id']}");
