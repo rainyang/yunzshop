@@ -5,6 +5,10 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'index';
 $openid    = m('user')->getOpenid();
+if(empty($openid)){
+	$openid = m('user')->isLogin();
+}
+$member    = m('member')->getMember($openid);
 $uniacid   = $_W['uniacid'];
 $designer  = p('designer');
 $shopset   = m('common')->getSysset('shop');
@@ -22,7 +26,6 @@ if (empty($this->yzShopSet['ispc']) || isMobile()) {
             if (p('commission')) {
                 $set = p('commission')->getSet();
                 if (!empty($set['level'])) {
-                    $member = m('member')->getMember($openid);
                     if (!empty($member) && $member['status'] == 1 && $member['isagent'] == 1) {
                         $_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $member['id']));
                         if (empty($set['become_reg']) && (empty($member['realname']) || empty($member['mobile']))) {
@@ -127,9 +130,15 @@ if ($operation == 'index') {
 	//精品推荐
 	$ads_pc = array();
 	$goods_pc = array();
+
+	//会员权限控制商品显示
+	$levelid = intval($member['level']);
+	$groupid = intval($member['groupid']);
+	$condition = " and ( ifnull(showlevels,'')='' or FIND_IN_SET( {$levelid},showlevels)<>0 ) ";
+	$condition .= " and ( ifnull(showgroups,'')='' or FIND_IN_SET( {$groupid},showgroups)<>0 ) ";
 	if(!empty($this->yzShopSet['index']['isrecommand']) && !empty($this->yzShopSet['ispc'])){
 		$ads_pc['isrecommand'] = pdo_fetchall('select * from ' . tablename('sz_yi_adpc') . " where uniacid=:uniacid and location='isrecommand'", array(':uniacid' => $uniacid));
-		$goods_pc['isrecommand'] = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . ' where uniacid = :uniacid and status = 1 and deleted = 0 and isrecommand=1 order by displayorder desc limit 4', array(':uniacid' => $uniacid));
+		$goods_pc['isrecommand'] = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . " where uniacid = :uniacid and status = 1 and deleted = 0 and isrecommand=1 {$condition} order by displayorder desc limit 4", array(':uniacid' => $uniacid));
 		$ads_pc['isrecommand'] = set_medias($ads_pc['isrecommand'], 'thumb');
 		$goods_pc['isrecommand'] = set_medias($goods_pc['isrecommand'], 'thumb');
 	}
@@ -137,7 +146,7 @@ if ($operation == 'index') {
 	//新上商品
 	if(!empty($this->yzShopSet['index']['isnew']) && !empty($this->yzShopSet['ispc'])){
 		$ads_pc['isnew'] = pdo_fetchall('select * from ' . tablename('sz_yi_adpc') . " where uniacid=:uniacid and location='isnew'", array(':uniacid' => $uniacid));
-		$goods_pc['isnew'] = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . ' where uniacid = :uniacid and status = 1 and deleted = 0 and isnew=1 order by displayorder desc limit 4', array(':uniacid' => $uniacid));
+		$goods_pc['isnew'] = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . " where uniacid = :uniacid and status = 1 and deleted = 0 and isnew=1 {$condition} order by displayorder desc limit 4", array(':uniacid' => $uniacid));
 		$ads_pc['isnew'] = set_medias($ads_pc['isnew'], 'thumb');
 		$goods_pc['isnew'] = set_medias($goods_pc['isnew'], 'thumb');
 	}
@@ -145,7 +154,7 @@ if ($operation == 'index') {
 	//热卖商品
 	if(!empty($this->yzShopSet['index']['ishot']) && !empty($this->yzShopSet['ispc'])){
 		$ads_pc['ishot'] = pdo_fetchall('select * from ' . tablename('sz_yi_adpc') . " where uniacid=:uniacid and location='ishot'", array(':uniacid' => $uniacid));
-		$goods_pc['ishot'] = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . ' where uniacid = :uniacid and status = 1 and deleted = 0 and ishot=1 order by displayorder desc limit 4', array(':uniacid' => $uniacid));
+		$goods_pc['ishot'] = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . " where uniacid = :uniacid and status = 1 and deleted = 0 and ishot=1 {$condition} order by displayorder desc limit 4", array(':uniacid' => $uniacid));
 		$ads_pc['ishot'] = set_medias($ads_pc['ishot'], 'thumb');
 		$goods_pc['ishot'] = set_medias($goods_pc['ishot'], 'thumb');
 	}
@@ -153,7 +162,7 @@ if ($operation == 'index') {
 	//促销商品
 	if(!empty($this->yzShopSet['index']['isdiscount']) && !empty($this->yzShopSet['ispc'])){
 		$ads_pc['isdiscount'] = pdo_fetchall('select * from ' . tablename('sz_yi_adpc') . " where uniacid=:uniacid and location='isdiscount'", array(':uniacid' => $uniacid));
-		$goods_pc['isdiscount'] = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . ' where uniacid = :uniacid and status = 1 and deleted = 0 and isdiscount=1 order by displayorder desc limit 4', array(':uniacid' => $uniacid));
+		$goods_pc['isdiscount'] = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . " where uniacid = :uniacid and status = 1 and deleted = 0 and isdiscount=1 {$condition} order by displayorder desc limit 4", array(':uniacid' => $uniacid));
 		$ads_pc['isdiscount'] = set_medias($ads_pc['isdiscount'], 'thumb');
 		$goods_pc['isdiscount'] = set_medias($goods_pc['isdiscount'], 'thumb');
 	}
@@ -161,7 +170,7 @@ if ($operation == 'index') {
 	//包邮商品
 	if(!empty($this->yzShopSet['index']['issendfree']) && !empty($this->yzShopSet['ispc'])){
 		$ads_pc['issendfree'] = pdo_fetchall('select * from ' . tablename('sz_yi_adpc') . " where uniacid=:uniacid and location='issendfree'", array(':uniacid' => $uniacid));
-		$goods_pc['issendfree'] = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . ' where uniacid = :uniacid and status = 1 and deleted = 0 and issendfree=1 order by displayorder desc limit 4', array(':uniacid' => $uniacid));
+		$goods_pc['issendfree'] = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . " where uniacid = :uniacid and status = 1 and deleted = 0 and issendfree=1 {$condition} order by displayorder desc limit 4", array(':uniacid' => $uniacid));
 		$ads_pc['issendfree'] = set_medias($ads_pc['issendfree'], 'thumb');
 		$goods_pc['issendfree'] = set_medias($goods_pc['issendfree'], 'thumb');
 	}
@@ -169,7 +178,7 @@ if ($operation == 'index') {
 	//限时特价
 	if(!empty($this->yzShopSet['index']['istime']) && !empty($this->yzShopSet['ispc'])){
 		$ads_pc['istime'] = pdo_fetchall('select * from ' . tablename('sz_yi_adpc') . " where uniacid=:uniacid and location='istime'", array(':uniacid' => $uniacid));
-		$goods_pc['istime'] = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . ' where uniacid = :uniacid and status = 1 and deleted = 0 and istime=1 order by displayorder desc limit 4', array(':uniacid' => $uniacid));
+		$goods_pc['istime'] = pdo_fetchall('select * from ' . tablename('sz_yi_goods') . " where uniacid = :uniacid and status = 1 and deleted = 0 and istime=1 {$condition} order by displayorder desc limit 4", array(':uniacid' => $uniacid));
 		$ads_pc['istime'] = set_medias($ads_pc['istime'], 'thumb');
 		$goods_pc['istime'] = set_medias($goods_pc['istime'], 'thumb');
 	}
