@@ -16,8 +16,8 @@ input {-webkit-appearance:none; outline:none;}
 
 
    <div class="balance_img"><i class="fa fa-cny"></i></div>
-   <div class="balance_text">您的当前余额</div>
-   <div class="balance_num">￥<span id="credit">{$member['credit2']}</span></div>
+   <div class="balance_text">您的当前{if !empty($_GPC['yunbi'])}{$title}{else}余额{/if}</div>
+   <div class="balance_num">￥<span id="credit">{if !empty($_GPC['yunbi'])}{$member['virtual_currency']}{else}{$member['credit2']}{/if}</span></div>
 
    <div class="balance_num" style="height:30px;">
         <span style="width:30%; height:38px;font-size:16px; float: left;">受让人ID</span>

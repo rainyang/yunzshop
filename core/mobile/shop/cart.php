@@ -125,7 +125,7 @@ if ($_W['isajax']) {
         }
         empty($total) && $total = 1;
         $optionid = intval($_GPC['optionid']);
-        $goods    = pdo_fetch('select id,marketprice from ' . tablename('sz_yi_goods') . ' where uniacid=:uniacid and id=:id limit 1', array(
+        $goods    = pdo_fetch('select id,marketprice,hasoption,`type`, total from ' . tablename('sz_yi_goods') . ' where uniacid=:uniacid and id=:id limit 1', array(
             ':uniacid' => $uniacid,
             ':id' => $id
         ));
@@ -143,6 +143,23 @@ if ($_W['isajax']) {
             ':optionid' => $optionid,
             ':id' => $id
         ));
+
+        if ($goods['hasoption'] == 1) {
+              $option_data = pdo_fetch("SELECT `stock` FROM " . tablename('sz_yi_goods_option') . ' WHERE id=:id', array(':id'=> $optionid));
+            if (intval($data['total'] + $total) > $option_data['stock']) {
+                show_json(0, array(
+                    'message' => '您最多购买' . $option_data['stock'] . '件'
+                ));
+            }
+
+        } else {
+            if (intval($data['total'] + $total) > $goods['total']) {
+                show_json(0, array(
+                    'message' => '您最多购买' . $goods['total'] . '件'
+                ));
+            }
+        }
+
         $diyformdataid = 0;
         $diyformfields = iserializer(array());
         $diyformdata   = iserializer(array());
@@ -172,7 +189,8 @@ if ($_W['isajax']) {
         ':openid' => $openid,
         
         ':id' => $id
-        ));                   
+        ));
+
         if (empty($data)) {
 
             $data = array(

@@ -13,8 +13,107 @@
 }
 </style>
 {if $operation == "display"}
+<div class="panel panel-info">
+    <div class="panel-heading">筛选</div>
+    <div class="panel-body">
+        <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
+            <input type="hidden" name="c" value="site" />
+            <input type="hidden" name="a" value="entry" />
+            <input type="hidden" name="m" value="sz_yi" />
+            <input type="hidden" name="do" value="plugin" />
+            <input type="hidden" name="p" value="bonus" />
+            <input type="hidden" name="method" value="agent" />
+            <input type="hidden" name="op" value="display" />
+            <div class="form-group">
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">ID</label>
+                    <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <input type="text" class="form-control"  name="mid" value="{$_GPC['mid']}"/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">会员信息</label>
+                    <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <input type="text" class="form-control"  name="realname" value="{$_GPC['realname']}" placeholder='可搜索昵称/名称/手机号'/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">是否关注</label>
+                    <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <select name='followed' class='form-control'>
+                            <option value=''></option>
+                            <option value='0' {if $_GPC['followed']=='0'}selected{/if}>未关注</option>
+                            <option value='1' {if $_GPC['followed']=='1'}selected{/if}>已关注</option>
+                            <option value='2' {if $_GPC['followed']=='2'}selected{/if}>取消关注</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">推荐人</label>
+                    <div class="col-sm-3">
+                        <select name='parentid' class='form-control'>
+                            <option value=''></option>
+                            <option value='0' {if $_GPC['parentid']=='0'}selected{/if}>总店</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-6">
+                        <input type="text"  class="form-control" name="parentname" value="{$_GPC['parentname']}" placeholder='推荐人昵称/姓名/手机号'/>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">代理商等级</label>
+                    <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <select name='agentlevel' class='form-control'>
+                            <option value=''></option>
+                            {loop $agentlevels $level}
+                            <option value='{$level['id']}' {if $_GPC['agentlevel']==$level['id']}selected{/if}>{$level['levelname']}</option>
+                            {/loop}
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">区域代理</label>
+                    <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <select name='bonus_area' class='form-control'>
+                            <option value=''>全部等级</option>
+                            <option value='1' {if $_GPC['bonus_area']=='1'}selected{/if}>省级代理</option>
+                            <option value='2' {if $_GPC['bonus_area']=='2'}selected{/if}>市级代理</option>
+                            <option value='3' {if $_GPC['bonus_area']=='3'}selected{/if}>区级代理</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">区域选择</label>
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <select class="form-control tpl-province" id="sel-provance" onchange="selectCity();" name="reside[province]">
+                            <option value="" selected="true">所在省份</option>
+                        </select>
+                    </div>
+          
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <select class="form-control tpl-city" id="sel-city" onchange="selectcounty()" name="reside[city]"><option value="" selected="true">所在城市</option></select>
+                    </div>
+            
+                    <div class="col-xs-12 col-sm-3 col-md-3 col-lg-3">
+                        <select class="form-control tpl-district" id="sel-area" name="reside[district]"><option value="" selected="true">所在地区</option></select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
+                    <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                        <input type="hidden" name="token" value="{$_W['token']}" />
+                        {ifp 'bonus.agent.export'}
+                        <!-- <button type="submit" name="export" value="1" class="btn btn-primary">导出 Excel</button> -->
+                        {/if}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <div class="panel panel-default">
-    <div class="panel-heading">奖励详情</div>
+    <div class="panel-heading">分红明细</div>
     <div class="panel-body">
         <table class="table table-hover">
             <thead class="navbar-inner">
@@ -53,8 +152,42 @@
     </div>
 </div>
 {else}
+<div class="panel panel-info">
+    <div class="panel-heading">筛选</div>
+    <div class="panel-body">
+        <form action="./index.php" method="get" class="form-horizontal" role="form" id="form1">
+            <input type="hidden" name="c" value="site" />
+            <input type="hidden" name="a" value="entry" />
+            <input type="hidden" name="m" value="sz_yi" />
+            <input type="hidden" name="do" value="plugin" />
+            <input type="hidden" name="p" value="bonus" />
+            <input type="hidden" name="method" value="detail" />
+            <input type="hidden" name="op" value="list" />
+            <div class="form-group">
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">分红类型</label>
+                    <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <select name='type' class='form-control'>
+                            <option value=''>全部分红</option>
+                            <option value='1' {if $_GPC['type']=='1'}selected{/if}>团队分红</option>
+                            <option value='2' {if $_GPC['type']=='2'}selected{/if}>地区分红</option>
+                            <option value='3' {if $_GPC['type']=='3'}selected{/if}>全球分红</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label"></label>
+                    <div class="col-sm-8 col-lg-9 col-xs-12">
+                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
+                        <input type="hidden" name="token" value="{$_W['token']}" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
 <div class="panel panel-default">
-    <div class="panel-heading">奖励总金额：{if !empty($totalmoney)}{$totalmoney}元{else}0元{/if}</div>
+    <div class="panel-heading">分红金额共：{if !empty($totalmoney)}{$totalmoney}元{else}0元{/if}</div>
     <div class="panel-body">
         <table class="table table-hover">
             <thead class="navbar-inner">
@@ -64,7 +197,7 @@
                     <th style='width:10%;'>分红人数</th>
                     <th style='width:10%;'>分红方式</th>
                     <th style='width:15%;'>打款方式</th>
-                    <th style='width:10%;'>操作方式</th>
+                    <th style='width:10%;'>分红类型</th>
                     <th style='width:20%;'>分红时间</th>
                     <th style='width:15%;'>操作</th>
                 </tr>
@@ -84,7 +217,13 @@
                         {if $row['isglobal']==1}
                             全球分红
                         {else}
-                            代理分红
+                            {if $row['type'] == 2}
+                                团队分红
+                            {elseif $row['type'] == 3}
+                                地区分红
+                            {else}
+                                团队地区分红
+                            {/if}
                         {/if}
                     </td>
                     <td><?php echo date("Y-m-d H:i:s", $row['ctime'])?></td>

@@ -32,6 +32,9 @@ if (p('merchant')) {
 	if (!empty($member['id'])) {
 		$ismerchant = pdo_fetchall("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and member_id={$member['id']}");
 	}
+	if (!empty($openid)) {
+		$iscenter = p('merchant')->isCenter($openid);
+	}
 }
 if (p('supplier')) {
 	$supplier_set = p('supplier')->getSet();

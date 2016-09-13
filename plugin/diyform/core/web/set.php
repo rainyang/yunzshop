@@ -10,20 +10,30 @@ if (p('supplier')) {
 	$use_form_list = array();
 	foreach ($form_list as $key => $value) {
 		$value['fields'] = unserialize($value['fields']);
-		if (!$value['fields']['diyzhanghao']) {
-			$value['fields'] = iunserializer($value['fields']);
-			$use_form_list[$key] = $value;
+		foreach ($value['fields'] as $val) {
+			if ($val['tp_is_default'] != 5 && $val['tp_is_default'] != 6) {
+				$value['fields'] = iunserializer($value['fields']);
+				$use_form_list[$key] = $value;
+			}
 		}
 	}
 	$supplier_form_list = array();
 	foreach ($form_list as $key => $value) {
 		$value['fields'] = unserialize($value['fields']);
-		if ($value['fields']['diyzhanghao']) {
-			$value['fields'] = iunserializer($value['fields']);
-			$supplier_form_list[$key] = $value;
+		foreach ($value['fields'] as $val) {
+			if (!empty($val['tp_is_default']) && ($val['tp_is_default'] == 5 || $val['tp_is_default'] == 6)) {
+				$value['fields'] = iunserializer($value['fields']);
+				$supplier_form_list[$key] = $value;
+			}
 		}
 	}
 }
+/*
+print_r($use_form_list);
+print_r($form_list);
+exit;
+ */
+
 if (checksubmit('submit')) {
     ca('diyform.set.save');
     $data = is_array($_GPC['setdata']) ? array_merge($set, $_GPC['setdata']) : array();

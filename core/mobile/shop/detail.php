@@ -26,9 +26,12 @@ if($goods['ccate']){
 if($goods['tcate']){
     $tcate = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$goods['tcate']." and uniacid=".$uniacid);
 }
+$yunbi = 0;
 if (p('yunbi')) {
+    $yunbi = 1;
     $yunbi_set = p('yunbi')->getSet();
 }
+
 if(p('hotel')){//开启酒店插件后 判断当前时间是否有剩余房间可预约
 $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
 $params2 = array(':goodsid' => $goods['id']);
@@ -175,7 +178,7 @@ if (isset($imgs[1])) {
 }
 $levelid           = $member['level'];
 $groupid           = $member['groupid'];
-if(!is_weixin()){
+//if(!is_weixin()){
     //禁止浏览的商品
     if ($goods['showlevels'] != '') {
         $showlevels = explode(',', $goods['showlevels']);
@@ -189,7 +192,7 @@ if(!is_weixin()){
             message('当前商品禁止访问，请联系客服……', $this->createMobileUrl('shop/index'), 'error');
         }
     }
-}
+//}
 //分销佣金
 $commissionprice = p('commission')->getCommission($goods);
 

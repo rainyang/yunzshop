@@ -19,6 +19,7 @@ class Apply extends \api\YZ
     private $apply_info;
     private $agent_level;
     private $commission_info;
+
     public function __construct()
     {
         parent::__construct();
@@ -29,7 +30,9 @@ class Apply extends \api\YZ
         $this->set = $this->commission_model->getSet();
 
     }
-    private function _Info(){
+
+    private function _Info()
+    {
         $para = $this->getPara();
         $this->apply_info = $this->commission_apply_model->getInfo($para['commission_apply_id'], $para['uniacid']);
         $apply = $this->apply_info;
@@ -44,9 +47,13 @@ class Apply extends \api\YZ
 
     private function _getTotalCommissionInfo($order_list)
     {
-        $total =  array_sum(array_column($order_list, 'commission'));
+        $total = array_sum(array_column($order_list, 'commission'));
         $pay = array_sum(array_column($order_list, 'commission_pay'));
-        return compact('total','pay');
+        $res = array(
+            'total' => $total,
+            'pay' => $pay
+        );
+        return $res;
     }
 
     public function pay()
@@ -55,14 +62,14 @@ class Apply extends \api\YZ
         $this->_Info();
         $para = $this->getPara();
         $apply = $this->apply_info;
-        if ($apply['status'] != 2 ) {
+        if ($apply['status'] != 2) {
             $this->returnError('此操作与提现申请状态不符');
         }
         $order = $apply['order_list'];
         $member = $this->member;
         $now_time = time();
         $totalpay = $this->commission_info['total'];
-        $totalcommission =  $this->commission_info['pay'];
+        $totalcommission = $this->commission_info['pay'];
         if ($apply['type'] == 1 || $apply['type'] == 2) {
             $totalpay *= 100;
         }
@@ -163,8 +170,8 @@ class Apply extends \api\YZ
         $order = $apply['order_list'];
 
         $agent_level = $this->agent_level;
-        
-        $order_goods_list = $this->commission_apply_model->getCheckOrderGoods(array_column($order,'order_id'),$para['status'],$agent_level['id']);
+
+        $order_goods_list = $this->commission_apply_model->getCheckOrderGoods(array_column($order, 'order_id'), $para['status'], $agent_level['id']);
         //dump($order_goods_list);exit;
         $commission_info = $this->_getTotalCommissionInfo($order_goods_list);
         $paycommission = $commission_info['commission_pay'];
@@ -180,7 +187,7 @@ class Apply extends \api\YZ
 
         plog('commission.apply.check', "佣金审核 ID: {$para['commission_apply_id']} 申请编号: {$apply['applyno']} 总佣金: {$totalmoney} 审核通过佣金: {$paycommission} ");
         $this->returnSuccess('', '申请处理成功!');
-        
+
     }
 
     public function getInfo()
@@ -203,12 +210,21 @@ class Apply extends \api\YZ
 
         $totalcount = count($order);
         $totalmoney = array_sum(array_column($order, 'price'));
-        $apply = array_part('type,type_name,status_name,applytime,checktime,paytime,invalidtime,status,total,commission', $apply) + compact('totalcount', 'totalmoney');
+        $apply = array_part('type,type_name,status_name,applytime,checktime,paytime,invalidtime,status,total,commission', $apply)
+            + array(
+                'totalcount' => $totalcount,
+                'totalmoney' => $totalmoney
+            );
 
         $agent_level = $this->agent_level;
         $member['level_name'] = $agent_level['levelname'];
         $commission = $this->commission_info;
-        $res = compact('order', 'member', 'apply','commission');
+        $res = array(
+            'order' => $order,
+            'member' => $member,
+            'apply' => $apply,
+            'commission' => $commission
+        );
         dump($res);
         $this->returnSuccess($res);
     }

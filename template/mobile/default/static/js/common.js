@@ -1,11 +1,11 @@
 //判断图片是否存在
 function isExitsImg_nopic(thisObj) {
-    thisObj.src = "http://img.dm1961.com/tc/image/nopic.jpg";
+
 }
 
 //判断头像入径是否存在目标服务器
 function isExitsImg_logo(thisObj) {
-    thisObj.src = "http://img.dm1961.com/tc/image/logo.jpg";
+
 }
 
 //保留2位小数点
@@ -132,8 +132,6 @@ function GoBack() {
     if ((navigator.userAgent.indexOf('MSIE') >= 0) && (navigator.userAgent.indexOf('Opera') < 0)) { // IE  
         if (history.length > 0) {
             window.history.go(-1);
-        } else {
-            window.location.href = 'http://b.dm1961.com/tc/index.aspx';
         }
     } else { //非IE浏览器  
         if (navigator.userAgent.indexOf('Firefox') >= 0 ||
@@ -143,14 +141,10 @@ function GoBack() {
             navigator.userAgent.indexOf('WebKit') >= 0) {
             if (window.history.length >= 2) {
                 window.history.go(-1);
-            } else {
-                window.location.href = 'http://b.dm1961.com/tc/index.aspx';
             }
         } else {//未知的浏览器  
             if (history.length > 1) {
                 window.history.go(-1);
-            } else {
-                window.location.href = 'http://b.dm1961.com/tc/index.aspx';
             }
         }
     }

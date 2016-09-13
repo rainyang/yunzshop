@@ -48,10 +48,10 @@ class Sale extends \api\YZ
             ':starttime' => strtotime("-1 week",$first_time_of_today),
             ':endtime' => time()
         ));
-
-       
-        $rse = compact('sale', 'count');
-        dump($rse);
+        $rse = array(
+            'sale'=>$sale,
+            'count'=>$count
+        );
         $this->returnSuccess($rse);
     }
     private function getSaleData($countfield, $map = array())

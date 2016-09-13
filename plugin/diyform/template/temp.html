@@ -14,6 +14,7 @@
                 {ife 'diyform.temp' $item}
                 {if !empty($_GPC['id'])}
                 <div class="alert alert-info">警告：当模板中已经添加数据后改变模板结构有可能导致无法使用！
+                    <br/>注意：默认值为"账号"/"密码"类型的，仅能用于会员申请供应商使用！
                     <br/>使用情况：
                     <br/>会员资料 ({if $use_flag1}正在使用{else}未使用{/if})
                     <br/>分销商申请资料 ({if $use_flag2}正在使用{else}未使用{/if})

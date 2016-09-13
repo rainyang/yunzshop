@@ -60,6 +60,7 @@ class commissionApply
         $this->order_list = $apply_info['order_list'];
         return $apply_info;
     }
+
     public function _getBaseInfo($uniacid, $id, $fields = '*')
     {
         $apply = pdo_fetch('select ' . $fields . ' from ' . tablename('sz_yi_commission_apply') . ' where uniacid=:uniacid and id=:id limit 1', array(':uniacid' => $uniacid, ':id' => $id));
@@ -72,6 +73,7 @@ class commissionApply
         $apply['status_name'] = $this->name_map['status'][$apply['status']];
         return $apply;
     }
+
     private function _getOrderList($orderids, $uniacid, $agent_level_id)
     {
         $orderids = iunserializer($orderids);
@@ -99,18 +101,20 @@ class commissionApply
         }
         return $order_list;
     }
-    public function getCheckOrderGoods($order_ids, $check_status_array, $agent_level_id){
-        $order_ids_string = implode(',',$order_ids);
-        $order_goods_ids_string = implode(',',array_keys($check_status_array));
+
+    public function getCheckOrderGoods($order_ids, $check_status_array, $agent_level_id)
+    {
+        $order_ids_string = implode(',', $order_ids);
+        $order_goods_ids_string = implode(',', array_keys($check_status_array));
         $order_goods_list = pdo_fetchall("SELECT og.*,o.id as order_id FROM " . tablename('sz_yi_order_goods') . " AS og
         JOIN " . tablename('sz_yi_order') . " AS o ON og.orderid = o.id
         WHERE og.uniacid = :uniacid AND og.orderid IN ({$order_ids_string}) AND nocommission=0 AND og.id IN ({$order_goods_ids_string})"
             , array(':uniacid' => $this->uniacid));
 
-        foreach($order_goods_list as &$order_goods){
+        foreach ($order_goods_list as &$order_goods) {
             //dump($check_status_array);exit;
             $order_goods_check_status = $check_status_array[$order_goods['id']];
-            $order_goods['status'.$agent_level_id] = $order_goods_check_status;
+            $order_goods['status' . $agent_level_id] = $order_goods_check_status;
             $order_goods = $this->_getCommissionInfo($order_goods, $agent_level_id);
 
             //dump($para["status"][$ogid]);exit;
@@ -121,6 +125,7 @@ class commissionApply
         }
         return $order_goods_list;
     }
+
     private function _getOrderGoods($uniacid, $order)
     {
         $goods_list = pdo_fetchall('SELECT og.id as order_goods_id,g.thumb,og.price,og.realprice, og.total,g.title,o.paytype,og.optionname,og.commission1,og.commission2,og.commission3,og.commissions,og.status1,og.status2,og.status3,og.content1,og.content2,og.content3 
@@ -176,7 +181,10 @@ order by og.createtime  desc '
         } else {
             $commission_pay = 0;
         }
-        $res = compact('commission', 'commission_pay');
+        $res = array(
+            'commission' => $commission,
+            'commission_pay' => $commission_pay
+        );
         return $res;
     }
 

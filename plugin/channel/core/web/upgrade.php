@@ -13,7 +13,7 @@ if(empty($result)){
 }
 
 $sql = "
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_merchant` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_channel_merchant') . " (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `uniacid` INT(11) NOT NULL,
   `openid` VARCHAR(255) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL COMMENT '我的openid',
@@ -27,7 +27,7 @@ COMMENT = '渠道商推荐员';
 
 
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_level` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_channel_level') . " (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `uniacid` INT(11) NOT NULL,
   `level_name` VARCHAR(45) CHARACTER SET 'utf8' COLLATE 'utf8_general_ci' NULL COMMENT '等级名称',
@@ -51,7 +51,7 @@ COMMENT = '渠道商等级';
 
 
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_channel` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_af_channel') . " (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `mid` INT(11) NOT NULL,
   `uniacid` INT(11) NOT NULL,
@@ -68,7 +68,7 @@ COMMENT = '会员申请渠道商';
 
 
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_apply` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_channel_apply') . " (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `uniacid` INT(11) NOT NULL,
   `mid` INT(11) NOT NULL,
@@ -85,7 +85,7 @@ COMMENT = '渠道商申请提现';
 
 
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_stock` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_channel_stock') . " (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `uniacid` INT(11) NOT NULL,
   `openid` VARCHAR(50) NULL,
@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_stock` (
 ENGINE = MyISAM
 COMMENT = '渠道商库存';
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_order_goods_profit` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_channel_order_goods_profit') . " (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `uniacid` INT(11) NOT NULL,
   `order_goods_id` INT(11) NOT NULL COMMENT '商品ID',
@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_order_goods_profit` (
 ENGINE = MyISAM
 COMMENT = '渠道商商品利润';
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_channel_stock_log` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_channel_stock_log') . " (
   `id` INT(11) NOT NULL AUTO_INCREMENT,
   `uniacid` INT(11) NOT NULL,
   `openid` VARCHAR(50) NULL,
