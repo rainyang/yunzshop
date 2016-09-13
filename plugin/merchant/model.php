@@ -31,6 +31,7 @@ if (!class_exists('MerchantModel')) {
 			$this->child_centers = array();
 			$centers = $this->getChildCenters($openid);
 			$info['centercount'] = count($centers);
+			$info['merchantcount'] = count($this->getCenterMerchants($center['id']));
 			$info['commission_total'] = number_format(pdo_fetchcolumn("SELECT sum(money) FROM " . tablename('sz_yi_merchant_apply') . " WHERE uniacid=:uniacid AND member_id=:member_id AND iscenter=1", array(':uniacid' => $_W['uniacid'], ':member_id' => $member['id'])), 2);
 
 			$info['commission_ok'] = 0;
@@ -96,7 +97,9 @@ if (!class_exists('MerchantModel')) {
 					$ids[] = $val['id'];
 				}
 				$center_ids = implode(',', $ids);
-				$center_ids .= ",".$center['id'];
+				if (!empty($center)) {
+					$center_ids .= ",".$center['id'];
+				}
 				$supplier_uids = pdo_fetchall("SELECT distinct supplier_uid FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND center_id in ({$center_ids})", array(':uniacid' => $_W['uniacid']));
 				if (!empty($supplier_uids)) {
 					$uids = array();
@@ -104,6 +107,9 @@ if (!class_exists('MerchantModel')) {
 						$uids[] = $val['supplier_uid'];
 					}
 					$supplier_uids = implode(',', $uids);
+				}
+				if (empty($supplier_uids)) {
+					$supplier_uids = 0;
 				}
 				return $supplier_uids;
 			}
