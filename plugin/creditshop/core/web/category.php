@@ -28,11 +28,11 @@ if ($operation == 'display') {
 		$data = array('uniacid' => $_W['uniacid'], 'name' => trim($_GPC['catename']), 'enabled' => intval($_GPC['enabled']), 'isrecommand' => intval($_GPC['isrecommand']), 'displayorder' => intval($_GPC['displayorder']), 'thumb' => save_media($_GPC['thumb']));
 		if (!empty($id)) {
 			pdo_update('sz_yi_creditshop_category', $data, array('id' => $id));
-			plog('creditshop.category.edit', "修改积分商城分类 ID: {$id}");
+			plog('creditshop.category.edit', "修改{SZ_YI_INTEGRAL}商城分类 ID: {$id}");
 		} else {
 			pdo_insert('sz_yi_creditshop_category', $data);
 			$id = pdo_insertid();
-			plog('creditshop.category.add', "添加积分商城分类 ID: {$id}");
+			plog('creditshop.category.add', "添加{SZ_YI_INTEGRAL}商城分类 ID: {$id}");
 		}
 		message('更新分类成功！', $this->createPluginWebUrl('creditshop/category', array('op' => 'display')), 'success');
 	}
@@ -45,7 +45,7 @@ if ($operation == 'display') {
 		message('抱歉，分类不存在或是已经被删除！', $this->createPluginWebUrl('creditshop/category', array('op' => 'display')), 'error');
 	}
 	pdo_delete('sz_yi_creditshop_category', array('id' => $id));
-	plog('creditshop.category.delete', "删除积分商城分类 ID: {$id} 标题: {$item['name']} ");
+	plog('creditshop.category.delete', "删除{SZ_YI_INTEGRAL}商城分类 ID: {$id} 标题: {$item['name']} ");
 	message('分类删除成功！', $this->createPluginWebUrl('creditshop/category', array('op' => 'display')), 'success');
 }
 load()->func('tpl');

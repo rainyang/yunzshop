@@ -79,7 +79,7 @@
             <li><a href="#"><span><%member.virtual_currency%></span><br/>{$yunbi_title}</a></li>
         {/if}
 
-        <li><a href="#"><span><%member.credit1%></span><br/>{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}</a></li>
+        <li><a href="#"><span><%member.credit1%></span><br/>{if $shopset['credit1']}{$shopset['credit1']}{else}{php echo SZ_YI_INTEGRAL}{/if}</a></li>
         <li><a href="#"><span><%counts.couponcount%></span><br/>优惠券</a></li>     
                
     </ul>
@@ -167,7 +167,7 @@
 {if $open_creditshop}
         <li>
         <a href="#" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">
-        <i class="fa iconfont icon-database" style="background:#28c870"></i><br/>积分商城
+        <i class="fa iconfont icon-database" style="background:#28c870"></i><br/>{php echo SZ_YI_INTEGRAL}商城
         </a>
         </li>
 {/if}
@@ -267,6 +267,11 @@
 {/if}
 {if $has_cashier}
     <a href="{php echo $this->createPluginMobileUrl('cashier/qrcode_list')}"><div class="list1" style="margin:0px; "><i class="iconfont icon-web-price"></i>收银台<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+{/if}
+{if $member['is_bind']==0}
+ <a href="{php echo $this->createMobileUrl('member/bind')}"><div class="list1" style="margin:0px; "><i class="iconfont icon-web-price"></i>善心汇账户绑定<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+{else}
+ <a href="{php echo $this->createMobileUrl('member/sxh')}"><div class="list1" style="margin:0px; "><i class="iconfont icon-web-price"></i>善心汇账户<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 {/if}
 {if !is_weixin()}
 <div class="cart">

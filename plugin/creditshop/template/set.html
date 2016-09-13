@@ -10,7 +10,7 @@
         </div>
         <div class='panel-body'>
             <div class="form-group">
-                       <label class="col-xs-12 col-sm-3 col-md-2 control-label">在会员中心显示积分兑换按钮</label>
+                       <label class="col-xs-12 col-sm-3 col-md-2 control-label">在会员中心显示{php echo SZ_YI_INTEGRAL}兑换按钮</label>
                        <div class="col-sm-9 col-xs-12">
                                   {ifp 'creditshop.set.save'}
                                   <label class='radio radio-inline'>
@@ -48,7 +48,7 @@
                 </div>
             </div>
                  <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分说明页面</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">{php echo SZ_YI_INTEGRAL}说明页面</label>
                 <div class="col-sm-9 col-xs-12">
                            {ifp 'creditshop.set.save'}
                     <input type="text" name="setdata[crediturl]" class="form-control" value="{$set['crediturl']}"  />

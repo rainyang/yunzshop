@@ -14,7 +14,7 @@ if ($operation == 'display') {
 		foreach ($_GPC['displayorder'] as $id => $displayorder) {
 			pdo_update('sz_yi_creditshop_goods', array('displayorder' => $displayorder), array('id' => $id));
 		}
-		plog('creditshop.goods.edit', '批量修改积分商城商品排序');
+		plog('creditshop.goods.edit', '批量修改'.SZ_YI_INTEGRAL.'商城商品排序');
 		message('商品排序更新成功！', $this->createPluginWebUrl('creditshop/goods', array('op' => 'display')), 'success');
 	}
 	$pindex = max(1, intval($_GPC['page']));
@@ -54,11 +54,11 @@ if ($operation == 'display') {
 		$data['vip'] = (!empty($data['showlevels']) || !empty($data['showgroups'])) ? 1 : 0;
 		if (!empty($id)) {
 			pdo_update('sz_yi_creditshop_goods', $data, array('id' => $id, 'uniacid' => $_W['uniacid']));
-			plog('creditshop.goods.edit', "编辑积分商城商品 ID: {$id} <br/>商品名称: {$data['title']}");
+			plog('creditshop.goods.edit', "编辑{$id}商城商品 ID: {$id} <br/>商品名称: {$data['title']}");
 		} else {
 			pdo_insert('sz_yi_creditshop_goods', $data);
 			$id = pdo_insertid();
-			plog('creditshop.goods.add', "添加积分商城商品 ID: {$id}  <br/>商品名称: {$data['title']}");
+			plog('creditshop.goods.add', "添加{SZ_YI_INTEGRAL}商城商品 ID: {$id}  <br/>商品名称: {$data['title']}");
 		}
 		message('更新商品成功！', $this->createPluginWebUrl('creditshop/goods', array('op' => 'post', 'id' => $id)), 'success');
 	}
@@ -94,7 +94,7 @@ if ($operation == 'display') {
 		message('抱歉，商品不存在或是已经被删除！', $this->createPluginWebUrl('creditshop/goods', array('op' => 'display')), 'error');
 	}
 	pdo_update('sz_yi_creditshop_goods', array('deleted' => 1), array('id' => $id, 'uniacid' => $_W['uniacid']));
-	plog('creditshop.goods.delete', "删除积分商城商品 ID: {$id}  <br/>商品名称: {$item['title']} ");
+	plog('creditshop.goods.delete', "删除{SZ_YI_INTEGRAL}商城商品 ID: {$id}  <br/>商品名称: {$item['title']} ");
 	message('商品删除成功！', $this->createPluginWebUrl('creditshop/goods', array('op' => 'display')), 'success');
 } elseif ($operation == 'setgoodsproperty') {
 	ca('creditshop.goods.edit');
@@ -113,7 +113,7 @@ if ($operation == 'display') {
 		} else if ($type == 'status') {
 			$typestr = '上下架';
 		}
-		plog('creditshop.goods.edit', "修改积分商城商品{$typestr}状态   ID: {$id}");
+		plog('creditshop.goods.edit', "修改{SZ_YI_INTEGRAL}商城商品{$typestr}状态   ID: {$id}");
 		die(json_encode(array('result' => 1, 'data' => $data)));
 	}
 	die(json_encode(array('result' => 0)));

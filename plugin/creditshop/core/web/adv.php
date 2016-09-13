@@ -28,11 +28,11 @@ if ($operation == 'display') {
 		$data = array('uniacid' => $_W['uniacid'], 'advname' => trim($_GPC['advname']), 'link' => trim($_GPC['link']), 'enabled' => intval($_GPC['enabled']), 'displayorder' => intval($_GPC['displayorder']), 'thumb' => save_media($_GPC['thumb']));
 		if (!empty($id)) {
 			pdo_update('sz_yi_creditshop_adv', $data, array('id' => $id));
-			plog('creditshop.adv.edit', "修改积分商城幻灯片 ID: {$id}");
+			plog('creditshop.adv.edit', "修改{SZ_YI_INTEGRAL}商城幻灯片 ID: {$id}");
 		} else {
 			pdo_insert('sz_yi_creditshop_adv', $data);
 			$id = pdo_insertid();
-			plog('creditshop.adv.add', "添加积分商城幻灯片 ID: {$id}");
+			plog('creditshop.adv.add', "添加{SZ_YI_INTEGRAL}商城幻灯片 ID: {$id}");
 		}
 		message('更新幻灯片成功！', $this->createPluginWebUrl('creditshop/adv', array('op' => 'display')), 'success');
 	}
@@ -45,7 +45,7 @@ if ($operation == 'display') {
 		message('抱歉，幻灯片不存在或是已经被删除！', $this->createPluginWebUrl('creditshop/adv', array('op' => 'display')), 'error');
 	}
 	pdo_delete('sz_yi_creditshop_adv', array('id' => $id));
-	plog('creditshop.adv.delete', "删除积分商城幻灯片 ID: {$id} 标题: {$item['advname']} ");
+	plog('creditshop.adv.delete', "删除{SZ_YI_INTEGRAL}商城幻灯片 ID: {$id} 标题: {$item['advname']} ");
 	message('幻灯片删除成功！', $this->createPluginWebUrl('creditshop/adv', array('op' => 'display')), 'success');
 }
 load()->func('tpl');

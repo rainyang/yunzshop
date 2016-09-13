@@ -1,0 +1,124 @@
+﻿{template 'common/header'}
+<title>个人中心</title>
+<style type="text/css">
+    body {margin:0px; background:#f9f9f9; -moz-appearance:none;font: 12px/1.5 tahoma, "microsoft yahei", "\5FAE\8F6F\96C5\9ED1";}
+    a {text-decoration:none;}
+    .header {height: auto;padding:0px; background:#f15353;background-size: 100% 100%; padding:10px;position: relative;}
+    .header .user {height:100px;text-align: center;}
+    .header .user .user-head {height:48px; width:48px; background:#fff; border-radius:50%; border:2px solid #fff;margin: 6px auto;}
+    .header .user .user-head img {height:48px; width:48px; border-radius:50%;}
+    .header .user .user-info {height:48px; width:100%; float:left;color:#fff;}
+    .header .user .user-info .user-name {height:20px; width:auto; font-size:14px; line-height:20px;}
+    .header .user .user-info .user-other {height:24px; width:auto; font-size:12px;}
+    .header .user-gold {height:35px; width:94%; padding:5px 3%; border-bottom:1px solid #e3e3e3; background:#fff; font-size:14px; line-height:35px;}
+    .header .user-gold .title {height:35px; width:auto; float:left; color:#666;}
+    .header .user-gold .num {height:35px; width:auto; float:left; color:#f90;}
+
+    .header .user-gold .draw {width:80px; height:30px; background:#6c9; float:right;}
+    .header .user .set {position: absolute;right: 10px;top: 10px;color: #fff;font-size: 14px}
+
+    .header .user-op { height:35px; width:94%; padding:5px 3%; border-bottom:1px solid #e3e3e3; background:#fff; font-size:14px; line-height:35px; }
+    .take {height:22px; width:auto; padding:0 12px; line-height:22px; font-size:12px; float:right;margin-top: 4px;border-radius:50px;color:#fff;border: 1px #fff solid}
+.order {height:116px; width:100%; background:#fff; margin-top:10px; border-bottom:1px solid #e3e3e3;}
+    .order_all {height:100px; width:100%; padding:14px 0px; color:#666;}
+.order_all a i{font-size:20px;margin-bottom: 4px}
+    .order_pub {height:38px; float:left; border-left:1px solid #eee; padding-top:2px; text-align:center; color:#8c8c8c; position:relative;font-size: 14px}
+    .order_pub span {height:14px; background:#f30; border-radius:8px; position:absolute; top:0; right:6%;padding: 0 5px;font-size:12px; color:#fff; line-height:14px;}
+    .order_1 {width:24%;}
+    .order_2 {width:25%;}
+    .order_3 {width:25%;}
+    .order_4 {width:25%;}
+    .list1 {height:44px; width:97%; background:#fff; padding:0 0 0 3%; margin-top:10px; border-top:1px solid #e3e3e3;font-size: 16px;line-height:44px; color:#242424;}
+    .list1 i {font-size:16px; margin-right:6px;color: #929292;width: 20px;height: 20px;text-align: center;}
+    .allorder {float:right; color:#909090; margin-right:10px; text-decoration:none;font-size: 12px}
+
+    .cart {height:auto; width:100%; background:#fff; margin-top:10px; border-bottom:1px solid #e3e3e3;}
+    .address {height:38px; width:100%; background:#fff; margin-top:10px; border-bottom:1px solid #e3e3e3; border-top:1px solid #e3e3e3; line-height:38px;}
+
+    .copyright {height:40px; width:100%; text-align:center; line-height:40px; font-size:12px; color:#999; margin-top:10px;}
+
+    span.count {float:right; margin-top:16px; margin-right: 4px; height:14px; background:#f30; border-radius:8px; font-size:12px; color:#fff; line-height:14px; text-align: center;padding: 0 5px}
+</style>
+<div id="container"></div>
+    <div class="header" style="padding:0px;">
+        <div class="user">
+            <div class="user-head"><img src="{php echo $member['avatar']}" /></div>
+           <div class="tixian-bg">
+                <p>{php echo $output['data']['username']}</p>
+                <ul class="mo-list">
+                    <li><span>{php echo $member['credit1']}</span><br>商城善金币</li>
+                    <li><span>{php echo $output['data']['accountdetail'][0]['value']} </span><br/>善种子</li>
+                    <li><span>{php echo $output['data']['accountdetail'][1]['value']} </span><br/>善心币</li>
+                    <li><span class="accountnum">{php echo $output['data']['accountnum']} </span><br/>善金币</li>
+
+                </ul>
+            </div>
+        </div>
+    </div>
+<div class="jf-list">
+    <h1>我要兑换<span>兑换商城币数量：{php echo $bindcredit;}</span></h1>
+    <div class="dh-s">
+        兑换数量：<input type="text" id='accountnum' placeholder="输入善金币数量">
+    </div>
+</div>
+
+<div class="tx-inp">
+    <div class="info_sub but-tx" style="line-height:38px">立即兑换</div>
+    <a href="{php echo $this->createMobileUrl('member/sjblog')}" style="display:block">查看历史兑换信息</a>
+</div>
+
+
+
+<script language="javascript">
+    require(['tpl', 'core'], function(tpl, core) {
+        core.json('member/sxh',{},function(json){
+            if (json.result.member) { 
+
+                var data = json.result.member;
+
+                $('.info_sub').click(function() {
+
+                    if($(this).attr('saving')=='1')
+                    {
+                        return;
+                    }
+                   
+                    if ($('#accountnum').isEmpty()) {
+                           core.tip.show('请输入善金币数量!');
+                           return;
+                    }
+
+                    if ($('#accountnum').val()>$('.accountnum').html()) {
+                           core.tip.show('善金币数量不足!');
+                           return;
+                    }
+                   $(this).html('正在处理...').attr('saving',1);
+                    core.json('member/sxh', {
+                       'memberdata':{
+                            'accountnum': $('#accountnum').val(),
+                       }
+                    }, function(json) {
+                       
+                        if(json.status==0){
+                             core.tip.show('兑换成功');
+                             {if !empty($_GPC['returnurl'])}
+                                 location.href="{php echo urldecode($_GPC['returnurl'])}";
+                             {else}
+                                 location.href="{php echo $this->createMobileUrl('member')}";
+                             {/if}
+                        }
+                        else{
+                            $('.info_sub').html('立即兑换').removeAttr('saving');
+                            core.tip.show(json.result.msg);
+                        }
+
+                    },true,true);
+                })
+            }
+        });
+
+    })
+</script>
+{php $show_footer=true}
+{php $footer_current='member'}
+{template 'common/footer'}

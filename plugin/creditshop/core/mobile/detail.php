@@ -84,7 +84,7 @@ if ($_W['isajax']) {
 				$params['tid'] = $log['logno'];
 				$params['user'] = $openid;
 				$params['fee'] = $goods['money'];
-				$params['title'] = $set['shop']['name'] . (empty($goods['type']) ? '积分兑换' : '积分抽奖') . ' 单号:' . $log['logno'];
+				$params['title'] = $set['shop']['name'] . (empty($goods['type']) ? '善金币兑换' : '善金币抽奖') . ' 单号:' . $log['logno'];
 				load()->model('payment');
 				$setting = uni_setting($_W['uniacid'], array('payment'));
 				if (is_array($setting['payment'])) {
@@ -121,12 +121,12 @@ if ($_W['isajax']) {
 		pdo_update('sz_yi_creditshop_goods', array('joins' => $goods['joins'] + 1), array('id' => $id));
 		$update = array('couponid' => $goods['couponid']);
 		if ($goods['credit'] > 0 && empty($log['creditpay'])) {
-			m('member')->setCredit($openid, 'credit1', -$goods['credit'], "积分商城抽奖扣除积分 {$goods['credit']}");
+			m('member')->setCredit($openid, 'credit1', -$goods['credit'], "{SZ_YI_INTEGRAL}商城抽奖扣除{SZ_YI_INTEGRAL} {$goods['credit']}");
 			$update['creditpay'] = 1;
 		}
 		if ($goods['money'] > 0 && empty($log['paystatus'])) {
 			if ($goods['paytype'] == 0) {
-				m('member')->setCredit($openid, 'credit2', -$goods['money'], "积分商城抽奖扣除余额度 {$goods['credit']}");
+				m('member')->setCredit($openid, 'credit2', -$goods['money'], "{SZ_YI_INTEGRAL}商城抽奖扣除余额度 {$goods['credit']}");
 			}
 			$update['paystatus'] = 1;
 		}

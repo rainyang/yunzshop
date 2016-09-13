@@ -17,7 +17,7 @@
 </div>
 {/if}
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分抵扣</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">{php echo SZ_YI_INTEGRAL}抵扣</label>
     <div class="col-sm-4">
        {ife 'shop.goods' $item}
         <div class='input-group'>
@@ -25,10 +25,10 @@
             <input type="text" name="deduct"  value="{$item['deduct']}" class="form-control" />
             <span class="input-group-addon">元</span>
         </div>
-       <span class="help-block">如果设置0，则不支持积分抵扣</span>
+       <span class="help-block">如果设置0，则不支持{php echo SZ_YI_INTEGRAL}抵扣</span>
           {else}
           <div class='form-control-static'>
-              {if empty($item['deduct'])}不支持积分抵扣{else}最多抵扣 {$item['deduct']} 元 {/if}
+              {if empty($item['deduct'])}不支持{php echo SZ_YI_INTEGRAL}抵扣{else}最多抵扣 {$item['deduct']} 元 {/if}
          </div>
           {/if}
     </div>   

@@ -251,6 +251,8 @@
          <div style="float: left" id="ttttype">
             <label for="isshow3" class="radio-inline"><input type="radio" name="type" value="1" id="isshow3" {if empty($item['type']) || $item['type'] == 1}checked="true"{/if} onclick="$('#product').show();$('#type_virtual').hide();$('#divdeposit').hide();" /> 实体商品</label>
             <label for="isshow4" class="radio-inline"><input type="radio" name="type" value="2" id="isshow4"  {if $item['type'] == 2}checked="true"{/if}  onclick="$('#product').hide();$('#type_virtual').hide();$('#divdeposit').hide()" /> 虚拟商品</label>
+            <label for="isshow4" class="radio-inline"><input type="radio" name="type" value="30" id="isshow4"  {if $item['type'] == 30}checked="true"{/if}  onclick="$('#product').hide();$('#type_virtual').hide();$('#divdeposit').hide()" /> 善种子充值</label>
+             <label for="isshow4" class="radio-inline"><input type="radio" name="type" value="31" id="isshow4"  {if $item['type'] == 31}checked="true"{/if}  onclick="$('#product').hide();$('#type_virtual').hide();$('#divdeposit').hide()" /> 善心币充值</label>
             <!-- 安装酒店插件新增 三种类型 -->
             {if p('hotel')}
             {if $hotelstatus=='1'}
@@ -558,16 +560,16 @@
     </div>
 </div>
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">赠送积分</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">赠送{php echo SZ_YI_INTEGRAL}</label>
     <div class="col-sm-6 col-xs-12">
             {ife 'shop.goods' $item}
         <div class="input-group">
             <input type="text" name="credit" id="credit" class="form-control" value="{$item['credit']}" />
             <span class="input-group-addon">分</span>
         </div>
-        <p class="help-block">会员购物赠送的积分, 如果不填写或填写0，则默认为不赠送积分，如果带%则为按成交价格的比例计算积分</p>
-    <p class="help-block">如: 购买2件，设置10 积分, 不管成交价格是多少， 则购买后获得20积分</p>
-    <p class="help-block">如: 购买2件，设置10%积分, 成交价格2 * 200= 400， 则购买后获得 40 积分（400*10%）</p>
+        <p class="help-block">会员购物赠送的{php echo SZ_YI_INTEGRAL}, 如果不填写或填写0，则默认为不赠送{php echo SZ_YI_INTEGRAL}，如果带%则为按成交价格的比例计算{php echo SZ_YI_INTEGRAL}</p>
+    <p class="help-block">如: 购买2件，设置10 {php echo SZ_YI_INTEGRAL}, 不管成交价格是多少， 则购买后获得20{php echo SZ_YI_INTEGRAL}</p>
+    <p class="help-block">如: 购买2件，设置10%{php echo SZ_YI_INTEGRAL}, 成交价格2 * 200= 400， 则购买后获得 40 {php echo SZ_YI_INTEGRAL}（400*10%）</p>
                {else}
         <div class='form-control-static'>{$item['credit']} 分</div>
         {/if}
