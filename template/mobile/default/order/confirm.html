@@ -187,7 +187,7 @@
         <div class="ico"><i class="fa fa-file-text-o"></i></div>
         <div class="tips">确认订单后请尽快付款，<br>过时订单将自动取消。</div>
     </div>
-    <input type="hidden"  id="isverify" value="<%if isverify || isvirtual || goods.type==2%>true<%else%>false<%/if%>" />
+    <input type="hidden"  id="isverify" value="<%if isverify || isvirtual || goods.type==2 || goods[0].type==30 || goods[0].type==31%>true<%else%>false<%/if%>" />
 	
 	 {if $show==1}
       <%if isverify%>
@@ -272,7 +272,7 @@
       
 
       <%else%>
-        <%if isvirtual || goods.type==2%>
+        <%if isvirtual || goods.type==2 || goods[0].type==30|| goods[0].type ==31%>
           <input type="hidden"  id="dispatchtype" value="0" />
           <div class="carrier_input_info" >
           <div class="row">
