@@ -87,7 +87,7 @@ if ($_W['isajax']) {
 				}
 				$channel_cond = ',og.ischannelpay';
 			}
-			$sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid' . $channel_cond . ' FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$order_where.' order by og.id asc';
+			$sql = 'SELECT og.goodsid,og.total,g.type,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid' . $channel_cond . ' FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$order_where.' order by og.id asc';
 			$row['goods'] = set_medias(pdo_fetchall($sql), 'thumb');
 			foreach ($row['goods'] as $k => $value) {
 				if ($value['ischannelpay'] == 1) {
@@ -190,7 +190,7 @@ if ($_W['isajax']) {
 				}
 			}
 			$row['canrefund'] = $canrefund;
-		
+	
 			if ($canrefund == true) {
 		        if ($row['status'] == 1) {
 		            $row['refund_button'] = '申请退款';
@@ -200,6 +200,9 @@ if ($_W['isajax']) {
 		        if (!empty($row['refundstate'])) {
 		            $row['refund_button'] .= '中';
 		        }
+		    }
+		    if($row['goods'][0]['type'] == '30' || $row['goods'][0]['type'] == '31'){
+		    	$row['canrefund'] = false;
 		    }
 	    }
 		unset($row);
