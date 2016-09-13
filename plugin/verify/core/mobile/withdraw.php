@@ -8,43 +8,19 @@ $page = 'withdraw';
 $openid = m('user')->getOpenid();
 $member = m('member')->getInfo($openid);
 $id=$_GPC['storeid']? $_GPC['storeid'] : '0';
-$store = pdo_fetch('select * from ' . tablename('sz_yi_store') . ' where uniacid=:uniacid and id=:id', array(
-    ':uniacid' => $_W['uniacid'], ':id' => $id
-));
+$store = $this->model->getInfo($id);
+// 累计支付金额
+$totalprices = $this->model->getTotalPrice($id);
+// 已经提现的金额
+$totalwithdraws = $this->model->getWithdrawed($id);
+//扣除平台提成的金额
+$totalwithdrawprice = $this->model->getRealPrice($id);;
 
-$cashier_order = pdo_fetchall('SELECT id FROM ' . tablename('sz_yi_order') . ' WHERE uniacid = :uniacid AND storeid = :cashier_store_id', array(':uniacid' => $_W['uniacid'], ':cashier_store_id' => $store['id']));
-$orderidss = false;
+//未提现金额
+$totalprices = $totalwithdrawprice - $totalwithdraws;
+$totalpricess = number_format($totalprices,'2');
+//echo  $totalpricess;exit;
 
-foreach ($cashier_order as $order) {
-    if($order['id']){
-         $orderidss = true;
-         $orderids .= "'".$order['id']."',";
-    }
-
-}
-
-$totalprices = 0;
-if ($orderidss) {
-    // 累计支付金额
-    $orderids = substr($orderids,0,-1);
-    $totalprices = pdo_fetch('SELECT SUM(price) AS tprice FROM ' . tablename('sz_yi_order') . ' WHERE uniacid = :uniacid AND id IN ( '.$orderids.' ) AND status = 3', array(':uniacid' => $_W['uniacid']));
-    $totalprices = $totalprices['tprice'];
-    // 已经提现的金额
-    $totalwithdraw = pdo_fetchall('SELECT money FROM ' . tablename('sz_yi_store_withdraw') . ' WHERE uniacid = :uniacid AND store_id = :id', array(':id' => $id, ':uniacid' => $_W['uniacid']));
-    foreach ($totalwithdraw as  $value) {
-        $totalwithdraws += $value['money'];
-    }
-    //扣除平台提成的金额
-    if (!empty($store['balance'])) {
-        $totalwithdrawprice = $totalprices - $totalprices * ($store['balance']/100);
-    } else {
-        $totalwithdrawprice = $totalprices;
-    }
-    //未提现金额
-    $totalprices = $totalwithdrawprice - $totalwithdraws;
-    $totalpricess = number_format($totalprices,'2');
-    //echo  $totalpricess;exit;
-}
 
 if ($operation == 'display' && $_W['isajax']) {
     $store['totalprices'] = $totalpricess;

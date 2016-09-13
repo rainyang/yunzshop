@@ -2115,6 +2115,8 @@ if ($_W['isajax']) {
                 'redprice' => $redpriceall,
      
             );
+
+
             if (p('channel')) {
                 if (!empty($ischannelpick)) {
                     $order['ischannelself'] = 1;
@@ -2335,6 +2337,25 @@ if ($_W['isajax']) {
                     }
                 }
             }
+            $store_info = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_store')." WHERE id=:id and uniacid=:uniacid ", array(':id' => $carrierid, ':uniacid' => $_W['uniacid']));
+            //门店真实结算价格
+            $order_goods_store = pdo_fetchall(" SELECT * FROM ".tablename('sz_yi_order_goods')." WHERE orderid=:id and uniacid=:uniacid", array(':uniacid' => $_W['uniacid'], ':id' => $orderid));
+            $goods_realprice = 0;
+            foreach ($order_goods_store as $val) {
+                $goods_store = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_goods')." WHERE uniacid=:uniacid and id=:id ", array(':uniacid' => $_W['uniacid'], ':id' => $val['goodsid']));
+
+                if (empty($goods_store['balance_with_store']) || $goods_store['balance_with_store'] == '0') {
+                    $goods_realprice += $val['price'] * (100 - $goods_store['goods_balance'])/100;
+
+                } elseif (!empty($store_info['balance'])) {
+                    $goods_realprice += $val['price'] * (100 - $store_info['balance'])/100;
+                } else {
+                    $goods_realprice += $val['price'];
+                }
+            }
+            $realprice = $goods_realprice - ($goodsprice-$totalprice) * (100 - $store_info['balance'])/100;
+            pdo_update('sz_yi_order', array('realprice' => $realprice), array('id' => $orderid, 'uniacid' => $_W['uniacid']));
+
             if(p('hotel')){
                 //打印订单      
                 $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));

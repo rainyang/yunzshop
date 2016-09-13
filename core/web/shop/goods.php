@@ -583,7 +583,9 @@ if ($operation == "change") {
                 "edareas" => trim($_GPC["edareas"]),
                 "edmoney" => trim($_GPC["edmoney"]),
                 "redprice" => $_GPC["redprice"],//红包价格
-                "isopenchannel" => intval($_GPC["isopenchannel"])
+                "isopenchannel" => intval($_GPC["isopenchannel"]),
+                'goods_balance' =>  intval($_GPC['goods_balance']),
+                'balance_with_store' => intval($_GPC['balance_with_store'])
 
             );
             if (p('area')) {

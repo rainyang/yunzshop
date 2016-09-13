@@ -69,8 +69,8 @@ a {text-decoration:none;}
 .order_main .sub2 {height:30px; width:auto; padding:0px 10px; border:1px solid #5f6e8b; float:right; border-radius:5px; line-height:30px; font-size:14px; margin:10px 5px 10px 0px; color:#5f6e8b;}
 </style>
 <div class="order_top">
-    <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> {php echo $this->set['texts']['order']}({$ordercount})</div>
-    <div class='num'>预计: +{$totalprice}元</div>
+    <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> 订单总数({$ordercount})</div>
+    <div class='num'>交易总额：{$totalprice}元</div>
 </div>
 <div class="order_menu">
         <div class="nav navon" style="border-left:0px;width:24%;" data-status=''>所有订单</div>
@@ -113,7 +113,7 @@ a {text-decoration:none;}
     <%/each%>
 </script>
 <script id='tpl_empty' type='text/html'>
-    <div class="order_no"><i class="fa fa-file-text-o" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">您还没有相关{php echo $this->set['texts']['order']}~</span></div>
+    <div class="order_no"><i class="fa fa-file-text-o" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">您还没有相关订单~</span></div>
 </script>
 
 <script language="javascript">
@@ -165,7 +165,7 @@ a {text-decoration:none;}
         function getOrder(status) {
             $('.order_menu .nav').removeClass('navon');
             $('.order_menu .nav[data-status=\'' + status + '\']').addClass('navon');
-            core.pjson('verify/order', {status:status, page: page}, function (json) {
+            core.pjson('verify/order', {status:status, page: page, storeid:"{$_GPC['storeid']}"}, function (json) {
                 if (json.result.list.length <= 0) {
                     $('#container').html(tpl('tpl_empty'));
                     return;

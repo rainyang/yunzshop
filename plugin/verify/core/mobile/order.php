@@ -1,21 +1,19 @@
-<?php                                                                         1
+<?php
 global $_W, $_GPC;
+if (!defined('IN_IA')) {
+    exit('Access Denied');
+}
 $openid = m('user')->getOpenid();
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'order';
 $storeid = intval($_GPC['storeid']);
 $order = pdo_fetchall(" SELECT * FROM ".tablename('sz_yi_order')." WHERE storeid=:id and uniacid=:uniacid ", array(':uniacid' => $_W['uniacid'], ':id' => $storeid));
 
-$ordercount = count($order);
-$totalprice = 0;
-foreach ($order as $value) {
-    $totalprice += $value['price'];
-}
-
-
+$ordercount = $this->model->getTotal($storeid);
+$totalprice = $this->model->getTotalPrice($storeid);
 if ($_W['isajax']) {
 
     if ($operation == 'order') {
-        //echo "<pre>"; print_r(1);exit;
+        $storeid = intval($_GPC['storeid']);
         $status = trim($_GPC['status']);
         if ($status != ''){
             $conditionq = '  and o.status=' . intval($status);
@@ -24,9 +22,9 @@ if ($_W['isajax']) {
         }
         $pindex = max(1, intval($_GPC['page']));
         $psize = 20;
-        $sql = "select o.id,o.ordersn,o.price,o.openid,o.status,o.address,o.createtime from " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and o.status>=0 " . " where 1 {$conditionq} and o.uniacid=".$_W['uniacid']." and o.storeid=".$storeid." ORDER BY o.createtime DESC,o.status DESC  ";
+        $sql = "select o.id,o.ordersn,o.price,o.openid,o.status,o.address,o.createtime from " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and o.status>=0 " . " where 1 {$conditionq} and o.uniacid=:uniacid and o.storeid=:storeid ORDER BY o.createtime DESC,o.status DESC  ";
         $sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
-        $listsd = pdo_fetchall($sql);
+        $listsd = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid'], ':storeid' => $storeid));
         foreach ($listsd as &$rowp) {
             $sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where og.orderid=:orderid order by og.id asc';
             $rowp['goods'] = set_medias(pdo_fetchall($sql, array(':orderid' => $rowp['id'])), 'thumb');

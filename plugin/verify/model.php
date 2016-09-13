@@ -61,8 +61,44 @@ if (!class_exists('VerifyModel')) {
         public function getInfo($storeid = 0)
         {
             global $_W, $_GPC;
-            $store_info = pdo_fetchall("SELECT * FROM ".tablename('sz_yi_store')." WHERE id=:storeid and uniacid=:uniacid", array(':stoerid' => $storeid, ':uniacid' => $_W['uniacid']));
-            return $store_info;   
+            $store_info = pdo_fetch("SELECT * FROM ".tablename('sz_yi_store')." WHERE id=:storeid and uniacid=:uniacid", array(':storeid' => $storeid, ':uniacid' => $_W['uniacid']));
+            return $store_info;
         }
+        //获取门店成交总额
+        public function getTotalPrice($storeid = 0)
+        {
+            global $_W, $_GPC;
+            $store_price = pdo_fetchcolumn("SELECT sum(price)  FROM ".tablename('sz_yi_order')." WHERE storeid=:storeid and uniacid=:uniacid and status = 3 ", array(':storeid' => $storeid, ':uniacid' => $_W['uniacid']));
+            return $store_price;
+        }
+        public function getTotal($storeid = 0)
+        {
+            global $_W, $_GPC;
+            $order = pdo_fetchall(" SELECT * FROM ".tablename('sz_yi_order')." WHERE storeid=:id and uniacid=:uniacid and status = 3", array(':uniacid' => $_W['uniacid'], ':id' => $storeid));
+            $ordercount = count($order);
+            return $ordercount;
+        }
+        public function getWithdrawed($storeid = 0)
+        {
+            global $_W, $_GPC;
+            $totalwithdraw = pdo_fetchall('SELECT money FROM ' . tablename('sz_yi_store_withdraw') . ' WHERE uniacid = :uniacid AND store_id = :id AND status >= 0 and status < 2', array(':uniacid' => $_W['uniacid'], ':id' => $storeid));
+            $totalwithdraws = 0;
+            foreach ($totalwithdraw as  $value) {
+                $totalwithdraws += $value['money'];
+            }
+            return $totalwithdraws;
+        }
+        //门店比例计算之后的总金额
+        public function getRealPrice($storeid = 0)
+        {
+            global $_W, $_GPC;
+            $store_info = $this->getInfo($storeid);
+            $realprice = 0;
+            $store_price = pdo_fetchcolumn("SELECT sum(realprice) FROM ".tablename('sz_yi_order')." WHERE storeid=:storeid and uniacid=:uniacid and status = 3", array(':storeid' => $storeid, ':uniacid' => $_W['uniacid']));
+
+
+            return $store_price;
+        }
+
     }
 }

@@ -99,6 +99,34 @@
     </div>
   
 </div>
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否跟随门店结算比例</label>
+    <div class="col-sm-6 col-xs-6">
+        {ife 'shop.goods' $item}
+        <label class="radio-inline"><input type="radio" name="balance_with_store" value="1" {if $item['balance_with_store'] || $item['balance_with_store'] == 1}checked="true"{/if} onclick="$('#goods_balance').hide()" /> 是</label>
+        <label class="radio-inline"><input type="radio" name="balance_with_store" value="0" {if empty($item['balance_with_store']) || $item['balance_with_store']  == 0}checked="true"{/if} onclick="$('#goods_balance').show()"  /> 否</label>
+        {else}
+        <div class='form-control-static'>
+            {if empty($item['balance_with_store']) || $item['balance_with_store'] == 0}否{else}是{/if}
+        </div>
+        {/if}
+
+    </div>
+</div>
+<div class="form-group" id="goods_balance" {if $item['balance_with_store'] == 1} style="display:none;" {/if} >
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品独立结算百分比</label>
+    <div class="col-sm-6 col-xs-6">
+        {ife 'shop.goods' $item}
+        <input type="text"  class="form-control" name="goods_balance" value="{$item['goods_balance']}"  />
+
+        {else}
+        <div class='form-control-static'>
+            {$item['goods_balance']}
+        </div>
+        {/if}
+
+    </div>
+</div>
 <script language='javascript'>
          function search_stores() {
 		$("#module-menus").html("正在搜索....")

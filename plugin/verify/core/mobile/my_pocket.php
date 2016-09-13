@@ -4,30 +4,14 @@ $openid = m('user')->getOpenid();
 if ($_W['isajax']) {
 	$id = $_GPC['id'];
 	$store = pdo_fetch("SELECT * FROM ".tablename('sz_yi_store')." WHERE id=:id and uniacid=:uniacid", array(':id' => $id, ':uniacid' => $_W['uniacid']));
-	$order = pdo_fetchall(" SELECT * FROM ".tablename('sz_yi_order')." WHERE storeid=:id and uniacid=:uniacid and status >= 0", array(':uniacid' => $_W['uniacid'], ':id' => $id));
-	$ordercount = count($order);
-	//累计支付金额
-	$totalprice = 0;
-
-	foreach ($order as $value) {
-		$totalprice += $value['price'];
-	}
+	//累计成交金额
+	$totalprice = $this->model->getTotalPrice($id);
+	//订单数量
+	$ordercount = $this->model->getTotal($id);
 	//可以提现的金额
-	$order_complete = pdo_fetchall(" SELECT * FROM ".tablename('sz_yi_order')." WHERE storeid=:id and uniacid=:uniacid and status =3", array(':uniacid' => $_W['uniacid'], ':id' => $id));
-	$totalcanwithdraw = 0;
-	foreach ($order_complete as $val) {
-		$totalcanwithdraw += $val['price'];
-	}
-	if (!empty($store['balance'])) {
-		$totalwithdrawprice = $totalcanwithdraw - $totalcanwithdraw * ($store['balance']/100);
-	} else {
-		$totalwithdrawprice = $totalcanwithdraw;
-	}
+	$totalwithdrawprice = $this->model->getRealPrice($id);
 	//已经提现的金额
-	$totalwithdraw = pdo_fetchall('SELECT money FROM ' . tablename('sz_yi_store_withdraw') . ' WHERE uniacid = :uniacid AND store_id = :id AND status = 1', array(':uniacid' => $_W['uniacid'], ':id' => $id));
-	foreach ($totalwithdraw as  $value) {
-		$totalwithdraws += $value['money'];
-	}
+	$totalwithdraws = $this->model->getWithdrawed($id);
 	//未提现金额
 	$canwithdraw =  $totalwithdrawprice - $totalwithdraws;
 	//待打款金额
