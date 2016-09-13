@@ -119,6 +119,9 @@ class Sz_DYi_Goods
             }
         }
         $openid  = m('user')->getOpenid();
+        if(empty($openid)){
+            $openid = m('user')->isLogin();
+        }
         $member  = m('member')->getMember($openid);
         $levelid = intval($member['level']);
         $groupid = intval($member['groupid']);
