@@ -90,6 +90,7 @@ if (!class_exists('MerchantModel')) {
 			if (empty($openid)) {
 				return;
 			}
+			$member = m('member')->getInfo($openid);
 			$center = $this->isCenter($openid);
 			$child_centers = $this->getChildCenters($openid);
 			if (!empty($child_centers)) {
@@ -103,7 +104,12 @@ if (!class_exists('MerchantModel')) {
 				}
 				$supplier_uids = pdo_fetchall("SELECT distinct supplier_uid FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND center_id in ({$center_ids})", array(':uniacid' => $_W['uniacid']));
 			} else {
-				$supplier_uids = pdo_fetchall("SELECT distinct supplier_uid FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND center_id=:center_id", array(':uniacid' => $_W['uniacid'], ':center_id' => $center['id']));
+				if (!empty($center)) {
+					$supplier_uids = pdo_fetchall("SELECT distinct supplier_uid FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND center_id=:center_id", array(':uniacid' => $_W['uniacid'], ':center_id' => $center['id']));
+				} else {
+					$supplier_uids = pdo_fetchall("SELECT distinct supplier_uid FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND member_id=:member_id", array(':uniacid' => $_W['uniacid'], ':member_id' => $member['id']));
+				}
+				
 			}
 			if (!empty($supplier_uids)) {
 				$uids = array();
