@@ -7,6 +7,10 @@ global $_W, $_GPC;
 $url = 'http://'.$_SERVER['HTTP_HOST'].$_SERVER['REQUEST_URI'];
 $operation  = !empty($_GPC['op']) ? $_GPC['op'] : 'index';
 $openid     = m('user')->getOpenid();
+if(empty($openid)){
+    $openid = m('user')->isLogin();
+}
+$member    = m('member')->getMember($openid);
 $uniacid    = $_W['uniacid'];
 $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
 $commission = p('commission');
@@ -87,7 +91,12 @@ if (!empty($myshop['selectgoods']) && !empty($myshop['goodsids'])) {
     $args['ids'] = $myshop['goodsids'];
 }
 
-$condition = ' and `uniacid` = :uniacid AND `deleted` = 0 and status=1';
+//会员权限控制商品显示
+$levelid = intval($member['level']);
+$groupid = intval($member['groupid']);
+$levelCondition = " and ( ifnull(showlevels,'')='' or FIND_IN_SET( {$levelid},showlevels)<>0 ) ";
+$levelCondition .= " and ( ifnull(showgroups,'')='' or FIND_IN_SET( {$groupid},showgroups)<>0 ) ";
+$condition = ' and `uniacid` = :uniacid AND `deleted` = 0 and status=1' . $levelCondition;
 $params    = array(
      ':uniacid' => $_W['uniacid']
 );
@@ -182,13 +191,13 @@ if (intval($shopset['catlevel']) == 3) {
 }
 
 if ($args['tcate']) {
-     $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where tcate=:tcate and pcate=:pcate and ccate=:ccate and uniacid=:uniacid and deleted = 0   order by sales desc limit 7", array(':uniacid' => $uniacid , ':tcate' => $args['tcate'] , ':pcate' => $args['pcate'] , ':ccate' => $args['ccate'])), 'thumb');
+     $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where tcate=:tcate and pcate=:pcate and ccate=:ccate and uniacid=:uniacid and deleted = 0 {$levelCondition} order by sales desc limit 7", array(':uniacid' => $uniacid , ':tcate' => $args['tcate'] , ':pcate' => $args['pcate'] , ':ccate' => $args['ccate'])), 'thumb');
 } elseif ($args['ccate']) {
-    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate and ccate=:ccate and uniacid=:uniacid and deleted = 0 order by sales desc limit 7", array(':uniacid' => $uniacid, ':pcate' => $args['pcate'], ':ccate' => $args['ccate'])), 'thumb');
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate and ccate=:ccate and uniacid=:uniacid and deleted = 0 {$levelCondition} order by sales desc limit 7", array(':uniacid' => $uniacid, ':pcate' => $args['pcate'], ':ccate' => $args['ccate'])), 'thumb');
 } elseif ($args['pcate']) {
-    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and deleted = 0 order by sales desc limit 7", array(':uniacid' => $uniacid , ':pcate' => $args['pcate'] )), 'thumb');
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and deleted = 0 {$levelCondition} order by sales desc limit 7", array(':uniacid' => $uniacid , ':pcate' => $args['pcate'] )), 'thumb');
 } else {
-    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where uniacid=:uniacid and deleted = 0  order by sales desc limit 7", array(':uniacid' => $uniacid )), 'thumb');
+    $ishot = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_goods')." where uniacid=:uniacid and deleted = 0  {$levelCondition} order by sales desc limit 7", array(':uniacid' => $uniacid )), 'thumb');
 }
 
 $category = false;
