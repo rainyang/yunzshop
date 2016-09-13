@@ -9,12 +9,14 @@ $suppliercount = count($suppliers);
 $uids = $this->model->getChildSupplierUids($openid);
 if ($uids == 0) {
     $cond = " o.supplier_uid < 0 ";
+    $conds = " supplier_uid < 0 ";
 } else {
     $cond = " o.supplier_uid in ({$uids}) ";
+    $conds = " supplier_uid in ({$uids}) ";
 }
 $_GPC['type'] = $_GPC['type'] ? $_GPC['type'] : 0;
 //订单数量
-$ordercount0 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where {$cond} and userdeleted=0 and deleted=0 and uniacid={$_W['uniacid']} ");
+$ordercount0 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where {$conds} and userdeleted=0 and deleted=0 and uniacid={$_W['uniacid']} and status>=1 ");
 //已提现佣金总和
 $commission_total=number_format(pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_merchant_apply') . " where uniacid={$_W['uniacid']} and member_id={$member['id']} and status=1"), 2);
 $apply_total = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_merchant_apply') . " where uniacid={$_W['uniacid']} and member_id={$member['id']}");
