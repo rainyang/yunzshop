@@ -57,7 +57,7 @@ if (!class_exists('SupplierModel')) {
             $supplierinfo['totalmoney'] = 0;
             $supplierinfo['ordercount'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where supplier_uid={$uid} and userdeleted=0 and deleted=0 and uniacid={$_W['uniacid']} ");
             $supplierinfo['commission_total'] = number_format(pdo_fetchcolumn("select sum(apply_money) from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and uid={$uid} and status=1"), 2);
-            $sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0");
+            /*$sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0");
             foreach ($sp_goods as $key => $value) {
                 if ($value['goods_op_cost_price'] > 0) {
                     $supplierinfo['costmoney'] += $value['goods_op_cost_price'] * $value['total'];
@@ -70,7 +70,16 @@ if (!class_exists('SupplierModel')) {
                         $supplierinfo['costmoney'] += $goods_info['costprice'] * $value['total'];
                     }
                 }
+            }*/
+            $sp_goods = pdo_fetchall("select og.price,o.basis_money from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0");
+            foreach ($sp_goods as $value) {
+                if (empty($value['basis_money'])) {
+                    $supplierinfo['costmoney'] += $value['price'];
+                } else {
+                    $supplierinfo['costmoney'] += $value['basis_money'];
+                }
             }
+            $supplierinfo['costmoney'] = number_format($supplierinfo['costmoney'],2);
             $supplierinfo['totalmoney'] = pdo_fetchcolumn("select sum(apply_money) from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and uid={$uid}");
             return $supplierinfo;
         }

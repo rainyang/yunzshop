@@ -7,6 +7,7 @@ $_GPC['type'] 		= $_GPC['type'] ? $_GPC['type'] : 0;
 $center_info		= $this->model->getInfo($openid);
 $ordercount 		= $center_info['ordercount'];
 $centercount		= $center_info['centercount'];
+$merchantcount		= $center_info['merchantcount'];
 $commission_total 	= $center_info['commission_total'];
 $commission_ok 		= $center_info['commission_ok'];
 $order_total_price	= $center_info['order_total_price'];

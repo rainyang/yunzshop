@@ -1387,6 +1387,7 @@ if ($_W['isajax']) {
             if (empty($goods)) {
                 show_json(0, '未找到任何商品');
             }
+            $basis_money = 0;
             $allgoods      = array();
             $totalprice    = 0;
             $goodsprice    = 0;
@@ -1434,12 +1435,17 @@ if ($_W['isajax']) {
                 if (p('yunbi')) {
                     $yunbi_condtion = 'isforceyunbi,yunbi_deduct,';
                 }
-                $sql  = 'SELECT id as goodsid,costprice,' . $channel_condtion . 'supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,discounts2,discountway,discounttype,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice, yunbi_deduct FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
+                $sql  = 'SELECT id as goodsid,costprice,' . $channel_condtion . 'supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,discounts2,discountway,discounttype,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice, yunbi_deduct,bonusmoney FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
 
                 $data = pdo_fetch($sql, array(
                     ':uniacid' => $uniacid,
                     ':id' => $goodsid
                 ));
+                if (!empty($data['bonusmoney'])) {
+                    $basis_money += $data['bonusmoney'];
+                } else {
+                    $basis_money += $data['marketprice'];
+                }
                 if (p('channel')) {
                     if ($ischannelpay == 1) {
                         if (empty($data['isopenchannel'])) {
@@ -2115,6 +2121,9 @@ if ($_W['isajax']) {
                 'redprice' => $redpriceall,
      
             );
+            if (p('merchant')) {
+                $order['basis_money'] = $basis_money;
+            }
             if (p('channel')) {
                 if (!empty($ischannelpick)) {
                     $order['ischannelself'] = 1;

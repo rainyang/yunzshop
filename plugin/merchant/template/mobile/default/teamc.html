@@ -1,5 +1,5 @@
 {template 'common/header'}
-<title>我的{if empty($_GPC['iscenter'])}供应商{else}下级{/if}</title>
+<title>我的招商员</title>
 <style type="text/css">
     body {margin:0px; background:#eee; font-family:'微软雅黑'; -moz-appearance:none;}
     a {text-decoration:none;}
@@ -28,11 +28,11 @@
 
 </style>
 <div class="team_top">
-    <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> 我的{if empty($_GPC['iscenter'])}供应商({$total}){else}下级{/if}</div>
+    <div class="title" onclick='history.back()'><i class='fa fa-chevron-left'></i> 我的招商员</div>
 </div>
 <div class="team_list_head">
         <div class="info">成员信息</div>
-        <div class="num">TA的{if empty($_GPC['iscenter'])}佣金{else}信息{/if}</div>
+        <div class="num">TA的信息</div>
 </div>
 <div id='container'></div>
 
@@ -40,18 +40,14 @@
     
     <%each list as user%>
     <div class="team_list" data-center_id='<%user.id%>'>
-        {if empty($_GPC['iscenter'])}
-        <div class="info"><%if user.username%><%user.username%><%else%>未获取<%/if%><br><span><%user.username%></span></div>
-        <div class="num">+<%user.commission_total%><br><span><%user.ordercount%> 个订单</span></div>
-        {else}
-        <div class="info"><%if user.realname%><%user.realname%><%else%>未填写姓名<%/if%><br><span><%if user.mobile%><%user.mobile%><%else%>未填写电话<%/if%></span></div>
-        <div class="num"><%if user.level%><%user.level.level_name%><%else%>无等级<%/if%><br><span><%user.level.commission%>%</span></div>
-        {/if}
+        <div class="img"><img src="<%if user.realname%><%user.avatar%><%else%>../addons/sz_yi/plugin/commission/images/head.jpg<%/if%>"></div>
+        <div class="info"><%if user.realname%><%user.realname%><%else%>未获取<%/if%><br><span><%user.agenttime%></span></div>
+        <div class="num"><%user.commissions%>%</div>
     </div>
     <%/each%>
 </script>
 <script id='tpl_empty' type='text/html'>
-    <div class="team_no"><i class="fa fa-users" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">您没有{if empty($_GPC['iscenter'])}供应商{else}下级信息{/if}~</span></div>
+    <div class="team_no"><i class="fa fa-users" style="font-size:100px;"></i><br><span style="line-height:18px; font-size:16px;">您没有招商员~</span></div>
 </script>
 
 <script language="javascript">
@@ -77,7 +73,7 @@ function bindScroller(){
                     stop = false;
                     $('#container').append('<div id="team_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载...</div>');
                     page++;
-                    core.pjson('merchant/team', {page: page,iscenter:"{$_GPC['iscenter']}"}, function (morejson) {
+                    core.pjson('merchant/teamc', {page: page}, function (morejson) {
                         stop = true;
                         $('#team_loading').remove();
                         $("#container").append(tpl('tpl_team', morejson.result));
@@ -95,22 +91,12 @@ function bindScroller(){
         function getTeam(level) {
             $('.team_nav').removeClass('team_navon');
             $('.team_nav[data-level=' + level + ']').addClass('team_navon');
-            core.pjson('merchant/team', {page: page,iscenter:"{$_GPC['iscenter']}"}, function (json) {
+            core.pjson('merchant/teamc', {page: page}, function (json) {
                 if (json.result.list.length <= 0) {
                     $('#container').html(tpl('tpl_empty'));
                     return;
                 }
                 $('#container').html(tpl('tpl_team', json.result));
-                $('.team_list').click(function(){
-                    var center_id = $(this).closest('.team_list').data('center_id');
-                    core.pjson('merchant/team', {center_id:center_id,iscenter:"{$_GPC['iscenter']}"}, function (json) {
-                        if (json.result.list.length <= 0) {
-                            $('#container').html(tpl('tpl_empty'));
-                            return;
-                        }
-                        $('#container').html(tpl('tpl_team', json.result));
-                    },true);
-                });
                 bindScroller();
             }, true);
         }

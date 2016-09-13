@@ -6,34 +6,33 @@ $set = $this->getSet();
 $member = m('member')->getMember($openid);
 $suppliers = pdo_fetchall("select distinct supplier_uid from " . tablename('sz_yi_merchants') . " where member_id={$member['id']} and uniacid={$_W['uniacid']}");
 $suppliercount = count($suppliers);
-$uids = '';
-foreach ($suppliers as $key => $value) {
-    if ($key == 0) {
-        $uids .= $value['supplier_uid'];
-    } else {
-        $uids .= ','.$value['supplier_uid'];
-    }
-}
-if (empty($uids)) {
-    $uids = 0;
+$uids = $this->model->getChildSupplierUids($openid);
+if ($uids == 0) {
+    $cond = " o.supplier_uid < 0 ";
+    $conds = " supplier_uid < 0 ";
+} else {
+    $cond = " o.supplier_uid in ({$uids}) ";
+    $conds = " supplier_uid in ({$uids}) ";
 }
 $_GPC['type'] = $_GPC['type'] ? $_GPC['type'] : 0;
 //订单数量
-$ordercount0 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where supplier_uid in ({$uids}) and userdeleted=0 and deleted=0 and uniacid={$_W['uniacid']} ");
+$ordercount0 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where {$conds} and userdeleted=0 and deleted=0 and uniacid={$_W['uniacid']} and status>=1 ");
 //已提现佣金总和
 $commission_total=number_format(pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_merchant_apply') . " where uniacid={$_W['uniacid']} and member_id={$member['id']} and status=1"), 2);
 $apply_total = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_merchant_apply') . " where uniacid={$_W['uniacid']} and member_id={$member['id']}");
 //可提现佣金
 $commission_ok = 0;
-foreach ($suppliers as $key => $value) {
-    $commissions = pdo_fetchcolumn("select commissions from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and supplier_uid={$value['supplier_uid']} and member_id={$member['id']}");
-    $order_total_price = pdo_fetchcolumn("select sum(goodsprice) from " . tablename('sz_yi_order') . " where uniacid={$_W['uniacid']} and status = 3 and userdeleted = 0 and deleted = 0 and supplier_uid = {$value['supplier_uid']} and merchant_apply_status = 0 ");
-    $commission_ok += $commissions * $order_total_price/100;
-
+$orderinfo = pdo_fetchall("select o.basis_money,og.price from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_order_goods') . " og on o.id=og.orderid where o.uniacid={$_W['uniacid']} and o.status = 3 and o.userdeleted = 0 and o.deleted = 0 and {$cond} and o.merchant_apply_status = 0 ");
+foreach ($orderinfo as $value) {
+    if (empty($value['basis_money'])) {
+        $commission_ok += $value['price'];
+    } else {
+        $commission_ok += $value['basis_money'];
+    }
 }
+$my_commissions = pdo_fetchcolumn("SELECT commissions FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND openid=:openid", array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+$commission_ok = $commission_ok*$my_commissions/100;
 $commission_ok=number_format($commission_ok, 2);
-//预计佣金
-//$commission_totaly=number_format($member['commission_totaly'], 2);
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 
 if($_W['isajax']) {
