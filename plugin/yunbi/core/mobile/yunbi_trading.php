@@ -94,7 +94,7 @@ if ($operation == 'display') {
             if ($row['status'] == '0') {
                 $row['iscancel'] = '1';
             }elseif ($row['status'] == '1') {
-                $row['status_text'] = '我购买的1';
+                $row['status_text'] = '我购买的';
             }elseif ($row['status'] == '2') {
                 $row['status_text'] = '我出售';
             }elseif ($row['status'] == '3') {
@@ -108,7 +108,7 @@ if ($operation == 'display') {
                 $row['buy_link'] = $this->createPluginMobileUrl('yunbi/yunbi_trading',array('op'=>'buy','id'=>$row['id']));
             }
             if ($row['status'] == '2' && $row['buy_mid'] == $member['id']) {
-                $row['status_text'] = '我购买的2';
+                $row['status_text'] = '我购买的';
             }
         }
 
