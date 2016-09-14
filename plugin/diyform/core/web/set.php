@@ -5,34 +5,20 @@ global $_W, $_GPC;
 
 ca('diyform.set.view');
 $set       = $this->getSet();
-$form_list = $this->model->getDiyformList();
+$use_form_list = $this->model->getDiyformList();
+$supplier_form_list = array();
 if (p('supplier')) {
-	$use_form_list = array();
-	foreach ($form_list as $key => $value) {
+	foreach ($use_form_list as $key => $value) {
 		$value['fields'] = unserialize($value['fields']);
 		foreach ($value['fields'] as $val) {
-			if ($val['tp_is_default'] != 5 && $val['tp_is_default'] != 6) {
-				$value['fields'] = iunserializer($value['fields']);
-				$use_form_list[$key] = $value;
-			}
-		}
-	}
-	$supplier_form_list = array();
-	foreach ($form_list as $key => $value) {
-		$value['fields'] = unserialize($value['fields']);
-		foreach ($value['fields'] as $val) {
-			if (!empty($val['tp_is_default']) && ($val['tp_is_default'] == 5 || $val['tp_is_default'] == 6)) {
-				$value['fields'] = iunserializer($value['fields']);
-				$supplier_form_list[$key] = $value;
+			if ($val['tp_is_default'] == 5 || $val['tp_is_default'] == 6) {
+				unset($use_form_list[$key]);
+				$supplier_form_list[] = $value;
+				break;
 			}
 		}
 	}
 }
-/*
-print_r($use_form_list);
-print_r($form_list);
-exit;
- */
 
 if (checksubmit('submit')) {
     ca('diyform.set.save');
