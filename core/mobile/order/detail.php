@@ -201,7 +201,7 @@ if ($_W['isajax']) {
         } else {
             $order['refund_button'] = '申请售后';
         }
-        if (!empty($order['refundstate'])) {
+        if (!empty($order['refundstate']) && $order['status'] != -1) {
             $order['refund_button'] .= '中';
         }
     }	
