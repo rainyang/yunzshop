@@ -233,6 +233,13 @@
    <a href="{php echo $this->createMobileUrl('member/rechange_log')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-cny"></i>分期记录
     <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
+    {if is_app()}
+    {if $app['accept'] == 1}
+    <a href="{php echo $this->createMobileUrl('member/referral')}">div class="list1" style="margin:0px;"><i class="fa fa-barcode" ></i>我的推荐码<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    {/if}
+    <a href="{php echo $this->createMobileUrl('member/messagelist')}"><div class="list1" style="margin:0px;"><i class="fa fa-volume-up" ></i>订单通知<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    <a href="{php echo $this->createMobileUrl('member/pushlist')}"><div class="list1" style="margin:0px;"><i class="fa fa-share-square-o" ></i>系统消息<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    {/if}
 </div>
 {if $hascoupon}
 <!--
