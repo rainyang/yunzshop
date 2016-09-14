@@ -29,7 +29,7 @@ if ($_W['isajax']) {
 					$condition .= ' and status=' . intval($status);
 				}
 			} else {
-				$condition .= ' and refundstate>0';
+				$condition .= ' and refundstate>0 and status!=-1';
 			}
 		} else {
 
