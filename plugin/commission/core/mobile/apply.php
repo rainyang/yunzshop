@@ -132,7 +132,7 @@ if ($_W['isajax']) {
 					message($result['message'], '', 'error');
 				}
 
-				pdo_update('sz_yi_commission_apply', array('status' => 3, 'paytime' => $time, 'commission_pay' => $commission_ok), array('id' => $id, 'uniacid' => $_W['uniacid']));
+				pdo_update('sz_yi_commission_apply', array('status' => 3, 'paytime' => $time, 'checktime' => $time, 'commission_pay' => $commission_ok), array('id' => $id, 'uniacid' => $_W['uniacid']));
 				$log = array('uniacid' => $_W['uniacid'], 'applyid' => $id, 'mid' => $member['id'], 'commission' => $commission_ok, 'commission_pay' => $commission_ok, 'createtime' => $time);
 				pdo_insert('sz_yi_commission_log', $log);
 				$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 0 ? '余额' : '微信'), TM_COMMISSION_PAY);
