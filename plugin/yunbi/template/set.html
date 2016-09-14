@@ -121,6 +121,15 @@
         </div>
         <div class='panel-body'>
             <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">开关</label>
+                <div class="col-sm-8 col-xs-12">
+                    <label class="radio-inline "><input type="radio"  name="setdata[isreturnremove]" value="0" {if $set['isreturnremove'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline "><input type="radio"  name="setdata[isreturnremove]" value="1" {if $set['isreturnremove'] ==1} checked="checked"{/if} /> 开启</label>
+                </div>
+            </div>
+        </div>
+        <div class='panel-body'>
+            <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现&清除</label>
                 <div class="col-sm-8 col-xs-12">
                     <label class="radio-inline return_remove"><input type="radio"  name="setdata[isreturn_or_remove]" value="0" {if $set['isreturn_or_remove'] ==0} checked="checked"{/if} /> 返现</label>

@@ -50,14 +50,17 @@ win.document.close();
 			{/if}
 
 			{if p('supplier')}
+        <?php $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid'])?>
+        {if empty($perm_role)}
         {ifpp 'supplier'}
           {ifpp 'supplier'}
-				 <li {if $_GPC['p'] == 'supplier'} class="active" {/if}>
-					<a href='{php echo $this->createPluginWebUrl('supplier')}' class="dropdown-toggle" ><span>供应商</span><i class="fa fa-angle-down"></i></a>
-				</li>
+         <li {if $_GPC['p'] == 'supplier'} class="active" {/if}>
+          <a href='{php echo $this->createPluginWebUrl('supplier')}' class="dropdown-toggle" ><span>供应商</span><i class="fa fa-angle-down"></i></a>
+        </li>
           {/if}
-				{/if}        
-			{/if}
+        {/if} 
+        {/if}       
+      {/if}
 
 		{ifp 'member'}
 		<li {if $_GPC['do'] == 'member'} class="active" {/if}>

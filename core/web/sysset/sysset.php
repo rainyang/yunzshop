@@ -121,7 +121,7 @@ if ($op == 'template') {
     //支付宝证书
     $cert = IA_ROOT . "/addons/sz_yi/cert/cacert.pem";
 } else if($op == 'pcset'){
-    ca('sysset.view.pcset');
+    ca('sysset.save.pcset');
     //默认首页导航内容
     if(empty($set['shop']['hmenu_name'])){
         $set['shop']['hmenu_name'] = array('首页', '全部商品', '店铺公告', '成为分销商', '会员中心');
