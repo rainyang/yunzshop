@@ -74,7 +74,7 @@ if (!class_exists('VerifyModel')) {
         public function getTotal($storeid = 0)
         {
             global $_W, $_GPC;
-            $order = pdo_fetchall(" SELECT * FROM ".tablename('sz_yi_order')." WHERE storeid=:id and uniacid=:uniacid and status = 3", array(':uniacid' => $_W['uniacid'], ':id' => $storeid));
+            $order = pdo_fetchall(" SELECT * FROM ".tablename('sz_yi_order')." WHERE storeid=:id and uniacid=:uniacid ", array(':uniacid' => $_W['uniacid'], ':id' => $storeid));
             $ordercount = count($order);
             return $ordercount;
         }
