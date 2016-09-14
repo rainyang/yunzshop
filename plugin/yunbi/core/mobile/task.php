@@ -24,7 +24,7 @@ if (!file_exists($file)) {
         $set = m('plugin')->getpluginSet('yunbi', $_W['uniacid']);
 
         //虚拟币返现到余额
-        if (!empty($set) && $set['isreturn_or_remove'] == 0) {
+        if (!empty($set) && $set['isreturn_or_remove'] == 0 && $set['isreturnremove'] == 1 ) {
             $return_validation   = $tmpdirs."/return_".date("Ymd").$_W['uniacid'].".txt";
             if (!file_exists($return_validation)) {
                 $isexecute = false;
@@ -56,7 +56,7 @@ if (!file_exists($file)) {
 
         }
 
-        if (!empty($set) && $set['isreturn_or_remove'] == 1) {
+        if (!empty($set) && $set['isreturn_or_remove'] == 1 && $set['isreturnremove'] == 1) {
             //清除虚拟币
             $remove_validation   = $tmpdirs."/remove_".date("Ymd").$_W['uniacid'].".txt";
             if (!file_exists($remove_validation)) {

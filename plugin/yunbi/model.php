@@ -69,7 +69,7 @@ if (!class_exists('YunbiModel')) {
 			global $_W, $_GPC;
 			$current_time = time();
 
-			$sql = "update ".tablename('sz_yi_member')." as m join (select sm.agentid, count(1) as agent_count from ".tablename('sz_yi_member')." sm where sm.`uniacid` =  " . $uniacid . " group by sm.agentid) as ac on m.id = ac.agentid set `virtual_currency` = virtual_currency + ac.agent_count *  " . $set['distribution'] . ", last_money =  ac.agent_count *  " . $set['distribution'] . ",updatetime = " .$current_time. " where m.`uniacid` =  " . $uniacid . " AND status = '1' AND isagent = '1' ";
+			$sql = "update ".tablename('sz_yi_member')." as m join (select sm.agentid, count(1) as agent_count from ".tablename('sz_yi_member')." sm where sm.`uniacid` =  " . $uniacid . " AND sm.status = '1' AND sm.isagent = 1 group by sm.agentid) as ac on m.id = ac.agentid set `virtual_currency` = virtual_currency + ac.agent_count *  " . $set['distribution'] . ", last_money =  ac.agent_count *  " . $set['distribution'] . ",updatetime = " .$current_time. " where m.`uniacid` =  " . $uniacid . " AND status = '1' AND isagent = '1' ";
 			pdo_fetchall($sql);
 
 			$update_member = pdo_fetchall("SELECT id, uniacid, openid, last_money, updatetime FROM " . tablename('sz_yi_member') . " WHERE updatetime = :updatetime and uniacid = :uniacid ",
@@ -100,7 +100,7 @@ if (!class_exists('YunbiModel')) {
 		public function PerformYunbiReturn($set,$uniacid){
 			global $_W, $_GPC;
 			$current_time = time();
-			if ($set['isreturn_or_remove'] == 0) {
+			if ($set['isreturn_or_remove'] == 0 && $set['isreturnremove'] == 1 ) {
 				$mc_sql = "update ".tablename('mc_members')." as m join (select sm.virtual_currency, sm.uid from ".tablename('sz_yi_member')." sm where sm.`uniacid` =  " . $uniacid . " and sm.virtual_currency > 0 ) as ac on m.uid = ac.uid set m.credit2 = credit2 + (ac.virtual_currency * " .$set['yunbi_return']. " / 100)  where m.`uniacid` =  " . $uniacid ;
 				pdo_fetchall($mc_sql);
 				$sz_sql = "update ".tablename('sz_yi_member')."  set credit2 = credit2 + (virtual_currency * " .$set['yunbi_return']. " / 100), last_money =  (virtual_currency * " .$set['yunbi_return']. " / 100) ,updatetime = " .$current_time. ", `virtual_currency` = virtual_currency - (virtual_currency * " .$set['yunbi_return']. " / 100) where `uniacid` =  " . $uniacid ." AND virtual_currency > 0";
