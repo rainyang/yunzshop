@@ -254,7 +254,6 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
              </style>
                          {template 'diyform/formfields'}
                 </div>
-                {/if}
                <%if goods.isdeclaration == '1'%>
                   <div class="diyform_main">
                     <div class="dline " style="border:none">
@@ -268,6 +267,8 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                     </div>
                   </div>
                 <%/if%>
+                {/if}
+
                 <div class='number'>
                   <div class='label'>购买数量</div>
                   <div class='num'>

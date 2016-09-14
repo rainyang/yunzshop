@@ -30,7 +30,7 @@ if (!class_exists('YunbiModel')) {
 			$virtual_agent = 0;
 			$declaration = array();
 			foreach($order_goods as $good){
-				if($good['isyunbi'] == 1){
+				if($good['isyunbi'] == 1 && $good['declaration_mid'] != ''){
 					if ($good['yunbi_consumption'] > 0) {
 						$virtual_currency += ($good['price'] - $good['dispatchprice']) * $good['yunbi_consumption'] / 100;
 					} else {
