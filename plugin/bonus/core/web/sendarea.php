@@ -19,13 +19,13 @@ $list = pdo_fetchall($sql);
 $totalmoney = 0;
 $real_total = 0;
 foreach ($list as $key => &$row) {
-	$member = $this->model->getInfo($row['mid'], array('ok', 'pay', 'myorder'));
+	$member = $this->model->getInfo($row['mid'], array('areaok', 'pay', 'myorder'));
 	if(!empty($member)){
 		//Author:ym Date:2016-04-08 Content:需消费一定金额，否则清除该用户不参与分红
 		if(floatval($member['myordermoney']) < floatval($set['consume_withdraw']) || empty($member)){
 			unset($list[$key]);
 		}else{
-			if($member['commission_ok'] <= 0){
+			if($member['commission_areaok'] <= 0){
 				unset($list[$key]);
 			}else{
 				if(!empty($member['bonuslevel'])){
@@ -33,7 +33,7 @@ foreach ($list as $key => &$row) {
 				}else{
 					$row['realname'] = $set['levelname'];
 				}
-				$row['commission_ok'] = $member['commission_ok'];
+				$row['commission_ok'] = $member['commission_areaok'];
 
 				$row['commission_pay'] = $member['commission_pay'];
 				$row['id'] = $member['id'];
@@ -41,7 +41,7 @@ foreach ($list as $key => &$row) {
 				$row['nickname'] = $member['nickname'];
 				$row['realname'] = $member['realname'];
 				$row['mobile'] = $member['mobile'];
-				$totalmoney += $member['commission_ok'];
+				$totalmoney += $member['commission_areaok'];
 				$real_total +=1;
 			}
 		}

@@ -400,6 +400,8 @@ if (!class_exists('BonusModel')) {
             }
             $commission_total = 0;
             $commission_ok    = 0;
+            $commission_teamok= 0;
+            $commission_areaok= 0;
             $commission_apply = 0;
             $commission_check = 0;
             $commission_lock  = 0;
@@ -429,6 +431,16 @@ if (!class_exists('BonusModel')) {
 	            //可提现佣金
 	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3  and o.status<>4  and o.status<>5 and o.status<>6 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.finishtime > {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
 	            $commission_ok = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
+	        }
+	        if (in_array('teamok', $options)) {
+	            //可提现佣金
+	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3  and o.status<>4  and o.status<>5 and o.status<>6 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.finishtime > {$day_times})  and cg.bonus_area=0 ORDER BY o.createtime DESC,o.status DESC";
+	            $commission_teamok = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
+	        }
+	        if (in_array('areaok', $options)) {
+	            //可提现佣金
+	            $sql = "select sum(money) as money from " . tablename('sz_yi_order') . " o left join  ".tablename('sz_yi_bonus_goods')."  cg on o.id=cg.orderid and cg.status=0 left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3  and o.status<>4  and o.status<>5 and o.status<>6 and o.uniacid={$_W['uniacid']} and cg.mid = {$agentid} and ({$time} - o.finishtime > {$day_times})  and cg.bonus_area!=0 ORDER BY o.createtime DESC,o.status DESC";
+	            $commission_areaok = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
 	        }
 
 	        if (in_array('total', $options)) {
@@ -482,6 +494,8 @@ if (!class_exists('BonusModel')) {
 	        $agentcount                     = count($agentids);
             //$member['commissionTotal']      = $commissionTotal;
             $member['commission_ok']        = isset($commission_ok) ? $commission_ok : 0;
+            $member['commission_teamok']	= isset($commission_teamok) ? $commission_teamok : 0;
+			$member['commission_areaok']	= isset($commission_areaok) ? $commission_areaok : 0;
             $member['commission_total']     = isset($commission_total) ? $commission_total : 0;
             $member['commission_pay']       = isset($commission_pay) ? $commission_pay : 0;
             $member['commission_apply']     = isset($commission_apply) ? $commission_apply : 0;
