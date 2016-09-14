@@ -29,8 +29,11 @@
 </div>
     <div class="info_main">
         <div class="line"><div class="title">姓名</div><div class='info'><div class='inner'><input type="text" id='realname' placeholder="请输入您的姓名"  value="<%realname%>" /></div></div></div>
+        {if is_app()}
+        <div class="line"><div class="title">昵称</div><div class='info'><div class='inner'><input type="text" id='nickname' placeholder="请输入您的昵称"  value="<%nickname%>" /></div></div></div>
+        {/if}
         <%if mobile%>
-        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><%mobile%></div></div></div>
+        <div class="line"><div class="title">手机号码</div><div clas=s='info'><div class='inner'><%mobile%></div></div></div>
         <input type="hidden" id='mobile' value="<%mobile%>" />
         <%else%>
         <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><input type="text" id='mobile' placeholder="请输入您的手机号码"  value="<%mobile%>" /></div></div></div>
@@ -119,6 +122,7 @@
                     core.json('member/info', {
                        'memberdata':{
                             'realname': $('#realname').val(),
+                            'nickname': $("#nickname").val(),
                             'mobile': $('#mobile').val(),
                             'weixin': $('#weixin').val(),
                             'gender': $('#sex').val(),
@@ -131,6 +135,7 @@
                             'alipayname': $('#alipayname').val(),
                        }, 'mcdata':{
                             'realname': $('#realname').val(),
+                            'nickname': $("#nickname").val(),
                             'mobile': $('#mobile').val(),
                             'gender': $('#sex').val(),
                             'birthyear': $('#birthday').val().length>0?birthday[0]:0,

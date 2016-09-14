@@ -44,8 +44,14 @@
 <script id="member_center" type="text/html">
     <div class="header">
         <div class="user">
-            <div class="user-head"><img src="<%member.avatar%>" /></div>
-            <div class="user-info">
+            <div class="user-head">
+                <%if member.avatar.length > 0%>
+                <img src="<%member.avatar%>" />
+                <%else%>
+                <img src="../addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg" />
+                <%/if%>
+            </div>
+                <div class="user-info">
                 <div class="user-name"><%member.nickname%>[会员ID:<%member.id%>]</div>
                 <div class="user-other" {if !empty($set['shop']['levelurl'])}onclick='location.href="{$set['shop']['levelurl']}"'{/if}>[<%level.levelname%>] {if !empty($set['shop']['levelurl'])}<i class='fa fa-question-circle' ></i>{/if}
                     <%if shop_set.shop.isreferrer%>
@@ -65,7 +71,7 @@
         {/if}
         {if $member['credit2'] > 0 && empty($set['trade']['transfer'])}
             <a href="#" class="recharge-ybut" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer'))}'">转账</a>
-        {/if}
+        {/if} 
         {if !empty($yunbiset['isbot'])}
         {if $member['virtual_currency'] > 0 && p('yunbi')}
             <a href="#" class="recharge-ybut" onclick="location.href='{php echo $this->createMobileUrl('member/transfer',array('openid'=>$openid,'op'=>'transfer', 'yunbi' => 1))}'">{if !empty($shopset['yunbi_title'])}{php echo $shopset['yunbi_title']}{else}云币{/if}转账</a>
@@ -80,8 +86,8 @@
         {/if}
 
         <li><a href="#"><span><%member.credit1%></span><br/>{if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}</a></li>
-        <li><a href="#"><span><%counts.couponcount%></span><br/>优惠券</a></li>
-
+        <li><a href="#"><span><%counts.couponcount%></span><br/>优惠券</a></li>     
+               
     </ul>
 </div>
 <div class="order">
@@ -203,27 +209,27 @@
     {/if}
     {if is_weixin_show()}
     <%if shopset.isreturn%>
-    <a href="{php echo $this->createPluginMobileUrl('return/return_queue')}"><div class="list1" style="margin:0px;"><i class="fa fa-piechart" ></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    <a href="{php echo $this->createPluginMobileUrl('return/return_queue')}"><div class="list1" style="margin:0px;"><i class="fa fa-piechart" ></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
     <%/if%>
     {/if}
         {if $shopset['isyunbi']}
             <a href="{php echo $this->createPluginMobileUrl('yunbi/yunbi_log',array('type'=>'1'))}"><div class="list1" style="margin:0px;"><i class="fa fa-piechart" ></i>{$yunbi_title}明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-
-        {/if}
-
+           
+        {/if} 
+  
     <%if shopset.isarticle == 1%>
     <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-article"></i><%shopset.article_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {if p('helper')}
-    <a href="{php echo $this->createPluginMobileUrl('article/article', array('is_helper' => 1))}"><div class="list1" style="margin:0px;"><i class="iconfont icon-article"></i>帮助中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    <a href="{php echo $this->createPluginMobileUrl('article/article', array('is_helper' => 1))}"><div class="list1" style="margin:0px;"><i class="iconfont icon-article"></i>帮助中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
     {/if}
     <%/if%>
-
+ 
     {if p('merchant') && !empty($iscenter)}
     <a href="{php echo $this->createPluginMobileUrl('merchant/index')}"><div class="list1" style="margin:0px; "><i class="fa fa-globe"></i>招商中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
 
      <%if shopset.isranking == 1%>
-    <a href="{php echo $this->createPluginMobileUrl('ranking/ranking')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-ranking"></i><%shopset.rankingname%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    <a href="{php echo $this->createPluginMobileUrl('ranking/ranking')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-ranking"></i><%shopset.rankingname%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
     <%/if%>
     {if isset($set['trade']) && ($set['trade']['withdraw']==1 || empty($set['trade']['closerecharge']))}
     <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-cny"></i>{if isset($set['trade']) && $set['trade']['withdraw']==1}{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}明细{else}充值记录{/if}
@@ -232,13 +238,6 @@
    {if p('love')}
    <a href="{php echo $this->createMobileUrl('member/rechange_log')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-cny"></i>分期记录
     <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-    {/if}
-    {if is_app()}
-    {if $app['accept'] == 1}
-    <a href="{php echo $this->createMobileUrl('member/referral')}">div class="list1" style="margin:0px;"><i class="fa fa-barcode" ></i>我的推荐码<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-    {/if}
-    <a href="{php echo $this->createMobileUrl('member/messagelist')}"><div class="list1" style="margin:0px;"><i class="fa fa-volume-up" ></i>订单通知<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-    <a href="{php echo $this->createMobileUrl('member/pushlist')}"><div class="list1" style="margin:0px;"><i class="fa fa-share-square-o" ></i>系统消息<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
 </div>
 {if $hascoupon}
