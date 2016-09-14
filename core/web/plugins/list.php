@@ -64,6 +64,7 @@ $plugins_icon = array(
 	"helper" => "help",
 	"yunbi" => "coin",
 	"area" => "region",
+	"beneficence" => "donation",
 	);
 $plugins_desc = array(
 	"supplier" => "厂家入驻，平台统一销售", 
