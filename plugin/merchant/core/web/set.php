@@ -4,6 +4,7 @@ global $_W, $_GPC;
 $set = $this->getSet();
 if (checksubmit('submit')) {
     $data          = is_array($_GPC['tm']) ? array_merge($set, $_GPC['tm']) : array();
+    $data['apply_day'] = intval($data['apply_day']);
     $this->updateSet($data);
     m('cache')->set('template_' . $this->pluginname, $data['style']);
     plog('merchant.set', '修改基本设置');

@@ -189,7 +189,7 @@
     .menu .nav5 {border-right:1px solid #f1f1f1; text-align:center;} .menu .nav5 i { color:#53bdec}
 
     .menu .nav6 {border-bottom:1px solid #f1f1f1; text-align:center;} .menu .nav6 i { color:#CC3431}
-	
+    
     .menu .nav7 {border-bottom:1px solid #f1f1f1; text-align:center;} .menu .nav7 i { color:#53bdec}
     .menu .nav8 {border-bottom:1px solid #f1f1f1; text-align:center;} .menu .nav8 i { color:#ff9901;font-size:30px;}
     .menu .nav9 {border-bottom:1px solid #f1f1f1; text-align:center;} .menu .nav9 i { color:#98cd37;font-size:30px;}
@@ -212,7 +212,7 @@
         <li><a href="#"><span>{php echo $commission_ok}</span><br/>可结算金额</a></li>
         <li><a href="#"><span>{php echo $commission_total}</span><br/>累计结算金额</a></li>
 
-        <li><a class="recharge" {if $commission_ok<=0 } href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('merchant/applyg', array('iscenter' => 1))}"{/if} id='withdraw' ><p style="margin:0" {if $commission_ok<=0 } class="disabled" {/if}>提现</p></a>
+        <li><a class="recharge" {if $commission_ok<=0 || !empty($center_info['applymonth']) } href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('merchant/applyg', array('iscenter' => 1))}"{/if} id='withdraw' ><p style="margin:0" {if $commission_ok<=0 || !empty($center_info['applymonth']) } class="disabled" {/if}>提现</p></a>
         </li>
     </ul>
     </div>
@@ -235,7 +235,11 @@
             $('#withdraw').click(function(){
                 if(!json.result.cansettle){
                     core.tip.show('无可提佣金!');
-                    return;     
+                    return false;     
+                }
+                if (json.result.center_info.applymonth) {
+                    core.tip.show('本月已经提现一次，请下个月再进行提现!');
+                    return false;
                 }
             });
         },true);

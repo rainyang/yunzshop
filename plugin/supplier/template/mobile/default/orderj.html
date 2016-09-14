@@ -207,7 +207,7 @@
 
         </div>
 
-        <div class="top_2">{php echo $commission_ok}<a {if $commission_ok<=0 }href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('supplier/applyg')}"{/if} id='withdraw' ><span {if $commission_ok<=0 }class='disabled'{/if} >提现</span></a></div>
+        <div class="top_2">{php echo $commission_ok}<a {if $commission_ok<=0 || !empty($supplierinfo['applymonth'])}href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('supplier/applyg')}"{/if} id='withdraw' ><span {if $commission_ok<=0 || !empty($supplierinfo['applymonth'])}class='disabled'{/if} >提现</span></a></div>
 
     </div> 
 
@@ -248,6 +248,10 @@
 
                      }
 
+                }
+                if (json.result.supplierinfo.applymonth) {
+                    core.tip.show('本月已经提现一次，请下个月再进行提现!');
+                    return false;
                 }
 
             });

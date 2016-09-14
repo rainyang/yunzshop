@@ -7,6 +7,26 @@
            <div class='panel-heading'>
             供应商设置
         </div>
+        <div class="form-group"></div>
+        <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单完成n天后可申请提现</label>
+                <div class="col-sm-9 col-xs-12">
+                      <input type="text" name="setdata[apply_day]" class="form-control" value="{$set['apply_day']}" />
+                    <div class="help-block">订单完成后 ，用户在x天内可以发起提现申请,如果不填写则订单完成就可以提现</div>
+                </div>
+            </div>
+        </div>
+        <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启每月提现一次</label>
+                <div class="col-sm-9 col-xs-12">
+                    <label class="radio-inline"><input type="radio" class="sendmoth" name="setdata[applymonth]" value="0" {if $set['applymonth'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline"><input type="radio" class="sendmoth" name="setdata[applymonth]" value="1" {if $set['applymonth'] ==1} checked="checked"{/if} /> 开启</label>
+                    <span class='help-block'>开启，每个月只能提现一次</span>
+                </div>
+            </div>
+        </div>
         <div class='panel-body'>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">开启会员申请供应商</label>

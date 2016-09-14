@@ -8,6 +8,7 @@ if (!class_exists('MerchantModel')) {
 		Private $child_centers = array();
 		public function getInfo($openid){
 			global $_W;
+			$set = $this->getSet();
 			$info = array();
 			if (empty($openid)) {
 				return;
@@ -17,6 +18,18 @@ if (!class_exists('MerchantModel')) {
 				return;
 			}
 			$member = m('member')->getInfo($openid);
+			if (!empty($set['applymonth'])) {
+				$now_month = date('m',time());
+				if (!empty($member['id'])) {
+					$last_apply_time = pdo_fetchcolumn("SELECT apply_time FROM " . tablename('sz_yi_merchant_apply') . "WHERE uniacid={$_W['uniacid']} AND member_id={$member['id']} ORDER BY id DESC LIMIT 1");
+					if (!empty($last_apply_time)) {
+						$last_apply_month = date('m', $last_apply_time);
+						if ($last_apply_month == $now_month) {
+							$info['applymonth'] = true;
+						}
+					}
+				}
+			}
 			$info['levelinfo'] = pdo_fetch("SELECT * FROM " . tablename('sz_yi_merchant_level') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $center['level_id']));
 			$this->child_centers = array();
 			$centers = $this->getChildCenters($openid);
@@ -36,7 +49,14 @@ if (!class_exists('MerchantModel')) {
 			$info['commission_total'] = number_format(pdo_fetchcolumn("SELECT sum(money) FROM " . tablename('sz_yi_merchant_apply') . " WHERE uniacid=:uniacid AND member_id=:member_id AND iscenter=1", array(':uniacid' => $_W['uniacid'], ':member_id' => $member['id'])), 2);
 
 			$info['commission_ok'] = 0;
-			$orderinfo = pdo_fetchall("SELECT o.basis_money,og.price FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} AND o.center_apply_status=0 AND o.status=3 ORDER BY o.createtime DESC,o.status DESC ");
+
+			$apply_cond = "";
+			if (!empty($set['apply_day'])) {
+				$now_time = time();
+				$apply_day = $now_time - $set['apply_day']*60*60*24;
+				$apply_cond = " AND o.finishtime<{$apply_day} ";
+			}
+			$orderinfo = pdo_fetchall("SELECT o.basis_money,og.price FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} {$apply_cond} AND o.center_apply_status=0 AND o.status=3 ORDER BY o.createtime DESC,o.status DESC ");
 			foreach ($orderinfo as $value) {
 				if (empty($value['basis_money'])) {
 					$info['commission_ok'] += $value['price'];

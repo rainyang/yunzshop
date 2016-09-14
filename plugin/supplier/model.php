@@ -46,6 +46,19 @@ if (!class_exists('SupplierModel')) {
         //获取供应商订单佣金相关数据
         public function getSupplierInfo($uid){
             global $_W, $_GPC;
+            $set = $this->getSet();
+            if (!empty($set['applymonth'])) {
+                $now_month = date('m',time());
+                if (!empty($uid)) {
+                    $last_apply_time = pdo_fetchcolumn("SELECT apply_time FROM " . tablename('sz_yi_supplier_apply') . "WHERE uniacid={$_W['uniacid']} AND uid={$uid} ORDER BY id DESC LIMIT 1");
+                    if (!empty($last_apply_time)) {
+                        $last_apply_month = date('m', $last_apply_time);
+                        if ($last_apply_month == $now_month) {
+                            $supplierinfo['applymonth'] = true;
+                        }
+                    }
+                }
+            }
             $supplierinfo = array();
             //订单总数
             $supplierinfo['ordercount'] = 0;
@@ -71,7 +84,13 @@ if (!class_exists('SupplierModel')) {
                     }
                 }
             }*/
-            $sp_goods = pdo_fetchall("select og.price,o.basis_money from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0");
+            $apply_cond = "";
+            if (!empty($set['apply_day'])) {
+                $now_time = time();
+                $apply_day = $now_time - $set['apply_day']*60*60*24;
+                $apply_cond = " AND o.finishtime<{$apply_day} ";
+            }
+            $sp_goods = pdo_fetchall("select og.price,o.basis_money from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 {$apply_cond}");
             foreach ($sp_goods as $value) {
                 if (empty($value['basis_money'])) {
                     $supplierinfo['costmoney'] += $value['price'];
