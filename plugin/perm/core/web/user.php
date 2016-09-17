@@ -7,6 +7,10 @@ global $_W, $_GPC;
 
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 load()->model('user');
+$plugin_supplier = p('supplier');
+if ($plugin_supplier) {
+	$supplier_roleid = $plugin_supplier->getRoleId();
+}
 if ($operation == 'display') {
 	ca('perm.user.view');
 	$pindex = max(1, intval($_GPC['page']));
@@ -26,6 +30,13 @@ if ($operation == 'display') {
 		$condition .= ' and u.status=' . intval($_GPC['status']);
 	}
 	$list = pdo_fetchall('SELECT u.*,r.rolename FROM ' . tablename('sz_yi_perm_user') . ' u  ' . ' left join ' . tablename('sz_yi_perm_role') . ' r on u.roleid =r.id  ' . " WHERE 1 {$condition} ORDER BY id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
+	if (!empty($supplier_roleid)) {
+		foreach ($list as $key => $value) {
+			if ($value['roleid'] == $supplier_roleid) {
+				unset($list[$key]);
+			}
+		}
+	}
 	$total = pdo_fetchcolumn('SELECT count(*) FROM ' . tablename('sz_yi_perm_user') . ' u  ' . ' left join ' . tablename('sz_yi_perm_role') . ' r on u.roleid =r.id  ' . " WHERE 1 {$condition} ", $params);
 	$pager = pagination($total, $pindex, $psize);
 	$roles = pdo_fetchall('select id,rolename from ' . tablename('sz_yi_perm_role') . ' where uniacid=:uniacid and deleted=0', array(':uniacid' => $_W['uniacid']));
