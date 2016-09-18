@@ -794,7 +794,7 @@ if ($_W['isajax']) {
             }
             $order_all[$val['supplier_uid']]['hascoupon'] = false;
             if ($hascouponplugin) {
-                $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
+                $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['goodsprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
                 $order_all[$val['supplier_uid']]['hascoupon']   = $order_all[$val['supplier_uid']]['couponcount'] > 0;
             }
             $order_all[$val['supplier_uid']]['realprice'] += $order_all[$val['supplier_uid']]['dispatch_price'];
@@ -970,13 +970,6 @@ if ($_W['isajax']) {
         $coupon_carrierid = intval($_GPC['carrierid']);
         $goodsid = $_GPC['id'] ? intval($_GPC['id']) : 0;
         $cartids = $_GPC['cartids'] ? $_GPC['cartids'] : 0;
-        if ($pc) {
-            $pset = $pc->getSet();
-            if (empty($pset["closemember"])) {
-                $couponcount = $pc->consumeCouponCount($openid, $totalprice, $supplier_uid, 0, 0, $goodsid, $cartids,$coupon_carrierid);
-                $hascoupon   = $couponcount > 0;
-            }
-        }
         $addressid           = intval($_GPC["addressid"]);
         $address     = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' WHERE  id=:id AND openid=:openid AND uniacid=:uniacid limit 1', array(
             ':uniacid' => $uniacid,
