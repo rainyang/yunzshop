@@ -33,7 +33,7 @@ if (!class_exists('BeneficenceModel')) {
 			}
 			$info = m('member')->getMember($order_goods[0]['mid']);
 			$names = $info['nickname']?$info['nickname']:$info['realname'];
-			$name = mb_substr($names,0,2)."*****".mb_substr($names,-2);
+			$name = mb_substr($names,0,2,'utf-8')."*****".mb_substr($names,-2,2,'utf-8');
 			$data = array(
 				'uniacid' 		=> $_W['uniacid'],
 			    'name' 			=> $name,
