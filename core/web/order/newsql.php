@@ -1741,7 +1741,7 @@ if (!pdo_fieldexists('sz_yi_cashier_store', 'isreturn')) {
 
 //2016-8-15 商品是否返虚拟币  虚拟币返现比例 
 if (!pdo_fieldexists('sz_yi_goods', 'yunbi_consumption')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `yunbi_consumption` DECIMAL(5,3) NOT NULL AFTER `isopenchannel`;");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `yunbi_consumption` DECIMAL(6,3) NOT NULL AFTER `isopenchannel`;");
 }
 if (!pdo_fieldexists('sz_yi_goods', 'isyunbi')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `isyunbi` TINYINT(1) NOT NULL DEFAULT '0' AFTER `yunbi_consumption`;");

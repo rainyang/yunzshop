@@ -124,6 +124,15 @@ if (p('return')) {
 		$shopset['isreturn'] = true;
 	}
 }
+if (p('beneficence')) {
+	$beneficenceset = m('plugin')->getpluginSet('beneficence');
+	$shopset['isbeneficence'] = false;
+	if($beneficenceset['isbeneficence'] == 1 ){
+		$shopset['isbeneficence'] = true;
+	}
+	$beneficencename = $beneficenceset['beneficencename']?$beneficenceset['beneficencename']:'行善池';
+	$shopset['beneficencename'] = $beneficencename;
+}
 if (p('yunbi')) {
 	$yunbiset = m('plugin')->getpluginSet('yunbi');
 	$shopset['isyunbi'] = false;
