@@ -171,7 +171,7 @@
 {if $open_creditshop}
         <li>
         <a href="#" onclick="location.href='{php echo $this->createPluginMobileUrl('creditshop')}'">
-        <i class="fa iconfont icon-database" style="background:#28c870"></i><br/>{php echo SZ_YI_INTEGRAL}商城
+        <i class="fa iconfont icon-database" style="background:#28c870"></i><br/>积分商城
         </a>
         </li>
 {/if}
@@ -210,12 +210,16 @@
     <a href="{php echo $this->createPluginMobileUrl('return/return_queue')}"><div class="list1" style="margin:0px;"><i class="fa fa-piechart" ></i>全返明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
     <%/if%>
     {/if}
-        {if $shopset['isyunbi']}
-            <a href="{php echo $this->createPluginMobileUrl('yunbi/yunbi_log',array('type'=>'1'))}"><div class="list1" style="margin:0px;"><i class="fa fa-piechart" ></i>{$yunbi_title}明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+        {if $shopset['isbeneficence']}
+            <a href="{php echo $this->createPluginMobileUrl('beneficence/beneficence')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-donation" ></i>{$beneficencename}<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
            
         {/if} 
-  
-    <%if shopset.isarticle == 1%>
+        {if $shopset['isyunbi']}
+            <a href="{php echo $this->createPluginMobileUrl('yunbi/yunbi_log',array('type'=>'1'))}"><div class="list1" style="margin:0px;"><i class="iconfont icon-coin" ></i>{$yunbi_title}明细<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+           
+        {/if} 
+     <%if shopset.isarticle == 1%>
+
     <a href="{php echo $this->createPluginMobileUrl('article/article')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-article"></i><%shopset.article_text%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {if p('helper')}
     <a href="{php echo $this->createPluginMobileUrl('article/article', array('is_helper' => 1))}"><div class="list1" style="margin:0px;"><i class="iconfont icon-article"></i>帮助中心<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
@@ -271,11 +275,6 @@
 {/if}
 {if $has_cashier}
     <a href="{php echo $this->createPluginMobileUrl('cashier/qrcode_list')}"><div class="list1" style="margin:0px; "><i class="iconfont icon-web-price"></i>收银台<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-{/if}
-{if $member['is_bind']==0}
- <a href="{php echo $this->createMobileUrl('member/bind')}"><div class="list1" style="margin:0px; "><i class="iconfont icon-web-price"></i>善心汇账户绑定<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
-{else}
- <a href="{php echo $this->createMobileUrl('member/sxh')}"><div class="list1" style="margin:0px; "><i class="iconfont icon-web-price"></i>善心汇账户<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
 {/if}
 {if !is_weixin()}
 <div class="cart">

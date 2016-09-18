@@ -196,7 +196,11 @@ if ($_W['isajax']) {
                 if (!empty($option)) {
                     $data['optionid']    = $optionid;
                     $data['optiontitle'] = $option['title'];
-                    $data['marketprice'] = $option['marketprice'];
+                    if (p('supplier')) {
+                        if ($option['marketprice'] != 0) {
+                            $data['marketprice'] = $option['marketprice'];
+                        }
+                    }
                     $data['virtual']     = $option['virtual'];
                     $data['stock']       = $option['stock'];
                     if (!empty($option['weight'])) {
@@ -790,7 +794,7 @@ if ($_W['isajax']) {
             }
             $order_all[$val['supplier_uid']]['hascoupon'] = false;
             if ($hascouponplugin) {
-                $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['realprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
+                $order_all[$val['supplier_uid']]['couponcount'] = $plugc->consumeCouponCount($openid, $order_all[$val['supplier_uid']]['goodsprice'], $val['supplier_uid'], 0, 0, $goodid, $cartid);
                 $order_all[$val['supplier_uid']]['hascoupon']   = $order_all[$val['supplier_uid']]['couponcount'] > 0;
             }
             $order_all[$val['supplier_uid']]['realprice'] += $order_all[$val['supplier_uid']]['dispatch_price'];
@@ -966,13 +970,6 @@ if ($_W['isajax']) {
         $coupon_carrierid = intval($_GPC['carrierid']);
         $goodsid = $_GPC['id'] ? intval($_GPC['id']) : 0;
         $cartids = $_GPC['cartids'] ? $_GPC['cartids'] : 0;
-        if ($pc) {
-            $pset = $pc->getSet();
-            if (empty($pset["closemember"])) {
-                $couponcount = $pc->consumeCouponCount($openid, $totalprice, $supplier_uid, 0, 0, $goodsid, $cartids,$coupon_carrierid);
-                $hascoupon   = $couponcount > 0;
-            }
-        }
         $addressid           = intval($_GPC["addressid"]);
         $address     = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' WHERE  id=:id AND openid=:openid AND uniacid=:uniacid limit 1', array(
             ':uniacid' => $uniacid,
@@ -1457,9 +1454,6 @@ if ($_W['isajax']) {
                     show_json(-1, $data['title'] . '<br/> 已下架!');
                 }
                 $virtualid     = $data['virtual'];
-                if($data['type']=='30' || $data['type']=='31'){
-                    $virtualid = true;
-                }
                 $data['stock'] = $data['total'];
                 $data['total'] = $goodstotal;
                 if ($data['cash'] != 2) {
@@ -1573,6 +1567,7 @@ if ($_W['isajax']) {
                         $temp_data             = $diyform_plugin->getOneDiyformTemp($goods_data_id, 0);
                         $data["diyformfields"] = $temp_data["diyformfields"];
                         $data["diyformdata"]   = $temp_data["diyformdata"];
+                        $data["declaration_mid"]= $temp_data["declaration_mid"];
                         $data["diyformid"]     = $formInfo["id"];
                     }
                 }
@@ -2267,6 +2262,7 @@ if ($_W['isajax']) {
                 if ($diyform_plugin) {
                     $order_goods["diyformid"]     = $goods["diyformid"];
                     $order_goods["diyformdata"]   = $goods["diyformdata"];
+                    $order_goods["declaration_mid"]   = $goods["declaration_mid"];
                     $order_goods["diyformfields"] = $goods["diyformfields"];
                 }
                 if (p('supplier')) {

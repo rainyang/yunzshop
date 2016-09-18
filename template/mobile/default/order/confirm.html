@@ -187,7 +187,7 @@
         <div class="ico"><i class="fa fa-file-text-o"></i></div>
         <div class="tips">确认订单后请尽快付款，<br>过时订单将自动取消。</div>
     </div>
-    <input type="hidden"  id="isverify" value="<%if isverify || isvirtual || goods.type==2 || goods[0].type==30 || goods[0].type==31%>true<%else%>false<%/if%>" />
+    <input type="hidden"  id="isverify" value="<%if isverify || isvirtual || goods.type==2%>true<%else%>false<%/if%>" />
 	
 	 {if $show==1}
       <%if isverify%>
@@ -272,7 +272,7 @@
       
 
       <%else%>
-        <%if isvirtual || goods.type==2 || goods[0].type==30|| goods[0].type ==31%>
+        <%if isvirtual || goods.type==2%>
           <input type="hidden"  id="dispatchtype" value="0" />
           <div class="carrier_input_info" >
           <div class="row">
@@ -363,7 +363,7 @@
         <%/each%>
         <input type="hidden"  data-id="<%order.supplier_uid%>" data-name="goods" value="<%each order.goods as g%><%g.goodsid%>,<%g.optionid%>,<%g.total%>|<%/each%>"/>
         <input type="text" data-id="<%order.supplier_uid%>" data-name="remark" placeholder="给卖家留言" />
-        <div class="text">共 <span id="goodscount"><%order.total%></span> 件商品 合计：<span style="color:#f15353;">￥<span class='goodsprice' data-id="<%order.supplier_uid%>" style="color:#f15353;"><%order.goodsprice%></span></span></div>
+        <div class="text">共 <span class="goodscount" data-id="<%order.supplier_uid%>"><%order.total%></span> 件商品 合计：<span style="color:#f15353;">￥<span class='goodsprice' data-id="<%order.supplier_uid%>" style="color:#f15353;"><%order.goodsprice%></span></span></div>
     </div>
     {if !empty($order_formInfo)}
     	 <div class="carrier_input_info" >
@@ -399,19 +399,10 @@
     </div>
 	<input type="hidden" data-id="<%order.supplier_uid%>" data-name="couponid" value="" />
      <div></div>
-     <div class="addorder_price coupondiv"  data-id="<%order.supplier_uid%>" style="<%if !order.hascoupon%>display:none<%/if%>" >
+     <div class="addorder_price coupondiv"  data-id="<%order.supplier_uid%>" >
         <div class="price">
             <div class="line selectcoupon" style="line-height:32px;" data-id="<%order.supplier_uid%>">
-			           <d class="couponselect" data-id="<%order.supplier_uid%>">我要使用优惠券</d>
-                <div class="ico2" style="float:right;color:#999;margin-top:2px;"><i class='fa fa-angle-right fa-2x'></i></div>
-                <div class="couponcount"><%order.couponcount%></div>
-            </div>
-        </div>
-    </div>
-    <div class="addorder_price coupondiv" style="<%if order.hascoupon%>display:none<%/if%>" >
-        <div class="price">
-            <div class="line selectcoupon1" style="line-height:32px;" data-id="<%order.supplier_uid%>">
-                 <d class="couponselect" data-id="<%order.supplier_uid%>">没有符合使用条件的优惠券~</d>
+			           <d class="couponselect" data-id="<%order.supplier_uid%>"><%if order.couponcount.length>0%>我要使用优惠券<%else%>没有符合条件的优惠券~<%/if%></d>
                 <div class="ico2" style="float:right;color:#999;margin-top:2px;"><i class='fa fa-angle-right fa-2x'></i></div>
                 <div class="couponcount"><%order.couponcount%></div>
             </div>
@@ -500,7 +491,7 @@ var fromcart = 0;
                     num=1;
                 }
                 input.val(num);
-                    $('#goodscount').html(num);
+                    $('.goodscount').html(num);
                 marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") ) * num;
                 $('.goodsprice').html( marketprice.toFixed(2) );
                     var supplierids = $("#supplierids").val();
@@ -547,7 +538,7 @@ var fromcart = 0;
                     core.tip.show("您最多购买 " + maxbuy + " 件");
                 }
                 input.val(num);
-                $('#goodscount').html(num);
+                $('.goodscount').html(num);
                 var marketprice = parseFloat( $(this).closest('.good').find('.marketprice').html().replace(",","") ) * num;
                 $('.goodsprice').html( marketprice.toFixed(2) );
                     var supplierids = $("#supplierids").val();
@@ -847,15 +838,15 @@ var fromcart = 0;
                           $('.deductcredit2[data-id='+supplier_uid+']').attr('credit2',getjson.result.deductcredit2);
                       }
 
-                      if(getjson.result.hascoupon){
-                        $('.coupondiv[data-id='+supplier_uid+']').show();
-                        $('.coupondiv[data-id='+supplier_uid+'] .couponcount').html(getjson.result.couponcount);
-                        bindCouponEvents();
-                      }else{
-                        $("input[data-name='couponid'][data-id="+supplier_uid+"]").val('');
-                        $('.couponselect[data-id='+supplier_uid+']').html('我要使用优惠券');
-                        $('.coupondiv[data-id='+supplier_uid+']').hide();
-                      }
+//                      if(getjson.result.hascoupon){
+//                        $('.coupondiv[data-id='+supplier_uid+']').show();
+//                        $('.coupondiv[data-id='+supplier_uid+'] .couponcount').html(getjson.result.couponcount);
+//                        bindCouponEvents();
+//                      }else{
+//                        $("input[data-name='couponid'][data-id="+supplier_uid+"]").val('');
+//                        $('.couponselect[data-id='+supplier_uid+']').html('没有符合条件的优惠券~');
+//                        //$('.coupondiv[data-id='+supplier_uid+']').hide();
+//                      }
 
                       if(getjson.result.deductenough_money>0){
                         $('.deductenough[data-id='+supplier_uid+']').show();
@@ -1236,7 +1227,7 @@ var fromcart = 0;
 
         function bindCouponEvents(){
 				  $('.selectcoupon').click( function(){
-             var money =parseFloat( $('.totalprice').html().replace(",","") ) ;	
+             var money =parseFloat( $('.goodsprice').html().replace(",","") ) ;
              var supplier_uid = $(this).attr('data-id');
 			       var carrierid = $('#carrierid').val();
  				     core.pjson('coupon/util', {op: 'query', money: money, type:0, supplier_uid: supplier_uid, goodsid: "{$goodid}", cartids: "{$cartid}", carrierid: carrierid}, function (rjson) {

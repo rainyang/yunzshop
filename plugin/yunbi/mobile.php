@@ -22,4 +22,9 @@ class YunbiMobile extends Plugin
     {    
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function yunbi_trading()
+    {    
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    
 }
