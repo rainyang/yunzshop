@@ -2,6 +2,9 @@
 global $_W, $_GPC;
 load()->func('file');
 set_time_limit(0);
+
+p('beneficence')->GetVirtualBeneficence('833');
+echo "<pre>";print_r(44);exit;
 //创建文件锁
 $tmpdir = IA_ROOT . "/addons/sz_yi/tmp/yunbi";
 $file   = $tmpdir."/filelock.txt";
