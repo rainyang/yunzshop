@@ -29,14 +29,10 @@ if ($operation == 'display') {
 	if ($_GPC['status'] != '') {
 		$condition .= ' and u.status=' . intval($_GPC['status']);
 	}
-	$list = pdo_fetchall('SELECT u.*,r.rolename FROM ' . tablename('sz_yi_perm_user') . ' u  ' . ' left join ' . tablename('sz_yi_perm_role') . ' r on u.roleid =r.id  ' . " WHERE 1 {$condition} ORDER BY id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
 	if (!empty($supplier_roleid)) {
-		foreach ($list as $key => $value) {
-			if ($value['roleid'] == $supplier_roleid) {
-				unset($list[$key]);
-			}
-		}
+		$condtion .= ' and u.roleid<>' . $supplier_roleid;
 	}
+	$list = pdo_fetchall('SELECT u.*,r.rolename FROM ' . tablename('sz_yi_perm_user') . ' u  ' . ' left join ' . tablename('sz_yi_perm_role') . ' r on u.roleid =r.id  ' . " WHERE 1 {$condition} ORDER BY id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
 	$total = pdo_fetchcolumn('SELECT count(*) FROM ' . tablename('sz_yi_perm_user') . ' u  ' . ' left join ' . tablename('sz_yi_perm_role') . ' r on u.roleid =r.id  ' . " WHERE 1 {$condition} ", $params);
 	$pager = pagination($total, $pindex, $psize);
 	$roles = pdo_fetchall('select id,rolename from ' . tablename('sz_yi_perm_role') . ' where uniacid=:uniacid and deleted=0', array(':uniacid' => $_W['uniacid']));
