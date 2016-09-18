@@ -617,5 +617,370 @@ if (!class_exists('TaobaoModel')) {
                 )
             );
         }
+
+        //获取京东商品
+        public function get_item_jingdong($itemid = '', $jingdongurl = '', $pcate = 0, $ccate = 0, $tcate = 0)
+        {
+            error_reporting(0);
+            global $_W;
+            $g = pdo_fetch('select * from ' . tablename('sz_yi_goods') . ' where uniacid=:uniacid and catch_id=:catch_id and catch_source=\'jingdong\' limit 1', array(':uniacid' => $_W['uniacid'], ':catch_id' => $itemid));
+            if ($g) {
+            }
+            $url = $this->get_jingdong_info_url($itemid);
+            load()->func('communication');
+            $response = ihttp_get($url);
+            $length = strval($response['headers']['Content-Length']);
+            if ($length != NULL) {
+                return array('result' => '0', 'error' => '未从京东获取到商品信息!');
+            }
+            $content = $response['content'];
+            $dom = new DOMDocument();
+            $dom->loadHTML('<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>' . $content);
+            $xml = simplexml_import_dom($dom);
+            $prodectNameContent = $xml->xpath('//*[@id="goodName"]');
+            $prodectName = strval($prodectNameContent[0]->attributes()->value);
+            if ($prodectName == NULL) {
+                echo '宝贝不存在';
+                return array('result' => '0', 'error' => '宝贝不存在!');
+            }
+            $item = array();
+            $item['id'] = $g['id'];
+            $item['pcate'] = $pcate;
+            $item['ccate'] = $ccate;
+            $item['tcate'] = $tcate;
+            $item['cates'] = $pcate . ',' . $ccate . ',' . $tcate;
+            $item['itemId'] = $itemid;
+            $item['title'] = $prodectName;
+            $pics = array();
+            $imgurls = $xml->xpath('//*[@id="slide"]/ul');
+            foreach ($imgurls[0]->li as $imgurl) {
+                if (count($pics) < 4) {
+                    $pics[] = 'http:' . $imgurl->img->attributes()->src;
+                }
+            }
+            $item['pics'] = $pics;
+            $specs = array();
+            $item['total'] = 10;
+            $item['sales'] = 0;
+            $prodectPriceContent = $xml->xpath('//*[@id="jdPrice"]');
+            $prodectPrices = strval($prodectPriceContent[0]->attributes()->value);
+            $item['marketprice'] = $prodectPrices;
+            $url = $this->get_jingdong_detail_url($itemid);
+            $responseDetail = ihttp_get($url);
+            $contenteDetail = $responseDetail['content'];
+            $details = json_decode($contenteDetail, true);
+            $prodectContent = $details[wdis];
+            $item['content'] = strval($prodectContent);
+            $params = array();
+            $pr = $details[ware][wi][code];
+            preg_match_all('/<td class="tdTitle">(.*?)<\\/td>/i', $pr, $params1);
+            preg_match_all('/<td>(.*?)<\\/td>/i', $pr, $params2);
+            $paramsTitle = $params1[1];
+            $paramsValue = $params2[1];
+            if (count($paramsTitle) == count($paramsValue)) {
+                $i = 0;
+                while ($i < count($paramsTitle)) {
+                    $params[] = array('title' => $paramsTitle[$i], 'value' => $paramsValue[$i]);
+                    ++$i;
+                }
+            }
+            $item['params'] = $params;
+            return $this->save_jingdong_goods($item, $jingdongurl);
+        }
+        public function get_item_one688($itemid = '', $one688url = '', $pcate = 0, $ccate = 0, $tcate = 0)
+        {
+            error_reporting(0);
+            global $_W;
+            $g = pdo_fetch('select * from ' . tablename('sz_yi_goods') . ' where uniacid=:uniacid and catch_id=:catch_id and catch_source=\'1688\' limit 1', array(':uniacid' => $_W['uniacid'], ':catch_id' => $itemid));
+            $url = $this->get_1688_info_url($itemid);
+            load()->func('communication');
+            $response = ihttp_get($url);
+            $length = strval($response['headers']['Content-Length']);
+            if ($length != NULL) {
+                return array('result' => '0', 'error' => '未从京东获取到商品信息!');
+            }
+            $content = $response['content'];
+            $dom = new DOMDocument();
+            $dom->loadHTML('<meta http-equiv="Content-Type" content="text/html; charset=gbk"/>' . $content);
+            $xml = simplexml_import_dom($dom);
+            $prodectNameContent = $xml->xpath('//*[@id="mod-detail-title"]/h1');
+            $prodectName = strval($prodectNameContent[0]);
+            if ($prodectName == NULL) {
+                echo '宝贝不存在';
+                return array('result' => '0', 'error' => '宝贝不存在!');
+            }
+            $item = array();
+            $item['id'] = $g['id'];
+            $item['pcate'] = $pcate;
+            $item['ccate'] = $ccate;
+            $item['tcate'] = $tcate;
+            $item['cates'] = $pcate . ',' . $ccate . ',' . $tcate;
+            $item['itemId'] = $itemid;
+            $item['title'] = $prodectName;
+            $pics = array();
+            $imgurls = $xml->xpath('//*[@id="dt-tab"]/div/ul');
+            foreach ($imgurls[0]->li as $imgurlContent) {
+                $imgurlall = $imgurlContent->attributes();
+                $img = json_decode($imgurlall[1], true);
+                if (count($pics) < 4) {
+                    $pics[] = $img['original'];
+                }
+            }
+            $item['pics'] = $pics;
+            $item['total'] = 10;
+            $item['sales'] = 0;
+            $prodectPriceContent = $xml->xpath('//*[@property="og:product:price"]');
+            $prodectPrices = strval($prodectPriceContent[0]->attributes()->content);
+            $item['marketprice'] = $prodectPrices;
+            $prodectContent = $xml->xpath('//*[@id="desc-lazyload-container"]');
+            $Contents = $prodectContent[0]->attributes();
+            $detail = $Contents['data-tfs-url'];
+            $responseDetail = ihttp_get(strval($detail));
+            $contenteDetail = $responseDetail['content'];
+            $contenteDetail = iconv('GB2312', 'UTF-8', $contenteDetail);
+            if (strpos($contenteDetail, '{')) {
+                $contenteDetail = substr($contenteDetail, strpos($contenteDetail, '{'), -1);
+                $details = json_decode($contenteDetail, true);
+                $prodectContent = $details['content'];
+                $prodectContent = preg_replace('/ (?:height|width)=(\'|").*?\\1/', '', $prodectContent);
+                $item['content'] = $prodectContent;
+            }
+            $params = $xml->xpath('//*[@id="mod-detail-attributes"]/div[1]/table/tbody');
+            $paramsTitle = array();
+            $paramsValue = array();
+            foreach ($params[0]->tr as $tr) {
+                foreach ($tr[0]->td as $td) {
+                    if ($td->attributes()->class == 'de-feature' && 0 < strlen(strval($td))) {
+                        $paramsTitle[] = strval($td);
+                    }
+                    if ($td->attributes()->class == 'de-value' && 0 < strlen(strval($td))) {
+                        $paramsValue[] = strval($td);
+                    }
+                }
+            }
+            $params = array();
+            if (count($paramsTitle) == count($paramsValue)) {
+                $i = 0;
+                while ($i < count($paramsTitle)) {
+                    $params[] = array('title' => $paramsTitle[$i], 'value' => $paramsValue[$i]);
+                    ++$i;
+                }
+            }
+            $item['params'] = $params;
+            return $this->save_1688_goods($item, $one688url);
+        }
+        public function save_jingdong_goods($item = array(), $catch_url = '')
+        {
+            global $_W;
+            $data = array('uniacid' => $_W['uniacid'], 'catch_source' => 'jingdong', 'catch_id' => $item['itemId'], 'catch_url' => $catch_url, 'title' => $item['title'], 'total' => $item['total'], 'marketprice' => $item['marketprice'], 'pcate' => $item['pcate'], 'ccate' => $item['ccate'], 'tcate' => $item['tcate'], 'cates' => $item['cates'], 'sales' => $item['sales'], 'createtime' => time(), 'updatetime' => time(), 'hasoption' => 0, 'status' => 0, 'deleted' => 0, 'buylevels' => '', 'showlevels' => '', 'buygroups' => '', 'showgroups' => '', 'noticeopenid' => '', 'storeids' => '', 'minprice' => $item['marketprice'], 'maxprice' => $item['marketprice']);
+            $thumb_url = array();
+            $pics = $item['pics'];
+            $piclen = count($pics);
+            if (0 < $piclen) {
+                $data['thumb'] = $this->save_image($pics[0], false);
+                if (1 < $piclen) {
+                    $i = 1;
+                    while ($i < $piclen) {
+                        $img = $this->save_image($pics[$i], false);
+                        $thumb_url[] = $img;
+                        ++$i;
+                    }
+                }
+            }
+            $data['thumb_url'] = serialize($thumb_url);
+            $goods = pdo_fetch('select * from ' . tablename('sz_yi_goods') . ' where  catch_id=:catch_id and catch_source=\'jingdong\' and uniacid=:uniacid', array(':catch_id' => $item['itemId'], ':uniacid' => $_W['uniacid']));
+            if (empty($goods)) {
+                pdo_insert('sz_yi_goods', $data);
+                $goodsid = pdo_insertid();
+            } else {
+                $goodsid = $goods['id'];
+                unset($data['createtime']);
+                pdo_update('sz_yi_goods', $data, array('id' => $goodsid));
+            }
+            $goods_params = pdo_fetchall('select * from ' . tablename('sz_yi_goods_param') . ' where goodsid=:goodsid ', array(':goodsid' => $goodsid));
+            $params = $item['params'];
+            $paramids = array();
+            $displayorder = 0;
+            foreach ($params as $p) {
+                $oldp = pdo_fetch('select * from ' . tablename('sz_yi_goods_param') . ' where goodsid=:goodsid and title=:title limit 1', array(':goodsid' => $goodsid, ':title' => $p['title']));
+                $paramid = 0;
+                $d = array('uniacid' => $_W['uniacid'], 'goodsid' => $goodsid, 'title' => $p['title'], 'value' => $p['value'], 'displayorder' => $displayorder);
+                if (empty($oldp)) {
+                    pdo_insert('sz_yi_goods_param', $d);
+                    $paramid = pdo_insertid();
+                } else {
+                    pdo_update('sz_yi_goods_param', $d, array('id' => $oldp['id']));
+                    $paramid = $oldp['id'];
+                }
+                $paramids[] = $paramid;
+                ++$displayorder;
+            }
+            if (0 < count($paramids)) {
+                pdo_query('delete from ' . tablename('sz_yi_goods_param') . ' where goodsid=:goodsid and id not in (' . implode(',', $paramids) . ')', array(':goodsid' => $goodsid));
+            } else {
+                pdo_query('delete from ' . tablename('sz_yi_goods_param') . ' where goodsid=:goodsid ', array(':goodsid' => $goodsid));
+            }
+            $content = $item['content'];
+            preg_match_all('/<img.*?src=[\\\\\'| \\"](.*?(?:[\\.gif|\\.jpg]?))[\\\\\'|\\"].*?[\\/]?>/', $content, $imgs);
+            if (isset($imgs[1])) {
+                foreach ($imgs[1] as $img) {
+                    $catchimg = $img;
+                    if (substr($catchimg, 0, 2) == '//') {
+                        $img = 'http://' . substr($img, 2);
+                    }
+                    $im = array('catchimg' => $catchimg, 'system' => $this->save_image($img, true));
+                    $images[] = $im;
+                }
+            }
+            $html = $content;
+            if (isset($images)) {
+                foreach ($images as $img) {
+                    $html = str_replace($img['catchimg'], $img['system'], $html);
+                }
+            }
+            $d = array('content' => $html);
+            pdo_update('sz_yi_goods', $d, array('id' => $goodsid));
+            return array('result' => '1', 'goodsid' => $goodsid);
+        }
+        public function save_1688_goods($item = array(), $catch_url = '')
+        {
+            global $_W;
+            $data = array('uniacid' => $_W['uniacid'], 'catch_source' => '1688', 'catch_id' => $item['itemId'], 'catch_url' => $catch_url, 'title' => $item['title'], 'total' => $item['total'], 'marketprice' => $item['marketprice'], 'pcate' => $item['pcate'], 'ccate' => $item['ccate'], 'tcate' => $item['tcate'], 'cates' => $item['cates'], 'sales' => $item['sales'], 'createtime' => time(), 'updatetime' => time(), 'hasoption' => 0, 'status' => 0, 'deleted' => 0, 'buylevels' => '', 'showlevels' => '', 'buygroups' => '', 'showgroups' => '', 'noticeopenid' => '', 'storeids' => '', 'minprice' => $item['marketprice'], 'maxprice' => $item['marketprice'],'content' => $item['content']);
+            $thumb_url = array();
+            $pics = $item['pics'];
+            $piclen = count($pics);
+            if (0 < $piclen) {
+                $pics[0] = str_replace("https", "http", $pics[0]);
+                $data['thumb'] = $this->save_image($pics[0], false);
+                if (1 < $piclen) {
+                    $i = 1;
+                    while ($i < $piclen) {
+                        $pics[$i] = str_replace("https", "http", $pics[$i]);
+                        $img = $this->save_image($pics[$i], false);
+                        $thumb_url[] = $img;
+                        ++$i;
+                    }
+                }
+            }
+            $data['thumb_url'] = serialize($thumb_url);
+            $goods = pdo_fetch('select * from ' . tablename('sz_yi_goods') . ' where  catch_id=:catch_id and catch_source=\'1688\' and uniacid=:uniacid', array(':catch_id' => $item['itemId'], ':uniacid' => $_W['uniacid']));
+            if (empty($goods)) {
+                pdo_insert('sz_yi_goods', $data);
+                $goodsid = pdo_insertid();
+            } else {
+                $goodsid = $goods['id'];
+                unset($data['createtime']);
+                pdo_update('sz_yi_goods', $data, array('id' => $goodsid));
+            }
+            $goods_params = pdo_fetchall('select * from ' . tablename('sz_yi_goods_param') . ' where goodsid=:goodsid ', array(':goodsid' => $goodsid));
+            $params = $item['params'];
+            $paramids = array();
+            $displayorder = 0;
+            foreach ($params as $p) {
+                $oldp = pdo_fetch('select * from ' . tablename('sz_yi_goods_param') . ' where goodsid=:goodsid and title=:title limit 1', array(':goodsid' => $goodsid, ':title' => $p['title']));
+                $paramid = 0;
+                $d = array('uniacid' => $_W['uniacid'], 'goodsid' => $goodsid, 'title' => $p['title'], 'value' => $p['value'], 'displayorder' => $displayorder);
+                if (empty($oldp)) {
+                    pdo_insert('sz_yi_goods_param', $d);
+                    $paramid = pdo_insertid();
+                } else {
+                    pdo_update('sz_yi_goods_param', $d, array('id' => $oldp['id']));
+                    $paramid = $oldp['id'];
+                }
+                $paramids[] = $paramid;
+                ++$displayorder;
+            }
+            if (0 < count($paramids)) {
+                pdo_query('delete from ' . tablename('sz_yi_goods_param') . ' where goodsid=:goodsid and id not in (' . implode(',', $paramids) . ')', array(':goodsid' => $goodsid));
+            } else {
+                pdo_query('delete from ' . tablename('sz_yi_goods_param') . ' where goodsid=:goodsid ', array(':goodsid' => $goodsid));
+            }
+            $specs = $item['specs'];
+            $specids = array();
+            $displayorder = 0;
+            $newspecs = array();
+            foreach ($specs as $spec) {
+                $oldspec = pdo_fetch('select * from ' . tablename('sz_yi_goods_spec') . ' where goodsid=:goodsid and propId=:propId limit 1', array(':goodsid' => $goodsid, ':propId' => $spec['propId']));
+                $specid = 0;
+                $d_spec = array('uniacid' => $_W['uniacid'], 'goodsid' => $goodsid, 'title' => $spec['title'], 'displayorder' => $displayorder, 'propId' => $spec['propId']);
+                if (empty($oldspec)) {
+                    pdo_insert('sz_yi_goods_spec', $d_spec);
+                    $specid = pdo_insertid();
+                } else {
+                    pdo_update('sz_yi_goods_spec', $d_spec, array('id' => $oldspec['id']));
+                    $specid = $oldspec['id'];
+                }
+                $d_spec['id'] = $specid;
+                $specids[] = $specid;
+                ++$displayorder;
+                $spec_items = $spec['items'];
+                $spec_itemids = array();
+                $displayorder_item = 0;
+                $newspecitems = array();
+                foreach ($spec_items as $spec_item) {
+                    $d = array('uniacid' => $_W['uniacid'], 'specid' => $specid, 'title' => $spec_item['title'], 'thumb' => $this->save_image($spec_item['thumb'], false), 'valueId' => $spec_item['valueId'], 'show' => 1, 'displayorder' => $displayorder_item);
+                    $oldspecitem = pdo_fetch('select * from ' . tablename('sz_yi_goods_spec_item') . ' where specid=:specid and valueId=:valueId limit 1', array(':specid' => $specid, ':valueId' => $spec_item['valueId']));
+                    $spec_item_id = 0;
+                    if (empty($oldspecitem)) {
+                        pdo_insert('sz_yi_goods_spec_item', $d);
+                        $spec_item_id = pdo_insertid();
+                    } else {
+                        pdo_update('sz_yi_goods_spec_item', $d, array('id' => $oldspecitem['id']));
+                        $spec_item_id = $oldspecitem['id'];
+                    }
+                    ++$displayorder_item;
+                    $spec_itemids[] = $spec_item_id;
+                    $d['id'] = $spec_item_id;
+                    $newspecitems[] = $d;
+                }
+                $d_spec['items'] = $newspecitems;
+                $newspecs[] = $d_spec;
+                if (0 < count($spec_itemids)) {
+                    pdo_query('delete from ' . tablename('sz_yi_goods_spec_item') . ' where specid=:specid and id not in (' . implode(',', $spec_itemids) . ')', array(':specid' => $specid));
+                } else {
+                    pdo_query('delete from ' . tablename('sz_yi_goods_spec_item') . ' where specid=:specid ', array(':specid' => $specid));
+                }
+                pdo_update('sz_yi_goods_spec', array('content' => serialize($spec_itemids)), array('id' => $oldspec['id']));
+            }
+            if (0 < count($specids)) {
+                pdo_query('delete from ' . tablename('sz_yi_goods_spec') . ' where goodsid=:goodsid and id not in (' . implode(',', $specids) . ')', array(':goodsid' => $goodsid));
+            } else {
+                pdo_query('delete from ' . tablename('sz_yi_goods_spec') . ' where goodsid=:goodsid ', array(':goodsid' => $goodsid));
+            }
+            $content = $item['content'];
+            preg_match_all('/<img.*?src=[\\\\\'| \\"](.*?(?:[\\.gif|\\.jpg]?))[\\\\\'|\\"].*?[\\/]?>/', $content, $imgs);
+            if (isset($imgs[1])) {
+                foreach ($imgs[1] as $img) {
+                    $catchimg = $img;
+                    if (substr($catchimg, 0, 2) == '//') {
+                        $img = 'http://' . substr($img, 2);
+                    }
+                    $im = array('catchimg' => $catchimg, 'system' => $this->save_image($img, true));
+                    $images[] = $im;
+                }
+            }
+            $html = $content;
+            if (isset($images)) {
+                foreach ($images as $img) {
+                    $html = str_replace($img['catchimg'], $img['system'], $html);
+                }
+            }
+            //$d = array('content' => $html);
+            //pdo_update('sz_yi_goods', $d, array('id' => $goodsid));
+            return array('result' => '1', 'goodsid' => $goodsid);
+        }
+
+        public function get_jingdong_info_url($itemid)
+        {
+            return 'http://item.m.jd.com/ware/view.action?wareId=' . $itemid;
+        }
+        public function get_jingdong_detail_url($itemid)
+        {
+            return 'http://item.m.jd.com/ware/detail.json?wareId=' . $itemid;
+        }
+        public function get_1688_info_url($itemid)
+        {
+            return 'https://detail.1688.com/offer/' . $itemid . '.html';
+        }
     }
 }
