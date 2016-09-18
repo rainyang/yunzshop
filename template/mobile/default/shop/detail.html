@@ -260,7 +260,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                       <div class="dtitle">保单人：</div>
                       <div class="dinfo">
                         <div class="dinner ">
-                          <input id="declaration" onchange="declaration()" type="text" value="" placeholder="请输入ID\名称" name="declaration">
+                          <input id="declaration"  type="text" value="" placeholder="请输入ID\名称" name="declaration">
                           <input type='hidden' name="declaration_mid" id="declaration_mid" class='' value="" title="12">
                         </div>
                       </div>
@@ -1353,6 +1353,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                  $("#optiondiv").html(titles);
         }
     function choose2(direct,close){
+        declaration();
       var isforce = $('#isforce').val();
          require(['core'],function(core){
              
