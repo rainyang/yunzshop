@@ -62,5 +62,15 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_store_withdraw') . " (
   `apply_time` varchar(255) NOT NULL,
   `refuse_time` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 comment='门店提现表';";
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 comment='门店提现表';
+
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_cancel_goods') . " (
+`id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `uniacid` int(11) NOT NULL COMMENT '公众号ID',
+  `orderid` int(11) NOT NULL COMMENT '订单ID',
+  `from_storeid` int(11) NOT NULL COMMENT '原来属于的门店',
+  `last_storeid` int(11) NOT NULL COMMENT '最后得到的门店',
+  `ismaster` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 comment='门店取消配送表';";
 pdo_fetchall($sql);

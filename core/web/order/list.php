@@ -14,6 +14,7 @@ $r_type         = array(
     '1' => '退货退款',
     '2' => '换货'
 );
+$store_list = pdo_fetchall("SELECT * FROM ".tablename('sz_yi_store')." WHERE uniacid=:uniacid and status=1", array(':uniacid' => $_W['uniacid']));
 if ($operation == "display") {
     ca("order.view.status_1|order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status5");
     //判断该帐号的权限
@@ -86,6 +87,24 @@ if ($operation == "display") {
             $condition.= " AND ( o.paytype =21 or o.paytype=22 or o.paytype=23 )";
         } else {
             $condition.= " AND o.paytype =" . intval($_GPC["paytype"]);
+        }
+    }
+    //门店取消订单搜索
+    if(empty($_W['isagent'])){
+        if($_GPC['cancel'] == 1){
+            $orderids = pdo_fetchall("select orderid from " . tablename('sz_yi_cancel_goods') . " where uniacid={$_W['uniacid']} ");
+            $ids = "";
+            foreach ($orderids as $key => $value) {
+                if($key != 0){
+                    $ids .= "," . $value['orderid'];
+                }else{
+                    $ids .= $value['orderid'];
+                }
+            }
+            if (!empty($orderids)) {
+                $condition.= " and o.id in (" .$ids. ") ";
+            }
+
         }
     }
     //商品名称检索订单
@@ -303,12 +322,22 @@ if ($operation == "display") {
         }
     }
     //Author:ym Date:2016-07-20 Content:订单分组查询
-    $sql = 'select o.* , a.realname as arealname,a.mobile as amobile,a.province as aprovince ,a.city as acity , a.area as aarea,a.address as aaddress, d.dispatchname,m.nickname,m.id as mid,m.realname as mrealname,m.mobile as mmobile,sm.id as salerid,sm.nickname as salernickname,s.salername,r.rtype,r.status as rstatus,o.pay_ordersn from ' . tablename("sz_yi_order") . " o" . " left join " . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename("sz_yi_member_address") . " a on a.id=o.addressid " . " left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . "  where {$condition} {$statuscondition} {$cond} group by o.ordersn_general ORDER BY o.createtime DESC,o.status DESC  ";
+    $sql = 'select o.* , a.realname as arealname,a.mobile as amobile,a.province as aprovince ,a.city as acity , a.area as aarea,a.address as aaddress, d.dispatchname,m.nickname,m.id as mid,m.realname as mrealname,m.mobile as mmobile,sm.id as salerid,sm.nickname as salernickname,s.salername,r.rtype,r.status as rstatus,o.pay_ordersn, o.dispatchtype, o.isverify, o.storeid from ' . tablename("sz_yi_order") . " o" . " left join " . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename("sz_yi_member_address") . " a on a.id=o.addressid " . " left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . "  where {$condition} {$statuscondition} {$cond} group by o.ordersn_general ORDER BY o.createtime DESC,o.status DESC  ";
     if (empty($_GPC["export"])) {
         $sql.= "LIMIT " . ($pindex - 1) * $psize . "," . $psize;
     }
     $list = pdo_fetchall($sql, $paras);
-
+    foreach ($list as $key => &$value) {
+        $isresult = pdo_fetch("select * from " . tablename('sz_yi_cancel_goods') . " where orderid={$value['id']} and uniacid={$_W['uniacid']}");
+        if(!empty($isresult)){
+            $value['isempty'] = 1;
+            if($isresult['ismaster'] == 0){
+                $value['ismaster'] = 1;
+            }
+        }else{
+            $value['isempty'] = 0;
+        }
+    }
     if (p('supplier')) {
         foreach ($list as &$value) {
             $suppliers_num = pdo_fetchcolumn('select count(*) from ' . tablename("sz_yi_order") . " where ordersn_general=:ordersn_general and uniacid=:uniacid", array(':ordersn_general' => $value['ordersn_general'], ':uniacid' => $_W['uniacid']));
@@ -1085,6 +1114,28 @@ if ($operation == "display") {
           include $this->template("web/order/list");
     }
     exit;
+} elseif ($operation == "changeagent") {
+    $openid = pdo_fetchcolumn("select openid from " . tablename('sz_yi_member') . " where id=(select member_id from " . tablename('sz_yi_store') . " where id={$_GPC['changeagent']} and uniacid={$_W['uniacid']}) and uniacid={$_W['uniacid']}");
+    //$openid = pdo_fetchcolumn("SELECT openid FROM ".tablename('sz_yi_member')." WHERE id = (SELECT member_id FROM ".tablename('sz_yi_store')." WHERE id={$_GPC['changeagent']} and uniacid={$_W['uniacid']}") and uniacid={$_W['uniacid']}");
+    $agentuid = array('storeid' => $_GPC['changeagent']);
+    $last_agentuid = array('last_storeid' => $_GPC['changeagent'], 'ismaster' => 1);
+    $orderid = $_GPC['id'];
+    pdo_update('sz_yi_order', $agentuid, array('id' => $orderid, 'uniacid' => $_W['uniacid']));
+    pdo_update('sz_yi_cancel_goods', $last_agentuid, array('orderid' => $orderid, 'uniacid' => $_W['uniacid']));
+    $msg = array(
+        'first' => array(
+            'value' => "您获得新的订单！(门店)",
+            "color" => "#4a5077"
+        ),
+        'keyword1' => array(
+            'title' => '内容',
+            'value' => "您获得[总店]分配的订单！",
+            "color" => "#4a5077"
+        )
+    );
+    $detailurl = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&method=orderj&p=commission&op=order&type=0&m=sz_yi&do=plugin";
+    m('message')->sendCustomNotice($openid, $msg, $detailurl);
+    message('选择门店成功', $this->createWebUrl('order', array('op' => 'display')), 'success');
 } elseif ($operation == "detail") {
     $id = intval($_GPC["id"]);
     $p = p("commission");

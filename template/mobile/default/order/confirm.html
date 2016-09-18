@@ -228,6 +228,22 @@
             </div>
           </div>
           <div id='address_container'></div>
+            <div class="addorder_user addorder_user_0" style="display:none;" >
+                <input type='hidden' id='carrierindex' value='0' />
+                <input type='hidden' id='carrierid' value='<%carrier.id%>' />
+                <div class="info" id='carrier_select' data-id="1" >
+                    <div class="ico"><i class="iconfont icon-map-marker"></i></div>
+                    <div class='info1'>
+                        <div class='inner'>
+                            <div class="user">请选择发货门店：<span id='carrier_realname'><%carrier.storename%></span>(<span id='carrier_mobile'><%carrier.tel%></span>)</div>
+                            <div class="address"><span id='carrier_address'><%carrier.address%></span></div>
+                        </div>
+                    </div>
+                    <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+                </div>
+            </div>
+            <div id='address_container'></div>
+
         <%/if%>
            <%if carrier%>
               <div class="addorder_user addorder_user_1" >
@@ -668,7 +684,6 @@ var fromcart = 0;
                     $('.addorder_user addorder_user_0').show();
                     $('.addorder_exp').show();
                     $('#carrierid').val('');
-                    $('#isverify').val('false');
                     getDispatchPrice();
                 }
                 $('#dispatchtype').val(nav);
@@ -688,7 +703,12 @@ var fromcart = 0;
                     $("#carrier_mobile").html(obj.data('mobile'));
                     $("#carrier_address").html(obj.data('address'));
                     $(".choose_carrier").animate({right: "-100%"}, 100);
-                    getDispatchPrice(true);
+                    if ($('#dispatchtype').val() == 1) {
+                        getDispatchPrice(true);
+                    } else {
+                        getDispatchPrice();
+                    }
+
                 })
             })
         }
@@ -1110,8 +1130,7 @@ var fromcart = 0;
                order[i].dispatchid = dispatchid;
             }
              
-            if( ($("#dispatchtype").val()=='1' || $('#isverify').val()=='true') && $("#dispatchtype").val()!='2'){
-              
+            if($('#isverify').val()=='true'){
                 order[i].carrierid = carrierid;
                 order[i].carrier = {
                     'carrier_realname': carrier_realname,

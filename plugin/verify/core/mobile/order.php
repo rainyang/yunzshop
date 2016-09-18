@@ -85,16 +85,18 @@ if ($_W['isajax']) {
 
 
     } elseif ($operation == 'order_cancel') {
+        $storeid = $_GPC['storeid'];
         $orderid = $_GPC['orderid'];
-        pdo_update('sz_yi_order', array('agentuid' => 0, 'ownerid' => 0), array('id' => $orderid, 'uniacid' => $_W['uniacid']));
         $data = array(
             'uniacid'       => $_W['uniacid'],
             'orderid'       => $orderid,
-            'from_agentuid' => $member['uid']
+            'from_storeid' => $storeid
         );
         pdo_insert("sz_yi_cancel_goods", $data);
+        pdo_update('sz_yi_order', array('storeid' => 0), array('id' => $orderid, 'uniacid' => $_W['uniacid']));
         show_json(1,'取消订单成功');
     } elseif ($operation == 'order_send') {
+        $storeid = $_GPC['storeid'];
         $orderid = $_GPC['orderid'];
         pdo_update('sz_yi_order', array('status' => 2), array('id' => $orderid, 'uniacid' => $_W['uniacid']));
         m('notice')->sendOrderMessage($orderid);

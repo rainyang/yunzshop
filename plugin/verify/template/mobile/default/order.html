@@ -193,7 +193,8 @@ a {text-decoration:none;}
                 {
                     core.pjson('verify/order',{
                         'op':'order_cancel',
-                        'orderid':orderid
+                        'orderid':orderid,
+                        'storeid': "{$storeid}"
                     },function(json){
                         if(json.status==1){
                             location.reload();
@@ -208,7 +209,7 @@ a {text-decoration:none;}
             var orderid = $(this).find('.order_id').val();
             if(confirm('确认配送?'))
             {
-                core.pjson('verify/order',{'op':'order_send', 'orderid':orderid},function(json){
+                core.pjson('verify/order',{'op':'order_send', 'orderid':orderid, 'storeid':"{$storeid}"},function(json){
 
                     if(json.status==1){
 
