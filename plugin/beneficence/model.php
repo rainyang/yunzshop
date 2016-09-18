@@ -40,6 +40,7 @@ if (!class_exists('BeneficenceModel')) {
 			    'money' 		=> $beneficence,
 				'create_time'	=> time()
 			);
+			echo "<pre>";print_r($data);exit;
 			pdo_insert('sz_yi_beneficence', $data);
 		}
 		
