@@ -196,7 +196,11 @@ if ($_W['isajax']) {
                 if (!empty($option)) {
                     $data['optionid']    = $optionid;
                     $data['optiontitle'] = $option['title'];
-                    $data['marketprice'] = $option['marketprice'];
+                    if (p('supplier')) {
+                        if ($option['marketprice'] != 0) {
+                            $data['marketprice'] = $option['marketprice'];
+                        }
+                    }
                     $data['virtual']     = $option['virtual'];
                     $data['stock']       = $option['stock'];
                     if (!empty($option['weight'])) {
