@@ -201,9 +201,6 @@ if ($_W['isajax']) {
 		            $row['refund_button'] .= '中';
 		        }
 		    }
-		    if($row['goods'][0]['type'] == '30' || $row['goods'][0]['type'] == '31'){
-		    	$row['canrefund'] = false;
-		    }
 	    }
 		unset($row);
 		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
