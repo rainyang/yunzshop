@@ -1573,6 +1573,7 @@ if ($_W['isajax']) {
                         $temp_data             = $diyform_plugin->getOneDiyformTemp($goods_data_id, 0);
                         $data["diyformfields"] = $temp_data["diyformfields"];
                         $data["diyformdata"]   = $temp_data["diyformdata"];
+                        $data["declaration_mid"]= $temp_data["declaration_mid"];
                         $data["diyformid"]     = $formInfo["id"];
                     }
                 }
@@ -2267,6 +2268,7 @@ if ($_W['isajax']) {
                 if ($diyform_plugin) {
                     $order_goods["diyformid"]     = $goods["diyformid"];
                     $order_goods["diyformdata"]   = $goods["diyformdata"];
+                    $order_goods["declaration_mid"]   = $goods["declaration_mid"];
                     $order_goods["diyformfields"] = $goods["diyformfields"];
                 }
                 if (p('supplier')) {
