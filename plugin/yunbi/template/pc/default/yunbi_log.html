@@ -58,6 +58,12 @@
                 <div class="text">
                     累计{$yunbi_title}：{$cumulative_total}
                 </div>
+
+                {if $yunbiset['acquisition'] == 1}
+                    <div class="text">
+                        待转{$yunbi_title}：{$member['virtual_temporary']}
+                    </div>
+                {/if}
                 <div class="text">
                     抵扣返现：{$deduct_return}
                 </div>
@@ -90,11 +96,19 @@
                     <i class="fa iconfont icon-record" style="background:#FF6441"></i>{$return_deduct}<br/>抵扣返还
                 </a>
             </li>
-            <li>
-                <a href="#" class="nav" data-type='5' >
-                    <i class="fa iconfont icon-database" style="background:#ffcb05"></i>{$return}<br/>返现到余额
-                </a>
-            </li>
+            {if $yunbiset['acquisition'] == 0}
+                <li>
+                    <a href="#" class="nav" data-type='5' >
+                        <i class="fa iconfont icon-database" style="background:#ffcb05"></i>{$return}<br/>返现到余额
+                    </a>
+                </li>
+            {else}
+                <li>
+                    <a href="#" class="nav" data-type='10' >
+                        <i class="fa iconfont icon-database" style="background:#ffcb05"></i>{$into}<br/>转入{$yunbiset['yunbi_title']}
+                    </a>
+                </li>
+            {/if}
             <li>
                 <a href="#" class="nav" data-type='6' >
                     <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>{$remove}<br/>清除明细
@@ -107,12 +121,12 @@
             </li>
             <li>
                 <a href="#" class="nav" data-type='8' >
-                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>{$presented}<br/>转赠明细
+                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>转赠明细：{$presented}<br/>获赠明细：{$acquisition}
                 </a>
             </li>
             <li>
-                <a href="#" class="nav" data-type='9' >
-                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>{$acquisition}<br/>获赠明细
+                <a href="#" class="nav" data-type='13' >
+                    <i class="fa iconfont icon-article" style="background:#5ED1FF"></i>{$declaration}<br/>报单获得
                 </a>
             </li>
             </ul>
@@ -142,6 +156,8 @@
                         <%else if log.returntype == 8%>
                             -
                         <%else if log.returntype == 9%>
+                            +
+                        <%else if log.returntype == 13%>
                             +
                         <%/if%>
                     <%log.money%> </p>

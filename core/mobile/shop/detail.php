@@ -109,9 +109,15 @@ if ($diyform_plugin) {
         $f_data   = $diyform_plugin->getLastData(3, $diymode, $diyformid, $goodsid, $fields, $member);
     }
     if ($_W['isajax'] && $_GPC['op'] == 'create') {
-        $insert_data = $diyform_plugin->getInsertData($fields, $_GPC['diydata']);
-        $idata       = $insert_data['data'];
-        $goods_temp  = $diyform_plugin->getGoodsTemp($goodsid, $diyformid, $openid);
+        if (!empty($_GPC['diydata'])) {
+            $insert_data = $diyform_plugin->getInsertData($fields, $_GPC['diydata']);
+            $idata       = $insert_data['data'];
+             
+        }
+        $goods_temp  = $diyform_plugin->getGoodsTemp($goodsid, $diyformid, $openid); 
+        if (!empty($_GPC['declaration_mid'])) {
+            $declaration_mid = $_GPC['declaration_mid'];
+        }
         $insert      = array(
             'cid' => $goodsid,
             'openid' => $openid,
@@ -119,6 +125,7 @@ if ($diyform_plugin) {
             'type' => 3,
             'diyformfields' => iserializer($fields),
             'diyformdata' => $idata,
+            'declaration_mid' => $declaration_mid,
             'uniacid' => $_W['uniacid']
         );
         if (empty($goods_temp)) {
@@ -133,6 +140,23 @@ if ($diyform_plugin) {
         show_json(1, array(
             'goods_data_id' => $gdid
         ));
+    }
+
+    if ($_W['isajax'] && $_GPC['op'] == 'getmember') {
+        if (!empty($_GPC['mid'])) {
+            $condition = ' and ( id = :mid or realname like :mid or nickname like :mid or mobile like :mid )';
+            $declaration = pdo_fetch("SELECT * FROM " . tablename('sz_yi_member') . " WHERE 1 {$condition}",
+                    array(':mid' => $_GPC['mid']
+            ));
+            if ($declaration) {
+               show_json(1,array('mid'=>$declaration['id'])); 
+           }else{
+                show_json(0,'用户信息不存在');
+           }
+            
+        }else{
+            show_json(1,array('mid'=>''));
+        }
     }
 }
 $html = $goods['content'];
@@ -237,7 +261,7 @@ if ($_W['isajax']) {
         }
     }
     $goods['canaddcart'] = true;
-    if ($goods['isverify'] == 2 || $goods['type'] == 2 || $goods['type'] == 3|| $goods['type'] == 30|| $goods['type'] == 31) {
+    if ($goods['isverify'] == 2 || $goods['type'] == 2 || $goods['type'] == 3) {
         $goods['canaddcart'] = false;
     }
     $pics     = array(

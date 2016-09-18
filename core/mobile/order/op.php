@@ -46,7 +46,7 @@ if ($_W['isajax']) {
 	       	if ($order['deductyunbimoney'] > 0) {
 	            $shop = m('common')->getSysset('shop');
 	            p('yunbi')->setVirtualCurrency($order['openid'],$order['deductyunbi']);
-		        //虚拟币抵扣记录
+		        //虚拟币抵扣记录 
 	            $data_log = array(
 	                'id'           => $member['id'],
 	                'openid'        => $openid,
@@ -63,7 +63,6 @@ if ($_W['isajax']) {
 	    } else if ($operation == 'complete') {
 
 	        $orderid = intval($_GPC['orderid']);
-
 	        $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
 	            ':id' => $orderid,
 	            ':uniacid' => $uniacid,
@@ -137,6 +136,9 @@ if ($_W['isajax']) {
 
 		if (p('yunbi')) {
 			p('yunbi')->GetVirtualCurrency($orderid);
+		}
+		if (p('beneficence')) {
+			p('beneficence')->GetVirtualBeneficence($orderid);
 		}
 		//购买商品赠送红包
 		if($order['redprice'] > 0) {
