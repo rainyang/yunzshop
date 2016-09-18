@@ -46,6 +46,7 @@ if (!class_exists('SupplierModel')) {
         //获取供应商订单佣金相关数据
         public function getSupplierInfo($uid){
             global $_W, $_GPC;
+            $supplierinfo = array();
             $set = $this->getSet();
             if (!empty($set['apply_time'])) {
                 $now_time = time();
@@ -61,7 +62,6 @@ if (!class_exists('SupplierModel')) {
                     }
                 }
             }
-            $supplierinfo = array();
             //订单总数
             $supplierinfo['ordercount'] = 0;
             //累积佣金
