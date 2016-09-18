@@ -8,6 +8,13 @@ if (!class_exists('MerchantModel')) {
 		Private $child_centers = array();
 		public function getInfo($openid){
 			global $_W;
+
+			$setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+			    ':uniacid' => $_W['uniacid']
+			));
+			$setsyss     = unserialize($setdata['sets']);
+			$settrade = $setsyss['trade'];
+
 			$set = $this->getSet();
 			$info = array();
 			if (empty($openid)) {
@@ -18,14 +25,16 @@ if (!class_exists('MerchantModel')) {
 				return;
 			}
 			$member = m('member')->getInfo($openid);
-			if (!empty($set['applymonth'])) {
-				$now_month = date('m',time());
+			if (!empty($set['apply_time'])) {
+				$now_time = time();
+				$apply_time = $set['apply_time']*60*60*24;
 				if (!empty($member['id'])) {
 					$last_apply_time = pdo_fetchcolumn("SELECT apply_time FROM " . tablename('sz_yi_merchant_apply') . "WHERE uniacid={$_W['uniacid']} AND member_id={$member['id']} ORDER BY id DESC LIMIT 1");
 					if (!empty($last_apply_time)) {
-						$last_apply_month = date('m', $last_apply_time);
-						if ($last_apply_month == $now_month) {
-							$info['applymonth'] = true;
+						$result_time = $last_apply_time + $apply_time;
+						if ($result_time > $now_time) {
+							$info['apply_relust'] = true;
+							$info['next_apply_time'] = date('Y-m-d H:i:s', $result_time);
 						}
 					}
 				}
@@ -51,10 +60,14 @@ if (!class_exists('MerchantModel')) {
 			$info['commission_ok'] = 0;
 
 			$apply_cond = "";
+			$now_time = time();
 			if (!empty($set['apply_day'])) {
-				$now_time = time();
 				$apply_day = $now_time - $set['apply_day']*60*60*24;
-				$apply_cond = " AND o.finishtime<{$apply_day} ";
+				$apply_cond .= " AND o.finishtime<{$apply_day} ";
+			}
+			if (!empty($settrade['receive'])) {
+				$sendreceive = $now_time - $settrade['receive']*60*60*24;
+				$apply_cond .= " AND o.sendtime<{$sendreceive}";
 			}
 			$orderinfo = pdo_fetchall("SELECT o.basis_money,og.price FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} {$apply_cond} AND o.center_apply_status=0 AND o.status=3 ORDER BY o.createtime DESC,o.status DESC ");
 			foreach ($orderinfo as $value) {
