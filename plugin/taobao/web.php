@@ -18,4 +18,16 @@ class TaobaoWeb extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__);
     }
+    public function jingdong()
+    {
+        $this->_exec_plugin(__FUNCTION__);
+    }
+    public function one688()
+    {
+        $this->_exec_plugin(__FUNCTION__);
+    }
+    public function taobaocsv()
+    {
+        $this->_exec_plugin(__FUNCTION__);
+    }
 }
