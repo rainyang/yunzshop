@@ -1353,7 +1353,22 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                  $("#optiondiv").html(titles);
         }
     function choose2(direct,close){
-        declaration();
+    var iscontinue = false; 
+      require(['core'],function(core){
+          core.json('shop/detail', {'op':'getmember','mid':$('#declaration').val()}, function(m_json) {
+              if (m_json.status == 1) {
+                  $('#declaration_mid').val(m_json.result.mid);
+                  iscontinue = true; 
+              } else {
+                  core.tip.show("用户不存在!");
+                  return false;
+              }
+          }, true, true);
+      });
+      if(!iscontinue){
+          return false;
+      }
+      
       var isforce = $('#isforce').val();
          require(['core'],function(core){
              
