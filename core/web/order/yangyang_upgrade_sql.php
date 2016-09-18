@@ -14,3 +14,7 @@ if (!pdo_fieldexists('sz_yi_goods', 'isforceyunbi')) {
 if (!pdo_fieldexists('sz_yi_order', 'basis_money')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `basis_money` decimal(10,2) DEFAULT NULL;");
 }
+
+if (!pdo_fieldexists('sz_yi_cashier_store', 'bonus')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_cashier_store')." ADD `bonus` decimal(10,2) DEFAULT NULL;");
+}
