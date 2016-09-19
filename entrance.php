@@ -10,25 +10,22 @@
 #      History:
 =============================================================================*/
 
-
 error_reporting(0);
 require '../../framework/bootstrap.inc.php';
 require '../../addons/sz_yi/defines.php';
 require '../../addons/sz_yi/core/inc/functions.php';
 require '../../addons/sz_yi/core/inc/plugin/plugin_model.php';
 global $_W, $_GPC;
-ignore_user_abort();
 set_time_limit(0);
-
 
 $sql = "SELECT * FROM ". tablename('uni_account'). " as a LEFT JOIN". tablename('account'). " as b ON a.default_acid = b.acid WHERE a.default_acid <> 0 ORDER BY a.`rank` DESC, a.`uniacid` DESC ";
 $sets = pdo_fetchall($sql);
 foreach ($sets as $k => $set) {
-    // m('order')->autoexec($set['uniacid']);
-    // $pbonus = p('bonus');
-    // if(!empty($pbonus)){
-    //     $pbonus->autoexec($set['uniacid']);
-    // }
+    m('order')->autoexec($set['uniacid']);
+    $pbonus = p('bonus');
+    if(!empty($pbonus)){
+        $pbonus->autoexec($set['uniacid']);
+    }
 
     $preturn = p('return');
     if(!empty($preturn)){
@@ -39,4 +36,5 @@ foreach ($sets as $k => $set) {
         $pyunbi->autoexec($set['uniacid']);
     }
 }
+echo "<pre>";print_r("ok...");exit;
 
