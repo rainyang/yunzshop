@@ -29,4 +29,8 @@ class ArticleMobile extends Plugin
 	{
 		$this->_exec_plugin(__FUNCTION__, false);
 	}
+	public function article_pc()
+	{
+		$this->_exec_plugin(__FUNCTION__, false);
+	}
 }
