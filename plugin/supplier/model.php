@@ -46,20 +46,21 @@ if (!class_exists('SupplierModel')) {
         //获取供应商订单佣金相关数据
         public function getSupplierInfo($uid){
             global $_W, $_GPC;
+            $supplierinfo = array();
             $set = $this->getSet();
-            if (!empty($set['applymonth'])) {
-                $now_month = date('m',time());
+            if (!empty($set['limit_day'])) {
+                $time = time();
                 if (!empty($uid)) {
                     $last_apply_time = pdo_fetchcolumn("SELECT apply_time FROM " . tablename('sz_yi_supplier_apply') . "WHERE uniacid={$_W['uniacid']} AND uid={$uid} ORDER BY id DESC LIMIT 1");
                     if (!empty($last_apply_time)) {
-                        $last_apply_month = date('m', $last_apply_time);
-                        if ($last_apply_month == $now_month) {
-                            $supplierinfo['applymonth'] = true;
+                        $last_time = $last_apply_time + $set['limit_day']*60*60*24;
+                        if ($last_time > $time) {
+                            $supplierinfo['limit_day'] = true;
+                            $supplierinfo['last_time'] = date('Y-m-d H:i:s', $last_time);
                         }
                     }
                 }
             }
-            $supplierinfo = array();
             //订单总数
             $supplierinfo['ordercount'] = 0;
             //累积佣金
@@ -84,21 +85,31 @@ if (!class_exists('SupplierModel')) {
                     }
                 }
             }*/
+            $supplierinfo['sp_goods'] = array();
+            $supplierinfo['costmoney'] = 0;
             $apply_cond = "";
             if (!empty($set['apply_day'])) {
                 $now_time = time();
                 $apply_day = $now_time - $set['apply_day']*60*60*24;
                 $apply_cond = " AND o.finishtime<{$apply_day} ";
             }
-            $sp_goods = pdo_fetchall("select og.price,o.basis_money from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 {$apply_cond}");
-            foreach ($sp_goods as $value) {
-                if (empty($value['basis_money'])) {
-                    $supplierinfo['costmoney'] += $value['price'];
-                } else {
-                    $supplierinfo['costmoney'] += $value['basis_money'];
+            $sp_goods = pdo_fetchall("select og.*,o.basis_money from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 {$apply_cond}");
+            if (!empty($sp_goods)) {
+                $supplierinfo['sp_goods'] = $sp_goods;
+                foreach ($sp_goods as $value) {
+                    if (empty($set['isopenbonus'])) {
+                        $supplierinfo['costmoney'] += $value['goods_op_cost_price'];
+                    } else {
+                        if (empty($value['basis_money'])) {
+                            $supplierinfo['costmoney'] += $value['goods_op_cost_price'];
+                        } else {
+                            $supplierinfo['costmoney'] += $value['basis_money'];
+                        }
+                    }
                 }
+                $supplierinfo['costmoney'] = number_format($supplierinfo['costmoney'],2);
             }
-            $supplierinfo['costmoney'] = number_format($supplierinfo['costmoney'],2);
+            
             $supplierinfo['totalmoney'] = pdo_fetchcolumn("select sum(apply_money) from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and uid={$uid}");
             return $supplierinfo;
         }

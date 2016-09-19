@@ -241,21 +241,8 @@ if ($operation == "display") {
             $cond .= " and o.supplier_uid={$_W['uid']} ";
             $supplierapply = pdo_fetchall('select a.id,u.uid,p.realname,p.mobile,p.banknumber,p.accountname,p.accountbank,a.applysn,a.apply_money,a.apply_time,a.type,a.finish_time,a.status from ' . tablename('sz_yi_supplier_apply') . ' a ' . ' left join' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid ' . 'left join' . tablename('users') . ' u on a.uid=u.uid where u.uid=' . $_W['uid']);
             $totals['status9'] = count($supplierapply);
-            $costmoney = 0;
-            $sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$_W['uid']} and o.status=3 and og.supplier_apply_status=0");
-            foreach ($sp_goods as $key => $value) {
-                if ($value['goods_op_cost_price'] > 0) {
-                    $costmoney += $value['goods_op_cost_price'] * $value['total'];
-                } else {
-                    $option = pdo_fetch("select * from " . tablename('sz_yi_goods_option') . " where uniacid={$_W['uniacid']} and goodsid={$value['goodsid']} and id={$value['optionid']}");
-                    if ($option['costprice'] > 0) {
-                        $costmoney += $option['costprice'] * $value['total'];
-                    } else {
-                        $goods_info = pdo_fetch("select * from" . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
-                        $costmoney += $goods_info['costprice'] * $value['total'];
-                    }
-                }
-            }
+            $supplier_info = p('supplier')->getSupplierInfo($_W['uid']);
+            $costmoney = $supplier_info['costmoney'];
             $openid = pdo_fetchcolumn('select openid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid'=> $_W['uniacid']));
             if(empty($openid)){
                 message("暂未绑定微信，请联系管理员", '', "error");
@@ -263,7 +250,7 @@ if ($operation == "display") {
             //全部提现
             $applytype = intval($_GPC['applytype']);
             $apply_ordergoods_ids = "";
-            foreach ($sp_goods as $key => $value) {
+            foreach ($supplier_info['sp_goods'] as $key => $value) {
                 if ($key == 0) {
                     $apply_ordergoods_ids .= $value['id'];
                 } else {
@@ -286,7 +273,7 @@ if ($operation == "display") {
                 pdo_insert('sz_yi_supplier_apply',$data);
                 @file_put_contents(IA_ROOT . "/addons/sz_yi/data/apply.log", print_r($data, 1), FILE_APPEND);
                 if( pdo_insertid() ) {
-                    foreach ($sp_goods as $ids) {
+                    foreach ($supplier_info['sp_goods'] as $ids) {
                         $arr = array(
                             'supplier_apply_status' => 2
                             );
@@ -294,7 +281,7 @@ if ($operation == "display") {
                             'id' => $ids['id']
                             ));
                     }
-                    $tmp_sp_goods = $sp_goods;
+                    $tmp_sp_goods = $supplier_info['sp_goods'];
                     $tmp_sp_goods['applyno'] = $applysn;
                     @file_put_contents(IA_ROOT . "/addons/sz_yi/data/sp_goods.log", print_r($tmp_sp_goods, 1), FILE_APPEND);
                 }
