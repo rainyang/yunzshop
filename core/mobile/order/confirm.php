@@ -1438,11 +1438,9 @@ if ($_W['isajax']) {
                     ':uniacid' => $uniacid,
                     ':id' => $goodsid
                 ));
-                if (!empty($data['bonusmoney'])) {
-                    $basis_money += $data['bonusmoney'];
-                } else {
-                    $basis_money += $data['marketprice'];
-                }
+
+                $basis_money += $data['bonusmoney'];
+
                 if (p('channel')) {
                     if ($ischannelpay == 1) {
                         if (empty($data['isopenchannel'])) {
@@ -2119,9 +2117,7 @@ if ($_W['isajax']) {
                 'redprice' => $redpriceall,
      
             );
-            if (p('merchant')) {
-                $order['basis_money'] = $basis_money;
-            }
+            
             if (p('channel')) {
                 if (!empty($ischannelpick)) {
                     $order['ischannelself'] = 1;
@@ -2253,6 +2249,36 @@ if ($_W['isajax']) {
                     "openid" => $openid,
                     'goods_op_cost_price' => $goods['costprice']
                 );
+                if (p('supplier')) {
+                    $supplier_set = p('supplier')->getSet();
+                    $supplier_order = array(
+                        'uniacid' => $_W['uniacid'],
+                        'orderid' => $orderid
+                        );
+                    if (empty($supplier_set['isopenbonus'])) {
+                        $supplier_order['money'] = $order_goods['goods_op_cost_price'];
+                        $supplier_order['isopenbonus'] = 0;
+                    } else {
+                        $supplier_order['money'] = $basis_money;
+                        $supplier_order['isopenbonus'] = 1;
+                    }
+                    pdo_insert('sz_yi_supplier_order', $supplier_order);
+                }
+                if (p('merchant')) {
+                    $merchant_set = p('merchant')->getSet();
+                    $merchant_order = array(
+                        'uniacid' => $_W['uniacid'],
+                        'orderid' => $orderid
+                        );
+                    if (empty($merchant_set['isopenbonus'])) {
+                        $merchant_order['money'] = $totalprice;
+                        $merchant_order['isopenbonus'] = 0;
+                    } else {
+                        $merchant_order['money'] = $basis_money;
+                        $merchant_order['isopenbonus'] = 1;
+                    }
+                    pdo_insert('sz_yi_merchant_order', $merchant_order);
+                }
                 //修改全返插件中房价
                 if(p('hotel') && $_GPC['type']=='99'){
                      $order_goods['price'] = $goodsprice ;

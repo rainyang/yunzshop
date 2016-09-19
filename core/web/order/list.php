@@ -252,9 +252,9 @@ if ($operation == "display") {
             $apply_ordergoods_ids = "";
             foreach ($supplier_info['sp_goods'] as $key => $value) {
                 if ($key == 0) {
-                    $apply_ordergoods_ids .= $value['id'];
+                    $apply_ordergoods_ids .= $value['ogid'];
                 } else {
-                    $apply_ordergoods_ids .= ','.$value['id'];
+                    $apply_ordergoods_ids .= ','.$value['ogid'];
                 }
             }
             if(!empty($applytype)){
@@ -278,7 +278,7 @@ if ($operation == "display") {
                             'supplier_apply_status' => 2
                             );
                         pdo_update('sz_yi_order_goods', $arr, array(
-                            'id' => $ids['id']
+                            'id' => $ids['ogid']
                             ));
                     }
                     $tmp_sp_goods = $supplier_info['sp_goods'];

@@ -21,15 +21,8 @@ $ordercount0 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order'
 $commission_total=number_format(pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_merchant_apply') . " where uniacid={$_W['uniacid']} and member_id={$member['id']} and status=1"), 2);
 $apply_total = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_merchant_apply') . " where uniacid={$_W['uniacid']} and member_id={$member['id']}");
 //可提现佣金
-$commission_ok = 0;
-$orderinfo = pdo_fetchall("select o.basis_money,og.price from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_order_goods') . " og on o.id=og.orderid where o.uniacid={$_W['uniacid']} and o.status = 3 and o.userdeleted = 0 and o.deleted = 0 and {$cond} and o.merchant_apply_status = 0 ");
-foreach ($orderinfo as $value) {
-    if (empty($value['basis_money'])) {
-        $commission_ok += $value['price'];
-    } else {
-        $commission_ok += $value['basis_money'];
-    }
-}
+$commission_ok = pdo_fetchcolumn("SELECT sum(so.money) FROM " . tablename('sz_yi_merchant_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=".$_W['uniacid']." AND {$cond} AND o.merchant_apply_status=0 AND o.status=3 ORDER BY o.createtime DESC,o.status DESC ");
+
 $my_commissions = pdo_fetchcolumn("SELECT commissions FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND openid=:openid", array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
 $commission_ok = $commission_ok*$my_commissions/100;
 $commission_ok=number_format($commission_ok, 2);
