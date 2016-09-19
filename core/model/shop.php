@@ -1,7 +1,7 @@
 <?php
 /*=============================================================================
 #     FileName: shop.php
-#         Desc: 商城类
+#         Desc: 鍟嗗搧鍒嗙被
 #       Author: Yunzhong - http://www.yunzshop.com
 #        Email: 913768135@qq.com
 #     HomePage: http://www.yunzshop.com
@@ -19,7 +19,7 @@ class Sz_DYi_Shop
         global $_W;
         $shopset     = m('common')->getSysset('shop');
         $allcategory = array();
-        $category    = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_category') . " WHERE uniacid=:uniacid and enabled=1 ORDER BY parentid ASC, displayorder DESC", array(
+        $category    = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_category') . " WHERE uniacid=:uniacid and enabled=1 ORDER BY displayorder ASC, parentid ASC, displayorder DESC", array(
             ':uniacid' => $_W['uniacid']
         ));
         $category    = set_medias($category, array(

@@ -100,11 +100,10 @@ if ($operation == 'index') {
 			$categoryfloor[$key]['key'] = $key;
 			foreach($children as $key1 => $value1){
 				$categoryfloor[$key]['children'][$key1] = $value1;
-				$third = set_medias(pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and ishome=1  and enabled=1 and uniacid=:uniacid  limit 20",array(':pid' => $value1['id'] , ':uniacid' => $_W["uniacid"])),'advimg');		
+				$third = set_medias(pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and ishome=1  and enabled=1 and uniacid=:uniacid  limit 20",array(':pid' => $value1['id'] , ':uniacid' => $_W["uniacid"])),'advimg');
 				if(!empty($third)){
 					$categoryfloor[$key]['third'][$key1] = $third;
-
-				}		
+				}
 			}
 	    }
 	}
@@ -231,15 +230,15 @@ if ($_W['isajax']) {
 		show_json(1,array('category' => $category));
 	} else if ($operation == 'category_recommend'){
 
-		$category = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=0 and uniacid=".$_W['uniacid']),'advimg_pc');
+		$category = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=0 and uniacid=".$_W['uniacid']." order by displayorder asc"),'advimg_pc');
 
 		foreach ($category as $key => $value) {
-			$children = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=:pid and uniacid=:uniacid limit 8",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"])),'advimg');
+			$children = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=:pid and uniacid=:uniacid order by displayorder asc limit 8",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"])),'advimg');
 			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 and deleted = 0 and status = 1 limit 8",array(':pcate' => $value['id'] , ':uniacid' => $_W['uniacid'])) , 'thumb');
 			$category[$key]['goods'] = $goods;
 			foreach($children as $key1 => $value1){
 				$category[$key]['children'][$key1] = $value1;
-				$third = set_medias(pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and ishome=1 and uniacid=:uniacid",array(':pid' => $value1['id'] , ':uniacid' => $_W["uniacid"])),'advimg');
+				$third = set_medias(pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and ishome=1 and uniacid=:uniacid order by displayorder asc",array(':pid' => $value1['id'] , ':uniacid' => $_W["uniacid"])),'advimg');
 				$category[$key]['third'] = $third;
 				
 			}
