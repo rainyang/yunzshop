@@ -366,5 +366,162 @@ if (!class_exists('YunbiModel')) {
 			pdo_fetchall("update ".tablename('sz_yi_member')." set ".$fieldname." = ".$fieldname." + ".$currency." where `uniacid` =  " . $_W['uniacid'] . " AND openid = '".$openid."' ");
 		}
 
+		public function autoexec ($uniacid) {
+			global $_W, $_GPC;
+			$_W['uniacid'] = $uniacid;
+			set_time_limit(0);
+			load()->func('file');
+	        $tmpdirs = IA_ROOT . "/addons/sz_yi/tmp/yunbi/".date("Ymd");
+			$yunbi_log = $tmpdirs."/yunbi_log.txt";
+			$log_content = array();
+			$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."云币LOG开始========================\r\n";
+	        if (!is_dir($tmpdirs)) {
+	            mkdirs($tmpdirs);
+	        }
+	        $set = m('plugin')->getpluginSet('yunbi', $_W['uniacid']);
+	        $log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."虚拟币返现到余额开始--------\r\n";
+	       //虚拟币返现到余额
+	        if (!empty($set) && $set['isreturn_or_remove'] == 0 && $set['isreturnremove'] == 1 ) {
+	            if ($set['acquisition'] == 0) {
+	                $return_validation   = $tmpdirs."/return_".date("Ymd").$_W['uniacid'].".txt";
+	                if (!file_exists($return_validation)) {
+	                    $isexecute = false;
+	                    if (date('H') == $set['yunbi_returntime']) {
+	                        if (!isset($set['current_d']) || $set['current_d'] != date('d')) {
+	                            //$data  = array_merge($set, array('current_d'=>date('d')));
+	                            $set['current_d'] = date('d');
+	                            $this->updateSet($set);
+	                            $isexecute = true;
+	                        }
+	                    }
+	                }else{
+	                	$log_content[] = "uniacid:".$_W['uniacid']."时间：".date("Y-m-d")."虚拟币已返现！\r\n";
+	                }
+	                if ( $isexecute ) {
+	                    //虚拟币返现到余额
+	                   	$this->PerformYunbiReturn($set, $_W['uniacid']);
+	                    touch($return_validation);
+	                    $log_content[] = "uniacid:".$_W['uniacid']."时间：".date("Y-m-d")."虚拟币返现到余额成功！\r\n";
+	                } else {
+	                	$log_content[] = "uniacid:".$_W['uniacid']."时间：".date("Y-m-d")."当前虚拟币不可返现到余额！\r\n";
+	                }
+	            }
+	        }
+			$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."虚拟币返现到余额结束--------\r\n";
+			$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."清除虚拟币开始--------\r\n";
+	        if (!empty($set) && $set['isreturn_or_remove'] == 1 && $set['isreturnremove'] == 1) {
+	            //清除虚拟币
+	            $remove_validation   = $tmpdirs."/remove_".date("Ymd").$_W['uniacid'].".txt";
+	            if (!file_exists($remove_validation)) {
+	                $remove_times = explode("||",$set['yunbi_remove_times']);
+	                $isexecute = false;
+	                foreach ($remove_times as $k => $v) {
+	                    if (str_replace(array("日","点"),"",$v) == date('dH')) {
+	                        if (!isset($set['remove_d']) || $set['remove_d'] != date('d')) {
+	                            $set['remove_d'] = date('d');
+	                            $this->updateSet($set);
+	                            $isexecute = true;
+	                            break;
+	                        }
+	                    }
+	                }
+	            }else{
+	            	$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."虚拟币已清除！\r\n";
+	            }
+
+	            if ($_GPC['testtype'] == 'remove') {
+	                $isexecute = true;
+	            }
+	            if ( $isexecute ) {
+	                //清除虚拟币
+	                $this->RemoveYunbi($set, $_W['uniacid']);
+	                touch($remove_validation);
+	                $log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."虚拟币清除成功！\r\n";
+	            } else {
+	            	$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."当前虚拟币不可清除！\r\n";
+	            }
+
+
+	        }
+	        $log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."清除虚拟币结束--------\r\n";
+	        $log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."临时虚拟币转入云币开始--------\r\n";
+	        if (!empty($set) && $set['isreturn_or_remove'] == 2) { 
+	            //临时虚拟币转入云币关闭！
+	            $log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."临时虚拟币转入云币关闭！\r\n";
+	        } elseif (!empty($set) && $set['isreturn_or_remove'] == 3) {
+	            //临时虚拟币转入云币开启！
+	            if ($set['acquisition'] == 1) {
+	                $yunbi_into  = $tmpdirs."/into_".date("Ymd").$_W['uniacid'].".txt";
+	                if (!file_exists($yunbi_into)) {
+	                    $isexecute = false;
+	                    if (date('H') == $set['yunbi_returntime']) {
+	                        if (!isset($set['into_d']) || $set['into_d'] != date('d')) {
+	                            $set['into_d'] = date('d');
+	                            $this->updateSet($set);
+	                            $isexecute = true;
+	                        }
+	                    }
+	                }else{
+	                	$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."临时虚拟币已转入到".$set['yunbi_title']."！\r\n";
+	                }
+	                if ($_GPC['testtype'] == 'into') {
+	                    $isexecute = true;
+	                }
+	                if ( $isexecute ) {
+	                    //虚拟币返现到余额
+	                    $this->PerformYunbiInto($set, $_W['uniacid']);
+	                    touch($yunbi_into);
+	                    $log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."临时虚拟币转入到".$set['yunbi_title']."成功！\r\n";
+	                } else {
+	                	$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."当前临时虚拟币不可转入到".$set['yunbi_title']."！\r\n";
+	                }
+
+	            }
+	        }
+			$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."临时虚拟币转入云币结束--------\r\n";
+			$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."分销下线获得虚拟币开始--------\r\n";
+	        //分销下线获得虚拟币
+	        if (!empty($set) && $set['isdistribution']) {
+	            $d_validation   = $tmpdirs."/d_".date("Ymd").$_W['uniacid'].".txt";
+	            if (!file_exists($d_validation)) {
+	                        $this->updateSet($set);
+	                if (date('H') == $set['distribution_returntime']) {
+	                    if (!isset($set['distribution_d']) || $set['distribution_d'] != date('d')) {
+	                        $set['distribution_d'] = date('d');
+	                        $this->updateSet($set);
+	                        $isdistribution = true;
+	                    }
+	                }
+	            }else{
+	            	$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."分销下线已获得虚拟币！ \r\n";
+	            }
+
+	            if ($_GPC['testtype'] == 'distribution') {
+	                $isdistribution = true;
+	            }
+	            if ( $isdistribution) {
+	                //分销商获得虚拟币
+	                $this->GetVirtual_Currency($set, $_W['uniacid']);
+	                touch($d_validation);
+	                $log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."分销下线获得虚拟币成功！ \r\n";
+	            } else {
+	            	$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."当前分销下线不可获得虚拟币！ \r\n";
+	            }
+	        }
+	        $log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."分销下线获得虚拟币结束--------\r\n";
+	        $log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."公司回购开始--------\r\n";
+	        //公司回购
+	        if (!empty($set) && $set['recycling'] >= '1') {
+	            $this->PerformRecycling($set, $_W['uniacid']);
+	            $log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."公司回购成功！ \r\n";
+	        }else{
+	        	$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."公司回购失败！ \r\n";
+	        }
+			$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."公司回购结束--------\r\n";
+
+			$log_content[] = "uniacid:".$_W['uniacid'].date("Y-m-d H:i:s")."云币LOG结束========================\r\n\r\n\r\n";
+        	file_put_contents($yunbi_log,$log_content,FILE_APPEND);
+		}
+
 	}
 }
