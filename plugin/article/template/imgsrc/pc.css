@@ -73,11 +73,11 @@ body {font-family:"Helvetica Neue",Helvetica,"Hiragino Sans GB","Microsoft YaHei
 /* 以下是文章列表样式3 */
 .t3 {background: #f4f4f4;}
 .t3 a {color: inherit; text-decoration: none;}
-.t3 .topbar {height: 48px; width: 100%;}
-.t3 .topbar .menu-main {    margin: 0 10px;height: 40px; background: #fff; padding: 0; white-space:nowrap; -webkit-overflow-scrolling:touch;    border-bottom: 2px #ECECEC solid;}
-.t3 .topbar .menu-main nav {cursor: pointer;height:40px; width:auto; padding:0px 10px; background:none; display:inline-block; line-height:44px; color:#666;}
-.t3 .topbar .menu-main .on {height: 40px; border-bottom: 2px solid #0cc; color: #0cc;}
-.t3 .topbar .block {height: 5px; width: 100%; position: absolute; bottom: 0; left: 0; background: #fff; border-top: 1px solid #eee; z-index: 999;}
+.t3 .pctopbar {height: 48px; width: 100%;}
+.t3 .pctopbar .menu-main {    margin: 0 10px;height: 40px; background: #fff; padding: 0; white-space:nowrap; -webkit-overflow-scrolling:touch;    border-bottom: 2px #ECECEC solid;}
+.t3 .pctopbar .menu-main nav {cursor: pointer;height:40px; width:auto; padding:0px 10px; background:none; display:inline-block; line-height:44px; color:#666;}
+.t3 .pctopbar .menu-main .on {height: 40px; border-bottom: 2px solid #0cc; color: #0cc;}
+.t3 .pctopbar .block {height: 5px; width: 100%; position: absolute; bottom: 0; left: 0; background: #fff; border-top: 1px solid #eee; z-index: 999;}
 .t3 .list {height: auto; padding: 0 8px;}
 .t3 .list .line {height: 96px; border-bottom: 1px solid #f0f0f0; padding: 8px 0;}
 .t3 .list .line .img {height: 80px; width: 80px; background: #eee; float: left;}
@@ -101,3 +101,56 @@ body {font-family:"Helvetica Neue",Helvetica,"Hiragino Sans GB","Microsoft YaHei
 .but-notice{ margin:2%;overflow:hidden;line-height:38px;}
 .cancel-not{ box-sizing: border-box;width:49%;margin-right:2%;height:40px;border:1px #c9c9c9 solid;border-radius:3px;color:#343434}
 .qued-not{ box-sizing: border-box;width:49%;height:40px;background:#ff4a4e;border-radius:3px;color:#fff !important}  
+/*pc帮助中心样式*/
+.help-tabs{width: 1200px;margin: 0 auto}
+.help-tabs .tab-list {
+    display: flex;
+}
+.help-tabs .tab-list .list-item.current {
+    background-color: #f3b701;
+    color: #fff;
+    position: relative;
+}
+.help-tabs .tab-list .list-item {
+    float: left;
+        -webkit-box-flex: 1;
+    -webkit-flex: 1;
+    -moz-box-flex: 1;
+    -ms-flex: 1;
+    flex: 1;
+    height: 45px;
+    line-height: 45px;
+    margin-right: 12px;
+    background-color: #e9e9e9;
+    color: #585858;
+    font-size: 16px;
+    width: 150px;
+    text-align: center;
+    font-weight: bold;
+    cursor: default;
+}
+.tabcons {
+    padding: 28px;
+    background-color: #fff;
+}
+.tabcons ul{
+    overflow: hidden;
+    font-size: 14px;
+}
+.tabcons ul li{
+    width: 48%;overflow: hidden;
+    float: left;
+    margin: 0 1%;
+    color:#f15353;
+    list-style-type:square;
+    border-bottom: 1px #e9e9e9 solid
+
+}
+.tabcons ul li a {
+    height: 32px;
+    line-height: 32px;
+    display: block;
+    padding-left: 10px;
+    color: #585858;
+    font-size: 14px
+}
