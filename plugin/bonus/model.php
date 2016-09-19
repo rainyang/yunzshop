@@ -1240,33 +1240,31 @@ if (!class_exists('BonusModel')) {
 			$isbonus = false;
 			$bonus_set = $this->getSet($_W['uniacid']);
 			//未开启自动分红直接跳过
-			if (empty($bonus_set['sendmethod'])) {
-				continue;
-			}
-
-			//是否为月分红
-			if($bonus_set['sendmonth'] == 1){
-				//按月分红查询月初0点时间
-				$daytime = strtotime(date("Y-m-1 00:00:00"));
-			}
-			//按每天0點查詢，如查詢到則已發放
-			$bonus_data = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=0 and uniacid=".$_W['uniacid']." and bonus_area=0  order by id desc");
-			$bonus_data_area = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=0 and uniacid=".$_W['uniacid']." and bonus_area!=0  order by id desc");
-			$bonus_data_isglobal = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=1 and uniacid=".$_W['uniacid']."  order by id desc");
-            if(!empty($bonus_set['start'])){
-                //团队分红
-                if(empty($bonus_data)){
-                    $this->autosend($_W['uniacid']);
-                }
-                //地区分红
-                if(empty($bonus_data_area)){
-                    $this->autosendarea($_W['uniacid']);
-                }
-                //全球分红
-                if(empty($bonus_data_isglobal)){
-                    $this->autosendall($_W['uniacid']);
-                }
-            }
+			if (!empty($bonus_set['sendmethod'])) {
+				//是否为月分红
+				if($bonus_set['sendmonth'] == 1){
+					//按月分红查询月初0点时间
+					$daytime = strtotime(date("Y-m-1 00:00:00"));
+				}
+				//按每天0點查詢，如查詢到則已發放
+				$bonus_data = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=0 and uniacid=".$_W['uniacid']." and bonus_area=0  order by id desc");
+				$bonus_data_area = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=0 and uniacid=".$_W['uniacid']." and bonus_area!=0  order by id desc");
+				$bonus_data_isglobal = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=1 and uniacid=".$_W['uniacid']."  order by id desc");
+	            if(!empty($bonus_set['start'])){
+	                //团队分红
+	                if(empty($bonus_data)){
+	                    $this->autosend($_W['uniacid']);
+	                }
+	                //地区分红
+	                if(empty($bonus_data_area)){
+	                    $this->autosendarea($_W['uniacid']);
+	                }
+	                //全球分红
+	                if(empty($bonus_data_isglobal)){
+	                    $this->autosendall($_W['uniacid']);
+	                }
+	            }
+	        }
 		}
 	}
 }
