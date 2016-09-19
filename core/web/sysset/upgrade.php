@@ -42,7 +42,7 @@ if ($op == 'display') {
         if (function_exists('ioncube_loader_iversion')) {
             $liv = ioncube_loader_iversion();
             $lv = substr($liv, 0, 1);
-            if ($lv != 5) {
+            if ($lv < 5) {
                 $ret = 'ionCube扩展版本太低,不能更新，请联系客服';
                 die(json_encode(array(
                     'result' => 0,

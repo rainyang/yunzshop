@@ -260,7 +260,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                       <div class="dtitle">保单人：</div>
                       <div class="dinfo">
                         <div class="dinner ">
-                          <input id="declaration" onchange="declaration()" type="text" value="" placeholder="请输入ID\名称" name="declaration">
+                          <input id="declaration"  type="text" value="" placeholder="请输入ID\名称" name="declaration">
                           <input type='hidden' name="declaration_mid" id="declaration_mid" class='' value="" title="12">
                         </div>
                       </div>
@@ -1353,45 +1353,58 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                  $("#optiondiv").html(titles);
         }
     function choose2(direct,close){
-      var isforce = $('#isforce').val();
-         require(['core'],function(core){
-             
-            if(close){
-                closechoose();
-                return;
-            }
-        if(!direct){
+        if ($('#declaration').val()) {
+            var iscontinue = 0; 
+            require(['core'],function(core){
+              core.json('shop/detail', {'op':'getmember','mid':$('#declaration').val()}, function(m_json) {
+                  if (m_json.status == 1) {
+                      $('#declaration_mid').val(m_json.result.mid);
+                  } else {
+                      core.tip.show("用户不存在!");
+                      $('#declaration_mid').val('');
+                      return false;
+                  }
+                    if ($('#declaration_mid').val() != '') {
+                        choose3(direct,close);
+                    }
+
+              }, true, true);
+
+            });
+        } else {
+            choose3(direct,close);
+        }
+    }
+function choose3(direct,close){
+    var isforce = $('#isforce').val();
+    require(['core'],function(core){
+        if(close){
+            closechoose();
+            return;
+        }
+        if (!direct) {
             if($('.confirm_option').hasClass('disabled')){
                return;
-            }
-            else{
+            } else {
                 setoptions();
             }
-                                      
-          
         } else {
-              action = "";
+            action = "";
         }
-        
-          var specselected  = '';
-                
+        var specselected  = '';    
         $('.spec_items').each(function(){
-                
-                   var self = $(this);
-         if( $(this).find('.on').length<=0){
-            specselected = self.attr('title');
-            return false;
-          }
+            var self = $(this);
+            if( $(this).find('.on').length<=0){
+                specselected = self.attr('title');
+                return false;
+            }
         });  
         if( specselected!=''){
           require(['core'],function(core){
              core.tip.show('请选择' + specselected) ;
           });
           return;
-        }
-                   
-                           
-                              
+        }                  
         if(action=='cart'){
            var data = {};
            {if !empty($formInfo)}
@@ -1402,7 +1415,6 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                 };
           {/if}
         //openid
-
           {if !empty($popenid) or !empty($openid)}
              core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
                     if(ret.status==1){ 
@@ -1419,19 +1431,16 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                        core.message(ret.result,'','error');
                    }
                 },true,true);
-              
           {else}
               location.href = "{php echo $this->createMobileUrl('member/login')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
           {/if}
-
-        //end openid
-                                            
+        //end openid                           
         }else if(action=='buy'){
-          var isdeclaration = $('#isdeclaration').val();
-          var formInfo = false;
-          {if !empty($formInfo)}
-            formInfo = true;
-          {/if}
+            var isdeclaration = $('#isdeclaration').val();
+            var formInfo = false;
+            {if !empty($formInfo)}
+                formInfo = true;
+            {/if}
            if (formInfo || isdeclaration) {
               {template 'diyform/common_js_data'}
                 //declaration();
@@ -1449,38 +1458,17 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                         } else {
                             core.tip.show("提交失败!")
                         }
-
                         return false;
-
                     }, true, true);
                 })
-
             }else {
-                    location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
+                location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
             }
-
-                    } else {
-                             closechoose();
+        } else {
+            closechoose();
         }
-  });
-    }
-  function declaration(){
-    var iscontinue = false; 
-      require(['core'],function(core){
-          core.json('shop/detail', {'op':'getmember','mid':$('#declaration').val()}, function(m_json) {
-              if (m_json.status == 1) {
-                  $('#declaration_mid').val(m_json.result.mid);
-                  iscontinue = true; 
-              } else {
-                  core.tip.show("用户不存在!");
-                  return false;
-              }
-          }, true, true);
-      });
-      if(!iscontinue){
-          return false;
-      }
-  }
+    });
+}
 
   function addNum(){
     var total = $("#total");

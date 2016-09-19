@@ -408,7 +408,7 @@
             <%if order.dispatch_price>0%>
             <div class="line" style="line-height:26px;">+运费<span>￥<span class='dispatchprice' data-id="<%order.supplier_uid%>"><%order.dispatch_price%></span></span></div>
             <%/if%>
-            <%if order.discountprice>0%>
+            <%if order.discountprice!=0%>
             <div class="line" style="line-height:26px;">
              -优惠 
             <span>-￥<span class='discountprice' data-id="<%order.supplier_uid%>"><%order.discountprice%></span></span></div>
