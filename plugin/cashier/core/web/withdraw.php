@@ -33,9 +33,9 @@ if ($operation == 'display') {
             $params[':endtime']   = $_GPC['time']['end'];
         }
     }
-    if ($_GPC['status'] != '') {
+    /*if ($_GPC['status'] != '') {
         $condition .= ' and w.status=' . intval($_GPC['status']);
-    }
+    }*/
     //todo
     $mt = mt_rand(5, 35);
     if ($mt <= 10) {
@@ -57,9 +57,9 @@ if ($operation == 'display') {
         }
     }
 
-    $sql   = "select w.id, s.name, m.nickname, m.avatar, m.weixin, w.withdraw_no, w.money, w.create_time, w.status from " . tablename('sz_yi_cashier_store') . " s left join " . tablename('sz_yi_cashier_withdraw') . " w on s.id=w.cashier_store_id  left join " . tablename('sz_yi_member') . " m on m.id=s.member_id where 1 {$condition}";
+    $sql   = "select w.id, s.name, m.nickname, m.avatar, m.weixin, w.withdraw_no, w.money, w.create_time, w.status from " . tablename('sz_yi_cashier_store') . " s left join " . tablename('sz_yi_cashier_withdraw') . " w on s.id=w.cashier_store_id  left join " . tablename('sz_yi_member') . " m on m.id=s.member_id where 1 {$condition} and w.status=0";
     $list  = pdo_fetchall($sql, $params);
-    $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_cashier_store') . " s left join " . tablename('sz_yi_cashier_withdraw') . " w on s.id=w.cashier_store_id left join " . tablename('sz_yi_member') . " m on m.id=s.member_id where 1 {$condition}", $params);
+    $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_cashier_store') . " s left join " . tablename('sz_yi_cashier_withdraw') . " w on s.id=w.cashier_store_id left join " . tablename('sz_yi_member') . " m on m.id=s.member_id where 1 {$condition} and w.status=0", $params);
     $pager = pagination($total, $pindex, $psize);
 } else if ($operation == 'pay') {
     $id      = intval($_GPC['id']);

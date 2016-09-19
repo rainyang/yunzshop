@@ -37,5 +37,10 @@ class CashierWeb extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__);
     }
+
+    public function withdraws()
+    {
+        $this->_exec_plugin(__FUNCTION__);
+    }
 }
 
