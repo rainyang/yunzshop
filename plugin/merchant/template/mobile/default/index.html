@@ -212,7 +212,7 @@
         <li><a href="#"><span>{php echo $commission_ok}</span><br/>可结算金额</a></li>
         <li><a href="#"><span>{php echo $commission_total}</span><br/>累计结算金额</a></li>
 
-        <li><a class="recharge" {if $commission_ok<=0 || !empty($center_info['applymonth']) } href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('merchant/applyg', array('iscenter' => 1))}"{/if} id='withdraw' ><p style="margin:0" {if $commission_ok<=0 || !empty($center_info['applymonth']) } class="disabled" {/if}>提现</p></a>
+        <li><a class="recharge" {if $commission_ok<=0 || !empty($center_info['limit_day']) } href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('merchant/applyg', array('iscenter' => 1))}"{/if} id='withdraw' ><p style="margin:0" {if $commission_ok<=0 || !empty($center_info['limit_day']) } class="disabled" {/if}>提现</p></a>
         </li>
     </ul>
     </div>
@@ -236,9 +236,8 @@
                 if(!json.result.cansettle){
                     core.tip.show('无可提佣金!');
                     return false;     
-                }
-                if (json.result.center_info.applymonth) {
-                    core.tip.show('本月已经提现一次，请下个月再进行提现!');
+                }else if (json.result.center_info.limit_day) {
+                    core.tip.show('提现周期未到，下次提现时间'+json.result.center_info.last_time);
                     return false;
                 }
             });
