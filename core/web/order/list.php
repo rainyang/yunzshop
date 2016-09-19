@@ -1862,6 +1862,10 @@ function order_list_confirmsend1($order) {
     if (p('yunbi')) {
         p('yunbi')->GetVirtualCurrency($order["id"]);
     }
+    if (p('beneficence')) {
+        p('beneficence')->GetVirtualBeneficence($order["id"]);
+    }
+
     plog("order.op.fetch", "订单确认取货 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
     message("发货操作成功！", order_list_backurl() , "success");
 }
