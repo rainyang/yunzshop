@@ -248,14 +248,8 @@
 
                      }
 
-<<<<<<< HEAD
-                }
-                if (json.result.supplierinfo.apply_relust) {
-                    core.tip.show('下次提现时间'+json.result.supplierinfo.next_apply_time);
-=======
                 }else if (json.result.supplierinfo.limit_day) {
                     core.tip.show('提现周期未到，下次提现时间'+json.result.supplierinfo.last_time);
->>>>>>> release
                     return false;
                 }
 
