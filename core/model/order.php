@@ -591,4 +591,56 @@ class Sz_DYi_Order
         $OneDispatch = pdo_fetch($sql, $prem);
         return $OneDispatch;
     }
+
+    //自动执行方法
+    function autoexec($uniacid = 0){
+        global $_W, $_GPC;
+        if(empty($uniacid)){
+            return;
+        }
+        $_W['uniacid'] = $uniacid;
+        $trade = m('common')->getSysset('trade', $_W['uniacid']);
+        $days = intval($trade['receive']);
+        if ($days > 0) {
+            $daytimes = 86400 * $days;
+            $p = p('commission');
+            $pcoupon = p('coupon');
+            $orders = pdo_fetchall('select id,couponid from ' . tablename('sz_yi_order') . " where uniacid={$_W['uniacid']} and status=2 and sendtime + {$daytimes} <=unix_timestamp() ", array(), 'id');
+            if (!empty($orders)) {
+                $orderkeys = array_keys($orders);
+                $orderids = implode(',', $orderkeys);
+                if (!empty($orderids)) {
+                    pdo_query('update ' . tablename('sz_yi_order') . ' set status=3,finishtime=' . time() . ' where id in (' . $orderids . ')');
+                    foreach ($orders as $orderid => $o) {
+                        m('notice')->sendOrderMessage($orderid);
+                        if ($pcoupon) {
+                            if (!empty($o['couponid'])) {
+                                $pcoupon->backConsumeCoupon($o['id']);
+                            }
+                        }
+                        if ($p) {
+                            $p->checkOrderFinish($orderid);
+                        }
+                    }
+                }
+            }
+        }
+        $days = intval($trade['closeorder']);
+        if ($days > 0) {
+            $daytimes = 86400 * $days;
+            $orders = pdo_fetchall('select id from ' . tablename('sz_yi_order') . " where  uniacid={$_W['uniacid']} and status=0 and paytype<>3  and createtime + {$daytimes} <=unix_timestamp() ");
+            $p = p('coupon');
+            foreach ($orders as $o) {
+                $onew = pdo_fetch('select status from ' . tablename('sz_yi_order') . " where id=:id and status=0 and paytype<>3  and createtime + {$daytimes} <=unix_timestamp()  limit 1", array(':id' => $o['id']));
+                if (!empty($onew) && $onew['status'] == 0) {
+                    pdo_query('update ' . tablename('sz_yi_order') . ' set status=-1,canceltime=' . time() . ' where id=' . $o['id']);
+                    if ($p) {
+                        if (!empty($o['couponid'])) {
+                            $p->returnConsumeCoupon($o['id']);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

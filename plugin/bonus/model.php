@@ -20,8 +20,12 @@ if (!class_exists('BonusModel')) {
 		private $agents = array();
 		private $parentAgents = array();
 
-		public function getSet()
+		public function getSet($uniacid = 0)
 		{
+			global $_W;
+			if(!empty($uniacid)){
+				$_W['uniacid'] = $uniacid;
+			}
 			$set = parent::getSet();
 			$set['texts'] = array('agent' => empty($set['texts']['agent']) ? '代理商' : $set['texts']['agent'],'premiername' => empty($set['texts']['premiername']) ? '全球分红' : $set['texts']['premiername'], 'center' => empty($set['texts']['center']) ? '分红中心' : $set['texts']['center'], 'commission' => empty($set['texts']['commission']) ? '佣金' : $set['texts']['commission'], 'commission1' => empty($set['texts']['commission1']) ? '分红佣金' : $set['texts']['commission1'], 'commission_total' => empty($set['texts']['commission_total']) ? '累计分红佣金' : $set['texts']['commission_total'], 'commission_ok' => empty($set['texts']['commission_ok']) ? '待分红佣金' : $set['texts']['commission_ok'], 'commission_apply' => empty($set['texts']['commission_apply']) ? '已申请佣金' : $set['texts']['commission_apply'], 'commission_check' => empty($set['texts']['commission_check']) ? '待打款佣金' : $set['texts']['commission_check'], 'commission_lock' => empty($set['texts']['commission_lock']) ? '未结算佣金' : $set['texts']['commission_lock'], 'commission_detail' => empty($set['texts']['commission_detail']) ? '分红明细' : $set['texts']['commission_detail'], 'commission_pay' => empty($set['texts']['commission_pay']) ? '已分红佣金' : $set['texts']['commission_pay'], 'order' => empty($set['texts']['order']) ? '分红订单' : $set['texts']['order'], 'order_area' => empty($set['texts']['order_area']) ? '区域订单' : $set['texts']['order_area'], 'mycustomer' => empty($set['texts']['mycustomer']) ? '我的下线' : $set['texts']['mycustomer'], 'agent_province' => empty($set['texts']['agent_province']) ? '省级代理' : $set['texts']['agent_province'], 'agent_city' => empty($set['texts']['agent_city']) ? '市级代理' : $set['texts']['agent_city'], 'agent_district' => empty($set['texts']['agent_district']) ? '区级代理' : $set['texts']['agent_district'], 'withdraw' => empty($set['texts']['withdraw']) ? '提现' : $set['texts']['withdraw']);
 			return $set;
@@ -913,9 +917,12 @@ if (!class_exists('BonusModel')) {
 		}
 
 		//团队分红
-		public function autosend(){
+		public function autosend($uniacid = 0){
 			global $_W, $_GPC;
-			
+			if(empty($uniacid)){
+				return;
+			}
+			$_W['uniacid'] = $uniacid;
 			$time           = time();
 			$sendpay_error  = 0;
 			$bonus_money    = 0;
@@ -1009,9 +1016,12 @@ if (!class_exists('BonusModel')) {
 		}
 
 		//地区分红
-		public function autosendarea(){
+		public function autosendarea($uniacid = 0){
 			global $_W, $_GPC;
-			
+			if(empty($uniacid)){
+				return;
+			}
+			$_W['uniacid'] = $uniacid;
 			$time           = time();
 			$sendpay_error  = 0;
 			$bonus_money    = 0;
@@ -1105,8 +1115,12 @@ if (!class_exists('BonusModel')) {
 		}
 
 		//全球分红
-		public function autosendall(){
+		public function autosendall($uniacid = 0){
 			global $_W, $_GPC;
+			if(empty($uniacid)){
+				return;
+			}
+			$_W['uniacid'] = $uniacid;
 			$time           = time();
 			$sendpay_error  = 0;
 			$bonus_money    = 0;
@@ -1214,6 +1228,45 @@ if (!class_exists('BonusModel')) {
 					"total" => $total
 					);
 			pdo_insert('sz_yi_bonus', $log);
+		}
+
+		public function autoexec($uniacid = 0){
+			global $_W, $_GPC;
+			if(empty($uniacid)){
+				return;
+			}
+			$_W['uniacid'] = $uniacid;
+			$daytime = strtotime(date("Y-m-d 00:00:00"));
+			$isbonus = false;
+			$bonus_set = $this->getSet($_W['uniacid']);
+			//未开启自动分红直接跳过
+			if (empty($bonus_set['sendmethod'])) {
+				continue;
+			}
+
+			//是否为月分红
+			if($bonus_set['sendmonth'] == 1){
+				//按月分红查询月初0点时间
+				$daytime = strtotime(date("Y-m-1 00:00:00"));
+			}
+			//按每天0點查詢，如查詢到則已發放
+			$bonus_data = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=0 and uniacid=".$_W['uniacid']." and bonus_area=0  order by id desc");
+			$bonus_data_area = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=0 and uniacid=".$_W['uniacid']." and bonus_area!=0  order by id desc");
+			$bonus_data_isglobal = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=1 and uniacid=".$_W['uniacid']."  order by id desc");
+            if(!empty($bonus_set['start'])){
+                //团队分红
+                if(empty($bonus_data)){
+                    $this->autosend($_W['uniacid']);
+                }
+                //地区分红
+                if(empty($bonus_data_area)){
+                    $this->autosendarea($_W['uniacid']);
+                }
+                //全球分红
+                if(empty($bonus_data_isglobal)){
+                    $this->autosendall($_W['uniacid']);
+                }
+            }
 		}
 	}
 }
