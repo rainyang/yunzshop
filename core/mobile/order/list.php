@@ -175,8 +175,9 @@ if ($_W['isajax']) {
 				}
 			}
 			$canrefund = false;
+			$refunded = pdo_fetch(" SELECT * FROM " .tablename('sz_yi_order_refund'). " WHERE orderid=:orderid and uniacid=:uniacid", array(':orderid' => $row['id'], ':uniacid' => $_W['uniacid']));
 			if ($row['status'] == 1 || $row['status'] == 2) {
-				if ($refunddays > 0 || $row['status'] == 1) {
+				if (($refunddays > 0 || $row['status'] == 1) && $refunded['status'] != -1) {
 					$canrefund = true;
 				}
 			} else if ($row['status'] == 3) {
@@ -189,6 +190,7 @@ if ($_W['isajax']) {
 					}
 				}
 			}
+
 			$row['canrefund'] = $canrefund;
 	
 			if ($canrefund == true) {
