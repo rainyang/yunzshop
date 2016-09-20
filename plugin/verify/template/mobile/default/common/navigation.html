@@ -1,0 +1,60 @@
+<body>
+<div class="wfs head_top">
+    <div class="cover-page-wrapper">
+        <ul class="fl top_l">
+            <li class="fore"></li>
+        </ul>
+        <ul class="fr top_r">
+            <li class="fore"></li>
+        {if $_COOKIE[__cookie_sz_yi_userid_.$_W['uniacid']]}
+            <li class="fore"><a href="{php echo $this->createMobileUrl('order')}">个人中心</a></li>
+        {else}
+            <li class="fore"><a href="{php echo $this->createMobileUrl('member')}"></a></li>
+            <li class="fore"><a href="{php echo $this->createMobileUrl('member/register')}"></a></li>
+        {/if}
+
+            <li class="fore cart" id="ECS_CARTINFO">
+                <a href="{php echo $this->createMobileUrl('shop/cart')}" title="查看购物车"></a>
+             </li>
+        </ul>
+    </div>
+</div>
+
+<div id="head-fix" class="head fl wfs nav-wrap">
+<div class="cover-page-wrapper head_logo_nav">
+<!-- logo -->
+    <div class="logo fl">
+    </div>
+ 
+</div>
+</div>
+<script type="text/javascript">
+    require(['tpl', 'core'], function(tpl, core) {
+	$('#keyword').keyup(function(){
+	    if(event.keyCode == 13){
+		$('.search').click();
+		return;
+	    }
+	});
+
+        $('.search').click(function(){
+            var args  = {
+                   page:"{$_GPC['page']}",
+                   isnew: "{$_GPC['isnew']}",
+                   ishot: "{$_GPC['ishot']}",
+                   isrecommand:"{$_GPC['isrecommand']}",
+                   isdiscount:"{$_GPC['isdiscount']}",
+                   keywords:"{$_GPC['keywords']}",
+                   istime:"{$_GPC['istime']}",
+                   pcate:"{$_GPC['pcate']}",
+                   ccate:"{$_GPC['ccate']}",
+                   tcate:"{$_GPC['tcate']}",
+                   order:"{$_GPC['order']}",
+                   by:"{$_GPC['by']}",
+                   shopid:"{$_GPC['shopid']}",
+                   keywords:$("#keyword").val()
+            };
+            location.href=core.getUrl('shop/list', args);
+        });
+    })
+</script>
