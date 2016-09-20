@@ -1836,15 +1836,15 @@ function order_list_confirmsend($order) {
         ));
         if (!empty($zym_var_35)) {
             pdo_update("sz_yi_order_refund", array(
-                "status" => - 1
+                "status" => 2
             ) , array(
                 "id" => $order["refundid"]
             ));
-            pdo_update("sz_yi_order", array(
-                "refundid" => 0
-            ) , array(
-                "id" => $order["id"]
-            ));
+//            pdo_update("sz_yi_order", array(
+//                "refundid" => 0
+//            ) , array(
+//                "id" => $order["id"]
+//            ));
         }
     }
     m("notice")->sendOrderMessage($order["id"]);
@@ -1923,8 +1923,27 @@ function order_list_cancelsend($order) {
         "id" => $order["id"],
         "uniacid" => $_W["uniacid"]
     ));
+
+    if (!empty($order["refundid"])) {
+        $zym_var_35 = pdo_fetch("select * from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
+            ":id" => $order["refundid"]
+        ));
+        if (!empty($zym_var_35)) {
+            pdo_update("sz_yi_order_refund", array(
+                "status" => 0
+            ) , array(
+                "id" => $order["refundid"]
+            ));
+//            pdo_update("sz_yi_order", array(
+//                "refundid" => 0
+//            ) , array(
+//                "id" => $order["id"]
+//            ));
+        }
+    }
     plog("order.op.sencancel", "订单取消发货 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
     message("取消发货操作成功！", order_list_backurl() , "success");
+
 }
 function order_list_cancelsend1($order) {
     global $_W, $_GPC;
