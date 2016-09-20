@@ -8,7 +8,7 @@
 <meta content="yes" name="apple-mobile-web-app-capable" />
 <meta content="black" name="apple-mobile-web-app-status-bar-style" />
 <meta name="format-detection" content="telephone=no"/>
-<title>{$pagename}</title>
+<title>{$store['storename']}</title>
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/plugin/choose/template/mobile/default/static/css/dish/wei_dialog.css" media="all" />
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/plugin/choose/template/mobile/default/static/css/dish/wei_canyin.css" media="all" />
 <link rel="stylesheet" type="text/css" href="../addons/sz_yi/plugin/choose/template/mobile/default/static/css/dish/home.css" media="all">
@@ -273,8 +273,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 </style>
 <div class="foot-nav">
   <span id="alltotal">0</span>
-  {if empty($_GPC['ischannelpick'])}<p id="totalprice">总价：￥0.00</p>{/if}
-  <a class='channel' href="{php echo $this->createMobileUrl('shop/cart', array('ischannelpick' => $_GPC['ischannelpick'], 'ischannelpay' => $_GPC['ischannelpay']))}">选好了</a>
+  <a class='channel' href="{php echo $this->createPluginMobileUrl('verify', array('id' => $_GPC['storeid']))}">确认</a>
 
 </div>
 {php $show_footer=true;$footer_current =''} 
@@ -301,7 +300,7 @@ ul, li { list-style:none; margin:0; padding:0 }
              
             var pcate = $("#navBar").find(".parent_item").first().data('cate');
 
-            core.pjson('choose/list_goods',{pcate:pcate,pageid:pageid,ischannelpick:"{$_GPC['ischannelpick']}",op:'moren'}, function (json) {
+            core.pjson('choose/list_goods',{pcate:pcate,pageid:pageid,ischannelpick:"1",op:'moren',storeid:"{$_GPC['storeid']}"}, function (json) {
                             result = json.result;
                             
                             var h = '';
@@ -361,7 +360,7 @@ ul, li { list-style:none; margin:0; padding:0 }
         function setNum(){   
             
             $.ajax({
-                        url:"{php echo $this->createMobileUrl('shop/cart')}", 
+                        url:"{php echo $this->createPluginMobileUrl('verify/add')}", 
                         type:'post',
                         data: {op:'cart'},
                         success:function(data){
@@ -421,8 +420,8 @@ ul, li { list-style:none; margin:0; padding:0 }
         function getTotalPrice(){
             require(['core'],function(core){
 
-                core.json('shop/cart',{op:'display',ischannelpick:"{$_GPC['ischannelpick']}", ischannelpay:"{$_GPC['ischannelpay']}"},function(ret){
-                     $('#alltotal').html(ret.result.total);
+                core.pjson('verify/add',{op:'display',ischannelpick:"{$_GPC['ischannelpick']}", ischannelpay:"{$_GPC['ischannelpay']}", storeid:"{$_GPC['storeid']}"},function(ret){
+                     $('#alltotal').html(ret.result.counttotal);
                      $('#totalprice').html('总价：￥' + ret.result.totalprice + ret.result.difference);
 
                         if(ret.result.difference){
@@ -529,7 +528,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                      cate = $(this).data('cate');
                      //console.log(pcate);
-                     core.pjson('choose/list_goods',{'pcate':cate,pageid:pageid,op:'moren'}, function (json) {
+                     core.pjson('choose/list_goods',{'pcate':cate,pageid:pageid,op:'moren', storeid:"{$_GPC['storeid']}"}, function (json) {
                             result = json.result;                           
                             var h = '';
                             
@@ -593,7 +592,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                          cate = $(this).data('cate');
                          //console.log(pcate);
-                         core.pjson('choose/list_goods',{'ccate':cate,pageid:pageid,op:'second'}, function (json) {
+                         core.pjson('choose/list_goods',{'ccate':cate,pageid:pageid,op:'second', storeid:"{$_GPC['storeid']}"}, function (json) {
                                 result = json.result;
                                                         
                                 var h = '';
@@ -658,7 +657,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                          cate = $(this).data('cate');
                          //console.log(pcate);
-                         core.pjson('choose/list_goods',{'tcate':cate,pageid:pageid,op:'third'}, function (json) {
+                         core.pjson('choose/list_goods',{'tcate':cate,pageid:pageid,op:'third', storeid:"{$_GPC['storeid']}"}, function (json) {
                                 result = json.result;
                                                         
                                 var h = '';
@@ -739,26 +738,26 @@ ul, li { list-style:none; margin:0; padding:0 }
                     var maxbuy = input.attr('data-maxbuy');
                     $(this).parent().find('.subtract').show();
                     input.show();                 
-                    if (num > stock) {
-                      core.tip.show("您最多可购买 " + stock + " 件!");
+                    // if (num > stock) {
+                    //   core.tip.show("您最多可购买 " + stock + " 件!");
                       
-                      input.val(stock); 
-                      return;
+                    //   input.val(stock); 
+                    //   return;
                       
                       
-                    }  
-                    {if $ischannelpay == 0}                 
+                    // }  
+                    // {if $ischannelpay == 0}                 
 
 
-	                    if (num > maxbuy && maxbuy > 0){
-	                      core.tip.show("您最多可购买 " + maxbuy + " 件!");
-	                      input.val(maxbuy); 
-	                      return;
-	                      
-	                     
-	                    }
+                    //   if (num > maxbuy && maxbuy > 0){
+                    //     core.tip.show("您最多可购买 " + maxbuy + " 件!");
+                    //     input.val(maxbuy); 
+                    //     return;
+                        
+                       
+                    //   }
 
-                    {/if}   
+                    // {/if}   
                     if (num == 1) {
                         type = 'add';
                     } else {
@@ -767,7 +766,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                     require(['core'],function(core){
                       
-                        core.json('shop/cart',{op:'add', id:id,total:1},function(ret){
+                        core.pjson('verify/add',{op:'add', id:id,total:1, storeid:"{$_GPC['storeid']}"},function(ret){
 
                             now.attr("data-num",ret.result.cartcount);
                               setNum();
@@ -789,27 +788,28 @@ ul, li { list-style:none; margin:0; padding:0 }
                     if (!num) {
                       return;
                     }
-                    if (num > stock) {
-                      core.tip.show("您最多可购买 " + stock + " 件!");
+                    // if (num > stock) {
+                    //   core.tip.show("您最多可购买 " + stock + " 件!");
                       
                       
-                      input.val(stock);
-                      return;
+                    //   input.val(stock);
+                    //   return;
                       
-                    }  
-                    {if $ischannelpay == 0}                 
+                    // }  
+                    // {if $ischannelpay == 0}                 
 
 
-                      if (num > maxbuy && maxbuy > 0){
-                        core.tip.show("您最多可购买 " + maxbuy + " 件!");
+                    //   if (num > maxbuy && maxbuy > 0){
+                    //     core.tip.show("您最多可购买 " + maxbuy + " 件!");
                        
-                        input.val(maxbuy);
-                        return;
+                    //     input.val(maxbuy);
+                    //     return;
                         
-                      }                   
+                    //   }                   
 
 
-                    {/if}
+                    // {/if}
+                    
                     if (num == 1) {
                         type = 'add';
                     } else {
@@ -818,7 +818,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                     require(['core'],function(core){
                       
-                        core.json('shop/cart',{op:'add', id:id, total:num, type:'propertychange'},function(ret){
+                        core.pjson('verify/add',{op:'add', id:id, total:num, type:'propertychange', storeid:"{$_GPC['storeid']}"},function(ret){
 
                             now.attr("data-num",ret.result.cartcount);
                               setNum();
@@ -848,7 +848,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                     };
 
                     require(['core'],function(core){
-                        core.json('shop/cart',{op:'add', id:id,total:-1},function(ret){
+                        core.pjson('verify/add',{op:'add', id:id,total:-1, storeid:"{$_GPC{'storeid'}}"},function(ret){
 
                            now.attr("data-num",ret.result.cartcount);
                             setNum();
@@ -860,30 +860,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                 })         
                  
                  
-                $('.search').click(function(){
-
-                   $(".search1").animate({bottom:"0px"},100);
-                   $('#keywords').focus().unbind('keyup').keyup(function(){
-                            var keywords = $.trim( $(this).val());
-                            if(keywords==''){
-                                $('#search_container').html("");         
-                                return;
-                            }
-                            core.json('list_goods',{op:'search',keywords:keywords }, function (json) {
-                                 var result = json.result;
-                                 if(result.list.length>0){
-                                    $('#search_container').html(tpl('tpl_search_list',result));    
-                                 }
-                                 else{
-                                    $('#search_container').html("");         
-                                 }
-
-                              }, true);
-                    });
-                    $('.search1 .home1').unbind('click').click(function(){
-                         $(".search1").animate({bottom:"-100%"},100);
-                    });
-                });
+                
         
         }, true);
  
@@ -900,7 +877,7 @@ ul, li { list-style:none; margin:0; padding:0 }
    
         $(document).on('click','.canoption',function(){
           var id = $(this).data('id');
-          core.json('shop/detail',{id:id,'ischannelpay':"{$_GPC['ischannelpay']}",'ischannelpick':"{$_GPC['ischannelpick']}", storeid:"{$color['storeid']}"},function (json) { 
+          core.json('shop/detail',{id:id,'ischannelpay':"{$_GPC['ischannelpay']}",'ischannelpick':"{$_GPC['ischannelpick']}"},function (json) { 
             $('#container_specs').html(tpl('tpl_goods_info',json.result));
             $('.good_choose_layer').fadeIn(200);
             $('.good_choose_layer').unbind('click').click(function(){
@@ -963,7 +940,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                     }
                     
                 }
-                 core.json('shop/cart', {id:id, optionid:optionid, op:'gettotal'}, function(json){
+                 core.pjson('verify/add', {id:id, optionid:optionid, op:'gettotal'}, function(json){
                           var total = json.result;
                           if(!total){
                             total = '0'; 
@@ -1116,7 +1093,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                           if(action=='cart'){
                               require(['core'],function(core){
 
-                                core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(), is:'choose'},function(ret){
+                                core.pjson('verify/add',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(), is:'choose', storeid:"{$_GPC['storeid']}"},function(ret){
                                       if(ret.status==1){
                                         core.tip.show(ret.result.message);
                                         var cartdiv = $('.cart');
@@ -1210,7 +1187,7 @@ ul, li { list-style:none; margin:0; padding:0 }
         
                   {if !empty($popenid) or !empty($openid)}
 
-                       core.json('shop/cart',{op:'add', id:$('#goodsid').val(),optionid:$('#optionid').val(),total:$('#total').val(), is:'choose'},function(ret){
+                       core.pjson('verify/add',{op:'add', id:$('#goodsid').val(),optionid:$('#optionid').val(),total:$('#total').val(), is:'choose', storeid:"{$_GPC['storeid']}"},function(ret){
                                                     if(ret.status==1){ 
                                                        core.tip.show(ret.result.message);
                                                        var cartdiv = $('.cart');
@@ -1246,7 +1223,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                 };
 
                 require(['core'],function(core){
-                    core.json('shop/detail', data, function(create_json) {
+                    core.pjson('shop/detail', data, function(create_json) {
                         if (create_json.status == 1) {
                             location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val()+ "&gdid="+create_json.result.goods_data_id;
                         } else {
@@ -1276,15 +1253,15 @@ ul, li { list-style:none; margin:0; padding:0 }
     var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
     var num = parseInt(total.val() ) + 1;
     var maxbuy = $('#maxbuy').val();
-    
-    if(num>maxbuy && maxbuy>0){
-        core.tip.show("您最多可购买 " + maxbuy + " 件!");
-        num = maxbuy;
-    }
-    else if(num>stock && stock!=-1){
-        core.tip.show("您最多可购买 " + stock + " 件");
-        num = stock;
-    }
+    alert(1);
+    // if(num>maxbuy && maxbuy>0){
+    //     core.tip.show("您最多可购买 " + maxbuy + " 件!");
+    //     num = maxbuy;
+    // }
+    // else if(num>stock && stock!=-1){
+    //     core.tip.show("您最多可购买 " + stock + " 件");
+    //     num = stock;
+    // }
     total.val(num);
 }
   function addNum1(optionid_id,oid){
