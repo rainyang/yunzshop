@@ -179,8 +179,9 @@ if ($_W['isajax']) {
     $canrefund = false;
     $tradeset   = m('common')->getSysset('trade');
     $refunddays = intval($tradeset['refunddays']);
+    $refunded = pdo_fetch(" SELECT * FROM " .tablename('sz_yi_order_refund'). " WHERE orderid=:orderid and uniacid=:uniacid", array(':orderid' => $order['id'], ':uniacid' => $_W['uniacid']));
     if ($order['status'] == 1 || $order['status'] == 2) {
-        if ($refunddays > 0 || $order['status'] == 1) {
+        if ($refunddays > 0 || $order['status'] == 1 && $refunded['status'] != -1) {
             $canrefund = true;
         }
     } else if ($order['status'] == 3) {
@@ -204,7 +205,7 @@ if ($_W['isajax']) {
         if (!empty($order['refundstate']) && $order['status'] != -1) {
             $order['refund_button'] .= '中';
         }
-    }	
+    }
     show_json(1, array(
         'order' => $order,
         'goods' => $goods,
