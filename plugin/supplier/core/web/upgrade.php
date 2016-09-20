@@ -27,6 +27,14 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_apply` (
   `finish_time` int(11) NOT NULL COMMENT '完成时间',
   `apply_ordergoods_ids` text,
   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_order` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL,
+  `orderid` int(11) NOT NULL,
+  `money` decimal(10,2) DEFAULT '0.00' COMMENT '金额',
+  `isopenbonus` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
 pdo_query($sql);
 if(!pdo_fieldexists('sz_yi_perm_user', 'banknumber')) {

@@ -82,7 +82,7 @@
 
         <ul class="tab-list">
                 {loop $helper_category $row}
-                <li class="list-item" data-id="{$row['id']}">
+                <li class="list-item" data-id="{$row['id']}" style="overflow: hidden">
                     {$row['category_name']}
                 </li>
                 {/loop}

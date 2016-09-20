@@ -87,29 +87,30 @@ if (!class_exists('SupplierModel')) {
             }*/
             $supplierinfo['sp_goods'] = array();
             $supplierinfo['costmoney'] = 0;
+            $supplierinfo['expect_money'] = '0.00';
             $apply_cond = "";
+            $apply_conds = "";
+            $now_time = time();
             if (!empty($set['apply_day'])) {
-                $now_time = time();
                 $apply_day = $now_time - $set['apply_day']*60*60*24;
-                $apply_cond = " AND o.finishtime<{$apply_day} ";
+                $apply_cond .= " AND o.finishtime<{$apply_day} ";
+                $apply_conds = " AND o.finishtime>{$apply_day} ";
+                $supplierinfo['expect_money'] = pdo_fetchcolumn("SELECT sum(so.money) FROM " . tablename('sz_yi_supplier_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id where o.uniacid={$_W['uniacid']} and o.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 {$apply_conds}");
             }
-            $sp_goods = pdo_fetchall("select og.*,o.basis_money from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 {$apply_cond}");
-            if (!empty($sp_goods)) {
-                $supplierinfo['sp_goods'] = $sp_goods;
-                foreach ($sp_goods as $value) {
-                    if (empty($set['isopenbonus'])) {
-                        $supplierinfo['costmoney'] += $value['goods_op_cost_price'];
-                    } else {
-                        if (empty($value['basis_money'])) {
-                            $supplierinfo['costmoney'] += $value['goods_op_cost_price'];
-                        } else {
-                            $supplierinfo['costmoney'] += $value['basis_money'];
-                        }
-                    }
+            if (!empty($settrade['receive'])) {
+                $sendreceive = $now_time - $settrade['receive']*60*60*24;
+                $apply_cond .= " AND o.sendtime<{$sendreceive}";
+            }
+            $supplier_orders = pdo_fetchall("SELECT so.*,o.id as oid,og.id as ogid FROM " . tablename('sz_yi_supplier_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id where o.uniacid={$_W['uniacid']} and o.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 {$apply_cond}");
+            if (!empty($supplier_orders)) {
+                $supplierinfo['sp_goods'] = $supplier_orders;
+                $supplierinfo['costmoney'] = 0;
+                foreach ($supplier_orders as $o) {
+                    $supplierinfo['costmoney'] += $o['money'];
                 }
-                $supplierinfo['costmoney'] = number_format($supplierinfo['costmoney'],2);
             }
-            
+            $supplierinfo['costmoney'] = number_format($supplierinfo['costmoney'],2);
+                        
             $supplierinfo['totalmoney'] = pdo_fetchcolumn("select sum(apply_money) from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and uid={$uid}");
             return $supplierinfo;
         }

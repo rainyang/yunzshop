@@ -8,6 +8,13 @@ if (!class_exists('MerchantModel')) {
 		Private $child_centers = array();
 		public function getInfo($openid){
 			global $_W;
+
+			$setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+			    ':uniacid' => $_W['uniacid']
+			));
+			$setsyss     = unserialize($setdata['sets']);
+			$settrade = $setsyss['trade'];
+
 			$set = $this->getSet();
 			$info = array();
 			if (empty($openid)) {
@@ -52,28 +59,28 @@ if (!class_exists('MerchantModel')) {
 			$info['commission_ok'] = 0;
 
 			$apply_cond = "";
+			$now_time = time();
 			if (!empty($set['apply_day'])) {
-				$now_time = time();
 				$apply_day = $now_time - $set['apply_day']*60*60*24;
-				$apply_cond = " AND o.finishtime<{$apply_day} ";
+				$apply_cond .= " AND o.finishtime<{$apply_day} ";
+			}else if (!empty($settrade['receive']) && !empty($set['apply_day'])) {
+				$apply_day = $now_time - $set['apply_day']*60*60*24;
+				$sendreceive = $now_time - $settrade['receive']*60*60*24;
+				$apply_cond .= " AND (o.finishtime<{$apply_day} or o.sendtime<{$sendreceive})";
+			}else if (!empty($settrade['receive'])){
+				$sendreceive = $now_time - $settrade['receive']*60*60*24;
+				$apply_cond .= " AND o.sendtime<{$sendreceive}";
 			}
-			$orderinfo = pdo_fetchall("SELECT o.basis_money,og.price FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} {$apply_cond} AND o.center_apply_status=0 AND o.status=3 ORDER BY o.createtime DESC,o.status DESC ");
-			foreach ($orderinfo as $value) {
-				if (empty($set['isopenbonus'])) {
-                    $info['commission_ok'] += $value['price'];
-                } else {
-                    if (empty($value['basis_money'])) {
-                        $info['commission_ok'] += $value['price'];
-                    } else {
-                        $info['commission_ok'] += $value['basis_money'];
-                    }
+			$merchant_orders = pdo_fetchall("SELECT so.*,o.id as oid FROM " . tablename('sz_yi_merchant_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} {$apply_cond} AND o.center_apply_status=0 AND o.status=3 ORDER BY o.createtime DESC,o.status DESC ");
+			if (!empty($merchant_orders)) {
+                $info['commission_ok'] = 0;
+                foreach ($merchant_orders as $o) {
+                    $info['commission_ok'] += $o['money'];
                 }
-			}
+            }
 			$info['commission_ok'] = $info['commission_ok']*$info['levelinfo']['commission']/100;
-			$info['commission_ok'] = 100;
-			/*$info['commission_ok'] = number_format(pdo_fetchcolumn("SELECT ifnull(sum(o.basis_money),sum(og.price)) FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} AND o.center_apply_status=0 ORDER BY o.createtime DESC,o.status DESC ")*$info['levelinfo']['commission']/100, 2);*/
 			$info['order_total_price'] = number_format(pdo_fetchcolumn("SELECT sum(og.price) FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} {$apply_cond} ORDER BY o.createtime DESC,o.status DESC "), 2);
-			$order_ids = pdo_fetchall("SELECT o.id FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." AND o.supplier_uid in ({$supplier_uids}) AND o.center_apply_status=0 {$apply_cond} ORDER BY o.createtime DESC,o.status DESC ");
+			$order_ids = pdo_fetchall("SELECT o.id FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_merchant_order') . " so on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} {$apply_cond} AND o.center_apply_status=0 AND o.status=3 ORDER BY o.createtime DESC,o.status DESC ");
 			$info['order_ids'] = $order_ids;
 			return $info;
 		}
@@ -120,17 +127,36 @@ if (!class_exists('MerchantModel')) {
 			$child_centers = $this->getChildCenters($openid);
 			if (!empty($child_centers)) {
 				$ids = array();
+				$center_openids = '';
+				$ismerchant = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_merchants') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}'");
+				if (!empty($ismerchant)) {
+					$center_openids = "'{$openid}'";
+				}
 				foreach ($child_centers as $val) {
 					$ids[] = $val['id'];
+					if (!empty($center_openids)) {
+						$center_openids .= ",";
+					}
+					$center_openids .= "'".$val['openid']."'";
+				}
+				$merchant_cond = '';
+				if (!empty($center_openids)) {
+					$merchant_cond .= " OR openid in ({$center_openids})";
 				}
 				$center_ids = implode(',', $ids);
 				if (!empty($center)) {
 					$center_ids .= ",".$center['id'];
 				}
-				$supplier_uids = pdo_fetchall("SELECT distinct supplier_uid FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND center_id in ({$center_ids})", array(':uniacid' => $_W['uniacid']));
+				
+				$supplier_uids = pdo_fetchall("SELECT distinct supplier_uid FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND (center_id in ({$center_ids}) {$merchant_cond})", array(':uniacid' => $_W['uniacid']));
 			} else {
 				if (!empty($center)) {
-					$supplier_uids = pdo_fetchall("SELECT distinct supplier_uid FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND center_id=:center_id", array(':uniacid' => $_W['uniacid'], ':center_id' => $center['id']));
+					$ismerchant = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_merchants') . " WHERE uniacid={$_W['uniacid']} AND openid='{$openid}'");
+					$merchant_cond = '';
+					if (!empty($ismerchant)) {
+						$merchant_cond = " OR openid='{$openid}'";
+					}
+					$supplier_uids = pdo_fetchall("SELECT distinct supplier_uid FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND center_id=:center_id {$merchant_cond}", array(':uniacid' => $_W['uniacid'], ':center_id' => $center['id']));
 				} else {
 					$supplier_uids = pdo_fetchall("SELECT distinct supplier_uid FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND member_id=:member_id", array(':uniacid' => $_W['uniacid'], ':member_id' => $member['id']));
 				}

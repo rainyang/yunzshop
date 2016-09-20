@@ -65,8 +65,10 @@ if ($operation == 'display') {
             'condition' => trim($_GPC['condition']),
             'isreturn' => intval($_GPC['isreturn']),
             'centercan' => intval($_GPC['centercan'])
-
         );
+        if (p('bonus')) {
+            $data['bonus'] = trim($_GPC['bonus']);
+        }
         if ($pcoupon) {
             $data['coupon_id'] = trim($_GPC['coupon_id']);
         }
