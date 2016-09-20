@@ -12,6 +12,7 @@ $supplierinfo = $this->model->getSupplierInfo($uid);
 $ordercount = $supplierinfo['ordercount'];
 $commission_total = $supplierinfo['commission_total'];
 $costmoney = $supplierinfo['costmoney'];
+$expect_money = $supplierinfo['expect_money'];
 $commission_ok = number_format($costmoney, 2);
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if($_W['isajax']) {
