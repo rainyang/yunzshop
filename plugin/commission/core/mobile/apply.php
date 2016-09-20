@@ -14,6 +14,9 @@ if ($_W['isajax']) {
 	$time = time();
 	$day_times = intval($this->set['settledays']) * 3600 * 24;
 	$commission_ok = $member['commission_ok'];
+	if($commission_ok <= 0){
+		show_json('0', '提现金额不能为0！');
+	}
 	$cansettle = $commission_ok >= floatval($this->set['withdraw']);
 	$member['commission_ok'] = number_format($commission_ok, 2);
 	$operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';

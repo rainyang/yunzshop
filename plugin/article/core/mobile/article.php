@@ -16,6 +16,7 @@ if (empty($_GPC['is_helper'])) {
 	$cond = ' AND is_helper=0';
 } else {
 	$cond = ' AND is_helper=1';
+	$article_sys['article_temp'] = 0;
 }
 if ($article_sys['article_temp'] == 0) {
 	$limit = empty($article_sys['article_shownum']) ? '10' : $article_sys['article_shownum'];
