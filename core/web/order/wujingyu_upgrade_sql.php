@@ -23,7 +23,7 @@ if(!pdo_fieldexists('sz_yi_store', 'balance')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD    `balance` decimal(10,2) DEFAULT '0';");
 }
 if(!pdo_fieldexists('sz_yi_goods', 'goods_balance')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD    `goods_balance` decimal(10，2) DEFAULT '0';");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD    `goods_balance` decimal(10,2) DEFAULT '0';");
 }
 if(!pdo_fieldexists('sz_yi_goods', 'balance_with_store')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD    `balance_with_store` tinyint(1) DEFAULT '1';");
