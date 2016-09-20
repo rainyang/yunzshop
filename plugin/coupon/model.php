@@ -6,268 +6,268 @@ if (!defined('IN_IA')) {
 if (!class_exists('CouponModel')) {
 	class CouponModel extends PluginModel
 	{
-		function get_last_count($_var_0 = 0)
+		function get_last_count($couponid = 0)
 		{
 			global $_W;
-			$_var_1 = pdo_fetch('SELECT id,total FROM ' . tablename('sz_yi_coupon') . ' WHERE id=:id and uniacid=:uniacid ', array(':id' => $_var_0, ':uniacid' => $_W['uniacid']));
-			if (empty($_var_1)) {
+			$coupon = pdo_fetch('SELECT id,total FROM ' . tablename('sz_yi_coupon') . ' WHERE id=:id and uniacid=:uniacid ', array(':id' => $couponid, ':uniacid' => $_W['uniacid']));
+			if (empty($coupon)) {
 				return 0;
 			}
-			if ($_var_1['total'] == -1) {
+			if ($coupon['total'] == -1) {
 				return -1;
 			}
-			$_var_2 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_coupon_data') . ' where couponid=:couponid and uniacid=:uniacid limit 1', array(':couponid' => $_var_0, ':uniacid' => $_W['uniacid']));
-			return $_var_1['total'] - $_var_2;
+			$gettotal = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_coupon_data') . ' where couponid=:couponid and uniacid=:uniacid limit 1', array(':couponid' => $couponid, ':uniacid' => $_W['uniacid']));
+			return $coupon['total'] - $gettotal;
 		}
 
-		function creditshop($_var_3 = 0)
+		function creditshop($logid = 0)
 		{
 			global $_W, $_GPC;
-			$_var_4 = p('creditshop');
-			if (!$_var_4) {
+			$pcreditshop = p('creditshop');
+			if (!$pcreditshop) {
 				return;
 			}
-			$_var_5 = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_creditshop_log') . ' WHERE `id`=:id and `uniacid`=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $_var_3));
-			if (!empty($_var_5)) {
-				$_var_6 = m('member')->getMember($_var_5['openid']);
-				$_var_7 = $_var_4->getGoods($_var_5['couponid'], $_var_6);
-				$_var_8 = array('uniacid' => $_W['uniacid'], 'openid' => $_var_5['openid'], 'logno' => m('common')->createNO('coupon_log', 'logno', 'CC'), 'couponid' => $_var_5['couponid'], 'status' => 1, 'paystatus' => $_var_7['money'] > 0 ? 0 : -1, 'creditstatus' => $_var_7['credit'] > 0 ? 0 : -1, 'createtime' => time(), 'getfrom' => 2);
-				pdo_insert('sz_yi_coupon_log', $_var_8);
-				$_var_9 = array('uniacid' => $_W['uniacid'], 'openid' => $_var_5['openid'], 'couponid' => $_var_5['couponid'], 'gettype' => 2, 'gettime' => time());
-				pdo_insert('sz_yi_coupon_data', $_var_9);
-				$_var_1 = pdo_fetch('select * from ' . tablename('sz_yi_coupon') . ' where id=:id limit 1', array(':id' => $_var_5['couponid']));
-				$_var_1 = $this->setCoupon($_var_1, time());
-				$_var_10 = $this->getSet();
-				$this->sendMessage($_var_1, 1, $_var_6, $_var_10['templateid']);
-				pdo_update('sz_yi_creditshop_log', array('status' => 3), array('id' => $_var_3));
+			$log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_creditshop_log') . ' WHERE `id`=:id and `uniacid`=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $logid));
+			if (!empty($log)) {
+				$member = m('member')->getMember($log['openid']);
+				$goods = $pcreditshop->getGoods($log['couponid'], $member);
+				$couponlog = array('uniacid' => $_W['uniacid'], 'openid' => $log['openid'], 'logno' => m('common')->createNO('coupon_log', 'logno', 'CC'), 'couponid' => $log['couponid'], 'status' => 1, 'paystatus' => $goods['money'] > 0 ? 0 : -1, 'creditstatus' => $goods['credit'] > 0 ? 0 : -1, 'createtime' => time(), 'getfrom' => 2);
+				pdo_insert('sz_yi_coupon_log', $couponlog);
+				$data = array('uniacid' => $_W['uniacid'], 'openid' => $log['openid'], 'couponid' => $log['couponid'], 'gettype' => 2, 'gettime' => time());
+				pdo_insert('sz_yi_coupon_data', $data);
+				$coupon = pdo_fetch('select * from ' . tablename('sz_yi_coupon') . ' where id=:id limit 1', array(':id' => $log['couponid']));
+				$coupon = $this->setCoupon($coupon, time());
+				$set = $this->getSet();
+				$this->sendMessage($coupon, 1, $member, $set['templateid']);
+				pdo_update('sz_yi_creditshop_log', array('status' => 3), array('id' => $logid));
 			}
 		}
 
-		function poster($_var_6, $_var_0, $_var_11)
+		function poster($member, $couponid, $couponnum)
 		{
 			global $_W, $_GPC;
-			$_var_12 = p('poster');
-			if (!$_var_12) {
+			$pposter = p('poster');
+			if (!$pposter) {
 				return;
 			}
-			$_var_1 = $this->getCoupon($_var_0);
-			if (empty($_var_1)) {
+			$coupon = $this->getCoupon($couponid);
+			if (empty($coupon)) {
 				return;
 			}
-			for ($_var_13 = 1; $_var_13 <= $_var_11; $_var_13++) {
-				$_var_8 = array('uniacid' => $_W['uniacid'], 'openid' => $_var_6['openid'], 'logno' => m('common')->createNO('coupon_log', 'logno', 'CC'), 'couponid' => $_var_0, 'status' => 1, 'paystatus' => -1, 'creditstatus' => -1, 'createtime' => time(), 'getfrom' => 3);
-				pdo_insert('sz_yi_coupon_log', $_var_8);
-				$_var_9 = array('uniacid' => $_W['uniacid'], 'openid' => $_var_6['openid'], 'couponid' => $_var_0, 'gettype' => 3, 'gettime' => time());
-				pdo_insert('sz_yi_coupon_data', $_var_9);
+			for ($i = 1; $i <= $couponnum; $i++) {
+				$couponlog = array('uniacid' => $_W['uniacid'], 'openid' => $member['openid'], 'logno' => m('common')->createNO('coupon_log', 'logno', 'CC'), 'couponid' => $couponid, 'status' => 1, 'paystatus' => -1, 'creditstatus' => -1, 'createtime' => time(), 'getfrom' => 3);
+				pdo_insert('sz_yi_coupon_log', $couponlog);
+				$data = array('uniacid' => $_W['uniacid'], 'openid' => $member['openid'], 'couponid' => $couponid, 'gettype' => 3, 'gettime' => time());
+				pdo_insert('sz_yi_coupon_data', $data);
 			}
-			$_var_10 = $this->getSet();
-			$this->sendMessage($_var_1, $_var_11, $_var_6, $_var_10['templateid']);
+			$set = $this->getSet();
+			$this->sendMessage($coupon, $couponnum, $member, $set['templateid']);
 		}
 
-		function payResult($_var_14)
+		function payResult($logno)
 		{
 			global $_W;
-			if (empty($_var_14)) {
+			if (empty($logno)) {
 				return error(-1);
 			}
-			$_var_5 = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_coupon_log') . ' WHERE `logno`=:logno and `uniacid`=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':logno' => $_var_14));
-			if (empty($_var_5)) {
+			$log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_coupon_log') . ' WHERE `logno`=:logno and `uniacid`=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':logno' => $logno));
+			if (empty($log)) {
 				return error(-1, '服务器错误!');
 			}
-			if ($_var_5['status'] >= 1) {
+			if ($log['status'] >= 1) {
 				return true;
 			}
-			$_var_1 = pdo_fetch('select * from ' . tablename('sz_yi_coupon') . ' where id=:id limit 1', array(':id' => $_var_5['couponid']));
-			$_var_1 = $this->setCoupon($_var_1, time());
-			if (empty($_var_1['gettype'])) {
+			$coupon = pdo_fetch('select * from ' . tablename('sz_yi_coupon') . ' where id=:id limit 1', array(':id' => $log['couponid']));
+			$coupon = $this->setCoupon($coupon, time());
+			if (empty($coupon['gettype'])) {
 				return error(-1, '无法领取');
 			}
-			if ($_var_1['total'] != -1) {
-				if ($_var_1['total'] <= 0) {
+			if ($coupon['total'] != -1) {
+				if ($coupon['total'] <= 0) {
 					return error(-1, '优惠券数量不足');
 				}
 				//只有优惠劵数量不等于-1的情况下减数量
-				$_var_1['total'] -= 1;
+				$coupon['total'] -= 1;
 			}
-			if (!$_var_1['canget']) {
+			if (!$coupon['canget']) {
 				return error(-1, '您已超出领取次数限制');
 			}
-			if (empty($_var_5['status'])) {
-				$_var_15 = array();
-				if ($_var_1['credit'] > 0 && empty($_var_5['creditstatus'])) {
-					m('member')->setCredit($_var_5['openid'], 'credit1', -$_var_1['credit'], "购买优惠券扣除积分 {$_var_1['credit']}");
-					$_var_15['creditstatus'] = 1;
+			if (empty($log['status'])) {
+				$update = array();
+				if ($coupon['credit'] > 0 && empty($log['creditstatus'])) {
+					m('member')->setCredit($log['openid'], 'credit1', -$coupon['credit'], "购买优惠券扣除积分 {$coupon['credit']}");
+					$update['creditstatus'] = 1;
 				}
-				if ($_var_1['money'] > 0 && empty($_var_5['paystatus'])) {
-					if ($_var_1['paytype'] == 0) {
-						m('member')->setCredit($_var_5['openid'], 'credit2', -$_var_1['money'], "购买优惠券扣除余额 {$_var_1['money']}");
+				if ($coupon['money'] > 0 && empty($log['paystatus'])) {
+					if ($coupon['paytype'] == 0) {
+						m('member')->setCredit($log['openid'], 'credit2', -$coupon['money'], "购买优惠券扣除余额 {$coupon['money']}");
 					}
-					$_var_15['paystatus'] = 1;
+					$update['paystatus'] = 1;
 				}
-				$_var_15['status'] = 1;
-				pdo_update('sz_yi_coupon_log', $_var_15, array('id' => $_var_5['id']));
-				$_var_9 = array('uniacid' => $_W['uniacid'], 'openid' => $_var_5['openid'], 'couponid' => $_var_5['couponid'], 'gettype' => $_var_5['getfrom'], 'gettime' => time());
-				pdo_insert('sz_yi_coupon_data', $_var_9);
-				$_var_6 = m('member')->getMember($_var_5['openid']);
-				$_var_10 = $this->getSet();
-				$this->sendMessage($_var_1, 1, $_var_6, $_var_10['templateid']);
+				$update['status'] = 1;
+				pdo_update('sz_yi_coupon_log', $update, array('id' => $log['id']));
+				$data = array('uniacid' => $_W['uniacid'], 'openid' => $log['openid'], 'couponid' => $log['couponid'], 'gettype' => $log['getfrom'], 'gettime' => time());
+				pdo_insert('sz_yi_coupon_data', $data);
+				$member = m('member')->getMember($log['openid']);
+				$set = $this->getSet();
+				$this->sendMessage($coupon, 1, $member, $set['templateid']);
 			}
 			
-			pdo_update('sz_yi_coupon', array('total' => $_var_1['total']), array('uniacid' => $_W['uniacid'], 'id' => $_var_5['couponid']));
-			$_var_16 = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=member';
-			if ($_var_1['coupontype'] == 0) {
-				$_var_16 = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=shop&p=list';
+			pdo_update('sz_yi_coupon', array('total' => $coupon['total']), array('uniacid' => $_W['uniacid'], 'id' => $log['couponid']));
+			$url = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=member';
+			if ($coupon['coupontype'] == 0) {
+				$url = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=shop&p=list';
 			} else {
-				$_var_16 = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=member&p=recharge';
+				$url = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=member&p=recharge';
 			}
-			if (strexists($_var_16, '/addons/sz_yi/plugin/coupon/core/mobile/')) {
-				$_var_16 = str_replace('/addons/sz_yi/plugin/coupon/core/mobile/', '/', $_var_16);
+			if (strexists($url, '/addons/sz_yi/plugin/coupon/core/mobile/')) {
+				$url = str_replace('/addons/sz_yi/plugin/coupon/core/mobile/', '/', $url);
 			}
-			if (strexists($_var_16, '/addons/sz_yi/')) {
-				$_var_16 = str_replace('/addons/sz_yi/', '/', $_var_16);
+			if (strexists($url, '/addons/sz_yi/')) {
+				$url = str_replace('/addons/sz_yi/', '/', $url);
 			}
-			return array('url' => $_var_16);
+			return array('url' => $url);
 		}
 
-		function sendMessage($_var_1, $_var_17, $_var_6, $_var_18 = '', $_var_19 = null)
+		function sendMessage($coupon, $send_total, $member, $templateid = '', $account = null)
 		{
 			global $_W;
-			$_var_20 = array();
-			$_var_21 = str_replace('[nickname]', $_var_6['nickname'], $_var_1['resptitle']);
-			$_var_22 = str_replace('[nickname]', $_var_6['nickname'], $_var_1['respdesc']);
-			$_var_21 = str_replace('[total]', $_var_17, $_var_21);
-			$_var_22 = str_replace('[total]', $_var_17, $_var_22);
-			$_var_16 = empty($_var_1['respurl']) ? $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=plugin&p=coupon&method=my' : $_var_1['respurl'];
-			if (!empty($_var_1['resptitle'])) {
-				$_var_20[] = array('title' => urlencode($_var_21), 'description' => urlencode($_var_22), 'url' => $_var_16, 'picurl' => tomedia($_var_1['respthumb']));
+			$articles = array();
+			$title = str_replace('[nickname]', $member['nickname'], $coupon['resptitle']);
+			$desc = str_replace('[nickname]', $member['nickname'], $coupon['respdesc']);
+			$title = str_replace('[total]', $send_total, $title);
+			$desc = str_replace('[total]', $send_total, $desc);
+			$url = empty($coupon['respurl']) ? $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=plugin&p=coupon&method=my' : $coupon['respurl'];
+			if (!empty($coupon['resptitle'])) {
+				$articles[] = array('title' => urlencode($title), 'description' => urlencode($desc), 'url' => $url, 'picurl' => tomedia($coupon['respthumb']));
 			}
-			if (!empty($_var_20)) {
-				$_var_23 = m('message')->sendNews($_var_6['openid'], $_var_20, $_var_19);
-				if (is_error($_var_23)) {
-					$_var_24 = array('keyword1' => array('value' => $_var_21, 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_22, 'color' => '#73a68d'));
-					if (!empty($_var_18)) {
-						m('message')->sendTplNotice($_var_6['openid'], $_var_18, $_var_24, $_var_16);
+			if (!empty($articles)) {
+				$resp = m('message')->sendNews($member['openid'], $articles, $account);
+				if (is_error($resp)) {
+					$msg = array('keyword1' => array('value' => $title, 'color' => '#73a68d'), 'keyword2' => array('value' => $desc, 'color' => '#73a68d'));
+					if (!empty($templateid)) {
+						m('message')->sendTplNotice($member['openid'], $templateid, $msg, $url);
 					}
 				}
 			}
 		}
 
-		function sendBackMessage($_var_25, $_var_1, $_var_26)
+		function sendBackMessage($openid, $coupon, $gives)
 		{
 			global $_W;
-			if (empty($_var_26)) {
+			if (empty($gives)) {
 				return;
 			}
-			$_var_10 = $this->getSet();
-			$_var_18 = $_var_10['templateid'];
-			$_var_27 = "您的优惠券【{$_var_1['couponname']}】已返利 ";
-			$_var_28 = '';
-			if (isset($_var_26['credit'])) {
-				$_var_28 .= " {$_var_26['credit']}个积分";
+			$set = $this->getSet();
+			$templateid = $set['templateid'];
+			$content = "您的优惠券【{$coupon['couponname']}】已返利 ";
+			$givestr = '';
+			if (isset($gives['credit'])) {
+				$givestr .= " {$gives['credit']}个积分";
 			}
-			if (isset($_var_26['money'])) {
-				if (!empty($_var_28)) {
-					$_var_28 .= '，';
+			if (isset($gives['money'])) {
+				if (!empty($givestr)) {
+					$givestr .= '，';
 				}
-				$_var_28 .= "{$_var_26['money']}元余额";
+				$givestr .= "{$gives['money']}元余额";
 			}
-			if (isset($_var_26['redpack'])) {
-				if (!empty($_var_28)) {
-					$_var_28 .= '，';
+			if (isset($gives['redpack'])) {
+				if (!empty($givestr)) {
+					$givestr .= '，';
 				}
-				$_var_28 .= "{$_var_26['redpack']}元现金";
+				$givestr .= "{$gives['redpack']}元现金";
 			}
-			$_var_27 .= $_var_28;
-			$_var_27 .= '，请查看您的账户，谢谢!';
-			$_var_24 = array('keyword1' => array('value' => '优惠券返利', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_27, 'color' => '#73a68d'));
-			$_var_16 = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=member';
-			if (strexists($_var_16, '/addons/sz_yi/plugin/coupon/core/mobile/')) {
-				$_var_16 = str_replace('/addons/sz_yi/plugin/coupon/core/mobile/', '/', $_var_16);
+			$content .= $givestr;
+			$content .= '，请查看您的账户，谢谢!';
+			$msg = array('keyword1' => array('value' => '优惠券返利', 'color' => '#73a68d'), 'keyword2' => array('value' => $content, 'color' => '#73a68d'));
+			$url = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=member';
+			if (strexists($url, '/addons/sz_yi/plugin/coupon/core/mobile/')) {
+				$url = str_replace('/addons/sz_yi/plugin/coupon/core/mobile/', '/', $url);
 			}
-			if (strexists($_var_16, '/addons/sz_yi/')) {
-				$_var_16 = str_replace('/addons/sz_yi/', '/', $_var_16);
+			if (strexists($url, '/addons/sz_yi/')) {
+				$url = str_replace('/addons/sz_yi/', '/', $url);
 			}
-			if (!empty($_var_18)) {
-				m('message')->sendTplNotice($_var_25, $_var_18, $_var_24, $_var_16);
+			if (!empty($templateid)) {
+				m('message')->sendTplNotice($openid, $templateid, $msg, $url);
 			} else {
-				m('message')->sendCustomNotice($_var_25, $_var_24, $_var_16);
+				m('message')->sendCustomNotice($openid, $msg, $url);
 			}
 		}
 
-		function sendReturnMessage($_var_25, $_var_1)
+		function sendReturnMessage($openid, $coupon)
 		{
 			global $_W;
-			$_var_10 = $this->getSet();
-			$_var_18 = $_var_10['templateid'];
-			$_var_24 = array('keyword1' => array('value' => '优惠券退回', 'color' => '#73a68d'), 'keyword2' => array('value' => "您的优惠券【{$_var_1['couponname']}】已退回您的账户，您可以再次使用, 谢谢!", 'color' => '#73a68d'));
-			$_var_16 = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=plugin&p=coupon&method=my';
-			if (!empty($_var_18)) {
-				m('message')->sendTplNotice($_var_25, $_var_18, $_var_24, $_var_16);
+			$set = $this->getSet();
+			$templateid = $set['templateid'];
+			$msg = array('keyword1' => array('value' => '优惠券退回', 'color' => '#73a68d'), 'keyword2' => array('value' => "您的优惠券【{$coupon['couponname']}】已退回您的账户，您可以再次使用, 谢谢!", 'color' => '#73a68d'));
+			$url = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=plugin&p=coupon&method=my';
+			if (!empty($templateid)) {
+				m('message')->sendTplNotice($openid, $templateid, $msg, $url);
 			} else {
-				m('message')->sendCustomNotice($_var_25, $_var_24, $_var_16);
+				m('message')->sendCustomNotice($openid, $msg, $url);
 			}
 		}
 
-		function useRechargeCoupon($_var_5)
+		function useRechargeCoupon($log)
 		{
 			global $_W;
-			if (empty($_var_5['couponid'])) {
+			if (empty($log['couponid'])) {
 				return;
 			}
-			$_var_9 = pdo_fetch('select id,openid,couponid,used from ' . tablename('sz_yi_coupon_data') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $_var_5['couponid'], ':uniacid' => $_W['uniacid']));
-			if (empty($_var_9)) {
+			$data = pdo_fetch('select id,openid,couponid,used from ' . tablename('sz_yi_coupon_data') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $log['couponid'], ':uniacid' => $_W['uniacid']));
+			if (empty($data)) {
 				return;
 			}
-			if (!empty($_var_9['used'])) {
+			if (!empty($data['used'])) {
 				return;
 			}
-			$_var_1 = pdo_fetch('select enough,backcredit,backmoney,backredpack from ' . tablename('sz_yi_coupon') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $_var_9['couponid'], ':uniacid' => $_W['uniacid']));
-			if (empty($_var_1)) {
+			$coupon = pdo_fetch('select enough,backcredit,backmoney,backredpack from ' . tablename('sz_yi_coupon') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $data['couponid'], ':uniacid' => $_W['uniacid']));
+			if (empty($coupon)) {
 				return;
 			}
-			if ($_var_1['enough'] > 0 && $_var_5['money'] < $_var_1['enough']) {
+			if ($coupon['enough'] > 0 && $log['money'] < $coupon['enough']) {
 				return;
 			}
-			$_var_26 = array();
-			$_var_29 = $_var_1['backcredit'];
-			if (!empty($_var_29)) {
-				if (strexists($_var_29, '%')) {
-					$_var_29 = intval(floatval(str_replace('%', '', $_var_29)) / 100 * $_var_5['money']);
+			$gives = array();
+			$backcredit = $coupon['backcredit'];
+			if (!empty($backcredit)) {
+				if (strexists($backcredit, '%')) {
+					$backcredit = intval(floatval(str_replace('%', '', $backcredit)) / 100 * $log['money']);
 				} else {
-					$_var_29 = intval($_var_29);
+					$backcredit = intval($backcredit);
 				}
-				if ($_var_29 > 0) {
-					$_var_26['credit'] = $_var_29;
-					m('member')->setCredit($_var_9['openid'], 'credit1', $_var_29, array(0, '充值优惠券返积分'));
+				if ($backcredit > 0) {
+					$gives['credit'] = $backcredit;
+					m('member')->setCredit($data['openid'], 'credit1', $backcredit, array(0, '充值优惠券返积分'));
 				}
 			}
-			$_var_30 = $_var_1['backmoney'];
-			if (!empty($_var_30)) {
-				if (strexists($_var_30, '%')) {
-					$_var_30 = round(floatval(floatval(str_replace('%', '', $_var_30)) / 100 * $_var_5['money']), 2);
+			$backmoney = $coupon['backmoney'];
+			if (!empty($backmoney)) {
+				if (strexists($backmoney, '%')) {
+					$backmoney = round(floatval(floatval(str_replace('%', '', $backmoney)) / 100 * $log['money']), 2);
 				} else {
-					$_var_30 = round(floatval($_var_30), 2);
+					$backmoney = round(floatval($backmoney), 2);
 				}
-				if ($_var_30 > 0) {
-					$_var_26['money'] = $_var_30;
-					m('member')->setCredit($_var_9['openid'], 'credit2', $_var_30, array(0, '充值优惠券返利'));
+				if ($backmoney > 0) {
+					$gives['money'] = $backmoney;
+					m('member')->setCredit($data['openid'], 'credit2', $backmoney, array(0, '充值优惠券返利'));
 				}
 			}
-			$_var_31 = $_var_1['backredpack'];
-			if (!empty($_var_31)) {
-				if (strexists($_var_31, '%')) {
-					$_var_31 = round(floatval(floatval(str_replace('%', '', $_var_31)) / 100 * $_var_5['money']), 2);
+			$backredpack = $coupon['backredpack'];
+			if (!empty($backredpack)) {
+				if (strexists($backredpack, '%')) {
+					$backredpack = round(floatval(floatval(str_replace('%', '', $backredpack)) / 100 * $log['money']), 2);
 				} else {
-					$_var_31 = round(floatval($_var_31), 2);
+					$backredpack = round(floatval($backredpack), 2);
 				}
-				if ($_var_31 > 0) {
-					$_var_26['redpack'] = $_var_31;
-					$_var_31 = intval($_var_31 * 100);
-					m('finance')->pay($_var_9['openid'], 1, $_var_31, '', '充值优惠券-返现金');
+				if ($backredpack > 0) {
+					$gives['redpack'] = $backredpack;
+					$backredpack = intval($backredpack * 100);
+					m('finance')->pay($data['openid'], 1, $backredpack, '', '充值优惠券-返现金');
 				}
 			}
-			pdo_update('sz_yi_coupon_data', array('used' => 1, 'usetime' => time(), 'ordersn' => $_var_5['logno']), array('id' => $_var_9['id']));
-			$this->sendBackMessage($_var_5['openid'], $_var_1, $_var_26);
+			pdo_update('sz_yi_coupon_data', array('used' => 1, 'usetime' => time(), 'ordersn' => $log['logno']), array('id' => $data['id']));
+			$this->sendBackMessage($log['openid'], $coupon, $gives);
 		}
 
 		function consumeCouponCount($openid, $enough = 0, $supplier_uid = 0, $sid = 0,$iscashier = 0, $goodid = 0, $cartid = 0, $coupon_carrierid = 0)
@@ -495,308 +495,308 @@ if (!class_exists('CouponModel')) {
 			
 		}
 
-		function useConsumeCoupon($_var_35 = 0)
+		function useConsumeCoupon($logid5 = 0)
 		{
 			global $_W, $_GPC;
-			if (empty($_var_35)) {
+			if (empty($logid5)) {
 				return;
 			}
-			$_var_36 = pdo_fetch('select ordersn,createtime,couponid from ' . tablename('sz_yi_order') . ' where id=:id and status>=0 and uniacid=:uniacid limit 1', array(':id' => $_var_35, ':uniacid' => $_W['uniacid']));
-			if (empty($_var_36)) {
+			$order = pdo_fetch('select ordersn,createtime,couponid from ' . tablename('sz_yi_order') . ' where id=:id and status>=0 and uniacid=:uniacid limit 1', array(':id' => $logid5, ':uniacid' => $_W['uniacid']));
+			if (empty($order)) {
 				return;
 			}
-			$_var_1 = false;
-			if (!empty($_var_36['couponid'])) {
-				$_var_1 = $this->getCouponByDataID($_var_36['couponid']);
+			$coupon = false;
+			if (!empty($order['couponid'])) {
+				$coupon = $this->getCouponByDataID($order['couponid']);
 			}
-			if (empty($_var_1)) {
+			if (empty($coupon)) {
 				return;
 			}
-			pdo_update('sz_yi_coupon_data', array('used' => 1, 'usetime' => $_var_36['createtime'], 'ordersn' => $_var_36['ordersn']), array('id' => $_var_36['couponid']));
+			pdo_update('sz_yi_coupon_data', array('used' => 1, 'usetime' => $order['createtime'], 'ordersn' => $order['ordersn']), array('id' => $order['couponid']));
 		}
 
-		function returnConsumeCoupon($_var_36)
+		function returnConsumeCoupon($order)
 		{
 			global $_W;
-			if (!is_array($_var_36)) {
-				$_var_36 = pdo_fetch('select id,openid,ordersn,createtime,couponid,status,finishtime from ' . tablename('sz_yi_order') . ' where id=:id and status=-1 and uniacid=:uniacid limit 1', array(':id' => intval($_var_36), ':uniacid' => $_W['uniacid']));
+			if (!is_array($order)) {
+				$order = pdo_fetch('select id,openid,ordersn,createtime,couponid,status,finishtime from ' . tablename('sz_yi_order') . ' where id=:id and status=-1 and uniacid=:uniacid limit 1', array(':id' => intval($order), ':uniacid' => $_W['uniacid']));
 			}
-			if (empty($_var_36)) {
+			if (empty($order)) {
 				return;
 			}
-			$_var_1 = $this->getCouponByDataID($_var_36['couponid']);
-			if (empty($_var_1)) {
+			$coupon = $this->getCouponByDataID($order['couponid']);
+			if (empty($coupon)) {
 				return;
 			}
-			if (!empty($_var_1['returntype'])) {
-				if (!empty($_var_1['used'])) {
-					pdo_update('sz_yi_coupon_data', array('used' => 0, 'usetime' => 0, 'ordersn' => ''), array('id' => $_var_36['couponid']));
-					$this->sendReturnMessage($_var_36['openid'], $_var_1);
+			if (!empty($coupon['returntype'])) {
+				if (!empty($coupon['used'])) {
+					pdo_update('sz_yi_coupon_data', array('used' => 0, 'usetime' => 0, 'ordersn' => ''), array('id' => $order['couponid']));
+					$this->sendReturnMessage($order['openid'], $coupon);
 				}
 			}
 		}
 
-		function backConsumeCoupon($_var_36)
+		function backConsumeCoupon($order)
 		{
 			global $_W;
-			if (!is_array($_var_36)) {
-				$_var_36 = pdo_fetch('select id,openid,ordersn,createtime,couponid,status,finishtime,virtual from ' . tablename('sz_yi_order') . ' where id=:id and status>=0 and uniacid=:uniacid limit 1', array(':id' => intval($_var_36), ':uniacid' => $_W['uniacid']));
+			if (!is_array($order)) {
+				$order = pdo_fetch('select id,openid,ordersn,createtime,couponid,status,finishtime,virtual from ' . tablename('sz_yi_order') . ' where id=:id and status>=0 and uniacid=:uniacid limit 1', array(':id' => intval($order), ':uniacid' => $_W['uniacid']));
 			}
-			if (empty($_var_36)) {
+			if (empty($order)) {
 				return;
 			}
-			$_var_0 = $_var_36['couponid'];
-			if (empty($_var_0)) {
+			$couponid = $order['couponid'];
+			if (empty($couponid)) {
 				return;
 			}
-			$_var_1 = $this->getCouponByDataID($_var_36['couponid']);
-			if (empty($_var_1)) {
+			$coupon = $this->getCouponByDataID($order['couponid']);
+			if (empty($coupon)) {
 				return;
 			}
-			if (!empty($_var_1['back'])) {
+			if (!empty($coupon['back'])) {
 				return;
 			}
-			$_var_26 = array();
-			$_var_37 = false;
-			if ($_var_36['status'] == 1 && $_var_1['backwhen'] == 2) {
-				$_var_37 = true;
-			} else if ($_var_36['status'] == 3) {
-				if (!empty($_var_36['virtual'])) {
-					$_var_37 = true;
+			$gives = array();
+			$canback = false;
+			if ($order['status'] == 1 && $coupon['backwhen'] == 2) {
+				$canback = true;
+			} else if ($order['status'] == 3) {
+				if (!empty($order['virtual'])) {
+					$canback = true;
 				} else {
-					if ($_var_1['backwhen'] == 1) {
-						$_var_37 = true;
-					} else if ($_var_1['backwhen'] == 0) {
-						$_var_37 = true;
-						$_var_38 = m('common')->getSysset('trade');
-						$_var_39 = intval($_var_38['refunddays']);
-						if ($_var_39 > 0) {
-							$_var_40 = intval((time() - $_var_36['finishtime']) / 3600 / 24);
-							if ($_var_40 <= $_var_39) {
-								$_var_37 = false;
+					if ($coupon['backwhen'] == 1) {
+						$canback = true;
+					} else if ($coupon['backwhen'] == 0) {
+						$canback = true;
+						$tradeset = m('common')->getSysset('trade');
+						$refunddays = intval($tradeset['refunddays']);
+						if ($refunddays > 0) {
+							$days = intval((time() - $order['finishtime']) / 3600 / 24);
+							if ($days <= $refunddays) {
+								$canback = false;
 							}
 						}
 					}
 				}
 			}
-			if ($_var_37) {
-				$_var_41 = pdo_fetchcolumn('select ifnull( sum(og.realprice),0) from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_order') . ' o on o.id=og.orderid ' . ' where o.id=:orderid and o.openid=:openid and o.uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':openid' => $_var_36['openid'], ':orderid' => $_var_36['id']));
-				$_var_29 = $_var_1['backcredit'];
-				if (!empty($_var_29)) {
-					if (strexists($_var_29, '%')) {
-						$_var_29 = intval(floatval(str_replace('%', '', $_var_29)) / 100 * $_var_41);
+			if ($canback) {
+				$ordermoney = pdo_fetchcolumn('select ifnull( sum(og.realprice),0) from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_order') . ' o on o.id=og.orderid ' . ' where o.id=:orderid and o.openid=:openid and o.uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':openid' => $order['openid'], ':orderid' => $order['id']));
+				$backcredit = $coupon['backcredit'];
+				if (!empty($backcredit)) {
+					if (strexists($backcredit, '%')) {
+						$backcredit = intval(floatval(str_replace('%', '', $backcredit)) / 100 * $ordermoney);
 					} else {
-						$_var_29 = intval($_var_29);
+						$backcredit = intval($backcredit);
 					}
-					if ($_var_29 > 0) {
-						$_var_26['credit'] = $_var_29;
-						m('member')->setCredit($_var_36['openid'], 'credit1', $_var_29, array(0, '充值优惠券返积分'));
+					if ($backcredit > 0) {
+						$gives['credit'] = $backcredit;
+						m('member')->setCredit($order['openid'], 'credit1', $backcredit, array(0, '充值优惠券返积分'));
 					}
 				}
-				$_var_30 = $_var_1['backmoney'];
-				if (!empty($_var_30)) {
-					if (strexists($_var_30, '%')) {
-						$_var_30 = round(floatval(floatval(str_replace('%', '', $_var_30)) / 100 * $_var_41), 2);
+				$backmoney = $coupon['backmoney'];
+				if (!empty($backmoney)) {
+					if (strexists($backmoney, '%')) {
+						$backmoney = round(floatval(floatval(str_replace('%', '', $backmoney)) / 100 * $ordermoney), 2);
 					} else {
-						$_var_30 = round(floatval($_var_30), 2);
+						$backmoney = round(floatval($backmoney), 2);
 					}
-					if ($_var_30 > 0) {
-						$_var_26['money'] = $_var_30;
-						m('member')->setCredit($_var_36['openid'], 'credit2', $_var_30, array(0, '购物优惠券返利'));
+					if ($backmoney > 0) {
+						$gives['money'] = $backmoney;
+						m('member')->setCredit($order['openid'], 'credit2', $backmoney, array(0, '购物优惠券返利'));
 					}
 				}
-				$_var_31 = $_var_1['backredpack'];
-				if (!empty($_var_31)) {
-					if (strexists($_var_31, '%')) {
-						$_var_31 = round(floatval(floatval(str_replace('%', '', $_var_31)) / 100 * $_var_41), 2);
+				$backredpack = $coupon['backredpack'];
+				if (!empty($backredpack)) {
+					if (strexists($backredpack, '%')) {
+						$backredpack = round(floatval(floatval(str_replace('%', '', $backredpack)) / 100 * $ordermoney), 2);
 					} else {
-						$_var_31 = round(floatval($_var_31), 2);
+						$backredpack = round(floatval($backredpack), 2);
 					}
-					if ($_var_31 > 0) {
-						$_var_26['redpack'] = $_var_31;
-						$_var_31 = intval($_var_31 * 100);
-						m('finance')->pay($_var_36['openid'], 1, $_var_31, '', '购物优惠券-返现金');
+					if ($backredpack > 0) {
+						$gives['redpack'] = $backredpack;
+						$backredpack = intval($backredpack * 100);
+						m('finance')->pay($order['openid'], 1, $backredpack, '', '购物优惠券-返现金');
 					}
 				}
-				pdo_update('sz_yi_coupon_data', array('back' => 1, 'backtime' => time()), array('id' => $_var_36['couponid']));
-				$this->sendBackMessage($_var_36['openid'], $_var_1, $_var_26);
+				pdo_update('sz_yi_coupon_data', array('back' => 1, 'backtime' => time()), array('id' => $order['couponid']));
+				$this->sendBackMessage($order['openid'], $coupon, $gives);
 			}
 		}
 
-		function getCoupon($_var_0 = 0)
+		function getCoupon($couponid = 0)
 		{
 			global $_W;
-			return pdo_fetch('select * from ' . tablename('sz_yi_coupon') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $_var_0, ':uniacid' => $_W['uniacid']));
+			return pdo_fetch('select * from ' . tablename('sz_yi_coupon') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $couponid, ':uniacid' => $_W['uniacid']));
 		}
 
-		function getCouponByDataID($_var_42 = 0)
+		function getCouponByDataID($dataid = 0)
 		{
 			global $_W;
-			$_var_9 = pdo_fetch('select id,openid,couponid,used,back,backtime from ' . tablename('sz_yi_coupon_data') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $_var_42, ':uniacid' => $_W['uniacid']));
-			if (empty($_var_9)) {
+			$data = pdo_fetch('select id,openid,couponid,used,back,backtime from ' . tablename('sz_yi_coupon_data') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $dataid, ':uniacid' => $_W['uniacid']));
+			if (empty($data)) {
 				return false;
 			}
-			$_var_1 = pdo_fetch('select * from ' . tablename('sz_yi_coupon') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $_var_9['couponid'], ':uniacid' => $_W['uniacid']));
-			if (empty($_var_1)) {
+			$coupon = pdo_fetch('select * from ' . tablename('sz_yi_coupon') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $data['couponid'], ':uniacid' => $_W['uniacid']));
+			if (empty($coupon)) {
 				return false;
 			}
-			$_var_1['back'] = $_var_9['back'];
-			$_var_1['backtime'] = $_var_9['backtime'];
-			$_var_1['used'] = $_var_9['used'];
-			$_var_1['usetime'] = $_var_9['usetime'];
-			return $_var_1;
+			$coupon['back'] = $data['back'];
+			$coupon['backtime'] = $data['backtime'];
+			$coupon['used'] = $data['used'];
+			$coupon['usetime'] = $data['usetime'];
+			return $coupon;
 		}
 
-		function setCoupon($_var_43, $_var_33, $_var_44 = true)
+		function setCoupon($row, $time, $withOpenid = true)
 		{
 			global $_W;
-			if ($_var_44) {
-				$_var_25 = m('user')->getOpenid();
+			if ($withOpenid) {
+				$openid = m('user')->getOpenid();
 			}
-			$_var_43['free'] = false;
-			$_var_43['past'] = false;
-			$_var_43['thumb'] = tomedia($_var_43['thumb']);
-			if ($_var_43['money'] > 0 && $_var_43['credit'] > 0) {
-				$_var_43['getstatus'] = 0;
-				$_var_43['gettypestr'] = '购买';
-			} else if ($_var_43['money'] > 0) {
-				$_var_43['getstatus'] = 1;
-				$_var_43['gettypestr'] = '购买';
-			} else if ($_var_43['credit'] > 0) {
-				$_var_43['getstatus'] = 2;
-				$_var_43['gettypestr'] = '兑换';
+			$row['free'] = false;
+			$row['past'] = false;
+			$row['thumb'] = tomedia($row['thumb']);
+			if ($row['money'] > 0 && $row['credit'] > 0) {
+				$row['getstatus'] = 0;
+				$row['gettypestr'] = '购买';
+			} else if ($row['money'] > 0) {
+				$row['getstatus'] = 1;
+				$row['gettypestr'] = '购买';
+			} else if ($row['credit'] > 0) {
+				$row['getstatus'] = 2;
+				$row['gettypestr'] = '兑换';
 			} else {
-				$_var_43['getstatus'] = 3;
-				$_var_43['gettypestr'] = '领取';
+				$row['getstatus'] = 3;
+				$row['gettypestr'] = '领取';
 			}
-			$_var_43['timestr'] = "0";
-			if (empty($_var_43['timelimit'])) {
-				if (!empty($_var_43['timedays'])) {
-					$_var_43['timestr'] = 1;
+			$row['timestr'] = "0";
+			if (empty($row['timelimit'])) {
+				if (!empty($row['timedays'])) {
+					$row['timestr'] = 1;
 				}
 			} else {
-				if ($_var_43['timestart'] >= $_var_33) {
-					$_var_43['timestr'] = date('Y-m-d', $_var_43['timestart']) . '-' . date('Y-m-d', $_var_43['timeend']);
+				if ($row['timestart'] >= $time) {
+					$row['timestr'] = date('Y-m-d', $row['timestart']) . '-' . date('Y-m-d', $row['timeend']);
 				} else {
-					$_var_43['timestr'] = date('Y-m-d', $_var_43['timeend']);
+					$row['timestr'] = date('Y-m-d', $row['timeend']);
 				}
 			}
-			$_var_43['css'] = 'deduct';
-			if ($_var_43['backtype'] == 0) {
-				$_var_43['backstr'] = '立减';
-				$_var_43['css'] = 'deduct';
-				$_var_43['backpre'] = true;
-				$_var_43['_backmoney'] = $_var_43['deduct'];
-			} else if ($_var_43['backtype'] == 1) {
-				$_var_43['backstr'] = '折';
-				$_var_43['css'] = 'discount';
-				$_var_43['_backmoney'] = $_var_43['discount'];
-			} else if ($_var_43['backtype'] == 2) {
-				if (!empty($_var_43['backredpack'])) {
-					$_var_43['backstr'] = '返现';
-					$_var_43['css'] = 'redpack';
-					$_var_43['backpre'] = true;
-					$_var_43['_backmoney'] = $_var_43['backredpack'];
-				} else if (!empty($_var_43['backmoney'])) {
-					$_var_43['backstr'] = '返利';
-					$_var_43['css'] = 'money';
-					$_var_43['backpre'] = true;
-					$_var_43['_backmoney'] = $_var_43['backmoney'];
-				} else if (!empty($_var_43['backcredit'])) {
-					$_var_43['backstr'] = '返积分';
-					$_var_43['css'] = 'credit';
-					$_var_43['_backmoney'] = $_var_43['backcredit'];
+			$row['css'] = 'deduct';
+			if ($row['backtype'] == 0) {
+				$row['backstr'] = '立减';
+				$row['css'] = 'deduct';
+				$row['backpre'] = true;
+				$row['_backmoney'] = $row['deduct'];
+			} else if ($row['backtype'] == 1) {
+				$row['backstr'] = '折';
+				$row['css'] = 'discount';
+				$row['_backmoney'] = $row['discount'];
+			} else if ($row['backtype'] == 2) {
+				if (!empty($row['backredpack'])) {
+					$row['backstr'] = '返现';
+					$row['css'] = 'redpack';
+					$row['backpre'] = true;
+					$row['_backmoney'] = $row['backredpack'];
+				} else if (!empty($row['backmoney'])) {
+					$row['backstr'] = '返利';
+					$row['css'] = 'money';
+					$row['backpre'] = true;
+					$row['_backmoney'] = $row['backmoney'];
+				} else if (!empty($row['backcredit'])) {
+					$row['backstr'] = '返积分';
+					$row['css'] = 'credit';
+					$row['_backmoney'] = $row['backcredit'];
 				}
 			}
-			if ($_var_44) {
-				$_var_43['cangetmax'] = -1;
-				$_var_43['canget'] = true;
-				if ($_var_43['getmax'] > 0) {
-					$_var_45 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_coupon_data') . ' where couponid=:couponid and openid=:openid and uniacid=:uniacid and gettype=1 limit 1', array(':couponid' => $_var_43['id'], ':openid' => $_var_25, ':uniacid' => $_W['uniacid']));
-					$_var_43['cangetmax'] = $_var_43['getmax'] - $_var_45;
-					if ($_var_43['cangetmax'] <= 0) {
-						$_var_43['cangetmax'] = 0;
-						$_var_43['canget'] = false;
+			if ($withOpenid) {
+				$row['cangetmax'] = -1;
+				$row['canget'] = true;
+				if ($row['getmax'] > 0) {
+					$gets = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_coupon_data') . ' where couponid=:couponid and openid=:openid and uniacid=:uniacid and gettype=1 limit 1', array(':couponid' => $row['id'], ':openid' => $openid, ':uniacid' => $_W['uniacid']));
+					$row['cangetmax'] = $row['getmax'] - $gets;
+					if ($row['cangetmax'] <= 0) {
+						$row['cangetmax'] = 0;
+						$row['canget'] = false;
 					}
 				}
 			}
-			return $_var_43;
+			return $row;
 		}
 
-		function setMyCoupon($_var_43, $_var_33)
+		function setMyCoupon($row, $time)
 		{
 			global $_W;
-			$_var_43['past'] = false;
-			$_var_43['thumb'] = tomedia($_var_43['thumb']);
-			$_var_43['timestr'] = "";
-			if (empty($_var_43['timelimit'])) {
-				if (!empty($_var_43['timedays'])) {
-					$_var_43['timestr'] = date('Y-m-d', $_var_43['gettime'] + $_var_43['timedays'] * 86400);
-					if ($_var_43['gettime'] + $_var_43['timedays'] * 86400 < $_var_33) {
-						$_var_43['past'] = true;
+			$row['past'] = false;
+			$row['thumb'] = tomedia($row['thumb']);
+			$row['timestr'] = "";
+			if (empty($row['timelimit'])) {
+				if (!empty($row['timedays'])) {
+					$row['timestr'] = date('Y-m-d', $row['gettime'] + $row['timedays'] * 86400);
+					if ($row['gettime'] + $row['timedays'] * 86400 < $time) {
+						$row['past'] = true;
 					}
 				}
 			} else {
-				if ($_var_43['timestart'] >= $_var_33) {
-					$_var_43['timestr'] = date('Y-m-d H:i', $_var_43['timestart']) . '-' . date('Y-m-d', $_var_43['timeend']);
+				if ($row['timestart'] >= $time) {
+					$row['timestr'] = date('Y-m-d H:i', $row['timestart']) . '-' . date('Y-m-d', $row['timeend']);
 				} else {
-					$_var_43['timestr'] = date('Y-m-d H:i', $_var_43['timeend']);
+					$row['timestr'] = date('Y-m-d H:i', $row['timeend']);
 				}
-				if ($_var_43['timeend'] < $_var_33) {
-					$_var_43['past'] = true;
-				}
-			}
-			$_var_43['css'] = 'deduct';
-			if ($_var_43['backtype'] == 0) {
-				$_var_43['backstr'] = '立减';
-				$_var_43['css'] = 'deduct';
-				$_var_43['backpre'] = true;
-				$_var_43['_backmoney'] = $_var_43['deduct'];
-			} else if ($_var_43['backtype'] == 1) {
-				$_var_43['backstr'] = '折';
-				$_var_43['css'] = 'discount';
-				$_var_43['_backmoney'] = $_var_43['discount'];
-			} else if ($_var_43['backtype'] == 2) {
-				if (!empty($_var_43['backredpack'])) {
-					$_var_43['backstr'] = '返现';
-					$_var_43['css'] = 'redpack';
-					$_var_43['backpre'] = true;
-					$_var_43['_backmoney'] = $_var_43['backredpack'];
-				} else if (!empty($_var_43['backmoney'])) {
-					$_var_43['backstr'] = '返利';
-					$_var_43['css'] = 'money';
-					$_var_43['backpre'] = true;
-					$_var_43['_backmoney'] = $_var_43['backmoney'];
-				} else if (!empty($_var_43['backcredit'])) {
-					$_var_43['backstr'] = '返积分';
-					$_var_43['css'] = 'credit';
-					$_var_43['_backmoney'] = $_var_43['backcredit'];
+				if ($row['timeend'] < $time) {
+					$row['past'] = true;
 				}
 			}
-			if ($_var_43['past']) {
-				$_var_43['css'] = 'past';
+			$row['css'] = 'deduct';
+			if ($row['backtype'] == 0) {
+				$row['backstr'] = '立减';
+				$row['css'] = 'deduct';
+				$row['backpre'] = true;
+				$row['_backmoney'] = $row['deduct'];
+			} else if ($row['backtype'] == 1) {
+				$row['backstr'] = '折';
+				$row['css'] = 'discount';
+				$row['_backmoney'] = $row['discount'];
+			} else if ($row['backtype'] == 2) {
+				if (!empty($row['backredpack'])) {
+					$row['backstr'] = '返现';
+					$row['css'] = 'redpack';
+					$row['backpre'] = true;
+					$row['_backmoney'] = $row['backredpack'];
+				} else if (!empty($row['backmoney'])) {
+					$row['backstr'] = '返利';
+					$row['css'] = 'money';
+					$row['backpre'] = true;
+					$row['_backmoney'] = $row['backmoney'];
+				} else if (!empty($row['backcredit'])) {
+					$row['backstr'] = '返积分';
+					$row['css'] = 'credit';
+					$row['_backmoney'] = $row['backcredit'];
+				}
 			}
-			return $_var_43;
+			if ($row['past']) {
+				$row['css'] = 'past';
+			}
+			return $row;
 		}
 
 		function setShare()
 		{
 			global $_W, $_GPC;
-			$_var_10 = $this->getSet();
-			$_var_25 = m('user')->getOpenid();
-			$_var_16 = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&p=coupon&m=sz_yi&do=plugin";
-			$_W['shopshare'] = array('title' => $_var_10['title'], 'imgUrl' => tomedia($_var_10['icon']), 'desc' => $_var_10['desc'], 'link' => $_var_16);
+			$set = $this->getSet();
+			$openid = m('user')->getOpenid();
+			$url = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&p=coupon&m=sz_yi&do=plugin";
+			$_W['shopshare'] = array('title' => $set['title'], 'imgUrl' => tomedia($set['icon']), 'desc' => $set['desc'], 'link' => $url);
 			if (p('commission')) {
-				$_var_46 = p('commission')->getSet();
-				if (!empty($_var_46['level'])) {
-					$_var_6 = m('member')->getMember($_var_25);
-					if (!empty($_var_6) && $_var_6['status'] == 1 && $_var_6['isagent'] == 1) {
-						$_W['shopshare']['link'] = $_var_16 . '&mid=' . $_var_6['id'];
-						if (empty($_var_46['become_reg']) && (empty($_var_6['realname']) || empty($_var_6['mobile']))) {
-							$_var_47 = true;
+				$pset = p('commission')->getSet();
+				if (!empty($pset['level'])) {
+					$member = m('member')->getMember($openid);
+					if (!empty($member) && $member['status'] == 1 && $member['isagent'] == 1) {
+						$_W['shopshare']['link'] = $url . '&mid=' . $member['id'];
+						if (empty($pset['become_reg']) && (empty($member['realname']) || empty($member['mobile']))) {
+							$trigger = true;
 						}
 					} else if (!empty($_GPC['mid'])) {
-						$_W['shopshare']['link'] = $_var_16 . '&mid=' . $_GPC['id'];
+						$_W['shopshare']['link'] = $url . '&mid=' . $_GPC['id'];
 					}
 				}
 			}

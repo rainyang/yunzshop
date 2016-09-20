@@ -422,7 +422,7 @@ if (!class_exists('CashierModel')) {
                                 )
                             );
 
-                            $_var_156 = array(
+                            $msg = array(
                                 'keyword1' => array('value' => '收银台收款发送红包失败', 'color' => '#73a68d'),
                                 'keyword2' => array('value' => '【订单编号】' . $row['ordersn'], 'color' => '#73a68d'),
                                 'remark' => array('value' => '收银台收款红包发送失败！失败原因：'.$error)
@@ -435,7 +435,7 @@ if (!class_exists('CashierModel')) {
                                     'id' => $orderid
                                 )
                             );
-                            m('message')->sendCustomNotice($openid, $_var_156);
+                            m('message')->sendCustomNotice($openid, $msg);
                         }
                         return error(-2, $error);
                     }
