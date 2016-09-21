@@ -13,7 +13,6 @@ define('TM_COMMISSION_BECOME', 'commission_become');
 if (!class_exists('CommissionModel')) {
 	class CommissionModel extends PluginModel
 	{
-		//基础设置
 		public function getSet()
 		{
 			$set = parent::getSet();
@@ -22,7 +21,7 @@ if (!class_exists('CommissionModel')) {
 
 			return $set;
 		}
-		//订单佣金计算
+
 		public function calculate($orderid = 0, $update = true)
 		{
 			global $_W;
@@ -137,7 +136,7 @@ if (!class_exists('CommissionModel')) {
 				}
 			}
 		}
-		//查询订单分佣金额
+
 		public function getOrderCommissions($orderid = 0, $ordergoodsid = 0)
 		{
 			global $_W;
@@ -169,357 +168,357 @@ if (!class_exists('CommissionModel')) {
 			}
 			return $OrderCommissions;
 		}
-		//获取分销商详细信息
-		public function getInfo($openid, $options = null)
+
+		public function getInfo($openid, $_var_21 = null)
 		{
-			if (empty($options) || !is_array($options)) {
-				$options = array();
+			if (empty($_var_21) || !is_array($_var_21)) {
+				$_var_21 = array();
 			}
 			global $_W;
 			$set = $this->getSet();
-			$level = intval($set['level']);
+			$_var_8 = intval($set['level']);
 			$member = m('member')->getMember($openid);
-			$agentLevel = $this->getLevel($openid);
-			$time = time();
-			$day_times = intval($set['settledays']) * 3600 * 24;
+			$_var_23 = $this->getLevel($openid);
+			$_var_24 = time();
+			$_var_25 = intval($set['settledays']) * 3600 * 24;
 			$withdraw_day = intval($set['withdraw_day']) * 3600 * 24;
-			$agentcount = 0;
-			$ordercount0 = 0;
-			$ordermoney0 = 0;
-			$ordercount = 0;
-			$ordermoney = 0;
-			$ordercount3 = 0;
-			$ordermoney3 = 0;
+			$_var_26 = 0;
+			$_var_27 = 0;
+			$_var_28 = 0;
+			$_var_29 = 0;
+			$_var_30 = 0;
+			$_var_31 = 0;
+			$_var_32 = 0;
 			$commission_total = 0;
 			$commission_ok = 0;
 			$commission_apply = 0;
 			$commission_check = 0;
 			$commission_lock = 0;
 			$commission_pay = 0;
-			$level1 = 0;
-			$level2 = 0;
-			$level3 = 0;
-			$order10 = 0;
-			$order20 = 0;
-			$order30 = 0;
-			$order1 = 0;
-			$order2 = 0;
-			$order3 = 0;
-			$order13 = 0;
-			$order23 = 0;
-			$order33 = 0;
-			$order13money = 0;
-			$order23money = 0;
-			$order33money = 0;
+			$_var_39 = 0;
+			$_var_40 = 0;
+			$_var_41 = 0;
+			$_var_42 = 0;
+			$_var_43 = 0;
+			$_var_44 = 0;
+			$_var_45 = 0;
+			$_var_46 = 0;
+			$_var_47 = 0;
+			$_var_48 = 0;
+			$_var_49 = 0;
+			$_var_50 = 0;
+			$_var_51 = 0;
+			$_var_52 = 0;
+			$_var_53 = 0;
 			$myordermoney = 0;
 			$myordercount = 0;
-			if ($level >= 1) {
-				if (in_array('ordercount0', $options)) {
-					$level1_ordercount = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=0 and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+			if ($_var_8 >= 1) {
+				if (in_array('ordercount0', $_var_21)) {
+					$_var_54 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=0 and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					if(p('hotel')){
-					$level1_ordercount = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=0 and o.status<>4 and o.status<>5 and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					$_var_54 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=0 and o.status<>4 and o.status<>5 and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					}
-					$order10 += $level1_ordercount['ordercount'];
-					$ordercount0 += $level1_ordercount['ordercount'];
-					$ordermoney0 += $level1_ordercount['ordermoney'];
+					$_var_42 += $_var_54['ordercount'];
+					$_var_27 += $_var_54['ordercount'];
+					$_var_28 += $_var_54['ordermoney'];
 				}
-				if (in_array('ordercount', $options)) {
-					$level1_ordercount = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=1 and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+				if (in_array('ordercount', $_var_21)) {
+					$_var_54 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=1 and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					if(p('hotel')){
-					$level1_ordercount = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=1 and o.status<>4 and o.status<>5 and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					$_var_54 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=1 and o.status<>4 and o.status<>5 and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					}
-					$order1 += $level1_ordercount['ordercount'];
-					$ordercount += $level1_ordercount['ordercount'];
-					$ordermoney += $level1_ordercount['ordermoney'];
+					$_var_45 += $_var_54['ordercount'];
+					$_var_29 += $_var_54['ordercount'];
+					$_var_30 += $_var_54['ordermoney'];
 				}
-				if (in_array('ordercount3', $options)) {
-					$level1_ordercount3 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=3  and o.status<>5 and o.status<>4 and o.status<>6  and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
-					$order13 += $level1_ordercount3['ordercount'];
-					$ordercount3 += $level1_ordercount3['ordercount'];
-					$ordermoney3 += $level1_ordercount3['ordermoney'];
-					$order13money += $level1_ordercount3['ordermoney'];
+				if (in_array('ordercount3', $_var_21)) {
+					$_var_55 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid=:agentid and o.status>=3  and o.status<>5 and o.status<>4 and o.status<>6  and og.status1>=0 and og.nocommission=0 and o.uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					$_var_48 += $_var_55['ordercount'];
+					$_var_31 += $_var_55['ordercount'];
+					$_var_32 += $_var_55['ordermoney'];
+					$_var_51 += $_var_55['ordermoney'];
 				}
-				if (in_array('total', $options)) {
-					$level1_commissions = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+				if (in_array('total', $_var_21)) {
+					$_var_56 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					if(p('hotel')){
-					$level1_commissions = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=1 and o.status<>4  and o.status<>5 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					$_var_56 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=1 and o.status<>4  and o.status<>5 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 
 					}
-					foreach ($level1_commissions as $c) {
-						$commission = iunserializer($c['commissions']);
-						$commission_pay = iunserializer($c['commission1']);
-						if (empty($commission)) {
-							$commission_total += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+					foreach ($_var_56 as $_var_57) {
+						$_var_9 = iunserializer($_var_57['commissions']);
+						$_var_58 = iunserializer($_var_57['commission1']);
+						if (empty($_var_9)) {
+							$commission_total += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 						} else {
-							$commission_total += isset($commission['level1']) ? floatval($commission['level1']) : 0;
+							$commission_total += isset($_var_9['level1']) ? floatval($_var_9['level1']) : 0;
 						}
 					}
 				}
-				if (in_array('ok', $options)) {
-					$level1_commissions = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . " where o.agentid=:agentid and o.status>=3 and o.status<>6  and o.status<>4 and o.status<>5 and og.nocommission=0 and ({$time} - o.createtime > {$day_times}) and og.status1=0  and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
-					foreach ($level1_commissions as $c) {
-						$commission = iunserializer($c['commissions']);
-						$commission_pay = iunserializer($c['commission1']);
-						if (empty($commission)) {
-							$commission_ok += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+				if (in_array('ok', $_var_21)) {
+					$_var_56 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . " where o.agentid=:agentid and o.status>=3 and o.status<>6  and o.status<>4 and o.status<>5 and og.nocommission=0 and ({$_var_24} - o.createtime > {$_var_25}) and og.status1=0  and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					foreach ($_var_56 as $_var_57) {
+						$_var_9 = iunserializer($_var_57['commissions']);
+						$_var_58 = iunserializer($_var_57['commission1']);
+						if (empty($_var_9)) {
+							$commission_ok += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 						} else {
-							$commission_ok += isset($commission['level1']) ? $commission['level1'] : 0;
+							$commission_ok += isset($_var_9['level1']) ? $_var_9['level1'] : 0;
 						}
 					}
 				}
-				if (in_array('lock', $options)) {
-					$level1_commissions1 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . " where o.agentid=:agentid and o.status>=3 and  o.status<>6 and o.status<>4 and o.status<>5 and og.nocommission=0 and ({$time} - o.createtime <= {$day_times})  and og.status1=0  and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
-					foreach ($level1_commissions1 as $c) {
-						$commission = iunserializer($c['commissions']);
-						$commission_pay = iunserializer($c['commission1']);
-						if (empty($commission)) {
-							$commission_lock += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+				if (in_array('lock', $_var_21)) {
+					$_var_59 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . " where o.agentid=:agentid and o.status>=3 and  o.status<>6 and o.status<>4 and o.status<>5 and og.nocommission=0 and ({$_var_24} - o.createtime <= {$_var_25})  and og.status1=0  and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					foreach ($_var_59 as $_var_57) {
+						$_var_9 = iunserializer($_var_57['commissions']);
+						$_var_58 = iunserializer($_var_57['commission1']);
+						if (empty($_var_9)) {
+							$commission_lock += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 						} else {
-							$commission_lock += isset($commission['level1']) ? $commission['level1'] : 0;
+							$commission_lock += isset($_var_9['level1']) ? $_var_9['level1'] : 0;
 						}
 					}
 				}
-				if (in_array('apply', $options)) {
-					$level1_commissions2 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=3  and o.status<>6 and o.status<>4 and og.status1=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
-					foreach ($level1_commissions2 as $c) {
-						$commission = iunserializer($c['commissions']);
-						$commission_pay = iunserializer($c['commission1']);
-						if (empty($commission)) {
-							$commission_apply += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+				if (in_array('apply', $_var_21)) {
+					$_var_60 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=3  and o.status<>6 and o.status<>4 and og.status1=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					foreach ($_var_60 as $_var_57) {
+						$_var_9 = iunserializer($_var_57['commissions']);
+						$_var_58 = iunserializer($_var_57['commission1']);
+						if (empty($_var_9)) {
+							$commission_apply += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 						} else {
-							$commission_apply += isset($commission['level1']) ? $commission['level1'] : 0;
+							$commission_apply += isset($_var_9['level1']) ? $_var_9['level1'] : 0;
 						}
 					}
 				}
-				if (in_array('check', $options)) {
-					$level1_commissions2 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=3 and  o.status<>6  and o.status<>4   and og.status1=2 and og.nocommission=0 and o.uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
-					foreach ($level1_commissions2 as $c) {
-						$commission = iunserializer($c['commissions']);
-						$commission_pay = iunserializer($c['commission1']);
-						if (empty($commission)) {
-							$commission_check += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+				if (in_array('check', $_var_21)) {
+					$_var_60 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=3 and  o.status<>6  and o.status<>4   and og.status1=2 and og.nocommission=0 and o.uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					foreach ($_var_60 as $_var_57) {
+						$_var_9 = iunserializer($_var_57['commissions']);
+						$_var_58 = iunserializer($_var_57['commission1']);
+						if (empty($_var_9)) {
+							$commission_check += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 						} else {
-							$commission_check += isset($commission['level1']) ? $commission['level1'] : 0;
+							$commission_check += isset($_var_9['level1']) ? $_var_9['level1'] : 0;
 						}
 					}
 				}
-				if (in_array('pay', $options)) {
-					$level1_commissions2 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=3 and  o.status<>6 and o.status<>4 and o.status<>5 and og.status1=3 and og.nocommission=0 and o.uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
-					foreach ($level1_commissions2 as $c) {
-						$commission = iunserializer($c['commissions']);
-						$commission_pay = iunserializer($c['commission1']);
-						if (empty($commission)) {
-							$commission_pay += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+				if (in_array('pay', $_var_21)) {
+					$_var_60 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=3 and  o.status<>6 and o.status<>4 and o.status<>5 and og.status1=3 and og.nocommission=0 and o.uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
+					foreach ($_var_60 as $_var_57) {
+						$_var_9 = iunserializer($_var_57['commissions']);
+						$_var_58 = iunserializer($_var_57['commission1']);
+						if (empty($_var_9)) {
+							$commission_pay += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 						} else {
-							$commission_pay += isset($commission['level1']) ? $commission['level1'] : 0;
+							$commission_pay += isset($_var_9['level1']) ? $_var_9['level1'] : 0;
 						}
 					}
 				}
-				$level1_agentids = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid=:agentid and isagent=1 and status=1 and uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']), 'id');
-				$level1 = count($level1_agentids);
-				$agentcount += $level1;
+				$_var_61 = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid=:agentid and isagent=1 and status=1 and uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']), 'id');
+				$_var_39 = count($_var_61);
+				$_var_26 += $_var_39;
 			}
-			if ($level >= 2) {
-				if ($level1 > 0) {
-					if (in_array('ordercount0', $options)) {
-						$level2_ordercount = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid in( ' . implode(',', array_keys($level1_agentids)) . ')  and o.status>=0 and o.status<>4 and og.status2>=0 and og.nocommission=0 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
-						$order20 += $level2_ordercount['ordercount'];
-						$ordercount0 += $level2_ordercount['ordercount'];
-						$ordermoney0 += $level2_ordercount['ordermoney'];
+			if ($_var_8 >= 2) {
+				if ($_var_39 > 0) {
+					if (in_array('ordercount0', $_var_21)) {
+						$_var_62 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ')  and o.status>=0 and o.status<>4 and og.status2>=0 and og.nocommission=0 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
+						$_var_43 += $_var_62['ordercount'];
+						$_var_27 += $_var_62['ordercount'];
+						$_var_28 += $_var_62['ordermoney'];
 					}
-					if (in_array('ordercount', $options)) {
-						$level2_ordercount = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid in( ' . implode(',', array_keys($level1_agentids)) . ')  and o.status>=1 and o.status<>4 and og.status2>=0 and og.nocommission=0 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
-						$order2 += $level2_ordercount['ordercount'];
-						$ordercount += $level2_ordercount['ordercount'];
-						$ordermoney += $level2_ordercount['ordermoney'];
+					if (in_array('ordercount', $_var_21)) {
+						$_var_62 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ')  and o.status>=1 and o.status<>4 and og.status2>=0 and og.nocommission=0 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
+						$_var_46 += $_var_62['ordercount'];
+						$_var_29 += $_var_62['ordercount'];
+						$_var_30 += $_var_62['ordermoney'];
 					}
-					if (in_array('ordercount3', $options)) {
-						$level2_ordercount3 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid in( ' . implode(',', array_keys($level1_agentids)) . ')  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status2>=0 and og.nocommission=0 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
-						$order23 += $level2_ordercount3['ordercount'];
-						$ordercount3 += $level2_ordercount3['ordercount'];
-						$ordermoney3 += $level2_ordercount3['ordermoney'];
-						$order23money += $level2_ordercount3['ordermoney'];
+					if (in_array('ordercount3', $_var_21)) {
+						$_var_63 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct o.id) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ')  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status2>=0 and og.nocommission=0 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
+						$_var_49 += $_var_63['ordercount'];
+						$_var_31 += $_var_63['ordercount'];
+						$_var_32 += $_var_63['ordermoney'];
+						$_var_52 += $_var_63['ordermoney'];
 					}
-					if (in_array('total', $options)) {
-						$level2_commissions = pdo_fetchall('select og.commission2,og.commissions from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($level1_agentids)) . ')  and o.status>=1 and o.status<>4 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
-						foreach ($level2_commissions as $c) {
-							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission2']);
-							if (empty($commission)) {
-								$commission_total += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+					if (in_array('total', $_var_21)) {
+						$_var_64 = pdo_fetchall('select og.commission2,og.commissions from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ')  and o.status>=1 and o.status<>4 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+						foreach ($_var_64 as $_var_57) {
+							$_var_9 = iunserializer($_var_57['commissions']);
+							$_var_58 = iunserializer($_var_57['commission2']);
+							if (empty($_var_9)) {
+								$commission_total += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 							} else {
-								$commission_total += isset($commission['level2']) ? $commission['level2'] : 0;
+								$commission_total += isset($_var_9['level2']) ? $_var_9['level2'] : 0;
 							}
 						}
 					}
-					if (in_array('ok', $options)) {
-						$level2_commissions = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($level1_agentids)) . ")  and ({$time} - o.createtime > {$day_times}) and o.status>=3  and  o.status<>6 and o.status<>4 and o.status<>5 and og.status2=0 and og.nocommission=0  and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
-						foreach ($level2_commissions as $c) {
-							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission2']);
-							if (empty($commission)) {
-								$commission_ok += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+					if (in_array('ok', $_var_21)) {
+						$_var_64 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ")  and ({$_var_24} - o.createtime > {$_var_25}) and o.status>=3  and  o.status<>6 and o.status<>4 and o.status<>5 and og.status2=0 and og.nocommission=0  and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
+						foreach ($_var_64 as $_var_57) {
+							$_var_9 = iunserializer($_var_57['commissions']);
+							$_var_58 = iunserializer($_var_57['commission2']);
+							if (empty($_var_9)) {
+								$commission_ok += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 							} else {
-								$commission_ok += isset($commission['level2']) ? $commission['level2'] : 0;
+								$commission_ok += isset($_var_9['level2']) ? $_var_9['level2'] : 0;
 							}
 						}
 					}
-					if (in_array('lock', $options)) {
-						$level2_commissions1 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($level1_agentids)) . ")  and ({$time} - o.createtime <= {$day_times}) and og.status2=0 and o.status>=3  and  o.status<>6 and o.status<>4 and o.status<>5 and og.nocommission=0 and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
-						foreach ($level2_commissions1 as $c) {
-							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission2']);
-							if (empty($commission)) {
-								$commission_lock += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+					if (in_array('lock', $_var_21)) {
+						$_var_65 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ")  and ({$_var_24} - o.createtime <= {$_var_25}) and og.status2=0 and o.status>=3  and  o.status<>6 and o.status<>4 and o.status<>5 and og.nocommission=0 and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
+						foreach ($_var_65 as $_var_57) {
+							$_var_9 = iunserializer($_var_57['commissions']);
+							$_var_58 = iunserializer($_var_57['commission2']);
+							if (empty($_var_9)) {
+								$commission_lock += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 							} else {
-								$commission_lock += isset($commission['level2']) ? $commission['level2'] : 0;
+								$commission_lock += isset($_var_9['level2']) ? $_var_9['level2'] : 0;
 							}
 						}
 					}
-					if (in_array('apply', $options)) {
-						$level2_commissions2 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($level1_agentids)) . ')  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status2=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
-						foreach ($level2_commissions2 as $c) {
-							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission2']);
-							if (empty($commission)) {
-								$commission_apply += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+					if (in_array('apply', $_var_21)) {
+						$_var_66 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ')  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status2=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+						foreach ($_var_66 as $_var_57) {
+							$_var_9 = iunserializer($_var_57['commissions']);
+							$_var_58 = iunserializer($_var_57['commission2']);
+							if (empty($_var_9)) {
+								$commission_apply += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 							} else {
-								$commission_apply += isset($commission['level2']) ? $commission['level2'] : 0;
+								$commission_apply += isset($_var_9['level2']) ? $_var_9['level2'] : 0;
 							}
 						}
 					}
-					if (in_array('check', $options)) {
-						$level2_commissions3 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($level1_agentids)) . ')  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status2=2 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
-						foreach ($level2_commissions3 as $c) {
-							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission2']);
-							if (empty($commission)) {
-								$commission_check += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+					if (in_array('check', $_var_21)) {
+						$_var_67 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ')  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status2=2 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+						foreach ($_var_67 as $_var_57) {
+							$_var_9 = iunserializer($_var_57['commissions']);
+							$_var_58 = iunserializer($_var_57['commission2']);
+							if (empty($_var_9)) {
+								$commission_check += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 							} else {
-								$commission_check += isset($commission['level2']) ? $commission['level2'] : 0;
+								$commission_check += isset($_var_9['level2']) ? $_var_9['level2'] : 0;
 							}
 						}
 					}
-					if (in_array('pay', $options)) {
-						$level2_commissions3 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($level1_agentids)) . ')  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status2=3 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
-						foreach ($level2_commissions3 as $c) {
-							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission2']);
-							if (empty($commission)) {
-								$commission_pay += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+					if (in_array('pay', $_var_21)) {
+						$_var_67 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($_var_61)) . ')  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status2=3 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+						foreach ($_var_67 as $_var_57) {
+							$_var_9 = iunserializer($_var_57['commissions']);
+							$_var_58 = iunserializer($_var_57['commission2']);
+							if (empty($_var_9)) {
+								$commission_pay += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 							} else {
-								$commission_pay += isset($commission['level2']) ? $commission['level2'] : 0;
+								$commission_pay += isset($_var_9['level2']) ? $_var_9['level2'] : 0;
 							}
 						}
 					}
-					$level2_agentids = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid in( ' . implode(',', array_keys($level1_agentids)) . ') and isagent=1 and status=1 and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']), 'id');
-					$level2 = count($level2_agentids);
-					$agentcount += $level2;
+					$_var_68 = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid in( ' . implode(',', array_keys($_var_61)) . ') and isagent=1 and status=1 and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']), 'id');
+					$_var_40 = count($_var_68);
+					$_var_26 += $_var_40;
 				}
 			}
-			if ($level >= 3) {
-				if ($level2 > 0) {
-					if (in_array('ordercount0', $options)) {
-						$level3_ordercount = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid in( ' . implode(',', array_keys($level2_agentids)) . ')  and o.status>=0 and o.status<>4 and og.status3>=0 and og.nocommission=0 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
-						$order30 += $level3_ordercount['ordercount'];
-						$ordercount0 += $level3_ordercount['ordercount'];
-						$ordermoney0 += $level3_ordercount['ordermoney'];
+			if ($_var_8 >= 3) {
+				if ($_var_40 > 0) {
+					if (in_array('ordercount0', $_var_21)) {
+						$_var_69 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ')  and o.status>=0 and o.status<>4 and og.status3>=0 and og.nocommission=0 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
+						$_var_44 += $_var_69['ordercount'];
+						$_var_27 += $_var_69['ordercount'];
+						$_var_28 += $_var_69['ordermoney'];
 					}
-					if (in_array('ordercount', $options)) {
-						$level3_ordercount = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid in( ' . implode(',', array_keys($level2_agentids)) . ')  and o.status>=1 and o.status<>4 and og.status3>=0 and og.nocommission=0 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
-						$order3 += $level3_ordercount['ordercount'];
-						$ordercount += $level3_ordercount['ordercount'];
-						$ordermoney += $level3_ordercount['ordermoney'];
+					if (in_array('ordercount', $_var_21)) {
+						$_var_69 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ')  and o.status>=1 and o.status<>4 and og.status3>=0 and og.nocommission=0 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
+						$_var_47 += $_var_69['ordercount'];
+						$_var_29 += $_var_69['ordercount'];
+						$_var_30 += $_var_69['ordermoney'];
 					}
-					if (in_array('ordercount3', $options)) {
-						$level3_ordercount3 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid in( ' . implode(',', array_keys($level2_agentids)) . ')  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status3>=0 and og.nocommission=0 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
-						$order33 += $level3_ordercount3['ordercount'];
-						$ordercount3 += $level3_ordercount3['ordercount'];
-						$ordermoney3 += $level3_ordercount3['ordermoney'];
-						$order33money += $level3_ordercount['ordermoney'];
+					if (in_array('ordercount3', $_var_21)) {
+						$_var_70 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ')  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status3>=0 and og.nocommission=0 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid']));
+						$_var_50 += $_var_70['ordercount'];
+						$_var_31 += $_var_70['ordercount'];
+						$_var_32 += $_var_70['ordermoney'];
+						$_var_53 += $_var_69['ordermoney'];
 					}
-					if (in_array('total', $options)) {
-						$level3_commissions = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($level2_agentids)) . ')  and o.status>=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
-						foreach ($level3_commissions as $c) {
-							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission3']);
-							if (empty($commission)) {
-								$commission_total += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+					if (in_array('total', $_var_21)) {
+						$_var_71 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ')  and o.status>=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+						foreach ($_var_71 as $_var_57) {
+							$_var_9 = iunserializer($_var_57['commissions']);
+							$_var_58 = iunserializer($_var_57['commission3']);
+							if (empty($_var_9)) {
+								$commission_total += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 							} else {
-								$commission_total += isset($commission['level3']) ? $commission['level3'] : 0;
+								$commission_total += isset($_var_9['level3']) ? $_var_9['level3'] : 0;
 							}
 						}
 					}
-					if (in_array('ok', $options)) {
-						$level3_commissions = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($level2_agentids)) . ")  and ({$time} - o.createtime > {$day_times}) and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status3=0  and og.nocommission=0 and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
-						foreach ($level3_commissions as $c) {
-							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission3']);
-							if (empty($commission)) {
-								$commission_ok += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+					if (in_array('ok', $_var_21)) {
+						$_var_71 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ")  and ({$_var_24} - o.createtime > {$_var_25}) and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status3=0  and og.nocommission=0 and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
+						foreach ($_var_71 as $_var_57) {
+							$_var_9 = iunserializer($_var_57['commissions']);
+							$_var_58 = iunserializer($_var_57['commission3']);
+							if (empty($_var_9)) {
+								$commission_ok += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 							} else {
-								$commission_ok += isset($commission['level3']) ? $commission['level3'] : 0;
+								$commission_ok += isset($_var_9['level3']) ? $_var_9['level3'] : 0;
 							}
 						}
 					}
-					if (in_array('lock', $options)) {
-						$level3_commissions1 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($level2_agentids)) . ")  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and ({$time} - o.createtime > {$day_times}) and og.status3=0  and og.nocommission=0 and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
-						foreach ($level3_commissions1 as $c) {
-							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission3']);
-							if (empty($commission)) {
-								$commission_lock += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+					if (in_array('lock', $_var_21)) {
+						$_var_72 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ")  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and ({$_var_24} - o.createtime > {$_var_25}) and og.status3=0  and og.nocommission=0 and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
+						foreach ($_var_72 as $_var_57) {
+							$_var_9 = iunserializer($_var_57['commissions']);
+							$_var_58 = iunserializer($_var_57['commission3']);
+							if (empty($_var_9)) {
+								$commission_lock += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 							} else {
-								$commission_lock += isset($commission['level3']) ? $commission['level3'] : 0;
+								$commission_lock += isset($_var_9['level3']) ? $_var_9['level3'] : 0;
 							}
 						}
 					}
-					if (in_array('apply', $options)) {
-						$level3_commissions2 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($level2_agentids)) . ')  and o.status>=3 and o.status<>6  and o.status<>4 and o.status<>5 and og.status3=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
-						foreach ($level3_commissions2 as $c) {
-							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission3']);
-							if (empty($commission)) {
-								$commission_apply += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+					if (in_array('apply', $_var_21)) {
+						$_var_73 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ')  and o.status>=3 and o.status<>6  and o.status<>4 and o.status<>5 and og.status3=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+						foreach ($_var_73 as $_var_57) {
+							$_var_9 = iunserializer($_var_57['commissions']);
+							$_var_58 = iunserializer($_var_57['commission3']);
+							if (empty($_var_9)) {
+								$commission_apply += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 							} else {
-								$commission_apply += isset($commission['level3']) ? $commission['level3'] : 0;
+								$commission_apply += isset($_var_9['level3']) ? $_var_9['level3'] : 0;
 							}
 						}
 					}
-					if (in_array('check', $options)) {
-						$level3_commissions3 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($level2_agentids)) . ')  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status3=2 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
-						foreach ($level3_commissions3 as $c) {
-							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission3']);
-							if (empty($commission)) {
-								$commission_check += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+					if (in_array('check', $_var_21)) {
+						$_var_74 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ')  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status3=2 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+						foreach ($_var_74 as $_var_57) {
+							$_var_9 = iunserializer($_var_57['commissions']);
+							$_var_58 = iunserializer($_var_57['commission3']);
+							if (empty($_var_9)) {
+								$commission_check += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 							} else {
-								$commission_check += isset($commission['level3']) ? $commission['level3'] : 0;
+								$commission_check += isset($_var_9['level3']) ? $_var_9['level3'] : 0;
 							}
 						}
 					}
-					if (in_array('pay', $options)) {
-						$level3_commissions3 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($level2_agentids)) . ')  and o.status>=3  and o.status<>4 and o.status<>5 and o.status<>6 and og.status3=3 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
-						foreach ($level3_commissions3 as $c) {
-							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission3']);
-							if (empty($commission)) {
-								$commission_pay += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+					if (in_array('pay', $_var_21)) {
+						$_var_74 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($_var_68)) . ')  and o.status>=3  and o.status<>4 and o.status<>5 and o.status<>6 and og.status3=3 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+						foreach ($_var_74 as $_var_57) {
+							$_var_9 = iunserializer($_var_57['commissions']);
+							$_var_58 = iunserializer($_var_57['commission3']);
+							if (empty($_var_9)) {
+								$commission_pay += isset($_var_58['level' . $_var_23['id']]) ? $_var_58['level' . $_var_23['id']] : $_var_58['default'];
 							} else {
-								$commission_pay += isset($commission['level3']) ? $commission['level3'] : 0;
+								$commission_pay += isset($_var_9['level3']) ? $_var_9['level3'] : 0;
 							}
 						}
 					}
-					$level3_agentids = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where uniacid=:uniacid and agentid in( ' . implode(',', array_keys($level2_agentids)) . ') and isagent=1 and status=1', array(':uniacid' => $_W['uniacid']), 'id');
-					$level3 = count($level3_agentids);
-					$agentcount += $level3;
+					$_var_75 = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where uniacid=:uniacid and agentid in( ' . implode(',', array_keys($_var_68)) . ') and isagent=1 and status=1', array(':uniacid' => $_W['uniacid']), 'id');
+					$_var_41 = count($_var_75);
+					$_var_26 += $_var_41;
 				}
 			}
 			//Author:ym Date:2016-04-07 Content:自购完成订单
-			if (in_array('myorder', $options)) {
+			if (in_array('myorder', $_var_21)) {
 				$myorder_where = "";
 				if(p('love')){
-					$myorder_where .= " and ({$time} - o.finishtime <= {$withdraw_day}) and cashier=0";
+					$myorder_where .= " and ({$_var_24} - o.finishtime <= {$withdraw_day}) and cashier=0";
 				}
 				$myorder = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
 				//Author:ym Date:2016-04-07 Content:自购订单金额
@@ -542,80 +541,80 @@ if (!class_exists('CommissionModel')) {
 				$commission_pay -= $commission_pay_credit20;
 			}
 
-			$member['agentcount'] = $agentcount;
-			$member['ordercount'] = $ordercount;
-			$member['ordermoney'] = $ordermoney;
-			$member['order1'] = $order1;
-			$member['order2'] = $order2;
-			$member['order3'] = $order3;
-			$member['ordercount3'] = $ordercount3;
-			$member['ordermoney3'] = $ordermoney3;
-			$member['order13'] = $order13;
-			$member['order23'] = $order23;
-			$member['order33'] = $order33;
-			$member['order13money'] = $order13money;
-			$member['order23money'] = $order23money;
-			$member['order33money'] = $order33money;
-			$member['ordercount0'] = $ordercount0;
-			$member['ordermoney0'] = $ordermoney0;
-			$member['order10'] = $order10;
-			$member['order20'] = $order20;
-			$member['order30'] = $order30;
+			$member['agentcount'] = $_var_26;
+			$member['ordercount'] = $_var_29;
+			$member['ordermoney'] = $_var_30;
+			$member['order1'] = $_var_45;
+			$member['order2'] = $_var_46;
+			$member['order3'] = $_var_47;
+			$member['ordercount3'] = $_var_31;
+			$member['ordermoney3'] = $_var_32;
+			$member['order13'] = $_var_48;
+			$member['order23'] = $_var_49;
+			$member['order33'] = $_var_50;
+			$member['order13money'] = $_var_51;
+			$member['order23money'] = $_var_52;
+			$member['order33money'] = $_var_53;
+			$member['ordercount0'] = $_var_27;
+			$member['ordermoney0'] = $_var_28;
+			$member['order10'] = $_var_42;
+			$member['order20'] = $_var_43;
+			$member['order30'] = $_var_44;
 			$member['commission_total'] = round($commission_total, 2);
 			$member['commission_ok'] = round($commission_ok, 2);
 			$member['commission_lock'] = round($commission_lock, 2);
 			$member['commission_apply'] = round($commission_apply, 2);
 			$member['commission_check'] = round($commission_check, 2);
 			$member['commission_pay'] = round($commission_pay, 2);
-			$member['level1'] = $level1;
-			$member['level1_agentids'] = $level1_agentids;
-			$member['level2'] = $level2;
-			$member['level2_agentids'] = $level2_agentids;
-			$member['level3'] = $level3;
-			$member['level3_agentids'] = $level3_agentids;
+			$member['level1'] = $_var_39;
+			$member['level1_agentids'] = $_var_61;
+			$member['level2'] = $_var_40;
+			$member['level2_agentids'] = $_var_68;
+			$member['level3'] = $_var_41;
+			$member['level3_agentids'] = $_var_75;
 			$member['agenttime'] = date('Y-m-d H:i', $member['agenttime']);
 			$member['myordermoney'] = $myordermoney;
 			$member['myordercount'] = $myordercount;
 			return $member;
 		}
-		//获取该订单的所有分佣分销商
-		public function getAgents($orderid = 0)
+
+		public function getAgents($_var_1 = 0)
 		{
 			global $_W, $_GPC;
-			$agents = array();
-			$order = pdo_fetch('select id,agentid,openid from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
-			if (empty($order)) {
-				return $agents;
+			$_var_76 = array();
+			$_var_77 = pdo_fetch('select id,agentid,openid from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $_var_1, ':uniacid' => $_W['uniacid']));
+			if (empty($_var_77)) {
+				return $_var_76;
 			}
-			$m1 = m('member')->getMember($order['agentid']);
-			if (!empty($m1) && $m1['isagent'] == 1 && $m1['status'] == 1) {
-				$agents[] = $m1;
-				if (!empty($m1['agentid'])) {
-					$m2 = m('member')->getMember($m1['agentid']);
-					if (!empty($m2) && $m2['isagent'] == 1 && $m2['status'] == 1) {
-						$agents[] = $m2;
-						if (!empty($m2['agentid'])) {
-							$m3 = m('member')->getMember($m2['agentid']);
-							if (!empty($m3) && $m3['isagent'] == 1 && $m3['status'] == 1) {
-								$agents[] = $m3;
+			$_var_10 = m('member')->getMember($_var_77['agentid']);
+			if (!empty($_var_10) && $_var_10['isagent'] == 1 && $_var_10['status'] == 1) {
+				$_var_76[] = $_var_10;
+				if (!empty($_var_10['agentid'])) {
+					$_var_12 = m('member')->getMember($_var_10['agentid']);
+					if (!empty($_var_12) && $_var_12['isagent'] == 1 && $_var_12['status'] == 1) {
+						$_var_76[] = $_var_12;
+						if (!empty($_var_12['agentid'])) {
+							$_var_14 = m('member')->getMember($_var_12['agentid']);
+							if (!empty($_var_14) && $_var_14['isagent'] == 1 && $_var_14['status'] == 1) {
+								$_var_76[] = $_var_14;
 							}
 						}
 					}
 				}
 			}
-			return $agents;
+			return $_var_76;
 		}
-		//是否为分销商
-		public function isAgent($openid)
+
+		public function isAgent($_var_20)
 		{
-			if (empty($openid)) {
+			if (empty($_var_20)) {
 				return false;
 			}
-			if (is_array($openid)) {
-				return $openid['isagent'] == 1 && $openid['status'] == 1;
+			if (is_array($_var_20)) {
+				return $_var_20['isagent'] == 1 && $_var_20['status'] == 1;
 			}
-			$member = m('member')->getMember($openid);
-			return $member['isagent'] == 1 && $member['status'] == 1;
+			$_var_22 = m('member')->getMember($_var_20);
+			return $_var_22['isagent'] == 1 && $_var_22['status'] == 1;
 		}
 
 		//Author:ym Date:2016-05-06 Content:分成方式计算		
@@ -638,7 +637,7 @@ if (!class_exists('CommissionModel')) {
 				}
 			}
 		}
-		//获取商品的分销佣金
+
 		public function getCommission($goods)
 		{
 			global $_W;
@@ -658,210 +657,210 @@ if (!class_exists('CommissionModel')) {
 			}
 			return $commission;
 		}
-		//创建商城二维码
-		public function createMyShopQrcode($mid = 0, $posterid = 0)
+
+		public function createMyShopQrcode($_var_78 = 0, $_var_79 = 0)
 		{
 			global $_W;
-			$path = IA_ROOT . '/addons/sz_yi/data/qrcode/' . $_W['uniacid'];
-			if (!is_dir($path)) {
+			$_var_80 = IA_ROOT . '/addons/sz_yi/data/qrcode/' . $_W['uniacid'];
+			if (!is_dir($_var_80)) {
 				load()->func('file');
-				mkdirs($path);
+				mkdirs($_var_80);
 			}
-			$url = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=plugin&p=commission&method=myshop&mid=' . $mid;
-			if (!empty($posterid)) {
-				$url .= '&posterid=' . $posterid;
+			$_var_81 = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=plugin&p=commission&method=myshop&mid=' . $_var_78;
+			if (!empty($_var_79)) {
+				$_var_81 .= '&posterid=' . $_var_79;
 			}
-			$file = 'myshop_' . $posterid . '_' . $mid . '.png';
-			$qr_file = $path . '/' . $file;
-			if (!is_file($qr_file)) {
+			$_var_82 = 'myshop_' . $_var_79 . '_' . $_var_78 . '.png';
+			$_var_83 = $_var_80 . '/' . $_var_82;
+			if (!is_file($_var_83)) {
 				require IA_ROOT . '/framework/library/qrcode/phpqrcode.php';
-				QRcode::png($url, $qr_file, QR_ECLEVEL_H, 4);
+				QRcode::png($_var_81, $_var_83, QR_ECLEVEL_H, 4);
 			}
-			return $_W['siteroot'] . 'addons/sz_yi/data/qrcode/' . $_W['uniacid'] . '/' . $file;
+			return $_W['siteroot'] . 'addons/sz_yi/data/qrcode/' . $_W['uniacid'] . '/' . $_var_82;
 		}
-		//创建图像
-		private function createImage($url)
+
+		private function createImage($_var_81)
 		{
 			load()->func('communication');
-			$resp = ihttp_request($url);
-			return imagecreatefromstring($resp['content']);
+			$_var_84 = ihttp_request($_var_81);
+			return imagecreatefromstring($_var_84['content']);
 		}
-		//创建商品推广图
-		public function createGoodsImage($goods, $shop_set)
+
+		public function createGoodsImage($_var_5, $_var_85)
 		{
 			global $_W, $_GPC;
-			$goods = set_medias($goods, 'thumb');
-			$openid = m('user')->getOpenid();
-			$me = m('member')->getMember($openid);
-			if ($me['isagent'] == 1 && $me['status'] == 1) {
-				$userinfo = $me;
+			$_var_5 = set_medias($_var_5, 'thumb');
+			$_var_20 = m('user')->getOpenid();
+			$_var_86 = m('member')->getMember($_var_20);
+			if ($_var_86['isagent'] == 1 && $_var_86['status'] == 1) {
+				$_var_87 = $_var_86;
 			} else {
-				$mid = intval($_GPC['mid']);
-				if (!empty($mid)) {
-					$userinfo = m('member')->getMember($mid);
+				$_var_78 = intval($_GPC['mid']);
+				if (!empty($_var_78)) {
+					$_var_87 = m('member')->getMember($_var_78);
 				}
 			}
-			$path = IA_ROOT . '/addons/sz_yi/data/poster/' . $_W['uniacid'] . '/';
-			if (!is_dir($path)) {
+			$_var_80 = IA_ROOT . '/addons/sz_yi/data/poster/' . $_W['uniacid'] . '/';
+			if (!is_dir($_var_80)) {
 				load()->func('file');
-				mkdirs($path);
+				mkdirs($_var_80);
 			}
-			$img = empty($goods['commission_thumb']) ? $goods['thumb'] : tomedia($goods['commission_thumb']);
-			$md5 = md5(json_encode(array('id' => $goods['id'], 'marketprice' => $goods['marketprice'], 'productprice' => $goods['productprice'], 'img' => $img, 'openid' => $openid, 'version' => 4)));
-			$file = $md5 . '.jpg';
-			//echo $path . $file;exit;
-			if (!is_file($path . $file)) {
+			$_var_88 = empty($_var_5['commission_thumb']) ? $_var_5['thumb'] : tomedia($_var_5['commission_thumb']);
+			$_var_89 = md5(json_encode(array('id' => $_var_5['id'], 'marketprice' => $_var_5['marketprice'], 'productprice' => $_var_5['productprice'], 'img' => $_var_88, 'openid' => $_var_20, 'version' => 4)));
+			$_var_82 = $_var_89 . '.jpg';
+			//echo $_var_80 . $_var_82;exit;
+			if (!is_file($_var_80 . $_var_82)) {
 				
 				set_time_limit(0);
-				$font = IA_ROOT . '/addons/sz_yi/static/fonts/msyh.ttf';
-				$target = imagecreatetruecolor(640, 1225);
+				$_var_90 = IA_ROOT . '/addons/sz_yi/static/fonts/msyh.ttf';
+				$_var_91 = imagecreatetruecolor(640, 1225);
 				if(!is_weixin()){
 					$location_num = 196;
-					$bg = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster_pc.jpg');
+					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster_pc.jpg');
 				}else{
 					$location_num = 50;
-					$bg = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
+					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
 				}
-				$imgusername = $userinfo['nickname'] ? $userinfo['nickname'] : $userinfo['realname'];
-				$imgusername = $imgusername ? $imgusername : $userinfo['mobile'];
-				imagecopy($target, $bg, 0, 0, 0, 0, 640, 1225);
-				imagedestroy($bg);
-				$avatar = preg_replace('/\\/0$/i', '/96', $userinfo['avatar']);
-				$head = $this->createImage($avatar);
-				$w = imagesx($head);
-				$h = imagesy($head);
-				imagecopyresized($target, $head, 24, 32, 0, 0, 88, 88, $w, $h);
-				imagedestroy($head);
-				$thumb = $this->createImage($img);
-				$w = imagesx($thumb);
-				$h = imagesy($thumb);
-				imagecopyresized($target, $thumb, 0, 160, 0, 0, 640, 640, $w, $h);
-				imagedestroy($thumb);
-				$black = imagecreatetruecolor(640, 127);
-				imagealphablending($black, false);
-				imagesavealpha($black, true);
-				$blackcolor = imagecolorallocatealpha($black, 0, 0, 0, 25);
-				imagefill($black, 0, 0, $blackcolor);
-				imagecopy($target, $black, 0, 678, 0, 0, 640, 127);
-				imagedestroy($black);
-				$goods_qrcode_file = tomedia(m('qrcode')->createGoodsQrcode($userinfo['id'], $goods['id']));
-				$qrcode = $this->createImage($goods_qrcode_file);
-				$w = imagesx($qrcode);
-				$h = imagesy($qrcode);
-				imagecopyresized($target, $qrcode, $location_num, 835, 0, 0, 250, 250, $w, $h);
-				imagedestroy($qrcode);
-				$bc = imagecolorallocate($target, 0, 3, 51);
-				$cc = imagecolorallocate($target, 240, 102, 0);
-				$wc = imagecolorallocate($target, 255, 255, 255);
-				$yc = imagecolorallocate($target, 255, 255, 0);
-				$str1 = '我是';
-				imagettftext($target, 20, 0, 150, 70, $bc, $font, $str1);
-				imagettftext($target, 20, 0, 210, 70, $cc, $font, $imgusername);
-				$str2 = '我要为';
-				imagettftext($target, 20, 0, 150, 105, $bc, $font, $str2);
-				$str3 = $shop_set['name'];
-				imagettftext($target, 20, 0, 240, 105, $cc, $font, $str3);
-				$box = imagettfbbox(20, 0, $font, $str3);
-				$width = $box[4] - $box[6];
-				$str4 = '代言';
-				imagettftext($target, 20, 0, 240 + $width + 10, 105, $bc, $font, $str4);
-				$str5 = mb_substr($goods['title'], 0, 50, 'utf-8');
-				imagettftext($target, 20, 0, 30, 730, $wc, $font, $str5);
-				$str6 = '￥' . number_format($goods['marketprice'], 2);
-				imagettftext($target, 25, 0, 25, 780, $yc, $font, $str6);
-				$box = imagettfbbox(26, 0, $font, $str6);
-				$width = $box[4] - $box[6];
-				if ($goods['productprice'] > 0) {
-					$str7 = '￥' . number_format($goods['productprice'], 2);
-					imagettftext($target, 22, 0, 25 + $width + 10, 780, $wc, $font, $str7);
-					$end = 25 + $width + 10;
-					$box = imagettfbbox(22, 0, $font, $str7);
-					$width = $box[4] - $box[6];
-					imageline($target, $end, 770, $end + $width + 20, 770, $wc);
-					imageline($target, $end, 771.5, $end + $width + 20, 771, $wc);
+				$imgusername = $_var_87['nickname'] ? $_var_87['nickname'] : $_var_87['realname'];
+				$imgusername = $imgusername ? $imgusername : $_var_87['mobile'];
+				imagecopy($_var_91, $_var_92, 0, 0, 0, 0, 640, 1225);
+				imagedestroy($_var_92);
+				$_var_93 = preg_replace('/\\/0$/i', '/96', $_var_87['avatar']);
+				$_var_94 = $this->createImage($_var_93);
+				$_var_95 = imagesx($_var_94);
+				$_var_96 = imagesy($_var_94);
+				imagecopyresized($_var_91, $_var_94, 24, 32, 0, 0, 88, 88, $_var_95, $_var_96);
+				imagedestroy($_var_94);
+				$_var_97 = $this->createImage($_var_88);
+				$_var_95 = imagesx($_var_97);
+				$_var_96 = imagesy($_var_97);
+				imagecopyresized($_var_91, $_var_97, 0, 160, 0, 0, 640, 640, $_var_95, $_var_96);
+				imagedestroy($_var_97);
+				$_var_98 = imagecreatetruecolor(640, 127);
+				imagealphablending($_var_98, false);
+				imagesavealpha($_var_98, true);
+				$_var_99 = imagecolorallocatealpha($_var_98, 0, 0, 0, 25);
+				imagefill($_var_98, 0, 0, $_var_99);
+				imagecopy($_var_91, $_var_98, 0, 678, 0, 0, 640, 127);
+				imagedestroy($_var_98);
+				$_var_100 = tomedia(m('qrcode')->createGoodsQrcode($_var_87['id'], $_var_5['id']));
+				$_var_101 = $this->createImage($_var_100);
+				$_var_95 = imagesx($_var_101);
+				$_var_96 = imagesy($_var_101);
+				imagecopyresized($_var_91, $_var_101, $location_num, 835, 0, 0, 250, 250, $_var_95, $_var_96);
+				imagedestroy($_var_101);
+				$_var_102 = imagecolorallocate($_var_91, 0, 3, 51);
+				$_var_103 = imagecolorallocate($_var_91, 240, 102, 0);
+				$_var_104 = imagecolorallocate($_var_91, 255, 255, 255);
+				$_var_105 = imagecolorallocate($_var_91, 255, 255, 0);
+				$_var_106 = '我是';
+				imagettftext($_var_91, 20, 0, 150, 70, $_var_102, $_var_90, $_var_106);
+				imagettftext($_var_91, 20, 0, 210, 70, $_var_103, $_var_90, $imgusername);
+				$_var_107 = '我要为';
+				imagettftext($_var_91, 20, 0, 150, 105, $_var_102, $_var_90, $_var_107);
+				$_var_108 = $_var_85['name'];
+				imagettftext($_var_91, 20, 0, 240, 105, $_var_103, $_var_90, $_var_108);
+				$_var_109 = imagettfbbox(20, 0, $_var_90, $_var_108);
+				$_var_110 = $_var_109[4] - $_var_109[6];
+				$_var_111 = '代言';
+				imagettftext($_var_91, 20, 0, 240 + $_var_110 + 10, 105, $_var_102, $_var_90, $_var_111);
+				$_var_112 = mb_substr($_var_5['title'], 0, 50, 'utf-8');
+				imagettftext($_var_91, 20, 0, 30, 730, $_var_104, $_var_90, $_var_112);
+				$_var_113 = '￥' . number_format($_var_5['marketprice'], 2);
+				imagettftext($_var_91, 25, 0, 25, 780, $_var_105, $_var_90, $_var_113);
+				$_var_109 = imagettfbbox(26, 0, $_var_90, $_var_113);
+				$_var_110 = $_var_109[4] - $_var_109[6];
+				if ($_var_5['productprice'] > 0) {
+					$_var_114 = '￥' . number_format($_var_5['productprice'], 2);
+					imagettftext($_var_91, 22, 0, 25 + $_var_110 + 10, 780, $_var_104, $_var_90, $_var_114);
+					$_var_115 = 25 + $_var_110 + 10;
+					$_var_109 = imagettfbbox(22, 0, $_var_90, $_var_114);
+					$_var_110 = $_var_109[4] - $_var_109[6];
+					imageline($_var_91, $_var_115, 770, $_var_115 + $_var_110 + 20, 770, $_var_104);
+					imageline($_var_91, $_var_115, 771.5, $_var_115 + $_var_110 + 20, 771, $_var_104);
 				}
-				imagejpeg($target, $path . $file);
-				imagedestroy($target);
+				imagejpeg($_var_91, $_var_80 . $_var_82);
+				imagedestroy($_var_91);
 			}
-			return $_W['siteroot'] . 'addons/sz_yi/data/poster/' . $_W['uniacid'] . '/' . $file;
+			return $_W['siteroot'] . 'addons/sz_yi/data/poster/' . $_W['uniacid'] . '/' . $_var_82;
 		}
-		//创建商城推广图
-		public function createShopImage($shop_set)
+
+		public function createShopImage($_var_85)
 		{
 			global $_W, $_GPC;
-			$shop_set = set_medias($shop_set, 'signimg');
-			$path = IA_ROOT . '/addons/sz_yi/data/poster/' . $_W['uniacid'] . '/';
-			if (!is_dir($path)) {
+			$_var_85 = set_medias($_var_85, 'signimg');
+			$_var_80 = IA_ROOT . '/addons/sz_yi/data/poster/' . $_W['uniacid'] . '/';
+			if (!is_dir($_var_80)) {
 				load()->func('file');
-				mkdirs($path);
+				mkdirs($_var_80);
 			}
-			$mid = intval($_GPC['mid']);
-			$openid = m('user')->getOpenid();
-			$me = m('member')->getMember($openid);
-			if ($me['isagent'] == 1 && $me['status'] == 1) {
-				$userinfo = $me;
+			$_var_78 = intval($_GPC['mid']);
+			$_var_20 = m('user')->getOpenid();
+			$_var_86 = m('member')->getMember($_var_20);
+			if ($_var_86['isagent'] == 1 && $_var_86['status'] == 1) {
+				$_var_87 = $_var_86;
 			} else {
-				$mid = intval($_GPC['mid']);
-				if (!empty($mid)) {
-					$userinfo = m('member')->getMember($mid);
+				$_var_78 = intval($_GPC['mid']);
+				if (!empty($_var_78)) {
+					$_var_87 = m('member')->getMember($_var_78);
 				}
 			}
-			$md5 = md5(json_encode(array('openid' => $openid, 'signimg' => $shop_set['signimg'], 'version' => 4)));
-			$file = $md5 . '.jpg';
-			if (!is_file($path . $file)) {
+			$_var_89 = md5(json_encode(array('openid' => $_var_20, 'signimg' => $_var_85['signimg'], 'version' => 4)));
+			$_var_82 = $_var_89 . '.jpg';
+			if (!is_file($_var_80 . $_var_82)) {
 				set_time_limit(0);
 				@ini_set('memory_limit', '256M');
-				$font = IA_ROOT . '/addons/sz_yi/static/fonts/msyh.ttf';
-				$target = imagecreatetruecolor(640, 1225);
-				$bc = imagecolorallocate($target, 0, 3, 51);
-				$cc = imagecolorallocate($target, 240, 102, 0);
-				$wc = imagecolorallocate($target, 255, 255, 255);
-				$yc = imagecolorallocate($target, 255, 255, 0);
+				$_var_90 = IA_ROOT . '/addons/sz_yi/static/fonts/msyh.ttf';
+				$_var_91 = imagecreatetruecolor(640, 1225);
+				$_var_102 = imagecolorallocate($_var_91, 0, 3, 51);
+				$_var_103 = imagecolorallocate($_var_91, 240, 102, 0);
+				$_var_104 = imagecolorallocate($_var_91, 255, 255, 255);
+				$_var_105 = imagecolorallocate($_var_91, 255, 255, 0);
 				if(!is_weixin()){
-					$bg = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster_pc.jpg');
+					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster_pc.jpg');
 					$location_num = 196;
 				}else{
-					$bg = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
+					$_var_92 = imagecreatefromjpeg(IA_ROOT . '/addons/sz_yi/plugin/commission/images/poster.jpg');
 					$location_num = 50;
 				}
-				$imgusername = $userinfo['nickname'] ? $userinfo['nickname'] : $userinfo['realname'];
-				$imgusername = $imgusername ? $imgusername : $userinfo['mobile'];
-				imagecopy($target, $bg, 0, 0, 0, 0, 640, 1225);
-				imagedestroy($bg);
-				$avatar = preg_replace('/\\/0$/i', '/96', $userinfo['avatar']);
-				$head = $this->createImage($avatar);
-				$w = imagesx($head);
-				$h = imagesy($head);
-				imagecopyresized($target, $head, 24, 32, 0, 0, 88, 88, $w, $h);
-				imagedestroy($head);
-				$thumb = $this->createImage($shop_set['signimg']);
-				$w = imagesx($thumb);
-				$h = imagesy($thumb);
-				imagecopyresized($target, $thumb, 0, 160, 0, 0, 640, 640, $w, $h);
-				imagedestroy($thumb);
-				$qrcode_file = tomedia($this->createMyShopQrcode($userinfo['id']));
-				$qrcode = $this->createImage($qrcode_file);
-				$w = imagesx($qrcode);
-				$h = imagesy($qrcode);
-				imagecopyresized($target, $qrcode, $location_num, 835, 0, 0, 250, 250, $w, $h);
-				imagedestroy($qrcode);
-				$str1 = '我是';
-				imagettftext($target, 20, 0, 150, 70, $bc, $font, $str1);
-				imagettftext($target, 20, 0, 210, 70, $cc, $font, $imgusername);
-				$str2 = '我要为';
-				imagettftext($target, 20, 0, 150, 105, $bc, $font, $str2);
-				$str3 = $shop_set['name'];
-				imagettftext($target, 20, 0, 240, 105, $cc, $font, $str3);
-				$box = imagettfbbox(20, 0, $font, $str3);
-				$width = $box[4] - $box[6];
-				$str4 = '代言';
-				imagettftext($target, 20, 0, 240 + $width + 10, 105, $bc, $font, $str4);
-				imagejpeg($target, $path . $file);
-				imagedestroy($target);
+				$imgusername = $_var_87['nickname'] ? $_var_87['nickname'] : $_var_87['realname'];
+				$imgusername = $imgusername ? $imgusername : $_var_87['mobile'];
+				imagecopy($_var_91, $_var_92, 0, 0, 0, 0, 640, 1225);
+				imagedestroy($_var_92);
+				$_var_93 = preg_replace('/\\/0$/i', '/96', $_var_87['avatar']);
+				$_var_94 = $this->createImage($_var_93);
+				$_var_95 = imagesx($_var_94);
+				$_var_96 = imagesy($_var_94);
+				imagecopyresized($_var_91, $_var_94, 24, 32, 0, 0, 88, 88, $_var_95, $_var_96);
+				imagedestroy($_var_94);
+				$_var_97 = $this->createImage($_var_85['signimg']);
+				$_var_95 = imagesx($_var_97);
+				$_var_96 = imagesy($_var_97);
+				imagecopyresized($_var_91, $_var_97, 0, 160, 0, 0, 640, 640, $_var_95, $_var_96);
+				imagedestroy($_var_97);
+				$_var_116 = tomedia($this->createMyShopQrcode($_var_87['id']));
+				$_var_101 = $this->createImage($_var_116);
+				$_var_95 = imagesx($_var_101);
+				$_var_96 = imagesy($_var_101);
+				imagecopyresized($_var_91, $_var_101, $location_num, 835, 0, 0, 250, 250, $_var_95, $_var_96);
+				imagedestroy($_var_101);
+				$_var_106 = '我是';
+				imagettftext($_var_91, 20, 0, 150, 70, $_var_102, $_var_90, $_var_106);
+				imagettftext($_var_91, 20, 0, 210, 70, $_var_103, $_var_90, $imgusername);
+				$_var_107 = '我要为';
+				imagettftext($_var_91, 20, 0, 150, 105, $_var_102, $_var_90, $_var_107);
+				$_var_108 = $_var_85['name'];
+				imagettftext($_var_91, 20, 0, 240, 105, $_var_103, $_var_90, $_var_108);
+				$_var_109 = imagettfbbox(20, 0, $_var_90, $_var_108);
+				$_var_110 = $_var_109[4] - $_var_109[6];
+				$_var_111 = '代言';
+				imagettftext($_var_91, 20, 0, 240 + $_var_110 + 10, 105, $_var_102, $_var_90, $_var_111);
+				imagejpeg($_var_91, $_var_80 . $_var_82);
+				imagedestroy($_var_91);
 			}
-			return $_W['siteroot'] . 'addons/sz_yi/data/poster/' . $_W['uniacid'] . '/' . $file;
+			return $_W['siteroot'] . 'addons/sz_yi/data/poster/' . $_W['uniacid'] . '/' . $_var_82;
 		}
-		//会员进入商城根据配置处理
+
 		public function checkAgent()
 		{
 			global $_W, $_GPC;
@@ -869,63 +868,63 @@ if (!class_exists('CommissionModel')) {
 			if (empty($set['level'])) {
 				return;
 			}
-			$openid = m('user')->getOpenid();
-			if (empty($openid)) {
+			$_var_20 = m('user')->getOpenid();
+			if (empty($_var_20)) {
 				return;
 			}
-			$member = m('member')->getMember($openid);
-			if (empty($member)) {
+			$_var_22 = m('member')->getMember($_var_20);
+			if (empty($_var_22)) {
 				return;
 			}
-			$parent = false;
-			$mid = intval($_GPC['mid']);
-			if (!empty($mid)) {
-				$parent = m('member')->getMember($mid);
+			$_var_117 = false;
+			$_var_78 = intval($_GPC['mid']);
+			if (!empty($_var_78)) {
+				$_var_117 = m('member')->getMember($_var_78);
 			}
-			$parent_is_agent = !empty($parent) && $parent['isagent'] == 1 && $parent['status'] == 1;
-			if ($parent_is_agent) {
-				if ($parent['openid'] != $openid) {
-					$clickcount = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_commission_clickcount') . ' where uniacid=:uniacid and openid=:openid and from_openid=:from_openid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':from_openid' => $parent['openid']));
-					if ($clickcount <= 0) {
-						$click = array('uniacid' => $_W['uniacid'], 'openid' => $openid, 'from_openid' => $parent['openid'], 'clicktime' => time());
-						pdo_insert('sz_yi_commission_clickcount', $click);
-						pdo_update('sz_yi_member', array('clickcount' => $parent['clickcount'] + 1), array('uniacid' => $_W['uniacid'], 'id' => $parent['id']));
+			$_var_118 = !empty($_var_117) && $_var_117['isagent'] == 1 && $_var_117['status'] == 1;
+			if ($_var_118) {
+				if ($_var_117['openid'] != $_var_20) {
+					$_var_119 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_commission_clickcount') . ' where uniacid=:uniacid and openid=:openid and from_openid=:from_openid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $_var_20, ':from_openid' => $_var_117['openid']));
+					if ($_var_119 <= 0) {
+						$_var_120 = array('uniacid' => $_W['uniacid'], 'openid' => $_var_20, 'from_openid' => $_var_117['openid'], 'clicktime' => time());
+						pdo_insert('sz_yi_commission_clickcount', $_var_120);
+						pdo_update('sz_yi_member', array('clickcount' => $_var_117['clickcount'] + 1), array('uniacid' => $_W['uniacid'], 'id' => $_var_117['id']));
 					}
 				}
 			}
-			if ($member['isagent'] == 1) {
+			if ($_var_22['isagent'] == 1) {
 				return;
 			}
-			if ($type == 0) {
-				$first = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . ' where id<:id and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $member['id']));
-				if ($first <= 0) {
-					pdo_update('sz_yi_member', array('isagent' => 1, 'status' => 1, 'agenttime' => time(), 'agentblack' => 0), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
+			if ($_var_121 == 0) {
+				$_var_122 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . ' where id<:id and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $_var_22['id']));
+				if ($_var_122 <= 0) {
+					pdo_update('sz_yi_member', array('isagent' => 1, 'status' => 1, 'agenttime' => time(), 'agentblack' => 0), array('uniacid' => $_W['uniacid'], 'id' => $_var_22['id']));
 					return;
 				}
 			}
-			$time = time();
-			$become_child = intval($set['become_child']);
-			if ($parent_is_agent && empty($member['agentid'])) {
-				if ($member['id'] != $parent['id']) {
-					if (empty($become_child)) {
-						if (empty($member['fixagentid'])) {
-							pdo_update('sz_yi_member', array('agentid' => $parent['id'], 'childtime' => $time), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
-							$this->sendMessage($parent['openid'], array('nickname' => $member['nickname'], 'childtime' => $time), TM_COMMISSION_AGENT_NEW);
-							$this->upgradeLevelByAgent($parent['id']);
+			$_var_24 = time();
+			$_var_123 = intval($set['become_child']);
+			if ($_var_118 && empty($_var_22['agentid'])) {
+				if ($_var_22['id'] != $_var_117['id']) {
+					if (empty($_var_123)) {
+						if (empty($_var_22['fixagentid'])) {
+							pdo_update('sz_yi_member', array('agentid' => $_var_117['id'], 'childtime' => $_var_24), array('uniacid' => $_W['uniacid'], 'id' => $_var_22['id']));
+							$this->sendMessage($_var_117['openid'], array('nickname' => $_var_22['nickname'], 'childtime' => $_var_24), TM_COMMISSION_AGENT_NEW);
+							$this->upgradeLevelByAgent($_var_117['id']);
 						}
 					} else {
-						pdo_update('sz_yi_member', array('inviter' => $parent['id']), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
+						pdo_update('sz_yi_member', array('inviter' => $_var_117['id']), array('uniacid' => $_W['uniacid'], 'id' => $_var_22['id']));
 					}
 				}
 			}
-			$become_check = intval($set['become_check']);
+			$_var_124 = intval($set['become_check']);
 			if (empty($set['become'])) {
-				if (empty($member['agentblack'])) {
-					pdo_update('sz_yi_member', array('isagent' => 1, 'status' => $become_check, 'agenttime' => $become_check == 1 ? $time : 0), array('uniacid' => $_W['uniacid'], 'id' => $member['id']));
-					if ($become_check == 1) {
-						$this->sendMessage($openid, array('nickname' => $member['nickname'], 'agenttime' => $time), TM_COMMISSION_BECOME);
-						if ($parent_is_agent) {
-							$this->upgradeLevelByAgent($parent['id']);
+				if (empty($_var_22['agentblack'])) {
+					pdo_update('sz_yi_member', array('isagent' => 1, 'status' => $_var_124, 'agenttime' => $_var_124 == 1 ? $_var_24 : 0), array('uniacid' => $_W['uniacid'], 'id' => $_var_22['id']));
+					if ($_var_124 == 1) {
+						$this->sendMessage($_var_20, array('nickname' => $_var_22['nickname'], 'agenttime' => $_var_24), TM_COMMISSION_BECOME);
+						if ($_var_118) {
+							$this->upgradeLevelByAgent($_var_117['id']);
 						}
 					}
 				}
@@ -935,7 +934,7 @@ if (!class_exists('CommissionModel')) {
 		/**
 		 * Author:ym
 		 * Date:2016-04-07
-		 * Content:处理提交订单
+		 * Content:修改编译变量，检查内购无问题。
 		 **/
 		public function checkOrderConfirm($orderid = '0')
 		{
@@ -999,7 +998,7 @@ if (!class_exists('CommissionModel')) {
 		/**
 		 * Author:ym
 		 * Date:2016-04-07
-		 * Content:处理订单支付
+		 * Content:修改编译变量
 		 **/
 		public function checkOrderPay($orderid = '0')
 		{
@@ -1202,7 +1201,7 @@ if (!class_exists('CommissionModel')) {
 		/**
 		 * Author:ym
 		 * Date:2016-04-07
-		 * Content:处理订单完成
+		 * Content:修改编译变量
 		 **/
 		public function checkOrderFinish($orderid = '')
 		{
@@ -1367,139 +1366,138 @@ if (!class_exists('CommissionModel')) {
 			$this->upgradeLevelByGood($orderid);
 		}
 
-		//获取小店的详细信息
-		function getShop($openid)
+		function getShop($_var_132)
 		{
 			global $_W;
-			$member = m('member')->getMember($openid);
-			$shop = pdo_fetch('select * from ' . tablename('sz_yi_commission_shop') . ' where uniacid=:uniacid and mid=:mid limit 1', array(':uniacid' => $_W['uniacid'], ':mid' => $member['id']));
-			$sysset = m('common')->getSysset(array('shop', 'share'));
-			$set = $sysset['shop'];
-			$share = $sysset['share'];
-			$desc = $share['desc'];
-			if (empty($desc)) {
-				$desc = $set['description'];
+			$_var_22 = m('member')->getMember($_var_132);
+			$_var_133 = pdo_fetch('select * from ' . tablename('sz_yi_commission_shop') . ' where uniacid=:uniacid and mid=:mid limit 1', array(':uniacid' => $_W['uniacid'], ':mid' => $_var_22['id']));
+			$_var_134 = m('common')->getSysset(array('shop', 'share'));
+			$set = $_var_134['shop'];
+			$_var_135 = $_var_134['share'];
+			$_var_136 = $_var_135['desc'];
+			if (empty($_var_136)) {
+				$_var_136 = $set['description'];
 			}
-			if (empty($desc)) {
-				$desc = $set['name'];
+			if (empty($_var_136)) {
+				$_var_136 = $set['name'];
 			}
-			$thisset = $this->getSet();
-			if (empty($shop)) {
-				$shop = array('name' => $member['nickname'] . '的' . $thisset['texts']['shop'], 'logo' => $member['avatar'], 'desc' => $desc, 'img' => tomedia($set['img']),);
+			$_var_137 = $this->getSet();
+			if (empty($_var_133)) {
+				$_var_133 = array('name' => $_var_22['nickname'] . '的' . $_var_137['texts']['shop'], 'logo' => $_var_22['avatar'], 'desc' => $_var_136, 'img' => tomedia($set['img']),);
 			} else {
-				if (empty($shop['name'])) {
-					$shop['name'] = $member['nickname'] . '的' . $thisset['texts']['shop'];
+				if (empty($_var_133['name'])) {
+					$_var_133['name'] = $_var_22['nickname'] . '的' . $_var_137['texts']['shop'];
 				}
-				if (empty($shop['logo'])) {
-					$shop['logo'] = tomedia($member['avatar']);
+				if (empty($_var_133['logo'])) {
+					$_var_133['logo'] = tomedia($_var_22['avatar']);
 				}
-				if (empty($shop['img'])) {
-					$shop['img'] = tomedia($set['img']);
+				if (empty($_var_133['img'])) {
+					$_var_133['img'] = tomedia($set['img']);
 				}
-				if (empty($shop['desc'])) {
-					$shop['desc'] = $desc;
+				if (empty($_var_133['desc'])) {
+					$_var_133['desc'] = $_var_136;
 				}
 			}
-			return $shop;
+			return $_var_133;
 		}
-		//获取全部分销商等级
-		function getLevels($all = true)
+
+		function getLevels($_var_138 = true)
 		{
 			global $_W;
-			if ($all) {
+			if ($_var_138) {
 				return pdo_fetchall('select * from ' . tablename('sz_yi_commission_level') . ' where uniacid=:uniacid order by commission1 asc', array(':uniacid' => $_W['uniacid']));
 			} else {
 				return pdo_fetchall('select * from ' . tablename('sz_yi_commission_level') . ' where uniacid=:uniacid and (ordermoney>0 or commissionmoney>0) order by commission1 asc', array(':uniacid' => $_W['uniacid']));
 			}
 		}
-		//查询个人分销商等级
-		function getLevel($openid)
+
+		function getLevel($_var_20)
 		{
 			global $_W;
-			if (empty($openid)) {
+			if (empty($_var_20)) {
 				return false;
 			}
-			$member = m('member')->getMember($openid);
-			if (empty($member['agentlevel'])) {
+			$_var_22 = m('member')->getMember($_var_20);
+			if (empty($_var_22['agentlevel'])) {
 				return false;
 			}
-			$level = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . ' where uniacid=:uniacid and id=:id limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $member['agentlevel']));
-			return $level;
+			$_var_8 = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . ' where uniacid=:uniacid and id=:id limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $_var_22['agentlevel']));
+			return $_var_8;
 		}
-		//用户分局订单条件升级
-		function upgradeLevelByOrder($openid)
+
+		function upgradeLevelByOrder($_var_20)
 		{
 			global $_W;
-			if (empty($openid)) {
+			if (empty($_var_20)) {
 				return false;
 			}
 			$set = $this->getSet();
 			if (empty($set['level'])) {
 				return false;
 			}
-			$member = m('member')->getMember($openid);
-			if (empty($member)) {
+			$_var_132 = m('member')->getMember($_var_20);
+			if (empty($_var_132)) {
 				return;
 			}
-			$leveltype = intval($set['leveltype']);
-			if ($leveltype == 4 || $leveltype == 5) {
-				if (!empty($member['agentnotupgrade'])) {
+			$_var_139 = intval($set['leveltype']);
+			if ($_var_139 == 4 || $_var_139 == 5) {
+				if (!empty($_var_132['agentnotupgrade'])) {
 					return;
 				}
-				$oldlevel = $this->getLevel($member['openid']);
-				if (empty($oldlevel['id'])) {
-					$oldlevel = array('levelname' => empty($set['levelname']) ? '普通等级' : $set['levelname'], 'commission1' => $set['commission1'], 'commission2' => $set['commission2'], 'commission3' => $set['commission3']);
+				$_var_140 = $this->getLevel($_var_132['openid']);
+				if (empty($_var_140['id'])) {
+					$_var_140 = array('levelname' => empty($set['levelname']) ? '普通等级' : $set['levelname'], 'commission1' => $set['commission1'], 'commission2' => $set['commission2'], 'commission3' => $set['commission3']);
 				}
-				$m31 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
-				$ordermoney = $m31['ordermoney'];
-				$ordercount = $m31['ordercount'];
-				if ($leveltype == 4) {
-					$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$ordermoney} >= ordermoney and ordermoney>0  order by ordermoney desc limit 1", array(':uniacid' => $_W['uniacid']));
-					if (empty($newlevel)) {
+				$_var_141 = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $_var_20));
+				$_var_30 = $_var_141['ordermoney'];
+				$_var_29 = $_var_141['ordercount'];
+				if ($_var_139 == 4) {
+					$_var_142 = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$_var_30} >= ordermoney and ordermoney>0  order by ordermoney desc limit 1", array(':uniacid' => $_W['uniacid']));
+					if (empty($_var_142)) {
 						return;
 					}
-					if (!empty($oldlevel['id'])) {
-						if ($oldlevel['id'] == $newlevel['id']) {
+					if (!empty($_var_140['id'])) {
+						if ($_var_140['id'] == $_var_142['id']) {
 							return;
 						}
-						if ($oldlevel['ordermoney'] > $newlevel['ordermoney']) {
+						if ($_var_140['ordermoney'] > $_var_142['ordermoney']) {
 							return;
 						}
 					}
-				} else if ($leveltype == 5) {
-					$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$ordercount} >= ordercount and ordercount>0  order by ordercount desc limit 1", array(':uniacid' => $_W['uniacid']));
-					if (empty($newlevel)) {
+				} else if ($_var_139 == 5) {
+					$_var_142 = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$_var_29} >= ordercount and ordercount>0  order by ordercount desc limit 1", array(':uniacid' => $_W['uniacid']));
+					if (empty($_var_142)) {
 						return;
 					}
-					if (!empty($oldlevel['id'])) {
-						if ($oldlevel['id'] == $newlevel['id']) {
+					if (!empty($_var_140['id'])) {
+						if ($_var_140['id'] == $_var_142['id']) {
 							return;
 						}
-						if ($oldlevel['ordercount'] > $newlevel['ordercount']) {
+						if ($_var_140['ordercount'] > $_var_142['ordercount']) {
 							return;
 						}
 					}
 				}
-				pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $member['id']));
-				$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
-			} else if ($leveltype >= 0 && $leveltype <= 3) {
-				$agents = array();
+				pdo_update('sz_yi_member', array('agentlevel' => $_var_142['id']), array('id' => $_var_132['id']));
+				$this->sendMessage($_var_132['openid'], array('nickname' => $_var_132['nickname'], 'oldlevel' => $_var_140, 'newlevel' => $_var_142,), TM_COMMISSION_UPGRADE);
+			} else if ($_var_139 >= 0 && $_var_139 <= 3) {
+				$_var_76 = array();
 				if (!empty($set['selfbuy'])) {
-					$agents[] = $member;
+					$_var_76[] = $_var_132;
 				}
-				if (!empty($member['agentid'])) {
-					$m1 = m('member')->getMember($member['agentid']);
-					if (!empty($m1)) {
-						$agents[] = $m1;
-						if (!empty($m1['agentid']) && $m1['isagent'] == 1 && $m1['status'] == 1) {
-							$m2 = m('member')->getMember($m1['agentid']);
-							if (!empty($m2) && $m2['isagent'] == 1 && $m2['status'] == 1) {
-								$agents[] = $m2;
+				if (!empty($_var_132['agentid'])) {
+					$_var_10 = m('member')->getMember($_var_132['agentid']);
+					if (!empty($_var_10)) {
+						$_var_76[] = $_var_10;
+						if (!empty($_var_10['agentid']) && $_var_10['isagent'] == 1 && $_var_10['status'] == 1) {
+							$_var_12 = m('member')->getMember($_var_10['agentid']);
+							if (!empty($_var_12) && $_var_12['isagent'] == 1 && $_var_12['status'] == 1) {
+								$_var_76[] = $_var_12;
 								if (empty($set['selfbuy'])) {
-									if (!empty($m2['agentid']) && $m2['isagent'] == 1 && $m2['status'] == 1) {
-										$m3 = m('member')->getMember($m2['agentid']);
-										if (!empty($m3) && $m3['isagent'] == 1 && $m3['status'] == 1) {
-											$agents[] = $m3;
+									if (!empty($_var_12['agentid']) && $_var_12['isagent'] == 1 && $_var_12['status'] == 1) {
+										$_var_14 = m('member')->getMember($_var_12['agentid']);
+										if (!empty($_var_14) && $_var_14['isagent'] == 1 && $_var_14['status'] == 1) {
+											$_var_76[] = $_var_14;
 										}
 									}
 								}
@@ -1507,98 +1505,98 @@ if (!class_exists('CommissionModel')) {
 						}
 					}
 				}
-				if (empty($agents)) {
+				if (empty($_var_76)) {
 					return;
 				}
-				foreach ($agents as $m33) {
-					$m34 = $this->getInfo($m33['id'], array('ordercount3', 'ordermoney3', 'order13money', 'order13'));
-					if (!empty($m34['agentnotupgrade'])) {
+				foreach ($_var_76 as $_var_143) {
+					$_var_144 = $this->getInfo($_var_143['id'], array('ordercount3', 'ordermoney3', 'order13money', 'order13'));
+					if (!empty($_var_144['agentnotupgrade'])) {
 						continue;
 					}
-					$oldlevel = $this->getLevel($m33['openid']);
-					if (empty($oldlevel['id'])) {
-						$oldlevel = array('levelname' => empty($set['levelname']) ? '普通等级' : $set['levelname'], 'commission1' => $set['commission1'], 'commission2' => $set['commission2'], 'commission3' => $set['commission3']);
+					$_var_140 = $this->getLevel($_var_143['openid']);
+					if (empty($_var_140['id'])) {
+						$_var_140 = array('levelname' => empty($set['levelname']) ? '普通等级' : $set['levelname'], 'commission1' => $set['commission1'], 'commission2' => $set['commission2'], 'commission3' => $set['commission3']);
 					}
-					if ($leveltype == 0) {
-						$ordermoney = $m34['ordermoney3'];
-						$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid and {$ordermoney} >= ordermoney and ordermoney>0  order by ordermoney desc limit 1", array(':uniacid' => $_W['uniacid']));
-						if (empty($newlevel)) {
+					if ($_var_139 == 0) {
+						$_var_30 = $_var_144['ordermoney3'];
+						$_var_142 = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid and {$_var_30} >= ordermoney and ordermoney>0  order by ordermoney desc limit 1", array(':uniacid' => $_W['uniacid']));
+						if (empty($_var_142)) {
 							continue;
 						}
-						if (!empty($oldlevel['id'])) {
-							if ($oldlevel['id'] == $newlevel['id']) {
+						if (!empty($_var_140['id'])) {
+							if ($_var_140['id'] == $_var_142['id']) {
 								continue;
 							}
-							if ($oldlevel['ordermoney'] > $newlevel['ordermoney']) {
+							if ($_var_140['ordermoney'] > $_var_142['ordermoney']) {
 								continue;
 							}
 						}
-					} else if ($leveltype == 1) {
-						$ordermoney = $m34['order13money'];
-						$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid and {$ordermoney} >= ordermoney and ordermoney>0  order by ordermoney desc limit 1", array(':uniacid' => $_W['uniacid']));
-						if (empty($newlevel)) {
+					} else if ($_var_139 == 1) {
+						$_var_30 = $_var_144['order13money'];
+						$_var_142 = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid and {$_var_30} >= ordermoney and ordermoney>0  order by ordermoney desc limit 1", array(':uniacid' => $_W['uniacid']));
+						if (empty($_var_142)) {
 							continue;
 						}
-						if (!empty($oldlevel['id'])) {
-							if ($oldlevel['id'] == $newlevel['id']) {
+						if (!empty($_var_140['id'])) {
+							if ($_var_140['id'] == $_var_142['id']) {
 								continue;
 							}
-							if ($oldlevel['ordermoney'] > $newlevel['ordermoney']) {
+							if ($_var_140['ordermoney'] > $_var_142['ordermoney']) {
 								continue;
 							}
 						}
-					} else if ($leveltype == 2) {
-						$ordercount = $m34['ordercount3'];
-						$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$ordercount} >= ordercount and ordercount>0  order by ordercount desc limit 1", array(':uniacid' => $_W['uniacid']));
-						if (empty($newlevel)) {
+					} else if ($_var_139 == 2) {
+						$_var_29 = $_var_144['ordercount3'];
+						$_var_142 = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$_var_29} >= ordercount and ordercount>0  order by ordercount desc limit 1", array(':uniacid' => $_W['uniacid']));
+						if (empty($_var_142)) {
 							continue;
 						}
-						if (!empty($oldlevel['id'])) {
-							if ($oldlevel['id'] == $newlevel['id']) {
+						if (!empty($_var_140['id'])) {
+							if ($_var_140['id'] == $_var_142['id']) {
 								continue;
 							}
-							if ($oldlevel['ordercount'] > $newlevel['ordercount']) {
+							if ($_var_140['ordercount'] > $_var_142['ordercount']) {
 								continue;
 							}
 						}
-					} else if ($leveltype == 3) {
-						$ordercount = $m34['order13'];
-						$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$ordercount} >= ordercount and ordercount>0  order by ordercount desc limit 1", array(':uniacid' => $_W['uniacid']));
-						if (empty($newlevel)) {
+					} else if ($_var_139 == 3) {
+						$_var_29 = $_var_144['order13'];
+						$_var_142 = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$_var_29} >= ordercount and ordercount>0  order by ordercount desc limit 1", array(':uniacid' => $_W['uniacid']));
+						if (empty($_var_142)) {
 							continue;
 						}
-						if (!empty($oldlevel['id'])) {
-							if ($oldlevel['id'] == $newlevel['id']) {
+						if (!empty($_var_140['id'])) {
+							if ($_var_140['id'] == $_var_142['id']) {
 								continue;
 							}
-							if ($oldlevel['ordercount'] > $newlevel['ordercount']) {
+							if ($_var_140['ordercount'] > $_var_142['ordercount']) {
 								continue;
 							}
 						}
 					}
-					pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $m33['id']));
-					$this->sendMessage($m33['openid'], array('nickname' => $m33['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
+					pdo_update('sz_yi_member', array('agentlevel' => $_var_142['id']), array('id' => $_var_143['id']));
+					$this->sendMessage($_var_143['openid'], array('nickname' => $_var_143['nickname'], 'oldlevel' => $_var_140, 'newlevel' => $_var_142,), TM_COMMISSION_UPGRADE);
 				}
 			}
 		}
-		//会员根据
-		function upgradeLevelByAgent($openid)
+
+		function upgradeLevelByAgent($_var_20)
 		{
 			global $_W;
-			if (empty($openid)) {
+			if (empty($_var_20)) {
 				return false;
 			}
 			$set = $this->getSet();
 			if (empty($set['level'])) {
 				return false;
 			}
-			$member = m('member')->getMember($openid);
-			if (empty($member)) {
+			$_var_132 = m('member')->getMember($_var_20);
+			if (empty($_var_132)) {
 				return;
 			}
 			$pluginbonus = p("bonus");
 			if(!empty($pluginbonus)){
-				$pluginbonus->upgradeLevelByAgent($openid);
+				$pluginbonus->upgradeLevelByAgent($_var_20);
 			}
 			$pluginchannel = p('channel');
 			if(!empty($pluginchannel)){
@@ -1620,270 +1618,270 @@ if (!class_exists('CommissionModel')) {
 				}
 				
 			}
-			$leveltype = intval($set['leveltype']);
-			if ($leveltype < 6 || $leveltype > 9) {
+			$_var_139 = intval($set['leveltype']);
+			if ($_var_139 < 6 || $_var_139 > 9) {
 				return;
 			}
-			$m34 = $this->getInfo($member['id'], array());
-			if ($leveltype == 6 || $leveltype == 8) {
-				$agents = array($member);
-				if (!empty($member['agentid'])) {
-					$m1 = m('member')->getMember($member['agentid']);
-					if (!empty($m1)) {
-						$agents[] = $m1;
-						if (!empty($m1['agentid']) && $m1['isagent'] == 1 && $m1['status'] == 1) {
-							$m2 = m('member')->getMember($m1['agentid']);
-							if (!empty($m2) && $m2['isagent'] == 1 && $m2['status'] == 1) {
-								$agents[] = $m2;
+			$_var_144 = $this->getInfo($_var_132['id'], array());
+			if ($_var_139 == 6 || $_var_139 == 8) {
+				$_var_76 = array($_var_132);
+				if (!empty($_var_132['agentid'])) {
+					$_var_10 = m('member')->getMember($_var_132['agentid']);
+					if (!empty($_var_10)) {
+						$_var_76[] = $_var_10;
+						if (!empty($_var_10['agentid']) && $_var_10['isagent'] == 1 && $_var_10['status'] == 1) {
+							$_var_12 = m('member')->getMember($_var_10['agentid']);
+							if (!empty($_var_12) && $_var_12['isagent'] == 1 && $_var_12['status'] == 1) {
+								$_var_76[] = $_var_12;
 							}
 						}
 					}
 				}
-				if (empty($agents)) {
+				if (empty($_var_76)) {
 					return;
 				}
-				foreach ($agents as $m33) {
-					$m34 = $this->getInfo($m33['id'], array());
-					if (!empty($m34['agentnotupgrade'])) {
+				foreach ($_var_76 as $_var_143) {
+					$_var_144 = $this->getInfo($_var_143['id'], array());
+					if (!empty($_var_144['agentnotupgrade'])) {
 						continue;
 					}
-					$oldlevel = $this->getLevel($m33['openid']);
-					if (empty($oldlevel['id'])) {
-						$oldlevel = array('levelname' => empty($set['levelname']) ? '普通等级' : $set['levelname'], 'commission1' => $set['commission1'], 'commission2' => $set['commission2'], 'commission3' => $set['commission3']);
+					$_var_140 = $this->getLevel($_var_143['openid']);
+					if (empty($_var_140['id'])) {
+						$_var_140 = array('levelname' => empty($set['levelname']) ? '普通等级' : $set['levelname'], 'commission1' => $set['commission1'], 'commission2' => $set['commission2'], 'commission3' => $set['commission3']);
 					}
-					if ($leveltype == 6) {
-						$m35 = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid=:agentid and uniacid=:uniacid ', array(':agentid' => $member['id'], ':uniacid' => $_W['uniacid']), 'id');
-						$m36 += count($m35);
-						if (!empty($m35)) {
-							$m37 = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid in( ' . implode(',', array_keys($m35)) . ') and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']), 'id');
-							$m36 += count($m37);
-							if (!empty($m37)) {
-								$m38 = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid in( ' . implode(',', array_keys($m37)) . ') and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']), 'id');
-								$m36 += count($m38);
+					if ($_var_139 == 6) {
+						$_var_145 = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid=:agentid and uniacid=:uniacid ', array(':agentid' => $_var_132['id'], ':uniacid' => $_W['uniacid']), 'id');
+						$_var_146 += count($_var_145);
+						if (!empty($_var_145)) {
+							$_var_147 = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid in( ' . implode(',', array_keys($_var_145)) . ') and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']), 'id');
+							$_var_146 += count($_var_147);
+							if (!empty($_var_147)) {
+								$_var_148 = pdo_fetchall('select id from ' . tablename('sz_yi_member') . ' where agentid in( ' . implode(',', array_keys($_var_147)) . ') and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']), 'id');
+								$_var_146 += count($_var_148);
 							}
 						}
-						$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$m36} >= downcount and downcount>0  order by downcount desc limit 1", array(':uniacid' => $_W['uniacid']));
-					} else if ($leveltype == 8) {
-						$m36 = $m34['level1'] + $m34['level2'] + $m34['level3'];
-						$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$m36} >= downcount and downcount>0  order by downcount desc limit 1", array(':uniacid' => $_W['uniacid']));
+						$_var_142 = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$_var_146} >= downcount and downcount>0  order by downcount desc limit 1", array(':uniacid' => $_W['uniacid']));
+					} else if ($_var_139 == 8) {
+						$_var_146 = $_var_144['level1'] + $_var_144['level2'] + $_var_144['level3'];
+						$_var_142 = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$_var_146} >= downcount and downcount>0  order by downcount desc limit 1", array(':uniacid' => $_W['uniacid']));
 					}
-					if (empty($newlevel)) {
+					if (empty($_var_142)) {
 						continue;
 					}
-					if ($newlevel['id'] == $oldlevel['id']) {
+					if ($_var_142['id'] == $_var_140['id']) {
 						continue;
 					}
-					if (!empty($oldlevel['id'])) {
-						if ($oldlevel['downcount'] > $newlevel['downcount']) {
+					if (!empty($_var_140['id'])) {
+						if ($_var_140['downcount'] > $_var_142['downcount']) {
 							continue;
 						}
 					}
-					pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $m33['id']));
-					$this->sendMessage($m33['openid'], array('nickname' => $m33['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
+					pdo_update('sz_yi_member', array('agentlevel' => $_var_142['id']), array('id' => $_var_143['id']));
+					$this->sendMessage($_var_143['openid'], array('nickname' => $_var_143['nickname'], 'oldlevel' => $_var_140, 'newlevel' => $_var_142,), TM_COMMISSION_UPGRADE);
 				}
 			} else {
-				if (!empty($member['agentnotupgrade'])) {
+				if (!empty($_var_132['agentnotupgrade'])) {
 					return;
 				}
-				$oldlevel = $this->getLevel($member['openid']);
-				if (empty($oldlevel['id'])) {
-					$oldlevel = array('levelname' => empty($set['levelname']) ? '普通等级' : $set['levelname'], 'commission1' => $set['commission1'], 'commission2' => $set['commission2'], 'commission3' => $set['commission3']);
+				$_var_140 = $this->getLevel($_var_132['openid']);
+				if (empty($_var_140['id'])) {
+					$_var_140 = array('levelname' => empty($set['levelname']) ? '普通等级' : $set['levelname'], 'commission1' => $set['commission1'], 'commission2' => $set['commission2'], 'commission3' => $set['commission3']);
 				}
-				if ($leveltype == 7) {
-					$m36 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . ' where agentid=:agentid and uniacid=:uniacid ', array(':agentid' => $member['id'], ':uniacid' => $_W['uniacid']));
-					$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$m36} >= downcount and downcount>0  order by downcount desc limit 1", array(':uniacid' => $_W['uniacid']));
-				} else if ($leveltype == 9) {
-					$m36 = $m34['level1'];
-					$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$m36} >= downcount and downcount>0  order by downcount desc limit 1", array(':uniacid' => $_W['uniacid']));
+				if ($_var_139 == 7) {
+					$_var_146 = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . ' where agentid=:agentid and uniacid=:uniacid ', array(':agentid' => $_var_132['id'], ':uniacid' => $_W['uniacid']));
+					$_var_142 = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$_var_146} >= downcount and downcount>0  order by downcount desc limit 1", array(':uniacid' => $_W['uniacid']));
+				} else if ($_var_139 == 9) {
+					$_var_146 = $_var_144['level1'];
+					$_var_142 = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$_var_146} >= downcount and downcount>0  order by downcount desc limit 1", array(':uniacid' => $_W['uniacid']));
 				}
-				if (empty($newlevel)) {
+				if (empty($_var_142)) {
 					return;
 				}
-				if ($newlevel['id'] == $oldlevel['id']) {
+				if ($_var_142['id'] == $_var_140['id']) {
 					return;
 				}
-				if (!empty($oldlevel['id'])) {
-					if ($oldlevel['downcount'] > $newlevel['downcount']) {
+				if (!empty($_var_140['id'])) {
+					if ($_var_140['downcount'] > $_var_142['downcount']) {
 						return;
 					}
 				}
-				pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $member['id']));
-				$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
+				pdo_update('sz_yi_member', array('agentlevel' => $_var_142['id']), array('id' => $_var_132['id']));
+				$this->sendMessage($_var_132['openid'], array('nickname' => $_var_132['nickname'], 'oldlevel' => $_var_140, 'newlevel' => $_var_142,), TM_COMMISSION_UPGRADE);
 			}
 		}
-		//根据可提现佣金升级
-		function upgradeLevelByCommissionOK($openid)
+
+		function upgradeLevelByCommissionOK($_var_20)
 		{
 			global $_W;
-			if (empty($openid)) {
+			if (empty($_var_20)) {
 				return false;
 			}
 			$set = $this->getSet();
 			if (empty($set['level'])) {
 				return false;
 			}
-			$member = m('member')->getMember($openid);
-			if (empty($member)) {
+			$_var_132 = m('member')->getMember($_var_20);
+			if (empty($_var_132)) {
 				return;
 			}
 			$pluginbonus = p("bonus");
 			if(!empty($pluginbonus)){
-				$pluginbonus->upgradeLevelByAgent($openid);
+				$pluginbonus->upgradeLevelByAgent($_var_20);
 			}
-			$leveltype = intval($set['leveltype']);
-			if ($leveltype != 10) {
+			$_var_139 = intval($set['leveltype']);
+			if ($_var_139 != 10) {
 				return;
 			}
-			if (!empty($member['agentnotupgrade'])) {
+			if (!empty($_var_132['agentnotupgrade'])) {
 				return;
 			}
-			$oldlevel = $this->getLevel($member['openid']);
-			if (empty($oldlevel['id'])) {
-				$oldlevel = array('levelname' => empty($set['levelname']) ? '普通等级' : $set['levelname'], 'commission1' => $set['commission1'], 'commission2' => $set['commission2'], 'commission3' => $set['commission3']);
+			$_var_140 = $this->getLevel($_var_132['openid']);
+			if (empty($_var_140['id'])) {
+				$_var_140 = array('levelname' => empty($set['levelname']) ? '普通等级' : $set['levelname'], 'commission1' => $set['commission1'], 'commission2' => $set['commission2'], 'commission3' => $set['commission3']);
 			}
-			$m34 = $this->getInfo($member['id'], array('pay'));
-			$m39 = $m34['commission_pay'];
-			$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$m39} >= commissionmoney and commissionmoney>0  order by commissionmoney desc limit 1", array(':uniacid' => $_W['uniacid']));
-			if (empty($newlevel)) {
+			$_var_144 = $this->getInfo($_var_132['id'], array('pay'));
+			$_var_149 = $_var_144['commission_pay'];
+			$_var_142 = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$_var_149} >= commissionmoney and commissionmoney>0  order by commissionmoney desc limit 1", array(':uniacid' => $_W['uniacid']));
+			if (empty($_var_142)) {
 				return;
 			}
-			if ($oldlevel['id'] == $newlevel['id']) {
+			if ($_var_140['id'] == $_var_142['id']) {
 				return;
 			}
-			if (!empty($oldlevel['id'])) {
-				if ($oldlevel['commissionmoney'] > $newlevel['commissionmoney']) {
+			if (!empty($_var_140['id'])) {
+				if ($_var_140['commissionmoney'] > $_var_142['commissionmoney']) {
 					return;
 				}
 			}
-			pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $member['id']));
-			$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
+			pdo_update('sz_yi_member', array('agentlevel' => $_var_142['id']), array('id' => $_var_132['id']));
+			$this->sendMessage($_var_132['openid'], array('nickname' => $_var_132['nickname'], 'oldlevel' => $_var_140, 'newlevel' => $_var_142,), TM_COMMISSION_UPGRADE);
 		}
-		//发送消息
-		function sendMessage($openid = '', $data = array(), $message_type = '')
+
+		function sendMessage($_var_20 = '', $_var_150 = array(), $_var_151 = '')
 		{
 			global $_W, $_GPC;
 			$set = $this->getSet();
-			$tm = $set['tm'];
-			$templateid = $tm['templateid'];
-			$member = m('member')->getMember($openid);
-			$usernotice = unserialize($member['noticeset']);
-			if (!is_array($usernotice)) {
-				$usernotice = array();
+			$_var_152 = $set['tm'];
+			$_var_153 = $_var_152['templateid'];
+			$_var_22 = m('member')->getMember($_var_20);
+			$_var_154 = unserialize($_var_22['noticeset']);
+			if (!is_array($_var_154)) {
+				$_var_154 = array();
 			}
-			if ($message_type == TM_COMMISSION_AGENT_NEW && !empty($tm['commission_agent_new']) && empty($usernotice['commission_agent_new'])) {
-				$message = $tm['commission_agent_new'];
-				$message = str_replace('[昵称]', $data['nickname'], $message);
-				$message = str_replace('[时间]', date('Y-m-d H:i:s', $data['childtime']), $message);
-				$msg = array('keyword1' => array('value' => !empty($tm['commission_agent_newtitle']) ? $tm['commission_agent_newtitle'] : '新增下线通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
-				if (!empty($templateid)) {
-					m('message')->sendTplNotice($openid, $templateid, $msg);
+			if ($_var_151 == TM_COMMISSION_AGENT_NEW && !empty($_var_152['commission_agent_new']) && empty($_var_154['commission_agent_new'])) {
+				$_var_155 = $_var_152['commission_agent_new'];
+				$_var_155 = str_replace('[昵称]', $_var_150['nickname'], $_var_155);
+				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', $_var_150['childtime']), $_var_155);
+				$_var_156 = array('keyword1' => array('value' => !empty($_var_152['commission_agent_newtitle']) ? $_var_152['commission_agent_newtitle'] : '新增下线通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
+				if (!empty($_var_153)) {
+					m('message')->sendTplNotice($_var_20, $_var_153, $_var_156);
 				} else {
-					m('message')->sendCustomNotice($openid, $msg);
+					m('message')->sendCustomNotice($_var_20, $_var_156);
 				}
-			} else if ($message_type == TM_COMMISSION_ORDER_PAY && !empty($tm['commission_order_pay']) && empty($usernotice['commission_order_pay'])) {
-				$message = $tm['commission_order_pay'];
-				$message = str_replace('[昵称]', $data['nickname'], $message);
-				$message = str_replace('[时间]', date('Y-m-d H:i:s', $data['paytime']), $message);
-				$message = str_replace('[订单编号]', $data['ordersn'], $message);
-				$message = str_replace('[订单金额]', $data['price'], $message);
-				$message = str_replace('[佣金金额]', $data['commission'], $message);
-				$message = str_replace('[商品详情]', $data['goods'], $message);
-				$msg = array('keyword1' => array('value' => !empty($tm['commission_order_paytitle']) ? $tm['commission_order_paytitle'] : '下线付款通知'), 'keyword2' => array('value' => $message));
-				if (!empty($templateid)) {
-					m('message')->sendTplNotice($openid, $templateid, $msg);
+			} else if ($_var_151 == TM_COMMISSION_ORDER_PAY && !empty($_var_152['commission_order_pay']) && empty($_var_154['commission_order_pay'])) {
+				$_var_155 = $_var_152['commission_order_pay'];
+				$_var_155 = str_replace('[昵称]', $_var_150['nickname'], $_var_155);
+				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', $_var_150['paytime']), $_var_155);
+				$_var_155 = str_replace('[订单编号]', $_var_150['ordersn'], $_var_155);
+				$_var_155 = str_replace('[订单金额]', $_var_150['price'], $_var_155);
+				$_var_155 = str_replace('[佣金金额]', $_var_150['commission'], $_var_155);
+				$_var_155 = str_replace('[商品详情]', $_var_150['goods'], $_var_155);
+				$_var_156 = array('keyword1' => array('value' => !empty($_var_152['commission_order_paytitle']) ? $_var_152['commission_order_paytitle'] : '下线付款通知'), 'keyword2' => array('value' => $_var_155));
+				if (!empty($_var_153)) {
+					m('message')->sendTplNotice($_var_20, $_var_153, $_var_156);
 				} else {
-					m('message')->sendCustomNotice($openid, $msg);
+					m('message')->sendCustomNotice($_var_20, $_var_156);
 				}
-			} else if ($message_type == TM_COMMISSION_ORDER_FINISH && !empty($tm['commission_order_finish']) && empty($usernotice['commission_order_finish'])) {
-				$message = $tm['commission_order_finish'];
-				$message = str_replace('[昵称]', $data['nickname'], $message);
-				$message = str_replace('[时间]', date('Y-m-d H:i:s', $data['finishtime']), $message);
-				$message = str_replace('[订单编号]', $data['ordersn'], $message);
-				$message = str_replace('[订单金额]', $data['price'], $message);
-				$message = str_replace('[佣金金额]', $data['commission'], $message);
-				$message = str_replace('[商品详情]', $data['goods'], $message);
-				$msg = array('keyword1' => array('value' => !empty($tm['commission_order_finishtitle']) ? $tm['commission_order_finishtitle'] : '下线确认收货通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
-				if (!empty($templateid)) {
-					m('message')->sendTplNotice($openid, $templateid, $msg);
+			} else if ($_var_151 == TM_COMMISSION_ORDER_FINISH && !empty($_var_152['commission_order_finish']) && empty($_var_154['commission_order_finish'])) {
+				$_var_155 = $_var_152['commission_order_finish'];
+				$_var_155 = str_replace('[昵称]', $_var_150['nickname'], $_var_155);
+				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', $_var_150['finishtime']), $_var_155);
+				$_var_155 = str_replace('[订单编号]', $_var_150['ordersn'], $_var_155);
+				$_var_155 = str_replace('[订单金额]', $_var_150['price'], $_var_155);
+				$_var_155 = str_replace('[佣金金额]', $_var_150['commission'], $_var_155);
+				$_var_155 = str_replace('[商品详情]', $_var_150['goods'], $_var_155);
+				$_var_156 = array('keyword1' => array('value' => !empty($_var_152['commission_order_finishtitle']) ? $_var_152['commission_order_finishtitle'] : '下线确认收货通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
+				if (!empty($_var_153)) {
+					m('message')->sendTplNotice($_var_20, $_var_153, $_var_156);
 				} else {
-					m('message')->sendCustomNotice($openid, $msg);
+					m('message')->sendCustomNotice($_var_20, $_var_156);
 				}
-			} else if ($message_type == TM_COMMISSION_APPLY && !empty($tm['commission_apply']) && empty($usernotice['commission_apply'])) {
-				$message = $tm['commission_apply'];
-				$message = str_replace('[昵称]', $member['nickname'], $message);
-				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
-				$message = str_replace('[金额]', $data['commission'], $message);
-				$message = str_replace('[提现方式]', $data['type'], $message);
-				$msg = array('keyword1' => array('value' => !empty($tm['commission_applytitle']) ? $tm['commission_applytitle'] : '提现申请提交成功', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
-				if (!empty($templateid)) {
-					m('message')->sendTplNotice($openid, $templateid, $msg);
+			} else if ($_var_151 == TM_COMMISSION_APPLY && !empty($_var_152['commission_apply']) && empty($_var_154['commission_apply'])) {
+				$_var_155 = $_var_152['commission_apply'];
+				$_var_155 = str_replace('[昵称]', $_var_22['nickname'], $_var_155);
+				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', time()), $_var_155);
+				$_var_155 = str_replace('[金额]', $_var_150['commission'], $_var_155);
+				$_var_155 = str_replace('[提现方式]', $_var_150['type'], $_var_155);
+				$_var_156 = array('keyword1' => array('value' => !empty($_var_152['commission_applytitle']) ? $_var_152['commission_applytitle'] : '提现申请提交成功', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
+				if (!empty($_var_153)) {
+					m('message')->sendTplNotice($_var_20, $_var_153, $_var_156);
 				} else {
-					m('message')->sendCustomNotice($openid, $msg);
+					m('message')->sendCustomNotice($_var_20, $_var_156);
 				}
-			} else if ($message_type == TM_COMMISSION_CHECK && !empty($tm['commission_check']) && empty($usernotice['commission_check'])) {
-				$message = $tm['commission_check'];
-				$message = str_replace('[昵称]', $member['nickname'], $message);
-				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
-				$message = str_replace('[金额]', $data['commission'], $message);
-				$message = str_replace('[提现方式]', $data['type'], $message);
-				$msg = array('keyword1' => array('value' => !empty($tm['commission_checktitle']) ? $tm['commission_checktitle'] : '提现申请审核处理完成', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
-				if (!empty($templateid)) {
-					m('message')->sendTplNotice($openid, $templateid, $msg);
+			} else if ($_var_151 == TM_COMMISSION_CHECK && !empty($_var_152['commission_check']) && empty($_var_154['commission_check'])) {
+				$_var_155 = $_var_152['commission_check'];
+				$_var_155 = str_replace('[昵称]', $_var_22['nickname'], $_var_155);
+				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', time()), $_var_155);
+				$_var_155 = str_replace('[金额]', $_var_150['commission'], $_var_155);
+				$_var_155 = str_replace('[提现方式]', $_var_150['type'], $_var_155);
+				$_var_156 = array('keyword1' => array('value' => !empty($_var_152['commission_checktitle']) ? $_var_152['commission_checktitle'] : '提现申请审核处理完成', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
+				if (!empty($_var_153)) {
+					m('message')->sendTplNotice($_var_20, $_var_153, $_var_156);
 				} else {
-					m('message')->sendCustomNotice($openid, $msg);
+					m('message')->sendCustomNotice($_var_20, $_var_156);
 				}
-			} else if ($message_type == TM_COMMISSION_PAY && !empty($tm['commission_pay']) && empty($usernotice['commission_pay'])) {
-				$message = $tm['commission_pay'];
-				$message = str_replace('[昵称]', $member['nickname'], $message);
-				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
-				$message = str_replace('[金额]', $data['commission'], $message);
-				$message = str_replace('[提现方式]', $data['type'], $message);
-				$message = str_replace('[微信比例]', $set['withdraw_wechat'], $message);
-				$message = str_replace('[商城余额比例]', $set['withdraw_balance'], $message);
-				$message = str_replace('[税费和服务费比例]', $set['withdraw_factorage'], $message);
+			} else if ($_var_151 == TM_COMMISSION_PAY && !empty($_var_152['commission_pay']) && empty($_var_154['commission_pay'])) {
+				$_var_155 = $_var_152['commission_pay'];
+				$_var_155 = str_replace('[昵称]', $_var_22['nickname'], $_var_155);
+				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', time()), $_var_155);
+				$_var_155 = str_replace('[金额]', $_var_150['commission'], $_var_155);
+				$_var_155 = str_replace('[提现方式]', $_var_150['type'], $_var_155);
+				$_var_155 = str_replace('[微信比例]', $set['withdraw_wechat'], $_var_155);
+				$_var_155 = str_replace('[商城余额比例]', $set['withdraw_balance'], $_var_155);
+				$_var_155 = str_replace('[税费和服务费比例]', $set['withdraw_factorage'], $_var_155);
 				
-				$msg = array('keyword1' => array('value' => !empty($tm['commission_paytitle']) ? $tm['commission_paytitle'] : '佣金打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
-				if (!empty($templateid)) {
-					m('message')->sendTplNotice($openid, $templateid, $msg);
+				$_var_156 = array('keyword1' => array('value' => !empty($_var_152['commission_paytitle']) ? $_var_152['commission_paytitle'] : '佣金打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
+				if (!empty($_var_153)) {
+					m('message')->sendTplNotice($_var_20, $_var_153, $_var_156);
 				} else {
-					m('message')->sendCustomNotice($openid, $msg);
+					m('message')->sendCustomNotice($_var_20, $_var_156);
 				}
-			} else if ($message_type == TM_COMMISSION_UPGRADE && !empty($tm['commission_upgrade']) && empty($usernotice['commission_upgrade'])) {
-				$message = $tm['commission_upgrade'];
-				$message = str_replace('[昵称]', $member['nickname'], $message);
-				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
-				$message = str_replace('[旧等级]', $data['oldlevel']['levelname'], $message);
-				$message = str_replace('[旧一级分销比例]', $data['oldlevel']['commission1'] . '%', $message);
-				$message = str_replace('[旧二级分销比例]', $data['oldlevel']['commission2'] . '%', $message);
-				$message = str_replace('[旧三级分销比例]', $data['oldlevel']['commission3'] . '%', $message);
-				$message = str_replace('[新等级]', $data['newlevel']['levelname'], $message);
-				$message = str_replace('[新一级分销比例]', $data['newlevel']['commission1'] . '%', $message);
-				$message = str_replace('[新二级分销比例]', $data['newlevel']['commission2'] . '%', $message);
-				$message = str_replace('[新三级分销比例]', $data['newlevel']['commission3'] . '%', $message);
-				$msg = array('keyword1' => array('value' => !empty($tm['commission_upgradetitle']) ? $tm['commission_upgradetitle'] : '分销等级升级通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
-				if (!empty($templateid)) {
-					m('message')->sendTplNotice($openid, $templateid, $msg);
+			} else if ($_var_151 == TM_COMMISSION_UPGRADE && !empty($_var_152['commission_upgrade']) && empty($_var_154['commission_upgrade'])) {
+				$_var_155 = $_var_152['commission_upgrade'];
+				$_var_155 = str_replace('[昵称]', $_var_22['nickname'], $_var_155);
+				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', time()), $_var_155);
+				$_var_155 = str_replace('[旧等级]', $_var_150['oldlevel']['levelname'], $_var_155);
+				$_var_155 = str_replace('[旧一级分销比例]', $_var_150['oldlevel']['commission1'] . '%', $_var_155);
+				$_var_155 = str_replace('[旧二级分销比例]', $_var_150['oldlevel']['commission2'] . '%', $_var_155);
+				$_var_155 = str_replace('[旧三级分销比例]', $_var_150['oldlevel']['commission3'] . '%', $_var_155);
+				$_var_155 = str_replace('[新等级]', $_var_150['newlevel']['levelname'], $_var_155);
+				$_var_155 = str_replace('[新一级分销比例]', $_var_150['newlevel']['commission1'] . '%', $_var_155);
+				$_var_155 = str_replace('[新二级分销比例]', $_var_150['newlevel']['commission2'] . '%', $_var_155);
+				$_var_155 = str_replace('[新三级分销比例]', $_var_150['newlevel']['commission3'] . '%', $_var_155);
+				$_var_156 = array('keyword1' => array('value' => !empty($_var_152['commission_upgradetitle']) ? $_var_152['commission_upgradetitle'] : '分销等级升级通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
+				if (!empty($_var_153)) {
+					m('message')->sendTplNotice($_var_20, $_var_153, $_var_156);
 				} else {
-					m('message')->sendCustomNotice($openid, $msg);
+					m('message')->sendCustomNotice($_var_20, $_var_156);
 				}
-			} else if ($message_type == TM_COMMISSION_BECOME && !empty($tm['commission_become']) && empty($usernotice['commission_become'])) {
-				/*m('member')->setCredit($openid, $credittype = 'credit1', $set['own_integral'], $log = array());*/
-				$message = $tm['commission_become'];
-				$message = str_replace('[昵称]', $data['nickname'], $message);
-				$message = str_replace('[时间]', date('Y-m-d H:i:s', $data['agenttime']), $message);
-				/*$message = str_replace('[积分]', $set['own_integral'], $message);*/
-				$msg = array('keyword1' => array('value' => !empty($tm['commission_becometitle']) ? $tm['commission_becometitle'] : '成为分销商通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
-				if (!empty($templateid)) {
-					m('message')->sendTplNotice($openid, $templateid, $msg);
+			} else if ($_var_151 == TM_COMMISSION_BECOME && !empty($_var_152['commission_become']) && empty($_var_154['commission_become'])) {
+				/*m('member')->setCredit($_var_20, $credittype = 'credit1', $set['own_integral'], $log = array());*/
+				$_var_155 = $_var_152['commission_become'];
+				$_var_155 = str_replace('[昵称]', $_var_150['nickname'], $_var_155);
+				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', $_var_150['agenttime']), $_var_155);
+				/*$_var_155 = str_replace('[积分]', $set['own_integral'], $_var_155);*/
+				$_var_156 = array('keyword1' => array('value' => !empty($_var_152['commission_becometitle']) ? $_var_152['commission_becometitle'] : '成为分销商通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
+				if (!empty($_var_153)) {
+					m('message')->sendTplNotice($_var_20, $_var_153, $_var_156);
 				} else {
-					m('message')->sendCustomNotice($openid, $msg);
+					m('message')->sendCustomNotice($_var_20, $_var_156);
 				}
-				/*if (!empty($member['agentid'])) {
-					$agent_info = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid={$_W['uniacid']} and id={$member['agentid']}");
+				/*if (!empty($_var_22['agentid'])) {
+					$agent_info = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid={$_W['uniacid']} and id={$_var_22['agentid']}");
 					m('member')->setCredit($agent_info['openid'], $credittype = 'credit1', $set['up_integral'], $log = array());
-					$message = "[" . $member['realname'] . "]成为分销商，您获得推广奖励：" . $set['up_integral'] . "积分";
-					$msg = array('keyword1' => array('value' => '推广奖励通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
-					m('message')->sendCustomNotice($agent_info['openid'], $msg);
+					$_var_155 = "[" . $_var_22['realname'] . "]成为分销商，您获得推广奖励：" . $set['up_integral'] . "积分";
+					$_var_156 = array('keyword1' => array('value' => '推广奖励通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
+					m('message')->sendCustomNotice($agent_info['openid'], $_var_156);
 				}*/
 			}
 		}
@@ -1892,7 +1890,7 @@ if (!class_exists('CommissionModel')) {
 		{
 			return array('commission' => array('text' => $this->getName(), 'isplugin' => true, 'child' => array('cover' => array('text' => '入口设置'), 'agent' => array('text' => '分销商', 'view' => '浏览', 'check' => '审核-log', 'edit' => '修改-log', 'agentblack' => '黑名单操作-log', 'delete' => '删除-log', 'user' => '查看下线', 'order' => '查看推广订单(还需有订单权限)', 'changeagent' => '设置分销商'), 'level' => array('text' => '分销商等级', 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log'), 'apply' => array('text' => '佣金审核', 'view1' => '浏览待审核', 'view2' => '浏览已审核', 'view3' => '浏览已打款', 'view_1' => '浏览无效', 'export1' => '导出待审核-log', 'export2' => '导出已审核-log', 'export3' => '导出已打款-log', 'export_1' => '导出无效-log', 'check' => '审核-log', 'pay' => '打款-log', 'cancel' => '重新审核-log'), 'notice' => array('text' => '通知设置-log'), 'increase' => array('text' => '分销商趋势图'), 'changecommission' => array('text' => '修改佣金-log'), 'set' => array('text' => '基础设置-log'))));
 		}
-		//购买商品升级
+
         function upgradeLevelByGood($orderid)
         {
             // 如果购买的商品可以指定成为分销商
