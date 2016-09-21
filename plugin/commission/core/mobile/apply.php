@@ -88,7 +88,6 @@ if ($_W['isajax']) {
 			$apply = array('uniacid' => $_W['uniacid'], 'applyno' => $applyno, 'orderids' => iserializer($orderids), 'mid' => $member['id'], 'commission' => $commission_ok, 'type' => intval($_GPC['type']),'alipay' => $_GPC['alipay'],'alipayname' => $_GPC['alipayname'], 'status' => 1, 'applytime' => $time);
 		}else{
 		    $apply = array('uniacid' => $_W['uniacid'], 'applyno' => $applyno, 'orderids' => iserializer($orderids), 'mid' => $member['id'], 'commission' => $commission_ok, 'type' => intval($_GPC['type']), 'status' => 1, 'applytime' => $time);
-	
 		}
 	
 		//Author:ym Date:2016-07-15 Content:减去已消费的佣金

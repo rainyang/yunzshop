@@ -25,6 +25,8 @@ if(empty($set['sendmonth'])){
 }
 
 $orderallmoney = pdo_fetchcolumn("select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}");
+//获取分红订单id
+$orderids = pdo_fetchall("select o.id from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid=:uniacid and  o.finishtime >={$stattime} and o.finishtime < {$endtime}", array(":uniacid" => $_W['uniacid']), 'id');
 $ordermoney = floatval($orderallmoney);
 $premierlevels = pdo_fetchall("select * from ".tablename('sz_yi_bonus_level')." where uniacid={$_W['uniacid']} and premier=1");
 $levelmoneys = array();
@@ -114,6 +116,7 @@ if (!empty($_POST)) {
             "sendmonth" => $set['sendmonth'],
             "paymethod" => $set['paymethod'],
             "sendpay_error" => $sendpay_error,
+            "orderids" => iserializer($orderids),
             "isglobal" => 1,
             'utime' => $daytime,
             "send_bonus_sn" => $send_bonus_sn,
