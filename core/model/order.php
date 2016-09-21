@@ -14,46 +14,46 @@ if (!defined('IN_IA')) {
 }
 class Sz_DYi_Order
 {
-    function getDispatchPrice($dephp_0, $dephp_1, $dephp_2 = -1){
-        if (empty($dephp_1)){
+    function getDispatchPrice($weight, $dispatch_data, $calculatetype = -1){
+        if (empty($dispatch_data)){
             return 0;
         }
-        $dephp_3 = 0;
-        if ($dephp_2 == -1){
-            $dephp_2 = $dephp_1['calculatetype'];
+        $price = 0;
+        if ($calculatetype == -1){
+            $calculatetype = $dispatch_data['calculatetype'];
         }
-        if ($dephp_2 == 1){
-            if ($dephp_0 <= $dephp_1['firstnum']){
-                $dephp_3 = floatval($dephp_1['firstnumprice']);
+        if ($calculatetype == 1){
+            if ($weight <= $dispatch_data['firstnum']){
+                $price = floatval($dispatch_data['firstnumprice']);
             }else{
-                $dephp_3 = floatval($dephp_1['firstnumprice']);
-                $dephp_4 = $dephp_0 - floatval($dephp_1['firstnum']);
-                $dephp_5 = floatval($dephp_1['secondnum']) <= 0 ? 1 : floatval($dephp_1['secondnum']);
-                $dephp_6 = 0;
-                if ($dephp_4 % $dephp_5 == 0){
-                    $dephp_6 = ($dephp_4 / $dephp_5) * floatval($dephp_1['secondnumprice']);
+                $price = floatval($dispatch_data['firstnumprice']);
+                $secondweight = $weight - floatval($dispatch_data['firstnum']);
+                $dsecondweight = floatval($dispatch_data['secondnum']) <= 0 ? 1 : floatval($dispatch_data['secondnum']);
+                $secondprice = 0;
+                if ($secondweight % $dsecondweight == 0){
+                    $secondprice = ($secondweight / $dsecondweight) * floatval($dispatch_data['secondnumprice']);
                 }else{
-                    $dephp_6 = ((int) ($dephp_4 / $dephp_5) + 1) * floatval($dephp_1['secondnumprice']);
+                    $secondprice = ((int) ($secondweight / $dsecondweight) + 1) * floatval($dispatch_data['secondnumprice']);
                 }
-                $dephp_3 += $dephp_6;
+                $price += $secondprice;
             }
         }else{
-            if ($dephp_0 <= $dephp_1['firstweight']){
-                $dephp_3 = floatval($dephp_1['firstprice']);
+            if ($weight <= $dispatch_data['firstweight']){
+                $price = floatval($dispatch_data['firstprice']);
             }else{
-                $dephp_3 = floatval($dephp_1['firstprice']);
-                $dephp_4 = $dephp_0 - floatval($dephp_1['firstweight']);
-                $dephp_5 = floatval($dephp_1['secondweight']) <= 0 ? 1 : floatval($dephp_1['secondweight']);
-                $dephp_6 = 0;
-                if ($dephp_4 % $dephp_5 == 0){
-                    $dephp_6 = ($dephp_4 / $dephp_5) * floatval($dephp_1['secondprice']);
+                $price = floatval($dispatch_data['firstprice']);
+                $secondweight = $weight - floatval($dispatch_data['firstweight']);
+                $dsecondweight = floatval($dispatch_data['secondweight']) <= 0 ? 1 : floatval($dispatch_data['secondweight']);
+                $secondprice = 0;
+                if ($secondweight % $dsecondweight == 0){
+                    $secondprice = ($secondweight / $dsecondweight) * floatval($dispatch_data['secondprice']);
                 }else{
-                    $dephp_6 = ((int) ($dephp_4 / $dephp_5) + 1) * floatval($dephp_1['secondprice']);
+                    $secondprice = ((int) ($secondweight / $dsecondweight) + 1) * floatval($dispatch_data['secondprice']);
                 }
-                $dephp_3 += $dephp_6;
+                $price += $secondprice;
             }
         }
-        return $dephp_3;
+        return $price;
     }
 
     /*
@@ -96,16 +96,16 @@ class Sz_DYi_Order
     }
      */
 
-    function getCityDispatchPrice($dephp_7, $dephp_8, $dephp_0, $dephp_1){
-        if (is_array($dephp_7) && count($dephp_7) > 0){
-            foreach ($dephp_7 as $dephp_9){
-                $dephp_10 = explode(';', $dephp_9['citys']);
-                if (in_array($dephp_8, $dephp_10) && !empty($dephp_10)){
-                    return $this -> getDispatchPrice($dephp_0, $dephp_9, $dephp_1['calculatetype']);
+    function getCityDispatchPrice($areas, $city, $param, $dispatch_data){
+        if (is_array($areas) && count($areas) > 0){
+            foreach ($areas as $area){
+                $citys = explode(';', $area['citys']);
+                if (in_array($city, $citys) && !empty($citys)){
+                    return $this -> getDispatchPrice($param, $area, $dispatch_data['calculatetype']);
                 }
             }
         }
-        return $this -> getDispatchPrice($dephp_0, $dephp_1);
+        return $this -> getDispatchPrice($param, $dispatch_data);
     }
 
     /**

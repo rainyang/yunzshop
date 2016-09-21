@@ -343,54 +343,6 @@ if (!class_exists('BonusModel')) {
             }
         }
 
-        //全球分红
-        public function premierInfo($openid, $options = null){
-        	if (empty($options) || !is_array($options)) {
-                $options = array();
-            }
-        
-            global $_W;
-            $set              = $this->getSet();
-            $member           = m('member')->getInfo($openid);
-            $commission_total = 0;
-            $commission_ok    = 0;
-            $commission_pay	  = 0;
-            $myordermoney     = 0;
-			$myordercount     = 0;
-        	$time             = time();
-            $day_times        = intval($set['settledays']) * 3600 * 24;
-        	if (in_array('ok', $options)) {
-	            //可提现佣金
-	            $sql = "select sum(o.price) as money from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3   and o.status<>6 and o.status<>5 and o.status<>4 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
-	            $commission_ok = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
-	        }
-
-	        if (in_array('total', $options)) {
-	            //累计佣金
-	            $sql = "select sum(o.price) as money from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where o.status>=1 and  and o.status<>5 and o.status<>4 and o.uniacid=:uniacid  ORDER BY o.createtime DESC,o.status DESC";
-	            $commission_total = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
-	        }
-	        if (in_array('pay', $options)) {
-	            //已分红
-	            $sql = "select sum(money) from " . tablename('sz_yi_bonus_log') . " where openid=:openid and isglobal=1 and uniacid=:uniacid";
-	            $commission_pay = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid'], 'openid' => $member['openid']));
-	        }
-	        //Author:ym Date:2016-04-08 Content:自购完成订单
-			if (in_array('myorder', $options)) {
-				$myorder = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
-				//Author:ym Date:2016-04-08 Content:自购订单金额
-				$myordermoney = $myorder['ordermoney'];
-				//Author:ym Date:2016-04-08 Content:自购订单数量
-				$myordercount = $myorder['ordercount'];
-			}
-	        $member['commission_ok']      = round($commission_ok, 2);
-            $member['commission_total']   = round($commission_total, 2);
-            $member['commission_pay']     = $commission_pay;
-            $member['myordermoney']       = $myordermoney;
-			$member['myordercount']       = $myordercount;
-            return $member;
-        }
-
 		public function getInfo($openid, $options = null){
             if (empty($options) || !is_array($options)) {
                 $options = array();

@@ -24,9 +24,9 @@ if (!class_exists('SaleModel')) {
 				$allenoughs[] = array('enough' => floatval($set['enoughmoney']), 'money' => floatval($set['enoughdeduct']));
 			}
 			if (is_array($timeout)) {
-				foreach ($timeout as $_var_7) {
-					if (floatval($_var_7['enough']) > 0 && floatval($_var_7['give']) > 0) {
-						$allenoughs[] = array('enough' => floatval($_var_7['enough']), 'money' => floatval($_var_7['give']));
+				foreach ($timeout as $val) {
+					if (floatval($val['enough']) > 0 && floatval($val['give']) > 0) {
+						$allenoughs[] = array('enough' => floatval($val['enough']), 'money' => floatval($val['give']));
 					}
 				}
 			}

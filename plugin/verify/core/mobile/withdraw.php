@@ -51,12 +51,12 @@ if ($operation == 'display' && $_W['isajax']) {
         'status'            => 0
     );
     pdo_insert('sz_yi_store_withdraw', $data);
-    $_var_157 = array(
+    $message = array(
                             'keyword1' => array('value' => '门店提现成功通知', 'color' => '#73a68d'),
                             'keyword2' => array('value' => '【商户名称】' . $cashier_stores['name'], 'color' => '#73a68d'),
                             'remark' => array('value' => '恭喜,您的提现申请已经成功提交!')
                         );          
-    m('message')->sendCustomNotice($openid, $_var_157);
+    m('message')->sendCustomNotice($openid, $message);
     show_json(1);
 }
 
