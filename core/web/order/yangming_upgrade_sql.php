@@ -27,5 +27,8 @@ if (!pdo_fieldexists('sz_yi_goods', 'minprice')) {
 if (!pdo_fieldexists('sz_yi_goods', 'maxprice')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `maxprice` decimal(10,2) DEFAULT '0.00';");
 }
-
+//9.21添加
+if(!pdo_fieldexists('sz_yi_bonus_log', 'goodids')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_bonus_log')." ADD `goodids` text DEFAULT '';");
+}
 echo 1;

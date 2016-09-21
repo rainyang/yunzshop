@@ -203,11 +203,11 @@
 
         <div class="top_1">
 
-            <div class="text">累计提现金额：{php echo $commission_total} 元<br>可提现金额（元）（订单完成后可获得）</div>
+            <div class="text">累计提现金额：{php echo $commission_total} 元 订单完成{$set['apply_day']}天后可提现：{php echo $expect_money} 元 <br>可提现金额（元）（订单完成后可获得）</div>
 
         </div>
 
-        <div class="top_2">{php echo $commission_ok}<a {if $commission_ok<=0 || !empty($supplierinfo['applymonth'])}href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('supplier/applyg')}"{/if} id='withdraw' ><span {if $commission_ok<=0 || !empty($supplierinfo['applymonth'])}class='disabled'{/if} >提现</span></a></div>
+        <div class="top_2">{php echo $commission_ok}<a {if $commission_ok<=0 || !empty($supplierinfo['limit_day'])}href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('supplier/applyg')}"{/if} id='withdraw' ><span {if $commission_ok<=0 || !empty($supplierinfo['limit_day'])}class='disabled'{/if} >提现</span></a></div>
 
     </div> 
 
@@ -248,9 +248,8 @@
 
                      }
 
-                }
-                if (json.result.supplierinfo.applymonth) {
-                    core.tip.show('本月已经提现一次，请下个月再进行提现!');
+                }else if (json.result.supplierinfo.limit_day) {
+                    core.tip.show('提现周期未到，下次提现时间'+json.result.supplierinfo.last_time);
                     return false;
                 }
 

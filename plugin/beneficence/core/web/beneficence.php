@@ -10,6 +10,7 @@ if ($_GPC['quantity']) {
 	if ($quantity > 0) {
 
 		$last = pdo_fetch("select * from" . tablename('sz_yi_beneficence') . " where uniacid = '" .$_W['uniacid'] . "' order by create_time desc ");
+		$last['create_time'] = !empty($last['create_time'])?$last['create_time']:time()-86400;
 		for ($i=1; $i <= $quantity; $i++) { 
 			$name = getRandChar(2)."****".getRandChar(2);
 			$money = rand($_GPC['low'],$_GPC['high']-1) + rand(1,99)/100;

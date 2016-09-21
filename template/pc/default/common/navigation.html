@@ -23,8 +23,17 @@
 <div id="head-fix" class="head wfs nav-wrap">
   <div class="cover-page-wrapper head_logo_nav"> 
     <!-- logo -->
-    <div class="logo fl"> <a href="{php echo $this->createMobileUrl('shop/index')}"> {if $this->yzShopSet['pclogo']} <img src="{php echo $_W['siteroot'] . "attachment/" . $this->yzShopSet['pclogo']}" style="width:270px;height:60px;" title="{php echo $this->yzShopSet['pctitle']}">
-      {else} <img src="../addons/sz_yi/template/pc/default/static/images/logo.png" title="" alt="我是默认logo"> {/if} </a> </div>
+    
+
+    <div class="logo fl"> <a href="{php echo $this->createMobileUrl('shop/index')}"> 
+    {if $this->yzShopSet['pclogo']} 
+        {if FALSE == stristr($this->yzShopSet['pclogo'], "http")}
+          {php $pclogo = $_W['siteroot'] . "attachment/" . $this->yzShopSet['pclogo'];}
+        {else}
+          {php $pclogo = $this->yzShopSet['pclogo'];}
+        {/if}
+        <img src="{php echo $pclogo}" style="width:270px;height:60px;" title="{php echo $this->yzShopSet['pctitle']}">
+    {else} <img src="../addons/sz_yi/template/pc/default/static/images/logo.png" title="" alt="我是默认logo"> {/if} </a> </div>
     <div class="fore cart fr" id="ECS_CARTINFO"> <a href="{php echo $this->createMobileUrl('shop/cart')}" title="查看购物车"><i class="fontello-icon-basket"></i><span>购物车</span><strong><b>0</b></strong></a> </div>
     
     <!--<form id="searchForm" name="searchForm" method="get" action="" onSubmit="return checkSearchForm()" class="search-product fl">-->

@@ -31,7 +31,24 @@ if ($_W['isajax']) {
 				pdo_update('sz_yi_order', array('center_apply_status' => 1), array('uniacid' => $_W['uniacid'], 'id' => $value['id']));
 			}
 		} else {
-			$orderids = pdo_fetchall("select id from " . tablename('sz_yi_order') . " where uniacid={$_W['uniacid']} and supplier_uid in ({$uids}) and status = 3 and userdeleted = 0 and deleted = 0 and merchant_apply_status = 0 ");
+			$set = $this->model->getSet();
+			$apply_cond = "";
+			if (!empty($set['apply_day'])) {
+				$now_time = time();
+				$apply_day = $now_time - $set['apply_day']*60*60*24;
+				$apply_cond = " AND finishtime<{$apply_day} ";
+			}
+
+			$suppliers = pdo_fetchall("SELECT distinct supplier_uid FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND openid=:openid", array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
+			$uids = array();
+			foreach ($suppliers as $value) {
+				$uids[] = $value['supplier_uid'];
+			}
+			if (!empty($uids)) {
+				$uids = implode(',', $uids);
+			}
+
+			$orderids = pdo_fetchall("select id from " . tablename('sz_yi_order') . " where uniacid={$_W['uniacid']} and supplier_uid in ({$uids}) and status = 3 and userdeleted = 0 and deleted = 0 and merchant_apply_status = 0 {$apply_cond} ");
 			foreach ($orderids as $key => $value) {
 				pdo_update('sz_yi_order', array('merchant_apply_status' => 1), array('uniacid' => $_W['uniacid'], 'id' => $value['id']));
 			}

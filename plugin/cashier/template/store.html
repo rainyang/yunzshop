@@ -301,6 +301,18 @@
                     </div>
                 </div>
             </div>
+            {if p('bonus')}
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">分红金额</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ife 'cashier.store' $item}
+                        <input type="text" name="bonus" class="form-control" value="{$item['bonus']}" placeholder="消费者在商家支付完成后，代理商获得的分红奖励百分比">
+                    {else}
+                        <div class='form-control-static'>{$item['bonus']}</div>
+                    {/if}
+                </div>
+            </div>
+            {/if}
         </div>
         {/if}    
         <div class='panel-heading'>

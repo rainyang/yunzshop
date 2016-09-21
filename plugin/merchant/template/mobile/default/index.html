@@ -212,7 +212,7 @@
         <li><a href="#"><span>{php echo $commission_ok}</span><br/>可结算金额</a></li>
         <li><a href="#"><span>{php echo $commission_total}</span><br/>累计结算金额</a></li>
 
-        <li><a class="recharge" {if $commission_ok<=0 || !empty($center_info['applymonth']) } href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('merchant/applyg', array('iscenter' => 1))}"{/if} id='withdraw' ><p style="margin:0" {if $commission_ok<=0 || !empty($center_info['applymonth']) } class="disabled" {/if}>提现</p></a>
+        <li><a class="recharge" {if $commission_ok<=0 || !empty($center_info['limit_day']) } href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('merchant/applyg', array('iscenter' => 1))}"{/if} id='withdraw' ><p style="margin:0" {if $commission_ok<=0 || !empty($center_info['limit_day']) } class="disabled" {/if}>提现</p></a>
         </li>
     </ul>
     </div>
@@ -223,7 +223,7 @@
     <div class="menu">  
         <a {php echo "href='".$this->createPluginMobileUrl('merchant/logg', array('iscenter' => 1))."'";}><div class="nav nav1"><i class="fa  iconfont icon-record" style="background:#BC7BFF;"></i><div class="title">提现记录</div><div class="con"><span>{php echo $commission_total}</span>元</div></div></a>
         <a {php echo "href='".$this->createPluginMobileUrl('merchant/index',array('op' => 'order','type'=>$_GPC['type']))."'";}><div class="nav nav1"><i class="fa iconfont icon-dingdan" style="background:#F981A7;"></i><div class="title">我的订单</div><div class="con"><span>{$ordercount}</span>个订单</div></div></a>
-        <a href="{php echo $this->createPluginMobileUrl('merchant/team',array('iscenter' => 1))}"><div class="nav nav1"><i class="fa iconfont icon-hezuotuandui" style="background:#ff6e03;"></i><div class="title">我的客户</div><div class="con"><span>{php echo $centercount}</span> 人</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('merchant/team',array('iscenter' => 1))}"><div class="nav nav1"><i class="fa iconfont icon-hezuotuandui" style="background:#ff6e03;"></i><div class="title">我的招商部</div><div class="con"><span>{php echo $centercount}</span> 人</div></div></a>
         <a href="{php echo $this->createPluginMobileUrl('merchant/teamc')}"><div class="nav nav1"><i class="fa iconfont icon-hezuotuandui" style="background:#ff6e03;"></i><div class="title">我的招商员</div><div class="con"><span>{php echo $merchantcount}</span> 人</div></div></a>
     </div>
 </script>
@@ -236,9 +236,8 @@
                 if(!json.result.cansettle){
                     core.tip.show('无可提佣金!');
                     return false;     
-                }
-                if (json.result.center_info.applymonth) {
-                    core.tip.show('本月已经提现一次，请下个月再进行提现!');
+                }else if (json.result.center_info.limit_day) {
+                    core.tip.show('提现周期未到，下次提现时间'+json.result.center_info.last_time);
                     return false;
                 }
             });

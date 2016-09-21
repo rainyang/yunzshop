@@ -192,18 +192,20 @@
 	 {if $show==1}
       <%if isverify%>
           
-        <%if isverifysend%>
-          <%if carrier_list.length>0%>
-              <input type="hidden"  id="dispatchtype" value="1" />
-              <div class="addorder_nav">
-                <div class="nav selected" data-nav='1'>上门自提</div>
-                <div class="nav"  data-nav='0'>配送核销</div>
-              </div>
-          <%else%>
-              <input type="hidden"  id="dispatchtype" value="0" />  
-          <%/if%>
-
-          <div class="addorder_user addorder_user_0" <%if isverifysend && carrier_list.length>0%>style='display:none'<%/if%>>
+        
+        <%if isverifysend || dispatchsend%>
+          <input type="hidden"  id="dispatchtype" value="1" />
+          <div class="addorder_nav">
+            <div class="nav selected" data-nav='1'>上门自提</div>
+            <%if isverifysend%>
+            <div class="nav"  data-nav='0'>配送核销</div>
+            <%/if%>
+            <%if dispatchsend%>
+            <div class="nav"  data-nav='2'>快递配送</div>
+            <%/if%>
+          </div>
+        
+          <div class="addorder_user addorder_user_0" <%if (isverifysend || diapatchsend) && carrier_list.length>0%>style='display:none'<%/if%>>
             <input type='hidden' id='addressid' value='<%address.id%>' />
             <div class="info" id='address_select' <%if !address %>style='display:none'<%/if%>>
                <div class="ico"><i class="iconfont icon-map-marker"></i></div>
@@ -226,6 +228,22 @@
             </div>
           </div>
           <div id='address_container'></div>
+            <div class="addorder_user addorder_user_0" style="display:none;" >
+                <input type='hidden' id='carrierindex_send' value='0' />
+                <input type='hidden' id='carrierid_send' value='<%carrier.id%>' />
+                <div class="info" id='carrier_select_send'>
+                    <div class="ico"><i class="iconfont icon-map-marker"></i></div>
+                    <div class='info1'>
+                        <div class='inner'>
+                            <div class="user">请选择发货门店：<span id='carrier_realname_send'><%carrier.storename%></span>(<span id='carrier_mobile_send'><%carrier.tel%></span>)</div>
+                            <div class="address"><span id='carrier_address_send'><%carrier.address%></span></div>
+                        </div>
+                    </div>
+                    <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+                </div>
+            </div>
+            <div id='address_container'></div>
+
         <%/if%>
            <%if carrier%>
               <div class="addorder_user addorder_user_1" >
@@ -382,7 +400,7 @@
             <%if order.dispatch_price>0%>
             <div class="line" style="line-height:26px;">+运费<span>￥<span class='dispatchprice' data-id="<%order.supplier_uid%>"><%order.dispatch_price%></span></span></div>
             <%/if%>
-            <%if order.discountprice>0%>
+            <%if order.discountprice!=0%>
             <div class="line" style="line-height:26px;">
               优惠 
               <span>-￥<span class='discountprice' data-id="<%order.supplier_uid%>"><%order.discountprice%></span></span></div>
@@ -635,14 +653,24 @@ var fromcart = 0;
                 $('.addorder_nav .nav').removeClass('selected');
                 $(this).addClass('selected');
                 $('.addorder_user').hide();
-                $('.addorder_user_' + nav).show();
+                if (nav == '2') {
+                    $('.addorder_user_0').show();  
+                } else {
+                    $('.addorder_user_' + nav).show();
+                }
+                
                 if (nav == '1') {
                     $('.carrier_input_info').show();
                     $('.addorder_user addorder_user_0').hide(); 
                     $('.addorder_exp').hide();
                     getDispatchPrice(true);
-                }
-                else {
+                } else if (nav == '0') {
+                    $('.carrier_input_info').hide();
+                    $('.addorder_user addorder_user_0').show();
+                    $('.addorder_exp').show();
+                    $('#carrierid').val('');
+                    getDispatchPrice();
+                } else if (nav == '2') {
                     $('.carrier_input_info').hide();
                     $('.addorder_user addorder_user_0').show();
                     $('.addorder_exp').show();
@@ -667,6 +695,26 @@ var fromcart = 0;
                     $("#carrier_address").html(obj.data('address'));
                     $(".choose_carrier").animate({right: "-100%"}, 100);
                     getDispatchPrice(true);
+
+
+                })
+            })
+            $('#carrier_select_send').click(function() {
+                json.result.selectedCarrierIndex = $("#carrierindex").val();
+
+                $('#carrier_container').html(tpl('tpl_carrier_list', json.result));
+                $(".chooser").height($(document.body).height());
+                $(".choose_carrier").animate({right: "0px"}, 200);
+                $('.carrier').click(function() {
+                    var obj = $(this);
+                    $("#carrierindex_send").val(obj.data('index'));
+                    $("#carrierid_send").val(obj.data('id'));
+                    $("#carrier_realname_send").html(obj.data('realname'));
+                    $("#carrier_mobile_send").html(obj.data('mobile'));
+                    $("#carrier_address_send").html(obj.data('address'));
+                    $(".choose_carrier").animate({right: "-100%"}, 100);
+
+
                 })
             })
         }
@@ -1021,6 +1069,7 @@ var fromcart = 0;
 
             var dispatchid = $("#dispatchid").val();
             var carrierid = $("#carrierid").val();
+            var carrierid_send = $('#carrierid_send').val();
             var addressid = $("#addressid").val();
             var goods = $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val();
             var carrier_realname = $.trim( $('#carrier_input_realname').val() );
@@ -1083,13 +1132,15 @@ var fromcart = 0;
                 'deduct2':0
             };
             
-            if( $("#dispatchtype").val()=='0'){
+            if( $("#dispatchtype").val()=='0' || $("#dispatchtype").val()=='2'){
                order[i].addressid = addressid; 
                order[i].dispatchid = dispatchid;
             }
              
-            if( $("#dispatchtype").val()=='1' || $('#isverify').val()=='true'){
-                order[i].carrierid = carrierid;
+            if($('#isverify').val()=='true'){
+                if ($('#dispatchtype').val() != 1) {
+                    order[i].carrierid = carrierid_send;
+                }
                 order[i].carrier = {
                     'carrier_realname': carrier_realname,
                     'carrier_mobile':carrier_mobile,

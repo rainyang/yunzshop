@@ -3,15 +3,15 @@ global $_W, $_GPC;
 $operation = empty($_GPC["op"]) ? "display" : $_GPC["op"];
 ca("order.op.export");
 $plugin_diyform = p("diyform");
-function field_index($zym_var_5, $zym_var_4) {
-    $zym_var_3 = - 1;
-    foreach ($zym_var_5 as $zym_var_1 => $zym_var_2) {
-        if ($zym_var_2["field"] == $zym_var_4) {
-            $zym_var_3 = $zym_var_1;
+function field_index($columns, $field) {
+    $index = - 1;
+    foreach ($columns as $k => $v) {
+        if ($v["field"] == $field) {
+            $index = $k;
             break;
         }
     }
-    return $zym_var_3;
+    return $index;
 }
 $setdata = pdo_fetch("select * from " . tablename("sz_yi_sysset") . " where uniacid=:uniacid limit 1", array(
     ":uniacid" => $_W["uniacid"]

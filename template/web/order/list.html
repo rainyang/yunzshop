@@ -74,6 +74,14 @@
             {/loop}
                         </select>
                     {/if}
+                        <div class='input-group-addon'>门店取消订单
+                            <label class='radio-inline' style='margin-top:-7px;'>
+                                <input type='radio' value='0' name='cancel' {if $_GPC['cancel']=='0'}checked{/if}>不搜索
+                            </label>
+                            <label class='radio-inline'  style='margin-top:-7px;'>
+                                <input type='radio' value='1' name='cancel' {if $_GPC['cancel']=='1'}checked{/if}>搜索
+                            </label>
+                        </div>
             </div>
                   </div>
             </div>
@@ -103,30 +111,36 @@
                         </div>
                     </div>
                     <div class="col-sm-12 col-lg-6">
-                    <div class='input-group'>
-                        <div class='input-group-addon'>付款时间
-                            <label class='radio-inline' style='margin-top:-7px;'>
-                                <input type='radio' value='0' name='psearchtime' {if $_GPC['psearchtime']=='0'}checked{/if}>不搜索
-                            </label>
-                            <label class='radio-inline'  style='margin-top:-7px;'>
-                                <input type='radio' value='1' name='psearchtime' {if $_GPC['psearchtime']=='1'}checked{/if}>搜索
-                            </label>
+                        <div class='input-group'>
+                            <div class='input-group-addon'>付款时间
+                                <label class='radio-inline' style='margin-top:-7px;'>
+                                    <input type='radio' value='0' name='psearchtime' {if $_GPC['psearchtime']=='0'}checked{/if}>不搜索
+                                </label>
+                                <label class='radio-inline'  style='margin-top:-7px;'>
+                                    <input type='radio' value='1' name='psearchtime' {if $_GPC['psearchtime']=='1'}checked{/if}>搜索
+                                </label>
+                            </div>
+                            {php echo tpl_form_field_daterange('ptime', array('starttime'=>date('Y-m-d H:i', $pstarttime),'endtime'=>date('Y-m-d H:i', $pendtime)),true);}
                         </div>
-                        {php echo tpl_form_field_daterange('ptime', array('starttime'=>date('Y-m-d H:i', $pstarttime),'endtime'=>date('Y-m-d H:i', $pendtime)),true);}
-                    </div>
-                    <div class='input-group'>
-                        <div class='input-group-addon'>发货时间
-                            <label class='radio-inline' style='margin-top:-7px;'>
-                                <input type='radio' value='0' name='ssearchtime' {if $_GPC['ssearchtime']=='0'}checked{/if}>不搜索
-                            </label>
-                            <label class='radio-inline'  style='margin-top:-7px;'>
-                                <input type='radio' value='1' name='ssearchtime' {if $_GPC['ssearchtime']=='1'}checked{/if}>搜索
-                            </label>
+                        <div class='input-group'>
+                            <div class='input-group-addon'>发货时间
+                                <label class='radio-inline' style='margin-top:-7px;'>
+                                    <input type='radio' value='0' name='ssearchtime' {if $_GPC['ssearchtime']=='0'}checked{/if}>不搜索
+                                </label>
+                                <label class='radio-inline'  style='margin-top:-7px;'>
+                                    <input type='radio' value='1' name='ssearchtime' {if $_GPC['ssearchtime']=='1'}checked{/if}>搜索
+                                </label>
+                            </div>
+                            {php echo tpl_form_field_daterange('stime', array('starttime'=>date('Y-m-d H:i', $sstarttime),'endtime'=>date('Y-m-d H:i', $sendtime)),true);}
                         </div>
-                        {php echo tpl_form_field_daterange('stime', array('starttime'=>date('Y-m-d H:i', $sstarttime),'endtime'=>date('Y-m-d H:i', $sendtime)),true);}
                     </div>
-                </div>
-                
+
+                    <div class='input-group'>
+
+
+                    </div>
+
+
             </div>
             <div class="form-group">
                 {if !empty($agentid) && $level>0}   
@@ -196,6 +210,14 @@
                             {/if}
                             {/if}
                     </td>
+
+                    {if empty($_W['isagent']) && $item['isempty'] == 1 && $item['ismaster'] == 1}
+                    <td style="...">
+                        <input class='itemid'  type='hidden' value="{$item['id']}"  />
+                        <a class="btn btn-primary btn-sm" href="javascript:;" onclick="sendagent(this)" data-toggle="modal" data-target="#modal-changeagent">选择门店</a>
+                    </td>
+                    {/if}
+
                          
                 </tr>
   </table>
@@ -427,6 +449,11 @@
             allowClear: true
         });
     });
+    function sendagent(btn){
+        var modal =$('#modal-changeagent');
+        var itemid = $(btn).parent().find('.itemid').val();
+        modal.find(':input[name=id]').val( itemid );
+    }
 </script> 
                     
          {template 'web/order/modals'}

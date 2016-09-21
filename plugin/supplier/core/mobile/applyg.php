@@ -14,14 +14,13 @@ if ($_W['isajax']) {
 		$supplierinfo = $this->model->getSupplierInfo($uid);
 		$costmoney = $supplierinfo['costmoney'];
 		$time = time();
-		$sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0");
 		$applyno = m('common')->createNO('commission_apply', 'applyno', 'CA');
 		$apply_ordergoods_ids = "";
-        foreach ($sp_goods as $key => $value) {
+        foreach ($supplierinfo['sp_goods'] as $key => $value) {
             if ($key == 0) {
-                $apply_ordergoods_ids .= $value['id'];
+                $apply_ordergoods_ids .= $value['ogid'];
             } else {
-                $apply_ordergoods_ids .= ','.$value['id'];
+                $apply_ordergoods_ids .= ','.$value['ogid'];
             }
         }
 		$apply = array(
@@ -37,10 +36,11 @@ if ($_W['isajax']) {
 		pdo_insert('sz_yi_supplier_apply', $apply);
 		@file_put_contents(IA_ROOT . "/addons/sz_yi/data/apply.log", print_r($apply, 1), FILE_APPEND);
 		if( pdo_insertid() ) {
-			foreach ($sp_goods as $key => $value) {
-				pdo_update('sz_yi_order_goods', array('supplier_apply_status' => 2), array('id' => $value['id'], 'uniacid' => $_W['uniacid']));
+			foreach ($supplierinfo['sp_goods'] as $key => $value) {
+				pdo_update('sz_yi_order_goods', array('supplier_apply_status' => 2), array('id' => $value['ogid'], 'uniacid' => $_W['uniacid']));
+
 			}
-			$tmp_sp_goods = $sp_goods;
+			$tmp_sp_goods = $supplierinfo['sp_goods'];
 			$tmp_sp_goods['applyno'] = $applyno;
 			@file_put_contents(IA_ROOT . "/addons/sz_yi/data/sp_goods.log", print_r($tmp_sp_goods, 1), FILE_APPEND);
 		}

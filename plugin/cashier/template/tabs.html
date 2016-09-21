@@ -12,7 +12,12 @@
         {/if}
         {ifp 'cashier.withdraw'}
             <li {if $_GPC['method'] == 'withdraw'}class="active"{/if}>
-                <a href="{php echo $this->createPluginWebUrl('cashier/withdraw')}">提现申请</a>
+                <a href="{php echo $this->createPluginWebUrl('cashier/withdraw')}">待审核提现申请</a>
+            </li>
+        {/if}
+        {ifp 'cashier.withdraw'}
+            <li {if $_GPC['method'] == 'withdraws'}class="active"{/if}>
+                <a href="{php echo $this->createPluginWebUrl('cashier/withdraws')}">已处理提现申请</a>
             </li>
         {/if}
     </ul>

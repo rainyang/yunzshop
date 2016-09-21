@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_return_money') . " (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_order_goods_queue` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_order_goods_queue') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `openid` varchar(255) NOT NULL,
@@ -43,7 +43,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_order_goods_queue` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
-ALTER TABLE  `ims_sz_yi_goods` ADD  `isreturn` TINYINT( 1 ) NOT NULL ,
+ALTER TABLE  " . tablename('sz_yi_goods') . " ADD  `isreturn` TINYINT( 1 ) NOT NULL ,
 ADD  `isreturnqueue` TINYINT( 1 ) NOT NULL;";
 pdo_query($sql);
 

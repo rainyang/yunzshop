@@ -38,7 +38,7 @@
         <!--核销 确认核销-->
             {ifp 'order.op.verify'}
             <div>
-                <input class='addressdata' type='hidden' value='{php echo json_encode($item[' addressdata'])}' />
+                <input class='addressdata' type='hidden' value='{php echo json_encode($item['addressdata'])}' />
                 <input class='itemid1' type='hidden' value="{$item['id']}"/>
                 <a class="btn btn-primary btn-sm disbut" href="javascript:;" onclick="send1(this)" data-toggle="modal"
                    data-target="#modal-confirmsend1">确认核销</a>
@@ -64,10 +64,13 @@
            data-target="#modal-cancelsend">取消发货</a>
         {/if}
         {ifp 'order.op.finish'}
+        {if empty($perm_role)}
         <a class="btn btn-primary btn-sm disbut"
            href="{php echo $this->createWebUrl('order', array('op' => 'deal','to'=>'finish','id' => $item['id']))}"
            onclick="return confirm('确认订单收货吗？');return false;">确认收货</a>
-
+        {else}
+        <a class="btn btn-danger btn-sm disbut">等待收货</a>
+        {/if}
         {/if}
     {/if}
 <!-- 补发红包 -->

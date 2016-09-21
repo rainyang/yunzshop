@@ -20,8 +20,12 @@ if (!class_exists('BonusModel')) {
 		private $agents = array();
 		private $parentAgents = array();
 
-		public function getSet()
+		public function getSet($uniacid = 0)
 		{
+			global $_W;
+			if(!empty($uniacid)){
+				$_W['uniacid'] = $uniacid;
+			}
 			$set = parent::getSet();
 			$set['texts'] = array('agent' => empty($set['texts']['agent']) ? '代理商' : $set['texts']['agent'],'premiername' => empty($set['texts']['premiername']) ? '全球分红' : $set['texts']['premiername'], 'center' => empty($set['texts']['center']) ? '分红中心' : $set['texts']['center'], 'commission' => empty($set['texts']['commission']) ? '佣金' : $set['texts']['commission'], 'commission1' => empty($set['texts']['commission1']) ? '分红佣金' : $set['texts']['commission1'], 'commission_total' => empty($set['texts']['commission_total']) ? '累计分红佣金' : $set['texts']['commission_total'], 'commission_ok' => empty($set['texts']['commission_ok']) ? '待分红佣金' : $set['texts']['commission_ok'], 'commission_apply' => empty($set['texts']['commission_apply']) ? '已申请佣金' : $set['texts']['commission_apply'], 'commission_check' => empty($set['texts']['commission_check']) ? '待打款佣金' : $set['texts']['commission_check'], 'commission_lock' => empty($set['texts']['commission_lock']) ? '未结算佣金' : $set['texts']['commission_lock'], 'commission_detail' => empty($set['texts']['commission_detail']) ? '分红明细' : $set['texts']['commission_detail'], 'commission_pay' => empty($set['texts']['commission_pay']) ? '已分红佣金' : $set['texts']['commission_pay'], 'order' => empty($set['texts']['order']) ? '分红订单' : $set['texts']['order'], 'order_area' => empty($set['texts']['order_area']) ? '区域订单' : $set['texts']['order_area'], 'mycustomer' => empty($set['texts']['mycustomer']) ? '我的下线' : $set['texts']['mycustomer'], 'agent_province' => empty($set['texts']['agent_province']) ? '省级代理' : $set['texts']['agent_province'], 'agent_city' => empty($set['texts']['agent_city']) ? '市级代理' : $set['texts']['agent_city'], 'agent_district' => empty($set['texts']['agent_district']) ? '区级代理' : $set['texts']['agent_district'], 'withdraw' => empty($set['texts']['withdraw']) ? '提现' : $set['texts']['withdraw']);
 			return $set;
@@ -337,54 +341,6 @@ if (!class_exists('BonusModel')) {
                     ':uniacid' => $_W['uniacid']
                 ));
             }
-        }
-
-        //全球分红
-        public function premierInfo($openid, $options = null){
-        	if (empty($options) || !is_array($options)) {
-                $options = array();
-            }
-        
-            global $_W;
-            $set              = $this->getSet();
-            $member           = m('member')->getInfo($openid);
-            $commission_total = 0;
-            $commission_ok    = 0;
-            $commission_pay	  = 0;
-            $myordermoney     = 0;
-			$myordercount     = 0;
-        	$time             = time();
-            $day_times        = intval($set['settledays']) * 3600 * 24;
-        	if (in_array('ok', $options)) {
-	            //可提现佣金
-	            $sql = "select sum(o.price) as money from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3   and o.status<>6 and o.status<>5 and o.status<>4 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
-	            $commission_ok = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
-	        }
-
-	        if (in_array('total', $options)) {
-	            //累计佣金
-	            $sql = "select sum(o.price) as money from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where o.status>=1 and  and o.status<>5 and o.status<>4 and o.uniacid=:uniacid  ORDER BY o.createtime DESC,o.status DESC";
-	            $commission_total = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
-	        }
-	        if (in_array('pay', $options)) {
-	            //已分红
-	            $sql = "select sum(money) from " . tablename('sz_yi_bonus_log') . " where openid=:openid and isglobal=1 and uniacid=:uniacid";
-	            $commission_pay = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid'], 'openid' => $member['openid']));
-	        }
-	        //Author:ym Date:2016-04-08 Content:自购完成订单
-			if (in_array('myorder', $_var_21)) {
-				$myorder = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
-				//Author:ym Date:2016-04-08 Content:自购订单金额
-				$myordermoney = $myorder['ordermoney'];
-				//Author:ym Date:2016-04-08 Content:自购订单数量
-				$myordercount = $myorder['ordercount'];
-			}
-	        $member['commission_ok']      = round($commission_ok, 2);
-            $member['commission_total']   = round($commission_total, 2);
-            $member['commission_pay']     = $commission_pay;
-            $member['myordermoney']       = $myordermoney;
-			$member['myordercount']       = $myordercount;
-            return $member;
         }
 
 		public function getInfo($openid, $options = null){
@@ -913,9 +869,12 @@ if (!class_exists('BonusModel')) {
 		}
 
 		//团队分红
-		public function autosend(){
+		public function autosend($uniacid = 0){
 			global $_W, $_GPC;
-			
+			if(empty($uniacid)){
+				return;
+			}
+			$_W['uniacid'] = $uniacid;
 			$time           = time();
 			$sendpay_error  = 0;
 			$bonus_money    = 0;
@@ -967,6 +926,9 @@ if (!class_exists('BonusModel')) {
 							$sendpay_error = 1;
 						}
 					}
+					$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and o.finishtime < {$endtime} and cg.bonus_area=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
+
+					
 					pdo_insert('sz_yi_bonus_log', array(
 						"openid" => $member['openid'],
 						"uid" => $member['uid'],
@@ -974,17 +936,17 @@ if (!class_exists('BonusModel')) {
 						"uniacid" => $_W['uniacid'],
 						"paymethod" => $set['paymethod'],
 						"sendpay" => $sendpay,
+						"goodids" => iserializer($ids),
 						"status" => 1,
 						"ctime" => time(),
 						"send_bonus_sn" => $time
 					));
+					//更新分红订单完成
+					pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
 					if($sendpay == 1){
 						$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_PAY);
 					}
-					$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and o.finishtime < {$endtime} and cg.bonus_area=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
-
-					//更新分红订单完成
-					pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
+					
 					$totalmoney += $send_money;
 					$total += 1;
 				}
@@ -994,7 +956,7 @@ if (!class_exists('BonusModel')) {
 				$log = array(
 			            "uniacid" => $_W['uniacid'],
 			            "money" => $totalmoney,
-			            "status" => 1,
+			            "status" => 2,
 			            "ctime" => time(),
 						"type" => 2,
 			            "paymethod" => $set['paymethod'],
@@ -1009,9 +971,12 @@ if (!class_exists('BonusModel')) {
 		}
 
 		//地区分红
-		public function autosendarea(){
+		public function autosendarea($uniacid = 0){
 			global $_W, $_GPC;
-			
+			if(empty($uniacid)){
+				return;
+			}
+			$_W['uniacid'] = $uniacid;
 			$time           = time();
 			$sendpay_error  = 0;
 			$bonus_money    = 0;
@@ -1063,6 +1028,8 @@ if (!class_exists('BonusModel')) {
 							$sendpay_error = 1;
 						}
 					}
+					$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and o.finishtime < {$endtime} and cg.bonus_area!=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
+
 					pdo_insert('sz_yi_bonus_log', array(
 						"openid" => $member['openid'],
 						"uid" => $member['uid'],
@@ -1070,17 +1037,18 @@ if (!class_exists('BonusModel')) {
 						"uniacid" => $_W['uniacid'],
 						"paymethod" => $set['paymethod'],
 						"sendpay" => $sendpay,
+						"goodids" => iserializer($ids),
 						"status" => 1,
 						"ctime" => time(),
 						"send_bonus_sn" => $time
 					));
+					//更新分红订单完成
+					pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
+					
 					if($sendpay == 1){
 						$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_PAY);
 					}
-					$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and o.finishtime < {$endtime} and cg.bonus_area!=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
-
-					//更新分红订单完成
-					pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
+					
 					$totalmoney += $send_money;
 					$total += 1;
 				}
@@ -1090,7 +1058,7 @@ if (!class_exists('BonusModel')) {
 				$log = array(
 			            "uniacid" => $_W['uniacid'],
 			            "money" => $totalmoney,
-			            "status" => 1,
+			            "status" => 2,
 			            "ctime" => time(),
 						"type" => 3,
 			            "paymethod" => $set['paymethod'],
@@ -1105,8 +1073,12 @@ if (!class_exists('BonusModel')) {
 		}
 
 		//全球分红
-		public function autosendall(){
+		public function autosendall($uniacid = 0){
 			global $_W, $_GPC;
+			if(empty($uniacid)){
+				return;
+			}
+			$_W['uniacid'] = $uniacid;
 			$time           = time();
 			$sendpay_error  = 0;
 			$bonus_money    = 0;
@@ -1133,6 +1105,8 @@ if (!class_exists('BonusModel')) {
 				return false;
 			}
 			$ordermoney = pdo_fetchcolumn("select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}");
+			//获取分红订单id
+			$orderids = pdo_fetchall("select o.id from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid=:uniacid and  o.finishtime >={$stattime} and o.finishtime < {$endtime}", array(":uniacid" => $_W['uniacid']), 'id');
 
 			$premierlevels = pdo_fetchall("select * from ".tablename('sz_yi_bonus_level')." where uniacid={$_W['uniacid']} and premier=1");
 			$levelmoneys = array();
@@ -1202,10 +1176,11 @@ if (!class_exists('BonusModel')) {
 			$log = array(
 					"uniacid" => $_W['uniacid'],
 					"money" => $totalmoney,
-					"status" => 1,
+					"status" => 2,
 					"ctime" => time(),
 					"sendmonth" => $set['sendmonth'],
 					"paymethod" => $set['paymethod'],
+					"orderids" => iserializer($orderids),
 					'type' => 4,
 					"sendpay_error" => $sendpay_error,
 					"isglobal" => 1,
@@ -1214,6 +1189,43 @@ if (!class_exists('BonusModel')) {
 					"total" => $total
 					);
 			pdo_insert('sz_yi_bonus', $log);
+		}
+
+		public function autoexec($uniacid = 0){
+			global $_W, $_GPC;
+			if(empty($uniacid)){
+				return;
+			}
+			$_W['uniacid'] = $uniacid;
+			$daytime = strtotime(date("Y-m-d 00:00:00"));
+			$isbonus = false;
+			$bonus_set = $this->getSet($_W['uniacid']);
+			//未开启自动分红直接跳过
+			if (!empty($bonus_set['sendmethod'])) {
+				//是否为月分红
+				if($bonus_set['sendmonth'] == 1){
+					//按月分红查询月初0点时间
+					$daytime = strtotime(date("Y-m-1 00:00:00"));
+				}
+				//按每天0點查詢，如查詢到則已發放
+				$bonus_data = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=0 and uniacid=".$_W['uniacid']." and bonus_area=0  order by id desc");
+				$bonus_data_area = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=0 and uniacid=".$_W['uniacid']." and bonus_area!=0  order by id desc");
+				$bonus_data_isglobal = pdo_fetch("select * from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=1 and uniacid=".$_W['uniacid']."  order by id desc");
+	            if(!empty($bonus_set['start'])){
+	                //团队分红
+	                if(empty($bonus_data)){
+	                    $this->autosend($_W['uniacid']);
+	                }
+	                //地区分红
+	                if(empty($bonus_data_area)){
+	                    $this->autosendarea($_W['uniacid']);
+	                }
+	                //全球分红
+	                if(empty($bonus_data_isglobal)){
+	                    $this->autosendall($_W['uniacid']);
+	                }
+	            }
+	        }
 		}
 	}
 }

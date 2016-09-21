@@ -39,6 +39,14 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_merchant_center') . " (
   `level_id` int(11) NOT NULL,
   `center_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_merchant_order') . " (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) NOT NULL,
+  `orderid` int(11) NOT NULL,
+  `money` decimal(10,2) DEFAULT '0.00' COMMENT '金额',
+  `isopenbonus` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;";
 pdo_query($sql);
 $info = pdo_fetch('select * from ' . tablename('sz_yi_plugin') . ' where identity= "merchant"  order by id desc limit 1');

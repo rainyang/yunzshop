@@ -77,16 +77,16 @@ class Express extends \api\YZ
     private function getList($company_name, $sn) {
         $url = "http://wap.kuaidi100.com/wap_result.jsp?rand=" . time() . "&id={$company_name}&fromWeb=null&postid={$sn}";
         load()->func("communication");
-        $zym_var_13 = ihttp_request($url);
-        $zym_var_16 = $zym_var_13["content"];
-        if (empty($zym_var_16)) {
+        $info = ihttp_request($url);
+        $result = $info["content"];
+        if (empty($result)) {
             return array();
         }
-        preg_match_all("/\<p\>&middot;(.*)\<\/p\>/U", $zym_var_16, $zym_var_5);
-        if (!isset($zym_var_5[1])) {
+        preg_match_all("/\<p\>&middot;(.*)\<\/p\>/U", $result, $data);
+        if (!isset($data[1])) {
             return false;
         }
-        return $zym_var_5[1];
+        return $data[1];
     }
 }
 

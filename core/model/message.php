@@ -170,12 +170,12 @@ class Sz_DYi_Message
             )
         ));
     }
-	public function sendNews($openid, $_var_11, $account = null)
+	public function sendNews($openid, $articles, $account = null)
 	{
 		if (!$account) {
 			$account = m('common')->getAccount();
 		}
-		return $account->sendCustomNotice(array('touser' => $openid, 'msgtype' => 'news', 'news' => array('articles' => $_var_11)));
+		return $account->sendCustomNotice(array('touser' => $openid, 'msgtype' => 'news', 'news' => array('articles' => $articles)));
 	}
 
     public function appSendContent($openid, $msg, $content) {

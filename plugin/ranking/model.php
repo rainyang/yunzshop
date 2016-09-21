@@ -8,8 +8,8 @@ if (!class_exists('RankingModel')) {
 	{
 		public function getSet()
 		{
-			$_var_0 = parent::getSet();
-			return $_var_0;
+			$set = parent::getSet();
+			return $set;
 		}
 		public function getMember($id)
 		{

@@ -35,4 +35,8 @@ class VerifyWeb extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__);
     }
+    public function withdraw()
+    {
+        $this->_exec_plugin(__FUNCTION__);
+    }
 }
