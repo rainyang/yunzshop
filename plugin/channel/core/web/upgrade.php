@@ -60,8 +60,8 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_af_channel') . " (
   `mobile` VARCHAR(11) NULL COMMENT '电话号',
   `diychannelid` INT(11) NULL,
   `diychanneldataid` INT(11) NULL,
-  `diychannelfields` TEXT NULL,
-  `diychanneldata` TEXT NULL,
+  `diychannelfields` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `diychanneldata` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
   PRIMARY KEY (`id`))
 ENGINE = MyISAM
 COMMENT = '会员申请渠道商';

@@ -11,7 +11,7 @@ if(empty($result)){
   pdo_query($sql);
 }
 $sql = "
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_chooseagent` (
+CREATE TABLE IF NOT EXISTS ". tablename('sz_yi_chooseagent') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) DEFAULT NULL,
   `agentname` varchar(255) DEFAULT NULL,

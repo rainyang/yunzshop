@@ -70,9 +70,9 @@ class goods
 
     public function getCateTree($uniacid)
     {
-        $tree = pdo_fetchall("SELECT p.id AS pcate,p.name,CONCAT(\"[\",GROUP_CONCAT(item),\"]\") AS ccate_list FROM ims_sz_yi_category p
+        $tree = pdo_fetchall("SELECT p.id AS pcate,p.name,CONCAT(\"[\",GROUP_CONCAT(item),\"]\") AS ccate_list FROM " . tablename('sz_yi_category') . " p
                       LEFT JOIN (SELECT parentid,CONCAT('{\"ccate\":\"',id,'\",\"name\":\"',name,'\"}') item 
-                            FROM ims_sz_yi_category WHERE level=2) c ON p.id=c.parentid WHERE uniacid = '{$uniacid}'
+                            FROM " . tablename('sz_yi_category') . " WHERE level=2) c ON p.id=c.parentid WHERE uniacid = '{$uniacid}'
                       GROUP BY pcate
                 ");
         foreach ($tree as &$item) {
