@@ -203,21 +203,18 @@ function send_sms_alidayu($mobile, $code, $templateType)
     $req->setExtend("123456");
     $req->setSmsType("normal");
     $req->setSmsFreeSignName($set['sms']['signname']);
-    //print_r($params);
-    $nparam['code'] = "{$code}";
-    foreach ($params as $param) {
-        if (strstr($param, '=')) {
+    if (is_array($params)) {
+        $nparam['code'] = "{$code}";
+        foreach ($params as $param) {
             $param = trim($param);
             $explode_param = explode("=", $param);
             $nparam[$explode_param[0]] = "{$explode_param[1]}";
-        } else {
-            $param = trim($param);
-            $nparam['product'] = "{$param}";
         }
+        //print_r(json_encode($nparam));exit;
         $req->setSmsParam(json_encode($nparam));
+    } else {
+        $req->setSmsParam("{\"code\":\"{$code}\",\"product\":\"{$set['sms']['product']}\"}");
     }
-    //print_r(json_encode($nparam));
-    $req->setSmsParam(json_encode($nparam));
 
     $req->setRecNum($mobile);
     $req->setSmsTemplateCode($templateCode);
