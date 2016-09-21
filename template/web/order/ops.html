@@ -64,10 +64,13 @@
            data-target="#modal-cancelsend">取消发货</a>
         {/if}
         {ifp 'order.op.finish'}
+        {if empty($perm_role)}
         <a class="btn btn-primary btn-sm disbut"
            href="{php echo $this->createWebUrl('order', array('op' => 'deal','to'=>'finish','id' => $item['id']))}"
            onclick="return confirm('确认订单收货吗？');return false;">确认收货</a>
-
+        {else}
+        <a class="btn btn-danger btn-sm disbut">等待收货</a>
+        {/if}
         {/if}
     {/if}
 <!-- 补发红包 -->
