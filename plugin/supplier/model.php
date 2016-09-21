@@ -87,7 +87,9 @@ if (!class_exists('SupplierModel')) {
             }*/
             $supplierinfo['sp_goods'] = array();
             $supplierinfo['costmoney'] = 0;
+
             $supplierinfo['expect_money'] = '0.00';
+
             $apply_cond = "";
             $apply_conds = "";
             $now_time = time();
@@ -103,10 +105,13 @@ if (!class_exists('SupplierModel')) {
                 $supplierinfo['costmoney'] = 0;
                 foreach ($supplier_orders as $o) {
                     $supplierinfo['costmoney'] += $o['money'];
+
                 }
+                $supplierinfo['costmoney'] = number_format($supplierinfo['costmoney'],2);
             }
             $supplierinfo['costmoney'] = number_format($supplierinfo['costmoney'],2);
                         
+
             $supplierinfo['totalmoney'] = pdo_fetchcolumn("select sum(apply_money) from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and uid={$uid}");
             return $supplierinfo;
         }

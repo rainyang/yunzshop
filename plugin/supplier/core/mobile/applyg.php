@@ -38,6 +38,7 @@ if ($_W['isajax']) {
 		if( pdo_insertid() ) {
 			foreach ($supplierinfo['sp_goods'] as $key => $value) {
 				pdo_update('sz_yi_order_goods', array('supplier_apply_status' => 2), array('id' => $value['ogid'], 'uniacid' => $_W['uniacid']));
+
 			}
 			$tmp_sp_goods = $supplierinfo['sp_goods'];
 			$tmp_sp_goods['applyno'] = $applyno;

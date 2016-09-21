@@ -59,13 +59,13 @@ if (!class_exists('YunbiModel')) {
 					        'openid' 		=> $declaration_info['openid'],
 					        'credittype' 	=> 'virtual_currency',
 					        'money' 		=> $value,
-							'remark'		=> '保单获得'.$value.$set['yunbi_title']
+							'remark'		=> '报单获得'.$value.$set['yunbi_title']
 					    );
 						$this->addYunbiLog($_W['uniacid'],$declaration_log,'13');
 
 						$declaration = array(
 							'keyword1' => array(
-								'value' => '保单获得'.$set['yunbi_title'].'通知',
+								'value' => '报单获得'.$set['yunbi_title'].'通知',
 								'color' => '#73a68d'),
 							'keyword2' =>array(
 								'value' => '本次获得'.$value.$set['yunbi_title'],
