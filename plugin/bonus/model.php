@@ -1001,7 +1001,7 @@ if (!class_exists('BonusModel')) {
 				$log = array(
 			            "uniacid" => $_W['uniacid'],
 			            "money" => $totalmoney,
-			            "status" => 1,
+			            "status" => 2,
 			            "ctime" => time(),
 						"type" => 2,
 			            "paymethod" => $set['paymethod'],
@@ -1100,7 +1100,7 @@ if (!class_exists('BonusModel')) {
 				$log = array(
 			            "uniacid" => $_W['uniacid'],
 			            "money" => $totalmoney,
-			            "status" => 1,
+			            "status" => 2,
 			            "ctime" => time(),
 						"type" => 3,
 			            "paymethod" => $set['paymethod'],
@@ -1216,7 +1216,7 @@ if (!class_exists('BonusModel')) {
 			$log = array(
 					"uniacid" => $_W['uniacid'],
 					"money" => $totalmoney,
-					"status" => 1,
+					"status" => 2,
 					"ctime" => time(),
 					"sendmonth" => $set['sendmonth'],
 					"paymethod" => $set['paymethod'],

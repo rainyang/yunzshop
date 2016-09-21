@@ -208,7 +208,15 @@
                     <td>{$row['id']}</td>
                     <td>{$row['money']}</td>
                     <td>{$row['total']}</td>
-                    <td>{php echo empty($row['type']) ? "手动" : "自动"}</td>
+                    <td>
+                        {if $row['status'] == 0}
+                            手动
+                        {elseif $row['status'] == 2}
+                            自动
+                        {else}
+                            ———
+                        {/if}
+                    </td>
                     <td>
                         {php echo empty($row['paymethod']) ? "账户余额" : "微信钱包"}
                         {if $row['sendpay_error']==1 && !empty($row['status'])}(打款失败){/if}

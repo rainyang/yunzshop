@@ -108,7 +108,7 @@ if (!empty($_POST)) {
 	$log = array(
             "uniacid" => $_W['uniacid'],
             "money" => $totalmoney,
-            "status" => 1,
+            "status" => 0,
             "type" => 4,
             "ctime" => time(),
             "sendmonth" => $set['sendmonth'],
