@@ -2349,8 +2349,7 @@ if ($_W['isajax']) {
                     }
                 }
             }
-<<<<<<< HEAD
-=======
+
             if (p('supplier')) {
                 $supplier_set = p('supplier')->getSet();
                 $supplier_order = array(
@@ -2400,7 +2399,6 @@ if ($_W['isajax']) {
             $realprice = $goods_realprice - ($goodsprice-$totalprice) * (100 - $store_info['balance'])/100;
             pdo_update('sz_yi_order', array('realprice' => $realprice), array('id' => $orderid, 'uniacid' => $_W['uniacid']));
 
->>>>>>> ec842449a7b2986c2e2359de73a04b6cd47dc15e
             if(p('hotel')){
                 //打印订单      
                 $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
