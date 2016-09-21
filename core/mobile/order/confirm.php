@@ -2357,10 +2357,10 @@ if ($_W['isajax']) {
                     'orderid' => $orderid
                     );
                 if (empty($supplier_set['isopenbonus'])) {
-                    $supplier_order['money'] = $supplier_or_merchant_price;
+                    $supplier_order['money'] = $supplier_or_merchant_price + $dispatch_price;
                     $supplier_order['isopenbonus'] = 0;
                 } else {
-                    $supplier_order['money'] = $basis_money;
+                    $supplier_order['money'] = $basis_money + $dispatch_price;
                     $supplier_order['isopenbonus'] = 1;
                 }
                 pdo_insert('sz_yi_supplier_order', $supplier_order);
