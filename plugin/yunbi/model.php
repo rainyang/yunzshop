@@ -133,14 +133,14 @@ if (!class_exists('YunbiModel')) {
 						$member = m('member')->getMember($order_goods[0]['openid']);
 						$agentinfo = m('member')->getMember($member['agentid']);
 						if ($agentinfo) {
-							$this->setVirtualCurrency($agentinfo['openid'],$virtual_agent,'virtual_temporary');
-							$this->setVirtualCurrency($agentinfo['openid'],$virtual_agent,'virtual_temporary_total');
+							$this->setVirtualCurrency($agentinfo['openid'],$virtual_agent);
+							//$this->setVirtualCurrency($agentinfo['openid'],$virtual_agent,'virtual_temporary_total');
 							$data_log = array(
 						        'id' 			=> $agentinfo['id'],
 						        'openid' 		=> $agentinfo['openid'],
-						        'credittype' 	=> 'virtual_temporary',
+						        'credittype' 	=> 'virtual_currency',
 						        'money' 		=> $virtual_agent,
-								'remark'		=> '购物-分销上级-间接获得'.$virtual_agent.$set['yunbi_title']
+								'remark'		=> '购物-分销上级-获得'.$virtual_agent.$set['yunbi_title']
 						    );
 							$this->addYunbiLog($_W['uniacid'],$data_log,'1');
 							$messages = array(
@@ -148,7 +148,7 @@ if (!class_exists('YunbiModel')) {
 									'value' => '分销上级获得'.$set['yunbi_title'].'通知',
 									'color' => '#73a68d'),
 								'keyword2' =>array(
-									'value' => '本次获得'.$virtual_agent.'待转'.$set['yunbi_title'].',等待转入'.$set['yunbi_title'],
+									'value' => '本次获得'.$virtual_agent.$set['yunbi_title'],
 									'color' => '#73a68d')
 							);
 							m('message')->sendCustomNotice($agentinfo['openid'], $messages);
