@@ -169,9 +169,9 @@
                     <div class="col-sm-8 col-lg-9 col-xs-12">
                         <select name='type' class='form-control'>
                             <option value=''>全部分红</option>
-                            <option value='1' {if $_GPC['type']=='1'}selected{/if}>团队分红</option>
-                            <option value='2' {if $_GPC['type']=='2'}selected{/if}>地区分红</option>
-                            <option value='3' {if $_GPC['type']=='3'}selected{/if}>全球分红</option>
+                            <option value='2' {if $_GPC['type']=='2'}selected{/if}>团队分红</option>
+                            <option value='3' {if $_GPC['type']=='3'}selected{/if}>地区分红</option>
+                            <option value='1' {if $_GPC['type']=='1'}selected{/if}>全球分红</option>
                         </select>
                     </div>
                 </div>
@@ -208,7 +208,15 @@
                     <td>{$row['id']}</td>
                     <td>{$row['money']}</td>
                     <td>{$row['total']}</td>
-                    <td>{php echo empty($row['type']) ? "手动" : "自动"}</td>
+                    <td>
+                        {if $row['status'] == 0}
+                            手动
+                        {elseif $row['status'] == 2}
+                            自动
+                        {else}
+                            ———
+                        {/if}
+                    </td>
                     <td>
                         {php echo empty($row['paymethod']) ? "账户余额" : "微信钱包"}
                         {if $row['sendpay_error']==1 && !empty($row['status'])}(打款失败){/if}

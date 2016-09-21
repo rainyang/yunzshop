@@ -9,8 +9,7 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 
 $uniacid   = $_W['uniacid'];
 
-$sets = $this->getSet();
-$set = $sets['beneficence'];
+$set = $this->getSet();
 $beneficencename = $set['beneficencename']?$set['beneficencename']:'行善池';
 $total_money     = pdo_fetchcolumn('select sum(money) as total_money from ' . tablename('sz_yi_beneficence') . " where  uniacid = '" .$_W['uniacid'] . "'");
 if ($_W['isajax']) {

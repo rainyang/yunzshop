@@ -61,11 +61,11 @@ if (!empty($_POST)) {
 		message("发放人数为0，不能发放。", "", "error");
 	}
 	foreach ($count as $key => $value) {
-		$member = $this->model->getInfo($value['mid'], array('ok', 'pay', 'ordergoods'));
+		$member = $this->model->getInfo($value['mid'], array('teamok', 'pay', 'ordergoods'));
 		if(empty($member)){
 			continue;
 		}
-		$send_money = $member['commission_ok'];
+		$send_money = $member['commission_teamok'];
 		$sendpay = 1;
 		$islog = true;
 		$level = $this->model->getlevel($member['openid']);
@@ -112,7 +112,7 @@ if (!empty($_POST)) {
 		$log = array(
 	            "uniacid" => $_W['uniacid'],
 	            "money" => $totalmoney,
-	            "status" => 1,
+	            "status" => 0,
 	            "type" => 2,
 	            "ctime" => time(),
 	            "paymethod" => $set['paymethod'],

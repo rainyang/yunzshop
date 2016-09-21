@@ -227,36 +227,36 @@ if (!class_exists('MerchantModel')) {
 		}
 
 		//发送消息
-		function sendMessage($_var_20 = '', $_var_150 = array(), $_var_151 = '')
+		function sendMessage($openid = '', $data = array(), $message_type = '')
 		{
 			global $_W, $_GPC;
 			$set = $this->getSet();
-			$_var_153 = $set['templateid'];
-			$member = m('member')->getMember($_var_20);
-			$_var_154 = unserialize($member['noticeset']);
-			if (!is_array($_var_154)) {
-				$_var_154 = array();
+			$templateid = $set['templateid'];
+			$member = m('member')->getMember($openid);
+			$usernotice = unserialize($member['noticeset']);
+			if (!is_array($usernotice)) {
+				$usernotice = array();
 			}
-			if ($_var_151 == TM_MERCHANT_APPLY) {
-				$_var_155 = $set['merchant_applycontent'];
-				$_var_155 = str_replace('[昵称]', $_var_150['nickname'], $_var_155);
-				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', $_var_150['time']), $_var_155);
-				$_var_156 = array('keyword1' => array('value' => !empty($set['merchant_applytitle']) ? $set['merchant_applytitle'] : '提现申请通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
-				if (!empty($_var_153)) {
-					m('message')->sendTplNotice($_var_20, $_var_153, $_var_156);
+			if ($message_type == TM_MERCHANT_APPLY) {
+				$message = $set['merchant_applycontent'];
+				$message = str_replace('[昵称]', $data['nickname'], $message);
+				$message = str_replace('[时间]', date('Y-m-d H:i:s', $data['time']), $message);
+				$msg = array('keyword1' => array('value' => !empty($set['merchant_applytitle']) ? $set['merchant_applytitle'] : '提现申请通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
+				if (!empty($templateid)) {
+					m('message')->sendTplNotice($openid, $templateid, $msg);
 				} else {
-					m('message')->sendCustomNotice($_var_20, $_var_156);
+					m('message')->sendCustomNotice($openid, $msg);
 				}
 			}
-			if ($_var_151 == TM_MERCHANT_PAY) {
-				$_var_155 = $set['merchant_finishcontent'];
-				$_var_155 = str_replace('[昵称]', $_var_150['nickname'], $_var_155);
-				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', $_var_150['time']), $_var_155);
-				$_var_156 = array('keyword1' => array('value' => !empty($set['merchant_finishtitle']) ? $set['merchant_finishtitle'] : '提现申请完成通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
-				if (!empty($_var_153)) {
-					m('message')->sendTplNotice($_var_20, $_var_153, $_var_156);
+			if ($message_type == TM_MERCHANT_PAY) {
+				$message = $set['merchant_finishcontent'];
+				$message = str_replace('[昵称]', $data['nickname'], $message);
+				$message = str_replace('[时间]', date('Y-m-d H:i:s', $data['time']), $message);
+				$msg = array('keyword1' => array('value' => !empty($set['merchant_finishtitle']) ? $set['merchant_finishtitle'] : '提现申请完成通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
+				if (!empty($templateid)) {
+					m('message')->sendTplNotice($openid, $templateid, $msg);
 				} else {
-					m('message')->sendCustomNotice($_var_20, $_var_156);
+					m('message')->sendCustomNotice($openid, $msg);
 				}
 			}
 		}
