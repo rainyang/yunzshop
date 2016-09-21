@@ -209,10 +209,10 @@
     </div>
     <div class="comm-center">
     <ul>
-        <li><a href="#"><span>{php echo $commission_ok}</span><br/>可结算金额</a></li>
-        <li><a href="#"><span>{php echo $commission_total}</span><br/>累计结算金额</a></li>
-
-        <li><a class="recharge" {if $commission_ok<=0 || !empty($center_info['limit_day']) } href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('merchant/applyg', array('iscenter' => 1))}"{/if} id='withdraw' ><p style="margin:0" {if $commission_ok<=0 || !empty($center_info['limit_day']) } class="disabled" {/if}>提现</p></a>
+        <li style='width:25%'><a href="#"><span>{php echo $commission_ok}</span><br/>可结算金额</a></li>
+        <li style='width:25%'><a href="#"><span>{php echo $commission_total}</span><br/>累计结算金额</a></li>
+        <li style='width:25%'><a href="#"><span>{php echo $center_info['no_apply_money']}</span><br/>累计未提现金额</a></li>
+        <li style='width:25%'><a class="recharge" {if $commission_ok<=0 || !empty($center_info['limit_day']) } href="javascript:;"{else}href="{php echo $this->createPluginMobileUrl('merchant/applyg', array('iscenter' => 1))}"{/if} id='withdraw' ><p style="margin:0" {if $commission_ok<=0 || !empty($center_info['limit_day']) } class="disabled" {/if}>提现</p></a>
         </li>
     </ul>
     </div>

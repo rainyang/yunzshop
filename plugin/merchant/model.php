@@ -66,14 +66,22 @@ if (!class_exists('MerchantModel')) {
 				$apply_cond .= " AND o.finishtime<{$apply_day} ";
 
 			}
-			$merchant_orders = pdo_fetchall("SELECT so.*,o.id as oid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_merchant_order') . " so on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} {$apply_cond} AND o.center_apply_status=0 AND o.status=3 ORDER BY o.createtime DESC,o.status DESC ");
+			$info['no_apply_money'] = 0;
+			$no_apply_money = pdo_fetchall("SELECT so.money FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_merchant_order') . " so on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} AND o.center_apply_status=0 AND o.status=3 ");
+			if (!empty($no_apply_money)) {
+				foreach ($no_apply_money as $n) {
+					$info['no_apply_money'] += $n['money'];
+				}
+				$info['no_apply_money'] = number_format($info['no_apply_money']*$info['levelinfo']['commission']/100,2);
+			}
+			$merchant_orders = pdo_fetchall("SELECT so.*,o.id as oid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_merchant_order') . " so on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} {$apply_cond} AND o.center_apply_status=0 AND o.status=3 ");
 			if (!empty($merchant_orders)) {
                 $info['commission_ok'] = 0;
                 foreach ($merchant_orders as $o) {
                     $info['commission_ok'] += $o['money'];
                 }
             }
-			$info['commission_ok'] = $info['commission_ok']*$info['levelinfo']['commission']/100;
+			$info['commission_ok'] = number_format($info['commission_ok']*$info['levelinfo']['commission']/100,2);
 
 			$info['order_total_price'] = number_format(pdo_fetchcolumn("SELECT sum(og.price) FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} {$apply_cond} ORDER BY o.createtime DESC,o.status DESC "), 2);
 			$order_ids = pdo_fetchall("SELECT o.id FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_merchant_order') . " so on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} {$apply_cond} AND o.center_apply_status=0 AND o.status=3 ORDER BY o.createtime DESC,o.status DESC ");
