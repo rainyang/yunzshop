@@ -44,7 +44,7 @@ if($op == 'sendcode'){
             show_json(1);
         }
         else{
-            show_json(0, $issendsms['msg']);
+            show_json(0, $issendsms['msg']. '/' . $issendsms['sub_msg']);
         }
     }
 }else if ($op == 'forgetcode'){
