@@ -1840,12 +1840,13 @@ function order_list_confirmsend($order) {
             ) , array(
                 "id" => $order["refundid"]
             ));
-//            pdo_update("sz_yi_order", array(
-//                "refundid" => 0
-//            ) , array(
-//                "id" => $order["id"]
-//            ));
+           /*pdo_update("sz_yi_order", array(
+               "refundid" => 0
+           ) , array(
+               "id" => $order["id"]
+           ));*/
         }
+        
     }
     m("notice")->sendOrderMessage($order["id"]);
     plog("order.op.send", "订单发货 ID: {$order["id"]} 订单号: {$order["ordersn"]} <br/>快递公司: {$_GPC["expresscom"]} 快递单号: {$_GPC["expresssn"]}");
@@ -1882,12 +1883,13 @@ function order_list_confirmsend1($order) {
             ) , array(
                 "id" => $order["refundid"]
             ));
-            pdo_update("sz_yi_order", array(
+            /*pdo_update("sz_yi_order", array(
                 "refundid" => 0
             ) , array(
                 "id" => $order["id"]
-            ));
+            ));*/
         }
+        
     }
     m("member")->upgradeLevel($order["openid"]);
     m("notice")->sendOrderMessage($order["id"]);

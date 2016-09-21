@@ -60,18 +60,18 @@ if (!class_exists('MerchantModel')) {
 
 			$apply_cond = "";
 			$now_time = time();
-			if (!empty($set['apply_day'])) {
-				$apply_day = $now_time - $set['apply_day']*60*60*24;
-				$apply_cond .= " AND o.finishtime<{$apply_day} ";
-			}else if (!empty($settrade['receive']) && !empty($set['apply_day'])) {
+			if (!empty($settrade['receive']) && !empty($set['apply_day'])) {
 				$apply_day = $now_time - $set['apply_day']*60*60*24;
 				$sendreceive = $now_time - $settrade['receive']*60*60*24;
 				$apply_cond .= " AND (o.finishtime<{$apply_day} or o.sendtime<{$sendreceive})";
-			}else if (!empty($settrade['receive'])){
+			} else if (!empty($settrade['receive'])){
 				$sendreceive = $now_time - $settrade['receive']*60*60*24;
 				$apply_cond .= " AND o.sendtime<{$sendreceive}";
+			} else if (!empty($set['apply_day'])) {
+				$apply_day = $now_time - $set['apply_day']*60*60*24;
+				$apply_cond .= " AND o.finishtime<{$apply_day} ";
 			}
-			$merchant_orders = pdo_fetchall("SELECT so.*,o.id as oid FROM " . tablename('sz_yi_merchant_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} {$apply_cond} AND o.center_apply_status=0 AND o.status=3 ORDER BY o.createtime DESC,o.status DESC ");
+			$merchant_orders = pdo_fetchall("SELECT so.*,o.id as oid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_merchant_order') . " so on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} {$apply_cond} AND o.center_apply_status=0 AND o.status=3 ORDER BY o.createtime DESC,o.status DESC ");
 			if (!empty($merchant_orders)) {
                 $info['commission_ok'] = 0;
                 foreach ($merchant_orders as $o) {

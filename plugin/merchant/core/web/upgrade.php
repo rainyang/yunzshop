@@ -40,7 +40,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_merchant_center') . " (
   `center_id` int(11) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_merchant_order` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_merchant_order') . " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) NOT NULL,
   `orderid` int(11) NOT NULL,
