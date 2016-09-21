@@ -20,7 +20,7 @@ if (empty($member)) {
 	header('Location: '.$this->createMobileUrl('member/login'));
 }
 $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
-
+$member['credit1'] 	= floor($member['credit1']);
 $uniacid = $_W['uniacid'];
 $trade['withdraw'] = $set['trade']['withdraw'];
 $trade['closerecharge'] = $set['trade']['closerecharge'];
