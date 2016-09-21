@@ -18,6 +18,18 @@ if (!pdo_fieldexists('sz_yi_order', 'basis_money')) {
 if (!pdo_fieldexists('sz_yi_cashier_store', 'bonus')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_cashier_store')." ADD `bonus` decimal(10,2) DEFAULT NULL;");
 }
+
+if (!pdo_fieldexists('sz_yi_af_supplier', 'diymemberid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." ADD `diymemberid` int(11) NOT NULL DEFAULT '0';");
+}
+
+if (!pdo_fieldexists('sz_yi_af_supplier', 'diymemberfields')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." ADD `diymemberfields` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+}
+
+if (!pdo_fieldexists('sz_yi_af_supplier', 'diymemberdata')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." ADD `diymemberdata` TEXT CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;");
+}
 $sql = "
 CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_supplier_order')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
