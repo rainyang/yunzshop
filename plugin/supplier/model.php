@@ -97,10 +97,6 @@ if (!class_exists('SupplierModel')) {
                 $apply_conds = " AND o.finishtime>{$apply_day} ";
                 $supplierinfo['expect_money'] = pdo_fetchcolumn("SELECT sum(so.money) FROM " . tablename('sz_yi_supplier_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id where o.uniacid={$_W['uniacid']} and o.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 {$apply_conds}");
             }
-            if (!empty($settrade['receive'])) {
-                $sendreceive = $now_time - $settrade['receive']*60*60*24;
-                $apply_cond .= " AND o.sendtime<{$sendreceive}";
-            }
             $supplier_orders = pdo_fetchall("SELECT so.*,o.id as oid,og.id as ogid FROM " . tablename('sz_yi_supplier_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id where o.uniacid={$_W['uniacid']} and o.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 {$apply_cond}");
             if (!empty($supplier_orders)) {
                 $supplierinfo['sp_goods'] = $supplier_orders;

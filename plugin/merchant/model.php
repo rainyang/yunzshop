@@ -60,14 +60,7 @@ if (!class_exists('MerchantModel')) {
 
 			$apply_cond = "";
 			$now_time = time();
-			if (!empty($settrade['receive']) && !empty($set['apply_day'])) {
-				$apply_day = $now_time - $set['apply_day']*60*60*24;
-				$sendreceive = $now_time - $settrade['receive']*60*60*24;
-				$apply_cond .= " AND (o.finishtime<{$apply_day} or o.sendtime<{$sendreceive})";
-			} else if (!empty($settrade['receive'])){
-				$sendreceive = $now_time - $settrade['receive']*60*60*24;
-				$apply_cond .= " AND o.sendtime<{$sendreceive}";
-			} else if (!empty($set['apply_day'])) {
+			if (!empty($set['apply_day'])) {
 				$apply_day = $now_time - $set['apply_day']*60*60*24;
 				$apply_cond .= " AND o.finishtime<{$apply_day} ";
 			}
