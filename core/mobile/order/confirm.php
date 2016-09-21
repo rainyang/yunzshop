@@ -148,7 +148,7 @@ if ($_W['isajax']) {
                 ':openid' => $openid
             ), 'supplier_uid');
 
-            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,,g.dispatchsend, g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,discounts2,discounttype,discountway,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid, g.yunbi_deduct FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
+            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.dispatchsend, g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,discounts2,discounttype,discountway,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid, g.yunbi_deduct FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
 
             $goods = pdo_fetchall($sql, array(
                 ':uniacid' => $uniacid,
@@ -2247,6 +2247,7 @@ if ($_W['isajax']) {
                     ));
                 }
             }
+            $supplier_or_merchant_price = 0;
             foreach ($allgoods as $goods) {
                 $order_goods = array(
                     'uniacid' => $uniacid,
@@ -2264,35 +2265,8 @@ if ($_W['isajax']) {
                     "openid" => $openid,
                     'goods_op_cost_price' => $goods['costprice']
                 );
-                if (p('supplier')) {
-                    $supplier_set = p('supplier')->getSet();
-                    $supplier_order = array(
-                        'uniacid' => $_W['uniacid'],
-                        'orderid' => $orderid
-                        );
-                    if (empty($supplier_set['isopenbonus'])) {
-                        $supplier_order['money'] = $order_goods['goods_op_cost_price'];
-                        $supplier_order['isopenbonus'] = 0;
-                    } else {
-                        $supplier_order['money'] = $basis_money;
-                        $supplier_order['isopenbonus'] = 1;
-                    }
-                    pdo_insert('sz_yi_supplier_order', $supplier_order);
-                }
-                if (p('merchant')) {
-                    $merchant_set = p('merchant')->getSet();
-                    $merchant_order = array(
-                        'uniacid' => $_W['uniacid'],
-                        'orderid' => $orderid
-                        );
-                    if (empty($merchant_set['isopenbonus'])) {
-                        $merchant_order['money'] = $totalprice;
-                        $merchant_order['isopenbonus'] = 0;
-                    } else {
-                        $merchant_order['money'] = $basis_money;
-                        $merchant_order['isopenbonus'] = 1;
-                    }
-                    pdo_insert('sz_yi_merchant_order', $merchant_order);
+                if (p('supplier') || p('merchant')) {
+                    $supplier_or_merchant_price += $goods['costprice'];
                 }
                 //修改全返插件中房价
                 if(p('hotel') && $_GPC['type']=='99'){
@@ -2383,6 +2357,36 @@ if ($_W['isajax']) {
                         pdo_insert('sz_yi_channel_order_goods_profit', $profit_data);
                     }
                 }
+            }
+            if (p('supplier')) {
+                $supplier_set = p('supplier')->getSet();
+                $supplier_order = array(
+                    'uniacid' => $_W['uniacid'],
+                    'orderid' => $orderid
+                    );
+                if (empty($supplier_set['isopenbonus'])) {
+                    $supplier_order['money'] = $supplier_or_merchant_price;
+                    $supplier_order['isopenbonus'] = 0;
+                } else {
+                    $supplier_order['money'] = $basis_money;
+                    $supplier_order['isopenbonus'] = 1;
+                }
+                pdo_insert('sz_yi_supplier_order', $supplier_order);
+            }
+            if (p('merchant')) {
+                $merchant_set = p('merchant')->getSet();
+                $merchant_order = array(
+                    'uniacid' => $_W['uniacid'],
+                    'orderid' => $orderid
+                    );
+                if (empty($merchant_set['isopenbonus'])) {
+                    $merchant_order['money'] = $totalprice;
+                    $merchant_order['isopenbonus'] = 0;
+                } else {
+                    $merchant_order['money'] = $basis_money;
+                    $merchant_order['isopenbonus'] = 1;
+                }
+                pdo_insert('sz_yi_merchant_order', $merchant_order);
             }
             $store_info = pdo_fetch(" SELECT * FROM ".tablename('sz_yi_store')." WHERE id=:id and uniacid=:uniacid ", array(':id' => $carrierid, ':uniacid' => $_W['uniacid']));
             //门店真实结算价格
