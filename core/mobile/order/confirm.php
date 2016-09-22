@@ -969,8 +969,9 @@ if ($_W['isajax']) {
         $pc             = p("coupon");
         $supplier_uid   = $_GPC["supplier_uid"];
         $coupon_carrierid = intval($_GPC['carrierid']);
-        $goodsid = $_GPC['id'] ? intval($_GPC['id']) : 0;
+        $goodid = $_GPC['id'] ? intval($_GPC['id']) : 0;
         $cartids = $_GPC['cartids'] ? $_GPC['cartids'] : 0;
+        $storeid = intval($_GPC['carrierid']);
         $addressid           = intval($_GPC["addressid"]);
         $address     = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' WHERE  id=:id AND openid=:openid AND uniacid=:uniacid limit 1', array(
             ':uniacid' => $uniacid,
@@ -1333,6 +1334,26 @@ if ($_W['isajax']) {
                 
                 $deductyunbi = $deductyunbimoney / $ymoney * $ycredit;
                 
+            }
+
+        }
+        if (!empty($goodid)) {
+            
+            $optionid = intval($_GPC['optionid']);
+            $total = $_GPC['total'];
+            $storegoodtotal = pdo_fetchcolumn(" SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:goodsid and optionid=:optionid and storeid=:storeid and uniacid=:uniacid", array(':goodsid' => $goodsid, ':optionid' => $optionid, ':storeid' => $storeid, ':uniacid' => $_W['uniacid']));
+            if ($total > $storegoodtotal) {
+                show_json(-1);
+            }
+        } else if (!empty($cartids)) {
+
+            $carts = pdo_fetchall(" SELECT * FROM ".tablename('sz_yi_member_cart'). " WHERE id in (".$cartids.") and uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
+            foreach ($carts as $cart) {
+
+                $total = pdo_fetchcolumn(" SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:id and uniacid=:uniacid and storeid=:storeid and optionid=:optionid", array(':id' => $cart['goodsid'], ':uniacid' => $_W['uniacid'], ':storeid' => $storeid, ':optionid' => $cart['optionid'])); 
+                if ($total > $cart['total']) {
+                    show_json(-1);
+                }
             }
 
         }

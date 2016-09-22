@@ -15,7 +15,10 @@ if($_W['isajax']){
     }
     $pageid = intval($_GPC['pageid']);
     $page   = pdo_fetch('select * from '.tablename('sz_yi_chooseagent'). ' where id=:id and uniacid=:uniacid',array(':uniacid'=>$_W['uniacid'],':id'=>$pageid));
-    $goodsids = pdo_fetchall("SELECT distinct goodsid FROM ".tablename('sz_yi_store_goods')." WHERE storeid=:storeid and uniacid=:uniacid", array(':uniacid' => $_W['uniacid'], ':storeid' => $page['storeid']));
+    if ($page['isstore'] == 1) {
+       $goodsids = pdo_fetchall("SELECT distinct goodsid FROM ".tablename('sz_yi_store_goods')." WHERE storeid=:storeid and uniacid=:uniacid ", array(':uniacid' => $_W['uniacid'], ':storeid' => $page['storeid'])); 
+    }
+    
             
     $goodsid = array();
 
