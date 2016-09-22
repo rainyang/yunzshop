@@ -185,9 +185,11 @@ function send_sms_alidayu($mobile, $code, $templateType)
     switch ($templateType) {
         case 'reg':
             $templateCode = $set['sms']['templateCode'];
+            $params = @explode("\n", $set['sms']['product']);
             break;
         case 'forget':
             $templateCode = $set['sms']['templateCodeForget'];
+            $params = @explode("\n", $set['sms']['forget']);
             break;
         default:
             $templateCode = $set['sms']['templateCode'];
@@ -201,10 +203,23 @@ function send_sms_alidayu($mobile, $code, $templateType)
     $req->setExtend("123456");
     $req->setSmsType("normal");
     $req->setSmsFreeSignName($set['sms']['signname']);
-    $req->setSmsParam("{\"code\":\"{$code}\",\"product\":\"{$set['sms']['product']}\"}");
+    if (is_array($params)) {
+        $nparam['code'] = "{$code}";
+        foreach ($params as $param) {
+            $param = trim($param);
+            $explode_param = explode("=", $param);
+            $nparam[$explode_param[0]] = "{$explode_param[1]}";
+        }
+        //print_r(json_encode($nparam));exit;
+        $req->setSmsParam(json_encode($nparam));
+    } else {
+        $req->setSmsParam("{\"code\":\"{$code}\",\"product\":\"{$set['sms']['product']}\"}");
+    }
+
     $req->setRecNum($mobile);
     $req->setSmsTemplateCode($templateCode);
     $resp = $c->execute($req);
+    //print_r($resp);exit;
     return objectArray($resp);
 }
 
@@ -441,6 +456,11 @@ function is_weixin()
         return false;
     }
     return true;
+}
+
+function is_app_api()
+{
+    return defined('__MODULE_NAME__') && __MODULE_NAME__ == 'app/api';
 }
 
 function b64_encode($obj)
@@ -827,6 +847,9 @@ function sent_message($customer_id_array, $message)
 
 function is_app()
 {
+    if(defined('__MODULE_NAME__') && __MODULE_NAME__ == 'app/api'){
+        return true;
+    }
     $agent = strtolower($_SERVER['HTTP_USER_AGENT']);
     $yunzhong = (strpos($agent, 'yunzhong')) ? true : false;
     if ($yunzhong) {
@@ -993,21 +1016,17 @@ if (!function_exists("pdo_sql_debug")) {
  */
 function json_encode_ex($value)
 {
-    if (version_compare(PHP_VERSION,'5.4.0','<'))
-    {
+    if (version_compare(PHP_VERSION, '5.4.0', '<')) {
         $str = json_encode($value);
         $str = preg_replace_callback(
             "#\\\u([0-9a-f]{4})#i",
-            function($matchs)
-            {
+            function ($matchs) {
                 return iconv('UCS-2BE', 'UTF-8', pack('H4', $matchs[1]));
             },
             $str
         );
         return $str;
-    }
-    else
-    {
+    } else {
         return json_encode($value, JSON_UNESCAPED_UNICODE);
     }
 }
