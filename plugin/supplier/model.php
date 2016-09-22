@@ -87,7 +87,7 @@ if (!class_exists('SupplierModel')) {
             }*/
             $supplierinfo['sp_goods'] = array();
             $supplierinfo['costmoney'] = 0;
-
+            $supplierinfo['costmoney_total'] = 0;
             $supplierinfo['expect_money'] = '0.00';
 
             $apply_cond = "";
@@ -98,6 +98,13 @@ if (!class_exists('SupplierModel')) {
                 $apply_cond .= " AND o.finishtime<{$apply_day} ";
                 $apply_conds = " AND o.finishtime>{$apply_day} ";
                 $supplierinfo['expect_money'] = pdo_fetchcolumn("SELECT sum(so.money) FROM " . tablename('sz_yi_supplier_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id where o.uniacid={$_W['uniacid']} and o.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 {$apply_conds}");
+            }
+            $costmoney_total = pdo_fetchall("SELECT so.money FROM " . tablename('sz_yi_supplier_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id where o.uniacid={$_W['uniacid']} and o.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 ");
+            if (!empty($costmoney_total)) {
+                foreach ($costmoney_total as $c) {
+                    $supplierinfo['costmoney_total'] += $c['money'];
+                }
+                $supplierinfo['costmoney_total'] = number_format($supplierinfo['costmoney_total'],2);
             }
             $supplier_orders = pdo_fetchall("SELECT so.*,o.id as oid,og.id as ogid FROM " . tablename('sz_yi_supplier_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id where o.uniacid={$_W['uniacid']} and o.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 {$apply_cond}");
             if (!empty($supplier_orders)) {
