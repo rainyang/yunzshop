@@ -247,9 +247,9 @@ if (!class_exists('CommissionModel')) {
 					}
 					foreach ($level1_commissions as $c) {
 						$commission = iunserializer($c['commissions']);
-						$commission_pay = iunserializer($c['commission1']);
+						$commission1 = iunserializer($c['commission1']);
 						if (empty($commission)) {
-							$commission_total += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+							$commission_total += isset($commission1['level' . $agentLevel['id']]) ? $commission1['level' . $agentLevel['id']] : $commission1['default'];
 						} else {
 							$commission_total += isset($commission['level1']) ? floatval($commission['level1']) : 0;
 						}
@@ -259,9 +259,9 @@ if (!class_exists('CommissionModel')) {
 					$level1_commissions = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . " where o.agentid=:agentid and o.status>=3 and o.status<>6  and o.status<>4 and o.status<>5 and og.nocommission=0 and ({$time} - o.createtime > {$day_times}) and og.status1=0  and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					foreach ($level1_commissions as $c) {
 						$commission = iunserializer($c['commissions']);
-						$commission_pay = iunserializer($c['commission1']);
+						$commission1 = iunserializer($c['commission1']);
 						if (empty($commission)) {
-							$commission_ok += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+							$commission_ok += isset($commission1['level' . $agentLevel['id']]) ? $commission1['level' . $agentLevel['id']] : $commission1['default'];
 						} else {
 							$commission_ok += isset($commission['level1']) ? $commission['level1'] : 0;
 						}
@@ -271,9 +271,9 @@ if (!class_exists('CommissionModel')) {
 					$level1_commissions1 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . " where o.agentid=:agentid and o.status>=3 and  o.status<>6 and o.status<>4 and o.status<>5 and og.nocommission=0 and ({$time} - o.createtime <= {$day_times})  and og.status1=0  and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					foreach ($level1_commissions1 as $c) {
 						$commission = iunserializer($c['commissions']);
-						$commission_pay = iunserializer($c['commission1']);
+						$commission1 = iunserializer($c['commission1']);
 						if (empty($commission)) {
-							$commission_lock += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+							$commission_lock += isset($commission1['level' . $agentLevel['id']]) ? $commission1['level' . $agentLevel['id']] : $commission1['default'];
 						} else {
 							$commission_lock += isset($commission['level1']) ? $commission['level1'] : 0;
 						}
@@ -283,9 +283,9 @@ if (!class_exists('CommissionModel')) {
 					$level1_commissions2 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=3  and o.status<>6 and o.status<>4 and og.status1=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					foreach ($level1_commissions2 as $c) {
 						$commission = iunserializer($c['commissions']);
-						$commission_pay = iunserializer($c['commission1']);
+						$commission1 = iunserializer($c['commission1']);
 						if (empty($commission)) {
-							$commission_apply += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+							$commission_apply += isset($commission1['level' . $agentLevel['id']]) ? $commission1['level' . $agentLevel['id']] : $commission1['default'];
 						} else {
 							$commission_apply += isset($commission['level1']) ? $commission['level1'] : 0;
 						}
@@ -295,9 +295,9 @@ if (!class_exists('CommissionModel')) {
 					$level1_commissions2 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=3 and  o.status<>6  and o.status<>4   and og.status1=2 and og.nocommission=0 and o.uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					foreach ($level1_commissions2 as $c) {
 						$commission = iunserializer($c['commissions']);
-						$commission_pay = iunserializer($c['commission1']);
+						$commission1 = iunserializer($c['commission1']);
 						if (empty($commission)) {
-							$commission_check += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+							$commission_check += isset($commission1['level' . $agentLevel['id']]) ? $commission1['level' . $agentLevel['id']] : $commission1['default'];
 						} else {
 							$commission_check += isset($commission['level1']) ? $commission['level1'] : 0;
 						}
@@ -307,9 +307,9 @@ if (!class_exists('CommissionModel')) {
 					$level1_commissions2 = pdo_fetchall('select og.commission1,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid=:agentid and o.status>=3 and  o.status<>6 and o.status<>4 and o.status<>5 and og.status1=3 and og.nocommission=0 and o.uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':agentid' => $member['id']));
 					foreach ($level1_commissions2 as $c) {
 						$commission = iunserializer($c['commissions']);
-						$commission_pay = iunserializer($c['commission1']);
+						$commission1 = iunserializer($c['commission1']);
 						if (empty($commission)) {
-							$commission_pay += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+							$commission_pay += isset($commission1['level' . $agentLevel['id']]) ? $commission1['level' . $agentLevel['id']] : $commission1['default'];
 						} else {
 							$commission_pay += isset($commission['level1']) ? $commission['level1'] : 0;
 						}
@@ -344,9 +344,9 @@ if (!class_exists('CommissionModel')) {
 						$level2_commissions = pdo_fetchall('select og.commission2,og.commissions from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($level1_agentids)) . ')  and o.status>=1 and o.status<>4 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
 						foreach ($level2_commissions as $c) {
 							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission2']);
+							$commission2 = iunserializer($c['commission2']);
 							if (empty($commission)) {
-								$commission_total += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+								$commission_total += isset($commission2['level' . $agentLevel['id']]) ? $commission2['level' . $agentLevel['id']] : $commission2['default'];
 							} else {
 								$commission_total += isset($commission['level2']) ? $commission['level2'] : 0;
 							}
@@ -356,9 +356,9 @@ if (!class_exists('CommissionModel')) {
 						$level2_commissions = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($level1_agentids)) . ")  and ({$time} - o.createtime > {$day_times}) and o.status>=3  and  o.status<>6 and o.status<>4 and o.status<>5 and og.status2=0 and og.nocommission=0  and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
 						foreach ($level2_commissions as $c) {
 							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission2']);
+							$commission2 = iunserializer($c['commission2']);
 							if (empty($commission)) {
-								$commission_ok += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+								$commission_ok += isset($commission2['level' . $agentLevel['id']]) ? $commission2['level' . $agentLevel['id']] : $commission2['default'];
 							} else {
 								$commission_ok += isset($commission['level2']) ? $commission['level2'] : 0;
 							}
@@ -368,9 +368,9 @@ if (!class_exists('CommissionModel')) {
 						$level2_commissions1 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($level1_agentids)) . ")  and ({$time} - o.createtime <= {$day_times}) and og.status2=0 and o.status>=3  and  o.status<>6 and o.status<>4 and o.status<>5 and og.nocommission=0 and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
 						foreach ($level2_commissions1 as $c) {
 							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission2']);
+							$commission2 = iunserializer($c['commission2']);
 							if (empty($commission)) {
-								$commission_lock += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+								$commission_lock += isset($commission2['level' . $agentLevel['id']]) ? $commission2['level' . $agentLevel['id']] : $commission2['default'];
 							} else {
 								$commission_lock += isset($commission['level2']) ? $commission['level2'] : 0;
 							}
@@ -380,9 +380,9 @@ if (!class_exists('CommissionModel')) {
 						$level2_commissions2 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($level1_agentids)) . ')  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status2=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
 						foreach ($level2_commissions2 as $c) {
 							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission2']);
+							$commission2 = iunserializer($c['commission2']);
 							if (empty($commission)) {
-								$commission_apply += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+								$commission_apply += isset($commission2['level' . $agentLevel['id']]) ? $commission2['level' . $agentLevel['id']] : $commission2['default'];
 							} else {
 								$commission_apply += isset($commission['level2']) ? $commission['level2'] : 0;
 							}
@@ -392,9 +392,9 @@ if (!class_exists('CommissionModel')) {
 						$level2_commissions3 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($level1_agentids)) . ')  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status2=2 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
 						foreach ($level2_commissions3 as $c) {
 							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission2']);
+							$commission2 = iunserializer($c['commission2']);
 							if (empty($commission)) {
-								$commission_check += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+								$commission_check += isset($commission2['level' . $agentLevel['id']]) ? $commission2['level' . $agentLevel['id']] : $commission2['default'];
 							} else {
 								$commission_check += isset($commission['level2']) ? $commission['level2'] : 0;
 							}
@@ -404,9 +404,9 @@ if (!class_exists('CommissionModel')) {
 						$level2_commissions3 = pdo_fetchall('select og.commission2,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid ' . ' where o.agentid in( ' . implode(',', array_keys($level1_agentids)) . ')  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status2=3 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
 						foreach ($level2_commissions3 as $c) {
 							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission2']);
+							$commission2 = iunserializer($c['commission2']);
 							if (empty($commission)) {
-								$commission_pay += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+								$commission_pay += isset($commission2['level' . $agentLevel['id']]) ? $commission2['level' . $agentLevel['id']] : $commission2['default'];
 							} else {
 								$commission_pay += isset($commission['level2']) ? $commission['level2'] : 0;
 							}
@@ -442,9 +442,9 @@ if (!class_exists('CommissionModel')) {
 						$level3_commissions = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($level2_agentids)) . ')  and o.status>=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
 						foreach ($level3_commissions as $c) {
 							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission3']);
+							$commission3 = iunserializer($c['commission3']);
 							if (empty($commission)) {
-								$commission_total += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+								$commission_total += isset($commission3['level' . $agentLevel['id']]) ? $commission3['level' . $agentLevel['id']] : $commission3['default'];
 							} else {
 								$commission_total += isset($commission['level3']) ? $commission['level3'] : 0;
 							}
@@ -454,9 +454,9 @@ if (!class_exists('CommissionModel')) {
 						$level3_commissions = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($level2_agentids)) . ")  and ({$time} - o.createtime > {$day_times}) and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status3=0  and og.nocommission=0 and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
 						foreach ($level3_commissions as $c) {
 							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission3']);
+							$commission3 = iunserializer($c['commission3']);
 							if (empty($commission)) {
-								$commission_ok += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+								$commission_ok += isset($commission3['level' . $agentLevel['id']]) ? $commission3['level' . $agentLevel['id']] : $commission3['default'];
 							} else {
 								$commission_ok += isset($commission['level3']) ? $commission['level3'] : 0;
 							}
@@ -466,9 +466,9 @@ if (!class_exists('CommissionModel')) {
 						$level3_commissions1 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($level2_agentids)) . ")  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and ({$time} - o.createtime > {$day_times}) and og.status3=0  and og.nocommission=0 and o.uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
 						foreach ($level3_commissions1 as $c) {
 							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission3']);
+							$commission3 = iunserializer($c['commission3']);
 							if (empty($commission)) {
-								$commission_lock += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+								$commission_lock += isset($commission3['level' . $agentLevel['id']]) ? $commission3['level' . $agentLevel['id']] : $commission3['default'];
 							} else {
 								$commission_lock += isset($commission['level3']) ? $commission['level3'] : 0;
 							}
@@ -478,9 +478,9 @@ if (!class_exists('CommissionModel')) {
 						$level3_commissions2 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($level2_agentids)) . ')  and o.status>=3 and o.status<>6  and o.status<>4 and o.status<>5 and og.status3=1 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
 						foreach ($level3_commissions2 as $c) {
 							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission3']);
+							$commission3 = iunserializer($c['commission3']);
 							if (empty($commission)) {
-								$commission_apply += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+								$commission_apply += isset($commission3['level' . $agentLevel['id']]) ? $commission3['level' . $agentLevel['id']] : $commission3['default'];
 							} else {
 								$commission_apply += isset($commission['level3']) ? $commission['level3'] : 0;
 							}
@@ -490,9 +490,9 @@ if (!class_exists('CommissionModel')) {
 						$level3_commissions3 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($level2_agentids)) . ')  and o.status>=3 and o.status<>6 and o.status<>4 and o.status<>5 and og.status3=2 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
 						foreach ($level3_commissions3 as $c) {
 							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission3']);
+							$commission3 = iunserializer($c['commission3']);
 							if (empty($commission)) {
-								$commission_check += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+								$commission_check += isset($commission3['level' . $agentLevel['id']]) ? $commission3['level' . $agentLevel['id']] : $commission3['default'];
 							} else {
 								$commission_check += isset($commission['level3']) ? $commission['level3'] : 0;
 							}
@@ -502,9 +502,9 @@ if (!class_exists('CommissionModel')) {
 						$level3_commissions3 = pdo_fetchall('select og.commission3,og.commissions  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join  ' . tablename('sz_yi_order') . ' o on o.id = og.orderid' . ' where o.agentid in( ' . implode(',', array_keys($level2_agentids)) . ')  and o.status>=3  and o.status<>4 and o.status<>5 and o.status<>6 and og.status3=3 and og.nocommission=0 and o.uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
 						foreach ($level3_commissions3 as $c) {
 							$commission = iunserializer($c['commissions']);
-							$commission_pay = iunserializer($c['commission3']);
+							$commission3 = iunserializer($c['commission3']);
 							if (empty($commission)) {
-								$commission_pay += isset($commission_pay['level' . $agentLevel['id']]) ? $commission_pay['level' . $agentLevel['id']] : $commission_pay['default'];
+								$commission_pay += isset($commission3['level' . $agentLevel['id']]) ? $commission3['level' . $agentLevel['id']] : $commission3['default'];
 							} else {
 								$commission_pay += isset($commission['level3']) ? $commission['level3'] : 0;
 							}
@@ -1744,9 +1744,9 @@ if (!class_exists('CommissionModel')) {
 			if (empty($oldlevel['id'])) {
 				$oldlevel = array('levelname' => empty($set['levelname']) ? '普通等级' : $set['levelname'], 'commission1' => $set['commission1'], 'commission2' => $set['commission2'], 'commission3' => $set['commission3']);
 			}
-			$m34 = $this->getInfo($member['id'], array('pay'));
-			$m39 = $m34['commission_pay'];
-			$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$m39} >= commissionmoney and commissionmoney>0  order by commissionmoney desc limit 1", array(':uniacid' => $_W['uniacid']));
+			$info = $this->getInfo($member['id'], array('pay'));
+			$commission_pay = $info['commission_pay'];
+			$newlevel = pdo_fetch('select * from ' . tablename('sz_yi_commission_level') . " where uniacid=:uniacid  and {$commission_pay} >= commissionmoney and commissionmoney>0  order by commissionmoney desc limit 1", array(':uniacid' => $_W['uniacid']));
 			if (empty($newlevel)) {
 				return;
 			}
