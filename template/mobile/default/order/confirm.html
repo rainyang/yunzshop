@@ -1140,6 +1140,8 @@ var fromcart = 0;
             if($('#isverify').val()=='true'){
                 if ($('#dispatchtype').val() != 1) {
                     order[i].carrierid = carrierid_send;
+                } else {
+                    order[i].carrierid = carrierid;
                 }
                 order[i].carrier = {
                     'carrier_realname': carrier_realname,
