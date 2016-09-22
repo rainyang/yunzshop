@@ -62,7 +62,7 @@
                     <td><img src='{$row['avatar']}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' />{if empty($row['iscenter'])}<label class="label label-primary">招商员</label>{else}<label class="label label-danger">招商中心</label>{/if}</td>
                     <td>{$row['realname']}</td>
                     <td>{$row['mobile']}</td>
-                    <td><label class="label label-primary">微信</label></td>
+                    <td>{if $row['type'] == 2}<label class="label label-primary">微信</label>{else}<label class="label label-danger">线下</label>{/if}</td>
                     <td><label class="label label-danger">{$row['money']}元</label></td>
                     <td>{$row['apply_time']}</td>
                      <td>
