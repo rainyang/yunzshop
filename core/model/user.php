@@ -189,7 +189,7 @@ class Sz_DYi_User
     {
         global $_W, $_GPC;
 
-        if(!is_weixin() ){
+        if(!is_weixin()&&!is_app_api() ){
             return $this->getUserInfo();
         }
         $userinfo = array();

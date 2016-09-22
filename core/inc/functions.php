@@ -458,6 +458,11 @@ function is_weixin()
     return true;
 }
 
+function is_app_api()
+{
+    return defined('__MODULE_NAME__') && __MODULE_NAME__ == 'app/api';
+}
+
 function b64_encode($obj)
 {
     if (is_array($obj)) {
@@ -842,6 +847,9 @@ function sent_message($customer_id_array, $message)
 
 function is_app()
 {
+    if(defined('__MODULE_NAME__') && __MODULE_NAME__ == 'app/api'){
+        return true;
+    }
     $agent = strtolower($_SERVER['HTTP_USER_AGENT']);
     $yunzhong = (strpos($agent, 'yunzhong')) ? true : false;
     if ($yunzhong) {
@@ -1008,21 +1016,17 @@ if (!function_exists("pdo_sql_debug")) {
  */
 function json_encode_ex($value)
 {
-    if (version_compare(PHP_VERSION,'5.4.0','<'))
-    {
+    if (version_compare(PHP_VERSION, '5.4.0', '<')) {
         $str = json_encode($value);
         $str = preg_replace_callback(
             "#\\\u([0-9a-f]{4})#i",
-            function($matchs)
-            {
+            function ($matchs) {
                 return iconv('UCS-2BE', 'UTF-8', pack('H4', $matchs[1]));
             },
             $str
         );
         return $str;
-    }
-    else
-    {
+    } else {
         return json_encode($value, JSON_UNESCAPED_UNICODE);
     }
 }
