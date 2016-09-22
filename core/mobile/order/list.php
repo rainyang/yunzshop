@@ -189,6 +189,7 @@ if ($_W['isajax']) {
 					}
 				}
 			}
+
 			$row['canrefund'] = $canrefund;
 	
 			if ($canrefund == true) {

@@ -1115,7 +1115,7 @@ pdo_fetchall($sql);
 
 //供应商
 pdo_fetchall("
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_supplier` (
+CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_af_supplier')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `openid` varchar(255) CHARACTER SET utf8 NOT NULL,
   `uniacid` int(11) NOT NULL,
@@ -1128,7 +1128,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_af_supplier` (
   `status` tinyint(3) NOT NULL COMMENT '1审核成功2驳回',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8 AUTO_INCREMENT=1;
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_supplier_apply` (
+CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_supplier_apply')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uid` int(11) NOT NULL COMMENT '供应商id',
   `uniacid` int(11) NOT NULL,
@@ -1191,7 +1191,7 @@ if(empty($result)){
 }
 
 $sql = "
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_banner` (
+CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_banner')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `advname` varchar(50) DEFAULT '',
@@ -1206,7 +1206,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_banner` (
 pdo_fetchall($sql);
 
 $sql = "
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_message` (
+CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_message')." (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '编号',
   `openid` varchar(255) NOT NULL COMMENT '用户openid',
   `title` varchar(255) NOT NULL COMMENT '标题',
@@ -1219,7 +1219,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_message` (
 pdo_fetchall($sql);
 
 $sql = "
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_push` (
+CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_push')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `name` varchar(50) DEFAULT '',

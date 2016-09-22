@@ -397,7 +397,7 @@ class Sz_DYi_Finance {
                         );
                         
                         if (!empty($row)) {
-                            $_var_156 = array(
+                            $msg = array(
                                 'keyword1' => array('value' => '购买商品发送红包失败', 'color' => '#73a68d'),
                                 'keyword2' => array('value' => '【订单编号】' . $row['ordersn'], 'color' => '#73a68d'),
                                 'remark' => array('value' => '购物赠送红包发送失败！失败原因：'.$error)
@@ -410,7 +410,7 @@ class Sz_DYi_Finance {
                                     'id' => $orderid
                                 )
                             );
-                            m('message')->sendCustomNotice($openid, $_var_156);
+                            m('message')->sendCustomNotice($openid, $msg);
                         }
                     }
                     
