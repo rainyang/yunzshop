@@ -588,7 +588,7 @@ if ($apply['status'] == 2  && checksubmit('submit_pay') ) {
 	$agentid = $order['agentid'];
 	$agentLevel = $this->model->getLevel($agentid);
 	$ogid = intval($_GPC['ogid']);
-	$order_goods_change = pdo_fetchall('select og.id,g.title,g.thumb,g.goodssn,og.goodssn as option_goodssn, g.productsn,og.productsn as option_productsn, og.total,og.price,og.optionname as optiontitle, og.realprice,og.oldprice,og.commission1,og.commission2,og.commission3,og.commissions,og.status1,og.status2,og.status3 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.nocommission=0 ', array(':uniacid' => $_W['uniacid']));
+	$order_goods_change = pdo_fetchall('select og.id,g.title,g.thumb,g.goodssn,og.goodssn as option_goodssn, g.productsn,og.productsn as option_productsn, og.total,og.price,og.optionname as optiontitle, og.realprice,og.oldprice,og.commission1,og.commission2,og.commission3,og.commissions,og.status1,og.status2,og.status3 from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' where og.uniacid=:uniacid and og.orderid=:orderid and og.nocommission=0 ', array(':uniacid' => $_W['uniacid'], ':orderid' => $id));
 	if (empty($order_goods_change)) {
 		message('未找到订单商品，无法修改佣金!', '', 'error');
 	}
