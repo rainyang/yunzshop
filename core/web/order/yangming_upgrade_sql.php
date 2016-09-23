@@ -31,4 +31,7 @@ if (!pdo_fieldexists('sz_yi_goods', 'maxprice')) {
 if(!pdo_fieldexists('sz_yi_bonus_log', 'goodids')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_bonus_log')." ADD `goodids` text DEFAULT '';");
 }
+if(!pdo_fieldexists('sz_yi_bonus', 'orderids')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_bonus')." ADD `orderids` text DEFAULT '';");
+}
 echo 1;
