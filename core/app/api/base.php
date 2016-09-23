@@ -134,7 +134,7 @@ class Base
         $data['para'] = $this->getPara() == 'null' ? '' : json_encode_ex($this->getPara());
         $data['api'] = $_GET['api'];
         $data['client_ip'] = $this->getClientIp();
-        $data['error_info'] = "";
+        $data['error_info'] = json_encode_ex($_COOKIE);
         $data['is_error'] = "";
         $data['date_added'] = date('Y-m-d H:i:s');
 
