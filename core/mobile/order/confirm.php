@@ -1442,7 +1442,7 @@ if ($_W['isajax']) {
                     $goodstotal = 1;
                 }
                 $storegoodstotal = pdo_fetchcolumn("SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:goodsid and uniacid=:uniacid and storeid=:storeid and optionid=:optionid", array(':goodsid' => $goodsid, ':uniacid' => $uniacid, ':storeid' => $carrierid, ':optionid' => $optionid));
-                if ($goodstotal > $storegoodstotal) {
+                if ($goodstotal > $storegoodstotal && !empty($carrierid)) {
                     show_json(-2,'抱歉，此门店库存不足！');
                 }
                 if (empty($goodsid)) {
