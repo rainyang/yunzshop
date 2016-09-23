@@ -1165,7 +1165,7 @@ ul, li { list-style:none; margin:0; padding:0 }
         } else {
              var action = "";
         }
-        var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+        var stock = $("#option_stock").html()==''?-1:parseInt($("#option_stock").html());
         var num = parseInt($('#total').val() );
         var maxbuy = $('#maxbuy').val();
         
@@ -1273,10 +1273,9 @@ ul, li { list-style:none; margin:0; padding:0 }
     // if(!total.isInt()){
     //     total.val("1");
     // }
-    var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+    var stock = $("#option_stock").html()==''?-1:parseInt($("#option_stock").html());
     var num = parseInt(total.val() ) + 1;
     var maxbuy = $('#maxbuy').val();
-    
     if(num>maxbuy && maxbuy>0){
         core.tip.show("您最多可购买 " + maxbuy + " 件!");
         num = maxbuy;
@@ -1291,7 +1290,7 @@ ul, li { list-style:none; margin:0; padding:0 }
     
     $("."+optionid_id).val(oid);
     var total = $("#total");
-    var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+    var stock = $("#option_stock").html()==''?-1:parseInt($("#option_stock").html());
 
     var num = parseInt(total.val() );
     if(num>maxbuy && maxbuy>0){
