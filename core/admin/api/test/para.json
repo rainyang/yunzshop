@@ -20,7 +20,7 @@
         "describe": "登录",
         "para": {
           "username": "admin",
-          "password": "111111",
+          "password": "admin",
           "mobile": "18545571024"
         },
         "data": []
