@@ -121,6 +121,7 @@ class Base
         $return_data = json_encode_ex($json_data);
         //dump($json_data);
         //dump($this->getSqlLog());
+        $this->addLog($return_data);
         exit($return_data);
     }
     /**
@@ -129,12 +130,12 @@ class Base
      * 详细描述（略）
      * @return void
      */
-    protected function addLog()
+    protected function addLog($log = "")
     {
         $data['para'] = $this->getPara() == 'null' ? '' : json_encode_ex($this->getPara());
         $data['api'] = $_GET['api'];
         $data['client_ip'] = $this->getClientIp();
-        $data['error_info'] = json_encode_ex($_COOKIE);
+        $data['error_info'] = json_encode_ex($_COOKIE).$log;
         $data['is_error'] = "";
         $data['date_added'] = date('Y-m-d H:i:s');
 
