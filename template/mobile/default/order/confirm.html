@@ -1181,16 +1181,18 @@ var fromcart = 0;
             core.json('order/confirm', data, function(create_json) {
 
                 if (create_json.status == 1) {
-                  if (create_json.result.ischannelpick) {
-                    location.href = "{php echo $this->createMobileUrl('order/list')}";
-                  } else {
-                    location.href = "{php echo $this->createMobileUrl('order/pay')}&orderid=" + create_json.result.orderid +"&openid={$openid}&ischannelpay=" + create_json.result.ischannelpay;
-                  }
+                    if (create_json.result.ischannelpick) {
+                        location.href = "{php echo $this->createMobileUrl('order/list')}";
+                    } else {
+                        location.href = "{php echo $this->createMobileUrl('order/pay')}&orderid=" + create_json.result.orderid +"&openid={$openid}&ischannelpay=" + create_json.result.ischannelpay;
+                    }
                 } else if (create_json.status == -1) {
-                     $('.paysub').html('确认订单').removeAttr('submitting');
-                     core.tip.show(create_json.result);
-                }
-                else {
+                    $('.paysub').html('确认订单').removeAttr('submitting');
+                    core.tip.show(create_json.result);
+                } else if (create_json.status == -2) {
+                    $('.paysub').html('确认订单').removeAttr('submitting');
+                    core.tip.show(create_json.result);
+                } else {
                     $('.paysub').html('确认订单').removeAttr('submitting');
                     core.tip.show("生成订单失败!")
                 }

@@ -133,6 +133,12 @@ if ($_W['isajax']) {
             ':uniacid' => $uniacid,
             ':id' => $id
         ));
+        if (!empty($optionid)) {
+            $isoption = pdo_fetch("SELECT * FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:goodsid and openid=:openid and uniacid=:uniacid and optionid=0", array(':goodsid' => $id, ':openid' => $openid, ':uniacid' => $uniacid));
+            if (!empty($isoption)) {
+                pdo_delete('sz_yi_store_goods', array('goodsid' => $id, 'uniacid' => $uniacid, 'openid' => $openid, 'optionid' => 0));
+            }
+        }
         if (empty($goods)) {
             show_json(0, '商品未找到');
         }
