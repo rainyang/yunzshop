@@ -351,14 +351,14 @@
         <tr>
             <td colspan="4">
                 {if !empty($level)}
-                    {if !empty($item['agentid'])}
+                    {if !empty($item['agentid']) && (!empty($item['commission1']) || !empty($item['commission2']) || !empty($item['commission3']) )}
                     <i class="iconfont icon-sitemap biz" style="color:#fff;background-color: #3366FF;"></i>
                      <b style="color:#3366FF">分销佣金:</b>
                      {/if}
                       {if empty($agentid)}
-                      {if $item['commission1']!=-1}<b>1级佣金:</b> {$item['commission1']} 元 {/if}
-                      {if $item['commission2']!=-1}<b>2级佣金:</b> {$item['commission2']} 元 {/if}
-                      {if $item['commission3']!=-1}<b>3级佣金:</b> {$item['commission3']} 元 {/if}
+                      {if $item['commission1']>0}<b>1级佣金:</b> {$item['commission1']} 元 {/if}
+                      {if $item['commission2']>0}<b>2级佣金:</b> {$item['commission2']} 元 {/if}
+                      {if $item['commission3']>0}<b>3级佣金:</b> {$item['commission3']} 元 {/if}
                       {/if}
                       {if !empty($item['agentid'])}
                     {ifp 'commission.changecommission'}

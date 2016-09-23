@@ -1342,7 +1342,7 @@ if ($_W['isajax']) {
             $optionid = intval($_GPC['optionid']);
             $total = $_GPC['total'];
             $storegoodtotal = pdo_fetchcolumn(" SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:goodsid and optionid=:optionid and storeid=:storeid and uniacid=:uniacid", array(':goodsid' => $goodsid, ':optionid' => $optionid, ':storeid' => $storeid, ':uniacid' => $_W['uniacid']));
-            if ($total > $storegoodtotal) {
+            if ($total > $storegoodtotal && !empty($storeid)) {
                 show_json(-1);
             }
         } else if (!empty($cartids)) {
@@ -1351,7 +1351,7 @@ if ($_W['isajax']) {
             foreach ($carts as $cart) {
 
                 $total = pdo_fetchcolumn(" SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:id and uniacid=:uniacid and storeid=:storeid and optionid=:optionid", array(':id' => $cart['goodsid'], ':uniacid' => $_W['uniacid'], ':storeid' => $storeid, ':optionid' => $cart['optionid'])); 
-                if ($total > $cart['total']) {
+                if ($total > $cart['total'] && !empty($storeid)) {
                     show_json(-1);
                 }
             }
