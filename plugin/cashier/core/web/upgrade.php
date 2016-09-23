@@ -87,6 +87,10 @@ if(!pdo_fieldexists('sz_yi_order', 'cashierid')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `cashierid` int(11) DEFAULT '0';");
 }
 
+if (!pdo_fieldexists('sz_yi_cashier_store', 'bonus')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_cashier_store')." ADD `bonus` decimal(10,2) DEFAULT NULL;");
+}
+
 //收银台添加店员表结构
 pdo_fetchall("CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_cashier_store_waiter')." (
   `id` int(11) NOT NULL AUTO_INCREMENT,

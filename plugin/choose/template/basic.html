@@ -57,7 +57,36 @@
                     
                 </div>
         </div>
-        
+        <div class="form-group" id="agentchoose">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">请选择指定供应商</label>
+                
+                <div class="col-sm-9 col-xs-12">
+                {loop $agent $item1}
+                    <label class="radio-inline"><input type="radio"  name="uid" value="{$item1['uid']}" {if $open['uid'] ==$item1['uid']} checked="checked"{/if} /> {$item1['username']}</label>
+                {/loop}
+                </div>
+               
+        </div>
+
+        <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启只显示指定门店的商品</label>
+                <div class="col-sm-9 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="isstore" value="1"  id="open_store" onclick="showdiv('store')" {if $open['isstore'] ==1} checked="checked"{/if} /> 开启</label>
+                    <label class="radio-inline"><input type="radio"  name="isstore" value="0" id="close_store" onclick="hidediv('store')" {if $open['isstore'] ==0} checked="checked"{/if} /> 关闭</label> 
+                    
+                </div>
+        </div>
+        <div class="form-group" id="store" style="display:none;">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">请选择指定门店</label>
+                
+                <div class="col-sm-9 col-xs-12">
+                {loop $store $item2}
+                    <label class="radio-inline"><input type="radio"  name="storeid" value="{$item2['id']}" {if $open['storeid'] ==$item2['id']} checked="checked"{/if} /> {$item2['storename']}</label>
+                {/loop}
+                </div>
+               
+        </div>
+
         {if p('channel')}
         <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启采购商品</label>
@@ -82,16 +111,7 @@
                 </div>
         </div>
 
-		<div class="form-group" id="agentchoose">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">请选择指定供应商</label>
-                
-                <div class="col-sm-9 col-xs-12">
-                {loop $agent $item1}
-                    <label class="radio-inline"><input type="radio"  name="uid" value="{$item1['uid']}" {if $open['uid'] ==$item1['uid']} checked="checked"{/if} /> {$item1['username']}</label>
-                {/loop}
-                </div>
-               
-		</div>
+		
 
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">请选择指定分类</label>
@@ -104,7 +124,7 @@
             </div>
              
         </div>
-
+    
         <div class="form-group" id="agentchoose">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">请选择颜色基调</label>
                 
@@ -171,7 +191,9 @@
      
     });
 
-
+if ($(':input[name=isstore]:checked').val() == 1) {
+    $('#store').show();
+}
 
 $('#submit').click(function(){
     if($('#pagename').isEmpty()){
@@ -189,13 +211,21 @@ $('#submit').click(function(){
 
 });
 
-function showdiv() { 
+function showdiv(store) { 
+    if (store) {
+        document.getElementById(store).style.display ="block";
+    } else {
+        document.getElementById("agentchoose").style.display ="block";
 
-document.getElementById("agentchoose").style.display ="block";
+    }
 }
-function hidediv() {
+function hidediv(store) {
+if (store) {
+        document.getElementById(store).style.display ="none";
+    } else {
+        document.getElementById("agentchoose").style.display ="none";
 
-document.getElementById("agentchoose").style.display ='none';
+    }
 }	
 	
 $(function(){

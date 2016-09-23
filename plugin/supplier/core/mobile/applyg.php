@@ -18,9 +18,9 @@ if ($_W['isajax']) {
 		$apply_ordergoods_ids = "";
         foreach ($supplierinfo['sp_goods'] as $key => $value) {
             if ($key == 0) {
-                $apply_ordergoods_ids .= $value['id'];
+                $apply_ordergoods_ids .= $value['ogid'];
             } else {
-                $apply_ordergoods_ids .= ','.$value['id'];
+                $apply_ordergoods_ids .= ','.$value['ogid'];
             }
         }
 		$apply = array(
@@ -37,7 +37,8 @@ if ($_W['isajax']) {
 		@file_put_contents(IA_ROOT . "/addons/sz_yi/data/apply.log", print_r($apply, 1), FILE_APPEND);
 		if( pdo_insertid() ) {
 			foreach ($supplierinfo['sp_goods'] as $key => $value) {
-				pdo_update('sz_yi_order_goods', array('supplier_apply_status' => 2), array('id' => $value['id'], 'uniacid' => $_W['uniacid']));
+				pdo_update('sz_yi_order_goods', array('supplier_apply_status' => 2), array('id' => $value['ogid'], 'uniacid' => $_W['uniacid']));
+
 			}
 			$tmp_sp_goods = $supplierinfo['sp_goods'];
 			$tmp_sp_goods['applyno'] = $applyno;

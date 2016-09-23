@@ -34,10 +34,6 @@ class Sz_DYi_Goods
         $orderby   = !empty($args['by']) ? $args['by'] : '';
         $ids       = !empty($args['ids']) ? trim($args['ids']) : '';
         $id       = !empty($args['id']) ? trim($args['id']) : '0';
-        $goods_id       = !empty($args['goodsid']) ? trim($args['goodsid']) : '0';
-
-
-
         $sup_uid   = !empty($args['supplier_uid']) ? trim($args['supplier_uid']) : '';
         $isopenchannel   = !empty($args['isopenchannel']) ? trim($args['isopenchannel']) : 0;
         $ischannelpick   = !empty($args['ischannelpick']) ? trim($args['ischannelpick']) : 0;
@@ -52,11 +48,6 @@ class Sz_DYi_Goods
             $condition .= " and id = :id";
             $params[':id'] = intval($id);
         }
-        if (!empty($goods_id)) {
-            $condition .= " and id < :id";
-            $params[':id'] = intval($goods_id);
-        }
-
         if (!empty($args['isverify']) && $args['isverify'] == 1) {
             $condition .= " and isverify = '1' ";
         }
@@ -134,9 +125,7 @@ class Sz_DYi_Goods
                 }
             }
         }
-
         $openid  = m('user')->getOpenid();
-
         if(empty($openid)){
             $openid = m('user')->isLogin();
         }
@@ -163,7 +152,10 @@ class Sz_DYi_Goods
                     $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} LIMIT " . ($page - 1) * $pagesize . ',' . $pagesize;
                 }    
             } else {
+                
                     $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() LIMIT " . $pagesize;
+                
+                
             }
             $list = pdo_fetchall($sql, $params);
         }

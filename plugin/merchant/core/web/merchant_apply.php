@@ -23,7 +23,6 @@ if ($operation == 'display') {
     $list = pdo_fetchall($sql, $params);
     foreach ($list as &$value) {
         $value['apply_time'] = date('Y-m-d H:i:s',$value['apply_time']);
-        $value['type'] = '微信';
     }
     unset($value);
     if ($_GPC['export'] == '1') {

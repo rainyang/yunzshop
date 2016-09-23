@@ -1,5 +1,6 @@
 <?php
 global $_W, $_GPC;
+set_time_limit(0);
 ca('bonus.send.view');
 $operation = empty($_GPC['op']) ? 'display' : $_GPC['op'];
 $set = $this->getSet();
@@ -61,11 +62,11 @@ if (!empty($_POST)) {
 		message("发放人数为0，不能发放。", "", "error");
 	}
 	foreach ($count as $key => $value) {
-		$member = $this->model->getInfo($value['mid'], array('ok', 'pay', 'ordergoods'));
+		$member = $this->model->getInfo($value['mid'], array('teamok', 'pay', 'ordergoods'));
 		if(empty($member)){
 			continue;
 		}
-		$send_money = $member['commission_ok'];
+		$send_money = $member['commission_teamok'];
 		$sendpay = 1;
 		$islog = true;
 		$level = $this->model->getlevel($member['openid']);
@@ -79,6 +80,10 @@ if (!empty($_POST)) {
 	            $sendpay_error = 1;
 	        }
 		}
+
+		//更新分红订单完成
+		$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and ({$time} - o.finishtime > {$day_times}) and cg.bonus_area=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
+
 		pdo_insert('sz_yi_bonus_log', array(
             "openid" => $member['openid'],
             "uid" => $member['uid'],
@@ -86,10 +91,13 @@ if (!empty($_POST)) {
             "uniacid" => $_W['uniacid'],
             "paymethod" => $set['paymethod'],
             "sendpay" => $sendpay,
+            "goodids" => iserializer($ids),
 			"status" => 1,
             "ctime" => time(),
             "send_bonus_sn" => $send_bonus_sn
         ));
+        //更新分红订单完成
+		pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
         if($sendpay == 1){
         	if(empty($level)){
 				if($member['bonus_area'] == 1){
@@ -102,17 +110,12 @@ if (!empty($_POST)) {
 			}
         	$this->model->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_PAY);
         }
-        //更新分红订单完成
-		$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and ({$time} - o.finishtime > {$day_times}) and cg.bonus_area=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
-
-		//更新分红订单完成
-		pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
 	}
 	if($islog){
 		$log = array(
 	            "uniacid" => $_W['uniacid'],
 	            "money" => $totalmoney,
-	            "status" => 1,
+	            "status" => 0,
 	            "type" => 2,
 	            "ctime" => time(),
 	            "paymethod" => $set['paymethod'],

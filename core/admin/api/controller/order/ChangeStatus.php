@@ -247,10 +247,10 @@ class ChangeStatus extends \admin\api\YZ
             "uniacid" => $_W["uniacid"]
         ));
         if (!empty($order["refundid"])) {
-            $paylog5 = pdo_fetch("select * from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
+            $zym_var_35 = pdo_fetch("select * from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
                 ":id" => $order["refundid"]
             ));
-            if (!empty($paylog5)) {
+            if (!empty($zym_var_35)) {
                 pdo_update("sz_yi_order_refund", array(
                     "status" => -1
                 ), array(
@@ -442,42 +442,42 @@ class ChangeStatus extends \admin\api\YZ
         exit;
     }
 
-    function changeWechatSend($ordersn, $status, $msg = '')
+    function changeWechatSend($zym_var_2, $zym_var_4, $zym_var_1 = '')
     {
         global $_W;
-        $paylog = pdo_fetch("SELECT plid, openid, tag FROM " . tablename("core_paylog") . " WHERE tid = '{$ordersn}' AND status = 1 AND type = 'wechat'");
-        if (!empty($paylog["openid"])) {
-            $paylog["tag"] = iunserializer($paylog["tag"]);
-            $acid = $paylog["tag"]["acid"];
+        $zym_var_3 = pdo_fetch("SELECT plid, openid, tag FROM " . tablename("core_paylog") . " WHERE tid = '{$zym_var_2}' AND status = 1 AND type = 'wechat'");
+        if (!empty($zym_var_3["openid"])) {
+            $zym_var_3["tag"] = iunserializer($zym_var_3["tag"]);
+            $zym_var_8 = $zym_var_3["tag"]["acid"];
             load()->model("account");
-            $account = account_fetch($acid);
-            $payment = uni_setting($account["uniacid"], "payment");
-            if ($payment["payment"]["wechat"]["version"] == "2") {
+            $zym_var_17 = account_fetch($zym_var_8);
+            $zym_var_6 = uni_setting($zym_var_17["uniacid"], "payment");
+            if ($zym_var_6["payment"]["wechat"]["version"] == "2") {
                 return true;
             }
-            $send = array(
-                "appid" => $account["key"],
-                "openid" => $paylog["openid"],
-                "transid" => $paylog["tag"]["transaction_id"],
-                "out_trade_no" => $paylog["plid"],
+            $zym_var_7 = array(
+                "appid" => $zym_var_17["key"],
+                "openid" => $zym_var_3["openid"],
+                "transid" => $zym_var_3["tag"]["transaction_id"],
+                "out_trade_no" => $zym_var_3["plid"],
                 "deliver_timestamp" => TIMESTAMP,
-                "deliver_status" => $status,
-                "deliver_msg" => $msg,
+                "deliver_status" => $zym_var_4,
+                "deliver_msg" => $zym_var_1,
             );
-            $sign = $send;
-            $sign["appkey"] = $payment["payment"]["wechat"]["signkey"];
-            ksort($sign);
-            $string = '';
-            foreach ($sign as $key => $v) {
-                $key = strtolower($key);
-                $string .= "{$key}={$v}&";
+            $zym_var_14 = $zym_var_7;
+            $zym_var_14["appkey"] = $zym_var_6["payment"]["wechat"]["signkey"];
+            ksort($zym_var_14);
+            $zym_var_19 = '';
+            foreach ($zym_var_14 as $zym_var_33 => $zym_var_31) {
+                $zym_var_33 = strtolower($zym_var_33);
+                $zym_var_19 .= "{$zym_var_33}={$zym_var_31}&";
             }
-            $send["app_signature"] = sha1(rtrim($string, "&"));
-            $send["sign_method"] = "sha1";
-            $account = WeAccount::create($acid);
-            $response = $account->changeOrderStatus($send);
-            if (is_error($response)) {
-                $this->returnError($response["message"]);
+            $zym_var_7["app_signature"] = sha1(rtrim($zym_var_19, "&"));
+            $zym_var_7["sign_method"] = "sha1";
+            $zym_var_17 = WeAccount::create($zym_var_8);
+            $zym_var_29 = $zym_var_17->changeOrderStatus($zym_var_7);
+            if (is_error($zym_var_29)) {
+                $this->returnError($zym_var_29["message"]);
             }
         }
     }
@@ -521,32 +521,32 @@ class ChangeStatus extends \admin\api\YZ
         if ($refundstatus == 0) {
             $this->returnError('暂不处理', referer());
         } else if ($refundstatus == 3) {
-            $raid = $para['raid'];
-            $message = trim($para['message']);
-            if ($raid == 0) {
-                $address = pdo_fetch('select * from ' . tablename('sz_yi_refund_address') . ' where isdefault=1 and uniacid=:uniacid limit 1', array(
+            $_obscure_a935d631d53636373730d433d4d433d6 = $para['raid'];
+            $_obscure_d53335d73033d5d7d8383530d938d634 = trim($para['message']);
+            if ($_obscure_a935d631d53636373730d433d4d433d6 == 0) {
+                $_obscure_aa35d7d734313632d43532d5d4d9d636 = pdo_fetch('select * from ' . tablename('sz_yi_refund_address') . ' where isdefault=1 and uniacid=:uniacid limit 1', array(
                     ':uniacid' => $uniacid
                 ));
             } else {
-                $address = pdo_fetch('select * from ' . tablename('sz_yi_refund_address') . ' where id=:id and uniacid=:uniacid limit 1', array(
-                    ':id' => $raid,
+                $_obscure_aa35d7d734313632d43532d5d4d9d636 = pdo_fetch('select * from ' . tablename('sz_yi_refund_address') . ' where id=:id and uniacid=:uniacid limit 1', array(
+                    ':id' => $_obscure_a935d631d53636373730d433d4d433d6,
                     ':uniacid' => $uniacid
                 ));
             }
-            if (empty($address)) {
-                $address = pdo_fetch('select * from ' . tablename('sz_yi_refund_address') . ' where uniacid=:uniacid order by id desc limit 1', array(
+            if (empty($_obscure_aa35d7d734313632d43532d5d4d9d636)) {
+                $_obscure_aa35d7d734313632d43532d5d4d9d636 = pdo_fetch('select * from ' . tablename('sz_yi_refund_address') . ' where uniacid=:uniacid order by id desc limit 1', array(
                     ':uniacid' => $uniacid
                 ));
             }
-            unset($address['uniacid']);
-            unset($address['openid']);
-            unset($address['isdefault']);
-            unset($address['deleted']);
-            $address = iserializer($address);
+            unset($_obscure_aa35d7d734313632d43532d5d4d9d636['uniacid']);
+            unset($_obscure_aa35d7d734313632d43532d5d4d9d636['openid']);
+            unset($_obscure_aa35d7d734313632d43532d5d4d9d636['isdefault']);
+            unset($_obscure_aa35d7d734313632d43532d5d4d9d636['deleted']);
+            $_obscure_aa35d7d734313632d43532d5d4d9d636 = iserializer($_obscure_aa35d7d734313632d43532d5d4d9d636);
             $data['reply'] = '';
-            $data['refundaddress'] = $address;
-            $data['refundaddressid'] = $raid;
-            $data['message'] = $message;
+            $data['refundaddress'] = $_obscure_aa35d7d734313632d43532d5d4d9d636;
+            $data['refundaddressid'] = $_obscure_a935d631d53636373730d433d4d433d6;
+            $data['message'] = $_obscure_d53335d73033d5d7d8383530d938d634;
             if (empty($refund['operatetime'])) {
                 $data['operatetime'] = $time;
             }
@@ -570,17 +570,17 @@ class ChangeStatus extends \admin\api\YZ
             ));
             m('notice')->sendOrderMessage($order['id'], true);
         } else if ($refundstatus == 10) {
-            $refund_data['status'] = 1;
-            $refund_data['refundtime'] = $time;
-            pdo_update('sz_yi_order_refund', $refund_data, array(
+            $_obscure_acd53337d9d5d6d930343734d43739d7['status'] = 1;
+            $_obscure_acd53337d9d5d6d930343734d43739d7['refundtime'] = $time;
+            pdo_update('sz_yi_order_refund', $_obscure_acd53337d9d5d6d930343734d43739d7, array(
                 'id' => $order['refundid'],
                 'uniacid' => $uniacid
             ));
-            $order_data = array();
-            $order_data['refundstate'] = 0;
-            $order_data['status'] = 1;
-            $order_data['refundtime'] = $time;
-            pdo_update('sz_yi_order', $order_data, array(
+            $_obscure_aa343731d63230d534d9d5d73630d438 = array();
+            $_obscure_aa343731d63230d534d9d5d73630d438['refundstate'] = 0;
+            $_obscure_aa343731d63230d534d9d5d73630d438['status'] = 1;
+            $_obscure_aa343731d63230d534d9d5d73630d438['refundtime'] = $time;
+            pdo_update('sz_yi_order', $_obscure_aa343731d63230d534d9d5d73630d438, array(
                 'id' => $order['id'],
                 'uniacid' => $uniacid
             ));

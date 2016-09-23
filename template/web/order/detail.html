@@ -765,7 +765,7 @@
                    <div class="col-sm-9 col-xs-12">
                         {if $refund['status']==0 || $refund['status']>=3}
                         <a class="btn btn-danger btn-sm" href="javascript:;" onclick="$('#modal-refund').find(':input[name=id]').val('{$item['id']}')" data-toggle="modal" data-target="#modal-refund">处理{$r_type[$refund['rtype']]}申请</a>
-                        {elseif $refund['status']==-1}
+                        {elseif $refund['status']==-1 || $refund['status']==2}
                         <span class='label label-default'>已拒绝</span>
                         {elseif $refund['status']==-2}
                         <span class='label label-default'>客户取消</span>

@@ -343,54 +343,6 @@ if (!class_exists('BonusModel')) {
             }
         }
 
-        //全球分红
-        public function premierInfo($openid, $options = null){
-        	if (empty($options) || !is_array($options)) {
-                $options = array();
-            }
-        
-            global $_W;
-            $set              = $this->getSet();
-            $member           = m('member')->getInfo($openid);
-            $commission_total = 0;
-            $commission_ok    = 0;
-            $commission_pay	  = 0;
-            $myordermoney     = 0;
-			$myordercount     = 0;
-        	$time             = time();
-            $day_times        = intval($set['settledays']) * 3600 * 24;
-        	if (in_array('ok', $options)) {
-	            //可提现佣金
-	            $sql = "select sum(o.price) as money from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3   and o.status<>6 and o.status<>5 and o.status<>4 and o.uniacid={$_W['uniacid']} and ({$time} - o.finishtime > {$day_times}) ORDER BY o.createtime DESC,o.status DESC";
-	            $commission_ok = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
-	        }
-
-	        if (in_array('total', $options)) {
-	            //累计佣金
-	            $sql = "select sum(o.price) as money from " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where o.status>=1 and  and o.status<>5 and o.status<>4 and o.uniacid=:uniacid  ORDER BY o.createtime DESC,o.status DESC";
-	            $commission_total = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid']));
-	        }
-	        if (in_array('pay', $options)) {
-	            //已分红
-	            $sql = "select sum(money) from " . tablename('sz_yi_bonus_log') . " where openid=:openid and isglobal=1 and uniacid=:uniacid";
-	            $commission_pay = pdo_fetchcolumn($sql, array(':uniacid' => $_W['uniacid'], 'openid' => $member['openid']));
-	        }
-	        //Author:ym Date:2016-04-08 Content:自购完成订单
-			if (in_array('myorder', $_var_21)) {
-				$myorder = pdo_fetch('select sum(og.realprice) as ordermoney,count(distinct og.orderid) as ordercount from ' . tablename('sz_yi_order') . ' o ' . ' left join  ' . tablename('sz_yi_order_goods') . ' og on og.orderid=o.id ' . ' where o.openid=:openid and o.status>=3 and o.uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
-				//Author:ym Date:2016-04-08 Content:自购订单金额
-				$myordermoney = $myorder['ordermoney'];
-				//Author:ym Date:2016-04-08 Content:自购订单数量
-				$myordercount = $myorder['ordercount'];
-			}
-	        $member['commission_ok']      = round($commission_ok, 2);
-            $member['commission_total']   = round($commission_total, 2);
-            $member['commission_pay']     = $commission_pay;
-            $member['myordermoney']       = $myordermoney;
-			$member['myordercount']       = $myordercount;
-            return $member;
-        }
-
 		public function getInfo($openid, $options = null){
             if (empty($options) || !is_array($options)) {
                 $options = array();
@@ -974,6 +926,9 @@ if (!class_exists('BonusModel')) {
 							$sendpay_error = 1;
 						}
 					}
+					$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and o.finishtime < {$endtime} and cg.bonus_area=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
+
+					
 					pdo_insert('sz_yi_bonus_log', array(
 						"openid" => $member['openid'],
 						"uid" => $member['uid'],
@@ -981,17 +936,17 @@ if (!class_exists('BonusModel')) {
 						"uniacid" => $_W['uniacid'],
 						"paymethod" => $set['paymethod'],
 						"sendpay" => $sendpay,
+						"goodids" => iserializer($ids),
 						"status" => 1,
 						"ctime" => time(),
 						"send_bonus_sn" => $time
 					));
+					//更新分红订单完成
+					pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
 					if($sendpay == 1){
 						$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_PAY);
 					}
-					$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and o.finishtime < {$endtime} and cg.bonus_area=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
-
-					//更新分红订单完成
-					pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
+					
 					$totalmoney += $send_money;
 					$total += 1;
 				}
@@ -1001,7 +956,7 @@ if (!class_exists('BonusModel')) {
 				$log = array(
 			            "uniacid" => $_W['uniacid'],
 			            "money" => $totalmoney,
-			            "status" => 1,
+			            "status" => 2,
 			            "ctime" => time(),
 						"type" => 2,
 			            "paymethod" => $set['paymethod'],
@@ -1073,6 +1028,8 @@ if (!class_exists('BonusModel')) {
 							$sendpay_error = 1;
 						}
 					}
+					$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and o.finishtime < {$endtime} and cg.bonus_area!=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
+
 					pdo_insert('sz_yi_bonus_log', array(
 						"openid" => $member['openid'],
 						"uid" => $member['uid'],
@@ -1080,17 +1037,18 @@ if (!class_exists('BonusModel')) {
 						"uniacid" => $_W['uniacid'],
 						"paymethod" => $set['paymethod'],
 						"sendpay" => $sendpay,
+						"goodids" => iserializer($ids),
 						"status" => 1,
 						"ctime" => time(),
 						"send_bonus_sn" => $time
 					));
+					//更新分红订单完成
+					pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
+					
 					if($sendpay == 1){
 						$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $send_money, 'type' => empty($set['paymethod']) ? "余额" : "微信钱包"), TM_BONUS_PAY);
 					}
-					$ids = pdo_fetchall("select cg.id from " . tablename('sz_yi_bonus_goods') . " cg left join  ".tablename('sz_yi_order')."  o on o.id=cg.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and cg.mid=:mid and cg.status=0 and o.status>=3 and o.uniacid=:uniacid and o.finishtime < {$endtime} and cg.bonus_area!=0", array(":mid" => $member['id'], ":uniacid" => $_W['uniacid']), 'id');
-
-					//更新分红订单完成
-					pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
+					
 					$totalmoney += $send_money;
 					$total += 1;
 				}
@@ -1100,7 +1058,7 @@ if (!class_exists('BonusModel')) {
 				$log = array(
 			            "uniacid" => $_W['uniacid'],
 			            "money" => $totalmoney,
-			            "status" => 1,
+			            "status" => 2,
 			            "ctime" => time(),
 						"type" => 3,
 			            "paymethod" => $set['paymethod'],
@@ -1147,6 +1105,8 @@ if (!class_exists('BonusModel')) {
 				return false;
 			}
 			$ordermoney = pdo_fetchcolumn("select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}");
+			//获取分红订单id
+			$orderids = pdo_fetchall("select o.id from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid=:uniacid and  o.finishtime >={$stattime} and o.finishtime < {$endtime}", array(":uniacid" => $_W['uniacid']), 'id');
 
 			$premierlevels = pdo_fetchall("select * from ".tablename('sz_yi_bonus_level')." where uniacid={$_W['uniacid']} and premier=1");
 			$levelmoneys = array();
@@ -1216,10 +1176,11 @@ if (!class_exists('BonusModel')) {
 			$log = array(
 					"uniacid" => $_W['uniacid'],
 					"money" => $totalmoney,
-					"status" => 1,
+					"status" => 2,
 					"ctime" => time(),
 					"sendmonth" => $set['sendmonth'],
 					"paymethod" => $set['paymethod'],
+					"orderids" => iserializer($orderids),
 					'type' => 4,
 					"sendpay_error" => $sendpay_error,
 					"isglobal" => 1,

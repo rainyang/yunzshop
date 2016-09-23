@@ -20,7 +20,7 @@ if (empty($member)) {
 	header('Location: '.$this->createMobileUrl('member/login'));
 }
 $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
-
+$member['credit1'] 	= floor($member['credit1']);
 $uniacid = $_W['uniacid'];
 $trade['withdraw'] = $set['trade']['withdraw'];
 $trade['closerecharge'] = $set['trade']['closerecharge'];
@@ -216,4 +216,11 @@ if ($pcashier) {
         $has_cashier = true;
     }
 }
+$verify = pdo_fetch('SELECT * FROM '.tablename('sz_yi_store')." WHERE uniacid=:uniacid and status=1 and member_id=:member_id", array(':uniacid' => $_W['uniacid'], ':member_id' => $member['id']));
+if ($verify) {
+	$issupervisor = true;
+}
+$verifyset  = m('common')->getSetData();
+$allset = iunserializer($verifyset['plugins']);
+
 include $this->template('member/center');

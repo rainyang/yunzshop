@@ -30,10 +30,10 @@
                 <td style="text-align: center;">
                     {if !empty($row['agent_avatar'])}
                     <img src='{$row['agent_avatar']}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' /><br/>
+                    {$row['agent_realname']}
                     {else}
                     <label class="label label-primary">总店</label>
                     {/if}
-                    {if !empty($row['agent_realname'])}{$row['agent_realname']}{/if}
                 </td>
                 <td style="text-align: center;">
                     {if !empty($row['avatar'])}
@@ -117,10 +117,11 @@
                 <td style="text-align: center;">
                     {if !empty($row['agent_avatar'])}
                     <img src='{$row['agent_avatar']}' style='width:30px;height:30px;padding1px;border:1px solid #ccc' /><br/>
+                    {if !empty($row['agent_realname'])}{$row['agent_realname']}{/if}
                     {else}
                     <label class="label label-primary">总店</label>
                     {/if}
-                    {if !empty($row['agent_realname'])}{$row['agent_realname']}{/if}
+                    
                 </td>
                 <td style="text-align: center;">
                     {if !empty($row['avatar'])}

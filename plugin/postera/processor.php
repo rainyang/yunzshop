@@ -12,33 +12,31 @@ class PosteraProcessor extends PluginProcessor
 		parent::__construct('postera');
 	}
 
-	public function respond($_var_0 = null)
+	public function respond($obj = null)
 	{
 		global $_W;
-		$_var_1 = $_var_0->message;
-		$_var_2 = strtolower($_var_1['msgtype']);
-		$_var_3 = strtolower($_var_1['event']);
-		$_var_0->member = $this->model->checkMember($_var_1['from']);
-        file_put_contents(IA_ROOT.'/ares.log', $_var_2);
-        file_put_contents(IA_ROOT.'/ares1.log', $_var_3);
-		if ($_var_2 == 'text' || $_var_3 == 'click') {
-			return $this->responseText($_var_0);
-		} else if ($_var_2 == 'event') {
-			if ($_var_3 == 'scan') {
-				return $this->responseScan($_var_0);
-			} else if ($_var_3 == 'subscribe') {
-				return $this->responseSubscribe($_var_0);
+		$message = $obj->message;
+		$msgtype = strtolower($message['msgtype']);
+		$event = strtolower($message['event']);
+		$obj->member = $this->model->checkMember($message['from']);
+		if ($msgtype == 'text' || $event == 'click') {
+			return $this->responseText($obj);
+		} else if ($msgtype == 'event') {
+			if ($event == 'scan') {
+				return $this->responseScan($obj);
+			} else if ($event == 'subscribe') {
+				return $this->responseSubscribe($obj);
 			}
 		}
 	}
 
-	private function responseText($_var_0)
+	private function responseText($obj)
 	{
 		global $_W;
-		$_var_4 = 4;
+		$timeout = 4;
 		load()->func('communication');
-		$_var_5 = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=plugin&p=postera&method=build&timestamp=' . time();
-		$_var_6 = ihttp_request($_var_5, array('openid' => $_var_0->message['from'], 'content' => urlencode($_var_0->message['content'])), array(), $_var_4);
+		$url = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=plugin&p=postera&method=build&timestamp=' . time();
+		$info = ihttp_request($url, array('openid' => $obj->message['from'], 'content' => urlencode($obj->message['content'])), array(), $timeout);
 		return $this->responseEmpty();
 	}
 
@@ -52,205 +50,205 @@ class PosteraProcessor extends PluginProcessor
 		exit(0);
 	}
 
-	private function responseDefault($_var_0)
+	private function responseDefault($obj)
 	{
 		global $_W;
-		return $_var_0->respText('感谢您的关注!');
+		return $obj->respText('感谢您的关注!');
 	}
 
-	private function responseScan($_var_0)
+	private function responseScan($obj)
 	{
 		global $_W;
-		$_var_7 = $_var_0->message['from'];
-		$_var_8 = $_var_0->message['eventkey'];
-		$_var_9 = $_var_0->message['ticket'];
-		if (empty($_var_9)) {
-			return $this->responseDefault($_var_0);
+		$openid = $obj->message['from'];
+		$sceneid = $obj->message['eventkey'];
+		$ticket = $obj->message['ticket'];
+		if (empty($ticket)) {
+			return $this->responseDefault($obj);
 		}
-		$_var_10 = $this->model->getQRByTicket($_var_9);
-		if (empty($_var_10)) {
-			return $this->responseDefault($_var_0);
+		$qr = $this->model->getQRByTicket($ticket);
+		if (empty($qr)) {
+			return $this->responseDefault($obj);
 		}
-		$_var_11 = pdo_fetch('select * from ' . tablename('sz_yi_postera') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $_var_10['posterid'], ':uniacid' => $_W['uniacid']));
-		if (empty($_var_11)) {
-			return $this->responseDefault($_var_0);
+		$poster = pdo_fetch('select * from ' . tablename('sz_yi_postera') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $qr['posterid'], ':uniacid' => $_W['uniacid']));
+		if (empty($poster)) {
+			return $this->responseDefault($obj);
 		}
-		$_var_12 = m('member')->getMember($_var_10['openid']);
-		$this->commission($_var_11, $_var_0->member, $_var_12);
-		$_var_5 = trim($_var_11['respurl']);
-		if (empty($_var_5)) {
-			if ($_var_12['isagent'] == 1 && $_var_12['status'] == 1) {
-				$_var_5 = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&m=sz_yi&do=plugin&p=commission&method=myshop&mid=" . $_var_12['id'];
+		$qrmember = m('member')->getMember($qr['openid']);
+		$this->commission($poster, $obj->member, $qrmember);
+		$url = trim($poster['respurl']);
+		if (empty($url)) {
+			if ($qrmember['isagent'] == 1 && $qrmember['status'] == 1) {
+				$url = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&m=sz_yi&do=plugin&p=commission&method=myshop&mid=" . $qrmember['id'];
 			} else {
-				$_var_5 = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&m=sz_yi&do=shop&mid=" . $_var_12['id'];
+				$url = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&m=sz_yi&do=shop&mid=" . $qrmember['id'];
 			}
 		}
-		if (!empty($_var_11['resptitle'])) {
-			$_var_13 = array(array('title' => $_var_11['resptitle'], 'description' => $_var_11['respdesc'], 'picurl' => tomedia($_var_11['respthumb']), 'url' => $_var_5));
-			return $_var_0->respNews($_var_13);
+		if (!empty($poster['resptitle'])) {
+			$news = array(array('title' => $poster['resptitle'], 'description' => $poster['respdesc'], 'picurl' => tomedia($poster['respthumb']), 'url' => $url));
+			return $obj->respNews($news);
 		}
 		return $this->responseEmpty();
 	}
 
-	private function responseSubscribe($_var_0)
+	private function responseSubscribe($obj)
 	{
 		global $_W;
-		$_var_7 = $_var_0->message['from'];
-		$_var_14 = explode('_', $_var_0->message['eventkey']);
-		$_var_8 = isset($_var_14[1]) ? $_var_14[1] : '';
-		$_var_9 = $_var_0->message['ticket'];
-		$_var_15 = $_var_0->member;
-		if (empty($_var_9)) {
-			return $this->responseDefault($_var_0);
+		$openid = $obj->message['from'];
+		$keys = explode('_', $obj->message['eventkey']);
+		$sceneid = isset($keys[1]) ? $keys[1] : '';
+		$ticket = $obj->message['ticket'];
+		$member = $obj->member;
+		if (empty($ticket)) {
+			return $this->responseDefault($obj);
 		}
-		$_var_10 = $this->model->getQRByTicket($_var_9);
-		if (empty($_var_10)) {
-			return $this->responseDefault($_var_0);
+		$qr = $this->model->getQRByTicket($ticket);
+		if (empty($qr)) {
+			return $this->responseDefault($obj);
 		}
-		$_var_11 = pdo_fetch('select * from ' . tablename('sz_yi_postera') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $_var_10['posterid'], ':uniacid' => $_W['uniacid']));
-		if (empty($_var_11)) {
-			return $this->responseDefault($_var_0);
+		$poster = pdo_fetch('select * from ' . tablename('sz_yi_postera') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $qr['posterid'], ':uniacid' => $_W['uniacid']));
+		if (empty($poster)) {
+			return $this->responseDefault($obj);
 		}
-		$_var_12 = m('member')->getMember($_var_10['openid']);
-		$_var_16 = pdo_fetch('select * from ' . tablename('sz_yi_postera_log') . ' where openid=:openid and posterid=:posterid and uniacid=:uniacid limit 1', array(':openid' => $_var_7, ':posterid' => $_var_11['id'], ':uniacid' => $_W['uniacid']));
-		if (empty($_var_16) && $_var_7 != $_var_10['openid']) {
-			$_var_16 = array('uniacid' => $_W['uniacid'], 'posterid' => $_var_11['id'], 'openid' => $_var_7, 'from_openid' => $_var_10['openid'], 'subcredit' => $_var_11['subcredit'], 'submoney' => $_var_11['submoney'], 'reccredit' => $_var_11['reccredit'], 'recmoney' => $_var_11['recmoney'], 'createtime' => time());
-			pdo_insert('sz_yi_postera_log', $_var_16);
-			$_var_16['id'] = pdo_insertid();
-			$_var_17 = $_var_11['subpaycontent'];
-			if (empty($_var_17)) {
-				$_var_17 = '您通过 [nickname] 的推广二维码扫码关注的奖励';
+		$qrmember = m('member')->getMember($qr['openid']);
+		$log = pdo_fetch('select * from ' . tablename('sz_yi_postera_log') . ' where openid=:openid and posterid=:posterid and uniacid=:uniacid limit 1', array(':openid' => $openid, ':posterid' => $poster['id'], ':uniacid' => $_W['uniacid']));
+		if (empty($log) && $openid != $qr['openid']) {
+			$log = array('uniacid' => $_W['uniacid'], 'posterid' => $poster['id'], 'openid' => $openid, 'from_openid' => $qr['openid'], 'subcredit' => $poster['subcredit'], 'submoney' => $poster['submoney'], 'reccredit' => $poster['reccredit'], 'recmoney' => $poster['recmoney'], 'createtime' => time());
+			pdo_insert('sz_yi_postera_log', $log);
+			$log['id'] = pdo_insertid();
+			$subpaycontent = $poster['subpaycontent'];
+			if (empty($subpaycontent)) {
+				$subpaycontent = '您通过 [nickname] 的推广二维码扫码关注的奖励';
 			}
-			$_var_17 = str_replace('[nickname]', $_var_12['nickname'], $_var_17);
-			$_var_18 = $_var_11['recpaycontent'];
-			if (empty($_var_18)) {
-				$_var_18 = '推荐 [nickname] 扫码关注的奖励';
+			$subpaycontent = str_replace('[nickname]', $qrmember['nickname'], $subpaycontent);
+			$recpaycontent = $poster['recpaycontent'];
+			if (empty($recpaycontent)) {
+				$recpaycontent = '推荐 [nickname] 扫码关注的奖励';
 			}
-			$_var_18 = str_replace('[nickname]', $_var_15['nickname'], $_var_17);
-			if ($_var_11['subcredit'] > 0) {
-				m('member')->setCredit($_var_7, 'credit1', $_var_11['subcredit'], array(0, '扫码关注积分+' . $_var_11['subcredit']));
+			$recpaycontent = str_replace('[nickname]', $member['nickname'], $subpaycontent);
+			if ($poster['subcredit'] > 0) {
+				m('member')->setCredit($openid, 'credit1', $poster['subcredit'], array(0, '扫码关注积分+' . $poster['subcredit']));
 			}
-			if ($_var_11['submoney'] > 0) {
-				$_var_19 = $_var_11['submoney'];
-				if ($_var_11['paytype'] == 1) {
-					$_var_19 *= 100;
+			if ($poster['submoney'] > 0) {
+				$pay = $poster['submoney'];
+				if ($poster['paytype'] == 1) {
+					$pay *= 100;
 				}
-				m('finance')->pay($_var_7, $_var_11['paytype'], $_var_19, '', $_var_17);
+				m('finance')->pay($openid, $poster['paytype'], $pay, '', $subpaycontent);
 			}
-			if ($_var_11['reccredit'] > 0) {
-				m('member')->setCredit($_var_10['openid'], 'credit1', $_var_11['reccredit'], array(0, '推荐扫码关注积分+' . $_var_11['reccredit']));
+			if ($poster['reccredit'] > 0) {
+				m('member')->setCredit($qr['openid'], 'credit1', $poster['reccredit'], array(0, '推荐扫码关注积分+' . $poster['reccredit']));
 			}
-			if ($_var_11['recmoney'] > 0) {
-				$_var_19 = $_var_11['recmoney'];
-				if ($_var_11['paytype'] == 1) {
-					$_var_19 *= 100;
+			if ($poster['recmoney'] > 0) {
+				$pay = $poster['recmoney'];
+				if ($poster['paytype'] == 1) {
+					$pay *= 100;
 				}
-				m('finance')->pay($_var_10['openid'], $_var_11['paytype'], $_var_19, '', $_var_18);
+				m('finance')->pay($qr['openid'], $poster['paytype'], $pay, '', $recpaycontent);
 			}
-			$_var_20 = false;
-			$_var_21 = false;
-			$_var_22 = p('coupon');
-			if ($_var_22) {
-				if (!empty($_var_11['reccouponid']) && $_var_11['reccouponnum'] > 0) {
-					$_var_23 = $_var_22->getCoupon($_var_11['reccouponid']);
-					if (!empty($_var_23)) {
-						$_var_20 = true;
+			$cansendreccoupon = false;
+			$cansendsubcoupon = false;
+			$plugin_coupon = p('coupon');
+			if ($plugin_coupon) {
+				if (!empty($poster['reccouponid']) && $poster['reccouponnum'] > 0) {
+					$reccoupon = $plugin_coupon->getCoupon($poster['reccouponid']);
+					if (!empty($reccoupon)) {
+						$cansendreccoupon = true;
 					}
 				}
-				if (!empty($_var_11['subcouponid']) && $_var_11['subcouponnum'] > 0) {
-					$_var_24 = $_var_22->getCoupon($_var_11['subcouponid']);
-					if (!empty($_var_24)) {
-						$_var_21 = true;
+				if (!empty($poster['subcouponid']) && $poster['subcouponnum'] > 0) {
+					$subcoupon = $plugin_coupon->getCoupon($poster['subcouponid']);
+					if (!empty($subcoupon)) {
+						$cansendsubcoupon = true;
 					}
 				}
 			}
-			if (!empty($_var_11['subtext'])) {
-				$_var_25 = $_var_11['subtext'];
-				$_var_25 = str_replace('[nickname]', $_var_15['nickname'], $_var_25);
-				$_var_25 = str_replace('[credit]', $_var_11['reccredit'], $_var_25);
-				$_var_25 = str_replace('[money]', $_var_11['recmoney'], $_var_25);
-				if ($_var_23) {
-					$_var_25 = str_replace('[couponname]', $_var_23['couponname'], $_var_25);
-					$_var_25 = str_replace('[couponnum]', $_var_11['reccouponnum'], $_var_25);
+			if (!empty($poster['subtext'])) {
+				$subtext = $poster['subtext'];
+				$subtext = str_replace('[nickname]', $member['nickname'], $subtext);
+				$subtext = str_replace('[credit]', $poster['reccredit'], $subtext);
+				$subtext = str_replace('[money]', $poster['recmoney'], $subtext);
+				if ($reccoupon) {
+					$subtext = str_replace('[couponname]', $reccoupon['couponname'], $subtext);
+					$subtext = str_replace('[couponnum]', $poster['reccouponnum'], $subtext);
 				}
-				if (!empty($_var_11['templateid'])) {
-					m('message')->sendTplNotice($_var_10['openid'], $_var_11['templateid'], array('first' => array('value' => '推荐关注奖励到账通知', 'color' => '#4a5077'), 'keyword1' => array('value' => '推荐奖励', 'color' => '#4a5077'), 'keyword2' => array('value' => $_var_25, 'color' => '#4a5077'), 'remark' => array('value' => '
+				if (!empty($poster['templateid'])) {
+					m('message')->sendTplNotice($qr['openid'], $poster['templateid'], array('first' => array('value' => '推荐关注奖励到账通知', 'color' => '#4a5077'), 'keyword1' => array('value' => '推荐奖励', 'color' => '#4a5077'), 'keyword2' => array('value' => $subtext, 'color' => '#4a5077'), 'remark' => array('value' => '
 谢谢您对我们的支持！', 'color' => '#4a5077'),), '');
 				} else {
-					m('message')->sendCustomNotice($_var_10['openid'], $_var_25);
+					m('message')->sendCustomNotice($qr['openid'], $subtext);
 				}
 			}
-			if (!empty($_var_11['entrytext'])) {
-				$_var_26 = $_var_11['entrytext'];
-				$_var_26 = str_replace('[nickname]', $_var_12['nickname'], $_var_26);
-				$_var_26 = str_replace('[credit]', $_var_11['subcredit'], $_var_26);
-				$_var_26 = str_replace('[money]', $_var_11['submoney'], $_var_26);
-				if ($_var_24) {
-					$_var_26 = str_replace('[couponname]', $_var_24['couponname'], $_var_26);
-					$_var_26 = str_replace('[couponnum]', $_var_11['subcouponnum'], $_var_26);
+			if (!empty($poster['entrytext'])) {
+				$entrytext = $poster['entrytext'];
+				$entrytext = str_replace('[nickname]', $qrmember['nickname'], $entrytext);
+				$entrytext = str_replace('[credit]', $poster['subcredit'], $entrytext);
+				$entrytext = str_replace('[money]', $poster['submoney'], $entrytext);
+				if ($subcoupon) {
+					$entrytext = str_replace('[couponname]', $subcoupon['couponname'], $entrytext);
+					$entrytext = str_replace('[couponnum]', $poster['subcouponnum'], $entrytext);
 				}
-				if (!empty($_var_11['templateid'])) {
-					m('message')->sendTplNotice($_var_7, $_var_11['templateid'], array('first' => array('value' => '关注奖励到账通知', 'color' => '#4a5077'), 'keyword1' => array('value' => '关注奖励', 'color' => '#4a5077'), 'keyword2' => array('value' => $_var_26, 'color' => '#4a5077'), 'remark' => array('value' => '
+				if (!empty($poster['templateid'])) {
+					m('message')->sendTplNotice($openid, $poster['templateid'], array('first' => array('value' => '关注奖励到账通知', 'color' => '#4a5077'), 'keyword1' => array('value' => '关注奖励', 'color' => '#4a5077'), 'keyword2' => array('value' => $entrytext, 'color' => '#4a5077'), 'remark' => array('value' => '
 谢谢您对我们的支持！', 'color' => '#4a5077'),), '');
 				} else {
-					m('message')->sendCustomNotice($_var_7, $_var_26);
+					m('message')->sendCustomNotice($openid, $entrytext);
 				}
 			}
-			$_var_27 = array();
-			if ($_var_20) {
-				$_var_27['reccouponid'] = $_var_11['reccouponid'];
-				$_var_27['reccouponnum'] = $_var_11['reccouponnum'];
-				$_var_22->poster($_var_12, $_var_11['reccouponid'], $_var_11['reccouponnum']);
+			$upgrade = array();
+			if ($cansendreccoupon) {
+				$upgrade['reccouponid'] = $poster['reccouponid'];
+				$upgrade['reccouponnum'] = $poster['reccouponnum'];
+				$plugin_coupon->poster($qrmember, $poster['reccouponid'], $poster['reccouponnum']);
 			}
-			if ($_var_21) {
-				$_var_27['subcouponid'] = $_var_11['subcouponid'];
-				$_var_27['subcouponnum'] = $_var_11['subcouponnum'];
-				$_var_22->poster($_var_15, $_var_11['subcouponid'], $_var_11['subcouponnum']);
+			if ($cansendsubcoupon) {
+				$upgrade['subcouponid'] = $poster['subcouponid'];
+				$upgrade['subcouponnum'] = $poster['subcouponnum'];
+				$plugin_coupon->poster($member, $poster['subcouponid'], $poster['subcouponnum']);
 			}
-			if (!empty($_var_27)) {
-				pdo_update('sz_yi_postera_log', $_var_27, array('id' => $_var_16['id']));
+			if (!empty($upgrade)) {
+				pdo_update('sz_yi_postera_log', $upgrade, array('id' => $log['id']));
 			}
 		}
-		$this->commission($_var_11, $_var_15, $_var_12);
-		$_var_5 = trim($_var_11['respurl']);
-		if (empty($_var_5)) {
-			if ($_var_12['isagent'] == 1 && $_var_12['status'] == 1) {
-				$_var_5 = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&m=sz_yi&do=plugin&p=commission&method=myshop&mid=" . $_var_12['id'];
+		$this->commission($poster, $member, $qrmember);
+		$url = trim($poster['respurl']);
+		if (empty($url)) {
+			if ($qrmember['isagent'] == 1 && $qrmember['status'] == 1) {
+				$url = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&m=sz_yi&do=plugin&p=commission&method=myshop&mid=" . $qrmember['id'];
 			} else {
-				$_var_5 = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&m=sz_yi&do=shop&mid=" . $_var_12['id'];
+				$url = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&m=sz_yi&do=shop&mid=" . $qrmember['id'];
 			}
 		}
-		if (!empty($_var_11['resptitle'])) {
-			$_var_13 = array(array('title' => $_var_11['resptitle'], 'description' => $_var_11['respdesc'], 'picurl' => tomedia($_var_11['respthumb']), 'url' => $_var_5));
-			return $_var_0->respNews($_var_13);
+		if (!empty($poster['resptitle'])) {
+			$news = array(array('title' => $poster['resptitle'], 'description' => $poster['respdesc'], 'picurl' => tomedia($poster['respthumb']), 'url' => $url));
+			return $obj->respNews($news);
 		}
 		return $this->responseEmpty();
 	}
 
-	private function commission($_var_11, $_var_15, $_var_12)
+	private function commission($poster, $member, $qrmember)
 	{
-		$_var_28 = time();
-		$_var_29 = p('commission');
-		if ($_var_29) {
-			$_var_30 = $_var_29->getSet();
-			if (!empty($_var_30)) {
-				if ($_var_15['isagent'] != 1) {
-					if ($_var_12['isagent'] == 1 && $_var_12['status'] == 1) {
-						if (!empty($_var_11['bedown'])) {
-							if (empty($_var_15['agentid'])) {
-								if (empty($_var_15['fixagentid'])) {
-									pdo_update('sz_yi_member', array('agentid' => $_var_12['id'], 'childtime' => $_var_28), array('id' => $_var_15['id']));
-									$_var_15['agentid'] = $_var_12['id'];
-									$_var_29->sendMessage($_var_12['openid'], array('nickname' => $_var_15['nickname'], 'childtime' => $_var_28), TM_COMMISSION_AGENT_NEW);
-									$_var_29->upgradeLevelByAgent($_var_12['id']);
+		$time = time();
+		$pcommission = p('commission');
+		if ($pcommission) {
+			$cset = $pcommission->getSet();
+			if (!empty($cset)) {
+				if ($member['isagent'] != 1) {
+					if ($qrmember['isagent'] == 1 && $qrmember['status'] == 1) {
+						if (!empty($poster['bedown'])) {
+							if (empty($member['agentid'])) {
+								if (empty($member['fixagentid'])) {
+									pdo_update('sz_yi_member', array('agentid' => $qrmember['id'], 'childtime' => $time), array('id' => $member['id']));
+									$member['agentid'] = $qrmember['id'];
+									$pcommission->sendMessage($qrmember['openid'], array('nickname' => $member['nickname'], 'childtime' => $time), TM_COMMISSION_AGENT_NEW);
+									$pcommission->upgradeLevelByAgent($qrmember['id']);
 								}
 							}
-							if (!empty($_var_11['beagent'])) {
-								$_var_31 = intval($_var_30['become_check']);
-								pdo_update('sz_yi_member', array('isagent' => 1, 'status' => $_var_31, 'agenttime' => $_var_28), array('id' => $_var_15['id']));
-								if ($_var_31 == 1) {
-									$_var_29->sendMessage($_var_15['openid'], array('nickname' => $_var_15['nickname'], 'agenttime' => $_var_28), TM_COMMISSION_BECOME);
-									$_var_29->upgradeLevelByAgent($_var_12['id']);
+							if (!empty($poster['beagent'])) {
+								$become_check = intval($cset['become_check']);
+								pdo_update('sz_yi_member', array('isagent' => 1, 'status' => $become_check, 'agenttime' => $time), array('id' => $member['id']));
+								if ($become_check == 1) {
+									$pcommission->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'agenttime' => $time), TM_COMMISSION_BECOME);
+									$pcommission->upgradeLevelByAgent($qrmember['id']);
 								}
 							}
 						}

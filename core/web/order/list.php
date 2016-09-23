@@ -1822,16 +1822,6 @@ function order_list_confirmsend($order) {
     if (!empty($order["transid"])) {
         changeWechatSend($order["ordersn"], 1);
     }
-    if (!empty($order["refundid"])) {
-        $zym_var_35 = pdo_fetchcolumn("select status from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
-            ":id" => $order["refundid"]
-        ));
-        if ($zym_var_35 == 0) {
-            message("此订单有退款申请未处理，请处理完成之后进行确认发货操作！");
- 
-        }
-        
-    }
     pdo_update("sz_yi_order", array(
         "status" => 2,
         "express" => trim($_GPC["express"]) ,
@@ -1842,7 +1832,16 @@ function order_list_confirmsend($order) {
         "id" => $order["id"],
         "uniacid" => $_W["uniacid"]
     ));
-    
+    if (!empty($order["refundid"])) {
+        $zym_var_35 = pdo_fetchcolumn("select status from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
+            ":id" => $order["refundid"]
+        ));
+        if ($zym_var_35 == 0) {
+            message("此订单有退款申请未处理，请处理完成之后进行确认发货操作！");
+ 
+        }
+        
+    }
     m("notice")->sendOrderMessage($order["id"]);
     plog("order.op.send", "订单发货 ID: {$order["id"]} 订单号: {$order["ordersn"]} <br/>快递公司: {$_GPC["expresscom"]} 快递单号: {$_GPC["expresssn"]}");
     message("发货操作成功！", order_list_backurl() , "success");
@@ -1864,21 +1863,20 @@ function order_list_confirmsend1($order) {
         $paylog6["verifytime"] = $paylog7;
         $paylog6["verifyopenid"] = "";
     }
+    pdo_update("sz_yi_order", $paylog6, array(
+        "id" => $order["id"],
+        "uniacid" => $_W["uniacid"]
+    ));
     if (!empty($order["refundid"])) {
         $zym_var_35 = pdo_fetchcolumn("select status from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
             ":id" => $order["refundid"]
         ));
         if ($zym_var_35 == 0) {
-            message("此订单有退款申请未处理，请处理完成之后进行操作！");
+            message("此订单有退款申请未处理，请处理完成之后进行确认发货操作！");
  
         }
         
     }
-    pdo_update("sz_yi_order", $paylog6, array(
-        "id" => $order["id"],
-        "uniacid" => $_W["uniacid"]
-    ));
-    
     m("member")->upgradeLevel($order["openid"]);
     m("notice")->sendOrderMessage($order["id"]);
     if (p("commission")) {
