@@ -1,5 +1,5 @@
 <?php
-namespace app\api\controller\address;
+namespace app\api\controller\order;
 @session_start();
 use app\api\YZ;
 use app\api\Request;
@@ -10,7 +10,6 @@ class Display extends YZ
     {
         $this->_validatePara();
         $openid = m('user')->isLogin();
-        //var_dump($openid);exit;
         $uniacid = Request::input("uniacid");
         $address_id = Request::input("address_id");
         $total = $this->_getCount($openid, $uniacid);
