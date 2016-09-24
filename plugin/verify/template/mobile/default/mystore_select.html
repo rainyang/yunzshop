@@ -362,7 +362,7 @@ ul, li { list-style:none; margin:0; padding:0 }
             $.ajax({
                         url:"{php echo $this->createPluginMobileUrl('verify/add')}", 
                         type:'post',
-                        data: {op:'cart'},
+                        data: {op:'cart', storeid:"{$_GPC['storeid']}"},
                         success:function(data){
                           console.log(data);
                           if(data){
@@ -848,7 +848,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                     };
 
                     require(['core'],function(core){
-                        core.pjson('verify/add',{op:'add', id:id,total:-1, storeid:"{$_GPC{'storeid'}}"},function(ret){
+                        core.pjson('verify/add',{op:'add', id:id,total:-1, storeid:"{$_GPC['storeid']}"},function(ret){
 
                            now.attr("data-num",ret.result.cartcount);
                             setNum();
@@ -940,7 +940,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                     }
                     
                 }
-                 core.pjson('verify/add', {id:id, optionid:optionid, op:'gettotal'}, function(json){
+                 core.pjson('verify/add', {id:id, optionid:optionid, op:'gettotal', storeid:"{$_GPC['storeid']}"}, function(json){
                           var total = json.result;
                           if(!total){
                             total = '0'; 

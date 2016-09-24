@@ -344,7 +344,7 @@ if ($_W['isajax']) {
             $my_stock = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_store_goods') . " WHERE uniacid=:uniacid AND storeid=:storeid AND goodsid=:goodsid", array(':uniacid' => $_W['uniacid'], ':storeid' => intval($_GPC['storeid']), ':goodsid' => $goodsid));
             foreach ($my_stock as $val) {
                 $my_option          = m('goods')->getOption($goodsid, $val['optionid']);
-                $stock_total        = pdo_fetchcolumn("SELECT total FROM " . tablename('sz_yi_store_goods') . " WHERE uniacid=:uniacid AND goodsid=:goodsid AND optionid=:optionid", array(':uniacid' => $_W['uniacid'], ':goodsid' => $goodsid, ':optionid' => $val['optionid']));
+                $stock_total        = pdo_fetchcolumn("SELECT total FROM " . tablename('sz_yi_store_goods') . " WHERE uniacid=:uniacid AND goodsid=:goodsid AND optionid=:optionid and storeid=:storeid", array(':uniacid' => $_W['uniacid'], ':goodsid' => $goodsid, ':optionid' => $val['optionid'], ':storeid' => intval($_GPC['storeid'])));
                 $my_option['stock'] = $stock_total;
                 $options[]          = $my_option;
             }
