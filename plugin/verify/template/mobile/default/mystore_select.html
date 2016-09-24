@@ -848,7 +848,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                     };
 
                     require(['core'],function(core){
-                        core.pjson('verify/add',{op:'add', id:id,total:-1, storeid:"{$_GPC{'storeid'}}"},function(ret){
+                        core.pjson('verify/add',{op:'add', id:id,total:-1, storeid:"{$_GPC['storeid']}"},function(ret){
 
                            now.attr("data-num",ret.result.cartcount);
                             setNum();

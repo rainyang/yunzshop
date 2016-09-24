@@ -108,16 +108,16 @@ if ($_W['isajax']) {
         $type = $_GPC['type'];
         $storeid = intval($_GPC['storeid']);
         if ($total <= 0) {
-            $old_total = pdo_fetchcolumn( "SELECT total FROM ".tablename('sz_yi_store_goods')." where goodsid=:id and uniacid=:uniacid and openid=:openid",array(':id' => $id, ':uniacid' => $uniacid, ':openid' => $openid) );
+            $old_total = pdo_fetchcolumn( "SELECT total FROM ".tablename('sz_yi_store_goods')." where goodsid=:id and uniacid=:uniacid and storeid=:storeid",array(':id' => $id, ':uniacid' => $uniacid, ':storeid' => $storeid) );
             $total = $old_total + $total;
             if ($total <= 0) {
-                pdo_delete('sz_yi_store_goods',array('goodsid' => $id, 'openid' => $openid, 'uniacid' => $uniacid));  
+                pdo_delete('sz_yi_store_goods',array('goodsid' => $id, 'storeid' => $storeid, 'uniacid' => $uniacid));  
             } else {
-                $sql = "update " . tablename('sz_yi_store_goods') . ' set total= '.$total.' where uniacid=:uniacid and openid=:openid and goodsid = :goodsid';
+                $sql = "update " . tablename('sz_yi_store_goods') . ' set total= '.$total.' where uniacid=:uniacid and storeid=:storeid and goodsid = :goodsid';
                 pdo_query($sql, array(
                     ':uniacid' => $uniacid,
                     ':goodsid' => $id,
-                    ':openid' => $openid
+                    ':storeid' => $storeid
                 ));
             }
 
@@ -134,9 +134,9 @@ if ($_W['isajax']) {
             ':id' => $id
         ));
         if (!empty($optionid)) {
-            $isoption = pdo_fetch("SELECT * FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:goodsid and openid=:openid and uniacid=:uniacid and optionid=0", array(':goodsid' => $id, ':openid' => $openid, ':uniacid' => $uniacid));
+            $isoption = pdo_fetch("SELECT * FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:goodsid and storeid=:storeid and uniacid=:uniacid and optionid=0", array(':goodsid' => $id, ':storeid' => $storeid, ':uniacid' => $uniacid));
             if (!empty($isoption)) {
-                pdo_delete('sz_yi_store_goods', array('goodsid' => $id, 'uniacid' => $uniacid, 'openid' => $openid, 'optionid' => 0));
+                pdo_delete('sz_yi_store_goods', array('goodsid' => $id, 'uniacid' => $uniacid, 'storeid' => $storeid, 'optionid' => 0));
             }
         }
         if (empty($goods)) {
@@ -147,9 +147,9 @@ if ($_W['isajax']) {
         if ($diyform_plugin) {
             $datafields .= ",diyformdataid";
         }
-        $data          = pdo_fetch("select {$datafields} from " . tablename('sz_yi_store_goods') . ' where openid=:openid and goodsid=:id and  optionid=:optionid and deleted=0 and  uniacid=:uniacid   limit 1', array(
+        $data          = pdo_fetch("select {$datafields} from " . tablename('sz_yi_store_goods') . ' where storeid=:storeid and goodsid=:id and  optionid=:optionid and deleted=0 and  uniacid=:uniacid   limit 1', array(
             ':uniacid' => $uniacid,
-            ':openid' => $openid,
+            ':storeid' => $storeid,
             ':optionid' => $optionid,
             ':id' => $id
         ));
@@ -173,13 +173,13 @@ if ($_W['isajax']) {
                 }
             }
         }
-        $cartcount = pdo_fetchcolumn('select sum(total) from ' . tablename('sz_yi_store_goods') . ' where openid=:openid and deleted=0 and uniacid=:uniacid  limit 1', array(
+        $cartcount = pdo_fetchcolumn('select sum(total) from ' . tablename('sz_yi_store_goods') . ' where storeid=:storeid and deleted=0 and uniacid=:uniacid  limit 1', array(
             ':uniacid' => $uniacid,
-            ':openid' => $openid
+            ':storeid' => $storeid
         ));
-        $dates= pdo_fetch("select {$datafields} from " . tablename('sz_yi_store_goods') . ' where openid=:openid and goodsid=:id  and deleted=0 and  uniacid=:uniacid   limit 1', array(
+        $dates= pdo_fetch("select {$datafields} from " . tablename('sz_yi_store_goods') . ' where storeid=:storeid and goodsid=:id  and deleted=0 and  uniacid=:uniacid   limit 1', array(
         ':uniacid' => $uniacid,
-        ':openid' => $openid,
+        ':storeid' => $storeid,
         
         ':id' => $id
         ));                   
@@ -187,7 +187,6 @@ if ($_W['isajax']) {
 
             $data = array(
             'uniacid' => $uniacid,
-            'openid' => $openid,
             'goodsid' => $id,
             'optionid' => $optionid,
             'marketprice' => $goods['marketprice'],
@@ -223,7 +222,6 @@ if ($_W['isajax']) {
                 ), array(
                     'uniacid' => $uniacid,
                     'goodsid' => $id,
-                    'openid' => $openid,
                     'optionid' => $optionid,
             		'storeid' => $storeid
                 ));
