@@ -388,15 +388,16 @@ if ($_W['isajax']) {
         ));
         show_json(1);
     } else if ($operation == 'cart' && $_W['ispost']) {
-        $data          = pdo_fetchall("select * from " . tablename('sz_yi_store_goods') . ' where openid=:openid and deleted=0 and  uniacid=:uniacid ', array(
+        $storeid = intval($_GPC['storeid']);
+        $data          = pdo_fetchall("select * from " . tablename('sz_yi_store_goods') . ' where storeid=:storeid and deleted=0 and  uniacid=:uniacid ', array(
             ':uniacid' => $uniacid,
-            ':openid' => $openid
+            ':storeid' => $storeid
         ));
         foreach ($data as &$row) {
-            $row['total'] =pdo_fetchcolumn("select sum(total) from " . tablename('sz_yi_store_goods') . ' where openid=:openid and deleted=0 and  uniacid=:uniacid and goodsid=:id limit 1', 
+            $row['total'] =pdo_fetchcolumn("select sum(total) from " . tablename('sz_yi_store_goods') . ' where storeid=:storeid and deleted=0 and  uniacid=:uniacid and goodsid=:id limit 1', 
                 array(
                     ':uniacid' => $uniacid,
-                    ':openid' => $openid,
+                    ':storeid' => $storeid,
                     ':id' => $row['goodsid']
                 )
             );
@@ -418,10 +419,10 @@ if ($_W['isajax']) {
 
             $conut = 0;
             foreach ($goods as $key => $good) {
-                $cartcount = pdo_fetchcolumn('select sum(total) from ' . tablename('sz_yi_store_goods') . ' where openid=:openid and deleted=0 and uniacid=:uniacid and goodsid = :goodsid limit 1', array(
+                $cartcount = pdo_fetchcolumn('select sum(total) from ' . tablename('sz_yi_store_goods') . ' where storeid=:storeid and deleted=0 and uniacid=:uniacid and goodsid = :goodsid limit 1', array(
                     ':uniacid' => $_W['uniacid'],
                     'goodsid' => $good['id'],
-                    ':openid' => $openid
+                    ':storeid' => $storeid
                 ));
 
                 $conut = $cartcount + $conut;
@@ -435,14 +436,15 @@ if ($_W['isajax']) {
             'goods' => $data
         ));
     } else if ($operation == 'gettotal' ) {
-        $id = $_GPC['id'];
-        $optionid = $_GPC['optionid'];
-        $total = pdo_fetchcolumn("SELECT total FROM ".tablename('sz_yi_store_goods')." WHERE goodsid=:id and optionid=:optionid and uniacid=:uniacid and openid=:openid and deleted=0",
+        $id = intval($_GPC['id']);
+        $storeid = intval($_GPC['storeid']);
+        $optionid = intval($_GPC['optionid']);
+        $total = pdo_fetchcolumn("SELECT total FROM ".tablename('sz_yi_store_goods')." WHERE goodsid=:id and optionid=:optionid and uniacid=:uniacid and storeid=:storeid and deleted=0",
             array(
                 ':id' => $id,
                 ':optionid' => $optionid,
                 ':uniacid' => $uniacid,
-                ':openid' => $openid
+                ':storeid' => $storeid
 
             )
         );
