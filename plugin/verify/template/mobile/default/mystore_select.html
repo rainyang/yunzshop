@@ -102,7 +102,7 @@ line-height: 20px;font-weight: bold;}
         </dd>
     </dl>
          <div class="nav-erj" date-type="1">
-                
+            <%if value.sub.length>0%>    
             <%each value.sub as value1%>   
                   <dl >  
                     <dd data-cate="<%value1.id%>" data-advimg='<%value1.advimg%>' data-advurl='<%value1.advurl%>' class="parent_item1"><%value1.name%>
@@ -125,7 +125,7 @@ line-height: 20px;font-weight: bold;}
                     {/if}
             <!-- end -->
             <%/each%>    
-                
+            <%/if%>    
         </div>
 
     <%/each%>
@@ -300,7 +300,7 @@ ul, li { list-style:none; margin:0; padding:0 }
              
             var pcate = $("#navBar").find(".parent_item").first().data('cate');
 
-            core.pjson('choose/list_goods',{pcate:pcate,pageid:pageid,ischannelpick:"1",op:'moren',storeid:"{$_GPC['storeid']}"}, function (json) {
+            core.pjson('choose/list_goods',{pcate:pcate,pageid:pageid,op:'moren',storeid:"{$_GPC['storeid']}"}, function (json) {
                             result = json.result;
                             
                             var h = '';
