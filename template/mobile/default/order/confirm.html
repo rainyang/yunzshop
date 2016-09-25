@@ -417,7 +417,7 @@
     </div>
 	<input type="hidden" data-id="<%order.supplier_uid%>" data-name="couponid" value="" />
      <div></div>
-    {if empty($_GPC['ischannelpay'])}
+    {if empty($_GPC['ischannelpay']) && $hascouponplugin}
      <div class="addorder_price coupondiv"  data-id="<%order.supplier_uid%>" >
         <div class="price">
             <div class="line selectcoupon" style="line-height:32px;" data-id="<%order.supplier_uid%>">
