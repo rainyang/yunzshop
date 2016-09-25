@@ -1,5 +1,5 @@
 {template 'common/header'}
-<title>绑定手机</title>
+<title>修改绑定手机</title>
 <style type="text/css">
     body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearance:none;}
     .info_main {height:auto;  background:#fff; margin-top:14px; border-bottom:1px solid #e8e8e8; border-top:1px solid #e8e8e8;}
@@ -29,7 +29,7 @@
 <script id="member_info" type="text/html">
     <div class="page_topbar">
     <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
-    <div class="title">绑定手机</div>
+    <div class="title">修改绑定手机</div>
 </div>
     <div class="info_main">
         <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><input type="text" id='mobile' placeholder="请输入您的手机号码"  value="" /></div></div></div>
@@ -43,7 +43,7 @@
 
 
     </div>
-    <div class="info_sub">绑定</div>
+    <div class="info_sub">修改</div>
     {if empty($nobindmobile_hide)}
     <div class="nobindmobile">跳过</div>
     {/if}
@@ -150,12 +150,11 @@
                        core.tip.show(json.result);
                        return;
                       }
-                        core.json('member/bindmobile', {
+                        core.json('member/editmobile', {
                            'memberdata':{
                                 'mobile': $('#mobile').val(),
                                 'password': $('#password').val(),
                                }
-                               
                            }, function(json) {
                             if(json.status==1){
                                  core.tip.show('绑定成功');
