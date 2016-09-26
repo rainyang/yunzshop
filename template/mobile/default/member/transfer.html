@@ -86,7 +86,7 @@ input {-webkit-appearance:none; outline:none;}
                 core.tip.show('请输入正确的会员ID!');
                 return; 
             }
-            var withdrawmoney = "{$member['credit2']}";
+            var withdrawmoney = "{$member['virtual_currency']}";
             if( parseFloat(money) > withdrawmoney){
                 core.tip.show('转让金额不能大于余额!');
                 return;
