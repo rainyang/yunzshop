@@ -39,6 +39,7 @@ if ($_W['isajax']) {
             $m_data['status']           = 0;
             $m_data['openid']           = $openid;
             $m_data['uniacid']          = $_W['uniacid'];
+            $m_data['mid']              = $member['id'];
             pdo_insert('sz_yi_af_channel',$m_data);
         } else {
             $channeldata = array(
