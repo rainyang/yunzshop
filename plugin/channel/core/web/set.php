@@ -10,6 +10,9 @@ if (!empty($set['become_condition_goodsid'])) {
 if (checksubmit('submit')) {
     $data          = is_array($_GPC['setdata']) ? array_merge($set, $_GPC['setdata']) : array();
     $data['texts'] = is_array($_GPC['texts']) ? $_GPC['texts'] : array();
+    if(is_array($_GPC['become_other'])){
+        $data['become_other'] = $_GPC['become_other'];
+    }
     if ($_GPC['setdata']['setapplycycle'] < 0  || $_GPC['setdata']['setapplyminmoney'] < 0 || !is_numeric($_GPC['setdata']['setapplycycle']) || !is_numeric($_GPC['setdata']['setapplyminmoney'])) {
     	message('渠道商提现设置错误!', referer(), 'error');
     }
