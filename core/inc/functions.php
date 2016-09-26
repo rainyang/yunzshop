@@ -918,7 +918,6 @@ if (!function_exists("array_part")) {
         if (!is_array($array)) {
             $array = array();
         }
-        dump($key);
         $res_array = \yii\helpers\ArrayHelper::filter($array,$key);
         return $res_array;
     }

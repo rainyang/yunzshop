@@ -47,8 +47,18 @@ class YZ extends base
         $this->set_WAnd_GPC();
         //require IA_ROOT . '/web/common/bootstrap.sys.inc.php';
         require_once __CORE_PATH__.'/../site.php';
-        $json = $this->getJson('commission/index');
-        dump($json);
+    }
+    protected function getPlugin($p){
+        require_once SZ_YI_INC . "plugin/plugin.php";
+        $plugins = m('plugin')->getAll();
+        $file = SZ_YI_PLUGIN . $p . "/mobile.php";
+        if (!is_file($file)) {
+            message('未找到插件 ' . $plugins[$p] . ' 入口方法');
+        }
+        require_once $file;
+        $pluginClass = ucfirst($p) . "Mobile";
+        $plug = new $pluginClass($p);
+        return $plug;
     }
     protected function getJson($path){
         global $_GPC,$_W;
@@ -57,7 +67,6 @@ class YZ extends base
         $class = new \Sz_yiModuleSite();
         $json = $class->doMobilePlugin();
         return $json;
-        //dump($_GPC);exit;
     }
     /**
      * 返回解密的参数
