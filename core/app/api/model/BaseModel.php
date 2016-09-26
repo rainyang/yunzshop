@@ -1,6 +1,7 @@
 <?php
 namespace app\api\model;
-
-class BaseModel extends \Think\Model{
+use Yii;
+use yii\db\ActiveRecord;
+class BaseModel extends ActiveRecord{
     
 }

@@ -204,8 +204,8 @@ class Display extends YZ
             }
         }
         unset($row);
-        //dump($list[0]);exit;
-        $this->returnSuccess(array('total' => $total, 'list' => $list, 'pagesize' => $psize));
+        dump($list);exit;
+        $this->returnSuccess(array('total' => $total, 'list' => $list));
     }
 
     private function _getCount($openid, $uniacid)

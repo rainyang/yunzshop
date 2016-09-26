@@ -47,7 +47,7 @@ function get_test_para()
     $group_name = array_shift($api_name);
     $method_name = array_shift($api_name);
     if(!isset($api_db[$group_name]['method'][$method_name]['para'])){
-        dump("参数为空");
+        //dump("参数为空");
         return array();
     }
     $para = $api_db[$group_name]['method'][$method_name]['para'];

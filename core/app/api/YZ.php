@@ -65,6 +65,7 @@ class YZ extends base
         $_W['uid'] = $para['uid'];
         $_GPC['__uid'] = $para['uid'];
         $para['uniacid'] = $_GET['uniacid'];
+        $_GPC['directopenid'] = true;
         if (isset($para['uniacid'])) {
             //var_dump( $para['uniacid']);
             $_W['uniacid'] = $_GET['uniacid'];
@@ -121,18 +122,10 @@ class YZ extends base
      * 详细描述（略）
      * @return bool
      */
-    public function isSupplier($uid = false)
+    public function getOpenId()
     {
-        if (!$uid) {
-            $uid = $this->uid;
-        }
-        if (!p('supplier')){
-            return false;
-        }
-        if (!p('supplier')->verifyUserIsSupplier($uid)){
-            return false;
-        }
-        return true;
+        $open_id = m('user')->getPerOpenid();
+        return $open_id;
     }
     /**
      * 载入指定model

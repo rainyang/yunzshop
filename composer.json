@@ -1,0 +1,22 @@
+{
+  "name": "yunzhong",
+  "description": "yunzhong shop",
+  "keywords": ["yii2", "legacy"],
+  "homepage": "http://www.yunzshop.com/",
+  "type": "project",
+  "license": "Copyrighted",
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.4.0",
+    "yiisoft/yii2": "*"
+  },
+  "config": {
+    "process-timeout": 1800
+  },
+  "extra": {
+    "asset-installer-paths": {
+      "npm-asset-library": "vendor/npm",
+      "bower-asset-library": "vendor/bower"
+    }
+  }
+}
