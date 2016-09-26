@@ -108,6 +108,19 @@ if ($operation == 'display') {
     $ds = pdo_fetchall('SELECT id,storename FROM ' . tablename('sz_yi_store') . " WHERE 1 {$condition} order by id asc", $params);
     include $this->template('query_store');
     exit;
+} elseif ($operation == 'getmembers') {
+    global $_W, $_GPC;
+    $keyword            = trim($_GPC['keyword']);
+    $params             = array();
+    $params[':uniacid'] = $_W['uniacid'];
+    $condition = ' and uniacid=:uniacid';
+    if (!empty($keyword)) {
+        $condition .= ' AND `nickname` LIKE :keyword';
+        $params[':keyword'] = "%{$keyword}%";
+    }
+    $members = pdo_fetchall('SELECT id,nickname,avatar FROM ' . tablename('sz_yi_member') . " WHERE 1 {$condition}", $params);
+    include $this->template('getmembers');
+    exit;
 }
 load()->func('tpl');
 include $this->template('store');

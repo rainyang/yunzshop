@@ -157,7 +157,7 @@ function search_member() {
         return;
     }
     $("#module-members").html("正在搜索....")
-    $.get('{php echo $this->createPluginWebUrl('cashier/store/getmembers')}', {
+    $.get('{php echo $this->createPluginWebUrl('verify/store/getmembers')}', {
         keyword: $.trim($('#search-member').val())
     }, function (dat) {
         $('#module-members').html(dat);

@@ -100,16 +100,16 @@ class Core extends WeModuleSite
         }
 
         if (p('coupon')) {
-            $couponbacktime = strtotime(m('cache')->getString('couponbacktime', 'global'));
-            $coupon_set = p('coupon')->getSet();
-            $backruntime = intval($coupon_set['backruntime']);
-            if (empty($backruntime)) {
-                $backruntime = 60;
+            $_var_0 = strtotime(m('cache')->getString('couponbacktime', 'global'));
+            $_var_3 = p('coupon')->getSet();
+            $_var_1 = intval($_var_3['backruntime']);
+            if (empty($_var_1)) {
+                $_var_1 = 60;
             }
-            $backruntime *= 60;
-            $time = time();
-            if ($couponbacktime + $backruntime <= $time) {
-                m('cache')->set('couponbacktime', date('Y-m-d H:i:s', $time), 'global');
+            $_var_1 *= 60;
+            $_var_2 = time();
+            if ($_var_0 + $_var_1 <= $_var_2) {
+                m('cache')->set('couponbacktime', date('Y-m-d H:i:s', $_var_2), 'global');
                 $back_url = $this->createPluginMobileUrl('coupon/back');
                 ihttp_request($back_url, null, null, 1);
             }
@@ -154,12 +154,12 @@ class Core extends WeModuleSite
     public function setFooter()
     {
         global $_W, $_GPC;
-        $p = strtolower(trim($_GPC['p']));
-        $method = strtolower(trim($_GPC['method']));
-        if (strexists($p, 'poster') && $method == 'build') {
+        $_var_11 = strtolower(trim($_GPC['p']));
+        $_var_12 = strtolower(trim($_GPC['method']));
+        if (strexists($_var_11, 'poster') && $_var_12 == 'build') {
             return;
         }
-        if (strexists($p, 'designer') && ($method == 'index' || empty($method)) && $_GPC['preview'] == 1) {
+        if (strexists($_var_11, 'designer') && ($_var_12 == 'index' || empty($_var_12)) && $_GPC['preview'] == 1) {
             return;
         }
         $openid = m('user')->getOpenid();

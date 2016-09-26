@@ -361,7 +361,7 @@
                        <div class="name">
                            <%if g.isnodiscount=='0' && haslevel%><span style='color:red'><%if g.discountway == 1%>[折扣]<%else%>[立减]<%/if%></span><%/if%>
                            <%g.title%></div>     
-                       <div class='option'><%if g.optionid!='0'%>规格:  <%g.optiontitle%><%/if%></div>
+                       <div class='option' data-id="<%g.optionid%>"><%if g.optionid!='0'%>规格:  <%g.optiontitle%><%/if%></div>
                 </div>
             </div>
             <div class="price">
@@ -417,6 +417,7 @@
     </div>
 	<input type="hidden" data-id="<%order.supplier_uid%>" data-name="couponid" value="" />
      <div></div>
+    {if empty($_GPC['ischannelpay']) && $hascouponplugin}
      <div class="addorder_price coupondiv"  data-id="<%order.supplier_uid%>" >
         <div class="price">
             <div class="line selectcoupon" style="line-height:32px;" data-id="<%order.supplier_uid%>">
@@ -426,6 +427,7 @@
             </div>
         </div>
     </div>
+    {/if}
    <%if order.deductyunbi>0%>
      <div class="addorder_price">
         <div class="price" >
@@ -848,7 +850,6 @@ var fromcart = 0;
                   var num = parseInt( $('.shownum').val());
                   $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val(goodsid + "," + optionid +"," + num + '|');
               }
-
               var supplier_uid =  supplierarr[i];
               core.json('order/confirm', {
                   op: 'getdispatchprice',
@@ -860,7 +861,9 @@ var fromcart = 0;
                   dflag: zt,
                   id:"{$_GPC['id']}",
                   cartids:"{$_GPC['cartids']}",
-                  goods: $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val()
+                  optionid:$('.option').data('id'),
+                  goods: $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val(),
+                  total:$('.shownum').val()
               }, function(getjson) {
                   if (getjson.status == 1) {
                       if(zt){
@@ -914,11 +917,14 @@ var fromcart = 0;
                         var num = parseInt( $('.shownum').val());
                         $("input[data-name='goods'][data-id="+supplier_uid+"]").val(goodsid + "," + optionid +"," + num + '|');
                       }
-                     
+
+                  } else {
+                    core.tip.show('抱歉，此门店库存不足！');
+                    return;
                   }
               }, true);
             };
-            
+
         }
         //新增地址
         function addAddress(obj) {
@@ -930,7 +936,7 @@ var fromcart = 0;
                 cascdeInit(result.address.province,result.address.city);
                 {if $trade['shareaddress']=='1' && is_weixin()}
                     var shareAddress = {php echo json_encode($shareAddress)};
-                                WeixinJSBridge.invoke('editAddress',shareAddress,function(res){ 
+                                WeixinJSBridge.invoke('editAddress',shareAddress,function(res){
                                     if(res.err_msg=='edit_address:ok'){
                                         $("#realname").val( res.userName  );
                                         $('#mobile').val( res.telNumber );
@@ -940,7 +946,7 @@ var fromcart = 0;
                     });
                 {/if}
 					$(".chooser").height($(document.body).height());
-                $(".address_main").animate({right: "0px"}, 200); 
+                $(".address_main").animate({right: "0px"}, 200);
                 $('.address_sub2').click(function() {
                     $(".address_main").animate({right: "-100%"}, 200);
                 });
@@ -984,10 +990,10 @@ var fromcart = 0;
             if($('.deductcredit[data-id='+supplier_uid+']').length>0){
                 if($('.deductcredit[data-id='+supplier_uid+']').attr('on')=='1'){
                     deductprice = parseFloat( $('.deductcredit[data-id='+supplier_uid+']').attr('money').replace(',','') )
-                 
+
                            if($('.deductcredit2[data-id='+supplier_uid+']').length>0){
                               var td1 = parseFloat( $('.deductcredit2[data-id='+supplier_uid+']').attr('credit2').replace(',','') );
-                        
+
                               if(totalprice-deductprice>=0){
                                   var td = totalprice - deductprice;
                                   if(td>td1){
@@ -998,30 +1004,30 @@ var fromcart = 0;
                                    $('.deductcredit2[data-id='+supplier_uid+']').attr('on','0').removeClass('on');
                               }
                            }
-                   
+
                 } else{
                      if($('.deductcredit2[data-id='+supplier_uid+']').length>0){
                         var td = parseFloat( $('.deductcredit2[data-id='+supplier_uid+']').attr('credit2').replace(',','') );
                         $('.deductcredit2_money[data-id='+supplier_uid+']').html( td.toFixed(2) );
                      }
-                     
+
                 }
-            }  
+            }
             var deductyunbi = 0;
             if($('.deductyunbi[data-id='+supplier_uid+']').length>0){
                 if($('.deductyunbi[data-id='+supplier_uid+']').attr('on')=='1'){
                     deductyunbi = parseFloat( $('.deductyunbi[data-id='+supplier_uid+']').attr('money').replace(',','') )
-                } 
-            } 
+                }
+            }
             var deductprice2 = 0;
             if($('.deductcredit2[data-id='+supplier_uid+']').length>0){
                      if($('.deductcredit2[data-id='+supplier_uid+']').attr('on')=='1'){
                           deductprice2 = parseFloat( $('.deductcredit2_money[data-id='+supplier_uid+']').html().replace(',','') );
                      }
              }
-            
+
             totalprice = totalprice - deductprice - deductprice2 - deductyunbi;
-            if(totalprice<=0){ 
+            if(totalprice<=0){
                 totalprice = 0;
             }
             $('.goodspricesubtotal[data-id='+supplier_uid+']').html(totalprice.toFixed(2));
@@ -1029,7 +1035,7 @@ var fromcart = 0;
             $(".goodspricesubtotal").each(function(){
                 order_realprice += parseFloat($(this).html().replace(',',''));
             });
-            
+
             $('.totalprice').html(order_realprice.toFixed(2));
             return totalprice;
         }
@@ -1088,7 +1094,7 @@ var fromcart = 0;
       						core.tip.show("请选择配送方式");
       						return;
       					}
-      				} 
+      				}
                 /*if($('#isverify').val()=='true'){
                     if (carrier_realname== '') {
                         core.tip.show("请填写联系人姓名");
@@ -1109,16 +1115,16 @@ var fromcart = 0;
                       return;
                   }
               }
-					  {/if} 
+					  {/if}
 			      var diydata = '';
 			      var gdid = {php echo intval($goods_data_id)};
    	        {if !empty($order_formInfo)}
       				 {template 'diyform/common_js_data'}
       			{/if}
-            
+
 
             order[i] ={
-                'supplier_uid': supplierarr[i], 
+                'supplier_uid': supplierarr[i],
                 'goods': goods,
         				'id':'{$id}',
         				gdid:gdid,
@@ -1131,12 +1137,12 @@ var fromcart = 0;
                 'yunbi':0,
                 'deduct2':0
             };
-            
+
             if( $("#dispatchtype").val()=='0' || $("#dispatchtype").val()=='2'){
-               order[i].addressid = addressid; 
+               order[i].addressid = addressid;
                order[i].dispatchid = dispatchid;
             }
-             
+
             if($('#isverify').val()=='true'){
                 if ($('#dispatchtype').val() != 1) {
                     order[i].carrierid = carrierid_send;
@@ -1151,17 +1157,17 @@ var fromcart = 0;
                     'address': $('#carrier_address').html()
                 };
             }
-            
+
             if($('.deductcredit[data-id='+supplierarr[i]+']').length>0){
                 if($('.deductcredit[data-id='+supplierarr[i]+']').attr('on')=='1'){
-                      order[i].deduct = 1;       
+                      order[i].deduct = 1;
                 }
             }
             if($('.deductyunbi[data-id='+supplierarr[i]+']').length>0){
                 if($('.deductyunbi[data-id='+supplierarr[i]+']').attr('on')=='1'){
-                      order[i].yunbi = 1;       
+                      order[i].yunbi = 1;
                 }
-            }            
+            }    1111
             if($('.deductcredit2[data-id='+supplierarr[i]+']').length>0){
                 if($('.deductcredit2[data-id='+supplierarr[i]+']').attr('on')=='1'){
                       order[i].deduct2 = 1;       
@@ -1177,16 +1183,18 @@ var fromcart = 0;
             core.json('order/confirm', data, function(create_json) {
 
                 if (create_json.status == 1) {
-                  if (create_json.result.ischannelpick) {
-                    location.href = "{php echo $this->createMobileUrl('order/list')}";
-                  } else {
-                    location.href = "{php echo $this->createMobileUrl('order/pay')}&orderid=" + create_json.result.orderid +"&openid={$openid}&ischannelpay=" + create_json.result.ischannelpay;
-                  }
+                    if (create_json.result.ischannelpick) {
+                        location.href = "{php echo $this->createMobileUrl('order/list')}";
+                    } else {
+                        location.href = "{php echo $this->createMobileUrl('order/pay')}&orderid=" + create_json.result.orderid +"&openid={$openid}&ischannelpay=" + create_json.result.ischannelpay;
+                    }
                 } else if (create_json.status == -1) {
-                     $('.paysub').html('确认订单').removeAttr('submitting');
-                     core.tip.show(create_json.result);
-                }
-                else {
+                    $('.paysub').html('确认订单').removeAttr('submitting');
+                    core.tip.show(create_json.result);
+                } else if (create_json.status == -2) {
+                    $('.paysub').html('确认订单').removeAttr('submitting');
+                    core.tip.show(create_json.result);
+                } else {
                     $('.paysub').html('确认订单').removeAttr('submitting');
                     core.tip.show("生成订单失败!")
                 }

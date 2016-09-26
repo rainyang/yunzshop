@@ -189,6 +189,9 @@
     {if !$member['isbindmobile'] && is_weixin()}
     <a href="{php echo $this->createMobileUrl('member/bindmobile')}"><div class="list1" style="margin:0px;"><i class="fa fa-mobile"></i>绑定手机<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
     {/if}
+    {if $member['isbindmobile']}
+    <a href="{php echo $this->createMobileUrl('member/editmobile')}"><div class="list1" style="margin:0px;"><i class="fa fa-mobile"></i>修改绑定手机<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    {/if}
     {if p('supplier')}
         {if $shopset['switch'] == 1 && empty($shopset['af_result']) && empty($issupplier)}
             <a href="{php echo $this->createPluginMobileUrl('supplier/af_supplier')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-file" ></i>供应商申请<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
@@ -240,8 +243,10 @@
      <%if shopset.isranking == 1%>
     <a href="{php echo $this->createPluginMobileUrl('ranking/ranking')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-ranking"></i><%shopset.rankingname%><i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a> 
     <%/if%>
-    {if $allset['verify']['centershow'] == 1}
-    <a href="{php echo $this->createPluginMobileUrl('verify/ranking')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-ranking"></i>门店销售排行榜<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+    {if $allset['verify']}
+        {if $allset['verify']['centershow'] == 1}
+        <a href="{php echo $this->createPluginMobileUrl('verify/ranking')}"><div class="list1" style="margin:0px; border-bottom:0px;"><i class="iconfont icon-ranking"></i>门店销售排行榜<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>
+        {/if}
     {/if}
     {if isset($set['trade']) && ($set['trade']['withdraw']==1 || empty($set['trade']['closerecharge']))}
     <a href="{php echo $this->createMobileUrl('member/log')}"><div class="list1" style="margin:0px;"><i class="iconfont icon-cny"></i>{if isset($set['trade']) && $set['trade']['withdraw']==1}{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}明细{else}充值记录{/if}

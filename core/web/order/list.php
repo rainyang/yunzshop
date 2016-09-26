@@ -1833,20 +1833,12 @@ function order_list_confirmsend($order) {
         "uniacid" => $_W["uniacid"]
     ));
     if (!empty($order["refundid"])) {
-        $refund = pdo_fetch("select * from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
+        $zym_var_35 = pdo_fetchcolumn("select status from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
             ":id" => $order["refundid"]
         ));
-        if (!empty($refund)) {
-            pdo_update("sz_yi_order_refund", array(
-                "status" => 2
-            ) , array(
-                "id" => $order["refundid"]
-            ));
-           /*pdo_update("sz_yi_order", array(
-               "refundid" => 0
-           ) , array(
-               "id" => $order["id"]
-           ));*/
+        if ($zym_var_35 == 0) {
+            message("此订单有退款申请未处理，请处理完成之后进行确认发货操作！");
+ 
         }
         
     }
@@ -1876,20 +1868,12 @@ function order_list_confirmsend1($order) {
         "uniacid" => $_W["uniacid"]
     ));
     if (!empty($order["refundid"])) {
-        $refund = pdo_fetch("select * from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
+        $zym_var_35 = pdo_fetchcolumn("select status from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
             ":id" => $order["refundid"]
         ));
-        if (!empty($refund)) {
-            pdo_update("sz_yi_order_refund", array(
-                "status" => - 1
-            ) , array(
-                "id" => $order["refundid"]
-            ));
-            /*pdo_update("sz_yi_order", array(
-                "refundid" => 0
-            ) , array(
-                "id" => $order["id"]
-            ));*/
+        if ($zym_var_35 == 0) {
+            message("此订单有退款申请未处理，请处理完成之后进行确认发货操作！");
+ 
         }
         
     }
@@ -1928,23 +1912,6 @@ function order_list_cancelsend($order) {
         "uniacid" => $_W["uniacid"]
     ));
 
-    if (!empty($order["refundid"])) {
-        $refund = pdo_fetch("select * from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
-            ":id" => $order["refundid"]
-        ));
-        if (!empty($refund)) {
-            pdo_update("sz_yi_order_refund", array(
-                "status" => 0
-            ) , array(
-                "id" => $order["refundid"]
-            ));
-//            pdo_update("sz_yi_order", array(
-//                "refundid" => 0
-//            ) , array(
-//                "id" => $order["id"]
-//            ));
-        }
-    }
     plog("order.op.sencancel", "订单取消发货 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
     message("取消发货操作成功！", order_list_backurl() , "success");
 

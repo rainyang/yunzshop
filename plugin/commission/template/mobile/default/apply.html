@@ -73,7 +73,7 @@ input {-webkit-appearance:none; outline:none;}
                    }
                    var type= $(this).data('type');
                        
-                   core.tip.confirm('确认要申请{php echo $this->set['texts']['widthdraw']}? {php echo $this->set['texts']['withdraw']}申请通过之后给您打款后会通知您到的微信.',function(){
+                   core.tip.confirm('确认要申请{php echo $this->set['texts']['widthdraw']}? {php echo $this->set['texts']['withdraw']}申请通过之后给您打款后会通知到您的微信.',function(){
                        
                        $('.balance_sub').attr('saving',1).html('正在处理中...');
                         core.pjson('commission/apply',{type:type},function(pjson){
