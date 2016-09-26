@@ -20,6 +20,7 @@ if ($operation == "display") {
     //判断该帐号的权限
     if(p('supplier')){
         $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+        $suppliers = p('supplier')->AllSuppliers();
     }
     //END
     $pindex = max(1, intval($_GPC["page"]));
@@ -33,6 +34,10 @@ if ($operation == "display") {
     if (empty($starttime) || empty($endtime)) {
         $starttime = strtotime("-1 month");
         $endtime = time();
+    }
+    if (!empty($_GPC['supplier_uid'])) {
+        $condition.= " AND o.supplier_uid = :supplier_uid ";
+        $paras[":supplier_uid"] = $_GPC['supplier_uid'];
     }
     if (!empty($_GPC["time"])) {
         $starttime = strtotime($_GPC["time"]["start"]);
