@@ -31,8 +31,9 @@ class Sz_DYi_User
         $lifeTime = 24 * 3600 * 3;
         session_set_cookie_params($lifeTime);
         @session_start();
-        $cookieid = "__cookie_sz_yi_openid_{$_W['uniacid']}";
+        $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
         $openid   = base64_decode($_COOKIE[$cookieid]);
+
         if (!empty($openid)) {
             return $openid;
         }
@@ -202,7 +203,6 @@ class Sz_DYi_User
                 'city' => '九龙'
             );
         } else {
-            load()->model('mc');
             if (empty($_GPC['directopenid'])) {
                 $userinfo = mc_oauth_userinfo();
             } else {

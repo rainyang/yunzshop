@@ -12,6 +12,7 @@ namespace api;
 use Think;
 define('IN_SYS', true);
 define("__CORE_PATH__", __DIR__);
+define("__VENDOR_PATH__", __DIR__."/../vendor");
 define("__BASE_ROOT__", __DIR__ . "/../../..");
 //var_dump(get_defined_constants());
 require_once __BASE_ROOT__ . '/framework/bootstrap.inc.php';
@@ -20,6 +21,7 @@ require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/functions.php';
 require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/plugin/plugin_model.php';
 require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/aes.php';
 require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/core.php';
+
 $_GET['api'] = ltrim($_GET['api'], '/');
 class AutoLoader
 {
@@ -155,5 +157,11 @@ require_once __CORE_PATH__ . '/inc/framework/framework.php';
 /*$info = D('User')->find();
 echo D('User')->_sql();
 dump($info);exit;*/
+define('YII_DEBUG',true);
+
+require_once __VENDOR_PATH__."/autoload.php";
+require(__VENDOR_PATH__ . '/yiisoft/yii2/Yii.php');
+$config = require(__CORE_PATH__ . '/config/yii.php');
+new \yii\web\Application($config);
 new Run();
 

@@ -1,0 +1,2112 @@
+2016-09-24 20:06:38 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'api\Yii' not found' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php:165
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-24 20:06:38 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'order/Display'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=order/Display'
+    'QUERY_STRING' => 'uniacid=2&api=order/Display'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=order/Display'
+    'REMOTE_PORT' => '64691'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474718798.34
+    'REQUEST_TIME' => 1474718798
+    'argv' => [
+        0 => 'uniacid=2&api=order/Display'
+    ]
+    'argc' => 1
+]
+2016-09-24 20:07:23 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'api\Yii' not found' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php:165
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-24 20:07:23 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'order/Display'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=order/Display'
+    'QUERY_STRING' => 'uniacid=2&api=order/Display'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=order/Display'
+    'REMOTE_PORT' => '64698'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474718843.37
+    'REQUEST_TIME' => 1474718843
+    'argv' => [
+        0 => 'uniacid=2&api=order/Display'
+    ]
+    'argc' => 1
+]
+2016-09-25 13:17:13 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'api\Yii' not found' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php:165
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-25 13:17:13 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'order/Display'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=order/Display'
+    'QUERY_STRING' => 'uniacid=2&api=order/Display'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=order/Display'
+    'REMOTE_PORT' => '65247'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474780633.21
+    'REQUEST_TIME' => 1474780633
+    'argv' => [
+        0 => 'uniacid=2&api=order/Display'
+    ]
+    'argc' => 1
+]
+2016-09-25 13:19:24 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'api\Yii' not found' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php:165
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-25 13:19:24 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'order/Display'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=order/Display'
+    'QUERY_STRING' => 'uniacid=2&api=order/Display'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=order/Display'
+    'REMOTE_PORT' => '65344'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474780763.67
+    'REQUEST_TIME' => 1474780763
+    'argv' => [
+        0 => 'uniacid=2&api=order/Display'
+    ]
+    'argc' => 1
+]
+2016-09-25 13:37:57 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'api\Yii' not found' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php:166
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-25 13:37:57 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'order/Display'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=order/Display'
+    'QUERY_STRING' => 'uniacid=2&api=order/Display'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=order/Display'
+    'REMOTE_PORT' => '49323'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474781877.55
+    'REQUEST_TIME' => 1474781877
+    'argv' => [
+        0 => 'uniacid=2&api=order/Display'
+    ]
+    'argc' => 1
+]
+2016-09-25 13:38:14 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'api\Yii' not found' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php:166
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-25 13:38:14 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'order/Display'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=order/Display'
+    'QUERY_STRING' => 'uniacid=2&api=order/Display'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=order/Display'
+    'REMOTE_PORT' => '49325'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474781894.15
+    'REQUEST_TIME' => 1474781894
+    'argv' => [
+        0 => 'uniacid=2&api=order/Display'
+    ]
+    'argc' => 1
+]
+2016-09-25 13:38:26 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'api\Yii' not found' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php:166
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-25 13:38:26 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'order/Display'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=order/Display'
+    'QUERY_STRING' => 'uniacid=2&api=order/Display'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=order/Display'
+    'REMOTE_PORT' => '49329'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474781905.73
+    'REQUEST_TIME' => 1474781905
+    'argv' => [
+        0 => 'uniacid=2&api=order/Display'
+    ]
+    'argc' => 1
+]
+2016-09-26 10:09:07 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'app\api\controller\commission\Index' not found' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php:133
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-26 10:09:07 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '52697'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474855747.39
+    'REQUEST_TIME' => 1474855747
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 10:14:52 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Call to a member function getLevel() on a non-object' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php:13
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-26 10:14:52 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'R9aa' => 1474855203
+        'xWBG' => 1474855206
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '52737'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474856091.72
+    'REQUEST_TIME' => 1474856091
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 10:15:11 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Call to a member function getLevel() on a non-object' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php:14
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-26 10:15:10 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'R9aa' => 1474855203
+        'xWBG' => 1474855206
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '52742'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474856110.72
+    'REQUEST_TIME' => 1474856110
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 14:03:55 [127.0.0.1][-][-][error][yii\base\InvalidConfigException] exception 'yii\base\InvalidConfigException' with message 'Unknown component ID: db' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/di/ServiceLocator.php:136
+Stack trace:
+#0 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/base/Application.php(491): yii\di\ServiceLocator->get('db')
+#1 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveRecord.php(133): yii\base\Application->getDb()
+#2 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveQuery.php(315): yii\db\ActiveRecord::getDb()
+#3 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(386): yii\db\ActiveQuery->createCommand(NULL)
+#4 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveQuery.php(334): yii\db\Query->queryScalar('COUNT(*)', NULL)
+#5 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(300): yii\db\ActiveQuery->queryScalar('COUNT(*)', NULL)
+#6 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php(12): yii\db\Query->count()
+#7 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(133): app\api\controller\commission\Index->__construct()
+#8 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(124): api\Run->run()
+#9 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(165): api\Run->__construct()
+#10 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/shenyang...')
+#11 /Users/shenyang/wwwroots/yunzong/test/app_api.php(20): require('/Users/shenyang...')
+#12 {main}
+2016-09-26 14:03:55 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'V9zg' => 1474861622
+        'l2B1' => 1474861626
+        'Jh27' => 1474861640
+        'u68x' => 1474861643
+        'j2mU' => 1474861849
+        'C5Cf' => 1474861852
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '51024'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474869834.43
+    'REQUEST_TIME' => 1474869834
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 14:09:00 [127.0.0.1][-][-][error][yii\base\InvalidConfigException] exception 'yii\base\InvalidConfigException' with message 'Unknown component ID: db' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/di/ServiceLocator.php:136
+Stack trace:
+#0 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/base/Application.php(491): yii\di\ServiceLocator->get('db')
+#1 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveRecord.php(133): yii\base\Application->getDb()
+#2 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveQuery.php(315): yii\db\ActiveRecord::getDb()
+#3 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(386): yii\db\ActiveQuery->createCommand(NULL)
+#4 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveQuery.php(334): yii\db\Query->queryScalar('COUNT(*)', NULL)
+#5 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(300): yii\db\ActiveQuery->queryScalar('COUNT(*)', NULL)
+#6 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php(12): yii\db\Query->count()
+#7 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(133): app\api\controller\commission\Index->__construct()
+#8 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(124): api\Run->run()
+#9 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#10 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/shenyang...')
+#11 /Users/shenyang/wwwroots/yunzong/test/app_api.php(20): require('/Users/shenyang...')
+#12 {main}
+2016-09-26 14:09:00 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'V9zg' => 1474861622
+        'l2B1' => 1474861626
+        'Jh27' => 1474861640
+        'u68x' => 1474861643
+        'j2mU' => 1474861849
+        'C5Cf' => 1474861852
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '51166'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474870140.07
+    'REQUEST_TIME' => 1474870140
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 14:09:20 [127.0.0.1][-][-][error][yii\base\InvalidConfigException] exception 'yii\base\InvalidConfigException' with message 'Unknown component ID: db' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/di/ServiceLocator.php:136
+Stack trace:
+#0 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/base/Application.php(491): yii\di\ServiceLocator->get('db')
+#1 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveRecord.php(133): yii\base\Application->getDb()
+#2 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveQuery.php(315): yii\db\ActiveRecord::getDb()
+#3 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(386): yii\db\ActiveQuery->createCommand(NULL)
+#4 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveQuery.php(334): yii\db\Query->queryScalar('COUNT(*)', NULL)
+#5 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(300): yii\db\ActiveQuery->queryScalar('COUNT(*)', NULL)
+#6 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php(12): yii\db\Query->count()
+#7 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(133): app\api\controller\commission\Index->__construct()
+#8 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(124): api\Run->run()
+#9 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#10 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/shenyang...')
+#11 /Users/shenyang/wwwroots/yunzong/test/app_api.php(20): require('/Users/shenyang...')
+#12 {main}
+2016-09-26 14:09:20 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'V9zg' => 1474861622
+        'l2B1' => 1474861626
+        'Jh27' => 1474861640
+        'u68x' => 1474861643
+        'j2mU' => 1474861849
+        'C5Cf' => 1474861852
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '51172'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474870159.93
+    'REQUEST_TIME' => 1474870159
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 14:18:00 [127.0.0.1][-][-][error][yii\db\Exception] exception 'PDOException' with message 'SQLSTATE[42000] [1049] Unknown database 'sy.yunzshop.comport=3306'' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Connection.php:602
+Stack trace:
+#0 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Connection.php(602): PDO->__construct('mysql:host=119....', 'root', 'hsTv1nuWRsM', NULL)
+#1 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Connection.php(544): yii\db\Connection->createPdoInstance()
+#2 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Connection.php(863): yii\db\Connection->open()
+#3 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Connection.php(850): yii\db\Connection->getMasterPdo()
+#4 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(219): yii\db\Connection->getSlavePdo()
+#5 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(894): yii\db\Command->prepare('<span class="ke...')
+#6 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(388): yii\db\Command->queryInternal('<span class="st...', '<span class="nu...')
+#7 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(393): yii\db\Command->queryScalar()
+#8 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveQuery.php(334): yii\db\Query->queryScalar('<span class="st...', '<span class="ke...')
+#9 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(300): yii\db\ActiveQuery->queryScalar('<span class="st...', '<span class="ke...')
+#10 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php(12): yii\db\Query->count()
+#11 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(133): app\api\controller\commission\Index->__construct()
+#12 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(124): api\Run->run()
+#13 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#14 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/shenyang...')
+#15 /Users/shenyang/wwwroots/yunzong/test/app_api.php(20): require('/Users/shenyang...')
+#16 {main}
+
+Next exception 'yii\db\Exception' with message 'SQLSTATE[42000] [1049] Unknown database 'sy.yunzshop.comport=3306'' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Connection.php:549
+Stack trace:
+#0 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Connection.php(863): yii\db\Connection->open()
+#1 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Connection.php(850): yii\db\Connection->getMasterPdo()
+#2 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(219): yii\db\Connection->getSlavePdo()
+#3 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(894): yii\db\Command->prepare('<span class="ke...')
+#4 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(388): yii\db\Command->queryInternal('<span class="st...', '<span class="nu...')
+#5 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(393): yii\db\Command->queryScalar()
+#6 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveQuery.php(334): yii\db\Query->queryScalar('<span class="st...', '<span class="ke...')
+#7 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(300): yii\db\ActiveQuery->queryScalar('<span class="st...', '<span class="ke...')
+#8 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php(12): yii\db\Query->count()
+#9 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(133): app\api\controller\commission\Index->__construct()
+#10 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(124): api\Run->run()
+#11 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#12 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/shenyang...')
+#13 /Users/shenyang/wwwroots/yunzong/test/app_api.php(20): require('/Users/shenyang...')
+#14 {main}
+Additional Information:
+
+2016-09-26 14:18:00 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'V9zg' => 1474861622
+        'l2B1' => 1474861626
+        'Jh27' => 1474861640
+        'u68x' => 1474861643
+        'j2mU' => 1474861849
+        'C5Cf' => 1474861852
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '51276'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474870680.27
+    'REQUEST_TIME' => 1474870680
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 14:18:21 [127.0.0.1][-][-][error][yii\db\Exception] exception 'PDOException' with message 'SQLSTATE[42S02]: Base table or view not found: 1146 Table 'sy.yunzshop.com.member' doesn't exist' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php:900
+Stack trace:
+#0 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(900): PDOStatement->execute()
+#1 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(388): yii\db\Command->queryInternal('<span class="st...', '<span class="nu...')
+#2 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(393): yii\db\Command->queryScalar()
+#3 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveQuery.php(334): yii\db\Query->queryScalar('<span class="st...', '<span class="ke...')
+#4 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(300): yii\db\ActiveQuery->queryScalar('<span class="st...', '<span class="ke...')
+#5 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php(12): yii\db\Query->count()
+#6 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(133): app\api\controller\commission\Index->__construct()
+#7 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(124): api\Run->run()
+#8 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#9 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/shenyang...')
+#10 /Users/shenyang/wwwroots/yunzong/test/app_api.php(20): require('/Users/shenyang...')
+#11 {main}
+
+Next exception 'yii\db\Exception' with message 'SQLSTATE[42S02]: Base table or view not found: 1146 Table 'sy.yunzshop.com.member' doesn't exist
+The SQL being executed was: SELECT COUNT(*) FROM `member`' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Schema.php:631
+Stack trace:
+#0 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(915): yii\db\Schema->convertException(Object(PDOException), 'SELECT COUNT(*)...')
+#1 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(388): yii\db\Command->queryInternal('<span class="st...', '<span class="nu...')
+#2 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(393): yii\db\Command->queryScalar()
+#3 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveQuery.php(334): yii\db\Query->queryScalar('<span class="st...', '<span class="ke...')
+#4 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(300): yii\db\ActiveQuery->queryScalar('<span class="st...', '<span class="ke...')
+#5 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php(12): yii\db\Query->count()
+#6 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(133): app\api\controller\commission\Index->__construct()
+#7 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(124): api\Run->run()
+#8 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#9 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/shenyang...')
+#10 /Users/shenyang/wwwroots/yunzong/test/app_api.php(20): require('/Users/shenyang...')
+#11 {main}
+Additional Information:
+Array
+(
+    [0] => 42S02
+    [1] => 1146
+    [2] => Table 'sy.yunzshop.com.member' doesn't exist
+)
+
+2016-09-26 14:18:21 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'V9zg' => 1474861622
+        'l2B1' => 1474861626
+        'Jh27' => 1474861640
+        'u68x' => 1474861643
+        'j2mU' => 1474861849
+        'C5Cf' => 1474861852
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '51282'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474870700.81
+    'REQUEST_TIME' => 1474870700
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 14:20:47 [127.0.0.1][-][-][error][yii\db\Exception] exception 'PDOException' with message 'SQLSTATE[42S02]: Base table or view not found: 1146 Table 'sy.yunzshop.com.ims_member' doesn't exist' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php:900
+Stack trace:
+#0 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(900): PDOStatement->execute()
+#1 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(388): yii\db\Command->queryInternal('<span class="st...', '<span class="nu...')
+#2 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(393): yii\db\Command->queryScalar()
+#3 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveQuery.php(334): yii\db\Query->queryScalar('<span class="st...', '<span class="ke...')
+#4 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(300): yii\db\ActiveQuery->queryScalar('<span class="st...', '<span class="ke...')
+#5 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php(12): yii\db\Query->count()
+#6 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(133): app\api\controller\commission\Index->__construct()
+#7 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(124): api\Run->run()
+#8 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#9 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/shenyang...')
+#10 /Users/shenyang/wwwroots/yunzong/test/app_api.php(20): require('/Users/shenyang...')
+#11 {main}
+
+Next exception 'yii\db\Exception' with message 'SQLSTATE[42S02]: Base table or view not found: 1146 Table 'sy.yunzshop.com.ims_member' doesn't exist
+The SQL being executed was: SELECT COUNT(*) FROM `ims_member`' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Schema.php:631
+Stack trace:
+#0 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(915): yii\db\Schema->convertException(Object(PDOException), 'SELECT COUNT(*)...')
+#1 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(388): yii\db\Command->queryInternal('<span class="st...', '<span class="nu...')
+#2 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(393): yii\db\Command->queryScalar()
+#3 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveQuery.php(334): yii\db\Query->queryScalar('<span class="st...', '<span class="ke...')
+#4 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(300): yii\db\ActiveQuery->queryScalar('<span class="st...', '<span class="ke...')
+#5 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php(12): yii\db\Query->count()
+#6 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(133): app\api\controller\commission\Index->__construct()
+#7 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(124): api\Run->run()
+#8 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#9 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/shenyang...')
+#10 /Users/shenyang/wwwroots/yunzong/test/app_api.php(20): require('/Users/shenyang...')
+#11 {main}
+Additional Information:
+Array
+(
+    [0] => 42S02
+    [1] => 1146
+    [2] => Table 'sy.yunzshop.com.ims_member' doesn't exist
+)
+
+2016-09-26 14:20:47 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'V9zg' => 1474861622
+        'l2B1' => 1474861626
+        'Jh27' => 1474861640
+        'u68x' => 1474861643
+        'j2mU' => 1474861849
+        'C5Cf' => 1474861852
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '51522'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474870847.05
+    'REQUEST_TIME' => 1474870847
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 14:25:54 [127.0.0.1][-][-][error][yii\db\Exception] exception 'PDOException' with message 'SQLSTATE[42S02]: Base table or view not found: 1146 Table 'sy.yunzshop.com.sz_yi_member' doesn't exist' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php:900
+Stack trace:
+#0 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(900): PDOStatement->execute()
+#1 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(388): yii\db\Command->queryInternal('<span class="st...', '<span class="nu...')
+#2 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(393): yii\db\Command->queryScalar()
+#3 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveQuery.php(334): yii\db\Query->queryScalar('<span class="st...', '<span class="ke...')
+#4 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(300): yii\db\ActiveQuery->queryScalar('<span class="st...', '<span class="ke...')
+#5 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php(12): yii\db\Query->count()
+#6 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(133): app\api\controller\commission\Index->__construct()
+#7 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(124): api\Run->run()
+#8 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#9 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/shenyang...')
+#10 /Users/shenyang/wwwroots/yunzong/test/app_api.php(20): require('/Users/shenyang...')
+#11 {main}
+
+Next exception 'yii\db\Exception' with message 'SQLSTATE[42S02]: Base table or view not found: 1146 Table 'sy.yunzshop.com.sz_yi_member' doesn't exist
+The SQL being executed was: SELECT COUNT(*) FROM `sz_yi_member`' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Schema.php:631
+Stack trace:
+#0 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(915): yii\db\Schema->convertException(Object(PDOException), 'SELECT COUNT(*)...')
+#1 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Command.php(388): yii\db\Command->queryInternal('<span class="st...', '<span class="nu...')
+#2 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(393): yii\db\Command->queryScalar()
+#3 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/ActiveQuery.php(334): yii\db\Query->queryScalar('<span class="st...', '<span class="ke...')
+#4 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/db/Query.php(300): yii\db\ActiveQuery->queryScalar('<span class="st...', '<span class="ke...')
+#5 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php(12): yii\db\Query->count()
+#6 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(133): app\api\controller\commission\Index->__construct()
+#7 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(124): api\Run->run()
+#8 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#9 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/shenyang...')
+#10 /Users/shenyang/wwwroots/yunzong/test/app_api.php(20): require('/Users/shenyang...')
+#11 {main}
+Additional Information:
+Array
+(
+    [0] => 42S02
+    [1] => 1146
+    [2] => Table 'sy.yunzshop.com.sz_yi_member' doesn't exist
+)
+
+2016-09-26 14:25:54 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'V9zg' => 1474861622
+        'l2B1' => 1474861626
+        'Jh27' => 1474861640
+        'u68x' => 1474861643
+        'j2mU' => 1474861849
+        'C5Cf' => 1474861852
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '51658'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474871154.23
+    'REQUEST_TIME' => 1474871154
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 14:29:54 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Access to undeclared static property: app\api\model\Member::$tablePrefix' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/model/Member.php:10
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-26 14:29:54 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'V9zg' => 1474861622
+        'l2B1' => 1474861626
+        'Jh27' => 1474861640
+        'u68x' => 1474861643
+        'j2mU' => 1474861849
+        'C5Cf' => 1474861852
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '51726'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474871394.42
+    'REQUEST_TIME' => 1474871394
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 15:32:31 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Access to undeclared static property: app\api\model\Member::$tablePrefix' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/model/Member.php:9
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-26 15:32:31 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'V9zg' => 1474861622
+        'l2B1' => 1474861626
+        'Jh27' => 1474861640
+        'u68x' => 1474861643
+        'j2mU' => 1474861849
+        'C5Cf' => 1474861852
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '52320'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474875151.32
+    'REQUEST_TIME' => 1474875151
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 17:02:28 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Unsupported operand types' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php:166
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-26 17:02:26 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'TvS1' => 1474876482
+        'o5iJ' => 1474876485
+        'bVm0' => 1474876700
+        'hjkK' => 1474876703
+        'duj0' => 1474876744
+        'NHK9' => 1474876747
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '54967'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474880546.53
+    'REQUEST_TIME' => 1474880546
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 17:05:41 [127.0.0.1][-][-][error][yii\base\ErrorException:2] exception 'yii\base\ErrorException' with message 'Invalid argument supplied for foreach()' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/helpers/BaseArrayHelper.php:816
+Stack trace:
+#0 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/helpers/BaseArrayHelper.php(816): yii\base\ErrorHandler->handleError(2, 'Invalid argumen...', '/Users/shenyang...', 816, Array)
+#1 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php(166): yii\helpers\BaseArrayHelper::filter(Array, 'commission_tota...')
+#2 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(134): app\api\controller\commission\Index->index()
+#3 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(124): api\Run->run()
+#4 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#5 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/shenyang...')
+#6 /Users/shenyang/wwwroots/yunzong/test/app_api.php(20): require('/Users/shenyang...')
+#7 {main}
+2016-09-26 17:05:40 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'TvS1' => 1474876482
+        'o5iJ' => 1474876485
+        'bVm0' => 1474876700
+        'hjkK' => 1474876703
+        'duj0' => 1474876744
+        'NHK9' => 1474876747
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '55017'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474880740.37
+    'REQUEST_TIME' => 1474880740
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 17:22:18 [127.0.0.1][-][-][error][yii\base\ErrorException:2] exception 'yii\base\ErrorException' with message 'Illegal offset type in isset or empty' in /Users/shenyang/wwwroots/yunzong/framework/function/global.func.php:967
+Stack trace:
+#0 /Users/shenyang/wwwroots/yunzong/framework/function/global.func.php(967): yii\base\ErrorHandler->handleError(2, 'Illegal offset ...', '/Users/shenyang...', 967, Array)
+#1 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php(167): array_part(Array, 'commission_tota...')
+#2 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(134): app\api\controller\commission\Index->index()
+#3 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(124): api\Run->run()
+#4 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#5 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/shenyang...')
+#6 /Users/shenyang/wwwroots/yunzong/test/app_api.php(20): require('/Users/shenyang...')
+#7 {main}
+2016-09-26 17:22:17 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'TvS1' => 1474876482
+        'o5iJ' => 1474876485
+        'bVm0' => 1474876700
+        'hjkK' => 1474876703
+        'duj0' => 1474876744
+        'NHK9' => 1474876747
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '55094'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474881736.97
+    'REQUEST_TIME' => 1474881736
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 17:24:40 [127.0.0.1][-][-][error][yii\base\ErrorException:2] exception 'yii\base\ErrorException' with message 'Illegal offset type in isset or empty' in /Users/shenyang/wwwroots/yunzong/framework/function/global.func.php:967
+Stack trace:
+#0 /Users/shenyang/wwwroots/yunzong/framework/function/global.func.php(967): yii\base\ErrorHandler->handleError(2, 'Illegal offset ...', '/Users/shenyang...', 967, Array)
+#1 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php(167): array_part(Array, 'commission_tota...')
+#2 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(134): app\api\controller\commission\Index->index()
+#3 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(124): api\Run->run()
+#4 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#5 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/shenyang...')
+#6 /Users/shenyang/wwwroots/yunzong/test/app_api.php(20): require('/Users/shenyang...')
+#7 {main}
+2016-09-26 17:24:36 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'TvS1' => 1474876482
+        'o5iJ' => 1474876485
+        'bVm0' => 1474876700
+        'hjkK' => 1474876703
+        'duj0' => 1474876744
+        'NHK9' => 1474876747
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '55103'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474881875.34
+    'REQUEST_TIME' => 1474881875
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 17:26:00 [127.0.0.1][-][-][error][yii\base\ErrorException:2] exception 'yii\base\ErrorException' with message 'explode() expects parameter 2 to be string, array given' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/helpers/BaseArrayHelper.php:817
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleError(2, 'explode() expec...', '/Users/shenyang...', 817, Array)
+#1 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/helpers/BaseArrayHelper.php(817): explode('.', Array)
+#2 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/inc/functions.php(917): yii\helpers\BaseArrayHelper::filter(Array, Array)
+#3 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php(167): array_part(Array, 'commission_tota...')
+#4 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(134): app\api\controller\commission\Index->index()
+#5 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(124): api\Run->run()
+#6 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#7 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/shenyang...')
+#8 /Users/shenyang/wwwroots/yunzong/test/app_api.php(20): require('/Users/shenyang...')
+#9 {main}
+2016-09-26 17:25:59 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'TvS1' => 1474876482
+        'o5iJ' => 1474876485
+        'bVm0' => 1474876700
+        'hjkK' => 1474876703
+        'duj0' => 1474876744
+        'NHK9' => 1474876747
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '55111'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474881959.27
+    'REQUEST_TIME' => 1474881959
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]
+2016-09-26 17:27:12 [127.0.0.1][-][-][error][yii\base\ErrorException:2] exception 'yii\base\ErrorException' with message 'explode() expects parameter 2 to be string, array given' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/helpers/BaseArrayHelper.php:817
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleError(2, 'explode() expec...', '/Users/shenyang...', 817, Array)
+#1 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/vendor/yiisoft/yii2/helpers/BaseArrayHelper.php(817): explode('.', Array)
+#2 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/inc/functions.php(918): yii\helpers\BaseArrayHelper::filter(Array, Array)
+#3 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/controller/commission/Index.php(167): array_part(Array, 'commission_tota...')
+#4 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(134): app\api\controller\commission\Index->index()
+#5 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(124): api\Run->run()
+#6 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#7 /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/shenyang...')
+#8 /Users/shenyang/wwwroots/yunzong/test/app_api.php(20): require('/Users/shenyang...')
+#9 {main}
+2016-09-26 17:27:11 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'commission/Index'
+]
+
+$_COOKIE = [
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'member_mobile' => '18545571024'
+    'ext_type' => '1'
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '5cf58b71012713745d9b974969d0fce4'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'TvS1' => 1474876482
+        'o5iJ' => 1474876485
+        'bVm0' => 1474876700
+        'hjkK' => 1474876703
+        'duj0' => 1474876744
+        'NHK9' => 1474876747
+    ]
+]
+
+$_SERVER = [
+    'PHP_FCGI_CHILDREN' => '4'
+    'PWD' => '/Applications/MAMP/fcgi-bin'
+    'SHLVL' => '0'
+    'PHP_FCGI_MAX_REQUESTS' => '200'
+    '__CF_USER_TEXT_ENCODING' => '0x1F5:0x19:0x34'
+    'ORIG_SCRIPT_NAME' => '/fcgi-bin/php5.5.10.fcgi'
+    'ORIG_PATH_TRANSLATED' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'ORIG_PATH_INFO' => '/test/app_api.php'
+    'ORIG_SCRIPT_FILENAME' => '/Applications/MAMP/fcgi-bin/php5.5.10.fcgi'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=commission/Index'
+    'QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REQUEST_METHOD' => 'GET'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'REDIRECT_URL' => '/test/app_api.php'
+    'REDIRECT_QUERY_STRING' => 'uniacid=2&api=commission/Index'
+    'REMOTE_PORT' => '55114'
+    'SCRIPT_FILENAME' => '/Users/shenyang/wwwroots/yunzong/test/app_api.php'
+    'SERVER_ADMIN' => 'you@example.com'
+    'DOCUMENT_ROOT' => '/Users/shenyang/wwwroots/yunzong'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_NAME' => 'www.yunzong.com'
+    'SERVER_SOFTWARE' => 'Apache'
+    'SERVER_SIGNATURE' => ''
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_COOKIE' => '__cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; member_mobile=18545571024; ext_type=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=5cf58b71012713745d9b974969d0fce4; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDU4NjExMyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.12; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_HOST' => 'www.yunzong.com'
+    'REDIRECT_STATUS' => '200'
+    'REDIRECT_HANDLER' => 'php-fastcgi'
+    'FCGI_ROLE' => 'RESPONDER'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1474882031.02
+    'REQUEST_TIME' => 1474882031
+    'argv' => [
+        0 => 'uniacid=2&api=commission/Index'
+    ]
+    'argc' => 1
+]

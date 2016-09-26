@@ -1,6 +1,7 @@
 <?php
 namespace app\api\controller\member;
 @session_start();
+use app\api\model\Member;
 use app\api\YZ;
 use app\api\Request;
 
@@ -8,13 +9,12 @@ class Login extends YZ
 {
     public function index()
     {
-
         $validate_messages = $this->_validatePara();
         if (!empty($validate_messages)) {
             $this->returnError($validate_messages);
         }
         $para = $this->getPara();
-        $info = D('Member')->field('id,openid,nickname,mobile')->where($para)->find();
+        $info = $this->_getUserInfo($para);
         //dump(D('Member')->_sql());
         if (empty($info)) {
             $this->returnError('用户名或密码错误');
@@ -22,6 +22,11 @@ class Login extends YZ
         $this->_setCookie($info['openid'],$info['mobile']);
 
         $this->returnSuccess($info);
+    }
+    private function _getUserInfo($para){
+        $info = D('Member')->field('id,openid,nickname,mobile,avatar,isagent')->where($para)->find();
+        $info['commission_level'] = "一星董事";
+        return $info;
     }
     private function _validatePara(){
         $validate_fields = array(

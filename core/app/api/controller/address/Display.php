@@ -9,7 +9,8 @@ class Display extends YZ
     {
         $this->_validatePara();
         $openid    = m('user')->isLogin();
-        $uniacid = Request::input("uniacid");
+        $uniacid = Request::input("uniacid");$request = \Yii::$app->request;
+        $get = $request->get();
         $address_id = Request::input("address_id");
         $total = $this->_getCount($openid,$uniacid);
         $list = $this->_getList($openid,$uniacid,$address_id);
