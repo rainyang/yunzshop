@@ -56,7 +56,25 @@
                         {else}
                         <div class='form-control-static'>{if $set['centershow']==1}是{else}否{/if}</div>
                         {/if}
-                        <span class='help-block'>会员中心是否显示门店销售排行榜！</span>
+                        <span class='help-block'>决定会员中心是否显示门店销售排行榜！</span>
+                    </div>
+
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">商城下单是否走门店库存</label>
+                    <div class="col-sm-9 col-xs-12">
+                        {ife 'verify.store' $item}
+                        <label class='radio-inline'>
+                            <input type='radio' name='data[store_total]' value='1' {if $set['store_total']==1}checked{/if} /> 是
+                        </label>
+                        <label class='radio-inline'>
+                            <input type='radio' name='data[store_total]' value='0' {if $set['store_total']==0}checked{/if} /> 否
+                        </label>
+                        {else}
+                        <div class='form-control-static'>{if $set['store_total']==1}是{else}否{/if}</div>
+                        {/if}
+                        <span class='help-block'>决定商城下单时走门店库存还是平台库存！</span>
                     </div>
 
                 </div>
