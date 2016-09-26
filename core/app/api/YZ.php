@@ -46,6 +46,10 @@ class YZ extends base
         parent::__construct();
         $this->set_WAnd_GPC();
         //require IA_ROOT . '/web/common/bootstrap.sys.inc.php';
+        require_once __CORE_PATH__.'/../site.php';
+    }
+    protected function getJson(){
+        
     }
     /**
      * 返回解密的参数

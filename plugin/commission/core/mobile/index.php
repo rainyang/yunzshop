@@ -1,6 +1,6 @@
 <?php
 global $_W, $_GPC;
-1
+
 $openid = m('user')->getOpenid();
 $pluginbonus = p("bonus");
 $bonus = 0;
