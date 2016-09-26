@@ -115,7 +115,8 @@ if ($op == 'display') {
 
         if (!empty($_GPC['openchannel'])) {
           $openchannel = $_GPC['openchannel'];
-          pdo_update('sz_yi_chooseagent',array(
+          if (p('channel')) {
+              pdo_update('sz_yi_chooseagent',array(
                   'pagename'  => $_GPC['pagename'],  
                   'isopen'    => $_GPC['openclose'],
                   'isopenchannel' => $openchannel,
@@ -132,12 +133,32 @@ if ($op == 'display') {
                   'storeid'=>intval($_GPC['storeid'])
                   
                   ),array('id'=>$_GPC['pageid'],'uniacid'=>$_W['uniacid']));
+          } else {
+              pdo_update('sz_yi_chooseagent',array(
+                  'pagename'  => $_GPC['pagename'],  
+                  'isopen'    => $_GPC['openclose'],
+                  'uid'       => '',
+                  'savetime'  => $date,
+                  'agentname' => '',
+                  'pcate'     => '',
+                  'ccate'     => '',
+                  'tcate'     => '',
+                  'color'     => $color,
+                  'detail'    =>$detail,
+                  'allgoods'  =>$allgoods,
+                  'isstore'=>intval($_GPC['isstore']),
+                  'storeid'=>intval($_GPC['storeid'])
+                  
+                  ),array('id'=>$_GPC['pageid'],'uniacid'=>$_W['uniacid']));
+          }
+          
           message('快速选购页修改成功!',$this->createPluginWebUrl('choose'), 'success');
         }
 
         if($_GPC['openclose']==1){
             $agentname=pdo_fetch('select username from ' .tablename('sz_yi_perm_user'). ' where uid=:uid and uniacid=:uniacid',array(':uid'=>$_GPC['uid'],':uniacid'=>$_W['uniacid']));
-            pdo_update('sz_yi_chooseagent',array(
+            if (p('channel')) {
+              pdo_update('sz_yi_chooseagent',array(
                   'pagename'=>$_GPC['pagename'],  
                   'isopen'=>$_GPC['openclose'],
                   'isopenchannel' => $openchannel,
@@ -155,51 +176,114 @@ if ($op == 'display') {
               
 
                   ),array('id'=>$_GPC['pageid'],'uniacid'=>$_W['uniacid']));
+            } else {
+              pdo_update('sz_yi_chooseagent',array(
+                  'pagename'=>$_GPC['pagename'],  
+                  'isopen'=>$_GPC['openclose'],
+                  'uid'=>$_GPC['uid'],
+                  'savetime'=>$date,
+                  'agentname'=>$agentname['username'],
+                  'pcate'=>'',
+                  'ccate'=>'',
+                  'tcate'=>'',
+                  'color'=>$color ,
+                  'detail'=>$detail,
+                  'allgoods'=>$allgoods ,
+                  'isstore'=>intval($_GPC['isstore']),
+                  'storeid'=>intval($_GPC['storeid'])
+              
+
+                  ),array('id'=>$_GPC['pageid'],'uniacid'=>$_W['uniacid']));
+            }
+            
 
                  message('快速选购页修改成功!',$this->createPluginWebUrl('choose'), 'success');
            
         }else{
-          if($pcate!=''){
-            pdo_update('sz_yi_chooseagent',array(
-                  'pagename'=>$_GPC['pagename'],  
-                  'isopen'=>0,
-                  'isopenchannel' => $openchannel,
-                  'uid'=>'',
-                  'savetime'=>$date,
-                  'agentname'=>'未设置',
-                  'pcate'=>$pcate,
-                  'ccate'=>$ccate,
-                  'tcate'=>$tcate,
-                  'color'=>$color,
-                  'detail'=>$detail,
-                  'allgoods'=>$allgoods,
-                  'isstore'=>intval($_GPC['isstore']),
-                  'storeid'=>intval($_GPC['storeid'])
-  
+          if (p('channel')) {
+            if($pcate!=''){
+              pdo_update('sz_yi_chooseagent',array(
+                    'pagename'=>$_GPC['pagename'],  
+                    'isopen'=>0,
+                    'isopenchannel' => $openchannel,
+                    'uid'=>'',
+                    'savetime'=>$date,
+                    'agentname'=>'未设置',
+                    'pcate'=>$pcate,
+                    'ccate'=>$ccate,
+                    'tcate'=>$tcate,
+                    'color'=>$color,
+                    'detail'=>$detail,
+                    'allgoods'=>$allgoods,
+                    'isstore'=>intval($_GPC['isstore']),
+                    'storeid'=>intval($_GPC['storeid'])
+    
 
-                  ),array('id'=>$_GPC['pageid'],'uniacid'=>$_W['uniacid']));
-                  message('快速选购页修改成功!', $this->createPluginWebUrl('choose'), 'success');
-          }else{
-            pdo_update('sz_yi_chooseagent',array(
-            'pagename'=>$_GPC['pagename'],  
-                  'isopen'=>0,
-                  'isopenchannel' => $openchannel,
-                  'uid'=>'',
-                  'savetime'=>$date,
-                  'agentname'=>'未设置',
-                  'pcate'=>'',
-                  'ccate'=>'',
-                  'tcate'=>'',
-                  'color'=>$color,
-                  'detail'=>$detail,
-                  'allgoods'=>$allgoods,
-                  'isstore'=>intval($_GPC['isstore']),
-                  'storeid'=>intval($_GPC['storeid'])
-  
+                    ),array('id'=>$_GPC['pageid'],'uniacid'=>$_W['uniacid']));
+                    message('快速选购页修改成功!', $this->createPluginWebUrl('choose'), 'success');
+            }else{
+              pdo_update('sz_yi_chooseagent',array(
+              'pagename'=>$_GPC['pagename'],  
+                    'isopen'=>0,
+                    'isopenchannel' => $openchannel,
+                    'uid'=>'',
+                    'savetime'=>$date,
+                    'agentname'=>'未设置',
+                    'pcate'=>'',
+                    'ccate'=>'',
+                    'tcate'=>'',
+                    'color'=>$color,
+                    'detail'=>$detail,
+                    'allgoods'=>$allgoods,
+                    'isstore'=>intval($_GPC['isstore']),
+                    'storeid'=>intval($_GPC['storeid'])
+    
 
-                  ),array('id'=>$_GPC['pageid'],'uniacid'=>$_W['uniacid']));
-                  message('快速选购页修改成功!', $this->createPluginWebUrl('choose'), 'success');
-          }  
+                    ),array('id'=>$_GPC['pageid'],'uniacid'=>$_W['uniacid']));
+                    message('快速选购页修改成功!', $this->createPluginWebUrl('choose'), 'success');
+            }  
+          } else {
+            if($pcate!=''){
+              pdo_update('sz_yi_chooseagent',array(
+                    'pagename'=>$_GPC['pagename'],  
+                    'isopen'=>0,
+                    'uid'=>'',
+                    'savetime'=>$date,
+                    'agentname'=>'未设置',
+                    'pcate'=>$pcate,
+                    'ccate'=>$ccate,
+                    'tcate'=>$tcate,
+                    'color'=>$color,
+                    'detail'=>$detail,
+                    'allgoods'=>$allgoods,
+                    'isstore'=>intval($_GPC['isstore']),
+                    'storeid'=>intval($_GPC['storeid'])
+    
+
+                    ),array('id'=>$_GPC['pageid'],'uniacid'=>$_W['uniacid']));
+                    message('快速选购页修改成功!', $this->createPluginWebUrl('choose'), 'success');
+            }else{
+              pdo_update('sz_yi_chooseagent',array(
+              'pagename'=>$_GPC['pagename'],  
+                    'isopen'=>0,
+                    'uid'=>'',
+                    'savetime'=>$date,
+                    'agentname'=>'未设置',
+                    'pcate'=>'',
+                    'ccate'=>'',
+                    'tcate'=>'',
+                    'color'=>$color,
+                    'detail'=>$detail,
+                    'allgoods'=>$allgoods,
+                    'isstore'=>intval($_GPC['isstore']),
+                    'storeid'=>intval($_GPC['storeid'])
+    
+
+                    ),array('id'=>$_GPC['pageid'],'uniacid'=>$_W['uniacid']));
+                    message('快速选购页修改成功!', $this->createPluginWebUrl('choose'), 'success');
+            }  
+          }
+          
         }
       }     
     }    

@@ -31,6 +31,13 @@ if(!pdo_fieldexists('sz_yi_goods', 'balance_with_store')) {
 if(!pdo_fieldexists('sz_yi_goods', 'dispatchsend')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD    `dispatchsend` tinyint(1) DEFAULT '0';");
 }
+if(!pdo_fieldexists('sz_yi_chooseagent', 'isstore')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_chooseagent')." ADD    `isstore` tinyint(1) DEFAULT '0';");
+}
+if(!pdo_fieldexists('sz_yi_chooseagent', 'storeid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_chooseagent')." ADD    `storeid` int(11) DEFAULT '0';");
+}
+
 $sql = "
 CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_store_goods') . " (
  `id` int(11) NOT NULL AUTO_INCREMENT,
