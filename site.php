@@ -104,7 +104,6 @@ class Sz_yiModuleSite extends Core
         $plugins = m('plugin')->getAll();
         $p = $_GPC['p'];
         $file = SZ_YI_PLUGIN . $p . "/mobile.php";
-
         if (!is_file($file)) {
             message('未找到插件 ' . $plugins[$p] . ' 入口方法');
         }
@@ -113,14 +112,12 @@ class Sz_yiModuleSite extends Core
         $plug = new $pluginClass($p);
         $method = strtolower($_GPC['method']);
         if (empty($method)) {
-            $plug->index();
-            exit;
+            return $plug->index();
+        }elseif(method_exists($plug, $method)){
+            return $plug->$method();
+        }else{
+            trigger_error('Plugin Mobile Method ' . $method . ' not Found!');
         }
-        if (method_exists($plug, $method)) {
-            $plug->$method();
-            exit;
-        }
-        trigger_error('Plugin Mobile Method ' . $method . ' not Found!');
     }
 
     //购物车入口

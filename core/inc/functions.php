@@ -432,6 +432,10 @@ function show_json($status = 1, $return = null)
     if ($return) {
         $ret['result'] = $return;
     }
+    if(is_app_api()){
+        //dump($ret);exit;
+        return $ret;
+    }
     die(json_encode($ret));
 }
 

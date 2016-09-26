@@ -47,9 +47,17 @@ class YZ extends base
         $this->set_WAnd_GPC();
         //require IA_ROOT . '/web/common/bootstrap.sys.inc.php';
         require_once __CORE_PATH__.'/../site.php';
+        $json = $this->getJson('commission/index');
+        dump($json);
     }
-    protected function getJson(){
-        
+    protected function getJson($path){
+        global $_GPC,$_W;
+        $_W['isajax'] = true;
+        list($_GPC['p'],$_GPC['method']) = explode('/',$path);
+        $class = new \Sz_yiModuleSite();
+        $json = $class->doMobilePlugin();
+        return $json;
+        //dump($_GPC);exit;
     }
     /**
      * 返回解密的参数
