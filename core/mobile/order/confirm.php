@@ -10,6 +10,13 @@ $shopset   = m('common')->getSysset('shop');
 $uniacid   = $_W['uniacid'];
 $fromcart  = 0;
 $trade     = m('common')->getSysset('trade');
+$verifyset  = m('common')->getSetData();
+$allset = iunserializer($verifyset['plugins']);
+$store_total = false;
+if ($allset['verify']['store_total'] == 1) {
+    $store_total = true;
+}
+
 if (!empty($trade['shareaddress'])  && is_weixin()) {
     if (!$_W['isajax']) {
         $shareAddress = m('common')->shareAddress();
@@ -1345,26 +1352,28 @@ if ($_W['isajax']) {
             }
 
         }
-        if (!empty($goodid)) {
+        if ($store_total) {
+            if (!empty($goodid)) {
 
-            $optionid = intval($_GPC['optionid']);
-            $total = $_GPC['total'];
-            $storegoodtotal = pdo_fetchcolumn(" SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:goodsid and optionid=:optionid and storeid=:storeid and uniacid=:uniacid", array(':goodsid' => $goodsid, ':optionid' => $optionid, ':storeid' => $storeid, ':uniacid' => $_W['uniacid']));
-            if ($total > $storegoodtotal && !empty($storeid)) {
-                show_json(-1);
-            }
-        } else if (!empty($cartids)) {
-
-            $carts = pdo_fetchall(" SELECT * FROM ".tablename('sz_yi_member_cart'). " WHERE id in (".$cartids.") and uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
-            foreach ($carts as $cart) {
-
-                $total = pdo_fetchcolumn(" SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:id and uniacid=:uniacid and storeid=:storeid and optionid=:optionid", array(':id' => $cart['goodsid'], ':uniacid' => $_W['uniacid'], ':storeid' => $storeid, ':optionid' => $cart['optionid']));
-                if ($total > $cart['total'] && !empty($storeid)) {
+                $optionid = intval($_GPC['optionid']);
+                $total = $_GPC['total'];
+                $storegoodtotal = pdo_fetchcolumn(" SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:goodsid and optionid=:optionid and storeid=:storeid and uniacid=:uniacid", array(':goodsid' => $goodsid, ':optionid' => $optionid, ':storeid' => $storeid, ':uniacid' => $_W['uniacid']));
+                if ($total > $storegoodtotal && !empty($storeid)) {
                     show_json(-1);
                 }
-            }
+            } else if (!empty($cartids)) {
 
+                $carts = pdo_fetchall(" SELECT * FROM ".tablename('sz_yi_member_cart'). " WHERE id in (".$cartids.") and uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
+                foreach ($carts as $cart) {
+
+                    $total = pdo_fetchcolumn(" SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:id and uniacid=:uniacid and storeid=:storeid and optionid=:optionid", array(':id' => $cart['goodsid'], ':uniacid' => $_W['uniacid'], ':storeid' => $storeid, ':optionid' => $cart['optionid']));
+                    if ($total > $cart['total'] && !empty($storeid)) {
+                        show_json(-1);
+                    }
+                }
+            }
         }
+
         show_json(1, array(
             "price" => $dispatch_price,
             "hascoupon" => $hascoupon,
@@ -1449,10 +1458,13 @@ if ($_W['isajax']) {
                 if ($goodstotal < 1) {
                     $goodstotal = 1;
                 }
-                $storegoodstotal = pdo_fetchcolumn("SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:goodsid and uniacid=:uniacid and storeid=:storeid and optionid=:optionid", array(':goodsid' => $goodsid, ':uniacid' => $uniacid, ':storeid' => $carrierid, ':optionid' => $optionid));
-                if ($goodstotal > $storegoodstotal && !empty($carrierid)) {
-                    show_json(-2,'抱歉，此门店库存不足！');
+                if ($store_total) {
+                    $storegoodstotal = pdo_fetchcolumn("SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:goodsid and uniacid=:uniacid and storeid=:storeid and optionid=:optionid", array(':goodsid' => $goodsid, ':uniacid' => $uniacid, ':storeid' => $carrierid, ':optionid' => $optionid));
+                    if ($goodstotal > $storegoodstotal && !empty($carrierid)) {
+                        show_json(-2,'抱歉，此门店库存不足！');
+                    }
                 }
+
                 if (empty($goodsid)) {
                     show_json(0, '参数错误，请刷新重试');
                 }
