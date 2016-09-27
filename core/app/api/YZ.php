@@ -48,25 +48,26 @@ class YZ extends base
         //require IA_ROOT . '/web/common/bootstrap.sys.inc.php';
         require_once __CORE_PATH__.'/../site.php';
     }
-    protected function getPlugin($p){
-        require_once SZ_YI_INC . "plugin/plugin.php";
-        $plugins = m('plugin')->getAll();
-        $file = SZ_YI_PLUGIN . $p . "/mobile.php";
-        if (!is_file($file)) {
-            message('未找到插件 ' . $plugins[$p] . ' 入口方法');
-        }
-        require_once $file;
-        $pluginClass = ucfirst($p) . "Mobile";
-        $plug = new $pluginClass($p);
-        return $plug;
+    protected function callMobile($path)
+    {
+        global $_W,$_GPC;
+        $_W['isajax'] = true;
+        list($folder_name,$file_name,$action_name)=explode('/',$path);
+        $class = new \Sz_yiModuleSite();
+        $method = 'doMobile'.ucfirst($folder_name);
+        $_GPC['p'] = $file_name;
+        $_GPC['op'] = $action_name;
+        $result = $class->$method();
+        return $result;
     }
-    protected function getJson($path){
+    protected function callPlugin($path){
         global $_GPC,$_W;
         $_W['isajax'] = true;
-        list($_GPC['p'],$_GPC['method']) = explode('/',$path);
+        list($_GPC['p'],$_GPC['method'],$_GPC['op']) = explode('/',$path);
+dump($_GPC);
         $class = new \Sz_yiModuleSite();
-        $json = $class->doMobilePlugin();
-        return $json;
+        $result = $class->doMobilePlugin();
+        return $result;
     }
     /**
      * 返回解密的参数

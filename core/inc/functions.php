@@ -424,7 +424,7 @@ function show_message($msg = '', $url = '', $type = 'success')
     die($scripts);
 }
 
-function show_json($status = 1, $return = null)
+function show_json($status = 1, $return = null, $variable = array())
 {
     $ret = array(
         'status' => $status
@@ -432,9 +432,12 @@ function show_json($status = 1, $return = null)
     if ($return) {
         $ret['result'] = $return;
     }
-    if(is_app_api()){
+    if (is_app_api()) {
         //dump($ret);exit;
-        return $ret;
+        return array(
+            'variable' => $variable,
+            'json' => $return,
+        );
     }
     die(json_encode($ret));
 }
@@ -851,7 +854,7 @@ function sent_message($customer_id_array, $message)
 
 function is_app()
 {
-    if(defined('__MODULE_NAME__') && __MODULE_NAME__ == 'app/api'){
+    if (defined('__MODULE_NAME__') && __MODULE_NAME__ == 'app/api') {
         return true;
     }
     $agent = strtolower($_SERVER['HTTP_USER_AGENT']);
@@ -918,7 +921,7 @@ if (!function_exists("array_part")) {
         if (!is_array($array)) {
             $array = array();
         }
-        $res_array = \yii\helpers\ArrayHelper::filter($array,$key);
+        $res_array = \yii\helpers\ArrayHelper::filter($array, $key);
         return $res_array;
     }
 }
