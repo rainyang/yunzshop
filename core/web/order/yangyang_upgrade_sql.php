@@ -121,6 +121,18 @@ if (p('supplier')) {
             if (!empty($all_apply)) {
                 foreach ($all_apply as $a) {
                     if (!empty($a['apply_ordergoods_ids'])) {
+                        $order_goods = pdo_fetchall("SELECT uniacid, goods_op_cost_price, orderid, total FROM " . tablename('sz_yi_order_goods') . " WHERE uniacid=:uniacid AND id in ({$a['apply_ordergoods_ids']})", array(':uniacid' => $a['uniacid']));
+                        if (!empty($order_goods)) {
+                            foreach ($order_goods as $og) {
+                                $money = $og['goods_op_cost_price']*$og['total'];
+                                pdo_insert('sz_yi_supplier_order', array(
+                                    'uniacid'       => $og['uniacid'],
+                                    'orderid'       => $og['orderid'],
+                                    'money'         => $money,
+                                    'isopenbonus'   => '3'
+                                ));
+                            }
+                        }
                         pdo_query("UPDATE " . tablename('sz_yi_order_goods') . " SET supplier_apply_status=0 WHERE id in ({$a['apply_ordergoods_ids']}) AND uniacid=:uniacid ", array(':uniacid' => $a['uniacid']));
                         pdo_delete('sz_yi_supplier_apply', array('id' => $a['id']));
                     }
