@@ -2,7 +2,6 @@
 defined('IN_IA') or exit('Access Denied');
 global $_W;
 $master_db_config = $_W['config']['db']['master'];
-$master_db_config = $_W['config']['db']['master'];
 return array(
     "DB_TYPE" =>"mysqli",
      "DB_HOST" => $master_db_config['host'],

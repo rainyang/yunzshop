@@ -3,42 +3,37 @@ namespace app\api\controller\address;
 @session_start();
 use app\api\YZ;
 use app\api\Request;
-
 class Display extends YZ
 {
     public function index()
     {
         $this->_validatePara();
-        $openid = m('user')->isLogin();
-        //var_dump($openid);exit;
-        $uniacid = Request::input("uniacid");
+        $openid    = m('user')->isLogin();
+        $uniacid = Request::input("uniacid");$request = \Yii::$app->request;
+        $get = $request->get();
         $address_id = Request::input("address_id");
-        $total = $this->_getCount($openid, $uniacid);
-        $list = $this->_getList($openid, $uniacid, $address_id);
+        $total = $this->_getCount($openid,$uniacid);
+        $list = $this->_getList($openid,$uniacid,$address_id);
         $this->returnSuccess(array('total' => $total, 'list' => $list));
     }
-
-    private function _getCount($openid, $uniacid)
-    {
+    private function _getCount($openid,$uniacid){
         $where = array(
-            'openid' => $openid,
-            'uniacid' => $uniacid,
+            'openid'=>$openid,
+            'uniacid'=>$uniacid,
         );
         $where[] = 'deleted=0';
         $total = D("MemberAddress")->where($where)->count();
         //echo D("MemberFavorite")->_sql();
         return $total;
     }
-
-    private function _getList($openid, $uniacid, $address_id)
-    {
+    private function _getList($openid,$uniacid,$address_id){
         $fields = "*";
         $where = array(
-            'openid' => $openid,
-            'uniacid' => $uniacid,
+            'openid'=>$openid,
+            'uniacid'=>$uniacid,
         );
-        if (!empty($address_id)) {
-            $where['a.id'] = array('lt', $address_id);
+        if(!empty($address_id)){
+            $where['a.id'] = array('lt',$address_id);
         }
         $where[] = 'deleted=0';
         //var_dump($where);
@@ -47,14 +42,12 @@ class Display extends YZ
         //echo D("MemberFavorite")->_sql();
         return $list;
     }
-
-    private function _validatePara()
-    {
+    private function _validatePara(){
         $validate_fields = array(
             'uniacid' => array(
                 'type' => 'required',
                 'describe' => '',
-            ), 'address_id' => array(
+            ),'address_id' => array(
                 'type' => 'required',
                 'describe' => '手机号',
                 'required' => false

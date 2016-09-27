@@ -27,7 +27,7 @@ if ($_W['isajax']) {
 		$param_title = $shopset['name'] . "订单: " . $order['ordersn_general'];
 		$alipay = array('success' => false);
 		$params = array();
-		$params['tid'] = $log['tid'];
+		$params['tid'] = $order['ordersn_general'];
 		$params['user'] = $openid;
 		$params['fee'] = $order_price;
 		$params['title'] = $param_title;

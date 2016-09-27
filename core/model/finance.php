@@ -331,7 +331,6 @@ class Sz_DYi_Finance {
             'remark'       => empty($remark) ? '佣金提现红包' : $remark,
             'nonce_str'    => $this->createNonceStr()
         );
-
         $stringA           = $this->formatQuery($post, false);
         $stringSignTemp    = $stringA . '&key=' . $wechat['apikey'];
         $post['sign']      = strtoupper(md5($stringSignTemp));
@@ -378,6 +377,7 @@ class Sz_DYi_Finance {
                 $xpath = new DOMXPath($dom);
                 $code = $xpath->evaluate('string(//xml/return_code)');
                 $ret = $xpath->evaluate('string(//xml/result_code)');
+
                 if (strtolower($code) == 'success' && strtolower($ret) == 'success') {
                     //发送成功
                     return true;
