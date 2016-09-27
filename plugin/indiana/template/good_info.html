@@ -22,15 +22,15 @@
             <div class="form-group" >
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">几元专区</label>
                 <div class="col-sm-8 col-xs-12">
-                    <input type="text" name="data[init_money]" class="form-control" value="{$good['init_money']}"  />
-                    <span class='help-block'></span>
+                    <input type="text" name="data[init_money]" id="init_money" class="form-control" value="{$good['init_money']}"  />
+                    <span class='help-block'>{if $_GPC['id']}(本期结束，下一期专区价格修改为当前设置*(元)专区) {/if}</span>
                 </div>
             </div>
 
             <div class="form-group" >
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">夺宝标题</label>
                 <div class="col-sm-8 col-xs-12">
-                    <input type="text" name="data[title]" class="form-control" value="{$good['title']}"  />
+                    <input type="text" name="data[title]" id="title" class="form-control" value="{$good['title']}"  />
                     <span class='help-block'></span>
                 </div>
             </div>
@@ -46,15 +46,15 @@
             <div class="form-group" >
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">夺宝价格</label>
                 <div class="col-sm-8 col-xs-12">
-                    <input type="text" name="data[price]" class="form-control" value="{$good['price']}"  />
+                    <input type="text" name="data[price]" {if $_GPC['id']}readonly{/if} id="price" class="form-control" value="{$good['price']}"  />
                     <span class='help-block'></span>
                 </div>
             </div>
 
             <div class="form-group" >
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">夺宝期数</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品总期数</label>
                 <div class="col-sm-8 col-xs-12">
-                    <input type="text" name="data[periods]" class="form-control" value="{$good['periods']}"  />
+                    <input type="text" name="data[max_periods]" class="form-control" value="{$good['max_periods']}"  />
                     <span class='help-block'></span>
                 </div>
             </div>
@@ -97,3 +97,27 @@
 </div>
 </div>
 {template 'web/_footer'}
+<script type="text/javascript">
+    function formcheck () {
+        if ($("#init_money").isEmpty()) {
+            $('#myTab a[href="#tab_basic"]').tab('show');
+            Tip.focus("#init_money", "请输入几元专区!");
+            return false;
+        }
+        if ($("#title").isEmpty()) {
+            $('#myTab a[href="#tab_basic"]').tab('show');
+            Tip.focus("#title", "请输入夺宝标题!");
+            return false;
+        }
+        if ($("#price").isEmpty()) {
+            $('#myTab a[href="#tab_basic"]').tab('show');
+            Tip.focus("#price", "请输入夺宝总价!");
+            return false;
+        }
+        if ($("#price").val() % $("#init_money").val() > 0) {
+            $('#myTab a[href="#tab_basic"]').tab('show');
+            Tip.focus("#init_money", "商品价格必须是"+$("#init_money").val()+"的整数倍!");
+            return false;
+        }
+    }
+</script>

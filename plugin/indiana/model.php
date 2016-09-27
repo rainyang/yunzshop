@@ -15,7 +15,196 @@ if (!class_exists('IndianaModel')) {
 		public function setPeriod($id)
 		{
 			global $_W, $_GPC;
-			echo "<pre>";print_r($id);exit;
+			$indiana_good = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_indiana_goods') . " WHERE uniacid = '" .$_W['uniacid'] . "' AND id = '".$id."'");
+
+			if($indiana_good['max_periods'] <= $indiana_good['periods']){
+				//判断是否期数已满
+				pdo_update('sz_yi_indiana_goods',array('status'=>0),array('id'=>$id));
+			}
+
+			//判断是否已经有正在进行的期数
+			$sql_check = "select id,status from".tablename('sz_yi_indiana_period')." where uniacid=:uniacid and goodsid=:goodsid and ig_id=:igid and status=:status";
+			$data_check = array(
+				':uniacid'=>$_W['uniacid'],
+				':goodsid'=>$indiana_good['good_id'],
+				':igid'=>$indiana_good['id'],
+				':status'=>1
+			);
+			$result_check = pdo_fetchall($sql_check,$data_check);
+			if(!empty($result_check)){
+				return 'false';
+			}
+
+			$code_num = $indiana_good['price'] / $indiana_good['init_money']; //夺宝码数量
+			$allcodes = $this -> create_codes_group($code_num);
+			//添加本期
+			$new_period = array(
+				'uniacid' 		=> $_W['uniacid'],
+				'ig_id'			=> $indiana_good['id'],
+				'goodsid' 		=> $indiana_good['good_id'],
+				'period' 		=> intval($indiana_good['periods']) + 1,
+				'shengyu_codes' => $code_num,
+				'zong_codes' 	=> $code_num,
+				'allcodes' 		=> $allcodes,
+				'period_num' 	=> date('Ymd').substr(time(), -5).substr(microtime(), 2, 5).sprintf('%02d', rand(0, 99)),
+				'canyurenshu'	=> 0,
+				'status' 		=> 1,
+				'create_time' 	=> time()
+			);
+			$result_insert = pdo_insert('sz_yi_indiana_period',$new_period);
+			pdo_update("sz_yi_indiana_goods",array('periods'=>$new_period['period']),array('uniacid'=>$_W['uniacid'],'id'=>$id));
+			$this -> create_code($new_period['period_num']);
 		}
+
+		/**********计算新的压缩字段********/
+		public function create_codes_group($codes_number = 0){
+			global $_W;
+			$codes_ervery = 5;		//设置每组大小
+			$codes_group = intval($codes_number/$codes_ervery);		//夺宝码组数
+			$codes_group_last = intval($codes_number%$codes_ervery);	//夺宝码最后一组个数
+			if($codes_group_last != 0){
+				$codes_group++;		//有余数组数加1
+			}
+
+			$codes_group_new = array();
+			for($i = 0;$i < $codes_group;$i++){
+				if($codes_group_last != 0 && $i == $codes_group-1){
+					$codes_group_new[$i] = $i*$codes_ervery.':'.($i*$codes_ervery+$codes_group_last); //最后一个区段
+				}else{
+					$codes_group_new[$i] = $i*$codes_ervery.':'.($i+1)*$codes_ervery;		//创建区段
+				}
+			}
+			shuffle($codes_group_new);			//打乱数组
+			$allcodes = serialize($codes_group_new);		//压缩数组
+			return $allcodes;
+		}
+
+		/***************计算夺宝码****************/
+		public function create_code($period_number = '',$flag = 0){
+			global $_W;
+			$sql_period = "select id,period_num,codes,shengyu_codes,allcodes,canyurenshu from ".tablename('sz_yi_indiana_period')." where uniacid = :uniacid and period_num = :period_number";
+			$data_period = array(
+					':uniacid' => $_W['uniacid'],
+					':period_number' => $period_number
+				);
+			$result_period = pdo_fetch($sql_period,$data_period);
+			$group_number  = 40;		//	取得区间组数
+			$codes_ervery = 5;		//夺宝码区间个数
+			$allcodes = unserialize($result_period['allcodes']);		//解压所有码段
+			$needcodes = array();			//设置夺宝码数组
+			if($result_period['shengyu_codes'] < ($group_number * $codes_ervery)){
+				$need_groupnum = sizeof($allcodes);
+				$left_codes = '';
+			}else{
+				$need_groupnum = $group_number;
+				$left_codes = array_slice($allcodes,$need_groupnum,sizeof($allcodes)-$need_groupnum);
+				if(!is_array($left_codes)){
+					if($flag == 1){
+						return 'false';
+					}else{
+						self::create_code($period_number,1);
+					}						//检测剩余码
+				}
+				$left_codes = serialize($left_codes);		//压缩剩余夺宝码段
+			}
+			//剩余码小于单次取得数
+			for($i = 0;$i < $need_groupnum ; $i++){
+				$codes_ervery_group = array_slice($allcodes,$i,1);		//从第0个取值取一个
+				$arr = explode(':', $codes_ervery_group[0]);		//分隔字符串
+				for($j = intval($arr[0]) ; $j < intval($arr[1]) ; $j++){
+					//合成夺宝码
+					$num = $j;		//次序
+					$needcodes[$num] = 1000001+$num;	//夺宝码合成
+				}
+			}
+			shuffle($needcodes);			//打乱夺宝码
+			if(!is_array($needcodes)){		//检测生成码
+				if($flag == 1){
+					return 'false';
+				}else{
+					self::create_code($period_number,1);
+				}					
+			}
+			$needcodes = serialize($needcodes);
+			pdo_update('sz_yi_indiana_period',array('codes'=>$needcodes,'allcodes'=>$left_codes),array('uniacid'=>$_W['uniacid'],'period_num'=>$period_number));
+		}
+
+		/***********开奖计算*********/
+		public function createtime_winer($periodid = '',$period_number = ''){
+			global $_W;
+			$src = 'http://f.apiplus.cn/cqssc.json';
+			$src .= '?_='.time();
+			$json = file_get_contents(urldecode($src));
+			$json = json_decode($json);
+			$periods = $json->data[0]->expect;
+			$s_record = pdo_fetchall("SELECT openid,create_time,microtime FROM " . tablename('sz_yi_indiana_record') . " WHERE uniacid = '{$_W['uniacid']}' ORDER BY `id` DESC LIMIT 0 , 20");//获取商品所有交易记录
+			foreach ($s_record as $key => $value) {
+				$nickname = pdo_fetchcolumn("select nickname from".tablename('sz_yi_member')."where uniacid = '{$_W['uniacid']}' and openid = '{$value['openid']}'");
+				$s_record[$key]['nickname'] =  base64_encode($nickname);
+			}
+			$numa = floatval(0);
+			$arecord = array();
+			foreach ($s_record as $key => $value) {
+				$arecord[$key]['nickname'] = $value['nickname'];
+				$numa += intval(date('His', $value['create_time']).$value['microtime']);
+			}
+			$numb = str_replace(array(","),"",$json ->data[0]->opencode);
+			$period = pdo_fetch("SELECT id,goodsid,zong_codes FROM " . tablename('sz_yi_indiana_period') . " WHERE id ='{$periodid}'");//获取商品详情
+			$endtime = time();				//揭晓时间
+			$wincode = fmod(($numa + $numb),$period['zong_codes']) + 1000001;
+			$comdata = array(
+				'uniacid' => $_W['uniacid'], 
+				'numa' => $numa, 
+				'numb' => $numb, 
+				'periods' => $periods, 
+				'pid' => $period['id'], 
+				'wincode' => intval($wincode), 
+				'arecord' => serialize($arecord), 
+				'createtime' => TIMESTAMP
+			);
+			pdo_insert('sz_yi_indiana_comcode',$comdata);				//写入中奖计算记录
+			pdo_update('sz_yi_indiana_period',array('code'=>$wincode,'endtime'=>$endtime,'status'=>2),array('uniacid'=>$_W['uniacid'],'period_num'=>$period_number));	//写入中奖信息
+			self::get_winner($period_number, $periodid, $wincode );		//执行中奖人信息
+
+		}
+		/******************获取中奖人信息****************/
+		public function get_winner($period_num = '', $periodid = '' , $wincode = ''){
+			global $_W;
+			//更新完毕，计算获奖信息
+			$sql_record_winner = "select * from".tablename('sz_yi_indiana_record')." where uniacid = :uniacid and period_num = :period_num";
+			$data_record_winner = array(
+					':uniacid' => $_W['uniacid'],
+					':period_num' => $period_num
+				);
+			$records = pdo_fetchall($sql_record_winner,$data_record_winner);		//查询所有本期商品交易记录
+			//计算获奖人
+			foreach ($records as$k=> $v) {
+				$scodes=unserialize($v['codes']);//转换商品code
+				for ($i=0; $i < count($scodes) ; $i++) { 
+					if ($scodes[$i]==$wincode) {
+						$lack_period['openid']=$v['openid'];
+						$lack_period['recordid']=$v['id'];
+						break;
+					}
+				}
+			}
+			if(empty($lack_period['openid'])){
+				pdo_delete('sz_yi_indiana_comcode',array('pid'=>$periodid));
+				self::createtime_winer($period_num,$periodid);
+			}else{
+				$pro_m = m('member')->getMember($lack_period['openid']);//获奖用户信息
+				$lack_record = pdo_fetch("select count from ".tablename('sz_yi_indiana_record')." where uniacid='{$_W['uniacid']}' and openid='{$lack_period['openid']}' and period_num='{$period_num}'");
+				$lack_period['code']=$wincode;
+				$lack_period['nickname']=$pro_m['nickname'];
+				$lack_period['avatar']=$pro_m['avatar'];
+				$lack_period['partakes']=$lack_record['count'];
+				$lack_period['status']='3';
+				//更新中奖信息到这期数据
+				pdo_update('sz_yi_indiana_period', $lack_period, array('id' => $periodid));
+			}
+		}
+
+
+
 	}
 }

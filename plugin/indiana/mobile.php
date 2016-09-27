@@ -12,8 +12,13 @@ class IndianaMobile extends Plugin
         $this->set = $this->getSet();
         global $_GPC;
     }
+    public function index()
+    {
+        header('location: ' . $this->createPluginMobileUrl('indiana/goods'));
 
-    public function indiana_order()
+    }
+
+    public function goods()
     {    
         $this->_exec_plugin(__FUNCTION__, false);
     }

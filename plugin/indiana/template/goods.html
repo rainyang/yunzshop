@@ -1,8 +1,9 @@
 {template 'web/_header'}
 <div class="w1200 m0a">
-
+<style type="text/css">
+    .fa-article:before{content: "\f0f6";}
+</style>
 {template 'tabs'}
-
 <div class="main rightlist">
 <div class="right-addbox">
     <div class="panel panel-info">
@@ -31,8 +32,6 @@
                         </select>
                     </div>
                 </div>
-
-                
                 <div class="form-group">
                     <div class="col-xs-12 col-sm-2 col-lg-2">
                         <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
@@ -74,15 +73,16 @@
                             <td class='tdedit' width="16%"> {$item['price']}</td>
                             <td >{$item['periods']}/{$item['max_periods']}</td>
                             <td >
-                                <label data='{$item['status']}' class='label  label-default {if $item['status']==2}label-info{/if}' {ifp 'shop.goods.edit'}onclick="setProperty(this,{$item['id']},'status')"{/if}>{if $item['status']==2}上架{else}下架{/if}</label>
+                                <label data='{$item['status']}' class='label  label-default {if $item['status']==2}label-info {/if}' onclick="setProperty(this,{$item['id']},'status')" >{if $item['status']==2}上架{else}下架{/if}</label>
                             </td>
-
                             <td style="position:relative;" width="20%">
-                                {ifp 'shop.goods.edit|shop.goods.view'}<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['good_id'], 'op' => 'post'))}"class="btn btn-sm btn-default" title="{ifp 'shop.goods.edit'}编辑商品{else}查看商品{/if}"><i class="fa fa-pencil"></i></a>{/if}
+                                {ifp 'shop.goods.edit|shop.goods.view'}<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['good_id'], 'op' => 'post'))}" class="btn btn-sm btn-default" title="{ifp 'shop.goods.edit'}编辑商品{else}查看商品{/if}">{ifp 'shop.goods.edit'}编辑商品{else}查看商品{/if}</a>{/if}
                                 
-                                <a href="{php echo $this->createPluginWebUrl('indiana/good_info', array('id' => $item['id'], 'op' => 'edit'))}"class="btn btn-sm btn-default" title="{ifp 'shop.goods.edit'}编辑夺宝{else}查看夺宝{/if}"><i class="fa fa-pencil"></i></a>
+                               <a href="{php echo $this->createPluginWebUrl('indiana/period', array('id' => $item['id']))}"  title="查看往期" class="btn btn-sm btn-default">查看往期</a>
 
-                                {ifp 'shop.goods.delete'}<a href="{php echo $this->createWebUrl('shop/goods', array('id' => $item['id'], 'op' => 'delete'))}" onclick="return confirm('确认删除此商品？');
+                               <a href="{php echo $this->createPluginWebUrl('indiana/good_info', array('id' => $item['id'], 'op' => 'edit'))}"  title="编辑夺宝" class="btn btn-sm btn-default">编辑夺宝</a>
+
+                                {ifp 'shop.goods.delete'}<a href="{php echo $this->createPluginWebUrl('indiana/goods', array('id' => $item['id'], 'op' => 'delete'))}" onclick="return confirm('确认删除此商品？');
                                         return false;" class="btn btn-default  btn-sm" title="删除"><i class="fa fa-times"></i></a>{/if}
                             </td>
                         </tr>
@@ -154,77 +154,18 @@
 
 
 <script type="text/javascript">
-    function fastChange(id, type, value) {
-        
-        $.ajax({
-            url: "{php echo $this->createWebUrl('shop/goods')}",
-            type: "post",
-            data: {op: 'change', id: id, type: type, value: value},
-            cache: false,
-            success: function () {
-
-            }
-        })
-    }
-    $(function () {
-        $("form").keypress(function(e) {
-            if (e.which == 13) {
-              return false;
-            }
-          });
-
-        $('.tdedit input').keydown(function (event) {
-            if (event.keyCode == 13) {
-                 var group = $(this).closest('.input-group');
-                 var type = group.find('button').data('type');
-                var goodsid = group.find('button').data('goodsid');
-                var val = $.trim($(this).val());
-                if(type=='title' && val==''){
-                    return;
-                }
-                group.prev().show().find('span').html(val);
-                group.hide();
-                fastChange(goodsid,type,val);
-            }
-        })
-        $('.tdedit').mouseover(function () {
-            $(this).find('.fa-pencil').show();
-        }).mouseout(function () {
-            $(this).find('.fa-pencil').hide();
-        });
-        $('.fa-edit-item').click(function () {
-            var group = $(this).closest('span').hide().next();
-
-            group.show().find('button').unbind('click').click(function () {
-                var type = $(this).data('type');
-                var goodsid = $(this).data('goodsid');
-                var val = $.trim(group.find(':input').val());
-                if(type=='title' && val==''){
-                    Tip.show(group.find(':input'), '请输入名称!');
-                    return;
-                }
-                group.prev().show().find('span').html(val);
-                group.hide();
-                fastChange(goodsid,type,val);
-            });
-        })
-    })
-            var category = {php echo json_encode($children)};
     function setProperty(obj, id, type) {
         $(obj).html($(obj).html() + "...");
-        $.post("{php echo $this->createWebUrl('shop/goods')}"
+        $.post("{php echo $this->createPluginWebUrl('indiana/goods')}"
                 , {'op': 'setgoodsproperty', id: id, type: type, data: obj.getAttribute("data")}
         , function (d) {
             $(obj).html($(obj).html().replace("...", ""));
-            if (type == 'type') {
-                $(obj).html(d.data == '1' ? '实体物品' : '虚拟物品');
-            }
             if (type == 'status') {
-                $(obj).html(d.data == '1' ? '上架' : '下架');
+                $(obj).html(d.data == '2' ? '上架' : '下架');
             }
             $(obj).attr("data", d.data);
             if (d.result == 1) {
-                $(obj).toggleClass("label-info text-pinfo");
+                $(obj).toggleClass("label-info ");
             }
         }
         , "json"

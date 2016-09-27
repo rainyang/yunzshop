@@ -36,4 +36,8 @@ class IndianaWeb extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__);
     }
+    public function period()
+    {
+        $this->_exec_plugin(__FUNCTION__);
+    }
 }
