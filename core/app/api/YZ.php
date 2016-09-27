@@ -64,7 +64,6 @@ class YZ extends base
         global $_GPC,$_W;
         $_W['isajax'] = true;
         list($_GPC['p'],$_GPC['method'],$_GPC['op']) = explode('/',$path);
-dump($_GPC);
         $class = new \Sz_yiModuleSite();
         $result = $class->doMobilePlugin();
         return $result;

@@ -204,8 +204,8 @@ if ($_W['isajax']) {
         if (!empty($order['refundstate'])) {
             $order['refund_button'] .= '中';
         }
-    }	
-    show_json(1, array(
+    }
+    return show_json(1, array(
         'order' => $order,
         'goods' => $goods,
         'address' => $address,
