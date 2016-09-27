@@ -13,7 +13,7 @@ $trade     = m('common')->getSysset('trade');
 $verifyset  = m('common')->getSetData();
 $allset = iunserializer($verifyset['plugins']);
 $store_total = false;
-if ($allset['verify']['store_total'] == 1) {
+if (isset($allset['verify']) && $allset['verify']['store_total'] == 1) {
     $store_total = true;
 }
 
@@ -2510,7 +2510,7 @@ if ($_W['isajax']) {
             if (p('channel') && !empty($ischannelpick)) {
                 p('channel')->deductChannelStock($orderid);
             } else {
-                if (empty($virtualid)) {
+                if (!empty($virtualid)) {
                     m('order')->setStocksANDCredits($orderid, 0);
                 } else {
                     if (isset($allgoods[0])) {

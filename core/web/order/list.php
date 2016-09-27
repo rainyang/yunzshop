@@ -2083,7 +2083,7 @@ function order_list_confirmpay($order) {
         $plugin_commission = p("commission");
         $orderid = array();
         foreach ($order_all as $key => $val) {
-            m("order")->setStocksAndCredits($val["id"], 1);
+            //m("order")->setStocksAndCredits($val["id"], 1);
             m("notice")->sendOrderMessage($val["id"]);
             if ($plugin_coupon && !empty($val["couponid"])) {
                 $plugin_coupon->backConsumeCoupon($val["id"]);
