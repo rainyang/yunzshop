@@ -13,7 +13,7 @@ $trade     = m('common')->getSysset('trade');
 $verifyset  = m('common')->getSetData();
 $allset = iunserializer($verifyset['plugins']);
 $store_total = false;
-if ($allset['verify']['store_total'] == 1) {
+if (isset($allset['verify']) && $allset['verify']['store_total'] == 1) {
     $store_total = true;
 }
 
