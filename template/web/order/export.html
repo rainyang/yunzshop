@@ -132,6 +132,21 @@
 			 
 				  </div>
 			</div>
+			 {if p('supplier')}
+            <div class='form-group'>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">供应商</label>
+				    <div class="col-sm-9 col-xs-12">
+                  
+                        <select name="supplier_uid" class="form-control select2">
+                            <option value="" ></option>
+                            {loop $suppliers $supplier}
+                            <option value="{$supplier['uid']}" {if $_GPC['supplier_uid'] ==$supplier['uid']} selected="selected" {/if}>{$supplier['username']}</option>
+                            {/loop}
+                        </select>
+			 
+				  </div>
+            </div>
+            {/if}
             <div class="form-group">
 		<label class="col-xs-12 col-sm-3 col-md-2 control-label">下单时间</label>
 		<div class="col-sm-9 col-xs-12">

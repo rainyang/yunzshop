@@ -4,7 +4,10 @@ global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if ($operation == 'display') {
     $id = intval($_GPC['id']);
-    $store = pdo_fetchall(" SELECT goodsid,optionid,storeid,total FROM " .tablename('sz_yi_store_goods'). " WHERE storeid=:storeid and uniacid=:uniacid", array(':storeid' => $id, ':uniacid' => $_W['uniacid']));
+    $pindex = max(1, intval($_GPC['page']));
+    $psize = 10;
+    $store = pdo_fetchall(" SELECT goodsid,optionid,storeid,total FROM " .tablename('sz_yi_store_goods'). " WHERE storeid=:storeid and uniacid=:uniacid LIMIT " . ($pindex - 1) * $psize . ',' . $psize, array(':storeid' => $id, ':uniacid' => $_W['uniacid']));
+    $total = pdo_fetchcolumn("SELECT COUNT(*) FROM " .tablename('sz_yi_store_goods'). " WHERE storeid=:storeid and uniacid=:uniacid ", array(':storeid' => $id, ':uniacid' => $_W['uniacid']));
     //echo '<pre>'; print_r($store);exit;
     foreach ($store as $key => $row) {
         $store[$key]['title'] = pdo_fetchcolumn(" SELECT title FROM " .tablename('sz_yi_goods'). " WHERE id=".$row['goodsid']);
@@ -14,10 +17,9 @@ if ($operation == 'display') {
         }
 
     }
-    //echo '<pre>';print_r($store);  exit;
+    $pager = pagination($total, $pindex, $psize);
 
     if (checksubmit("submit")) {
-       //echo '<pre>';print_r($_GPC['total']);  exit;
         $total = $_GPC['total'];
         $storeid = intval($_GPC['storeid']);
         foreach ($total as $key => $value) {
