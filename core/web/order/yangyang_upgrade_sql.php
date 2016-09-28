@@ -149,7 +149,7 @@ if (p('supplier')) {
             $Xorderids = pdo_fetchall("SELECT orderid,uniacid FROM " . tablename('sz_yi_supplier_order') . " WHERE id<:id GROUP BY orderid ", array(':id' => $isinsert['id']));
             if (!empty($Xorderids)) {
                 $i = 0;
-                //pdo_query("DELETE FROM " . tablename('sz_yi_supplier_order') . " WHERE id<:id ", array(':id' => $isinsert['id']));
+                pdo_query("DELETE FROM " . tablename('sz_yi_supplier_order') . " WHERE id<:id ", array(':id' => $isinsert['id']));
                 $order_ids = array();
                 foreach ($Xorderids as $xo) {
                     $order_ids[] = $xo['orderid'];
