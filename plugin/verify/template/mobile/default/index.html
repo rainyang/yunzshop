@@ -83,8 +83,9 @@
         <a href="{php echo $this->createPluginMobileUrl('verify/log', array('storeid'=>$id))}"><div class="nav nav1"><i class="fa iconfont icon-dingdan" style="background:#ff6e03;"></i><div class="title">明细</div><div class="con">提现明细</div></div></a>
 
 
-        <!--分红-->
+
         <a href="{php echo $this->createPluginMobileUrl('verify/mystore/select', array('storeid'=>$id))}"><div class="nav nav1"><i class="fa iconfont icon-bag"style="background:#FF8989;"></i><div class="title">自选商品</div><div class="con">选择我喜欢的商品</div></div></a>
+        <a id="reset"><div class="nav nav1"><i class="fa iconfont icon-bag"style="background:#FF8989;"></i><div class="title">重置</div><div class="con">一键清除我的自选商品</div></div></a>
 
 
         <a href="#"><div class="nav nav1"><i class="fa iconfont icon-tongji" style="background:#2886FB;"></i><div class="title">订单总计</div><div class="con"><span><%totalprice%></span> 元</div></div></a>
@@ -112,7 +113,20 @@
                 }
             });
         },true);
-    })
+        $(document).on('click','#reset',function(){
+            core.tip.confirm('确认重置?',function() {
+                core.pjson('verify/mystore', {op:'reset', storeid: "{$id}"}, function (json) {
+                    if (json.status == 1) {
+                        core.message('操作成功！',"{php echo $this->createPluginMobileUrl('verify')}" ,'success');
+                        return;
+                    } else {
+                        core.message('操作失败，此门店不存在！',"{php echo $this->createPluginMobileUrl('verify')}" ,'error');
+                        return;
+                    }
+                },true);
+            });
+        });
+    });
 </script>
 {php $show_footer=true}
 {template 'common/footer'}
