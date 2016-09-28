@@ -3985,3 +3985,158 @@ $_SERVER = [
     ]
     'argc' => 1
 ]
+2016-09-28 19:03:21 [127.0.0.1][-][-][error][yii\base\ErrorException:2] exception 'yii\base\ErrorException' with message 'Invalid argument supplied for foreach()' in /Users/dingran/wwwroots/project/addons/sz_yi/vendor/yiisoft/yii2/BaseYii.php:520
+Stack trace:
+#0 /Users/dingran/wwwroots/project/addons/sz_yi/vendor/yiisoft/yii2/BaseYii.php(520): yii\base\ErrorHandler->handleError(2, 'Invalid argumen...', '/Users/dingran/...', 520, Array)
+#1 /Users/dingran/wwwroots/project/addons/sz_yi/vendor/yiisoft/yii2/base/Object.php(105): yii\BaseYii::configure(Object(app\api\model\Member), 'Member')
+#2 /Users/dingran/wwwroots/project/addons/sz_yi/core/inc/framework/functions.php(124): yii\base\Object->__construct('Member')
+#3 /Users/dingran/wwwroots/project/addons/sz_yi/core/app/api/controller/member/Login.php(27): D('Member')
+#4 /Users/dingran/wwwroots/project/addons/sz_yi/core/app/api/controller/member/Login.php(17): app\api\controller\member\Login->_getUserInfo(Array)
+#5 /Users/dingran/wwwroots/project/addons/sz_yi/core/index.php(134): app\api\controller\member\Login->index()
+#6 /Users/dingran/wwwroots/project/addons/sz_yi/core/index.php(124): api\Run->run()
+#7 /Users/dingran/wwwroots/project/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#8 /Users/dingran/wwwroots/project/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/dingran/...')
+#9 /Users/dingran/wwwroots/project/test/app_api.php(20): require('/Users/dingran/...')
+#10 {main}
+2016-09-28 19:03:21 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'member/Login'
+]
+
+$_POST = [
+    'mobile' => '18545571024'
+    'pwd' => 'sgl918'
+]
+
+$_COOKIE = [
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ2MTE0MDUzOSIsImxhc3RpcCI6IjEyNS4yMTEuNTMuMTQ3IiwiaGFzaCI6IjNmOTBjYjEwYTdlZGViYjlhMDc3OTgzOWMyZjI3YzYzIn0='
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '1c9bde05c00b48c8da0d92d72a187ba8'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'g55Z' => 1475059883
+        'QLl8' => 1475059887
+    ]
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.pro.com'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate, sdch'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en;q=0.6'
+    'HTTP_COOKIE' => 'ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ2MTE0MDUzOSIsImxhc3RpcCI6IjEyNS4yMTEuNTMuMTQ3IiwiaGFzaCI6IjNmOTBjYjEwYTdlZGViYjlhMDc3OTgzOWMyZjI3YzYzIn0%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=1c9bde05c00b48c8da0d92d72a187ba8'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.4.42 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.pro.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/dingran/wwwroots/project'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/dingran/wwwroots/project'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/dingran/wwwroots/project/test/app_api.php'
+    'REMOTE_PORT' => '64633'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=2&api=member/Login'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=member/Login'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475060601.341
+    'REQUEST_TIME' => 1475060601
+]
+2016-09-28 19:04:33 [127.0.0.1][-][-][error][Think\Exception] exception 'Think\Exception' with message '1146:Table 'sy.yunzshop.com.ims_member' doesn't exist
+ [ SQL语句 ] : SHOW COLUMNS FROM `ims_member`' in /Users/dingran/wwwroots/project/addons/sz_yi/core/inc/framework/functions.php:75
+Stack trace:
+#0 /Users/dingran/wwwroots/project/addons/sz_yi/core/inc/framework/Think/Db/Driver.php(350): E('1146:Table 'sy....')
+#1 /Users/dingran/wwwroots/project/addons/sz_yi/core/inc/framework/Think/Db/Driver.php(180): Think\Db\Driver->error()
+#2 /Users/dingran/wwwroots/project/addons/sz_yi/core/inc/framework/Think/Db/Driver/Mysql.php(56): Think\Db\Driver->query('SHOW COLUMNS FR...')
+#3 /Users/dingran/wwwroots/project/addons/sz_yi/core/inc/framework/Think/Model.php(186): Think\Db\Driver\Mysql->getFields('ims_member')
+#4 /Users/dingran/wwwroots/project/addons/sz_yi/core/inc/framework/Think/Model.php(175): Think\Model->flush()
+#5 /Users/dingran/wwwroots/project/addons/sz_yi/core/inc/framework/Think/Model.php(129): Think\Model->_checkTableInfo()
+#6 /Users/dingran/wwwroots/project/addons/sz_yi/core/inc/framework/Think/Model.php(96): Think\Model->db(0, '', true)
+#7 /Users/dingran/wwwroots/project/addons/sz_yi/core/inc/framework/functions.php(124): Think\Model->__construct('Member')
+#8 /Users/dingran/wwwroots/project/addons/sz_yi/core/app/api/controller/member/Login.php(27): D('Member')
+#9 /Users/dingran/wwwroots/project/addons/sz_yi/core/app/api/controller/member/Login.php(17): app\api\controller\member\Login->_getUserInfo(Array)
+#10 /Users/dingran/wwwroots/project/addons/sz_yi/core/index.php(134): app\api\controller\member\Login->index()
+#11 /Users/dingran/wwwroots/project/addons/sz_yi/core/index.php(124): api\Run->run()
+#12 /Users/dingran/wwwroots/project/addons/sz_yi/core/index.php(166): api\Run->__construct()
+#13 /Users/dingran/wwwroots/project/addons/sz_yi/core/app/api/tests/index.php(61): require('/Users/dingran/...')
+#14 /Users/dingran/wwwroots/project/test/app_api.php(20): require('/Users/dingran/...')
+#15 {main}
+2016-09-28 19:04:33 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'member/Login'
+]
+
+$_POST = [
+    'mobile' => '18545571024'
+    'pwd' => 'sgl918'
+]
+
+$_COOKIE = [
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ2MTE0MDUzOSIsImxhc3RpcCI6IjEyNS4yMTEuNTMuMTQ3IiwiaGFzaCI6IjNmOTBjYjEwYTdlZGViYjlhMDc3OTgzOWMyZjI3YzYzIn0='
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    'PHPSESSID' => '1c9bde05c00b48c8da0d92d72a187ba8'
+]
+
+$_SESSION = [
+    'acid' => '2'
+    'uniacid' => 2
+    'token' => [
+        'g55Z' => 1475059883
+        'QLl8' => 1475059887
+    ]
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.pro.com'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate, sdch'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en;q=0.6'
+    'HTTP_COOKIE' => 'ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ2MTE0MDUzOSIsImxhc3RpcCI6IjEyNS4yMTEuNTMuMTQ3IiwiaGFzaCI6IjNmOTBjYjEwYTdlZGViYjlhMDc3OTgzOWMyZjI3YzYzIn0%3D; fdbf___uniacid=2; fdbf___uid=1; PHPSESSID=1c9bde05c00b48c8da0d92d72a187ba8'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.4.42 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.pro.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/dingran/wwwroots/project'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/dingran/wwwroots/project'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/dingran/wwwroots/project/test/app_api.php'
+    'REMOTE_PORT' => '64661'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=2&api=member/Login'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=2&api=member/Login'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475060673.085
+    'REQUEST_TIME' => 1475060673
+]

@@ -12,17 +12,34 @@ use app\api\YZ;
 
 class Account extends YZ
 {
+    private $_json_datas;
+
     public function __construct()
     {
         parent::__construct();
+
+        $this->_json_datas = $this->callMobile('member/center');
     }
 
     public function index()
-    {
-        $result = $this->callMobile('member/center');
+    { //echo '<pre>';print_r($this->_json_datas);exit;
+        if (!empty($this->_json_datas) && !empty($this->_json_datas['json']['member'])) {
+              $res = array(
+                  'id'     => $this->_json_datas['json']['member']['id'],
+                  'avatar'     => $this->_json_datas['json']['member']['avatar'],
+                  'nickname'   => $this->_json_datas['json']['member']['nickname'],
+                  'levelname'   => $this->_json_datas['json']['level']['levelname'],
+                  'levelurl'   => $this->_json_datas['json']['set']['shop']['levelurl'],
+                  'isreferrer'   => $this->_json_datas['json']['shop_set']['shop']['isreferrer'],
+                  'referrer_realname'   => $this->_json_datas['json']['referrer']['realname'],
+              );
 
-        $res = array();
+            $this->returnSuccess($res);
+        } else {
+            $this->returnError("请重新登录!");
+        }
 
-        $this->returnSuccess($result);
+
     }
+
 }
