@@ -13,7 +13,7 @@ $trade     = m('common')->getSysset('trade');
 $verifyset  = m('common')->getSetData();
 $allset = iunserializer($verifyset['plugins']);
 $store_total = false;
-if ($allset['verify']['store_total'] == 1) {
+if (isset($allset['verify']) && $allset['verify']['store_total'] == 1) {
     $store_total = true;
 }
 
@@ -1423,7 +1423,6 @@ if ($_W['isajax']) {
             if (empty($goods)) {
                 show_json(0, '未找到任何商品');
             }
-            $basis_money = 0;
             $allgoods      = array();
             $totalprice    = 0;
             $goodsprice    = 0;
@@ -1483,11 +1482,6 @@ if ($_W['isajax']) {
                     ':uniacid' => $uniacid,
                     ':id' => $goodsid
                 ));
-                if (!empty($data['bonusmoney'])) {
-                    $basis_money += $data['bonusmoney'];
-                } else {
-                    $basis_money += $data['marketprice'];
-                }
                 if (p('channel')) {
                     if ($ischannelpay == 1) {
                         if (empty($data['isopenchannel'])) {
@@ -2176,9 +2170,6 @@ if ($_W['isajax']) {
                 'redprice' => $redpriceall,
 
             );
-            if (p('merchant')) {
-                $order['basis_money'] = $basis_money;
-            }
             if (p('channel')) {
                 if (!empty($ischannelpick)) {
                     $order['ischannelself'] = 1;
@@ -2294,6 +2285,7 @@ if ($_W['isajax']) {
                 }
             }
             $supplier_or_merchant_price = 0;
+            $supplier_or_merchant_basis = 0;
             foreach ($allgoods as $goods) {
                 $order_goods = array(
                     'uniacid' => $uniacid,
@@ -2311,9 +2303,9 @@ if ($_W['isajax']) {
                     "openid" => $openid,
                     'goods_op_cost_price' => $goods['costprice']
                 );
-
                 if (p('supplier') || p('merchant')) {
-                    $supplier_or_merchant_price += $goods['costprice'];
+                    $supplier_or_merchant_price += ($goods['costprice']*$goods['total']);
+                    $supplier_or_merchant_basis += ($goods['bonusmoney']*$goods['total']);
                 }
                 //修改全返插件中房价
                 if(p('hotel') && $_GPC['type']=='99'){
@@ -2405,7 +2397,6 @@ if ($_W['isajax']) {
                     }
                 }
             }
-
             if (p('supplier')) {
                 $supplier_set = p('supplier')->getSet();
                 $supplier_order = array(
@@ -2416,7 +2407,7 @@ if ($_W['isajax']) {
                     $supplier_order['money'] = $supplier_or_merchant_price + $dispatch_price;
                     $supplier_order['isopenbonus'] = 0;
                 } else {
-                    $supplier_order['money'] = $basis_money + $dispatch_price;
+                    $supplier_order['money'] = $supplier_or_merchant_basis + $dispatch_price;
                     $supplier_order['isopenbonus'] = 1;
                 }
                 pdo_insert('sz_yi_supplier_order', $supplier_order);
@@ -2431,7 +2422,7 @@ if ($_W['isajax']) {
                     $merchant_order['money'] = $totalprice;
                     $merchant_order['isopenbonus'] = 0;
                 } else {
-                    $merchant_order['money'] = $basis_money;
+                    $merchant_order['money'] = $supplier_or_merchant_basis;
                     $merchant_order['isopenbonus'] = 1;
                 }
                 pdo_insert('sz_yi_merchant_order', $merchant_order);
@@ -2519,7 +2510,7 @@ if ($_W['isajax']) {
             if (p('channel') && !empty($ischannelpick)) {
                 p('channel')->deductChannelStock($orderid);
             } else {
-                if (empty($virtualid)) {
+                if (!empty($virtualid)) {
                     m('order')->setStocksANDCredits($orderid, 0);
                 } else {
                     if (isset($allgoods[0])) {

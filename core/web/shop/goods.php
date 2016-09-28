@@ -33,7 +33,23 @@ if (p('hotel')) {
     $hotel = p('hotel');
     $hotelstatus = $hotel->check_plugin('hotel');
 }
-   
+ 
+$lang = array(
+    "shopname" => "商品名称",
+    "mainimg" => "商品图片",
+    "limittime" => "限时卖时间",
+    "shopnumber" => "商品编号",
+    "shopprice" => "商品价格"
+    ); 
+if($_GPC['plugin'] == "fund"){
+    $lang = array(
+    "shopname" => "项目名称",
+    "mainimg" => "项目主图",
+    "limittime" => "项目时间",
+    "shopnumber" => "项目编号",
+    "shopprice" => "项目金额"
+    ); 
+}
 
 //  END
 //分红

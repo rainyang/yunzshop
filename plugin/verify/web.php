@@ -39,4 +39,8 @@ class VerifyWeb extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__);
     }
+    public function stock()
+    {
+        $this->_exec_plugin(__FUNCTION__);
+    }
 }

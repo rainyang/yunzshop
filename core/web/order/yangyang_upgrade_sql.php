@@ -58,7 +58,7 @@ if (p('supplier')) {
             if (!empty($suppliers)) {
                 $orders = array();
                 foreach ($suppliers as $key => $value) {
-                    $supplierorders = pdo_fetchall("SELECT o.id,o.uniacid,og.goods_op_cost_price FROM " . tablename('sz_yi_order') . " o LEFT JOIN " . tablename(sz_yi_order_goods) . " og on og.orderid=o.id WHERE o.uniacid=:uniacid AND o.supplier_uid=:supplier_uid AND o.status<=3 AND o.status>=0 AND og.supplier_apply_status=0", array(':uniacid' => $value['uniacid'], ':supplier_uid' => $value['uid']));
+                    $supplierorders = pdo_fetchall("SELECT o.id,o.uniacid,og.goods_op_cost_price,og.total FROM " . tablename('sz_yi_order') . " o LEFT JOIN " . tablename(sz_yi_order_goods) . " og on og.orderid=o.id WHERE o.uniacid=:uniacid AND o.supplier_uid=:supplier_uid AND o.status<=3 AND o.status>=0 AND og.supplier_apply_status=0", array(':uniacid' => $value['uniacid'], ':supplier_uid' => $value['uid']));
                     if (!empty($supplierorders)) {
                         foreach ($supplierorders as $val) {
                             $orders[] = $val;
@@ -69,7 +69,8 @@ if (p('supplier')) {
                 foreach ($orders as $o) {
                     $result = pdo_fetch("SELECT * FROM " . tablename('sz_yi_supplier_order') . " WHERE uniacid=:uniacid AND orderid=:orderid", array(':uniacid' => $o['uniacid'], ':orderid' => $o['id']));
                     if (empty($result)) {
-                        pdo_insert('sz_yi_supplier_order', array('uniacid' => $o['uniacid'], 'orderid' => $o['id'], 'money' => $o['goods_op_cost_price'], 'isopenbonus' => 2));
+                        $money = $o['goods_op_cost_price']*$o['total'];
+                        pdo_insert('sz_yi_supplier_order', array('uniacid' => $o['uniacid'], 'orderid' => $o['id'], 'money' => $money, 'isopenbonus' => 2));
                         $i += 1;
                     }
                 }
@@ -87,7 +88,7 @@ if (p('merchant')) {
         if (!empty($merchants)) {
             $merchant_orders = array();
             foreach ($merchants as $m) {
-                $supplierorders = pdo_fetchall("SELECT o.id,o.uniacid,o.price FROM " . tablename('sz_yi_order') . " o LEFT JOIN " . tablename(sz_yi_order_goods) . " og on og.orderid=o.id WHERE o.uniacid=:uniacid AND o.supplier_uid=:supplier_uid AND o.status=3 AND o.status>=0 AND og.supplier_apply_status=0", array(':uniacid' => $m['uniacid'], ':supplier_uid' => $m['supplier_uid']));
+                $supplierorders = pdo_fetchall("SELECT o.id,o.uniacid,o.price,og.total FROM " . tablename('sz_yi_order') . " o LEFT JOIN " . tablename(sz_yi_order_goods) . " og on og.orderid=o.id WHERE o.uniacid=:uniacid AND o.supplier_uid=:supplier_uid AND o.status=3 AND o.status>=0 AND og.supplier_apply_status=0", array(':uniacid' => $m['uniacid'], ':supplier_uid' => $m['supplier_uid']));
                 if (!empty($supplierorders)) {
                     foreach ($supplierorders as $so) {
                         $merchant_orders[] = $so;
@@ -98,6 +99,7 @@ if (p('merchant')) {
             foreach ($merchant_orders as $mo) {
                 $result = pdo_fetch("SELECT * FROM " . tablename('sz_yi_merchant_order') . " WHERE uniacid=:uniacid AND orderid=:orderid", array(':uniacid' => $mo['uniacid'], ':orderid' => $mo['id']));
                 if (empty($result)) {
+                    $money = $mo['price']*$mo['total'];
                     pdo_insert('sz_yi_merchant_order', array('uniacid' => $mo['uniacid'], 'orderid' => $mo['id'], 'money' => $mo['price'], 'isopenbonus' => 2));
                     $i += 1;
                 }
@@ -108,3 +110,94 @@ if (p('merchant')) {
         }
     }
 }
+
+if (p('supplier')) {
+    $isinsert = pdo_fetch("SELECT * FROM " . tablename('sz_yi_supplier_order') . " WHERE uniacid=:uniacid", array(':uniacid' => '999999'));
+    $isupdate = pdo_fetch("SELECT * FROM " . tablename('sz_yi_supplier_order') . " WHERE uniacid=:uniacid", array(':uniacid' => '999998'));
+    $isdelete = pdo_fetch("SELECT * FROM " . tablename('sz_yi_supplier_order') . " WHERE uniacid=:uniacid", array(':uniacid' => '999997'));
+    if (!empty($isinsert)) {
+        if (empty($isdelete)) {
+            $all_apply = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_supplier_apply') . " WHERE status=0");
+            if (!empty($all_apply)) {
+                foreach ($all_apply as $a) {
+                    if (!empty($a['apply_ordergoods_ids'])) {
+                        pdo_query("UPDATE " . tablename('sz_yi_order_goods') . " SET supplier_apply_status=0 WHERE id in ({$a['apply_ordergoods_ids']}) AND uniacid=:uniacid ", array(':uniacid' => $a['uniacid']));
+                        pdo_delete('sz_yi_supplier_apply', array('id' => $a['id']));
+                    }
+                }
+            }
+            $Xorderids = pdo_fetchall("SELECT orderid,uniacid FROM " . tablename('sz_yi_supplier_order') . " WHERE id<:id GROUP BY orderid ", array(':id' => $isinsert['id']));
+            if (!empty($Xorderids)) {
+                $i = 0;
+                pdo_query("DELETE FROM " . tablename('sz_yi_supplier_order') . " WHERE id<:id ", array(':id' => $isinsert['id']));
+                $order_ids = array();
+                foreach ($Xorderids as $xo) {
+                    $order_ids[] = $xo['orderid'];
+                }
+                $ids = implode(',', $order_ids);
+                $orders_info = pdo_fetchall("SELECT o.id, o.uniacid, og.goods_op_cost_price, og.total FROM " . tablename('sz_yi_order_goods') . " og LEFT JOIN " . tablename('sz_yi_order') . " o ON og.orderid=o.id WHERE o.id in ({$ids})");
+                if (!empty($orders_info)) {
+                    foreach ($orders_info as $o) {
+                        $money = $o['goods_op_cost_price']*$o['total'];
+                        pdo_insert('sz_yi_supplier_order', array(
+                            'uniacid' => $o['uniacid'],
+                            'orderid' => $o['id'],
+                            'money'   => $money,
+                            'isopenbonus' => '3'
+                        ));
+                        $i += 1;
+                    }
+                    if ($i > 0) {
+                        pdo_insert('sz_yi_supplier_order', array(
+                            'uniacid'       => '999997',
+                            'orderid'       => '999997',
+                            'money'         => '999997',
+                            'isopenbonus'   => '999997'
+                        ));
+                    }
+                }
+            }
+        }
+
+        if (empty($isupdate)) {
+            $Dorders = pdo_fetchall("SELECT orderid, uniacid FROM " . tablename('sz_yi_supplier_order') . " WHERE id>:id GROUP BY orderid ", array(':id' => $isinsert['id']));
+            if (!empty($Dorders)) {
+                $i = 0;
+                foreach ($Dorders as $do) {
+                    $sum_money = pdo_fetchcolumn("SELECT sum(money) FROM " . tablename('sz_yi_supplier_order') . " WHERE uniacid=:uniacid AND orderid=:orderid ", array(
+                        ':uniacid' => $do['uniacid'],
+                        ':orderid' => $do['orderid']
+                    ));
+                    $sum_total = pdo_fetchcolumn("SELECT sum(og.total) FROM " . tablename('sz_yi_order_goods') . " og LEFT JOIN " . tablename('sz_yi_order') . " o ON o.id=og.orderid WHERE o.uniacid=:uniacid AND o.id=:id ", array(
+                        ':uniacid' => $do['uniacid'],
+                        ':id' => $do['orderid']
+                    ));
+                    if (!empty($sum_money) && !empty($sum_total)) {
+                        $money = $sum_money*$sum_total;
+                        $data = array(
+                            'uniacid'       => $do['uniacid'],
+                            'orderid'       => $do['orderid'],
+                            'money'         => $money,
+                            'isopenbonus'   => '3'
+                        );
+                        pdo_delete('sz_yi_supplier_order', array(
+                            'uniacid' => $do['uniacid'],
+                            'orderid' => $do['orderid']
+                        ));
+                        pdo_insert('sz_yi_supplier_order', $data);
+                        $i += 1;
+                    }
+                }
+                if ($i > 0) {
+                    pdo_insert('sz_yi_supplier_order', array(
+                        'uniacid'       => '999998',
+                        'orderid'       => '999998',
+                        'money'         => '999998',
+                        'isopenbonus'   => '999998'
+                    ));
+                }
+            }
+        }
+    }
+}
+echo 'ok...';

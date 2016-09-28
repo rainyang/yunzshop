@@ -421,7 +421,7 @@
      <div class="addorder_price coupondiv"  data-id="<%order.supplier_uid%>" >
         <div class="price">
             <div class="line selectcoupon" style="line-height:32px;" data-id="<%order.supplier_uid%>">
-			           <d class="couponselect" data-id="<%order.supplier_uid%>"><%if order.couponcount.length>0%>我要使用优惠券<%else%>没有符合条件的优惠券~<%/if%></d>
+			           <d class="couponselect" data-id="<%order.supplier_uid%>"><%if order.couponcount>0%>我要使用优惠券<%else%>没有符合条件的优惠券~<%/if%></d>
                 <div class="ico2" style="float:right;color:#999;margin-top:2px;"><i class='fa fa-angle-right fa-2x'></i></div>
                 <div class="couponcount"><%order.couponcount%></div>
             </div>
