@@ -13,7 +13,7 @@ $trade     = m('common')->getSysset('trade');
 $verifyset  = m('common')->getSetData();
 $allset = iunserializer($verifyset['plugins']);
 $store_total = false;
-if ($allset['verify']['store_total'] == 1) {
+if (isset($allset['verify']) && $allset['verify']['store_total'] == 1) {
     $store_total = true;
 }
 
@@ -1482,9 +1482,6 @@ if ($_W['isajax']) {
                     ':uniacid' => $uniacid,
                     ':id' => $goodsid
                 ));
-                if (p('supplier') || p('merchant')) {
-                    $basis_money = $data['bonusmoney'];
-                }
                 if (p('channel')) {
                     if ($ischannelpay == 1) {
                         if (empty($data['isopenchannel'])) {
@@ -2308,7 +2305,7 @@ if ($_W['isajax']) {
                 );
                 if (p('supplier') || p('merchant')) {
                     $supplier_or_merchant_price += ($goods['costprice']*$goods['total']);
-                    $supplier_or_merchant_basis += ($basis_money*$goods['total']);
+                    $supplier_or_merchant_basis += ($goods['bonusmoney']*$goods['total']);
                 }
                 //修改全返插件中房价
                 if(p('hotel') && $_GPC['type']=='99'){
