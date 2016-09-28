@@ -32,7 +32,7 @@ if (!class_exists('ReturnModel')) {
 
 					for ($i=1; $i <= $good['total'] ; $i++) { 
 						$queuenum = $goods_queue['queue']+$i;
-						$queuemessages .= $queue."、";
+						$queuemessages .= $queuenum."、";
 						$data = array(
 		                    'uniacid' 	=> $uniacid,
 		                    'openid' 	=> $good['openid'],

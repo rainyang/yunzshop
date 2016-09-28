@@ -23,6 +23,9 @@ if ($pc) {
     $pset = $pc->getSet();
     $level = intval($pset["level"]);
 }
+if(p('supplier')){
+    $suppliers = p('supplier')->AllSuppliers();
+}
 $default_columns = array(
     array(
         "title" => "订单编号",
@@ -479,6 +482,10 @@ if ($_GPC["export"] == 1) {
         } else {
             $condition.= " AND o.paytype =" . intval($_GPC["paytype"]);
         }
+    }
+    if (!empty($_GPC['supplier_uid'])) {
+        $condition.= " AND o.supplier_uid = :supplier_uid ";
+        $paras[":supplier_uid"] = $_GPC['supplier_uid'];
     }
     if (!empty($_GPC["keyword"])) {
         $_GPC["keyword"] = trim($_GPC["keyword"]);
