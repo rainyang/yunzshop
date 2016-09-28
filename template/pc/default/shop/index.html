@@ -256,7 +256,7 @@ body { background:#fff;}
     
     <div class="tab_box<%value.id%>">
         <div class="goods_tab_list" style="display:block;">
-            <ul class="items">
+            <ul class="items" style="margin:0">
     <%each value.goods as g%>
           
               <li class="items-li"> <a target="_blank" href="{php echo $this->createMobileUrl('shop/detail')}&id=<%g.id%>" style="position:relative;"><img src="<%g.thumb%>" title=""></a>
