@@ -205,6 +205,11 @@ if ($_W['isajax']) {
             $order['refund_button'] .= '中';
         }
     }
+    $variable = [
+        'show'=>$show,
+        'diyform_flag'=>$diyform_flag,
+        'goods'=>$goods,
+    ];
     return show_json(1, array(
         'order' => $order,
         'goods' => $goods,
@@ -213,7 +218,7 @@ if ($_W['isajax']) {
         'stores' => $stores,
         'isverify' => $isverify,
         'set' => $set
-    ));
+    ),$variable);
 }
 if(p('hotel')){
     if($order['order_type']=='3'){
