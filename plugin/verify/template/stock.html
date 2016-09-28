@@ -12,18 +12,18 @@
         {if $operation == 'display'}
         <div class="main">
             <form action="" method="post">
-                <div class="panel panel-default">
+
                     <div class="panel-body table-responsive">
                         <table class="table table-hover">
                             <thead class="navbar-inner">
                             <tr>
 
-                                <th width="6%">商品</th>
-                                <th width="26%">&nbsp;</th>
-                                <th width="16%">库存</th>
+                                <th width="8%">商品</th>
+                                <th width="64%">&nbsp;</th>
+                                <th width="20%">库存</th>
 
 
-                                <th width="20%">操作</th>
+                                <th width="8%">操作</th>
                             </tr>
                             </thead>
                             <input type="hidden" name="storeid" value="{$id}"/>
@@ -31,10 +31,10 @@
                             <tr>
 
 
-                                <td width="6%" title="{$item['title']}">
+                                <td width="8%" title="{$item['title']}" style="border-top:0">
                                     <img src="{php echo tomedia($item['thumb'])}" style="width:40px;height:40px;padding:1px;border:1px solid #ccc;"  />
                                 </td>
-                                <td title="{$item['title']}" class='tdedit' width="26%">
+                                <td title="{$item['title']}" class='tdedit' width="64%"  style="border-top:0">
 
                                     {ifp 'verify.store.edit|verify.store.view'}
 
@@ -50,7 +50,7 @@
                                     {$item['title']}
                                     {/if}
                                 </td>
-                                <td class='tdedit' width="16%">
+                                <td class='tdedit' width="20%"  style="border-top:0">
                                     {ifp 'verify.store.edit|verify.store.view'}
 
                                     <div class="input-group" data-goodsid="{$item['goodsid']}">
@@ -65,7 +65,7 @@
                                 </td>
 
 
-                                <td style="position:relative;" width="20%">
+                                <td style="position:relative;border-top:0" width="8%">
 
                                     {ifp 'shop.goods.delete'}<a href="{php echo $this->createPluginWebUrl('verify/stock', array('id' => $item['goodsid'], 'op' => 'delete', 'storeid' => $_GPC['id']))}" onclick="return confirm('确认删除此商品？');
 										return false;" class="btn btn-default  btn-sm" title="删除"><i class="fa fa-times"></i></a>{/if}
@@ -74,7 +74,7 @@
 
                             {/loop}
                             <tr>
-                                <td colspan='10'>
+                                <td colspan='10 '>
                                     {ifp 'shop.goods.add'}
                                     <input name="submit" type="submit" class="btn btn-default" value="确认修改">
                                     {/if}
@@ -91,7 +91,7 @@
                         </table>
                         {$pager}
                     </div>
-                </div>
+
             </form>
         </div>
         {/if}
