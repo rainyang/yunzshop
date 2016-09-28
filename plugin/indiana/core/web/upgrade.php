@@ -33,6 +33,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_indiana_period') . " (
   `ig_id` int(11) NOT NULL COMMENT '夺宝商品表ID',
   `goodsid` int(11) NOT NULL COMMENT '本期商品ID',
   `period` int(11) NOT NULL COMMENT '该商品第几期',
+  `init_money` TINYINT(10) NOT NULL AFTER `period`;
   `mid` int(11) NOT NULL COMMENT '获奖人ID',
   `openid` varchar(145) NOT NULL COMMENT '获奖人openid',
   `nickname` varchar(60) NOT NULL COMMENT '获奖人昵称',

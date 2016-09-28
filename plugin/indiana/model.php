@@ -43,6 +43,7 @@ if (!class_exists('IndianaModel')) {
 				'ig_id'			=> $indiana_good['id'],
 				'goodsid' 		=> $indiana_good['good_id'],
 				'period' 		=> intval($indiana_good['periods']) + 1,
+				'init_money'	=> $indiana_good['init_money'],
 				'shengyu_codes' => $code_num,
 				'zong_codes' 	=> $code_num,
 				'allcodes' 		=> $allcodes,

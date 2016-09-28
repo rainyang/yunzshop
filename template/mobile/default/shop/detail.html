@@ -122,6 +122,33 @@ border: 1px solid rgba(255, 255, 255, 0.5); }
 .last-act .last-user span.act-timer { margin-left: 10px; vertical-align: top; }
 .last-act .last-user span.act-name { display: inline-block; max-width: 4em; overflow: hidden; -o-text-overflow: ellipsis; text-overflow: ellipsis; 
 word-break: keep-all; white-space: nowrap; vertical-align: top; }
+.progress-bar {
+    margin-bottom: 5px;
+    position: relative;
+    width: 100%;
+    height: 8px;
+    z-index: 2;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    font-size: 0;
+    line-height: 0;
+    background: #e04512;
+    background: -webkit-gradient(linear,left top,right top,from(#fcc150),to(#e04512));
+    background: -webkit-linear-gradient(left,#fcc150,#e04512);
+    background: linear-gradient(to right,#fcc150,#e04512);
+}
+.bg {
+    display: block;
+    width: 101%;
+    height: 8px;
+    position: absolute;
+    z-index: 3;
+    background-color: #d8d8d8;
+    right: -1px;
+    -webkit-border-radius: 0 4px 4px 0;
+    border-radius: 0 4px 4px 0;
+}
+
 </style>
 <input type="hidden" id="lastOrderUrl" value="{php echo $this->createMobileUrl('shop/lastorder',array('op'=>'display'),true)}"/>
 <script type="text/javascript">
@@ -220,6 +247,32 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
     <%/if%>
 
     <div class="good_choose_layer"></div>
+{if $pindiana && $_GPC['indiana']}
+
+    <div class="good_choose">
+        <div class="info">
+             <div class="left">
+                 <img id="chooser_img" src='<%goods.thumb%>'/>
+             </div>
+             <div class="right">
+                   <div class="price">￥<span id='option_price'><%indiana.initmoney%></span></div>
+                   <div class="stock">剩余:<span id='option_stock'><%indiana.shengyu_codes%></span></span> </div>
+             </div>
+        </div>
+        <div class="other">
+                <div class='number'>
+                  <div class='label'>购买数量</div>
+                  <div class='num'>
+                            <button id='btn_minus' onclick='reduceNum()'><i class='fa fa-minus'></i></button>
+                            <input type='text' id='total' value='1' />
+                            <button id='btn_plus' onclick='addNum()'><i class='fa fa-plus'></i></button>
+                  </div>
+               </div>
+        </div>
+        <div class="close" onClick="closechoose()"><i class="iconfont icon-close"></i></div>
+        <div class="sub confirm_option" onClick="choose3()">确认</div>
+    </div>
+{else}
     <div class="good_choose">
         <div class="info">
              <div class="left">
@@ -281,7 +334,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         <div class="close" onClick="closechoose()"><i class="iconfont icon-close"></i></div>
         <div class="sub confirm_option" onClick="choose2()">确认</div>
     </div>
-
+{/if}
     <div class="good_img">
         <%if pics.length>1%>
         <div class="flicking_con">
@@ -300,6 +353,25 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             </ul>
         </div>
     </div>
+{if $pindiana && $_GPC['indiana']}
+<div class="good_info1">
+
+        <div class="info2">第<%indiana.period%>期 <%indiana.title%> </div>
+        <div class="price" style="height:auto">
+            <span style="font-size: 14px;padding-right: 10px;">总需人次：<%indiana.zong_codes%> </span><span> 每满<%indiana.zong_codes%>人次，即抽取1人获得该商品</span>
+            <div class="progress-bar" >
+              <span class="bg" style="width:<%indiana.shengyu%>%"></span>
+            </div>
+            <div class="other" style="height: 24px;line-height: 24px;">
+              <span><%indiana.zong_codes - indiana.shengyu_codes%></span><span style="float: right;text-align: right;color:#d91d37"><%indiana.shengyu_codes%></span>
+            </div>
+            <div class="other" style="height: 24px;line-height: 24px;">
+              <span>已参与人次</span><span style="float: right;text-align: right;">剩余人次</span>
+            </div>
+        </div>
+      </div>
+      </div>
+{else}
     <div class="good_info1">
         <%if commission && goods.nocommission==0 && goods.hidecommission==0%>
         <div class="info1">
@@ -445,6 +517,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             <div class="sub2" onclick="location.href='<%detail.btnurl2%>'"> <i class="iconfont icon-shop"></i> <%if detail.btntext2!=''%><%detail.btntext2%><%else%>进店逛逛<%/if%></div>
         </div>
     </div>
+{/if}
     <div class="good_info2">
         <div class="menu">
             <div id="nav_1" class="nav navon" onClick="tab(1)">图文详情</div>
@@ -829,7 +902,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                return i;    
             } 
 
-        core.json('shop/detail',{id:'{$_GPC['id']}',mid:"{$mid}",is_admin:'{$_GPC['is_admin']}'},function(json){
+        core.json('shop/detail',{id:'{$_GPC['id']}',mid:"{$mid}",is_admin:'{$_GPC['is_admin']}',indiana:'{$_GPC['indiana']}',periodnum:'{$_GPC['periodnum']}'},function(json){
      
           tip = core.tip;
           if(json.status<=0){

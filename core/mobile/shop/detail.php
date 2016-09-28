@@ -159,6 +159,23 @@ if ($diyform_plugin) {
         }
     }
 }
+$pindiana = p('indiana');
+$indiana = array();
+if ($pindiana && $_GPC['indiana']) {
+    $periodnum = $_GPC['periodnum'];
+
+    $condition = ' and ig.uniacid = :uniacid AND ig.status = 2 AND ig.good_id = :goodsid AND ip.period_num = :periodnum';
+    $params    = array(
+        ':uniacid' => $_W['uniacid'],
+        ':goodsid' => $goodsid,
+        ':periodnum' => $periodnum
+    );
+    $indiana = set_medias(pdo_fetch("SELECT ig.*, g.thumb, ip.period, ip.shengyu_codes, ip.zong_codes, ip.period_num, ip.init_money as initmoney FROM " . tablename('sz_yi_indiana_goods') . " ig 
+        left join " . tablename('sz_yi_goods') . " g on (ig.good_id = g.id) 
+        left join " . tablename('sz_yi_indiana_period') . " ip on (ig.id = ip.ig_id)
+        where 1 {$condition} AND ip.status = 1 " , $params),'thumb');
+       $indiana['shengyu'] = $indiana['shengyu_codes']/$indiana['zong_codes']*100;
+}
 $html = $goods['content'];
 preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg]?))[\'|\"].*?[\/]?>/", $html, $imgs);
 if (isset($imgs[1])) {
@@ -195,7 +212,6 @@ $groupid           = $member['groupid'];
 //}
 //分销佣金
 $commissionprice = p('commission')->getCommission($goods);
-
 if ($_W['isajax']) {
     if (p('channel')) {
         $ischannelpay   = intval($_GPC['ischannelpay']);
@@ -469,9 +485,11 @@ if($goods['tcate']){
         $saleset            = $sale_plugin->getSet();
         $saleset['enoughs'] = $sale_plugin->getEnoughs();
     }
+
     $ret        = array(
         'is_admin' => $_GPC['is_admin'],
         'goods' => $goods,
+        'indiana' => $indiana,
         'followed' => $followed ? 1 : 0,
         'followurl' => $followurl,
         'followtip' => $followtip,
