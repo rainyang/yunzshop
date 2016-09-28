@@ -28,9 +28,6 @@ if (!class_exists('ReturnModel')) {
 				if($good['isreturnqueue'] == 1){
 
 					$goods_queue = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$uniacid." and goodsid = ".$good['goodsid']." order by queue desc limit 1" );
-
-
-
 					$queuemessages = '';
 
 					for ($i=1; $i <= $good['total'] ; $i++) { 
@@ -48,8 +45,8 @@ if (!class_exists('ReturnModel')) {
 		                pdo_insert('sz_yi_order_goods_queue',$data);
 		                $queueid = pdo_insertid();
 
-					$goods_returnid = pdo_fetchcolumn("SELECT returnid FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$uniacid." and goodsid = ".$good['goodsid']." order by returnid desc limit 1" );
-					$goods_returnid = !empty($goods_returnid)?$goods_returnid:0;
+						$goods_returnid = pdo_fetchcolumn("SELECT returnid FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$uniacid." and goodsid = ".$good['goodsid']." order by returnid desc limit 1" );
+						$goods_returnid = !empty($goods_returnid)?$goods_returnid:0;
 
 
 						if(($queuenum-$goods_returnid) >= $set['queue'])
