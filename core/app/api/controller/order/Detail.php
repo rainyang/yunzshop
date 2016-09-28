@@ -30,10 +30,9 @@ class Detail extends YZ
             'button_list' => $button_list,
             'show_diyform' => $show_diyform,
             'order_status_str' => $order_status_str,
-
         );
         //$res = array_merge($res, $this->json);
-        $res += array_part($this->json);
+        $res += $this->json;
         return $this->returnSuccess($res);
     }
     private function _getButtonList()
@@ -42,59 +41,60 @@ class Detail extends YZ
 
         if($order['status'] == 0 ){
             if($order['paytype']!=3){
-                $button[]=[
+                $button_list[]=[
                     'name'=>'付款',
                     'value'=>1
                 ];
             }
-            $button[]=[
+            $button_list[]=[
                 'name'=>'取消订单',
                 'value'=>9
             ];
         }
         if($order['status']==2 ){
-            $button[]=[
+            $button_list[]=[
                 'name'=>'确认收货',
                 'value'=>5
             ];
 
             if($order['expresssn']!='' ) {
-                $button[]=[
+                $button_list[]=[
                     'name'=>'查看物流',
                     'value'=>8
                 ];
             }
          }
         if($order['status']==3 && $order['iscomment']==0 ) {
-            $button[]=[
+            $button_list[]=[
                 'name'=>'评价',
                 'value'=>10
             ];
         }
         if($order['status']==3 && $order['iscomment']==1 ) {
-            $button[]=[
+            $button_list[]=[
                 'name'=>'追加评价',
                 'value'=>11
             ];
         }
         if($order['status']==3 || $order['status']==-1) {
-            $button[]=[
+            $button_list[]=[
                 'name'=>'删除订单',
                 'value'=>12
             ];
         }
         if($order['canrefund'] ) {
-            $button[]=[
+            $button_list[]=[
                 'name'=>$order['refund_button'],
                 'value'=>13
             ];
         }
         if($order['isverify']=='1' && $order['verified']!='1' && $order['status']=='1') {
-            $button[]=[
+            $button_list[]=[
                 'name'=>'确认使用',
                 'value'=>14
             ];
         }
+        return $button_list;
     }
     private function _getStatusStr(){
         $order = $this->json['order'];
@@ -153,22 +153,15 @@ class Detail extends YZ
         return $id_arr;
     }
 
-    private function _canShowCarrier()
+    private function _canShowDiyForm()
     {
-        $show = $this->variable['show'];
-        $order = $this->variable['order'];
-        if (!$show) {
-            return false;
+        $goods = $this->variable['goods'];
+        $diyform_flag = $this->variable['diyform_flag'];
+        if ($diyform_flag == 1 && count($goods) == 1) {
+            return true;
         }
-        if ($order['isverify'] == 1) {
-            return false;
-        }
-        if ($order['virtual'] != 0) {
-            return false;
-        }
-        return true;
+        return false;
     }
-
     private function _validatePara()
     {
         $validate_fields = array(
