@@ -28,13 +28,10 @@ if (!class_exists('ReturnModel')) {
 				if($good['isreturnqueue'] == 1){
 
 					$goods_queue = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$uniacid." and goodsid = ".$good['goodsid']." order by queue desc limit 1" );
-
-					$goods_returnid = pdo_fetchcolumn("SELECT returnid FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$uniacid." and goodsid = ".$good['goodsid']." order by returnid desc limit 1" );
-
 					$queuemessages = '';
 
 					for ($i=1; $i <= $good['total'] ; $i++) { 
-						$queue = $goods_queue['queue']+$i;
+						$queuenum = $goods_queue['queue']+$i;
 						$queuemessages .= $queue."、";
 						$data = array(
 		                    'uniacid' 	=> $uniacid,
@@ -42,17 +39,21 @@ if (!class_exists('ReturnModel')) {
 		                    'goodsid' 	=> $good['goodsid'],
 		                    'orderid' 	=> $good['orderid'],
 		                    'price' 	=> $good['price']/$good['total'],
-		                    'queue' 	=> $queue,
+		                    'queue' 	=> $queuenum,
 		                    'create_time' 	=> time()
 		                    );
 		                pdo_insert('sz_yi_order_goods_queue',$data);
 		                $queueid = pdo_insertid();
 
-						if(($queue-$goods_returnid) == $set['queue'])
+						$goods_returnid = pdo_fetchcolumn("SELECT returnid FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$uniacid." and goodsid = ".$good['goodsid']." order by returnid desc limit 1" );
+						$goods_returnid = !empty($goods_returnid)?$goods_returnid:0;
+
+
+						if(($queuenum-$goods_returnid) >= $set['queue'])
 						{
 							$queue = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$uniacid." and goodsid = ".$good['goodsid']." and status = 0 order by queue asc limit 1" );
+							pdo_update('sz_yi_order_goods_queue', array('returnid'=>$queuenum,'status'=>'1'), array('id' => $queue['id'], 'uniacid' => $uniacid));
 
-							pdo_update('sz_yi_order_goods_queue', array('returnid'=>$queue,'status'=>'1'), array('id' => $queue['id'], 'uniacid' => $uniacid));
 							$this->setReturnCredit($queue['openid'],'credit2',$queue['price'],'4');
 							$queue_price_txt= $set['queue_price'];
 							$queue_price_txt = str_replace('[返现金额]', $queue['price'], $queue_price_txt);
