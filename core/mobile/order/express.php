@@ -34,7 +34,7 @@ if ($_W['isajax']) {
 	if ($operation == 'display') {
 		$order = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
 		if (empty($order)) {
-			show_json(0);
+return show_json(0);
 		}
 		$goods = pdo_fetchall("select og.goodsid,og.price,g.title,g.thumb,og.total,g.credit,og.optionid,og.optionname as optiontitle,g.isverify,g.storeids  from " . tablename('sz_yi_order_goods') . " og " . " left join " . tablename('sz_yi_goods') . " g on g.id=og.goodsid " . " where og.orderid=:orderid and og.uniacid=:uniacid ", array(':uniacid' => $uniacid, ':orderid' => $orderid));
 		$goods = set_medias($goods, 'thumb');
@@ -48,7 +48,7 @@ if ($_W['isajax']) {
 		if (!$arr) {
 			$arr = getList($express, $expresssn);
 			if (!$arr) {
-				show_json(1, array('list' => array()));
+	return show_json(1, array('list' => array()));
 			}
 		}
 		$len = count($arr);

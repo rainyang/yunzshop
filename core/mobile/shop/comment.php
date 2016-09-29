@@ -23,7 +23,7 @@ if ($operation == 'display') {
 	$lastdata = pdo_fetch('select createime from ' . tablename('sz_yi_member_address') . ' where uniacid=:uniacid and openid=:openid order by id desc limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $id));
 	if (!empty($lastdata)) {
 		if ($lastdata['createtime'] - time() <= 5) {
-			show_json(0, '请过 5 秒钟后再次评论!');
+return show_json(0, '请过 5 秒钟后再次评论!');
 		}
 	}
 	$data = $_GPC['commentdata'];

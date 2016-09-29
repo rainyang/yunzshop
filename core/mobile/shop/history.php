@@ -27,7 +27,7 @@ if ($_W['isajax']) {
 	} else if ($operation == 'remove' && $_W['ispost']) {
 		$ids = $_GPC['ids'];
 		if (empty($ids) || !is_array($ids)) {
-			show_json(0, '参数错误');
+return show_json(0, '参数错误');
 		}
 		$sql = "update " . tablename('sz_yi_member_history') . ' set deleted=1 where uniacid=:uniacid and openid=:openid and id in (' . implode(',', $ids) . ')';
 		pdo_query($sql, array(':uniacid' => $uniacid, ':openid' => $openid));

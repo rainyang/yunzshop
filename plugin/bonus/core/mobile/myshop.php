@@ -95,7 +95,7 @@ if ($op == 'display') {
 			} else {
 				pdo_update('sz_yi_commission_shop', $shopdata, array('id' => $shop['id']));
 			}
-			show_json(1);
+return show_json(1);
 		}
 		$shop = pdo_fetch('select * from ' . tablename('sz_yi_commission_shop') . ' where uniacid=:uniacid and mid=:mid limit 1', array(':uniacid' => $_W['uniacid'], ':mid' => $member['id']));
 		$shop = set_medias($shop, array('img', 'logo'));
@@ -116,11 +116,11 @@ if ($op == 'display') {
 } else if ($op == 'select') {
 	if ($_W['isajax']) {
 		if ($member['agentselectgoods'] == 1) {
-			show_json(-1, '您无权自选商品，请和运营商联系!');
+return show_json(-1, '您无权自选商品，请和运营商联系!');
 		}
 		if (empty($this->set['select_goods'])) {
 			if ($member['agentselectgoods'] != 2) {
-				show_json(-1, '系统未开启自选商品!');
+	return show_json(-1, '系统未开启自选商品!');
 			}
 		}
 		$shop = pdo_fetch('select * from ' . tablename('sz_yi_commission_shop') . ' where uniacid=:uniacid and mid=:mid limit 1', array(':uniacid' => $_W['uniacid'], ':mid' => $member['id']));
@@ -133,14 +133,14 @@ if ($op == 'display') {
 				$shopdata['goodsids'] = implode(",", $_GPC['goodsids']);
 			}
 			if (!empty($shopdata['selectgoods']) && !is_array($_GPC['goodsids'])) {
-				show_json(0, '请选择商品!');
+	return show_json(0, '请选择商品!');
 			}
 			if (empty($shop['id'])) {
 				pdo_insert('sz_yi_commission_shop', $shopdata);
 			} else {
 				pdo_update('sz_yi_commission_shop', $shopdata, array('id' => $shop['id']));
 			}
-			show_json(1);
+return show_json(1);
 		}
 		$goods = array();
 		if (!empty($shop['selectgoods'])) {
