@@ -2,13 +2,13 @@
 namespace app\api\controller\order;
 @session_start();
 use app\api\YZ;
-use app\api\Request;
-use yii\helpers\ArrayHelper;
+use Illuminate\Support\Arr;
 
 class Display extends YZ
 {
     private $json;
     private $variable;
+
     public function __construct()
     {
         parent::__construct();
@@ -20,25 +20,13 @@ class Display extends YZ
 
     public function index()
     {
+        /*$order_list = $this->json['list'];
+
+        $a = Arr::pluck($order_list, 'goods');
+        dump($a);
+        exit;*/
         return $this->returnSuccess($this->json);
     }
 
-    private function _validatePara()
-    {
-        $validate_fields = array(
-            'uniacid' => array(
-                'type' => 'required',
-                'describe' => '',
-            ), 'address_id' => array(
-                'type' => 'required',
-                'describe' => '手机号',
-                'required' => false
-            ),
-
-        );
-        Request::filter($validate_fields);
-        $validate_messages = Request::validate($validate_fields);
-        return $validate_messages;
-    }
 }
 

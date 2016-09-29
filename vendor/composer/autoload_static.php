@@ -8,6 +8,8 @@ class ComposerStaticInit01ad426e57bf2cd69517f61a2314cf60
 {
     public static $files = array (
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
+        '5255c38a0faeba867671b61dfda6d864' => __DIR__ . '/..' . '/paragonie/random_compat/lib/random.php',
+        '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -19,6 +21,11 @@ class ComposerStaticInit01ad426e57bf2cd69517f61a2314cf60
         'c' => 
         array (
             'cebe\\markdown\\' => 14,
+        ),
+        'I' => 
+        array (
+            'Illuminate\\Support\\' => 19,
+            'Illuminate\\Contracts\\' => 21,
         ),
     );
 
@@ -35,6 +42,14 @@ class ComposerStaticInit01ad426e57bf2cd69517f61a2314cf60
         array (
             0 => __DIR__ . '/..' . '/cebe/markdown',
         ),
+        'Illuminate\\Support\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/illuminate/support',
+        ),
+        'Illuminate\\Contracts\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/illuminate/contracts',
+        ),
     );
 
     public static $prefixesPsr0 = array (
@@ -43,6 +58,13 @@ class ComposerStaticInit01ad426e57bf2cd69517f61a2314cf60
             'HTMLPurifier' => 
             array (
                 0 => __DIR__ . '/..' . '/ezyang/htmlpurifier/library',
+            ),
+        ),
+        'D' => 
+        array (
+            'Doctrine\\Common\\Inflector\\' => 
+            array (
+                0 => __DIR__ . '/..' . '/doctrine/inflector/lib',
             ),
         ),
     );
