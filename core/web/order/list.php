@@ -1079,6 +1079,7 @@ if ($operation == "display") {
     );
     $totals = array();
     $supplier_cond = '';
+    $supplier_conds = '';
     if (p('supplier')) {
         if (!empty($perm_role)) {
             $supplier_cond = ' AND supplier_uid=' . $_W['uid'];
