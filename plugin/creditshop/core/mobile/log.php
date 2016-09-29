@@ -33,7 +33,7 @@ if ($_W['isajax']) {
 			}
 			unset($row);
 		}
-		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
+return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 	} else if ($operation == 'detail') {
 		$id = intval($_GPC['id']);
 		$log = pdo_fetch('select * from ' . tablename('sz_yi_creditshop_log') . ' where id=:id and openid=:openid and uniacid=:uniacid limit 1', array(':id' => $id, ':openid' => $openid, ':uniacid' => $uniacid));
@@ -66,7 +66,7 @@ return show_json(-1, '商品记录不存在!');
 		} else {
 			$store = pdo_fetch('select * from ' . tablename('sz_yi_store') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $log['storeid'], ':uniacid' => $_W['uniacid']));
 		}
-		show_json(1, array('log' => $log, 'goods' => $goods, 'address' => $address, 'stores' => $stores, 'store' => $store, 'member' => $member));
+return show_json(1, array('log' => $log, 'goods' => $goods, 'address' => $address, 'stores' => $stores, 'store' => $store, 'member' => $member));
 	} else if ($operation == 'paydispatch' && $_W['ispost']) {
 		$id = intval($_GPC['id']);
 		$addressid = intval($_GPC['addressid']);
@@ -129,7 +129,7 @@ return show_json(0, '未开启微信支付!');
 		if (!$wechat['success']) {
 return show_json(0, '微信支付参数错误!');
 		}
-		show_json(1, array('logid' => $logid, 'wechat' => $wechat));
+return show_json(1, array('logid' => $logid, 'wechat' => $wechat));
 	} else if ($operation == 'payresult' && $_W['ispost']) {
 		$id = intval($_GPC['id']);
 		$log = pdo_fetch('select * from ' . tablename('sz_yi_creditshop_log') . ' where id=:id and openid=:openid and uniacid=:uniacid limit 1', array(':id' => $id, ':openid' => $openid, ':uniacid' => $uniacid));
@@ -141,7 +141,7 @@ return show_json(0, '兑换记录不存在!');
 return show_json(0, '商品记录不存在!');
 		}
 		$this->model->sendMessage($id);
-		show_json(1);
+return show_json(1);
 	} else if ($operation == 'setstore' && $_W['ispost']) {
 		$id = intval($_GPC['id']);
 		$storeid = intval($_GPC['storeid']);
@@ -177,7 +177,7 @@ return show_json(0, '商品记录不存在!');
 				mc_update($member['uid'], $upgrade1);
 			}
 		}
-		show_json(1);
+return show_json(1);
 	}
 }
 $_W['shopshare'] = array(

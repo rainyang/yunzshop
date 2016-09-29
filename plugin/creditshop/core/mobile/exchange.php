@@ -11,16 +11,16 @@ $id        = intval($_GPC['id']);
 if ($operation == 'check') {
 	$log = pdo_fetch('select id,status from ' . tablename('sz_yi_creditshop_log') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(':id' => $id, ':uniacid' => $uniacid, ':openid' => $openid));
 	if (!empty($log) && $log['status'] == 3) {
-		show_json(1);
+return show_json(1);
 	}
-	show_json(0);
+return show_json(0);
 } elseif ($operation == 'qrcode') {
 	$log = pdo_fetch('select id,eno from ' . tablename('sz_yi_creditshop_log') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(':id' => $id, ':uniacid' => $uniacid, ':openid' => $openid));
 	if (empty($log)) {
-		show_json(0, '兑换记录未找到!');
+return show_json(0, '兑换记录未找到!');
 	}
 	$qrcode = $this->model->createQrcode($id);
-	show_json(1, array('qrcode' => $qrcode, 'eno' => $log['eno']));
+return show_json(1, array('qrcode' => $qrcode, 'eno' => $log['eno']));
 } elseif ($operation == 'exchange') {
 	if ($_W['ispost'] && $_W['isajax']) {
 		$saler = pdo_fetch('select * from ' . tablename('sz_yi_saler') . ' where openid=:openid and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
@@ -70,7 +70,7 @@ return show_json(0, '未支付运费，无法进行兑换!');
 		$time = time();
 		pdo_update('sz_yi_creditshop_log', array('status' => 3, 'usetime' => $time, 'verifyopenid' => $openid), array('id' => $log['id']));
 		$this->model->sendMessage($id);
-		show_json(1);
+return show_json(1);
 	}
 	include $this->template('exchange');
 }

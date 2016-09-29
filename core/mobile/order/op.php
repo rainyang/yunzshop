@@ -144,7 +144,7 @@ return show_json(0, '订单未发货，不能确认收货!');
 			m('finance')->sendredpack($order['openid'], $order["redprice"]*100, $orderid, $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
 		}
 
-		show_json(1);
+return show_json(1);
 	}else if ($operation == 'completehotel') {
 		    $orderid = intval($_GPC['orderid']);
 
@@ -492,7 +492,7 @@ return show_json(0, '订单无交易，不能删除!');
             'id' => $order['id'],
             'uniacid' => $uniacid
         ));
-		show_json(1);
+return show_json(1);
 	}
 }
 if ($operation == 'refund') {

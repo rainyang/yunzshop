@@ -161,6 +161,6 @@ return show_json(1, '已提交,请等待审核!');
 	$returnurl = urlencode($this->createPluginMobileUrl('commission/apply'));
 	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
     //print_r($settingalipay);exit;
-	show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
+return show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
 }
 include $this->template('apply');
