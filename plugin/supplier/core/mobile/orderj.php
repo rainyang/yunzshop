@@ -13,7 +13,7 @@ $ordercount = $supplierinfo['ordercount'];
 $commission_total = $supplierinfo['commission_total'];
 $costmoney = $supplierinfo['costmoney'];
 $expect_money = $supplierinfo['expect_money'];
-$commission_ok = number_format($costmoney, 2);
+$commission_ok = $costmoney;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if($_W['isajax']) {
  	if ($operation == 'order') {
