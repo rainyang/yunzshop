@@ -20,13 +20,18 @@ class Display extends YZ
 
     public function index()
     {
-        /*$order_list = $this->json['list'];
+        $order_list = $this->json['list'];
 
         $a = Arr::pluck($order_list, 'goods');
         dump($a);
-        exit;*/
+        //exit;
         return $this->returnSuccess($this->json);
     }
+    private function _formateResult(){
+        array_intersect();
+        $except_structure = array(
 
+        );
+    }
 }
 
