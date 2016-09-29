@@ -23,15 +23,15 @@ if ($_W['isajax']) {
 			$list = pdo_fetchall($sql, $params);
 			$list = set_medias($list, 'thumb');
 		}
-		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
+return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 	} else if ($operation == 'remove' && $_W['ispost']) {
 		$ids = $_GPC['ids'];
 		if (empty($ids) || !is_array($ids)) {
-			show_json(0, '参数错误');
+return show_json(0, '参数错误');
 		}
 		$sql = "update " . tablename('sz_yi_member_history') . ' set deleted=1 where uniacid=:uniacid and openid=:openid and id in (' . implode(',', $ids) . ')';
 		pdo_query($sql, array(':uniacid' => $uniacid, ':openid' => $openid));
-		show_json(1);
+return show_json(1);
 	}
 }
 include $this->template('shop/history');

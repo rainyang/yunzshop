@@ -770,54 +770,7 @@
     <%/if%>
 
     <%if order.isverify==1%>
-    <!--  <div class="store_title" onclick="showStores(this)" show="1" >适用的门店
-          <i class="fa fa-angle-down" style="float:right; line-height:44px; font-size:26px;"></i>
-     </div>
 
-
-       <div class="stores">
-       <%each stores as store index%>
-      <%if index<=1%>
-      <div class="store" >
-              <div class="info">
-              <div class="ico"><i class="fa fa-building-o"></i></div>
-              <div class='info1'>
-                  <div class='inner'>
-                      <div class="user"><%store.storename%></div>
-                      <div class="address">地址: <%store.address%></div>
-                      <div class="tel">电话: <%store.tel%></div>
-                  </div>
-              </div>
-              <a href="http://api.map.baidu.com/marker?location=<%store.lat%>,<%store.lng%>&title=<%store.storename%>&name=<%store.storename%>&content=<%store.address%>&output=html"><div class="ico2"><i class='fa fa-map-marker'></i></div></a>
-              <a href="tel:<%store.tel%>"><div class="ico3" ><i class='fa fa-phone'></i></div></a>
-         </div>
-        </div>
-      <%/if%>
-      <%/each%>
-          <div id='store_more' style="display:none">
-       <%each stores as store index%>
-      <%if index>1%>
-      <div class="store" >
-              <div class="info">
-              <div class="ico"><i class="fa fa-building-o"></i></div>
-              <div class='info1'>
-                  <div class='inner'>
-                      <div class="user"><%store.storename%></div>
-                      <div class="address">地址: <%store.address%></div>
-                      <div class="tel">电话: <%store.tel%></div>
-                  </div>
-              </div>
-              <a href="http://api.map.baidu.com/marker?location=<%store.lat%>,<%store.lng%>&title=<%store.storename%>&name=<%store.storename%>&content=<%store.address%>&output=html"><div class="ico2"><i class='fa fa-map-marker'></i></div></a>
-              <a href="tel:<%store.tel%>"><div class="ico3" ><i class='fa fa-phone'></i></div></a>
-         </div>
-        </div>
-      <%/if%>
-      <%/each%>
-          </div>
-     <%if stores.length>=3%>
-      <div class="store_more" onclick="$('#store_more').show();$(this).remove()">显示更多 <i class="fa fa-angle-double-down"></i></div>
-      <%/if%>
-       </div> -->
     <%if order.addressid!=0%>
     <div class="detail_user">
         <input type='hidden' id='addressid' value='<%address.id%>'/>
@@ -888,20 +841,6 @@
     </div>
     <%/if%>
 
-    <!--  <%if order.dispatchtype==1%>
-     <div class="detail_user">
-         <input type='hidden' id='carrierindex' value='0' />
-        <div class="info" id='carrier_select' >
-            <div class="ico"><i class="fa fa-map-marker"></i></div>
-                <div class='info1'>
-                     <div class='inner'>
-                         <div class="user">自提地点：<span id='carrier_realname'><%carrier.realname%></span>(<span id='carrier_mobile'><%carrier.mobile%></span>)</div>
-                         <div class="address"><span id='carrier_address'><%carrier.address%></span></div>
-                     </div>
-             </div>
-        </div>
-    </div>
-     <%/if%> -->
     <%/if%>
 
 

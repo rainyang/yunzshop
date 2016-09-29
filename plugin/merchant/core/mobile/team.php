@@ -30,6 +30,6 @@ if ($_W['isajax']) {
         $row['realname'] = pdo_fetchcolumn("select realname from " . tablename('sz_yi_member') . " where uniacid={$_W['uniacid']} and openid='{$supplier_openid}'");
 	}
 	unset($row);
-	show_json(1, array('list' => $list, 'pagesize' => $psize));
+return show_json(1, array('list' => $list, 'pagesize' => $psize));
 }
 include $this->template('team');

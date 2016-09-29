@@ -23,10 +23,10 @@ if ($_W['isajax']) {
 	            ':openid' => $openid
 	        ));		
 		if (empty($order)) {
-			show_json(0, '订单未找到!');
+return show_json(0, '订单未找到!');
 		}
 		if ($order['status'] != 0) {
-			show_json(0, '订单已支付，不能取消!');
+return show_json(0, '订单已支付，不能取消!');
 		}
 		pdo_update('sz_yi_order', array(
 	            'status' => -1,
@@ -73,7 +73,7 @@ if ($_W['isajax']) {
 	            show_json(0, '订单未找到!');
 	        }
 		if ($order['status'] != 2) {
-			show_json(0, '订单未发货，不能确认收货!');
+return show_json(0, '订单未发货，不能确认收货!');
 		}
 
 		if ($order['refundstate'] > 0 && !empty($order['refundid'])) {
@@ -144,7 +144,7 @@ if ($_W['isajax']) {
 			m('finance')->sendredpack($order['openid'], $order["redprice"]*100, $orderid, $desc = '购买商品赠送红包', $act_name = '购买商品赠送红包', $remark = '购买商品确认收货发送红包');
 		}
 
-		show_json(1);
+return show_json(1);
 	}else if ($operation == 'completehotel') {
 		    $orderid = intval($_GPC['orderid']);
 
@@ -157,7 +157,7 @@ if ($_W['isajax']) {
 	            show_json(0, '订单未找到!');
 	        }
 		if ($order['status'] != 2) {
-			show_json(0, '订单未确认，不能确认入住!');
+return show_json(0, '订单未确认，不能确认入住!');
 
 		}
 		pdo_update('sz_yi_order', array(
@@ -241,21 +241,21 @@ if ($_W['isajax']) {
 	            show_json(0, '订单未找到!');
 	        }
 		if ($order['status'] != 1 && $order['status'] != 3) {
-			show_json(0, '订单未付款或未收货，不能申请退款!');
+return show_json(0, '订单未付款或未收货，不能申请退款!');
 		} else {
 			if ($order['status'] == 3) {
 				if (!empty($order['virtual']) || $order['isverify'] == 1) {
-					show_json(0, '此订单不允许退款!');
+		return show_json(0, '此订单不允许退款!');
 				} else {
 					$tradeset = m('common')->getSysset('trade');
 					$refunddays = intval($tradeset['refunddays']);
 					if ($refunddays > 0) {
 						$days = intval((time() - $order['finishtime']) / 3600 / 24);
 						if ($days > $refunddays) {
-							show_json(0, '订单完成已超过 ' . $refunddays . ' 天, 无法发起退款申请!');
+				return show_json(0, '订单完成已超过 ' . $refunddays . ' 天, 无法发起退款申请!');
 						}
 					} else {
-						show_json(0, '订单完成, 无法申请退款!');
+			return show_json(0, '订单完成, 无法申请退款!');
 					}
 				}
 			}
@@ -397,13 +397,13 @@ if ($_W['isajax']) {
 		$orderid = intval($_GPC['orderid']);
 		$order = pdo_fetch('select id,status,iscomment from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
 		if (empty($order)) {
-			show_json(0, '订单未找到!');
+return show_json(0, '订单未找到!');
 		}
 		if ($order['status'] != 3 && $order['status'] != 4) {
-			show_json(0, '订单未收货，不能评价!');
+return show_json(0, '订单未收货，不能评价!');
 		}
 		if ($order['iscomment'] >= 2) {
-			show_json(0, '您已经评价了!');
+return show_json(0, '您已经评价了!');
 		}
 		if ($_W['ispost']) {
 	            $member   = m('member')->getMember($openid);
@@ -471,10 +471,10 @@ if ($_W['isajax']) {
 	            ':openid' => $openid
 	        ));
 		if (empty($order)) {
-			show_json(0, '订单未找到!');
+return show_json(0, '订单未找到!');
 		}
 		if ($order['status'] != 3 && $order['status'] != -1) {
-			show_json(0, '订单无交易，不能删除!');
+return show_json(0, '订单无交易，不能删除!');
 		}
  if ($order['refundstate'] > 0 && !empty($order['refundid'])) {
             $change_refund               = array();
@@ -492,7 +492,7 @@ if ($_W['isajax']) {
             'id' => $order['id'],
             'uniacid' => $uniacid
         ));
-		show_json(1);
+return show_json(1);
 	}
 }
 if ($operation == 'refund') {

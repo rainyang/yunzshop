@@ -12,7 +12,8 @@ class Edit extends YZ
     public function __construct()
     {
         parent::__construct();
-
+        global $_W;
+        $_W['ispost'] = true;
         $result = $this->callMobile('shop/address/submit');
         $this->variable = $result['variable'];
         $this->json = $result['json'];
