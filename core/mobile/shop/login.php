@@ -9,7 +9,7 @@ if ($operation == 'display') {
     if ($_W['isajax']) {
         if ($_W['ispost']) {
         	if (!p('supplier')) {
-        		show_json(3);
+        return show_json(3);
         	}
             $userdata = $_GPC['userdata'];
             $member = array();

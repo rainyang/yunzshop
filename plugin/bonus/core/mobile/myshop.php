@@ -59,7 +59,7 @@ if ($op == 'display') {
 		$advs = set_medias($advs, 'thumb');
 		$ret = array('shop' => $shop, 'goodscount' => number_format($goodscount, 0), 'set' => m('common')->getSysset('shop'), 'advs' => $advs);
 		$ret['isme'] = $mid == $member['id'];
-		show_json(1, $ret);
+return show_json(1, $ret);
 	}
 	$_W['shopshare'] = array('title' => $shop['name'], 'imgUrl' => $shop['logo'], 'desc' => $shop['desc'], 'link' => $this->createMobileUrl('shop'));
 	if ($member['isagent'] == 1 && $member['status'] == 1) {
@@ -82,7 +82,7 @@ if ($op == 'display') {
 			}
 		}
 		$goods = m('goods')->getList($args);
-		show_json(1, array('goods' => $goods, 'pagesize' => $args['pagesize']));
+return show_json(1, array('goods' => $goods, 'pagesize' => $args['pagesize']));
 	}
 } else if ($op == 'set') {
 	if ($_W['isajax']) {
@@ -110,7 +110,7 @@ return show_json(1);
 			}
 		}
 		$shop['openselect'] = $openselect;
-		show_json(1, array('shop' => $shop));
+return show_json(1, array('shop' => $shop));
 	}
 	include $this->template('myshop_set');
 } else if ($op == 'select') {
@@ -150,7 +150,7 @@ return show_json(1);
 				$goods = set_medias($goods, 'thumb');
 			}
 		}
-		show_json(1, array('shop' => $shop, 'goods' => $goods));
+return show_json(1, array('shop' => $shop, 'goods' => $goods));
 	}
 	$set = m('common')->getSysset('shop');
 	include $this->template('myshop_select');

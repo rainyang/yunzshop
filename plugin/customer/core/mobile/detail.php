@@ -15,7 +15,7 @@ if ($_W['isajax']) {
 		if (!empty($goods)) {
 			pdo_update('sz_yi_creditshop_goods', array('views' => $goods['views'] + 1), array('id' => $id));
 		}
-		show_json(1, array('followed' => m('user')->followed($openid), 'creditstr' => number_format(intval($credit), 0), 'credit' => intval($credit), 'moneystr' => number_format(intval($money), 2), 'money' => $money, 'goods' => $goods));
+return show_json(1, array('followed' => m('user')->followed($openid), 'creditstr' => number_format(intval($credit), 0), 'credit' => intval($credit), 'moneystr' => number_format(intval($money), 2), 'money' => $money, 'goods' => $goods));
 	} else if ($operation == 'pay' && $_W['ispost']) {
 		if (empty($goods['canbuy'])) {
 return show_json(0, $goods['buymsg']);
@@ -79,7 +79,7 @@ return show_json(0, $goods['buymsg']);
 	return show_json(1, array('logid' => $logid, 'wechat' => $wechat));
 			}
 		}
-		show_json(1, array('logid' => $logid));
+return show_json(1, array('logid' => $logid));
 	} else if ($operation == 'lottery' && $_W['ispost']) {
 		$logid = intval($_GPC['logid']);
 		$log = pdo_fetch('select * from ' . tablename('sz_yi_creditshop_log') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $logid, ':uniacid' => $uniacid));
@@ -127,7 +127,7 @@ return show_json(-1, $goods['buymsg']);
 		if ($status == 2) {
 			$this->model->sendMessage($logid);
 		}
-		show_json($status);
+return show_json($status);
 	}
 }
 $_W['shopshare'] = array('title' => !empty($goods['share_title']) ? $goods['share_title'] : $goods['title'], 'imgUrl' => !empty($goods['share_icon']) ? tomedia($goods['share_icon']) : tomedia($goods['thumb']), 'link' => $this->createPluginMobileUrl('creditshop/detail', array('id' => $id)), 'desc' => !empty($goods['share_desc']) ? $goods['share_desc'] : $goods['title']);

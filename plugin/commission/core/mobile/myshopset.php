@@ -34,7 +34,7 @@ return show_json(1);
 			}
 		}
 		$shop['openselect'] = $openselect;
-		show_json(1, array('shop' => $shop));
+return show_json(1, array('shop' => $shop));
 	}
 	include $this->template('myshop_set');
 }

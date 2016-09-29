@@ -66,6 +66,6 @@ return show_json(0, '已经充值成功,无需重复支付!');
 			}
 		}
 	}
-	show_json(1, array('alipay' => $alipay));
+return show_json(1, array('alipay' => $alipay));
 }
 include $this->template('order/pay_alipay');

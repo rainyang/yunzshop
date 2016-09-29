@@ -40,7 +40,7 @@ return show_json(0);
 		$goods = set_medias($goods, 'thumb');
 		$order['goodstotal'] = count($goods);
 		$set = set_medias(m('common')->getSysset('shop'), 'logo');
-		show_json(1, array('order' => $order, 'goods' => $goods, 'set' => $set));
+return show_json(1, array('order' => $order, 'goods' => $goods, 'set' => $set));
 	} else if ($operation == 'step') {
 		$express = trim($_GPC['express']);
 		$expresssn = trim($_GPC['expresssn']);
@@ -63,7 +63,7 @@ return show_json(0);
 			$step = explode("<br />", str_replace("&middot;", "", $row));
 			$list[] = array('time' => trim($step[0]), 'step' => trim($step[1]), 'ts' => strtotime(trim($step[0])));
 		}
-		show_json(1, array('list' => $list));
+return show_json(1, array('list' => $list));
 	}
 }
 include $this->template('order/express');
