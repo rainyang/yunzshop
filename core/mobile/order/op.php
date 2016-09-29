@@ -59,7 +59,7 @@ return show_json(0, '订单已支付，不能取消!');
 	        if (p('coupon') && !empty($order['couponid'])) {
 	            p('coupon')->returnConsumeCoupon($orderid);
 	        }
-	        show_json(1);
+	        return show_json(1);
 	    } else if ($operation == 'complete') {
 
 	        $orderid = intval($_GPC['orderid']);
@@ -70,7 +70,7 @@ return show_json(0, '订单已支付，不能取消!');
 	            ':openid' => $openid
 	        ));
 	        if (empty($order)) {
-	            show_json(0, '订单未找到!');
+	            return show_json(0, '订单未找到!');
 	        }
 		if ($order['status'] != 2) {
 return show_json(0, '订单未发货，不能确认收货!');
@@ -154,7 +154,7 @@ return show_json(1);
 	            ':openid' => $openid
 	        ));
 	        if (empty($order)) {
-	            show_json(0, '订单未找到!');
+	            return show_json(0, '订单未找到!');
 	        }
 		if ($order['status'] != 2) {
 return show_json(0, '订单未确认，不能确认入住!');
@@ -166,7 +166,7 @@ return show_json(0, '订单未确认，不能确认入住!');
             'id' => $order['id'],
             'uniacid' => $uniacid
         ));
-        show_json(1);
+        return show_json(1);
 	}  else if ($operation == 'delivery') {
 	        if ($_W['ispost']) {
 	            $refundid = intval($_GPC['id']);
@@ -177,7 +177,7 @@ return show_json(0, '订单未确认，不能确认入住!');
 	                ':openid' => $openid
 	            ));
 	            if (empty($order)) {
-	                show_json(0, '订单未找到!');
+	                return show_json(0, '订单未找到!');
 	            }
 	            $refund = pdo_fetch('select * from ' . tablename('sz_yi_order_refund') . ' where id=:id and uniacid=:uniacid and orderid=:orderid limit 1', array(
 	                ':id' => $refundid,
@@ -185,7 +185,7 @@ return show_json(0, '订单未确认，不能确认入住!');
 	                ':orderid' => $orderid
 	            ));
 	            if (empty($refund)) {
-	                show_json(0, '换货申请未找到!');
+	                return show_json(0, '换货申请未找到!');
 	            }
 	            $time                      = time();
 	            $refund_data               = array();
@@ -203,7 +203,7 @@ return show_json(0, '订单未确认，不能确认入住!');
 	                'id' => $orderid,
 	                'uniacid' => $uniacid
 	            ));
-	            show_json(1, '成功!');
+	            return show_json(1, '成功!');
 	        }
 	    } else if ($operation == 'express') {
 	        if ($_W['ispost']) {
@@ -213,10 +213,10 @@ return show_json(0, '订单未确认，不能确认入住!');
 	            $expresscom = $refunddata['expresscom'];
 	            $expresssn  = $refunddata['expresssn'];
 	            if (empty($refundid)) {
-	                show_json(0, '参数错误!');
+	                return show_json(0, '参数错误!');
 	            }
 	            if (empty($expresssn)) {
-	                show_json(0, '请输入快递单号!');
+	                return show_json(0, '请输入快递单号!');
 	            }
 	            $refund               = array();
 	            $refund['status']     = 4;
@@ -228,7 +228,7 @@ return show_json(0, '订单未确认，不能确认入住!');
 	                'id' => $refundid,
 	                'uniacid' => $uniacid
 	            ));
-	            show_json(1, '成功!');
+	            return show_json(1, '成功!');
 	        }
 	} else if ($operation == 'refund') {
 		$orderid = intval($_GPC['orderid']);
@@ -238,7 +238,7 @@ return show_json(0, '订单未确认，不能确认入住!');
 	            ':openid' => $openid
 	        ));
 	        if (empty($order)) {
-	            show_json(0, '订单未找到!');
+	            return show_json(0, '订单未找到!');
 	        }
 		if ($order['status'] != 1 && $order['status'] != 3) {
 return show_json(0, '订单未付款或未收货，不能申请退款!');
@@ -285,17 +285,17 @@ return show_json(0, '订单未付款或未收货，不能申请退款!');
 	                    'id' => $orderid,
 	                    'uniacid' => $uniacid
 	                ));
-	                show_json(1);
+	                return show_json(1);
 	            } else {
 	                $refunddata = $_GPC['refunddata'];
 	                $rtype      = $refunddata['rtype'];
 	                if ($rtype != 2) {
 	                    $price = $refunddata['price'];
 	                    if (empty($price)) {
-	                        show_json(2, '退款金额不能为0元');
+	                        return show_json(2, '退款金额不能为0元');
 	                    }
 	                    if ($price > $order['refundprice']) {
-	                        show_json(3, '退款金额不能超过' . $order['refundprice'] . '元');
+	                        return show_json(3, '退款金额不能超过' . $order['refundprice'] . '元');
 	                    }
 	                    $price = trim($refunddata['price']);
 	                } else {
@@ -346,7 +346,7 @@ return show_json(0, '订单未付款或未收货，不能申请退款!');
 	                    ));
 	                }
 	                m('notice')->sendOrderMessage($orderid, true);
-	                show_json(1);
+	                return show_json(1);
 	            }
 	        }
 	        $refund = false;
@@ -387,7 +387,7 @@ return show_json(0, '订单未付款或未收货，不能申请退款!');
 	        } else {
 	            $show_price = $refund['applyprice'];
 	        }
-	        show_json(1, array(
+	        return show_json(1, array(
 	            'showprice' => $show_price,
 	            'order' => $order,
 	            'refund' => $refund,
@@ -409,7 +409,7 @@ return show_json(0, '您已经评价了!');
 	            $member   = m('member')->getMember($openid);
 	            $comments = $_GPC['comments'];
 	            if (!is_array($comments)) {
-	                show_json(0, '数据出错，请重试!');
+	                return show_json(0, '数据出错，请重试!');
 	            }
 	            foreach ($comments as $c) {
 	                $old_c = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order_comment') . ' where uniacid=:uniacid and orderid=:orderid and goodsid=:goodsid limit 1', array(
@@ -452,14 +452,14 @@ return show_json(0, '您已经评价了!');
 	                'id' => $orderid,
 	                'uniacid' => $uniacid
 	            ));
-	            show_json(1);
+	            return show_json(1);
 	        }
 	        $goods = pdo_fetchall('select og.id,og.goodsid,og.price,g.title,g.thumb,og.total,g.credit,og.optionid,o.title as optiontitle from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on g.id=og.goodsid ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on o.id=og.optionid ' . ' where og.orderid=:orderid and og.uniacid=:uniacid ', array(
 	            ':uniacid' => $uniacid,
 	            ':orderid' => $orderid
 	        ));
 	        $goods = set_medias($goods, 'thumb');
-	        show_json(1, array(
+	        return show_json(1, array(
 	            'order' => $order,
 	            'goods' => $goods
 	        ));
