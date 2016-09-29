@@ -3985,3 +3985,826 @@ $_SERVER = [
     ]
     'argc' => 1
 ]
+2016-09-28 12:31:14 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Call to undefined function template_parse()' in E:\yunzhong\app.yunzhong.com\addons\sz_yi\core\inc\functions.php:590
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-28 12:31:14 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '1'
+    'api' => 'commission/Withdraw'
+]
+
+$_COOKIE = [
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'fdbf___uniacid' => '1'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'PHPSESSID' => '1ou23rbhdju3v5fk5gfgc0tfv3'
+]
+
+$_SESSION = [
+    'acid' => '1'
+    'uniacid' => 1
+    'token' => [
+        'QCyI' => 1475035343
+        'Vzhf' => 1475035350
+        'o7bY' => 1475035351
+        'TF4x' => 1475035351
+        'z46u' => 1475035495
+        'B6Od' => 1475035495
+    ]
+]
+
+$_SERVER = [
+    'MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'PHPRC' => '\\xampp\\php'
+    'TMP' => '\\xampp\\tmp'
+    'HTTP_HOST' => 'app.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; fdbf___uniacid=1; fdbf___uid=1; ext_type=1; PHPSESSID=1ou23rbhdju3v5fk5gfgc0tfv3'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => 'D:\\Program Files\\Perl64\\site\\bin;D:\\Program Files\\Perl64\\bin;C:\\Program Files (x86)\\Common Files\\NetSarang;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files (x86)\\Intel\\iCLS Client\\;C:\\Program Files\\Intel\\iCLS Client\\;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\IPT;D:\\Program Files\\TortoiseSVN\\bin'
+    'SystemRoot' => 'C:\\Windows'
+    'COMSPEC' => 'C:\\Windows\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\Windows'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33 Server at app.yunzhong.com Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33'
+    'SERVER_NAME' => 'app.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'SERVER_ADMIN' => 'yangming@163.com'
+    'SCRIPT_FILENAME' => 'E:/yunzhong/app.yunzhong.com/app_api.php'
+    'REMOTE_PORT' => '51071'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=1&api=commission/Withdraw'
+    'REQUEST_URI' => '/app_api.php?uniacid=1&api=commission/Withdraw'
+    'SCRIPT_NAME' => '/app_api.php'
+    'PHP_SELF' => '/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475037074.679
+    'REQUEST_TIME' => 1475037074
+]
+2016-09-28 12:31:24 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Call to undefined function template_parse()' in E:\yunzhong\app.yunzhong.com\addons\sz_yi\core\inc\functions.php:590
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-28 12:31:24 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '1'
+    'api' => 'commission/Withdraw'
+]
+
+$_COOKIE = [
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'fdbf___uniacid' => '1'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'PHPSESSID' => '1ou23rbhdju3v5fk5gfgc0tfv3'
+]
+
+$_SESSION = [
+    'acid' => '1'
+    'uniacid' => 1
+    'token' => [
+        'QCyI' => 1475035343
+        'Vzhf' => 1475035350
+        'o7bY' => 1475035351
+        'TF4x' => 1475035351
+        'z46u' => 1475035495
+        'B6Od' => 1475035495
+    ]
+]
+
+$_SERVER = [
+    'MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'PHPRC' => '\\xampp\\php'
+    'TMP' => '\\xampp\\tmp'
+    'HTTP_HOST' => 'app.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; fdbf___uniacid=1; fdbf___uid=1; ext_type=1; PHPSESSID=1ou23rbhdju3v5fk5gfgc0tfv3'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => 'D:\\Program Files\\Perl64\\site\\bin;D:\\Program Files\\Perl64\\bin;C:\\Program Files (x86)\\Common Files\\NetSarang;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files (x86)\\Intel\\iCLS Client\\;C:\\Program Files\\Intel\\iCLS Client\\;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\IPT;D:\\Program Files\\TortoiseSVN\\bin'
+    'SystemRoot' => 'C:\\Windows'
+    'COMSPEC' => 'C:\\Windows\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\Windows'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33 Server at app.yunzhong.com Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33'
+    'SERVER_NAME' => 'app.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'SERVER_ADMIN' => 'yangming@163.com'
+    'SCRIPT_FILENAME' => 'E:/yunzhong/app.yunzhong.com/app_api.php'
+    'REMOTE_PORT' => '51076'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=1&api=commission/Withdraw'
+    'REQUEST_URI' => '/app_api.php?uniacid=1&api=commission/Withdraw'
+    'SCRIPT_NAME' => '/app_api.php'
+    'PHP_SELF' => '/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475037084.064
+    'REQUEST_TIME' => 1475037084
+]
+2016-09-28 12:31:25 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Call to undefined function template_parse()' in E:\yunzhong\app.yunzhong.com\addons\sz_yi\core\inc\functions.php:590
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-28 12:31:25 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '1'
+    'api' => 'commission/Withdraw'
+]
+
+$_COOKIE = [
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'fdbf___uniacid' => '1'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'PHPSESSID' => '1ou23rbhdju3v5fk5gfgc0tfv3'
+]
+
+$_SESSION = [
+    'acid' => '1'
+    'uniacid' => 1
+    'token' => [
+        'QCyI' => 1475035343
+        'Vzhf' => 1475035350
+        'o7bY' => 1475035351
+        'TF4x' => 1475035351
+        'z46u' => 1475035495
+        'B6Od' => 1475035495
+    ]
+]
+
+$_SERVER = [
+    'MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'PHPRC' => '\\xampp\\php'
+    'TMP' => '\\xampp\\tmp'
+    'HTTP_HOST' => 'app.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; fdbf___uniacid=1; fdbf___uid=1; ext_type=1; PHPSESSID=1ou23rbhdju3v5fk5gfgc0tfv3'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => 'D:\\Program Files\\Perl64\\site\\bin;D:\\Program Files\\Perl64\\bin;C:\\Program Files (x86)\\Common Files\\NetSarang;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files (x86)\\Intel\\iCLS Client\\;C:\\Program Files\\Intel\\iCLS Client\\;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\IPT;D:\\Program Files\\TortoiseSVN\\bin'
+    'SystemRoot' => 'C:\\Windows'
+    'COMSPEC' => 'C:\\Windows\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\Windows'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33 Server at app.yunzhong.com Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33'
+    'SERVER_NAME' => 'app.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'SERVER_ADMIN' => 'yangming@163.com'
+    'SCRIPT_FILENAME' => 'E:/yunzhong/app.yunzhong.com/app_api.php'
+    'REMOTE_PORT' => '51079'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=1&api=commission/Withdraw'
+    'REQUEST_URI' => '/app_api.php?uniacid=1&api=commission/Withdraw'
+    'SCRIPT_NAME' => '/app_api.php'
+    'PHP_SELF' => '/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475037085.201
+    'REQUEST_TIME' => 1475037085
+]
+2016-09-28 12:31:26 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Call to undefined function template_parse()' in E:\yunzhong\app.yunzhong.com\addons\sz_yi\core\inc\functions.php:590
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-28 12:31:26 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '1'
+    'api' => 'commission/Withdraw'
+]
+
+$_COOKIE = [
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'fdbf___uniacid' => '1'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'PHPSESSID' => '1ou23rbhdju3v5fk5gfgc0tfv3'
+]
+
+$_SESSION = [
+    'acid' => '1'
+    'uniacid' => 1
+    'token' => [
+        'QCyI' => 1475035343
+        'Vzhf' => 1475035350
+        'o7bY' => 1475035351
+        'TF4x' => 1475035351
+        'z46u' => 1475035495
+        'B6Od' => 1475035495
+    ]
+]
+
+$_SERVER = [
+    'MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'PHPRC' => '\\xampp\\php'
+    'TMP' => '\\xampp\\tmp'
+    'HTTP_HOST' => 'app.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; fdbf___uniacid=1; fdbf___uid=1; ext_type=1; PHPSESSID=1ou23rbhdju3v5fk5gfgc0tfv3'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => 'D:\\Program Files\\Perl64\\site\\bin;D:\\Program Files\\Perl64\\bin;C:\\Program Files (x86)\\Common Files\\NetSarang;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files (x86)\\Intel\\iCLS Client\\;C:\\Program Files\\Intel\\iCLS Client\\;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\IPT;D:\\Program Files\\TortoiseSVN\\bin'
+    'SystemRoot' => 'C:\\Windows'
+    'COMSPEC' => 'C:\\Windows\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\Windows'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33 Server at app.yunzhong.com Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33'
+    'SERVER_NAME' => 'app.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'SERVER_ADMIN' => 'yangming@163.com'
+    'SCRIPT_FILENAME' => 'E:/yunzhong/app.yunzhong.com/app_api.php'
+    'REMOTE_PORT' => '51081'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=1&api=commission/Withdraw'
+    'REQUEST_URI' => '/app_api.php?uniacid=1&api=commission/Withdraw'
+    'SCRIPT_NAME' => '/app_api.php'
+    'PHP_SELF' => '/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475037086.352
+    'REQUEST_TIME' => 1475037086
+]
+2016-09-28 12:32:45 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Call to undefined function template_parse()' in E:\yunzhong\app.yunzhong.com\addons\sz_yi\core\inc\functions.php:590
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-28 12:32:44 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '1'
+    'api' => 'commission/Withdraw'
+]
+
+$_COOKIE = [
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'fdbf___uniacid' => '1'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'PHPSESSID' => '1ou23rbhdju3v5fk5gfgc0tfv3'
+]
+
+$_SESSION = [
+    'acid' => '1'
+    'uniacid' => 1
+    'token' => [
+        'QCyI' => 1475035343
+        'Vzhf' => 1475035350
+        'o7bY' => 1475035351
+        'TF4x' => 1475035351
+        'z46u' => 1475035495
+        'B6Od' => 1475035495
+    ]
+]
+
+$_SERVER = [
+    'MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'PHPRC' => '\\xampp\\php'
+    'TMP' => '\\xampp\\tmp'
+    'HTTP_HOST' => 'app.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; fdbf___uniacid=1; fdbf___uid=1; ext_type=1; PHPSESSID=1ou23rbhdju3v5fk5gfgc0tfv3'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => 'D:\\Program Files\\Perl64\\site\\bin;D:\\Program Files\\Perl64\\bin;C:\\Program Files (x86)\\Common Files\\NetSarang;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files (x86)\\Intel\\iCLS Client\\;C:\\Program Files\\Intel\\iCLS Client\\;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\IPT;D:\\Program Files\\TortoiseSVN\\bin'
+    'SystemRoot' => 'C:\\Windows'
+    'COMSPEC' => 'C:\\Windows\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\Windows'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33 Server at app.yunzhong.com Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33'
+    'SERVER_NAME' => 'app.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'SERVER_ADMIN' => 'yangming@163.com'
+    'SCRIPT_FILENAME' => 'E:/yunzhong/app.yunzhong.com/app_api.php'
+    'REMOTE_PORT' => '51121'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=1&api=commission/Withdraw'
+    'REQUEST_URI' => '/app_api.php?uniacid=1&api=commission/Withdraw'
+    'SCRIPT_NAME' => '/app_api.php'
+    'PHP_SELF' => '/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475037164.896
+    'REQUEST_TIME' => 1475037164
+]
+2016-09-28 16:50:08 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Call to undefined function template_parse()' in E:\yunzhong\app.yunzhong.com\addons\sz_yi\core\inc\functions.php:590
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-28 16:50:08 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '1'
+    'api' => 'commission/withdraw'
+]
+
+$_COOKIE = [
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'fdbf___uniacid' => '1'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'PHPSESSID' => '1ou23rbhdju3v5fk5gfgc0tfv3'
+]
+
+$_SESSION = [
+    'acid' => '1'
+    'uniacid' => 1
+    'token' => [
+        'QCyI' => 1475035343
+        'Vzhf' => 1475035350
+        'o7bY' => 1475035351
+        'TF4x' => 1475035351
+        'z46u' => 1475035495
+        'B6Od' => 1475035495
+    ]
+]
+
+$_SERVER = [
+    'MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'PHPRC' => '\\xampp\\php'
+    'TMP' => '\\xampp\\tmp'
+    'HTTP_HOST' => 'app.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; fdbf___uniacid=1; fdbf___uid=1; ext_type=1; PHPSESSID=1ou23rbhdju3v5fk5gfgc0tfv3'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'PATH' => 'D:\\Program Files\\Perl64\\site\\bin;D:\\Program Files\\Perl64\\bin;C:\\Program Files (x86)\\Common Files\\NetSarang;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files (x86)\\Intel\\iCLS Client\\;C:\\Program Files\\Intel\\iCLS Client\\;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\IPT;D:\\Program Files\\TortoiseSVN\\bin'
+    'SystemRoot' => 'C:\\Windows'
+    'COMSPEC' => 'C:\\Windows\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\Windows'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33 Server at app.yunzhong.com Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33'
+    'SERVER_NAME' => 'app.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'SERVER_ADMIN' => 'yangming@163.com'
+    'SCRIPT_FILENAME' => 'E:/yunzhong/app.yunzhong.com/app_api.php'
+    'REMOTE_PORT' => '51125'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=1&api=commission/withdraw'
+    'REQUEST_URI' => '/app_api.php?uniacid=1&api=commission/withdraw'
+    'SCRIPT_NAME' => '/app_api.php'
+    'PHP_SELF' => '/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475052608.685
+    'REQUEST_TIME' => 1475052608
+]
+2016-09-28 16:50:14 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Call to undefined function template_parse()' in E:\yunzhong\app.yunzhong.com\addons\sz_yi\core\inc\functions.php:590
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-28 16:50:14 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '1'
+    'api' => 'commission/Withdraw'
+]
+
+$_COOKIE = [
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'fdbf___uniacid' => '1'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'PHPSESSID' => '1ou23rbhdju3v5fk5gfgc0tfv3'
+]
+
+$_SESSION = [
+    'acid' => '1'
+    'uniacid' => 1
+    'token' => [
+        'QCyI' => 1475035343
+        'Vzhf' => 1475035350
+        'o7bY' => 1475035351
+        'TF4x' => 1475035351
+        'z46u' => 1475035495
+        'B6Od' => 1475035495
+    ]
+]
+
+$_SERVER = [
+    'MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'PHPRC' => '\\xampp\\php'
+    'TMP' => '\\xampp\\tmp'
+    'HTTP_HOST' => 'app.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; fdbf___uniacid=1; fdbf___uid=1; ext_type=1; PHPSESSID=1ou23rbhdju3v5fk5gfgc0tfv3'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'PATH' => 'D:\\Program Files\\Perl64\\site\\bin;D:\\Program Files\\Perl64\\bin;C:\\Program Files (x86)\\Common Files\\NetSarang;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files (x86)\\Intel\\iCLS Client\\;C:\\Program Files\\Intel\\iCLS Client\\;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\IPT;D:\\Program Files\\TortoiseSVN\\bin'
+    'SystemRoot' => 'C:\\Windows'
+    'COMSPEC' => 'C:\\Windows\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\Windows'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33 Server at app.yunzhong.com Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33'
+    'SERVER_NAME' => 'app.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'SERVER_ADMIN' => 'yangming@163.com'
+    'SCRIPT_FILENAME' => 'E:/yunzhong/app.yunzhong.com/app_api.php'
+    'REMOTE_PORT' => '51128'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=1&api=commission/Withdraw'
+    'REQUEST_URI' => '/app_api.php?uniacid=1&api=commission/Withdraw'
+    'SCRIPT_NAME' => '/app_api.php'
+    'PHP_SELF' => '/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475052614.201
+    'REQUEST_TIME' => 1475052614
+]
+2016-09-28 17:06:36 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Call to undefined function template_parse()' in E:\yunzhong\app.yunzhong.com\addons\sz_yi\core\inc\functions.php:590
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-28 17:06:35 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '1'
+    'api' => 'commission/Withdraw'
+]
+
+$_COOKIE = [
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'fdbf___uniacid' => '1'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'PHPSESSID' => '1ou23rbhdju3v5fk5gfgc0tfv3'
+]
+
+$_SESSION = [
+    'acid' => '1'
+    'uniacid' => 1
+    'token' => [
+        'QCyI' => 1475035343
+        'Vzhf' => 1475035350
+        'o7bY' => 1475035351
+        'TF4x' => 1475035351
+        'z46u' => 1475035495
+        'B6Od' => 1475035495
+    ]
+]
+
+$_SERVER = [
+    'MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'PHPRC' => '\\xampp\\php'
+    'TMP' => '\\xampp\\tmp'
+    'HTTP_HOST' => 'app.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; fdbf___uniacid=1; fdbf___uid=1; ext_type=1; PHPSESSID=1ou23rbhdju3v5fk5gfgc0tfv3'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => 'D:\\Program Files\\Perl64\\site\\bin;D:\\Program Files\\Perl64\\bin;C:\\Program Files (x86)\\Common Files\\NetSarang;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files (x86)\\Intel\\iCLS Client\\;C:\\Program Files\\Intel\\iCLS Client\\;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\IPT;D:\\Program Files\\TortoiseSVN\\bin'
+    'SystemRoot' => 'C:\\Windows'
+    'COMSPEC' => 'C:\\Windows\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\Windows'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33 Server at app.yunzhong.com Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33'
+    'SERVER_NAME' => 'app.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'SERVER_ADMIN' => 'yangming@163.com'
+    'SCRIPT_FILENAME' => 'E:/yunzhong/app.yunzhong.com/app_api.php'
+    'REMOTE_PORT' => '51453'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=1&api=commission/Withdraw'
+    'REQUEST_URI' => '/app_api.php?uniacid=1&api=commission/Withdraw'
+    'SCRIPT_NAME' => '/app_api.php'
+    'PHP_SELF' => '/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475053595.889
+    'REQUEST_TIME' => 1475053595
+]
+2016-09-28 17:07:34 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Call to undefined function template_parse()' in E:\yunzhong\app.yunzhong.com\addons\sz_yi\core\inc\functions.php:590
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-28 17:07:34 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '1'
+    'api' => 'commission/Withdraw'
+]
+
+$_COOKIE = [
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'fdbf___uniacid' => '1'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'PHPSESSID' => '1ou23rbhdju3v5fk5gfgc0tfv3'
+]
+
+$_SESSION = [
+    'acid' => '1'
+    'uniacid' => 1
+    'token' => [
+        'QCyI' => 1475035343
+        'Vzhf' => 1475035350
+        'o7bY' => 1475035351
+        'TF4x' => 1475035351
+        'z46u' => 1475035495
+        'B6Od' => 1475035495
+    ]
+]
+
+$_SERVER = [
+    'MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'PHPRC' => '\\xampp\\php'
+    'TMP' => '\\xampp\\tmp'
+    'HTTP_HOST' => 'app.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; fdbf___uniacid=1; fdbf___uid=1; ext_type=1; PHPSESSID=1ou23rbhdju3v5fk5gfgc0tfv3'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => 'D:\\Program Files\\Perl64\\site\\bin;D:\\Program Files\\Perl64\\bin;C:\\Program Files (x86)\\Common Files\\NetSarang;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files (x86)\\Intel\\iCLS Client\\;C:\\Program Files\\Intel\\iCLS Client\\;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\IPT;D:\\Program Files\\TortoiseSVN\\bin'
+    'SystemRoot' => 'C:\\Windows'
+    'COMSPEC' => 'C:\\Windows\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\Windows'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33 Server at app.yunzhong.com Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33'
+    'SERVER_NAME' => 'app.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'SERVER_ADMIN' => 'yangming@163.com'
+    'SCRIPT_FILENAME' => 'E:/yunzhong/app.yunzhong.com/app_api.php'
+    'REMOTE_PORT' => '51466'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=1&api=commission/Withdraw'
+    'REQUEST_URI' => '/app_api.php?uniacid=1&api=commission/Withdraw'
+    'SCRIPT_NAME' => '/app_api.php'
+    'PHP_SELF' => '/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475053654.685
+    'REQUEST_TIME' => 1475053654
+]
+2016-09-28 17:07:52 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Call to undefined function template_parse()' in E:\yunzhong\app.yunzhong.com\addons\sz_yi\core\inc\functions.php:590
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-28 17:07:52 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '1'
+    'api' => 'commission/Withdraw'
+]
+
+$_COOKIE = [
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'fdbf___uniacid' => '1'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'PHPSESSID' => '1ou23rbhdju3v5fk5gfgc0tfv3'
+]
+
+$_SESSION = [
+    'acid' => '1'
+    'uniacid' => 1
+    'token' => [
+        'QCyI' => 1475035343
+        'Vzhf' => 1475035350
+        'o7bY' => 1475035351
+        'TF4x' => 1475035351
+        'z46u' => 1475035495
+        'B6Od' => 1475035495
+    ]
+]
+
+$_SERVER = [
+    'MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'PHPRC' => '\\xampp\\php'
+    'TMP' => '\\xampp\\tmp'
+    'HTTP_HOST' => 'app.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; fdbf___uniacid=1; fdbf___uid=1; ext_type=1; PHPSESSID=1ou23rbhdju3v5fk5gfgc0tfv3'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => 'D:\\Program Files\\Perl64\\site\\bin;D:\\Program Files\\Perl64\\bin;C:\\Program Files (x86)\\Common Files\\NetSarang;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files (x86)\\Intel\\iCLS Client\\;C:\\Program Files\\Intel\\iCLS Client\\;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\IPT;D:\\Program Files\\TortoiseSVN\\bin'
+    'SystemRoot' => 'C:\\Windows'
+    'COMSPEC' => 'C:\\Windows\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\Windows'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33 Server at app.yunzhong.com Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33'
+    'SERVER_NAME' => 'app.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'SERVER_ADMIN' => 'yangming@163.com'
+    'SCRIPT_FILENAME' => 'E:/yunzhong/app.yunzhong.com/app_api.php'
+    'REMOTE_PORT' => '51472'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=1&api=commission/Withdraw'
+    'REQUEST_URI' => '/app_api.php?uniacid=1&api=commission/Withdraw'
+    'SCRIPT_NAME' => '/app_api.php'
+    'PHP_SELF' => '/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475053672.528
+    'REQUEST_TIME' => 1475053672
+]
+2016-09-28 17:20:54 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Call to undefined function template_parse()' in E:\yunzhong\app.yunzhong.com\addons\sz_yi\core\inc\functions.php:590
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-28 17:20:54 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '1'
+    'api' => 'commission/Withdraw'
+]
+
+$_COOKIE = [
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'fdbf___uniacid' => '1'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'PHPSESSID' => '1ou23rbhdju3v5fk5gfgc0tfv3'
+]
+
+$_SESSION = [
+    'acid' => '1'
+    'uniacid' => 1
+    'token' => [
+        'QCyI' => 1475035343
+        'Vzhf' => 1475035350
+        'o7bY' => 1475035351
+        'TF4x' => 1475035351
+        'z46u' => 1475035495
+        'B6Od' => 1475035495
+    ]
+]
+
+$_SERVER = [
+    'MIBDIRS' => 'D:/xampp/php/extras/mibs'
+    'MYSQL_HOME' => '\\xampp\\mysql\\bin'
+    'OPENSSL_CONF' => 'D:/xampp/apache/bin/openssl.cnf'
+    'PHP_PEAR_SYSCONF_DIR' => '\\xampp\\php'
+    'PHPRC' => '\\xampp\\php'
+    'TMP' => '\\xampp\\tmp'
+    'HTTP_HOST' => 'app.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3NDg4OTk5NyIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; fdbf___uniacid=1; fdbf___uid=1; ext_type=1; PHPSESSID=1ou23rbhdju3v5fk5gfgc0tfv3'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => 'D:\\Program Files\\Perl64\\site\\bin;D:\\Program Files\\Perl64\\bin;C:\\Program Files (x86)\\Common Files\\NetSarang;C:\\Program Files (x86)\\NVIDIA Corporation\\PhysX\\Common;C:\\Program Files (x86)\\Intel\\iCLS Client\\;C:\\Program Files\\Intel\\iCLS Client\\;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files\\Intel\\Intel(R) Management Engine Components\\IPT;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\DAL;C:\\Program Files (x86)\\Intel\\Intel(R) Management Engine Components\\IPT;D:\\Program Files\\TortoiseSVN\\bin'
+    'SystemRoot' => 'C:\\Windows'
+    'COMSPEC' => 'C:\\Windows\\system32\\cmd.exe'
+    'PATHEXT' => '.COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC'
+    'WINDIR' => 'C:\\Windows'
+    'SERVER_SIGNATURE' => '<address>Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33 Server at app.yunzhong.com Port 80</address>
+'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Win32) OpenSSL/1.0.2d PHP/5.5.33'
+    'SERVER_NAME' => 'app.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => 'E:/yunzhong/app.yunzhong.com'
+    'SERVER_ADMIN' => 'yangming@163.com'
+    'SCRIPT_FILENAME' => 'E:/yunzhong/app.yunzhong.com/app_api.php'
+    'REMOTE_PORT' => '51781'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=1&api=commission/Withdraw'
+    'REQUEST_URI' => '/app_api.php?uniacid=1&api=commission/Withdraw'
+    'SCRIPT_NAME' => '/app_api.php'
+    'PHP_SELF' => '/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475054454.317
+    'REQUEST_TIME' => 1475054454
+]
