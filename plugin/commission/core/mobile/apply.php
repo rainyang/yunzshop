@@ -65,13 +65,13 @@ if ($_W['isajax']) {
 		));
 		if( $_GPC['type'] =='2'){
 			if($settingalipay['pay']['weixin']!='1' || $settingalipay['pay']['weixin_withdrawals']!='1' ){
-				show_json('0', '商家未开启微信支付或微信红包提现功能！!');
+	return show_json('0', '商家未开启微信支付或微信红包提现功能！!');
 			}
 
 		}
 		if( $_GPC['type'] =='3'){
 			if($settingalipay['pay']['alipay']!='1' || $settingalipay['pay']['alipay_withdrawals']!='1' ){
-				show_json('0', '商家未开启支付宝支付或支付宝提现功能！!');
+	return show_json('0', '商家未开启支付宝支付或支付宝提现功能！!');
 			}
 		}
 		 $time = time();
@@ -139,13 +139,13 @@ if ($_W['isajax']) {
 				$this->model->upgradeLevelByCommissionOK($openid);
 				plog('commission.apply.pay', "佣金打款 ID: {$id} 申请编号: {$apply['applyno']} 总佣金: {$commission_ok} 审核通过佣金: {$commission_ok} ");
 				// message('佣金打款处理成功!', $this->createPluginWebUrl('commission/apply', array('status' => $apply['status'])), 'success');
-				show_json(1, '已自动打款!');
+	return show_json(1, '已自动打款!');
 			} else {
 				//开启审核走正常流程
 				$returnurl = urlencode($this->createMobileUrl('member/withdraw'));
 				$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
 				$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 0 ? '余额' : '微信'), TM_COMMISSION_APPLY);
-				show_json(1, '已提交,请等待审核!');
+	return show_json(1, '已提交,请等待审核!');
 			}
 			
 
@@ -154,7 +154,7 @@ if ($_W['isajax']) {
 			$returnurl = urlencode($this->createMobileUrl('member/withdraw'));
 			$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
 			$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 0 ? '余额' : '微信'), TM_COMMISSION_APPLY);
-			show_json(1, '已提交,请等待审核!');
+return show_json(1, '已提交,请等待审核!');
 			
 		}
 	}

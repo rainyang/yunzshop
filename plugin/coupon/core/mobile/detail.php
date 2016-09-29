@@ -24,7 +24,7 @@ if ($op == 'display') {
 	}
 	if ($coupon['total'] != -1) {
 		if ($coupon['total'] <= 0) {
-			show_json(-1, '优惠券数量不足');
+return show_json(-1, '优惠券数量不足');
 		}
 	}
 	if (!$coupon['canget']) {
@@ -33,7 +33,7 @@ if ($op == 'display') {
 	if ($coupon['credit'] > 0) {
 		$credit = m('member')->getCredit($openid, 'credit1');
 		if (intval($coupon['credit']) > $credit) {
-			show_json(-1, "您的积分不足，无法{$coupon['gettypestr']}!");
+return show_json(-1, "您的积分不足，无法{$coupon['gettypestr']}!");
 		}
 	}
 	$needpay = false;
@@ -42,7 +42,7 @@ if ($op == 'display') {
 		$needpay = true;
 		$lastlog = pdo_fetch('select * from ' . tablename('sz_yi_coupon_log') . ' where couponid=:couponid and openid=:openid  and status=0 and paystatus=1 and uniacid=:uniacid limit 1', array(':couponid' => $id, ':openid' => $openid, ':uniacid' => $_W['uniacid']));
 		if (!empty($lastlog)) {
-			show_json(1, array('logid' => $lastlog['id']));
+return show_json(1, array('logid' => $lastlog['id']));
 		}
 	} else {
 		pdo_delete('sz_yi_coupon_log', array('couponid' => $id, 'openid' => $openid, 'status' => 0));
@@ -62,10 +62,10 @@ if ($op == 'display') {
 		if ($useweixin) {
 			$set = m('common')->getSysset();
 			if (!is_weixin()) {
-				show_json(-1, '非微信环境!');
+	return show_json(-1, '非微信环境!');
 			}
 			if (empty($set['pay']['weixin'])) {
-				show_json(-1, '未开启微信支付!');
+	return show_json(-1, '未开启微信支付!');
 			}
 			$wechat = array('success' => false);
 			$params = array();
@@ -84,13 +84,13 @@ if ($op == 'display') {
 				if (!is_error($wechat)) {
 					$wechat['success'] = true;
 				} else {
-					show_json(0, $wechat['message']);
+		return show_json(0, $wechat['message']);
 				}
 			}
 			if (!$wechat['success']) {
-				show_json(0, '微信支付参数错误!');
+	return show_json(0, '微信支付参数错误!');
 			}
-			show_json(1, array('logid' => $logid, 'wechat' => $wechat));
+return show_json(1, array('logid' => $logid, 'wechat' => $wechat));
 		}
 	}
 	show_json(1, array('logid' => $logid));

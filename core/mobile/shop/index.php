@@ -244,7 +244,7 @@ if ($_W['isajax']) {
 			return show_json(1,array('goods' => $goods));	
 		}else{
 			if(empty($id)){
-				show_json(0);
+	return show_json(0);
 			}
 			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where ccate=:ccate and uniacid=:uniacid and deleted = 0",array(':ccate' => $id , ':uniacid' => $_W['uniacid'])) , 'thumb');
 			$third = pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid",array(':pid' => $id , ':uniacid' => $_W["uniacid"]));
