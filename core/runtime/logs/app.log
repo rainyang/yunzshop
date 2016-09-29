@@ -4140,3 +4140,55 @@ $_SERVER = [
     'REQUEST_TIME_FLOAT' => 1475060673.085
     'REQUEST_TIME' => 1475060673
 ]
+2016-09-29 20:22:25 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'app\api\controller\member\logout' not found' in /Users/dingran/wwwroots/project/addons/sz_yi/core/index.php:133
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-29 20:22:25 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '2'
+    'api' => 'member/logout'
+]
+
+$_COOKIE = [
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ2MTE0MDUzOSIsImxhc3RpcCI6IjEyNS4yMTEuNTMuMTQ3IiwiaGFzaCI6IjNmOTBjYjEwYTdlZGViYjlhMDc3OTgzOWMyZjI3YzYzIn0='
+    'fdbf___uniacid' => '2'
+    'fdbf___uid' => '1'
+    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
+    'PHPSESSID' => '1c9bde05c00b48c8da0d92d72a187ba8'
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.pro.com'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate, sdch'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en;q=0.6'
+    'HTTP_COOKIE' => 'ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ2MTE0MDUzOSIsImxhc3RpcCI6IjEyNS4yMTEuNTMuMTQ3IiwiaGFzaCI6IjNmOTBjYjEwYTdlZGViYjlhMDc3OTgzOWMyZjI3YzYzIn0%3D; fdbf___uniacid=2; fdbf___uid=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; PHPSESSID=1c9bde05c00b48c8da0d92d72a187ba8'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.4.42 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.pro.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/dingran/wwwroots/project'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/dingran/wwwroots/project'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/dingran/wwwroots/project/app_api.php'
+    'REMOTE_PORT' => '63244'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=2&api=member/logout'
+    'REQUEST_URI' => '/app_api.php?uniacid=2&api=member/logout'
+    'SCRIPT_NAME' => '/app_api.php'
+    'PHP_SELF' => '/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475151745.075
+    'REQUEST_TIME' => 1475151745
+]
