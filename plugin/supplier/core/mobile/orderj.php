@@ -10,10 +10,11 @@ $username = $supplieruser['username'];
 $_GPC['type'] = $_GPC['type'] ? $_GPC['type'] : 0;
 $supplierinfo = $this->model->getSupplierInfo($uid);
 $ordercount = $supplierinfo['ordercount'];
-$commission_total = $supplierinfo['commission_total'];
-$costmoney = $supplierinfo['costmoney'];
-$expect_money = $supplierinfo['expect_money'];
+$commission_total = number_format($supplierinfo['commission_total'], 2);
+$costmoney = number_format($supplierinfo['costmoney'], 2);
+$expect_money = number_format($supplierinfo['expect_money'], 2);
 $commission_ok = $costmoney;
+$supplierinfo['costmoney_total'] = number_format($supplierinfo['costmoney_total'], 2);
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if($_W['isajax']) {
  	if ($operation == 'order') {
