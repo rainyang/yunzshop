@@ -4,13 +4,12 @@ namespace app\api\controller\supplier;
 use app\api\YZ;
 use yii\helpers\ArrayHelper;
 
-class Supplier extends YZ
+class Index extends YZ
 {
 
     public function __construct()
     {
         parent::__construct();
-        echo 1;exit();
     }
 
     public function index()
