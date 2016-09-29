@@ -1,5 +1,5 @@
 <?php
-namespace app\api\controller\order;
+namespace app\api\controller\cart;
 @session_start();
 use app\api\YZ;
 use app\api\Request;
@@ -12,14 +12,15 @@ class Display extends YZ
     public function __construct()
     {
         parent::__construct();
-        $result = $this->callMobile('order/list/display');
+        $result = $this->callMobile('shop/cart/display');
 
         $this->variable = $result['variable'];
         $this->json = $result['json'];
     }
-
     public function index()
     {
+        //dump($this->json['list'][0]);
+        //$result = ArrayHelper::;
         return $this->returnSuccess($this->json);
     }
 

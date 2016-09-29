@@ -39,6 +39,9 @@ if ($_W['isajax']) {
 	} else if ($operation == 'submit' && $_W['ispost']) {
 		$id = intval($_GPC['id']);
 		$data = $_GPC['addressdata'];
+        if(!is_array($data)){
+            $data = json_decode($data);
+        }
 		$data['openid'] = $openid;
 		$data['uniacid'] = $_W['uniacid'];
 		if (empty($id)) {
@@ -51,7 +54,10 @@ if ($_W['isajax']) {
 		} else {
 			pdo_update('sz_yi_member_address', $data, array('id' => $id, 'uniacid' => $_W['uniacid'], 'openid' => $openid));
 		}
-		show_json(1, array('addressid' => $id));
+		$variable = array(
+            'data'=>$data
+        );
+		return show_json(1, array('addressid' => $id),$variable);
 	} else if ($operation == 'remove' && $_W['ispost']) {
 		$id = intval($_GPC['id']);
 		$data = pdo_fetch('select id,isdefault from ' . tablename('sz_yi_member_address') . ' where  id=:id and openid=:openid and deleted=0 and uniacid=:uniacid  limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':id' => $id));

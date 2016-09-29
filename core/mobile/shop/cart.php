@@ -88,7 +88,7 @@ if ($_W['isajax']) {
         $list       = set_medias($list, 'thumb');
         $totalprice = number_format($totalprice, 2);
         
-            show_json(1, array(
+            return show_json(1, array(
                 'total' => $total,
                 'list' => $list,
                 'totalprice' => $totalprice,
