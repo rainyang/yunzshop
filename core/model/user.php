@@ -34,6 +34,7 @@ class Sz_DYi_User
         session_set_cookie_params($lifeTime);
         @session_start();
         $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
+
         $openid   = base64_decode($_COOKIE[$cookieid]);
 
         if (!empty($openid)) {
@@ -198,7 +199,6 @@ class Sz_DYi_User
     function getInfo($base64 = false, $debug = false)
     {
         global $_W, $_GPC;
-
         if(!is_weixin()&&!is_app_api() ){
             return $this->getUserInfo();
         }
@@ -212,6 +212,7 @@ class Sz_DYi_User
                 'city' => '九龙'
             );
         } else {
+            //var_dump($_GPC['directopenid']);exit;
             if (empty($_GPC['directopenid'])) {
                 $userinfo = mc_oauth_userinfo();
             } else {
