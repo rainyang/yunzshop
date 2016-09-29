@@ -29,7 +29,7 @@ class Sz_DYi_User
     {
         global $_W, $_GPC;
         //用于测试，直接返回ipenid
-        //return "oh6uVxM1tlBQiP8diuFHbZfbOP30";
+        return "oh6uVxM1tlBQiP8diuFHbZfbOP30";
         $lifeTime = 24 * 3600 * 3;
         session_set_cookie_params($lifeTime);
         @session_start();
@@ -117,7 +117,7 @@ class Sz_DYi_User
                 'nickname' => '杨明',
                 'headimgurl' => 'http://wx.qlogo.cn/mmopen/ajNVdqHZLLATXmBR0oJgXhJRvS7rrr6ay25CWblqAA5kn8OribpHQXHVl8DSsEUJyOhvkq6TvBW0z1861oST7vg/132',
             );
-        //return $userinfo;
+        return $userinfo;
         if($_GPC['p'] == 'return' && $_GPC["method"]=='task'){
             return;
         }
