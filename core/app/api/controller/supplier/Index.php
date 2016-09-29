@@ -1,10 +1,10 @@
 <?php
-namespace app\api\controller\commission;
+namespace app\api\controller\supplier;
 @session_start();
 use app\api\YZ;
 use yii\helpers\ArrayHelper;
 
-class Index extends YZ
+class Supplier extends YZ
 {
     private $json;
     private $variable;
@@ -12,33 +12,20 @@ class Index extends YZ
     public function __construct()
     {
         parent::__construct();
-        //$commission_model = new \admin\api\model\commission();
-        //$this->model = $commission_model;
-        $result = $this->callPlugin('commission/index/index');
-        $this->variable = $result['variable'];
-        $this->json = $result['json'];
-        //dump($this->variable);
     }
 
     public function index()
     {
-        //$json = $this->getJson('commission/index');
-        //$set = p('commission')->getSet();
-        $member = $this->json['member'];
-        $member['can_withdraw'] = true;//todo 假数据
-
-        $block_list = $this->_getBlockList();
-        $res = ['block_list' => $block_list];
-        $res += array_part('commission_total,agentcount,agenttime,commission_ok,can_withdraw', $member);
-        $this->returnSuccess($res);
+        $result = $this->callPlugin('supplier/orderj');
+        //$this->variable = $result['variable'];
+        $this->returnSuccess($result);
     }
 
-    private function _getBlockList()
+    private function order()
     {
-        $block_list_1 = $this->_getCommissionBlockList();
-        $block_list_2 = $this->_getBonusBlockList();
-        $list = ArrayHelper::merge($block_list_1, $block_list_2);
-        return $list;
+        $result = $this->callPlugin('supplier/orderj/order');
+        //$this->variable = $result['variable'];
+        $this->returnSuccess($result);
     }
 
     private function _getBonusBlockList()
