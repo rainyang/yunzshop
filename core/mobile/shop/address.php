@@ -42,6 +42,7 @@ if ($_W['isajax']) {
         if(!is_array($data)){
             $data = json_decode($data);
         }
+        //echo '<pre>';print_r($data);exit;
 		$data['openid'] = $openid;
 		$data['uniacid'] = $_W['uniacid'];
 		if (empty($id)) {

@@ -24,7 +24,8 @@ if ($_W['isajax']) {
 		$row = $this->model->setMyCoupon($row, $time);
 	}
 	unset($row);
-	show_json(1, array('list' => $coupons, 'pagesize' => $psize));
+    //echo '<pre>';print_r($coupons);exit;
+	return show_json(1, array('list' => $coupons, 'pagesize' => $psize));
 }
 $set = $this->model->getSet();
 $this->model->setShare();

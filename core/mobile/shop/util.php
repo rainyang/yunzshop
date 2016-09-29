@@ -50,5 +50,5 @@ if ($operation == 'category') {
 	show_json(1, array('list' => $list, 'pagesize' => $psize));
 } else if ($operation == 'recommand') {
 	$goods = m('goods')->getList(array('pagesize' => 4, 'isrecommand' => true, 'random' => true));
-	show_json(1, array('list' => $goods));
+	return show_json(1, array('list' => $goods));
 }
