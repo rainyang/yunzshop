@@ -61,7 +61,7 @@ a {text-decoration:none;}
                 <div class="tx-name">{php echo $this->set['texts']['commission_ok']}（元）</div>
                 <div class="pr-jine">
                     <em><%member.commission_ok%></em>
-                    <a <%if commission_ok<=0 || commission_ok< set.withdraw || commission_ok< set.consume_withdraw %>href="javascript:;"<%else%>href="{php echo $this->createPluginMobileUrl('commission/apply')}"<%/if%> id='withdraw' ><span <%if commission_ok<=0 || commission_ok< set.withdraw%>class='disabled'<%/if%> >{php echo $this->set['texts']['withdraw']}</span></a>
+                    <a <%if commission_ok<=0 || commission_ok< set.withdraw || member.myordermoney< set.consume_withdraw %>href="javascript:;"<%else%>href="{php echo $this->createPluginMobileUrl('commission/apply')}"<%/if%> id='withdraw' ><span <%if commission_ok<=0 || commission_ok< set.withdraw%>class='disabled'<%/if%> >{php echo $this->set['texts']['withdraw']}</span></a>
                 </div>
             </div>
             <div class="top_1">
