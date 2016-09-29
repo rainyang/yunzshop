@@ -148,7 +148,14 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
     -webkit-border-radius: 0 4px 4px 0;
     border-radius: 0 4px 4px 0;
 }
-
+.good_confirm { background: #fff none repeat scroll 0 0; bottom: 0; display: none; height: auto; left: 0; position: fixed; width: 100%; z-index: 10; 
+}
+.good_confirm .sub { background: #f15353 none repeat scroll 0 0; bottom: 0; color: #fff; font-size: 16px; height: 44px; line-height: 44px; position: fixed; text-align: center; width: 100%;
+}
+.good_confirm .close { color: #666; font-size: 24px; font-weight: normal; position: absolute; right: 10px; top: 10px; }
+.good_confirm .info {height: 230px; position: relative;top: -15px; width: 100%; }
+.good_confirm .info .content {height: auto;position: absolute;top: 15px;width: 100%;}
+.good_confirm .info .content .title {background: #eee none repeat scroll 0 0;  border-bottom: 1px solid #e0e0e0; font-size: 16px; height: 36px; line-height: 36px; padding: 6px 0 0 10px;}
 </style>
 <input type="hidden" id="lastOrderUrl" value="{php echo $this->createMobileUrl('shop/lastorder',array('op'=>'display'),true)}"/>
 <script type="text/javascript">
@@ -255,23 +262,49 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                  <img id="chooser_img" src='<%goods.thumb%>'/>
              </div>
              <div class="right">
-                   <div class="price">￥<span id='option_price'><%indiana.initmoney%></span></div>
-                   <div class="stock">剩余:<span id='option_stock'><%indiana.shengyu_codes%></span></span> </div>
+                <div class="stock">夺宝有风险，参与需谨慎</div>
+                <div class="stock" style="font-size:14px">共￥<span class="price" id="indiana_price_total"><%indiana.initmoney%></span></div>
+                <div class="stock" >剩余:<span id="stock"><%indiana.shengyu_codes%></span></span> </div>
+                   
              </div>
         </div>
         <div class="other">
-                <div class='number'>
-                  <div class='label'>购买数量</div>
-                  <div class='num'>
+                <div class='number' style="height: auto;">
+
+                    <div class='label' style="float: left;font-size:14px;line-height: 34px;padding-top: 1px;width:100%;text-align: center;">
+                        <div class="stock" style="line-height: 34px;">参与人次</div>
+                    </div>
+
+                    <div class='num' style="float: left;width:75%;text-align: center;margin-left: 10%;" >
                             <button id='btn_minus' onclick='reduceNum()'><i class='fa fa-minus'></i></button>
-                            <input type='text' id='total' value='1' />
+                            <input type='text' id='total' value='1' style="width:60%" />
                             <button id='btn_plus' onclick='addNum()'><i class='fa fa-plus'></i></button>
-                  </div>
+                    </div>
+
+                    <div class='label' style="float: left;font-size:14px;line-height: 34px;padding-top: 1px;width:100%;text-align: center;">
+                        <div class="stock" style="line-height: 34px;"><span id="indiana_price"><%indiana.initmoney%></span>元/人次</div>
+                    </div>
                </div>
         </div>
         <div class="close" onClick="closechoose()"><i class="iconfont icon-close"></i></div>
-        <div class="sub confirm_option" onClick="choose3()">确认</div>
+        <div class="sub confirm_option" onClick="choose4()" style="z-index: 3;">确认</div>
     </div>
+    <div class="good_confirm ">
+        <div class="info">
+            <div class="content">
+                <div class="title">结算 <span onClick="closechoose()" style="float:right;padding-right: 15px;color: #666;"><i class="iconfont icon-close"></i></span></div>
+
+                <div class="title" style="font-size: 12px;">专区：<span style="float:right;padding-right: 15px;"><%indiana.initmoney%>元专区</span></div>
+
+                <div class="title" style="font-size: 12px;">购买人次：<span style="float:right;padding-right: 15px;"><d class="indiana_total">1</d>人次</span></div>
+
+                <div class="title" style="font-size: 12px;">应付金额：<span style="float:right;padding-right: 15px;color: #f15353;">￥<d class="indiana_price_total"><%indiana.initmoney%></d></span></div>
+            </div>
+        </div>
+       <!--  <div class="close" onClick="closechoose()"><i class="iconfont icon-close"></i></div> -->
+        <div class="sub confirm_option" onClick="choose5()" style="z-index: 3;">确认支付</div>
+    </div>
+
 {else}
     <div class="good_choose">
         <div class="info">
@@ -355,22 +388,23 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
     </div>
 {if $pindiana && $_GPC['indiana']}
 <div class="good_info1">
+    <div class="info2">第<%indiana.period%>期 <%indiana.title%> </div>
+    <div class="price" style="height:auto">
+        <span style="font-size: 14px;padding-right: 10px;">总需人次：<%indiana.zong_codes%> </span>
+        <span> 每满<%indiana.zong_codes%>人次，即抽取1人获得该商品</span>
 
-        <div class="info2">第<%indiana.period%>期 <%indiana.title%> </div>
-        <div class="price" style="height:auto">
-            <span style="font-size: 14px;padding-right: 10px;">总需人次：<%indiana.zong_codes%> </span><span> 每满<%indiana.zong_codes%>人次，即抽取1人获得该商品</span>
-            <div class="progress-bar" >
-              <span class="bg" style="width:<%indiana.shengyu%>%"></span>
-            </div>
-            <div class="other" style="height: 24px;line-height: 24px;">
-              <span><%indiana.zong_codes - indiana.shengyu_codes%></span><span style="float: right;text-align: right;color:#d91d37"><%indiana.shengyu_codes%></span>
-            </div>
-            <div class="other" style="height: 24px;line-height: 24px;">
-              <span>已参与人次</span><span style="float: right;text-align: right;">剩余人次</span>
-            </div>
+        <div class="progress-bar" >
+            <span class="bg" style="width:<%indiana.shengyu%>%"></span>
         </div>
-      </div>
-      </div>
+        <div class="other" style="height: 24px;line-height: 24px;">
+            <span><%indiana.zong_codes - indiana.shengyu_codes%></span><span style="float: right;text-align: right;color:#d91d37"><%indiana.shengyu_codes%></span>
+        </div>
+        <div class="other" style="height: 24px;line-height: 24px;">
+            <span>已参与人次</span><span style="float: right;text-align: right;">剩余人次</span>
+        </div>
+    </div>
+</div>
+ 
 {else}
     <div class="good_info1">
         <%if commission && goods.nocommission==0 && goods.hidecommission==0%>
@@ -540,6 +574,17 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         </div>
     </div>
 
+{if $pindiana && $_GPC['indiana']}
+
+    <div class="good_bottom" style="z-index: 3">
+        <div class="buy" onclick="choose('buy')" style="width:100%; z-index: 3">立即购买</div>
+
+        <input type="hidden" value="<%goods.isdeclaration%>" id='isdeclaration'>
+        <input type="hidden" value="<%goods.isforce%>" id='isforce'>
+        <input type="hidden" value="<%goods.yunbi_num%>" id='yunbi_num'>
+        <input type="hidden" value="<%goods.isforceyunbi%>" id='isforceyunbi'>
+    </div>
+{else}
     <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1' && goods.groupbuy=='1'  && goods.levelbuy=='1' && is_admin!='1' %>
     <div class="good_bottom">
      
@@ -585,6 +630,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         <input type="hidden" value="<%goods.isforceyunbi%>" id='isforceyunbi'>
 </div>
     <%/if%>
+{/if}
 
 </script>
 <script id='tpl_comment' type='text/html'>
@@ -1052,28 +1098,29 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
            }
    
            $('#total').blur(function(){
-              var total = $("#total");
-    if(!total.isInt()){
-         total.val("1");
-                       return;
-    }
-                  if(parseInt(total.val())<=0){
-         total.val("1");
-                       return;
-    } 
-    var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
-    var num = parseInt(total.val() );
-                  if(num>maxbuy && maxbuy>0){
-        tip.show("您最多可购买 " + maxbuy + " 件!");
-        num = maxbuy;
-    }
-    else if(num>stock && stock!=-1){
-        tip.show("您最多可购买 " + stock + " 件");
-        num = stock;
-    }
-    
-    total.val(num);
-        
+                var total = $("#total");
+                if(!total.isInt()){
+                     total.val("1");
+                    return;
+                }
+                if(parseInt(total.val())<=0){
+                    total.val("1");
+                    return;
+                } 
+                var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+                var num = parseInt(total.val() );
+                if(num>maxbuy && maxbuy>0){
+                    tip.show("您最多可购买 " + maxbuy + " 件!");
+                    num = maxbuy;
+                } else if(num>stock && stock!=-1){
+                    tip.show("您最多可购买 " + stock + " 件");
+                    num = stock;
+                }
+                total.val(num);
+                $(".indiana_total").html(num
+                    );
+                $(".indiana_price_total").html(num * $("#indiana_price").html());
+                $("#indiana_price_total").html(num * $("#indiana_price").html());
                
            });
  
@@ -1292,8 +1339,9 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                       
     }
         function closechoose(){
-                 $('.good_choose_layer').fadeOut(100);
-        $('.good_choose').fadeOut(100); 
+            $('.good_choose_layer').fadeOut(100);
+            $('.good_choose').fadeOut(100); 
+            $('.good_confirm').fadeOut(100);
         }
     function choose(act){
       {if empty($openid)}
@@ -1542,7 +1590,12 @@ function choose3(direct,close){
         }
     });
 }
-
+function choose4(direct,close){
+    closechoose();
+    $('.good_choose_layer').fadeIn(200);
+    $('.good_confirm').fadeIn(200);
+    //location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&total=" + $("#total").val()+ "&isindiana=1&periodnum={$indiana['period_num']}";
+}
   function addNum(){
     var total = $("#total");
     if(!total.isInt()){
@@ -1559,6 +1612,11 @@ function choose3(direct,close){
         num = stock;
     }
     total.val(num);
+    $(".indiana_total").html(num
+        );
+    $(".indiana_price_total").html(num * $("#indiana_price").html());
+    $("#indiana_price_total").html(num * $("#indiana_price").html());
+    
 }
 function reduceNum(){
     var total = $("#total");
@@ -1571,6 +1629,11 @@ function reduceNum(){
     }
     num--;
     total.val(num);
+    
+    $(".indiana_total").html(num
+        );
+    $(".indiana_price_total").html(num * $("#indiana_price").html());
+    $("#indiana_price_total").html(num * $("#indiana_price").html());
 }
 
     function option_selected(){
