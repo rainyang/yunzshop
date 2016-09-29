@@ -22,9 +22,9 @@ class Detail extends YZ
     {
         //$result = ArrayHelper::;
         $address_block_list = $this->_getAddressBlockTypeId();//$address_block_list配送信息
-        $button_list = $this->_getButtonList();//$button_list按钮列表
+        $button_list = $this->_getButtonList($this->json['order']);//$button_list按钮列表
         $show_diyform = $this->_canShowDiyForm();//$show_diyform显示diyform
-        $order_status_str = $this->_getStatusStr();//$order_status_str订单状态文字
+        $order_status_str = $this->_getStatusStr($this->json['order']);//$order_status_str订单状态文字
         $res = array(
             'address_block_list' => $address_block_list,
             'button_list' => $button_list,
@@ -36,89 +36,16 @@ class Detail extends YZ
         return $this->returnSuccess($res);
     }
 
-    private function _getButtonList()
+    private function _getButtonList($order)
     {
-        $order = $this->json['order'];
-
-        if ($order['status'] == 0) {
-            if ($order['paytype'] != 3) {
-                $button_list[] = [
-                    'name' => '付款',
-                    'value' => 1
-                ];
-            }
-            $button_list[] = [
-                'name' => '取消订单',
-                'value' => 9
-            ];
-        }
-        if ($order['status'] == 2) {
-            $button_list[] = [
-                'name' => '确认收货',
-                'value' => 5
-            ];
-
-            if ($order['expresssn'] != '') {
-                $button_list[] = [
-                    'name' => '查看物流',
-                    'value' => 8
-                ];
-            }
-        }
-        if ($order['status'] == 3 && $order['iscomment'] == 0) {
-            $button_list[] = [
-                'name' => '评价',
-                'value' => 10
-            ];
-        }
-        if ($order['status'] == 3 && $order['iscomment'] == 1) {
-            $button_list[] = [
-                'name' => '追加评价',
-                'value' => 11
-            ];
-        }
-        if ($order['status'] == 3 || $order['status'] == -1) {
-            $button_list[] = [
-                'name' => '删除订单',
-                'value' => 12
-            ];
-        }
-        if ($order['canrefund']) {
-            $button_list[] = [
-                'name' => $order['refund_button'],
-                'value' => 13
-            ];
-        }
-        if ($order['isverify'] == '1' && $order['verified'] != '1' && $order['status'] == '1') {
-            $button_list[] = [
-                'name' => '确认使用',
-                'value' => 14
-            ];
-        }
+        $button_list = Order::getButtonList($order);
         return $button_list;
     }
 
-    private function _getStatusStr()
+    private function _getStatusStr($order)
     {
-        $order = $this->json['order'];
-        if ($order['status'] == 0 && $order['paytype'] != 3) {
-            $status_str = '等待付款';
-        }
-        if ($order['paytype'] == 3 && $order['status'] != 0) {
-            $status_str = '货到付款，等待发货';
-        }
-        if ($order['status'] == 1) {
-            $status_str = '买家已付款';
-        }
-        if ($order['status'] == 2) {
-            $status_str = '卖家已发货';
-        }
-        if ($order['status'] == 3) {
-            $status_str = '交易完成';
-        }
-        if ($order['status'] == -1) {
-            $status_str = '交易关闭';
-        }
+
+        $status_str = Order::getStatusStr($order);
         return $status_str;
     }
 

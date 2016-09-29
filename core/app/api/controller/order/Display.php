@@ -20,18 +20,41 @@ class Display extends YZ
 
     public function index()
     {
-        $order_list = $this->json['list'];
+        $order_list = $this->_formatOrderList($this->json['list']);
 
-        $a = Arr::pluck($order_list, 'goods');
-        dump($a);
-        //exit;
-        return $this->returnSuccess($this->json);
+        return $this->returnSuccess($order_list);
     }
-    private function _formateResult(){
-        array_intersect();
-        $except_structure = array(
 
-        );
+    private function _formatOrderList($order_list)
+    {
+        foreach ($order_list as &$order) {
+            $order = $this->_formatOrder($order);
+        }
+        return $order_list;
     }
+
+    private function _formatOrder($order)
+    {
+        $button_list = $this->_getButtonList($order);
+        //$order['goods'] =
+        $order += [
+            'button_list' => $button_list,
+        ];
+        return $order;
+    }
+
+    private function _getButtonList($order)
+    {
+        $button_list = Order::getButtonList($order);
+        return $button_list;
+    }
+
+    private function _getStatusStr($order)
+    {
+
+        $status_str = Order::getStatusStr($order);
+        return $status_str;
+    }
+
 }
 
