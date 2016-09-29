@@ -23,7 +23,7 @@ if ($_W['isajax']) {
 			$list = pdo_fetchall($sql, $params);
 			$list = set_medias($list, 'thumb');
 		}
-		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
+return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 	} else if ($operation == 'set') {
 		$id = intval($_GPC['id']);
 		$goods = pdo_fetch('select id from ' . tablename('sz_yi_goods') . ' where uniacid=:uniacid and id=:id limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $id));
@@ -51,7 +51,7 @@ return show_json(0, '参数错误');
 		}
 		$sql = "update " . tablename('sz_yi_member_favorite') . ' set deleted=1 where uniacid=:uniacid and openid=:openid and id in (' . implode(',', $ids) . ')';
 		pdo_query($sql, array(':uniacid' => $uniacid, ':openid' => $openid));
-		show_json(1);
+return show_json(1);
 	}
 }
 include $this->template('shop/favorite');

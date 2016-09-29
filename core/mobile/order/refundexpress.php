@@ -42,7 +42,7 @@ return show_json(0);
 		$refundid = $order["refundid"];
 		$refund = pdo_fetch("select * from " . tablename("sz_yi_order_refund") . " where id=:id and uniacid=:uniacid  limit 1", array(":id" => $refundid, ":uniacid" => $uniacid));
 		$set = set_medias(m("common")->getSysset("shop"), "logo");
-		show_json(1, array("order" => $order, "refund" => $refund, "set" => $set));
+return show_json(1, array("order" => $order, "refund" => $refund, "set" => $set));
 	} else if ($operation == "step") {
 		$express = trim($_GPC["express"]);
 		$expresssn = trim($_GPC["expresssn"]);
@@ -65,7 +65,7 @@ return show_json(0);
 			$step = explode("<br />", str_replace("&middot;", "", $row));
 			$list[] = array("time" => trim($step[0]), "step" => trim($step[1]), "ts" => strtotime(trim($step[0])));
 		}
-		show_json(1, array("list" => $list));
+return show_json(1, array("list" => $list));
 	}
 }
 include $this->template("order/refundexpress");

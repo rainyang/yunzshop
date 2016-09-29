@@ -1,4 +1,5 @@
 data/
 core/runtime/
+core/runtime/logs
 sh.exe.stackdump
 core/inc/plugin/vendor/phpunit

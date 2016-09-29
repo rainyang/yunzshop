@@ -46,10 +46,10 @@ if ($_W['isajax']) {
 		$returnurl = urlencode($this->createPluginMobileUrl('merchant/orderj'));
 		$infourl = $this->createPluginMobileUrl('merchant/orderj', array('returnurl' => $returnurl));
 		$this->model->sendMessage($openid, array('money' => $commission_ok, 'time' => $time, 'nickname' => $member['nickname']), TM_MERCHANT_APPLY);
-		show_json(1, '已提交,请等待审核!');
+return show_json(1, '已提交,请等待审核!');
 	}
 	$returnurl = urlencode($this->createPluginMobileUrl('commission/applyg'));
 	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
-	show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
+return show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
 }
 include $this->template('applyg');

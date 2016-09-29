@@ -7,7 +7,7 @@ $id = intval($_GPC['id']);
 $coupon = pdo_fetch('select * from ' . tablename('sz_yi_coupon') . ' where id=:id and uniacid=:uniacid  limit 1', array(':id' => $id, ':uniacid' => $_W['uniacid']));
 if (empty($coupon)) {
 	if ($_W['isajax']) {
-		show_json(-1, '未找到优惠券');
+return show_json(-1, '未找到优惠券');
 	}
 	header('location: ' . $this->createPluginMobileUrl('coupon'));
 	exit;
@@ -20,7 +20,7 @@ if ($op == 'display') {
 	include $this->template('detail');
 } else if ($op == 'pay' && $_W['ispost']) {
 	if (empty($coupon['gettype'])) {
-		show_json(-1, '无法' . $coupon['gettypestr']);
+return show_json(-1, '无法' . $coupon['gettypestr']);
 	}
 	if ($coupon['total'] != -1) {
 		if ($coupon['total'] <= 0) {
@@ -28,7 +28,7 @@ return show_json(-1, '优惠券数量不足');
 		}
 	}
 	if (!$coupon['canget']) {
-		show_json(-1, "您已超出{$coupon['gettypestr']}次数限制");
+return show_json(-1, "您已超出{$coupon['gettypestr']}次数限制");
 	}
 	if ($coupon['credit'] > 0) {
 		$credit = m('member')->getCredit($openid, 'credit1');
@@ -93,13 +93,13 @@ return show_json(1, array('logid' => $lastlog['id']));
 return show_json(1, array('logid' => $logid, 'wechat' => $wechat));
 		}
 	}
-	show_json(1, array('logid' => $logid));
+return show_json(1, array('logid' => $logid));
 } else if ($op == 'payresult' && $_W['ispost']) {
 	$logid = intval($_GPC['logid']);
 	$logno = pdo_fetchcolumn('select logno from ' . tablename('sz_yi_coupon_log') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $logid, ':uniacid' => $_W['uniacid']));
 	$result = $this->model->payResult($logno);
 	if (is_error($result)) {
-		show_json($result['errno'], $result['message']);
+return show_json($result['errno'], $result['message']);
 	}
-	show_json(1, array('url' => $result['url'], 'coupontype' => $coupon['coupontype']));
+return show_json(1, array('url' => $result['url'], 'coupontype' => $coupon['coupontype']));
 }

@@ -7,10 +7,10 @@ $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if ($operation == 'category') {
 	$category = m('shop')->getCategory();
 	$category2 = m('shop')->getCategory2();
-	show_json(1, array('category' => $category,'category2'=>$category2));
+return show_json(1, array('category' => $category,'category2'=>$category2));
 } else if($operation == 'category2'){
 	$category = m('shop')->getCategory2();
-	show_json(1, array('category' => $category));
+return show_json(1, array('category' => $category));
 } else if ($operation == 'areas') {
 	$areas = m('cache')->getArray('areas', 'global');
 	if (!is_array($areas)) {
@@ -25,7 +25,7 @@ if ($operation == 'category') {
 } else if ($operation == 'search') {
 	$keywords = trim($_GPC['keywords']);
 	$goods = m('goods')->getList(array('pagesize' => 100000, 'keywords' => trim($_GPC['keywords'])));
-	show_json(1, array('list' => $goods));
+return show_json(1, array('list' => $goods));
 } else if ($operation == 'comment') {
 	$goodsid = intval($_GPC['goodsid']);
 	$pindex = max(1, intval($_GPC['page']));
@@ -47,8 +47,10 @@ if ($operation == 'category') {
 		$row['append_reply_images'] = is_array($append_reply_images) ? set_medias($append_reply_images) : array();
 	}
 	unset($row);
-	show_json(1, array('list' => $list, 'pagesize' => $psize));
+return show_json(1, array('list' => $list, 'pagesize' => $psize));
 } else if ($operation == 'recommand') {
 	$goods = m('goods')->getList(array('pagesize' => 4, 'isrecommand' => true, 'random' => true));
+
 	return show_json(1, array('list' => $goods));
+
 }
