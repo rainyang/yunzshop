@@ -39,6 +39,9 @@ if ($_W['isajax']) {
 	} else if ($operation == 'submit' && $_W['ispost']) {
 		$id = intval($_GPC['id']);
 		$data = $_GPC['addressdata'];
+        if(!is_array($data)){
+            $data = json_decode($data);
+        }
 		$data['openid'] = $openid;
 		$data['uniacid'] = $_W['uniacid'];
 		if (empty($id)) {
