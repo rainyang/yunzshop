@@ -114,7 +114,6 @@ if (!class_exists('SupplierModel')) {
                     $supplierinfo['costmoney'] += $o['money'];
 
                 }
-                $supplierinfo['costmoney'] = number_format($supplierinfo['costmoney'],2);
             }
             $supplierinfo['costmoney'] = number_format($supplierinfo['costmoney'],2);
                         
