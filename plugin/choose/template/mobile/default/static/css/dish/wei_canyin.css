@@ -732,7 +732,7 @@ figure[hidden] {
     -webkit-overflow-scrolling: touch;
     /* height: 100px; */
     position: fixed;
-    top: 71px;
+    top: 0px;
     bottom: 99px;
 }
 
@@ -771,7 +771,7 @@ figure[hidden] {
     left: 22%;
     width: 78%;
     box-sizing: border-box;
-    top: 70px;
+    top: 0px;
     bottom: 100px;
     overflow-y: scroll;
 }

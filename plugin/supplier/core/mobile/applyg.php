@@ -9,7 +9,7 @@ if ($_W['isajax']) {
 	$supplierinfo = $this->model->getSupplierInfo($uid);
 	$costmoney = $supplierinfo['costmoney'];
 	$cansettle = $costmoney >= 1;
-	$member['commission_ok'] = number_format($costmoney, 2);
+	$member['commission_ok'] = $costmoney;
 	if ($_W['ispost']) {
 		$supplierinfo = $this->model->getSupplierInfo($uid);
 		$costmoney = $supplierinfo['costmoney'];
