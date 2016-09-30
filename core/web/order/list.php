@@ -1045,7 +1045,7 @@ if ($operation == "display") {
     }
     $total = pdo_fetchcolumn("SELECT COUNT(distinct o.ordersn_general) FROM " . tablename("sz_yi_order") . " o " . " left join " . tablename("sz_yi_order_refund") . " r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition $statuscondition " . $cond , $paras);
     $totalmoney = pdo_fetchcolumn('SELECT ifnull(sum(o.price),0) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_order_refund') . ' r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition $statuscondition $cond ", $paras);
-   
+
     /*$totals['status_1'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.status=-1 and o.refundtime=0 and o.order_type<>3 $cond ", $paras);
     $totals['status0'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.status=0 and o.paytype<>3 and o.order_type<>3 $cond ", $paras);
     $totals['status1'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.order_type<>3 and ( o.status=1 or ( o.status=0 and o.paytype=3)) $cond ", $paras);
@@ -1078,14 +1078,22 @@ if ($operation == "display") {
         ":uniacid" => $_W["uniacid"]
     );
     $totals = array();
-    $totals['all'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition, $paras);
-    $totals['status_1'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=-1 and refundtime=0', $paras);
-    $totals['status0'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=0 and paytype<>3', $paras);
-    $totals['status1'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and ( status=1 or ( status=0 and paytype=3) )', $paras);
-    $totals['status2'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=2', $paras);
-    $totals['status3'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=3', $paras);
-    $totals['status4'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_order_refund') . ' r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE o.uniacid=:uniacid AND o.refundtime=0 AND o.refundid<>0 and r.status=0  and o.refundstate>=0 and o.deleted=0 " . $join_order_type, array(':uniacid' => $_W['uniacid']));
-    $totals['status5'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and refundtime<>0 AND refundid<>0', $paras);
+    $supplier_cond = '';
+    $supplier_conds = '';
+    if (p('supplier')) {
+        if (!empty($perm_role)) {
+            $supplier_cond = ' AND supplier_uid=' . $_W['uid'];
+            $supplier_conds = ' AND o.supplier_uid=' . $_W['uid'];
+        }
+    }
+    $totals['all'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . $supplier_cond, $paras);
+    $totals['status_1'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=-1 and refundtime=0' . $supplier_cond, $paras);
+    $totals['status0'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=0 and paytype<>3' . $supplier_cond, $paras);
+    $totals['status1'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and ( status=1 or ( status=0 and paytype=3) )' . $supplier_cond, $paras);
+    $totals['status2'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=2' . $supplier_cond, $paras);
+    $totals['status3'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=3' . $supplier_cond, $paras);
+    $totals['status4'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_order_refund') . ' r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE o.uniacid=:uniacid AND o.refundtime=0 AND o.refundid<>0 and r.status=0  and o.refundstate>=0 and o.deleted=0 {$supplier_conds}" . $join_order_type, array(':uniacid' => $_W['uniacid']));
+    $totals['status5'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and refundtime<>0 AND refundid<>0' . $supplier_cond, $paras);
     if(p('hotel') && $type=='hotel'){
         $totals['status6'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=6', $paras);
     }
