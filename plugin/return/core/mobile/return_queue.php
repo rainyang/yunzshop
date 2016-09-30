@@ -10,9 +10,7 @@ $member = m('member')->getMember($openid);
 $uniacid = $_W['uniacid'];
 $trade = m('common')->getSysset('trade');
 $_GPC['type'] = $_GPC['type'] ? $_GPC['type'] : 0;
-
 if ($_W['isajax']) {
-
     if ($operation == 'display') {
         if ($_GPC['type'] == 0) {
             $pindex = max(1, intval($_GPC['page']));
@@ -24,7 +22,7 @@ if ($_W['isajax']) {
                 $row['createtime'] = date('Y-m-d H:i', $row['create_time']);
             }
             unset($row);
-            show_json(1, array(
+            return show_json(1, array(
                 'total' => $total,
                 'list' => $list,
                 'pagesize' => $psize,
@@ -43,7 +41,7 @@ if ($_W['isajax']) {
                 $row['total'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order_goods_queue') . " where  uniacid = '" . $_W['uniacid'] . "' and openid = '" . $openid . "' and goodsid = " . $row['goodsid']);
             }
             unset($row);
-            show_json(1, array(
+            return show_json(1, array(
                 'total' => $total,
                 'list' => $list,
                 'pagesize' => $psize,
@@ -60,7 +58,7 @@ if ($_W['isajax']) {
                 $row['createtime'] = date('Y-m-d H:i', $row['create_time']);
             }
             unset($row);
-            show_json(1, array(
+            return show_json(1, array(
                 'total' => $total,
                 'list' => $list,
                 'pagesize' => $psize,
@@ -79,7 +77,7 @@ if ($_W['isajax']) {
                 $row['createtime'] = date('Y-m-d H:i', $row['create_time']);
             }
             unset($row);
-            show_json(1, array(
+            return show_json(1, array(
                 'total' => $total,
                 'list' => $list,
                 'pagesize' => $psize,
