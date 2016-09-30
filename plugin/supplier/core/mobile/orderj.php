@@ -72,7 +72,14 @@ if($_W['isajax']) {
 	        'openid' => $openid,
             'set'    => $set,
             'member' => $member,
-            'supplieruser' => $supplieruser
+            'supplieruser' => $supplieruser,
+            'uid' => $uid,
+            'username' => $username,
+            'type' => $_GPC['type'],
+            'supplierinfo' => $supplierinfo,
+            'commission_total' => $commission_total,
+            'costmoney' => $costmoney,
+            'commission_ok' => number_format($costmoney, 2)
         ));
     }
 }
