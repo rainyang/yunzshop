@@ -15,7 +15,6 @@ class  Recommandgoods extends YZ
         $result = $this->callMobile('shop/util/recommand');
         $this->variable = $result['variable'];
         $this->json = $result['json'];
-        //dump($this->variable);
     }
 
     public function index()

@@ -15,7 +15,6 @@ class My extends YZ    //优惠券列表
         $result = $this->callPlugin('coupon/my');
         $this->variable = $result['variable'];
         $this->json = $result['json'];
-        //dump($this->variable);
     }
 
     public function index()

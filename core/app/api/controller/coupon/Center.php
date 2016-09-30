@@ -15,7 +15,7 @@ class Center extends YZ    //优惠券列表
         $result = $this->callPlugin('coupon/index');
         $this->variable = $result['variable'];
         $this->json = $result['json'];
-        //dump($this->variable);
+
     }
 
     public function index()

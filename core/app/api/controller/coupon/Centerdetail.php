@@ -15,7 +15,6 @@ class Centerdetail extends YZ
         $result = $this->callPlugin('coupon/detail');
         $this->variable = $result['variable'];
         $this->json = $result['json'];
-        //dump($this->variable);
     }
 
     public function index()
