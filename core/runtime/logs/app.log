@@ -4211,10 +4211,12 @@ $_COOKIE = [
     'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
     'fdbf___uniacid' => '4'
     '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+
 ]
 
 $_SERVER = [
     'TMP' => '/Applications/AMPPS/tmp'
+
     'HTTP_HOST' => 'test.yunzhong.com'
     'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
     'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'

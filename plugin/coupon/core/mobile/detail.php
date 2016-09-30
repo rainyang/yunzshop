@@ -14,10 +14,14 @@ return show_json(-1, '未找到优惠券');
 }
 $coupon = $this->model->setCoupon($coupon, time());
 $set = $this->model->getSet();
+if ($_W['isajax']) {
+    return show_json(1,array('coupon' => $coupon, 'set' => $set));
+}
 if ($op == 'display') {
 	$this->model->setShare();
 	$credit = m('member')->getCredit($openid, 'credit1');
 	include $this->template('detail');
+
 } else if ($op == 'pay' && $_W['ispost']) {
 	if (empty($coupon['gettype'])) {
 return show_json(-1, '无法' . $coupon['gettypestr']);
