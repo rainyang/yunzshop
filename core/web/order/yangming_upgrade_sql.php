@@ -34,4 +34,10 @@ if(!pdo_fieldexists('sz_yi_bonus_log', 'goodids')) {
 if(!pdo_fieldexists('sz_yi_bonus', 'orderids')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_bonus')." ADD `orderids` text DEFAULT '';");
 }
+//9.30添加  yangyang
+pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_channel')." CHANGE `diychannelfields` `diychannelfields` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '自定义表单字段';");
+pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_channel')." CHANGE `diychanneldata` `diychanneldata` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '自定义表单数据';");
+pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_channel')." CHANGE `realname` `realname` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '姓名';");
+pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." CHANGE `diymemberfields` `diymemberfields` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '自定义表单字段';");
+pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." CHANGE `diymemberdata` `diymemberdata` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '自定义表单数据';");
 echo 1;
