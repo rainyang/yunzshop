@@ -40,7 +40,13 @@ return show_json(1, array('address' => $data, 'member' => $member));
 		$id = intval($_GPC['id']);
 		$data = $_GPC['addressdata'];
         if(!is_array($data)){
-            $data = json_decode($data);
+            $data = array();
+            $data['realname'] = $_GPC['realname'];
+            $data['mobile'] = $_GPC['mobile'];
+            $data['province'] = $_GPC['province'];
+            $data['city'] = $_GPC['city'];
+            $data['area'] = $_GPC['area'];
+            $data['address'] = $_GPC['address'];
         }
         //echo '<pre>';print_r($data);exit;
 		$data['openid'] = $openid;
