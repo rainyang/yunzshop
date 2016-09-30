@@ -4140,55 +4140,544 @@ $_SERVER = [
     'REQUEST_TIME_FLOAT' => 1475060673.085
     'REQUEST_TIME' => 1475060673
 ]
-2016-09-29 20:22:25 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'app\api\controller\member\logout' not found' in /Users/dingran/wwwroots/project/addons/sz_yi/core/index.php:133
+2016-09-29 12:10:21 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'app\api\controller\retrunmoney\Index' not found' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/index.php:133
 Stack trace:
 #0 [internal function]: yii\base\ErrorHandler->handleFatalError()
 #1 {main}
-2016-09-29 20:22:25 [127.0.0.1][-][-][info][application] $_GET = [
-    'uniacid' => '2'
-    'api' => 'member/logout'
+2016-09-29 12:10:21 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'retrunmoney/Index'
 ]
 
 $_COOKIE = [
-    'ext_type' => '1'
-    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ2MTE0MDUzOSIsImxhc3RpcCI6IjEyNS4yMTEuNTMuMTQ3IiwiaGFzaCI6IjNmOTBjYjEwYTdlZGViYjlhMDc3OTgzOWMyZjI3YzYzIn0='
-    'fdbf___uniacid' => '2'
+    'member_mobile' => '13936237723'
     'fdbf___uid' => '1'
-    '__cookie_sz_yi_userid_2' => 'b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ=='
-    'PHPSESSID' => '1c9bde05c00b48c8da0d92d72a187ba8'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
 ]
 
 $_SERVER = [
     'TMP' => '/Applications/AMPPS/tmp'
-    'HTTP_HOST' => 'test.pro.com'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
     'HTTP_CONNECTION' => 'keep-alive'
     'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
-    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.116 Safari/537.36'
-    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8'
-    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate, sdch'
-    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en;q=0.6'
-    'HTTP_COOKIE' => 'ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ2MTE0MDUzOSIsImxhc3RpcCI6IjEyNS4yMTEuNTMuMTQ3IiwiaGFzaCI6IjNmOTBjYjEwYTdlZGViYjlhMDc3OTgzOWMyZjI3YzYzIn0%3D; fdbf___uniacid=2; fdbf___uid=1; __cookie_sz_yi_userid_2=b1lHaUZ4R0tmT0NMV21TOG8xa2pWX0Nfd1U2SQ%3D%3D; PHPSESSID=1c9bde05c00b48c8da0d92d72a187ba8'
     'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
     'SERVER_SIGNATURE' => ''
-    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.4.42 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
-    'SERVER_NAME' => 'test.pro.com'
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
     'SERVER_ADDR' => '127.0.0.1'
     'SERVER_PORT' => '80'
     'REMOTE_ADDR' => '127.0.0.1'
-    'DOCUMENT_ROOT' => '/Users/dingran/wwwroots/project'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
     'REQUEST_SCHEME' => 'http'
     'CONTEXT_PREFIX' => ''
-    'CONTEXT_DOCUMENT_ROOT' => '/Users/dingran/wwwroots/project'
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
     'SERVER_ADMIN' => 'admin@localhost'
-    'SCRIPT_FILENAME' => '/Users/dingran/wwwroots/project/app_api.php'
-    'REMOTE_PORT' => '63244'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '63781'
     'GATEWAY_INTERFACE' => 'CGI/1.1'
     'SERVER_PROTOCOL' => 'HTTP/1.1'
     'REQUEST_METHOD' => 'GET'
-    'QUERY_STRING' => 'uniacid=2&api=member/logout'
-    'REQUEST_URI' => '/app_api.php?uniacid=2&api=member/logout'
-    'SCRIPT_NAME' => '/app_api.php'
-    'PHP_SELF' => '/app_api.php'
-    'REQUEST_TIME_FLOAT' => 1475151745.075
-    'REQUEST_TIME' => 1475151745
+    'QUERY_STRING' => 'uniacid=4&api=retrunmoney/Index'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=retrunmoney/Index'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475151021.857
+    'REQUEST_TIME' => 1475151021
+]
+2016-09-30 02:41:39 [127.0.0.1][-][-][error][yii\base\ErrorException:4] exception 'yii\base\ErrorException' with message 'syntax error, unexpected ')'' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/app/api/controller/returnmoney/Index.php:38
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 02:41:39 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'returnmoney/Index/queue'
+    'type' => '1'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '50246'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=returnmoney/Index/queue&type=1'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=returnmoney/Index/queue&type=1'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475203299.052
+    'REQUEST_TIME' => 1475203299
+]
+2016-09-30 06:44:03 [127.0.0.1][-][-][error][yii\base\ErrorException:4] exception 'yii\base\ErrorException' with message 'syntax error, unexpected 'unset' (T_UNSET)' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/app/api/controller/ranking/Index.php:23
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 06:44:03 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'ranking/Index'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '57396'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=ranking/Index'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=ranking/Index'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475217843.079
+    'REQUEST_TIME' => 1475217843
+]
+2016-09-30 06:44:38 [127.0.0.1][-][-][error][yii\base\ErrorException:4] exception 'yii\base\ErrorException' with message 'syntax error, unexpected 'unset' (T_UNSET)' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/app/api/controller/ranking/Index.php:23
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 06:44:38 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'ranking/Index'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '57408'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=ranking/Index'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=ranking/Index'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475217878.302
+    'REQUEST_TIME' => 1475217878
+]
+2016-09-30 06:44:39 [127.0.0.1][-][-][error][yii\base\ErrorException:4] exception 'yii\base\ErrorException' with message 'syntax error, unexpected 'unset' (T_UNSET)' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/app/api/controller/ranking/Index.php:23
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 06:44:39 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'ranking/Index'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '57409'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=ranking/Index'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=ranking/Index'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475217879.718
+    'REQUEST_TIME' => 1475217879
+]
+2016-09-30 06:44:40 [127.0.0.1][-][-][error][yii\base\ErrorException:4] exception 'yii\base\ErrorException' with message 'syntax error, unexpected 'unset' (T_UNSET)' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/app/api/controller/ranking/Index.php:23
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 06:44:40 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'ranking/Index'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '57410'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=ranking/Index'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=ranking/Index'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475217880.654
+    'REQUEST_TIME' => 1475217880
+]
+2016-09-30 06:45:43 [127.0.0.1][-][-][error][yii\base\ErrorException:4] exception 'yii\base\ErrorException' with message 'syntax error, unexpected '$this' (T_VARIABLE)' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/app/api/controller/ranking/Index.php:23
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 06:45:43 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'ranking/Index'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '57431'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=ranking/Index'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=ranking/Index'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475217943.581
+    'REQUEST_TIME' => 1475217943
+]
+2016-09-30 06:46:28 [127.0.0.1][-][-][error][yii\base\ErrorException:4] exception 'yii\base\ErrorException' with message 'syntax error, unexpected '$this' (T_VARIABLE)' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/app/api/controller/ranking/Index.php:23
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 06:46:28 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'ranking/Index'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '57445'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=ranking/Index'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=ranking/Index'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475217988.593
+    'REQUEST_TIME' => 1475217988
+]
+2016-09-30 06:46:29 [127.0.0.1][-][-][error][yii\base\ErrorException:4] exception 'yii\base\ErrorException' with message 'syntax error, unexpected '$this' (T_VARIABLE)' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/app/api/controller/ranking/Index.php:23
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 06:46:29 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'ranking/Index'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '57446'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=ranking/Index'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=ranking/Index'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475217989.57
+    'REQUEST_TIME' => 1475217989
+]
+2016-09-30 06:46:30 [127.0.0.1][-][-][error][yii\base\ErrorException:4] exception 'yii\base\ErrorException' with message 'syntax error, unexpected '$this' (T_VARIABLE)' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/app/api/controller/ranking/Index.php:23
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 06:46:30 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'ranking/Index'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '57447'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=ranking/Index'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=ranking/Index'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475217990.29
+    'REQUEST_TIME' => 1475217990
 ]
