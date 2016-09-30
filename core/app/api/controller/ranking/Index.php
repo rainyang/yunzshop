@@ -18,7 +18,6 @@ class Index extends YZ
     public function index()
     {
         $result = $this->callPlugin('ranking/ranking');
-echo "<pre>";print_r($result);exit;
         $this->returnSuccess($result);
     }
  
