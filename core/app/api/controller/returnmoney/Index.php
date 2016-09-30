@@ -27,7 +27,6 @@ class Index extends YZ
             } 
         }
         unset($value);
-        echo "<pre>";print_r($result);exit;
         $this->returnSuccess($result);
     }
 
