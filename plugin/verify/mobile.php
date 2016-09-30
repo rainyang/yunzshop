@@ -57,4 +57,12 @@ class VerifyMobile extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function select_category()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function select_goods()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 }
