@@ -10,21 +10,24 @@ $member = m('member')->getMember($openid);
 $uniacid = $_W['uniacid'];
 $trade = m('common')->getSysset('trade');
 $_GPC['type'] = $_GPC['type'] ? $_GPC['type'] : 0;
-
+$_GPC['pageid'] = $_GPC['pageid'] ? $_GPC['pageid'] : '';
 if ($_W['isajax']) {
-
     if ($operation == 'display') {
         if ($_GPC['type'] == 0) {
             $pindex = max(1, intval($_GPC['page']));
             $psize = 10;
 
-            $list = pdo_fetchall("select * from " . tablename('sz_yi_return') . " where uniacid = '" . $_W['uniacid'] . "' and mid = '" . $member['id'] . "' and `delete` = '0' order by create_time desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+            $pageid = "";
+            if (!empty($_GPC['pageid'])) {
+                $pageid = " AND id < '".intval($_GPC['pageid'])."'" ;
+            }
+            $list = pdo_fetchall("select * from " . tablename('sz_yi_return') . " where uniacid = '" . $_W['uniacid'] . "' and mid = '" . $member['id'] . "' and `delete` = '0' {$pageid} order by create_time desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
             $total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_return') . " where  uniacid = '" . $_W['uniacid'] . "' and mid = '" . $member['id'] . "' and `delete` = '0'");
             foreach ($list as &$row) {
                 $row['createtime'] = date('Y-m-d H:i', $row['create_time']);
             }
             unset($row);
-            show_json(1, array(
+            return show_json(1, array(
                 'total' => $total,
                 'list' => $list,
                 'pagesize' => $psize,
@@ -34,8 +37,12 @@ if ($_W['isajax']) {
             $pindex = max(1, intval($_GPC['page']));
             $psize = 10;
 
-            $list = pdo_fetchall("select ogq.*, g.title from " . tablename('sz_yi_order_goods_queue') . " ogq left join " . tablename('sz_yi_goods') . " g on(ogq.goodsid = g.id) where ogq.uniacid = '" . $_W['uniacid'] . "' and ogq.openid = '" . $openid . "'  group by ogq.goodsid  LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+            $pageid = "";
+            if (!empty($_GPC['pageid'])) {
+                $pageid = " AND ogq.goodsid > '".intval($_GPC['pageid'])."'" ;
+            }
 
+            $list = pdo_fetchall("select ogq.*, g.title from " . tablename('sz_yi_order_goods_queue') . " ogq left join " . tablename('sz_yi_goods') . " g on(ogq.goodsid = g.id) where ogq.uniacid = '" . $_W['uniacid'] . "' and ogq.openid = '" . $openid . "' {$pageid} group by ogq.goodsid order by ogq.goodsid asc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
             $total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order_goods_queue') . " where  uniacid = '" . $_W['uniacid'] . "' and openid = '" . $openid . "' group by goodsid");
             foreach ($list as &$row) {
                 $row['createtime'] = date('Y-m-d H:i', $row['create_time']);
@@ -43,7 +50,7 @@ if ($_W['isajax']) {
                 $row['total'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order_goods_queue') . " where  uniacid = '" . $_W['uniacid'] . "' and openid = '" . $openid . "' and goodsid = " . $row['goodsid']);
             }
             unset($row);
-            show_json(1, array(
+            return show_json(1, array(
                 'total' => $total,
                 'list' => $list,
                 'pagesize' => $psize,
@@ -52,15 +59,18 @@ if ($_W['isajax']) {
         } elseif ($_GPC['type'] == 2) {
             $pindex = max(1, intval($_GPC['page']));
             $psize = 10;
-
-            $list = pdo_fetchall("select ogq.*, g.title from " . tablename('sz_yi_order_goods_queue') . " ogq left join " . tablename('sz_yi_goods') . " g on(ogq.goodsid = g.id) where ogq.uniacid = '" . $_W['uniacid'] . "' and ogq.openid = '" . $openid . "'  and ogq.goodsid = '" . $_GPC['goodsid'] . "'  LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+            $pageid = "";
+            if (!empty($_GPC['pageid'])) {
+                $pageid = " AND ogq.id > '".intval($_GPC['pageid'])."'" ;
+            }
+            $list = pdo_fetchall("select ogq.*, g.title from " . tablename('sz_yi_order_goods_queue') . " ogq left join " . tablename('sz_yi_goods') . " g on(ogq.goodsid = g.id) where ogq.uniacid = '" . $_W['uniacid'] . "' and ogq.openid = '" . $openid . "'  and ogq.goodsid = '" . $_GPC['goodsid'] . "' {$pageid}  LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
 
             $total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order_goods_queue') . " where  uniacid = '" . $_W['uniacid'] . "' and openid = '" . $openid . "' and goodsid = '" . $_GPC['goodsid'] . "' ");
             foreach ($list as &$row) {
                 $row['createtime'] = date('Y-m-d H:i', $row['create_time']);
             }
             unset($row);
-            show_json(1, array(
+            return show_json(1, array(
                 'total' => $total,
                 'list' => $list,
                 'pagesize' => $psize,
@@ -69,9 +79,13 @@ if ($_W['isajax']) {
 
         } elseif ($_GPC['type'] == 3) {
             $pindex = max(1, intval($_GPC['page']));
-            $psize = 10;
+            $psize = 2;
 
-            $list = pdo_fetchall("select * from " . tablename('sz_yi_return_log') . "  where uniacid = '" . $_W['uniacid'] . "' and openid = '" . $openid . "' and returntype = 1   LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
+            $pageid = "";
+            if (!empty($_GPC['pageid'])) {
+                $pageid = " AND id > '".intval($_GPC['pageid'])."'" ;
+            }
+            $list = pdo_fetchall("select * from " . tablename('sz_yi_return_log') . "  where uniacid = '" . $_W['uniacid'] . "' and openid = '" . $openid . "' and returntype = 1  {$pageid} LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
 
             $total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_return_log') . " where  uniacid = '" . $_W['uniacid'] . "' and openid = '" . $openid . "' and returntype = 1 ");
 
@@ -79,7 +93,7 @@ if ($_W['isajax']) {
                 $row['createtime'] = date('Y-m-d H:i', $row['create_time']);
             }
             unset($row);
-            show_json(1, array(
+            return show_json(1, array(
                 'total' => $total,
                 'list' => $list,
                 'pagesize' => $psize,
