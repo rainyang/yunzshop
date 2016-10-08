@@ -79,7 +79,7 @@ if ($_W['isajax']) {
                         $difference = '';
                     } else {
                         $difference = number_format($difference,2);
-                        $difference = "您还需要{$difference}元才可以购买";
+                        $difference = "还差{$difference}元";
                     }
                 //}
             }
