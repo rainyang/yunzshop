@@ -38,20 +38,21 @@
     #order_loading { width:94%;padding:10px;color:#666;text-align: center;}
 
 </style>
-<div id='container'></div>
+
+<div class="page_topbar">
+    <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
+    <div class="title">我的订单</div>
+</div>
+<div class="order_topbar">
+    <div class="nav {if $_GPC['status']==''}on{/if}" data-status="">全部</div>
+    <div class="nav {if $_GPC['status']=='1'}on{/if}"  data-status="1">待发货</div>
+    <div class="nav {if $_GPC['status']=='2'}on{/if}"  data-status="2">待收货</div>
+    <div class="nav {if $_GPC['status']=='3'}on{/if}"  data-status="3">已完成</div>
+</div>
 <script id='tpl_order_list' type='text/html'>
-    <div class="page_topbar">
-        <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
-        <div class="title">我的订单</div>
-    </div>
-    <div class="order_topbar">
-        <div class="nav {if $_GPC['status']==''}on{/if}" data-status="">全部</div>
-        <div class="nav {if $_GPC['status']=='1'}on{/if}"  data-status="1">待发货</div>
-        <div class="nav {if $_GPC['status']=='2'}on{/if}"  data-status="2">待收货</div>
-        <div class="nav {if $_GPC['status']=='3'}on{/if}"  data-status="3">已完成</div>
-    </div>
-    <div id='order_container'></div>
+
 </script>
+<div id='container'></div>
 <script id='tpl_order' type='text/html'>
     <%each list as order%>
     <div class="order_main" data-orderid="<%order.id%>">
@@ -87,12 +88,10 @@
     var current_status = '';
     require(['tpl', 'core'], function (tpl, core) {
         function bindEvents(){
-            {if !empty($this->set['openorderdetail']) ||!empty($this->set['openorderbuyer'])}
-            $('.order_list').unbind('click').click(function(){
-                $('.order_detail').slideUp();
-                $(this).next('.order_detail').slideDown();
-            })
-            {/if}
+            $('.order_main').click(function(){
+                var orderid = $(this).closest('.order_main').data('orderid');
+                location.href = core.getUrl('plugin/supplier/detail', {orderid: orderid});
+            });
         }
         function bindScroller(){
             //加载更多
@@ -126,8 +125,8 @@
             });
         }
         function getOrder(status) {
-            $('.order_menu .nav').removeClass('navon');
-            $('.order_menu .nav[data-status=\'' + status + '\']').addClass('navon');
+            $('.order_topbar .nav').removeClass('on');
+            $('.order_topbar .nav[data-status=\'' + status + '\']').addClass('on');
             core.pjson('supplier/orderj', {'op':'order', status:status, page: page}, function (json) {
                 if (json.result.list.length <= 0) {
                     $('#container').html(tpl('tpl_empty'));
@@ -138,7 +137,7 @@
                 bindEvents();
             }, true);
         }
-        $('.order_menu .nav').unbind('click').click(function () {
+        $('.order_topbar .nav').unbind('click').click(function () {
             page = 1; current_status = $(this).data('status')
             getOrder(current_status);
 

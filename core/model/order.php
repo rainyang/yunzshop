@@ -150,7 +150,7 @@ class Sz_DYi_Order
             $orderid = $order['id'];
             $verify_set = m('common')->getSetData();
             $allset = iunserializer($verify_set['plugins']);
-            if ($order['isverify'] == 1 && $allset['verify']['sendcode'] == 1) {
+            if ($order['isverify'] == 1 && isset($allset['verify']) && $allset['verify']['sendcode'] == 1) {
                 $carriers = unserialize($order['carrier']);
                 $mobile = $carriers['carrier_mobile'];
                 $type = 'verify';
@@ -333,7 +333,7 @@ class Sz_DYi_Order
             }
         }
     }
-    function sendSms($mobile, $code, $templateType = 'reg', $type = 'check', $name, $title, $total, $tel)
+    function sendSms($mobile, $code, $templateType = 'reg', $type = 'check', $name = '', $title = '', $total = '', $tel = '')
     {
         $set = m('common')->getSysset();
         if ($set['sms']['type'] == 1) {
@@ -348,7 +348,7 @@ class Sz_DYi_Order
         $verifyset  = m('common')->getSetData();
         $allset = iunserializer($verifyset['plugins']);
         $store_total = false;
-        if ($allset['verify']['store_total'] == 1) {
+        if (isset($allset['verify']) && $allset['verify']['store_total'] == 1) {
             $store_total = true;
         }
         $order   = pdo_fetch('select id,ordersn,price,openid,dispatchtype,addressid,carrier,status,storeid from ' . tablename('sz_yi_order') . ' where id=:id limit 1', array(
