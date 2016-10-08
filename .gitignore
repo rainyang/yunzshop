@@ -1,6 +1,6 @@
 data/
 core/runtime/
 core/runtime/logs
-core/core/model/user.php
+core/model/user.php
 sh.exe.stackdump
 core/inc/plugin/vendor/phpunit
