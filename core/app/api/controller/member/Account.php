@@ -35,6 +35,7 @@ class Account extends YZ
               );
 
             //操作按钮
+            $res['btn'] = array();
             if ($this->_json_datas['json']['set']['trade']['closerecharge']) {
                 array_push($res['btn'], array('text'=> '充值', 'url'=> '1'));
             }
@@ -54,6 +55,7 @@ class Account extends YZ
             }
 
             //货币
+            $res['other'] = array();
             if ($this->_json_datas['json']['shopset']['credit']) {
                 $text = $this->_json_datas['json']['shopset']['credit'];
             } else {

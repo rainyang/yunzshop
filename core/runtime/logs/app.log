@@ -1,3 +1,4 @@
+
 2016-09-24 20:06:38 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'api\Yii' not found' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php:165
 Stack trace:
 #0 [internal function]: yii\base\ErrorHandler->handleFatalError()
@@ -5472,3 +5473,4 @@ $_SERVER = [
     'REQUEST_TIME_FLOAT' => 1475890900.619
     'REQUEST_TIME' => 1475890900
 ]
+

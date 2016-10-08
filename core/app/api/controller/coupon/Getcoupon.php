@@ -17,7 +17,6 @@ class Getcoupon extends YZ
         $result = $this->callPlugin('coupon/detail/pay');
         $this->variable = $result['variable'];
         $this->json = $result['json'];
-        //dump($this->variable);
     }
 
     public function index()

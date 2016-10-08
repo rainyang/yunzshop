@@ -4,7 +4,7 @@ namespace app\api\controller\coupon;
 use app\api\YZ;
 use yii\helpers\ArrayHelper;
 
-class My extends YZ    //优惠券列表
+class Util extends YZ    //优惠券列表
 {
     private $json;
     private $variable;
@@ -12,7 +12,7 @@ class My extends YZ    //优惠券列表
     public function __construct()
     {
         parent::__construct();
-        $result = $this->callPlugin('coupon/my');
+        $result = $this->callPlugin('coupon/util');
         $this->variable = $result['variable'];
         $this->json = $result['json'];
     }
