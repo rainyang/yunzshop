@@ -7,9 +7,9 @@ if ($_W['isajax']) {
 	$supplieruser = $this->model->getSupplierUidAndUsername($openid);
 	$uid = $supplieruser['uid'];
 	$supplierinfo = $this->model->getSupplierInfo($uid);
-	$costmoney = $supplierinfo['costmoney'];
+	$costmoney = number_format($supplierinfo['costmoney'], 2);
 	$cansettle = $costmoney >= 1;
-	$member['commission_ok'] = number_format($costmoney, 2);
+	$member['commission_ok'] = $costmoney;
 	if ($_W['ispost']) {
 		$supplierinfo = $this->model->getSupplierInfo($uid);
 		$costmoney = $supplierinfo['costmoney'];
