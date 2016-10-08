@@ -1,54 +1,75 @@
 <?php
 namespace app\api\controller\order;
+use util\Str;
+
+
 @session_start();
 
 class Order
 {
+    const OP_ROUTE = 'order/op/';
+    const PAY = 1;
+    const COMPLETE = 5;
+    const EXPRESS =8;
+    const CANCEL = 9;
+    const COMMENT = 10;
+    const ADD_COMMENT = 11;
+    const DELETE = 12;
+    const REFUND = 13;
+    const VERIFY = 14;
+
+
     public static function getButtonModel($button_id)
     {
         $button = [
-            1 => [
+            static::PAY => [
                 'name' => '付款',
-                'api' => 'pay',
-                'value' => 1
+                'api' => '',// /order/pay
+                'value' => static::PAY
             ],
-            5 => [
+            static::COMPLETE => [
                 'name' => '确认收货',
                 'api' => 'complete',
-                'value' => 5
+                'value' => static::COMPLETE
             ],
-            9 => [
+            static::EXPRESS => [
+                'name' => '确认收货',
+                'api' => 'express',
+                'value' => static::EXPRESS
+            ],
+            static::CANCEL => [
                 'name' => '取消订单',
-                'api' => 'pay',
-                'value' => 9
+                'api' => 'cancel',
+                'value' => static::CANCEL
             ],
-            10=>[
+            static::COMMENT=>[
                 'name'=>'评价',
-                'api'=>'pay',
-                'value'=>10
+                'api'=>'comment',
+                'value'=>static::COMMENT
             ],
-            11=>[
+            static::ADD_COMMENT=>[
                 'name'=>'追加评价',
-                'api'=>'pay',
-                'value'=>11
+                'api'=>'comment',
+                'value'=>static::ADD_COMMENT
             ],
-            12=>[
+            static::DELETE=>[
                 'name'=>'删除订单',
-                'api'=>'pay',
-                'value'=>12
+                'api'=>'delete',
+                'value'=>static::DELETE
             ],
-            1=>[
-                'name'=>'付款',
-                'api'=>'pay',
-                'value'=>1
+            static::REFUND=>[
+                'name'=>'',
+                'api'=>'refund',
+                'value'=>static::REFUND
             ],
-            14=>[
+            static::VERIFY=>[
                 'name'=>'确认使用',
-                'api'=>'pay',
-                'value'=>14
+                'api'=>'/',//verify
+                'value'=>static::VERIFY
             ],
         ];
-        if (!Arr::has($button_id)) {
+        if (!isset($button[$button_id])) {
+
             echo 'button_id不存在';
             exit;
         }
@@ -57,8 +78,14 @@ class Order
 
     public static function getButtonApi($button_id)
     {
-        $file_name = 'order/op/';
+        $file_name = static::OP_ROUTE;
         $button_model = static::getButtonModel($button_id);
+        if(empty($button_model['api'])){
+            echo '正在写';exit;
+        }
+        if(Str::startsWith($button_model['api'],'/')){
+            return ltrim($button_model['api'],'/');
+        }
         $api = $file_name . $button_model['api'];
         return $api;
     }
@@ -67,6 +94,9 @@ class Order
     {
         $button_model = static::getButtonModel($button_id);
         $name = $button_model['name'];
+        if(empty($name)){
+            return '正在写';
+        }
         return $name;
 
     }
@@ -75,60 +105,40 @@ class Order
     {
         if ($order['status'] == 0) {
             if ($order['paytype'] != 3) {
-                $button_id_arr[] = 1;//付款
+                $button_id_arr[] = static::PAY;//付款
             }
-            
-            $button_id_arr[] = 9;//取消订单
+
+            $button_id_arr[] = static::CANCEL;//取消订单
 
         }
         if ($order['status'] == 2) {
-            $button_list[] = [
-                'name' => '确认收货',
-                'value' => 5
-            ];
+            $button_id_arr[] = static::COMPLETE;//收货
 
             if ($order['expresssn'] != '') {
-                $button_list[] = [
-                    'name' => '查看物流',
-                    'value' => 8
-                ];
+                $button_id_arr[] = static::EXPRESS;//物流信息
             }
         }
         if ($order['status'] == 3 && $order['iscomment'] == 0) {
-            $button_list[] = [
-                'name' => '评价',
-                'value' => 10
-            ];
+            $button_id_arr[] = static::COMMENT;//评价
+            
         }
         if ($order['status'] == 3 && $order['iscomment'] == 1) {
-            $button_list[] = [
-                'name' => '追加评价',
-                'value' => 11
-            ];
+            $button_id_arr[] = static::ADD_COMMENT;//追加评价
+
         }
         if ($order['status'] == 3 || $order['status'] == -1) {
-            $button_list[] = [
-                'name' => '删除订单',
-                'value' => 12
-            ];
+            $button_id_arr[] = static::DELETE;//删除订单
         }
         if ($order['canrefund']) {
-            $button_list[] = [
-                'name' => $order['refund_button'],
-                'value' => 13
-            ];
+            $button_id_arr[] = static::REFUND;//删除订单
         }
         if ($order['isverify'] == '1' && $order['verified'] != '1' && $order['status'] == '1') {
-            $button_list[] = [
-                'name' => '确认使用',
-                'value' => 14
-            ];
+            $button_id_arr[] = static::VERIFY;//使用
+
         }
-        $button_list = [
-            'name' => '付款',
-            'value' => 1
-        ];
+//dump($button_id_arr);exit;
         foreach ($button_id_arr as $button_id) {
+            //dump($button_id);exit;
             $button_list[] = static::getButtonModel($button_id);
         }
         return $button_list;

@@ -61,9 +61,10 @@ return show_json(0, '订单已支付，不能取消!');
 	        }
 	        return show_json(1);
 	    } else if ($operation == 'complete') {
-
 	        $orderid = intval($_GPC['orderid']);
-
+            if(empty($orderid)){
+                return show_json(0, '订单id不能为空!');
+            }
 	        $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
 	            ':id' => $orderid,
 	            ':uniacid' => $uniacid,

@@ -1,8 +1,9 @@
 <?php
-namespace test\api\controller\account;
-use app\api\tests\TestCase;
+namespace test\app\api\member;
+use tests\app\api\TestCase;
+
 require_once __DIR__.'/../TestCase.php';
-class LoginTest extends TestCase   {
+class LoginTest extends TestCase  {
     public function setUp() {
 
     }

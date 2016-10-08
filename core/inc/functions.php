@@ -435,6 +435,7 @@ function show_json($status = 1, $return = null, $variable = array())
     if (is_app_api()) {
         //dump($ret);exit;
         return array(
+            'status' => $status,
             'variable' => $variable,
             'json' => $return,
         );
