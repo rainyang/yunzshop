@@ -9,10 +9,12 @@ $member = m('member')->getMember($openid);
 $uniacid = $_W['uniacid'];
 $trade = m('common')->getSysset('trade');
 $_GPC['type'] = $_GPC['type'] ? $_GPC['type'] : 1;
+$_GPC['pageid'] = $_GPC['pageid'] ? $_GPC['pageid'] : '';
 
 if ($_W['isajax']) {
     if ($operation == 'display') {
         $pindex = max(1, intval($_GPC['page']));
+        $pindex    = !empty($_GPC['pageid']) ? $_GPC['pageid'] + 1 : $pindex;
         $psize = 10;
         $total = pdo_fetchcolumn("select count(rl.id) from" . tablename('sz_yi_return_log') . " rl
             left join " . tablename('sz_yi_member') . " m on( rl.mid=m.id ) 
@@ -23,7 +25,7 @@ if ($_W['isajax']) {
         ));
         $list = pdo_fetchall("select rl.*, m.id as mid, m.realname , m.mobile  from" . tablename('sz_yi_return_log') . " rl
             left join " . tablename('sz_yi_member') . " m on( rl.mid=m.id ) 
-            where rl.uniacid = :uniacid and rl.returntype = :returntype and m.id = :mid order by create_time desc LIMIT " . ($pindex - 1) * $psize . "," . $psize,
+            where rl.uniacid = :uniacid and rl.returntype = :returntype and m.id = :mid  order by create_time desc LIMIT " . ($pindex - 1) * $psize . "," . $psize,
             array(
                 ':uniacid' => $_W['uniacid'],
                 ':returntype' => $_GPC['type'],
@@ -33,10 +35,11 @@ if ($_W['isajax']) {
             $row['create_time'] = date("Y-m-d H:i:s", $row['create_time']);
         }
         unset($row);
-        show_json(1, array(
+        return show_json(1, array(
             'total' => $total,
             'list' => $list,
             'pagesize' => $psize,
+            'pageid' => $pindex,
             'type' => $_GPC['type']
         ));
     }
