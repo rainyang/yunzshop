@@ -7,12 +7,10 @@ load()->func('file');
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $member = m('member')->getMember($openid);
-if (p('yunbi')) {
-    if (!empty($_GPC['yunbi'])) {
-        $member['basis_money'] = $member['virtual_currency'];
-    } else {
-        $member['basis_money'] = $member['credit2'];
-    }
+if (!empty($_GPC['yunbi'])) {
+    $member['basis_money'] = $member['virtual_currency'];
+} else {
+    $member['basis_money'] = $member['credit2'];
 }
 $uniacid   = $_W['uniacid'];
 $trade     = m('common')->getSysset('trade');
