@@ -46,13 +46,15 @@ if (!class_exists('ReturnModel')) {
 		                $queueid = pdo_insertid();
 
 						$goods_returnid = pdo_fetchcolumn("SELECT returnid FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$uniacid." and goodsid = ".$good['goodsid']." order by returnid desc limit 1" );
-						$goods_returnid = !empty($goods_returnid)?$goods_returnid:0;
+						$return_queue = 0;
+						if (!empty($goods_returnid)) {
+							$return_queue = pdo_fetchcolumn("SELECT queue FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$uniacid." and goodsid = ".$good['goodsid']." and id = ".$goods_returnid);
+						}
 
-
-						if(($queuenum-$goods_returnid) >= $set['queue'])
+						if(($queuenum-$return_queue) >= $set['queue'])
 						{
 							$queue = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order_goods_queue') . " where uniacid = ".$uniacid." and goodsid = ".$good['goodsid']." and status = 0 order by queue asc limit 1" );
-							pdo_update('sz_yi_order_goods_queue', array('returnid'=>$queuenum,'status'=>'1'), array('id' => $queue['id'], 'uniacid' => $uniacid));
+							pdo_update('sz_yi_order_goods_queue', array('returnid'=>$queueid,'status'=>'1'), array('id' => $queue['id'], 'uniacid' => $uniacid));
 
 							$this->setReturnCredit($queue['openid'],'credit2',$queue['price'],'4');
 							$queue_price_txt= $set['queue_price'];
