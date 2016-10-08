@@ -1,10 +1,10 @@
-
+﻿
 2016-09-24 20:06:38 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'api\Yii' not found' in /Users/shenyang/wwwroots/yunzong/addons/sz_yi/core/index.php:165
 Stack trace:
 #0 [internal function]: yii\base\ErrorHandler->handleFatalError()
 #1 {main}
 2016-09-24 20:06:38 [127.0.0.1][-][-][info][application] $_GET = [
-    'uniacid' => '2'
+    'uniacid' => 123
     'api' => 'order/Display'
 ]
 
