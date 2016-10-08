@@ -4681,3 +4681,794 @@ $_SERVER = [
     'REQUEST_TIME_FLOAT' => 1475217990.29
     'REQUEST_TIME' => 1475217990
 ]
+2016-09-30 09:41:32 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'app\api\controller\member\Transferlog' not found' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/index.php:133
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 09:41:32 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'member/Transferlog'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SESSION = [
+    'acid' => '4'
+    'uniacid' => 4
+    'token' => [
+        'uT62' => 1475225673
+        'K5wr' => 1475225682
+        'lz1K' => 1475225685
+        'IcmB' => 1475225685
+        'bc82' => 1475225692
+        'xo6A' => 1475225693
+    ]
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '60913'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=member/Transferlog'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=member/Transferlog'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475228492.735
+    'REQUEST_TIME' => 1475228492
+]
+2016-09-30 09:43:04 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'app\api\controller\member\Transferlog' not found' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/index.php:133
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 09:43:04 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'member/Transferlog'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SESSION = [
+    'acid' => '4'
+    'uniacid' => 4
+    'token' => [
+        'uT62' => 1475225673
+        'K5wr' => 1475225682
+        'lz1K' => 1475225685
+        'IcmB' => 1475225685
+        'bc82' => 1475225692
+        'xo6A' => 1475225693
+    ]
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '60937'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=member/Transferlog'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=member/Transferlog'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475228584.85
+    'REQUEST_TIME' => 1475228584
+]
+2016-09-30 09:43:08 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'app\api\controller\member\Transferlog' not found' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/index.php:133
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 09:43:08 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'member/Transferlog'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SESSION = [
+    'acid' => '4'
+    'uniacid' => 4
+    'token' => [
+        'uT62' => 1475225673
+        'K5wr' => 1475225682
+        'lz1K' => 1475225685
+        'IcmB' => 1475225685
+        'bc82' => 1475225692
+        'xo6A' => 1475225693
+    ]
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '60938'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=member/Transferlog'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=member/Transferlog'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475228588.512
+    'REQUEST_TIME' => 1475228588
+]
+2016-09-30 09:43:17 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'app\api\controller\member\Transferlog' not found' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/index.php:133
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 09:43:17 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'member/Transferlog'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SESSION = [
+    'acid' => '4'
+    'uniacid' => 4
+    'token' => [
+        'uT62' => 1475225673
+        'K5wr' => 1475225682
+        'lz1K' => 1475225685
+        'IcmB' => 1475225685
+        'bc82' => 1475225692
+        'xo6A' => 1475225693
+    ]
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '60942'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=member/Transferlog'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=member/Transferlog'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475228597.491
+    'REQUEST_TIME' => 1475228597
+]
+2016-09-30 09:43:19 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'app\api\controller\member\Transferlog' not found' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/index.php:133
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 09:43:19 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'member/Transferlog'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SESSION = [
+    'acid' => '4'
+    'uniacid' => 4
+    'token' => [
+        'uT62' => 1475225673
+        'K5wr' => 1475225682
+        'lz1K' => 1475225685
+        'IcmB' => 1475225685
+        'bc82' => 1475225692
+        'xo6A' => 1475225693
+    ]
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '60943'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=member/Transferlog'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=member/Transferlog'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475228599.135
+    'REQUEST_TIME' => 1475228599
+]
+2016-09-30 09:43:49 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'app\api\controller\member\Transferlog' not found' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/index.php:133
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 09:43:49 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'member/Transferlog'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SESSION = [
+    'acid' => '4'
+    'uniacid' => 4
+    'token' => [
+        'uT62' => 1475225673
+        'K5wr' => 1475225682
+        'lz1K' => 1475225685
+        'IcmB' => 1475225685
+        'bc82' => 1475225692
+        'xo6A' => 1475225693
+    ]
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '60950'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=member/Transferlog'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=member/Transferlog'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475228629.69
+    'REQUEST_TIME' => 1475228629
+]
+2016-09-30 09:44:06 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'app\api\controller\member\Transferlog' not found' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/index.php:133
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 09:44:06 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'member/Transferlog'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SESSION = [
+    'acid' => '4'
+    'uniacid' => 4
+    'token' => [
+        'uT62' => 1475225673
+        'K5wr' => 1475225682
+        'lz1K' => 1475225685
+        'IcmB' => 1475225685
+        'bc82' => 1475225692
+        'xo6A' => 1475225693
+    ]
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '60953'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=member/Transferlog'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=member/Transferlog'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475228646.434
+    'REQUEST_TIME' => 1475228646
+]
+2016-09-30 09:44:07 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'app\api\controller\member\Transferlog' not found' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/index.php:133
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 09:44:07 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'member/Transferlog'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SESSION = [
+    'acid' => '4'
+    'uniacid' => 4
+    'token' => [
+        'uT62' => 1475225673
+        'K5wr' => 1475225682
+        'lz1K' => 1475225685
+        'IcmB' => 1475225685
+        'bc82' => 1475225692
+        'xo6A' => 1475225693
+    ]
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '60954'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=member/Transferlog'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=member/Transferlog'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475228647.317
+    'REQUEST_TIME' => 1475228647
+]
+2016-09-30 09:45:03 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'app\api\controller\member\Transferlog' not found' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/index.php:133
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 09:45:03 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'member/Transferlog'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SESSION = [
+    'acid' => '4'
+    'uniacid' => 4
+    'token' => [
+        'uT62' => 1475225673
+        'K5wr' => 1475225682
+        'lz1K' => 1475225685
+        'IcmB' => 1475225685
+        'bc82' => 1475225692
+        'xo6A' => 1475225693
+    ]
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'HTTP_CACHE_CONTROL' => 'max-age=0'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '60967'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=member/Transferlog'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=member/Transferlog'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475228703.767
+    'REQUEST_TIME' => 1475228703
+]
+2016-09-30 09:45:33 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Class 'app\api\controller\member\Transferlog' not found' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/index.php:133
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-09-30 09:45:33 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'member/Transferlog'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'fdbf___uid' => '1'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    'fdbf___uniacid' => '4'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SESSION = [
+    'acid' => '4'
+    'uniacid' => 4
+    'token' => [
+        'uT62' => 1475225673
+        'K5wr' => 1475225682
+        'lz1K' => 1475225685
+        'IcmB' => 1475225685
+        'bc82' => 1475225692
+        'xo6A' => 1475225693
+    ]
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; fdbf___uid=1; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; fdbf___uniacid=4; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '60976'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=member/Transferlog'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=member/Transferlog'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475228733.643
+    'REQUEST_TIME' => 1475228733
+]
+2016-10-08 01:41:19 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Call to undefined method app\api\controller\member\Transferlog::()' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/index.php:134
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-10-08 01:41:19 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'member/Transferlog/'
+    'pageid' => '1'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SESSION = [
+    'acid' => '4'
+    'uniacid' => 4
+    'token' => [
+        'H22E' => 1475889982
+        'ud1Y' => 1475889982
+        'akVS' => 1475889986
+    ]
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '51038'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=member/Transferlog/&pageid=1'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=member/Transferlog/&pageid=1'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475890879.405
+    'REQUEST_TIME' => 1475890879
+]
+2016-10-08 01:41:40 [127.0.0.1][-][-][error][yii\base\ErrorException:1] exception 'yii\base\ErrorException' with message 'Call to undefined method app\api\controller\member\Transferlog::()' in /Users/yanglei/localhost/yunzhong/addons/sz_yi/core/index.php:134
+Stack trace:
+#0 [internal function]: yii\base\ErrorHandler->handleFatalError()
+#1 {main}
+2016-10-08 01:41:40 [127.0.0.1][-][-][info][application] $_GET = [
+    'uniacid' => '4'
+    'api' => 'member/Transferlog/'
+    'pageid' => '1'
+]
+
+$_COOKIE = [
+    'member_mobile' => '13936237723'
+    'ext_type' => '1'
+    'fdbf___session' => 'eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9'
+    'PHPSESSID' => 'f4adb0cce4e15c885637b0dc1ac43986'
+    '__cookie_sz_yi_userid_4' => 'dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+]
+
+$_SESSION = [
+    'acid' => '4'
+    'uniacid' => 4
+    'token' => [
+        'H22E' => 1475889982
+        'ud1Y' => 1475889982
+        'akVS' => 1475889986
+    ]
+]
+
+$_SERVER = [
+    'TMP' => '/Applications/AMPPS/tmp'
+    'HTTP_HOST' => 'test.yunzhong.com'
+    'HTTP_USER_AGENT' => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:48.0) Gecko/20100101 Firefox/48.0'
+    'HTTP_ACCEPT' => 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'
+    'HTTP_ACCEPT_LANGUAGE' => 'zh-CN,zh;q=0.8,en-US;q=0.5,en;q=0.3'
+    'HTTP_ACCEPT_ENCODING' => 'gzip, deflate'
+    'HTTP_COOKIE' => 'member_mobile=13936237723; ext_type=1; fdbf___session=eyJ1aWQiOiIxIiwibGFzdHZpc2l0IjoiMTQ3MzczNDI1OSIsImxhc3RpcCI6IjEyNy4wLjAuMSIsImhhc2giOiIzZjkwY2IxMGE3ZWRlYmI5YTA3Nzk4MzljMmYyN2M2MyJ9; PHPSESSID=f4adb0cce4e15c885637b0dc1ac43986; __cookie_sz_yi_userid_4=dTlhODdkNTY2ZTM3M2IxNmVkMjBmYjM1MjZjMDM1OGYw'
+    'HTTP_CONNECTION' => 'keep-alive'
+    'HTTP_UPGRADE_INSECURE_REQUESTS' => '1'
+    'PATH' => '/usr/bin:/bin:/usr/sbin:/sbin'
+    'SERVER_SIGNATURE' => ''
+    'SERVER_SOFTWARE' => 'Apache/2.4.17 (Unix) PHP/5.5.31 mod_wsgi/3.5 Python/3.5.1 OpenSSL/1.0.1p'
+    'SERVER_NAME' => 'test.yunzhong.com'
+    'SERVER_ADDR' => '127.0.0.1'
+    'SERVER_PORT' => '80'
+    'REMOTE_ADDR' => '127.0.0.1'
+    'DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'REQUEST_SCHEME' => 'http'
+    'CONTEXT_PREFIX' => ''
+    'CONTEXT_DOCUMENT_ROOT' => '/Users/yanglei/localhost/yunzhong'
+    'SERVER_ADMIN' => 'admin@localhost'
+    'SCRIPT_FILENAME' => '/Users/yanglei/localhost/yunzhong/test/app_api.php'
+    'REMOTE_PORT' => '51048'
+    'GATEWAY_INTERFACE' => 'CGI/1.1'
+    'SERVER_PROTOCOL' => 'HTTP/1.1'
+    'REQUEST_METHOD' => 'GET'
+    'QUERY_STRING' => 'uniacid=4&api=member/Transferlog/&pageid=1'
+    'REQUEST_URI' => '/test/app_api.php?uniacid=4&api=member/Transferlog/&pageid=1'
+    'SCRIPT_NAME' => '/test/app_api.php'
+    'PHP_SELF' => '/test/app_api.php'
+    'REQUEST_TIME_FLOAT' => 1475890900.619
+    'REQUEST_TIME' => 1475890900
+]
