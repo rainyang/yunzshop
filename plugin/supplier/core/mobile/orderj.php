@@ -56,18 +56,6 @@ if($_W['isajax']) {
 		}
 	    return show_json(2, array('list' => $list,'pagesize' => $psize,'setlevel'=>$setids));
 	} else if ($operation == 'display') {
-        $openid = m('user')->getOpenid();
-        $set = $this->getSet();
-        $member = m('member')->getMember($openid);
-        $supplieruser = $this->model->getSupplierUidAndUsername($openid);
-        $uid = $supplieruser['uid'];
-        $username = $supplieruser['username'];
-        $_GPC['type'] = $_GPC['type'] ? $_GPC['type'] : 0;
-        $supplierinfo = $this->model->getSupplierInfo($uid);
-        $ordercount = $supplierinfo['ordercount'];
-        $commission_total = $supplierinfo['commission_total'];
-        $costmoney = $supplierinfo['costmoney'];
-        $commission_ok = number_format($costmoney, 2);
 	    return show_json(1, array(
 	        'openid' => $openid,
             'set'    => $set,

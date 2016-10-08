@@ -149,14 +149,16 @@ if ($_W['isajax']) {
         }
     }
     $order['canrefund'] = $canrefund;
-    show_json(1, array(
+    return show_json(1, array(
         'order' => $order,
         'goods' => $goods,
         'address' => $address,
         'carrier' => $carrier,
         'stores' => $stores,
         'isverify' => $isverify,
-        'set' => $set
+        'set' => $set,
+        'diyform_flag' => $diyform_flag,
+        'show'         => $show
     ));
 }
 function order_list_confirmsend($zym_var_32) {

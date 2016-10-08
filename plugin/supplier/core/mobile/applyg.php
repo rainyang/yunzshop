@@ -50,6 +50,6 @@ return show_json(1, '已提交,请等待审核!');
 	}
 	$returnurl = urlencode($this->createPluginMobileUrl('commission/applyg'));
 	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
-return show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
+return show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'shopset' => $shopset, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
 }
 include $this->template('applyg');
