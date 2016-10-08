@@ -294,7 +294,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             <div class="content">
                 <div class="title">结算 <span onClick="closechoose()" style="float:right;padding-right: 15px;color: #666;"><i class="iconfont icon-close"></i></span></div>
 
-                <div class="title" style="font-size: 12px;">专区：<span style="float:right;padding-right: 15px;"><%indiana.initmoney%>元专区</span></div>
+                <div class="title" style="font-size: 12px;">专区：<span style="float:right;padding-right: 15px;" data-initmoney="<%indiana.initmoney%>" id="initmoney"><%indiana.initmoney%>元专区</span></div>
 
                 <div class="title" style="font-size: 12px;">购买人次：<span style="float:right;padding-right: 15px;"><d class="indiana_total">1</d>人次</span></div>
 
@@ -302,6 +302,8 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             </div>
         </div>
        <!--  <div class="close" onClick="closechoose()"><i class="iconfont icon-close"></i></div> -->
+       
+       <input type='hidden' name="period" value="<%indiana.period%>" id="period">
         <div class="sub confirm_option" onClick="choose5()" style="z-index: 3;">确认支付</div>
     </div>
 
@@ -1595,6 +1597,23 @@ function choose4(direct,close){
     $('.good_choose_layer').fadeIn(200);
     $('.good_confirm').fadeIn(200);
     //location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&total=" + $("#total").val()+ "&isindiana=1&periodnum={$indiana['period_num']}";
+}
+function choose5(){
+//id:'{$_GPC['id']}',total:$('#total').val()
+
+
+    data = {op:'indiana_create', id:'{$_GPC['id']}',total:$('#total').val(),initmoney:$("#initmoney").data('initmoney'),period:$("#period").val()};
+    require(['core'],function(core){
+        core.pjson('indiana/confirm', data, function(create_json) {
+            if (create_json.status == 1) {
+                location.href = "{php echo $this->createMobileUrl('order/pay')}&orderid=" + create_json.result.orderid;
+            } else if (create_json.status == -1) {
+                core.tip.show(create_json.result);
+            } else {
+                core.tip.show("生成订单失败!");
+            }
+        }, true, true);
+    });
 }
   function addNum(){
     var total = $("#total");
