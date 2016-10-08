@@ -17,7 +17,7 @@ class Edit extends YZ
         $result = $this->callMobile('shop/address/submit');
         $this->variable = $result['variable'];
         $this->json = $result['json'];
-        //dump($this->variable);
+
     }
 
     public function index()

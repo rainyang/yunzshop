@@ -14,11 +14,8 @@ $_GPC['pageid'] = $_GPC['pageid'] ? $_GPC['pageid'] : '';
 if ($_W['isajax']) {
     if ($operation == 'display') {
         $pindex = max(1, intval($_GPC['page']));
-        $psize = 2;
-        $pageid = "";
-        if (!empty($_GPC['pageid'])) {
-            $pageid = " AND rl.id < '".intval($_GPC['pageid'])."'" ;
-        }
+        $pindex    = !empty($_GPC['pageid']) ? $_GPC['pageid'] + 1 : $pindex;
+        $psize = 10;
         $total = pdo_fetchcolumn("select count(rl.id) from" . tablename('sz_yi_return_log') . " rl
             left join " . tablename('sz_yi_member') . " m on( rl.mid=m.id ) 
             where rl.uniacid = :uniacid and rl.returntype = :returntype and m.id = :mid ", array(
@@ -28,7 +25,7 @@ if ($_W['isajax']) {
         ));
         $list = pdo_fetchall("select rl.*, m.id as mid, m.realname , m.mobile  from" . tablename('sz_yi_return_log') . " rl
             left join " . tablename('sz_yi_member') . " m on( rl.mid=m.id ) 
-            where rl.uniacid = :uniacid and rl.returntype = :returntype and m.id = :mid {$pageid} order by create_time desc LIMIT " . ($pindex - 1) * $psize . "," . $psize,
+            where rl.uniacid = :uniacid and rl.returntype = :returntype and m.id = :mid  order by create_time desc LIMIT " . ($pindex - 1) * $psize . "," . $psize,
             array(
                 ':uniacid' => $_W['uniacid'],
                 ':returntype' => $_GPC['type'],
@@ -42,6 +39,7 @@ if ($_W['isajax']) {
             'total' => $total,
             'list' => $list,
             'pagesize' => $psize,
+            'pageid' => $pindex,
             'type' => $_GPC['type']
         ));
     }
