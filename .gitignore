@@ -1,6 +1,6 @@
-data/
-core/runtime/
-core/runtime/logs
+/data/
+/core/runtime/
+/core/model/user.php
 sh.exe.stackdump
 core/inc/plugin/vendor/phpunit
 vendor/sebastian

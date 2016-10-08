@@ -42,13 +42,14 @@ if ($set['isintegral']) {
 }
 
 $_GPC['type'] = $_GPC['type']?$_GPC['type']:$type;
-
+$_GPC['pageid'] = $_GPC['pageid'] ? $_GPC['pageid'] : '';
 $default_avatar = "../addons/sz_yi/template/mobile/default/static/images/photo-mr.jpg";
 if ($_W['isajax']) {
     if ($operation == 'display') {
         if($_GPC['type'] == 0)
         {
             $pindex    = max(1, intval($_GPC['page']));
+            $pindex    = !empty($_GPC['pageid']) ? $_GPC['pageid'] + 1 : $pindex;
             $psize     = 10;
 
             $list      = pdo_fetchall("select * from " . tablename('mc_members') . " where uniacid = '" .$_W['uniacid'] . "' order by credit1 desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
@@ -62,10 +63,11 @@ if ($_W['isajax']) {
             }
             unset($row);
 
-            show_json(1, array(
+            return show_json(1, array(
                 'total' => $total,
                 'list' => $list,
                 'pagesize' => $psize,
+                'pageid' => $pindex,
                 'type'=>$_GPC['type'],
                 'm_num'=>$m_num,
                 'm_credit1'=>$member['credit1'],
@@ -77,6 +79,7 @@ if ($_W['isajax']) {
         {
 
             $pindex    = max(1, intval($_GPC['page']));
+            $pindex    = !empty($_GPC['pageid']) ? $_GPC['pageid'] + 1 : $pindex;
             $psize     = 10;
 
             $condition = " and o.uniacid={$_W['uniacid']}";
@@ -112,10 +115,11 @@ if ($_W['isajax']) {
                 }
             }
             unset($row);
-            show_json(1, array(
+            return show_json(1, array(
                 'total' => $total,
                 'list' => $list,
                 'pagesize' => $psize,
+                'pageid' => $pindex,
                 'type'=>$_GPC['type'],
                 'm_num'=>$m_num,
                 'm_credit1'=>$m_list['ordermoney'],
@@ -126,6 +130,7 @@ if ($_W['isajax']) {
         }elseif($_GPC['type'] == 2)
         {
             $pindex    = max(1, intval($_GPC['page']));
+            $pindex    = !empty($_GPC['pageid']) ? $_GPC['pageid'] + 1 : $pindex;
             $psize     = 10;
 
             $list = pdo_fetchall("select r.*, m.realname,m.avatar from " . tablename('sz_yi_ranking') . " r left join " . tablename('sz_yi_member') . " m on(r.mid = m.id) where r.uniacid = '" .$_W['uniacid'] . "' and r.mid > 0 order by r.credit desc   LIMIT " . ($pindex - 1) * $psize . ',' . $psize);
@@ -140,10 +145,11 @@ if ($_W['isajax']) {
                 $row['avatar'] = !empty($row['avatar'])?$row['avatar']:$default_avatar;
             }
             unset($row);
-            show_json(1, array(
+            return show_json(1, array(
                 'total' => $total,
                 'list' => $list,
                 'pagesize' => $psize,
+                'pageid' => $pindex,
                 'type'=>$_GPC['type'],
                 'm_num'=>$m_num,
                 'm_credit1'=>$m_list['credit']?$m_list['credit']:0,
