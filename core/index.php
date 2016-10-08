@@ -38,8 +38,9 @@ class AutoLoader
         }
         $dir = self::_mapNamespaceToDir($namespace);
         $class_name = $this->_getClassName($full_class_name);
+
         $full_dir = $this->_formatDir(__CORE_PATH__.'/'."{$dir}/{$class_name}.php");
-        dump($full_dir);
+        //dump($full_dir);
         if(is_file($full_dir)){
             include $full_dir;
         }
@@ -57,7 +58,7 @@ class AutoLoader
                 $dir = __CORE_PATH__ . '/inc/';
                 break;
             case 'util':
-                $dir = __CORE_PATH__ . '/inc/';
+                $dir = '/inc/';
                 break;
             case 'LeanCloud':
                 $dir = __CORE_PATH__ . '/inc/plugin/vendor/';
