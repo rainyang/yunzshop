@@ -333,7 +333,7 @@ class Sz_DYi_Order
             }
         }
     }
-    function sendSms($mobile, $code, $templateType = 'reg', $type = 'check', $name, $title, $total, $tel)
+    function sendSms($mobile, $code, $templateType = 'reg', $type = 'check', $name = '', $title = '', $total = '', $tel = '')
     {
         $set = m('common')->getSysset();
         if ($set['sms']['type'] == 1) {
