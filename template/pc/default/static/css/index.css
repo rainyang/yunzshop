@@ -1050,7 +1050,7 @@ li {
 
 .boutique .items-li {
 	float: left;
-	width: 294px;
+	width: 289px;
 	margin-right: 11px;
 	margin-bottom: 11px;
 	padding-bottom: 10px;
@@ -1108,7 +1108,7 @@ li {
 	bottom: 0;
 	z-index: 100;
 	width: 100%;
-	background: white;
+
 }
 .boutique .items-li .wrap_div p {
 	text-align: center;
