@@ -18,6 +18,11 @@ class Order
     const DELETE = 12;
     const REFUND = 13;
     const VERIFY = 14;
+    const AFTER_SALES = 15;
+    const IN_REFUND = 16;
+    const IN_AFTER_SALE = 17;
+
+
 
 
     public static function getButtonModel($button_id)
@@ -59,9 +64,24 @@ class Order
                 'value'=>static::DELETE
             ],
             static::REFUND=>[
-                'name'=>'',
+                'name'=>'申请退款',
                 'api'=>'refund',
                 'value'=>static::REFUND
+            ],
+            static::AFTER_SALES=>[
+                'name'=>'refund',
+                'api'=>'申请售后',
+                'value'=>static::AFTER_SALES
+            ],
+            static::IN_REFUND=>[//todo 有问题这个状态不是一个按钮
+                'name'=>'申请退款中',
+                'api'=>'/',
+                'value'=>static::IN_REFUND
+            ],
+            static::IN_AFTER_SALE=>[//todo 有问题这个状态不是一个按钮
+                'name'=>'申请退款中',
+                'api'=>'/',
+                'value'=>static::IN_AFTER_SALE
             ],
             static::VERIFY=>[
                 'name'=>'确认使用',
@@ -70,7 +90,6 @@ class Order
             ],
         ];
         if (!isset($button[$button_id])) {
-
             echo 'button_id不存在';
             exit;
         }
@@ -131,7 +150,19 @@ class Order
             $button_id_arr[] = static::DELETE;//删除订单
         }
         if ($order['canrefund']) {
-            $button_id_arr[] = static::REFUND;//删除订单
+            if ($order['status'] == 1) {
+                if(!empty($order['refundstate'])){
+                    $button_id_arr[] = static::IN_REFUND;//删除订单
+                }else{
+                    $button_id_arr[] = static::REFUND;//删除订单
+                }
+            } else {
+                if(!empty($order['refundstate'])){
+                    $button_id_arr[] = static::IN_AFTER_SALES;//删除订单
+                }else{
+                    $button_id_arr[] = static::REFUND;//删除订单
+                }
+            }
         }
         if ($order['isverify'] == '1' && $order['verified'] != '1' && $order['status'] == '1') {
             $button_id_arr[] = static::VERIFY;//使用

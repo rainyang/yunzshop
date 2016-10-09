@@ -1,9 +1,9 @@
 <?php
-namespace test\app\api\member;
+namespace test\app\api\order;
 use tests\app\api\TestCase;
 
 require_once __DIR__.'/../TestCase.php';
-class LoginTest extends TestCase  {
+class OperationTest extends TestCase  {
     public function setUp() {
         parent::setUp();
     }

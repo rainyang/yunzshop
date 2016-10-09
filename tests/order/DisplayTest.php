@@ -3,26 +3,75 @@ namespace test\app\api\order;
 use tests\app\api\TestCase;
 
 require_once __DIR__.'/../TestCase.php';
-class OperationTest extends TestCase  {
+class DisplayTest extends TestCase  {
     public function setUp() {
         parent::setUp();
     }
 
-    public function testLoginSuccess() {
+    public function testAll() {
         $para = array(
-            "mobile"=>'18545571024',
-            "pwd"=>'sgl918'
+            "order_id"=>'0',
+            "status"=>''
         );
-        $out = $this->get('member/Login',$para);
+        $out = $this->get('order/Display',$para);
         $this->assertEquals($out['result'], '1');
     }
-    public function testPasswordError() {
+    public function testWaitPay() {
         $para = array(
-            "mobile"=>'18545571024',
-            "pwd"=>'111111'
+            "order_id"=>'',
+            "status"=>'0'
         );
-        $out = $this->get('member/Login',$para);
-        $this->assertEquals($out['result'], '0');
+        $out = $this->get('order/Display',$para);
+        $this->assertEquals($out['result'], '1');
+    }
+    public function testWaitSent() {
+        $para = array(
+            "order_id"=>'',
+            "status"=>'1'
+        );
+        $out = $this->get('order/Display',$para);
+        $this->assertEquals($out['result'], '1');
+    }
+    public function testWaitDelivery() {
+        $para = array(
+            "order_id"=>'2',
+            "status"=>''
+        );
+        $out = $this->get('order/Display',$para);
+        $this->assertEquals($out['result'], '1');
+    }
+
+    public function testFinish() {
+        $para = array(
+            "order_id"=>'3',
+            "status"=>''
+        );
+        $out = $this->get('order/Display',$para);
+        $this->assertEquals($out['result'], '1');
+    }
+    public function testClose() {
+        $para = array(
+            "order_id"=>'-1',
+            "status"=>''
+        );
+        $out = $this->get('order/Display',$para);
+        $this->assertEquals($out['result'], '1');
+    }
+    public function testApplyRefund() {
+        $para = array(
+            "order_id"=>'4',
+            "status"=>''
+        );
+        $out = $this->get('order/Display',$para);
+        $this->assertEquals($out['result'], '1');
+    }
+    public function testRefund() {
+        $para = array(
+            "order_id"=>'5',
+            "status"=>''
+        );
+        $out = $this->get('order/Display',$para);
+        $this->assertEquals($out['result'], '1');
     }
     public function tearDown(){
         

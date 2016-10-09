@@ -9,13 +9,13 @@
  * @version   v1.0
  */
 namespace api;
-use Think;
 define('IN_SYS', true);
 define("__CORE_PATH__", __DIR__);
 define("__VENDOR_PATH__", __DIR__."/../vendor");
 define("__BASE_ROOT__", __DIR__ . "/../../..");
 //var_dump(get_defined_constants());
 require_once __BASE_ROOT__ . '/framework/bootstrap.inc.php';
+
 require_once __BASE_ROOT__ . '/addons/sz_yi/defines.php';
 require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/functions.php';
 require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/plugin/plugin_model.php';
