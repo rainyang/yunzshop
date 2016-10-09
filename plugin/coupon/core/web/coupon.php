@@ -8,7 +8,9 @@ global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $type = intval($_GPC['type']);
 //Author:ym Date:2016-08-05 Content:添加供应商判断
-$perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+if (p('supplier')) {
+    $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+}
 if($perm_role == 1){
     $supplier_uid = $_W['uid'];
 }else{
