@@ -185,15 +185,16 @@ if ($_W['isajax']) {
             $canrefund = true;
         }
     } else if ($order['status'] == 3) {
-        if ($order['isverify'] != 1 && empty($order['virtual'])) {
-            
+
+        //申请售后去除核销商品与虚拟产品不允许退货
+        //if ($order['isverify'] != 1 && empty($order['virtual'])) { 
             if ($refunddays > 0) {
                 $days = intval((time() - $order['finishtimevalue']) / 3600 / 24);
                 if ($days <= $refunddays) {
                     $canrefund = true;
                 }
             }
-        }
+        //}
     }
     $order['canrefund'] = $canrefund;
     if ($canrefund == true) {
