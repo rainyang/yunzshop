@@ -1074,6 +1074,38 @@ if ($operation == "display") {
         $condition .= " and order_type<>3";
         $join_order_type = " and o.order_type<>3";
     }
+    if (!empty($agentid) && $level > 0) {
+        if (empty($olevel)) {
+            if ($level >= 1) {
+                $condition.= " and  ( agentid=" . intval($_GPC["agentid"]);
+            }
+            if ($level >= 2 && $agent["level2"] > 0) {
+                $condition.= " or agentid in( " . implode(",", array_keys($agent["level1_agentids"])) . ")";
+            }
+            if ($level >= 3 && $agent["level3"] > 0) {
+                $condition.= " or agentid in( " . implode(",", array_keys($agent["level2_agentids"])) . ")";
+            }
+            if ($level >= 1) {
+                $condition.= ")";
+            }
+        } else {
+            if ($olevel == 1) {
+                $condition.= " and agentid=" . intval($_GPC["agentid"]);
+            } else if ($olevel == 2) {
+                if ($agent["level2"] > 0) {
+                    $condition.= " and agentid in( " . implode(",", array_keys($agent["level1_agentids"])) . ")";
+                } else {
+                    $condition.= " and agentid in( 0 )";
+                }
+            } else if ($olevel == 3) {
+                if ($agent["level3"] > 0) {
+                    $condition.= " and agentid in( " . implode(",", array_keys($agent["level2_agentids"])) . ")";
+                } else {
+                    $condition.= " and agentid in( 0 )";
+                }
+            }
+        }
+    }
     $paras = array(
         ":uniacid" => $_W["uniacid"]
     );
