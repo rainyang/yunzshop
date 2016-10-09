@@ -4,10 +4,10 @@
     body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearance:none;}
     .info_main {height:auto;  background:#fff; margin-top:14px; border-bottom:1px solid #e8e8e8; border-top:1px solid #e8e8e8;}
     .info_main .line {margin:0 10px; height:40px; border-bottom:1px solid #e8e8e8; line-height:40px; color:#999;}
-    .info_main .line .title {height:40px; width:80px; line-height:40px; color:#444; float:left; font-size:16px;}
+    .info_main .line .title {height:40px; width:80px; line-height:40px; color:#444; float:left; font-size:14px;}
     .info_main .line .info { width:100%;float:right;margin-left:-80px; }
     .info_main .line .inner { margin-left:80px; }
-    .info_main .line .inner input {height:40px; width:100%;display:block; padding:0px; margin:0px; border:0px; float:left; font-size:16px;}
+    .info_main .line .inner input {height:40px; width:100%;display:block; padding:0px; margin:0px; border:0px; float:left; font-size:14px;}
     .info_main .line .inner .user_sex {line-height:40px;}
     .info_sub {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
     .select { border:1px solid #ccc;height:25px;}
@@ -33,10 +33,12 @@
         <div class="line"><div class="title">昵称</div><div class='info'><div class='inner'><input type="text" id='nickname' placeholder="请输入您的昵称"  value="<%nickname%>" /></div></div></div>
         {/if}
         <%if mobile%>
-        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><%mobile%><button onclick="location.href='{php echo $this->createMobileUrl('member/editmobile')}'">更换</button></div></div></div>
+        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><%mobile%><a style="font-size: 12px;line-height: 40px;float: right;
+    padding: 0 10px;color: #f15353;text-decoration: none;" href='{php echo $this->createMobileUrl('member/editmobile')}'>更换</a></div></div></div>
         <input type="hidden" id='mobile' value="<%mobile%>" />
         <%else%>
-        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><button onclick="location.href='{php echo $this->createMobileUrl('member/bindmobile')}'">立即绑定</button></div></div></div>
+        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><a style="font-size: 12px;line-height: 40px;float: right;
+    padding: 0 10px;color: #f15353;text-decoration: none;" href='{php echo $this->createMobileUrl('member/bindmobile')}'>立即绑定</button></div></div></div>
         <%/if%>
         <div class="line"><div class="title">微信号</div><div class='info'><div class='inner'><input type="text"  id='weixin' placeholder="请输入微信号" value="<%weixin%>"/></div></div></div>
         <div class="line"><div class="title">支付宝帐号</div><div class='info'><div class='inner'><input type="text"  id='alipay' placeholder="请输入支付宝帐号" value="<%alipay%>"/></div></div></div>
