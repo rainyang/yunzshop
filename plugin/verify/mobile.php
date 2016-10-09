@@ -25,4 +25,44 @@ class VerifyMobile extends Plugin
     {
         return $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function index()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function mystore()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function add()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function order()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function withdraw()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function log()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function my_pocket()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function ranking()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function select_category()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+    public function select_goods()
+    {
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
 }

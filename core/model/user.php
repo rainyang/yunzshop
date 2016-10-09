@@ -138,6 +138,9 @@ class Sz_DYi_User
         if($_GPC['p'] == 'area' && $_GPC["method"]=='area_detail'){
             return;
         }
+        if($_GPC['p'] == 'article' && $_GPC["method"]=='article_pc'){
+            return;
+        }
         //需要登陆的P方法                  
         $needLoginPList = array('address', 'commission','cart');
 

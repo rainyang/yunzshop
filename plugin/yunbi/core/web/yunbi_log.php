@@ -20,12 +20,29 @@ if ($operation == 'display') {
     }
 
     $total = pdo_fetchall("select yl.id from" . tablename('sz_yi_yunbi_log') . " yl
-        left join " . tablename('sz_yi_member') . " m on( yl.openid=m.openid and m.uniacid = '" .$_W['uniacid'] . "' ) where yl.uniacid = '" .$_W['uniacid'] . "' and yl.returntype = '".$yunbitype."' AND yl.money <> 0 ".$condition);
+        left join " . tablename('sz_yi_member') . " m on( yl.openid=m.openid and m.uniacid = '" .$_W['uniacid'] . "' ) where yl.uniacid = '" .$_W['uniacid'] . "' and yl.returntype = '".$yunbitype."' and yl.status >= 0 AND yl.money <> 0 ".$condition);
     $total = count($total);
     $list_group = pdo_fetchall("select yl.*, m.id as mid, m.realname , m.mobile  from" . tablename('sz_yi_yunbi_log') . " yl
-        left join " . tablename('sz_yi_member') . " m on( yl.openid=m.openid and m.uniacid = '" .$_W['uniacid'] . "') where yl.uniacid = '" .$_W['uniacid'] . "' and yl.returntype = '".$yunbitype."' AND yl.money <> 0 ".$condition." order by create_time desc LIMIT " . ($pindex - 1) * $psize . "," . $psize);
+        left join " . tablename('sz_yi_member') . " m on( yl.openid=m.openid and m.uniacid = '" .$_W['uniacid'] . "') where yl.uniacid = '" .$_W['uniacid'] . "' and yl.returntype = '".$yunbitype."' and yl.status >= 0 AND yl.money <> 0 ".$condition." order by create_time desc LIMIT " . ($pindex - 1) * $psize . "," . $psize);
     foreach ($list_group as &$row) {
         $row['create_time']     = date("Y-m-d H:i:s",$row['create_time']);
+        if ($row['returntype'] == '11') {
+            if ($row['status'] == '0') {
+                $row['status_text'] = '交易中';
+            }elseif ($row['status'] == '2') {
+                $row['status_text'] = '已完成';
+            }elseif ($row['status'] == '3') {
+                $row['status_text'] = '公司回购';
+            }
+        }else{
+            if ($row['status'] == '0') {
+                $row['status_text'] = '等待返现';
+            }else{
+                $row['status_text'] = '已完成';
+            }
+
+        }
+
     }
     unset($row);
     $pager = pagination($total, $pindex, $psize);

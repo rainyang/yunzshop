@@ -33,7 +33,23 @@ if (p('hotel')) {
     $hotel = p('hotel');
     $hotelstatus = $hotel->check_plugin('hotel');
 }
-   
+ 
+$lang = array(
+    "shopname" => "商品名称",
+    "mainimg" => "商品图片",
+    "limittime" => "限时卖时间",
+    "shopnumber" => "商品编号",
+    "shopprice" => "商品价格"
+    ); 
+if($_GPC['plugin'] == "fund"){
+    $lang = array(
+    "shopname" => "项目名称",
+    "mainimg" => "项目主图",
+    "limittime" => "项目时间",
+    "shopnumber" => "项目编号",
+    "shopprice" => "项目金额"
+    ); 
+}
 
 //  END
 //分红
@@ -154,7 +170,7 @@ if ($operation == "change") {
         } else {
             ca('shop.goods.add');
         }
-        $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid'] . ' AND roleid=(select id from ' . tablename('sz_yi_perm_role') . ' where status1=1)');
+        $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid'] . ' AND roleid in (select id from ' . tablename('sz_yi_perm_role') . ' where status1=1)');
         if (p('hotel')) {
             $print_list = pdo_fetchall('SELECT * FROM ' . tablename('sz_yi_print_list') . ' WHERE uniacid = :uniacid ',
                 array(':uniacid' => $_W['uniacid']));
@@ -412,7 +428,7 @@ if ($operation == "change") {
         }
         unset($value);
         if (checksubmit("submit")) {
-            if($_GPC['dispatchtype']==0){
+            if($_GPC['dispatchtype']==0  && $_GPC["type"] == 1){
                 if ($perm_role == 1) {
                     $supplier_uid = intval($_W['uid']);
                 } else {
@@ -429,7 +445,7 @@ if ($operation == "change") {
             }
             if ($diyform_plugin) {
                 if ($_GPC["type"] == 1 && $_GPC["diyformtype"] == 2) {
-                    message("替换模式只试用于虚拟物品类型，实体物品无效！请重新选择！");
+                    message("替换模式只适用于虚拟物品类型，实体物品无效！请重新选择！");
                 }
             }
             if (empty($_GPC['goodsname'])) {
@@ -558,6 +574,7 @@ if ($operation == "change") {
                 'buygroups' => is_array($_GPC['buygroups']) ? implode(",", $_GPC['buygroups']) : '',
                 'isverify' => intval($_GPC['isverify']),
                 'isverifysend' => intval($_GPC['isverifysend']),
+                'dispatchsend' => intval($_GPC['dispatchsend']),
                 'storeids' => is_array($_GPC['storeids']) ? implode(',', $_GPC['storeids']) : '',
                 'noticeopenid' => trim($_GPC['noticeopenid']),
                 'noticetype' => is_array($_GPC['noticetype']) ? implode(",", $_GPC['noticetype']) : '',
@@ -586,7 +603,9 @@ if ($operation == "change") {
                 "edareas" => trim($_GPC["edareas"]),
                 "edmoney" => trim($_GPC["edmoney"]),
                 "redprice" => $_GPC["redprice"],//红包价格
-                "isopenchannel" => intval($_GPC["isopenchannel"])
+                "isopenchannel" => intval($_GPC["isopenchannel"]),
+                'goods_balance' =>  intval($_GPC['goods_balance']),
+                'balance_with_store' => intval($_GPC['balance_with_store'])
 
             );
             if (p('area')) {
@@ -620,9 +639,14 @@ if ($operation == "change") {
             if ($pluginyunbi) {
                 $data['isyunbi'] = intval($_GPC['isyunbi']);   //返虚拟币开关    1:开    0:关
                 $data['yunbi_consumption'] = floatval($_GPC['yunbi_consumption']);  //虚拟币 返现比例 
+                
+                $data['yunbi_commission'] = floatval($_GPC['yunbi_commission']);  //虚拟币 上级获得比例 
                 $data['yunbi_deduct'] = floatval($_GPC['yunbi_deduct']);  //虚拟币最高抵扣 
                 //1开启强制使用云币，0关闭
                 $data['isforceyunbi'] = intval($_GPC['isforceyunbi']);
+                //是否使用保单
+                $data['isdeclaration'] = intval($_GPC['isdeclaration']);
+                $data['virtual_declaration'] = floatval($_GPC['virtual_declaration']);
             }
             if (p('hotel')) {
                 $data['deposit'] = $_GPC["deposit"];//房间押金

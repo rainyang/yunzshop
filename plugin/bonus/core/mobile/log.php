@@ -6,6 +6,7 @@ global $_W, $_GPC;
 $operation  = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid     = m('user')->getOpenid();
 $mid        = m('member')->getMid();
+$member = $this->model->getInfo($openid, array());
 $uniacid    = $_W['uniacid'];
 $agentLevel = $this->model->getLevel($openid);
 if ($_W['isajax']) {
@@ -14,7 +15,10 @@ if ($_W['isajax']) {
 		$psize = 20;
 		$condition = " and `openid`=:openid and uniacid=:uniacid";
 		$params = array(':openid' => $openid, ':uniacid' => $uniacid);
-		$status = trim($_GPC['status']);
+		$status = intval($_GPC['status']);
+		if($status > 1){
+			$condition .= " and type=".$status;
+		}
 		$commissioncount = 0;
 		$list = pdo_fetchall("select * from " . tablename('sz_yi_bonus_log') . " where 1 {$condition} order by id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_bonus_log') . " where 1 {$condition}", $params);
@@ -64,10 +68,6 @@ return show_json(0, array('message' => '未找到订单信息!'));
 				}
 			}
 			$condition = "";
-			$status = trim($_GPC['status']);
-			if ($status != '') {
-				$condition .= ' and status=' . intval($status);
-			}
 			$goods = pdo_fetchall("SELECT og.id,og.goodsid,g.thumb,og.price,og.total,g.title,og.optionname," . "og.commission1,og.commission2,og.commission3,og.commissions," . "og.status1,og.status2,og.status3," . "og.content1,og.content2,og.content3 from " . tablename('sz_yi_order_goods') . " og" . " left join " . tablename('sz_yi_goods') . " g on g.id=og.goodsid  " . " where og.orderid=:orderid and og.nocommission=0 and og.uniacid = :uniacid order by og.createtime  desc ", array(':uniacid' => $_W['uniacid'], ':orderid' => $row['id']));
 			$goods = set_medias($goods, 'thumb');
 			foreach ($goods as &$g) {

@@ -9,40 +9,76 @@
                 核销设置
             </div>
             <div class="panel-body">
-                    <div class="form-group">
-                       <label class="col-xs-12 col-sm-3 col-md-2 control-label">核销关键词</label>
-                       <div class="col-sm-9 col-xs-12">
-                           <input type="text" name="data[verifykeyword]" class="form-control" value="{$set['verifykeyword']}" />
-                           <span class='help-block'>店员核销使用，如果不填写默认为核销，使用方法: 回复关键词后系统会提示输入消费码</span>
-                       </div>
-                    </div>
-                   
-            
-                    <div class="form-group">
-                       <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否发送消费码</label>
-                        <div class="col-sm-9 col-xs-12">
-                            {ife 'verify.store' $item}
-                            <label class='radio-inline'>
-                                <input type='radio' name='data[sendcode]' value='1' {if $set['sendcode']==1}checked{/if} /> 是
-                            </label>
-                            <label class='radio-inline'>
-                                <input type='radio' name='data[sendcode]' value='0' {if $set['sendcode']==0}checked{/if} /> 否
-                            </label>
-                            {else}
-                            <div class='form-control-static'>{if $set['sendcode']==1}是{else}否{/if}</div>
-                            {/if}
-                            <span class='help-block'>以短信形式发送消费码，需要在短信设置里面填写短信账号！</span>
-                        </div>
+                <div class="form-group">
+                   <label class="col-xs-12 col-sm-3 col-md-2 control-label">核销关键词</label>
+                   <div class="col-sm-9 col-xs-12">
+                       <input type="text" name="data[verifykeyword]" class="form-control" value="{$set['verifykeyword']}" />
+                       <span class='help-block'>店员核销使用，如果不填写默认为核销，使用方法: 回复关键词后系统会提示输入消费码</span>
+                   </div>
+                </div>
 
+
+                <div class="form-group">
+                   <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否发送消费码</label>
+                    <div class="col-sm-9 col-xs-12">
+                        {ife 'verify.store' $item}
+                        <label class='radio-inline'>
+                            <input type='radio' name='data[sendcode]' value='1' {if $set['sendcode']==1}checked{/if} /> 是
+                        </label>
+                        <label class='radio-inline'>
+                            <input type='radio' name='data[sendcode]' value='0' {if $set['sendcode']==0}checked{/if} /> 否
+                        </label>
+                        {else}
+                        <div class='form-control-static'>{if $set['sendcode']==1}是{else}否{/if}</div>
+                        {/if}
+                        <span class='help-block'>以短信形式发送消费码，需要在短信设置里面填写短信账号！</span>
                     </div>
-                    <div class="form-group">
-                       <label class="col-xs-12 col-sm-3 col-md-2 control-label">消费码短信模板</label>
-                       <div class="col-sm-9 col-xs-12">
-                           <input type="text" name="data[code_template]" class="form-control" value="{if $set['code_template']}{$set['code_template']}{else}提醒您，您的核销码为：%s，订购的票型是：%s，数量：%s张，购票人：%s，电话：%s，门店电话：%s。请妥善保管，验票使用！{/if}" />
-                           <span class='help-block'>注意：如不填写则模板默认为输入框中内容 ，其中“ %s ”为消费码变量，请勿更改，所有标点符号均为全角符号，模板中不能有空格！并且此模板必须和短信模板保持一致！另外此模板只支持“互亿无线”使用！</span>
-                       </div>
+
+                </div>
+                <div class="form-group">
+                   <label class="col-xs-12 col-sm-3 col-md-2 control-label">消费码短信模板</label>
+                   <div class="col-sm-9 col-xs-12">
+                       <input type="text" name="data[code_template]" class="form-control" value="{if $set['code_template']}{$set['code_template']}{else}提醒您，您的核销码为：%s，订购的票型是：%s，数量：%s张，购票人：%s，电话：%s，门店电话：%s。请妥善保管，验票使用！{/if}" />
+                       <span class='help-block'>注意：如不填写则模板默认为输入框中内容 ，其中“ %s ”为消费码变量，请勿更改，所有标点符号均为全角符号，模板中不能有空格！并且此模板必须和短信模板保持一致！另外此模板只支持“互亿无线”使用！</span>
+                   </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">会员中心是否显示排行榜</label>
+                    <div class="col-sm-9 col-xs-12">
+                        {ife 'verify.store' $item}
+                        <label class='radio-inline'>
+                            <input type='radio' name='data[centershow]' value='1' {if $set['centershow']==1}checked{/if} /> 是
+                        </label>
+                        <label class='radio-inline'>
+                            <input type='radio' name='data[centershow]' value='0' {if $set['centershow']==0}checked{/if} /> 否
+                        </label>
+                        {else}
+                        <div class='form-control-static'>{if $set['centershow']==1}是{else}否{/if}</div>
+                        {/if}
+                        <span class='help-block'>决定会员中心是否显示门店销售排行榜！</span>
                     </div>
- 
+
+                </div>
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">商城下单是否走门店库存</label>
+                    <div class="col-sm-9 col-xs-12">
+                        {ife 'verify.store' $item}
+                        <label class='radio-inline'>
+                            <input type='radio' name='data[store_total]' value='1' {if $set['store_total']==1}checked{/if} /> 是
+                        </label>
+                        <label class='radio-inline'>
+                            <input type='radio' name='data[store_total]' value='0' {if $set['store_total']==0}checked{/if} /> 否
+                        </label>
+                        {else}
+                        <div class='form-control-static'>{if $set['store_total']==1}是{else}否{/if}</div>
+                        {/if}
+                        <span class='help-block'>决定商城下单时走门店库存还是平台库存！</span>
+                    </div>
+
+                </div>
+
                     <div class="form-group">
                            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                            <div class="col-sm-9 col-xs-12">

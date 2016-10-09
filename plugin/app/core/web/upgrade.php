@@ -19,7 +19,7 @@ if(empty($result)){
 }
 
 $sql = "
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_banner` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_banner'). " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `advname` varchar(50) DEFAULT '',
@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_banner` (
 pdo_query($sql);
 
 $sql = "
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_message` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_message'). " (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT '编号',
   `openid` varchar(255) NOT NULL COMMENT '用户openid',
   `title` varchar(255) NOT NULL COMMENT '标题',
@@ -47,7 +47,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_message` (
 pdo_query($sql);
 
 $sql = "
-CREATE TABLE IF NOT EXISTS `ims_sz_yi_push` (
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_push'). " (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `uniacid` int(11) DEFAULT '0',
   `name` varchar(50) DEFAULT '',
@@ -61,7 +61,7 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_push` (
 pdo_query($sql);
 
 $sql = "
-ALTER TABLE `ims_sz_yi_member` ADD `bindapp` tinyint(4) NOT NULL DEFAULT '0';
+ALTER TABLE " . tablename('sz_yi_member'). " ADD `bindapp` tinyint(4) NOT NULL DEFAULT '0';
 ";
 if(!pdo_fieldexists('sz_yi_member', 'bindapp')) {
     pdo_query($sql);

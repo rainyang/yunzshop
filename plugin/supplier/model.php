@@ -15,7 +15,7 @@ if (!class_exists('SupplierModel')) {
                 return '';
             }
             //uid下的所有招商员
-            $merchants = pdo_fetchall("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and supplier_uid={$uid}");
+            $merchants = pdo_fetchall("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and supplier_uid={$uid} ORDER BY id DESC");
             //循环赋予头像等信息
             foreach ($merchants as &$value) {
                 $merchants_member = m('member')->getMember($value['openid']);
@@ -36,10 +36,31 @@ if (!class_exists('SupplierModel')) {
             return $roleid;
         }
 
+        public function AllSuppliers(){
+            global $_W, $_GPC;
+            $roleid = $this->getRoleId();
+            $all_suppliers = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_perm_user') . " WHERE uniacid=:uniacid AND roleid=:roleid", array(':uniacid' => $_W['uniacid'], ':roleid' => $roleid));
+            return $all_suppliers;
+        }
+
         //获取供应商订单佣金相关数据
         public function getSupplierInfo($uid){
             global $_W, $_GPC;
             $supplierinfo = array();
+            $set = $this->getSet();
+            if (!empty($set['limit_day'])) {
+                $time = time();
+                if (!empty($uid)) {
+                    $last_apply_time = pdo_fetchcolumn("SELECT apply_time FROM " . tablename('sz_yi_supplier_apply') . "WHERE uniacid={$_W['uniacid']} AND uid={$uid} ORDER BY id DESC LIMIT 1");
+                    if (!empty($last_apply_time)) {
+                        $last_time = $last_apply_time + $set['limit_day']*60*60*24;
+                        if ($last_time > $time) {
+                            $supplierinfo['limit_day'] = true;
+                            $supplierinfo['last_time'] = date('Y-m-d H:i:s', $last_time);
+                        }
+                    }
+                }
+            }
             //订单总数
             $supplierinfo['ordercount'] = 0;
             //累积佣金
@@ -49,8 +70,8 @@ if (!class_exists('SupplierModel')) {
             //累积佣金
             $supplierinfo['totalmoney'] = 0;
             $supplierinfo['ordercount'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where supplier_uid={$uid} and userdeleted=0 and deleted=0 and uniacid={$_W['uniacid']} ");
-            $supplierinfo['commission_total'] = number_format(pdo_fetchcolumn("select sum(apply_money) from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and uid={$uid} and status=1"), 2);
-            $sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0");
+            $supplierinfo['commission_total'] = pdo_fetchcolumn("select sum(apply_money) from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and uid={$uid} and status=1");
+            /*$sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0");
             foreach ($sp_goods as $key => $value) {
                 if ($value['goods_op_cost_price'] > 0) {
                     $supplierinfo['costmoney'] += $value['goods_op_cost_price'] * $value['total'];
@@ -63,7 +84,36 @@ if (!class_exists('SupplierModel')) {
                         $supplierinfo['costmoney'] += $goods_info['costprice'] * $value['total'];
                     }
                 }
+            }*/
+            $supplierinfo['sp_goods'] = array();
+            $supplierinfo['costmoney'] = 0;
+            $supplierinfo['costmoney_total'] = 0;
+            $supplierinfo['expect_money'] = '0.00';
+
+            $apply_cond = "";
+            $apply_conds = "";
+            $now_time = time();
+            if (!empty($set['apply_day'])) {
+                $apply_day = $now_time - $set['apply_day']*60*60*24;
+                $apply_cond .= " AND o.finishtime<{$apply_day} ";
+                $apply_conds = " AND o.finishtime>{$apply_day} ";
+                $supplierinfo['expect_money'] = pdo_fetchcolumn("SELECT sum(so.money) FROM " . tablename('sz_yi_supplier_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id where o.uniacid={$_W['uniacid']} and o.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 {$apply_conds}");
             }
+            $costmoney_total = pdo_fetchall("SELECT so.money FROM " . tablename('sz_yi_supplier_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id where o.uniacid={$_W['uniacid']} and o.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 ");
+            if (!empty($costmoney_total)) {
+                foreach ($costmoney_total as $c) {
+                    $supplierinfo['costmoney_total'] += $c['money'];
+                }
+            }
+            $supplier_orders = pdo_fetchall("SELECT so.*,o.id as oid,og.id as ogid FROM " . tablename('sz_yi_supplier_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id where o.uniacid={$_W['uniacid']} and o.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 {$apply_cond}");
+            if (!empty($supplier_orders)) {
+                $supplierinfo['sp_goods'] = $supplier_orders;
+                $supplierinfo['costmoney'] = 0;
+                foreach ($supplier_orders as $o) {
+                    $supplierinfo['costmoney'] += $o['money'];
+
+                }
+            }                        
             $supplierinfo['totalmoney'] = pdo_fetchcolumn("select sum(apply_money) from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and uid={$uid}");
             return $supplierinfo;
         }
@@ -129,12 +179,12 @@ if (!class_exists('SupplierModel')) {
             global $_W, $_GPC;
 			$member = m('member')->getMember($openid);
 			if ($becometitle == TM_SUPPLIER_PAY) {
-				$_var_155 = '恭喜您，您的提现将通过 [提现方式] 转账提现金额为[金额]已在[时间]转账到您的账号，敬请查看';
-				$_var_155 = str_replace('[时间]', date('Y-m-d H:i:s', time()), $_var_155);
-				$_var_155 = str_replace('[金额]', $data['money'], $_var_155);
-				$_var_155 = str_replace('[提现方式]', $data['type'], $_var_155);
-				$_var_156 = array('keyword1' => array('value' => '供应商打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
-				m('message')->sendCustomNotice($openid, $_var_156);
+				$message = '恭喜您，您的提现将通过 [提现方式] 转账提现金额为[金额]已在[时间]转账到您的账号，敬请查看';
+				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
+				$message = str_replace('[金额]', $data['money'], $message);
+				$message = str_replace('[提现方式]', $data['type'], $message);
+				$msg = array('keyword1' => array('value' => '供应商打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
+				m('message')->sendCustomNotice($openid, $msg);
 			}
 		}
 
@@ -148,17 +198,17 @@ if (!class_exists('SupplierModel')) {
 				$resu = '通过';
 			}
 			$set = $this->getSet();
-			$_var_152 = $set['tm'];
-			$_var_155 = $_var_152['commission_become'];			
-			$_var_155 = str_replace('[状态]', $resu, $_var_155);
-			$_var_155 = str_replace('[时间]', date('Y-m-d H:i', time()), $_var_155);
-			if (!empty($_var_152['commission_becometitle'])) {
-				$title = $_var_152['commission_becometitle'];
+			$tm = $set['tm'];
+			$message = $tm['commission_become'];			
+			$message = str_replace('[状态]', $resu, $message);
+			$message = str_replace('[时间]', date('Y-m-d H:i', time()), $message);
+			if (!empty($tm['commission_becometitle'])) {
+				$title = $tm['commission_becometitle'];
 			} else {
 				$title = '会员申请供应商通知';
 			}
-			$_var_156 = array('keyword1' => array('value' => $title, 'color' => '#73a68d'), 'keyword2' => array('value' => $_var_155, 'color' => '#73a68d'));
-			m('message')->sendCustomNotice($openid, $_var_156);
+			$msg = array('keyword1' => array('value' => $title, 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
+			m('message')->sendCustomNotice($openid, $msg);
 		}
 		
         /**订单分解修改，订单会员折扣、积分折扣、余额抵扣、使用优惠劵后订单分解按商品价格与总商品价格比例拆分，使用运费的平分运费。添加平分修改运费以及修改订单金额的信息到新的订单表中。**/

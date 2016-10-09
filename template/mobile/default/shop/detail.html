@@ -110,7 +110,70 @@ div.flicking_con a.on{background-position:0 -9px}
 .sort_list .nav {height:30px; padding:0px 10px; border-bottom:1px solid #696d6f; color:#c6c7c8; line-height:30px; font-size:13px;}
 .label-free {background:#ff6801;color:#fff;padding:3px;border-radius: 5px; font-size:12px;}
 
+
+/*last-act*/
+.last-act { position: fixed; z-index: 997; top: 55px; left: 0; right: 0; }
+.last-act .last-user { background: rgba(0, 0, 0, 0.5); line-height: 32px; height: 32px; border-radius: 16px;
+ padding: 0 20px 0 42px; border: 1px solid rgba(255, 255, 255, 0.3); position: relative; font-size: 13px; width: auto !important; max-width: 100% !important; }
+.last-act .last-user .act-link { display: block; position: absolute; left: 0; top: 0; right: 0; bottom: 0; z-index: 1; }
+.last-act .last-user .user-avatar { position: absolute; width: 32px; height: 32px; border-radius: 50%; left: 0; top: 0; 
+border: 1px solid rgba(255, 255, 255, 0.5); }
+.last-act .last-user p { margin: 0; display: block; vertical-align: top;color:#fff; }
+.last-act .last-user span.act-timer { margin-left: 10px; vertical-align: top; }
+.last-act .last-user span.act-name { display: inline-block; max-width: 4em; overflow: hidden; -o-text-overflow: ellipsis; text-overflow: ellipsis; 
+word-break: keep-all; white-space: nowrap; vertical-align: top; }
 </style>
+<input type="hidden" id="lastOrderUrl" value="{php echo $this->createMobileUrl('shop/lastorder',array('op'=>'display'),true)}"/>
+<script type="text/javascript">
+    function lastPurchaseUser(url) {
+        if (!url || url == '' || url == undefined)
+        {
+            return ;
+        }
+        jQuery.ajax({
+                type : 'POST',
+                url : url,
+                data:{'g_id':{php echo $goodsid;}},
+                dataType : 'json',
+                 error: function(XMLHttpRequest, textStatus, errorThrown) {
+                
+                       },
+                success : function(data) {
+                    //alert(data.status);
+                    if ((data.status == 1 || data.status == '1') && data.result) {
+                        var actData = data.result;
+
+                        $lastAct = jQuery('<div class="last-act">'
+                                + ' <div class="container clearfix">'
+                                + '     <div class="pull-left last-user text-overflow">'
+                                + '         <a href="" class="act-link"></a>'
+                                + '         <img src="" class="user-avatar">'
+                                + '         <p class="color-fff clearfix">'
+                                + '             <span class="act-name"></span>下了<span class="act-count"></span>笔订单 <span class="act-timer"></span>'
+                                + '         </p>' + '       </div>' + ' </div>' + '</div>');
+
+                        $lastAct.find('.user-avatar').attr({
+                            'src' : actData.avatar
+                        });
+                        $lastAct.find('p').find('.act-name').text(
+                                actData.nickname);
+                        $lastAct.find('p').find('.act-count').text(1);
+                        $lastAct.find('p').find('.act-timer').text(actData.time);
+                        jQuery('body').append($lastAct);
+                        //lastAddTime = actData.addtime;
+                        setTimeout(function() {
+                            jQuery('body').find('.last-act').remove();
+                        }, 10000);
+                    } else {
+
+                        jQuery('body').find('.last-act').remove();
+                    }
+                }
+            });
+    }
+    var lou=$("#lastOrderUrl").val();
+    setInterval("lastPurchaseUser('"+lou+"')", 15000);
+</script>
 
   {if !empty($formInfo)}
 <script src="../addons/sz_yi/static/js/dist/mobiscroll/mobiscroll.core-2.5.2.js" type="text/javascript"></script>
@@ -148,7 +211,7 @@ div.flicking_con a.on{background-position:0 -9px}
                 <div class="nav" onclick="location.href='<%shop.url%>'"><i class='fa fa-home'></i> 首页</div>
                 <div class="nav" onclick="location.href='{php echo $this->createMobileUrl('member')}'"><i class='fa fa-user'></i> 会员中心</div>
              {if is_app()}
-              <div class="nav" id="webapp_share" style="border:none;"><i class='fa fa-share'></i> 分享</div>
+              <div class="nav" id="webapp_share" style="border:none;" onclick="web_app_share()"><i class='fa fa-share'></i> 分享</div>
               {else}
              <div class="nav" onclick="share()" style="border:none;"><i class='fa fa-share'></i> 分享</div>
              {/if}
@@ -183,15 +246,27 @@ div.flicking_con a.on{background-position:0 -9px}
 
             <!--<span>diyform</span>-->
 
-            
+            {template 'diyform/formcss'}
                 {if !empty($formInfo)}
                 <div id="diyform_container" >
-             {template 'diyform/formcss'}
              <style type='text/css'>
                      .diyform_main { float:left;}
              </style>
                          {template 'diyform/formfields'}
                 </div>
+               <%if goods.isdeclaration == '1'%>
+                  <div class="diyform_main">
+                    <div class="dline " style="border:none">
+                      <div class="dtitle">保单人：</div>
+                      <div class="dinfo">
+                        <div class="dinner ">
+                          <input id="declaration"  type="text" value="" placeholder="请输入ID\名称" name="declaration">
+                          <input type='hidden' name="declaration_mid" id="declaration_mid" class='' value="" title="12">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                <%/if%>
                 {/if}
 
                 <div class='number'>
@@ -420,7 +495,7 @@ div.flicking_con a.on{background-position:0 -9px}
     {else}
             <div class="buy" onclick="choose('buy')"  <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%else%>style="width:70%"<%/if%>>立即购买</div>
     {/if}
-    <input type="hidden" value="<%goods.isforce%>" id='isforce'>
+
         <%else%>
             <%if goods.canaddcart%>
             <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
@@ -431,6 +506,7 @@ div.flicking_con a.on{background-position:0 -9px}
             <%/if%>
             <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:85%'<%/if%>>立即购买</div>
         <%/if%>
+        <input type="hidden" value="<%goods.isdeclaration%>" id='isdeclaration'>
         <input type="hidden" value="<%goods.isforce%>" id='isforce'>
         <input type="hidden" value="<%goods.yunbi_num%>" id='yunbi_num'>
         <input type="hidden" value="<%goods.isforceyunbi%>" id='isforceyunbi'>
@@ -634,6 +710,71 @@ div.flicking_con a.on{background-position:0 -9px}
             $(obj).attr('show','1').find('i').removeClass('fa-angle-up').addClass('fa-angle-down');
         }
     }
+
+    //分享
+    function web_app_share() {
+        if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
+            webapp_share();
+            PINGPP_ANDROID_SDK.shareLink(title, link, imgurl, desc);
+        } else {
+            setupWebViewJavascriptBridge(function(bridge) {
+                //var imgurls = z;
+                var resData = [title,link,imgurl,desc,imgurls];
+
+                //启动页
+                bridge.callHandler("webapp_share",'',function(response)
+                {
+
+                });
+
+                //微信分享
+                bridge.registerHandler("sharewx", function(data){
+                    bridge.callHandler("share_wx_result",resData,function(response)
+                    {
+                    });
+                })
+
+                //微信朋友圈
+                bridge.registerHandler("sharefriend", function(data){
+                    bridge.callHandler("share_friend_result",resData,function(response)
+                    {
+                    });
+                })
+
+                //二维码
+                bridge.registerHandler("shareRQCode", function(data){
+                    var resData = [qr_url, qr_imgurl];
+                    bridge.callHandler("share_RQCode_result",resData,function(response)
+                    {
+                    });
+                })
+
+
+                //QQ分享
+                bridge.registerHandler("share_qq_firend", function(data){
+                    bridge.callHandler("share_qq_firend_result",resData,function(response)
+                    {
+                    });
+                })
+
+                //QQ空间
+                bridge.registerHandler("share_qq_zone", function(data){
+                    bridge.callHandler("share_qq_zone_result",resData,function(response)
+                    {
+                    });
+                })
+
+                //复制链接
+                bridge.registerHandler("share_copy", function(data){
+                    var resData = [link];
+                    bridge.callHandler("share_copy_result",resData,function(response)
+                    {
+                    });
+                })
+            })
+        }
+    }
+
     require(['tpl', 'core','jquery.touchslider','swipe'], function(tpl, core) {
         $.ajax({
             url:"{php echo $this->createPluginMobileUrl('commission/shares')}",
@@ -719,69 +860,6 @@ div.flicking_con a.on{background-position:0 -9px}
         
           $('#container').html(  tpl('goods_info',json.result) );
 
-            //分享
-            $("#webapp_share").click(function() {
-                if (typeof PINGPP_ANDROID_SDK !== 'undefined') {
-                    webapp_share();
-                    PINGPP_ANDROID_SDK.shareLink(title, link, imgurl, desc);
-                } else {
-                    setupWebViewJavascriptBridge(function(bridge) {
-                        var imgurls = z;
-                        var resData = [title,link,imgurl,desc,imgurls];
-
-                        //启动页
-                        bridge.callHandler("webapp_share",'',function(response)
-                        {
-
-                        });
-
-                        //微信分享
-                        bridge.registerHandler("sharewx", function(data){
-                            bridge.callHandler("share_wx_result",resData,function(response)
-                            {
-                            });
-                        })
-
-                        //微信朋友圈
-                        bridge.registerHandler("sharefriend", function(data){
-                            bridge.callHandler("share_friend_result",resData,function(response)
-                            {
-                            });
-                        })
-
-                        //二维码
-                        bridge.registerHandler("shareRQCode", function(data){
-                            var resData = [qr_url, qr_imgurl];
-                            bridge.callHandler("share_RQCode_result",resData,function(response)
-                            {
-                            });
-                        })
-
-
-                        //QQ分享
-                        bridge.registerHandler("share_qq_firend", function(data){
-                            bridge.callHandler("share_qq_firend_result",resData,function(response)
-                            {
-                            });
-                        })
-
-                        //QQ空间
-                        bridge.registerHandler("share_qq_zone", function(data){
-                            bridge.callHandler("share_qq_zone_result",resData,function(response)
-                            {
-                            });
-                        })
-
-                        //复制链接
-                        bridge.registerHandler("share_copy", function(data){
-                            var resData = [link];
-                            bridge.callHandler("share_copy_result",resData,function(response)
-                            {
-                            });
-                        })
-                    })
-                }
-            });
 
           var bh = $(document.body).height() - 50;
           $('.good_choose').css('max-height',bh); 
@@ -796,7 +874,7 @@ div.flicking_con a.on{background-position:0 -9px}
            var z = []; 
            $(".main_image img").each(function() {
                 z.push($(this).attr("src"));
-                imgurls = JSON.stringify(z);
+                imgurls = z;//JSON.stringify(z);
             });
             var current;
             if (isWX) {
@@ -1145,9 +1223,14 @@ div.flicking_con a.on{background-position:0 -9px}
         $('.good_choose').fadeOut(100); 
         }
     function choose(act){
+      {if empty($openid)}
+        location.href = "{php echo $this->createMobileUrl('member/login')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+        return;
+      {/if}
       var isforce = $('#isforce').val();
       var yunbi_num = $('#yunbi_num').val();
-      if (!isforce) {
+      var plugin = "{$yunbi}";
+      if (plugin == "1" && !isforce) {
           tip.show("强制使用"+yunbi_num+"{if $yunbi_set['yunbi_title']}{$yunbi_set['yunbi_title']}{else}云币{/if}");
           return;
       } else {
@@ -1157,100 +1240,105 @@ div.flicking_con a.on{background-position:0 -9px}
             isyunbipay = 0;
           }
       }
-                          if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
-                                require(['core'],function(core){
-                                    core.tip.confirm($('#followtip').val(),function(){
-                                        location.href = $('#followurl').val();
-                                        return;
-                                    }) 
-                                });
-                             return;
-                          }
-                   action = act;
-                         if(!action){
-                                     
-                                $('.good_choose_layer').fadeIn(200);
-                                $('.good_choose_layer').unbind('click').click(function(){
-                                    $('.good_choose_layer').fadeOut(100);
-                                    $('.good_choose').fadeOut(100); 
-                                })
-                                $('.good_choose').fadeIn(200);
-                                return;
-                         }
-                         var specselected  = '';
-  if( action=='cart'){
-             $('.good_choose_layer').fadeIn(200);
-                             $('.good_choose_layer').unbind('click').click(function(){
-                                   closechoose();
-                             })
-               $('.good_choose').fadeIn(200);
-               return;   
-             }else{
-            {if !empty($formInfo)}
+            if($('#followed').val()=='0'  && $('#needfollow').val()=='1' ){
+                  require(['core'],function(core){
+                      core.tip.confirm($('#followtip').val(),function(){
+                          location.href = $('#followurl').val();
+                          return;
+                      }) 
+                  });
+               return;
+            }
+            action = act;
+            if(!action){
+                       
+                  $('.good_choose_layer').fadeIn(200);
+                  $('.good_choose_layer').unbind('click').click(function(){
+                      $('.good_choose_layer').fadeOut(100);
+                      $('.good_choose').fadeOut(100); 
+                  })
+                  $('.good_choose').fadeIn(200);
+                  return;
+            }
+            var specselected  = '';
+            if( action=='cart'){
                  $('.good_choose_layer').fadeIn(200);
-                             $('.good_choose_layer').unbind('click').click(function(){
-                                   closechoose();
-                             })
-               $('.good_choose').fadeIn(200);
-               return;
-            {/if}
-             
+                   $('.good_choose_layer').unbind('click').click(function(){
+                         closechoose();
+                   })
+                  $('.good_choose').fadeIn(200);
+                   return;   
+            }else{
+                {if !empty($formInfo)}
+                  $('.good_choose_layer').fadeIn(200);
+                       $('.good_choose_layer').unbind('click').click(function(){
+                             closechoose();
+                       })
+                  $('.good_choose').fadeIn(200);
+                  return;
+                {/if}
                 $('.spec_items').each(function(){
-                             var self = $(this);
-                                            if( $(this).find('.on').length<=0){
-                                 specselected = self.attr('title');
-                                 return false;
-                              }
+                   var self = $(this);
+                    if( $(this).find('.on').length<=0){
+                       specselected = self.attr('title');
+                       return false;
+                    }
                 });  
-             if(specselected!='') {
-               $('.good_choose_layer').fadeIn(200);
-                             $('.good_choose_layer').unbind('click').click(function(){
-                                   closechoose();
-                             })
-               $('.good_choose').fadeIn(200);
-               return;
-             }
-            
-         }
- 
+                 if(specselected!='') {
+                   $('.good_choose_layer').fadeIn(200);
+                                 $('.good_choose_layer').unbind('click').click(function(){
+                                       closechoose();
+                                 })
+                   $('.good_choose').fadeIn(200);
+                   return;
+                 }
+                  var isdeclaration = $('#isdeclaration').val();
+                  if (isdeclaration == 1) {
+                     $('.good_choose_layer').fadeIn(200);
+                        $('.good_choose_layer').unbind('click').click(function(){
+                             closechoose();
+                         })
+                     $('.good_choose').fadeIn(200);
+                     return;
+                  }
 
-                      var diymode = {php echo intval($diymode)};
+            }
+          var diymode = {php echo intval($diymode)};
 
-                      if(specselected!='' || diymode==1) {
-                             if (specselected == '') {
-                                 $('#goods_spec').hide();
-                             }
+          if(specselected!='' || diymode==1) {
+                 if (specselected == '') {
+                     $('#goods_spec').hide();
+                 }
 
-                             $('.good_choose_layer').fadeIn(200);
-                             $('.good_choose_layer').unbind('click').click(function(){
-                                 closechoose();
-                             })
-                        $('.good_choose').fadeIn(200);
-                      } else{
-                          if(action=='cart'){
-                                                require(['core'],function(core){
+                 $('.good_choose_layer').fadeIn(200);
+                 $('.good_choose_layer').unbind('click').click(function(){
+                     closechoose();
+                 })
+            $('.good_choose').fadeIn(200);
+          } else{
+              if(action=='cart'){
+                require(['core'],function(core){
+                    core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val()},function(ret){
+                        if(ret.status==1){
+                           core.tip.show(ret.result.message);
+                           var cartdiv = $('.cart');
+                               if( cartdiv.find('b').length<=0){
+                                  cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
+                               }
+                               else {
+                                  cartdiv.find('b').html(ret.result.cartcount);
+                               }
 
-                                                                           core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val()},function(ret){
-                                                                                                        if(ret.status==1){
-                                                                                                           core.tip.show(ret.result.message);
-                                                                                                           var cartdiv = $('.cart');
-                                                                                                                               if( cartdiv.find('b').length<=0){
-                                                                                                                                  cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
-                                                                                                                               }
-                                                                                                                               else {
-                                                                                                                                  cartdiv.find('b').html(ret.result.cartcount);
-                                                                                                                               }
+                       } else{
+                           core.message(ret.result,'','error');
+                       }
+                    },true,true);
+                 });
+              }else if(action=='buy'){
+               location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
+              }
 
-                                                                                                       } else{
-                                                                                                           core.message(ret.result,'','error');
-                                                                                                       }
-                                                                               },true,true);
-                                                 });
-                                    }else if(action=='buy'){
-                                         location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
-                                    }
-
-                      }
+          }
     }
         function setoptions(){
              var titles = '';
@@ -1265,92 +1353,104 @@ div.flicking_con a.on{background-position:0 -9px}
                  $("#optiondiv").html(titles);
         }
     function choose2(direct,close){
-      var isforce = $('#isforce').val();
-         require(['core'],function(core){
-             
-            if(close){
-                closechoose();
-                return;
-            }
-        if(!direct){
+        if ($('#declaration').val()) {
+            var iscontinue = 0; 
+            require(['core'],function(core){
+              core.json('shop/detail', {'op':'getmember','mid':$('#declaration').val()}, function(m_json) {
+                  if (m_json.status == 1) {
+                      $('#declaration_mid').val(m_json.result.mid);
+                  } else {
+                      core.tip.show("用户不存在!");
+                      $('#declaration_mid').val('');
+                      return false;
+                  }
+                    if ($('#declaration_mid').val() != '') {
+                        choose3(direct,close);
+                    }
+
+              }, true, true);
+
+            });
+        } else {
+            choose3(direct,close);
+        }
+    }
+function choose3(direct,close){
+    var isforce = $('#isforce').val();
+    require(['core'],function(core){
+        if(close){
+            closechoose();
+            return;
+        }
+        if (!direct) {
             if($('.confirm_option').hasClass('disabled')){
                return;
-            }
-            else{
+            } else {
                 setoptions();
             }
-                                      
-          
         } else {
-                            action = "";
-                      }
-        
-                var specselected  = '';
-                
+            action = "";
+        }
+        var specselected  = '';    
         $('.spec_items').each(function(){
-                
-                   var self = $(this);
-         if( $(this).find('.on').length<=0){
-                                          specselected = self.attr('title');
-                                          return false;
-                      }
-                               });  
-                                if( specselected!=''){
-                                      require(['core'],function(core){
-                                         core.tip.show('请选择' + specselected) ;
-                                      });
-                                      return;
-                      }
-                               
-                           
-                              
+            var self = $(this);
+            if( $(this).find('.on').length<=0){
+                specselected = self.attr('title');
+                return false;
+            }
+        });  
+        if( specselected!=''){
+          require(['core'],function(core){
+             core.tip.show('请选择' + specselected) ;
+          });
+          return;
+        }                  
         if(action=='cart'){
-                 var data = {};
-                 
-                 {if !empty($formInfo)}
-                 
-                    {template 'diyform/common_js_data'}
-
-                         data = {
-                        'diyformid': "{$goods['diyformid']}",
-                        'diydata':diydata
-                    };
-                {/if}
+           var data = {};
+           {if !empty($formInfo)}
+              {template 'diyform/common_js_data'}
+                data = {
+                  'diyformid': "{$goods['diyformid']}",
+                  'diydata':diydata
+                };
+          {/if}
         //openid
-                                {if !empty($popenid) or !empty($openid)}
-                                                                           core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
-                                                                                                        if(ret.status==1){ 
-                                                                                                           core.tip.show(ret.result.message);
-                                                                                                           var cartdiv = $('.cart');
-                                                                                                                               if( cartdiv.find('b').length<=0){
-                                                                                                                                  cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
-                                                                                                                               }
-                                                                                                                               else {
-                                                                                                                                  cartdiv.find('b').html(ret.result.cartcount);
-                                                                                                                               } closechoose();
+          {if !empty($popenid) or !empty($openid)}
+             core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
+                    if(ret.status==1){ 
+                       core.tip.show(ret.result.message);
+                       var cartdiv = $('.cart');
+                           if( cartdiv.find('b').length<=0){
+                              cartdiv.append('<b>'+ ret.result.cartcount +"</b>");
+                           }
+                           else {
+                              cartdiv.find('b').html(ret.result.cartcount);
+                           } closechoose();
 
-                                                                                                       } else{
-                                                                                                           core.message(ret.result,'','error');
-                                                                                                       }
-                                                                               },true,true);
-                                
-                            {else}
-                                         location.href = "{php echo $this->createMobileUrl('member/login')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
-                            {/if}
-        //end openid
-                                            
-                                    }else if(action=='buy'){
- 
-               {if !empty($formInfo)}
-                  
-                {template 'diyform/common_js_data'}
-
+                   } else{
+                       core.message(ret.result,'','error');
+                   }
+                },true,true);
+          {else}
+              location.href = "{php echo $this->createMobileUrl('member/login')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
+          {/if}
+        //end openid                           
+        }else if(action=='buy'){
+            var isdeclaration = $('#isdeclaration').val();
+            var formInfo = false;
+            {if !empty($formInfo)}
+                formInfo = true;
+            {/if}
+           if (formInfo || isdeclaration) {
+              {template 'diyform/common_js_data'}
+                //declaration();
+                var declaration_mid = $('#declaration_mid').val();
                 var data ={
                     'op': 'create',
                     'id': {$_GPC['id']},
-                    'diydata': diydata
+                    'diydata': diydata,
+                    'declaration_mid':declaration_mid
                 };
-
                 require(['core'],function(core){
                     core.json('shop/detail', data, function(create_json) {
                         if (create_json.status == 1) {
@@ -1358,21 +1458,18 @@ div.flicking_con a.on{background-position:0 -9px}
                         } else {
                             core.tip.show("提交失败!")
                         }
-
                         return false;
-
                     }, true, true);
                 })
-
-                {else}
-                    location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
-                {/if}
-
-                    } else {
-                             closechoose();
+            }else {
+                location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
+            }
+        } else {
+            closechoose();
         }
-  });
-    }
+    });
+}
+
   function addNum(){
     var total = $("#total");
     if(!total.isInt()){

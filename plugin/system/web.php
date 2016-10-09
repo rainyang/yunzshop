@@ -28,6 +28,10 @@ class SystemWeb extends Plugin
             header('location: ' . $this->createPluginWebUrl('system/commission'));
             exit;
         }
+		  else if (cv('system.replacedomain')) {
+           header('location: ' . $this->createPluginWebUrl('system/replacedomain'));
+           exit;
+        }
         
     }
     
@@ -48,6 +52,10 @@ class SystemWeb extends Plugin
         $this->_exec_plugin(__FUNCTION__);
     }
     public function commission()
+    {
+        $this->_exec_plugin(__FUNCTION__);
+    }
+	public function replacedomain()
     {
         $this->_exec_plugin(__FUNCTION__);
     }

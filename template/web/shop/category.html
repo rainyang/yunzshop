@@ -154,9 +154,69 @@
                              <div class='form-control-static'>{$item['advurl_pc']}</div>
                              {/if}
                         </div>
-                    </div>   
-                    
-               {/if}
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">pc首页图片标签1</label>
+                        <div class="col-sm-9 col-xs-12">
+                            {ife 'shop.category' $item}
+                            {php echo tpl_form_field_image('advtitle1', $item['advtitle1'])}
+                            <span class="help-block">建议尺寸: 300*640</span>
+                            {else}
+                            {if !empty($item['advtitle1'])}
+                            <a href='{php echo tomedia($item['advtitle1'])}' target='_blank'>
+                            <img src="{php echo tomedia($item['advtitle1'])}" style='width:100px;border:1px solid #ccc;padding:1px' />
+                            </a>
+                            {/if}
+                            {/if}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">pc首页图片标签2</label>
+                        <div class="col-sm-9 col-xs-12">
+                            {ife 'shop.category' $item}
+                            {php echo tpl_form_field_image('advtitle2', $item['advtitle2'])}
+                            <span class="help-block">建议尺寸: 300*640</span>
+                            {else}
+                            {if !empty($item['advtitle2'])}
+                            <a href='{php echo tomedia($item['advtitle2'])}' target='_blank'>
+                            <img src="{php echo tomedia($item['advtitle2'])}" style='width:100px;border:1px solid #ccc;padding:1px' />
+                            </a>
+                            {/if}
+                            {/if}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">pc首页图片标签3</label>
+                        <div class="col-sm-9 col-xs-12">
+                            {ife 'shop.category' $item}
+                            {php echo tpl_form_field_image('advtitle3', $item['advtitle3'])}
+                            <span class="help-block">建议尺寸: 300*640</span>
+                            {else}
+                            {if !empty($item['advtitle3'])}
+                            <a href='{php echo tomedia($item['advtitle3'])}' target='_blank'>
+                            <img src="{php echo tomedia($item['advtitle3'])}" style='width:100px;border:1px solid #ccc;padding:1px' />
+                            </a>
+                            {/if}
+                            {/if}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">pc首页图片标签4</label>
+                        <div class="col-sm-9 col-xs-12">
+                            {ife 'shop.category' $item}
+                            {php echo tpl_form_field_image('advtitle4', $item['advtitle4'])}
+                            <span class="help-block">建议尺寸: 300*640</span>
+                            {else}
+                            {if !empty($item['advtitle4'])}
+                            <a href='{php echo tomedia($item['advtitle4'])}' target='_blank'>
+                            <img src="{php echo tomedia($item['advtitle4'])}" style='width:100px;border:1px solid #ccc;padding:1px' />
+                            </a>
+                            {/if}
+                            {/if}
+                        </div>
+                    </div>
+
+                {/if}
                {if !empty($parentid)}
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否推荐</label>
@@ -175,7 +235,7 @@
                 </div>
                {/if} 
                <div class="form-group">
-                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">首页推荐</label>
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">首页推荐（只有PC端生效）</label>
                     <div class="col-sm-9 col-xs-12">
                             {ife 'shop.category' $item}
                         <label class='radio-inline'>

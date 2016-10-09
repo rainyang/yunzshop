@@ -20,7 +20,7 @@ if (checksubmit('submit')) {
 		pdo_update('rule_keyword', array('content' => trim($exchangekeyword)), array('rid' => $rule['id']));
 	}
 	m('cache')->set('template_' . $this->pluginname, $data['style']);
-	plog('creditshop.set.save', '修改积分商城基本设置');
+	plog('creditshop.set.save', '修改'.SZ_YI_INTEGRAL.'商城基本设置');
 	message('设置保存成功!', referer(), 'success');
 }
 $styles = array();

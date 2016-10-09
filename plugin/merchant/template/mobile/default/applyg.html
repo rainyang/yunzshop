@@ -17,7 +17,8 @@ input {-webkit-appearance:none; outline:none;}
 <script id='tpl_main' type='text/html'>
  <div class="balance_img"><i class="fa fa-cny"></i></div>
     <div class="balance_text">我的结算金额</div>
-    <div class="balance_num">￥<%member.commission_ok%></div>    
+    <div class="balance_num">￥<%member.commission_ok%></div>  
+    <div class="balance_sub balance_sub1 <%if !cansettle%>disabled<%/if%>" data-type="1">提现(线下)</div>  
     <div class="balance_sub balance_sub2 <%if !cansettle%>disabled<%/if%>"  data-type="2">提现到微信钱包</div>
     <div class="balance_sub3" onclick="location.href='{php echo $this->createPluginMobileUrl('merchant/logg')}'">提现记录</div>
 </script>
@@ -42,10 +43,10 @@ input {-webkit-appearance:none; outline:none;}
                    core.tip.confirm('确认要申请提现? 提现申请通过之后给您打款后会通知您到的微信.',function(){
                        
                        $('.balance_sub').attr('saving',1).html('正在处理中...');
-                        core.pjson('merchant/applyg',{type:type},function(pjson){
+                        core.pjson('merchant/applyg',{type:type,iscenter:"{$_GPC['iscenter']}"},function(pjson){
                               if(pjson.status=='1'){
                                    core.tip.show( pjson.result );
-                                   location.href = core.getUrl('plugin/merchant/orderj');
+                                   location.href = core.getUrl('plugin/merchant/index');
                               }
                                
                        },true,true);

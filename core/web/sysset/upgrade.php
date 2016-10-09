@@ -42,7 +42,7 @@ if ($op == 'display') {
         if (function_exists('ioncube_loader_iversion')) {
             $liv = ioncube_loader_iversion();
             $lv = substr($liv, 0, 1);
-            if ($lv != 5) {
+            if ($lv < 5) {
                 $ret = 'ionCube扩展版本太低,不能更新，请联系客服';
                 die(json_encode(array(
                     'result' => 0,
@@ -279,7 +279,7 @@ if ($op == 'display') {
     }
     die(json_encode(array('result' => 2)));
 } elseif ($op == 'checkversion') {
-	file_put_contents(IA_ROOT . "/addons/sz_yi/version.php", "<?php if(!defined('IN_IA')) {exit('Access Denied');}if(!defined('SZ_YI_VERSION')) {define('SZ_YI_VERSION', '1.0');}");
+	@file_put_contents(IA_ROOT . "/addons/sz_yi/version.php", "<?php if(!defined('IN_IA')) {exit('Access Denied');}if(!defined('SZ_YI_VERSION')) {define('SZ_YI_VERSION', '1.0');}");
     header('location: '.$this->createWebUrl('upgrade'));
     exit;
 

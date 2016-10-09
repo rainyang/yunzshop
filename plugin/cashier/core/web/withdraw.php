@@ -33,9 +33,9 @@ if ($operation == 'display') {
             $params[':endtime']   = $_GPC['time']['end'];
         }
     }
-    if ($_GPC['status'] != '') {
+    /*if ($_GPC['status'] != '') {
         $condition .= ' and w.status=' . intval($_GPC['status']);
-    }
+    }*/
     //todo
     $mt = mt_rand(5, 35);
     if ($mt <= 10) {
@@ -57,9 +57,9 @@ if ($operation == 'display') {
         }
     }
 
-    $sql   = "select w.id, s.name, m.nickname, m.avatar, m.weixin, w.withdraw_no, w.money, w.create_time, w.status from " . tablename('sz_yi_cashier_store') . " s left join " . tablename('sz_yi_cashier_withdraw') . " w on s.id=w.cashier_store_id  left join " . tablename('sz_yi_member') . " m on m.id=s.member_id where 1 {$condition}";
+    $sql   = "select w.id, s.name, m.nickname, m.avatar, m.weixin, w.withdraw_no, w.money, w.create_time, w.status from " . tablename('sz_yi_cashier_store') . " s left join " . tablename('sz_yi_cashier_withdraw') . " w on s.id=w.cashier_store_id  left join " . tablename('sz_yi_member') . " m on m.id=s.member_id where 1 {$condition} and w.status=0";
     $list  = pdo_fetchall($sql, $params);
-    $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_cashier_store') . " s left join " . tablename('sz_yi_cashier_withdraw') . " w on s.id=w.cashier_store_id left join " . tablename('sz_yi_member') . " m on m.id=s.member_id where 1 {$condition}", $params);
+    $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_cashier_store') . " s left join " . tablename('sz_yi_cashier_withdraw') . " w on s.id=w.cashier_store_id left join " . tablename('sz_yi_member') . " m on m.id=s.member_id where 1 {$condition} and w.status=0", $params);
     $pager = pagination($total, $pindex, $psize);
 } else if ($operation == 'pay') {
     $id      = intval($_GPC['id']);
@@ -82,12 +82,12 @@ if ($operation == 'display') {
             'uniacid' => $uniacid
         ));
         // TODO: 要不要给提现的用户发一条通知  要
-         $_var_157 = array(
+         $msg = array(
                                 'keyword1' => array('value' => '收银台提现打款通知', 'color' => '#73a68d'),
                                 'keyword2' => array('value' => '【商户名称】' . $cashier_stores['name'], 'color' => '#73a68d'),
                                 'remark' => array('value' => '您的提现申请已经手动打款完成,请注意查收!')
                             );          
-        m('message')->sendCustomNotice($log['openid'], $_var_157);
+        m('message')->sendCustomNotice($log['openid'], $msg);
         plog('cashier.withdraw.withdraw', "收银台商户提现 方式: 手动 ID: {$log['id']} <br/>商户信息: ID: {$log['cashier_store_id']} / {$log['openid']}/{$log['name']}/{$log['contact']}/{$log['mobile']}");
         message('手动提现完成!', referer(), 'success');
     } else if ($paytype == 'wechat') {
@@ -103,12 +103,12 @@ if ($operation == 'display') {
             'uniacid' => $uniacid
         ));
         // TODO: 要不要给提现的用户发一条通知 要
-         $_var_157 = array(
+         $msg = array(
                         'keyword1' => array('value' => '收银台提现打款通知', 'color' => '#73a68d'),
                         'keyword2' => array('value' => '【商户名称】' . $cashier_stores['name'], 'color' => '#73a68d'),
                         'remark' => array('value' => '您的提现申请已经微信打款完成,请注意查收!')
                     );          
-        m('message')->sendCustomNotice($log['openid'], $_var_157);
+        m('message')->sendCustomNotice($log['openid'], $msg);
         plog('cashier.withdraw.withdraw', "收银台商户提现 ID: {$log['id']} 方式: 微信 金额: {$log['money']} <br/>商户信息: ID: {$log['cashier_store_id']} / {$log['openid']}/{$log['name']}/{$log['contact']}/{$log['mobile']}");
         message('微信钱包提现成功!', referer(), 'success');
     } else if ($paytype == 'refuse') {

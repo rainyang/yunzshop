@@ -4,29 +4,29 @@ if (!defined("IN_IA")) {
 	exit("Access Denied");
 }
 global $_W, $_GPC;
-function sortByTime($_var_0, $_var_1)
+function sortByTime($a, $b)
 {
-	if ($_var_0["ts"] == $_var_1["ts"]) {
+	if ($a["ts"] == $b["ts"]) {
 		return 0;
 	} else {
-		return $_var_0["ts"] > $_var_1["ts"] ? 1 : -1;
+		return $a["ts"] > $b["ts"] ? 1 : -1;
 	}
 }
 
-function getList($_var_2, $_var_3)
+function getList($id, $postid)
 {
-	$_var_4 = "http://wap.kuaidi100.com/wap_result.jsp?rand=" . time() . "&id={$_var_2}&fromWeb=null&postid={$_var_3}";
+	$result = "http://wap.kuaidi100.com/wap_result.jsp?rand=" . time() . "&id={$id}&fromWeb=null&postid={$postid}";
 	load()->func("communication");
-	$_var_5 = ihttp_request($_var_4);
-	$_var_6 = $_var_5["content"];
-	if (empty($_var_6)) {
+	$info = ihttp_request($result);
+	$content = $info["content"];
+	if (empty($content)) {
 		return array();
 	}
-	preg_match_all("/\\<p\\>&middot;(.*)\\<\\/p\\>/U", $_var_6, $_var_7);
-	if (!isset($_var_7[1])) {
+	preg_match_all("/\\<p\\>&middot;(.*)\\<\\/p\\>/U", $content, $list);
+	if (!isset($list[1])) {
 		return false;
 	}
-	return $_var_7[1];
+	return $list[1];
 }
 
 $operation = !empty($_GPC["op"]) ? $_GPC["op"] : "display";

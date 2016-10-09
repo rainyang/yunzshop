@@ -64,7 +64,7 @@ height: 20px;
 line-height: 20px;font-weight: bold;}
 #page_allMenu nav dl dd.active {
   color: #fff;
-  background-color:{if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if}; 
+  background-color:{if $color['color']}{$color['color']}{else}rgba(255,0,0,0.6){/if};
 }
 #page_allMenu section article dl{margin-bottom: 0;padding-bottom: 0;    height: auto;    overflow: hidden;}
 #page_allMenu section article dl dd em.eys{ color: #A8A8A8 !important;font-size: 12px;font-weight: normal;padding-top: 10px}
@@ -94,7 +94,7 @@ line-height: 20px;font-weight: bold;}
 </head>
 <body id="page_allMenu">
 <script id='tpl_parent_list' type='text/html'>
-    
+
     <%each category as value%>
     <dl >
         <dd id="erji" data-cate="<%value.id%>" data-advimg='<%value.advimg%>' data-advurl='<%value.advurl%>' class="parent_item" ><%value.name%>
@@ -102,30 +102,30 @@ line-height: 20px;font-weight: bold;}
         </dd>
     </dl>
          <div class="nav-erj" date-type="1">
-                
-            <%each value.sub as value1%>   
-                  <dl >  
+            <%if value.sub%>
+            <%each value.sub as value1%>
+                  <dl >
                     <dd data-cate="<%value1.id%>" data-advimg='<%value1.advimg%>' data-advurl='<%value1.advurl%>' class="parent_item1"><%value1.name%>
-                    
+
                     </dd>
-                  </dl> 
+                  </dl>
             <!-- 三级分类 -->
                     {if intval($shopset['shop']['catlevel'])==3}
                        <div class="nav-sanj" date-type="1">
-                              
+
                           <%each value1.sub1 as value2%>
-                              <dl>   
+                              <dl>
                                   <dd data-cate="<%value2.id%>" data-advimg='<%value2.advimg%>' data-advurl='<%value2.advurl%>' class="parent_item2"><%value2.name%>
-                                  
+
                                   </dd>
-                              </dl>        
-                          <%/each%>    
-                              
-                      </div> 
+                              </dl>
+                          <%/each%>
+
+                      </div>
                     {/if}
             <!-- end -->
-            <%/each%>    
-                
+            <%/each%>
+            <%/if%>
         </div>
 
     <%/each%>
@@ -164,7 +164,7 @@ line-height: 20px;font-weight: bold;}
                 </div>
                 <%/each%>
 
-                
+
 
                 <div class='number'>
                   <div class='label'>购买数量</div>
@@ -196,7 +196,7 @@ line-height: 20px;font-weight: bold;}
           <li>编号：<%good.gooodssn%></li>
           <%each specs as spec%>
           <li><%spec.title%>：<%each spec.sub as item%><%item.title%>/<%/each%></li>
-          <%/each%> 
+          <%/each%>
       </ul>
       <p class="last-tcprice">建议零售价：<i>¥<%good.marketprice%></i>元</p>
   </div>
@@ -210,7 +210,7 @@ line-height: 20px;font-weight: bold;}
     <!-- <a href="javascript:;" class="close-pos"><img src="../addons/sz_yi/template/mobile/default/static/css/dish/img/close.png" class="close-pos"> --></a>
     </div>
     <nav id="navBar" >
-        
+
     </nav>
     <section id="infoSection" >
         <article>
@@ -277,7 +277,7 @@ ul, li { list-style:none; margin:0; padding:0 }
   <a class='channel' href="{php echo $this->createMobileUrl('shop/cart', array('ischannelpick' => $_GPC['ischannelpick'], 'ischannelpay' => $_GPC['ischannelpay']))}">选好了</a>
 
 </div>
-{php $show_footer=true;$footer_current =''} 
+{php $show_footer=true;$footer_current =''}
 {template 'common/footer'}
 <script language='javascript'>
     var category = [];
@@ -287,7 +287,7 @@ ul, li { list-style:none; margin:0; padding:0 }
     var pageid = "{$_GPC['pageid']}";
 
 
-        
+
     require(['tpl', 'core'], function (tpl, core) {
         function setCategory(){
             $("#navBar").find(".parent_item").find('span').removeClass('fffbg');
@@ -298,28 +298,28 @@ ul, li { list-style:none; margin:0; padding:0 }
             $("#navBar").find(".parent_item").first().find('span').addClass('fffbg');
             $("#navBar").find(".parent_item").find('span').hide();
 
-             
+
             var pcate = $("#navBar").find(".parent_item").first().data('cate');
 
             core.pjson('choose/list_goods',{pcate:pcate,pageid:pageid,ischannelpick:"{$_GPC['ischannelpick']}",op:'moren'}, function (json) {
                             result = json.result;
-                            
+
                             var h = '';
-                            
+
                             var store = result.goods;
                             if(store.length<=0){
                                $('#pInfo').html(  tpl('cart_empty') );
                                 return;
                             }
 
-                            if (store.length) {                                                             
+                            if (store.length) {
                                 for (var i = 0; i < store.length ;i++ ) {
 
 
                                     h += '<div class="all-choosegood">';
 
-                                    
-                                    h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
+
+                                    h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';
 
                                     if (store[i].isrecommand != 0) {
                                         h += '<span style="font-size:10px;">推荐</span></a>';
@@ -339,12 +339,12 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                                     h += '</dd></dl>';
 
-                                    
+
                                     h += '</div>';
 
                                 };
-                                $("#infoSection").css("height","auto"); 
-                                $("#navBar").css("height","auto"); 
+                                $("#infoSection").css("height","auto");
+                                $("#navBar").css("height","auto");
 
                             } else {
                                 h += '';
@@ -354,14 +354,14 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                             $('#pInfo').html(h);
                             setNum();
-                                                
-            }, true);        
+
+            }, true);
         }
 
-        function setNum(){   
-            
+        function setNum(){
+
             $.ajax({
-                        url:"{php echo $this->createMobileUrl('shop/cart')}", 
+                        url:"{php echo $this->createMobileUrl('shop/cart')}",
                         type:'post',
                         data: {op:'cart'},
                         success:function(data){
@@ -372,28 +372,28 @@ ul, li { list-style:none; margin:0; padding:0 }
                             var goods = jsonObj.result.goods;
                             var categorys = jsonObj.result.categorys;
 
-                            $('#pInfo').find('dl').each(function () {  
+                            $('#pInfo').find('dl').each(function () {
                                var id = $(this).attr('data-id');
 
-                               if (goods.length) {                                                  
+                               if (goods.length) {
                                     for (var i = 0; i < goods.length ;i++ ) {
                                         if (goods[i].goodsid == id) {
                                             $(this).attr("data-num",goods[i].total);
 
                                             if (parseInt(goods[i].total) > 0) {
                                                 var input = $(this).find('.num');
-                                                input.show();                    
+                                                input.show();
                                                 input.val(goods[i].total);
                                                 $(this).find('.subtract').show();
                                             };
                                         }
                                     };
-                                }  
-                                 
-                            })
-                            
+                                }
 
-                            $('#navBar').find('dd').each(function () {  
+                            })
+
+
+                            $('#navBar').find('dd').each(function () {
                                var id = $(this).attr('data-cate');
 
                                if (categorys.length) {
@@ -407,14 +407,14 @@ ul, li { list-style:none; margin:0; padding:0 }
                                             } else {
                                               $(this).find("span").hide();
                                             };
-                                            
+
                                         }
                                     };
-                                }  
-                                 
+                                }
+
                             })
                         }
-                      }                       
+                      }
                     })
         }
 
@@ -423,10 +423,14 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                 core.json('shop/cart',{op:'display',ischannelpick:"{$_GPC['ischannelpick']}", ischannelpay:"{$_GPC['ischannelpay']}"},function(ret){
                      $('#alltotal').html(ret.result.total);
-                     $('#totalprice').html('总价：￥' + ret.result.totalprice + ret.result.difference);
+                     if (ret.result.difference) {
+                         $('#totalprice').html(ret.result.difference);
+                     } else {
+                         $('#totalprice').html('总价：￥' + ret.result.totalprice);
+                     }
 
                         if(ret.result.difference){
-                          $(".channel").hide();                                                       
+                          $(".channel").hide();
                         } else {
                           $(".channel").show();
                         }
@@ -437,7 +441,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 
         /*function setCategoryList(ret,level,catid){
                showAdv(catid);
-               if(catid=='rec'){ 
+               if(catid=='rec'){
                      $('#right_container  .inner').html(tpl('tpl_child_list',{category:ret,level:level,catid:catid}));
                }
                else{
@@ -455,7 +459,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                      {else}
                               $('#right_container  .inner').html(tpl('tpl_child_list',{category:ret,level:level,catid:catid}));
                      {/if}
-                    
+
                }
             setTimeout(function(){
 
@@ -464,17 +468,17 @@ ul, li { list-style:none; margin:0; padding:0 }
               })
               },10);
              bindChildEvents(); ;
-           
+
         }*/
         /*function showAdv(cate){
-                        
+
             var adv = $('#right_container .adv');
             var img = '',url ='';
             if(cate=='rec'){
                 img = "{php echo $shopset['catadvimg']}",url = "{php echo $shopset['catadvurl']}";
             }
             else{
-        
+
             for(i in category){
                   if(category[i].id==cate) {
                       img = category[i].advimg,url = category[i].advurl;
@@ -495,7 +499,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                              adv.unbind('click').click(function(){
                                  location.href = url;
                             });
-                         } 
+                         }
                      } else{
                          adv.hide().unbind('click');
                      }
@@ -511,7 +515,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                  };
                  $('#navBar').html(tpl('tpl_parent_list',result));
 
-                 //$("#navBar").find(".parent_item").first().trigger("click");        
+                 //$("#navBar").find(".parent_item").first().trigger("click");
                  setCategory();
                  setNum();
 
@@ -530,18 +534,18 @@ ul, li { list-style:none; margin:0; padding:0 }
                      cate = $(this).data('cate');
                      //console.log(pcate);
                      core.pjson('choose/list_goods',{'pcate':cate,pageid:pageid,op:'moren'}, function (json) {
-                            result = json.result;                           
+                            result = json.result;
                             var h = '';
-                            
+
                             var store = result.goods;
 
-                            if (store.length) {                                                             
+                            if (store.length) {
                                 for (var i = 0; i < store.length ;i++ ) {
 
                                      h += '<div class="all-choosegood">';
 
-                                    
-                                    h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
+
+                                    h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';
 
                                     if (store[i].isrecommand != 0) {
                                         h += '<span style="font-size:10px;">推荐</span></a>';
@@ -563,7 +567,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                                     h += '</dd></dl>';
 
-                                    
+
                                     h += '</div>';
 
                                 };
@@ -571,14 +575,14 @@ ul, li { list-style:none; margin:0; padding:0 }
                                 //$("#navBar").css("height","auto");
                             } else {
                                 h += '';
-                                $("#infoSection").css("height","729px"); 
-                                //$("#navBar").css("height","729px"); 
+                                $("#infoSection").css("height","729px");
+                                //$("#navBar").css("height","729px");
                             };
                             //$("#navBar").css("height","auto");
                             $('#pInfo').html(h);
                             setNum();
-                     }, true);                        
-                                        
+                     }, true);
+
                   })
                     $('.parent_item1').click(function(){
                          $('.parent_item1').removeClass('active');
@@ -595,18 +599,18 @@ ul, li { list-style:none; margin:0; padding:0 }
                          //console.log(pcate);
                          core.pjson('choose/list_goods',{'ccate':cate,pageid:pageid,op:'second'}, function (json) {
                                 result = json.result;
-                                                        
+
                                 var h = '';
-                                
+
                                 var store = result.goods;
 
-                                if (store.length) {                                                             
+                                if (store.length) {
                                     for (var i = 0; i < store.length ;i++ ) {
 
                                          h += '<div class="all-choosegood">';
 
-                                    
-                                    h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
+
+                                    h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';
 
                                     if (store[i].isrecommand != 0) {
                                         h += '<span style="font-size:10px;">推荐</span></a>';
@@ -627,7 +631,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                                     h += '</dd></dl>';
 
-                                    
+
                                     h += '</div>';
 
                                     };
@@ -635,14 +639,14 @@ ul, li { list-style:none; margin:0; padding:0 }
                                     //$("#navBar").css("height","auto");
                                 } else {
                                     h += '';
-                                    $("#infoSection").css("height","729px"); 
-                                    //$("#navBar").css("height","729px"); 
+                                    $("#infoSection").css("height","729px");
+                                    //$("#navBar").css("height","729px");
                                 };
                                 //$("#navBar").css("height","auto");
                                 $('#pInfo').html(h);
                                 setNum();
-                                                    
-                        },true);                    
+
+                        },true);
                     })
 
                     $('.parent_item2').click(function(){
@@ -660,18 +664,18 @@ ul, li { list-style:none; margin:0; padding:0 }
                          //console.log(pcate);
                          core.pjson('choose/list_goods',{'tcate':cate,pageid:pageid,op:'third'}, function (json) {
                                 result = json.result;
-                                                        
+
                                 var h = '';
-                                
+
                                 var store = result.goods;
 
-                                if (store.length) {                                                             
+                                if (store.length) {
                                     for (var i = 0; i < store.length ;i++ ) {
 
                                        h += '<div class="all-choosegood">';
 
-                                    
-                                    h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';                
+
+                                    h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';
 
                                     if (store[i].isrecommand != 0) {
                                         h += '<span style="font-size:10px;">推荐</span></a>';
@@ -693,7 +697,7 @@ ul, li { list-style:none; margin:0; padding:0 }
 
                                     h += '</dd></dl>';
 
-                                    
+
                                     h += '</div>';
 
 
@@ -702,14 +706,14 @@ ul, li { list-style:none; margin:0; padding:0 }
                                     //$("#navBar").css("height","auto");
                                 } else {
                                     h += '';
-                                    $("#infoSection").css("height","729px"); 
-                                    //$("#navBar").css("height","729px"); 
+                                    $("#infoSection").css("height","729px");
+                                    //$("#navBar").css("height","729px");
                                 };
                                 //$("#navBar").css("height","auto");
                                 $('#pInfo').html(h);
                                 setNum();
-                                                    
-                        },true);                    
+
+                        },true);
                     })
 
                 $('body').on('click','.dataIn',function(){
@@ -723,7 +727,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                         $('#container_detail').show();
                       })
                     {/if}
-                })                
+                })
 
                 $('body').on('click','.close-pos',function(){
                     $(this).parents('.notice').hide();
@@ -738,35 +742,35 @@ ul, li { list-style:none; margin:0; padding:0 }
                     var stock = input.attr('data-stock');
                     var maxbuy = input.attr('data-maxbuy');
                     $(this).parent().find('.subtract').show();
-                    input.show();                 
+                    input.show();
                     if (num > stock) {
                       core.tip.show("您最多可购买 " + stock + " 件!");
-                      
-                      input.val(stock); 
+
+                      input.val(stock);
                       return;
-                      
-                      
-                    }  
-                    {if $ischannelpay == 0}                 
+
+
+                    }
+                    {if $ischannelpay == 0}
 
 
 	                    if (num > maxbuy && maxbuy > 0){
 	                      core.tip.show("您最多可购买 " + maxbuy + " 件!");
-	                      input.val(maxbuy); 
+	                      input.val(maxbuy);
 	                      return;
-	                      
-	                     
+
+
 	                    }
 
-                    {/if}   
+                    {/if}
                     if (num == 1) {
                         type = 'add';
                     } else {
-                        type = 'updatenum';                       
+                        type = 'updatenum';
                     };
 
                     require(['core'],function(core){
-                      
+
                         core.json('shop/cart',{op:'add', id:id,total:1},function(ret){
 
                             now.attr("data-num",ret.result.cartcount);
@@ -775,10 +779,10 @@ ul, li { list-style:none; margin:0; padding:0 }
                             },true,true);
                         });
 
-                    
+
                 })
                 $('body').on('input propertychange','.num',function(){
-                  
+
                     var input = $(this);
                     var num = parseInt($(this).val());
                     var id  = $(this).attr('data-id');
@@ -791,33 +795,33 @@ ul, li { list-style:none; margin:0; padding:0 }
                     }
                     if (num > stock) {
                       core.tip.show("您最多可购买 " + stock + " 件!");
-                      
-                      
+
+
                       input.val(stock);
                       return;
-                      
-                    }  
-                    {if $ischannelpay == 0}                 
+
+                    }
+                    {if $ischannelpay == 0}
 
 
                       if (num > maxbuy && maxbuy > 0){
                         core.tip.show("您最多可购买 " + maxbuy + " 件!");
-                       
+
                         input.val(maxbuy);
                         return;
-                        
-                      }                   
+
+                      }
 
 
                     {/if}
                     if (num == 1) {
                         type = 'add';
                     } else {
-                        type = 'updatenum';                       
+                        type = 'updatenum';
                     };
 
                     require(['core'],function(core){
-                      
+
                         core.json('shop/cart',{op:'add', id:id, total:num, type:'propertychange'},function(ret){
 
                             now.attr("data-num",ret.result.cartcount);
@@ -826,12 +830,12 @@ ul, li { list-style:none; margin:0; padding:0 }
                             },true,true);
                         });
 
-                    
+
                 })
 
 
 
-                $('body').on('click','.subtract',function(){                    
+                $('body').on('click','.subtract',function(){
                     var input = $(this).parent().find('.num');
 
                     var num = input.val() - 1;
@@ -857,25 +861,25 @@ ul, li { list-style:none; margin:0; padding:0 }
                         });
 
 
-                })         
-                 
-                 
+                })
+
+
                 $('.search').click(function(){
 
                    $(".search1").animate({bottom:"0px"},100);
                    $('#keywords').focus().unbind('keyup').keyup(function(){
                             var keywords = $.trim( $(this).val());
                             if(keywords==''){
-                                $('#search_container').html("");         
+                                $('#search_container').html("");
                                 return;
                             }
                             core.json('list_goods',{op:'search',keywords:keywords }, function (json) {
                                  var result = json.result;
                                  if(result.list.length>0){
-                                    $('#search_container').html(tpl('tpl_search_list',result));    
+                                    $('#search_container').html(tpl('tpl_search_list',result));
                                  }
                                  else{
-                                    $('#search_container').html("");         
+                                    $('#search_container').html("");
                                  }
 
                               }, true);
@@ -884,9 +888,9 @@ ul, li { list-style:none; margin:0; padding:0 }
                          $(".search1").animate({bottom:"-100%"},100);
                     });
                 });
-        
+
         }, true);
- 
+
         $('.sort').click(function () {
                 var display = $(".sort_list").css('display');
                 if (display == 'none') {
@@ -897,21 +901,21 @@ ul, li { list-style:none; margin:0; padding:0 }
 
         });
 
-   
+
         $(document).on('click','.canoption',function(){
           var id = $(this).data('id');
-          core.json('shop/detail',{id:id,'ischannelpay':"{$_GPC['ischannelpay']}",'ischannelpick':"{$_GPC['ischannelpick']}"},function (json) { 
+          core.json('shop/detail',{id:id,'ischannelpay':"{$_GPC['ischannelpay']}",'ischannelpick':"{$_GPC['ischannelpick']}", storeid:"{$color['storeid']}"},function (json) {
             $('#container_specs').html(tpl('tpl_goods_info',json.result));
             $('.good_choose_layer').fadeIn(200);
             $('.good_choose_layer').unbind('click').click(function(){
             $('.good_choose_layer').fadeOut(100);
-            $('.good_choose').fadeOut(100); 
+            $('.good_choose').fadeOut(100);
             })
             $('.good_choose').fadeIn(200);
             var maxbuy = json.result.goods.maxbuy;
 
             $(document).on('click','.option',function(){
-               
+
               var specid = $(this).attr("specid");
               var oid = $(this).attr("oid");
               $(".optionid_"+specid).val(oid);
@@ -921,16 +925,16 @@ ul, li { list-style:none; margin:0; padding:0 }
               var titles='已选: ';
                  $('.spec_items').each(function(){
                                  if($(this).find('.on').length>0){
-                    titles+= $(this).find('.on').attr('title')+";";   
+                    titles+= $(this).find('.on').attr('title')+";";
                             }
                  });
-                             
+
               $('.good_choose .info .right .option').html(titles);
             var thumb = $(this).attr('thumb');
             if(thumb!=''){
                $("#chooser_img").attr('src',thumb);
             }
-            else{ 
+            else{
                $("#chooser_img").attr('src',json.result.goods.thumb);
             }
             setoptions();
@@ -946,32 +950,32 @@ ul, li { list-style:none; margin:0; padding:0 }
                 for(var i=0;i<len;i++) {
                     var o = options[i];
                     var ids = ret.all.join("_");
-                                
+
                                 var specarr = o.specs.split('_').sort();
                                 var idsarr = ret.all.sort();
-                              
-                                
-                                
-                             
+
+
+
+
                     if(specarr.join('_') ==idsarr.join('_') ){
-                      
+
                         optionid = o.id;
                         stock = o.stock;
                         marketprice = o.marketprice;
                         productprice = o.productprice;
                         break;
                     }
-                    
+
                 }
                  core.json('shop/cart', {id:id, optionid:optionid, op:'gettotal'}, function(json){
                           var total = json.result;
                           if(!total){
-                            total = '0'; 
+                            total = '0';
                           }
                           $("#total").val(total);
-                        })               
-               $("#optionid").val(optionid); 
-              
+                        })
+               $("#optionid").val(optionid);
+
 
                 var num = parseInt($("#total").val() );
 
@@ -1003,18 +1007,18 @@ ul, li { list-style:none; margin:0; padding:0 }
                     else{
                      $('.sub').removeClass('disabled').html('确认');
                     }
-                } 
+                }
                 $("#marketprice").html(marketprice);
-                
-                $("#option_price").html(marketprice);   
-                $("#option_stock").html(stock); 
-                 
+
+                $("#option_price").html(marketprice);
+                $("#option_stock").html(stock);
+
                 $("#productprice").html(productprice);
                 if(productprice<=0){
                 $('#productpricecontainer').html("");
                 }
                 else{
-            
+
                    $('#productpricecontainer').html("市场价￥<span id='productprice'>" + productprice + "</span>");
                 }
             }
@@ -1039,7 +1043,7 @@ ul, li { list-style:none; margin:0; padding:0 }
       var maxbuy = $('#maxbuy').val();
       function closechoose(){
           $('.good_choose_layer').fadeOut(100);
-          $('.good_choose').fadeOut(100); 
+          $('.good_choose').fadeOut(100);
           $('#container_detail').hide();
         }
             function choose(act){
@@ -1048,17 +1052,17 @@ ul, li { list-style:none; margin:0; padding:0 }
                                     core.tip.confirm($('#followtip').val(),function(){
                                         location.href = $('#followurl').val();
                                         return;
-                                    }) 
+                                    })
                                 });
                              return;
                           }
                    action = act;
                          if(!action){
-                                     
+
                                 $('.good_choose_layer').fadeIn(200);
                                 $('.good_choose_layer').unbind('click').click(function(){
                                     $('.good_choose_layer').fadeOut(100);
-                                    $('.good_choose').fadeOut(100); 
+                                    $('.good_choose').fadeOut(100);
                                 })
                                 $('.good_choose').fadeIn(200);
                                 return;
@@ -1070,7 +1074,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                                    closechoose();
                              })
                $('.good_choose').fadeIn(200);
-               return;   
+               return;
              }else{
             {if !empty($formInfo)}
                  $('.good_choose_layer').fadeIn(200);
@@ -1080,14 +1084,14 @@ ul, li { list-style:none; margin:0; padding:0 }
                $('.good_choose').fadeIn(200);
                return;
             {/if}
-             
+
                 $('.spec_items').each(function(){
                              var self = $(this);
                                             if( $(this).find('.on').length<=0){
                                  specselected = self.attr('title');
                                  return false;
                               }
-                });  
+                });
              if(specselected!='') {
                $('.good_choose_layer').fadeIn(200);
                              $('.good_choose_layer').unbind('click').click(function(){
@@ -1096,9 +1100,9 @@ ul, li { list-style:none; margin:0; padding:0 }
                $('.good_choose').fadeIn(200);
                return;
              }
-            
+
          }
- 
+
 
                       var diymode = {php echo intval($diymode)};
 
@@ -1120,7 +1124,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                                       if(ret.status==1){
                                         core.tip.show(ret.result.message);
                                         var cartdiv = $('.cart');
-                                                                                                                      
+
                                       } else{
                                         core.message(ret.result,'','error');
                                       }
@@ -1134,19 +1138,19 @@ ul, li { list-style:none; margin:0; padding:0 }
     }
         function setoptions(){
              var titles = '';
-                 
-                 
+
+
              titles+='已选: ';
                  $('.spec_items').each(function(){
-                    titles+= $(this).find('.on').attr('title')+";";   
+                    titles+= $(this).find('.on').attr('title')+";";
                  });
-                 
+
                                              titles+='数量:' + $('#total').val();
                  $("#optiondiv").html(titles);
         }
     function choose2(direct,close){
          require(['core'],function(core){
-             
+
             if(close){
 
                 closechoose();
@@ -1160,15 +1164,15 @@ ul, li { list-style:none; margin:0; padding:0 }
             else{
                 setoptions();
             }
-                                      
-          
+
+
         } else {
              var action = "";
         }
-        var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+        var stock = $("#option_stock").html()==''?-1:parseInt($("#option_stock").html());
         var num = parseInt($('#total').val() );
         var maxbuy = $('#maxbuy').val();
-        
+
         if(num>maxbuy && maxbuy>0){
             core.tip.show("您最多可购买 " + maxbuy + " 件!");
             num = maxbuy;
@@ -1181,18 +1185,18 @@ ul, li { list-style:none; margin:0; padding:0 }
             $('#total').val(num);
             return;
         }
-        
+
                 var specselected  = '';
-                
+
         $('.spec_items').each(function(){
-                
+
                   var self = $(this);
                   if( $(this).find('.on').length<=0){
-                    
+
                       specselected = self.attr('title');
                       return false;
                   }
-                  });  
+                  });
                                 if( specselected!=''){
 
                                       require(['core'],function(core){
@@ -1200,18 +1204,18 @@ ul, li { list-style:none; margin:0; padding:0 }
                                       });
                                       return;
                       }
-                               
-                           
-                              
-        
+
+
+
+
                  var data = {};
-                 
-                 
-        
+
+
+
                   {if !empty($popenid) or !empty($openid)}
 
                        core.json('shop/cart',{op:'add', id:$('#goodsid').val(),optionid:$('#optionid').val(),total:$('#total').val(), is:'choose'},function(ret){
-                                                    if(ret.status==1){ 
+                                                    if(ret.status==1){
                                                        core.tip.show(ret.result.message);
                                                        var cartdiv = $('.cart');
                                                                            if( cartdiv.find('b').length<=0){
@@ -1227,16 +1231,16 @@ ul, li { list-style:none; margin:0; padding:0 }
                                                        core.message(ret.result,'','error');
                                                    }
                            },true,true);
-                                
+
                   {else}
                         location.href = "{php echo $this->createMobileUrl('member/login')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
                   {/if}
         //end openid
-                                            
+
         if(action=='buy'){
- 
+
                {if !empty($formInfo)}
-                  
+
                 {template 'diyform/common_js_data'}
 
                 var data ={
@@ -1266,17 +1270,16 @@ ul, li { list-style:none; margin:0; padding:0 }
             closechoose();
         }
   });
-  
+
     }
   function addNum(){
     var total = $("#total");
     // if(!total.isInt()){
     //     total.val("1");
     // }
-    var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+    var stock = $("#option_stock").html()==''?-1:parseInt($("#option_stock").html());
     var num = parseInt(total.val() ) + 1;
     var maxbuy = $('#maxbuy').val();
-    
     if(num>maxbuy && maxbuy>0){
         core.tip.show("您最多可购买 " + maxbuy + " 件!");
         num = maxbuy;
@@ -1288,10 +1291,10 @@ ul, li { list-style:none; margin:0; padding:0 }
     total.val(num);
 }
   function addNum1(optionid_id,oid){
-    
+
     $("."+optionid_id).val(oid);
     var total = $("#total");
-    var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
+    var stock = $("#option_stock").html()==''?-1:parseInt($("#option_stock").html());
 
     var num = parseInt(total.val() );
     if(num>maxbuy && maxbuy>0){
@@ -1329,13 +1332,13 @@ function reduceNum(){
                     ret.no = $(this).attr("title");
                     return false;
                 }
-               
+
     })
       return ret;
-    } 
+    }
     })
- 
 
 
-            
+
+
 </script>

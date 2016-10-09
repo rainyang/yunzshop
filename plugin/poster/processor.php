@@ -17,7 +17,6 @@ class PosterProcessor extends PluginProcessor
         $msgtype     = strtolower($message['msgtype']);
         $event       = strtolower($message['event']);
         $obj->member = $this->model->checkMember($message['from']);
-        file_put_contents(IA_ROOT . '/addons/sz_yi/test.log', print_r($message, 1), FILE_APPEND);
         if ($msgtype == 'text' || $event == 'click') {
             return $this->responseText($obj);
         } else if ($msgtype == 'event') {
@@ -45,8 +44,7 @@ class PosterProcessor extends PluginProcessor
 		$timeout = 4;
 		load()->func('communication');
 		$resp = $_W['siteroot'] . 'app/index.php?i=' . $_W['uniacid'] . '&c=entry&m=sz_yi&do=plugin&p=poster&method=build&timestamp=' . time();
-		$_var_6 = ihttp_request($resp, array('openid' => $obj->message['from'], 'content' => urlencode($obj->message['content'])), array(), $timeout);
-        file_put_contents(IA_ROOT . '/addons/sz_yi/test_responseText.log', print_r($_var_6, 1), FILE_APPEND);
+		$info = ihttp_request($resp, array('openid' => $obj->message['from'], 'content' => urlencode($obj->message['content'])), array(), $timeout);
 		return $this->responseEmpty();
 	}
     private function responseEmpty()
@@ -184,20 +182,20 @@ class PosterProcessor extends PluginProcessor
                 }
                 m('finance')->pay($qr['openid'], $poster['paytype'], $pay, '', $recpaycontent);
             }
-			$_var_20 = false;
-			$_var_21 = false;
-			$_var_22 = p('coupon');
-			if ($_var_22) {
+			$isrec = false;
+			$issub = false;
+			$pcoupon = p('coupon');
+			if ($pcoupon) {
 				if (!empty($poster['reccouponid']) && $poster['reccouponnum'] > 0) {
-					$_var_23 = $_var_22->getCoupon($poster['reccouponid']);
-					if (!empty($_var_23)) {
-						$_var_20 = true;
+					$reccoupon = $pcoupon->getCoupon($poster['reccouponid']);
+					if (!empty($reccoupon)) {
+						$isrec = true;
 					}
 				}
 				if (!empty($poster['subcouponid']) && $poster['subcouponnum'] > 0) {
-					$_var_24 = $_var_22->getCoupon($poster['subcouponid']);
-					if (!empty($_var_24)) {
-						$_var_21 = true;
+					$subcoupon = $pcoupon->getCoupon($poster['subcouponid']);
+					if (!empty($subcoupon)) {
+						$issub = true;
 					}
 				}
 			}
@@ -206,8 +204,8 @@ class PosterProcessor extends PluginProcessor
                 $subtext = str_replace("[nickname]", $member['nickname'], $subtext);
                 $subtext = str_replace("[credit]", $poster['reccredit'], $subtext);
                 $subtext = str_replace("[money]", $poster['recmoney'], $subtext);
-				if ($_var_23) {
-					$subtext = str_replace('[couponname]', $_var_23['couponname'], $subtext);
+				if ($reccoupon) {
+					$subtext = str_replace('[couponname]', $reccoupon['couponname'], $subtext);
 					$subtext = str_replace('[couponnum]', $poster['reccouponnum'], $subtext);
 				}
                 if (!empty($poster['templateid'])) {
@@ -238,8 +236,8 @@ class PosterProcessor extends PluginProcessor
                 $entrytext = str_replace("[nickname]", $qrmember['nickname'], $entrytext);
                 $entrytext = str_replace("[credit]", $poster['subcredit'], $entrytext);
                 $entrytext = str_replace("[money]", $poster['submoney'], $entrytext);
-				if ($_var_24) {
-					$entrytext = str_replace('[couponname]', $_var_24['couponname'], $entrytext);
+				if ($subcoupon) {
+					$entrytext = str_replace('[couponname]', $subcoupon['couponname'], $entrytext);
 					$entrytext = str_replace('[couponnum]', $poster['subcouponnum'], $entrytext);
 				}
                 if (!empty($poster['templateid'])) {
@@ -265,19 +263,19 @@ class PosterProcessor extends PluginProcessor
                     m('message')->sendCustomNotice($openid, $entrytext);
                 }
             }
-			$_var_27 = array();
-			if ($_var_20) {
-				$_var_27['reccouponid'] = $poster['reccouponid'];
-				$_var_27['reccouponnum'] = $poster['reccouponnum'];
-				$_var_22->poster($qrmember, $poster['reccouponid'], $poster['reccouponnum']);
+			$update = array();
+			if ($isrec) {
+				$update['reccouponid'] = $poster['reccouponid'];
+				$update['reccouponnum'] = $poster['reccouponnum'];
+				$pcoupon->poster($qrmember, $poster['reccouponid'], $poster['reccouponnum']);
 			}
-			if ($_var_21) {
-				$_var_27['subcouponid'] = $poster['subcouponid'];
-				$_var_27['subcouponnum'] = $poster['subcouponnum'];
-				$_var_22->poster($member, $poster['subcouponid'], $poster['subcouponnum']);
+			if ($issub) {
+				$update['subcouponid'] = $poster['subcouponid'];
+				$update['subcouponnum'] = $poster['subcouponnum'];
+				$pcoupon->poster($member, $poster['subcouponid'], $poster['subcouponnum']);
 			}
-			if (!empty($_var_27)) {
-				pdo_update('sz_yi_poster_log', $_var_27, array('id' => $log['id']));
+			if (!empty($update)) {
+				pdo_update('sz_yi_poster_log', $update, array('id' => $log['id']));
 			}
 		}
         $this->commission($poster, $member, $qrmember);

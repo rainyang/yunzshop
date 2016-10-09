@@ -8,8 +8,9 @@ $type = $_GPC['type'];
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
 $r_type = array('0' => '退款', '1' => '退货退款', '2' => '换货');
-if (p('yunbi')) {
-	$yunbi_set = p('yunbi')->getSet();
+$plugin_yunbi = p('yunbi');
+if ($plugin_yunbi) {
+	$yunbi_set = $plugin_yunbi->getSet();
 }
 if ($_W['isajax']) {
 	if ($operation == 'display') {
@@ -28,7 +29,7 @@ if ($_W['isajax']) {
 					$condition .= ' and status=' . intval($status);
 				}
 			} else {
-				$condition .= ' and refundstate>0';
+				$condition .= ' and refundstate>0 and status!=-1';
 			}
 		} else {
 
@@ -90,7 +91,7 @@ if ($_W['isajax']) {
 				}
 				$channel_cond = ',og.ischannelpay';
 			}
-			$sql = 'SELECT og.goodsid,og.total,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid' . $channel_cond . ' FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$order_where.' order by og.id asc';
+			$sql = 'SELECT og.goodsid,og.total,g.type,g.title,g.thumb,og.price,og.optionname as optiontitle,og.optionid' . $channel_cond . ' FROM ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$order_where.' order by og.id asc';
 			$row['goods'] = set_medias(pdo_fetchall($sql), 'thumb');
 			foreach ($row['goods'] as $k => $value) {
 				if ($value['ischannelpay'] == 1) {
@@ -183,17 +184,19 @@ if ($_W['isajax']) {
 					$canrefund = true;
 				}
 			} else if ($row['status'] == 3) {
-				if ($row['isverify'] != 1 && empty($row['virtual'])) {
+				//申请售后去除核销商品与虚拟产品不允许退货
+				//if ($row['isverify'] != 1 && empty($row['virtual'])) {
 					if ($refunddays > 0) {
 						$days = intval((time() - $row['finishtime']) / 3600 / 24);
 						if ($days <= $refunddays) {
 							$canrefund = true;
 						}
 					}
-				}
+				//}
 			}
+
 			$row['canrefund'] = $canrefund;
-		
+	
 			if ($canrefund == true) {
 		        if ($row['status'] == 1) {
 		            $row['refund_button'] = '申请退款';

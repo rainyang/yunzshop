@@ -20,10 +20,10 @@
             </div>-->
             
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">股权代理下级付款通知</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">团队下级付款通知</label>
                 <div class="col-sm-9 col-xs-12">
                       <input type="text" name="tm[bonus_order_paytitle]" class="form-control" value="{$set['tm']['bonus_order_paytitle']}" />
-                    <div class="help-block">标题，默认"股权代理下级付款通知"</div>
+                    <div class="help-block">标题，默认"团队下级付款通知"</div>
                 </div>
             </div>
             
@@ -37,10 +37,10 @@
             </div>
             
            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">股权代理下级确认收货通知</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">团队下级确认收货通知</label>
                 <div class="col-sm-9 col-xs-12">
                       <input type="text" name="tm[bonus_order_finishtitle]" class="form-control" value="{$set['tm']['bonus_order_finishtitle']}" />
-                    <div class="help-block">标题，默认"股权代理下级确认收货通知"</div>
+                    <div class="help-block">标题，默认"团队下级确认收货通知"</div>
                 </div>
             </div>
             
@@ -54,10 +54,10 @@
             </div>
 
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">区域代理下级付款通知</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区下级付款通知</label>
                 <div class="col-sm-9 col-xs-12">
                       <input type="text" name="tm[bonus_order_area_paytitle]" class="form-control" value="{$set['tm']['bonus_order_area_paytitle']}" />
-                    <div class="help-block">标题，默认"区域代理下级付款通知"</div>
+                    <div class="help-block">标题，默认"地区下级付款通知"</div>
                 </div>
             </div>
             
@@ -71,10 +71,10 @@
             </div>
             
            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">区域代理下级确认收货通知</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区下级确认收货通知</label>
                 <div class="col-sm-9 col-xs-12">
                       <input type="text" name="tm[bonus_order_area_finishtitle]" class="form-control" value="{$set['tm']['bonus_order_area_finishtitle']}" />
-                    <div class="help-block">标题，默认"区域代理下级确认收货通知"</div>
+                    <div class="help-block">标题，默认"地区下级确认收货通知"</div>
                 </div>
             </div>
             
@@ -88,10 +88,10 @@
             </div>
             
                <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">代理分红打款通知</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">团队分红打款通知</label>
                 <div class="col-sm-9 col-xs-12">
                       <input type="text" name="tm[bonus_paytitle]" class="form-control" value="{$set['tm']['bonus_paytitle']}" />
-                    <div class="help-block">标题，默认"代理分红打款通知"</div>
+                    <div class="help-block">标题，默认"团队分红打款通知"</div>
                 </div>
             </div>
             
@@ -100,6 +100,22 @@
                 <div class="col-sm-9 col-xs-12">
                     <textarea  name="tm[bonus_pay]" class="form-control" >{$set['tm']['bonus_pay']}</textarea>
                     模板变量 [昵称] [打款方式] [金额] [时间] [代理等级]
+                </div>
+            </div>
+
+               <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区分红打款通知</label>
+                <div class="col-sm-9 col-xs-12">
+                      <input type="text" name="tm[bonus_paytitle_area]" class="form-control" value="{$set['tm']['bonus_paytitle_area']}" />
+                    <div class="help-block">标题，默认"地区分红打款通知"</div>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    <textarea  name="tm[bonus_pay_area]" class="form-control" >{$set['tm']['bonus_pay_area']}</textarea>
+                    模板变量 [昵称] [打款方式] [金额] [时间] [地区等级]
                 </div>
             </div>
 

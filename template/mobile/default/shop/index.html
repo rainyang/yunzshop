@@ -52,6 +52,10 @@
 .class1 .class2 .class3 .ico img { width:50px;height:50px;}
 .class1 .class2 .class3 .text {height:20px; width:80px; font-size:12px; color:#999; text-align:center; line-height:20px;overflow:hidden;}
 
+    #tuan {
+        font-size:12px;
+        text-decoration: none;
+    }
 </style>
 <div id='list_contanier'></div>
 <div id='container'></div>
@@ -143,7 +147,7 @@
     <div class="good" data-goodsid='<%g.id%>'>
         <div class='img'><img src="<%g.thumb%>"></div>
         <div class="name"><%g.title%></div>
-        <div class="price">￥<%g.marketprice%> <%if g.productprice>0 && g.marketprice!=g.productprice%><span>￥<%g.productprice%></span><%/if%><%if g.isforceyunbi%>{if !empty($yunbi_set['yunbi_title'])}{php echo $yunbi_set['yunbi_title']}{else}云币{/if}:<%g.yunbi_deduct%><%/if%></div>
+        <div class="price">￥<%g.marketprice%> <%if g.type == 4%><span id="tuan"><%g.groupnumber%>人团</span><%/if%> <%if g.productprice>0 && g.marketprice!=g.productprice%><span>￥<%g.productprice%></span><%/if%>{if $plugin_yunbi}<%if g.isforceyunbi == 1%>{if !empty($yunbi_set['yunbi_title'])}{php echo $yunbi_set['yunbi_title']}{else}云币{/if}:<%g.yunbi_deduct%><%/if%>{/if}</div>
     </div>
     <%/each%>
 

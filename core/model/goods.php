@@ -48,8 +48,11 @@ class Sz_DYi_Goods
             $condition .= " and id = :id";
             $params[':id'] = intval($id);
         }
-        if (!empty($args['isverify'])) {
-            $condition .= " and isverify = 1";
+        if (!empty($args['isverify']) && $args['isverify'] == 1) {
+            $condition .= " and isverify = '1' ";
+        }
+        if (!empty($args['isverify']) && $args['isverify'] == 2) {
+            $condition .= " and isverify = '2' ";
         }
         if (!empty($sup_uid)) {
             $condition .= " and supplier_uid = :supplier_uid ";
@@ -74,6 +77,10 @@ class Sz_DYi_Goods
         $isdiscount = !empty($args['isdiscount']) ? 1 : 0;
         if (!empty($isdiscount)) {
             $condition .= " and isdiscount=1";
+        }
+        $goodsids = !empty($args['goodsids']) ? $args['goodsids'] : 0;
+        if (!empty($goodsids)) {
+            $condition .= " and id in (".$goodsids.")";
         }
         $istime = !empty($args['istime']) ? 1 : 0;
         if (!empty($istime)) {
@@ -119,6 +126,9 @@ class Sz_DYi_Goods
             }
         }
         $openid  = m('user')->getOpenid();
+        if(empty($openid)){
+            $openid = m('user')->isLogin();
+        }
         $member  = m('member')->getMember($openid);
         $levelid = intval($member['level']);
         $groupid = intval($member['groupid']);
@@ -136,13 +146,15 @@ class Sz_DYi_Goods
             }
         } else {
             if (!$random) {
-                $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} LIMIT " . ($page - 1) * $pagesize . ',' . $pagesize;
-            } else {
                 if ($choose) {
-                    $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() ";
+                    $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} ";
                 } else {
+                    $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY {$order} {$orderby} LIMIT " . ($page - 1) * $pagesize . ',' . $pagesize;
+                }    
+            } else {
+                
                     $sql = "SELECT * FROM " . tablename('sz_yi_goods') . " where 1 {$condition} ORDER BY rand() LIMIT " . $pagesize;
-                }
+                
                 
             }
             $list = pdo_fetchall($sql, $params);

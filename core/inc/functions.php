@@ -153,7 +153,7 @@ function curl_download($url, $dir)
     return $res;
 }
 
-function send_sms($account, $pwd, $mobile, $code, $type = 'check', $name, $title, $total, $tel)
+function send_sms($account, $pwd, $mobile, $code, $type = 'check', $name = '', $title = '', $total = '', $tel = '')
 {
     if ($type == 'check') {
         $content = "您的验证码是：" . $code . "。请不要把验证码泄露给其他人。如非本人操作，可不用理会！";
@@ -560,7 +560,7 @@ function my_scandir($dir)
     global $my_scenfiles;
     if ($handle = opendir($dir)) {
         while (($file = readdir($handle)) !== false) {
-            if ($file != ".." && $file != "." && $file != ".git" && $file != "tmp") {
+            if ($file != ".." && $file != "." && $file != ".git" && $file != "tmp"  && $file != "data") {
                 if (is_dir($dir . "/" . $file)) {
                     my_scandir($dir . "/" . $file);
                 } else {

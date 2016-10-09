@@ -1,6 +1,6 @@
 {template 'common/header'}
 {template '_header'}
-<title>积分商城</title>
+<title>{php echo SZ_YI_INTEGRAL}商城</title>
 <style type="text/css">
        .banner {overflow:hidden;position:relative;height:auto;}
      .banner  .main_image{width:100%;position:relative;top:0;left:0;}
@@ -18,7 +18,7 @@
 <script id='tpl_main'  type='text/html'>
 <div class="page_topbar">
 <a href="javascript:;" class="back" onclick="history.back()"><i class='iconfont icon-chevron-left'></i></a>
-<div class="title">积分商城</div>
+<div class="title">{php echo SZ_YI_INTEGRAL}商城</div>
 </div>
     <%if advs.length>0%>
     <div class="banner">
@@ -41,7 +41,7 @@
     </div>
     <%/if%>
     <div class="index_sub">
-        <a href="{php echo $this->createPluginMobileUrl('creditshop/creditlog')}"><i class="fa fa-database"></i> 积分<d><%credit%></d></a>
+        <a href="{php echo $this->createPluginMobileUrl('creditshop/creditlog')}"><i class="fa fa-database"></i> {php echo SZ_YI_INTEGRAL}<d><%credit%></d></a>
         <a href="{php echo $this->createPluginMobileUrl('creditshop/log')}"><i class="fa fa-align-justify"></i> 兑换记录</a>
     </div>
     <%if tops.length>0%>

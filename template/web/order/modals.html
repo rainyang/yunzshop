@@ -1,4 +1,32 @@
-
+<!--选择门店-->
+<div id="modal-changeagent" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
+	<form class="form-horizontal form" action="{php echo $this->createWebUrl('order')}" method="post" enctype="multipart/form-data">
+		<input type='hidden' name='id' value='' />
+		<input type='hidden' name='op' value='changeagent' />
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+					<h3>选择门店</h3>
+				</div>
+				<div class="form-group">
+					<label class="col-xs-10 col-sm-3 col-md-3 control-label">门店</label>
+					<div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
+						<select class="form-control" name="changeagent" id="express">
+							{loop $store_list $row}
+							<option value="{$row['id']}" data-name="">{$row['storename']}</option>
+							{/loop}
+						</select>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="submit" class="btn btn-primary" name="close" value="yes">确定</button>
+					<a href="#" class="btn btn-default" data-dismiss="modal" aria-hidden="true">关闭</a>
+				</div>
+			</div>
+		</div>
+	</form>
+</div>
 <!-- 关闭原因 -->
 <div id="modal-close" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
 	<form class="form-horizontal form" action="{php echo $this->createWebUrl('order')}" method="post" enctype="multipart/form-data">
@@ -79,7 +107,7 @@
 					<div class="form-group">
 						<label class="col-xs-10 col-sm-3 col-md-3 control-label">快递公司</label>
 						<div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
-							<select class="form-control" name="express" id="express">
+							<select class="form-control" name="express" id="express_company">
 								<option value="" data-name="">其他快递</option>
 								<option value="shunfeng" data-name="顺丰">顺丰</option>
 								<option value="shentong" data-name="申通">申通</option>
@@ -595,7 +623,7 @@
 
         $("select[name=rexpress]").val("{$refund['rexpress']}");
 
-		$("#express").change(function () {
+		$("#express_company").change(function () {
 			var obj = $(this);
 			var sel = obj.find("option:selected").attr("data-name");
 			$("#expresscom").val(sel);

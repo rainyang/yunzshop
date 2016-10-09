@@ -359,7 +359,9 @@ if ($operation == 'display') {
         "couponprice" => $couponprice,
         'cashier' => 1,
         'cashierid' => $sid,
-        'redprice' => $totalprice*($store['redpack']/100)
+        'redprice' => $totalprice*($store['redpack']/100),
+        'ordersn_general' =>  $ordersn,
+        'pay_ordersn' => $ordersn
     );
     if($store['deredpack']==1){
         $order['deredpack']=1;
@@ -388,8 +390,14 @@ if ($operation == 'display') {
         "oldprice" => $orig_price,
         "openid" => $openid
     );
+    if (p('bonus')) {
+        $order_goods['bonusmoney'] = $store['bonus'];
+    }
     pdo_insert('sz_yi_order_goods', $order_goods);
     $this->model->calculateCommission($orderid);
+    if (p('bonus')) {
+        $this->model->calculateBonus($orderid);
+    }
     if($store['iscontact'] == 1){
         if (is_array($carrier)) {
             $up = array(

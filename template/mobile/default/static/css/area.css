@@ -803,7 +803,7 @@ input[type="button"], input[type="submit"], input[type="reset"] {-webkit-appeara
 .hiden_zz{ display:none; width:100%; height:100%; position:fixed; top:0px; left:0px; z-index:999;}
 .item_p{ position:relative;}
 .item_erweima{ display:none; position:relative; margin-top:10px; z-index:9999; background:#fff; padding:10px; font-size:13px; color:#3EB134; text-align:center; border:1px solid #eee;}
-.on_jticon{ display:block; width:21px; height:11px; position:absolute; top:-11px; left:50%; margin-left:-10px; background:url(http://b.dm1961.com/goadmin/skin/default/skin_icons.png) 0px -290px no-repeat; z-index:99999;}
+.on_jticon{ display:block; width:21px; height:11px; position:absolute; top:-11px; left:50%; margin-left:-10px; z-index:99999;}
 .item_erweima img{ display:block; margin:0 auto;}
 .qrcode_biz{display: block; color: #222; text-decoration: none; font-size: 15px; background-color: #fcfcfc; margin: 0 0 15px 0; padding: 10px; text-align: center; cursor: pointer; border: none; height: 42px; position: relative; text-align: left; padding: 12px; padding-left: 62px; margin-top: 15px; margin-bottom: 0px;}
 .qrcode_biz .logo{position: absolute; padding: 6px; width: 42px; height: 42px; overflow: hidden; top: 6px; left: 5px;}

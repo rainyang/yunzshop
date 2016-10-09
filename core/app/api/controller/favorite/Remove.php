@@ -1,5 +1,5 @@
 <?php
-namespace app\api\controller\favirite;
+namespace app\api\controller\favorite;
 @session_start();
 use app\api\YZ;
 use app\api\Request;
@@ -27,6 +27,4 @@ class Remove extends YZ
         }
         $this->returnSuccess();
     }
-
 }
-

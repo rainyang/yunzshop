@@ -26,9 +26,12 @@ if($goods['ccate']){
 if($goods['tcate']){
     $tcate = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$goods['tcate']." and uniacid=".$uniacid);
 }
+$yunbi = 0;
 if (p('yunbi')) {
+    $yunbi = 1;
     $yunbi_set = p('yunbi')->getSet();
 }
+
 if(p('hotel')){//开启酒店插件后 判断当前时间是否有剩余房间可预约
 $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
 $params2 = array(':goodsid' => $goods['id']);
@@ -106,9 +109,15 @@ if ($diyform_plugin) {
         $f_data   = $diyform_plugin->getLastData(3, $diymode, $diyformid, $goodsid, $fields, $member);
     }
     if ($_W['isajax'] && $_GPC['op'] == 'create') {
-        $insert_data = $diyform_plugin->getInsertData($fields, $_GPC['diydata']);
-        $idata       = $insert_data['data'];
-        $goods_temp  = $diyform_plugin->getGoodsTemp($goodsid, $diyformid, $openid);
+        if (!empty($_GPC['diydata'])) {
+            $insert_data = $diyform_plugin->getInsertData($fields, $_GPC['diydata']);
+            $idata       = $insert_data['data'];
+             
+        }
+        $goods_temp  = $diyform_plugin->getGoodsTemp($goodsid, $diyformid, $openid); 
+        if (!empty($_GPC['declaration_mid'])) {
+            $declaration_mid = $_GPC['declaration_mid'];
+        }
         $insert      = array(
             'cid' => $goodsid,
             'openid' => $openid,
@@ -116,6 +125,7 @@ if ($diyform_plugin) {
             'type' => 3,
             'diyformfields' => iserializer($fields),
             'diyformdata' => $idata,
+            'declaration_mid' => $declaration_mid,
             'uniacid' => $_W['uniacid']
         );
         if (empty($goods_temp)) {
@@ -130,6 +140,23 @@ if ($diyform_plugin) {
         show_json(1, array(
             'goods_data_id' => $gdid
         ));
+    }
+
+    if ($_W['isajax'] && $_GPC['op'] == 'getmember') {
+        if (!empty($_GPC['mid'])) {
+            $condition = ' and ( id = :mid or realname like :mid or nickname like :mid or mobile like :mid )';
+            $declaration = pdo_fetch("SELECT * FROM " . tablename('sz_yi_member') . " WHERE 1 {$condition}",
+                    array(':mid' => $_GPC['mid']
+            ));
+            if ($declaration) {
+               show_json(1,array('mid'=>$declaration['id'])); 
+           }else{
+                show_json(0,'用户信息不存在');
+           }
+            
+        }else{
+            show_json(1,array('mid'=>''));
+        }
     }
 }
 $html = $goods['content'];
@@ -151,7 +178,7 @@ if (isset($imgs[1])) {
 }
 $levelid           = $member['level'];
 $groupid           = $member['groupid'];
-if(!is_weixin()){
+//if(!is_weixin()){
     //禁止浏览的商品
     if ($goods['showlevels'] != '') {
         $showlevels = explode(',', $goods['showlevels']);
@@ -165,7 +192,7 @@ if(!is_weixin()){
             message('当前商品禁止访问，请联系客服……', $this->createMobileUrl('shop/index'), 'error');
         }
     }
-}
+//}
 //分销佣金
 $commissionprice = p('commission')->getCommission($goods);
 
@@ -312,7 +339,16 @@ if ($_W['isajax']) {
                 }
             }
             unset($value);*/
-        }
+        } elseif (!empty($_GPC['storeid'])) {
+            $options = array();
+            $my_stock = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_store_goods') . " WHERE uniacid=:uniacid AND storeid=:storeid AND goodsid=:goodsid", array(':uniacid' => $_W['uniacid'], ':storeid' => intval($_GPC['storeid']), ':goodsid' => $goodsid));
+            foreach ($my_stock as $val) {
+                $my_option          = m('goods')->getOption($goodsid, $val['optionid']);
+                $stock_total        = pdo_fetchcolumn("SELECT total FROM " . tablename('sz_yi_store_goods') . " WHERE uniacid=:uniacid AND goodsid=:goodsid AND optionid=:optionid and storeid=:storeid", array(':uniacid' => $_W['uniacid'], ':goodsid' => $goodsid, ':optionid' => $val['optionid'], ':storeid' => intval($_GPC['storeid'])));
+                $my_option['stock'] = $stock_total;
+                $options[]          = $my_option;
+            }
+        }    
         $options = set_medias($options, 'thumb');
         foreach ($options as $o) {
             if ($maxprice < $o['marketprice']) {

@@ -73,11 +73,11 @@
 			 <option value="0" {if $set['commission_diyform']==0}selected{/if}>--选择自定义表单--</option>
                         {if p('supplier')}
                         {loop $use_form_list $key $value}
-                        <option value="{$value['id']}" {if $set['user_diyform']==$value['id']}selected{/if}>{$value['title']}</option>
+                        <option value="{$value['id']}" {if $set['commission_diyform']==$value['id']}selected{/if}>{$value['title']}</option>
                         {/loop}
                         {else}
                         {loop $form_list $key $value}
-                        <option value="{$value['id']}" {if $set['user_diyform']==$value['id']}selected{/if}>{$value['title']}</option>
+                        <option value="{$value['id']}" {if $set['commission_diyform']==$value['id']}selected{/if}>{$value['title']}</option>
                         {/loop}
                         {/if}
                     </select>
@@ -115,11 +115,11 @@
 						<option value="0" {if $set['order_diyform']==0}selected{/if}>--选择自定义表单--</option>
                         {if p('supplier')}
                         {loop $use_form_list $key $value}
-                        <option value="{$value['id']}" {if $set['user_diyform']==$value['id']}selected{/if}>{$value['title']}</option>
+                        <option value="{$value['id']}" {if $set['order_diyform']==$value['id']}selected{/if}>{$value['title']}</option>
                         {/loop}
                         {else}
                         {loop $form_list $key $value}
-                        <option value="{$value['id']}" {if $set['user_diyform']==$value['id']}selected{/if}>{$value['title']}</option>
+                        <option value="{$value['id']}" {if $set['order_diyform']==$value['id']}selected{/if}>{$value['title']}</option>
                         {/loop}
                         {/if}
                     </select>    
@@ -166,7 +166,7 @@
                         {/loop}
                         {/if}
                     </select>    
-                      <span class="help-block">&nbsp;&nbsp;会员申请供应商表单</span>
+                      <span class="help-block">&nbsp;&nbsp;此模板必须带有"账号"/"密码"类型</span>
                        {else}
                  <div class="form-control-static">
                {if $set['supplier_diyform_open'] == 1}
@@ -201,11 +201,11 @@
                         <option value="0" {if $set['channel_diyform']==0}selected{/if}>--选择自定义表单--</option>
                         {if p('supplier')}
                         {loop $use_form_list $key $value}
-                        <option value="{$value['id']}" {if $set['user_diyform']==$value['id']}selected{/if}>{$value['title']}</option>
+                        <option value="{$value['id']}" {if $set['channel_diyform']==$value['id']}selected{/if}>{$value['title']}</option>
                         {/loop}
                         {else}
                         {loop $form_list $key $value}
-                        <option value="{$value['id']}" {if $set['user_diyform']==$value['id']}selected{/if}>{$value['title']}</option>
+                        <option value="{$value['id']}" {if $set['channel_diyform']==$value['id']}selected{/if}>{$value['title']}</option>
                         {/loop}
                         {/if}
                     </select>    

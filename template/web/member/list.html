@@ -126,7 +126,7 @@
                     <th style='width:12%;'>姓名<br/>手机号码</th>
                     <th style='width:8%;'>等级/分组</th>
                     <th style='width:10%;'>注册时间</th>
-                    <th style='width:15%;'>积分/余额</th>
+                    <th style='width:15%;'>{php echo SZ_YI_INTEGRAL}/余额</th>
                     <th style='width:15%;'>成交</th>
                     <th style='width:8%'>关注</th>
                     <th style='width:8%'>操作</th>
@@ -166,7 +166,7 @@
                     <td>{if empty($row['levelname'])}普通会员{else}{$row['levelname']}{/if}
                         <br/>{if empty($row['groupname'])}无分组{else}{$row['groupname']}{/if}</td>
                     <td>{php echo date('Y-m-d',$row['createtime'])}<br/>{php echo date('H:i',$row['createtime'])}</td>
-                    <td><label class="label label-primary">积分：{$row['credit1']}</label><br/><label class="label label-danger">余额：{$row['credit2']}</label></td>
+                    <td><label class="label label-primary">{php echo SZ_YI_INTEGRAL}：{$row['credit1']}</label><br/><label class="label label-danger">余额：{$row['credit2']}</label></td>
                     <td><label class="label label-primary">订单：{$row['ordercount']}</label><br/>
                     <label class="label label-danger">金额：{php echo floatval($row['ordermoney'])}</label></td>
                     <td> 
@@ -193,7 +193,7 @@
                                
                         {ifp 'member.member.view|member.member.edit'}<li><a href="{php echo $this->createWebUrl('member',array('op'=>'detail','id' => $row['id']));}" title="会员详情"><i class='fa fa-edit'></i> 会员详情</a></li>{/if}
                         {ifp 'order'}<li><a  href="{php echo $this->createWebUrl('order', array('op' => 'display','member'=>$row['nickname']))}" title='会员订单'><i class='fa fa-list'></i> 会员订单</a></li>{/if}
-                        {ifp 'finance.recharge.credit1'}<li><a href="{php echo $this->createWebUrl('finance/recharge', array('op'=>'credit1','id'=>$row['id']))}" title='充值积分'><i class='fa fa-credit-card'></i> 充值积分</a></li>{/if}
+                        {ifp 'finance.recharge.credit1'}<li><a href="{php echo $this->createWebUrl('finance/recharge', array('op'=>'credit1','id'=>$row['id']))}" title='充值{php echo SZ_YI_INTEGRAL}'><i class='fa fa-credit-card'></i> 充值{php echo SZ_YI_INTEGRAL}</a></li>{/if}
                         {ifp 'finance.recharge.credit2'}<li><a href="{php echo $this->createWebUrl('finance/recharge', array('op'=>'credit2','id'=>$row['id']))}" title='充值余额'><i class='fa fa-money'></i> 充值余额 </a></li>{/if}
                         {if p('yunbi')}
                         <?php $yunbi_set = p('yunbi')->getSet()?>
@@ -332,7 +332,7 @@
                 </div>
             </div>
            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">积分</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">{php echo SZ_YI_INTEGRAL}</label>
                 <div class="col-sm-3">
                       {ifp 'finance.recharge.credit1'}
                      <div class='input-group'>

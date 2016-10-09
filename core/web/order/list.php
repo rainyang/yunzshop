@@ -14,16 +14,18 @@ $r_type         = array(
     '1' => '退货退款',
     '2' => '换货'
 );
+$store_list = pdo_fetchall("SELECT * FROM ".tablename('sz_yi_store')." WHERE uniacid=:uniacid and status=1", array(':uniacid' => $_W['uniacid']));
 if ($operation == "display") {
     ca("order.view.status_1|order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status5");
     //判断该帐号的权限
     if(p('supplier')){
         $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+        $suppliers = p('supplier')->AllSuppliers();
     }
     //END
     $pindex = max(1, intval($_GPC["page"]));
     $psize = 20;
-    $status = $_GPC["status"];
+    $status = $_GPC["status"] == "" ? 1 : $_GPC["status"];
     $sendtype = !isset($_GPC["sendtype"]) ? 0 : $_GPC["sendtype"];
     $condition = " o.uniacid = :uniacid and o.deleted=0";
     $paras = $paras1 = array(
@@ -32,6 +34,10 @@ if ($operation == "display") {
     if (empty($starttime) || empty($endtime)) {
         $starttime = strtotime("-1 month");
         $endtime = time();
+    }
+    if (!empty($_GPC['supplier_uid'])) {
+        $condition.= " AND o.supplier_uid = :supplier_uid ";
+        $paras[":supplier_uid"] = $_GPC['supplier_uid'];
     }
     if (!empty($_GPC["time"])) {
         $starttime = strtotime($_GPC["time"]["start"]);
@@ -86,6 +92,24 @@ if ($operation == "display") {
             $condition.= " AND ( o.paytype =21 or o.paytype=22 or o.paytype=23 )";
         } else {
             $condition.= " AND o.paytype =" . intval($_GPC["paytype"]);
+        }
+    }
+    //门店取消订单搜索
+    if(empty($_W['isagent'])){
+        if($_GPC['cancel'] == 1){
+            $orderids = pdo_fetchall("select orderid from " . tablename('sz_yi_cancel_goods') . " where uniacid={$_W['uniacid']} ");
+            $ids = "";
+            foreach ($orderids as $key => $value) {
+                if($key != 0){
+                    $ids .= "," . $value['orderid'];
+                }else{
+                    $ids .= $value['orderid'];
+                }
+            }
+            if (!empty($orderids)) {
+                $condition.= " and o.id in (" .$ids. ") ";
+            }
+
         }
     }
     //商品名称检索订单
@@ -153,7 +177,7 @@ if ($operation == "display") {
            $condition.= " AND o.order_type<>3";
     }
     $statuscondition = '';
-    if ($status != '') {
+    if ($status != "all") {
         if ($status == - 1) {
             ca("order.view.status_1");
         } else {
@@ -241,21 +265,8 @@ if ($operation == "display") {
             $cond .= " and o.supplier_uid={$_W['uid']} ";
             $supplierapply = pdo_fetchall('select a.id,u.uid,p.realname,p.mobile,p.banknumber,p.accountname,p.accountbank,a.applysn,a.apply_money,a.apply_time,a.type,a.finish_time,a.status from ' . tablename('sz_yi_supplier_apply') . ' a ' . ' left join' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid ' . 'left join' . tablename('users') . ' u on a.uid=u.uid where u.uid=' . $_W['uid']);
             $totals['status9'] = count($supplierapply);
-            $costmoney = 0;
-            $sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$_W['uid']} and o.status=3 and og.supplier_apply_status=0");
-            foreach ($sp_goods as $key => $value) {
-                if ($value['goods_op_cost_price'] > 0) {
-                    $costmoney += $value['goods_op_cost_price'] * $value['total'];
-                } else {
-                    $option = pdo_fetch("select * from " . tablename('sz_yi_goods_option') . " where uniacid={$_W['uniacid']} and goodsid={$value['goodsid']} and id={$value['optionid']}");
-                    if ($option['costprice'] > 0) {
-                        $costmoney += $option['costprice'] * $value['total'];
-                    } else {
-                        $goods_info = pdo_fetch("select * from" . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
-                        $costmoney += $goods_info['costprice'] * $value['total'];
-                    }
-                }
-            }
+            $supplier_info = p('supplier')->getSupplierInfo($_W['uid']);
+            $costmoney = $supplier_info['costmoney'];
             $openid = pdo_fetchcolumn('select openid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',array(':uid' => $_W['uid'],':uniacid'=> $_W['uniacid']));
             if(empty($openid)){
                 message("暂未绑定微信，请联系管理员", '', "error");
@@ -263,11 +274,11 @@ if ($operation == "display") {
             //全部提现
             $applytype = intval($_GPC['applytype']);
             $apply_ordergoods_ids = "";
-            foreach ($sp_goods as $key => $value) {
+            foreach ($supplier_info['sp_goods'] as $key => $value) {
                 if ($key == 0) {
-                    $apply_ordergoods_ids .= $value['id'];
+                    $apply_ordergoods_ids .= $value['ogid'];
                 } else {
-                    $apply_ordergoods_ids .= ','.$value['id'];
+                    $apply_ordergoods_ids .= ','.$value['ogid'];
                 }
             }
             if(!empty($applytype)){
@@ -286,15 +297,15 @@ if ($operation == "display") {
                 pdo_insert('sz_yi_supplier_apply',$data);
                 @file_put_contents(IA_ROOT . "/addons/sz_yi/data/apply.log", print_r($data, 1), FILE_APPEND);
                 if( pdo_insertid() ) {
-                    foreach ($sp_goods as $ids) {
+                    foreach ($supplier_info['sp_goods'] as $ids) {
                         $arr = array(
                             'supplier_apply_status' => 2
                             );
                         pdo_update('sz_yi_order_goods', $arr, array(
-                            'id' => $ids['id']
+                            'id' => $ids['ogid']
                             ));
                     }
-                    $tmp_sp_goods = $sp_goods;
+                    $tmp_sp_goods = $supplier_info['sp_goods'];
                     $tmp_sp_goods['applyno'] = $applysn;
                     @file_put_contents(IA_ROOT . "/addons/sz_yi/data/sp_goods.log", print_r($tmp_sp_goods, 1), FILE_APPEND);
                 }
@@ -303,12 +314,22 @@ if ($operation == "display") {
         }
     }
     //Author:ym Date:2016-07-20 Content:订单分组查询
-    $sql = 'select o.* , a.realname as arealname,a.mobile as amobile,a.province as aprovince ,a.city as acity , a.area as aarea,a.address as aaddress, d.dispatchname,m.nickname,m.id as mid,m.realname as mrealname,m.mobile as mmobile,sm.id as salerid,sm.nickname as salernickname,s.salername,r.rtype,r.status as rstatus,o.pay_ordersn from ' . tablename("sz_yi_order") . " o" . " left join " . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename("sz_yi_member_address") . " a on a.id=o.addressid " . " left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . "  where {$condition} {$statuscondition} {$cond} group by o.ordersn_general ORDER BY o.createtime DESC,o.status DESC  ";
+    $sql = 'select o.* , a.realname as arealname,a.mobile as amobile,a.province as aprovince ,a.city as acity , a.area as aarea,a.address as aaddress, d.dispatchname,m.nickname,m.id as mid,m.realname as mrealname,m.mobile as mmobile,sm.id as salerid,sm.nickname as salernickname,s.salername,r.rtype,r.status as rstatus,o.pay_ordersn, o.dispatchtype, o.isverify, o.storeid from ' . tablename("sz_yi_order") . " o" . " left join " . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename("sz_yi_member_address") . " a on a.id=o.addressid " . " left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . "  where {$condition} {$statuscondition} {$cond} group by o.ordersn_general ORDER BY o.createtime DESC,o.status DESC  ";
     if (empty($_GPC["export"])) {
         $sql.= "LIMIT " . ($pindex - 1) * $psize . "," . $psize;
     }
     $list = pdo_fetchall($sql, $paras);
-
+    foreach ($list as $key => &$value) {
+        $isresult = pdo_fetch("select * from " . tablename('sz_yi_cancel_goods') . " where orderid={$value['id']} and uniacid={$_W['uniacid']}");
+        if(!empty($isresult)){
+            $value['isempty'] = 1;
+            if($isresult['ismaster'] == 0){
+                $value['ismaster'] = 1;
+            }
+        }else{
+            $value['isempty'] = 0;
+        }
+    }
     if (p('supplier')) {
         foreach ($list as &$value) {
             $suppliers_num = pdo_fetchcolumn('select count(*) from ' . tablename("sz_yi_order") . " where ordersn_general=:ordersn_general and uniacid=:uniacid", array(':ordersn_general' => $value['ordersn_general'], ':uniacid' => $_W['uniacid']));
@@ -1022,19 +1043,21 @@ if ($operation == "display") {
             "columns" => $columns
         ));
     }
-    $total = pdo_fetchcolumn("SELECT COUNT(distinct o.ordersn_general) FROM " . tablename("sz_yi_order") . " o " . " left join ( select rr.id,rr.orderid,rr.status from " . tablename("sz_yi_order_refund") . " rr left join " . tablename("sz_yi_order") . " ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition $statuscondition " . $cond , $paras);
-    $totalmoney = pdo_fetchcolumn('SELECT ifnull(sum(o.price),0) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition $statuscondition $cond ", $paras);
-   
-    $totals['all'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE o.uniacid = :uniacid and o.deleted=0 and o.order_type<>3 $cond ", $paras);
-    $totals['status_1'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.status=-1 and o.refundtime=0 and o.order_type<>3 $cond ", $paras);
-    $totals['status0'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.status=0 and o.paytype<>3 and o.order_type<>3 $cond ", $paras);
-    $totals['status1'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.order_type<>3 and ( o.status=1 or ( o.status=0 and o.paytype=3)) $cond ", $paras);
-    $totals['status2'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.status=2 and o.order_type<>3 $cond ", $paras);
-    $totals['status3'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.status=3 and o.order_type<>3 $cond ", $paras);
+    $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " o " . " left join " . tablename("sz_yi_order_refund") . " r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition $statuscondition " . $cond , $paras);
+    $total = $result['total'];
+    $totalmoney = $result['totalmoney'];
+    unset($result);
+    
+    /*$totals['status_1'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.status=-1 and o.refundtime=0 and o.order_type<>3 $cond ", $paras);
+    $totals['status0'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.status=0 and o.paytype<>3 and o.order_type<>3 $cond ", $paras);
+    $totals['status1'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.order_type<>3 and ( o.status=1 or ( o.status=0 and o.paytype=3)) $cond ", $paras);
+    $totals['status2'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.status=2 and o.order_type<>3 $cond ", $paras);
+    $totals['status3'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.status=3 and o.order_type<>3 $cond ", $paras);
     $totals['status4'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_order_refund') . '  r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition AND o.refundtime=0 AND o.refundid<>0 and o.order_type<>3 and r.status=0 $cond ", $paras);
-    $totals['status5'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id  order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition AND o.refundtime<>0 AND o.refundid<>0 and o.order_type<>3 $cond ", $paras);
-    if (p('hotel') && $type=='hotel') {
-        $totals['all'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE o.uniacid = :uniacid and o.deleted=0 and o.order_type=3 $cond ", $paras);
+    $totals['status5'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition AND o.refundtime<>0 AND o.refundid<>0 and o.order_type<>3 $cond ", $paras);
+    $totals['all'] = $totals['status_1'] + $totals['status0'] + $totals['status1'] + $totals['status2'] + $totals['status3'] + $totals['status4'] + $totals['status5'];*/
+
+    /*if (p('hotel') && $type=='hotel') {
         $totals['status_1'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.status=-1 and o.order_type=3 and o.refundtime=0 $cond ", $paras);
         $totals['status0'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.status=0 and o.order_type=3 and o.paytype<>3 $cond ", $paras);
         $totals['status1'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and  o.order_type=3 and( o.status=1 or ( o.status=0 and o.paytype=3) ) $cond ", $paras);
@@ -1043,6 +1066,70 @@ if ($operation == "display") {
         $totals['status4'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_order_refund') . ' r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition AND o.refundtime=0 AND o.refundid<>0 and r.status=0 and o.order_type=3 and o.refundstate>=0 $cond ", $paras);
         $totals['status5'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id  order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition AND o.refundtime<>0 AND o.refundid<>0 $cond ", $paras);
         $totals['status6'] = pdo_fetchcolumn('SELECT COUNT(distinct o.ordersn_general) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ( select rr.id,rr.orderid,rr.status from ' . tablename('sz_yi_order_refund') . ' rr left join ' . tablename('sz_yi_order') . ' ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE $condition and o.status=6 and o.order_type=3 $cond ", $paras);
+        $totals['all'] = $totals['status_1'] + $totals['status0'] + $totals['status1'] + $totals['status2'] + $totals['status3'] + $totals['status4'] + $totals['status5'] + $totals['status6'];
+    }*/
+    $condition = " uniacid=:uniacid and deleted=0";
+    if(p('hotel') && $type=='hotel'){
+        $condition .= " and order_type=3";
+        $join_order_type = " and o.order_type=3";
+    }else{
+        $condition .= " and order_type<>3";
+        $join_order_type = " and o.order_type<>3";
+    }
+    if (!empty($agentid) && $level > 0) {
+        if (empty($olevel)) {
+            if ($level >= 1) {
+                $condition.= " and  ( agentid=" . intval($_GPC["agentid"]);
+            }
+            if ($level >= 2 && $agent["level2"] > 0) {
+                $condition.= " or agentid in( " . implode(",", array_keys($agent["level1_agentids"])) . ")";
+            }
+            if ($level >= 3 && $agent["level3"] > 0) {
+                $condition.= " or agentid in( " . implode(",", array_keys($agent["level2_agentids"])) . ")";
+            }
+            if ($level >= 1) {
+                $condition.= ")";
+            }
+        } else {
+            if ($olevel == 1) {
+                $condition.= " and agentid=" . intval($_GPC["agentid"]);
+            } else if ($olevel == 2) {
+                if ($agent["level2"] > 0) {
+                    $condition.= " and agentid in( " . implode(",", array_keys($agent["level1_agentids"])) . ")";
+                } else {
+                    $condition.= " and agentid in( 0 )";
+                }
+            } else if ($olevel == 3) {
+                if ($agent["level3"] > 0) {
+                    $condition.= " and agentid in( " . implode(",", array_keys($agent["level2_agentids"])) . ")";
+                } else {
+                    $condition.= " and agentid in( 0 )";
+                }
+            }
+        }
+    }
+    $paras = array(
+        ":uniacid" => $_W["uniacid"]
+    );
+    $totals = array();
+    $supplier_cond = '';
+    $supplier_conds = '';
+    if (p('supplier')) {
+        if (!empty($perm_role)) {
+            $supplier_cond = ' AND supplier_uid=' . $_W['uid'];
+            $supplier_conds = ' AND o.supplier_uid=' . $_W['uid'];
+        }
+    }
+    $totals['all'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . $supplier_cond, $paras);
+    $totals['status_1'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=-1 and refundtime=0' . $supplier_cond, $paras);
+    $totals['status0'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=0 and paytype<>3' . $supplier_cond, $paras);
+    $totals['status1'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and ( status=1 or ( status=0 and paytype=3) )' . $supplier_cond, $paras);
+    $totals['status2'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=2' . $supplier_cond, $paras);
+    $totals['status3'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=3' . $supplier_cond, $paras);
+    $totals['status4'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_order_refund') . ' r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE o.uniacid=:uniacid AND o.refundtime=0 AND o.refundid<>0 and r.status=0  and o.refundstate>=0 and o.deleted=0 {$supplier_conds}" . $join_order_type, array(':uniacid' => $_W['uniacid']));
+    $totals['status5'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and refundtime<>0 AND refundid<>0' . $supplier_cond, $paras);
+    if(p('hotel') && $type=='hotel'){
+        $totals['status6'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=6', $paras);
     }
     $pager = pagination($total, $pindex, $psize);
     $stores = pdo_fetchall("select id,storename from " . tablename("sz_yi_store") . " where uniacid=:uniacid ", array(
@@ -1085,6 +1172,28 @@ if ($operation == "display") {
           include $this->template("web/order/list");
     }
     exit;
+} elseif ($operation == "changeagent") {
+    $openid = pdo_fetchcolumn("select openid from " . tablename('sz_yi_member') . " where id=(select member_id from " . tablename('sz_yi_store') . " where id={$_GPC['changeagent']} and uniacid={$_W['uniacid']}) and uniacid={$_W['uniacid']}");
+    //$openid = pdo_fetchcolumn("SELECT openid FROM ".tablename('sz_yi_member')." WHERE id = (SELECT member_id FROM ".tablename('sz_yi_store')." WHERE id={$_GPC['changeagent']} and uniacid={$_W['uniacid']}") and uniacid={$_W['uniacid']}");
+    $agentuid = array('storeid' => $_GPC['changeagent']);
+    $last_agentuid = array('last_storeid' => $_GPC['changeagent'], 'ismaster' => 1);
+    $orderid = $_GPC['id'];
+    pdo_update('sz_yi_order', $agentuid, array('id' => $orderid, 'uniacid' => $_W['uniacid']));
+    pdo_update('sz_yi_cancel_goods', $last_agentuid, array('orderid' => $orderid, 'uniacid' => $_W['uniacid']));
+    $msg = array(
+        'first' => array(
+            'value' => "您获得新的订单！(门店)",
+            "color" => "#4a5077"
+        ),
+        'keyword1' => array(
+            'title' => '内容',
+            'value' => "您获得[总店]分配的订单！",
+            "color" => "#4a5077"
+        )
+    );
+    $detailurl = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&method=orderj&p=commission&op=order&type=0&m=sz_yi&do=plugin";
+    m('message')->sendCustomNotice($openid, $msg, $detailurl);
+    message('选择门店成功', $this->createWebUrl('order', array('op' => 'display')), 'success');
 } elseif ($operation == "detail") {
     $id = intval($_GPC["id"]);
     $p = p("commission");
@@ -1264,19 +1373,37 @@ if ($operation == "display") {
         }
         unset($og);
     }
-    $condition = " o.uniacid=:uniacid and o.deleted=0";
+    $condition = " uniacid=:uniacid and deleted=0";
     $paras = array(
         ":uniacid" => $_W["uniacid"]
     );
+    $supplier_conds = '';
+    $supplier_cond = '';
+    if (p('supplier')) {
+        $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+        if (!empty($perm_role)) {
+            $supplier_cond = ' AND supplier_uid=' . $_W['uid'];
+            $supplier_conds = ' AND o.supplier_uid=' . $_W['uid'];
+        }
+    }
     $totals = array();
-    $totals["all"] = pdo_fetchcolumn("SELECT COUNT(distinct o.ordersn_general) FROM " . tablename("sz_yi_order") . " o " . " left join ( select rr.id,rr.orderid,rr.status from " . tablename("sz_yi_order_refund") . " rr left join " . tablename("sz_yi_order") . " ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition", $paras);
+    $totals['all'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . $supplier_cond, $paras);
+    $totals['status_1'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=-1 and refundtime=0' . $supplier_cond, $paras);
+    $totals['status0'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=0 and paytype<>3' . $supplier_cond, $paras);
+    $totals['status1'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and ( status=1 or ( status=0 and paytype=3) )' . $supplier_cond, $paras);
+    $totals['status2'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=2' . $supplier_cond, $paras);
+    $totals['status3'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=3' . $supplier_cond, $paras);
+    $totals['status4'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_order_refund') . ' r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE o.uniacid=:uniacid AND o.refundtime=0 AND o.refundid<>0 and r.status=0  and o.refundstate>=0 and o.deleted=0 " . $supplier_conds, array(':uniacid' => $_W['uniacid']));
+    $totals['status5'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and refundtime<>0 AND refundid<>0' . $supplier_cond, $paras);
+
+    /*$totals["all"] = pdo_fetchcolumn("SELECT COUNT(distinct o.ordersn_general) FROM " . tablename("sz_yi_order") . " o " . " left join ( select rr.id,rr.orderid,rr.status from " . tablename("sz_yi_order_refund") . " rr left join " . tablename("sz_yi_order") . " ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition", $paras);
     $totals["status_1"] = pdo_fetchcolumn("SELECT COUNT(distinct o.ordersn_general) FROM " . tablename("sz_yi_order") . " o " . " left join ( select rr.id,rr.orderid,rr.status from " . tablename("sz_yi_order_refund") . " rr left join " . tablename("sz_yi_order") . " ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition and o.status=-1 and o.refundtime=0", $paras);
     $totals["status0"] = pdo_fetchcolumn("SELECT COUNT(distinct o.ordersn_general) FROM " . tablename("sz_yi_order") . " o " . " left join ( select rr.id,rr.orderid,rr.status from " . tablename("sz_yi_order_refund") . " rr left join " . tablename("sz_yi_order") . " ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition and o.status=0 and o.paytype<>3", $paras);
     $totals["status1"] = pdo_fetchcolumn("SELECT COUNT(distinct o.ordersn_general) FROM " . tablename("sz_yi_order") . " o " . " left join ( select rr.id,rr.orderid,rr.status from " . tablename("sz_yi_order_refund") . " rr left join " . tablename("sz_yi_order") . " ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition and ( o.status=1 or ( o.status=0 and o.paytype=3) )", $paras);
     $totals["status2"] = pdo_fetchcolumn("SELECT COUNT(distinct o.ordersn_general) FROM " . tablename("sz_yi_order") . " o " . " left join ( select rr.id,rr.orderid,rr.status from " . tablename("sz_yi_order_refund") . " rr left join " . tablename("sz_yi_order") . " ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition and o.status=2", $paras);
     $totals["status3"] = pdo_fetchcolumn("SELECT COUNT(distinct o.ordersn_general) FROM " . tablename("sz_yi_order") . " o " . " left join ( select rr.id,rr.orderid,rr.status from " . tablename("sz_yi_order_refund") . " rr left join " . tablename("sz_yi_order") . " ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition and o.status=3", $paras);
     $totals["status4"] = pdo_fetchcolumn("SELECT COUNT(distinct o.ordersn_general) FROM " . tablename("sz_yi_order") . " o " . " left join " . tablename("sz_yi_order_refund") . " r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition AND o.refundtime=0 AND o.refundid<>0  and r.status=0", $paras);
-    $totals["status5"] = pdo_fetchcolumn("SELECT COUNT(distinct o.ordersn_general) FROM " . tablename("sz_yi_order") . " o " . " left join ( select rr.id,rr.orderid,rr.status from " . tablename("sz_yi_order_refund") . " rr left join " . tablename("sz_yi_order") . " ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition AND o.refundtime<>0 AND o.refundid<>0", $paras);
+    $totals["status5"] = pdo_fetchcolumn("SELECT COUNT(distinct o.ordersn_general) FROM " . tablename("sz_yi_order") . " o " . " left join ( select rr.id,rr.orderid,rr.status from " . tablename("sz_yi_order_refund") . " rr left join " . tablename("sz_yi_order") . " ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition AND o.refundtime<>0 AND o.refundid<>0", $paras);*/
     $coupon = false;
     if (p("coupon") && !empty($item["couponid"])) {
         $coupon = p("coupon")->getCouponByDataID($item["couponid"]);
@@ -1702,62 +1829,62 @@ if ($operation == "display") {
     }
     exit;
 }
-function sortByTime($zym_var_10, $zym_var_11) {
-    if ($zym_var_10["ts"] == $zym_var_11["ts"]) {
+function sortByTime($msg0, $msg1) {
+    if ($msg0["ts"] == $msg1["ts"]) {
         return 0;
     } else {
-        return $zym_var_10["ts"] > $zym_var_11["ts"] ? 1 : -1;
+        return $msg0["ts"] > $msg1["ts"] ? 1 : -1;
     }
 }
-function getList($zym_var_12, $zym_var_15) {
-    $zym_var_9 = "http://wap.kuaidi100.com/wap_result.jsp?rand=" . time() . "&id={$zym_var_12}&fromWeb=null&postid={$zym_var_15}";
+function getList($id, $postid) {
+    $url = "http://wap.kuaidi100.com/wap_result.jsp?rand=" . time() . "&id={$id}&fromWeb=null&postid={$postid}";
     load()->func("communication");
-    $zym_var_13 = ihttp_request($zym_var_9);
-    $zym_var_16 = $zym_var_13["content"];
-    if (empty($zym_var_16)) {
+    $info = ihttp_request($url);
+    $result = $info["content"];
+    if (empty($result)) {
         return array();
     }
-    preg_match_all("/\<p\>&middot;(.*)\<\/p\>/U", $zym_var_16, $zym_var_5);
-    if (!isset($zym_var_5[1])) {
+    preg_match_all("/\<p\>&middot;(.*)\<\/p\>/U", $result, $data);
+    if (!isset($data[1])) {
         return false;
     }
-    return $zym_var_5[1];
+    return $data[1];
 }
-function changeWechatSend($zym_var_2, $zym_var_4, $zym_var_1 = '') {
+function changeWechatSend($ordersn, $status, $msg = '') {
     global $_W;
-    $zym_var_3 = pdo_fetch("SELECT plid, openid, tag FROM " . tablename("core_paylog") . " WHERE tid = '{$zym_var_2}' AND status = 1 AND type = 'wechat'");
-    if (!empty($zym_var_3["openid"])) {
-        $zym_var_3["tag"] = iunserializer($zym_var_3["tag"]);
-        $zym_var_8 = $zym_var_3["tag"]["acid"];
+    $paylog = pdo_fetch("SELECT plid, openid, tag FROM " . tablename("core_paylog") . " WHERE tid = '{$ordersn}' AND status = 1 AND type = 'wechat'");
+    if (!empty($paylog["openid"])) {
+        $paylog["tag"] = iunserializer($paylog["tag"]);
+        $acid = $paylog["tag"]["acid"];
         load()->model("account");
-        $zym_var_17 = account_fetch($zym_var_8);
-        $zym_var_6 = uni_setting($zym_var_17["uniacid"], "payment");
-        if ($zym_var_6["payment"]["wechat"]["version"] == "2") {
+        $account = account_fetch($acid);
+        $payment = uni_setting($account["uniacid"], "payment");
+        if ($payment["payment"]["wechat"]["version"] == "2") {
             return true;
         }
-        $zym_var_7 = array(
-            "appid" => $zym_var_17["key"],
-            "openid" => $zym_var_3["openid"],
-            "transid" => $zym_var_3["tag"]["transaction_id"],
-            "out_trade_no" => $zym_var_3["plid"],
+        $send = array(
+            "appid" => $account["key"],
+            "openid" => $paylog["openid"],
+            "transid" => $paylog["tag"]["transaction_id"],
+            "out_trade_no" => $paylog["plid"],
             "deliver_timestamp" => TIMESTAMP,
-            "deliver_status" => $zym_var_4,
-            "deliver_msg" => $zym_var_1,
+            "deliver_status" => $status,
+            "deliver_msg" => $msg,
         );
-        $zym_var_14 = $zym_var_7;
-        $zym_var_14["appkey"] = $zym_var_6["payment"]["wechat"]["signkey"];
-        ksort($zym_var_14);
-        $zym_var_19 = '';
-        foreach ($zym_var_14 as $zym_var_33 => $zym_var_31) {
-            $zym_var_33 = strtolower($zym_var_33);
-            $zym_var_19.= "{$zym_var_33}={$zym_var_31}&";
+        $sign = $send;
+        $sign["appkey"] = $payment["payment"]["wechat"]["signkey"];
+        ksort($sign);
+        $string = '';
+        foreach ($sign as $key => $v) {
+            $key = strtolower($key);
+            $string.= "{$key}={$v}&";
         }
-        $zym_var_7["app_signature"] = sha1(rtrim($zym_var_19, "&"));
-        $zym_var_7["sign_method"] = "sha1";
-        $zym_var_17 = WeAccount::create($zym_var_8);
-        $zym_var_29 = $zym_var_17->changeOrderStatus($zym_var_7);
-        if (is_error($zym_var_29)) {
-            message($zym_var_29["message"]);
+        $send["app_signature"] = sha1(rtrim($string, "&"));
+        $send["sign_method"] = "sha1";
+        $account = WeAccount::create($acid);
+        $response = $account->changeOrderStatus($send);
+        if (is_error($response)) {
+            message($response["message"]);
         }
     }
 }
@@ -1793,21 +1920,14 @@ function order_list_confirmsend($order) {
         "uniacid" => $_W["uniacid"]
     ));
     if (!empty($order["refundid"])) {
-        $zym_var_35 = pdo_fetch("select * from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
+        $zym_var_35 = pdo_fetchcolumn("select status from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
             ":id" => $order["refundid"]
         ));
-        if (!empty($zym_var_35)) {
-            pdo_update("sz_yi_order_refund", array(
-                "status" => - 1
-            ) , array(
-                "id" => $order["refundid"]
-            ));
-            pdo_update("sz_yi_order", array(
-                "refundid" => 0
-            ) , array(
-                "id" => $order["id"]
-            ));
+        if ($zym_var_35 == 0) {
+            message("此订单有退款申请未处理，请处理完成之后进行确认发货操作！");
+ 
         }
+        
     }
     m("notice")->sendOrderMessage($order["id"]);
     plog("order.op.send", "订单发货 ID: {$order["id"]} 订单号: {$order["ordersn"]} <br/>快递公司: {$_GPC["expresscom"]} 快递单号: {$_GPC["expresssn"]}");
@@ -1819,37 +1939,30 @@ function order_list_confirmsend1($order) {
     if ($order["status"] != 1) {
         message("订单未付款，无法确认取货！");
     }
-    $zym_var_37 = time();
-    $zym_var_36 = array(
+    $paylog7 = time();
+    $paylog6 = array(
         "status" => 3,
-        "sendtime" => $zym_var_37,
-        "finishtime" => $zym_var_37
+        "sendtime" => $paylog7,
+        "finishtime" => $paylog7
     );
     if ($order["isverify"] == 1) {
-        $zym_var_36["verified"] = 1;
-        $zym_var_36["verifytime"] = $zym_var_37;
-        $zym_var_36["verifyopenid"] = "";
+        $paylog6["verified"] = 1;
+        $paylog6["verifytime"] = $paylog7;
+        $paylog6["verifyopenid"] = "";
     }
-    pdo_update("sz_yi_order", $zym_var_36, array(
+    pdo_update("sz_yi_order", $paylog6, array(
         "id" => $order["id"],
         "uniacid" => $_W["uniacid"]
     ));
     if (!empty($order["refundid"])) {
-        $zym_var_35 = pdo_fetch("select * from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
+        $zym_var_35 = pdo_fetchcolumn("select status from " . tablename("sz_yi_order_refund") . " where id=:id limit 1", array(
             ":id" => $order["refundid"]
         ));
-        if (!empty($zym_var_35)) {
-            pdo_update("sz_yi_order_refund", array(
-                "status" => - 1
-            ) , array(
-                "id" => $order["refundid"]
-            ));
-            pdo_update("sz_yi_order", array(
-                "refundid" => 0
-            ) , array(
-                "id" => $order["id"]
-            ));
+        if ($zym_var_35 == 0) {
+            message("此订单有退款申请未处理，请处理完成之后进行确认发货操作！");
+ 
         }
+        
     }
     m("member")->upgradeLevel($order["openid"]);
     m("notice")->sendOrderMessage($order["id"]);
@@ -1862,6 +1975,10 @@ function order_list_confirmsend1($order) {
     if (p('yunbi')) {
         p('yunbi')->GetVirtualCurrency($order["id"]);
     }
+    if (p('beneficence')) {
+        p('beneficence')->GetVirtualBeneficence($order["id"]);
+    }
+
     plog("order.op.fetch", "订单确认取货 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
     message("发货操作成功！", order_list_backurl() , "success");
 }
@@ -1881,8 +1998,10 @@ function order_list_cancelsend($order) {
         "id" => $order["id"],
         "uniacid" => $_W["uniacid"]
     ));
+
     plog("order.op.sencancel", "订单取消发货 ID: {$order["id"]} 订单号: {$order["ordersn"]}");
     message("取消发货操作成功！", order_list_backurl() , "success");
+
 }
 function order_list_cancelsend1($order) {
     global $_W, $_GPC;
@@ -2046,7 +2165,7 @@ function order_list_confirmpay($order) {
         $plugin_commission = p("commission");
         $orderid = array();
         foreach ($order_all as $key => $val) {
-            m("order")->setStocksAndCredits($val["id"], 1);
+            //m("order")->setStocksAndCredits($val["id"], 1);
             m("notice")->sendOrderMessage($val["id"]);
             if ($plugin_coupon && !empty($val["couponid"])) {
                 $plugin_coupon->backConsumeCoupon($val["id"]);
@@ -2205,32 +2324,32 @@ function order_list_refund($item)
     if ($refundstatus == 0) {
         message('暂不处理', referer());
     } else if ($refundstatus == 3) {
-        $_obscure_a935d631d53636373730d433d4d433d6 = $_GPC['raid'];
-        $_obscure_d53335d73033d5d7d8383530d938d634 = trim($_GPC['message']);
-        if ($_obscure_a935d631d53636373730d433d4d433d6 == 0) {
-            $_obscure_aa35d7d734313632d43532d5d4d9d636 = pdo_fetch('select * from ' . tablename('sz_yi_refund_address') . ' where isdefault=1 and uniacid=:uniacid limit 1', array(
+        $raid = $_GPC['raid'];
+        $message = trim($_GPC['message']);
+        if ($raid == 0) {
+            $address = pdo_fetch('select * from ' . tablename('sz_yi_refund_address') . ' where isdefault=1 and uniacid=:uniacid limit 1', array(
                 ':uniacid' => $uniacid
             ));
         } else {
-            $_obscure_aa35d7d734313632d43532d5d4d9d636 = pdo_fetch('select * from ' . tablename('sz_yi_refund_address') . ' where id=:id and uniacid=:uniacid limit 1', array(
-                ':id' => $_obscure_a935d631d53636373730d433d4d433d6,
+            $address = pdo_fetch('select * from ' . tablename('sz_yi_refund_address') . ' where id=:id and uniacid=:uniacid limit 1', array(
+                ':id' => $raid,
                 ':uniacid' => $uniacid
             ));
         }
-        if (empty($_obscure_aa35d7d734313632d43532d5d4d9d636)) {
-            $_obscure_aa35d7d734313632d43532d5d4d9d636 = pdo_fetch('select * from ' . tablename('sz_yi_refund_address') . ' where uniacid=:uniacid order by id desc limit 1', array(
+        if (empty($address)) {
+            $address = pdo_fetch('select * from ' . tablename('sz_yi_refund_address') . ' where uniacid=:uniacid order by id desc limit 1', array(
                 ':uniacid' => $uniacid
             ));
         }
-        unset($_obscure_aa35d7d734313632d43532d5d4d9d636['uniacid']);
-        unset($_obscure_aa35d7d734313632d43532d5d4d9d636['openid']);
-        unset($_obscure_aa35d7d734313632d43532d5d4d9d636['isdefault']);
-        unset($_obscure_aa35d7d734313632d43532d5d4d9d636['deleted']);
-        $_obscure_aa35d7d734313632d43532d5d4d9d636                    = iserializer($_obscure_aa35d7d734313632d43532d5d4d9d636);
+        unset($address['uniacid']);
+        unset($address['openid']);
+        unset($address['isdefault']);
+        unset($address['deleted']);
+        $address                    = iserializer($address);
         $data['reply']           = '';
-        $data['refundaddress']   = $_obscure_aa35d7d734313632d43532d5d4d9d636;
-        $data['refundaddressid'] = $_obscure_a935d631d53636373730d433d4d433d6;
-        $data['message']         = $_obscure_d53335d73033d5d7d8383530d938d634;
+        $data['refundaddress']   = $address;
+        $data['refundaddressid'] = $raid;
+        $data['message']         = $message;
         if (empty($refund['operatetime'])) {
             $data['operatetime'] = $time;
         }
@@ -2254,17 +2373,17 @@ function order_list_refund($item)
         ));
         m('notice')->sendOrderMessage($item['id'], true);
     } else if ($refundstatus == 10) {
-        $_obscure_acd53337d9d5d6d930343734d43739d7['status']     = 1;
-        $_obscure_acd53337d9d5d6d930343734d43739d7['refundtime'] = $time;
-        pdo_update('sz_yi_order_refund', $_obscure_acd53337d9d5d6d930343734d43739d7, array(
+        $refund_data['status']     = 1;
+        $refund_data['refundtime'] = $time;
+        pdo_update('sz_yi_order_refund', $refund_data, array(
             'id' => $item['refundid'],
             'uniacid' => $uniacid
         ));
-        $_obscure_aa343731d63230d534d9d5d73630d438                = array();
-        $_obscure_aa343731d63230d534d9d5d73630d438['refundstate'] = 0;
-        $_obscure_aa343731d63230d534d9d5d73630d438['status']      = 1;
-        $_obscure_aa343731d63230d534d9d5d73630d438['refundtime']  = $time;
-        pdo_update('sz_yi_order', $_obscure_aa343731d63230d534d9d5d73630d438, array(
+        $order_data                = array();
+        $order_data['refundstate'] = 0;
+        $order_data['status']      = 1;
+        $order_data['refundtime']  = $time;
+        pdo_update('sz_yi_order', $order_data, array(
             'id' => $item['id'],
             'uniacid' => $uniacid
         ));
@@ -2466,7 +2585,7 @@ function order_list_refund($item)
     message('退款申请处理成功!', order_list_backurl(), 'success');
 }
 
-function room_mumber($zym_var_32) {
+function room_mumber($paylog2) {
     global $_W, $_GPC;
     ca("order.op.send"); 
     if($_GPC['expresssn']==''){
@@ -2477,41 +2596,41 @@ function room_mumber($zym_var_32) {
         "status" => 2,      
         "room_number" => trim($_GPC["expresssn"]) ,
     ) , array(
-        "id" => $zym_var_32["id"],
+        "id" => $paylog2["id"],
         "uniacid" => $_W["uniacid"]
     ));
 
-    m("notice")->sendOrderMessage($zym_var_32["id"]);
-    plog("order.op.send", "订单确认 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]} <br/>房间号: {$_GPC["expresssn"]}}");
+    m("notice")->sendOrderMessage($paylog2["id"]);
+    plog("order.op.send", "订单确认 ID: {$paylog2["id"]} 订单号: {$paylog2["ordersn"]} <br/>房间号: {$_GPC["expresssn"]}}");
     message("预约操作成功！", order_list_backurl() , "success");
 }
 
-function order_list_sendin($zym_var_32) {//确认入住
+function order_list_sendin($paylog2) {//确认入住
     global $_W, $_GPC;
     ca("order.op.sendin");
     pdo_update("sz_yi_order", array(
         "status" => '6',
     ) ,array(
-        "id" => $zym_var_32["id"],
+        "id" => $paylog2["id"],
         "uniacid" => $_W["uniacid"]
     ));
-    m("notice")->sendOrderMessage($zym_var_32["id"]);
+    m("notice")->sendOrderMessage($paylog2["id"]);
 
-    plog("order.op.finish", "订单已入住 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]}");
+    plog("order.op.finish", "订单已入住 ID: {$paylog2["id"]} 订单号: {$paylog2["ordersn"]}");
     message("订单操作成功！", order_list_backurl() , "success");
 }
 
-function cancelsendroom($zym_var_32) {//取消入住
+function cancelsendroom($paylog2) {//取消入住
     global $_W, $_GPC;
     ca("order.op.sendcancel");
-    if ($zym_var_32["status"] != 2) {
+    if ($paylog2["status"] != 2) {
         message("订单未确认，不需取消！");
     }
     $refund = array(
     "uniacid" => $_W["uniacid"],
     'orderid' => $_GPC['id'],
-    'price' => $zym_var_32['price'],
-    'applyprice' => sprintf("%1.2f",$zym_var_32['price']),
+    'price' => $paylog2['price'],
+    'applyprice' => sprintf("%1.2f",$paylog2['price']),
     'createtime' => time(),  
     'content'=>$_GPC['cancelreson'],
     'reason'=>$_GPC['cancelreson']
@@ -2524,7 +2643,7 @@ function cancelsendroom($zym_var_32) {//取消入住
         "refundtime"=>time(),
         'refundstate'=>'1',
     ) , array(
-        "id" => $zym_var_32["id"],
+        "id" => $paylog2["id"],
         "uniacid" => $_W["uniacid"]
     ));
 
@@ -2535,29 +2654,29 @@ function cancelsendroom($zym_var_32) {//取消入住
     $sql .= " AND roomdate >= :btime AND roomdate < :etime";
     $sql .= " AND status = 1";
 
-    $params[':roomid'] =$zym_var_32['roomid'];
-    $params[':btime'] = $zym_var_32['btime'];
-    $params[':etime'] = $zym_var_32['etime'];
+    $params[':roomid'] =$paylog2['roomid'];
+    $params[':btime'] = $paylog2['btime'];
+    $params[':etime'] = $paylog2['etime'];
     $room_date_list = pdo_fetchall($sql, $params);
         if ($room_date_list) {
             foreach ($room_date_list as $key => $value) {
                 $num = $value['num'];
                 if ($num >= 0) {
-                    $now_num = $num +$zym_var_32['num'];
+                    $now_num = $num +$paylog2['num'];
                     pdo_update('sz_yi_hotel_room_price', array('num' => $now_num), array('id' => $value['id']));
             }
         }
     }
 
-    plog("order.op.sencancel", "订单取消 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]}");
+    plog("order.op.sencancel", "订单取消 ID: {$paylog2["id"]} 订单号: {$paylog2["ordersn"]}");
     message("取消操作成功！", order_list_backurl() , "success");
 }
 
 //异常退房
-function abnormalroom($zym_var_32) {
+function abnormalroom($paylog2) {
     global $_W, $_GPC;
     ca("order.op.sendcancel");
-    if ($zym_var_32["status"] != 6) {
+    if ($paylog2["status"] != 6) {
         message("订单不可被退！");
     }
 
@@ -2567,8 +2686,8 @@ function abnormalroom($zym_var_32) {
     'createtime' => time(),  
     'content'=>'异常的退房,需重新补订单',
     'reason'=>'异常的退房,需重新补订单',
-    'price' => $zym_var_32['price'],
-    'applyprice' => sprintf("%1.2f",$zym_var_32['price']),
+    'price' => $paylog2['price'],
+    'applyprice' => sprintf("%1.2f",$paylog2['price']),
 
     );
     pdo_insert('sz_yi_order_refund',$refund);
@@ -2579,77 +2698,140 @@ function abnormalroom($zym_var_32) {
         "refundtime"=>time(),
         'refundstate'=>'1',
     ) , array(
-        "id" => $zym_var_32["id"],
+        "id" => $paylog2["id"],
         "uniacid" => $_W["uniacid"]
     ));
 
-    plog("order.op.sencancel", "订单被退 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]}");
+    plog("order.op.sencancel", "订单被退 ID: {$paylog2["id"]} 订单号: {$paylog2["ordersn"]}");
     message("操作成功！", order_list_backurl() , "success");
 }
 
 //退押金
-function order_list_depositprice($zym_var_32) {
+function order_list_depositprice($paylog2) {
     global $_W, $_GPC;
 if($_GPC['expresssn']==''){
          message("请填写押金金额");
     }
-    if($zym_var_32['depositpricetype']=='2'){
+    if($paylog2['depositpricetype']=='2'){
        pdo_update("sz_yi_order", array(           
             'returndepositprice'=>$_GPC['expresssn'],
         ) , array(
-            "id" => $zym_var_32["id"],
+            "id" => $paylog2["id"],
             "uniacid" => $_W["uniacid"]
         ));
     }else{
-        $zym_var_2 = $zym_var_32["ordersn"];
-        if (!empty($zym_var_32["ordersn2"])) {
-            $zym_var_20 = sprintf("%02d", $zym_var_32["ordersn2"]);
-            $zym_var_2.= "GJ" . $zym_var_20;
+        $ordersn = $paylog2["ordersn"];
+        if (!empty($paylog2["ordersn2"])) {
+            $ordersn0 = sprintf("%02d", $paylog2["ordersn2"]);
+            $ordersn.= "GJ" . $ordersn0;
         }
-        $zym_var_28 =$_GPC['expresssn'];
-        $zym_var_18 = pdo_fetchall("SELECT g.id,g.credit, o.total,o.realprice FROM " . tablename("sz_yi_order_goods") . " o left join " . tablename("sz_yi_goods") . " g on o.goodsid=g.id " . " WHERE o.orderid=:orderid and o.uniacid=:uniacid", array(
-            ":orderid" => $zym_var_32["id"],
+        $ordersn8 =$_GPC['expresssn'];
+        $msg8 = pdo_fetchall("SELECT g.id,g.credit, o.total,o.realprice FROM " . tablename("sz_yi_order_goods") . " o left join " . tablename("sz_yi_goods") . " g on o.goodsid=g.id " . " WHERE o.orderid=:orderid and o.uniacid=:uniacid", array(
+            ":orderid" => $paylog2["id"],
             ":uniacid" => $_W["uniacid"]
         ));
-        $zym_var_22 = 0;
-        foreach ($zym_var_18 as $zym_var_23) {
-            $zym_var_22+= $zym_var_23["credit"] * $zym_var_23["total"];
+        $ordersn2 = 0;
+        foreach ($msg8 as $ordersn3) {
+            $ordersn2+= $ordersn3["credit"] * $ordersn3["total"];
         }
-        $zym_var_26 = 0;
-        if ($zym_var_32["paytype"] == 1) {
-            m("member")->setCredit($zym_var_32["openid"], "credit2", $zym_var_28, array(
+        $ordersn6 = 0;
+        if ($paylog2["paytype"] == 1) {
+            m("member")->setCredit($paylog2["openid"], "credit2", $ordersn8, array(
                 0,
-                $zym_var_30["name"] . "退押金: {$zym_var_28}元 订单号: " . $zym_var_32["ordersn"]
+                $paylog0["name"] . "退押金: {$ordersn8}元 订单号: " . $paylog2["ordersn"]
             ));
-            $zym_var_25 = true;
-        } else if ($zym_var_32["paytype"] == 21) {
-            $zym_var_28 = round($zym_var_28 - $zym_var_32["deductcredit2"], 2);
-            $zym_var_25 = m("finance")->refund($zym_var_32["openid"], $zym_var_2, $zym_var_35["refundno"], $zym_var_32["price"] * 100, $zym_var_28 * 100);
-            $zym_var_26 = 2;
+            $ordersn5 = true;
+        } else if ($paylog2["paytype"] == 21) {
+            $ordersn8 = round($ordersn8 - $paylog2["deductcredit2"], 2);
+            $ordersn5 = m("finance")->refund($paylog2["openid"], $ordersn, $refund["refundno"], $paylog2["price"] * 100, $ordersn8 * 100);
+            $ordersn6 = 2;
         } else {
-            if ($zym_var_28 < 1) {
+            if ($ordersn8 < 1) {
                 message("押金金额必须大于1元，才能使用微信企业付款!", '', "error");
             }
-            $zym_var_28 = round($zym_var_28 - $zym_var_32["deductcredit2"], 2);
-            $zym_var_25 = m("finance")->pay($zym_var_32["openid"], 1, $zym_var_28 * 100, $zym_var_35["refundno"], $zym_var_30["name"] . "押金: {$zym_var_28}元 订单号: " . $zym_var_32["ordersn"]);
-            $zym_var_26 = 1;
+            $ordersn8 = round($ordersn8 - $paylog2["deductcredit2"], 2);
+            $ordersn5 = m("finance")->pay($paylog2["openid"], 1, $ordersn8 * 100, $refund["refundno"], $paylog0["name"] . "押金: {$ordersn8}元 订单号: " . $paylog2["ordersn"]);
+            $ordersn6 = 1;
         }
-        if (is_error($zym_var_25)) {
-            message($zym_var_25["message"], '', "error");
+        if (is_error($ordersn5)) {
+            message($ordersn5["message"], '', "error");
         }
         pdo_update("sz_yi_order", array(           
             'returndepositprice'=>$_GPC['expresssn'],
         ) , array(
-            "id" => $zym_var_32["id"],
+            "id" => $paylog2["id"],
             "uniacid" => $_W["uniacid"]
         ));
 
-        m("notice")->sendOrderMessage($zym_var_32["id"], true);  
+        m("notice")->sendOrderMessage($paylog2["id"], true);  
    
-        plog("order.op.refund", "订单退押金 ID: {$zym_var_32["id"]} 订单号: {$zym_var_32["ordersn"]}");
+        plog("order.op.refund", "订单退押金 ID: {$paylog2["id"]} 订单号: {$paylog2["ordersn"]}");
 
     } 
-    
+
+    //退押金
+    function order_list_depositprice($item) {
+        global $_W, $_GPC;
+        if($_GPC['expresssn']==''){
+             message("请填写押金金额");
+        }
+        if($item['depositpricetype']=='2'){
+           pdo_update("sz_yi_order", array(           
+                'returndepositprice'=>$_GPC['expresssn'],
+            ) , array(
+                "id" => $item["id"],
+                "uniacid" => $_W["uniacid"]
+            ));
+        }else{
+            $ordersn = $item["ordersn"];
+            if (!empty($item["ordersn2"])) {
+                $ordersn2 = sprintf("%02d", $item["ordersn2"]);
+                $ordersn.= "GJ" . $ordersn2;
+            }
+            $realprice =$_GPC['expresssn'];
+            $goods = pdo_fetchall("SELECT g.id,g.credit, o.total,o.realprice FROM " . tablename("sz_yi_order_goods") . " o left join " . tablename("sz_yi_goods") . " g on o.goodsid=g.id " . " WHERE o.orderid=:orderid and o.uniacid=:uniacid", array(
+                ":orderid" => $item["id"],
+                ":uniacid" => $_W["uniacid"]
+            ));
+            $credits = 0;
+            foreach ($goods as $g) {
+                $credits+= $g["credit"] * $g["total"];
+            }
+            $refundtype = 0;
+            if ($item["paytype"] == 1) {
+                m("member")->setCredit($item["openid"], "credit2", $realprice, array(
+                    0,
+                    $shopset["name"] . "退押金: {$realprice}元 订单号: " . $item["ordersn"]
+                ));
+                $result = true;
+            } else if ($item["paytype"] == 21) {
+                $realprice = round($realprice - $item["deductcredit2"], 2);
+                $result = m("finance")->refund($item["openid"], $ordersn, $refund["refundno"], $item["price"] * 100, $realprice * 100);
+                $refundtype = 2;
+            } else {
+                if ($realprice < 1) {
+                    message("押金金额必须大于1元，才能使用微信企业付款!", '', "error");
+                }
+                $realprice = round($realprice - $item["deductcredit2"], 2);
+                $result = m("finance")->pay($item["openid"], 1, $realprice * 100, $refund["refundno"], $shopset["name"] . "押金: {$realprice}元 订单号: " . $item["ordersn"]);
+                $refundtype = 1;
+            }
+            if (is_error($result)) {
+                message($result["message"], '', "error");
+            }
+            pdo_update("sz_yi_order", array(           
+                'returndepositprice'=>$_GPC['expresssn'],
+            ) , array(
+                "id" => $item["id"],
+                "uniacid" => $_W["uniacid"]
+            ));
+
+            m("notice")->sendOrderMessage($item["id"], true);  
+       
+            plog("order.op.refund", "订单退押金 ID: {$item["id"]} 订单号: {$item["ordersn"]}");
+
+        } 
+    }
         
     message("押金退款处理成功!", order_list_backurl() , "success");
 } 

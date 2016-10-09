@@ -80,6 +80,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_bonus_log') . " (
   `logno` varchar(255) DEFAULT '',
   `send_bonus_sn` int(11) DEFAULT '0',
   `paymethod` tinyint(1) DEFAULT '0',
+  `type` tinyint(1) DEFAULT '0',
   `isglobal` tinyint(1) DEFAULT '0',
   `status` tinyint(1) DEFAULT '0',
   `sendpay` tinyint(1) DEFAULT '0',
@@ -92,7 +93,9 @@ pdo_fetchall($sql);
 if(!pdo_fieldexists('sz_yi_member', 'bonuslevel')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonuslevel` INT DEFAULT '0' AFTER `agentlevel`, ADD `bonus_status` TINYINT(1) DEFAULT '0' AFTER `bonuslevel`;");
 }
-
+if(!pdo_fieldexists('sz_yi_bonus_log', 'money')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_bonus_log')." ADD `money` DEFAULT(10,2) DEFAULT '0.00';");
+}
 if(!pdo_fieldexists('sz_yi_member', 'bonus_area')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_area` TINYINT(1) DEFAULT '0';");
 }

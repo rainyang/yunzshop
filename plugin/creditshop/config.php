@@ -6,5 +6,5 @@ if (!defined('IN_IA')) {
 return array(
     'version' => '1.0',
     'id' => 'creditshop',
-    'name' => '积分商城'
+    'name' => SZ_YI_INTEGRAL.'商城'
 );

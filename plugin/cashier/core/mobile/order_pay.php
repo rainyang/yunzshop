@@ -356,7 +356,7 @@ if ($operation == 'display' && $_W['isajax']) {
         }
        
         $this->model->redpack($openid,$orderid);
-        $this->model->setCredits($orderid);
+        //$this->model->setCredits($orderid);
         $this->model->setCredits2($orderid);
         show_json(1, $pay_result);
 

@@ -20,7 +20,7 @@ if (empty($member)) {
 	header('Location: '.$this->createMobileUrl('member/login'));
 }
 $member['nickname'] = empty($member['nickname']) ? $member['mobile'] : $member['nickname'];
-
+$member['credit1'] 	= floor($member['credit1']);
 $uniacid = $_W['uniacid'];
 $trade['withdraw'] = $set['trade']['withdraw'];
 $trade['closerecharge'] = $set['trade']['closerecharge'];
@@ -31,6 +31,9 @@ $supplier_switch_centre = false;
 if (p('merchant')) {
 	if (!empty($member['id'])) {
 		$ismerchant = pdo_fetchall("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and member_id={$member['id']}");
+	}
+	if (!empty($openid)) {
+		$iscenter = p('merchant')->isCenter($openid);
 	}
 }
 if (p('supplier')) {
@@ -121,6 +124,15 @@ if (p('return')) {
 		$shopset['isreturn'] = true;
 	}
 }
+if (p('beneficence')) {
+	$beneficenceset = m('plugin')->getpluginSet('beneficence');
+	$shopset['isbeneficence'] = false;
+	if($beneficenceset['isbeneficence'] == 1 ){
+		$shopset['isbeneficence'] = true;
+	}
+	$beneficencename = $beneficenceset['beneficencename']?$beneficenceset['beneficencename']:'行善池';
+	$shopset['beneficencename'] = $beneficencename;
+}
 if (p('yunbi')) {
 	$yunbiset = m('plugin')->getpluginSet('yunbi');
 	$shopset['isyunbi'] = false;
@@ -209,4 +221,11 @@ if ($pcashier) {
         $has_cashier = true;
     }
 }
+$verify = pdo_fetch('SELECT * FROM '.tablename('sz_yi_store')." WHERE uniacid=:uniacid and status=1 and member_id=:member_id", array(':uniacid' => $_W['uniacid'], ':member_id' => $member['id']));
+if ($verify) {
+	$issupervisor = true;
+}
+$verifyset  = m('common')->getSetData();
+$allset = iunserializer($verifyset['plugins']);
+
 include $this->template('member/center');

@@ -16,7 +16,7 @@ if ($operation == 'display') {
         $category = set_medias(pdo_fetch('select * from ' . tablename('sz_yi_category_area') . ' where id=:id 
             and uniacid=:uniacid order by displayorder DESC', array(
             ':id' => intval($_GPC['tcate_area']), ':uniacid' => $_W['uniacid']
-        )),'thumb');
+        )),'advimg');
         
        
     } else if (!empty($_GPC['ccate_area'])) {
@@ -24,7 +24,7 @@ if ($operation == 'display') {
             and uniacid=:uniacid order by displayorder DESC', array(
             ':id' => intval($_GPC['ccate_area']),
             ':uniacid' => $_W['uniacid']
-        )),'thumb');
+        )),'advimg');
         
     }
 

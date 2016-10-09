@@ -491,15 +491,15 @@ class Sz_DYi_Member
 			return;
 		}
 		$oldlevel = $this->getLevel($openid);
-		$_var_23 = false;
+		$isup = false;
 		if (empty($oldlevel['id'])) {
-			$_var_23 = true;
+			$isup = true;
 		} else {
 			if ($level['level'] > $oldlevel['level']) {
-				$_var_23 = true;
+				$isup = true;
 			}
 		}
-		if ($_var_23) {
+		if ($isup) {
 			pdo_update('sz_yi_member', array('level' => $level['id']), array('id' => $member['id']));
 			m('notice')->sendMemberUpgradeMessage($openid, $oldlevel, $level);
 		}

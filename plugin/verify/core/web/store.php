@@ -27,16 +27,21 @@ if ($operation == 'display') {
         ':uniacid' => $_W['uniacid'],
         ':id' => $id
     ));
+    $member = pdo_fetch('SELECT id,nickname FROM ' . tablename('sz_yi_member') . " WHERE uniacid=:uniacid AND id=:id",
+        array(':uniacid' => $_W['uniacid'], ':id' => $item['member_id'])
+    );
     if (checksubmit('submit')) {
         $data = array(
             'uniacid' => $_W['uniacid'],
             'storename' => trim($_GPC['storename']),
             'address' => trim($_GPC['address']),
+            'member_id' => intval($_GPC['member_id']),
             'tel' => trim($_GPC['tel']),
             'lng' => $_GPC['map']['lng'],
             'lat' => $_GPC['map']['lat'],
             'status' => intval($_GPC['status']),
-            'myself_support' => intval($myself_support)
+            'myself_support' => intval($myself_support),
+            'balance' => intval($_GPC['balance'])
         );
         if ($data['myself_support'] == 0) {
             $goods = pdo_fetchall(" SELECT * FROM ".tablename('sz_yi_goods')." WHERE uniacid=:uniacid and isverify=2",array(':uniacid' => $_W['uniacid']));
@@ -102,6 +107,19 @@ if ($operation == 'display') {
     }
     $ds = pdo_fetchall('SELECT id,storename FROM ' . tablename('sz_yi_store') . " WHERE 1 {$condition} order by id asc", $params);
     include $this->template('query_store');
+    exit;
+} elseif ($operation == 'getmembers') {
+    global $_W, $_GPC;
+    $keyword            = trim($_GPC['keyword']);
+    $params             = array();
+    $params[':uniacid'] = $_W['uniacid'];
+    $condition = ' and uniacid=:uniacid';
+    if (!empty($keyword)) {
+        $condition .= ' AND `nickname` LIKE :keyword';
+        $params[':keyword'] = "%{$keyword}%";
+    }
+    $members = pdo_fetchall('SELECT id,nickname,avatar FROM ' . tablename('sz_yi_member') . " WHERE 1 {$condition}", $params);
+    include $this->template('getmembers');
     exit;
 }
 load()->func('tpl');

@@ -10,9 +10,11 @@ $username = $supplieruser['username'];
 $_GPC['type'] = $_GPC['type'] ? $_GPC['type'] : 0;
 $supplierinfo = $this->model->getSupplierInfo($uid);
 $ordercount = $supplierinfo['ordercount'];
-$commission_total = $supplierinfo['commission_total'];
-$costmoney = $supplierinfo['costmoney'];
-$commission_ok = number_format($costmoney, 2);
+$commission_total = number_format($supplierinfo['commission_total'], 2);
+$costmoney = number_format($supplierinfo['costmoney'], 2);
+$expect_money = number_format($supplierinfo['expect_money'], 2);
+$commission_ok = $costmoney;
+$supplierinfo['costmoney_total'] = number_format($supplierinfo['costmoney_total'], 2);
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if($_W['isajax']) {
  	if ($operation == 'order') {
@@ -24,7 +26,7 @@ if($_W['isajax']) {
     	}
 		$pindex = max(1, intval($_GPC['page']));
 		$psize = 20;
-    	$sql = "select o.id,o.ordersn,o.price,o.openid,o.status,o.address,o.createtime from " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 " . " where 1 {$conditionq} and o.uniacid=".$_W['uniacid']." and o.supplier_uid={$uid} ORDER BY o.createtime DESC,o.status DESC  ";
+    	$sql = "select o.id,o.ordersn,o.price,o.openid,o.status,o.address,o.createtime from " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 " . " where 1 {$conditionq} and o.uniacid=".$_W['uniacid']." and o.supplier_uid={$uid} GROUP BY o.id ORDER BY o.createtime DESC,o.status DESC  ";
     	$sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
     	$list = pdo_fetchall($sql);
     	foreach ($list as &$rowp) {

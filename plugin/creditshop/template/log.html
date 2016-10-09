@@ -148,7 +148,7 @@
 							 {php echo empty($row['realname'])?$row['mrealname']:$row['realname']}<br />
 						 {php echo empty($row['mobile'])?$row['mmobile']:$row['mobile']}
 						 </td>
-                         <td>{if $row['credit']>0}-{$row['credit']}积分<br/>{/if}
+                         <td>{if $row['credit']>0}-{$row['credit']}{php echo SZ_YI_INTEGRAL}<br/>{/if}
                               {if $row['money']>0}
                               -{$row['money']}现金
                               {/if}
@@ -254,7 +254,7 @@
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">消耗</label>
                 <div class="col-sm-9 col-xs-12">
                     <div class='form-control-static'>
-                        {if $goods['credit']>0}-{$goods['credit']}积分<br/>{/if}
+                        {if $goods['credit']>0}-{$goods['credit']}{php echo SZ_YI_INTEGRAL}<br/>{/if}
                               {if $goods['money']>0}
                               -{$goods['money']}现金
                               {/if}
