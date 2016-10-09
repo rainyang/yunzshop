@@ -128,7 +128,11 @@ if ($operation == 'display') {
             'advimg_pc' => save_media($_GPC['advimg_pc']),
             'advurl' => trim($_GPC['advurl']),
             'advurl_pc' => trim($_GPC['advurl_pc']),
-            'level' => $level
+            'level' => $level,
+            'advtitle1' => trim($_GPC['advtitle1']),
+            'advtitle2' => trim($_GPC['advtitle2']),
+            'advtitle3' => trim($_GPC['advtitle3']),
+            'advtitle4' => trim($_GPC['advtitle4'])
         );
         if (!empty($id)) {
             unset($data['parentid']);
