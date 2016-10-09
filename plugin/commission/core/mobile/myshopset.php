@@ -19,7 +19,7 @@ if ($op == 'display') {
 			} else {
 				pdo_update('sz_yi_commission_shop', $shopdata, array('id' => $shop['id']));
 			}
-return show_json(1);
+			show_json(1);
 		}
 		$shop = pdo_fetch('select * from ' . tablename('sz_yi_commission_shop') . ' where uniacid=:uniacid and mid=:mid limit 1', array(':uniacid' => $_W['uniacid'], ':mid' => $member['id']));
 		$shop = set_medias($shop, array('img', 'logo'));
@@ -34,7 +34,7 @@ return show_json(1);
 			}
 		}
 		$shop['openselect'] = $openselect;
-return show_json(1, array('shop' => $shop));
+		show_json(1, array('shop' => $shop));
 	}
 	include $this->template('myshop_set');
 }

@@ -20,41 +20,41 @@ class ChannelMobile extends Plugin
     }
     public function index()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
 
     public function af_channel()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
 
     public function apply()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
 
     public function detail()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
 
     public function log()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
 
     public function team()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
 
     public function stock()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
 
     public function chamer_list()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
 }

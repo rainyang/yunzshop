@@ -30,54 +30,54 @@ class BonusMobile extends Plugin
     }
     public function index()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function team()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function customer()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function order()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function order_area()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function withdraw()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function apply()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function shares()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function register()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function myshop()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function log()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function agent_info()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function agency()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
 }

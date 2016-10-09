@@ -77,7 +77,7 @@ if ($_W['isajax']) {
         }
         show_json(1);
     }
-return show_json(1, array(
+	show_json(1, array(
         'member' => $af_supplier
     ));
 }

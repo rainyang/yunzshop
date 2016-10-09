@@ -67,7 +67,7 @@ li {
 	margin: 0 auto 0;
 	overflow: hidden;
 	margin-bottom:20px;
-	*zoom:1;
+ *zoom:1;
 }
 .shop-cart-wrapper {
 	width: 900px;
@@ -206,8 +206,8 @@ li {
 .car_ul_none {
 	padding: 35px;
 	width: 405px;
-	*height: 30px;
-	*width:325px;
+*height: 30px;
+*width:325px;
 	right: -1px;
 }
 .car_ul {
@@ -241,10 +241,10 @@ li {
 .head .listing {
 	margin-left: 30px;
 	margin-right: 30px;
-	*margin-right: 0;
+ *margin-right: 0;
 	/*padding-left: 35px;*/
 
-	/*background-image: url(../images/cover-page-tv.png);*/
+    /*background-image: url(../images/cover-page-tv.png);*/
 
 	background-repeat: no-repeat;
 	background-position: left 5px;
@@ -273,7 +273,7 @@ li {
 	font-size: 20px;
 	text-align: center;
 	color: #ccc;
-	border: 1px solid #dfdfdf ;
+    border: 1px solid #dfdfdf ;
 	border-left: none;
 	padding-right: -4px;
 	background: url(../images/search-h.jpg) no-repeat;
@@ -286,7 +286,7 @@ li {
 	top: 40px;
 	display: none;
 	width: 302px;
-	*width: 300px;
+ *width: 300px;
 	padding-bottom: 15px;
 	border-right: 1px solid #cdcdcd;
 	border-bottom: 1px solid #cdcdcd;
@@ -302,7 +302,7 @@ li {
 }
 .head .search-product .search-history .left {
 	width: 302px;
-	*width: 175px;
+ *width: 175px;
 	min-height: 115px;
 	padding-top: 15px;
 	padding-right: 15px;
@@ -329,7 +329,7 @@ li {
 }
 .head .search-product .search-history .right {
 	width: 210px;
-	*width: 195px;
+ *width: 195px;
 	padding-top: 15px;
 	padding-left: 15px;
 	padding-bottom: 15px;
@@ -345,7 +345,7 @@ li {
 	display: block;
 	min-width: 74px;
 	height: 24px;
-	*height: 22px;
+ *height: 22px;
 	margin-right: 10px;
 	margin-top: 10px;
 	padding-left: 5px;
@@ -400,7 +400,7 @@ li {
 	z-index: 300;
 	float: right;
 	width: 170px;
-	*width: 155px;
+ *width: 155px;
 }
 .head-operates-logined .user-img, .head_top .user-img {
 	float: right;
@@ -439,13 +439,13 @@ li {
 .logined .logined-user {
 	width: 220px;
 	margin-left: 15px;
-	*margin-left: 5px;
+ *margin-left: 5px;
 	margin-top: 15px;
 	padding-left: 5px;
 	padding-right: 5px;
 	padding-bottom: 50px;
-	*padding-bottom: 20px;
-	*padding-left: 20px;
+ *padding-bottom: 20px;
+ *padding-left: 20px;
 	border-bottom: 1px solid #ddd;
 }
 .logined .logined-user b {
@@ -524,7 +524,7 @@ li {
 .head-operates-logined .login, .head-operates-logined .quest, .head_top .login, .head_top .quest {
 	float: left;
 	margin-left: 30px;
-	*margin-left: 20px;
+ *margin-left: 20px;
 	padding-top: 25px;
 	font-size: 12px;
 	color: #8A8D92;
@@ -600,7 +600,7 @@ li {
 	border-bottom: #333 2px solid;
 	overflow: hidden;
 	background-color: #333;
-	*zoom:1;
+ *zoom:1;
 	margin-top: 10px;
 }
 .nav_head {
@@ -1050,7 +1050,7 @@ li {
 
 .boutique .items-li {
 	float: left;
-	width: 289px;
+	width: 294px;
 	margin-right: 11px;
 	margin-bottom: 11px;
 	padding-bottom: 10px;
@@ -1108,6 +1108,7 @@ li {
 	bottom: 0;
 	z-index: 100;
 	width: 100%;
+	background: white;
 }
 .boutique .items-li .wrap_div p {
 	text-align: center;
@@ -1384,7 +1385,7 @@ li {
 }
 .pay-items li label input {
 	margin-top: 15px;
-	*margin-top: 12px;
+ *margin-top: 12px;
 	margin-left: 20px;
 }
 .pay-items-bank-1 {
@@ -1642,17 +1643,17 @@ li {
 /*classical-case css*/
 
 @media (max-width: 1024px) {
-	body .cover-page-index .classical-case {
-		padding: 20px;
-	}
-	body .cover-page-index .classical-case .list-case li.items {
-		width: 234px;
-		height: 234px;
-	}
-	body .cover-page-index .classical-case .list-case .items img {
-		width: 234px;
-		height: 234px;
-	}
+body .cover-page-index .classical-case {
+	padding: 20px;
+}
+body .cover-page-index .classical-case .list-case li.items {
+	width: 234px;
+	height: 234px;
+}
+body .cover-page-index .classical-case .list-case .items img {
+	width: 234px;
+	height: 234px;
+}
 }
 .cover-page-index .classical-case .header {
 	padding-bottom: 20px;
@@ -1666,7 +1667,7 @@ li {
 	background-image: url(../images/trangle-right.png);
 	background-repeat: no-repeat;
 	background-position: right 8px;
-	*background-position: right 7px;
+ *background-position: right 7px;
 }
 .cover-page-index .classical-case .header .more:hover span {
 	text-decoration: underline;
@@ -1709,18 +1710,18 @@ li {
 /*cover-page-plug-in css*/
 
 @media (max-width: 1024px) {
-	body .cover-page-plug-in {
-		padding: 20px;
-	}
-	body .cover-page-plug-in .w484 {
-		width: 474px;
-	}
-	body .cover-page-plug-in .w241 {
-		width: 231px;
-	}
-	body .cover-page-plug-in img {
-		margin-left: -5px;
-	}
+body .cover-page-plug-in {
+	padding: 20px;
+}
+body .cover-page-plug-in .w484 {
+	width: 474px;
+}
+body .cover-page-plug-in .w241 {
+	width: 231px;
+}
+body .cover-page-plug-in img {
+	margin-left: -5px;
+}
 }
 .cover-page-plug-in div {
 	position: relative;
@@ -1731,8 +1732,8 @@ li {
 	position: absolute;
 	right: 0px;
 	bottom: 0px;
-	*right: -1px;
-	*bottom: -1px;
+ *right: -1px;
+ *bottom: -1px;
 	float: left;
 	padding: 0;
 	width: 112px;
@@ -1743,8 +1744,8 @@ li {
 	position: absolute;
 	left: -1px;
 	bottom: -1px;
-	*left: 0px;
-	*bottom: 0px;
+ *left: 0px;
+ *bottom: 0px;
 	z-index: 5;
 	float: left;
 	width: 112px;
@@ -1762,8 +1763,8 @@ li {
 	position: absolute;
 	left: -1px;
 	bottom: -1px;
-	*left: 0px;
-	*bottom: 0px;
+ *left: 0px;
+ *bottom: 0px;
 	width: 112px;
 	height: 24px;
 	background-color: #000;
@@ -1774,12 +1775,12 @@ li {
 /*church css*/
 
 @media (max-width: 1024px) {
-	body .cover-page-index .church {
-		padding: 20px;
-	}
-	body .cover-page-index .church .knowledge, body .cover-page-index .church .letters {
-		margin-left: 6px;
-	}
+body .cover-page-index .church {
+	padding: 20px;
+}
+body .cover-page-index .church .knowledge, body .cover-page-index .church .letters {
+	margin-left: 6px;
+}
 }
 .cover-page-index .church dl {
 	width: 386px;
@@ -1844,7 +1845,7 @@ li {
 .cover-page-index .church .reputation dd {
 	padding-top: 13px;
 	padding-bottom: 5px;
-	*padding-bottom: 13px;
+ *padding-bottom: 13px;
 	background-color: #E4F0CA;
 }
 .cover-page-index .church .knowledge dd, .cover-page-index .church .letters dd {
@@ -1946,7 +1947,7 @@ li {
 	background-position: left center;
 	display: block;
 	width: 80px;
-	*width: 60px;
+ *width: 60px;
 	height: 20px;
 	line-height: 20px;
 }
@@ -1954,15 +1955,15 @@ li {
 /*demos css*/
 
 @media (max-width: 1024px) {
-	body .cover-page-index .demos {
-		padding: 20px;
-	}
-	body .cover-page-index .demos .service {
-		margin-left: 6px;
-	}
-	body .cover-page-index .demos dl {
-		margin: 6px;
-	}
+body .cover-page-index .demos {
+	padding: 20px;
+}
+body .cover-page-index .demos .service {
+	margin-left: 6px;
+}
+body .cover-page-index .demos dl {
+	margin: 6px;
+}
 }
 .cover-page-index .demos {
 	margin-top: 30px;
@@ -1972,7 +1973,7 @@ li {
 }
 .cover-page-index .demos dl {
 	width: 220px;
-	*width: 215px;
+ *width: 215px;
 	margin: 10px;
 	padding-right: 0px;
 	border-right: 2px solid #E3E3E3;
@@ -2000,7 +2001,7 @@ li {
 }
 .cover-page-index .demos dd.flow-us a {
 	padding-left: 20px;
-	*width: 80px;
+ *width: 80px;
 	background-repeat: no-repeat;
 	background-position: left center;
 }
@@ -2058,7 +2059,7 @@ li {
 	/*float: left;*/
 
 	width: 300px;
-	*width: 274px;
+ *width: 274px;
 	padding-left: 13px;
 	padding-right: 13px;
 	padding-bottom: 50px;
@@ -2105,7 +2106,7 @@ li {
 }
 .cover-page-list .left .conditions dt b span {
 	float: right;
-	*margin-top: -23px;
+ *margin-top: -23px;
 	font-weight: normal;
 }
 .cover-page-list .left .conditions dt.now b {
@@ -2277,24 +2278,24 @@ li {
 /*boutique*/
 
 @media (max-width: 1024px) {
-	body .cover-page-index .boutique {
-		padding: 20px;
-	}
-	body .cover-page-index .boutique .canvas {
-		width: 100%;
-	}
-	body .cover-page-index .boutique .items-li {
-		width: 284px;
-	}
-	body .cover-page-index .boutique .items-li > a {
-		width: 284px;
-		height: 284px;
-	}
-	body .cover-page-index .boutique .items-li img {
-		max-height: 284px;
-		max-width: 284px;
-		vertical-align: inherit;
-	}
+body .cover-page-index .boutique {
+	padding: 20px;
+}
+body .cover-page-index .boutique .canvas {
+	width: 100%;
+}
+body .cover-page-index .boutique .items-li {
+	width: 284px;
+}
+body .cover-page-index .boutique .items-li > a {
+	width: 284px;
+	height: 284px;
+}
+body .cover-page-index .boutique .items-li img {
+	max-height: 284px;
+	max-width: 284px;
+	vertical-align: inherit;
+}
 }
 .cover-page-list .right .boutique {
 	padding-top: 30px;
@@ -2313,7 +2314,7 @@ li {
 /*details css*/
 
 .cover-page-details .details {
-	*width: 1130px;
+ *width: 1130px;
 	padding: 30px 40px;
 	background-color: #fff;
 }
@@ -2362,8 +2363,8 @@ li {
 .cover-page-details .details .left .canvas-container-li {
 	width: 70px;
 	height: 70px;
-	*width: 60px;
-	*height: 60px;
+ *width: 60px;
+ *height: 60px;
 	margin-bottom: 5px;
 	padding: 4px;
 	border-width: 1px;
@@ -2406,8 +2407,8 @@ li {
 .cover-page-details .details .mid {
 	width: 422px;
 	height: 422px;
-	*width: 400px;
-	*height: 400px;
+ *width: 400px;
+ *height: 400px;
 	margin-left: 30px;
 	padding: 10px;
 	border: 1px solid #E8E8E8;
@@ -2692,8 +2693,8 @@ li {
 	top: 50px;
 	width: 164px;
 	min-height: 60px;
-	*width: 152px;
-	*height: 53px;
+ *width: 152px;
+ *height: 53px;
 	padding: 5px 5px;
 	font-size: 12px;
 	line-height: 25px;
@@ -2729,7 +2730,7 @@ li {
 /*pack css*/
 
 .cover-page-details .package, .cover-page-details .content {
-	*width: 1170px;
+ *width: 1170px;
 	padding: 20px;
 	margin-top: 15px;
 	background-color: #fff;
@@ -2747,9 +2748,9 @@ li {
 .cover-page-details .package .canvas {
 	position: relative;
 	width: 853px;
-	*width: 852px;
+ *width: 852px;
 	margin-left: 20px;
-	*padding-top: 10px;
+ *padding-top: 10px;
 	border-left: 1px solid #DCDBD9;
 	border-right: 1px solid #DCDBD9;
 }
@@ -2792,7 +2793,7 @@ li {
 .cover-page-details .package .canvas .package-container-items li img {
 	width: 120px;
 	height: 120px;
-	*margin-left: 15px;
+ *margin-left: 15px;
 	margin-bottom: 5px;
 }
 .cover-page-details .package .canvas .package-container-items li span {
@@ -2892,7 +2893,7 @@ li {
 .cover-page-details .content-item-dl dt {
 	float: left;
 	width: 100%;
-	*width: 1154px;
+ *width: 1154px;
 	height: 38px;
 	font-weight: bold;
 	line-height: 38px;
@@ -2912,7 +2913,7 @@ li {
 .cover-page-details .content-item-dl dd {
 	float: left;
 	width: 20%;
-	*width: 222px;
+ *width: 222px;
 	line-height: 29px;
 	border-right: 1px solid #ECECEC;
 	border-bottom: 1px solid #ECECEC;
@@ -2942,7 +2943,7 @@ li {
 /*comments css*/
 
 .cover-page-details .content-item-comments {
-	*width: 1170px;
+ *width: 1170px;
 	padding-bottom: 20px;
 }
 .cover-page-details .content-item-comments .comment-item {
@@ -3046,7 +3047,7 @@ li {
 }
 .cover-page-details .content-item-comments .comment_box .evaluation .submit-comment {
 	margin-top: 15px;
-	*margin-top: 0;
+ *margin-top: 0;
 	margin-left: 90px;
 	padding: 10px 30px;
 	border-radius: 0;
@@ -3065,7 +3066,7 @@ li {
 .cover-page-details .advantage-items li {
 	float: left;
 	width: 572px;
-	*width: 530px;
+ *width: 530px;
 	height: 210px;
 	margin-bottom: 20px;
 	padding-top: 20px;
@@ -3124,7 +3125,7 @@ li {
  */
 
 .shop-cart .curtomers-regist-form, .goods-list, .shop-cart .payment {
-	*width: 840px;
+ *width: 840px;
 	padding: 30px;
 }
 /*table */
@@ -3154,7 +3155,7 @@ li {
 	background-color: #fff;
 }
 .shop-cart .curtomers-regist-form .form-header {
-	*width: 840px;
+ *width: 840px;
 	margin-bottom: 30px;
 }
 .shop-cart .curtomers-regist-form .form-header span {
@@ -3361,7 +3362,7 @@ li {
 	position: absolute;
 	left: -1px;
 	top: -10px;
-	*top: -8px;
+ *top: -8px;
 	z-index: 1;
 	float: left;
 	width: 121px;
@@ -3371,7 +3372,7 @@ li {
 	background-position: 0 -577px;
 }
 .shop-cart .payment .recharge-banks {
-	*width: 842px;
+ *width: 842px;
 	padding-bottom: 30px;
 	border-right: 1px solid #eee;
 	border-bottom: 1px solid #eee;
@@ -3396,8 +3397,8 @@ li {
 	display: none;
 	width: 190px;
 	height: 30px;
-	*width: 188px;
-	*height: 28px;
+ *width: 188px;
+ *height: 28px;
 	line-height: 28px;
 	text-align: center;
 	background-color: #FFFDEE;
@@ -3435,7 +3436,7 @@ li {
 }
 .shop-cart .payment .recharge-banks .bank .items li label input {
 	margin-top: 15px;
-	*margin-top: 12px;
+ *margin-top: 12px;
 	margin-left: 20px;
 }
 .shop-cart .payment .recharge .submit-recharge {
@@ -3482,11 +3483,11 @@ li {
 .shop-cart .goods-list-table .list-title img {
 	float: left;
 	margin-right: 20px;
-	*margin-top: 5px;
+ *margin-top: 5px;
 }
 .shop-cart .goods-list-table .list-title h5 {
 	line-height: 75px;
-	*line-height: 80px;
+ *line-height: 80px;
 }
 .shop-cart .goods-list-table .list-title h5 a {
 	font-size: 12px;
@@ -3501,7 +3502,7 @@ li {
 }
 .shop-cart .goods-list-table .list-num input {
 	width: 72px;
-	*height: 36px;
+ *height: 36px;
 	font-size: 12px;
 	line-height: 36px;
 	padding: 0;
@@ -3550,16 +3551,16 @@ li {
 }
 .shop-cart .order-submit input {
 	padding: 10px 50px;
-	*padding: 5px 30px;
+ *padding: 5px 30px;
 	font-size: 18px;
-	*border: 0;
+ *border: 0;
 }
 .shop-cart .order-submit a.no_submit {
 	width: 174px;
 	height: 47px;
-	*padding: 0;
+ *padding: 0;
 	line-height: 30px;
-	*line-height: 47px;
+ *line-height: 47px;
 	font-size: 22px;
 	text-align: center;
 	color: #BEBEBE;
@@ -3719,7 +3720,7 @@ li {
 .cart-list .full-gifts .redempte-ul li {
 	float: left;
 	width: 100%;
-	*width: 488px;
+ *width: 488px;
 	padding-left: 20px;
 	padding-top: 15px;
 	padding-bottom: 15px;
@@ -3732,7 +3733,7 @@ li {
 }
 .cart-list .full-gifts .redempte-ul li input {
 	margin-top: 30px;
-	*margin-top: 20px;
+ *margin-top: 20px;
 }
 .cart-list .full-gifts .redempte-ul li p a {
 	font-size: 12px;
@@ -3745,7 +3746,7 @@ li {
 .cart-list .full-gifts .redempte-p2 {
 	padding-top: 25px;
 	padding-left: 190px;
-	*padding-left: 140px;
+ *padding-left: 140px;
 }
 .cart-list .full-gifts .submit {
 	padding-left: 15px;
@@ -3792,13 +3793,13 @@ li {
 .cart-list .list-title img {
 	float: left;
 	margin-right: 20px;
-	*margin-top: 5px;
+ *margin-top: 5px;
 	width: 75px;
 	height: 75px;
 }
 .cart-list .list-title h5 {
 	line-height: 75px;
-	*line-height: 80px;
+ *line-height: 80px;
 }
 .cart-list .list-title h5 a {
 	font-size: 12px;
@@ -3823,7 +3824,7 @@ li {
 }
 .cart-list .list-num input {
 	width: 72px;
-	*height: 36px;
+ *height: 36px;
 	font-size: 12px;
 	line-height: 36px;
 	padding: 0;
@@ -3888,7 +3889,7 @@ li {
  */
 
 .shop-cart-pay {
-	*width: 840px;
+ *width: 840px;
 	margin-top: 20px;
 	padding: 30px;
 	margin-bottom: 30px;
@@ -3949,7 +3950,7 @@ li {
 	z-index: 4;
 	float: left;
 	width: 820px;
-	*width: 810px;
+ *width: 810px;
 	margin-left: 10px;
 	padding-left: 10px;
 	padding-top: 10px;
@@ -3974,7 +3975,7 @@ li {
 }
 .shop-cart-pay .pay-div-1 .items li label input {
 	margin-top: 15px;
-	*margin-top: 12px;
+ *margin-top: 12px;
 	margin-left: 20px;
 }
 .shop-cart-pay .triangle {
@@ -4055,7 +4056,7 @@ li {
  */
 
 .regist-process-body {
-	*width: 1000px;
+ *width: 1000px;
 	margin-top: 22px;
 	padding: 80px 100px;
 	background-color: #fff;
@@ -4093,17 +4094,17 @@ li {
 .regist-process-forget .forget-items #username {
 	width: 360px;
 	height: 40px;
-	*padding: 0;
-	*line-height: 40px;
-	*text-indent: 15px;
+ *padding: 0;
+ *line-height: 40px;
+ *text-indent: 15px;
 	border-radius: 0;
 }
 .regist-process-forget .forget-items .vericode {
 	width: 148px;
 	height: 40px;
-	*padding: 0;
-	*line-height: 40px;
-	*text-indent: 15px;
+ *padding: 0;
+ *line-height: 40px;
+ *text-indent: 15px;
 	border-radius: 0;
 }
 .regist-process-forget .forget-items .vericode-p {
@@ -4144,15 +4145,15 @@ li {
 }
 .regist-process-login-left .text {
 	width: 360px;
-	*width: 330px;
+ *width: 330px;
 	height: 40px;
 	margin-top: 20px;
-	*padding: 0;
-	*line-height: 40px;
-	*text-indent: 15px;
+ *padding: 0;
+ *line-height: 40px;
+ *text-indent: 15px;
 	color: #A8A8A8;
 	padding-left: 40px;
-	*padding-left: 30px;
+ *padding-left: 30px;
 	background-repeat: no-repeat;
 	background-position: 12px center;
 	border-radius: 0;
@@ -4167,9 +4168,9 @@ li {
 	margin-top: 20px;
 	margin-bottom: 20px;
 	padding: 10px 161px;
-	*padding: 5px 105px;
+ *padding: 5px 105px;
 	font-size: 18px;
-	*border: 0;
+ *border: 0;
 }
 .regist-process-login-left .operates {
 	width: 360px;
@@ -4180,7 +4181,7 @@ li {
 	color: #999;
 }
 .regist-process-login-left .other-login {
-	*width: 100%;
+ *width: 100%;
 	margin-top: 30px;
 	margin-left: 50px;
 }
@@ -4233,7 +4234,7 @@ li {
 .regist-process-register-left span.title {
 	float: left;
 	width: 80px;
-	*margin-top: 20px;
+ *margin-top: 20px;
 	margin-right: 15px;
 	font-size: 16px;
 	line-height: 40px;
@@ -4241,12 +4242,12 @@ li {
 }
 .regist-process-register-left .text {
 	width: 360px;
-	*width: 330px;
+ *width: 330px;
 	height: 40px;
 	margin-top: 20px;
-	*padding: 0;
-	*line-height: 40px;
-	*text-indent: 15px;
+ *padding: 0;
+ *line-height: 40px;
+ *text-indent: 15px;
 	color: #A8A8A8;
 	/*padding-left: 40px;
 
@@ -4282,10 +4283,10 @@ li {
 	margin-top: 20px;
 	margin-left: 95px;
 	padding: 10px 145px;
-	*padding: 10px 90px;
+ *padding: 10px 90px;
 	font-size: 18px;
 	background-color: #E53939;
-	*border: 0;
+ *border: 0;
 }
 .regist-process-register-left .read-protocal {
 	margin-top: 100px;
@@ -4376,7 +4377,7 @@ li {
 	font-weight: normal;
 	color: #EE2D23;
 }
-/* 评分*/
+/* 评分*/  
 
 .score-wrap .score-bottom {
 	display: none;
@@ -4425,17 +4426,17 @@ li {
 	font-family: 'Microsoft yahei';
 }
 
-::-moz-placeholder {
-	color: #ccc!important;
-	opacity: 1!important;
+    ::-moz-placeholder {
+ color: #ccc!important;
+ opacity: 1!important;
 }
 
-:-ms-input-placeholder {
-	color: #ccc!important;
+    :-ms-input-placeholder {
+ color: #ccc!important;
 }
 
-::-webkit-input-placeholder {
-	color: #ccc!important;
+    ::-webkit-input-placeholder {
+ color: #ccc!important;
 }
 /*修改slide*/
 
@@ -4526,30 +4527,30 @@ li {
 }
 
 @media (min-width: 1280px) and (max-width: 1366px) {
-	.cover-page-index-slide a.show_pre {
-		left: 288px;
-	}
-	.cover-page-index-slide a.show_next {
-		right: 17px;
-	}
+.cover-page-index-slide a.show_pre {
+	left: 288px;
+}
+.cover-page-index-slide a.show_next {
+	right: 17px;
+}
 }
 
 @media (min-width: 1367px) and (max-width: 1900px) {
-	.cover-page-index-slide a.show_pre {
-		left: 288px;
-	}
-	.cover-page-index-slide a.show_next {
-		right: 17px;
-	}
+.cover-page-index-slide a.show_pre {
+	left: 288px;
+}
+.cover-page-index-slide a.show_next {
+	right: 17px;
+}
 }
 
 @media (min-width: 1901px) {
-	.cover-page-index-slide a.show_pre {
-		left: 288px;
-	}
-	.cover-page-index-slide a.show_next {
-		right: 17px;
-	}
+.cover-page-index-slide a.show_pre {
+	left: 288px;
+}
+.cover-page-index-slide a.show_next {
+	right: 17px;
+}
 }
 /*双十一*/
 
@@ -4927,7 +4928,7 @@ ul, li {
 	color: #666;
 }
 .good_info1 .price {
-	h background-color: #F3F3F3;
+h background-color: #F3F3F3;
 	padding: 10px;
 	background-color: #F3F3F3;
 	margin-top: 10px;
@@ -5268,10 +5269,10 @@ div.flicking_con a.on {
 /*.comment .info .nickname {width:100%;height:30px;line-height:30px;overflow:hidden;text-align: center;}
 
 */.comment .info .nickname .inner {
-	  margin-left: 35px;
-	  margin-right: 100px;
-	  overflow: hidden;
-  }
+	margin-left: 35px;
+	margin-right: 100px;
+	overflow: hidden;
+}
 .comment .info .level {
 	width: 82px;
 	float: left;
@@ -5285,7 +5286,7 @@ div.flicking_con a.on {
 }
 .pj-imgpos {
 	position: absolute;
-;
+	;
 	left: 0;
 	top: 0;
 	width: 60px

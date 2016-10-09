@@ -21,22 +21,22 @@ class SupplierMobile extends Plugin
     }
     public function af_supplier()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function logg()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function applyg()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function orderj()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function detail()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
 }

@@ -28,14 +28,10 @@ class Sz_DYi_User
     function getPerOpenid()
     {
         global $_W, $_GPC;
-        //用于测试，直接返回ipenid
-        //return "oh6uVxM1tlBQiP8diuFHbZfbOP30";
-
         $lifeTime = 24 * 3600 * 3;
         session_set_cookie_params($lifeTime);
         @session_start();
         $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
-
         $openid   = base64_decode($_COOKIE[$cookieid]);
 
         if (!empty($openid)) {
@@ -113,13 +109,6 @@ class Sz_DYi_User
 
     function getUserInfo(){
         global $_W, $_GPC;
-        //用于测试直接返回用户信息
-        /*$userinfo = array(
-                'openid' => 'oh6uVxM1tlBQiP8diuFHbZfbOP30',
-                'nickname' => '杨明',
-                'headimgurl' => 'http://wx.qlogo.cn/mmopen/ajNVdqHZLLATXmBR0oJgXhJRvS7rrr6ay25CWblqAA5kn8OribpHQXHVl8DSsEUJyOhvkq6TvBW0z1861oST7vg/132',
-            );
-        return $userinfo;*/
         if($_GPC['p'] == 'return' && $_GPC["method"]=='task'){
             return;
         }
@@ -203,6 +192,7 @@ class Sz_DYi_User
     function getInfo($base64 = false, $debug = false)
     {
         global $_W, $_GPC;
+
         if(!is_weixin()&&!is_app_api() ){
             return $this->getUserInfo();
         }
@@ -216,7 +206,6 @@ class Sz_DYi_User
                 'city' => '九龙'
             );
         } else {
-            //var_dump($_GPC['directopenid']);exit;
             if (empty($_GPC['directopenid'])) {
                 $userinfo = mc_oauth_userinfo();
             } else {

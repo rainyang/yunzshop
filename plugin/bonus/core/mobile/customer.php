@@ -23,6 +23,6 @@ if ($_W['isajax']) {
 		$row['moneycount'] = number_format(floatval($moneycount), 2);
 	}
 	unset($row);
-return show_json(1, array('list' => $list, 'pagesize' => $psize));
+	show_json(1, array('list' => $list, 'pagesize' => $psize));
 }
 include $this->template('customer');

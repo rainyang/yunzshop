@@ -13,26 +13,26 @@ class CouponMobile extends Plugin
 
 	public function index()
 	{
-		return $this->_exec_plugin(__FUNCTION__, false);
+		$this->_exec_plugin(__FUNCTION__, false);
 	}
 
 	public function detail()
 	{
-		return $this->_exec_plugin(__FUNCTION__, false);
+		$this->_exec_plugin(__FUNCTION__, false);
 	}
 
 	public function my()
 	{
-		return $this->_exec_plugin(__FUNCTION__, false);
+		$this->_exec_plugin(__FUNCTION__, false);
 	}
 
 	public function mydetail()
 	{
-		return $this->_exec_plugin(__FUNCTION__, false);
+		$this->_exec_plugin(__FUNCTION__, false);
 	}
 
 	public function util()
 	{
-		return $this->_exec_plugin(__FUNCTION__, false);
+		$this->_exec_plugin(__FUNCTION__, false);
 	}
 }

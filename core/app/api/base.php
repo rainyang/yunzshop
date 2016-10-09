@@ -114,7 +114,7 @@ class Base
      */
     protected function callBackByAes($json_data)
     {
-        //header('Content-Type: application/json');
+        header('Content-Type: application/json');
         if (isset($_GET['is_test'])) {
             dump($json_data);
         }

@@ -26,7 +26,7 @@ if($_W['isajax']) {
     	}
 		$pindex = max(1, intval($_GPC['page']));
 		$psize = 20;
-    	$sql = "select o.id,o.ordersn,o.price,o.openid,o.status,o.address,o.createtime from " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 " . " where 1 {$conditionq} and o.uniacid=".$_W['uniacid']." and o.supplier_uid={$uid} GROUP BY o.id ORDER BY o.createtime DESC,o.status DESC  ";
+    	$sql = "select o.id,o.ordersn,o.price,o.openid,o.status,o.address,o.createtime from " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 " . " where 1 {$conditionq} and o.uniacid=".$_W['uniacid']." and o.supplier_uid={$uid} ORDER BY o.createtime DESC,o.status DESC  ";
     	$sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
     	$list = pdo_fetchall($sql);
     	foreach ($list as &$rowp) {
@@ -56,26 +56,9 @@ if($_W['isajax']) {
 	 			}
 			}
 		}
-	    return show_json(2, array('list' => $list,'pagesize' => $psize,'setlevel'=>$setids));
-	} else if ($operation == 'display') {
-        $openid = m('user')->getOpenid();
-        $set = $this->getSet();
-        $member = m('member')->getMember($openid);
-        $supplieruser = $this->model->getSupplierUidAndUsername($openid);
-        $uid = $supplieruser['uid'];
-        $username = $supplieruser['username'];
-        $_GPC['type'] = $_GPC['type'] ? $_GPC['type'] : 0;
-        $supplierinfo = $this->model->getSupplierInfo($uid);
-        $ordercount = $supplierinfo['ordercount'];
-        $commission_total = $supplierinfo['commission_total'];
-        $costmoney = $supplierinfo['costmoney'];
-        $commission_ok = number_format($costmoney, 2);
-	    return show_json(1, array(
-	        'openid' => $openid,
-            'set'    => $set,
-            'member' => $member,
-            'supplieruser' => $supplieruser
-        ));
-    }
+	show_json(2, array('list' => $list,'pagesize' => $psize,'setlevel'=>$setids));
+	
+	
+	}
 }
 include $this->template('orderj');

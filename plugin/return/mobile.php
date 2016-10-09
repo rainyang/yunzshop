@@ -16,14 +16,14 @@ class ReturnMobile extends Plugin
 
     public function task()
     {    
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function return_queue()
     {    
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     } 
     public function return_log()
     {    
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
 }

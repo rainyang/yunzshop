@@ -23,35 +23,35 @@ if ($_W['isajax']) {
 			$list = pdo_fetchall($sql, $params);
 			$list = set_medias($list, 'thumb');
 		}
-return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
+		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 	} else if ($operation == 'set') {
 		$id = intval($_GPC['id']);
 		$goods = pdo_fetch('select id from ' . tablename('sz_yi_goods') . ' where uniacid=:uniacid and id=:id limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $id));
 		if (empty($goods)) {
-return show_json(0, '商品未找到');
+			show_json(0, '商品未找到');
 		}
 		$data = pdo_fetch('select id,deleted from ' . tablename('sz_yi_member_favorite') . ' where uniacid=:uniacid and goodsid=:id and openid=:openid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':id' => $id));
 		if (empty($data)) {
 			$data = array('uniacid' => $_W['uniacid'], 'openid' => $openid, 'goodsid' => $id, 'createtime' => time());
 			pdo_insert('sz_yi_member_favorite', $data);
-return show_json(1, array('isfavorite' => true));
+			show_json(1, array('isfavorite' => true));
 		} else {
 			if (empty($data['deleted'])) {
 				pdo_update('sz_yi_member_favorite', array('deleted' => 1), array('id' => $data['id'], 'uniacid' => $_W['uniacid'], 'openid' => $openid));
-	return show_json(1, array('isfavorite' => false));
+				show_json(1, array('isfavorite' => false));
 			} else {
 				pdo_update('sz_yi_member_favorite', array('deleted' => 0), array('id' => $data['id'], 'uniacid' => $_W['uniacid'], 'openid' => $openid));
-	return show_json(1, array('isfavorite' => true));
+				show_json(1, array('isfavorite' => true));
 			}
 		}
 	} else if ($operation == 'remove' && $_W['ispost']) {
 		$ids = $_GPC['ids'];
 		if (empty($ids) || !is_array($ids)) {
-return show_json(0, '参数错误');
+			show_json(0, '参数错误');
 		}
 		$sql = "update " . tablename('sz_yi_member_favorite') . ' set deleted=1 where uniacid=:uniacid and openid=:openid and id in (' . implode(',', $ids) . ')';
 		pdo_query($sql, array(':uniacid' => $uniacid, ':openid' => $openid));
-return show_json(1);
+		show_json(1);
 	}
 }
 include $this->template('shop/favorite');
