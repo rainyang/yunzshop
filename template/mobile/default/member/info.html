@@ -4,10 +4,10 @@
     body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearance:none;}
     .info_main {height:auto;  background:#fff; margin-top:14px; border-bottom:1px solid #e8e8e8; border-top:1px solid #e8e8e8;}
     .info_main .line {margin:0 10px; height:40px; border-bottom:1px solid #e8e8e8; line-height:40px; color:#999;}
-    .info_main .line .title {height:40px; width:80px; line-height:40px; color:#444; float:left; font-size:16px;}
+    .info_main .line .title {height:40px; width:80px; line-height:40px; color:#444; float:left; font-size:14px;}
     .info_main .line .info { width:100%;float:right;margin-left:-80px; }
     .info_main .line .inner { margin-left:80px; }
-    .info_main .line .inner input {height:40px; width:100%;display:block; padding:0px; margin:0px; border:0px; float:left; font-size:16px;}
+    .info_main .line .inner input {height:40px; width:100%;display:block; padding:0px; margin:0px; border:0px; float:left; font-size:14px;}
     .info_main .line .inner .user_sex {line-height:40px;}
     .info_sub {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
     .select { border:1px solid #ccc;height:25px;}
@@ -24,19 +24,21 @@
 <div id="container"></div>
 <script id="member_info" type="text/html">
     <div class="page_topbar">
-    <a href="javascript:;" class="back" onclick="history.back()"><i class="iconfont icon-chevron-left"></i></a>
-    <div class="title">我的资料</div>
-</div>
+        <a href="javascript:;" class="back" onclick="history.back()"><i class="iconfont icon-chevron-left"></i></a>
+        <div class="title">我的资料</div>
+    </div>
     <div class="info_main">
         <div class="line"><div class="title">姓名</div><div class='info'><div class='inner'><input type="text" id='realname' placeholder="请输入您的姓名"  value="<%realname%>" /></div></div></div>
         {if is_app()}
         <div class="line"><div class="title">昵称</div><div class='info'><div class='inner'><input type="text" id='nickname' placeholder="请输入您的昵称"  value="<%nickname%>" /></div></div></div>
         {/if}
         <%if mobile%>
-        <div class="line"><div class="title">手机号码</div><div clas=s='info'><div class='inner'><%mobile%></div></div></div>
+        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><%mobile%><a style="font-size: 12px;line-height: 40px;float: right;
+    padding: 0 10px;color: #f15353;text-decoration: none;" href='{php echo $this->createMobileUrl('member/editmobile')}'>更换</a></div></div></div>
         <input type="hidden" id='mobile' value="<%mobile%>" />
         <%else%>
-        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><input type="text" id='mobile' placeholder="请输入您的手机号码"  value="<%mobile%>" /></div></div></div>
+        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><a style="font-size: 12px;line-height: 40px;float: right;
+    padding: 0 10px;color: #f15353;text-decoration: none;" href='{php echo $this->createMobileUrl('member/bindmobile')}'>立即绑定</a></div></div></div>
         <%/if%>
         <div class="line"><div class="title">微信号</div><div class='info'><div class='inner'><input type="text"  id='weixin' placeholder="请输入微信号" value="<%weixin%>"/></div></div></div>
         <div class="line"><div class="title">支付宝帐号</div><div class='info'><div class='inner'><input type="text"  id='alipay' placeholder="请输入支付宝帐号" value="<%alipay%>"/></div></div></div>
@@ -46,7 +48,7 @@
             <span class="gender" data-val="1"><i class="fa <%if gender=='1'%>fa-check-circle-o<%else%>fa-circle-o<%/if%>" <%if gender=='1'%>style="color:#0C9;"<%/if%>></i> 男</span>&nbsp;&nbsp;
             <span class="gender" data-val="2"><i class="fa <%if gender=='2'%>fa-check-circle-o<%else%>fa-circle-o<%/if%>" <%if gender=='2'%>style="color:#0C9;"<%/if%>></i> 女
                 <input type="hidden" id="gender" value="<%sex%>" />
-                </div></div>
+        </div></div>
         </div>
         <div class="line">
             <div class="title">所在城市</div><div class='info'><div class='inner'>
@@ -61,7 +63,7 @@
             </select></div></div>
         </div>
         <div class="line"  style="border:0px;"><div class="title">生日</div><div class='info'><div class='inner'><input type="text" id="birthday" placeholder="点击选择日期" readonly value='<%birthday%>'/></div></div></div>
-        
+
     </div>
     <div class="info_sub">确认修改</div>
 </script>
@@ -69,9 +71,9 @@
     require(['tpl', 'core'], function(tpl, core) {
         core.json('member/info',{},function(json){
             if (json.result.member) {
- 
+
                 var data = json.result.member;
- 
+
                 $('#container').html(tpl('member_info', data));
 
                 var currYear = (new Date()).getFullYear();
@@ -80,12 +82,12 @@
                 opt.datetime = {preset: 'datetime'};
                 opt.time = {preset: 'time'};
                 opt.default = {
-                    theme: 'android-ics light', 
+                    theme: 'android-ics light',
                     display: 'modal',
                     mode: 'scroller',
                     lang: 'zh',
                     startYear: currYear - 100,
-                    endYear: currYear 
+                    endYear: currYear
                 };
 
                 $("#birthday").scroller('destroy').scroller($.extend(opt['date'], opt['default']));
@@ -102,25 +104,25 @@
                     {
                         return;
                     }
-                   
-                       if( $('#realname').isEmpty()){
-                           core.tip.show('请输入姓名!');
-                           return;
-                       }
-                       if(!$('#mobile').isMobile()){
-                           core.tip.show('请输入正确手机号码!');
-                           return;
-                       }
-                       
-                      if( $('#weixin').isEmpty()){
-                           core.tip.show('请输入微信号!');
-                           return;
-                       }
-                  
-                   $(this).html('正在处理...').attr('saving',1);
-                   var birthday = $('#birthday').val().split('-');
+
+                    if( $('#realname').isEmpty()){
+                        core.tip.show('请输入姓名!');
+                        return;
+                    }
+                    if(!$('#mobile').isMobile()){
+                        core.tip.show('请输入正确手机号码!');
+                        return;
+                    }
+
+                    if( $('#weixin').isEmpty()){
+                        core.tip.show('请输入微信号!');
+                        return;
+                    }
+
+                    $(this).html('正在处理...').attr('saving',1);
+                    var birthday = $('#birthday').val().split('-');
                     core.json('member/info', {
-                       'memberdata':{
+                        'memberdata':{
                             'realname': $('#realname').val(),
                             'nickname': $("#nickname").val(),
                             'mobile': $('#mobile').val(),
@@ -133,7 +135,7 @@
                             'city': $('#sel-city').val(),
                             'alipay': $('#alipay').val(),
                             'alipayname': $('#alipayname').val(),
-                       }, 'mcdata':{
+                        }, 'mcdata':{
                             'realname': $('#realname').val(),
                             'nickname': $("#nickname").val(),
                             'mobile': $('#mobile').val(),
@@ -143,16 +145,16 @@
                             'birthday': $('#birthday').val().length>0?birthday[2]:0,
                             'resideprovince': $('#sel-provance').val(),
                             'residecity': $('#sel-city').val()
-                       }
+                        }
                     }, function(json) {
-                       
+
                         if(json.status==1){
-                             core.tip.show('保存成功');
-                             {if !empty($_GPC['returnurl'])}
-                                 location.href="{php echo urldecode($_GPC['returnurl'])}";
-                             {else}
-                                 location.href="{php echo $this->createMobileUrl('member')}";
-                             {/if}
+                            core.tip.show('保存成功');
+                            {if !empty($_GPC['returnurl'])}
+                            location.href="{php echo urldecode($_GPC['returnurl'])}";
+                            {else}
+                            location.href="{php echo $this->createMobileUrl('member')}";
+                            {/if}
                         }
                         else{
                             $('.info_sub').html('确认修改').removeAttr('saving');

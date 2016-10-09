@@ -92,8 +92,8 @@ if ($operation == 'index') {
 			if(!empty($goods)){
 				foreach ($goods as $keys => $values) {
 					if(!empty($values)){
-						$thumb_url = unserialize($values['thumb_url']);
-					    $categoryfloor[$key]['thumb_url'][$values['id']] =$thumb_url;
+						$thumb_url = $values['thumb'];
+					    $categoryfloor[$key]['thumb_url'][$values['id']] = $thumb_url;
 					}
 				}
 			}
