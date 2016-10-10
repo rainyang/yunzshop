@@ -179,22 +179,20 @@ if ($_W['isajax']) {
     $canrefund = false;
     $tradeset   = m('common')->getSysset('trade');
     $refunddays = intval($tradeset['refunddays']);
-    $refunded = pdo_fetch(" SELECT * FROM " .tablename('sz_yi_order_refund'). " WHERE orderid=:orderid and uniacid=:uniacid", array(':orderid' => $order['id'], ':uniacid' => $_W['uniacid']));
     if ($order['status'] == 1 || $order['status'] == 2) {
-        if ($refunddays > 0 || $order['status'] == 1 ) {
+        if ($refunddays > 0 || $order['status'] == 1) {
             $canrefund = true;
         }
     } else if ($order['status'] == 3) {
-
-        //申请售后去除核销商品与虚拟产品不允许退货
-        //if ($order['isverify'] != 1 && empty($order['virtual'])) { 
+        if ($order['isverify'] != 1 && empty($order['virtual'])) {
+            
             if ($refunddays > 0) {
                 $days = intval((time() - $order['finishtimevalue']) / 3600 / 24);
                 if ($days <= $refunddays) {
                     $canrefund = true;
                 }
             }
-        //}
+        }
     }
     $order['canrefund'] = $canrefund;
     if ($canrefund == true) {
@@ -207,7 +205,12 @@ if ($_W['isajax']) {
             $order['refund_button'] .= '中';
         }
     }
-    show_json(1, array(
+    $variable = [
+        'show'=>$show,
+        'diyform_flag'=>$diyform_flag,
+        'goods'=>$goods,
+    ];
+    return show_json(1, array(
         'order' => $order,
         'goods' => $goods,
         'address' => $address,
@@ -215,7 +218,7 @@ if ($_W['isajax']) {
         'stores' => $stores,
         'isverify' => $isverify,
         'set' => $set
-    ));
+    ),$variable);
 }
 if(p('hotel')){
     if($order['order_type']=='3'){

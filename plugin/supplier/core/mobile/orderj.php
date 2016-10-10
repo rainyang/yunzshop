@@ -56,9 +56,21 @@ if($_W['isajax']) {
 	 			}
 			}
 		}
-	show_json(2, array('list' => $list,'pagesize' => $psize,'setlevel'=>$setids));
-	
-	
-	}
+	    return show_json(2, array('list' => $list,'pagesize' => $psize,'setlevel'=>$setids));
+	} else if ($operation == 'display') {
+	    return show_json(1, array(
+	        'openid' => $openid,
+            'set'    => $set,
+            'member' => $member,
+            'supplieruser' => $supplieruser,
+            'uid' => $uid,
+            'username' => $username,
+            'type' => $_GPC['type'],
+            'supplierinfo' => $supplierinfo,
+            'commission_total' => $commission_total,
+            'costmoney' => $costmoney,
+            'commission_ok' => number_format($costmoney, 2)
+        ));
+    }
 }
 include $this->template('orderj');

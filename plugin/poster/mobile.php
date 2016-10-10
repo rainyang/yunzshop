@@ -11,6 +11,6 @@ class PosterMobile extends Plugin
 	}
 	public function build()
 	{
-		$this->_exec_plugin(__FUNCTION__, false);
+		return $this->_exec_plugin(__FUNCTION__, false);
 	}
 }

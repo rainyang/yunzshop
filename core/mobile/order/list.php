@@ -40,6 +40,10 @@ if ($_W['isajax']) {
 		}else{
 	          $condition.= " AND order_type<>3";
 	    }
+        if (!empty($_GPC['id'])) {
+            $condition .=' AND id < :id';
+            $params['id'] = $_GPC['id'];
+        }
 		$conds = '';
 		if (p('channel')) {
 			$conds = ',ischannelself';
@@ -205,7 +209,7 @@ if ($_W['isajax']) {
 		    }
 	    }
 		unset($row);
-		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
+		return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 	}
 }
 if(p('hotel')){

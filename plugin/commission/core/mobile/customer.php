@@ -8,8 +8,13 @@ if ($_W['isajax']) {
 	$pindex = max(1, intval($_GPC['page']));
 	$psize = 20;
 	$list = array();
+	if (!empty($_GPC['id'])) {
+        $condition .=' AND id<:id';
+        $params[':id'] = intval($_GPC['id']);
+    }
+
 	$sql = 'select * from ' . tablename('sz_yi_member') . " where agentid={$member['id']} and ((isagent=1 and status=0) or isagent=0) and uniacid = " . $_W['uniacid'] . " {$condition}  ORDER BY id desc limit " . ($pindex - 1) * $psize . ',' . $psize;
-	$list = pdo_fetchall($sql);
+	$list = pdo_fetchall($sql, $params);
 	foreach ($list as &$row) {
 		$row['createtime'] = date('Y-m-d H:i', $row['createtime']);
 		$ordercount = pdo_fetchcolumn('select count(id) from ' . tablename('sz_yi_order') . ' where openid=:openid and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':openid' => $row['openid']));;
@@ -18,6 +23,6 @@ if ($_W['isajax']) {
 		$row['moneycount'] = number_format(floatval($moneycount), 2);
 	}
 	unset($row);
-	show_json(1, array('list' => $list, 'pagesize' => $psize));
+return show_json(1, array('list' => $list, 'pagesize' => $psize));
 }
 include $this->template('customer');

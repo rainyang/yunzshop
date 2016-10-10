@@ -149,6 +149,7 @@ if ($_W['isajax']) {
         }
     }
     $order['canrefund'] = $canrefund;
+
 	
 	if("" == trim($order['address'], "\"") && isset($order['openid'])){
 		$order['address'] = pdo_fetch('select realname,mobile,address from ' . tablename('sz_yi_member_address') . ' where uniacid=:uniacid and openid=:openid and deleted = 0', array(
@@ -158,15 +159,17 @@ if ($_W['isajax']) {
 		$order['address'] = iunserializer($order['address']);
 		$order['address'] = json_encode($order['address']);
 	}
-	
-    show_json(1, array(
+
+    return show_json(1, array(
         'order' => $order,
         'goods' => $goods,
         'address' => $address,
         'carrier' => $carrier,
         'stores' => $stores,
         'isverify' => $isverify,
-        'set' => $set
+        'set' => $set,
+        'diyform_flag' => $diyform_flag,
+        'show'         => $show
     ));
 }
 function order_list_confirmsend($order) {

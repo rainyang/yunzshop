@@ -11,19 +11,19 @@ class VerifyMobile extends Plugin
     }
     public function check()
     {
-        $this->_exec_plugin(__FUNCTION__, false);
+        return $this->_exec_plugin(__FUNCTION__, false);
     }
     public function complete()
     {
-        $this->_exec_plugin(__FUNCTION__, false);
+        return $this->_exec_plugin(__FUNCTION__, false);
     }
     public function qrcode()
     {
-        $this->_exec_plugin(__FUNCTION__, false);
+        return $this->_exec_plugin(__FUNCTION__, false);
     }
     public function detail()
     {
-        $this->_exec_plugin(__FUNCTION__, false);
+        return $this->_exec_plugin(__FUNCTION__, false);
     }
     public function index()
     {

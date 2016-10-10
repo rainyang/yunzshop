@@ -46,6 +46,33 @@ class YZ extends base
         parent::__construct();
         $this->set_WAnd_GPC();
         //require IA_ROOT . '/web/common/bootstrap.sys.inc.php';
+        require_once __CORE_PATH__.'/../site.php';
+    }
+    protected function callMobile($path)
+    {
+        global $_W,$_GPC;
+        $_W['isajax'] = true;
+        list($folder_name,$file_name,$action_name)=explode('/',$path);
+        $class = new \Sz_yiModuleSite();
+        $method = 'doMobile'.ucfirst($folder_name);
+        $_GPC['p'] = $file_name;
+        $_GPC['op'] = $action_name;
+        $result = $class->$method();
+        if(empty($result['status'])){
+            $this->returnError($result['json']);
+        }
+        return $result;
+    }
+    protected function callPlugin($path){
+        global $_GPC,$_W;
+        $_W['isajax'] = true;
+        list($_GPC['p'],$_GPC['method'],$_GPC['op']) = explode('/',$path);
+        $class = new \Sz_yiModuleSite();
+        $result = $class->doMobilePlugin();
+        if(empty($result['status'])){
+            $this->returnError($result['json']);
+        }
+        return $result;
     }
     /**
      * 返回解密的参数

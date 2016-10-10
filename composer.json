@@ -1,14 +1,18 @@
 {
   "name": "yunzhong",
   "description": "yunzhong shop",
-  "keywords": ["yii2", "legacy"],
+  "keywords": [
+    "yii2",
+    "legacy"
+  ],
   "homepage": "http://www.yunzshop.com/",
   "type": "project",
   "license": "Copyrighted",
   "minimum-stability": "dev",
   "require": {
     "php": ">=5.4.0",
-    "yiisoft/yii2": "*"
+    "yiisoft/yii2": "*",
+    "phpunit/phpunit": "^5.5"
   },
   "config": {
     "process-timeout": 1800

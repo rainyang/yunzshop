@@ -20,6 +20,6 @@ if ($_W['isajax']) {
 	$member['commission_apply'] = number_format($member['commission_apply'], 2);
 	$member['commission_lock'] = number_format($member['commission_lock'], 2);
 	$member['commission_pay'] = number_format($member['commission_pay'], 2);
-	show_json(1, array('cansettle' => $cansettle, 'settlemoney' => number_format(floatval($this->set['withdraw']), 2), 'member' => $member, 'set' => $this->set));
+	return show_json(1, array('cansettle' => $cansettle, 'settlemoney' => number_format(floatval($this->set['withdraw']), 2), 'member' => $member, 'set' => $this->set));
 }
 include $this->template('withdraw');

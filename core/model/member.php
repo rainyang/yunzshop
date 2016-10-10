@@ -68,7 +68,6 @@ class Sz_DYi_Member
     public function getMember($openid = '')
     {
         global $_W;
-		
         $uid = intval($openid);
 		
         if (empty($uid)) {
@@ -83,8 +82,8 @@ class Sz_DYi_Member
                 ':id' => $uid
             ));
         }
-		
-		if (!empty($info)) {
+
+        if (!empty($info)) {
 			
 			$openid = $info['openid'];
 			if (empty($info['uid'])) {

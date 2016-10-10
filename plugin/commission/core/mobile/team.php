@@ -41,7 +41,11 @@ if ($_W['isajax']) {
 	$psize = 20;
 	$list = array();
 	if ($hasangent) {
-		$list = pdo_fetchall("select * from " . tablename('sz_yi_member') . " where isagent =1 and status=1 and uniacid = " . $_W['uniacid'] . " {$condition}  ORDER BY agenttime desc limit " . ($pindex - 1) * $psize . ',' . $psize);
+        if (!empty($_GPC['id'])) {
+            $condition .=' AND id<:id';
+            $params[':id'] = intval($_GPC['id']);
+        }
+		$list = pdo_fetchall("select * from " . tablename('sz_yi_member') . " where isagent =1 and status=1 and uniacid = " . $_W['uniacid'] . " {$condition}  ORDER BY agenttime desc, id desc limit " . ($pindex - 1) * $psize . ',' . $psize, $params);
 		foreach ($list as &$row) {
 			$info = $this->model->getInfo($row['openid'], array('total'));
 			$row['commission_total'] = $info['commission_total'];
@@ -50,6 +54,6 @@ if ($_W['isajax']) {
 		}
 	}
 	unset($row);
-	show_json(1, array('list' => $list, 'pagesize' => $psize));
+return show_json(1, array('list' => $list, 'pagesize' => $psize, 'set' => $this->set, 'total' => $total, 'level1' => $level1, 'level2' => $level2, 'level3' => $level3, ));
 }
 include $this->template('team');

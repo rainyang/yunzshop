@@ -11,6 +11,7 @@ if ($_W['isajax']) {
 
     if ($operation == 'display') {
         $pindex    = max(1, intval($_GPC['page']));
+        $pindex    = !empty($_GPC['pageid']) ? $_GPC['pageid'] + 1 : $pindex;
         $psize     = 10;
 
 
@@ -29,7 +30,6 @@ if ($_W['isajax']) {
                 ':assigns_id' => $member['id']
             );
         }
-
             $list      = pdo_fetchall("select * from " . tablename('sz_yi_member_transfer_log') . " where 1 {$condition} order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
             $total     = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member_transfer_log') . " where 1 {$condition}", $params);
   
@@ -48,10 +48,11 @@ if ($_W['isajax']) {
             $row['type'] = $_GPC['type'];
         }
         unset($row);
-        show_json(1, array(
+        return show_json(1, array(
             'total' => $total,
             'list' => $list,
-            'pagesize' => $psize
+            'pagesize' => $psize,
+            'pageid' => $pindex
         ));
     }
 }
