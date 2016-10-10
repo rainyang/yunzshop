@@ -190,8 +190,20 @@ if ($_W['isajax']) {
 		$counts['couponcount'] = pdo_fetchcolumn($sql, array(':openid' => $openid, ':uniacid' => $_W['uniacid']));
 	}
 
+	if (p('supplier') && $shopset['switch'] == 1 && empty($shopset['af_result']) && empty($issupplier)) {
+    	$show_af_supplier = true;
+    } else {
+    	$show_af_supplier = false;
+    }
+    if (p('supplier') && !empty($issupplier) && $shopset['switch_centre'] == 1) {
+    	$show_supplier_center = true;
+    } else {
+    	$show_supplier_center = false;
+    }
     $variable = array(
-        'yunbiset'=> $yunbiset
+        'yunbiset'=> $yunbiset,
+        'show_af_supplier' => $show_af_supplier,
+        'show_supplier_center' => $show_supplier_center
     );
 	return show_json(1, array('member' => $member,'referrer'=>$referrer,'shop_set'=>$shop_set, 'order' => $order,'orderhotel' => $orderhotel,'memberhotel'=>$memberhotel,'level' => $level, 'open_creditshop' => $open_creditshop, 'counts' => $counts, 'shopset' => $shopset, 'trade' => $trade, 'app'=>$app, 'set'=> $set),$variable);
 

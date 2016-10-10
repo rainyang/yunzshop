@@ -16,7 +16,6 @@ class Af_supplier extends YZ
     public function index()
     {
         $result = $this->callPlugin('supplier/af_supplier');
-        echo "<pre>";print_r($result);exit;
         $this->returnSuccess($result);
     }
 }

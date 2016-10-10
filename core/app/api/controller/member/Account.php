@@ -76,6 +76,11 @@ class Account extends YZ
             array_push($res['other'],array('text' => '优惠券', 'cost' => $this->_json_datas['json']['counts']['couponcount']));
 
             $res['order_count'] = $this->_getOrderCount();
+            //供应商
+            $res['supplier'] = array(
+                'show_supplier_center' => $this->_json_datas['variable']['show_supplier_center'],
+                'show_af_supplier' => $this->_json_datas['variable']['show_af_supplier']
+                );
             $this->returnSuccess($res);
         } else {
             $this->returnError("请重新登录!");
