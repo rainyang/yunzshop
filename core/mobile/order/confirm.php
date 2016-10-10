@@ -1497,9 +1497,6 @@ if ($_W['isajax']) {
                     show_json(-1, $data['title'] . '<br/> 已下架!');
                 }
                 $virtualid     = $data['virtual'];
-                if($data['type']=='30' || $data['type']=='31'){
-                    $virtualid = true;
-                }
                 $data['stock'] = $data['total'];
                 $data['total'] = $goodstotal;
                 if ($data['cash'] != 2) {
