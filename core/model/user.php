@@ -29,7 +29,7 @@ class Sz_DYi_User
     {
         global $_W, $_GPC;
         //用于测试，直接返回ipenid
-        //return "oh6uVxM1tlBQiP8diuFHbZfbOP30";
+        return "o5yWLwYsHRERYCo5Lh34Hlc7GGno";
 
         $lifeTime = 24 * 3600 * 3;
         session_set_cookie_params($lifeTime);
