@@ -20,6 +20,9 @@ class Operation extends YZ
         $_W['ispost'] = true;
         $route = Order::getButtonApi($button_id);
         $result = $this->callMobile($route);
+        if($result['status']==-1){
+            $this->returnError($result['json']);
+        }
         //dump($result);exit;
         $this->json = $result['result'];
         $this->returnSuccess($this->json);
