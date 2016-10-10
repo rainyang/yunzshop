@@ -8,8 +8,8 @@
  * @author    shenyang <shenyang@yunzshop.com>
  * @version   v1.0
  */
-namespace admin\admin\api\controller\order;
-class Display extends \admin\api\controller\YZ
+namespace admin\api\controller\order;
+class Display extends \admin\api\YZ
 {
     public function __construct()
     {

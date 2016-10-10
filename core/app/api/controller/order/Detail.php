@@ -3,7 +3,6 @@ namespace app\api\controller\order;
 @session_start();
 use app\api\YZ;
 use app\api\Request;
-use yii\helpers\ArrayHelper;
 
 class Detail extends YZ
 {

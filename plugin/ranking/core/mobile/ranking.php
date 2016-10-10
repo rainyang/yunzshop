@@ -28,7 +28,7 @@ if($set['isexpense'] == 1)
 }
 if($set['iscommission'] == 1)
 {
-    $style_width_type+=1; 
+    $style_width_type+=1;
 }
 $style_width = 100 / $style_width_type;
 
@@ -85,14 +85,22 @@ if ($_W['isajax']) {
             $condition = " and o.uniacid={$_W['uniacid']}";
             $condition1 = ' and m.uniacid=:uniacid';
             $params1 = array(':uniacid' => $_W['uniacid']);
-            $sql     = "SELECT m.id,m.uniacid,m.realname, m.mobile,m.avatar,m.nickname,l.levelname," . "(select ifnull( count(o.id) ,0) from  " . tablename('sz_yi_order') . " o where o.openid=m.openid and o.status>=1 {$condition})  as ordercount," . "(select ifnull(sum(o.price),0) from  " . tablename('sz_yi_order') . " o where o.openid=m.openid  and o.status>=1 {$condition})  as ordermoney" . " from " . tablename('sz_yi_member') . " m  " . " left join " . tablename('sz_yi_member_level') . " l on l.id = m.level" . " where 1 {$condition1} order by ordermoney desc ";
+            $sql     = "SELECT m.id,m.uniacid,m.realname, m.mobile,m.avatar,m.nickname,l.levelname," . "(
+            select ifnull( count(o.id) ,0) from  " . tablename('sz_yi_order') . " o where o.openid=m.openid and o.status>=1 {$condition}
+            )  as ordercount," . "(
+            select ifnull(sum(o.price),0) from  " . tablename('sz_yi_order') . " o where o.openid=m.openid  and o.status>=1 {$condition}
+            )  as ordermoney" . " 
+            from " . tablename('sz_yi_member') . " m  " . " 
+            left join " . tablename('sz_yi_member_level') . " l on l.id = m.level" . " 
+            where 1 {$condition1} order by ordermoney desc ";
+
             $sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
-            
+
             $list  = pdo_fetchall($sql, $params1);
 
             $total = pdo_fetchcolumn("select  count(*) from " . tablename('sz_yi_member') . ' m ' . " where 1 {$condition1} ", $params1);
 
-  
+
             $m_sql     = "SELECT m.id,m.uniacid,m.realname, m.mobile,m.avatar,m.nickname,l.levelname," . "(select ifnull( count(o.id) ,0) from  " . tablename('sz_yi_order') . " o where o.openid=m.openid and o.status>=1 {$condition})  as ordercount," . "(select ifnull(sum(o.price),0) from  " . tablename('sz_yi_order') . " o where o.openid=m.openid  and o.status>=1 {$condition})  as ordermoney" . " from " . tablename('sz_yi_member') . " m  " . " left join " . tablename('sz_yi_member_level') . " l on l.id = m.level" . " where 1 {$condition1} and m.id = '".$member['id']."'";
             $m_list  = pdo_fetch($m_sql, $params1);
 

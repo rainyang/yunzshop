@@ -62,14 +62,20 @@ class Account extends YZ
                 $text = '余额';
             }
             array_push($res['other'], array('text'=> $text, 'cost'=> $this->_json_datas['json']['member']['credit2']));
-
+            //积分
+            if ($this->_json_datas['json']['shopset']['credit1']) {
+                $text = $this->_json_datas['json']['shopset']['credit1'];
+            } else {
+                $text = '积分';
+            }
+            array_push($res['other'], array('text'=> $text, 'cost'=> $this->_json_datas['json']['member']['credit1']));
             if ($this->_json_datas['json']['shopset']['isyunbi']) {
                 array_push($res['other'], array('text'=> $this->_json_datas['json']['shopset']['yunbi_title'], 'cost'=> $this->_json_datas['json']['member']['virtual_currency']));
             }
 
             array_push($res['other'],array('text' => '优惠券', 'cost' => $this->_json_datas['json']['counts']['couponcount']));
 
-
+            $res['order_count'] = $this->_getOrderCount();
             $this->returnSuccess($res);
         } else {
             $this->returnError("请重新登录!");
@@ -77,5 +83,18 @@ class Account extends YZ
 
 
     }
-
+    private function _getOrderCount(){
+        $order_count_arr = $this->_json_datas['json']['order'];
+        $res = array(
+            'wait_pay'=>$order_count_arr['status0'],
+            'wait_sent'=>$order_count_arr['status1'],
+            'wait_delivery'=>$order_count_arr['status2'],
+            'wait_refund'=>$order_count_arr['status4']
+        );
+        /*        order.status0 付款
+        order.status1 发货
+        order.status2 收货
+        order.status4*/
+        return $res;
+    }
 }

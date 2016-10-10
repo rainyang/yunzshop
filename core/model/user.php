@@ -114,12 +114,12 @@ class Sz_DYi_User
     function getUserInfo(){
         global $_W, $_GPC;
         //用于测试直接返回用户信息
-        $userinfo = array(
+        /*$userinfo = array(
                 'openid' => 'oh6uVxM1tlBQiP8diuFHbZfbOP30',
                 'nickname' => '杨明',
                 'headimgurl' => 'http://wx.qlogo.cn/mmopen/ajNVdqHZLLATXmBR0oJgXhJRvS7rrr6ay25CWblqAA5kn8OribpHQXHVl8DSsEUJyOhvkq6TvBW0z1861oST7vg/132',
             );
-        return $userinfo;
+        return $userinfo;*/
         if($_GPC['p'] == 'return' && $_GPC["method"]=='task'){
             return;
         }

@@ -11,6 +11,7 @@ $shopset   = m('common')->getSysset('shop');
 if ($_W['isajax']) {
     if ($operation == 'display') {
         $pindex    = max(1, intval($_GPC['page']));
+        $pindex    = !empty($_GPC['pageid']) ? $_GPC['pageid'] + 1 : $pindex;
         $psize     = 10;
         $condition = " and openid=:openid and uniacid=:uniacid and type=:type";
         $params    = array(
@@ -24,10 +25,11 @@ if ($_W['isajax']) {
             $row['createtime'] = date('Y-m-d H:i', $row['createtime']);
         }
         unset($row);
-        show_json(1, array(
+        return show_json(1, array(
             'total' => $total,
             'list' => $list,
-            'pagesize' => $psize
+            'pagesize' => $psize,
+            'pageid' => $pindex
         ));
     }
 }
