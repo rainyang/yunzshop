@@ -211,6 +211,7 @@ if ($_W['isajax']) {
         'goods'=>$goods,
     ];
     return show_json(1, array(
+
         'order' => $order,
         'goods' => $goods,
         'address' => $address,
@@ -218,8 +219,7 @@ if ($_W['isajax']) {
         'stores' => $stores,
         'isverify' => $isverify,
         'set' => $set
-    ),$variable);
-}
+    ),$variable);}
 if(p('hotel')){
     if($order['order_type']=='3'){
           include $this->template('order/detail_hotel');

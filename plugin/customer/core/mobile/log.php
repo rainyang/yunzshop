@@ -33,52 +33,52 @@ if ($_W['isajax']) {
 			}
 			unset($row);
 		}
-return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
+		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 	} else if ($operation == 'detail') {
 		$id = intval($_GPC['id']);
 		$log = pdo_fetch('select * from ' . tablename('sz_yi_creditshop_log') . ' where id=:id and openid=:openid and uniacid=:uniacid limit 1', array(':id' => $id, ':openid' => $openid, ':uniacid' => $uniacid));
 		if (empty($log)) {
-return show_json(-1, '兑换记录不存在!');
+			show_json(-1, '兑换记录不存在!');
 		}
 		$goods = $this->model->getGoods($log['goodsid'], $member);
 		if (empty($goods['id'])) {
-return show_json(-1, '商品记录不存在!');
+			show_json(-1, '商品记录不存在!');
 		}
 		$address = false;
 		if (!empty($log['addressid'])) {
 			$address = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where id=:id and openid=:openid and uniacid=:uniacid limit 1', array(':id' => $log['addressid'], ':uniacid' => $uniacid, ':openid' => $openid));
 		}
 		$goods['currenttime'] = time();
-return show_json(1, array('log' => $log, 'goods' => $goods, 'address' => $address));
+		show_json(1, array('log' => $log, 'goods' => $goods, 'address' => $address));
 	} else if ($operation == 'paydispatch' && $_W['ispost']) {
 		$id = intval($_GPC['id']);
 		$addressid = intval($_GPC['addressid']);
 		$log = pdo_fetch('select * from ' . tablename('sz_yi_creditshop_log') . ' where id=:id and openid=:openid and uniacid=:uniacid limit 1', array(':id' => $id, ':openid' => $openid, ':uniacid' => $uniacid));
 		if (empty($log)) {
-return show_json(0, '兑换记录不存在!');
+			show_json(0, '兑换记录不存在!');
 		}
 		$goods = $this->model->getGoods($log['goodsid'], $member);
 		if (empty($goods['id'])) {
-return show_json(0, '商品记录不存在!');
+			show_json(0, '商品记录不存在!');
 		}
 		if (!empty($goods['isendtime'])) {
 			if (time() > $goods['endtime']) {
-	return show_json(0, '商品已过期!');
+				show_json(0, '商品已过期!');
 			}
 		}
 		if ($goods['dispatch'] <= 0) {
 			pdo_update('sz_yi_creditshop_log', array('dispatchstatus' => 1, 'addressid' => $addressid), array('id' => $log['id']));
-return show_json(1, array('logid' => $logid));
+			show_json(1, array('logid' => $logid));
 		}
 		if (!empty($log['dispatchstatus'])) {
-return show_json(0, '商品已支付运费!');
+			show_json(0, '商品已支付运费!');
 		}
 		$set = m('common')->getSysset();
 		if (!is_weixin()) {
-return show_json(0, '非微信环境!');
+			show_json(0, '非微信环境!');
 		}
 		if (empty($set['pay']['weixin'])) {
-return show_json(0, '未开启微信支付!');
+			show_json(0, '未开启微信支付!');
 		}
 		$wechat = array('success' => false);
 		$dispatchno = $log['dispatchno'];
@@ -106,25 +106,25 @@ return show_json(0, '未开启微信支付!');
 			if (!is_error($wechat)) {
 				$wechat['success'] = true;
 			} else {
-	return show_json(0, $wechat['message']);
+				show_json(0, $wechat['message']);
 			}
 		}
 		if (!$wechat['success']) {
-return show_json(0, '微信支付参数错误!');
+			show_json(0, '微信支付参数错误!');
 		}
-return show_json(1, array('logid' => $logid, 'wechat' => $wechat));
+		show_json(1, array('logid' => $logid, 'wechat' => $wechat));
 	} else if ($operation == 'payresult' && $_W['ispost']) {
 		$id = intval($_GPC['id']);
 		$log = pdo_fetch('select * from ' . tablename('sz_yi_creditshop_log') . ' where id=:id and openid=:openid and uniacid=:uniacid limit 1', array(':id' => $id, ':openid' => $openid, ':uniacid' => $uniacid));
 		if (empty($log)) {
-return show_json(0, '兑换记录不存在!');
+			show_json(0, '兑换记录不存在!');
 		}
 		$goods = $this->model->getGoods($log['goodsid'], $member);
 		if (empty($goods['id'])) {
-return show_json(0, '商品记录不存在!');
+			show_json(0, '商品记录不存在!');
 		}
 		$this->model->sendMessage($id);
-return show_json(1);
+		show_json(1);
 	}
 }
 $_W['shopshare'] = array('title' => $this->set['share_title'], 'imgUrl' => tomedia($this->set['share_icon']), 'link' => $this->createPluginMobileUrl('creditshop'), 'desc' => $this->set['share_desc']);

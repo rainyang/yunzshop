@@ -16,11 +16,11 @@ class YunbiMobile extends Plugin
 
     public function task()
     {    
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function yunbi_log()
     {    
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function yunbi_trading()
     {    

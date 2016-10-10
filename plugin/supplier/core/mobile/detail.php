@@ -161,6 +161,7 @@ if ($_W['isajax']) {
 	}
 
     return show_json(1, array(
+
         'order' => $order,
         'goods' => $goods,
         'address' => $address,

@@ -29,8 +29,5 @@ if ($coupon['coupontype'] == 1) {
 	$useurl = $this->createMobileUrl('member/recharge');
 }
 $set = $this->model->getSet();
-if ($_W['isajax']) {
-    return show_json(1,array('coupon' => $coupon, 'set' => $set, 'num' => $num));
-}
 $this->model->setShare();
 include $this->template('mydetail');

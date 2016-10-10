@@ -13,18 +13,18 @@ if ($operation == 'display' && $_W['isajax']) {
 	$member = m('member')->getMember($openid);
 	$returnurl = urlencode($this->createMobileUrl('member/withdraw'));
 	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
-return show_json(1, array('credit' => $credit, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
+	show_json(1, array('credit' => $credit, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
 } else if ($operation == 'submit' && $_W['ispost']) {
 	$money = floatval($_GPC['money']);
 	$credit = m('member')->getCredit($openid, 'credit2');
     if ($money < 0) {
-return show_json(0, '非法提现金额!');
+		show_json(0, '非法提现金额!');
 	}
 	if (empty($money)) {
-return show_json(0, '申请金额为空!');
+		show_json(0, '申请金额为空!');
 	}
 	if ($money > $credit) {
-return show_json(0, '提现金额过大!');
+		show_json(0, '提现金额过大!');
 	}
 	m('member')->setCredit($openid, 'credit2', -$money, array(0, '余额提现：-' . $money . " 元"));
 	$logno = m('common')->createNO('member_log', 'logno', 'RW');
@@ -64,7 +64,7 @@ return show_json(0, '提现金额过大!');
 	    show_json(1);
 	} else {
 		m('notice')->sendMemberLogMessage($logid);
-return show_json(2);
+		show_json(2);
 	}
     
 	

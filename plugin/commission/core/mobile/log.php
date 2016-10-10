@@ -39,29 +39,29 @@ if ($_W['isajax']) {
 			}
 		}
 		unset($row);
-return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize, 'commissioncount' => number_format($commissioncount, 2)));
+		show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize, 'commissioncount' => number_format($commissioncount, 2)));
 	} else if ($operation == 'detail') {
 		$id = intval($_GPC['id']);
 		$apply = pdo_fetch('select * from ' . tablename('sz_yi_commission_apply') . ' where id=:id and `mid`=:mid and uniacid=:uniacid limit 1', array(':id' => $id, ':mid' => $mid, ':uniacid' => $uniacid));
 		if (empty($apply)) {
-return show_json(0, array('message' => '未找到提现申请!'));
+			show_json(0, array('message' => '未找到提现申请!'));
 		}
 		$orderids = iunserializer($apply['orderids']);
 		if (!is_array($orderids) || count($orderids) <= 0) {
-return show_json(0, array('message' => '未找到订单信息!'));
+			show_json(0, array('message' => '未找到订单信息!'));
 		}
-return show_json(1, array('apply' => $apply));
+		show_json(1, array('apply' => $apply));
 	} else if ($operation == 'detail_order') {
 		$id = intval($_GPC['id']);
 		$pindex = max(1, intval($_GPC['page']));
 		$psize = 5;
 		$apply = pdo_fetch('select orderids from ' . tablename('sz_yi_commission_apply') . ' where id=:id and `mid`=:mid and uniacid=:uniacid limit 1', array(':id' => $id, ':mid' => $mid, ':uniacid' => $uniacid));
 		if (empty($apply)) {
-return show_json(0, array('message' => '未找到提现申请!'));
+			show_json(0, array('message' => '未找到提现申请!'));
 		}
 		$orderids = iunserializer($apply['orderids']);
 		if (!is_array($orderids) || count($orderids) <= 0) {
-return show_json(0, array('message' => '未找到订单信息!'));
+			show_json(0, array('message' => '未找到订单信息!'));
 		}
 		$ids = array();
 		foreach ($orderids as $o) {
@@ -163,7 +163,7 @@ return show_json(0, array('message' => '未找到订单信息!'));
 			$row['orderpay'] = $orderpay;
 		}
 		unset($row);
-return show_json(1, array('list' => $list, 'pagesize' => $psize, 'totalcommission' => $totalcommission));
+		show_json(1, array('list' => $list, 'pagesize' => $psize, 'totalcommission' => $totalcommission));
 	}
 }
 if ($operation == 'display') {

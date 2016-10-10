@@ -29,7 +29,7 @@ class BonusMobile extends Plugin
     }
     public function index()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
 
 }

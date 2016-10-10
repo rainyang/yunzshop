@@ -20,13 +20,12 @@ class Login extends YZ
             $this->returnError('用户名或密码错误');
         }
         $this->_setCookie($info['openid'],$info['mobile']);
+
         $this->returnSuccess($info);
     }
     private function _getUserInfo($para){
         $info = D('Member')->field('id,openid,nickname,mobile,avatar,isagent')->where($para)->find();
-        if(!empty($info)){
-            $info['commission_level'] = "一星董事";
-        }
+        $info['commission_level'] = "一星董事";
         return $info;
     }
     private function _validatePara(){
@@ -59,7 +58,7 @@ class Login extends YZ
         session_set_cookie_params($lifeTime);
         $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
         if (is_app()) {
-            //setcookie($cookieid, base64_encode($openid), time()+3600*24*7,'/');
+            setcookie($cookieid, base64_encode($openid), time()+3600*24*7,'/');
         } else {
             setcookie($cookieid, base64_encode($openid),0,'/');
         };

@@ -12,22 +12,22 @@ class ArticleMobile extends Plugin
 
 	public function index()
 	{
-		return $this->_exec_plugin(__FUNCTION__, false);
+		$this->_exec_plugin(__FUNCTION__, false);
 	}
 
 	public function api()
 	{
-		return $this->_exec_plugin(__FUNCTION__, false);
+		$this->_exec_plugin(__FUNCTION__, false);
 	}
 
 	public function article()
 	{
-		return $this->_exec_plugin(__FUNCTION__, false);
+		$this->_exec_plugin(__FUNCTION__, false);
 	}
 
 	public function report()
 	{
-		return $this->_exec_plugin(__FUNCTION__, false);
+		$this->_exec_plugin(__FUNCTION__, false);
 	}
 	public function article_pc()
 	{

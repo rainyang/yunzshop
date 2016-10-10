@@ -9,7 +9,6 @@
  * @copyright Copyright (c) 2008 Yii Software LLC
  * @license http://www.yiiframework.com/license/
  */
-
 return [
   'yii\base\Action' => YII2_PATH . '/base/Action.php',
   'yii\base\ActionEvent' => YII2_PATH . '/base/ActionEvent.php',

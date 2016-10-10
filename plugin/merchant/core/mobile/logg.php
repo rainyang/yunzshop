@@ -36,7 +36,7 @@ if ($_W['isajax']) {
 		}
 	}
 	unset($row);
-return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
+	show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 }
 if ($operation == 'display') {
 	include $this->template('logg');

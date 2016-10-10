@@ -1,5 +1,5 @@
 <?php
-//Ü¿ï¿½ï¿½ï¿½Ì³ï¿½ QQ:913768135
+//Ü¿ÖÚÉÌ³Ç QQ:913768135
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -12,26 +12,26 @@ class CreditshopMobile extends Plugin
     }
     public function index()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function lists()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function detail()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function log()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function creditlog()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
     public function exchange()
     {
-        return $this->_exec_plugin(__FUNCTION__, false);
+        $this->_exec_plugin(__FUNCTION__, false);
     }
 }

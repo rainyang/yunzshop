@@ -34,13 +34,13 @@ if ($_W['isajax']) {
 	if ($operation == 'display') {
 		$order = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
 		if (empty($order)) {
-return show_json(0);
+			show_json(0);
 		}
 		$goods = pdo_fetchall("select og.goodsid,og.price,g.title,g.thumb,og.total,g.credit,og.optionid,og.optionname as optiontitle,g.isverify,g.storeids  from " . tablename('sz_yi_order_goods') . " og " . " left join " . tablename('sz_yi_goods') . " g on g.id=og.goodsid " . " where og.orderid=:orderid and og.uniacid=:uniacid ", array(':uniacid' => $uniacid, ':orderid' => $orderid));
 		$goods = set_medias($goods, 'thumb');
 		$order['goodstotal'] = count($goods);
 		$set = set_medias(m('common')->getSysset('shop'), 'logo');
-return show_json(1, array('order' => $order, 'goods' => $goods, 'set' => $set));
+		show_json(1, array('order' => $order, 'goods' => $goods, 'set' => $set));
 	} else if ($operation == 'step') {
 		$express = trim($_GPC['express']);
 		$expresssn = trim($_GPC['expresssn']);
@@ -48,7 +48,7 @@ return show_json(1, array('order' => $order, 'goods' => $goods, 'set' => $set));
 		if (!$arr) {
 			$arr = getList($express, $expresssn);
 			if (!$arr) {
-	return show_json(1, array('list' => array()));
+				show_json(1, array('list' => array()));
 			}
 		}
 		$len = count($arr);
@@ -63,7 +63,7 @@ return show_json(1, array('order' => $order, 'goods' => $goods, 'set' => $set));
 			$step = explode("<br />", str_replace("&middot;", "", $row));
 			$list[] = array('time' => trim($step[0]), 'step' => trim($step[1]), 'ts' => strtotime(trim($step[0])));
 		}
-return show_json(1, array('list' => $list));
+		show_json(1, array('list' => $list));
 	}
 }
 include $this->template('order/express');

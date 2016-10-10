@@ -1,19 +1,19 @@
 <?php
 namespace test\api\controller\account;
-use app\api\tests\TestCase;
-require_once __DIR__.'/../TestCase.php';
-class LoginTest extends TestCase   {
+use \app\api\controller\member;
+require_once __CORE_PATH__;
+
+class LoginTest extends \PHPUnit_Framework_TestCase {
     public function setUp() {
 
     }
 
     public function testLoginSuccess() {
         $para = array(
-            "mobile"=>'18545571024',
-            "pwd"=>'sgl918'
+            "mobile"=>'18545571024'
         );
         $out = $this->get('member/Login',$para);
-        $this->assertEquals($out['code'], 11);
+        $this->assertEquals($out['code'], 0);
     }
     public function tearDown(){
         

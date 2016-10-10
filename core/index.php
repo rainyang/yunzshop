@@ -9,13 +9,13 @@
  * @version   v1.0
  */
 namespace api;
+use Think;
 define('IN_SYS', true);
 define("__CORE_PATH__", __DIR__);
 define("__VENDOR_PATH__", __DIR__."/../vendor");
 define("__BASE_ROOT__", __DIR__ . "/../../..");
 //var_dump(get_defined_constants());
 require_once __BASE_ROOT__ . '/framework/bootstrap.inc.php';
-
 require_once __BASE_ROOT__ . '/addons/sz_yi/defines.php';
 require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/functions.php';
 require_once __BASE_ROOT__ . '/addons/sz_yi/core/inc/plugin/plugin_model.php';
@@ -38,9 +38,7 @@ class AutoLoader
         }
         $dir = self::_mapNamespaceToDir($namespace);
         $class_name = $this->_getClassName($full_class_name);
-
         $full_dir = $this->_formatDir(__CORE_PATH__.'/'."{$dir}/{$class_name}.php");
-        //dump($full_dir);
         if(is_file($full_dir)){
             include $full_dir;
         }
@@ -56,9 +54,6 @@ class AutoLoader
         switch ($namespace) {
             case 'Util':
                 $dir = __CORE_PATH__ . '/inc/';
-                break;
-            case 'util':
-                $dir = '/inc/';
                 break;
             case 'LeanCloud':
                 $dir = __CORE_PATH__ . '/inc/plugin/vendor/';
