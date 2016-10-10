@@ -128,12 +128,21 @@ if ($operation == 'display') {
             'advimg_pc' => save_media($_GPC['advimg_pc']),
             'advurl' => trim($_GPC['advurl']),
             'advurl_pc' => trim($_GPC['advurl_pc']),
-            'level' => $level,
-            'advtitle1' => trim($_GPC['advtitle1']),
-            'advtitle2' => trim($_GPC['advtitle2']),
-            'advtitle3' => trim($_GPC['advtitle3']),
-            'advtitle4' => trim($_GPC['advtitle4'])
+            'level' => $level
         );
+        if (!empty($_GPC['advtitle1'])) {
+            $data['advtitle1'] = trim($_GPC['advtitle1']);
+        }
+        if (!empty($_GPC['advtitle2'])) {
+            $data['advtitle2'] = trim($_GPC['advtitle2']);
+        }
+        if (!empty($_GPC['advtitle3'])) {
+            $data['advtitle3'] = trim($_GPC['advtitle3']);
+        }
+        if (!empty($_GPC['advtitle4'])) {
+            $data['advtitle4'] = trim($_GPC['advtitle4']);
+        }
+
         if (!empty($id)) {
             unset($data['parentid']);
             pdo_update('sz_yi_category', $data, array(
