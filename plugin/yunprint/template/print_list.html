@@ -79,14 +79,21 @@
                             <input type="text" class="form-control" name="print_nums" value="{$item['print_nums']}">
                             <div class="help-block">默认为1</div>
                         </div>
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">二维码</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" class="form-control" name="qrcode_link" value="{$item['qrcode_link']}">
+                            <div class="help-block">url地址</div>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="form-group">
-                <div class="col-sm-9 col-xs-9 col-md-9">
-                    <input type="hidden" name="token" value="{$_W['token']}">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                <div class="col-sm-9 col-xs-12">
+                    <input type="hidden" name="token" value="{$_W['token']}" />
                     <input name="submit" id="submit" type="submit" value="提交" class="btn btn-primary col-lg-1">
-                </div>  
+                    <input type="button" name="back" onclick='history.back()' {ifp 'perm.user.add|perm.user.edit'}style='margin-left:10px;'{/if} value="返回列表" class="btn btn-default" />
+                </div>
             </div>
         </div>
     </form>
@@ -99,13 +106,17 @@
     </script>
 {elseif $op == 'print_list'}
     <div class="clearfix">
+        <div class="form-group">
+            <div class="col-sm-12">
+                <a class="btn btn-success col-lg-1" href="{php echo $this->createPluginWebUrl('yunprint/print_list', array('op' => 'print_post'));}"/><i class="fa fa-plus-circle"> </i>  添加打印机</a>
+            </div>
+        </div>
         <form class="form-horizontal" action="" method="post">
             <div class="panel panel-default">
                 <div class="panel-body table-responsive">
                     <table class="table table-hover">
                         <thead class="navbar-inner">
                             <tr>
-                                <!-- <th>加盟店</th> -->
                                 <th>打印机名称</th>
                                 <th>机器号</th>
                                 <th>打印机key</th>
@@ -117,8 +128,7 @@
                         <tbody>
                             {loop $data $item}
                             <tr>
-                                <!-- <td>{if $item['agentuid'] == 1}<span class="btn btn-danger">总店</span>{else}<span class="btn btn-warning">{$item['username']}</span>{/if}</td> -->
-                                <td>{$item['name']}</td>
+                                <td><span class="label label-danger">{$item['name']}</span></td>
                                 <td>{$item['print_no']}</td>
                                 <td>{$item['key']}</td>
                                 <td>{if $item['mode'] == 1}
@@ -141,11 +151,6 @@
                             {/loop}
                         </tbody>
                     </table>
-                </div>
-            </div>
-            <div class="form-group">
-                <div class="col-sm-12">
-                    <a class="btn btn-success col-lg-1" href="{php echo $this->createPluginWebUrl('yunprint/print_list', array('op' => 'print_post'));}"/><i class="fa fa-plus-circle"> </i>  添加打印机</a>
                 </div>
             </div>
         </form>

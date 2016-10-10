@@ -16,6 +16,50 @@
                     <span class='help-block'>如果开启，用户支付订单时打印订单。</span>
                 </div>
             </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">打印选项</label>
+                <div class="col-sm-9 col-xs-12" >
+                    <label for="realname" class="checkbox-inline">
+                        <input type="checkbox" name="offers[realname]" value="1" id="realname" {if $set['offers']['realname'] == 1}checked="true"{/if} /> 客户姓名
+                    </label>
+                    <label for="mobile" class="checkbox-inline">
+                        <input type="checkbox" name="offers[mobile]" value="1" id="mobile" {if $set['offers']['mobile'] == 1}checked="true"{/if} /> 联系方式
+                    </label>
+                    <label for="address" class="checkbox-inline">
+                        <input type="checkbox" name="offers[address]" value="1" id="address" {if $set['offers']['address'] == 1}checked="true"{/if} /> 配送地址
+                    </label>
+                    <label for="remark" class="checkbox-inline">
+                        <input type="checkbox" name="offers[remark]" value="1" id="remark" {if $set['offers']['remark'] == 1}checked="true"{/if} /> 订单备注
+                    </label>
+                    <label for="goodsinfo" class="checkbox-inline">
+                        <input type="checkbox" name="offers[goodsinfo]" value="1" id="goodsinfo" {if $set['offers']['goodsinfo'] == 1}checked="true"{/if} /> 订单商品详情
+                    </label>
+                    <label for="goodsprice" class="checkbox-inline">
+                        <input type="checkbox" name="offers[goodsprice]" value="1" id="goodsprice" {if $set['offers']['goodsprice'] == 1}checked="true"{/if} /> 商品金额(合)
+                    </label>
+
+                    <br>
+
+                    <label for="discountprice" class="checkbox-inline">
+                        <input type="checkbox" name="offers[discountprice]" value="1" id="discountprice" {if $set['offers']['discountprice'] == 1}checked="true"{/if} /> 会员折扣
+                    </label>
+                    <label for="deductcredit2" class="checkbox-inline">
+                        <input type="checkbox" name="offers[deductcredit2]" value="1" id="deductcredit2" {if $set['offers']['deductcredit2'] == 1}checked="true"{/if} /> 余额抵扣
+                    </label>
+                    <label for="deductenough" class="checkbox-inline">
+                        <input type="checkbox" name="offers[deductenough]" value="1" id="deductenough" {if $set['offers']['deductenough'] == 1}checked="true"{/if} /> 满额优惠
+                    </label>
+                    <label for="deductprice" class="checkbox-inline">
+                        <input type="checkbox" name="offers[deductprice]" value="1" id="deductprice" {if $set['offers']['deductprice'] == 1}checked="true"{/if} /> 积分抵扣
+                    </label>
+                    <label for="couponprice" class="checkbox-inline">
+                        <input type="checkbox" name="offers[couponprice]" value="1" id="couponprice" {if $set['offers']['couponprice'] == 1}checked="true"{/if} /> 优惠券价格 
+                    </label>
+                    <label for="dispatchprice" class="checkbox-inline">
+                        <input type="checkbox" name="offers[dispatchprice]" value="1" id="dispatchprice" {if $set['offers']['dispatchprice'] == 1}checked="true"{/if} /> 运费
+                    </label>
+                </div>
+            </div>
         </div>
         <div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>

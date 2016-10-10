@@ -61,9 +61,8 @@ if (!class_exists('YunprintModel')) {
                 'memberCode'=>$member_code, 
                 'msgDetail'=>
                 "
-                万花童国际乳品品牌商城
+                {$print_order['shopname']}
             ------------------------------
-            配送加盟店：{$print_order['username']}
             订单编号：{$msgNo}
             订购时间：{$time}
             客户姓名：{$address['realname']}
@@ -120,8 +119,7 @@ if (!class_exists('YunprintModel')) {
                 $num++;
             }
             $time = date('Y-m-d H:i:s',$order['createtime']);
-            $orderInfo = '<CB><LOGO>万花童国际乳品品牌商城</CB><BR>';
-            $orderInfo .= "配送加盟店：{$order['username']}<BR>";
+            $orderInfo = "<CB><LOGO>{$order['shopname']}</CB><BR>";
             $orderInfo .= "订单编号：{$order['ordersn']}<BR>";
             $orderInfo .= "订购时间：{$time}<BR>";
             $orderInfo .= "客户姓名：{$address['realname']}<BR>";
@@ -153,10 +151,6 @@ if (!class_exists('YunprintModel')) {
                 if ($offers['dispatchprice'] == 1) {
                     $orderinfo .= "运费：                   {$print_order['dispatchprice']}<BR>";
                 }
-                if (!empty($offers['statement'])) {
-                    $statement = $offers['statement'];
-                    $statement = str_replace('[换行]', "<BR>", $statement);
-                }
             }
             $orderInfo .= "实际支付：                    {$order['price']}<BR>";
             $orderInfo .= "================================================<BR>";
@@ -177,6 +171,46 @@ if (!class_exists('YunprintModel')) {
             else{
                  $this->client->getContent();
             }
+        }
+
+        public function executePrint ($orderid) {
+            global $_W;
+            if (!empty($orderid)) {
+                return;
+            }
+            $set = $this->getSet();
+            $offers = $set['offers'];
+            $shopset = m('common')->getSysset('shop');
+            $order = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND id=:id", array(
+                    ':uniacid'  => $_W['uniacid'],
+                    ':id'       => $orderid
+                ));
+            $order['shopname'] = $shopset['name'];
+            $order['goods'] = pdo_fetchall("SELECT og.goodsid,og.price,og.total,g.title,g.marketprice FROM " . tablename('sz_yi_order_goods') . " og LEFT JOIN " . tablename('sz_yi_goods') . " g ON g.id=og.goodsid WHERE og.uniacid=:uniacid AND og.orderid=:orderid", array(
+                    ':uniacid' => $_W['uniacid'],
+                    ':orderid' => $orderid
+                )); 
+            foreach ($order['goods'] as &$value) {
+                $value['totalmoney'] = number_format($value['price']*$value['total'],2);
+            }
+            unset($value);
+            $openprint = pdo_fetch("SELECT * FROM " . tablename('sz_yi_yunprint_list') . " WHERE uniacid=:uniacid AND status=:status LIMIT 1 ", array(
+                    ':uniacid'  => $_W['uniacid'],
+                    ':status'   => 1
+                ));
+            // mode = 1 飞蛾   mode = 2 飞印
+            if ($openprint['mode'] == 1) {
+                $this->feie_print($order, $openprint['member_code'], $openprint['print_no'], $openprint['key'], $offers);
+            }
+            if ($openprint['mode'] == 2) {
+                $this->feiyin_print($order, $openprint['print_no'], $openprint['key'], $openprint['print_nums'], $openprint['qrcode_link'], $offers);
+            }
+        }
+
+        public function getSet()
+        {
+            $set = parent::getSet();
+            return $set;
         }
 	}
 }
