@@ -145,7 +145,7 @@ if ($operation == "display") {
 
     if (!empty($_GPC["keyword"])) {
         $_GPC["keyword"] = trim($_GPC["keyword"]);
-        $condition.= " AND (o.ordersn LIKE '%{$_GPC["keyword"]}%' OR o.ordersn_general LIKE '%{$_GPC["keyword"]}%')";
+        $condition.= " AND (o.pay_ordersn LIKE '%{$_GPC["keyword"]}%' OR o.ordersn_general LIKE '%{$_GPC["keyword"]}%')";
     }
     if (!empty($_GPC["expresssn"])) {
         $_GPC["expresssn"] = trim($_GPC["expresssn"]);
