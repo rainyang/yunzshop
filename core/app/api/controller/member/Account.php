@@ -81,6 +81,11 @@ class Account extends YZ
                 'show_supplier_center' => $this->_json_datas['variable']['show_supplier_center'],
                 'show_af_supplier' => $this->_json_datas['variable']['show_af_supplier']
                 );
+            //渠道商
+            $res['channel'] = array(
+                'show_af_channel' => $this->_json_datas['variable']['show_af_channel'],
+                'show_channel_center' => $this->_json_datas['variable']['show_channel_center']
+                );
             $this->returnSuccess($res);
         } else {
             $this->returnError("请重新登录!");
