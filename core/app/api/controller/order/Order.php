@@ -30,7 +30,7 @@ class Order
         $button = [
             static::PAY => [
                 'name' => '付款',
-                'api' => '',// /order/pay
+                'api' => '/order/pay',//
                 'value' => static::PAY
             ],
             static::COMPLETE => [
