@@ -86,6 +86,10 @@ class Account extends YZ
                 'show_af_channel' => $this->_json_datas['variable']['show_af_channel'],
                 'show_channel_center' => $this->_json_datas['variable']['show_channel_center']
                 );
+            //分红中心
+            $res['bonus'] = array(
+                'show_bonus_center' => $this->_json_datas['variable']['show_bonus_center']
+                );
             $this->returnSuccess($res);
         } else {
             $this->returnError("请重新登录!");
