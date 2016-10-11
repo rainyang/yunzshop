@@ -2301,6 +2301,7 @@ if ($_W['isajax']) {
                     'goods_op_cost_price' => $goods['costprice']
                 );
                 if (p('supplier') || p('merchant')) {
+                    $goods['bonusmoney'] = pdo_fetchcolumn("SELECT bonusmoney FROM " . tablename('sz_yi_goods') . " WHERE id=:id", array(':id' => $goods['goodsid']));
                     $supplier_or_merchant_price += ($goods['costprice']*$goods['total']);
                     $supplier_or_merchant_basis += ($goods['bonusmoney']*$goods['total']);
                 }
