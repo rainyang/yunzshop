@@ -12,6 +12,12 @@ class YunprintWeb extends Plugin
 		$this->set = $this->getSet();
 	}
 
+    public function index()
+    {
+        header('location: ' . $this->createPluginWebUrl('yunprint/print_list'));
+        exit;
+    }
+
     public function upgrade()
     {
         $this->_exec_plugin(__FUNCTION__);

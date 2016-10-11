@@ -3,7 +3,6 @@ global $_W, $_GPC;
 $this -> backlists();
 $id = intval($_GPC['id']);
 $op = trim($_GPC['op']) ? trim($_GPC['op']) : 'print_list';
-echo "<pre>";print_r(p('yunprint')->getSet());exit;
 if ($op == 'print_post') {
     if ($id > 0) {
         $item = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_yunprint_list') . ' WHERE uniacid = :uniacid AND id = :id', array(':uniacid' => $_W['uniacid'], ':id' => $id));

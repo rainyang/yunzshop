@@ -61,22 +61,22 @@ if (!class_exists('YunprintModel')) {
                 'memberCode'=>$member_code, 
                 'msgDetail'=>
                 "
-                {$print_order['shopname']}
-            ------------------------------
-            订单编号：{$msgNo}
-            订购时间：{$time}
-            客户姓名：{$address['realname']}
-            联系方式：{$address['mobile']}
-            配送地址：{$address['province']}{$address['city']}{$address['area']}{$address['address']}
-            订单备注：{$print_order['remark']}
-            ------------------------------
-            序号 商品名称 单价 数量  金额
-            {$goods}
-            ------------------------------
-            {$orderinfo}
-            ------------------------------
-            {$statement}
-            客户签收：
+    {$print_order['shopname']}
+------------------------------
+订单编号：{$msgNo}
+订购时间：{$time}
+客户姓名：{$address['realname']}
+联系方式：{$address['mobile']}
+配送地址：{$address['province']}{$address['city']}{$address['area']}{$address['address']}
+订单备注：{$print_order['remark']}
+------------------------------
+序号 商品名称 单价 数量  金额
+{$goods}
+------------------------------
+{$orderinfo}
+------------------------------
+{$statement}
+客户签收：
             ",
                 'deviceNo'=>$device_no, 
                 'msgNo'=>$msgNo
@@ -93,7 +93,6 @@ if (!class_exists('YunprintModel')) {
             $content = $msg['memberCode'].$msg['msgDetail'].$msg['deviceNo'].$msg['msgNo'].$msg['reqTime'].$key;
             $msg['securityCode'] = md5($content);
             $msg['mode']=2;
-
             return $this->sendMessage($msg);
         }
 
@@ -103,6 +102,7 @@ if (!class_exists('YunprintModel')) {
             if(!$clientt->post('/api/sendMsg',$msgInfo)){ //提交失败
                 return 'faild';
             }else{
+                echo "<pre>";print_r($clientt->getContent());exit;
                 return $clientt->getContent();
             }
         }
@@ -175,8 +175,7 @@ if (!class_exists('YunprintModel')) {
 
         public function executePrint ($orderid) {
             global $_W;
-            echo "<pre>";print_r($orderid);exit;
-            if (!empty($orderid)) {
+            if (empty($orderid)) {
                 return;
             }
             $set = $this->getSet();
@@ -201,10 +200,10 @@ if (!class_exists('YunprintModel')) {
                 ));
             // mode = 1 飞蛾   mode = 2 飞印
             if ($openprint['mode'] == 1) {
-                $this->feie_print($order, $openprint['member_code'], $openprint['print_no'], $openprint['key'], $offers);
+                $this->feie_print($order, $openprint['member_code'], $openprint['print_no'], $openprint['print_nums'], $offers);
             }
             if ($openprint['mode'] == 2) {
-                $this->feiyin_print($order, $openprint['print_no'], $openprint['key'], $openprint['print_nums'], $openprint['qrcode_link'], $offers);
+                $this->feiyin_print($order, $openprint['member_code'], $openprint['print_no'], $openprint['key'], $openprint['qrcode_link'], $offers);
             }
         }
 

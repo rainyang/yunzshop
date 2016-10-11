@@ -2562,6 +2562,13 @@ if ($_W['isajax']) {
         /*if ($pluginc) {
             $pluginc->checkOrderConfirm($orderid);
         }*/
+        //云打印
+                if (p('yunprint')) {
+                    $yunprint_set = p('yunprint')->getSet();
+                    if ($yunprint_set['isopenprint'] == 1) {
+                        p('yunprint')->executePrint($orderid);
+                    }
+                }
         show_json(1, array(
             'orderid' => $orderid,
             'ischannelpay' => $ischannelpay,
