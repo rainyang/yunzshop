@@ -13,6 +13,7 @@ if(empty($openid)){
 $member    = m('member')->getMember($openid);
 $uniacid    = $_W['uniacid'];
 $set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
+
 $pindex = max(1, intval($_GPC["page"]));
 $psize = 12;
 $condition = ' and ig.uniacid = :uniacid AND ig.status=2';

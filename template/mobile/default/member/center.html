@@ -178,6 +178,24 @@
     </ul>
 
 </div>
+
+{if $pindiana}
+    <div class="cart">
+        <a href="{php echo $this->createPluginMobileUrl('indiana/order')}">
+            <div class="list1">
+                <i class="iconfont icon-article"></i>夺宝记录
+                <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; "></i>
+            </div>
+        </a>
+        <a href="{php echo $this->createPluginMobileUrl('indiana/order',array('op'=>'lucky'))}">
+            <div class="list1" style="margin:0px;">
+                <i class="iconfont icon-donation" ></i>幸运记录
+                <i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i>
+            </div>
+        </a>
+    </div>
+{/if}
+
 <div class="cart">
     {if !$member['isbindmobile'] && is_weixin()}
     <a href="{php echo $this->createMobileUrl('member/bindmobile')}"><div class="list1" style="margin:0px;"><i class="fa fa-mobile"></i>绑定手机<i class="fa fa-angle-right" style="color:#999; font-size:26px; float:right; line-height:44px;"></i></div></a>

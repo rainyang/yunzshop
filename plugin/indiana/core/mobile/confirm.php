@@ -56,6 +56,7 @@ $order   = array(
     'carrier' => "a:0:{}",
     'isvirtual' => 0,
     'order_type' => 4,
+    'period_num' => $indiana_period['period_num'],
     'oldprice' => $totalprice
 );
 pdo_insert('sz_yi_order',$order);

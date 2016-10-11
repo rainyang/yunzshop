@@ -161,7 +161,7 @@ class Sz_DYi_Order
                 
             }
         }
-        echo "<pre>";print_r($order);exit;
+
         //验证paylog里金额是否与订单金额一致
         $log = pdo_fetch('select * from ' . tablename('core_paylog') . ' where `uniacid`=:uniacid and fee=:fee and `module`=:module and `tid`=:tid limit 1',
             array(
@@ -250,7 +250,6 @@ class Sz_DYi_Order
                         }   
                     }
                 }
-
                 //支付后订单打印
                 if(p('hotel')){
                 //打印订单      
@@ -321,6 +320,9 @@ class Sz_DYi_Order
                    $pluginlove->checkOrder($goods_where, $order['openid'], 0);
                 }
                 $orderdetail['goodscount'] = count($orderdetail['goods1']);
+                if ($order['order_type'] == '4') {
+                    p('indiana')->dispose($orderid);
+                }
                 return array(
                     'result' => 'success',
                     'order' => $order,

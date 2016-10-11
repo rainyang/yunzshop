@@ -150,6 +150,15 @@ if (p('ranking')) {
 		//$shopset['isranking'] = $ranking_set['ranking']['isranking'];		
 	}
 }
+$pindiana = false;
+$indiana = p('indiana');
+if ($indiana) {
+	$indiana_set = $indiana->getSet();
+	if (!empty($indiana_set['isindiana'])) {
+		$pindiana = true;
+	}
+}
+
 
 $open_creditshop = false;
 $creditshop = p('creditshop');

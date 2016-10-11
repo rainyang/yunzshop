@@ -44,6 +44,23 @@ if(!empty($orderid)){
         $order = $order_all[0];
     }
 }
+// 支付验证库存
+if ( $order['order_type'] == '4' && $_W['ispost'] ) {
+    $goodstotal = pdo_fetchcolumn('SELECT total FROM ' . tablename('sz_yi_order_goods') . ' where uniacid=:uniacid and orderid = :orderid',array(
+            ':uniacid'  => $_W['uniacid'],
+            ':orderid'  => $order['id']
+        ));
+
+    // 本期数据
+    $shengyu_codes = pdo_fetchcolumn('SELECT shengyu_codes FROM ' . tablename('sz_yi_indiana_period') . ' where uniacid=:uniacid and period_num = :period_num ',array(
+            ':uniacid'  => $_W['uniacid'],
+            ':period_num'  => $order['period_num']
+        ));
+    if ($goodstotal > $shengyu_codes) {
+        show_json(0, '剩余人次不足!');
+    }
+}
+
 if ($operation == 'display' && $_W['isajax']) {
     if (empty($orderid)) {
         show_json(0, '参数错误!');

@@ -205,7 +205,83 @@ if (!class_exists('IndianaModel')) {
 			}
 		}
 
+		public function dispose($orderid = ''){
+			global $_W;
+			$order = pdo_fetch('SELECT o.*, og.total, og.goodsid FROM ' . tablename('sz_yi_order') . ' o 
+			left join ' . tablename('sz_yi_order_goods') . ' og on (o.id = og.orderid)
+			 where o.uniacid=:uniacid and o.id = :orderid and o.status = 1 ',array(
+			        ':uniacid'  => $_W['uniacid'],
+			        ':orderid'  => $orderid
+			    ));
+			$codes_number 	= $order['total'];//购买数量
+			$openid 		= $order['openid'];
+			$period_num 	= $order['period_num'];
+			// 本期数据
+			$indiana_period = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_indiana_period') . ' where uniacid=:uniacid and period_num = :period_num ',array(
+			        ':uniacid'  => $_W['uniacid'],
+			        ':period_num'  => $period_num
+			    ));	
 
+			$sql_record = "select * from ".tablename('sz_yi_indiana_record')." where uniacid = :uniacid and openid = :openid and period_num = :period_num";
+			$data_record = array(
+					':uniacid' => $_W['uniacid'],
+					':openid' => $openid,
+					':period_num' => $period_num
+				);
+			$indiana_record = pdo_fetch($sql_record,$data_record); // 检索购买记录
+
+			$codes = unserialize($indiana_period['codes']);
+			$codes_num = sizeof($codes);		//检测现有code的数量
+			$buy_codes = array_slice($codes,0,$codes_number);
+			if(!is_array($buy_codes)){	//判断分码正确
+				return 'false';
+			}
+			$left_codes = array_slice($codes,$codes_number,$codes_num-$codes_number);
+			if(!is_array($left_codes)){	//判断分码正确
+				return 'false';
+			}
+			$left_codes = serialize($left_codes);
+			$shengyu_codes = $indiana_period['shengyu_codes'] - $codes_number;
+			$canyurenshu = $indiana_period['canyurenshu'] + $codes_number;
+			$create_time = time();
+			$microtime	 = rand(100,999);
+			pdo_update('sz_yi_indiana_period',array('codes'=>$left_codes,'shengyu_codes'=>$shengyu_codes,'canyurenshu'=>$canyurenshu),array('uniacid'=>$_W['uniacid'],'period_num'=>$order['period_num']));
+
+			if(empty($indiana_record)){
+				//未曾有购买记录
+				$ordersn =$order['ordersn'];
+				$record  = array(
+					'openid' 		=> $openid,
+					'uniacid' 		=> $_W['uniacid'],
+					'ordersn' 		=> $ordersn,
+					'create_time'	=> $create_time,
+					'period_id' 	=> $indiana_period['id'],
+					'period_num' 	=> $period_num,
+					'codes' 		=> serialize($buy_codes),//购买码
+					'count' 		=> $codes_number, //购买个数
+					'microtime' 	=> $microtime
+
+				);
+				pdo_insert('sz_yi_indiana_record',$record);
+			}else{
+				$new_code = array_merge(unserialize($indiana_record['codes']),$buy_codes);	//组合两个数组
+				$new_count = $codes_number + $indiana_record['count'];
+				$result = pdo_update('sz_yi_indiana_record',array('codes' => serialize($new_code),'count' => $new_count),array('uniacid'=>$_W['uniacid'],'period_num' => $period_num,'openid' => $openid));
+			}
+
+			$consumerecord = array(
+				'openid' 		=> $openid,
+				'uniacid' 		=> $_W['uniacid'],
+				'num' 			=> $codes_number,
+				'codes' 		=> serialize($buy_codes),//购买码
+				'period_num' 	=> $period_num,
+				'create_time' 	=> $create_time,
+				'microtime' 	=> $microtime,
+				'ip' 			=> $_SERVER['REMOTE_ADDR']
+			);
+			pdo_insert("sz_yi_indiana_consumerecord",$consumerecord);	
+
+		}
 
 	}
 }

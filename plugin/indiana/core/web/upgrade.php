@@ -66,7 +66,8 @@ CREATE TABLE IF NOT EXISTS `ims_sz_yi_indiana_record` (
   `period_num` varchar(145) NOT NULL COMMENT '期号',
   `count` int(10) NOT NULL,
   `codes` longtext NOT NULL COMMENT 'code',
-  `create_time` varchar(145) NOT NULL
+  `create_time` varchar(145) NOT NULL,
+  `microtime` SMALLINT(3) NOT NULL AFTER `create_time`,
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
 
 ALTER TABLE " . tablename('sz_yi_indiana_record') . "  ADD PRIMARY KEY (`id`);
@@ -87,11 +88,28 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_indiana_comcode') . " (
 ALTER TABLE " . tablename('sz_yi_indiana_comcode') . " ADD PRIMARY KEY (`id`);
 
 ALTER TABLE " . tablename('sz_yi_indiana_comcode') . " MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_indiana_consumerecord') . " (
+  `id` int(11) NOT NULL,
+  `uniacid` int(11) NOT NULL,
+  `openid` varchar(145) NOT NULL,
+  `num` int(11) NOT NULL COMMENT '夺宝数量',
+  `codes` LONGTEXT NOT NULL AFTER `num`,
+  `period_num` varchar(145) NOT NULL COMMENT '期号',
+  `create_time` varchar(145) NOT NULL COMMENT '消费时间',
+  `microtime` SMALLINT(3) NOT NULL AFTER `create_time`,
+  `ip` varchar(45) NOT NULL
+  ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+
+ALTER TABLE " . tablename('sz_yi_indiana_consumerecord') . " ADD PRIMARY KEY (`id`);
+
+ALTER TABLE " . tablename('sz_yi_indiana_consumerecord') . " MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 ";
 pdo_query($sql);
 
 
 message('一元夺宝插件安装成功', $this->createPluginWebUrl('indiana/set'), 'success');
+
 
 
 
