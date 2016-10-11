@@ -175,6 +175,27 @@
     </div>
 </script>
 
+<script id='tpl_carrier_list_send' type='text/html'>
+    <div class="chooser choose_carrier">
+        <%each carrier_list_send as carrier index%>
+        <div class="address carrier"
+             data-index='<%index%>'
+             data-id='<%carrier.id%>'
+             data-realname='<%carrier.storename%>'
+             data-mobile='<%carrier.tel%>'
+             data-address='<%carrier.address%>'
+        >
+            <div class="ico" ><%if selectedCarrierIndex==index%><i class="iconfont icon-check" style="color:#f15353;font-size: 20px"></i><%/if%></div>
+            <div class="info">
+                <div class='inner'>
+                    <div class="name"><%carrier.storename%>(<%carrier.tel%>)</div>
+                    <div class="addr"><%carrier.address%></div>
+                </div>
+            </div>
+        </div>
+        <%/each%>
+    </div>
+</script>
 
 <script id='tpl_confirm_info' type='text/html'>
     {if is_app()}
@@ -194,14 +215,16 @@
           
         
         <%if isverifysend || dispatchsend%>
-          <input type="hidden"  id="dispatchtype" value="1" />
+          <input type="hidden"  id="dispatchtype" <%if carrier_list.length>0%>value="1"<%else if isverifysend%>value="0"<%else if dispatchsend%>value="2"<%/if%> />
           <div class="addorder_nav">
-            <div class="nav selected" data-nav='1'>上门自提</div>
+            <%if carrier_list.length>0%>
+            <div class="nav <%if carrier_list.length>0%>selected<%/if%>" data-nav='1'>上门自提</div>
+            <%/if%>
             <%if isverifysend%>
-            <div class="nav"  data-nav='0'>配送核销</div>
+            <div class="nav <%if carrier_list.length<=0%>selected<%/if%>"  data-nav='0'>配送核销</div>
             <%/if%>
             <%if dispatchsend%>
-            <div class="nav"  data-nav='2'>快递配送</div>
+            <div class="nav <%if carrier_list.length<=0 && !isverifysend%>selected<%/if%>"  data-nav='2'>快递配送</div>
             <%/if%>
           </div>
         
@@ -228,15 +251,15 @@
             </div>
           </div>
           <div id='address_container'></div>
-            <div class="addorder_user addorder_user_0" style="display:none;" >
+            <div class="addorder_user addorder_user_0" <%if carrier_list.length>0%>style="display:none;"<%/if%> >
                 <input type='hidden' id='carrierindex_send' value='0' />
-                <input type='hidden' id='carrierid_send' value='<%carrier.id%>' />
+                <input type='hidden' id='carrierid_send' value='<%carrier_send.id%>' />
                 <div class="info" id='carrier_select_send'>
                     <div class="ico"><i class="iconfont icon-map-marker"></i></div>
                     <div class='info1'>
                         <div class='inner'>
-                            <div class="user">请选择发货门店：<span id='carrier_realname_send'><%carrier.storename%></span>(<span id='carrier_mobile_send'><%carrier.tel%></span>)</div>
-                            <div class="address"><span id='carrier_address_send'><%carrier.address%></span></div>
+                            <div class="user">请选择发货门店：<span id='carrier_realname_send'><%carrier_send.storename%></span>(<span id='carrier_mobile_send'><%carrier_send.tel%></span>)</div>
+                            <div class="address"><span id='carrier_address_send'><%carrier_send.address%></span></div>
                         </div>
                     </div>
                     <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
@@ -645,48 +668,49 @@ var fromcart = 0;
         fromcart = json.result.fromcart;
         
  
+
+
+        //选择快递或字提
+        $('.addorder_nav .nav').click(function () {
+            var nav = $(this).data('nav');
+            $('.addorder_nav .nav').removeClass('selected');
+            $(this).addClass('selected');
+            $('.addorder_user').hide();
+            if (nav == '2') {
+                $('.addorder_user_0').show();
+            } else {
+                $('.addorder_user_' + nav).show();
+            }
+
+            if (nav == '1') {
+                $('.carrier_input_info').show();
+                $('.addorder_user addorder_user_0').hide();
+                $('.addorder_exp').hide();
+                getDispatchPrice(true);
+            } else if (nav == '0') {
+                $('.carrier_input_info').hide();
+                $('.addorder_user addorder_user_0').show();
+                $('.addorder_exp').show();
+                $('#carrierid').val('');
+                getDispatchPrice();
+            } else if (nav == '2') {
+                $('.carrier_input_info').hide();
+                $('.addorder_user addorder_user_0').show();
+                $('.addorder_exp').show();
+                $('#carrierid').val('');
+                getDispatchPrice();
+            }
+            $('#dispatchtype').val(nav);
+        });
         if (json.result.carrier_list.length > 0) {
-             
-            //选择快递或字提
-            $('.addorder_nav .nav').click(function() {
-                var nav = $(this).data('nav');
-                $('.addorder_nav .nav').removeClass('selected');
-                $(this).addClass('selected');
-                $('.addorder_user').hide();
-                if (nav == '2') {
-                    $('.addorder_user_0').show();  
-                } else {
-                    $('.addorder_user_' + nav).show();
-                }
-                
-                if (nav == '1') {
-                    $('.carrier_input_info').show();
-                    $('.addorder_user addorder_user_0').hide(); 
-                    $('.addorder_exp').hide();
-                    getDispatchPrice(true);
-                } else if (nav == '0') {
-                    $('.carrier_input_info').hide();
-                    $('.addorder_user addorder_user_0').show();
-                    $('.addorder_exp').show();
-                    $('#carrierid').val('');
-                    getDispatchPrice();
-                } else if (nav == '2') {
-                    $('.carrier_input_info').hide();
-                    $('.addorder_user addorder_user_0').show();
-                    $('.addorder_exp').show();
-                    $('#carrierid').val('');
-                    getDispatchPrice();
-                }
-                $('#dispatchtype').val(nav);
-            });
             //选择自提
-            $('#carrier_select').click(function() {
+            $('#carrier_select').click(function () {
                 json.result.selectedCarrierIndex = $("#carrierindex").val();
 
                 $('#carrier_container').html(tpl('tpl_carrier_list', json.result));
                 $(".chooser").height($(document.body).height());
                 $(".choose_carrier").animate({right: "0px"}, 200);
-                $('.carrier').click(function() {
+                $('.carrier').click(function () {
                     var obj = $(this);
                     $("#carrierindex").val(obj.data('index'));
                     $("#carrierid").val(obj.data('id'));
@@ -699,10 +723,12 @@ var fromcart = 0;
 
                 })
             })
+        }
+        if (json.result.carrier_list_send.length > 0){
             $('#carrier_select_send').click(function() {
-                json.result.selectedCarrierIndex = $("#carrierindex").val();
+                json.result.selectedCarrierIndex = $("#carrierindex_send").val();
 
-                $('#carrier_container').html(tpl('tpl_carrier_list', json.result));
+                $('#carrier_container').html(tpl('tpl_carrier_list_send', json.result));
                 $(".chooser").height($(document.body).height());
                 $(".choose_carrier").animate({right: "0px"}, 200);
                 $('.carrier').click(function() {
@@ -952,7 +978,7 @@ var fromcart = 0;
 
             }, true);
         }
-        if ($('#dispatchtype').val() == 1) {
+        if ($('#dispatchtype').val() == 1 && json.result.carrier_list.length>0) {
             getDispatchPrice(true);
         }
         $('#address_new').click(function() {
