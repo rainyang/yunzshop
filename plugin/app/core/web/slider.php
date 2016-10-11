@@ -45,7 +45,7 @@ if ($operation == 'display') {
             'link' => trim($_GPC['link']),
             'enabled' => intval($_GPC['enabled']),
             'displayorder' => intval($_GPC['displayorder']),
-            'thumb' => save_media($_GPC['thumb'])
+            'thumb' => $_GPC['thumb']
         );
         if (!empty($id)) {
             pdo_update('sz_yi_banner', $data, array(
@@ -71,7 +71,7 @@ if ($operation == 'display') {
         $token = $auth->uploadToken($bucket,null, $expire);
 
         // 要上传文件的本地路径
-        $filePath =   "../attachment/" . save_media($_GPC['thumb']);
+        $filePath =   "../attachment/" . $_GPC['thumb'];
 
         $file_info = pathinfo($filePath);
 
