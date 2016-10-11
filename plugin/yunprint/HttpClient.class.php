@@ -3,7 +3,7 @@
 /* Version 0.9, 6th April 2003 - Simon Willison ( http://simon.incutio.com/ )
    Manual: http://scripts.incutio.com/httpclient/
 */
-
+if (!class_exists('HttpClient')) {
 class HttpClient {
     // Request vars
     var $host;
@@ -335,5 +335,5 @@ class HttpClient {
         }
     }   
 }
-
+}
 ?>

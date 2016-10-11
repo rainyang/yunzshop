@@ -250,6 +250,7 @@ class Sz_DYi_Order
                         }   
                     }
                 }
+
                 //支付后订单打印
                 if(p('hotel')){
                 //打印订单      

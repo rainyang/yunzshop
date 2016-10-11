@@ -8,7 +8,7 @@ define('HOSTNAME','/FeieServer/');
 //以下2项是平台相关的设置，您不需要更改
 define('FEYIN_HOST','my.feyin.net');
 define('FEYIN_PORT', 80);
-include 'HttpClient.class.php';
+include_once 'HttpClient.class.php';
 if (!class_exists('YunprintModel')) {
 	class YunprintModel extends PluginModel
 	{
@@ -175,6 +175,7 @@ if (!class_exists('YunprintModel')) {
 
         public function executePrint ($orderid) {
             global $_W;
+            echo "<pre>";print_r($orderid);exit;
             if (!empty($orderid)) {
                 return;
             }
