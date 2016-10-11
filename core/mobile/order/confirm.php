@@ -46,7 +46,7 @@ if ($diyform_plugin) {
         }
     }
 }
-$carrier_list = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_store") . " WHERE uniacid=:uniacid AND status=1", array(
+$carrier_list = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_store") . " WHERE uniacid=:uniacid AND status=1 AND myself_support=1", array(
     ":uniacid" => $_W["uniacid"]
 ));
 
@@ -374,6 +374,7 @@ if ($_W['isajax']) {
         //$discountprice  = 0;
         //$deductprice2   = 0;
         $stores        = array();
+        $stores_send   = array();
         $address       = false;
         $carrier       = false;
         $carrier_list  = array();
@@ -383,7 +384,7 @@ if ($_W['isajax']) {
         //$dispatch_array = array();
 
         //$carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1 and type in(1,3)", array(
-        $carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1 ", array(
+        $carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1 AND myself_support=1 ", array(
 
             ":uniacid" => $_W["uniacid"]
         ));
@@ -604,15 +605,25 @@ if ($_W['isajax']) {
 
             foreach ($suppliers as $key => $val) {
                 if (empty($order_all[$val['supplier_uid']]['storeids'])) {
-                    $order_all[$val['supplier_uid']]['stores'] = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where  uniacid=:uniacid and status=1 ', array(
+                    $order_all[$val['supplier_uid']]['stores'] = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where  uniacid=:uniacid and status=1 and myself_support=1', array(
                         ':uniacid' => $_W['uniacid']
                     ));
                 } else {
-                    $order_all[$val['supplier_uid']]['stores'] = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where id in (' . implode(',', $order_all[$val['supplier_uid']]['storeids']) . ') and uniacid=:uniacid and status=1 ', array(
+                    $order_all[$val['supplier_uid']]['stores'] = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where id in (' . implode(',', $order_all[$val['supplier_uid']]['storeids']) . ') and uniacid=:uniacid and status=1 and myself_support=1', array(
+                        ':uniacid' => $_W['uniacid']
+                    ));
+                }
+                if (empty($order_all[$val['supplier_uid']]['storeids'])) {
+                    $order_all[$val['supplier_uid']]['stores_send'] = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where  uniacid=:uniacid and status=1 ', array(
+                        ':uniacid' => $_W['uniacid']
+                    ));
+                } else {
+                    $order_all[$val['supplier_uid']]['stores_send'] = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where id in (' . implode(',', $order_all[$val['supplier_uid']]['storeids']) . ') and uniacid=:uniacid and status=1 ', array(
                         ':uniacid' => $_W['uniacid']
                     ));
                 }
                 $stores = $order_all[$val['supplier_uid']]['stores'];
+                $stores_send = $order_all[$val['supplier_uid']]['stores_send'];
             }
 
             $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
@@ -957,11 +968,14 @@ if ($_W['isajax']) {
             //'carrier_list' => $carrier_list,
             'carrier' => $stores[0],
             'carrier_list' => $stores,
+            'carrier_send' => $stores_send[0],
+            'carrier_list_send' => $stores_send,
             'dispatch_list' => $dispatch_list,
             'isverify' => $isverify,
             'isverifysend' => $isverifysend,
             'dispatchsend' => $dispatchsend,
             'stores' => $stores,
+            'stores_send' => $stores_send,
             'isvirtual' => $isvirtual,
             'changenum' => $changenum,
             //'hascoupon' => $hascoupon,
@@ -1497,9 +1511,6 @@ if ($_W['isajax']) {
                     show_json(-1, $data['title'] . '<br/> 已下架!');
                 }
                 $virtualid     = $data['virtual'];
-                if($data['type']=='30' || $data['type']=='31'){
-                    $virtualid = true;
-                }
                 $data['stock'] = $data['total'];
                 $data['total'] = $goodstotal;
                 if ($data['cash'] != 2) {
@@ -1796,6 +1807,24 @@ if ($_W['isajax']) {
 
                 if (empty($dispatchtype) && $isverify) {
                     $isverifysend = true;
+                }
+                if ($isverifysend) {
+                    foreach ($goodsarr as $row) {
+                        $goodsids = explode(',', $row);
+                        $can_verifysend = pdo_fetch(" SELECT id,title,isverifysend FROM " .tablename('sz_yi_goods'). " WHERE id=:id and uniacid=:uniacid ", array(':id' => $goodsids[0], ':uniacid' => $_W['uniacid']));
+                        if ($can_verifysend['isverifysend'] != 1) {
+                            show_json(0,'您的订单中，商品标题为 ‘'.$can_verifysend['title'].'’ 的商品不支持配送核销，请更换配送方式或者剔除此商品！');
+                        }
+                    }
+                }
+                if ($dispatchsend) {
+                    foreach ($goodsarr as $row1) {
+                        $goodsids = explode(',', $row1);
+                        $can_dispatchsend = pdo_fetch(" SELECT id,title,isverifysend FROM " .tablename('sz_yi_goods'). " WHERE id=:id and uniacid=:uniacid ", array(':id' => $goodsids[0], ':uniacid' => $_W['uniacid']));
+                        if ($can_verifysend['isverifysend'] != 1) {
+                            show_json(0,'您的订单中，商品标题为 ‘'.$can_dispatchsend['title'].'’ 的商品不支持快递配送，请更换配送方式或者剔除此商品！');
+                        }
+                    }
                 }
                 if (!empty($data["virtual"]) || $data["type"] == 2) {
                     $isvirtual = true;

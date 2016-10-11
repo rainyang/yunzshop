@@ -5,6 +5,7 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 @session_start();
 setcookie('preUrl', $_W['siteurl']);
+$operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid         = m('user')->getOpenid();
 $popenid        = m('user')->islogin();
 $openid         = $openid?$openid:$popenid;
@@ -197,6 +198,35 @@ $groupid           = $member['groupid'];
 $commissionprice = p('commission')->getCommission($goods);
 
 if ($_W['isajax']) {
+    if ($operation == 'can_buy') {
+        $id = intval($_GPC['id']);
+        $can_buy_goods = pdo_fetch(" SELECT id,dispatchsend,isverifysend,storeids FROM " .tablename('sz_yi_goods'). " WHERE id=:id and uniacid=:uniacid", array(':id' => $id, ':uniacid' => $_W['uniacid']));
+        if ($can_buy_goods['isverify'] == 2) {
+            $a = 0;
+            if ($can_buy_goods['isverifysend'] == 1) {
+                $a += 1;
+            }
+            if ($can_buy_goods['dispatchsend'] == 1) {
+                $a += 1;
+            }
+            $can_buy_goods['storeids'] = explode(',', $can_buy_goods['storeids']);
+            if (empty($can_buy_goods['storeids'])) {
+                $a += 1;
+            } else {
+                foreach ($can_buy_goods['storeids'] as $c) {
+                    $store_c = pdo_fetchcolumn(" SELECT myself_support FROM " .tablename('sz_yi_store'). " WHERE id=:id and uniacid=:unaicid", array(':id' => $c, ':uniacid' => $_W['uniacid']));
+                    if (!empty($store_c)) {
+                        $a += 1;
+                    }
+                }
+            }
+        }
+        if ($a == 0) {
+            show_json(0, '抱歉！因为此商品不支持任何配送方式，故暂不支持购买，请联系运营人员了解详情');
+        } else {
+            show_json(1);
+        }
+    }
     if (p('channel')) {
         $ischannelpay   = intval($_GPC['ischannelpay']);
         $ischannelpick  = intval($_GPC['ischannelpick']);
@@ -535,6 +565,7 @@ if($goods['tcate']){
         show_json(1, $ret);
 
 }
+
 $_W['shopshare'] = array(
     'title' => !empty($goods['share_title']) ? $goods['share_title'] : $goods['title'],
     'imgUrl' => !empty($goods['share_icon']) ? tomedia($goods['share_icon']) : tomedia($goods['thumb']),

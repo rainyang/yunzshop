@@ -457,28 +457,7 @@ if ($operation == "change") {
             if (empty($_GPC['thumbs'])) {
                 $_GPC['thumbs'] = array();
             }
-            if ($_GPC['isverify'] == 2 && $_GPC['isverifysend'] == 0) {
-                if (!empty($_GPC['storeids'])) {
-                    $storeids = $_GPC['storeids'];
-                    $a = 0;
-                    foreach ($storeids as $v) {
-                        $stores = pdo_fetch("SELECT * FROM " . tablename('sz_yi_store') . " WHERE id=" . $v);
-                        if ($stores['myself_support'] == 1) {
-                            $a += 1;
-                        }
-                    }
-                    if ($a == 0) {
-                        message('由于此商品所支持的门店都不支持自提选项，为了避免出现错误，所以您要填写支持配送核销！');
-                    }
-                } else {
 
-                    $stores = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_store') . " WHERE uniacid=:uniacid and status=1 and myself_support=1",
-                        array(':uniacid' => $_W['uniacid']));
-                    if (empty($stores)) {
-                        message('由于此商品所支持的门店都不支持自提选项，为了避免出现错误，所以您要填写支持配送核销！');
-                    }
-                }
-            }
             if($_GPC['discountway'] == 1){
                 if($_GPC['discounttype'] == 1){
                     foreach ($_GPC['discounts'] as $value) {
