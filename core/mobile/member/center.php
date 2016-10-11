@@ -210,12 +210,18 @@ if ($_W['isajax']) {
     } else {
     	$show_channel_center = false;
     }
+    if ($pluginbonus && is_weixin_show() && !empty($shopset['bonus_start']) && empty($bonus_set['bonushow'])) {
+    	$show_bonus_center = true;
+    } else {
+    	$show_bonus_center = false;
+    }
     $variable = array(
         'yunbiset'=> $yunbiset,
         'show_af_supplier' => $show_af_supplier,
         'show_supplier_center' => $show_supplier_center,
         'show_af_channel' => $show_af_channel,
-        'show_channel_center' => $show_channel_center
+        'show_channel_center' => $show_channel_center,
+        'show_bonus_center' => $show_bonus_center
     );
 	return show_json(1, array('member' => $member,'referrer'=>$referrer,'shop_set'=>$shop_set, 'order' => $order,'orderhotel' => $orderhotel,'memberhotel'=>$memberhotel,'level' => $level, 'open_creditshop' => $open_creditshop, 'counts' => $counts, 'shopset' => $shopset, 'trade' => $trade, 'app'=>$app, 'set'=> $set),$variable);
 
