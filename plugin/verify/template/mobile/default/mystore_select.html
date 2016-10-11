@@ -420,7 +420,7 @@ ul, li { list-style:none; margin:0; padding:0 }
         function getTotalPrice(){
             require(['core'],function(core){
 
-                core.pjson('verify/add',{op:'display',ischannelpick:"{$_GPC['ischannelpick']}", ischannelpay:"{$_GPC['ischannelpay']}", storeid:"{$_GPC['storeid']}"},function(ret){
+                core.pjson('verify/add',{op:'display', storeid:"{$_GPC['storeid']}"},function(ret){
                      $('#alltotal').html(ret.result.counttotal);
                      $('#totalprice').html('总价：￥' + ret.result.totalprice + ret.result.difference);
 
@@ -500,7 +500,7 @@ ul, li { list-style:none; margin:0; padding:0 }
                      }
         }*/
 
-        core.pjson('verify/select_category',{op:'category',ischannelpick:"{$_GPC['ischannelpick']}",level:3,storeid:{$_GPC['storeid']}}, function (json) {
+        core.pjson('verify/select_category',{op:'category',level:3,storeid:{$_GPC['storeid']}}, function (json) {
                  result = json.result;
                  category = result.category;
                  if (result) {
