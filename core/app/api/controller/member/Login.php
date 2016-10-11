@@ -59,7 +59,7 @@ class Login extends YZ
         session_set_cookie_params($lifeTime);
         $cookieid = "__cookie_sz_yi_userid_{$_W['uniacid']}";
         if (is_app()) {
-            //setcookie($cookieid, base64_encode($openid), time()+3600*24*7,'/');
+            setcookie($cookieid, base64_encode($openid), time()+3600*24*7,'/');
         } else {
             setcookie($cookieid, base64_encode($openid),0,'/');
         };
