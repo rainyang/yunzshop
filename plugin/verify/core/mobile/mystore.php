@@ -11,6 +11,7 @@ if(!isMobile() && $this->yzShopSet['ispc']==1){
   header('location: ' . $shopurl);
   exit;
 }
+$shopset    = set_medias(m('common')->getSysset(array('share','shop')), 'catadvimg');
 $id = intval($_GPC{'storeid'});
 $store = pdo_fetch('SELECT * FROM '.tablename('sz_yi_store')." WHERE id=".$id);
 if ($operation == 'reset') {
