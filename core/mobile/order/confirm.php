@@ -185,7 +185,7 @@ if ($_W['isajax']) {
 
                 $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             }else{
-                $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+                $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,dispatchsend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             }
             $data = pdo_fetch($sql, array(
 
@@ -321,6 +321,9 @@ if ($_W['isajax']) {
             }
             if ($g['isverifysend'] == 1) {
                 $isverifysend = true;
+            }
+            if ($g['dispatchsend'] == 1) {
+                $dispatchsend = true;
             }
             if (!empty($g['virtual']) || $g['type'] == 2) {
                 $isvirtual = true;
@@ -626,7 +629,7 @@ if ($_W['isajax']) {
 
         //如果开启核销并且不支持配送，则没有运费
         $isDispath = true;
-        if ($isverify && !$isverifysend) {
+        if ($isverify && !$isverifysend && !$dispatchsend) {
             $isDispath = false;
         }
 
@@ -957,6 +960,7 @@ if ($_W['isajax']) {
             'dispatch_list' => $dispatch_list,
             'isverify' => $isverify,
             'isverifysend' => $isverifysend,
+            'dispatchsend' => $dispatchsend,
             'stores' => $stores,
             'isvirtual' => $isvirtual,
             'changenum' => $changenum,
@@ -1001,7 +1005,7 @@ if ($_W['isajax']) {
         $deductenough_enough = 0;
         $sale_plugin = p('sale');
         $saleset     = false;
-        if ($sale_plugin && $supplier_uid==0) {
+        if ($sale_plugin) {
             $saleset = $sale_plugin->getSet();
             $saleset["enoughs"] = $sale_plugin->getEnoughs();
         }
@@ -1011,7 +1015,7 @@ if ($_W['isajax']) {
             $totalprice = round(floatval($level["discount"]) / 10 * $totalprice, 2);
         }
 
-        if ($sale_plugin && $supplier_uid==0) {
+        if ($sale_plugin) {
             if ($saleset) {
                 foreach ($saleset["enoughs"] as $e) {
                     if ($totalprice >= floatval($e["enough"]) && floatval($e["money"]) > 0 && floatval($e["enough"]) >= $deductenough_enough) {
@@ -1352,27 +1356,27 @@ if ($_W['isajax']) {
             }
 
         }
-        if ($store_total) {
-            if (!empty($goodid)) {
-
-                $optionid = intval($_GPC['optionid']);
-                $total = $_GPC['total'];
-                $storegoodtotal = pdo_fetchcolumn(" SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:goodsid and optionid=:optionid and storeid=:storeid and uniacid=:uniacid", array(':goodsid' => $goodsid, ':optionid' => $optionid, ':storeid' => $storeid, ':uniacid' => $_W['uniacid']));
-                if ($total > $storegoodtotal && !empty($storeid)) {
-                    show_json(-1);
-                }
-            } else if (!empty($cartids)) {
-
-                $carts = pdo_fetchall(" SELECT * FROM ".tablename('sz_yi_member_cart'). " WHERE id in (".$cartids.") and uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
-                foreach ($carts as $cart) {
-
-                    $total = pdo_fetchcolumn(" SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:id and uniacid=:uniacid and storeid=:storeid and optionid=:optionid", array(':id' => $cart['goodsid'], ':uniacid' => $_W['uniacid'], ':storeid' => $storeid, ':optionid' => $cart['optionid']));
-                    if ($total > $cart['total'] && !empty($storeid)) {
-                        show_json(-1);
-                    }
-                }
-            }
-        }
+//        if ($store_total) {
+//            if (!empty($goodid)) {
+//
+//                $optionid = intval($_GPC['optionid']);
+//                $total = $_GPC['total'];
+//                $storegoodtotal = pdo_fetchcolumn(" SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:goodsid and optionid=:optionid and storeid=:storeid and uniacid=:uniacid", array(':goodsid' => $goodsid, ':optionid' => $optionid, ':storeid' => $storeid, ':uniacid' => $_W['uniacid']));
+//                if ($total > $storegoodtotal && !empty($storeid)) {
+//                    show_json(-1);
+//                }
+//            } else if (!empty($cartids)) {
+//
+//                $carts = pdo_fetchall(" SELECT * FROM ".tablename('sz_yi_member_cart'). " WHERE id in (".$cartids.") and uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
+//                foreach ($carts as $cart) {
+//
+//                    $total = pdo_fetchcolumn(" SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:id and uniacid=:uniacid and storeid=:storeid and optionid=:optionid", array(':id' => $cart['goodsid'], ':uniacid' => $_W['uniacid'], ':storeid' => $storeid, ':optionid' => $cart['optionid']));
+//                    if ($total > $cart['total'] && !empty($storeid)) {
+//                        show_json(-1);
+//                    }
+//                }
+//            }
+//        }
 
         show_json(1, array(
             "price" => $dispatch_price,
@@ -1776,10 +1780,17 @@ if ($_W['isajax']) {
                 }
                 $data["realprice"] = $ggprice;
                 $totalprice += $ggprice;
+                $dispatchsend = false;
+                if ($dispatchtype == '2') {
+                    $dispatchtype = '0';
+                    $dispatchsend = true;
+                }
 
-                if ($data['isverify'] == 2) {
+                if ($data['isverify'] == 2 && !$dispatchsend) {
                     $isverify = true;
                 }
+
+
                 if (empty($dispatchtype) && $isverify) {
                     $isverifysend = true;
                 }

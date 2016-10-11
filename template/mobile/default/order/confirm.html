@@ -493,12 +493,10 @@ var fromcart = 0;
             return;
         }
         $('#confirm_container').html(tpl('tpl_confirm_info', json.result));
-	        if ($('#dispatchtype').val() == 1) {   //自提没有运费
-	        	getDispatchPrice(true);
-	        }
+
             {if !empty($order_formInfo)}
                 {template 'diyform/common_js'}
-            {/if} 
+            {/if}
 
             $('.leftnav').click(function(){
                 var input =$(this).next();
@@ -866,6 +864,7 @@ var fromcart = 0;
                   total:$('.shownum').val()
               }, function(getjson) {
                   if (getjson.status == 1) {
+
                       if(zt){
                           $('.dispatchprice[data-id='+supplier_uid+']').html('0.00');
                       } else {
@@ -918,9 +917,6 @@ var fromcart = 0;
                         $("input[data-name='goods'][data-id="+supplier_uid+"]").val(goodsid + "," + optionid +"," + num + '|');
                       }
 
-                  } else {
-                    core.tip.show('抱歉，此门店库存不足！');
-                    return;
                   }
               }, true);
             };
@@ -956,7 +952,9 @@ var fromcart = 0;
 
             }, true);
         }
-
+        if ($('#dispatchtype').val() == 1) {
+            getDispatchPrice(true);
+        }
         $('#address_new').click(function() {
             addAddress($(this));
         });
