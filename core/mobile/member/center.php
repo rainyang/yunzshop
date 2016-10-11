@@ -210,7 +210,7 @@ if ($_W['isajax']) {
     } else {
     	$show_channel_center = false;
     }
-    if ($pluginbonus && is_weixin_show() && !empty($shopset['bonus_start']) && empty($bonus_set['bonushow'])) {
+    if ($pluginbonus && is_weixin_show() && !empty($shopset['bonus_start'])) {
     	$show_bonus_center = true;
     } else {
     	$show_bonus_center = false;
