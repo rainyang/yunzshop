@@ -120,17 +120,29 @@ class Account extends YZ
 
         if ($trigger == 'display') {
             $user_info = $this->callMobile('member/info');
+
+            switch ($user_info['json']['member']['gender']) {
+                case '1':
+                    $gender = '男';
+                    break;
+                case '2':
+                    $gender = '女';
+                    break;
+                default:
+                    $gender = '';
+            }
 //echo '<pre>';print_r($user_info);exit;
             $res = array(
                 'realname' =>$user_info['json']['member']['realname'],
                 'mobile' =>$user_info['json']['member']['mobile'],
                 'weixin' =>$user_info['json']['member']['weixin'],
-                'gender' =>$user_info['json']['member']['gender'],
+                'gender' => $gender,
                 'birthyear' =>$user_info['json']['member']['birthyear'],
                 'birthmonth' =>$user_info['json']['member']['birthmonth'],
                 'birthday' =>$user_info['json']['member']['birthday'],
                 'province' =>$user_info['json']['member']['province'],
                 'city' =>$user_info['json']['member']['city'],
+                'area' => '',
                 'alipay' =>$user_info['json']['member']['alipay'],
                 'alipayname' =>$user_info['json']['member']['alipayname'],
             );
