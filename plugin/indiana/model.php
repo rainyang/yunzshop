@@ -14,6 +14,7 @@ if (!class_exists('IndianaModel')) {
 		
 		public function setPeriod($id)
 		{
+			//设置本期
 			global $_W, $_GPC;
 			$indiana_good = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_indiana_goods') . " WHERE uniacid = '" .$_W['uniacid'] . "' AND id = '".$id."'");
 
@@ -280,6 +281,9 @@ if (!class_exists('IndianaModel')) {
 				'ip' 			=> $_SERVER['REMOTE_ADDR']
 			);
 			pdo_insert("sz_yi_indiana_consumerecord",$consumerecord);	
+			if ($shengyu_codes <= 0) {
+
+			}	
 
 		}
 
