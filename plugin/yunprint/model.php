@@ -2,7 +2,7 @@
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
-define('IP','115.28.225.82');
+define('IP','api163.feieyun.com');
 define('PORT','80');
 define('HOSTNAME','/FeieServer/');
 //以下2项是平台相关的设置，您不需要更改
@@ -21,6 +21,7 @@ if (!class_exists('YunprintModel')) {
         function feiyin_print ($print_order,$member_code,$device_no,$key, $offers)
         {   
             $orderinfo = "";
+            $shopname = '';
             $address = unserialize($print_order['address']);
             if (!empty($offers)) {
                 if ($offers['createtime'] == 1) {
@@ -86,6 +87,11 @@ if (!class_exists('YunprintModel')) {
                 if ($offers['dispatchprice'] == 1) {
                     $orderinfo .= "运费：              {$print_order['dispatchprice']}\n";
                 }
+                if ($offers['shopname'] == 1) {
+                    $shopname = "
+商城：{$print_order['shopname']}\n
+-------------------------";
+                }
             }
             $orderinfo .= "实际支付：         {$print_order['price']}\n";
             if (!empty($offers)) {
@@ -100,8 +106,7 @@ if (!class_exists('YunprintModel')) {
                 'memberCode'=>$member_code, 
                 'msgDetail'=>
                 "
-商城：{$print_order['shopname']}
--------------------------
+{$shopname}
 订单号:{$print_order['ordersn']}
 {$orderinfo}
             ",
@@ -129,64 +134,98 @@ if (!class_exists('YunprintModel')) {
             if(!$clientt->post('/api/sendMsg',$msgInfo)){ //提交失败
                 return 'faild';
             }else{
-                echo "<pre>";print_r($clientt->getContent());exit;
                 return $clientt->getContent();
             }
         }
 
-        function feie_print ($order,$printer_sn,$key,$times,$url, $offers)
+        function feie_print ($print_order,$printer_sn,$key,$times,$url, $offers)
         {
             //标签说明："<BR>"为换行符,"<CB></CB>"为居中放大,"<B></B>"为放大,"<C></C>"为居中,"<L></L>"为字体变高
             //"<W></W>"为字体变宽,"<QR></QR>"为二维码,"<CODE>"为条形码,后面接12个数字
-            $address = unserialize($order['address']);
-            $goods = "";
-            $num = 1;
-            foreach ($order['goods'] as $value) {
-                $goods .= " ".$num."    ".$value['goodstitle']."<BR>                         ".$value['marketprice']."      ".$value['total']."    ".$value['price']."<BR>";
-                $num++;
-            }
-            $time = date('Y-m-d H:i:s',$order['createtime']);
-            $orderInfo = "<CB><LOGO>{$order['shopname']}</CB><BR>";
-            $orderInfo .= "订单编号：{$order['ordersn']}<BR>";
-            $orderInfo .= "订购时间：{$time}<BR>";
-            $orderInfo .= "客户姓名：{$address['realname']}<BR>";
-            $orderInfo .= "联系方式：{$address['mobile']}<BR>";
-            $orderInfo .= "配送地址：{$address['city']}{$address['area']}{$address['address']}<BR>";
-            $orderInfo .= "订单备注：{$order['remark']}<BR>";
-            $orderInfo .= "================================================<BR>";
-            $orderInfo .= "序号  商品名称           单价   数量  金额<BR>";
-            $orderInfo .= "{$goods}<BR>";
-            $orderInfo .= "================================================<BR>";
-            $orderInfo .= "合计：                          {$order['goodsprice']}<BR>";
-            $statement = "";
+            $orderinfo = "";
+            $shopname = '';
+            $address = unserialize($print_order['address']);
             if (!empty($offers)) {
+                if ($offers['shopname'] == 1) {
+                    $orderinfo .= "
+                                <LOGO><CB>{$print_order['shopname']}</CB><BR>
+                                ================================<BR>";
+                }
+            }
+            $orderinfo .= "订单编号：{$print_order['ordersn']}<BR>";
+            if (!empty($offers)) {
+                if ($offers['createtime'] == 1) {
+                    $createtime = date('Y-m-d H:i', $print_order['createtime']);
+                    $orderinfo .= "订购时间：{$createtime}<BR>";
+                }
+                if ($offers['realname'] == 1) {
+                    $orderinfo .= "客户姓名：{$address['realname']}<BR>";
+                }
+                if ($offers['mobile'] == 1) {
+                    $orderinfo .= "联系方式：{$address['mobile']}<BR>";
+                }
+                if ($offers['address'] == 1) {
+                    $orderinfo .= "配送地址：{$address['province']}{$address['city']}{$address['area']}{$address['address']}<BR>";
+                }
+                if ($offers['remark'] == 1) {
+                    $orderinfo .= "订单备注：{$print_order['remark']}<BR>";
+                }
+                if ($offers['diy'] == 1) {
+                    $diydata = unserialize($print_order['diyformdata']);
+                    $diyformfields = unserialize($print_order['diyformfields']);
+                    if (!empty($diyformfields)) {
+                        foreach ($diyformfields as $k => $v) {
+                            if (!empty($diydata)) {
+                                $orderinfo .= "{$v['tp_name']}：{$diydata[$k]}<BR>";
+                            } else {
+                                $orderinfo .= "{$v['tp_name']}：{$v['tp_default']}<BR>";
+                            }
+                        }
+                    }
+                }
+                if ($offers['goodsinfo'] == 1) {
+                    $goods = "";
+                    $num = 1;
+                    foreach ($print_order['goods'] as $value) {
+                        $goods .= " " . $num . " " . $value['title'] . "<BR>" . $value['marketprice'] . " " . $value['total'] . " " . $value['price'] . "<BR>";
+                        $num++;
+                    }
+                    $orderinfo .= "
+                                ================================<BR>
+                                序号 商品名称 单价 数量  金额<BR>               
+                                {$goods}<BR>
+                                ================================<BR>";
+                }
+                if ($offers['goodsprice'] == 1) {
+                    $orderinfo .= "商品合计：           {$print_order['goodsprice']}<BR>";
+                }
                 if ($offers['discountprice'] == 1) {
-                    $orderInfo .= "会员折扣：               {$order['discountprice']}<BR>";
+                    $orderinfo .= "会员折扣：           {$print_order['discountprice']}<BR>";
                 }
                 if ($offers['deductcredit2'] == 1) {
-                    $orderInfo .= "余额抵扣：               {$order['deductcredit2']}<BR>";
+                    $orderinfo .= "余额抵扣：           {$print_order['deductcredit2']}<BR>";
                 }
                 if ($offers['deductenough'] == 1) {
-                    $orderInfo .= "满额优惠：               {$order['deductenough']}<BR>";
+                    $orderinfo .= "满额优惠：           {$print_order['deductenough']}<BR>";
                 }
                 if ($offers['deductprice'] == 1) {
-                    $orderInfo .= "积分抵扣：               {$order['deductprice']}<BR>";
+                    $orderinfo .= "积分抵扣：           {$print_order['deductprice']}<BR>";
                 }
                 if ($offers['couponprice'] == 1) {
-                    $orderInfo .= "优惠项目：               {$order['couponprice']}<BR>";
+                    $orderinfo .= "优惠项目：           {$print_order['couponprice']}<BR>";
                 }
                 if ($offers['dispatchprice'] == 1) {
-                    $orderinfo .= "运费：                   {$print_order['dispatchprice']}<BR>";
+                    $orderinfo .= "运费：                {$print_order['dispatchprice']}<BR>";
+                }
+                if ($offers['url'] == 1) {
+                    $orderinfo .= "
+                                ================================<BR>
+                                <QR>{$url}</QR>";
                 }
             }
-            $orderInfo .= "实际支付：                    {$order['price']}<BR>";
-            $orderInfo .= "================================================<BR>";
-            $orderInfo .= "{$statement}";
-            $orderInfo .= "客户签收：<BR>";
-            $orderInfo .= "<QR>{$url}</QR>";//把二维码字符串用标签套上即可自动生成二维码
             $content = array(
                 'sn'=>$printer_sn,  
-                'printContent'=>$orderInfo,
+                'printContent'=>$orderinfo,
                 //'apitype'=>'php',//如果打印出来的订单中文乱码，请把注释打开
                 'key'=>$key,
                 'times'=>$times//打印次数
@@ -196,7 +235,8 @@ if (!class_exists('YunprintModel')) {
                 echo 'error';
             }
             else{
-                 $this->client->getContent();
+                echo "<pre>";print_r($this->client->getContent());exit;
+                $this->client->getContent();
             }
         }
 
@@ -227,7 +267,7 @@ if (!class_exists('YunprintModel')) {
                 ));
             // mode = 1 飞蛾   mode = 2 飞印
             if ($openprint['mode'] == 1) {
-                $this->feie_print($order, $openprint['member_code'], $openprint['print_no'], $openprint['print_nums'], $offers);
+                $this->feie_print($order, $openprint['print_no'], $openprint['key'], $openprint['print_nums'], $openprint['qrcode_link'],$offers);
             }
             if ($openprint['mode'] == 2) {
                 $this->feiyin_print($order, $openprint['member_code'], $openprint['print_no'], $openprint['key'], $offers);

@@ -15,6 +15,7 @@ if ($op == 'print_post') {
                 ':uniacid'  => $_W['uniacid'],
                 ':status'   => 1
             ));
+        $data = array();
         $data['status'] = intval($_GPC['status']);
         if ($result['id'] != $id) {
             if (!empty($result) && $data['status'] == 1) {

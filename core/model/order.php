@@ -250,13 +250,13 @@ class Sz_DYi_Order
                         }   
                     }
                 }
-                // //云打印
-                // if (p('yunprint')) {
-                //     $yunprint_set = p('yunprint')->getSet();
-                //     if ($yunprint_set['isopenprint'] == 1) {
-                //         p('yunprint')->executePrint($order['id']);
-                //     }
-                // }
+                //云打印
+                if (p('yunprint')) {
+                    $yunprint_set = p('yunprint')->getSet();
+                    if ($yunprint_set['isopenprint'] == 1) {
+                        p('yunprint')->executePrint($order['id']);
+                    }
+                }
                 //支付后订单打印
                 if(p('hotel')){
                 //打印订单      
