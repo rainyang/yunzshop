@@ -68,10 +68,6 @@ class Balance extends YZ
             } else {
                 $this->returnError("请重新登录!");
             }
-
-
-
         }
-
     }
 }
