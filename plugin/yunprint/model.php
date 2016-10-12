@@ -19,64 +19,91 @@ if (!class_exists('YunprintModel')) {
         }
 
         function feiyin_print ($print_order,$member_code,$device_no,$key, $offers)
-        {
-            $orderinfo = "合计：                   {$print_order['goodsprice']}\n";
-            $statement = "";
+        {   
+            $orderinfo = "";
+            $address = unserialize($print_order['address']);
             if (!empty($offers)) {
+                if ($offers['createtime'] == 1) {
+                    $createtime = date('Y-m-d H:i', $print_order['createtime']);
+                    $orderinfo .= "订购时间：{$createtime}\n";
+                }
+                if ($offers['realname'] == 1) {
+                    $orderinfo .= "客户姓名：{$address['realname']}\n";
+                }
+                if ($offers['mobile'] == 1) {
+                    $orderinfo .= "联系方式：{$address['mobile']}\n";
+                }
+                if ($offers['address'] == 1) {
+                    $orderinfo .= "配送地址：{$address['province']}{$address['city']}{$address['area']}{$address['address']}\n";
+                }
+                if ($offers['remark'] == 1) {
+                    $orderinfo .= "订单备注：{$print_order['remark']}\n";
+                }
+                if ($offers['diy'] == 1) {
+                    $diydata = unserialize($print_order['diyformdata']);
+                    $diyformfields = unserialize($print_order['diyformfields']);
+                    if (!empty($diyformfields)) {
+                        foreach ($diyformfields as $k => $v) {
+                            if (!empty($diydata)) {
+                                $orderinfo .= "{$v['tp_name']}：{$diydata[$k]}\n";
+                            } else {
+                                $orderinfo .= "{$v['tp_name']}：{$v['tp_default']}\n";
+                            }
+                        }
+                    }
+                }
+                if ($offers['goodsinfo'] == 1) {
+                    $goods = "";
+                    $num = 1;
+                    foreach ($print_order['goods'] as $value) {
+                        $goods .= " " . $num . " " . $value['title'] . "\n" . $value['marketprice'] . " " . $value['total'] . " " . $value['price'] . "\n";
+                        $num++;
+                    }
+                    $orderinfo .= "
+-------------------------
+序号 商品名称 单价 数量  金额               
+{$goods}\n
+-------------------------";
+                }
+                if ($offers['goodsprice'] == 1) {
+                    $orderinfo .= "商品合计：         {$print_order['goodsprice']}\n";
+                }
                 if ($offers['discountprice'] == 1) {
-                    $orderinfo .= "会员折扣：               {$print_order['discountprice']}\n";
+                    $orderinfo .= "会员折扣：           {$print_order['discountprice']}\n";
                 }
                 if ($offers['deductcredit2'] == 1) {
-                    $orderinfo .= "余额抵扣：               {$print_order['deductcredit2']}\n";
+                    $orderinfo .= "余额抵扣：           {$print_order['deductcredit2']}\n";
                 }
                 if ($offers['deductenough'] == 1) {
-                    $orderinfo .= "满额优惠：               {$print_order['deductenough']}\n";
+                    $orderinfo .= "满额优惠：           {$print_order['deductenough']}\n";
                 }
                 if ($offers['deductprice'] == 1) {
-                    $orderinfo .= "积分抵扣：               {$print_order['deductprice']}\n";
+                    $orderinfo .= "积分抵扣：           {$print_order['deductprice']}\n";
                 }
                 if ($offers['couponprice'] == 1) {
-                    $orderinfo .= "优惠项目：               {$print_order['couponprice']}\n";
+                    $orderinfo .= "优惠项目：           {$print_order['couponprice']}\n";
                 }
                 if ($offers['dispatchprice'] == 1) {
-                    $orderinfo .= "运费：                   {$print_order['dispatchprice']}\n";
-                }
-                if (!empty($offers['statement'])) {
-                    $statement = $offers['statement'];
-                    $statement = str_replace('[换行]', "\n", $statement);
+                    $orderinfo .= "运费：              {$print_order['dispatchprice']}\n";
                 }
             }
-            $orderinfo .= "实际支付：               {$print_order['price']}\n";
-            $goods = "";
-            $num = 1;
-            foreach ($print_order['goods'] as $value) {
-                $goods .= "  ".$num."  ".$value['goodstitle']."\n             ".$value['marketprice']." ".$value['total']."   ".$value['price']."\n";
-                $num++;
+            $orderinfo .= "实际支付：         {$print_order['price']}\n";
+            if (!empty($offers)) {
+                if ($offers['usersign'] == 1) {
+                    $orderinfo .= "
+-------------------------
+客户签收：";
+                }
             }
-            
             $msgNo = $print_order['ordersn'];
-            $address = unserialize($print_order['address']);
-            $time = date('Y-m-d H:i:s',$print_order['createtime']);
             $freeMessage = array(
                 'memberCode'=>$member_code, 
                 'msgDetail'=>
                 "
-    {$print_order['shopname']}
-------------------------------
-订单编号：{$msgNo}
-订购时间：{$time}
-客户姓名：{$address['realname']}
-联系方式：{$address['mobile']}
-配送地址：{$address['province']}{$address['city']}{$address['area']}{$address['address']}
-订单备注：{$print_order['remark']}
-------------------------------
-序号 商品名称 单价 数量  金额
-{$goods}
-------------------------------
+商城：{$print_order['shopname']}
+-------------------------
+订单号:{$print_order['ordersn']}
 {$orderinfo}
-------------------------------
-{$statement}
-客户签收：
             ",
                 'deviceNo'=>$device_no, 
                 'msgNo'=>$msgNo
@@ -203,7 +230,7 @@ if (!class_exists('YunprintModel')) {
                 $this->feie_print($order, $openprint['member_code'], $openprint['print_no'], $openprint['print_nums'], $offers);
             }
             if ($openprint['mode'] == 2) {
-                $this->feiyin_print($order, $openprint['member_code'], $openprint['print_no'], $openprint['key'], $openprint['qrcode_link'], $offers);
+                $this->feiyin_print($order, $openprint['member_code'], $openprint['print_no'], $openprint['key'], $offers);
             }
         }
 
