@@ -145,10 +145,11 @@ if (!class_exists('YunprintModel')) {
             $orderinfo = "";
             $shopname = '';
             $address = unserialize($print_order['address']);
+            $orderinfo .= "<LOGO><BR>";
             if (!empty($offers)) {
                 if ($offers['shopname'] == 1) {
                     $orderinfo .= "
-                                <LOGO><CB>{$print_order['shopname']}</CB><BR>
+                                <CB>{$print_order['shopname']}</CB><BR>
                                 ================================<BR>";
                 }
             }
