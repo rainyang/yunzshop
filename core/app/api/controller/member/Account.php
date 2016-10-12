@@ -18,11 +18,13 @@ class Account extends YZ
     {
         parent::__construct();
 
-        $this->_json_datas = $this->callMobile('member/center');
+
     }
 
     public function index()
-    { //echo '<pre>';print_r($this->_json_datas);exit;
+    {
+        $this->_json_datas = $this->callMobile('member/center');
+        //echo '<pre>';print_r($this->_json_datas);exit;
         if (!empty($this->_json_datas) && !empty($this->_json_datas['json']['member'])) {
               //会员信息
               $res['info'] = array(
@@ -110,5 +112,41 @@ class Account extends YZ
         order.status2 收货
         order.status4*/
         return $res;
+    }
+
+    public function info()
+    {
+        $trigger = !empty($_REQUEST['trigger']) ? $_REQUEST['trigger'] : 'display';
+
+        if ($trigger == 'display') {
+            $user_info = $this->callMobile('member/info');
+//echo '<pre>';print_r($user_info);exit;
+            $res = array(
+                'realname' =>$user_info['json']['member']['realname'],
+                'mobile' =>$user_info['json']['member']['mobile'],
+                'weixin' =>$user_info['json']['member']['weixin'],
+                'gender' =>$user_info['json']['member']['gender'],
+                'birthyear' =>$user_info['json']['member']['birthyear'],
+                'birthmonth' =>$user_info['json']['member']['birthmonth'],
+                'birthday' =>$user_info['json']['member']['birthday'],
+                'province' =>$user_info['json']['member']['province'],
+                'city' =>$user_info['json']['member']['city'],
+                'alipay' =>$user_info['json']['member']['alipay'],
+                'alipayname' =>$user_info['json']['member']['alipayname'],
+            );
+
+            if ($user_info) {
+                $this->returnSuccess($res);
+            } else {
+                $this->returnError("请重新登录!");
+            }
+        } else if ($trigger == 'post') {
+            $_W['ispost'] = true;
+
+            $res = $this->callMobile('member/info');
+
+            $this->returnSuccess($res);
+        }
+
     }
 }
