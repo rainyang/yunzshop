@@ -29,19 +29,48 @@ class Balance extends YZ
         $member = m('member')->getMember($openid);
 
         if ($trigger == 'display') {
-            if ($member) {
+            if ($openid) {
                 $res = array('credit2' => $member['credit2'], 'openid' => $openid);
 
                 $this->returnSuccess($res);
             } else {
                 $this->returnError("请重新登录!");
             }
-        } else if ($trigger == 'post') {
-            $parames = array('openid', 'money', 'assigns', 'yunbi'=>'0');
+        } else if ($trigger == 'get') {
+            //api  /member/Balance/transfer&trigger=get&openid=x&money=x&assigins=x&yunbi=0
 
-            $json_data = $this->callMobile('member/transfer/submit');
+            if ($openid) {
+                $json_data = $this->callMobile('member/transfer/submit');
 
-            print_r($json_data);exit;
+                $this->returnSuccess($json_data);
+            } else {
+                $this->returnError("请重新登录!");
+            }
+        } else if ($trigger == 'list') {
+            //api  /member/Balance/transfe&trigger=list&type=1
+
+            if ($openid) {
+                $jsons = $this->callMobile('member/transfer_log');
+
+                foreach ($jsons['json']['list'] as $list) {
+                    if ($list['type'] == 1) {
+                        $txt = '转让金额';
+                        $status = '转让成功';
+                    } else {
+                        $txt = '受让金额';
+                        $status = '受让成功';
+                    }
+
+                    $res[] = array('txt'=>$txt,'money'=>$list['money'],'time'=>$list['createtime'],'status'=>$status, 'name'=>$list['name']);
+                }
+
+                $this->returnSuccess($res);
+            } else {
+                $this->returnError("请重新登录!");
+            }
+
+
+
         }
 
     }
