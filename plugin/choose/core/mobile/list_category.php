@@ -74,22 +74,22 @@ if ($operation == 'category') {
 			$goodsid = implode(',', $goodsid);
 			
 			$parent_category = pdo_fetchall('SELECT distinct c.id,c.parentid,c.name,c.level FROM ' . tablename('sz_yi_category') . ' c left join ' .tablename('sz_yi_goods'). ' g on c.id = g.pcate '.' WHERE c.uniacid=:uniacid AND c.parentid=0 and g.id in ('.$goodsid.') ', array(':uniacid' => $uniacid));
-			
-			foreach ($parent_category as $v) {
-				$ids[] = $v['id'];
-			}
-			if (!empty($ids)) {
-				$sql = 'SELECT id,parentid,name,level FROM ' . tablename('sz_yi_category') . ' WHERE uniacid=:uniacid AND parentid in ('.implode(',',$ids).') ' ;
-				$children_category = pdo_fetchall($sql, array(':uniacid' => $uniacid));	
-				foreach ($children_category as $v1) {
-					$ids1[] = $v1['id'];
-				}
-				if (!empty($ids1)) {
-					$sql1 = 'SELECT id,parentid,name,level FROM ' . tablename('sz_yi_category') . ' WHERE uniacid=:uniacid AND parentid in ('.implode(',',$ids1).') ' ;
-					$third_category = pdo_fetchall($sql1, array(':uniacid' => $uniacid));	
-				}
-					
-			}
+
+            foreach ($parent_category as $v) {
+                $ids[] = $v['id'];
+            }
+            if (!empty($ids)) {
+                $sql = 'SELECT a.id,a.parentid,a.name,a.level FROM ' . tablename('sz_yi_category') . ' a left join ' .tablename('sz_yi_goods'). ' b on a.id=b.ccate WHERE a.uniacid=:uniacid AND a.parentid in ('.implode(',',$ids).') and b.id in ('.$goodsid.')' ;
+                $children_category = pdo_fetchall($sql, array(':uniacid' => $uniacid));
+                foreach ($children_category as $v1) {
+                    $ids1[] = $v1['id'];
+                }
+                if (!empty($ids1)) {
+                    $sql1 = 'SELECT a.id,a.parentid,a.name,a.level FROM ' . tablename('sz_yi_category') . ' a left join ' .tablename('sz_yi_goods'). ' b ON a.id=b.tcate WHERE a.uniacid=:uniacid AND a.parentid in ('.implode(',',$ids1).') AND b.id IN ('.$goodsid.') ' ;
+                    $third_category = pdo_fetchall($sql1, array(':uniacid' => $uniacid));
+                }
+
+            }
 			
 		} elseif ($page['isopen']==1) {//判断是否开启供应商
 		    $parent_category = pdo_fetchall("SELECT a.id,a.parentid,a.name,a.level FROM " . tablename('sz_yi_category') . " a LEFT JOIN  " .tablename('sz_yi_goods'). " b ON (a.id = b.pcate )  WHERE a.parentid=0 AND a.uniacid=:uniacid AND b.isverify=1 AND  b.supplier_uid = :sup_uid GROUP BY a.id ", array(
