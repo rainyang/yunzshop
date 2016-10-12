@@ -36,52 +36,54 @@ class Index extends YZ
             }
         }
         $this->json['navs'] = $navs;
-        $this->returnSuccess($this->json);
+        $data['json'] = $this->json;
+        $this->returnSuccess($data);
     }
 
     private function _getBonusBlockList()
     {
         $member = $this->json['member'];
         $set = $this->json['set'];
-        $list = array(
-            array(
-                'id' => 1,
-                'icon' => '',
-                'title' => $set['texts']['commission'],
-                'value' => $member['commission_total'],
-                'unit' => '元'
-            ), array(
-                'id' => 2,
-                'icon' => '',
-                'title' => $set['texts']['order'],
-                'value' => $member['ordercount0'],
-                'unit' => '个'
-            ), array(
-                'id' => 3,
-                'icon' => '',
-                'title' => $set['texts']['order_area'],
-                'value' => $member['ordercount_area'],
-                'unit' => '个'
-            ), array(
-                'id' => 4,
-                'icon' => '',
-                'title' => $set['texts']['commission_detail'],
-                'value' => '',
-                'unit' => $set['texts']['commission'].'明细'
-            ), array(
-                'id' => 4,
-                'icon' => '',
-                'title' => $set['texts']['mycustomer'],
-                'value' => $member['agentcount'],
-                'unit' => '个'
-            ), array(
-                'id' => 5,
-                'icon' => '',
-                'title' => $set['texts']['mycustomer'],
-                'value' => $member['customercount'],
-                'unit' => '人'
-            )
-        );
+        $list = array();
+        $list[] = array(
+                    'id' => 1,
+                    'icon' => '',
+                    'title' => $set['texts']['commission'],
+                    'value' => $member['commission_total'],
+                    'unit' => '元'
+                    );
+        if(!empty($this->json['level'])){
+            $list[] = array(
+                        'id' => 2,
+                        'icon' => '',
+                        'title' => $set['texts']['order'],
+                        'value' => $member['ordercount0'],
+                        'unit' => '个'
+                    );
+        }
+        if($member['bonus_area'] > 0){
+            $list[] = array(
+                        'id' => 3,
+                        'icon' => '',
+                        'title' => $set['texts']['order_area'],
+                        'value' => $member['ordercount_area'],
+                        'unit' => '个'
+                    );
+        }
+        $list[] = array(
+                    'id' => 4,
+                    'icon' => '',
+                    'title' => $set['texts']['commission_detail'],
+                    'value' => '',
+                    'unit' => $set['texts']['commission'].'明细'
+                );
+        $list[] = array(
+                    'id' => 5,
+                    'icon' => '',
+                    'title' => $set['texts']['mycustomer'],
+                    'value' => $member['agentcount'],
+                    'unit' => '个'
+                );
 
         return $list;
     }

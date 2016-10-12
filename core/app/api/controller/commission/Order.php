@@ -15,30 +15,19 @@ class Order extends YZ
     public function index()
     {
         $result = $this->callPlugin('commission/order');
-        print_r($result);exit();
-        $result['json']['set']['texts']['commission_detail'] = $result['json']['set']['texts']['commission_detail'] . "(" . $result['json']['total'] . ")";
-        $result['json']['set']['texts']['commission_yj'] = "预计".$result['json']['set']['texts']['commission'] . "：+" . $result['json']['commissioncount'] . "元";
-        $commission_sq = "申请".$result['json']['set']['texts']['commission'];
+        $result['json']['set']['texts']['order'] = $result['json']['set']['texts']['order'] . "(" . $result['json']['ordercount'] . ")";
+        $result['json']['set']['texts']['commission_yj'] = "预计: +" . $result['json']['commissioncount'] . "元";
+        $result['json']['set']['texts']['commission'] = "预计" . $result['json']['set']['texts']['commission'];
+        $pageno = $result['json']['ordercount']/$result['json']['pagesize'];   
+        $result['json']['pageno'] = $pageno ? ceil($pageno) : 0;
         foreach ($result['json']['list'] as $key => &$val) {
-        	$val['applyno'] = "编号：" . $val['applyno'];
-            $val['commission_sq'] = $commission_sq . "：" . $val['commission'];
-            switch ($val['status']) {
-                case 1:
-                    $val['commission_sq'] .= " 申请时间：" . $val['dealtime'];
-                    break;
-                case 2:
-                    $val['commission_sq'] .= " 审核时间：" . $val['dealtime'];
-                    break;
-                case 3:
-                    $val['commission_sq'] .= " 打款时间：" . $val['dealtime'];
-                    break;
-                case -1:
-                    $val['commission_sq'] .= " 无效时间：" . $val['dealtime'];
-                    break;
-                default:
-                    break;
+        	$val['ordersn'] = $val['ordersn'] . "(" . $val['level'] . "级）";
+            $val['commission'] = "+" . $val['commission'];
+            $val['weixin'] = "微信号: " . $val['weixin'];
+            foreach ($val['order_goods'] as &$god) {
+                $god['optionname'] = $god['optionname'] . "x" . $god['total'];
+                $god['commission'] = "+" . $god['commission'];
             }
-        	$val['commission_pay'] = "+" . $val['commission_pay'];
         }
         $result['json']['navs'] = array(
             '0' => array("text" => "所有订单", "status" => ""),
