@@ -314,22 +314,12 @@ if ($operation == "display") {
         }
     }
     //Author:ym Date:2016-07-20 Content:订单分组查询
-    $sql = 'select o.* , a.realname as arealname,a.mobile as amobile,a.province as aprovince ,a.city as acity , a.area as aarea,a.address as aaddress, d.dispatchname,m.nickname,m.id as mid,m.realname as mrealname,m.mobile as mmobile,sm.id as salerid,sm.nickname as salernickname,s.salername,r.rtype,r.status as rstatus,o.pay_ordersn, o.dispatchtype, o.isverify, o.storeid from ' . tablename("sz_yi_order") . " o" . " left join " . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename("sz_yi_member_address") . " a on a.id=o.addressid " . " left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . "  where {$condition} {$statuscondition} {$cond} group by o.ordersn_general ORDER BY o.createtime DESC,o.status DESC  ";
+    $sql = 'select o.* , a.realname as arealname,a.mobile as amobile,a.province as aprovince ,a.city as acity , a.area as aarea,a.address as aaddress, d.dispatchname,m.nickname,m.id as mid,m.realname as mrealname,m.mobile as mmobile,sm.id as salerid,sm.nickname as salernickname,s.salername,r.rtype,r.status as rstatus,o.pay_ordersn, o.dispatchtype, o.isverify, o.storeid, cg.id as cgid, cg.ismaster, st.storename, cs.name as csname, cs.thumb as csthumb from ' . tablename("sz_yi_order") . " o" . " left join " . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename("sz_yi_member_address") . " a on a.id=o.addressid " . " left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid " . " left join " .tablename('sz_yi_cancel_goods'). " cg on cg.orderid=o.id and cg.uniacid=o.uniacid "." left join " .tablename('sz_yi_store'). " st on st.id=o.storeid and st.uniacid=o.uniacid "." left join " .tablename('sz_yi_cashier_store'). " cs on cs.id=o.id and cs.uniacid=o.uniacid where {$condition} {$statuscondition} {$cond} group by o.ordersn_general ORDER BY o.createtime DESC,o.status DESC  ";
     if (empty($_GPC["export"])) {
         $sql.= "LIMIT " . ($pindex - 1) * $psize . "," . $psize;
     }
     $list = pdo_fetchall($sql, $paras);
-    foreach ($list as $key => &$value) {
-        $isresult = pdo_fetch("select * from " . tablename('sz_yi_cancel_goods') . " where orderid={$value['id']} and uniacid={$_W['uniacid']}");
-        if(!empty($isresult)){
-            $value['isempty'] = 1;
-            if($isresult['ismaster'] == 0){
-                $value['ismaster'] = 1;
-            }
-        }else{
-            $value['isempty'] = 0;
-        }
-    }
+
     if (p('supplier')) {
         foreach ($list as &$value) {
             $suppliers_num = pdo_fetchcolumn('select count(*) from ' . tablename("sz_yi_order") . " where ordersn_general=:ordersn_general and uniacid=:uniacid", array(':ordersn_general' => $value['ordersn_general'], ':uniacid' => $_W['uniacid']));
@@ -479,6 +469,12 @@ if ($operation == "display") {
         }else{
             $order_where = "og.orderid = ".$value['id'];
         }
+        //门店取消订单
+        if(!empty($value['cgid'])){
+            $value['isempty'] = 1;
+        }else{
+            $value['isempty'] = 0;
+        }
 
         $s = $value["status"];
         $pt = $value["paytype"];
@@ -523,7 +519,7 @@ if ($operation == "display") {
             $value["dispatchname"] = "收银台支付";
         }
         if(p('cashier') && $value['cashier'] == 1){
-                    $value['name'] = set_medias(pdo_fetch('select cs.name,cs.thumb from ' .tablename('sz_yi_cashier_store'). 'cs '.'left join ' .tablename('sz_yi_cashier_order'). ' co on cs.id = co.cashier_store_id where co.order_id=:orderid and co.uniacid=:uniacid', array(':orderid' => $value['id'],':uniacid'=>$_W['uniacid'])), 'thumb');
+            $value['name'] = set_medias(array('name' => $value['csname'], 'thumb' => $value['csthumb']), 'thumb');
         }
 
         if (($value["dispatchtype"] == 1 && !empty($value["isverify"])) || !empty($value["virtual"]) || !empty($value["isvirtual"])|| $value['cashier'] == 1) {
@@ -1176,7 +1172,7 @@ if ($operation == "display") {
     $openid = pdo_fetchcolumn("select openid from " . tablename('sz_yi_member') . " where id=(select member_id from " . tablename('sz_yi_store') . " where id={$_GPC['changeagent']} and uniacid={$_W['uniacid']}) and uniacid={$_W['uniacid']}");
     //$openid = pdo_fetchcolumn("SELECT openid FROM ".tablename('sz_yi_member')." WHERE id = (SELECT member_id FROM ".tablename('sz_yi_store')." WHERE id={$_GPC['changeagent']} and uniacid={$_W['uniacid']}") and uniacid={$_W['uniacid']}");
     $agentuid = array('storeid' => $_GPC['changeagent']);
-    $last_agentuid = array('last_storeid' => $_GPC['changeagent'], 'ismaster' => 1);
+    $last_agentuid = array('last_storeid' => $_GPC['changeagent'], 'ismaster' => 0);
     $orderid = $_GPC['id'];
     pdo_update('sz_yi_order', $agentuid, array('id' => $orderid, 'uniacid' => $_W['uniacid']));
     pdo_update('sz_yi_cancel_goods', $last_agentuid, array('orderid' => $orderid, 'uniacid' => $_W['uniacid']));
