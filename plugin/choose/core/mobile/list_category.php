@@ -73,19 +73,19 @@ if ($operation == 'category') {
 			}
 			$goodsid = implode(',', $goodsid);
 			
-			$parent_category = pdo_fetchall('SELECT distinct c.id,c.parentid,c.name,c.level FROM ' . tablename('sz_yi_category') . ' c left join ' .tablename('sz_yi_goods'). ' g on c.id = g.pcate '.' WHERE c.uniacid=:uniacid AND c.parentid=0 and g.id in ('.$goodsid.') ', array(':uniacid' => $uniacid));
+			$parent_category = pdo_fetchall('SELECT distinct c.id,c.parentid,c.name,c.level FROM ' . tablename('sz_yi_category') . ' c left join ' .tablename('sz_yi_goods'). ' g on c.id = g.pcate '.' WHERE c.uniacid=:uniacid AND c.parentid=0 and g.id in ('.$goodsid.') GROUP BY c.id', array(':uniacid' => $uniacid));
 
             foreach ($parent_category as $v) {
                 $ids[] = $v['id'];
             }
             if (!empty($ids)) {
-                $sql = 'SELECT a.id,a.parentid,a.name,a.level FROM ' . tablename('sz_yi_category') . ' a left join ' .tablename('sz_yi_goods'). ' b on a.id=b.ccate WHERE a.uniacid=:uniacid AND a.parentid in ('.implode(',',$ids).') and b.id in ('.$goodsid.')' ;
+                $sql = 'SELECT a.id,a.parentid,a.name,a.level FROM ' . tablename('sz_yi_category') . ' a left join ' .tablename('sz_yi_goods'). ' b on a.id=b.ccate WHERE a.uniacid=:uniacid AND a.parentid in ('.implode(',',$ids).') and b.id in ('.$goodsid.') GROUP BY a.id' ;
                 $children_category = pdo_fetchall($sql, array(':uniacid' => $uniacid));
                 foreach ($children_category as $v1) {
                     $ids1[] = $v1['id'];
                 }
                 if (!empty($ids1)) {
-                    $sql1 = 'SELECT a.id,a.parentid,a.name,a.level FROM ' . tablename('sz_yi_category') . ' a left join ' .tablename('sz_yi_goods'). ' b ON a.id=b.tcate WHERE a.uniacid=:uniacid AND a.parentid in ('.implode(',',$ids1).') AND b.id IN ('.$goodsid.') ' ;
+                    $sql1 = 'SELECT a.id,a.parentid,a.name,a.level FROM ' . tablename('sz_yi_category') . ' a left join ' .tablename('sz_yi_goods'). ' b ON a.id=b.tcate WHERE a.uniacid=:uniacid AND a.parentid in ('.implode(',',$ids1).') AND b.id IN ('.$goodsid.') GROUP BY a.id' ;
                     $third_category = pdo_fetchall($sql1, array(':uniacid' => $uniacid));
                 }
 
