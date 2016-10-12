@@ -14,7 +14,7 @@ if ($operation == 'display') {
 		$data = array(
 			'uniacid' => $_W['uniacid'], 
 			'level_name' => $_GPC['level_name'], 
-			'commission' => intval($_GPC['commission'])
+			'commission' => $_GPC['commission']
 			);
 		if (!empty($id)) {
 			pdo_update('sz_yi_merchant_level', $data, array('id' => $id, 'uniacid' => $_W['uniacid']));
