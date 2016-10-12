@@ -11,7 +11,7 @@
 
 <footer id="footer-nav">
                 <ul class="menu-list" style="margin:0">
-                    <li {if $footer_current=='first'}class='active'{/if}><a href="{php echo $this->footer['first']['url']}"><i class="fa fa-{php echo $this->footer['first']['ico']}"></i><span>{php echo $this->footer['first']['text']}</span></a></li>
+                    <li {if $footer_current=='first'}class='active'{/if}><a href="{php echo $this->createMobileUrl('shop')}"><i class="fa fa-{php echo $this->footer['first']['ico']}"></i><span>首页</span></a></li>
                     <li {if $footer_current=='second'}class='active'{/if}><a href="{php echo $this->footer['second']['url']}"><i class="fa fa-{php echo $this->footer['second']['ico']}"></i><span>{php echo $this->footer['second']['text']}</span></a></li>
                 {if $this->footer['commission']}
                     <li {if $footer_current=='commission'}class='active'{/if}><a href="{php echo $this->footer['commission']['url']}"><i class="fa fa-{php echo $this->footer['commission']['ico']}"></i><span>{php echo $this->footer['commission']['text']}</span></a></li>
