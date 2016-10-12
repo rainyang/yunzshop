@@ -1809,12 +1809,14 @@ if ($_W['isajax']) {
                 }
                 if ($isverifysend) {
                     foreach ($goodsarr as $row) {
-                        $goodsids = explode(',', $row);
-
+                        if (!empty($row)) {
+                            $goodsids = explode(',', $row);
                             $can_verifysend = pdo_fetch(" SELECT id,title,isverifysend FROM " .tablename('sz_yi_goods'). " WHERE id=:id and uniacid=:uniacid ", array(':id' => $goodsids[0], ':uniacid' => $_W['uniacid']));
                             if ($can_verifysend['isverifysend'] != 1) {
                                 show_json(-2,'您的订单中，商品标题为 ‘'.$can_verifysend['title'].'’ 的商品不支持配送核销，请更换配送方式或者剔除此商品！');
                             }
+                        }
+
                     }
                 }
                 if ($dispatchsend) {
