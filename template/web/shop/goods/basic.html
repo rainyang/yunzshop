@@ -342,7 +342,7 @@
 </div>
 {/if}
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">{$lang['limittime']}</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">限时卖时间</label>
       {ife 'shop.goods' $item}
     <div class="col-sm-4 col-xs-6">
 
@@ -363,7 +363,7 @@
 </div>
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">{$lang['mainimg']}</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品图片</label>
     <div class="col-sm-9 col-xs-12 detail-logo">
              {ife 'shop.goods' $item}
         {php echo tpl_form_field_image('thumb', $item['thumb'])}
@@ -395,7 +395,7 @@
 </div>
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">{$lang['shopnumber']}</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品编号</label>
     <div class="col-sm-4 col-xs-12">
           {ife 'shop.goods' $item}
         <input type="text" name="goodssn" id="goodssn" class="form-control" value="{$item['goodssn']}" />
@@ -417,7 +417,7 @@
 </div>
 {/if}
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">{$lang['shopprice']}</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品价格</label>
     <div class="col-sm-9 col-xs-12">
          {ife 'shop.goods' $item}
         <div class="input-group form-group">
