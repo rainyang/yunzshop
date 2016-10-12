@@ -200,7 +200,7 @@ $commissionprice = p('commission')->getCommission($goods);
 if ($_W['isajax']) {
     if ($operation == 'can_buy') {
         $id = intval($_GPC['id']);
-        $can_buy_goods = pdo_fetch(" SELECT id,dispatchsend,isverifysend,storeids FROM " .tablename('sz_yi_goods'). " WHERE id=:id and uniacid=:uniacid", array(':id' => $id, ':uniacid' => $_W['uniacid']));
+        $can_buy_goods = pdo_fetch(" SELECT id,dispatchsend,isverifysend,storeids,isverify FROM " .tablename('sz_yi_goods'). " WHERE id=:id and uniacid=:uniacid", array(':id' => $id, ':uniacid' => $_W['uniacid']));
         if ($can_buy_goods['isverify'] == 2) {
             $a = 0;
             if ($can_buy_goods['isverifysend'] == 1) {
