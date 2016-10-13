@@ -6,7 +6,7 @@
  * Time: 上午10:00
  */
 //芸众商城 QQ:913768135
-
+file_put_contents("../../../data/msg.log",1,FILE_APPEND);
 define('IN_MOBILE', true);
 if (!empty($_POST)) {
     require '../../../../framework/bootstrap.inc.php';
