@@ -20,6 +20,12 @@ class Recharge extends YZ
         parent::__construct();
     }
 
+    /**
+     * 显示当前余额&余额充值
+     *
+     * @method post
+     * @request /member/Recharge/index&trigger=post&openid=x&money=x&type=x&logid=x
+     */
     public function index()
     {
         $trigger = !empty($_REQUEST['trigger']) ? $_REQUEST['trigger'] : 'display';
@@ -49,8 +55,6 @@ class Recharge extends YZ
                 $this->returnError("请重新登录!");
             }
         } else if ($trigger == 'post') {
-            //api  /member/Recharge/index&trigger=post&openid=x&money=x&type=x&logid=x
-
             if ($openid) {
                 $json = $this->callMobile('member/transfer/recharge');
 
@@ -61,12 +65,84 @@ class Recharge extends YZ
         }
     }
 
+    /**
+     * 余额充值记录
+     *
+     * @method get
+     * @request member/Recharge/log&paymethod=0,1&page=page     0-充值,1-提现
+     */
     public function log()
     {
         $openid    = m('user')->getOpenid();
 
         if ($openid) {
             $json = $this->callMobile('member/log');
+
+            foreach ($json['json']['list'] as $log) {
+                switch ($log['type']) {
+                    case 0:
+                        $txt1 = '充值金额';
+                        break;
+                    case 1:
+                        $txt1 = '提现金额';
+                        break;
+                    case 2:
+                        $txt1 = '佣金打款';
+                        break;
+                    default:
+                        $txt1 = '';
+
+                }
+
+                if ($log['type'] == 1) {
+                    $pre_txt = '手续费:';
+                    if ($log['poundage'] > 0) {
+                        $txt3 = $pre_txt . $log['poundage'];
+                    } else {
+                        $txt3 = $pre_txt . '0元';
+                    }
+                }
+
+                if ($log['status'] == 0) {
+                     if ($log['type'] == 0) {
+                         $txt2 = '未充值';
+                     } else {
+                         $txt2 = '申请中';
+                     }
+                } else if ($log['status'] == 1) {
+                    switch ($log['type']) {
+                        case 0:
+                            $txt2 = '充值成功';
+                            break;
+                        case 1:
+                            $txt2 = '提现成功';
+                            break;
+                        case 2:
+                            $txt2 = '打款成功';
+                            break;
+                        default:
+                            $txt2 = '';
+                    }
+
+                } else if ($log['status'] == -1) {
+                    if ($log['type'] == 1) {
+                        $txt2 = '提现失败';
+                    }
+                } else if ($log['status'] == -3) {
+                    if ($log['type'] == 0) {
+                        $txt2 = '充值退款';
+                    }
+                }
+
+                $res[] = array(
+                    'txt1' => $txt1,
+                    'money' => $log['money'],
+                    'time' => $log['createtime'],
+                    'txt2' => $txt2,
+                    'txt3' => $txt3,
+                );
+            }
+
         } else {
             $this->returnError("请重新登录!");
         }

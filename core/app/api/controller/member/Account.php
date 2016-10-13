@@ -153,8 +153,7 @@ class Account extends YZ
                 $this->returnError("请重新登录!");
             }
         } else if ($trigger == 'post') {
-            $_W['ispost'] = true;
-
+//api member/Account/info   memberdata
             $res = $this->callMobile('member/info');
 
             $this->returnSuccess($res);
