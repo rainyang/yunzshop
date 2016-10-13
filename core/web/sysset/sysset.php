@@ -296,6 +296,14 @@ if (checksubmit()) {
         $set['shop']['description'] = trim($shop['description']);
         plog('sysset.save.contact', '修改系统设置-联系方式设置');
     }
+
+
+    if ($set['pay']['yeepay'] && (empty($set['pay']['merchantaccount']) || empty($set['pay']['merchantPrivateKey']) || empty($set['pay']['merchantPublicKey']) || empty($set['pay']['yeepayPublicKey']))) {
+        message('易宝支付设置失败!', $this->createWebUrl('sysset', array(
+            'op' => $op
+        )), 'error');
+    }
+
     $data = array(
         'uniacid' => $_W['uniacid'],
         'sets' => iserializer($set)
