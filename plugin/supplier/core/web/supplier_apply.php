@@ -9,8 +9,8 @@ if ($operation == 'display') {
 		$where .= ' and p.uid=' . $_GPC['uid'];
 	}
 	if(!empty($_GPC['applysn'])){
-		$where .= ' and a.applysn=' . $_GPC['applysn'];
-	} 
+		$where .= " and a.applysn='" . $_GPC['applysn'] . "'";
+	}
 	//提现列表
 	$list = pdo_fetchall('select a.*,p.accountname, mobile as telephone, accountbank, banknumber   from ' . tablename('sz_yi_supplier_apply') . ' a left join ' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid where a.status=0 and p.uniacid=' . $_W['uniacid'] . $where . '  limit ' . ($pindex - 1) * $psize . ',' . $psize);
 	//总数
