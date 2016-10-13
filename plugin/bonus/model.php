@@ -75,6 +75,7 @@ if (!class_exists('BonusModel')) {
             		if($isdistinction == 0){
 	            		$agentlevel = pdo_fetchcolumn("select level from " . tablename('sz_yi_bonus_level') . " where id=".$parentAgent['bonuslevel']);
 		            	if(empty($this->parentAgents[$parentAgent['bonuslevel']]) && $level < $agentlevel){
+		            		$level = $agentlevel;		//去最大权重值
 		        			$this->parentAgents[$parentAgent['bonuslevel']] = $parentAgent['id'];
 		        			if(p('love') && $parentAgent['isagency'] < 2){
 		        				unset($this->parentAgents[$parentAgent['bonuslevel']]);
@@ -90,7 +91,7 @@ if (!class_exists('BonusModel')) {
 	        		}
         		}
             	if($parentAgent['agentid'] != 0){
-                    return $this->getParentAgents($parentAgent['agentid'], $isdistinction, $agentlevel);
+                    return $this->getParentAgents($parentAgent['agentid'], $isdistinction, $level);
                 }else{
                 	return $this->parentAgents;
                 }
