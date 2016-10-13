@@ -20,6 +20,11 @@ class Balance extends YZ
     /**
      * 余额转账
      *
+     * @method get
+     * @request /member/Balance/transfer
+     * @request /member/Balance/transfer&trigger=get&openid=x&money=x&assigins=x&yunbi=0  提交
+     * @reqeust /member/Balance/transfe&trigger=list&type=1  转账记录
+     *
      */
     public function transfer()
     {
@@ -37,8 +42,6 @@ class Balance extends YZ
                 $this->returnError("请重新登录!");
             }
         } else if ($trigger == 'get') {
-            //api  /member/Balance/transfer&trigger=get&openid=x&money=x&assigins=x&yunbi=0
-
             if ($openid) {
                 $json_data = $this->callMobile('member/transfer/submit');
 
@@ -47,8 +50,6 @@ class Balance extends YZ
                 $this->returnError("请重新登录!");
             }
         } else if ($trigger == 'list') {
-            //api  /member/Balance/transfe&trigger=list&type=1
-
             if ($openid) {
                 $jsons = $this->callMobile('member/transfer_log');
 
