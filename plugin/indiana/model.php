@@ -304,7 +304,7 @@ if (!class_exists('IndianaModel')) {
 				$raise = 5;
 			}
 			$jiexiao = time() + $raise * 60;	
-			pdo_update('sz_yi_indiana_period',array('jiexiao_time'=>$jiexiao),array('uniacid'=>$_W['uniacid'],'period_num'=>$period_num));
+			pdo_update('sz_yi_indiana_period',array('jiexiao_time'=>$jiexiao, 'status'=>'2'),array('uniacid'=>$_W['uniacid'],'period_num'=>$period_num));
 		}
 	}
 }
