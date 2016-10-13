@@ -106,6 +106,7 @@ class Core extends WeModuleSite
             if (empty($backruntime)) {
                 $backruntime = 60;
             }
+            
             $backruntime *= 60;
             $time = time();
             if ($couponbacktime + $backruntime <= $time) {
