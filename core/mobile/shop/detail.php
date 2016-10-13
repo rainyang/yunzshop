@@ -209,23 +209,26 @@ if ($_W['isajax']) {
             if ($can_buy_goods['dispatchsend'] == 1) {
                 $a += 1;
             }
-            $can_buy_goods['storeids'] = explode(',', $can_buy_goods['storeids']);
-            if (empty($can_buy_goods['storeids'])) {
+            $storeids = explode(',', $can_buy_goods['storeids']);
+            if (empty($storeids)) {
                 $a += 1;
             } else {
-                foreach ($can_buy_goods['storeids'] as $c) {
-                    $store_c = pdo_fetchcolumn(" SELECT myself_support FROM " .tablename('sz_yi_store'). " WHERE id=:id and uniacid=:unaicid", array(':id' => $c, ':uniacid' => $_W['uniacid']));
-                    if (!empty($store_c)) {
-                        $a += 1;
-                    }
+                $store_all = pdo_fetchall(" SELECT id FROM " .tablename('sz_yi_store'). " WHERE uniacid=:uniacid and myself_support=1", array(':uniacid' => $_W['uniacid']));
+                foreach ($storeids as $c) {
+                   foreach ($store_all as $a) {
+                       if ($a == $c) {
+                           $a += 1;
+                       }
+                   }
                 }
             }
+            if ($a == 0) {
+                show_json(0, '抱歉！因为此商品不支持任何配送方式，故暂不支持购买，请联系运营人员了解详情');
+            } else {
+                show_json(1);
+            }
         }
-        if ($a == 0) {
-            show_json(0, '抱歉！因为此商品不支持任何配送方式，故暂不支持购买，请联系运营人员了解详情');
-        } else {
-            show_json(1);
-        }
+
     }
     if (p('channel')) {
         $ischannelpay   = intval($_GPC['ischannelpay']);

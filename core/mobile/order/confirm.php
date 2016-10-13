@@ -2556,7 +2556,7 @@ if ($_W['isajax']) {
             if (p('channel') && !empty($ischannelpick)) {
                 p('channel')->deductChannelStock($orderid);
             } else {
-                if (!empty($virtualid)) {
+                if (empty($virtualid)) {
                     m('order')->setStocksANDCredits($orderid, 0);
                 } else {
                     if (isset($allgoods[0])) {
