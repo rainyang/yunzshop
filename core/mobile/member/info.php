@@ -58,9 +58,9 @@ if ($_W['isajax']) {
                 mc_update($member['uid'], $mcdata);
             }
         }
-        show_json(1);
+        return show_json(1);
     }
-    show_json(1, array(
+    return show_json(1, array(
         'member' => $member
     ));
 }
