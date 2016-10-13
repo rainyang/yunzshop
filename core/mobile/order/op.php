@@ -246,9 +246,9 @@ if ($_W['isajax']) {
 			show_json(0, '订单未付款或未收货，不能申请退款!');
 		} else {
 			if ($order['status'] == 3) {
-				if (!empty($order['virtual']) || $order['isverify'] == 1) {
+				/*if (!empty($order['virtual']) || $order['isverify'] == 1) {
 					show_json(0, '此订单不允许退款!');
-				} else {
+				} else {*/
 					$tradeset = m('common')->getSysset('trade');
 					$refunddays = intval($tradeset['refunddays']);
 					if ($refunddays > 0) {
@@ -259,7 +259,7 @@ if ($_W['isajax']) {
 					} else {
 						show_json(0, '订单完成, 无法申请退款!');
 					}
-				}
+				/*}*/
 			}
 		}
 		if ($order['status'] == 1) {

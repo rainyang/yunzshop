@@ -219,7 +219,10 @@
                         {if !empty($item['refundstate'])}<label class='label label-danger'>{$r_type[$item['rtype']]}申请</label>{/if}
                         {if $item['rstatus'] == 4}<label class='label label-primary'>客户已经寄出快递</label>{/if}
                         
-                         <label class="label label-info">{$item['vendor']}</label>
+                        <label class="label label-info">{$item['vendor']}</label>
+                        {if !empty($item['storename'])}
+                        <label class="label label-primary">所属门店：{$item['storename']}</label>
+                        {/if}
                     <td style='border-bottom:1px solid #ccc;background:#f8f8f8;text-align: center' >
                           {if empty($item['statusvalue'])}
                            {ifp 'order.op.close'}

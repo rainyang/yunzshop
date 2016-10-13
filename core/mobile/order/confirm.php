@@ -46,7 +46,7 @@ if ($diyform_plugin) {
         }
     }
 }
-$carrier_list = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_store") . " WHERE uniacid=:uniacid AND status=1", array(
+$carrier_list = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_store") . " WHERE uniacid=:uniacid AND status=1 AND myself_support=1", array(
     ":uniacid" => $_W["uniacid"]
 ));
 
@@ -185,7 +185,7 @@ if ($_W['isajax']) {
 
                 $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             }else{
-                $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+                $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,dispatchsend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             }
             $data = pdo_fetch($sql, array(
 
@@ -322,6 +322,9 @@ if ($_W['isajax']) {
             if ($g['isverifysend'] == 1) {
                 $isverifysend = true;
             }
+            if ($g['dispatchsend'] == 1) {
+                $dispatchsend = true;
+            }
             if (!empty($g['virtual']) || $g['type'] == 2) {
                 $isvirtual = true;
             }
@@ -371,6 +374,7 @@ if ($_W['isajax']) {
         //$discountprice  = 0;
         //$deductprice2   = 0;
         $stores        = array();
+        $stores_send   = array();
         $address       = false;
         $carrier       = false;
         $carrier_list  = array();
@@ -380,7 +384,7 @@ if ($_W['isajax']) {
         //$dispatch_array = array();
 
         //$carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1 and type in(1,3)", array(
-        $carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1 ", array(
+        $carrier_list = pdo_fetchall("select * from " . tablename("sz_yi_store") . " where  uniacid=:uniacid and status=1 AND myself_support=1 ", array(
 
             ":uniacid" => $_W["uniacid"]
         ));
@@ -601,15 +605,25 @@ if ($_W['isajax']) {
 
             foreach ($suppliers as $key => $val) {
                 if (empty($order_all[$val['supplier_uid']]['storeids'])) {
-                    $order_all[$val['supplier_uid']]['stores'] = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where  uniacid=:uniacid and status=1 ', array(
+                    $order_all[$val['supplier_uid']]['stores'] = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where  uniacid=:uniacid and status=1 and myself_support=1', array(
                         ':uniacid' => $_W['uniacid']
                     ));
                 } else {
-                    $order_all[$val['supplier_uid']]['stores'] = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where id in (' . implode(',', $order_all[$val['supplier_uid']]['storeids']) . ') and uniacid=:uniacid and status=1 ', array(
+                    $order_all[$val['supplier_uid']]['stores'] = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where id in (' . implode(',', $order_all[$val['supplier_uid']]['storeids']) . ') and uniacid=:uniacid and status=1 and myself_support=1', array(
+                        ':uniacid' => $_W['uniacid']
+                    ));
+                }
+                if (empty($order_all[$val['supplier_uid']]['storeids'])) {
+                    $order_all[$val['supplier_uid']]['stores_send'] = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where  uniacid=:uniacid and status=1 ', array(
+                        ':uniacid' => $_W['uniacid']
+                    ));
+                } else {
+                    $order_all[$val['supplier_uid']]['stores_send'] = pdo_fetchall('select * from ' . tablename('sz_yi_store') . ' where id in (' . implode(',', $order_all[$val['supplier_uid']]['storeids']) . ') and uniacid=:uniacid and status=1 ', array(
                         ':uniacid' => $_W['uniacid']
                     ));
                 }
                 $stores = $order_all[$val['supplier_uid']]['stores'];
+                $stores_send = $order_all[$val['supplier_uid']]['stores_send'];
             }
 
             $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
@@ -626,7 +640,7 @@ if ($_W['isajax']) {
 
         //如果开启核销并且不支持配送，则没有运费
         $isDispath = true;
-        if ($isverify && !$isverifysend) {
+        if ($isverify && !$isverifysend && !$dispatchsend) {
             $isDispath = false;
         }
 
@@ -954,10 +968,14 @@ if ($_W['isajax']) {
             //'carrier_list' => $carrier_list,
             'carrier' => $stores[0],
             'carrier_list' => $stores,
+            'carrier_send' => $stores_send[0],
+            'carrier_list_send' => $stores_send,
             'dispatch_list' => $dispatch_list,
             'isverify' => $isverify,
             'isverifysend' => $isverifysend,
+            'dispatchsend' => $dispatchsend,
             'stores' => $stores,
+            'stores_send' => $stores_send,
             'isvirtual' => $isvirtual,
             'changenum' => $changenum,
             //'hascoupon' => $hascoupon,
@@ -1001,7 +1019,7 @@ if ($_W['isajax']) {
         $deductenough_enough = 0;
         $sale_plugin = p('sale');
         $saleset     = false;
-        if ($sale_plugin && $supplier_uid==0) {
+        if ($sale_plugin) {
             $saleset = $sale_plugin->getSet();
             $saleset["enoughs"] = $sale_plugin->getEnoughs();
         }
@@ -1011,7 +1029,7 @@ if ($_W['isajax']) {
             $totalprice = round(floatval($level["discount"]) / 10 * $totalprice, 2);
         }
 
-        if ($sale_plugin && $supplier_uid==0) {
+        if ($sale_plugin) {
             if ($saleset) {
                 foreach ($saleset["enoughs"] as $e) {
                     if ($totalprice >= floatval($e["enough"]) && floatval($e["money"]) > 0 && floatval($e["enough"]) >= $deductenough_enough) {
@@ -1352,27 +1370,27 @@ if ($_W['isajax']) {
             }
 
         }
-        if ($store_total) {
-            if (!empty($goodid)) {
-
-                $optionid = intval($_GPC['optionid']);
-                $total = $_GPC['total'];
-                $storegoodtotal = pdo_fetchcolumn(" SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:goodsid and optionid=:optionid and storeid=:storeid and uniacid=:uniacid", array(':goodsid' => $goodsid, ':optionid' => $optionid, ':storeid' => $storeid, ':uniacid' => $_W['uniacid']));
-                if ($total > $storegoodtotal && !empty($storeid)) {
-                    show_json(-1);
-                }
-            } else if (!empty($cartids)) {
-
-                $carts = pdo_fetchall(" SELECT * FROM ".tablename('sz_yi_member_cart'). " WHERE id in (".$cartids.") and uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
-                foreach ($carts as $cart) {
-
-                    $total = pdo_fetchcolumn(" SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:id and uniacid=:uniacid and storeid=:storeid and optionid=:optionid", array(':id' => $cart['goodsid'], ':uniacid' => $_W['uniacid'], ':storeid' => $storeid, ':optionid' => $cart['optionid']));
-                    if ($total > $cart['total'] && !empty($storeid)) {
-                        show_json(-1);
-                    }
-                }
-            }
-        }
+//        if ($store_total) {
+//            if (!empty($goodid)) {
+//
+//                $optionid = intval($_GPC['optionid']);
+//                $total = $_GPC['total'];
+//                $storegoodtotal = pdo_fetchcolumn(" SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:goodsid and optionid=:optionid and storeid=:storeid and uniacid=:uniacid", array(':goodsid' => $goodsid, ':optionid' => $optionid, ':storeid' => $storeid, ':uniacid' => $_W['uniacid']));
+//                if ($total > $storegoodtotal && !empty($storeid)) {
+//                    show_json(-1);
+//                }
+//            } else if (!empty($cartids)) {
+//
+//                $carts = pdo_fetchall(" SELECT * FROM ".tablename('sz_yi_member_cart'). " WHERE id in (".$cartids.") and uniacid=:uniacid", array(':uniacid' => $_W['uniacid']));
+//                foreach ($carts as $cart) {
+//
+//                    $total = pdo_fetchcolumn(" SELECT total FROM " .tablename('sz_yi_store_goods'). " WHERE goodsid=:id and uniacid=:uniacid and storeid=:storeid and optionid=:optionid", array(':id' => $cart['goodsid'], ':uniacid' => $_W['uniacid'], ':storeid' => $storeid, ':optionid' => $cart['optionid']));
+//                    if ($total > $cart['total'] && !empty($storeid)) {
+//                        show_json(-1);
+//                    }
+//                }
+//            }
+//        }
 
         show_json(1, array(
             "price" => $dispatch_price,
@@ -1493,9 +1511,6 @@ if ($_W['isajax']) {
                     show_json(-1, $data['title'] . '<br/> 已下架!');
                 }
                 $virtualid     = $data['virtual'];
-                if($data['type']=='30' || $data['type']=='31'){
-                    $virtualid = true;
-                }
                 $data['stock'] = $data['total'];
                 $data['total'] = $goodstotal;
                 if ($data['cash'] != 2) {
@@ -1779,12 +1794,37 @@ if ($_W['isajax']) {
                 }
                 $data["realprice"] = $ggprice;
                 $totalprice += $ggprice;
+                $dispatchsend = false;
+                if ($dispatchtype == '2') {
+                    $dispatchtype = '0';
+                    $dispatchsend = true;
+                }
 
-                if ($data['isverify'] == 2) {
+                if ($data['isverify'] == 2 && !$dispatchsend) {
                     $isverify = true;
                 }
+
+
                 if (empty($dispatchtype) && $isverify) {
                     $isverifysend = true;
+                }
+                if ($isverifysend) {
+                    foreach ($goodsarr as $row) {
+                        $goodsids = explode(',', $row);
+                        $can_verifysend = pdo_fetch(" SELECT id,title,isverifysend FROM " .tablename('sz_yi_goods'). " WHERE id=:id and uniacid=:uniacid ", array(':id' => $goodsids[0], ':uniacid' => $_W['uniacid']));
+                        if ($can_verifysend['isverifysend'] != 1) {
+                            show_json(0,'您的订单中，商品标题为 ‘'.$can_verifysend['title'].'’ 的商品不支持配送核销，请更换配送方式或者剔除此商品！');
+                        }
+                    }
+                }
+                if ($dispatchsend) {
+                    foreach ($goodsarr as $row1) {
+                        $goodsids = explode(',', $row1);
+                        $can_dispatchsend = pdo_fetch(" SELECT id,title,isverifysend FROM " .tablename('sz_yi_goods'). " WHERE id=:id and uniacid=:uniacid ", array(':id' => $goodsids[0], ':uniacid' => $_W['uniacid']));
+                        if ($can_verifysend['isverifysend'] != 1) {
+                            show_json(0,'您的订单中，商品标题为 ‘'.$can_dispatchsend['title'].'’ 的商品不支持快递配送，请更换配送方式或者剔除此商品！');
+                        }
+                    }
                 }
                 if (!empty($data["virtual"]) || $data["type"] == 2) {
                     $isvirtual = true;

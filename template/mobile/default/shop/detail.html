@@ -1335,7 +1335,18 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                     },true,true);
                  });
               }else if(action=='buy'){
-               location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
+                  require(['core'],function(core){
+                      core.json('shop/detail',{op:'can_buy', id:'{$_GPC['id']}'},function(cret){
+                          if(cret.status==1){
+                              location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
+
+                          } else{
+                              core.tip.show(cret.result);
+                              return;
+                          }
+                      },true,true);
+                  });
+
               }
 
           }
@@ -1454,7 +1465,17 @@ function choose3(direct,close){
                 require(['core'],function(core){
                     core.json('shop/detail', data, function(create_json) {
                         if (create_json.status == 1) {
-                            location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val()+ "&gdid="+create_json.result.goods_data_id+"&isyunbipay=" + isyunbipay;
+
+                            core.json('shop/detail',{op:'can_buy', id:'{$_GPC['id']}'},function(cret){
+                                if(cret.status==1){
+                                    location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
+
+                                } else{
+                                    core.tip.show(cret.result);
+                                    return;
+                                }
+                            },true,true);
+
                         } else {
                             core.tip.show("提交失败!")
                         }
@@ -1462,7 +1483,17 @@ function choose3(direct,close){
                     }, true, true);
                 })
             }else {
-                location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
+               require(['core'],function(core){
+                   core.json('shop/detail',{op:'can_buy', id:'{$_GPC['id']}'},function(cret){
+                       if(cret.status==1){
+                           location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&isyunbipay=" + isyunbipay;
+
+                       } else{
+                           core.tip.show(cret.result);
+                           return;
+                       }
+                   },true,true);
+               });
             }
         } else {
             closechoose();

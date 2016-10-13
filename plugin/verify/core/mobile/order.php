@@ -90,7 +90,8 @@ if ($_W['isajax']) {
         $data = array(
             'uniacid'       => $_W['uniacid'],
             'orderid'       => $orderid,
-            'from_storeid' => $storeid
+            'from_storeid'  => $storeid,
+            'ismaster'      => 1
         );
         pdo_insert("sz_yi_cancel_goods", $data);
         pdo_update('sz_yi_order', array('storeid' => 0), array('id' => $orderid, 'uniacid' => $_W['uniacid']));
