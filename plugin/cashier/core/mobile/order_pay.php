@@ -55,7 +55,7 @@ if ($operation == 'display' && $_W['isajax']) {
         array(
             ':uniacid' => $uniacid,
             ':module' => 'sz_yi',
-            ':tid' => $order['ordersn']
+            ':tid' => $order['ordersn_general']
         )
     );
     if (!empty($log) && $log['status'] != '0') {
@@ -71,9 +71,9 @@ if ($operation == 'display' && $_W['isajax']) {
     if (empty($log)) {
         $log = array(
             'uniacid' => $uniacid,
-            'openid'  => $member['uid'],
+            'openid'  => $member['openid'],
             'module'  => "sz_yi",
-            'tid'     => $order['ordersn'],
+            'tid'     => $order['ordersn_general'],
             'fee'     => $order['price'],
             'status'  => 0
         );
@@ -179,7 +179,7 @@ if ($operation == 'display' && $_W['isajax']) {
         array(
             ':uniacid' => $uniacid,
             ':module'  => 'sz_yi',
-            ':tid'     => $order['ordersn']
+            ':tid'     => $order['ordersn_general']
         )
     );
     if (empty($log)) {
@@ -299,7 +299,7 @@ if ($operation == 'display' && $_W['isajax']) {
         array(
             ':uniacid' => $uniacid,
             ':module' => 'sz_yi',
-            ':tid' => $order['ordersn']
+            ':tid' => $order['ordersn_general']
         )
     );
     if (empty($log)) {
@@ -361,7 +361,7 @@ if ($operation == 'display' && $_W['isajax']) {
         show_json(1, $pay_result);
 
     } else if ($type == 'weixin') {
-        $ordersn = $order['ordersn'];
+        $ordersn = $order['ordersn_general'];
         if (!empty($order['ordersn2'])) {
             $ordersn .= "GJ" . sprintf("%02d", $order['ordersn2']);
         }
@@ -436,7 +436,7 @@ if ($operation == 'display' && $_W['isajax']) {
         $this->model->payResult($ret);
     }
     $orderid = pdo_fetchcolumn(
-        'select id from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid',
+        'select id from ' . tablename('sz_yi_order') . ' where ordersn_general=:ordersn and uniacid=:uniacid',
         array(
             ':ordersn' => $log['tid'],
             ':uniacid' => $_W['uniacid']
@@ -496,7 +496,7 @@ if ($operation == 'display' && $_W['isajax']) {
         $this->model->payResult($ret);
     }
     $orderid = pdo_fetchcolumn(
-        'select id from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid',
+        'select id from ' . tablename('sz_yi_order') . ' where ordersn_general=:ordersn and uniacid=:uniacid',
         array(
             ':ordersn' => $log['tid'],
             ':uniacid' => $_W['uniacid']
