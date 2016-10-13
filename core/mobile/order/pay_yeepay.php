@@ -76,7 +76,12 @@ function yeepay_build($params, $yeepay = array(), $openid = '')
 
     $tid                   = $params['tid'] . ":" . $_W['uniacid'];
 
-    $nourl = $_W['siteroot'] . "addons/sz_yi/payment/yeepay/notify.php";
+    $source = "../addons/sz_yi/payment/yeepay/notify.php";
+    $dest =  "../addons/sz_yi/payment/yeepay/{$_W['uniacid']}/notify.php";
+
+     moveFile($source, $dest);
+
+    $nourl = $_W['siteroot'] . "addons/sz_yi/payment/yeepay/{$_W['uniacid']}/notify.php";
     //$nourl = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&m=sz_yi&do=order&p=callback_yeepay&openid=" . $openid;
     $reurl = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&m=sz_yi&do=order&p=pay&op=returnyeepay&openid=" . $openid;
 
@@ -142,4 +147,21 @@ function yeepay_build($params, $yeepay = array(), $openid = '')
     return $url;
 
 
+}
+
+/**
+ * 复制支付通知文件
+ *
+ * @param $source
+ * @param $dest
+ */
+function moveFile($source, $dest)
+{
+   if (!is_dir(dirname($dest))) {
+        if (mkdir(dirname($dest), 0777, true)) {
+            copy($source, $dest);
+        } else {
+            die('false');
+        }
+   }
 }

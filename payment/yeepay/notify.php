@@ -6,7 +6,7 @@
  * Time: 上午10:00
  */
 //芸众商城 QQ:913768135
-error_reporting(0);
+
 define('IN_MOBILE', true);
 if (!empty($_POST)) {
     require '../../../../framework/bootstrap.inc.php';
@@ -14,9 +14,12 @@ if (!empty($_POST)) {
     require '../../../../addons/sz_yi/core/inc/functions.php';
     require '../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
 
+    $dir = dirname(__FILE__);
+    $uniacid = substr($dir,strrpos($dir,'/')+1);
+
     include("../../core/inc/plugin/vendor/yeepay/yeepay/yeepayMPay.php");
     $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
-        ':uniacid' => 3
+        ':uniacid' => $uniacid
     ));
     $set     = unserialize($setdata['sets']);
     $merchantaccount= $set['pay']['merchantaccount'];
