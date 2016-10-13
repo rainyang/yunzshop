@@ -12,9 +12,14 @@ use app\api\YZ;
 
 class Balance extends YZ
 {
+    private $_openid;
+    private $_withdrawmoney;
+
     public function __construct()
     {
         parent::__construct();
+
+        $this->_openid = m('user')->getOpenid();
     }
 
     /**
@@ -30,7 +35,7 @@ class Balance extends YZ
     {
         $trigger = !empty($_REQUEST['trigger']) ? $_REQUEST['trigger'] : 'display';
 
-        $openid    = m('user')->getOpenid();
+        $openid    = $this->_openid;
         $member = m('member')->getMember($openid);
 
         if ($trigger == 'display') {
@@ -70,5 +75,66 @@ class Balance extends YZ
                 $this->returnError("请重新登录!");
             }
         }
+    }
+
+    /**
+     * 余额提现
+     *
+     * @method get
+     * @request member/Balance/withdraw
+     * @method post
+     * @request member/Balance/withdraw&trigger=post&money=money  提交
+     */
+    public function withdraw()
+    {
+        $trigger = !empty($_REQUEST['trigger']) ? $_REQUEST['trigger'] : 'display';
+
+        if ($this->_openid) {
+            if ($trigger == 'display') {
+                $jsons = $this->callMobile('member/withdraw');
+
+                $msg = '';
+                if (!$jsons['json']['noinfo']) {
+                    $msg ="请补充您的资料后才能申请提现!";
+                }
+
+                if ($jsons['json']['credit'] <= 0 ) {
+                    $msg = "无余额,无法申请提现!";
+                }
+
+                $withdrawmoney = $this->_withdrawmoney = empty($set['withdrawmoney']) ? 0 : $set['withdrawmoney'];
+
+                if ($withdrawmoney > 0 && $withdrawmoney > $jsons['json']['credit']) {
+                    $msg = "余额不足!";
+                }
+
+                $jsons['json']['msg'] = $msg;
+                $this->returnSuccess($jsons['json']);
+
+            } else if ($trigger == 'post') {
+
+                $msg = '';
+                if (empty($_REQUEST['money'])) {
+                    $msg = '请输入数字金额!';
+                }
+
+                if ($_REQUEST['money'] < $this->_withdrawmoney) {
+                    $msg = '满 ' . $this->_withdrawmoney . ' 元才能申请提现!';
+                }
+
+                if (!empty($msg)) {
+                    $this->returnError(array($msg));
+                }
+
+                $jsons = $this->callMobile('member/withdraw/submit');
+
+                $this->returnSuccess($jsons);
+            }
+        } else {
+            $this->returnError("请重新登录!");
+        }
+
+
+
     }
 }

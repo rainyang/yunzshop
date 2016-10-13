@@ -66,10 +66,10 @@ class Recharge extends YZ
     }
 
     /**
-     * 余额充值记录
+     * 余额充值&提现记录
      *
      * @method get
-     * @request member/Recharge/log&paymethod=0,1&page=page     0-充值,1-提现
+     * @request member/Recharge/log&typ=0,1&page=page     0-充值,1-提现
      */
     public function log()
     {

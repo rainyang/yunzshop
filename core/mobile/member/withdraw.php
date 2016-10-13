@@ -13,7 +13,17 @@ if ($operation == 'display' && $_W['isajax']) {
 	$member = m('member')->getMember($openid);
 	$returnurl = urlencode($this->createMobileUrl('member/withdraw'));
 	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
-return show_json(1, array('credit' => $credit, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
+
+    if ($set['trade']) {
+        $variable = array(
+            'set'=> $set['trade'],
+            'shopset' =>$shopset
+        );
+    } else {
+        $variable = array();
+    }
+
+return show_json(1, array('credit' => $credit, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])),$variable);
 } else if ($operation == 'submit' && $_W['ispost']) {
 	$money = floatval($_GPC['money']);
 	$credit = m('member')->getCredit($openid, 'credit2');
@@ -42,16 +52,16 @@ return show_json(0, '提现金额过大!');
 	        ':uniacid' => $uniacid
 	    ));
 	    if (empty($log)) {
-	        show_json(0,'未找到记录!');
+            return show_json(0,'未找到记录!');
 	    }
 
 	    $member = m('member')->getMember($log['openid']);
 		if($set['pay']['weixin']!='1'){
-	        show_json(0,'商城未开启微信支付功能,请联系管理员手动打款!');
+            return show_json(0,'商城未开启微信支付功能,请联系管理员手动打款!');
 	    }    
 	    $result = m('finance')->pay($log['openid'], 1, $log['money'] * 100, $log['logno'], $set['name'] . '余额提现');
 	    if (is_error($result)) {
-	        show_json(0,'微信钱包提现失败: ' . $result['message'].'请联系管理员手动打款！');
+            return show_json(0,'微信钱包提现失败: ' . $result['message'].'请联系管理员手动打款！');
 	    }
 	    pdo_update('sz_yi_member_log', array(
 	        'status' => 1
@@ -60,8 +70,8 @@ return show_json(0, '提现金额过大!');
 	        'uniacid' => $uniacid
 	    ));
 	    m('notice')->sendMemberLogMessage($log['id']);
-	    plog('finance.withdraw.withdraw', "余额提现 ID: {$log['id']} 方式: 微信 金额: {$log['money']} <br/>会员信息:  ID: {$member['id']} / {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");	
-	    show_json(1);
+	    plog('finance.withdraw.withdraw', "余额提现 ID: {$log['id']} 方式: 微信 金额: {$log['money']} <br/>会员信息:  ID: {$member['id']} / {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+        return show_json(1);
 	} else {
 		m('notice')->sendMemberLogMessage($logid);
 return show_json(2);
