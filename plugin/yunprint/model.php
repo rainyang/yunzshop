@@ -238,7 +238,7 @@ if (!class_exists('YunprintModel')) {
                 echo 'error';
             }
             else{
-                echo "<pre>";print_r($this->client->getContent());exit;
+                //echo "<pre>";print_r($this->client->getContent());exit;
                 $this->client->getContent();
             }
         }
