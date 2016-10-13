@@ -211,16 +211,16 @@ if ($_W['isajax']) {
             }
             $storeids = explode(',', $can_buy_goods['storeids']);
             if (empty($storeids)) {
-                $a += 1;
-            } else {
                 $store_all = pdo_fetchall(" SELECT id FROM " .tablename('sz_yi_store'). " WHERE uniacid=:uniacid and myself_support=1", array(':uniacid' => $_W['uniacid']));
-                foreach ($storeids as $c) {
-                   foreach ($store_all as $a) {
-                       if ($a == $c) {
-                           $a += 1;
-                       }
-                   }
+                if (!empty($store_all) && is_array($store_all)) {
+                    $a += 1;
                 }
+            } else {
+                $store = pdo_fetchall(" SELECT id FROM " .tablename('sz_yi_store'). " WHERE uniacid=:uniacid and myself_support=1 and id in (".implode(',', $storeids).")", array(':uniacid' => $_W['uniacid']));
+                if (!empty($store) && is_array($store)) {
+                    $a += 1;
+                }
+
             }
             if ($a == 0) {
                 show_json(0, '抱歉！因为此商品不支持任何配送方式，故暂不支持购买，请联系运营人员了解详情');

@@ -1807,29 +1807,28 @@ if ($_W['isajax']) {
                 if (empty($dispatchtype) && $isverify) {
                     $isverifysend = true;
                 }
-                if ($isverifysend) {
-                    foreach ($goodsarr as $row) {
-                        if (!empty($row)) {
-                            $goodsids = explode(',', $row);
-                            $can_verifysend = pdo_fetch(" SELECT id,title,isverifysend FROM " .tablename('sz_yi_goods'). " WHERE id=:id and uniacid=:uniacid ", array(':id' => $goodsids[0], ':uniacid' => $_W['uniacid']));
-                            if ($can_verifysend['isverifysend'] != 1) {
-                                show_json(-2,'您的订单中，商品标题为 ‘'.$can_verifysend['title'].'’ 的商品不支持配送核销，请更换配送方式或者剔除此商品！');
-                            }
-                        }
+                $can_goodsid = array();
+                foreach ($goodsarr as $row) {
+                    if (!empty($row)) {
+                        $row = explode(',', $row);
+                        $can_goodsid[] = $row[0];
+                    }
+                }
 
+                if ($isverifysend) {
+                    if (!empty($can_goodsid) && is_array($can_goodsid)) {
+                        $can_verifysend = pdo_fetch(" SELECT id,title,isverifysend FROM " .tablename('sz_yi_goods'). " WHERE id IN (".implode(',', $can_goodsid).") AND uniacid=:uniacid AND isverifysend=0 LIMIT 1", array(':uniacid' => $_W['uniacid']));
+                        if ($can_verifysend) {
+                            show_json(-2,'您的订单中，商品标题为 ‘'.$can_verifysend['title'].'’ 的商品不支持配送核销，请更换配送方式或者剔除此商品！');
+                        }
                     }
                 }
                 if ($dispatchsend) {
-                    foreach ($goodsarr as $row1) {
-                        if (!empty($row1)) {
-                            $goodsids1 = explode(',', $row1);
-                            $can_dispatchsend = pdo_fetch(" SELECT id,title,dispatchsend FROM " .tablename('sz_yi_goods'). " WHERE id=:id and uniacid=:uniacid ", array(':id' => $goodsids1[0], ':uniacid' => $_W['uniacid']));
-                            if ($can_dispatchsend['dispatchsend'] != 1) {
-                                show_json(-2,'您的订单中，商品标题为 ‘'.$can_dispatchsend['title'].'’ 的商品不支持快递配送，请更换配送方式或者剔除此商品！');
-                            }
+                    if (!empty($can_goodsid) && is_array($can_goodsid)) {
+                        $can_dispatchsend = pdo_fetch(" SELECT id,title,dispatchsend FROM " .tablename('sz_yi_goods'). " WHERE uniacid=:uniacid AND id IN (".implode(',', $can_goodsid).") AND dispatchsend=0 LIMIT 1", array(':uniacid' => $_W['uniacid']));
+                        if ($can_dispatchsend) {
+                            show_json(-2,'您的订单中，商品标题为 ‘'.$can_dispatchsend['title'].'’ 的商品不支持快递配送，请更换配送方式或者剔除此商品！');
                         }
-
-
                     }
                 }
                 if (!empty($data["virtual"]) || $data["type"] == 2) {
