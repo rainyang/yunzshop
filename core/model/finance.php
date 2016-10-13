@@ -584,6 +584,87 @@ class Sz_DYi_Finance {
         exit;  
 
     }
+
+    //易宝支付退款(26-pc,25-mobile)
+    public function yeepayrefund($type, $openid, $trade_no, $out_refund_no,$refundmoney = 0)
+    {
+        global $_W;
+
+        $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+            ':uniacid' => $_W['uniacid']
+        ));
+        $set     = unserialize($setdata['sets']);
+        $merchantaccount= $set['pay']['merchantaccount'];
+        $merchantPublicKey= $set['pay']['merchantPublicKey'];
+        $merchantPrivateKey= $set['pay']['merchantPrivateKey'];
+        $yeepayPublicKey= $set['pay']['yeepayPublicKey'];
+
+        $p1_MerId	    = $set['pay']['merchantaccount'];
+        $merchantKey	= $set['pay']['merchantKey'];
+
+        if ($type == 26) {
+            include(IA_ROOT . "/addons/sz_yi/core/inc/plugin/vendor/yeepay/wy/yeepayCommon.php");
+
+            $data = array();
+            $data['p0_Cmd']    = "RefundOrd";
+            $data['p1_MerId']  = $p1_MerId;
+            $data['p2_Order']  = $out_refund_no;
+            $data['pb_TrxId']  = $trade_no;
+            $data['p3_Amt']    = $refundmoney;
+            $data['p4_Cur']    = "CNY";
+            $data['p5_Desc']   = '';
+            $hmacstring        = HmacMd5(implode($data),$merchantKey);
+            $data['hmac']      = $hmacstring ;
+//            echo '<pre>';print_r($data);
+//发送请求
+            $respdata  = HttpClient::quickPost($OrderURL_onLine, $data);
+//            print_r($respdata);
+//响应参数转数组
+            $arr  =   getresp($respdata);
+//echo "return:".$arr ['hmac_safe'];
+
+//本地签名参数
+            $arr1=array(
+                'r0_Cmd'   => $arr['r0_Cmd'],
+                'r1_Code'  => $arr['r1_Code'],
+                'r2_TrxId' => $arr['r2_TrxId'],
+                'r3_Amt'   => $arr['r3_Amt'],
+                'r4_Cur'   => $arr['r4_Cur']);
+
+//本地签名
+            $hmacLocal = HmacLocal($arr1);
+            $safeLocal= gethamc_safe($arr1);
+//echo "local:".$safeLocal ;
+//验签
+           /* if($arr['hmac'] != $hmacLocal  || $arr['hmac_safe'] != $safeLocal)
+
+            {
+
+                echo "签名验证失败";
+                return;
+            }*/
+
+           if ($arr1['r1_Code'] != 1) {
+               echo "退款失败";
+               return;
+           }
+        } else {
+             include(IA_ROOT . "/addons/sz_yi/core/inc/plugin/vendor/yeepay/yeepay/yeepayMPay.php");
+
+
+             $yeepay = new yeepayMPay($merchantaccount,$merchantPublicKey,$merchantPrivateKey,$yeepayPublicKey);
+
+             $order_id       = trim($out_refund_no);
+             $amount         = intval($refundmoney * 100) ;
+             $currency       = 156;
+             $origyborder_id = trim($trade_no);
+             $cause          = '退款';
+
+             $data = $yeepay->refund($amount,$order_id,$origyborder_id,$currency,$cause);
+           // echo '<pre>';print_r($data);exit;
+         }
+    }
+
     public function downloadbill($starttime, $endtime, $type = 'ALL')
     {
         global $_W, $_GPC;

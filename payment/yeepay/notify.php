@@ -22,6 +22,7 @@ if (!empty($_POST)) {
         ':uniacid' => $uniacid
     ));
     $set     = unserialize($setdata['sets']);
+    file_put_contents(IA_ROOT .'/addons/sz_yi/data/re.log', print_r($set['pay'],1));
     $merchantaccount= $set['pay']['merchantaccount'];
     $merchantPublicKey= $set['pay']['merchantPublicKey'];
     $merchantPrivateKey= $set['pay']['merchantPrivateKey'];
