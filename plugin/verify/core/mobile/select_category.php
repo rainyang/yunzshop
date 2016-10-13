@@ -15,7 +15,7 @@ if ($operation == 'category') {
             if (!empty($row['storeids'])) {
                 $storeids = explode(',', $row['storeids']);
                 foreach ($storeids as $r) {
-                    if ($storeid == $r) {
+                    if ($r == $storeid) {
                         $goodsids[] = $row['id'];
                     }
                 }
@@ -30,13 +30,13 @@ if ($operation == 'category') {
             $ids[] = $v['id'];
         }
         if (!empty($ids)) {
-            $sql = 'SELECT a.id,a.parentid,a.name,a.level FROM ' . tablename('sz_yi_category') . ' a left join ' .tablename('sz_yi_goods'). ' b on a.id=b.ccate WHERE a.uniacid=:uniacid AND a.parentid in ('.implode(',',$ids).') and b.id in ('.implode(',',$goodsids).')' ;
+            $sql = 'SELECT a.id,a.parentid,a.name,a.level FROM ' . tablename('sz_yi_category') . ' a left join ' .tablename('sz_yi_goods'). ' b on a.id=b.ccate WHERE a.uniacid=:uniacid AND a.parentid in ('.implode(',',$ids).') and b.id in ('.implode(',',$goodsids).') GROUP BY a.id' ;
             $children_category = pdo_fetchall($sql, array(':uniacid' => $uniacid));
             foreach ($children_category as $v1) {
                 $ids1[] = $v1['id'];
             }
             if (!empty($ids1)) {
-                $sql1 = 'SELECT a.id,a.parentid,a.name,a.level FROM ' . tablename('sz_yi_category') . ' a left join ' .tablename('sz_yi_goods'). ' b ON a.id=b.tcate WHERE a.uniacid=:uniacid AND a.parentid in ('.implode(',',$ids1).') AND b.id IN ('.implode(',',$goodsids).') ' ;
+                $sql1 = 'SELECT a.id,a.parentid,a.name,a.level FROM ' . tablename('sz_yi_category') . ' a left join ' .tablename('sz_yi_goods'). ' b ON a.id=b.tcate WHERE a.uniacid=:uniacid AND a.parentid in ('.implode(',',$ids1).') AND b.id IN ('.implode(',',$goodsids).') GROUP BY a.id' ;
                 $third_category = pdo_fetchall($sql1, array(':uniacid' => $uniacid));
             }
 
