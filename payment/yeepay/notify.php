@@ -6,7 +6,7 @@
  * Time: 上午10:00
  */
 //芸众商城 QQ:913768135
-file_put_contents("../../../data/msg.log",1,FILE_APPEND);
+//file_put_contents("../../../data/msg.log",1,FILE_APPEND);
 define('IN_MOBILE', true);
 if (!empty($_POST)) {
     require '../../../../framework/bootstrap.inc.php';
@@ -22,13 +22,12 @@ if (!empty($_POST)) {
         ':uniacid' => $uniacid
     ));
     $set     = unserialize($setdata['sets']);
-    file_put_contents(IA_ROOT .'/addons/sz_yi/data/re.log', print_r($set['pay'],1));
+    //file_put_contents(IA_ROOT .'/addons/sz_yi/data/re.log', print_r($set['pay'],1));
     $merchantaccount= $set['pay']['merchantaccount'];
     $merchantPublicKey= $set['pay']['merchantPublicKey'];
     $merchantPrivateKey= $set['pay']['merchantPrivateKey'];
     $yeepayPublicKey= $set['pay']['yeepayPublicKey'];
 
-//file_put_contents(IA_ROOT . "/addons/sz_yi/data/re.log",1,FILE_APPEND);
         $yeepay = new yeepayMPay($merchantaccount, $merchantPublicKey, $merchantPrivateKey, $yeepayPublicKey);
 
         if ($_POST['data']=="" || $_POST['encryptkey'] == "")
@@ -40,7 +39,7 @@ if (!empty($_POST)) {
         $data=$_POST['data'];
         $encryptkey=$_POST['encryptkey'];
         $return = $yeepay->callback($data, $encryptkey); //解密易宝支付回调结果
-    //file_put_contents(IA_ROOT . "/addons/sz_yi/data/re_data.log",print_r($return,true),FILE_APPEND);
+
     list($out_trade_no, $uniacid) = explode(':',$return['orderid']);
 
 
@@ -103,7 +102,6 @@ if (!empty($_POST)) {
                                     $record['status'] = '1';
                                     pdo_update('core_paylog', $record, array('plid' => $log['plid']));
                                     $orders = array('trade_no'=>$trade_no);
-//file_put_contents(IA_ROOT . "/addons/sz_yi/data/re_success.log",print_r($return,true),FILE_APPEND);
                                     pdo_update('sz_yi_order', $orders, array('pay_ordersn' =>$out_trade_no,'uniacid'=>$log['uniacid']));
                                     exit('success');
                                 }
