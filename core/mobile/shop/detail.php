@@ -170,10 +170,10 @@ if ($pindiana && $_GPC['indiana']) {
         ':goodsid' => $goodsid,
         ':periodnum' => $periodnum
     );
-    $indiana = set_medias(pdo_fetch("SELECT ig.*, g.thumb, ip.period, ip.shengyu_codes, ip.zong_codes, ip.period_num, ip.init_money as initmoney FROM " . tablename('sz_yi_indiana_goods') . " ig 
+    $indiana = set_medias(pdo_fetch("SELECT ig.*, g.thumb, ip.period, ip.shengyu_codes, ip.zong_codes, ip.period_num, ip.init_money as initmoney , ip.status as ipstatus FROM " . tablename('sz_yi_indiana_goods') . " ig 
         left join " . tablename('sz_yi_goods') . " g on (ig.good_id = g.id) 
         left join " . tablename('sz_yi_indiana_period') . " ip on (ig.id = ip.ig_id)
-        where 1 {$condition} AND ip.status = 1 " , $params),'thumb');
+        where 1 {$condition} " , $params),'thumb');
        $indiana['shengyu'] = $indiana['shengyu_codes']/$indiana['zong_codes']*100;
 }
 $html = $goods['content'];

@@ -389,24 +389,40 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         </div>
     </div>
 {if $pindiana && $_GPC['indiana']}
-<div class="good_info1">
-    <div class="info2">第<%indiana.period%>期 <%indiana.title%> </div>
-    <div class="price" style="height:auto">
-        <span style="font-size: 14px;padding-right: 10px;">总需人次：<%indiana.zong_codes%> </span>
-        <span> 每满<%indiana.zong_codes%>人次，即抽取1人获得该商品</span>
+    {if $indiana['ipstatus'] == 1}
+        <div class="good_info1">
+            <div class="info2">第<%indiana.period%>期 <%indiana.title%> </div>
+            <div class="price" style="height:auto">
+                <span style="font-size: 14px;padding-right: 10px;">总需人次：<%indiana.zong_codes%> </span>
+                <span> 每满<%indiana.zong_codes%>人次，即抽取1人获得该商品</span>
 
-        <div class="progress-bar" >
-            <span class="bg" style="width:<%indiana.shengyu%>%"></span>
+                <div class="progress-bar" >
+                    <span class="bg" style="width:<%indiana.shengyu%>%"></span>
+                </div>
+                <div class="other" style="height: 24px;line-height: 24px;">
+                    <span><%indiana.zong_codes - indiana.shengyu_codes%></span><span style="float: right;text-align: right;color:#d91d37"><%indiana.shengyu_codes%></span>
+                </div>
+                <div class="other" style="height: 24px;line-height: 24px;">
+                    <span>已参与人次</span><span style="float: right;text-align: right;margin-right: 5px;">剩余人次</span>
+                </div>
+            </div>
         </div>
-        <div class="other" style="height: 24px;line-height: 24px;">
-            <span><%indiana.zong_codes - indiana.shengyu_codes%></span><span style="float: right;text-align: right;color:#d91d37"><%indiana.shengyu_codes%></span>
+    {elseif $indiana['ipstatus'] == 2 }
+        <div class="good_info1">
+            <div class="info2" style=" padding: 11px 0px 0px 0px;">第<%indiana.period%>期 <%indiana.title%> <%indiana.title%> <%indiana.title%> <%indiana.title%> <%indiana.title%> </div>
+            <div class="price" style="height:auto;background:#f00">
+                <span style="font-size: 12px;padding-right: 10px;padding-left: 10px;color: #FFF4F4;">期号：<%indiana.period_num%> </span>
+
+                <div style="height: 24px;line-height: 24px;">
+                    <span style="padding-left: 10px;color: #FFF4F4;">揭晓倒计时：<span class="w-countdown-nums" style="color: #FFF4F4;font-size: 16px;"></span></span><span style="float: right;text-align: right;margin-right: 5px;color: #FFF4F4;">计算{$indiana['status']}详情</span>
+                </div>
+            </div>
+<!--             <div class="price" style="height:auto;text-align: center;">
+                <span style="font-size: 12px;">你本期没有购买</span>
+            </div> -->
         </div>
-        <div class="other" style="height: 24px;line-height: 24px;">
-            <span>已参与人次</span><span style="float: right;text-align: right;">剩余人次</span>
-        </div>
-    </div>
-</div>
- 
+
+    {/if}
 {else}
     <div class="good_info1">
         <%if commission && goods.nocommission==0 && goods.hidecommission==0%>
@@ -577,15 +593,16 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
     </div>
 
 {if $pindiana && $_GPC['indiana']}
+    {if $indiana['ipstatus'] == 1}
+        <div class="good_bottom" style="z-index: 3">
+            <div class="buy" onclick="choose('buy')" style="width:100%; z-index: 3">立即购买</div>
 
-    <div class="good_bottom" style="z-index: 3">
-        <div class="buy" onclick="choose('buy')" style="width:100%; z-index: 3">立即购买</div>
-
-        <input type="hidden" value="<%goods.isdeclaration%>" id='isdeclaration'>
-        <input type="hidden" value="<%goods.isforce%>" id='isforce'>
-        <input type="hidden" value="<%goods.yunbi_num%>" id='yunbi_num'>
-        <input type="hidden" value="<%goods.isforceyunbi%>" id='isforceyunbi'>
-    </div>
+            <input type="hidden" value="<%goods.isdeclaration%>" id='isdeclaration'>
+            <input type="hidden" value="<%goods.isforce%>" id='isforce'>
+            <input type="hidden" value="<%goods.yunbi_num%>" id='yunbi_num'>
+            <input type="hidden" value="<%goods.isforceyunbi%>" id='isforceyunbi'>
+        </div>
+    {/if}
 {else}
     <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1' && goods.groupbuy=='1'  && goods.levelbuy=='1' && is_admin!='1' %>
     <div class="good_bottom">
@@ -701,7 +718,37 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         <div class='minus'><i class='fa fa-minus-circle'></i></div>
     </div>
 </script>
-
+<script type="text/javascript">
+    $(document).ready(function(){
+    function FreshTime(){
+        var str ='2016-10-13 13:26:00';
+        str = str.replace(/-/g,"/");
+        var starttime= new Date(str);//开始时间
+        var nowtime = new Date();//当前时间
+        var now_time = parseInt(nowtime.getTime());
+        var start_time = parseInt(starttime.getTime());
+        var jiexiao_time = start_time;
+        var lefttime = (jiexiao_time-now_time)/1000;
+       if (lefttime > 0) {
+            mm=parseInt((lefttime/60)%60);
+            if(10>mm>0){
+                mm="0"+mm;
+            }
+            ss=(lefttime%60).toFixed(2);
+            if(10>parseInt(ss)>0){
+                ss="0"+ss;
+            }
+            $(".w-countdown-nums").html(mm+":"+ss);
+        }else{
+            //location.reload([false]) 
+            return false;
+        }
+    }
+    FreshTime();
+    var sh;
+    sh=setInterval(FreshTime,10);
+});
+</script>
 
 <script language="javascript">
     var title = "{php echo $_W['shopshare']['title']}";
@@ -1400,6 +1447,14 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                   $('.good_choose').fadeIn(200);
                   return;
                 {/if}
+                {if $pindiana && $_GPC['indiana']}
+                  $('.good_choose_layer').fadeIn(200);
+                       $('.good_choose_layer').unbind('click').click(function(){
+                             closechoose();
+                       })
+                  $('.good_choose').fadeIn(200);
+                  return;
+                {/if}  
                 $('.spec_items').each(function(){
                    var self = $(this);
                     if( $(this).find('.on').length<=0){

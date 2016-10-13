@@ -282,10 +282,29 @@ if (!class_exists('IndianaModel')) {
 			);
 			pdo_insert("sz_yi_indiana_consumerecord",$consumerecord);	
 			if ($shengyu_codes <= 0) {
-
+				self::jiexiaotime($period_num);
 			}	
 
 		}
-
+		//统计揭晓时间
+		public function jiexiaotime ($period_num){
+			global $_W, $_GPC;
+			$hour	= date('H');
+			$minute = date('i');
+			//销售时间：10:00~22:00(72期)10分钟一期，22:00~02:00(48期)5分钟一期 
+			if ( $hour >= '10' && $hour <= '22') {
+				$raise = 10 - substr($minute,-1) + 3;
+			} elseif ( $hour > '22' || $hour <= '2'){
+				if ( substr($minute,-1) < 5) {
+					$raise = 5 - substr($minute,-1) + 3;
+				} else {
+					$raise = 10 - substr($minute,-1) + 3;
+				}
+			} else {
+				$raise = 5;
+			}
+			$jiexiao = time() + $raise * 60;	
+			pdo_update('sz_yi_indiana_period',array('jiexiao_time'=>$jiexiao),array('uniacid'=>$_W['uniacid'],'period_num'=>$period_num));
+		}
 	}
 }

@@ -41,7 +41,7 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_indiana_period') . " (
   `partakes` int(11) NOT NULL COMMENT '获奖人参与次数',
   `code` varchar(45) NOT NULL COMMENT '获奖码',
   `endtime` varchar(145) NOT NULL COMMENT '本期结束时间',
-  `jiexiao_time` int(11) NOT NULL COMMENT '多少分钟后揭晓',
+  `jiexiao_time` VARCHAR(145) NOT NULL COMMENT '揭晓时间',
   `ordersn` varchar(20) NOT NULL COMMENT '订单ID',
   `codes` longtext NOT NULL COMMENT '本期剩余夺宝码',
   `recordid` INT NOT NULL AFTER `code`,
