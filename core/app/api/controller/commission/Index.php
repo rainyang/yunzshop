@@ -90,7 +90,7 @@ class Index extends YZ
                 'id' => 2,
                 'icon' => '',
                 'title' => $set['texts']['order'],
-                'value' => $member['ordercount'],
+                'value' => $member['ordercount0'],
                 'unit' => '个'
             ], [
                 'id' => 3,
