@@ -208,6 +208,8 @@ if ($_W['isajax']) {
                         if ($option['marketprice'] != 0) {
                             $data['marketprice'] = $option['marketprice'];
                         }
+                    } else {
+                        $data['marketprice'] = $option['marketprice'];
                     }
                     $data['virtual']     = $option['virtual'];
                     $data['stock']       = $option['stock'];
