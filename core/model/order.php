@@ -109,10 +109,10 @@ class Sz_DYi_Order
     }
 
     /**
-     * 支付完成回调方法
+     * 判断是否有不支持当前配送方式的商品
      * @param params array
      * @return array()
-     * modify RainYang 2016.4.7
+     * modify Wujingyu 2016.10.14
      */
     public function isSupportDelivery($order_data = array()) {
         global $_W;
@@ -164,6 +164,12 @@ class Sz_DYi_Order
         }
         return array('status' => 1);
     }
+    /**
+     * 支付完成回调方法
+     * @param params array
+     * @return array()
+     * modify RainYang 2016.4.7
+     */
     public function payResult($params)
     {
         global $_W;
