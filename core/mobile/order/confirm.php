@@ -1420,6 +1420,18 @@ if ($_W['isajax']) {
         $ordersn_general    = m('common')->createNO('order', 'ordersn', 'SH');
         $member       = m('member')->getMember($openid);
         $level         = m('member')->getLevel($openid);
+        //判断所有商品有没有不支持此配送方式的情况
+        $can_buy = array();
+        $can_buy = m('order')->isSupportDelivery($order_data);
+        if ($can_buy['status'] == -1) {
+            show_json(-2,'您的订单中，商品标题为 ‘'.$can_buy['title'].'’ 的商品不支持配送核销，请更换配送方式或者剔除此商品！');
+
+        } else if ($can_buy['status'] == -2) {
+            show_json(-2,'您的订单中，商品标题为 ‘'.$can_buy['title'].'’ 的商品不支持快递配送，请更换配送方式或者剔除此商品！');
+
+        }
+
+        //判断结束
         foreach ($order_data as $key => $order_row) {
             unset($minDispathPrice);
             $dispatchtype = intval($order_row['dispatchtype']);
@@ -1449,7 +1461,6 @@ if ($_W['isajax']) {
             $discountprice = 0;
             $goodsarr      = explode('|', $goods);
             $cash          = 1;
-
             $deductprice   = 0;
             $deductprice2   = 0;
             $virtualsales  = 0;
@@ -1808,24 +1819,9 @@ if ($_W['isajax']) {
                 if (empty($dispatchtype) && $isverify) {
                     $isverifysend = true;
                 }
-                if ($isverifysend) {
-                    foreach ($goodsarr as $row) {
-                        $goodsids = explode(',', $row);
-                        $can_verifysend = pdo_fetch(" SELECT id,title,isverifysend FROM " .tablename('sz_yi_goods'). " WHERE id=:id and uniacid=:uniacid ", array(':id' => $goodsids[0], ':uniacid' => $_W['uniacid']));
-                        if ($can_verifysend['isverifysend'] != 1) {
-                            show_json(0,'您的订单中，商品标题为 ‘'.$can_verifysend['title'].'’ 的商品不支持配送核销，请更换配送方式或者剔除此商品！');
-                        }
-                    }
-                }
-                if ($dispatchsend) {
-                    foreach ($goodsarr as $row1) {
-                        $goodsids = explode(',', $row1);
-                        $can_dispatchsend = pdo_fetch(" SELECT id,title,isverifysend FROM " .tablename('sz_yi_goods'). " WHERE id=:id and uniacid=:uniacid ", array(':id' => $goodsids[0], ':uniacid' => $_W['uniacid']));
-                        if ($can_verifysend['isverifysend'] != 1) {
-                            show_json(0,'您的订单中，商品标题为 ‘'.$can_dispatchsend['title'].'’ 的商品不支持快递配送，请更换配送方式或者剔除此商品！');
-                        }
-                    }
-                }
+
+
+
                 if (!empty($data["virtual"]) || $data["type"] == 2) {
                     $isvirtual = true;
                 }
@@ -1932,7 +1928,7 @@ if ($_W['isajax']) {
 
             //如果开启核销并且不支持配送，则没有运费
             $isDispath = true;
-            if ($isverify && !$isverifysend) {
+            if ($isverify && !$isverifysend && !$dispatchsend) {
                 $isDispath = false;
             }
 
@@ -2550,7 +2546,7 @@ if ($_W['isajax']) {
             if (p('channel') && !empty($ischannelpick)) {
                 p('channel')->deductChannelStock($orderid);
             } else {
-                if (!empty($virtualid)) {
+                if (empty($virtualid)) {
                     m('order')->setStocksANDCredits($orderid, 0);
                 } else {
                     if (isset($allgoods[0])) {

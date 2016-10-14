@@ -174,6 +174,15 @@ if ($operation == 'display' && $_W['isajax']) {
     $storecash      = array(
         'success' => $order['cash'] == 1 && isset($set['pay']) && $set['pay']['cash'] == 1 && $order['dispatchtype'] == 1
     );
+
+    //易宝支付
+    $yeepay = array(
+        'success' => false
+    );
+    if (isset($set['pay']) && $set['pay']['yeepay'] == 1) {
+        $yeepay['success'] = true;
+    }
+
     $returnurl = urlencode($this->createMobileUrl('order/pay', array(
         'orderid' => $orderid
     )));
@@ -221,6 +230,7 @@ if ($operation == 'display' && $_W['isajax']) {
         'yunpay' => $yunpay,
         'cash' => $cash,
         'storecash' => $storecash,
+        'yeepay' => $yeepay,
         'isweixin' => is_weixin(),
         'currentcredit' => $currentcredit,
         'returnurl' => $returnurl,
@@ -241,7 +251,9 @@ if ($operation == 'display' && $_W['isajax']) {
         'app_alipay',
         'app_weixin',
         'unionpay',
-        'yunpay'
+        'yunpay',
+        'yeepay',
+        'yeepay_wy'
     ))) {
         show_json(0, '未找到支付方式');
     }
@@ -415,6 +427,16 @@ if ($operation == 'display' && $_W['isajax']) {
         pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=24 where '.$where_update.' and uniacid=:uniacid ', array(
                     ':uniacid' => $uniacid
                 ));
+        show_json(1);
+    } else if ($type == 'yeepay') {
+        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=25 where '.$where_update.' and uniacid=:uniacid ', array(
+            ':uniacid' => $uniacid
+        ));
+        show_json(1);
+    } else if ($type == 'yeepay_wy') {
+        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=26 where '.$where_update.' and uniacid=:uniacid ', array(
+            ':uniacid' => $uniacid
+        ));
         show_json(1);
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
@@ -854,7 +876,187 @@ if ($operation == 'display' && $_W['isajax']) {
         ));
     }
     die("<script>top.window.location.href='{$url}'</script>");
+} else if ($operation == 'returnyeepay') {
+    include(IA_ROOT . "/addons/sz_yi/core/inc/plugin/vendor/yeepay/yeepay/yeepayMPay.php");
+    $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+        ':uniacid' => $_W['uniacid']
+    ));
+    $set     = unserialize($setdata['sets']);
+    $merchantaccount= $set['pay']['merchantaccount'];
+    $merchantPublicKey= $set['pay']['merchantPublicKey'];
+    $merchantPrivateKey= $set['pay']['merchantPrivateKey'];
+    $yeepayPublicKey= $set['pay']['yeepayPublicKey'];
+
+    $yeepay = new yeepayMPay($merchantaccount, $merchantPublicKey, $merchantPrivateKey, $yeepayPublicKey);
+    try {
+        if ($_GET['data']=="" || $_GET['encryptkey'] == "")
+        {
+            echo "参数不正确！";
+            return;
+        }
+        //echo "success";
+        $data=$_GET['data'];
+        $encryptkey=$_GET['encryptkey'];
+        $return = $yeepay->callback($data, $encryptkey); //解密易宝支付回调结果
+        //file_put_contents(IA_ROOT . "/addons/sz_yi/data/re_pay.log",print_r($return,true),FILE_APPEND);
+        //后台通知有延迟,可开启页面通知
+
+        list($tid,$type) = explode(':',$return['orderid']);
+        //$tid = $return['orderid'];
+        if ($return['status'] == 1) {
+        //保存易宝交易号
+        $trade_no = array('trade_no'=>$return['yborderid']);
+        pdo_update('sz_yi_order', $trade_no, array('ordersn_general' =>$tid,'uniacid'=>$uniacid));
+        $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
+            ':uniacid' => $uniacid,
+            ':module' => 'sz_yi',
+            ':tid' => $tid
+        ));
+
+        if (empty($log)) {
+            die('支付出现错误，请重试!');
+        }
+        if ($log['status'] != 1) {
+            $record           = array();
+            $record['status'] = '1';
+            $record['type']   = 'alipay';
+            pdo_update('core_paylog', $record, array(
+                'plid' => $log['plid']
+            ));
+            $ret            = array();
+            $ret['result']  = 'success';
+            $ret['type']    = 'alipay';
+            $ret['from']    = 'return';
+            $ret['tid']     = $log['tid'];
+            $ret['user']    = $log['openid'];
+            $ret['fee']     = $log['fee'];
+            $ret['weid']    = $log['weid'];
+            $ret['uniacid'] = $log['uniacid'];
+            $this->payResult($ret);
+        }
+        }
+
+
+        $url     = $this->createMobileUrl('order/list',array('status' => 1));
+        die("<script>top.window.location.href='{$url}'</script>");
+
+    }catch (yeepayMPayException $e) {
+        echo "支付失败！";
+        return;
+    }
+} else if ($operation == 'returnyeepay_wy') {
+    include(IA_ROOT . "/addons/sz_yi/core/inc/plugin/vendor/yeepay/wy/yeepayCommon.php");
+
+    $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+        ':uniacid' => $_W['uniacid']
+    ));
+    $set     = unserialize($setdata['sets']);
+    $merchantaccount= $set['pay']['merchantaccount'];
+    $merchantPublicKey= $set['pay']['merchantPublicKey'];
+    $merchantPrivateKey= $set['pay']['merchantPrivateKey'];
+    $yeepayPublicKey= $set['pay']['yeepayPublicKey'];
+
+    $p1_MerId		= $set['pay']['merchantaccount'];
+    $merchantKey	= $set['pay']['merchantKey'];
+
+    #	只有支付成功时易宝支付才会通知商户.
+##支付成功回调有两次，都会通知到在线支付请求参数中的p8_Url上：浏览器重定向;服务器点对点通讯.
+
+#	解析返回参数.
+    $data=array();
+    if ( $_REQUEST['r9_BType'] == 1)
+    {
+        $data['p1_MerId']		 = $_REQUEST['p1_MerId'];
+        $data['r0_Cmd']		   = $_REQUEST['r0_Cmd'];
+        $data['r1_Code']	   = $_REQUEST['r1_Code'];
+        $data['r2_TrxId']    = $_REQUEST['r2_TrxId'];
+        $data['r3_Amt']      = $_REQUEST['r3_Amt'];
+        $data['r4_Cur']		   = $_REQUEST['r4_Cur'];
+        $data['r5_Pid']		   = iconv("utf-8","gbk",$_REQUEST['r5_Pid']);
+        $data['r6_Order']	   = $_REQUEST['r6_Order'];
+        $data['r7_Uid']		   = $_REQUEST['r7_Uid'];
+        $data['r8_MP']		   = iconv("utf-8","gbk",$_REQUEST['r8_MP']);
+        $data['r9_BType']	   = $_REQUEST['r9_BType'];
+        $data['hmac']			   = $_REQUEST['hmac'];
+        $data['hmac_safe']   = $_REQUEST['hmac_safe'];
+    }
+    else
+    {
+        $data['p1_MerId']		 = $_REQUEST['p1_MerId'];
+        $data['r0_Cmd']		   = $_REQUEST['r0_Cmd'];
+        $data['r1_Code']	   = $_REQUEST['r1_Code'];
+        $data['r2_TrxId']    = $_REQUEST['r2_TrxId'];
+        $data['r3_Amt']      = $_REQUEST['r3_Amt'];
+        $data['r4_Cur']		   = $_REQUEST['r4_Cur'];
+        $data['r5_Pid']		   = $_REQUEST['r5_Pid'] ;
+        $data['r6_Order']	   = $_REQUEST['r6_Order'];
+        $data['r7_Uid']		   = $_REQUEST['r7_Uid'];
+        $data['r8_MP']		   = $_REQUEST['r8_MP'] ;
+        $data['r9_BType']	   = $_REQUEST['r9_BType'];
+        $data['hmac']			   = $_REQUEST['hmac'];
+        $data['hmac_safe']   = $_REQUEST['hmac_safe'];
+    }
+//var_dump($data);
+    //本地签名
+    $hmacLocal = HmacLocal($data);
+// echo "</br>hmacLocal:".$hmacLocal;
+    $safeLocal= gethamc_safe($data);
+// echo "</br>safeLocal:".$safeLocal;
+
+    //验签
+//    if($data['hmac']	 != $hmacLocal    || $data['hmac_safe'] !=$safeLocal)
+//    {
+//        echo "验签失败";
+//        return;
+//    }else{
+        if ($data['r1_Code']=="1" ){
+                $tid = $data['r6_Order'];
+                //保存易宝交易号
+                $trade_no = array('trade_no'=>$data['r2_TrxId']);
+                pdo_update('sz_yi_order', $trade_no, array('ordersn_general' =>$tid,'uniacid'=>$uniacid));
+                $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
+                    ':uniacid' => $uniacid,
+                    ':module' => 'sz_yi',
+                    ':tid' => $tid
+                ));
+
+                if (empty($log)) {
+                    die('支付出现错误，请重试!');
+                }
+                if ($log['status'] != 1) {
+                    $record           = array();
+                    $record['status'] = '1';
+                    $record['type']   = 'alipay';
+                    pdo_update('core_paylog', $record, array(
+                        'plid' => $log['plid']
+                    ));
+                    $ret            = array();
+                    $ret['result']  = 'success';
+                    $ret['type']    = 'alipay';
+                    $ret['from']    = 'return';
+                    $ret['tid']     = $log['tid'];
+                    $ret['user']    = $log['openid'];
+                    $ret['fee']     = $log['fee'];
+                    $ret['weid']    = $log['weid'];
+                    $ret['uniacid'] = $log['uniacid'];
+                    $this->payResult($ret);
+                }
+            if($data['r9_BType']=="1"){
+                $url     = $this->createMobileUrl('order/list',array('status' => 1));
+                die("<script>top.window.location.href='{$url}'</script>");
+            }elseif($data['r9_BType']=="2"){
+                #如果需要应答机制则必须回写success.
+                echo "SUCCESS";
+                return;
+            }
+
+        }
+ //   }
+
+
 }
+
+
 if ($operation == 'display') {
     include $this->template('order/pay');
 }

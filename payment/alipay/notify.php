@@ -16,7 +16,7 @@ if (!empty($_POST)) {
 	$type = intval($strs[1]);
 	if ($type == 0) {
 		$paylog = "\r\n-------------------------------------------------\r\n";
-		$paylog .= "orderno: " . $get['out_trade_no'] . "\r\n";
+		$paylog .= "orderno: " . $out_trade_no . "\r\n";
 		$paylog .= "paytype: alipay\r\n";
 		$paylog .= "data: " . json_encode($_POST) . "\r\n";
 		m('common')->paylog($paylog);

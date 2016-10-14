@@ -52,6 +52,7 @@
 .order_main1 {height:30px;padding:10px;border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; background:#fff;text-align:center;margin-top:10px;box-sizing: content-box; }
 .order_sub5 {height:30px; width:35%;padding:5px 10px 5px 10px; border:1px solid #ccc; border-radius:4px; text-align:center; font-size:16px; line-height:30px; color:#333; }
 .order_sub6 {height:44px; margin:14px 5px; background:#07c4d0; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+    .order_sub8 {height:44px; margin:14px 5px; background: #2e78d0; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .order_sub_qr {height: 44px;
     margin: 14px 5px;
     background: hsl(106, 100%, 40%);
@@ -104,7 +105,7 @@
     <img src="" id="wechat_code" />
     </div>
     <%if alipay.success%><div class="button order_sub2" >支付宝支付</div><%/if%>
-    
+    <%if yeepay.success%><div class="button order_sub8" >易宝支付</div><%/if%>
     <%if credit.success %>
         <div class="button order_sub3">{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}支付(当前{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}:<%credit.current%>)</div>
         <input type="hidden" id="credit" value="<%credit.current%>" />
@@ -288,6 +289,25 @@
                     },true,true);
                });})
            }
+
+            //易宝网银支付
+            if(result.yeepay.success){
+
+                $('.order_sub8').click(function(){
+
+                    var deduct = ($('#deductmoney').length>0 &&$('#deductmoney').attr('on')=='1' )?1:0 ;
+                    core.json('order/pay', {op: 'pay',type: 'yeepay_wy', orderid:'{$_GPC['orderid']}',openid:"{$openid}",deduct:deduct}, function (rjson) {
+                        if(rjson.status!=1){
+                            $('.button').removeAttr('submitting');
+                            core.tip.show(rjson.result);
+                            return;
+                        }
+
+                        location.href = core.getUrl('order/pay_yeepay_wy',{orderid:'{$_GPC['orderid']}'});
+                        return;
+                    },true,true);
+                })
+            }
 
            if(result.wechat.qrcode){
                 function weixinpayresult(){
