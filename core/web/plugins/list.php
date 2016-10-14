@@ -65,6 +65,7 @@ $plugins_icon = array(
 	"yunbi" => "coin",
 	"area" => "region",
 	"beneficence" => "donation",
+    "yunprint" => "print",
 	);
 $plugins_desc = array(
 	"supplier" => "厂家入驻，平台统一销售", 
@@ -96,6 +97,7 @@ $plugins_desc = array(
 	"cashier" => "能分销、分红、全返，奖励红包的收银台",
 	"merchant" => "招募供应商获得销售分红",
 	"channel" => "虚拟库存，人、货、钱一体化管理",
+    "yunprint" => "云打印",
 );
 
 if(!pdo_fieldexists('sz_yi_plugin', 'desc')) {
