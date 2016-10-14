@@ -36,7 +36,7 @@ $cartid = $_GPC['cartids'] ? $_GPC['cartids'] : 0;
 $diyform_plugin = p("diyform");
 $order_formInfo = false;
 
-/*if ($diyform_plugin) {
+if ($diyform_plugin) {
     $diyform_set = $diyform_plugin->getSet();
     if (!empty($diyform_set["order_diyform_open"])) {
         $orderdiyformid = intval($diyform_set["order_diyform"]);
@@ -46,7 +46,7 @@ $order_formInfo = false;
             $f_data         = $diyform_plugin->getLastOrderData($orderdiyformid, $member);
         }
     }
-}*/
+}
 $carrier_list = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_store") . " WHERE uniacid=:uniacid AND status=1 AND myself_support=1", array(
     ":uniacid" => $_W["uniacid"]
 ));
@@ -61,6 +61,7 @@ if ($operation == "display" || $operation == "create") {
                 ":uniacid" => $uniacid,
                 ":id" => $id
             ));
+            //print_r($goods_data);exit;
             $diyformtype = $goods_data["diyformtype"];
             $diyformid   = $goods_data["diyformid"];
             $diymode     = $goods_data["diymode"];
@@ -71,6 +72,7 @@ if ($operation == "display" || $operation == "create") {
         }
     }
 }
+
 $ischannelpick = $_GPC['ischannelpick'];
 
 if ($operation == "date") {
@@ -1597,11 +1599,6 @@ if ($_W['isajax']) {
                 $data["diyformfields"] = iserializer(array());
                 if ($order_row["fromcart"] == 1) {
                     if ($diyform_plugin) {
-                        print_r(array(
-                            ":goodsid" => $data["goodsid"],
-                            ":optionid" => $data["optionid"],
-                            ":openid" => $openid
-                        ));
                         $cartdata = pdo_fetch("select id,diyformdataid,diyformfields,diyformdata from " . tablename("sz_yi_member_cart") . " " . " where goodsid=:goodsid and optionid=:optionid and openid=:openid and deleted=0 order by id desc limit 1", array(
                             ":goodsid" => $data["goodsid"],
                             ":optionid" => $data["optionid"],
@@ -1622,7 +1619,7 @@ if ($_W['isajax']) {
                         $data["diyformid"]     = $formInfo["id"];
                     }
                 }
-                //print_r($data);
+
                 /**
                  *  红包价格计算
                  */
