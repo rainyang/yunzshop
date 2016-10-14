@@ -1010,8 +1010,6 @@ if ($operation == 'display' && $_W['isajax']) {
 //        return;
 //    }else{
         if ($data['r1_Code']=="1" ){
-
-            if($data['r9_BType']=="1"){
                 $tid = $data['r6_Order'];
                 //保存易宝交易号
                 $trade_no = array('trade_no'=>$data['r2_TrxId']);
@@ -1043,7 +1041,7 @@ if ($operation == 'display' && $_W['isajax']) {
                     $ret['uniacid'] = $log['uniacid'];
                     $this->payResult($ret);
                 }
-
+            if($data['r9_BType']=="1"){
                 $url     = $this->createMobileUrl('order/list',array('status' => 1));
                 die("<script>top.window.location.href='{$url}'</script>");
             }elseif($data['r9_BType']=="2"){
