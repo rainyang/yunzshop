@@ -15,11 +15,11 @@ if (!empty($_POST)) {
     require '../../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
 
     $dir = dirname(__FILE__);
-    $dir_sn = substr($dir,strrpos($dir,'/')+1);
+    $uniacid = substr($dir,strrpos($dir,'/')+1);
 
     include("../../../core/inc/plugin/vendor/yeepay/yeepay/yeepayMPay.php");
     $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
-        ':uniacid' => $dir_sn
+        ':uniacid' => $uniacid
     ));
     $set     = unserialize($setdata['sets']);
 
@@ -28,31 +28,69 @@ if (!empty($_POST)) {
     $merchantPrivateKey= $set['pay']['merchantPrivateKey'];
     $yeepayPublicKey= $set['pay']['yeepayPublicKey'];
 
-        $yeepay = new yeepayMPay($merchantaccount, $merchantPublicKey, $merchantPrivateKey, $yeepayPublicKey);
+    $p1_MerId		= $set['pay']['merchantaccount'];
+    $merchantKey	= $set['pay']['merchantKey'];
 
-        if ($_POST['data']=="" || $_POST['encryptkey'] == "")
-        {
-            echo "参数不正确！";
-            return;
-        }
+    $data=array();
+    if ( $_REQUEST['r9_BType'] == 1)
+    {
+        $data['p1_MerId']		 = $_REQUEST['p1_MerId'];
+        $data['r0_Cmd']		   = $_REQUEST['r0_Cmd'];
+        $data['r1_Code']	   = $_REQUEST['r1_Code'];
+        $data['r2_TrxId']    = $_REQUEST['r2_TrxId'];
+        $data['r3_Amt']      = $_REQUEST['r3_Amt'];
+        $data['r4_Cur']		   = $_REQUEST['r4_Cur'];
+        $data['r5_Pid']		   = iconv("utf-8","gbk",$_REQUEST['r5_Pid']);
+        $data['r6_Order']	   = $_REQUEST['r6_Order'];
+        $data['r7_Uid']		   = $_REQUEST['r7_Uid'];
+        $data['r8_MP']		   = iconv("utf-8","gbk",$_REQUEST['r8_MP']);
+        $data['r9_BType']	   = $_REQUEST['r9_BType'];
+        $data['hmac']			   = $_REQUEST['hmac'];
+        $data['hmac_safe']   = $_REQUEST['hmac_safe'];
+    }
+    else
+    {
+        $data['p1_MerId']		 = $_REQUEST['p1_MerId'];
+        $data['r0_Cmd']		   = $_REQUEST['r0_Cmd'];
+        $data['r1_Code']	   = $_REQUEST['r1_Code'];
+        $data['r2_TrxId']    = $_REQUEST['r2_TrxId'];
+        $data['r3_Amt']      = $_REQUEST['r3_Amt'];
+        $data['r4_Cur']		   = $_REQUEST['r4_Cur'];
+        $data['r5_Pid']		   = $_REQUEST['r5_Pid'] ;
+        $data['r6_Order']	   = $_REQUEST['r6_Order'];
+        $data['r7_Uid']		   = $_REQUEST['r7_Uid'];
+        $data['r8_MP']		   = $_REQUEST['r8_MP'] ;
+        $data['r9_BType']	   = $_REQUEST['r9_BType'];
+        $data['hmac']			   = $_REQUEST['hmac'];
+        $data['hmac_safe']   = $_REQUEST['hmac_safe'];
+    }
+//var_dump($data);
+    //本地签名
+    $hmacLocal = HmacLocal($data);
+// echo "</br>hmacLocal:".$hmacLocal;
+    $safeLocal= gethamc_safe($data);
+// echo "</br>safeLocal:".$safeLocal;
 
-        $data=$_POST['data'];
-        $encryptkey=$_POST['encryptkey'];
-        $return = $yeepay->callback($data, $encryptkey); //解密易宝支付回调结果
+    //验签
+//    if($data['hmac']	 != $hmacLocal    || $data['hmac_safe'] !=$safeLocal)
+//    {
+//        echo "验签失败";
+//        return;
+//    }
 
-    list($out_trade_no, $uniacid) = explode(':',$return['orderid']);
+    $out_trade_no =$data['r6_Order'];
 
 
-    $total_fee = $return['amount'] * 0.01;  //最小单位(分)
-    $trade_no = $return['yborderid'];
+    $total_fee = $data['r3_Amt'];  //最小单位(元)
+    $trade_no = $data['r2_TrxId'];
 
     $_W['uniacid'] = $_W['weid'] = intval($uniacid);
     $type = 0;
     if ($type == 0) {
         $paylog = "\r\n-------------------------------------------------\r\n";
         $paylog .= "orderno: " . $out_trade_no . "\r\n";
-        $paylog .= "paytype: yeepay\r\n";
-        $paylog .= "data: " . json_encode($return) . "\r\n";
+        $paylog .= "paytype: yeepay_wy\r\n";
+        $paylog .= "data: " . json_encode($data) . "\r\n";
         m('common')->paylog($paylog);
     }
     $setting = uni_setting($_W['uniacid'], array('payment'));
@@ -61,7 +99,7 @@ if (!empty($_POST)) {
         if (!empty($alipay)) {
             m('common')->paylog("setting: ok\r\n");
 
-            if ($return['status'] == 1) {
+            if ($data['r1_Code'] == 1) {
                 m('common')->paylog("sign: ok\r\n");
                 if (empty($type)) {
                     $tid = $out_trade_no;
