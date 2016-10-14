@@ -36,7 +36,7 @@ $cartid = $_GPC['cartids'] ? $_GPC['cartids'] : 0;
 $diyform_plugin = p("diyform");
 $order_formInfo = false;
 
-if ($diyform_plugin) {
+/*if ($diyform_plugin) {
     $diyform_set = $diyform_plugin->getSet();
     if (!empty($diyform_set["order_diyform_open"])) {
         $orderdiyformid = intval($diyform_set["order_diyform"]);
@@ -46,13 +46,13 @@ if ($diyform_plugin) {
             $f_data         = $diyform_plugin->getLastOrderData($orderdiyformid, $member);
         }
     }
-}
+}*/
 $carrier_list = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_store") . " WHERE uniacid=:uniacid AND status=1 AND myself_support=1", array(
     ":uniacid" => $_W["uniacid"]
 ));
 
 if ($operation == "display" || $operation == "create") {
-    $id   = $operation == "create" ? intval($_GPC["order"][0]["id"]) : intval($_GPC["id"]);
+    $id   = ($operation == "create") ? intval($_GPC["order"][0]["id"]) : intval($_GPC["id"]);
     $show = 1;
     if ($diyform_plugin) {
         if (!empty($id)) {
@@ -1596,8 +1596,13 @@ if ($_W['isajax']) {
                 $data["diyformdataid"] = 0;
                 $data["diyformdata"]   = iserializer(array());
                 $data["diyformfields"] = iserializer(array());
-                if ($_GPC["fromcart"] == 1) {
+                if ($order_row["fromcart"] == 1) {
                     if ($diyform_plugin) {
+                        print_r(array(
+                            ":goodsid" => $data["goodsid"],
+                            ":optionid" => $data["optionid"],
+                            ":openid" => $openid
+                        ));
                         $cartdata = pdo_fetch("select id,diyformdataid,diyformfields,diyformdata from " . tablename("sz_yi_member_cart") . " " . " where goodsid=:goodsid and optionid=:optionid and openid=:openid and deleted=0 order by id desc limit 1", array(
                             ":goodsid" => $data["goodsid"],
                             ":optionid" => $data["optionid"],
@@ -1618,7 +1623,7 @@ if ($_W['isajax']) {
                         $data["diyformid"]     = $formInfo["id"];
                     }
                 }
-
+                //print_r($data);
                 /**
                  *  红包价格计算
                  */
@@ -2303,14 +2308,18 @@ if ($_W['isajax']) {
             if ($order_row['fromcart'] == 1) {
                 $cartids = $order_row['cartids'];
                 if (!empty($cartids)) {
-                    pdo_query('update ' . tablename('sz_yi_member_cart') . ' set deleted=1 where id in (' . $cartids . ') and openid=:openid and uniacid=:uniacid ', array(
+                    pdo_query('update ' . tablename('sz_yi_member_cart') . ' set deleted=1 where id in (' . $cartids . ') and openid=:openid and goodsid=:goodsid and optionid=:optionid and uniacid=:uniacid ', array(
                         ':uniacid' => $uniacid,
-                        ':openid' => $openid
+                        ':openid' => $openid,
+                        ":goodsid" => $data["goodsid"],
+                        ":optionid" => $data["optionid"]
                     ));
                 } else {
-                    pdo_query('update ' . tablename('sz_yi_member_cart') . ' set deleted=1 where openid=:openid and uniacid=:uniacid ', array(
+                    pdo_query('update ' . tablename('sz_yi_member_cart') . ' set deleted=1 where openid=:openid and goodsid=:goodsid and optionid=:optionid and uniacid=:uniacid ', array(
                         ':uniacid' => $uniacid,
-                        ':openid' => $openid
+                        ':openid' => $openid,
+                        ":goodsid" => $data["goodsid"],
+                        ":optionid" => $data["optionid"]
                     ));
                 }
             }
