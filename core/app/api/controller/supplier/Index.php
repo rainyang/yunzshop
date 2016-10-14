@@ -20,6 +20,7 @@ class Index extends YZ
     {
         $block_list = $this->_getSupplierBlockList();
         $res = ['block_list' => $block_list];
+        $this->json['json'] += $res;
         $this->returnSuccess($res);
     }
 
