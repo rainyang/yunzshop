@@ -209,13 +209,15 @@ if ($_W['isajax']) {
             if ($can_buy_goods['dispatchsend'] == 1) {
                 $a += 1;
             }
-            $storeids = explode(',', $can_buy_goods['storeids']);
+
             if (empty($storeids)) {
+                $storeids = explode(',', $can_buy_goods['storeids']);
                 $store_all = pdo_fetchall(" SELECT id FROM " .tablename('sz_yi_store'). " WHERE uniacid=:uniacid and myself_support=1", array(':uniacid' => $_W['uniacid']));
                 if (!empty($store_all) && is_array($store_all)) {
                     $a += 1;
                 }
             } else {
+                $storeids = explode(',', $can_buy_goods['storeids']);
                 $store = pdo_fetchall(" SELECT id FROM " .tablename('sz_yi_store'). " WHERE uniacid=:uniacid and myself_support=1 and id in (".implode(',', $storeids).")", array(':uniacid' => $_W['uniacid']));
                 if (!empty($store) && is_array($store)) {
                     $a += 1;
