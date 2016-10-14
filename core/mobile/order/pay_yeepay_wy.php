@@ -70,6 +70,12 @@ function yeepay_build($params, $yeepay = array(), $openid = '')
     $merchantKey	= $set['pay']['merchantKey'];
 
     $tid                   = $params['tid'];
+
+    $source = "../addons/sz_yi/payment/yeepay/wy_notify.php";
+    $dest =  "../addons/sz_yi/payment/yeepay/{$_W['uniacid']}/wy_notify.php";
+
+    moveFile($source, $dest);
+
     $reurl = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&m=sz_yi&do=order&p=pay&op=returnyeepay_wy&openid=" . $openid;
 
 #	商家设置用户购买商品的支付信息.
@@ -141,4 +147,18 @@ function yeepay_build($params, $yeepay = array(), $openid = '')
     //$sHtml = $sHtml;
     echo $sHtml;exit;
 
+}
+
+/**
+ * 复制支付通知文件
+ *
+ * @param $source
+ * @param $dest
+ */
+function moveFile($source, $dest)
+{
+    if (!is_dir(dirname($dest))) {
+        (@mkdir(dirname($dest), 0777, true));
+    }
+    @copy($source, $dest);
 }
