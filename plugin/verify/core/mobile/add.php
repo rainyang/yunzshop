@@ -89,7 +89,7 @@ if ($_W['isajax']) {
         unset($r);
         $list       = set_medias($list, 'thumb');
         $totalprice = number_format($totalprice, 2);
-        $counttotal = pdo_fetchcolumn('SELECT count(*) FROM '.tablename('sz_yi_store_goods')." WHERE storeid=:storeid and uniacid=:uniacid",array(':storeid'=>intval($_GPC['storeid']), ':uniacid'=>$_W['uniacid']));
+        $counttotal = pdo_fetchcolumn('SELECT COUNT(DISTINCT goodsid) FROM '.tablename('sz_yi_store_goods')." WHERE storeid=:storeid and uniacid=:uniacid ",array(':storeid'=>intval($_GPC['storeid']), ':uniacid'=>$_W['uniacid']));
             show_json(1, array(
                 'total' => $total,
                 'counttotal' => $counttotal,
