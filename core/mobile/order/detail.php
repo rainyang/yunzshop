@@ -205,11 +205,11 @@ if ($_W['isajax']) {
             $order['refund_button'] .= '中';
         }
     }
-    $variable = [
+    $variable = array(
         'show'=>$show,
         'diyform_flag'=>$diyform_flag,
-        'goods'=>$goods,
-    ];
+        'goods'=>$goods
+    );
     return show_json(1, array(
 
         'order' => $order,
