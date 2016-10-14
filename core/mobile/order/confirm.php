@@ -1028,6 +1028,13 @@ if ($_W['isajax']) {
         if (empty($g["isnodiscount"]) && floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
             $totalprice = round(floatval($level["discount"]) / 10 * $totalprice, 2);
         }
+        if ($pc) {
+           $pset = $pc->getSet();
+           if (empty($pset["closemember"])) {
+               $couponcount = $pc->consumeCouponCount($openid, $totalprice, $supplier_uid, 0, 0, $goodsid, $cartids,$coupon_carrierid);
+               $hascoupon   = $couponcount > 0;
+           }
+        }
 
         if ($sale_plugin) {
             if ($saleset) {

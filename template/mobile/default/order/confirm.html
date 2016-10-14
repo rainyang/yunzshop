@@ -914,15 +914,17 @@ var fromcart = 0;
                           $('.deductcredit2[data-id='+supplier_uid+']').attr('credit2',getjson.result.deductcredit2);
                       }
 
-//                      if(getjson.result.hascoupon){
-//                        $('.coupondiv[data-id='+supplier_uid+']').show();
-//                        $('.coupondiv[data-id='+supplier_uid+'] .couponcount').html(getjson.result.couponcount);
-//                        bindCouponEvents();
-//                      }else{
-//                        $("input[data-name='couponid'][data-id="+supplier_uid+"]").val('');
-//                        $('.couponselect[data-id='+supplier_uid+']').html('没有符合条件的优惠券~');
-//                        //$('.coupondiv[data-id='+supplier_uid+']').hide();
-//                      }
+                      if(getjson.result.hascoupon){
+                        $('.coupondiv[data-id='+supplier_uid+']').show();
+                          $('.couponselect[data-id='+supplier_uid+']').html('我要使用优惠券');
+                          $('.coupondiv[data-id='+supplier_uid+'] .couponcount').html(getjson.result.couponcount);
+                        bindCouponEvents();
+                      }else{
+                        $("input[data-name='couponid'][data-id="+supplier_uid+"]").val('');
+                        $('.couponselect[data-id='+supplier_uid+']').html('没有符合条件的优惠券~');
+                        $('.coupondiv[data-id='+supplier_uid+'] .couponcount').html('0');
+                        //$('.coupondiv[data-id='+supplier_uid+']').hide();
+                      }
 
                       if(getjson.result.deductenough_money>0){
                         $('.deductenough[data-id='+supplier_uid+']').show();
