@@ -74,7 +74,7 @@ if($_W['isajax']) {
 
         return show_json(1, array(
             'avatar'            => $member['avatar'],
-            'realname'          => $member['realname'],
+            'nickname'          => $member['nickname'],
             'username'          => $supplieruser['username'],
             'is_show_check'     => $is_show_check,
             'check_money'       => $check_money,
