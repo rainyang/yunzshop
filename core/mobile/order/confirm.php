@@ -197,6 +197,8 @@ if ($_W['isajax']) {
                         if ($option['marketprice'] != 0) {
                             $data['marketprice'] = $option['marketprice'];
                         }
+                    } else {
+                        $data['marketprice'] = $option['marketprice'];
                     }
                     $data['virtual']     = $option['virtual'];
                     $data['stock']       = $option['stock'];
@@ -1017,6 +1019,13 @@ if ($_W['isajax']) {
         //总价-优惠
         if (empty($g["isnodiscount"]) && floatval($level["discount"]) > 0 && floatval($level["discount"]) < 10) {
             $totalprice = round(floatval($level["discount"]) / 10 * $totalprice, 2);
+        }
+        if ($pc) {
+           $pset = $pc->getSet();
+           if (empty($pset["closemember"])) {
+               $couponcount = $pc->consumeCouponCount($openid, $totalprice, $supplier_uid, 0, 0, $goodsid, $cartids,$coupon_carrierid);
+               $hascoupon   = $couponcount > 0;
+           }
         }
 
         if ($sale_plugin) {

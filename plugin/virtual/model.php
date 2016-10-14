@@ -147,7 +147,16 @@ if (!class_exists('VirtualModel')) {
                     $shopset['name'] . "余额抵扣: {$order['deductcredit2']} 订单号: " . $order['ordersn']
                 ));
             }
-            $credits = $goods['total'] * $g['credit'];
+            //add_yitian[161009]
+            $gcredit = trim($g['credit']);
+            if (!empty($gcredit)) {
+                if (strexists($gcredit, '%')) {
+                    $credits += intval(floatval(str_replace('%', '', $gcredit)) / 100 * $goods['realprice']);
+                } else {
+                    $credits += intval($g['credit']) * $goods['total'];
+                }
+            }
+            //$credits = $goods['total'] * $g['credit'];
             if ($credits > 0) {
                 $shopset = m('common')->getSysset('shop');
                 m('member')->setCredit($order['openid'], 'credit1', $credits, array(

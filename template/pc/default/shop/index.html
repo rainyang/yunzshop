@@ -126,13 +126,13 @@ body { background:#fff;}
 }
 .goods_tab_list .items-li .price-attente .price {
     float: left;
-    margin-left: 30px;
+    margin-left: 10px;
     font-size: 12px;
     color: #ef353d;
 }
 .goods_tab_list .items-li .price-attente .attente {
     float: right;
-    margin-right: 30px;
+    margin-right: 10px;
     padding-left: 15px;
     font-size: 12px;
     color: #71cd9c;
@@ -199,7 +199,7 @@ body { background:#fff;}
     <div class="boutique boutique-index mt20 fl wfs">
       <h3>{$val}</h3>
       <div class="canvas">
-        <ul class="items" style="width: 1222px;margin:0">
+        <ul class="items" style="width: 1200px;margin:0">
           {if $goods_pc[$key]}
           {loop $goods_pc[$key] $row}
           <li class="items-li j-items-li"> <a target="_blank" href="{php echo $this->createMobileUrl('shop/detail')}&id={$row['id']}" style="position:relative;"><img src="{$row['thumb']}" title=""></a>
