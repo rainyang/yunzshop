@@ -1,10 +1,10 @@
 
 @font-face {font-family: "iconfont";
-  src: url('iconfont.eot?t=1473757319'); /* IE9*/
-  src: url('iconfont.eot?t=1473757319#iefix') format('embedded-opentype'), /* IE6-IE8 */
-  url('iconfont.woff?t=1473757319') format('woff'), /* chrome, firefox */
-  url('iconfont.ttf?t=1473757319') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
-  url('iconfont.svg?t=1473757319#iconfont') format('svg'); /* iOS 4.1- */
+  src: url('iconfont.eot?t=1476435603'); /* IE9*/
+  src: url('iconfont.eot?t=1476435603#iefix') format('embedded-opentype'), /* IE6-IE8 */
+  url('iconfont.woff?t=1476435603') format('woff'), /* chrome, firefox */
+  url('iconfont.ttf?t=1476435603') format('truetype'), /* chrome, firefox, opera, Safari, Android, iOS 4.2+*/
+  url('iconfont.svg?t=1476435603#iconfont') format('svg'); /* iOS 4.1- */
 }
 
 .iconfont {
@@ -24,6 +24,7 @@
 .icon-cog:before { content: "\e615"; }
 .icon-take:before { content: "\e62b"; }
 .icon-donation:before { content: "\e648"; }
+.icon-print:before { content: "\e64d"; }
 .icon-bag:before { content: "\e616"; }
 .icon-w-sale:before { content: "\e631"; }
 .icon-search:before { content: "\e613"; }
@@ -42,6 +43,7 @@
 .icon-volume-up:before { content: "\e607"; }
 .icon-diyform:before { content: "\e632"; }
 .icon-pencil:before { content: "\e61b"; }
+.icon-team-list:before { content: "\e649"; }
 .icon-remove:before { content: "\e61c"; }
 .icon-tmessage:before { content: "\e633"; }
 .icon-virtual:before { content: "\e63c"; }
@@ -52,6 +54,7 @@
 .icon-return:before { content: "\e63b"; }
 .icon-hezuotuandui:before { content: "\e618"; }
 .icon-database:before { content: "\e60b"; }
+.icon-team-home:before { content: "\e64a"; }
 .icon-fensi:before { content: "\e63f"; }
 .icon-map-marker:before { content: "\e60c"; }
 .icon-perm:before { content: "\e634"; }
@@ -64,6 +67,7 @@
 .icon-kehu:before { content: "\e61a"; }
 .icon-chat:before { content: "\e62a"; }
 .icon-region:before { content: "\e645"; }
+.icon-team-order:before { content: "\e64b"; }
 .icon-stock:before { content: "\e62d"; }
 .icon-poster:before { content: "\e641"; }
 .icon-purchase:before { content: "\e62e"; }
@@ -74,6 +78,7 @@
 .icon-channel:before { content: "\e62f"; }
 .icon-hotel:before { content: "\e63d"; }
 .icon-app:before { content: "\e637"; }
+.icon-team-group:before { content: "\e64c"; }
 .icon-street-view:before { content: "\e610"; }
 .icon-file:before { content: "\e622"; }
 .icon-fh:before { content: "\e624"; }
