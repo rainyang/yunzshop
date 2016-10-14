@@ -218,10 +218,10 @@ if (!class_exists('YunprintModel')) {
                     $orderinfo .= "优惠项目：           {$print_order['couponprice']}<BR>";
                 }
                 if ($offers['dispatchprice'] == 1) {
-                    $orderinfo .= "运费：               {$print_order['dispatchprice']}<BR>";
+                    $orderinfo .= "订单运费：           {$print_order['dispatchprice']}<BR>";
                 }
             }
-            $orderinfo .= "实际支付：            {$print_order['price']}";
+            $orderinfo .= "实际支付：           {$print_order['price']}";
             if (!empty($offers)) {
                 if ($offers['url'] == 1) {
                     $orderinfo .= "
