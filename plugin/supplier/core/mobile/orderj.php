@@ -31,6 +31,8 @@ if($_W['isajax']) {
 		$pindex = max(1, intval($_GPC['page']));
 		$psize = 20;
     	$sql = "select o.id,o.ordersn,o.price,o.openid,o.status,o.address,o.createtime from " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 " . " where 1 {$conditionq} and o.uniacid=".$_W['uniacid']." and o.supplier_uid={$uid} ORDER BY o.createtime DESC,o.status DESC  ";
+        $ordercount = pdo_fetchcolumn("select count(o.id) from " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 " . " where 1 and o.uniacid=".$_W['uniacid']." and o.supplier_uid={$uid}");
+        $pageno = $ordercount/$psize;
     	$sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
     	$list = pdo_fetchall($sql);
     	foreach ($list as &$rowp) {
@@ -60,7 +62,7 @@ if($_W['isajax']) {
 	 			}
 			}
 		}
-	    return show_json(2, array('list' => $list,'pagesize' => $psize,'setlevel'=>$setids));
+	    return show_json(2, array('list' => $list,'pagesize' => $psize,'setlevel'=>$setids,'pageno' => $pageno));
 	}
 	if ($operation == 'display') {
         if (empty($set['apply_day'])) {
