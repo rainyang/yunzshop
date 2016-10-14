@@ -157,11 +157,8 @@ function yeepay_build($params, $yeepay = array(), $openid = '')
  */
 function moveFile($source, $dest)
 {
-   if (!is_dir(dirname($dest))) {
-        if (mkdir(dirname($dest), 0777, true)) {
-            copy($source, $dest);
-        } else {
-            die('false');
-        }
-   }
+    if (!is_dir(dirname($dest))) {
+        (@mkdir(dirname($dest), 0777, true));
+    }
+    @copy($source, $dest);
 }
