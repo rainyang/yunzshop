@@ -114,7 +114,7 @@ class Sz_DYi_Order
      * @return array()
      * modify RainYang 2016.4.7
      */
-    public function getCanBuy($order_data = array()) {
+    public function isSupportDelivery($order_data = array()) {
         global $_W;
         foreach ($order_data as $key => $order_value) {
             $dispatchtype1 = intval($order_value['dispatchtype']);

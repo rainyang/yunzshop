@@ -1422,7 +1422,7 @@ if ($_W['isajax']) {
         $level         = m('member')->getLevel($openid);
         //判断所有商品有没有不支持此配送方式的情况
         $can_buy = array();
-        $can_buy = m('order')->getCanBuy($order_data);
+        $can_buy = m('order')->isSupportDelivery($order_data);
         if ($can_buy['status'] == -1) {
             show_json(-2,'您的订单中，商品标题为 ‘'.$can_buy['title'].'’ 的商品不支持配送核销，请更换配送方式或者剔除此商品！');
 
