@@ -70,6 +70,55 @@ class Sz_DYi_Common
         }
         return $set;
     }
+    public function getCanBuy($order_data = array()) {
+        global $_W;
+        foreach ($order_data as $key => $order_value) {
+            $dispatchtype1 = intval($order_value['dispatchtype']);
+            $goodsarr_1      = explode('|', $order_value['goods']);
+            $dispatchsend1 = false;
+            if ($dispatchtype1 == '2') {
+                $dispatchtype1 = '0';
+                $dispatchsend1 = true;
+            }
+            $can_goodsid_1 = array();
+            foreach ($goodsarr_1 as $row1) {
+                if (!empty($row1)) {
+                    $row1 = explode(',', $row1);
+                    $can_goodsid_1[] = $row1[0];
+                }
+            }
+            if (!empty($can_goodsid_1) && is_array($can_goodsid_1)) {
+                $goods_data = pdo_fetchall(" SELECT id,isverify,isverifysend,dispatchsend,title FROM " .tablename('sz_yi_goods'). " WHERE uniacid=:uniacid AND id IN (".implode(',', $can_goodsid_1).")", array(':uniacid' => $_W['uniacid']));
+
+            }
+
+            foreach ($goods_data as $gdata) {
+                $isverify1  = false;
+                $isverifysend1  = false;
+                if ($gdata['isverify'] == 2 && !$dispatchsend1) {
+                    $isverify1 = true;
+                }
+                if (empty($dispatchtype1) && $isverify1) {
+                    $isverifysend1 = true;
+                }
+                //判断此商品是否支持配送核销
+                if ($isverifysend1) {
+                    if ($gdata['isverifysend'] != 1) {
+                        $info = array('status' => -1, 'title' => $gdata['title']);
+                        return $info;
+                    }
+
+                }
+                //判断此商品是否支持快递配送
+                if ($dispatchsend1) {
+                    if ($gdata['dispatchsend'] != 1) {
+                        $info = array('status' => -2, 'title' => $gdata['title']);
+                        return $info;
+                    }
+                }
+            }
+        }
+    }
     public function getSysset($key = '', $uniacid = 0)
     {
         global $_W, $_GPC;
