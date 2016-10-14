@@ -19,6 +19,10 @@ if ($_W['isajax']) {
 	if ($status != '') {
 		$condition .= ' and status=' . intval($status);
 	}
+    if (!empty($_GPC['id'])) {
+        $condition .=' AND id<:id';
+        $params[':id'] = intval($_GPC['id']);
+    }
 	$list = pdo_fetchall("select * from " . tablename('sz_yi_supplier_apply') . " where 1 {$condition} order by id desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
 	$total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_supplier_apply') . " where 1 {$condition}", $params);
 	foreach ($list as &$row) {
@@ -34,7 +38,7 @@ if ($_W['isajax']) {
 		}
 	}
 	unset($row);
-	show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
+	return show_json(1, array('total' => $total, 'list' => $list, 'pagesize' => $psize));
 }
 if ($operation == 'display') {
 	include $this->template('logg');
