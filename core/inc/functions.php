@@ -203,7 +203,7 @@ function send_sms_alidayu($mobile, $code, $templateType)
     $req->setExtend("123456");
     $req->setSmsType("normal");
     $req->setSmsFreeSignName($set['sms']['signname']);
-    if (is_array($params)) {
+    if (count($params) > 1) {
         $nparam['code'] = "{$code}";
         foreach ($params as $param) {
             $param = trim($param);
