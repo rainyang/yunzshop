@@ -6,23 +6,23 @@
  * Time: 上午10:00
  */
 //芸众商城 QQ:913768135
-//file_put_contents("../../../data/msg.log",1,FILE_APPEND);
+error_reporting(0);
 define('IN_MOBILE', true);
 if (!empty($_POST)) {
-    require '../../../../framework/bootstrap.inc.php';
-    require '../../../../addons/sz_yi/defines.php';
-    require '../../../../addons/sz_yi/core/inc/functions.php';
-    require '../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
+    require '../../../../../framework/bootstrap.inc.php';
+    require '../../../../../addons/sz_yi/defines.php';
+    require '../../../../../addons/sz_yi/core/inc/functions.php';
+    require '../../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
 
     $dir = dirname(__FILE__);
     $uniacid = substr($dir,strrpos($dir,'/')+1);
 
-    include("../../core/inc/plugin/vendor/yeepay/yeepay/yeepayMPay.php");
+    include("../../../core/inc/plugin/vendor/yeepay/yeepay/yeepayMPay.php");
     $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
         ':uniacid' => $uniacid
     ));
     $set     = unserialize($setdata['sets']);
-    //file_put_contents(IA_ROOT .'/addons/sz_yi/data/re.log', print_r($set['pay'],1));
+
     $merchantaccount= $set['pay']['merchantaccount'];
     $merchantPublicKey= $set['pay']['merchantPublicKey'];
     $merchantPrivateKey= $set['pay']['merchantPrivateKey'];
