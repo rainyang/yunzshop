@@ -8,7 +8,7 @@
 //芸众商城 QQ:913768135
 error_reporting(0);
 define('IN_MOBILE', true);
-if (!empty($_POST)) {
+if (!empty($_GET)) {
     require '../../../../../framework/bootstrap.inc.php';
     require '../../../../../addons/sz_yi/defines.php';
     require '../../../../../addons/sz_yi/core/inc/functions.php';
