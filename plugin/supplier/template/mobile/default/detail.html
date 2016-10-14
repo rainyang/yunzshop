@@ -133,7 +133,7 @@
         <div class="ico"><i class="fa fa-map-marker"></i></div>
          <div class='info1'>
                  <div class='inner'>
-                        <div class="user">收件人：<span id='address_realname'><%addressraca.realname%></span>(<span id='address_mobile'><%address.mobile%></span>)</div>
+                        <div class="user">收件人：<span id='address_realname'><%address.realname%></span>(<span id='address_mobile'><%address.mobile%></span>)</div>
                         <div class="address"><span id='address_address'><%address.province%>/<%address.city%>/<%address.area%>/<%address.address%></span></div>
                  </div>
              </div>
@@ -143,7 +143,7 @@
  <%/if%>
   <%if show==1%>
     <%if order.isverify==1 || order.virtual!='0'%>
-
+    
     <div class="detail_user">
         <div class="info" >
             <div class="ico"><i class="fa fa-user"></i></div>
@@ -282,7 +282,9 @@
                         <div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
                             <div class="form-control-static">
                                 收  件 人: <span class="realname"></span> / <span class="mobile"></span><br>
+								<%if order.isvirtual == 0%>
                                 收货地址: <span class="province"></span><span class="city"></span><span class="area"></span><span class="address"></span>
+								<%/if%>
                             </div>
                         </div>
                     </div>

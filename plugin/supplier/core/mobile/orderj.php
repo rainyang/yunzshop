@@ -10,9 +10,11 @@ $username = $supplieruser['username'];
 $_GPC['type'] = $_GPC['type'] ? $_GPC['type'] : 0;
 $supplierinfo = $this->model->getSupplierInfo($uid);
 $ordercount = $supplierinfo['ordercount'];
-$commission_total = $supplierinfo['commission_total'];
-$costmoney = $supplierinfo['costmoney'];
-$commission_ok = number_format($costmoney, 2);
+$commission_total = number_format($supplierinfo['commission_total'], 2);
+$costmoney = number_format($supplierinfo['costmoney'], 2);
+$expect_money = number_format($supplierinfo['expect_money'], 2);
+$commission_ok = $costmoney;
+$supplierinfo['costmoney_total'] = number_format($supplierinfo['costmoney_total'], 2);
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if($_W['isajax']) {
  	if ($operation == 'order') {
@@ -55,19 +57,30 @@ if($_W['isajax']) {
 			}
 		}
 	    return show_json(2, array('list' => $list,'pagesize' => $psize,'setlevel'=>$setids));
-	} else if ($operation == 'display') {
-	    return show_json(1, array(
-	        'openid' => $openid,
-            'set'    => $set,
-            'member' => $member,
-            'supplieruser' => $supplieruser,
-            'uid' => $uid,
-            'username' => $username,
-            'type' => $_GPC['type'],
-            'supplierinfo' => $supplierinfo,
-            'commission_total' => $commission_total,
-            'costmoney' => $costmoney,
-            'commission_ok' => number_format($costmoney, 2)
+	}
+	if ($operation == 'display') {
+        if (empty($set['apply_day'])) {
+            $is_show_check = false;
+            $check_money = '';
+        } else {
+            $is_show_check = true;
+            $check_money = "订单完成{$set['apply_day']}天后可提现{$expect_money}元";
+        }
+        if ($commission_ok<=0 || !empty($supplierinfo['limit_day'])) {
+            $is_show_withdraw = false;
+        } else {
+            $is_show_withdraw = true;
+        }
+
+        return show_json(1, array(
+            'avatar'            => $member['avatar'],
+            'realname'          => $member['realname'],
+            'username'          => $supplieruser['username'],
+            'is_show_check'     => $is_show_check,
+            'check_money'       => $check_money,
+            'commission_total'  => $commission_total,
+            'costmoney'         => $costmoney,
+            'is_show_withdraw'  => $is_show_withdraw
         ));
     }
 }

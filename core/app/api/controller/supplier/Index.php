@@ -13,15 +13,12 @@ class Index extends YZ
     {
         parent::__construct();
         $result = $this->callPlugin('supplier/orderj');
-        $result['json']['checkmoney'] = "订单完成{$result['json']['set']['apply_day']}天后可提现{}元";
         $this->json = $result;
     }
 
     public function index()
     {
-        echo '<pre>';print_r($this->json);
         $block_list = $this->_getSupplierBlockList();
-        订单完成{$set['apply_day']}天后可提现：{php echo $expect_money} 元 <br>可提现金额（元）（订单完成后可获得）</div>
     }
 
     private function _getSupplierBlockList()
