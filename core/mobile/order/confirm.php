@@ -1420,6 +1420,52 @@ if ($_W['isajax']) {
         $ordersn_general    = m('common')->createNO('order', 'ordersn', 'SH');
         $member       = m('member')->getMember($openid);
         $level         = m('member')->getLevel($openid);
+        //判断所有商品有没有不支持此配送方式的情况
+        foreach ($order_data as $key => $order_value) {
+            $dispatchtype1 = intval($order_value['dispatchtype']);
+            $goodsarr_1      = explode('|', $order_value['goods']);
+            $dispatchsend1 = false;
+            if ($dispatchtype1 == '2') {
+                $dispatchtype1 = '0';
+                $dispatchsend1 = true;
+            }
+            $can_goodsid_1 = array();
+            foreach ($goodsarr_1 as $row1) {
+                if (!empty($row1)) {
+                    $row1 = explode(',', $row1);
+                    $can_goodsid_1[] = $row1[0];
+                }
+            }
+            if (!empty($can_goodsid_1) && is_array($can_goodsid_1)) {
+                $goods_data = pdo_fetchall(" SELECT id,isverify,isverifysend,dispatchsend,title FROM " .tablename('sz_yi_goods'). " WHERE uniacid=:uniacid AND id IN (".implode(',', $can_goodsid_1).")", array(':uniacid' => $_W['uniacid']));
+
+            }
+
+            foreach ($goods_data as $gdata) {
+                $isverify1  = false;
+                $isverifysend1  = false;
+                if ($gdata['isverify'] == 2 && !$dispatchsend1) {
+                    $isverify1 = true;
+                }
+                if (empty($dispatchtype1) && $isverify1) {
+                    $isverifysend1 = true;
+                }
+                //判断此商品是否支持配送核销
+                if ($isverifysend1) {
+                    if ($gdata['isverifysend'] != 1) {
+                        show_json(-2,'您的订单中，商品标题为 ‘'.$gdata['title'].'’ 的商品不支持配送核销，请更换配送方式或者剔除此商品！');
+                    }
+
+                }
+                //判断此商品是否支持快递配送
+                if ($dispatchsend1) {
+                    if ($gdata['dispatchsend'] != 1) {
+                        show_json(-2,'您的订单中，商品标题为 ‘'.$gdata['title'].'’ 的商品不支持快递配送，请更换配送方式或者剔除此商品！');
+                    }
+                }
+            }
+        }
+        //判断结束
         foreach ($order_data as $key => $order_row) {
             unset($minDispathPrice);
             $dispatchtype = intval($order_row['dispatchtype']);
@@ -1807,30 +1853,9 @@ if ($_W['isajax']) {
                 if (empty($dispatchtype) && $isverify) {
                     $isverifysend = true;
                 }
-                $can_goodsid = array();
-                foreach ($goodsarr as $row) {
-                    if (!empty($row)) {
-                        $row = explode(',', $row);
-                        $can_goodsid[] = $row[0];
-                    }
-                }
 
-                if ($isverifysend) {
-                    if (!empty($can_goodsid) && is_array($can_goodsid)) {
-                        $can_verifysend = pdo_fetch(" SELECT id,title,isverifysend FROM " .tablename('sz_yi_goods'). " WHERE id IN (".implode(',', $can_goodsid).") AND uniacid=:uniacid AND isverifysend=0 LIMIT 1", array(':uniacid' => $_W['uniacid']));
-                        if ($can_verifysend) {
-                            show_json(-2,'您的订单中，商品标题为 ‘'.$can_verifysend['title'].'’ 的商品不支持配送核销，请更换配送方式或者剔除此商品！');
-                        }
-                    }
-                }
-                if ($dispatchsend) {
-                    if (!empty($can_goodsid) && is_array($can_goodsid)) {
-                        $can_dispatchsend = pdo_fetch(" SELECT id,title,dispatchsend FROM " .tablename('sz_yi_goods'). " WHERE uniacid=:uniacid AND id IN (".implode(',', $can_goodsid).") AND dispatchsend=0 LIMIT 1", array(':uniacid' => $_W['uniacid']));
-                        if ($can_dispatchsend) {
-                            show_json(-2,'您的订单中，商品标题为 ‘'.$can_dispatchsend['title'].'’ 的商品不支持快递配送，请更换配送方式或者剔除此商品！');
-                        }
-                    }
-                }
+
+
                 if (!empty($data["virtual"]) || $data["type"] == 2) {
                     $isvirtual = true;
                 }
@@ -1937,7 +1962,7 @@ if ($_W['isajax']) {
 
             //如果开启核销并且不支持配送，则没有运费
             $isDispath = true;
-            if ($isverify && !$isverifysend) {
+            if ($isverify && !$isverifysend && !$dispatchsend) {
                 $isDispath = false;
             }
 
