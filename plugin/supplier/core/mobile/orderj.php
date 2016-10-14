@@ -80,7 +80,10 @@ if($_W['isajax']) {
             'check_money'       => $check_money,
             'commission_total'  => $commission_total,
             'costmoney'         => $costmoney,
-            'is_show_withdraw'  => $is_show_withdraw
+            'is_show_withdraw'  => $is_show_withdraw,
+            'expect_money'      => $expect_money,
+            'costmoney_total'   => $supplierinfo['costmoney_total'],
+            'ordercount'        => $ordercount
         ));
     }
 }

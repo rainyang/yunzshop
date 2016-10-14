@@ -19,50 +19,32 @@ class Index extends YZ
     public function index()
     {
         $block_list = $this->_getSupplierBlockList();
+        $res = ['block_list' => $block_list];
+        $this->returnSuccess($res);
     }
 
     private function _getSupplierBlockList()
     {
-        $member = $this->json['member'];
-        $set = p('commission')->getSet();
         $list = [
             [
                 'id' => 1,
                 'icon' => '',
-                'title' => $set['texts']['commission1'],
-                'value' => $member['commission_total'],
+                'title' => '累计未提现金额',
+                'value' => $this->json['json']['costmoney_total'],
                 'unit' => '元'
             ], [
                 'id' => 2,
                 'icon' => '',
-                'title' => $set['texts']['order'],
-                'value' => $member['ordercount0'],
-                'unit' => '个'
+                'title' => '提现记录',
+                'value' => $this->json['json']['commission_total'],
+                'unit' => '元'
             ], [
                 'id' => 3,
                 'icon' => '',
-                'title' => $set['texts']['commission_detail'],
-                'value' => '',
-                'unit' => $set['texts']['commission_detail']
-            ], [
-                'id' => 4,
-                'icon' => '',
-                'title' => $set['texts']['myteam'],
-                'value' => $member['agentcount'],
+                'title' => '我的订单',
+                'value' => $this->json['json']['ordercount'],
                 'unit' => '个'
-            ], [
-                'id' => 5,
-                'icon' => '',
-                'title' => $set['texts']['mycustomer'],
-                'value' => $member['customercount'],
-                'unit' => '人'
-            ], [
-                'id' => 6,
-                'icon' => '',
-                'title' => '二维码',
-                'value' => '',
-                'unit' => '推广二维码'
-            ],
+            ]
         ];
 
         return $list;
