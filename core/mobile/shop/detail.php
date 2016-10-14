@@ -200,7 +200,7 @@ $commissionprice = p('commission')->getCommission($goods);
 if ($_W['isajax']) {
     if ($operation == 'can_buy') {
         $id = intval($_GPC['id']);
-        $can_buy_goods = pdo_fetch(" SELECT id,dispatchsend,isverifysend,storeids FROM " .tablename('sz_yi_goods'). " WHERE id=:id and uniacid=:uniacid", array(':id' => $id, ':uniacid' => $_W['uniacid']));
+        $can_buy_goods = pdo_fetch(" SELECT id,dispatchsend,isverifysend,storeids,isverify FROM " .tablename('sz_yi_goods'). " WHERE id=:id and uniacid=:uniacid", array(':id' => $id, ':uniacid' => $_W['uniacid']));
         if ($can_buy_goods['isverify'] == 2) {
             $a = 0;
             if ($can_buy_goods['isverifysend'] == 1) {
@@ -209,23 +209,26 @@ if ($_W['isajax']) {
             if ($can_buy_goods['dispatchsend'] == 1) {
                 $a += 1;
             }
-            $can_buy_goods['storeids'] = explode(',', $can_buy_goods['storeids']);
-            if (empty($can_buy_goods['storeids'])) {
-                $a += 1;
-            } else {
-                foreach ($can_buy_goods['storeids'] as $c) {
-                    $store_c = pdo_fetchcolumn(" SELECT myself_support FROM " .tablename('sz_yi_store'). " WHERE id=:id and uniacid=:unaicid", array(':id' => $c, ':uniacid' => $_W['uniacid']));
-                    if (!empty($store_c)) {
-                        $a += 1;
-                    }
+            $storeids = explode(',', $can_buy_goods['storeids']);
+            if (empty($storeids)) {
+                $store_all = pdo_fetchall(" SELECT id FROM " .tablename('sz_yi_store'). " WHERE uniacid=:uniacid and myself_support=1", array(':uniacid' => $_W['uniacid']));
+                if (!empty($store_all) && is_array($store_all)) {
+                    $a += 1;
                 }
+            } else {
+                $store = pdo_fetchall(" SELECT id FROM " .tablename('sz_yi_store'). " WHERE uniacid=:uniacid and myself_support=1 and id in (".implode(',', $storeids).")", array(':uniacid' => $_W['uniacid']));
+                if (!empty($store) && is_array($store)) {
+                    $a += 1;
+                }
+
+            }
+            if ($a == 0) {
+                show_json(0, '抱歉！因为此商品不支持任何配送方式，故暂不支持购买，请联系运营人员了解详情');
+            } else {
+                show_json(1);
             }
         }
-        if ($a == 0) {
-            show_json(0, '抱歉！因为此商品不支持任何配送方式，故暂不支持购买，请联系运营人员了解详情');
-        } else {
-            show_json(1);
-        }
+
     }
     if (p('channel')) {
         $ischannelpay   = intval($_GPC['ischannelpay']);
