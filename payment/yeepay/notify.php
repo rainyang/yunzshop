@@ -15,11 +15,11 @@ if (!empty($_POST)) {
     require '../../../../../addons/sz_yi/core/inc/plugin/plugin_model.php';
 
     $dir = dirname(__FILE__);
-    $uniacid = substr($dir,strrpos($dir,'/')+1);
+    $dir_sn = substr($dir,strrpos($dir,'/')+1);
 
     include("../../../core/inc/plugin/vendor/yeepay/yeepay/yeepayMPay.php");
     $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
-        ':uniacid' => $uniacid
+        ':uniacid' => $dir_sn
     ));
     $set     = unserialize($setdata['sets']);
 
@@ -43,7 +43,7 @@ if (!empty($_POST)) {
     list($out_trade_no, $uniacid) = explode(':',$return['orderid']);
 
 
-    $total_fee = $return['amount'] * 0.01;  //最小单位(元)
+    $total_fee = $return['amount'] * 0.01;  //最小单位(分)
     $trade_no = $return['yborderid'];
 
     $_W['uniacid'] = $_W['weid'] = intval($uniacid);
@@ -51,7 +51,7 @@ if (!empty($_POST)) {
     if ($type == 0) {
         $paylog = "\r\n-------------------------------------------------\r\n";
         $paylog .= "orderno: " . $out_trade_no . "\r\n";
-        $paylog .= "paytype: alipay\r\n";
+        $paylog .= "paytype: yeepay\r\n";
         $paylog .= "data: " . json_encode($return) . "\r\n";
         m('common')->paylog($paylog);
     }
