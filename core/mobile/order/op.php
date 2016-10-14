@@ -407,7 +407,7 @@ if ($_W['isajax']) {
 		if ($order['iscomment'] >= 2) {
 			show_json(0, '您已经评价了!');
 		}
-		if ($_W['ispost']) {
+		if ($_W['ispost'] && $_GPC['from_pc_client'] == 'pc') {
 	            $member   = m('member')->getMember($openid);
 	            $comments = $_GPC['comments'];
 	            if (!is_array($comments)) {
