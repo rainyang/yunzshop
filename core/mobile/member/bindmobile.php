@@ -26,8 +26,10 @@ if ($_W['isajax']) {
         }
         
         //更换公众号或pc到微信绑定
-        $memberall = pdo_fetchall('select id, openid, pwd, level, agentlevel, bonuslevel, createtime, bindapp, status, isagent from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and openid!=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':mobile' => $mc['mobile']));
-
+        $memberall = pdo_fetchall('select id, openid, pwd, level, agentlevel, bonuslevel, createtime, bindapp, status, isagent, agentid from ' . tablename('sz_yi_member') . ' where  mobile =:mobile and openid!=:openid and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':openid' => $openid, ':mobile' => $mc['mobile']));
+        $log = "绑定开始++++++++++++++++++++++++++++++++";
+        $log .= print_r($member, 1);
+        $log .= print_r($memberall, 1);
         if (!empty($memberall)) {
             foreach ($memberall as $key => $info) {
                 $oldopenid = $info['openid'];
@@ -77,16 +79,15 @@ if ($_W['isajax']) {
 
                 //会员等级对比
                 if(!empty($info['level'])){
-                   /* $newlevel = "";
+                    $newlevel = "";
+                    //查询其它会员等级的权重
                     $oldlevel = pdo_fetchcolumn('select level from ' . tablename('sz_yi_member_level') . ' where id=:id and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':id' => $info['level']));
+                    //如当前会员有等级查询当前会员等级权重
                     if(!empty($member['level'])){
                         $newlevel = pdo_fetchcolumn('select level from ' . tablename('sz_yi_member_level') . ' where id=:id and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':id' => $member['level']));
                     }
                     if(empty($newlevel) || $oldlevel > $newlevel){
-                       $data['level'] = $oldlevel;
-                    } */
-                    if(empty($member['level']) || $info['level'] > $member['level']){
-                        $data['level'] = $info['level'];
+                       $data['level'] = $info['level'];
                     }
                 }
 
@@ -98,7 +99,7 @@ if ($_W['isajax']) {
                         $newagentlevel = pdo_fetchcolumn('select level from ' . tablename('sz_yi_commission_level') . ' where id=:id and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':id' => $member['agentlevel']));
                     }
                     if(empty($newagentlevel) || $oldagentlevel > $newagentlevel){
-                       $data['agentlevel'] = $oldagentlevel;
+                       $data['agentlevel'] = $info['agentlevel'];
                     }
                 }
 
@@ -110,7 +111,7 @@ if ($_W['isajax']) {
                         $newbonuslevel = pdo_fetchcolumn('select level from ' . tablename('sz_yi_bonus_level') . ' where id=:id and uniacid=:uniacid', array(':uniacid' => $_W['uniacid'], ':id' => $member['bonuslevel']));
                     }
                     if(empty($newbonuslevel) || $oldbonuslevel > $newbonuslevel){
-                       $data['bonuslevel'] = $oldbonuslevel;
+                       $data['bonuslevel'] = $info['bonuslevel'];
                     } 
                 }
 
@@ -119,10 +120,12 @@ if ($_W['isajax']) {
 
                 //当前用户是否大于其他用户
                 if($member['createtime'] > $info['createtime']){
-                    //大于则使用老的用户id
-                    pdo_update('sz_yi_member', array('id' => $info['id']), array('openid' => $openid, 'uniacid' => $_W['uniacid']));
-                    //修改新用户，所有用户agentid为老的用户id
-                    pdo_update('sz_yi_member', array('agentid' => $info['id']), array('agentid' => $member['id'], 'uniacid' => $_W['uniacid']));
+                    if($info['agentid'] != 0){
+                        //大于则使用老的用户id
+                        pdo_update('sz_yi_member', array('id' => $info['id']), array('openid' => $openid, 'uniacid' => $_W['uniacid']));
+                        //修改新用户，所有用户agentid为老的用户id
+                        pdo_update('sz_yi_member', array('agentid' => $info['id']), array('agentid' => $member['id'], 'uniacid' => $_W['uniacid']));
+                    }
                 }else{
                     //修改老用户的agentid改为新用户id
                     pdo_update('sz_yi_member', array('agentid' => $member['id']), array('agentid' => $info['id'], 'uniacid' => $_W['uniacid']));
@@ -154,7 +157,16 @@ if ($_W['isajax']) {
                     }
                 }
             }
-            
+            $path = IA_ROOT . '/addons/sz_yi/data/bindmember/' . $_W['uniacid'];
+            if (!is_dir($path)) {
+                load()->func('file');
+                @mkdirs($path, '0777');
+            }
+            $log .= "绑定新号++++++++++++++++++++++++++++++++";
+            $member = m('member')->getMember($openid);
+            $log .= print_r($member, 1);
+            $log .= "绑定结束++++++++++++++++++++++++++++++++";
+            @file_put_contents($path.'/'.date('Ymd').".log", $log, FILE_APPEND);
             show_json(1, array(
                 'preurl' => $preUrl
             ));
