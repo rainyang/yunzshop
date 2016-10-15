@@ -3,7 +3,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
-$openid = m('user')->getOpenid();
+echo $openid = m('user')->getOpenid();
 $member = m('member')->getMember($openid);
 $preUrl = $_COOKIE['preUrl'];
 if (is_weixin()) {
@@ -165,8 +165,8 @@ if ($_W['isajax']) {
             $log .= "绑定新号++++++++++++++++++++++++++++++++";
             $member = m('member')->getMember($openid);
             $log .= print_r($member, 1);
-            $log = "绑定结束++++++++++++++++++++++++++++++++";
-            @file_put_contents($path.date('Ymd').".log", $log, FILE_APPEND);
+            $log .= "绑定结束++++++++++++++++++++++++++++++++";
+            @file_put_contents($path.'/'.date('Ymd').".log", $log, FILE_APPEND);
             show_json(1, array(
                 'preurl' => $preUrl
             ));
