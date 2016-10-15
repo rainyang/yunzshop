@@ -3,7 +3,7 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
-echo $openid = m('user')->getOpenid();
+$openid = m('user')->getOpenid();
 $member = m('member')->getMember($openid);
 $preUrl = $_COOKIE['preUrl'];
 if (is_weixin()) {
