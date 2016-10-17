@@ -48,10 +48,11 @@ if ($_W['isajax']) {
 		$returnurl = urlencode($this->createPluginMobileUrl('supplier/orderj'));
 		$infourl = $this->createPluginMobileUrl('supplier/orderj', array('returnurl' => $returnurl));
 		$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 2 ? '微信' : '线下'), TM_COMMISSION_APPLY);
-		show_json(1, '已提交,请等待审核!');
+		return show_json(1, '已提交,请等待审核!');
 	}
+	$closetocredit = $this->set['closetocredit'];
 	$returnurl = urlencode($this->createPluginMobileUrl('commission/applyg'));
 	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
-	show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname']), 'supplierinfo' => $supplierinfo));
+	return show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname']), 'supplierinfo' => $supplierinfo, 'closetocredit' => $closetocredit, 'shopset' => $shopset));
 }
 include $this->template('applyg');

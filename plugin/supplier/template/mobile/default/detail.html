@@ -110,14 +110,13 @@
 <script id='tpl_detail' type='text/html'>
 <div class="page_topbar">
     <a href="{php echo $this->createPluginMobileUrl('supplier/orderj',array('op'=>'order'))}" class="back"><i class="fa fa-angle-left"></i></a>
-    <%if order.status==1 && order.isverify=='1' && order.verifyied!='1'%><a href="javascript:;" class="btn" onclick="VerifyHandler.verify('{$_GPC['id']}')"><i class="fa fa-qrcode"></i></a><%/if%>
     <div class="title">订单详情</div>
 </div>
 <div class="detail_topbar">
     <div class="ico"><i class="fa fa-file-text-o"></i></div>
     <div class="tips">
-         <%if order.status==0 && order.paytype!=3%>等待付款<%/if%>
-     <%if order.paytype==3 && order.status==0%>货到付款，等待发货<%/if%>
+        <%if order.status==0 && order.paytype!=3%>等待付款<%/if%>
+        <%if order.paytype==3 && order.status==0%>货到付款，等待发货<%/if%>
         <%if order.status==1%>已付款<%/if%>
         <%if order.status==2 %>已发货<%/if%>
         <%if order.status==3%>交易完成<%/if%>
@@ -141,23 +140,6 @@
     </div>
 </div>
  <%/if%>
-  <%if show==1%>
-    <%if order.isverify==1 || order.virtual!='0'%>
-    
-    <div class="detail_user">
-        <div class="info" >
-            <div class="ico"><i class="fa fa-user"></i></div>
-                <div class='info1'>
-                     <div class='inner'>
-                         <div class="user">联系人:  <%carrier.carrier_realname%></div>
-                         <div class="address">联系电话: <span id='carrier_address'><%carrier.carrier_mobile%></span></div>
-                     </div>
-                 </div>
-            </div>
-          </div>
-    </div>
-    <%/if%>
-<%/if%>
 <!--<span>diyform</span>-->
 {if $diyform_flag == 1 && count($goods)==1}
 {php $datas = iunserializer($goods[0]['diyformdata'])}
