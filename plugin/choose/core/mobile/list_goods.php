@@ -16,53 +16,53 @@ if($_W['isajax']){
     $pageid = intval($_GPC['pageid']);
     $page   = pdo_fetch('select * from '.tablename('sz_yi_chooseagent'). ' where id=:id and uniacid=:uniacid',array(':uniacid'=>$_W['uniacid'],':id'=>$pageid));
     if ($page['isstore'] == 1) {
-       $goodsids = pdo_fetchall("SELECT distinct goodsid FROM ".tablename('sz_yi_store_goods')." WHERE storeid=:storeid and uniacid=:uniacid ", array(':uniacid' => $_W['uniacid'], ':storeid' => $page['storeid'])); 
+        $goodsids = pdo_fetchall("SELECT distinct goodsid FROM ".tablename('sz_yi_store_goods')." WHERE storeid=:storeid and uniacid=:uniacid ", array(':uniacid' => $_W['uniacid'], ':storeid' => $page['storeid']));
     }
-    
-            
+
+
     $goodsid = array();
 
     foreach ($goodsids as $row) {
-        
+
         $goodsid[] = $row['goodsid'];
     }
     $goodsid = implode(',', $goodsid);
     if (!empty($page['isopenchannel'])) {
         $args = array(
             'isopenchannel' => $page['isopenchannel']
-            );
+        );
         if (!empty($ischannelpick)) {
             $args = array(
-            'isopenchannel' => $page['isopenchannel'],
-            'ischannelpick' => $ischannelpick,
-            'openid'        => $openid
+                'isopenchannel' => $page['isopenchannel'],
+                'ischannelpick' => $ischannelpick,
+                'openid'        => $openid
             );
         }
     } else {
         if($page['isopen']!=0){
             $args=array(
-            'pcate'         => $_GPC['pcate'],
-            'ccate'         => $_GPC['ccate'],
-            'tcate'         => $_GPC['tcate'],
-            'supplier_uid'  => $page['uid']
+                'pcate'         => $_GPC['pcate'],
+                'ccate'         => $_GPC['ccate'],
+                'tcate'         => $_GPC['tcate'],
+                'supplier_uid'  => $page['uid']
             );
         }else{
             if ($operation == 'moren') {
-                    $args = array(
-                        'pcate' => $_GPC['pcate'],
-                        'goodsids' => $goodsid
+                $args = array(
+                    'pcate' => $_GPC['pcate'],
+                    'ids' => $goodsid
 
-                    ); 
+                );
             } else if($operation == 'second') {
-                    $args=array(
-                        'pcate' => $page['pcate'],
-                        'ccate' => $_GPC['ccate'],
-                        'goodsids' => $goodsid
-                    );
+                $args=array(
+                    'pcate' => $page['pcate'],
+                    'ccate' => $_GPC['ccate'],
+                    'ids' => $goodsid
+                );
             } else if ($operation == 'third') {
                 $args = array(
                     'tcate' => $_GPC['tcate'],
-                    'goodsids' => $goodsid
+                    'ids' => $goodsid
                 );
             } else if ($operation == 'getdetail') {
                 $args = array(
@@ -75,7 +75,7 @@ if($_W['isajax']){
                 $good = set_medias(pdo_fetch("SELECT * FROM ".tablename('sz_yi_goods')." WHERE id=".$args['id']),'thumb');
             }
         }
-    }  
+    }
 
     if (empty($page['isstore']) && empty($_GPC['storeid'])) {
         $args['isverify'] = 1;
