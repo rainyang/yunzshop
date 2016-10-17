@@ -2001,6 +2001,11 @@ function order_list_cancelsend1($order) {
 }
 function order_list_finish($order) {
     global $_W, $_GPC;
+    if ( $order['status'] == '3') {
+        message("订单已完成！", order_list_backurl() , "error");
+        exit;
+    }
+
     ca("order.op.finish");
     pdo_update("sz_yi_order", array(
         "status" => 3,
