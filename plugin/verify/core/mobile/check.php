@@ -14,12 +14,12 @@ $order     = pdo_fetch("select id,status,isverify,verified from " . tablename('s
     ':openid' => $openid
 ));
 if (empty($order)) {
-    show_json(0);
+    return show_json(0,'没有该订单!');
 }
 if (empty($order['isverify'])) {
-    show_json(0);
+    return show_json(0,'订单是核销商品!');
 }
 if (empty($order['verified'])) {
-    show_json(0);
+    return show_json(0,'该商品已核销!');
 }
-show_json(1);
+return show_json(1);

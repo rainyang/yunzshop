@@ -24,7 +24,7 @@ class Operation extends YZ
             $this->returnError($result['json']);
         }
         //dump($result);exit;
-        $this->json = $result['result'];
+        $this->json = $result['json'];
         $this->returnSuccess($this->json);
     }
 }

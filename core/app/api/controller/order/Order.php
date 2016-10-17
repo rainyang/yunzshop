@@ -39,8 +39,8 @@ class Order
                 'value' => static::COMPLETE
             ],
             static::EXPRESS => [
-                'name' => '确认收货',
-                'api' => 'express',
+                'name' => '查看物流',
+                'api' => '/order/express/display',
                 'value' => static::EXPRESS
             ],
             static::CANCEL => [

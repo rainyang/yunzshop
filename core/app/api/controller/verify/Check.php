@@ -3,7 +3,7 @@ namespace app\api\controller\verify;
 @session_start();
 use app\api\YZ;
 use app\api\Request;
-class Qrcode extends YZ
+class Check extends YZ
 {
     private $json;
     private $variable;
@@ -12,10 +12,10 @@ class Qrcode extends YZ
     {
         parent::__construct();
         global $_W;
-        $_W['ispost']= true;
-        $result = $this->callPlugin('verify/Qrcode');
+        $result = $this->callPlugin('verify/Check');
+
         //dump($result);exit;
-        if($result['code'] == -1){
+        if($result['code'] != 1){
             $this->returnError($result['json']);
         }
         $this->variable = $result['variable'];

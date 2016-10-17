@@ -14,10 +14,10 @@ $order     = pdo_fetch("select id,status,isverify,verified,verifycode from " . t
     ':openid' => $openid
 ));
 if (empty($order)) {
-    show_json(0, '订单未找到!');
+    return show_json(0, '订单未找到!');
 }
 $qrcode = $this->model->createQrcode($orderid);
-show_json(1, array(
+return show_json(1, array(
     'qrcode' => $qrcode,
     'verifycode' => $order['verifycode']
 ));

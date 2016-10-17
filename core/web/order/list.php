@@ -1696,7 +1696,10 @@ if ($operation == "display") {
                 "ts" => strtotime(trim($step[0]))
             );
         }
+
         load()->func("tpl");
+        load()->web("template");
+
         include $this->template("web/order/express");
         exit;
     }

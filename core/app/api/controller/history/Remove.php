@@ -1,5 +1,5 @@
 <?php
-namespace app\api\controller\favorite;
+namespace app\api\controller\history;
 @session_start();
 use app\api\YZ;
 use app\api\Request;
@@ -14,7 +14,7 @@ class Remove extends YZ
         parent::__construct();
         global $_W;
         $_W['ispost']= true;
-        $result = $this->callMobile('shop/favorite/remove');
+        $result = $this->callMobile('shop/history/remove');
         //dump($result);exit;
         if($result['code'] == -1){
             $this->returnError($result['json']);

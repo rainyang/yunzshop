@@ -81,7 +81,7 @@ if (!empty($order)) {
         $g['thumb'] = tomedia($g['thumb']);
         if ($diyform_plugin) {
             $diyformdata   = iunserializer($g['diyformdata']);
-            $fields        = iunserializer($g['diyformfields']);
+            $fields        = iunserializer($g['diyformfields'])?:array();
             $diyformfields = array();
             foreach ($fields as $key => $value) {
                 $tp_value = "";

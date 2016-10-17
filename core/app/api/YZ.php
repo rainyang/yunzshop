@@ -58,7 +58,7 @@ class YZ extends base
         $_GPC['p'] = $file_name;
         $_GPC['op'] = $action_name;
         $result = $class->$method();
-        if(empty($result['status'])){
+        if($result['status'] != 1 ){
             $this->returnError($result['json']);
         }
         return $result;
@@ -69,7 +69,7 @@ class YZ extends base
         list($_GPC['p'],$_GPC['method'],$_GPC['op']) = explode('/',$path);
         $class = new \Sz_yiModuleSite();
         $result = $class->doMobilePlugin();
-        if(empty($result['status'])){
+        if($result['status'] != 1){
             $this->returnError($result['json']);
         }
         return $result;

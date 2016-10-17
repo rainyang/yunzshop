@@ -922,7 +922,13 @@ if (!function_exists("array_part")) {
         if (!is_array($array)) {
             $array = array();
         }
-        $res_array = \yii\helpers\ArrayHelper::filter($array, $key);
+        foreach ($key as $key_item) {
+            if (isset($array[$key_item])) {
+                $res_array[$key_item] = $array[$key_item];
+            } else {
+                $res_array[$key_item] = '';
+            }
+        }
         return $res_array;
     }
 }
@@ -1002,7 +1008,7 @@ if (!function_exists("array_column")) {
 }
 if (!function_exists("pdo_sql_debug")) {
 
-    function pdo_sql_debug($sql, $placeholders)
+    function pdo_sql_debug($sql, $placeholders = ':')
     {
         foreach ($placeholders as $k => $v) {
             $sql = preg_replace('/' . $k . '/', "'" . $v . "'", $sql);
@@ -1030,5 +1036,25 @@ function json_encode_ex($value)
         return $str;
     } else {
         return json_encode($value, JSON_UNESCAPED_UNICODE);
+    }
+}
+
+if (!function_exists("pdo_sql_debug")) {
+
+    function getExitInfo()
+    {
+        function shutdown_find_exit()
+        {
+            dump($GLOBALS['dbg_stack']);
+        }
+
+        register_shutdown_function('shutdown_find_exit');
+        function write_dbg_stack()
+        {
+            $GLOBALS['dbg_stack'] = debug_backtrace();
+        }
+
+        register_tick_function('write_dbg_stack');
+        declare(ticks = 1);
     }
 }

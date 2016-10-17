@@ -1,9 +1,9 @@
 <?php
-namespace app\api\controller\history;
+namespace app\api\controller\verify;
 @session_start();
 use app\api\YZ;
 use app\api\Request;
-class Display extends YZ
+class Qrcode extends YZ
 {
     private $json;
     private $variable;
@@ -12,8 +12,7 @@ class Display extends YZ
     {
         parent::__construct();
         global $_W;
-        $_W['ispost']= true;
-        $result = $this->callMobile('shop/history/display');
+        $result = $this->callPlugin('verify/Qrcode');
         //dump($result);exit;
         if($result['code'] == -1){
             $this->returnError($result['json']);
