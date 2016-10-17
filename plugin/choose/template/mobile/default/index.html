@@ -301,62 +301,64 @@ ul, li { list-style:none; margin:0; padding:0 }
 
 
             var pcate = $("#navBar").find(".parent_item").first().data('cate');
+            if (pcate > 0) {
+                core.pjson('choose/list_goods',{pcate:pcate,pageid:pageid,ischannelpick:"{$_GPC['ischannelpick']}",op:'moren'}, function (json) {
+                    result = json.result;
 
-            core.pjson('choose/list_goods',{pcate:pcate,pageid:pageid,ischannelpick:"{$_GPC['ischannelpick']}",op:'moren'}, function (json) {
-                            result = json.result;
+                    var h = '';
 
-                            var h = '';
+                    var store = result.goods;
+                    if(store.length<=0){
+                        $('#pInfo').html(  tpl('cart_empty') );
+                        return;
+                    }
 
-                            var store = result.goods;
-                            if(store.length<=0){
-                               $('#pInfo').html(  tpl('cart_empty') );
-                                return;
+                    if (store.length) {
+                        for (var i = 0; i < store.length ;i++ ) {
+
+
+                            h += '<div class="all-choosegood">';
+
+
+                            h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';
+
+                            if (store[i].isrecommand != 0) {
+                                h += '<span style="font-size:10px;">推荐</span></a>';
                             }
 
-                            if (store.length) {
-                                for (var i = 0; i < store.length ;i++ ) {
-
-
-                                    h += '<div class="all-choosegood">';
-
-
-                                    h += '<dl data-id="'+store[i].id+'"><dt><h3>'+store[i].title+'</h3></dt><dd><a href="javascript:void(0)" class="dataIn" data-id="'+store[i].id+'"> <img src="'+store[i].thumb+'" alt="" title="">';
-
-                                    if (store[i].isrecommand != 0) {
-                                        h += '<span style="font-size:10px;">推荐</span></a>';
-                                    }
-
-                                    {if $ischannelpay == 1}
-                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
-                                    {else}
-                                        h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元/'+store[i].unit+'</em></dd><dd>';
-                                    {/if}
-                                    if (store[i].hasoption == 1) {
-                                        h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
-                                    } else {
-                                        h +=  '<div class="right-choose"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a><input type="text" style="display:none;" class="num" data-id="'+store[i].id+'" value="0" data-stock="'+store[i].total+'" data-maxbuy="'+store[i].maxbuy+'"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a></div>';
-                                    }
-
-
-                                    h += '</dd></dl>';
-
-
-                                    h += '</div>';
-
-                                };
-                                $("#infoSection").css("height","auto");
-                                $("#navBar").css("height","auto");
-
+                            {if $ischannelpay == 1}
+                            h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元'+store[i].channel_price+'/'+store[i].unit+'</em></dd><dd>';
+                            {else}
+                            h +=  '</dd><dd><em class="eys">已售'+store[i].sales+store[i].unit+'</em></dd><dd><em>'+store[i].marketprice+'元/'+store[i].unit+'</em></dd><dd>';
+                            {/if}
+                            if (store[i].hasoption == 1) {
+                                h +=  '<div class="right-choose"><input type="text" style="display:none;" class="num" value="0"><a href="javascript:;" class="canoption" data-id="'+store[i].id+'" style="color:{if $color['color']}{$color['color']}{else}black{/if};">可选规格</a></div>';
                             } else {
-                                h += '';
-                                $("#infoSection").css("height","729px");
-                                $("#navBar").css("height","729px");
-                            };
+                                h +=  '<div class="right-choose"> <a href="javascript:;" class="add" data-id="'+store[i].id+'">+</a><input type="text" style="display:none;" class="num" data-id="'+store[i].id+'" value="0" data-stock="'+store[i].total+'" data-maxbuy="'+store[i].maxbuy+'"><a href="javascript:;" style="display:none;" class="subtract" data-id="'+store[i].id+'" >-</a></div>';
+                            }
 
-                            $('#pInfo').html(h);
-                            setNum();
 
-            }, true);
+                            h += '</dd></dl>';
+
+
+                            h += '</div>';
+
+                        };
+                        $("#infoSection").css("height","auto");
+                        $("#navBar").css("height","auto");
+
+                    } else {
+                        h += '';
+                        $("#infoSection").css("height","729px");
+                        $("#navBar").css("height","729px");
+                    };
+
+                    $('#pInfo').html(h);
+                    setNum();
+
+                }, true);
+            }
+
         }
 
         function setNum(){
