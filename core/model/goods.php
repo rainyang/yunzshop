@@ -78,10 +78,6 @@ class Sz_DYi_Goods
         if (!empty($isdiscount)) {
             $condition .= " and isdiscount=1";
         }
-        $goodsids = !empty($args['goodsids']) ? $args['goodsids'] : 0;
-        if (!empty($goodsids)) {
-            $condition .= " and id in (".$goodsids.")";
-        }
         $istime = !empty($args['istime']) ? 1 : 0;
         if (!empty($istime)) {
             $condition .= " and istime=1 and " . time() . ">=timestart and " . time() . "<=timeend";

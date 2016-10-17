@@ -117,10 +117,10 @@
             core.tip.confirm('确认重置?',function() {
                 core.pjson('verify/mystore', {op:'reset', storeid: "{$id}"}, function (json) {
                     if (json.status == 1) {
-                        core.message('操作成功！',"{php echo $this->createPluginMobileUrl('verify')}" ,'success');
+                        core.message('操作成功！',"{php echo $this->createPluginMobileUrl('verify', array('id'=>$id))}" ,'success');
                         return;
                     } else {
-                        core.message('操作失败，此门店不存在！',"{php echo $this->createPluginMobileUrl('verify')}" ,'error');
+                        core.message('操作失败，此门店不存在！',"{php echo $this->createPluginMobileUrl('verify', array('id'=>$id))}" ,'error');
                         return;
                     }
                 },true);

@@ -29,18 +29,18 @@ if($_W['isajax']){
     if ($operation == 'moren') {
             $args = array(
                 'pcate' => $_GPC['pcate'],
-                'goodsids' => $goodsid
+                'ids' => $goodsid
 
             );
     } else if($operation == 'second') {
             $args=array(
                 'ccate' => $_GPC['ccate'],
-                'goodsids' => $goodsid
+                'ids' => $goodsid
             );
     } else if ($operation == 'third') {
         $args = array(
             'tcate' => $_GPC['tcate'],
-            'goodsids' => $goodsid
+            'ids' => $goodsid
         );
     } else if ($operation == 'getdetail') {
         $args = array(
