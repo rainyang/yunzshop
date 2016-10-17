@@ -13,7 +13,7 @@ if ($_GPC['quantity']) {
 		$last['create_time'] = !empty($last['create_time'])?$last['create_time']:time()-86400;
 		for ($i=1; $i <= $quantity; $i++) { 
 			$name = getRandChar(2)."****".getRandChar(2);
-			$money = rand($_GPC['low'],$_GPC['high']-1) + rand(1,99)/100;
+			$money = rand($_GPC['low'],$_GPC['high']);
 			$create_time = rand($last['create_time'],time());
 			
 			$data = array(
