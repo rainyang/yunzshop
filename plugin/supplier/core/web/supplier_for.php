@@ -59,7 +59,7 @@ if (empty($_GPC['export'])) {
     $sql .= " limit " . ($pindex - 1) * $psize . ',' . $psize;
 }
 $list = pdo_fetchall($sql, $params);
-if ($_GPC['export1'] == '1') {
+if ($_GPC['export'] == '1') {
     plog('member.member.export', '导出会员数据');
     m('excel')->export($list, array(
         "title" => "会员数据-" . date('Y-m-d-H-i', time()),

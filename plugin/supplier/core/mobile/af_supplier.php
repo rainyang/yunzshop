@@ -44,7 +44,7 @@ if ($_W['isajax']) {
             $m_data['uniacid'] = $_W['uniacid'];
             $result = pdo_fetch('select * from ' . tablename('users') . " where username='".$m_data['username']."'");
             if (!empty($result)) {
-                return show_json(2);
+                show_json(2);
             }
             pdo_insert('sz_yi_af_supplier',$m_data);
             if (!empty($af_supplier['uid'])) {
@@ -66,7 +66,7 @@ if ($_W['isajax']) {
             );
             $result = pdo_fetch('select * from ' . tablename('users') . " where username='".$memberdata['username']."'");
             if (!empty($result)) {
-                return show_json(2);
+                show_json(2);
             } 
             pdo_insert('sz_yi_af_supplier',$memberdata);
             if (!empty($af_supplier['uid'])) {
@@ -75,17 +75,10 @@ if ($_W['isajax']) {
                 mc_update($af_supplier['uid'], $mcdata);
             }
         }
-        return show_json(1);
+        show_json(1);
     }
-
-    if (!empty($af_supplier)) {
-        $is_supplier = true;
-    } else {
-        $is_supplier = false;
-    }
-    return show_json(1, array(
-        'member' => $af_supplier,
-        'is_supplier' => $is_supplier
+	show_json(1, array(
+        'member' => $af_supplier
     ));
 }
 if ($template_flag == 1) {

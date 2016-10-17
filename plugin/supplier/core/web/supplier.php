@@ -124,17 +124,43 @@ if ($operation == 'display') {
     }
 } else if ($operation == 'merchant') {
     $uid = intval($_GPC['uid']);
-    $merchants = $this->model->getSupplierMerchants($uid);
+    $center_id = intval($_GPC['center_id']);
+    if (!empty($uid)) {
+        $merchants = $this->model->getSupplierMerchants($uid);
+    } else if (!empty($center_id)){
+        if (p('merchant')) {
+            $merchants = p('merchant')->getCenterMerchants($center_id);
+        }
+    }
     $total = count($merchants);
 } else if ($operation == 'merchant_post') {
     //对某个供应商添加招商员
     $uid = intval($_GPC['uid']);
+    $center_id = intval($_GPC['center_id']);
+    if (!empty($center_id)) {
+        $all_suppliers = $this->model->AllSuppliers();
+    }
     if(checksubmit('submit')){
         $data = is_array($_GPC['data']) ? $_GPC['data'] : array();
         if (empty($data['openid'])) {
             message('请选择微信!', referer(), 'error');
         } else {
-            $result = pdo_fetch("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and openid='{$data['openid']}' and supplier_uid={$uid}");
+            if (!empty($uid)) {
+                $result = pdo_fetch("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and openid='{$data['openid']}' and supplier_uid={$uid}");
+                $data['supplier_uid'] = $uid;
+                $arr = array(
+                    'op' => 'merchant',
+                    'uid' => $uid
+                    );
+            }
+            if (!empty($center_id)) {
+                $result = pdo_fetch("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and openid='{$data['openid']}' and supplier_uid={$data['supplier_uid']}");
+                $data['center_id'] = $center_id;
+                $arr = array(
+                    'op' => 'merchant',
+                    'center_id' => $center_id
+                    );
+            }
             if (!empty($result)) {
                 message('该微信角色已经是此供应商的招商员!', referer(), 'error');
             } else {
@@ -145,9 +171,8 @@ if ($operation == 'display') {
             message('请输入佣金比例!', referer(), 'error');
         }
         $data['uniacid'] = $_W['uniacid'];
-        $data['supplier_uid'] = $uid;
         pdo_insert('sz_yi_merchants',$data);
-        message('添加招商员成功!', $this->createPluginWebUrl('supplier/supplier', array('op' => 'merchant', 'uid' => $uid)), 'success');
+        message('添加招商员成功!', $this->createPluginWebUrl('supplier/supplier', $arr), 'success');
     }
 } else if ($operation == 'merchant_delete') {
     //删除招商员

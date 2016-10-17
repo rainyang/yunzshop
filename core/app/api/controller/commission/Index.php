@@ -35,9 +35,9 @@ class Index extends YZ
 
     private function _getBlockList()
     {
-        $block_list_1 = $this->_getCommissionBlockList();
-        $block_list_2 = $this->_getBonusBlockList();
-        $list = ArrayHelper::merge($block_list_1, $block_list_2);
+        $list = $this->_getCommissionBlockList();
+        /*$block_list_2 = $this->_getBonusBlockList();
+        $list = ArrayHelper::merge($block_list_1, $block_list_2);*/
         return $list;
     }
 
@@ -90,7 +90,7 @@ class Index extends YZ
                 'id' => 2,
                 'icon' => '',
                 'title' => $set['texts']['order'],
-                'value' => $member['ordercount'],
+                'value' => $member['ordercount0'],
                 'unit' => '个'
             ], [
                 'id' => 3,
@@ -116,13 +116,7 @@ class Index extends YZ
                 'title' => '二维码',
                 'value' => '',
                 'unit' => '推广二维码'
-            ], [
-                'id' => 7,
-                'icon' => '',
-                'title' => '爱心基金',
-                'value' => '',
-                'unit' => '设置我的爱心'
-            ],
+            ], 
         ];
 
         return $list;

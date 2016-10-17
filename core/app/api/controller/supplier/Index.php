@@ -7,46 +7,47 @@ use yii\helpers\ArrayHelper;
 
 class Index extends YZ
 {
+    private $json;
 
     public function __construct()
     {
         parent::__construct();
+        $result = $this->callPlugin('supplier/orderj');
+        $this->json = $result;
     }
 
     public function index()
     {
-        $result = $this->callPlugin('supplier/orderj');
-        //$this->variable = $result['variable'];
-        $this->returnSuccess($result);
+        $block_list = $this->_getSupplierBlockList();
+        $res = ['block_list' => $block_list];
+        $this->json['json'] += $res;
+        $this->returnSuccess($this->json);
     }
 
-    public function order()
+    private function _getSupplierBlockList()
     {
-        $result = $this->callPlugin('supplier/orderj/order');
-        //$this->variable = $result['variable'];
-        $this->returnSuccess($result);
-    }
+        $list = [
+            [
+                'id' => 1,
+                'icon' => '',
+                'title' => '累计未提现金额',
+                'value' => $this->json['json']['costmoney_total'],
+                'unit' => '元'
+            ], [
+                'id' => 2,
+                'icon' => '',
+                'title' => '提现记录',
+                'value' => $this->json['json']['commission_total'],
+                'unit' => '元'
+            ], [
+                'id' => 3,
+                'icon' => '',
+                'title' => '我的订单',
+                'value' => $this->json['json']['ordercount'],
+                'unit' => '个'
+            ]
+        ];
 
-    public function logg()
-    {
-        $result = $this->callPlugin('supplier/logg');
-        //$this->variable = $result['variable'];
-        $this->returnSuccess($result);
-    }
-
-    public function applyg()
-    {
-        $result = $this->callPlugin('supplier/applyg');
-        //$this->variable = $result['variable'];
-        $this->returnSuccess($result);
-    }
-
-    public function detail()
-    {
-        $result = $this->callPlugin('supplier/detail');
-
-        echo '<pre>';print_r($result);exit;
-        //$this->variable = $result['variable'];
-        $this->returnSuccess($result);
+        return $list;
     }
 }

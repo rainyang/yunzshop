@@ -154,13 +154,13 @@ if ($_W['isajax']) {
 			$returnurl = urlencode($this->createMobileUrl('member/withdraw'));
 			$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
 			$this->model->sendMessage($openid, array('commission' => $commission_ok, 'type' => $apply['type'] == 0 ? '余额' : '微信'), TM_COMMISSION_APPLY);
-return show_json(1, '已提交,请等待审核!');
+			show_json(1, '已提交,请等待审核!');
 			
 		}
 	}
 	$returnurl = urlencode($this->createPluginMobileUrl('commission/apply'));
 	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
     //print_r($settingalipay);exit;
-return show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
+return show_json(1, array('commission_ok' => $member['commission_ok'], 'cansettle' => $cansettle, 'member' => $member, 'set' => $this->set, 'infourl' => $infourl, 'noinfo' => empty($member['realname']), 'settingalipay' => $settingalipay));
 }
 include $this->template('apply');
