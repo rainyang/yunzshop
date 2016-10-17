@@ -175,6 +175,10 @@ if ($pindiana && $_GPC['indiana']) {
         left join " . tablename('sz_yi_indiana_period') . " ip on (ig.id = ip.ig_id)
         where 1 {$condition} " , $params),'thumb');
        $indiana['shengyu'] = $indiana['shengyu_codes']/$indiana['zong_codes']*100;
+    //下一期
+    $next = $indiana['period'] + 1;
+    $next_phase = pdo_fetch("SELECT goodsid, period_num FROM " . tablename('sz_yi_indiana_period') . " where goodsid = '".$goodsid."' and period = '" . $next . "'");
+
 }
 $html = $goods['content'];
 preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg]?))[\'|\"].*?[\/]?>/", $html, $imgs);

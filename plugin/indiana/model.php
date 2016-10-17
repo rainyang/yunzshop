@@ -131,81 +131,6 @@ if (!class_exists('IndianaModel')) {
 			pdo_update('sz_yi_indiana_period',array('codes'=>$needcodes,'allcodes'=>$left_codes),array('uniacid'=>$_W['uniacid'],'period_num'=>$period_number));
 		}
 
-		/***********开奖计算*********/
-		public function createtime_winer($periodid = '',$period_number = ''){
-			global $_W;
-			$src = 'http://f.apiplus.cn/cqssc.json';
-			$src .= '?_='.time();
-			$json = file_get_contents(urldecode($src));
-			$json = json_decode($json);
-			$periods = $json->data[0]->expect;
-			$s_record = pdo_fetchall("SELECT openid,create_time,microtime FROM " . tablename('sz_yi_indiana_record') . " WHERE uniacid = '{$_W['uniacid']}' ORDER BY `id` DESC LIMIT 0 , 20");//获取商品所有交易记录
-			foreach ($s_record as $key => $value) {
-				$nickname = pdo_fetchcolumn("select nickname from".tablename('sz_yi_member')."where uniacid = '{$_W['uniacid']}' and openid = '{$value['openid']}'");
-				$s_record[$key]['nickname'] =  base64_encode($nickname);
-			}
-			$numa = floatval(0);
-			$arecord = array();
-			foreach ($s_record as $key => $value) {
-				$arecord[$key]['nickname'] = $value['nickname'];
-				$numa += intval(date('His', $value['create_time']).$value['microtime']);
-			}
-			$numb = str_replace(array(","),"",$json ->data[0]->opencode);
-			$period = pdo_fetch("SELECT id,goodsid,zong_codes FROM " . tablename('sz_yi_indiana_period') . " WHERE id ='{$periodid}'");//获取商品详情
-			$endtime = time();				//揭晓时间
-			$wincode = fmod(($numa + $numb),$period['zong_codes']) + 1000001;
-			$comdata = array(
-				'uniacid' => $_W['uniacid'], 
-				'numa' => $numa, 
-				'numb' => $numb, 
-				'periods' => $periods, 
-				'pid' => $period['id'], 
-				'wincode' => intval($wincode), 
-				'arecord' => serialize($arecord), 
-				'createtime' => TIMESTAMP
-			);
-			pdo_insert('sz_yi_indiana_comcode',$comdata);				//写入中奖计算记录
-			pdo_update('sz_yi_indiana_period',array('code'=>$wincode,'endtime'=>$endtime,'status'=>2),array('uniacid'=>$_W['uniacid'],'period_num'=>$period_number));	//写入中奖信息
-			self::get_winner($period_number, $periodid, $wincode );		//执行中奖人信息
-
-		}
-		/******************获取中奖人信息****************/
-		public function get_winner($period_num = '', $periodid = '' , $wincode = ''){
-			global $_W;
-			//更新完毕，计算获奖信息
-			$sql_record_winner = "select * from".tablename('sz_yi_indiana_record')." where uniacid = :uniacid and period_num = :period_num";
-			$data_record_winner = array(
-					':uniacid' => $_W['uniacid'],
-					':period_num' => $period_num
-				);
-			$records = pdo_fetchall($sql_record_winner,$data_record_winner);		//查询所有本期商品交易记录
-			//计算获奖人
-			foreach ($records as$k=> $v) {
-				$scodes=unserialize($v['codes']);//转换商品code
-				for ($i=0; $i < count($scodes) ; $i++) { 
-					if ($scodes[$i]==$wincode) {
-						$lack_period['openid']=$v['openid'];
-						$lack_period['recordid']=$v['id'];
-						break;
-					}
-				}
-			}
-			if(empty($lack_period['openid'])){
-				pdo_delete('sz_yi_indiana_comcode',array('pid'=>$periodid));
-				self::createtime_winer($period_num,$periodid);
-			}else{
-				$pro_m = m('member')->getMember($lack_period['openid']);//获奖用户信息
-				$lack_record = pdo_fetch("select count from ".tablename('sz_yi_indiana_record')." where uniacid='{$_W['uniacid']}' and openid='{$lack_period['openid']}' and period_num='{$period_num}'");
-				$lack_period['code']=$wincode;
-				$lack_period['nickname']=$pro_m['nickname'];
-				$lack_period['avatar']=$pro_m['avatar'];
-				$lack_period['partakes']=$lack_record['count'];
-				$lack_period['status']='3';
-				//更新中奖信息到这期数据
-				pdo_update('sz_yi_indiana_period', $lack_period, array('id' => $periodid));
-			}
-		}
-
 		public function dispose($orderid = ''){
 			global $_W;
 			$order = pdo_fetch('SELECT o.*, og.total, og.goodsid FROM ' . tablename('sz_yi_order') . ' o 
@@ -306,5 +231,123 @@ if (!class_exists('IndianaModel')) {
 			$jiexiao = time() + $raise * 60;	
 			pdo_update('sz_yi_indiana_period',array('jiexiao_time'=>$jiexiao, 'status'=>'2'),array('uniacid'=>$_W['uniacid'],'period_num'=>$period_num));
 		}
+
+		//开奖
+		public function autoexec ($uniacid) {
+			global $_W, $_GPC;
+			$_W['uniacid'] = $uniacid;
+			set_time_limit(0);
+
+
+			$indiana = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_indiana_period') . " WHERE uniacid = :uniacid AND jiexiao_time <= :jiexiao_time AND status = :status ",array(
+					':uniacid' => $_W['uniacid'],
+					':jiexiao_time' => time(),
+					':status' => 2
+				));
+			if (!$indiana) {
+				return false;
+			}
+			foreach ($indiana as $key => $value) {
+				self::createtime_winer($value['id'],$value['period_num'],$_W['uniacid']);
+			}
+			
+
+		}
+		// /***********开奖计算*********/
+		public function createtime_winer($periodid = '',$period_number = '',$uniacid){
+			global $_W;
+			$_W['uniacid'] = $uniacid;
+
+			$src = 'http://f.apiplus.cn/cqssc.json';
+			$src .= '?_='.time();
+			$json = file_get_contents(urldecode($src));
+			$json = json_decode($json);
+			$periods = $json->data[0]->expect;
+
+			//本期最后购买时间pdo_fetchcolumn
+			$lasttime = pdo_fetchcolumn("SELECT create_time FROM " . tablename('sz_yi_indiana_consumerecord') . " WHERE uniacid = :uniacid and period_num = :period_num order by create_time desc limit 1", array(
+			        ':uniacid'      => $_W['uniacid'],
+			        ':period_num'   => $period_number
+			    ));
+
+			$s_indiana = pdo_fetchall("SELECT ic.openid, ic.create_time, ic.microtime, m.nickname from " . tablename('sz_yi_indiana_consumerecord') . " ic 
+			    left join " . tablename('sz_yi_member') . " m on( ic.openid=m.openid )  
+			    where ic.uniacid = :uniacid  and ic.create_time < :create_time order by ic.create_time desc limit 20 ",
+			    array(
+			        ':uniacid'      => $_W['uniacid'],
+			        ':create_time'   => $lasttime
+			    ));
+			    $numa = 0;
+			    foreach ($s_indiana as &$row) {
+			        $row['numa'] = date("His", $row['create_time']).$row['microtime'];
+			        $numa += date("His", $row['create_time'])+$row['microtime'];
+			        $row['create_time'] = date("Y-m-d H:i:s", $row['create_time']);
+
+			    }
+			    unset($row);
+
+				$numb = str_replace(array(","),"",$json ->data[0]->opencode);
+
+				$period = pdo_fetch("SELECT id,goodsid,zong_codes FROM " . tablename('sz_yi_indiana_period') . " WHERE id ='{$periodid}'");
+
+				$endtime = time();				//揭晓时间 announced
+				$wincode = fmod(($numa + $numb),$period['zong_codes']) + 1000001;
+				$comdata = array(
+					'uniacid' => $_W['uniacid'], 
+					'numa' => $numa, 
+					'numb' => $numb, 
+					'periods' => $periods,//开奖期号 
+					'pid' => $period['id'], 
+					'wincode' => intval($wincode), //开奖号码
+					'createtime' => $endtime
+				);
+				pdo_insert('sz_yi_indiana_comcode',$comdata);				//写入中奖计算记录
+				pdo_update('sz_yi_indiana_period',array('code'=>$wincode,'endtime'=>$endtime,'status'=>2),array('uniacid'=>$_W['uniacid'],'period_num'=>$period_number));	//写入中奖信息
+				self::get_winner($period_number,$period['id'],$wincode,$_W['uniacid']);
+				
+
+		}
+
+		
+		/******************获取中奖人信息****************/
+		public function get_winner($period_num = '', $periodid = '' , $wincode = '',$uniacid){
+			global $_W;
+			$_W['uniacid'] = $uniacid;
+			//更新完毕，计算获奖信息
+			$sql_record_winner = "select * from ".tablename('sz_yi_indiana_record')." where uniacid = :uniacid and period_num = :period_num";
+			$data_record_winner = array(
+					':uniacid' => $_W['uniacid'],
+					':period_num' => $period_num
+				);
+			$records = pdo_fetchall($sql_record_winner,$data_record_winner);		//查询所有本期商品交易记录
+			//计算获奖人
+			foreach ($records as$k=> $v) {
+				$scodes=unserialize($v['codes']);//转换商品code
+				for ($i=0; $i < count($scodes) ; $i++) { 
+					if ($scodes[$i]==$wincode) {
+						$lack_period['openid']=$v['openid'];
+						$lack_period['ordersn']=$v['ordersn'];
+						$lack_period['recordid']=$v['id'];
+						break;
+					}
+				}
+			}
+			if(empty($lack_period['openid'])){
+				pdo_delete('sz_yi_indiana_comcode',array('pid'=>$periodid));
+				self::createtime_winer($periodid,$period_num,$uniacid);
+			}else{
+				$pro_m = m('member')->getMember($lack_period['openid']);//获奖用户信息
+				$lack_record = pdo_fetch("select count from ".tablename('sz_yi_indiana_record')." where uniacid='{$_W['uniacid']}' and openid='{$lack_period['openid']}' and period_num='{$period_num}'");
+				$lack_period['code']=$wincode;
+				$lack_period['nickname']=$pro_m['nickname'];
+				$lack_period['avatar']=$pro_m['avatar'];
+				$lack_period['partakes']=$lack_record['count'];
+				$lack_period['status']='3';
+				//更新中奖信息到这期数据
+				pdo_update('sz_yi_indiana_period', $lack_period, array('id' => $periodid));
+			}
+		}
+
+
 	}
 }

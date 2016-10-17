@@ -409,12 +409,16 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         </div>
     {elseif $indiana['ipstatus'] == 2 }
         <div class="good_info1">
-            <div class="info2" style=" padding: 11px 0px 0px 0px;">第<%indiana.period%>期 <%indiana.title%> <%indiana.title%> <%indiana.title%> <%indiana.title%> <%indiana.title%> </div>
+            <div class="info2" style=" padding: 11px 0px 0px 0px;">第<%indiana.period%>期 <%indiana.title%> </div>
             <div class="price" style="height:auto;background:#f00">
                 <span style="font-size: 12px;padding-right: 10px;padding-left: 10px;color: #FFF4F4;">期号：<%indiana.period_num%> </span>
-
                 <div style="height: 24px;line-height: 24px;">
-                    <span style="padding-left: 10px;color: #FFF4F4;">揭晓倒计时：<span class="w-countdown-nums" style="color: #FFF4F4;font-size: 16px;"></span></span><span style="float: right;text-align: right;margin-right: 5px;color: #FFF4F4;">计算{$indiana['status']}详情</span>
+                    <span style="padding-left: 10px;color: #FFF4F4;">
+                        揭晓倒计时：<span class="w-countdown-nums" style="color: #FFF4F4;font-size: 14px;"></span>
+                    </span>
+                    <span style="float: right;text-align: right;margin-right: 5px;color: #FFF4F4;font-size: 14px;" onclick="location.href='{php echo $this->createPluginMobileUrl('indiana/announced')}&periodnum=<%indiana.period_num%>'">
+                        计算详情
+                    </span>
                 </div>
             </div>
 <!--             <div class="price" style="height:auto;text-align: center;">
@@ -574,8 +578,13 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         <div class="menu">
             <div id="nav_1" class="nav navon" onClick="tab(1)">图文详情</div>
             <div id="nav_2" class="nav" onClick="tab(2)">产品参数</div>
-            <div id="nav_3" class="nav" onClick="tab(3)">用户评价</div>
-            <div id="nav_4" class="nav" onClick="tab(4)" style="border-right:0px; width:24%">同店推荐</div>
+            {if $pindiana && $_GPC['indiana']}
+              <div id="nav_5" class="nav" data-periodnum="<%indiana.period_num%>" onClick="tab(5)">本期参与</div>
+              <div id="nav_6" class="nav" data-goodsid="{$_GPC['id']}" onClick="tab(6)" style="border-right:0px; width:24%">往期揭晓</div>
+            {else}
+              <div id="nav_3" class="nav" onClick="tab(3)">用户评价</div>
+              <div id="nav_4" class="nav" onClick="tab(4)" style="border-right:0px; width:24%">同店推荐</div>
+            {/if}
         </div>
         <div class="tab_con">
             <div class="con" id="con_1"  style='display:block'><%=goods.content%></div>
@@ -589,6 +598,8 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             </div>
             <div class="con" id="con_3" ><div id='comment_container'></div></div>
             <div class="con" id="con_4"><div id='recommand_container'></div></div>
+            <div class="con" id="con_5"><div id='benqi_container'></div></div>
+            <div class="con" id="con_6"><div id='wangqi_container'></div></div>
         </div>
     </div>
 
@@ -601,6 +612,11 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             <input type="hidden" value="<%goods.isforce%>" id='isforce'>
             <input type="hidden" value="<%goods.yunbi_num%>" id='yunbi_num'>
             <input type="hidden" value="<%goods.isforceyunbi%>" id='isforceyunbi'>
+        </div>
+    {elseif $indiana['ipstatus'] == 2 && $next_phase}
+        <div class="good_bottom" style="z-index: 3">
+            <div style=" background: #999 none repeat scroll 0 0; float: left; line-height: 50px; padding-left: 15px; width: 65%; z-index: 3;">最新一期火热进行中</div>
+            <div class="buy" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id={$next_phase['goodsid']}&periodnum={$next_phase['period_num']}&indiana=1'" style="width:30%; z-index: 3">立即前往</div>
         </div>
     {/if}
 {else}
@@ -709,6 +725,31 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         <div class="name"><%g.title%></div>
         <div class="price">￥<%g.marketprice%> <%if g.productprice>0 && g.marketprice!=g.productprice%><span>￥<%g.productprice%></span><%/if%></div>
     </div>
+    <%/each%>
+</script>
+
+<script id='tpl_benqi' type='text/html'>
+    <%each list as ben%>
+    <div style="padding-left:62px;position:relative;min-height:60px; border-bottom: 1px solid #666;" >
+        <img src='<%ben.avatar%>' style="position:absolute;width:50px;height:50px;left:6px;top:6px;border-radius:50%">
+        <div style="padding-top:6px;line-height:20px;color:#f15353"><%ben.realname%></div>
+        <div style="line-height:20px;color:#666">ip:<%ben.ip%></div>
+        <div style="line-height:20px;color:#333;font-size: 12px;">参与了<span style="color:#ff0000"><%ben.num%></span>人次  <%ben.create_time%> <%ben.microtime%></div>
+    </div>
+    <%/each%>
+</script>
+
+<script id='tpl_wangqi' type='text/html'>
+    <%each list as w%>
+    <div style="font-size: 12px;">期号：<%w.period%> （ 揭晓时间:<%w.jiexiao_time%> ）</div>
+    <div style="padding-left:62px;position:relative;min-height:60px; border-bottom: 1px solid #666;" >
+        <img src='<%w.avatar%>' style="position:absolute;width:50px;height:50px;left:6px;top:6px;border-radius:50%">
+        <div style="padding-top:6px;line-height:20px;color:#f15353">获得者：<%w.nickname%></div>
+        <div style="line-height:20px;color:#666">用户ID:<%w.mid%>(唯一不变标识)</div>
+        <div style="line-height:20px;color:#666">幸运号码：<span style="color:#ff0000"><%w.code%></span></div>
+        <div style="line-height:20px;color:#666">本期参与：<span style="color:#ff0000"><%w.partakes%></span>人次</div>
+    </div>
+
     <%/each%>
 </script>
 
@@ -1373,6 +1414,25 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                              $(this).height($(this).width());
                          });
                          
+                     });
+                 });
+
+                 $('#nav_5').click(function(){
+                      core.json('shop/util',{op:'benqi',period_num:$(this).data('periodnum')},function(json){
+                         if(json.result.list.length<=0){
+                             $('#benqi_container').html('暂时没有夺宝记录');
+                             return;
+                         }
+                         $('#benqi_container').html( tpl('tpl_benqi',json.result));
+                     });
+                 });
+                 $('#nav_6').click(function(){
+                      core.json('shop/util',{op:'wangqi',goodsid:$(this).data('goodsid')},function(json){
+                         if(json.result.list.length<=0){
+                             $('#benqi_container').html('暂时没有夺宝记录');
+                             return;
+                         }
+                         $('#wangqi_container').html( tpl('tpl_wangqi',json.result));
                      });
                  });
         },true);

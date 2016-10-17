@@ -34,4 +34,9 @@ class IndianaMobile extends Plugin
     {    
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function announced()
+    {    
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
+
 }

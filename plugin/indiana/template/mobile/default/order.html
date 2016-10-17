@@ -89,6 +89,28 @@
 	           	<div style="width: 30%; float: right;">
 	           		<span class="sub1" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%order.goodsid%>&periodnum=<%order.period_num%>&indiana=1'">追加</span>
 	           	</div>
+	        <%else if order.status == 2%>
+	        	<div style="width: 70%; float: left; line-height: 40px;">
+					<div class="other" style="height: 24px;line-height: 24px;">
+						<span>总需：<%order.zong_codes%></span>
+						<span style="float: right;text-align: right;">剩余：<%order.shengyu_codes%></span>
+					</div>
+			        <div class="progress-bar" >
+			            <span class="bg" style="width:<%order.shengyu%>%"></span>
+			        </div>
+	        	</div>
+	           	<div style="width: 30%; float: right;">
+	           		<span class="sub1" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%order.goodsid%>&periodnum=<%order.period_num%>&indiana=1'">查看开奖</span>
+	           	</div>
+	        <%else if order.status == 3%>
+	        	<div style="width: 70%; float: left; line-height: 40px;">
+					<div class="other" style="height: 36px;line-height: 36px;">
+						<span>获奖者：<%order.nickname%></span>
+					</div>
+	        	</div>
+	           	<div style="width: 30%; float: right;">
+	           		<span class="sub1" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%order.next_phase.goodsid%>&periodnum=<%order.next_phase.period_num%>&indiana=1'">再次购买</span>
+	           	</div>
 	        <%/if%>
 	        </div>
 	    </div>
