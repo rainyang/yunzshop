@@ -4,11 +4,12 @@ if (!defined('IN_IA')) {
     print 'Access Denied';
 }
 global $_W, $_GPC;
+
 $op = $_GPC['op'];
 if ($op == 'list') {
     $cate = $_GPC['cate'];
     $condition = '';
-    if (p('supplier')) {
+    if (p('supplier') && !$_W['isfounder']) {
         $condition .= " and uid={$_W['uid']}";
     }
     if (!empty($cate)) {
