@@ -309,6 +309,20 @@ if ($op == 'display') {
     pdo_delete('sz_yi_member', array(
         'id' => $_GPC['id']
     ));
+    $openid = $member['openid'];
+    $fans = pdo_fetchall("select uid from " . tablename('mc_mapping_fans') . " where uniacid=:uniacid and openid=:openid", array(
+        ':uniacid' => $_W['uniacid'],
+        ':openid' => $openid
+    ),'id');
+    //删除会员其它两张表的数据
+    if(!empty($fans)){
+        pdo_delete('mc_mapping_fans', array(
+            'openid' => $openid,
+            'uniacid' => $_W['uniacid']
+        ));
+        pdo_query('delete from ' . tablename('mc_members') . ' where uid in (' . implode(',', array_keys($fans)) . ') and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
+    }
+
     plog('member.member.delete', "删除会员  ID: {$member['id']} <br/>会员信息: {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
     message('删除成功！', $this->createWebUrl('member/list'), 'success');
 } else if ($operation == 'setblack') {
