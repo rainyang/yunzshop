@@ -314,8 +314,9 @@ if (!class_exists('CouponModel')) {
 					$b = 0;
 
 					if ($goodid != 0 && $cartid == 0) {
-						if (!empty($supplier_uid)) {
-							if (!empty($supplierids) && $row['getsupplier'] == 1) {
+
+                        if (!empty($supplierids) && $row['getsupplier'] == 1) {
+                            if (!empty($supplier_uid)) {
 								foreach ($supplierids as $s) {
 									if ($supplier_uid == $s) {
 										$a += 1;
@@ -418,10 +419,9 @@ if (!class_exists('CouponModel')) {
 						}	
 						
 					} elseif ($cartid != 0 && $goodid == 0){
-						
-						
-						if (!empty($supplier_uid)) {
-							if (!empty($supplierids) && $row['getsupplier'] == 1) {
+
+                        if (!empty($supplierids) && $row['getsupplier'] == 1) {
+						    if (!empty($supplier_uid)) {
 								foreach ($supplierids as $s) {
 									if ($supplier_uid == $s) {
 										$a += 1;

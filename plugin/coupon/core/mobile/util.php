@@ -93,9 +93,10 @@ if ($operation == 'query') {
 			$goodsids = unserialize($row['goodsids']);
 			$categoryids = unserialize($row['categoryids']);
 			$supplierids = unserialize($row['supplierids']);
-			if ($supplier_uid) {
-				$a = 0;
-				if (!empty($supplierids) && $row['getsupplier'] == 1) {
+            if (!empty($supplierids) && $row['getsupplier'] == 1) {
+			    if ($supplier_uid) {
+				    $a = 0;
+
 					foreach ($supplierids as $s) {
 						if ($s == $supplier_uid) {
 							$a += 1;
