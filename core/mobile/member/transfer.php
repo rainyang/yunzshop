@@ -26,12 +26,12 @@ if($operation == 'assigns'){
         ));
         if($assigns){
             if($assigns['id'] == $member['id']){
-                show_json(0,"受让人不可以是您自己！");
+                return show_json(0,"受让人不可以是您自己！");
                 exit;
             }
-            show_json(1, $assigns);
+            return show_json(1, $assigns);
         }else{
-            show_json(-1);
+            return show_json(-1);
         }
     }
 }elseif($operation == 'submit'){
