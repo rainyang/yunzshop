@@ -166,7 +166,9 @@ class Detail extends YZ
         );
         //$res = array_merge($res, $this->json);
         $res += $this->json;
-        $res += $status_and_time;
+        if (!empty($status_and_time)) {
+            $res += $status_and_time;
+        }
         $res += $express;
         return $this->returnSuccess($res);
     }

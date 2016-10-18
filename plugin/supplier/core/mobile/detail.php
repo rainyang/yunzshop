@@ -7,7 +7,7 @@ global $_W, $_GPC;
 $operation      = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $uniacid        = $_W['uniacid'];
 $orderid        = intval($_GPC['orderid']);
-$orderid = '6141';//假数据
+//$orderid = '6141';//假数据
 $order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid limit 1', array(
     ':id' => $orderid,
     ':uniacid' => $uniacid
