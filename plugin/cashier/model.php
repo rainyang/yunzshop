@@ -19,7 +19,7 @@ if (!class_exists('CashierModel')) {
                 'status' => $params['result'] == 'success' ? 1 : 0
             );
             $ordersn = $params['tid'];
-            $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where  ordersn=:ordersn and uniacid=:uniacid limit 1', array(
+            $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where  pay_ordersn=:ordersn and uniacid=:uniacid limit 1', array(
                 ':uniacid' => $_W['uniacid'],
                 ':ordersn' => $ordersn
             ));
