@@ -73,17 +73,29 @@ $args = array(
     'by' => $_GPC['by']
 );
 if ($args['pcate']) {
-    $pcatename = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$args['pcate']." and uniacid=".$uniacid);
+    $pcatename = pdo_fetch(" select id,name from ".tablename('sz_yi_category')." where id =".$args['pcate']." and uniacid=".$uniacid);
 }
 if ($args['ccate']) {
-    $ccatename = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$args['ccate']." and uniacid=".$uniacid);
+    $ccatename = pdo_fetch(" select id,name,parentid from ".tablename('sz_yi_category')." where id =".$args['ccate']." and uniacid=".$uniacid);
+    $pcatename = pdo_fetch(" select id,name from ".tablename('sz_yi_category')." where id =".$ccatename['parentid']." and uniacid=".$uniacid);
 }
 if ($args['tcate']) {
-    $tcatename = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$args['tcate']." and uniacid=".$uniacid);
+    $tcatename = pdo_fetch(" select id,name,parentid from ".tablename('sz_yi_category')." where id =".$args['tcate']." and uniacid=".$uniacid);
+    $ccatename = pdo_fetch(" select id,name,parentid from ".tablename('sz_yi_category')." where id =".$tcatename['parentid']." and uniacid=".$uniacid);
+    $pcatename = pdo_fetch(" select id,name from ".tablename('sz_yi_category')." where id =".$ccatename['parentid']." and uniacid=".$uniacid);
 }
 
 if ($args['pcate1']) {
-    $pcate1name = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category2')." where id =".$args['pcate1']." and uniacid=".$uniacid);
+    $pcate1name = pdo_fetch(" select id,name from ".tablename('sz_yi_category2')." where id =".$args['pcate1']." and uniacid=".$uniacid);
+}
+if ($args['ccate1']) {
+    $ccate1name = pdo_fetch(" select id,name,parentid from ".tablename('sz_yi_category2')." where id =".$args['ccate1']." and uniacid=".$uniacid);
+    $pcate1name = pdo_fetch(" select id,name from ".tablename('sz_yi_category2')." where id =".$ccate1name['parentid']." and uniacid=".$uniacid);
+}
+if ($args['tcate1']) {
+    $tcate1name = pdo_fetch(" select id,name,parentid from ".tablename('sz_yi_category2')." where id =".$args['tcate1']." and uniacid=".$uniacid);
+    $ccate1name = pdo_fetch(" select id,name,parentid from ".tablename('sz_yi_category2')." where id =".$tcate1name['parentid']." and uniacid=".$uniacid);
+    $pcate1name = pdo_fetch(" select id,name from ".tablename('sz_yi_category2')." where id =".$ccate1name['parentid']." and uniacid=".$uniacid);
 }
 $category2 = m('shop')->getCategory2();
 //$args = icheck_gpc($args);
