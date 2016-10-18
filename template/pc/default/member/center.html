@@ -104,6 +104,7 @@
     </div>
 </div>
 {if p('hotel')}
+<%if memberhotel==1%>
 <div class="order">
     <a href="{php echo $this->createMobileUrl('order',array('type'=>'hotel'))}">
         <div class="list1" style="margin-top:0px;">
@@ -121,6 +122,7 @@
         <a href="{php echo $this->createMobileUrl('order',array('status'=>4,'type'=>'hotel'))}"><div class="order_pub order_4"><!--<i class="fa fa-money" style="font-size:30px"></i><br>-->待退款<%if orderhotel.status4>0%><span><%orderhotel.status4%></span><%/if%></div></a>
     </div>
 </div>
+<%/if%>
 {/if}    
 <div class="cart">
     <%if shopset.hascom%>
