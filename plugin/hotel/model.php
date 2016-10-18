@@ -175,7 +175,7 @@ if (!class_exists('HotelModel')) {
                    $allow = true; 
                 }
             } else {
-                $allow = false;
+                $allow = true;
             }
             return  $allow;
         }
