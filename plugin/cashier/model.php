@@ -38,7 +38,7 @@ if (!class_exists('CashierModel')) {
                 ':uniacid' => $_W['uniacid'],
                 ':module' => 'sz_yi',
                 ':fee' => $fee,
-                ':tid' => $order['ordersn']
+                ':tid' => $params['tid']
             ));
 
             if (empty($log)) {
