@@ -773,6 +773,14 @@ if (!class_exists('TaobaoModel')) {
         {
             global $_W;
             $data = array('uniacid' => $_W['uniacid'], 'catch_source' => 'jingdong', 'catch_id' => $item['itemId'], 'catch_url' => $catch_url, 'title' => $item['title'], 'total' => $item['total'], 'marketprice' => $item['marketprice'], 'pcate' => $item['pcate'], 'ccate' => $item['ccate'], 'tcate' => $item['tcate'], 'cates' => $item['cates'], 'sales' => $item['sales'], 'createtime' => time(), 'updatetime' => time(), 'hasoption' => 0, 'status' => 0, 'deleted' => 0, 'buylevels' => '', 'showlevels' => '', 'buygroups' => '', 'showgroups' => '', 'noticeopenid' => '', 'storeids' => '', 'minprice' => $item['marketprice'], 'maxprice' => $item['marketprice']);
+            if (p('supplier')) {
+                $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+                if (empty($perm_role)) {
+                    $data['supplier_uid'] = 0;
+                } else {
+                    $data['supplier_uid'] = $_W['uid'];
+                }
+            }
             $thumb_url = array();
             $pics = $item['pics'];
             $piclen = count($pics);
@@ -846,6 +854,14 @@ if (!class_exists('TaobaoModel')) {
         {
             global $_W;
             $data = array('uniacid' => $_W['uniacid'], 'catch_source' => '1688', 'catch_id' => $item['itemId'], 'catch_url' => $catch_url, 'title' => $item['title'], 'total' => $item['total'], 'marketprice' => $item['marketprice'], 'pcate' => $item['pcate'], 'ccate' => $item['ccate'], 'tcate' => $item['tcate'], 'cates' => $item['cates'], 'sales' => $item['sales'], 'createtime' => time(), 'updatetime' => time(), 'hasoption' => 0, 'status' => 0, 'deleted' => 0, 'buylevels' => '', 'showlevels' => '', 'buygroups' => '', 'showgroups' => '', 'noticeopenid' => '', 'storeids' => '', 'minprice' => $item['marketprice'], 'maxprice' => $item['marketprice'],'content' => $item['content']);
+            if (p('supplier')) {
+                $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+                if (empty($perm_role)) {
+                    $data['supplier_uid'] = 0;
+                } else {
+                    $data['supplier_uid'] = $_W['uid'];
+                }
+            }
             $thumb_url = array();
             $pics = $item['pics'];
             $piclen = count($pics);
