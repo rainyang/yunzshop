@@ -82,7 +82,7 @@ if($_W['isajax']){
     } elseif (!empty($page['isstore']) || !empty($_GPC['storeid'])) {
         $args['isverify'] = 2;
     }
-
+    $args['pagesize'] = 50;
     $goods = m('goods')->getList($args);
     //替换门店商品库存（没有规格的商品）
     if ($page['isstore'] == 1) {
