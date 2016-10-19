@@ -243,7 +243,8 @@ $('.pcomment').click(function(){
                 core.json('order/op', {
                     op: 'comment',
                     orderid: orderid,
-                    comments: comments
+                    comments: comments,
+                    from_client:'post'
                 }, function(postjson) {
                     if (postjson.status == 1) {
                        // history.back();
