@@ -99,15 +99,6 @@ if (p('commission')) {
                     $mid = $member['id'];
                 }
             }
-            if (!empty($mid)) {
-                if (empty($cset['closemyshop'])) {
-                    $shop        = set_medias(p('commission')->getShop($mid), 'logo');
-                    $shop['url'] = $this->createPluginMobileUrl('commission/myshop', array(
-                        'mid' => $mid
-                    ));
-                }
-            }
-            $commission_text = empty($cset['buttontext']) ? '我要分销' : $cset['buttontext'];
         }
     }
 }
@@ -586,8 +577,9 @@ $_W['shopshare'] = array(
     'title' => !empty($goods['share_title']) ? $goods['share_title'] : $goods['title'],
     'imgUrl' => !empty($goods['share_icon']) ? tomedia($goods['share_icon']) : tomedia($goods['thumb']),
     'desc' => !empty($goods['description']) ? $goods['description'] : $shop['name'],
-    'link' => $this->createMobileUrl('shop/detail', array(
-        'id' => $goods['id']
+    'link' => $this->createPluginMobileUrl('fund/detail', array(
+        'id' => $goods['id'],
+        'mid' => $mid
     ))
 );
 $com             = p('commission');
