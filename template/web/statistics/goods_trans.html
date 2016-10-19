@@ -1,17 +1,21 @@
 {template 'web/_header'}
 <div class="w1200 m0a">
-{template 'web/statistics/tabs'}
+{if $_GPC['plugin'] != "fund"}
+  {template 'web/statistics/tabs'}
+{else}
+  {template 'fund/tabs'}
+{/if}
 <div class="rightlist">
 <!-- 新增加右侧顶部三级菜单 -->
 <div class="right-titpos">
 	<ul class="add-snav">
 		<li class="active"><a href="#">数据统计</a></li>
-		<li><a href="#">商品销售转化率</a></li>
+		<li><a href="#">{$lang['good']}销售转化率</a></li>
 	</ul>
 </div>
 <!-- 新增加右侧顶部三级菜单结束 -->
 <div class="panel panel-info">
-    <div class="panel-heading">查询商品浏览量及购买转化率，默认排序为转化率从高到低</div>
+    <div class="panel-heading">查询{$lang['good']}浏览量及购买转化率，默认排序为转化率从高到低</div>
     <div class="panel-body">
         <form action="./index.php" method="get" class="form-horizontal">
             <input type="hidden" name="c" value="site" />
@@ -20,7 +24,7 @@
             <input type="hidden" name="do" value="statistics" />
             <input type="hidden" name="p"  value="goods_trans" />
              <div class="form-group">
-                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">商品名称</label>
+                <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">{$lang['good']}名称</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
                       <input name="title" type="text"  class="form-control" value="{$_GPC['title']}">
                 </div>
@@ -57,7 +61,7 @@
             <thead>
                 <tr>
                 
-                    <th>商品名称</th>
+                    <th>{$lang['good']}名称</th>
                     <th style='width:100px;'>访问次数</th>
                     <th style='width:100px;'>购买件数</th>
                     <th>转化率</th>

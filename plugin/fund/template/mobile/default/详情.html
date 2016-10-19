@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="target-densitydpi=device-dpi, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link href="css/zc.css" rel="stylesheet" type="text/css">
+    <link href="font/iconfont.css" rel="stylesheet" type="text/css">
+    <title></title>
+</head>
+<body>
+<div class="single_top">
+	<div class="single_bg">
+		<div class="zc-go_back"><a href="#"><i class="iconfont icon-chevron-left"></i></a></div>
+		<div class="zc-go2index"><a href="#"><i class="iconfont icon-team-home"></i></a></div>
+		<div class="single_fk">
+			<a href="#"><img src="images/img.jpg"></a>
+		</div>
+		<div class="bg_bottom">
+			<a href="#">SAETA智能公路跑车</a>
+		</div>
+	</div>
+		<div class="total_data">
+			<ul>
+	            <li><p><span><i>4578</i><em>支持人数</em></span></p></li>
+	            <li class="can">
+		            <div class="w100" style="position: relative;">
+	                <canvas id="process01" width="200" height="200" style="width: 100px; height: 100px;"></canvas>
+                    
+<script type="text/javascript">
+
+var c=document.getElementById("process01");
+        var ctx=c.getContext("2d");
+        var drow= function (curr) {
+ 
+ 
+            ctx.clearRect(0,0, c.width, c.height);
+            ctx.beginPath();
+            ctx.strokeStyle='#666';
+            ctx.lineWidth=13;
+            ctx.arc(100,100,94,-0.5*Math.PI,1.5*Math.PI);
+            ctx.moveTo(140,80);
+            ctx.closePath();
+            ctx.stroke();
+ 
+            ctx.beginPath();
+            ctx.strokeStyle = '#51CEBE';
+            ctx.lineWidth=10;
+            ctx.arc(100,100,94,-0.5*Math.PI,curr*2*Math.PI-0.5*Math.PI);
+            ctx.moveTo(140,80);
+            ctx.closePath();
+            ctx.stroke();
+ 
+            ctx.fillStyle="#fff";
+            ctx.font="60px abc";
+            text = Math.floor(curr*100)+"%";
+            text_w = ctx.measureText(text).width;
+            ctx.fillText(text,50,100);
+        };
+        var t=0;
+        var lod= function (gos) {
+            var te=setInterval(function () {
+                if (t>gos){
+ 
+                    clearInterval(te);
+                }else{
+ 
+                    t+=0.01;
+                    drow(t);
+                }
+ 
+            },5)
+        };
+        lod(0.7);
+</script>
+
+                    <span class="center_span">众筹中</span>
+		            </div>
+	            </li>
+	            <li><p><span><i>25<b>天</b></i><em>剩余时间</em></span></p></li>
+	        </ul>
+	     </div>
+	     <div class="total_tab">
+	    	 <ul>
+					<li><span>
+						<i>￥</i>3000000</span><span class="ls_span"><b>目标金额</b></span></li>
+					<li><span><i>￥</i>3024063</span><span class="ls_span"><b>已筹金额</b></span></li>
+				</ul>
+	    </div>
+	    <div class="total_zan">
+	    	<a href="#">竞赛级公路车，超轻破风车架、SHIMANO105套件、智能把立，专业、时尚。PROMADE SAETA给您全新的公路自行车竞速体验。</a>
+	    </div>
+</div>
+   <div class="pro_con">
+   	 	<p><img src="images/1.jpg"><img src="images/2.jpg"><img src="images/3.jpg"><img src="images/4.jpg"><img src="images/5.jpg"><img src="images/6.jpg"><img src="images/7.jpg"><img src="images/8.jpg"></p>
+   </div>
+
+</body>
+</html>

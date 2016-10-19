@@ -483,6 +483,7 @@
       
     </div>
     <%/if%>
+    {if $issale}
     <div class="addorder_price">
             <div class="price">
             <div class="line" style="line-height:26px;">商品小计 <span>￥<span class='goodspricesubtotal' data-id="<%order.supplier_uid%>"><%order.realprice%></span></span>
@@ -490,6 +491,7 @@
         </div>
       
     </div>
+    {/if}
 <%/each%>	
     <div class="addorder_pay">
         <div class="paysub">确认订单</div>

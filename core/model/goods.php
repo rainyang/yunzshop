@@ -121,6 +121,12 @@ class Sz_DYi_Goods
                 }
             }
         }
+
+        if($args['plugin'] == 'fund'){
+            $condition .= " and plugin='fund'";
+        }else{
+            $condition .= " and plugin=''";
+        }
         $openid  = m('user')->getOpenid();
         if(empty($openid)){
             $openid = m('user')->isLogin();

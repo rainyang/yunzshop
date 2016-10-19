@@ -89,6 +89,16 @@ if(!empty($pluginbonus)){
 	}
 
 }
+//众筹
+$pluginfund = p('fund');
+$fund_start = false;
+if(!empty($pluginfund)){
+	$fund_set = $pluginfund->getSet();
+	if(!empty($fund_set['isshow'])){
+		$fund_start = true;
+		$fund_text = $fund_set['texts']['order'];
+	}
+}
 $shopset['bonus_start'] = $bonus_start;
 $shopset['bonus_text'] = $bonus_text;
 $shopset['is_weixin'] = is_weixin();
