@@ -24,7 +24,8 @@ if(!empty($_GPC["submit"])){
 		'sz_yi_member'			=> array("avatar"),
 		'sz_yi_order_comment'	=> array("headimgurl"),
 		'sz_yi_poster_qr'		=> array("qrimg"),
-	);	
+		'sz_yi_coupon'		    => array("respurl"),
+	);
 	if($oldReplaceDomain == $newReplaceDomain){
 		message('域名不能相同!', '', 'warning');
 	}
