@@ -12,6 +12,12 @@ $plugin_yunbi = p('yunbi');
 if ($plugin_yunbi) {
 	$yunbi_set = $plugin_yunbi->getSet();
 }
+$plugin_fund = p('fund');
+$ordertitle = "我的订单";
+if($plugin_fund){
+	$fund_set = $plugin_fund->getSet();
+	$ordertitle = $fund_set['texts']['order'];
+}
 if ($_W['isajax']) {
 	if ($operation == 'display') {
 		$pindex = max(1, intval($_GPC['page']));
@@ -44,6 +50,7 @@ if ($_W['isajax']) {
 		if (p('channel')) {
 			$conds = ',ischannelself';
 		}
+		$condition.= " AND plugin='".$_GPC['plugin']."'";
 	    //Author:ym Date:2016-07-20 Content:订单分组查询
 		$list = pdo_fetchall('select * from ' . tablename('sz_yi_order') . " where 1 {$condition} group by ordersn_general order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where 1 {$condition}", $params);
@@ -175,11 +182,11 @@ if ($_W['isajax']) {
 				}
 			}
 			$canrefund = false;
-			if ($row['status'] == 1 || $row['status'] == 2) {
+			if (($row['status'] == 1 || $row['status'] == 2) && $_GPC['plugin'] == "") {
 				if ($refunddays > 0 || $row['status'] == 1) {
 					$canrefund = true;
 				}
-			} else if ($row['status'] == 3) {
+			} else if ($row['status'] == 3 && $_GPC['plugin'] == "") {
 				//申请售后去除核销商品与虚拟产品不允许退货
 				//if ($row['isverify'] != 1 && empty($row['virtual'])) {
 					if ($refunddays > 0) {

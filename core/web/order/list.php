@@ -14,6 +14,16 @@ $r_type         = array(
     '1' => '退货退款',
     '2' => '换货'
 );
+$lang = array(
+    'good' => '商品',
+    'orderlist' => '订单管理'
+    );
+if($_GPC['plugin'] == "fund"){
+    $lang = array(
+    'good' => '项目',
+    'orderlist' => '众筹订单'
+    ); 
+}
 $store_list = pdo_fetchall("SELECT * FROM ".tablename('sz_yi_store')." WHERE uniacid=:uniacid and status=1", array(':uniacid' => $_W['uniacid']));
 if ($operation == "display") {
     ca("order.view.status_1|order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status5");
@@ -257,6 +267,9 @@ if ($operation == "display") {
                 }
             }
         }
+    }
+    if(!empty($_GPC['plugin'])){
+        $condition.= " and o.plugin='".$_GPC['plugin']."'";
     }
     //是否为供应商 等于1的是
     if(p('supplier')){
@@ -1087,6 +1100,10 @@ if ($operation == "display") {
             }
         }
     }
+    if(!empty($_GPC['plugin'])){
+        $condition.= " and plugin='".$_GPC['plugin']."'";
+    }
+
     $paras = array(
         ":uniacid" => $_W["uniacid"]
     );
@@ -1357,6 +1374,9 @@ if ($operation == "display") {
     $paras = array(
         ":uniacid" => $_W["uniacid"]
     );
+    if(!empty($_GPC['plugin'])){
+        $condition.= " and plugin='".$_GPC['plugin']."'";
+    }
     $supplier_conds = '';
     $supplier_cond = '';
     if (p('supplier')) {

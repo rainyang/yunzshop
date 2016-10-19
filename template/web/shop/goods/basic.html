@@ -42,6 +42,18 @@
         {/if}
     </div>
 </div>
+{if $_GPC['plugin'] == "fund"}
+<div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>项目简述</label>
+    <div class="col-sm-9 col-xs-12">
+         {ife 'shop.goods' $item}
+        <textarea name="desc" class="form-control">{$item['desc']}</textarea>
+            {else}
+        <div class='form-control-static'>{$item['desc']}</div>
+        {/if}
+    </div>
+</div>
+{/if}
 {if $_GPC['plugin'] != "fund"}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span>商品分类</label>
@@ -342,7 +354,7 @@
 </div>
 {/if}
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">限时卖时间</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">{$lang['limittime']}</label>
       {ife 'shop.goods' $item}
     <div class="col-sm-4 col-xs-6">
 
@@ -363,7 +375,7 @@
 </div>
 
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品图片</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">{$lang['mainimg']}</label>
     <div class="col-sm-9 col-xs-12 detail-logo">
              {ife 'shop.goods' $item}
         {php echo tpl_form_field_image('thumb', $item['thumb'])}
@@ -377,7 +389,7 @@
                         {/if}
     </div>
 </div>
-
+{if $_GPC['plugin'] != "fund"}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">其他图片</label>
     <div class="col-sm-9 col-xs-12">
@@ -393,9 +405,9 @@
             {/if}
     </div>
 </div>
-
+{/if}
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品编号</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">{$lang['shopnumber']}</label>
     <div class="col-sm-4 col-xs-12">
           {ife 'shop.goods' $item}
         <input type="text" name="goodssn" id="goodssn" class="form-control" value="{$item['goodssn']}" />
@@ -416,6 +428,7 @@
     </div>
 </div>
 {/if}
+{if $_GPC['plugin'] != "fund"}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">商品价格</label>
     <div class="col-sm-9 col-xs-12">
@@ -458,6 +471,48 @@
           <span class='help-block'>填写分红金额，不填写则为现价计算</span>
     </div>
 </div>
+{else}
+  <div class="form-group">
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">项目金额</label>
+    <div class="col-sm-9 col-xs-12">
+        {ife 'shop.goods' $item}
+        <div class="input-group form-group">
+
+            <span class="input-group-addon">总筹金额</span>
+            <input type="text" name="allprice" id="allprice" class="form-control" value="{$item['allprice']}" />
+            <span class="input-group-addon">元</span>
+        </div>
+          {else}
+           <div class='form-control-static'>总筹金额：{$item['allprice']} 元</div>
+        {/if}
+         {ife 'shop.goods' $item}
+        <div class="input-group form-group">
+
+            <span class="input-group-addon">单件筹金</span>
+            <input type="text" name="marketprice" id="marketprice" class="form-control" value="{$item['marketprice']}" />
+            <span class="input-group-addon">元</span>
+        </div>
+          {else}
+           <div class='form-control-static'>单件筹金：{$item['marketprice']} 元</div>
+        {/if}
+        {ife 'shop.goods' $item}
+        <div class="input-group form-group">
+            <span class="input-group-addon">单件成本</span>
+            <input type="text" name="costprice" id="costprice" class="form-control" value="{$item['costprice']}" />
+            <span class="input-group-addon">元</span>
+        </div>
+           {else}
+           <div class='form-control-static'>成本：{$item['costprice']} 元</div>
+        {/if}
+          <div class="input-group form-group">
+              <span class="input-group-addon">分红金额</span>
+              <input type="text" name="bonusmoney" class="form-control" value="{$item['bonusmoney']}" />
+              <span class="input-group-addon">元</span>
+          </div>
+          <span class='help-block'>填写分红金额，不填写则为单件筹金计算</span>
+    </div>
+</div>
+{/if}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">红包价格</label>
     <div class="col-sm-6 col-xs-12">
@@ -669,7 +724,7 @@
 {/if}
 {if $perm_role == 0}
 <div class="form-group">
-    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否上架</label>
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">{$lang['isputaway']}</label>
     <div class="col-sm-9 col-xs-12">
           {ife 'shop.goods' $item}
         <label for="isshow1" class="radio-inline"><input type="radio" name="status" value="1" id="isshow1" {if $item['status'] == 1}checked="true"{/if} /> 是</label>

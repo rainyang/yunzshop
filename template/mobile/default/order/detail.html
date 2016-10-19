@@ -307,8 +307,8 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
                   </div>
               </div>
             <%else%>
-              <div class="img" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'"><img src="<%g.thumb%>"/></div>
-              <div class='info'onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
+              <div class="img" onclick="location.href='<%g.url%>'"><img src="<%g.thumb%>"/></div>
+              <div class='info'onclick="location.href='<%g.url%>'">
              
                   <div class='inner'>
                          <div class="name"><%if order.cashier==1%><%order.name.name%><span style="color:red">(收银台支付)</span><%else%><%g.title%><%/if%></div>     

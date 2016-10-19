@@ -173,6 +173,7 @@ if (!empty($minprice)) {
     $condition .= ' AND `marketprice` >= :minprice';
     $params[':minprice'] = $minprice;
 }
+$condition .= " AND `plugin` = ''";
 $total = pdo_fetchcolumn("SELECT count(*) FROM " . tablename('sz_yi_goods') . " where 1 {$condition}", $params);
 
 $pindex = max(1, intval($_GPC['page']));

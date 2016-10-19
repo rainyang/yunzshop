@@ -30,8 +30,8 @@ a {text-decoration:none;}
 {if $member['bonus_area']}
 <div class="log_menu">
     <div class="nav" data-status='1'  style='width:33%'>全部明细</div>
-    <div class="nav" data-status='2'  style='width:33%'>团队明细</div>
-    <div class="nav" data-status='3'  style='width:33%'>地区明细</div>
+    <div class="nav" data-status='2'  style='width:33%'>{php echo $this->set['texts']['team']}明细</div>
+    <div class="nav" data-status='3'  style='width:33%'>{php echo $this->set['texts']['area']}明细</div>
 </div>
 {/if}
 <div id='container'></div>
@@ -42,14 +42,14 @@ a {text-decoration:none;}
        data-applyid='<%log.id%>'>
     <div class="left"><div class='inner'>编号: <%log.send_bonus_sn%>（<%if log.paymethod>0%>微信钱包<%else%>余额<%/if%>）
     <%if log.isglobal==1%>
-        全球分红
+        {php echo $this->set['texts']['global']}分红
     <%else%>
         <%if log.type==2%>
-            团队分红
+            {php echo $this->set['texts']['team']}分红
         <%else if log.type==3%>
-            地区分红
+            {php echo $this->set['texts']['area']}分红
         <%else%>
-            团队地区分红
+            {php echo $this->set['texts']['team']}{php echo $this->set['texts']['area']}分红
         <%/if%>
     <%/if%>
     <br>
