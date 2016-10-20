@@ -133,22 +133,28 @@ body { background:#fff;}
     <span class="t">您的位置：</span>
     <a class="c" href="{php echo $this->createMobileUrl('shop')}">首页</a>
     {if $pcatename}
-    <span class="divide">&gt;</span>
-    <a class="c" href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$_GPC['pcate']))}">{$pcatename}</a>
+        <span class="divide">&gt;</span>
+        <a class="c" href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$pcatename['id']))}">{$pcatename['name']}</a>
     {elseif $pcate1name}
-    <span class="divide">&gt;</span>
-    <a class="c" href="{php echo $this->createMobileUrl('shop/list')}">{$pcate1name}</a>
+        <span class="divide">&gt;</span>
+        <a class="c" href="{php echo $this->createMobileUrl('shop/list',array('pcate1'=>$pcate1name['id']))}">{$pcate1name['name']}</a>
     {else}
-    <span class="divide">&gt;</span>
-    <a class="c" href="{php echo $this->createMobileUrl('shop/list')}">全部商品</a>
+        <span class="divide">&gt;</span>
+        <a class="c" href="{php echo $this->createMobileUrl('shop/list')}">全部商品</a>
     {/if}
     {if $ccatename}
-    <span class="divide">&gt;</span>
-    <a class="c" href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$_GPC['pcate'],'ccate'=>$_GPC['ccate']))}">{$ccatename}</a>
+        <span class="divide">&gt;</span>
+        <a class="c" href="{php echo $this->createMobileUrl('shop/list',array('ccate'=>$ccatename['id']))}">{$ccatename['name']}</a>
+    {elseif $ccate1name}
+        <span class="divide">&gt;</span>
+        <a class="c" href="{php echo $this->createMobileUrl('shop/list',array('ccate1'=>$ccate1name['id']))}">{$ccate1name['name']}</a>
     {/if}
     {if $tcatename}
-    <span class="divide">&gt;</span>
-    <a class="c" href="{php echo $this->createMobileUrl('shop/list',array('pcate'=>$_GPC['pcate'],'ccate'=>$_GPC['ccate'],'tcate'=>$_GPC['tcate']))}">{$tcatename}</a>
+        <span class="divide">&gt;</span>
+        <a class="c" href="{php echo $this->createMobileUrl('shop/list',array('tcate'=>$tcatename['id']))}">{$tcatename['name']}</a>
+    {elseif $tcate1name}
+        <span class="divide">&gt;</span>
+        <a class="c" href="{php echo $this->createMobileUrl('shop/list',array('tcate1'=>$tcate1name['id']))}">{$tcate1name['name']}</a>
     {/if}
 <span class="divide">&gt;</span>
 <span style="color:#666;font-size:12px;">{$goods['title']}</span>

@@ -299,7 +299,7 @@ if ($operation == 'display' && $_W['isajax']) {
         array(
             ':uniacid' => $uniacid,
             ':module' => 'sz_yi',
-            ':tid' => $order['ordersn_general']
+            ':tid' => $order['pay_ordersn']
         )
     );
     if (empty($log)) {
@@ -361,7 +361,7 @@ if ($operation == 'display' && $_W['isajax']) {
         show_json(1, $pay_result);
 
     } else if ($type == 'weixin') {
-        $ordersn = $order['ordersn_general'];
+        $ordersn =  $order['pay_ordersn'] ? $order['pay_ordersn'] : $order['ordersn_general'];
         if (!empty($order['ordersn2'])) {
             $ordersn .= "GJ" . sprintf("%02d", $order['ordersn2']);
         }
