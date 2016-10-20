@@ -1038,10 +1038,9 @@ function json_encode_ex($value)
         return json_encode($value, JSON_UNESCAPED_UNICODE);
     }
 }
+if (!function_exists("getExitInfo")) {
 
-if (!function_exists("pdo_sql_debug")) {
-
-    function getExitInfo()
+    function getExitInfo1()
     {
         function shutdown_find_exit()
         {
@@ -1056,5 +1055,19 @@ if (!function_exists("pdo_sql_debug")) {
 
         register_tick_function('write_dbg_stack');
         declare(ticks = 1);
+    }
+}
+if (! function_exists('array_get')) {
+    /**
+     * Get an item from an array using "dot" notation.
+     *
+     * @param  \ArrayAccess|array  $array
+     * @param  string  $key
+     * @param  mixed   $default
+     * @return mixed
+     */
+    function array_get($array, $key, $default = null)
+    {
+        return \util\Arr::get($array, $key, $default);
     }
 }

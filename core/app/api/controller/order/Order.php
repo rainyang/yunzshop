@@ -158,7 +158,7 @@ class Order
                 }
             } else {
                 if(!empty($order['refundstate'])){
-                    $button_id_arr[] = static::IN_AFTER_SALES;//删除订单
+                    $button_id_arr[] = static::IN_AFTER_SALE;//删除订单
                 }else{
                     $button_id_arr[] = static::REFUND;//删除订单
                 }

@@ -41,7 +41,7 @@ if ($op == 'upload') {
 		exit(json_encode($result));
 	} else {
 		$result['message'] = '请选择要上传的图片';
-		exit(json_encode($result));
+        exit(json_encode($result));
 	}
 } elseif ($op == 'remove') {
     $file = $_GPC['file'];
