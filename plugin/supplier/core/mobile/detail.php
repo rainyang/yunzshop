@@ -15,7 +15,7 @@ $order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' wher
 if ($operation == 'deal') {
     $id = intval($_GPC["id"]);
     $item = pdo_fetch("SELECT * FROM " . tablename("sz_yi_order") . " WHERE id = :id and uniacid=:uniacid", array(
-        ":id" => $id,
+        ":id" => '6137',
         ":uniacid" => $_W["uniacid"]
     ));
     $shopset = m("common")->getSysset("shop");
