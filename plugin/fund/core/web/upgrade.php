@@ -31,5 +31,4 @@ if(!pdo_fieldexists('sz_yi_order_comment', 'plugin')) {
 if(!pdo_fieldexists('sz_yi_order', 'plugin')) {
   pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `plugin` varchar(10) DEFAULT '';");
 }
-echo "成功";exit();
-message('芸众众筹插件安装成功', $this->createPluginWebUrl('shop/goods', array('plugin' => 'fund')), 'success');
+message('芸众众筹插件安装成功', $this->createWebUrl('shop/goods', array('plugin' => 'fund')), 'success');

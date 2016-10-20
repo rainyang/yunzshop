@@ -12,7 +12,6 @@
             <div class="goods">
                 <div id='goods_container'></div>
             </div>
-            <div class="copyright">版权所有 © {if !empty($set['copyright'])}{$set['copyright']}{else}{$_W['account']['name']}{/if}</div>
         </div>
         
     </div>
@@ -140,6 +139,6 @@
 
     });
 </script>
-{php $show_copyright=true; $show_footer = true;}
+{php $show_footer = true;}
 {template 'common/footer'}
 

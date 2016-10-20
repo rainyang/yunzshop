@@ -9,7 +9,7 @@ class FundMobile extends Plugin
     {
         parent::__construct('fund');
     }
-    public function lists()
+    public function index()
     {
         $this->_exec_plugin(__FUNCTION__, false);
     }

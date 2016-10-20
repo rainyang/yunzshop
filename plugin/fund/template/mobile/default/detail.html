@@ -313,7 +313,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 
     <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1' && goods.groupbuy=='1'  && goods.levelbuy=='1' && is_admin!='1' %>
     <div class="good_bottom">
-        <div class="like"  onclick="location.href='{php echo $this->createPluginMobileUrl('fund/lists')}'">
+        <div class="like"  onclick="location.href='{php echo $this->createPluginMobileUrl('fund/index')}'">
             <i style="padding-left:6px"  class="iconfont icon-team-group" style="color:#f90"></i>
             <br><span>众筹列表</span>
         </div>
@@ -719,8 +719,7 @@ var lod= function (gos) {
 
             clearInterval(te);
         }else{
-
-            t+=0.01;
+            t+=0.0{php echo $goods['percentage'] ? 1 : 0;};
             drow(t);
         }
 

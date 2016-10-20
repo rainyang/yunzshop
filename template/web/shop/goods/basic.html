@@ -555,6 +555,7 @@
         {/if}
     </div>
 </div>
+{if $_GPC['plugin'] != "fund"}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">减库存方式</label>
     <div class="col-sm-9 col-xs-12">
@@ -575,6 +576,9 @@
         {/if}
     </div>
 </div>
+{else}
+  <input type="hidden" name="totalcnf" value='1' />
+{/if}
 <div class="form-group">
     <label class="col-xs-12 col-sm-3 col-md-2 control-label">单次最多购买量</label>
     <div class="col-sm-6 col-xs-12">

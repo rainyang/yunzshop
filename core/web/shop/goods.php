@@ -1069,7 +1069,8 @@ if ($operation == "change") {
             }
             message($lang['good'].'更新成功！', $this->createWebUrl('shop/goods', array(
                 'op' => 'post',
-                'id' => $id
+                'id' => $id,
+                'plugin' => $_GPC['plugin']
             )), 'success');
         }
         if (p('commission')) {
