@@ -70,7 +70,6 @@ class YZ extends base
         list($_GPC['p'],$_GPC['method'],$_GPC['op'],$_GPC['to']) = explode('/',$path);
         $class = new \Sz_yiModuleSite();
         $result = $class->doMobilePlugin();
-        dump($result);exit;
         if($result['status'] != 1){
             $this->returnError($result['json']);
         }

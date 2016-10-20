@@ -13,7 +13,6 @@ class Send extends YZ
     {
         parent::__construct();
         $result = $this->callPlugin('supplier/detail/deal/confirmsend');
-        dump($result);exit;
         $this->json = $result;
     }
     public function index(){
