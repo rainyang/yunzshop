@@ -76,11 +76,11 @@ if($operation == 'assigns'){
                     m('member')->setCredit($member['openid'],'credit2',-$money);
                     $messages = array(
                         'keyword1' => array(
-                            'value' => '转增通知', 
+                            'value' => '转赠通知',
                             'color' => '#73a68d'
                         ),
                         'keyword2' => array(
-                            'value' => '你向'.$assigns['nickname'].'转增金额'.$money."元！",
+                            'value' => '你向'.$assigns['nickname'].'转赠金额'.$money."元！",
                             'color' => '#73a68d'
                         )
                     );
@@ -88,11 +88,11 @@ if($operation == 'assigns'){
                     m('member')->setCredit($assigns['openid'],'credit2',$money, array(0, '会员余额转让所得：' . $money . " 元"));
                     $messages = array(
                         'keyword1' => array(
-                            'value' => '转增通知', 
+                            'value' => '转赠通知',
                             'color' => '#73a68d'
                         ),
                         'keyword2' => array(
-                            'value' => $member['nickname'].'向你转增金额'.$money."元！",
+                            'value' => $member['nickname'].'向你转赠金额'.$money."元！",
                             'color' => '#73a68d'
                         )
                     );

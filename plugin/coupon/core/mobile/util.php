@@ -174,7 +174,6 @@ if ($operation == 'query') {
 						$a = 0;
 						$b = 0;
 						if (!empty($categoryids)) {
-							echo 1;exit;
 							foreach ($categoryids as $v) {
 								if ($v == $goods['ccate'] || $v == $goods['tcate'] ) {
 									$a += 1;
