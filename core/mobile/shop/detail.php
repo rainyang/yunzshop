@@ -161,23 +161,29 @@ if ($diyform_plugin) {
 }
 $pindiana = p('indiana');
 $indiana = array();
+
+// $pindiana->test('20161018949435241998');
+// echo "<pre>";print_r(2);exit;
 if ($pindiana && $_GPC['indiana']) {
     $periodnum = $_GPC['periodnum'];
-
     $condition = ' and ig.uniacid = :uniacid AND ig.status = 2 AND ig.good_id = :goodsid AND ip.period_num = :periodnum';
     $params    = array(
         ':uniacid' => $_W['uniacid'],
         ':goodsid' => $goodsid,
         ':periodnum' => $periodnum
     );
-    $indiana = set_medias(pdo_fetch("SELECT ig.*, g.thumb, ip.period, ip.shengyu_codes, ip.zong_codes, ip.period_num, ip.init_money as initmoney , ip.status as ipstatus FROM " . tablename('sz_yi_indiana_goods') . " ig 
+    $indiana = set_medias(pdo_fetch("SELECT ig.*, g.thumb, ip.period, ip.shengyu_codes, ip.zong_codes, ip.period_num, ip.init_money as initmoney , ip.status  as ipstatus, ip.avatar, ip.nickname, ip.mid, ip.code, ip.partakes, ip.jiexiao_time FROM " . tablename('sz_yi_indiana_goods') . " ig 
         left join " . tablename('sz_yi_goods') . " g on (ig.good_id = g.id) 
         left join " . tablename('sz_yi_indiana_period') . " ip on (ig.id = ip.ig_id)
         where 1 {$condition} " , $params),'thumb');
-       $indiana['shengyu'] = $indiana['shengyu_codes']/$indiana['zong_codes']*100;
-    //下一期
-    $next = $indiana['period'] + 1;
-    $next_phase = pdo_fetch("SELECT goodsid, period_num FROM " . tablename('sz_yi_indiana_period') . " where goodsid = '".$goodsid."' and period = '" . $next . "'");
+        if ($indiana) {
+            $indiana['shengyu'] = $indiana['shengyu_codes']/$indiana['zong_codes']*100;
+            $indiana['jiexiao'] =  $indiana['jiexiao_time']?date("Y-m-d H:i:s",$indiana['jiexiao_time']):'';
+        }
+        //下一期
+        $next = $indiana['period'];
+        $next_phase = pdo_fetch("SELECT goodsid, period_num FROM " . tablename('sz_yi_indiana_period') . " where goodsid = '".$goodsid."' and period > '" . $next . "' ORDER BY period desc limit 1");  
+
 
 }
 $html = $goods['content'];

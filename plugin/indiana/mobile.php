@@ -30,6 +30,10 @@ class IndianaMobile extends Plugin
     {    
         $this->_exec_plugin(__FUNCTION__, false);
     }
+    public function order_list()
+    {    
+        $this->_exec_plugin(__FUNCTION__, false);
+    }
     public function info()
     {    
         $this->_exec_plugin(__FUNCTION__, false);

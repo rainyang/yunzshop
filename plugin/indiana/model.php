@@ -205,7 +205,7 @@ if (!class_exists('IndianaModel')) {
 				'microtime' 	=> $microtime,
 				'ip' 			=> $_SERVER['REMOTE_ADDR']
 			);
-			pdo_insert("sz_yi_indiana_consumerecord",$consumerecord);	
+			pdo_insert("sz_yi_indiana_consumerecord",$consumerecord);
 			if ($shengyu_codes <= 0) {
 				self::jiexiaotime($period_num);
 			}	
@@ -230,6 +230,16 @@ if (!class_exists('IndianaModel')) {
 			}
 			$jiexiao = time() + $raise * 60;	
 			pdo_update('sz_yi_indiana_period',array('jiexiao_time'=>$jiexiao, 'status'=>'2'),array('uniacid'=>$_W['uniacid'],'period_num'=>$period_num));
+
+			$period = pdo_fetch("SELECT ip.goodsid, ip.period, ig.max_periods, ig.id FROM " . tablename('sz_yi_indiana_period') . " ip 
+			left join " . tablename('sz_yi_indiana_goods') . " ig on (ip.goodsid = ig.good_id) 
+			 WHERE ip.uniacid = :uniacid and ip.period_num = :period_num ",array(
+			 	'uniacid' => $_W['uniacid'],
+			 	'period_num' => $period_num
+			 ));
+			if ($period['max_periods']-$period['period'] > 0) {
+				self::setPeriod($period['id']);
+			}
 		}
 
 		//开奖
@@ -237,7 +247,6 @@ if (!class_exists('IndianaModel')) {
 			global $_W, $_GPC;
 			$_W['uniacid'] = $uniacid;
 			set_time_limit(0);
-
 
 			$indiana = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_indiana_period') . " WHERE uniacid = :uniacid AND jiexiao_time <= :jiexiao_time AND status = :status ",array(
 					':uniacid' => $_W['uniacid'],
@@ -247,6 +256,7 @@ if (!class_exists('IndianaModel')) {
 			if (!$indiana) {
 				return false;
 			}
+
 			foreach ($indiana as $key => $value) {
 				self::createtime_winer($value['id'],$value['period_num'],$_W['uniacid']);
 			}
@@ -339,6 +349,7 @@ if (!class_exists('IndianaModel')) {
 				$pro_m = m('member')->getMember($lack_period['openid']);//获奖用户信息
 				$lack_record = pdo_fetch("select count from ".tablename('sz_yi_indiana_record')." where uniacid='{$_W['uniacid']}' and openid='{$lack_period['openid']}' and period_num='{$period_num}'");
 				$lack_period['code']=$wincode;
+				$lack_period['mid']=$pro_m['id'];
 				$lack_period['nickname']=$pro_m['nickname'];
 				$lack_period['avatar']=$pro_m['avatar'];
 				$lack_period['partakes']=$lack_record['count'];
@@ -348,6 +359,17 @@ if (!class_exists('IndianaModel')) {
 			}
 		}
 
-
+		public function getorder($period_num) {
+			global $_W;
+			$sql_record = "select ip.*, ig.title from ".tablename('sz_yi_indiana_period')." ip 
+			left join ".tablename('sz_yi_indiana_goods')." ig on (ip.goodsid = ig.good_id) 
+			where ip.uniacid = :uniacid and ip.period_num = :period_num ";
+			$data_record = array(
+					':uniacid' => $_W['uniacid'],
+					':period_num' => $period_num
+				);
+			$indiana_record = pdo_fetch($sql_record,$data_record); // 检索购买记录
+			return $indiana_record;
+		}
 	}
 }

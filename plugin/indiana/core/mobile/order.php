@@ -22,7 +22,7 @@ if ( $_W['isajax'] && $operation == 'display') {
          $condition = " and ip.status = '".$_GPC['status']."'";
     }
     
-    $list = pdo_fetchall("select ir.*,ip.status, ip.goodsid, ip.period, ip.nickname, ip.partakes shengyu_codes, zong_codes from" . tablename('sz_yi_indiana_record') . " ir 
+    $list = pdo_fetchall("select ir.*,ip.status, ip.goodsid, ip.period, ip.nickname, ip.partakes, ip.shengyu_codes, zong_codes, canyurenshu from" . tablename('sz_yi_indiana_record') . " ir 
         left join " . tablename('sz_yi_indiana_period') . "ip on( ir.period_num=ip.period_num ) 
         where ir.uniacid = :uniacid and ir.openid = :openid  {$condition} order by ir.create_time desc LIMIT " . ($pindex - 1) * $psize . "," . $psize,
         array(
@@ -45,7 +45,6 @@ if ( $_W['isajax'] && $operation == 'display') {
 
         }
     }
-
     unset($row);
     show_json(1, array(
         //'total' => $total,
@@ -58,10 +57,11 @@ if ( $_W['isajax'] && $operation == 'display') {
     $pindex = max(1, intval($_GPC['page']));
     $psize = 10;
 
-    $list = pdo_fetchall("select * from " . tablename('sz_yi_indiana_period') . "iwhere uniacid = :uniacid and openid = :openid order by endtime desc LIMIT " . ($pindex - 1) * $psize . "," . $psize,
+    $list = pdo_fetchall("select * from " . tablename('sz_yi_indiana_period') . " where uniacid = :uniacid and openid = :openid and status = :status order by endtime desc LIMIT " . ($pindex - 1) * $psize . "," . $psize,
         array(
             ':uniacid' => $_W['uniacid'],
-            ':openid' => $openid
+            ':openid' => $openid,
+            ':status' => 3
         ));
     foreach ($list as &$row) {
         $row['create_time'] = date("Y-m-d H:i:s", $row['create_time']);
@@ -71,13 +71,10 @@ if ( $_W['isajax'] && $operation == 'display') {
                 ':uniacid' => $_W['uniacid'],
                 ':goodsid' => $row['goodsid']
             )),'thumb');
-        $row['shengyu'] = $row['shengyu_codes']/$row['zong_codes']*100;
-        if ($row['status'] == 3) {
             //下一期
-            $next = $row['period'] + 1;
-            $row['next_phase'] = pdo_fetch("SELECT goodsid, period_num FROM " . tablename('sz_yi_indiana_period') . " where goodsid = '".$row['goodsid']."' and period = '" . $next . "'");
+            $next = $row['period'];
+            $row['next_phase'] = pdo_fetch("SELECT goodsid, period_num FROM " . tablename('sz_yi_indiana_period') . " where goodsid = '".$row['goodsid']."' and period > '" . $next . "' ORDER BY period desc limit 1");
 
-        }
     }
 
     unset($row);

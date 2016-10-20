@@ -425,7 +425,27 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                 <span style="font-size: 12px;">你本期没有购买</span>
             </div> -->
         </div>
-
+    {elseif $indiana['ipstatus'] == 3 }
+        <div class="good_info1">
+            <div class="info2" style=" padding: 11px 0px 0px 0px;">第<%indiana.period%>期 <%indiana.title%> </div>
+            <div class="price" style="height:auto;">
+                <div style="padding-left:62px;position:relative;min-height:60px;font-size: 12px;" >
+                    <img src='<%indiana.avatar%>' style="position:absolute;width:50px;height:50px;left:6px;top:6px;border-radius:50%">
+                    <div style="padding-top:6px;line-height:20px;color:#f15353">获得者：<%indiana.nickname%></div>
+                    <div style="line-height:20px;color:#666">用户ID:<span style="color:#ff0000"><%indiana.mid%></span>(唯一不变标识)</div>
+                    <div style="line-height:20px;color:#666">幸运号码：<span style="color:#ff0000"><%indiana.code%></span></div>
+                    <div style="line-height:20px;color:#666">本期参与：<span style="color:#ff0000"><%indiana.partakes%></span>人次</div>
+                </div>
+                <div style="height: 30px;line-height: 24px;">
+                    <span style="float: right;text-align: right;margin-right: 5px;padding:2px 3px 0px 3px;font-size: 14px; border: 1px solid #f15353;" onclick="location.href='{php echo $this->createPluginMobileUrl('indiana/announced')}&periodnum=<%indiana.period_num%>'">
+                        计算详情
+                    </span>
+                </div>
+            </div>
+<!--             <div class="price" style="height:auto;text-align: center;">
+                <span style="font-size: 12px;">你本期没有购买</span>
+            </div> -->
+        </div>
     {/if}
 {else}
     <div class="good_info1">
@@ -613,7 +633,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             <input type="hidden" value="<%goods.yunbi_num%>" id='yunbi_num'>
             <input type="hidden" value="<%goods.isforceyunbi%>" id='isforceyunbi'>
         </div>
-    {elseif $indiana['ipstatus'] == 2 && $next_phase}
+    {elseif $indiana['ipstatus'] >= 2 && $next_phase}
         <div class="good_bottom" style="z-index: 3">
             <div style=" background: #999 none repeat scroll 0 0; float: left; line-height: 50px; padding-left: 15px; width: 65%; z-index: 3;">最新一期火热进行中</div>
             <div class="buy" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id={$next_phase['goodsid']}&periodnum={$next_phase['period_num']}&indiana=1'" style="width:30%; z-index: 3">立即前往</div>
@@ -762,7 +782,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 <script type="text/javascript">
     $(document).ready(function(){
     function FreshTime(){
-        var str ='2016-10-13 13:26:00';
+        var str ='{$indiana['jiexiao']}';
         str = str.replace(/-/g,"/");
         var starttime= new Date(str);//开始时间
         var nowtime = new Date();//当前时间

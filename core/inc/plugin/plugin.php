@@ -138,8 +138,12 @@ class Plugin extends Core
         if (!is_file($source)) {
             exit("Error: template source '{$filename}' is not exist!");
         }
+
         if (DEVELOPMENT || !is_file($compile) || filemtime($source) > filemtime($compile)) {
             shop_template_compile($source, $compile, true);
+        }
+        if (!is_file($compile)) {
+            $compile = $source;
         }
         return $compile;
     }

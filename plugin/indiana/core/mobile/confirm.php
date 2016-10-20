@@ -33,6 +33,13 @@ if ( $total > $indiana_period['shengyu_codes'] ) {
     show_json(-1, '剩余人次不足！');
 }
 
+$address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' WHERE openid=:openid AND deleted=0 AND isdefault=1  AND uniacid=:uniacid limit 1', array(
+    ':uniacid' => $uniacid,
+    ':openid' => $openid
+));
+if (!$address) {
+   show_json(-1, '请编辑默认收货地址！'); 
+}
 $ordersn    = m('common')->createNO('order', 'ordersn', 'SH');
 //通用订单号，支付用
 $ordersn_general    = m('common')->createNO('order', 'ordersn', 'SH');
@@ -50,7 +57,8 @@ $order   = array(
     'paytype' => 0,
     'transid' => '',
     'remark' => '',
-    'addressid' =>  0,
+    'addressid' =>  $address['id'],
+    'address' =>  iserializer($address),
     'createtime' => time(),
     'isverify' => 0,
     'carrier' => "a:0:{}",
@@ -59,6 +67,7 @@ $order   = array(
     'period_num' => $indiana_period['period_num'],
     'oldprice' => $totalprice
 );
+
 pdo_insert('sz_yi_order',$order);
 $orderid = pdo_insertid();
 if ( $orderid ) {

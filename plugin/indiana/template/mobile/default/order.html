@@ -41,19 +41,14 @@
     	<a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
     	<div class="title">{$title}</div>
 	</div>
-    <div class="order_topbar">
-        
-		{if $operation == 'display'}
+	{if $operation == 'display'}
+	    <div class="order_topbar">
 			<div class="nav {if $_GPC['status']==''}on{/if}" data-status="0">参与成功</div>
 			<div class="nav {if $_GPC['status']=='1'}on{/if}" data-status="1">正在进行</div>
 	        <div class="nav {if $_GPC['status']=='0'}on{/if}" data-status="2">即将揭晓</div>
 	        <div class="nav {if $_GPC['status']=='2'}on{/if}" data-status="3">已揭晓</div>
-
-		{else}
-			<div class="nav {if $_GPC['status']==''}on{/if}" data-status="1">参与成功</div>
-	        <div class="nav {if $_GPC['status']=='0'}on{/if}" data-status="2">即将揭晓</div>
-		{/if}
-    </div>
+	    </div>
+    {/if}
     <div id='order_container'></div>
 </script>
 <script id='tpl_order' type='text/html'>
@@ -68,7 +63,7 @@
 				            </div>
 				            <div class='option'>期号：<%order.period_num%></div> 
 				            <div class='option'>
-				            	我参与：<span style="color: #f15353;"><%order.count%></span>人次    
+				            	我参与：<span style="color: #f15353;"><%if order.status == 3%><%order.canyurenshu%><%else%><%order.count%><%/if%></span>人次    
 				            	<span style="color: rgb(53, 85, 224);padding-left: 10px;" onclick="location.href='{php echo $this->createPluginMobileUrl('indiana/info')}&periodnum=<%order.period_num%>'"> 查看详情</span>
 				            </div>      
 				        </div>
@@ -103,14 +98,18 @@
 	           		<span class="sub1" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%order.goodsid%>&periodnum=<%order.period_num%>&indiana=1'">查看开奖</span>
 	           	</div>
 	        <%else if order.status == 3%>
-	        	<div style="width: 70%; float: left; line-height: 40px;">
+	        	<div style="width: 45%; float: left; line-height: 40px;">
 					<div class="other" style="height: 36px;line-height: 36px;">
 						<span>获奖者：<%order.nickname%></span>
 					</div>
 	        	</div>
-	           	<div style="width: 30%; float: right;">
+	           	<div style="width: 55%; float: right;">
+	           	<%if order.next_phase%>
 	           		<span class="sub1" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%order.next_phase.goodsid%>&periodnum=<%order.next_phase.period_num%>&indiana=1'">再次购买</span>
+	           	<%/if%>
+	           		<span class="sub1" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%order.goodsid%>&periodnum=<%order.period_num%>&indiana=1'">计算详情</span>
 	           	</div>
+
 	        <%/if%>
 	        </div>
 	    </div>
