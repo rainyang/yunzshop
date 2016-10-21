@@ -11,7 +11,9 @@ class Send extends YZ
 
     public function __construct()
     {
+        global $_GPC;
         parent::__construct();
+        $_GPC["id"] = $_GPC["orderid"];
         $result = $this->callPlugin('supplier/detail/deal/confirmsend');
         $this->json = $result;
     }
