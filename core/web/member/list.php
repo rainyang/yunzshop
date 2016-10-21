@@ -322,7 +322,7 @@ if ($op == 'display') {
         ));
         pdo_query('delete from ' . tablename('mc_members') . ' where uid in (' . implode(',', array_keys($fans)) . ') and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
     }
-    
+
     plog('member.member.delete', "删除会员  ID: {$member['id']} <br/>会员信息: {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
     message('删除成功！', $this->createWebUrl('member/list'), 'success');
 } else if ($operation == 'setblack') {

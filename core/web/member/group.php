@@ -81,6 +81,7 @@ if ($operation == 'display') {
     pdo_update('sz_yi_member', array(
         'groupid' => 0
     ), array(
+        'groupid' => $id,
         'uniacid' => $_W['uniacid']
     ));
     plog('member.group.delete', "删除会员分组 ID: {$id} 分组名称: {$group['groupname']}");
