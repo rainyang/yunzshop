@@ -290,7 +290,7 @@ if (!class_exists('IndianaModel')) {
 			    $numa = 0;
 			    foreach ($s_indiana as &$row) {
 			        $row['numa'] = date("His", $row['create_time']).$row['microtime'];
-			        $numa += date("His", $row['create_time'])+$row['microtime'];
+			        $numa += date("His", $row['create_time']).$row['microtime'];
 			        $row['create_time'] = date("Y-m-d H:i:s", $row['create_time']);
 
 			    }

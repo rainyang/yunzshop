@@ -28,7 +28,7 @@ $indiana = pdo_fetchall("SELECT ic.openid, ic.create_time, ic.microtime, m.nickn
     $numa = 0;
     foreach ($indiana as &$row) {
         $row['numa'] = date("His", $row['create_time']).$row['microtime'];
-        $numa += date("His", $row['create_time'])+$row['microtime'];
+        $numa += date("His", $row['create_time']).$row['microtime'];
         $row['create_time'] = date("Y-m-d H:i:s", $row['create_time']);
 
     }
