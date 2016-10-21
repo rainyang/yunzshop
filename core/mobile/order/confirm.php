@@ -332,9 +332,14 @@ if ($_W['isajax']) {
                     $g['marketprice'] -= $g['yunbi_deduct'];
                 }
             }
+
             if($g['plugin'] == 'fund'){
                 $issale = false;
+                $g['url'] = $this->createPluginMobileUrl('fund/detail', array('id' => $g['goodsid']));
+            }else{
+                $g['url'] = $this->createMobileUrl('shop/detail', array('id' => $g['goodsid']));
             }
+
         }
 
         //多店值分开初始化

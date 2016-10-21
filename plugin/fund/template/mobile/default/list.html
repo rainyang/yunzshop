@@ -36,7 +36,7 @@
                <div class="progress_bar" progress="101" style="width: {$g['percentage']}%;"></div>
             </div>
             <div class="exp_text">
-                <a href="#">{$g['desc']}</a>
+                <a href="javascript">{$g['desc']}</a>
             </div>
         </div>
     </div>
@@ -71,69 +71,66 @@
     };
 
     require(['tpl', 'core'], function (tpl, core) {
-
-
       function getGoods() {
-          $('#goods_container').html(tpl('tpl_goods_list'));
-          bindEvents();
+          core.json('shop/list', args, function (json) {
+              $('#goods_container').html(tpl('tpl_goods_list',json.result));
+              bindEvents();
+            }, true);
       }
 
-        function getGoodsMore() {
-     
-            core.pjson('fund/list', args, function (json) {
-                var result = json.result;
-                $('#goods_container').append(tpl('tpl_goods_list',result));
-                bindEvents();
-                $('#list_loading').remove();
-                if (result.goods.length < result.pagesize) {
-                        $('#goods_container').append('<div id="list_loading">已经加载全部商品</div>');
-                        loaded = true;
-                        $(window).scroll = null;
-                        return;
-                }
-                stop=true;
-                bindMore(); 
-                
-            });
-        }
-
-        function bindEvents() {
-            $('.project img').each(function(){
-               $(this).height($(this).width()); 
-            });
-            $('.project').unbind('click').click(function () {
-                        location.href = core.getUrl('plugin/fund/detail', {id: $(this).data('goodsid'),my:'{$_GPC['my']}'});
-            });
-        }
-        
-        function bindMore() {
-     
-            $(window).scroll(function () {
-  
-                if (loaded) {
-                    return;
-                }
-                totalheight = parseFloat($(window).height()) + parseFloat($(window).scrollTop());
-                if ($(document).height() <= totalheight) {
-                
-                    if (stop == true) {
-                        stop = false;
-                        $('#goods_container').append('<div id="list_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载更多商品</div>');
-                  
-                        if(args.page=='' || args.page=='undefined'){
-                            args.page = 1;
-                        }
-                        args.page++;
-                        getGoodsMore();
-                    }
-                }
-            });
-        }
+    function getGoodsMore() {
  
-        $('#container').html(tpl('tpl_main'));
-        
-      
-   
+        core.pjson('fund/list', args, function (json) {
+            var result = json.result;
+            $('#goods_container').append(tpl('tpl_goods_list',result));
+            bindEvents();
+            $('#list_loading').remove();
+            if (result.goods.length < result.pagesize) {
+                    $('#goods_container').append('<div id="list_loading">已经加载全部商品</div>');
+                    loaded = true;
+                    $(window).scroll = null;
+                    return;
+            }
+            stop=true;
+            bindMore(); 
+            
+        });
+    }
+
+    function bindEvents() {
+        $('.project img').each(function(){
+           $(this).height($(this).width()); 
+        });
+        $('.project').unbind('click').click(function () {
+                    location.href = core.getUrl('plugin/fund/detail', {id: $(this).data('goodsid'),my:'{$_GPC['my']}'});
+        });
+    }
+    
+    function bindMore() {
+ 
+        $(window).scroll(function () {
+
+            if (loaded) {
+                return;
+            }
+            totalheight = parseFloat($(window).height()) + parseFloat($(window).scrollTop());
+            if ($(document).height() <= totalheight) {
+            
+                if (stop == true) {
+                    stop = false;
+                    $('#goods_container').append('<div id="list_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载更多商品</div>');
+              
+                    if(args.page=='' || args.page=='undefined'){
+                        args.page = 1;
+                    }
+                    args.page++;
+                    getGoodsMore();
+                }
+            }
+        });
+    }
+
+    $('#container').html(tpl('tpl_main'));
      getGoods();
         
 

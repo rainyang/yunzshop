@@ -8,6 +8,9 @@ if ($_W['isajax']) {
 	$pindex = max(1, intval($_GPC['page']));
 	$psize = 20;
 	$list = array();
+	if (!empty($_GPC['id'])) {
+        $condition .=' AND id<'.$_GPC['id'];
+    }
 	$sql = 'select * from ' . tablename('sz_yi_member') . " where agentid={$member['id']} and ((isagent=1 and status=0) or isagent=0) and uniacid = " . $_W['uniacid'] . " {$condition}  ORDER BY id desc limit " . ($pindex - 1) * $psize . ',' . $psize;
 	$list = pdo_fetchall($sql);
 	foreach ($list as &$row) {

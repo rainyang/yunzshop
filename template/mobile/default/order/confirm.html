@@ -378,8 +378,8 @@
         <%each order.goods as g%>
         <div class="good" data-totalmaxbuy="<%g.totalmaxbuy%>">
             
-            <div class="img"  onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'"><img src="<%g.thumb%>"/></div>
-            <div class='info' onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
+            <div class="img"  onclick="location.href='<%g.url%>'"><img src="<%g.thumb%>"/></div>
+            <div class='info' onclick="location.href='<%g.url%>'">
                 <div class='inner'>
                        <div class="name">
                            <%if g.isnodiscount=='0' && haslevel%><span style='color:red'><%if g.discountway == 1%>[折扣]<%else%>[立减]<%/if%></span><%/if%>
@@ -483,7 +483,6 @@
       
     </div>
     <%/if%>
-    {if $issale}
     <div class="addorder_price">
             <div class="price">
             <div class="line" style="line-height:26px;">商品小计 <span>￥<span class='goodspricesubtotal' data-id="<%order.supplier_uid%>"><%order.realprice%></span></span>
@@ -491,7 +490,6 @@
         </div>
       
     </div>
-    {/if}
 <%/each%>	
     <div class="addorder_pay">
         <div class="paysub">确认订单</div>

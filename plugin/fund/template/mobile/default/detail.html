@@ -28,7 +28,7 @@ ul,li {padding:0px; margin:0px;}
 .good_info1 .other1 .left { float:left; text-align:left; width:80px;}
 .good_info1 .other1 .right { float:right; text-align:left; margin-left:-80px; width:100%;}
 .good_info1 .other1 .right .inner { margin-left:80px;}
-.good_speci {height:44px; width:96%; overflow: hidden; background:#fff; padding:0px 2%; margin-top:10px; border-bottom:1px solid #e2e2e2;  line-height:44px; color:#666; font-size:14px;}
+.good_speci {height:44px; width:96%; overflow: hidden;  padding:0px 2%; border-bottom:1px solid #e2e2e2; border-top:1px solid #e2e2e2; line-height:44px; color:#fff; font-size:14px;background: #2c2b29 none repeat scroll 0 0;}
 
 .good_shop {height:130px; width:96%; background:#fff; padding:0px 2%; margin-top:10px; border-bottom:1px solid #e2e2e2;}
 .good_shop .shop1 {height:50px; width:100%; padding:10px 0px; }
@@ -124,6 +124,8 @@ border: 1px solid rgba(255, 255, 255, 0.5); }
 .last-act .last-user span.act-timer { margin-left: 10px; vertical-align: top; }
 .last-act .last-user span.act-name { display: inline-block; max-width: 4em; overflow: hidden; -o-text-overflow: ellipsis; text-overflow: ellipsis; 
 word-break: keep-all; white-space: nowrap; vertical-align: top; }
+
+.good_choose .other{margin-top: 0;}
 </style>
 <input type="hidden" id="lastOrderUrl" value="{php echo $this->createMobileUrl('shop/lastorder',array('op'=>'display'),true)}"/>
 <script type="text/javascript">
@@ -205,7 +207,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         <div class="zc-go_back"><a href="javascript:void(0)" onclick="history.back();"><i class="iconfont icon-chevron-left"></i></a></div>
         <div class="zc-go2index"><a href="<%shop.url%>"><i class="iconfont icon-team-home"></i></a></div>
         <div class="single_fk">
-            <a href="javascript:void(0);"><img src="<%goods.thumb%>"></a>
+            <a href="javascript:void(0);"><img id="chooser_img" src="<%goods.thumb%>"></a>
         </div>
         <div class="bg_bottom">
             <a href="javascript:void(0);"><%goods.title%></a>
@@ -235,7 +237,12 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         </div>
 </div>
 
-
+<%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1'  && goods.groupbuy=='1'  && goods.levelbuy=='1'%> 
+    <div class="good_speci" onClick="choose()">
+                <span id="optiondiv">请选择档位及数量</span>
+                <i class="fa fa-angle-right" style="float:right; line-height:44px; font-size:26px;"></i>
+    </div>
+     <%/if%>
 
 
     <div class="good_choose_layer"></div>
@@ -885,7 +892,6 @@ lod(0.{$goods['percentage']});
             {/if}
 
             $(".option").click(function() {
-               
              var specid = $(this).attr("specid");
              var oid = $(this).attr("oid");
             $(".optionid_"+specid).val(oid);

@@ -25,7 +25,7 @@ if(empty($set['sendmonth'])){
     $logs_count = pdo_fetchcolumn("select count(*) from ".tablename('sz_yi_bonus')." where uniacid={$_W['uniacid']} and isglobal=1 and sendmonth=0 and ctime >= " . $log_stattime . " and ctime < ".$log_endtime);
     $logs_text = "本月";
 }
-//获取中订单金额
+//获取总订单金额
 $orderallmoney = pdo_fetchcolumn("select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}");
 $ordermoney = floatval($orderallmoney);
 //获取全球分红代理等级信息
@@ -59,7 +59,7 @@ if(!empty($levelnames)){
     $where_uid = implode(',', array_keys($levelnames));
     //获取分红总人数
     $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_member')." where uniacid={$_W['uniacid']} and bonuslevel in({$where_uid})");
-    $sql = "select * from ".tablename('sz_yi_member')." where uniacid={$_W['uniacid']} and bonuslevel in({$where_uid})";
+    $sql = "select id, openid, bonuslevel, uid, nickname from ".tablename('sz_yi_member')." where uniacid={$_W['uniacid']} and bonuslevel in({$where_uid})";
     if ($operation != "sub_bonus") {
         $sql .= " limit " . ($pindex - 1) * $psize . ',' . $psize;
     }
@@ -84,7 +84,7 @@ if ($operation != "sub_bonus") {
         $commission_pay = pdo_fetchcolumn("select sum(money) from " . tablename('sz_yi_bonus_log') . " where openid=:openid and uniacid=:uniacid", array(":openid" => $row['openid'], ":uniacid" => $_W['uniacid']));
         $row['commission_ok'] = number_format($levelmoneys[$row['bonuslevel']],2); 
         $row['commission_pay'] = number_format($commission_pay,2);
-        $row['levelname'] = $levelnames[$value['bonuslevel']];
+        $row['levelname'] = $levelnames[$row['bonuslevel']];
     }
     unset($row);
 }
@@ -126,8 +126,8 @@ if (!empty($_POST)) {
         $sql_num++;
         //Author:ym Date:2016-10-15 Content:需消费一定金额，否则跳过该用户分红并减去对应分红金额
         if (!empty($set['consume_withdraw'])) {
-            $ordermoney = $this->model->myorder_money($value['opneid']);
-            if($ordermoney < floatval($set['consume_withdraw'])){
+            $myorder = $this->model->myorder($value['opneid']);
+            if($myorder['ordermoney'] < floatval($set['consume_withdraw'])){
                 $totalmoney -= $send_money;
                 continue;
             }
@@ -188,6 +188,7 @@ if (!empty($_POST)) {
             //获取用户等级名称
             $templateid = $set['tm']['templateid'];
             $send_type = empty($set['paymethod']) ? "余额" : "微信钱包";
+            $message = $set['tm']['bonus_global_pay'];
             $message = str_replace('[昵称]', $value['nickname'], $message);
             $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
             $message = str_replace('[金额]', $send_money, $message);
