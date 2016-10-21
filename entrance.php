@@ -18,7 +18,7 @@ require '../../addons/sz_yi/core/inc/plugin/plugin_model.php';
 global $_W, $_GPC;
 set_time_limit(0);
 
-$sql = "SELECT * FROM ". tablename('uni_account'). " as a LEFT JOIN". tablename('account'). " as b ON a.default_acid = b.acid WHERE a.default_acid <> 0 ORDER BY a.`rank` DESC, a.`uniacid` DESC ";
+$sql = "SELECT * FROM ". tablename('uni_account'). " as a LEFT JOIN". tablename('account'). " as b ON a.default_acid = b.acid WHERE a.default_acid <> 0 ORDER BY a.`uniacid` DESC ";
 $sets = pdo_fetchall($sql);
 foreach ($sets as $k => $set) {
     m('order')->autoexec($set['uniacid']);
