@@ -35,30 +35,24 @@ class Withdraw extends YZ
         $list = array();
         if (empty($this->json['closetocredit'])) {
             $list[] = array(
-                [
                     'id' => 1,
                     'icon' => '',
                     'title' => '提现(线下)',
                     'type' => '1'
-                ]
             );
         }
         if ($this->json['shopset']['weixin'] == 1) {
             $list[] = array(
-                [
                     'id' => 2,
                     'icon' => '',
                     'title' => '提现到微信钱包',
                     'type' => '2'
-                ]
             );
         }
         $list[] = array(
-            [
                 'id' => 3,
                 'icon' => '',
                 'title' => '提现记录'
-            ]
         );
         return $list;
     }
