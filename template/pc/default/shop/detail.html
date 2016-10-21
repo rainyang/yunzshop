@@ -39,6 +39,7 @@ ul,li {padding:0px; margin:0px;}
 .good_shop .shop1 {height:70px; width:100%; padding:10px 8px; }
 .good_shop .shop1 img {height:50px; width:50px; margin-right:10px; float:left;}
 .good_shop .shop1 .shop_info {height:50px; width:auto; float:left; font-size:16px; color:#666; line-height:25px;}
+.good_shop .shop1 .shop_info p{width: 118px;height: 25px;overflow: hidden;}
 .good_shop .shop1 .shop_info span {font-size:14px; color:#ccc;}
 .good_shop .shop2 {height:59px; width:100%;  padding:0 8px;}
 .good_shop .shop2 .sub1 {height:37px; width:49%; float:left; border:1px solid #e2e2e2; border-radius:3px; text-align:center; line-height:37px; font-size:16px; color:#999;cursor: pointer;}
@@ -492,7 +493,8 @@ div.flicking_con a.on{background-position:0 -9px}
 	<div class="good_shop">
         <div class="shop1" onclick="location.href='<%detail.btnurl2%>'">
         <img src='<%detail.logo%>'/>
-        <div class="shop_info"><%detail.shopname%><br><span><%if detail.totaltitle!=''%><%detail.totaltitle%><%else%>全部宝贝 <%goodscount%> 个 <%/if%></span></div></div>
+        <div class="shop_info">
+        <p><%detail.shopname%></p><span><%if detail.totaltitle!=''%><%detail.totaltitle%><%else%>全部宝贝 <%goodscount%> 个 <%/if%></span></div></div>
         <div class="shop2">
             <div class="sub1" onclick="location.href='<%detail.btnurl1%>'"><i class="fa fa-list"></i> <%if detail.btntext1!=''%><%detail.btntext1%><%else%>全部商品 <%/if%></div>
             <div class="sub2" onclick="location.href='<%detail.btnurl2%>'"> <i class="fa fa-gift" o></i> <%if detail.btntext2!=''%><%detail.btntext2%><%else%>进店逛逛<%/if%></div>
