@@ -204,14 +204,14 @@ class ChangeStatus extends \admin\api\YZ
             "mobile" => $address["mobile"],
             "address" => array_part('province,city,area,address', $address)
         );
-        $company_json = file_get_contents(__CORE_PATH__ . '/../data/source/expresscom.json');
+
+        $company_json = file_get_contents(__CORE_PATH__ . '/../static/source/expresscom.json');
         $company_list = json_decode($company_json, true);
         //exit;
         $res = array(
             'company_list' => $company_list,
             'address' => $address
         );
-        dump($res);
         $this->returnSuccess($res);
     }
 

@@ -113,7 +113,7 @@ if ($yunbi_plugin) {
     $yunbiset = $yunbi_plugin->getSet();
 }
 
-if ($_W['isajax']) {
+if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物车记录id逗号分隔
     $ischannelpick = intval($_GPC['ischannelpick']);
     $isyunbipay = intval($_GPC['isyunbipay']);
     if ($operation == 'display') {

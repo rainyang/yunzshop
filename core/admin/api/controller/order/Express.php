@@ -31,6 +31,7 @@ class Express extends \admin\api\YZ
         $order_info = $this->order_info;
 //dump($order_info);
         $order_info['url'] = $_W['siteurl']."/wap/&id={$order_info['express']}&express={$order_info['express']}&expresssn={$order_info['expresssn']}";
+        dump($order_info);
         $order_info = array_part('expresscom,expresssn,url',$order_info);
 
         //dump($order_info);

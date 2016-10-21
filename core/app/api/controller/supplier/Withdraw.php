@@ -18,6 +18,16 @@ class Withdraw extends YZ
         $this->json = $result['json'];
         $navs = $this->_getSupplierBlockList();
         $this->json['navs'] = $navs;
+        $this->returnSuccess($this->json);
+    }
+
+    public function apply()
+    {
+        global $_W;
+        $_W['ispost'] = true;
+        $result = $this->callPlugin('supplier/applyg');
+        $this->json = $result['json'];
+        $this->returnSuccess('',$this->json);
     }
 
     private function _getSupplierBlockList()

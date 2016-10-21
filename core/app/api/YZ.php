@@ -52,13 +52,14 @@ class YZ extends base
     {
         global $_W,$_GPC;
         $_W['isajax'] = true;
-        list($folder_name,$file_name,$action_name)=explode('/',$path);
+        list($folder_name,$file_name,$action_name,$to)=explode('/',$path);
         $class = new \Sz_yiModuleSite();
         $method = 'doMobile'.ucfirst($folder_name);
         $_GPC['p'] = $file_name;
         $_GPC['op'] = $action_name;
+        $_GPC['to'] = $to;
         $result = $class->$method();
-        if($result['status'] != 1 ){
+        if(!in_array($result['status'],[1,2])){
             $this->returnError($result['json']);
         }
         return $result;
@@ -66,10 +67,10 @@ class YZ extends base
     protected function callPlugin($path){
         global $_GPC,$_W;
         $_W['isajax'] = true;
-        list($_GPC['p'],$_GPC['method'],$_GPC['op']) = explode('/',$path);
+        list($_GPC['p'],$_GPC['method'],$_GPC['op'],$_GPC['to']) = explode('/',$path);
         $class = new \Sz_yiModuleSite();
         $result = $class->doMobilePlugin();
-        if($result['status'] != 1){
+        if(!in_array($result['status'],[1,2])){
             $this->returnError($result['json']);
         }
         return $result;
