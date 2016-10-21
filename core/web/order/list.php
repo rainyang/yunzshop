@@ -358,6 +358,14 @@ if ($operation == "display") {
             "css" => "primary",
             "name" => "易宝网银支付"
         ) ,
+        "27" => array(
+            "css" => "success",
+            "name" => "微信支付"
+        ) ,
+        "28" => array(
+            "css" => "warning",
+            "name" => "支付宝支付"
+        ) ,
         "3" => array(
             "css" => "primary",
             "name" => "货到付款"
@@ -2376,8 +2384,8 @@ function order_list_refund($item)
     } else if ($refundstatus == 1) {
         if(!empty($item['pay_ordersn'])){
             $pay_ordersn = $item['pay_ordersn'];
-            $ordersn_count = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
-                'pay_ordersn' => $pay_ordersn,
+            $ordersn_count = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_order') . ' where uniacid=:uniacid and pay_ordersn=:pay_ordersn limit 1', array(
+                ':pay_ordersn' => $pay_ordersn,
                 ':uniacid' => $uniacid
             ));
         }else{
@@ -2436,6 +2444,7 @@ function order_list_refund($item)
             }
             $realprice = round($realprice - $item['deductcredit2'], 2);
             m('finance')->alipayrefund($item['openid'], $item['trade_no'], $refund['refundno'],$realprice);
+
         } elseif ($item['paytype'] == 26 || $item['paytype'] == 25) {
             $set           = m('common')->getSysset(array('pay'));
             $setting = uni_setting($_W['uniacid'], array('payment'));
@@ -2447,6 +2456,14 @@ function order_list_refund($item)
             }
             $realprice = round($realprice - $item['deductcredit2'], 2);
             m('finance')->yeepayrefund($item['paytype'], $item['openid'], $item['trade_no'], $refund['refundno'],$realprice);
+        } elseif ($item['paytype'] == 27 || $item['paytype'] == 28) {
+            if ($ordersn_count > 1) {
+                message('多笔合并付款订单，请使用手动退款。', '', 'error');
+            }
+
+            $realprice = round($realprice - $item['deductcredit2'], 2);
+            m('finance')->apprefund($item['paytype'], $item['openid'], $item['trade_no'], $refund['refundno'],$realprice);
+
         } else {
             if ($realprice < 1) {
                 message('退款金额必须大于1元，才能使用微信企业付款退款!', '', 'error');

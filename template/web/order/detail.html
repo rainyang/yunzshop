@@ -768,6 +768,15 @@
                     </div>
                     {/if}
 
+                    {if ($item['paytype'] == 27 || $item['paytype'] == 28) && empty($item['trade_no'])}
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">退款操作 :</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <div class="form-control-static" style="color: red">请手动退款</div>
+                        </div>
+                    </div>
+                    {/if}
+
                     {ifp 'order.op.refund'}
                     <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
