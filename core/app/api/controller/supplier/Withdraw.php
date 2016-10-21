@@ -27,7 +27,7 @@ class Withdraw extends YZ
         $_W['ispost'] = true;
         $result = $this->callPlugin('supplier/applyg');
         $this->json = $result['json'];
-        $this->returnSuccess($this->json);
+        $this->returnSuccess('',$this->json);
     }
 
     private function _getSupplierBlockList()
