@@ -665,6 +665,61 @@ class Sz_DYi_Finance {
          }
     }
 
+    //App支付退款(27-微信,28-支付宝)
+    public function apprefund($type, $openid, $trade_no, $out_refund_no,$refundmoney = 0)
+    {
+        global $_W;
+
+        $setdata = m("cache")->get("sysset");
+
+        $set     = unserialize($setdata['sets']);
+
+        $setting = uni_setting($_W['uniacid'], array('payment'));
+        $pay = $setting['payment'];
+
+        require_once('../addons/sz_yi/plugin/pingpp/init.php');
+
+        $api_key = $pay['ping']['secret'];
+
+        \Pingpp\Pingpp::setApiKey($api_key);
+// 通过发起一次退款请求创建一个新的 refund 对象，只能对已经发生交易并且没有全额退款的 charge 对象发起退款
+        $ch = \Pingpp\Charge::retrieve($trade_no);// Charge 对象的 id
+        try {
+            $re = $ch->refunds->create(
+                array(
+                    'amount' => $refundmoney * 100,// 退款的金额, 单位为对应币种的最小货币单位，例如：人民币为分（如退款金额为 1 元，此处请填 100）。必须小于等于可退款金额，默认为全额退款
+                    'description' => 'APP端支付退款'
+                )
+            );
+        } catch (Exception $e) {
+            message($e->getMessage(), referer() , "error");
+        }
+        // $re;exit;// 输出 Ping++ 返回的退款对象 Refund
+
+        if ($re) {
+            if ($type == 28) {
+                if ($re->succeed == false && $re->status == 'pending') {
+                    $url = substr($re->failure_msg, strpos($re->failure_msg, ':')+1);
+                    header("location:". $url);exit;
+                } else {
+                    message("退款失败!", referer() , "error");
+                }
+            } elseif ($type == 27) {
+                if (($re->status != 'succeeded' && $re->status != 'pending')) {
+                    message("退款失败!", referer() , "error");
+                }
+
+                if ($re->status == 'pending') {
+                    return;
+                }
+
+                return;
+            }
+        } else {
+            message("退款失败!", referer() , "error");
+        }
+    }
+
     public function downloadbill($starttime, $endtime, $type = 'ALL')
     {
         global $_W, $_GPC;
