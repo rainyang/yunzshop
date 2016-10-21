@@ -49,11 +49,6 @@ class Withdraw extends YZ
                     'type' => '2'
             );
         }
-        $list[] = array(
-                'id' => 3,
-                'icon' => '',
-                'title' => '提现记录'
-        );
         return $list;
     }
 }
