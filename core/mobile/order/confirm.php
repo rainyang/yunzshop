@@ -2270,17 +2270,22 @@ if ($_W['isajax']) {
             }
 
             if (is_array($carrier)) {
-                //todo, carrier_realname和carrier_mobile字段表里有么?
+                //todo, carrier_realname和carrier_mobile字段表里有么? 没有，是序列化存进去的。
                 $up = array(
+                    'realname' => $carrier['carrier_realname'],
+                    'membermobile' => $carrier['carrier_mobile']
+                );
+                $up_mc = array(
                     'realname' => $carrier['carrier_realname'],
                     'mobile' => $carrier['carrier_mobile']
                 );
+
                 pdo_update('sz_yi_member', $up, array(
                     'id' => $member['id'],
                     'uniacid' => $_W['uniacid']
                 ));
                 if (!empty($member['uid'])) {
-                    pdo_update('mc_members', $up, array(
+                    pdo_update('mc_members', $up_mc, array(
                         'uid' => $member['uid'],
                         'uniacid' => $_W['uniacid']
                     ));
