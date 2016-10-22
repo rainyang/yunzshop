@@ -78,15 +78,39 @@ require_once('../addons/sz_yi/plugin/pingpp/init.php');
         $subject = $log['title'];
         $body = $log['title'];
     } else {
-        $order_info          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid and openid=:openid limit 1', array(
-            ':ordersn' => $orderNo,
+        //$order_info          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid and openid=:openid limit 1', array(
+            /*':ordersn' => $orderNo,
             ':uniacid' => $uniacid,
             ':openid' => $input_data['openid']
-        ));
+        ));*/
 
-        if (empty($order_info)) {
-            $order_info          = pdo_fetchall('select * from ' . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid limit 1', array(
-                ':ordersn_general' => $orderNo,
+        $order_all = pdo_fetchall("select * from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid', array(
+            ':ordersn_general' => $orderNo,
+            ':uniacid' => $uniacid,
+            ':openid' => $openid
+        ));
+        //合并订单号订单大于1个，执行合并付款
+        if(count($order_all) > 1){
+            $order = array();
+            $order['ordersn'] = $orderNo;
+            $orderid = array();
+            foreach ($order_all as $key => $val) {
+                $order['price']           += $val['price'];
+                $order['deductcredit2']   += $val['deductcredit2'];
+                $order['ordersn2']        += $val['ordersn2'];
+                $orderid[]                 = $val['id'];
+            }
+            $order['status']    = $val['status'];
+            $order['cash']      = $val['cash'];
+            $order['openid']        = $val['openid'];
+            $order['pay_ordersn']        = $val['pay_ordersn'];
+        }else{
+            $order = $order_all[0];
+        }
+
+        if (empty($order)) {
+            $order_info          = pdo_fetchall('select * from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid and openid=:openid limit 1', array(
+                ':ordersn' => $orderNo,
                 ':uniacid' => $uniacid,
                 ':openid' => $input_data['openid']
             ));
@@ -99,7 +123,7 @@ require_once('../addons/sz_yi/plugin/pingpp/init.php');
             $amount = (int)($order_price * 100);
 
         } else {
-            $amount = (int)($order_info['price'] * 100);
+            $amount = (int)($order['price'] * 100);
         }
         $subject = '商品订单';
         $body = '商品订单';
