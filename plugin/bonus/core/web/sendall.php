@@ -186,7 +186,7 @@ if (!empty($_POST)) {
 
         if($sendpay == 1){
             //获取用户等级名称
-            $templateid = $set['tm']['templateid'];
+            /*$templateid = $set['tm']['templateid'];
             $send_type = empty($set['paymethod']) ? "余额" : "微信钱包";
             $message = $set['tm']['bonus_global_pay'];
             $message = str_replace('[昵称]', $value['nickname'], $message);
@@ -199,7 +199,7 @@ if (!empty($_POST)) {
                 m('message')->sendTplNotice($value['openid'], $templateid, $msg, '', $account);
             } else {
                 m('message')->sendCustomNotice($value['openid'], $msg, "", $account);
-            }
+            }*/
         }
     }
     if(!empty($insert_log_data)){

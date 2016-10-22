@@ -113,7 +113,7 @@
     </div>
 </div>
 <div class="panel panel-default">
-    <div class="panel-heading">分红明细</div>
+    <div class="panel-heading">分红明细<button type="button" name="send" value="1" onclick="send(this)" data-toggle="modal" data-target="#modal-confirmsend" data-original-title="" class="btn btn-primary" style="float:right">发送消息</button></div>
     <div class="panel-body">
         <table class="table table-hover">
             <thead class="navbar-inner">
@@ -151,6 +151,115 @@
         {$pager}
     </div>
 </div>
+<!--群发消息-->
+<div id="modal-confirmsend" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" style="width:600px;margin:0px auto;">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button aria-hidden="true" data-dismiss="modal" class="close" type="button">×</button>
+                    <h3>群发消息</h3>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label class="col-xs-10 col-sm-3 col-md-3 control-label">共计人数</label>
+                        <div class="col-xs-12 col-sm-9 col-md-8 col-lg-8">
+                            {$total}人
+                        </div>
+                    </div>
+                    <div id="module-menus"></div>
+                </div>
+                <div class="modal-footer">
+                    <input type="button" name="button" value="发送" class="btn btn-primary col-lg-4"  onclick="sendmsg()"/>
+                </div>
+            </div>
+        </div>
+</div>
+<script>
+    $(function(){
+        $(':radio[name=send1]').click(function(){
+            var v = $(this).val();
+             $(".choose").hide();
+             $(".choose_"+v).show();
+        })
+    })
+  
+     var openids = [];
+    function sendmsg(){
+          var btn = $('input[type=button]');
+        if(btn.attr('sending')=='1'){
+            return;
+        }
+        
+        var c = $('input[name=send1]:checked').val();
+        var v = $('#value_'+c).val();
+        if(c==1 && v==''){
+            alert('请输入要群发的用户Openid!');
+            return;
+        }
+
+        btn.removeClass('btn-primary').val('正在获取发送的用户Openid...').attr('sending',1);
+        $.ajax({
+            url: "{php echo $this->createPluginWebUrl('bonus/detail')}",
+            type:'post',
+            dataType:'json',
+            data: {'op':'getopenids',sn:"{$_GPC['sn']}"},
+            success:function(result){
+                openids = result.openids;
+                btn.val('共要发送给 ' + openids.length + " 个用户，准备发送!");
+                sendmessage();
+            }
+        });
+    }
+    var current = 0;
+    var failed = [];
+    var failmsg = "";
+    var succeed = 0;
+    function sendmessage(){
+       var btn = $('input[type=button]');
+          
+        if(current>openids.length-1){
+            if(failed.length>0){
+                var msg = '发送成功 ' + succeed + ' 个用户，失败 ' + failed.length + " 个用户:\r\n";
+                msg+=failmsg;
+                msg+="\r\n 是否继续发送失败的用户? ";
+               if(confirm(msg)) {
+                   current = 0 ;succeed=0;
+                   openids = failed;
+                   failed=[];
+                   failmsg= "";
+                   btn.val('共要发送给 ' + openids.length + " 个用户，准备发送!");
+                   sendmessage();
+                   return;
+               }
+               location.reload();
+               
+            } else{
+                alert('发送成功 ' + succeed + ' 个用户!' );
+                location.reload();
+            }
+        }
+        var openid = openids[current];
+        $.ajax({
+            url: "{php echo $this->createPluginWebUrl('bonus/detail')}",
+            type:'post',
+            data: {'op':'sendmessage','openid':openid,sn:"{$_GPC['sn']}"},
+            dataType:'json',
+            success:function(result2){
+              if(result2.result=='1'){
+                   succeed++;
+              }
+              else{
+                  failmsg+= result2.openid + "\r\n(错误信息: " + result2.message + ")\r\n\r\n";
+                  failed.push(result2.openid);
+              }
+              btn.val('已经发送 ' + current + " / " + openids.length + " 个用户...");
+              current++;
+              sendmessage();
+          }
+        });
+    }
+</script>
+
 {else}
 <div class="panel panel-info">
     <div class="panel-heading">筛选</div>
