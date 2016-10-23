@@ -20,52 +20,22 @@ $uniacid = $_W['uniacid'];
 $orderid = intval($_GPC['orderid']);
 $logid   = intval($_GPC['logid']);
 $shopset = m('common')->getSysset('shop');
-if(!empty($orderid)){
-    $ordersn_general = pdo_fetchcolumn("select ordersn_general from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
-            ':id' => $orderid,
-            ':uniacid' => $uniacid,
-            ':openid' => $openid
-        ));
-    $order_all = pdo_fetchall("select * from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid', array(
-            ':ordersn_general' => $ordersn_general,
-            ':uniacid' => $uniacid,
-            ':openid' => $openid
-        ));
-    //合并订单号订单大于1个，执行合并付款
-    if(count($order_all) > 1){
-        $order = array();
-        $order['ordersn'] = $ordersn_general;
-        $orderid = array();
-        foreach ($order_all as $key => $val) {
-            $order['price']           += $val['price'];
-            $order['deductcredit2']   += $val['deductcredit2'];
-            $order['ordersn2']        += $val['ordersn2'];
-            $orderid[]                 = $val['id'];
-        }
-        $order['status']    = $val['status'];
-        $order['cash']      = $val['cash'];
-        $order['openid']        = $val['openid'];
-        $order['pay_ordersn']        = $val['pay_ordersn'];
-    }else{
-        $order = $order_all[0];
-    }
-}
+
     if (!empty($orderid)) {
-        //$order = pdo_fetch("select * from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
+        $order = pdo_fetch("select * from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
         if (empty($order)) {
             show_json(0, '订单未找到!');
         }
-        //$order_price = pdo_fetchcolumn("select price from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid limit 1', array(':ordersn_general' => $order['ordersn_general'], ':uniacid' => $uniacid, ':openid' => $openid));
-        $order_price = $order['price'];
+        $order_price = pdo_fetchcolumn("select sum(price) from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid limit 1', array(':ordersn_general' => $order['ordersn_general'], ':uniacid' => $uniacid, ':openid' => $openid));
         $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
             ':uniacid' => $uniacid,
             ':module' => 'sz_yi',
-            ':tid' => $order['ordersn']
+            ':tid' => $order['ordersn_general']
         ));
         if (!empty($log) && $log['status'] != '0') {
             show_json(0, '订单已支付, 无需重复支付!');
         }
-        $param_title     = $shopset['name'] . "订单: " . $order['ordersn'];
+        $param_title     = $shopset['name'] . "订单: " . $order['ordersn_general'];
         $yeepay         = array(
             'success' => false
         );
