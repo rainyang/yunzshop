@@ -16,8 +16,11 @@ ul,li {padding:0px; margin:0px;}
 .good_info1 .info1 .name {height:38px; width:67%; border-right:1px solid #e3e3e3; float:left; font-size:14px; color:#666;}
 .good_info1 .info1 .sub1 {height:34px; width:30%; background:#ff6500; float:right; border-radius:5px; color:#fff; text-align:center; line-height:34px;margin-top: 2px}
 .good_info1 .info1 .sub1 i {height:16px; width:16px; margin-right:2px; background:#fff; border-radius:5px; color:#FFAC2E; line-height:18px; font-size:14px;}
-.good_info1 .info2  {height:38px; width:100%; border-bottom:1px dashed #f3f3f3; padding:11px 0px;color:#666;}
-.good_info1 .price {height:40px; width:100%;  font-size:18px; color:#f15353; line-height:40px;}
+.good_info1 .info2  {height:auto; width:100%; border-bottom:1px dashed #f3f3f3; padding:11px 0px 5px;color:#666;}
+.good_info1 .info3 {color: #999;font-size: 12px;float: right;}
+.good_info1 .price-area {font-size:12px;color: #fff;background: #f77183;border-radius: 2px;padding:0 5px;width:auto;float: left;text-align: center;  }
+
+.good_info1 .price {width:100%;  font-size:18px; color:#f15353; padding-bottom: 10px ; overflow: hidden}
 .good_info1 .price span {font-size:12px; color:#999;}
 .good_info1 .other {border-top:1px dashed #f3f3f3;  height:34px; width:100%;  line-height:34px; font-size:14px; color:#999;}
 .good_info1 .other .left { float:left; text-align:right;}
@@ -27,6 +30,7 @@ ul,li {padding:0px; margin:0px;}
 .good_info1 .other1 .right { float:right; text-align:left; margin-left:-80px; width:100%;}
 .good_info1 .other1 .right .inner { margin-left:80px;}
 .good_speci {height:44px; width:96%; overflow: hidden; background:#fff; padding:0px 2%; margin-top:10px; border-bottom:1px solid #e2e2e2;  line-height:44px; color:#666; font-size:14px;}
+
 
 .good_shop {height:130px; width:96%; background:#fff; padding:0px 2%; margin-top:10px; border-bottom:1px solid #e2e2e2;}
 .good_shop .shop1 {height:50px; width:100%; padding:10px 0px; }
@@ -66,12 +70,12 @@ ul,li {padding:0px; margin:0px;}
 .main_image li{float:left;width:100%;}
 .main_image li img{width:100%;}
 .main_image li a{display:block;width:100%;}
- 
+
 div.flicking_con{position:absolute;bottom:9px;z-index:1;width:100%;height:12px;}
 div.flicking_con .inner { width:100%;height:9px;text-align:center;}
 div.flicking_con a{position:relative; width:9px;height:9px;background:url('../addons/sz_yi/template/mobile/default/static/images/dot.png') 0 0 no-repeat;display:inline-block;text-indent:-1000px}
 div.flicking_con a.on{background-position:0 -9px}
- 
+
    .comment { padding:5px; border-bottom:1px solid #ccc;overflow:hidden;}
                     .comment .info { padding:5px;height:35px;width:100%;}
                     .comment .info .head { float:left; width:30px;height:30px;}
@@ -80,19 +84,19 @@ div.flicking_con a.on{background-position:0 -9px}
                     .comment .info .nickname .inner { margin-left:35px;margin-right:100px;overflow:hidden; }
                     .comment .info .level { width:100px;float:right;margin-left:-100px; text-align:right;height:30px;line-height:30px;color:#ff6600}
                     .comment .info .level i {width:13px;}
-                   
+
                     .comment .content { overflow:hidden;color:#555;font-size:13px;padding-left:5px;}
                     .comment .time { padding:5px; color:#666;font-size:13px;padding-left:5px;}
                     .comment .imgs { overflow:hidden;padding-top:5px;padding-left:5px;}
                     .comment .imgs img { padding:1px;border:1px solid #ccc;float:left;margin-right:5px;}
-                   #comment_loading { width:96%;padding:10px;color:#666;text-align: center;} 
-        #recommand_container  {height:auto; width:100%; background:#fff; overflow:hidden;float:left;} 
+                   #comment_loading { width:96%;padding:10px;color:#666;text-align: center;}
+        #recommand_container  {height:auto; width:100%; background:#fff; overflow:hidden;float:left;}
     #recommand_container .good {height:auto; width:46%; padding:0px 2% 10px; float:left;}
     #recommand_container .good img {height:120px; width:100%;}
     #recommand_container .good .name {height:20px; width:100%; font-size:15px; line-height:20px; color:#666; overflow:hidden;}
     #recommand_container .good .price {height:20px; width:100%; color:#f03; font-size:14px;}
     #recommand_container .good .price span {color:#aaa; font-size:12px; text-decoration:line-through;}
-    
+
 .store {height:65px;  background:#fff; padding:5px; border-bottom:1px solid #eaeaea;}
 .store .info .ico { float:left;  height:50px; width:30px; line-height:30px; font-size:16px; text-align:center; color:#666}
 .store .info .info1 {height:54px; width:100%; float:left;margin-left:-30px;margin-right:-60px;}
@@ -101,7 +105,7 @@ div.flicking_con a.on{background-position:0 -9px}
 .store .info .info1 .inner .tel {height:20px; width:100%; font-size:13px; color:#999; line-height:20px;overflow:hidden;}
 .store .info .info1 .inner .address {height:20px; width:100%; font-size:13px; color:#999; line-height:20px;overflow:hidden;}
 .store .info .ico2 {height:50px; width:30px;padding-top:15px; float:right; font-size:24px; text-align:center; color:#ccc;}
-.store .info .ico3 {height:50px; width:30px;padding-top:15px; float:right; font-size:24px; text-align:center; color:#ccc;} 
+.store .info .ico3 {height:50px; width:30px;padding-top:15px; float:right; font-size:24px; text-align:center; color:#ccc;}
 .store_more {height:20px;  background:#fff; font-size:14px; color:#999; line-height:20px; padding:5px; border-bottom:1px solid #eaeaea; text-align: center;}
 
 .timestate span {color:#ff6600;font-size:16px; font-weight:bold;}
@@ -116,14 +120,14 @@ div.flicking_con a.on{background-position:0 -9px}
 .last-act .last-user { background: rgba(0, 0, 0, 0.5); line-height: 32px; height: 32px; border-radius: 16px;
  padding: 0 20px 0 42px; border: 1px solid rgba(255, 255, 255, 0.3); position: relative; font-size: 13px; width: auto !important; max-width: 100% !important; }
 .last-act .last-user .act-link { display: block; position: absolute; left: 0; top: 0; right: 0; bottom: 0; z-index: 1; }
-.last-act .last-user .user-avatar { position: absolute; width: 32px; height: 32px; border-radius: 50%; left: 0; top: 0; 
+.last-act .last-user .user-avatar { position: absolute; width: 32px; height: 32px; border-radius: 50%; left: 0; top: 0;
 border: 1px solid rgba(255, 255, 255, 0.5); }
 .last-act .last-user p { margin: 0; display: block; vertical-align: top;color:#fff; }
 .last-act .last-user span.act-timer { margin-left: 10px; vertical-align: top; }
-.last-act .last-user span.act-name { display: inline-block; max-width: 4em; overflow: hidden; -o-text-overflow: ellipsis; text-overflow: ellipsis; 
+.last-act .last-user span.act-name { display: inline-block; max-width: 4em; overflow: hidden; -o-text-overflow: ellipsis; text-overflow: ellipsis;
 word-break: keep-all; white-space: nowrap; vertical-align: top; }
 .progress-bar {
-    margin-bottom: 5px;
+    margin: 5px 0;
     position: relative;
     width: 100%;
     height: 8px;
@@ -148,7 +152,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
     -webkit-border-radius: 0 4px 4px 0;
     border-radius: 0 4px 4px 0;
 }
-.good_confirm { background: #fff none repeat scroll 0 0; bottom: 0; display: none; height: auto; left: 0; position: fixed; width: 100%; z-index: 10; 
+.good_confirm { background: #fff none repeat scroll 0 0; bottom: 0; display: none; height: auto; left: 0; position: fixed; width: 100%; z-index: 10;
 }
 .good_confirm .sub { background: #f15353 none repeat scroll 0 0; bottom: 0; color: #fff; font-size: 16px; height: 44px; line-height: 44px; position: fixed; text-align: center; width: 100%;
 }
@@ -156,6 +160,14 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 .good_confirm .info {height: 230px; position: relative;top: -15px; width: 100%; }
 .good_confirm .info .content {height: auto;position: absolute;top: 15px;width: 100%;}
 .good_confirm .info .content .title {background: #eee none repeat scroll 0 0;  border-bottom: 1px solid #e0e0e0; font-size: 16px; height: 36px; line-height: 36px; padding: 6px 0 0 10px;}
+.good_choose .other .number .num input{border-left: 1px solid #dedede;
+    border-right: 1px solid #dedede;
+    text-align: center;
+    border: none;
+    height: 32px;
+    line-height: 32px;
+    float: left;
+    -webkit-appearance: none;}
 </style>
 <input type="hidden" id="lastOrderUrl" value="{php echo $this->createMobileUrl('shop/lastorder',array('op'=>'display'),true)}"/>
 <script type="text/javascript">
@@ -170,7 +182,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                 data:{'g_id':{php echo $goodsid;}},
                 dataType : 'json',
                  error: function(XMLHttpRequest, textStatus, errorThrown) {
-                
+
                        },
                 success : function(data) {
                     //alert(data.status);
@@ -265,7 +277,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                 <div class="stock">夺宝有风险，参与需谨慎</div>
                 <div class="stock" style="font-size:14px">共￥<span class="price" id="indiana_price_total"><%indiana.initmoney%></span></div>
                 <div class="stock" >剩余:<span id="stock"><%indiana.shengyu_codes%></span></span> </div>
-                   
+
              </div>
         </div>
         <div class="other">
@@ -277,7 +289,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 
                     <div class='num' style="float: left;width:75%;text-align: center;margin-left: 10%;" >
                             <button id='btn_minus' onclick='reduceNum()'><i class='fa fa-minus'></i></button>
-                            <input type='text' id='total' value='1' style="width:60%" />
+                            <input type='text' id='total' value='1' style="width:74.5%" />
                             <button id='btn_plus' onclick='addNum()'><i class='fa fa-plus'></i></button>
                     </div>
 
@@ -302,7 +314,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             </div>
         </div>
        <!--  <div class="close" onClick="closechoose()"><i class="iconfont icon-close"></i></div> -->
-       
+
        <input type='hidden' name="period" value="<%indiana.period%>" id="period">
         <div class="sub confirm_option" onClick="choose5()" style="z-index: 3;">确认支付</div>
     </div>
@@ -392,19 +404,32 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
     {if $indiana['ipstatus'] == 1}
         <div class="good_info1">
             <div class="info2">第<%indiana.period%>期 <%indiana.title%> </div>
+
+            <div class="price-area">
+                <span>3元专区</span>
+            </div>
+
+            <div class="info3">商品价格：￥50.00 </div>
+
             <div class="price" style="height:auto">
-                <span style="font-size: 14px;padding-right: 10px;">总需人次：<%indiana.zong_codes%> </span>
-                <span> 每满<%indiana.zong_codes%>人次，即抽取1人获得该商品</span>
 
                 <div class="progress-bar" >
                     <span class="bg" style="width:<%indiana.shengyu%>%"></span>
                 </div>
-                <div class="other" style="height: 24px;line-height: 24px;">
-                    <span><%indiana.zong_codes - indiana.shengyu_codes%></span><span style="float: right;text-align: right;color:#d91d37"><%indiana.shengyu_codes%></span>
+                <div class="other" style="height: 16px;line-height: 16px;">
+                    <span style="float: left ;width: 32%;"><%indiana.zong_codes - indiana.shengyu_codes%></span>
+                    <span style="float: left;text-align: center;width: 32%"><%indiana.zong_codes%></span>
+                    <span style="float: right;text-align: right;width: 32%"color:#d91d37"><%indiana.shengyu_codes%></span>
                 </div>
-                <div class="other" style="height: 24px;line-height: 24px;">
-                    <span>已参与人次</span><span style="float: right;text-align: right;margin-right: 5px;">剩余人次</span>
+                <div class="other" style="height: 16px;line-height: 16px;">
+                    <span style="float: left ;width: 32%" >已参与人次</span>
+                    <span style="float: left;text-align: center;width: 32%">总需人数</span>
+                    <span style="float: right;text-align: right;width: 32%;">剩余人次</span>
+
                 </div>
+                <!--<span style="font-size: 12px;padding-right: 10px;">总需人次：<%indiana.zong_codes%> </span>-->
+                <span> 每满<%indiana.zong_codes%>人次，即抽取1人获得该商品</span>
+
             </div>
         </div>
     {elseif $indiana['ipstatus'] == 2 }
@@ -467,29 +492,29 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                 <%goods.marketprice%>
                 <%/if%>
             </d>&nbsp;<span id='productpricecontainer'><%if goods.productprice>0%>市场价￥<%/if%><span id='productprice'><%if goods.productprice>0%><%goods.productprice%><%/if%></span></span>
-             
+
             <span style='float:right'><d id="stockcontainer">库存:<d id="stock"><%goods.total%></d></d> 销量:<%goods.sales%><%goods.unit%></d></span>
         </div>
-       
+
        <%if saleset && saleset.enoughfree=='1' %>
       <div class="other">
             <div class='left'>
                 <%if saleset.enoughorder<=0%>
                     <span><i class='fa fa-coffee'></i> 全场包邮</span>
-                 <%else%>  
+                 <%else%>
                     <span><i class='fa fa-coffee'></i> 单笔订单 满 <span style='color:#f15353'><%saleset.enoughorder%></span> 元包邮</span>
                   <%/if%>
             </div>
        </div>
-        <%/if%> 
-        
+        <%/if%>
+
           <%if saleset && saleset.enoughs.length>0%>
       <div class="other1">
             <div class='left'>
                 <span><i class='iconfont icon-activity'></i> 单笔订单
             </div>
           <div class='right'>
-              <div class='inner'> 
+              <div class='inner'>
         <%each saleset.enoughs as e i%><%if i<=1%>满 <span style='color:#f15353'><%e.enough%></span> 元立减 <span style='color:#f15353'><%e.money%></span> 元</span>;<br/><%/if%><%/each%>
         <%if saleset.enoughs.length>2%><span id='morebtn' onclick='showMoreActivity()'><i class='fa fa-angle-down'></i> 查看更多优惠<br/></span><%/if%>
         <div id='moreactivity' style='display:none'>
@@ -498,15 +523,15 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 </div>
           </div>
        </div>
-        <%/if%> 
-        
+        <%/if%>
+
       <%if goods.deduct>0%>
       <div class="other">
             <div class='left'>
                     <span><i class='fa fa-cube'></i> {if $shopset['credit1']}{$shopset['credit1']}{else}积分{/if}抵扣 <span style='color:#ff6600'><%goods.deduct%></span> 元</span>
             </div>
        </div>
-        <%/if%> 
+        <%/if%>
       <%if goods.isforceyunbi>0%>
       <div class="other">
         <div class='left'>
@@ -523,7 +548,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                     <i class='fa fa-user'></i> <%level.discounttxt%>  <span style='color:#ff6600'><%level.discount%></span> 元(<%level.levelname%>)
                 <%/if%>
             </div>
-         </div> 
+         </div>
         <%/if%>  </div>
       </div>
       <%if goods.isverify=='2'%>
@@ -548,7 +573,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         </div>
        </div>
      <%/if%>
-     <%/each%> 
+     <%/each%>
      <div id='store_more' style="display:none">
       <%each stores as store index%>
      <%if index>1%>
@@ -567,7 +592,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         </div>
        </div>
      <%/if%>
-     <%/each%> 
+     <%/each%>
      </div>
     <%if stores.length>=3%>
      <div class="store_more" onclick="$('#store_more').show();$(this).remove()">显示更多 <i class="fa fa-angle-double-down"></i></div>
@@ -576,14 +601,14 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
      <%/if%>
    <div id="buytime" class="good_speci" style="display:none"></div>
    <div id="notbuy" class="good_speci" style="display:none"></div>
-   
-   <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1'  && goods.groupbuy=='1'  && goods.levelbuy=='1'%> 
+
+   <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1'  && goods.groupbuy=='1'  && goods.levelbuy=='1'%>
     <div class="good_speci" onClick="choose()">
                 <span id="optiondiv">请选择商品规格及数量</span>
                 <i class="fa fa-angle-right" style="float:right; line-height:44px; font-size:26px;"></i>
     </div>
      <%/if%>
-       
+
     <div class="good_shop">
         <div class="shop1" onclick="location.href='<%detail.btnurl2%>'">
         <img src='<%detail.logo%>'/>
@@ -642,7 +667,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 {else}
     <%if goods.canbuy && goods.total!=0 && goods.timebuy=='0' && goods.userbuy=='1' && goods.groupbuy=='1'  && goods.levelbuy=='1' && is_admin!='1' %>
     <div class="good_bottom">
-     
+
         <div class="like" >
             <i style="padding-left:6px" class="fa <%if isfavorite%>fa-star<%else%>fa-star-o<%/if%>" <%if isfavorite==1%>style="color:#f90"<%/if%>></i>
             <br><span>收藏</span>
@@ -674,7 +699,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa fa-shopping-cart"></i><br><span>购物车</span>
                 <%if cartcount>0%><b><%cartcount%></b><%/if%>
             </div>
-            
+
             <div class="add" onclick="choose('cart')">加入购物车</div>
             <%/if%>
             <div class="buy" onclick="choose('buy')" <%if !goods.canaddcart%>style='width:85%'<%/if%>>立即购买</div>
@@ -716,7 +741,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                          </div>
                    <%/if%>
                       <%/if%>
-              
+
                      <%if comment.append_content!=''%>
                          <div class='content' style='margin-top:5px;'><span style='color:#ff6600'>[追加]</span><%comment.append_content%></div>
                         <%if comment.append_images.length>0%>
@@ -725,7 +750,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                          </div>
                       <%/if%>
                      <%/if%>
-                
+
                   <%if comment.append_reply_content!=''%>
                          <div class='content' style='margin-top:5px;'><span style='color:#ff6600'>[回复]</span><%comment.append_reply_content%></div>
                         <%if comment.append_reply_images.length>0%>
@@ -801,7 +826,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             }
             $(".w-countdown-nums").html(mm+":"+ss);
         }else{
-            //location.reload([false]) 
+            //location.reload([false])
             return false;
         }
     }
@@ -830,7 +855,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
      $('#morebtn').hide();
      $("#moreactivity").fadeIn();
  }
- 
+
     var hasoption = false;
     var maxbuy = 0;
     var options = [];
@@ -839,9 +864,9 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
     var action="";
     var alpha = 0;
 
-    
+
     function share(){
-        
+
            $('#cover').fadeIn(200).unbind('click').click(function(){
                     $(this).fadeOut(100);
           })
@@ -906,24 +931,24 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 
 
     function menu(obj){
-       
+
         if($(obj).attr('show')=='1'){
             $(obj).removeAttr('show');
             $('.sort_list').fadeOut(200);
         }else{
-            $(obj).attr('show','1');  
+            $(obj).attr('show','1');
             $('.sort_list').fadeIn(200);
         }
     }
     $(function(){
         $(document.body).click(function(e){
            var classname = "";
-           
+
             if($(e.target).get(0) ){
                 classname =$(e.target).get(0).className;
             }
             if(classname!='fa fa-ellipsis-v' && classname!='btn func') {
-                
+
                 $('.func').removeAttr('show');
                 $('.sort_list').fadeOut(200);
             }
@@ -1014,7 +1039,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         })
 
       function setTimer(goods){
-            
+
             setTimeHtml(goods);
             window.timer = setInterval(function(){
                 setTimeHtml(goods);
@@ -1024,7 +1049,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             var current = Math.floor(new Date().getTime()/1000);
                 var ts = 0;//计算剩余的毫秒数
                 var prefix = '';
-                
+
                 if(goods.timestate=='before'){
                     ts = goods.timestart - current;
                     prefix = "限时购开始倒计时: ";
@@ -1034,7 +1059,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                 }
                 else if(goods.timestate=='after'){
                     ts = goods.timeend - current;
-                    
+
                     prefix = "限时购结束倒计时:  ";
                      if(ts<=0){
                         location.reload();
@@ -1050,24 +1075,24 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                 ss = checkTime(ss);
                 $('.timestate').html(prefix+ "<span>" + dd + "</span>天<span>" + hh + "</span>时<span>" + mm + "</span>分<span>" + ss + "</span>秒");
         }
-        function checkTime(i)    
-            {    
-               if (i < 10) {    
-                   i = "0" + i;    
-                }    
-               return i;    
-            } 
+        function checkTime(i)
+            {
+               if (i < 10) {
+                   i = "0" + i;
+                }
+               return i;
+            }
 
         core.json('shop/detail',{id:'{$_GPC['id']}',mid:"{$mid}",is_admin:'{$_GPC['is_admin']}',indiana:'{$_GPC['indiana']}',periodnum:'{$_GPC['periodnum']}'},function(json){
-     
+
           tip = core.tip;
           if(json.status<=0){
               core.message('没有找到您想要的宝贝哦~',"{php echo $this->createMobileUrl('shop/list')}",'error');
               return;
           }
-            
+
         $(window).scroll(function(){
-         
+
            var top = $(document).scrollTop() ;
            alpha = top/270 ;
            if(alpha>0.5){
@@ -1077,7 +1102,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
              $('.good_topbar .btn').css("background","rgba(237,237,237,"+ (0.5-alpha) + ")");
         });
          $('body').on("touchmove",function(){
-                
+
            var top = $(document).scrollTop() ;
            alpha = top/270 ;
            if(alpha>0.6){
@@ -1086,21 +1111,21 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
           $('.good_topbar').css("background","rgba(237,237,237,"+ alpha + ")");
           $('.good_topbar .btn').css("background","rgba(237,237,237,"+ (0.6-alpha) + ")");
         });
-        
+
           $('#container').html(  tpl('goods_info',json.result) );
 
 
           var bh = $(document.body).height() - 50;
-          $('.good_choose').css('max-height',bh); 
+          $('.good_choose').css('max-height',bh);
           $('.good_choose .other').css('max-height',bh-175);
-       
+
          // alert(document.body.clientWidth);
          $('.good_img').height( document.body.clientWidth + "px");
-              
+
           $('#con_1 img,#con_1 table,#con_1 div').width('100%');
            var ua = navigator.userAgent.toLowerCase();
            var isWX = ua.match(/MicroMessenger/i) == "micromessenger";
-           var z = []; 
+           var z = [];
            $(".main_image img").each(function() {
                 z.push($(this).attr("src"));
                 imgurls = z;//JSON.stringify(z);
@@ -1122,8 +1147,8 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                     });
                 });
             }
-            
-              var z1 = []; 
+
+              var z1 = [];
            $("#con_1 img").each(function() {
                 z1.push($(this).attr("src"));
             });
@@ -1138,23 +1163,23 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                             current1 = $(A).attr("src");
                         }
                     });
-               
+
                     WeixinJSBridge.invoke("imagePreview", {
                         current: current1,
                         urls: z1
                     });
                 });
             }
-            
-      
-            
+
+
+
            document.title = json.result.goods.title;
            hasoption = json.result.options.length>0;
            goods = json.result.goods;
            maxbuy = json.result.goods.maxbuy;
            options = json.result.options;
            specs = json.result.specs;
-           
+
            nothtml = "";
            timehtml = "";
            hastime = false;
@@ -1182,11 +1207,11 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                     }
                      if( goods.istime=='1'){
                                                       if( goods.timebuy!='1'){
-                                                         
+
                                                           timehtml = '<span class="timestate"></span>';
                                                       }
                                                  }
-                     
+
         }else{
             nothtml = "商品已下架";
         }
@@ -1201,12 +1226,12 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                      setTimer(goods);
                }
         }
-            
-           
+
+
            if(options.length>0){
              $('#productpricecontainer').html('');
            }
-   
+
            $('#total').blur(function(){
                 var total = $("#total");
                 if(!total.isInt()){
@@ -1216,7 +1241,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                 if(parseInt(total.val())<=0){
                     total.val("1");
                     return;
-                } 
+                }
                 var stock = $("#stock").html()==''?-1:parseInt($("#stock").html());
                 var num = parseInt(total.val() );
                 if(num>maxbuy && maxbuy>0){
@@ -1231,15 +1256,15 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                     );
                 $(".indiana_price_total").html(num * $("#indiana_price").html());
                 $("#indiana_price_total").html(num * $("#indiana_price").html());
-               
+
            });
- 
-               
+
+
                     new Swipe($('.main_image')[0], {
             speed:300,
             auto:4000,
             callback: function(){
-              
+
                                  $(".flicking_con  .inner  a").removeClass("on").eq(this.index).addClass("on");
         }
       });
@@ -1248,27 +1273,27 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             {/if}
 
             $(".option").click(function() {
-               
+
              var specid = $(this).attr("specid");
              var oid = $(this).attr("oid");
             $(".optionid_"+specid).val(oid);
             $(".options_" + specid + "  .option").removeClass("on").attr("sel", "false");
             $(this).addClass("on").attr("sel", "true");
-     
+
              var titles='已选: ';
                  $('.spec_items').each(function(){
                                  if($(this).find('.on').length>0){
-                    titles+= $(this).find('.on').attr('title')+";";   
+                    titles+= $(this).find('.on').attr('title')+";";
                             }
                  });
-                             
+
                              $('.good_choose .info .right .option').html(titles);
          var thumb = $(this).attr('thumb');
          if(thumb!=''){
              $("#chooser_img").attr('src',thumb);
          }
          else{
-             
+
              $("#chooser_img").attr('src',json.result.goods.thumb);
          }
          setoptions();
@@ -1277,19 +1302,19 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             var marketprice = 0;
             var productprice = 0;
              var ret = option_selected();
-  
+
             if(ret.no==''){
                 var len = options.length;
                 for(var i=0;i<len;i++) {
                     var o = options[i];
                     var ids = ret.all.join("_");
-                                
+
                                 var specarr = o.specs.split('_').sort();
                                 var idsarr = ret.all.sort();
-                              
-                                
-                                
-                             
+
+
+
+
                     if(specarr.join('_') ==idsarr.join('_') ){
                         optionid = o.id;
                         stock = o.stock;
@@ -1297,11 +1322,11 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                         productprice = o.productprice;
                         break;
                     }
-                    
+
                 }
-                                
-               $("#optionid").val(optionid); 
-                
+
+               $("#optionid").val(optionid);
+
                 if(stock!="-1"){
                     $("#stockcontainer").html("库存:<span id='stock'>" + stock + "</span>");
                 }
@@ -1315,34 +1340,34 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                     else{
                      $('.confirm_option').removeClass('disabled').html('确认');
                     }
-                } 
+                }
                 $("#marketprice").html(marketprice);
-                
-                $("#option_price").html(marketprice);   
-                $("#option_stock").html(stock); 
-                 
+
+                $("#option_price").html(marketprice);
+                $("#option_stock").html(stock);
+
                 $("#productprice").html(productprice);
                 if(productprice<=0){
                 $('#productpricecontainer').html("");
                 }
                 else{
-            
+
                    $('#productpricecontainer').html("市场价￥<span id='productprice'>" + productprice + "</span>");
                 }
             }
         });
-                
-           
+
+
     $('.cs').click(function(){
             location.href='{php echo $shopset['cservice']}&metadata={"name":"{php echo htmlspecialchars($member['nickname'],ENT_QUOTES)}","tel":"{php echo $member['mobile']}","address":"{php echo $member['province']}"}';
     });
-    
+
                 $('.like').click(function(){
                     var self = $(this);
                     require(['core'],function(core){
                        core.json('shop/favorite',{op:'set', id:'{$_GPC['id']}'},function(ret){
                            if(ret.status==1){
-                
+
                                 if(ret.result.isfavorite){
                                    self.find('i').removeClass('fa-star-o').addClass('fa-star').css('color','#f90');
                                 }
@@ -1358,7 +1383,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                 });
                 var page = 1;
           function bindCommentImages(){
-                var z = []; 
+                var z = [];
                           $(".comment .imgs img").each(function() {
                              z.push($(this).attr("src"));
                          });
@@ -1390,19 +1415,19 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                          $('#comment_container').html( tpl('tpl_comment',json.result));
                        bindCommentImages();
                             var loaded = false;
-                              var stop=true; 
-                              $(window).scroll(function(){ 
+                              var stop=true;
+                              $(window).scroll(function(){
                                   if(loaded){
                                       return;
                                   }
-                                    totalheight = parseFloat($(window).height()) + parseFloat($(window).scrollTop()); 
-                                    if($(document).height() <= totalheight){ 
+                                    totalheight = parseFloat($(window).height()) + parseFloat($(window).scrollTop());
+                                    if($(document).height() <= totalheight){
 
-                                        if(stop==true){ 
-                                            stop=false; 
+                                        if(stop==true){
+                                            stop=false;
                                             $('#comment_container').append('<div id="comment_loading"><i class="fa fa-spinner fa-spin"></i> 正在加载...</div>');
                                             page++;
-                                            core.json('shop/util', {op:'comment',page:page,goodsid:'{$_GPC['id']}'}, function(morejson) {  
+                                            core.json('shop/util', {op:'comment',page:page,goodsid:'{$_GPC['id']}'}, function(morejson) {
                                                 stop = true;
                                                 $('#comment_loading').remove();
                                                 $("#comment_container").append(tpl('tpl_comment', morejson.result));
@@ -1414,13 +1439,13 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                                                     $(window).scroll = null;
                                                     return;
                                                 }
-                                            },true); 
-                                        } 
-                                    } 
+                                            },true);
+                                        }
+                                    }
                                 });
                      });
                  });
-                 
+
                  $('#nav_4').click(function(){
                       core.json('shop/util',{op:'recommand'},function(json){
                          if(json.result.list.length<=0){
@@ -1433,7 +1458,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                          }).find('img').each(function(){
                              $(this).height($(this).width());
                          });
-                         
+
                      });
                  });
 
@@ -1456,7 +1481,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                      });
                  });
         },true);
-        
+
     })
 </script>
 <script type="text/javascript">
@@ -1465,11 +1490,11 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         $('#con_'+n).siblings().hide();
         $('#nav_'+n).addClass('navon');
         $('#nav_'+n).siblings().removeClass('navon');
-                      
+
     }
         function closechoose(){
             $('.good_choose_layer').fadeOut(100);
-            $('.good_choose').fadeOut(100); 
+            $('.good_choose').fadeOut(100);
             $('.good_confirm').fadeOut(100);
         }
     function choose(act){
@@ -1495,17 +1520,17 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                       core.tip.confirm($('#followtip').val(),function(){
                           location.href = $('#followurl').val();
                           return;
-                      }) 
+                      })
                   });
                return;
             }
             action = act;
             if(!action){
-                       
+
                   $('.good_choose_layer').fadeIn(200);
                   $('.good_choose_layer').unbind('click').click(function(){
                       $('.good_choose_layer').fadeOut(100);
-                      $('.good_choose').fadeOut(100); 
+                      $('.good_choose').fadeOut(100);
                   })
                   $('.good_choose').fadeIn(200);
                   return;
@@ -1517,7 +1542,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                          closechoose();
                    })
                   $('.good_choose').fadeIn(200);
-                   return;   
+                   return;
             }else{
                 {if !empty($formInfo)}
                   $('.good_choose_layer').fadeIn(200);
@@ -1534,14 +1559,14 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                        })
                   $('.good_choose').fadeIn(200);
                   return;
-                {/if}  
+                {/if}
                 $('.spec_items').each(function(){
                    var self = $(this);
                     if( $(this).find('.on').length<=0){
                        specselected = self.attr('title');
                        return false;
                     }
-                });  
+                });
                  if(specselected!='') {
                    $('.good_choose_layer').fadeIn(200);
                                  $('.good_choose_layer').unbind('click').click(function(){
@@ -1601,10 +1626,10 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         function setoptions(){
              var titles = '';
                  if(hasoption){
-                 
+
              titles+='已选: ';
                  $('.spec_items').each(function(){
-                    titles+= $(this).find('.on').attr('title')+";";   
+                    titles+= $(this).find('.on').attr('title')+";";
                  });
                  }
                                              titles+='数量:' + $('#total').val();
@@ -1612,7 +1637,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         }
     function choose2(direct,close){
         if ($('#declaration').val()) {
-            var iscontinue = 0; 
+            var iscontinue = 0;
             require(['core'],function(core){
               core.json('shop/detail', {'op':'getmember','mid':$('#declaration').val()}, function(m_json) {
                   if (m_json.status == 1) {
@@ -1649,20 +1674,20 @@ function choose3(direct,close){
         } else {
             action = "";
         }
-        var specselected  = '';    
+        var specselected  = '';
         $('.spec_items').each(function(){
             var self = $(this);
             if( $(this).find('.on').length<=0){
                 specselected = self.attr('title');
                 return false;
             }
-        });  
+        });
         if( specselected!=''){
           require(['core'],function(core){
              core.tip.show('请选择' + specselected) ;
           });
           return;
-        }                  
+        }
         if(action=='cart'){
            var data = {};
            {if !empty($formInfo)}
@@ -1675,7 +1700,7 @@ function choose3(direct,close){
         //openid
           {if !empty($popenid) or !empty($openid)}
              core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
-                    if(ret.status==1){ 
+                    if(ret.status==1){
                        core.tip.show(ret.result.message);
                        var cartdiv = $('.cart');
                            if( cartdiv.find('b').length<=0){
@@ -1692,7 +1717,7 @@ function choose3(direct,close){
           {else}
               location.href = "{php echo $this->createMobileUrl('member/login')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val();
           {/if}
-        //end openid                           
+        //end openid
         }else if(action=='buy'){
             var isdeclaration = $('#isdeclaration').val();
             var formInfo = false;
@@ -1770,7 +1795,7 @@ function choose5(){
         );
     $(".indiana_price_total").html(num * $("#indiana_price").html());
     $("#indiana_price_total").html(num * $("#indiana_price").html());
-    
+
 }
 function reduceNum(){
     var total = $("#total");
@@ -1783,7 +1808,7 @@ function reduceNum(){
     }
     num--;
     total.val(num);
-    
+
     $(".indiana_total").html(num
         );
     $(".indiana_price_total").html(num * $("#indiana_price").html());

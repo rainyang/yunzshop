@@ -63,7 +63,7 @@
        <div class="page_topbar">
             <div class="title">支付成功</div>
         </div>
-    <%if address%>
+    <%if address && order.order_type!='4'%>
         <img src="../addons/sz_yi/template/mobile/default/static/images/pay_ok.png" style="width:100%;" />
      <%/if%>
      <%if order.dispatchtype=='1' && order.isverify!='1'%>
