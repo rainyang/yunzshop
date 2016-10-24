@@ -184,7 +184,12 @@ if ($pindiana && $_GPC['indiana']) {
         $next = $indiana['period'];
         $next_phase = pdo_fetch("SELECT goodsid, period_num FROM " . tablename('sz_yi_indiana_period') . " where goodsid = '".$goodsid."' and period > '" . $next . "' ORDER BY period desc limit 1");  
 
+        $indiana['dz'] = "选择地址1";
 
+        $indiana['address']      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' WHERE openid=:openid AND deleted=0 AND isdefault=1  AND uniacid=:uniacid limit 1', array(
+            ':uniacid' => $uniacid,
+            ':openid' => $openid
+        ));
 }
 $html = $goods['content'];
 preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg]?))[\'|\"].*?[\/]?>/", $html, $imgs);
@@ -495,7 +500,6 @@ if($goods['tcate']){
         $saleset            = $sale_plugin->getSet();
         $saleset['enoughs'] = $sale_plugin->getEnoughs();
     }
-
     $ret        = array(
         'is_admin' => $_GPC['is_admin'],
         'goods' => $goods,

@@ -164,6 +164,20 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 .good_confirm .info {height: 230px; position: relative;top: -15px; width: 100%; }
 .good_confirm .info .content {height: auto;position: absolute;top: 15px;width: 100%;}
 .good_confirm .info .content .title {background: #eee none repeat scroll 0 0;  border-bottom: 1px solid #e0e0e0; font-size: 16px; height: 36px; line-height: 36px; padding: 6px 0 0 10px;}
+
+
+.good_address { background: #fff none repeat scroll 0 0; bottom: 0; display: none; height: auto; left: 0; position: fixed; width: 100%; z-index: 10;
+}
+.good_address .sub { background: #f15353 none repeat scroll 0 0; bottom: 0; color: #fff; font-size: 16px; height: 44px; line-height: 44px; position: fixed; text-align: center; width: 100%;
+}
+.good_address .close { color: #666; font-size: 24px; font-weight: normal; position: absolute; right: 10px; top: 10px; }
+.good_address .info {height: 230px; position: relative;top: -15px; width: 100%; }
+.good_address .info .content {height: auto;position: absolute;top: 15px;width: 100%;}
+.good_address .info .content .title {background: #eee none repeat scroll 0 0;  border-bottom: 1px solid #e0e0e0; font-size: 16px; height: 36px; line-height: 36px; padding: 6px 0 0 10px;}
+
+
+
+
 .good_choose .other .number .num input{border-left: 1px solid #dedede;
     border-right: 1px solid #dedede;
     text-align: center;
@@ -172,6 +186,17 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
     line-height: 32px;
     float: left;
     -webkit-appearance: none;}
+
+   .chooser {overflow: auto; width: 100%; background:#efefef; position: fixed; padding-top: 20px; right: -100%; z-index: 1;}
+    .chooser .address {height:50px; background:#fff; padding:10px;; border-bottom:1px solid #eaeaea;}
+    .chooser .address .ico {float:left; height:50px; width:30px; line-height:50px; float:left; font-size:20px; text-align:center; color:#999;}
+    .chooser .address .info {height:50px; width:100%;float:left;margin-left:-30px;margin-right:-30px;}
+    .chooser .address .info .inner { margin-left:35px;margin-right:30px;}
+    .chooser .address .info .inner .name {height:28px; width:100%; font-size:16px; color:#666; line-height:28px;overflow:hidden;}
+    .chooser .address .info .inner .addr {height:22px; width:100%; font-size:14px; color:#999; line-height:22px;overflow: hidden;}
+    .chooser .address .edit {height:50px; width:30px; float:right;margin-left:-30px;text-align:center;line-height:50px;color:#666;}
+
+    .chooser .add_address {height:44px; padding:5px; background:#fff; border-bottom:1px solid #eaeaea; line-height:44px; font-size:16px; color:#666;}
 </style>
 <input type="hidden" id="lastOrderUrl" value="{php echo $this->createMobileUrl('shop/lastorder',array('op'=>'display'),true)}"/>
 <script type="text/javascript">
@@ -292,9 +317,9 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                     </div>
 
                     <div class='num' style="float: left;width:75%;text-align: center;margin-left: 10%;" >
-                            <button id='btn_minus' onclick='reduceNum()'><i class='fa fa-minus'></i></button>
+                            <button id='btn_minus' onclick='reduceNum()' style="width:12%"><i class='fa fa-minus'></i></button>
                             <input type='text' id='total' value='1' style="width:74.5%" />
-                            <button id='btn_plus' onclick='addNum()'><i class='fa fa-plus'></i></button>
+                            <button id='btn_plus' onclick='addNum()' style="width:12%"><i class='fa fa-plus'></i></button>
                     </div>
 
                     <div class='label' style="float: left;font-size:14px;line-height: 34px;padding-top: 1px;width:100%;text-align: center;">
@@ -310,6 +335,28 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             <div class="content">
                 <div class="title">结算 <span onClick="closechoose()" style="float:right;padding-right: 15px;color: #666;"><i class="iconfont icon-close"></i></span></div>
 
+                <div class="title" id="address_select" style="font-size: 12px;">地址：
+                    <%if indiana.address%>
+                        <span style="float:right;padding-right: 15px;" >
+                            <div class="ico2">
+                                <i class="fa fa-angle-right fa-2x"></i>
+                            </div>
+                        </span>
+                        <span style="float:right;padding-right: 15px;line-height: 17px;" data-initmoney="<%indiana.initmoney%>" id="initmoney"><%indiana.address.realname%>（<%indiana.address.mobile%>）<br/><%indiana.address.province%><%indiana.address.city%><%indiana.address.area%><%indiana.address.address%></span>
+                        <input type='hidden' id='addressid' value='8' />
+                    <%else%>
+                        <span style="float:right;padding-right: 15px;" >
+                            <div class="ico2">
+                               <i class="fa fa-angle-right fa-2x"></i>
+                            </div>
+                        </span>
+                        <span style="float:right;padding-right: 15px;" >
+                            添加地址
+                        </span>
+                    <%/if%>
+                    
+                </div>
+
                 <div class="title" style="font-size: 12px;">专区：<span style="float:right;padding-right: 15px;" data-initmoney="<%indiana.initmoney%>" id="initmoney"><%indiana.initmoney%>元专区</span></div>
 
                 <div class="title" style="font-size: 12px;">购买人次：<span style="float:right;padding-right: 15px;"><d class="indiana_total">1</d>人次</span></div>
@@ -322,7 +369,6 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
        <input type='hidden' name="period" value="<%indiana.period%>" id="period">
         <div class="sub confirm_option" onClick="choose5()" style="z-index: 3;">确认支付</div>
     </div>
-
 {else}
     <div class="good_choose">
         <div class="info">
@@ -410,10 +456,10 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             <div class="info2">第<%indiana.period%>期 <%indiana.title%> </div>
 
             <div class="price-area">
-                <span>3元专区</span>
+                <span><%indiana.init_money%>元专区</span>
             </div>
 
-            <div class="info3">商品价格：￥50.00 </div>
+            <div class="info3">商品价格：￥<%goods.marketprice%> </div>
 
             <div class="price" style="height:auto">
 
@@ -1274,7 +1320,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             auto:4000,
             callback: function(){
 
-                                 $(".flicking_con  .inner  a").removeClass("on").eq(this.index).addClass("on");
+            $(".flicking_con  .inner  a").removeClass("on").eq(this.index).addClass("on");
         }
       });
             {if !empty($formInfo)}
@@ -1493,7 +1539,15 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 
     })
 </script>
+
+
 <script type="text/javascript">
+
+        //选择地址 
+        $(document).on('click','#address_select',function() {
+            location.href = "{php echo $this->createMobileUrl('shop/address')}&gid={$_GPC['id']}&periodnum={$indiana[period_num]}&indiana=1";
+        });
+
     function tab(n){
         $('#con_'+n).fadeIn();
         $('#con_'+n).siblings().hide();
@@ -1784,6 +1838,9 @@ function choose5(){
         }, true, true);
     });
 }
+
+
+
   function addNum(){
     var total = $("#total");
     if(!total.isInt()){

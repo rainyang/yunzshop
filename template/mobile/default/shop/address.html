@@ -52,17 +52,21 @@
         </div>
     </div>
   <%/each%>
-  <a href="javascript:;" id='new_address'>
-      <div class="address_addnav">
-          <i class="iconfont icon-plus-circle" ></i>
-          <span>新增收货地址</span>
-      </div>
-  </a>
-  <a href="javascript:;" id='new_address'>
-      <div class="address_continue">
-          <span>继续购物</span>
-      </div>
-  </a>
+    {if $_GPC['indiana']}
+        <a href="javascript:;" id='new_address'>
+            <div class="address_addnav">
+                <i class="iconfont icon-plus-circle" ></i>
+                <span>新增收货地址</span>
+            </div>
+        </a>
+        <a href="javascript:;" id='new_address'>
+            <div class="address_continue">
+                <span>继续购物</span>
+            </div>
+        </a>
+    {else}
+        <a href="javascript:;" id='new_address'><div class="address_addnav"><i class="iconfont icon-plus-circle" ></i><span>新增收货地址</span></div></a>
+    {/if}
 </script>
 <script id='address_data' type='text/html'>
  
@@ -89,9 +93,11 @@
 </script>
 
 <script language="javascript">
-    
+    var indiana = "{$_GPC['indiana']}";
+    var gid = "{$_GPC['gid']}";
+    var periodnum = "{$_GPC['periodnum']}";
     require(['tpl', 'core'], function(tpl, core) {
-        
+
         function bindEditEvents(){
        
             $('.address_sub1').click(function(){
@@ -153,6 +159,9 @@
                 list();
             });
         }
+        function historyindiana(){
+            location.href = core.getUrl('shop/detail', {id: gid, periodnum: periodnum,indiana:'1'});
+        }
         function list(){
             core.json('shop/address',{},function(json){
                  $('#container').html(  tpl('address_list',json.result) );
@@ -177,6 +186,9 @@
                          core.json('shop/address',{op:'setdefault',id:id},function(json){
                           if(json.status==1){
                               core.tip.show('设置默认地址成功');
+                              if(indiana){
+                                historyindiana();
+                              }
                           }
                           else{
                               core.tip.show('设置默认地址失败');
@@ -226,12 +238,20 @@
                             bindEditEvents();
                      },true);
                   });
+                 $('#historyindiana').click(function(){
+                    historyindiana();
+                    
+                 });
+
+
             },true);
         }
         
         list();
-        
+
     })
+
+
 </script>
 {php $show_footer = true}
 {template 'common/footer'}
