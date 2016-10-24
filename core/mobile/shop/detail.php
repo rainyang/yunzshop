@@ -184,7 +184,9 @@ if ($pindiana && $_GPC['indiana']) {
         $next = $indiana['period'];
         $next_phase = pdo_fetch("SELECT goodsid, period_num FROM " . tablename('sz_yi_indiana_period') . " where goodsid = '".$goodsid."' and period > '" . $next . "' ORDER BY period desc limit 1");  
 
+        $indiana['dz'] = "选择地址1";
 
+        //echo "<pre>";print_r($member);exit;
 }
 $html = $goods['content'];
 preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg]?))[\'|\"].*?[\/]?>/", $html, $imgs);
@@ -495,7 +497,6 @@ if($goods['tcate']){
         $saleset            = $sale_plugin->getSet();
         $saleset['enoughs'] = $sale_plugin->getEnoughs();
     }
-
     $ret        = array(
         'is_admin' => $_GPC['is_admin'],
         'goods' => $goods,
