@@ -1,7 +1,7 @@
 {template 'web/_header'}
 <div class="w1200 m0a">
 <div class="ulleft-nav">
-<ul class="nav nav-tabs"> 
+<ul class="nav nav-tabs">
     {ifp 'indiana.set'}<li {if $_GPC['method']=='set'}class="active"{/if}><a href="{php echo $this->createPluginWebUrl('indiana/set')}">基础设置</a></li>{/if}
 
     {ifp 'indiana.set'}<li {if $_GPC['method']=='goods' || $_GPC['method']=='good_info' || $_GPC['method']=='period' }class="active"{/if}><a href="{php echo $this->createPluginWebUrl('indiana/goods')}">夺宝商品</a></li>{/if}
@@ -51,7 +51,7 @@
                     <div class='form-control-static'>ID: {$member['id']} 姓名: {$member['realname']} / 手机号: {$member['mobile']} /微信号: {$member['weixin']}</div>
                 </div>
             </div>
-                
+
                 {if $item['transid']}
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信交易号 :</label>
@@ -74,7 +74,7 @@
                     </div>
                 </div>
                 {/if}
-                
+
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">配送方式 :</label>
                     <div class="col-sm-9 col-xs-12">
@@ -117,7 +117,7 @@
                         </p>
                     </div>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">下单日期 :</label>
                     <div class="col-sm-9 col-xs-12">
@@ -132,7 +132,7 @@
                     </div>
                 </div>
                 {/if}
-                
+
                 {if $item['status']>=2 && !empty($item['addressid']) }
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">发货信息 :</label>
@@ -253,19 +253,19 @@
                     </div>
                 </div>
                 {/if}
-                  
+
                 {if $item['status']>=2 && !empty($item['virtual']) }
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">发货信息 :</label>
                     <div class="col-sm-9 col-xs-12">
                         <p class="form-control-static">{php echo str_replace("\n","<br/>", $item['virtual_str'])}
-						
-									   
+
+
 						</p>
                     </div>
                 </div>
                 {/if}
-                
+
                 {if $item['status']>=3}
 
                 <div class="form-group">
@@ -280,7 +280,7 @@
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">备注 :</label>
                     <div class="col-sm-9 col-xs-12"><textarea style="height:150px;" class="form-control" name="remark" cols="70">{$item['remark']}</textarea></div>
                 </div>
-                
+
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9 col-xs-12">
@@ -294,7 +294,7 @@
                 </div>
         </div>
     </form>
- 
+
         {if !empty($item['addressid'])}
           <div class="panel panel-default">
             <div class="panel-heading">
@@ -366,14 +366,14 @@
                 </div>
             </div>
         {/if}
-      
+
 
         <div class="panel panel-default">
             <div class="panel-heading">
                {if $item['cashier']==1}商户信息{else}商品信息{/if}</span>
             </div>
                 {if $item['cashier']==1}
-            
+
               <div class="panel-body table-responsive">
                 <table class="table table-hover">
                   <thead class="navbar-inner">
@@ -384,7 +384,7 @@
                         <th style="width:20%;">商户地址</th>
                         <th style="width:16%;">商户电话</th>
                         <th style="width:16%;">商户联系人</th>
-                        <th style="width:16%;">商户创建时间</th> 
+                        <th style="width:16%;">商户创建时间</th>
                     </tr>
                   </thead>
                     <tr>
@@ -424,23 +424,23 @@
                         <td>{$item['indiana']['init_money']} 元区</td>
                         <td>{$item['indiana']['partakes']} 人次</td>
                         <td>{$item['indiana']['code']} </td>
-                        <td>  
+                        <td>
                             <a href="{php echo $this->createPluginWebUrl('indiana/good_info', array('id' => $item['indiana']['ig_id'], 'op' => 'edit'))}" class="btn btn-default btn-sm" title="编辑"><i class="fa fa-edit"></i></a>&nbsp;&nbsp;
                         </td>
                     </tr>
                     {/loop}
                     <tr>
                         <td colspan="2">
-                            
+
                            {template 'web/order/ops'}
-                           
+
                         </td>
                         <td colspan="8">
                         </td>
                     </tr>
                 </table>
             </div>
-        {/if}    
+        {/if}
         </div>
 </div>
         </div>
@@ -577,7 +577,7 @@
 			</script>
 {template 'web/order/modals'}
   {if  p('commission')}
-		  
+
 		   {template 'commission/changecommission'}
 		  {/if}
 
