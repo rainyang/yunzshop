@@ -1,6 +1,6 @@
 <?php
 if (!defined('IN_IA')) {
-    exit('Access Denied');
+	exit('Access Denied');
 }
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'index';
@@ -17,29 +17,29 @@ if ($plugin_yunbi) {
 	$yunbi_set = $plugin_yunbi->getSet();
 }
 if (empty($this->yzShopSet['ispc']) || isMobile()) {
-    if ($designer) {
-        $pagedata = $designer->getPage();
-        if ($pagedata) {
-            extract($pagedata);
-            $guide = $designer->getGuide($system, $pageinfo);
-            $_W['shopshare'] = array('title' => $share['title'], 'imgUrl' => $share['imgUrl'], 'desc' => $share['desc'], 'link' => $this->createMobileUrl('shop'));
-            if (p('commission')) {
-                $set = p('commission')->getSet();
-                if (!empty($set['level'])) {
-                    if (!empty($member) && $member['status'] == 1 && $member['isagent'] == 1) {
-                        $_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $member['id']));
-                        if (empty($set['become_reg']) && (empty($member['realname']) || empty($member['mobile']))) {
-                            $trigger = true;
-                        }
-                    } elseif (!empty($_GPC['mid'])) {
-                            $_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $_GPC['mid']));
-                    }
-                }
-            }
-            include $this->template('shop/index_diy');
-            exit;
-        }
-    }
+	if ($designer) {
+		$pagedata = $designer->getPage();
+		if ($pagedata) {
+			extract($pagedata);
+			$guide = $designer->getGuide($system, $pageinfo);
+			$_W['shopshare'] = array('title' => $share['title'], 'imgUrl' => $share['imgUrl'], 'desc' => $share['desc'], 'link' => $this->createMobileUrl('shop'));
+			if (p('commission')) {
+				$set = p('commission')->getSet();
+				if (!empty($set['level'])) {
+					if (!empty($member) && $member['status'] == 1 && $member['isagent'] == 1) {
+						$_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $member['id']));
+						if (empty($set['become_reg']) && (empty($member['realname']) || empty($member['mobile']))) {
+							$trigger = true;
+						}
+					} elseif (!empty($_GPC['mid'])) {
+						$_W['shopshare']['link'] = $this->createMobileUrl('shop', array('mid' => $_GPC['mid']));
+					}
+				}
+			}
+			include $this->template('shop/index_diy');
+			exit;
+		}
+	}
 }
 
 if ($operation == 'index') {
@@ -54,32 +54,32 @@ if ($operation == 'index') {
 	}
 	$advs = set_medias($advs, 'thumb,thumb_pc');
 	$advs_pc = set_medias($adv_pc, 'thumb,thumb_pc');
-    $category = pdo_fetchall('select id,name,thumb,parentid,level from ' . tablename('sz_yi_category') . ' where uniacid=:uniacid and ishome=1 and enabled=1 and parentid>0 order by displayorder desc', array(':uniacid' => $uniacid));
+	$category = pdo_fetchall('select id,name,thumb,parentid,level from ' . tablename('sz_yi_category') . ' where uniacid=:uniacid and ishome=1 and enabled=1 and parentid>0 order by displayorder desc', array(':uniacid' => $uniacid));
 	$category = set_medias($category, 'thumb');
 
 	//首页获取全部分类导航条
 	$categorylist = m('shop')->getCategory();
 	if(!empty($categorylist)){
-		foreach ($categorylist as $key1 => $value1) {			
+		foreach ($categorylist as $key1 => $value1) {
 			if($key1<10){
 				if(is_array($value1['children']) && !empty($value1['children'])){
-				 	foreach ($value1['children'] as $keyc => $valuec) {
-				 	  	 $cgood = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where ccate=:ccate and tcate=:tcate and uniacid=:uniacid  and isrecommand=1  and deleted = 0 limit 20",array(':ccate' => $valuec['id'] , ':tcate' => '' ,':uniacid' => $_W['uniacid'])) , 'thumb');
-				 	     $categorylist[$key1]['children'][$keyc]['goods']= $cgood;		 		 
-				 		if(is_array($valuec['children']) && !empty($valuec['children'])){
-			 			 	foreach ($valuec['children'] as $keyt => $valuet) {
-			 					$tgood = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where tcate=:tcate and ccate=:ccate and uniacid=:uniacid and isrecommand=1   and deleted = 0 limit 20",array(':ccate' => $valuec['id'] ,':tcate' =>$valuet['id'] , ':uniacid' => $_W['uniacid'])) , 'thumb');
+					foreach ($value1['children'] as $keyc => $valuec) {
+						$cgood = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where ccate=:ccate and tcate=:tcate and uniacid=:uniacid  and isrecommand=1  and deleted = 0 limit 20",array(':ccate' => $valuec['id'] , ':tcate' => '' ,':uniacid' => $_W['uniacid'])) , 'thumb');
+						$categorylist[$key1]['children'][$keyc]['goods']= $cgood;
+						if(is_array($valuec['children']) && !empty($valuec['children'])){
+							foreach ($valuec['children'] as $keyt => $valuet) {
+								$tgood = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where tcate=:tcate and ccate=:ccate and uniacid=:uniacid and isrecommand=1   and deleted = 0 limit 20",array(':ccate' => $valuec['id'] ,':tcate' =>$valuet['id'] , ':uniacid' => $_W['uniacid'])) , 'thumb');
 								$categorylist[$key1]['children'][$keyc]['children'][$keyt]['goods']= $tgood;
-			 			 	}
-				 		}
-				 	}
+							}
+						}
+					}
 				}else{
 					$goods= set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand=1  and deleted = 0 limit 16",array(':pcate' => $value1['id'] , ':uniacid' => $_W['uniacid'])) , 'thumb');
 					$categorylist[$key1]['goods'] = $goods;
 				}
-		    }else{
-		    	unset($categorylist[$key1]);
-		    }
+			}else{
+				unset($categorylist[$key1]);
+			}
 		}
 	}
 	$categoryfloor = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where parentid=0 and ishome=1 and enabled=1 and uniacid=".$_W['uniacid']),'advimg');
@@ -93,7 +93,7 @@ if ($operation == 'index') {
 				foreach ($goods as $keys => $values) {
 					if(!empty($values)){
 						$thumb_url = $values['thumb'];
-					    $categoryfloor[$key]['thumb_url'][$values['id']] = $thumb_url;
+						$categoryfloor[$key]['thumb_url'][$values['id']] = $thumb_url;
 					}
 				}
 			}
@@ -105,7 +105,7 @@ if ($operation == 'index') {
 					$categoryfloor[$key]['third'][$key1] = $third;
 				}
 			}
-	    }
+		}
 	}
 
 	$index_name = array(
@@ -115,7 +115,7 @@ if ($operation == 'index') {
 		'isdiscount' 	=> '促销商品',
 		'issendfree' 	=> '包邮商品',
 		'istime' 		=> '限时特价'
-		);
+	);
 	foreach ($category as &$c) {
 		$c['thumb'] = tomedia($c['thumb']);
 		if ($c['level'] == 3) {
@@ -124,7 +124,7 @@ if ($operation == 'index') {
 			$c['url'] = $this->createMobileUrl('shop/list', array('ccate' => $c['id']));
 		}
 	}
-	
+
 	/*广告与商品*/
 	//精品推荐
 	$ads_pc = array();
@@ -183,7 +183,7 @@ if ($operation == 'index') {
 	}
 	$ads_pc['bottom_ad'] = pdo_fetch('select link,thumb from ' . tablename('sz_yi_adpc') . " where uniacid=:uniacid and location='bottom_ad' and enabled='1'", array(':uniacid' => $uniacid));
 	if(!empty($ads_pc['bottom_ad'])){
-		$ads_pc['bottom_ad'] = set_medias($ads_pc['bottom_ad'], 'thumb');	
+		$ads_pc['bottom_ad'] = set_medias($ads_pc['bottom_ad'], 'thumb');
 	}
 
 	if (is_app()) {
@@ -234,28 +234,30 @@ if ($_W['isajax']) {
 
 		foreach ($category as $key => $value) {
 			$children = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where ishome=1 and parentid=:pid and uniacid=:uniacid order by displayorder desc limit 8",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"])),'advimg');
-			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 and deleted = 0 and status = 1 limit 8",array(':pcate' => $value['id'] , ':uniacid' => $_W['uniacid'])) , 'thumb');
+
+
+
+			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where ( pcate=:pcate or find_in_set('{$value['id']}',pcates) )  and uniacid=:uniacid and isrecommand =1 and deleted = 0 and status = 1 limit 8",array(':pcate' => $value['id'] , ':uniacid' => $_W['uniacid'])) , 'thumb');
 			$category[$key]['goods'] = $goods;
 			foreach($children as $key1 => $value1){
 				$category[$key]['children'][$key1] = $value1;
 				$third = set_medias(pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and ishome=1 and uniacid=:uniacid order by displayorder desc",array(':pid' => $value1['id'] , ':uniacid' => $_W["uniacid"])),'advimg');
 				$category[$key]['third'] = $third;
-				
+
 			}
 		}
-
 		show_json(1,array('category' => $category));
 	} else if ($operation == 'children_goods'){
 		$id = $_GPC['id'];
 		$aid = $_GPC['aid'];
 		if($aid){
-			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where pcate=:pcate and uniacid=:uniacid and isrecommand =1 and deleted = 0 and status = 1 limit 8",array(':pcate' => $aid , ':uniacid' => $_W['uniacid'])) , 'thumb');
-			show_json(1,array('goods' => $goods));	
+			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where ( pcate=:pcate or find_in_set('{$aid}',pcates) ) and uniacid=:uniacid and isrecommand =1 and deleted = 0 and status = 1 limit 8",array(':pcate' => $aid , ':uniacid' => $_W['uniacid'])) , 'thumb');
+			show_json(1,array('goods' => $goods));
 		}else{
 			if(empty($id)){
 				show_json(0);
 			}
-			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where ccate=:ccate and uniacid=:uniacid and deleted = 0 and status = 1 limit 8",array(':ccate' => $id , ':uniacid' => $_W['uniacid'])) , 'thumb');
+			$goods = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_goods')." where ( ccate=:ccate or find_in_set('{$id}',ccates) ) and uniacid=:uniacid and deleted = 0 and status = 1 limit 8",array(':ccate' => $id , ':uniacid' => $_W['uniacid'])) , 'thumb');
 			$third = pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid and enabled = 1",array(':pid' => $id , ':uniacid' => $_W["uniacid"]));
 			show_json(1,array('goods' => $goods,'third' => $third));
 		}

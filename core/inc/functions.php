@@ -914,8 +914,13 @@ if (!function_exists("array_part")) {
         if (!is_array($array)) {
             $array = array();
         }
-        dump($key);
-        $res_array = \yii\helpers\ArrayHelper::filter($array,$key);
+        foreach ($key as $key_item) {
+            if (isset($array[$key_item])) {
+                $res_array[$key_item] = $array[$key_item];
+            } else {
+                $res_array[$key_item] = '';
+            }
+        }
         return $res_array;
     }
 }

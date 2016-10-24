@@ -198,6 +198,70 @@ class Sz_DYi_Excel
         $writer->save('php://output');
         exit;
     }
+
+    function exportOrder($list, $params = array(), $page = 1, $page_total)
+    {
+        if (PHP_SAPI == 'cli') {
+            die('This example should only be run from a Web Browser');
+        }
+        static $excel;
+        if (!isset($excel)) {
+            require_once IA_ROOT . '/addons/sz_yi/core/inc/phpexcel/PHPExcel.php';
+            $excel = new PHPExcel();
+        }
+        $excel->getProperties()->setCreator("芸众商城")->setLastModifiedBy("芸众商城")->setTitle("Office 2007 XLSX Test Document")->setSubject("Office 2007 XLSX Test Document")->setDescription("Test document for Office 2007 XLSX, generated using PHP classes.")->setKeywords("office 2007 openxml php")->setCategory("report file");
+        $sheet  = $excel->setActiveSheetIndex(0);
+        $rownum = 1;
+        foreach ($params['columns'] as $key => $column) {
+            $sheet->setCellValue($this->column($key, $rownum), $column['title']);
+            if (!empty($column['width'])) {
+                $sheet->getColumnDimension($this->column_str($key))->setWidth($column['width']);
+            }
+        }
+        $rownum++;
+        foreach ($list as $row) {
+            $len = count($params['columns']);
+            for ($i = 0; $i < $len; $i++) {
+                $value = $row[$params['columns'][$i]['field']];
+                $value = @iconv("utf-8", "gbk", $value);
+                $value = @iconv("gbk", "utf-8", $value);
+                $sheet->setCellValueExplicit($this->column($i, $rownum), $value, PHPExcel_Cell_DataType::TYPE_STRING);
+            }
+            $rownum++;
+        }
+        $excel->getActiveSheet()->setTitle($params['title']);
+        $filename = $params['title']."-". $page;
+        $writer = PHPExcel_IOFactory::createWriter($excel, 'Excel5');
+        if (!file_exists('IA_ROOT . "/addons/sz_yi/data/excel')) {
+            mkdir (IA_ROOT . "/addons/sz_yi/data/excel/");
+        }  
+        $writer->save(IA_ROOT . "/addons/sz_yi/data/excel/" . $filename . ".xls");
+        if ($page == $page_total) {
+            load()->func('file');
+            $filename = IA_ROOT . "/addons/sz_yi/data/". time() . "down.zip";
+            $zip = new ZipArchive (); // 使用本类，linux需开启zlib，windows需取消php_zip.dll前的注释
+            if ($zip->open ( $filename, ZIPARCHIVE::CREATE ) !== TRUE) {
+                exit ( '无法打开文件，或者文件创建失败' );
+            }
+            //$fileNameArr 就是一个存储文件路径的数组 比如 array('/a/1.jpg,/a/2.jpg....');
+            $fileNameArr = file_tree(IA_ROOT . "/addons/sz_yi/data/excel");
+            foreach ($fileNameArr as $val ) {
+                $zip->addFile ( $val, basename($val) ); // 第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
+            }
+            $zip->close (); // 关闭
+            foreach ($fileNameArr as $val ) {
+                file_delete($val);
+            }
+            //下面是输出下载;
+            header ( "Cache-Control: max-age=0" );
+            header ( "Content-Description: File Transfer" );
+            header ( 'Content-disposition: attachment; filename=' . basename ($filename)); // 文件名
+            header ( "Content-Type: application/zip" ); // zip格式的
+            header ( "Content-Transfer-Encoding: binary" ); // 告诉浏览器，这是二进制文件
+            header ( 'Content-Length: ' . filesize ( $filename ) ); // 告诉浏览器，文件大小
+            @readfile ( $filename );//输出文件;
+        } 
+    }
     public function import($excefile)
     {
         global $_W;

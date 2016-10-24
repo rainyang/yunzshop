@@ -100,7 +100,7 @@ class order
         );
 
         $condition_str = implode(' ', $condition);
-        $sql = 'select o.ordersn,o.status,o.price ,o.id as order_id,o.changedispatchprice,o.changeprice,r.rtype,r.status as rstatus,o.isverify,o.isvirtual,o.addressid
+        $sql = 'select o.ordersn_general as ordersn,o.status,o.price ,o.id as order_id,o.changedispatchprice,o.changeprice,r.rtype,r.status as rstatus,o.isverify,o.isvirtual,o.addressid
 from ' . tablename("sz_yi_order") . " o" . " 
 left join " . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " 
 left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " 

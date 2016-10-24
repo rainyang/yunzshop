@@ -19,7 +19,8 @@
             <input type="hidden" name="c" value="site" />
             <input type="hidden" name="a" value="entry" />
             <input type="hidden" name="m" value="sz_yi" />
-            <input type="hidden" name="do" value="member" />
+            <input type="hidden" name="p" value="list" id="form_p" />
+            <input type="hidden" name="do" value="member" id="form_do" />
                  <div class="form-group">
                 <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">ID</label>
                 <div class="col-sm-8 col-lg-9 col-xs-12">
@@ -98,7 +99,8 @@
                        <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
                        <input type="hidden" name="token" value="{$_W['token']}" />
                        {ifp 'member.member.export'}   
-                        <button type="submit" name="export" value="1" class="btn btn-primary">导出 Excel</button>
+                        <button type="button" name="export" value="1" id="export" class="btn btn-primary">导出 Excel</button>
+                        
                         {/if}
                        
                     </div>
@@ -162,7 +164,7 @@
                        {if empty($row['nickname'])}未更新{else}{$row['nickname']}{/if}
                         
                     </td>
-                    <td>{$row['realname']}<br/>{$row['mobile']}</td>
+                    <td>{$row['realname']}<br/>{$row['membermobile']}</td>
                     <td>{if empty($row['levelname'])}普通会员{else}{$row['levelname']}{/if}
                         <br/>{if empty($row['groupname'])}无分组{else}{$row['groupname']}{/if}</td>
                     <td>{php echo date('Y-m-d',$row['createtime'])}<br/>{php echo date('H:i',$row['createtime'])}</td>
@@ -312,10 +314,20 @@
             </div>
 
             <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">手机号码</label>
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">联系电话</label>
                 <div class="col-sm-9 col-xs-12">
                         {ifp 'member.member.edit'}
-                    <input type="text" name="data[mobile]" class="form-control" value="{$member['mobile']}"  />
+                    <input type="text" name="data[membermobile]" class="form-control" value="{$member['membermobile']}"  />
+                      {else}
+                    <div class='form-control-static'>{$member['membermobile']}</div>
+                    {/if}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">绑定手机</label>
+                <div class="col-sm-9 col-xs-12">
+                        {ifp 'member.member.edit'}
+                    <div class='form-control-static'>{$member['mobile']}</div>
                       {else}
                     <div class='form-control-static'>{$member['mobile']}</div>
                     {/if}
@@ -492,7 +504,7 @@
                         
                       {ifp 'commission.agent.edit'}
                         <div class='input-group'>
-                            <input type="text" name="parentagent" maxlength="30" value="{if !empty($parentagent)}{$parentagent['nickname']}/{$parentagent['realname']}/{$parentagent['mobile']}{/if}" id="parentagent" class="form-control" readonly />
+                            <input type="text" name="parentagent" maxlength="30" value="{if !empty($parentagent)}{$parentagent['nickname']}/{$parentagent['realname']}/{$parentagent['membermobile']}{/if}" id="parentagent" class="form-control" readonly />
                             <div class='input-group-btn'>
                                 <button class="btn btn-default" type="button" onclick="popwin = $('#modal-module-menus-notice').modal();">选择上级分销商</button>
                                 <button class="btn btn-danger" type="button" onclick="$('#agentid').val('');$('#parentagent').val('');$('#parentagentavatar').hide()">清除选择</button>
@@ -684,11 +696,18 @@
 			$('#module-menus-notice').html(dat);
 		});
 	}
+    $(function () {
+        $('#export').click(function(){
+            $('#form_p').val("exportMember");
+            $('#form1').submit();   
+            $('#form_p').val("list");
+        });  
+    });
 	function select_member(o) {
 		$("#agentid").val(o.id);
                   $("#parentagentavatar").show();
                   $("#parentagentavatar").find('img').attr('src',o.avatar);
-		$("#parentagent").val( o.nickname+ "/" + o.realname + "/" + o.mobile );
+		$("#parentagent").val( o.nickname+ "/" + o.realname + "/" + o.membermobile );
 		$("#modal-module-menus-notice .close").click();
 	}
         

@@ -13,3 +13,4 @@ define('SZ_YI_DEBUG', false);//false
 !defined('SZ_YI_STATIC') && define('SZ_YI_STATIC', SZ_YI_URL . 'static/');
 !defined('SZ_YI_PREFIX') && define('SZ_YI_PREFIX', 'sz_yi_');
 !defined('SZ_YI_INTEGRAL') &&define("SZ_YI_INTEGRAL", "积分");
+!defined('SZ_YI_EXPORT') &&define("SZ_YI_EXPORT", "1000");

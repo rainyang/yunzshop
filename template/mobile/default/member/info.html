@@ -33,14 +33,16 @@
         <div class="line"><div class="title">昵称</div><div class='info'><div class='inner'><input type="text" id='nickname' placeholder="请输入您的昵称"  value="<%nickname%>" /></div></div></div>
         {/if}
         <%if mobile%>
-        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><%mobile%><a style="font-size: 12px;line-height: 40px;float: right;
+        <div class="line"><div class="title">绑定手机号</div><div class='info'><div class='inner'><%mobile%><a style="font-size: 12px;line-height: 40px;float: right;
     padding: 0 10px;color: #f15353;text-decoration: none;" href='{php echo $this->createMobileUrl('member/editmobile')}'>更换</a></div></div></div>
         <input type="hidden" id='mobile' value="<%mobile%>" />
         <%else%>
-        <div class="line"><div class="title">手机号码</div><div class='info'><div class='inner'><a style="font-size: 12px;line-height: 40px;float: right;
+        <div class="line"><div class="title">绑定手机</div><div class='info'><div class='inner'><a style="font-size: 12px;line-height: 40px;float: right;
     padding: 0 10px;color: #f15353;text-decoration: none;" href='{php echo $this->createMobileUrl('member/bindmobile')}'>立即绑定</a></div></div></div>
+        <input type="hidden" id='mobile' value="<%mobile%>" />
         <%/if%>
         <div class="line"><div class="title">微信号</div><div class='info'><div class='inner'><input type="text"  id='weixin' placeholder="请输入微信号" value="<%weixin%>"/></div></div></div>
+        <div class="line"><div class="title">联系电话</div><div class='info'><div class='inner'><input type="text" id='membermobile' placeholder="请输入您的手机号"  value="<%membermobile%>" /></div></div></div>
         <div class="line"><div class="title">支付宝帐号</div><div class='info'><div class='inner'><input type="text"  id='alipay' placeholder="请输入支付宝帐号" value="<%alipay%>"/></div></div></div>
         <div class="line"><div class="title">账号姓名</div><div class='info'><div class='inner'><input type="text"  id='alipayname' placeholder="请输入账号姓名" value="<%alipayname%>"/></div></div></div>
         <div class="line">
@@ -109,7 +111,7 @@
                         core.tip.show('请输入姓名!');
                         return;
                     }
-                    if(!$('#mobile').isMobile()){
+                    if(!$('#membermobile').isMobile()){
                         core.tip.show('请输入正确手机号码!');
                         return;
                     }
@@ -125,7 +127,7 @@
                         'memberdata':{
                             'realname': $('#realname').val(),
                             'nickname': $("#nickname").val(),
-                            'mobile': $('#mobile').val(),
+                            'membermobile': $('#membermobile').val(),
                             'weixin': $('#weixin').val(),
                             'gender': $('#sex').val(),
                             'birthyear': $('#birthday').val().length>0?birthday[0]:0,
@@ -138,7 +140,7 @@
                         }, 'mcdata':{
                             'realname': $('#realname').val(),
                             'nickname': $("#nickname").val(),
-                            'mobile': $('#mobile').val(),
+                            'membermobile': $('#membermobile').val(),
                             'gender': $('#sex').val(),
                             'birthyear': $('#birthday').val().length>0?birthday[0]:0,
                             'birthmonth': $('#birthday').val().length>0?birthday[1]:0,

@@ -179,14 +179,7 @@ if (!class_exists('TaobaoModel')) {
                 'noticeopenid' => '',
                 'storeids' => ''
             );
-            if (p('supplier')) {
-                $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
-                if (empty($perm_role)) {
-                    $data['supplier_uid'] = 0;
-                } else {
-                    $data['supplier_uid'] = $_W['uid'];
-                }
-            }
+            $data['supplier_uid'] = $this->get_supplier_uid();
             $thumb_url = array();
             $pics      = $item['pics'];
             $piclen    = count($pics);
@@ -773,14 +766,7 @@ if (!class_exists('TaobaoModel')) {
         {
             global $_W;
             $data = array('uniacid' => $_W['uniacid'], 'catch_source' => 'jingdong', 'catch_id' => $item['itemId'], 'catch_url' => $catch_url, 'title' => $item['title'], 'total' => $item['total'], 'marketprice' => $item['marketprice'], 'pcate' => $item['pcate'], 'ccate' => $item['ccate'], 'tcate' => $item['tcate'], 'cates' => $item['cates'], 'sales' => $item['sales'], 'createtime' => time(), 'updatetime' => time(), 'hasoption' => 0, 'status' => 0, 'deleted' => 0, 'buylevels' => '', 'showlevels' => '', 'buygroups' => '', 'showgroups' => '', 'noticeopenid' => '', 'storeids' => '', 'minprice' => $item['marketprice'], 'maxprice' => $item['marketprice']);
-            if (p('supplier')) {
-                $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
-                if (empty($perm_role)) {
-                    $data['supplier_uid'] = 0;
-                } else {
-                    $data['supplier_uid'] = $_W['uid'];
-                }
-            }
+            $data['supplier_uid'] = $this->get_supplier_uid();
             $thumb_url = array();
             $pics = $item['pics'];
             $piclen = count($pics);
@@ -854,14 +840,7 @@ if (!class_exists('TaobaoModel')) {
         {
             global $_W;
             $data = array('uniacid' => $_W['uniacid'], 'catch_source' => '1688', 'catch_id' => $item['itemId'], 'catch_url' => $catch_url, 'title' => $item['title'], 'total' => $item['total'], 'marketprice' => $item['marketprice'], 'pcate' => $item['pcate'], 'ccate' => $item['ccate'], 'tcate' => $item['tcate'], 'cates' => $item['cates'], 'sales' => $item['sales'], 'createtime' => time(), 'updatetime' => time(), 'hasoption' => 0, 'status' => 0, 'deleted' => 0, 'buylevels' => '', 'showlevels' => '', 'buygroups' => '', 'showgroups' => '', 'noticeopenid' => '', 'storeids' => '', 'minprice' => $item['marketprice'], 'maxprice' => $item['marketprice'],'content' => $item['content']);
-            if (p('supplier')) {
-                $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
-                if (empty($perm_role)) {
-                    $data['supplier_uid'] = 0;
-                } else {
-                    $data['supplier_uid'] = $_W['uid'];
-                }
-            }
+            $data['supplier_uid'] = $this->get_supplier_uid();
             $thumb_url = array();
             $pics = $item['pics'];
             $piclen = count($pics);
@@ -984,6 +963,19 @@ if (!class_exists('TaobaoModel')) {
             //$d = array('content' => $html);
             //pdo_update('sz_yi_goods', $d, array('id' => $goodsid));
             return array('result' => '1', 'goodsid' => $goodsid);
+        }
+        private function get_supplier_uid()
+        {
+            global $_W;
+            $supplier_uid = 0;
+            if (p('supplier')) {
+                $perm_role = p('supplier')->verifyUserIsSupplier($_W['uid']);
+                if (!empty($perm_role)) {
+                    $supplier_uid = $_W['uid'];
+                }
+            }
+            return $supplier_uid;
+
         }
 
         public function get_jingdong_info_url($itemid)

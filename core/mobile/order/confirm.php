@@ -175,9 +175,9 @@ if ($_W['isajax']) {
             $fromcart = 1;
         } else {
             if(p('hotel')){
-                $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,dispatchsend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+                $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,dispatchsend,deduct,virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             }else{
-                $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,dispatchsend,deduct, manydeduct, virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+                $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,dispatchsend,deduct,virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             }
             $data = pdo_fetch($sql, array(
                 ':uniacid' => $uniacid,
@@ -564,11 +564,7 @@ if ($_W['isajax']) {
                 $price = $goodsprice;
             }
             $order_all[$g['supplier_uid']]['total'] += $g["total"];
-            if ($g["manydeduct"]) {
-                $order_all[$g['supplier_uid']]['deductprice'] += $g["deduct"] * $g["total"];
-            } else {
-                $order_all[$g['supplier_uid']]['deductprice'] += $g["deduct"];
-            }
+            $order_all[$g['supplier_uid']]['deductprice'] += $g["deduct"] * $g["total"];
             //虚拟币抵扣
             if ($g["yunbi_deduct"]) {
                 $order_all[$g['supplier_uid']]['yunbideductprice'] += $g["yunbi_deduct"] * $g["total"];
@@ -1094,7 +1090,7 @@ if ($_W['isajax']) {
                         "price" => 0
                     ));
                 }
-                $sql  = "SELECT id as goodsid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformid,diyformtype,diymode,dispatchtype,dispatchid,dispatchprice,yunbi_deduct FROM " . tablename("sz_yi_goods") . " WHERE id=:id AND uniacid=:uniacid  limit 1";
+                $sql  = "SELECT id as goodsid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,virtual,discounts,deduct2,ednum,edmoney,edareas,diyformid,diyformtype,diymode,dispatchtype,dispatchid,dispatchprice,yunbi_deduct FROM " . tablename("sz_yi_goods") . " WHERE id=:id AND uniacid=:uniacid  limit 1";
                 $data = pdo_fetch($sql, array(
                     ":uniacid" => $uniacid,
                     ":id" => $goodsid
@@ -1164,11 +1160,8 @@ if ($_W['isajax']) {
                 if ($g['isverifysend'] == 1) {
                     $isverifysend = true;
                 }
-                if ($g["manydeduct"]) {
-                    $deductprice += $g["deduct"] * $g["total"];
-                } else {
-                    $deductprice += $g["deduct"];
-                }
+                $deductprice += $g["deduct"] * $g["total"];
+
                 //虚拟币抵扣
                 if ($data["yunbi_deduct"]) {
                     $yunbideductprice += $g["yunbi_deduct"] * $g["total"];
@@ -1485,7 +1478,7 @@ if ($_W['isajax']) {
                 if (p('yunbi')) {
                     $yunbi_condtion = 'isforceyunbi,yunbi_deduct,';
                 }
-                $sql  = 'SELECT id as goodsid,costprice,' . $channel_condtion . 'supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,manydeduct,virtual,discounts,discounts2,discountway,discounttype,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice, yunbi_deduct,bonusmoney FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
+                $sql  = 'SELECT id as goodsid,costprice,' . $channel_condtion . 'supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,virtual,discounts,discounts2,discountway,discounttype,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice, yunbi_deduct,bonusmoney FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
 
                 $data = pdo_fetch($sql, array(
                     ':uniacid' => $uniacid,
@@ -1810,11 +1803,8 @@ if ($_W['isajax']) {
                         $isvirtual = true;
                     }
                 }
-                if ($data["manydeduct"]) {
-                    $deductprice += $data["deduct"] * $data["total"];
-                } else {
-                    $deductprice += $data["deduct"];
-                }
+
+                $deductprice += $data["deduct"] * $data["total"];
 
                 //虚拟币抵扣
                 if ($data["yunbi_deduct"]) {
@@ -2270,17 +2260,22 @@ if ($_W['isajax']) {
             }
 
             if (is_array($carrier)) {
-                //todo, carrier_realname和carrier_mobile字段表里有么?
+                //todo, carrier_realname和carrier_mobile字段表里有么? 没有，是序列化存进去的。
                 $up = array(
+                    'realname' => $carrier['carrier_realname'],
+                    'membermobile' => $carrier['carrier_mobile']
+                );
+                $up_mc = array(
                     'realname' => $carrier['carrier_realname'],
                     'mobile' => $carrier['carrier_mobile']
                 );
+
                 pdo_update('sz_yi_member', $up, array(
                     'id' => $member['id'],
                     'uniacid' => $_W['uniacid']
                 ));
                 if (!empty($member['uid'])) {
-                    pdo_update('mc_members', $up, array(
+                    pdo_update('mc_members', $up_mc, array(
                         'uid' => $member['uid'],
                         'uniacid' => $_W['uniacid']
                     ));
