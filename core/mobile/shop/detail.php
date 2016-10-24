@@ -186,7 +186,7 @@ if ($pindiana && $_GPC['indiana']) {
 
         $indiana['dz'] = "选择地址1";
 
-        //echo "<pre>";print_r($member);exit;
+        //echo "<pre>";print_r($indiana);exit;
 }
 $html = $goods['content'];
 preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg]?))[\'|\"].*?[\/]?>/", $html, $imgs);
