@@ -28,7 +28,7 @@ class Plugin extends Core
         } else if (strexists($_SERVER['REQUEST_URI'], '/app/')) {
 
                 $this->setFooter();
-	    }
+        }
         $this->module['title'] = pdo_fetchcolumn('select title from ' . tablename('modules') . " where name='sz_yi' limit 1");
     }
     private function loadModel()
@@ -55,7 +55,8 @@ class Plugin extends Core
         $tmplateType = (isMobile()) ? 'mobile' : 'pc';
         if(strstr($_SERVER['REQUEST_URI'],'app')){
             if(!isMobile()){
-                if($this->yzShopSet['ispc']==0){
+                //没开启手机端与使用店铺装修都使用手机模板
+                if($this->yzShopSet['ispc']==0 || $this->pluginname == "designer"){
                     $tmplateType = 'mobile';
                 }
             }
@@ -109,16 +110,16 @@ class Plugin extends Core
             }
             if (!is_file($source)) {
                 $source  = $defineDir . "/template/{$tmplateType}/{$template}/{$filename}.html";
-                $compile = IA_ROOT . "/data/app/sz_yi/{$template}/{$filename}.tpl.php";
+                $compile = IA_ROOT . "/data/app/sz_yi/{$template}/{$tmplateType}/{$filename}.tpl.php";
             }
 
             if (!is_file($source)) {
                 $source  = $defineDir . "/template/{$tmplateType}/default/{$filename}.html";
-                $compile = IA_ROOT . "/data/app/sz_yi/default/{$filename}.tpl.php";
+                $compile = IA_ROOT . "/data/app/sz_yi/default/{$tmplateType}/{$filename}.tpl.php";
             }
             if (!is_file($source)) {
                 $source  = $defineDir . "/template/{$tmplateType}/default_drug/{$filename}.html";
-                $compile = IA_ROOT . "/data/app/sz_yi/{$filename}.tpl.php";
+                $compile = IA_ROOT . "/data/app/sz_yi/{$tmplateType}/{$filename}.tpl.php";
             }
             if (!is_file($source)) {
                 $names      = explode('/', $filename);
@@ -138,6 +139,7 @@ class Plugin extends Core
         if (!is_file($source)) {
             exit("Error: template source '{$filename}' is not exist!");
         }
+
         if (DEVELOPMENT || !is_file($compile) || filemtime($source) > filemtime($compile)) {
             shop_template_compile($source, $compile, true);
         }
