@@ -560,7 +560,6 @@ if ($operation == "change") {
                 'followurl' => trim($_GPC['followurl']),
                 'followtip' => trim($_GPC['followtip']),
                 'deduct' => $_GPC['deduct'],
-                "manydeduct" => $_GPC["manydeduct"],
                 "deduct2" => $_GPC["deduct2"],
                 'virtual' => intval($_GPC['type']) == 3 ? intval($_GPC['virtual']) : 0,
                 'discounts' => is_array($_GPC['discounts']) ? json_encode($_GPC['discounts']) : "",
