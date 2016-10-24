@@ -12,7 +12,7 @@ if(empty($openid)){
 }
 $member    = m('member')->getMember($openid);
 $uniacid    = $_W['uniacid'];
-$set = set_medias(m('common')->getSysset('shop'), array('logo', 'img'));
+$set = $this->model->getSet();
 $commission = p('commission');
 $shopset   = m('common')->getSysset('shop');
 $plugin_yunbi = p('yunbi');
@@ -158,5 +158,34 @@ if ($_W['isajax']) {
         'category' => $category,
         'current_category' => $current_category
     ));
+}
+
+$_W['shopshare'] = array(
+    'title' => !empty($set['sharetitle']) ? $set['sharetitle'] : "众筹列表",
+    'imgUrl' => !empty($set['shareicon']) ? tomedia($set['shareicon']) : tomedia($shopset['logo']),
+    'desc' => !empty($set['sharedesc']) ? $set['sharedesc'] : '',
+    'link' => $this->createPluginMobileUrl('fund/index', array(
+        'mid' => $mid
+    ))
+);
+$com             = p('commission');
+if ($com) {
+    $cset = $com->getSet();
+    if (!empty($cset)) {
+        if ($member['isagent'] == 1 && $member['status'] == 1) {
+            $_W['shopshare']['link'] = $this->createPluginMobileUrl('fund/index', array(
+                'id' => $goods['id'],
+                'mid' => $member['id']
+            ));
+            if (empty($cset['become_reg']) && (empty($member['realname']) || empty($member['mobile']))) {
+                $trigger = true;
+            }
+        } else if (!empty($_GPC['mid'])) {
+            $_W['shopshare']['link'] = $this->createPluginMobileUrl('fund/index', array(
+                'id' => $goods['id'],
+                'mid' => $_GPC['mid']
+            ));
+        }
+    }
 }
 include $this->template('list');

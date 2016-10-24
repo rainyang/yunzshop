@@ -125,7 +125,6 @@ border: 1px solid rgba(255, 255, 255, 0.5); }
 .last-act .last-user span.act-name { display: inline-block; max-width: 4em; overflow: hidden; -o-text-overflow: ellipsis; text-overflow: ellipsis; 
 word-break: keep-all; white-space: nowrap; vertical-align: top; }
 
-.good_choose .other{margin-top: 0;}
 </style>
 <input type="hidden" id="lastOrderUrl" value="{php echo $this->createMobileUrl('shop/lastorder',array('op'=>'display'),true)}"/>
 <script type="text/javascript">
@@ -247,6 +246,17 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 
     <div class="good_choose_layer"></div>
     <div class="good_choose">
+    <div class="info">
+             <div class="left">
+                 <img id="chooser_img" src='<%goods.thumb%>'/>
+             </div>
+             <div class="right">
+                   <div class="price">￥<span id='option_price'><%goods.marketprice%></span></div>
+                   <div class="stock">库存:<span id='option_stock'><%goods.total%></span>件</span> </div>
+                   <div class="option">请选择规格</div>
+             </div>
+            <div class="close" onClick="closechoose()"><i class="fa fa-remove-o"></i></div>
+        </div>
         <div class="other">
             <input type='hidden' id='optionid' value='' />
                 <%each specs as spec%>

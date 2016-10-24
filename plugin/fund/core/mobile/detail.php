@@ -587,7 +587,7 @@ if ($com) {
     $cset = $com->getSet();
     if (!empty($cset)) {
         if ($member['isagent'] == 1 && $member['status'] == 1) {
-            $_W['shopshare']['link'] = $this->createMobileUrl('shop/detail', array(
+            $_W['shopshare']['link'] = $this->createPluginMobileUrl('fund/detail', array(
                 'id' => $goods['id'],
                 'mid' => $member['id']
             ));
@@ -595,7 +595,7 @@ if ($com) {
                 $trigger = true;
             }
         } else if (!empty($_GPC['mid'])) {
-            $_W['shopshare']['link'] = $this->createMobileUrl('shop/detail', array(
+            $_W['shopshare']['link'] = $this->createPluginMobileUrl('fund/detail', array(
                 'id' => $goods['id'],
                 'mid' => $_GPC['mid']
             ));

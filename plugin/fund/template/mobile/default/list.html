@@ -1,5 +1,5 @@
 {template 'common/header'}
-<title>{if empty($current_category)}全部商品{else}{$current_category['name']}{/if}</title>
+<title>{if empty($set['title'])}众筹列表{else}{$set['title']}{/if}</title>
 <link href="../addons/sz_yi/plugin/fund/template/mobile/default/static/css/zc.css" rel="stylesheet" type="text/css">
 <link href="../addons/sz_yi/plugin/fund/template/mobile/default/static/font/iconfont.css" rel="stylesheet" type="text/css">
 <div id='container'></div>
@@ -98,9 +98,7 @@
     }
 
     function bindEvents() {
-        $('.project img').each(function(){
-           $(this).height($(this).width()); 
-        });
+
         $('.project').unbind('click').click(function () {
                     location.href = core.getUrl('plugin/fund/detail', {id: $(this).data('goodsid'),my:'{$_GPC['my']}'});
         });
