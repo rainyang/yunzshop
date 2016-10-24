@@ -186,7 +186,10 @@ if ($pindiana && $_GPC['indiana']) {
 
         $indiana['dz'] = "选择地址1";
 
-        //echo "<pre>";print_r($indiana);exit;
+        $indiana['address']      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' WHERE openid=:openid AND deleted=0 AND isdefault=1  AND uniacid=:uniacid limit 1', array(
+            ':uniacid' => $uniacid,
+            ':openid' => $openid
+        ));
 }
 $html = $goods['content'];
 preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg]?))[\'|\"].*?[\/]?>/", $html, $imgs);
