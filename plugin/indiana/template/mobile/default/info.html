@@ -2,23 +2,25 @@
 <title>{$title}</title>
 <style type="text/css">
     body {margin:0px; background:#efefef; -moz-appearance:none; -webkit-appearance: none;}
-    .indiana_topbar {height:auto; width:100%; background:#fff; border-bottom:1px solid #e3e3e3; padding: 5px 0; background: #e9e9e9;}
-    .indiana_topbar .inner {height: 22px;color: #555;line-height: 22px;font-size: 12px;}
+    .indiana_topbar {height:auto; width:100%;background:  #fff8de none repeat scroll 0% 0%; border-bottom:1px solid #e3e3e3; padding: 10px; }
+    .indiana_topbar .inner {height: 24px;color: #333;line-height: 24px;font-size: 14px;}
+    .indiana_topbar .inner-num {height: 20px;color: #999;line-height: 20px;font-size: 12px;}
 
-    .indiana_main {height:30px; width:100%; background:#fff;line-height: 30px;  margin-top:5px; border-bottom:1px solid #e2e2e2; border-top:1px solid #e2e2e2;}
-   	.indiana_main .inner  {text-align: center;font-size: 11px;}
+    .indiana_main {height:40px; width:100%; background:#fff;line-height: 40px;  border-bottom:1px solid #e2e2e2; }
+   	.indiana_main .inner  {text-align: center;font-size: 12px;}
 	.indiana_main .top  {text-align: center;font-size: 12px;float: left;}
 	.indiana_main .info  {font-size: 12px;float: left;}
 
-    .indiana_inner {height:auto; width:100%; background:#fff;line-height: 30px;  border-bottom:1px solid #e2e2e2; border-top:1px solid #e2e2e2;}
-	.indiana_inner .top  {text-align: center;font-size: 12px;float: left;}
-	.indiana_inner .info  {font-size: 12px;float: left;}
+    .indiana_inner {height:auto; width:100%; background:#fff;line-height: 30px;  /*border-bottom:1px solid #e2e2e2; border-top:1px solid #e2e2e2;*/}
+	.indiana_inner .top  {text-align: center;font-size: 12px;float: left;line-height: 40px;}
+	.indiana_inner .info  {font-size: 12px;float: left;line-height: 40px;}
 
     .order_no {height:40px; width:90%;  padding-top:10px; margin:50px 0px;}
 
     .order_no {height:100px; width:90%; margin:50px 0px 60px; color:#BFBFBF; font-size:12px; text-align:center;}
     .order_no_menu {height:40px; width:90%; text-align:center;}
     .order_no_nav {height:34px;padding:6px 20px;background:#eee; border:1px solid #d4d4d4; border-radius:5px; text-align:center; line-height:34px; color:#666;font-size: 16px}
+	#order_loading { width:94%;padding:10px;color:#666;text-align: center;}
 </style>
 
 <script language="javascript" src="../addons/sz_yi/static/js/dist/bootstrap.min.js"></script>
@@ -30,7 +32,7 @@
 	</div>
     <div class="indiana_topbar">
 		<div class='inner' style="font-size: 14px;">{$indiana['title']}</div>
-		<div class='inner'>期号：{$indiana['period_num']}</div> 
+		<div class='inner inner-num'>期号：{$indiana['period_num']}</div>
 		{if $indiana['status'] == 3}
 		<div class='inner'>揭晓时间：{$indiana['endtime']}</div> 
 		<div class='inner'>本期幸运号：<span style="color:#f00">{$indiana['code']}</span></div> 
@@ -39,13 +41,13 @@
 
     <div class="indiana_main">
     	<div class="inner">
-			我已参与<span style="color:#f00">{$indiana['count']}</span>人次，以下是所有夺宝记录
+			我已参与<span style="color: #f15353">{$indiana['count']}</span>人次，以下是所有夺宝记录
 		</div>
     </div>
     <div class="indiana_main">
-    	<div class="top" style="width:47%">夺宝时间</div>
-    	<div class="top" style="width:25%">参与人次</div>
-    	<div class="top" style="width:25%">操作</div>
+    	<div class="top" style="width:46%">夺宝时间</div>
+    	<div class="top" style="width:27%">参与人次</div>
+    	<div class="top" style="width:27%">操作</div>
     </div>
 
 
@@ -54,11 +56,11 @@
 <script id='tpl_order' type='text/html'>
 <div class="indiana_inner">
     <%each list as indiana%>
-	    <div style="width:100%;height:30px;border-bottom: 1px solid #e2e2e2;">
-	    	<div class="info" style="width:47%"><%indiana.create_time%> <%indiana.microtime%></div>
-	    	<div class="top" style="width:25%"><span style="color:#f00"><%indiana.num%></span>人次</div>
-	    	<div class="top" style="width:25%">
-	    		<span style="color:rgb(11, 14, 246);cursor: pointer;" data-createtime="<%indiana.create_time%>" data-toggle="modal" data-target="#modal-confirmsend<%indiana.id%>">查看号码</span>
+	    <div style="width:100%;height:40px;border-bottom: 1px solid #e2e2e2;">
+	    	<div class="info" style="width:46%;text-align: center;"><%indiana.create_time%> <%indiana.microtime%></div>
+	    	<div class="top" style="width:27%"><span style="color: #f15353"><%indiana.num%></span>人次</div>
+	    	<div class="top" style="width:27%">
+	    		<span style="color:#2783ce;cursor: pointer;" data-createtime="<%indiana.create_time%>" data-toggle="modal" data-target="#modal-confirmsend<%indiana.id%>">查看号码</span>
 	    	</div>
 	    </div>
 
