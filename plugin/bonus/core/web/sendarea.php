@@ -173,24 +173,6 @@ if (!empty($_POST)) {
 
 	        //更新分红订单完成
 			pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
-	        if($sendpay == 1){
-	        	//获取用户等级名称
-	            $templateid = $set['tm']['templateid'];
-	            $message = $set['tm']['bonus_pay'];
-	            $send_type = empty($set['paymethod']) ? "余额" : "微信钱包";
-	            $message = $set['tm']['bonus_pay_area'];
-				$message = str_replace('[昵称]', $member['nickname'], $message);
-				$message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
-				$message = str_replace('[金额]', $send_money, $message);
-				$message = str_replace('[打款方式]', $send_type, $message);
-				$message = str_replace('[地区等级]', $value['levelname'], $message);
-				$msg = array('keyword1' => array('value' => !empty($set['tm']['bonus_paytitle_area']) ? $set['tm']['bonus_paytitle_area'] : '地区分红打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
-				if (!empty($templateid)) {
-					m('message')->sendTplNotice($member['openid'], $templateid, $msg, '', $account);
-				} else {
-					m('message')->sendCustomNotice($member['openid'], $msg, '', $account);
-				}
-	        }
 		}	
 	}
 

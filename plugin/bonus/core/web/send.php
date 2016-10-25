@@ -165,7 +165,7 @@ if (!empty($_POST)) {
 
 	        //更新分红订单完成
 			pdo_query('update ' . tablename('sz_yi_bonus_goods') . ' set status=3, applytime='.$time.', checktime='.$time.', paytime='.$time.', invalidtime='.$time.' where id in( ' . implode(',', array_keys($ids)) . ') and uniacid='.$_W['uniacid']);
-	        if($sendpay == 1){
+	        /*if($sendpay == 1){
 	        	//获取用户等级名称
 	            $templateid = $set['tm']['templateid'];
 	            $message = $set['tm']['bonus_pay'];
@@ -181,7 +181,7 @@ if (!empty($_POST)) {
 	            } else {
 	                m('message')->sendCustomNotice($member['openid'], $msg, "", $account);
 	            }
-	        }
+	        }*/
 		}	
 	}
 

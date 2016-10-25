@@ -98,7 +98,8 @@ if($operation == "display"){
 	$psize     = 20;
 	$list  = pdo_fetchall('select * from ' . tablename('sz_yi_bonus') . " where uniacid={$_W["uniacid"]}".$sendwhere." order by id desc limit " . ($pindex - 1) * $psize . ',' . $psize);
 }else if($operation == "getopenids"){
-	$member = pdo_fetchall("SELECT openid FROM " . tablename('sz_yi_bonus_log') . " WHERE uniacid = '{$_W['uniacid']}' and send_bonus_sn=:sn", array(":sn" => $_GPC['sn']), 'openid');
+	//获取发放成功的openid
+	$member = pdo_fetchall("SELECT openid FROM " . tablename('sz_yi_bonus_log') . " WHERE uniacid = '{$_W['uniacid']}' and send_bonus_sn=:sn and sendpay=1", array(":sn" => $_GPC['sn']), 'openid');
     plog('tmessage.send', "分红群发 人数: " . count($member));
     die(json_encode(array(
         'result' => 1,
@@ -107,10 +108,10 @@ if($operation == "display"){
 }else if($operation == "sendmessage"){
 	$openid = $_GPC['openid'];
 	$set = $this->set;
-	$member =  pdo_fetch("SELECT nickname,bonuslevel,bonus_area FROM " . tablename('sz_yi_member') . " WHERE uniacid = '{$_W['uniacid']}' and  openid=:openid", array(":openid" => $openid));
+	$member =  pdo_fetch("SELECT nickname, bonuslevel, bonus_area FROM " . tablename('sz_yi_member') . " WHERE `uniacid` = '{$_W['uniacid']}' and  `openid`=:openid", array(":openid" => $openid));
 
-	$log = pdo_fetch("SELECT openid, money, ctime FROM " . tablename('sz_yi_bonus_log') . " WHERE uniacid = '{$_W['uniacid']}' and openid=:openid and send_bonus_sn=:sn", array(":sn" => $_GPC['sn'], ":openid" => $openid));
-	$bonus = pdo_fetch("SELECT paymethod FROM " . tablename('sz_yi_bonus') . " WHERE uniacid = '{$_W['uniacid']}' and  send_bonus_sn=:sn", array(":sn" => $_GPC['sn']));
+	$log = pdo_fetch("SELECT openid, money, ctime FROM " . tablename('sz_yi_bonus_log') . " WHERE `uniacid` = '{$_W['uniacid']}' and `openid`=:openid and `send_bonus_sn`=:sn", array(":sn" => $_GPC['sn'], ":openid" => $openid));
+	$bonus = pdo_fetch("SELECT paymethod, type FROM " . tablename('sz_yi_bonus') . " WHERE `uniacid` = '{$_W['uniacid']}' and  `send_bonus_sn`=:sn", array(":sn" => $_GPC['sn']));
 	if($bonus['type'] == 3){
 		if($member['bonus_area'] == 1){
 			$levelname = "省级代理";
@@ -122,21 +123,35 @@ if($operation == "display"){
 	}else{
 		$levelname =  pdo_fetchcolumn("SELECT levelname FROM " . tablename('sz_yi_bonus_level') . " WHERE uniacid = '{$_W['uniacid']}' and  id=:id", array(":id" => $member['bonuslevel']));
 	}
-
+	switch ($bonus['type']) {
+		case 2:			//团队分红
+			$message = $set['tm']['bonus_pay'];
+			$send_title = !empty($set['tm']['bonus_paytitle']) ? $set['tm']['bonus_paytitle'] : '代理分红打款通知';
+			break;
+		case 3:			//地区分红
+			$message = $set['tm']['bonus_pay_area'];
+			$send_title = !empty($set['tm']['bonus_global_paytitle']) ? $set['tm']['bonus_global_paytitle'] : '全球分红打款通知';
+			break;
+		default:		//全球分红
+			$message = $set['tm']['bonus_global_pay'];
+			$send_title = !empty($set['tm']['bonus_paytitle_area']) ? $set['tm']['bonus_paytitle_area'] : '地区分红打款通知';
+			break;
+	}
 	$templateid = $set['tm']['templateid'];
     $send_type = empty($bonus['paymethod']) ? "余额" : "微信钱包";
-    $message = $set['tm']['bonus_global_pay'];
     $message = str_replace('[昵称]', $member['nickname'], $message);
     $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
     $message = str_replace('[金额]', $log['money'], $message);
     $message = str_replace('[打款方式]', $send_type, $message);
     $message = str_replace('[代理等级]', $levelname, $message);
-    $msg = array('keyword1' => array('value' => !empty($set['tm']['bonus_global_paytitle']) ? $set['tm']['bonus_global_paytitle'] : '全球分红打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
+    $message = str_replace('[地区等级]', $levelname, $message);
+    $msg = array('keyword1' => array('value' => $send_title, 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
     if (!empty($templateid)) {
         $result = m('message')->sendTplNotice($openid, $templateid, $msg);
     } else {
         $result = m('message')->sendCustomNotice($openid, $msg);
     }
+
     if (is_error($result)) {
         die(json_encode(array(
             'result' => 0,
