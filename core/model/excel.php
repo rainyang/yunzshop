@@ -239,6 +239,7 @@ class Sz_DYi_Excel
         if ($page == $page_total) {
             load()->func('file');
             $filename = IA_ROOT . "/addons/sz_yi/data/". time() . "down.zip";
+            $time = time();
             $zip = new ZipArchive (); // 使用本类，linux需开启zlib，windows需取消php_zip.dll前的注释
             if ($zip->open ( $filename, ZIPARCHIVE::CREATE ) !== TRUE) {
                 exit ( '无法打开文件，或者文件创建失败' );
@@ -246,20 +247,25 @@ class Sz_DYi_Excel
             //$fileNameArr 就是一个存储文件路径的数组 比如 array('/a/1.jpg,/a/2.jpg....');
             $fileNameArr = file_tree(IA_ROOT . "/addons/sz_yi/data/excel");
             foreach ($fileNameArr as $val ) {
-                $zip->addFile ( $val, basename($val) ); // 第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
+                $zip->addFile ($val,basename($val) ); // 第二个参数是放在压缩包中的文件名称，如果文件可能会有重复，就需要注意一下
             }
             $zip->close (); // 关闭
             foreach ($fileNameArr as $val ) {
                 file_delete($val);
             }
             //下面是输出下载;
-            header ( "Cache-Control: max-age=0" );
-            header ( "Content-Description: File Transfer" );
-            header ( 'Content-disposition: attachment; filename=' . basename ($filename)); // 文件名
-            header ( "Content-Type: application/zip" ); // zip格式的
-            header ( "Content-Transfer-Encoding: binary" ); // 告诉浏览器，这是二进制文件
-            header ( 'Content-Length: ' . filesize ( $filename ) ); // 告诉浏览器，文件大小
-            @readfile ( $filename );//输出文件;
+
+            $url = "http://". $_SERVER['SERVER_NAME']."/addons/sz_yi/data/".$time ."down.zip";
+            $backurl = "http://". $_SERVER['SERVER_NAME']."/web/index.php?c=site&a=entry&op=display&do=order&m=sz_yi"; 
+            echo '<div style="border: 6px solid #e0e0e0;width: 12%;margin: 0 auto;margin-top: 12%;padding: 26px 100px;box-shadow: 0 0 14px #a2a2a2;color: #616161;"><a style="color:red;text-decorationnone;"  href="'.$url.'">点击获取下载文件</a><a style="color:#616161"  href="'.$backurl.'">返回</a><div>';
+
+            // header ( "Cache-Control: max-age=0" );
+            // header ( "Content-Description: File Transfer" );
+            // header ( 'Content-disposition: attachment; filename=' . basename ($filename)); // 文件名
+            // header ( "Content-Type: application/zip" ); // zip格式的
+            // header ( "Content-Transfer-Encoding: binary" ); // 告诉浏览器，这是二进制文件
+            // header ( 'Content-Length: ' . filesize ( $filename ) ); // 告诉浏览器，文件大小
+            // @readfile ( $filename );//输出文件;
         } 
     }
     public function import($excefile)
