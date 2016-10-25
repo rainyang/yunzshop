@@ -409,7 +409,6 @@ class Sz_DYi_Order
         ));
         $credits = 0;
 
-        $store_nifo = p('verify')->getInfo($order['storeid']);
         foreach ($goods as $g) {
             $stocktype = 0;
             if ($type == 0) {
