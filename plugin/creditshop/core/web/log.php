@@ -20,7 +20,7 @@ if ($operation == 'display') {
 	}
 	if (!empty($_GPC['realname'])) {
 		$_GPC['realname'] = trim($_GPC['realname']);
-		$condition .= ' and ( m.realname like :realname or m.nickname like :realname  or m.mobile like :realname or log.realname like :realname  or log.mobile like :realname  or a.realname like :realname or a.mobile like :realname  ) ';
+		$condition .= ' and ( m.realname like :realname or m.nickname like :realname  or m.mobile like :realname or m.membermobile like :realname or log.realname like :realname  or log.mobile like :realname  or a.realname like :realname or a.mobile like :realname  ) ';
 		$params[':realname'] = "%{$_GPC['realname']}%";
 	}
 	if (!empty($_GPC['storename'])) {
@@ -42,7 +42,7 @@ if ($operation == 'display') {
 			$params[':endtime'] = $endtime;
 		}
 	}
-	$sql = 'select log.*, m.nickname,m.avatar,m.realname as mrealname,m.mobile as mmobile, g.title,g.thumb,g.thumb,g.credit,g.money,g.type as goodstype,g.isverify,g.goodstype as iscoupon,s.storename,s.address as storeaddress from ' . tablename('sz_yi_creditshop_log') . ' log ' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid = log.openid and m.uniacid=log.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on a.id = log.addressid' . ' left join ' . tablename('sz_yi_store') . ' s on s.id = log.storeid' . ' left join ' . tablename('sz_yi_creditshop_goods') . ' g on g.id = log.goodsid' . " where 1 {$condition} ORDER BY log.createtime desc ";
+	$sql = 'select log.*, m.nickname,m.avatar,m.realname as mrealname,m.membermobile as mmobile, g.title,g.thumb,g.thumb,g.credit,g.money,g.type as goodstype,g.isverify,g.goodstype as iscoupon,s.storename,s.address as storeaddress from ' . tablename('sz_yi_creditshop_log') . ' log ' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid = log.openid and m.uniacid=log.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on a.id = log.addressid' . ' left join ' . tablename('sz_yi_store') . ' s on s.id = log.storeid' . ' left join ' . tablename('sz_yi_creditshop_goods') . ' g on g.id = log.goodsid' . " where 1 {$condition} ORDER BY log.createtime desc ";
 	if (empty($_GPC['export'])) {
 		$sql .= ' limit ' . ($pindex - 1) * $psize . ',' . $psize;
 	}
