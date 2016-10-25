@@ -214,7 +214,7 @@
     <input type="hidden" name="op" value="post" />
     <div class='panel panel-default'>
         <div class='panel-heading'>
-            编辑{if $type==0}购物{else}充值{/if}优惠券
+            编辑{if empty($_GPC['type'])}购物{else}充值{/if}优惠券
         </div>
     
    <div class='panel-body'>
@@ -278,7 +278,7 @@
                 <div class="col-sm-9 col-xs-12">
                     {ife 'coupon.coupon' $item}
                     <input type="text" name="enough" class="form-control" value="{$item['enough']}"  />
-                    <span class='help-block' >{if empty($type)}消费{else}充值{/if}满多少可用, 空或0 不限制</span>
+                    <span class='help-block' >{if empty($_GPC['type'])}消费{else}充值{/if}满多少可用, 空或0 不限制</span>
                     {else}
                     <div class='form-control-static'>{if $item['enough']>0}满 {$item['enough']} 可用 {else}不限制{/if}</div>
                     {/if}
@@ -320,11 +320,12 @@
                     {/if}
               
             </div>
-            {if empty($type)}
+            {if empty($_GPC['type'])}
       {template 'coupon/consume'}
       {else}
       {template 'coupon/recharge'}
       {/if}
+   {if empty($_GPC['type'])}
     <div class="form-group">
         <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否支持收银台使用</label>
         <div class="col-sm-9 col-xs-12" >
@@ -616,7 +617,7 @@
                       </div>
                   {/if}
 </div>
-
+{/if}
 
 <div id="goods" style="display: none"></div>
 

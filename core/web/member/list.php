@@ -22,7 +22,7 @@ if ($op == 'display') {
     }
     if (!empty($_GPC['realname'])) {
         $_GPC['realname'] = trim($_GPC['realname']);
-        $condition .= ' and ( dm.realname like :realname or dm.nickname like :realname or dm.mobile like :realname)';
+        $condition .= ' and ( dm.realname like :realname or dm.nickname like :realname or dm.membermobile like :realname)';
         $params[':realname'] = "%{$_GPC['realname']}%";
     }
     if (empty($starttime) || empty($endtime)) {
@@ -98,7 +98,7 @@ if ($op == 'display') {
                 ),
                 array(
                     'title' => '手机号',
-                    'field' => 'mobile',
+                    'field' => 'membermobile',
                     'width' => 12
                 ),
                 array(
@@ -225,7 +225,7 @@ if ($op == 'display') {
             'uniacid' => $_W['uniacid']
         ));
         $member = m('member')->getMember($id);
-        plog('member.member.edit', "修改会员资料  ID: {$member['id']} <br/> 会员信息:  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+        plog('member.member.edit', "修改会员资料  ID: {$member['id']} <br/> 会员信息:  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['membermobile']}");
         if ($hascommission) {
             if (cv('commission.agent.changeagent')) {
                 $adata = is_array($_GPC['adata']) ? $_GPC['adata'] : array();
@@ -237,9 +237,9 @@ if ($op == 'display') {
                             'nickname' => $member['nickname'],
                             'agenttime' => $time
                         ), TM_COMMISSION_BECOME);
-                        plog('commission.agent.check', "审核分销商 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+                        plog('commission.agent.check', "审核分销商 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['membermobile']}");
                     }
-                    plog('commission.agent.edit', "修改分销商 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+                    plog('commission.agent.edit', "修改分销商 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['membermobile']}");
                     pdo_update('sz_yi_member', $adata, array(
                         'id' => $id,
                         'uniacid' => $_W['uniacid']
@@ -323,7 +323,7 @@ if ($op == 'display') {
         pdo_query('delete from ' . tablename('mc_members') . ' where uid in (' . implode(',', array_keys($fans)) . ') and uniacid=:uniacid', array(':uniacid' => $_W['uniacid']));
     }
 
-    plog('member.member.delete', "删除会员  ID: {$member['id']} <br/>会员信息: {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+    plog('member.member.delete', "删除会员  ID: {$member['id']} <br/>会员信息: {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['membermobile']}");
     message('删除成功！', $this->createWebUrl('member/list'), 'success');
 } else if ($operation == 'setblack') {
     ca('member.member.setblack');
@@ -342,7 +342,7 @@ if ($op == 'display') {
         ), array(
             'id' => $_GPC['id']
         ));
-        plog('member.member.black', "设置黑名单 <br/>用户信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+        plog('member.member.black', "设置黑名单 <br/>用户信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['membermobile']}");
         message('设置黑名单成功！', $this->createWebUrl('member/list'), 'success');
     } else {
         pdo_update('sz_yi_member', array(
@@ -350,7 +350,7 @@ if ($op == 'display') {
         ), array(
             'id' => $_GPC['id']
         ));
-        plog('member.member.black', "取消黑名单 <br/>用户信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+        plog('member.member.black', "取消黑名单 <br/>用户信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['membermobile']}");
         message('取消黑名单成功！', $this->createWebUrl('member/list'), 'success');
     }
 }
