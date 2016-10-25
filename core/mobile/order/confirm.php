@@ -153,7 +153,7 @@ if ($_W['isajax']) {
             ), 'supplier_uid');
 
             $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.dispatchsend, g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,discounts2,discounttype,discountway,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid, g.yunbi_deduct FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
-            
+
             $goods = pdo_fetchall($sql, array(
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
@@ -327,7 +327,7 @@ if ($_W['isajax']) {
                 }
             }
             if (p('yunbi')) {
-                if (!empty($isyunbipay)) {
+                if (!empty($isyunbipay) && !empty($yunbiset['isdeduct'])) {
                     $g['marketprice'] -= $g['yunbi_deduct'];
                 }
             }
@@ -384,7 +384,6 @@ if ($_W['isajax']) {
         if (!empty($carrier_list)) {
             $carrier = $carrier_list[0];
         }
-
         if (p('channel')) {
             $my_info = p('channel')->getInfo($openid);
         }
@@ -582,7 +581,6 @@ if ($_W['isajax']) {
             }
             $order_all[$g['supplier_uid']]['goods'][] = $g;
         }
-
         unset($g);
         //核销
         if ($isverify) {
@@ -815,7 +813,6 @@ if ($_W['isajax']) {
                 $order_all[$val['supplier_uid']]['hascoupon']   = $order_all[$val['supplier_uid']]['couponcount'] > 0;
             }
             $order_all[$val['supplier_uid']]['realprice'] += $order_all[$val['supplier_uid']]['dispatch_price'];
-
             $realprice_total += $order_all[$val['supplier_uid']]['realprice'];
             $order_all[$val['supplier_uid']]['deductcredit']  = 0;
             $order_all[$val['supplier_uid']]['deductmoney']   = 0;
@@ -1403,7 +1400,7 @@ if ($_W['isajax']) {
             show_json(-2,'您的订单中，商品标题为 ‘'.$can_buy['title'].'’ 的商品不支持快递配送，请更换配送方式或者剔除此商品！');
 
         }
-
+        $yunbiprice = 0;
         //判断结束
         foreach ($order_data as $key => $order_row) {
             unset($minDispathPrice);
@@ -1587,6 +1584,11 @@ if ($_W['isajax']) {
                         }
                     }
                 }
+                /*if (p('yunbi')) {
+                    if (!empty($isyunbipay) && !empty($yunbiset['isdeduct'])) {
+                        $data['marketprice'] -= $data['yunbi_deduct'];
+                    }
+                }*/
                 $data["diyformdataid"] = 0;
                 $data["diyformdata"]   = iserializer(array());
                 $data["diyformfields"] = iserializer(array());
@@ -1808,9 +1810,8 @@ if ($_W['isajax']) {
 
                 //虚拟币抵扣
                 if ($data["yunbi_deduct"]) {
-                    $yunbideductprice += $data["yunbi_deduct"] * $data["total"];
-                } else {
-                    $yunbideductprice += $data["yunbi_deduct"];
+                    $yunbiprice += $data["yunbi_deduct"] * $data["total"];
+                    $yunbideductprice = $data["yunbi_deduct"] * $data["total"];
                 }
                 //虚拟币抵扣
                 $deductyunbi = 0;
@@ -1858,9 +1859,6 @@ if ($_W['isajax']) {
                     }
                     $totalprice -= $deductyunbimoney;
                 }
-
-
-
                 $virtualsales += $data["sales"];
                 if ($data["deduct2"] == 0.00) {
                     $deductprice2 += $ggprice;
@@ -2082,7 +2080,6 @@ if ($_W['isajax']) {
                     }
                 }
                 $totalprice -= $deductmoney;
-
                 if (!empty($order_row['deduct2'])) {
                     $deductcredit2 = m('member')->getCredit($openid, 'credit2');
                     if ($deductcredit2 > $totalprice) {
@@ -2094,8 +2091,6 @@ if ($_W['isajax']) {
                 }
                 $totalprice -= $deductcredit2;
             }
-
-
             $ordersn    = m('common')->createNO('order', 'ordersn', 'SH');
             $verifycode = "";
             if ($isverify) {
@@ -2137,7 +2132,6 @@ if ($_W['isajax']) {
                     $goodsprice =$_GPC['goodsprice'];
                 }
             }
-
             $order   = array(
                 'supplier_uid' => $order_row['supplier_uid'],
                 'uniacid' => $uniacid,
@@ -2149,7 +2143,7 @@ if ($_W['isajax']) {
                 'discountprice' => $discountprice,
                 'deductprice' => $deductmoney,
                 'deductcredit' => $deductcredit,
-                'deductyunbimoney' => $deductyunbimoney,
+                'deductyunbimoney' => $yunbiprice,
                 'deductyunbi' => $deductyunbi,
                 'deductcredit2' => $deductcredit2,
                 'deductenough' => $deductenough,
