@@ -158,10 +158,8 @@ if ($op == 'display') {
                 $_GET['current_page'] = $export_page+1;
                 $_GET['orderindex'] = $orderindex;
                 $url = "http://". $_SERVER['SERVER_NAME']."/".$_W['script_name'] . '?' . http_build_query($_GET);
-                //header("Location:". $url);
-                $current_pages = $current_page+1;
                 $backurl = "http://". $_SERVER['SERVER_NAME']."/web/index.php?c=site&a=entry&op=display&do=member&m=sz_yi";                   
-                echo '<div style="border: 6px solid #e0e0e0;width: 12%;margin: 0 auto;margin-top: 12%;padding: 26px 100px;box-shadow: 0 0 14px #a2a2a2;color: #616161;">共'.$page_total.'个excel文件, 已完成'.$current_pages. '个 <a style="color:#616161" href="'.$backurl.'">返回</a><div>';
+                echo '<div style="border: 6px solid #e0e0e0;width: 12%;margin: 0 auto;margin-top: 12%;padding: 26px 100px;box-shadow: 0 0 14px #a2a2a2;color: #616161;">共'.$page_total.'个excel文件, 已完成'.$current_page. '个。<div>';
                 echo '<meta http-equiv="Refresh" charset="UTF-8" content="1; url='.$url.'" />';
                 exit;
             }
