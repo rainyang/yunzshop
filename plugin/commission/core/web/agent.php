@@ -18,14 +18,14 @@ if ($operation == 'display') {
     }
     if (!empty($_GPC['realname'])) {
         $_GPC['realname'] = trim($_GPC['realname']);
-        $condition .= ' and ( dm.realname like :realname or dm.nickname like :realname or dm.mobile like :realname)';
+        $condition .= ' and ( dm.realname like :realname or dm.nickname like :realname or dm.mobile like :realname or dm.membermobile like :realname)';
         $params[':realname'] = "%{$_GPC['realname']}%";
     }
     if ($_GPC['parentid'] == '0') {
         $condition .= ' and dm.agentid=0';
     } else if (!empty($_GPC['parentname'])) {
         $_GPC['parentname'] = trim($_GPC['parentname']);
-        $condition .= ' and ( p.mobile like :parentname or p.nickname like :parentname or p.realname like :parentname)';
+        $condition .= ' and ( p.membermobile like :parentname p.mobile like :parentname or p.nickname like :parentname or p.realname like :parentname)';
         $params[':parentname'] = "%{$_GPC['parentname']}%";
     }
     if ($_GPC['followed'] != '') {
@@ -78,6 +78,7 @@ if ($operation == 'display') {
         }
     }
     $sql = "select dm.*,dm.nickname,dm.avatar,l.levelname,p.nickname as parentname,p.avatar as parentavatar from " . tablename('sz_yi_member') . " dm " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.agentid " . " left join " . tablename('sz_yi_commission_level') . " l on l.id = dm.agentlevel" . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid and f.uniacid={$_W['uniacid']}" . " where dm.uniacid = " . $_W['uniacid'] . " and dm.isagent =1  {$condition} ORDER BY dm.agenttime desc";
+    //echo "<pre>"; print_r($sql);exit;
     if (empty($_GPC['export'])) {
         $sql .= " limit " . ($pindex - 1) * $psize . ',' . $psize;
     }

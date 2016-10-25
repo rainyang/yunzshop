@@ -151,13 +151,19 @@ if ($operation == "display") {
         $_GPC["expresssn"] = trim($_GPC["expresssn"]);
         $condition.= " AND o.expresssn LIKE '%{$_GPC["expresssn"]}%'";
     }
+/*    if (!empty($_GPC["member"])) {
+        $_GPC["member"] = trim($_GPC["member"]);
+        $condition.= " AND (m.realname LIKE '%{$_GPC["member"]}%' or m.mobile LIKE '%{$_GPC["member"]}%' or m.membermobile LIKE '%{$_GPC["member"]}%' or m.nickname LIKE '%{$_GPC["member"]}%' " . " or a.realname LIKE '%{$_GPC["member"]}%' or a.mobile LIKE '%{$_GPC["member"]}%' or o.carrier LIKE '%{$_GPC["member"]}%')";
+    }*/
     if (!empty($_GPC["member"])) {
         $_GPC["member"] = trim($_GPC["member"]);
-        $condition.= " AND (m.realname LIKE '%{$_GPC["member"]}%' or m.mobile LIKE '%{$_GPC["member"]}%' or m.nickname LIKE '%{$_GPC["member"]}%' " . " or a.realname LIKE '%{$_GPC["member"]}%' or a.mobile LIKE '%{$_GPC["member"]}%' or o.carrier LIKE '%{$_GPC["member"]}%')";
+        $condition.= " AND (m.realname LIKE :member or m.mobile LIKE :member or m.membermobile LIKE :member or m.nickname LIKE :member " . " or a.realname LIKE :member or a.mobile LIKE :member or o.carrier LIKE :member)";
+        $paras[':member'] = "%{$_GPC['member']}%";
     }
     if (!empty($_GPC["saler"])) {
         $_GPC["saler"] = trim($_GPC["saler"]);
-        $condition.= " AND (sm.realname LIKE '%{$_GPC["saler"]}%' or sm.mobile LIKE '%{$_GPC["saler"]}%' or sm.nickname LIKE '%{$_GPC["saler"]}%' " . " or s.salername LIKE '%{$_GPC["saler"]}%' )";
+        $condition.= " AND (sm.realname LIKE :saler or sm.mobile LIKE :saler or sm.membermobile LIKE :saler or sm.nickname LIKE :saler " . " or s.salername LIKE :saler )";
+        $paras[':saler'] = "%{$_GPC['saler']}%";
     }
     if (!empty($_GPC["storeid"])) {
         $_GPC["storeid"] = trim($_GPC["storeid"]);
