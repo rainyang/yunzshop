@@ -232,7 +232,7 @@ if ($operation == "display") {
                 WHERE (a.realname LIKE :member OR a.mobile LIKE :member) AND a.uniacid = :uniacid";
         $member_paras = array(
             ":uniacid" => $_W["uniacid"],
-            ":member" => '%'.$_GPC["member"].'%'
+            ":member" => '%' . $_GPC["member"] . '%'
         );
         $members = pdo_fetchall($sql, $member_paras);
         $openids = '';
@@ -276,7 +276,7 @@ if ($operation == "display") {
         } else {
             ca("order.view.status" . intval($status));
         }
-        switch ($status){
+        switch ($status) {
             case "-1" :
                 $statuscondition = " AND o.status=-1 and o.refundtime=0";
                 break;
@@ -549,7 +549,7 @@ if ($operation == "display") {
 
         $order_status = $value["status"];
         $order_paytype = $value["paytype"];
-        $value["statusvalue"] = $s;
+        $value["statusvalue"] = $order_status;
         $value["statuscss"] = $orderstatus[$value["status"]]["css"];
         $value["status"] = $orderstatus[$value["status"]]["name"];
         if ($order_paytype == 3 && empty($value["statusvalue"])) {
@@ -575,6 +575,7 @@ if ($operation == "display") {
                 $value['status'] = '已关闭';
             }
         }
+        //echo $order_paytype;exit;
         $value["paytypevalue"] = $order_paytype;
         $value["css"] = $paytype[$order_paytype]["css"];
         $value["paytype"] = $paytype[$order_paytype]["name"];
@@ -803,9 +804,21 @@ if ($operation == "display") {
     unset($value);
 
     //todo, 改为ajax获取或写入方式
-    $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " o " . " left join " . tablename("sz_yi_order_refund") . " r on r.orderid= o.id WHERE 1 $condition $statuscondition " . $cond , $paras);
-    $total = $result['total'];
-    $totalmoney = $result['totalmoney'];
+    $total_cache_key = shorturl($_W['uniacid'] . $condition . $statuscondition . $cond);
+    $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " o " . " left join " . tablename("sz_yi_order_refund") . " r on r.orderid= o.id WHERE 1 $condition $statuscondition " . $cond,
+        $paras);
+
+    if ($_GPC[$total_cache_key]) {
+        $result = unserialize(html_entity_decode($_GPC[$total_cache_key]));
+        $total = $result['total'];
+        $totalmoney = $result['totalmoney'];
+    } else {
+        $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " o " . " left join " . tablename("sz_yi_order_refund") . " r on r.orderid= o.id WHERE 1 $condition $statuscondition " . $cond,
+            $paras);
+        isetcookie($total_cache_key, serialize($result), 60*30);
+        $total = $result['total'];
+        $totalmoney = $result['totalmoney'];
+    }
     unset($result);
 
     $condition = " uniacid=:uniacid and deleted=0";
