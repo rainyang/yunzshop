@@ -165,9 +165,11 @@ if (!empty($aid)) {
 			if (!empty($set['level'])) {
 				$member = m('member')->getMember($openid);
 				if (!empty($member) && $member['status'] == 1 && $member['isagent'] == 1) {
-					$_W['shopshare']['link'] = $this->createPluginMobileUrl('article', array('directopenid' => 1, 'aid' => $article['id'], 'shareid' => $myid, 'mid' => $member['id']));
-				} else if (!empty($_GPC['mid'])) {
-					$_W['shopshare']['link'] = $this->createPluginMobileUrl('article', array('directopenid' => 1, 'aid' => $article['id'], 'shareid' => $myid, 'mid' => $_GPC['mid']));
+					$_W['shopshare']['link'] = $this->createPluginMobileUrl('article', array('aid' => $article['id'], 'shareid' => $myid, 'mid' => $member['id']));
+				} elseif (!empty($_GPC['mid'])) {
+					$_W['shopshare']['link'] = $this->createPluginMobileUrl('article', array('aid' => $article['id'], 'shareid' => $myid, 'mid' => $_GPC['mid']));
+				} elseif (!empty($shareid)) {
+					$_W['shopshare']['link'] = $this->createPluginMobileUrl('article', array('aid' => $article['id'], 'shareid' => $myid, 'mid' => $shareid));
 				}
 			}
 		}

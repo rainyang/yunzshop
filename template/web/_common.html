@@ -105,7 +105,11 @@ win.document.close();
             <li><a href="{url 'system/updatecache'}" target="_blank"><i class="fa fa-refresh fa-fw"></i> 更新缓存</a></li>
             <li class="divider"></li>
             {/if}
+              {if empty($perm_role)}
             <li><a href="{url 'user/logout'}"><i class="fa fa-sign-out fa-fw"></i> 退出系统</a></li>
+              {else}
+              <li><a href="{php echo $this->createWebUrl('order/logout')}"><i class="fa fa-sign-out fa-fw"></i> 退出系统</a></li>
+              {/if}
           </ul>
         </li>
     </ul>
