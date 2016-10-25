@@ -167,6 +167,7 @@
 		}
 	    // $('.nav').unbind('click').click(function () {
 	    $(document).on('click','.nav',function () {
+	    	page = 1;
 	        status = $(this).data('status');
 			getList(status);
 	    });
