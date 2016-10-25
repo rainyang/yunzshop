@@ -98,12 +98,12 @@
 	           		<span class="sub1" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%order.goodsid%>&periodnum=<%order.period_num%>&indiana=1'">查看开奖</span>
 	           	</div>
 	        <%else if order.status == 3%>
-	        	<div style="width: 45%; float: left; line-height: 40px;">
-					<div class="other" style="height: 36px;line-height: 36px;">
+	        	<div style="width: 49%; float: left; line-height: 40px;">
+					<div class="other" style="height: 36px;line-height: 36px;overflow: hidden;">
 						<span>获奖者：<%order.nickname%></span>
 					</div>
 	        	</div>
-	           	<div style="width: 55%; float: right;">
+	           	<div style="width: 50%; float: right;">
 	           	<%if order.next_phase%>
 	           		<span class="sub1" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%order.next_phase.goodsid%>&periodnum=<%order.next_phase.period_num%>&indiana=1'">再次购买</span>
 	           	<%/if%>
