@@ -91,13 +91,17 @@ if($operation == "display"){
 }else if($operation == "list"){
 	$type = intval($_GPC['type']);
 	$sendwhere = "";
-	if($type != 0){
+	if ($type > 1) {
 		$sendwhere = " and type=".$type;
+	}elseif ($type == 1){
+		$sendwhere = " and isglobal=".$type;
 	}
 	$totalmoney = pdo_fetchcolumn("select sum(money) as totalmoney from " . tablename('sz_yi_bonus') . " where uniacid=:uniacid".$sendwhere, array(':uniacid' => $_W['uniacid']));
 	$pindex    = max(1, intval($_GPC['page']));
 	$psize     = 20;
-	$list  = pdo_fetchall('select * from ' . tablename('sz_yi_bonus') . " where uniacid={$_W["uniacid"]}".$sendwhere." order by id desc limit " . ($pindex - 1) * $psize . ',' . $psize);
+	$total  = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_bonus') . " where uniacid={$_W['uniacid']}" . $sendwhere);
+	$list  = pdo_fetchall('select * from ' . tablename('sz_yi_bonus') . " where uniacid={$_W['uniacid']}".$sendwhere." order by id desc limit " . ($pindex - 1) * $psize . ',' . $psize);
+	$pager = pagination($total, $pindex, $psize);
 }else if($operation == "getopenids"){
 	//获取发放成功的openid
 	$member = pdo_fetchall("SELECT openid FROM " . tablename('sz_yi_bonus_log') . " WHERE uniacid = '{$_W['uniacid']}' and send_bonus_sn=:sn and sendpay=1", array(":sn" => $_GPC['sn']), 'openid');
