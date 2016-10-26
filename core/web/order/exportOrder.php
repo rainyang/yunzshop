@@ -424,7 +424,12 @@ if ($operation == "display") {
     $orderindex = (isset($_GPC['orderindex'])) ? intval($_GPC['orderindex']) : 0;
     $current_page = (isset($_GPC['current_page'])) ? intval($_GPC['current_page']) : 1;
     for ($export_page = $current_page; $export_page <= $page_total; $export_page++ ) {
-            
+        // if ($export_page != $page_total) {
+        // $_GET['current_page'] = $export_page+1;
+        // $_GET['orderindex'] = $orderindex;
+        // $url = "http://". $_SERVER['SERVER_NAME']."/".$_W['script_name'] . '?' . http_build_query($_GET);
+        // header($url);
+        // } 
         unset($list);
         unset($sql);
         $sql = 'select count(1) as suppliers_num, o.* , a.realname as arealname,a.mobile as amobile,a.province as aprovince ,a.city as acity , a.area as aarea,a.address as aaddress, d.dispatchname,m.nickname,m.id as mid,m.realname as mrealname,m.mobile as mmobile,sm.id as salerid,sm.nickname as salernickname,s.salername,r.rtype,r.status as rstatus,o.pay_ordersn, o.dispatchtype, o.isverify, o.storeid from ' . tablename("sz_yi_order") . " o" . " left join " . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename("sz_yi_member_address") . " a on a.id=o.addressid " . " left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . "  where {$condition} {$statuscondition} {$cond} group by o.ordersn_general ORDER BY o.createtime DESC,o.status DESC  ";
@@ -1076,9 +1081,8 @@ if ($operation == "display") {
                 $_GET['current_page'] = $export_page+1;
                 $_GET['orderindex'] = $orderindex;
                 $url = "http://". $_SERVER['SERVER_NAME']."/".$_W['script_name'] . '?' . http_build_query($_GET);
-                $current_pages = $current_page+1;
                 $backurl = "http://". $_SERVER['SERVER_NAME']."/web/index.php?c=site&a=entry&op=display&do=order&m=sz_yi";               
-                echo '<div style="border: 6px solid #e0e0e0;width: 12%;margin: 0 auto;margin-top: 12%;padding: 26px 100px;box-shadow: 0 0 14px #a2a2a2;color: #616161;">共'.$page_total.'个excel文件, 已完成'.$current_pages. '个 <a style="color:#616161" href="'.$backurl.'">返回</a><div>';
+                echo '<div style="border: 6px solid #e0e0e0;width: 12%;margin: 0 auto;margin-top: 12%;padding: 26px 100px;box-shadow: 0 0 14px #a2a2a2;color: #616161;">共'.$page_total.'个excel文件, 已完成'.$current_page. '个。 <div>';
                 echo '<meta http-equiv="Refresh" content="1; url='.$url.'" />';
                 exit;
             }

@@ -635,13 +635,13 @@ if ($_W['isajax']) {
         if (!$isvirtual && $isDispath) {
             //购买的商品是否都是统一运费的,如果是,取最低统一运费价
             foreach ($goods as $g) {
-
                 $sendfree = false;
                 if (!empty($g["issendfree"])) { //包邮
                     $sendfree = true;
                 } else {
+                    $gareas = explode(";", $g["edareas"]);  //不参加包邮地区
                     if ($g["total"] >= $g["ednum"] && $g["ednum"] > 0) {    //单品满xx件包邮
-                        $gareas = explode(";", $g["edareas"]);  //不参加包邮地区
+
                         if (empty($gareas)) {
                             $sendfree = true;
                         } else {
@@ -658,8 +658,8 @@ if ($_W['isajax']) {
                             }
                         }
                     }
+
                     if ($g["ggprice"] >= floatval($g["edmoney"]) && floatval($g["edmoney"]) > 0) {  //满额包邮
-                        $gareas = unserialize($g["edareas"]);
                         if (empty($gareas)) {
                             $sendfree = true;
                         } else {
@@ -756,17 +756,11 @@ if ($_W['isajax']) {
                             if (empty($saleset["enoughareas"])) {
                                 $order_all[$val['supplier_uid']]['dispatch_price'] = 0;
                             } else {
-                                $areas = explode(",", $saleset["enoughareas"]);
+                                $areas = explode(";", $saleset["enoughareas"]);
                                 if (!empty($address)) {
                                     if (!in_array($address["city"], $areas)) {
                                         $order_all[$val['supplier_uid']]['dispatch_price'] = 0;
                                     }
-                                } else if (!empty($member["city"])) {
-                                    if (!in_array($member["city"], $areas)) {
-                                        $order_all[$val['supplier_uid']]['dispatch_price'] = 0;
-                                    }
-                                } else if (empty($member["city"])) {
-                                    $order_all[$val['supplier_uid']]['dispatch_price'] = 0;
                                 }
                             }
                         }
@@ -1205,8 +1199,8 @@ if ($_W['isajax']) {
                     if ($g["type"] == 2 || $g["type"] == 3) {
                         $sendfree = true;
                     } else {
+                        $gareas = explode(";", $g["edareas"]);
                         if ($g["total"] >= $g["ednum"] && $g["ednum"] > 0) {
-                            $gareas = explode(";", $g["edareas"]);
                             if (empty($gareas)) {
                                 $sendfree = true;
                             } else {
@@ -1224,7 +1218,6 @@ if ($_W['isajax']) {
                             }
                         }
                         if ($g["ggprice"] >= floatval($g["edmoney"]) && floatval($g["edmoney"]) > 0) {
-                            $gareas = unserialize($g["edareas"]);
                             if (empty($gareas)) {
                                 $sendfree = true;
                             } else {
@@ -1903,14 +1896,15 @@ if ($_W['isajax']) {
             if (!$isvirtual && $isDispath && $dispatchtype == 0) {
                 //购买的商品是否都是统一运费的,如果是,取最低统一运费价
                 $isAllSameDispath = true;
+                //print_r($allgoods);
                 foreach ($allgoods as $g) {
-                    $g["ggprice"] = $ggprice;
+                    $g["ggprice"] = $g['realprice'];
                     $sendfree = false;
                     if (!empty($g["issendfree"])) {
                         $sendfree = true;
                     } else {
+                        $gareas = explode(";", $g["edareas"]);
                         if ($g["total"] >= $g["ednum"] && $g["ednum"] > 0) {
-                            $gareas = explode(";", $g["edareas"]);
                             if (empty($gareas)) {
                                 $sendfree = true;
                             } else {
@@ -1927,8 +1921,8 @@ if ($_W['isajax']) {
                                 }
                             }
                         }
+
                         if ($g["ggprice"] >= floatval($g["edmoney"]) && floatval($g["edmoney"]) > 0) {
-                            $gareas = unserialize($g["edareas"]);
                             if (empty($gareas)) {
                                 $sendfree = true;
                             } else {
@@ -1985,7 +1979,6 @@ if ($_W['isajax']) {
                         }
                     }
                 }
-
                 if (!empty($dispatch_array)) {
                     foreach ($dispatch_array as $k => $v) {
                         $dispatch_data = $dispatch_array[$k]["data"];
@@ -2001,8 +1994,10 @@ if ($_W['isajax']) {
                     }
                 }
             }
+
             if ($saleset) {
                 if (!empty($saleset["enoughfree"])) {
+                    //enoughorder为0则全场包邮
                     if (floatval($saleset["enoughorder"]) <= 0) {
                         $dispatch_price = 0;
                     } else {
@@ -2010,23 +2005,19 @@ if ($_W['isajax']) {
                             if (empty($saleset["enoughareas"])) {
                                 $dispatch_price = 0;
                             } else {
-                                $areas = explode(",", $saleset["enoughareas"]);
+                                $areas = explode(";", $saleset["enoughareas"]);
                                 if (!empty($address)) {
                                     if (!in_array($address["city"], $areas)) {
                                         $dispatch_price = 0;
                                     }
-                                } else if (!empty($member["city"])) {
-                                    if (!in_array($member["city"], $areas)) {
-                                        $dispatch_price = 0;
-                                    }
-                                } else if (empty($member["city"])) {
-                                    $dispatch_price = 0;
                                 }
+                                //去掉下面else,没有用的代码,根本不会执行, By RainYang.
                             }
                         }
                     }
                 }
             }
+
             $couponprice = 0;
             $couponid    = intval($order_row["couponid"]);
             if ($plugc) {
