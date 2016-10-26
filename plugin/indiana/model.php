@@ -231,7 +231,7 @@ if (!class_exists('IndianaModel')) {
 				        "color" => "#4a5077"
 				    )
 				);
-				$detailurl  = "http://" . $_SERVER['SERVER_NAME'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&method=order&p=indiana&m=sz_yi&do=plugin";
+				$detailurl  = $_W['siteroot'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&method=order&p=indiana&m=sz_yi&do=plugin";
 				m('message')->sendCustomNotice($openid, $msg, $detailurl);
 			}
 			if ($shengyu_codes <= 0) {
@@ -315,7 +315,7 @@ if (!class_exists('IndianaModel')) {
 					        "color" => "#4a5077"
 					    )
 					);
-					$detailurl  = $_W['siteroot'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&p=detail&do=shop&m=sz_yi&id=".$value['goodsid']."&periodnum=".$value['period_num']."&indiana=1";
+					$detailurl  = "http://" . $_SERVER['SERVER_NAME'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&p=detail&do=shop&m=sz_yi&id=".$value['goodsid']."&periodnum=".$value['period_num']."&indiana=1";
 					foreach ($indiana_record as $k => $v) {
 						m('message')->sendCustomNotice($v['openid'], $msg, $detailurl);
 					}
@@ -392,6 +392,7 @@ if (!class_exists('IndianaModel')) {
 		public function get_winner($period_num = '', $periodid = '' , $wincode = '',$uniacid){
 			global $_W;
 			$_W['uniacid'] = $uniacid;
+			$set = m('plugin')->getpluginSet('indiana', $_W['uniacid']);
 			//更新完毕，计算获奖信息
 			$sql_record_winner = "select * from ".tablename('sz_yi_indiana_record')." where uniacid = :uniacid and period_num = :period_num";
 			$data_record_winner = array(
@@ -426,6 +427,33 @@ if (!class_exists('IndianaModel')) {
 				//更新中奖信息到这期数据
 				pdo_update('sz_yi_indiana_period', $lack_period, array('id' => $periodid));
 
+
+					$indiana_goods = pdo_fetch('SELECT ig.*,ip.period FROM ' . tablename('sz_yi_indiana_period') . ' ip 
+					left join ' . tablename('sz_yi_indiana_goods') . ' ip on (ip.goodsid = ig.good_id)
+					where ip.uniacid=:uniacid and ip.period_num = :period_num ',array(
+				        ':uniacid'  => $_W['uniacid'],
+				        ':period_num'  => $period_num
+				    ));
+				$winning_txt= $set['indiana_winning'];
+				$winning_txt = str_replace('[商品]', $indiana_goods['title'], $winning_txt);
+				$winning_txt = str_replace('[期数]', $indiana_goods['period'], $winning_txt);
+				$winning_txt = str_replace('[幸运号]', $wincode, $winning_txt);
+				$winning_txt = str_replace('[本期参与人次]', $lack_record['count'], $winning_txt);
+
+				$default_txt = "您参与的您参与的夺宝商品【第".$indiana_goods['period']."期】  ".$indiana_goods['title']." \r\n\r\n 幸运号码".$wincode."\r\n\r\nben'qi'can'yu：".$lack_record['count']."人次";
+				$msg = array(
+				    'first' => array(
+				        'value' => $set['indiana_participatetitle']?$set['indiana_participatetitle']:"参与夺宝通知",
+				        "color" => "#4a5077"
+				    ),
+				    'keyword1' => array(
+				        'value' => $participate_txt?$participate_txt:$default_txt,
+				        "color" => "#4a5077"
+				    )
+				);
+				
+				$detailurl  = "http://" . $_SERVER['SERVER_NAME'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&method=order&p=indiana&op=lucky&m=sz_yi&do=plugin";
+				m('message')->sendCustomNotice($lack_period['openid'], $msg, $detailurl);
 
 			}
 		}
