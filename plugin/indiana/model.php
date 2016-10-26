@@ -288,7 +288,7 @@ if (!class_exists('IndianaModel')) {
 					':status' => 2
 				));
 			foreach ($indiana_message as $key => $value) {
-				if ( ( $value['jiexiao_time']-time() >= 60 ) && ( $value['jiexiao_time'] - time() < 119 ) ) {
+				if ( ( $value['jiexiao_time']-60 >= time() ) && ( $value['jiexiao_time']-120 < time() ) ) {
 					
 					$indiana_goods = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_indiana_goods') . ' where uniacid=:uniacid and good_id = :good_id ',array(
 				        ':uniacid'  => $_W['uniacid'],
