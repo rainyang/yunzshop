@@ -215,7 +215,7 @@ if (!class_exists('IndianaModel')) {
 				$participate_txt = str_replace('[期号]', $indiana_period['period_num'], $participate_txt);
 				$participate_txt = str_replace('[人次]', $codes_number, $participate_txt);
 
-				$default_txt = "您已参与【第".$indiana_period['period']."期  ".$order['total']." 】\r\n 期号：$indiana_period['period_num']\r\n 参与：".$codes_number."人次";
+				$default_txt = "您已参与【第".$indiana_period['period']."期  ".$order['total']." 】\r\n 期号：".$indiana_period['period_num']."\r\n 参与：".$codes_number."人次";
 
 				$msg = array(
 				    'first' => array(
