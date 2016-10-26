@@ -295,27 +295,28 @@ if (!class_exists('IndianaModel')) {
 				        ':good_id'  => $value['goodsid']
 				    ));
 
-					$indiana_record = pdo_fetchall('SELECT * FROM ' . tablename('sz_yi_indiana_record') . ' where uniacid=:uniacid and good_id = :good_id ',array(
+					$indiana_record = pdo_fetchall('SELECT * FROM ' . tablename('sz_yi_indiana_record') . ' where uniacid=:uniacid and period_num = :period_num ',array(
 				        ':uniacid'  => $_W['uniacid'],
 				        ':period_num'  => $value['period_num']
 				    ));
-					foreach ($indiana_record as $k => $v) {
-						$announced_txt= $set['indiana_announced'];
-						$announced_txt = str_replace('[商品]', $indiana_goods['title'], $announced_txt);
-						$announced_txt = str_replace('[期数]', $value['period'], $announced_txt);
-						$default_txt = "您已参与【第".$value['period']."期】  ".$indiana_goods['title']." 即将揭晓结果";
+				    
+					$announced_txt= $set['indiana_announced'];
+					$announced_txt = str_replace('[商品]', $indiana_goods['title'], $announced_txt);
+					$announced_txt = str_replace('[期数]', $value['period'], $announced_txt);
+					$default_txt = "您已参与【第".$value['period']."期】  ".$indiana_goods['title']." 即将揭晓结果";
 
-						$msg = array(
-						    'first' => array(
-						        'value' => $set['indiana_announcedtitle']?$set['indiana_announcedtitle']:"您参与的夺宝即将揭晓",
-						        "color" => "#4a5077"
-						    ),
-						    'keyword1' => array(
-						        'value' => $announced_txt?$announced_txt:$default_txt,
-						        "color" => "#4a5077"
-						    )
-						);
-						$detailurl  = $_W['siteroot'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&p=detail&do=shop&m=sz_yi&id=".$value['goodsid']."&periodnum=".$value['period_num']."&indiana=1";
+					$msg = array(
+					    'first' => array(
+					        'value' => $set['indiana_announcedtitle']?$set['indiana_announcedtitle']:"您参与的夺宝即将揭晓",
+					        "color" => "#4a5077"
+					    ),
+					    'keyword1' => array(
+					        'value' => $announced_txt?$announced_txt:$default_txt,
+					        "color" => "#4a5077"
+					    )
+					);
+					$detailurl  = $_W['siteroot'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&p=detail&do=shop&m=sz_yi&id=".$value['goodsid']."&periodnum=".$value['period_num']."&indiana=1";
+					foreach ($indiana_record as $k => $v) {
 						m('message')->sendCustomNotice($v['openid'], $msg, $detailurl);
 					}
 				}
