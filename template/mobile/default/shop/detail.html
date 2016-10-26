@@ -714,8 +714,8 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
         </div>
     {elseif $indiana['ipstatus'] >= 2 && $next_phase}
         <div class="good_bottom" style="z-index: 3">
-            <div style=" background: #999 none repeat scroll 0 0; float: left; line-height: 50px; padding-left: 15px; width: 65%; z-index: 3;">最新一期火热进行中</div>
-            <div class="buy" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id={$next_phase['goodsid']}&periodnum={$next_phase['period_num']}&indiana=1'" style="width:30%; z-index: 3">立即前往</div>
+            <div style=" background: #999 none repeat scroll 0 0; float: left; width: 65%; z-index: 3;"><p style="padding-left: 15px;line-height: 50px;margin: 0;  ">最新一期火热进行中</p></div>
+            <div class="buy" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id={$next_phase['goodsid']}&periodnum={$next_phase['period_num']}&indiana=1'" style="width:35%; z-index: 3">立即前往</div>
         </div>
     {/if}
 {else}
