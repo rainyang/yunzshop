@@ -228,7 +228,7 @@ if (!class_exists('IndianaModel')) {
 				    )
 				);
 				$detailurl  = $_W['siteroot'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&method=order&p=indiana&m=sz_yi&do=plugin";
-				m('message')->sendCustomNotice($openid, $msg);
+				m('message')->sendCustomNotice($openid, $msg, $detailurl);
 
 
 
