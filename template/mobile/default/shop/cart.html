@@ -268,8 +268,9 @@ body {margin:0px; background:#f8f8f8;width:100%;}
               var total =  calcprice();
               var ischannelpay = json.result.ischannelpay;
               var virtual_currency = json.result.virtual_currency;
+               var yunbi_title = json.result.yunbi_title;
               if (!virtual_currency) {
-                  core.tip.show("云币不足已购买");
+                  core.tip.show(yunbi_title + "不足已购买");
                   return;
               } else {
                   var isyunbipay = 1;

@@ -22,7 +22,7 @@ if ($op == 'display') {
     }
     if (!empty($_GPC['realname'])) {
         $_GPC['realname'] = trim($_GPC['realname']);
-        $condition .= ' and ( dm.realname like :realname or dm.nickname like :realname or dm.membermobile like :realname)';
+        $condition .= ' and ( dm.realname like :realname or dm.nickname like :realname or dm.membermobile like :realname or dm.mobile like :realname)';
         $params[':realname'] = "%{$_GPC['realname']}%";
     }
     if (empty($starttime) || empty($endtime)) {
@@ -54,7 +54,7 @@ if ($op == 'display') {
     if ($_GPC['isblack'] != '') {
         $condition .= ' and dm.isblack=' . intval($_GPC['isblack']);
     }
-    $sql = "select dm.*,l.levelname,g.groupname,a.nickname as agentnickname,a.avatar as agentavatar from " . tablename('sz_yi_member') . " dm " . " left join " . tablename('sz_yi_member_group') . " g on dm.groupid=g.id" . " left join " . tablename('sz_yi_member') . " a on a.id=dm.agentid" . " left join " . tablename('sz_yi_member_level') . " l on dm.level =l.id" . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid  and f.uniacid={$_W['uniacid']}" . " where 1 {$condition}  ORDER BY dm.id DESC";
+    $sql = "select dm.* from " . tablename('sz_yi_member') . " dm " . "  left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid  and f.uniacid={$_W['uniacid']}" . " where 1 {$condition}  ORDER BY dm.id DESC";
     if (empty($_GPC['export'])) {
         $sql .= " limit " . ($pindex - 1) * $psize . ',' . $psize;
     }

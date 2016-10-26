@@ -63,7 +63,7 @@ if ($op == 'display') {
     );
     if (!empty($_GPC['realname'])) {
         $_GPC['realname'] = trim($_GPC['realname']);
-        $condition .= ' and (m.realname like :realname or m.nickname like :realname or m.mobile like :realname)';
+        $condition .= ' and (m.realname LIKE :realname or m.nickname LIKE :realname or m.mobile LIKE :realname or m.membermobile LIKE :realname)';
         $params[':realname'] = "%{$_GPC['realname']}%";
     }
     if (!empty($_GPC['logno'])) {
