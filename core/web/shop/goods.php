@@ -81,7 +81,10 @@ $shopset = m('common')->getSysset('shop');
 $shoppay = m('common')->getSysset('pay');
 $sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uniacid ORDER BY `parentid`, `displayorder` DESC';
 $category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
-$result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid']);
+if (p('supplier')) {
+    $roleid = p('supplier')->getRoleId();
+    $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid'] . ' AND roleid=' . $roleid);
+}
 
 $parent = $children = array();
 if (!empty($category)) {
