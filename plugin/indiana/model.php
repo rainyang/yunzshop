@@ -220,8 +220,7 @@ if (!class_exists('IndianaModel')) {
 				$participate_txt = str_replace('[期号]', $indiana_period['period_num'], $participate_txt);
 				$participate_txt = str_replace('[人次]', $codes_number, $participate_txt);
 
-				$default_txt = "您已参与【第".$indiana_period['period']."期】  ".$order['total']." \r\n 期号：".$indiana_period['period_num']."\r\n 参与：".$codes_number."人次";
-
+				$default_txt = "您已参与【第".$indiana_period['period']."期】  ".$indiana_goods['title']." \r\n\r\n 期号：".$indiana_period['period_num']."\r\n\r\n参与：".$codes_number."人次";
 				$msg = array(
 				    'first' => array(
 				        'value' => $set['indiana_participatetitle']?$set['indiana_participatetitle']:"参与夺宝通知",
@@ -234,7 +233,6 @@ if (!class_exists('IndianaModel')) {
 				);
 				$detailurl  = $_W['siteroot'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&method=order&p=indiana&m=sz_yi&do=plugin";
 				m('message')->sendCustomNotice($openid, $msg, $detailurl);
-
 			}
 			if ($shengyu_codes <= 0) {
 				self::jiexiaotime($period_num);
@@ -283,10 +281,42 @@ if (!class_exists('IndianaModel')) {
 					':jiexiao_time' => time(),
 					':status' => 2
 				));
+			
+			$indiana_message = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_indiana_period') . " WHERE uniacid = :uniacid AND  status = :status ",array(
+					':uniacid' => $_W['uniacid'],
+					':status' => 2
+				));
+			foreach ($indiana_message as $key => $value) {
+				if ( ( $value['jiexiao_time']-60 >= time() ) && ( $value['jiexiao_time'] - 120 < time() ) ) {
+
+				$indiana_goods = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_indiana_goods') . ' where uniacid=:uniacid and good_id = :good_id ',array(
+			        ':uniacid'  => $_W['uniacid'],
+			        ':good_id'  => $value['goodsid']
+			    ));
+					$announced_txt= $set['indiana_announced'];
+					$announced_txt = str_replace('[商品]', $indiana_goods['title'], $announced_txt);
+					$announced_txt = str_replace('[期数]', $value['period'], $announced_txt);
+					$default_txt = "您已参与【第".$value['period']."期】  ".$indiana_goods['title']." 即将揭晓结果";
+
+					$msg = array(
+					    'first' => array(
+					        'value' => $set['indiana_announcedtitle']?$set['indiana_announcedtitle']:"您参与的夺宝即将揭晓",
+					        "color" => "#4a5077"
+					    ),
+					    'keyword1' => array(
+					        'value' => $announced_txt?$announced_txt:$default_txt,
+					        "color" => "#4a5077"
+					    )
+					);
+					$detailurl  = $_W['siteroot'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&p=detail&do=shop&m=sz_yi&id=".$value['goodsid']."&periodnum=".$value['period_num']."&indiana=1";
+					m('message')->sendCustomNotice($openid, $msg, $detailurl);
+				}
+			}
+
+
 			if (!$indiana) {
 				return false;
 			}
-
 			foreach ($indiana as $key => $value) {
 				self::createtime_winer($value['id'],$value['period_num'],$_W['uniacid']);
 			}
