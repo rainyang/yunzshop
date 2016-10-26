@@ -14,6 +14,11 @@ if (!defined('IN_IA')) {
 }
 class Sz_DYi_Order
 {
+    function getStoreList(){
+        global $_W;
+        return pdo_fetchall("SELECT * FROM ".tablename('sz_yi_store')." WHERE uniacid=:uniacid and status=1", array(':uniacid' => $_W['uniacid']));
+    }
+    
     function getDispatchPrice($weight, $dispatch_data, $calculatetype = -1){
         if (empty($dispatch_data)){
             return 0;
