@@ -288,7 +288,7 @@ if (!class_exists('IndianaModel')) {
 					':status' => 2
 				));
 			foreach ($indiana_message as $key => $value) {
-				if ( ( $value['jiexiao_time']-60 >= time() ) && ( $value['jiexiao_time'] - 120 < time() ) ) {
+				if ( ( $value['jiexiao_time']-120 >= time() ) && ( $value['jiexiao_time'] - 180 < time() ) ) {
 					
 					$indiana_goods = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_indiana_goods') . ' where uniacid=:uniacid and good_id = :good_id ',array(
 				        ':uniacid'  => $_W['uniacid'],
@@ -428,12 +428,12 @@ if (!class_exists('IndianaModel')) {
 				pdo_update('sz_yi_indiana_period', $lack_period, array('id' => $periodid));
 
 
-					$indiana_goods = pdo_fetch('SELECT ig.*,ip.period FROM ' . tablename('sz_yi_indiana_period') . ' ip 
-					left join ' . tablename('sz_yi_indiana_goods') . ' ip on (ip.goodsid = ig.good_id)
-					where ip.uniacid=:uniacid and ip.period_num = :period_num ',array(
-				        ':uniacid'  => $_W['uniacid'],
-				        ':period_num'  => $period_num
-				    ));
+				$indiana_goods = pdo_fetch('SELECT ig.*,ip.period FROM ' . tablename('sz_yi_indiana_period') . ' ip 
+				left join ' . tablename('sz_yi_indiana_goods') . ' ig on (ip.goodsid = ig.good_id)
+				where ip.uniacid=:uniacid and ip.period_num = :period_num ',array(
+			        ':uniacid'  => $_W['uniacid'],
+			        ':period_num'  => $period_num
+			    ));
 				$winning_txt= $set['indiana_winning'];
 				$winning_txt = str_replace('[商品]', $indiana_goods['title'], $winning_txt);
 				$winning_txt = str_replace('[期数]', $indiana_goods['period'], $winning_txt);
@@ -443,11 +443,11 @@ if (!class_exists('IndianaModel')) {
 				$default_txt = "您参与的您参与的夺宝商品【第".$indiana_goods['period']."期】  ".$indiana_goods['title']." \r\n\r\n 幸运号码".$wincode."\r\n\r\nben'qi'can'yu：".$lack_record['count']."人次";
 				$msg = array(
 				    'first' => array(
-				        'value' => $set['indiana_participatetitle']?$set['indiana_participatetitle']:"参与夺宝通知",
+				        'value' => $set['indiana_participatetitle']?$set['indiana_participatetitle']:"开奖通知",
 				        "color" => "#4a5077"
 				    ),
 				    'keyword1' => array(
-				        'value' => $participate_txt?$participate_txt:$default_txt,
+				        'value' => $winning_txt?$winning_txt:$default_txt,
 				        "color" => "#4a5077"
 				    )
 				);
