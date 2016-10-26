@@ -217,7 +217,8 @@ if (!class_exists('IndianaModel')) {
 					'keyword2' => array('value' => $participate_txt?$participate_txt:"本次参与".$codes_number."人次！",
 						'color' => '#73a68d')
 					);
-				m('message')->sendCustomNotice($openid, $messages);
+				$detailurl  = $this->createPluginMobileUrl('indiana/order');
+				m('message')->sendCustomNotice($openid, $messages,$detailurl);
 
 			}
 			if ($shengyu_codes <= 0) {
