@@ -210,27 +210,25 @@ if (!class_exists('IndianaModel')) {
 			$province_id = pdo_insertid();
 			if ($province_id) {
 				$participate_txt= $set['indiana_participate'];
+				$participate_txt = str_replace('[商品]', $order['total'], $participate_txt);
+				$participate_txt = str_replace('[期数]', $indiana_period['period'], $participate_txt);
+				$participate_txt = str_replace('[期号]', $indiana_period['period_num'], $participate_txt);
 				$participate_txt = str_replace('[人次]', $codes_number, $participate_txt);
+
+				$default_txt = "您已参与【第".$indiana_period['period']."期  ".$order['total']." 】\r\n 期号：$indiana_period['period_num']\r\n 参与：".$codes_number."人次";
 
 				$msg = array(
 				    'first' => array(
-				        'value' => "夺宝通知",
+				        'value' => $set['indiana_participatetitle']?$set['indiana_participatetitle']:"参与夺宝通知",
 				        "color" => "#4a5077"
 				    ),
 				    'keyword1' => array(
-				        'title' => $set['indiana_participatetitle']?$set['indiana_participatetitle']:"参与夺宝通知",
-				        'value' => $participate_txt?$participate_txt:"本次参与".$codes_number."人次！",
-				        "color" => "#4a5077"
-				    ),
-				    'remark' => array(
-				        'value' => "\r\n参与成功，请您登录个人中心查看。",
+				        'value' => $participate_txt?$participate_txt:$default_txt,
 				        "color" => "#4a5077"
 				    )
 				);
 				$detailurl  = $_W['siteroot'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&method=order&p=indiana&m=sz_yi&do=plugin";
 				m('message')->sendCustomNotice($openid, $msg, $detailurl);
-
-
 
 			}
 			if ($shengyu_codes <= 0) {
