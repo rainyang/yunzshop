@@ -381,7 +381,7 @@
                           <option value="9999" {if $_GPC['supplier_uid']==9999}selected="selected"{/if}>
                               平台商品
                           </option>
-                          {loop $result $row}
+                          {loop $all_suppliers $row}
                           <option value="{$row['uid']}" {if $_GPC['supplier_uid']==$row['uid']}selected="selected"{/if}>{$row['realname']}/{$row['username']}</option>
                           {/loop}
                         </select>
