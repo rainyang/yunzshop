@@ -36,8 +36,8 @@ body {margin:0px; width:100%; height:100%; background:#efefef; color:#fff; }
 .main .page .goods .good .goods-cont .price span{font-size:12px;color: #fff;background: #f77183;border-radius: 2px;padding:0 5px;width:auto;float: left;text-align: center;  margin-left: 3%;  margin-top: 4px; }
 .main .page .goods .good .nostock { position: absolute;bottom:20px;right:0px; width:30%;height:30%;z-index: 999;}
 .main .page .goods .good .nostock img { max-width: 50px}
-.main .page .goods .good .name {height:22px; width:94%; font-size:14px; color:#333333; line-height:22px;overflow:hidden; padding-bottom:5px;margin-left: 3%;}
-
+.main .page .goods .good .name {height:22px; width:94%; font-size:13px; color:#333333; line-height:22px;overflow:hidden; padding-bottom:5px;margin-left: 3%;}
+.main .page .goods .good .name p{margin: 0;height: 22px;overflow: hidden}
 
 .main .page .goods .good .tishi {overflow: hidden; height:16px; line-height:16px; width:94%; font-size:14px; color:#a59d9d;padding: 0 3%;}
 .main .page .goods .good .tishi span {height:auto; width:auto; /*padding:0 6px; */color:#a59d9d; font-size:12px; border-radius:5px;}
@@ -176,7 +176,7 @@ a, ins {
     		</div>
 
     		<div class="goods-cont">
-                <div class="name">{$g['title']} </div>
+                <div class="name"><p>{$g['title']} </p></div>
 
                 <div class="progress-bar" >
                     <span class="bg" style="width:{$g['shengyu']}%"></span>
