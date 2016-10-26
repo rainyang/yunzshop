@@ -210,7 +210,7 @@ if (!class_exists('IndianaModel')) {
 			$province_id = pdo_insertid();
 			if ($province_id) {
 				$participate_txt= $set['indiana_participate'];
-				$participate_txt = str_replace('[排列序号]', $codes_number, $participate_txt);
+				$participate_txt = str_replace('[人次]', $codes_number, $participate_txt);
 				$messages = array(
 					'keyword1' => array('value' => $set['indiana_participatetitle']?$set['indiana_participatetitle']:'参与夺宝通知',
 						'color' => '#73a68d'),
