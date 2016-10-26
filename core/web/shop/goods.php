@@ -83,7 +83,10 @@ $sql = 'SELECT * FROM ' . tablename('sz_yi_category') . ' WHERE `uniacid` = :uni
 $category = pdo_fetchall($sql, array(':uniacid' => $_W['uniacid']), 'id');
 if (p('supplier')) {
     $roleid = p('supplier')->getRoleId();
-    $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' where uniacid =' . $_W['uniacid'] . ' AND roleid=' . $roleid);
+    $result = pdo_fetchall("SELECT uid,realname,username FROM " . tablename('sz_yi_perm_user') . ' WHERE uniacid = :uniacid AND roleid=:roleid', array(
+        ':uniacid' => $_W['uniacid'],
+        ':roleid'  => $roleid
+    ));
 }
 
 $parent = $children = array();
