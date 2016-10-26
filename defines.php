@@ -14,3 +14,4 @@ define('SZ_YI_DEBUG', false);//false
 !defined('SZ_YI_PREFIX') && define('SZ_YI_PREFIX', 'sz_yi_');
 !defined('SZ_YI_INTEGRAL') &&define("SZ_YI_INTEGRAL", "积分");
 !defined('SZ_YI_EXPORT') &&define("SZ_YI_EXPORT", "1000");
+!defined('SZ_YI_PSIZE') &&define("SZ_YI_PSIZE", 20);

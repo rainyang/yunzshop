@@ -37,19 +37,19 @@ if ($_W['isajax']) {
         $sql        = 'SELECT f.id,f.total,' . $channel_condtion . $yunbi_condtion . 'f.goodsid,g.total as stock, o.stock as optionstock, g.maxbuy,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,g.productprice,o.title as optiontitle,f.optionid,o.specs FROM ' . tablename('sz_yi_member_cart') . ' f ' . ' left join ' . tablename('sz_yi_goods') . ' g on f.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on f.optionid = o.id ' . ' where 1 ' . $condition . ' ORDER BY `id` DESC ';
         $list       = pdo_fetchall($sql, $params);
         $verify_goods_ischannelpick = '';
+        if (p('yunbi')) {
+            $virtual_currency = '1';
+        }
         foreach ($list as &$r) {
             if (!empty($r['optionid'])) {
                 $r['stock'] = $r['optionstock'];
             }
             if (p('yunbi')) {
                 $yunbi_set = p('yunbi')->getSet();
+                $yunbi_title = empty($yunbi_set['yunbi_title'])?'云币':$yunbi_set['yunbi_title'];
                 if (!empty($yunbi_set['isdeduct']) && !empty($r['isforceyunbi']) && $member['virtual_currency'] < $r['yunbi_deduct']) {
                     $virtual_currency = '';
-                } else {
-                    $virtual_currency = '1';
                 }
-            } else {
-                $virtual_currency = '1';
             }
             if (p('channel')) {
                 $member = m('member')->getInfo($openid);
@@ -87,7 +87,6 @@ if ($_W['isajax']) {
         unset($r);
         $list       = set_medias($list, 'thumb');
         $totalprice = number_format($totalprice, 2);
-        
             show_json(1, array(
                 'total' => $total,
                 'list' => $list,
@@ -95,7 +94,8 @@ if ($_W['isajax']) {
                 'difference' => $difference,
                 'ischannelpay' => $ischannelpay,
                 'verify_goods_ischannelpick' => $verify_goods_ischannelpick,
-                'virtual_currency' => $virtual_currency
+                'virtual_currency' => $virtual_currency,
+                'yunbi_title' => $yunbi_title
             ));
         
     } else if ($operation == 'add' && $_W['ispost']) {

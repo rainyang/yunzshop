@@ -7,6 +7,15 @@ if (!class_exists('SupplierModel')) {
 
 	class SupplierModel extends PluginModel
 	{
+        public function getSupplierName($supplier_uid){
+            global $_W;
+            if (m('cache')->get('supplier_' . $supplier_uid)){
+                return m('cache')->get('supplier_' . $supplier_uid);
+            }
+            $supplierName = pdo_fetchcolumn("select username from " . tablename('sz_yi_perm_user') . " where uniacid={$_W['uniacid']} and uid={$supplier_uid}");
+            m('cache')->set('supplier_' . $supplier_uid, $supplierName);
+            return $supplierName;
+        }
 
         //某个供应商下的招商员
         public function getSupplierMerchants($uid){
