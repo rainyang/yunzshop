@@ -274,7 +274,7 @@ if (!class_exists('IndianaModel')) {
 		public function autoexec ($uniacid) {
 			global $_W, $_GPC;
 			$_W['uniacid'] = $uniacid;
-			$set = $this->getSet();
+			$set = m('plugin')->getpluginSet('indiana', $_W['uniacid']);
 			echo "<pre>";print_r($set);exit;
 			set_time_limit(0);
 
