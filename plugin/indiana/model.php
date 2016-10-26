@@ -196,6 +196,11 @@ if (!class_exists('IndianaModel')) {
 				$result = pdo_update('sz_yi_indiana_record',array('codes' => serialize($new_code),'count' => $new_count),array('uniacid'=>$_W['uniacid'],'period_num' => $period_num,'openid' => $openid));
 			}
 
+			$indiana_goods = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_indiana_goods') . ' where uniacid=:uniacid and good_id = :good_id ',array(
+			        ':uniacid'  => $_W['uniacid'],
+			        ':good_id'  => $indiana_period['goodsid']
+			    ));	
+
 			$consumerecord = array(
 				'openid' 		=> $openid,
 				'uniacid' 		=> $_W['uniacid'],
@@ -210,12 +215,12 @@ if (!class_exists('IndianaModel')) {
 			$province_id = pdo_insertid();
 			if ($province_id) {
 				$participate_txt= $set['indiana_participate'];
-				$participate_txt = str_replace('[商品]', $order['total'], $participate_txt);
+				$participate_txt = str_replace('[商品]', $indiana_goods['title'], $participate_txt);
 				$participate_txt = str_replace('[期数]', $indiana_period['period'], $participate_txt);
 				$participate_txt = str_replace('[期号]', $indiana_period['period_num'], $participate_txt);
 				$participate_txt = str_replace('[人次]', $codes_number, $participate_txt);
 
-				$default_txt = "您已参与【第".$indiana_period['period']."期  ".$order['total']." 】\r\n 期号：".$indiana_period['period_num']."\r\n 参与：".$codes_number."人次";
+				$default_txt = "您已参与【第".$indiana_period['period']."期】  ".$order['total']." \r\n 期号：".$indiana_period['period_num']."\r\n 参与：".$codes_number."人次";
 
 				$msg = array(
 				    'first' => array(
