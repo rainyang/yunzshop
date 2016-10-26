@@ -232,8 +232,7 @@ if (!class_exists('IndianaModel')) {
 				    )
 				);
 				$detailurl  = $_W['siteroot'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&method=order&p=indiana&m=sz_yi&do=plugin";
-				$ddf = m('message')->sendCustomNotice($openid, $msg, $detailurl);
-				echo "<pre>";print_r($ddf);
+				m('message')->sendCustomNotice($openid, $msg, $detailurl);
 			}
 			if ($shengyu_codes <= 0) {
 				self::jiexiaotime($period_num);
