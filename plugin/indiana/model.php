@@ -214,7 +214,7 @@ if (!class_exists('IndianaModel')) {
 
 				$msg = array(
 				    'first' => array(
-				        'value' => "参与夺宝通知",
+				        'value' => "夺宝通知",
 				        "color" => "#4a5077"
 				    ),
 				    'keyword1' => array(
@@ -227,8 +227,7 @@ if (!class_exists('IndianaModel')) {
 				        "color" => "#4a5077"
 				    )
 				);
-
-				//$detailurl  = $this->createMobileUrl('member');
+				$detailurl  = $_W['siteroot'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&method=order&p=indiana&m=sz_yi&do=plugin";
 				m('message')->sendCustomNotice($openid, $msg);
 
 
