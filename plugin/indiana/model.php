@@ -289,7 +289,7 @@ if (!class_exists('IndianaModel')) {
 				));
 			foreach ($indiana_message as $key => $value) {
 				if ( ( $value['jiexiao_time']-60 >= time() ) && ( $value['jiexiao_time'] - 120 < time() ) ) {
-
+					echo "o";
 					$indiana_goods = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_indiana_goods') . ' where uniacid=:uniacid and good_id = :good_id ',array(
 				        ':uniacid'  => $_W['uniacid'],
 				        ':good_id'  => $value['goodsid']
@@ -417,6 +417,8 @@ if (!class_exists('IndianaModel')) {
 				$lack_period['status']='3';
 				//更新中奖信息到这期数据
 				pdo_update('sz_yi_indiana_period', $lack_period, array('id' => $periodid));
+
+
 			}
 		}
 
