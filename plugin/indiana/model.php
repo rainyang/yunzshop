@@ -133,6 +133,7 @@ if (!class_exists('IndianaModel')) {
 
 		public function dispose($orderid = ''){
 			global $_W;
+			$set = $this->getSet();
 			$order = pdo_fetch('SELECT o.*, og.total, og.goodsid FROM ' . tablename('sz_yi_order') . ' o 
 			left join ' . tablename('sz_yi_order_goods') . ' og on (o.id = og.orderid)
 			 where o.uniacid=:uniacid and o.id = :orderid and o.status = 1 ',array(
@@ -206,6 +207,19 @@ if (!class_exists('IndianaModel')) {
 				'ip' 			=> $_SERVER['REMOTE_ADDR']
 			);
 			pdo_insert("sz_yi_indiana_consumerecord",$consumerecord);
+			$province_id = pdo_insertid();
+			if ($province_id) {
+				$participate_txt= $set['indiana_participate'];
+				$participate_txt = str_replace('[排列序号]', $codes_number, $participate_txt);
+				$messages = array(
+					'keyword1' => array('value' => $set['indiana_participatetitle']?$set['indiana_participatetitle']:'参与夺宝通知',
+						'color' => '#73a68d'),
+					'keyword2' => array('value' => $participate_txt?$participate_txt:"本次参与".$codes_number."人次！",
+						'color' => '#73a68d')
+					);
+				m('message')->sendCustomNotice($openid, $messages);
+
+			}
 			if ($shengyu_codes <= 0) {
 				self::jiexiaotime($period_num);
 			}	

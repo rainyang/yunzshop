@@ -16,7 +16,51 @@
                     <label class="radio-inline"><input type="radio"  name="setdata[isindiana]" value="1" {if $set['isindiana'] ==1} checked="checked"{/if} /> 开启</label>
                 </div>
             </div>
+        </div>
 
+        <div class='panel-heading'>
+            一元夺宝设置
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">参与夺宝通知</label>
+            <div class="col-sm-9 col-xs-12">
+                  <input type="text" name="setdata[indiana_participatetitle]" class="form-control" value="{$set['indiana_participatetitle']}" />
+                <div class="help-block">标题，默认"参与夺宝通知"</div>
+            </div>
+
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+            <div class="col-sm-9 col-xs-12">
+                <textarea  name="setdata[indiana_participate]" class="form-control" >{$set['indiana_participate']}</textarea>
+                 <span class='help-block'>模板变量: [人次] </span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">揭晓通知</label>
+            <div class="col-sm-9 col-xs-12">
+                  <input type="text" name="setdata[indiana_announcedtitle]" class="form-control" value="{$set['indiana_announcedtitle']}" />
+                <div class="help-block">标题，默认"揭晓通知"</div>
+            </div>
+
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+            <div class="col-sm-9 col-xs-12">
+                <textarea  name="setdata[indiana_announced]" class="form-control" >{$set['indiana_announced']}</textarea>
+                 <span class='help-block'>模板变量: [时间分钟] </span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">中奖通知</label>
+            <div class="col-sm-9 col-xs-12">
+                  <input type="text" name="setdata[indiana_winningtitle]" class="form-control" value="{$set['indiana_winningtitle']}" />
+                <div class="help-block">标题，默认"中奖通知"</div>
+            </div>
+
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+            <div class="col-sm-9 col-xs-12">
+                <textarea  name="setdata[indiana_winning]" class="form-control" >{$set['indiana_winning']}</textarea>
+            </div>
         </div>
 
         <div class="form-group"></div>
