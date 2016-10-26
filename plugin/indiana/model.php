@@ -228,8 +228,8 @@ if (!class_exists('IndianaModel')) {
 				    )
 				);
 
-				$detailurl  = $this->createMobileUrl('member');
-				m('message')->sendCustomNotice($openid, $msg, $detailurl);
+				//$detailurl  = $this->createMobileUrl('member');
+				m('message')->sendCustomNotice($openid, $msg);
 
 
 
