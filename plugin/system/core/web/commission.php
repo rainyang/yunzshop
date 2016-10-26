@@ -1,15 +1,15 @@
 <?php
 global $_W, $_GPC;
+ca('system.commission');
 $wechatid = intval($_GPC['wechatid']);
-if (!$_W['isfounder']) {
-    if($wechatid == 0){
-        $wechatid = $_W['uniacid'];
-    }
+if(!cv('system.commission.view')){
+    $wechatid = $_W['uniacid'];
 }
-
 if (checksubmit('submit')) {
     $mid     = intval($_GPC['mid']);
     $agentid = intval($_GPC['agentid']);
+
+
     if (empty($mid)) {
         message('请选择会员!', '', 'error');
     }
@@ -39,6 +39,7 @@ if (checksubmit('submit')) {
         'id' => $mid,
         'uniacid' => $wechatid
     ));
+    plog('system.commission', "分销关系修改：ID：{$mid} 原上级 ID：".$member['agentid'] ? $member['agentid'] : "总店"." 修改上级为：{$agentid}");
     message('设置成功!', $this->createPluginWebUrl('system/commission'), 'success');
 }
 $wechats = $this->model->get_wechats();

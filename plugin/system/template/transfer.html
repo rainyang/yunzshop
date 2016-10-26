@@ -27,7 +27,7 @@
 						</select>
                     </div>
                 </div>
-                {if $_W['isfounder']}
+                {ifp 'system.transfer.view'}
 				  <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">目标公众号</label>
                     <div class="col-sm-9">
@@ -200,8 +200,10 @@
 				<div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9">
+                    	{ifp 'system.transfer.edit'}
 						<input id="btn_submit" type="submit" name='submit'  value="确认操作" class="btn btn-primary"  onclick="return formcheck()"/>
 						<input type="hidden" name="token" value="{$_W['token']}" />
+						{/if}
                     </div>
                 </div>	
             </div>
@@ -212,8 +214,14 @@
 <script type="text/javascript">
 
 	$(function () {
-		{if $_W['isfounder']}
+		{ifp 'system.transfer.view'}
 		$('#wechatid,#wechatid1').select2({
+			search: true,
+			placeholder: "请选择公众号",
+			allowClear: true
+		});
+		{else}
+		$('#wechatid').select2({
 			search: true,
 			placeholder: "请选择公众号",
 			allowClear: true
@@ -235,13 +243,13 @@
 			alert("请选择源公众号!");
 			return false;
 		}
-		{if $_W['isfounder']}
+		{ifp 'system.transfer.view'}
 		if ($("#wechatid1").val() == '') {
 			alert("请选择源公众号!");
 			return false;
 		}
 		{/if}
-		{if $_W['isfounder']}
+		{ifp 'system.transfer.view'}
 			var wechatid1 = $("#wechatid1").val();
 		{else}
 			var wechatid1 = {$_W['uniacid']};

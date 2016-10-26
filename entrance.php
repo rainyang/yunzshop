@@ -20,11 +20,21 @@ set_time_limit(0);
 
 $sql = "SELECT * FROM ". tablename('uni_account'). " as a LEFT JOIN". tablename('account'). " as b ON a.default_acid = b.acid WHERE a.default_acid <> 0 ORDER BY a.`uniacid` DESC ";
 $sets = pdo_fetchall($sql);
+//查询常见发消息存储文件数据目录
+$cdir = IA_ROOT . "/addons/sz_yi/data/message";
+if (!is_dir($cdir))
+{
+    mkdir($cdir, 0777, true);
+};
+$filedatas = array();
 foreach ($sets as $k => $set) {
     m('order')->autoexec($set['uniacid']);
     $pbonus = p('bonus');
     if(!empty($pbonus)){
-        $pbonus->autoexec($set['uniacid']);
+        $filesn = $pbonus->autoexec($set['uniacid']);
+        if(!empty($filesn)){
+            $filedatas[] = array("uniacid" => $set['uniacid'], "filesn" => $filesn);
+        }
     }
 
     $preturn = p('return');
@@ -35,6 +45,14 @@ foreach ($sets as $k => $set) {
     if(!empty($pyunbi)){
         $pyunbi->autoexec($set['uniacid']);
     }
+
+
+}
+
+if ($filedatas) {
+    foreach ($filedatas as $key => $value) {
+        m('message')->sendmsg($value['filesn'], $value['uniacid']);
+    }  
 }
 echo "<pre>";print_r("ok...");exit;
 

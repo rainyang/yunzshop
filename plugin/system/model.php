@@ -31,10 +31,16 @@ if (!class_exists('SystemModel')) {
         function perms()
         {
             return array(
-                'taobao' => array(
+                'system' => array(
                     'text' => $this->getName(),
                     'isplugin' => true,
-                    'fetch' => '抓取宝贝-log'
+                    'child' => array(
+                        'clear' => array('text' => '数据清理', 'edit' => '修改', 'view' => '公众号选择'),
+                        'transfer' => array('text' => '复制转移', 'edit' => '修改', 'view' => '公众号选择'),
+                        'backup' => array('text' => '数据下载', 'edit' => '修改'),
+                        'commission' => array('text' => '分销关系', 'edit' => '修改', 'view' => '公众号选择'),
+                        'replacedomain' => array('text' => '域名转换', 'edit' => '修改'),
+                        )
                 )
             );
         }

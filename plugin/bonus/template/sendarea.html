@@ -53,7 +53,7 @@
             </div>
             {else}
             <div class="form-group" style="text-align: center;">
-                {ifp 'bonus.send.bont'}
+                {ifp 'bonus.sendarea.bont'}
                 <div class="col-sm-3 col-lg-2"><button class="btn btn-primary">发放分红</button></div>
                 {/if}
             </div>
@@ -68,8 +68,9 @@
             <thead class="navbar-inner">
                 <tr>
                     <th style='width:16%;'>id</th>
-                    <th style='width:16%;'>代理商</th>
-                    <th style='width:16%;'>真实姓名</th>
+                    <th style='width:14%;'>代理商</th>
+                    <th style='width:14%;'>代理等级</th>
+                    <th style='width:14%;'>真实姓名</th>
                     <th style='width:16%;'>手机号</th>
                     <th style='width:16%;'>已分红</th>
                     <th style='width:16%;'>待分红</th>
@@ -85,6 +86,7 @@
                         {/if}
                         {if empty($row['nickname'])}未更新{else}{$row['nickname']}{/if}
                     </td>
+                    <td>{$row['levelname']}</td>
                     <td>{$row['realname']}</td>
                     <td>{$row['mobile']}</td>
                     <td>
