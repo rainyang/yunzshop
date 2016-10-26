@@ -211,14 +211,27 @@ if (!class_exists('IndianaModel')) {
 			if ($province_id) {
 				$participate_txt= $set['indiana_participate'];
 				$participate_txt = str_replace('[人次]', $codes_number, $participate_txt);
-				$messages = array(
-					'keyword1' => array('value' => $set['indiana_participatetitle']?$set['indiana_participatetitle']:'参与夺宝通知',
-						'color' => '#73a68d'),
-					'keyword2' => array('value' => $participate_txt?$participate_txt:"本次参与".$codes_number."人次！",
-						'color' => '#73a68d')
-					);
-				$detailurl  = $this->createPluginMobileUrl('indiana/order');
-				m('message')->sendCustomNotice($openid, $messages,$detailurl);
+
+				$msg = array(
+				    'first' => array(
+				        'value' => "参与夺宝通知",
+				        "color" => "#4a5077"
+				    ),
+				    'keyword1' => array(
+				        'title' => $set['indiana_participatetitle']?$set['indiana_participatetitle']:"参与夺宝通知",
+				        'value' => $participate_txt?$participate_txt:"本次参与".$codes_number."人次！",
+				        "color" => "#4a5077"
+				    ),
+				    'remark' => array(
+				        'value' => "\r\n参与成功，请您登录个人中心查看。",
+				        "color" => "#4a5077"
+				    )
+				);
+
+				$detailurl  = $this->createMobileUrl('member');
+				m('message')->sendCustomNotice($openid, $msg, $detailurl);
+
+
 
 			}
 			if ($shengyu_codes <= 0) {
