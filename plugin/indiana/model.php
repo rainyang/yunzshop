@@ -274,6 +274,7 @@ if (!class_exists('IndianaModel')) {
 		public function autoexec ($uniacid) {
 			global $_W, $_GPC;
 			$_W['uniacid'] = $uniacid;
+			$set = $this->getSet();
 			set_time_limit(0);
 
 			$indiana = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_indiana_period') . " WHERE uniacid = :uniacid AND jiexiao_time <= :jiexiao_time AND status = :status ",array(
@@ -281,7 +282,7 @@ if (!class_exists('IndianaModel')) {
 					':jiexiao_time' => time(),
 					':status' => 2
 				));
-			
+
 			$indiana_message = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_indiana_period') . " WHERE uniacid = :uniacid AND  status = :status ",array(
 					':uniacid' => $_W['uniacid'],
 					':status' => 2
@@ -289,10 +290,10 @@ if (!class_exists('IndianaModel')) {
 			foreach ($indiana_message as $key => $value) {
 				if ( ( $value['jiexiao_time']-60 >= time() ) && ( $value['jiexiao_time'] - 120 < time() ) ) {
 
-				$indiana_goods = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_indiana_goods') . ' where uniacid=:uniacid and good_id = :good_id ',array(
-			        ':uniacid'  => $_W['uniacid'],
-			        ':good_id'  => $value['goodsid']
-			    ));
+					$indiana_goods = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_indiana_goods') . ' where uniacid=:uniacid and good_id = :good_id ',array(
+				        ':uniacid'  => $_W['uniacid'],
+				        ':good_id'  => $value['goodsid']
+				    ));
 					$announced_txt= $set['indiana_announced'];
 					$announced_txt = str_replace('[商品]', $indiana_goods['title'], $announced_txt);
 					$announced_txt = str_replace('[期数]', $value['period'], $announced_txt);
