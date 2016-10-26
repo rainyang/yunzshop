@@ -3,8 +3,8 @@
 <style type="text/css">
     body {margin:0px; background:#efefef; -moz-appearance:none; -webkit-appearance: none;}
     .indiana_topbar {height:auto; width:100%;background:  #fff8de none repeat scroll 0% 0%; border-bottom:1px solid #e3e3e3; padding: 10px; }
-    .indiana_topbar .inner {height: 24px;color: #333;line-height: 24px;font-size: 14px;}
-    .indiana_topbar .inner-num {height: 20px;color: #999;line-height: 20px;font-size: 12px;}
+    .indiana_topbar .inner {height: auto;color: #333;line-height: 24px;font-size: 14px;}
+    .indiana_topbar .inner-num {height: auto;color: #999;line-height: 20px;font-size: 12px;}
 
     .indiana_main {height:40px; width:100%; background:#fff;line-height: 40px;  border-bottom:1px solid #e2e2e2; }
    	.indiana_main .inner  {text-align: center;font-size: 12px;}
@@ -35,7 +35,7 @@
 		<div class='inner inner-num'>期号：{$indiana['period_num']}</div>
 		{if $indiana['status'] == 3}
 		<div class='inner'>揭晓时间：{$indiana['endtime']}</div> 
-		<div class='inner'>本期幸运号：<span style="color:#f00">{$indiana['code']}</span></div> 
+		<div class='inner'>本期幸运号：<span style="color: #f15353">{$indiana['code']}</span></div>
 		{/if}
     </div>
 

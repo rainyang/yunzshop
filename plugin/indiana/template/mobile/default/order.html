@@ -19,7 +19,7 @@
     .order_main .good span { color:#666;}
 
     .order_main .sub {height:40px; width:100%;}
-    .order_main .sub1 {height:30px; width:auto; padding:0px 10px; border:1px solid #ff771b; float:right; border-radius:5px; line-height:30px; font-size:14px; margin: 4px 0 10px 5px !important; color:#fff; background:#ff771b;}
+    .order_main .sub1 {height:30px; width:auto; padding:0px 3px; border:1px solid #ff771b; float:right; border-radius:5px; line-height:30px; font-size:14px; margin: 4px 0 10px 5px !important; color:#fff; background:#ff771b;}
     
     .order_no {height:40px; width:100%;  padding-top:10px; margin:50px 0px;}
 
@@ -99,12 +99,12 @@
 	           		<span class="sub1" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%order.goodsid%>&periodnum=<%order.period_num%>&indiana=1'">查看开奖</span>
 	           	</div>
 	        <%else if order.status == 3%>
-	        	<div style="width: 49%; float: left; line-height: 40px;">
+	        	<div style="width: 54%; float: left; line-height: 40px;">
 					<div class="other" style="height: 36px;line-height: 36px;overflow: hidden;">
 						<span>获奖者：<%order.nickname%></span>
 					</div>
 	        	</div>
-	           	<div style="width: 50%; float: right;">
+	           	<div style="width: 46%; float: right;">
 	           	<%if order.next_phase%>
 	           		<span class="sub1" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%order.next_phase.goodsid%>&periodnum=<%order.next_phase.period_num%>&indiana=1'">再次购买</span>
 	           	<%/if%>
