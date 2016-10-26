@@ -299,7 +299,7 @@ if (!class_exists('IndianaModel')) {
 				        ':uniacid'  => $_W['uniacid'],
 				        ':period_num'  => $value['period_num']
 				    ));
-					foreach ($indiana_message as $k => $v) {
+					foreach ($indiana_record as $k => $v) {
 						$announced_txt= $set['indiana_announced'];
 						$announced_txt = str_replace('[商品]', $indiana_goods['title'], $announced_txt);
 						$announced_txt = str_replace('[期数]', $value['period'], $announced_txt);
