@@ -99,13 +99,13 @@ if ($operation == "date") {
             if (!empty($bdate) && !empty($day)) {
                 $btime = strtotime($bdate);
                 $etime = $btime + $day * 86400;
-                $weekarray = array("日", "一", "二", "三", "四", "五", "六");
+                //$weekarray = array("日", "一", "二", "三", "四", "五", "六");
                 $data['btime'] = $btime;
                 $data['etime'] = $etime;
                 $data['bdate'] = $bdate;
                 $data['edate'] = date('Y-m-d', $etime);
-                $data['bweek'] = '星期' . $weekarray[date("w", $btime)];
-                $data['eweek'] = '星期' . $weekarray[date("w", $etime)];
+                //$data['bweek'] = '星期' . $weekarray[date("w", $btime)];
+                //$data['eweek'] = '星期' . $weekarray[date("w", $etime)];
                 $data['day'] = $day;
                 //setcookie('data',serialize($data),time()+2*7*24*3600);
                 $_SESSION['data']=$data;
@@ -2587,13 +2587,13 @@ if(p('hotel') && $goods_data['type']=='99'){ //判断是否开启酒店插件
         $btime = strtotime(date('Y-m-d'));
         $day=1;
         $etime = $btime + $day * 86400;
-        $weekarray = array("日", "一", "二", "三", "四", "五", "六");
+        //$weekarray = array("日", "一", "二", "三", "四", "五", "六");
         $arr['btime'] = $btime;
         $arr['etime'] = $etime;
         $arr['bdate'] = date('Y-m-d');
         $arr['edate'] = date('Y-m-d', $etime);
-        $arr['bweek'] = '星期' . $weekarray[date("w", $btime)];
-        $arr['eweek'] = '星期' . $weekarray[date("w", $etime)];
+        //$arr['bweek'] = '星期' . $weekarray[date("w", $btime)];
+        //$arr['eweek'] = '星期' . $weekarray[date("w", $etime)];
         $arr['day'] = $day;
         $_SESSION['data']=$arr;
     }
