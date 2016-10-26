@@ -275,7 +275,6 @@ if (!class_exists('IndianaModel')) {
 			global $_W, $_GPC;
 			$_W['uniacid'] = $uniacid;
 			$set = m('plugin')->getpluginSet('indiana', $_W['uniacid']);
-			echo "<pre>";print_r($set);exit;
 			set_time_limit(0);
 
 			$indiana = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_indiana_period') . " WHERE uniacid = :uniacid AND jiexiao_time <= :jiexiao_time AND status = :status ",array(
