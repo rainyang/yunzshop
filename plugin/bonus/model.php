@@ -866,7 +866,7 @@ if (!class_exists('BonusModel')) {
 
 		function perms()
 		{
-			return array('bonus' => array('text' => $this->getName(), 'isplugin' => true, 'child' => array('cover' => array('text' => '入口设置'), 'agent' => array('text' => '代理商管理', 'view' => '浏览', 'edit' => '修改-log', 'user' => '推广下线', 'order' => '查看推广订单(还需有订单权限)', 'goods_rank'=>'推广商品', 'changeagent' => '设置代理商'), 'level' => array('text' => '代理商等级', 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log'), 'send' => array('text' => '代理分红', 'view' => '浏览', 'bont' => '分红按钮'), 'sendall' => array('text' => '全球分红', 'view' => '浏览', 'bont' => '分红按钮'), 'detail' => array('text' => '分红明细', 'view' => '浏览', 'afresh' => '重发分红'), 'notice' => array('text' => '通知设置-log'), 'set' => array('text' => '基础设置-log'))));
+			return array('bonus' => array('text' => $this->getName(), 'isplugin' => true, 'child' => array('cover' => array('text' => '入口设置'), 'agent' => array('text' => '代理商管理', 'view' => '浏览', 'edit' => '修改-log', 'user' => '推广下线', 'order' => '查看推广订单(还需有订单权限)', 'goods_rank'=>'推广商品', 'changeagent' => '设置代理商'), 'level' => array('text' => '代理商等级', 'view' => '浏览', 'add' => '添加-log', 'edit' => '修改-log', 'delete' => '删除-log'), 'send' => array('text' => '团队分红', 'view' => '浏览', 'bont' => '分红按钮'), 'sendarea' => array('text' => '地区分红', 'view' => '浏览', 'bont' => '分红按钮'), 'sendall' => array('text' => '全球分红', 'view' => '浏览', 'bont' => '分红按钮'), 'detail' => array('text' => '分红明细', 'view' => '浏览', 'afresh' => '重发分红'), 'notice' => array('text' => '通知设置-log'), 'set' => array('text' => '基础设置-log'))));
 		}
 
 		//团队分红
@@ -1049,6 +1049,7 @@ if (!class_exists('BonusModel')) {
 			            "total" => $real_total
 			            );
 			    pdo_insert('sz_yi_bonus', $log);
+			    plog('bonus.send', "自动发放团队分红，共计{$real_total}人 金额{$totalmoney}元");
 			    if($senddata){
 			    	$filedata = array();
 			    	$file_path = IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log";
@@ -1244,6 +1245,7 @@ if (!class_exists('BonusModel')) {
 			            "total" => $real_total
 			            );
 			    pdo_insert('sz_yi_bonus', $log);
+			    plog('bonus.sendarea', "自动发放地区分红，共计{$real_total}人 金额{$totalmoney}元");
 			    if($senddata){
 			    	$filedata = array();
 			    	$file_path = IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log";
@@ -1291,7 +1293,6 @@ if (!class_exists('BonusModel')) {
 
 			//获取总订单金额
 			$ordermoney = pdo_fetchcolumn("select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}");
-			$ordermoney = 100000;
 			//获取全球分红代理等级信息
 			$premierlevels = pdo_fetchall("select id, pcommission, levelname from ".tablename('sz_yi_bonus_level')." where uniacid={$_W['uniacid']} and premier=1");
 			//分组查询会员每个等级人数
@@ -1465,6 +1466,7 @@ if (!class_exists('BonusModel')) {
 			            "total" => $total
 			            );
 			    pdo_insert('sz_yi_bonus', $log);
+			    plog('bonus.sendall', "自动发放全球分红，共计{$total}人 金额{$totalmoney}元，订单总额{$ordermoney}元");
 			    if($senddata){
 			    	$filedata = array();
 			    	$file_path = IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log";

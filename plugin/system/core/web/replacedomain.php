@@ -1,6 +1,6 @@
 <?php
 global $_W, $_GPC;
-
+ca('system.replacedomain');
 if(!empty($_GPC["submit"])){
 	$oldReplaceDomain = $_GPC["oldReplaceDomain"];
 	$newReplaceDomain = $_GPC["newReplaceDomain"];
@@ -53,6 +53,7 @@ if(!empty($_GPC["submit"])){
 			$result = pdo_fetch("update " . tablename($key) . " set $v = REPLACE($v,'" . $oldReplaceDomain . "','" . $newReplaceDomain . "')");
 		}
 	}
+	plog('system.replacedomain', "域名转换 旧域名：{$oldReplaceDomain} 新域名：{$newReplaceDomain}");
 	 message('替换完成!', $this->createPluginWebUrl('system/replacedomain'), 'success');
 }
 load()->func('tpl');

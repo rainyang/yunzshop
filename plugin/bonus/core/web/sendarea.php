@@ -201,6 +201,7 @@ if (!empty($_POST)) {
 	            );
 	    pdo_insert('sz_yi_bonus', $log);
     }
+    plog('bonus.sendarea', "后台发放地区分红，共计{$real_total}人 金额{$totalmoney}元");
     message("地区分红发放成功,需在下一页面点击发送消息！", $this->createPluginWebUrl('bonus/detail', array("sn" => $send_bonus_sn)), "success");
 }
 $pager = pagination($total, $pindex, $psize);

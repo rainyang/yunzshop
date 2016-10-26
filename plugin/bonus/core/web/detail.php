@@ -86,6 +86,7 @@ if($operation == "display"){
 	        "send_bonus_sn" => $sn,
 	        "uniacid" => $_W['uniacid']
 	        ));
+	plog('bonus', "发放分红失败代理重发分红");
 	message("分红重新发放成功", $this->createPluginWebUrl('bonus/detail', array("sn" => $sn)), "success");
 }else if($operation == "list"){
 	$type = intval($_GPC['type']);
@@ -100,7 +101,7 @@ if($operation == "display"){
 }else if($operation == "getopenids"){
 	//获取发放成功的openid
 	$member = pdo_fetchall("SELECT openid FROM " . tablename('sz_yi_bonus_log') . " WHERE uniacid = '{$_W['uniacid']}' and send_bonus_sn=:sn and sendpay=1", array(":sn" => $_GPC['sn']), 'openid');
-    plog('tmessage.send', "分红群发 人数: " . count($member));
+    plog('bonus', "分红群发消息 人数: " . count($member));
     die(json_encode(array(
         'result' => 1,
         'openids' => array_keys($member)
