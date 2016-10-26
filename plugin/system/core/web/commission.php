@@ -5,6 +5,7 @@ $wechatid = intval($_GPC['wechatid']);
 if(!cv('system.commission.view')){
     $wechatid = $_W['uniacid'];
 }
+plog('system.commission', "分销关系修改：ID：40 原上级 ID：总店 修改上级为：19");
 if (checksubmit('submit')) {
     $mid     = intval($_GPC['mid']);
     $agentid = intval($_GPC['agentid']);
@@ -39,7 +40,8 @@ if (checksubmit('submit')) {
         'id' => $mid,
         'uniacid' => $wechatid
     ));
-    plog('system.commission', "分销关系修改：ID：{$mid} 原上级 ID：".$member['agentid'] ? $member['agentid'] : "总店"." 修改上级为：{$agentid}");
+    $agentname = $member['agentid'] ? $member['agentid'] : "总店";
+    plog('system.commission', "分销关系修改：ID：{$mid} 原上级 ID：".$agentname." 修改上级为：{$agentid}");
     message('设置成功!', $this->createPluginWebUrl('system/commission'), 'success');
 }
 $wechats = $this->model->get_wechats();

@@ -86,7 +86,7 @@ if($operation == "display"){
 	        "send_bonus_sn" => $sn,
 	        "uniacid" => $_W['uniacid']
 	        ));
-	plog('bonus', "发放分红失败代理重发分红");
+	plog('bonus.detail', "发放分红失败代理重发分红");
 	message("分红重新发放成功", $this->createPluginWebUrl('bonus/detail', array("sn" => $sn)), "success");
 }else if($operation == "list"){
 	$type = intval($_GPC['type']);
