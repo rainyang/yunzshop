@@ -233,6 +233,7 @@ if (!class_exists('IndianaModel')) {
 				);
 				$detailurl  = $_W['siteroot'] . "/app/index.php?i=" .$_W['uniacid']."&c=entry&method=order&p=indiana&m=sz_yi&do=plugin";
 				m('message')->sendCustomNotice($openid, $msg, $detailurl);
+				echo "<pre>";print_r(m('message'));
 			}
 			if ($shengyu_codes <= 0) {
 				self::jiexiaotime($period_num);
@@ -299,7 +300,7 @@ if (!class_exists('IndianaModel')) {
 				        ':uniacid'  => $_W['uniacid'],
 				        ':period_num'  => $value['period_num']
 				    ));
-				    
+
 					$announced_txt= $set['indiana_announced'];
 					$announced_txt = str_replace('[商品]', $indiana_goods['title'], $announced_txt);
 					$announced_txt = str_replace('[期数]', $value['period'], $announced_txt);
