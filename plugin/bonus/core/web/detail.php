@@ -143,8 +143,11 @@ if($operation == "display"){
     $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
     $message = str_replace('[金额]', $log['money'], $message);
     $message = str_replace('[打款方式]', $send_type, $message);
-    $message = str_replace('[代理等级]', $levelname, $message);
-    $message = str_replace('[地区等级]', $levelname, $message);
+    if($bonus['type'] == 3){
+    	$message = str_replace('[地区等级]', $levelname, $message);
+    }else{
+    	$message = str_replace('[代理等级]', $levelname, $message);	
+    }
     $msg = array('keyword1' => array('value' => $send_title, 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
     if (!empty($templateid)) {
         $result = m('message')->sendTplNotice($openid, $templateid, $msg);
@@ -164,8 +167,5 @@ if($operation == "display"){
     )));
 
 }
-
-
-
 
 include $this->template('detail');

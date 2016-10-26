@@ -201,7 +201,7 @@ if (!empty($_POST)) {
 	            );
 	    pdo_insert('sz_yi_bonus', $log);
     }
-    message("地区分红发放成功", $this->createPluginWebUrl('bonus/detail', array("sn" => $send_bonus_sn)), "success");
+    message("地区分红发放成功,需在下一页面点击发送消息！", $this->createPluginWebUrl('bonus/detail', array("sn" => $send_bonus_sn)), "success");
 }
 $pager = pagination($total, $pindex, $psize);
 include $this->template('sendarea');

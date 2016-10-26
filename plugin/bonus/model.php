@@ -870,7 +870,7 @@ if (!class_exists('BonusModel')) {
 		}
 
 		//团队分红
-		public function autosend($uniacid = 0){
+		public function autosend($uniacid = 0, $filesn){
 			global $_W, $_GPC;
 			if(empty($uniacid)){
 				return;
@@ -931,6 +931,7 @@ if (!class_exists('BonusModel')) {
 		    }
 
 			$uids = array();
+			$senddata = array();
 			foreach ($list as $key => $value) {
 				$member = pdo_fetch("select id, avatar, nickname, realname, mobile, openid, bonuslevel, uid from ". tablename('sz_yi_member') . " where id=".$value['mid']." and uniacid=". $_W['uniacid']);
 				if(!empty($member)){
@@ -1015,11 +1016,11 @@ if (!class_exists('BonusModel')) {
 						$message = str_replace('[打款方式]', $send_type, $message);
 						$message = str_replace('[代理等级]', $value['levelname'], $message);
 						$msg = array('keyword1' => array('value' => !empty($set['tm']['bonus_paytitle']) ? $set['tm']['bonus_paytitle'] : '代理分红打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
-			            if (!empty($templateid)) {
-			                m('message')->sendTplNotice($member['openid'], $templateid, $msg, '', $account);
-			            } else {
-			                m('message')->sendCustomNotice($member['openid'], $msg, "", $account);
-			            }
+						$senddata[] = array(
+			            	'openid' => 	$member['openid'],
+			        		'templateid' => $set['tm']['templateid'],
+			        		'msg'	 => 	$msg,
+			        		);
 			        }
 				}
 			}
@@ -1048,12 +1049,20 @@ if (!class_exists('BonusModel')) {
 			            "total" => $real_total
 			            );
 			    pdo_insert('sz_yi_bonus', $log);
-			    return true;
+			    if($senddata){
+			    	$filedata = array();
+			    	$file_path = IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log";
+			    	if(file_exists($file_path)){
+			    		$filedata = unserialize(file_get_contents(IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log"));
+			    	}
+			    	$data = serialize(array_merge($senddata, $filedata));
+			    	file_put_contents(IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log", $data, FILE_APPEND);
+			    }
 		    }
 		}
 
 		//地区分红
-		public function autosendarea($uniacid = 0){
+		public function autosendarea($uniacid = 0, $filesn){
 			global $_W, $_GPC;
 			if(empty($uniacid)){
 				return;
@@ -1062,7 +1071,6 @@ if (!class_exists('BonusModel')) {
 			$time           = time();
 			$sendpay_error  = 0;
 			$bonus_money    = 0;
-			$islog          = false;
 			$set = $this->getSet();
 			$setshop = m('common')->getSysset('shop');
 			$day_times        = intval($set['settledays']) * 3600 * 24;
@@ -1113,6 +1121,7 @@ if (!class_exists('BonusModel')) {
 		    }
 
 			$uids = array();
+			$senddata = array();
 			foreach ($list as $key => $value) {
 				$member = pdo_fetch("select id, avatar, nickname, realname, mobile, openid, bonus_area, uid from ". tablename('sz_yi_member') . " where id=".$value['mid']." and uniacid=". $_W['uniacid']);
 				if(!empty($member)){
@@ -1202,11 +1211,11 @@ if (!class_exists('BonusModel')) {
 						$message = str_replace('[打款方式]', $send_type, $message);
 						$message = str_replace('[地区等级]', $levelname, $message);
 						$msg = array('keyword1' => array('value' => !empty($set['tm']['bonus_paytitle_area']) ? $set['tm']['bonus_paytitle_area'] : '地区分红打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
-						if (!empty($templateid)) {
-							m('message')->sendTplNotice($member['openid'], $templateid, $msg, '', $account);
-						} else {
-							m('message')->sendCustomNotice($member['openid'], $msg, '', $account);
-						}
+						$senddata[] = array(
+			            	'openid' => 	$member['openid'],
+			        		'templateid' => $set['tm']['templateid'],
+			        		'msg'	 => 	$msg,
+			        		);
 			        }
 				}
 			}
@@ -1235,12 +1244,20 @@ if (!class_exists('BonusModel')) {
 			            "total" => $real_total
 			            );
 			    pdo_insert('sz_yi_bonus', $log);
-			    return true;
+			    if($senddata){
+			    	$filedata = array();
+			    	$file_path = IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log";
+			    	if(file_exists($file_path)){
+			    		$filedata = unserialize(file_get_contents(IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log"));
+			    	}
+			    	$data = serialize(array_merge($senddata, $filedata));
+			    	file_put_contents(IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log", $data, FILE_APPEND);
+			    }
 		    }
 		}
 
 		//全球分红
-		public function autosendall($uniacid = 0){
+		public function autosendall($uniacid = 0, $filesn){
 			global $_W, $_GPC;
 			if(empty($uniacid)){
 				return;
@@ -1271,8 +1288,10 @@ if (!class_exists('BonusModel')) {
 			if($sendtime > $time){
 				return false;
 			}
+
 			//获取总订单金额
 			$ordermoney = pdo_fetchcolumn("select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}");
+			$ordermoney = 100000;
 			//获取全球分红代理等级信息
 			$premierlevels = pdo_fetchall("select id, pcommission, levelname from ".tablename('sz_yi_bonus_level')." where uniacid={$_W['uniacid']} and premier=1");
 			//分组查询会员每个等级人数
@@ -1282,11 +1301,11 @@ if (!class_exists('BonusModel')) {
 			$levelnames = array();
 			//分红佣金计算
 			foreach ($premierlevels as $key => $value) {
-			    $levelnames[$value['id']] = $value['levelname'];
 			    $leveldcount = $leveldcounts[$value['id']]['levelnum'];
 			    if($leveldcount>0){
+			    	$levelnames[$value['id']] = $value['levelname'];
 			        //当前等级分总额的百分比
-			        $levelmembermoney = round($orderallmoney*$value['pcommission']/100,2);
+			        $levelmembermoney = round($ordermoney*$value['pcommission']/100,2);
 			        if($levelmembermoney > 0){
 			            //当前等级人数平分该等级比例金额
 			            $membermoney = round($levelmembermoney/$leveldcount,2);
@@ -1304,10 +1323,7 @@ if (!class_exists('BonusModel')) {
 			    $where_uid = implode(',', array_keys($levelnames));
 			    //获取分红总人数
 			    $total = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_member')." where uniacid={$_W['uniacid']} and bonuslevel in({$where_uid})");
-			    $sql = "select id, opneid, bonuslevel, uid, nickname from ".tablename('sz_yi_member')." where uniacid={$_W['uniacid']} and bonuslevel in({$where_uid})";
-			    if ($operation != "sub_bonus") {
-			        $sql .= " limit " . ($pindex - 1) * $psize . ',' . $psize;
-			    }
+			    $sql = "select id, openid, bonuslevel, uid, nickname from ".tablename('sz_yi_member')." where uniacid={$_W['uniacid']} and bonuslevel in({$where_uid})";
 			    //获取分红列表
 			    $list = pdo_fetchall($sql);
 			    //$member_money = pdo_fetchall("select money, uid from " . tablename('member_money'), array(":uid" => $row['uid']), 'uid');
@@ -1318,7 +1334,6 @@ if (!class_exists('BonusModel')) {
 			if($totalmoney<=0){
 				return false;
 			}
-
 			$send_bonus_sn = time();
 		    $sendpay_error = 0;
 		    $bonus_money = 0;
@@ -1336,17 +1351,8 @@ if (!class_exists('BonusModel')) {
 		    $update_log_key = "UPDATE " . tablename('mc_members') . " SET credit2 = CASE uid";
 		    $paymethod = empty($set['paymethod']) ? 0 : 1;
 
-		    //获取公众号函数
-		    load()->model('account');
-		    if (!empty($_W['acid'])) {
-		        $account = WeAccount::create($_W['acid']);
-		    } else {
-		        $acid = pdo_fetchcolumn("SELECT acid FROM " . tablename('account_wechats') . " WHERE `uniacid`=:uniacid LIMIT 1", array(
-		            ':uniacid' => $_W['uniacid']
-		        ));
-		        $account = WeAccount::create($acid);
-		    }
-
+		    $senddata = array();
+		    $send_title = !empty($set['tm']['bonus_global_paytitle']) ? $set['tm']['bonus_global_paytitle'] : '全球分红打款通知';
 		    foreach ($list as $key => $value) {
 		        $send_money = $levelmoneys[$value['bonuslevel']];
 		        $levelname = $levelnames[$value['bonuslevel']];
@@ -1363,7 +1369,7 @@ if (!class_exists('BonusModel')) {
 		        if ($send_money <= 0) {
 		            continue;
 		        }
-		        
+		        $islog = true;
 		        $sendpay = 1;
 		        //分红打款
 		        if ($paymethod == 0) {
@@ -1412,20 +1418,22 @@ if (!class_exists('BonusModel')) {
 		        }
 
 		        if($sendpay == 1){
+		        	
 		            //获取用户等级名称
 		            $templateid = $set['tm']['templateid'];
 		            $send_type = empty($set['paymethod']) ? "余额" : "微信钱包";
+		            $message = $set['tm']['bonus_global_pay'];
 		            $message = str_replace('[昵称]', $value['nickname'], $message);
 		            $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
 		            $message = str_replace('[金额]', $send_money, $message);
 		            $message = str_replace('[打款方式]', $send_type, $message);
 		            $message = str_replace('[代理等级]', $levelname, $message);
 		            $msg = array('keyword1' => array('value' => !empty($set['tm']['bonus_global_paytitle']) ? $set['tm']['bonus_global_paytitle'] : '全球分红打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
-		            if (!empty($templateid)) {
-		                m('message')->sendTplNotice($value['openid'], $templateid, $msg, '', $account);
-		            } else {
-		                m('message')->sendCustomNotice($value['openid'], $msg, "", $account);
-		            }
+		            $senddata[] = array(
+		            	'openid' 		=> $value['openid'],
+		        		'templateid' 	=> $set['tm']['templateid'],
+		        		'msg'	 		=> $msg,
+		        		);
 		        }
 		    }
 		    if(!empty($insert_log_data)){
@@ -1437,26 +1445,36 @@ if (!class_exists('BonusModel')) {
 		    if(!empty($insert_member_log_data)){
 		        pdo_query($insert_member_log_key . implode(",", $insert_member_log_data));
 		    }  
-		    //获取分红订单id
-		    $orderids = pdo_fetchall("select o.id from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid=:uniacid and  o.finishtime >={$stattime} and o.finishtime < {$endtime}", array(":uniacid" => $_W['uniacid']), 'id');
-		    //分红明细记录
-		    $log = array(
-		            "uniacid" => $_W['uniacid'],
-		            "money" => $totalmoney,
-		            "status" => 2,
-		            "type" => 4,
-		            "ctime" => TIMESTAMP,
-		            "sendmonth" => $set['sendmonth'],
-		            "paymethod" => $set['paymethod'],
-		            "sendpay_error" => $sendpay_error,
-		            "orderids" => iserializer($orderids),
-		            "isglobal" => 1,
-		            'utime' => $daytime,
-		            "send_bonus_sn" => $send_bonus_sn,
-		            "total" => $total
-		            );
-		    pdo_insert('sz_yi_bonus', $log);
-		    return true;
+		    if($islog){
+			    //获取分红订单id
+			    $orderids = pdo_fetchall("select o.id from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid=:uniacid and  o.finishtime >={$stattime} and o.finishtime < {$endtime}", array(":uniacid" => $_W['uniacid']), 'id');
+			    //分红明细记录
+			    $log = array(
+			            "uniacid" => $_W['uniacid'],
+			            "money" => $totalmoney,
+			            "status" => 2,
+			            "type" => 4,
+			            "ctime" => TIMESTAMP,
+			            "sendmonth" => $set['sendmonth'],
+			            "paymethod" => $set['paymethod'],
+			            "sendpay_error" => $sendpay_error,
+			            "orderids" => iserializer($orderids),
+			            "isglobal" => 1,
+			            'utime' => $daytime,
+			            "send_bonus_sn" => $send_bonus_sn,
+			            "total" => $total
+			            );
+			    pdo_insert('sz_yi_bonus', $log);
+			    if($senddata){
+			    	$filedata = array();
+			    	$file_path = IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log";
+			    	if(file_exists($file_path)){
+			    		$filedata = unserialize(file_get_contents(IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log"));
+			    	}
+			    	$data = serialize(array_merge($senddata, $filedata));
+			    	file_put_contents(IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log", $data, FILE_APPEND);
+			    }
+			}
 		}
 
 		//确认收货消费中金额
@@ -1487,19 +1505,26 @@ if (!class_exists('BonusModel')) {
 				$bonus_data_area = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=0 and uniacid=".$_W['uniacid']." and bonus_area!=0  order by id desc");
 				$bonus_data_isglobal = pdo_fetchcolumn("select count(*) from " . tablename('sz_yi_bonus') . " where ctime>".$daytime." and isglobal=1 and uniacid=".$_W['uniacid']."  order by id desc");
 	            if(!empty($bonus_set['start'])){
+	            	$filesn = TIMESTAMP;
 	                //团队分红
 	                if(empty($bonus_data)){
-	                    $this->autosend($_W['uniacid']);
+	                    $this->autosend($_W['uniacid'], $filesn);
+	                    $isbonus = true;
 	                }
 	                //地区分红
 	                if(empty($bonus_data_area)){
-	                    $this->autosendarea($_W['uniacid']);
+	                    $this->autosendarea($_W['uniacid'], $filesn);
+	                    $isbonus = true;
 	                }
 	                //全球分红
 	                if(empty($bonus_data_isglobal)){
-	                    $this->autosendall($_W['uniacid']);
+	                    $this->autosendall($_W['uniacid'], $filesn);
+	                    $isbonus = true;
 	                }
 	            }
+	        }
+	        if($isbonus){
+	        	return $filesn;
 	        }
 		}
 	}

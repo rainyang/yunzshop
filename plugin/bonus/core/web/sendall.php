@@ -183,24 +183,6 @@ if (!empty($_POST)) {
                 $insert_log_data = array();
             }
         }
-
-        if($sendpay == 1){
-            //获取用户等级名称
-            /*$templateid = $set['tm']['templateid'];
-            $send_type = empty($set['paymethod']) ? "余额" : "微信钱包";
-            $message = $set['tm']['bonus_global_pay'];
-            $message = str_replace('[昵称]', $value['nickname'], $message);
-            $message = str_replace('[时间]', date('Y-m-d H:i:s', time()), $message);
-            $message = str_replace('[金额]', $send_money, $message);
-            $message = str_replace('[打款方式]', $send_type, $message);
-            $message = str_replace('[代理等级]', $levelname, $message);
-            $msg = array('keyword1' => array('value' => !empty($set['tm']['bonus_global_paytitle']) ? $set['tm']['bonus_global_paytitle'] : '全球分红打款通知', 'color' => '#73a68d'), 'keyword2' => array('value' => $message, 'color' => '#73a68d'));
-            if (!empty($templateid)) {
-                m('message')->sendTplNotice($value['openid'], $templateid, $msg, '', $account);
-            } else {
-                m('message')->sendCustomNotice($value['openid'], $msg, "", $account);
-            }*/
-        }
     }
     if(!empty($insert_log_data)){
         pdo_query($insert_log_key . implode(",", $insert_log_data));
@@ -230,7 +212,7 @@ if (!empty($_POST)) {
             "total" => $total
             );
     pdo_insert('sz_yi_bonus', $log);
-    message("全球分红发放成功", $this->createPluginWebUrl('bonus/detail', array("sn" => $send_bonus_sn, "isglobal" => 1)), "success");
+    message("全球分红发放成功,需在下一页面点击发送消息！", $this->createPluginWebUrl('bonus/detail', array("sn" => $send_bonus_sn, "isglobal" => 1)), "success");
 }
 $pager = pagination($total, $pindex, $psize);
 include $this->template('sendall');
