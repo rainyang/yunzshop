@@ -288,7 +288,7 @@ if (!class_exists('IndianaModel')) {
 					':status' => 2
 				));
 			foreach ($indiana_message as $key => $value) {
-				if ( ( $value['jiexiao_time']-120 >= time() ) && ( $value['jiexiao_time'] - 180 < time() ) ) {
+				if ( ( $value['jiexiao_time']-time() >= 60 ) && ( $value['jiexiao_time'] - time() < 119 ) ) {
 					
 					$indiana_goods = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_indiana_goods') . ' where uniacid=:uniacid and good_id = :good_id ',array(
 				        ':uniacid'  => $_W['uniacid'],
@@ -440,10 +440,10 @@ if (!class_exists('IndianaModel')) {
 				$winning_txt = str_replace('[幸运号]', $wincode, $winning_txt);
 				$winning_txt = str_replace('[本期参与人次]', $lack_record['count'], $winning_txt);
 
-				$default_txt = "您参与的您参与的夺宝商品【第".$indiana_goods['period']."期】  ".$indiana_goods['title']." \r\n\r\n 幸运号码".$wincode."\r\n\r\nben'qi'can'yu：".$lack_record['count']."人次";
+				$default_txt = "您参与的夺宝商品【第".$indiana_goods['period']."期】  ".$indiana_goods['title']." \r\n\r\n 幸运号码".$wincode."\r\n\r\nben'qi'can'yu：".$lack_record['count']."人次";
 				$msg = array(
 				    'first' => array(
-				        'value' => $set['indiana_participatetitle']?$set['indiana_participatetitle']:"开奖通知",
+				        'value' => $set['indiana_winningtitle']?$set['indiana_winningtitle']:"开奖通知",
 				        "color" => "#4a5077"
 				    ),
 				    'keyword1' => array(
