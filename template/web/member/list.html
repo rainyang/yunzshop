@@ -501,7 +501,7 @@
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">代理商等级</label>
                 <div class="col-sm-9 col-xs-12">
                     {ifp 'bonus.agent.edit'}
-                    <select name='data[bonuslevel]' class='form-control'>
+                    <select name='bdata[bonuslevel]' class='form-control'>
                         <option value='0'>{php echo empty($plugin_bonus_set['levelname'])?'普通等级':$plugin_bonus_set['levelname']}</option>
                         {loop $bonuslevels $level}
                         <option value='{$level['id']}' {if $member['bonuslevel']==$level['id']}selected{/if}>{$level['levelname']}</option>
