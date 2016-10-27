@@ -666,7 +666,7 @@ if ($operation == "display") {
                         $commission1 += isset($commissions["level1"]) ? floatval($commissions["level1"]) : 0;
                     } else {
                         $c1 = iunserializer($og["commission1"]);
-                        $l1 = $p->getLevel($m1["openid"]);
+                        $l1 = $plugin_commission->getLevel($m1["openid"]);
                         $commission1 += isset($c1["level" . $l1["id"]]) ? $c1["level" . $l1["id"]] : $c1["default"];
                     }
                 }
@@ -675,7 +675,7 @@ if ($operation == "display") {
                         $commission2 += isset($commissions["level2"]) ? floatval($commissions["level2"]) : 0;
                     } else {
                         $c2 = iunserializer($og["commission2"]);
-                        $l2 = $p->getLevel($m2["openid"]);
+                        $l2 = $plugin_commission->getLevel($m2["openid"]);
                         $commission2 += isset($c2["level" . $l2["id"]]) ? $c2["level" . $l2["id"]] : $c2["default"];
                     }
                 }
@@ -684,7 +684,7 @@ if ($operation == "display") {
                         $commission3 += isset($commissions["level3"]) ? floatval($commissions["level3"]) : 0;
                     } else {
                         $c3 = iunserializer($og["commission3"]);
-                        $l3 = $p->getLevel($m3["openid"]);
+                        $l3 = $plugin_commission->getLevel($m3["openid"]);
                         $commission3 += isset($c3["level" . $l3["id"]]) ? $c3["level" . $l3["id"]] : $c3["default"];
                     }
                 }
