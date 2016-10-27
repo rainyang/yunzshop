@@ -85,6 +85,7 @@ if (empty($_GPC['export'])) {
     $sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
 }
 $list = pdo_fetchall($sql, $params);
+$totalmoney = pdo_fetchcolumn('select sum(o.price) from ' . tablename("sz_yi_order") . " o" . " left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id left join" . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename("sz_yi_member_address") . " a on a.id=o.addressid " . " left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . "  where {$condition} group by o.ordersn_general ORDER BY o.createtime DESC,o.status DESC  ", $params);
 $paytype = array(
     '0' => array(
         "css" => "default",
@@ -129,7 +130,7 @@ foreach ($list as & $value) {
         ':uniacid' => $_W['uniacid'],
         ':orderid' => $value['id']
     ));
-    $totalmoney += $value['price'];
+    //$totalmoney += $value['price'];
     $orderids = pdo_fetchall("select distinct id from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid', array(
                 ':ordersn_general' => $value["ordersn_general"],
                 ':uniacid' => $_W["uniacid"]
