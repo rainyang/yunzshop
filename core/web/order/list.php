@@ -285,10 +285,10 @@ if ($operation == "display") {
                 $statuscondition = " AND o.status=-1 and o.refundtime=0";
                 break;
             case "4" :
-                $statuscondition = " AND o.refundtime=0 AND o.refundid<>0 and r.status=0";
+                $statuscondition = " AND o.refundtime=0 AND o.refundid<>0";
                 break;
             case "5" :
-                $statuscondition = " AND o.refundtime<>0 AND o.refundid<>0 and r.status=1";
+                $statuscondition = " AND o.refundtime<>0";
                 break;
             case "1" :
                 $statuscondition = " AND ( o.status = 1 or (o.status=0 and o.paytype=3) )";
@@ -670,7 +670,7 @@ if ($operation == "display") {
                         $commission1 += isset($commissions["level1"]) ? floatval($commissions["level1"]) : 0;
                     } else {
                         $c1 = iunserializer($og["commission1"]);
-                        $l1 = $p->getLevel($m1["openid"]);
+                        $l1 = $plugin_commission->getLevel($m1["openid"]);
                         $commission1 += isset($c1["level" . $l1["id"]]) ? $c1["level" . $l1["id"]] : $c1["default"];
                     }
                 }
@@ -679,7 +679,7 @@ if ($operation == "display") {
                         $commission2 += isset($commissions["level2"]) ? floatval($commissions["level2"]) : 0;
                     } else {
                         $c2 = iunserializer($og["commission2"]);
-                        $l2 = $p->getLevel($m2["openid"]);
+                        $l2 = $plugin_commission->getLevel($m2["openid"]);
                         $commission2 += isset($c2["level" . $l2["id"]]) ? $c2["level" . $l2["id"]] : $c2["default"];
                     }
                 }
@@ -688,7 +688,7 @@ if ($operation == "display") {
                         $commission3 += isset($commissions["level3"]) ? floatval($commissions["level3"]) : 0;
                     } else {
                         $c3 = iunserializer($og["commission3"]);
-                        $l3 = $p->getLevel($m3["openid"]);
+                        $l3 = $plugin_commission->getLevel($m3["openid"]);
                         $commission3 += isset($c3["level" . $l3["id"]]) ? $c3["level" . $l3["id"]] : $c3["default"];
                     }
                 }
@@ -896,7 +896,7 @@ if ($operation == "display") {
         $paras);
     $totals['status4'] = pdo_fetchcolumn('SELECT COUNT(DISTINCT o.id) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_order_refund') . ' r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE o.uniacid=:uniacid AND o.refundtime=0 AND o.refundid<>0 and r.status=0  and o.refundstate>=0 and o.deleted=0 {$supplier_conds}" . $join_order_type,
         array(':uniacid' => $_W['uniacid']));
-    $totals['status5'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and refundtime<>0 AND refundid<>0' . $supplier_cond,
+    $totals['status5'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and refundtime<>0' . $supplier_cond,
         $paras);
 
     if (p('hotel') && $type == 'hotel') {
@@ -1182,7 +1182,7 @@ if ($operation == "display") {
         $paras);
     $totals['status4'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . ' o ' . ' left join ' . tablename('sz_yi_order_refund') . ' r on r.orderid= o.id' . ' left join ' . tablename('sz_yi_member') . ' m on m.openid=o.openid  and m.uniacid =  o.uniacid' . ' left join ' . tablename('sz_yi_member_address') . ' a on o.addressid = a.id ' . ' left join ' . tablename('sz_yi_member') . ' sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid' . ' left join ' . tablename('sz_yi_saler') . ' s on s.openid = o.verifyopenid and s.uniacid=o.uniacid' . " WHERE o.uniacid=:uniacid AND o.refundtime=0 AND o.refundid<>0 and r.status=0  and o.refundstate>=0 and o.deleted=0 " . $supplier_conds,
         array(':uniacid' => $_W['uniacid']));
-    $totals['status5'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and refundtime<>0 AND refundid<>0' . $supplier_cond,
+    $totals['status5'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and refundtime<>0' . $supplier_cond,
         $paras);
 
     /*$totals["all"] = pdo_fetchcolumn("SELECT COUNT(distinct o.ordersn_general) FROM " . tablename("sz_yi_order") . " o " . " left join ( select rr.id,rr.orderid,rr.status from " . tablename("sz_yi_order_refund") . " rr left join " . tablename("sz_yi_order") . " ro on rr.orderid =ro.id order by rr.id desc limit 1) r on r.orderid= o.id" . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid  and m.uniacid =  o.uniacid" . " left join " . tablename("sz_yi_member_address") . " a on o.addressid = a.id " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . " WHERE $condition", $paras);
