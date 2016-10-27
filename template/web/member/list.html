@@ -502,8 +502,8 @@
                 <div class="col-sm-9 col-xs-12">
                     {ifp 'bonus.agent.edit'}
                     <select name='data[bonuslevel]' class='form-control'>
-                        <option value='0'>{php echo empty($this->set['levelname'])?'普通等级':$this->set['levelname']}</option>
-                        {loop $agentlevels $level}
+                        <option value='0'>{php echo empty($plugin_bonus_set['levelname'])?'普通等级':$plugin_bonus_set['levelname']}</option>
+                        {loop $bonuslevels $level}
                         <option value='{$level['id']}' {if $member['bonuslevel']==$level['id']}selected{/if}>{$level['levelname']}</option>
                         {/loop}
                     </select>
@@ -511,7 +511,7 @@
                     <input type="hidden" name="data[bonuslevel]" class="form-control" value="{$member['bonuslevel']}"  />
 
                     {if empty($member['agentlevel'])}
-                    {php echo empty($this->set['levelname'])?'普通等级':$this->set['levelname']}
+                    {php echo empty($plugin_bonus_set['levelname'])?'普通等级':$plugin_bonus_set['levelname']}
                     {else}
                     {php echo pdo_fetchcolumn('select levelname from '.tablename('sz_yi_bonus_level').' where id=:id limit 1',array(':id'=>$member['bonuslevel']))}
                     {/if}

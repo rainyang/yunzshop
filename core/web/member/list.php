@@ -305,6 +305,9 @@ if ($op == 'display') {
     if ($hascommission) {
         $agentlevels = $plugin_com->getLevels();
     }
+    if ($plugin_bonus) {
+        $bonuslevels = $plugin_bonus->getLevels();
+    }
     $member = m('member')->getMember($id);
     if ($hascommission) {
         $member = $plugin_com->getInfo($id, array(
