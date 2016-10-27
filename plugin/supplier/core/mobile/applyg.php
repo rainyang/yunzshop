@@ -16,11 +16,13 @@ if ($_W['isajax']) {
 		$time = time();
 		$applyno = m('common')->createNO('commission_apply', 'applyno', 'CA');
 		$apply_ordergoods_ids = "";
-        foreach ($supplierinfo['sp_goods'] as $key => $value) {
-            if ($key == 0) {
-                $apply_ordergoods_ids .= $value['ogid'];
-            } else {
-                $apply_ordergoods_ids .= ','.$value['ogid'];
+        if (!empty($supplierinfo['sp_goods'])) {
+            foreach ($supplierinfo['sp_goods'] as $key => $value) {
+                if ($key == 0) {
+                    $apply_ordergoods_ids .= $value['ogid'];
+                } else {
+                    $apply_ordergoods_ids .= ','.$value['ogid'];
+                }
             }
         }
 		$apply = array(

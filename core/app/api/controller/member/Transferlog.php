@@ -23,6 +23,19 @@ class Transferlog extends YZ
     public function index()
     {
         $result = $this->callMobile('member/transfer_log');
+        foreach ($result['json']['list'] as $key => &$value) {
+            $value['status_name'] = '';
+            if ($value['type'] == '1') {
+                if ($value['status'] == '1') {
+                    $value['status_name'] = "转让成功";
+                }
+            } else {
+                if ($value['status'] == '1') {
+                    $value['status_name'] = "受让成功";
+                }
+            }
+        }
+        unset($value);
         $this->returnSuccess($result);
 
 

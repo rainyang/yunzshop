@@ -200,12 +200,12 @@ if ($_W['isajax']) {
     } else {
     	$show_supplier_center = false;
     }
-    if (p('channel') && !empty($ischannel)) {
+    if (p('channel') && empty($ischannel) && $channel_set['become_condition'] == 1 && $member['isagent'] == 1 && $member['status'] == 1) {
     	$show_af_channel = true;
     } else {
     	$show_af_channel = false;
     }
-    if (p('channel') && empty($ischannel) && $channel_set['become_condition'] == 1 && $member['isagent'] == 1 && $member['status'] == 1) {
+    if (p('channel') && !empty($ischannel)) {
     	$show_channel_center = true;
     } else {
     	$show_channel_center = false;
