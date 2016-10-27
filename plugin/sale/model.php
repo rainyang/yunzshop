@@ -19,12 +19,12 @@ if (!class_exists('SaleModel')) {
 		{
 			$set = $this->getSet();
 			$allenoughs = array();
-			$timeout = $set['timeout'];
+			$enoughs = $set['enoughs'];
 			if (floatval($set['enoughmoney']) > 0 && floatval($set['enoughdeduct']) > 0) {
 				$allenoughs[] = array('enough' => floatval($set['enoughmoney']), 'money' => floatval($set['enoughdeduct']));
 			}
-			if (is_array($timeout)) {
-				foreach ($timeout as $val) {
+			if (is_array($enoughs)) {
+				foreach ($enoughs as $val) {
 					if (floatval($val['enough']) > 0 && floatval($val['give']) > 0) {
 						$allenoughs[] = array('enough' => floatval($val['enough']), 'money' => floatval($val['give']));
 					}
