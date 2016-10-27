@@ -349,7 +349,7 @@ if (!class_exists('IndianaModel')) {
 
 			$s_indiana = pdo_fetchall("SELECT ic.openid, ic.create_time, ic.microtime, m.nickname from " . tablename('sz_yi_indiana_consumerecord') . " ic 
 			    left join " . tablename('sz_yi_member') . " m on( ic.openid=m.openid )  
-			    where ic.uniacid = :uniacid  and ic.create_time < :create_time order by ic.create_time desc limit 20 ",
+			    where ic.uniacid = :uniacid  and ic.create_time <= :create_time order by ic.create_time desc limit 20 ",
 			    array(
 			        ':uniacid'      => $_W['uniacid'],
 			        ':create_time'   => $lasttime
@@ -438,7 +438,7 @@ if (!class_exists('IndianaModel')) {
 				$winning_txt = str_replace('[幸运号]', $wincode, $winning_txt);
 				$winning_txt = str_replace('[本期参与人次]', $lack_record['count'], $winning_txt);
 
-				$default_txt = "您参与的夺宝商品【第".$indiana_goods['period']."期】  ".$indiana_goods['title']." \r\n\r\n 幸运号码".$wincode."\r\n\r\nben'qi'can'yu：".$lack_record['count']."人次";
+				$default_txt = "您参与的夺宝商品【第".$indiana_goods['period']."期】  ".$indiana_goods['title']." \r\n\r\n 幸运号码".$wincode."\r\n\r\n本期参与：".$lack_record['count']."人次";
 				$msg = array(
 				    'first' => array(
 				        'value' => $set['indiana_winningtitle']?$set['indiana_winningtitle']:"开奖通知",
