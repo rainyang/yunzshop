@@ -487,7 +487,7 @@ if ($operation == "display") {
     }
 
     foreach ($list as & $value) {
-        if ($order_members) {
+        if (isset($order_members[$value['openid']])) {
             $value = $value + $order_members[$value['openid']];
         }
 
