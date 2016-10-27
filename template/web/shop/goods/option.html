@@ -37,7 +37,11 @@
 		<tr>
 			<td>
 				<h4><a href="javascript:;" class='btn btn-primary' id='add-spec' onclick="addSpec()" style="margin-top:10px;margin-bottom:10px;" title="添加规格"><i class='fa fa-plus'></i> 添加规格</a> 
-				<a href="javascript:;" onclick="calc()" title="刷新规格项目表" class="btn btn-primary"><i class="fa fa-refresh"></i> 刷新规格项目表</a></h4>
+				<a href="javascript:;" onclick="calc()" title="刷新规格项目表" class="btn btn-primary"><i class="fa fa-refresh"></i> 刷新规格项目表</a>
+					{if p('recharge') && $_GPC['plugin'] == "recharge"}
+					<a href="javascript:;" class='btn btn-primary' id='add-spec' onclick="addDataSpec()" style="margin-top:10px;margin-bottom:10px;" title="一键添加流量规格"><i class='fa fa-plus'></i> 一键添加流量规格</a>
+					{/if}
+			</h4>
 			</td>
 		</tr>
 	</table>
@@ -99,6 +103,21 @@
 			}
 		});
 	})
+	function addDataSpec(){
+		$("#add-spec").html("正在处理...").attr("disabled", "true").toggleClass("btn-primary");
+		var url = "{php echo $this->createWebUrl('shop/tpl',array('tpl'=>'spec_data'))}";
+		$.ajax({
+			"url": url,
+			success:function(data){
+				$("#add-spec").html('<i class="fa fa-plus"></i> 添加规格').removeAttr("disabled").toggleClass("btn-primary"); ;
+				$('#specs').append(data);
+				var len = $(".add-specitem").length -1;
+				$(".add-specitem:eq(" +len+ ")").focus();
+
+				window.optionchanged = true;
+			}
+		});
+	}
 	function addSpec(){
                     var len = $(".spec_item").length;
                

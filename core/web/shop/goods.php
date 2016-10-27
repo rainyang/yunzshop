@@ -189,6 +189,7 @@ if ($operation == "change") {
 } else {
     if ($operation == "post") {
         $id = intval($_GPC['id']);
+
         if (!empty($id)) {
             ca('shop.goods.edit|shop.goods.view');
         } else {
@@ -636,6 +637,7 @@ if ($operation == "change") {
                 'plugin' => trim($_GPC["plugin"])
 
             );
+
             if (p('area')) {
                 $data['pcate_area'] = intval($_GPC['category_area']['parentid']);
                 $data['ccate_area'] = intval($_GPC['category_area']['childid']);
@@ -809,7 +811,10 @@ if ($operation == "change") {
             if($_GPC['plugin'] == 'fund'){
                 $data['productprice'] = $data['marketprice'];
             }
-
+            if ($_GPC['plugin'] == 'recharge') {
+                $data["province"] = $_GPC["reside"]['province'];
+                $data["operator"] = intval($_GPC["operator"]);
+            }
             if (empty($id)) {
                 pdo_insert('sz_yi_goods', $data);
                 $id = pdo_insertid();
@@ -828,6 +833,7 @@ if ($operation == "change") {
                         pdo_insert('sz_yi_hotel_room', $room);
                     }
                 }
+
                 if($_GPC['plugin'] == 'fund'){
                     $fund_data = array(
                         'goodsid' => $id,

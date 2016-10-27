@@ -2,6 +2,8 @@
 <div class="w1200 m0a">
 {if $_GPC['plugin'] != "fund"}
 	{template 'web/shop/tabs'}
+{elseif $_GPC['plugin'] == 'recharge'}
+	{template 'recharge/tabs'}
 {else}
 	{template 'fund/tabs'}
 {/if}
