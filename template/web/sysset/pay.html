@@ -23,8 +23,8 @@
             <div class="alert alert-warning">
                 易宝支付，含银联，信用卡等多种支付方式, PC版支付成功后台通知请登录商户后台添加通知地址,<a href="http://www.yeepay.com/" target="_blank">申请及详情请查看这里</a>.
             </div>
+            <!-- weixin支付设置 _start -->
                 <div class="form-group">
-
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">微信支付</label>
                     <div class="col-sm-9 col-xs-12">
                         {ifp 'sysset.save.pay'}
@@ -110,6 +110,84 @@
                         </div>
                     </div>
                 </div>
+
+
+<!-- paypal支付设置 _start -->
+
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">Paypal支付</label>
+                    <div class="col-sm-9 col-xs-12">
+                        {ifp 'sysset.save.pay'}
+                        <label class='radio-inline'><input type='radio' name='pay[paypalstatus]' value='1' {if $set['pay']['paypalstatus']==1}checked{/if}/> 开启</label>
+                        <label class='radio-inline'><input type='radio' name='pay[paypalstatus]' value='0' {if $set['pay']['paypalstatus']==0}checked{/if} /> 关闭</label>
+                        {else}
+                        <input type="hidden" name="pay[paypalstatus]" value="{$set['pay']['paypalstatus']}" />
+                        <div class='form-control-static'> {if $set['pay']['paypalstatus']==1}开启{else}关闭{/if}</div>
+                        {/if}
+                    </div>
+                </div>
+
+                <div id='paypal' {if empty($set['pay']['paypalstatus'])}style="display:none"{/if}>
+
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                        <div class="col-sm-9 col-xs-12">
+                            <div style="float:left; width:15%; height:30px;">
+                                <label class='radio-inline'  style="padding-left:0px">商户号：</label>
+                            </div>
+                            <div style="float:left; width:85%; height:30px;">
+                                <label class='radio-inline' style="width:70%;"><input class="col-sm-6" style="width:100%;" type="text" name="pay[paypal][mchid]" value="{$set['pay']['paypal']['mchid']}"/></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                        <div class="col-sm-9 col-xs-12">
+                            <div style="float:left; width:15%; height:30px;">
+                                <label class='radio-inline'  style="padding-left:0px">商户密码：</label>
+                            </div>
+                            <div style="float:left; width:85%; height:30px;">
+                                <label class='radio-inline' style="width:70%;"><input class="col-sm-6" style="width:100%;" type="text" name="pay[paypal][key]" value="{$set['pay']['paypal']['key']}"/></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                        <div class="col-sm-9 col-xs-12">
+                            <div style="float:left; width:15%; height:30px;">
+                                <label class='radio-inline'  style="padding-left:0px">商户支付密钥：</label>
+                            </div>
+                            <div style="float:left; width:85%; height:30px;">
+                                <label class='radio-inline' style="width:70%;"><input class="col-sm-6" style="width:100%;" type="text" name="pay[paypal][signkey]" value="{$set['pay']['paypal']['signkey']}"/></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                        <div class="col-sm-9 col-xs-12">
+                            <div style="float:left; width:15%; height:30px;">
+                                <label class='radio-inline'  style="padding-left:0px">支付币种：</label>
+                            </div>
+                            <div style="float:left; width:85%; height:30px;">
+                                <label class='radio-inline' style="width:70%;"><input class="col-sm-6" style="width:100%;" type="text" name="pay[paypal][currency]" value="{$set['pay']['paypal']['currency']}"/></label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                        <div class="col-sm-9 col-xs-12">
+                            <div style="float:left; width:15%; height:30px;">
+                                <label class='radio-inline'  style="padding-left:0px">汇率：</label>
+                            </div>
+                            <div style="float:left; width:85%; height:30px;">
+                                <label class='radio-inline' style="width:70%;"><input class="col-sm-6" style="width:100%;" type="text" name="pay[paypal][currencies]" value="{$set['pay']['paypal']['currencies']}"/></label>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+<!-- paypal支付设置 _end -->
+
 
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付宝支付</label>
@@ -260,6 +338,14 @@
                         }
                     })
 
+                    $(":radio[name='pay[paypalstatus]']").click(function () {
+                        if ($(this).val() == 1) {
+                            $("#paypal").show();
+                        }
+                        else {
+                            $("#paypal").hide();
+                        }
+                    })
                     $(":radio[name='pay[yeepay]']").click(function () {
                         if ($(this).val() == 1) {
                             $("#yeepay_set").show();

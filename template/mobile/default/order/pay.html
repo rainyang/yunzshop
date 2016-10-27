@@ -15,18 +15,21 @@
 .order_main .line .nav .on {margin-left:19px;}
 
 .order_sub1 {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
-.order_sub10 {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .order_sub2 {height:44px; margin:14px 5px; background:#2e78d0; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .order_sub3 {height:44px; margin:14px 5px;background:#e2cb04; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .order_sub4 {height:44px; margin:14px 5px; background:#18c0f7; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
-
-.order_main1 {height:30px;padding:10px;border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; background:#fff;text-align:center;margin-top:10px; }
 .order_sub5 {height:30px; width:35%;padding:5px 10px 5px 10px; border:1px solid #ccc; border-radius:4px; text-align:center; font-size:16px; line-height:30px; color:#333; }
 .order_sub6 {height:44px; margin:14px 5px; background:#07c4d0; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
-
 .order_sub7 {height:44px; margin:14px 5px; background:#07c4d0; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+.order_sub8 {height:44px; margin:14px 5px; background: #f49c06; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 
-    .order_sub8 {height:44px; margin:14px 5px; background: #f49c06; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+.order_sub10 {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+.order_sub11 {height:44px; margin:14px 5px; background:#19F95E; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
+
+.order_main1 {height:30px;padding:10px;border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; background:#fff;text-align:center;margin-top:10px; }
+
+
+
 
 .order_subc {height:44px; margin:14px 5px; background:#31cd00; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 </style>
@@ -47,6 +50,7 @@
     <%if wechat.success%><div class="button order_sub1">微信支付</div><%/if%>
     <%if alipay.success%><div class="button order_sub2" >支付宝支付</div><%/if%>
     <%if yeepay.success%><div class="button order_sub8" >易宝支付</div><%/if%>
+    <%if paypal.success%><div class="button order_sub11" >paypal支付</div><%/if%>
     
     <%if credit.success %>
         <div class="button order_sub3">{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}支付(当前{if $shopset['credit']}{$shopset['credit']}{else}余额{/if}:<%credit.current%>)</div>
@@ -261,7 +265,7 @@
 
                 $('.order_sub8').click(function(){
 
-                    var deduct = ($('#deductmoney').length>0 &&$('#deductmoney').attr('on')=='1' )?1:0 ;
+                    var deduct = ($('#deductmoney').length>0 && $('#deductmoney').attr('on')=='1' )?1:0 ;
                     core.json('order/pay', {op: 'pay',type: 'yeepay', orderid:'{$_GPC['orderid']}',openid:"{$openid}",deduct:deduct}, function (rjson) {
                         if(rjson.status!=1){
                             $('.button').removeAttr('submitting');
@@ -274,7 +278,23 @@
                     },true,true);
                 })
             }
+            //paypal支付
+            if(result.paypal.success){
 
+                $('.order_sub11').click(function(){
+
+                    var deduct = ($('#deductmoney').length>0 && $('#deductmoney').attr('on')=='1' )?1:0;
+                    core.json('order/pay', {op: 'pay',type: 'paypal', orderid:'{$_GPC['orderid']}',openid:"{$openid}",deduct:deduct}, function (rjson) {
+                        if(rjson.status!=1){
+                            $('.button').removeAttr('submitting');
+                            core.tip.show(rjson.result);
+                            return;
+                        }
+                        location.href = core.getUrl('order/pay_paypal',{orderid:'{$_GPC['orderid']}'});
+                        return;
+                    },true,true);
+                })
+            }
            if(result.wechat.success){
                 $('.order_sub1').click(function(){   
                         if($(this).attr('submitting')=='1'){

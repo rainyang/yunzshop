@@ -59,6 +59,10 @@ $paytype = array(
         "css" => "warning",
         "name" => "支付宝支付"
     ),
+    '29' => array(
+        'css' => "paypal",
+        'name' => "paypal支付"
+    ),
     "3" => array(
         "css" => "primary",
         "name" => "货到付款"
