@@ -18,7 +18,7 @@ require '../../addons/sz_yi/core/inc/plugin/plugin_model.php';
 global $_W, $_GPC;
 set_time_limit(0);
 
-$sql = "SELECT * FROM ". tablename('uni_account'). " as a LEFT JOIN". tablename('account'). " as b ON a.default_acid = b.acid WHERE a.default_acid <> 0 ORDER BY a.`uniacid` DESC ";
+$sql = "SELECT * FROM ". tablename('uni_account'). " as a LEFT JOIN". tablename('account'). " as b ON a.default_acid = b.acid WHERE a.default_acid <> 0";
 
 $sets = pdo_fetchall($sql);
 //查询常见发消息存储文件数据目录
@@ -39,23 +39,15 @@ foreach ($sets as $k => $set) {
         }
     }
 
-
     $preturn = p('return');
     if(!empty($preturn)){
         $preturn->autoexec($set['uniacid']);
-    }
-
-    $pindiana = p('indiana');
-    if(!empty($pindiana)){
-        $pindiana->autoexec($set['uniacid']);
     }
 
     $pyunbi = p('yunbi');
     if(!empty($pyunbi)){
         $pyunbi->autoexec($set['uniacid']);
     }
-
-
 }
 
 if ($filedatas) {
