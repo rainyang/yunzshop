@@ -90,14 +90,12 @@ if (!class_exists('IndianaModel')) {
 					':period_number' => $period_number
 				);
 			$result_period = pdo_fetch($sql_period,$data_period);
-			$group_number  = 40;		//	取得区间组数
+			$allcodes = unserialize($result_period['allcodes']);	
+			$group_number  = sizeof($allcodes);		//	取得区间组数
 			$codes_ervery = 5;		//夺宝码区间个数
-			$allcodes = unserialize($result_period['allcodes']);		//解压所有码段
-			$needcodes = array();			//设置夺宝码数组
-			if($result_period['shengyu_codes'] < ($group_number * $codes_ervery)){
-				$need_groupnum = sizeof($allcodes);
-				$left_codes = '';
-			}else{
+				//解压所有码段
+			$needcodes = array($group_number);			//设置夺宝码数组
+
 				$need_groupnum = $group_number;
 				$left_codes = array_slice($allcodes,$need_groupnum,sizeof($allcodes)-$need_groupnum);
 				if(!is_array($left_codes)){
@@ -108,7 +106,6 @@ if (!class_exists('IndianaModel')) {
 					}						//检测剩余码
 				}
 				$left_codes = serialize($left_codes);		//压缩剩余夺宝码段
-			}
 			//剩余码小于单次取得数
 			for($i = 0;$i < $need_groupnum ; $i++){
 				$codes_ervery_group = array_slice($allcodes,$i,1);		//从第0个取值取一个
@@ -129,6 +126,7 @@ if (!class_exists('IndianaModel')) {
 			}
 			$needcodes = serialize($needcodes);
 			pdo_update('sz_yi_indiana_period',array('codes'=>$needcodes,'allcodes'=>$left_codes),array('uniacid'=>$_W['uniacid'],'period_num'=>$period_number));
+
 		}
 
 		public function dispose($orderid = ''){
