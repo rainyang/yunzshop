@@ -19,6 +19,7 @@ global $_W, $_GPC;
 set_time_limit(0);
 
 $sql = "SELECT * FROM ". tablename('uni_account'). " as a LEFT JOIN". tablename('account'). " as b ON a.default_acid = b.acid WHERE a.default_acid <> 0 ORDER BY a.`uniacid` DESC ";
+
 $sets = pdo_fetchall($sql);
 //查询常见发消息存储文件数据目录
 $cdir = IA_ROOT . "/addons/sz_yi/data/message";
@@ -28,6 +29,7 @@ if (!is_dir($cdir))
 };
 $filedatas = array();
 foreach ($sets as $k => $set) {
+
     m('order')->autoexec($set['uniacid']);
     $pbonus = p('bonus');
     if(!empty($pbonus)){
@@ -37,10 +39,17 @@ foreach ($sets as $k => $set) {
         }
     }
 
+
     $preturn = p('return');
     if(!empty($preturn)){
         $preturn->autoexec($set['uniacid']);
     }
+
+    $pindiana = p('indiana');
+    if(!empty($pindiana)){
+        $pindiana->autoexec($set['uniacid']);
+    }
+
     $pyunbi = p('yunbi');
     if(!empty($pyunbi)){
         $pyunbi->autoexec($set['uniacid']);
@@ -52,7 +61,10 @@ foreach ($sets as $k => $set) {
 if ($filedatas) {
     foreach ($filedatas as $key => $value) {
         m('message')->sendmsg($value['filesn'], $value['uniacid']);
-    }  
+    }
 }
-echo "<pre>";print_r("ok...");exit;
+echo date("Y-m-d H:i:s");
+echo "<pre>";print_r("ok...");
+echo "\r\n";
+exit;
 
