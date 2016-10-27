@@ -5,7 +5,6 @@ if (!defined('IN_IA')) {
 global $_W, $_GPC;
 
 ca('indiana.goods');
-
 $set = $this->getSet();
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 

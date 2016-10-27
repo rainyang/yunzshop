@@ -20,7 +20,7 @@ $lasttime = pdo_fetchcolumn("SELECT create_time FROM " . tablename('sz_yi_indian
 
 $indiana = pdo_fetchall("SELECT ic.openid, ic.create_time, ic.microtime, m.nickname from " . tablename('sz_yi_indiana_consumerecord') . " ic 
     left join " . tablename('sz_yi_member') . " m on( ic.openid=m.openid )  
-    where ic.uniacid = :uniacid  and ic.create_time < :create_time order by ic.create_time desc limit 20 ",
+    where ic.uniacid = :uniacid  and ic.create_time <= :create_time order by ic.create_time desc limit 20 ",
     array(
         ':uniacid'      => $_W['uniacid'],
         ':create_time'   => $lasttime
