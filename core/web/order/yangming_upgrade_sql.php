@@ -9,7 +9,7 @@ if(!pdo_fieldexists('sz_yi_bonus', 'bonus_area')) {
 //充值记录表中添加进行充值中的记录
 if (!pdo_fieldexists('sz_yi_member_log', 'underway')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_log')." ADD `underway` tinyint(1) DEFAULT '0';");
-}
+}                                          an
 
 //9.18添加
 if (!pdo_fieldexists('sz_yi_goods', 'catch_id')) {
