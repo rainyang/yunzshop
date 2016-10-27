@@ -223,6 +223,10 @@ if ($operation == "display") {
         $_GPC["expresssn"] = trim($_GPC["expresssn"]);
         $condition .= " AND o.expresssn LIKE '%{$_GPC["expresssn"]}%'";
     }
+/*    if (!empty($_GPC["member"])) {
+        $_GPC["member"] = trim($_GPC["member"]);
+        $condition.= " AND (m.realname LIKE '%{$_GPC["member"]}%' or m.mobile LIKE '%{$_GPC["member"]}%' or m.membermobile LIKE '%{$_GPC["member"]}%' or m.nickname LIKE '%{$_GPC["member"]}%' " . " or a.realname LIKE '%{$_GPC["member"]}%' or a.mobile LIKE '%{$_GPC["member"]}%' or o.carrier LIKE '%{$_GPC["member"]}%')";
+    }*/
     if (!empty($_GPC["member"])) {
         $_GPC["member"] = trim($_GPC["member"]);
         $sql = 'SELECT m.openid FROM ' . tablename("sz_yi_member") . " m WHERE (m.realname LIKE :member 
@@ -483,7 +487,7 @@ if ($operation == "display") {
     }
 
     foreach ($list as & $value) {
-        if ($order_members) {
+        if (isset($order_members[$value['openid']])) {
             $value = $value + $order_members[$value['openid']];
         }
 

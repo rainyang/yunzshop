@@ -28,7 +28,7 @@ class Plugin extends Core
         } else if (strexists($_SERVER['REQUEST_URI'], '/app/')) {
 
                 $this->setFooter();
-	    }
+        }
         $this->module['title'] = pdo_fetchcolumn('select title from ' . tablename('modules') . " where name='sz_yi' limit 1");
     }
     private function loadModel()

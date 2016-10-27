@@ -55,8 +55,9 @@ if ($op == 'display') {
     }
     $sql = "select dm.*,l.levelname,g.groupname,a.nickname as agentnickname,a.avatar as agentavatar from " . tablename('sz_yi_member') . " dm " . " left join " . tablename('sz_yi_member_group') . " g on dm.groupid=g.id" . " left join " . tablename('sz_yi_member') . " a on a.id=dm.agentid" . " left join " . tablename('sz_yi_member_level') . " l on dm.level =l.id" . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid  and f.uniacid={$_W['uniacid']}" . " where 1 {$condition}  ORDER BY dm.id DESC";
 
-    $lists = pdo_fetchall($sql, $params);
-    $export_total = count($lists);
+    // $lists = pdo_fetchall($sql, $params);
+    // $export_total = count($lists);
+    $export_total = pdo_fetchcolumn($sql, $params);
     $psize = SZ_YI_EXPORT; // 每个excel文件的数量(可在defines.php文件里修改)
     $page_total = ceil($export_total / $psize);
     $orderindex = (isset($_GPC['orderindex'])) ? intval($_GPC['orderindex']) : 0;
@@ -159,7 +160,7 @@ if ($op == 'display') {
                 $url = "http://". $_SERVER['SERVER_NAME']."/".$_W['script_name'] . '?' . http_build_query($_GET);
                 $backurl = "http://". $_SERVER['SERVER_NAME']."/web/index.php?c=site&a=entry&op=display&do=member&m=sz_yi";                   
                 echo '<div style="border: 6px solid #e0e0e0;width: 12%;margin: 0 auto;margin-top: 12%;padding: 26px 100px;box-shadow: 0 0 14px #a2a2a2;color: #616161;">共'.$page_total.'个excel文件, 已完成'.$current_page. '个。<div>';
-                echo '<meta http-equiv="Refresh" content="1; url='.$url.'" />';
+                echo '<meta http-equiv="Refresh" charset="UTF-8" content="1; url='.$url.'" />';
                 exit;
             }
         }

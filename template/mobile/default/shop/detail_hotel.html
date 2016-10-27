@@ -45,6 +45,16 @@ ul,li {padding:0px; margin:0px;}
 .good_info2 .tab_con .con {height:auto; display:none;color:#333;word-break:break-all;margin-bottom:80px;}
 .good_info2 .tab_con .con .param { padding:10px; border-bottom:1px solid #ccc}
 .good_info2 .tab_con #con_1 img { width:100%;outline-width:0px;  vertical-align:top; display:block}
+
+/** 解决商品详情图片超链接在微信端无法跳转问题 start **/
+.good_info2 a{display: block; width:100%; position: relative;}
+.good_info2 a:before{
+    content:" ";
+    display:block;width:100%; background: rgba(0,0,0,0); height:100%;
+    position: absolute; top:0px; left:0px;
+}
+/** 解决商品详情图片超链接在微信端无法跳转问题 end **/
+
 .tab_con p{ margin:0 }
 
 

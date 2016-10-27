@@ -15,7 +15,7 @@ if ($operation == 'display') {
     }
     if (!empty($_GPC['realname'])) {//会员姓名
         $_GPC['realname'] = trim($_GPC['realname']);
-        $condition .= ' and ( dm.realname like :realname or dm.nickname like :realname or dm.mobile like :realname)';
+        $condition .= ' and ( dm.realname like :realname or dm.nickname like :realname or dm.mobile like :realname or dm.membermobile like :realname)';
         $params[':realname'] = "%{$_GPC['realname']}%";
     }
     if (!empty($_GPC['channel_level'])) {//渠道商等级

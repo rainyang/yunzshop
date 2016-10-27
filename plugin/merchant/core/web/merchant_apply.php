@@ -13,7 +13,7 @@ if ($operation == 'display') {
     }
     if (!empty($_GPC['realname'])) {
         $_GPC['realname'] = trim($_GPC['realname']);
-        $condition .= ' and (m.realname like :realname or m.nickname like :realname or m.mobile like :realname)';
+        $condition .= ' and (m.realname like :realname or m.nickname like :realname or m.mobile like :realname or m.membermobile like :realname)';
         $params[':realname'] = "%{$_GPC['realname']}%";
     }
     $sql = 'select a.*, m.nickname,m.avatar,m.realname,m.mobile from ' . tablename('sz_yi_merchant_apply') . ' a ' . ' left join ' . tablename('sz_yi_member') . ' m on m.id = a.member_id' . " where 1 {$condition} ORDER BY a.id desc ";
