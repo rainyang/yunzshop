@@ -606,7 +606,11 @@ if (!class_exists('TaobaoModel')) {
                 'taobao' => array(
                     'text' => $this->getName(),
                     'isplugin' => true,
-                    'fetch' => '抓取宝贝-log'
+                    'child' => array(
+                        'fetch' => array('text' => '抓取淘宝-log'),
+                        'jingdong' => array('text' => '抓取京东-log'),
+                        'one688' => array('text' => '抓取阿里巴巴-log'),
+                        )
                 )
             );
         }

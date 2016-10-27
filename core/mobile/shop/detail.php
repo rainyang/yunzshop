@@ -160,6 +160,38 @@ if ($diyform_plugin) {
         }
     }
 }
+$pindiana = p('indiana');
+$indiana = array();
+
+// $pindiana->test('20161018949435241998');
+// echo "<pre>";print_r(2);exit;
+if ($pindiana && $_GPC['indiana']) {
+    $periodnum = $_GPC['periodnum'];
+    $condition = ' and ig.uniacid = :uniacid AND ig.status = 2 AND ig.good_id = :goodsid AND ip.period_num = :periodnum';
+    $params    = array(
+        ':uniacid' => $_W['uniacid'],
+        ':goodsid' => $goodsid,
+        ':periodnum' => $periodnum
+    );
+    $indiana = set_medias(pdo_fetch("SELECT ig.*, g.thumb, ip.period, ip.shengyu_codes, ip.zong_codes, ip.period_num, ip.init_money as initmoney , ip.status  as ipstatus, ip.avatar, ip.nickname, ip.mid, ip.code, ip.partakes, ip.jiexiao_time FROM " . tablename('sz_yi_indiana_goods') . " ig 
+        left join " . tablename('sz_yi_goods') . " g on (ig.good_id = g.id) 
+        left join " . tablename('sz_yi_indiana_period') . " ip on (ig.id = ip.ig_id)
+        where 1 {$condition} " , $params),'thumb');
+        if ($indiana) {
+            $indiana['shengyu'] = $indiana['shengyu_codes']/$indiana['zong_codes']*100;
+            $indiana['jiexiao'] =  $indiana['jiexiao_time']?date("Y-m-d H:i:s",$indiana['jiexiao_time']):'';
+        }
+        //下一期
+        $next = $indiana['period'];
+        $next_phase = pdo_fetch("SELECT goodsid, period_num FROM " . tablename('sz_yi_indiana_period') . " where goodsid = '".$goodsid."' and period > '" . $next . "' ORDER BY period desc limit 1");  
+
+        $indiana['dz'] = "选择地址1";
+
+        $indiana['address']      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' WHERE openid=:openid AND deleted=0 AND isdefault=1  AND uniacid=:uniacid limit 1', array(
+            ':uniacid' => $uniacid,
+            ':openid' => $openid
+        ));
+}
 $html = $goods['content'];
 preg_match_all("/<img.*?src=[\'| \"](.*?(?:[\.gif|\.jpg]?))[\'|\"].*?[\/]?>/", $html, $imgs);
 if (isset($imgs[1])) {
@@ -196,7 +228,6 @@ $groupid           = $member['groupid'];
 //}
 //分销佣金
 $commissionprice = p('commission')->getCommission($goods);
-
 if ($_W['isajax']) {
     if ($operation == 'can_buy') {
         $id = intval($_GPC['id']);
@@ -514,6 +545,7 @@ if($goods['tcate']){
     $ret        = array(
         'is_admin' => $_GPC['is_admin'],
         'goods' => $goods,
+        'indiana' => $indiana,
         'followed' => $followed ? 1 : 0,
         'followurl' => $followurl,
         'followtip' => $followtip,

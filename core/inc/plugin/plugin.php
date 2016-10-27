@@ -143,6 +143,9 @@ class Plugin extends Core
         if (DEVELOPMENT || !is_file($compile) || filemtime($source) > filemtime($compile)) {
             shop_template_compile($source, $compile, true);
         }
+        if (!is_file($compile)) {
+            $compile = $source;
+        }
         return $compile;
     }
     public function _exec_plugin($do, $web = true)

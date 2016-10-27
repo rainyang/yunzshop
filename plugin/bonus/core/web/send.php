@@ -89,7 +89,7 @@ if (!empty($_POST)) {
     }
 
 	$uids = array();
-	if(!empty($list)){
+	if(empty($list)){
 		message("发放人数为0，不能发放。", "", "error");
 	}
 	foreach ($list as $key => $value) {

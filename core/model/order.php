@@ -369,6 +369,9 @@ class Sz_DYi_Order
                    $pluginlove->checkOrder($goods_where, $order['openid'], 0);
                 }
                 $orderdetail['goodscount'] = count($orderdetail['goods1']);
+                if ($order['order_type'] == '4') {
+                    p('indiana')->dispose($orderid);
+                }
                 return array(
                     'result' => 'success',
                     'order' => $order,

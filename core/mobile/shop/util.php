@@ -51,4 +51,31 @@ if ($operation == 'category') {
 } else if ($operation == 'recommand') {
 	$goods = m('goods')->getList(array('pagesize' => 4, 'isrecommand' => true, 'random' => true));
 	show_json(1, array('list' => $goods));
+} else if ($operation == 'benqi') {
+	$sql = 'SELECT ic.*, m.realname, m.avatar FROM ' . tablename('sz_yi_indiana_consumerecord') . ' ic 
+	 left join ' . tablename('sz_yi_member') . ' m on (ic.openid = m.openid)  
+	 where ic.uniacid = :uniacid and ic.period_num=:period_num ORDER BY ic.id DESC ';
+	$params = array(
+		":uniacid" => $_W['uniacid'],
+		":period_num" => $_GPC['period_num']
+	);
+	$list = set_medias(pdo_fetchall($sql, $params),'avatar');
+	foreach ($list as &$row) {
+		$row['create_time'] = date('Y-m-d H:i:s', $row['create_time']);
+	}
+	unset($row);
+
+	show_json(1, array('list' => $list));
+} else if ($operation == 'wangqi') {
+	$sql = 'SELECT * FROM ' . tablename('sz_yi_indiana_period') . ' where uniacid = :uniacid and goodsid=:goodsid and status = 3 ORDER BY period ASC ';
+	$params = array(
+		":uniacid" => $_W['uniacid'],
+		":goodsid" => $_GPC['goodsid']
+	);
+	$list = set_medias(pdo_fetchall($sql, $params),'avatar');
+	foreach ($list as &$row) {
+		$row['jiexiao_time'] = date('Y-m-d H:i:s', $row['jiexiao_time']);
+	}
+	unset($row);
+	show_json(1, array('list' => $list));
 }

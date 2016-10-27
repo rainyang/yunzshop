@@ -50,7 +50,11 @@ if ($_W['isajax']) {
 		if (p('channel')) {
 			$conds = ',ischannelself';
 		}
+
 		$condition.= " AND plugin='".$_GPC['plugin']."'";
+
+		$condition .= " and order_type <> 4"; //排除 夺宝订单
+
 	    //Author:ym Date:2016-07-20 Content:订单分组查询
 		$list = pdo_fetchall('select * from ' . tablename('sz_yi_order') . " where 1 {$condition} group by ordersn_general order by createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
 		$total = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where 1 {$condition}", $params);

@@ -1225,12 +1225,14 @@ if ($operation == "change") {
             $total = pdo_fetchcolumn($sqls, $params);
         }
         $list = pdo_fetchall($sql, $params);
-        foreach ($list as $key => &$value) {
-            $allprice = pdo_fetchcolumn("select allprice from ". tablename('sz_yi_fund_goods') ." where goodsid=".$value['id']);
-            $yetprice = pdo_fetchcolumn("select sum(price) from ". tablename('sz_yi_order_goods') ." where goodsid=".$value['id']);
-            $yetprice += $value['marketprice']*$value['sales'];
-            $value['yetprice'] = number_format($yetprice, 2);
-            $value['allprice'] = number_format($allprice, 2);
+        if($_GPC['plugin'] == "fund"){
+            foreach ($list as $key => &$value) {
+                $allprice = pdo_fetchcolumn("select allprice from ". tablename('sz_yi_fund_goods') ." where goodsid=".$value['id']);
+                $yetprice = pdo_fetchcolumn("select sum(price) from ". tablename('sz_yi_order_goods') ." where goodsid=".$value['id']);
+                $yetprice += $value['marketprice']*$value['sales'];
+                $value['yetprice'] = number_format($yetprice, 2);
+                $value['allprice'] = number_format($allprice, 2);
+            }
         }
         unset($value);
         $pager = pagination($total, $pindex, $psize);
