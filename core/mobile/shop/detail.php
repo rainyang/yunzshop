@@ -180,6 +180,7 @@ if ($pindiana && $_GPC['indiana']) {
         if ($indiana) {
             $indiana['shengyu'] = $indiana['shengyu_codes']/$indiana['zong_codes']*100;
             $indiana['jiexiao'] =  $indiana['jiexiao_time']?date("Y-m-d H:i:s",$indiana['jiexiao_time']):'';
+            $indiana['now_time'] = time();
         }
         //下一期
         $next = $indiana['period'];
