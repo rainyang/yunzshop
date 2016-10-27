@@ -42,7 +42,7 @@ class Detail extends \admin\api\YZ
     private function getOrderInfo($para)
     {
         $order_model = new \admin\api\model\order();
-        $fields = 'ordersn,status,price,id as order_id,openid,addressid,dispatchid,createtime,paytime,dispatchprice,deductenough,paytype,changeprice,changedispatchprice,goodsprice,olddispatchprice,address,isverify,isvirtual,virtual,dispatchtype,redstatus';
+        $fields = 'ordersn_general as ordersn,status,price,id as order_id,openid,addressid,dispatchid,createtime,paytime,dispatchprice,deductenough,paytype,changeprice,changedispatchprice,goodsprice,olddispatchprice,address,isverify,isvirtual,virtual,dispatchtype,redstatus';
         $order_info = $order_model->getInfo(array(
             'id' => $para["order_id"],
             'uniacid' => $para["uniacid"]

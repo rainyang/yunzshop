@@ -154,7 +154,7 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
                 ':openid' => $openid
             ));
             if (empty($goods)) {
-                show_json(-1, array(
+                return show_json(-1, array(
                     'url' => $this->createMobileUrl('shop/cart')
                 ));
             } else {
@@ -906,8 +906,12 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
             $order_all[$g['supplier_uid']]['goodsprice'] = $goodsprice;
           
         }}
-
-        show_json(1, array(
+        $variable = [
+            'show'=>$show,
+            'diyform_flag'=>$diyform_flag,
+            'goods'=>$goods,
+        ];
+        return show_json(1, array(
             'member' => $member,
             //'deductcredit' => $deductcredit,
             'deductmoney' => $deductmoney,
@@ -945,7 +949,7 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
             'price_list' => $price_list,
             'realprice' => number_format($realprice, 2),
             'type'=>$goods[0]['type'],
-        ));
+        ),$variable);
     } elseif ($operation == 'getdispatchprice') {
         $isverify       = false;
         $isvirtual      = false;
@@ -1004,7 +1008,7 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
                 }
                 if (!empty($saleset['enoughfree'])) {
                     if (floatval($saleset['enoughorder']) <= 0) {
-                        show_json(1, array(
+                        return show_json(1, array(
                             'price' => 0,
                             "hascoupon" => $hascoupon,
                             "couponcount" => $couponcount,
@@ -1017,7 +1021,7 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
                     if (!empty($saleset['enoughareas'])) {
                         $areas = explode(";", $saleset['enoughareas']);
                         if (!in_array($address['city'], $areas)) {
-                            show_json(1, array(
+                            return show_json(1, array(
                                 "price" => 0,
                                 "hascoupon" => $hascoupon,
                                 "couponcount" => $couponcount,
@@ -1026,7 +1030,7 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
                             ));
                         }
                     } else {
-                        show_json(1, array(
+                        return show_json(1, array(
                             "price" => 0,
                             "hascoupon" => $hascoupon,
                             "couponcount" => $couponcoun,
@@ -1054,7 +1058,7 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
                     $goodstotal = 1;
                 }
                 if (empty($goodsid)) {
-                    show_json(1, array(
+                    return show_json(1, array(
                         "price" => 0
                     ));
                 }
@@ -1064,7 +1068,7 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
                     ":id" => $goodsid
                 ));
                 if (empty($data)) {
-                    show_json(1, array(
+                    return show_json(1, array(
                         "price" => 0
                     ));
                 }
@@ -1163,7 +1167,7 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
             }
 
             if ($isverify && $isDispath) {
-                show_json(1, array(
+                return show_json(1, array(
                     "price" => 0,
                     "hascoupon" => $hascoupon,
                     "couponcount" => $couponcount
@@ -1335,7 +1339,7 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
             }
 
         }
-        show_json(1, array(
+        return show_json(1, array(
             "price" => $dispatch_price,
             "hascoupon" => $hascoupon,
             "couponcount" => $couponcount,
@@ -1376,13 +1380,13 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
                     ':id' => $addressid
                 ));
                 if (empty($address)) {
-                    show_json(0, '未找到地址');
+                    return show_json(0, '未找到地址');
                 }
             }
             $carrierid = intval($order_row["carrierid"]);
             $goods = $order_row['goods'];
             if (empty($goods)) {
-                show_json(0, '未找到任何商品');
+                return show_json(0, '未找到任何商品');
             }
             $allgoods      = array();
             $totalprice    = 0;
@@ -1420,7 +1424,7 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
                 }
 
                 if (empty($goodsid)) {
-                    show_json(0, '参数错误，请刷新重试');
+                    return show_json(0, '参数错误，请刷新重试');
                 }
 
                 $channel_condtion = '';
@@ -1440,12 +1444,12 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
                 if (p('channel')) {
                     if ($ischannelpay == 1) {
                         if (empty($data['isopenchannel'])) {
-                            show_json(-1, $data['title'] . '<br/> 不支持采购!请前往购物车移除该商品！');
+                            return show_json(-1, $data['title'] . '<br/> 不支持采购!请前往购物车移除该商品！');
                         }
                     }
                 }
                 if (empty($data['status']) || !empty($data['deleted'])) {
-                    show_json(-1, $data['title'] . '<br/> 已下架!');
+                    return show_json(-1, $data['title'] . '<br/> 已下架!');
                 }
                 $virtualid     = $data['virtual'];
                 $data['stock'] = $data['total'];
@@ -1456,7 +1460,7 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
                 $unit = empty($data['unit']) ? '件' : $data['unit'];
                 if ($data['maxbuy'] > 0) {
                     if ($goodstotal > $data['maxbuy']) {
-                        show_json(-1, $data['title'] . '<br/> 一次限购 ' . $data['maxbuy'] . $unit . "!");
+                        return show_json(-1, $data['title'] . '<br/> 一次限购 ' . $data['maxbuy'] . $unit . "!");
 
                     }
                 }
@@ -1467,15 +1471,15 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
                         ':openid' => $openid
                     ));
                     if ($order_goodscount >= $data['usermaxbuy']) {
-                        show_json(-1, $data['title'] . '<br/> 最多限购 ' . $data['usermaxbuy'] . $unit . "!");
+                        return show_json(-1, $data['title'] . '<br/> 最多限购 ' . $data['usermaxbuy'] . $unit . "!");
                     }
                 }
                 if ($data['istime'] == 1) {
                     if (time() < $data['timestart']) {
-                        show_json(-1, $data['title'] . '<br/> 限购时间未到!');
+                        return show_json(-1, $data['title'] . '<br/> 限购时间未到!');
                     }
                     if (time() > $data['timeend']) {
-                        show_json(-1, $data['title'] . '<br/> 限购时间已过!');
+                        return show_json(-1, $data['title'] . '<br/> 限购时间已过!');
                     }
                 }
                 $levelid = intval($member['level']);
@@ -1483,13 +1487,13 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
                 if ($data['buylevels'] != '') {
                     $buylevels = explode(',', $data['buylevels']);
                     if (!in_array($levelid, $buylevels)) {
-                        show_json(-1, '您的会员等级无法购买<br/>' . $data['title'] . '!');
+                        return show_json(-1, '您的会员等级无法购买<br/>' . $data['title'] . '!');
                     }
                 }
                 if ($data['buygroups'] != '') {
                     $buygroups = explode(',', $data['buygroups']);
                     if (!in_array($groupid, $buygroups)) {
-                        show_json(-1, '您所在会员组无法购买<br/>' . $data['title'] . '!');
+                        return show_json(-1, '您所在会员组无法购买<br/>' . $data['title'] . '!');
                     }
                 }
                 if (!empty($optionid)) {
@@ -1506,7 +1510,7 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
                     if (!empty($option)) {                                             
                         if ($option['stock'] != -1) {
                             if (empty($option['stock'])) {
-                                show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
+                                return show_json(-1, $data['title'] . "<br/>" . $option['title'] . " 库存不足!");
                             }
                         }
                         $data['optionid']    = $optionid;
@@ -1536,7 +1540,7 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
                     }
                     if ($data['stock'] != -1) {
                         if (empty($data['stock'])) {
-                            show_json(-1, $data['title'] . "<br/>库存不足!");
+                            return show_json(-1, $data['title'] . "<br/>库存不足!");
                         }
                     }
                 }
@@ -1810,7 +1814,7 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
                 $allgoods[] = $data;
             }
             if (empty($allgoods)) {
-                show_json(0, '未找到任何商品');
+                return show_json(0, '未找到任何商品');
             }
             $deductenough = 0;
             /*获取满额队列中符合条件的最大值*/
@@ -2445,7 +2449,7 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
         /*if ($pluginc) {
             $pluginc->checkOrderConfirm($orderid);
         }*/
-        show_json(1, array(
+        return show_json(1, array(
             'orderid' => $orderid,
             'ischannelpay' => $ischannelpay,
             'ischannelpick' => $ischannelpick

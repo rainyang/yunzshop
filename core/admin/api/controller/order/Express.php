@@ -29,18 +29,21 @@ class Express extends \admin\api\YZ
     public function index(){
         global $_W;
         $order_info = $this->order_info;
-//dump($order_info);
-        $order_info['url'] = $_W['siteurl']."/wap/&id={$order_info['express']}&express={$order_info['express']}&expresssn={$order_info['expresssn']}";
-        dump($order_info);
+        $order_info['url'] = $_W['siteurl']."/wap/&uniacid={$_W['uniacid']}&id={$order_info['id']}&express={$order_info['express']}&expresssn={$order_info['expresssn']}";
+        //dump($order_info);
         $order_info = array_part('expresscom,expresssn,url',$order_info);
+        pdo_update('sz_yi_api_log', ['error_info'=> json_encode($order_info)], array('api_log_id' => pdo_insertid()));
 
         //dump($order_info);
         $this->returnSuccess($order_info);
     }
     public function wap()
     {
+        global $_W;
+        //echo "http://$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";exit;
         //todo deceive addons/sz_yi/core/inc/core.php line 44
         $_SERVER['SCRIPT_NAME'] = '/notify';
+        $_W["uniacid"] = $_GET['uniacid'];
         $this->callWeb('order/list/deal/express');
 
     }

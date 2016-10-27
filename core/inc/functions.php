@@ -865,7 +865,13 @@ function is_app()
 
     return false;
 }
+if (!function_exists("ddump")) {
+    function ddump($var, $echo = true, $label = null, $strict = true){
+        defined('IS_TEST')||define('IS_TEST',1);
+        return dump($var, $echo, $label, $strict);
+    }
 
+}
 /**
  * 浏览器友好的变量输出
  * @param mixed $var 变量
@@ -1012,7 +1018,6 @@ if (!function_exists("pdo_sql_debug")) {
         foreach ($placeholders as $k => $v) {
             $sql = preg_replace('/' . $k . '/', "'" . $v . "'", $sql);
         }
-        dump($sql);
         return $sql;
     }
 }
@@ -1039,11 +1044,11 @@ function json_encode_ex($value)
 }
 if (!function_exists("getExitInfo")) {
 
-    function getExitInfo1()
+    function getExitInfo()
     {
         function shutdown_find_exit()
         {
-            dump($GLOBALS['dbg_stack']);
+            ddump($GLOBALS['dbg_stack']);
         }
 
         register_shutdown_function('shutdown_find_exit');

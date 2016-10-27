@@ -52,10 +52,12 @@ function get_test_para()
     }
     $para = $api_db[$group_name]['method'][$method_name]['para'];
     //var_dump($para);
+    require __DIR__."/../../../inc/aes.php";
+    $aes = new \Aes('hrbin-yunzs-2016','');
+    $para = str_replace('"', '', $aes->siyuan_aes_encode(json_encode($para)));
     return $para;
-
 }
 
-$_POST = get_test_para();
+$_POST['para'] = get_test_para();
 //var_dump($_POST);exit;
 require __DIR__ . "/../../../index.php";

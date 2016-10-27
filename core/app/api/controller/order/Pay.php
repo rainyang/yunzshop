@@ -14,7 +14,9 @@ class Pay extends YZ
         parent::__construct();
         global $_W;
         $_W['ispost']= true;
-        $result = $this->callMobile('order/history/display');
+        //$result = $this->callMobile('order/history/display');
+        $result = $this->callMobile('order/pay/pay');
+
         //dump($result);exit;
         if($result['code'] == -1){
             $this->returnError($result['json']);
