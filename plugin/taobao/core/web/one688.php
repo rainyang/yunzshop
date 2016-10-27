@@ -37,7 +37,7 @@ if ($op == 'display') {
 			die(json_encode(array('result' => 0, 'error' => '未获取到 itemid!')));
 		}
 		$ret = $this->model->get_item_one688($itemid, $_GPC['url'], $pcate, $ccate, $tcate);
-		plog('1688.main', '1688抓取宝贝 1688id:' . $itemid);
+		plog('taobao.one688', '1688抓取宝贝 1688id:' . $itemid);
 		die(json_encode($ret));
 }
 load()->func('tpl');
