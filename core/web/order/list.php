@@ -518,10 +518,9 @@ if ($operation == "display") {
     }
 
     foreach ($list as &$value) {
-        if ($order_members) {
+        if ($order_members[$value['openid']]) {
             $value = $value + $order_members[$value['openid']];
         }
-
         if (p('supplier')) {
             $suppliers_num = $value['suppliers_num'];
             if ($suppliers_num > 1) {
