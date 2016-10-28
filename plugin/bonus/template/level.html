@@ -249,8 +249,9 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th style="width:15%;">等级名称</th>
-                        <th style="width:10%;">分红比例</th>
+                        <th style="width:10%;">等级名称</th>
+                        <th style="width:8%;">分红比例</th>
+                        <th style="width:7%;">全球比例</th>
                         <th style="width:60%;">升级条件</th>
                         <th style="width:15%;">操作</th>
                     </tr>
@@ -260,8 +261,8 @@
                     <tr>
                         <td>{$row['levelname']}</td>
                         <td>{$row['agent_money']}%</td>
-                        <td class="condition">
-						
+                        <td>{$row['pcommission']}%</td>
+                        <td class="condition">					
 						{if in_array('1', $set['leveltype'])}{if $row['ordermoney']>0}一级分销订单金额满 {$row['ordermoney']} 元 {/if}{/if}
 						{if in_array('2', $set['leveltype'])}{if $row['ordercount']>0}分销订单数量满 {$row['ordercount']} 个 {/if}{/if}
 						{if in_array('3', $set['leveltype'])}{if $row['ordercount']>0}一级分销订单数量满 {$row['ordercount']} 个 {/if}{/if}

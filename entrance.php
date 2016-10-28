@@ -18,23 +18,45 @@ require '../../addons/sz_yi/core/inc/plugin/plugin_model.php';
 global $_W, $_GPC;
 set_time_limit(0);
 
-$sql = "SELECT * FROM ". tablename('uni_account'). " as a LEFT JOIN". tablename('account'). " as b ON a.default_acid = b.acid WHERE a.default_acid <> 0 ORDER BY a.`uniacid` DESC ";
+$sql = "SELECT * FROM ". tablename('uni_account'). " as a LEFT JOIN". tablename('account'). " as b ON a.default_acid = b.acid WHERE a.default_acid <> 0";
+
 $sets = pdo_fetchall($sql);
+//查询常见发消息存储文件数据目录
+$cdir = IA_ROOT . "/addons/sz_yi/data/message";
+if (!is_dir($cdir))
+{
+    mkdir($cdir, 0777, true);
+};
+$filedatas = array();
 foreach ($sets as $k => $set) {
+
     m('order')->autoexec($set['uniacid']);
     $pbonus = p('bonus');
     if(!empty($pbonus)){
-        $pbonus->autoexec($set['uniacid']);
+        $filesn = $pbonus->autoexec($set['uniacid']);
+        if(!empty($filesn)){
+            $filedatas[] = array("uniacid" => $set['uniacid'], "filesn" => $filesn);
+        }
     }
 
     $preturn = p('return');
     if(!empty($preturn)){
         $preturn->autoexec($set['uniacid']);
     }
+
     $pyunbi = p('yunbi');
     if(!empty($pyunbi)){
         $pyunbi->autoexec($set['uniacid']);
     }
 }
-echo "<pre>";print_r("ok...");exit;
+
+if ($filedatas) {
+    foreach ($filedatas as $key => $value) {
+        m('message')->sendmsg($value['filesn'], $value['uniacid']);
+    }
+}
+echo date("Y-m-d H:i:s");
+echo "<pre>";print_r("ok...");
+echo "\r\n";
+exit;
 

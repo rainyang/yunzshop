@@ -13,7 +13,7 @@
                 分销关系修改
             </div>
             <div class="panel-body">
-            	{if $_W['isfounder']}
+            	{ifp 'system.commission.view'}
 	 			<div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 选择公众号</label>
                     <div class="col-sm-9">
@@ -75,8 +75,10 @@
 				<div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
                     <div class="col-sm-9">
+                    	{ifp 'system.edit.view'}
 						<input id="btn_submit" type="submit" name='submit'  value="保存" class="btn btn-primary" onsubmit="return formcheck()"/>
 						<input type="hidden" name="token" value="{$_W['token']}" />
+						{/if}
                     </div>
                 </div>	
             </div>
@@ -118,7 +120,7 @@
 	 }else{
 		 $('#modalTitle').html("选择会员");
 	 }
-	 {if $_W['isfounder']}
+	 {ifp 'system.commission.view'}
 	 if($('#wechatid').isEmpty()){
 		 alert('请选择公众号!');
 		 return;
@@ -131,7 +133,7 @@
 	 $("#modal-module-menus-notice").modal();
  }
  function formcheck(){
- 	{if $_W['isfounder']}
+ 	{ifp 'system.commission.view'}
 	 if($('#wechatid').isEmpty()){
 		 alert('请选择公众号!');
 		 return false;
@@ -186,7 +188,7 @@
 	 }
 	 $("#modal-module-menus-notice .close").click();
 	}
-{if $_W['isfounder']}
+{ifp 'system.commission.view'}
  $(function () {
 		$('#wechatid').select2({
 			search: true,

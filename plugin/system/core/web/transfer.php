@@ -1,13 +1,9 @@
 <?php
 global $_W, $_GPC;
+ca('system.transfer');
 $wechatid1 = intval($_GPC['wechatid1']);
-if (!$_W['isfounder']) {
-    message('无权访问!');
-    /*
-    if($wechatid1 == 0){
-        $wechatid1 = $_W['uniacid'];
-    }
-     */
+if(!cv('system.transfer.view')){
+    $wechatid1 = $_W['uniacid'];
 }
 $wechatid   = intval($_GPC['wechatid']);
 $transtype  = intval($_GPC['transtype']);
@@ -550,6 +546,7 @@ if (checksubmit('submit')) {
             }
         }
     }
+    plog('system.transfer', "数据复制转移 源公众号ID：{$wechatid} 目标公众号ID：{$wechatid1}");
     message('数据操作成功!', $this->createPluginWebUrl('system/transfer'), 'success');
 }
 $wechats = $this->model->get_wechats();
