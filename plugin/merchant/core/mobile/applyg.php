@@ -66,7 +66,6 @@ if ($_W['isajax']) {
             $member['commission_ok']=number_format($commission_ok, 2);
             $apply['money'] = $member['commission_ok'];
 		}
-		echo '<pre>';print_r($iscenter);exit;
 		pdo_insert('sz_yi_merchant_apply', $apply);
 		
 		if (!empty($iscenter)) {
