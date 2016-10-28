@@ -16,12 +16,21 @@ $openid    = m('user')->getOpenid();
 if (empty($openid)) {
     $openid = $_GPC['openid'];
 }
-$member  = m('member')->getMember($openid);
+
 $uniacid = $_W['uniacid'];
 $orderid = intval($_GPC['orderid']);
-$logid   = intval($_GPC['logid']);
-$shopset = m('common')->getSysset('shop');
 
+$setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
+	':uniacid' => $_W['uniacid']
+));
+$set     = unserialize($setdata['sets']);
+//$oldset  = unserialize($setdata['sets']);
+$paypal = $set['pay']['paypal'];
+$paypal['paypalstatus'] = $set['pay']['paypalstatus'];
+
+//$logid   = intval($_GPC['logid']);
+//$shopset = m('common')->getSysset('shop');
+//$member  = m('member')->getMember($openid);
 if (!empty($orderid) && $operation = 'display') {
 	
     $order = pdo_fetch("select * from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
@@ -35,23 +44,18 @@ if (!empty($orderid) && $operation = 'display') {
     $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
         ':uniacid' => $uniacid,
         ':module' => 'sz_yi',
-        ':tid' => $order['ordersn']
+        ':tid' => $order['ordersn_general']
     ));
     if (!empty($log) && $log['status'] != '0') {
         show_json(0, '订单已支付, 无需重复支付!');
     }
-	
-	load()->func('communication');
+	//echo "<pre>"; print_r($log);exit;
+/*	load()->func('communication');
 	load()->model('payment');
+*/
 
 
-	$setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
-    	':uniacid' => $_W['uniacid']
-	));
-	$set     = unserialize($setdata['sets']);
-	//$oldset  = unserialize($setdata['sets']);
-	$paypal = $set['pay']['paypal'];
-	$paypal['paypalstatus'] = $set['pay']['paypalstatus'];
+
 	//echo "<pre>"; print_r($paypal);exit;
 
 /*	$setting = uni_setting($_W['uniacid'], array('payment'));
@@ -90,16 +94,10 @@ if (!empty($orderid) && $operation = 'display') {
 	$token =urlencode($_REQUEST['token']);
 	$nvpstr="&TOKEN=".$token;
 	
-	load()->func('communication');
-	load()->model('payment');
+/*	load()->func('communication');
+	load()->model('payment');*/
 	//$setting = uni_setting($_W['uniacid'], array('payment'));
-	$setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
-    	':uniacid' => $_W['uniacid']
-	));
-	$set     = unserialize($setdata['sets']);
-	//$oldset  = unserialize($setdata['sets']);
-	$paypal = $set['pay']['paypal'];
-	$paypal['paypalstatus'] = $set['pay']['paypalstatus'];
+
 /*	if (is_array($setting['payment'])) {
 		$options = $setting['payment']['paypal'];
 	}*/
@@ -147,7 +145,7 @@ if (!empty($orderid) && $operation = 'display') {
 				$this->payResult($ret);
 			}
 			$orderid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid', array(
-				':ordersn' => $log['tid'],
+				':ordersn_general' => $log['tid'],
 				':uniacid' => $_W['uniacid']
 			));
 			$url     = $this->createMobileUrl('order/detail', array(
