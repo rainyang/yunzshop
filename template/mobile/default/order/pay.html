@@ -151,7 +151,8 @@
         core.json('order/pay',{orderid:'{$_GPC['orderid']}',openid:"{$openid}"},function(json){
             var result = json.result;
             if(json.status==-1){
-                 location.href = core.getUrl('order/detail',{id:"{$_GPC['orderid']}"});
+                 //location.href = core.getUrl('order/detail',{id:"{$_GPC['orderid']}"});
+                 location.href = core.getUrl('member');
                  return;
             }
             if(json.status!=1){

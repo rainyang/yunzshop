@@ -39,7 +39,7 @@
 <div id='container'></div>
 <script id='tpl_order_list' type='text/html'>
     <div class="page_topbar">
-    	<a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
+    	<a href="javascript:;" class="back" onclick="location.href='{php echo $this->createMobileUrl('member')}'"><i class="fa fa-angle-left"></i></a>
     	<div class="title">{$title}</div>
 	</div>
 	{if $operation == 'display'}
