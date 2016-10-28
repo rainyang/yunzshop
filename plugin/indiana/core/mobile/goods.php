@@ -20,7 +20,7 @@ $condition = ' and ig.uniacid = :uniacid AND ig.status=2';
 $params    = array(
     ':uniacid' => $_W['uniacid']
 );
-if ($_W['ispost'] && $_GPC["init_money"]) {
+if ($_GPC["init_money"]) {
     $condition .= ' and ip.init_money = :init_money ';
     $params[':init_money']  = intval($_GPC["init_money"]);
 }
