@@ -572,9 +572,7 @@ if ($operation == "display") {
         if ($order_status == -1) {
             $value['status'] = $value['rstatus'];
             if (!empty($value["refundtime"])) {
-                if ($value['rstatus'] == 1) {
-                    $value['status'] = '已' . $r_type[$value['rtype']];
-                }
+                $value['status'] = '已退款';
             } else {
                 $value['status'] = '已关闭';
             }

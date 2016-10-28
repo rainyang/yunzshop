@@ -69,7 +69,7 @@ if ($op == 'credit1') {
 	$profile['credit2'] = m('member')->getCredit($profile['openid'], 'credit2'); //查询当前余额
 	
 } else if ($op == 'virtual_currency') {
-	$money = intval($_GPC['num']);
+	$money = $_GPC['num'];
 	$plugin_yunbi = p('yunbi');
 	if ($plugin_yunbi) {
 		$plugin_set = $plugin_yunbi->getSet();
