@@ -171,6 +171,14 @@ if ($op == 'display') {
     }
 } else if ($op == 'detail') {
     ca('member.member.view');
+    $hasbonus = false;
+    $plugin_bonus    = p('bonus');
+    if ($plugin_bonus) {
+        $plugin_bonus_set = $plugin_bonus->getSet();
+        if($plugin_bonus_set['start'] == 1 || $plugin_bonus_set['area_start'] == 1){
+            $hasbonus  = true;
+        }
+    }
     $hascommission = false;
     $plugin_com    = p('commission');
     if ($plugin_com) {
@@ -253,10 +261,53 @@ if ($op == 'display') {
                 }
             }
         }
+        if($plugin_bonus){
+            if (cv('bonus.agent.changeagent')) {
+                $bdata = is_array($_GPC['bdata']) ? $_GPC['bdata'] : array();
+                if (!empty($bdata)) {
+                    $reside = $_GPC['reside'];
+                    if(!empty($bdata['bonus_area'])){
+                        if($bdata['bonus_area'] == 1){
+                            if(empty($reside['province'])){
+                                message('请选择代理的省', '', 'error');
+                            }
+                        }else if($bdata['bonus_area'] == 2){
+                            if(empty($reside['city'])){
+                                message('请选择代理的市', '', 'error');
+                            }
+                        }else if($bdata['bonus_area'] == 3){
+                            if(empty($reside['district'])){
+                                message('请选择代理的区', '', 'error');
+                            }
+                        }
+                        $bdata['bonus_province'] = $reside['province'];
+                        $bdata['bonus_city'] = $reside['city'];
+                        $bdata['bonus_district'] = $reside['district'];
+                    }
+
+                    pdo_update('sz_yi_member', $bdata, array(
+                        'id' => $id,
+                        'uniacid' => $_W['uniacid']
+                    ));
+                    if($member['bonuslevel'] != $bdata['bonuslevel']){
+                        plog('member.member.edit', "修改代理等级 原代理等级ID：{$member['bonuslevel']} 改为 ID：{$bdata['bonuslevel']}");
+                    }
+                    if($member['bonus_area'] != $bdata['bonus_area']){
+                        plog('member.member.edit', "修改代理等级 原地区等级ID：{$member['bonus_area']} 改为 ID：{$bdata['bonus_area']}");
+                    }
+                    if($member['bonus_area_commission'] != $bdata['bonus_area_commission']){
+                        plog('member.member.edit', "修改地区代理比例 原比例：{$member['bonus_area_commission']}% 改为 {$bdata['bonus_area_commission']}%");
+                    }
+                }
+            }
+        }
         message('保存成功!', $this->createWebUrl('member/list'), 'success');
     }
     if ($hascommission) {
         $agentlevels = $plugin_com->getLevels();
+    }
+    if ($plugin_bonus) {
+        $bonuslevels = $plugin_bonus->getLevels();
     }
     $member = m('member')->getMember($id);
     if ($hascommission) {

@@ -98,7 +98,7 @@ if ($operation == 'display') {
         if (is_error($result)) {
             message('微信钱包提现失败: ' . $result['message'], '', 'error');
         }
-        pdo_update('sz_yi_cashier_withdraw', array(
+        pdo_update('sz_yi_store_withdraw', array(
             'status' => 1,
             'apply_time' => time()
         ), array(

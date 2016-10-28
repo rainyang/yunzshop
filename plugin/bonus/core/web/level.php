@@ -41,11 +41,11 @@ if ($operation == 'display') {
 			);
 		if (!empty($id)) {
 			pdo_update('sz_yi_bonus_level', $data, array('id' => $id, 'uniacid' => $_W['uniacid']));
-			plog('bonus.level.edit', "修改分销商等级 ID: {$id}");
+			plog('bonus.level.edit', "修改代理等级 ID: {$id}");
 		} else {
 			pdo_insert('sz_yi_bonus_level', $data);
 			$id = pdo_insertid();
-			plog('bonus.level.add', "添加分销商等级 ID: {$id}");
+			plog('bonus.level.add', "添加代理等级 ID: {$id}");
 		}
 		message('更新等级成功！', $this->createPluginWebUrl('bonus/level', array('op' => 'display')), 'success');
 	}
@@ -59,7 +59,7 @@ if ($operation == 'display') {
 		message('抱歉，等级不存在或是已经被删除！', $this->createPluginWebUrl('bonus/level', array('op' => 'display')), 'error');
 	}
 	pdo_delete('sz_yi_bonus_level', array('id' => $id, 'uniacid' => $_W['uniacid']));
-	plog('bonus.level.delete', "删除分销商等级 ID: {$id} 等级名称: {$level['levelname']}");
+	plog('bonus.level.delete', "删除代理等级 ID: {$id} 等级名称: {$level['levelname']}");
 	message('等级删除成功！', $this->createPluginWebUrl('bonus/level', array('op' => 'display')), 'success');
 }
 load()->func('tpl');
