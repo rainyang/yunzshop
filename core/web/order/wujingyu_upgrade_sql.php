@@ -84,6 +84,82 @@ CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_cancel_goods') . " (
   `last_storeid` int(11) NOT NULL COMMENT '最后得到的门店',
   `ismaster` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 comment='门店取消配送表';";
-pdo_fetchall($sql);
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 comment='门店取消配送表';
 
+CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_store_category') . " (
+`id` int(11) NOT NULL AUTO_INCREMENT,
+  `uniacid` int(11) DEFAULT '0' COMMENT '所属帐号',
+  `name` varchar(50) DEFAULT NULL COMMENT '分类名称',
+  `thumb` varchar(255) DEFAULT NULL COMMENT '分类图片',
+  `parentid` int(11) DEFAULT '0' COMMENT '上级分类ID,0为第一级',
+  `isrecommand` int(10) DEFAULT '0',
+  `description` varchar(500) DEFAULT NULL COMMENT '分类介绍',
+  `displayorder` tinyint(3) unsigned DEFAULT '0' COMMENT '排序',
+  `enabled` tinyint(1) DEFAULT '1' COMMENT '是否开启',
+  `ishome` tinyint(3) DEFAULT '0',
+  `advimg` varchar(255) DEFAULT '',
+  `advurl` varchar(500) DEFAULT '',
+  `level` tinyint(3) DEFAULT '0',
+  `advimg_pc` varchar(255) DEFAULT NULL,
+  `advurl_pc` varchar(500) DEFAULT NULL,
+  `supplier_uid` int(11) DEFAULT '0',
+  PRIMARY KEY (`id`),
+  KEY `idx_uniacid` (`uniacid`),
+  KEY `idx_displayorder` (`displayorder`),
+  KEY `idx_enabled` (`enabled`),
+  KEY `idx_parentid` (`parentid`),
+  KEY `idx_isrecommand` (`isrecommand`),
+  KEY `idx_ishome` (`ishome`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8  comment='门店分类表' ;";
+
+pdo_fetchall($sql);
+//20161018
+if(!pdo_fieldexists('sz_yi_store', 'pcate')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD    `pcate` int(11) DEFAULT '0';");
+}
+if(!pdo_fieldexists('sz_yi_store', 'ccate')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD    `ccate` int(11) DEFAULT '0';");
+}
+if(!pdo_fieldexists('sz_yi_store', 'tcate')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD    `tcate` int(11) DEFAULT '0';");
+}
+if(!pdo_fieldexists('sz_yi_store', 'cashierid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD    `cashierid` int(11) DEFAULT '0';");
+}
+if(!pdo_fieldexists('sz_yi_store_category', 'advimg_pc')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store_category')." ADD    `advimg_pc` varchar(255) DEFAULT '0';");
+}
+if(!pdo_fieldexists('sz_yi_store_category', 'advurl_pc')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store_category')." ADD    `advurl_pc` varchar(255) DEFAULT '0';");
+}
+if(!pdo_fieldexists('sz_yi_store_category', 'supplier_uid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store_category')." ADD    `supplier_uid` int(11) DEFAULT '0';");
+}
+//20161020
+if(!pdo_fieldexists('sz_yi_store', 'city')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD    `city` varchar(30) DEFAULT '0';");
+}
+if(!pdo_fieldexists('sz_yi_store', 'area')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD    `area` varchar(30) DEFAULT '0';");
+}
+if(!pdo_fieldexists('sz_yi_store', 'province')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD    `province` varchar(30) DEFAULT '0';");
+}
+if(!pdo_fieldexists('sz_yi_store', 'street')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD    `street` varchar(30) DEFAULT '0';");
+}
+//20161021
+if(!pdo_fieldexists('sz_yi_store', 'singleprice')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD    `singleprice` decimal(10,2) DEFAULT '0';");
+}
+//20161022
+if(!pdo_fieldexists('sz_yi_store', 'info')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD    `info` varchar(255) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_store', 'thumb')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD    `thumb` varchar(255) DEFAULT '';");
+}
+//20161024
+if(!pdo_fieldexists('sz_yi_order_comment', 'storeid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_comment')." ADD    `storeid` int(11) DEFAULT '0';");
+}
