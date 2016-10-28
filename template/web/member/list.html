@@ -164,7 +164,7 @@
                        {if empty($row['nickname'])}未更新{else}{$row['nickname']}{/if}
                         
                     </td>
-                    <td>{$row['realname']}<br/>{$row['membermobile']}</td>
+                    <td>{$row['realname']}<br/>{php echo $row['mobile'] ? $row['mobile'] : $row['membermobile'];}</td>
                     <td>{if empty($row['levelname'])}普通会员{else}{$row['levelname']}{/if}
                         <br/>{if empty($row['groupname'])}无分组{else}{$row['groupname']}{/if}</td>
                     <td>{php echo date('Y-m-d',$row['createtime'])}<br/>{php echo date('H:i',$row['createtime'])}</td>
