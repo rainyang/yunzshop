@@ -79,6 +79,11 @@ if (!empty($order)) {
     $diyform_flag = 0;
     foreach ($goods as &$g) {
         $g['thumb'] = tomedia($g['thumb']);
+        if($order['plugin'] == 'fund'){
+            $g['url'] = $this->createPluginMobileUrl('fund/detail', array('id' => $g['goodsid']));
+        }else{
+            $g['url'] = $this->createMobileUrl('shop/detail', array('goodsid' => $g['goodsid']));
+        }
         if ($diyform_plugin) {
             $diyformdata   = iunserializer($g['diyformdata']);
             $fields        = iunserializer($g['diyformfields']);
@@ -179,11 +184,11 @@ if ($_W['isajax']) {
     $canrefund = false;
     $tradeset   = m('common')->getSysset('trade');
     $refunddays = intval($tradeset['refunddays']);
-    if ($order['status'] == 1 || $order['status'] == 2) {
+    if (($order['status'] == 1 || $order['status'] == 2) && $order['plugin'] == "") {
         if ($refunddays > 0 || $order['status'] == 1) {
             $canrefund = true;
         }
-    } else if ($order['status'] == 3) {
+    } else if ($order['status'] == 3 && $order['plugin'] == "") {
         if ($order['isverify'] != 1 && empty($order['virtual'])) {
             
             if ($refunddays > 0) {

@@ -946,11 +946,7 @@ if (!class_exists('CommissionModel')) {
 			if (empty($orderid)) {
 				return;
 			}
-			//Author:ym Date:2016-04-07 Content:分红提交订单处理
-			$pluginbonus = p("bonus");
-			if(!empty($pluginbonus)){
-				$pluginbonus->checkOrderConfirm($orderid);
-			}
+			
 			$set = $this->getSet();
 			if (empty($set['level'])) {
 				return;
@@ -997,6 +993,11 @@ if (!class_exists('CommissionModel')) {
 				pdo_update('sz_yi_order', array('agentid' => $agentid), array('id' => $orderid));
 			}
 			$this->calculate($orderid);
+			//Author:ym Date:2016-04-07 Content:分红提交订单处理
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$pluginbonus->checkOrderConfirm($orderid);
+			}
 		}
 
 		/**
@@ -1023,11 +1024,7 @@ if (!class_exists('CommissionModel')) {
 			if (empty($member)) {
 				return;
 			}
-			//Author:ym Date:2016-04-07 Content:分红支付订单处理
-			$pluginbonus = p("bonus");
-			if(!empty($pluginbonus)){
-				$pluginbonus->checkOrderPay($orderid);
-			}
+			
 			$pluginchannel = p("channel");
 			if(!empty($pluginchannel)){
 				$pluginchannel->checkOrderFinishOrPay($orderid);
@@ -1200,6 +1197,11 @@ if (!class_exists('CommissionModel')) {
 					}
 				}
 			}
+			//Author:ym Date:2016-04-07 Content:分红支付订单处理
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$pluginbonus->checkOrderPay($orderid);
+			}
 		}
 
 		/**
@@ -1226,17 +1228,7 @@ if (!class_exists('CommissionModel')) {
 			if (empty($member)) {
 				return;
 			}
-			//Author:ym Date:2016-07-14 Content:爱心基金完成订单
-			$pluginlove = p('love');
-            if($pluginlove){
-               $goods_where = "og.orderid = {$orderid}";
-               $pluginlove->checkOrder($goods_where, $order['openid'], 1);
-            }
-			//Author:ym Date:2016-04-07 Content:分红完成订单处理
-			$pluginbonus = p("bonus");
-			if(!empty($pluginbonus)){
-				$pluginbonus->checkOrderFinish($orderid);
-			}
+			
 			$pluginchannel = p("channel");
 			if(!empty($pluginchannel)){
 				$channel_set = $pluginchannel->getSet();
@@ -1368,6 +1360,17 @@ if (!class_exists('CommissionModel')) {
 			}
 			$this->upgradeLevelByOrder($openid);
 			$this->upgradeLevelByGood($orderid);
+			//Author:ym Date:2016-07-14 Content:爱心基金完成订单
+			$pluginlove = p('love');
+            if($pluginlove){
+               $goods_where = "og.orderid = {$orderid}";
+               $pluginlove->checkOrder($goods_where, $order['openid'], 1);
+            }
+			//Author:ym Date:2016-04-07 Content:分红完成订单处理
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$pluginbonus->checkOrderFinish($orderid);
+			}
 		}
 
 		//获取小店的详细信息
@@ -1583,6 +1586,10 @@ if (!class_exists('CommissionModel')) {
 					$this->sendMessage($m33['openid'], array('nickname' => $m33['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
 				}
 			}
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$pluginbonus->upgradeLevelByAgent($openid);
+			}
 		}
 		//会员根据
 		function upgradeLevelByAgent($openid)
@@ -1599,10 +1606,7 @@ if (!class_exists('CommissionModel')) {
 			if (empty($member)) {
 				return;
 			}
-			$pluginbonus = p("bonus");
-			if(!empty($pluginbonus)){
-				$pluginbonus->upgradeLevelByAgent($openid);
-			}
+			
 			$pluginchannel = p('channel');
 			if(!empty($pluginchannel)){
 				$channel_set = $pluginchannel->getSet();
@@ -1713,6 +1717,10 @@ if (!class_exists('CommissionModel')) {
 				pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $member['id']));
 				$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
 			}
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$pluginbonus->upgradeLevelByAgent($openid);
+			}
 		}
 		//根据可提现佣金升级
 		function upgradeLevelByCommissionOK($openid)
@@ -1729,10 +1737,7 @@ if (!class_exists('CommissionModel')) {
 			if (empty($member)) {
 				return;
 			}
-			$pluginbonus = p("bonus");
-			if(!empty($pluginbonus)){
-				$pluginbonus->upgradeLevelByAgent($openid);
-			}
+			
 			$leveltype = intval($set['leveltype']);
 			if ($leveltype != 10) {
 				return;
@@ -1760,6 +1765,10 @@ if (!class_exists('CommissionModel')) {
 			}
 			pdo_update('sz_yi_member', array('agentlevel' => $newlevel['id']), array('id' => $member['id']));
 			$this->sendMessage($member['openid'], array('nickname' => $member['nickname'], 'oldlevel' => $oldlevel, 'newlevel' => $newlevel,), TM_COMMISSION_UPGRADE);
+			$pluginbonus = p("bonus");
+			if(!empty($pluginbonus)){
+				$pluginbonus->upgradeLevelByAgent($openid);
+			}
 		}
 		//发送消息
 		function sendMessage($openid = '', $data = array(), $message_type = '')

@@ -47,17 +47,13 @@ input {-webkit-appearance:none; outline:none;}
     <%/if%>
     {/if}
     {if $settingalipay['pay']['alipay']=='1'  &&  $settingalipay['pay']['alipay_withdrawals']=='1'}
-    <div style="background: #31cd00" class="balance_subapply balance_sub3 <%if !cansettle%>disabled<%/if%>"
+    <div style="background: #31cd00" class="balance_sub balance_sub3 <%if !cansettle%>disabled<%/if%>"
     data-type="3">{php echo $this->set['texts']['withdraw']}到支付宝</div>
     {/if}
     <div class="balance_sub3" onclick="location.href='{php echo $this->createPluginMobileUrl('commission/log')}'">{php echo $this->set['texts']['withdraw']}记录</div>
-    <input value="{php echo $member['alipay']}" id="alipay" type="hidden">
-    <input value="{php echo $member['alipayname']}" id="alipayname" type="hidden">
-
 </script>
 <script language="javascript">
-    require(['tpl', 'core'], function(tpl, core) {
-        
+    require(['tpl', 'core'], function(tpl, core) {   
         core.pjson('commission/apply',{},function(json){
            var result = json.result;
            $('#container').html(  tpl('tpl_main',json.result) );
@@ -72,9 +68,11 @@ input {-webkit-appearance:none; outline:none;}
                        return;
                    }
                    var type= $(this).data('type');
-                       
-                   core.tip.confirm('确认要申请{php echo $this->set['texts']['widthdraw']}? {php echo $this->set['texts']['withdraw']}申请通过之后给您打款后会通知到您的微信.',function(){
-                       
+                   var msg = '确认要申请{php echo $this->set['texts']['widthdraw']}? {php echo $this->set['texts']['withdraw']}申请通过之后给您打款后会通知到您的微信.';
+                   if(type == 3){
+                      msg = '确认要申请提现？</br>收款账号:{php echo $member['alipay']}</br>收款姓名:{php echo $member['alipayname']}</br>如更改账号请前往人中心我的资料中修改';
+                   }
+                   core.tip.confirm(msg, function(){
                        $('.balance_sub').attr('saving',1).html('正在处理中...');
                         core.pjson('commission/apply',{type:type},function(pjson){
                               if(pjson.status=='1'){
@@ -87,36 +85,8 @@ input {-webkit-appearance:none; outline:none;}
                        },true,true);
                    });
                })
-
-
-               $('.balance_subapply').click(function(){
-                   if($('.balance_subapply').attr('saving')=='1'){
-                       return;
-                   }
-                   var type= $(this).data('type');
-                   var alipay  = $("#alipay").val();
-                   var alipayname  = $("#alipayname").val();
-                   if(alipay=='' || alipayname=='' ){
-                     alert('您个人中心我的资料中未填写支付宝账号或姓名')
-                   }else{
-                  core.tip.confirm('确认要申请提现？</br>收款账号:{php echo $member['alipay']}</br>收款姓名:{php echo $member['alipayname']}</br>如更改账号请前往人中心我的资料中修改',function(){                       
-                         $('.balance_subapply').attr('saving',1).html('正在处理中...');
-                          core.pjson('commission/apply',{alipay:alipay,alipayname:alipayname,type:type},function(pjson){
-                                if(pjson.status=='1'){
-                                     core.tip.show(pjson.result);
-                                     location.href = core.getUrl('plugin/commission/withdraw');
-                                }else{
-                                     core.message(pjson.result,"{php echo $this->createPluginMobileUrl('commission/apply')}" ,'error');
-                                }
-                                 
-                         },true,true);
-                     });
-                   }
-    
-               })
            }
         },true);
-        
     })
 </script>
 {template 'common/footer'}

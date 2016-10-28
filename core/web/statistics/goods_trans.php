@@ -20,12 +20,21 @@ if (!empty($_GPC['datetime'])) {
 		$condition .= " AND o.createtime >={$starttime} AND o.createtime <= {$endtime} ";
 	}
 }
+$lang = array(
+	"good" => "商品"
+	);
+if($_GPC['plugin'] == "fund"){
+	$lang = array(
+	"good" => "项目"
+	);
+}
 $condition1 = ' and g.uniacid=:uniacid';
 $params1 = array(':uniacid' => $_W['uniacid']);
 if (!empty($_GPC['title'])) {
 	$condition1 .= ' and g.title like :title';
 	$params1[':title'] = "%{$_GPC['title']}%";
 }
+$condition1 .= " AND g.plugin = '".$_GPC['plugin']."'";
 $orderby = !isset($_GPC['orderby']) ? 'desc' : (empty($_GPC['orderby']) ? 'desc' : 'asc');
 $sql = 'SELECT g.id,g.title,g.thumb,g.viewcount,' . '(select sum(og.total) from  ' . tablename('sz_yi_order_goods') . ' og left join ' . tablename('sz_yi_order') . " o on og.orderid=o.id  where o.status>=1 and og.goodsid=g.id {$condition})  as buycount" . ' from ' . tablename('sz_yi_goods') . ' g  ' . "where 1 {$condition1} order by buycount/g.viewcount {$orderby}  ";
 if (empty($_GPC['export'])) {

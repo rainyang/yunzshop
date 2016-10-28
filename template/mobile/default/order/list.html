@@ -1,5 +1,5 @@
 {template 'common/header'}
-<title>我的订单</title>
+<title>{$ordertitle}</title>
 <style type="text/css">
     body {margin:0px; background:#efefef; -moz-appearance:none; -webkit-appearance: none;}
     .order_topbar {height:44px; width:100%; background:#fff; border-bottom:1px solid #e3e3e3;}
@@ -42,7 +42,7 @@
 <script id='tpl_order_list' type='text/html'>
     <div class="page_topbar">
     <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
-    <div class="title">我的订单</div>
+    <div class="title">{$ordertitle}</div>
 </div>
     <div class="order_topbar">
         {if $_GPC['status']!=4}
@@ -216,12 +216,12 @@
                                  },true,true);
                          });
              }
-             core.json('order/list', {page:page, status: '{$_GPC['status']}'}, function(json) {
+             core.json('order/list', {page:page, status: '{$_GPC['status']}', plugin: '{$_GPC['plugin']}'}, function(json) {
 
                     $("#container").html(tpl('tpl_order_list'));
                     $('.nav').click(function() {
                         var status = $(this).data('status');
-                        location.href = core.getUrl('order/list', {status: status});
+                        location.href = core.getUrl('order/list', {status: status, plugin: '{$_GPC['plugin']}'});
                     })
                     if (json.result.list.length <= 0) {
                         $("#order_container").html(tpl('tpl_empty'));
