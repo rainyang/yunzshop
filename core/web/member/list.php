@@ -54,7 +54,9 @@ if ($op == 'display') {
     if ($_GPC['isblack'] != '') {
         $condition .= ' and dm.isblack=' . intval($_GPC['isblack']);
     }
-    $sql = "select dm.* from " . tablename('sz_yi_member') . " dm " . "  left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid  and f.uniacid={$_W['uniacid']}" . " where 1 {$condition}  ORDER BY dm.id DESC";
+
+    $sql = "select dm.*,l.levelname,g.groupname,a.nickname as agentnickname,a.avatar as agentavatar from " . tablename('sz_yi_member') . " dm " . " left join " . tablename('sz_yi_member_group') . " g on dm.groupid=g.id" . " left join " . tablename('sz_yi_member') . " a on a.id=dm.agentid" . " left join " . tablename('sz_yi_member_level') . " l on dm.level =l.id" . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid  and f.uniacid={$_W['uniacid']}" . " where 1 {$condition}  ORDER BY dm.id DESC";
+
     if (empty($_GPC['export'])) {
         $sql .= " limit " . ($pindex - 1) * $psize . ',' . $psize;
     }
@@ -171,6 +173,14 @@ if ($op == 'display') {
     }
 } else if ($op == 'detail') {
     ca('member.member.view');
+    $hasbonus = false;
+    $plugin_bonus    = p('bonus');
+    if ($plugin_bonus) {
+        $plugin_bonus_set = $plugin_bonus->getSet();
+        if($plugin_bonus_set['start'] == 1 || $plugin_bonus_set['area_start'] == 1){
+            $hasbonus  = true;
+        }
+    }
     $hascommission = false;
     $plugin_com    = p('commission');
     if ($plugin_com) {
@@ -230,6 +240,7 @@ if ($op == 'display') {
             if (cv('commission.agent.changeagent')) {
                 $adata = is_array($_GPC['adata']) ? $_GPC['adata'] : array();
                 if (!empty($adata)) {
+                    $agentname = $_GPC['adata']['agentid'] ? $_GPC['adata']['agentid'] : "总店";
                     if (empty($_GPC['oldstatus']) && $adata['status'] == 1) {
                         $time               = time();
                         $adata['agenttime'] = time();
@@ -237,9 +248,9 @@ if ($op == 'display') {
                             'nickname' => $member['nickname'],
                             'agenttime' => $time
                         ), TM_COMMISSION_BECOME);
-                        plog('commission.agent.check', "审核分销商 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['membermobile']}");
+                        plog('commission.agent.check', "审核分销商 <br/>分销商信息:  ID: {$member['id']} 上级修改为 ID：{$agentname}");
                     }
-                    plog('commission.agent.edit', "修改分销商 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['membermobile']}");
+                    plog('commission.agent.edit', "修改分销商 <br/>分销商信息:  ID: {$member['id']} 上级修改为 ID：{$agentname}");
                     pdo_update('sz_yi_member', $adata, array(
                         'id' => $id,
                         'uniacid' => $_W['uniacid']
@@ -252,10 +263,53 @@ if ($op == 'display') {
                 }
             }
         }
+        if($plugin_bonus){
+            if (cv('bonus.agent.changeagent')) {
+                $bdata = is_array($_GPC['bdata']) ? $_GPC['bdata'] : array();
+                if (!empty($bdata)) {
+                    $reside = $_GPC['reside'];
+                    if(!empty($bdata['bonus_area'])){
+                        if($bdata['bonus_area'] == 1){
+                            if(empty($reside['province'])){
+                                message('请选择代理的省', '', 'error');
+                            }
+                        }else if($bdata['bonus_area'] == 2){
+                            if(empty($reside['city'])){
+                                message('请选择代理的市', '', 'error');
+                            }
+                        }else if($bdata['bonus_area'] == 3){
+                            if(empty($reside['district'])){
+                                message('请选择代理的区', '', 'error');
+                            }
+                        }
+                        $bdata['bonus_province'] = $reside['province'];
+                        $bdata['bonus_city'] = $reside['city'];
+                        $bdata['bonus_district'] = $reside['district'];
+                    }
+
+                    pdo_update('sz_yi_member', $bdata, array(
+                        'id' => $id,
+                        'uniacid' => $_W['uniacid']
+                    ));
+                    if($member['bonuslevel'] != $bdata['bonuslevel']){
+                        plog('member.member.edit', "修改代理等级 原代理等级ID：{$member['bonuslevel']} 改为 ID：{$bdata['bonuslevel']}");
+                    }
+                    if($member['bonus_area'] != $bdata['bonus_area']){
+                        plog('member.member.edit', "修改代理等级 原地区等级ID：{$member['bonus_area']} 改为 ID：{$bdata['bonus_area']}");
+                    }
+                    if($member['bonus_area_commission'] != $bdata['bonus_area_commission']){
+                        plog('member.member.edit', "修改地区代理比例 原比例：{$member['bonus_area_commission']}% 改为 {$bdata['bonus_area_commission']}%");
+                    }
+                }
+            }
+        }
         message('保存成功!', $this->createWebUrl('member/list'), 'success');
     }
     if ($hascommission) {
         $agentlevels = $plugin_com->getLevels();
+    }
+    if ($plugin_bonus) {
+        $bonuslevels = $plugin_bonus->getLevels();
     }
     $member = m('member')->getMember($id);
     if ($hascommission) {

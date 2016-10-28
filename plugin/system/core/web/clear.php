@@ -1,15 +1,14 @@
 <?php
 global $_W, $_GPC;
-$wechatid = intval($_GPC['wechatid']);
-if (!$_W['isfounder']) {
-    if($wechatid == 0){
-        $wechatid = $_W['uniacid'];
-    }
-}
+ca('system.clear');
 if (checksubmit('submit')) {
     $condition = "";
     $acid      = 0;
     $where     = array();
+    $wechatid = intval($_GPC['wechatid']);
+    if(!cv('system.transfer.view')){
+        $wechatid = $_W['uniacid'];
+    }
     if ($wechatid != -1) {
         $condition = ' and uniacid=' . $wechatid;
         $where     = array(
@@ -289,7 +288,20 @@ if (checksubmit('submit')) {
             }
         }
     }
-// echo "<pre>";print_r($_GPC['return']);exit;
+    if (is_array($_GPC['bonus'])) {
+        foreach ($_GPC['bonus'] as $data) {
+            if ($data == 'agent') {
+                pdo_query('update ' . tablename('sz_yi_member') . " set bonuslevel=0,bonus_area=0,bonus_province='',bonus_city='',bonus_district='',bonus_area_commission=0,bonus_status=0 where 1 {$condition}");
+            } else if ($data == 'detall') {
+                pdo_query('delete from  ' . tablename('sz_yi_bonus') . " where 1 {$condition}");
+                pdo_query('delete from  ' . tablename('sz_yi_bonus_log') . " where 1 {$condition}");
+            } else if ($data == 'level') {
+                pdo_query('delete from  ' . tablename('sz_yi_bonus_level') . " where 1 {$condition}");
+            }
+
+        }
+    }
+
     if (is_array($_GPC['return'])) {
         foreach ($_GPC['return'] as $data) {
             if ($data == 'order') {
@@ -304,7 +316,7 @@ if (checksubmit('submit')) {
 
         }
     }
-    plog('system.save.delete', '清空数据');
+    plog('system.delete', '清空数据');
     
     message('数据清理成功!', $this->createPluginWebUrl('system/clear'), 'success');
 }

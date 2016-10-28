@@ -183,4 +183,34 @@ class Sz_DYi_Message
                 'contents'=>$content));
             sent_message(array($openid),$msg['first']['value']);
     }
+
+    //群发消息
+    public function sendmsg($filesn, $uniacid){
+        $_W['uniacid'] = $uniacid;
+        $data = array();
+        $file_path = IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log";
+        if(file_exists($file_path)){
+            $data = unserialize(file_get_contents(IA_ROOT . "/addons/sz_yi/data/message/" . $filesn . ".log"));
+        }
+
+        if($data){
+            //获取公众号函数
+            load()->model('account');
+            if (!empty($_W['acid'])) {
+                $account = WeAccount::create($_W['acid']);
+            } else {
+                $acid = pdo_fetchcolumn("SELECT acid FROM " . tablename('account_wechats') . " WHERE `uniacid`=:uniacid LIMIT 1", array(
+                    ':uniacid' => $_W['uniacid']
+                ));
+                $account = WeAccount::create($acid);
+            }
+            foreach ($data as $value) {
+                if (!empty($value['templateid'])) {
+                    m('message')->sendTplNotice($value['openid'], $value['templateid'], $value['msg'], '', $account);
+                } else {
+                    m('message')->sendCustomNotice($value['openid'], $value['msg'], "", $account);
+                }
+            }
+        }
+    }
 }

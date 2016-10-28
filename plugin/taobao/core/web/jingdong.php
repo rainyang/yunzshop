@@ -37,7 +37,7 @@ if ($op == 'display') {
 		die(json_encode(array('result' => 0, 'error' => '未获取到 itemid!')));
 	}
 	$ret = $this->model->get_item_jingdong($itemid, $_GPC['url'], $pcate, $ccate, $tcate);
-	plog('jingdong.main', '京东抓取宝贝 京东id:' . $itemid);
+	plog('taobao.jingdong', '京东抓取宝贝 京东id:' . $itemid);
 	die(json_encode($ret));
 }
 load()->func('tpl');
