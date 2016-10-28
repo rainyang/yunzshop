@@ -395,9 +395,7 @@ if ($operation == "display") {
             }
         }
     }
-    if(!empty($_GPC['plugin'])){
-        $condition.= " and o.plugin='".$_GPC['plugin']."'";
-    }
+    $condition.= " and o.plugin='".$_GPC['plugin']."'";
     //是否为供应商 等于1的是
     if (p('supplier')) {
         $cond = "";
@@ -902,9 +900,7 @@ if ($operation == "display") {
         }
     }
 
-    if(!empty($_GPC['plugin'])){
-        $condition.= " and plugin='".$_GPC['plugin']."'";
-    }
+    $condition.= " and plugin='".$_GPC['plugin']."'";
 
     $paras = array(
         ":uniacid" => $_W["uniacid"]
@@ -1198,9 +1194,8 @@ if ($operation == "display") {
     $paras = array(
         ":uniacid" => $_W["uniacid"]
     );
-    if(!empty($_GPC['plugin'])){
-        $condition.= " and plugin='".$_GPC['plugin']."'";
-    }
+        
+    $condition.= " and plugin='".$_GPC['plugin']."'";
     $supplier_conds = '';
     $supplier_cond = '';
     if (p('supplier')) {
