@@ -15,14 +15,14 @@ if ($operation == 'display') {
     }
     if (!empty($_GPC['realname'])) {
         $_GPC['realname'] = trim($_GPC['realname']);
-        $condition .= ' and ( dm.realname like :realname or dm.nickname like :realname or dm.mobile like :realname)';
+        $condition .= ' and ( dm.realname like :realname or dm.nickname like :realname or dm.mobile like :realname or dm.membermobile like :realname)';
         $params[':realname'] = "%{$_GPC['realname']}%";
     }
     if ($_GPC['parentid'] == '0') {
         $condition .= ' and dm.agentid=0';
     } else if (!empty($_GPC['parentname'])) {
         $_GPC['parentname'] = trim($_GPC['parentname']);
-        $condition .= ' and ( p.mobile like :parentname or p.nickname like :parentname or p.realname like :parentname)';
+        $condition .= ' and ( p.mobile like :parentname or p.nickname like :parentname or p.realname like :parentname or p.membermobile like :parentname)';
         $params[':parentname'] = "%{$_GPC['parentname']}%";
     }
     if ($_GPC['followed'] != '') {
