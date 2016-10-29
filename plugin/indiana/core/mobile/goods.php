@@ -45,7 +45,10 @@ $pager = pagination($total, $pindex, $psize);
 $init_money = pdo_fetchall("SELECT init_money FROM " . tablename('sz_yi_indiana_period') . " where uniacid = :uniacid and status=1 group by init_money ",array(
      ':uniacid' => $_W['uniacid']
 ));
-
+$_W['shopshare']['link'] = $this->createPluginMobileUrl('indiana/goods', array(
+    'init_money' => $_GPC["init_money"],
+    'mid' => $member['id']
+));
 if ($_W['isajax']) {
     show_json(1, array(
         'goods' => $goods,
