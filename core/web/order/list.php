@@ -443,7 +443,7 @@ if ($operation == "display") {
             left join " .tablename('sz_yi_cashier_store'). " cs on cs.id=o.id and cs.uniacid=o.uniacid
             where {$condition} {$statuscondition} {$cond} group by o.ordersn_general
             ORDER BY o.createtime DESC,o.status DESC  ";*/
-    $sql = 'SELECT count(1) AS suppliers_num, o.* 
+    $sql = 'SELECT count(1) AS suppliers_num, o.*, r.rtype 
             FROM ' . tablename("sz_yi_order") . " AS o 
             LEFT JOIN " . tablename("sz_yi_order_refund") . " r ON r.id =o.refundid 
             WHERE 1 {$condition} {$statuscondition} {$cond} GROUP BY o.ordersn_general ORDER BY o.createtime DESC,o.status DESC

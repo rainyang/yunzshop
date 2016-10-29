@@ -54,7 +54,9 @@ if ($op == 'display') {
     if ($_GPC['isblack'] != '') {
         $condition .= ' and dm.isblack=' . intval($_GPC['isblack']);
     }
-    $sql = "select dm.* from " . tablename('sz_yi_member') . " dm " . "  left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid  and f.uniacid={$_W['uniacid']}" . " where 1 {$condition}  ORDER BY dm.id DESC";
+
+    $sql = "select dm.*,l.levelname,g.groupname,a.nickname as agentnickname,a.avatar as agentavatar from " . tablename('sz_yi_member') . " dm " . " left join " . tablename('sz_yi_member_group') . " g on dm.groupid=g.id" . " left join " . tablename('sz_yi_member') . " a on a.id=dm.agentid" . " left join " . tablename('sz_yi_member_level') . " l on dm.level =l.id" . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid  and f.uniacid={$_W['uniacid']}" . " where 1 {$condition}  ORDER BY dm.id DESC";
+
     if (empty($_GPC['export'])) {
         $sql .= " limit " . ($pindex - 1) * $psize . ',' . $psize;
     }
@@ -238,6 +240,7 @@ if ($op == 'display') {
             if (cv('commission.agent.changeagent')) {
                 $adata = is_array($_GPC['adata']) ? $_GPC['adata'] : array();
                 if (!empty($adata)) {
+                    $agentname = $_GPC['adata']['agentid'] ? $_GPC['adata']['agentid'] : "总店";
                     if (empty($_GPC['oldstatus']) && $adata['status'] == 1) {
                         $time               = time();
                         $adata['agenttime'] = time();
@@ -245,9 +248,9 @@ if ($op == 'display') {
                             'nickname' => $member['nickname'],
                             'agenttime' => $time
                         ), TM_COMMISSION_BECOME);
-                        plog('commission.agent.check', "审核分销商 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['membermobile']}");
+                        plog('commission.agent.check', "审核分销商 <br/>分销商信息:  ID: {$member['id']} 上级修改为 ID：{$agentname}");
                     }
-                    plog('commission.agent.edit', "修改分销商 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['membermobile']}");
+                    plog('commission.agent.edit', "修改分销商 <br/>分销商信息:  ID: {$member['id']} 上级修改为 ID：{$agentname}");
                     pdo_update('sz_yi_member', $adata, array(
                         'id' => $id,
                         'uniacid' => $_W['uniacid']
