@@ -144,12 +144,12 @@ if (!empty($orderid) && $operation = 'display') {
 				$ret['uniacid'] = $log['uniacid'];
 				$this->payResult($ret);
 			}
-			$orderid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid', array(
+/*			$orderid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid', array(
 				':ordersn_general' => $log['tid'],
 				':uniacid' => $_W['uniacid']
-			));
-			$url     = $this->createMobileUrl('order/detail', array(
-				'id' => $orderid
+			));*/
+			$url     = $this->createMobileUrl('order/list', array(
+				'status' => ''
 			));
 			die("<script>top.window.location.href='{$url}'</script>");
 		}
