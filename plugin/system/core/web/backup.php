@@ -1,11 +1,6 @@
 <?php
-
-
 global $_W, $_GPC;
-
-if (!$_W['isfounder']) {
-    message('您无权操作!', '', 'error');
-}
+ca('system.backup');
 function table2sql($table)
 {
     global $db;
@@ -42,6 +37,7 @@ if (checksubmit('submit')) {
     header('Content-type: application/force-download');
     header('Content-Disposition: attachment; filename="' . $filename . '"');
     m('cache')->set('systembackuptime', date('Y-m-d H:i:s'), 'global');
+    plog('system.backup', "数据备份下载");
     exit($sqls);
 }
 $lasttime = m('cache')->getString('systembackuptime', 'global');

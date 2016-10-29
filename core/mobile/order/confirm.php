@@ -152,7 +152,7 @@ if ($_W['isajax']) {
                 ':openid' => $openid
             ), 'supplier_uid');
 
-            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.dispatchsend, g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,discounts2,discounttype,discountway,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid, g.yunbi_deduct FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
+            $sql   = 'SELECT c.goodsid,c.total,g.maxbuy,g.type,g.issendfree,g.isnodiscount,g.weight,o.weight as optionweight,g.title,g.thumb,ifnull(o.marketprice, g.marketprice) as marketprice,o.title as optiontitle,c.optionid,g.storeids,g.isverify,g.isverifysend,g.dispatchsend, g.deduct,g.deduct2,g.virtual,o.virtual as optionvirtual,discounts,discounts2,discounttype,discountway,g.supplier_uid,g.dispatchprice,g.dispatchtype,g.dispatchid, g.yunbi_deduct, g.plugin FROM ' . tablename('sz_yi_member_cart') . ' c ' . ' left join ' . tablename('sz_yi_goods') . ' g on c.goodsid = g.id ' . ' left join ' . tablename('sz_yi_goods_option') . ' o on c.optionid = o.id ' . " where c.openid=:openid and  c.deleted=0 and c.uniacid=:uniacid {$condition} order by g.supplier_uid asc";
 
             $goods = pdo_fetchall($sql, array(
                 ':uniacid' => $uniacid,
@@ -175,9 +175,9 @@ if ($_W['isajax']) {
             $fromcart = 1;
         } else {
             if(p('hotel')){
-                $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,dispatchsend,deduct,virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+                $sql = "SELECT id as goodsid,type,title,weight,deposit,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,dispatchsend,deduct,virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct, plugin FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             }else{
-                $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,dispatchsend,deduct,virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
+                $sql = "SELECT id as goodsid,type,title,weight,issendfree,isnodiscount, thumb,marketprice,storeids,isverify,isverifysend,dispatchsend,deduct,virtual,maxbuy,usermaxbuy,discounts,discounts2,discounttype,discountway,total as stock, deduct2, ednum, edmoney, edareas, diyformtype, diyformid, diymode, dispatchtype, dispatchid, dispatchprice, supplier_uid, yunbi_deduct, plugin FROM " . tablename("sz_yi_goods") . " where id=:id and uniacid=:uniacid  limit 1";
             }
             $data = pdo_fetch($sql, array(
                 ':uniacid' => $uniacid,
@@ -308,6 +308,7 @@ if ($_W['isajax']) {
 
 
         $goods = set_medias($goods, 'thumb');
+        $issale = true;
         foreach ($goods as &$g) {
             if ($g['isverify'] == 2) {
                 $isverify = true;
@@ -331,7 +332,16 @@ if ($_W['isajax']) {
                     $g['marketprice'] -= $g['yunbi_deduct'];
                 }
             }
+
+            if($g['plugin'] == 'fund'){
+                $issale = false;
+                $g['url'] = $this->createPluginMobileUrl('fund/detail', array('id' => $g['goodsid']));
+            }else{
+                $g['url'] = $this->createMobileUrl('shop/detail', array('id' => $g['goodsid']));
+            }
+
         }
+
         //多店值分开初始化
         foreach ($suppliers as $key => $val) {
             $order_all[$val['supplier_uid']]['weight']         = 0;
@@ -737,7 +747,8 @@ if ($_W['isajax']) {
 
         $sale_plugin   = p('sale');
         $saleset       = false;
-        if ($sale_plugin) {
+
+        if ($sale_plugin && $issale) {
             $saleset = $sale_plugin->getSet();
             $saleset["enoughs"] = $sale_plugin->getEnoughs();
         }
@@ -1438,6 +1449,7 @@ if ($_W['isajax']) {
             $isvirtual = false;
             $isverify  = false;
             $isverifysend  = false;
+            $issale = true;
             foreach ($goodsarr as $g) {
                 if (empty($g)) {
                     continue;
@@ -1468,7 +1480,7 @@ if ($_W['isajax']) {
                 if (p('yunbi')) {
                     $yunbi_condtion = 'isforceyunbi,yunbi_deduct,';
                 }
-                $sql  = 'SELECT id as goodsid,costprice,' . $channel_condtion . 'supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,virtual,discounts,discounts2,discountway,discounttype,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice, yunbi_deduct,bonusmoney FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
+                $sql  = 'SELECT id as goodsid,costprice,' . $channel_condtion . 'supplier_uid,title,type, weight,total,issendfree,isnodiscount, thumb,marketprice,cash,isverify,goodssn,productsn,sales,istime,timestart,timeend,usermaxbuy,maxbuy,unit,buylevels,buygroups,deleted,status,deduct,virtual,discounts,discounts2,discountway,discounttype,deduct2,ednum,edmoney,edareas,diyformtype,diyformid,diymode,dispatchtype,dispatchid,dispatchprice,redprice, yunbi_deduct,bonusmoney,plugin FROM ' . tablename('sz_yi_goods') . ' where id=:id and uniacid=:uniacid  limit 1';
 
                 $data = pdo_fetch($sql, array(
                     ':uniacid' => $uniacid,
@@ -1480,6 +1492,9 @@ if ($_W['isajax']) {
                             show_json(-1, $data['title'] . '<br/> 不支持采购!请前往购物车移除该商品！');
                         }
                     }
+                }
+                if($data['plugin'] == 'fund'){
+                    $issale = false;
                 }
                 if (empty($data['status']) || !empty($data['deleted'])) {
                     show_json(-1, $data['title'] . '<br/> 已下架!');
@@ -1873,7 +1888,8 @@ if ($_W['isajax']) {
             if (p('channel') && $ischannelpay == 1) {
                 $saleset = array();
             }
-            if ($saleset) {
+
+            if ($saleset && $issale) {
                 foreach ($saleset["enoughs"] as $e) {
                     if ($totalprice >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
                         if ($e["enough"] > $tmp_money) {
@@ -2159,7 +2175,6 @@ if ($_W['isajax']) {
                 "couponid" => $couponid,
                 "couponprice" => $couponprice,
                 'redprice' => $redpriceall,
-
             );
             if (p('channel')) {
                 if (!empty($ischannelpick)) {
@@ -2189,7 +2204,6 @@ if ($_W['isajax']) {
                     $order['deductcredit2']=$_GPC['deductcredit2'];
                     $order['deductcredit']=$_GPC['deductcredit'];
                     $order['deductprice']=$_GPC['deductcredit'];
-
                 }
             }
             if ($diyform_plugin) {
@@ -2202,6 +2216,11 @@ if ($_W['isajax']) {
                 }
 
             }
+
+            if($issale == false){
+                $order["plugin"]   = 'fund';
+            }
+
             if (!empty($address)) {
                 $order['address'] = iserializer($address);
             }
@@ -2599,5 +2618,6 @@ if(p('hotel') && $goods_data['type']=='99'){ //判断是否开启酒店插件
     }
     include $this->template('order/confirm_hotel');
 }else{
+    $hascouponplugin = $hascouponplugin && $issale ? true : false;
     include $this->template('order/confirm');
 }

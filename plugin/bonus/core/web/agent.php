@@ -22,7 +22,7 @@ if ($operation == 'display') {
         $condition .= ' and dm.agentid=0';
     } else if (!empty($_GPC['parentname'])) {
         $_GPC['parentname'] = trim($_GPC['parentname']);
-        $condition .= ' and ( p.mobile like :parentname or p.membermobile like :parentname or p.nickname like :parentname or p.realname like :parentname)';
+        $condition .= ' and ( p.mobile like :parentname or p.nickname like :parentname or p.realname like :parentname or p.membermobile like :parentname)';
         $params[':parentname'] = "%{$_GPC['parentname']}%";
     }
     if ($_GPC['followed'] != '') {
@@ -75,7 +75,7 @@ if ($operation == 'display') {
     if ($_GPC['agentblack'] != '') {
         $condition .= ' and dm.agentblack=' . intval($_GPC['agentblack']);
     }
-    $sql = "select dm.*,dm.nickname,dm.avatar,l.levelname,p.nickname as parentname,p.avatar as parentavatar from " . tablename('sz_yi_member') . " dm " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.agentid " . " left join " . tablename('sz_yi_bonus_level') . " l on l.id = dm.bonuslevel" . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid and f.uniacid={$_W['uniacid']}" . " where dm.uniacid = " . $_W['uniacid'] . " and dm.isagent =1  {$condition} ORDER BY dm.agenttime desc";
+    $sql = "select dm.*,dm.nickname,dm.avatar,l.levelname,p.nickname as parentname,p.avatar as parentavatar from " . tablename('sz_yi_member') . " dm " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.agentid " . " left join " . tablename('sz_yi_bonus_level') . " l on l.id = dm.bonuslevel" . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid and f.uniacid={$_W['uniacid']}" . " where dm.uniacid = " . $_W['uniacid'] . " and dm.isagent =1 and (dm.bonuslevel!=0 || dm.bonus_area!=0) {$condition} ORDER BY dm.agenttime desc";
     if (empty($_GPC['export'])) {
         $sql .= " limit " . ($pindex - 1) * $psize . ',' . $psize;
     }
@@ -161,47 +161,22 @@ if ($operation == 'display') {
                     'width' => 12
                 ),
                 array(
-                    'title' => '下线分销商总数',
+                    'title' => '下线总数',
                     'field' => 'levelcount',
                     'width' => 12
                 ),
                 array(
-                    'title' => '一级下线分销商数',
-                    'field' => 'level1',
-                    'width' => 12
-                ),
-                array(
-                    'title' => '二级下线分销商数',
-                    'field' => 'level2',
-                    'width' => 12
-                ),
-                array(
-                    'title' => '三级下线分销商数',
-                    'field' => 'level3',
-                    'width' => 12
-                ),
-                array(
-                    'title' => '累计佣金',
+                    'title' => '累计分红佣金',
                     'field' => 'commission_total',
                     'width' => 12
                 ),
                 array(
-                    'title' => '打款佣金',
+                    'title' => '发放分红佣金',
                     'field' => 'commission_pay',
                     'width' => 12
                 ),
                 array(
-                    'title' => '注册时间',
-                    'field' => 'createtime',
-                    'width' => 12
-                ),
-                array(
-                    'title' => '成为分销商时间',
-                    'field' => 'createtime',
-                    'width' => 12
-                ),
-                array(
-                    'title' => '审核状态',
+                    'title' => '成为会员时间',
                     'field' => 'createtime',
                     'width' => 12
                 ),
@@ -280,7 +255,15 @@ if ($operation == 'display') {
             $data['bonus_city'] = $reside['city'];
             $data['bonus_district'] = $reside['district'];
         }
-        plog('bonus.agent.edit', "修改分销商 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
+        if($member['bonuslevel'] != $data['bonuslevel']){
+            plog('bonus.agent.edit', "修改代理等级 原代理等级ID：{$member['bonuslevel']} 改为 ID：{$data['bonuslevel']}");
+        }
+        if($member['bonus_area'] != $data['bonus_area']){
+            plog('bonus.agent.edit', "修改代理等级 原地区等级ID：{$member['bonus_area']} 改为 ID：{$data['bonus_area']}");
+        }
+        if($member['bonus_area_commission'] != $data['bonus_area_commission']){
+            plog('bonus.agent.edit', "修改地区代理比例 原比例：{$member['bonus_area_commission']}% 改为 {$data['bonus_area_commission']}%");
+        }
         if(!empty($data['bonuslevel'])){
             $data['bonus_status'] = 1;
             if($_GPC['isagency'] == 1){
@@ -309,63 +292,6 @@ if ($operation == 'display') {
             $diyform_flag = 1;
             $fields       = iunserializer($member['diycommissionfields']);
         }
-    }
-} else if ($operation == 'delete') {
-    ca('bonus.agent.delete');
-    $id     = intval($_GPC['id']);
-    $member = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid=:uniacid and id=:id limit 1 ", array(
-        ':uniacid' => $_W['uniacid'],
-        ':id' => $id
-    ));
-    if (empty($member)) {
-        message('会员不存在，无法取消分销商资格!', $this->createPluginWebUrl('bonus/agent'), 'error');
-    }
-    $agentcount = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_member') . ' where  uniacid=:uniacid and agentid=:agentid limit 1 ', array(
-        ':uniacid' => $_W['uniacid'],
-        ':agentid' => $id
-    ));
-    if ($agentcount > 0) {
-        message('此会员有下线存在，无法取消分销商资格!', '', 'error');
-    }
-    pdo_update('sz_yi_member', array(
-        'isagent' => 0,
-        'status' => 0
-    ), array(
-        'id' => $_GPC['id']
-    ));
-    plog('bonus.agent.delete', "取消分销商资格 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
-    message('删除成功！', $this->createPluginWebUrl('bonus/agent'), 'success');
-} else if ($operation == 'agentblack') {
-    ca('bonus.agent.agentblack');
-    $id     = intval($_GPC['id']);
-    $member = pdo_fetch("select * from " . tablename('sz_yi_member') . " where uniacid=:uniacid and id=:id limit 1 ", array(
-        ':uniacid' => $_W['uniacid'],
-        ':id' => $id
-    ));
-    if (empty($member)) {
-        message('会员不存在，无法设置黑名单!', $this->createPluginWebUrl('bonus/agent'), 'error');
-    }
-    $black = intval($_GPC['black']);
-    if (!empty($black)) {
-        pdo_update('sz_yi_member', array(
-            'isagent' => 1,
-            'status' => 0,
-            'agentblack' => 1
-        ), array(
-            'id' => $_GPC['id']
-        ));
-        plog('bonus.agent.agentblack', "设置黑名单 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
-        message('设置黑名单成功！', $this->createPluginWebUrl('bonus/agent'), 'success');
-    } else {
-        pdo_update('sz_yi_member', array(
-            'isagent' => 1,
-            'status' => 1,
-            'agentblack' => 0
-        ), array(
-            'id' => $_GPC['id']
-        ));
-        plog('bonus.agent.agentblack', "取消黑名单 <br/>分销商信息:  ID: {$member['id']} /  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['mobile']}");
-        message('取消黑名单成功！', $this->createPluginWebUrl('bonus/agent'), 'success');
     }
 } else if ($operation == 'user') {
     ca('bonus.agent.user');

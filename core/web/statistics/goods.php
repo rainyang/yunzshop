@@ -36,6 +36,7 @@ if (!empty($_GPC['title'])) {
 	$condition .= " and g.title like :title";
 	$params[':title'] = "%{$_GPC['title']}%";
 }
+$condition .= " AND g.plugin = '".$_GPC['plugin']."'";
 $orderby = !isset($_GPC['orderby']) ? 'og.price' : (empty($_GPC['orderby']) ? 'og.price' : 'og.total');
 $sql = "select og.price,og.total,o.createtime,o.ordersn,g.title,g.thumb,g.goodssn,op.goodssn as optiongoodssn from " . tablename('sz_yi_order_goods') . ' og ' . " left join " . tablename('sz_yi_order') . " o on o.id = og.orderid " . " left join " . tablename('sz_yi_goods') . " g on g.id = og.goodsid " . " left join " . tablename('sz_yi_goods_option') . " op on op.id = og.optionid " . " where 1 {$condition} order by {$orderby} desc ";
 if (empty($_GPC['export'])) {

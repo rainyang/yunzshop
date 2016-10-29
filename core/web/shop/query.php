@@ -6,7 +6,7 @@ global $_W, $_GPC;
 $kwd                = trim($_GPC['keyword']);
 $params             = array();
 $params[':uniacid'] = $_W['uniacid'];
-$condition = ' and uniacid=:uniacid';
+$condition = " and uniacid=:uniacid and plugin=''";
 if (!empty($kwd)) {
 	$condition .= ' AND `title` LIKE :keyword';
 	$params[':keyword'] = "%{$kwd}%";
