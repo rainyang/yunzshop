@@ -979,6 +979,8 @@ if ($operation == "display") {
     if (p('hotel')) {
         if ($type == 'hotel') {
             include $this->template("web/order/list_hotel");
+        } elseif ($indiana_plugin && $_GPC['isindiana']) {
+            include p('indiana')->ptemplate("order");
         } else {
             include $this->template("web/order/list");
         }
