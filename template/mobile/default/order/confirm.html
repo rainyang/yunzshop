@@ -406,7 +406,7 @@
     <div class="addorder_price" >
         <input type="hidden" data-id="<%order.supplier_uid%>" data-name="weight" value="<%weight%>" />
         <div class="price">
-            <%if order.dispatch_price>0%>
+            <%if order.dispatch_price>=0%>
             <div class="line" style="line-height:26px;">+运费<span>￥<span class='dispatchprice' data-id="<%order.supplier_uid%>"><%order.dispatch_price%></span></span></div>
             <%/if%>
             <%if order.discountprice!=0%>
