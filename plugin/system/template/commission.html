@@ -13,6 +13,7 @@
                 分销关系修改
             </div>
             <div class="panel-body">
+            	{if $_W['isfounder']}
             	{ifp 'system.commission.view'}
 	 			<div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 选择公众号</label>
@@ -26,6 +27,7 @@
 						</select>
                     </div>
                 </div>
+                {/if}
                 {/if}
 	       <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style='color:red'>*</span> 选择会员</label>
@@ -120,11 +122,13 @@
 	 }else{
 		 $('#modalTitle').html("选择会员");
 	 }
+	 {if $_W['isfounder']}
 	 {ifp 'system.commission.view'}
 	 if($('#wechatid').isEmpty()){
 		 alert('请选择公众号!');
 		 return;
 	 }
+	 {/if}
 	 {/if}
 	 if(oldwechatid!=$('#wechatid').val()){
 		$("#module-menus-notice").html('');
@@ -133,11 +137,13 @@
 	 $("#modal-module-menus-notice").modal();
  }
  function formcheck(){
+ 	{if $_W['isfounder']}
  	{ifp 'system.commission.view'}
 	 if($('#wechatid').isEmpty()){
 		 alert('请选择公众号!');
 		 return false;
 	 }
+	 {/if}
 	 {/if}
 	 if($('#mid').isEmpty()){
 		 alert('请选择会员!');
@@ -150,8 +156,12 @@
 	 return true;
  }
          function search_members() {
+         	{if $_W['isfounder']}
          	{ifp 'system.commission.view'}
          		var wechatid = $('#wechatid').val();
+         	{else}
+         		var wechatid = {$_W['uniacid']};
+         	{/if}
          	{else}
          		var wechatid = {$_W['uniacid']};
          	{/if}
@@ -188,6 +198,7 @@
 	 }
 	 $("#modal-module-menus-notice .close").click();
 	}
+	{if $_W['isfounder']}
 {ifp 'system.commission.view'}
  $(function () {
 		$('#wechatid').select2({
@@ -198,6 +209,7 @@
 	 
 	})
 {/if}	
+{/if}
 </script>
 
 {template 'web/_footer'}

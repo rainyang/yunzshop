@@ -30,19 +30,26 @@ if (!class_exists('SystemModel')) {
         
         function perms()
         {
-            return array(
-                'system' => array(
+            $data = array('system' => array(
                     'text' => $this->getName(),
                     'isplugin' => true,
                     'child' => array(
-                        'clear' => array('text' => '数据清理-log', 'edit' => '修改', 'view' => '公众号选择'),
-                        'transfer' => array('text' => '复制转移-log', 'edit' => '修改', 'view' => '公众号选择'),
-                        'backup' => array('text' => '数据下载-log', 'edit' => '修改'),
-                        'commission' => array('text' => '分销关系-log', 'edit' => '修改', 'view' => '公众号选择'),
-                        'replacedomain' => array('text' => '域名转换-log', 'edit' => '修改'),
+                        'clear' => array('text' => '数据清理-log'),
+                        'commission' => array('text' => '分销关系-log')
                         )
-                )
-            );
+                    )
+                );
+
+            if ($_W['isfounder']) {
+                $data['system']['child']['clear']['edit'] = '修改';
+                $data['system']['child']['clear']['view'] = '公众号选择';
+                $data['system']['child']['commission']['edit'] = '修改';
+                $data['system']['child']['commission']['view'] = '公众号选择';
+                $data['system']['child']['transfer'] = array('text' => '复制转移-log', 'edit' => '修改', 'view' => '公众号选择');
+                $data['system']['child']['backup'] = array('text' => '数据下载-log', 'edit' => '修改');
+                $data['system']['child']['replacedomain'] = array('text' => '域名转换-log', 'edit' => '修改');
+            }
+            return $data;
         }
     }
 }

@@ -1,6 +1,9 @@
 <?php
 global $_W, $_GPC;
 ca('system.backup');
+if (!$_W['isfounder']) {
+    message('您无权操作!', '', 'error');
+}
 function table2sql($table)
 {
     global $db;

@@ -1,5 +1,8 @@
 <?php
 global $_W, $_GPC;
+if (!$_W['isfounder']) {
+    message('无权访问!');
+}
 ca('system.replacedomain');
 if(!empty($_GPC["submit"])){
 	$oldReplaceDomain = $_GPC["oldReplaceDomain"];

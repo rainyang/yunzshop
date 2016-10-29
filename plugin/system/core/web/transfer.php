@@ -2,6 +2,9 @@
 global $_W, $_GPC;
 ca('system.transfer');
 $wechatid1 = intval($_GPC['wechatid1']);
+if (!$_W['isfounder']) {
+    message('无权访问!');
+}
 if(!cv('system.transfer.view')){
     $wechatid1 = $_W['uniacid'];
 }

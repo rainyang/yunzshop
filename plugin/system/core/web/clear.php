@@ -1,11 +1,15 @@
 <?php
 global $_W, $_GPC;
+$wechatid = intval($_GPC['wechatid']);
+if (!$_W['isfounder']) {
+    $wechatid = $_W['uniacid'];
+}
 ca('system.clear');
 if (checksubmit('submit')) {
     $condition = "";
     $acid      = 0;
     $where     = array();
-    $wechatid = intval($_GPC['wechatid']);
+    
     if(!cv('system.transfer.view')){
         $wechatid = $_W['uniacid'];
     }
