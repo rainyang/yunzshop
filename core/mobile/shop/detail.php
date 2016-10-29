@@ -630,6 +630,9 @@ if ($com) {
         }
     }
 }
+if ($pindiana && $_GPC['indiana']) {
+    $_W['shopshare']['link'] .= "&periodnum=".$periodnum."&indiana=1";
+}
 $this->setHeader();
 if(p('hotel')){ //判断是否开启酒店插件
    if($goods['type']=='99'){//判断是否为房间
