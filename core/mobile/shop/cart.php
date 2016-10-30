@@ -28,6 +28,7 @@ if ($_W['isajax']) {
         $totalprice = 0;
         $channel_condtion = '';
         $yunbi_condtion = '';
+        $virtual_currency = '1';
         if (p('channel')) {
             $channel_condtion = 'g.isopenchannel,';
         }
@@ -38,15 +39,14 @@ if ($_W['isajax']) {
         $list       = pdo_fetchall($sql, $params);
         $verify_goods_ischannelpick = '';
         if (p('yunbi')) {
-            $virtual_currency = '1';
+            $yunbi_set = p('yunbi')->getSet();
+            $yunbi_title = empty($yunbi_set['yunbi_title'])?'云币':$yunbi_set['yunbi_title'];
         }
         foreach ($list as &$r) {
             if (!empty($r['optionid'])) {
                 $r['stock'] = $r['optionstock'];
             }
             if (p('yunbi')) {
-                $yunbi_set = p('yunbi')->getSet();
-                $yunbi_title = empty($yunbi_set['yunbi_title'])?'云币':$yunbi_set['yunbi_title'];
                 if (!empty($yunbi_set['isdeduct']) && !empty($r['isforceyunbi']) && $member['virtual_currency'] < $r['yunbi_deduct']) {
                     $virtual_currency = '';
                 }
