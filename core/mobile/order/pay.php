@@ -547,6 +547,9 @@ if ($operation == 'display' && $_W['isajax']) {
         $where_update = "id={$orderid}";
     }
     if ($type == 'cash') {
+        if (!$set['pay']['cash']) {
+            show_json(0, '当前支付方式未开启,请重试!');
+        }
         pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=3 where '.$where_update.' and uniacid=:uniacid ', array(
                     ':uniacid' => $uniacid
                 ));
@@ -594,6 +597,9 @@ if ($operation == 'display' && $_W['isajax']) {
     $ps['fee']   = $log['fee'];
     $ps['title'] = $log['title'];
     if ($type == 'storecash') {
+        if (!$set['pay']['cash']) {
+            show_json(0, '当前支付方式未开启,请重试!');
+        }
         pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=4 where '.$where_update.' and uniacid=:uniacid ', array(
                     ':uniacid' => $_W['uniacid']
                 ));
