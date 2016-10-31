@@ -809,7 +809,8 @@ if ($operation == "display") {
     $total_cache_key = shorturl($_W['uniacid'] . $condition . $statuscondition . $cond);
     $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " o " . " left join " . tablename("sz_yi_order_refund") . " r on r.orderid= o.id WHERE 1 $condition $statuscondition " . $cond,
         $paras);
-
+    $total = $result['total'];
+    $totalmoney = $result['totalmoney'];
     /*if ($_GPC[$total_cache_key]) {
         $result = unserialize(html_entity_decode($_GPC[$total_cache_key]));
         $total = $result['total'];
