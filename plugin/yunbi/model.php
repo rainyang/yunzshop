@@ -19,29 +19,27 @@ if (!class_exists('YunbiModel')) {
 			if (empty($orderid)) {
 				return false;
 			}
-			$order_goods = pdo_fetchall("SELECT g.isyunbi,g.yunbi_consumption,g.yunbi_commission,o.openid,o.price,o.dispatchprice,m.id,m.openid as mid ,g.isdeclaration,g.virtual_declaration,og.declaration_mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
+			$order_goods = pdo_fetchall("SELECT g.isyunbi,g.yunbi_consumption,g.yunbi_commission,o.openid,o.price,o.goodsprice,o.dispatchprice,m.id,m.openid as mid ,g.isdeclaration,g.virtual_declaration,og.declaration_mid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_member') . " m  on o.openid = m.openid left join " . tablename("sz_yi_order_goods") . " og on og.orderid = o.id  left join " . tablename("sz_yi_goods") . " g on g.id = og.goodsid WHERE o.id = :orderid and o.uniacid = :uniacid and m.uniacid = :uniacid",
 				array(':orderid' => $orderid,':uniacid' => $_W['uniacid']
 			));
 			if (empty($order_goods)) {
 				return false;
 			}
-
 			$virtual_currency = 0;
 			$virtual_agent = 0;
 			$declaration = array();
 			foreach($order_goods as $good){
 				if($good['isyunbi'] == 1 && $good['declaration_mid'] != ''){
 					if ($good['yunbi_consumption'] > 0) {
-						$virtual_currency += ($good['price'] - $good['dispatchprice']) * $good['yunbi_consumption'] / 100;
+						$virtual_currency += ($good['goodsprice']) * $good['yunbi_consumption'] / 100;
 					} else {
-						$virtual_currency += ($good['price'] - $good['dispatchprice']) * $set['consumption'] / 100;
+						$virtual_currency += ($good['goodsprice']) * $set['consumption'] / 100;
 					}
 					$is_goods_return = true;
 					if ($good['yunbi_commission'] > 0) {
-						$virtual_agent += ( $good['price'] - $good['dispatchprice'] ) * $good['yunbi_commission'] / 100;
+						$virtual_agent += ( $good['goodsprice'] ) * $good['yunbi_commission'] / 100;
 					}
 				}
-
 				if ($good['isdeclaration'] == '1') {
 					//$virtual_declaration += $good['virtual_declaration'];
 					$declaration[$good['declaration_mid']] += $good['virtual_declaration'];
@@ -230,6 +228,9 @@ if (!class_exists('YunbiModel')) {
 			global $_W, $_GPC;
 			$current_time = time();
 			if ($set['isreturn_or_remove'] == 3) {
+
+				pdo_fetchall("update ".tablename('sz_yi_member')."  set last_money =  '0' where `uniacid` =  " . $uniacid ." ;");
+
 				//小于等于返现比例
 				pdo_fetchall("update ".tablename('sz_yi_member')."  set virtual_currency = virtual_currency + virtual_temporary, last_money =  virtual_temporary ,updatetime = " .$current_time. ", `virtual_temporary` = 0 where `uniacid` =  " . $uniacid ." AND virtual_temporary <= (virtual_temporary_total * " .$set['yunbi_return']. " / 100) AND virtual_temporary > 0;");
 				//大于返现比例
