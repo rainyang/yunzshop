@@ -365,7 +365,7 @@ if ($operation == 'display' && $_W['isajax']) {
                 if (1) {
                     $options['appid'] = 'wxeeba418aa0deeb15';//$_W['account']['key'];
                     $options['secret'] = '351d89bf124e08557bebf5b284b33229';//$_W['account']['secret'];
-                    $params['trade_type'] = 'NATIVE';
+                    $params['trade_type'] = 'APP';
                 } else {
                     $options['appid'] = $_W['account']['key'];
                     $options['secret'] = $_W['account']['secret'];

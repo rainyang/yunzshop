@@ -27,37 +27,95 @@ class Confirm extends YZ
          */
         $json = $this->json;
         $variable = $this->variable;
+        $is_show_dispatch_type_block = $this->_isShowDispatchTypeBlock();
+        $is_show_address_block = $this->_isShowAddressBlock();
 
-        $isverify = $this->_isVerify();
-        $address_block_list = $this->_getAddressBlockTypeId($json[''], $variable);
-        dump($address_block_list);
-        $resutl = $this->json;
-        dump($this->json);
+
+
         return $this->returnSuccess($this->json);
     }
-
-    private function _isVerify()
-    {
+    private function _isShowDispatchTypeBlock(){
         $json = $this->json;
-        if ($json['isverify'] || $json['isvirtual'] || $json['goods']['type'] == 2) {
+        if(!$this->_isVerifySend()){
+            return false;
+        }
+        if($json['carrier_list']['length']>0){
             return true;
         }
         return false;
     }
-
-    private function _getAddressBlockTypeId($variable,$json)
-    {
-        if($variable['show']){
-            if($json['isverifysend']){
-                //<%if carrier_list.length>0%>
-                if($json['carrier_list']['length']>0){
-                    //todo
-                }else{
-
-                }
-
+    private function _isVerifySend(){
+        $json = $this->json;
+        $variable = $this->variable;
+        if($variable['show'] == 1) {
+            if ($json['isverify']) {
+                return true;
             }
         }
+        return false;
+    }
+    private function _isCarrier(){
+        $json = $this->json;
+        return $json['carrier'];
+    }
+    private function _getContactsBlock(){
+        $json = $this->json;
+        $member = $json['member'];
+        if(!$this->_isCarrier()){
+            return false;
+        }
+        $res[] = [
+            'title'=>'提货人姓名',
+            'text'=>$member['realname'],
+        ];
+        $res[] = [
+            'title'=>'提货人手机',
+            'text'=>$member['mobile'],
+        ];
+        return $res;
+    }
+
+
+
+    private function _getAddressBlock(){
+        $json = $this->json;
+
+        if($this->_isVerifySend()){
+            return $this->_getVerifySendAddressBlock();
+        }
+        if($this->_isCarrier()){
+            return $this->_getCarrierAddressBlock();
+        }
+        return false;
+    }
+    private function _getVerifySendAddressBlock()
+    {
+        $json = $this->json;
+        $address = $json['address'];
+        if($json['isverifysend'] && $json['carrier_list']['length']>0){
+            return false;
+        }
+        $res = [
+            'title'=>'收件人',
+            'name'=>$address['realname'],
+            'mobile'=>$address['mobile'],
+            'address'=>$address['address'],
+        ];
+        //false时显示新建
+        return $res;
+    }
+    private function _getCarrierAddressBlock()
+    {
+        $json = $this->json;
+        $carrier = $json['carrier'];
+        $res = [
+            'title'=>'自提地点',
+            'name'=>$carrier['storename'],
+            'mobile'=>$carrier['tel'],
+            'address'=>$carrier['address'],
+        ];
+        //false时显示新建
+        return $res;
     }
 }
 
