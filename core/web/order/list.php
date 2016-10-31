@@ -810,7 +810,7 @@ if ($operation == "display") {
     $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " o " . " left join " . tablename("sz_yi_order_refund") . " r on r.orderid= o.id WHERE 1 $condition $statuscondition " . $cond,
         $paras);
 
-    if ($_GPC[$total_cache_key]) {
+    /*if ($_GPC[$total_cache_key]) {
         $result = unserialize(html_entity_decode($_GPC[$total_cache_key]));
         $total = $result['total'];
         $totalmoney = $result['totalmoney'];
@@ -820,7 +820,7 @@ if ($operation == "display") {
         isetcookie($total_cache_key, serialize($result), 60*30);
         $total = $result['total'];
         $totalmoney = $result['totalmoney'];
-    }
+    }*/
     unset($result);
 
     $condition = " uniacid=:uniacid and deleted=0";
