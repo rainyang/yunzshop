@@ -354,9 +354,19 @@ if (!class_exists('ReturnModel')) {
 			$daytime = strtotime(date("Y-m-d 00:00:00"));
 			$stattime = $daytime - 86400;
 			$endtime = $daytime - 1;
-			$sql = "select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$uniacid} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}  ORDER BY o.finishtime DESC,o.status DESC";
-			$ordermoney = pdo_fetchcolumn($sql);
+			if ($set['isprofit']) {
+				$sql = "select o.id from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$uniacid} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}  ORDER BY o.finishtime DESC,o.status DESC";
+				$dayorder = pdo_fetchall($sql);
+
+				echo "<pre>";print_r($dayorder);exit;
+			} else {
+				$sql = "select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$uniacid} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}  ORDER BY o.finishtime DESC,o.status DESC";
+				$ordermoney = pdo_fetchcolumn($sql);
+			}
+			
+			
 			$ordermoney = floatval($ordermoney);
+			echo "<pre>";print_r($ordermoney);exit;
 			$log_content[] = "昨日成交金额：".$ordermoney."\r\n";
 			$r_ordermoney = $ordermoney * $set['percentage'] / 100;//可返利金额
 			$log_content[] = "可返现金额：".$r_ordermoney."\r\n";
@@ -550,6 +560,7 @@ if (!class_exists('ReturnModel')) {
                             }
                         }
                     }
+                    $isexecute = true;
                     if (($set["isreturn"] || $set["isqueue"]) && $isexecute) {
                         touch($validation);
                         $log_content[] = "当前可以返现\r\n";
