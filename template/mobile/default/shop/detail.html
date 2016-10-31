@@ -484,9 +484,9 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
             <br><span>收藏</span>
         </div>
         <%if shopset.cservice%>
-        {if !is_app()}
+
             <div class="cs" ><i class="fa fa-headphones"></i><br><span>客服</span></div>
-        {/if}
+
             <%if goods.canaddcart%>
             <div class="cart" onclick="location.href='{php echo $this->createMobileUrl('shop/cart')}'"><i class="fa iconfont icon-cart" style="font-size: 18px"></i><br><span>购物车</span>
                 <%if cartcount>0%><b><%cartcount%></b><%/if%>
