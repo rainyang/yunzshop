@@ -11,6 +11,8 @@ class Detail extends YZ
     public function __construct()
     {
         parent::__construct();
+        global $_GPC;
+        $_GPC['id'] = $_GPC['orderid'];
         $result = $this->callPlugin('supplier/detail');
         $this->json = $result['json'];
     }
