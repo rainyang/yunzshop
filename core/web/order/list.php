@@ -53,11 +53,11 @@ $paytype = array(
     ),
     "27" => array(
         "css" => "success",
-        "name" => "微信支付"
+        "name" => "App微信支付"
     ),
     "28" => array(
         "css" => "warning",
-        "name" => "支付宝支付"
+        "name" => "App支付宝支付"
     ),
     "3" => array(
         "css" => "primary",
