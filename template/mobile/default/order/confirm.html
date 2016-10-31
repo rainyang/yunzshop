@@ -206,10 +206,10 @@
             <%if carrier_list.length>0%>
             <div class="nav <%if carrier_list.length>0%>selected<%/if%>" data-nav='1'>上门自提</div>
             <%/if%>
-            <%if isverifysend%>
+            <%if isverifysend && carrier_send%>
             <div class="nav <%if carrier_list.length<=0%>selected<%/if%>"  data-nav='0'>配送核销</div>
             <%/if%>
-            <%if dispatchsend%>
+            <%if dispatchsend && carrier_send%>
             <div class="nav <%if carrier_list.length<=0 && !isverifysend%>selected<%/if%>"  data-nav='2'>快递配送</div>
             <%/if%>
           </div>
@@ -237,6 +237,7 @@
             </div>
           </div>
           <div id='address_container'></div>
+            <%if carrier_send%>
             <div class="addorder_user addorder_user_0" <%if carrier_list.length>0%>style="display:none;"<%/if%> >
                 <input type='hidden' id='carrierindex_send' value='0' />
                 <input type='hidden' id='carrierid_send' value='<%carrier_send.id%>' />
@@ -252,7 +253,7 @@
                 </div>
             </div>
             <div id='address_container'></div>
-
+            <%/if%>
         <%/if%>
            <%if carrier%>
               <div class="addorder_user addorder_user_1" >
@@ -1087,7 +1088,9 @@ var fromcart = 0;
 
             var dispatchid = $("#dispatchid").val();
             var carrierid = $("#carrierid").val();
-            var carrierid_send = $('#carrierid_send').val();
+            var carrierid_send = $('#carrierid_send').val(); 
+            
+            
             var addressid = $("#addressid").val();
             var goods = $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val();
             var carrier_realname = $.trim( $('#carrier_input_realname').val() );
