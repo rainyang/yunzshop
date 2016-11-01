@@ -354,8 +354,24 @@ if (!class_exists('ReturnModel')) {
 			$daytime = strtotime(date("Y-m-d 00:00:00"));
 			$stattime = $daytime - 86400;
 			$endtime = $daytime - 1;
-			$sql = "select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$uniacid} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}  ORDER BY o.finishtime DESC,o.status DESC";
-			$ordermoney = pdo_fetchcolumn($sql);
+			if ($set['isprofit']) {
+				$sql = "select o.id, o.price, g.marketprice, g.costprice, og.total from ".tablename('sz_yi_order')." o 
+				left join ".tablename('sz_yi_order_goods')." og on (o.id = og.orderid) 
+				left join ".tablename('sz_yi_goods')." g on (og.goodsid = g.id) 
+				left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 
+				where 1 and o.status>=3 and o.uniacid={$uniacid} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}  ORDER BY o.finishtime DESC,o.status DESC";
+				$dayorder = pdo_fetchall($sql);
+
+		        foreach ($dayorder as $key => $value) {
+		            $ordermoney += $value['price'] - $value['costprice'] * $value['total'];
+		        }
+
+			} else {
+				$sql = "select sum(o.price) from ".tablename('sz_yi_order')." o left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 where 1 and o.status>=3 and o.uniacid={$uniacid} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}  ORDER BY o.finishtime DESC,o.status DESC";
+				$ordermoney = pdo_fetchcolumn($sql);
+			}
+			
+			
 			$ordermoney = floatval($ordermoney);
 			$log_content[] = "昨日成交金额：".$ordermoney."\r\n";
 			$r_ordermoney = $ordermoney * $set['percentage'] / 100;//可返利金额
