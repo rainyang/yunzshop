@@ -368,11 +368,28 @@ if ($operation == "display") {
             }
         }
     }
-    //是否为供应商 等于1的是
+    $cond = "";
     if (p('supplier')) {
-        $cond = "";
         if ($perm_role == 1) {
             $cond .= " and o.supplier_uid={$_W['uid']} ";
+        }
+    }
+    //查询订单总数以及总金额
+    if ($_W['isajax']) {
+        $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " o " . " left join " . tablename("sz_yi_order_refund") . " r on r.orderid= o.id WHERE 1 $condition $statuscondition " . $cond,
+            $paras);
+        $total = $result['total'];
+        $totalmoney = $result['totalmoney'];
+        $pager = pagination($total, $pindex, $psize);
+        show_json(1, array(
+                'pager' => $pager,
+                'total' => $total,
+                'totalmoney' => floatval($totalmoney)
+            ));
+    }
+    //是否为供应商 等于1的是
+    if (p('supplier')) {
+        if ($cond) {
             $supplierapply = pdo_fetchall('select a.id,u.uid,p.realname,p.mobile,p.banknumber,p.accountname,p.accountbank,a.applysn,a.apply_money,a.apply_time,a.type,a.finish_time,a.status from ' . tablename('sz_yi_supplier_apply') . ' a ' . ' left join' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid ' . 'left join' . tablename('users') . ' u on a.uid=u.uid where u.uid=' . $_W['uid']);
             $totals['status9'] = count($supplierapply);
             $supplier_info = p('supplier')->getSupplierInfo($_W['uid']);
@@ -806,11 +823,11 @@ if ($operation == "display") {
     unset($value);
 
     //todo, 改为ajax获取或写入方式
-    $total_cache_key = shorturl($_W['uniacid'] . $condition . $statuscondition . $cond);
-    $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " o " . " left join " . tablename("sz_yi_order_refund") . " r on r.orderid= o.id WHERE 1 $condition $statuscondition " . $cond,
+    //$total_cache_key = shorturl($_W['uniacid'] . $condition . $statuscondition . $cond);
+    /*$result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " o " . " left join " . tablename("sz_yi_order_refund") . " r on r.orderid= o.id WHERE 1 $condition $statuscondition " . $cond,
         $paras);
     $total = $result['total'];
-    $totalmoney = $result['totalmoney'];
+    $totalmoney = $result['totalmoney'];*/
     /*if ($_GPC[$total_cache_key]) {
         $result = unserialize(html_entity_decode($_GPC[$total_cache_key]));
         $total = $result['total'];
@@ -822,7 +839,7 @@ if ($operation == "display") {
         $total = $result['total'];
         $totalmoney = $result['totalmoney'];
     }*/
-    unset($result);
+    //unset($result);
 
     $condition = " uniacid=:uniacid and deleted=0";
     if (p('hotel') && $type == 'hotel') {
@@ -902,7 +919,7 @@ if ($operation == "display") {
         $totals['status6'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=6',
             $paras);
     }
-    $pager = pagination($total, $pindex, $psize);
+    
     $stores = pdo_fetchall("select id,storename from " . tablename("sz_yi_store") . " where uniacid=:uniacid ", array(
         ":uniacid" => $_W["uniacid"]
     ));
