@@ -88,7 +88,7 @@
             <ul>
                 <%each near_goods as nrow%>
                 <li>
-                    <a href="{php echo $this->createMobileUrl('shop/detail')}$id=<%nrow.id%>">
+                    <a href="{php echo $this->createMobileUrl('shop/detail')}&id=<%nrow.id%>">
                         <div class="img">
                             <img src="<%nrow.thumb%>"/>
                         </div>
