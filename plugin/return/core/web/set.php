@@ -8,7 +8,6 @@
 global $_W, $_GPC;
 ca('return.set');
 $set = $this->getSet();
-
 //print_R($set);exit;
 if (checksubmit('submit')) {
     $data          = is_array($_GPC['setdata']) ? array_merge($set, $_GPC['setdata']) : array();

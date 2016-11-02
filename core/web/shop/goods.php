@@ -612,6 +612,7 @@ if ($operation == "change") {
             if ($pluginreturn) {
                 $data['isreturn'] = intval($_GPC['isreturn']);   //添加全返开关    1:开    0:关
                 $data['isreturnqueue'] = intval($_GPC['isreturnqueue']);   //添加全返排列开关    1:开    0:关
+                $data['return_appoint_amount'] = intval($_GPC['return_appoint_amount']); //全返分红金额
             }
             if ($pluginyunbi) {
                 $data['isyunbi'] = intval($_GPC['isyunbi']);   //返虚拟币开关    1:开    0:关

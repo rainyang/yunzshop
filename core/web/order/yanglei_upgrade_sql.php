@@ -43,6 +43,8 @@ if (!pdo_fieldexists('sz_yi_order_goods', 'declaration_mid')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `declaration_mid` INT NOT NULL AFTER `ischannelpay`;");
 }
 
-
+if (!pdo_fieldexists('sz_yi_goods', 'return_appoint_amount')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `return_appoint_amount` DECIMAL(10,2) NOT NULL COMMENT '全返分红金额' AFTER `plugin`;");
+}
 
 
