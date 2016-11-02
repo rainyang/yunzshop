@@ -141,7 +141,7 @@ function isMobile()
     }
     return false;
 }
-
+//通过两个经纬度信息获取距离
 function getDistance($lat1, $lng1, $lat2, $lng2)
 {
     $earthRadius = 6367000; //approximate radius of earth in meters

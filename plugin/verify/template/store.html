@@ -3,7 +3,7 @@
     {template 'web/shop/dispatch_tabs'}
     <div class="rightlist">
         {if $operation == 'post'}
-        <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
+        <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade_street.js"></script>
         <div class="main">
             <form {ife 'verify.store' $item}action="" method="post"{/if} class="form-horizontal form" enctype="multipart/form-data">
             <input type="hidden" name="id" value="{$item['id']}" />

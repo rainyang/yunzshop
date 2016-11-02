@@ -34,7 +34,7 @@ if ($operation == 'display' && $_W['isajax']) {
 
 
 
-     // echo '<pre>';print_r($store_goods);exit;
+
     if ($store_total) {
         $goods_list = set_medias(pdo_fetchall("SELECT a.storename,c.id,a.lng,a.lat,a.area,a.address,b.goodsid,c.title,c.sales,c.marketprice,c.productprice,c.thumb FROM " .tablename('sz_yi_store'). " a LEFT JOIN " .tablename('sz_yi_store_goods'). " b ON b.storeid=a.id and b.uniacid=a.uniacid"." LEFT JOIN ".tablename('sz_yi_goods'). " c on c.id=b.goodsid and c.uniacid=a.uniacid and c.isverify=2  WHERE a.status=1 and a.uniacid=:uniacid and a.city like :city GROUP BY b.goodsid limit 5", array(':uniacid' => $_W['uniacid'], ':city' => trim($_SESSION['city']))), 'thumb');
     } else {
@@ -43,7 +43,7 @@ if ($operation == 'display' && $_W['isajax']) {
 
 
 
-
+    //查出数据按距离排序
     $distance = array();
     foreach ($goods_list as $key => &$row) {
 

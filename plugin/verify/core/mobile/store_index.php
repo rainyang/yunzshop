@@ -17,7 +17,8 @@ if ($_W['isajax'] || $_W['ispost']) {
         $page = $_GPC['page'];
         $category = array();
         $total = count(pdo_fetchall(" SELECT id,name,thumb FROM " .tablename('sz_yi_store_category'). " WHERE enabled=1 and ishome= 1 and uniacid=:uniacid and parentid=0 ", array(':uniacid' => $_W['uniacid'])));
-        $page_total = ($total/10)+1;
+        $page_total = ceil($total) == $total ? $total/10 : $total/10+1;
+        //查询所有分类并以十个分类为一个单位存入数组 （LBS首页分类滑动）
         for ($i=$page;$i<=$page_total;$i++) {
             $category[$i] = set_medias(pdo_fetchall(" SELECT id,name,thumb FROM " .tablename('sz_yi_store_category'). " WHERE enabled=1 and ishome= 1 and uniacid=:uniacid and parentid=0 limit " . ($i - 1) * 10 . ',' . 10, array(':uniacid' => $_W['uniacid'])), 'thumb');
         }
@@ -46,18 +47,18 @@ if ($_W['isajax'] || $_W['ispost']) {
             $_SESSION['street'] = $_GPC['street'];
         }
         if ($store_total) {
-            $goods_list = set_medias(pdo_fetchall("SELECT a.storename,c.id,a.lng,a.lat,a.area,a.address,b.goodsid,c.title,c.sales,c.marketprice,c.productprice,c.thumb FROM " .tablename('sz_yi_store'). " a LEFT JOIN " .tablename('sz_yi_store_goods'). " b ON b.storeid=a.id and b.uniacid=a.uniacid"." LEFT JOIN ".tablename('sz_yi_goods'). " c on c.id=b.goodsid and c.uniacid=a.uniacid and c.status=1 and c.isverify=2 WHERE a.status=1 and a.uniacid=:uniacid and a.city like :city GROUP BY b.goodsid limit " . ($page - 1) * 10 . ',' . 10, array(':uniacid' => $_W['uniacid'], ':city' => trim($_SESSION['city']))), 'thumb');
+            $goods_list = set_medias(pdo_fetchall("SELECT a.storename,c.id,a.lng,a.lat,a.area,a.address,b.goodsid,c.title,c.sales,c.marketprice,c.productprice,c.thumb FROM " .tablename('sz_yi_store'). " a LEFT JOIN " .tablename('sz_yi_store_goods'). " b ON b.storeid=a.id and b.uniacid=a.uniacid"." LEFT JOIN ".tablename('sz_yi_goods'). " c on c.id=b.goodsid and c.uniacid=a.uniacid and c.status=1 and c.isverify=2 WHERE a.status=1 and a.uniacid=:uniacid and a.city like :city GROUP BY b.goodsid  ", array(':uniacid' => $_W['uniacid'], ':city' => trim($_SESSION['city']))), 'thumb');
         } else {
             $goods_list = set_medias(pdo_fetchall("SELECT a.storename,c.id,a.lng,a.lat,a.area,a.address,c.title,c.sales,c.marketprice,c.productprice,c.thumb FROM " .tablename('sz_yi_goods'). " c right JOIN " .tablename('sz_yi_store')." a on find_in_set(a.id,c.storeids) and a.uniacid=c.uniacid and a.status=1 and a.city like :city WHERE c.isverify=2 and c.uniacid=:uniacid and c.deleted=0 and c.status=1 union all SELECT a.storename,c.id,a.lng,a.lat,a.area,a.address,c.title,c.sales,c.marketprice,c.productprice,c.thumb FROM ".tablename('sz_yi_goods')." c left JOIN " .tablename('sz_yi_store'). " a on a.uniacid=c.uniacid and a.status=1 and a.city like :city WHERE c.isverify=2 and c.uniacid=:uniacid and c.deleted=0 and c.storeids = '' and c.status=1 ", array(':uniacid' => $_W['uniacid'], ':city' => trim($_SESSION['city']))), 'thumb');
         }
 
 
 
-        //echo '<pre>';print_r($goods_list);exit;
 
 
 
 
+        //给数据按距离排序
         $distance = array();
         foreach ($goods_list as $key => &$row) {
 
@@ -83,7 +84,6 @@ if ($_W['isajax'] || $_W['ispost']) {
             }
         }
 
-        //echo '<pre>';print_r($goods_list);exit;
         show_json(1, array('goods' => $goods_list, 'pagesize' => 10));
 
     }

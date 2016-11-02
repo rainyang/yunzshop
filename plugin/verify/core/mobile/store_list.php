@@ -38,13 +38,14 @@ if ($operation == 'display') {
         $condition .= " ORDER by singleprice DESC";
     }
 
-    $goods_list = set_medias(pdo_fetchall("SELECT a.thumb,a.storename,a.id,a.lng,a.lat,a.street,a.address,a.singleprice,b.name FROM " .tablename('sz_yi_store'). " a LEFT JOIN ".tablename('sz_yi_store_category'). " b ON b.id=a.ccate and b.uniacid=a.uniacid WHERE 1 {$condition} limit " . ($page - 1) * 10 . ',' . 10, $params), 'thumb');
-
+    $goods_list = set_medias(pdo_fetchall("SELECT a.thumb,a.storename,a.id,a.lng,a.lat,a.street,a.address,a.singleprice,b.name FROM " .tablename('sz_yi_store'). " a LEFT JOIN ".tablename('sz_yi_store_category'). " b ON b.id=a.ccate and b.uniacid=a.uniacid WHERE 1 {$condition}  ", $params), 'thumb');
+    //门店评论平均数
     $store_comment = pdo_fetchall(" SELECT storeid,avg(level) as level FROM " .tablename('sz_yi_order_comment'). " WHERE uniacid=:uniacid GROUP BY storeid", array( ':uniacid' => $_W['uniacid']));
     $store_level = array();
     foreach ($store_comment as $value) {
         $store_level[$value['storeid']] = $value['level'];
     }
+    //按照距离排序
     $distance = array();
     foreach ($goods_list as $key => &$row) {
 
@@ -62,10 +63,18 @@ if ($operation == 'display') {
             unset($goods_list[$key]);
         }
     }
+
     if (empty($_GPC['displayorder']) || $_GPC['displayorder'] == 'display' || $_GPC['displayorder'] == 'near_me') {
         array_multisort($distance, SORT_ASC, $goods_list);
     }
-    //echo '<pre>';print_r($goods_list);exit;
+    //分页
+    $size = $page*10;
+    $_size = ($page-1)*10;
+    foreach ($goods_list as $k => $value) {
+        if ($k < $_size || $k >= $size) {
+            unset($goods_list[$k]);
+        }
+    }
     show_json(1, array('goods' => $goods_list, 'pagesize' => 10));
 }
 
