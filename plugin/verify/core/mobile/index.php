@@ -4,9 +4,10 @@ $openid = m('user')->getOpenid();
 $id = intval($_GPC['id']);
 
 $store = pdo_fetch("SELECT * FROM ".tablename('sz_yi_store')." WHERE id=:id and uniacid=:uniacid", array(':id' => $id, ':uniacid' => $_W['uniacid']));
+$set = $this->getSet();
  if ($_W['isajax']) {
      $id = $_GPC['id'];
-     $store = set_medias(pdo_fetch("SELECT * FROM ".tablename('sz_yi_store')." WHERE id=:id and uniacid=:uniacid", array(':id' => $id, ':uniacid' => $_W['uniacid'])), 'thumb');
+     $store = pdo_fetch("SELECT * FROM ".tablename('sz_yi_store')." WHERE id=:id and uniacid=:uniacid", array(':id' => $id, ':uniacid' => $_W['uniacid']));
 
      //累计成交金额
      $totalprice = $this->model->getTotalPrice($id);
