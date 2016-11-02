@@ -468,6 +468,7 @@
     $(function () {
         $.ajax({
             url: window.location.href,
+            type: 'post',
             success: function (serverData) {
                 if(serverData){
                     eval("var data=" + serverData + "");

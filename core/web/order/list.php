@@ -375,7 +375,7 @@ if ($operation == "display") {
         }
     }
     //查询订单总数以及总金额
-    if ($_W['isajax']) {
+    if ($_W['ispost']) {
         $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " o " . " left join " . tablename("sz_yi_order_refund") . " r on r.orderid= o.id WHERE 1 $condition $statuscondition " . $cond,
             $paras);
         $total = $result['total'];
