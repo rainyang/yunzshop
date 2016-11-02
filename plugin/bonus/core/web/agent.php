@@ -81,7 +81,7 @@ if ($operation == 'display') {
     }
     
     $list  = pdo_fetchall($sql, $params);
-    $total = pdo_fetchcolumn("select count(dm.id) from" . tablename('sz_yi_member') . " dm  " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.agentid " . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid" . " where dm.uniacid =" . $_W['uniacid'] . " and dm.isagent =1 {$condition}", $params);
+    $total = pdo_fetchcolumn("select count(dm.id) from" . tablename('sz_yi_member') . " dm  " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.agentid " . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid" . " where dm.uniacid =" . $_W['uniacid'] . " and dm.isagent =1 and (dm.bonuslevel!=0 || dm.bonus_area!=0) {$condition}", $params);
     foreach ($list as &$row) {
         $info              = $this->model->getInfo($row['openid'], array(
             'total',
