@@ -14,7 +14,11 @@
 <script src="../addons/sz_yi/template/mobile/default/static/js/star-rating.js" type="text/javascript"></script>
 <script src="../addons/sz_yi/static/js/dist/ajaxfileupload.js" type="text/javascript"></script>
 {/if}
+{if $shopset['is_street'] == 1}
+<script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade_street.js"></script>
+{else}
 <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
+{/if}
 <style type="text/css">
     body {margin:0px; background:#efefef;}
     .addorder_topbar {height:34px; background:#5f6e8b; padding:15px;}
@@ -129,8 +133,10 @@
         
         <div class="line"><select id="sel-provance" onchange="selectCity();" class="select"><option value="" selected="true">所在省份</option></select></div>
         <div class="line"><select id="sel-city" onchange="selectcounty()" class="select"><option value="" selected="true">所在城市</option></select></div>
-        <div class="line"><select id="sel-area" class="select"><option value="" selected="true">所在地区</option></select></div>
-       
+        <div class="line"><select id="sel-area" {if $shopset['is_street'] == 1}onchange="selectstreet()"{/if}class="select"><option value="" selected="true">所在地区</option></select></div>
+        {if $shopset['is_street'] == 1}
+        <div class="line"><select id="sel-street"  class="select"><option value="" selected="true">所在街道</option></select></div>
+        {/if}
         <div class="line"><input type="text" placeholder="详细地址(不包含省份城市区域)"  id="address" value="{if address.address}<%address.address%>{/if}"/></div>
 <!--        <div class="line"><input type="text" placeholder="邮政编码"  id="zipcode" value="{if address.zipcode}<%address.zipcode%>{/if}"/></div>-->
 
@@ -810,6 +816,11 @@ var fromcart = 0;
             }
             $('.address_sub1').html('正在处理...').attr('disabled', true);
             obj.attr('saving', '1');
+            if ($('#sel-street').val()) {
+                var street = $('#sel-street').val();
+            } else {
+                var street = '';
+            }
             core.json('shop/address', {
                 op: 'submit',
                 id: $('#edit_addressid').val(),
@@ -820,6 +831,7 @@ var fromcart = 0;
                     province: $('#sel-provance').val(),
                     city: $('#sel-city').val(),
                     area: $('#sel-area').val(),
+                    street : street
                  //   zipcode: $('#zipcode').val(),
                 }
             }, function(saveaddress_json) {

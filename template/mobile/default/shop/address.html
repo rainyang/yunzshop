@@ -25,7 +25,11 @@
 .address_sub1 {height:44px; margin:14px 10px; background:#ff4f4f; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .address_sub2 {height:44px; margin:14px 10px; background:#ddd; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#666; border:1px solid #d4d4d4;}
 </style>
+{if $shopset['is_street'] == 1}
 <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade_street.js"></script>
+{else}
+<script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
+{/if}
 <div id='container'></div>
 
 <script id='address_list' type='text/html'>
@@ -66,9 +70,10 @@
         
         <div class="line"><select id="sel-provance" onchange="selectCity();" class="select"><option value="" selected="true">所在省份</option></select></div>
         <div class="line"><select id="sel-city" onchange="selectcounty()" class="select"><option value="" selected="true">所在城市</option></select></div>
-        <div class="line"><select id="sel-area" onchange="selectstreet()" class="select"><option value="" selected="true">所在地区</option></select></div>
+        <div class="line"><select id="sel-area" {if $shopset['is_street'] == 1}onchange="selectstreet()"{/if} class="select"><option value="" selected="true">所在地区</option></select></div>
+        {if $shopset['is_street'] == 1}
         <div class="line"><select id="sel-street" class="select"><option value="" selected="true">所在街道</option></select></div>
-        
+        {/if}
         <div class="line"><input type="text" placeholder="详细地址(不包含省份城市)"  id="address" value="{if address.address}<%address.address%>{/if}"/></div>
 <!--        <div class="line"><input type="text" placeholder="邮政编码"  id="zipcode" value="{if address.zipcode}<%address.zipcode%>{/if}"/></div>-->
     </div>

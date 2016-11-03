@@ -170,3 +170,7 @@ if(!pdo_fieldexists('sz_yi_order_comment', 'storeid')) {
 if(!pdo_fieldexists('sz_yi_store', 'supplier_uid')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD    `supplier_uid` int(11) DEFAULT '0';");
 }
+//20161103
+if(!pdo_fieldexists('sz_yi_member_address', 'street')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_address')." ADD    `street` varchar(255) DEFAULT '0';");
+}
