@@ -61,18 +61,24 @@
                         <label class="radio radio-inline">
                               <input type="radio" name="shop[leveltype]" value="0" {if empty($set['shop']['leveltype'])}checked{/if}/> 已完成的订单金额
                         </label>
-                       <label class="radio radio-inline">
+                        <label class="radio radio-inline">
                               <input type="radio" name="shop[leveltype]" value="1" {if $set['shop']['leveltype']==1}checked{/if}/> 已完成的订单数量
                         </label>
+                        <label class="radio radio-inline">
+                              <input type="radio" name="shop[leveltype]" value="2" {if $set['shop']['leveltype']==2}checked{/if}/> 购买指定商品
+                        </label>
+
                         <span class="help-block">默认为完成订单金额</span> 
                         {else}
                         <input type="hidden" name="shop[leveltype]" value="{$set['shop']['leveltype']}" />
                         <div class='form-control-static'>
 							{if empty($set['shop']['leveltype'])}
-							 已完成的订单金额
-							 {else if $set['shop']['leveltype']==1}
-							 已完成的订单数量
-							 {/if}
+							    已完成的订单金额
+							{else if $set['shop']['leveltype']==1}
+							    已完成的订单数量
+                            {else if $set['shop']['leveltype']==2}
+                                购买指定商品
+							{/if}
 						</div>
                         {/if}
                     </div>

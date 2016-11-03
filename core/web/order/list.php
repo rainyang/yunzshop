@@ -1758,7 +1758,7 @@ function order_list_confirmsend1($order)
         }
 
     }
-    m("member")->upgradeLevel($order["openid"]);
+    m("member")->upgradeLevel($order["openid"],$order["id"]);
     m("notice")->sendOrderMessage($order["id"]);
     if (p("commission")) {
         p("commission")->checkOrderFinish($order["id"]);
@@ -1863,7 +1863,7 @@ function order_list_finish($order)
         }
     }
 
-    m("member")->upgradeLevel($order["openid"]);
+    m("member")->upgradeLevel($order["openid"],$order["id"]);
     m("notice")->sendOrderMessage($order["id"]);
     if (p("coupon") && !empty($order["couponid"])) {
         p("coupon")->backConsumeCoupon($order["id"]);
