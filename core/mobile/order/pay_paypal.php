@@ -1,11 +1,15 @@
 <?php
-/**
- * Created by Sublime Text3.
- * User: yitian
- * Date: 16/10/27
- * Time: 上午10:10
- * QQ: 995265288
- */
+/*=============================================================================
+#     FileName: excel.php
+#	Created by: Sublime Text3.  
+#       Author: yitian - http://www.yunzshop.com
+#        Email: livsyitian@163.com
+#     HomePage: http://shop.yunzshop.com
+#      Version: 0.0.1
+#   LastChange: 2016-10-27 21:44:10
+#      History:
+#		  Q Q : 751818588
+=============================================================================*/
 if (!defined('IN_IA')) {
     exit('Access Denied');
 }
@@ -17,9 +21,6 @@ if (empty($openid)) {
     $openid = $_GPC['openid'];
 }
 
-$uniacid = $_W['uniacid'];
-$orderid = intval($_GPC['orderid']);
-
 $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
 	':uniacid' => $_W['uniacid']
 ));
@@ -28,9 +29,12 @@ $set     = unserialize($setdata['sets']);
 $paypal = $set['pay']['paypal'];
 $paypal['paypalstatus'] = $set['pay']['paypalstatus'];
 
+//$member  = m('member')->getMember($openid);
+$uniacid = $_W['uniacid'];
+$orderid = intval($_GPC['orderid']);
 //$logid   = intval($_GPC['logid']);
 //$shopset = m('common')->getSysset('shop');
-//$member  = m('member')->getMember($openid);
+
 if (!empty($orderid) && $operation = 'display') {
 	
     $order = pdo_fetch("select * from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
@@ -46,23 +50,11 @@ if (!empty($orderid) && $operation = 'display') {
         ':module' => 'sz_yi',
         ':tid' => $order['ordersn_general']
     ));
+    //echo "<pre>"; print_r($log);exit;
     if (!empty($log) && $log['status'] != '0') {
         show_json(0, '订单已支付, 无需重复支付!');
     }
-	//echo "<pre>"; print_r($log);exit;
-/*	load()->func('communication');
-	load()->model('payment');
-*/
-
-
-
-	//echo "<pre>"; print_r($paypal);exit;
-
-/*	$setting = uni_setting($_W['uniacid'], array('payment'));
-	if (is_array($setting['payment'])) {
-		$options = $setting['payment']['paypal'];
-	}*/
-
+	
 	if (empty($paypal['currencies'])) {
 		$paypal['currencies'] = 1;
 	}
@@ -82,29 +74,18 @@ if (!empty($orderid) && $operation = 'display') {
 
 	$cancelURL =urlencode($_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&p=pay&do=order&m=sz_yi&orderid={$orderid}&openid=" . $openid);
 	$nvpstr="&Amt=".$paymentAmount."&PAYMENTACTION=".$paymentType."&ReturnUrl=".$returnURL."&CANCELURL=".$cancelURL ."&CURRENCYCODE=".$currencyCodeType;
-	
+	//echo "<pre>"; print_r($nvpstr);exit;
 	$resArray=hash_call("SetExpressCheckout",$nvpstr,$paypal);
-	//echo "<pre>"; print_r(789);exit;
+	//echo "<pre>"; print_r($paypal);exit;
 	$token = urldecode($resArray["TOKEN"]);
 	$payPalURL .= $token;
-	//echo "<pre>"; print_r($paypal);exit;
+	//echo "<pre>"; print_r($payPalURL);exit;
 	die("<script>window.location.href='".$payPalURL."';</script>");
 }else if ($operation == 'returnpaypal') {
 	$tid = $_REQUEST['invoice'];
 	$token =urlencode($_REQUEST['token']);
 	$nvpstr="&TOKEN=".$token;
-	
-/*	load()->func('communication');
-	load()->model('payment');*/
-	//$setting = uni_setting($_W['uniacid'], array('payment'));
 
-/*	if (is_array($setting['payment'])) {
-		$options = $setting['payment']['paypal'];
-	}*/
-/*	if (empty($paypal['currencies'])) {
-		$paypal['currencies'] = 1;
-	}*/
-	
     $resArray=hash_call("GetExpressCheckoutDetails",$nvpstr,$paypal);
 	$ack = strtoupper($resArray["ACK"]);
 	if($ack=="SUCCESS"){
@@ -144,8 +125,8 @@ if (!empty($orderid) && $operation = 'display') {
 				$ret['uniacid'] = $log['uniacid'];
 				$this->payResult($ret);
 			}
-/*			$orderid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid', array(
-				':ordersn_general' => $log['tid'],
+			/*$orderid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid', array(
+				':ordersn' => $log['tid'],
 				':uniacid' => $_W['uniacid']
 			));*/
 			$url     = $this->createMobileUrl('order/list', array(
