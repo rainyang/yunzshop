@@ -73,7 +73,7 @@ if ($operation == 'display') {
         if((!empty($userroleid)) && ($userroleid == $suproleid)){
             $sql = 'SELECT g.*,cs.stock_total,cs.optionid,cs.id as stockid FROM ' . tablename('sz_yi_channel_stock') . ' cs left join ' . tablename('sz_yi_goods') . ' g on g.id = cs.goodsid' . $condition . ' and g.supplier_uid='.$_W['uid'].' ORDER BY g.`status` DESC, g.`displayorder` DESC,
                     `id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
-            $sqls = 'SELECT COUNT(g.*) FROM ' . tablename('sz_yi_channel_stock') . ' cs left join ' . tablename('sz_yi_goods') . ' g on g.id = cs.goodsid' . $condition . ' and g.supplier_uid='.$_W['uid'];
+            $sqls = 'SELECT COUNT(1) FROM ' . tablename('sz_yi_channel_stock') . ' cs left join ' . tablename('sz_yi_goods') . ' g on g.id = cs.goodsid' . $condition . ' and g.supplier_uid='.$_W['uid'];
             $total = pdo_fetchcolumn($sqls, $params);
         }
         else{
@@ -83,7 +83,7 @@ if ($operation == 'display') {
         }
     }else{
         $sql = 'SELECT g.*,cs.stock_total,cs.optionid,cs.id as stockid FROM ' . tablename('sz_yi_channel_stock') . ' cs left join ' . tablename('sz_yi_goods') . ' g on g.id = cs.goodsid' . $condition . ' ORDER BY cs.`id` DESC LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;
-        $sqls = 'SELECT COUNT(g.*) FROM ' . tablename('sz_yi_channel_stock') . ' cs left join ' . tablename('sz_yi_goods') . ' g on g.id = cs.goodsid' . $condition;
+        $sqls = 'SELECT COUNT(1) FROM ' . tablename('sz_yi_channel_stock') . ' cs left join ' . tablename('sz_yi_goods') . ' g on g.id = cs.goodsid' . $condition;
         $total = pdo_fetchcolumn($sqls, $params);
     }
     $list  = pdo_fetchall($sql, $params);
