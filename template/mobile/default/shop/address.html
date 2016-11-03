@@ -25,7 +25,7 @@
 .address_sub1 {height:44px; margin:14px 10px; background:#ff4f4f; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .address_sub2 {height:44px; margin:14px 10px; background:#ddd; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#666; border:1px solid #d4d4d4;}
 </style>
-<script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
+<script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade_street.js"></script>
 <div id='container'></div>
 
 <script id='address_list' type='text/html'>
@@ -65,8 +65,9 @@
         <div class="line"><input type="text" placeholder="联系电话"  id="mobile" value="{if address.mobile}<%address.mobile%>{/if}"/></div>
         
         <div class="line"><select id="sel-provance" onchange="selectCity();" class="select"><option value="" selected="true">所在省份</option></select></div>
-         <div class="line"><select id="sel-city" onchange="selectcounty()" class="select"><option value="" selected="true">所在城市</option></select></div>
-         <div class="line"><select id="sel-area" class="select"><option value="" selected="true">所在地区</option></select></div>
+        <div class="line"><select id="sel-city" onchange="selectcounty()" class="select"><option value="" selected="true">所在城市</option></select></div>
+        <div class="line"><select id="sel-area" onchange="selectstreet()" class="select"><option value="" selected="true">所在地区</option></select></div>
+        <div class="line"><select id="sel-street" class="select"><option value="" selected="true">所在街道</option></select></div>
         
         <div class="line"><input type="text" placeholder="详细地址(不包含省份城市)"  id="address" value="{if address.address}<%address.address%>{/if}"/></div>
 <!--        <div class="line"><input type="text" placeholder="邮政编码"  id="zipcode" value="{if address.zipcode}<%address.zipcode%>{/if}"/></div>-->
@@ -113,6 +114,13 @@
                 } 
                
                 $('.address_sub1').html('正在处理...').attr('saving',1);
+                if ($('#sel-street').val()) {
+                    var street = $('#sel-street').val();
+                } else {
+                    var street = '';
+                }
+
+
                 core.json('shop/address',{
                     op:'submit',
                     id:$('#addressid').val(),
@@ -122,7 +130,8 @@
                         address: $('#address').val(),
                         province: $('#sel-provance').val(),
                         city: $('#sel-city').val(),
-                        area: $('#sel-area').val()
+                        area: $('#sel-area').val(),
+                        street: street
                                 //,zipcode: $('#zipcode').val()
                     }
                  },function(json){
