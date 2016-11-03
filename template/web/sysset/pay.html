@@ -111,6 +111,127 @@
                     </div>
                 </div>
 
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">借用微信支付</label>
+                <div class="col-sm-9 col-xs-12">
+                    {ifp 'sysset.save.pay'}
+                    <label class='radio-inline'><input type='radio' name='pay[weixin_jie]' value='1' {if $set['pay']['weixin_jie']==1}checked{/if}/> 开启</label>
+                    <label class='radio-inline'><input type='radio' name='pay[weixin_jie]' value='0' {if $set['pay']['weixin_jie']==0}checked{/if} /> 关闭</label>
+                    {else}
+                    <input type="hidden" name="pay[weixin_jie]" value="{$set['pay']['weixin_jie']}" />
+                    <div class='form-control-static'> {if $set['pay']['weixin_jie']==1}开启{else}关闭{/if}</div>
+                    {/if}
+                </div>
+            </div>
+            <div id='jie' {if empty($set['pay']['weixin_jie'])}style="display:none"{/if}>
+                <div class="form-group" >
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label must">公众号(AppId)</label>
+                    <div class="col-sm-9">
+                        {ifp 'sysset.pay.edit'}
+                        <input type="text" name="pay[weixin_jie_appid]" class="form-control" value="{$set['pay']['weixin_jie_appid']}"/>
+                        {else}
+                        <div class='form-control-static'>{$set['pay']['weixin_jie_appid']}</div>
+                        {/if}
+                    </div>
+                </div>
+
+                <div class="form-group" >
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label must">微信支付商户号(Mch_Id)</label>
+                    <div class="col-sm-9">
+                        {ifp 'sysset.pay.edit'}
+                        <input type="text" name="pay[weixin_jie_mchid]" class="form-control" value="{$set['pay']['weixin_jie_mchid']}"/>
+                        {else}
+                        <div class='form-control-static'>{$set['pay']['weixin_jie_mchid']}</div>
+                        {/if}
+                    </div>
+                </div>
+
+            <div class="form-group" >
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label must">微信支付密钥(APIKEY)</label>
+                <div class="col-sm-9">
+                    {ifp 'sysset.pay.edit'}
+                    <input type="text" name="pay[weixin_jie_apikey]" class="form-control" value="{$set['pay']['weixin_jie_apikey']}"/>
+                    {else}
+                    <div class='form-control-static'>{$set['pay']['weixin_jie_apikey']}</div>
+                    {/if}
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-2 control-label">CERT证书文件</label>
+                <div class="col-sm-9 col-xs-12">
+                    <input type="hidden" name="pay[weixin_jie_cert]" value="{$data['weixin_jie_cert']}"/>
+                    {ifp 'sysset.pay.edit'}
+
+                    <input type="file" name="weixin_jie_cert_file" class="form-control" />
+                                <span class="help-block">
+                                    {if !empty($sec['jie']['cert'])}
+                                    <span class='label label-success'>已上传</span>
+                                    {else}
+                                    <span class='label label-danger'>未上传</span>
+                                    {/if}
+                                    下载证书 cert.zip 中的 apiclient_cert.pem 文件</span>
+                    {else}
+                    {if !empty($sec['cert'])}
+                    <span class='label label-success'>已上传</span>
+                    {else}
+                    <span class='label label-danger'>未上传</span>
+                    {/if}
+                    {/if}
+
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">KEY密钥文件</label>
+                <div class="col-sm-9 col-xs-12">
+                    <input type="hidden" name="pay[weixin_jie_key]"  value="{$data['weixin_jie_key']}"/>
+                    {ifp 'sysset.pay.edit'}
+
+                    <input type="file" name="weixin_jie_key_file" class="form-control" />
+                                <span class="help-block">
+                                   {if !empty($sec['jie']['key'])}
+                                    <span class='label label-success'>已上传</span>
+                                    {else}
+                                    <span class='label label-danger'>未上传</span>
+                                    {/if}
+                                    下载证书 cert.zip 中的 apiclient_key.pem 文件
+                                </span>
+                    {else}
+                    {if !empty($sec['key'])}
+                    <span class='label label-success'>已上传</span>
+                    {else}
+                    <span class='label label-danger'>未上传</span>
+                    {/if}
+                    {/if}
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-2 control-label">ROOT文件</label>
+                <div class="col-sm-9 col-xs-12">
+                    <input type="hidden" name="pay[weixin_jie_root]" value="{$data['weixin_jie_root']}"/>
+                    {ifp 'sysset.pay.edit'}
+
+                    <input type="file" name="weixin_jie_root_file" class="form-control" />
+                                <span class="help-block">
+                                  {if !empty($sec['jie']['root'])}
+                                    <span class='label label-success'>已上传</span>
+                                    {else}
+                                    <span class='label label-danger'>未上传</span>
+                                    {/if}
+                                    下载证书 cert.zip 中的 rootca.pem 文件
+                                </span>
+                    {else}
+                    {if !empty($sec['jie']['root'])}
+                    <span class='label label-success'>已上传</span>
+                    {else}
+                    <span class='label label-danger'>未上传</span>
+                    {/if}
+                    {/if}
+                </div>
+            </div>
+        </div>
+
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">支付宝支付</label>
                     <div class="col-sm-9 col-xs-12">
@@ -257,6 +378,15 @@
                         }
                         else {
                             $("#certs").hide();
+                        }
+                    })
+
+                    $(":radio[name='pay[weixin_jie]']").click(function () {
+                        if ($(this).val() == 1) {
+                            $("#jie").show();
+                        }
+                        else {
+                            $("#jie").hide();
                         }
                     })
 
