@@ -107,7 +107,7 @@ footer#footer-nav {
 .good_choose .info .right .stock {color:#999;font-size:12px; line-height:20px; ;height:20px; }
 .good_choose .info .right .option {color:#999;font-size:12px; line-height:20px; ;height:20px;overflow: hidden; }
 
-.list-bor{border-bottom:1px #DCDCDC dotted;min-height: 40px;overflow: hidden;position:relative;padding-left:75px}
+.list-bor{/*border-bottom:1px #DCDCDC dotted;*/min-height: 40px;overflow: hidden;position:relative;padding-left:75px}
 
 .good_choose .other { position:relative; height:auto;margin-bottom:50px;padding-left:0;width:99%;/*overflow-y:scroll;overflow-x:hidden; */ margin-top:-15px;  font-size:14px; color:#999;}
 .good_choose .other .spec { width:65px;padding:0;float:left;position: absolute;;left: 10px;top: 0;line-height: 40px;color: #565656}
@@ -115,7 +115,7 @@ footer#footer-nav {
 .good_choose .other .option { float:left; padding:0 5px; background:#fff; border:1px solid #c3c3c3;min-width: 10px;text-align: center;
  border-radius:2px; margin-right:4px;margin-bottom:4px; font-size:12px; color: #999;height: 30px;line-height: 28px;}
 .good_choose .other .on {background:#ff6801; border:1px solid #ff6801; color:#fff}
-.good_choose .other .number { float:left; width:100%;padding-top:10px;/*height:36px*/}
+.good_choose .other .number { float:left; width:100%;padding:10px 0;/*height:36px*/}
 .good_choose .other .number .label { float:left;width:75px;/*padding-top:5px;*/}
 .good_choose .other .number .num { border:1px solid #dedede;width:140px;height:34px;float:left;margin-right:10px;}
 .good_choose .other .number .num button { width:35px; height:32px; border:none; color:#333; float:left; background: #eee;-webkit-appearance: none;  }

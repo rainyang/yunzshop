@@ -152,6 +152,7 @@ if (checksubmit()) {
         $set['shop']['pcdesc']     = trim($custom['pcdesc']);
         $set['shop']['pccopyright'] =  $pccopyright;
         $set['shop']['pccopyright']  = trim($custom['pccopyright']);
+        $set['shop']['pcadv']  = !empty($custom['pcadv']) ? trim($custom['pcadv']) : '';
         $set['shop']['footercontent']  = trim(htmlspecialchars_decode($custom['footercontent']));
         $set['shop']['index']      = $custom['index'];
         $set['shop']['pclogo']     = save_media($custom['pclogo']);
