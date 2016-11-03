@@ -122,7 +122,7 @@ if ($operation == "display") {
     $status = $_GPC["status"] == "" ? 1 : $_GPC["status"];
     $sendtype = !isset($_GPC["sendtype"]) ? 0 : $_GPC["sendtype"];
     $condition = " AND o.uniacid = :uniacid and o.deleted=0";
-
+    $join_table = "";
     $paras = array(
         ":uniacid" => $_W["uniacid"]
     );
@@ -254,6 +254,7 @@ if ($operation == "display") {
     if (!empty($_GPC["saler"])) {
         $_GPC["saler"] = trim($_GPC["saler"]);
         $condition .= " AND (sm.realname LIKE '%{$_GPC["saler"]}%' or sm.mobile LIKE '%{$_GPC["saler"]}%' or sm.nickname LIKE '%{$_GPC["saler"]}%' " . " or s.salername LIKE '%{$_GPC["saler"]}%' )";
+        $join_table .= " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid ";
     }
     if (!empty($_GPC["storeid"])) {
         $_GPC["storeid"] = trim($_GPC["storeid"]);
@@ -376,8 +377,8 @@ if ($operation == "display") {
     }
     //查询订单总数以及总金额
     if ($_W['ispost']) {
-        $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " o " . " left join " . tablename("sz_yi_order_refund") . " r on r.orderid= o.id WHERE 1 $condition $statuscondition " . $cond,
-            $paras);
+        $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " AS o 
+            LEFT JOIN " . tablename("sz_yi_order_refund") . " r ON r.id =o.refundid {$join_table} WHERE 1 {$condition} {$statuscondition} {$cond}", $paras);
         $total = $result['total'];
         $totalmoney = $result['totalmoney'];
         $pager = pagination($total, $pindex, $psize);
@@ -445,8 +446,7 @@ if ($operation == "display") {
 
     $sql = 'SELECT count(1) AS suppliers_num, o.*, r.rtype 
             FROM ' . tablename("sz_yi_order") . " AS o 
-            LEFT JOIN " . tablename("sz_yi_order_refund") . " r ON r.id =o.refundid 
-            WHERE 1 {$condition} {$statuscondition} {$cond} GROUP BY o.ordersn_general ORDER BY o.createtime DESC,o.status DESC
+            LEFT JOIN " . tablename("sz_yi_order_refund") . " r ON r.id =o.refundid {$join_table} WHERE 1 {$condition} {$statuscondition} {$cond} GROUP BY o.ordersn_general ORDER BY o.createtime DESC,o.status DESC
             LIMIT " . ($pindex - 1) * $psize . "," . $psize;
     //echo $sql;exit;
     $list = pdo_fetchall($sql, $paras);
