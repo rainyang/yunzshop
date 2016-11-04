@@ -17,10 +17,10 @@ if ($_W['isajax'] || $_W['ispost']) {
         $page = $_GPC['page'];
         $category = array();
         $total = count(pdo_fetchall(" SELECT id,name,thumb FROM " .tablename('sz_yi_store_category'). " WHERE enabled=1 and ishome= 1 and uniacid=:uniacid and parentid=0 ", array(':uniacid' => $_W['uniacid'])));
-        $page_total = ceil($total) == $total ? $total/10 : $total/10+1;
+        $page_total = is_float($total/10)  ? $total/10+1 : $total/10;
         //查询所有分类并以十个分类为一个单位存入数组 （LBS首页分类滑动）
         for ($i=$page;$i<=$page_total;$i++) {
-            $category[$i] = set_medias(pdo_fetchall(" SELECT id,name,thumb FROM " .tablename('sz_yi_store_category'). " WHERE enabled=1 and ishome= 1 and uniacid=:uniacid and parentid=0 limit " . ($i - 1) * 10 . ',' . 10, array(':uniacid' => $_W['uniacid'])), 'thumb');
+            $category[$i] = set_medias(pdo_fetchall(" SELECT id,name,thumb FROM " .tablename('sz_yi_store_category'). " WHERE enabled=1 and ishome= 1 and uniacid=:uniacid and parentid=0 order by displayorder limit " . ($i - 1) * 10 . ',' . 10, array(':uniacid' => $_W['uniacid'])), 'thumb');
         }
 
         $set = $this->getSet();
