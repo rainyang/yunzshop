@@ -277,7 +277,7 @@
 
            if(result.wechat.success){
                 $('.order_sub1').click(function(){  
-                if (wechat.weixin) { 
+                if (result.wechat.weixin) { 
                         if($(this).attr('submitting')=='1'){
                            return;
                         }
@@ -360,8 +360,8 @@
                           },true,true); 
                 }
 
-                if (wechat.weixin_jie || wechat.jie == 1) {
-                    payWechatJie(wechat);
+                if (result.wechat.weixin_jie || result.wechat.jie == 1) {
+                    payWechatJie();
                 }
                  });
              }
@@ -383,17 +383,30 @@
                            })
               });
         function payWechatJie(){
+            if($(this).attr('submitting')=='1'){
+               return;
+            }
+             $('.button').attr('submitting',1);
+             var deduct = ($('#deductmoney').length>0 &&$('#deductmoney').attr('on')=='1' )?1:0 ;
+             core.json('order/pay', {op: 'pay',type: 'weixin', orderid:'{$_GPC['orderid']}',deduct:deduct, jie:1}, function (rjson) {
+                if(rjson.status!=1){
+                    $('.button').removeAttr('submitting');
+                    core.tip.show(rjson.result);
+                    return;
+                }
+                
+                var wechat = rjson.result.wechat;
             var img = "http://paysdk.weixin.qq.com/example/qrcode.php?data=" + wechat.code_url;
-            $("#qrmoney").text(modal.params.money);
+            $("#qrmoney").text({$order['price']});
             $(".order-weixinpay-hidden").show();
             $("#btnWeixinJieCancel").unbind("click").click(function() {
-                btn.removeAttr("stop");
+                //btn.removeAttr("stop");
                 clearInterval(settime);
                 $(".order-weixinpay-hidden").hide();
             });
             var settime = setInterval(function() {
                 $.getJSON(core.getUrl("order/pay/orderstatus"), {
-                    id: modal.params.orderid
+                    id: {$_GPC['orderid']}
                 }, function(data) {
                     if (data.result.status >= 1) {
                         clearInterval(settime);
@@ -416,10 +429,11 @@
             }, 1e3);
             $(".verify-pop").find(".close").unbind("click").click(function() {
                 $(".order-weixinpay-hidden").hide();
-                btn.removeAttr("stop");
+                //btn.removeAttr("stop");
                 clearInterval(settime);
             });
             $(".verify-pop").find(".qrimg").attr("src", img).show();
+         },true,true);
         }
         
     },true)

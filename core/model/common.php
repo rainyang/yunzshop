@@ -427,8 +427,8 @@ class Sz_DYi_Common
         global $_W;
         load()->func('communication');
         $package = array();
-        $package['appid'] = $wechat['weixin_jie_appid'];
-        $package['mch_id'] = $wechat['weixin_jie_mchid'];
+        $package['appid'] = $wechat['appid'];
+        $package['mch_id'] = $wechat['mchid'];
         $package['nonce_str'] = random(8) . '';
         $package['body'] = $params['title'];
         $package['device_info'] = (isset($params['device_info']) ? 'sz_yi:' . $params['device_info'] : 'sz_yi');
@@ -437,7 +437,6 @@ class Sz_DYi_Common
         $package['total_fee'] = $params['fee'] * 100;
         $package['spbill_create_ip'] = CLIENT_IP;
         $package['product_id'] = $params['goods_id'];
-
         if (!empty($params['goods_tag'])) {
             $package['goods_tag'] = $params['goods_tag'];
         }
@@ -446,10 +445,11 @@ class Sz_DYi_Common
         $package['time_start'] = date('YmdHis', TIMESTAMP);
         $package['time_expire'] = date('YmdHis', TIMESTAMP + 3600);
         $package['notify_url'] = (empty($params['notify_url']) ? $_W['siteroot'] . 'addons/sz_yi/payment/wechat/notify.php' : $params['notify_url']);
+        //print_r($params);
         $package['trade_type'] = 'NATIVE';
         ksort($package, SORT_STRING);
         $string1 = '';
-
+        //print_r($wechat);
         foreach ($package as $key => $v ) {
             if (empty($v)) {
                 continue;
@@ -459,7 +459,7 @@ class Sz_DYi_Common
             $string1 .= $key . '=' . $v . '&';
         }
 
-        $string1 .= 'key=' . $wechat['weixin_jie_apikey'];
+        $string1 .= 'key=' . $wechat['apikey'];
         $package['sign'] = strtoupper(md5($string1));
         $dat = array2xml($package);
         $response = ihttp_request('https://api.mch.weixin.qq.com/pay/unifiedorder', $dat);
