@@ -43,4 +43,8 @@ class VerifyWeb extends Plugin
     {
         $this->_exec_plugin(__FUNCTION__);
     }
+    public function category()
+    {
+        $this->_exec_plugin(__FUNCTION__);
+    }
 }

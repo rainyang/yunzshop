@@ -31,12 +31,15 @@ if(!pdo_fieldexists('sz_yi_goods', 'balance_with_store')) {
 if(!pdo_fieldexists('sz_yi_goods', 'dispatchsend')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD    `dispatchsend` tinyint(1) DEFAULT '0';");
 }
-if(!pdo_fieldexists('sz_yi_chooseagent', 'isstore')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_chooseagent')." ADD    `isstore` tinyint(1) DEFAULT '0';");
+if (pdo_tableexists('sz_yi_chooseagent')) {
+    if(!pdo_fieldexists('sz_yi_chooseagent', 'isstore')) {
+        pdo_fetchall("ALTER TABLE ".tablename('sz_yi_chooseagent')." ADD    `isstore` tinyint(1) DEFAULT '0';");
+    }
+    if(!pdo_fieldexists('sz_yi_chooseagent', 'storeid')) {
+        pdo_fetchall("ALTER TABLE ".tablename('sz_yi_chooseagent')." ADD    `storeid` int(11) DEFAULT '0';");
+    }
 }
-if(!pdo_fieldexists('sz_yi_chooseagent', 'storeid')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_chooseagent')." ADD    `storeid` int(11) DEFAULT '0';");
-}
+
 
 $sql = "
 CREATE TABLE IF NOT EXISTS " . tablename('sz_yi_store_goods') . " (
@@ -162,4 +165,12 @@ if(!pdo_fieldexists('sz_yi_store', 'thumb')) {
 //20161024
 if(!pdo_fieldexists('sz_yi_order_comment', 'storeid')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_comment')." ADD    `storeid` int(11) DEFAULT '0';");
+}
+//20161031
+if(!pdo_fieldexists('sz_yi_store', 'supplier_uid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_store')." ADD    `supplier_uid` int(11) DEFAULT '0';");
+}
+//20161103
+if(!pdo_fieldexists('sz_yi_member_address', 'street')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_address')." ADD    `street` varchar(255) DEFAULT '0';");
 }

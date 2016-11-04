@@ -614,13 +614,13 @@ if ($_W['isajax']) {
                 $stores_send = $order_all[$val['supplier_uid']]['stores_send'];
             }
 
-            $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
+            $address      = pdo_fetch('select id,realname,mobile,address,province,city,area,street from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
 
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
             ));
         } else {
-            $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' WHERE openid=:openid AND deleted=0 AND isdefault=1  AND uniacid=:uniacid limit 1', array(
+            $address      = pdo_fetch('select id,realname,mobile,address,province,city,area,street from ' . tablename('sz_yi_member_address') . ' WHERE openid=:openid AND deleted=0 AND isdefault=1  AND uniacid=:uniacid limit 1', array(
                 ':uniacid' => $uniacid,
                 ':openid' => $openid
             ));
@@ -987,7 +987,7 @@ if ($_W['isajax']) {
         $cartids = $_GPC['cartids'] ? $_GPC['cartids'] : 0;
         $storeid = intval($_GPC['carrierid']);
         $addressid           = intval($_GPC["addressid"]);
-        $address     = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' WHERE  id=:id AND openid=:openid AND uniacid=:uniacid limit 1', array(
+        $address     = pdo_fetch('select id,realname,mobile,address,province,city,area,street from ' . tablename('sz_yi_member_address') . ' WHERE  id=:id AND openid=:openid AND uniacid=:uniacid limit 1', array(
             ':uniacid' => $uniacid,
             ':openid' => $openid,
             ':id' => $addressid
@@ -1401,7 +1401,7 @@ if ($_W['isajax']) {
             $addressid    = intval($order_row['addressid']);
             $address      = false;
             if (!empty($addressid) && $dispatchtype == 0) {
-                $address = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where id=:id and openid=:openid and uniacid=:uniacid   limit 1', array(
+                $address = pdo_fetch('select id,realname,mobile,address,province,city,area,street from ' . tablename('sz_yi_member_address') . ' where id=:id and openid=:openid and uniacid=:uniacid   limit 1', array(
 
                     ':uniacid' => $uniacid,
                     ':openid' => $openid,
