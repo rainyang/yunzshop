@@ -19,7 +19,7 @@ if (!class_exists('CashierModel')) {
                 'status' => $params['result'] == 'success' ? 1 : 0
             );
             $ordersn = $params['tid'];
-            $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where  pay_ordersn=:ordersn and uniacid=:uniacid limit 1', array(
+            $order   = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where  (ordersn=:ordersn or pay_ordersn=:ordersn or ordersn_general=:ordersn) and uniacid=:uniacid limit 1', array(
                 ':uniacid' => $_W['uniacid'],
                 ':ordersn' => $ordersn
             ));
@@ -48,7 +48,7 @@ if (!class_exists('CashierModel')) {
 
             $orderid = $order['id'];
             if ($params['from'] == 'return') {
-                if ($order['status'] == 0 || $order['status'] == 1) {                
+                if ($order['status'] == 0 || $order['status'] == 1) {
                     pdo_update('sz_yi_order', array(
                         'status' => 3,
                         'paytime' => time(),
