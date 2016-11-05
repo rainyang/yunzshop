@@ -29,7 +29,7 @@ if ($operation == 'display' && $_W['isajax']) {
     if ($store_total) {
         $store_goods = set_medias(pdo_fetchall(" SELECT b.id,b.title,b.marketprice,b.productprice,b.thumb,b.sales FROM " .tablename('sz_yi_goods'). " b LEFT JOIN " .tablename('sz_yi_store_goods'). " a on b.id=a.goodsid and b.uniacid=a.uniacid WHERE b.isverify=2 and a.storeid=:id and a.uniacid=:uniacid GROUP BY a.goodsid ORDER BY b.sales DESC LIMIT 3 ", array(':id' => $id, ':uniacid' => $_W['uniacid'])), 'thumb');
     } else {
-        $store_goods = set_medias(pdo_fetchall(" SELECT id,title,marketprice,productprice,thumb,sales FROM " .tablename('sz_yi_goods'). " WHERE :id in (storeids) and uniacid=:uniacid and deleted=0 and status=1 and isverify=2 union all SELECT id,title,marketprice,productprice,thumb,sales FROM " .tablename('sz_yi_goods'). " WHERE storeids=0 and uniacid=:uniacid and deleted=0 and status=1 ORDER BY sales DESC LIMIT 3 ", array(':id' => $id, ':uniacid' => $_W['uniacid'])), 'thumb');
+        $store_goods = set_medias(pdo_fetchall(" SELECT id,title,marketprice,productprice,thumb,sales FROM " .tablename('sz_yi_goods'). " WHERE :id in (storeids) and uniacid=:uniacid and deleted=0 and status=1 and isverify=2 union all SELECT id,title,marketprice,productprice,thumb,sales FROM " .tablename('sz_yi_goods'). " WHERE storeids='' and uniacid=:uniacid and deleted=0 and status=1 and isverify=2 ORDER BY sales DESC LIMIT 3 ", array(':id' => $id, ':uniacid' => $_W['uniacid'])), 'thumb');
     }
 
 
