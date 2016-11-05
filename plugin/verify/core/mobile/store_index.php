@@ -52,12 +52,6 @@ if ($_W['isajax'] || $_W['ispost']) {
             $goods_list = set_medias(pdo_fetchall("SELECT a.storename,c.id,a.lng,a.lat,a.area,a.address,c.title,c.sales,c.marketprice,c.productprice,c.thumb FROM " .tablename('sz_yi_goods'). " c right JOIN " .tablename('sz_yi_store')." a on find_in_set(a.id,c.storeids) and a.uniacid=c.uniacid and a.status=1 and a.city like :city WHERE c.isverify=2 and c.uniacid=:uniacid and c.deleted=0 and c.status=1 union all SELECT a.storename,c.id,a.lng,a.lat,a.area,a.address,c.title,c.sales,c.marketprice,c.productprice,c.thumb FROM ".tablename('sz_yi_goods')." c left JOIN " .tablename('sz_yi_store'). " a on a.uniacid=c.uniacid and a.status=1 and a.city like :city WHERE c.isverify=2 and c.uniacid=:uniacid and c.deleted=0 and c.storeids = '' and c.status=1 ", array(':uniacid' => $_W['uniacid'], ':city' => trim($_SESSION['city']))), 'thumb');
         }
 
-
-
-
-
-
-
         //给数据按距离排序
         $distance = array();
         foreach ($goods_list as $key => &$row) {
@@ -69,7 +63,7 @@ if ($_W['isajax'] || $_W['ispost']) {
             }
             $distance[] =  $goods_list[$key]['distance'];
             $goods_list[$key]['address'] = $row['area'].$row['address'];
-            if (empty($row['lng']) || empty($row['lat'])) {
+            if (empty($row['lng']) || empty($row['lat']) || empty($row['id'])) {
                 unset($goods_list[$key]);
             }
 

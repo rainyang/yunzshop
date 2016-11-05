@@ -19,6 +19,7 @@
                             {ife 'verify.store' $item}
                             <select name="supplier_uid" class="form-control">
                                 {loop $supplier $row}
+                                <option value="0">无</option>
                                 <option value="{$row['uid']}" {if $row['uid'] == $item['supplier_uid']}selected="true"{/if}>{$row['username']}</option>
                                 {/loop}
                             </select>

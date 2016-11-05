@@ -54,7 +54,7 @@ if ($operation == 'display' && $_W['isajax']) {
         }
         $distance[] =  $goods_list[$key]['distance'];
         $goods_list[$key]['address'] = $row['area'].$row['address'];
-        if (empty($row['lng']) || empty($row['lat'])) {
+        if (empty($row['lng']) || empty($row['lat']) || empty($row['id'])) {
             unset($goods_list[$key]);
         }
 
