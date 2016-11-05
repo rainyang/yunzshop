@@ -863,9 +863,10 @@ class Sz_DYi_Finance {
         }
     }
 
-    public function isWeixinPay($out_trade_no)
+    public function isWeixinPay($out_trade_no, $jie=0)
     {
         global $_W, $_GPC;
+        $set = m('common')->getSysset(array('shop', 'pay'));
         $setting = uni_setting($_W['uniacid'], array(
             'payment'
         ));
@@ -873,10 +874,16 @@ class Sz_DYi_Finance {
             return error(1, '没有设定支付参数');
         }
         $wechat = $setting['payment']['wechat'];
+        //借号支付修改数据
+        
         $sql = 'SELECT `key`,`secret` FROM ' . tablename('account_wechats') . ' WHERE `uniacid`=:uniacid limit 1';
         $row = pdo_fetch($sql, array(
             ':uniacid' => $_W['uniacid']
         ));
+        if ($set['pay']['weixin_jie'] == 1) {
+            $wechat = array('version' => 1, 'key' => $set['pay']['weixin_jie_apikey'], 'signkey' => $set['pay']['weixin_jie_apikey'], 'appid' => $set['pay']['weixin_jie_appid'], 'mchid' => $set['pay']['weixin_jie_mchid']);
+            $row['key'] = $set['pay']['weixin_jie_apikey'];
+        }
         $url = 'https://api.mch.weixin.qq.com/pay/orderquery';
         $pars = array();
         $pars['appid'] = $row['key'];

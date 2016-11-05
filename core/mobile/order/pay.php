@@ -743,7 +743,7 @@ if ($operation == 'display' && $_W['isajax']) {
         if (!empty($order['ordersn2'])) {
             $ordersn .= "GJ" . sprintf("%02d", $order['ordersn2']);
         }
-        $payquery = m('finance')->isWeixinPay($ordersn);
+        $payquery = m('finance')->isWeixinPay($ordersn, intval($_GPC['jie']));
         if (!is_error($payquery)) {
             $record           = array();
             $record['status'] = '1';
@@ -1096,7 +1096,6 @@ if ($operation == 'display' && $_W['isajax']) {
 }elseif ($operation == 'orderstatus' && $_W['isajax']) {
     global $_W;
     $order = pdo_fetch('select status from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $orderid, ':uniacid' => $uniacid));
-
     show_json(1, $order);
 }
 
