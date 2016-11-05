@@ -14,7 +14,7 @@
 <script src="../addons/sz_yi/template/mobile/default/static/js/star-rating.js" type="text/javascript"></script>
 <script src="../addons/sz_yi/static/js/dist/ajaxfileupload.js" type="text/javascript"></script>
 {/if}
-{if $shopset['is_street'] == 1}
+{if $trade['is_street'] == 1}
 <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade_street.js"></script>
 {else}
 <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
@@ -133,8 +133,8 @@
         
         <div class="line"><select id="sel-provance" onchange="selectCity();" class="select"><option value="" selected="true">所在省份</option></select></div>
         <div class="line"><select id="sel-city" onchange="selectcounty()" class="select"><option value="" selected="true">所在城市</option></select></div>
-        <div class="line"><select id="sel-area" {if $shopset['is_street'] == 1}onchange="selectstreet()"{/if}class="select"><option value="" selected="true">所在地区</option></select></div>
-        {if $shopset['is_street'] == 1}
+        <div class="line"><select id="sel-area" {if $trade['is_street'] == 1}onchange="selectstreet()"{/if}class="select"><option value="" selected="true">所在地区</option></select></div>
+        {if $trade['is_street'] == 1}
         <div class="line"><select id="sel-street"  class="select"><option value="" selected="true">所在街道</option></select></div>
         {/if}
         <div class="line"><input type="text" placeholder="详细地址(不包含省份城市区域)"  id="address" value="{if address.address}<%address.address%>{/if}"/></div>

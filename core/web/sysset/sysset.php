@@ -135,7 +135,6 @@ if (checksubmit()) {
         $shop                   = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['name']    = trim($shop['name']);
         $set['shop']['cservice'] = trim($shop['cservice']);
-        $set['shop']['is_street'] = trim($shop['is_street']);
         $set['shop']['img']     = save_media($shop['img']);
         $set['shop']['logo']    = save_media($shop['logo']);
         $set['shop']['signimg'] = save_media($shop['signimg']);
