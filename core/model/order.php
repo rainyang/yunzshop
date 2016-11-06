@@ -211,7 +211,8 @@ class Sz_DYi_Order
             $orderid = $order['id'];
             $verify_set = m('common')->getSetData();
             $allset = iunserializer($verify_set['plugins']);
-            if ($order['isverify'] == 1 && isset($allset['verify']) && $allset['verify']['sendcode'] == 1) {
+            $pset = m('common')->getSysset();
+            if ($order['isverify'] == 1 && isset($allset['verify']) && $allset['verify']['sendcode'] == 1 && isset($pset['sms']) && $pset['sms']['type'] == 1) {
                 $carriers = unserialize($order['carrier']);
                 $mobile = $carriers['carrier_mobile'];
                 $type = 'verify';

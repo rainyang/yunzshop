@@ -394,7 +394,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
       <div>
      <%each stores as store index%>
      <%if index<=1%>
-     <div class="store" >
+     <div class="store" onclick="location.href='{php echo $this->createPluginMobileUrl('verify/store_detail')}&id=<%store.id%>'">
              <div class="info">
              <div class="ico"><i class="fa fa-building-o"></i></div>
              <div class='info1'>
@@ -413,7 +413,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
      <div id='store_more' style="display:none">
       <%each stores as store index%>
      <%if index>1%>
-     <div class="store" >
+     <div class="store" onclick="location.href='{php echo $this->createPluginMobileUrl('verify/store_detail')}&id=<%store.id%>'">
              <div class="info">
              <div class="ico"><i class="fa fa-building-o"></i></div>
              <div class='info1'>
