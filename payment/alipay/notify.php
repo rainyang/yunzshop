@@ -77,13 +77,16 @@ if (!empty($_POST)) {
 									$record['status'] = '1';
 									pdo_update('core_paylog', $record, array('plid' => $log['plid']));
 									$orders = array('trade_no'=>$trade_no);
-                                    $order   = pdo_fetch('select id,cashier from ' . tablename('sz_yi_order') . ' where  (ordersn=:ordersn or pay_ordersn=:ordersn or ordersn_general=:ordersn) and uniacid=:uniacid limit 1', array(
-                                        ':uniacid' => $_W['uniacid'],
-                                        ':ordersn' => $ret['tid']
-                                    ));
-                                    if (!empty($order['cashier'])) {
-                                        $orders['status'] = '3';
+                                    if (p('cashier')) {
+                                        $order   = pdo_fetch('select id,cashier from ' . tablename('sz_yi_order') . ' where  (ordersn=:ordersn or pay_ordersn=:ordersn or ordersn_general=:ordersn) and uniacid=:uniacid limit 1', array(
+                                            ':uniacid' => $_W['uniacid'],
+                                            ':ordersn' => $ret['tid']
+                                        ));
+                                        if (!empty($order['cashier'])) {
+                                            $orders['status'] = '3';
+                                        }
                                     }
+
    									pdo_update('sz_yi_order', $orders, array('pay_ordersn' =>$tid,'uniacid'=>$log['uniacid']));
 									exit('success');
 								}
