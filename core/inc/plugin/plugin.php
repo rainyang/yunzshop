@@ -100,16 +100,6 @@ class Plugin extends Core
             if(!is_dir(IA_ROOT . '/addons/sz_yi/plugin/' . $this->pluginname . "/template/pc") && $tmplateType = "pc"){
                 $tmplateType = "mobile";
             }
-            //没有pc版的文件单独判断
-            if($_GPC['p'] == 'verify' && $_GPC["method"]=='store_index'){
-                $tmplateType = "mobile";
-            }
-            if($_GPC['p'] == 'verify' && $_GPC["method"]=='store_list'){
-                $tmplateType = "mobile";
-            }
-            if($_GPC['p'] == 'verify' && $_GPC["method"]=='store_detail'){
-                $tmplateType = "mobile";
-            }
 
             if (empty($template)) {
                 $template = "default";
