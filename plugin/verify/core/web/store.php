@@ -132,7 +132,7 @@ if ($operation == 'display') {
         if (p('cashier')) {
             if (!empty($cashier_id)) {
                 $data['cashierid'] = $cashier_id;
-            } else if (!empty($_GPC['cashierid'])) {
+            } elseif (!empty($_GPC['cashierid'])) {
                 $is_cashier = pdo_fetchcolumn(" SELECT id FROM " .tablename('sz_yi_store'). " WHERE cashierid=:id and uniacid=:uniacid limit 1", array(':id' => intval($_GPC['cashierid']), ':uniacid' => $_W['uniacid']));
                 if (empty($is_cashier)) {
                     $data['cashierid'] = intval($_GPC['cashierid']);
