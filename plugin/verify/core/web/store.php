@@ -99,7 +99,7 @@ if ($operation == 'display') {
         array(':uniacid' => $_W['uniacid'], ':id' => $item['member_id'])
     );
     if (checksubmit('submit')) {
-        if ($_GPC['iswithcashier'] == 1) {
+        if ($_GPC['iswithcashier'] == 1 && p('cashier')) {
             $data_cashier = array(
                 'uniacid' => $_W['uniacid'],
                 'name' => trim($_GPC['storename']),
@@ -129,19 +129,22 @@ if ($operation == 'display') {
             'thumb' => $_GPC['thumb'],
             'supplier_uid' => $_GPC['supplier_uid']
         );
-        if (!empty($cashier_id)) {
-            $data['cashierid'] = $cashier_id;
-        } else {
-            $is_cashier = pdo_fetchcolumn(" SELECT id FROM " .tablename('sz_yi_store'). " WHERE cashierid=:id and uniacid=:uniacid limit 1", array(':id' => intval($_GPC['cashierid']), ':uniacid' => $_W['uniacid']));
-            if (empty($is_cashier)) {
-                $data['cashierid'] = intval($_GPC['cashierid']);
-            } elseif ($is_cashier != $id) {
-                message('此收银台已被其他门店绑定，请选择其他收银台！', $this->createPluginWebUrl('verify/store', array(
-                    'op' => 'post',
-                    'id' => $id
-                )), 'error');
+        if (p('cashier')) {
+            if (!empty($cashier_id)) {
+                $data['cashierid'] = $cashier_id;
+            } else if (!empty($_GPC['cashierid'])) {
+                $is_cashier = pdo_fetchcolumn(" SELECT id FROM " .tablename('sz_yi_store'). " WHERE cashierid=:id and uniacid=:uniacid limit 1", array(':id' => intval($_GPC['cashierid']), ':uniacid' => $_W['uniacid']));
+                if (empty($is_cashier)) {
+                    $data['cashierid'] = intval($_GPC['cashierid']);
+                } elseif ($is_cashier != $id) {
+                    message('此收银台已被其他门店绑定，请选择其他收银台！', $this->createPluginWebUrl('verify/store', array(
+                        'op' => 'post',
+                        'id' => $id
+                    )), 'error');
+                }
             }
         }
+
         $data["province"] = trim($_GPC["province"]);
         $data["city"] = trim($_GPC["city"]);
         $data["area"] = trim($_GPC["area"]);
