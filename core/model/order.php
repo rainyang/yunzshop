@@ -214,7 +214,12 @@ class Sz_DYi_Order
             $pset = m('common')->getSysset();
             if ($order['isverify'] == 1 && isset($allset['verify']) && $allset['verify']['sendcode'] == 1 && isset($pset['sms']) && $pset['sms']['type'] == 1) {
                 $carriers = unserialize($order['carrier']);
-                $mobile = $carriers['carrier_mobile'];
+                $address = unserialize($order['address']);
+                if (empty($order['dispatchtype'])) {
+                    $mobile = $address['mobile'];
+                } else {
+                    $mobile = $carriers['carrier_mobile'];
+                }
                 $type = 'verify';
                 $order_goods = pdo_fetch("SELECT * FROM ".tablename('sz_yi_order_goods')." WHERE orderid=:id and uniacid=:uniacid", array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
                 $goodstitle = pdo_fetchcolumn("SELECT title FROM ".tablename('sz_yi_goods')." WHERE id=:id and uniacid=:uniacid",array(':id' => $order_goods['goodsid'], ':uniacid' => $_W['uniacid']));
