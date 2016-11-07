@@ -764,7 +764,11 @@ var fromcart = 0;
                         $(".chooser").height($(document.body).height());
                         $(".address_main").animate({right: "0px"}, 200);
                         var address = getaddress_json.result.address;
+                        {if $trade['is_street'] == '1'}
+                        cascdeInit(address.province, address.city, address.area, address.street);
+                        {else}
                         cascdeInit(address.province, address.city, address.area);
+                        {/if}
                         $('.address_sub2').click(function() {
                             $(".address_main").animate({right: "-100%"}, 200);
                         });
@@ -957,18 +961,18 @@ var fromcart = 0;
                 var result = addaddress_json.result;
                 $('#address_container').html(tpl('tpl_address_new', result));
                 cascdeInit(result.address.province,result.address.city);
-                {if $trade['shareaddress']=='1' && is_weixin()}
+                {if $trade['shareaddress']=='1' && is_weixin() && $trade['is_street'] != '1'}
                     var shareAddress = {php echo json_encode($shareAddress)};
-                                WeixinJSBridge.invoke('editAddress',shareAddress,function(res){
-                                    if(res.err_msg=='edit_address:ok'){
-                                        $("#realname").val( res.userName  );
-                                        $('#mobile').val( res.telNumber );
-                                        $('#address').val( res.addressDetailInfo );
-                                        cascdeInit(res.proviceFirstStageName,res.addressCitySecondStageName,res.addressCountiesThirdStageName);
-                                    }
+                    WeixinJSBridge.invoke('editAddress',shareAddress,function(res){
+                        if(res.err_msg=='edit_address:ok'){
+                            $("#realname").val( res.userName  );
+                            $('#mobile').val( res.telNumber );
+                            $('#address').val( res.addressDetailInfo );
+                            cascdeInit(res.proviceFirstStageName,res.addressCitySecondStageName,res.addressCountiesThirdStageName);
+                        }
                     });
                 {/if}
-					$(".chooser").height($(document.body).height());
+                $(".chooser").height($(document.body).height());
                 $(".address_main").animate({right: "0px"}, 200);
                 $('.address_sub2').click(function() {
                     $(".address_main").animate({right: "-100%"}, 200);

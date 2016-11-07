@@ -31,7 +31,7 @@ if ($_W['isajax']) {
 		}
 		show_json(1, array('list' => $list));
 	} else if ($operation == 'new') {
-		show_json(1, array('address' => array('province' => $member['province'], 'city' => $member['city']), 'area' => $member['area'], 'member' => $member, 'shareAddress' => $shareAddress));
+		show_json(1, array('address' => array('province' => $member['province'], 'city' => $member['city']), 'area' => $member['area'], 'street' => $member['street'], 'member' => $member, 'shareAddress' => $shareAddress));
 	} else if ($operation == 'get') {
 		$id = intval($_GPC['id']);
 		$data = pdo_fetch('select * from ' . tablename('sz_yi_member_address') . ' where id=:id and deleted=0 and uniacid=:uniacid limit 1', array(':uniacid' => $_W['uniacid'], ':id' => $id));

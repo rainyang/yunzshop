@@ -165,7 +165,11 @@
                     core.json('shop/address',{op:'get',id:id},function(json){
                         $('#container').html(  tpl('address_data',json.result) );
                         var address = json.result.address;
+                        {if $trade['is_street'] == 1}
+                        cascdeInit(address.province,address.city,address.area,address.street);
+                        {else}
                         cascdeInit(address.province,address.city,address.area);
+                        {/if}
                         bindEditEvents();
                      },true);
                      
@@ -212,9 +216,13 @@
                  $('#new_address').click(function(){
                       core.json('shop/address',{op:'new'},function(json){
                           var result = json.result;
-                            $('#container').html(  tpl('address_data',result) );
-                            cascdeInit(result.address.province,result.address.city,result.address.area);
-                              {if $trade['shareaddress']=='1' && is_weixin()}
+                          $('#container').html(  tpl('address_data',result) );
+                          {if $trade['is_street'] == '1'}
+                          cascdeInit(result.address.province,result.address.city,result.address.area,result.addressstreet);
+                          {else}
+                          cascdeInit(result.address.province,result.address.city,result.address.area);
+                          {/if}
+                          {if $trade['shareaddress']=='1' && $trade['is_street'] != '1' && is_weixin()}
                                     var shareAddress = {php echo json_encode($shareAddress)};
                                     WeixinJSBridge.invoke('editAddress',shareAddress,function(res){ 
                                         if(res.err_msg=='edit_address:ok'){
