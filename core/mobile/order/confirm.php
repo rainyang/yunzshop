@@ -16,7 +16,9 @@ $store_total = false;
 if (isset($allset['verify']) && $allset['verify']['store_total'] == 1) {
     $store_total = true;
 }
-
+if (p('recharge')) {
+        $telephone =  $_GPC['telephone'];
+    }
 if (!empty($trade['shareaddress'])  && is_weixin()) {
     if (!$_W['isajax']) {
         $shareAddress = m('common')->shareAddress();
@@ -25,6 +27,7 @@ if (!empty($trade['shareaddress'])  && is_weixin()) {
         }
     }
 }
+
 $pv = p('virtual');
 $hascouponplugin = false;
 $plugc           = p("coupon");
@@ -122,6 +125,9 @@ if ($yunbi_plugin) {
 }
 
 if ($_W['isajax']) {
+    if (p('recharge')) {
+        $telephone =  $_GPC['telephone'];
+    }
     $ischannelpick = intval($_GPC['ischannelpick']);
     $isyunbipay = intval($_GPC['isyunbipay']);
     if ($operation == 'display') {
@@ -935,7 +941,11 @@ if ($_W['isajax']) {
                 $order_all[$g['supplier_uid']]['goodsprice'] = $goodsprice;
 
             }}
-
+        if (p('recharge')) {
+            $member['realname'] = $telephone;
+            $member['membermobile'] = $telephone;
+            $changenum = false;
+        }
         show_json(1, array(
             'member' => $member,
             //'deductcredit' => $deductcredit,

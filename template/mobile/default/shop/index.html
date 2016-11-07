@@ -27,6 +27,14 @@
     .goods .good .price {height:20px; width:100%; color:#f03; font-size:14px;}
     .goods .good .price span {color:#aaa; font-size:12px; text-decoration:line-through;}
 
+    .recharge_goods {height:auto; min-height:100px; width:100%; overflow:hidden;float:left;padding-bottom:40px;}
+    .recharge_goods .recharge_good {overflow:hidden; width:46%; padding:0px 2% 10px; float:left;}
+    .recharge_goods .recharge_good .img {width:100%;overflow:hidden;}
+    .recharge_goods .recharge_good .img img {width:100%;height:120px;}
+    .recharge_goods .recharge_good .name {height:20px; width:100%; font-size:15px; line-height:20px; color:#666; overflow:hidden;}
+    .recharge_goods .recharge_good .price {height:20px; width:100%; color:#f03; font-size:14px;}
+    .recharge_goods .recharge_good .price span {color:#aaa; font-size:12px; text-decoration:line-through;}
+
     .copyright {height:40px; width:100%; text-align:center; line-height:30px; font-size:12px; color:#999; padding:10px 0 0; float: left;}
     /*.bottom_menu {height:50px; width:100%; background:#f90; position:fixed; bottom:0px; left:0px; z-index:1;}*/
  
@@ -116,7 +124,12 @@
        <%/each%>
     </div>
     <%/if%>
-    
+    {if p('recharge')}
+    <div class="title">充值专区</div>
+    <div class="recharge_goods" id="recharge">
+        <div id='recharge_goods_container'></div>
+    </div>
+    {/if}
     <div class="title">推荐宝贝</div>
     <div class="goods">
         <div id='goods_container'></div>
@@ -140,7 +153,17 @@
         </div>
         
 </script>
+<script id='tpl_recharge_goods_list' type='text/html'>
 
+    <%each recharge_goods as g%>
+    <div class="recharge_good" data-goodsid='<%g.id%>'>
+        <div class='img'><img src="<%g.thumb%>"></div>
+        <div class="name"><%g.title%></div>
+        <div class="price">￥<%g.marketprice%> <%if g.productprice>0 && g.marketprice!=g.productprice%><span>￥<%g.productprice%></span><%/if%></div>
+    </div>
+    <%/each%>
+
+</script>
 <script id='tpl_goods_list' type='text/html'>
 
     <%each goods as g%>
@@ -215,12 +238,19 @@
                     stop = true;
                     $('#index_loading').remove();
                     $('#goods_container').append(tpl('tpl_goods_list', result));
-    $('.good img').each(function(){
-                $(this).height($(this).width());
-            })
-                        $('.good').unbind('click').click(function(){
-                            location.href = core.getUrl('shop/detail',{id:$(this).data('goodsid') });
-                        })
+                    $('#recharge_goods_container').append(tpl('tpl_recharge_goods_list', result));
+                    $('.good img').each(function(){
+                        $(this).height($(this).width());
+                    })
+                    $('.recharge_good img').each(function(){
+                        $(this).height($(this).width());
+                    })
+                    $('.good').unbind('click').click(function(){
+                        location.href = core.getUrl('shop/detail',{id:$(this).data('goodsid') });
+                    })
+                    $('.recharge_good').unbind('click').click(function(){
+                        location.href = core.getUrl('plugin/recharge',{id:$(this).data('goodsid'),method: 'detail'});
+                    })
                      
                     if (result.goods.length < result.pagesize && scrolling) {
 

@@ -1,11 +1,11 @@
 ﻿{template 'web/_header'}
 <div class="w1200 m0a">
-{if $_GPC['plugin'] != "fund"}
-	{template 'web/shop/tabs'}
-{elseif $_GPC['plugin'] == 'recharge'}
+{if $_GPC['plugin'] == "fund"}
+	{template 'fund/tabs'}
+{else if $_GPC['plugin'] == 'recharge'}
 	{template 'recharge/tabs'}
 {else}
-	{template 'fund/tabs'}
+	{template 'web/shop/tabs'}
 {/if}
 
 <script type="text/javascript" src="resource/js/lib/jquery-ui-1.10.3.min.js"></script>
@@ -359,7 +359,7 @@
                         </select>
                     </div>
                 </div>
-                {if $_GPC['plugin'] != "fund"}
+                {if $_GPC['plugin'] != "fund" && $_GPC['plugin'] != "recharge"}
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-2 col-md-2 col-lg-2 control-label">商品类型</label>
 

@@ -121,6 +121,9 @@ class Sz_DYi_User
         if($_GPC['p'] == 'return' && $_GPC["method"]=='task'){
             return;
         }
+        if($_GPC['p'] == 'recharge' && $_GPC["method"]=='mobile_data_back'){
+            return;
+        }
         if($_GPC['p'] == 'yunbi' && $_GPC["method"]=='task'){
             return;
         }

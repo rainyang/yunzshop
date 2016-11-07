@@ -313,19 +313,19 @@
 
 
       <%else%>
-        <%if isvirtual || goods.type==2%>
+        <%if isvirtual || goods.type==2 || type == 11 || type == 12%>
           <input type="hidden"  id="dispatchtype" value="0" />
           <div class="carrier_input_info" >
           <div class="row">
             <div class='title'>联系人姓名</div>
             <div class='info'>
-                <div class='inner'><input type="text" placeholder="联系人姓名" id="carrier_input_realname" value="<%member.realname%>" style='height:35px;'/></div>
+                <div class='inner'><input type="text" placeholder="联系人姓名" id="carrier_input_realname" value="<%member.realname%>" style='height:35px;' {if p('recharge') && $_GPC['telephone']}readonly = "readonly" {/if}/></div>
             </div>
           </div>
           <div class="row">
             <div class='title'>联系人手机</div>
             <div class='info'>
-                <div class='inner'><input type="text" placeholder="联系人手机"  id="carrier_input_mobile" value="<%member.membermobile%>" style='height:35px;'/></div>
+                <div class='inner'><input type="text" placeholder="联系人手机"  id="carrier_input_mobile" value="<%member.membermobile%>" style='height:35px;' {if p('recharge') && $_GPC['telephone']}readonly = "readonly" {/if}/></div>
             </div>
           </div>
           </div>
@@ -508,7 +508,7 @@
 <script type="text/javascript">
 var fromcart = 0;
     require(['tpl', 'core'], function(tpl, core) {
-        core.json('order/confirm', {id:'{php echo intval($_GPC['id'])}', optionid:'{php echo intval($_GPC['optionid'])}', total:'{php echo intval($_GPC['total'])}',cartids:"{$_GPC['cartids']}",ischannelpay:"{$_GPC['ischannelpay']}",ischannelpick:"{$_GPC['ischannelpick']}",isyunbipay:"{$_GPC['isyunbipay']}"}, function(json){
+        core.json('order/confirm', {id:'{php echo intval($_GPC['id'])}', optionid:'{php echo intval($_GPC['optionid'])}', total:'{php echo intval($_GPC['total'])}',cartids:"{$_GPC['cartids']}",ischannelpay:"{$_GPC['ischannelpay']}",ischannelpick:"{$_GPC['ischannelpick']}",isyunbipay:"{$_GPC['isyunbipay']}",telephone:"{$_GPC['telephone']}"}, function(json){
 
         if(json.status==-1){
             location.href=json.result.url;
@@ -1082,6 +1082,150 @@ var fromcart = 0;
         });
 
         //订单
+        {if p('recharge') && $_GPC['telephone']}
+        var supplierids = $("#supplierids").val();
+          var supplierarr = new Array();
+          var data = new Array();
+          var order = new Array();
+          supplier_str = supplierids.split(",");
+          if($.isArray(supplierarr) == false){
+            supplierarr[0] = supplier_str;
+          }else{
+            supplierarr = supplier_str;
+          }
+          for (var i = 0; i < supplierarr.length; i++) {
+            if ($(this).attr('submitting') == '1') {
+                return;
+            }
+
+            var dispatchid = $("#dispatchid").val();
+            var carrierid = $("#carrierid").val();
+            var carrierid_send = $('#carrierid_send').val();
+            var addressid = $("#addressid").val();
+            var goods = $("input[data-name='goods'][data-id="+supplierarr[i]+"]").val();
+            var carrier_realname = $.trim( $('#carrier_input_realname').val() );
+            var carrier_mobile = $.trim( $('#carrier_input_mobile').val() );
+            if (goods == '') {
+                core.tip.show("没有任何商品");
+                return;
+            }
+            {if $show==1}
+                    if( $("#dispatchtype").val()=='0'){
+                if (addressid == '') {
+                            core.tip.show("请选择地址");
+                            return;
+                        }
+                        if (dispatchid == '') {
+                            core.tip.show("请选择配送方式");
+                            return;
+                        }
+                    }
+                /*if($('#isverify').val()=='true'){
+                    if (carrier_realname== '') {
+                        core.tip.show("请填写联系人姓名");
+                        return;
+                    }
+                    if (!$.isMobile(carrier_mobile)) {
+                        core.tip.show("请填写正确手机号");
+                        return;
+                    }
+                }*/
+              if( $("#dispatchtype").val()=='1'){
+                  if (carrier_realname== '') {
+                      core.tip.show("请填写姓名");
+                      return;
+                  }
+                  if (!$.isMobile(carrier_mobile)) {
+                      core.tip.show("请填写正确手机号");
+                      return;
+                  }
+              }
+                      {/if}
+                  var diydata = '';
+                  var gdid = {php echo intval($goods_data_id)};
+            {if !empty($order_formInfo)}
+                     {template 'diyform/common_js_data'}
+                {/if}
+
+
+            order[i] ={
+                'supplier_uid': supplierarr[i],
+                'goods': goods,
+                        'id':'{$id}',
+                        gdid:gdid,
+                        diydata:diydata,
+                'dispatchtype': $("#dispatchtype").val(),
+                'fromcart':fromcart,
+                'cartids':"{$_GPC['cartids']}",
+                'remark': $("input[data-name='remark'][data-id="+supplierarr[i]+"]").val(),
+                'deduct':0,
+                'yunbi':0,
+                'deduct2':0
+            };
+
+            if( $("#dispatchtype").val()=='0' || $("#dispatchtype").val()=='2'){
+               order[i].addressid = addressid;
+               order[i].dispatchid = dispatchid;
+            }
+
+            if($('#isverify').val()=='true'){
+                if ($('#dispatchtype').val() != 1) {
+                    order[i].carrierid = carrierid_send;
+                } else {
+                    order[i].carrierid = carrierid;
+                }
+                order[i].carrier = {
+                    'carrier_realname': carrier_realname,
+                    'carrier_mobile':carrier_mobile,
+                    'realname': $('#carrier_realname').html(),
+                    'mobile': $('#carrier_mobile').html(),
+                    'address': $('#carrier_address').html()
+                };
+            }
+
+            if($('.deductcredit[data-id='+supplierarr[i]+']').length>0){
+                if($('.deductcredit[data-id='+supplierarr[i]+']').attr('on')=='1'){
+                      order[i].deduct = 1;
+                }
+            }
+            if($('.deductyunbi[data-id='+supplierarr[i]+']').length>0){
+                if($('.deductyunbi[data-id='+supplierarr[i]+']').attr('on')=='1'){
+                      order[i].yunbi = 1;
+                }
+            }
+            if($('.deductcredit2[data-id='+supplierarr[i]+']').length>0){
+                if($('.deductcredit2[data-id='+supplierarr[i]+']').attr('on')=='1'){
+                      order[i].deduct2 = 1;
+                }
+            }
+              {if $hascouponplugin}
+                  order[i].couponid = $("input[data-name='couponid'][data-id="+supplierarr[i]+"]").val();
+              {/if}
+
+          }
+           data = {op:'create', order:order, ischannelpay:"{$_GPC['ischannelpay']}", ischannelpick:"{$_GPC['ischannelpick']}",isyunbipay:"{$_GPC['isyunbipay']}"};
+          $(this).attr('submitting', '1').html('提交中...');
+            core.json('order/confirm', data, function(create_json) {
+
+                if (create_json.status == 1) {
+                    if (create_json.result.ischannelpick) {
+                        location.href = "{php echo $this->createMobileUrl('order/list')}";
+                    } else {
+                        location.href = "{php echo $this->createMobileUrl('order/pay')}&orderid=" + create_json.result.orderid +"&openid={$openid}&ischannelpay=" + create_json.result.ischannelpay + "&telephone={$telephone}";
+                    }
+                } else if (create_json.status == -1) {
+                    $('.paysub').html('确认订单').removeAttr('submitting');
+                    core.tip.show(create_json.result);
+                } else if (create_json.status == -2) {
+                    $('.paysub').html('确认订单').removeAttr('submitting');
+                    core.tip.show(create_json.result);
+                } else {
+                    $('.paysub').html('确认订单').removeAttr('submitting');
+                    core.tip.show("生成订单失败!")
+                }
+
+            }, true, true);
+        {else}
         $('.paysub').click(function() {
           var supplierids = $("#supplierids").val();
           var supplierarr = new Array();
@@ -1227,7 +1371,7 @@ var fromcart = 0;
             }, true, true);
 
         })
-
+        {/if}
         //积分抵扣
         $('.deductcredit').click(function(){
                var on = $(this).attr('on')=='0'?'1':'0';
