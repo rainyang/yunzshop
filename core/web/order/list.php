@@ -4,6 +4,7 @@ $operation = !empty($_GPC["op"]) ? $_GPC["op"] : "display";
 $type = $_GPC['type'];
 $plugin_diyform = p("diyform");
 $shopset = m('common')->getSysset('pay');
+$trade     = m('common')->getSysset('trade');
 $yunbi_plugin = p('yunbi');
 if ($yunbi_plugin) {
     $yunbiset = $yunbi_plugin->getSet();
@@ -468,7 +469,7 @@ if ($operation == "display") {
         $member_condition = (!empty($member_addresids) ? " and a.id in (" . $member_addresids . ")" : '');
 
         $sql = 'select m.openid, a.realname as arealname,a.mobile as amobile,a.province as aprovince,
-            a.city as acity , a.area as aarea,a.address as aaddress,m.nickname,m.id as mid,
+            a.city as acity,a.area as aarea,a.street as astreet,a.address as aaddress,m.nickname,m.id as mid,
             m.realname as mrealname,m.mobile as mmobile 
             from ' . tablename("sz_yi_member") . " m" . "
             left join " . tablename("sz_yi_member_address") . " a on m.openid=a.openid and m.uniacid = a.uniacid {$member_condition} 
@@ -618,12 +619,22 @@ if ($operation == "display") {
             $value["province"] = $isarray ? $address["province"] : $value["aprovince"];
             $value["city"] = $isarray ? $address["city"] : $value["acity"];
             $value["area"] = $isarray ? $address["area"] : $value["aarea"];
+            //是否开启了街道联动
+            if ($trade['is_street'] == '1') {
+                $value["street"] = $isarray ? $address["street"] : $value["astreet"];
+            }
             $value["address"] = $isarray ? $address["address"] : $value["aaddress"];
             $value["address_province"] = $value["province"];
             $value["address_city"] = $value["city"];
             $value["address_area"] = $value["area"];
+            $value["address_street"] = $value["street"];
             $value["address_address"] = $value["address"];
-            $value["address"] = $value["province"] . " " . $value["city"] . " " . $value["area"] . " " . $value["address"];
+            //是否开启了街道联动
+            if (!empty($value['street']) && $trade['is_street'] == '1') {
+                $value["address"] = $value["province"] . " " . $value["city"] . " " . $value["area"] . " " . $value["street"] . " " . $value["address"];
+            } else {
+                $value["address"] = $value["province"] . " " . $value["city"] . " " . $value["area"] . " " . $value["address"];
+            }
             $value["addressdata"] = array(
                 "realname" => $value["realname"],
                 "mobile" => $value["mobile"],

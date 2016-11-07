@@ -613,17 +613,36 @@ if ($_W['isajax']) {
                 $stores = $order_all[$val['supplier_uid']]['stores'];
                 $stores_send = $order_all[$val['supplier_uid']]['stores_send'];
             }
+            //是否开启街道联动
+            if ($trade['is_street'] == '1') {
+                $address      = pdo_fetch('select id,realname,mobile,address,province,city,area,street from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
 
-            $address      = pdo_fetch('select id,realname,mobile,address,province,city,area,street from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
+                    ':uniacid' => $uniacid,
+                    ':openid' => $openid
+                ));
+            } else {
+                $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
 
-                ':uniacid' => $uniacid,
-                ':openid' => $openid
-            ));
+                    ':uniacid' => $uniacid,
+                    ':openid' => $openid
+                ));
+            }
+
         } else {
-            $address      = pdo_fetch('select id,realname,mobile,address,province,city,area,street from ' . tablename('sz_yi_member_address') . ' WHERE openid=:openid AND deleted=0 AND isdefault=1  AND uniacid=:uniacid limit 1', array(
-                ':uniacid' => $uniacid,
-                ':openid' => $openid
-            ));
+            //是否开启街道联动
+            if ($trade['is_street'] == '1') {
+                $address      = pdo_fetch('select id,realname,mobile,address,province,city,area,street from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
+
+                    ':uniacid' => $uniacid,
+                    ':openid' => $openid
+                ));
+            } else {
+                $address      = pdo_fetch('select id,realname,mobile,address,province,city,area from ' . tablename('sz_yi_member_address') . ' where openid=:openid and deleted=0 and isdefault=1  and uniacid=:uniacid limit 1', array(
+
+                    ':uniacid' => $uniacid,
+                    ':openid' => $openid
+                ));
+            }
         }
 
         //如果开启核销并且不支持配送，则没有运费
@@ -1400,7 +1419,7 @@ if ($_W['isajax']) {
             $dispatchtype = intval($order_row['dispatchtype']);
             $addressid    = intval($order_row['addressid']);
             $address      = false;
-            if (!empty($addressid) && $dispatchtype == 0) {
+            if (!empty($addressid) && ($dispatchtype == 0 || $dispatchtype == 2)) {
                 $address = pdo_fetch('select id,realname,mobile,address,province,city,area,street from ' . tablename('sz_yi_member_address') . ' where id=:id and openid=:openid and uniacid=:uniacid   limit 1', array(
 
                     ':uniacid' => $uniacid,

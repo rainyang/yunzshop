@@ -1116,7 +1116,7 @@ var fromcart = 0;
                 return;
             }
             {if $show==1}
-      				if( $("#dispatchtype").val()=='0'){
+      				if( $("#dispatchtype").val()=='0' || $("#dispatchtype").val()=='2'){
                 if (addressid == '') {
       						core.tip.show("请选择地址");
       						return;
