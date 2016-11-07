@@ -218,7 +218,7 @@
                           var result = json.result;
                           $('#container').html(  tpl('address_data',result) );
                           {if $trade['is_street'] == '1'}
-                          cascdeInit(result.address.province,result.address.city,result.address.area,result.addressstreet);
+                          cascdeInit(result.address.province,result.address.city,result.address.area,result.address.street);
                           {else}
                           cascdeInit(result.address.province,result.address.city,result.address.area);
                           {/if}
