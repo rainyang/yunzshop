@@ -122,7 +122,9 @@
                     <input type="hidden" name="pay[weixin_jie]" value="{$set['pay']['weixin_jie']}" />
                     <div class='form-control-static'> {if $set['pay']['weixin_jie']==1}开启{else}关闭{/if}</div>
                     {/if}
+                    <span class='help-block'>开启借号微信支付，微信支付功能将失效</span>
                 </div>
+
             </div>
             <div id='jie' {if empty($set['pay']['weixin_jie'])}style="display:none"{/if}>
                 <div class="form-group" >
@@ -230,6 +232,7 @@
                     {/if}
                 </div>
             </div>
+            
         </div>
 
                 <div class="form-group">

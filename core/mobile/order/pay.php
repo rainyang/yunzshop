@@ -127,7 +127,7 @@ if ($operation == 'display' && $_W['isajax']) {
     );
     if (is_weixin()) {
         $jie = $set['pay']['weixin_jie'];
-        if (isset($set['pay']) && ($set['pay']['weixin'] == 1) && ($jie !== 1)) {
+        if (isset($set['pay']) && ($set['pay']['weixin'] == 1) && ($jie != 1)) {
             if (is_array($setting['payment']['wechat']) && $setting['payment']['wechat']['switch']) {
                 $wechat['success'] = true;
                 $wechat['weixin'] = true;
@@ -137,7 +137,7 @@ if ($operation == 'display' && $_W['isajax']) {
         }
 
 
-        if ((isset($set['pay']) && ($set['pay']['weixin_jie'] == 1) && !$wechat['success']) || ($jie === 1)) {
+        if ((isset($set['pay']) && ($set['pay']['weixin_jie'] == 1) && !$wechat['success']) || ($jie == 1)) {
             //$params = array();
             $wechat['success'] = true;
             $wechat['weixin_jie'] = true;
@@ -392,8 +392,7 @@ if ($operation == 'display' && $_W['isajax']) {
 
             if (is_array($setting['payment'])) {
                 $options           = $setting['payment']['wechat'];
-                $weixin_jie = intval($_GPC['jie']);
-                if($weixin_jie == 0){
+                if(empty($set['pay']['weixin_jie'])){
                     $options['appid']  = $_W['account']['key'];
                     $options['secret'] = $_W['account']['secret'];
                     $wechat            = m('common')->wechat_build($params, $options, 0);
@@ -743,7 +742,7 @@ if ($operation == 'display' && $_W['isajax']) {
         if (!empty($order['ordersn2'])) {
             $ordersn .= "GJ" . sprintf("%02d", $order['ordersn2']);
         }
-        $payquery = m('finance')->isWeixinPay($ordersn, intval($_GPC['jie']));
+        $payquery = m('finance')->isWeixinPay($ordersn);
         if (!is_error($payquery)) {
             $record           = array();
             $record['status'] = '1';

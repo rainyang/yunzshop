@@ -440,6 +440,11 @@ class Sz_DYi_Finance {
         }
         $pay = m('common')->getSysset('pay');
         $wechat = $setting['payment']['wechat'];
+        $set = m('common')->getSysset(array('shop', 'pay'));
+        if (!empty($set['pay']['weixin_jie'])) {
+            $wechat = array('version' => 1, 'apikey' => $set['pay']['weixin_jie_apikey'], 'appid' => $set['pay']['weixin_jie_appid'], 'mchid' => $set['pay']['weixin_jie_mchid']);
+            $row['key'] = $set['pay']['weixin_jie_appid'];
+        }
         $sql = 'SELECT `key`,`secret` FROM ' . tablename('account_wechats') . ' WHERE `uniacid`=:uniacid limit 1';
         $row = pdo_fetch($sql, array(
             ':uniacid' => $_W['uniacid']
@@ -863,10 +868,9 @@ class Sz_DYi_Finance {
         }
     }
 
-    public function isWeixinPay($out_trade_no, $jie=0)
+    public function isWeixinPay($out_trade_no)
     {
         global $_W, $_GPC;
-        $set = m('common')->getSysset(array('shop', 'pay'));
         $setting = uni_setting($_W['uniacid'], array(
             'payment'
         ));
@@ -880,9 +884,10 @@ class Sz_DYi_Finance {
         $row = pdo_fetch($sql, array(
             ':uniacid' => $_W['uniacid']
         ));
-        if ($set['pay']['weixin_jie'] == 1) {
-            $wechat = array('version' => 1, 'key' => $set['pay']['weixin_jie_apikey'], 'signkey' => $set['pay']['weixin_jie_apikey'], 'appid' => $set['pay']['weixin_jie_appid'], 'mchid' => $set['pay']['weixin_jie_mchid']);
-            $row['key'] = $set['pay']['weixin_jie_apikey'];
+        $set = m('common')->getSysset(array('shop', 'pay'));
+        if (!empty($set['pay']['weixin_jie'])) {
+            $wechat = array('version' => 1, 'apikey' => $set['pay']['weixin_jie_apikey'], 'appid' => $set['pay']['weixin_jie_appid'], 'mchid' => $set['pay']['weixin_jie_mchid']);
+            $row['key'] = $set['pay']['weixin_jie_appid'];
         }
         $url = 'https://api.mch.weixin.qq.com/pay/orderquery';
         $pars = array();
