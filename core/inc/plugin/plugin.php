@@ -51,7 +51,7 @@ class Plugin extends Core
     public function template($filename, $type = TEMPLATE_INCLUDEPATH)
     {
 
-        global $_W;
+        global $_W, $_GPC;
         $tmplateType = (isMobile()) ? 'mobile' : 'pc';
         if(strstr($_SERVER['REQUEST_URI'],'app')){
             if(!isMobile()){
@@ -97,7 +97,16 @@ class Plugin extends Core
             }*/
             //$template = m('cache')->getString('template_' . $this->pluginname);
             //判断是否有pc端模板，没有则使用手机模板
-            if(is_dir(IA_ROOT . '/addons/sz_yi/plugin/' . $this->pluginname . "/template/pc/") &&  $tmplateType == "pc"){
+            if(!is_dir(IA_ROOT . '/addons/sz_yi/plugin/' . $this->pluginname . "/template/pc") && $tmplateType = "pc"){
+                $tmplateType = "mobile";
+            }
+            if($_GPC['p'] == 'verify' && $_GPC["method"]=='store_index'){
+                $tmplateType = "mobile";
+            }
+            if($_GPC['p'] == 'verify' && $_GPC["method"]=='store_list'){
+                $tmplateType = "mobile";
+            }
+            if($_GPC['p'] == 'verify' && $_GPC["method"]=='store_detail'){
                 $tmplateType = "mobile";
             }
 
