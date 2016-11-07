@@ -20,7 +20,7 @@ class Detail extends YZ
     public function index()
     {
         //$result = ArrayHelper::;
-        $address_block_list = $this->getAddressBlockTypeId($this->json['order'],$this->variable['show']);//$address_block_list配送信息
+        $address_block_list = $this->getAddressBlockTypeId($this->json['order'], $this->variable['show']);//$address_block_list配送信息
         $button_list = $this->_getButtonList($this->json['order']);//$button_list按钮列表
         $show_diyform = $this->_canShowDiyForm();//$show_diyform显示diyform
         $order_status_str = $this->_getStatusStr($this->json['order']);//$order_status_str订单状态文字

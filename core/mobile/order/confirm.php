@@ -44,7 +44,9 @@ $carrier_list = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_store") . " WHE
         ));
 
 if ($operation == "display" || $operation == "create") {
+    //ddump($_GPC["order"]);
     $id   = $operation == "create" ? intval($_GPC["order"][0]["id"]) : intval($_GPC["id"]);
+
     $show = 1;
     if ($diyform_plugin) {
         if (!empty($id)) {
@@ -950,7 +952,8 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
             'realprice' => number_format($realprice, 2),
             'type'=>$goods[0]['type'],
         ),$variable);
-    } elseif ($operation == 'getdispatchprice') {
+    }
+    elseif ($operation == 'getdispatchprice') {
         $isverify       = false;
         $isvirtual      = false;
         $isverifysend   = false;
@@ -1352,16 +1355,17 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
             "deductyunbimoney" => $deductyunbimoney
         ));
 
-    } elseif ($operation == 'create' && $_W['ispost']) {
+    }
+    elseif ($operation == 'create' && $_W['ispost']) {
         $ischannelpay = intval($_GPC['ischannelpay']);
         $ischannelpick = intval($_GPC['ischannelpick']);
         $isyunbipay = intval($_GPC['isyunbipay']);
         $order_data = $_GPC['order'];
-        if(p('hotel')){ 
+        if(p('hotel')){
             if($_GPC['type']=='99'){
                 $order_data[] = $_GPC; 
             }
-        }  
+        }
 
         //通用订单号，支付用
         $ordersn_general    = m('common')->createNO('order', 'ordersn', 'SH');
@@ -2454,7 +2458,8 @@ if ($_W['isajax']) {//optionid,total,   id 有则为立即购买 cartids 购物�
             'ischannelpay' => $ischannelpay,
             'ischannelpick' => $ischannelpick
         ));
-    }else if ($operation == 'date') {
+    }
+    else if ($operation == 'date') {
         global $_GPC, $_W;
         $id = $_GPC['id'];
         if ($search_array && !empty($search_array['bdate']) && !empty($search_array['day'])) {

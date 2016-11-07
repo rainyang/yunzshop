@@ -196,12 +196,16 @@ class Sz_DYi_User
             return $userinfo;
         }
     }
-
     function getInfo($base64 = false, $debug = false)
     {
         global $_W, $_GPC;
         if(!is_weixin()&&!is_app_api() ){
             return $this->getUserInfo();
+        }
+        if(is_app_api()){
+            if(in_array($_GET['api'],['index/Index/getGoodsList','category/Index','goods/Detail'])){
+                return false;
+            }
         }
         $userinfo = array();
         if (SZ_YI_DEBUG) {
