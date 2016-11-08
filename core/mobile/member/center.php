@@ -222,5 +222,26 @@ if ($verify) {
 }
 $verifyset  = m('common')->getSetData();
 $allset = iunserializer($verifyset['plugins']);
+$dtimes = time();
 
+if ($shopset['term']) {
+    $termtime = '';
+    if ( $shopset['term_unit'] == '1' ) {
+        $termtime = $shopset['term_time'] * 86400;
+    } elseif ( $shopset['term_unit'] == '2' ) {
+        $termtime = $shopset['term_time'] * 86400 * 7;
+    } elseif ( $shopset['term_unit'] == '3' ) {
+        $termtime = $shopset['term_time'] * 86400 * 30;
+    } elseif ( $shopset['term_unit'] == '4' ) {
+        $termtime = $shopset['term_time'] * 86400 * 365;
+    }
+}
+
+// echo "<pre>";print_r(strtotime('2016-11-04 13:00:00'));
+//             echo '--';
+//             echo "<pre>";print_r(date('Y-m-d H:i:s','1478235600'));exit;
+
+// echo "<pre>";print_r($termtime);exit;
+// $uptime = date("Y-m-d H:i:s",$member['upgradeleveltime']);
+ //echo "<pre>";print_r($dtimes);exit;
 include $this->template('member/center');
