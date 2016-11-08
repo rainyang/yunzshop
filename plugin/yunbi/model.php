@@ -235,8 +235,10 @@ if (!class_exists('YunbiModel')) {
 				pdo_fetchall("update ".tablename('sz_yi_member')."  set virtual_currency = virtual_currency + virtual_temporary, last_money =  virtual_temporary ,updatetime = " .$current_time. ", `virtual_temporary` = 0 where `uniacid` =  " . $uniacid ." AND virtual_temporary <= (virtual_temporary_total * " .$set['yunbi_return']. " / 100) AND virtual_temporary > 0;");
 				//大于返现比例
 				pdo_fetchall("update ".tablename('sz_yi_member')."  set virtual_currency = virtual_currency + (virtual_temporary_total * " .$set['yunbi_return']. " / 100), last_money =  (virtual_temporary_total * " .$set['yunbi_return']. " / 100) ,updatetime = " .$current_time. ", `virtual_temporary` = virtual_temporary - (virtual_temporary_total * " .$set['yunbi_return']. " / 100) where `uniacid` =  " . $uniacid ." AND virtual_temporary > 0;");
+
 				//上级获得相应数量的云币
-				$sql = "update ".tablename('sz_yi_member')." as m join (select sm.agentid, sm.id as smid from ".tablename('sz_yi_member')." sm where sm.`uniacid` =  " . $uniacid . " AND sm.updatetime = " .$current_time. " ) as ac on m.id = ac.agentid set `virtual_currency` = virtual_currency + " . $set['the_superior_obtain'] . ", last_money = last_money + " . $set['the_superior_obtain'] . ",updatetime = " .$current_time. " where m.`uniacid` =  " . $uniacid . " AND status = '1' AND isagent = '1' ";
+				$sql = "update ".tablename('sz_yi_member')." as m join (select sm.agentid, count(1) as cnt from ".tablename('sz_yi_member')." sm where sm.`uniacid` =  " . $uniacid . " AND sm.updatetime = " .$current_time. " group by sm.agentid ) as ac on m.id = ac.agentid set `virtual_currency` = virtual_currency + " . $set['the_superior_obtain'] . " * ac.cnt, last_money = if(updatetime = " .$current_time. ",last_money + " . $set['the_superior_obtain'] . " * ac.cnt," . $set['the_superior_obtain'] . " * ac.cnt),updatetime = " .$current_time. " where m.`uniacid` =  " . $uniacid . " AND status = '1' AND isagent = '1' ";
+
 				pdo_fetchall($sql);
 
 				$update_member = pdo_fetchall("SELECT id, uniacid, openid, last_money, updatetime FROM " . tablename('sz_yi_member') . " WHERE updatetime = :updatetime and uniacid = :uniacid ",
