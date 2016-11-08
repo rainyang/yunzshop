@@ -17,7 +17,7 @@ class SentCode extends YZ
 
     public function index()
     {
-        $result = $this->callMobile('member/sendcode');
+        $result = $this->callMobile('member/sendcode/sendcode');
         $this->returnSuccess($result['json']);
     }
 }
