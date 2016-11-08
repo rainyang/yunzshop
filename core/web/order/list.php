@@ -1536,7 +1536,7 @@ if ($operation == "display") {
                                                                             if (!$content) {
                                                                                 $content = getExpress($express, $expresssn);
                                                                                 if (!$content) {
-                                                                                    show_json(1, array('list' => array()));
+                                                                                    die('未找到物流信息.');
                                                                                 }
                                                                             }
                                                                             foreach ($content as $data) {
@@ -1553,7 +1553,7 @@ if ($operation == "display") {
                                                                                 if (!$content) {
                                                                                     $content = getExpress($express, $expresssn);
                                                                                     if (!$content) {
-                                                                                        show_json(1, array('list' => array()));
+                                                                                        die('未找到物流信息.');
                                                                                     }
                                                                                 }
                                                                                 foreach ($content as $data) {
