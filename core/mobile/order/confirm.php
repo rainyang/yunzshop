@@ -16,7 +16,9 @@ $store_total = false;
 if (isset($allset['verify']) && $allset['verify']['store_total'] == 1) {
     $store_total = true;
 }
-
+if (p('recharge')) {
+        $telephone =  $_GPC['telephone'];
+    }
 if (!empty($trade['shareaddress'])  && is_weixin()) {
     if (!$_W['isajax']) {
         $shareAddress = m('common')->shareAddress();
@@ -25,6 +27,7 @@ if (!empty($trade['shareaddress'])  && is_weixin()) {
         }
     }
 }
+
 $pv = p('virtual');
 $hascouponplugin = false;
 $plugc           = p("coupon");
@@ -122,6 +125,9 @@ if ($yunbi_plugin) {
 }
 
 if ($_W['isajax']) {
+    if (p('recharge')) {
+        $telephone =  $_GPC['telephone'];
+    }
     $ischannelpick = intval($_GPC['ischannelpick']);
     $isyunbipay = intval($_GPC['isyunbipay']);
     if ($operation == 'display') {
@@ -308,6 +314,7 @@ if ($_W['isajax']) {
 
 
         $goods = set_medias($goods, 'thumb');
+        $issale = true;
         foreach ($goods as &$g) {
             if ($g['isverify'] == 2) {
                 $isverify = true;
@@ -331,7 +338,16 @@ if ($_W['isajax']) {
                     $g['marketprice'] -= $g['yunbi_deduct'];
                 }
             }
+
+            if($g['plugin'] == 'fund'){
+                $issale = false;
+                $g['url'] = $this->createPluginMobileUrl('fund/detail', array('id' => $g['goodsid']));
+            }else{
+                $g['url'] = $this->createMobileUrl('shop/detail', array('id' => $g['goodsid']));
+            }
+
         }
+
         //多店值分开初始化
         foreach ($suppliers as $key => $val) {
             $order_all[$val['supplier_uid']]['weight']         = 0;
@@ -756,7 +772,8 @@ if ($_W['isajax']) {
 
         $sale_plugin   = p('sale');
         $saleset       = false;
-        if ($sale_plugin) {
+
+        if ($sale_plugin && $issale) {
             $saleset = $sale_plugin->getSet();
             $saleset["enoughs"] = $sale_plugin->getEnoughs();
         }
@@ -943,7 +960,11 @@ if ($_W['isajax']) {
                 $order_all[$g['supplier_uid']]['goodsprice'] = $goodsprice;
 
             }}
-
+        if (p('recharge')) {
+            $member['realname'] = $telephone;
+            $member['membermobile'] = $telephone;
+            $changenum = false;
+        }
         show_json(1, array(
             'member' => $member,
             //'deductcredit' => $deductcredit,
@@ -1457,6 +1478,7 @@ if ($_W['isajax']) {
             $isvirtual = false;
             $isverify  = false;
             $isverifysend  = false;
+            $issale = true;
             foreach ($goodsarr as $g) {
                 if (empty($g)) {
                     continue;
@@ -1499,6 +1521,9 @@ if ($_W['isajax']) {
                             show_json(-1, $data['title'] . '<br/> 不支持采购!请前往购物车移除该商品！');
                         }
                     }
+                }
+                if($data['plugin'] == 'fund'){
+                    $issale = false;
                 }
                 if (empty($data['status']) || !empty($data['deleted'])) {
                     show_json(-1, $data['title'] . '<br/> 已下架!');
@@ -1892,7 +1917,8 @@ if ($_W['isajax']) {
             if (p('channel') && $ischannelpay == 1) {
                 $saleset = array();
             }
-            if ($saleset) {
+
+            if ($saleset && $issale) {
                 foreach ($saleset["enoughs"] as $e) {
                     if ($totalprice >= floatval($e["enough"]) && floatval($e["money"]) > 0) {
                         if ($e["enough"] > $tmp_money) {
@@ -2178,7 +2204,6 @@ if ($_W['isajax']) {
                 "couponid" => $couponid,
                 "couponprice" => $couponprice,
                 'redprice' => $redpriceall,
-
             );
             if (p('channel')) {
                 if (!empty($ischannelpick)) {
@@ -2208,7 +2233,6 @@ if ($_W['isajax']) {
                     $order['deductcredit2']=$_GPC['deductcredit2'];
                     $order['deductcredit']=$_GPC['deductcredit'];
                     $order['deductprice']=$_GPC['deductcredit'];
-
                 }
             }
             if ($diyform_plugin) {
@@ -2221,6 +2245,11 @@ if ($_W['isajax']) {
                 }
 
             }
+
+            if($issale == false){
+                $order["plugin"]   = 'fund';
+            }
+
             if (!empty($address)) {
                 $order['address'] = iserializer($address);
             }
@@ -2618,5 +2647,6 @@ if(p('hotel') && $goods_data['type']=='99'){ //判断是否开启酒店插件
     }
     include $this->template('order/confirm_hotel');
 }else{
+    $hascouponplugin = $hascouponplugin && $issale ? true : false;
     include $this->template('order/confirm');
 }

@@ -332,7 +332,11 @@ class Sz_DYi_Order
                 $print_order = $order;
                 //商品信息
                 $ordergoods = pdo_fetchall("select * from " . tablename('sz_yi_order_goods') . " where uniacid=".$_W['uniacid']." and orderid=".$orderid);
+                $plugin_fund = p('fund');
                     foreach ($ordergoods as $key =>$value) {
+                        if($plugin_fund){
+                            $plugin_fund->check($value['goodsid']);
+                        }
                         //$ordergoods[$key]['price'] = pdo_fetchcolumn("select marketprice from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
                         $ordergoods[$key]['goodstitle'] = pdo_fetchcolumn("select title from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
                         $ordergoods[$key]['totalmoney'] = number_format($ordergoods[$key]['price']*$value['total'],2);
@@ -371,6 +375,9 @@ class Sz_DYi_Order
                    $pluginlove->checkOrder($goods_where, $order['openid'], 0);
                 }
                 $orderdetail['goodscount'] = count($orderdetail['goods1']);
+                if ($order['order_type'] == '4') {
+                    p('indiana')->dispose($orderid);
+                }
                 return array(
                     'result' => 'success',
                     'order' => $order,

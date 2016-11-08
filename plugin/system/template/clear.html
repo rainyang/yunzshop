@@ -14,7 +14,10 @@
                 数据清理工具
             </div>
             <div class="panel-body">
+<<<<<<< HEAD
             	{if $_W['isfounder']}
+=======
+>>>>>>> recharge
             	{ifp 'system.clear.view'}
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">选择公众号</label>
@@ -343,7 +346,10 @@
 <script type="text/javascript">
 
 	$(function () {
+<<<<<<< HEAD
 		{if $_W['isfounder']}
+=======
+>>>>>>> recharge
 		{ifp 'system.clear.view'}
 		$('#wechatid').select2({
 			search: true,
@@ -363,7 +369,10 @@
 	})
 	
 	function formcheck() {
+<<<<<<< HEAD
 		{if $_W['isfounder']}
+=======
+>>>>>>> recharge
 		{ifp 'system.clear.view'}
 			if ($("#wechatid").val() == '') {
 				alert("请选择要清除的公众号!");
@@ -376,7 +385,10 @@
 			return confirm('您选择的公众号是: ' + wechatname + ' ，是否确认操作?');
 			{else}
 			return confirm('您是否确认操作?');
+<<<<<<< HEAD
 		{/if}
+=======
+>>>>>>> recharge
 		{/if}
 	}
  	

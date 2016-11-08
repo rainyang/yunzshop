@@ -18,6 +18,14 @@ if (!empty($category)) {
         }
     }
 }
+$lang = array(
+	"good" => "商品"
+	);
+if($_GPC['plugin'] == "fund"){
+	$lang = array(
+	"good" => "项目"
+	);
+}
 $pindex    = max(1, intval($_GPC['page']));
 $psize     = 20;
 $params    = array();
@@ -52,6 +60,7 @@ if (!empty($_GPC['title'])) {
 	$params1[':title'] = "%{$_GPC['title']}%";
 }
 $orderby = !isset($_GPC['orderby']) ? 'money' : (empty($_GPC['orderby']) ? 'money' : 'count');
+$condition1 .= " AND g.plugin = '".$_GPC['plugin']."'";
 $sql = 'SELECT g.id,g.title,g.thumb,' . '(select ifnull(sum(og.price),0) from  ' . tablename('sz_yi_order_goods') . ' og left join ' . tablename('sz_yi_order') . " o on og.orderid=o.id  where o.status>=1 and og.goodsid=g.id {$condition})  as money," . '(select ifnull(sum(og.total),0) from  ' . tablename('sz_yi_order_goods') . ' og left join ' . tablename('sz_yi_order') . " o on og.orderid=o.id  where o.status>=1 and og.goodsid=g.id {$condition}) as count  " . 'from ' . tablename('sz_yi_goods') . ' g  ' . "where 1 {$condition1}  order by {$orderby} desc ";
 if (empty($_GPC['export'])) {
 	$sql .= 'LIMIT ' . ($pindex - 1) * $psize . ',' . $psize;

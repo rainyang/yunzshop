@@ -1045,7 +1045,11 @@ if (!class_exists('BonusModel')) {
 			            "paymethod" => $set['paymethod'],
 			            "sendpay_error" => $sendpay_error,
 			            'utime' => $daytime,
+<<<<<<< HEAD
 			            "send_bonus_sn" => $send_bonus_sn,
+=======
+			            "send_bonus_sn" => $time,
+>>>>>>> recharge
 			            "total" => $real_total
 			            );
 			    pdo_insert('sz_yi_bonus', $log);

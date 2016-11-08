@@ -316,6 +316,7 @@ if ($op == 'display') {
     if ($plugin_bonus) {
         $bonuslevels = $plugin_bonus->getLevels();
     }
+
     if ($hascommission) {
         $member = $plugin_com->getInfo($id, array(
             'total',
