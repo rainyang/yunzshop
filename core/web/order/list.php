@@ -894,7 +894,7 @@ if ($operation == "display") {
             "color" => "#4a5077"
         )
     );
-    $detailurl = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&method=orderj&p=commission&op=order&type=0&m=sz_yi&do=plugin";
+    $detailurl = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&method=order&p=verify&m=sz_yi&do=plugin&storeid=".$agentuid['storeid'];
     m('message')->sendCustomNotice($openid, $msg, $detailurl);
     message('选择门店成功', $this->createWebUrl('order', array('op' => 'display')), 'success');
 } elseif ($operation == "detail") {
