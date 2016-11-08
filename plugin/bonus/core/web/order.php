@@ -1224,28 +1224,15 @@ if ($operation == "display") {
             $express   = trim($refund['rexpress']);
             $expresssn = trim($refund['rexpresssn']);
         }
-        $arr = getList($express, $expresssn);
-        if (!$arr) {
-            $arr = getList($express, $expresssn);
-            if (!$arr) {
-                die('未找到物流信息.');
+        $content = getExpress($express, $expresssn);
+        if (!$content) {
+            $content = getExpress($express, $expresssn);
+            if (!$content) {
+                show_json(1, array('list' => array()));
             }
         }
-        $len   = count($arr);
-        $step1 = explode('<br />', str_replace('&middot;', "", $arr[0]));
-        $step2 = explode('<br />', str_replace('&middot;', "", $arr[$len - 1]));
-        for ($i = 0; $i < $len; $i++) {
-            if (strtotime(trim($step1[0])) > strtotime(trim($step2[0]))) {
-                $row = $arr[$i];
-            } else {
-                $row = $arr[$len - $i - 1];
-            }
-            $step   = explode('<br />', str_replace('&middot;', "", $row));
-            $list[] = array(
-                'time' => trim($step[0]),
-                'step' => trim($step[1]),
-                'ts' => strtotime(trim($step[0]))
-            );
+        foreach ($content as $data) {
+            $list[] = array('time' => $data->time, 'step' => $data->context, 'ts' => $data->time);
         }
         load()->func('tpl');
         include $this->template('web/order/express');
@@ -1253,28 +1240,15 @@ if ($operation == "display") {
     } else if ($to == "express") {
         $express = trim($item["express"]);
         $expresssn = trim($item["expresssn"]);
-        $arr = getList($express, $expresssn);
-        if (!$arr) {
-            $arr = getList($express, $expresssn);
-            if (!$arr) {
-                die("未找到物流信息.");
+        $content = getExpress($express, $expresssn);
+        if (!$content) {
+            $content = getExpress($express, $expresssn);
+            if (!$content) {
+                show_json(1, array('list' => array()));
             }
         }
-        $len = count($arr);
-        $step1 = explode("<br />", str_replace("&middot;", "", $arr[0]));
-        $step2 = explode("<br />", str_replace("&middot;", "", $arr[$len - 1]));
-        for ($i = 0; $i < $len; $i++) {
-            if (strtotime(trim($step1[0])) > strtotime(trim($step2[0]))) {
-                $row = $arr[$i];
-            } else {
-                $row = $arr[$len - $i - 1];
-            }
-            $step = explode("<br />", str_replace("&middot;", "", $row));
-            $list[] = array(
-                "time" => trim($step[0]) ,
-                "step" => trim($step[1]) ,
-                "ts" => strtotime(trim($step[0]))
-            );
+        foreach ($content as $data) {
+            $list[] = array('time' => $data->time, 'step' => $data->context, 'ts' => $data->time);
         }
         load()->func("tpl");
         include $this->template("web/order/express");
@@ -1282,20 +1256,3 @@ if ($operation == "display") {
     }
     exit;
 }
-
-function getList($id, $postid) {
-    $url = "http://wap.kuaidi100.com/wap_result.jsp?rand=" . time() . "&id={$id}&fromWeb=null&postid={$postid}";
-    load()->func("communication");
-    $info = ihttp_request($url);
-    $result = $info["content"];
-    if (empty($result)) {
-        return array();
-    }
-    preg_match_all("/\<p\>&middot;(.*)\<\/p\>/U", $result, $data);
-    if (!isset($data[1])) {
-        return false;
-    }
-    return $data[1];
-}
-
-?>
