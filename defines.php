@@ -15,3 +15,4 @@ define('SZ_YI_DEBUG', false);//false
 !defined('SZ_YI_INTEGRAL') &&define("SZ_YI_INTEGRAL", "积分");
 !defined('SZ_YI_EXPORT') &&define("SZ_YI_EXPORT", "1000");
 !defined('SZ_YI_PSIZE') &&define("SZ_YI_PSIZE", 20);
+!defined('SZ_YI_EXPRESS_URL') &&define("SZ_YI_EXPRESS_URL", "https://m.kuaidi100.com/query?type=%s&postid=%s&id=1&valicode=&temp=%s");
