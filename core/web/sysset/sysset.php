@@ -63,10 +63,12 @@ function upload_alipay_cert($fileinput)
     return "";
 }
 $op      = empty($_GPC['op']) ? 'shop' : trim($_GPC['op']);
+/*
 if ($op == 'datamove') {
     $up = m('common')->dataMove();
     exit('迁移成功');
 }
+ */
 $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
     ':uniacid' => $_W['uniacid']
 ));
@@ -119,7 +121,7 @@ if ($op == 'template') {
     //支付宝证书
     $cert = IA_ROOT . "/addons/sz_yi/cert/cacert.pem";
 } else if($op == 'pcset'){
-
+    ca('sysset.save.pcset');
     //默认首页导航内容
     if(empty($set['shop']['hmenu_name'])){
         $set['shop']['hmenu_name'] = array('首页', '全部商品', '店铺公告', '成为分销商', '会员中心');
@@ -175,7 +177,7 @@ if (checksubmit()) {
         $set['shop']['recpaycontent']   = $custom['recpaycontent'];
         $set['shop']['referrallogo']   = $custom['referrallogo'];
 
-        plog('sysset.save.sms', '修改系统设置-PC设置');
+        plog('sysset.save.pcset', '修改系统设置-PC设置');
     }
     elseif ($op == 'sms') {
         $sms                    = is_array($_GPC['sms']) ? $_GPC['sms'] : array();
@@ -186,6 +188,7 @@ if (checksubmit()) {
         $set['sms']['secret']   = $sms['secret'];
         $set['sms']['signname'] = $sms['signname'];
         $set['sms']['product']  = $sms['product'];
+        $set['sms']['forget']   = $sms['forget'];
         $set['sms']['templateCode'] = $sms['templateCode'];
         $set['sms']['templateCodeForget'] = $sms['templateCodeForget'];
         plog('sysset.save.sms', '修改系统设置-短信设置');
@@ -204,6 +207,7 @@ if (checksubmit()) {
         }
         plog('sysset.save.notice', '修改系统设置-模板消息通知设置');
     } elseif ($op == 'trade') {
+        //print_r($_GPC['trade']);exit;
         $set['trade'] = is_array($_GPC['trade']) ? $_GPC['trade'] : array();
         if (!$_W['isfounder']) {
             unset($set['trade']['receivetime']);
@@ -292,6 +296,23 @@ if (checksubmit()) {
         $set['shop']['description'] = trim($shop['description']);
         plog('sysset.save.contact', '修改系统设置-联系方式设置');
     }
+
+
+    if ($set['pay']['yeepay'] && (empty($set['pay']['merchantaccount']) || empty($set['pay']['merchantPrivateKey']) || empty($set['pay']['merchantPublicKey']) || empty($set['pay']['yeepayPublicKey']))) {
+        message('易宝支付设置失败!', $this->createWebUrl('sysset', array(
+            'op' => $op
+        )), 'error');
+    }
+    if($set['pay']['paypalstatus'] == 1){
+        foreach ($set['pay']['paypal'] as $paypal) {
+            if(empty($paypal)){
+                 message('请输入完整的Paypal支付接口信息.', $this->createWebUrl('sysset', array(
+                'op' => $op
+            )), 'error');
+            }
+        }
+    }
+
     $data = array(
         'uniacid' => $_W['uniacid'],
         'sets' => iserializer($set)
