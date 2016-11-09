@@ -154,8 +154,9 @@ class Account extends YZ
             }
         } else if ($trigger == 'post') {
 //api member/Account/info   memberdata
-            global $_W;
+            global $_W,$_GPC;
             $_W['ispost'] = true;
+            $_GPC['memberdata'] = json_decode($_GPC['memberdata'],true);
             $res = $this->callMobile('member/info');
 
             $this->returnSuccess($res);
