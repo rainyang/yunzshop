@@ -36,9 +36,14 @@ if ($type == 0) {
 ';
 	m('common')->paylog($paylog);
 }
+$set = m('common')->getSysset(array('shop', 'pay'));
 $setting = uni_setting($_W['uniacid'], array('payment'));
-if (is_array($setting['payment'])) {
+if (is_array($setting['payment']) || $set['pay']['weixin_jie'] == 1) {
 	$wechat = $setting['payment']['wechat'];
+	//借号支付修改数据
+	if ($set['pay']['weixin_jie'] == 1) {
+		$wechat = array('version' => 1, 'key' => $set['pay']['weixin_jie_apikey'], 'signkey' => $set['pay']['weixin_jie_apikey'], 'appid' => $set['pay']['weixin_jie_appid'], 'mchid' => $set['pay']['weixin_jie_mchid']);
+	}
 	if (!empty($wechat)) {
 		m('common')->paylog('setting: ok');
 		ksort($get);
@@ -48,6 +53,8 @@ if (is_array($setting['payment'])) {
 				$string1 .= "{$k}={$v}&";
 			}
 		}
+		//m('common')->paylog(print_r($wechat,1));
+		//m('common')->paylog(print_r($get,1));
 		$wechat['signkey'] = ($wechat['version'] == 1) ? $wechat['key'] : $wechat['signkey'];
 		$sign = strtoupper(md5($string1 . "key={$wechat['signkey']}"));
 		if ($sign == $get['sign']) {
