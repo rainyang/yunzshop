@@ -17,11 +17,16 @@ if (!class_exists('SupplierModel')) {
             return $supplierName;
         }
 
-        //某个供应商下的招商员
+        /**
+         * 某个供应商下的招商员
+         *
+         * @param int $uid
+         * @return array $merchants
+         */
         public function getSupplierMerchants($uid){
             global $_W, $_GPC;
             if (empty($uid)) {
-                return '';
+                return array();
             }
             //uid下的所有招商员
             $merchants = pdo_fetchall("select * from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and supplier_uid={$uid} ORDER BY id DESC");
@@ -37,7 +42,12 @@ if (!class_exists('SupplierModel')) {
             return $merchants;
         }
 
-        //供应商角色权限id
+        /**
+         * 供应商角色权限id
+         *
+         * @param
+         * @return int $roleid
+         */
         public function getRoleId(){
             global $_W, $_GPC;
             //权限id
@@ -45,6 +55,12 @@ if (!class_exists('SupplierModel')) {
             return $roleid;
         }
 
+        /**
+         * 商城下所有的供应商
+         *
+         * @param
+         * @return array $all_suppliers
+         */
         public function AllSuppliers(){
             global $_W, $_GPC;
             $roleid = $this->getRoleId();
@@ -52,11 +68,17 @@ if (!class_exists('SupplierModel')) {
             return $all_suppliers;
         }
 
-        //获取供应商订单佣金相关数据
+        /**
+         * 获取供应商订单佣金相关数据
+         *
+         * @param  int $uid
+         * @return array $supplierinfo
+         */
         public function getSupplierInfo($uid){
             global $_W, $_GPC;
             $supplierinfo = array();
             $set = $this->getSet();
+            //提现限制
             if (!empty($set['limit_day'])) {
                 $time = time();
                 if (!empty($uid)) {
@@ -78,7 +100,9 @@ if (!class_exists('SupplierModel')) {
             $supplierinfo['costmoney'] = 0;
             //累积佣金
             $supplierinfo['totalmoney'] = 0;
+            //订单数量
             $supplierinfo['ordercount'] = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . " where supplier_uid={$uid} and userdeleted=0 and deleted=0 and uniacid={$_W['uniacid']} ");
+            //提现总额
             $supplierinfo['commission_total'] = pdo_fetchcolumn("select sum(apply_money) from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and uid={$uid} and status=1");
             /*$sp_goods = pdo_fetchall("select og.* from " . tablename('sz_yi_order_goods') . " og left join " .tablename('sz_yi_order') . " o on (o.id=og.orderid) where og.uniacid={$_W['uniacid']} and og.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0");
             foreach ($sp_goods as $key => $value) {
@@ -102,6 +126,7 @@ if (!class_exists('SupplierModel')) {
             $apply_cond = "";
             $apply_conds = "";
             $now_time = time();
+            //订单完成X天
             if (!empty($set['apply_day'])) {
                 $apply_day = $now_time - $set['apply_day']*60*60*24;
                 $apply_cond .= " AND o.finishtime<{$apply_day} ";
@@ -127,7 +152,12 @@ if (!class_exists('SupplierModel')) {
             return $supplierinfo;
         }
 
-        //通过前台用户openid获取供应商uid和username
+        /**
+         * 通过前台用户openid获取供应商uid和username
+         *
+         * @param  string $openid
+         * @return array $supplieruser
+         */
         public function getSupplierUidAndUsername($openid){
             global $_W, $_GPC;
             //查询uid和username
@@ -135,7 +165,12 @@ if (!class_exists('SupplierModel')) {
             return $supplieruser;
         }
 
-        //前台判断用户是否为供应商
+        /**
+         * 前台判断用户是否为供应商
+         *
+         * @param  string $openid
+         * @return array $issupplier
+         */
         public function isSupplier($openid){
             global $_W, $_GPC;
             //不为空时，该用户是供应商
@@ -143,7 +178,12 @@ if (!class_exists('SupplierModel')) {
             return $issupplier;
         }
 
-        //获取供应商权限角色id
+        /**
+         * 获取供应商权限角色id
+         *
+         * @param
+         * @return int $permid
+         */
         public function getSupplierPermId(){
             global $_W, $_GPC;
             $perms = pdo_fetch('select * from ' . tablename('sz_yi_perm_role') . ' where status1 = 1');
@@ -164,7 +204,12 @@ if (!class_exists('SupplierModel')) {
             return $permid;
         }
 
-        //验证用户是否为供应商，$perm_role不为空是供应商。
+        /**
+         * 验证用户是否为供应商，$perm_role不为空是供应商。
+         *
+         * @param   int $uid
+         * @return int $permid
+         */
 		public function verifyUserIsSupplier($uid)
 		{
 			global $_W, $_GPC;
