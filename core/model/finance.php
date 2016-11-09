@@ -441,14 +441,14 @@ class Sz_DYi_Finance {
         $pay = m('common')->getSysset('pay');
         $wechat = $setting['payment']['wechat'];
         $set = m('common')->getSysset(array('shop', 'pay'));
-        if (!empty($set['pay']['weixin_jie'])) {
-            $wechat = array('version' => 1, 'apikey' => $set['pay']['weixin_jie_apikey'], 'appid' => $set['pay']['weixin_jie_appid'], 'mchid' => $set['pay']['weixin_jie_mchid']);
-            $row['key'] = $set['pay']['weixin_jie_appid'];
-        }
         $sql = 'SELECT `key`,`secret` FROM ' . tablename('account_wechats') . ' WHERE `uniacid`=:uniacid limit 1';
         $row = pdo_fetch($sql, array(
             ':uniacid' => $_W['uniacid']
         ));
+        if (!empty($set['pay']['weixin_jie'])) {
+            $wechat = array('version' => 1, 'apikey' => $set['pay']['weixin_jie_apikey'], 'appid' => $set['pay']['weixin_jie_appid'], 'mchid' => $set['pay']['weixin_jie_mchid']);
+            $row['key'] = $set['pay']['weixin_jie_appid'];
+        }
         $url = 'https://api.mch.weixin.qq.com/secapi/pay/refund';
         $pars = array();
         $pars['appid'] = $row['key'];
@@ -470,6 +470,12 @@ class Sz_DYi_Finance {
         $extras = array();
         $sec = m('common')->getSec();
         $certs = iunserializer($sec['sec']);
+        //使用借号支付数据
+        if (!empty($set['pay']['weixin_jie'])) {
+            $certs['cert'] = $certs['jie_cert'];
+            $certs['key'] = $certs['jie_key'];
+            $certs['root'] = $certs['jie_root'];
+        }
         if (is_array($certs)) {
             if (empty($certs['cert']) || empty($certs['key']) || empty($certs['root'])) {
                 message('未上传完整的微信支付证书，请到【系统设置】->【支付方式】中上传!', '', 'error');

@@ -285,13 +285,13 @@ if (checksubmit()) {
         }
         //借号支付
         if ($_FILES['weixin_jie_cert_file']['name']) {
-            $sec['jie']['cert'] = upload_jie_cert('weixin_jie_cert_file');
+            $sec['jie_cert'] = upload_jie_cert('weixin_jie_cert_file');
         }
         if ($_FILES['weixin_jie_key_file']['name']) {
-            $sec['jie']['key'] = upload_jie_cert('weixin_jie_key_file');
+            $sec['jie_key'] = upload_jie_cert('weixin_jie_key_file');
         }
         if ($_FILES['weixin_jie_root_file']['name']) {
-            $sec['jie']['root'] = upload_jie_cert('weixin_jie_root_file');
+            $sec['jie_root'] = upload_jie_cert('weixin_jie_root_file');
         }
 
         pdo_update('sz_yi_sysset', array(
