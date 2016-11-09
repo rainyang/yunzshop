@@ -46,7 +46,7 @@ input {-webkit-appearance:none; outline:none;}
                         core.pjson('merchant/applyg',{type:type,iscenter:"{$_GPC['iscenter']}"},function(pjson){
                               if(pjson.status=='1'){
                                    core.tip.show( pjson.result );
-                                   location.href = core.getUrl('plugin/merchant/index');
+                                   location.href = core.getUrl('member/center');
                               }
                                
                        },true,true);

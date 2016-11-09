@@ -6,25 +6,37 @@ if (!class_exists('MerchantModel')) {
 	class MerchantModel extends PluginModel
 	{
 		Private $child_centers = array();
+        /**
+         * 获取招商中心信息
+         *
+         * @param string $openid
+         * @return array $info
+         */
 		public function getInfo($openid){
 			global $_W;
 
+            //商城设置
 			$setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where uniacid=:uniacid limit 1', array(
 			    ':uniacid' => $_W['uniacid']
 			));
 			$setsyss     = unserialize($setdata['sets']);
 			$settrade = $setsyss['trade'];
 
+            //招商插件基础设置
 			$set = $this->getSet();
 			$info = array();
 			if (empty($openid)) {
 				return;
 			}
+
+			//判断用户是否为招商中心
 			$center = $this->isCenter($openid);
 			if (empty($center)) {
 				return;
 			}
 			$member = m('member')->getInfo($openid);
+
+            //招商中心提现限制
 			if (!empty($set['limit_day'])) {
                 $time = time();
                 if (!empty($member['id'])) {
@@ -38,9 +50,12 @@ if (!class_exists('MerchantModel')) {
                     }
                 }
             }
+            //招商中心等级详情
 			$info['levelinfo'] = pdo_fetch("SELECT * FROM " . tablename('sz_yi_merchant_level') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $center['level_id']));
 			$this->child_centers = array();
+            //招商中心下级所有招商中心
 			$centers = $this->getChildCenters($openid);
+            //招商中心下所有供应商uid
 			$supplier_uids = $this->getChildSupplierUids($openid);
 			if (empty($supplier_uids)) {
 				$supplier_uids = 0;
@@ -50,14 +65,17 @@ if (!class_exists('MerchantModel')) {
 			if ($info['supplier_uids'] == 0) {
 				$supplier_cond = " AND o.supplier_uid < 0 ";
 			}
+			//订单数量
 			$info['ordercount'] = pdo_fetchcolumn("SELECT count(o.id) FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} AND o.status>=1 ORDER BY o.createtime DESC,o.status DESC ");
-
+            //下级招商中心数量
 			$info['centercount'] = count($centers);
+            //招商员数量
 			$info['merchantcount'] = count($this->getCenterMerchants($center['id']));
-			$info['commission_total'] = number_format(pdo_fetchcolumn("SELECT sum(money) FROM " . tablename('sz_yi_merchant_apply') . " WHERE uniacid=:uniacid AND member_id=:member_id AND iscenter=1", array(':uniacid' => $_W['uniacid'], ':member_id' => $member['id'])), 2);
+			//提现总额
+            $info['commission_total'] = number_format(pdo_fetchcolumn("SELECT sum(money) FROM " . tablename('sz_yi_merchant_apply') . " WHERE uniacid=:uniacid AND member_id=:member_id AND iscenter=1", array(':uniacid' => $_W['uniacid'], ':member_id' => $member['id'])), 2);
 
 			$info['commission_ok'] = 0;
-
+            //订单完成x天后可提现
 			$apply_cond = "";
 			$now_time = time();
 			if (!empty($set['apply_day'])) {
@@ -66,6 +84,7 @@ if (!class_exists('MerchantModel')) {
 				$apply_cond .= " AND o.finishtime<{$apply_day} ";
 
 			}
+			//订单未完成X天,锁定的金额
 			$info['no_apply_money'] = 0;
 			$no_apply_money = pdo_fetchall("SELECT so.money FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_merchant_order') . " so on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} AND o.center_apply_status=0 AND o.status=3 ");
 			if (!empty($no_apply_money)) {
@@ -74,6 +93,7 @@ if (!class_exists('MerchantModel')) {
 				}
 				$info['no_apply_money'] = number_format($info['no_apply_money']*$info['levelinfo']['commission']/100,2);
 			}
+			//可提现金额
 			$merchant_orders = pdo_fetchall("SELECT so.*,o.id as oid FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_merchant_order') . " so on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} {$apply_cond} AND o.center_apply_status=0 AND o.status=3 ");
 			if (!empty($merchant_orders)) {
                 $info['commission_ok'] = 0;
@@ -81,24 +101,37 @@ if (!class_exists('MerchantModel')) {
                     $info['commission_ok'] += $o['money'];
                 }
             }
-			$info['commission_ok'] = number_format($info['commission_ok']*$info['levelinfo']['commission']/100,2);
-
+			$info['commission_ok'] = $info['commission_ok']*$info['levelinfo']['commission']/100;
+            //订单总额
 			$info['order_total_price'] = number_format(pdo_fetchcolumn("SELECT sum(og.price) FROM " . tablename('sz_yi_order') . " o " . " left join  ".tablename('sz_yi_order_goods')."  og on o.id=og.orderid left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id AND ifnull(r.status,-1)<>-1 " . " WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} {$apply_cond} ORDER BY o.createtime DESC,o.status DESC "), 2);
+            //所有的订单id
 			$order_ids = pdo_fetchall("SELECT o.id FROM " . tablename('sz_yi_order') . " o left join " . tablename('sz_yi_merchant_order') . " so on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=".$_W['uniacid']." {$supplier_cond} {$apply_cond} AND o.center_apply_status=0 AND o.status=3 ORDER BY o.createtime DESC,o.status DESC ");
 
 			$info['order_ids'] = $order_ids;
 			return $info;
 		}
 
+        /**
+         * 通过招商中心id获取用户的openid
+         *
+         * @param string $center_id
+         * @return array $openid
+         */
 		public function getOpenid($center_id){
 			global $_W;
 			if (empty($center_id)) {
 				return;
 			}
-			$center = pdo_fetchcolumn("SELECT openid FROM " . tablename('sz_yi_merchant_center') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $center_id));
-			return $center;
+			$openid = pdo_fetchcolumn("SELECT openid FROM " . tablename('sz_yi_merchant_center') . " WHERE uniacid=:uniacid AND id=:id", array(':uniacid' => $_W['uniacid'], ':id' => $center_id));
+			return $openid;
 		}
 
+        /**
+         * 通过用户的openid获取下级招商中心
+         *
+         * @param string $openid
+         * @return array $this->child_centers
+         */
 		public function getChildCenters($openid){
 			global $_W;
 			if (empty($openid)) {
@@ -122,6 +155,12 @@ if (!class_exists('MerchantModel')) {
 			}
 		}
 
+        /**
+         * 通过用户的openid获取所有供应商uid
+         *
+         * @param string $openid
+         * @return string $supplier_uids
+         */
 		public function getChildSupplierUids($openid){
 			global $_W;
 			if (empty($openid)) {
@@ -180,7 +219,12 @@ if (!class_exists('MerchantModel')) {
 			return $supplier_uids;
 		}
 
-		//会员id下的所有供应商的supplier_uid
+        /**
+         * 通过用户的id获取所有供应商uid
+         *
+         * @param string $member_id
+         * @return string $uids
+         */
 		public function getAllSupplierUids($member_id){
 			global $_W, $_GPC;
 			$supplier_uids = pdo_fetchall("select distinct supplier_uid from " . tablename('sz_yi_merchants') . " where uniacid={$_W['uniacid']} and member_id={$member_id}");
@@ -198,12 +242,24 @@ if (!class_exists('MerchantModel')) {
 	        return $uids;
 		}
 
+        /**
+         * 通过用户的openid判断用户是否为招商中心
+         *
+         * @param string $openid
+         * @return array $center
+         */
 		public function isCenter($openid){
 			global $_W;
 			$center = pdo_fetch("SELECT * FROM " . tablename('sz_yi_merchant_center') . " WHERE uniacid=:uniacid AND openid=:openid", array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
 			return $center;
 		}
 
+        /**
+         * 通过招商中心id获取所有招商员
+         *
+         * @param string $center_id
+         * @return array $merchants
+         */
 		public function getCenterMerchants($center_id){
             global $_W, $_GPC;
             if (empty($center_id)) {

@@ -106,7 +106,7 @@
          <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('order/list',array('type'=>'hotel'))}'">订单详情</span>
         <%/if%> 
         <%if order.order_type!='3'%>
-         <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('order/list')}'">订单详情</span>
+         <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('order/list')}'">订单列表</span>
         <%/if%>       
          <span class="order_sub5" onclick="location.href='{php echo $this->createMobileUrl('shop')}'">返回首页</span>
      </div>
@@ -139,7 +139,7 @@
      </div>
 </script>
  
-
+{template 'order/pay/wechat_jie'}
 <script language="javascript">
     require(['tpl', 'core'], function(tpl, core) {
         core.json('order/pay',{orderid:'{$_GPC['orderid']}',openid:"{$openid}"},function(json){
@@ -276,7 +276,8 @@
             }
 
            if(result.wechat.success){
-                $('.order_sub1').click(function(){   
+                $('.order_sub1').click(function(){  
+                if (result.wechat.weixin) { 
                         if($(this).attr('submitting')=='1'){
                            return;
                         }
@@ -357,6 +358,11 @@
 //                                            });
 //                              }); 
                           },true,true); 
+                }
+
+                if (result.wechat.weixin_jie || result.wechat.jie == 1) {
+                    payWechatJie();
+                }
                  });
              }
              $('.order_subc').click(function(){   
@@ -376,7 +382,59 @@
                                 },true,true);
                            })
               });
-             
+        function payWechatJie(){
+            if($(this).attr('submitting')=='1'){
+               return;
+            }
+             $('.button').attr('submitting',1);
+             var deduct = ($('#deductmoney').length>0 &&$('#deductmoney').attr('on')=='1' )?1:0 ;
+             core.json('order/pay', {op: 'pay',type: 'weixin', orderid:'{$_GPC['orderid']}',deduct:deduct}, function (rjson) {
+                if(rjson.status!=1){
+                    $('.button').removeAttr('submitting');
+                    core.tip.show(rjson.result);
+                    return;
+                }
+                
+                var wechat = rjson.result.wechat;
+            var img = "http://paysdk.weixin.qq.com/example/qrcode.php?data=" + wechat.code_url;
+            $("#qrmoney").text({$order['price']});
+            $(".order-weixinpay-hidden").show();
+            $("#btnWeixinJieCancel").unbind("click").click(function() {
+                //btn.removeAttr("stop");
+                clearInterval(settime);
+                $(".order-weixinpay-hidden").hide();
+            });
+            var settime = setInterval(function() {
+                $.getJSON(core.getUrl("order/pay",{op:'orderstatus'}), {
+                    orderid: {$_GPC['orderid']}
+                }, function(data) {
+                    if (data.result.status >= 1) {
+                        clearInterval(settime);
+                         core.json('order/pay',{
+                             op:'complete',
+                             orderid:'{$_GPC['orderid']}',
+                             type:'weixin',deduct:deduct
+                         },function(pay_json){ 
+                             if(pay_json.status==1){
+                                clearInterval(settime);
+                                $(".order-weixinpay-hidden").hide();
+                                $('#container').html(tpl('tpl_order_pay',pay_json.result));
+                                return;
+                             }
+                             core.tip.show(pay_json.result);
+                             $('.button').removeAttr('submitting');
+                        },true,true);
+                    }
+                });
+            }, 1e3);
+            $(".verify-pop").find(".close").unbind("click").click(function() {
+                $(".order-weixinpay-hidden").hide();
+                //btn.removeAttr("stop");
+                clearInterval(settime);
+            });
+            $(".verify-pop").find(".qrimg").attr("src", img).show();
+         },true,true);
+        }
         
     },true)
 });
