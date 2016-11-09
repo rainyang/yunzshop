@@ -34,6 +34,9 @@ class Sz_DYi_Goods
         $orderby   = !empty($args['by']) ? $args['by'] : '';
         $ids       = !empty($args['ids']) ? trim($args['ids']) : '';
         $id       = !empty($args['id']) ? trim($args['id']) : '0';
+        $goodsid       = !empty($args['goodsid']) ? trim($args['goodsid']) : '0';
+
+
         $sup_uid   = !empty($args['supplier_uid']) ? trim($args['supplier_uid']) : '';
         $isopenchannel   = !empty($args['isopenchannel']) ? trim($args['isopenchannel']) : 0;
         $ischannelpick   = !empty($args['ischannelpick']) ? trim($args['ischannelpick']) : 0;
@@ -48,6 +51,11 @@ class Sz_DYi_Goods
             $condition .= " and id = :id";
             $params[':id'] = intval($id);
         }
+        if (!empty($id)) {
+            $condition .= " and id < :goodsid";
+            $params[':goodsid'] = intval($goodsid);
+        }
+
         if (!empty($args['isverify'])) {
             $condition .= " and isverify = 1";
         }
@@ -145,6 +153,7 @@ class Sz_DYi_Goods
                 }
                 
             }
+            pdo_sql_debug($sql,$params);exit;
             $list = pdo_fetchall($sql, $params);
         }
         $list = set_medias($list, 'thumb');
