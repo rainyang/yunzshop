@@ -14,12 +14,7 @@ class Register extends YZ
 
     public function index()
     {
-        global $_W;
         $result = $this->callPlugin('commission/register');
-        if ($_W["ispost"]) {
-            $this->returnSuccess("提交成功，请等待审核");
-            exit;
-        }
         $result['json']['title'] = "申请分销商";
         $result['json']['images'] = $result['json']['set']['regbg'] ? $result['json']['set']['regbg'] : "../addons/sz_yi/plugin/commission/template/mobile/default/static/images/bg.png";
         $result['json']['footer']['title'] = $result['json']['set']['texts']['agent'] . "特权";
@@ -49,5 +44,14 @@ class Register extends YZ
         }
 
         $this->returnSuccess($result);
+    }
+
+    public function post(){
+        global $_W;
+        $_W["ispost"] = 1;
+        $result = $this->callPlugin('commission/register');
+        if(is_array($result)){
+            $this->returnSuccess("提交成功，请等待审核");
+        }
     }
 }
