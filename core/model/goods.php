@@ -153,7 +153,7 @@ class Sz_DYi_Goods
                 }
                 
             }
-            pdo_sql_debug($sql,$params);exit;
+            //pdo_sql_debug($sql,$params);exit;
             $list = pdo_fetchall($sql, $params);
         }
         $list = set_medias($list, 'thumb');

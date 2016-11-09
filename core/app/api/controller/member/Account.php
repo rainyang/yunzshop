@@ -154,6 +154,8 @@ class Account extends YZ
             }
         } else if ($trigger == 'post') {
 //api member/Account/info   memberdata
+            global $_W;
+            $_W['ispost'] = true;
             $res = $this->callMobile('member/info');
 
             $this->returnSuccess($res);
