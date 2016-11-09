@@ -2,12 +2,9 @@
 global $_W, $_GPC;
 ca('system.commission');
 $wechatid = intval($_GPC['wechatid']);
-<<<<<<< HEAD
 if (!$_W['isfounder']) {
         $wechatid = $_W['uniacid'];
 };
-=======
->>>>>>> recharge
 if(!cv('system.commission.view')){
     $wechatid = $_W['uniacid'];
 }
