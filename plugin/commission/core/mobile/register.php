@@ -4,8 +4,6 @@ $openid   = m("user")->getOpenid();
 $shop_set = m("common")->getSysset("shop");
 $set      = set_medias($this->set, "regbg");
 $member   = m("member")->getMember($openid);
-$member['status'] = 0;
-$member['isagent'] = 0;
 if ($member["isagent"] == 1 && $member["status"] == 1) {
     header("location: " . $this->createPluginMobileUrl("commission"));
     exit;
