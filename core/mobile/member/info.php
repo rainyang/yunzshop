@@ -50,7 +50,7 @@ if ($_W['isajax']) {
         } else {
             pdo_update('sz_yi_member', $memberdata, array(
                 'openid' => $openid,
-                'uniacid' => $_W['uniacid']
+                    'uniacid' => $_W['uniacid']
             ));
             if (!empty($member['uid'])) {
                 $mcdata = $_GPC['mcdata'];
