@@ -11,7 +11,9 @@ class Display extends YZ
 
     public function __construct()
     {
+        global $_GPC;
         parent::__construct();
+        $_GPC['id'] = $_GPC['order_id'];
         $result = $this->callMobile('order/list/display');
 
         $this->variable = $result['variable'];
