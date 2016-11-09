@@ -2,7 +2,7 @@
 <address>
     <province name="请选择省份">
         <city name="请选择城市">
-            <county name="请选择区域"/>
+            <county name="请选择区域">
                 <street name="请选择街道"/> 
             </county>
         </city>
