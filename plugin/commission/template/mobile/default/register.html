@@ -110,7 +110,10 @@ a{ text-decoration: none;}
         
         core.pjson('commission/register',{mid:"{$mid}"},function(json){
            var result = json.result;
-   
+          if(result.member.isagent==1 && result.member.status==1){
+              window.location.href = "{php echo $this->createPluginMobileUrl('commission')}";
+              return;
+           }
            if(result.member.isagent=='1'){
                $('#container').html(  tpl('tpl_ok',result) );    
                return;

@@ -4,12 +4,6 @@ $openid   = m("user")->getOpenid();
 $shop_set = m("common")->getSysset("shop");
 $set      = set_medias($this->set, "regbg");
 $member   = m("member")->getMember($openid);
-if ($member["isagent"] == 1 && $member["status"] == 1) {
-    header("location: " . $this->createPluginMobileUrl("commission"));
-    exit;
-}
-if (empty($set["become"])) {
-}
 $template_flag  = 0;
 $diyform_plugin = p("diyform");
 if ($diyform_plugin) {
