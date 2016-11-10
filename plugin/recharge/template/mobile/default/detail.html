@@ -106,7 +106,7 @@
         <!--<a href="#" class="hover">流量充值</a>-->
         <!--<a href="#">话费充值</a>-->
     <!--</div>-->
-    <div class="tel-pos"><input type="text" placeholder="请输入手机号码" class="telphone" id="telephone" maxlength="11" value="18646546800">
+    <div class="tel-pos"><input type="text" placeholder="请输入手机号码" class="telphone" id="telephone" maxlength="11" value="">
         <i class="yys-pos" id="catname"></i>
     </div>
 </div>
@@ -130,89 +130,98 @@
         $('#telephone').bind('input propertychange', function() {
             var cc = $(this).val().length;
             if (cc >= 11) {
-
-                $.ajax({
-                    type: "POST",
-                    url: "{php echo $this->createPluginMobileUrl('recharge/mobile_check')}",
-                    data: {mobile:$("#telephone").val(), goodsid:"{php echo $_GPC['id']}"},
-                    dataType: "json",
-                    success: function(result){
-                        $("#loading").hide();
-                        var specs = result.spec_datas;
-                        $("#catname").html(result.carrier);
-                        if (result.code == 1) {
-                            var html = '';
-                            var html_pro = '';
-                            var html_dom = '';
-                            var provincial =  specs.provincial;
-                            var domestic =  specs.domestic;
-                            //只有国内或省内
-                            if (provincial != undefined && domestic != undefined) {
-                                $("#tab").show();
-                                $.each(domestic,function(key,value){ 
-                                        html_dom += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
-                                        html_dom += '<p>' + value["itemtitle"] + '</p></li>';
-                                    })
-                                $("#specs").html(html_dom);
-                                $("#tab a").on('click',function(){
-                                    if ($(this).attr('type') == "provincial") {
-                                        html_pro = '';
-                                        $(this).addClass('hover');
-                                        $("#tab a").prev().removeClass();
-                                        $.each(provincial,function(key,value){    
-                                            html_pro += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
-                                            html_pro += '<p>' + value["itemtitle"] + '</p></li>';
-                                        })
-                                        $("#specs").html(html_pro);
-                                    } else if ($(this).attr('type') == "domestic"){
-                                        html_dom = '';
-                                        $(this).addClass('hover');
-                                        $("#tab a").next().removeClass();
-                                        $.each(domestic,function(key,value){ 
+                if(!(/^1[34578]\d{9}$/.test($(this).val()))){ 
+                    alert("手机格式填写错误！");
+                    window.location.reload();
+                }else {
+                    $.ajax({
+                        type: "POST",
+                        url: "{php echo $this->createPluginMobileUrl('recharge/mobile_check')}",
+                        data: {mobile:$("#telephone").val(), goodsid:"{php echo $_GPC['id']}"},
+                        dataType: "json",
+                        success: function(result){
+                            var specs = result.spec_datas;
+                            $("#catname").html(result.carrier);
+                            if (result.code == 1) {
+                                var html = '';
+                                var html_pro = '';
+                                var html_dom = '';
+                                var provincial =  specs.provincial;
+                                var domestic =  specs.domestic;
+                                //只有国内或省内
+                                if (provincial != undefined && domestic != undefined) {
+                                    $("#tab").show();
+                                    $.each(domestic,function(key,value){ 
                                             html_dom += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
                                             html_dom += '<p>' + value["itemtitle"] + '</p></li>';
                                         })
-                                        $("#specs").html(html_dom);
+                                    $("#specs").html(html_dom);
+                                    $("#tab a").on('click',function(){
+                                        if ($(this).attr('type') == "provincial") {
+                                            html_pro = '';
+                                            $(this).addClass('hover');
+                                            $("#tab a").prev().removeClass();
+                                            $.each(provincial,function(key,value){    
+                                                html_pro += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
+                                                html_pro += '<p>' + value["itemtitle"] + '</p></li>';
+                                            })
+                                            $("#specs").html(html_pro);
+                                        } else if ($(this).attr('type') == "domestic"){
+                                            html_dom = '';
+                                            $(this).addClass('hover');
+                                            $("#tab a").next().removeClass();
+                                            $.each(domestic,function(key,value){ 
+                                                html_dom += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
+                                                html_dom += '<p>' + value["itemtitle"] + '</p></li>';
+                                            })
+                                            $("#specs").html(html_dom);
+                                        }
+                                    })
+                                    
+                                } else {
+                                    $("#tab").hide();
+                                    if (provincial != undefined) {
+                                        
+                                        $.each(provincial,function(key,value){ 
+                                            html += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
+                                            html += '<p>' + value["itemtitle"] + '</p></li>';
+                                        })  
+                                        
                                     }
-                                })
+                                    if (domestic != undefined) {
+                                        
+                                        $.each(domestic,function(key,value){ 
+                                            html += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
+                                            html += '<p>' + value["itemtitle"] + '</p></li>';
+                                        }) 
+                                    }
+                                    $("#specs").html(html);
+                                     
+                                }
                                 
+                                
+                                $(document).on('click',".pay",function(){
+                                    location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$(this).attr('optionid') + "&total=1&telephone="+$("#telephone").val();
+                                })
                             } else {
-                                $("#tab").hide();
-                                if (provincial != undefined) {
-                                    
-                                    $.each(provincial,function(key,value){ 
-                                        html += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
-                                        html += '<p>' + value["itemtitle"] + '</p></li>';
-                                    })  
-                                    
-                                }
-                                if (domestic != undefined) {
-                                    
-                                    $.each(domestic,function(key,value){ 
-                                        html += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
-                                        html += '<p>' + value["itemtitle"] + '</p></li>';
-                                    }) 
-                                }
-                                $("#specs").html(html);
-                                 
+                                alert('该商品不支持号码所属运营商或地区');
+                                window.location.reload();
                             }
-                            
-                            
-                            $(document).on('click',".pay",function(){
-                                location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$(this).attr('optionid') + "&total=1&telephone="+$("#telephone").val();
-                            })
+                            console.log(result);
+                        },
+                        complete:function(){
+                            $("#loading").hide();
+                        },beforeSend:function (){
+                            $("#loading").show();
                         }
-                        console.log(result);
-                    },
-                    complete:function(){
-                        $("#loading").hide();
-                    },beforeSend:function (){
-                        $("#loading").show();
-                    }
 
-                });
+                    });
+                }
             }
         });
+    function showtime() {
+        $("#loading").hide();
+    }
     })
 </script>
 </html>

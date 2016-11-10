@@ -18,6 +18,11 @@ $commentcount = pdo_fetchcolumn($sql, $params);
 $goods          = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE id = :id limit 1", array(
     ':id' => $goodsid
 ));
+if (p('recharge')){
+    if ($goods['type'] == 11 || $goods['type'] == 12) {
+        header('location: ' . $this->createPluginMobileUrl('recharge/detail',array('id' => $goodsid)));
+    }
+}
 if($goods['pcate']){
     $pcate = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$goods['pcate']." and uniacid=".$uniacid);
 }

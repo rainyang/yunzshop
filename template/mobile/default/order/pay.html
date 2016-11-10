@@ -41,7 +41,7 @@
     <div class="order_main" >  
         <div class="line"><div class="label">订单编号</div><div class="info"><div class="inner"><%order.ordersn_general%></div></div></div>
         <div class="line"><div class="label">支付金额</div><div class="info"><div class="inner"><div style='color:#ff6600'>￥<span id="orderprice" price="<%order.price%>"><%order.price%></span>元</div></div></div></div>
-        {if p('recharge')}
+        {if p('recharge') && $_GPC['telephone']}
         <div class="line"><div class="label">手机号码</div><div class="info"><div class="inner"><%order.mobile%></div></div></div>
         <div class="line"><div class="label">流量</div><div class="info"><div class="inner"><%order.title%></div></div></div>
         {/if}
