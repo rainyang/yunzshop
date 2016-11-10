@@ -125,8 +125,9 @@ if ($operation == 'display' && $_W['isajax']) {
         'success' => false,
         'qrcode' => false
     );
+    $jie = $set['pay']['weixin_jie'];
     if (is_weixin()) {
-        $jie = $set['pay']['weixin_jie'];
+        
         if (isset($set['pay']) && ($set['pay']['weixin'] == 1) && ($jie != 1)) {
             if (is_array($setting['payment']['wechat']) && $setting['payment']['wechat']['switch']) {
                 $wechat['success'] = true;
@@ -136,16 +137,16 @@ if ($operation == 'display' && $_W['isajax']) {
 
         }
 
-
+    }
+    if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {  
         if ((isset($set['pay']) && ($set['pay']['weixin_jie'] == 1) && !$wechat['success']) || ($jie == 1)) {
-            //$params = array();
             $wechat['success'] = true;
             $wechat['weixin_jie'] = true;
             $wechat['weixin'] = false;
         }
-
-        $wechat['jie'] = $jie;
     }
+    $wechat['jie'] = $jie;
+    
     //扫码
     if (!isMobile() && isset($set['pay']) && $set['pay']['weixin'] == 1) {
         if (isset($set['pay']) && $set['pay']['weixin'] == 1) {
@@ -385,24 +386,23 @@ if ($operation == 'display' && $_W['isajax']) {
             'payment'
         ));
         //微信下
-        if (is_weixin()) {
-            /*$params['tid'] = $ordersn_general . '_borrow';
-            */
-
-
+        if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {  
             if (is_array($setting['payment'])) {
                 $options           = $setting['payment']['wechat'];
-                if(empty($set['pay']['weixin_jie'])){
-                    $options['appid']  = $_W['account']['key'];
-                    $options['secret'] = $_W['account']['secret'];
-                    $wechat            = m('common')->wechat_build($params, $options, 0);
-                    //$wechat['success'] = false;
-                    if (!is_error($wechat)) {
-                        $wechat['success'] = true;
-                    } else {
-                        show_json(0, $wechat['message']);
+                if (is_weixin()) {
+                    if(empty($set['pay']['weixin_jie'])){
+                        $options['appid']  = $_W['account']['key'];
+                        $options['secret'] = $_W['account']['secret'];
+                        $wechat            = m('common')->wechat_build($params, $options, 0);
+                        //$wechat['success'] = false;
+                        if (!is_error($wechat)) {
+                            $wechat['success'] = true;
+                        } else {
+                            show_json(0, $wechat['message']);
+                        }
                     }
-                }else{
+                }
+                if(!empty($set['pay']['weixin_jie'])){
                     $options['appid'] = $set['pay']['weixin_jie_appid'];
                     $options['mchid'] = $set['pay']['weixin_jie_mchid'];
                     $options['apikey'] = $set['pay']['weixin_jie_apikey'];
