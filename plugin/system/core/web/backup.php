@@ -1,12 +1,9 @@
 <?php
 global $_W, $_GPC;
 ca('system.backup');
-<<<<<<< HEAD
 if (!$_W['isfounder']) {
     message('您无权操作!', '', 'error');
 }
-=======
->>>>>>> recharge
 function table2sql($table)
 {
     global $db;
