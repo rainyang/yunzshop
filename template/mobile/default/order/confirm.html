@@ -370,14 +370,9 @@
         <div class="shop"><%order.supplier_name%></div>
         <%each order.goods as g%>
         <div class="good" data-totalmaxbuy="<%g.totalmaxbuy%>">
-<<<<<<< HEAD
             
             <div class="img"  onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'"><img src="<%g.thumb%>"/></div>
             <div class='info' onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
-=======
-            <div class="img"  onclick="location.href='<%g.url%>'"><img src="<%g.thumb%>"/></div>
-            <div class='info' onclick="location.href='<%g.url%>'">
->>>>>>> recharge
                 <div class='inner'>
                        <div class="name">
                            <%if g.isnodiscount=='0' && haslevel%><span style='color:red'><%if g.discountway == 1%>[折扣]<%else%>[立减]<%/if%></span><%/if%>
@@ -1382,11 +1377,8 @@ var fromcart = 0;
             }, true, true);
           
         })
-<<<<<<< HEAD
-        
-=======
         {/if}
->>>>>>> recharge
+
         //积分抵扣
         $('.deductcredit').click(function(){
                var on = $(this).attr('on')=='0'?'1':'0';

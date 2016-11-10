@@ -147,7 +147,7 @@
                             var provincial =  specs.provincial;
                             var domestic =  specs.domestic;
                             //只有国内或省内
-                            if (specs.provincial != 'undefined' && specs.domestic != 'undefined') {
+                            if (provincial != undefined && domestic != undefined) {
                                 $("#tab").show();
                                 $.each(domestic,function(key,value){ 
                                         html_dom += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
@@ -178,7 +178,7 @@
                                 
                             } else {
                                 $("#tab").hide();
-                                if (specs.provincial != 'undefined') {
+                                if (provincial != undefined) {
                                     
                                     $.each(provincial,function(key,value){ 
                                         html += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
@@ -186,7 +186,7 @@
                                     })  
                                     
                                 }
-                                if (specs.domestic != 'undefined') {
+                                if (domestic != undefined) {
                                     
                                     $.each(domestic,function(key,value){ 
                                         html += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';

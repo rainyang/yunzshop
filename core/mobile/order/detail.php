@@ -68,6 +68,25 @@ if(p('cashier') && $order['cashier'] == 1){
 
 if (!empty($order)) {
     $order['virtual_str'] = str_replace("\n", "<br/>", $order['virtual_str']);
+    /*
+     * 虚拟物品插件链接跳转 begin
+     */
+    $order['virtual_url'] = '';
+    $virtual_strs = explode("<br/>",$order['virtual_str']);
+    foreach ($virtual_strs as $key => $value) {
+        if(strstr($value,'http://')){
+            $str = explode(": ",$value);
+            $order['virtual_strs'][$key]['con'] = $str[0];
+            $order['virtual_strs'][$key]['url'] = $str[1];
+            if(count($virtual_strs) == 1)
+            {
+                $order['virtual_url'] = $str[1];
+            }
+        }
+    }
+    /*
+     * 虚拟物品插件链接跳转 end
+     */
     $diyformfields        = "";
     if ($diyform_plugin) {
         $diyformfields = ",og.diyformfields,og.diyformdata";
