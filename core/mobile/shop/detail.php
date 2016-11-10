@@ -276,7 +276,7 @@ if ($_W['isajax']) {
         } else {
             $goods['isforce'] = '1';
         }
-        if (!empty($goods['yunbi_deduct'])) {
+        if (!empty($goods['yunbi_deduct']) && !empty($yunbi_set['money'])) {
             $goods['yunbi_num'] = $goods['yunbi_deduct']/$yunbi_set['money'];
         }
     } else {

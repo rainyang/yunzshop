@@ -96,6 +96,9 @@
                             <option value='1' {if $_GPC['bonus_area']=='1'}selected{/if}>省级代理</option>
                             <option value='2' {if $_GPC['bonus_area']=='2'}selected{/if}>市级代理</option>
                             <option value='3' {if $_GPC['bonus_area']=='3'}selected{/if}>区级代理</option>
+                            {if $trade['is_street'] == 1}
+                            <option value='4' {if $_GPC['bonus_area']=='4'}selected{/if}>街级代理</option>
+                            {/if}
                         </select>
                     </div>
                 </div>
@@ -156,6 +159,7 @@
               {if $row['bonus_area'] == 1}省级代理：{$row['bonus_province']}{/if}
               {if $row['bonus_area'] == 2}市级代理：{$row['bonus_city']}{/if}
               {if $row['bonus_area'] == 3}区级代理：{$row['bonus_district']}{/if}
+              {if $row['bonus_area'] == 4}街级代理：{$row['bonus_street']}{/if}
           </td>
           <td>
 						{$row['clickcount']}

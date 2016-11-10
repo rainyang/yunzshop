@@ -1,8 +1,8 @@
 <?php
 global $_W, $_GPC;
-
 ca('bonus.set');
 $set = $this->getSet();
+$trade     = m('common')->getSysset('trade');
 if (checksubmit('submit')) {
     $data          = is_array($_GPC['setdata']) ? array_merge($set, $_GPC['setdata']) : array();
     $data['texts'] = is_array($_GPC['texts']) ? $_GPC['texts'] : array();

@@ -72,6 +72,9 @@
                     {if $member['bonus_area']==3}
                         [{php echo $this->set['texts']['agent_district']}]
                     {/if}
+                    {if $member['bonus_area']==4}
+                        [{php echo $this->set['texts']['agent_street']}]
+                    {/if}
                 {/if}
                 {if $set['levelurl']!=''}<i class='fa fa-question-circle' {if !empty($set['levelurl'])}onclick='location.href="{$set['levelurl']}"'{/if}></i></span>{/if}</div>
                 {if $member['agenttime']}
@@ -100,9 +103,6 @@
         {/if}
         <a href="{php echo $this->createPluginMobileUrl('bonus/log')}"><div class="nav nav1"><i class="fa fa-random  fa-3x" style="background:#ffb13b;"></i><div class="title">{php echo $this->set['texts']['commission_detail']}</div><div class="con">{php echo $this->set['texts']['commission']}明细</div></div></a>        
         <a href="{php echo $this->createPluginMobileUrl('bonus/customer')}"><div class="nav nav1"><i class="fa fa-users  fa-3x" style="background:#ff3877;"></i><div class="title">{php echo $this->set['texts']['mycustomer']}</div><div class="con"><span>{$member['customercount']}</span> 人</div></div></a> 
-        {if $member['bonus_area']}
-        
-        {/if}
     </div>
     <script language="javascript">
     require(['tpl', 'core'], function(tpl, core) {

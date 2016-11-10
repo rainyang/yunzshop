@@ -146,13 +146,28 @@ if ($operation == 'display' && $_W['isajax']) {
         'success' => false,
         'qrcode' => false
     );
+    $jie = $set['pay']['weixin_jie'];
     if (is_weixin()) {
-        if (isset($set['pay']) && $set['pay']['weixin'] == 1) {
+        
+        if (isset($set['pay']) && ($set['pay']['weixin'] == 1) && ($jie != 1)) {
             if (is_array($setting['payment']['wechat']) && $setting['payment']['wechat']['switch']) {
                 $wechat['success'] = true;
+                $wechat['weixin'] = true;
+                $wechat['weixin_jie'] = false;
             }
+
+        }
+
+    }
+    if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {  
+        if ((isset($set['pay']) && ($set['pay']['weixin_jie'] == 1) && !$wechat['success']) || ($jie == 1)) {
+            $wechat['success'] = true;
+            $wechat['weixin_jie'] = true;
+            $wechat['weixin'] = false;
         }
     }
+    $wechat['jie'] = $jie;
+    
     //扫码
     if (!isMobile() && isset($set['pay']) && $set['pay']['weixin'] == 1) {
         if (isset($set['pay']) && $set['pay']['weixin'] == 1) {
@@ -405,7 +420,9 @@ if ($operation == 'display' && $_W['isajax']) {
         $where_update = "id={$orderid}";
     }
     if ($type == 'weixin') {
-        if (empty($set['pay']['weixin'])) {
+        if (!empty($set['pay']['weixin']) || !empty($set['pay']['weixin_jie'])) {
+            
+        }else{
             show_json(0, '未开启微信支付!');
         }
 
@@ -426,17 +443,32 @@ if ($operation == 'display' && $_W['isajax']) {
             'payment'
         ));
         //微信下
-        if (is_weixin()) {
+        if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {  
             if (is_array($setting['payment'])) {
                 $options           = $setting['payment']['wechat'];
-                $options['appid']  = $_W['account']['key'];
-                $options['secret'] = $_W['account']['secret'];
-                $wechat            = m('common')->wechat_build($params, $options, 0);
-                //$wechat['success'] = false;
-                if (!is_error($wechat)) {
-                    $wechat['success'] = true;
-                } else {
-                    show_json(0, $wechat['message']);
+                if (is_weixin()) {
+                    if(empty($set['pay']['weixin_jie'])){
+                        $options['appid']  = $_W['account']['key'];
+                        $options['secret'] = $_W['account']['secret'];
+                        $wechat            = m('common')->wechat_build($params, $options, 0);
+                        //$wechat['success'] = false;
+                        if (!is_error($wechat)) {
+                            $wechat['success'] = true;
+                        } else {
+                            show_json(0, $wechat['message']);
+                        }
+                    }
+                }
+                if(!empty($set['pay']['weixin_jie'])){
+                    $options['appid'] = $set['pay']['weixin_jie_appid'];
+                    $options['mchid'] = $set['pay']['weixin_jie_mchid'];
+                    $options['apikey'] = $set['pay']['weixin_jie_apikey'];
+                    $wechat = m('common')->wechat_native_build($params, $options, 0);
+
+                    if (!is_error($wechat)) {
+                        $wechat['success'] = true;
+                        $wechat['weixin_jie'] = true;
+                    } 
                 }
             }
             if (!$wechat['success']) {
@@ -1153,6 +1185,10 @@ if ($operation == 'display' && $_W['isajax']) {
  //   }
 
 
+}elseif ($operation == 'orderstatus' && $_W['isajax']) {
+    global $_W;
+    $order = pdo_fetch('select status from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $orderid, ':uniacid' => $uniacid));
+    show_json(1, $order);
 }
 
 

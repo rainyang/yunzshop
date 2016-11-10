@@ -85,7 +85,7 @@ if (empty($_GPC['export'])) {
     $sql .= "LIMIT " . ($pindex - 1) * $psize . ',' . $psize;
 }
 $list = pdo_fetchall($sql, $params);
-$totalmoney = pdo_fetchcolumn('select sum(o.price) from ' . tablename("sz_yi_order") . " o" . " left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id left join" . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename("sz_yi_member_address") . " a on a.id=o.addressid " . " left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . "  where {$condition} ", $params);
+$totalmoney = pdo_fetchcolumn('select sum(og.price) AS totalmoney from ' . tablename("sz_yi_order") . " o" . " left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id left join" . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . " left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . " left join " . tablename("sz_yi_member_address") . " a on a.id=o.addressid " . " left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . " left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid" . "  where {$condition} ", $params);
 $paytype = array(
     '0' => array(
         "css" => "default",

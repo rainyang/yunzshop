@@ -41,14 +41,9 @@ pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_channel')." CHANGE `diychannelda
 pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_channel')." CHANGE `realname` `realname` varchar(45) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '姓名';");
 pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." CHANGE `diymemberfields` `diymemberfields` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '自定义表单字段';");
 pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." CHANGE `diymemberdata` `diymemberdata` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '自定义表单数据';");
-}
-if(!pdo_fieldexists('sz_yi_goods', 'plugin')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `plugin` varchar(10) DEFAULT '';");
-}
-if(!pdo_fieldexists('sz_yi_order_comment', 'plugin')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_comment')." ADD `plugin` varchar(10) DEFAULT '';");
-}
-if(!pdo_fieldexists('sz_yi_order', 'plugin')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `plugin` varchar(10) DEFAULT '';");
+
+//11.9 街道分红
+if (!pdo_fieldexists('sz_yi_member', 'bonus_street')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_street` varchar(50) DEFAULT '';");
 }
 echo 1;
