@@ -563,7 +563,7 @@ if ($_W['isajax']) {
                 $price = $goodsprice;
             }
             $order_all[$g['supplier_uid']]['total'] += $g["total"];
-            $order_all[$g['supplier_uid']]['deductprice'] += $g["deduct"] * $g["total"];
+            $order_all[$g['supplier_uid']]['deductprice'] += $g["deduct"];
             //虚拟币抵扣
             if ($g["yunbi_deduct"]) {
                 $order_all[$g['supplier_uid']]['yunbideductprice'] += $g["yunbi_deduct"] * $g["total"];
@@ -1170,7 +1170,7 @@ if ($_W['isajax']) {
                 if ($g['isverifysend'] == 1) {
                     $isverifysend = true;
                 }
-                $deductprice += $g["deduct"] * $g["total"];
+                $deductprice += $g["deduct"];
 
                 //虚拟币抵扣
                 if ($data["yunbi_deduct"]) {
@@ -1818,7 +1818,7 @@ if ($_W['isajax']) {
                     }
                 }
 
-                $deductprice += $data["deduct"] * $data["total"];
+                $deductprice += $data["deduct"];
 
                 //虚拟币抵扣
                 if ($data["yunbi_deduct"]) {
