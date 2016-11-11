@@ -537,21 +537,22 @@ var fromcart = 0;
                     var discountprice = 0;
 
                     for (var i = 0; i < supplierarr.length; i++) {
-                        discount = $('input[data-id=discount'+i+']').val();
-                        discountway = $('input[data-id=discountway'+i+']').val();
+                        discountprice = 0;
+                        discount = $('input[data-id=discount'+supplierarr[i]+']').val();
+                        discountway = $('input[data-id=discountway'+supplierarr[i]+']').val();
                         if (discountway == 1) {
-                            if( $('input[data-id=discount'+i+']').length>0){
+                            if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
                                 discountprice += marketprice - parseFloat( discount.replace(",","") ) / 10 * marketprice;
                                 
                             }
                         } else {
-                            if( $('input[data-id=discount'+i+']').length>0){
+                            if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
                                 discountprice += parseFloat( discount.replace(",","") ) * num;
                             }
                         }   
+                        $('.discountprice[data-id='+supplierarr[i]+']').html( discountprice.toFixed(2) );  
                     }
 
-                $('.discountprice').html( discountprice.toFixed(2) );
                 var zt =  $('.addorder_nav .selected').data('nav') =='1';
                 getDispatchPrice(zt);
                 
@@ -584,21 +585,23 @@ var fromcart = 0;
                     var discountprice = 0;
 
                     for (var i = 0; i < supplierarr.length; i++) {
-                        discount = $('input[data-id=discount'+i+']').val();
-                        discountway = $('input[data-id=discountway'+i+']').val();
+                        discountprice = 0;
+                        discount = $('input[data-id=discount'+supplierarr[i]+']').val();
+                        discountway = $('input[data-id=discountway'+supplierarr[i]+']').val();
                         if (discountway == 1) {
-                            if( $('input[data-id=discount'+i+']').length>0){
+                            if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
                                 discountprice += marketprice - parseFloat( discount.replace(",","") ) / 10 * marketprice;
                                 
                             }
                         } else {
-                            if( $('input[data-id=discount'+i+']').length>0){
+                            if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
                                 discountprice += parseFloat( discount.replace(",","") ) * num;
                             }
-                        }   
+                        } 
+                        $('.discountprice[data-id='+supplierarr[i]+']').html( discountprice.toFixed(2) );  
                     }
 
-                $('.discountprice').html( discountprice.toFixed(2) );
+                
 
                var zt =  $('.addorder_nav .selected').data('nav') =='1';
                 getDispatchPrice(zt);
@@ -638,21 +641,22 @@ var fromcart = 0;
                     var discountprice = 0;
 
                     for (var i = 0; i < supplierarr.length; i++) {
-                        discount = $('input[data-id=discount'+i+']').val();
-                        discountway = $('input[data-id=discountway'+i+']').val();
+                        discountprice = 0;
+                        discount = $('input[data-id=discount'+supplierarr[i]+']').val();
+                        discountway = $('input[data-id=discountway'+supplierarr[i]+']').val();
                         if (discountway == 1) {
-                            if( $('input[data-id=discount'+i+']').length>0){
+                            if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
                                 discountprice += marketprice - parseFloat( discount.replace(",","") ) / 10 * marketprice;
                                 
                             }
                         } else {
-                            if( $('input[data-id=discount'+i+']').length>0){
+                            if( $('input[data-id=discount'+supplierarr[i]+']').length>0){
                                 discountprice += parseFloat( discount.replace(",","") ) * num;
                             }
                         }   
+                        $('.discountprice[data-id='+supplierarr[i]+']').html( discountprice.toFixed(2) );  
                     }
 
-                $('.discountprice').html( discountprice.toFixed(2) );
           
                var zt =  $('.addorder_nav .selected').data('nav') =='1';
                 getDispatchPrice(zt);
