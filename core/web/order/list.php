@@ -582,12 +582,12 @@ if ($operation == "display") {
         $value["paytypevalue"] = $order_paytype;
         $value["css"] = $paytype[$order_paytype]["css"];
         $value["paytype"] = $paytype[$order_paytype]["name"];
-        $value["dispatchname"] = empty($value["addressid"]) ? "自提" : $value["dispatchname"];
+
         if (empty($value["dispatchname"])) {
-            $value["dispatchname"] = "快递";
+            $value["dispatchname"] = "快递配送";
         }
         if ($value["isverify"] == 1) {
-            $value["dispatchname"] = "线下核销";
+            $value["dispatchname"] = "配送核销";
         } elseif ($value["isvirtual"] == 1) {
             $value["dispatchname"] = "虚拟物品";
         } elseif (!empty($value["virtual"])) {
@@ -595,6 +595,7 @@ if ($operation == "display") {
         } elseif ($value['cashier'] == 1) {
             $value["dispatchname"] = "收银台支付";
         }
+        $value["dispatchname"] = empty($value["addressid"]) ? "上门自提" : $value["dispatchname"];
 
         if (p('cashier') && $value['cashier'] == 1) {
             $value['name'] = set_medias(array(
