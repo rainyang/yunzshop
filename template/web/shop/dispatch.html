@@ -29,6 +29,7 @@
             </thead>
             <tbody>
                 {loop $list $item}
+                {php $dispath_name = $dispatch_item['supplier_uid']==0 ? "(总店)" : "(". $dispatch_item['supplier_name'] .")";}
                 <tr>
                     <td>{$item['id']}</td>
                     <td>
@@ -36,7 +37,7 @@
                         <input type="text" class="form-control" name="displayorder[{$item['id']}]" value="{$item['displayorder']}">
                         {/if}
                     </td>
-                    <td>{$item['dispatchname']}</td>
+                    <td>{$item['dispatchname']}{$dispath_name}</td>
                     {if $item['calculatetype']==0}
                     <td>按重量计费</td>
                     <td>{$item['firstprice']}</td>
