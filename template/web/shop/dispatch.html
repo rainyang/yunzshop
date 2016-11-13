@@ -29,7 +29,7 @@
             </thead>
             <tbody>
                 {loop $list $item}
-                {php $dispath_name = $dispatch_item['supplier_uid']==0 ? "(总店)" : "(". $dispatch_item['supplier_name'] .")";}
+                {php $dispath_name = $item['supplier_uid']==0 ? "(总店)" : "(". $item['supplier_name'] .")";}
                 <tr>
                     <td>{$item['id']}</td>
                     <td>
