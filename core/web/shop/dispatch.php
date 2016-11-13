@@ -29,7 +29,7 @@ if (p('supplier')) {
         $supplier_uid = $_W['uid'];
     }
 
-    if (!empty($_W['isfounder'])) {
+    if (empty($_W['isfounder'])) {
         $supplier_cond = " AND supplier_uid = {$supplier_uid}";
     }
 }
