@@ -51,7 +51,7 @@ class AutoLoader
         $name = array_pop($array);
         return $name;
     }
-    private function _mapNamespaceToDir($namespace)
+    private static function _mapNamespaceToDir($namespace)
     {
         $dir = '';
         switch ($namespace) {
