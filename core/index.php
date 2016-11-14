@@ -125,7 +125,7 @@ final class Run
     public function __construct()
     {
         $this->dispatch = new Dispatcher($_GET['api']);
-
+        $this->run();
     }
 
     public function run()
@@ -160,7 +160,6 @@ final class Run
 }
 require_once __CORE_PATH__ . '/inc/framework/framework.php';
 new AutoLoader();
-$this->run();
 /*$info = D('User')->find();
 echo D('User')->_sql();
 dump($info);exit;*/
