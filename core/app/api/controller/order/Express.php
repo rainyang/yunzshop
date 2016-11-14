@@ -16,7 +16,6 @@ class Express extends YZ
         global $_W;
         $_W['ispost']= true;
         $result = $this->callMobile('order/express/display');
-        ddump(1);
         if($result['code'] == -1){
             $this->returnError();
         }

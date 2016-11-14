@@ -32,6 +32,7 @@ class AutoLoader
     //private $namespace;
     public function spl_autoload_register($full_class_name)
     {
+        dump($full_class_name);
         $namespace = substr($full_class_name, 0, strrpos($full_class_name, '\\'));//最后一个'\'之前 是命名空间
         if(empty($namespace)){
             return false;
@@ -124,9 +125,7 @@ final class Run
     public function __construct()
     {
         $this->dispatch = new Dispatcher($_GET['api']);
-        //todo 感觉应该使用静态方法
-        new AutoLoader();
-        $this->run();
+
     }
 
     public function run()
@@ -135,6 +134,7 @@ final class Run
         //require_once $this->dispatch->getControllerPatch();
         $controller_full_name = $this->_getControllerFullName();
         $method_name = $this->dispatch->getMethodName();
+        dump(1);
         $controller_obj = new $controller_full_name;
         $controller_obj->$method_name();
     }
@@ -159,14 +159,17 @@ final class Run
     }
 }
 require_once __CORE_PATH__ . '/inc/framework/framework.php';
+new AutoLoader();
+$this->run();
 /*$info = D('User')->find();
 echo D('User')->_sql();
 dump($info);exit;*/
 define('YII_DEBUG',true);
-
-require_once __VENDOR_PATH__."/autoload.php";
-require(__VENDOR_PATH__ . '/yiisoft/yii2/Yii.php');
-$config = require(__CORE_PATH__ . '/config/yii.php');
-new \yii\web\Application($config);
+if(is_test()){
+    require_once __VENDOR_PATH__."/autoload.php";
+    require(__VENDOR_PATH__ . '/yiisoft/yii2/Yii.php');
+    $config = require(__CORE_PATH__ . '/config/yii.php');
+    new \yii\web\Application($config);
+}
 new Run();
 
