@@ -585,9 +585,9 @@ if (!class_exists('ReturnModel')) {
                         $log_content[] = "当前不可返现\r\n";
                     }
                 }
-				$log_content[] = "公众号ID：".$val['uniacid']."结束-----------\r\n\r\n";
+				$log_content[] = "公众号ID：".$_W['uniacid']."结束-----------\r\n\r\n";
             } else {
-                $log_content[] = "公众号ID：".$val['uniacid'].date("Y-m-d")."已返现\r\n\r\n";
+                $log_content[] = "公众号ID：".$_W['uniacid'].date("Y-m-d")."已返现\r\n\r\n";
             }
             $log_content[] = date("Y-m-d H:i:s")."返现任务执行完成===================\r\n \r\n \r\n";
         	file_put_contents($return_log,$log_content,FILE_APPEND);
