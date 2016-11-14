@@ -305,9 +305,13 @@ if (!class_exists('ReturnModel')) {
 					// $finished_record[$percentage] = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
 					if($set['degression'] == 1)
 					{
+						$log_content[] = "递减返现";
+						$log_content[] = "\r\n";
 						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money <= 0.5  and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
 						pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + (money - return_money) * ".$percentage." / 100,last_money = (money - return_money) * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money > 0.5 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
 					}else{
+						$log_content[] = "单笔返现";
+						$log_content[] = "\r\n";
 						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
 						pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + money * ".$percentage." / 100,last_money = money * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
 					}
@@ -582,9 +586,9 @@ if (!class_exists('ReturnModel')) {
                         $log_content[] = "当前不可返现\r\n";
                     }
                 }
-				$log_content[] = "公众号ID：".$val['uniacid']."结束-----------\r\n\r\n";
+				$log_content[] = "公众号ID：".$_W['uniacid']."结束-----------\r\n\r\n";
             } else {
-                $log_content[] = "公众号ID：".$val['uniacid'].date("Y-m-d")."已返现\r\n\r\n";
+                $log_content[] = "公众号ID：".$_W['uniacid'].date("Y-m-d")."已返现\r\n\r\n";
             }
             $log_content[] = date("Y-m-d H:i:s")."返现任务执行完成===================\r\n \r\n \r\n";
         	file_put_contents($return_log,$log_content,FILE_APPEND);
