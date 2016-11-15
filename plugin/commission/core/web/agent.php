@@ -111,8 +111,9 @@ if ($operation == 'display') {
         plog('commission.agent.export', '导出分销商数据');
         foreach ($list as &$row) {
             $row['createtime'] = date('Y-m-d H:i', $row['createtime']);
-            $row['agentime']   = empty($row['agenttime']) ? '' : date('Y-m-d H:i', $row['agentime']);
+            $row['agenttime']   = empty($row['agenttime']) ? '' : date('Y-m-d H:i', $row['agenttime']);
             $row['groupname']  = empty($row['groupname']) ? '无分组' : $row['groupname'];
+            $row['isagent']  = empty($row['isagent']) ? '未审核' : '已审核';
             $row['levelname']  = empty($row['levelname']) ? '普通等级' : $row['levelname'];
             $row['parentname'] = empty($row['parentname']) ? '总店' : "[" . $row['agentid'] . "]" . $row['parentname'];
             $row['statusstr']  = empty($row['status']) ? '' : "通过";
@@ -204,7 +205,7 @@ if ($operation == 'display') {
                 ),
                 array(
                     'title' => '审核状态',
-                    'field' => 'agenttime',
+                    'field' => 'isagent',
                     'width' => 12
                 ),
                 array(
