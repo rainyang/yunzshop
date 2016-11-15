@@ -138,7 +138,7 @@ if (!class_exists('discuzModel')) {
             //生成同步登录的代码
             $ucsynlogin = uc_user_synlogin($bbs_uid);
             echo $ucsynlogin;
-            @message('登录成功', 'http://o2.yunzshop.com', 'success');
+            @message('登录成功', 'http://weixin.wso2o.cn/dsz/upload', 'success');
         }
 
         /**
