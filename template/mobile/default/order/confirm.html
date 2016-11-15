@@ -899,26 +899,26 @@ var fromcart = 0;
                   if (getjson.status == 1) {
 
                       if(zt){
-                          $('.dispatchprice[data-id='+supplier_uid+']').html('0.00');
+                          $('.dispatchprice[data-id='+getjson.result.supplier_uid+']').html('0.00');
                       } else {
-                          $('.dispatchprice[data-id='+supplier_uid+']').html(getjson.result.price);
+                          $('.dispatchprice[data-id='+getjson.result.supplier_uid+']').html(getjson.result.price);
                       }
 
                       if(getjson.result.deductcredit){
-                          $('.deductcredit_money[data-id='+supplier_uid+']').html( getjson.result.deductmoney);
-                          $('.deductcredit_info[data-id='+supplier_uid+']').html( getjson.result.deductcredit);
-                          $('.deductcredit[data-id='+supplier_uid+']').attr('credit',getjson.result.deductcredit);
-                          $('.deductcredit[data-id='+supplier_uid+']').attr('money',getjson.result.deductmoney);
+                          $('.deductcredit_money[data-id='+getjson.result.supplier_uid+']').html( getjson.result.deductmoney);
+                          $('.deductcredit_info[data-id='+getjson.result.supplier_uid+']').html( getjson.result.deductcredit);
+                          $('.deductcredit[data-id='+getjson.result.supplier_uid+']').attr('credit',getjson.result.deductcredit);
+                          $('.deductcredit[data-id='+getjson.result.supplier_uid+']').attr('money',getjson.result.deductmoney);
                       }
                       if(getjson.result.deductyunbi){
-                          $('.deductyunbi_money[data-id='+supplier_uid+']').html( getjson.result.deductyunbimoney);
-                          $('.deductyunbi_info[data-id='+supplier_uid+']').html( getjson.result.deductyunbi);
-                          $('.deductyunbi[data-id='+supplier_uid+']').attr('credit',getjson.result.deductyunbi);
-                          $('.deductyunbi[data-id='+supplier_uid+']').attr('money',getjson.result.deductyunbimoney);
+                          $('.deductyunbi_money[data-id='+getjson.result.supplier_uid+']').html( getjson.result.deductyunbimoney);
+                          $('.deductyunbi_info[data-id='+getjson.result.supplier_uid+']').html( getjson.result.deductyunbi);
+                          $('.deductyunbi[data-id='+getjson.result.supplier_uid+']').attr('credit',getjson.result.deductyunbi);
+                          $('.deductyunbi[data-id='+getjson.result.supplier_uid+']').attr('money',getjson.result.deductyunbimoney);
                       }
                       if(getjson.result.deductcredit2){
-                          $('.deductcredit2_money[data-id='+supplier_uid+']').html( getjson.result.deductcredit2);
-                          $('.deductcredit2[data-id='+supplier_uid+']').attr('credit2',getjson.result.deductcredit2);
+                          $('.deductcredit2_money[data-id='+getjson.result.supplier_uid+']').html( getjson.result.deductcredit2);
+                          $('.deductcredit2[data-id='+getjson.result.supplier_uid+']').attr('credit2',getjson.result.deductcredit2);
                       }
 
                       if(getjson.result.hascoupon){
@@ -934,22 +934,22 @@ var fromcart = 0;
                       }
 
                       if(getjson.result.deductenough_money>0){
-                        $('.deductenough[data-id='+supplier_uid+']').show();
-                        $('.deductenough_money[data-id='+supplier_uid+']').html( getjson.result.deductenough_money);
-                        $('.deductenough_enough[data-id='+supplier_uid+']').html( getjson.result.deductenough_enough);
+                          $('.deductenough[data-id='+getjson.result.supplier_uid+']').show();
+                          $('.deductenough_money[data-id='+getjson.result.supplier_uid+']').html( getjson.result.deductenough_money);
+                          $('.deductenough_enough[data-id='+getjson.result.supplier_uid+']').html( getjson.result.deductenough_enough);
                       } else{
-                        $('.deductenough[data-id='+supplier_uid+']').hide();
-                        $('.deductenough_money[data-id='+supplier_uid+']').html( '0');
-                        $('.deductenough_enough[data-id='+supplier_uid+']').html( '0');
+                          $('.deductenough[data-id='+getjson.result.supplier_uid+']').hide();
+                          $('.deductenough_money[data-id='+getjson.result.supplier_uid+']').html( '0');
+                          $('.deductenough_enough[data-id='+supplier_uid+']').html( '0');
                       }
-                      calctotalprice(supplier_uid);
+                      calctotalprice(getjson.result.supplier_uid);
                       if( $('.shownum').length>0){
-                        var goodsinfo = $("input[data-name='goods'][data-id="+supplier_uid+"]").val().split('|')[0];
-                        var goods = goodsinfo.split(',');
-                        var goodsid = goods[0];
-                        var optionid = goods[1];
-                        var num = parseInt( $('.shownum').val());
-                        $("input[data-name='goods'][data-id="+supplier_uid+"]").val(goodsid + "," + optionid +"," + num + '|');
+                          var goodsinfo = $("input[data-name='goods'][data-id="+getjson.result.supplier_uid+"]").val().split('|')[0];
+                          var goods = goodsinfo.split(',');
+                          var goodsid = goods[0];
+                          var optionid = goods[1];
+                          var num = parseInt( $('.shownum').val());
+                          $("input[data-name='goods'][data-id="+getjson.result.supplier_uid+"]").val(goodsid + "," + optionid +"," + num + '|');
                       }
 
                   }

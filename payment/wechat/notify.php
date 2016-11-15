@@ -71,7 +71,7 @@ if (is_array($setting['payment']) || $set['pay']['weixin_jie'] == 1) {
 				$params[':module'] = 'sz_yi';
 				$log = pdo_fetch($sql, $params);
 				m('common')->paylog('log: ' . (empty($log) ? '' : json_encode($log)) . '');
-				if (!empty($log) && $log['status'] == '0' && $log['fee'] == $total_fee) {
+				if (!empty($log) && $log['status'] == '0' &&  bccomp($log['fee'], $total_fee, 2) == 0) {
 					m('common')->paylog('corelog: ok');
 					$site = WeUtility::createModuleSite($log['module']);
 
