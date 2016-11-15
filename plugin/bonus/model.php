@@ -77,16 +77,10 @@ if (!class_exists('BonusModel')) {
 		            	if(empty($this->parentAgents[$parentAgent['bonuslevel']]) && $level < $agentlevel){
 		            		$level = $agentlevel;		//去最大权重值
 		        			$this->parentAgents[$parentAgent['bonuslevel']] = $parentAgent['id'];
-		        			if(p('love') && $parentAgent['isagency'] < 2){
-		        				unset($this->parentAgents[$parentAgent['bonuslevel']]);
-		        			}
 		        		}
 	        		}else{
 		            	if(empty($this->parentAgents[$parentAgent['bonuslevel']])){
 		        			$this->parentAgents[$parentAgent['bonuslevel']] = $parentAgent['id'];
-		        			if(p('love') && $parentAgent['isagency'] < 2){
-		        				unset($this->parentAgents[$parentAgent['bonuslevel']]);
-		        			}
 		        		}
 	        		}
         		}
