@@ -124,12 +124,6 @@
        <%/each%>
     </div>
     <%/if%>
-    {if p('recharge')}
-    <div class="title">充值专区</div>
-    <div class="recharge_goods" id="recharge">
-        <div id='recharge_goods_container'></div>
-    </div>
-    {/if}
     <div class="title">推荐宝贝</div>
     <div class="goods">
         <div id='goods_container'></div>
@@ -238,18 +232,11 @@
                     stop = true;
                     $('#index_loading').remove();
                     $('#goods_container').append(tpl('tpl_goods_list', result));
-                    $('#recharge_goods_container').append(tpl('tpl_recharge_goods_list', result));
                     $('.good img').each(function(){
-                        $(this).height($(this).width());
-                    })
-                    $('.recharge_good img').each(function(){
                         $(this).height($(this).width());
                     })
                     $('.good').unbind('click').click(function(){
                         location.href = core.getUrl('shop/detail',{id:$(this).data('goodsid') });
-                    })
-                    $('.recharge_good').unbind('click').click(function(){
-                        location.href = core.getUrl('plugin/recharge',{id:$(this).data('goodsid'),method: 'detail'});
                     })
                      
                     if (result.goods.length < result.pagesize && scrolling) {

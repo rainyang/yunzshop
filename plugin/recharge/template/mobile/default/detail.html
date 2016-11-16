@@ -137,9 +137,10 @@
                     $.ajax({
                         type: "POST",
                         url: "{php echo $this->createPluginMobileUrl('recharge/mobile_check')}",
-                        data: {mobile:$("#telephone").val(), goodsid:"{php echo $_GPC['id']}"},
+                        data: {mobile:$("#telephone").val()},
                         dataType: "json",
                         success: function(result){
+                           //console.log(result);return;
                             var specs = result.spec_datas;
                             $("#catname").html(result.carrier);
                             if (result.code == 1) {
@@ -148,11 +149,12 @@
                                 var html_dom = '';
                                 var provincial =  specs.provincial;
                                 var domestic =  specs.domestic;
+                                var goodsid = result.goodsid;
                                 //只有国内或省内
                                 if (provincial != undefined && domestic != undefined) {
                                     $("#tab").show();
                                     $.each(domestic,function(key,value){ 
-                                            html_dom += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
+                                            html_dom += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
                                             html_dom += '<p>' + value["itemtitle"] + '</p></li>';
                                         })
                                     $("#specs").html(html_dom);
@@ -162,7 +164,7 @@
                                             $(this).addClass('hover');
                                             $("#tab a").prev().removeClass();
                                             $.each(provincial,function(key,value){    
-                                                html_pro += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
+                                                html_pro += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
                                                 html_pro += '<p>' + value["itemtitle"] + '</p></li>';
                                             })
                                             $("#specs").html(html_pro);
@@ -171,7 +173,7 @@
                                             $(this).addClass('hover');
                                             $("#tab a").next().removeClass();
                                             $.each(domestic,function(key,value){ 
-                                                html_dom += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
+                                                html_dom += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
                                                 html_dom += '<p>' + value["itemtitle"] + '</p></li>';
                                             })
                                             $("#specs").html(html_dom);
@@ -183,7 +185,7 @@
                                     if (provincial != undefined) {
                                         
                                         $.each(provincial,function(key,value){ 
-                                            html += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
+                                            html += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
                                             html += '<p>' + value["itemtitle"] + '</p></li>';
                                         })  
                                         
@@ -191,7 +193,7 @@
                                     if (domestic != undefined) {
                                         
                                         $.each(domestic,function(key,value){ 
-                                            html += '<li><a href="#" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
+                                            html += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
                                             html += '<p>' + value["itemtitle"] + '</p></li>';
                                         }) 
                                     }
@@ -201,13 +203,13 @@
                                 
                                 
                                 $(document).on('click',".pay",function(){
-                                    location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$(this).attr('optionid') + "&total=1&telephone="+$("#telephone").val();
+                                    location.href = "{php echo $this->createMobileUrl('order/confirm')}&id=" + $(this).attr('goodsid') + "&optionid=" +$(this).attr('optionid') + "&total=1&telephone="+$("#telephone").val();
                                 })
                             } else {
-                                alert('该商品不支持号码所属运营商或地区');
+                                alert('暂不支持该运营商或该地区手机号码充值!');
                                 window.location.reload();
                             }
-                            console.log(result);
+                            //console.log(result);
                         },
                         complete:function(){
                             $("#loading").hide();

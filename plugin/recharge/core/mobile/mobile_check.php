@@ -9,11 +9,11 @@ global $_W, $_GPC;
 $openid         = m('user')->getOpenid();
 $member         = m('member')->getMember($openid);
 $uniacid        = $_W['uniacid'];
-$goodsid        = intval($_GPC['id']);
+//$goodsid        = intval($_GPC['id']);
 
 
 
-if($_GPC['mobile'] && $_GPC['goodsid']){
+if($_GPC['mobile']){
     $url = "http://tcc.taobao.com/cc/json/mobile_tel_segment.htm?tel=".$_GPC['mobile']."&t=".time();
     $num = 0;
     do {
@@ -31,6 +31,7 @@ if($_GPC['mobile'] && $_GPC['goodsid']){
         $num++;
     } while (empty($array['catName']) && $num < 3);
     //echo json_encode($array);exit;
+    //手机号所属运营商
     if ($array['catName'] == '中国移动') {
         $operator = 1;
     } else if ($array['catName'] == '中国联通') {
@@ -38,51 +39,43 @@ if($_GPC['mobile'] && $_GPC['goodsid']){
     } else if ($array['catName'] == '中国电信') {
         $operator = 3;
     }
-    if (!empty($array)) {
-        $goods          = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE id = :id limit 1", array(
-            ':id' => $_GPC['goodsid']
+    $province = $array['province'];//手机号所属省份
+    if (!empty($operator) && !empty($province)) {
+        $goods          = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE operator = :operator AND province like '%{$province}%' AND uniacid = :uniacid limit 1", 
+            array(
+            ':operator' => $operator,
+            ':uniacid' => $_W['uniacid']
         ));
-        if(empty($goods['province']) && $goods['operator'] == 0){
-            //没有地区及运营商限制
+        if (empty($goods)) {
+            $goods          = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE operator = :operator AND uniacid = :uniacid limit 1", 
+                array(
+                    ':operator' => $operator,
+                    ':uniacid' => $_W['uniacid']
+                ));
+        }
+        if (!empty($goods)) {
             $code = 1;
-            //$data = array('code' => 1,'carrier' => $array['carrier'],'catname' => $array['catName']);
-        }else{
-            if (!empty($goods['province']) && $goods['operator'] == 0) {
-                $where = " and province like '%" . $array['province'] . "%'";
-            }
-            if (empty($goods['province']) && $goods['operator'] != 0) {
-                $where = " and operator = " . $operator;
-            }
-            if (!empty($goods['province']) && $goods['operator'] != 0) {
-                $where = " and province like '%" . $array['province'] . "%' and operator = " . $operator;
-            }
-            $goods_info = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE id = :goodsid " . $where,array(':goodsid' => $_GPC['goodsid']));
-            if(!empty($goods_info)){
-                $code = 1;
-                //$data = array('code' => 1,'carrier' => $array['carrier'],'catname' => $array['catName']);
-            }else{
-                $goods_info = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE id = :goodsid ",array(':goodsid' => $_GPC['goodsid']));
-                $code = 0;
-                //$data = array('code' => 0,'carrier' => $array['carrier'],'catname' => $array['catName'],'limit_province' => $goods_info['province'],'limit_operator' => $goods_info['operator']);
-            }
+            $goodsid = $goods['id'];
+        } else {
+            $code = 0;
         }
         if ($code == 1) {
             $spec_provincial_id = pdo_fetchcolumn("select gsi.id from " . tablename('sz_yi_goods_spec') . " gs 
             left join " . tablename('sz_yi_goods_spec_item') . " gsi 
             on gs.id = gsi.specid 
-            where gs.goodsid = " . $_GPC['goodsid'] . " and gsi.title = '省内流量' and gs.uniacid = " . $_W['uniacid'] ." 
+            where gs.goodsid = " . $goodsid . " and gsi.title = '省内流量' and gs.uniacid = " . $_W['uniacid'] ." 
             order by gs.displayorder asc");//省内
 
             $spec_domestic_id = pdo_fetchcolumn("select gsi.id from " . tablename('sz_yi_goods_spec') . " gs 
             left join " . tablename('sz_yi_goods_spec_item') . " gsi 
             on gs.id = gsi.specid 
-            where gs.goodsid = " . $_GPC['goodsid'] . " and gsi.title = '国内流量' and gs.uniacid = " . $_W['uniacid'] ." 
+            where gs.goodsid = " . $goodsid . " and gsi.title = '国内流量' and gs.uniacid = " . $_W['uniacid'] ." 
             order by gs.displayorder asc");//国内
 
             $spec_operator_id = pdo_fetchcolumn("select gsi.id from " . tablename('sz_yi_goods_spec') . " gs 
             left join " . tablename('sz_yi_goods_spec_item') . " gsi 
             on gs.id = gsi.specid 
-            where gs.goodsid = " . $_GPC['goodsid'] . " and gsi.title = '" . $array['catName'] . "' and gs.uniacid = " . $_W['uniacid'] ." 
+            where gs.goodsid = " . $goodsid . " and gsi.title = '" . $array['catName'] . "' and gs.uniacid = " . $_W['uniacid'] ." 
             order by gs.displayorder asc");//获取用户填写手机号码的商品规格运营商id
 
             $spec_ids = pdo_fetchall("select gsi.id,gsi.title from " . tablename('sz_yi_goods_spec') . " gs 
@@ -91,7 +84,7 @@ if($_GPC['mobile'] && $_GPC['goodsid']){
             where gs.goodsid = :id and gs.uniacid = :uniacid
             order by gs.displayorder asc",
                 array(
-                    ':id' => $_GPC['goodsid'],
+                    ':id' => $goodsid,
                     ':uniacid' => $_W['uniacid']
                 ));//获取商品所有规格
             $spec_provincial_data = array();
@@ -122,43 +115,10 @@ if($_GPC['mobile'] && $_GPC['goodsid']){
                     $spec_datas['domestic'][$key]['price'] = $spec_domestic_data['marketprice'];
                 }
             }
-
-            /*$allspecs = pdo_fetchall("select * from " . tablename('sz_yi_goods_spec') . " where goodsid=:id order by displayorder asc", array(
-                ':id' => $_GPC['goodsid']
-            ));
-            foreach ($allspecs as &$s) {
-                $items      = pdo_fetchall("select * from " . tablename('sz_yi_goods_spec_item') . " where  `show`=1 and specid=:specid order by displayorder asc", array(
-                    ":specid" => $s['id']
-                ));
-                foreach ($items as $itemid) {
-                    if (in_array($itemid['id'],$spec_datas['provincial'])) {
-                        $items_new['provincial'][]     = pdo_fetch("select * from " . tablename('sz_yi_goods_spec_item') . " where  `show`=1 and id=:id order by displayorder asc", array(
-                            ":id" => $itemid['id']
-                        ));
-                    }
-                    if (in_array($itemid['id'],$spec_datas['domestic'])) {
-                        $items_new['domestic'][]     = pdo_fetch("select * from " . tablename('sz_yi_goods_spec_item') . " where  `show`=1 and id=:id order by displayorder asc", array(
-                            ":id" => $itemid['id']
-                        ));
-                    }
-                }
-                $s['items'] = set_medias($items_new, 'thumb');
-                $s['optionid'] = set_medias($items_new, 'thumb');
-
-            }
-            unset($s);*/
-
         }
-        $ret = array('code' => $code,'carrier' => $array['carrier'],'catname' => $array['catName'],'spec_datas' => $spec_datas);
+        $ret = array('code' => $code,'carrier' => $array['carrier'],'catname' => $array['catName'],'spec_datas' => $spec_datas,'goodsid' => $goodsid);
         echo json_encode($ret);
-
         exit;
-
     }
-//
-//    $data = json_encode($spec_mobile_data_ids);
-//
-//    //$array = json_encode($array);
-//    echo $data;exit;
 }
 

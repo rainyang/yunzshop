@@ -241,7 +241,7 @@ if ($op == 'display') {
             }
         } elseif ($apido == 'selectgood') {
             $kw    = $_GPC['kw'];
-            $goods = pdo_fetchall("SELECT id,title,productprice,marketprice,thumb,sales,unit FROM " . tablename('sz_yi_goods') . " WHERE uniacid= :uniacid and status=:status and deleted=0 AND (plugin='' OR plugin='recharge') AND title LIKE :title ", array(
+            $goods = pdo_fetchall("SELECT id,title,productprice,marketprice,thumb,sales,unit FROM " . tablename('sz_yi_goods') . " WHERE uniacid= :uniacid and status=:status and deleted=0 AND plugin='' AND title LIKE :title ", array(
                 ':title' => "%{$kw}%",
                 ':uniacid' => $_W['uniacid'],
                 ':status' => '1'
