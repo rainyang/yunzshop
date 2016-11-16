@@ -45,6 +45,8 @@ if ($operation != "sub_bonus") {
 						$row['levelname'] = "市级代理";
 					}else if($member['bonus_area'] == 3){
 						$row['levelname'] = "区级代理";
+					}else if($member['bonus_area'] == 4){
+						$row['levelname'] = "街级代理";
 					}
 				}
 				$row['commission_ok'] = $commission_teamok;
@@ -121,6 +123,8 @@ if (!empty($_POST)) {
 						$value['levelname'] = "市级代理";
 					}else if($member['bonus_area'] == 3){
 						$value['levelname'] = "区级代理";
+					}else if($member['bonus_area'] == 4){
+						$row['levelname'] = "街级代理";
 					}
 				}
 				$sendpay = 1;

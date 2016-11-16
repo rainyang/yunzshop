@@ -400,17 +400,25 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
         <%/if%>
         
         <div class="line">实付费(含运费):<span><span class='dispatchprice' style='color:#ff6600'>￥<%order.price%></span></span></div>
-      </div> 
+
+        <%if order.status==0 && order.paytype!=3%>
+        <div class="line">下单时间:<span><%order.createtime%></span></div>
+        <%else if order.status==1%>
+        <div class="line">下单时间:<span><%order.createtime%></span></div>
+        <div class="line">付款时间:<span><%order.paytime%></span></div>
+        <%else if order.status==2%>
+        <div class="line">下单时间:<span><%order.createtime%></span></div>
+        <div class="line">付款时间:<span><%order.paytime%></span></div>
+        <div class="line">发货时间:<span><%order.sendtime%></span></div>
+        <%else if order.status==3%>
+        <div class="line">下单时间:<span><%order.createtime%></span></div>
+        <div class="line">付款时间:<span><%order.paytime%></span></div>
+        <div class="line">发货时间:<span><%order.sendtime%></span></div>
+        <div class="line">完成时间:<span><%order.finishtime%></span></div>
+        <%/if%>
+
+      </div>
 </div>
-    <%if order.status==3%>
-    <div class="detail_price" style="margin-top:15px;height:80px;">
-    <div class="price" style="padding-top:10px;">
-     <div class="line">订单号:<span><%order.ordersn%></span></div>
-     <div class="line">交易完成时间:<span><%order.finishtime%></span></div>
-    </div>
-    </div>
-     <%/if%>
-     <div style="height:80px;"></div>
      
 <div class="detail_pay">
       <%if order.status==0%>

@@ -14,11 +14,19 @@ $orderisyb = pdo_fetch("select ordersn_general,status from " . tablename('sz_yi_
             ':uniacid' => $uniacid,
             ':openid' => $openid
         ));
-$order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
-    ':id' => $orderid,
-    ':uniacid' => $uniacid,
-    ':openid' => $openid
-));
+if ($_GPC['master'] == 1) {
+    $order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid limit 1', array(
+        ':id' => $orderid,
+        ':uniacid' => $uniacid
+    ));
+} else {
+    $order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
+        ':id' => $orderid,
+        ':uniacid' => $uniacid,
+        ':openid' => $openid
+    ));
+}
+
 
 $yunbi_plugin   = p('yunbi');
 if ($yunbi_plugin) {
@@ -157,6 +165,9 @@ if ($_W['isajax']) {
     }
     $order['virtual_str']     = str_replace("\n", "<br/>", $order['virtual_str']);
     $order['goodstotal']      = count($goods);
+    $order['createtime']      = date('Y-m-d H:i:s', $order['createtime']);
+    $order['paytime']         = date('Y-m-d H:i:s', $order['paytime']);
+    $order['sendtime']        = date('Y-m-d H:i:s', $order['sendtime']);
     $order['finishtimevalue'] = $order['finishtime'];
     $order['finishtime']      = date('Y-m-d H:i:s', $order['finishtime']);
     $address                  = false;

@@ -1405,7 +1405,8 @@ if ($_W['isajax']) {
             "deductcredit" => $deductcredit,
             "deductmoney" => $deductmoney,
             "deductyunbi" => $deductyunbi,
-            "deductyunbimoney" => $deductyunbimoney
+            "deductyunbimoney" => $deductyunbimoney,
+            "supplier_uid" => $supplier_uid
         ));
 
     } elseif ($operation == 'create' && $_W['ispost']) {
