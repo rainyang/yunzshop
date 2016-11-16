@@ -5,10 +5,17 @@
 <form id="setform"  action="" method="post" class="form-horizontal form">
     <div class='panel panel-default'>
         
+    <div class="form-group">
+        <label class="col-xs-12 col-sm-3 col-md-2 control-label">通知模板消息ID（任务处理通知）</label>
+        <div class="col-sm-9 col-xs-12">
+            <input type="text" name="setdata[templateid]" class="form-control" value="{$set['templateid']}" />
+            <div class="help-block">默认使用客服消息接口，需48小时与平台账号交互才会接收到消息，如用模板消息接口，请填写模板消息编号，请登录微信公众平台查询 </div>
+        </div>
+    </div>
+
         <div class='panel-heading'>
             排列返现
         </div>
- 
         <div class='panel-body'>
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">排列返现通知</label>
