@@ -66,7 +66,7 @@ $plugins_icon = array(
 	"area" => "region",
 	"beneficence" => "donation",
     "yunprint" => "print",
-    "fund"	=> "team-group"
+    "discuz" => "discuz",
 	);
 $plugins_desc = array(
 	"supplier" => "厂家入驻，平台统一销售", 

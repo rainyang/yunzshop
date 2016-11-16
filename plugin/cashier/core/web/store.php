@@ -14,7 +14,7 @@ if ($operation == 'display') {
     $condition = ' uniacid = :uniacid';
     $params    = array(':uniacid' => $_W['uniacid']);
     if (!empty($_GPC['keyword'])) {
-        $condition .= ' AND name LIKE :name OR contact LIKE :contact OR mobile LIKE :mobile OR address LIKE : address';
+        $condition .= ' AND name LIKE :name OR contact LIKE :contact OR mobile LIKE :mobile OR address LIKE :address';
         $_GPC['keyword']    = trim($_GPC['keyword']);
         $params[':name']    = '%' . trim($_GPC['keyword']) . '%';
         $params[':contact'] = '%' . trim($_GPC['keyword']) . '%';

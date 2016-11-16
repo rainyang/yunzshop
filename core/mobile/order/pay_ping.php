@@ -78,29 +78,22 @@ require_once('../addons/sz_yi/plugin/pingpp/init.php');
         $subject = $log['title'];
         $body = $log['title'];
     } else {
-        $order_info          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid and openid=:openid limit 1', array(
+        $ordersn_general          = pdo_fetchcolumn('select ordersn_general from ' . tablename('sz_yi_order') . ' where (ordersn=:ordersn or ordersn_general=:ordersn) and uniacid=:uniacid and openid=:openid limit 1', array(
             ':ordersn' => $orderNo,
             ':uniacid' => $uniacid,
             ':openid' => $input_data['openid']
         ));
 
-        if (empty($order_info)) {
-            $order_info          = pdo_fetchall('select * from ' . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid limit 1', array(
-                ':ordersn_general' => $orderNo,
-                ':uniacid' => $uniacid,
-                ':openid' => $input_data['openid']
-            ));
 
-            $order_price = 0;
-            foreach ($order_info as $val) {
-                $order_price  += $val['price'];
-            }
+        $order_price          = pdo_fetchcolumn('select sum(price) from ' . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid limit 1', array(
+            ':ordersn_general' => $ordersn_general,
+            ':uniacid' => $uniacid,
+            ':openid' => $input_data['openid']
+        ));
 
-            $amount = (int)($order_price * 100);
+        $amount = (int)($order_price * 100);
 
-        } else {
-            $amount = (int)($order_info['price'] * 100);
-        }
+
         $subject = '商品订单';
         $body = '商品订单';
     }

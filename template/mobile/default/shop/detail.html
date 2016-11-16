@@ -744,18 +744,13 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                 <%if cartcount>0%><b><%cartcount%></b><%/if%>
             </div>
 
-            {if is_app()}
-        <div class="add" onclick="choose('cart')">加入购物车</div>
-            {else}
+
             <div class="add" onclick="choose('cart')"  <%if shopset.cservice &&  goods.canaddcart%>style="width:28%"<%/if%>>加入购物车</div>
-            {/if}
+
             <%/if%>
 
-    {if is_app()}
-    <div class="buy" onclick="choose('buy')">立即购买</div>
-    {else}
+
             <div class="buy" onclick="choose('buy')"  <%if shopset.cservice &&  goods.canaddcart%>style="width:27%"<%else%>style="width:70%"<%/if%>>立即购买</div>
-    {/if}
 
         <%else%>
             <%if goods.canaddcart%>
