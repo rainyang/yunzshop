@@ -62,9 +62,6 @@ if ($_W["isajax"]) {
                 "isagent" => 1,
                 "agentid" => $mid,
                 "status" => $become_check,
-                //"realname" => $_GPC["realname"],
-                //"mobile" => $_GPC["mobile"],
-                //"weixin" => $_GPC["weixin"],
                 "agenttime" => $become_check == 1 ? time() : 0
             );
             pdo_update("sz_yi_member", $data, array(
@@ -75,13 +72,6 @@ if ($_W["isajax"]) {
                     "agenttime" => $data["agenttime"]
                 ), TM_COMMISSION_BECOME);
                 $this->model->upgradeLevelByAgent($member["id"]);
-            }
-            if (!empty($member["uid"])) {
-                load()->model("mc");
-                mc_update($member["uid"], array(
-                    "realname" => $data["realname"],
-                    "mobile" => $data["mobile"]
-                ));
             }
         }
     } else if ($set["become"] == "2") {
@@ -180,7 +170,7 @@ if ($_W["isajax"]) {
                     "agentid" => $mid,
                     "status" => $become_check,
                     "realname" => $_GPC["realname"],
-                    //"mobile" => $_GPC["mobile"],
+                    "membermobile" => $_GPC["mobile"],
                     "weixin" => $_GPC["weixin"],
                     "agenttime" => $become_check == 1 ? time() : 0
                 );
@@ -199,7 +189,7 @@ if ($_W["isajax"]) {
                     load()->model("mc");
                     mc_update($member["uid"], array(
                         "realname" => $data["realname"],
-                        "mobile" => $data["mobile"]
+                        "mobile" => $data["membermobile"]
                     ));
                     show_json(1, $ret);
                 }

@@ -75,6 +75,8 @@ if($operation == "display"){
 					$level['levelname'] = "市级代理";
 				}else if($member['bonus_area'] == 3){
 					$level['levelname'] = "区级代理";
+				}else if($member['bonus_area'] == 4){
+					$levelname = "街级代理";
 				}
 			}
         	$this->model->sendMessage($value['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $value['money'], 'type' => "微信钱包"), TM_BONUS_PAY);

@@ -214,18 +214,30 @@ if ($_W['isajax']) {
 		show_json(1, array('goods' => $goods, 'pagesize' => $args['pagesize']));
 	} else if ($operation == 'category'){
 
-		$category = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where parentid=0 and uniacid=".$_W['uniacid']),'advimg');
+        $category = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where parentid=0 and uniacid=".$_W['uniacid']." order by displayorder limit 14"),array('advimg','thumb'));
 
-		foreach ($category as $key => $value) {
-			$children = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"])),'advimg');
-			foreach($children as $key1 => $value1){
-				$category[$key]['children'][$key1] = $value1;
-				$third = set_medias(pdo_fetchall(" select  * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid",array(':pid' => $value1['id'] , ':uniacid' => $_W["uniacid"])),'advimg');
-				foreach($third as $key2 => $value2){
-					$category[$key]['children'][$key1]['third'][$key2] = $value2;
-				}
-			}
-		}
+        foreach ($category as $key => $value) {
+            $children = set_medias(pdo_fetchall("select * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid order by displayorder limit 4",array(':pid' => $value['id'],':uniacid' => $_W["uniacid"])),array('advimg','thumb'));
+            foreach($children as $key1 => $value1){
+                $category[$key]['children'][$key1] = $value1;
+                $third = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where parentid=:pid and uniacid=:uniacid order by displayorder",array(':pid' => $value1['id'] , ':uniacid' => $_W["uniacid"])),array('advimg','thumb'));
+                foreach($third as $key2 => $value2){
+                    $category[$key]['children'][$key1]['third'][$key2] = $value2;
+                }
+            }
+        }
+
+        foreach ($category as $k => $row) {
+            if ($k%2 != 0) {
+                $category1 = $category[$k-1];
+                $category2 = $category[$k];
+                unset($category[$k]);
+                unset($category[$k-1]);
+                $category[$k-1]['category1'] = $category1;
+                $category[$k-1]['category2'] = $category2;
+                unset($category1);unset($category2);
+            }
+        }
 
 		show_json(1,array('category' => $category));
 	} else if ($operation == 'category_recommend'){

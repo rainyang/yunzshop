@@ -1,5 +1,5 @@
 {template 'common/header'}
-<title>店长中心</title>
+<title>{$set['mastercenter']}</title>
 <style type="text/css">
     body {margin:0px; background:#eee; font-family:'微软雅黑'; }
     a {text-decoration:none;}
@@ -51,7 +51,7 @@
 <div id='container' style="padding-bottom: 55px"></div>
 <script id='tpl_main' type='text/html'>
     <div class="topbar header">
-        <div class="user_face"><img src="<%store.thumb%>"></div>
+        <div class="user_face"><img src="{php echo tomedia($store['thumb'])}"></div>
         <div class="user_info">
             <div class="user_name"><%store.storename%></div>
 
@@ -61,9 +61,9 @@
 
     <div class="comm-center">
         <ul>
-            <li><a href="#"><span><%totalprice%></span><br/>累计金额</a></li>
-            <li><a href="#"><span><%canwithdraw%></span><br/>可提现金额</a></li>
-            <li><a class="recharge"  id='withdraw' <%if canwithdraw>0%>href="{php echo $this->createPluginMobileUrl('verify/withdraw',array('storeid' => $id))}"<%else%>href="javascript:;"<%/if%> ><p style="margin:0" >提现</p style="margin:0"></a></li>
+            <li><a href="#"><span><%totalprice%></span><br/>{php echo empty($set['allmoney'])?'累计金额':$set['allmoney']}</a></li>
+            <li><a href="#"><span><%canwithdraw%></span><br/>{php echo empty($set['canwithdraw'])?'可提现金额':$set['canwithdraw']}</a></li>
+            <li><a class="recharge"  id='withdraw' <%if canwithdraw>0%>href="{php echo $this->createPluginMobileUrl('verify/withdraw',array('storeid' => $id))}"<%else%>href="javascript:;"<%/if%> ><p style="margin:0" >{php echo empty($set['withdraw'])?'提现':$set['withdraw']}</p style="margin:0"></a></li>
         </ul>
     </div>
 
@@ -78,17 +78,17 @@
     </div>-->
 
     <div class="menu">
-        <a href="{php echo $this->createPluginMobileUrl('verify/my_pocket', array('id'=>$id))}"><div class="nav nav1"><i class="fa iconfont icon-cny"  style="background:#BC7BFF;"></i><div class="title">我的钱包</div><div class="con"><span><%canwithdraw%></span> 元</div></div></a>
-        <a href="{php echo $this->createPluginMobileUrl('verify/order',array('storeid'=>$id))}"><div class="nav nav1"><i class="fa iconfont icon-dingdan" style="background:#F981A7;"></i><div class="title">我的订单</div><div class="con"><span><%ordercount%></span> 个</div></div></a>
-        <a href="{php echo $this->createPluginMobileUrl('verify/log', array('storeid'=>$id))}"><div class="nav nav1"><i class="fa iconfont icon-dingdan" style="background:#ff6e03;"></i><div class="title">明细</div><div class="con">提现明细</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('verify/my_pocket', array('id'=>$id))}"><div class="nav nav1"><i class="fa iconfont icon-cny"  style="background:#BC7BFF;"></i><div class="title">{php echo empty($set['mypocket'])?'我的钱包':$set['mypocket']}</div><div class="con"><span><%canwithdraw%></span> 元</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('verify/order',array('storeid'=>$id))}"><div class="nav nav1"><i class="fa iconfont icon-dingdan" style="background:#F981A7;"></i><div class="title">{php echo empty($set['myorder'])?'我的订单':$set['myorder']}</div><div class="con"><span><%ordercount%></span> 个</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('verify/log', array('storeid'=>$id))}"><div class="nav nav1"><i class="fa iconfont icon-dingdan" style="background:#ff6e03;"></i><div class="title">{php echo empty($set['details'])?'明细':$set['details']}</div><div class="con">{php echo empty($set['withdraw'])?'提现':$set['withdraw']}{php echo empty($set['details'])?'明细':$set['details']}</div></div></a>
 
 
 
-        <a href="{php echo $this->createPluginMobileUrl('verify/mystore/select', array('storeid'=>$id))}"><div class="nav nav1"><i class="fa iconfont icon-bag"style="background:#FF8989;"></i><div class="title">自选商品</div><div class="con">选择我喜欢的商品</div></div></a>
-        <a id="reset"><div class="nav nav1"><i class="fa iconfont icon-bag"style="background:#FF8989;"></i><div class="title">重置</div><div class="con">一键清除我的自选商品</div></div></a>
+        <a href="{php echo $this->createPluginMobileUrl('verify/mystore/select', array('storeid'=>$id))}"><div class="nav nav1"><i class="fa iconfont icon-bag"style="background:#FF8989;"></i><div class="title">{php echo empty($set['choosemyself'])?'自选商品':$set['choosemyself']}</div><div class="con">选择我喜欢的商品</div></div></a>
+        <a id="reset"><div class="nav nav1"><i class="fa iconfont icon-bag"style="background:#FF8989;"></i><div class="title">{php echo empty($set['reset'])?'重置':$set['reset']}</div><div class="con">一键清除我的自选商品</div></div></a>
 
 
-        <a href="#"><div class="nav nav1"><i class="fa iconfont icon-tongji" style="background:#2886FB;"></i><div class="title">订单总计</div><div class="con"><span><%totalprice%></span> 元</div></div></a>
+        <a href="#"><div class="nav nav1"><i class="fa iconfont icon-tongji" style="background:#2886FB;"></i><div class="title">{php echo empty($set['allorderprice'])?'订单总计':$set['allorderprice']}</div><div class="con"><span><%totalprice%></span> 元</div></div></a>
 
 
 

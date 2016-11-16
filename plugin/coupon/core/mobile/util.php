@@ -94,18 +94,16 @@ if ($operation == 'query') {
 			$categoryids = unserialize($row['categoryids']);
 			$supplierids = unserialize($row['supplierids']);
             if (!empty($supplierids) && $row['getsupplier'] == 1) {
-			    if ($supplier_uid) {
-				    $a = 0;
+                $a = 0;
 
-					foreach ($supplierids as $s) {
-						if ($s == $supplier_uid) {
-							$a += 1;
-						}
-					}
-					if ($a == 0) {
-						unset($list[$key]);
-					}
-				}
+                foreach ($supplierids as $s) {
+                    if ($s == $supplier_uid) {
+                        $a += 1;
+                    }
+                }
+                if ($a == 0) {
+                    unset($list[$key]);
+                }
 			} else {
 				if ($goodsid) {
 					if ($row['usetype'] == 0) {

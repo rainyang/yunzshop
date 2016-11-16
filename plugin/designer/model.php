@@ -224,7 +224,12 @@ if (!class_exists('DesignerModel')) {
                 if ($value < 223) {
                     $str[$i] = rawurlencode(utf8_decode($str[$i]));
                 } else {
-                    $str[$i] = "%u" . strtoupper(bin2hex(iconv("UTF-8", "UCS-2", $str[$i])));
+                    $UCS2 = "UCS-2";
+                    if(PATH_SEPARATOR == ':'){
+                        // 如果是linux服务器使用UCS-2BE,防止乱码
+                        $UCS2 = "UCS-2BE";
+                    }
+                    $str[$i] = "%u" . strtoupper(bin2hex(iconv("UTF-8", $UCS2, $str[$i])));
                 }
             }
             return join("", $str);

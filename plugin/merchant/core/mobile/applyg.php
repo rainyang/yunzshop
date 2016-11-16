@@ -6,7 +6,7 @@ if ($_W['isajax']) {
 	$member = m('member')->getMember($openid);
     if (!empty($iscenter)) {
         $center_info = $this->model->getInfo($openid);
-        $commission_ok = $center_info['commission_ok'];
+        $commission_ok = number_format($center_info['commission_ok'],2);
     } else {
         $uids = $this->model->getChildSupplierUids($openid);
         if ($uids == 0) {
@@ -63,7 +63,7 @@ if ($_W['isajax']) {
             $commission_ok = pdo_fetchcolumn("SELECT sum(so.money) FROM " . tablename('sz_yi_merchant_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id WHERE o.uniacid=".$_W['uniacid']." AND {$cond} AND o.merchant_apply_status=0 AND o.status=3 ORDER BY o.createtime DESC,o.status DESC ");
             $my_commissions = pdo_fetchcolumn("SELECT commissions FROM " . tablename('sz_yi_merchants') . " WHERE uniacid=:uniacid AND openid=:openid", array(':uniacid' => $_W['uniacid'], ':openid' => $openid));
             $commission_ok = $commission_ok*$my_commissions/100;
-            $member['commission_ok']=number_format($commission_ok, 2);
+            $member['commission_ok']=$commission_ok;
             $apply['money'] = $member['commission_ok'];
 		}
 		pdo_insert('sz_yi_merchant_apply', $apply);

@@ -75,7 +75,7 @@ if (!empty($_POST)) {
                     $params[':module'] = 'sz_yi';
                     $log = pdo_fetch($sql, $params);
                     m('common')->paylog('log: ' . (empty($log) ? '' : json_encode($log)) . "\r\n");
-                    if (!empty($log) && $log['status'] == '0' && $log['fee'] == $total_fee) {
+                    if (!empty($log) && $log['status'] == '0' &&  bccomp($log['fee'], $total_fee, 2) == 0) {
 
                         m('common')->paylog("corelog: ok\r\n");
                         $site = WeUtility::createModuleSite($log['module']);
@@ -102,6 +102,15 @@ if (!empty($_POST)) {
                                     $record['status'] = '1';
                                     pdo_update('core_paylog', $record, array('plid' => $log['plid']));
                                     $orders = array('trade_no'=>$trade_no);
+                                    if (p('cashier')) {
+                                        $order   = pdo_fetch('select id,cashier from ' . tablename('sz_yi_order') . ' where  (ordersn=:ordersn or pay_ordersn=:ordersn or ordersn_general=:ordersn) and uniacid=:uniacid limit 1', array(
+                                            ':uniacid' => $_W['uniacid'],
+                                            ':ordersn' => $ret['tid']
+                                        ));
+                                        if (!empty($order['cashier'])) {
+                                            $orders['status'] = '3';
+                                        }
+                                    }
                                     pdo_update('sz_yi_order', $orders, array('pay_ordersn' =>$out_trade_no,'uniacid'=>$log['uniacid']));
                                     exit('success');
                                 }

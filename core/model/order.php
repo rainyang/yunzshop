@@ -211,9 +211,15 @@ class Sz_DYi_Order
             $orderid = $order['id'];
             $verify_set = m('common')->getSetData();
             $allset = iunserializer($verify_set['plugins']);
-            if ($order['isverify'] == 1 && isset($allset['verify']) && $allset['verify']['sendcode'] == 1) {
+            $pset = m('common')->getSysset();
+            if ($order['isverify'] == 1 && isset($allset['verify']) && $allset['verify']['sendcode'] == 1 && isset($pset['sms']) && $pset['sms']['type'] == 1) {
                 $carriers = unserialize($order['carrier']);
-                $mobile = $carriers['carrier_mobile'];
+                $address = unserialize($order['address']);
+                if (empty($order['dispatchtype'])) {
+                    $mobile = $address['mobile'];
+                } else {
+                    $mobile = $carriers['carrier_mobile'];
+                }
                 $type = 'verify';
                 $order_goods = pdo_fetch("SELECT * FROM ".tablename('sz_yi_order_goods')." WHERE orderid=:id and uniacid=:uniacid", array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
                 $goodstitle = pdo_fetchcolumn("SELECT title FROM ".tablename('sz_yi_goods')." WHERE id=:id and uniacid=:uniacid",array(':id' => $order_goods['goodsid'], ':uniacid' => $_W['uniacid']));
@@ -659,6 +665,7 @@ class Sz_DYi_Order
                     0,
                     $shopset['name'] . '购物积分 订单号: ' . $order['ordersn']
                 ));
+                pdo_update('sz_yi_order', array('credit1'=>$credits), array('ordersn' => $order['ordersn'], 'uniacid' => $_W['uniacid']));
             } elseif ($type == 2) {
                 if ($order['status'] >= 1) {
                     m('member')->setCredit($order['openid'], 'credit1', -$credits, array(

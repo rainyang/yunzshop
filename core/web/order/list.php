@@ -4,6 +4,7 @@ $operation = !empty($_GPC["op"]) ? $_GPC["op"] : "display";
 $type = $_GPC['type'];
 $plugin_diyform = p("diyform");
 $shopset = m('common')->getSysset('pay');
+$trade     = m('common')->getSysset('trade');
 $yunbi_plugin = p('yunbi');
 if ($yunbi_plugin) {
     $yunbiset = $yunbi_plugin->getSet();
@@ -122,7 +123,7 @@ if ($operation == "display") {
     $status = $_GPC["status"] == "" ? 1 : $_GPC["status"];
     $sendtype = !isset($_GPC["sendtype"]) ? 0 : $_GPC["sendtype"];
     $condition = " AND o.uniacid = :uniacid and o.deleted=0";
-
+    $join_table = "";
     $paras = array(
         ":uniacid" => $_W["uniacid"]
     );
@@ -254,6 +255,7 @@ if ($operation == "display") {
     if (!empty($_GPC["saler"])) {
         $_GPC["saler"] = trim($_GPC["saler"]);
         $condition .= " AND (sm.realname LIKE '%{$_GPC["saler"]}%' or sm.mobile LIKE '%{$_GPC["saler"]}%' or sm.nickname LIKE '%{$_GPC["saler"]}%' " . " or s.salername LIKE '%{$_GPC["saler"]}%' )";
+        $join_table .= " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid ";
     }
     if (!empty($_GPC["storeid"])) {
         $_GPC["storeid"] = trim($_GPC["storeid"]);
@@ -375,9 +377,9 @@ if ($operation == "display") {
         }
     }
     //查询订单总数以及总金额
-    if ($_W['isajax']) {
-        $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " o " . " left join " . tablename("sz_yi_order_refund") . " r on r.orderid= o.id WHERE 1 $condition $statuscondition " . $cond,
-            $paras);
+    if ($_W['ispost']) {
+        $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " AS o 
+            LEFT JOIN " . tablename("sz_yi_order_refund") . " r ON r.id =o.refundid {$join_table} WHERE 1 {$condition} {$statuscondition} {$cond}", $paras);
         $total = $result['total'];
         $totalmoney = $result['totalmoney'];
         $pager = pagination($total, $pindex, $psize);
@@ -445,8 +447,7 @@ if ($operation == "display") {
 
     $sql = 'SELECT count(1) AS suppliers_num, o.*, r.rtype 
             FROM ' . tablename("sz_yi_order") . " AS o 
-            LEFT JOIN " . tablename("sz_yi_order_refund") . " r ON r.id =o.refundid 
-            WHERE 1 {$condition} {$statuscondition} {$cond} GROUP BY o.ordersn_general ORDER BY o.createtime DESC,o.status DESC
+            LEFT JOIN " . tablename("sz_yi_order_refund") . " r ON r.id =o.refundid {$join_table} WHERE 1 {$condition} {$statuscondition} {$cond} GROUP BY o.ordersn_general ORDER BY o.createtime DESC,o.status DESC
             LIMIT " . ($pindex - 1) * $psize . "," . $psize;
     //echo $sql;exit;
     $list = pdo_fetchall($sql, $paras);
@@ -468,7 +469,7 @@ if ($operation == "display") {
         $member_condition = (!empty($member_addresids) ? " and a.id in (" . $member_addresids . ")" : '');
 
         $sql = 'select m.openid, a.realname as arealname,a.mobile as amobile,a.province as aprovince,
-            a.city as acity , a.area as aarea,a.address as aaddress,m.nickname,m.id as mid,
+            a.city as acity,a.area as aarea,a.street as astreet,a.address as aaddress,m.nickname,m.id as mid,
             m.realname as mrealname,m.mobile as mmobile 
             from ' . tablename("sz_yi_member") . " m" . "
             left join " . tablename("sz_yi_member_address") . " a on m.openid=a.openid and m.uniacid = a.uniacid {$member_condition} 
@@ -581,12 +582,12 @@ if ($operation == "display") {
         $value["paytypevalue"] = $order_paytype;
         $value["css"] = $paytype[$order_paytype]["css"];
         $value["paytype"] = $paytype[$order_paytype]["name"];
-        $value["dispatchname"] = empty($value["addressid"]) ? "自提" : $value["dispatchname"];
+
         if (empty($value["dispatchname"])) {
-            $value["dispatchname"] = "快递";
+            $value["dispatchname"] = "快递配送";
         }
         if ($value["isverify"] == 1) {
-            $value["dispatchname"] = "线下核销";
+            $value["dispatchname"] = "配送核销";
         } elseif ($value["isvirtual"] == 1) {
             $value["dispatchname"] = "虚拟物品";
         } elseif (!empty($value["virtual"])) {
@@ -594,6 +595,7 @@ if ($operation == "display") {
         } elseif ($value['cashier'] == 1) {
             $value["dispatchname"] = "收银台支付";
         }
+        $value["dispatchname"] = empty($value["addressid"]) ? "上门自提" : $value["dispatchname"];
 
         if (p('cashier') && $value['cashier'] == 1) {
             $value['name'] = set_medias(array(
@@ -618,12 +620,22 @@ if ($operation == "display") {
             $value["province"] = $isarray ? $address["province"] : $value["aprovince"];
             $value["city"] = $isarray ? $address["city"] : $value["acity"];
             $value["area"] = $isarray ? $address["area"] : $value["aarea"];
+            //是否开启了街道联动
+            if ($trade['is_street'] == '1') {
+                $value["street"] = $isarray ? $address["street"] : $value["astreet"];
+            }
             $value["address"] = $isarray ? $address["address"] : $value["aaddress"];
             $value["address_province"] = $value["province"];
             $value["address_city"] = $value["city"];
             $value["address_area"] = $value["area"];
+            $value["address_street"] = $value["street"];
             $value["address_address"] = $value["address"];
-            $value["address"] = $value["province"] . " " . $value["city"] . " " . $value["area"] . " " . $value["address"];
+            //是否开启了街道联动
+            if (!empty($value['street']) && $trade['is_street'] == '1') {
+                $value["address"] = $value["province"] . " " . $value["city"] . " " . $value["area"] . " " . $value["street"] . " " . $value["address"];
+            } else {
+                $value["address"] = $value["province"] . " " . $value["city"] . " " . $value["area"] . " " . $value["address"];
+            }
             $value["addressdata"] = array(
                 "realname" => $value["realname"],
                 "mobile" => $value["mobile"],
@@ -883,7 +895,7 @@ if ($operation == "display") {
             "color" => "#4a5077"
         )
     );
-    $detailurl = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&method=orderj&p=commission&op=order&type=0&m=sz_yi&do=plugin";
+    $detailurl = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&method=order&p=verify&m=sz_yi&do=plugin&storeid=".$agentuid['storeid'];
     m('message')->sendCustomNotice($openid, $msg, $detailurl);
     message('选择门店成功', $this->createWebUrl('order', array('op' => 'display')), 'success');
 } elseif ($operation == "detail") {
@@ -1521,32 +1533,15 @@ if ($operation == "display") {
                                                                                     $expresssn = trim($refund['rexpresssn']);
                                                                                 }
                                                                             }
-                                                                            $arr = getList($express, $expresssn);
-                                                                            if (!$arr) {
-                                                                                $arr = getList($express, $expresssn);
-                                                                                if (!$arr) {
+                                                                            $content = getExpress($express, $expresssn);
+                                                                            if (!$content) {
+                                                                                $content = getExpress($express, $expresssn);
+                                                                                if (!$content) {
                                                                                     die('未找到物流信息.');
                                                                                 }
                                                                             }
-                                                                            $len = count($arr);
-                                                                            $step1 = explode('<br />',
-                                                                                str_replace('&middot;', "", $arr[0]));
-                                                                            $step2 = explode('<br />',
-                                                                                str_replace('&middot;', "",
-                                                                                    $arr[$len - 1]));
-                                                                            for ($i = 0; $i < $len; $i++) {
-                                                                                if (strtotime(trim($step1[0])) > strtotime(trim($step2[0]))) {
-                                                                                    $row = $arr[$i];
-                                                                                } else {
-                                                                                    $row = $arr[$len - $i - 1];
-                                                                                }
-                                                                                $step = explode('<br />',
-                                                                                    str_replace('&middot;', "", $row));
-                                                                                $list[] = array(
-                                                                                    'time' => trim($step[0]),
-                                                                                    'step' => trim($step[1]),
-                                                                                    'ts' => strtotime(trim($step[0]))
-                                                                                );
+                                                                            foreach ($content as $data) {
+                                                                                $list[] = array('time' => $data->time, 'step' => $data->context, 'ts' => $data->time);
                                                                             }
                                                                             load()->func('tpl');
                                                                             include $this->template('web/order/express');
@@ -1555,35 +1550,15 @@ if ($operation == "display") {
                                                                             if ($to == "express") {
                                                                                 $express = trim($item["express"]);
                                                                                 $expresssn = trim($item["expresssn"]);
-                                                                                $arr = getList($express, $expresssn);
-                                                                                if (!$arr) {
-                                                                                    $arr = getList($express,
-                                                                                        $expresssn);
-                                                                                    if (!$arr) {
-                                                                                        die("未找到物流信息.");
+                                                                                $content = getExpress($express, $expresssn);
+                                                                                if (!$content) {
+                                                                                    $content = getExpress($express, $expresssn);
+                                                                                    if (!$content) {
+                                                                                        die('未找到物流信息.');
                                                                                     }
                                                                                 }
-                                                                                $len = count($arr);
-                                                                                $step1 = explode("<br />",
-                                                                                    str_replace("&middot;", "",
-                                                                                        $arr[0]));
-                                                                                $step2 = explode("<br />",
-                                                                                    str_replace("&middot;", "",
-                                                                                        $arr[$len - 1]));
-                                                                                for ($i = 0; $i < $len; $i++) {
-                                                                                    if (strtotime(trim($step1[0])) > strtotime(trim($step2[0]))) {
-                                                                                        $row = $arr[$i];
-                                                                                    } else {
-                                                                                        $row = $arr[$len - $i - 1];
-                                                                                    }
-                                                                                    $step = explode("<br />",
-                                                                                        str_replace("&middot;", "",
-                                                                                            $row));
-                                                                                    $list[] = array(
-                                                                                        "time" => trim($step[0]),
-                                                                                        "step" => trim($step[1]),
-                                                                                        "ts" => strtotime(trim($step[0]))
-                                                                                    );
+                                                                                foreach ($content as $data) {
+                                                                                    $list[] = array('time' => $data->time, 'step' => $data->context, 'ts' => $data->time);
                                                                                 }
                                                                                 load()->func("tpl");
                                                                                 include $this->template("web/order/express");
@@ -1616,22 +1591,6 @@ function sortByTime($msg0, $msg1)
     } else {
         return $msg0["ts"] > $msg1["ts"] ? 1 : -1;
     }
-}
-
-function getList($id, $postid)
-{
-    $url = "http://wap.kuaidi100.com/wap_result.jsp?rand=" . time() . "&id={$id}&fromWeb=null&postid={$postid}";
-    load()->func("communication");
-    $info = ihttp_request($url);
-    $result = $info["content"];
-    if (empty($result)) {
-        return array();
-    }
-    preg_match_all("/\<p\>&middot;(.*)\<\/p\>/U", $result, $data);
-    if (!isset($data[1])) {
-        return false;
-    }
-    return $data[1];
 }
 
 function changeWechatSend($ordersn, $status, $msg = '')

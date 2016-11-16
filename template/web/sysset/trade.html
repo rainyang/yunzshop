@@ -291,7 +291,7 @@
                 </div>
 			</div>
 			<div class="panel-heading">
-				共享收货地址
+				收货地址
 			</div>	
 
             <div class='panel-body'>
@@ -307,6 +307,17 @@
                         <input type="hidden" name="trade[shareaddress]" value="{$set['trade']['shareaddress']}"/>
                         <div class='form-control-static'>{if $set['trade']['shareaddress']==1}开启{else}关闭{/if}</div>
                         {/if}
+                    </div>
+                </div>
+                <div class="form-group">
+
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启乡镇及街道地址选择
+                    </label>
+                    <div class="col-sm-9 col-xs-12">
+
+                        <label class='radio-inline'><input type='radio' name='trade[is_street]' value='1' {if $set['trade']['is_street']==1}checked{/if}/> 开启</label>
+                        <label class='radio-inline'><input type='radio' name='trade[is_street]' value='0' {if $set['trade']['is_street']==0}checked{/if} /> 关闭</label>
+
                     </div>
                 </div>
 			</div>

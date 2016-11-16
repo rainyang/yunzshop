@@ -49,7 +49,7 @@
             <div class="title">性别</div><div class='info'><div class='inner'>
             <span class="gender" data-val="1"><i class="fa <%if gender=='1'%>fa-check-circle-o<%else%>fa-circle-o<%/if%>" <%if gender=='1'%>style="color:#0C9;"<%/if%>></i> 男</span>&nbsp;&nbsp;
             <span class="gender" data-val="2"><i class="fa <%if gender=='2'%>fa-check-circle-o<%else%>fa-circle-o<%/if%>" <%if gender=='2'%>style="color:#0C9;"<%/if%>></i> 女
-                <input type="hidden" id="gender" value="<%sex%>" />
+                <input type="hidden" id="gender" value="<%gender%>" />
         </div></div>
         </div>
         <div class="line">
@@ -129,7 +129,7 @@
                             'nickname': $("#nickname").val(),
                             'membermobile': $('#membermobile').val(),
                             'weixin': $('#weixin').val(),
-                            'gender': $('#sex').val(),
+                            'gender': $('#gender').val(),
                             'birthyear': $('#birthday').val().length>0?birthday[0]:0,
                             'birthmonth': $('#birthday').val().length>0?birthday[1]:0,
                             'birthday': $('#birthday').val().length>0?birthday[2]:0,
@@ -141,7 +141,7 @@
                             'realname': $('#realname').val(),
                             'nickname': $("#nickname").val(),
                             'membermobile': $('#membermobile').val(),
-                            'gender': $('#sex').val(),
+                            'gender': $('#gender').val(),
                             'birthyear': $('#birthday').val().length>0?birthday[0]:0,
                             'birthmonth': $('#birthday').val().length>0?birthday[1]:0,
                             'birthday': $('#birthday').val().length>0?birthday[2]:0,

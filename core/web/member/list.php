@@ -173,6 +173,7 @@ if ($op == 'display') {
     }
 } else if ($op == 'detail') {
     ca('member.member.view');
+
     $hasbonus = false;
     $plugin_bonus    = p('bonus');
     if ($plugin_bonus) {
@@ -188,11 +189,15 @@ if ($op == 'display') {
         $hascommission  = !empty($plugin_com_set['level']);
     }
     $id = intval($_GPC['id']);
+    $member = m('member')->getMember($id);
+    if(empty($member)){
+        message('会员不存在，已被删除或参数错误!','', 'error');
+    }
     if (checksubmit('submit')) {
         ca('member.member.edit');
         $data = is_array($_GPC['data']) ? $_GPC['data'] : array();
 
-        $member = m('member')->getMember($id);
+        //$member = m('member')->getMember($id);
 
         if( (!empty($data['level']) || !empty($member['level'])) && $data['level'] != $member['level'])
         {
@@ -311,7 +316,6 @@ if ($op == 'display') {
     if ($plugin_bonus) {
         $bonuslevels = $plugin_bonus->getLevels();
     }
-    $member = m('member')->getMember($id);
     if ($hascommission) {
         $member = $plugin_com->getInfo($id, array(
             'total',

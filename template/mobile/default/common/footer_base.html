@@ -57,7 +57,7 @@
                                $_W['shopshare']['link'] = $this->createMobileUrl('shop',array('mid'=>$member['id']));
                             }
                             
-                            if(empty($set['become_reg']) && ( empty($member['realname']) || empty($member['mobile']))){
+                            if(empty($set['become_reg']) && ( empty($member['realname']) || empty($member['membermobile']))){
                                 $trigger = true;
                             }
                          } 

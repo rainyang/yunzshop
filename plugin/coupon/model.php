@@ -316,16 +316,14 @@ if (!class_exists('CouponModel')) {
 					if ($goodid != 0 && $cartid == 0) {
 
                         if (!empty($supplierids) && $row['getsupplier'] == 1) {
-                            if (!empty($supplier_uid)) {
-								foreach ($supplierids as $s) {
-									if ($supplier_uid == $s) {
-										$a += 1;
-									}
-								}
-								if ($a == 0) {
-									$total -= 1;
-								}
-							}
+                            foreach ($supplierids as $s) {
+                                if ($supplier_uid == $s) {
+                                    $a += 1;
+                                }
+                            }
+                            if ($a == 0) {
+                                $total -= 1;
+                            }
 						} else {
 							if ($row['usetype'] == 2) {
 								if (!empty($goodsids)) {
@@ -421,17 +419,15 @@ if (!class_exists('CouponModel')) {
 					} elseif ($cartid != 0 && $goodid == 0){
 
                         if (!empty($supplierids) && $row['getsupplier'] == 1) {
-						    if (!empty($supplier_uid)) {
-								foreach ($supplierids as $s) {
-									if ($supplier_uid == $s) {
-										$a += 1;
-									}
-								}
-								
-								if ($a == 0) {
-									$total -= 1;
-								}
-							}
+                            foreach ($supplierids as $s) {
+                                if ($supplier_uid == $s) {
+                                    $a += 1;
+                                }
+                            }
+
+                            if ($a == 0) {
+                                $total -= 1;
+                            }
 						} else {
 							
 							$cartids = explode(',',$cartid);

@@ -74,8 +74,8 @@ if ($operation != "sub_bonus") {
     foreach ($list as $key => &$row) {  
         //Author:ym Date:2016-04-08 Content:需消费一定金额，否则清除该用户不参与分红
         if(!empty($set['consume_withdraw'])){
-            $ordermoney = $this->model->myorder_money($row['opneid']);
-            if($ordermoney < floatval($set['consume_withdraw'])){
+            $myorder = $this->model->myorder($row['opneid']);
+            if($myorder['ordermoney'] < floatval($set['consume_withdraw'])){
                 $totalmoney -= $levelmoneys[$row['bonuslevel']];
                 unset($list[$key]);
                 continue;

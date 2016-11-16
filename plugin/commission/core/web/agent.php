@@ -199,12 +199,12 @@ if ($operation == 'display') {
                 ),
                 array(
                     'title' => '成为分销商时间',
-                    'field' => 'createtime',
+                    'field' => 'agenttime',
                     'width' => 12
                 ),
                 array(
                     'title' => '审核状态',
-                    'field' => 'createtime',
+                    'field' => 'agenttime',
                     'width' => 12
                 ),
                 array(

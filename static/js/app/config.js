@@ -8,6 +8,7 @@ require.config({
         'tpl':'../dist/tmodjs',
         'jquery.touchslider':'../dist/jquery.touchslider.min',
         'swipe':'../dist/swipe',
+        'Swiper':'../dist/swiper',
         'sweetalert':'../dist/sweetalert/sweetalert.min',
         /*'swiper':'../dist/swiper'*/
         

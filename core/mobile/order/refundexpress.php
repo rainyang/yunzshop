@@ -13,22 +13,6 @@ function sortByTime($a, $b)
 	}
 }
 
-function getList($id, $postid)
-{
-	$result = "http://wap.kuaidi100.com/wap_result.jsp?rand=" . time() . "&id={$id}&fromWeb=null&postid={$postid}";
-	load()->func("communication");
-	$info = ihttp_request($result);
-	$content = $info["content"];
-	if (empty($content)) {
-		return array();
-	}
-	preg_match_all("/\\<p\\>&middot;(.*)\\<\\/p\\>/U", $content, $list);
-	if (!isset($list[1])) {
-		return false;
-	}
-	return $list[1];
-}
-
 $operation = !empty($_GPC["op"]) ? $_GPC["op"] : "display";
 $openid = m("user")->getOpenid();
 $uniacid = $_W["uniacid"];
@@ -46,26 +30,17 @@ if ($_W["isajax"]) {
 	} else if ($operation == "step") {
 		$express = trim($_GPC["express"]);
 		$expresssn = trim($_GPC["expresssn"]);
-		$arr = getList($express, $expresssn);
-		if (!$arr) {
-			$arr = getList($express, $expresssn);
-			if (!$arr) {
-				show_json(1, array("list" => array()));
+		$content = getExpress($express, $expresssn);
+		if (!$content) {
+			$content = getExpress($express, $expresssn);
+			if (!$content) {
+				show_json(1, array('list' => array()));
 			}
 		}
-		$len = count($arr);
-		$step1 = explode("<br />", str_replace("&middot;", "", $arr[0]));
-		$step2 = explode("<br />", str_replace("&middot;", "", $arr[$len - 1]));
-		for ($i = 0; $i < $len; $i++) {
-			if (strtotime(trim($step1[0])) > strtotime(trim($step2[0]))) {
-				$row = $arr[$i];
-			} else {
-				$row = $arr[$len - $i - 1];
-			}
-			$step = explode("<br />", str_replace("&middot;", "", $row));
-			$list[] = array("time" => trim($step[0]), "step" => trim($step[1]), "ts" => strtotime(trim($step[0])));
+		foreach ($content as $data) {
+			$list[] = array('time' => $data->time, 'step' => $data->context, 'ts' => $data->time);
 		}
-		show_json(1, array("list" => $list));
+		show_json(1, array('list' => $list));
 	}
 }
 include $this->template("order/refundexpress");
