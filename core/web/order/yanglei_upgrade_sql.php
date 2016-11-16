@@ -42,7 +42,9 @@ if (!pdo_fieldexists('sz_yi_diyform_temp', 'declaration_mid')) {
 if (!pdo_fieldexists('sz_yi_order_goods', 'declaration_mid')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_goods')." ADD `declaration_mid` INT NOT NULL AFTER `ischannelpay`;");
 }
-
-
+//订单表添加购物积分
+if (!pdo_fieldexists('sz_yi_order', 'credit1')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `credit1` INT(11) NOT NULL COMMENT '购物积分' AFTER `goodsprice`;");
+}
 
 

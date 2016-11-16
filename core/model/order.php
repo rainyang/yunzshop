@@ -665,6 +665,7 @@ class Sz_DYi_Order
                     0,
                     $shopset['name'] . '购物积分 订单号: ' . $order['ordersn']
                 ));
+                pdo_update('sz_yi_order', array('credit1'=>$credits), array('ordersn' => $order['ordersn'], 'uniacid' => $_W['uniacid']));
             } elseif ($type == 2) {
                 if ($order['status'] >= 1) {
                     m('member')->setCredit($order['openid'], 'credit1', -$credits, array(

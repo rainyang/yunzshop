@@ -183,6 +183,9 @@ if (!class_exists('ReturnModel')) {
 					$this->setOrderRule($order_goods,$order_price,$set,$_W['uniacid']);
 				}elseif($set['returnrule'] == 2)
 				{
+					if ($set['iscumulative'] && $order['credit1'] > 0) {
+						$order_price = $order_price - $order['credit1'];
+					}
 					$this->setOrderMoneyRule($order_goods,$order_price,$set,$_W['uniacid']);
 				}
 				
@@ -358,7 +361,7 @@ if (!class_exists('ReturnModel')) {
 			$daytime = strtotime(date("Y-m-d 00:00:00"));
 			$stattime = $daytime - 86400;
 			$endtime = $daytime - 1;
-			if ($set['isprofit']) {
+			if ($set['isprofit'] == 1) {
 				$sql = "select o.id, o.price, g.marketprice, g.costprice, og.total from ".tablename('sz_yi_order')." o 
 				left join ".tablename('sz_yi_order_goods')." og on (o.id = og.orderid) 
 				left join ".tablename('sz_yi_goods')." g on (og.goodsid = g.id) 
