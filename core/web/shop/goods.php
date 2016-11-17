@@ -1229,6 +1229,7 @@ if ($operation == "change") {
             foreach ($list as $key => &$value) {
                 $allprice = pdo_fetchcolumn("select allprice from ". tablename('sz_yi_fund_goods') ." where goodsid=".$value['id']);
                 $yetprice = pdo_fetchcolumn("select sum(price) from ". tablename('sz_yi_order_goods') ." where goodsid=".$value['id']);
+                $value['casesceu'] = ceil($allprice / $value['marketprice']) <= $value['sales'];
                 $yetprice += $value['marketprice']*$value['sales'];
                 $value['yetprice'] = number_format($yetprice, 2);
                 $value['allprice'] = number_format($allprice, 2);

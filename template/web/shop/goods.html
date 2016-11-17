@@ -459,6 +459,9 @@
 
 							<th width="10%">销量</th>
 							<th width="10%">状态</th>
+							{if $_GPC['status'] == 0 && !empty($_GPC['plugin'])}
+							<th width="10%">进度</th>
+							{/if}
 							<th width="20%">操作</th>
 						</tr>
 					</thead>
@@ -583,6 +586,11 @@
                             {/if}
 
 							</td>
+							{if $_GPC['status'] == 0 && !empty($_GPC['plugin'])}
+							<td >
+								<label class='label  label-default {if $item['casesceu']}label-info{/if}'>{if $item['casesceu']}成功{else}失败{/if}</label>
+							</td>
+							{/if}
 							<td style="position:relative;" width="20%">
 								<a href="javascript:;" data-url="{php echo $_GPC['plugin'] == 'fund' ? $this->createPluginMobileUrl('fund/detail', array('id' => $item['id'])) : $this->createMobileUrl('shop/detail', array('id' => $item['id']));}"  title="复制连接" class="btn btn-default btn-sm js-clip"><i class="fa fa-link"></i></a>
 								{ifp 'shop.goods.copy'}<a href="{php echo $_GPC['plugin'] == 'fund' ? $this->createWebUrl('order/list', array('good_id' => $item['id'] ,'plugin' =>'fund', 'status' => 'all')) : $this->createWebUrl('shop/goods', array('id' => $item['id'] ,'op' =>'copygoods'))}"  title="{$lang['copyshop']}" class="btn btn-default btn-smjs-clip"><i class="fa fa-article"></i></a>{/if}

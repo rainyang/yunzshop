@@ -141,10 +141,9 @@ foreach ($goods as $key => &$value) {
     $value['allprice'] = number_format($get_fund_data['allprice'], 2);
     $value['desc'] = $get_fund_data['desc'];
     $yetprice = pdo_fetchcolumn("select sum(og.price) as yetprice from ". tablename('sz_yi_order_goods') ." og left join " . tablename('sz_yi_order') . " o on og.orderid=o.id  where o.status > 0 and og.goodsid=".$value['id']);
-    $yetprice += $value['marketprice']*$value['sales'];
+    //$yetprice += $value['marketprice']*$value['sales'];
     $value['yetprice'] = number_format($yetprice, 2);
-    $people = pdo_fetchcolumn("select count(og.id) from ". tablename('sz_yi_order_goods') ." og left join " . tablename('sz_yi_order') . " o on og.orderid=o.id  where o.status > 0 and og.goodsid=".$value['id']);
-    $value['people'] = $people + $value['sales'];
+    $value['people'] = pdo_fetchcolumn("select count(o.id) from ". tablename('sz_yi_order_goods') ." og left join " . tablename('sz_yi_order') . " o on og.orderid=o.id  where o.status > 0 and og.goodsid=".$value['id']);
     $value['percentage'] = !empty($yetprice) && !empty($get_fund_data['allprice']) ? intval($yetprice/$get_fund_data['allprice']*100) : 0;
     $value['sday'] = $value['timeend'] > time() ? ceil(($value['timeend'] - time())/86400) : 0;
 }
