@@ -53,7 +53,7 @@ if (p('commission')) {
                     'mid' => $member['id']
                 ));
             }
-            if (empty($set['become_reg']) && (empty($member['realname']) || empty($member['mobile']))) {
+            if (empty($set['become_reg']) && (empty($member['realname']) || empty($member['membermobile']))) {
                 $trigger = true;
             }
         } else if (!empty($_GPC['mid'])) {
