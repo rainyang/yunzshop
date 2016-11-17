@@ -7,7 +7,7 @@ use yii\helpers\ArrayHelper;
 class Shares extends YZ
 {
 
-
+    private $json;
     public function __construct()
     {
         parent::__construct();
@@ -16,6 +16,7 @@ class Shares extends YZ
     public function index()
     {
         $result = $this->callPlugin('commission/shares');
+        $this->json =$result['json'];
         $result['json']['share_title'] = "如何赚钱";
         $result['json']['content'] = array(
             array('number' => '第一步', 'text' => '转发商品链接或商品图片给微信好友；'),
@@ -24,7 +25,18 @@ class Shares extends YZ
             );
 
         $result['json']['desc'] = "说明：分享后会带有独有的推荐码，您的好友访问之后，系统会自动检测并记录客户关系。如果您的好友已被其他人抢先发展成了客户，他就不能成为您的客户，以最早发展成为客户为准。";
+        $result['json']['share'] = $this->_getShareInfo();
         $this->returnSuccess($result);
     }
-
+    private function _getShareInfo()
+    {
+        global $_W;
+        $result = array(
+            'title' => $_W['shopshare']['title'],
+            'webUrl' => $_W['shopshare']['link'] . '&access=app',
+            'imageUrl' => $this->json['img'],
+            'content' => $_W['shopshare']['desc']
+        );
+        return $result;
+    }
 }
