@@ -2274,7 +2274,7 @@ function order_list_refund($item)
                                         $refund['refundno'], $realprice);
 
                                 } elseif ($item['paytype'] == 29){
-                                    message('paypal付款订单，请使用手动退款并打paypal商户处理退款！！！', '', 'error');
+                                    message('paypal付款订单，请使用手动退款并到paypal商户处理退款！！！', '', 'error');
                                 }else {
                                     if ($realprice < 1) {
                                         message('退款金额必须大于1元，才能使用微信企业付款退款!', '', 'error');

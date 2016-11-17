@@ -65,7 +65,8 @@ if (!empty($orderid) && $operation = 'display') {
 	$data_order_id = $log['tid'];
 	
 	$payPalURL = 'https://www.paypal.com/cgi-bin/webscr&cmd=_express-checkout&token=';
-	
+	//$payPalURL = 'https://www.sandbox.paypal.com/cgi-bin/webscr&cmd=_express-checkout&token=';
+
 	$serverName = $_SERVER['SERVER_NAME'];
 	$serverPort = $_SERVER['SERVER_PORT'];
 	$url=dirname('http://'.$serverName.':'.$serverPort.$_SERVER['REQUEST_URI']);
@@ -74,12 +75,12 @@ if (!empty($orderid) && $operation = 'display') {
 
 	$cancelURL =urlencode($_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&p=pay&do=order&m=sz_yi&orderid={$orderid}&openid=" . $openid);
 	$nvpstr="&Amt=".$paymentAmount."&PAYMENTACTION=".$paymentType."&ReturnUrl=".$returnURL."&CANCELURL=".$cancelURL ."&CURRENCYCODE=".$currencyCodeType;
-	//echo "<pre>"; print_r($nvpstr);exit;
+
 	$resArray=hash_call("SetExpressCheckout",$nvpstr,$paypal);
-	//echo "<pre>"; print_r($paypal);exit;
+
 	$token = urldecode($resArray["TOKEN"]);
 	$payPalURL .= $token;
-	//echo "<pre>"; print_r($payPalURL);exit;
+
 	die("<script>window.location.href='".$payPalURL."';</script>");
 }else if ($operation == 'returnpaypal') {
 	$tid = $_REQUEST['invoice'];
@@ -150,7 +151,10 @@ function hash_call($methodName,$nvpStr,$paypal)
     $API_Signature=$paypal['signkey'];
     $nvp_Header;
     $ch = curl_init();
+
     curl_setopt($ch, CURLOPT_URL,'https://api-3t.paypal.com/nvp');
+    //curl_setopt($ch, CURLOPT_URL,'https://api-3t.sandbox.paypal.com/nvp');
+
     curl_setopt($ch, CURLOPT_VERBOSE, 1);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
     curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, FALSE);
