@@ -15,7 +15,28 @@ $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where unia
 $appset     = unserialize($setdata['sets']);
 $app = $appset['app']['base'];
 
+$uc = pdo_fetch("SELECT `uc`,`passport` FROM ".tablename('uni_settings') . " WHERE uniacid = :uniacid", array(':uniacid' => $_W['uniacid']));
+$uc = @iunserializer($uc['uc']);
+
 $member = m('member')->getMember($openid);
+
+if(isset($uc['status']) && $uc['status'] == '1') {
+    $sql = 'SELECT * FROM ' . tablename('mc_mapping_ucenter') . ' WHERE `uniacid`=:uniacid AND `uid`=:uid';
+    $pars = array();
+    $pars[':uniacid'] = $_W['uniacid'];
+    $pars[':uid'] = $member['uid'];
+    $mapping = pdo_fetch($sql, $pars);
+    if(!empty($mapping)) {
+        mc_init_uc();
+        $u = uc_get_user($mapping['centeruid'], true);
+        $ucUser = array(
+            'uid' => $u[0],
+            'username' => $u[1],
+            'email' => $u[2]
+        );
+    }
+}
+
 if (empty($member)) {
 	header('Location: '.$this->createMobileUrl('member/login'));
 }
@@ -222,5 +243,19 @@ if ($verify) {
 }
 $verifyset  = m('common')->getSetData();
 $allset = iunserializer($verifyset['plugins']);
+$dtimes = time();
+
+if ($shopset['term']) {
+    $termtime = '';
+    if ( $shopset['term_unit'] == '1' ) {
+        $termtime = $shopset['term_time'] * 86400;
+    } elseif ( $shopset['term_unit'] == '2' ) {
+        $termtime = $shopset['term_time'] * 86400 * 7;
+    } elseif ( $shopset['term_unit'] == '3' ) {
+        $termtime = $shopset['term_time'] * 86400 * 30;
+    } elseif ( $shopset['term_unit'] == '4' ) {
+        $termtime = $shopset['term_time'] * 86400 * 365;
+    }
+}
 
 include $this->template('member/center');
