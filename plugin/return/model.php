@@ -65,6 +65,12 @@ if (!class_exists('ReturnModel')) {
 								'keyword2' => array('value' => $queue_price_txt?$queue_price_txt:'本次返现金额'.$queue['price']."元！",
 									'color' => '#73a68d')
 							);
+
+							// if (!empty($set'templateid'])) {
+							// 	m('message')->sendTplNotice($openid, $templateid, $msg);
+							// } else {
+							// 	m('message')->sendCustomNotice($openid, $msg);
+							// }
 							m('message')->sendCustomNotice($queue['openid'], $messages);
 						}
 
