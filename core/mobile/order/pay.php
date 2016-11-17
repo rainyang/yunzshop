@@ -197,6 +197,13 @@ if ($operation == 'display' && $_W['isajax']) {
     if (isset($set['pay']) && $set['pay']['yeepay'] == 1) {
         $yeepay['success'] = true;
     }
+    //paypal支付
+    $paypal = array(
+        'success' => false
+    );
+    if (isset($set['pay']) && $set['pay']['paypalstatus'] == 1){
+        $paypal['success'] = true;
+    }
 
     $returnurl = urlencode($this->createMobileUrl('order/pay', array(
         'orderid' => $orderid
@@ -246,6 +253,7 @@ if ($operation == 'display' && $_W['isajax']) {
         'cash' => $cash,
         'storecash' => $storecash,
         'yeepay' => $yeepay,
+        'paypal' => $paypal,
         'isweixin' => is_weixin(),
         'currentcredit' => $currentcredit,
         'returnurl' => $returnurl,
@@ -268,6 +276,7 @@ if ($operation == 'display' && $_W['isajax']) {
         'unionpay',
         'yunpay',
         'yeepay',
+        'paypal',
         'yeepay_wy'
     ))) {
         show_json(0, '未找到支付方式');
@@ -470,6 +479,11 @@ if ($operation == 'display' && $_W['isajax']) {
             ':uniacid' => $uniacid
         ));
         show_json(1);
+    }elseif ($type == 'paypal') {
+        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=29 where '.$where_update.' and uniacid=:uniacid ', array(
+            ':uniacid' => $uniacid
+        ));
+        show_json(1);
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
     $pset = m('common')->getSysset();
@@ -554,7 +568,8 @@ if ($operation == 'display' && $_W['isajax']) {
         'alipay',
         'credit',
         'cash',
-        'storecash'
+        'storecash',
+        'paypal'
     ))) {
         show_json(0, '未找到支付方式');
     }
