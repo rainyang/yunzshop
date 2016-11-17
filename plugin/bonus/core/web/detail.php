@@ -13,7 +13,23 @@ $params[':isglobal'] = $isglobal;
 if($operation == "display"){
 	$pindex    = max(1, intval($_GPC['page']));
 	$psize     = 20;
-	$logs = pdo_fetchall("select * from " . tablename('sz_yi_bonus_log') . " where uniacid=:uniacid and send_bonus_sn =:sn and isglobal=:isglobal limit " . ($pindex - 1) * $psize . ',' . $psize, $params);
+	$condition = '';
+	$member_where = "";
+    if (!empty($_GPC['mid'])) {
+    	$member_where .= " and id=".intval($_GPC['mid']);
+    }
+
+    if (!empty($_GPC['realname'])) {
+    	$realname = trim($_GPC['realname']);
+        $member_where .= " and ( realname like '%{$realname}%' or nickname like '%{$realname}%' or mobile like '%{$realname}%' or membermobile like '%{$realname}%')";
+    }
+
+    if(!empty($member_where)){
+    	$openid = pdo_fetchcolumn("select openid from " . tablename('sz_yi_member') . " where uniacid={$_W['uniacid']}" . $member_where);
+        $condition .= ' and openid=:openid';
+        $params[':openid'] = $openid;
+    }
+	$logs = pdo_fetchall("select * from " . tablename('sz_yi_bonus_log') . " where uniacid=:uniacid and send_bonus_sn =:sn and isglobal=:isglobal {$condition} limit " . ($pindex - 1) * $psize . ',' . $psize, $params);
 	$total = pdo_fetchcolumn("select count(id) from " . tablename('sz_yi_bonus_log') . " where uniacid=:uniacid and send_bonus_sn =:sn and isglobal=:isglobal", $params);
 	foreach ($logs as $key => &$value) {
 	    $member = m('member')->getInfo($value['openid']);
@@ -75,6 +91,8 @@ if($operation == "display"){
 					$level['levelname'] = "市级代理";
 				}else if($member['bonus_area'] == 3){
 					$level['levelname'] = "区级代理";
+				}else if($member['bonus_area'] == 4){
+					$levelname = "街级代理";
 				}
 			}
         	$this->model->sendMessage($value['openid'], array('nickname' => $member['nickname'], 'levelname' => $level['levelname'], 'commission' => $value['money'], 'type' => "微信钱包"), TM_BONUS_PAY);
