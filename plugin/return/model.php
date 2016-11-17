@@ -65,13 +65,13 @@ if (!class_exists('ReturnModel')) {
 								'keyword2' => array('value' => $queue_price_txt?$queue_price_txt:'本次返现金额'.$queue['price']."元！",
 									'color' => '#73a68d')
 							);
-
-							// if (!empty($set'templateid'])) {
-							// 	m('message')->sendTplNotice($openid, $templateid, $msg);
-							// } else {
-							// 	m('message')->sendCustomNotice($openid, $msg);
-							// }
-							m('message')->sendCustomNotice($queue['openid'], $messages);
+							$templateid = $set['templateid'];
+							if (!empty($templateid)) {
+								m('message')->sendTplNotice($queue['openid'], $templateid, $messages);
+							} else {
+								m('message')->sendCustomNotice($queue['openid'], $messages);
+							}
+							//m('message')->sendCustomNotice($queue['openid'], $messages);
 						}
 
 					}
@@ -83,7 +83,14 @@ if (!class_exists('ReturnModel')) {
 							'keyword2' => array('value' => $queuemessages_txt?$queuemessages_txt:"您已加入排列，排列号为".$queuemessages."号！",
 								'color' => '#73a68d')
 							);
-						m('message')->sendCustomNotice($good['openid'], $queue_messages);
+
+							$templateid = $set['templateid'];
+							if (!empty($templateid)) {
+								m('message')->sendTplNotice($good['openid'], $templateid, $queue_messages);
+							} else {
+								m('message')->sendCustomNotice($good['openid'], $queue_messages);
+							}
+						//m('message')->sendCustomNotice($good['openid'], $queue_messages);
 				}
 			}
 
@@ -127,8 +134,13 @@ if (!class_exists('ReturnModel')) {
 					'keyword1' => array('value' => $set['member_title']?$set['member_title']:'购物返现通知', 'color' => '#73a68d'), 
 					'keyword2' => array('value' => $member_price_txt?$member_price_txt:'[返现金额]'.$money.'元,已存到您的余额', 'color' => '#73a68d')
 				);
-
-	        	m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
+				$templateid = $set['templateid'];
+				if (!empty($templateid)) {
+					m('message')->sendTplNotice($order_goods[0]['openid'], $templateid, $msg);
+				} else {
+					m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
+				}
+	        	//m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
 			}
 			
 			
@@ -216,7 +228,13 @@ if (!class_exists('ReturnModel')) {
 				'keyword1' => array('value' => $set['add_single_title']?$set['add_single_title']:'订单全返通知', 'color' => '#73a68d'), 
 				'keyword2' => array('value' => $order_price_txt?$order_price_txt:'[订单返现金额]'.$order_price, 'color' => '#73a68d')
 			);
-        	m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
+			$templateid = $set['templateid'];
+			if (!empty($templateid)) {
+				m('message')->sendTplNotice($order_goods[0]['openid'], $templateid, $msg);
+			} else {
+				m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
+			}
+        	//m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
 
 		}
 		//订单累计金额
@@ -267,7 +285,15 @@ if (!class_exists('ReturnModel')) {
 					'keyword2' => array('value' => $total_price_txt?$total_price_txt:'[订单累计金额]'.$return_money, 'color' => '#73a68d'),
 					'remark' => array('value' => $text)
 				);
-	        	m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
+
+				$templateid = $set['templateid'];
+				if (!empty($templateid)) {
+					m('message')->sendTplNotice($order_goods[0]['openid'], $templateid, $msg);
+				} else {
+					m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
+				}
+
+	        	//m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
 			
 		}
 		
@@ -347,7 +373,13 @@ if (!class_exists('ReturnModel')) {
 							'value' => $single_message_txt?$single_message_txt:'本次返现金额'.$return_money_totle."元",
 							'color' => '#73a68d')
 						);
-					m('message')->sendCustomNotice($value['openid'], $messages);
+					$templateid = $set['templateid'];
+					if (!empty($templateid)) {
+						m('message')->sendTplNotice($value['openid'], $templateid, $messages);
+					} else {
+						m('message')->sendCustomNotice($value['openid'], $messages);
+					}
+					//m('message')->sendCustomNotice($value['openid'], $messages);
 				}
 			}	
 			$log_content[] = date("Y-m-d H:i:s")."公众号ID：".$uniacid." 单笔订单返现完成==============\r\n\r\n\r\n\r\n";
@@ -426,7 +458,13 @@ if (!class_exists('ReturnModel')) {
 							'value' => $total_messsage_txt?$total_messsage_txt:'本次返现金额'.$return_money_totle."元",
 							'color' => '#73a68d')
 						);
-						m('message')->sendCustomNotice($value['openid'], $messages);
+						$templateid = $set['templateid'];
+						if (!empty($templateid)) {
+							m('message')->sendTplNotice($value['openid'], $templateid, $messages);
+						} else {
+							m('message')->sendCustomNotice($value['openid'], $messages);
+						}
+						//m('message')->sendCustomNotice($value['openid'], $messages);
 					}
 				}		
 			}
