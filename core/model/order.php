@@ -105,12 +105,20 @@ class Sz_DYi_Order
         if (is_array($areas) && count($areas) > 0){
             foreach ($areas as $area){
                 $citys = explode(';', $area['citys']);
-                if (in_array($city, $citys) && !empty($citys)){
-                    return $this -> getDispatchPrice($param, $area, $dispatch_data['calculatetype']);
+
+                //处理运费模版辖区,辖县问题
+                if(mb_strlen($city) == mb_strrpos($city, "市") + 1){
+                    $cityShortName = mb_substr($city, 0, mb_strlen($city) - 1);
+                    if (!empty($citys) && (in_array($city, $citys) || in_array($cityShortName . "辖区", $citys) || in_array($cityShortName . "辖县", $citys))){
+                        return $this->getDispatchPrice($param, $area, $dispatch_data['calculatetype']);
+                    }
+                }
+                if (!empty($citys) && in_array($city, $citys)){
+                    return $this->getDispatchPrice($param, $area, $dispatch_data['calculatetype']);
                 }
             }
         }
-        return $this -> getDispatchPrice($param, $dispatch_data);
+        return $this->getDispatchPrice($param, $dispatch_data);
     }
 
     /**
@@ -665,6 +673,7 @@ class Sz_DYi_Order
                     0,
                     $shopset['name'] . '购物积分 订单号: ' . $order['ordersn']
                 ));
+                pdo_update('sz_yi_order', array('credit1'=>$credits), array('ordersn' => $order['ordersn'], 'uniacid' => $_W['uniacid']));
             } elseif ($type == 2) {
                 if ($order['status'] >= 1) {
                     m('member')->setCredit($order['openid'], 'credit1', -$credits, array(

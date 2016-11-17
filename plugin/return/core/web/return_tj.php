@@ -12,6 +12,16 @@ if ($operation == 'display') {
     $ordermoney = pdo_fetchcolumn($sql);
     $ordermoney = floatval($ordermoney);
 
+    $profit_sql = "select o.id, o.price, g.marketprice, g.costprice, og.total from ".tablename('sz_yi_order')." o 
+    left join ".tablename('sz_yi_order_goods')." og on (o.id = og.orderid) 
+    left join ".tablename('sz_yi_goods')." g on (og.goodsid = g.id) 
+    left join " . tablename('sz_yi_order_refund') . " r on r.orderid=o.id and ifnull(r.status,-1)<>-1 
+    where 1 and o.status>=3 and o.uniacid={$_W['uniacid']} and  o.finishtime >={$stattime} and o.finishtime < {$endtime}  ORDER BY o.finishtime DESC,o.status DESC";
+    $dayorder = pdo_fetchall($profit_sql);
+    foreach ($dayorder as $key => $value) {
+        $profit += $value['price'] - $value['costprice'] * $value['total'];
+    }
+
     $params    = array();
     $condition = '';
     if (!empty($_GPC['mid'])) {
