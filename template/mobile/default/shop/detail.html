@@ -878,7 +878,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
            var z = []; 
            $(".main_image img").each(function() {
                 z.push($(this).attr("src"));
-                imgurls = z;//JSON.stringify(z);
+                imgurls = JSON.stringify(z);
             });
             var current;
             if (isWX) {
