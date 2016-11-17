@@ -284,8 +284,8 @@ if (!class_exists('ReturnModel')) {
 				$total_price_txt = $set['total_price'];
 				$total_price_txt = str_replace('[累计金额]', $return_money, $total_price_txt);
 				$msg = array(
-					'first' => array('value' => $set['total_title']?$set['total_title']:'订单金额累计通知', 'color' => '#73a68d'), 
-					'keyword1' => array('value' => $total_price_txt?$total_price_txt:'[订单累计金额]'.$return_money, 'color' => '#73a68d'),
+					'keyword1' => array('value' => $set['total_title']?$set['total_title']:'订单金额累计通知'), 
+					'keyword2' => array('value' => $total_price_txt?$total_price_txt:'[订单累计金额]'.$return_money),
 					'remark' => array('value' => $text)
 				);
 
