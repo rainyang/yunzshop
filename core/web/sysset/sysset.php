@@ -315,6 +315,9 @@ if (checksubmit()) {
         $set['shop']['levelname'] = trim($shop['levelname']);
         $set['shop']['levelurl']  = trim($shop['levelurl']);
         $set['shop']['leveltype']  = trim($shop['leveltype']);
+        $set['shop']['term']        = trim($shop['term']);
+        $set['shop']['term_time']        = trim($shop['term_time']);
+        $set['shop']['term_unit']        = trim($shop['term_unit']);
         plog('sysset.save.member', '修改系统设置-会员设置');
         $set['shop']['isbindmobile']   = intval($shop['isbindmobile']);
         $set['shop']['isreferrer']   = intval($shop['isreferrer']);
