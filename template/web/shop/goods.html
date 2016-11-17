@@ -589,6 +589,7 @@
 							{if $_GPC['status'] == 0 && !empty($_GPC['plugin'])}
 							<td >
 								<label class='label  label-default {if $item['casesceu']}label-info{/if}'>{if $item['casesceu']}成功{else}失败{/if}</label>
+								{if !$item['casesceu']}<br /><a href="{php echo $this->createPluginWebUrl('fund/order', array('id' => $item['id'], 'op' => 'refund'))}"  onclick="return confirm('确定全部退款吗？'); return false;"><label class="label label-danger">全部退款</label></a>{/if}
 							</td>
 							{/if}
 							<td style="position:relative;" width="20%">

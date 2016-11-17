@@ -33,7 +33,7 @@
                 <li>剩余天数<br><span>{$g['sday']}</span>天</li>
             </ul>
             <div class="progress_container">
-               <div class="progress_bar" progress="101" style="width: {$g['percentage']}%;"></div>
+               <div class="progress_bar" progress="101" style="width: {php echo $g['percentage'] > 100 ? 100 : $g['percentage'];}%;"></div>
             </div>
             <div class="exp_text">
                 <a href="javascript">{$g['desc']}</a>
