@@ -342,6 +342,15 @@ if (checksubmit()) {
             'op' => $op
         )), 'error');
     }
+    if($set['pay']['paypalstatus'] == 1){
+        foreach ($set['pay']['paypal'] as $paypal) {
+            if(empty($paypal)){
+                 message('请输入完整的Paypal支付接口信息.', $this->createWebUrl('sysset', array(
+                'op' => $op
+            )), 'error');
+            }
+        }
+    }
 
     $data = array(
         'uniacid' => $_W['uniacid'],
