@@ -342,10 +342,12 @@ if (checksubmit()) {
             'op' => $op
         )), 'error');
     }
+    
+    //目前无法判断paypal填写信息是否正确，直接判断是否为空
     if($set['pay']['paypalstatus'] == 1){
         foreach ($set['pay']['paypal'] as $paypal) {
             if(empty($paypal)){
-                 message('请输入完整的Paypal支付接口信息.', $this->createWebUrl('sysset', array(
+                 message('请输入正确的Paypal支付接口信息.', $this->createWebUrl('sysset', array(
                 'op' => $op
             )), 'error');
             }

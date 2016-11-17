@@ -65,7 +65,7 @@ if (!empty($orderid) && $operation = 'display') {
 	$data_order_id = $log['tid'];
 	
 	$payPalURL = 'https://www.paypal.com/cgi-bin/webscr&cmd=_express-checkout&token=';
-	//$payPalURL = 'https://www.sandbox.paypal.com/cgi-bin/webscr&cmd=_express-checkout&token=';
+	//$payPalURL = 'https://www.sandbox.paypal.com/cgi-bin/webscr&cmd=_express-checkout&token=';//测试地址【备用】
 
 	$serverName = $_SERVER['SERVER_NAME'];
 	$serverPort = $_SERVER['SERVER_PORT'];
@@ -106,7 +106,7 @@ if (!empty($orderid) && $operation = 'display') {
 				':tid' => $tid
 			));
 			if (empty($log)) {
-				die('支付出现错误，请重试!');
+				die('支付出现失败，没有找到该订单信息，请重试!');
 			}
 			if ($log['status'] != 1) {
 				$record           = array();
@@ -126,6 +126,8 @@ if (!empty($orderid) && $operation = 'display') {
 				$ret['uniacid'] = $log['uniacid'];
 				$this->payResult($ret);
 			}
+			//应该跳转订单详细页面，未找到方法，参照其他支付，跳转订单列表页面
+
 			/*$orderid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid', array(
 				':ordersn' => $log['tid'],
 				':uniacid' => $_W['uniacid']
@@ -135,9 +137,9 @@ if (!empty($orderid) && $operation = 'display') {
 			));
 			die("<script>top.window.location.href='{$url}'</script>");
 		}
-		die('支付出现错误，请重试!');
+		die('支付出现失败，paypal验证错误，请重试!');
 	}else{
-        die('支付出现错误，请重试!');
+        die('支付出现失败，paypal通信错误，请重试!');
     }
 
 }
@@ -153,7 +155,7 @@ function hash_call($methodName,$nvpStr,$paypal)
     $ch = curl_init();
 
     curl_setopt($ch, CURLOPT_URL,'https://api-3t.paypal.com/nvp');
-    //curl_setopt($ch, CURLOPT_URL,'https://api-3t.sandbox.paypal.com/nvp');
+    //curl_setopt($ch, CURLOPT_URL,'https://api-3t.sandbox.paypal.com/nvp');//测试地址【备用】
 
     curl_setopt($ch, CURLOPT_VERBOSE, 1);
     curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, FALSE);
