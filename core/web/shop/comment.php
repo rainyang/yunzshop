@@ -7,6 +7,14 @@ global $_W, $_GPC;
 ca('shop.comment.view');
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 load()->model('user');
+$lang = array(
+    'good' => '商品',
+    );
+if($_GPC['plugin'] == "fund"){
+    $lang = array(
+    'good' => '项目',
+    ); 
+}
 if ($operation == 'display') {
     $pindex    = max(1, intval($_GPC['page']));
     $psize     = 20;
@@ -46,6 +54,7 @@ if ($operation == 'display') {
             $condition .= " AND c.append_content='' and c.append_reply_content=''";
         }
     }
+    $condition .= " AND c.plugin='".$_GPC['plugin']."'";
     $list  = pdo_fetchall("SELECT  c.*, o.ordersn,g.title,g.thumb FROM " . tablename('sz_yi_order_comment') . " c  " . " left join " . tablename('sz_yi_goods') . " g on c.goodsid = g.id  " . " left join " . tablename('sz_yi_order') . " o on c.orderid = o.id  " . " WHERE 1 {$condition} ORDER BY createtime desc LIMIT " . ($pindex - 1) * $psize . ',' . $psize, $params);
     $total = pdo_fetchcolumn("SELECT count(*) FROM " . tablename('sz_yi_order_comment') . " c  " . " left join " . tablename('sz_yi_goods') . " g on c.goodsid = g.id  " . " left join " . tablename('sz_yi_order') . " o on c.orderid = o.id  " . " WHERE 1 {$condition} ", $params);
     $pager = pagination($total, $pindex, $psize);
@@ -99,7 +108,8 @@ if ($operation == 'display') {
             'append_images' => is_array($_GPC['append_images']) ? iserializer($_GPC['append_images']) : iserializer(array()),
             'append_reply_content' => $_GPC['append_reply_content'],
             'append_reply_images' => is_array($_GPC['append_reply_images']) ? iserializer($_GPC['append_reply_images']) : iserializer(array()),
-            'createtime' => time()
+            'createtime' => time(),
+            'plugin' => trim($_GPC['plugin'])
         );
         if (empty($data['nickname'])) {
             $data['nickname'] = pdo_fetchcolumn('select nickname from ' . tablename('mc_members') . " where nickname<>'' order by rand() limit 1");

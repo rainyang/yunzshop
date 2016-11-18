@@ -60,10 +60,13 @@ if ($operation == 'display') {
 	if ($_W['isajax'] && $_W['ispost']) {
 		$data = array('uniacid' => $_W['uniacid'], 'username' => trim($_GPC['username']), 'realname' => trim($_GPC['realname']), 'mobile' => trim($_GPC['mobile']), 'roleid' => intval($_GPC['roleid']), 'status' => intval($_GPC['status']), 'perms' => is_array($_GPC['perms']) ? implode(',', $_GPC['perms']) : '');
 		if (!empty($item['id'])) {
-			if(!empty($_GPC['password'])){
-				user_update(array('uid' => $item['uid'], 'password' => $_GPC['password']));
-			}
 			$user = user_single(array('username' => $item['username']));
+			if(!empty($_GPC['password'])){
+				$record = array(
+					"password" => user_hash($_GPC['password'], $user['salt'])
+					);
+				pdo_update('users', $record, array('uid' => intval($user['uid'])));
+			}
 			$data['uid'] = $user['uid'];
 			$data['password'] = $user['password'];
 			pdo_update('sz_yi_perm_user', $data, array('id' => $id, 'uniacid' => $_W['uniacid']));

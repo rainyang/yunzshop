@@ -21,7 +21,7 @@ if(checksubmit('submit')) {
     $wx['login_switch'] = intval($_GPC['login_switch']);
     $wx['domain'] = $_GPC['domain'];
 
-    if ($uc['login_switch'] == 1) {
+    if ($wx['login_switch'] == 1) {
         if (empty($_GPC['wx_appid']) || empty($_GPC['wx_appsecret'])) {
             message('请输入微信公众平台AppID或AppSecret！', referer(), 'error');
         } else {

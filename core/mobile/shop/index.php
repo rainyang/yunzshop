@@ -2,6 +2,7 @@
 if (!defined('IN_IA')) {
 	exit('Access Denied');
 }
+
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'index';
 $openid    = m('user')->getOpenid();
@@ -13,8 +14,12 @@ $uniacid   = $_W['uniacid'];
 $designer  = p('designer');
 $shopset   = m('common')->getSysset('shop');
 $plugin_yunbi = p('yunbi');
+$plugin_recharge = p('recharge');
 if ($plugin_yunbi) {
 	$yunbi_set = $plugin_yunbi->getSet();
+}
+if ($plugin_recharge) {
+	$recharge_set = $plugin_recharge->getSet();
 }
 if (empty($this->yzShopSet['ispc']) || isMobile()) {
 	if ($designer) {
@@ -204,6 +209,12 @@ if ($operation == 'index') {
 	$type = $_GPC['type'];
 	$args = array('page' => $_GPC['page'], 'pagesize' => 6, 'isrecommand' => 1, 'order' => 'displayorder desc,createtime desc', 'by' => '');
 	$goods = m('goods')->getList($args);
+	if ($recharge_set) {
+		$args = array('page' => $_GPC['page'], 'pagesize' => 6, 'isrecommand' => 0, 'order' => 'displayorder desc,createtime desc', 'by' => '','plugin' => 'recharge') ;
+		$recharge_goods =  m('goods')->getList($args);
+	}
+
+
 }
 if ($_W['isajax']) {
 	if ($operation == 'index') {
@@ -211,7 +222,7 @@ if ($_W['isajax']) {
 		show_json(1, array('set' => $set, 'advs' => $advs, 'category' => $category, 'is_read' => $is_read));
 	} else if ($operation == 'goods') {
 		$type = $_GPC['type'];
-		show_json(1, array('goods' => $goods, 'pagesize' => $args['pagesize']));
+		show_json(1, array('goods' => $goods, 'pagesize' => $args['pagesize'],'recharge_goods' => $recharge_goods));
 	} else if ($operation == 'category'){
 
         $category = set_medias(pdo_fetchall(" select * from ".tablename('sz_yi_category')." where parentid=0 and uniacid=".$_W['uniacid']." order by displayorder limit 14"),array('advimg','thumb'));

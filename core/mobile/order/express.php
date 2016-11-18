@@ -22,11 +22,16 @@ if ($_W['isajax']) {
 		if (empty($order)) {
 			show_json(0);
 		}
+		$pindiana = p('indiana');
+		$indiana = array();
+		if($pindiana && $_GPC['indiana']){
+			$indiana = $pindiana->getorder($order['period_num']);
+		}
 		$goods = pdo_fetchall("select og.goodsid,og.price,g.title,g.thumb,og.total,g.credit,og.optionid,og.optionname as optiontitle,g.isverify,g.storeids  from " . tablename('sz_yi_order_goods') . " og " . " left join " . tablename('sz_yi_goods') . " g on g.id=og.goodsid " . " where og.orderid=:orderid and og.uniacid=:uniacid ", array(':uniacid' => $uniacid, ':orderid' => $orderid));
 		$goods = set_medias($goods, 'thumb');
 		$order['goodstotal'] = count($goods);
 		$set = set_medias(m('common')->getSysset('shop'), 'logo');
-		show_json(1, array('order' => $order, 'goods' => $goods, 'set' => $set));
+		show_json(1, array('order' => $order, 'goods' => $goods, 'set' => $set, 'indiana' => $indiana));
 	} else if ($operation == 'step') {
 		$express = trim($_GPC['express']);
 		$expresssn = trim($_GPC['expresssn']);

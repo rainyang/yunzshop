@@ -121,6 +121,9 @@ class Sz_DYi_User
         if($_GPC['p'] == 'return' && $_GPC["method"]=='task'){
             return;
         }
+        if($_GPC['p'] == 'recharge' && $_GPC["method"]=='mobile_data_back'){
+            return;
+        }
         if($_GPC['p'] == 'yunbi' && $_GPC["method"]=='task'){
             return;
         }
@@ -152,7 +155,7 @@ class Sz_DYi_User
         $needLoginPList = array('address', 'commission','cart');
 
         //不需要登陆的P方法
-        $noLoginList = array('category', 'login' ,'receive', 'close', 'designer', 'register', 'sendcode', 'bindmobile', 'forget', 'home');
+        $noLoginList = array('category', 'login' ,'receive', 'close', 'designer', 'register', 'sendcode', 'bindmobile', 'forget', 'home', 'fund');
 
         //不需要登陆的do方法
         $noLoginDoList = array('shop', 'login', 'register');

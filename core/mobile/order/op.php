@@ -54,8 +54,9 @@ if ($_W['isajax']) {
 	                'money'         => $order['deductyunbi'],
 	                'remark'        => "购物返还抵扣".$yunbiset['yunbi_title']." ".$yunbiset['yunbi_title'].": {$order['deductyunbi']} 抵扣金额: {$order['deductyunbimoney']} 订单号: {$order['ordersn']}"
 	            );
+	           	p('yunbi')->addYunbiLog($uniacid,$data_log,'4');
             }
-			p('yunbi')->addYunbiLog($uniacid,$data_log,'4');
+
 	        if (p('coupon') && !empty($order['couponid'])) {
 	            p('coupon')->returnConsumeCoupon($orderid);
 	        }
