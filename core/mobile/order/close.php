@@ -20,12 +20,16 @@ foreach ($sets as $set) {
 		continue;
 	}
 	$daytimes = 86400 * $days;
-	$orders = pdo_fetchall('select id from ' . tablename('sz_yi_order') . " where  uniacid={$_W['uniacid']} and status=0 and paytype<>3  and createtime + {$daytimes} <=unix_timestamp() ");
+	$orders = pdo_fetchall('select id, openid, ordersn, ordersn_general from ' . tablename('sz_yi_order') . " where  uniacid={$_W['uniacid']} and status=0 and paytype<>3  and createtime + {$daytimes} <=unix_timestamp() ");
 	$p = p('coupon');
 	foreach ($orders as $o) {
 		$onew = pdo_fetch('select status from ' . tablename('sz_yi_order') . " where id=:id and status=0 and paytype<>3  and createtime + {$daytimes} <=unix_timestamp()  limit 1", array(':id' => $o['id']));
 		if (!empty($onew) && $onew['status'] == 0) {
 			pdo_query('update ' . tablename('sz_yi_order') . ' set status=-1,canceltime=' . time() . ' where id=' . $o['id']);
+
+            //返回积分
+            m('member')->returnCredit($o['openid'], $o['ordersn'], $o['ordersn_general']);
+
 			if ($p) {
 				if (!empty($o['couponid'])) {
 					$p->returnConsumeCoupon($o['id']);

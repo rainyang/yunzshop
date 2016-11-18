@@ -1,7 +1,7 @@
 <?php
 /*=============================================================================
 #     FileName: member.php
-#         Desc:  
+#         Desc:
 #       Author: Yunzhong - http://www.yunzshop.com
 #        Email: 913768135@qq.com
 #     HomePage: http://www.yunzshop.com
@@ -68,24 +68,24 @@ class Sz_DYi_Member
     public function getMember($openid = '')
     {
         global $_W;
-		
+
         $uid = intval($openid);
-		
+
         if (empty($uid)) {
             $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where  openid=:openid and uniacid=:uniacid limit 1', array(
                 ':uniacid' => $_W['uniacid'],
                 ':openid' => $openid
             ));
-			
+
         } else {
             $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where id=:id and uniacid=:uniacid limit 1', array(
                 ':uniacid' => $_W['uniacid'],
                 ':id' => $uid
             ));
         }
-		
+
 		if (!empty($info)) {
-			
+
 			$openid = $info['openid'];
 			if (empty($info['uid'])) {
 				$followed = m('user')->followed($openid);
@@ -249,13 +249,13 @@ class Sz_DYi_Member
         global $_W;
         load()->model('mc');
         $uid = mc_openid2uid($openid);
-		
+
         if (!empty($uid)) {
-			
+
             $value     = pdo_fetchcolumn("SELECT {$credittype} FROM " . tablename('mc_members') . " WHERE `uid` = :uid", array(
                 ':uid' => $uid
             ));
-			
+
             $newcredit = $credits + $value;
             if ($newcredit <= 0) {
                 $newcredit = 0;
@@ -282,9 +282,9 @@ class Sz_DYi_Member
                 'remark' => $log[1]
             );
             pdo_insert('mc_credits_record', $data);
-			
+
         } else {
-			
+
             $value     = pdo_fetchcolumn("SELECT {$credittype} FROM " . tablename('sz_yi_member') . " WHERE  uniacid=:uniacid and openid=:openid limit 1", array(
                 ':uniacid' => $_W['uniacid'],
                 ':openid' => $openid
@@ -529,7 +529,7 @@ class Sz_DYi_Member
     }
     function setRechargeCredit($openid = '', $money = 0)
     {
-		
+
         if (empty($openid)) {
             return;
         }
@@ -590,7 +590,37 @@ class Sz_DYi_Member
             }
 
             $level = pdo_fetch('UPDATE ' . tablename('sz_yi_member') . " SET level = '0', upgradeleveltime = ".$current_time." where uniacid=:uniacid and level > 0 and (".$current_time." - upgradeleveltime ) >=  ".$termtime, array(':uniacid' => $_W['uniacid']));
-        } 
+        }
+    }
+
+    /**
+     * 系统自动关闭 返还积分
+     *
+     * @param $openid
+     * @param $ordersn
+     * @param $ordersn_general
+     *
+     * @return void
+     */
+    public function returnCredit($openid, $ordersn, $ordersn_general)
+    {
+        global $_W;
+
+        $uid = mc_openid2uid($openid);
+
+        $rows = pdo_fetchall("SELECT `num`, `remark` FROM " . tablename('mc_credits_record') . " 
+                              WHERE `uniacid` = :uniacid AND `uid` = :uid AND `credittype`= 'credit1' ",
+                              array(':uniacid' => $_W['uniacid'], ':uid' => $uid));
+
+        foreach ($rows as $k => $v) {
+            if (strpos($v['remark'], $ordersn) !== FALSE
+                   || strpos($v['remark'], $ordersn_general) !== FALSE) {
+                $this->setCredit($openid, 'credit1', abs($v['num']), array(
+                    '0',
+                    "订单自动关闭返还积分 {" . abs($v['num']) . "} 订单号: {$ordersn}"
+                ));
+            }
+        }
     }
 
 }
