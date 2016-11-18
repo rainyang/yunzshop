@@ -70,6 +70,14 @@ if ($pluginreturn) {
         $isreturn = true;
     }
 }
+$isladder = false;
+$pluginladder = p('ladder');
+if ($pluginladder) {
+    $ladder_set = $pluginladder->getSet();
+    if ($ladder_set['isladder'] == 1 ) {
+        $isladder = true;
+    }
+}
 $isyunbi = false;
 $pluginyunbi = p('yunbi');
 if ($pluginyunbi) {
@@ -412,7 +420,16 @@ if ($operation == "change") {
             if (!empty($item['noticeopenid'])) {
                 $saler = m('member')->getMember($item['noticeopenid']);
             }
+            if ($isladder) {
+                $item['ladder'] = pdo_fetch("select * from " . tablename('sz_yi_goods_ladder') . " where goodsid=:goodsid and  uniacid=:uniacid",
+                    array(
+                        ":goodsid" => $id,
+                        ":uniacid" => $_W['uniacid']
+                    ));
+                $item['ladder']['ladders'] = unserialize($item['ladder']['ladders']);
+            }
         }
+        //echo "<pre>";print_r($item);exit;
         // if (empty($category)) {
         //     message('抱歉，请您先添加商品分类！', $this->createWebUrl('shop/category', array(
         //         'op' => 'post'
@@ -613,6 +630,15 @@ if ($operation == "change") {
                 $data['isreturn'] = intval($_GPC['isreturn']);   //添加全返开关    1:开    0:关
                 $data['isreturnqueue'] = intval($_GPC['isreturnqueue']);   //添加全返排列开关    1:开    0:关
             }
+            $ladders = array(); //阶梯价格数组
+            if($isladder && !empty($_GPC['minimum']) && !empty($_GPC['maximum']) && !empty($_GPC['ladderprice'])) {
+                // 开启阶梯价格插件 && get阶梯数据
+                for ($i=0; $i < count($_GPC['minimum']); $i++) { 
+                    $ladders[$i]['minimum'] = $_GPC['minimum'][$i];
+                    $ladders[$i]['maximum'] = $_GPC['maximum'][$i];
+                    $ladders[$i]['ladderprice'] = $_GPC['ladderprice'][$i];
+                }
+            }
             if ($pluginyunbi) {
                 $data['isyunbi'] = intval($_GPC['isyunbi']);   //返虚拟币开关    1:开    0:关
                 $data['yunbi_consumption'] = floatval($_GPC['yunbi_consumption']);  //虚拟币 返现比例 
@@ -808,6 +834,31 @@ if ($operation == "change") {
                     }
                 }
                 plog('shop.goods.edit', "编辑商品 ID: {$id}");
+            }
+
+            if (!empty($ladders)) {
+                // 有阶梯数据 进行添加 编辑
+                $ladder_data = array(
+                        'uniacid'   => $_W['uniacid'],
+                        'goodsid'   => $id,
+                        'ladders'   => serialize($ladders),
+                        'times'     => time()
+                    );
+                $ladderid = pdo_fetchcolumn("select id from " . tablename('sz_yi_goods_ladder') . " where goodsid=:goodsid and  uniacid=:uniacid",
+                        array(
+                            ":goodsid" => $id,
+                            ":uniacid" => $_W['uniacid']
+                        ));
+                if(empty($ladderid)){
+                    //添加阶梯价格
+                    pdo_insert('sz_yi_goods_ladder', $ladder_data);
+                } else {
+                    //修改阶梯价格
+                    pdo_update('sz_yi_goods_ladder', $ladder_data, array(
+                            'id' => $ladderid
+                        ));
+                }
+
             }
             $totalstocks = 0;
             $param_ids = $_POST['param_id'];
