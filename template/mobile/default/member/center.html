@@ -53,7 +53,11 @@
             </div>
                 <div class="user-info">
                 <div class="user-name"><%member.nickname%>[会员ID:<%member.id%>]</div>
-                <div class="user-other" {if !empty($set['shop']['levelurl'])}onclick='location.href="{$set['shop']['levelurl']}"'{/if}>[<%level.levelname%>] {if !empty($set['shop']['levelurl'])}<i class='fa fa-question-circle' ></i>{/if}
+                <div class="user-other" {if !empty($set['shop']['levelurl'])}onclick='location.href="{$set['shop']['levelurl']}"'{/if}>
+                [<%level.levelname%>]
+                <%if member.level > 0 %> <span id="countdown_nums"></span><%/if%>
+
+                 {if !empty($set['shop']['levelurl'])}<i class='fa fa-question-circle' ></i>{/if}
                     <%if shop_set.shop.isreferrer%>
                         [推荐人：<%referrer.realname%>]
                     <%/if%>
@@ -338,7 +342,49 @@
 
 <div class="copyright">版权所有 ©{if empty($set['shop']['copyright'])}{$set['shop']['name']}{else}{$set['shop']['copyright']}{/if} </div>
 </script>
-<script language="javascript">
+<script type="text/javascript">
+    $(document).ready(function(){
+
+    var d_time = '{$dtimes}';
+    var now_time = '{$member['upgradeleveltime']}';
+    var termtime = '{$termtime}';
+    prefix = "会员倒计时: ";
+    function FreshTimes(){
+        var lefttime =  parseInt(termtime) + parseInt(now_time) - parseInt(d_time);
+        if (lefttime > 0) {
+                var dd = parseInt(lefttime / 60 / 60 / 24, 10);//计算剩余的天数
+                var hh = parseInt(lefttime  / 60 / 60 % 24, 10);//计算剩余的小时数
+                var mm = parseInt(lefttime  / 60 % 60, 10);//计算剩余的分钟数
+                var ss = parseInt(lefttime % 60, 10);//计算剩余的秒数
+                dd = checkTime(dd);
+                hh = checkTime(hh);
+                mm = checkTime(mm);
+                ss = checkTime(ss);
+                $('#countdown_nums').html(prefix + "<span>" + dd + "</span>天<span>" + hh + "</span>时<span>" + mm + "</span>分<span>" + ss + "</span>秒");
+        }else{
+            //location.reload();
+            return false;
+        }
+        d_time = parseInt(d_time) + parseInt(1);
+    }
+
+    var memberlevel = "{$member['level']}";
+    if (memberlevel > 0) {
+        FreshTimes();
+        var sh;
+        sh=setInterval(FreshTimes,1000);
+    }
+
+    function checkTime(i)    
+    {    
+       if (i < 10) {    
+           i = "0" + i;    
+        }    
+       return i;    
+    } 
+});
+
+
     require(['tpl', 'core'], function(tpl, core) {
 
         core.json('member/center',{},function(json){

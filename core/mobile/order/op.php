@@ -75,7 +75,6 @@ if ($_W['isajax']) {
 		if ($order['status'] != 2) {
 			show_json(0, '订单未发货，不能确认收货!');
 		}
-
 		if ($order['refundstate'] > 0 && !empty($order['refundid'])) {
             $change_refund               = array();
             $change_refund['status']     = -2;
@@ -121,7 +120,7 @@ if ($_W['isajax']) {
 
 
 
-		m('member')->upgradeLevel($order['openid']);
+		m('member')->upgradeLevel($order['openid'],$orderid);
 		if (p('coupon') && !empty($order['couponid'])) {
 			p('coupon')->backConsumeCoupon($orderid);
 		}

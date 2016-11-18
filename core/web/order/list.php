@@ -80,6 +80,10 @@ $paytype = array(
         "css" => "warning",
         "name" => "App支付宝支付"
     ),
+    '29' => array(
+        'css' => "paypal",
+        'name' => "paypal支付"
+    ),
     "3" => array(
         "css" => "primary",
         "name" => "货到付款"
@@ -1771,7 +1775,7 @@ function order_list_confirmsend1($order)
         }
 
     }
-    m("member")->upgradeLevel($order["openid"]);
+    m("member")->upgradeLevel($order["openid"],$order["id"]);
     m("notice")->sendOrderMessage($order["id"]);
     if (p("commission")) {
         p("commission")->checkOrderFinish($order["id"]);
@@ -1876,7 +1880,7 @@ function order_list_finish($order)
         }
     }
 
-    m("member")->upgradeLevel($order["openid"]);
+    m("member")->upgradeLevel($order["openid"],$order["id"]);
     m("notice")->sendOrderMessage($order["id"]);
     if (p("coupon") && !empty($order["couponid"])) {
         p("coupon")->backConsumeCoupon($order["id"]);
@@ -2323,7 +2327,9 @@ function order_list_refund($item)
                                     m('finance')->apprefund($item['paytype'], $item['openid'], $item['trade_no'],
                                         $refund['refundno'], $realprice);
 
-                                } else {
+                                } elseif ($item['paytype'] == 29){
+                                    message('paypal付款订单，请使用手动退款并到paypal商户处理退款！！！', '', 'error');
+                                }else {
                                     if ($realprice < 1) {
                                         message('退款金额必须大于1元，才能使用微信企业付款退款!', '', 'error');
                                     }

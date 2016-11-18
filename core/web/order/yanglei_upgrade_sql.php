@@ -44,11 +44,19 @@ if (!pdo_fieldexists('sz_yi_order_goods', 'declaration_mid')) {
 }
 
 
-//夺宝分期期号 2016-10-09
-if (!pdo_fieldexists('sz_yi_order', 'period_num')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `period_num` VARCHAR(145) NOT NULL COMMENT '夺宝分期期号' AFTER `order_type`;");
+//会员升级指定商品
+if (!pdo_fieldexists('sz_yi_member_level', 'goodsid')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_level')." ADD `goodsid` INT NOT NULL COMMENT '购买指定商品成为指定会员等级' AFTER `discount`;");
+}
+//会员升级时间
+if (!pdo_fieldexists('sz_yi_member', 'upgradeleveltime')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `upgradeleveltime` VARCHAR(255) NOT NULL AFTER `level`;");
 }
 
+//订单表添加购物积分
+if (!pdo_fieldexists('sz_yi_order', 'credit1')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `credit1` INT(11) NOT NULL COMMENT '购物积分' AFTER `goodsprice`;");
+}
 
 
 
