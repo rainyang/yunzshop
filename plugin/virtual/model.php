@@ -173,7 +173,7 @@ if (!class_exists('VirtualModel')) {
             ), array(
                 'id' => $g['id']
             ));
-            m('member')->upgradeLevel($order['openid']);
+            m('member')->upgradeLevel($order['openid'],$order['id']);
             m('notice')->sendOrderMessage($order['id']);
     	    if (p('coupon') && !empty($order['couponid'])) {
     	    	p('coupon')->backConsumeCoupon($order['id']);

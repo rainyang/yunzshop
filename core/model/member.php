@@ -465,7 +465,7 @@ class Sz_DYi_Member
         }
         return $level;
     }
-    function upgradeLevel($openid)
+    function upgradeLevel($openid,$orderid='')
     {
         global $_W;
         if (empty($openid)) {
@@ -484,6 +484,13 @@ class Sz_DYi_Member
 		} else if ($leveltype == 1) {
 			$ordercount = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=3 and uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
 			$level = pdo_fetch('select * from ' . tablename('sz_yi_member_level') . " where uniacid=:uniacid  and {$ordercount} >= ordercount and ordercount>0  order by level desc limit 1", array(':uniacid' => $_W['uniacid']));
+        } else if ($leveltype == 2) {
+            $goods = pdo_fetchall('select goodsid from ' . tablename('sz_yi_order_goods') . ' where orderid=:orderid and uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $orderid));
+            foreach ($goods as $key => $value) {
+                $goodsids[$key] = $value['goodsid'];
+            }
+            $goodsid = " AND goodsid in ('".implode($goodsids,"','")."') ";
+            $level = pdo_fetch('select * from ' . tablename('sz_yi_member_level') . " where uniacid=:uniacid ".$goodsid." order by level desc limit 1", array(':uniacid' => $_W['uniacid']));
 		}
 		if (empty($level)) {
 			return;
@@ -501,7 +508,7 @@ class Sz_DYi_Member
 			}
 		}
 		if ($isup) {
-			pdo_update('sz_yi_member', array('level' => $level['id']), array('id' => $member['id']));
+			pdo_update('sz_yi_member', array('level' => $level['id'],'upgradeleveltime' => time()), array('id' => $member['id']));
 			m('notice')->sendMemberUpgradeMessage($openid, $oldlevel, $level);
 		}
     }
@@ -559,8 +566,31 @@ class Sz_DYi_Member
 		fclose($open);
 	}
 
+    //自动执行方法
+    function autoexec($uniacid = 0){
+        global $_W, $_GPC;
+        if(empty($uniacid)){
+            return;
+        }
+        $_W['uniacid'] = $uniacid;
+        $shopset = m('common')->getSysset('shop', $_W['uniacid']);
 
+        if ($shopset['term']) {
+            //echo "<pre>";print_r($shopset);
+            $termtime = '';
+            $current_time = time();
+            if ( $shopset['term_unit'] == '1' ) {
+                $termtime = $shopset['term_time'] * 86400;
+            } elseif ( $shopset['term_unit'] == '2' ) {
+                $termtime = $shopset['term_time'] * 86400 * 7;
+            } elseif ( $shopset['term_unit'] == '3' ) {
+                $termtime = $shopset['term_time'] * 86400 * 30;
+            } elseif ( $shopset['term_unit'] == '4' ) {
+                $termtime = $shopset['term_time'] * 86400 * 365;
+            }
 
-
+            $level = pdo_fetch('UPDATE ' . tablename('sz_yi_member') . " SET level = '0', upgradeleveltime = ".$current_time." where uniacid=:uniacid and level > 0 and (".$current_time." - upgradeleveltime ) >=  ".$termtime, array(':uniacid' => $_W['uniacid']));
+        } 
+    }
 
 }

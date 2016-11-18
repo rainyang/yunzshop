@@ -315,6 +315,9 @@ if (checksubmit()) {
         $set['shop']['levelname'] = trim($shop['levelname']);
         $set['shop']['levelurl']  = trim($shop['levelurl']);
         $set['shop']['leveltype']  = trim($shop['leveltype']);
+        $set['shop']['term']        = trim($shop['term']);
+        $set['shop']['term_time']        = trim($shop['term_time']);
+        $set['shop']['term_unit']        = trim($shop['term_unit']);
         plog('sysset.save.member', '修改系统设置-会员设置');
         $set['shop']['isbindmobile']   = intval($shop['isbindmobile']);
         $set['shop']['isreferrer']   = intval($shop['isreferrer']);
@@ -341,6 +344,17 @@ if (checksubmit()) {
         message('易宝支付设置失败!', $this->createWebUrl('sysset', array(
             'op' => $op
         )), 'error');
+    }
+    
+    //目前无法判断paypal填写信息是否正确，直接判断是否为空
+    if($set['pay']['paypalstatus'] == 1){
+        foreach ($set['pay']['paypal'] as $paypal) {
+            if(empty($paypal)){
+                 message('请输入正确的Paypal支付接口信息.', $this->createWebUrl('sysset', array(
+                'op' => $op
+            )), 'error');
+            }
+        }
     }
 
     $data = array(
