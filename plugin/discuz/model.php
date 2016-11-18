@@ -126,6 +126,12 @@ if (!class_exists('discuzModel')) {
          */
         public function userLogin($uid = '')
         {
+            global $_W;
+
+            $uc = pdo_fetch("SELECT `wx` FROM ".tablename('uni_settings') . " WHERE uniacid = :uniacid", array(':uniacid' => $_W['uniacid']));
+
+            $wx = @iunserializer($uc['wx']);
+
             $bindInfo = $this->getBindInfo($uid);
             $bbsUserInfo = uc_get_user($bindInfo['centeruid'], 1);
 
@@ -138,7 +144,7 @@ if (!class_exists('discuzModel')) {
             //生成同步登录的代码
             $ucsynlogin = uc_user_synlogin($bbs_uid);
             echo $ucsynlogin;
-            @message('登录成功', 'http://weixin.wso2o.cn/dsz/upload', 'success');
+            @message('登录成功', $wx['domain'], 'success');
         }
 
         /**

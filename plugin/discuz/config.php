@@ -13,5 +13,5 @@ if (!defined('IN_IA')) {
 return array(
     'version' => '1.0',
     'id' => 'dz',
-    'name' => 'Discuz数据同步'
+    'name' => 'Discuz数据整合'
 );

@@ -13,6 +13,16 @@
     <div class="main rightlist">
         <form id="form1" action="" method="post" class="form-horizontal form ">
             <div class="panel panel-default">
+                <div class="panel-heading">论坛设置</div>
+                <div class="panel-body">
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">域名</label>
+                        <div class="col-sm-9 col-xs-12">
+                            <input type="text" name="domain" class="form-control" value="{$wx['domain']}" autocomplete="off">
+                            <span class="help-block">域名地址必须是http://或https://开头</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="panel-heading">微信扫码</div>
                 <div class="panel-body">
                     <div class="form-group">

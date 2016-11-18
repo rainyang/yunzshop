@@ -27,6 +27,10 @@ if ($operation == 'display') {
         ca('member.level.edit|member.level.view');
     }
     $level = pdo_fetch("SELECT * FROM " . tablename('sz_yi_member_level') . " WHERE id = '$id'");
+    if ($level['goodsid']) {
+        $goods = pdo_fetch("SELECT id, title FROM " . tablename('sz_yi_goods') . " WHERE id = '{$level['goodsid']}'");
+    }
+    //$goods = pdo_fetch("SELECT id, title FROM " . tablename('sz_yi_goods') . " WHERE id = '{$level['goodsid']}'");
     if (checksubmit('submit')) {
         if (empty($_GPC['levelname'])) {
             message('抱歉，请输入分类名称！');
@@ -37,7 +41,8 @@ if ($operation == 'display') {
             'levelname' => trim($_GPC['levelname']),
             'ordercount' => intval($_GPC['ordercount']),
             'ordermoney' => $_GPC['ordermoney'],
-            'discount' => $_GPC['discount']
+            'discount' => $_GPC['discount'],
+            'goodsid' => $_GPC['goods_id']
         );
         if (!empty($id)) {
             pdo_update('sz_yi_member_level', $data, array(

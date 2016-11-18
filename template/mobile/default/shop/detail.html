@@ -644,7 +644,8 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 
   //微信朋友圈-多图分享
   function share_wx_images() {
-      PINGPP_ANDROID_SDK.app_share_wx_images(link, imgurls);
+      var json_imgurls = JSON.stringify(imgurls);
+      PINGPP_ANDROID_SDK.app_share_wx_images(link, json_imgurls);
   }
 
   //QQ空间分享
@@ -878,7 +879,7 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
            var z = []; 
            $(".main_image img").each(function() {
                 z.push($(this).attr("src"));
-                imgurls = z;//JSON.stringify(z);
+                imgurls = z; //JSON.stringify(z);
             });
             var current;
             if (isWX) {
