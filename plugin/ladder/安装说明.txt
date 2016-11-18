@@ -1,0 +1,4 @@
+ 域名/web/index.php?c=site&a=entry&method=upgrade&p=ladder&do=plugin&m=sz_yi
+
+清除缓存
+
