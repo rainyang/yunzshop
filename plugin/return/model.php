@@ -201,6 +201,10 @@ if (!class_exists('ReturnModel')) {
 					$this->setOrderRule($order_goods,$order_price,$set,$_W['uniacid']);
 				}elseif($set['returnrule'] == 2)
 				{
+					if ($set['iscumulative'] && $order['credit1'] > 0) {
+						$order_price = $order_price - $order['credit1'];
+					}
+
 					$this->setOrderMoneyRule($order_goods,$order_price,$set,$_W['uniacid']);
 				}
 				
