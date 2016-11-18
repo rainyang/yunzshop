@@ -612,14 +612,17 @@ class Sz_DYi_Member
             $param = array(':uniacid' => $_W['uniacid'], ':id'=> $id);
         }
 
-        $orders = pdo_fetchall("SELECT `openid`, `ordersn`, `deductcredit` FROM " . tablename(sz_yi_order) . " WHERE {$condition} AND `status` = -1", $param);
+        $orders = pdo_fetchall("SELECT `openid`, `ordersn`, `deductcredit`, `deductprice` FROM " . tablename(sz_yi_order) . " WHERE {$condition} AND `status` = -1", $param);
 
         foreach ($orders as $k => $v) {
-            $this->setCredit($v['openid'], 'credit1', $v['deductcredit'], array(
-                '0',
-                "订单自动关闭返还积分 {$v['deductcredit']} 订单号: {$v['ordersn']}"
-            ));
+
+            if ($v["deductcredit"] > 0) {
+                $shopset = m("common")->getSysset("shop");
+                m("member")->setCredit($v["openid"], "credit1", $v["deductcredit"], array(
+                    '0',
+                    $shopset["name"] . "购物返还抵扣积分 积分: {$v["deductcredit"]} 抵扣金额: {$v["deductprice"]} 订单号: {$v["ordersn"]}"
+                ));
+            }
         }
     }
-
 }
