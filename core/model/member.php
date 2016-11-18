@@ -596,7 +596,7 @@ class Sz_DYi_Member
     /**
      * 系统自动关闭 返还积分
      *
-     * @param $id
+     * @param $id 订单id
      *
      * @return void
      */
@@ -615,7 +615,7 @@ class Sz_DYi_Member
         $orders = pdo_fetchall("SELECT `openid`, `ordersn`, `deductcredit`, `deductprice` FROM " . tablename(sz_yi_order) . " WHERE {$condition} AND `status` = -1", $param);
 
         foreach ($orders as $k => $v) {
-
+            //抵扣积分
             if ($v["deductcredit"] > 0) {
                 $shopset = m("common")->getSysset("shop");
                 m("member")->setCredit($v["openid"], "credit1", $v["deductcredit"], array(
