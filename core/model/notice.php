@@ -953,6 +953,16 @@ class Sz_DYi_Notice
             if ($pv && !empty($order['virtual'])) {
                 $pvset       = $pv->getSet();
                 $virtual_str = "\n" . $buyerinfo . "\n" . $order['virtual_str'];
+                /*
+                 * 虚拟物品链接跳转 begin
+                 */
+                $virtual_url  = explode(" ", $order['virtual_str']);
+                if(count($virtual_url) < 4){
+                    $detailurl = $virtual_url[1];
+                }
+                /*
+                 * 虚拟物品链接跳转 end
+                 */
                 $msg         = array(
                     'first' => array(
                         'value' => "您购物的物品已自动发货!",

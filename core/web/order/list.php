@@ -9,6 +9,26 @@ $yunbi_plugin = p('yunbi');
 if ($yunbi_plugin) {
     $yunbiset = $yunbi_plugin->getSet();
 }
+
+$isindiana = '';
+$indiana_plugin   = p('indiana');
+if ($indiana_plugin) {
+    if ($_GPC['isindiana']) {
+        $isindiana = " AND o.order_type = 4 ";
+        $period = pdo_fetchall("SELECT ir.ordersn FROM " . tablename('sz_yi_indiana_record') . " ir 
+        left join " . tablename('sz_yi_indiana_period') . " ip on ( ip.openid = ir.openid and ip.period_num = ir.period_num ) 
+        WHERE ip.uniacid = :uniacid",array(
+            ":uniacid" => $_W["uniacid"]
+        ));
+        foreach ($period as $key => $value) {
+            $inordersn[$key] .= $value['ordersn'];
+        }
+        $isindiana .= " AND o.ordersn in ('".implode($inordersn,"','")."') "; 
+    }else{
+        $isindiana = " AND o.order_type <> 4 ";
+    }
+    
+}
 $totals = array();
 $r_type = array(
     '0' => '退款',
@@ -113,7 +133,16 @@ if (p('hotel')) {
 }
 
 $store_list = m('order')->getStoreList();
-
+$lang = array(
+    'good' => '商品',
+    'orderlist' => '订单管理'
+    );
+if($_GPC['plugin'] == "fund"){
+    $lang = array(
+    'good' => '项目',
+    'orderlist' => '众筹订单'
+    ); 
+}
 if ($operation == "display") {
     ca("order.view.status_1|order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status5");
     //判断该帐号的权限
@@ -279,6 +308,8 @@ if ($operation == "display") {
         $condition .= " AND o.order_type<>3";
     }
 
+    $condition.= $isindiana;
+
     $statuscondition = '';
     if ($status != "all") {
         if ($status == -1) {
@@ -374,6 +405,7 @@ if ($operation == "display") {
             }
         }
     }
+
     $cond = "";
     if (p('supplier')) {
         if ($perm_role == 1) {
@@ -457,6 +489,7 @@ if ($operation == "display") {
     $list = pdo_fetchall($sql, $paras);
     unset($value);
 
+
     //把会员信息等拿出来单独查询,避免order整表连接,每次只需查询20条会员信息即可。
     $member_openids = array();
     $member_addresids = array();
@@ -491,14 +524,15 @@ if ($operation == "display") {
         }
     }
 
+
     foreach ($list as & $value) {
         if (isset($order_members[$value['openid']])) {
             $value = $value + $order_members[$value['openid']];
         }
-
         if (p('supplier')) {
             $suppliers_num = $value['suppliers_num'];
             if ($suppliers_num > 1) {
+
                 $value['vendor'] = '多供应商';
                 $value['ischangePrice'] = 0;
             } else {
@@ -756,7 +790,6 @@ if ($operation == "display") {
         }
         $value["goods"] = set_medias($order_goods, "thumb");
         $value["goods_str"] = $goods;
-
     }
     unset($value);
 
@@ -805,6 +838,11 @@ if ($operation == "display") {
             }
         }
     }
+
+    if(!empty($_GPC['plugin'])){
+        $condition.= " and plugin='".$_GPC['plugin']."'";
+    }
+
     $paras = array(
         ":uniacid" => $_W["uniacid"]
     );
@@ -876,7 +914,11 @@ if ($operation == "display") {
         } else {
             include $this->template("web/order/list");
         }
-    } else {
+
+
+    } elseif ($indiana_plugin && $_GPC['isindiana']) {
+        include p('indiana')->ptemplate("order");
+    }else{          
         include $this->template("web/order/list");
     }
     exit;
@@ -1100,6 +1142,9 @@ if ($operation == "display") {
     $paras = array(
         ":uniacid" => $_W["uniacid"]
     );
+    if(!empty($_GPC['plugin'])){
+        $condition.= " and plugin='".$_GPC['plugin']."'";
+    }
     $supplier_conds = '';
     $supplier_cond = '';
     if (p('supplier')) {
@@ -1196,10 +1241,16 @@ if ($operation == "display") {
             }
         }
     }
-    $refund_address = pdo_fetchall('select * from ' . tablename('sz_yi_refund_address') . ' where uniacid=:uniacid',
-        array(
-            ':uniacid' => $_W['uniacid']
-        ));
+
+    $refund_address = pdo_fetchall('select * from ' . tablename('sz_yi_refund_address') . ' where uniacid=:uniacid', array(
+        ':uniacid' => $_W['uniacid']
+    ));
+    
+    if ($indiana_plugin && $_GPC['isindiana']) {
+        //include p('indiana')->ptemplate("detail");
+        $item['indiana'] = p('indiana')->getorder($item['period_num']);
+    }
+
     load()->func("tpl");
     if ($item['order_type'] == '3') {
         $order_room = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_order_room") . " WHERE orderid = :orderid ",
@@ -1208,7 +1259,10 @@ if ($operation == "display") {
             ));
         $item['order_room'] = $order_room;
         include $this->template("web/order/detail_hotel");
-    } else {
+
+    } elseif ($indiana_plugin && $_GPC['isindiana']) {
+        include p('indiana')->ptemplate("detail");
+    }else{
         include $this->template("web/order/detail");
 
     }

@@ -76,6 +76,25 @@ if(p('cashier') && $order['cashier'] == 1){
 
 if (!empty($order)) {
     $order['virtual_str'] = str_replace("\n", "<br/>", $order['virtual_str']);
+    /*
+     * 虚拟物品插件链接跳转 begin
+     */
+    $order['virtual_url'] = '';
+    $virtual_strs = explode("<br/>",$order['virtual_str']);
+    foreach ($virtual_strs as $key => $value) {
+        if(strstr($value,'http://')){
+            $str = explode(": ",$value);
+            $order['virtual_strs'][$key]['con'] = $str[0];
+            $order['virtual_strs'][$key]['url'] = $str[1];
+            if(count($virtual_strs) == 1)
+            {
+                $order['virtual_url'] = $str[1];
+            }
+        }
+    }
+    /*
+     * 虚拟物品插件链接跳转 end
+     */
     $diyformfields        = "";
     if ($diyform_plugin) {
         $diyformfields = ",og.diyformfields,og.diyformdata";
@@ -87,6 +106,11 @@ if (!empty($order)) {
     $diyform_flag = 0;
     foreach ($goods as &$g) {
         $g['thumb'] = tomedia($g['thumb']);
+        if($order['plugin'] == 'fund'){
+            $g['url'] = $this->createPluginMobileUrl('fund/detail', array('id' => $g['goodsid']));
+        }else{
+            $g['url'] = $this->createMobileUrl('shop/detail', array('goodsid' => $g['goodsid']));
+        }
         if ($diyform_plugin) {
             $diyformdata   = iunserializer($g['diyformdata']);
             $fields        = iunserializer($g['diyformfields']);
@@ -190,11 +214,11 @@ if ($_W['isajax']) {
     $canrefund = false;
     $tradeset   = m('common')->getSysset('trade');
     $refunddays = intval($tradeset['refunddays']);
-    if ($order['status'] == 1 || $order['status'] == 2) {
+    if (($order['status'] == 1 || $order['status'] == 2) && $order['plugin'] == "") {
         if ($refunddays > 0 || $order['status'] == 1) {
             $canrefund = true;
         }
-    } else if ($order['status'] == 3) {
+    } else if ($order['status'] == 3 && $order['plugin'] == "") {
         if ($order['isverify'] != 1 && empty($order['virtual'])) {
             
             if ($refunddays > 0) {

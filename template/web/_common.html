@@ -28,7 +28,7 @@ win.document.close();
             <a class="dropdown-toggle" href="{php echo url('home/welcome/ext',array('m'=>'sz_yi'))}"><i class='iconfont icon-heart'></i> {php echo $this->module['title']}</a> 
 
         </li> 
-			{ifp 'shop.goods.view'}<li {if ($_GPC['p'] == 'goods' || empty($_GPC['p'])) && $_GPC['do'] != 'order'} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods')}" class="dropdown-toggle">商品</a></li>{/if}
+			{ifp 'shop.goods.view'}<li {if ($_GPC['p'] == 'goods' || empty($_GPC['p'])) && $_GPC['do'] != 'order' && empty($_GPC['plugin'])} class="active" {/if}><a href="{php echo $this->createWebUrl('shop/goods')}" class="dropdown-toggle">商品</a></li>{/if}
         </li>
       {if p('commission')}
   			{ifpp 'commission'}
@@ -69,7 +69,7 @@ win.document.close();
         {/if}
 
          {ifp 'order'}
-		<li {if $_GPC['do'] == 'order'} class="active" {/if}>
+		<li {if $_GPC['do'] == 'order' && empty($_GPC['plugin'])} class="active" {/if}>
             <a href='{php echo $this->createWebUrl('order', array('op' => 'display'))}' class="dropdown-toggle" > 订单 <i class="fa fa-angle-down"></i></a>
         </li>
         {/if}
@@ -80,7 +80,7 @@ win.document.close();
         {/if} 
         
         {ifp 'statistics'}
-		<li {if $_GPC['do'] == 'statistics'} class="active" {/if}>
+		<li {if $_GPC['do'] == 'statistics' && empty($_GPC['plugin'])} class="active" {/if}>
             <a href='{php echo $this->createWebUrl('statistics/sale')}' class="dropdown-toggle" > 数据 <i class="fa fa-angle-down"></i></a>
         </li>
         {/if}                   
