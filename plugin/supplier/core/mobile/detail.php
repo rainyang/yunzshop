@@ -7,7 +7,7 @@ global $_W, $_GPC;
 $operation      = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $uniacid        = $_W['uniacid'];
 $orderid        = intval($_GPC['orderid']);
-$orderid = '6141';//假数据
+//$orderid = '6141';//假数据
 $order          = pdo_fetch('select * from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid limit 1', array(
     ':id' => $orderid,
     ':uniacid' => $uniacid
@@ -24,7 +24,7 @@ if ($operation == 'deal') {
     }
     $to = trim($_GPC["to"]);
     if ($to == 'confirmsend') {
-        order_list_confirmsend($item);
+        return order_list_confirmsend($item);
     }
 }
 if (!empty($order)) {
@@ -91,7 +91,7 @@ if (!empty($order)) {
 }
 if ($_W['isajax']) {
     if (empty($order)) {
-        show_json(0);
+        return show_json(0,'未找到订单!');
     }
     $order['virtual_str']     = str_replace("\n", "<br/>", $order['virtual_str']);
     $order['goodstotal']      = count($goods);
@@ -212,6 +212,9 @@ function order_list_confirmsend($order) {
                 "id" => $order["id"]
             ));
         }
+    }
+    if (is_app_api()) {
+        return show_json(1, ['confirmsend' => 1]);
     }
     m("notice")->sendOrderMessage($order["id"]);
     plog("order.op.send", "订单发货 ID: {$order["id"]} 订单号: {$order["ordersn"]} <br/>快递公司: {$_GPC["expresscom"]} 快递单号: {$_GPC["expresssn"]}");

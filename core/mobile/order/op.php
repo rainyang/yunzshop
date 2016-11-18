@@ -3,7 +3,6 @@ if (!defined('IN_IA')) {
     exit('Access Denied');
 }
 global $_W, $_GPC;
-
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid = m('user')->getOpenid();
 $member = m("member")->getMember($openid);
@@ -287,8 +286,9 @@ if ($_W['isajax']) {
                     'uniacid' => $uniacid
                 ));
                 return show_json(1);
-            } else {
+            } else {//refunddata,rtype,price,images,reason,content,
                 $refunddata = $_GPC['refunddata'];
+
                 $rtype = $refunddata['rtype'];
                 if ($rtype != 2) {
                     $price = $refunddata['price'];

@@ -18,7 +18,6 @@
 </div>
 <!-- 新增加右侧顶部三级菜单结束 -->
     <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
-    <form action="" method="post" class="form-horizontal form" enctype="multipart/form-data" >
         <input type='hidden' name='setid' value="{$set['id']}" />
         <input type='hidden' name='op' value="sms" />
         <div class="panel panel-default">
@@ -124,6 +123,23 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">注册模板变量:</label>
+                        <div class="col-sm-9 col-xs-12">
+{ifp 'sysset.save.sms'}
+<textarea name="sms[product]" class="form-control">
+{if !empty($set['sms']['product'])}
+    {$set['sms']['product']}
+{else}
+    product=xx商城
+{/if}
+</textarea>
+{else}
+    <input type="hidden" name="sms[product]" value="{$set['sms']['product']}"/>
+    <div class='form-control-static'>{$set['sms']['product']}</div>
+{/if}
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label class="col-xs-12 col-sm-3 col-md-2 control-label">找回密码短信模板ID:</label>
                         <div class="col-sm-9 col-xs-12">
                             {ifp 'sysset.save.sms'}
@@ -135,14 +151,26 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">product变量:</label>
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label">找回密码变量:</label>
                         <div class="col-sm-9 col-xs-12">
-                            {ifp 'sysset.save.sms'}
-                            <input type="text" name="sms[product]" class="form-control" value="{$set['sms']['product']}" placeholder="此值将会出现在短信模板中product处" />
-                            {else}
-                            <input type="hidden" name="sms[product]" value="{$set['sms']['product']}"/>
-                            <div class='form-control-static'>{$set['sms']['product']}</div>
-                            {/if}
+{ifp 'sysset.save.sms'}
+<textarea name="sms[forget]" class="form-control">
+{if !empty($set['sms']['forget'])}
+    {$set['sms']['forget']}
+{else}
+    product=xx商城
+{/if}
+</textarea>
+{else}
+    <input type="hidden" name="sms[forget]" value="{$set['sms']['forget']}"/>
+    <div class='form-control-static'>{$set['sms']['forget']}</div>
+{/if}
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+                        <div class="col-sm-9 col-xs-12 alert alert-info">
+                            模板变量请以"变量名=变量值"形式填写,多个值请以回车换行。
                         </div>
                     </div>
                 </div>

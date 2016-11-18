@@ -41,7 +41,7 @@
     </div>
     <%if order.price>0%>    
 	<%if yunpay.success%><div class="button order_sub10" >云支付</div><%/if%>    
-    <%if wechat.success%><div class="button order_sub1">微信支付</div><%/if%>
+    <%if 1||wechat.success%><div class="button order_sub1">微信支付</div><%/if%>
     <%if alipay.success%><div class="button order_sub2" >支付宝支付</div><%/if%>
     
     <%if credit.success %>
@@ -253,7 +253,7 @@
             }
            
 
-           if(result.wechat.success){
+           if(1||result.wechat.success){
                 $('.order_sub1').click(function(){   
                         if($(this).attr('submitting')=='1'){
                            return;

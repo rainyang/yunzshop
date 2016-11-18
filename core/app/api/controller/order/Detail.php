@@ -20,7 +20,7 @@ class Detail extends YZ
     public function index()
     {
         //$result = ArrayHelper::;
-        $address_block_list = $this->_getAddressBlockTypeId();//$address_block_list配送信息
+        $address_block_list = $this->getAddressBlockTypeId($this->json['order'], $this->variable['show']);//$address_block_list配送信息
         $button_list = $this->_getButtonList($this->json['order']);//$button_list按钮列表
         $show_diyform = $this->_canShowDiyForm();//$show_diyform显示diyform
         $order_status_str = $this->_getStatusStr($this->json['order']);//$order_status_str订单状态文字
@@ -48,10 +48,8 @@ class Detail extends YZ
         return $status_str;
     }
 
-    private function _getAddressBlockTypeId()
+    private static function getAddressBlockTypeId($order, $show)
     {
-        $order = $this->json['order'];
-        $show = $this->variable['show'];
         $id_arr = [];
         if ($show) {
             if ($order['isverify'] == 1 && $order['virtual'] != '0') {

@@ -19,7 +19,22 @@ if (!function_exists('mkdirs')) {
     }
 }
  */
+function getExpress($express, $expresssn)
+{
+    $url = sprintf(SZ_YI_EXPRESS_URL, $express, $expresssn, time());
+    //$url = "http://wap.kuaidi100.com/wap_result.jsp?rand=" . time() . "&id={$express}&fromWeb=null&postid={$expresssn}";
+    load()->func('communication');
+    $resp = ihttp_request($url);
+    $content = $resp['content'];
 
+    if (empty($content)) {
+        return array();
+    }
+
+    $content = json_decode($content);
+
+    return $content->data;
+}
 function sz_tpl_form_field_date($name, $value = '', $withtime = false)
 {
     $s = '';
@@ -433,7 +448,6 @@ function show_json($status = 1, $return = null, $variable = array())
         $ret['result'] = $return;
     }
     if (is_app_api()) {
-        //dump($ret);exit;
         return array(
             'status' => $status,
             'variable' => $variable,
@@ -866,7 +880,13 @@ function is_app()
 
     return false;
 }
+if (!function_exists("ddump")) {
+    function ddump($var, $echo = true, $label = null, $strict = true){
+        defined('IS_TEST')||define('IS_TEST',1);
+        return dump($var, $echo, $label, $strict);
+    }
 
+}
 /**
  * 浏览器友好的变量输出
  * @param mixed $var 变量
@@ -1013,7 +1033,6 @@ if (!function_exists("pdo_sql_debug")) {
         foreach ($placeholders as $k => $v) {
             $sql = preg_replace('/' . $k . '/', "'" . $v . "'", $sql);
         }
-        dump($sql);
         return $sql;
     }
 }
@@ -1038,14 +1057,13 @@ function json_encode_ex($value)
         return json_encode($value, JSON_UNESCAPED_UNICODE);
     }
 }
-
-if (!function_exists("pdo_sql_debug")) {
+if (!function_exists("getExitInfo")) {
 
     function getExitInfo()
     {
         function shutdown_find_exit()
         {
-            dump($GLOBALS['dbg_stack']);
+            ddump($GLOBALS['dbg_stack']);
         }
 
         register_shutdown_function('shutdown_find_exit');
@@ -1056,5 +1074,19 @@ if (!function_exists("pdo_sql_debug")) {
 
         register_tick_function('write_dbg_stack');
         declare(ticks = 1);
+    }
+}
+if (! function_exists('array_get')) {
+    /**
+     * Get an item from an array using "dot" notation.
+     *
+     * @param  \ArrayAccess|array  $array
+     * @param  string  $key
+     * @param  mixed   $default
+     * @return mixed
+     */
+    function array_get($array, $key, $default = null)
+    {
+        return \util\Arr::get($array, $key, $default);
     }
 }

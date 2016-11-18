@@ -1,7 +1,7 @@
 <?php
 /*=============================================================================
 #     FileName: shop.php
-#         Desc: ÉÌ³ÇÀà
+#         Desc: ï¿½Ì³ï¿½ï¿½ï¿½
 #       Author: Yunzhong - http://www.yunzshop.com
 #        Email: 913768135@qq.com
 #     HomePage: http://www.yunzshop.com
@@ -14,15 +14,21 @@ if (!defined('IN_IA')) {
 }
 class Sz_DYi_Shop
 {
+    public function __construct()
+    {
+        global $_W;
+        $this->uniacid = $_W['uniacid'];
+    }
+
     public function getCategory()
     {
         global $_W;
-        $shopset     = m('common')->getSysset('shop');
+        $shopset = m('common')->getSysset('shop');
         $allcategory = array();
-        $category    = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_category') . " WHERE uniacid=:uniacid and enabled=1 ORDER BY parentid ASC, displayorder DESC", array(
+        $category = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_category') . " WHERE uniacid=:uniacid and enabled=1 ORDER BY parentid ASC, displayorder DESC", array(
             ':uniacid' => $_W['uniacid']
         ));
-        $category    = set_medias($category, array(
+        $category = set_medias($category, array(
             'thumb',
             'advimg'
         ));
@@ -49,15 +55,16 @@ class Sz_DYi_Shop
         }
         return $allcategory;
     }
+
     public function getCategory2()
     {
         global $_W;
-        $shopset     = m('common')->getSysset('shop');
+        $shopset = m('common')->getSysset('shop');
         $allcategory = array();
-        $category    = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_category2') . " WHERE uniacid=:uniacid and enabled=1 ORDER BY parentid ASC, displayorder DESC", array(
+        $category = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_category2') . " WHERE uniacid=:uniacid and enabled=1 ORDER BY parentid ASC, displayorder DESC", array(
             ':uniacid' => $_W['uniacid']
         ));
-        $category    = set_medias($category, array(
+        $category = set_medias($category, array(
             'thumb',
             'advimg'
         ));
@@ -83,5 +90,23 @@ class Sz_DYi_Shop
             }
         }
         return $allcategory;
+    }
+
+    public function getADs($uniacid = null)
+    {
+        $uniacid = $uniacid ?: $this->uniacid;
+        $result = pdo_fetchall('select id,advname,link,thumb,thumb_pc from ' . tablename('sz_yi_adv') . ' where uniacid=:uniacid and enabled=1 and LENGTH(thumb)>0 order by displayorder desc', array(':uniacid' => $uniacid));
+
+        $result = set_medias($result, 'thumb,thumb_pc');
+        return $result;
+    }
+
+    public function getPCADs($uniacid = null)
+    {
+        $uniacid = $uniacid ?: $this->uniacid;
+        $result = pdo_fetchall('select id,advname,link,thumb,thumb_pc from ' . tablename('sz_yi_adv') . ' where uniacid=:uniacid and enabled=1 and LENGTH(thumb_pc)>0 order by displayorder desc', array(':uniacid' => $uniacid));
+
+        $result = set_medias($result, 'thumb,thumb_pc');
+        return $result;
     }
 }

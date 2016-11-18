@@ -17,16 +17,43 @@ class Apply extends YZ
     {
         $result = $this->callPlugin('commission/Apply');
         $result['json']['set']['texts']['commission_apply_title'] = $result['json']['set']['texts']['commission'] . "提现";
-        $result['json']['set']['texts']['commission_ok_title'] = "当前" . $result['json']['set']['texts']['commission_ok'] . "(元)";
-        print_r($result);exit();
-        $result['json']['share_title'] = "如何赚钱";
-        $result['json']['content'] = array(
-            array('number' => '第一步', 'text' => '转发商品链接或商品图片给微信好友；'),
-            array('number' => '第二步', 'text' => '从您转发的链接或图片进入商城的好友，' . $result['json']['set']['become_child'] == 1 ? '如果您的好友下单，' : '' . $result['json']['set']['become_child'] == 2 ? '如果您的好友下单并付款，' : '' . '系统将自动锁定成为您的客户, 他们在微信商城中购买任何商品，您都可以获得' . $result['json']['set']['texts']['commission1'] . '；'),
-            array('number' => '第三步', 'text' => '您可以在' . $result['json']['set']['texts']['center'] . '查看【' . $result['json']['set']['texts']['myteam'] . '】和【' . $result['json']['set']['texts']['order'] . '】，好友确认收货后' . $result['json']['set']['texts']['commission'] . '方可' . $result['json']['set']['texts']['withdraw'] . '。'),
-            );
+        $result['json']['set']['texts']['commission_ok_title'] = "当前" . $result['json']['member']['commission_ok'] . "(元)";
+        $result['json']['set']['texts']['widthdraw_log'] = "提现记录";
+        $result['json']['commission_ok'] = number_format($result['json']['member']['commission_ok'], 2);
+        $result['json']['buttons'] = array();
+        if (empty($result['json']['set']['closetocredit'])) {
+           $result['json']['buttons'][] =  array(
+                'id' => 1, 
+                'text' => $result['json']['set']['texts']['widthdraw']."到账户余额",
+                'type' => 0,
+                );
+        }
 
-        $result['json']['desc'] = "说明：分享后会带有独有的推荐码，您的好友访问之后，系统会自动检测并记录客户关系。如果您的好友已被其他人抢先发展成了客户，他就不能成为您的客户，以最早发展成为客户为准。";
+        if (empty($result['json']['set']['closetowechatwallet'])) {
+           $result['json']['buttons'][] =  array(
+                'id' => 2, 
+                'text' => $result['json']['set']['texts']['widthdraw']."到微信钱包",
+                'type' => 1,
+                );
+        }
+
+        if ($result['json']['settingalipay']['pay']['weixin'] == 1 && $result['json']['settingalipay']['pay']['weixin_withdrawals'] == 1) {
+            if ($result['json']['member']['commission_ok'] >= 1 && $result['json']['member']['commission_ok'] <= 200){
+               $result['json']['buttons'][] =  array(
+                    'id' => 3, 
+                    'text' => $result['json']['set']['texts']['widthdraw']."到微信红包",
+                    'type' => 2,
+                    );
+           }
+        }
+
+        if ($result['json']['settingalipay']['pay']['alipay'] == 1  &&  $settingalipay['pay']['alipay_withdrawals']=='1') {
+           $result['json']['buttons'][] =  array(
+                'id' => 4, 
+                'text' => $result['json']['set']['texts']['widthdraw']."到支付宝",
+                'type' => 3,
+                );
+        }
         $this->returnSuccess($result);
     }
 

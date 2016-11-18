@@ -4,12 +4,6 @@ $openid   = m("user")->getOpenid();
 $shop_set = m("common")->getSysset("shop");
 $set      = set_medias($this->set, "regbg");
 $member   = m("member")->getMember($openid);
-if ($member["isagent"] == 1 && $member["status"] == 1) {
-    header("location: " . $this->createPluginMobileUrl("commission"));
-    exit;
-}
-if (empty($set["become"])) {
-}
 $template_flag  = 0;
 $diyform_plugin = p("diyform");
 if ($diyform_plugin) {
@@ -62,9 +56,6 @@ if ($_W["isajax"]) {
                 "isagent" => 1,
                 "agentid" => $mid,
                 "status" => $become_check,
-                //"realname" => $_GPC["realname"],
-                //"mobile" => $_GPC["mobile"],
-                //"weixin" => $_GPC["weixin"],
                 "agenttime" => $become_check == 1 ? time() : 0
             );
             pdo_update("sz_yi_member", $data, array(
@@ -75,13 +66,6 @@ if ($_W["isajax"]) {
                     "agenttime" => $data["agenttime"]
                 ), TM_COMMISSION_BECOME);
                 $this->model->upgradeLevelByAgent($member["id"]);
-            }
-            if (!empty($member["uid"])) {
-                load()->model("mc");
-                mc_update($member["uid"], array(
-                    "realname" => $data["realname"],
-                    "mobile" => $data["mobile"]
-                ));
             }
         }
     } else if ($set["become"] == "2") {
@@ -139,10 +123,10 @@ if ($_W["isajax"]) {
     }
     if ($_W["ispost"]) {
         if ($member["isagent"] == 1 && $member["status"] == 1) {
-            show_json(0, "您已经是" . $set["texts"]["become"] . "，无需再次申请!");
+            return show_json(0, "您已经是" . $set["texts"]["become"] . "，无需再次申请!");
         }
         if ($ret["status"] == 1 || $ret["status"] == 2) {
-            show_json(0, "您消费的还不够哦，无法申请" . $set["texts"]["become"] . "!");
+            return show_json(0, "您消费的还不够哦，无法申请" . $set["texts"]["become"] . "!");
         } else {
             $become_check  = intval($set["become_check"]);
             $ret["status"] = $become_check;
@@ -171,7 +155,7 @@ if ($_W["isajax"]) {
                     load()->model("mc");
                     if (!empty($mc_data)) {
                         mc_update($member["uid"], $mc_data);
-                        show_json(1, $ret);
+                        return show_json(1, $ret);
                     }
                 }
             } else {
@@ -180,7 +164,7 @@ if ($_W["isajax"]) {
                     "agentid" => $mid,
                     "status" => $become_check,
                     "realname" => $_GPC["realname"],
-                    //"mobile" => $_GPC["mobile"],
+                    "membermobile" => $_GPC["mobile"],
                     "weixin" => $_GPC["weixin"],
                     "agenttime" => $become_check == 1 ? time() : 0
                 );
@@ -199,14 +183,14 @@ if ($_W["isajax"]) {
                     load()->model("mc");
                     mc_update($member["uid"], array(
                         "realname" => $data["realname"],
-                        "mobile" => $data["mobile"]
+                        "mobile" => $data["membermobile"]
                     ));
-                    show_json(1, $ret);
+                   return show_json(1, $ret);
                 }
             }
         }
     }
-    show_json(1, $ret);
+    return show_json(1, $ret);
 }
 $this->setHeader();
 if ($template_flag == 1) {

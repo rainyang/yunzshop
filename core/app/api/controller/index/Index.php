@@ -4,19 +4,34 @@ use app\api\Request;
 use app\api\YZ;
 class Index extends YZ
 {
+    private $json;
+    private $variable;
 
-    public function getGoodsList()
+    public function __construct()
     {
-        //$para = Request::all();
-        //$type = $_GPC['type'];
-        $goodsid = Request::input('goodsid');
-        $keywords = Request::input('keywords','');
-        $args = array('page' => 1,'pagesize' => 10,'goodsid' => $goodsid,'keywords'=>$keywords ,'isrecommand' => 1, 'order' => 'displayorder desc,id desc', 'by' => '');
-
-        $goods = m('goods')->getList($args);
-        foreach ($goods as &$good){
-            $good = array_part('id,thumb,title,marketprice,type,groupnumber,productprice,productprice',$good);
+        parent::__construct();
+        global $_W,$_GPC;
+        $_W['ispost'] = true;
+        $_GPC['pagesize'] = 10;
+        $result = $this->callMobile('shop/list');
+        //dump($result);exit;
+        if ($result['code'] == -1) {
+            $this->returnError($result['json']);
         }
-        $this->returnSuccess($goods);
+        $this->variable = $result['variable'];
+        $this->json = $result['json'];
+    }
+    private function _getGoods()
+    {
+        $res = $this->json;
+        foreach ($res['goods'] as &$good) {
+            unset($good['content']);
+        }
+        return $res['goods'];
+    }
+    public function index(){
+        $res['goods'] = $this->_getGoods();
+        $res['ads'] = m('shop')->getADs();
+        $this->returnSuccess($res);
     }
 }

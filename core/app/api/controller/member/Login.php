@@ -23,11 +23,13 @@ class Login extends YZ
         $this->returnSuccess($info);
     }
     private function _getUserInfo($para){
-        $info = D('Member')->field('id,openid,nickname,mobile,avatar,isagent')->where($para)->find();
+        $info = D('Member')->field('id,openid')->where($para)->find();
+        $member  = m('member')->getMember($info['openid']);
+
         if(!empty($info)){
-            $info['commission_level'] = "一星董事";
+            $member['commission_level'] = "一星董事";
         }
-        return $info;
+        return $member;
     }
     private function _validatePara(){
         $validate_fields = array(

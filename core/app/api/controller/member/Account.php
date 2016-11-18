@@ -134,6 +134,7 @@ class Account extends YZ
 //echo '<pre>';print_r($user_info);exit;
             $res = array(
                 'realname' =>$user_info['json']['member']['realname'],
+                'nickname' =>$user_info['json']['member']['nickname'],
                 'mobile' =>$user_info['json']['member']['mobile'],
                 'weixin' =>$user_info['json']['member']['weixin'],
                 'gender' => $gender,
@@ -154,6 +155,9 @@ class Account extends YZ
             }
         } else if ($trigger == 'post') {
 //api member/Account/info   memberdata
+            global $_W,$_GPC;
+            $_W['ispost'] = true;
+            $_GPC['memberdata'] = json_decode($_GPC['memberdata'],true);
             $res = $this->callMobile('member/info');
 
             $this->returnSuccess($res);

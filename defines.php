@@ -12,3 +12,4 @@ define('SZ_YI_DEBUG', false);//false
 !defined('SZ_YI_URL') && define('SZ_YI_URL', $_W['siteroot'] . 'addons/sz_yi/');
 !defined('SZ_YI_STATIC') && define('SZ_YI_STATIC', SZ_YI_URL . 'static/');
 !defined('SZ_YI_PREFIX') && define('SZ_YI_PREFIX', 'sz_yi_');
+!defined('SZ_YI_EXPRESS_URL') &&define("SZ_YI_EXPRESS_URL", "https://m.kuaidi100.com/query?type=%s&postid=%s&id=1&valicode=&temp=%s");

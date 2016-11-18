@@ -4,43 +4,43 @@ if (!defined('IN_IA')) {
 }
 global $_W, $_GPC;
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
-$shopset   = m('common')->getSysset('shop');
-$openid    = m('user')->getOpenid();
+$shopset = m('common')->getSysset('shop');
+$openid = m('user')->getOpenid();
 if (empty($openid)) {
     $openid = $_GPC['openid'];
 }
 
 $set = m('common')->getSysset(array('pay'));
-$member  = m('member')->getMember($openid);
+$member = m('member')->getMember($openid);
 $uniacid = $_W['uniacid'];
 $orderid = intval($_GPC['orderid']);
-if(!empty($orderid)){
-	$ordersn_general = pdo_fetchcolumn("select ordersn_general from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
-            ':id' => $orderid,
-            ':uniacid' => $uniacid,
-            ':openid' => $openid
-        ));
+if (!empty($orderid)) {
+    $ordersn_general = pdo_fetchcolumn("select ordersn_general from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
+        ':id' => $orderid,
+        ':uniacid' => $uniacid,
+        ':openid' => $openid
+    ));
     $order_all = pdo_fetchall("select * from " . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid and openid=:openid', array(
-            ':ordersn_general' => $ordersn_general,
-            ':uniacid' => $uniacid,
-            ':openid' => $openid
-        ));
+        ':ordersn_general' => $ordersn_general,
+        ':uniacid' => $uniacid,
+        ':openid' => $openid
+    ));
     //合并订单号订单大于1个，执行合并付款
-    if(count($order_all) > 1){
+    if (count($order_all) > 1) {
         $order = array();
         $order['ordersn'] = $ordersn_general;
-		$orderid = array();
+        $orderid = array();
         foreach ($order_all as $key => $val) {
-            $order['price']           += $val['price'];
-            $order['deductcredit2']   += $val['deductcredit2'];
-			$order['ordersn2']   	  += $val['ordersn2'];
-			$orderid[]				   = $val['id'];
+            $order['price'] += $val['price'];
+            $order['deductcredit2'] += $val['deductcredit2'];
+            $order['ordersn2'] += $val['ordersn2'];
+            $orderid[] = $val['id'];
         }
-		$order['status']	= $val['status'];
-		$order['cash']		= $val['cash'];
-		$order['openid']		= $val['openid'];
-        $order['pay_ordersn']        = $val['pay_ordersn'];
-    }else{
+        $order['status'] = $val['status'];
+        $order['cash'] = $val['cash'];
+        $order['openid'] = $val['openid'];
+        $order['pay_ordersn'] = $val['pay_ordersn'];
+    } else {
         $order = $order_all[0];
     }
 }
@@ -83,11 +83,11 @@ if ($operation == 'display' && $_W['isajax']) {
         pdo_insert('core_paylog', $log);
         $plid = pdo_insertid();
     }
-    $set           = m('common')->getSysset(array(
+    $set = m('common')->getSysset(array(
         'shop',
         'pay'
     ));
-    $credit        = array(
+    $credit = array(
         'success' => false
     );
     $currentcredit = 0;
@@ -105,7 +105,7 @@ if ($operation == 'display' && $_W['isajax']) {
     );
     if (isset($set['pay']) && $set['pay']['app_alipay'] == 1) {
         //if (is_array($setting['payment']['ping']) && $setting['payment']['ping']['switch']) {
-            $app_alipay['success'] = true;
+        $app_alipay['success'] = true;
         //}
     }
 
@@ -114,14 +114,14 @@ if ($operation == 'display' && $_W['isajax']) {
     );
     if (isset($set['pay']) && $set['pay']['app_weixin'] == 1) {
         //if (is_array($setting['payment']['ping']) && $setting['payment']['ping']['switch']) {
-            $app_wechat['success'] = true;
+        $app_wechat['success'] = true;
         //}
     }
     load()->model('payment');
     $setting = uni_setting($_W['uniacid'], array(
         'payment'
     ));
-    $wechat  = array(
+    $wechat = array(
         'success' => false,
         'qrcode' => false
     );
@@ -168,23 +168,23 @@ if ($operation == 'display' && $_W['isajax']) {
             $unionpay['success'] = true;
         }
     }
-    $cash      = array(
+    $cash = array(
         'success' => $order['cash'] == 1 && isset($set['pay']) && $set['pay']['cash'] == 1 && $order['dispatchtype'] == 0
     );
-    $storecash      = array(
+    $storecash = array(
         'success' => $order['cash'] == 1 && isset($set['pay']) && $set['pay']['cash'] == 1 && $order['dispatchtype'] == 1
     );
     $returnurl = urlencode($this->createMobileUrl('order/pay', array(
         'orderid' => $orderid
     )));
 
-    if(is_array($orderid)){
+    if (is_array($orderid)) {
         $orderids = implode(',', $orderid);
         $where_orderid = "og.orderid in ({$orderids})";
-    }else{
+    } else {
         $where_orderid = "og.orderid={$orderid}";
     }
-    $order_goods = pdo_fetchall('select og.id,g.title, og.goodsid,og.optionid,g.thumb, g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
+    $order_goods = pdo_fetchall('select og.id,g.title, og.goodsid,og.optionid,g.thumb, g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where ' . $where_orderid . ' and og.uniacid=:uniacid ', array(
         ':uniacid' => $_W['uniacid']
     ));
 
@@ -196,9 +196,9 @@ if ($operation == 'display' && $_W['isajax']) {
                 ":goodsid" => $value['goodsid'],
                 ":id" => $value['optionid']
             ));
-            
+
             if (!empty($option)) {
-                $value["optionid"]    = $value['optionid'];
+                $value["optionid"] = $value['optionid'];
                 $value["optiontitle"] = $option["title"];
                 $value["marketprice"] = $option["marketprice"];
                 if (!empty($option["weight"])) {
@@ -224,10 +224,10 @@ if ($operation == 'display' && $_W['isajax']) {
         'isweixin' => is_weixin(),
         'currentcredit' => $currentcredit,
         'returnurl' => $returnurl,
-        'goods'=>$order_goods
+        'goods' => $order_goods
     ));
 } else if ($operation == 'pay' && $_W['ispost']) {
-    $set   = m('common')->getSysset(array(
+    $set = m('common')->getSysset(array(
         'shop',
         'pay'
     ));
@@ -242,11 +242,12 @@ if ($operation == 'display' && $_W['isajax']) {
         'app_weixin',
         'unionpay',
         'yunpay'
-    ))) {
+    ))
+    ) {
         return show_json(0, '未找到支付方式');
     }
 
-    if($member['credit2'] < $order['deductcredit2'] && $order['deductcredit2'] > 0){
+    if ($member['credit2'] < $order['deductcredit2'] && $order['deductcredit2'] > 0) {
         return show_json(0, '余额不足，请充值后在试！');
     }
     $pay_ordersn = $order['pay_ordersn'] ? $order['pay_ordersn'] : $ordersn_general;
@@ -258,13 +259,13 @@ if ($operation == 'display' && $_W['isajax']) {
     if (empty($log)) {
         return show_json(0, '支付出错,请重试!');
     }
-    if(is_array($orderid)){
+    if (is_array($orderid)) {
         $orderids = implode(',', $orderid);
         $where_orderid = "og.orderid in ({$orderids})";
-    }else{
+    } else {
         $where_orderid = "og.orderid={$orderid}";
     }
-    $order_goods = pdo_fetchall('select og.id,g.title, og.goodsid,og.optionid,g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
+    $order_goods = pdo_fetchall('select og.id,g.title, og.goodsid,og.optionid,g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where ' . $where_orderid . ' and og.uniacid=:uniacid ', array(
         ':uniacid' => $_W['uniacid']
     ));
     foreach ($order_goods as $data) {
@@ -327,12 +328,12 @@ if ($operation == 'display' && $_W['isajax']) {
             }
         }
     }
-    $plid        = $log['plid'];
+    $plid = $log['plid'];
     $param_title = $set['shop']['name'] . "订单: " . $order['ordersn'];
-    if(is_array($orderid)){
+    if (is_array($orderid)) {
         $orderids = implode(',', $orderid);
         $where_update = "id in ({$orderids})";
-    }else{
+    } else {
         $where_update = "id={$orderid}";
     }
     if ($type == 'weixin') {
@@ -340,29 +341,36 @@ if ($operation == 'display' && $_W['isajax']) {
             return show_json(0, '未开启微信支付!');
         }
 
-        $wechat        = array(
+        $wechat = array(
             'success' => false
         );
-        $params        = array();
+        $params = array();
         $params['tid'] = $log['tid'];
         if (!empty($order['ordersn2'])) {
             $var = sprintf("%02d", $order['ordersn2']);
             $params['tid'] .= "GJ" . $var;
         }
-        $params['user']  = $openid;
-        $params['fee']   = $order['price'];
+        $params['user'] = $openid;
+        $params['fee'] = $order['price'];
         $params['title'] = $param_title;
         load()->model('payment');   //todo,貌似没有使用
         $setting = uni_setting($_W['uniacid'], array(
             'payment'
         ));
+        //ddump($setting);exit;
         //微信下
-        if (is_weixin()) {
+        if (is_weixin()||1) {
             if (is_array($setting['payment'])) {
-                $options           = $setting['payment']['wechat'];
-                $options['appid']  = $_W['account']['key'];
-                $options['secret'] = $_W['account']['secret'];
-                $wechat            = m('common')->wechat_build($params, $options, 0);
+                $options = $setting['payment']['wechat'];
+                if (1) {
+                    $options['appid'] = 'wxeeba418aa0deeb15';//$_W['account']['key'];
+                    $options['secret'] = '351d89bf124e08557bebf5b284b33229';//$_W['account']['secret'];
+                    $params['trade_type'] = 'APP';
+                } else {
+                    $options['appid'] = $_W['account']['key'];
+                    $options['secret'] = $_W['account']['secret'];
+                }
+                $wechat = m('common')->wechat_build($params, $options, 0);
                 //$wechat['success'] = false;
                 if (!is_error($wechat)) {
                     $wechat['success'] = true;
@@ -374,23 +382,24 @@ if ($operation == 'display' && $_W['isajax']) {
                 return show_json(0, '微信支付参数错误!');
             }
 
-            pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=21 where '.$where_update.' and uniacid=:uniacid ', array(
-                    ':uniacid' => $uniacid
-                ));
+            pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=21 where ' . $where_update . ' and uniacid=:uniacid ', array(
+                ':uniacid' => $uniacid
+            ));
             return show_json(1, array(
                 'wechat' => $wechat
             ));
-        }
-        else{   //PC端微信扫码pay
+        } else {   //PC端微信扫码pay
             if (is_array($setting['payment'])) {
-                $params['trade_type']  = 'NATIVE';
-                $options           = $setting['payment']['wechat'];
-                $options['appid']  = $_W['account']['key'];
+                $params['trade_type'] = 'NATIVE';
+                $options = $setting['payment']['wechat'];
+                $options['appid'] = $_W['account']['key'];
                 $options['secret'] = $_W['account']['secret'];
-                $wechat            = m('common')->wechat_build($params, $options, 0);
+                //ddump($options);
+                //ddump($params);
+                $wechat = m('common')->wechat_build($params, $options, 0);
                 //print_r($wechat);exit;
                 //$wechat['success'] = false;
-                
+
                 if (!is_error($wechat)) {
                     $wechat['success'] = true;
                     $wechat['code_url'] = m('qrcode')->createWechatQrcode($wechat['code_url']);
@@ -398,7 +407,7 @@ if ($operation == 'display' && $_W['isajax']) {
                 } else {
                     return show_json(0, $wechat['message']);
                 }
-                pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=21 where '.$where_update.' and uniacid=:uniacid ', array(
+                pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=21 where ' . $where_update . ' and uniacid=:uniacid ', array(
                     ':uniacid' => $uniacid
                 ));
                 return show_json(1, array(
@@ -407,14 +416,14 @@ if ($operation == 'display' && $_W['isajax']) {
             }
         }
     } else if ($type == 'alipay') {
-        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=22 where '.$where_update.' and uniacid=:uniacid ', array(
-                    ':uniacid' => $uniacid
-                ));
+        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=22 where ' . $where_update . ' and uniacid=:uniacid ', array(
+            ':uniacid' => $uniacid
+        ));
         return show_json(1);
-    }else if ($type == 'yunpay') {
-        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=24 where '.$where_update.' and uniacid=:uniacid ', array(
-                    ':uniacid' => $uniacid
-                ));
+    } else if ($type == 'yunpay') {
+        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=24 where ' . $where_update . ' and uniacid=:uniacid ', array(
+            ':uniacid' => $uniacid
+        ));
         return show_json(1);
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
@@ -422,13 +431,13 @@ if ($operation == 'display' && $_W['isajax']) {
     $verify_set = m('common')->getSetData();
     $allset = iunserializer($verify_set['plugins']);
     $ischannelpay = intval($_GPC['ischannelpay']);
-    if(is_array($orderid)){
+    if (is_array($orderid)) {
         $orderids = implode(',', $orderid);
         $where_orderid = "og.orderid in ({$orderids})";
-    }else{
+    } else {
         $where_orderid = "og.orderid={$orderid}";
     }
-    $order_goods = pdo_fetchall('select og.id,g.title, og.goodsid,og.optionid,g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
+    $order_goods = pdo_fetchall('select og.id,g.title, og.goodsid,og.optionid,g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where ' . $where_orderid . ' and og.uniacid=:uniacid ', array(
         ':uniacid' => $_W['uniacid']
     ));
     foreach ($order_goods as $data) {
@@ -501,7 +510,8 @@ if ($operation == 'display' && $_W['isajax']) {
         'credit',
         'cash',
         'storecash'
-    ))) {
+    ))
+    ) {
         return show_json(0, '未找到支付方式');
     }
 
@@ -518,89 +528,44 @@ if ($operation == 'display' && $_W['isajax']) {
         return show_json(0, '支付出错,请重试!');
     }
     $plid = $log['plid'];
-    if(is_array($orderid)){
+    if (is_array($orderid)) {
         $orderids = implode(',', $orderid);
         $where_update = "id in ({$orderids})";
-    }else{
+    } else {
         $where_update = "id={$orderid}";
     }
     if ($type == 'cash') {
-        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=3 where '.$where_update.' and uniacid=:uniacid ', array(
-                    ':uniacid' => $uniacid
-                ));
-        $ret            = array();
-        $ret['result']  = 'success';
-        $ret['type']    = 'cash';
-        $ret['from']    = 'return';
-        $ret['tid']     = $log['tid'];
-        $ret['user']    = $order['openid'];
-        $ret['fee']     = $order['price'];
-        $ret['weid']    = $_W['uniacid'];
+        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=3 where ' . $where_update . ' and uniacid=:uniacid ', array(
+            ':uniacid' => $uniacid
+        ));
+        $ret = array();
+        $ret['result'] = 'success';
+        $ret['type'] = 'cash';
+        $ret['from'] = 'return';
+        $ret['tid'] = $log['tid'];
+        $ret['user'] = $order['openid'];
+        $ret['fee'] = $order['price'];
+        $ret['weid'] = $_W['uniacid'];
         $ret['uniacid'] = $_W['uniacid'];
         if (p('channel')) {
             if ($ischannelpay == 1) {
                 $ret['ischannelpay'] = $ischannelpay;
             }
         }
-        $pay_result      = $this->payResult($ret);
-        $set = m('common')->getSysset();
-    //互亿无线
-        if (!empty($pay_result['verifycode'])) {
-            if($pset['sms']['type'] == 1){
-                if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
-                    return show_json(1, $pay_result);
-                }
-                else{
-                    return show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
-                }
-            }
-            else{
-                if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
-                    return show_json(1, $pay_result);
-                }
-                else{
-                    return show_json(0, $pay_result['verifycode']['msg']);
-                }
-            }
-        } else {
-            return show_json(1, $pay_result);
-        }
-    }
-    $ps          = array();
-    $ps['tid']   = $log['tid'];
-    $ps['user']  = $openid;
-    $ps['fee']   = $log['fee'];
-    $ps['title'] = $log['title'];
-    if ($type == 'storecash') {
-        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=4 where '.$where_update.' and uniacid=:uniacid ', array(
-                    ':uniacid' => $_W['uniacid']
-                ));
-        $ret            = array();
-        $ret['result']  = 'success';
-        $ret['type']    = 'storecash';
-        $ret['from']    = 'return';
-        $ret['tid']     = $log['tid'];
-        $ret['user']    = $order['openid'];
-        $ret['fee']     = $order['price'];
-        $ret['weid']    = $_W['uniacid'];
-        $ret['uniacid'] = $_W['uniacid'];
-        $pay_result      = $this->payResult($ret);
+        $pay_result = $this->payResult($ret);
         $set = m('common')->getSysset();
         //互亿无线
         if (!empty($pay_result['verifycode'])) {
-            if($pset['sms']['type'] == 1){
-                if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
+            if ($pset['sms']['type'] == 1) {
+                if ($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])) {
                     return show_json(1, $pay_result);
-                }
-                else{
+                } else {
                     return show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
                 }
-            }
-            else{
-                if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
+            } else {
+                if (isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])) {
                     return show_json(1, $pay_result);
-                }
-                else{
+                } else {
                     return show_json(0, $pay_result['verifycode']['msg']);
                 }
             }
@@ -608,10 +573,49 @@ if ($operation == 'display' && $_W['isajax']) {
             return show_json(1, $pay_result);
         }
     }
-    $ps          = array();
-    $ps['tid']   = $log['tid'];
-    $ps['user']  = $openid;
-    $ps['fee']   = $log['fee'];
+    $ps = array();
+    $ps['tid'] = $log['tid'];
+    $ps['user'] = $openid;
+    $ps['fee'] = $log['fee'];
+    $ps['title'] = $log['title'];
+    if ($type == 'storecash') {
+        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=4 where ' . $where_update . ' and uniacid=:uniacid ', array(
+            ':uniacid' => $_W['uniacid']
+        ));
+        $ret = array();
+        $ret['result'] = 'success';
+        $ret['type'] = 'storecash';
+        $ret['from'] = 'return';
+        $ret['tid'] = $log['tid'];
+        $ret['user'] = $order['openid'];
+        $ret['fee'] = $order['price'];
+        $ret['weid'] = $_W['uniacid'];
+        $ret['uniacid'] = $_W['uniacid'];
+        $pay_result = $this->payResult($ret);
+        $set = m('common')->getSysset();
+        //互亿无线
+        if (!empty($pay_result['verifycode'])) {
+            if ($pset['sms']['type'] == 1) {
+                if ($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])) {
+                    return show_json(1, $pay_result);
+                } else {
+                    return show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
+                }
+            } else {
+                if (isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])) {
+                    return show_json(1, $pay_result);
+                } else {
+                    return show_json(0, $pay_result['verifycode']['msg']);
+                }
+            }
+        } else {
+            return show_json(1, $pay_result);
+        }
+    }
+    $ps = array();
+    $ps['tid'] = $log['tid'];
+    $ps['user'] = $openid;
+    $ps['fee'] = $log['fee'];
     $ps['title'] = $log['title'];
     if ($type == 'credit') {
         if (!$set['pay']['credit']) {
@@ -621,7 +625,7 @@ if ($operation == 'display' && $_W['isajax']) {
         if ($credits < $ps['fee']) {
             return show_json(0, "余额不足,请充值");
         }
-        $fee    = floatval($ps['fee']);
+        $fee = floatval($ps['fee']);
         $result = m('member')->setCredit($openid, 'credit2', -$fee, array(
             $_W['member']['uid'],
             '消费' . $setting['creditbehaviors']['currency'] . ':' . $fee
@@ -629,54 +633,51 @@ if ($operation == 'display' && $_W['isajax']) {
         if (is_error($result)) {
             return show_json(0, $result['message']);
         }
-        $record           = array();
+        $record = array();
         $record['status'] = '1';
-        $record['type']   = 'cash';
+        $record['type'] = 'cash';
         pdo_update('core_paylog', $record, array(
             'plid' => $log['plid']
         ));
-        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=1 where '.$where_update.' and uniacid=:uniacid ', array(
-                    ':uniacid' => $uniacid
-                ));
-        $ret            = array();
-        $ret['result']  = 'success';
-        $ret['type']    = $log['type'];
-        $ret['from']    = 'return';
-        $ret['tid']     = $log['tid'];
-        $ret['user']    = $log['openid'];
-        $ret['fee']     = $log['fee'];
-        $ret['weid']    = $log['weid'];
+        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=1 where ' . $where_update . ' and uniacid=:uniacid ', array(
+            ':uniacid' => $uniacid
+        ));
+        $ret = array();
+        $ret['result'] = 'success';
+        $ret['type'] = $log['type'];
+        $ret['from'] = 'return';
+        $ret['tid'] = $log['tid'];
+        $ret['user'] = $log['openid'];
+        $ret['fee'] = $log['fee'];
+        $ret['weid'] = $log['weid'];
         $ret['uniacid'] = $log['uniacid'];
         if (p('channel')) {
             if ($ischannelpay == 1) {
                 $ret['ischannelpay'] = $ischannelpay;
             }
         }
-        
-        $pay_result     = $this->payResult($ret);
-        
-    //互亿无线
+
+        $pay_result = $this->payResult($ret);
+
+        //互亿无线
         if (!empty($pay_result['verifycode'])) {
-            if($pset['sms']['type'] == 1){
-                if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
+            if ($pset['sms']['type'] == 1) {
+                if ($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])) {
                     return show_json(1, $pay_result);
-                }
-                else{
+                } else {
                     return show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
                 }
-            }
-            else{
-                if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
+            } else {
+                if (isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])) {
                     return show_json(1, $pay_result);
-                }
-                else{
+                } else {
                     return show_json(0, $pay_result['verifycode']['msg']);
                 }
             }
         } else {
             return show_json(1, $pay_result);
         }
-       
+
     } else if ($type == 'weixin') {
         $ordersn = $pay_ordersn;
         if (!empty($order['ordersn2'])) {
@@ -684,29 +685,29 @@ if ($operation == 'display' && $_W['isajax']) {
         }
         $payquery = m('finance')->isWeixinPay($ordersn);
         if (!is_error($payquery)) {
-            $record           = array();
+            $record = array();
             $record['status'] = '1';
-            $record['type']   = 'wechat';
+            $record['type'] = 'wechat';
             pdo_update('core_paylog', $record, array(
                 'plid' => $log['plid']
             ));
-            $ret            = array();
-            $ret['result']  = 'success';
-            $ret['type']    = 'wechat';
-            $ret['from']    = 'return';
-            $ret['tid']     = $log['tid'];
-            $ret['user']    = $log['openid'];
-            $ret['fee']     = $log['fee'];
-            $ret['weid']    = $log['weid'];
+            $ret = array();
+            $ret['result'] = 'success';
+            $ret['type'] = 'wechat';
+            $ret['from'] = 'return';
+            $ret['tid'] = $log['tid'];
+            $ret['user'] = $log['openid'];
+            $ret['fee'] = $log['fee'];
+            $ret['weid'] = $log['weid'];
             $ret['uniacid'] = $log['uniacid'];
-            $ret['deduct']  = intval($_GPC['deduct']) == 1;
+            $ret['deduct'] = intval($_GPC['deduct']) == 1;
             if (p('channel')) {
                 if ($ischannelpay == 1) {
                     $ret['ischannelpay'] = $ischannelpay;
                 }
             }
-            
-            if(!empty($order['pay_ordersn']) && empty($order['isverify'])){
+
+            if (!empty($order['pay_ordersn']) && empty($order['isverify'])) {
                 $price = $order['price'];
                 $order = pdo_fetch("select * from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(
                     ':id' => $orderid,
@@ -730,27 +731,24 @@ if ($operation == 'display' && $_W['isajax']) {
                     'address' => $address,
                     'carrier' => $carrier,
                     'virtual' => $order['virtual'],
-                    'goods'=>$orderdetail
+                    'goods' => $orderdetail
 
                 );
-            }else{
-                $pay_result     = $this->payResult($ret);
-            } 
+            } else {
+                $pay_result = $this->payResult($ret);
+            }
             $set = m('common')->getSysset();
             if (!empty($pay_result['verifycode'])) {
-                if($pset['sms']['type'] == 1){
-                    if($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
+                if ($pset['sms']['type'] == 1) {
+                    if ($pay_result['verifycode']['SubmitResult']['code'] == 2 || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])) {
                         return show_json(1, $pay_result);
-                    }
-                    else{
+                    } else {
                         return show_json(0, $pay_result['verifycode']['SubmitResult']['msg']);
                     }
-                }
-                else{
-                    if(isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])){
+                } else {
+                    if (isset($pay_result['verifycode']['result']['success']) || $allset['verify']['sendcode'] == 0 || empty($order['isverify'])) {
                         return show_json(1, $pay_result);
-                    }
-                    else{
+                    } else {
                         return show_json(0, $pay_result['verifycode']['msg']);
                     }
                 }
@@ -759,16 +757,16 @@ if ($operation == 'display' && $_W['isajax']) {
             }
         }
         return show_json(0, '支付出错,请重试!');
-        
+
     }
-} else if ($operation == 'return') {    
+} else if ($operation == 'return') {
     $tid = $_GPC['out_trade_no'];
     if (!m('finance')->isAlipayNotify($_GET)) {
         die('支付出现错误，请重试!');
     }
     //保存支付宝交易号
-    $trade_no = array('trade_no'=>$_GPC['trade_no']);
-    pdo_update('sz_yi_order', $trade_no, array('pay_ordersn' =>$_GPC['out_trade_no'],'uniacid'=>$uniacid));
+    $trade_no = array('trade_no' => $_GPC['trade_no']);
+    pdo_update('sz_yi_order', $trade_no, array('pay_ordersn' => $_GPC['out_trade_no'], 'uniacid' => $uniacid));
     $log = pdo_fetch('SELECT * FROM ' . tablename('core_paylog') . ' WHERE `uniacid`=:uniacid AND `module`=:module AND `tid`=:tid limit 1', array(
         ':uniacid' => $uniacid,
         ':module' => 'sz_yi',
@@ -778,25 +776,25 @@ if ($operation == 'display' && $_W['isajax']) {
         die('支付出现错误，请重试!');
     }
     if ($log['status'] != 1) {
-        $record           = array();
+        $record = array();
         $record['status'] = '1';
-        $record['type']   = 'alipay';
+        $record['type'] = 'alipay';
         pdo_update('core_paylog', $record, array(
             'plid' => $log['plid']
         ));
-        $ret            = array();
-        $ret['result']  = 'success';
-        $ret['type']    = 'alipay';
-        $ret['from']    = 'return';
-        $ret['tid']     = $log['tid'];
-        $ret['user']    = $log['openid'];
-        $ret['fee']     = $log['fee'];
-        $ret['weid']    = $log['weid'];
+        $ret = array();
+        $ret['result'] = 'success';
+        $ret['type'] = 'alipay';
+        $ret['from'] = 'return';
+        $ret['tid'] = $log['tid'];
+        $ret['user'] = $log['openid'];
+        $ret['fee'] = $log['fee'];
+        $ret['weid'] = $log['weid'];
         $ret['uniacid'] = $log['uniacid'];
         $this->payResult($ret);
     }
     // if(is_array($orderid)){
-        $url     = $this->createMobileUrl('order/list',array('status' => 1));
+    $url = $this->createMobileUrl('order/list', array('status' => 1));
     // }else{
     //     $orderid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid', array(
     //         ':ordersn' => $log['tid'],
@@ -810,8 +808,8 @@ if ($operation == 'display' && $_W['isajax']) {
 } else if ($operation == 'returnyunpay') {
 
     $tids = $_REQUEST['i2'];
-    $strs          = explode(':', $tids);
-    $tid=$strs [0];
+    $strs = explode(':', $tids);
+    $tid = $strs [0];
     $pluginy = p('yunpay');
     if (!$pluginy->isYunpayNotify($_GET)) {
         die('支付出现错误，请重试!');
@@ -825,31 +823,31 @@ if ($operation == 'display' && $_W['isajax']) {
         die('支付出现错误，请重试!');
     }
     if ($log['status'] != 1) {
-        $record           = array();
+        $record = array();
         $record['status'] = '1';
-        $record['type']   = 'yunpay';
+        $record['type'] = 'yunpay';
         pdo_update('core_paylog', $record, array(
             'plid' => $log['plid']
         ));
-        $ret            = array();
-        $ret['result']  = 'success';
-        $ret['type']    = 'yunpay';
-        $ret['from']    = 'return';
-        $ret['tid']     = $log['tid'];
-        $ret['user']    = $log['openid'];
-        $ret['fee']     = $log['fee'];
-        $ret['weid']    = $log['weid'];
+        $ret = array();
+        $ret['result'] = 'success';
+        $ret['type'] = 'yunpay';
+        $ret['from'] = 'return';
+        $ret['tid'] = $log['tid'];
+        $ret['user'] = $log['openid'];
+        $ret['fee'] = $log['fee'];
+        $ret['weid'] = $log['weid'];
         $ret['uniacid'] = $log['uniacid'];
         $this->payResult($ret);
     }
-    if(is_array($orderid)){
-        $url     = $this->createMobileUrl('order/list');
-    }else{
+    if (is_array($orderid)) {
+        $url = $this->createMobileUrl('order/list');
+    } else {
         $orderid = pdo_fetchcolumn('select id from ' . tablename('sz_yi_order') . ' where ordersn=:ordersn and uniacid=:uniacid', array(
             ':ordersn' => $log['tid'],
             ':uniacid' => $_W['uniacid']
         ));
-        $url     = $this->createMobileUrl('order/detail', array(
+        $url = $this->createMobileUrl('order/detail', array(
             'id' => $orderid
         ));
     }

@@ -113,7 +113,8 @@ if (!class_exists('SupplierModel')) {
                     $supplierinfo['costmoney'] += $o['money'];
 
                 }
-            }                        
+            }
+            $supplierinfo['costmoney'] = 100;
             $supplierinfo['totalmoney'] = pdo_fetchcolumn("select sum(apply_money) from " . tablename('sz_yi_supplier_apply') . " where uniacid={$_W['uniacid']} and uid={$uid}");
             return $supplierinfo;
         }

@@ -11,21 +11,6 @@ function sortByTime($a, $b)
         return $a['ts'] > $b['ts'] ? 1 : -1;
     }
 }
-function getList($express, $expresssn)
-{
-	$url = "http://wap.kuaidi100.com/wap_result.jsp?rand=" . time() . "&id={$express}&fromWeb=null&postid={$expresssn}";
-	load()->func('communication');
-	$resp = ihttp_request($url);
-	$content = $resp['content'];
-	if (empty($content)) {
-		return array();
-	}
-	preg_match_all('/\\<p\\>&middot;(.*)\\<\\/p\\>/U', $content, $arr);
-	if (!isset($arr[1])) {
-		return false;
-	}
-	return $arr[1];
-}
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 $openid    = m('user')->getOpenid();
 $uniacid   = $_W['uniacid'];
@@ -44,9 +29,9 @@ if ($_W['isajax']) {
     } else if ($operation == 'step') {
         $express = trim($_GPC['express']);
         $expresssn = trim($_GPC['expresssn']);
-        $arr = getList($express, $expresssn);
+        $arr = getExpress($express, $expresssn);
         if (!$arr) {
-            $arr = getList($express, $expresssn);
+            $arr = getExpress($express, $expresssn);
             if (!$arr) {
                 return show_json(1, array('list' => array()));
             }
