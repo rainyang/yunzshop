@@ -9,9 +9,6 @@ global $_W, $_GPC;
 $openid         = m('user')->getOpenid();
 $member         = m('member')->getMember($openid);
 $uniacid        = $_W['uniacid'];
-//$goodsid        = intval($_GPC['id']);
-
-
 
 if($_GPC['mobile']){
     $url = "http://tcc.taobao.com/cc/json/mobile_tel_segment.htm?tel=".$_GPC['mobile']."&t=".time();
@@ -41,13 +38,13 @@ if($_GPC['mobile']){
     }
     $province = $array['province'];//手机号所属省份
     if (!empty($operator) && !empty($province)) {
-        $goods          = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE operator = :operator AND province like '%{$province}%' AND uniacid = :uniacid limit 1", 
+        $goods          = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE operator = :operator AND province like '%{$province}%' AND uniacid = :uniacid AND status = 1 limit 1", 
             array(
             ':operator' => $operator,
             ':uniacid' => $_W['uniacid']
         ));
         if (empty($goods)) {
-            $goods          = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE operator = :operator AND uniacid = :uniacid limit 1", 
+            $goods          = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE operator = :operator AND uniacid = :uniacid AND status = 1 limit 1", 
                 array(
                     ':operator' => $operator,
                     ':uniacid' => $_W['uniacid']

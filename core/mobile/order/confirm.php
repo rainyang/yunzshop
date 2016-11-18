@@ -960,11 +960,12 @@ if ($_W['isajax']) {
                 $order_all[$g['supplier_uid']]['goodsprice'] = $goodsprice;
 
             }}
-        if (p('recharge')) {
+        if (p('recharge') && !empty($telephone)) {
             $member['realname'] = $telephone;
             $member['membermobile'] = $telephone;
             $changenum = false;
         }
+        //echo "<pre>".print_r($changenum);exit;
         show_json(1, array(
             'member' => $member,
             //'deductcredit' => $deductcredit,

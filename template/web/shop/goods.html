@@ -136,10 +136,15 @@
 				}
 			}
 		})
-
+		{if p('recharge') && $_GPC['plugin']}
+		$("input[name='back']").click(function () {
+			location.href = "{php echo $this->createWebUrl('shop/goods', array('plugin' => $_GPC['plugin']))}";
+		});
+		{else}
 		$("input[name='back']").click(function () {
 			location.href = "{php echo $this->createWebUrl('shop/goods')}";
 		});
+		{/if}
 	})
 			var category = {php echo json_encode($children)};
 	window.optionchanged = false;

@@ -154,7 +154,7 @@
                                 if (provincial != undefined && domestic != undefined) {
                                     $("#tab").show();
                                     $.each(domestic,function(key,value){ 
-                                            html_dom += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
+                                            html_dom += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">￥' + value["price"] + '</a> ';
                                             html_dom += '<p>' + value["itemtitle"] + '</p></li>';
                                         })
                                     $("#specs").html(html_dom);
@@ -164,7 +164,7 @@
                                             $(this).addClass('hover');
                                             $("#tab a").prev().removeClass();
                                             $.each(provincial,function(key,value){    
-                                                html_pro += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
+                                                html_pro += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">￥' + value["price"] + '</a> ';
                                                 html_pro += '<p>' + value["itemtitle"] + '</p></li>';
                                             })
                                             $("#specs").html(html_pro);
@@ -173,7 +173,7 @@
                                             $(this).addClass('hover');
                                             $("#tab a").next().removeClass();
                                             $.each(domestic,function(key,value){ 
-                                                html_dom += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
+                                                html_dom += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">￥' + value["price"] + '</a> ';
                                                 html_dom += '<p>' + value["itemtitle"] + '</p></li>';
                                             })
                                             $("#specs").html(html_dom);
@@ -185,7 +185,7 @@
                                     if (provincial != undefined) {
                                         
                                         $.each(provincial,function(key,value){ 
-                                            html += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
+                                            html += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">￥' + value["price"] + '</a> ';
                                             html += '<p>' + value["itemtitle"] + '</p></li>';
                                         })  
                                         
@@ -193,7 +193,7 @@
                                     if (domestic != undefined) {
                                         
                                         $.each(domestic,function(key,value){ 
-                                            html += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">' + value["price"] + '</a> ';
+                                            html += '<li><a href="#" goodsid="' + goodsid + '" optionid="' + value["optionid"] + '" class="pay">￥' + value["price"] + '</a> ';
                                             html += '<p>' + value["itemtitle"] + '</p></li>';
                                         }) 
                                     }
