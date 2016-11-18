@@ -596,30 +596,29 @@ class Sz_DYi_Member
     /**
      * 系统自动关闭 返还积分
      *
-     * @param $openid
-     * @param $ordersn
-     * @param $ordersn_general
+     * @param $id
      *
      * @return void
      */
-    public function returnCredit($openid, $ordersn, $ordersn_general)
+    public function returnCredit($id = '')
     {
         global $_W;
 
-        $uid = mc_openid2uid($openid);
+        if (empty($id)) {
+            $condition = 'uniacid=:uniacid';
+            $param = array(':uniacid' => $_W['uniacid']);
+        } else {
+            $condition = 'uniacid = :uniacid AND id = :id';
+            $param = array(':uniacid' => $_W['uniacid'], ':id'=> $id);
+        }
 
-        $rows = pdo_fetchall("SELECT `num`, `remark` FROM " . tablename('mc_credits_record') . " 
-                              WHERE `uniacid` = :uniacid AND `uid` = :uid AND `credittype`= 'credit1' ",
-                              array(':uniacid' => $_W['uniacid'], ':uid' => $uid));
+        $orders = pdo_fetchall("SELECT `openid`, `ordersn`, `deductcredit` FROM " . tablename(sz_yi_order) . " WHERE {$condition} AND `status` = -1", $param);
 
-        foreach ($rows as $k => $v) {
-            if (strpos($v['remark'], $ordersn) !== FALSE
-                   || strpos($v['remark'], $ordersn_general) !== FALSE) {
-                $this->setCredit($openid, 'credit1', abs($v['num']), array(
-                    '0',
-                    "订单自动关闭返还积分 {" . abs($v['num']) . "} 订单号: {$ordersn}"
-                ));
-            }
+        foreach ($orders as $k => $v) {
+            $this->setCredit($v['openid'], 'credit1', $v['deductcredit'], array(
+                '0',
+                "订单自动关闭返还积分 {$v['deductcredit']} 订单号: {$v['ordersn']}"
+            ));
         }
     }
 
