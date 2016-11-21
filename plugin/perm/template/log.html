@@ -244,7 +244,7 @@
                     {loop $list $row}
                     <tr>
                         <td>{$row['id']}</td>
-                        <td>{$row['username']}</td>
+                        <td>{php echo $row['username'] ? $row['username'] : "系统";}</td>
                         <td>{$row['name']}</td>
                         <td>{$row['op']}</td>
                         <td>{$row['ip']}</td>

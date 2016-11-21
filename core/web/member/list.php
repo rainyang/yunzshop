@@ -173,7 +173,7 @@ if ($op == 'display') {
     }
 } else if ($op == 'detail') {
     ca('member.member.view');
-
+    $trade     = m('common')->getSysset('trade');
     $hasbonus = false;
     $plugin_bonus    = p('bonus');
     if ($plugin_bonus) {
@@ -316,6 +316,7 @@ if ($op == 'display') {
     if ($plugin_bonus) {
         $bonuslevels = $plugin_bonus->getLevels();
     }
+
     if ($hascommission) {
         $member = $plugin_com->getInfo($id, array(
             'total',

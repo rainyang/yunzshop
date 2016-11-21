@@ -664,6 +664,7 @@ if (!class_exists('TaobaoModel')) {
             $item['marketprice'] = $prodectPrices;
             $url = $this->get_jingdong_detail_url($itemid);
             $responseDetail = ihttp_get($url);
+
             $contenteDetail = $responseDetail['content'];
             $details = json_decode($contenteDetail, true);
             $prodectContent = $details[wdis];
@@ -769,17 +770,19 @@ if (!class_exists('TaobaoModel')) {
         public function save_jingdong_goods($item = array(), $catch_url = '')
         {
             global $_W;
+            $qiniu     = p('qiniu');
+            $config    = $qiniu ? $qiniu->getConfig() : false;
             $data = array('uniacid' => $_W['uniacid'], 'catch_source' => 'jingdong', 'catch_id' => $item['itemId'], 'catch_url' => $catch_url, 'title' => $item['title'], 'total' => $item['total'], 'marketprice' => $item['marketprice'], 'pcate' => $item['pcate'], 'ccate' => $item['ccate'], 'tcate' => $item['tcate'], 'cates' => $item['cates'], 'sales' => $item['sales'], 'createtime' => time(), 'updatetime' => time(), 'hasoption' => 0, 'status' => 0, 'deleted' => 0, 'buylevels' => '', 'showlevels' => '', 'buygroups' => '', 'showgroups' => '', 'noticeopenid' => '', 'storeids' => '', 'minprice' => $item['marketprice'], 'maxprice' => $item['marketprice']);
             $data['supplier_uid'] = $this->get_supplier_uid();
             $thumb_url = array();
             $pics = $item['pics'];
             $piclen = count($pics);
             if (0 < $piclen) {
-                $data['thumb'] = $this->save_image($pics[0], false);
+                $data['thumb'] = $this->save_image($pics[0], $config);
                 if (1 < $piclen) {
                     $i = 1;
                     while ($i < $piclen) {
-                        $img = $this->save_image($pics[$i], false);
+                        $img = $this->save_image($pics[$i], $config);
                         $thumb_url[] = $img;
                         ++$i;
                     }
@@ -826,7 +829,7 @@ if (!class_exists('TaobaoModel')) {
                     if (substr($catchimg, 0, 2) == '//') {
                         $img = 'http://' . substr($img, 2);
                     }
-                    $im = array('catchimg' => $catchimg, 'system' => $this->save_image($img, true));
+                    $im = array('catchimg' => $catchimg, 'system' => $this->save_image($img, $config));
                     $images[] = $im;
                 }
             }
@@ -843,6 +846,8 @@ if (!class_exists('TaobaoModel')) {
         public function save_1688_goods($item = array(), $catch_url = '')
         {
             global $_W;
+            $qiniu     = p('qiniu');
+            $config    = $qiniu ? $qiniu->getConfig() : false;
             $data = array('uniacid' => $_W['uniacid'], 'catch_source' => '1688', 'catch_id' => $item['itemId'], 'catch_url' => $catch_url, 'title' => $item['title'], 'total' => $item['total'], 'marketprice' => $item['marketprice'], 'pcate' => $item['pcate'], 'ccate' => $item['ccate'], 'tcate' => $item['tcate'], 'cates' => $item['cates'], 'sales' => $item['sales'], 'createtime' => time(), 'updatetime' => time(), 'hasoption' => 0, 'status' => 0, 'deleted' => 0, 'buylevels' => '', 'showlevels' => '', 'buygroups' => '', 'showgroups' => '', 'noticeopenid' => '', 'storeids' => '', 'minprice' => $item['marketprice'], 'maxprice' => $item['marketprice'],'content' => $item['content']);
             $data['supplier_uid'] = $this->get_supplier_uid();
             $thumb_url = array();
@@ -850,12 +855,12 @@ if (!class_exists('TaobaoModel')) {
             $piclen = count($pics);
             if (0 < $piclen) {
                 $pics[0] = str_replace("https", "http", $pics[0]);
-                $data['thumb'] = $this->save_image($pics[0], false);
+                $data['thumb'] = $this->save_image($pics[0], $config);
                 if (1 < $piclen) {
                     $i = 1;
                     while ($i < $piclen) {
                         $pics[$i] = str_replace("https", "http", $pics[$i]);
-                        $img = $this->save_image($pics[$i], false);
+                        $img = $this->save_image($pics[$i], $config);
                         $thumb_url[] = $img;
                         ++$i;
                     }
@@ -917,7 +922,7 @@ if (!class_exists('TaobaoModel')) {
                 $displayorder_item = 0;
                 $newspecitems = array();
                 foreach ($spec_items as $spec_item) {
-                    $d = array('uniacid' => $_W['uniacid'], 'specid' => $specid, 'title' => $spec_item['title'], 'thumb' => $this->save_image($spec_item['thumb'], false), 'valueId' => $spec_item['valueId'], 'show' => 1, 'displayorder' => $displayorder_item);
+                    $d = array('uniacid' => $_W['uniacid'], 'specid' => $specid, 'title' => $spec_item['title'], 'thumb' => $this->save_image($spec_item['thumb'], $config), 'valueId' => $spec_item['valueId'], 'show' => 1, 'displayorder' => $displayorder_item);
                     $oldspecitem = pdo_fetch('select * from ' . tablename('sz_yi_goods_spec_item') . ' where specid=:specid and valueId=:valueId limit 1', array(':specid' => $specid, ':valueId' => $spec_item['valueId']));
                     $spec_item_id = 0;
                     if (empty($oldspecitem)) {
@@ -954,7 +959,7 @@ if (!class_exists('TaobaoModel')) {
                     if (substr($catchimg, 0, 2) == '//') {
                         $img = 'http://' . substr($img, 2);
                     }
-                    $im = array('catchimg' => $catchimg, 'system' => $this->save_image($img, true));
+                    $im = array('catchimg' => $catchimg, 'system' => $this->save_image($img, $config));
                     $images[] = $im;
                 }
             }

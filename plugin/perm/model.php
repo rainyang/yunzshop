@@ -16,7 +16,6 @@ if (!class_exists('PermModel')) {
 				'sysset' => array('text' => '系统设置', 'child' => array('view' => array('text' => '浏览', 'shop' => '商城设置', 'follow' => '引导及分享设置', 'notice' => '模板消息设置', 'trade' => '交易设置', 'pay' => '支付方式设置', 'template' => '模板设置', 'member' => '会员设置', 'category' => '分类层级设置', 'contact' => '联系方式设置'), 'save' => array('text' => '修改', 'shop' => '修改商城设置-log', 'follow' => '修改引导及分享设置-log', 'notice' => '修改模板消息设置-log', 'trade' => '修改交易设置-log', 'pay' => '修改支付方式设置-log', 'template' => '模板设置-log', 'member' => '会员设置-log', 'category' => '分类层级设置-log', 'contact' => '联系方式设置-log', 'pcset' => 'PC设置'))),
 				'return' => array('text' => '全返插件', 'child' => array('view' => array('text' => '浏览'), 'save' => array('text' => '修改', 'set' => '设置参数-log' ))),
 				'yubbi' => array('text' => '云币插件', 'child' => array('view' => array('text' => '浏览'), 'save' => array('text' => '修改', 'set' => '设置参数-log' ))),
-				'system' => array('text' => '系统工具', 'child' => array('view' => array('text' => '浏览'), 'save' => array('text' => '操作', 'delete' => '清空数据-log' ))),
 			);
 			$plugins = m('plugin')->getAll();
 			foreach ($plugins as $plugin) {

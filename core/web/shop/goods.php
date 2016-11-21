@@ -40,7 +40,19 @@ $lang = array(
     "mainimg" => "商品图片",
     "limittime" => "限时卖时间",
     "shopnumber" => "商品编号",
-    "shopprice" => "商品价格"
+    "shopprice" => "商品价格",
+    "putaway"   => "上架",
+    "soldout"   => "下架",
+    "good"      => "商品",
+    "price"     => "价格",
+    "repertory" => "库存",
+    "copyshop"  => "复制商品",
+    "isputaway" => "是否上架",
+    "shopdesc"  => "商品描述",
+    "shopinfo"  => "商品详情",
+    'shopoption'=> "商品规格",
+    'marketprice'=> "销售价格",
+    'shopsubmit'=> "发布商品"
     ); 
 if($_GPC['plugin'] == "fund"){
     $lang = array(
@@ -48,7 +60,40 @@ if($_GPC['plugin'] == "fund"){
     "mainimg" => "项目主图",
     "limittime" => "项目时间",
     "shopnumber" => "项目编号",
-    "shopprice" => "项目金额"
+    "shopprice" => "项目金额",
+    "putaway"   => "发布中",
+    "soldout"   => "已结束",
+    "good"      => "项目",
+    "price"     => "筹款金额",
+    "repertory" => "已筹金额",
+    "copyshop"  => "筹款列表",
+    "isputaway" => "是否发布",
+    "shopdesc"  => "项目描述",
+    "shopinfo"  => "项目详情",
+    'shopoption'=> "项目规格",
+    'marketprice'=> "众筹单价",
+    'shopsubmit'=> "发布项目"
+    ); 
+}
+if($_GPC['plugin'] == "fund"){
+$lang = array(
+    "shopname" => "商品名称",
+    "mainimg" => "商品图片",
+    "limittime" => "限时卖时间",
+    "shopnumber" => "商品编号",
+    "shopprice" => "商品价格",
+    "putaway"   => "上架",
+    "soldout"   => "下架",
+    "good"      => "商品",
+    "price"     => "价格",
+    "repertory" => "库存",
+    "copyshop"  => "复制商品",
+    "isputaway" => "是否上架",
+    "shopdesc"  => "商品描述",
+    "shopinfo"  => "商品详情",
+    'shopoption'=> "商品规格",
+    'marketprice'=> "销售价格",
+    'shopsubmit'=> "发布商品"
     ); 
 }
 
@@ -165,6 +210,7 @@ if ($operation == "change") {
 } else {
     if ($operation == "post") {
         $id = intval($_GPC['id']);
+
         if (!empty($id)) {
             ca('shop.goods.edit|shop.goods.view');
         } else {
@@ -188,8 +234,15 @@ if ($operation == "change") {
             $item = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE id = :id", array(
                 ':id' => $id
             ));
+            if($_GPC['plugin'] == "fund"){
+                $get_fund_data = pdo_fetch("SELECT * FROM " . tablename('sz_yi_fund_goods') . " WHERE goodsid = :id", array(
+                    ':id' => $id
+                ));
+                $item['allprice'] = $get_fund_data['allprice'];
+                $item['desc'] = $get_fund_data['desc'];
+            }
             if (empty($item)) {
-                message('抱歉，商品不存在或是已经删除！', '', 'error');
+                message('抱歉，'.$lang['good'].'不存在或是已经删除！', '', 'error');
             }
             $noticetype = explode(',', $item['noticetype']);
             if ($shopset['catlevel'] == 3) {
@@ -279,21 +332,31 @@ if ($operation == "change") {
                 $canedit = ce('shop.goods', $item);
                 if ($canedit) {
                     $html .= '<th class="info" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">库存</div><div class="input-group"><input type="text" class="form-control option_stock_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_stock\');"></a></span></div></div></th>';
-                    $html .= '<th class="success" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">销售价格</div><div class="input-group"><input type="text" class="form-control option_marketprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_marketprice\');"></a></span></div></div></th>';
+                    $html .= '<th class="success" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">'.$lang['marketprice'].'</div><div class="input-group"><input type="text" class="form-control option_marketprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_marketprice\');"></a></span></div></div></th>';
+                    if($_GPC['plugin'] != "fund"){
                     $html .= '<th class="warning" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div><div class="input-group"><input type="text" class="form-control option_productprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productprice\');"></a></span></div></div></th>';
+                    }
                     $html .= '<th class="danger" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div><div class="input-group"><input type="text" class="form-control option_costprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_costprice\');"></a></span></div></div></th>';
+                    
                     $html .= '<th class="warning" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">红包价格</div><div class="input-group"><input type="text" class="form-control option_redprice_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_redprice\');"></a></span></div></div></th>';
-                    $html .= '<th class="primary" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品编码</div><div class="input-group"><input type="text" class="form-control option_goodssn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_goodssn\');"></a></span></div></div></th>';
+                    $html .= '<th class="primary" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">'.$lang['shopnumber'].'</div><div class="input-group"><input type="text" class="form-control option_goodssn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_goodssn\');"></a></span></div></div></th>';
+                    if($_GPC['plugin'] != "fund"){
                     $html .= '<th class="danger" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div><div class="input-group"><input type="text" class="form-control option_productsn_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_productsn\');"></a></span></div></div></th>';
+                    }
                     $html .= '<th class="info" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div><div class="input-group"><input type="text" class="form-control option_weight_all"  VALUE=""/><span class="input-group-addon"><a href="javascript:;" class="fa fa-hand-o-down" title="批量设置" onclick="setCol(\'option_weight\');"></a></span></div></div></th>';
                     $html .= '</tr></thead>';
                 } else {
                     $html .= '<th class="info" style="width:13%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">库存</div></div></th>';
-                    $html .= '<th class="success" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">销售价格</div></div></th>';
+                    $html .= '<th class="success" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">'.$lang['marketprice'].'</div></div></th>';
+                    if($_GPC['plugin'] != "fund"){
                     $html .= '<th class="warning" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">市场价格</div></div></th>';
+                    }
                     $html .= '<th class="danger" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">成本价格</div></div></th>';
-                    $html .= '<th class="primary" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品编码</div></div></th>';
+                    
+                    $html .= '<th class="primary" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">'.$lang['shopnumber'].'</div></div></th>';
+                    if($_GPC['plugin'] != "fund"){
                     $html .= '<th class="danger" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">商品条码</div></div></th>';
+                    }
                     $html .= '<th class="info" style="width:15%;"><div class=""><div style="padding-bottom:10px;text-align:center;font-size:16px;">重量（克）</div></th>';
                     $html .= '</tr></thead>';
                 }
@@ -371,21 +434,30 @@ if ($operation == "change") {
                         $hh .= '<input name="option_virtual_' . $ids . '[]"  type="hidden" class="form-control option_title option_virtual_' . $ids . '" value="' . $val['virtual'] . '"/>';
                         $hh .= '</td>';
                         $hh .= '<td class="success"><input name="option_marketprice_' . $ids . '[]" type="text" class="form-control option_marketprice option_marketprice_' . $ids . '" value="' . $val['marketprice'] . '"/></td>';
+                        if($_GPC['plugin'] != "fund"){
                         $hh .= '<td class="warning"><input name="option_productprice_' . $ids . '[]" type="text" class="form-control option_productprice option_productprice_' . $ids . '" " value="' . $val['productprice'] . '"/></td>';
+                        }
                         $hh .= '<td class="danger"><input name="option_costprice_' . $ids . '[]" type="text" class="form-control option_costprice option_costprice_' . $ids . '" " value="' . $val['costprice'] . '"/></td>';
+                        
                         $hh .= '<td class="warning"><input name="option_redprice_' . $ids . '[]" type="text" class="form-control option_redprice option_redprice_' . $ids . '" " value="' . $val['redprice'] . '"/></td>';
                         $hh .= '<td class="primary"><input name="option_goodssn_' . $ids . '[]" type="text" class="form-control option_goodssn option_goodssn_' . $ids . '" " value="' . $val['goodssn'] . '"/></td>';
+                        if($_GPC['plugin'] != "fund"){
                         $hh .= '<td class="danger"><input name="option_productsn_' . $ids . '[]" type="text" class="form-control option_productsn option_productsn_' . $ids . '" " value="' . $val['productsn'] . '"/></td>';
+                        }
                         $hh .= '<td class="info"><input name="option_weight_' . $ids . '[]" type="text" class="form-control option_weight option_weight_' . $ids . '" " value="' . $val['weight'] . '"/></td>';
                         $hh .= '</tr>';
                     } else {
                         $hh .= '<td class="info">' . $val['stock'] . '</td>';
                         $hh .= '<td class="success">' . $val['marketprice'] . '</td>';
+                        if($_GPC['plugin'] != "fund"){
                         $hh .= '<td class="warning">' . $val['productprice'] . '</td>';
                         $hh .= '<td class="danger">' . $val['costprice'] . '</td>';
+                        }
                         $hh .= '<td class="warning">' . $val['redprice'] . '</td>';
                         $hh .= '<td class="primary">' . $val['goodssn'] . '</td>';
+                        if($_GPC['plugin'] != "fund"){
                         $hh .= '<td class="danger">' . $val['productsn'] . '</td>';
+                        }
                         $hh .= '<td class="info">' . $val['weight'] . '</td>';
                         $hh .= '</tr>';
                     }
@@ -449,7 +521,7 @@ if ($operation == "change") {
                 }
             }
             if (empty($_GPC['goodsname'])) {
-                message('请输入商品名称！');
+                message('请输入'.$lang['good'].'名称！');
             }
             // if (empty($_GPC['category']['parentid'])) {
             //     message('请选择商品分类！');
@@ -582,9 +654,11 @@ if ($operation == "change") {
                 "redprice" => $_GPC["redprice"],//红包价格
                 "isopenchannel" => intval($_GPC["isopenchannel"]),
                 'goods_balance' =>  intval($_GPC['goods_balance']),
-                'balance_with_store' => intval($_GPC['balance_with_store'])
+                'balance_with_store' => intval($_GPC['balance_with_store']),
+                'plugin' => trim($_GPC["plugin"])
 
             );
+
             if (p('area')) {
                 $data['pcate_area'] = intval($_GPC['category_area']['parentid']);
                 $data['ccate_area'] = intval($_GPC['category_area']['childid']);
@@ -606,6 +680,7 @@ if ($operation == "change") {
             } else {
                 $data['status'] = $_GPC['status'];
             }
+
             if (p('love')) {
                 $data['love_money'] = $_GPC['love_money'];
             }
@@ -754,6 +829,13 @@ if ($operation == "change") {
                 }
                 $data['thumb_url'] = serialize($thumb_url);
             }
+            if($_GPC['plugin'] == 'fund'){
+                $data['productprice'] = $data['marketprice'];
+            }
+            if ($_GPC['plugin'] == 'recharge') {
+                $data["province"] = $_GPC["reside"]['province'];
+                $data["operator"] = intval($_GPC["operator"]);
+            }
             if (empty($id)) {
                 pdo_insert('sz_yi_goods', $data);
                 $id = pdo_insertid();
@@ -771,6 +853,16 @@ if ($operation == "change") {
                         );
                         pdo_insert('sz_yi_hotel_room', $room);
                     }
+                }
+
+                if($_GPC['plugin'] == 'fund'){
+                    $fund_data = array(
+                        'goodsid' => $id,
+                        'uniacid' => intval($_W['uniacid']),
+                        'allprice' => $_GPC['allprice'], 
+                        'desc' => $_GPC['desc'], 
+                        );
+                    pdo_insert('sz_yi_fund_goods', $fund_data);
                 }
                 plog('shop.goods.add', "添加商品 ID: {$id}");
             } else {
@@ -807,7 +899,14 @@ if ($operation == "change") {
                         }
                     }
                 }
-                plog('shop.goods.edit', "编辑商品 ID: {$id}");
+                if($_GPC['plugin'] == 'fund'){
+                    $fund_data = array(
+                        'allprice' => $_GPC['allprice'], 
+                        'desc' => $_GPC['desc'], 
+                        );
+                    pdo_update('sz_yi_fund_goods', $fund_data, array('goodsid' => $id));
+                }
+                plog('shop.goods.edit', "编辑{$lang['good']} ID: {$id}");
             }
             $totalstocks = 0;
             $param_ids = $_POST['param_id'];
@@ -962,6 +1061,9 @@ if ($operation == "change") {
                     'virtual' => $data['type'] == 3 ? $_GPC['option_virtual_' . $ids][0] : 0,
                     "redprice" => $_GPC['option_redprice_' . $ids][0],
                 );
+                if($_GPC['plugin'] == 'fund'){
+                    $a['productprice'] = $a['marketprice'];
+                }
                 $totalstocks += $a['stock'];
                 if (empty($get_option_id)) {
                     pdo_insert("sz_yi_goods_option", $a);
@@ -991,9 +1093,10 @@ if ($operation == "change") {
                     ));
                 }
             }
-            message('商品更新成功！', $this->createWebUrl('shop/goods', array(
+            message($lang['good'].'更新成功！', $this->createWebUrl('shop/goods', array(
                 'op' => 'post',
-                'id' => $id
+                'id' => $id,
+                'plugin' => $_GPC['plugin']
             )), 'success');
         }
         if (p('commission')) {
@@ -1038,7 +1141,7 @@ if ($operation == "change") {
                 ));
             }
             plog('shop.goods.edit', '批量修改商品排序');
-            message('商品排序更新成功！', $this->createWebUrl('shop/goods', array(
+            message($lang['good'].'排序更新成功！', $this->createWebUrl('shop/goods', array(
                 'op' => 'display'
             )), 'success');
         }
@@ -1123,6 +1226,8 @@ if ($operation == "change") {
             $condition .= ' AND `supplier_uid` = 0';
         }
 
+        $condition .= " AND `plugin` = '".$_GPC["plugin"]."' ";
+
         if (p('supplier')) {
             $suproleid = pdo_fetchcolumn('select id from' . tablename('sz_yi_perm_role') . ' where status1 = 1');
             $userroleid = pdo_fetchcolumn('select roleid from ' . tablename('sz_yi_perm_user') . ' where uid=:uid and uniacid=:uniacid',
@@ -1147,6 +1252,16 @@ if ($operation == "change") {
             $total = pdo_fetchcolumn($sqls, $params);
         }
         $list = pdo_fetchall($sql, $params);
+        if($_GPC['plugin'] == "fund"){
+            foreach ($list as $key => &$value) {
+                $allprice = pdo_fetchcolumn("select allprice from ". tablename('sz_yi_fund_goods') ." where goodsid=".$value['id']);
+                $yetprice = pdo_fetchcolumn("select sum(price) from ". tablename('sz_yi_order_goods') ." where goodsid=".$value['id']);
+                $yetprice += $value['marketprice']*$value['sales'];
+                $value['yetprice'] = number_format($yetprice, 2);
+                $value['allprice'] = number_format($allprice, 2);
+            }
+        }
+        unset($value);
         $pager = pagination($total, $pindex, $psize);
     } elseif ($operation == 'delete') {
         ca('shop.goods.delete');
@@ -1155,7 +1270,7 @@ if ($operation == "change") {
             ':id' => $id
         ));
         if (empty($row)) {
-            message('抱歉，商品不存在或是已经被删除！');
+            message('抱歉，'.$lang['good'].'不存在或是已经被删除！');
         }
         pdo_update('sz_yi_goods', array(
             'deleted' => 1

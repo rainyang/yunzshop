@@ -44,5 +44,7 @@ if ($tpl == 'option') {
 } else if ($tpl == 'supplier') {
     $id = random(32);
     include $this->template('web/shop/tpl/supplier');
+} else if ($tpl == 'spec_data') {
+    include $this->template('web/shop/tpl/spec_data');
 }
 

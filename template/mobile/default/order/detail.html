@@ -307,8 +307,8 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
                   </div>
               </div>
             <%else%>
-              <div class="img" onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'"><img src="<%g.thumb%>"/></div>
-              <div class='info'onclick="location.href='{php echo $this->createMobileUrl('shop/detail')}&id=<%g.goodsid%>'">
+              <div class="img" onclick="location.href='<%g.url%>'"><img src="<%g.thumb%>"/></div>
+              <div class='info'onclick="location.href='<%g.url%>'">
              
                   <div class='inner'>
                          <div class="name"><%if order.cashier==1%><%order.name.name%><span style="color:red">(收银台支付)</span><%else%><%g.title%><%/if%></div>     
@@ -345,14 +345,21 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
 
     <%/each%>
 </div> 
- <%if order.virtual_str!=''%>
+<%if order.virtual_str!=''%>
 <div class="detail_good" style='margin-bottom:10px;'>
     <div class="ico"><i class="fa fa-cubes" style="color:#666; font-size:20px;"></i></div>
     <div class="shop">发货信息</div>
-    <div class='text'><%=order.virtual_str%></div>
+    <%each order.virtual_strs as v k %>
+        <div class='text'>
+            <% k+1 %>、
+            <%v.con%>
+            <%if v.url%>
+                <a href="<%v.url%>" style="float:right;color:#999;text-decoration:none;">点击领取</a>
+            <%/if%> 
+        </div>
+    <%/each%>
 </div> 
- 
- <%/if%>
+<%/if%>
 <div class="detail_price" >
     <input type="hidden" id="weight" value="<%weight%>" />
     <div class="price">

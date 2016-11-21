@@ -59,3 +59,4 @@ if (!pdo_fieldexists('sz_yi_order', 'credit1')) {
 }
 
 
+
