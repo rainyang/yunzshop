@@ -64,7 +64,7 @@ if ($_W['isajax']) {
         'member' => $member
     ));
 }
-if ($template_flag == 1) {
+if ($template_flag == 1 && !$_GPC['withdraw']) {
     include $this->template('diyform/info');
 } else {
     include $this->template('member/info');

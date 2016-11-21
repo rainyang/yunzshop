@@ -12,7 +12,7 @@ if ($operation == 'display' && $_W['isajax']) {
 	$credit = m('member')->getCredit($openid, 'credit2');
 	$member = m('member')->getMember($openid);
 	$returnurl = urlencode($this->createMobileUrl('member/withdraw'));
-	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl));
+	$infourl = $this->createMobileUrl('member/info', array('returnurl' => $returnurl,'withdraw' => '1'));
 	show_json(1, array('credit' => $credit, 'infourl' => $infourl, 'noinfo' => empty($member['realname'])));
 } else if ($operation == 'submit' && $_W['ispost']) {
 	$money = floatval($_GPC['money']);
