@@ -331,7 +331,36 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
              
             <span style='float:right'><d id="stockcontainer">库存:<d id="stock"><%goods.total%></d></d> 销量:<%goods.sales%><%goods.unit%></d></span>
         </div>
-       
+
+        <%if goods.isladder%>
+        1111
+        <%if%>
+        <%if goods.isladder%>
+            <div class="other1">
+                <div class='left'>
+                    <span><i class='iconfont icon-activity'></i> 阶梯价格 </span> 
+                </div>
+                <div class='right'>
+                    <div class='inner'> 
+
+                        <span style='color:#f15353'>1</span> 
+                        至 <span style='color:#f15353'>12</span> 
+                        <%goods.unit%> 等于 <span style='color:#f15353'>22元</span>;<br/>
+
+                        <span id='morebtn' onclick='showMoreActivity()'><i class='fa fa-angle-down'></i> 查看更多阶梯价格<br/></span>
+                        <div id='moreactivity' style='display:none'>
+                            <span style='color:#f15353'>1</span> 
+                            至 <span style='color:#f15353'>12</span> 
+                            <%goods.unit%> 等于 <span style='color:#f15353'>22元</span>;<br/>
+
+                            <span style='color:#f15353'>1</span> 
+                            至 <span style='color:#f15353'>12</span> 
+                            <%goods.unit%> 等于 <span style='color:#f15353'>22元</span>;<br/>                      
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <%/if%>
        <%if saleset && saleset.enoughfree=='1' %>
       <div class="other">
             <div class='left'>

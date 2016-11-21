@@ -430,9 +430,10 @@
               <span class="input-group-addon"  style="float: left;overflow: hidden;width:80px">阶梯价格</span>
               <a class="btn btn-success ng-scope" id="addladder" href="javascript:;"><i class="fa fa-plus"></i> 增加</a>
           </div>
+          <div style="margin: 10px 40px;" id="ladderhtml">
           {if $item['ladder']}
             {loop $item['ladder']['ladders'] $ladder_val}
-              <div style="margin: 10px 40px;" id="ladderhtml">
+              
                   <div class="input-group form-group" >
                       <span class="input-group-addon" >数量</span>
                       <input type="text" name="minimum[]"  style="width:200px" class="form-control " value="{$ladder_val['minimum']}" ">
@@ -443,10 +444,10 @@
                       <span class="input-group-addon" style="border-left: 0px;">元
                       &nbsp;<a href="javascript:;" class="btn-default btn-sm deleteladder" title="删除"><i class="fa fa-times"></i></a></span>
                   </div>  
-              </div>
+              
             {/loop}
           {else}
-            <div style="margin: 10px 40px;" id="ladderhtml">
+            
                 <div class="input-group form-group" >
                     <span class="input-group-addon" >数量</span>
                     <input type="text" name="minimum[]"  style="width:200px" class="form-control " value="1" ">
@@ -457,8 +458,9 @@
                     <span class="input-group-addon" style="border-left: 0px;">元
                     &nbsp;<a href="javascript:;" class="btn-default btn-sm deleteladder" title="删除"><i class="fa fa-times"></i></a></span>
                 </div>  
-            </div>
+            
           {/if}
+          </div>
         {/if}
 <script type="text/javascript">
   $('#addladder').click(function() {
@@ -475,6 +477,27 @@
   });
 
 $(document).on('click','.deleteladder',function(){
+  if(!confirm("确认删除阶梯价格?")) {
+    return false;
+  }
+  $(this).parent().parent().remove();
+})
+
+  $(document).on('click','.addopladder',function(){  
+    var ids = $(this).data('ids');
+    var hh = '<div class="input-group">';
+        hh += ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_minimum_' + ids+'[]"/>';
+        hh += '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >至</span>';
+        hh += ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_maximum_' + ids+'[]"/>';
+        hh += '<span class="input-group-addon" style="width: 10px;padding: 6px 1px;" >=</span>';
+        hh += ' <input type="text" style="padding: 6px 2px;" class="form-control " value="" name="option_ladderprice_' + ids+'[]"/>';
+        hh += ' <span style="width: 10px;padding: 6px 1px;" class="input-group-addon"> &nbsp;<a href="javascript:;" class="btn-default btn-sm deleteopladder" title="删除"><i class="fa fa-times"></i></a> </span>';
+        hh += '</div>'; 
+
+    $('#ladderop').append(hh);
+  });
+
+$(document).on('click','.deleteopladder',function(){
 
   if(!confirm("确认删除阶梯价格?")) {
     return false;

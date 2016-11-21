@@ -18,6 +18,7 @@ $commentcount = pdo_fetchcolumn($sql, $params);
 $goods = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods') . " WHERE id = :id limit 1", array(
     ':id' => $goodsid
 ));
+// echo "<pre>";print_r($goods);exit;
 if ($goods['pcate']) {
     $pcate = pdo_fetchcolumn(" select name from " . tablename('sz_yi_category') . " where id =" . $goods['pcate'] . " and uniacid=" . $uniacid);
 }
@@ -31,6 +32,20 @@ $yunbi = 0;
 if (p('yunbi')) {
     $yunbi = 1;
     $yunbi_set = p('yunbi')->getSet();
+}
+
+$isladder = false;
+if (p('ladder')) {
+    $ladder_set = p('ladder')->getSet();
+    if ($ladder_set['isladder']) {
+        $ladders = pdo_fetch("SELECT * FROM " . tablename('sz_yi_goods_ladder') . " WHERE goodsid = :id limit 1", array(
+            ':id' => $goodsid
+        ));
+        if ($ladders) {
+            $goods['ladders'] = unserialize($ladders['ladders']);
+            $goods['isladder'] = true; 
+        }
+    }
 }
 
 if (p('hotel')) {//开启酒店插件后 判断当前时间是否有剩余房间可预约
