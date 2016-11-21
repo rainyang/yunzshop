@@ -23,7 +23,6 @@ class Index extends YZ
     }
     private function _getGoods()
     {
-        global $_GPC;
         $res = $this->json;
         foreach ($res['goods'] as &$good) {
             unset($good['content']);

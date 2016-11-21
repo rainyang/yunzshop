@@ -134,6 +134,7 @@ class Account extends YZ
 //echo '<pre>';print_r($user_info);exit;
             $res = array(
                 'realname' =>$user_info['json']['member']['realname'],
+                'nickname' =>$user_info['json']['member']['nickname'],
                 'mobile' =>$user_info['json']['member']['mobile'],
                 'weixin' =>$user_info['json']['member']['weixin'],
                 'gender' => $gender,
