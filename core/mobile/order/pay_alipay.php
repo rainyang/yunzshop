@@ -15,7 +15,7 @@ $logid   = intval($_GPC['logid']);
 $shopset = m('common')->getSysset('shop');
 if ($_W['isajax']) {
 	if (!empty($orderid)) {
-		//$order = pdo_fetch("select * from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
+		$order = pdo_fetch("select * from " . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid and openid=:openid limit 1', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
 		if (empty($order)) {
 			show_json(0, '订单未找到!');
 		}
