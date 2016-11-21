@@ -423,7 +423,7 @@ if (!class_exists('discuzModel')) {
                 if ($credits > 0) {
                     $int_credits = '+' . $credits;
                 } else {
-                    $int_credits = $credits;
+                    $int_credits = '+' . $credits;
                 }
                 self::getInstance()->query("UPDATE " . $prefix ."common_member SET `credits`= `credits`" . $int_credits . " WHERE `uid`=" . $exist['centeruid']);
 
