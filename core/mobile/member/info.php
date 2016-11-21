@@ -57,6 +57,20 @@ if ($_W['isajax']) {
                 load()->model('mc');
                 mc_update($member['uid'], $mcdata);
             }
+
+            //论坛插件-会员信息同步
+            if (p('discuz') && !empty($member['uid'])) {
+                $dzdata = array(
+                    'realname'=> $memberdata['realname'],
+                    'mobile'=> $memberdata['membermobile'],
+                    'gender'=> $memberdata['gender'],
+                    'birthyear'=> $memberdata['birthyear'],
+                    'birthmonth'=> $memberdata['birthmonth'],
+                    'birthday'=> $memberdata['birthday']
+                );
+
+                p('discuz')->updateUserInfo($member['uid'], $dzdata);
+            }
         }
         show_json(1);
     }
