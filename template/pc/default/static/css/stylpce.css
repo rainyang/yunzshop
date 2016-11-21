@@ -111,7 +111,7 @@ footer#footer-nav {
 .good_choose .other { position:relative; height:auto;margin-bottom:50px;padding-left:10px;width:99%;margin-top:-15px;  font-size:14px; color:#999;}
 .good_choose .other .spec { width:100%;padding:10px 0 5px 0;float:left}
 .good_choose .other .spec_items {width:100%;padding:5px 0 5px 0;height:auto;border-bottom:1px solid #e4e4e4;float:left}
-.good_choose .other .option { float:left; padding:5px; background:#fff; border:1px solid #e4e4e4; border-radius:3px; margin-right:5px;margin-bottom:5px; font-size:14px; color:#999;}
+.good_choose .other .option { float:left; padding:5px; background:#fff; border:1px solid #e4e4e4; border-radius:3px; margin-right:5px;margin-bottom:5px; font-size:14px; color:#999;cursor: pointer;}
 .good_choose .other .on {background:#ff6801; border:1px solid #ff6801; color:#fff}
 .good_choose .other .number { float:left; width:100%;padding-top:10px;/*height:36px*/}
 .good_choose .other .number .label {    float: left;
@@ -234,15 +234,15 @@ footer#footer-nav .menu-list:after {
         border-top: 0 !important;
     color: #dadada !important
 }
-.goods .good .price,.good_info1 .price,.good_info1 .price,.other .left span,.menu .nav .con span{color: #ec0405 !important;}
-.good_bottom .add,.good_info1 .info1 .sub1{background: #FFA722 !important;font-size: 14px; }
+.goods .good .price,.good_info1 .price,.good_info1 .price,.other .left span,.menu .nav .con span{color: #ff582e !important;}
+.good_bottom .add,.good_info1 .info1 .sub1{background: #FFA722 !important;font-size: 16px; }
 .good_info1 .info1 .sub1 i{color: #FFA722 !important;}
 .good_bottom .buy,.good_choose .sub,.myshop_sub1,#left_container .on{background: #ff4a4e !important;}
 .good_bottom span{ font-size: 12px !important;}
 .like .fa{padding-left: 6px}
 .like .fa-star,.main .page .sort_list .navon{color: #ff4a4e !important;}
 .myshop_main .line1 .info .inner .preview1 {width: 100% !important;}
-.top .topbar .menu .navon {border-bottom: 3px solid #ec0405 !important;}
+.top .topbar .menu .navon {border-bottom: 3px solid #ff582e !important;}
 #left_container .on{color: #fff !important}
 #left_container .parent_item {border-bottom: 1px #DCDCDC solid;height: 40px !important;line-height: 40px !important;}
 .diyform_main select { font-size: 14px;}
@@ -267,13 +267,13 @@ footer#footer-nav .menu-list:after {
 .cart .fa-list{ color: #7DB7FF!important}*/
 
 .like .fa-star-o,.like .fa-star,.cart .fa-shopping-cart,.cs .fa-headphones{ padding-bottom: 2px; box-sizing: border-box;}
-.label-free{background: #ec0405 !important}
+.label-free{background: #ff582e !important}
 .good_shop .shop2 .sub1,.good_shop .shop2 .sub2{font-size: 14px !important;color: #333 !important;}
 .good_info1 .info1 .name {line-height: 24px;}
 .cart_good {background-color: #fff;}
 .cart_top .nav {margin: 6px 6px 0px 0 !important;}
-.all .fa-check-circle-o,.ico .fa-check-circle-o,.addorder_pay span,.text span{ color:#ec0405 !important}
-.addorder_pay .paysub {background: #ec0405 !important; font-size: 14px;}
+.all .fa-check-circle-o,.ico .fa-check-circle-o,.addorder_pay span,.text span{ color:#ff582e !important}
+.addorder_pay .paysub {background: #ff582e !important; font-size: 14px;}
 .addorder_good .shop{font-size: 14px !important;}
 .addorder_good{padding: 0 10px !important}
 .addorder_good .ico .fa-gift{padding-top: 8px;}

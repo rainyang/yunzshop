@@ -211,6 +211,7 @@
                                     {if $item['paytype'] == 22}支付宝支付{/if}
                                     {if $item['paytype'] == 23}银联支付{/if}
                                     {if $item['paytype'] == 3}货到付款{/if}
+                                    {if $item['paytype'] == 29}paypal支付{/if}
 
                                 </p>
                             </div>
@@ -876,7 +877,7 @@
             {/if}
             <div class="panel panel-default">
                 <div class="panel-heading">
-                    {if $item['cashier']==1}商户信息{else}商品信息{/if}</span>
+                    {if $item['cashier']==1}商户信息{else}{$lang['good']}信息{/if}</span>
                 </div>
                 {if $item['cashier']==1}
 
@@ -920,12 +921,12 @@
                         <thead class="navbar-inner">
                         <tr>
                             <th style="width:8%;">ID</th>
-                            <th style="width:16%;">商品标题</th>
-                            <th style="width:22%;">商品规格</th>
-                            <th style="width:10%;">商品编号<br/>商品条码</th>
-                            <th style="width:16%;">现价/原价/成本价</th>
+                            <th style="width:16%;">{$lang['good']}标题</th>
+                            <th style="width:22%;">{$lang['good']}规格</th>
+                            <th style="width:10%;">{$lang['good']}编号{if $_GPC['plugin'] != 'fund'}<br/>商品条码{/if}</th>
+                            <th style="width:16%;">{if $_GPC['plugin'] != 'fund'}现价/原价/成本价{else}众筹单价{/if}</th>
                             <th style="width:8%;">购买数量</th>
-                            <th style="width:10%;color:red;">折扣前<br/>折扣后</th>
+                           {if $_GPC['plugin'] != 'fund'}<th style="width:10%;color:red;">折扣前<br/>折扣后</th>{/if}
                             <th style="width:10%;">操作</th>
                         </tr>
                         </thead>
@@ -940,16 +941,18 @@
                                 {$goods['title']}
                             </td>
                             <td><span class="label label-info">{$goods['optionname']}</span></td>
-                            <td>{$goods['goodssn']}<br/>{$goods['productsn']}</td>
-                            <td>{$goods['marketprice']}元<br/>{$goods['productprice']}元 <br/>{$goods['costprice']}元</td>
+                            <td>{$goods['goodssn']}{if $_GPC['plugin'] != 'fund'}<br/>{$goods['productsn']}{/if}</td>
+                            <td>{$goods['marketprice']}元{if $_GPC['plugin'] != 'fund'}<br/>{$goods['productprice']}元 <br/>{$goods['costprice']}元{/if}</td>
                             <td>{$goods['total']}</td>
+                            {if $_GPC['plugin'] != 'fund'}
                             <td style='color:red;font-weight:bold;'>{$goods['orderprice']}<br/>{$goods['realprice']}
                                 {if intval($goods['changeprice'])!=0}
                                 <br/>(改价{if $goods['changeprice']>0}+{/if}{php echo number_format(abs($goods['changeprice']),2)})
                                 {/if}
                             </td>
+                            {/if}
                             <td>
-                                <a href="{php echo $this->createWebUrl('shop/goods', array('id' => $goods['id'], 'op' => 'post'))}" class="btn btn-default btn-sm" title="编辑"><i class="fa fa-edit"></i></a>&nbsp;&nbsp;
+                                <a href="{php echo $this->createWebUrl('shop/goods', array('id' => $goods['id'], 'op' => 'post', 'plugin' => $_GPC['plugin']))}" class="btn btn-default btn-sm" title="编辑"><i class="fa fa-edit"></i></a>&nbsp;&nbsp;
                             </td>
                         </tr>
                         <tr style="text-align: right;padding: 6px 0;border-top:none;">

@@ -31,15 +31,16 @@
             <input type="hidden" name="status" value="{$status}" />
             <input type="hidden" name="agentid" value="{$_GPC['agentid']}" />
             <input type="hidden" name="refund" value="{$_GPC['refund']}" />  
+            <input type="hidden" name="plugin" value="{$_GPC['plugin']}" /> 
             <div class="form-group">
                 <div class="col-sm-8 col-lg-12 col-xs-12">
                     <div class='input-group'>
                         <div class='input-group-addon'>订单号</div>
                         <input class="form-control" name="keyword" type="text" value="{$_GPC['keyword']}" placeholder="订单号/支付单号">
-                        <div class='input-group-addon'>商品名称</div>
-                        <input class="form-control" name="good_name" type="text" value="{$_GPC['good_name']}" placeholder="商品名称">
-                        <div class='input-group-addon'>商品ID</div>
-                        <input class="form-control" name="good_id" type="text" value="{$_GPC['good_id']}" placeholder="商品ID">
+                        <div class='input-group-addon'>{$lang['good']}名称</div>
+                        <input class="form-control" name="good_name" type="text" value="{$_GPC['good_name']}" placeholder="{$lang['good']}名称">
+                        <div class='input-group-addon'>{$lang['good']}ID</div>
+                        <input class="form-control" name="good_id" type="text" value="{$_GPC['good_id']}" placeholder="{$lang['good']}ID">
                         <div class='input-group-addon'>快递单号</div>
                         <input class="form-control" name="expresssn" type="text" value="{$_GPC['expresssn']}" placeholder="快递单号">
                         <div class='input-group-addon'>用户信息</div>
@@ -54,6 +55,7 @@
                     </div>
                 </div>
             </div> 
+            {if $_GPC['plugin'] != "fund"}
             <div class='form-group'>
                   <div class="col-sm-8 col-lg-12 col-xs-12">
                     <div class='input-group'>
@@ -102,7 +104,7 @@
                 </div>
             </div>
             {/if}
-
+            {/if}
             <div class="form-group">
                     <div class="col-sm-12 col-lg-6">
                         <div class='input-group'>
@@ -180,7 +182,9 @@
                     <button class="btn btn-default"><i class="fa fa-search"></i> 搜索</button>
                     <input type="hidden" name="token" value="{$_W['token']}" />
                     <button type="button" name="export" value="1" id="export" class="btn btn-primary">导出 Excel</button>
+                    {if $_GPC['plugin'] != "fund"}
                     <a class="btn btn-warning" href="{php echo $this->createWebUrl('order/export')}">自定义导出</a>
+                    {/if}
                 </div>
 
             </div>
@@ -192,7 +196,7 @@
         <table class='table' style='float:left;margin-bottom:0;table-layout: fixed;line-height: 40px;height: 40px'>
                  <tr class='trhead'>
                     <td colspan='8' style="text-align: left;">
-                        订单数: {$total}  订单金额: <span style="color:red">{if $totalmoney>0}{$totalmoney}{else}0{/if}</span>元&nbsp;{if $perm_role == 1}结算金额: <span style="color:red">{if $costmoney>0}{$costmoney}</span>元 &nbsp;<a class="btn btn-default" href="{php echo $this->createWebUrl('order/list',array('applytype'=>1))}">提现</a>{if !empty($shopset['weixin'])}<a class='btn btn-default' onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('order/list',array('applytype'=>2));}">微信提现</a>{/if}{else}没有可提现金额{/if}{/if}                        
+                        订单数: <span id="total">--</span>  订单金额: <span id="totalmoney" style="color:red">--</span>元&nbsp;{if $perm_role == 1}结算金额: <span style="color:red">{if $costmoney>0}{$costmoney}</span>元 &nbsp;<a class="btn btn-default" href="{php echo $this->createWebUrl('order/list',array('applytype'=>1))}">提现</a>{if !empty($shopset['weixin'])}<a class='btn btn-default' onclick="return confirm('确认微信钱包提现?')" href="{php echo $this->createWebUrl('order/list',array('applytype'=>2));}">微信提现</a>{/if}{else}没有可提现金额{/if}{/if}                        
                     </td>
                 </tr>
         </table>
@@ -253,7 +257,7 @@
                         {if $item['cashier']==1}{$item['name']['name']}{else}{$g['title']}{/if}{if !empty($g['optiontitle'])}<br/><span class="label label-primary sizebg">{$g['optiontitle']}</span>{/if}
                         <br/>{$g['goodssn']}
                     </td>
-                    <td style='border-left:none;text-align:left;/*width:150px*/'>原价: {php echo number_format( $g['price']/$g['total'],2)} <br />应付: {php echo number_format($g['realprice']/$g['total'],2)}
+                    <td style='border-left:none;text-align:left;/*width:150px*/'>{if $_GPC['plugin'] != "fund"}原价: {php echo number_format( $g['price']/$g['total'],2)} {/if}<br />应付: {php echo number_format($g['realprice']/$g['total'],2)}
         <br/>数量: {$g['total']}           
                     </td>
                     
@@ -361,7 +365,7 @@
      
                     </td>
                     <td   rowspan="{php echo count($item['goods'])}" ><label class='label label-{$item['statuscss']}'>{$item['status']}</label><br />
-                    <a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $item['id']))}"   >查看详情</a></td>
+                    <a href="{php echo $this->createWebUrl('order', array('op' => 'detail', 'id' => $item['id'], 'plugin' => $_GPC['plugin']))}"   >查看详情</a></td>
                      <td   rowspan="{php echo count($item['goods'])}" width="10%">
                     {template 'web/order/ops'}
                      </td>
@@ -450,10 +454,12 @@
     </div>
 </div>
 {/if}  
-{$pager}
+<div id="pager"></div>
 </div>
 </div>                                                      
 <script language="javascript">
+    
+
     function send(btn){
         var modal =$('#modal-confirmsend');
         var itemid = $(btn).parent().find('.itemid').val();
@@ -464,6 +470,18 @@
             modal.find('.address').html(addressdata.address);
     }
     $(function () {
+        $.ajax({
+            url: window.location.href,
+            type: 'post',
+            success: function (serverData) {
+                if(serverData){
+                    eval("var data=" + serverData + "");
+                    $("#pager").html(data.result.pager);
+                    $("#total").html(data.result.total);
+                    $("#totalmoney").html(data.result.totalmoney);
+                }
+            }
+        })
         $('#export').click(function(){
             $('#form_p').val("exportOrder");
             $('#form1').submit();   

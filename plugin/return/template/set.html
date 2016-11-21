@@ -80,15 +80,6 @@
                     <span class='help-block'>用户完成的订单总额累计达到此金额后加入全返队列</span>
                 </div>
             </div> 
-
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">利润</label>
-                <div class="col-sm-8 col-xs-12">
-                     <label class="radio-inline"><input type="radio"  name="setdata[isprofit]" value="0" {if $set['isprofit'] ==0} checked="checked"{/if} /> 关闭</label>
-                    <label class="radio-inline"><input type="radio"  name="setdata[isprofit]" value="1" {if $set['isprofit'] ==1} checked="checked"{/if} /> 开启</label>
-                    <span class='help-block'>开启利润拿出上一个周期利润的百分比来进行全返，关闭为上一个周期的营业额。</span>
-                </div>
-            </div>
         </div>
 
         <div  id="return_degression" {if $set['returnrule'] ==2} style="display:none;"{/if}>
@@ -101,6 +92,26 @@
                     <span class='help-block'>单笔订单指定金额返现</span>
                 </div>
             </div> 
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现金额</label>
+                <div class="col-sm-8 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="setdata[isprofit]" value="0" {if $set['isprofit'] ==0} checked="checked"{/if} /> 营业额</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[isprofit]" value="1" {if $set['isprofit'] ==1} checked="checked"{/if} /> 利润</label>
+                    <span class='help-block'>返现金额默认为上一个周期的营业额，开启利润为上一个周期的利润进行累计。</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">累计金额</label>
+                <div class="col-sm-8 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="setdata[iscumulative]" value="0" {if $set['iscumulative'] ==0} checked="checked"{/if} /> 订单金额</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[iscumulative]" value="1" {if $set['iscumulative'] ==1} checked="checked"{/if} /> 排除赠送积分</label>
+                    <span class='help-block'>累计金额方式默认为订单金额，开启排除赠送积分为订单金额减去赠送的积分。</span>
+                </div>
+            </div>
+        </div>
+
 
             <div class="form-group isappoint" {if $set['isappoint'] ==1} style="display:none;"{/if}>
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">单笔订单递减返 是否开启</label>

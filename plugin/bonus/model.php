@@ -27,7 +27,7 @@ if (!class_exists('BonusModel')) {
 				$_W['uniacid'] = $uniacid;
 			}
 			$set = parent::getSet();
-			$set['texts'] = array('agent' => empty($set['texts']['agent']) ? '代理商' : $set['texts']['agent'],'premiername' => empty($set['texts']['premiername']) ? '全球分红' : $set['texts']['premiername'], 'center' => empty($set['texts']['center']) ? '分红中心' : $set['texts']['center'], 'commission' => empty($set['texts']['commission']) ? '佣金' : $set['texts']['commission'], 'commission1' => empty($set['texts']['commission1']) ? '分红佣金' : $set['texts']['commission1'], 'commission_total' => empty($set['texts']['commission_total']) ? '累计分红佣金' : $set['texts']['commission_total'], 'commission_ok' => empty($set['texts']['commission_ok']) ? '待分红佣金' : $set['texts']['commission_ok'], 'commission_apply' => empty($set['texts']['commission_apply']) ? '已申请佣金' : $set['texts']['commission_apply'], 'commission_check' => empty($set['texts']['commission_check']) ? '待打款佣金' : $set['texts']['commission_check'], 'commission_lock' => empty($set['texts']['commission_lock']) ? '未结算佣金' : $set['texts']['commission_lock'], 'commission_detail' => empty($set['texts']['commission_detail']) ? '分红明细' : $set['texts']['commission_detail'], 'commission_pay' => empty($set['texts']['commission_pay']) ? '已分红佣金' : $set['texts']['commission_pay'], 'order' => empty($set['texts']['order']) ? '分红订单' : $set['texts']['order'], 'order_area' => empty($set['texts']['order_area']) ? '区域订单' : $set['texts']['order_area'], 'mycustomer' => empty($set['texts']['mycustomer']) ? '我的下线' : $set['texts']['mycustomer'], 'agent_province' => empty($set['texts']['agent_province']) ? '省级代理' : $set['texts']['agent_province'], 'agent_city' => empty($set['texts']['agent_city']) ? '市级代理' : $set['texts']['agent_city'], 'agent_district' => empty($set['texts']['agent_district']) ? '区级代理' : $set['texts']['agent_district'], 'withdraw' => empty($set['texts']['withdraw']) ? '提现' : $set['texts']['withdraw'], 'team' => empty($set['texts']['team']) ? '团队' : $set['texts']['team'], 'area' => empty($set['texts']['area']) ? '地区' : $set['texts']['area'], 'global' => empty($set['texts']['global']) ? '全球' : $set['texts']['global']);
+			$set['texts'] = array('agent' => empty($set['texts']['agent']) ? '代理商' : $set['texts']['agent'],'premiername' => empty($set['texts']['premiername']) ? '全球分红' : $set['texts']['premiername'], 'center' => empty($set['texts']['center']) ? '分红中心' : $set['texts']['center'], 'commission' => empty($set['texts']['commission']) ? '佣金' : $set['texts']['commission'], 'commission1' => empty($set['texts']['commission1']) ? '分红佣金' : $set['texts']['commission1'], 'commission_total' => empty($set['texts']['commission_total']) ? '累计分红佣金' : $set['texts']['commission_total'], 'commission_ok' => empty($set['texts']['commission_ok']) ? '待分红佣金' : $set['texts']['commission_ok'], 'commission_apply' => empty($set['texts']['commission_apply']) ? '已申请佣金' : $set['texts']['commission_apply'], 'commission_check' => empty($set['texts']['commission_check']) ? '待打款佣金' : $set['texts']['commission_check'], 'commission_lock' => empty($set['texts']['commission_lock']) ? '未结算佣金' : $set['texts']['commission_lock'], 'commission_detail' => empty($set['texts']['commission_detail']) ? '分红明细' : $set['texts']['commission_detail'], 'commission_pay' => empty($set['texts']['commission_pay']) ? '已分红佣金' : $set['texts']['commission_pay'], 'order' => empty($set['texts']['order']) ? '分红订单' : $set['texts']['order'], 'order_area' => empty($set['texts']['order_area']) ? '区域订单' : $set['texts']['order_area'], 'mycustomer' => empty($set['texts']['mycustomer']) ? '我的下线' : $set['texts']['mycustomer'], 'agent_province' => empty($set['texts']['agent_province']) ? '省级代理' : $set['texts']['agent_province'], 'agent_city' => empty($set['texts']['agent_city']) ? '市级代理' : $set['texts']['agent_city'], 'agent_district' => empty($set['texts']['agent_district']) ? '区级代理' : $set['texts']['agent_district'], 'agent_street' => empty($set['texts']['agent_street']) ? '街级代理' : $set['texts']['agent_street'], 'withdraw' => empty($set['texts']['withdraw']) ? '提现' : $set['texts']['withdraw'], 'team' => empty($set['texts']['team']) ? '团队' : $set['texts']['team'], 'area' => empty($set['texts']['area']) ? '地区' : $set['texts']['area'], 'global' => empty($set['texts']['global']) ? '全球' : $set['texts']['global']);
 			return $set;
 		}
 
@@ -77,16 +77,10 @@ if (!class_exists('BonusModel')) {
 		            	if(empty($this->parentAgents[$parentAgent['bonuslevel']]) && $level < $agentlevel){
 		            		$level = $agentlevel;		//去最大权重值
 		        			$this->parentAgents[$parentAgent['bonuslevel']] = $parentAgent['id'];
-		        			if(p('love') && $parentAgent['isagency'] < 2){
-		        				unset($this->parentAgents[$parentAgent['bonuslevel']]);
-		        			}
 		        		}
 	        		}else{
 		            	if(empty($this->parentAgents[$parentAgent['bonuslevel']])){
 		        			$this->parentAgents[$parentAgent['bonuslevel']] = $parentAgent['id'];
-		        			if(p('love') && $parentAgent['isagency'] < 2){
-		        				unset($this->parentAgents[$parentAgent['bonuslevel']]);
-		        			}
 		        		}
 	        		}
         		}
@@ -166,6 +160,44 @@ if (!class_exists('BonusModel')) {
 					//是否开启区域代理
 					$bonus_area_money_old = 0;
 					if(!empty($set['area_start'])){
+						//街级代理计算
+			            $bonus_commission4 = floatval($set['bonus_commission4']);
+						if(!empty($bonus_commission4)){
+		            		$agent_streetall =  pdo_fetchall("select id, bonus_area_commission from " . tablename('sz_yi_member') . " where bonus_province='". $address['province']."' and bonus_city='". $address['city']."' and bonus_district='". $address['area']."' and bonus_street='". $address['street']."' and bonus_area=4 and uniacid=".$_W['uniacid']);
+		            		if(!empty($agent_streetall)){
+		            			foreach ($agent_streetall as $key => $agent_street) {
+		            				if($agent_street['bonus_area_commission'] > 0){
+				            			$bonus_area_money_new = round($price_all * $agent_street['bonus_area_commission']/100, 2);
+				            		}else{
+				            			$bonus_area_money_new = round($price_all * $set['bonus_commission3']/100, 2);
+				            		}
+				            		if(empty($set['isdistinction_area'])){
+										$bonus_area_money = $bonus_area_money_new - $bonus_area_money_old;
+										$bonus_area_money_old = $bonus_area_money_new;
+									}else{
+										$bonus_area_money = $bonus_area_money_new;
+									}
+				            		if($bonus_area_money > 0){
+				            			$data = array(
+						                    'uniacid' => $_W['uniacid'],
+						                    'ordergoodid' => $cinfo['goodsid'],
+						                    'orderid' => $orderid,
+						                    'total' => $cinfo['total'],
+						                    'optionname' => $cinfo['optionname'],
+						                    'mid' => $agent_street['id'],
+						                    'bonus_area' => 4,
+						                    'money' => $bonus_area_money,
+						                    'createtime' => $time
+						                );
+						            }
+					                pdo_insert('sz_yi_bonus_goods', $data);
+					                if(empty($set['isdistinction_area']) && empty($set['isdistinction_area_all'])){
+					                	break;
+					                }
+		            			}
+			            		
+				            }
+			            }
 						//区级代理计算
 			            $bonus_commission3 = floatval($set['bonus_commission3']);
 						if(!empty($bonus_commission3)){
@@ -197,7 +229,7 @@ if (!class_exists('BonusModel')) {
 						                );
 						            }
 					                pdo_insert('sz_yi_bonus_goods', $data);
-					                if(empty($set['isdistinction_area']) || empty($set['isdistinction_area_all'])){
+					                if(empty($set['isdistinction_area']) && empty($set['isdistinction_area_all'])){
 					                	break;
 					                }
 		            			}
@@ -236,7 +268,7 @@ if (!class_exists('BonusModel')) {
 						                );
 					                	pdo_insert('sz_yi_bonus_goods', $data);
 					                }
-					                if(empty($set['isdistinction_area']) || empty($set['isdistinction_area_all'])){
+					                if(empty($set['isdistinction_area']) && empty($set['isdistinction_area_all'])){
 					                	break;
 					                }
 					            }
@@ -273,7 +305,7 @@ if (!class_exists('BonusModel')) {
 						                );
 						                pdo_insert('sz_yi_bonus_goods', $data);
 					                }
-					                if(empty($set['isdistinction_area']) || empty($set['isdistinction_area_all'])){
+					                if(empty($set['isdistinction_area']) && empty($set['isdistinction_area_all'])){
 					                	break;
 					                }
 					            }
@@ -1045,7 +1077,7 @@ if (!class_exists('BonusModel')) {
 			            "paymethod" => $set['paymethod'],
 			            "sendpay_error" => $sendpay_error,
 			            'utime' => $daytime,
-			            "send_bonus_sn" => $time,
+			            "send_bonus_sn" => $send_bonus_sn,
 			            "total" => $real_total
 			            );
 			    pdo_insert('sz_yi_bonus', $log);
@@ -1148,6 +1180,8 @@ if (!class_exists('BonusModel')) {
 								$levelname = "市级代理";
 							}else if($member['bonus_area'] == 3){
 								$levelname = "区级代理";
+							}else if($member['bonus_area'] == 4){
+								$levelname = "街级代理";
 							}
 						}
 						$sendpay = 1;

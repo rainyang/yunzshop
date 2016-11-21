@@ -57,6 +57,16 @@
                         </div>
                     </div>
                 </div>
+                {if $set['shop']['style_pc']=='default_new'}
+                <div class="form-group">
+                    <label class="col-xs-12 col-sm-3 col-md-2 control-label">拼图广告</label>
+                    <div class="col-sm-9">
+                        <div class="input-group"  style="width: 99%;float:left;margin-right:1%">
+                            {php echo tpl_ueditor('pcset[pcadv]',$set['shop']['pcadv'])}
+                        </div>
+                    </div>
+                </div>
+                {/if}
             </div>
             <div class='panel-heading'>
                 SEO优化

@@ -4,7 +4,9 @@
     body {margin:0px; background:#efefef; font-family:'微软雅黑'; -moz-appearance:none;}
     a {text-decoration:none;}
 
-    .address_addnav {height:44px; width:94%; padding:0 3%; border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; margin-top:14px; line-height:42px; color:#666; background:#fff;}
+    .address_addnav {padding: 0 ; height:44px; width:50%; padding:0 3%; border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; margin-top:14px; line-height:42px; color:#666; background:#fff;}
+    .address_continue {padding: 0 ; position: fixed;  bottom: 54px;  left: 50%;  text-align: center;  height: 44px !important;  line-height: 44px !important;  width:50%;  border-bottom:1px solid #f0f0f0;  border-top:1px solid #f0f0f0;  margin-top:14px;  color:#f15353;  background:#fff;}
+    .address_addnav i{color: #fff;  font-size: 22px;  position: absolute;  left: 40%;  top: 50%;  height: 18px;  line-height: 18px;  margin-left: -74px;  margin-top: -9px;}
     .address_list {height:50px; padding:0 10px;  border-bottom:1px solid #f0f0f0; border-top:1px solid #f0f0f0; margin-top:14px; background:#fff;}
     .address_list .ico {height:50px; width:30px;   float:left; color:#999;margin-right:-30px; z-index:2}
     .address_list .ico i { font-size:24px;margin-top:15px;margin-left:10px;z-index:2;position: relative;}
@@ -25,7 +27,11 @@
 .address_sub1 {height:44px; margin:14px 10px; background:#ff4f4f; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#fff;}
 .address_sub2 {height:44px; margin:14px 10px; background:#ddd; border-radius:4px; text-align:center; font-size:16px; line-height:44px; color:#666; border:1px solid #d4d4d4;}
 </style>
+{if $trade['is_street'] == 1}
+<script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade_street.js"></script>
+{else}
 <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
+{/if}
 <div id='container'></div>
 
 <script id='address_list' type='text/html'>
@@ -50,7 +56,21 @@
         </div>
     </div>
   <%/each%>
-  <a href="javascript:;" id='new_address'><div class="address_addnav"><i class="iconfont icon-plus-circle" ></i><span>新增收货地址</span></div></a>
+    {if $_GPC['indiana']}
+        <a href="javascript:;" id='new_address'>
+            <div class="address_addnav">
+                <i class="iconfont icon-plus-circle" ></i>
+                <span>新增收货地址</span>
+            </div>
+        </a>
+        <a href="javascript:;" id='historyindiana'>
+            <div class="address_continue">
+                <span>继续购物</span>
+            </div>
+        </a>
+    {else}
+        <a href="javascript:;" id='new_address'><div class="address_addnav"><i class="iconfont icon-plus-circle" ></i><span>新增收货地址</span></div></a>
+    {/if}
 </script>
 <script id='address_data' type='text/html'>
  
@@ -65,9 +85,11 @@
         <div class="line"><input type="text" placeholder="联系电话"  id="mobile" value="{if address.mobile}<%address.mobile%>{/if}"/></div>
         
         <div class="line"><select id="sel-provance" onchange="selectCity();" class="select"><option value="" selected="true">所在省份</option></select></div>
-         <div class="line"><select id="sel-city" onchange="selectcounty()" class="select"><option value="" selected="true">所在城市</option></select></div>
-         <div class="line"><select id="sel-area" class="select"><option value="" selected="true">所在地区</option></select></div>
-        
+        <div class="line"><select id="sel-city" onchange="selectcounty()" class="select"><option value="" selected="true">所在城市</option></select></div>
+        <div class="line"><select id="sel-area" {if $trade['is_street'] == 1}onchange="selectstreet()"{/if} class="select"><option value="" selected="true">所在地区</option></select></div>
+        {if $trade['is_street'] == 1}
+        <div class="line"><select id="sel-street" class="select"><option value="" selected="true">所在街道</option></select></div>
+        {/if}
         <div class="line"><input type="text" placeholder="详细地址(不包含省份城市)"  id="address" value="{if address.address}<%address.address%>{/if}"/></div>
 <!--        <div class="line"><input type="text" placeholder="邮政编码"  id="zipcode" value="{if address.zipcode}<%address.zipcode%>{/if}"/></div>-->
     </div>
@@ -77,9 +99,11 @@
 </script>
 
 <script language="javascript">
-    
+    var indiana = "{$_GPC['indiana']}";
+    var gid = "{$_GPC['gid']}";
+    var periodnum = "{$_GPC['periodnum']}";
     require(['tpl', 'core'], function(tpl, core) {
-        
+
         function bindEditEvents(){
        
             $('.address_sub1').click(function(){
@@ -113,6 +137,13 @@
                 } 
                
                 $('.address_sub1').html('正在处理...').attr('saving',1);
+                if ($('#sel-street').val()) {
+                    var street = $('#sel-street').val();
+                } else {
+                    var street = '';
+                }
+
+
                 core.json('shop/address',{
                     op:'submit',
                     id:$('#addressid').val(),
@@ -122,7 +153,8 @@
                         address: $('#address').val(),
                         province: $('#sel-provance').val(),
                         city: $('#sel-city').val(),
-                        area: $('#sel-area').val()
+                        area: $('#sel-area').val(),
+                        street: street
                                 //,zipcode: $('#zipcode').val()
                     }
                  },function(json){
@@ -141,6 +173,9 @@
                 list();
             });
         }
+        function historyindiana(){
+            location.href = core.getUrl('shop/detail', {id: gid, periodnum: periodnum,indiana:'1'});
+        }
         function list(){
             core.json('shop/address',{},function(json){
                  $('#container').html(  tpl('address_list',json.result) );
@@ -151,7 +186,11 @@
                     core.json('shop/address',{op:'get',id:id},function(json){
                         $('#container').html(  tpl('address_data',json.result) );
                         var address = json.result.address;
+                        {if $trade['is_street'] == 1}
+                        cascdeInit(address.province,address.city,address.area,address.street);
+                        {else}
                         cascdeInit(address.province,address.city,address.area);
+                        {/if}
                         bindEditEvents();
                      },true);
                      
@@ -165,6 +204,9 @@
                          core.json('shop/address',{op:'setdefault',id:id},function(json){
                           if(json.status==1){
                               core.tip.show('设置默认地址成功');
+                              if(indiana){
+                                historyindiana();
+                              }
                           }
                           else{
                               core.tip.show('设置默认地址失败');
@@ -198,9 +240,13 @@
                  $('#new_address').click(function(){
                       core.json('shop/address',{op:'new'},function(json){
                           var result = json.result;
-                            $('#container').html(  tpl('address_data',result) );
-                            cascdeInit(result.address.province,result.address.city,result.address.area);
-                              {if $trade['shareaddress']=='1' && is_weixin()}
+                          $('#container').html(  tpl('address_data',result) );
+                          {if $trade['is_street'] == '1'}
+                          cascdeInit(result.address.province,result.address.city,result.address.area,result.address.street);
+                          {else}
+                          cascdeInit(result.address.province,result.address.city,result.address.area);
+                          {/if}
+                          {if $trade['shareaddress']=='1' && $trade['is_street'] != '1' && is_weixin()}
                                     var shareAddress = {php echo json_encode($shareAddress)};
                                     WeixinJSBridge.invoke('editAddress',shareAddress,function(res){ 
                                         if(res.err_msg=='edit_address:ok'){
@@ -214,12 +260,20 @@
                             bindEditEvents();
                      },true);
                   });
+                 $('#historyindiana').click(function(){
+                    historyindiana();
+                    
+                 });
+
+
             },true);
         }
         
         list();
-        
+
     })
+
+
 </script>
 {php $show_footer = true}
 {template 'common/footer'}

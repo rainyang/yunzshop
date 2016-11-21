@@ -22,6 +22,11 @@ class PluginModel
 		$this->pluginname = $name;
 	}
 
+	public function ptemplate($filename) {
+        $model = new Plugin($this->pluginname);
+        return $model->template($filename);
+	}
+
 	public function getSet()
 	{
 		global $_W, $_GPC;

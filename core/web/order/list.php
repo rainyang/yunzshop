@@ -4,9 +4,30 @@ $operation = !empty($_GPC["op"]) ? $_GPC["op"] : "display";
 $type = $_GPC['type'];
 $plugin_diyform = p("diyform");
 $shopset = m('common')->getSysset('pay');
+$trade     = m('common')->getSysset('trade');
 $yunbi_plugin = p('yunbi');
 if ($yunbi_plugin) {
     $yunbiset = $yunbi_plugin->getSet();
+}
+
+$isindiana = '';
+$indiana_plugin   = p('indiana');
+if ($indiana_plugin) {
+    if ($_GPC['isindiana']) {
+        $isindiana = " AND o.order_type = 4 ";
+        $period = pdo_fetchall("SELECT ir.ordersn FROM " . tablename('sz_yi_indiana_record') . " ir 
+        left join " . tablename('sz_yi_indiana_period') . " ip on ( ip.openid = ir.openid and ip.period_num = ir.period_num ) 
+        WHERE ip.uniacid = :uniacid",array(
+            ":uniacid" => $_W["uniacid"]
+        ));
+        foreach ($period as $key => $value) {
+            $inordersn[$key] .= $value['ordersn'];
+        }
+        $isindiana .= " AND o.ordersn in ('".implode($inordersn,"','")."') "; 
+    }else{
+        $isindiana = " AND o.order_type <> 4 ";
+    }
+    
 }
 $totals = array();
 $r_type = array(
@@ -59,6 +80,10 @@ $paytype = array(
         "css" => "warning",
         "name" => "App支付宝支付"
     ),
+    '29' => array(
+        'css' => "paypal",
+        'name' => "paypal支付"
+    ),
     "3" => array(
         "css" => "primary",
         "name" => "货到付款"
@@ -108,7 +133,16 @@ if (p('hotel')) {
 }
 
 $store_list = m('order')->getStoreList();
-
+$lang = array(
+    'good' => '商品',
+    'orderlist' => '订单管理'
+    );
+if($_GPC['plugin'] == "fund"){
+    $lang = array(
+    'good' => '项目',
+    'orderlist' => '众筹订单'
+    ); 
+}
 if ($operation == "display") {
     ca("order.view.status_1|order.view.status0|order.view.status1|order.view.status2|order.view.status3|order.view.status4|order.view.status5");
     //判断该帐号的权限
@@ -122,7 +156,7 @@ if ($operation == "display") {
     $status = $_GPC["status"] == "" ? 1 : $_GPC["status"];
     $sendtype = !isset($_GPC["sendtype"]) ? 0 : $_GPC["sendtype"];
     $condition = " AND o.uniacid = :uniacid and o.deleted=0";
-
+    $join_table = "";
     $paras = array(
         ":uniacid" => $_W["uniacid"]
     );
@@ -254,6 +288,7 @@ if ($operation == "display") {
     if (!empty($_GPC["saler"])) {
         $_GPC["saler"] = trim($_GPC["saler"]);
         $condition .= " AND (sm.realname LIKE '%{$_GPC["saler"]}%' or sm.mobile LIKE '%{$_GPC["saler"]}%' or sm.nickname LIKE '%{$_GPC["saler"]}%' " . " or s.salername LIKE '%{$_GPC["saler"]}%' )";
+        $join_table .= " left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid ";
     }
     if (!empty($_GPC["storeid"])) {
         $_GPC["storeid"] = trim($_GPC["storeid"]);
@@ -272,6 +307,8 @@ if ($operation == "display") {
     } else {
         $condition .= " AND o.order_type<>3";
     }
+
+    $condition.= $isindiana;
 
     $statuscondition = '';
     if ($status != "all") {
@@ -368,11 +405,29 @@ if ($operation == "display") {
             }
         }
     }
-    //是否为供应商 等于1的是
+
+    $cond = "";
     if (p('supplier')) {
-        $cond = "";
         if ($perm_role == 1) {
             $cond .= " and o.supplier_uid={$_W['uid']} ";
+        }
+    }
+    //查询订单总数以及总金额
+    if ($_W['ispost']) {
+        $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " AS o 
+            LEFT JOIN " . tablename("sz_yi_order_refund") . " r ON r.id =o.refundid {$join_table} WHERE 1 {$condition} {$statuscondition} {$cond}", $paras);
+        $total = $result['total'];
+        $totalmoney = $result['totalmoney'];
+        $pager = pagination($total, $pindex, $psize);
+        show_json(1, array(
+                'pager' => $pager,
+                'total' => $total,
+                'totalmoney' => floatval($totalmoney)
+            ));
+    }
+    //是否为供应商 等于1的是
+    if (p('supplier')) {
+        if ($cond) {
             $supplierapply = pdo_fetchall('select a.id,u.uid,p.realname,p.mobile,p.banknumber,p.accountname,p.accountbank,a.applysn,a.apply_money,a.apply_time,a.type,a.finish_time,a.status from ' . tablename('sz_yi_supplier_apply') . ' a ' . ' left join' . tablename('sz_yi_perm_user') . ' p on p.uid=a.uid ' . 'left join' . tablename('users') . ' u on a.uid=u.uid where u.uid=' . $_W['uid']);
             $totals['status9'] = count($supplierapply);
             $supplier_info = p('supplier')->getSupplierInfo($_W['uid']);
@@ -425,32 +480,15 @@ if ($operation == "display") {
             }
         }
     }
-    //Author:ym Date:2016-07-20 Content:订单分组查询
-    /*$sql = 'select count(1) as suppliers_num, o.*, a.realname as arealname,a.mobile as amobile,a.province as aprovince,
-            a.city as acity , a.area as aarea,a.address as aaddress, d.dispatchname,m.nickname,m.id as mid,
-            m.realname as mrealname,m.mobile as mmobile,sm.id as salerid,sm.nickname as salernickname,s.salername,
-            r.rtype,r.status as rstatus,o.pay_ordersn, o.dispatchtype, o.isverify, o.storeid, cg.id as cgid, cg.ismaster,
-            st.storename, cs.name as csname, cs.thumb as csthumb
-            from ' . tablename("sz_yi_order") . " o" . "
-            left join " . tablename("sz_yi_order_refund") . " r on r.id =o.refundid " . "
-            left join " . tablename("sz_yi_member") . " m on m.openid=o.openid and m.uniacid =  o.uniacid " . "
-            left join " . tablename("sz_yi_member_address") . " a on a.id=o.addressid " . "
-            left join " . tablename("sz_yi_dispatch") . " d on d.id = o.dispatchid " . "
-            left join " . tablename("sz_yi_member") . " sm on sm.openid = o.verifyopenid and sm.uniacid=o.uniacid" . "
-            left join " . tablename("sz_yi_saler") . " s on s.openid = o.verifyopenid and s.uniacid=o.uniacid " . "
-            left join " .tablename('sz_yi_cancel_goods'). " cg on cg.orderid=o.id and cg.uniacid=o.uniacid "."
-            left join " .tablename('sz_yi_store'). " st on st.id=o.storeid and st.uniacid=o.uniacid "."
-            left join " .tablename('sz_yi_cashier_store'). " cs on cs.id=o.id and cs.uniacid=o.uniacid
-            where {$condition} {$statuscondition} {$cond} group by o.ordersn_general
-            ORDER BY o.createtime DESC,o.status DESC  ";*/
+
     $sql = 'SELECT count(1) AS suppliers_num, o.*, r.rtype 
             FROM ' . tablename("sz_yi_order") . " AS o 
-            LEFT JOIN " . tablename("sz_yi_order_refund") . " r ON r.id =o.refundid 
-            WHERE 1 {$condition} {$statuscondition} {$cond} GROUP BY o.ordersn_general ORDER BY o.createtime DESC,o.status DESC
+            LEFT JOIN " . tablename("sz_yi_order_refund") . " r ON r.id =o.refundid {$join_table} WHERE 1 {$condition} {$statuscondition} {$cond} GROUP BY o.ordersn_general ORDER BY o.createtime DESC,o.status DESC
             LIMIT " . ($pindex - 1) * $psize . "," . $psize;
     //echo $sql;exit;
     $list = pdo_fetchall($sql, $paras);
     unset($value);
+
 
     //把会员信息等拿出来单独查询,避免order整表连接,每次只需查询20条会员信息即可。
     $member_openids = array();
@@ -468,7 +506,7 @@ if ($operation == "display") {
         $member_condition = (!empty($member_addresids) ? " and a.id in (" . $member_addresids . ")" : '');
 
         $sql = 'select m.openid, a.realname as arealname,a.mobile as amobile,a.province as aprovince,
-            a.city as acity , a.area as aarea,a.address as aaddress,m.nickname,m.id as mid,
+            a.city as acity,a.area as aarea,a.street as astreet,a.address as aaddress,m.nickname,m.id as mid,
             m.realname as mrealname,m.mobile as mmobile 
             from ' . tablename("sz_yi_member") . " m" . "
             left join " . tablename("sz_yi_member_address") . " a on m.openid=a.openid and m.uniacid = a.uniacid {$member_condition} 
@@ -486,14 +524,15 @@ if ($operation == "display") {
         }
     }
 
+
     foreach ($list as & $value) {
         if (isset($order_members[$value['openid']])) {
             $value = $value + $order_members[$value['openid']];
         }
-
         if (p('supplier')) {
             $suppliers_num = $value['suppliers_num'];
             if ($suppliers_num > 1) {
+
                 $value['vendor'] = '多供应商';
                 $value['ischangePrice'] = 0;
             } else {
@@ -581,12 +620,12 @@ if ($operation == "display") {
         $value["paytypevalue"] = $order_paytype;
         $value["css"] = $paytype[$order_paytype]["css"];
         $value["paytype"] = $paytype[$order_paytype]["name"];
-        $value["dispatchname"] = empty($value["addressid"]) ? "自提" : $value["dispatchname"];
+
         if (empty($value["dispatchname"])) {
-            $value["dispatchname"] = "快递";
+            $value["dispatchname"] = "快递配送";
         }
         if ($value["isverify"] == 1) {
-            $value["dispatchname"] = "线下核销";
+            $value["dispatchname"] = "配送核销";
         } elseif ($value["isvirtual"] == 1) {
             $value["dispatchname"] = "虚拟物品";
         } elseif (!empty($value["virtual"])) {
@@ -594,6 +633,7 @@ if ($operation == "display") {
         } elseif ($value['cashier'] == 1) {
             $value["dispatchname"] = "收银台支付";
         }
+        $value["dispatchname"] = empty($value["addressid"]) ? "上门自提" : $value["dispatchname"];
 
         if (p('cashier') && $value['cashier'] == 1) {
             $value['name'] = set_medias(array(
@@ -618,12 +658,22 @@ if ($operation == "display") {
             $value["province"] = $isarray ? $address["province"] : $value["aprovince"];
             $value["city"] = $isarray ? $address["city"] : $value["acity"];
             $value["area"] = $isarray ? $address["area"] : $value["aarea"];
+            //是否开启了街道联动
+            if ($trade['is_street'] == '1') {
+                $value["street"] = $isarray ? $address["street"] : $value["astreet"];
+            }
             $value["address"] = $isarray ? $address["address"] : $value["aaddress"];
             $value["address_province"] = $value["province"];
             $value["address_city"] = $value["city"];
             $value["address_area"] = $value["area"];
+            $value["address_street"] = $value["street"];
             $value["address_address"] = $value["address"];
-            $value["address"] = $value["province"] . " " . $value["city"] . " " . $value["area"] . " " . $value["address"];
+            //是否开启了街道联动
+            if (!empty($value['street']) && $trade['is_street'] == '1') {
+                $value["address"] = $value["province"] . " " . $value["city"] . " " . $value["area"] . " " . $value["street"] . " " . $value["address"];
+            } else {
+                $value["address"] = $value["province"] . " " . $value["city"] . " " . $value["area"] . " " . $value["address"];
+            }
             $value["addressdata"] = array(
                 "realname" => $value["realname"],
                 "mobile" => $value["mobile"],
@@ -740,89 +790,8 @@ if ($operation == "display") {
         }
         $value["goods"] = set_medias($order_goods, "thumb");
         $value["goods_str"] = $goods;
-        if (!empty($agentid) && $level > 0) {
-            $commission_level = 0;
-            if ($value["agentid"] == $agentid) {
-                $value["level"] = 1;
-                $level1_commissions = pdo_fetchall("select commission1,commissions  from " . tablename("sz_yi_order_goods") . " og " . " left join  " . tablename("sz_yi_order") . " o on o.id = og.orderid " . " where og.orderid=:orderid and o.agentid= " . $agentid . "  and o.uniacid=:uniacid",
-                    array(
-                        ":orderid" => $value["id"],
-                        ":uniacid" => $_W["uniacid"]
-                    ));
-                foreach ($level1_commissions as $c) {
-                    $commission = iunserializer($c["commission1"]);
-                    $commissions = iunserializer($c["commissions"]);
-                    if (empty($commissions)) {
-                        $commission_level += isset($commission["level" . $agentLevel["id"]]) ? $commission["level" . $agentLevel["id"]] : $commission["default"];
-                    } else {
-                        $commission_level += isset($commissions["level1"]) ? floatval($commissions["level1"]) : 0;
-                    }
-                }
-            } else {
-                if (in_array($value["agentid"], array_keys($agent["level1_agentids"]))) {
-                    $value["level"] = 2;
-                    if ($agent["level2"] > 0) {
-                        $level2_commissions = pdo_fetchall("select commission2,commissions  from " . tablename("sz_yi_order_goods") . " og " . " left join  " . tablename("sz_yi_order") . " o on o.id = og.orderid " . " where og.orderid=:orderid and  o.agentid in ( " . implode(",",
-                                array_keys($agent["level1_agentids"])) . ")  and o.uniacid=:uniacid", array(
-                            ":orderid" => $value["id"],
-                            ":uniacid" => $_W["uniacid"]
-                        ));
-                        foreach ($level2_commissions as $c) {
-                            $commission = iunserializer($c["commission2"]);
-                            $commissions = iunserializer($c["commissions"]);
-                            if (empty($commissions)) {
-                                $commission_level += isset($commission["level" . $agentLevel["id"]]) ? $commission["level" . $agentLevel["id"]] : $commission["default"];
-                            } else {
-                                $commission_level += isset($commissions["level2"]) ? floatval($commissions["level2"]) : 0;
-                            }
-                        }
-                    }
-                } else {
-                    if (in_array($value["agentid"], array_keys($agent["level2_agentids"]))) {
-                        $value["level"] = 3;
-                        if ($agent["level3"] > 0) {
-                            $level3_commissions = pdo_fetchall("select commission3,commissions from " . tablename("sz_yi_order_goods") . " og " . " left join  " . tablename("sz_yi_order") . " o on o.id = og.orderid " . " where og.orderid=:orderid and  o.agentid in ( " . implode(",",
-                                    array_keys($agent["level2_agentids"])) . ")  and o.uniacid=:uniacid", array(
-                                ":orderid" => $value["id"],
-                                ":uniacid" => $_W["uniacid"]
-                            ));
-                            foreach ($level3_commissions as $c) {
-                                $commission = iunserializer($c["commission3"]);
-                                $commissions = iunserializer($c["commissions"]);
-                                if (empty($commissions)) {
-                                    $commission_level += isset($commission["level" . $agentLevel["id"]]) ? $commission["level" . $agentLevel["id"]] : $commission["default"];
-                                } else {
-                                    $commission_level += isset($commissions["level3"]) ? floatval($commissions["level3"]) : 0;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            $value["commission"] = $commission_level;
-        }
-
     }
     unset($value);
-
-    //todo, 改为ajax获取或写入方式
-    $total_cache_key = shorturl($_W['uniacid'] . $condition . $statuscondition . $cond);
-    $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " o " . " left join " . tablename("sz_yi_order_refund") . " r on r.orderid= o.id WHERE 1 $condition $statuscondition " . $cond,
-        $paras);
-    $total = $result['total'];
-    $totalmoney = $result['totalmoney'];
-    /*if ($_GPC[$total_cache_key]) {
-        $result = unserialize(html_entity_decode($_GPC[$total_cache_key]));
-        $total = $result['total'];
-        $totalmoney = $result['totalmoney'];
-    } else {
-        $result = pdo_fetch("SELECT COUNT(distinct o.ordersn_general) as total, ifnull(sum(o.price),0) as totalmoney FROM " . tablename("sz_yi_order") . " o " . " left join " . tablename("sz_yi_order_refund") . " r on r.orderid= o.id WHERE 1 $condition $statuscondition " . $cond,
-            $paras);
-        isetcookie($total_cache_key, serialize($result), 60*30);
-        $total = $result['total'];
-        $totalmoney = $result['totalmoney'];
-    }*/
-    unset($result);
 
     $condition = " uniacid=:uniacid and deleted=0";
     if (p('hotel') && $type == 'hotel') {
@@ -869,6 +838,11 @@ if ($operation == "display") {
             }
         }
     }
+
+    if(!empty($_GPC['plugin'])){
+        $condition.= " and plugin='".$_GPC['plugin']."'";
+    }
+
     $paras = array(
         ":uniacid" => $_W["uniacid"]
     );
@@ -902,7 +876,7 @@ if ($operation == "display") {
         $totals['status6'] = pdo_fetchcolumn('SELECT COUNT(1) FROM ' . tablename('sz_yi_order') . '' . ' WHERE ' . $condition . ' and status=6',
             $paras);
     }
-    $pager = pagination($total, $pindex, $psize);
+    
     $stores = pdo_fetchall("select id,storename from " . tablename("sz_yi_store") . " where uniacid=:uniacid ", array(
         ":uniacid" => $_W["uniacid"]
     ));
@@ -940,7 +914,11 @@ if ($operation == "display") {
         } else {
             include $this->template("web/order/list");
         }
-    } else {
+
+
+    } elseif ($indiana_plugin && $_GPC['isindiana']) {
+        include p('indiana')->ptemplate("order");
+    }else{          
         include $this->template("web/order/list");
     }
     exit;
@@ -963,7 +941,7 @@ if ($operation == "display") {
             "color" => "#4a5077"
         )
     );
-    $detailurl = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&method=orderj&p=commission&op=order&type=0&m=sz_yi&do=plugin";
+    $detailurl = $_W['siteroot'] . "app/index.php?i={$_W['uniacid']}&c=entry&method=order&p=verify&m=sz_yi&do=plugin&storeid=".$agentuid['storeid'];
     m('message')->sendCustomNotice($openid, $msg, $detailurl);
     message('选择门店成功', $this->createWebUrl('order', array('op' => 'display')), 'success');
 } elseif ($operation == "detail") {
@@ -1164,6 +1142,9 @@ if ($operation == "display") {
     $paras = array(
         ":uniacid" => $_W["uniacid"]
     );
+    if(!empty($_GPC['plugin'])){
+        $condition.= " and plugin='".$_GPC['plugin']."'";
+    }
     $supplier_conds = '';
     $supplier_cond = '';
     if (p('supplier')) {
@@ -1260,10 +1241,16 @@ if ($operation == "display") {
             }
         }
     }
-    $refund_address = pdo_fetchall('select * from ' . tablename('sz_yi_refund_address') . ' where uniacid=:uniacid',
-        array(
-            ':uniacid' => $_W['uniacid']
-        ));
+
+    $refund_address = pdo_fetchall('select * from ' . tablename('sz_yi_refund_address') . ' where uniacid=:uniacid', array(
+        ':uniacid' => $_W['uniacid']
+    ));
+    
+    if ($indiana_plugin && $_GPC['isindiana']) {
+        //include p('indiana')->ptemplate("detail");
+        $item['indiana'] = p('indiana')->getorder($item['period_num']);
+    }
+
     load()->func("tpl");
     if ($item['order_type'] == '3') {
         $order_room = pdo_fetchall("SELECT * FROM " . tablename("sz_yi_order_room") . " WHERE orderid = :orderid ",
@@ -1272,7 +1259,10 @@ if ($operation == "display") {
             ));
         $item['order_room'] = $order_room;
         include $this->template("web/order/detail_hotel");
-    } else {
+
+    } elseif ($indiana_plugin && $_GPC['isindiana']) {
+        include p('indiana')->ptemplate("detail");
+    }else{
         include $this->template("web/order/detail");
 
     }
@@ -1601,32 +1591,15 @@ if ($operation == "display") {
                                                                                     $expresssn = trim($refund['rexpresssn']);
                                                                                 }
                                                                             }
-                                                                            $arr = getList($express, $expresssn);
-                                                                            if (!$arr) {
-                                                                                $arr = getList($express, $expresssn);
-                                                                                if (!$arr) {
+                                                                            $content = getExpress($express, $expresssn);
+                                                                            if (!$content) {
+                                                                                $content = getExpress($express, $expresssn);
+                                                                                if (!$content) {
                                                                                     die('未找到物流信息.');
                                                                                 }
                                                                             }
-                                                                            $len = count($arr);
-                                                                            $step1 = explode('<br />',
-                                                                                str_replace('&middot;', "", $arr[0]));
-                                                                            $step2 = explode('<br />',
-                                                                                str_replace('&middot;', "",
-                                                                                    $arr[$len - 1]));
-                                                                            for ($i = 0; $i < $len; $i++) {
-                                                                                if (strtotime(trim($step1[0])) > strtotime(trim($step2[0]))) {
-                                                                                    $row = $arr[$i];
-                                                                                } else {
-                                                                                    $row = $arr[$len - $i - 1];
-                                                                                }
-                                                                                $step = explode('<br />',
-                                                                                    str_replace('&middot;', "", $row));
-                                                                                $list[] = array(
-                                                                                    'time' => trim($step[0]),
-                                                                                    'step' => trim($step[1]),
-                                                                                    'ts' => strtotime(trim($step[0]))
-                                                                                );
+                                                                            foreach ($content as $data) {
+                                                                                $list[] = array('time' => $data->time, 'step' => $data->context, 'ts' => $data->time);
                                                                             }
                                                                             load()->func('tpl');
                                                                             include $this->template('web/order/express');
@@ -1635,35 +1608,15 @@ if ($operation == "display") {
                                                                             if ($to == "express") {
                                                                                 $express = trim($item["express"]);
                                                                                 $expresssn = trim($item["expresssn"]);
-                                                                                $arr = getList($express, $expresssn);
-                                                                                if (!$arr) {
-                                                                                    $arr = getList($express,
-                                                                                        $expresssn);
-                                                                                    if (!$arr) {
-                                                                                        die("未找到物流信息.");
+                                                                                $content = getExpress($express, $expresssn);
+                                                                                if (!$content) {
+                                                                                    $content = getExpress($express, $expresssn);
+                                                                                    if (!$content) {
+                                                                                        die('未找到物流信息.');
                                                                                     }
                                                                                 }
-                                                                                $len = count($arr);
-                                                                                $step1 = explode("<br />",
-                                                                                    str_replace("&middot;", "",
-                                                                                        $arr[0]));
-                                                                                $step2 = explode("<br />",
-                                                                                    str_replace("&middot;", "",
-                                                                                        $arr[$len - 1]));
-                                                                                for ($i = 0; $i < $len; $i++) {
-                                                                                    if (strtotime(trim($step1[0])) > strtotime(trim($step2[0]))) {
-                                                                                        $row = $arr[$i];
-                                                                                    } else {
-                                                                                        $row = $arr[$len - $i - 1];
-                                                                                    }
-                                                                                    $step = explode("<br />",
-                                                                                        str_replace("&middot;", "",
-                                                                                            $row));
-                                                                                    $list[] = array(
-                                                                                        "time" => trim($step[0]),
-                                                                                        "step" => trim($step[1]),
-                                                                                        "ts" => strtotime(trim($step[0]))
-                                                                                    );
+                                                                                foreach ($content as $data) {
+                                                                                    $list[] = array('time' => $data->time, 'step' => $data->context, 'ts' => $data->time);
                                                                                 }
                                                                                 load()->func("tpl");
                                                                                 include $this->template("web/order/express");
@@ -1696,22 +1649,6 @@ function sortByTime($msg0, $msg1)
     } else {
         return $msg0["ts"] > $msg1["ts"] ? 1 : -1;
     }
-}
-
-function getList($id, $postid)
-{
-    $url = "http://wap.kuaidi100.com/wap_result.jsp?rand=" . time() . "&id={$id}&fromWeb=null&postid={$postid}";
-    load()->func("communication");
-    $info = ihttp_request($url);
-    $result = $info["content"];
-    if (empty($result)) {
-        return array();
-    }
-    preg_match_all("/\<p\>&middot;(.*)\<\/p\>/U", $result, $data);
-    if (!isset($data[1])) {
-        return false;
-    }
-    return $data[1];
 }
 
 function changeWechatSend($ordersn, $status, $msg = '')
@@ -1838,7 +1775,7 @@ function order_list_confirmsend1($order)
         }
 
     }
-    m("member")->upgradeLevel($order["openid"]);
+    m("member")->upgradeLevel($order["openid"],$order["id"]);
     m("notice")->sendOrderMessage($order["id"]);
     if (p("commission")) {
         p("commission")->checkOrderFinish($order["id"]);
@@ -1943,7 +1880,7 @@ function order_list_finish($order)
         }
     }
 
-    m("member")->upgradeLevel($order["openid"]);
+    m("member")->upgradeLevel($order["openid"],$order["id"]);
     m("notice")->sendOrderMessage($order["id"]);
     if (p("coupon") && !empty($order["couponid"])) {
         p("coupon")->backConsumeCoupon($order["id"]);
@@ -2390,7 +2327,9 @@ function order_list_refund($item)
                                     m('finance')->apprefund($item['paytype'], $item['openid'], $item['trade_no'],
                                         $refund['refundno'], $realprice);
 
-                                } else {
+                                } elseif ($item['paytype'] == 29){
+                                    message('paypal付款订单，请使用手动退款并到paypal商户处理退款！！！', '', 'error');
+                                }else {
                                     if ($realprice < 1) {
                                         message('退款金额必须大于1元，才能使用微信企业付款退款!', '', 'error');
                                     }

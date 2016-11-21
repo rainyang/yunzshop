@@ -1,7 +1,7 @@
 <?php
 /*=============================================================================
 #     FileName: member.php
-#         Desc:  
+#         Desc:
 #       Author: Yunzhong - http://www.yunzshop.com
 #        Email: 913768135@qq.com
 #     HomePage: http://www.yunzshop.com
@@ -68,24 +68,24 @@ class Sz_DYi_Member
     public function getMember($openid = '')
     {
         global $_W;
-		
+
         $uid = intval($openid);
-		
+
         if (empty($uid)) {
             $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where  openid=:openid and uniacid=:uniacid limit 1', array(
                 ':uniacid' => $_W['uniacid'],
                 ':openid' => $openid
             ));
-			
+
         } else {
             $info = pdo_fetch('select * from ' . tablename('sz_yi_member') . ' where id=:id and uniacid=:uniacid limit 1', array(
                 ':uniacid' => $_W['uniacid'],
                 ':id' => $uid
             ));
         }
-		
+
 		if (!empty($info)) {
-			
+
 			$openid = $info['openid'];
 			if (empty($info['uid'])) {
 				$followed = m('user')->followed($openid);
@@ -249,13 +249,13 @@ class Sz_DYi_Member
         global $_W;
         load()->model('mc');
         $uid = mc_openid2uid($openid);
-		
+
         if (!empty($uid)) {
-			
+
             $value     = pdo_fetchcolumn("SELECT {$credittype} FROM " . tablename('mc_members') . " WHERE `uid` = :uid", array(
                 ':uid' => $uid
             ));
-			
+
             $newcredit = $credits + $value;
             if ($newcredit <= 0) {
                 $newcredit = 0;
@@ -282,9 +282,9 @@ class Sz_DYi_Member
                 'remark' => $log[1]
             );
             pdo_insert('mc_credits_record', $data);
-			
+
         } else {
-			
+
             $value     = pdo_fetchcolumn("SELECT {$credittype} FROM " . tablename('sz_yi_member') . " WHERE  uniacid=:uniacid and openid=:openid limit 1", array(
                 ':uniacid' => $_W['uniacid'],
                 ':openid' => $openid
@@ -465,7 +465,7 @@ class Sz_DYi_Member
         }
         return $level;
     }
-    function upgradeLevel($openid)
+    function upgradeLevel($openid,$orderid='')
     {
         global $_W;
         if (empty($openid)) {
@@ -484,6 +484,13 @@ class Sz_DYi_Member
 		} else if ($leveltype == 1) {
 			$ordercount = pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=3 and uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':openid' => $member['openid']));
 			$level = pdo_fetch('select * from ' . tablename('sz_yi_member_level') . " where uniacid=:uniacid  and {$ordercount} >= ordercount and ordercount>0  order by level desc limit 1", array(':uniacid' => $_W['uniacid']));
+        } else if ($leveltype == 2) {
+            $goods = pdo_fetchall('select goodsid from ' . tablename('sz_yi_order_goods') . ' where orderid=:orderid and uniacid=:uniacid ', array(':uniacid' => $_W['uniacid'], ':orderid' => $orderid));
+            foreach ($goods as $key => $value) {
+                $goodsids[$key] = $value['goodsid'];
+            }
+            $goodsid = " AND goodsid in ('".implode($goodsids,"','")."') ";
+            $level = pdo_fetch('select * from ' . tablename('sz_yi_member_level') . " where uniacid=:uniacid ".$goodsid." order by level desc limit 1", array(':uniacid' => $_W['uniacid']));
 		}
 		if (empty($level)) {
 			return;
@@ -501,7 +508,7 @@ class Sz_DYi_Member
 			}
 		}
 		if ($isup) {
-			pdo_update('sz_yi_member', array('level' => $level['id']), array('id' => $member['id']));
+			pdo_update('sz_yi_member', array('level' => $level['id'],'upgradeleveltime' => time()), array('id' => $member['id']));
 			m('notice')->sendMemberUpgradeMessage($openid, $oldlevel, $level);
 		}
     }
@@ -522,7 +529,7 @@ class Sz_DYi_Member
     }
     function setRechargeCredit($openid = '', $money = 0)
     {
-		
+
         if (empty($openid)) {
             return;
         }
@@ -559,8 +566,63 @@ class Sz_DYi_Member
 		fclose($open);
 	}
 
+    //自动执行方法
+    function autoexec($uniacid = 0){
+        global $_W, $_GPC;
+        if(empty($uniacid)){
+            return;
+        }
+        $_W['uniacid'] = $uniacid;
+        $shopset = m('common')->getSysset('shop', $_W['uniacid']);
 
+        if ($shopset['term']) {
+            //echo "<pre>";print_r($shopset);
+            $termtime = '';
+            $current_time = time();
+            if ( $shopset['term_unit'] == '1' ) {
+                $termtime = $shopset['term_time'] * 86400;
+            } elseif ( $shopset['term_unit'] == '2' ) {
+                $termtime = $shopset['term_time'] * 86400 * 7;
+            } elseif ( $shopset['term_unit'] == '3' ) {
+                $termtime = $shopset['term_time'] * 86400 * 30;
+            } elseif ( $shopset['term_unit'] == '4' ) {
+                $termtime = $shopset['term_time'] * 86400 * 365;
+            }
 
+            $level = pdo_fetch('UPDATE ' . tablename('sz_yi_member') . " SET level = '0', upgradeleveltime = ".$current_time." where uniacid=:uniacid and level > 0 and (".$current_time." - upgradeleveltime ) >=  ".$termtime, array(':uniacid' => $_W['uniacid']));
+        }
+    }
 
+    /**
+     * 系统自动关闭 返还积分
+     *
+     * @param $id 订单id
+     *
+     * @return void
+     */
+    public function returnCredit($id = '')
+    {
+        global $_W;
 
+        if (empty($id)) {
+            $condition = 'uniacid=:uniacid';
+            $param = array(':uniacid' => $_W['uniacid']);
+        } else {
+            $condition = 'uniacid = :uniacid AND id = :id';
+            $param = array(':uniacid' => $_W['uniacid'], ':id'=> $id);
+        }
+
+        $orders = pdo_fetchall("SELECT `openid`, `ordersn`, `deductcredit`, `deductprice` FROM " . tablename(sz_yi_order) . " WHERE {$condition} AND `status` = -1", $param);
+
+        foreach ($orders as $k => $v) {
+            //抵扣积分
+            if ($v["deductcredit"] > 0) {
+                $shopset = m("common")->getSysset("shop");
+                m("member")->setCredit($v["openid"], "credit1", $v["deductcredit"], array(
+                    '0',
+                    $shopset["name"] . "购物返还抵扣积分 积分: {$v["deductcredit"]} 抵扣金额: {$v["deductprice"]} 订单号: {$v["ordersn"]}"
+                ));
+            }
+        }
+    }
 }

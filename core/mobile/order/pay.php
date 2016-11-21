@@ -9,7 +9,10 @@ $openid    = m('user')->getOpenid();
 if (empty($openid)) {
     $openid = $_GPC['openid'];
 }
-
+if (p('recharge')) {
+    $rechargeset = p('recharge')->getSet();
+    $telephone = $_GPC['telephone'];
+}
 $set = m('common')->getSysset(array('pay'));
 $member  = m('member')->getMember($openid);
 $uniacid = $_W['uniacid'];
@@ -43,7 +46,25 @@ if(!empty($orderid)){
     }else{
         $order = $order_all[0];
     }
+
 }
+// 支付验证库存
+if ( $order['order_type'] == '4' && $_W['ispost'] ) {
+    $goodstotal = pdo_fetchcolumn('SELECT total FROM ' . tablename('sz_yi_order_goods') . ' where uniacid=:uniacid and orderid = :orderid',array(
+            ':uniacid'  => $_W['uniacid'],
+            ':orderid'  => $order['id']
+        ));
+
+    // 本期数据
+    $shengyu_codes = pdo_fetchcolumn('SELECT shengyu_codes FROM ' . tablename('sz_yi_indiana_period') . ' where uniacid=:uniacid and period_num = :period_num ',array(
+            ':uniacid'  => $_W['uniacid'],
+            ':period_num'  => $order['period_num']
+        ));
+    if ($goodstotal > $shengyu_codes) {
+        show_json(0, '剩余人次不足!');
+    }
+}
+
 if ($operation == 'display' && $_W['isajax']) {
     if (empty($orderid)) {
         show_json(0, '参数错误!');
@@ -125,13 +146,28 @@ if ($operation == 'display' && $_W['isajax']) {
         'success' => false,
         'qrcode' => false
     );
+    $jie = $set['pay']['weixin_jie'];
     if (is_weixin()) {
-        if (isset($set['pay']) && $set['pay']['weixin'] == 1) {
+        
+        if (isset($set['pay']) && ($set['pay']['weixin'] == 1) && ($jie != 1)) {
             if (is_array($setting['payment']['wechat']) && $setting['payment']['wechat']['switch']) {
                 $wechat['success'] = true;
+                $wechat['weixin'] = true;
+                $wechat['weixin_jie'] = false;
             }
+
+        }
+
+    }
+    if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {  
+        if ((isset($set['pay']) && ($set['pay']['weixin_jie'] == 1) && !$wechat['success']) || ($jie == 1)) {
+            $wechat['success'] = true;
+            $wechat['weixin_jie'] = true;
+            $wechat['weixin'] = false;
         }
     }
+    $wechat['jie'] = $jie;
+    
     //扫码
     if (!isMobile() && isset($set['pay']) && $set['pay']['weixin'] == 1) {
         if (isset($set['pay']) && $set['pay']['weixin'] == 1) {
@@ -182,6 +218,13 @@ if ($operation == 'display' && $_W['isajax']) {
     if (isset($set['pay']) && $set['pay']['yeepay'] == 1) {
         $yeepay['success'] = true;
     }
+    //paypal支付
+    $paypal = array(
+        'success' => false
+    );
+    if (isset($set['pay']) && $set['pay']['paypalstatus'] == 1){
+        $paypal['success'] = true;
+    }
 
     $returnurl = urlencode($this->createMobileUrl('order/pay', array(
         'orderid' => $orderid
@@ -193,10 +236,17 @@ if ($operation == 'display' && $_W['isajax']) {
     }else{
         $where_orderid = "og.orderid={$orderid}";
     }
-    $order_goods = pdo_fetchall('select og.id,g.title, og.goodsid,og.optionid,g.thumb, g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
+    $order_goods = pdo_fetchall('select og.id,g.title,g.type, og.goodsid,og.optionid,g.thumb, g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
         ':uniacid' => $_W['uniacid']
     ));
-
+    if (p('recharge')) {
+        $order_goods_recharge = pdo_fetch('select go.title,g.type,o.carrier,o.price from ' . tablename('sz_yi_order') . 'o left join '. tablename('sz_yi_order_goods') .' og ' .' on o.id=og.orderid left join ' . tablename('sz_yi_goods') .' g on og.goodsid=g.id left join'. tablename('sz_yi_goods_option') .' go on og.optionid=go.id where o.id=:id and o.uniacid=:uniacid and o.openid=:openid', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
+            
+        if ($order_goods_recharge['type'] == 11 || $order_goods_recharge['type'] == 12) {
+            $order['mobile'] = $_GPC['telephone'];
+            $order['title'] = $order_goods_recharge['title']; 
+        }    
+    }
     foreach ($order_goods as $key => &$value) {
         if (!empty($value['optionid'])) {
 
@@ -231,6 +281,7 @@ if ($operation == 'display' && $_W['isajax']) {
         'cash' => $cash,
         'storecash' => $storecash,
         'yeepay' => $yeepay,
+        'paypal' => $paypal,
         'isweixin' => is_weixin(),
         'currentcredit' => $currentcredit,
         'returnurl' => $returnurl,
@@ -253,6 +304,7 @@ if ($operation == 'display' && $_W['isajax']) {
         'unionpay',
         'yunpay',
         'yeepay',
+        'paypal',
         'yeepay_wy'
     ))) {
         show_json(0, '未找到支付方式');
@@ -276,9 +328,38 @@ if ($operation == 'display' && $_W['isajax']) {
     }else{
         $where_orderid = "og.orderid={$orderid}";
     }
-    $order_goods = pdo_fetchall('select og.id,g.title, og.goodsid,og.optionid,g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
+    
+    $order_goods = pdo_fetchall('select og.id,g.type,g.title, og.goodsid,og.optionid,g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
         ':uniacid' => $_W['uniacid']
     ));
+    if (p('recharge')) {
+        if ($order_goods['type'] == 11 || $order_goods['type'] == 12) {
+            $order_goods_recharge = pdo_fetch('select go.title,g.type,o.carrier,o.price from ' . tablename('sz_yi_order') . 'o left join '. tablename('sz_yi_order_goods') .' og ' .' on o.id=og.orderid left join ' . tablename('sz_yi_goods') .' g on og.goodsid=g.id left join'. tablename('sz_yi_goods_option') .' go on og.optionid=go.id where o.id=:id and o.uniacid=:uniacid and o.openid=:openid', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
+            $order['mobile'] = $_GPC['telephone'];
+                $order['title'] = $order_goods_recharge['title']; 
+            preg_match('/\d+/',$order_goods_recharge['title'],$packcode);
+
+            $unit = substr($order_goods_recharge['title'],-1);
+
+            if (strtoupper($unit) == "G") {
+                $packcode = $packcode[0]*1024;
+            } else {
+                $packcode = $packcode[0];
+            }
+
+            if(!empty($order_goods)){
+                $carrier = unserialize($order_goods['carrier']);
+            }
+            $mobile_data_param = array();
+            $mobile_data_param['apikey']    =   $rechargeset['rechargeapikey'];
+            $mobile_data_param['username']    =   $rechargeset['rechargeusername'];
+            $mobile_data_param['price']     =   $order_goods_recharge['price'];
+            p('recharge')->mobile_blance_api($mobile_data_param);
+        }
+        
+        
+    }
+
     foreach ($order_goods as $data) {
         if (empty($data['status']) || !empty($data['deleted'])) {
             show_json(-1, $data['title'] . '<br/> 已下架!');
@@ -348,7 +429,9 @@ if ($operation == 'display' && $_W['isajax']) {
         $where_update = "id={$orderid}";
     }
     if ($type == 'weixin') {
-        if (empty($set['pay']['weixin'])) {
+        if (!empty($set['pay']['weixin']) || !empty($set['pay']['weixin_jie'])) {
+            
+        }else{
             show_json(0, '未开启微信支付!');
         }
 
@@ -369,17 +452,32 @@ if ($operation == 'display' && $_W['isajax']) {
             'payment'
         ));
         //微信下
-        if (is_weixin()) {
+        if (strpos($_SERVER['HTTP_USER_AGENT'], 'MicroMessenger') !== false) {  
             if (is_array($setting['payment'])) {
                 $options           = $setting['payment']['wechat'];
-                $options['appid']  = $_W['account']['key'];
-                $options['secret'] = $_W['account']['secret'];
-                $wechat            = m('common')->wechat_build($params, $options, 0);
-                //$wechat['success'] = false;
-                if (!is_error($wechat)) {
-                    $wechat['success'] = true;
-                } else {
-                    show_json(0, $wechat['message']);
+                if (is_weixin()) {
+                    if(empty($set['pay']['weixin_jie'])){
+                        $options['appid']  = $_W['account']['key'];
+                        $options['secret'] = $_W['account']['secret'];
+                        $wechat            = m('common')->wechat_build($params, $options, 0);
+                        //$wechat['success'] = false;
+                        if (!is_error($wechat)) {
+                            $wechat['success'] = true;
+                        } else {
+                            show_json(0, $wechat['message']);
+                        }
+                    }
+                }
+                if(!empty($set['pay']['weixin_jie'])){
+                    $options['appid'] = $set['pay']['weixin_jie_appid'];
+                    $options['mchid'] = $set['pay']['weixin_jie_mchid'];
+                    $options['apikey'] = $set['pay']['weixin_jie_apikey'];
+                    $wechat = m('common')->wechat_native_build($params, $options, 0);
+
+                    if (!is_error($wechat)) {
+                        $wechat['success'] = true;
+                        $wechat['weixin_jie'] = true;
+                    } 
                 }
             }
             if (!$wechat['success']) {
@@ -438,6 +536,11 @@ if ($operation == 'display' && $_W['isajax']) {
             ':uniacid' => $uniacid
         ));
         show_json(1);
+    }elseif ($type == 'paypal') {
+        pdo_query('update ' . tablename('sz_yi_order') . ' set paytype=29 where '.$where_update.' and uniacid=:uniacid ', array(
+            ':uniacid' => $uniacid
+        ));
+        show_json(1);
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
     $pset = m('common')->getSysset();
@@ -450,9 +553,40 @@ if ($operation == 'display' && $_W['isajax']) {
     }else{
         $where_orderid = "og.orderid={$orderid}";
     }
-    $order_goods = pdo_fetchall('select og.id,g.title, og.goodsid,og.optionid,g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
+    $order_goods = pdo_fetchall('select og.id,g.title,g.type, og.goodsid,og.optionid,g.total as stock,og.total as buycount,g.status,g.deleted,g.maxbuy,g.usermaxbuy,g.istime,g.timestart,g.timeend,g.buylevels,g.buygroups from  ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_goods') . ' g on og.goodsid = g.id ' . ' where '.$where_orderid.' and og.uniacid=:uniacid ', array(
         ':uniacid' => $_W['uniacid']
     ));
+
+    if (p('recharge')) {
+        if ($order_goods[0]['type'] == 11 || $order_goods[0]['type'] == 12) {
+            $order_goods_recharge = pdo_fetch('select go.title,g.type,o.carrier,o.price from ' . tablename('sz_yi_order') . 'o left join '. tablename('sz_yi_order_goods') .' og ' .' on o.id=og.orderid left join ' . tablename('sz_yi_goods') .' g on og.goodsid=g.id left join'. tablename('sz_yi_goods_option') .' go on og.optionid=go.id where o.id=:id and o.uniacid=:uniacid and o.openid=:openid', array(':id' => $orderid, ':uniacid' => $uniacid, ':openid' => $openid));
+
+            preg_match('/\d+/',$order_goods_recharge['title'],$packcode);
+
+            $unit = substr($order_goods_recharge['title'],-1);
+
+            if (strtoupper($unit) == "G") {
+                $packcode = $packcode[0]*1024;
+            } else {
+                $packcode = $packcode[0];
+            }
+
+            if(!empty($order_goods_recharge)){
+                $carrier = unserialize($order_goods_recharge['carrier']);
+            }
+            $mobile_data_param = array();
+            $mobile_data_param['out_order_id']   =   $order['ordersn'];
+            $mobile_data_param['timetamp'] =   date("YmdHisB",time());
+            $mobile_data_param['flow_val']  =   $packcode;
+            $mobile_data_param['phone_no']    =   $telephone;
+            $mobile_data_param['price']     =   $order['price'];
+            $mobile_data_param['order_id']  =   $orderid;
+            $mobile_data_param['apikey']    =   $rechargeset['rechargeapikey'];
+            $mobile_data_param['account']    =   $rechargeset['rechargeusername'];
+        }
+    }
+
+    
     foreach ($order_goods as $data) {
         if (empty($data['status']) || !empty($data['deleted'])) {
             show_json(-1, $data['title'] . '<br/> 已下架!');
@@ -522,7 +656,8 @@ if ($operation == 'display' && $_W['isajax']) {
         'alipay',
         'credit',
         'cash',
-        'storecash'
+        'storecash',
+        'paypal'
     ))) {
         show_json(0, '未找到支付方式');
     }
@@ -682,7 +817,9 @@ if ($operation == 'display' && $_W['isajax']) {
         }
         
         $pay_result     = $this->payResult($ret);
-        
+        if (p('recharge') && !empty($mobile_data_param)) {
+            p('recharge')->mobile_submit_api($mobile_data_param);
+        }
     //互亿无线
         if (!empty($pay_result['verifycode'])) {
             if($pset['sms']['type'] == 1){
@@ -763,6 +900,9 @@ if ($operation == 'display' && $_W['isajax']) {
                 );
             }else{
                 $pay_result     = $this->payResult($ret);
+            }
+            if (p('recharge') && !empty($mobile_data_param)) {
+                p('recharge')->mobile_submit_api($mobile_data_param);
             } 
             $set = m('common')->getSysset();
             if (!empty($pay_result['verifycode'])) {
@@ -1060,6 +1200,10 @@ if ($operation == 'display' && $_W['isajax']) {
  //   }
 
 
+}elseif ($operation == 'orderstatus' && $_W['isajax']) {
+    global $_W;
+    $order = pdo_fetch('select status from ' . tablename('sz_yi_order') . ' where id=:id and uniacid=:uniacid limit 1', array(':id' => $orderid, ':uniacid' => $uniacid));
+    show_json(1, $order);
 }
 
 

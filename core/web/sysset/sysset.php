@@ -32,6 +32,34 @@ function upload_cert($fileinput)
     return "";
 }
 
+function upload_jie_cert($fileinput)
+{
+    global $_W;
+    $path = IA_ROOT . "/addons/sz_yi/cert";
+    load()->func('file');
+    mkdirs($path, '0777');
+    $f           = $fileinput . '_' . $_W['uniacid'] . '.pem';
+    $outfilename = $path . "/" . $f;
+    $filename    = $_FILES[$fileinput]['name'];
+    $tmp_name    = $_FILES[$fileinput]['tmp_name'];
+    if (!empty($filename) && !empty($tmp_name)) {
+        $ext = strtolower(substr($filename, strrpos($filename, '.')));
+        if ($ext != '.pem') {
+            $errinput = "";
+            if ($fileinput == 'weixin_jie_cert_file') {
+                $errinput = "CERT文件格式错误";
+            } else if ($fileinput == 'weixin_jie_key_file') {
+                $errinput = 'KEY文件格式错误';
+            } else if ($fileinput == 'weixin_jie_root_file') {
+                $errinput = 'ROOT文件格式错误';
+            } 
+            message($errinput . ',请重新上传!', '', 'error');
+        }
+        return file_get_contents($tmp_name);
+    }
+    return "";
+}
+
 function upload_alipay_cert($fileinput)
 {
     global $_W;
@@ -134,7 +162,7 @@ if (checksubmit()) {
     if ($op == 'shop') {
         $shop                   = is_array($_GPC['shop']) ? $_GPC['shop'] : array();
         $set['shop']['name']    = trim($shop['name']);
-        $set['shop']['cservice']= trim($shop['cservice']);
+        $set['shop']['cservice'] = trim($shop['cservice']);
         $set['shop']['img']     = save_media($shop['img']);
         $set['shop']['logo']    = save_media($shop['logo']);
         $set['shop']['signimg'] = save_media($shop['signimg']);
@@ -152,6 +180,7 @@ if (checksubmit()) {
         $set['shop']['pcdesc']     = trim($custom['pcdesc']);
         $set['shop']['pccopyright'] =  $pccopyright;
         $set['shop']['pccopyright']  = trim($custom['pccopyright']);
+        $set['shop']['pcadv']  = !empty($custom['pcadv']) ? trim($custom['pcadv']) : '';
         $set['shop']['footercontent']  = trim(htmlspecialchars_decode($custom['footercontent']));
         $set['shop']['index']      = $custom['index'];
         $set['shop']['pclogo']     = save_media($custom['pclogo']);
@@ -255,6 +284,16 @@ if (checksubmit()) {
         }
         if (empty($sec['cert']) || empty($sec['key']) || empty($sec['root'])) {
         }
+        //借号支付
+        if ($_FILES['weixin_jie_cert_file']['name']) {
+            $sec['jie_cert'] = upload_jie_cert('weixin_jie_cert_file');
+        }
+        if ($_FILES['weixin_jie_key_file']['name']) {
+            $sec['jie_key'] = upload_jie_cert('weixin_jie_key_file');
+        }
+        if ($_FILES['weixin_jie_root_file']['name']) {
+            $sec['jie_root'] = upload_jie_cert('weixin_jie_root_file');
+        }
 
         pdo_update('sz_yi_sysset', array(
             'sec' => iserializer($sec)
@@ -276,6 +315,9 @@ if (checksubmit()) {
         $set['shop']['levelname'] = trim($shop['levelname']);
         $set['shop']['levelurl']  = trim($shop['levelurl']);
         $set['shop']['leveltype']  = trim($shop['leveltype']);
+        $set['shop']['term']        = trim($shop['term']);
+        $set['shop']['term_time']        = trim($shop['term_time']);
+        $set['shop']['term_unit']        = trim($shop['term_unit']);
         plog('sysset.save.member', '修改系统设置-会员设置');
         $set['shop']['isbindmobile']   = intval($shop['isbindmobile']);
         $set['shop']['isreferrer']   = intval($shop['isreferrer']);
@@ -302,6 +344,17 @@ if (checksubmit()) {
         message('易宝支付设置失败!', $this->createWebUrl('sysset', array(
             'op' => $op
         )), 'error');
+    }
+    
+    //目前无法判断paypal填写信息是否正确，直接判断是否为空
+    if($set['pay']['paypalstatus'] == 1){
+        foreach ($set['pay']['paypal'] as $paypal) {
+            if(empty($paypal)){
+                 message('请输入正确的Paypal支付接口信息.', $this->createWebUrl('sysset', array(
+                'op' => $op
+            )), 'error');
+            }
+        }
     }
 
     $data = array(

@@ -15,7 +15,11 @@
 <script src="../addons/sz_yi/template/mobile/default/static/js/star-rating.js" type="text/javascript"></script>
 <script src="../addons/sz_yi/static/js/dist/ajaxfileupload.js" type="text/javascript"></script>
 {/if}
+{if $trade['is_street'] == 1}
+<script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade_street.js"></script>
+{else}
 <script type="text/javascript" src="../addons/sz_yi/static/js/dist/area/cascade.js"></script>
+{/if}
 <style type="text/css">
     body {margin:0px; background:#efefef;}
     .addorder_topbar {height:64px; background:#5f6e8b; padding:15px;}
@@ -173,7 +177,10 @@
         
         <div class="line"><select id="sel-provance" onchange="selectCity();" class="select"><option value="" selected="true">所在省份</option></select></div>
         <div class="line"><select id="sel-city" onchange="selectcounty()" class="select"><option value="" selected="true">所在城市</option></select></div>
-        <div class="line"><select id="sel-area" class="select"><option value="" selected="true">所在地区</option></select></div>
+        <div class="line"><select id="sel-area" {if $trade['is_street'] == 1}onchange="selectstreet()"{/if}class="select"><option value="" selected="true">所在地区</option></select></div>
+        {if $trade['is_street'] == 1}
+        <div class="line"><select id="sel-street"  class="select"><option value="" selected="true">所在街道</option></select></div>
+        {/if}
        
         <div class="line"><input type="text" placeholder="详细地址(不包含省份城市区域)"  id="address" value="{if address.address}<%address.address%>{/if}"/></div>
 <!--        <div class="line"><input type="text" placeholder="邮政编码"  id="zipcode" value="{if address.zipcode}<%address.zipcode%>{/if}"/></div>-->
@@ -216,41 +223,63 @@
     <input type="hidden"  id="isverify" value="<%if isverify || isvirtual || goods.type==2%>true<%else%>false<%/if%>" />
 	
 	 {if $show==1}
-      <%if isverify%>
-          <input type="hidden"  id="dispatchtype" value="0" />
-        <%if isverifysend%>
-          <%if carrier_list.length>0%>
-              <div class="addorder_nav">
-                <div class="nav selected" data-nav='0'>配送核销</div>
-                <div class="nav"  data-nav='1'>上门自提</div>
-              </div>
-          <%/if%>
+        <%if isverify%>
+        <%if isverifysend || dispatchsend%>
+        <input type="hidden"  id="dispatchtype" <%if carrier_list.length>0%>value="1"<%else if isverifysend%>value="0"<%else if dispatchsend%>value="2"<%/if%> />
+        <div class="addorder_nav">
+            <%if carrier_list.length>0%>
+            <div class="nav <%if carrier_list.length>0%>selected<%/if%>" data-nav='1'>上门自提</div>
+            <%/if%>
+            <%if isverifysend && carrier_send%>
+            <div class="nav <%if carrier_list.length<=0%>selected<%/if%>"  data-nav='0'>配送核销</div>
+            <%/if%>
+            <%if dispatchsend && carrier_send%>
+            <div class="nav <%if carrier_list.length<=0 && !isverifysend%>selected<%/if%>"  data-nav='2'>快递配送</div>
+            <%/if%>
+        </div>
 
-          <div class="addorder_user addorder_user_0">
-            <input type='hidden' id='addressid' value='<%address.id%>' />
-            <div class="info" id='address_select' <%if !address %>style='display:none'<%/if%>>
-               <div class="ico"><i class="fa fa-map-marker"></i></div>
-               <div class='info1'>
-                 <div class='inner'>
-                    <div class="user">收件人：<span id='address_realname'><%address.realname%></span>(<span id='address_mobile'><%address.mobile%></span>)</div>
-                    <div class="address"><span id='address_address'><%address.address%></span></div>
-                 </div>
-               </div>
-               <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+        <div class="addorder_user addorder_user_0" <%if (isverifysend || diapatchsend) && carrier_list.length>0%>style='display:none'<%/if%>>
+        <input type='hidden' id='addressid' value='<%address.id%>' />
+        <div class="info" id='address_select' <%if !address %>style='display:none'<%/if%>>
+        <div class="ico"><i class="iconfont icon-map-marker"></i></div>
+        <div class='info1'>
+            <div class='inner'>
+                <div class="user">收件人：<span id='address_realname'><%address.realname%></span>(<span id='address_mobile'><%address.mobile%></span>)</div>
+                <div class="address"><span id='address_address'><%address.address%></span></div>
             </div>
-            <div class='info' id='address_new'  <%if address %>style='display:none'<%/if%>>
-              <div class="ico"><i class="fa fa-plus-circle"></i></div>
-              <div class='info1'>
-                 <div class='inner'>
-                   <div class="user" style='padding-top:8px;'>新增地址</div>  
-                 </div>
-              </div>
-              <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+        </div>
+        <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+        </div>
+        <div class='info' id='address_new'  <%if address %>style='display:none'<%/if%>>
+        <div class="ico"><i class="fa fa-plus-circle"></i></div>
+        <div class='info1'>
+            <div class='inner'>
+                <div class="user" style='padding-top:9px;'>新增地址</div>
             </div>
-          </div>
-          <div id='address_container'></div>
+        </div>
+        <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+        </div>
+        </div>
+        <div id='address_container'></div>
+        <%if carrier_send%>
+        <div class="addorder_user addorder_user_0" <%if carrier_list.length>0%>style="display:none;"<%/if%> >
+        <input type='hidden' id='carrierindex_send' value='0' />
+        <input type='hidden' id='carrierid_send' value='<%carrier_send.id%>' />
+        <div class="info" id='carrier_select_send'>
+            <div class="ico"><i class="iconfont icon-map-marker"></i></div>
+            <div class='info1'>
+                <div class='inner'>
+                    <div class="user">请选择发货门店：<span id='carrier_realname_send'><%carrier_send.storename%></span>(<span id='carrier_mobile_send'><%carrier_send.tel%></span>)</div>
+                    <div class="address"><span id='carrier_address_send'><%carrier_send.address%></span></div>
+                </div>
+            </div>
+            <div class="ico2"><i class='fa fa-angle-right fa-2x'></i></div>
+        </div>
+        </div>
+        <div id='address_container'></div>
         <%/if%>
-           <%if carrier%>
+        <%/if%>
+        <%if carrier%>
               <div class="addorder_user addorder_user_1" <%if isverifysend%>style='display:none'<%/if%>>
                 <input type='hidden' id='carrierindex' value='0' />
                 <input type='hidden' id='carrierid' value='<%carrier.id%>' />
@@ -716,7 +745,11 @@ var fromcart = 0;
                 //$(".chooser").height($(document.body).height());
                 //$(".address_main").animate({right: "0px"}, 200);
                 var address = getaddress_json.result.address;
+                {if $trade['is_street'] == '1'}
+                cascdeInit(address.province, address.city, address.area, address.street);
+                {else}
                 cascdeInit(address.province, address.city, address.area);
+                {/if}
                 $('.address_sub2').click(function() {
                     //$(".address_main").animate({right: "-100%"}, 200);
                     //$(".good_choose_layer").class("display", "");
@@ -725,11 +758,13 @@ var fromcart = 0;
                     //$(".address_main").removeClass("hide").show();
                     $(".mark_layer").hide();
                     $(".address_main").hide();
+                    $('#address_select').click();
                 });
                 $('.address_sub1').click(function() {
                     saveAddress($(this));
+                    $('#address_select').click();
                 });
-                window.location.reload();
+
             }, true);
         });
         
@@ -756,7 +791,7 @@ var fromcart = 0;
                     getDispatchPrice();
                     $('#address_select').click();//pc版选择地址后ico没有变换 因此加入
                 });
-                }, true);
+            }, true);
 
         });
 
@@ -793,6 +828,12 @@ var fromcart = 0;
             }
             $('.address_sub1').html('正在处理...').attr('disabled', true);
             obj.attr('saving', '1');
+            if ($('#sel-street').val()) {
+                var street = $('#sel-street').val();
+            } else {
+                var street = '';
+            }
+
             core.json('shop/address', {
                 op: 'submit',
                 id: $('#edit_addressid').val(),
@@ -803,7 +844,7 @@ var fromcart = 0;
                     province: $('#sel-provance').val(),
                     city: $('#sel-city').val(),
                     area: $('#sel-area').val(),
-                 //   zipcode: $('#zipcode').val(),
+                    street: street,
                 }
             }, function(saveaddress_json) {
                 if (saveaddress_json.status == 1) {
@@ -1098,7 +1139,7 @@ var fromcart = 0;
                 return;
             }
             {if $show==1}
-      				if( $("#dispatchtype").val()=='0'){
+      				if( $("#dispatchtype").val()=='0' || $("#dispatchtype").val()=='2'){
                 if (addressid == '') {
       						core.tip.show("请选择地址");
       						return;

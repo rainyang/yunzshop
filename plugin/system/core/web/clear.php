@@ -9,7 +9,6 @@ if (checksubmit('submit')) {
     $condition = "";
     $acid      = 0;
     $where     = array();
-    
     if(!cv('system.transfer.view')){
         $wechatid = $_W['uniacid'];
     }

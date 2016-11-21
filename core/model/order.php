@@ -105,12 +105,20 @@ class Sz_DYi_Order
         if (is_array($areas) && count($areas) > 0){
             foreach ($areas as $area){
                 $citys = explode(';', $area['citys']);
-                if (in_array($city, $citys) && !empty($citys)){
-                    return $this -> getDispatchPrice($param, $area, $dispatch_data['calculatetype']);
+
+                //处理运费模版辖区,辖县问题
+                if(mb_strlen($city) == mb_strrpos($city, "市") + 1){
+                    $cityShortName = mb_substr($city, 0, mb_strlen($city) - 1);
+                    if (!empty($citys) && (in_array($city, $citys) || in_array($cityShortName . "辖区", $citys) || in_array($cityShortName . "辖县", $citys))){
+                        return $this->getDispatchPrice($param, $area, $dispatch_data['calculatetype']);
+                    }
+                }
+                if (!empty($citys) && in_array($city, $citys)){
+                    return $this->getDispatchPrice($param, $area, $dispatch_data['calculatetype']);
                 }
             }
         }
-        return $this -> getDispatchPrice($param, $dispatch_data);
+        return $this->getDispatchPrice($param, $dispatch_data);
     }
 
     /**
@@ -211,9 +219,15 @@ class Sz_DYi_Order
             $orderid = $order['id'];
             $verify_set = m('common')->getSetData();
             $allset = iunserializer($verify_set['plugins']);
-            if ($order['isverify'] == 1 && isset($allset['verify']) && $allset['verify']['sendcode'] == 1) {
+            $pset = m('common')->getSysset();
+            if ($order['isverify'] == 1 && isset($allset['verify']) && $allset['verify']['sendcode'] == 1 && isset($pset['sms']) && $pset['sms']['type'] == 1) {
                 $carriers = unserialize($order['carrier']);
-                $mobile = $carriers['carrier_mobile'];
+                $address = unserialize($order['address']);
+                if (empty($order['dispatchtype'])) {
+                    $mobile = $address['mobile'];
+                } else {
+                    $mobile = $carriers['carrier_mobile'];
+                }
                 $type = 'verify';
                 $order_goods = pdo_fetch("SELECT * FROM ".tablename('sz_yi_order_goods')." WHERE orderid=:id and uniacid=:uniacid", array(':id' => $orderid, ':uniacid' => $_W['uniacid']));
                 $goodstitle = pdo_fetchcolumn("SELECT title FROM ".tablename('sz_yi_goods')." WHERE id=:id and uniacid=:uniacid",array(':id' => $order_goods['goodsid'], ':uniacid' => $_W['uniacid']));
@@ -326,7 +340,11 @@ class Sz_DYi_Order
                 $print_order = $order;
                 //商品信息
                 $ordergoods = pdo_fetchall("select * from " . tablename('sz_yi_order_goods') . " where uniacid=".$_W['uniacid']." and orderid=".$orderid);
+                $plugin_fund = p('fund');
                     foreach ($ordergoods as $key =>$value) {
+                        if($plugin_fund){
+                            $plugin_fund->check($value['goodsid']);
+                        }
                         //$ordergoods[$key]['price'] = pdo_fetchcolumn("select marketprice from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
                         $ordergoods[$key]['goodstitle'] = pdo_fetchcolumn("select title from " . tablename('sz_yi_goods') . " where uniacid={$_W['uniacid']} and id={$value['goodsid']}");
                         $ordergoods[$key]['totalmoney'] = number_format($ordergoods[$key]['price']*$value['total'],2);
@@ -365,6 +383,9 @@ class Sz_DYi_Order
                    $pluginlove->checkOrder($goods_where, $order['openid'], 0);
                 }
                 $orderdetail['goodscount'] = count($orderdetail['goods1']);
+                if ($order['order_type'] == '4') {
+                    p('indiana')->dispose($orderid);
+                }
                 return array(
                     'result' => 'success',
                     'order' => $order,
@@ -659,6 +680,7 @@ class Sz_DYi_Order
                     0,
                     $shopset['name'] . '购物积分 订单号: ' . $order['ordersn']
                 ));
+                pdo_update('sz_yi_order', array('credit1'=>$credits), array('ordersn' => $order['ordersn'], 'uniacid' => $_W['uniacid']));
             } elseif ($type == 2) {
                 if ($order['status'] >= 1) {
                     m('member')->setCredit($order['openid'], 'credit1', -$credits, array(

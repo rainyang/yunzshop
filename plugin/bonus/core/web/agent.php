@@ -2,6 +2,7 @@
 global $_W, $_GPC;
 $agentlevels = $this->model->getLevels();
 $operation   = empty($_GPC['op']) ? 'display' : $_GPC['op'];
+$trade     = m('common')->getSysset('trade');
 if ($operation == 'display') {
     ca('bonus.agent.view');
     $level     = $this->set['level'];
@@ -34,13 +35,7 @@ if ($operation == 'display') {
     }
 
     if($_GPC['bonus_area'] != ''){
-        if($_GPC['bonus_area'] == 1){
-            $condition .= " and dm.bonus_area=1";
-        }else if($_GPC['bonus_area'] == 2){
-            $condition .= " and dm.bonus_area=2";
-        }else if($_GPC['bonus_area'] == 3){
-            $condition .= " and dm.bonus_area=3";
-        }
+        $condition .= " and dm.bonus_area=" . intval($_GPC['bonus_area']);
     }
     if($_GPC['reside']['province'] != "" && $_GPC['reside']['province'] != "请选择省份"){
         $condition .= " and dm.bonus_province='".$_GPC['reside']['province']."'";
@@ -53,6 +48,11 @@ if ($operation == 'display') {
     if($_GPC['reside']['district'] != "" && $_GPC['reside']['district'] != "请选择区域"){
         $condition .= "and dm.bonus_district='".$_GPC['reside']['district']."'";
     }
+
+    if($_GPC['reside']['street'] != "" && $_GPC['reside']['street'] != "请选择街道"){
+        $condition .= "and dm.bonus_street='".$_GPC['reside']['street']."'";
+    }
+
     if (empty($starttime) || empty($endtime)) {
         $starttime = strtotime('-1 month');
         $endtime   = time();
@@ -81,7 +81,7 @@ if ($operation == 'display') {
     }
     
     $list  = pdo_fetchall($sql, $params);
-    $total = pdo_fetchcolumn("select count(dm.id) from" . tablename('sz_yi_member') . " dm  " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.agentid " . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid" . " where dm.uniacid =" . $_W['uniacid'] . " and dm.isagent =1 {$condition}", $params);
+    $total = pdo_fetchcolumn("select count(dm.id) from" . tablename('sz_yi_member') . " dm  " . " left join " . tablename('sz_yi_member') . " p on p.id = dm.agentid " . " left join " . tablename('mc_mapping_fans') . "f on f.openid=dm.openid" . " where dm.uniacid =" . $_W['uniacid'] . " and dm.isagent =1 and (dm.bonuslevel!=0 || dm.bonus_area!=0) {$condition}", $params);
     foreach ($list as &$row) {
         $info              = $this->model->getInfo($row['openid'], array(
             'total',
@@ -250,10 +250,15 @@ if ($operation == 'display') {
                 if(empty($reside['district'])){
                     message('请选择代理的区', '', 'error');
                 }
+            }else if($data['bonus_area'] == 4){
+                if(empty($reside['street'])){
+                    message('请选择代理的街', '', 'error');
+                }
             }
             $data['bonus_province'] = $reside['province'];
             $data['bonus_city'] = $reside['city'];
             $data['bonus_district'] = $reside['district'];
+            $data['bonus_street'] = $reside['street'];
         }
         if($member['bonuslevel'] != $data['bonuslevel']){
             plog('bonus.agent.edit', "修改代理等级 原代理等级ID：{$member['bonuslevel']} 改为 ID：{$data['bonuslevel']}");

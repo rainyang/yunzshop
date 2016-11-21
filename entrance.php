@@ -31,6 +31,7 @@ $filedatas = array();
 foreach ($sets as $k => $set) {
 
     m('order')->autoexec($set['uniacid']);
+    m('member')->autoexec($set['uniacid']);
     $pbonus = p('bonus');
     if(!empty($pbonus)){
         $filesn = $pbonus->autoexec($set['uniacid']);

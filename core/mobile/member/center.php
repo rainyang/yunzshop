@@ -15,7 +15,28 @@ $setdata = pdo_fetch("select * from " . tablename('sz_yi_sysset') . ' where unia
 $appset     = unserialize($setdata['sets']);
 $app = $appset['app']['base'];
 
+$uc = pdo_fetch("SELECT `uc`,`passport` FROM ".tablename('uni_settings') . " WHERE uniacid = :uniacid", array(':uniacid' => $_W['uniacid']));
+$uc = @iunserializer($uc['uc']);
+
 $member = m('member')->getMember($openid);
+
+if(isset($uc['status']) && $uc['status'] == '1') {
+    $sql = 'SELECT * FROM ' . tablename('mc_mapping_ucenter') . ' WHERE `uniacid`=:uniacid AND `uid`=:uid';
+    $pars = array();
+    $pars[':uniacid'] = $_W['uniacid'];
+    $pars[':uid'] = $member['uid'];
+    $mapping = pdo_fetch($sql, $pars);
+    if(!empty($mapping)) {
+        mc_init_uc();
+        $u = uc_get_user($mapping['centeruid'], true);
+        $ucUser = array(
+            'uid' => $u[0],
+            'username' => $u[1],
+            'email' => $u[2]
+        );
+    }
+}
+
 if (empty($member)) {
 	header('Location: '.$this->createMobileUrl('member/login'));
 }
@@ -89,6 +110,16 @@ if(!empty($pluginbonus)){
 	}
 
 }
+//众筹
+$pluginfund = p('fund');
+$fund_start = false;
+if(!empty($pluginfund)){
+	$fund_set = $pluginfund->getSet();
+	if(!empty($fund_set['isshow'])){
+		$fund_start = true;
+		$fund_text = $fund_set['texts']['order'];
+	}
+}
 $shopset['bonus_start'] = $bonus_start;
 $shopset['bonus_text'] = $bonus_text;
 $shopset['is_weixin'] = is_weixin();
@@ -150,6 +181,17 @@ if (p('ranking')) {
 		//$shopset['isranking'] = $ranking_set['ranking']['isranking'];		
 	}
 }
+$pindiana = false;
+$indiana = p('indiana');
+$indiana_type = '';
+if ($indiana) {
+	$indiana_set = $indiana->getSet();
+	if (!empty($indiana_set['isindiana'])) {
+		$pindiana = true;
+		$indiana_type = " and order_type <> 4 ";
+	}
+}
+
 
 $open_creditshop = false;
 $creditshop = p('creditshop');
@@ -167,10 +209,22 @@ if ($_W['isajax']) {
 	}
 	
 	$orderparams = array(':uniacid' => $_W['uniacid'], ':openid' => $openid);
-	$order = array('status0' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=0  and uniacid=:uniacid limit 1', $orderparams), 'status1' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=1 and refundid=0 and uniacid=:uniacid limit 1', $orderparams), 'status2' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=2 and refundid=0 and uniacid=:uniacid limit 1', $orderparams), 'status4' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and refundstate>0 and uniacid=:uniacid limit 1', $orderparams),);
+	$order = array(
+		'status0' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=0 '.$indiana_type.' and uniacid=:uniacid limit 1', $orderparams), 
+		'status1' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=1 and refundid=0 '.$indiana_type.' and uniacid=:uniacid limit 1', $orderparams), 
+		'status2' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=2 and refundid=0 '.$indiana_type.' and uniacid=:uniacid limit 1', $orderparams), 
+		'status4' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and refundstate>0 '.$indiana_type.' and uniacid=:uniacid limit 1', $orderparams),);
 	if(p('hotel')){
-		$order = array('status0' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=0 and order_type<>3  and uniacid=:uniacid limit 1', $orderparams), 'status1' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=1 and order_type<>3 and refundid=0 and uniacid=:uniacid limit 1', $orderparams), 'status2' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=2 and order_type<>3 and refundid=0 and uniacid=:uniacid limit 1', $orderparams), 'status4' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and order_type<>3 and refundstate>0 and uniacid=:uniacid limit 1', $orderparams),);
-	    $orderhotel = array('status0' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=0 and order_type=3  and uniacid=:uniacid limit 1', $orderparams), 'status1' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=1 and order_type=3 and refundid=0 and uniacid=:uniacid limit 1', $orderparams), 'status6' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=6 and order_type=3 and refundid=0 and uniacid=:uniacid limit 1', $orderparams), 'status4' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and order_type=3 and refundstate>0 and uniacid=:uniacid limit 1', $orderparams),);
+		$order = array(
+			'status0' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=0 and order_type<>3 '.$indiana_type.'  and uniacid=:uniacid limit 1', $orderparams), 
+			'status1' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=1 and order_type<>3 '.$indiana_type.' and refundid=0 and uniacid=:uniacid limit 1', $orderparams), 
+			'status2' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=2 and order_type<>3 '.$indiana_type.' and refundid=0 and uniacid=:uniacid limit 1', $orderparams), 
+			'status4' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and order_type<>3 '.$indiana_type.' and refundstate>0 and uniacid=:uniacid limit 1', $orderparams),);
+	    $orderhotel = array(
+	    	'status0' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=0 and order_type=3  and uniacid=:uniacid limit 1', $orderparams), 
+	    	'status1' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=1 and order_type=3 and refundid=0 and uniacid=:uniacid limit 1', $orderparams), 
+	    	'status6' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and status=6 and order_type=3 and refundid=0 and uniacid=:uniacid limit 1', $orderparams), 
+	    	'status4' => pdo_fetchcolumn('select count(distinct ordersn_general) from ' . tablename('sz_yi_order') . ' where openid=:openid and order_type=3 and refundstate>0 and uniacid=:uniacid limit 1', $orderparams),);
 		$hotel = p('hotel');
 	    $memberhotel = $hotel->check_plugin('hotel');
 	}
@@ -222,5 +276,19 @@ if ($verify) {
 }
 $verifyset  = m('common')->getSetData();
 $allset = iunserializer($verifyset['plugins']);
+$dtimes = time();
 
+
+if ($shopset['term']) {
+    $termtime = '';
+    if ( $shopset['term_unit'] == '1' ) {
+        $termtime = $shopset['term_time'] * 86400;
+    } elseif ( $shopset['term_unit'] == '2' ) {
+        $termtime = $shopset['term_time'] * 86400 * 7;
+    } elseif ( $shopset['term_unit'] == '3' ) {
+        $termtime = $shopset['term_time'] * 86400 * 30;
+    } elseif ( $shopset['term_unit'] == '4' ) {
+        $termtime = $shopset['term_time'] * 86400 * 365;
+    }
+}
 include $this->template('member/center');

@@ -63,18 +63,33 @@ if (!class_exists('ReturnModel')) {
 								'keyword2' => array('value' => $queue_price_txt?$queue_price_txt:'本次返现金额'.$queue['price']."元！",
 									'color' => '#73a68d')
 							);
-							m('message')->sendCustomNotice($queue['openid'], $messages);
+							$templateid = $set['templateid'];
+							if (!empty($templateid)) {
+								m('message')->sendTplNotice($queue['openid'], $templateid, $messages);
+							} else {
+								m('message')->sendCustomNotice($queue['openid'], $messages);
+							}
+							//m('message')->sendCustomNotice($queue['openid'], $messages);
 						}
 					}
-					$queuemessages_txt= $set['queuemessages'];
-					$queuemessages_txt = str_replace('[排列序号]', $queuemessages, $queuemessages_txt);
-					$queue_messages = array(
-						'keyword1' => array('value' => $set['add_queue_title']?$set['add_queue_title']:'加入排列通知',
-							'color' => '#73a68d'),
-						'keyword2' => array('value' => $queuemessages_txt?$queuemessages_txt:"您已加入排列，排列号为".$queuemessages."号！",
-							'color' => '#73a68d')
-					);
-					m('message')->sendCustomNotice($good['openid'], $queue_messages);
+
+						$queuemessages_txt= $set['queuemessages'];
+						$queuemessages_txt = str_replace('[排列序号]', $queuemessages, $queuemessages_txt);
+						$queue_messages = array(
+							'keyword1' => array('value' => $set['add_queue_title']?$set['add_queue_title']:'加入排列通知',
+								'color' => '#73a68d'),
+							'keyword2' => array('value' => $queuemessages_txt?$queuemessages_txt:"您已加入排列，排列号为".$queuemessages."号！",
+								'color' => '#73a68d')
+							);
+
+							$templateid = $set['templateid'];
+							if (!empty($templateid)) {
+								m('message')->sendTplNotice($good['openid'], $templateid, $queue_messages);
+							} else {
+								m('message')->sendCustomNotice($good['openid'], $queue_messages);
+							}
+						//m('message')->sendCustomNotice($good['openid'], $queue_messages);
+
 				}
 			}
 		}
@@ -104,7 +119,15 @@ if (!class_exists('ReturnModel')) {
 					'keyword1' => array('value' => $set['member_title']?$set['member_title']:'购物返现通知', 'color' => '#73a68d'), 
 					'keyword2' => array('value' => $member_price_txt?$member_price_txt:'[返现金额]'.$money.'元,已存到您的余额', 'color' => '#73a68d')
 				);
-	        	m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
+
+				$templateid = $set['templateid'];
+				if (!empty($templateid)) {
+					m('message')->sendTplNotice($order_goods[0]['openid'], $templateid, $msg);
+				} else {
+					m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
+				}
+	        	//m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
+
 			}
 		}
 		public function cumulative_order_amount($orderid) {
@@ -154,7 +177,13 @@ if (!class_exists('ReturnModel')) {
 				}
 				if($set['returnrule'] == 1) {
 					$this->setOrderRule($order_goods,$order_price,$set,$_W['uniacid']);
-				} elseif($set['returnrule'] == 2) {
+
+				}elseif($set['returnrule'] == 2)
+				{
+					if ($set['iscumulative'] && $order['credit1'] > 0) {
+						$order_price = $order_price - $order['credit1'];
+					}
+
 					$this->setOrderMoneyRule($order_goods,$order_price,$set,$_W['uniacid']);
 				}
 			}
@@ -177,7 +206,13 @@ if (!class_exists('ReturnModel')) {
 				'keyword1' => array('value' => $set['add_single_title']?$set['add_single_title']:'订单全返通知', 'color' => '#73a68d'), 
 				'keyword2' => array('value' => $order_price_txt?$order_price_txt:'[订单返现金额]'.$order_price, 'color' => '#73a68d')
 			);
-        	m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
+			$templateid = $set['templateid'];
+			if (!empty($templateid)) {
+				m('message')->sendTplNotice($order_goods[0]['openid'], $templateid, $msg);
+			} else {
+				m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
+			}
+        	//m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
 
 		}
 		//订单累计金额
@@ -217,16 +252,26 @@ if (!class_exists('ReturnModel')) {
 				$total_unreached_txt = str_replace('[缺少金额]', $set['orderprice']-$return_money, $total_unreached_txt);
 				$total_unreached_txt = str_replace('[标准金额]', $set['orderprice'], $total_unreached_txt);
 
-				$text = $total_unreached_txt?$total_unreached_txt:"您的订单累计金额还差" . ($set['orderprice']-$return_money) . "元达到".$set['orderprice']."元，订单累计金额每达到".$set['orderprice']."元就可以加入全返机制，等待全返。继续加油！";
-			}
-			$total_price_txt = $set['total_price'];
-			$total_price_txt = str_replace('[累计金额]', $return_money, $total_price_txt);
-			$msg = array(
-				'keyword1' => array('value' => $set['total_title']?$set['total_title']:'订单金额累计通知', 'color' => '#73a68d'), 
-				'keyword2' => array('value' => $total_price_txt?$total_price_txt:'[订单累计金额]'.$return_money, 'color' => '#73a68d'),
-				'remark' => array('value' => $text)
-			);
-        	m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
+
+					$text = $total_unreached_txt?$total_unreached_txt:"您的订单累计金额还差" . ($set['orderprice']-$return_money) . "元达到".$set['orderprice']."元，订单累计金额每达到".$set['orderprice']."元就可以加入全返机制，等待全返。继续加油！";
+				}
+				$total_price_txt = $set['total_price'];
+				$total_price_txt = str_replace('[累计金额]', $return_money, $total_price_txt);
+				$msg = array(
+					'keyword1' => array('value' => $set['total_title']?$set['total_title']:'订单金额累计通知', 'color' => '#73a68d'), 
+					'keyword2' => array('value' => $total_price_txt?$total_price_txt:'[订单累计金额]'.$return_money, 'color' => '#73a68d'),
+					'remark' => array('value' => $text)
+				);
+
+				$templateid = $set['templateid'];
+				if (!empty($templateid)) {
+					m('message')->sendTplNotice($order_goods[0]['openid'], $templateid, $msg);
+				} else {
+					m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
+				}
+
+	        	//m('message')->sendCustomNotice($order_goods[0]['openid'], $msg);
+			
 		}
 
 		//单笔订单返现
@@ -260,13 +305,20 @@ if (!class_exists('ReturnModel')) {
 					}
 				}
 
-				if($set['degression'] == 1) {
-					pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money <= 0.5  and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
-					pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + (money - return_money) * ".$percentage." / 100,last_money = (money - return_money) * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money > 0.5 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
-				} else {
-					pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
-					pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + money * ".$percentage." / 100,last_money = money * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
-				}
+					// $unfinished_record[$percentage] = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
+					// $finished_record[$percentage] = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return') . " WHERE uniacid = '". $uniacid ."' and status=0 and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
+					if($set['degression'] == 1)
+					{
+						$log_content[] = "递减返现";
+						$log_content[] = "\r\n";
+						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money <= 0.5  and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
+						pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + (money - return_money) * ".$percentage." / 100,last_money = (money - return_money) * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and money - return_money > 0.5 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
+					}else{
+						$log_content[] = "单笔返现";
+						$log_content[] = "\r\n";
+						pdo_query("update  " . tablename('sz_yi_return') . " set last_money = money - return_money, status=1, return_money = money, updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - `return_money`) <= money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
+						pdo_query("update  " . tablename('sz_yi_return') . " set return_money = return_money + money * ".$percentage." / 100,last_money = money * ".$percentage." / 100,updatetime = '".$current_time."' WHERE uniacid = '". $uniacid ."' and status=0 and `delete` = '0' and (money - return_money) > money * ".$percentage." / 100 and returnrule = '".$set['returnrule']."' and mid = '".$value['mid']."' ");
+					}
 					
 			}
 			$return_record = pdo_fetchall("SELECT sum(r.money) as money, sum(r.return_money) as return_money, sum(r.last_money) as last_money,m.openid,count(r.id) as count  FROM " . tablename('sz_yi_return') . " r 
@@ -291,7 +343,13 @@ if (!class_exists('ReturnModel')) {
 							'value' => $single_message_txt?$single_message_txt:'本次返现金额'.$return_money_totle."元",
 							'color' => '#73a68d')
 						);
-					m('message')->sendCustomNotice($value['openid'], $messages);
+					$templateid = $set['templateid'];
+					if (!empty($templateid)) {
+						m('message')->sendTplNotice($value['openid'], $templateid, $messages);
+					} else {
+						m('message')->sendCustomNotice($value['openid'], $messages);
+					}
+					//m('message')->sendCustomNotice($value['openid'], $messages);
 				}
 			}	
 			$log_content[] = date("Y-m-d H:i:s")."公众号ID：".$uniacid." 单笔订单返现完成==============\r\n\r\n\r\n\r\n";
@@ -412,7 +470,13 @@ if (!class_exists('ReturnModel')) {
 							'value' => $total_messsage_txt?$total_messsage_txt:'本次返现金额'.$return_money_totle."元",
 							'color' => '#73a68d')
 						);
-						m('message')->sendCustomNotice($value['openid'], $messages);
+						$templateid = $set['templateid'];
+						if (!empty($templateid)) {
+							m('message')->sendTplNotice($value['openid'], $templateid, $messages);
+						} else {
+							m('message')->sendCustomNotice($value['openid'], $messages);
+						}
+						//m('message')->sendCustomNotice($value['openid'], $messages);
 					}
 				}		
 			}

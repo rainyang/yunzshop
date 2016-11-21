@@ -183,7 +183,7 @@ z-index: 2;position: fixed;
     border-bottom-right-radius: 2px;
 }
 .dropdown-menu-left{}
-
+.label-paypal {background-color: #19F95E;}
 .label-default {background-color: #BBB;}
 .label-info {
     background-color: hsl(194, 66%, 61%);

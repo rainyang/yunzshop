@@ -33,6 +33,11 @@ class Core extends WeModuleSite
         }
         if (is_weixin()) {
             m('member')->checkMember();
+
+            //discuz论坛一键登录
+            if (!empty($_GPC['refer']) && $_GPC['refer'] == 'bbs' && p('discuz')) {
+                p('discuz')->synLogin();
+            }
         } else {
             //APP 分销分享地址-用户注册
             if (isset($_GPC['access']) && $_GPC['access'] == 'app') {
