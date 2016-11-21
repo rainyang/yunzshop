@@ -51,7 +51,7 @@ class Sz_DYi_Goods
             $condition .= " and id = :id";
             $params[':id'] = intval($id);
         }
-        if (!empty($id)) {
+        if (!empty($goodsid)) {
             $condition .= " and id < :goodsid";
             $params[':goodsid'] = intval($goodsid);
         }

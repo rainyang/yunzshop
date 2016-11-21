@@ -32,7 +32,6 @@ class AutoLoader
     //private $namespace;
     public function spl_autoload_register($full_class_name)
     {
-        dump($full_class_name);
         $namespace = substr($full_class_name, 0, strrpos($full_class_name, '\\'));//最后一个'\'之前 是命名空间
         if(empty($namespace)){
             return false;
@@ -134,7 +133,6 @@ final class Run
         //require_once $this->dispatch->getControllerPatch();
         $controller_full_name = $this->_getControllerFullName();
         $method_name = $this->dispatch->getMethodName();
-        dump(1);
         $controller_obj = new $controller_full_name;
         $controller_obj->$method_name();
     }
