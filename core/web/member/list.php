@@ -239,7 +239,13 @@ if ($op == 'display') {
             'id' => $id,
             'uniacid' => $_W['uniacid']
         ));
-        $member = m('member')->getMember($id);
+        //$member = m('member')->getMember($id);
+        //论坛插件-会员信息同步
+        if (p('discuz') ) {
+            p('discuz')->updateUserInfo($member['uid'], array('realname'=>$data['realname'],
+                'mobile'=>$data['membermobile']));
+        }
+
         plog('member.member.edit', "修改会员资料  ID: {$member['id']} <br/> 会员信息:  {$member['openid']}/{$member['nickname']}/{$member['realname']}/{$member['membermobile']}");
         if ($hascommission) {
             if (cv('commission.agent.changeagent')) {
