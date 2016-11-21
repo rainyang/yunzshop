@@ -271,13 +271,14 @@ if (intval($_GPC['page']) <= 1) {
     }
     unset($c);
 }
+
 if ($_W['isajax']) {
     return show_json(1, array(
         'goods' => $goods,
         'pagesize' => $args['pagesize'],
         'category' => $category,
         'current_category' => $current_category,
-        'page_total' => (int)($total/$args['pagesize'])
+        'page_total' => ceil($total / $args['pagesize']) ?: 1
     ));
 }
 include $this->template('shop/list');
