@@ -37,15 +37,15 @@ class Recharge extends YZ
                 $json = $this->callMobile('member/recharge');
 
                 if ($json['json']['wechat']['success']) {
-                    $btn[] = '微信支付';
+                    $btn[] = array('wx' => '微信支付');
                 }
 
                 if ($json['json']['yunpay']['success']) {
-                    $btn[] = '云支付';
+                    $btn[] = array('yunpay' => '云支付');
                 }
 
                 if ($json['json']['alipay']['success']) {
-                    $btn[] = '支付宝支付';
+                    $btn[] = array('alipay' => '支付宝支付');
                 }
 
                 $res = array('openid'=>$openid, 'money'=>$json['json']['credit'], 'btn'=>$btn, 'acts'=>$json['json']['acts'], 'logid'=>$json['json']['logid']);
