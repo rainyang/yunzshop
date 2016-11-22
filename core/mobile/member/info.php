@@ -26,7 +26,8 @@ if ($diyform_plugin) {
 if ($_W['isajax']) {
     if ($_W['ispost']) {
         $memberdata = $_GPC['memberdata'];
-        if ($template_flag == 1) {
+        echo "<pre>";print_r($withdraw);exit;
+        if ($template_flag == 1 && !$withdraw) {
             $data                      = array();
             $m_data                    = array();
             $mc_data                   = array();

@@ -136,8 +136,9 @@
                             'province': $('#sel-provance').val(),
                             'city': $('#sel-city').val(),
                             'alipay': $('#alipay').val(),
-                            'alipayname': $('#alipayname').val(),
-                        }, 'mcdata':{
+                            'alipayname': $('#alipayname').val()
+                        },
+                        'mcdata':{
                             'realname': $('#realname').val(),
                             'nickname': $("#nickname").val(),
                             'membermobile': $('#membermobile').val(),
@@ -147,7 +148,8 @@
                             'birthday': $('#birthday').val().length>0?birthday[2]:0,
                             'resideprovince': $('#sel-provance').val(),
                             'residecity': $('#sel-city').val()
-                        }
+                        },
+                        'withdraw': '{$_GPC["withdraw"]}'
                     }, function(json) {
 
                         if(json.status==1){
