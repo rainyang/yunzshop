@@ -47,7 +47,6 @@ if (p('ladder')) {
         }
     }
 }
-
 if (p('hotel')) {//开启酒店插件后 判断当前时间是否有剩余房间可预约
     $sql2 = 'SELECT * FROM ' . tablename('sz_yi_hotel_room') . ' WHERE `goodsid` = :goodsid';
     $params2 = array(':goodsid' => $goods['id']);
@@ -268,6 +267,13 @@ if ($_W['isajax']) {
     } else {
         $goods['isforce'] = '1';
     }
+
+    //阶梯价格计算
+    if ($goods['isladder']) {
+        $laddermoney = m('goods')->getLaderMoney($goods['ladders'],'1');
+        $goods['marketprice'] = $laddermoney > 0 ? $laddermoney : $goods['marketprice'];
+    }
+
     $goods['canbuy'] = !empty($goods['status']) && empty($goods['deleted']);
     $goods['timestate'] = '';
     $goods['userbuy'] = '1';
