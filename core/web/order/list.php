@@ -292,7 +292,7 @@ if ($operation == "display") {
     }
     if (!empty($_GPC["storeid"])) {
         $_GPC["storeid"] = trim($_GPC["storeid"]);
-        $condition .= " AND o.verifystoreid=" . intval($_GPC["storeid"]);
+        $condition .= " AND o.storeid=" . intval($_GPC["storeid"]);
     }
     if (!empty($_GPC["csid"])) {
         $_GPC["csid"] = trim($_GPC["csid"]);
