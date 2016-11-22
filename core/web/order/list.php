@@ -523,6 +523,7 @@ if ($operation == "display") {
             unset($members);
         }
     }
+    $plugin_fund = p("fund");
 
     foreach ($list as & $value) {
         if (isset($order_members[$value['openid']])) {
@@ -691,7 +692,7 @@ if ($operation == "display") {
 
         $order_goods = pdo_fetchall("select g.id,g.title,g.thumb,g.goodssn,og.goodssn as option_goodssn, g.productsn,og.productsn as option_productsn, 
                         og.total,og.price,og.optionname as optiontitle, og.realprice,og.changeprice,og.oldprice,og.commission1,og.commission2,
-                        og.commission3,og.commissions,og.diyformdata,og.diyformfields 
+                        og.commission3,og.commissions,og.diyformdata,og.diyformfields, g.timeend 
                         from " . tablename("sz_yi_order_goods") . " og " . " 
                         left join " . tablename("sz_yi_goods") . " g on g.id=og.goodsid " . " 
                         where og.uniacid=:uniacid and " . $order_where, array(
@@ -755,7 +756,12 @@ if ($operation == "display") {
                 }
                 $og["goods_diyformdata"] = $diyformdata;
             }
-
+            $og['confirmsend'] = true;
+            if($plugin_fund){
+                if(!empty($_GPC['plugin'])){
+                   $og['confirmsend'] =  $og['timeend'] < time();
+                }    
+            }
         }
         unset($og);
         if (!empty($level) && empty($agentid)) {

@@ -27,10 +27,12 @@
         <!--快递 发货-->
         {ifp 'order.op.send'}
             <div>
+                {if $item['confirmsend']}
                 <input class='addressdata' type='hidden' value='{php echo json_encode($item['addressdata'])}' />
                 <input class='itemid' type='hidden' value="{$item['id']}"/>
                 <a class="btn btn-primary btn-sm disbut" href="javascript:;" onclick="send(this)" data-toggle="modal"
                    data-target="#modal-confirmsend">确认发货</a>
+                {/if}
             </div>
         {/if}
     {else}

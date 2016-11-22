@@ -108,7 +108,7 @@ select { width:100px;height:40px;position:absolute;left:0; -webkit-appearance: n
 
 <script id='tpl_detail' type='text/html'>
 <div class="page_topbar">
-    <a href="{php echo $this->createMobileUrl('order')}" class="back"><i class="fa fa-angle-left"></i></a>
+    <a href="javascript:;" class="back" onclick="history.back()"><i class="fa fa-angle-left"></i></a>
     <%if order.status==1 && order.isverify=='1' && order.verifyied!='1'%><a href="javascript:;" class="btn" onclick="VerifyHandler.verify('{$_GPC['id']}')"><i class="fa fa-qrcode"></i></a><%/if%>
     <div class="title">订单详情</div>
 </div>
