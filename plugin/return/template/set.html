@@ -80,18 +80,7 @@
                     <span class='help-block'>用户完成的订单总额累计达到此金额后加入全返队列</span>
                 </div>
             </div> 
-        </div>
-
-        <div  id="return_degression" {if $set['returnrule'] ==2} style="display:none;"{/if}>
-
-            <div class="form-group">
-                <label class="col-xs-12 col-sm-3 col-md-2 control-label">单笔订单指定金额返现</label>
-                <div class="col-sm-8 col-xs-12">
-                     <label class="radio-inline appoint"><input type="radio"  name="setdata[isappoint]" value="0" {if $set['isappoint'] ==0} checked="checked"{/if} /> 关闭</label>
-                    <label class="radio-inline appoint"><input type="radio"  name="setdata[isappoint]" value="1" {if $set['isappoint'] ==1} checked="checked"{/if} /> 开启</label>
-                    <span class='help-block'>单笔订单指定金额返现</span>
-                </div>
-            </div> 
+        
 
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现金额</label>
@@ -111,7 +100,16 @@
                 </div>
             </div>
         </div>
+        <div  id="return_degression" {if $set['returnrule'] ==2} style="display:none;"{/if}>
 
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">单笔订单指定金额返现</label>
+                <div class="col-sm-8 col-xs-12">
+                     <label class="radio-inline appoint"><input type="radio"  name="setdata[isappoint]" value="0" {if $set['isappoint'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline appoint"><input type="radio"  name="setdata[isappoint]" value="1" {if $set['isappoint'] ==1} checked="checked"{/if} /> 开启</label>
+                    <span class='help-block'>单笔订单指定金额返现</span>
+                </div>
+            </div> 
 
             <div class="form-group isappoint" {if $set['isappoint'] ==1} style="display:none;"{/if}>
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">单笔订单递减返 是否开启</label>
