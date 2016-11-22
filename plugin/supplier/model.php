@@ -139,8 +139,8 @@ if (!class_exists('SupplierModel')) {
                     $supplierinfo['costmoney_total'] += $c['money'];
                 }
             }
-            $supplier_orders = pdo_fetchall("SELECT so.*,o.id as oid,og.id as ogid FROM " . tablename('sz_yi_supplier_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id where o.uniacid={$_W['uniacid']} and o.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 {$apply_cond}");
-            if (!empty($supplier_orders)) {
+            $supplier_orders = pdo_fetchall("SELECT so.*,o.id as oid,og.id as ogid FROM " . tablename('sz_yi_supplier_order') . " so left join " . tablename('sz_yi_order') . " o on o.id=so.orderid left join " . tablename('sz_yi_order_goods') . " og on og.orderid=o.id where o.uniacid={$_W['uniacid']} and o.supplier_uid={$uid} and o.status=3 and og.supplier_apply_status=0 {$apply_cond}  GROUP BY so.id");
+			if (!empty($supplier_orders)) {
                 $supplierinfo['sp_goods'] = $supplier_orders;
                 $supplierinfo['costmoney'] = 0;
                 foreach ($supplier_orders as $o) {
