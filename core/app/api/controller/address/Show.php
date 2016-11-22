@@ -18,6 +18,9 @@ class Show extends YZ
     }
 
     public function index(){
+        if(empty($this->json['list'])){
+            return $this->returnError('该用户尚未添加收货地址');
+        }
         $this->returnSuccess($this->json);
     }
 }
