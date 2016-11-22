@@ -42,12 +42,12 @@ if ($_W['isajax']) {
                 'openid' => $openid,
                 'uniacid' => $_W['uniacid']
             ));
-            if (!empty($member['uid'])) {
+            /*if (!empty($member['uid'])) {
                 load()->model('mc');
                 if (!empty($mc_data)) {
                     mc_update($member['uid'], $mc_data);
                 }
-            }
+            }*/
         } else {
             pdo_update('sz_yi_member', $memberdata, array(
                 'openid' => $openid,
@@ -57,6 +57,20 @@ if ($_W['isajax']) {
                 $mcdata = $_GPC['mcdata'];
                 load()->model('mc');
                 mc_update($member['uid'], $mcdata);
+            }
+
+            //论坛插件-会员信息同步
+            if (p('discuz') && !empty($member['uid'])) {
+                $dzdata = array(
+                    'realname'=> $memberdata['realname'],
+                    'mobile'=> $memberdata['membermobile'],
+                    'gender'=> $memberdata['gender'],
+                    'birthyear'=> $memberdata['birthyear'],
+                    'birthmonth'=> $memberdata['birthmonth'],
+                    'birthday'=> $memberdata['birthday']
+                );
+
+                p('discuz')->updateUserInfo($member['uid'], $dzdata);
             }
         }
         show_json(1);

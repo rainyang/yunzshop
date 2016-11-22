@@ -16,6 +16,10 @@ global $_W, $_GPC;
 
 $operation = !empty($_GPC['op']) ? $_GPC['op'] : 'display';
 if ($operation == 'display') {
+    $uc = pdo_fetch("SELECT `uc`,`passport` FROM ".tablename('uni_settings') . " WHERE uniacid = :uniacid", array(':uniacid' => $_W['uniacid']));
+
+    $uc = @iunserializer($uc['uc']);
+
     ca('member.group.view');
     $list    = array(
         array(
@@ -86,6 +90,17 @@ if ($operation == 'display') {
     ));
     plog('member.group.delete', "删除会员分组 ID: {$id} 分组名称: {$group['groupname']}");
     message('分组删除成功！', $this->createWebUrl('member/group', array(
+        'op' => 'display'
+    )), 'success');
+} elseif ($operation == 'syn') { //同步用户组
+    if (!empty($_GPC['syn'])) {
+        if (p('discuz')) {
+            p('discuz')->syngroups($_GPC['syn']);
+        }
+
+    }
+
+    message('同步用户组成功!', $this->createWebUrl('member/group', array(
         'op' => 'display'
     )), 'success');
 }
