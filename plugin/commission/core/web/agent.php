@@ -25,7 +25,7 @@ if ($operation == 'display') {
         $condition .= ' and dm.agentid=0';
     } else if (!empty($_GPC['parentname'])) {
         $_GPC['parentname'] = trim($_GPC['parentname']);
-        $condition .= ' and ( p.membermobile like :parentname p.mobile like :parentname or p.nickname like :parentname or p.realname like :parentname)';
+        $condition .= ' and ( p.membermobile like :parentname or p.mobile like :parentname or p.nickname like :parentname or p.realname like :parentname)';
         $params[':parentname'] = "%{$_GPC['parentname']}%";
     }
     if ($_GPC['followed'] != '') {
