@@ -44,17 +44,17 @@ pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." CHANGE `diymemberda
 
 //11.9 街道分红
 if (!pdo_fieldexists('sz_yi_member', 'bonus_street')) {
-    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_street` varchar(50) DEFAULT '';");
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_street` varchar(50) DEFAULT '' COMMENT '街道分红';");
 }
 
 //11.23众筹其它数据库必加字段
 if(!pdo_fieldexists('sz_yi_goods', 'plugin')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `plugin` varchar(10) DEFAULT '';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `plugin` varchar(10) DEFAULT '' COMMENT '插件关联';");
 }
 if(!pdo_fieldexists('sz_yi_order_comment', 'plugin')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_comment')." ADD `plugin` varchar(10) DEFAULT '';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_comment')." ADD `plugin` varchar(10) DEFAULT '' COMMENT '插件关联';");
 }
 if(!pdo_fieldexists('sz_yi_order', 'plugin')) {
-  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `plugin` varchar(10) DEFAULT '';");
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `plugin` varchar(10) DEFAULT '' COMMENT '插件关联';");
 }
 echo 1;
