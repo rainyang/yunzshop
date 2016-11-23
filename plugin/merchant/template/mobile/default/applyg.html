@@ -18,8 +18,11 @@ input {-webkit-appearance:none; outline:none;}
  <div class="balance_img"><i class="fa fa-cny"></i></div>
     <div class="balance_text">我的结算金额</div>
     <div class="balance_num">￥<%member.commission_ok%></div>  
-    <div class="balance_sub balance_sub1 <%if !cansettle%>disabled<%/if%>" data-type="1">提现(线下)</div>  
-    <div class="balance_sub balance_sub2 <%if !cansettle%>disabled<%/if%>"  data-type="2">提现到微信钱包</div>
+    <div class="balance_sub balance_sub1 <%if !cansettle%>disabled<%/if%>" data-type="1">提现(线下)</div>
+
+{if $set['wx_withdraw'] == 1}
+ <div class="balance_sub balance_sub2 <%if !cansettle%>disabled<%/if%>"  data-type="2">提现到微信钱包</div>
+{/if}
     <div class="balance_sub3" onclick="location.href='{php echo $this->createPluginMobileUrl('merchant/logg')}'">提现记录</div>
 </script>
 <script language="javascript">

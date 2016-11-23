@@ -37,6 +37,17 @@
                 </div>
             </div>
         </div>
+
+        <div class='panel-body'>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启微信提现</label>
+                <div class="col-sm-9 col-xs-12">
+                    <label class="radio-inline"><input type="radio" class="sendmoth" name="setdata[wx_withdraw]" value="0" {if $set['wx_withdraw'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline"><input type="radio" class="sendmoth" name="setdata[wx_withdraw]" value="1" {if $set['wx_withdraw'] ==1} checked="checked"{/if} /> 开启</label>
+                </div>
+            </div>
+        </div>
+
         <!--<div class="form-group">
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否开启每月提现一次</label>
             <div class="col-sm-9 col-xs-12">

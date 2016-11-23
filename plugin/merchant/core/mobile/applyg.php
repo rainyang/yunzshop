@@ -1,6 +1,9 @@
 <?php
 global $_W, $_GPC;
 $openid = m('user')->getOpenid();
+
+$set = $this->model->getSet();
+
 if ($_W['isajax']) {
 	$iscenter = intval($_GPC['iscenter']);
 	$member = m('member')->getMember($openid);
@@ -73,7 +76,7 @@ if ($_W['isajax']) {
 				pdo_update('sz_yi_order', array('center_apply_status' => 1), array('uniacid' => $_W['uniacid'], 'id' => $value['id']));
 			}
 		} else {
-			$set = $this->model->getSet();
+			//$set = $this->model->getSet();
 			$apply_cond = "";
 			if (!empty($set['apply_day'])) {
 				$now_time = time();
