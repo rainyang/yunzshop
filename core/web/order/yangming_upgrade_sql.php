@@ -46,4 +46,15 @@ pdo_fetchall("ALTER TABLE ".tablename('sz_yi_af_supplier')." CHANGE `diymemberda
 if (!pdo_fieldexists('sz_yi_member', 'bonus_street')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member')." ADD `bonus_street` varchar(50) DEFAULT '';");
 }
+
+//11.23众筹其它数据库必加字段
+if(!pdo_fieldexists('sz_yi_goods', 'plugin')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `plugin` varchar(10) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_order_comment', 'plugin')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order_comment')." ADD `plugin` varchar(10) DEFAULT '';");
+}
+if(!pdo_fieldexists('sz_yi_order', 'plugin')) {
+  pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `plugin` varchar(10) DEFAULT '';");
+}
 echo 1;
