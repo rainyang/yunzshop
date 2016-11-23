@@ -756,14 +756,17 @@ if ($operation == "display") {
                 }
                 $og["goods_diyformdata"] = $diyformdata;
             }
-            $og['confirmsend'] = true;
-            if($plugin_fund){
-                if(!empty($_GPC['plugin'])){
-                   $og['confirmsend'] =  $og['timeend'] < time();
-                }    
-            }
+            
         }
         unset($og);
+
+        //众筹订单未到时间隐藏发货
+        $value['confirmsend'] = true;
+        if($plugin_fund){
+            if(!empty($_GPC['plugin'])){
+               $value['confirmsend'] =  $og['timeend'] < time();
+            }    
+        }
         if (!empty($level) && empty($agentid)) {
             $value["commission1"] = $commission1;
             $value["commission2"] = $commission2;
