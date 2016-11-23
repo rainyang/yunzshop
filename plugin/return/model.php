@@ -201,6 +201,7 @@ if (!class_exists('ReturnModel')) {
 					$this->setOrderRule($order_goods,$order_price,$set,$_W['uniacid']);
 				}elseif($set['returnrule'] == 2)
 				{
+					//排除赠送积分
 					if ($set['iscumulative'] && $order['credit1'] > 0) {
 						$order_price = $order_price - $order['credit1'];
 					}
@@ -216,13 +217,17 @@ if (!class_exists('ReturnModel')) {
 
 
 			$data = array(
-                'mid' => $order_goods[0]['mid'],
-                'uniacid' => $uniacid,
-                'money' => $order_price,
-                'returnrule' => $set['returnrule'],
+                'mid' 			=> $order_goods[0]['mid'],
+                'uniacid' 		=> $uniacid,
+                'money' 		=> $order_price,
+                'returnrule'	=> $set['returnrule'],
+                'status' 		=> 1,
 				'create_time'	=> time()
-                );
-			pdo_insert('sz_yi_return', $data);
+            );
+
+			//单笔订单加入队列
+			pdo_insert('sz_yi_return_tpm', $data);
+
 			$order_price_txt = $set['order_price'];
 			$order_price_txt = str_replace('[订单金额]', $order_price, $order_price_txt);
 			$msg = array(
@@ -484,10 +489,12 @@ if (!class_exists('ReturnModel')) {
 							'uniacid' 		=> $value['uniacid'],
 							'mid' 			=> $value['mid'],
 							'money' 		=> $orderprice,
-							'returnrule' => $set['returnrule'],
+							'returnrule' 	=> $set['returnrule'],
+							'status' 		=> 1,
 							'create_time'	=> time()
-							 );
-						pdo_insert('sz_yi_return', $data);
+						);
+						//订单累计金额加入队列
+						pdo_insert('sz_yi_return_tpm', $data);
 						pdo_update('sz_yi_return_money', array('money'=>$value['money']-$orderprice), array('id' => $value['id'], 'uniacid' => $uniacid));	
 					}
 				}
