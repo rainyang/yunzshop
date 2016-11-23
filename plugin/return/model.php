@@ -214,8 +214,6 @@ if (!class_exists('ReturnModel')) {
 		//单笔订单
 		public function setOrderRule($order_goods,$order_price,$set=array(),$uniacid='')
 		{
-
-
 			$data = array(
                 'mid' 			=> $order_goods[0]['mid'],
                 'uniacid' 		=> $uniacid,
@@ -574,8 +572,36 @@ if (!class_exists('ReturnModel')) {
 				pdo_insert('sz_yi_return_log', $data_log);
 	        
 	    }
+	    public function setDelay( $set = array(), $uniacid = '' ) {
+	    	if($uniacid == '4'){
+		    	if ( isset($set['delay']) && $set['delay'] > 0 ) {
 
-		public function autoexec ($uniacid) {
+		    	} else {
+		    		$delay_queue = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return_tpm') . " where uniacid = :uniacid and status = :status",array( ':uniacid'	=> $uniacid, ':status' => '1' ));
+		    		echo "<pre>";print_r($delay_queue);
+		    		foreach ($delay_queue as $key => $value) {
+		    			$queue_data = array(
+							'uniacid' 		=> $value['uniacid'],
+							'mid' 			=> $value['mid'],
+							'money' 		=> $value['money'],
+							'returnrule' 	=> $value['returnrule'],
+							'create_time'	=> time()
+						);
+						//添加队列
+						pdo_insert('sz_yi_return', $queue_data);
+						$queueid = pdo_insertid();
+						//修改临时队列
+			            pdo_update('sz_yi_return_tpm', array(
+			                'status' => 2,
+			            ), array(
+			                'uniacid' => $_W['uniacid'],
+			                'openid' => $openid
+			            ));
+		    		}
+		    	}	    		
+	    	}
+	    }
+		public function autoexec( $uniacid ) {
 			global $_W, $_GPC;
 			$_W['uniacid'] = $uniacid;
 			set_time_limit(0);
@@ -593,6 +619,8 @@ if (!class_exists('ReturnModel')) {
             if (!file_exists($validation)) {
                 $set = m('plugin')->getpluginSet('return', $_W['uniacid']);
                 if (!empty($set)) {
+                	//延期返现队列处理
+                	$this->setDelay($set, $_W['uniacid']);
                     $isexecute = false;
                     if ($set['returnlaw'] == 1) {
                         $log_content[] = '返现规律：按天返现，每天：'.$set['returntime']."返现\r\n";
