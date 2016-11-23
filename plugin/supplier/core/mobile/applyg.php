@@ -3,7 +3,7 @@ global $_W, $_GPC;
 $openid = m('user')->getOpenid();
 $shopset   = m('common')->getSysset('pay');
 $set = $this->model->getSet();
-echo '<pre>';print_r($set);exit;
+
 if ($_W['isajax']) {
 	$member = m('member')->getMember($openid);
 	$supplieruser = $this->model->getSupplierUidAndUsername($openid);
