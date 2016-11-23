@@ -26,7 +26,7 @@ if ($diyform_plugin) {
 if ($_W['isajax']) {
     if ($_W['ispost']) {
         $memberdata = $_GPC['memberdata'];
-        if ($template_flag == 1) {
+        if ($template_flag == 1 && !$_GPC['withdraw']) {
             $data                      = array();
             $m_data                    = array();
             $mc_data                   = array();
@@ -78,7 +78,7 @@ if ($_W['isajax']) {
         'member' => $member
     ));
 }
-if ($template_flag == 1) {
+if ($template_flag == 1 && !$_GPC['withdraw']) {
     include $this->template('diyform/info');
 } else {
     include $this->template('member/info');

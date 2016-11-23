@@ -67,50 +67,63 @@
 
             </div>
         </div>      
-<div id="return_rule" {if $set['returnrule'] ==1} style="display:none;"{/if}>
-        <div class="form-group"  >
-            <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单累计额度</label>
+        <div id="return_rule" {if $set['returnrule'] ==1} style="display:none;"{/if}>
+            <div class="form-group"  >
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">订单累计额度</label>
 
-            <div class="col-sm-8">
-                <div class="input-group">
-                    <!-- <div class="input-group-addon">提现到微信</div> -->
-                    <input type="text" name="setdata[orderprice]" class="form-control" value="{$set['orderprice']}"  />
-                    <div class="input-group-addon">元</div>
+                <div class="col-sm-8">
+                    <div class="input-group">
+                        <!-- <div class="input-group-addon">提现到微信</div> -->
+                        <input type="text" name="setdata[orderprice]" class="form-control" value="{$set['orderprice']}"  />
+                        <div class="input-group-addon">元</div>
+                    </div>
+                    <span class='help-block'>用户完成的订单总额累计达到此金额后加入全返队列</span>
                 </div>
-                <span class='help-block'>用户完成的订单总额累计达到此金额后加入全返队列</span>
-            </div>
-        </div> 
+            </div> 
+        
 
-        <div class="form-group">
-            <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现金额</label>
-            <div class="col-sm-8 col-xs-12">
-                 <label class="radio-inline"><input type="radio"  name="setdata[isprofit]" value="0" {if $set['isprofit'] ==0} checked="checked"{/if} /> 营业额</label>
-                <label class="radio-inline"><input type="radio"  name="setdata[isprofit]" value="1" {if $set['isprofit'] ==1} checked="checked"{/if} /> 利润</label>
-                <span class='help-block'>返现金额默认为上一个周期的营业额，开启利润为上一个周期的利润进行累计。</span>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现金额</label>
+                <div class="col-sm-8 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="setdata[isprofit]" value="0" {if $set['isprofit'] ==0} checked="checked"{/if} /> 营业额</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[isprofit]" value="1" {if $set['isprofit'] ==1} checked="checked"{/if} /> 利润</label>
+                    <span class='help-block'>返现金额默认为上一个周期的营业额，开启利润为上一个周期的利润进行累计。</span>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">累计金额</label>
+                <div class="col-sm-8 col-xs-12">
+                     <label class="radio-inline"><input type="radio"  name="setdata[iscumulative]" value="0" {if $set['iscumulative'] ==0} checked="checked"{/if} /> 订单金额</label>
+                    <label class="radio-inline"><input type="radio"  name="setdata[iscumulative]" value="1" {if $set['iscumulative'] ==1} checked="checked"{/if} /> 排除赠送积分</label>
+                    <span class='help-block'>累计金额方式默认为订单金额，开启排除赠送积分为订单金额减去赠送的积分。</span>
+                </div>
             </div>
         </div>
+        <div  id="return_degression" {if $set['returnrule'] ==2} style="display:none;"{/if}>
 
-        <div class="form-group">
-            <label class="col-xs-12 col-sm-3 col-md-2 control-label">累计金额</label>
-            <div class="col-sm-8 col-xs-12">
-                 <label class="radio-inline"><input type="radio"  name="setdata[iscumulative]" value="0" {if $set['iscumulative'] ==0} checked="checked"{/if} /> 订单金额</label>
-                <label class="radio-inline"><input type="radio"  name="setdata[iscumulative]" value="1" {if $set['iscumulative'] ==1} checked="checked"{/if} /> 排除赠送积分</label>
-                <span class='help-block'>累计金额方式默认为订单金额，开启排除赠送积分为订单金额减去赠送的积分。</span>
-            </div>
-        </div>
-</div>
+            <div class="form-group">
+                <label class="col-xs-12 col-sm-3 col-md-2 control-label">单笔订单指定金额返现</label>
+                <div class="col-sm-8 col-xs-12">
+                     <label class="radio-inline appoint"><input type="radio"  name="setdata[isappoint]" value="0" {if $set['isappoint'] ==0} checked="checked"{/if} /> 关闭</label>
+                    <label class="radio-inline appoint"><input type="radio"  name="setdata[isappoint]" value="1" {if $set['isappoint'] ==1} checked="checked"{/if} /> 开启</label>
+                    <span class='help-block'>单笔订单指定金额返现</span>
+                </div>
+            </div> 
 
-        <div class="form-group"  id="return_degression" {if $set['returnrule'] ==2} style="display:none;"{/if}>
+            <div class="form-group isappoint" {if $set['isappoint'] ==1} style="display:none;"{/if}>
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">单笔订单递减返 是否开启</label>
                 <div class="col-sm-8 col-xs-12">
                      <label class="radio-inline"><input type="radio"  name="setdata[degression]" value="0" {if $set['degression'] ==0} checked="checked"{/if} /> 关闭</label>
                     <label class="radio-inline"><input type="radio"  name="setdata[degression]" value="1" {if $set['degression'] ==1} checked="checked"{/if} /> 开启</label>
                     <span class='help-block'>如 ：返现金额为100元，第一次返现为（100*返现比例），第二次为（100-已返现金额*返现比例），以此类推。</br>当未返现金剩余0.5元时，将一次性返现给用户。</span>
                 </div>
+            </div>
 
-        </div> 
+        </div>
 
-        <div class="form-group">
+
+        <div class="form-group isappoint" {if $set['isappoint'] ==1} style="display:none;"{/if}>
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">默认比例</label>
 
             <div class="col-sm-8">
@@ -172,41 +185,41 @@
  
 <script type="text/javascript">
     $('.queue').click(function(){
-        if($(this).find('input').val() == 1)
-        {
+        if($(this).find('input').val() == 1) {
             $("#return_queue").show();
-        }else
-        {
+        } else {
             $("#return_queue").hide();
         }
     });
     $('.law').click(function(){
-        if($(this).find('input').val() == 1)
-        {
+        if($(this).find('input').val() == 1) {
             $("#return_time").show();
-        }else
-        {
+        } else {
             $("#return_time").hide();
         }
 
-        if($(this).find('input').val() == 3)
-        {
+        if($(this).find('input').val() == 3) {
             $("#return_time1").show();
-        }else
-        {
+        } else {
             $("#return_time1").hide();
         }
     });
     $('.rule').click(function(){
-        if($(this).find('input').val() == 2)
-        {
+        if($(this).find('input').val() == 2) {
             $("#return_rule").show();
             $("#return_degression").hide();
             
-        }else
-        {
+        } else {
             $("#return_rule").hide();
             $("#return_degression").show();
+        }
+    });
+
+    $('.appoint').click(function(){
+        if($(this).find('input').val() == 1) {
+            $(".isappoint").hide();
+        } else {
+            $(".isappoint").show();
         }
     });
 </script>

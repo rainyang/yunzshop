@@ -44,6 +44,11 @@ if (!pdo_fieldexists('sz_yi_order_goods', 'declaration_mid')) {
 }
 
 
+if (!pdo_fieldexists('sz_yi_goods', 'return_appoint_amount')) {
+    pdo_fetchall("ALTER TABLE ".tablename('sz_yi_goods')." ADD `return_appoint_amount` DECIMAL(10,2) NOT NULL COMMENT '全返分红金额' AFTER `plugin`;");
+}
+
+
 //会员升级指定商品
 if (!pdo_fieldexists('sz_yi_member_level', 'goodsid')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_member_level')." ADD `goodsid` INT NOT NULL COMMENT '购买指定商品成为指定会员等级' AFTER `discount`;");
