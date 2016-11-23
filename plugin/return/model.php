@@ -593,6 +593,7 @@ if (!class_exists('ReturnModel')) {
 						//修改临时队列
 			            pdo_update('sz_yi_return_tpm', array(
 			                'status' => 2,
+			                'status' => 2,
 			            ), array(
 			                'uniacid' => $_W['uniacid'],
 			                'openid' => $openid
