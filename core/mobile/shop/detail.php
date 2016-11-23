@@ -580,6 +580,22 @@ if ($_W['isajax']) {
         $saleset = $sale_plugin->getSet();
         $saleset['enoughs'] = $sale_plugin->getEnoughs();
     }
+
+    $opt_switch = $goods['opt_switch'];
+    $specs_nums = count($specs);
+
+    if (!empty($goods['hasoption']) && $opt_switch == 1 && $specs_nums == 2) {
+        foreach ($options as $opt) {
+            $prices[] = $opt['marketprice'];
+        }
+
+        $min_price = min($prices);
+        $max_price = max($prices);
+    } else {
+        $min_price = 0;
+        $max_price = 0;
+    }
+
     $ret = array(
         'is_admin' => $_GPC['is_admin'],
         'goods' => $goods,
@@ -597,6 +613,10 @@ if ($_W['isajax']) {
         'commission_text' => $commission_text,
         'level' => $level,
         'shop' => $shop,
+        'opt_switch' => $opt_switch,
+        'specs_nums' => $specs_nums,
+        'min_price' => $min_price,
+        'max_price' => $max_price,
         'goodscount' => pdo_fetchcolumn('select count(*) from ' . tablename('sz_yi_goods') . ' where uniacid=:uniacid and status=1 and deleted=0 ',
             array(
                 ':uniacid' => $uniacid
