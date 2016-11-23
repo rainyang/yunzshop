@@ -207,6 +207,176 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 
     .chooser .add_address {height:44px; padding:5px; background:#fff; border-bottom:1px solid #eaeaea; line-height:44px; font-size:16px; color:#666;}
 </style>
+<!--新规格模板样式-->
+<style>
+    html, body, div, span, applet, object, iframe,
+    h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+    a, abbr, acronym, address, big, cite, code,
+    del, dfn, em, font, img, ins, kbd, q, s, samp,
+    small, strike, strong, sub, sup, tt, var,
+    b, u, i, center,
+    dl, dt, dd, ol, ul, li,
+    fieldset, form, label, legend,
+    table, caption, tbody, tfoot, thead, tr, th, td, figure
+    {
+        margin: 0;
+        padding: 0;
+        border: 0;
+        color: inherit;
+        font-size: inherit;
+        -webkit-font-smoothing: antialiased;
+        -webkit-overflow-scrolling: touch;
+        -moz-overflow-scrolling: touch;
+        -o-overflow-scrolling: touch;
+        overflow-scrolling: touch;
+        color: inherit;
+        line-height: inherit;
+    }
+    .goodsDetailType .main .num:after {
+        content: ".";
+        display: none;
+        height: 0;
+        clear: both;
+        visibility: hidden;
+    }
+    .goodsDetailType {
+        /*position: fixed;*/
+        /*bottom: 0px;*/
+        /*left: 0px;*/
+        width: 100%;
+    }
+
+    .goodsDetailType .head {
+        width: 100%;
+        overflow: scroll;
+    }
+
+    .goodsDetailType .head ul {
+        white-space: nowrap;
+    }
+
+    .goodsDetailType .head ul li {
+        height: 50px;
+        line-height: 50px;
+        padding: 0px 15px;
+        display: inline-block;
+        font-size: 16px;
+        position: relative;
+    }
+
+    .goodsDetailType .head ul li.in {
+        color: #f15353;
+        border-bottom: 2px solid #f15353;
+        height: 48px;
+    }
+
+    .goodsDetailType .head ul .s2 {
+        position: absolute;
+        top: 0px;
+        right: 0px;
+        background: #f22;
+        color: #fff;
+        display: block;
+        height: 20px;
+        width: 20px;
+        text-align: center;
+        line-height: 20px;
+        font-size: 14px;
+        border-radius: 100%;
+    }
+
+    .goodsDetailType .main {
+        border-top: 1px solid #e3e3e3;
+    }
+
+    .goodsDetailType .main ul {
+        margin-top: -1px;
+        height: 200px;
+        overflow: auto;
+        display: none;
+    }
+
+    .goodsDetailType .main ul.in {
+        display: block;
+    }
+
+    .goodsDetailType .main ul li {
+        display: flex;
+        border-top: 1px solid #e3e3e3;
+    }
+
+    .goodsDetailType .main ul li .left, .goodsDetailType .main ul li .right {
+        padding: 10px;
+        flex: 1;
+        position: relative;
+    }
+
+    .goodsDetailType .main ul li .s1 {
+        line-height: 30px;
+        display: inline-block;
+        font-size: 16px;
+    }
+
+    .goodsDetailType .main .num {
+        position: absolute;
+        right: 10px;
+        top: 10px;
+    }
+
+    .goodsDetailType .main .num .btn, .goodsDetailType .main .num input {
+        height: 30px;
+        line-height: 30px;
+        box-sizing: border-box;
+        float: left;
+        border: 1px solid #e3e3e3;
+        width: 40px;
+        border-radius: 0px;
+        margin-left: -1px;
+        vertical-align: middle;
+        -webkit-appearance: none;
+        text-align: center;
+    }
+
+    .goodsDetailType .main .num .btn {
+        background: #f8f8f8;
+        color: #555;
+        font-size: 14px;
+    }
+
+    .goodsDetailType .main .num .btn.on {
+        color: #aaa;
+    }
+
+    .goodsDetailType .main .num input {
+        background: #fff;
+    }
+
+    .goodsDetailType .main .kc {
+        text-align: right;
+        width: 100%;
+        margin-top: 40px;
+        line-height: 15px;
+    }
+
+    .goodsDetailType .bottom {
+        text-align: right;
+        width: 100%;
+        border-top: 1px solid #e3e3e3;
+        line-height: 50px;
+        padding-right: 10px;
+        box-sizing: border-box;
+        font-size: 16px;
+    }
+
+    .goodsDetailType .bottom .s1 {
+        color: #f15353;
+        margin: 0px 3px;
+    }
+
+    .goodsDetailType .bottom .s2 {
+        margin-left: 10px;
+    }
+</style>
 <input type="hidden" id="lastOrderUrl" value="{php echo $this->createMobileUrl('shop/lastorder',array('op'=>'display'),true)}"/>
 <script type="text/javascript">
     function lastPurchaseUser(url) {
@@ -385,58 +555,24 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                  <img id="chooser_img" src='<%goods.thumb%>'/>
              </div>
              <div class="right">
-                   <div class="price">￥<span id='option_price'><%goods.marketprice%></span></div>
-                   <div class="stock">库存:<span id='option_stock'><%goods.total%></span>件</span> </div>
+                 <%if opt_switch == 1 && specs_nums == 2 %>
+                 <div class="price">￥<span id='option_price'><%min_price%>-<%max_price%></span></div>
+                 <%else%>
+                 <div class="price">￥<span id='option_price'><%goods.marketprice%></span></div>
+                 <%/if%>
+                 <%if specs_nums != 2 %>
+                 <div class="stock">库存:<span id='option_stock'><%goods.total%></span>件</span> </div>
+                 <%/if%>
                    <div class="option">请选择规格</div>
              </div>
             <div class="close" onClick="closechoose()"><i class="fa fa-remove-o"></i></div>
         </div>
-        <div class="other">
-            <input type='hidden' id='optionid' value='' />
-                <%each specs as spec%>
-                <input type='hidden' name="optionid[]" class='optionid optionid_<%spec.id%>' value="" title="<%spec.title%>">
-                <div class="spec"><%spec.title%></div>
-                <div class="spec_items options_<%spec.id%>"  title="<%spec.title%>">
-                      <%each spec.items as o%>
-                      <div class="option option_<%spec.id%>" specid='<%spec.id%>' oid="<%o.id%>" sel='false' title='<%o.title%>' thumb='<%o.thumb%>'><%o.title%></div>
-                     <%/each%>
-                </div>
-                <%/each%>
-
-            <!--<span>diyform</span>-->
-
-            {template 'diyform/formcss'}
-                {if !empty($formInfo)}
-                <div id="diyform_container" >
-             <style type='text/css'>
-                     .diyform_main { float:left;}
-             </style>
-                         {template 'diyform/formfields'}
-                </div>
-               <%if goods.isdeclaration == '1'%>
-                  <div class="diyform_main">
-                    <div class="dline " style="border:none">
-                      <div class="dtitle">保单人：</div>
-                      <div class="dinfo">
-                        <div class="dinner ">
-                          <input id="declaration"  type="text" value="" placeholder="请输入ID\名称" name="declaration">
-                          <input type='hidden' name="declaration_mid" id="declaration_mid" class='' value="" title="12">
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                <%/if%>
-                {/if}
-
-                <div class='number'>
-                  <div class='label'>购买数量</div>
-                  <div class='num'>
-                            <button id='btn_minus' onclick='reduceNum()'><i class='fa fa-minus'></i></button>
-                            <input type='text' id='total' value='1' />
-                            <button id='btn_plus' onclick='addNum()'><i class='fa fa-plus'></i></button>
-                  </div>
-               </div>
-        </div>
+        <!--规格选项-->
+        <%if opt_switch == 1 && specs_nums == 2 %>
+        {template 'shop/detail_ext_option'}
+        <%else%>
+        {template 'shop/detail_st_option'}
+        <%/if%>
         <div class="close" onClick="closechoose()"><i class="iconfont icon-close"></i></div>
         <div class="sub confirm_option" onClick="choose2()">确认</div>
     </div>
@@ -1173,6 +1309,95 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
 
           $('#container').html(  tpl('goods_info',json.result) );
 
+            if ($("div").hasClass('goodsDetailType')) {
+                getStock();
+            }
+
+            $(document).on("click","#goodsDetailTypeHead ul li",function(){
+                goodsDetailTypeHeadAnimate($(this).index());
+                getStock();
+            });
+
+            //获取库存&价格&optionid
+            function getStock() {
+                //横向当前查看的选项id
+                var v_id = $("#goodsDetailTypeHead li.in").data('id');
+
+                $("#goodsDetailTypeMain ul.in>li").each(function() {
+                    var _this = $(this);
+                    //竖向选项列表id
+                    var h_id = _this.data('id');
+                    $("input[name='opt']").each(function() {
+                        if ($(this).data('id') ==v_id + '_' + h_id) {
+                            _this.find('span').eq(1).text($(this).val());
+                            _this.find('span').eq(2).text($(this).data('price'));
+                            _this.find('span').eq(3).text($(this).data('optid'));
+                        }
+                    });
+                });
+            }
+
+            //新规格input修改
+            $('.more_total').blur(function(){
+                var total = $(this);
+                if(!total.isInt()){
+                    total.val("1");
+                    return;
+                }
+                if(parseInt(total.val())<=0){
+                    total.val("1");
+                    return;
+                }
+
+                var stock = $(this).parent().siblings('.kc').find('span').text();
+                stock = stock==''?-1:parseFloat(stock);
+
+                var num = parseInt(total.val() );
+                if(num>maxbuy && maxbuy>0){
+                    tip.show("您最多可购买 " + maxbuy + " 件!");
+                    num = maxbuy;
+                }
+                else if(num>stock && stock!=-1){
+                    tip.show("您最多可购买 " + stock + " 件");
+                    num = stock;
+                }
+
+                total.val(num);
+
+
+                var total_num =0;
+                var tip_num = 0;
+                var total_price = 0;
+                $('.more_total').each(function(i) {
+                    //总数量
+                    total_num += parseInt($(this).val());
+                    $('.total_num').text(total_num);
+
+                    //商品总价
+                    total_price += $(this).parent().siblings('.kc').find('span').eq(1).text() * $(this).val();
+                    parseFloat($('.total_price label').text(total_price.toFixed(2)));
+
+                    if ($(this).parents('ul').hasClass('in')) {
+                        tip_num += parseInt($(this).val());
+                        //提醒标签
+                        if ($("#goodsDetailTypeHead li.in>span").hasClass('s2')) {
+                            $("#goodsDetailTypeHead li.in>.s2").text(tip_num);
+                        } else {
+                            $("#goodsDetailTypeHead li.in").append('<span class="s2">'+(tip_num)+'</span>');
+                        }
+                    }
+                });
+
+
+
+
+            });
+            function goodsDetailTypeHeadAnimate(_i){
+                $("#goodsDetailTypeHead").find("ul li").removeClass("in");
+                $("#goodsDetailTypeHead").find("ul li").eq(_i).addClass("in");
+                $("#goodsDetailTypeMain").find("ul").removeClass("s1");
+                $("#goodsDetailTypeMain").find("ul").eq(_i).addClass("s1");
+            }
 
           var bh = $(document.body).height() - 50;
           $('.good_choose').css('max-height',bh);
@@ -1634,6 +1859,15 @@ word-break: keep-all; white-space: nowrap; vertical-align: top; }
                        return false;
                     }
                 });
+
+                $('.spec_items1').each(function(){
+                    var self = $(this);
+                    if( $(this).find('.on').length<=0){
+                        specselected = self.attr('title');
+                        return false;
+                    }
+                });
+
                  if(specselected!='') {
                    $('.good_choose_layer').fadeIn(200);
                                  $('.good_choose_layer').unbind('click').click(function(){
@@ -1760,11 +1994,28 @@ function choose3(direct,close){
                 return false;
             }
         });
-        if( specselected!=''){
-          require(['core'],function(core){
-             core.tip.show('请选择' + specselected) ;
-          });
-          return;
+        //多规格
+        $('.spec_items1').each(function(){
+            var self = $(this);
+            if( $(this).find('.on').length<=0){
+                specselected = self.attr('title');
+                return false;
+            }
+        });
+        if ($("div").hasClass('goodsDetailType')) {
+            if( $('.total_num').text() == '0'){
+                require(['core'],function(core){
+                    core.tip.show('请选择商品规格') ;
+                });
+                return;
+            }
+        } else {
+            if( specselected!=''){
+                require(['core'],function(core){
+                    core.tip.show('请选择' + specselected) ;
+                });
+                return;
+            }
         }
         if(action=='cart'){
            var data = {};
@@ -1777,6 +2028,9 @@ function choose3(direct,close){
           {/if}
         //openid
           {if !empty($popenid) or !empty($openid)}
+            if ($("div").hasClass('goodsDetailType')) {
+                setParams();
+            }
              core.json('shop/cart',{op:'add', id:'{$_GPC['id']}',optionid:$('#optionid').val(),total:$('#total').val(),diyformdata:data},function(ret){
                     if(ret.status==1){
                        core.tip.show(ret.result.message);
@@ -1818,6 +2072,10 @@ function choose3(direct,close){
 
                             core.json('shop/detail',{op:'can_buy', id:'{$_GPC['id']}'},function(cret){
                                 if(cret.status==1){
+                                    if ($("div").hasClass('goodsDetailType')) {
+                                        setParams();
+                                    }
+
                                     location.href = "{php echo $this->createMobileUrl('order/confirm')}&id={$_GPC['id']}&optionid=" +$("#optionid").val() + "&total=" + $("#total").val() + "&gdid="+create_json.result.goods_data_id+"&isyunbipay=" + isyunbipay;
 
                                 } else{
@@ -1898,6 +2156,47 @@ function choose5(){
     $("#indiana_price_total").html(num * $("#indiana_price").html());
 
 }
+
+        //新规格模板添加库存
+        function addMoreNum(self){
+            var stock = $(self).parent().siblings('.kc').find('span').text();
+            stock = stock==''?-1:parseFloat(stock);
+            var num = parseFloat($(self).siblings('.more_total').val() ) + 1;
+            if(num>maxbuy && maxbuy>0){
+                tip.show("您最多可购买 " + maxbuy + " 件!");
+                num = maxbuy;
+            }
+            else if(num>stock && stock!=-1){
+                tip.show("您最多可购买 " + stock + " 件");
+                num = stock;
+            }
+
+            //单个规格数量
+            $(self).siblings('.more_total').val(num);
+
+            //总数量
+            var total_num = parseFloat($('.total_num').text());
+            $('.total_num').text(++total_num);
+
+
+            //提醒标签
+            if ($("#goodsDetailTypeHead li.in>span").hasClass('s2')) {
+                var s2_num = $("#goodsDetailTypeHead li.in>.s2").text();
+                $("#goodsDetailTypeHead li.in>.s2").text(++s2_num);
+            } else {
+                var tip_num = 0;
+                $("#goodsDetailTypeHead li.in").append('<span class="s2">'+(++tip_num)+'</span>');
+            }
+
+            //商品总价
+            var h_id = $(self).parents('li').data('id');
+            var opt_price = getOptPrice(h_id);
+
+            var total_price = parseFloat($('.total_price label').text());
+            parseFloat($('.total_price label').text((total_price+opt_price).toFixed(2)));
+
+        }
+
 function reduceNum(){
     var total = $("#total");
     if(!total.isInt()){
@@ -1915,6 +2214,71 @@ function reduceNum(){
     $(".indiana_price_total").html(num * $("#indiana_price").html());
     $("#indiana_price_total").html(num * $("#indiana_price").html());
 }
+
+        //新规格模板减库存
+        function reduceMoreNum(self){
+            var num = parseInt( $(self).siblings('.more_total').val());
+            if(num-1<0){
+                return;
+            }
+            num--;
+
+            //单个规格数量
+            $(self).siblings('.more_total').val(num);
+
+            //总数量
+            var total_num = parseFloat($('.total_num').text());
+            $('.total_num').text(--total_num);
+
+            //提醒标签
+            if ($("#goodsDetailTypeHead li.in>span").hasClass('s2')) {
+                var s2_num = $("#goodsDetailTypeHead li.in>.s2").text();
+
+                $("#goodsDetailTypeHead li.in>.s2").text(--s2_num);
+            }
+
+            //商品总价
+            var h_id = $(self).parents('li').data('id');
+            var opt_price = getOptPrice(h_id);
+
+            var total_price = parseFloat($('.total_price label').text());
+            parseFloat($('.total_price label').text((total_price-opt_price).toFixed(2)));
+        }
+
+        //获取新规格价格
+        function getOptPrice(opt_id) {
+            var opt_price = 0;
+            var v_id,h_id;
+
+            //横向当前查看的选项id
+            v_id = $("#goodsDetailTypeHead li.in").data('id');
+
+            //竖向选项列表id
+            h_id = opt_id;
+            $("input[name='opt']").each(function() {
+                if ($(this).data('id') == v_id + '_' + h_id) {
+                    opt_price = parseFloat($(this).data('price'));
+                }
+            });
+
+            return opt_price;
+        }
+
+        function setParams()
+        {
+            $("#optionid").empty();
+            var str_val = '';
+            var str_num = '';
+            $('.more_total').each(function() {
+                if($(this).val() != 0) {
+                    str_val += $(this).parent().siblings('.kc').find('span').eq(2).text() + '|';
+                    str_num += $(this).val() + '|';
+                }
+            });
+
+            $("#optionid").val(str_val);
+            $('#total').val(str_num);
+        }
 
     function option_selected(){
     var ret= {
