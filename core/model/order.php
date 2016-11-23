@@ -742,6 +742,17 @@ class Sz_DYi_Order
                         if ($p) {
                             $p->checkOrderFinish($orderid);
                         }
+                        if (p('return')) {
+                            p('return')->cumulative_order_amount($orderid);
+                        }
+
+                        if (p('yunbi')) {
+                            p('yunbi')->GetVirtualCurrency($orderid);
+                        }
+                        if (p('beneficence')) {
+                            p('beneficence')->GetVirtualBeneficence($orderid);
+                        }
+                        
                     }
                 }
             }
