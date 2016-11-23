@@ -79,19 +79,26 @@ do{
     switch ($input_data['type']) {
         case "charge.succeeded":
             $pay_info = $input_data['data']['object'];
+
             if($pay_info['paid'] == 1){
                 $order_data['pay_time']=$pay_info['time_paid'];//时间戳
                 $order_data['pay_id'] = $pay_info['id'];
                 $order_data['order_id'] = $pay_info['order_no'];
 
                 if ($pay_info['channel'] == 'wx') {
-                    $pay_type = 'wechat';
+                    $pay_type = 'app_wechat';
                     $pay_type_num = 27;
 
                 } elseif ($pay_info['channel'] == 'alipay') {
-                    $pay_type = 'alipay';
+                    $pay_type = 'app_alipay';
                     $pay_type_num = 28;
                 }
+
+                $paylog = "\r\n-------------------------------------------------\r\n";
+                $paylog .= "orderno: " . $pay_info['order_no'] . "\r\n";
+                $paylog .= "paytype: $pay_type\r\n";
+                $paylog .= "data: " . json_encode($input_data) . "\r\n";
+                m('common')->paylog($paylog);
 
                 if (substr($pay_info['order_no'],0,2) == 'RC') {
                     $log = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `logno`=:logno and `uniacid`=:uniacid limit 1', array(
@@ -113,17 +120,15 @@ do{
                         m('notice')->sendMemberLogMessage($log['id']);
                     }
                 } else {
-                    $order_info = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND ordersn=:ordersn", array(
-                        ':uniacid'=> $uniacid,
-                        ':ordersn'=> $pay_info['order_no']
+                    $ordersn_general          = pdo_fetchcolumn('select ordersn_general from ' . tablename('sz_yi_order') . ' where (ordersn=:ordersn or ordersn_general=:ordersn) and uniacid=:uniacid  limit 1', array(
+                        ':ordersn' => $pay_info['order_no'],
+                        ':uniacid' => $uniacid
                     ));
 
-                    if (empty($order_info)) {
-                        $order_info = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND ordersn_general=:ordersn_general", array(
-                            ':uniacid'=> $uniacid,
-                            ':ordersn_general'=> $pay_info['order_no']
-                        ));
-                    }
+                    $order_info    = pdo_fetch('select id, ordersn_general from ' . tablename('sz_yi_order') . ' where ordersn_general=:ordersn_general and uniacid=:uniacid limit 1', array(
+                        ':ordersn_general' => $ordersn_general,
+                        ':uniacid' => $uniacid
+                    ));
 
                     pdo_query('update ' . tablename('sz_yi_order') . ' set paytype='. $pay_type_num .', trade_no="'. $pay_info['id'] .'" where ordersn_general=:ordersn_general and uniacid=:uniacid ', array(
                         ':uniacid' => $uniacid,
@@ -166,19 +171,21 @@ do{
             $refund = $input_data['data']['object'];
 
             if ($refund['succeed'] == true && $refund['status'] == 'succeeded') {
-                $order_info = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND ordersn=:ordersn", array(
-                    ':uniacid'=> $uniacid,
-                    ':ordersn'=> $refund['charge_order_no']
+
+                $ordersn_general = pdo_fetchcolumn('select ordersn_general from ' . tablename('sz_yi_order') . ' where (pay_ordersn=:ordersn or ordersn_general=:ordersn) and uniacid=:uniacid limit 1', array(
+                    ':ordersn' => $refund['charge_order_no'],
+                    ':uniacid' => $uniacid
                 ));
 
-                if (empty($order_info)) {
-                    $order_info = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND ordersn_general=:ordersn_general", array(
-                        ':uniacid'=> $uniacid,
-                        ':ordersn_general'=> $refund['charge_order_no']
-                    ));
-                }
 
-                if ($order_info['paytype'] == 28) {
+                $order_info = pdo_fetch("SELECT * FROM " . tablename('sz_yi_order') . " WHERE uniacid=:uniacid AND ordersn_general=:ordersn_general", array(
+                        ':uniacid'=> $uniacid,
+                        ':ordersn_general'=> $ordersn_general
+                ));
+
+
+                //if ($order_info['paytype'] == 28) {
+
                     $shopset = m('common')->getSysset('shop');
 
                     $goods = pdo_fetchall('SELECT g.id,g.credit, o.total,o.realprice FROM ' . tablename('sz_yi_order_goods') . ' o left join ' . tablename('sz_yi_goods') . ' g on o.goodsid=g.id ' . ' WHERE o.orderid=:orderid and o.uniacid=:uniacid', array(
@@ -253,7 +260,7 @@ do{
                         'id' => $order_info['id'],
                         'uniacid' => $uniacid
                     ));
-                }
+                //}
             }
 
             header($_SERVER['SERVER_PROTOCOL'] . ' 200 OK');

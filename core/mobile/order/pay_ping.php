@@ -91,8 +91,10 @@ require_once('../addons/sz_yi/plugin/pingpp/init.php');
             ':openid' => $input_data['openid']
         ));
 
-        $amount = (int)($order_price * 100);
+        //统一订单号
+        $orderNo = $ordersn_general;
 
+        $amount = (int)($order_price * 100);
 
         $subject = '商品订单';
         $body = '商品订单';
