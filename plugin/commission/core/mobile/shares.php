@@ -81,7 +81,11 @@ if (empty($infourl) && $_W['isajax']) {
         }
     }
     if ($_GPC['type'] == "app") {
-        return show_json(1, array('img' => $img, 'set' => $this->set));
+        $variable = array(
+            'commission_total'=>$commission,
+            'sales_quantity'=>$goods['sales']
+            );
+        return show_json(1, array('img' => $img, 'set' => $this->set), $variable);
     }
     die($img);
 }
