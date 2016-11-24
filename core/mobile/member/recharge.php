@@ -47,7 +47,7 @@ if ($operation == 'display' && $_W['isajax']) {
     $wechat = array(
         'success' => false
     );
-    if (is_weixin()) {
+    if (is_weixin() || is_app_api()) {
         if (isset($set['pay']) && $set['pay']['weixin'] == 1) {
             load()->model('payment');
             $setting = uni_setting($_W['uniacid'], array(
@@ -172,7 +172,7 @@ if ($operation == 'display' && $_W['isajax']) {
         'pay'
     ));
     if ($type == 'weixin') {
-        if (!is_weixin()) {
+        if (!is_weixin() && !is_app_api()) {
             return show_json(0, '非微信环境!');
         }
         if (empty($set['pay']['weixin'])) {
@@ -223,13 +223,19 @@ if ($operation == 'display' && $_W['isajax']) {
     }
 } else if ($operation == 'complete' && $_W['ispost']) {
     $logid = intval($_GPC['logid']);
-    $log   = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `id`=:id and `openid`=:openid and `uniacid`=:uniacid limit 1', array(
+    $log   = pdo_fetch('SELECT * FROM ' . tablename('sz_yi_member_log') . ' WHERE `id`=:id and `openid`=:openid and `uniacid`=:uniacid and underway=0 limit 1', array(
         ':uniacid' => $uniacid,
         ':openid' => $openid,
         ':id' => $logid
     ));
 
     if (!empty($log) && empty($log['status'])) {
+        //添加并行发送的链接判断处理
+        pdo_update('sz_yi_member_log', array(
+                'underway' => 1
+            ), array(
+                'id' => $logid
+            ));
         $payquery = m('finance')->isWeixinPay($log['logno']);
 
         if (!is_error($payquery)) {

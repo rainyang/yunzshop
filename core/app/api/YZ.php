@@ -47,6 +47,7 @@ class YZ extends base
         parent::__construct();
         $this->set_WAnd_GPC();
         //require IA_ROOT . '/web/common/bootstrap.sys.inc.php';
+<<<<<<< HEAD
         require_once __CORE_PATH__ . '/../site.php';
     }
 
@@ -54,6 +55,7 @@ class YZ extends base
     {
         global $_W, $_GPC;
         $_W['isajax'] = true;
+        $_W['ispost'] = true;
         list($folder_name, $file_name, $action_name, $to) = explode('/', $path);
         $class = new \Sz_yiModuleSite();
         $method = 'doMobile' . ucfirst($folder_name);
@@ -78,6 +80,8 @@ class YZ extends base
             $this->returnError($result['json']);
         }
         return $result;
+=======
+>>>>>>> a95fdcec2af83340b1cb9b9a6e68bf4a1b13e495
     }
 
     /**
