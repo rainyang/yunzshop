@@ -19,7 +19,7 @@ if($foo == 'bind') {
         $sql = 'SELECT * FROM ' . tablename('mc_mapping_ucenter') . ' WHERE `uniacid`=:uniacid AND `uid`=:uid';
         $pars = array();
         $pars[':uniacid'] = $_W['uniacid'];
-        $pars[':uid'] = $_W['member']['uid'];
+        $pars[':uid'] = $member['uid'];
         $mapping = pdo_fetch($sql, $pars);
         if(empty($mapping)) {
             $op = trim($_GPC['op']);
@@ -37,11 +37,11 @@ if($foo == 'bind') {
 
                     $exist = pdo_fetch('SELECT * FROM ' . tablename('mc_mapping_ucenter') . ' WHERE `uniacid`=:uniacid AND `centeruid`=:centeruid', array(':uniacid' => $_W['uniacid'], 'centeruid' => $data[0]));
                     if(empty($exist)) {
-                        pdo_insert('mc_mapping_ucenter', array('uniacid' => $_W['uniacid'], 'uid' => $_W['member']['uid'], 'centeruid' => $data[0]));
+                        pdo_insert('mc_mapping_ucenter', array('uniacid' => $_W['uniacid'], 'uid' => $member['uid'], 'centeruid' => $data[0]));
 
                         //同步会员现有积分
                         $credits     = pdo_fetchcolumn("SELECT `credit1` FROM " . tablename('mc_members') . " WHERE `uid` = :uid", array(
-                            ':uid' => $_W['member']['uid']
+                            ':uid' => $member['uid']
                         ));
 
                         $this->model->setCredits($openid, floatval($credits), 1);
@@ -72,13 +72,13 @@ if($foo == 'bind') {
                         elseif ($uid == -6) @message('邮箱已经被注册！', '', 'error');
                     } else {
                         if($_W['member']['email'] == '') {
-                            mc_update($_W['member']['uid'],array('email' => $email));
+                            mc_update($member['uid'],array('email' => $email));
                         }
-                        pdo_insert('mc_mapping_ucenter', array('uniacid' => $_W['uniacid'], 'uid' => $_W['member']['uid'], 'centeruid' => $uid));
+                        pdo_insert('mc_mapping_ucenter', array('uniacid' => $_W['uniacid'], 'uid' => $member['uid'], 'centeruid' => $uid));
 
                         //同步会员现有积分
                         $credits     = pdo_fetchcolumn("SELECT `credit1` FROM " . tablename('mc_members') . " WHERE `uid` = :uid", array(
-                            ':uid' => $_W['member']['uid']
+                            ':uid' => $member['uid']
                         ));
 
                         $this->model->setCredits($openid, floatval($credits), 1);
