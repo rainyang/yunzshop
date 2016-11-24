@@ -702,13 +702,14 @@
 	function mc_check(){
 		var can = true;
 		var lastprice = 0;
-		 $('.changeprice_orderprice').each(function () { 
+		 $('.changeprice').each(function () { 
 			 if( $.trim( $(this).val())==''){
 				 return true;
 			 }
 			var p = 0;
 			if ( !$.isNumber($(this).val())) {
 				$(this).select();
+				alert($(this).val());
 				alert('请输入数字!');
 				can =false;
 				return false;
