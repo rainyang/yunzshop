@@ -37,7 +37,7 @@ class Recharge extends YZ
                 $json = $this->callMobile('member/recharge');
 
                 if ($json['json']['wechat']['success']) {
-                    $btn[] = array('name' => '微信支付', 'value' => 'wx');
+                    $btn[] = array('name' => '微信支付', 'value' => 'weixin');
                 }
 
                 if ($json['json']['yunpay']['success']) {
@@ -56,7 +56,8 @@ class Recharge extends YZ
             }
         } else if ($trigger == 'post') {
             if ($openid) {
-                $json = $this->callMobile('member/transfer/recharge');
+                $_W['ispost'] = 1;
+                $json = $this->callMobile('member/recharge/recharge');
 
                 $this->returnSuccess($json);
             } else {
