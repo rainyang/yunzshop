@@ -13,6 +13,7 @@
         {loop $cv['plugins'] $plugin}
         {if empty($plugins_data) || in_array($plugin['identity'], $plugins_data)}
             {ifpp $plugin['identity']}
+              {ifp $plugin['identity']}
                 {if p($plugin['identity'])}
                 <li>
                 <a href="{php echo $this->createPluginWebUrl($plugin['identity'])}" title="{$plugin['name']}">
@@ -22,6 +23,7 @@
                 </a>
                 </li>
                 {/if}
+              {/if}
             {/if}
         {/if}
         {/loop}
