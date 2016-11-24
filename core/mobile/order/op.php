@@ -72,6 +72,7 @@ if ($_W['isajax']) {
 	        if (empty($order)) {
 	            show_json(0, '订单未找到!');
 	        }
+
 		if ($order['status'] != 2) {
 			show_json(0, '订单未发货，不能确认收货!');
 		}

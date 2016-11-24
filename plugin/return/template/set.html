@@ -101,7 +101,6 @@
             </div>
         </div>
         <div  id="return_degression" {if $set['returnrule'] ==2} style="display:none;"{/if}>
-
             <div class="form-group">
                 <label class="col-xs-12 col-sm-3 col-md-2 control-label">单笔订单指定金额返现</label>
                 <div class="col-sm-8 col-xs-12">
@@ -117,15 +116,14 @@
                      <label class="radio-inline"><input type="radio"  name="setdata[degression]" value="0" {if $set['degression'] ==0} checked="checked"{/if} /> 关闭</label>
                     <label class="radio-inline"><input type="radio"  name="setdata[degression]" value="1" {if $set['degression'] ==1} checked="checked"{/if} /> 开启</label>
                     <span class='help-block'>如 ：返现金额为100元，第一次返现为（100*返现比例），第二次为（100-已返现金额*返现比例），以此类推。</br>当未返现金剩余0.5元时，将一次性返现给用户。</span>
+
                 </div>
             </div>
-
         </div>
 
 
         <div class="form-group isappoint" {if $set['isappoint'] ==1} style="display:none;"{/if}>
             <label class="col-xs-12 col-sm-3 col-md-2 control-label">默认比例</label>
-
             <div class="col-sm-8">
                 <div class="input-group">
                     <!-- <div class="input-group-addon">提现到微信</div> -->
@@ -182,6 +180,7 @@
                  <span class='help-block'>返利会有延迟 最多延迟10分钟</span>
             </div>
         </div>
+
  
 <script type="text/javascript">
     $('.queue').click(function(){
@@ -224,7 +223,7 @@
     });
 </script>
 
-<!--             <div class='panel-body'>
+<!--              <div class='panel-body'>
                 <div class="form-group">
                     <label class="col-xs-12 col-sm-3 col-md-2 control-label">返现到余额与积分</label>
                     <div class="col-sm-8 col-xs-12">
@@ -235,6 +234,50 @@
                 </div>
             </div> -->
 
+         <div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">延期返现</label>
+            <div class="col-sm-8">
+                <div class="input-group">
+                    <input type="text" name="setdata[delay]" class="form-control" value="{$set['delay']}"  />
+                    <div class="input-group-addon">小时</div>
+
+                </div>
+                <span class='help-block'>订单完成时延期返现时间，0 与 空为不延期，订单完成直接加入返现队列。</span>
+            </div>
+        </div>
+
+            <script type="text/javascript">
+                $('.queue').click(function(){
+                    if($(this).find('input').val() == 1) {
+                        $("#return_queue").show();
+                    } else {
+                        $("#return_queue").hide();
+                    }
+                });
+                $('.law').click(function(){
+                    if($(this).find('input').val() == 1) {
+                        $("#return_time").show();
+                    } else {
+                        $("#return_time").hide();
+                    }
+
+                    if($(this).find('input').val() == 3) {
+                        $("#return_time1").show();
+                    } else {
+                        $("#return_time1").hide();
+                    }
+                });
+                $('.rule').click(function(){
+                    if($(this).find('input').val() == 2) {
+                        $("#return_rule").show();
+                        $("#return_degression").hide();
+                        
+                    } else {
+                        $("#return_rule").hide();
+                        $("#return_degression").show();
+                    }
+                });
+            </script>
 
             <div class="form-group"></div>
                <div class="form-group">
