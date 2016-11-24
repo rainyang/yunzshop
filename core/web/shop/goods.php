@@ -623,6 +623,7 @@ if ($operation == "change") {
                 'maxbuy' => intval($_GPC['maxbuy']),
                 'usermaxbuy' => intval($_GPC['usermaxbuy']),
                 'hasoption' => intval($_GPC['hasoption']),
+                'opt_switch' => intval($_GPC['opt_switch']),
                 'sales' => intval($_GPC['sales']),
                 'share_icon' => trim($_GPC['share_icon']),
                 'share_title' => trim($_GPC['share_title']),

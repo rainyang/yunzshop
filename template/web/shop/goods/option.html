@@ -20,6 +20,21 @@
            
        {/if}
            </div>
+
+    <label class="col-xs-12 col-sm-3 col-md-2 control-label">是否启用新规格模板</label>
+    <div class="col-sm-9 col-xs-12">
+        {ife 'shop.goods' $item}
+        <label class="checkbox-inline">
+            <input type="checkbox" id="opt_switch" value="1" name="opt_switch" {if $item['opt_switch']==1}checked{/if} />启用规格模板
+        </label>
+        <span class="help-block">新规格模板只在设置2组规格时显示</span>
+
+        {else}
+
+        <div class='form-control-static'>{if $item['opt_switch']==1}启用{else}不启用{/if} </div>
+
+        {/if}
+    </div>
 </div>
  
 <div id='tboption' style="{if $item['hasoption']!=1}display:none{/if}">
