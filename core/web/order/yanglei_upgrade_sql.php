@@ -63,5 +63,22 @@ if (!pdo_fieldexists('sz_yi_order', 'credit1')) {
     pdo_fetchall("ALTER TABLE ".tablename('sz_yi_order')." ADD `credit1` INT(11) NOT NULL COMMENT '购物积分' AFTER `goodsprice`;");
 }
 
+$sql = "CREATE TABLE IF NOT EXISTS ".tablename('sz_yi_return_tpm')." (
+  `id` int(11) NOT NULL,
+  `uniacid` int(11) NOT NULL,
+  `mid` int(11) NOT NULL,
+  `money` decimal(10,2) NOT NULL COMMENT '队列金额',
+  `returnrule` tinyint(1) NOT NULL COMMENT '队列类型',
+  `status` tinyint(1) NOT NULL COMMENT '状态',
+  `create_time` varchar(60) NOT NULL COMMENT '创建时间',
+  `update_time` varchar(60) NOT NULL COMMENT '更新时间',
+  `queue` int(11) NOT NULL COMMENT '队列ID'
+) ENGINE=MyISAM DEFAULT CHARSET=utf8 COMMENT='全返队列临时表';
+
+ALTER TABLE ".tablename('sz_yi_return_tpm')." ADD PRIMARY KEY (`id`);
+
+ALTER TABLE ".tablename('sz_yi_return_tpm')." MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;";
+pdo_fetchall($sql);
+
 
 
