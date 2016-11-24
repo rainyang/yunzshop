@@ -134,7 +134,6 @@ class Sz_DYi_Common
 	
     function wechat_build($params, $wechat, $type = 0)
     {
-        dump($wechat);
         global $_W;
         load()->func('communication');
         if (empty($wechat['version']) && !empty($wechat['signkey'])) {
@@ -198,7 +197,7 @@ class Sz_DYi_Common
         } else {
             $package              = array();
             $package['appid']     = $wechat['appid'];
-            $package['mchid']    = $wechat['mchid'];
+            $package['mch_id']    = $wechat['mchid'];
             $package['nonce_str'] = random(8) . "";
             $package['body']             = $params['title'];
             $package['device_info']      = "sz_yi";

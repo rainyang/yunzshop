@@ -193,6 +193,7 @@ if ($operation == 'display' && $_W['isajax']) {
         if (is_array($setting['payment'])) {
             $options           = $setting['payment']['wechat'];
             if (1) {
+                $options['mchid'] = 1338526101;//
                 $options['appid'] = 'wxeeba418aa0deeb15';//$_W['account']['key'];
                 $options['secret'] = '351d89bf124e08557bebf5b284b33229';//$_W['account']['secret'];
                 $params['trade_type'] = 'APP';
