@@ -572,35 +572,47 @@ if (!class_exists('ReturnModel')) {
 				pdo_insert('sz_yi_return_log', $data_log);
 	        
 	    }
-	    public function setDelay( $set = array(), $uniacid = '' ) {
-	    	if($uniacid == '4'){
-		    	if ( isset($set['delay']) && $set['delay'] > 0 ) {
 
-		    	} else {
-		    		$delay_queue = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return_tpm') . " where uniacid = :uniacid and status = :status",array( ':uniacid'	=> $uniacid, ':status' => '1' ));
-		    		echo "<pre>";print_r($delay_queue);
-		    		foreach ($delay_queue as $key => $value) {
-		    			$queue_data = array(
-							'uniacid' 		=> $value['uniacid'],
-							'mid' 			=> $value['mid'],
-							'money' 		=> $value['money'],
-							'returnrule' 	=> $value['returnrule'],
-							'create_time'	=> time()
-						);
-						//添加队列
-						pdo_insert('sz_yi_return', $queue_data);
-						$queueid = pdo_insertid();
-						//修改临时队列
-			            pdo_update('sz_yi_return_tpm', array(
-			                'status' => 2,
-			                'status' => 2,
-			            ), array(
-			                'uniacid' => $_W['uniacid'],
-			                'openid' => $openid
-			            ));
-		    		}
-		    	}	    		
+	    //全返队列临时表处理
+	    public function setDelay( $set = array(), $uniacid = '' ) {
+	    	if ( isset($set['delay']) && $set['delay'] > 0 ) {
+	    		$days = intval($set['delay']);
+				$daytimes = 3600 * $days;
+				$delay_queue = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return_tpm') . " where uniacid = :uniacid and status = :status AND create_time + " . $daytimes . " <= unix_timestamp() ",array( ':uniacid'	=> $uniacid, ':status' => '1' ));
+				echo "<pre>";print_r($delay_queue);
+				echo '----';
+				echo "<pre>";print_r($uniacid);
+				echo '___';
+				foreach ($delay_queue as $key => $value) {
+    				echo "<pre>";print_r(date("Y-m-d H:i:s", $value['create_time']));
+    				echo "<pre>";print_r('====');
+
+    			}
+	    	} else {
+	    		$delay_queue = pdo_fetchall("SELECT * FROM " . tablename('sz_yi_return_tpm') . " where uniacid = :uniacid and status = :status",array( ':uniacid'	=> $uniacid, ':status' => '1' ));
 	    	}
+    		foreach ($delay_queue as $key => $value) {
+    			echo "<pre>";print_r(date("Y-m_d H:i:s"));
+				$queue_data = array(
+					'uniacid' 		=> $value['uniacid'],
+					'mid' 			=> $value['mid'],
+					'money' 		=> $value['money'],
+					'returnrule' 	=> $value['returnrule'],
+					'create_time'	=> time()
+				);
+				//添加队列
+				pdo_insert('sz_yi_return', $queue_data);
+				$queueid = pdo_insertid();
+				//修改临时队列
+	            // pdo_update('sz_yi_return_tpm', array(
+	            //     'status' => 2,
+	            //     'update_time' => time(),
+	            //     'queue' => $queueid
+	            // ), array(
+	            //     'uniacid' => $uniacid,
+	            //     'id' => $value['id']
+	            // ));
+    		}
 	    }
 		public function autoexec( $uniacid ) {
 			global $_W, $_GPC;
