@@ -1228,12 +1228,11 @@ if ($operation == "change") {
         if($_GPC['plugin'] == "fund"){
             foreach ($list as $key => &$value) {
                 $allprice = pdo_fetchcolumn("select allprice from ". tablename('sz_yi_fund_goods') ." where goodsid=".$value['id']);
-                $yetprice = pdo_fetchcolumn("select sum(price) from ". tablename('sz_yi_order_goods') ." where goodsid=".$value['id']);
                 $value['casesceu'] = ceil($allprice / $value['marketprice']) <= $value['sales'];
                 if(!$value['casesceu']){
                     $value['allrefund'] = pdo_fetchcolumn("select allrefund from ". tablename('sz_yi_fund_goods') ." where goodsid=".$value['id']);
                 }
-                $yetprice += $value['marketprice']*$value['sales'];
+                $yetprice = pdo_fetchcolumn("select sum(og.price) as yetprice from ". tablename('sz_yi_order_goods') ." og left join " . tablename('sz_yi_order') . " o on og.orderid=o.id  where o.status > 0 and og.goodsid=".$value['id']);
                 $value['yetprice'] = number_format($yetprice, 2);
                 $value['allprice'] = number_format($allprice, 2);
             }

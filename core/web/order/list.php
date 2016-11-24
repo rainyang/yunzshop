@@ -758,7 +758,6 @@ if ($operation == "display") {
             }
             
         }
-        unset($og);
 
         //众筹订单未到时间隐藏发货
         $value['confirmsend'] = true;
@@ -767,6 +766,7 @@ if ($operation == "display") {
                $value['confirmsend'] =  $og['timeend'] < time();
             }    
         }
+        unset($og);
         if (!empty($level) && empty($agentid)) {
             $value["commission1"] = $commission1;
             $value["commission2"] = $commission2;

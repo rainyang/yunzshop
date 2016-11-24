@@ -145,7 +145,7 @@ foreach ($goods as $key => &$value) {
     $value['yetprice'] = number_format($yetprice, 2);
     $value['people'] = pdo_fetchcolumn("select count(o.id) from ". tablename('sz_yi_order_goods') ." og left join " . tablename('sz_yi_order') . " o on og.orderid=o.id  where o.status > 0 and og.goodsid=".$value['id']);
     $value['percentage'] = !empty($yetprice) && !empty($get_fund_data['allprice']) ? intval($yetprice/$get_fund_data['allprice']*100) : 0;
-    $value['sday'] = $value['timeend'] > time() ? ceil(($value['timeend'] - time())/86400) : 0;
+    $value['sday'] = $value['timeend'] > time() ? $this->model->check_time($value['timeend']) : "0秒";
 }
 unset($value);
 

@@ -29,5 +29,24 @@ if (!class_exists('FundModel')) {
 				}
 			}
 		}
+
+		//计算倒计时时间
+		public function check_time($endtime){
+			$time = time();
+			$ystime = $endtime - $time;
+			if ($ystime > 86400) {
+				$day = ceil($ystime / 86400);
+				return array("n" => $day, 'text' => "天");
+			} elseif ($ystime <= 86400 && $ystime > 3600) {
+				$day = ceil($ystime / 3600);
+				return array("n" => $day, 'text' => "时");
+			} elseif ($ystime <= 3600){
+				$day = ceil($ystime / 60);
+				return array("n" => $day, 'text' => "分");
+			} else {
+				return array("n" => "", 'text' => "已结束");
+			}
+			return 0;
+		}
 	}
 }

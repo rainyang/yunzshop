@@ -29,7 +29,7 @@ $yetprice = pdo_fetchcolumn("select sum(og.price) as yetprice from ". tablename(
 $goods['yetprice'] = number_format($yetprice, 2);
 $goods['people'] = pdo_fetchcolumn("select count(o.id) from ". tablename('sz_yi_order_goods') ." og left join " . tablename('sz_yi_order') . " o on og.orderid=o.id  where o.status > 0 and og.goodsid=".$goodsid);
 $goods['percentage'] = !empty($yetprice) && !empty($get_fund_data['allprice']) ? intval($yetprice/$get_fund_data['allprice']*100) : 0;
-$goods['sday'] = $goods['timeend'] > time() ? ceil(($goods['timeend'] - time())/86400) : 0;   
+$goods['sday'] = $this->model->check_time($goods['timeend']);   
 if($goods['pcate']){
     $pcate = pdo_fetchcolumn(" select name from ".tablename('sz_yi_category')." where id =".$goods['pcate']." and uniacid=".$uniacid);
 }
