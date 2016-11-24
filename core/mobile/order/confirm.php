@@ -132,14 +132,32 @@ if ($_W['isajax']) {
     $isyunbipay = intval($_GPC['isyunbipay']);
     if ($operation == 'display') {
         $id   = intval($_GPC["id"]);
-        $optionid = intval($_GPC['optionid']);
-        $total    = intval($_GPC['total']);
+        if (strpos($_GPC['optionid'], '|')) {
+            $optionid = rtrim($_GPC['optionid'], '|');
+            $optionid = explode('|', $optionid);
+        } else {
+            $optionid = intval($_GPC['optionid']);
+        }
+
+        if (strpos($_GPC['total'], '|')) {
+            $total    = rtrim($_GPC['total'], '|');
+            $total = explode('|', $total);
+        } else {
+            $total    = intval($_GPC['total']);
+        }
+
         $ischannelpay = intval($_GPC['ischannelpay']);
         $ids      = '';
         if ($total < 1) {
             $total = 1;
         }
-        $buytotal  = $total;
+
+        if (is_array($total)) {
+            $buytotal  = 1;
+        } else {
+            $buytotal  = $total;
+        }
+
         $isverify  = false;
         $isvirtual = false;
         $changenum = false;
@@ -190,75 +208,78 @@ if ($_W['isajax']) {
                 ':id' => $id
             ));
             $suppliers = array($data['supplier_uid'] => array("supplier_uid" => $data['supplier_uid']));
-            $data['total']    = $total;
-            $data['optionid'] = $optionid;
-            if (!empty($optionid)) {
-                $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,virtual,stock,weight from ' . tablename('sz_yi_goods_option') . ' WHERE id=:id AND goodsid=:goodsid AND uniacid=:uniacid  limit 1', array(
-                    ':uniacid' => $uniacid,
-                    ':goodsid' => $id,
-                    ':id' => $optionid
-                ));
-                if (!empty($option)) {
-                    $data['optionid']    = $optionid;
-                    $data['optiontitle'] = $option['title'];
-                    if (p('supplier')) {
-                        if ($option['marketprice'] != 0) {
+
+            //新规格
+            if (is_int($total) && is_int($optionid)) {
+                $data['total']    = $total;
+                $data['optionid'] = $optionid;
+                if (!empty($optionid)) {
+                    $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,virtual,stock,weight from ' . tablename('sz_yi_goods_option') . ' WHERE id=:id AND goodsid=:goodsid AND uniacid=:uniacid  limit 1', array(
+                        ':uniacid' => $uniacid,
+                        ':goodsid' => $id,
+                        ':id' => $optionid
+                    ));
+                    if (!empty($option)) {
+                        $data['optionid']    = $optionid;
+                        $data['optiontitle'] = $option['title'];
+                        if (p('supplier')) {
+                            if ($option['marketprice'] != 0) {
+                                $data['marketprice'] = $option['marketprice'];
+                            }
+                        } else {
                             $data['marketprice'] = $option['marketprice'];
                         }
-                    } else {
-                        $data['marketprice'] = $option['marketprice'];
-                    }
-                    $data['virtual']     = $option['virtual'];
-                    $data['stock']       = $option['stock'];
-                    if (!empty($option['weight'])) {
-                        $data['weight'] = $option['weight'];
+                        $data['virtual']     = $option['virtual'];
+                        $data['stock']       = $option['stock'];
+                        if (!empty($option['weight'])) {
+                            $data['weight'] = $option['weight'];
+                        }
                     }
                 }
-            }
-            $changenum   = true;
-            $totalmaxbuy = $data['stock'];
-            if ($data['maxbuy'] > 0) {
-                if ($totalmaxbuy != -1) {
-                    if ($totalmaxbuy > $data['maxbuy']) {
+                $changenum   = true;
+                $totalmaxbuy = $data['stock'];
+                if ($data['maxbuy'] > 0) {
+                    if ($totalmaxbuy != -1) {
+                        if ($totalmaxbuy > $data['maxbuy']) {
+                            $totalmaxbuy = $data['maxbuy'];
+                        }
+                    } else {
                         $totalmaxbuy = $data['maxbuy'];
                     }
-                } else {
-                    $totalmaxbuy = $data['maxbuy'];
                 }
-            }
-            if ($data['usermaxbuy'] > 0) {
-                $order_goodscount = pdo_fetchcolumn('select ifnull(sum(og.total),0)  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_order') . ' o on og.orderid=o.id ' . ' WHERE og.goodsid=:goodsid AND  o.status>=1 AND o.openid=:openid  AND og.uniacid=:uniacid ', array(
-                    ':goodsid' => $data['goodsid'],
-                    ':uniacid' => $uniacid,
-                    ':openid' => $openid
-                ));
-                $last = $data['usermaxbuy'] - $order_goodscount;
-                if ($last <= 0) {
-                    $last = 0;
-                }
-                if ($totalmaxbuy != -1) {
-                    if ($totalmaxbuy > $last) {
+                if ($data['usermaxbuy'] > 0) {
+                    $order_goodscount = pdo_fetchcolumn('select ifnull(sum(og.total),0)  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_order') . ' o on og.orderid=o.id ' . ' WHERE og.goodsid=:goodsid AND  o.status>=1 AND o.openid=:openid  AND og.uniacid=:uniacid ', array(
+                        ':goodsid' => $data['goodsid'],
+                        ':uniacid' => $uniacid,
+                        ':openid' => $openid
+                    ));
+                    $last = $data['usermaxbuy'] - $order_goodscount;
+                    if ($last <= 0) {
+                        $last = 0;
+                    }
+                    if ($totalmaxbuy != -1) {
+                        if ($totalmaxbuy > $last) {
+                            $totalmaxbuy = $last;
+                        }
+                    } else {
                         $totalmaxbuy = $last;
                     }
-                } else {
-                    $totalmaxbuy = $last;
                 }
-            }
-            $data['totalmaxbuy'] = $totalmaxbuy;
-            if (p('hotel')) {
-                if ($data['type']=='99') {
-                    $btime =  $_SESSION['data']['btime'];
-                    $bdate =  $_SESSION['data']['bdate'];
-                    // 住几天
-                    $days = intval($_SESSION['data']['day']);
-                    // 离店
-                    $etime =  $_SESSION['data']['etime'];
-                    $edate =  $_SESSION['data']['edate'] ;
-                    $date_array = array();
-                    $date_array[0]['date'] = $bdate;
-                    $date_array[0]['day'] = date('j', $btime);
-                    $date_array[0]['time'] = $btime;
-                    $date_array[0]['month'] = date('m', $btime);
+                $data['totalmaxbuy'] = $totalmaxbuy;
+                if (p('hotel')) {
+                    if ($data['type']=='99') {
+                        $btime =  $_SESSION['data']['btime'];
+                        $bdate =  $_SESSION['data']['bdate'];
+                        // 住几天
+                        $days = intval($_SESSION['data']['day']);
+                        // 离店
+                        $etime =  $_SESSION['data']['etime'];
+                        $edate =  $_SESSION['data']['edate'] ;
+                        $date_array = array();
+                        $date_array[0]['date'] = $bdate;
+                        $date_array[0]['day'] = date('j', $btime);
+                        $date_array[0]['time'] = $btime;
+                        $date_array[0]['month'] = date('m', $btime);
 
                     if ($days > 1) {
                         for ($i = 1; $i < $days; $i++) {
@@ -275,43 +296,109 @@ if ($_W['isajax']) {
                     $sql = 'SELECT `id`, `roomdate`, `num`, `status` FROM ' . tablename('sz_yi_hotel_room_price') . ' WHERE `roomid` = :roomid
                     AND `roomdate` >= :btime AND `roomdate` < :etime AND `status` = :status';
 
-                    $params = array(':roomid' => $room['id'], ':btime' => $btime, ':etime' => $etime, ':status' => '1');
-                    $room_date_list = pdo_fetchall($sql, $params);
-                    $flag = intval($room_date_list);
-                    $list = array();
-                    $max_room = 5;//最大预约房间数
-                    $is_order = 1;
-                    if ($flag == 1) {
-                        for ($i = 0; $i < $days; $i++) {
-                            $k = $date_array[$i]['time'];
-                            foreach ($room_date_list as $p_key => $p_value) {
-                                // 判断价格表中是否有当天的数据
-                                if ($p_value['roomdate'] == $k) {
-                                    $room_num = $p_value['num'];
-                                    if (empty($room_num)) {
-                                        $is_order = 0;
-                                        $max_room = 0;
-                                        $list['num'] = 0;
-                                        $list['date'] =  $date_array[$i]['date'];
-                                    } else if ($room_num > 0 && $room_num < $max_room) {
-                                        $max_room = $room_num;
-                                        $list['num'] =  $room_num;
-                                        $list['date'] =  $date_array[$i]['date'];
-                                    } else {
-                                        $list['num'] =  $max_room;
-                                        $list['date'] =  $date_array[$i]['date'];
+                        $params = array(':roomid' => $room['id'], ':btime' => $btime, ':etime' => $etime, ':status' => '1');
+                        $room_date_list = pdo_fetchall($sql, $params);
+                        $flag = intval($room_date_list);
+                        $list = array();
+                        $max_room = 5;//最大预约房间数
+                        $is_order = 1;
+                        if ($flag == 1) {
+                            for ($i = 0; $i < $days; $i++) {
+                                $k = $date_array[$i]['time'];
+                                foreach ($room_date_list as $p_key => $p_value) {
+                                    // 判断价格表中是否有当天的数据
+                                    if ($p_value['roomdate'] == $k) {
+                                        $room_num = $p_value['num'];
+                                        if (empty($room_num)) {
+                                            $is_order = 0;
+                                            $max_room = 0;
+                                            $list['num'] = 0;
+                                            $list['date'] =  $date_array[$i]['date'];
+                                        } else if ($room_num > 0 && $room_num < $max_room) {
+                                            $max_room = $room_num;
+                                            $list['num'] =  $room_num;
+                                            $list['date'] =  $date_array[$i]['date'];
+                                        } else {
+                                            $list['num'] =  $max_room;
+                                            $list['date'] =  $date_array[$i]['date'];
+                                        }
+                                        break;
                                     }
-                                    break;
                                 }
                             }
                         }
+                        $data['totalmaxbuy']= $list['num'];
                     }
-                    $data['totalmaxbuy']= $list['num'];
+                }
+                $goods[] = $data;
+            } else {
+                if (count($total) != count($optionid)) {
+                    show_json(0);
+                }
+                foreach ($optionid as $key => $val) {
+                    $data['total']    = $total[$key];
+                    $data['optionid'] = $optionid[$key];
+                    if (!empty($data['optionid'])) {
+                        $option = pdo_fetch('select id,title,marketprice,goodssn,productsn,virtual,stock,weight from ' . tablename('sz_yi_goods_option') . ' WHERE id=:id AND goodsid=:goodsid AND uniacid=:uniacid  limit 1', array(
+                            ':uniacid' => $uniacid,
+                            ':goodsid' => $id,
+                            ':id' => $data['optionid']
+                        ));
+                        if (!empty($option)) {
+                            $data['optionid']    = $data['optionid'];
+                            $data['optiontitle'] = $option['title'];
+                            if (p('supplier')) {
+                                if ($option['marketprice'] != 0) {
+                                    $data['marketprice'] = $option['marketprice'];
+                                }
+                            } else {
+                                $data['marketprice'] = $option['marketprice'];
+                            }
+                            $data['virtual']     = $option['virtual'];
+                            $data['stock']       = $option['stock'];
+                            if (!empty($option['weight'])) {
+                                $data['weight'] = $option['weight'];
+                            }
+                        }
+                    }
+                    $changenum   = true;
+                    $totalmaxbuy = $data['stock'];
+                    if ($data['maxbuy'] > 0) {
+                        if ($totalmaxbuy != -1) {
+                            if ($totalmaxbuy > $data['maxbuy']) {
+                                $totalmaxbuy = $data['maxbuy'];
+                            }
+                        } else {
+                            $totalmaxbuy = $data['maxbuy'];
+                        }
+                    }
+                    if ($data['usermaxbuy'] > 0) {
+                        $order_goodscount = pdo_fetchcolumn('select ifnull(sum(og.total),0)  from ' . tablename('sz_yi_order_goods') . ' og ' . ' left join ' . tablename('sz_yi_order') . ' o on og.orderid=o.id ' . ' WHERE og.goodsid=:goodsid AND  o.status>=1 AND o.openid=:openid  AND og.uniacid=:uniacid ', array(
+                            ':goodsid' => $data['goodsid'],
+                            ':uniacid' => $uniacid,
+                            ':openid' => $openid
+                        ));
+                        $last = $data['usermaxbuy'] - $order_goodscount;
+                        if ($last <= 0) {
+                            $last = 0;
+                        }
+                        if ($totalmaxbuy != -1) {
+                            if ($totalmaxbuy > $last) {
+                                $totalmaxbuy = $last;
+                            }
+                        } else {
+                            $totalmaxbuy = $last;
+                        }
+                    }
+
+                    $data['totalmaxbuy'] = $totalmaxbuy;
+
+                    $goods[$key] = $data;
                 }
             }
-            $goods[] = $data;
-        }
 
+
+        }
 
         $goods = set_medias($goods, 'thumb');
         $issale = true;
